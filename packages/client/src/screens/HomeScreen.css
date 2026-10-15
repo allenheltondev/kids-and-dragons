@@ -10,6 +10,9 @@
   background: var(--color-bg, #0d0b1a);
   color: var(--color-text, #f4f1ff);
   overflow-y: auto;
+  /* Opening the host card can tip the page into scrolling; the gutter is
+     kept either way so the column does not narrow and rewrap. */
+  scrollbar-gutter: stable;
 }
 
 .home__inner {
@@ -28,6 +31,10 @@
   flex-direction: column;
   gap: var(--space-6, 2em);
   margin-block: auto;
+}
+
+.home__body--top {
+  margin-block: 0 auto;
 }
 
 .home__masthead {
@@ -189,6 +196,12 @@
   font-weight: 700;
 }
 
+.home__mode-mark {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1em;
+}
+
 .home__mode-blurb {
   font-size: var(--font-size-sm, 0.875em);
   line-height: 1.35;
@@ -250,14 +263,23 @@
   border-color: var(--color-accent, #ffc95c);
 }
 
+/* Two lines of error chip tall, empty or not. Pulled in closer than the
+   cards' own gap, so an empty seat reads as breathing room, not a hole. */
+.home__status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 3em;
+  margin-block: calc(var(--space-3, 0.75em) - var(--space-6, 2em));
+}
+
 .home__busy {
   justify-content: center;
   color: var(--color-text-muted, #b7b0d8);
 }
 
 .home__error {
-  align-self: center;
-  white-space: normal;
   text-align: center;
 }
 

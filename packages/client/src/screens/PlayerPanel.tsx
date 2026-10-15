@@ -57,6 +57,7 @@ import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { CharacterSheet } from "./CharacterSheet";
 import { Icon } from "./icons";
+import { VoteTicks } from "./VoteTicks";
 import {
   beginLabel,
   campaignEndHeading,
@@ -156,6 +157,42 @@ function helperLine(prompt: Prompt & { kind: "roll" }, party: PartyMember[], meI
   return `${who} helping: +d${String(prompt.helper.sides)}`;
 }
 
+/**
+ * The confirm row (spec §11), drawn whether or not anything is picked yet.
+ *
+ * The answers sit at the bottom of the pane, so a bar that arrived with the
+ * pick pushed the option just tapped up a row — straight out from under the
+ * thumb on its way to "Do it!" — and "Change" dropped it back again. Empty, it
+ * keeps its seat but is invisible and inert, which also takes it out of the
+ * accessibility tree: there is exactly one "Do it!" to find, and only once
+ * there is something to do.
+ */
+function ConfirmBar({
+  open,
+  icon,
+  what,
+  children,
+}: {
+  open: boolean;
+  icon: string;
+  what: ReactNode;
+  children: ReactNode;
+}): ReactElement {
+  return (
+    <div
+      className={`confirm${open ? "" : " confirm--empty"}`}
+      aria-hidden={open ? undefined : true}
+      inert={!open}
+    >
+      <p className="confirm__what">
+        <Icon name={icon} />
+        <span>{open ? what : "\u00a0"}</span>
+      </p>
+      <div className="confirm__actions">{children}</div>
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Sheet
 // ---------------------------------------------------------------------------
@@ -180,12 +217,22 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
       </span>
       <span className="sheet__id">
         <span className="sheet__name">{character.name}</span>
-        <span className="sheet__meta kad-muted">
-          <Icon name={character.class} />
-          <span>Level {character.level}</span>
-          <span aria-hidden="true">·</span>
-          <span className="sheet__tier">{character.tier}</span>
-        </span>
+        {/* Knocked down (spec §7.3) takes the level line's place rather than
+            a banner of its own: a banner pushed the question down a row the
+            moment an enemy landed a hit, under a thumb already on its way. */}
+        {me.down ? (
+          <span className="sheet__meta sheet__down" role="status">
+            <Icon name="down" />
+            <span className="sheet__down-text">Knocked down. A friend can help you up.</span>
+          </span>
+        ) : (
+          <span className="sheet__meta kad-muted">
+            <Icon name={character.class} />
+            <span>Level {character.level}</span>
+            <span aria-hidden="true">·</span>
+            <span className="sheet__tier">{character.tier}</span>
+          </span>
+        )}
         {/*
          * The waiting point (spec §8.1). Pinned here rather than beside the
          * stat row because a point is earned at the end of a chapter and spent
@@ -445,6 +492,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
     !me.down &&
     !state.prompt.helper &&
     !(state.helpSpent ?? []).includes(me.character.id);
+  // Who that help would go to, so the way in can say so.
+  const helping = canHelp && state.prompt?.kind === "roll" ? nameOfCharacter(party, state.prompt.characterId) : null;
   const hasTask = myPrompt !== null || canHelp || state?.encounter != null || inLobby || state?.phase === "chapter_complete" ||
     (state?.phase === "scene" && state.sceneType === "rest" && (me?.character.unspentPoints ?? 0) > 0) ||
     (state?.trades ?? []).some((offer) => offer.toPlayerId === me?.playerId);
@@ -697,13 +746,6 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       {backdrop ? <SceneBackdrop src={backdrop} /> : null}
       <IdentityStrip me={me} />
 
-      {me.down ? (
-        <p className="player__down" role="status">
-          <Icon name="down" />
-          <span>Knocked down. A friend can help you up.</span>
-        </p>
-      ) : null}
-
       {/*
         What the world is asking, echoed here.
 
@@ -797,40 +839,250 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   })}
                 </ul>
 
-                {aimedStat === null ? null : (
-                  <div className="confirm">
-                    <p className="confirm__what">
-                      <Icon name={aimedStat} />
+                <ConfirmBar
+                  open={aimedStat !== null}
+                  icon={aimedStat ?? "levelup"}
+                  what={
+                    aimedStat === null ? null : (
                       <span className="grow__label">
                         {aimedStat} {me.character.stats[aimedStat]} → {me.character.stats[aimedStat] + 1}
                       </span>
-                    </p>
-                    <div className="confirm__actions">
-                      <Button
-                        variant="ghost"
-                        size="md"
-                        icon={<Icon name="back" />}
-                        onClick={() => setPendingStat(null)}
-                      >
-                        Change
-                      </Button>
-                      <Button
-                        variant="primary"
-                        size="md"
-                        icon={<Icon name="check" />}
-                        disabled={busy}
-                        onClick={() => {
-                          setPendingStat(null);
-                          void dispatch({ type: "SPEND_STAT_POINT", stat: aimedStat });
-                        }}
-                      >
-                        {busy ? "Growing…" : "Grow!"}
-                      </Button>
-                    </div>
-                  </div>
-                )}
+                    )
+                  }
+                >
+                  <Button
+                    variant="ghost"
+                    size="md"
+                    icon={<Icon name="back" />}
+                    onClick={() => setPendingStat(null)}
+                  >
+                    Change
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="md"
+                    icon={<Icon name="check" />}
+                    disabled={busy}
+                    onClick={() => {
+                      if (aimedStat === null) return;
+                      setPendingStat(null);
+                      void dispatch({ type: "SPEND_STAT_POINT", stat: aimedStat });
+                    }}
+                  >
+                    {busy ? "Growing…" : "Grow!"}
+                  </Button>
+                </ConfirmBar>
               </>
             )}
+          </div>
+        ) : null}
+
+        {/* ---------------- choice / vote (spec §6.1) ---------------- */}
+        {myPrompt !== null && myPrompt.kind === "choice" ? (
+          <div className="prompt">
+            <h3 className="prompt__title">
+              <Icon name={myPrompt.vote ? "vote" : "hand"} />
+              <span>
+                {myPrompt.vote
+                  ? "Everyone votes"
+                  : myPrompt.forPlayerIds.includes(me.playerId)
+                    ? "Your turn! What do you do?"
+                    : "What do you do?"}
+              </span>
+            </h3>
+
+            <ul className="prompt__options">
+              {myPrompt.options.map((option) => {
+                // Everyone with a say, so every option draws the same seats.
+                const voterIds =
+                  myPrompt.forPlayerIds.length > 0 ? myPrompt.forPlayerIds : party.map((m) => m.playerId);
+                const votedIds = Object.entries(myPrompt.votes ?? {})
+                  .filter(([, choiceId]) => choiceId === option.id)
+                  .map(([playerId]) => playerId);
+                const selected = pendingChoice === option.id || myVote === option.id;
+                return (
+                  <li key={option.id}>
+                    <button
+                      type="button"
+                      className={`choice kad-tap kad-focusable${selected ? " choice--on" : ""}`}
+                      aria-pressed={selected}
+                      onClick={() => setPendingChoice(option.id)}
+                    >
+                      <span className="choice__icon">
+                        <Icon name={option.icon} size="1.8em" />
+                      </span>
+                      <span className="choice__label">{option.label}</span>
+                      <span className="choice__trail">
+                        {/* The seats are always here; only the check and the
+                            ticks come and go, so somebody else voting cannot
+                            rewrap the label you are reading. */}
+                        <span className="choice__mark">
+                          {myVote === option.id ? <Icon name="check" label="Your vote" /> : null}
+                        </span>
+                        {myPrompt.vote ? (
+                          <VoteTicks voterIds={voterIds} votedIds={votedIds} party={party} />
+                        ) : null}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+
+            {/* Nothing is final until this bar is tapped (spec §11). */}
+            <ConfirmBar
+              open={chosenOption !== null}
+              icon={chosenOption?.icon ?? "check"}
+              what={chosenOption?.label}
+            >
+              <Button
+                variant="ghost"
+                size="md"
+                icon={<Icon name="back" />}
+                onClick={() => setPendingChoice(null)}
+              >
+                Change
+              </Button>
+              <Button
+                variant="primary"
+                size="md"
+                icon={<Icon name="check" />}
+                disabled={busy}
+                onClick={() => {
+                  if (chosenOption !== null) void dispatch({ type: "CHOOSE", choiceId: chosenOption.id });
+                }}
+              >
+                {busy ? "Sending…" : "Do it!"}
+              </Button>
+            </ConfirmBar>
+          </div>
+        ) : null}
+
+        {/* ---------------- roll (spec §4.1) ---------------- */}
+        {myPrompt !== null && myPrompt.kind === "roll" ? (
+          <div className="prompt">
+            <h3 className="prompt__title">
+              <Icon name="d20" />
+              <span>{myPrompt.prompt}</span>
+            </h3>
+            <p className="prompt__sub kad-muted">
+              <Icon name={myPrompt.stat} />
+              <span className="prompt__stat">{myPrompt.stat}</span>
+              <span aria-hidden="true">·</span>
+              <span>{checkTarget(myPrompt.tn)}</span>
+            </p>
+            {myPrompt.group ? (
+              <p className="prompt__sub" role="status">
+                <Icon name="players" />
+                <span>{`Everyone rolls! Half or more need to make it. ${String(myPrompt.group.rolls.length)} rolled so far.`}</span>
+              </p>
+            ) : null}
+            {/* A friend can chip in while you are reading this (spec §4.1),
+                so the line has its seat from the start: arriving, it would
+                lift the whole bottom-anchored card, Roll! and all. A group
+                check takes no help, and nor does a party of one, so neither
+                gets a seat. */}
+            {myPrompt.group || party.length < 2 ? null : (
+              <p
+                className={`prompt__sub prompt__helper${myPrompt.helper ? "" : " prompt__helper--empty"}`}
+                role="status"
+              >
+                <Icon name="players" />
+                <span>{helperLine(myPrompt, party, me.character.id) ?? "\u00a0"}</span>
+              </p>
+            )}
+            <Button
+              variant="primary"
+              size="lg"
+              icon={<Icon name="d20" />}
+              disabled={busy}
+              onClick={() => void dispatch({ type: "ROLL" })}
+            >
+              {busy ? "Rolling…" : "Roll!"}
+            </Button>
+          </div>
+        ) : null}
+
+        {/* ---------------- item swap (spec §9.1) ---------------- */}
+        {myPrompt !== null && myPrompt.kind === "item_swap" ? (
+          <div className="prompt">
+            <h3 className="prompt__title">
+              <Icon name={items?.[myPrompt.incomingItemId]?.icon ?? "bag"} />
+              <span>You found {items?.[myPrompt.incomingItemId]?.name ?? "something"}!</span>
+            </h3>
+            <p className="prompt__sub kad-muted">
+              {items?.[myPrompt.incomingItemId]?.text ?? "Your bag is full. Keep it, or leave it?"}
+            </p>
+
+            <ul className="prompt__options">
+              {me.character.inventory.map((entry) => {
+                const def = items?.[entry.itemId];
+                const selected = pendingDrop === entry.itemId;
+                return (
+                  <li key={entry.itemId}>
+                    <button
+                      type="button"
+                      className={`choice kad-tap kad-focusable${selected ? " choice--on" : ""}`}
+                      aria-pressed={selected}
+                      onClick={() => setPendingDrop(entry.itemId)}
+                    >
+                      <span className="choice__icon">
+                        <Icon name={def?.icon ?? entry.kind} size="1.8em" />
+                      </span>
+                      <span className="choice__label">Drop {def?.name ?? entry.itemId}</span>
+                    </button>
+                  </li>
+                );
+              })}
+              <li>
+                <button
+                  type="button"
+                  className={`choice kad-tap kad-focusable${pendingDrop === null ? " choice--on" : ""}`}
+                  aria-pressed={pendingDrop === null}
+                  onClick={() => setPendingDrop(null)}
+                >
+                  <span className="choice__icon">
+                    <Icon name="close" size="1.8em" />
+                  </span>
+                  <span className="choice__label">Leave it behind</span>
+                </button>
+              </li>
+            </ul>
+
+            {/* `undefined` is "not decided yet"; `null` is a real answer. */}
+            <ConfirmBar
+              open={pendingDrop !== undefined}
+              icon={pendingDrop === null ? "close" : "bag"}
+              what={
+                pendingDrop === null
+                  ? "Leave it behind"
+                  : pendingDrop === undefined
+                    ? null
+                    : `Drop ${items?.[pendingDrop]?.name ?? pendingDrop}`
+              }
+            >
+              <Button
+                variant="ghost"
+                size="md"
+                icon={<Icon name="back" />}
+                onClick={() => setPendingDrop(undefined)}
+              >
+                Change
+              </Button>
+              <Button
+                variant="primary"
+                size="md"
+                icon={<Icon name="check" />}
+                disabled={busy}
+                onClick={() => {
+                  if (pendingDrop !== undefined) {
+                    void dispatch({ type: "RESOLVE_ITEM_SWAP", dropItemId: pendingDrop });
+                  }
+                }}
+              >
+                {busy ? "Sending…" : "Yes, do that"}
+              </Button>
+            </ConfirmBar>
           </div>
         ) : null}
 
@@ -842,7 +1094,11 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
 
             The two-tap rule (spec §11) is spread across two phones here rather
             than two taps on one. Their offer is the selection — nothing has
-            left their bag — and this is the confirm. */}
+            left their bag — and this is the confirm.
+
+            Below the scene's own question, not above it: a friend's offer
+            lands whenever they tap, and above the choices it pushed the
+            answers you were reading down the pane. */}
         {offersToMe.length > 0 ? (
           <div className="prompt">
             <h3 className="prompt__title">
@@ -966,211 +1222,6 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </div>
         ) : null}
 
-        {/* ---------------- choice / vote (spec §6.1) ---------------- */}
-        {myPrompt !== null && myPrompt.kind === "choice" ? (
-          <div className="prompt">
-            <h3 className="prompt__title">
-              <Icon name={myPrompt.vote ? "vote" : "hand"} />
-              <span>
-                {myPrompt.vote
-                  ? "Everyone votes"
-                  : myPrompt.forPlayerIds.includes(me.playerId)
-                    ? "Your turn! What do you do?"
-                    : "What do you do?"}
-              </span>
-            </h3>
-
-            <ul className="prompt__options">
-              {myPrompt.options.map((option) => {
-                const voters =
-                  myPrompt.votes === undefined
-                    ? []
-                    : Object.entries(myPrompt.votes)
-                        .filter(([, choiceId]) => choiceId === option.id)
-                        .map(([playerId]) => nameOfPlayer(party, playerId));
-                const selected = pendingChoice === option.id || myVote === option.id;
-                return (
-                  <li key={option.id}>
-                    <button
-                      type="button"
-                      className={`choice kad-tap kad-focusable${selected ? " choice--on" : ""}`}
-                      aria-pressed={selected}
-                      onClick={() => setPendingChoice(option.id)}
-                    >
-                      <span className="choice__icon">
-                        <Icon name={option.icon} size="1.8em" />
-                      </span>
-                      <span className="choice__label">{option.label}</span>
-                      <span className="choice__trail">
-                        {/* The seat is always here; only the check comes and
-                            goes, so somebody else voting cannot rewrap the
-                            label you are reading. */}
-                        <span className="choice__mark">
-                          {myVote === option.id ? <Icon name="check" label="Your vote" /> : null}
-                        </span>
-                        {voters.length === 0 ? null : (
-                          <span className="choice__votes">
-                            <Icon name="vote" />
-                            <span>{voters.join(", ")}</span>
-                          </span>
-                        )}
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-
-            {/* Nothing is final until this bar is tapped (spec §11). */}
-            {chosenOption === null ? null : (
-              <div className="confirm">
-                <p className="confirm__what">
-                  <Icon name={chosenOption.icon} />
-                  <span>{chosenOption.label}</span>
-                </p>
-                <div className="confirm__actions">
-                  <Button
-                    variant="ghost"
-                    size="md"
-                    icon={<Icon name="back" />}
-                    onClick={() => setPendingChoice(null)}
-                  >
-                    Change
-                  </Button>
-                  <Button
-                    variant="primary"
-                    size="md"
-                    icon={<Icon name="check" />}
-                    disabled={busy}
-                    onClick={() => void dispatch({ type: "CHOOSE", choiceId: chosenOption.id })}
-                  >
-                    {busy ? "Sending…" : "Do it!"}
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        ) : null}
-
-        {/* ---------------- roll (spec §4.1) ---------------- */}
-        {myPrompt !== null && myPrompt.kind === "roll" ? (
-          <div className="prompt">
-            <h3 className="prompt__title">
-              <Icon name="d20" />
-              <span>{myPrompt.prompt}</span>
-            </h3>
-            <p className="prompt__sub kad-muted">
-              <Icon name={myPrompt.stat} />
-              <span className="prompt__stat">{myPrompt.stat}</span>
-              <span aria-hidden="true">·</span>
-              <span>{checkTarget(myPrompt.tn)}</span>
-            </p>
-            {myPrompt.group ? (
-              <p className="prompt__sub" role="status">
-                <Icon name="players" />
-                <span>{`Everyone rolls! Half or more need to make it. ${String(myPrompt.group.rolls.length)} rolled so far.`}</span>
-              </p>
-            ) : null}
-            {helperLine(myPrompt, party, me?.character.id) === null ? null : (
-              <p className="prompt__sub" role="status">
-                <Icon name="players" />
-                <span>{helperLine(myPrompt, party, me?.character.id)}</span>
-              </p>
-            )}
-            <Button
-              variant="primary"
-              size="lg"
-              icon={<Icon name="d20" />}
-              disabled={busy}
-              onClick={() => void dispatch({ type: "ROLL" })}
-            >
-              {busy ? "Rolling…" : "Roll!"}
-            </Button>
-          </div>
-        ) : null}
-
-        {/* ---------------- item swap (spec §9.1) ---------------- */}
-        {myPrompt !== null && myPrompt.kind === "item_swap" ? (
-          <div className="prompt">
-            <h3 className="prompt__title">
-              <Icon name={items?.[myPrompt.incomingItemId]?.icon ?? "bag"} />
-              <span>You found {items?.[myPrompt.incomingItemId]?.name ?? "something"}!</span>
-            </h3>
-            <p className="prompt__sub kad-muted">
-              {items?.[myPrompt.incomingItemId]?.text ?? "Your bag is full. Keep it, or leave it?"}
-            </p>
-
-            <ul className="prompt__options">
-              {me.character.inventory.map((entry) => {
-                const def = items?.[entry.itemId];
-                const selected = pendingDrop === entry.itemId;
-                return (
-                  <li key={entry.itemId}>
-                    <button
-                      type="button"
-                      className={`choice kad-tap kad-focusable${selected ? " choice--on" : ""}`}
-                      aria-pressed={selected}
-                      onClick={() => setPendingDrop(entry.itemId)}
-                    >
-                      <span className="choice__icon">
-                        <Icon name={def?.icon ?? entry.kind} size="1.8em" />
-                      </span>
-                      <span className="choice__label">Drop {def?.name ?? entry.itemId}</span>
-                    </button>
-                  </li>
-                );
-              })}
-              <li>
-                <button
-                  type="button"
-                  className={`choice kad-tap kad-focusable${pendingDrop === null ? " choice--on" : ""}`}
-                  aria-pressed={pendingDrop === null}
-                  onClick={() => setPendingDrop(null)}
-                >
-                  <span className="choice__icon">
-                    <Icon name="close" size="1.8em" />
-                  </span>
-                  <span className="choice__label">Leave it behind</span>
-                </button>
-              </li>
-            </ul>
-
-            {pendingDrop === undefined ? null : (
-              <div className="confirm">
-                <p className="confirm__what">
-                  <Icon name={pendingDrop === null ? "close" : "bag"} />
-                  <span>
-                    {pendingDrop === null
-                      ? "Leave it behind"
-                      : `Drop ${items?.[pendingDrop]?.name ?? pendingDrop}`}
-                  </span>
-                </p>
-                <div className="confirm__actions">
-                  <Button
-                    variant="ghost"
-                    size="md"
-                    icon={<Icon name="back" />}
-                    onClick={() => setPendingDrop(undefined)}
-                  >
-                    Change
-                  </Button>
-                  <Button
-                    variant="primary"
-                    size="md"
-                    icon={<Icon name="check" />}
-                    disabled={busy}
-                    onClick={() =>
-                      void dispatch({ type: "RESOLVE_ITEM_SWAP", dropItemId: pendingDrop })
-                    }
-                  >
-                    {busy ? "Sending…" : "Yes, do that"}
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        ) : null}
-
         {/* ---------------- ready (lobby, rest, chapter end) ---------------- */}
         {/* "creation" is a run-level phase the engine sets on the first
             CREATE_CHARACTER and never clears — being made is a fact about a
@@ -1195,14 +1246,17 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 : "Tap when you're ready. The fight starts when everyone is."}
             </p>
             {/* In the lobby, "Ready to play" on the bag page already said yes,
-                so this page only offers the way back out. Before a fight the
-                button is still the whole answer. */}
-            {me.ready ? (
+                so this page only offers the way back out — standing there,
+                disabled, while that first tap is still on its way, rather than
+                arriving with the server's answer. Before a fight the button is
+                still the whole answer. Both are the big size, so the swap
+                happens in one seat and the chips below stay put. */}
+            {me.ready || (inLobby && readyRequested) ? (
               <Button
                 variant="secondary"
-                size="md"
+                size="lg"
                 icon={<Icon name="back" />}
-                disabled={busy}
+                disabled={busy || !me.ready}
                 onClick={() => {
                   void dispatch({ type: "READY", ready: false });
                   if (inLobby) setPlayerSection("bag");
@@ -1210,7 +1264,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               >
                 Wait, not yet
               </Button>
-            ) : inLobby && readyRequested ? null : (
+            ) : (
               <Button
                 variant="primary"
                 size="lg"
@@ -1246,9 +1300,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 <ul className="prompt__options">
                   {(state.campaignOptions ?? []).map((option) => {
                     const myCampaignVote = state.campaignVotes?.[me.playerId];
-                    const voters = party
+                    const votedIds = party
                       .filter((member) => state.campaignVotes?.[member.playerId] === option.id)
-                      .map((member) => member.character.name);
+                      .map((member) => member.playerId);
                     const selected = myCampaignVote === option.id;
                     return (
                       <li key={option.id}>
@@ -1271,12 +1325,11 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                             <span className="choice__mark">
                               {selected ? <Icon name="check" label="Your vote" /> : null}
                             </span>
-                            {voters.length === 0 ? null : (
-                              <span className="choice__votes">
-                                <Icon name="vote" />
-                                <span>{voters.join(", ")}</span>
-                              </span>
-                            )}
+                            <VoteTicks
+                              voterIds={party.map((member) => member.playerId)}
+                              votedIds={votedIds}
+                              party={party}
+                            />
                           </span>
                         </button>
                       </li>
@@ -1294,25 +1347,32 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 </span>
               </p>
             ) : null}
-            {inLobby && everyoneReady && waitingOnVotes.length > 0 ? (
-              <p className="player__next-chapter">
-                <Icon name="waiting" />
-                <span>
-                  Waiting for {waitingOnVotes.map((member) => member.character.name).join(", ")} to
-                  pick an adventure
-                </span>
-              </p>
-            ) : null}
-            {inLobby && everyoneReady && waitingOnVotes.length === 0 && campaignId !== null ? (
-              <Button
-                variant="primary"
-                size="lg"
-                icon={<Icon name="forward" />}
-                disabled={busy}
-                onClick={() => void dispatch({ type: "CONTINUE_CAMPAIGN", campaignId })}
-              >
-                {beginLabel(state.campaign)}
-              </Button>
+            {/* One seat, held from the start, for whatever "go" looks like
+                right now: nothing, who the vote is waiting on, or Begin. They
+                change as other people tap, and appended they pushed the whole
+                card up under whoever was about to vote. */}
+            {inLobby ? (
+              <div className="player__start">
+                {everyoneReady && waitingOnVotes.length > 0 ? (
+                  <p className="player__next-chapter player__start-wait">
+                    <Icon name="waiting" />
+                    <span>
+                      Waiting for {waitingOnVotes.map((member) => member.character.name).join(", ")} to
+                      pick an adventure
+                    </span>
+                  </p>
+                ) : everyoneReady && campaignId !== null ? (
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    icon={<Icon name="forward" />}
+                    disabled={busy}
+                    onClick={() => void dispatch({ type: "CONTINUE_CAMPAIGN", campaignId })}
+                  >
+                    {beginLabel(state.campaign)}
+                  </Button>
+                ) : null}
+              </div>
             ) : null}
           </div>
         ) : null}
@@ -1372,9 +1432,11 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </p>
         ) : null}
 
-        {/* ---------------- help a friend's check ---------------- */}
+        {/* ---------------- help a friend's check ----------------
+            Held at the big button's height whichever line is showing, so
+            helping — yours or somebody quicker's — does not shrink the card. */}
         {myPrompt === null && !isMyPrompt && globalPrompt !== null && globalPrompt.kind === "roll" && !globalPrompt.group && me && !me.down ? (
-          <div className="prompt">
+          <div className="prompt prompt--help">
             {globalPrompt.helper ? (
               <p className="prompt__sub" role="status">
                 <Icon name="players" />
@@ -1408,17 +1470,24 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       </div>
 
       <div className="player__scroll kad-scroll" hidden={!showSheet}>
-        {hasTask && !inLobby ? (
-          <Button variant="primary" size="lg" block className="player__task-entry"
-            icon={<Icon name="hand" />} onClick={() => setPlayerSection("turn")}>
-            {offersToMe.length > 0 ? "A gift for you" : inLobby ? "Ready to play" : state.phase === "chapter_complete" ? "Chapter rewards" : atRest && banked > 0 ? banked === 1 ? "Spend your stat point" : "Spend your stat points" : myPrompt !== null || isMyCombatTurn ? "Your turn" : "View the fight"}
-          </Button>
-        ) : null}
-        {!hasTask ? (
-          <p className="player__waiting" role="status"><Icon name="waiting" />
-            <span>{globalPrompt !== null ? waitingLine(globalPrompt, party) : "Listen to the story…"}</span>
-          </p>
-        ) : null}
+        {/* One seat at the top of the bag, the big button's height, for
+            either the way into your task or what the table is waiting on.
+            Both change as other people act; sharing a fixed seat, neither
+            moves the bag under a finger that is in the middle of it. */}
+        {inLobby ? null : (
+          <div className="player__task-slot">
+            {hasTask ? (
+              <Button variant="primary" size="lg" block className="player__task-entry"
+                icon={<Icon name="hand" />} onClick={() => setPlayerSection("turn")}>
+                {offersToMe.length > 0 ? "A gift for you" : state.phase === "chapter_complete" ? "Chapter rewards" : atRest && banked > 0 ? banked === 1 ? "Spend your stat point" : "Spend your stat points" : myPrompt !== null || isMyCombatTurn ? "Your turn" : helping !== null ? `Help ${helping}` : "View the fight"}
+              </Button>
+            ) : (
+              <p className="player__waiting" role="status"><Icon name="waiting" />
+                <span>{globalPrompt !== null ? waitingLine(globalPrompt, party) : "Listen to the story…"}</span>
+              </p>
+            )}
+          </div>
+        )}
         <StatRow me={me} />
 
         {/*

@@ -71,6 +71,15 @@ describe("screens", () => {
   });
 });
 
+describe("HomeScreen", () => {
+  it("holds a seat for the busy line and the error before there is either", () => {
+    // The body is vertically centred: anything mounting into it moves the
+    // cards above, so the seat is drawn empty from the start.
+    const html = renderToStaticMarkup(<HomeScreen />);
+    expect(html).toContain('<div class="home__status"></div>');
+  });
+});
+
 describe("PlayerPanel inventory", () => {
   const potion = { itemId: "sunbloom_draught", kind: "consumable" as const };
   const heal = {
@@ -241,6 +250,23 @@ describe("creation art", () => {
     expect(html).toContain("Emberhoof");
   });
 
+  it("gives the hero strip one short line before a class, not the whole blurb", () => {
+    // The full blurb ran to three lines and then dropped to one when a class
+    // was picked, moving every class card under the tap.
+    const html = renderToStaticMarkup(<HeroStrip species={unicorn} klass={null} name="" />);
+    const first = unicorn.blurb.slice(0, unicorn.blurb.indexOf(".") + 1);
+    expect(html).toContain(first);
+    expect(html).not.toContain(unicorn.blurb.slice(first.length).trim());
+  });
+
+  it("seats every species card's check, chosen or not", () => {
+    const html = renderToStaticMarkup(
+      <SpeciesStep species={speciesList} chosen="unicorn" onChoose={() => undefined} />,
+    );
+    expect(html.match(/creation-card__mark/g)).toHaveLength(speciesList.length);
+    expect(html.match(/aria-label="Chosen"/g)).toHaveLength(1);
+  });
+
   it("stands the drafted hero in the preview as soon as a species is picked", () => {
     expect(renderToStaticMarkup(<CreationPreview />)).not.toContain("/assets/characters/");
     patchCreationDraft({ species: "dragonling" });
@@ -248,6 +274,11 @@ describe("creation art", () => {
     expect(html).toContain('src="/assets/characters/dragonling/fledgling/assembled.png"');
     // ...somewhere with a floor under it (spec §6.2).
     expect(html).toContain("/assets/biomes/");
+  });
+
+  it("holds the finished-heroes row open before anybody has finished", () => {
+    // Otherwise the first hero done grows a row and shrinks the stage.
+    expect(renderToStaticMarkup(<CreationPreview />)).toContain('class="preview__done"');
   });
 });
 

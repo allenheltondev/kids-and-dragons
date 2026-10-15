@@ -523,6 +523,15 @@
   block-size: calc(var(--kad-icon-lg) * 1.6);
 }
 
+/* Swapped into a button's icon slot while it is busy, the spinner takes the
+   icon's 1em box. At its own size it would make the button grow under the
+   finger that just pressed it. */
+.kad-button__icon .kad-spinner__ring {
+  inline-size: 1em;
+  block-size: 1em;
+  border-width: 0.15em;
+}
+
 .kad-spinner__label {
   font-size: var(--kad-text-sm);
 }
