@@ -120,9 +120,12 @@
   border-radius: var(--radius-md, 0.75em);
   background: var(--color-surface-sunken, #120f26);
   font-size: var(--font-size-sm, 0.875em);
-  max-block-size: 7.5em;
+  /* About three lines. A crowded round scrolls, newest at the bottom, and
+     the older lines fade out at the top rather than cutting off mid-word. */
+  max-block-size: 5.6em;
   overflow-y: auto;
   overscroll-behavior: contain;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 1.2em);
 }
 
 .combat__beat {
@@ -449,14 +452,19 @@
  * centred, and never wider than the pane.
  */
 .combat .combat__grid {
-  /* As big as the pane's height allows once the turn header, both sides'
-     chips, the hint and the cards have their rows (about 13.5em between
-     them, with gaps), and never wider than the pane. On a tall phone that is
+  /* As big as the pane's height allows once the turn header, the legend,
+     the hint and the cards have their rows (about 14.5em between them, with
+     gaps), and never wider than the pane. On a tall phone that is
      width-bound and the board floats in the middle; on a short one it is
      height-bound and just fits. The pane scrolls only if a phone is shorter
      than any we know. */
-  inline-size: min(100%, (100cqh - 13.5em) * 1.25);
+  inline-size: min(100%, (100cqh - 14.5em) * 1.25);
   margin-inline: auto;
+}
+
+/* With the last beat's log above it, the board gives up that much more. */
+.combat:has(.combat__log) .combat__grid {
+  inline-size: min(100%, (100cqh - 20.5em) * 1.25);
 }
 
 /*

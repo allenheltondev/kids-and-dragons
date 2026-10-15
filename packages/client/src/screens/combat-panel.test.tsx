@@ -308,7 +308,7 @@ describe("whose turn it is", () => {
     expect(party.textContent).toContain("10/10");
   });
 
-  it("shows every enemy's HP, on every turn, with the ordinal that tells them apart", () => {
+  it("shows every enemy's HP while waiting, with the ordinal that tells them apart", () => {
     // "How is the fight going" used to need the TV or a tap into a target
     // list. Now it is the second row of every phone.
     const base = encounterWith({
