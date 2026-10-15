@@ -138,6 +138,31 @@ function rigFile(url: string): Promise<any | null> {
   return file;
 }
 
+/**
+ * How far a rig's root is stretched up from its feet: its world transform's
+ * vertical scale, less 1. Clamped, because a fall rotates the root and its
+ * `yy` then says nothing about breathing.
+ *
+ * `worldTransform()` hands back a fresh WASM-backed `Mat2D` on every call,
+ * and the runtime frees it only on `delete()`. This runs every frame for every
+ * figure, so the matrix is released here, whatever the read did, or the heap
+ * grows by sixty matrices a second per figure for as long as the game is open.
+ */
+export function readBreath(body: {
+  worldTransform(): { yy: number; delete?(): void } | null | undefined;
+}): number {
+  let matrix: { yy: number; delete?(): void } | null | undefined = null;
+  try {
+    matrix = body.worldTransform();
+    const stretch = (matrix?.yy ?? 1) - 1;
+    return Number.isFinite(stretch) ? Math.max(0, Math.min(0.05, stretch)) : 0;
+  } catch {
+    return 0;
+  } finally {
+    matrix?.delete?.();
+  }
+}
+
 export interface RigHandle {
   /** The square buffer the rig draws into, `BUFFER_PX` on a side. */
   readonly canvas: HTMLCanvasElement;
@@ -274,12 +299,7 @@ export async function createRig(
         if (destroyed) return;
         drawnMachine.advance(dtSeconds);
         drawnArtboard.advance(dtSeconds);
-        if (body) {
-          const stretch = (body.worldTransform?.()?.yy ?? 1) - 1;
-          // Clamped: a fall rotates the root, and its yy then says nothing
-          // about breathing.
-          breath = Number.isFinite(stretch) ? Math.max(0, Math.min(0.05, stretch)) : 0;
-        }
+        if (body) breath = readBreath(body);
         draw();
       },
       setKnockedDown(down: boolean): void {
