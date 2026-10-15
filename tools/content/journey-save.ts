@@ -224,6 +224,18 @@ export function checkJourneySave(graph: ParsedCampaignGraph, raw: unknown): Save
     }
   }
 
+  if (j.lastAction !== undefined) {
+    // The rift action idempotence key (#197), held to `lastExit`'s rules.
+    const last = j.lastAction;
+    if (!isRecord(last) || typeof last.edge !== "string" || typeof last.node !== "string" || typeof last.action !== "string" || !Number.isInteger(last.visit)) {
+      error("impossible", "/lastAction", `"lastAction" must be { node, visit, action, edge, to? }`);
+    } else if (!edgeIds.has(last.edge)) {
+      warn("dangling", "/lastAction/edge", `the last rift action names edge "${last.edge}", which this campaign does not have`);
+    } else if (graph.edges[last.edge]!.from !== last.node) {
+      error("impossible", "/lastAction", `the last rift action was on "${last.edge}", which leaves "${graph.edges[last.edge]!.from}", not "${last.node}"`);
+    }
+  }
+
   // --- rifts ----------------------------------------------------------------
   if (isRecord(j.rifts)) {
     for (const [id, state] of Object.entries(j.rifts)) {
@@ -234,6 +246,9 @@ export function checkJourneySave(graph: ParsedCampaignGraph, raw: unknown): Save
         warn("dangling", path, `edge "${id}" is no longer a rift; its rift record is ignored`);
       } else if (!isRecord(state) || !["dormant", "open", "closed", "consumed", "expired", "collapsed"].includes(state.status as string)) {
         error("impossible", path, `the rift record for "${id}" has no valid status; the runtime reads it as closed, and only an explicit open brings it back`);
+      } else if (state.to !== undefined && !(graph.edges[id]!.rift!.redirects ?? []).includes(state.to as string)) {
+        // A redirect (#197) the declaration no longer lists reads as the edge's own `to`.
+        warn("dangling", `${path}/to`, `the rift "${id}" is turned toward ${JSON.stringify(state.to)}, which it no longer declares; it leads to "${graph.edges[id]!.to}"`);
       }
     }
   }

@@ -12,7 +12,11 @@ import {
   exitWarning,
   journeyBeginLabel,
   journeyLine,
+  journeyStuckLine,
   nextChapterLine,
+  riftActionIcon,
+  riftActionNeedsConfirm,
+  riftActionWarning,
 } from "./campaign-copy";
 
 const VIEW = { id: "gemfall", title: "Gemfall", chapters: 8, next: { index: 4, title: "The Pride Roads" } };
@@ -134,5 +138,43 @@ describe("the journey's words (#195)", () => {
         journey: journey({ status: "ended", reachedEnding: { node: "g", title: "The Dawn Gate" } }),
       }),
     ).toBe("Ending found: The Dawn Gate");
+  });
+});
+
+describe("rifts in a child's words (#196, #197)", () => {
+  const RIFT_REASONS = [
+    "rift-dormant",
+    "rift-faded",
+    "rift-closed",
+    "rift-consumed",
+    "rift-expired",
+    "rift-collapsed",
+    "fallback",
+  ] as const;
+
+  it("gives every rift reason its own plain sentence, never the code and never the generic one", () => {
+    const lines = RIFT_REASONS.map((reason) => exitBlockedLine(reason));
+    expect(new Set(lines).size).toBe(RIFT_REASONS.length);
+    for (const line of lines) {
+      expect(line).not.toMatch(/spent|guard|rift|fallback/i);
+      expect(line).not.toBe(exitBlockedLine(undefined));
+    }
+    expect(exitBlockedLine("rift-consumed")).toBe("It's all used up.");
+  });
+
+  it("asks before a close nothing can undo, and only then", () => {
+    expect(riftActionNeedsConfirm({ irreversible: true })).toBe(true);
+    expect(riftActionNeedsConfirm({})).toBe(false);
+    expect(riftActionWarning({ action: "close" })).toBe("Once it's shut, it won't open again.");
+  });
+
+  it("draws every action with an icon", () => {
+    for (const action of ["discover", "open", "close", "stabilize", "redirect"] as const) {
+      expect(riftActionIcon(action)).toMatch(/^[a-z]+$/);
+    }
+  });
+
+  it("says a stuck party is stuck without blaming it", () => {
+    expect(journeyStuckLine()).toContain("isn't your fault");
   });
 });
