@@ -324,6 +324,10 @@
         "rift": {
           "description": "Makes this edge a rift (#196): a stateful link with a lifecycle (dormant, open, closed, consumed, expired, collapsed). Absent means an ordinary edge. See docs/campaigns/graph-campaigns.md, Rifts.",
           "$ref": "#/$defs/graphRift"
+        },
+        "fallback": {
+          "description": "The long way round (#197): offered only while no other exit from `from` is available. Keeps a party a used-up, collapsed or shut rift strands moving.",
+          "const": true
         }
       }
     },
@@ -419,6 +423,61 @@
             "when-open",
             "when-crossed"
           ]
+        },
+        "redirects": {
+          "description": "Where else the rift can be turned to lead (#197): a redirectRift effect or a party's redirect action names one of these (or `to`). Not on a linked rift.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/graphId"
+          }
+        },
+        "actions": {
+          "description": "What the party may do to this rift while choosing at its `from` (#197). Each kind present is offered while its rule's `when` holds and the action would change something.",
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "discover": {
+              "$ref": "#/$defs/riftActionRule"
+            },
+            "open": {
+              "$ref": "#/$defs/riftActionRule"
+            },
+            "close": {
+              "$ref": "#/$defs/riftActionRule"
+            },
+            "stabilize": {
+              "$ref": "#/$defs/riftActionRule"
+            },
+            "redirect": {
+              "$ref": "#/$defs/riftActionRule"
+            }
+          }
+        }
+      }
+    },
+    "riftActionRule": {
+      "description": "RiftActionRule (#197): when the party may take one rift action, what its button says, and what else it does. Class gating is #199's.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "when": {
+          "$ref": "#/$defs/graphCondition"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/graphEffect"
+          }
         }
       }
     },
@@ -683,6 +742,49 @@
               "not": {
                 "const": 0
               }
+            }
+          }
+        },
+        {
+          "description": "Acts on a rift (#197): discover (drawn while blocked, destination revealed), open (latched), close, stabilize (no flicker, collapse or expiry). A final rift is left as it is.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "edge"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "discoverRift",
+                "openRift",
+                "closeRift",
+                "stabilizeRift"
+              ]
+            },
+            "edge": {
+              "$ref": "#/$defs/graphId"
+            }
+          }
+        },
+        {
+          "description": "Turns a rift (#197) toward its own `to` or one of its declared `redirects`.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "edge",
+            "to"
+          ],
+          "properties": {
+            "type": {
+              "const": "redirectRift"
+            },
+            "edge": {
+              "$ref": "#/$defs/graphId"
+            },
+            "to": {
+              "$ref": "#/$defs/graphId"
             }
           }
         }

@@ -977,6 +977,11 @@ function dispatch(
       // which the engine never sees — the same reason as CONTINUE_CAMPAIGN.
       throw new Illegal("ILLEGAL", "choosing a way on is resolved by the server");
 
+    case "RIFT_ACTION":
+      // Acts on the household's journey (#197, shared journey.ts
+      // `takeRiftAction`) — CHOOSE_EXIT's sibling, for CHOOSE_EXIT's reason.
+      throw new Illegal("ILLEGAL", "acting on a rift is resolved by the server");
+
     case "VOTE_CAMPAIGN":
       return doVoteCampaign(draft, playerId, intent.campaignId);
 

@@ -169,6 +169,17 @@ export function describeEffect(effect: GraphEffect): string {
       return `fact ${effect.fact} = ${JSON.stringify(effect.value)}`;
     case "adjustFact":
       return `fact ${effect.fact} ${effect.by >= 0 ? "+" : ""}${effect.by}`;
+    // Rift actions (#197).
+    case "discoverRift":
+      return `discover rift ${effect.edge}`;
+    case "openRift":
+      return `open rift ${effect.edge}`;
+    case "closeRift":
+      return `close rift ${effect.edge}`;
+    case "stabilizeRift":
+      return `steady rift ${effect.edge}`;
+    case "redirectRift":
+      return `turn rift ${effect.edge} toward ${effect.to}`;
     default:
       return JSON.stringify(effect);
   }
@@ -188,6 +199,11 @@ export function describeRift(edge: GraphEdge): string[] {
   if (rift.persistent) out.push("persistent");
   if (rift.linkedTo) out.push(`linked to ${rift.linkedTo}`);
   if (rift.reveal && rift.reveal !== "always") out.push(`reveals ${rift.reveal}`);
+  if (rift.redirects) out.push(`can be turned toward ${rift.redirects.join(", ")}`);
+  for (const [kind, rule] of Object.entries(rift.actions ?? {})) {
+    const when = describeCondition(rule?.when);
+    out.push(`party may ${kind}${when ? ` when ${when}` : ""}`);
+  }
   return out;
 }
 
@@ -205,6 +221,7 @@ export function edgeTags(edge: GraphEdge): string[] {
   if (edge.irreversible) tags.push("irreversible");
   if (edge.locked) tags.push("locked");
   if (edge.rift) tags.push("rift");
+  if (edge.fallback) tags.push("fallback");
   if (edge.when && describeCondition(edge.when) !== "") tags.push("guarded");
   return tags;
 }
@@ -250,6 +267,9 @@ export function outline(campaign: Campaign, graph: ParsedCampaignGraph): string 
       for (const effect of edge.effects ?? []) lines.push(`             effect: ${describeEffect(effect)}`);
       const rift = describeRift(edge);
       if (rift.length > 0) lines.push(`             rift: ${rift.join(", ")}`);
+      for (const [kind, rule] of Object.entries(edge.rift?.actions ?? {})) {
+        for (const effect of rule?.effects ?? []) lines.push(`             ${kind} effect: ${describeEffect(effect)}`);
+      }
     }
   }
   return lines.join("\n");
@@ -294,6 +314,13 @@ export function toMermaid(campaign: Campaign, graph: ParsedCampaignGraph): strin
     if (edge.rift) style.push("stroke-dasharray:6 4");
     if (style.length > 0) styled.push(`  linkStyle ${i} ${style.join(",")}`);
   });
+  // A redirectable rift's other destinations (#197), dotted, after every edge
+  // so `linkStyle` indexes above still name the edges they style.
+  for (const id of graph.edgeOrder) {
+    for (const to of graph.edges[id]!.rift?.redirects ?? []) {
+      out.push(`  ${mid(graph.edges[id]!.from)} -.->|"${mq(`${id} (turned)`)}"| ${mid(to)}`);
+    }
+  }
   out.push(...styled);
   out.push("  classDef entry stroke:#1e8449,stroke-width:3px");
   out.push("  classDef ending fill:#fcf3cf,stroke:#b7950b");
@@ -342,6 +369,9 @@ export function toDot(campaign: Campaign, graph: ParsedCampaignGraph): string {
     else if (edge.kind === "return") attrs.push('color="#7f8c8d"');
     else if (edge.kind === "sideways") attrs.push('color="#2874a6"', "penwidth=2");
     out.push(`  ${dq(edge.from)} -> ${dq(edge.to)} [${attrs.join(", ")}];`);
+    for (const to of edge.rift?.redirects ?? []) {
+      out.push(`  ${dq(edge.from)} -> ${dq(to)} [label=${dq(`${id} (turned)`)}, style=dotted];`);
+    }
   }
   out.push("}");
   return out.join("\n");
