@@ -15,8 +15,11 @@ Where this document and the TypeScript disagree, the TypeScript wins and this is
 > **Status.** The declaration, its schema, its parser and the load-time checks exist (#192), and
 > so does the journey runtime (#194, [§6](#the-runtime-194)): a graph campaign can be started,
 > played node by node, its exits chosen (`CHOOSE_EXIT`), and its journey is saved on the
-> household's attempt. The navigation screens are #195. No graph campaign ships; the only one in
-> the repo is the [Rift Sampler](#7-the-rift-sampler) fixture, which lives outside `content/`.
+> household's attempt. A graph may declare [world state](#world-state-198) (#198): typed facts —
+> a place displaced, a threat cleared, favours owed — that change what a place is on a revisit.
+> The navigation screens are #195. No graph campaign ships; the only ones in the repo are the
+> [Rift Sampler](#7-the-rift-sampler) and [Ash Wyrm Sampler](#the-ash-wyrm-sampler) fixtures,
+> which live outside `content/`.
 
 ---
 
@@ -84,6 +87,7 @@ author, to test and to read.
 | `nodes` | Places, keyed by stable id. Key order is authored order. |
 | `edges` | Ways between places, keyed by stable id — unique across the graph so an effect, a guard or a save can name one without naming its node. A node's exits are offered in authored edge order. |
 | `flags` | Journey flags beyond `routeSets` members ([§5](#5-journey-flags)). |
+| `facts` | World facts — typed, bounded, attempt-scoped ([World state](#world-state-198), #198). |
 
 Node and edge ids match `^[a-z0-9]+([-_][a-z0-9]+)*$`. **They are stable**: saved attempts name
 them, so renaming one is a content migration, not a tidy-up.
@@ -113,6 +117,7 @@ Chapters of a graph campaign are authored exactly as any other chapter, with thr
 | `title` | The map label; absent means the chapter's title. |
 | `revisit` | What entering a **completed** node does — below. Default `"replay"`. |
 | `variants` | A different chapter for this place when something holds — below. |
+| `onComplete` | Completion rules: effects applied when the node's chapter completes and their `when` holds ([World state](#writing-facts-edges-and-completion-rules), #198). |
 | `ending` | `{ "title": … }` makes this an ending — below. |
 
 ### `revisit`
@@ -143,6 +148,10 @@ the edge that floods the orchard is the edge whose arrival sees it flooded
 A variant is a whole chapter because biome — backdrop, palette, music — belongs to the file, the
 same reason routed beats are files. A change of *words* within one place is the chapter's own
 narration `variants` and needs nothing from the graph.
+
+A variant may also say how the place is **re-entered** while it is the place (`"revisit": "replay"
+| "pass"`, #198) — the restored village is walked through, the raging lair is fought again. See
+[revisits that change](#revisits-that-change).
 
 ### Ending
 
@@ -206,6 +215,11 @@ availability and whether it is drawn (`visible`: available, or blocked and `"sho
 | `{ "type": "setFlag", "flag": f, "value"?: bool }` | Sets a journey flag — the chapters' `setFlag`, same shape. A `routeSets` member is a fork: setting it clears the set's other members. |
 | `{ "type": "unlock", "edge": e }` | Opens `e` (it is then available subject to its `when`). |
 | `{ "type": "lock", "edge": e }` | Closes `e` for the rest of the attempt. |
+| `{ "type": "setFact", "fact": f, "value": v }` | Sets world fact `f` to `v`, a value in its domain (#198). |
+| `{ "type": "adjustFact", "fact": f, "by": n }` | Moves counter fact `f` by a non-zero integer, clamped to its bounds (#198). |
+
+The same effects are what a node's `onComplete` rules apply when its chapter completes
+([World state](#writing-facts-edges-and-completion-rules)).
 
 ### Guards (`when`)
 
@@ -220,6 +234,8 @@ means every listed id** (`"visited": ["orchard", "quarry"]` — both).
 | `completed` / `notCompleted` | the node's chapter has / has never **completed** this attempt |
 | `traversed` / `notTraversed` | the edge has / has never been taken this attempt |
 | `outcome` | the **subject** node's most recent completion was `"success"` / `"setback"`. On an edge the subject is `from` ("if the chapter you just finished was a setback"); on a variant it is the node itself ("if it went badly here last time"). Never completed matches neither. |
+| `visit` | `{ "min"?, "max"? }`: the **subject**'s visit ordinal is within these (#198). On an edge, the visit being finished; on a variant, the visit being begun (`{ "min": 2 }` = every revisit); in `onComplete`, the visit completing. |
+| `facts` | `{ factId: test, … }`: every listed world fact passes its test (#198) — [below](#reading-facts-guards-and-variants). |
 
 **A guard reads the journey, never the party.** No items, coins or party size. A graph decision
 has to come out the same on any evening for any phones, or a party resuming on Thursday sees
@@ -248,6 +264,181 @@ the quarry's exit to the tower is guarded on it. Declared, rather than inferred,
 
 ---
 
+## World state (#198)
+
+A graph campaign's world can change: the wyrm wakes and the mill village is displaced; the party
+clears the wyrm and the village is restored; the river folk owe the party favours; a path to the
+ford opens. **World facts** carry that, beside the journey flags, and a place's
+[variants](#variants) read them — so coming back somewhere is a *changed* place, not the same scene
+replayed. The shape is `WorldFact` in `types/campaign-graph.ts`; the arithmetic of one fact
+(reading, testing, writing) is [`world-state.ts`](../../packages/shared/src/world-state.ts).
+
+```jsonc
+"facts": {
+  "mill-village": { "domain": "locale", "type": "enum", "values": ["standing", "displaced", "restored"],
+                    "initial": "standing", "label": "The mill village", "visible": true },
+  "ash-wyrm":     { "domain": "threat", "type": "enum", "values": ["sleeping", "raging", "cleared"], "initial": "sleeping" },
+  "river-folk":   { "domain": "alliance", "type": "counter", "min": 0, "max": 3, "initial": 0 },
+  "ford-path":    { "domain": "route", "type": "flag" }
+}
+```
+
+### Typed facts, not more flags — the decision
+
+World state is **declared, typed and bounded**, not a second bag of booleans:
+
+- **A place is one thing at a time.** `village_displaced` and `village_restored` as flags can both
+  be true, and every guard reading them must rule out combinations nobody meant. An `enum` cannot
+  be two things.
+- **Bounded domains can be enumerated.** An enum has 2–12 values; a counter's `max - min` is at
+  most 20 (`MAX_COUNTER_SPAN`); a flag is two values. So the [lint](#validation) still walks every
+  state a party can reach, and "this variant is never played" or "this road never opens" stays a
+  decided question rather than a guess. An unbounded number or a free string would make that search
+  infinite.
+- **The initial value is part of the declaration**, so "nothing stored" always means one thing —
+  the world as the author wrote it — and a fact added after a party set out needs no migration.
+
+Journey flags stay what they were: what a chapter sets and reads. A world fact is the **graph's**:
+written by edges and completion rules, read by guards and variants. Facts are **not seeded into
+chapter runs** — a chapter that should differ by world state is a different chapter, chosen by a
+variant (the biome rule, [§3](#variants)); a fact a chapter's narration needs can be mirrored into
+a journey flag by a completion rule.
+
+| Field | Meaning |
+|---|---|
+| `domain` | `"locale"` \| `"threat"` \| `"alliance"` \| `"route"` \| `"consequence"` — what the fact is *about*, for the tools and screens (#195, #202). No rule reads it. |
+| `type` | `"enum"` (`values`, `initial` ∈ values) \| `"counter"` (integers `min` < `max`, `min ≤ initial ≤ max`) \| `"flag"` (`initial` true/false, default false) |
+| `label` | What the screens call it, for an 8-year-old. Default: the id. |
+| `visible: true` | Shown to the players (`JourneyView.facts`). Absent: remembered, never sent to a phone — the surprise stays one. |
+
+Fact ids and enum values match the node/edge id pattern and **are stable**: saves name them.
+
+### Writing facts: edges and completion rules
+
+Two effects, usable anywhere an effect is ([§4](#effects)):
+
+- `{ "type": "setFact", "fact": f, "value": v }` — `v` must be in the fact's domain.
+- `{ "type": "adjustFact", "fact": f, "by": n }` — counters only; clamped to `[min, max]`, so a
+  fourth favour on a counter that stops at three is three.
+
+**How a chapter writes a fact** — without the chapter schema learning anything: a node's
+`onComplete` rules.
+
+```json
+"onComplete": [
+  { "when": { "outcome": "setback", "facts": { "ash-wyrm": "sleeping" } },
+    "effects": [{ "type": "setFact", "fact": "ash-wyrm", "value": "raging" },
+                { "type": "setFact", "fact": "mill-village", "value": "displaced" }] },
+  { "when": { "flag": "befriended_river_folk" },
+    "effects": [{ "type": "adjustFact", "fact": "river-folk", "by": 1 },
+                { "type": "setFlag", "flag": "befriended_river_folk", "value": false }] }
+]
+```
+
+When the node's chapter completes, after the outcome is recorded and the journey flags are read
+back, **every rule whose `when` holds applies its effects**, in authored order. All the `when`s are
+judged against that same journey — rules do not see each other's effects — so order matters only
+for two effects writing the same thing. `outcome` and `visit` in a rule are about this node and
+this completion. The chapter reports what it always reports — its outcome, and the journey flags
+its choices set — and the *graph* says what that does to the world. A `"pass"` arrival completes
+nothing and runs no rules; a duplicate completion runs them never twice.
+
+Why not let chapters write facts directly? A chapter-level effect would make the chapter schema
+mean something different inside a graph campaign than inside an ordered one (where it would have
+to be refused), and a namespaced-flag convention (`fact:ash-wyrm=raging`) would be stringly-typed
+state the validator could not check. A completion rule keeps chapters exactly as they are in every
+campaign, keeps every write to the world in the one file the lint reads, and is checked like any
+other guard and effect.
+
+### Reading facts: guards and variants
+
+`GraphCondition.facts` tests facts by id; each test is
+
+| Test | Holds when |
+|---|---|
+| `"displaced"` / `2` / `true` | the fact **is** this value (enum, counter, flag) |
+| `{ "in": ["raging", "cleared"] }` | it is one of these (enum or counter) |
+| `{ "not": "cleared" }` | it is anything but this (enum or counter) |
+| `{ "min": 1, "max": 2 }` | a counter within these, inclusive (either may be absent) |
+
+Every key of a test must hold, every fact listed must pass, and it ANDs with the other condition
+fields as always. **A fact never written reads as its `initial`.** A value outside the fact's domain
+is refused by `parseCampaignGraph` — a test for a state the fact can never be in is a typo.
+
+### Revisits that change
+
+"Changed encounters on revisit, without forcing identical replays" is variants, read on every
+entry that plays the node, first match wins ([§3](#variants)) — now keyed on world facts and on the
+**visit ordinal**:
+
+```json
+"variants": [
+  { "chapter": "ws-village-restored",  "when": { "facts": { "mill-village": "restored" } }, "revisit": "pass" },
+  { "chapter": "ws-village-displaced", "when": { "facts": { "mill-village": "displaced" } } },
+  { "chapter": "ws-village-market",    "when": { "visit": { "min": 2 } } }
+]
+```
+
+The mill village is the standing village the first time, a market day on any later visit while it
+stands, the displaced camp once the wyrm wakes, and the restored village once it is cleared. A
+variant's own **`revisit`** (`"replay"` or `"pass"`) overrides the node's while that variant is the
+place: once the village is restored, coming back walks straight through to the exits rather than
+replaying it — but a party that first arrives after the village was saved still plays the restored
+chapter, because a first visit always plays. `"closed"` is not allowed on a variant: whether a
+place can be entered is decided before the party crosses (`exitAvailability`), and a variant is
+chosen on arrival. (A screen's `JourneyExitView.arrival` is computed before the edge's effects;
+an edge that itself changes the world may turn a `"replay"` into a `"pass"` on arrival.)
+
+### Persistence and scope
+
+`JourneyFacts.facts` stores the values **this attempt has written** — nothing for a fact never
+written, so a fresh journey carries no `facts` key at all. It rides the same attempt row and
+conditional commit as the rest of the journey (`CampaignProgressRecord.journey`), and needs no
+version bump: absence keeps today's behaviour.
+
+- **Reading through the declaration** (`readFact`): absent → `initial`; an enum value the
+  declaration no longer lists, or a value of the wrong type → `initial`; a counter outside
+  (narrowed) bounds → **clamped**; a stored `facts` that is not an object → nothing written.
+- **Unknown ids are ignored, not dropped**: a fact the declaration no longer has (or a later
+  build's) is never read and is carried along on the next write.
+- **A journey saved before #198** has no `facts`, and reads as the world the author wrote.
+- **Attempt-scoped, never global.** Facts live on one attempt's journey. Nothing writes the
+  campaign declaration, the parsed graph `ContentStore` caches, canon, `content/world.json`, the
+  field guide, another household's attempt, or this household's next attempt — which starts from
+  the declared `initial` values again. The transitions are pure and return new records; the tests
+  freeze the campaign and the parsed graph through a whole walk to hold them to it.
+- **Ordered campaigns** have no graph, so no facts, no completion rules, nothing new.
+
+### What the players see
+
+`JourneyView.facts` (on `CampaignView.journey`): the facts declared `visible`, in authored order —
+`{ id, domain, label, type, value }`. Present only when the graph declares a visible fact. #195 and
+#202 draw from it; nothing there is needed to decide anything.
+
+### The Ash Wyrm Sampler
+
+[`packages/shared/src/fixtures/world-state.campaign.json`](../../packages/shared/src/fixtures/world-state.campaign.json)
+— the world-state fixture, outside `content/` like the Rift Sampler, on placeholder chapter ids.
+
+```
+  [crossroads] (pass) ──to-village──▶ [village] ──village-to-crossroads (return)──▶ [crossroads]
+       │  │  │                          standing → market day (visit ≥ 2) → displaced → restored (pass)
+       │  │  └──to-lair (when wyrm not cleared)──▶ [lair] ──lair-to-crossroads (return)──▶ [crossroads]
+       │  │                                          sleeping: setback wakes it (raging; village displaced;
+       │  │                                          orchard scorched) · success finds the ford path
+       │  │                                          raging: success clears it (village restored)
+       │  └──to-high-pass (when wyrm cleared, shown)──▶ ((high-pass))
+       └──to-ford (when ford path and river-folk ≥ 1; costs a favour)──▶ ((ford))
+```
+
+One fact per domain: `mill-village` (locale), `ash-wyrm` (threat), `river-folk` (alliance counter,
+earned when the village chapter sets `befriended_river_folk`), `ford-path` (route, hidden),
+`scorched-orchard` (consequence, visible, read by nothing). `world-state.test.ts` plays every face
+of the village and both endings; `packages/server/src/handlers/world-state.test.ts` plays it
+through the server.
+
+---
+
 ## 6. Visits, completion, and resuming
 
 This is the part every later issue leans on. The words mean exactly this:
@@ -258,8 +449,9 @@ This is the part every later issue leans on. The words mean exactly this:
   and `(attemptId, node, visit)` names one visit exactly.
 - **Visited** = at least one visit has begun (`visits[node] > 0`), finished or not.
 - **A visit completes** when its chapter run settles (CHAPTER_COMPLETE) — at most once per visit.
-  That increments `completions[node]`, records the run's `outcome` as the node's latest, and
-  reads the journey flags back from the run. **Completed** = at least one visit completed.
+  That increments `completions[node]`, records the run's `outcome` as the node's latest,
+  reads the journey flags back from the run, and then applies the node's `onComplete` rules
+  (#198). **Completed** = at least one visit completed.
   A `"pass"` revisit begins done without playing, and so does **not** add a completion.
 - **The visit ends** when the party takes an exit (or the visit completed an ending).
 
@@ -368,7 +560,8 @@ and whatever it retries meets the moved journey — a duplicate, or a stale visi
 **`CampaignView.journey`** (`JourneyView`, for graph campaigns only): `node`, `title`, `visit`
 (what `CHOOSE_EXIT.visit` echoes), `status`, `chapter`, `exits` (while choosing: the *visible*
 exits in authored order — `edge`, `to`, `kind`, `label`, `available`, `reason?`, `arrival`,
-`irreversible?`), and `reachedEnding` once an attempt has completed at an ending. `next` is null
+`irreversible?`), `reachedEnding` once an attempt has completed at an ending, and `facts` — the
+visible [world facts](#what-the-players-see) (#198), when the graph declares any. `next` is null
 while choosing. For a completed attempt, `journey` shows the ending reached and `next` the fresh
 start a replay would begin.
 
@@ -419,12 +612,14 @@ sees it, and nothing ships it. `campaign-graph.test.ts` holds it to the parser a
 |---|---|
 | Shape — fields, kinds, policies, `version: 1`, id patterns, no unknown keys | `schemas/campaign.schema.json` (`content:validate`, editors) |
 | Every name resolves — entry, edge ends, guard and effect targets, flags declared, node/variant chapters listed, every listed chapter played, no exit from an ending, at least one ending | `parseCampaignGraph` — run by `content:validate` **and** at server startup (the loader refuses the content set) |
+| World facts (#198) — each declaration well-formed (enum values and initial, counter bounds and span, flag initial, domain); every fact a guard, effect or completion rule names is declared; every tested or written value is in its fact's domain; `adjustFact` only on counters; `visit` bounds positive; no variant `revisit` on a `closed` node | `parseCampaignGraph`, as above |
 | No chapter of a graph campaign declares `route` | `content:validate` |
 | The graph can be walked — reachability, dead ends, softlocks, unintentional cycles, `irreversible` claims, dead locked edges, contradictory guards, repeated ids | `lintCampaignGraph` (`campaign-graph-lint.ts`) — run by `content:validate` (errors fail, warnings print) **and** at server startup (errors only). See [Validation](#validation). |
 
 `parseCampaignGraph` returns `{ graph, problems }`; `graph` is non-null only when there are no
 problems, and is normalized: defaults filled (`revisit`, `blocked`), `nodeOrder`/`edgeOrder`,
-`exits`/`entrances` per node in authored edge order, `endings`, sorted `flags`.
+`exits`/`entrances` per node in authored edge order, `endings`, sorted `flags`, and `facts` /
+`factOrder` (`{}` / `[]` when the graph declares none).
 
 ### Validation
 
@@ -443,18 +638,24 @@ never reach it — Gemfall's validator output is unchanged.
 | `DEAD_END` | a reachable non-ending node has no exits at all |
 | `CANNOT_FINISH` | a reachable node has exits, but none of its routes ever reaches an ending |
 | `UNINTENTIONAL_CYCLE` | a loop uses only `forward`/`sideways` edges (a self-loop counts). The message shows the loop and the edge to mark `"kind": "return"`. Loops through a `return` edge are fine |
-| `LOCKED_EDGE_NEVER_UNLOCKED` | an edge is `locked: true` and no edge has an `unlock` effect for it |
-| `GUARD_CONTRADICTION` | one guard cannot hold: `flag` and `notFlag` the same flag, `visited`/`notVisited`, `completed`/`notCompleted`, `traversed`/`notTraversed` the same id, `completed` with `notVisited`, `outcome` with `notCompleted`/`notVisited` of the same node |
-| `GUARD_FLAG_NEVER_SET` ⚠ | a guard needs a flag no edge effect and no chapter on the graph sets true |
+| `LOCKED_EDGE_NEVER_UNLOCKED` | an edge is `locked: true` and no edge (or completion rule) has an `unlock` effect for it |
+| `GUARD_CONTRADICTION` | one guard cannot hold: `flag` and `notFlag` the same flag, `visited`/`notVisited`, `completed`/`notCompleted`, `traversed`/`notTraversed` the same id, `completed` with `notVisited`, `outcome` with `notCompleted`/`notVisited` of the same node, a fact test no value of the fact passes (`{ "in": ["a"], "not": "a" }`), `visit` with `min` above `max` |
+| `GUARD_FLAG_NEVER_SET` ⚠ | a guard needs a flag no edge effect, completion rule and no chapter on the graph sets true |
+| `FACT_VALUE_NEVER_SET` ⚠ | a world fact's state that is not its `initial` and that no `setFact` ever writes (one finding per enum value; for a counter, nothing ever moves it) |
+| `FACT_UNUSED` ⚠ | a world fact no guard, variant or completion rule reads, and that is not `visible` |
 | `DUPLICATE_KEY` | (`content:validate` only, reads the file text) the same node or edge id appears twice in one object; JSON would keep the last and silently drop the first |
 
 **The softlock search** is the part a static check cannot do: whether a *sequence* of choices
 leaves the party with nowhere to go. It explores every state a party can be in at an exit choice —
 the node plus the journey facts that can change what is available (flags, visited/completed nodes,
-latest outcomes, taken edges, lock overrides) — by calling the same `exitsFrom`, `arrivalAt` and
-`chapterAtNode` the runtime uses, and applying edge effects, `once`, `lock`/`unlock`, `revisit`
-policies and guards exactly as [§4](#4-edges) and [§6](#6-visits-completion-and-resuming) say. The
-search is breadth-first, so every path it prints is a shortest one.
+latest outcomes, taken edges, lock overrides, the value of every world fact a guard reads, and —
+capped just past the largest bound any `visit` test names — visit counts) — by calling the same
+`exitsFrom`, `arrivalAt`, `variantAtNode` and `completionEffects` the runtime uses, and applying
+edge effects, completion rules, `once`, `lock`/`unlock`, `revisit` policies (a variant's included)
+and guards exactly as [§4](#4-edges), [§6](#6-visits-completion-and-resuming) and
+[World state](#world-state-198) say. World facts are bounded, so tracking one multiplies the state
+space by at most its number of values. The search is breadth-first, so every path it prints is a
+shortest one.
 
 | Code | Reported when |
 |---|---|
@@ -463,6 +664,7 @@ search is breadth-first, so every path it prints is a shortest one.
 | `NO_ENDING_WINNABLE` | an ending is connected to the entry but no play-through can enter one |
 | `NODE_NEVER_ENTERED` / `ENDING_NEVER_REACHED` | a node (an ending) has incoming edges but no play-through can enter it — every edge into it is locked, guarded, spent or closed whenever the party stands at its start |
 | `EDGE_NEVER_AVAILABLE` ⚠ | an edge out of a node the party reaches is never available in any state |
+| `VARIANT_NEVER_CHOSEN` ⚠ | a variant of a node the party reaches is never played: on every entry that plays the node its `when` fails, or an earlier variant's holds first (#198) |
 | `IRREVERSIBLE_NOT` | an edge marked `irreversible` can be followed by a path back into its `from` node. The claim is checked against the same search, so a way back closed by a guard, `once` or `lock` counts as closed |
 | `SEARCH_TRUNCATED` ⚠ | the search hit its state cap (default 50,000); the "never"/"trapped" checks are skipped because they would be guesses. `STRANDED` findings made before the cap are still real |
 
@@ -503,10 +705,10 @@ its issue defines it. Where each attaches:
 | #195 navigation UX | `CampaignView.journey` (`JourneyView`: visible exits with label, availability, reason, arrival, `irreversible`) and the `CHOOSE_EXIT` intent; underneath, `exitsFrom` / `arrivalAt`. |
 | #196 rift links | a new optional `rift` on `GraphEdge` (one-way, single-use, timed, triggered, unstable, persistent, linked). `once` is the counting part of single-use; a rift adds the rest. New `ExitBlock` reasons go *after* the existing four. |
 | #197 rift actions | new `GraphEffect` types beside `unlock`/`lock`; per-edge state widens `JourneyFacts.edges`. |
-| #198 world state | new `GraphCondition` fields read by `variants[].when` and edge `when`; the variant selection rule stays first-match. |
-| #199 class rift interaction | edge-level requirements and actions; must stay journey-deterministic or say explicitly why not. |
+| #198 world state | **Done** — [World state](#world-state-198): `graph.facts` (typed, bounded, `domain`-tagged, `visible`), `GraphCondition.facts` / `visit`, `setFact` / `adjustFact`, node `onComplete` rules, variant `revisit`, `JourneyFacts.facts`, `JourneyView.facts`, and the lint's search over fact values. The variant selection rule stays first-match. |
+| #199 class rift interaction | edge-level requirements and actions; must stay journey-deterministic or say explicitly why not. A class action that changes the world writes a world fact (a `setFact`/`adjustFact` in its effects), so guards, variants and the lint see it like any other. |
 | #200 temporary buffs | `GraphEffect` granting attempt-scoped buffs, stored on `JourneyState`. |
-| #201 environmental combat | node-level (or variant-level) encounter modifiers. |
+| #201 environmental combat | node-level (or variant-level) encounter modifiers. A modifier that depends on world state is best keyed by a variant whose `when` reads the fact (the variant *is* the changed place), or by a modifier `when: GraphCondition` evaluated with `{ facts: graph.facts }`. |
 | #202 inspection | `ParsedCampaignGraph` + `JourneyState`. |
 | #203 vertical slice | a real graph campaign under a **new** campaign id, never Gemfall. |
 
@@ -524,15 +726,18 @@ From `@kad/shared` (and importable directly by `.mjs` tools — type imports onl
 | `campaignMode(campaign)` | `"ordered"` \| `"graph"` |
 | `parseCampaignGraph(campaign)` | `{ graph: ParsedCampaignGraph \| null, problems: GraphProblem[] }` |
 | `journeyFlags(campaign)` | sorted journey flags (`graph.flags` ∪ `routeSets` members) |
-| `evaluateGraphCondition(cond, journey, subject?)` | does a guard hold |
+| `evaluateGraphCondition(cond, journey, subject?, { facts?, visit? }?)` | does a guard hold; pass `{ facts: graph.facts }` so unwritten facts read as `initial` |
 | `exitAvailability(graph, edge, journey)` | `{ available: true }` \| `{ available: false, reason: ExitBlock }` |
 | `exitsFrom(graph, node, journey)` | every exit with availability and visibility |
-| `arrivalAt(graph, node, journey)` | `"new"` \| `"replay"` \| `"pass"` \| `"closed"` |
+| `arrivalAt(graph, node, journey)` | `"new"` \| `"replay"` \| `"pass"` \| `"closed"` (a variant's `revisit` included) |
+| `variantAtNode(graph, node, journey)` | `{ index, variant }` \| `null` — the variant entering would play |
 | `chapterAtNode(graph, node, journey)` | the chapter entering would play |
+| `completionEffects(graph, node, journey)` | the effects of the node's `onComplete` rules that hold |
+| `readFact(fact, raw)`, `worldFacts(facts, journey)`, `initialFact`, `factDomainValues`, `factTestHolds`, `factTestValues`, `writeFact`, `FACT_DOMAINS`, `MAX_COUNTER_SPAN`, `MAX_ENUM_VALUES` | `world-state.ts` (#198): reading, testing and writing one fact |
 | `lintCampaignGraph(graph, { chapterFlags?, routeSets?, maxStates? })` | `{ findings: { code, severity, path, message, hint }[], search: { states, complete } }` |
 | `chapterFlagWrites(chapter)` | `{ setsTrue, setsFalse }` — what a chapter can write to the journey, for `chapterFlags` |
 | `duplicateJsonKeys(text)` | repeated keys in one JSON object, by pointer |
-| Types | `CampaignGraph`, `GraphNode`, `GraphEdge`, `GraphEdgeKind`, `RevisitPolicy`, `NodeVariant`, `GraphEnding`, `GraphCondition`, `GraphEffect`, `JourneyFacts`, `JourneyState`, `VisitStatus`, `JourneyView`, `JourneyExitView`, `NodeId`, `EdgeId` |
+| Types | `CampaignGraph`, `GraphNode`, `GraphEdge`, `GraphEdgeKind`, `RevisitPolicy`, `NodeVariant`, `GraphEnding`, `GraphCondition`, `GraphEffect`, `JourneyFacts`, `JourneyState`, `VisitStatus`, `JourneyView`, `JourneyExitView`, `NodeId`, `EdgeId`; #198: `FactId`, `FactDomain`, `FactValue`, `WorldFact` (`EnumFact` \| `CounterFact` \| `FlagFact`), `FactTest`, `CompletionRule`, `JourneyFactView`, `GraphConditionContext` |
 
 And from `journey.ts` (#194; **not** loadable by `.mjs` tools — it has value imports): `JOURNEY_VERSION`,
 `startJourney`, `readJourney`, `migrateJourney`, `resumeJourney`, `completeVisit`, `takeExit`,
