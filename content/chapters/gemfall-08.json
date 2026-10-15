@@ -630,7 +630,7 @@
     },
     "choice_cairn_wish": {
       "type": "story",
-      "narration": "Each of you whispers a wish into the same pebble, one after another, and nobody tells anybody what they wished. You set it on the cairn. For a moment the pebble feels warm, though that might just be your hands. You walk on, all of you pretending you are not trying to guess each other's wishes. Everybody is trying to guess.",
+      "narration": "You whisper a wish into the same pebble, taking turns, and nobody tells anybody what they wished. You set it on the cairn. For a moment the pebble feels warm, though that might just be your hands. You walk on, all of you pretending you are not trying to guess each other's wishes. Everybody is trying to guess.",
       "variants": [
         {
           "when": {

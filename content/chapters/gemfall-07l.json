@@ -1469,7 +1469,7 @@
           "name": "Pellam"
         }
       ],
-      "narration": "\"It isn't ours to tell,\" you say. Pellam looks at you for a long moment. Then he nods, takes out a small notebook, and writes one word in it. You lean over to read it. The word is FAIR. He underlines it twice and goes back to bed.",
+      "narration": "\"It isn't your secret to tell,\" you say. Pellam looks at you for a long moment. Then he nods, takes out a small notebook, and writes one word in it. You lean over to read it. The word is FAIR. He underlines it twice and goes back to bed.",
       "choices": [
         {
           "id": "on",
@@ -1509,7 +1509,7 @@
     },
     "rest_under_the_table": {
       "type": "rest",
-      "narration": "You sleep under your own wobbly table, between the wardens' fires and the masks' fires. In the night a warden and a mask both come over to borrow the teapot at the same moment, and stand there not looking at each other until somebody says please. Patch each other up. The teapot survives.",
+      "narration": "You sleep under your own wobbly table, between the wardens' fires and the masks' fires. In the night a warden and a mask both come over to borrow the teapot at the same moment, and stand there not looking at each other until somebody says please. Patch up your scrapes. The teapot survives.",
       "heal": 3,
       "choices": [
         {
