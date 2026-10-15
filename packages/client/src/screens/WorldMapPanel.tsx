@@ -204,16 +204,19 @@ export function WorldMapPanel(): ReactElement {
       </header>
 
       {world.regions && Object.keys(world.regions).length > 0 ? (
-        <nav className="atlas__regions" aria-label="Map region">
-          <Button size="md" variant="secondary" aria-pressed={!region}
-            onClick={() => { setRegionId(null); setStep(0); setEntryId(null); setRouteId(null); }}>Whole realm</Button>
-          {Object.keys(world.regions).map((id) => (
-            <Button key={id} size="md" variant="secondary" aria-pressed={regionId === id}
-              onClick={() => { setRegionId(id); setStep(world.atlas ? 1 : 0); setEntryId(null); setRouteId(null); }}>
-              {world.places[id]?.title ?? id}
-            </Button>
-          ))}
-        </nav>
+        <label className="atlas__regions">
+          <span>Region</span>
+          <select className="atlas__region-pick kad-focusable" value={regionId ?? ""}
+            onChange={(event) => {
+              const id = event.target.value || null;
+              setRegionId(id); setStep(id && world.atlas ? 1 : 0); setEntryId(null); setRouteId(null);
+            }}>
+            <option value="">Whole realm</option>
+            {Object.keys(world.regions).map((id) => (
+              <option key={id} value={id}>{world.places[id]?.title ?? id}</option>
+            ))}
+          </select>
+        </label>
       ) : null}
       {region ? <p className="atlas__region-note">{regionPlace?.title}: {region.description}</p> : null}
       {(world.routes?.length ?? 0) > 0 ? <div className="atlas__route-controls">

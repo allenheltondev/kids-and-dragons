@@ -49,7 +49,7 @@ for (const mode of ["travel", "party"] as const) {
       await tray.getByRole("button", { name: /^Map$/ }).click();
       await expect(page.getByRole("button", { name: /^Atlas$/ })).toHaveAttribute("aria-pressed", "true");
       await expect(page.getByRole("button", { name: "Read about The Sunward Fields" })).toBeVisible();
-      await page.getByRole("button", { name: "Enchanted Woods", exact: true }).click();
+      await page.getByRole("combobox", { name: "Region" }).selectOption({ label: "Enchanted Woods" });
       const closer = page.getByRole("button", { name: "Closer", exact: true });
       while (await closer.isEnabled()) await closer.click();
       await expect(page.locator('[data-patch="northwest"]')).toBeAttached();
@@ -66,14 +66,14 @@ for (const mode of ["travel", "party"] as const) {
       await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
       await tray.getByRole("button", { name: /^You$/ }).click();
       await tray.getByRole("button", { name: /^Map$/ }).click();
-      await expect(page.getByRole("button", { name: "Enchanted Woods", exact: true })).toHaveAttribute("aria-pressed", "true");
+      await expect(page.getByRole("combobox", { name: "Region" }).locator("option:checked")).toHaveText("Enchanted Woods");
       await expect(page.getByRole("button", { name: "Closer", exact: true })).toBeDisabled();
       await expect.poll(() => viewport.evaluate((view) => Math.round(view.scrollTop))).toBeCloseTo(220, -1);
       await page.getByRole("button", { name: "Story trail", exact: true }).click();
       await expect(page.locator(".trail")).toBeVisible();
       await page.getByRole("button", { name: "Atlas", exact: true }).click();
       await expect(page.getByRole("button", { name: "Closer", exact: true })).toBeDisabled();
-      await page.getByRole("button", { name: "Whole realm", exact: true }).click();
+      await page.getByRole("combobox", { name: "Region" }).selectOption({ label: "Whole realm" });
       await page.getByRole("button", { name: "Read about The Sunward Fields" }).click();
       await expect(page.getByRole("heading", { name: "The Sunward Fields", exact: true })).toBeVisible();
       await page.getByRole("button", { name: "Back to map", exact: true }).click();
