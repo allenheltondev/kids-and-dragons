@@ -6,7 +6,10 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { beatOffsetsMs, clipForBeat, tileVariant } from "./board-math";
+import { beginEncounter, findPath, parseBoard } from "@kad/shared";
+import type { EncounterSetup, EncounterState, EnemySpec, ResolvedCharacter } from "@kad/shared";
+import { makeRules } from "../../../shared/src/test-fixtures";
+import { beatOffsetsMs, clipForBeat, facingFor, naturalPath, tileVariant } from "./board-math";
 
 describe("tileVariant", () => {
   it("is deterministic and always names one of the sheet's four variants", () => {
@@ -128,5 +131,121 @@ describe("clipForBeat", () => {
     // drives it from the distance left rather than from the beat.
     expect(clipForBeat({ type: "moved", actorId: "c_hero", to: { x: 4, y: 2 } })).toBeNull();
     expect(clipForBeat({ type: "shoved", actorId: "wisp#1", to: { x: 6, y: 2 } })).toBeNull();
+  });
+});
+
+describe("facingFor", () => {
+  const hero: ResolvedCharacter = {
+    id: "c_hero",
+    ownerPlayerId: "p_1",
+    name: "Sparklehoof",
+    species: "unicorn",
+    class: "thornguard",
+    appearance: { palette: "meadow", accent: "#7FD4C1" },
+    level: 1,
+    xp: 0,
+    tier: "fledgling",
+    stats: { might: 4, quick: 9, clever: 1, heart: 1 },
+    unspentPoints: 0,
+    spendableStats: ["might", "quick", "clever", "heart"],
+    committedLevel: 1,
+    maxHp: 10,
+    steps: 4,
+    guard: 12,
+    attackStat: "might",
+    actions: [],
+    worldAbility: "mend",
+    inventory: [],
+    questItems: [],
+    souvenirs: [],
+    isProvisional: false,
+  };
+  const wisp: EnemySpec = { id: "wisp", name: "Bramblewisp", count: 1, hp: 6, guard: 11, quick: 3, steps: 5, attack: 3 };
+  const fight = (enemies: EncounterSetup["enemies"]): EncounterState =>
+    beginEncounter(
+      { board: parseBoard([".....", ".....", ".....", ".....", "....."]), party: [{ character: hero, at: { x: 2, y: 2 } }], enemies },
+      { rules: makeRules(), abilities: {}, rng: { next: () => 0.5 } },
+    );
+
+  it("faces the nearest opponent, and each side faces the other", () => {
+    const state = fight([{ spec: wisp, at: { x: 4, y: 2 } }]);
+    expect(facingFor(state, "c_hero")).toBe("right");
+    expect(facingFor(state, "wisp#1")).toBe("left");
+  });
+
+  it("picks the nearest when there are several, by the board's step metric", () => {
+    // One wisp two steps right, one a single diagonal step left: the near one wins.
+    const state = fight([
+      { spec: wisp, at: { x: 4, y: 2 } },
+      { spec: wisp, at: { x: 1, y: 1 } },
+    ]);
+    expect(facingFor(state, "c_hero")).toBe("left");
+  });
+
+  it("ignores a knocked-down opponent — there is nobody to square up to", () => {
+    const base = fight([
+      { spec: wisp, at: { x: 1, y: 2 } },
+      { spec: wisp, at: { x: 4, y: 2 } },
+    ]);
+    const state = {
+      ...base,
+      combatants: base.combatants.map((c) => (c.id === "wisp#1" ? { ...c, down: true } : c)),
+    };
+    expect(facingFor(state, "c_hero")).toBe("right");
+  });
+
+  it("answers null straight above or below, and with nobody left, so the figure keeps its facing", () => {
+    expect(facingFor(fight([{ spec: wisp, at: { x: 2, y: 0 } }]), "c_hero")).toBeNull();
+    // The last wisp down: nobody standing to face.
+    const beaten = fight([{ spec: wisp, at: { x: 4, y: 2 } }]);
+    const nobody = {
+      ...beaten,
+      combatants: beaten.combatants.map((c) => (c.side === "enemy" ? { ...c, down: true } : c)),
+    };
+    expect(facingFor(nobody, "c_hero")).toBeNull();
+    expect(facingFor(fight([{ spec: wisp, at: { x: 4, y: 2 } }]), "nobody")).toBeNull();
+  });
+});
+
+describe("naturalPath", () => {
+  const open = parseBoard(["........", "........", "........", "........", "........"]);
+  const withMover = (board: ReturnType<typeof parseBoard>, at: { x: number; y: number }, others: { id: string; side: "party" | "enemy"; x: number; y: number }[] = []) => ({
+    ...board,
+    actors: [{ id: "me", side: "party" as const, ...at }, ...others],
+  });
+
+  it("walks a level route level, rather than up a row and back down", () => {
+    const board = withMover(open, { x: 0, y: 2 });
+    expect(naturalPath(board, { x: 0, y: 2 }, { x: 4, y: 2 })).toEqual([
+      { x: 0, y: 2 }, { x: 1, y: 2 }, { x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 2 },
+    ]);
+  });
+
+  it("costs exactly what the shared path-finder charges, on every square of a board", () => {
+    // Same rules, different tie-break: the step count must never differ, or
+    // the walk would cross more squares than the glow said it could.
+    const walls = parseBoard(["........", "..#..#..", "..#..#..", "........", "........"]);
+    const others = [
+      { id: "ally", side: "party" as const, x: 1, y: 2 },
+      { id: "foe", side: "enemy" as const, x: 4, y: 3 },
+    ];
+    const board = withMover(walls, { x: 0, y: 2 }, others);
+    for (let y = 0; y < 5; y++) {
+      for (let x = 0; x < 8; x++) {
+        const shared = findPath(board, { x: 0, y: 2 }, { x, y });
+        const natural = naturalPath(board, { x: 0, y: 2 }, { x, y });
+        expect(natural?.length ?? null).toBe(shared?.length ?? null);
+      }
+    }
+  });
+
+  it("crosses a friend but never a foe, and never finishes on anybody", () => {
+    const board = withMover(open, { x: 0, y: 0 }, [
+      { id: "ally", side: "party", x: 1, y: 0 },
+      { id: "foe", side: "enemy", x: 3, y: 0 },
+    ]);
+    expect(naturalPath(board, { x: 0, y: 0 }, { x: 2, y: 0 })).toEqual([{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }]);
+    expect(naturalPath(board, { x: 0, y: 0 }, { x: 4, y: 0 })).not.toContainEqual({ x: 3, y: 0 });
+    expect(naturalPath(board, { x: 0, y: 0 }, { x: 1, y: 0 })).toBeNull();
   });
 });
