@@ -167,6 +167,26 @@ export function riftActionNeedsConfirm(action: Pick<JourneyRiftActionView, "irre
   return action.irreversible === true;
 }
 
+/**
+ * Whose way a rift action is (#199), for its chip: "Starweaver",
+ * "Starweaver or Songkeeper", "Mosslight Jar". A class reads as its own name
+ * (every class's name is its id, capitalised — `content/rules.json`); an item
+ * as the catalog names it, when the phone has the catalog. Null for a way
+ * anyone can take, which needs no chip.
+ */
+export function riftActionNeedsLine(
+  needs: JourneyRiftActionView["needs"],
+  itemName: (id: string) => string | undefined = () => undefined,
+): string | null {
+  if (!needs) return null;
+  // Any one of a list will do ("or"); both kinds at once are both needed ("with").
+  const groups = [
+    (needs.anyClass ?? []).map((id) => id.charAt(0).toUpperCase() + id.slice(1)).join(" or "),
+    (needs.anyItem ?? []).map((id) => itemName(id) ?? "something you carry").join(" or "),
+  ].filter((group) => group !== "");
+  return groups.length === 0 ? null : groups.join(" with ");
+}
+
 /** The warning before a rift action that cannot be undone. */
 export function riftActionWarning(_action: Pick<JourneyRiftActionView, "action">): string {
   return "Once it's shut, it won't open again.";

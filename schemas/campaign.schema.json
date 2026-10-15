@@ -434,37 +434,56 @@
           }
         },
         "actions": {
-          "description": "What the party may do to this rift while choosing at its `from` (#197). Each kind present is offered while its rule's `when` holds and the action would change something.",
+          "description": "What the party may do to this rift while choosing at its `from` (#197). Each kind present is offered while its rule's `when` holds and the action would change something. A kind may be one rule, or a list of ways to take it (#199), each with its own `id`, `when`, `requires` and effects.",
           "type": "object",
           "additionalProperties": false,
           "minProperties": 1,
           "properties": {
             "discover": {
-              "$ref": "#/$defs/riftActionRule"
+              "$ref": "#/$defs/riftActionRules"
             },
             "open": {
-              "$ref": "#/$defs/riftActionRule"
+              "$ref": "#/$defs/riftActionRules"
             },
             "close": {
-              "$ref": "#/$defs/riftActionRule"
+              "$ref": "#/$defs/riftActionRules"
             },
             "stabilize": {
-              "$ref": "#/$defs/riftActionRule"
+              "$ref": "#/$defs/riftActionRules"
             },
             "redirect": {
-              "$ref": "#/$defs/riftActionRule"
+              "$ref": "#/$defs/riftActionRules"
             }
           }
         }
       }
     },
+    "riftActionRules": {
+      "description": "One rule, or a list of ways to take the same rift action (#199): every way in a list needs an `id`, distinct within it (RIFT_ACTION.way names it) - checked by parseCampaignGraph.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/riftActionRule"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/riftActionRule"
+          }
+        }
+      ]
+    },
     "riftActionRule": {
-      "description": "RiftActionRule (#197): when the party may take one rift action, what its button says, and what else it does. Class gating is #199's.",
+      "description": "RiftActionRule (#197): when the party may take one rift action, what its button says, and what else it does. `when` reads the journey (the lint walks it); `requires` (#199) reads the seated party and is checked by the server, never by a guard.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "$comment": {
           "type": "string"
+        },
+        "id": {
+          "description": "Which way this is, when the kind lists several (#199). Stable: a stored lastAction names it.",
+          "$ref": "#/$defs/graphId"
         },
         "when": {
           "$ref": "#/$defs/graphCondition"
@@ -477,6 +496,44 @@
           "type": "array",
           "items": {
             "$ref": "#/$defs/graphEffect"
+          }
+        },
+        "requires": {
+          "$ref": "#/$defs/partyRequirement"
+        },
+        "hint": {
+          "description": "What a party that cannot take this way is shown (#199). Absent: the way is not drawn for them. Must not name a hidden destination; needs `requires`.",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "partyRequirement": {
+      "description": "PartyRequirement (#199): who in the seated party can take a rift action. Every field present must hold; within a list, any one will do. Checked by the server against the seated party, never by a guard; the lint proves the campaign stays winnable without it (CLASS_GATED_ONLY_PATH).",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "anyClass": {
+          "description": "Someone seated is one of these classes.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["thornguard", "duskrunner", "starweaver", "songkeeper"]
+          }
+        },
+        "anyItem": {
+          "description": "Someone seated carries one of these items (content/items.json ids; inventory or quest items).",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
           }
         }
       }

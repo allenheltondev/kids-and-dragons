@@ -210,11 +210,47 @@ describe("rift actions (#197)", () => {
   });
 
   it("refuses an action it does not know, a rule with keys it does not know, and fallback as anything but true", () => {
-    // `requires` is the slot class gating (#199) will define; until then it is refused.
+    // `requires` is class gating's (#199): the shape it defines, and nothing else.
     expect(ferry((c) => (c.graph.edges["ferry-rift"].rift.actions.teleport = {})).ok).toBe(false);
     expect(ferry((c) => (c.graph.edges["ferry-rift"].rift.actions.redirect.requires = { class: "wizard" })).ok).toBe(false);
+    expect(ferry((c) => (c.graph.edges["ferry-rift"].rift.actions.redirect.colour = "red")).ok).toBe(false);
     expect(ferry((c) => (c.graph.edges["ferry-rift"].rift.actions = {})).ok).toBe(false);
     expect(ferry((c) => (c.graph.edges["ferry-rift"].rift.redirects = [])).ok).toBe(false);
     expect(ferry((c) => (c.graph.edges["harbor-row"].fallback = false)).ok).toBe(false);
+  });
+});
+
+describe("class rift interaction (#199)", () => {
+  const CLASSES = ["packages", "shared", "src", "fixtures", "rift-classes.campaign.json"];
+  const sealed = (mutate) => {
+    const campaign = read(...CLASSES);
+    mutate(campaign);
+    return judge(campaign);
+  };
+  const open = (c) => c.graph.edges["veil-rift"].rift.actions.open;
+
+  it("the Sealed Rift validates: lists of ways, a lone named way, requires and hints", () => {
+    const { ok, errors } = judge(read(...CLASSES));
+    expect(ok, errors.join("\n")).toBe(true);
+  });
+
+  it("is not content either", () => {
+    expect(() => read("content", "campaigns", `${read(...CLASSES).id}.json`)).toThrow();
+  });
+
+  it("knows a requirement's shape: real classes, item ids, at least one of them, nothing else", () => {
+    expect(sealed((c) => (open(c)[1].requires = { anyClass: ["starweaver", "songkeeper"], anyItem: ["luckstone"] })).ok).toBe(true);
+    expect(sealed((c) => (open(c)[1].requires = { anyClass: ["wizard"] })).ok).toBe(false);
+    expect(sealed((c) => (open(c)[1].requires = { anyClass: [] })).ok).toBe(false);
+    expect(sealed((c) => (open(c)[1].requires = { anyClass: ["thornguard", "thornguard"] })).ok).toBe(false);
+    expect(sealed((c) => (open(c)[1].requires = {})).ok).toBe(false);
+    expect(sealed((c) => (open(c)[1].requires = { species: ["unicorn"] })).ok).toBe(false);
+    expect(sealed((c) => (open(c)[1].requires = { anyItem: ["Not An Id"] })).ok).toBe(false);
+  });
+
+  it("knows a way's id and hint, and a list of ways is never empty", () => {
+    expect(sealed((c) => (open(c)[1].id = "Force Open")).ok).toBe(false);
+    expect(sealed((c) => (open(c)[1].hint = "")).ok).toBe(false);
+    expect(sealed((c) => (c.graph.edges["veil-rift"].rift.actions.open = [])).ok).toBe(false);
   });
 });

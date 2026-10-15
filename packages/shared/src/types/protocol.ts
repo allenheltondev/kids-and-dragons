@@ -96,6 +96,12 @@ export type ClientIntent =
    * echoes `JourneyView.visit`, and with `action`, `edgeId` and `to` is the
    * idempotence key: the same action sent twice is answered as done, never
    * applied twice. `to` is a redirect's destination (`JourneyRiftActionView.to`).
+   *
+   * `way` (#199) names which of several ways to the same action this is
+   * (`JourneyRiftActionView.way`) — the Starweaver's attunement, the
+   * Thornguard's shove, the hermit's help. The server judges that way's
+   * `requires` against the seated party and refuses it when nobody seated
+   * can (`"party-cannot"`).
    */
   | {
       type: "RIFT_ACTION";
@@ -103,6 +109,7 @@ export type ClientIntent =
       edgeId: string;
       visit: number;
       to?: string;
+      way?: string;
       campaignId?: string;
     }
   /**
