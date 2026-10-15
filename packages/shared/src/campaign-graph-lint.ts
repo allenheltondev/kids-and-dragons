@@ -83,6 +83,11 @@
  *                                 never offered where it stands.
  * - `RIFT_EFFECT_ON_FINAL` (warn) a rift effect (#197) that every time it runs
  *                                 meets a used-up, expired or collapsed rift.
+ * - `CLASS_GATED_ONLY_PATH`       a state from which an ending can be reached,
+ *                                 but only through a rift action whose way
+ *                                 `requires` a class or an item (#199): a party
+ *                                 without that hero (or that lost them half-way)
+ *                                 would be stuck. See `lintClassGates`.
  * - `SEARCH_TRUNCATED` (warn)    the state cap was hit; the "never" and
  *                                 "cannot finish" checks above are skipped
  *                                 because they would be guesses.
@@ -126,7 +131,10 @@
  * after is explored like any other. So a single-use rift whose only way on
  * is "steady it first", a `fallback` edge (offered only when nothing else
  * is), and a party that could close its last door are all judged on what the
- * party can actually do. "Stranded" means no exit *and* no action.
+ * party can actually do. "Stranded" means no exit *and* no action. Each way
+ * to an action (#199) is its own transition, taken whoever it `requires` —
+ * the search is of what the journey allows — and marked when it needs
+ * someone, so the class pass can prove the campaign winnable without them.
  *
  * Effects are applied wherever the runtime applies them: an edge's when it is
  * crossed, a node's `onComplete` rules (#198) when its chapter completes, each
@@ -169,7 +177,9 @@ import type {
   GraphEffect,
   JourneyFacts,
   NodeId,
+  PartyRequirement,
   RiftActionKind,
+  RiftParty,
   WorldFact,
 } from "./types/campaign-graph.js";
 import {
@@ -178,6 +188,7 @@ import {
   edgeDestinations,
   exitsFrom,
   RIFT_ACTION_KINDS,
+  riftActionWays,
   riftOwner,
   riftState,
   variantAtNode,
@@ -185,7 +196,16 @@ import {
   type ParsedCampaignGraph,
 } from "./campaign-graph.ts";
 import { crossRift, settleRifts, tickRifts } from "./rifts.ts";
-import { applyRiftEffect, isRiftEffect, riftActionChange, riftActionsFrom, riftEffectCanApply } from "./rift-actions.ts";
+import {
+  applyRiftEffect,
+  describeRequirement,
+  isRiftEffect,
+  partyMeets,
+  riftActionChange,
+  riftActionGated,
+  riftActionsFrom,
+  riftEffectCanApply,
+} from "./rift-actions.ts";
 import { factTestValues, initialFact, readFact, storedFacts, writeFact } from "./world-state.ts";
 
 // ---------------------------------------------------------------------------
@@ -218,7 +238,8 @@ export type GraphFindingCode =
   | "RIFT_REVEAL_MOOT"
   | "RIFT_EFFECT_ON_FINAL"
   | "RIFT_ACTION_NEVER_OFFERED"
-  | "BUFF_NEVER_GRANTED";
+  | "BUFF_NEVER_GRANTED"
+  | "CLASS_GATED_ONLY_PATH";
 
 export interface GraphFinding {
   /** Stable: tests, docs and any tool that filters key on this. */
@@ -250,6 +271,14 @@ export interface GraphLintOptions {
   routeSets?: Readonly<Record<string, readonly string[]>>;
   /** State cap for the search. Default {@link DEFAULT_MAX_STATES}. */
   maxStates?: number;
+  /**
+   * Explore as this one table (#199): a rift action way whose `requires` the
+   * party does not meet is not taken. Omitted — what the lint does — every
+   * way is taken, whoever it needs, and `CLASS_GATED_ONLY_PATH` proves the
+   * rest. The tools pass it to ask "what can a party with no Starweaver do?"
+   * and replay the answer through the runtime with the same party.
+   */
+  party?: RiftParty;
 }
 
 export interface GraphLintResult {
@@ -390,15 +419,17 @@ function guardsOf(graph: ParsedCampaignGraph): Guard[] {
     // judged against the rift's `from`, like the edge's own `when`. Not tied
     // to the edge (`edge` absent): an action never offered is not an exit
     // never available.
+    // Each way to it (#199) is its own guard; its `requires` is not one.
     for (const kind of RIFT_ACTION_KINDS) {
-      const rule = edge.rift?.actions?.[kind];
-      if (!rule?.when) continue;
-      guards.push({
-        path: `${edgePath(id)}/rift/actions/${kind}/when`,
-        cond: rule.when,
-        subject: edge.from,
-        what: `rift action "${kind}" on "${id}"`,
-      });
+      for (const { rule, way, at } of riftActionWays(edge.rift, kind)) {
+        if (!rule.when) continue;
+        guards.push({
+          path: `${edgePath(id)}/rift/${at}/when`,
+          cond: rule.when,
+          subject: edge.from,
+          what: `rift action "${kind}"${way !== undefined ? ` (${way})` : ""} on "${id}"`,
+        });
+      }
     }
   }
   for (const id of graph.nodeOrder) {
@@ -447,7 +478,7 @@ function effectSites(graph: ParsedCampaignGraph): Map<GraphEffect, string> {
     const edge = graph.edges[id]!;
     add(edge.effects, `${edgePath(id)}/effects`);
     for (const kind of RIFT_ACTION_KINDS) {
-      add(edge.rift?.actions?.[kind]?.effects, `${edgePath(id)}/rift/actions/${kind}/effects`);
+      for (const { rule, at } of riftActionWays(edge.rift, kind)) add(rule.effects, `${edgePath(id)}/rift/${at}/effects`);
     }
   }
   for (const id of graph.nodeOrder) {
@@ -908,12 +939,17 @@ interface Step {
    * A rift action taken where the party stands (#197), instead of an edge:
    * what `takeRiftAction` would be asked, so a replay can ask it.
    */
-  action?: { action: RiftActionKind; edge: EdgeId; to?: NodeId };
+  action?: { action: RiftActionKind; edge: EdgeId; to?: NodeId; way?: string };
 }
 
-/** `stabilize "storm-stair"`, `redirect "ferry-rift" toward "cove"` — a rift action in words. */
-export function describeRiftAction(step: { action: RiftActionKind; edge: EdgeId; to?: NodeId }): string {
-  return `${step.action} "${step.edge}"${step.to !== undefined ? ` toward "${step.to}"` : ""}`;
+/**
+ * `stabilize "storm-stair"`, `redirect "ferry-rift" toward "cove"`,
+ * `open "veil-rift" (attune)` — a rift action in words, its way (#199) named.
+ */
+export function describeRiftAction(step: { action: RiftActionKind; edge: EdgeId; to?: NodeId; way?: string }): string {
+  return `${step.action} "${step.edge}"${step.to !== undefined ? ` toward "${step.to}"` : ""}${
+    step.way !== undefined ? ` (${step.way})` : ""
+  }`;
 }
 
 interface SearchState {
@@ -927,15 +963,19 @@ interface SearchState {
 
 interface Search {
   states: SearchState[];
-  /** succ[i] = the states reachable from state i by one exit (and its completion). */
-  succ: { to: number; edge: EdgeId }[][];
+  /**
+   * succ[i] = the states reachable from state i by one exit (and its
+   * completion), or by one rift action (`edge` is `~kind:rift`). `needs` marks
+   * a rift action only some parties can take (#199) — its way's `requires`.
+   */
+  succ: { to: number; edge: EdgeId; needs?: PartyRequirement }[][];
   /** Non-ending states whose every exit is unavailable, with why. */
   stranded: { state: number; blocks: { edge: EdgeId; reason: ExitBlock }[] }[];
   everAvailable: Set<EdgeId>;
   entered: Set<NodeId>;
   /** `node#index` of every variant a played entry chose (`#-1`: the node's own chapter). */
   variantsChosen: Set<string>;
-  /** `edge/kind` of every rift action ever offered (#197). */
+  /** `edge/kind` (and `edge/kind/way`, #199) of every rift action ever offered (#197). */
   actionsOffered: Set<string>;
   /**
    * Every rift effect the search applied (#197), by where it is written:
@@ -1260,9 +1300,17 @@ function explore(
     // effects wrote) changed — exactly `takeRiftAction`. A place with no way
     // out but an action that opens one is not stranded; the state after the
     // action is judged on its own.
-    const offers = riftActionsFrom(graph, state.node, state.facts);
+    const offers = riftActionsFrom(graph, state.node, state.facts).filter(
+      (offer) => options.party === undefined || partyMeets(offer.rule.requires, options.party),
+    );
+    //
+    // Every way is taken (#199), whoever it needs: the search is of what the
+    // *journey* allows, with any party at the table. A way only some parties
+    // can take is marked on its transition (`needs`), so the class pass
+    // (`lintClassGates`) can ask what is left without it.
     for (const offer of offers) {
       search.actionsOffered.add(`${offer.edge}/${offer.action}`);
+      if (offer.way !== undefined) search.actionsOffered.add(`${offer.edge}/${offer.action}/${offer.way}`);
       const change = riftActionChange(graph, state.facts, offer.action, offer.edge, offer.to);
       if (!change.ok) continue;
       const acted = clone(change.journey);
@@ -1270,9 +1318,20 @@ function explore(
       const to = intern(state.node, { facts: settleRifts(graph, acted), ended: false, label: "" }, head, {
         edge: null,
         label: "",
-        action: { action: offer.action, edge: offer.edge, ...(offer.to !== undefined ? { to: offer.to } : {}) },
+        action: {
+          action: offer.action,
+          edge: offer.edge,
+          ...(offer.to !== undefined ? { to: offer.to } : {}),
+          ...(offer.way !== undefined ? { way: offer.way } : {}),
+        },
       });
-      if (to !== null && to !== head) search.succ[head]!.push({ to, edge: `~${offer.action}:${offer.edge}` });
+      if (to !== null && to !== head) {
+        search.succ[head]!.push({
+          to,
+          edge: `~${offer.action}:${offer.edge}`,
+          ...(riftActionGated(offer.rule) ? { needs: offer.rule.requires } : {}),
+        });
+      }
     }
     if (open.length === 0 && offers.length === 0) {
       search.stranded.push({
@@ -1418,6 +1477,9 @@ function lintSearch(
     );
   });
 
+  // --- winnable only with the right party (#199) ----------------------------
+  lintClassGates(search, winnable, endedStates, error);
+
   // --- places and doors nothing ever uses ---------------------------------
   for (const id of graph.nodeOrder) {
     if (!fromEntry.has(id) || search.entered.has(id) || explained.has(id)) continue;
@@ -1450,13 +1512,17 @@ function lintSearch(
     const edge = graph.edges[id]!;
     if (!search.entered.has(edge.from)) continue;
     for (const kind of RIFT_ACTION_KINDS) {
-      if (!edge.rift?.actions?.[kind] || search.actionsOffered.has(`${id}/${kind}`)) continue;
-      warn(
-        "RIFT_ACTION_NEVER_OFFERED",
-        `${edgePath(id)}/rift/actions/${kind}`,
-        `the "${kind}" action on rift "${id}" is never offered: whenever the party stands at "${edge.from}", its "when" does not hold or it would change nothing (the rift is already so, used up, or persistent)`,
-        `Check the rule's "when" and the rift's lifecycle; if the party is never meant to ${kind} it, delete the rule.`,
-      );
+      // Each way on its own (#199): a Starweaver's attunement nobody can ever
+      // reach is a dead rule even when the hermit's way is offered.
+      for (const { way, at } of riftActionWays(edge.rift, kind)) {
+        if (search.actionsOffered.has(way === undefined ? `${id}/${kind}` : `${id}/${kind}/${way}`)) continue;
+        warn(
+          "RIFT_ACTION_NEVER_OFFERED",
+          `${edgePath(id)}/rift/${at}`,
+          `the "${kind}" action${way !== undefined ? ` "${way}"` : ""} on rift "${id}" is never offered: whenever the party stands at "${edge.from}", its "when" does not hold or it would change nothing (the rift is already so, used up, or persistent)`,
+          `Check the rule's "when" and the rift's lifecycle; if the party is never meant to ${kind} it, delete the rule.`,
+        );
+      }
     }
   }
   for (const [site, applies] of search.riftEffects) {
@@ -1520,6 +1586,86 @@ function lintSearch(
       `Either the claim is wrong (remove "irreversible" from "${id}") or the way back is: remove it, or guard/lock/once it so it is closed after "${id}".`,
     );
   }
+}
+
+// ---------------------------------------------------------------------------
+// The class pass (#199)
+// ---------------------------------------------------------------------------
+
+/**
+ * No class is mandatory. The search above takes every rift action the
+ * journey offers, whoever it needs (`requires`), because the lint cannot know
+ * who will be seated — and the table changes between evenings: the
+ * Starweaver who attuned the rift on Tuesday may be at a sleepover on
+ * Friday. So the proof is the strong one:
+ *
+ *   **from every state a party can reach — by any ways at all, gated ones
+ *   included — some ending must still be reachable using only ways that need
+ *   nobody** (exits, completions, and rift actions with no `requires`).
+ *
+ * That is a second, cheaper pass over the same explored graph rather than a
+ * second search: backward reachability from the ending states over the
+ * ungated transitions only. A state the first pass can win from (`winnable`)
+ * that this one cannot is `CLASS_GATED_ONLY_PATH` — reported once per node,
+ * at the shortest such state, naming the gated ways that were its only way
+ * on. A state no party can win from is already `TRAPPED` or `STRANDED`.
+ *
+ * It covers the party that never had the class (the entry state is
+ * checked like any other) and the party that lost it half-way, and it is
+ * sound for item requirements too: a party may not carry the lantern any
+ * more than it may have a Starweaver. What is *earned* (a fact such as
+ * attunement) is journey state, so it is in the states, and does not need
+ * this pass.
+ */
+function lintClassGates(search: Search, winnable: ReadonlySet<number>, endedStates: readonly number[], error: Report): void {
+  const { states, succ } = search;
+  if (!succ.some((list) => list.some((each) => each.needs !== undefined))) return;
+  const reverse: number[][] = states.map(() => []);
+  succ.forEach((list, from) => list.forEach(({ to, needs }) => needs === undefined && reverse[to]!.push(from)));
+  const anyParty = new Set<number>(endedStates);
+  const queue = [...endedStates];
+  for (let head = 0; head < queue.length; head += 1) {
+    for (const before of reverse[queue[head]!]!) {
+      if (!anyParty.has(before)) {
+        anyParty.add(before);
+        queue.push(before);
+      }
+    }
+  }
+
+  /** The gated ways a party without them would need, from state `at` on. */
+  const neededFrom = (at: number): string[] => {
+    const seen = new Set([at]);
+    const walk = [at];
+    const needed = new Set<string>();
+    for (let head = 0; head < walk.length; head += 1) {
+      for (const { to, needs } of succ[walk[head]!]!) {
+        if (needs !== undefined) {
+          const step = states[to]!.step.action;
+          if (step && winnable.has(to)) needed.add(`${describeRiftAction(step)}, which ${describeRequirement(needs)}`);
+        } else if (!seen.has(to)) {
+          seen.add(to);
+          walk.push(to);
+        }
+      }
+    }
+    return [...needed];
+  };
+
+  const reported = new Set<NodeId>();
+  states.forEach((state, i) => {
+    if (!winnable.has(i) || anyParty.has(i) || reported.has(state.node)) return;
+    reported.add(state.node);
+    const needed = neededFrom(i);
+    error(
+      "CLASS_GATED_ONLY_PATH",
+      nodePath(state.node),
+      `a party without the right hero can be left with no way to an ending at "${state.node}": after ${describePath(search, i)}, every way on needs a rift action only some parties can take${
+        needed.length > 0 ? ` (${needed.slice(0, 4).join("; ")})` : ""
+      }`,
+      `No class is mandatory. Give that action a way with no "requires" (an ally the story earns, a world fact a chapter sets), or keep an exit that leads on without it. A gated way is a better road, never the only one.`,
+    );
+  });
 }
 
 // ---------------------------------------------------------------------------

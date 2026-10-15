@@ -23,7 +23,7 @@ import { setPlayerSection, usePlayerNavigation } from "../store/player-navigatio
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
-import { DEFAULT_HELP_DIE, INVENTORY_SLOTS, STAT_IDS, lobbyCampaign } from "@kad/shared";
+import { DEFAULT_HELP_DIE, INVENTORY_SLOTS, STAT_IDS, lobbyCampaign, riftPartyOf } from "@kad/shared";
 import { checkTarget } from "./DiceOverlay";
 import type {
   ClientIntent,
@@ -1408,8 +1408,13 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                         visit: graphJourney.visit,
                         campaignId,
                         ...(action.to !== undefined ? { to: action.to } : {}),
+                        ...(action.way !== undefined ? { way: action.way } : {}),
                       })
                     }
+                    // Whose ways the table can take (#199): the heroes seated
+                    // now, judged as the server judges them.
+                    party={riftPartyOf(state.party.map((member) => member.character))}
+                    itemName={(id) => items?.[id]?.name}
                   />
                 ) : everyoneReady && campaignId !== null ? (
                   <Button

@@ -16,8 +16,21 @@ import {
   nextChapterLine,
   riftActionIcon,
   riftActionNeedsConfirm,
+  riftActionNeedsLine,
   riftActionWarning,
 } from "./campaign-copy";
+
+describe("riftActionNeedsLine (#199)", () => {
+  it("names the classes and items a way needs, in words", () => {
+    expect(riftActionNeedsLine(undefined)).toBeNull();
+    expect(riftActionNeedsLine({ anyClass: ["starweaver"] })).toBe("Starweaver");
+    expect(riftActionNeedsLine({ anyClass: ["thornguard", "songkeeper"] })).toBe("Thornguard or Songkeeper");
+    const names = (id: string) => (id === "mosslight_jar" ? "Mosslight Jar" : undefined);
+    expect(riftActionNeedsLine({ anyItem: ["mosslight_jar"] }, names)).toBe("Mosslight Jar");
+    expect(riftActionNeedsLine({ anyItem: ["mosslight_jar"] })).toBe("something you carry");
+    expect(riftActionNeedsLine({ anyClass: ["duskrunner"], anyItem: ["luckstone"] }, () => "Luckstone")).toBe("Duskrunner with Luckstone");
+  });
+});
 
 const VIEW = { id: "gemfall", title: "Gemfall", chapters: 8, next: { index: 4, title: "The Pride Roads" } };
 
