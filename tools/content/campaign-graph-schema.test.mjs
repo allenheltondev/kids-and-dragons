@@ -183,6 +183,42 @@ describe("world state (#198)", () => {
   });
 });
 
+describe("rift actions (#197)", () => {
+  const ACTIONS = ["packages", "shared", "src", "fixtures", "rift-actions.campaign.json"];
+  const ferry = (mutate) => {
+    const campaign = read(...ACTIONS);
+    mutate(campaign);
+    return judge(campaign);
+  };
+
+  it("the Ferry Rift validates: effects, redirects, actions and a fallback, as the schema knows them", () => {
+    const { ok, errors } = judge(read(...ACTIONS));
+    expect(ok, errors.join("\n")).toBe(true);
+  });
+
+  it("is not content either", () => {
+    expect(() => read("content", "campaigns", `${read(...ACTIONS).id}.json`)).toThrow();
+  });
+
+  it("knows each rift effect's shape: an edge, and for a redirect where to", () => {
+    for (const type of ["discoverRift", "openRift", "closeRift", "stabilizeRift"]) {
+      expect(ferry((c) => (c.graph.edges["isle-to-harbor"].effects = [{ type, edge: "ferry-rift" }])).ok, type).toBe(true);
+      expect(ferry((c) => (c.graph.edges["isle-to-harbor"].effects = [{ type }])).ok, type).toBe(false);
+    }
+    expect(ferry((c) => (c.graph.edges["isle-to-harbor"].effects = [{ type: "redirectRift", edge: "ferry-rift" }])).ok).toBe(false);
+    expect(ferry((c) => (c.graph.edges["isle-to-harbor"].effects = [{ type: "openRift", edge: "ferry-rift", to: "cove" }])).ok).toBe(false);
+  });
+
+  it("refuses an action it does not know, a rule with keys it does not know, and fallback as anything but true", () => {
+    // `requires` is the slot class gating (#199) will define; until then it is refused.
+    expect(ferry((c) => (c.graph.edges["ferry-rift"].rift.actions.teleport = {})).ok).toBe(false);
+    expect(ferry((c) => (c.graph.edges["ferry-rift"].rift.actions.redirect.requires = { class: "wizard" })).ok).toBe(false);
+    expect(ferry((c) => (c.graph.edges["ferry-rift"].rift.actions = {})).ok).toBe(false);
+    expect(ferry((c) => (c.graph.edges["ferry-rift"].rift.redirects = [])).ok).toBe(false);
+    expect(ferry((c) => (c.graph.edges["harbor-row"].fallback = false)).ok).toBe(false);
+  });
+});
+
 describe("temporary buffs (#200)", () => {
   const BUFFS = ["packages", "shared", "src", "fixtures", "rift-buffs.campaign.json"];
   const buffs = (mutate) => {

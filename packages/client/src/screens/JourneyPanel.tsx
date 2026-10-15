@@ -24,6 +24,13 @@
  *
  * Status is always icon + word (spec 11), never colour alone.
  *
+ * **Things the party can try** (#197) - a rift's actions, `journey.riftActions`:
+ * search for a hidden way, open a rift, steady it, turn it, close it. Each is
+ * a button under the ways on, sent as `RIFT_ACTION` by the parent
+ * (`onAction`); a close nothing can undo asks first, through the same
+ * confirmation as a one-way crossing. A party with nowhere to go and nothing
+ * to try (`journey.stuck`) is told so plainly instead of shown an empty list.
+ *
  * ---------------------------------------------------------------------------
  * WHAT IT DOES NOT KNOW
  *
@@ -37,7 +44,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import type { KeyboardEvent, ReactElement } from "react";
-import type { CampaignView, JourneyExitView, JourneyView } from "@kad/shared";
+import type { CampaignView, JourneyExitView, JourneyRiftActionView, JourneyView } from "@kad/shared";
 import { Button } from "../ui/Button";
 import { ScreenReaderOnly } from "../ui/ScreenReaderOnly";
 import {
@@ -47,6 +54,10 @@ import {
   exitNeedsConfirm,
   exitWarning,
   journeyBeginLabel,
+  journeyStuckLine,
+  riftActionIcon,
+  riftActionNeedsConfirm,
+  riftActionWarning,
 } from "./campaign-copy";
 import { Icon } from "./icons";
 import { BuffList, journeyBuffRows } from "./BuffList";
@@ -63,7 +74,16 @@ export interface JourneyPanelProps {
   onChoose: (exit: JourneyExitView) => void | Promise<void>;
   /** The party plays where the journey stands (or starts again, once it has ended). */
   onContinue: () => void | Promise<void>;
+  /**
+   * The party tries a rift action (#197), after the confirmation where there
+   * is one. Absent: the panel draws no actions (a read-only map).
+   */
+  onAction?: (action: JourneyRiftActionView) => void | Promise<void>;
 }
+
+/** A rift action's key in `pending` - never an edge id, which has no colon. */
+const actionKey = (action: JourneyRiftActionView): string =>
+  `action:${action.action}:${action.edge}:${action.to ?? ""}`;
 
 const KIND_ICON: Record<JourneyExitView["kind"], string> = {
   forward: "forward",
@@ -77,7 +97,14 @@ function headingFor(journey: JourneyView): string {
   return (journey.places ?? []).some((place) => place.completed) ? "Ready to go on?" : "Your adventure";
 }
 
-export function JourneyPanel({ journey, ended, busy = false, onChoose, onContinue }: JourneyPanelProps): ReactElement {
+export function JourneyPanel({
+  journey,
+  ended,
+  busy = false,
+  onChoose,
+  onContinue,
+  onAction,
+}: JourneyPanelProps): ReactElement {
   const ids = useId();
   const headingId = `${ids}-heading`;
   const confirmId = `${ids}-confirm`;
@@ -87,6 +114,27 @@ export function JourneyPanel({ journey, ended, busy = false, onChoose, onContinu
   const exitButtons = useRef(new Map<string, HTMLButtonElement>());
 
   const pendingExit = journey.exits.find((exit) => exit.edge === pending && exit.available) ?? null;
+  const actions = onAction ? (journey.riftActions ?? []) : [];
+  const pendingAction = actions.find((action) => actionKey(action) === pending) ?? null;
+  // One "are you sure?" for both: a crossing that cannot be undone, and a rift
+  // action that cannot (#197).
+  const confirm =
+    pendingExit !== null
+      ? {
+          title: `Go to ${pendingExit.label}?`,
+          warning: exitWarning(pendingExit),
+          yes: "Yes, go",
+          go: () => onChoose(pendingExit),
+        }
+      : pendingAction !== null
+        ? {
+            title: `${pendingAction.label}?`,
+            warning: riftActionWarning(pendingAction),
+            yes: "Yes, do it",
+            go: () => onAction?.(pendingAction),
+          }
+        : null;
+  const confirming = confirm !== null;
 
   // The party has moved (or the screen was refreshed under a half-made
   // choice): forget any confirmation, and - when it is a move, not the first
@@ -101,8 +149,8 @@ export function JourneyPanel({ journey, ended, busy = false, onChoose, onContinu
 
   // The confirmation owns focus the moment it opens, on the safe question.
   useEffect(() => {
-    if (pendingExit !== null) confirmRef.current?.focus();
-  }, [pendingExit]);
+    if (confirming) confirmRef.current?.focus();
+  }, [confirming, pending]);
 
   const cancel = (): void => {
     const edge = pending;
@@ -118,6 +166,14 @@ export function JourneyPanel({ journey, ended, busy = false, onChoose, onContinu
       return;
     }
     void onChoose(exit);
+  };
+
+  const tryAction = (action: JourneyRiftActionView): void => {
+    if (riftActionNeedsConfirm(action)) {
+      setPending(actionKey(action));
+      return;
+    }
+    void onAction?.(action);
   };
 
   const onConfirmKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
@@ -193,7 +249,14 @@ export function JourneyPanel({ journey, ended, busy = false, onChoose, onContinu
             </span>
           </p>
 
-          {pendingExit !== null ? (
+          {journey.stuck ? (
+            <p className="journey__stuck" role="status">
+              <Icon name="waiting" />
+              <span>{journeyStuckLine()}</span>
+            </p>
+          ) : null}
+
+          {confirm !== null ? (
             <div
               className="journey-confirm"
               role="group"
@@ -202,10 +265,10 @@ export function JourneyPanel({ journey, ended, busy = false, onChoose, onContinu
             >
               <h4 className="journey-confirm__title" id={confirmId} ref={confirmRef} tabIndex={-1}>
                 <Icon name="scroll" />
-                <span>Go to {pendingExit.label}?</span>
+                <span>{confirm.title}</span>
               </h4>
               <p className="journey-confirm__warning" role="alert">
-                {exitWarning(pendingExit)}
+                {confirm.warning}
               </p>
               <div className="journey-confirm__actions">
                 <Button variant="secondary" size="lg" icon={<Icon name="back" />} disabled={busy} onClick={cancel}>
@@ -216,28 +279,63 @@ export function JourneyPanel({ journey, ended, busy = false, onChoose, onContinu
                   size="lg"
                   icon={<Icon name="forward" />}
                   disabled={busy}
-                  onClick={() => void onChoose(pendingExit)}
+                  onClick={() => void confirm.go()}
                 >
-                  Yes, go
+                  {confirm.yes}
                 </Button>
               </div>
             </div>
           ) : (
-            <ul className="journey__exits" aria-label={`Ways on from ${journey.title}`}>
-              {journey.exits.map((exit) => (
-                <li key={exit.edge}>
-                  <ExitRow
-                    exit={exit}
-                    busy={busy}
-                    onTap={() => choose(exit)}
-                    register={(node) => {
-                      if (node) exitButtons.current.set(exit.edge, node);
-                      else exitButtons.current.delete(exit.edge);
-                    }}
-                  />
-                </li>
-              ))}
-            </ul>
+            <>
+              <ul className="journey__exits" aria-label={`Ways on from ${journey.title}`}>
+                {journey.exits.map((exit) => (
+                  <li key={exit.edge}>
+                    <ExitRow
+                      exit={exit}
+                      busy={busy}
+                      onTap={() => choose(exit)}
+                      register={(node) => {
+                        if (node) exitButtons.current.set(exit.edge, node);
+                        else exitButtons.current.delete(exit.edge);
+                      }}
+                    />
+                  </li>
+                ))}
+              </ul>
+              {actions.length === 0 ? null : (
+                <ul className="journey__actions" aria-label="Things you can try">
+                  {actions.map((action) => (
+                    <li key={actionKey(action)}>
+                      <button
+                        type="button"
+                        className="journey-exit journey-exit--open journey-exit--action kad-tap kad-focusable"
+                        disabled={busy}
+                        ref={(node) => {
+                          if (node) exitButtons.current.set(actionKey(action), node);
+                          else exitButtons.current.delete(actionKey(action));
+                        }}
+                        onClick={() => tryAction(action)}
+                      >
+                        <span className="journey-exit__icon" aria-hidden="true">
+                          <Icon name={riftActionIcon(action.action)} size="1.6em" />
+                        </span>
+                        <span className="journey-exit__text">
+                          <b className="journey-exit__label">{action.label}</b>
+                          {action.irreversible ? (
+                            <span className="journey-exit__chips">
+                              <span className="kad-chip kad-chip--warn">
+                                <Icon name="close" />
+                                <span>Can't be undone</span>
+                              </span>
+                            </span>
+                          ) : null}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
           )}
         </>
       )}

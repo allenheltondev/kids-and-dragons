@@ -1,0 +1,112 @@
+{
+  "$comment": "Rift actions fixture (#197). NOT CONTENT: it lives outside content/ so neither the loader nor content:validate ever sees it, and nothing ships it. Its chapter ids are placeholders with no files behind them. It shows the rift actions and the traversal guarantees around them: a one-use crossing (the ferry rift) that a fact triggers (the beacon, lit by the lighthouse chapter's completion rule) and that is a consumed exit once crossed; a story redirect (a lighthouse setback turns the ferry toward the cove) and a party redirect (once the chart is read); a stabilize (steadying the flickering storm stair); a hidden door the party discovers and opens by an action; and a fallback path (rowing the long way round) offered only when the used-up ferry and the closed lighthouse leave the harbor no other way on. rift-actions.test.ts walks it; tools/content/campaign-graph-schema.test.mjs holds it to the schema. docs/campaigns/graph-campaigns.md (Rift actions) walks through it.",
+  "id": "rift-actions",
+  "title": "The Ferry Rift",
+  "blurb": "A harbor, a lighthouse, a storm isle and a hidden cove, joined by rifts the party can find, open, steady and turn. Not a story: a map of every rift action.",
+  "chapters": [
+    "actions-harbor",
+    "actions-lighthouse",
+    "actions-isle",
+    "actions-cove",
+    "actions-dawn"
+  ],
+  "graph": {
+    "version": 1,
+    "entry": "harbor",
+    "flags": ["read_the_chart", "tide_song"],
+    "facts": {
+      "beacon": {
+        "domain": "route",
+        "type": "enum",
+        "values": ["dark", "lit"],
+        "initial": "dark",
+        "label": "The lighthouse beacon",
+        "visible": true
+      }
+    },
+    "nodes": {
+      "harbor": {
+        "$comment": "The hub. Its chapter may have the party read the old chart (sets read_the_chart), which lets them turn the ferry rift.",
+        "chapter": "actions-harbor",
+        "title": "The Harbor",
+        "revisit": "pass"
+      },
+      "lighthouse": {
+        "$comment": "Played once (closed). Finishing it lights the beacon, which wakes the ferry rift; finishing it badly also lets the storm turn the ferry toward the cove - the encounter acting on a rift through a completion rule.",
+        "chapter": "actions-lighthouse",
+        "title": "The Lighthouse",
+        "revisit": "closed",
+        "onComplete": [
+          { "effects": [{ "type": "setFact", "fact": "beacon", "value": "lit" }] },
+          {
+            "when": { "outcome": "setback" },
+            "effects": [{ "type": "redirectRift", "edge": "ferry-rift", "to": "cove" }]
+          }
+        ]
+      },
+      "isle": { "chapter": "actions-isle", "title": "The Storm Isle" },
+      "cove": { "chapter": "actions-cove", "title": "The Hidden Cove" },
+      "dawn": { "chapter": "actions-dawn", "ending": { "title": "Dawn Over the Storm Isle" } }
+    },
+    "edges": {
+      "harbor-to-lighthouse": { "from": "harbor", "to": "lighthouse", "kind": "forward", "label": "Climb to the lighthouse" },
+      "lighthouse-to-harbor": { "from": "lighthouse", "to": "harbor", "kind": "return", "label": "Back down to the harbor" },
+      "ferry-rift": {
+        "$comment": "One crossing only, asleep until the beacon is lit, and drawn when used up (the consumed exit). It may be turned toward the cove: by the storm (the lighthouse's setback rule) or by the party once they have read the chart.",
+        "from": "harbor",
+        "to": "isle",
+        "kind": "forward",
+        "label": "Step through the ferry rift",
+        "blocked": "shown",
+        "rift": {
+          "uses": 1,
+          "opensWhen": { "facts": { "beacon": "lit" } },
+          "redirects": ["cove"],
+          "actions": {
+            "redirect": { "when": { "flag": "read_the_chart" } }
+          }
+        }
+      },
+      "harbor-row": {
+        "$comment": "The fallback: offered only while no other way from the harbor is open - once the ferry is used up and the lighthouse is done, the party rows. Without it the lint reports the harbor STRANDED.",
+        "from": "harbor",
+        "to": "isle",
+        "kind": "forward",
+        "label": "Row the long way round",
+        "fallback": true
+      },
+      "isle-to-harbor": { "from": "isle", "to": "harbor", "kind": "return", "label": "Sail back to the harbor" },
+      "storm-stair": {
+        "$comment": "Unstable: there on odd visits to the isle and gone on even ones - until the party steadies it.",
+        "from": "isle",
+        "to": "dawn",
+        "kind": "forward",
+        "label": "Climb the flickering stair",
+        "blocked": "shown",
+        "irreversible": true,
+        "rift": {
+          "unstable": { "flicker": { "open": 1, "shut": 1 }, "collapsesAfter": 1 },
+          "actions": {
+            "stabilize": { "label": "Steady the flickering stair" }
+          }
+        }
+      },
+      "cove-to-harbor": { "from": "cove", "to": "harbor", "kind": "return", "label": "Wade back to the harbor" },
+      "cove-door": {
+        "$comment": "Hidden until found (blocked hidden, revealed when crossed) and asleep until the tide song is sung: the party searches the walls (discover) and sings it open (open, which latches it), or a chapter sets tide_song.",
+        "from": "cove",
+        "to": "dawn",
+        "kind": "forward",
+        "label": "Through the door in the rock",
+        "rift": {
+          "opensWhen": { "flag": "tide_song" },
+          "reveal": "when-crossed",
+          "actions": {
+            "discover": { "label": "Search the cove walls" },
+            "open": { "when": { "completed": "cove" }, "label": "Sing the tide song" }
+          }
+        }
+      }
+    }
+  }
+}

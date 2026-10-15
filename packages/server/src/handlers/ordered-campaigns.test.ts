@@ -171,6 +171,18 @@ describe("Gemfall, played with the journey runtime in the build", () => {
     expect(refused).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
     expect(refused.ok ? "" : refused.error?.message).toContain("no map");
     expect(await harness.repo.getCampaignProgress(householdId, "gemfall")).toEqual(attempt);
+
+    // Rift actions (#197) are a graph journey's too: an ordered campaign has
+    // no rifts to act on, and the attempt row is left exactly as it was.
+    const seq = (await harness.repo.getState(created.value.runId))!.seq;
+    for (const action of ["discover", "open", "close", "stabilize", "redirect"] as const) {
+      const acted = await send({ type: "RIFT_ACTION", action, edgeId: "to-orchard", visit: 1, to: "orchard", campaignId: "gemfall" });
+      expect(acted).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+      expect(acted.ok ? "" : acted.error?.message).toContain("no map");
+    }
+    expect((await harness.repo.getState(created.value.runId))!.seq).toBe(seq);
+    expect(await harness.repo.getCampaignProgress(householdId, "gemfall")).toEqual(attempt);
+    expect(await harness.repo.getCampaignProgress(householdId, "gemfall")).not.toHaveProperty("journey");
   });
 });
 

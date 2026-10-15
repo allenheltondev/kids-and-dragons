@@ -413,6 +413,17 @@ export interface GraphEdge {
    * as before. See `GraphRift`, and "Rifts" in graph-campaigns.md.
    */
   rift?: GraphRift;
+  /**
+   * The long way round (#197): offered **only while no other exit from
+   * `from` is available** (`ExitBlock` `"fallback"` otherwise). The path
+   * home the story keeps for the party a used-up, collapsed or shut rift
+   * strands — "the rift is gone; you walk the old road" — without the
+   * author having to guess every way the rift could end, which no guard can
+   * read. Judged after every other check, so a fallback can still be guarded,
+   * locked or `once` like any edge. The lint (#193) proves the graph's
+   * softlock-freedom with it in place.
+   */
+  fallback?: true;
 }
 
 // ---------------------------------------------------------------------------
@@ -502,6 +513,86 @@ export interface GraphRift {
   linkedTo?: EdgeId;
   /** When the destination is shown. Default `"always"`. */
   reveal?: "always" | "when-open" | "when-crossed";
+  /**
+   * Where else this rift can be turned to lead (#197) — a `redirectRift`
+   * effect or a party's redirect action names one of these (or `to`, to turn
+   * it back). Declared in advance, never computed, so every destination a
+   * rift can ever have is in the file: the parser checks the names, the lint
+   * walks every one, and a destination nobody declared is refused rather
+   * than guessed at. Not on a linked rift: two mouths share one state, and a
+   * destination is one mouth's.
+   */
+  redirects?: NodeId[];
+  /**
+   * What the party may *do* to this rift while standing at its `from`
+   * between chapters (#197) — the player-triggered side of the actions an
+   * authored effect can also take. Each kind present is offered while its
+   * rule's `when` holds and the action would change something; absent kinds
+   * are never offered. See `RiftActionRule`.
+   */
+  actions?: Partial<Record<RiftActionKind, RiftActionRule>>;
+}
+
+// ---------------------------------------------------------------------------
+// Rift actions (#197)
+// ---------------------------------------------------------------------------
+
+/**
+ * What can be done to a rift, by an authored effect (`discoverRift`,
+ * `openRift`, …) or by the party (`RIFT_ACTION`, offered by
+ * `GraphRift.actions`). One meaning each, the same from either side:
+ *
+ * - `"discover"` — the party learns the rift is there and where it leads: it
+ *   is drawn even while blocked (whatever `blocked` says), and its
+ *   destination is revealed (whatever `reveal` says). Works on any rift,
+ *   final ones included — learning about a used-up rift is still learning.
+ * - `"open"` — a dormant or closed rift opens, latched (`openRift`).
+ * - `"close"` — an open or dormant rift closes (`closeRift`); refused on an
+ *   open persistent one.
+ * - `"stabilize"` — the rift is steadied for good (`RiftState.stable`): it no
+ *   longer flickers, never collapses, its `lasts` clock stops, and its
+ *   `opensWhen` no longer gates crossing it once open. `uses` still counts —
+ *   steadying a doorway does not make room for more travellers. Bounded: one
+ *   bit, set once.
+ * - `"redirect"` — the rift now leads to another of its declared
+ *   destinations (`GraphRift.redirects`, or `to` to turn it back).
+ *
+ * **Final statuses stay final.** Nothing here reopens, steadies or turns a
+ * consumed, expired or collapsed rift: an authored effect on one does
+ * nothing (an effect never refuses — it is part of a move that is happening
+ * anyway), a party action on one is never offered, and the lint warns about
+ * an effect that only ever meets a final rift (`RIFT_EFFECT_ON_FINAL`).
+ */
+export type RiftActionKind = "discover" | "open" | "close" | "stabilize" | "redirect";
+
+/**
+ * When the party may take one action on a rift (`GraphRift.actions`), and
+ * what else it does.
+ *
+ * Journey-only, like every graph guard: whether the party *can* steady the
+ * rift comes out the same on any evening for any phones. **Class gating is
+ * #199's**, and attaches here — a further field (`requires`, say) checked by
+ * the server against the seated party, beside this deterministic `when`, so
+ * the lint still walks the journey half. Until then every party may attempt
+ * what `when` allows; a story that wants "only if the wizard is here" sets a
+ * journey flag in a chapter and guards on it.
+ */
+export interface RiftActionRule {
+  /**
+   * Offered only while this holds — subject the rift's `from`, like an edge
+   * guard. Absent always holds.
+   */
+  when?: GraphCondition;
+  /**
+   * What the button says. Absent: a plain verb ("Steady the rift: …"). Like
+   * an edge label it must not name a hidden destination.
+   */
+  label?: string;
+  /**
+   * Applied in order after the action itself, exactly as an edge's effects
+   * apply — the flag that remembers the party did it, a world fact it moves.
+   */
+  effects?: GraphEffect[];
 }
 
 /**
@@ -546,6 +637,23 @@ export interface RiftState {
    * condition: the condition no longer gates crossing it.
    */
   latched?: true;
+  /**
+   * Steadied by a stabilize action or effect (#197): no flicker, no collapse,
+   * no expiry, and — once open — no `opensWhen` gating. Kept through a close
+   * and a reopen; a final status still wins.
+   */
+  stable?: true;
+  /**
+   * Found by a discover action or effect (#197): drawn even while blocked,
+   * whatever the edge's `blocked` says.
+   */
+  discovered?: true;
+  /**
+   * Where a redirect (#197) has turned it: one of `GraphRift.redirects`.
+   * Absent means the edge's own `to`. A stored value the declaration no
+   * longer lists reads as absent.
+   */
+  to?: NodeId;
 }
 
 /**
@@ -628,6 +736,18 @@ export type GraphEffect =
    * a fourth favour owed when the counter stops at three is still three.
    */
   | { type: "adjustFact"; fact: FactId; by: number }
+  /**
+   * Rift actions (#197), as the story takes them — an edge crossed, a
+   * chapter completed (`onComplete`), a party action's own effects. Each is
+   * `RiftActionKind`'s meaning; `edge` must be a rift. One that cannot apply
+   * (a final rift, closing an open persistent one) does nothing.
+   */
+  | { type: "discoverRift"; edge: EdgeId }
+  | { type: "openRift"; edge: EdgeId }
+  | { type: "closeRift"; edge: EdgeId }
+  | { type: "stabilizeRift"; edge: EdgeId }
+  /** `to` is the rift's own `to` or one of its declared `redirects`. */
+  | { type: "redirectRift"; edge: EdgeId; to: NodeId }
   /**
    * Grants a declared temporary buff (#200) — or, for one the party already
    * holds, refreshes, stacks or ignores it as the buff's `stack` says. Never
@@ -748,6 +868,14 @@ export interface JourneyState extends JourneyFacts {
    */
   lastExit?: { node: NodeId; visit: number; edge: EdgeId };
   /**
+   * The rift action most recently taken (#197), and the visit it was taken
+   * on: `lastExit`'s idempotence for `RIFT_ACTION`. The same
+   * `(node, visit, action, edge, to)` reported again is the same action —
+   * answered as done, never applied twice — wherever the journey has got to
+   * since. Absent until the first action.
+   */
+  lastAction?: { node: NodeId; visit: number; action: RiftActionKind; edge: EdgeId; to?: NodeId };
+  /**
    * The temporary buffs the party holds (#200), in the order they were first
    * granted. Attempt-scoped like everything here, and never a guard's
    * business. Seeded into each chapter run (`RunState.buffs`), spent by its
@@ -803,6 +931,45 @@ export interface JourneyView {
    * long it has left. Present only while there is one.
    */
   buffs?: JourneyBuffView[];
+  /**
+   * What the party may do to a rift here (#197), while `status` is
+   * `"choosing"`: only actions that are offered right now (their rule's
+   * `when` holds and they would change something), in exit order, then
+   * `RiftActionKind` order. `RIFT_ACTION` echoes one back. Absent when there
+   * are none — every view built before #197, and most views since.
+   */
+  riftActions?: JourneyRiftActionView[];
+  /**
+   * The party is choosing at a place that is not an ending, and has nowhere
+   * to go and nothing to do: no exit available and no rift action offered.
+   * The lint (`STRANDED`) refuses any content where a play-through can get
+   * here, so it can only come of content changing under a save; the screens
+   * say so plainly instead of drawing an empty choice.
+   */
+  stuck?: true;
+}
+
+/** One rift action the party may take now (`JourneyView.riftActions`, #197). */
+export interface JourneyRiftActionView {
+  action: RiftActionKind;
+  /** The rift edge it acts on — `RIFT_ACTION.edgeId`. */
+  edge: EdgeId;
+  /**
+   * What the button says: the rule's `label`, else a plain verb with the
+   * exit's own (spoiler-safe) label. Never a hidden destination.
+   */
+  label: string;
+  /**
+   * For `"redirect"`: the destination it would turn the rift toward —
+   * `RIFT_ACTION.to`. Offered only for a rift whose destination the party
+   * already knows, so naming the alternatives spoils nothing.
+   */
+  to?: NodeId;
+  /**
+   * A `"close"` nothing in the campaign can undo (no `openRift` effect and no
+   * open action names this rift): the screen asks first.
+   */
+  irreversible?: true;
 }
 
 /** One place the party has been (`JourneyView.places`). */
@@ -892,4 +1059,6 @@ export interface JourneyRiftView {
   persistent?: true;
   /** One of a linked pair: crossing it counts for its partner too. */
   linked?: true;
+  /** Steadied (#197): it no longer flickers, collapses or runs out. */
+  stable?: true;
 }

@@ -38,11 +38,15 @@
  *     completion;
  *   - a rift that is final (consumed, expired, collapsed) stays that status;
  *   - a visit that is `choosing` at a non-ending has at least one open exit
- *     (the only place with no way on is an ending), and an `ended` journey is
- *     at an ending;
+ *     or offered rift action (#197) (the only place with no way on is an
+ *     ending), and an `ended` journey is at an ending;
  *   - every transition reported twice is a no-op the second time
  *     (`duplicate: true`, same journey): the double-tap and the dropped
- *     response.
+ *     response — rift actions (#197) included.
+ *
+ * A party's rift actions (#197, `takeRiftAction`) are steps too: the explorer
+ * takes them as transitions (its state's `step.action`), the replay asks the
+ * runtime for exactly those, and the random walks try them now and then.
  *
  * Everything is deterministic: a seed fixes a walk, and the report prints the
  * trail of a failing one so it can be replayed by hand (`--path`).
@@ -53,13 +57,18 @@ import {
   FINAL_RIFT_STATUSES,
   completeVisit,
   currentPlayable,
+  describeRiftAction,
+  edgeDestinations,
   exitAvailability,
   exploreCampaignGraph,
   readFact,
   readJourney,
+  riftActionsFrom,
+  riftDestination,
   riftState,
   startJourney,
   takeExit,
+  takeRiftAction,
 } from "@kad/shared";
 import type {
   ChapterFlagWrites,
@@ -72,7 +81,12 @@ import type {
   JourneyState,
   NodeId,
   ParsedCampaignGraph,
+  RiftActionKind,
+  RiftActionOffer,
 } from "@kad/shared";
+
+/** A rift action a walk takes (#197): what `takeRiftAction` is asked. */
+type ActionChoice = { action: RiftActionKind; edge: EdgeId; to?: NodeId };
 import { checkJourneySave } from "./journey-save.ts";
 
 /** What a walk needs of the campaign beyond the graph: fork sets. */
@@ -150,7 +164,8 @@ export function pathTo(search: GraphSearch, state: number, extra?: EdgeId): Rout
   if (extra !== undefined) edges.push(extra);
   const words = chain.map((i) => {
     const at = search.states[i]!;
-    const { edge, label } = at.step;
+    const { edge, label, action } = at.step;
+    if (action !== undefined) return `~(${describeRiftAction(action)})~>`;
     const note = label !== "" && label !== "passed through" && label !== "ending" ? ` (${label})` : "";
     return edge === null ? `start at "${at.node}"${note}` : `-[${edge}]-> "${at.node}"${note}`;
   });
@@ -203,11 +218,13 @@ export function routeCoverage(graph: ParsedCampaignGraph, search: GraphSearch): 
   const staticReach = new Set<NodeId>([graph.entry]);
   const queue: NodeId[] = [graph.entry];
   for (let head = 0; head < queue.length; head += 1) {
+    // A redirectable rift (#197) leads to each of its declared destinations.
     for (const id of graph.exits[queue[head]!] ?? []) {
-      const to = graph.edges[id]!.to;
-      if (!staticReach.has(to)) {
-        staticReach.add(to);
-        queue.push(to);
+      for (const to of edgeDestinations(graph.edges[id]!)) {
+        if (!staticReach.has(to)) {
+          staticReach.add(to);
+          queue.push(to);
+        }
       }
     }
   }
@@ -360,6 +377,11 @@ interface Driver {
   chapter(j: JourneyState): { outcome: ChapterOutcome; flags: Record<string, boolean> };
   /** An edge id; `null` to stop; the runtime is asked about it either way. */
   exit(j: JourneyState, open: GraphExit[]): EdgeId | null;
+  /**
+   * A rift action to take before choosing an exit (#197), or `null` for none.
+   * Asked first at every choice; absent means the walk never acts.
+   */
+  act?(j: JourneyState, offers: RiftActionOffer[], open: GraphExit[]): ActionChoice | null;
   /** Called after each transition; a non-empty string is an EXPLORER_DIVERGES. */
   after?(j: JourneyState): string | null;
   /** Called once the walk stops; extra violations. */
@@ -472,8 +494,36 @@ export function playthrough(
       trail.push(`complete "${prev.node}" (${result.outcome})`);
     } else {
       const open = playable.exits.filter((exit) => exit.availability.available);
+      const offers = riftActionsFrom(graph, j.node, j);
+      if (open.length === 0 && offers.length === 0) {
+        flag("NO_OPEN_EXIT", `"${j.node}" is not an ending and none of its exits is open, and no rift action is offered`);
+        break;
+      }
+      const acting = driver.act?.(j, offers, open) ?? null;
+      if (acting !== null) {
+        const report = { ...acting, visit: j.visit };
+        const done = takeRiftAction(graph, j, report, campaign);
+        if (!done.ok) {
+          flag("TRANSITION_REFUSED", `takeRiftAction refused ${describeRiftAction(acting)}: ${done.message}`);
+          break;
+        }
+        if (done.duplicate) {
+          flag("FRESH_REPORTED_DUPLICATE", `the first ${describeRiftAction(acting)} was reported as a duplicate`);
+          break;
+        }
+        const again = takeRiftAction(graph, done.journey, report, campaign);
+        if (!again.ok || !again.duplicate || !isDeepStrictEqual(again.journey, done.journey)) {
+          flag("DUPLICATE_NOT_NOOP", `asking for ${describeRiftAction(acting)} twice changed the journey twice`);
+        }
+        j = done.journey;
+        trail.push(`~(${describeRiftAction(acting)})~>`);
+        check(j, prev);
+        const off = driver.after?.(j);
+        if (off) flag("EXPLORER_DIVERGES", off);
+        continue;
+      }
       if (open.length === 0) {
-        flag("NO_OPEN_EXIT", `"${j.node}" is not an ending and none of its exits is open`);
+        flag("NO_OPEN_EXIT", `"${j.node}" has no open exit, and the walk took none of its rift actions`);
         break;
       }
       const choice = driver.exit(j, open);
@@ -579,8 +629,19 @@ export function randomWalk(
 ): WalkResult {
   const next = rng(seed);
   const taken = new Set<EdgeId>();
+  const acted = new Map<string, number>();
   const driver: Driver = {
     name,
+    // Now and then (and always when it is the only thing to do) try a rift
+    // action — each one at most twice a walk, so a rift turned back and forth
+    // does not eat the walk.
+    act: (_j, offers, open) => {
+      const fresh = offers.filter((offer) => (acted.get(describeRiftAction(offer)) ?? 0) < 2);
+      if (fresh.length === 0 || (open.length > 0 && next() >= 0.3)) return null;
+      const pick = fresh[Math.floor(next() * fresh.length)]!;
+      acted.set(describeRiftAction(pick), (acted.get(describeRiftAction(pick)) ?? 0) + 1);
+      return { action: pick.action, edge: pick.edge, ...(pick.to !== undefined ? { to: pick.to } : {}) };
+    },
     chapter: (j) => ({
       outcome: next() < 0.5 ? "success" : "setback",
       flags: runFlags(graph, j, j.chapter, options.chapterFlags, (_f, now, can) =>
@@ -687,6 +748,14 @@ export function replayState(
       if (took) return { outcome: "success", flags: Object.fromEntries(graph.flags.map((flag) => [flag, j.flags?.[flag] === true])) };
       return chapterResult(graph, j, at().step.label);
     },
+    // The explorer's rift actions (#197), asked of the runtime exactly.
+    act: () => {
+      const next = chain[k + 1];
+      const step = next === undefined ? undefined : search.states[next]!.step.action;
+      if (step === undefined) return null;
+      k += 1;
+      return step;
+    },
     exit: () => {
       const next = chain[k + 1];
       if (next !== undefined) {
@@ -758,6 +827,14 @@ function compare(graph: ParsedCampaignGraph, state: GraphSearchState, j: Journey
     const mine = riftState(graph, id, j)!;
     const theirs = riftState(graph, id, state.facts)!;
     if (mine.status !== theirs.status) return `rift "${id}" is ${mine.status} in the runtime but ${theirs.status} in the explorer`;
+    // What rift actions change (#197): steadied, and where it leads.
+    if ((mine.stable === true) !== (theirs.stable === true)) {
+      return `rift "${id}" is ${mine.stable ? "" : "not "}steadied in the runtime but ${theirs.stable ? "" : "not "}in the explorer`;
+    }
+    const to = riftDestination(graph, id, j);
+    if (to !== riftDestination(graph, id, state.facts)) {
+      return `rift "${id}" leads to "${to}" in the runtime but "${riftDestination(graph, id, state.facts)}" in the explorer`;
+    }
   }
   return null;
 }

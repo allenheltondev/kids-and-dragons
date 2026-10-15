@@ -16,6 +16,7 @@ import type {
   Stats,
   TierId,
 } from "./domain.js";
+import type { RiftActionKind } from "./campaign-graph.js";
 import type { ChapterOutcome } from "./chapter.js";
 import type { RoomMode, RunState, DiceRoll } from "./state.js";
 import type { EncounterEvent } from "../encounter.js";
@@ -83,6 +84,27 @@ export type ClientIntent =
    * run's `campaignId`.
    */
   | { type: "CHOOSE_EXIT"; edgeId: string; visit: number; campaignId?: string }
+  /**
+   * Act on a rift where a graph campaign's party stands (#197) — the choice
+   * `CampaignView.journey.riftActions` draws: discover, open, close, steady or
+   * turn one. Resolved by the server against the household's journey (shared
+   * `takeRiftAction`), exactly like CHOOSE_EXIT and for the same reason, and
+   * legal at the same moments: between chapters, while the party is choosing.
+   *
+   * It changes the rift and nothing else; the party stays where it is, and
+   * the exits it is offered are re-answered on the same patch. `visit`
+   * echoes `JourneyView.visit`, and with `action`, `edgeId` and `to` is the
+   * idempotence key: the same action sent twice is answered as done, never
+   * applied twice. `to` is a redirect's destination (`JourneyRiftActionView.to`).
+   */
+  | {
+      type: "RIFT_ACTION";
+      action: RiftActionKind;
+      edgeId: string;
+      visit: number;
+      to?: string;
+      campaignId?: string;
+    }
   /**
    * A lobby vote for which campaign to play (`RunState.campaignVotes`). Tapped
    * on the ready screen; changing your mind is another vote.

@@ -32,7 +32,7 @@ import {
   storedBuffs,
   tickCombatBuffs,
 } from "./buffs.js";
-import { completeVisit, journeyView, startJourney, takeExit, type ExitCrossing, type JourneyRefusal, type VisitCompletion } from "./journey.js";
+import { completeVisit, journeyView, startJourney, takeExit, takeRiftAction, type ExitCrossing, type JourneyRefusal, type VisitCompletion } from "./journey.js";
 import {
   beginEncounter,
   combatantById,
@@ -271,6 +271,31 @@ describe("buffs on the journey", () => {
     journey = finish(journey);
     expect(ids(journey.buffs)).toEqual(["fleet-step", "rift-shield", "rift-surge"]);
     expect(journey.buffs![1]!.grantedAt).toEqual({ node: "spring", visit: 1 });
+  });
+
+  it("a rift action's own effects (#197) grant too — on the visit the party acts at, without moving it", () => {
+    const campaign = spring();
+    campaign.graph!.edges["camp-to-den"]!.rift = {
+      opensWhen: { visited: "den" },
+      actions: { open: { label: "Touch the humming stone", effects: [{ type: "grantBuff", buff: "rift-surge" }] } },
+    };
+    const graph = parsed(campaign);
+    const atCamp = completed(
+      completeVisit(graph, startJourney(graph), { node: "camp", visit: 1, chapterId: "rb-camp", outcome: "success", flags: {} }),
+    );
+    expect(journeyView(graph, atCamp).riftActions?.map((a) => a.action)).toEqual(["open"]);
+    const acted = takeRiftAction(graph, atCamp, { action: "open", edge: "camp-to-den", visit: atCamp.visit });
+    if (!acted.ok || acted.duplicate) throw new Error("the action was refused");
+    expect(acted.journey.buffs).toEqual([{ id: "rift-surge", stacks: 1, encountersLeft: 1, grantedAt: { node: "camp", visit: 1 } }]);
+    expect(acted.journey).toMatchObject({ node: "camp", visit: 1, status: "choosing" });
+    // The same action reported again is the same action: nothing granted twice.
+    const again = takeRiftAction(graph, acted.journey, { action: "open", edge: "camp-to-den", visit: atCamp.visit });
+    expect(again).toEqual({ ok: true, duplicate: true, journey: acted.journey });
+    // And an action naming a buff nobody declared is refused at load, like any effect.
+    campaign.graph!.edges["camp-to-den"]!.rift!.actions!.open!.effects = [{ type: "grantBuff", buff: "rift-wings" }];
+    expect(parseCampaignGraph(campaign).problems.map((p) => p.path)).toEqual([
+      "/graph/edges/camp-to-den/rift/actions/open/effects/0/buff",
+    ]);
   });
 
   it("travel ends travel buffs before the edge's own effects — so a crossing's grant survives it", () => {
