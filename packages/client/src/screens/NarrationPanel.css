@@ -254,12 +254,26 @@
   box-shadow: 0 0 0.8em rgba(111, 230, 255, 0.35);
 }
 
-.narration__picker,
 .narration__aim {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1, 0.25em);
   color: #6fe6ff;
+}
+
+/*
+ * Who has locked in a vote (`RunState.prompt.votes`). Plain text, not the
+ * cyan of a pick still being made: cyan means "about to", a name means "done".
+ */
+.narration__voters {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 0.25em);
+  margin-inline-start: auto;
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: 0.8em;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .narration__picker {
