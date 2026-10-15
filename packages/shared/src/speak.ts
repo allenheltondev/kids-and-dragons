@@ -10,6 +10,11 @@
  *
  * The **render layer** calls this — never the engine. `engine.ts` runs in Lambda
  * (architecture §4.1), and narration read aloud in a Lambda helps nobody.
+ *
+ * What it is handed is the **composed** text: `RunState.narration` and the
+ * prompt's option labels already have their narration variants applied and
+ * `{facets}` / `{party}` tokens filled by the engine (narration.ts, #159), so
+ * read-aloud says exactly what the screen shows and never a raw `{token}`.
  */
 
 export interface SpeakOptions {
