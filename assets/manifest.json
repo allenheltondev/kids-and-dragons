@@ -328,6 +328,18 @@
       "scale": "medium"
     },
     {
+      "id": "burrowfolk",
+      "classification": "supporting_people",
+      "primaryBiome": "sunward_fields",
+      "canonicalLocations": [
+        "sunward_fields",
+        "plains",
+        "red_sky_foothills",
+        "exchange"
+      ],
+      "scale": "small_to_medium"
+    },
+    {
       "id": "harvest_sprite",
       "classification": "supporting_people",
       "primaryBiome": "sunward_fields",
@@ -583,6 +595,16 @@
         "bone_yard"
       ],
       "scale": "variable"
+    },
+    {
+      "id": "boughkin",
+      "classification": "supporting_people",
+      "primaryBiome": "enchanted_woods",
+      "canonicalLocations": [
+        "enchanted_woods",
+        "mosshome"
+      ],
+      "scale": "very_large"
     }
   ],
   "gear": [
@@ -1833,6 +1855,39 @@
     "scenes/gemfall/redspire-citadel",
     "scenes/gemfall/facet-table",
     "scenes/gemfall/gem-gallery",
+    "scenes/gemfall/seal-chamber",
+    "scenes/gemfall/sheeple-ridge",
+    "scenes/gemfall/exchange-lighthouse",
+    "scenes/gemfall/exchange-docks",
+    "scenes/gemfall/exchange-noodle-stall",
+    "scenes/gemfall/empty-chair-tavern",
+    "scenes/gemfall/exchange-quay",
+    "scenes/gemfall/outfitters-steps",
+    "scenes/gemfall/caravan-yard",
+    "scenes/gemfall/exchange-long-bridge",
+    "scenes/gemfall/exchange-griffin-post",
+    "scenes/gemfall/exchange-north-gate",
+    "scenes/gemfall/east-road-markers",
+    "scenes/gemfall/stone-crossing-queue",
+    "scenes/gemfall/lintel-toll-stone",
+    "scenes/gemfall/drake-rock-shelf",
+    "scenes/gemfall/drowned-crossing-bank",
+    "scenes/gemfall/river-mouth-shore",
+    "scenes/gemfall/eastern-shore-camp",
+    "scenes/gemfall/eastern-bank-landing",
+    "scenes/gemfall/caravan-road-ruts",
+    "scenes/gemfall/ford-queue-market",
+    "scenes/gemfall/wend-soup-tent",
+    "scenes/gemfall/bracken-cart",
+    "scenes/gemfall/queue-dusk-camp",
+    "scenes/gemfall/ford-witch-stall",
+    "scenes/gemfall/west-branch-ford",
+    "scenes/gemfall/pride-marker-road",
+    "scenes/gemfall/sefa-ridge-camp",
+    "scenes/gemfall/centaur-sash-barn",
+    "scenes/gemfall/pride-stone-crater",
+    "scenes/gemfall/abandoned-caravan-rest",
+    "scenes/gemfall/pride-night-fire",
     "scenes/gemfall/north-rush-road",
     "scenes/gemfall/quiet-road-stretch",
     "scenes/gemfall/downbound-wagon-auction",
@@ -1841,8 +1896,6 @@
     "scenes/gemfall/rush-depot",
     "scenes/gemfall/relay-route-fire",
     "scenes/gemfall/road-bend-grass",
-    "scenes/gemfall/seal-chamber",
-    "scenes/gemfall/sheeple-ridge",
     "scenes/gemfall/north-signpost-fork",
     "scenes/gemfall/north-noon-stop",
     "scenes/gemfall/north-road-detour"
@@ -2010,6 +2063,24 @@
       "name": "Mother Thrum",
       "basis": "witch_order",
       "scale": "medium"
+    },
+    {
+      "id": "ma_ruddle",
+      "name": "Ma Ruddle",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "tib",
+      "name": "Tib",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "dunmore",
+      "name": "Dunmore",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium"
     }
   ],
   "globalPalette": {
