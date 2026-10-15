@@ -820,3 +820,140 @@ describe("graph campaigns (#192)", { timeout: 30_000 }, () => {
     expect(code, out).toBe(0);
   });
 });
+
+describe("graph campaigns are walked, not just resolved (#193)", { timeout: 30_000 }, () => {
+  const CAMPAIGN = ["content", "campaigns", "the-hollow-crown.json"];
+
+  /**
+   * A small cyclic graph over cloned chapters: the clearing (a hub, played once
+   * then passed through), a glade that returns to it, and the dawn ending the
+   * clearing opens once the glade has lit the lantern. Valid as written.
+   */
+  function walkTree(mutate = () => {}, rawEdit = (text) => text) {
+    const dir = copyTree();
+    const base = readJson(dir, ...CHAPTER);
+    for (const id of ["graph-glade", "graph-dawn"]) {
+      writeJson(dir, ["content", "chapters", `${id}.json`], { ...structuredClone(base), id, title: id });
+    }
+    const campaign = readJson(dir, ...CAMPAIGN);
+    campaign.chapters = ["bramblewood-01", "graph-glade", "graph-dawn"];
+    campaign.graph = {
+      version: 1,
+      entry: "clearing",
+      flags: ["lantern_lit"],
+      nodes: {
+        clearing: { chapter: "bramblewood-01", revisit: "pass" },
+        glade: { chapter: "graph-glade" },
+        dawn: { chapter: "graph-dawn", ending: { title: "Dawn" } },
+      },
+      edges: {
+        "to-glade": { from: "clearing", to: "glade", kind: "sideways" },
+        "glade-back": { from: "glade", to: "clearing", kind: "return", effects: [{ type: "setFlag", flag: "lantern_lit" }] },
+        "to-dawn": { from: "clearing", to: "dawn", kind: "forward", when: { flag: "lantern_lit" } },
+      },
+    };
+    mutate(campaign);
+    writeJson(dir, CAMPAIGN, campaign);
+    const file = join(dir, ...CAMPAIGN);
+    writeFileSync(file, rawEdit(readFileSync(file, "utf8")));
+    return validate(dir);
+  }
+
+  it("accepts a cyclic graph, and says it walked it", () => {
+    const { code, out } = walkTree();
+    expect(code, out).toBe(0);
+    expect(out).toMatch(/graph v1: 3 node\(s\), 3 edge\(s\), 1 ending\(s\), walked \d+ state\(s\)/);
+  });
+
+  it("rejects a node nothing leads to, with the path and a fix", () => {
+    const { code, out } = walkTree((campaign) => {
+      campaign.graph.edges["to-dawn"].from = "glade";
+      campaign.graph.edges["to-dawn"].kind = "forward";
+      delete campaign.graph.edges["glade-back"];
+      campaign.graph.nodes.island = { chapter: "bramblewood-01" };
+    });
+    expect(code).toBe(1);
+    expect(out).toContain("/graph/nodes/island");
+    expect(out).toContain("UNREACHABLE_NODE");
+    expect(out).toMatch(/Add an edge from a node the party can reach/);
+  });
+
+  it("rejects a place the party can walk into and never leave", () => {
+    const { code, out } = walkTree((campaign) => {
+      delete campaign.graph.edges["glade-back"];
+      campaign.graph.edges["to-dawn"].when = undefined;
+    });
+    expect(code).toBe(1);
+    expect(out).toContain("/graph/nodes/glade");
+    expect(out).toContain("DEAD_END");
+  });
+
+  it("rejects a loop with no return edge, and names the edge to mark", () => {
+    const { code, out } = walkTree((campaign) => {
+      campaign.graph.edges["glade-back"].kind = "forward";
+    });
+    expect(code).toBe(1);
+    expect(out).toContain("UNINTENTIONAL_CYCLE");
+    expect(out).toContain("/graph/edges/glade-back");
+    expect(out).toContain('"kind": "return"');
+  });
+
+  it("rejects a party that can be stranded, showing how they got there", () => {
+    const { code, out } = walkTree((campaign) => {
+      // The glade can be entered once, and the way to the dawn is shut to a
+      // party that has not lit the lantern - which the glade does only on a
+      // success the party might not have. Outcome decides it.
+      campaign.graph.edges["glade-back"].when = { outcome: "success" };
+    });
+    expect(code).toBe(1);
+    expect(out).toContain("STRANDED");
+    expect(out).toContain('-[to-glade]-> "glade" (setback)');
+  });
+
+  it("rejects an irreversible claim the graph disproves", () => {
+    const { code, out } = walkTree((campaign) => {
+      campaign.graph.edges["to-glade"].irreversible = true;
+    });
+    expect(code).toBe(1);
+    expect(out).toContain("IRREVERSIBLE_NOT");
+    expect(out).toContain("/graph/edges/to-glade");
+  });
+
+  it("rejects a locked edge that nothing unlocks", () => {
+    const { code, out } = walkTree((campaign) => {
+      campaign.graph.edges["to-glade"].locked = true;
+    });
+    expect(code).toBe(1);
+    expect(out).toContain("LOCKED_EDGE_NEVER_UNLOCKED");
+  });
+
+  it("rejects an id declared twice, which JSON would silently merge", () => {
+    const { code, out } = walkTree(undefined, (text) =>
+      text.replace('"glade": {', '"glade": {"chapter": "graph-dawn"},\n        "glade": {'),
+    );
+    expect(code).toBe(1);
+    expect(out).toContain("/graph/nodes/glade");
+    expect(out).toMatch(/appears twice in the same object/);
+  });
+
+  it("only warns, and still passes, about a guard no chapter or edge can ever satisfy", () => {
+    const { code, out } = walkTree((campaign) => {
+      campaign.graph.flags.push("never_set");
+      campaign.graph.edges["to-dawn-late"] = {
+        from: "clearing",
+        to: "dawn",
+        kind: "forward",
+        when: { flag: "never_set" },
+      };
+    });
+    expect(code, out).toBe(0);
+    expect(out).toContain("GUARD_FLAG_NEVER_SET");
+  });
+
+  it("leaves the ordered campaigns' output exactly as it was", () => {
+    const result = validate(REPO);
+    expect(result.code, result.out).toBe(0);
+    expect(result.out).toMatch(/gemfall\.json {2}campaign/);
+    expect(result.out).not.toMatch(/graph v\d|walked \d+ state|UNREACHABLE_NODE|STRANDED/);
+  });
+});

@@ -21,6 +21,9 @@
   background: linear-gradient(0deg, rgb(13 11 26 / 62%), rgb(13 11 26 / 38%));
   overflow-y: auto;
   overscroll-behavior: contain;
+  /* A scrollbar that appears (a long step, a short phone) must not narrow the
+     panel and rewrap it. */
+  scrollbar-gutter: stable;
 }
 
 .keepsake__panel {
@@ -262,16 +265,25 @@
   margin-block-start: var(--kad-space-1);
 }
 
+/* Two lines kept for an error in every step that can have one, so the field
+   above and the buttons below sit still when it arrives. */
+.keepsake__error-seat {
+  inline-size: 100%;
+  font-size: var(--kad-text-sm);
+  min-block-size: calc(2lh + 2 * var(--kad-space-2));
+}
+
 .keepsake__error {
   display: flex;
   align-items: center;
   gap: var(--kad-space-2);
   inline-size: 100%;
+  min-block-size: inherit;
+  margin: 0;
   padding: var(--kad-space-2) var(--kad-space-3);
   border-radius: var(--kad-radius-md);
   background: color-mix(in srgb, var(--kad-danger) 18%, transparent);
   color: var(--kad-danger);
-  font-size: var(--kad-text-sm);
   text-align: start;
 }
 

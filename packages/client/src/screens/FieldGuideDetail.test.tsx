@@ -165,6 +165,17 @@ describe("cross-links", () => {
     expect(localStorage.getItem(FIELD_GUIDE_SEEN_KEY)).toContain(target);
   });
 
+  it("opens a cross-linked entry in a fresh scroller, at its top", async () => {
+    setFieldGuideDiscoveries({ [home]: find(), [target]: find() });
+    const user = userEvent.setup();
+    const { rerender } = render(<FieldGuideDetail guide={mini} entryId={home} />);
+    const before = screen.getByTestId("guide-detail");
+    await user.click(screen.getByRole("button", { name: "Zzyzx Wyrm" }));
+    rerender(<FieldGuideDetail guide={mini} entryId={target} />);
+    // A new element, not the old one scrolled to wherever the reader was.
+    expect(screen.getByTestId("guide-detail")).not.toBe(before);
+  });
+
   it("reverse opinions hide undiscovered holders too", () => {
     const e = guide.entries["npc.boggart"]!;
     const holder = e.likedBy![0]!;

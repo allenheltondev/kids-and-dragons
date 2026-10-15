@@ -76,6 +76,16 @@
   white-space: nowrap;
 }
 
+/* For a chip that carries a sentence (an error, say) rather than a word: it
+   wraps inside its own width instead of pushing the pane into a sideways
+   scroll. Usually a <p>, hence the margin. */
+.kad-chip--wrap {
+  max-inline-size: 100%;
+  margin: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 .kad-chip--ok {
   border-color: var(--color-success, #4ad991);
   color: var(--color-success, #4ad991);
@@ -97,6 +107,9 @@
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   min-height: 0;
+  /* Room for the scrollbar whether or not one is showing, so content growing
+     past the fold does not narrow the column and rewrap everything in it. */
+  scrollbar-gutter: stable;
 }
 
 /*
@@ -111,4 +124,47 @@
 .kad-focusable:focus-visible {
   outline: 0.12em solid var(--color-focus, #ffc95c);
   outline-offset: 0.15em;
+}
+
+/*
+ * Vote ticks (VoteTicks.tsx): one seat per voter, always drawn, filled in the
+ * voter's color once they vote here. Fixed-size seats, so a vote changes a
+ * color and never a width — nothing beside the row can rewrap.
+ */
+.kad-vote-ticks {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.kad-vote-ticks__row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
+.kad-vote-tick {
+  inline-size: 0.7em;
+  block-size: 0.7em;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.18;
+}
+
+.kad-vote-tick--on {
+  background: var(--kad-tick, var(--color-primary, #7c5cff));
+  box-shadow: 0 0 0 0.12em rgba(10, 8, 20, 0.85);
+  opacity: 1;
+  animation: kad-vote-tick-in 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes kad-vote-tick-in {
+  from { transform: scale(0.3); }
+  to { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kad-vote-tick--on {
+    animation: none;
+  }
 }

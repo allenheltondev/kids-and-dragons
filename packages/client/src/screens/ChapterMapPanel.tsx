@@ -219,15 +219,24 @@ export function ChapterMapPanel(): ReactElement {
    * eight scenes in is below the fold of a phone, so a map that opened at the
    * top would answer "where are we?" with a scroll — which is the question
    * the map exists to save. Centred, so the road just walked and the road
-   * ahead are both on screen. `scrollIntoView` is absent in jsdom, hence the
-   * guard; the tests are not about scrolling.
+   * ahead are both on screen.
+   *
+   * Done by hand against the trail rather than with `scrollIntoView`, which
+   * also scrolls every ancestor that can scroll and tugs the whole pane (the
+   * same reason as the atlas, WorldMapPanel). `scrollTo` is absent on elements
+   * in jsdom, hence the guard; the tests are not about scrolling.
    */
+  const trailRef = useRef<HTMLElement | null>(null);
   const hereRef = useRef<HTMLLIElement | null>(null);
   useEffect(() => {
+    const trail = trailRef.current;
     const here = hereRef.current;
-    if (here && typeof here.scrollIntoView === "function") {
-      here.scrollIntoView({ block: "center", inline: "nearest" });
-    }
+    if (!trail || !here || typeof trail.scrollTo !== "function") return;
+    const port = trail.getBoundingClientRect();
+    const stop = here.getBoundingClientRect();
+    trail.scrollTo({
+      top: trail.scrollTop + (stop.top + stop.height / 2) - (port.top + port.height / 2),
+    });
   }, [sceneId, chapter]);
 
   // Nothing to draw before the evening has a chapter: the lobby, or a room
@@ -262,7 +271,7 @@ export function ChapterMapPanel(): ReactElement {
   const finished = state.phase === "chapter_complete";
 
   return (
-    <section className="trail kad-scroll" aria-label="Map">
+    <section className="trail kad-scroll" aria-label="Map" ref={trailRef}>
       <header className="trail__head">
         <h2 className="trail__title">{chapter.title}</h2>
         <p className="trail__progress" role="status">

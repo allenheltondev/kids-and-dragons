@@ -1,6 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { FieldGuide as FieldGuideData, FieldGuideCategory, FieldGuideEntry } from "@kad/shared";
-import { selectGuideEntry, setPlayerSection, usePlayerNavigation } from "../store/player-navigation";
+import {
+  guideIndexScroll,
+  rememberGuideIndexScroll,
+  selectGuideEntry,
+  selectGuideTab,
+  setPlayerSection,
+  usePlayerNavigation,
+} from "../store/player-navigation";
 import { useFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { markFieldGuideSeen, useFieldGuideSeen } from "../store/field-guide-seen";
 import { Button } from "../ui/Button";
@@ -59,7 +66,14 @@ export function FieldGuide() {
 export function FieldGuideIndex({ guide }: { guide: FieldGuideData | null }) {
   const discoveries = useFieldGuideDiscoveries();
   const seen = useFieldGuideSeen();
-  const [picked, setPicked] = useState<FieldGuideCategory | null>(null);
+  // In the navigation store, not local state: opening a card unmounts this
+  // index, and coming back should find the tab and the scroll you left.
+  const picked = usePlayerNavigation((n) => n.guideTab);
+  const body = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (body.current) body.current.scrollTop = guideIndexScroll();
+  }, [guide, picked]);
 
   if (guide === null) {
     return <div className="field-guide__body kad-scroll"><p className="field-guide__summary">Opening the guide…</p></div>;
@@ -80,14 +94,15 @@ export function FieldGuideIndex({ guide }: { guide: FieldGuideData | null }) {
           {sections.map((s) => (
             <button key={s.id} type="button" role="tab" id={`fg-tab-${s.id}`}
               aria-selected={s.id === section.id} aria-controls="fg-panel"
-              className="field-guide__tab" onClick={() => setPicked(s.id)}>
+              className="field-guide__tab" onClick={() => selectGuideTab(s.id)}>
               {s.label}
             </button>
           ))}
         </div>
       )}
-      <div className="field-guide__body kad-scroll" role="tabpanel" id="fg-panel"
-        aria-labelledby={section ? `fg-tab-${section.id}` : undefined}>
+      <div className="field-guide__body kad-scroll" role="tabpanel" id="fg-panel" ref={body}
+        aria-labelledby={section ? `fg-tab-${section.id}` : undefined}
+        onScroll={(e) => rememberGuideIndexScroll(e.currentTarget.scrollTop)}>
         {section && (
           <>
             <p className="field-guide__progress">{foundHere} of {items.length} {section.label.toLowerCase()} found</p>

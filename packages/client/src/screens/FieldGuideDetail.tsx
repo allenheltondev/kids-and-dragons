@@ -80,7 +80,10 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, 
 
   return (
     <>
-      <div className="field-guide__body kad-scroll field-guide__detail" data-testid="guide-detail">
+      {/* Keyed on the entry: a cross-link swaps the entry in place, and the
+          same scroller would open the new one wherever you had read down to
+          in the old. A fresh one starts at the top. */}
+      <div key={entryId} className="field-guide__body kad-scroll field-guide__detail" data-testid="guide-detail">
         <header className="fgd__header">
           <span className="fgd__art" aria-hidden="true">
             {entry.art ? <img src={entry.art} alt="" /> : <Icon name={CATEGORY_ICON[entry.category] ?? "leaf"} />}

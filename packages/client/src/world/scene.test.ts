@@ -526,3 +526,58 @@ describe("a new pane", () => {
     expect(story.x).toBeCloseTo(0);
   });
 });
+
+describe("the narration plate changing height", () => {
+  const storyOf = (app: FakeApp): Container => app.stage.children[1] as Container;
+  const figuresOf = (app: FakeApp): Container[] =>
+    (storyOf(app).children[0] as Container).children as Container[];
+  const settle = (app: FakeApp): void => {
+    for (let i = 0; i < 300; i++) app.ticker.frame(16);
+  };
+  const two = (): PartyMember[] => [
+    member(),
+    member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }) }),
+  ];
+
+  it("frames the first plate at once rather than gliding up into it", () => {
+    const { scene: s, app } = scene();
+    s.resize(1920, 1080);
+    s.setParty(two());
+    settle(app);
+    s.setStageInset(400);
+    const first = { y: storyOf(app).y, scale: storyOf(app).scale.x };
+    settle(app);
+    expect(storyOf(app).y).toBeCloseTo(first.y, 3);
+    expect(storyOf(app).scale.x).toBeCloseTo(first.scale, 5);
+  });
+
+  it("eases the stage and the lineup to a plate that grows, instead of snapping", () => {
+    /*
+     * Somebody leaning on a choice can rewrap the plate by a line. That used
+     * to jump the whole stage by half the difference in one frame and
+     * teleport every hero sideways to their new slot.
+     */
+    const { scene: s, app } = scene();
+    s.resize(1920, 1080);
+    s.setParty(two());
+    s.setStageInset(300);
+    settle(app);
+    const before = { y: storyOf(app).y, xs: figuresOf(app).map((f) => f.x) };
+
+    s.setStageInset(420);
+    expect(storyOf(app).y).toBeCloseTo(before.y, 3);
+    figuresOf(app).forEach((f, i) => expect(f.x).toBeCloseTo(before.xs[i]!, 3));
+
+    settle(app);
+    // And it does get there: the same frame a plate that started at 420 gets.
+    const fresh = scene();
+    fresh.scene.resize(1920, 1080);
+    fresh.scene.setParty(two());
+    fresh.scene.setStageInset(420);
+    settle(fresh.app);
+    expect(storyOf(app).y).toBeCloseTo(storyOf(fresh.app).y, 1);
+    figuresOf(app).forEach((f, i) => expect(f.x).toBeCloseTo(figuresOf(fresh.app)[i]!.x, 1));
+    fresh.scene.destroy();
+    s.destroy();
+  });
+});
