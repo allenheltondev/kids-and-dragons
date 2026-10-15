@@ -13,8 +13,10 @@
  * Rules (each one is an `AuditRule`):
  *  - `stones_not_held`  — a great stone is named, or counted, that the party
  *    does not hold at that moment (#162/#163/#165).
- *  - `counted_party`    — wording that counts a party that is not that size:
- *    "two of you", "both of you" … (#165).
+ *  - `counted_party`    — wording that counts a party that is not that size, at
+ *    any party size: "both of you" to three, "all four of you" to two, "each of
+ *    you" to one … (#165). Player-and-NPC wording is excused by
+ *    `PLAYER_AND_NPC_EXCEPTIONS`.
  *  - `unfilled_token`   — a `{token}` reached a player (never acceptable).
  *  - `band_text_missing` — the full collection should see its band text
  *    (variants of gemfall-08 gated on `count.min >= 5`) in the climb, at the
@@ -96,7 +98,62 @@ const COUNTED_STONES = new RegExp(
   "gi",
 );
 const GREAT_STONE = /\bgreat[\s-]+(?:stones?|facets?)\b/i;
-const COUNTED_PARTY = /\b(?:both|two|three|four)\s+of\s+you\b/i;
+/**
+ * Wording that counts the party: "both of you", "the two of you", "all three of
+ * you", "four of you" … (a number word, or "both"). Each states a size, which
+ * must be the size of the party being shown (#165).
+ */
+const COUNTED_PARTY = new RegExp(
+  `\\b(?:(?:all|the)\\s+)?(both|${NUMBER_WORDS.slice(1).join("|")})\\s+of\\s+you\\b`,
+  "gi",
+);
+/** "one of you", "each of you", "neither of you" … — wording that assumes more than one player. */
+const SINGULAR_ASSUMING_PARTY = /\b(?:one|each|every|all|any|either|neither|none)\s+of\s+you\b/gi;
+/**
+ * Expressions that read "of you" but count a player and an NPC, not the party
+ * ("the goat lies down too. Neither of you says anything"). Each is matched
+ * against the sentence of the hit and the one before it; a hit inside a match
+ * is not counted. Add a pattern here, with the scene it comes from, rather
+ * than rewording a line that is right.
+ */
+export const PLAYER_AND_NPC_EXCEPTIONS: readonly RegExp[] = [
+  /\bthe goat lies down too\.\s+neither of you\b/i, // gemfall-05c, the failed run
+  /\byou and the masks\b[^.]*\bneither of you\b/i, // gemfall-07r, scene_masks_let_be
+  /\byou look at the mule\.\s+neither of you\b/i, // gemfall-07r, the failed creep
+];
+
+/** The sentence a hit is in, and the one before it. */
+function sentenceWindow(text: string, at: number): string {
+  const before = text.slice(0, at);
+  const start = Math.max(
+    0,
+    before.lastIndexOf(". ", Math.max(0, before.lastIndexOf(". ") - 1)) + 1,
+  );
+  return text.slice(start, at + 120);
+}
+
+function partyCountOffences(line: AuditLine): string[] {
+  const text = norm(line.text);
+  const size = line.party.members.length;
+  const why: string[] = [];
+  const excused = (at: number) => {
+    const window = sentenceWindow(text, at);
+    return PLAYER_AND_NPC_EXCEPTIONS.some((re) => re.test(window));
+  };
+  for (const m of text.matchAll(COUNTED_PARTY)) {
+    const said = m[1]!.toLowerCase();
+    const count = said === "both" ? 2 : NUMBER_WORDS.indexOf(said) + 1;
+    if (count !== size && !excused(m.index!)) {
+      why.push(`"${m[0]}" (${count}) to a party of ${numberWord(size)}`);
+    }
+  }
+  if (size === 1) {
+    for (const m of text.matchAll(SINGULAR_ASSUMING_PARTY)) {
+      if (!excused(m.index!)) why.push(`"${m[0]}" to a party of one`);
+    }
+  }
+  return why;
+}
 const TOKEN = /\{[a-zA-Z_][a-zA-Z0-9_]*\}/;
 
 function stoneOffences(line: AuditLine, facetNames: Readonly<Record<string, string>>): string[] {
@@ -125,10 +182,7 @@ function lineOffences(line: AuditLine, options: AuditOptions, rules: ReadonlySet
   const add = (rule: AuditRule, why: string) =>
     out.push({ rule, chapterId: line.chapterId, sceneId: line.sceneId, kind: line.kind, line: line.text, why });
   if (rules.has("stones_not_held")) for (const why of stoneOffences(line, options.facetNames)) add("stones_not_held", why);
-  if (rules.has("counted_party") && line.party.members.length === 1) {
-    const hit = COUNTED_PARTY.exec(line.text);
-    if (hit) add("counted_party", `"${hit[0]}" to a party of one`);
-  }
+  if (rules.has("counted_party")) for (const why of partyCountOffences(line)) add("counted_party", why);
   if (rules.has("unfilled_token")) {
     const hit = TOKEN.exec(line.text);
     if (hit) add("unfilled_token", `${hit[0]} reached the player`);

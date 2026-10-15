@@ -30,7 +30,7 @@
 
 import { describe, expect, it } from "vitest";
 import path from "node:path";
-import { chapterStartDiscoveries, type Chapter } from "@kad/shared";
+import { chapterStartDiscoveries, fillTokens, type Chapter } from "@kad/shared";
 import { loadContent } from "../content/loader.ts";
 import {
   EMPTY_HANDED,
@@ -73,6 +73,9 @@ describe("Gemfall can be played from the Exchange to the mountain", () => {
       const run = await playCampaign(content, seed, { label: "random", steer: STEERED[seed] });
       runs.push(run);
       expect(["complete", "failed"]).toContain(run.status);
+      // Whatever size the table was, no line counts a party that is not that size (#165).
+      const miscounted = findOffenders(run.lines, { facetNames, rules: ["counted_party"] });
+      expect(miscounted, formatOffenders(miscounted)).toEqual([]);
 
       // The household's Field Guide holds exactly what the road walked revealed
       // — every chapter's biome, every creature fought — once each, credited
@@ -189,6 +192,8 @@ describe("Gemfall, played by steered parties (#166)", { timeout: 60_000 }, () =>
 
     it("sees no unfilled {token}", () => expectNoOffenders(EMPTY_HANDED, ["unfilled_token"]));
 
+    it("is never counted as a party of another size (#165)", () => expectNoOffenders(EMPTY_HANDED, ["counted_party"]));
+
     it("is never shown a stone it does not hold, or a count other than 'no' (#162/#163/#164)", () =>
       expectNoOffenders(EMPTY_HANDED, ["stones_not_held"]));
   });
@@ -216,6 +221,8 @@ describe("Gemfall, played by steered parties (#166)", { timeout: 60_000 }, () =>
 
     it("sees no unfilled {token}", () => expectNoOffenders(FULL_COLLECTION, ["unfilled_token"]));
 
+    it("is never counted as a party of another size (#165)", () => expectNoOffenders(FULL_COLLECTION, ["counted_party"]));
+
     // gemfall-08's band variants (`count.min >= 5`): in the climb and the ending always, and at
     // the Seal-Keeper on the roads that meet one (seed 5 loses the race check and never does).
     it("sees its band text in the climb, at the Seal-Keeper and in the ending (#163)", () =>
@@ -236,7 +243,7 @@ describe("Gemfall, played by steered parties (#166)", { timeout: 60_000 }, () =>
 
     it("sees no unfilled {token}", () => expectNoOffenders(SOLO, ["unfilled_token"]));
 
-    it("is never counted as 'two of you', 'three of you', 'four of you' or 'both of you' (#165)", () =>
+    it("is never counted as 'two of you', 'three of you', 'four of you' or 'both of you', or as 'each of you' (#165)", () =>
       expectNoOffenders(SOLO, ["counted_party"]));
   });
 });
@@ -319,10 +326,54 @@ describe("the narration audit itself", () => {
     expect(rules("The wardens hold the stones.")).toEqual([]);
   });
 
-  it("flags counted party wording only for a party of one", () => {
-    expect(rules("Both of you hear it.", [], 1)).toEqual(["counted_party"]);
-    expect(rules("All four of you hear it.", [], 1)).toEqual(["counted_party"]);
-    expect(rules("Both of you hear it.", [], 2)).toEqual([]);
+  describe("counted party wording, at every party size (#165)", () => {
+    const flagged = (text: string, size: number) => rules(text, [], size).filter((r) => r === "counted_party");
+    // What `{party}` renders at each size, and what a writer might type by hand.
+    const valid: Record<number, string[]> = {
+      1: ["You hear it.", "You alone hear it."],
+      2: ["Both of you hear it.", "The two of you hear it.", "Two of you hear it.", "Each of you hears it.", "One of you hears it."],
+      3: ["All three of you hear it.", "The three of you hear it.", "Three of you hear it.", "All of you hear it.", "Each of you hears it."],
+      4: ["All four of you hear it.", "The four of you hear it.", "Four of you hear it.", "One of you hears it."],
+    };
+    const invalid: Record<number, string[]> = {
+      1: ["Both of you hear it.", "The two of you hear it.", "All three of you hear it.", "All four of you hear it.", "Each of you hears it.", "One of you hears it.", "All of you hear it."],
+      2: ["All three of you hear it.", "All four of you hear it.", "Three of you hear it."],
+      3: ["Both of you hear it.", "The two of you hear it.", "All four of you hear it.", "Two of you hear it."],
+      4: ["Both of you hear it.", "All three of you hear it.", "Three of you hear it."],
+    };
+
+    for (const size of [1, 2, 3, 4]) {
+      it(`accepts wording that counts ${size} and flags wording that counts anything else`, () => {
+        for (const text of valid[size]!) expect(flagged(text, size), `"${text}" at ${size}`).toEqual([]);
+        for (const text of invalid[size]!) expect(flagged(text, size), `"${text}" at ${size}`).toEqual(["counted_party"]);
+      });
+    }
+
+    it("passes what {party} renders at each size", () => {
+      for (const size of [1, 2, 3, 4]) {
+        const text = fillTokens("Plainly, {party} hear it.", {
+          members: Array.from({ length: size }, () => member([])) as never,
+          flags: {},
+        });
+        expect(flagged(text, size), text).toEqual([]);
+      }
+    });
+
+    it("says which count it heard and which party it was shown to", () => {
+      const [offence] = findOffenders([line("Both of you hear it.", [], 3)], { facetNames, rules: ["counted_party"] });
+      expect(offence!.why).toContain("Both of you");
+      expect(offence!.why).toContain("three");
+    });
+
+    it("excuses a player and an NPC, at any size", () => {
+      for (const size of [1, 2, 3]) {
+        expect(flagged("A mule looks at you. You look at the mule. Neither of you tells anybody.", size)).toEqual([]);
+        expect(flagged("The goat lies down too. Neither of you says anything for a while.", size)).toEqual([]);
+        expect(flagged("For a while you and the masks pass stones, and neither of you stops.", size)).toEqual([]);
+      }
+      // Without the NPC, the same words are a count again.
+      expect(flagged("Neither of you tells anybody.", 1)).toEqual(["counted_party"]);
+    });
   });
 
   it("flags an unfilled token", () => {
