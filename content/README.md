@@ -58,6 +58,11 @@ that the reference chapter below does not:
   the Harvest Stone — is declared there, even the ones that select no chapter. `content:validate`
   lets a chapter gate on those without setting them itself, and refuses any path that sets two
   members of one set (the engine would quietly keep neither).
+- **Text and choices that depend on the party.** `when` on a choice, `variants` on a scene or
+  branch, and the `{facets}` / `{party}` tokens. `content:validate` fails a bad flag, item,
+  range, token, or overlapping `replace`. The patterns (absence, scaling, callbacks with a
+  fallback, party size) are in
+  [gemfall-authoring.md §5](../docs/campaigns/gemfall-authoring.md#5-writing-for-the-party-you-have).
 - **Facets as quest items.** Quest items outlive the chapter that grants them, which is what makes
   a collection collectable.
 
