@@ -972,6 +972,11 @@ function dispatch(
       // attempt, which the engine never sees.
       throw new Illegal("ILLEGAL", "continuing a campaign is resolved by the server");
 
+    case "CHOOSE_EXIT":
+      // Moves the household's journey (handlers/action.ts, shared journey.ts),
+      // which the engine never sees — the same reason as CONTINUE_CAMPAIGN.
+      throw new Illegal("ILLEGAL", "choosing a way on is resolved by the server");
+
     case "VOTE_CAMPAIGN":
       return doVoteCampaign(draft, playerId, intent.campaignId);
 

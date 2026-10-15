@@ -11,7 +11,7 @@
  * disagreeing about the rules.
  */
 
-import { chapterFor } from "@kad/shared";
+import { campaignMode, chapterFor, parseCampaignGraph } from "@kad/shared";
 import { makeChapter, makeItems, makeMap, makeRules } from "../../shared/src/test-fixtures.ts";
 import { makeRng } from "@kad/shared";
 import type {
@@ -102,10 +102,17 @@ export function makeContent(
     chapterAt: (campaignId, index, flags) => {
       const campaign = campaigns.get(campaignId);
       if (!campaign) return null;
+      // As the real store: a graph campaign has no beats (loader.ts).
+      if (campaignMode(campaign) === "graph") return null;
       const members = campaign.chapters
         .map((id) => chapters.get(id))
         .filter((chapter): chapter is Chapter => chapter !== undefined);
       return chapterFor(members, index, flags);
+    },
+    // The real store's parse, so a graph fixture is held to the same rule.
+    graph: (campaignId) => {
+      const campaign = campaigns.get(campaignId);
+      return campaign ? parseCampaignGraph(campaign).graph : null;
     },
   };
 }

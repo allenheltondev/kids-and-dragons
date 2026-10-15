@@ -24,14 +24,24 @@
 import {
   CharacterRuleError,
   commitCampaign,
+  completeVisit,
+  currentPlayable,
   failCampaign,
+  journeyView,
+  readJourney,
   resolveCharacter,
+  resumeJourney,
   spendStatPoint as applyStatPointSpend,
   startCampaign,
+  startJourney,
   type Campaign,
   type CampaignView,
   type Character,
   type Chapter,
+  type ChapterOutcome,
+  type JourneyRefusal,
+  type JourneyState,
+  type ParsedCampaignGraph,
   type ProgressionAward,
   type RunState,
   type StatId,
@@ -241,6 +251,7 @@ function newAttempt(
   runId: string,
   now: string,
   version: number,
+  journey?: JourneyState,
 ): CampaignProgressRecord {
   return {
     householdId,
@@ -250,6 +261,9 @@ function newAttempt(
     lastIndex: 0,
     // The row version is unique per household campaign row, so the id is too.
     attemptId: `${campaignId}:${version}:${runId}:${now}`,
+    // A graph campaign's attempt is born with its journey (#194); an ordered
+    // one never carries the key at all, so its row is exactly as before.
+    ...(journey ? { journey } : {}),
     version,
     updatedAt: now,
   };
@@ -273,11 +287,17 @@ export function joinOrStartAttempt(
   campaignId: string,
   runId: string,
   now: string,
+  /**
+   * A graph campaign's fresh journey, stored on the attempt this start creates
+   * (#194). Ignored when the start joins an active attempt: that attempt's
+   * journey — or, unwritten, the fresh start every reader derives — stands.
+   */
+  journey?: JourneyState,
 ): { attemptId: string | null; startedAttempt: StartedAttempt | null } {
   if (existing && existing.status === "active") {
     return { attemptId: existing.attemptId ?? null, startedAttempt: null };
   }
-  const attempt = newAttempt(householdId, campaignId, runId, now, (existing?.version ?? 0) + 1);
+  const attempt = newAttempt(householdId, campaignId, runId, now, (existing?.version ?? 0) + 1, journey);
   return {
     attemptId: attempt.attemptId ?? null,
     startedAttempt: { attempt, expectedVersion: existing ? (existing.version ?? 0) : null },
@@ -329,6 +349,8 @@ export function campaignView(
   deps: HandlerDeps,
   ended?: "complete" | "failed",
 ): CampaignView {
+  const graph = deps.content.graph(campaign.id);
+  if (graph) return graphCampaignView(campaign, graph, attempt, deps, ended);
   const index = expectedIndex(campaign, attempt, deps);
   const flags = attempt && attempt.status === "active" ? (attempt.routeFlags ?? {}) : {};
   const chapter = deps.content.chapterAt(campaign.id, index, flags);
@@ -340,6 +362,75 @@ export function campaignView(
     next: chapter ? { index: chapter.index, title: chapter.title } : null,
     ...(ended ? { ended } : {}),
   };
+}
+
+/**
+ * `campaignView` for a graph campaign (#194).
+ *
+ * `next` answers the question it always has — what "Begin" would start — from
+ * the journey CONTINUE_CAMPAIGN would resume (`attemptJourney`): the visit's
+ * chapter while it is playing, and null while the party is choosing a way on,
+ * which is exactly "a fork nobody has chosen at". `chapters` keeps its
+ * ordered meaning as best it can — the highest act number — since a graph
+ * has no fixed count of beats.
+ *
+ * `journey` is where the attempt stands: the journey CONTINUE resumes, or —
+ * for an attempt that reached an ending — that ending, so the completion
+ * screen (and the lobby until a replay starts) can say which one. In that
+ * case `next` is the fresh start a replay would begin.
+ *
+ * A journey this build cannot read (`readJourney` refused it) shows nothing
+ * to start and no journey: better a lobby that offers nothing than one that
+ * offers a chapter the server will then refuse.
+ */
+function graphCampaignView(
+  campaign: Campaign,
+  graph: ParsedCampaignGraph,
+  attempt: CampaignProgressRecord | null,
+  deps: HandlerDeps,
+  ended?: "complete" | "failed",
+): CampaignView {
+  const base = {
+    id: campaign.id,
+    title: campaign.title,
+    blurb: campaign.blurb,
+    chapters: finalIndex(campaign, deps),
+    ...(ended ? { ended } : {}),
+  };
+  const resumed = attemptJourney(campaign, graph, attempt);
+  if (!resumed.ok) return { ...base, next: null };
+  const playable = currentPlayable(graph, resumed.journey);
+  const chapter = playable.kind === "play" ? deps.content.chapter(playable.chapter) : null;
+  const finished = attempt && attempt.status === "complete" ? readJourney(graph, attempt.journey) : null;
+  const shown = finished?.ok && finished.journey?.status === "ended" ? finished.journey : resumed.journey;
+  return {
+    ...base,
+    next: chapter ? { index: chapter.index, title: chapter.title } : null,
+    journey: journeyView(graph, shown, (id) => deps.content.chapter(id)?.title),
+  };
+}
+
+/**
+ * The journey a graph campaign's attempt stands at — the one CONTINUE resumes,
+ * a chapter start must match, and a completion settles against (#194).
+ *
+ * An active attempt's stored journey, or — none written yet — the fresh start
+ * at the entry, which `startJourney` makes the same for every reader. No
+ * attempt, or a finished one, is a fresh start too: the next chapter start
+ * creates a new attempt, and a replayed campaign walks its map again rather
+ * than inheriting the last one's — the rule `roadTo` applies to route flags.
+ * A stored journey this build cannot read is refused (`readJourney`), never
+ * replaced: overwriting it with a fresh start would throw away a party's map.
+ */
+export function attemptJourney(
+  campaign: Campaign,
+  graph: ParsedCampaignGraph,
+  attempt: CampaignProgressRecord | null,
+): { ok: true; journey: JourneyState; fresh: boolean } | JourneyRefusal {
+  if (!attempt || attempt.status !== "active") {
+    return { ok: true, journey: startJourney(graph, campaign), fresh: true };
+  }
+  return resumeJourney(graph, attempt.journey, campaign);
 }
 
 /**
@@ -404,6 +495,12 @@ export interface ChapterSettlement {
   stale?: boolean;
   /** The household's standing after this completion, for `RunState.campaign`. */
   campaignView?: CampaignView;
+  /**
+   * A graph campaign's replay (#194): the visit completed and was recorded, but
+   * its chapter had already paid this attempt, so it paid nothing now — XP is
+   * once per chapter per attempt. The room's completion screen shows no XP.
+   */
+  replay?: boolean;
 }
 
 /**
@@ -461,6 +558,13 @@ export async function settleChapterCompletion(
     campaignId && campaign && chapter
       ? (pending?.attempt ?? (await deps.repo.getCampaignProgress(householdId, campaignId)))
       : null;
+  // A graph campaign settles by visit, not by beat (#194). Branched here, after
+  // the one read both share and before anything ordered-only runs, so an
+  // ordered campaign's path below is untouched.
+  const graph = campaign && chapter ? deps.content.graph(campaign.id) : null;
+  if (graph && campaign && chapter) {
+    return settleVisit({ state, deps, householdId, campaign, graph, chapter, existing, pending, now, outcome });
+  }
   if (campaign && chapter && isStale(state, chapter, campaign, existing, deps)) {
     return { characters: [], awards: [], stale: true };
   }
@@ -559,6 +663,119 @@ export async function settleChapterCompletion(
     campaignProgressExpectedVersion,
     campaignView: campaignView(campaign, attempt, deps),
   };
+}
+
+/**
+ * `settleChapterCompletion` for a graph campaign (#194): the visit completes
+ * (shared `completeVisit`), and the attempt's fate is decided exactly as an
+ * ordered campaign's is — the setback limit fails it wherever the party is,
+ * and completing an ending node completes it.
+ *
+ * What differs is what "stale" means. An ordered completion is checked by
+ * beat; a graph completion is checked by **visit** — the `(attemptId, node,
+ * visit)` the run was stamped with at chapter start (`RunState.journeyVisit`).
+ * A completion is settled only against the active attempt it began under, for
+ * the visit the journey is playing. Anything else — another room already
+ * finished this visit, the visit has been left, the attempt ended, the run
+ * carries no visit — settles nothing and awards nothing (`stale`), which is
+ * the double-count guard: a repeat is answered, never applied.
+ *
+ * The write rides the run's commit under the attempt row's version, as every
+ * campaign write does, so two rooms completing the same visit at the same
+ * moment cannot both land: the loser's commit fails, and anything it retries
+ * finds the visit already completed — a duplicate.
+ *
+ * XP pays once per chapter per attempt (`firstCompletion`): a replayed visit
+ * still folds the bag — what was found on a replay is real — but no XP.
+ */
+async function settleVisit(input: {
+  state: RunState;
+  deps: HandlerDeps;
+  householdId: string;
+  campaign: Campaign;
+  graph: ParsedCampaignGraph;
+  chapter: Chapter;
+  existing: CampaignProgressRecord | null;
+  pending: StartedAttempt | undefined;
+  now: string;
+  outcome: ChapterOutcome;
+}): Promise<ChapterSettlement> {
+  const { state, deps, householdId, campaign, graph, chapter, existing, pending, now, outcome } = input;
+  const stale: ChapterSettlement = { characters: [], awards: [], stale: true };
+  const at = state.journeyVisit;
+  if (
+    !existing ||
+    existing.status !== "active" ||
+    !at ||
+    (state.campaignAttemptId ?? null) !== (existing.attemptId ?? null)
+  ) {
+    return stale;
+  }
+  const resumed = resumeJourney(graph, existing.journey, campaign);
+  if (!resumed.ok) {
+    console.error(`settle: journey for ${householdId}/${campaign.id} unreadable: ${resumed.message}`);
+    return stale;
+  }
+  const step = completeVisit(
+    graph,
+    resumed.journey,
+    { node: at.node, visit: at.visit, chapterId: chapter.id, outcome, flags: state.flags },
+    campaign,
+  );
+  if (!step.ok || step.duplicate) return stale;
+
+  const replay = !step.firstCompletion;
+  // A shallow copy shares the party, so the fold still re-resolves the room's
+  // characters in place; only the amount it reads is withheld on a replay.
+  const award = await foldChapterXpDetails(replay ? { ...state, xpEarned: 0 } : state, deps, householdId, chapter);
+  const characters = award.characters;
+  const chapterProgress: ChapterProgressRecord = {
+    runId: state.runId,
+    index: chapter.index,
+    chapterId: chapter.id,
+    status: "complete",
+    outcome,
+    xpEarned: replay ? 0 : computeChapterXp(state, chapter),
+    updatedAt: now,
+  };
+
+  const campaignProgressExpectedVersion = pending ? pending.expectedVersion : (existing.version ?? 0);
+  const version = pending ? (pending.attempt.version ?? 1) : (existing.version ?? 0) + 1;
+  const attempt: CampaignProgressRecord = { ...existing, journey: step.journey, version, updatedAt: now };
+  if (outcome === "setback") attempt.setbacks += 1;
+  attempt.coins = state.coins ?? attempt.coins ?? 0;
+  const settled = {
+    awards: award.awards,
+    chapterProgress,
+    campaignProgressExpectedVersion,
+    ...(replay ? { replay } : {}),
+  };
+
+  // Failure first, as for an ordered campaign: a setback that reaches the
+  // limit fails the attempt even at an ending node.
+  if (attempt.setbacks >= (campaign.setbackLimit ?? DEFAULT_SETBACK_LIMIT)) {
+    attempt.status = "failed";
+    return {
+      ...settled,
+      characters: await transformParty(state, deps, householdId, characters, (c) => {
+        const reached = c.provisional?.tier;
+        const flavored = reached && reached !== c.committed.tier;
+        return failCampaign(c, flavored ? `${campaign.id}#${reached}` : campaign.id, now);
+      }),
+      campaignProgress: attempt,
+      campaignView: campaignView(campaign, attempt, deps, "failed"),
+    };
+  }
+  if (step.ended) {
+    attempt.status = "complete";
+    return {
+      ...settled,
+      characters: await transformParty(state, deps, householdId, characters, commitCampaign),
+      campaignProgress: attempt,
+      campaignView: campaignView(campaign, attempt, deps, "complete"),
+    };
+  }
+  return { ...settled, characters, campaignProgress: attempt, campaignView: campaignView(campaign, attempt, deps) };
 }
 
 /**

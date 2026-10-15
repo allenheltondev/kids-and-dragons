@@ -38,6 +38,7 @@
  * can load them directly under Node.
  */
 
+import type { Arrival, ExitBlock } from "../campaign-graph.js";
 import type { ChapterOutcome } from "./chapter.js";
 
 /** A node's key in `CampaignGraph.nodes`. Stable: saves name it. */
@@ -337,9 +338,16 @@ export type VisitStatus = "playing" | "choosing" | "ended";
  *
  * Defined here so #194 (persistence, transitions), #195 (navigation) and
  * #202 (inspection) share one meaning; stored by #194 on
- * `CampaignProgressRecord`. **Absent on an attempt means an ordered
- * campaign** — every row written before graphs existed, and every Gemfall row
- * forever — and nothing about such an attempt changes.
+ * `CampaignProgressRecord.journey`. **Absent on an attempt of an ordered
+ * campaign is the only reading there is** — every row written before graphs
+ * existed, and every Gemfall row forever — and nothing about such an attempt
+ * changes. Absent on an attempt of a graph campaign means the journey has not
+ * been written yet, and reads as a fresh start at the entry (`startJourney`,
+ * which is deterministic, so every reader agrees on what that is).
+ *
+ * Only `journey.ts` moves it: `startJourney`, `completeVisit`, `takeExit`.
+ * `version` is this record's own (`JOURNEY_VERSION`), checked on every read
+ * (`readJourney`) — a row written by a newer build is refused, never guessed.
  */
 export interface JourneyState extends JourneyFacts {
   version: CampaignGraphVersion;
@@ -365,4 +373,58 @@ export interface JourneyState extends JourneyFacts {
    * different chapter, so a changed place pays once more.
    */
   chaptersCompleted?: string[];
+  /**
+   * The exit most recently taken, and the visit it ended (#194). What makes
+   * an exit idempotent: a second report of `(node, visit, edge)` — the
+   * double-tap, the retry after a dropped response — is recognized as the
+   * same crossing and answered with the journey as it stands, rather than
+   * refused as stale or, worse, taken again from wherever the party now is.
+   * Only the latest is kept: a report older than that is a stale screen, and
+   * is refused (`takeExit`). Absent until the first exit is taken.
+   */
+  lastExit?: { node: NodeId; visit: number; edge: EdgeId };
+}
+
+/**
+ * Where a graph campaign's journey stands, as the screens need it
+ * (`CampaignView.journey`, built by `journeyView`). The navigation screens
+ * (#195) draw from this and send `CHOOSE_EXIT` back; nothing here is needed to
+ * *decide* anything — the server re-derives every answer from the stored
+ * journey.
+ */
+export interface JourneyView {
+  /** The node the journey is at. */
+  node: NodeId;
+  /** Its map label: the node's `title`, else its chapter's title. */
+  title: string;
+  /** The visit ordinal — `CHOOSE_EXIT.visit` echoes it back. */
+  visit: number;
+  status: VisitStatus;
+  /** The chapter this visit plays (or, for a `"pass"` visit, the place's chapter). */
+  chapter: string;
+  /**
+   * The exits a screen draws, in authored order, while `status` is
+   * `"choosing"`; empty otherwise (there is no leaving mid-chapter, and an
+   * ended journey goes nowhere). Only `visible` exits: available ones, and
+   * blocked ones authored `blocked: "shown"`, with why they are blocked.
+   */
+  exits: JourneyExitView[];
+  /** The ending this journey reached, once `status` is `"ended"`. */
+  reachedEnding?: { node: NodeId; title: string };
+}
+
+/** One drawn exit (`JourneyView.exits`). */
+export interface JourneyExitView {
+  edge: EdgeId;
+  to: NodeId;
+  kind: GraphEdgeKind;
+  /** The edge's `label`, else the destination's title. */
+  label: string;
+  available: boolean;
+  /** Why not, when `available` is false (`ExitBlock`). */
+  reason?: ExitBlock;
+  /** What crossing would be (`arrivalAt`): a new place, a replay, a pass-through. */
+  arrival: Arrival;
+  /** Authored `irreversible` — #195 warns before the crossing. */
+  irreversible?: true;
 }

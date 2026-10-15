@@ -9,6 +9,7 @@ import type { EncounterState } from "../encounter.js";
 import type { ResolvedCharacter, StatId } from "./domain.js";
 import type { ChapterOutcome, SceneId, SceneType } from "./chapter.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
+import type { JourneyView, NodeId } from "./campaign-graph.js";
 
 export type RoomMode = "party" | "travel";
 
@@ -70,6 +71,14 @@ export interface CampaignView {
    * gains are taken back, a souvenir is kept). Cleared when a chapter starts.
    */
   ended?: "complete" | "failed";
+  /**
+   * A graph campaign's journey (#194): where the party is, whether it is
+   * playing that place or choosing a way on, and the exits a screen draws.
+   * `next` is null while it is choosing — a fork nobody has chosen at, which
+   * `CHOOSE_EXIT` answers. Present only for graph campaigns (`campaignMode`);
+   * an ordered campaign's view never carries it. See `JourneyView`.
+   */
+  journey?: JourneyView;
 }
 
 /** A decision the game is waiting on. Only one is ever open at a time. */
@@ -128,6 +137,15 @@ export interface RunState {
    * Optional because runs persisted before it existed carry none.
    */
   campaignAttemptId?: string | null;
+  /**
+   * The journey visit this chapter plays, for a graph campaign (#194): the
+   * node and its visit ordinal, stamped by the server at chapter start beside
+   * `campaignAttemptId`. With the attempt id it names one visit exactly, and
+   * that is what the completion is reported against (`completeVisit`): a
+   * second room finishing the same visit, or a retry of this one, is a repeat
+   * and moves nothing. Absent on every ordered campaign's run.
+   */
+  journeyVisit?: { node: NodeId; visit: number } | null;
   /**
    * Where the household stands in the campaign this room plays, for the
    * screens: the lobby says which chapter is next, and the completion screen

@@ -12,10 +12,11 @@ the rules that read it are [`packages/shared/src/campaign-graph.ts`](../../packa
 the schema is `graph` in [`schemas/campaign.schema.json`](../../schemas/campaign.schema.json).
 Where this document and the TypeScript disagree, the TypeScript wins and this is a bug.
 
-> **Status.** The declaration, its schema, its parser and the load-time checks exist. The
-> journey runtime does not yet (#194): the server loads a graph campaign and refuses to start
-> it (`ContentStore.chapterAt` answers `null`). No graph campaign ships; the only one in the
-> repo is the [Rift Sampler](#7-the-rift-sampler) fixture, which lives outside `content/`.
+> **Status.** The declaration, its schema, its parser and the load-time checks exist (#192), and
+> so does the journey runtime (#194, [§6](#the-runtime-194)): a graph campaign can be started,
+> played node by node, its exits chosen (`CHOOSE_EXIT`), and its journey is saved on the
+> household's attempt. The navigation screens are #195. No graph campaign ships; the only one in
+> the repo is the [Rift Sampler](#7-the-rift-sampler) fixture, which lives outside `content/`.
 
 ---
 
@@ -290,12 +291,91 @@ records which have paid.)
 
 ### Save/load compatibility
 
-The journey is stored on the campaign attempt (`CampaignProgressRecord`, #194) as `JourneyState`,
-`version: 1`. **An attempt with no journey state is an ordered attempt** — every row written before
-graphs, and every Gemfall row forever — and reads exactly as before. No graph campaign has ever
-been played, so there are no in-flight graph attempts to migrate. Content may change under a
-journey: a counter or lock state for an id the declaration no longer has is ignored, never an
-error; renaming an id is a migration.
+The journey is stored on the campaign attempt (`CampaignProgressRecord.journey`, #194) as
+`JourneyState`, `version: 1`. **An ordered campaign's attempt has no journey state** — every row
+written before graphs, and every Gemfall row forever — and reads exactly as before: nothing on the
+ordered path reads the field. A **graph** campaign's attempt with no journey written yet reads as a
+fresh start at the entry (`startJourney` is deterministic, so every reader agrees on it). No graph
+campaign has ever been played, so there are no in-flight graph attempts to migrate. Content may
+change under a journey: a counter or lock state for an id the declaration no longer has is
+ignored, never an error; renaming an id is a migration — and a journey *standing at* a node the
+declaration no longer has is refused (`"unknown-node"`) rather than guessed at.
+
+### The runtime (#194)
+
+[`packages/shared/src/journey.ts`](../../packages/shared/src/journey.ts) moves the journey; it is
+pure (no clock, no randomness, no store) and every transition returns a new `JourneyState`, a
+**duplicate** marker, or a **refusal** value — never a throw:
+
+| | |
+|---|---|
+| `startJourney(graph, campaign?)` | the first visit to the entry, `"playing"` (variants resolved) |
+| `readJourney(graph, raw)` | the stored value checked: `null` when absent; refused when unreadable, from a newer build (`"version"`) or standing at an unknown node |
+| `resumeJourney(graph, raw, campaign?)` | `readJourney`, or `startJourney` when nothing is stored (`fresh: true`) |
+| `completeVisit(graph, journey, { node, visit, chapterId, outcome, flags }, campaign?)` | the visit's chapter settled: `completions`/`outcomes`/flags/`chaptersCompleted`; `firstCompletion` (XP pays), `ended` (an ending) |
+| `takeExit(graph, journey, { edge, visit }, campaign?)` | traversed + 1, `lastExit`, effects in order, then enter the destination; `arrival` is `"new"`/`"replay"`/`"pass"` |
+| `currentPlayable(graph, journey)` | `{ kind: "play", node, visit, chapter }` \| `{ kind: "choose", node, visit, exits }` \| `{ kind: "ended", node, visit, ending }` |
+| `journeyView(graph, journey, titleOf?)` | `JourneyView`, the screens' read model (below) |
+| `migrateJourney(raw)` | the migration ladder — one rung today (the hook a `JOURNEY_VERSION` 2 fills) |
+
+`campaign` supplies `routeSets`: a route set member is a fork in a graph campaign too, so an edge's
+`setFlag` clears the set's other members, and reading flags back from a run keeps the ordered
+rule — the newly set member wins; two new ones is a content bug and the set is left as it was.
+Journey flags are stored true-only.
+
+**Idempotence.** Every report names its visit, and `(attemptId, node, visit)` is the key — the
+attempt id is the row's, `(node, visit)` the report's:
+
+| Report | Answer |
+|---|---|
+| completion of the current visit while `"playing"` | applied |
+| completion of the current visit already done, or of any earlier visit (`visit ≤ visits[node]`) | **duplicate**: the journey unchanged, nothing counted or paid |
+| completion of a visit the journey never had | refused `"stale-visit"` |
+| completion naming another chapter than the visit resolved | refused `"wrong-chapter"` |
+| the exit recorded as `lastExit` (same `node`, `visit`, `edge`) | **duplicate**, wherever the journey has got to since |
+| an exit from another node / another visit / while `"playing"` / after `"ended"` | refused `"not-here"` / `"stale-visit"` / `"still-playing"` / `"ended"` |
+| an unavailable exit | refused `"unavailable"` with `reason` (`ExitBlock`) |
+| an edge id the graph does not have | refused `"unknown-edge"` |
+
+**On the server.** `ContentStore.graph(campaignId)` is `chapterAt`'s by-node sibling: the parsed
+graph, or `null` for an ordered campaign — the branch every caller takes first.
+
+- **CONTINUE_CAMPAIGN** resumes the journey (`attemptJourney`: the active attempt's journey, or a
+  fresh start for no attempt or a finished one) and starts the playing visit's chapter. A party
+  that is choosing is refused until it chooses.
+- **START_CHAPTER** of a graph campaign must name exactly that chapter. The chapter run is seeded
+  with the journey's flags, and stamped with `RunState.journeyVisit = { node, visit }` beside
+  `campaignAttemptId`. A start that creates the attempt writes it holding its fresh journey.
+- **Settlement** (chapter completion) calls `completeVisit` with the run's stamp, its outcome and
+  its flags, inside the same conditional commit as every campaign write. A run of a finished or
+  different attempt, without a stamp, or whose visit is a duplicate or stale, settles nothing and
+  is shown no XP. A replay (`firstCompletion: false`) records the visit and folds the bag but pays
+  no XP. Setbacks count and the setback limit fails the attempt wherever the party is; completing
+  an ending completes it (`commitCampaign`). `lastIndex` and `routeFlags` are not maintained for a
+  graph campaign — the journey is the whole of where the party got to.
+- **`CHOOSE_EXIT { edgeId, visit, campaignId? }`** (campaign defaults to the run's) calls
+  `takeExit` and writes the attempt. Legal only between chapters (lobby, creation, completion
+  screen). A duplicate answers `{ ok: true }` at the current seq and writes nothing. It moves the
+  journey only; CONTINUE then plays where it leads (or, at a `"pass"`, the party is at a choice
+  again).
+
+**Concurrency.** Every journey write rides the run's `repo.commit` with
+`campaignProgressExpectedVersion` — the attempt row's optimistic lock that already serialized the
+setback counter across rooms. Two rooms completing one visit, or two phones taking different exits
+from it, both read version *v*; exactly one write lands, the other's commit fails (`STALE_SEQ`),
+and whatever it retries meets the moved journey — a duplicate, or a stale visit.
+
+**`CampaignView.journey`** (`JourneyView`, for graph campaigns only): `node`, `title`, `visit`
+(what `CHOOSE_EXIT.visit` echoes), `status`, `chapter`, `exits` (while choosing: the *visible*
+exits in authored order — `edge`, `to`, `kind`, `label`, `available`, `reason?`, `arrival`,
+`irreversible?`), and `reachedEnding` once an attempt has completed at an ending. `next` is null
+while choosing. For a completed attempt, `journey` shows the ending reached and `next` the fresh
+start a replay would begin.
+
+**Versioning.** `JourneyState.version` is the stored record's (`JOURNEY_VERSION = 1`), separate in
+meaning from the declaration's. A later change to what a saved journey means bumps it and adds a
+rung to `migrateJourney`; a row from a newer build is refused (CONTINUE, START_CHAPTER and
+CHOOSE_EXIT refuse; settlement settles nothing and logs) and never overwritten.
 
 ---
 
@@ -356,8 +436,8 @@ its issue defines it. Where each attaches:
 | Issue | Attaches to |
 |---|---|
 | #193 validation | `ParsedCampaignGraph` (adjacency already built); hooks into `checkGraphCampaign` in `tools/content/validate.mjs`. Uses `kind` to tell an intentional revisit from an accidental cycle. |
-| #194 runtime | `JourneyState` (shared type, stored on `CampaignProgressRecord`); the three transitions *enter / complete / take exit* with the semantics of [§6](#6-visits-completion-and-resuming); `ContentStore.chapterAt` grows a by-node sibling. |
-| #195 navigation UX | `exitsFrom` (availability, `visible`, reason), `arrivalAt` (revisits), `irreversible`, `blocked`, `label`. |
+| #194 runtime | **Done** ([the runtime](#the-runtime-194)): `JourneyState` stored on `CampaignProgressRecord.journey`; `journey.ts` (`startJourney`, `completeVisit`, `takeExit`, `currentPlayable`, `readJourney`/`migrateJourney`, `journeyView`); `ContentStore.graph`; `RunState.journeyVisit`; `CHOOSE_EXIT`; `CampaignView.journey`. |
+| #195 navigation UX | `CampaignView.journey` (`JourneyView`: visible exits with label, availability, reason, arrival, `irreversible`) and the `CHOOSE_EXIT` intent; underneath, `exitsFrom` / `arrivalAt`. |
 | #196 rift links | a new optional `rift` on `GraphEdge` (one-way, single-use, timed, triggered, unstable, persistent, linked). `once` is the counting part of single-use; a rift adds the rest. New `ExitBlock` reasons go *after* the existing four. |
 | #197 rift actions | new `GraphEffect` types beside `unlock`/`lock`; per-edge state widens `JourneyFacts.edges`. |
 | #198 world state | new `GraphCondition` fields read by `variants[].when` and edge `when`; the variant selection rule stays first-match. |
@@ -386,4 +466,10 @@ From `@kad/shared` (and importable directly by `.mjs` tools — type imports onl
 | `exitsFrom(graph, node, journey)` | every exit with availability and visibility |
 | `arrivalAt(graph, node, journey)` | `"new"` \| `"replay"` \| `"pass"` \| `"closed"` |
 | `chapterAtNode(graph, node, journey)` | the chapter entering would play |
-| Types | `CampaignGraph`, `GraphNode`, `GraphEdge`, `GraphEdgeKind`, `RevisitPolicy`, `NodeVariant`, `GraphEnding`, `GraphCondition`, `GraphEffect`, `JourneyFacts`, `JourneyState`, `VisitStatus`, `NodeId`, `EdgeId` |
+| Types | `CampaignGraph`, `GraphNode`, `GraphEdge`, `GraphEdgeKind`, `RevisitPolicy`, `NodeVariant`, `GraphEnding`, `GraphCondition`, `GraphEffect`, `JourneyFacts`, `JourneyState`, `VisitStatus`, `JourneyView`, `JourneyExitView`, `NodeId`, `EdgeId` |
+
+And from `journey.ts` (#194; **not** loadable by `.mjs` tools — it has value imports): `JOURNEY_VERSION`,
+`startJourney`, `readJourney`, `migrateJourney`, `resumeJourney`, `completeVisit`, `takeExit`,
+`currentPlayable`, `journeyView`, and the types `JourneyRefusal`, `JourneyRefusalCode`,
+`JourneyDuplicate`, `VisitCompletion`, `ExitCrossing`, `Playable`, `VisitReport`, `ExitReport`,
+`JourneyCampaign` — see [the runtime](#the-runtime-194).

@@ -30,6 +30,7 @@ export * from "./chapter-pacing.js";
 export * from "./narration.js";
 export * from "./routes.js";
 export * from "./campaign-graph.js";
+export * from "./journey.js";
 export * from "./chapter-map.js";
 export * from "./grid.js";
 export * from "./encounter.js";

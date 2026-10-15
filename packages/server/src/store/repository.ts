@@ -17,6 +17,7 @@ import type {
   FieldGuideDiscovery,
   FieldGuideRecord,
   Household,
+  JourneyState,
   PlayerProfile,
   RoomMode,
   RunState,
@@ -122,6 +123,31 @@ export interface CampaignProgressRecord {
    * at the same beat. Absent on rows written before it existed.
    */
   attemptId?: string;
+  /**
+   * Where a **graph** campaign's attempt stands (#194): the node, the visit,
+   * whether it is being played or an exit is being chosen, and everything the
+   * edges' guards read — visits, completions, outcomes, edges taken, lock
+   * overrides, journey flags, the chapters that have paid XP. Moved only by
+   * shared `journey.ts` (`completeVisit` at settlement, `takeExit` on
+   * CHOOSE_EXIT) and written through the same conditional commit as the rest
+   * of this row, under `version` — so two rooms finishing one visit, or two
+   * phones taking one exit, cannot both land, and the loser's retry is
+   * answered as a duplicate rather than applied twice.
+   *
+   * On this row, beside the setback counter and the route flags, for the
+   * reason they are here: the journey spans evenings, and every evening is a
+   * new run.
+   *
+   * **Absent on every ordered campaign's attempt** — Gemfall's, every row
+   * written before graphs existed — which reads exactly as it always did;
+   * nothing on the ordered path looks at this field. Absent on a graph
+   * campaign's attempt means nothing has been written yet and reads as a fresh
+   * start at the entry (`resumeJourney`). Carries its own `version`
+   * (`JOURNEY_VERSION`); a row from a newer build is refused, not guessed at
+   * (`readJourney`). For a graph campaign `lastIndex` and `routeFlags` are not
+   * maintained — the journey is the whole of where the party got to.
+   */
+  journey?: JourneyState;
   /** Monotonic optimistic-lock version. Rows written before this field are version 0. */
   version?: number;
   updatedAt: string;
