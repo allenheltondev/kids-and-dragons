@@ -22,12 +22,14 @@
  */
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import type { ReactElement } from "react";
+import type { CSSProperties, ReactElement } from "react";
 import type { FieldGuide, WorldMap, WorldPlace } from "@kad/shared";
 import { useChapter, useParty, useRunState, useWorld, useGameStore } from "../store";
 import { getAtlasCenter, updateAtlasView, useAtlasNavigation } from "../store/atlas-navigation";
 import { useFieldGuideDiscoveries } from "../store/field-guide-discoveries";
-import { atlasLevel, regionalAnchor, visibleMapPlaces, visibleMapRoutes } from "./atlas-math";
+import { atlasLevel, dangerBadge, explorerTrail, visibleMapPlaces, visibleMapRoutes, wobblyPath } from "./atlas-math";
+import { markCloudsRevealed, revealedClouds } from "../store/atlas-clouds";
+import { cue } from "../audio";
 import { FieldGuideDetail } from "./FieldGuideDetail";
 import { markFieldGuideSeen } from "../store/field-guide-seen";
 import { Button } from "../ui/Button";
@@ -67,12 +69,13 @@ export function WorldMapPanel(): ReactElement {
   const runId = useGameStore((store) => store.session?.runId ?? "");
   const chapterId = state?.chapterId ?? null;
   const scope = JSON.stringify([runId, chapterId]);
-  const { step, regionId, routeId, showRoutes } = useAtlasNavigation(scope);
+  const { step, routeId, showRoutes } = useAtlasNavigation(scope);
   const setStep = (next: number | ((value: number) => number)) => updateAtlasView(scope, { step: typeof next === "function" ? next(step) : next, center: null });
-  const setRegionId = (next: string | null) => updateAtlasView(scope, { regionId: next, center: null });
   const setRouteId = (next: string | null) => updateAtlasView(scope, { routeId: next, center: null });
   const setShowRoutes = (next: boolean) => updateAtlasView(scope, { showRoutes: next });
   const [entryId, setEntryId] = useState<string | null>(null);
+  /** The region whose card is open over the map, by place id. */
+  const [cardId, setCardId] = useState<string | null>(null);
   const [guide, setGuide] = useState<FieldGuide | null>(null);
   const [guideFailed, setGuideFailed] = useState(false);
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
@@ -84,17 +87,14 @@ export function WorldMapPanel(): ReactElement {
   const place = ready ? placeOf(world, chapter.biome) : null;
   const zoomSteps = world?.atlas ? ATLAS_ZOOM_STEPS : ZOOM_STEPS;
   const zoom = zoomSteps[step] ?? 1;
-  const region = regionId ? world?.regions?.[regionId] : undefined;
-  const regionPlace = regionId ? world?.places[regionId] : undefined;
-  const crop = world?.atlas ? undefined : region;
-  const partyAnchor = place ? (crop ? regionalAnchor(place.anchor, crop.bounds) : place.anchor) : null;
-  const image = world?.atlas?.image ?? crop?.image ?? world?.image;
+  const partyAnchor = place?.anchor ?? null;
+  const image = world?.atlas?.image ?? world?.image;
   const aspect = image ? image.width / image.height : 1;
   // Cover the pane at the first step: neighbors fill the screen, with no sheet gutters.
   const canvasWidth = Math.max(viewportSize.width, viewportSize.height * aspect) * zoom;
   const level = world?.atlas ? atlasLevel(world.atlas, canvasWidth * (globalThis.devicePixelRatio || 1)) : null;
-  const tiles = level?.tiles ?? crop?.tiles;
-  const tileImage = level?.image ?? crop?.image;
+  const tiles = level?.tiles;
+  const tileImage = level?.image;
   const discovered = new Set(Object.keys(discoveries));
   const routes = world ? visibleMapRoutes(world.routes ?? [], world.places, discovered) : [];
   const atDetail = step === zoomSteps.length - 1;
@@ -103,6 +103,19 @@ export function WorldMapPanel(): ReactElement {
     if (id) markFieldGuideSeen(id);
     setEntryId(id);
   };
+  const openCard = (id: string) => {
+    setCardId(id);
+    cue("page-turn");
+  };
+  const cardPlace = cardId ? Object.values(world?.places ?? {}).find((known) => known.id === cardId) : undefined;
+  const cardRegion = cardId ? Object.values(world?.regions ?? {}).find((known) => known.placeId === cardId) : undefined;
+
+  useEffect(() => {
+    if (!cardId) return;
+    const close = (event: KeyboardEvent) => { if (event.key === "Escape") setCardId(null); };
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, [cardId]);
 
   useEffect(() => {
     const view = viewport.current;
@@ -114,13 +127,30 @@ export function WorldMapPanel(): ReactElement {
     return () => observer.disconnect();
   }, [ready]);
 
+  // The guide feeds an open entry, and a card's painting and danger.
+  const wantGuide = Boolean((entryId && discoveries[entryId]) || cardId);
   useEffect(() => {
-    if (!entryId || !discoveries[entryId]) return;
+    if (!wantGuide) return;
     let live = true;
     setGuideFailed(false);
     loadFieldGuide().then((data) => { if (live) setGuide(data); }, () => { if (live) setGuideFailed(true); });
     return () => { live = false; };
-  }, [entryId, discoveries]);
+  }, [wantGuide]);
+
+  /*
+   * Clouds hang over every region the household has not found. A region found
+   * since this device last looked keeps its cloud for one more moment, which
+   * rolls back as the map opens: the map grows with the story. The snapshot
+   * is taken once per visit, so a lifted cloud stays lifted while it is open.
+   */
+  const [cloudsAtOpen] = useState(revealedClouds);
+  const regions = Object.values(world?.regions ?? {});
+  const lifting = regions.filter((r) => discoveries[r.placeId] && !cloudsAtOpen.has(r.placeId)).map((r) => r.placeId);
+  const liftingKey = lifting.join(",");
+  useEffect(() => {
+    if (liftingKey) markCloudsRevealed(liftingKey.split(","));
+  }, [liftingKey]);
+  const trail = world ? wobblyPath(explorerTrail(world.places, discoveries).map((known) => known.anchor)) : "";
 
   /*
    * Keep the party in the middle of the pane: on open, and again every time
@@ -135,17 +165,17 @@ export function WorldMapPanel(): ReactElement {
     // `scrollTo` is absent on elements in jsdom; the tests are not about panning.
     if (!view || typeof view.scrollTo !== "function") return;
     if (world?.atlas && canvasWidth <= 0) return;
-    const focus = getAtlasCenter(scope) ?? selectedRoute?.points[Math.floor(selectedRoute.points.length / 2)] ??
-      (world?.atlas && regionPlace ? regionPlace.anchor : null);
+    const focus = getAtlasCenter(scope) ?? selectedRoute?.points[Math.floor(selectedRoute.points.length / 2)] ?? null;
     view.scrollTo({
       left: focus ? focus.x / 1000 * canvasWidth - view.clientWidth / 2 : pin ? pin.offsetLeft - view.clientWidth / 2 : 0,
       top: focus ? focus.y / 1000 * canvasWidth / aspect - view.clientHeight / 2 : pin ? pin.offsetTop - view.clientHeight / 2 : 0,
     });
-  }, [zoom, place?.id, regionId, canvasWidth, routeId, scope]);
+  }, [zoom, place?.id, canvasWidth, routeId, scope]);
 
   // A new chapter is a new country: start from the whole realm again.
   useEffect(() => {
     setEntryId(null);
+    setCardId(null);
   }, [scope]);
 
   if (state === null || chapterId === null) {
@@ -203,19 +233,6 @@ export function WorldMapPanel(): ReactElement {
         </div>
       </header>
 
-      {world.regions && Object.keys(world.regions).length > 0 ? (
-        <nav className="atlas__regions" aria-label="Map region">
-          <Button size="md" variant="secondary" aria-pressed={!region}
-            onClick={() => { setRegionId(null); setStep(0); setEntryId(null); setRouteId(null); }}>Whole realm</Button>
-          {Object.keys(world.regions).map((id) => (
-            <Button key={id} size="md" variant="secondary" aria-pressed={regionId === id}
-              onClick={() => { setRegionId(id); setStep(world.atlas ? 1 : 0); setEntryId(null); setRouteId(null); }}>
-              {world.places[id]?.title ?? id}
-            </Button>
-          ))}
-        </nav>
-      ) : null}
-      {region ? <p className="atlas__region-note">{regionPlace?.title}: {region.description}</p> : null}
       {(world.routes?.length ?? 0) > 0 ? <div className="atlas__route-controls">
         <label><input type="checkbox" checked={showRoutes} onChange={(event) => setShowRoutes(event.target.checked)} /> Routes</label>
         {atDetail ? <span>Solid: mapped · Dashed: approximate</span> : <span>Routes appear at the closest zoom.</span>}
@@ -238,7 +255,35 @@ export function WorldMapPanel(): ReactElement {
         </aside>
       ) : null}
 
+      {cardPlace ? (
+        <aside className="atlas__card" role="dialog" aria-labelledby="atlas-card-title" data-place={cardPlace.id}>
+          <div className="atlas__card-head">
+            <span className={`atlas__card-art${discoveries[cardPlace.id] ? "" : " atlas__card-art--mystery"}`} aria-hidden="true">
+              {guide?.entries[cardPlace.id]?.art ? <img src={guide.entries[cardPlace.id]!.art} alt="" /> : <Icon name="leaf" />}
+              {discoveries[cardPlace.id] ? null : <span className="atlas__card-q">?</span>}
+            </span>
+            <div className="atlas__card-words">
+              <h3 className="atlas__card-title" id="atlas-card-title">{cardPlace.title}</h3>
+              {!discoveries[cardPlace.id] || guide ? (() => {
+                const badge = dangerBadge(guide?.entries[cardPlace.id]?.danger_level, Boolean(discoveries[cardPlace.id]));
+                return <span className="atlas__badge" data-testid="danger"><span aria-hidden="true">{badge.icon}</span> {badge.label}</span>;
+              })() : null}
+            </div>
+            <Button variant="ghost" size="md" icon={<Icon name="close" />} aria-label="Close" onClick={() => setCardId(null)} />
+          </div>
+          {cardRegion ? <p className="atlas__card-text">{cardRegion.description}</p> : null}
+          {discoveries[cardPlace.id] ? (
+            <Button variant="secondary" size="md" block
+              onClick={() => { setCardId(null); selectEntry(cardPlace.id); }}>Read in Field Guide</Button>
+          ) : <p className="atlas__card-hint">Not explored yet.</p>}
+        </aside>
+      ) : null}
+
       <div className="atlas__viewport kad-scroll" ref={viewport} data-zoom={zoom}
+        onClick={(event) => {
+          // A tap on the painting itself puts the card away; a tap on a label opens one.
+          if (!(event.target as Element).closest("button")) setCardId(null);
+        }}
         onScroll={(event) => {
           const view = event.currentTarget;
           const sheet = view.firstElementChild as HTMLElement | null;
@@ -285,8 +330,23 @@ export function WorldMapPanel(): ReactElement {
                   width: `${tile.width / patch.image.width * 100}%`, height: `${tile.height / patch.image.height * 100}%` }} />)}
             </div>
           )) : null}
+          {regions.map((r) => {
+            const found = Boolean(discoveries[r.placeId]);
+            const isLifting = lifting.includes(r.placeId);
+            // No cloud over found country, nor over the ground the party stands on.
+            if (!isLifting && (found || r.placeId === place?.id)) return null;
+            return <div key={r.placeId} aria-hidden="true" data-cloud={r.placeId}
+              className={`atlas__cloud${isLifting ? " atlas__cloud--lifting" : ""}`}
+              style={{ left: `${r.bounds.x / 10}%`, top: `${r.bounds.y / 10}%`,
+                width: `${r.bounds.width / 10}%`, height: `${r.bounds.height / 10}%` }} />;
+          })}
+          {trail ? <svg className="atlas__trail" aria-hidden="true" viewBox="0 0 1000 1000" preserveAspectRatio="none"
+            data-testid="explorer-trail">
+            <path className="atlas__trail-halo" d={trail} vectorEffect="non-scaling-stroke" />
+            <path className="atlas__trail-ink" d={trail} vectorEffect="non-scaling-stroke" />
+          </svg> : null}
           {atDetail && showRoutes ? <svg className="atlas__routes" aria-hidden="true"
-            viewBox={crop ? `${crop.bounds.x} ${crop.bounds.y} ${crop.bounds.width} ${crop.bounds.height}` : "0 0 1000 1000"}
+            viewBox="0 0 1000 1000"
             preserveAspectRatio="none">
             {routes.map((route) => <g key={route.id} data-route={route.id} data-accuracy={route.accuracy}
               className={routeId === route.id ? "atlas__route--selected" : undefined}>
@@ -295,19 +355,23 @@ export function WorldMapPanel(): ReactElement {
             </g>)}
           </svg> : null}
           {visibleMapPlaces(world.places, new Set(Object.keys(discoveries))).map((known) => {
-            const anchor = crop ? regionalAnchor(known.anchor, crop.bounds) : known.anchor;
-            if (!anchor || known.id === place?.id) return null;
+            const anchor = known.anchor;
+            if (known.id === place?.id) return null;
             const isDiscovered = Boolean(discoveries[known.id]);
-            // Small-scale labels wait until zoomed in; region framing keeps them sparse.
-            if (!region && step === 0 && known.kind === "location") return null;
-            return isDiscovered ? (
-              <button key={known.id} type="button" className="atlas__landmark kad-focusable"
+            // Small-scale labels wait until zoomed in.
+            if (step === 0 && known.kind === "location") return null;
+            // Regions open their card, found or not; a found site goes straight to its entry.
+            const isRegion = known.kind === "biome";
+            return (
+              <button key={known.id} type="button"
+                className={`atlas__landmark kad-focusable${isDiscovered ? "" : " atlas__landmark--region"}`}
                 style={{ left: `${anchor.x / 10}%`, top: `${anchor.y / 10}%` }}
-                onClick={() => selectEntry(known.id)} aria-label={`Read about ${known.title}`}>
+                aria-pressed={isRegion ? cardId === known.id : undefined}
+                onClick={() => (isRegion ? openCard(known.id) : selectEntry(known.id))}
+                aria-label={isRegion ? `About ${known.title}` : `Read about ${known.title}`}>
                 {known.title}
               </button>
-            ) : <span key={known.id} className="atlas__landmark atlas__landmark--region"
-              style={{ left: `${anchor.x / 10}%`, top: `${anchor.y / 10}%` }}>{known.title}</span>;
+            );
           })}
           {place && partyAnchor ? (
             <div
@@ -321,6 +385,9 @@ export function WorldMapPanel(): ReactElement {
               aria-current="location"
             >
               <span className="atlas__party" aria-hidden="true">
+                {[-1.8, 1.6, -0.7, 0.9, 0].map((dx, i) => (
+                  <span key={i} className="atlas__sparkle" style={{ "--dx": `${dx}em`, "--i": i } as CSSProperties} />
+                ))}
                 {party.slice(0, 4).map((member) => (
                   <span className="atlas__face" key={member.playerId}>
                     <CharacterPortrait
@@ -336,7 +403,9 @@ export function WorldMapPanel(): ReactElement {
                 ))}
               </span>
               <span className="atlas__label">
-                <span className="atlas__place">{place.title}</span>
+                {place.kind === "biome" ? <button type="button" className="atlas__place atlas__place--button kad-focusable"
+                  aria-label={`About ${place.title}`} onClick={() => openCard(place.id)}>{place.title}</button>
+                  : <span className="atlas__place">{place.title}</span>}
                 <span className="atlas__here">You are here</span>
                 {discoveries[place.id] ? <button type="button" className="atlas__read kad-focusable"
                   onClick={() => selectEntry(place.id)} aria-label={`Read about ${place.title}`}>Field Guide</button> : null}
