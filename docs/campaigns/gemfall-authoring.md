@@ -350,6 +350,24 @@ next scene must be true for a party that did not see that variant. Anything late
 on (who is friendly, what was given, which door is open) goes in a choice with a `setFlag`,
 not in a variant. Likewise do not hide the only way forward behind a `when`.
 
+### Running the narration audit
+
+Steered parties (empty-handed, full collection, solo, and the 07h/07l runs at no facets and
+nine or more) play the whole campaign through the real server and record every composed line
+and choice label with the party as it stood. `narration-audit.ts` judges them: stones named or
+counted that the party does not hold, party-counted wording ("both of you") shown to a party
+of one, unfilled `{tokens}`, and missing band text in the finale. To see every offender, with
+chapter, scene and line, instead of a pass/fail:
+
+```
+KAD_AUDIT_REPORT=1 npx vitest run packages/server/src/handlers/gemfall-playthrough.test.ts --reporter=verbose
+```
+
+Without the variable the same assertions fail the test with that list. The cheap static
+version, `tools/content/gemfall-flow.test.mjs`, greps for party-counted phrases; a phrase that
+is right because it counts the party *and* an NPC goes in its `PARTY_COUNT_ALLOWED` list with a
+reason.
+
 ### Semantics
 
 - **Fields are ANDed.** Every field present in a `Condition` must hold; an empty `{}` always
