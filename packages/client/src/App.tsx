@@ -21,6 +21,7 @@ import { ConnectionBanner, ErrorToast, Spinner } from "./ui";
 
 import { AudioControl } from "./audio";
 import { musicForScene } from "./audio/scene-audio";
+import { PhoneMagic } from "./ui/PhoneMagic";
 
 export function App(): React.JSX.Element {
   const route = useRoute();
@@ -58,14 +59,14 @@ export function App(): React.JSX.Element {
   }, [route, attach]);
 
   return (
-    <>
+    <PhoneMagic enabled={route.name !== "tv"}>
       <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
       {pickLayout()}
       <ErrorToast />
       {/* Shell-level like the toast, and for the same reason: a dropped
           connection is true on every surface in every mode at once. */}
       <ConnectionBanner />
-    </>
+    </PhoneMagic>
   );
 
   function pickLayout(): React.JSX.Element {
