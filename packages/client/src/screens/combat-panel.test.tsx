@@ -1062,7 +1062,8 @@ describe("what just happened", () => {
     expect(log.textContent).toContain("You take 3. 7 left.");
 
     // And a fight that ends takes its log with it. The next one starts with
-    // the box already in its place, empty, so its first beat moves nothing.
+    // the box already in its place, holding only its opening line, so its
+    // first beat moves nothing.
     act(() => {
       useGameStore.setState({ state: { ...current, encounter: null } });
     });
@@ -1070,7 +1071,8 @@ describe("what just happened", () => {
       useGameStore.setState({ state: { ...current, encounter: { ...encounterWith(), startedAt: 99 } } });
     });
     const fresh = screen.getByRole("list", { name: "What just happened" });
-    expect(within(fresh).queryAllByRole("listitem")).toEqual([]);
+    expect(within(fresh).getAllByRole("listitem").map((li) => li.textContent)).toEqual(["The fight is on!"]);
+    expect(fresh.textContent).not.toContain("You take 3");
   });
 
   it("shows the last beat on the phone, and the d20 as its parts", () => {

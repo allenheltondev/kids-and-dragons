@@ -460,7 +460,11 @@ export function CombatControls(): ReactElement | null {
               "s" keeps its room at 1 step, so 2 → 1 does not shift a thing. */}
           <span className="kad-chip combat__steps" style={seat(!encounter.actionTaken || moves.length > 0)}>
             <Icon name="steps" />
-            {encounter.stepsLeft} step<span style={seat(encounter.stepsLeft !== 1)}>s</span>
+            {/* One span: the chip is a flex row, and a bare "s" beside it was
+                its own item, set off by the chip's gap as "step s". */}
+            <span>
+              {encounter.stepsLeft} step<span style={seat(encounter.stepsLeft !== 1)}>s</span>
+            </span>
           </span>
         </h3>
       ) : (
@@ -1110,6 +1114,9 @@ function BeatLog({ beats }: { beats: readonly Beat[] }): ReactElement {
   }, [beats]);
   return (
     <ol className="combat__log" aria-label="What just happened" ref={ref}>
+      {/* The box is up from the first moment of the fight; empty, it read as
+          something broken. */}
+      {beats.length === 0 ? <li className="combat__beat combat__beat--quiet">The fight is on!</li> : null}
       {beats.map((beat) => (
         <li key={beat.key} className={`combat__beat combat__beat--${beat.tone}`}>
           {beat.roll ? (

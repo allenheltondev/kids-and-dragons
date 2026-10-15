@@ -138,6 +138,10 @@
   margin-block-start: auto;
 }
 
+.combat__beat--quiet {
+  color: var(--color-text-muted, #b7b0d8);
+}
+
 .combat__beat--good {
   color: var(--color-success, #4ad991);
 }
