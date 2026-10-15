@@ -8,8 +8,23 @@
  */
 
 import type { Chapter, Combatant, EncounterState, PartyMember, Position } from "@kad/shared";
-import { currentActorId, enemyArtId } from "@kad/shared";
+import { currentActorId, enemyArtId, environmentView } from "@kad/shared";
 import { facingFor, type Facing } from "../world/board-math";
+import { CAPTIVE_ICON, EXIT_ICON, hazardIcon } from "./environment-copy";
+
+/**
+ * What the ground on a square is, in a fight with an environment (#201): a
+ * hazard, a rift exit, or the captive. One per square — the authoring check
+ * never lets two share one. Carried as a glyph and words, never a colour.
+ */
+export interface GridFeature {
+  readonly kind: "hazard" | "exit" | "captive";
+  readonly label: string;
+  /** icons.tsx name — the shape that marks the square. */
+  readonly icon: string;
+  /** A hazard burning this round, an exit open this round, a captive still waiting. */
+  readonly active: boolean;
+}
 
 export interface GridOccupant {
   readonly id: string;
@@ -43,6 +58,8 @@ export interface GridCell {
    * four. Size, not colour, so it survives colour blindness (spec §11).
    */
   readonly nearness: number | null;
+  /** The environment's mark on this square (#201). Absent in an ordinary fight. */
+  readonly feature?: GridFeature;
 }
 
 /**
@@ -110,10 +127,13 @@ export function gridCells(
     });
   }
 
+  const features = featuresOf(encounter);
+
   const cells: GridCell[] = [];
   for (let y = 0; y < board.height; y++) {
     for (let x = 0; x < board.width; x++) {
       const key = `${x},${y}`;
+      const feature = features.get(key);
       cells.push({
         x,
         y,
@@ -122,10 +142,38 @@ export function gridCells(
         tappable: tapKeys.has(key),
         selected: selectedKeys.has(key),
         nearness: nearnessOf(costs.get(key), farthest),
+        ...(feature ? { feature } : {}),
       });
     }
   }
   return cells;
+}
+
+/**
+ * Every square the environment marks, by `"x,y"`. Empty without one. A
+ * captive who has been freed or lost is no longer on the board, and an exit
+ * that has closed for good is no longer a way out, so neither is marked.
+ */
+function featuresOf(encounter: EncounterState): Map<string, GridFeature> {
+  const out = new Map<string, GridFeature>();
+  const view = environmentView(encounter);
+  if (!view) return out;
+  for (const hazard of view.hazards) {
+    for (const t of hazard.tiles) {
+      out.set(`${t.x},${t.y}`, { kind: "hazard", label: hazard.label, icon: hazardIcon(hazard.kind), active: hazard.active });
+    }
+  }
+  for (const exit of view.exits) {
+    if (exit.gone) continue;
+    for (const t of exit.tiles) {
+      out.set(`${t.x},${t.y}`, { kind: "exit", label: exit.label, icon: EXIT_ICON, active: exit.open });
+    }
+  }
+  if (view.rescue?.status === "waiting") {
+    const { at, name } = view.rescue;
+    out.set(`${at.x},${at.y}`, { kind: "captive", label: name, icon: CAPTIVE_ICON, active: true });
+  }
+  return out;
 }
 
 /**

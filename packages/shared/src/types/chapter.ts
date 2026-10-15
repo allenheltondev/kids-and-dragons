@@ -364,6 +364,118 @@ export interface EncounterMap {
   enemySpawns: { x: number; y: number }[];
 }
 
+/** A tile of the battle map, as `EncounterMap` spawns are written. */
+export interface MapTile {
+  x: number;
+  y: number;
+}
+
+/**
+ * The place fighting back (#201): an encounter that happens *in* a rift
+ * rather than merely beside one. Every part is optional and opt-in per scene;
+ * a scene without `environment` — every chapter written before it, Gemfall's
+ * sixteen included — fights exactly as it always did. The rules are in
+ * `environment.ts` and `endTurnWithEvents` (encounter.ts); the authoring
+ * contract is docs/campaigns/graph-campaigns.md, "Environmental combat".
+ *
+ * Everything here is read at **turn ends and round starts**, never in the
+ * middle of a move or a swing: "where you stop" is a rule an 8-year-old can
+ * plan around, and it keeps the base combat loop — moves, actions, legality —
+ * exactly what it was.
+ */
+export interface EncounterEnvironment {
+  clock?: RiftClock;
+  hazards?: EnvironmentHazard[];
+  exits?: RiftExit[];
+  rescue?: RescueObjective;
+  relocate?: EnemyRelocation[];
+}
+
+/**
+ * The visible timer. It counts **rounds** (one full turn order: every hero
+ * and every monster once), because a round is what the table can see pass —
+ * the marker coming back round to the first seat.
+ */
+export interface RiftClock {
+  /** Rounds the fight has before the rift acts, 1 to 12. */
+  rounds: number;
+  /** What the rift does, as the phone says it: "The rift closes" → "The rift closes in 2 rounds". */
+  label: string;
+  /**
+   * `"collapse"` — when the last round ends, the fight is over and the story
+   * takes `onTimeout` (which is then required). `"surge"` — the fight goes
+   * on, but every round that starts past the clock hurts every hero still on
+   * the board by `surge` (default 1): staying is allowed, and it costs.
+   */
+  onExpire: "collapse" | "surge";
+  surge?: number;
+}
+
+/**
+ * Ground that hurts. A figure — hero or monster, the rift does not take sides
+ * — that **ends its turn** on one of `tiles` while the hazard is active takes
+ * `damage`. Walking across is free; stopping there is not. Not a hit: Brace
+ * does not redirect it and a ward does not shave it.
+ */
+export interface EnvironmentHazard {
+  id: string;
+  /** What it looks like, and so which glyph and word the phone uses. */
+  kind: "fire" | "thorns" | "rift";
+  /** What the phone calls it: "Rift fire". */
+  label: string;
+  tiles: MapTile[];
+  /** 1 to 5. */
+  damage: number;
+  /** Active from this round (default 1) … */
+  fromRound?: number;
+  /** … through this one (default: the rest of the fight). */
+  untilRound?: number;
+}
+
+/**
+ * A way out that is only sometimes there. A hero who **ends their turn** on
+ * one of `tiles` while it is open steps through and leaves the fight. Once
+ * every hero still standing has gone (knocked-down friends are pulled
+ * through by the others — nobody is left on the board, §7.3), the fight ends
+ * and the story takes `onEscape` (which is then required).
+ */
+export interface RiftExit {
+  id: string;
+  label: string;
+  tiles: MapTile[];
+  /** Open from this round (default 1) … */
+  opensRound?: number;
+  /** … through this one (default: the rest of the fight). */
+  closesRound?: number;
+}
+
+/**
+ * Somebody to save. The captive stands on `at` (nobody else can) until a
+ * hero **ends a turn** next to them, which frees them. A captive not freed by
+ * the end of round `byRound` — or, without one, by the time the clock runs
+ * out — is lost to the rift. `effects` apply when the fight ends, however it
+ * ends, if the captive was freed; they are where the rescue becomes a story
+ * fact (`setFlag`, then a journey flag and a node's `onComplete`).
+ */
+export interface RescueObjective {
+  /** "Pip the ferry-sprite". */
+  name: string;
+  at: MapTile;
+  byRound?: number;
+  effects?: Effect[];
+}
+
+/**
+ * The rift spits a monster somewhere else. At the start of `round`, enemy
+ * `enemy` — a derived id, `<spec id>#<n>` (encounter.ts) — is moved to `to`,
+ * if it is still standing and the tile is free.
+ */
+export interface EnemyRelocation {
+  round: number;
+  enemy: string;
+  to: MapTile;
+}
+
 export interface EncounterScene {
   type: "encounter";
   map: string;
@@ -379,6 +491,12 @@ export interface EncounterScene {
   onVictory: Branch;
   /** Never a game over — the story branches. spec §7.3. */
   onDefeat: Branch;
+  /** The place fighting back (#201). See `EncounterEnvironment`. */
+  environment?: EncounterEnvironment;
+  /** Every hero still standing went out through an open `environment.exits` tile. */
+  onEscape?: Branch;
+  /** A `"collapse"` clock ran out with the fight still on. */
+  onTimeout?: Branch;
   /**
    * The chapter-4 gate. The engine's combat is built and tested, but until the
    * phones grow a combat UI (docs/briefs/combat-rendering.md) a fight is a
@@ -407,7 +525,8 @@ export type SceneType = Scene["type"];
  *
  * A chapter ends at a scene with nowhere left to go, and the only representable
  * way to say that is an empty `choices` array (content/README.md) — so a check
- * or an encounter can never be one, since both always carry two branches. A
+ * or an encounter can never be one, since both always carry at least two
+ * branches (an environmental encounter, #201, may carry four). A
  * chapter may have several endings, which is exactly why the outcome is
  * declared on the scene rather than on the chapter: spec §8.2 wants "which
  * endings are setbacks" to be authored, not inferred.

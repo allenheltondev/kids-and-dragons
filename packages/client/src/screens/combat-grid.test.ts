@@ -101,3 +101,30 @@ describe("turnKey", () => {
     expect(turnKey(null)).toBe("none");
   });
 });
+
+describe("the environment's marks (#201)", () => {
+  it("marks hazard, exit and captive squares — and nothing in an ordinary fight", () => {
+    const character = makeCharacter({ stats: { might: 2, quick: 25, clever: 3, heart: 5 } });
+    const ctx: EncounterContext = { rules: { version: 1 } as unknown as RulesContent, abilities: {}, rng: makeRng("grid-env") };
+    const encounter = beginEncounter(
+      {
+        board: parseBoard(["....", "....", "....", "...."]),
+        party: [{ character, at: { x: 0, y: 0 } }],
+        enemies: [{ spec: WISP, at: { x: 3, y: 3 } }],
+        environment: {
+          hazards: [{ id: "fire", kind: "fire", label: "Rift fire", tiles: [{ x: 1, y: 1 }], damage: 1 }],
+          exits: [{ id: "tear", label: "The tear", tiles: [{ x: 3, y: 0 }], opensRound: 2 }],
+          rescue: { name: "Pip", at: { x: 0, y: 3 } },
+        },
+      },
+      ctx,
+    );
+    const cells = gridCells(encounter, [makeMember()], legalMoves(encounter), []);
+    const at = (x: number, y: number) => cells.find((c) => c.x === x && c.y === y)!;
+    expect(at(1, 1).feature).toEqual({ kind: "hazard", label: "Rift fire", icon: "flame", active: true });
+    expect(at(3, 0).feature).toMatchObject({ kind: "exit", active: false });
+    expect(at(0, 3)).toMatchObject({ blocked: true, feature: { kind: "captive", label: "Pip" } });
+    expect(cells.filter((c) => c.feature)).toHaveLength(3);
+    expect(gridCells(fight(), [makeMember()], [], []).some((c) => "feature" in c)).toBe(false);
+  });
+});

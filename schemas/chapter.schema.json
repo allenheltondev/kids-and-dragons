@@ -1089,6 +1089,17 @@
           "description": "Losing branches the story; it is never a game over (spec \u00a77.3), which is why it is required.",
           "$ref": "#/$defs/branch"
         },
+        "environment": {
+          "$ref": "#/$defs/encounterEnvironment"
+        },
+        "onEscape": {
+          "description": "#201 \u2014 every hero still standing stepped out through an open environment exit. Required with exits, refused without them (content:validate).",
+          "$ref": "#/$defs/branch"
+        },
+        "onTimeout": {
+          "description": "#201 \u2014 a \"collapse\" clock ran out with the fight still on. Required with one, refused without one (content:validate).",
+          "$ref": "#/$defs/branch"
+        },
         "autoResolve": {
           "description": "The chapter-4 gate (chapter.ts). The engine's combat is built, but until the phones grow a combat UI (docs/briefs/combat-rendering.md) a fight is a scene nobody can tap \u2014 so a gated encounter resolves straight through onVictory. Turning the fight on is deleting this line.",
           "const": "victory"
@@ -1209,6 +1220,219 @@
       "minItems": 1,
       "items": {
         "$ref": "#/$defs/narrationVariant"
+      }
+    },
+    "mapTile": {
+      "description": "A tile of the 10x8 battle map, as map spawns are written. content:validate checks it is on open ground of the scene's map.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "x",
+        "y"
+      ],
+      "properties": {
+        "x": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9
+        },
+        "y": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        }
+      }
+    },
+    "encounterEnvironment": {
+      "description": "EncounterEnvironment in chapter.ts (#201): the place fighting back. Every part optional; a scene without it fights exactly as before. Rules fire at turn ends and round starts only. See docs/campaigns/graph-campaigns.md, \"Environmental combat (#201)\".",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "clock": {
+          "description": "The visible rift timer, in rounds. collapse: the fight ends after the last round and takes onTimeout. surge: it goes on, and every later round hurts each hero by `surge` (default 1).",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "rounds",
+            "label",
+            "onExpire"
+          ],
+          "properties": {
+            "rounds": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 12
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "onExpire": {
+              "enum": [
+                "collapse",
+                "surge"
+              ]
+            },
+            "surge": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 3
+            }
+          }
+        },
+        "hazards": {
+          "description": "Ground that hurts: a figure that ENDS its turn on an active hazard tile takes `damage`.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "kind",
+              "label",
+              "tiles",
+              "damage"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+([-_][a-z0-9]+)*$"
+              },
+              "kind": {
+                "enum": [
+                  "fire",
+                  "thorns",
+                  "rift"
+                ]
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "tiles": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "#/$defs/mapTile"
+                }
+              },
+              "damage": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+              },
+              "fromRound": {
+                "description": "Active from this round (default 1).",
+                "type": "integer",
+                "minimum": 1
+              },
+              "untilRound": {
+                "description": "Active through this round (default: the rest of the fight).",
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        },
+        "exits": {
+          "description": "Timed ways out: a hero who ENDS a turn on an open exit tile steps through. When every standing hero is through, the fight takes onEscape.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "label",
+              "tiles"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+([-_][a-z0-9]+)*$"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "tiles": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "#/$defs/mapTile"
+                }
+              },
+              "opensRound": {
+                "description": "Open from this round (default 1).",
+                "type": "integer",
+                "minimum": 1
+              },
+              "closesRound": {
+                "description": "Open through this round (default: the rest of the fight).",
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        },
+        "rescue": {
+          "description": "Somebody to save, standing on `at`. Freed when a hero ENDS a turn beside them; lost after `byRound` (default: when the clock runs out). `effects` apply when the fight ends, if freed.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "at"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "at": {
+              "$ref": "#/$defs/mapTile"
+            },
+            "byRound": {
+              "description": "The last round they can be freed in.",
+              "type": "integer",
+              "minimum": 1
+            },
+            "effects": {
+              "$ref": "#/$defs/effects"
+            }
+          }
+        },
+        "relocate": {
+          "description": "The rift moves a monster: at the start of `round`, enemy `<spec id>#<n>` goes to `to`, if it still stands and the tile is free.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "round",
+              "enemy",
+              "to"
+            ],
+            "properties": {
+              "round": {
+                "type": "integer",
+                "minimum": 2
+              },
+              "enemy": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*#[1-9][0-9]*$"
+              },
+              "to": {
+                "$ref": "#/$defs/mapTile"
+              }
+            }
+          }
+        }
       }
     }
   }

@@ -59,6 +59,9 @@ export function exitsOf(scene: Scene): { label: string | null; goto: SceneId }[]
       return dedupe([
         { label: "won the fight", goto: scene.onVictory.goto },
         { label: "lost the fight", goto: scene.onDefeat.goto },
+        // An environmental fight's other endings (#201).
+        ...(scene.onEscape ? [{ label: "got away through the rift", goto: scene.onEscape.goto }] : []),
+        ...(scene.onTimeout ? [{ label: "ran out of time", goto: scene.onTimeout.goto }] : []),
       ]);
     case "check":
       return dedupe([

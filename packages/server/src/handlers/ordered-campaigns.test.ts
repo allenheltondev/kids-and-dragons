@@ -381,6 +381,39 @@ describe("Gemfall's numbers, with temporary buffs in the build (#200)", () => {
     expect(digest).toBe(GOLDEN);
   });
 
+  /*
+   * Environmental combat (#201) is opt-in per encounter scene, and a fight
+   * whose scene declares no `environment` is handed straight to the base turn
+   * hand-over. The digest above already pins the numbers; this pins the
+   * reason: no shipped ordered chapter declares one, and a seeded Gemfall
+   * fight never grows an environment, an escaped hero, or an environmental
+   * beat.
+   */
+  it("has no environmental combat anywhere: no shipped ordered encounter declares one, and a fight never grows one (#201)", () => {
+    for (const campaignId of ["gemfall", "the-hollow-crown"]) {
+      const campaign = content.campaign(campaignId)!;
+      for (const chapterId of campaign.chapters) {
+        for (const scene of Object.values(content.chapter(chapterId)!.scenes)) {
+          if (scene.type !== "encounter") continue;
+          expect(scene).not.toHaveProperty("environment");
+          expect(scene).not.toHaveProperty("onEscape");
+          expect(scene).not.toHaveProperty("onTimeout");
+        }
+      }
+    }
+    const party = HEROES.map((hero) => resolveCharacter(hero, rules, items));
+    const ENVIRONMENT_BEATS = ["hazard", "escaped", "freed", "captiveLost", "relocated", "riftClock", "surge"];
+    for (const fight of [
+      playFight(party, "gemfall-02", firstEncounter("gemfall-02"), "gemfall-golden-1"),
+      playFight(party.slice(0, 2), "gemfall-03a", firstEncounter("gemfall-03a"), "gemfall-golden-2"),
+    ]) {
+      expect(fight.final).not.toHaveProperty("environment");
+      expect(fight.final.combatants.some((c) => "escaped" in c)).toBe(false);
+      expect(fight.log.flat().filter((e) => ENVIRONMENT_BEATS.includes(e.type))).toEqual([]);
+      expect(["victory", "defeat"]).toContain(fight.outcome);
+    }
+  });
+
   function firstEncounter(chapterId: string): string {
     const scenes = content.chapter(chapterId)!.scenes;
     return Object.keys(scenes).find((id) => scenes[id]!.type === "encounter")!;

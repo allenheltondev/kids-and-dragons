@@ -48,7 +48,7 @@ import { reachableScenes, sceneEdges } from "./chapter-graph.js";
 import type { Chapter, Condition, Scene, SceneId } from "./types/chapter.js";
 
 /** Where an edge comes from, which is the same thing as what kind of edge it is. */
-export type EdgeKind = "choice" | "success" | "failure" | "victory" | "defeat";
+export type EdgeKind = "choice" | "success" | "failure" | "victory" | "defeat" | "escape" | "timeout";
 
 export interface MapEdge {
   from: SceneId;
@@ -211,6 +211,13 @@ export function edgesOf(sceneId: SceneId, scene: Scene): Omit<MapEdge, "backward
                 gate: null,
               },
             ]
+          : []),
+        // An environmental fight's other endings (#201).
+        ...(scene.onEscape
+          ? [{ from: sceneId, to: scene.onEscape.goto, kind: "escape" as const, label: "got away", gate: null }]
+          : []),
+        ...(scene.onTimeout
+          ? [{ from: sceneId, to: scene.onTimeout.goto, kind: "timeout" as const, label: "ran out of time", gate: null }]
           : []),
       ];
     default:
