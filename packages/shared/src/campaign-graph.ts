@@ -46,12 +46,15 @@ import type {
   GraphEdge,
   GraphEffect,
   GraphNode,
+  GraphRift,
   FactId,
   FactValue,
   JourneyFacts,
   NodeId,
   NodeVariant,
   RevisitPolicy,
+  RiftState,
+  RiftStatus,
   WorldFact,
 } from "./types/campaign-graph.js";
 import {
@@ -389,6 +392,7 @@ export function parseCampaignGraph(
     if (nodeSet.has(typed.to)) entrances[typed.to]!.push(id);
     checkCondition(`${at}/when`, typed.when);
     checkEffects(`${at}/effects`, typed.effects);
+    if (typed.rift !== undefined) checkRift(id, typed, rawEdges, fail, checkCondition);
     edges[id] = { ...typed, blocked: typed.blocked ?? "hidden" };
   }
 
@@ -422,6 +426,90 @@ export function parseCampaignGraph(
     },
     problems,
   };
+}
+
+const isCount = (value: unknown): boolean => Number.isInteger(value) && (value as number) >= 1;
+
+/** The lifecycle half of a rift — what a linked pair must declare alike. */
+const lifecycleOf = (rift: GraphRift): string =>
+  JSON.stringify([rift.opensWhen ?? null, rift.persistent ?? null, rift.uses ?? null, rift.lasts ?? null, rift.unstable ?? null]);
+
+/**
+ * A rift declaration (#196), in `parseCampaignGraph`'s terms: the names it
+ * uses resolve, its numbers are counts, and its properties do not contradict
+ * each other. Whether a party can get *stuck* on one is the lint's (#193's
+ * search, which tracks rift state).
+ */
+function checkRift(
+  id: EdgeId,
+  edge: GraphEdge,
+  rawEdges: Record<string, unknown>,
+  fail: (path: string, problem: string) => void,
+  checkCondition: (path: string, raw: unknown) => void,
+): void {
+  const at = `/edges/${seg(id)}/rift`;
+  if (!isRecord(edge.rift)) {
+    fail(at, "a rift must be an object");
+    return;
+  }
+  const rift = edge.rift as GraphRift;
+  if (rift.uses !== undefined && !isCount(rift.uses)) fail(`${at}/uses`, "uses must be a whole number of crossings, at least 1");
+  if (rift.lasts !== undefined) {
+    if (!isRecord(rift.lasts)) fail(`${at}/lasts`, "lasts must be { unit, count }");
+    else {
+      if (rift.lasts.unit !== "visits" && rift.lasts.unit !== "chapters") {
+        fail(`${at}/lasts/unit`, `unit ${JSON.stringify(rift.lasts.unit)} is not "visits" or "chapters" (turn timing is #201's)`);
+      }
+      if (!isCount(rift.lasts.count)) fail(`${at}/lasts/count`, "count must be a whole number, at least 1");
+    }
+  }
+  if (rift.unstable !== undefined) {
+    if (!isRecord(rift.unstable)) fail(`${at}/unstable`, "unstable must be an object");
+    else {
+      const { flicker, collapsesAfter } = rift.unstable;
+      if (flicker === undefined && collapsesAfter === undefined) {
+        fail(`${at}/unstable`, "an unstable rift needs a flicker, a collapsesAfter, or both");
+      }
+      if (flicker !== undefined && (!isRecord(flicker) || !isCount(flicker.open) || !isCount(flicker.shut))) {
+        fail(`${at}/unstable/flicker`, "flicker must be { open, shut }, each a whole number of visits, at least 1");
+      }
+      if (collapsesAfter !== undefined && !isCount(collapsesAfter)) {
+        fail(`${at}/unstable/collapsesAfter`, "collapsesAfter must be a whole number of crossings, at least 1");
+      }
+    }
+  }
+  if (rift.reveal !== undefined && !(["always", "when-open", "when-crossed"] as unknown[]).includes(rift.reveal)) {
+    fail(`${at}/reveal`, `reveal ${JSON.stringify(rift.reveal)} is not "always", "when-open" or "when-crossed"`);
+  }
+  checkCondition(`${at}/opensWhen`, rift.opensWhen);
+  if (rift.persistent === true) {
+    for (const key of ["uses", "lasts", "unstable"] as const) {
+      if (rift[key] !== undefined) {
+        fail(`${at}/${key}`, `a persistent rift stays open for good once open, so it cannot also have "${key}"`);
+      }
+    }
+  }
+  if (rift.linkedTo !== undefined) {
+    const partner = typeof rift.linkedTo === "string" ? rawEdges[rift.linkedTo] : undefined;
+    const partnerRift = isRecord(partner) ? (partner as unknown as GraphEdge).rift : undefined;
+    if (rift.linkedTo === id) fail(`${at}/linkedTo`, "a rift cannot be linked to itself");
+    else if (!isRecord(partner)) fail(`${at}/linkedTo`, `no edge "${rift.linkedTo}"`);
+    else if (!isRecord(partnerRift)) fail(`${at}/linkedTo`, `"${rift.linkedTo}" is not a rift, so it cannot share this one's state`);
+    else if (partnerRift.linkedTo !== id) {
+      fail(`${at}/linkedTo`, `"${rift.linkedTo}" does not link back to "${id}"; a linked pair names each other`);
+    } else {
+      if (lifecycleOf(rift) !== lifecycleOf(partnerRift)) {
+        fail(
+          `${at}/linkedTo`,
+          `"${id}" and "${rift.linkedTo}" are one rift, so they must declare the same opensWhen, persistent, uses, lasts and unstable`,
+        );
+      }
+      const other = partner as unknown as GraphEdge;
+      if (rift.oneWay === true && other.from === edge.to && other.to === edge.from) {
+        fail(`${at}/oneWay`, `"${id}" is one-way, but its partner "${rift.linkedTo}" is the same rift leading back`);
+      }
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -503,8 +591,9 @@ export interface GraphConditionContext {
  * - `"spent"` — a `once` edge already taken.
  * - `"closed"` — it leads into a `revisit: "closed"` node already completed.
  * - `"guard"` — its `when` does not hold.
+ * - then, for a rift (#196), `RiftBlock`: why the rift cannot be crossed.
  */
-export type ExitBlock = "locked" | "spent" | "closed" | "guard";
+export type ExitBlock = "locked" | "spent" | "closed" | "guard" | RiftBlock;
 
 export type ExitAvailability = { available: true } | { available: false; reason: ExitBlock };
 
@@ -527,6 +616,8 @@ export function exitAvailability(
   if (!evaluateGraphCondition(edge.when, journey, edge.from, { facts: graph.facts })) {
     return { available: false, reason: "guard" };
   }
+  const rift = riftBlock(graph, edgeId, journey);
+  if (rift !== null) return { available: false, reason: rift };
   return { available: true };
 }
 
@@ -633,4 +724,124 @@ export function completionEffects(graph: ParsedCampaignGraph, node: NodeId, jour
   return (graph.nodes[node]?.onComplete ?? [])
     .filter((rule) => evaluateGraphCondition(rule.when, journey, node, context))
     .flatMap((rule) => rule.effects);
+}
+
+// ---------------------------------------------------------------------------
+// Rifts (#196) — the read side
+// ---------------------------------------------------------------------------
+//
+// A rift is an edge with a lifecycle (`GraphRift`, `RiftStatus`). What is
+// here only *reads* one: its state as it stands, and whether it can be crossed
+// right now. What moves one — crossing, ticking its clock, settling, the
+// actions #197 will offer — is `rifts.ts`, which builds on these, so that
+// `exitAvailability` (and through it the runtime, the screens and the lint
+// search) has a single answer to "is the rift there".
+
+const RIFT_STATUSES: readonly RiftStatus[] = ["dormant", "open", "closed", "consumed", "expired", "collapsed"];
+
+/** The statuses nothing leaves — not a condition, not a clock, not an explicit open. */
+export const FINAL_RIFT_STATUSES: readonly RiftStatus[] = ["consumed", "expired", "collapsed"];
+
+/**
+ * Why a rift cannot be crossed, after the four ordinary reasons. One per
+ * status that blocks, plus the two momentary ones:
+ *
+ * - `"rift-dormant"` — not yet open (its `opensWhen` has never held), or a
+ *   non-persistent triggered rift whose condition does not hold right now.
+ * - `"rift-faded"` — unstable, and this visit to `from` is in a shut
+ *   stretch of its flicker. A later visit may find it again.
+ * - `"rift-closed"` — closed by an action (#197); only an explicit open
+ *   brings it back.
+ * - `"rift-consumed"` / `"rift-expired"` / `"rift-collapsed"` — final.
+ */
+export type RiftBlock =
+  | "rift-dormant"
+  | "rift-faded"
+  | "rift-closed"
+  | "rift-consumed"
+  | "rift-expired"
+  | "rift-collapsed";
+
+/**
+ * The edge a linked pair keeps its state *for*: the smaller of the two ids.
+ * Both records are written alike (`rifts.ts`), but reading one fixed side
+ * means two mouths can never disagree, and its `from` is the subject the
+ * pair's `opensWhen` is judged against. An unlinked rift is its own owner.
+ */
+export function riftOwner(graph: ParsedCampaignGraph, edgeId: EdgeId): EdgeId {
+  const partner = graph.edges[edgeId]?.rift?.linkedTo;
+  return partner !== undefined && graph.edges[partner]?.rift !== undefined && partner < edgeId ? partner : edgeId;
+}
+
+/**
+ * A stored record, read totally. A record that is not one — a corrupted
+ * row, a status from some later build — reads `"closed"`: blocked, and
+ * reopened only by an explicit action, because the one thing a misread rift
+ * must never do is open by accident.
+ */
+function storedRift(raw: unknown): RiftState | undefined {
+  if (raw === undefined || raw === null) return undefined;
+  if (!isRecord(raw) || !RIFT_STATUSES.includes(raw.status as RiftStatus)) return { status: "closed" };
+  return raw as unknown as RiftState;
+}
+
+/**
+ * A rift's state as it stands — the stored record (or, absent, the declared
+ * start: `"open"`, or `"dormant"` with `opensWhen`) **settled**: a dormant
+ * rift whose `opensWhen` now holds is open (age 0), and an open timed rift
+ * whose age has reached its `lasts` is expired. `rifts.ts` writes exactly
+ * this back after every journey transition, so a stored record and its
+ * reading only differ on a journey that has not been settled yet — and then
+ * every reader still agrees. `null` for an edge that is not a rift.
+ */
+export function riftState(graph: ParsedCampaignGraph, edgeId: EdgeId, journey: JourneyFacts): RiftState | null {
+  const rift = graph.edges[edgeId]?.rift;
+  if (!rift) return null;
+  const owner = riftOwner(graph, edgeId);
+  const stored = storedRift(journey.rifts?.[owner]) ?? storedRift(journey.rifts?.[edgeId]);
+  let state: RiftState = stored ?? { status: rift.opensWhen ? "dormant" : "open" };
+  if (state.status === "dormant" && rift.opensWhen) {
+    if (evaluateGraphCondition(rift.opensWhen, journey, graph.edges[owner]!.from, { facts: graph.facts })) {
+      state = {
+        ...state,
+        status: "open",
+        ...(rift.lasts ? { age: 0 } : {}),
+        ...(rift.reveal === "when-open" ? { revealed: true as const } : {}),
+      };
+    }
+  }
+  if (state.status === "open" && rift.lasts && (state.age ?? 0) >= rift.lasts.count) {
+    state = { ...state, status: "expired" };
+  }
+  return state;
+}
+
+/**
+ * Whether the rift on `edgeId` can be crossed now, and if not why — `null`
+ * for a crossable rift or an edge that is not one. `exitAvailability` asks
+ * this after its four ordinary checks.
+ */
+export function riftBlock(graph: ParsedCampaignGraph, edgeId: EdgeId, journey: JourneyFacts): RiftBlock | null {
+  const state = riftState(graph, edgeId, journey);
+  if (!state) return null;
+  if (state.status !== "open") return `rift-${state.status}`;
+  const edge = graph.edges[edgeId]!;
+  const rift = edge.rift!;
+  if (rift.opensWhen && rift.persistent !== true && state.latched !== true) {
+    if (!evaluateGraphCondition(rift.opensWhen, journey, graph.edges[riftOwner(graph, edgeId)]!.from, { facts: graph.facts })) {
+      return "rift-dormant";
+    }
+  }
+  const flicker = rift.unstable?.flicker;
+  if (flicker && !flickerOpen(flicker, count(journey.visits, edge.from))) return "rift-faded";
+  return null;
+}
+
+/**
+ * The flicker rhythm: visit ordinal `visit` to the rift's `from` is open when
+ * `(visit - 1) mod (open + shut) < open`. A node never visited reads as its
+ * first visit, which is the one the party would make.
+ */
+export function flickerOpen(flicker: { open: number; shut: number }, visit: number): boolean {
+  return (Math.max(visit, 1) - 1) % (flicker.open + flicker.shut) < flicker.open;
 }

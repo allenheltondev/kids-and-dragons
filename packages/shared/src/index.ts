@@ -31,6 +31,7 @@ export * from "./narration.js";
 export * from "./routes.js";
 export * from "./campaign-graph.js";
 export * from "./journey.js";
+export * from "./rifts.js";
 export * from "./campaign-graph-lint.js";
 export * from "./world-state.js";
 export * from "./chapter-map.js";

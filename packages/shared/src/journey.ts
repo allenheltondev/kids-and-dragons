@@ -14,6 +14,10 @@
  *   - **take an exit** (only once the visit is done): the edge counted, its
  *     effects applied, and then the destination entered.
  *
+ * Rifts (#196) move inside these three and nowhere else — crossed, aged and
+ * settled by `rifts.ts` in the order its file comment gives — so a rift's
+ * lifecycle commits with the journey write that caused it.
+ *
  * ---------------------------------------------------------------------------
  * WHY PURE, AND WHY HERE
  *
@@ -71,6 +75,7 @@ import {
   type GraphExit,
   type ParsedCampaignGraph,
 } from "./campaign-graph.js";
+import { crossRift, riftDestinationRevealed, riftView, settleRifts, tickRifts } from "./rifts.js";
 import { readFact, storedFacts, worldFacts, writeFact } from "./world-state.js";
 
 /**
@@ -431,7 +436,7 @@ export function startJourney(graph: ParsedCampaignGraph, _campaign?: JourneyCamp
     status: "playing",
     chapter: graph.nodes[graph.entry]!.chapter,
   };
-  return enter(graph, empty, graph.entry).journey;
+  return settleRifts(graph, enter(graph, empty, graph.entry).journey);
 }
 
 /**
@@ -501,8 +506,13 @@ export function completeVisit(
   const paid = journey.chaptersCompleted ?? [];
   const firstCompletion = !paid.includes(journey.chapter);
   const ended = node.ending !== undefined;
+  // Rifts (#196): the chapter that just settled is one tick of the session
+  // clock for every timed rift that was open while it played — then the
+  // completion and its rules, then whatever they opened or ended (`rifts.ts`,
+  // "when a rift moves").
+  const aged = tickRifts(graph, journey, "chapters");
   const settled: JourneyState = {
-    ...journey,
+    ...aged,
     completions: bump(journey.completions, journey.node),
     outcomes: { ...(journey.outcomes ?? {}), [journey.node]: report.outcome },
     flags: readBackFlags(graph, journey.flags, report.flags, campaign),
@@ -511,9 +521,10 @@ export function completeVisit(
     ...(ended ? { ending: journey.node } : {}),
   };
   // The node's completion rules (#198) read the journey the chapter has just
-  // produced — this outcome, the flags it handed back — and write the world.
+  // produced — this outcome, the flags it handed back — and write the world;
+  // a rift that world opens (#196) opens now, at age 0.
   const next = applyEffects(graph, settled, completionEffects(graph, journey.node, settled), campaign);
-  return { ok: true, duplicate: false, journey: next, firstCompletion, ended };
+  return { ok: true, duplicate: false, journey: settleRifts(graph, next), firstCompletion, ended };
 }
 
 /** An exit choice, as `CHOOSE_EXIT` reports it. */
@@ -564,10 +575,15 @@ export function takeExit(
     return refuse("unavailable", `"${report.edge}" cannot be taken (${availability.reason})`, availability.reason);
   }
 
+  // A rift crossing (#196) is this one party-wide move: counted against the
+  // rift (and its linked partner) first, then one tick of the move clock for
+  // every timed rift, then the edge's own bookkeeping, effects and arrival —
+  // all in the one journey this returns, so it commits whole or not at all.
+  const moved = tickRifts(graph, crossRift(graph, journey, report.edge), "visits");
   const crossed = applyEffects(
     graph,
     {
-      ...journey,
+      ...moved,
       traversed: bump(journey.traversed, report.edge),
       lastExit: { node: journey.node, visit: journey.visit, edge: report.edge },
     },
@@ -575,7 +591,7 @@ export function takeExit(
     campaign,
   );
   const entered = enter(graph, crossed, edge.to);
-  return { ok: true, duplicate: false, journey: entered.journey, arrival: entered.arrival };
+  return { ok: true, duplicate: false, journey: settleRifts(graph, entered.journey), arrival: entered.arrival };
 }
 
 // ---------------------------------------------------------------------------
@@ -598,6 +614,9 @@ export function currentPlayable(graph: ParsedCampaignGraph, journey: JourneyStat
   }
   return { kind: "play", node: journey.node, visit: journey.visit, chapter: journey.chapter };
 }
+
+/** What an unlabelled rift with a hidden destination says on the screen. */
+export const HIDDEN_RIFT_LABEL = "Into the rift";
 
 /**
  * The journey as the screens draw it (`CampaignView.journey`). `titleOf`
@@ -634,20 +653,32 @@ export function journeyView(
           .filter((exit) => exit.visible)
           .map((exit) => {
             const edge = graph.edges[exit.edge]!;
+            const rift = riftView(graph, exit.edge, journey);
+            // A rift whose destination the players have not learned (#196)
+            // must not be named by anything sent to a phone: not `to`, not a
+            // title-derived label, not an arrival that says "been there", not
+            // `changed`. Its crossing is not even simulated — what it would
+            // find is exactly what the view may not say.
+            const hidden = !riftDestinationRevealed(graph, exit.edge, journey);
             // An available exit is answered by the crossing itself, so the
             // edge's own effects count: a world fact it writes can turn the
             // destination's variant — and with it a variant's `revisit`
             // (#198) — before the party arrives. A blocked exit cannot be
             // crossed, and is told what the place is now.
-            const crossing = exit.availability.available ? simulateCrossing(graph, journey, exit.edge, campaign) : null;
-            const arrival = crossing?.arrival ?? arrivalAt(graph, exit.to, journey);
+            const crossing =
+              exit.availability.available && !hidden ? simulateCrossing(graph, journey, exit.edge, campaign) : null;
+            const arrival = hidden ? "new" : (crossing?.arrival ?? arrivalAt(graph, exit.to, journey));
             const label =
               edge.label ??
-              (arrival === "new" ? (graph.nodes[exit.to]?.title ?? "Somewhere new") : placeTitle(exit.to));
+              (hidden
+                ? HIDDEN_RIFT_LABEL
+                : arrival === "new"
+                  ? (graph.nodes[exit.to]?.title ?? "Somewhere new")
+                  : placeTitle(exit.to));
             const changed = crossing !== null && foundChanged(journey, crossing);
             return {
               edge: exit.edge,
-              to: exit.to,
+              to: hidden ? "" : exit.to,
               kind: exit.kind,
               label,
               available: exit.availability.available,
@@ -656,6 +687,8 @@ export function journeyView(
               ...(edge.irreversible === true ? { irreversible: true as const } : {}),
               ...(edge.once === true ? { once: true as const } : {}),
               ...(changed ? { changed: true as const } : {}),
+              ...(rift ? { rift } : {}),
+              ...(hidden ? { hiddenDestination: true as const } : {}),
             };
           });
   const ending = journey.status === "ended" ? (journey.ending ?? journey.node) : undefined;
