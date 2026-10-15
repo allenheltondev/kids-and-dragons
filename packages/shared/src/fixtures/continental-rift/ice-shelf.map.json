@@ -1,0 +1,26 @@
+{
+  "$comment": "Board for the Continental Rift vertical slice (#203) - NOT content: it lives outside content/maps/, so nothing ships it and content:validate never lists it. The cracking ice shelf below the Glacier of Origins: two ice pillars, open snow, a crack in the glacier wall at the bottom-left corner (the timed way out) and a reader trapped beside it. One frost spawn stands right above the party's first spawn, so a hero's first turn can be a swing (the slice's tests read the buffed roll off it).",
+  "id": "cr_ice_shelf",
+  "rows": [
+    "..........",
+    "..........",
+    "......#...",
+    "..........",
+    "..........",
+    "......#...",
+    "..........",
+    ".........."
+  ],
+  "partySpawns": [
+    { "x": 0, "y": 3 },
+    { "x": 0, "y": 4 },
+    { "x": 1, "y": 3 },
+    { "x": 1, "y": 4 }
+  ],
+  "enemySpawns": [
+    { "x": 0, "y": 2 },
+    { "x": 9, "y": 4 },
+    { "x": 8, "y": 2 },
+    { "x": 8, "y": 5 }
+  ]
+}

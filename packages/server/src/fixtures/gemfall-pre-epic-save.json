@@ -1,0 +1,703 @@
+{
+  "$comment": "A Gemfall save taken on the build BEFORE the nonlinear-campaign epic (#191): main at 57c63ba8, just before #205, by running packages/server/src/handlers/gemfall-compat-golden.test.ts there (gemfall-compat-probe.ts says how). `digests` are that build's answers to the compatibility probe - every ending settled, the three roads and pursuits carried, setbacks to failure, and the save played on. `save` is every record one evening left in the store, stopped at the hero's first turn in the wolves fight of gemfall-02: the run state mid-fight (no journeyVisit, no buffs, no environment - none existed), the run and room records, the hero, the attempt row. `resumed` is what that build did next. gemfall-compat.test.ts holds today's build to all of it. Generated, never edited by hand.",
+  "build": "57c63ba8",
+  "digests": {
+    "endings": "05ebeefa182e40bec9e9eb653c4f110ac05f74ea498448abf6b0bbc3333ace27",
+    "roads": "170c13018eb50c0cb91d4977e9dfaf062b9252b6425ebce8e377ac18015b9f98",
+    "setbacks": "69a4f1bee2c9f7166277b2d11e28655a8571e5d522fb2c0eec1df4e1fc18d7b2",
+    "resumed": "90f82c1be301d53e1c47e7d80898404f694494d0af508a369e940b15fb90e8bf"
+  },
+  "save": {
+    "state": {
+      "runId": "r_50da1967ea",
+      "roomCode": "LBAF",
+      "mode": "party",
+      "seq": 5,
+      "phase": "encounter",
+      "campaignId": "gemfall",
+      "chapterId": "gemfall-02",
+      "sceneId": "encounter_wolves",
+      "sceneType": "encounter",
+      "narration": "Two cold cinder wolves slink out onto the road, glowing faintly, more hungry than angry.",
+      "art": null,
+      "party": [
+        {
+          "character": {
+            "id": "c_r_a643e21e5a_p_1",
+            "ownerPlayerId": "p_1",
+            "name": "Pip",
+            "species": "unicorn",
+            "class": "thornguard",
+            "appearance": {
+              "palette": "bark",
+              "accent": "#70CEE0"
+            },
+            "level": 2,
+            "xp": 100,
+            "tier": "fledgling",
+            "stats": {
+              "might": 2,
+              "quick": 2,
+              "clever": 1,
+              "heart": 3
+            },
+            "unspentPoints": 1,
+            "spendableStats": [
+              "might",
+              "quick",
+              "clever",
+              "heart"
+            ],
+            "maxHp": 10,
+            "steps": 4,
+            "guard": 13,
+            "attackStat": "might",
+            "actions": [
+              "brace",
+              "mending_light"
+            ],
+            "worldAbility": "mend",
+            "inventory": [],
+            "questItems": [],
+            "souvenirs": [],
+            "isProvisional": true,
+            "committedLevel": 1
+          },
+          "playerId": "p_1",
+          "hp": 10,
+          "down": false,
+          "connected": true,
+          "ready": true
+        }
+      ],
+      "prompt": null,
+      "lastRoll": null,
+      "flags": {},
+      "coins": 0,
+      "xpEarned": 0,
+      "chapterOutcome": null,
+      "bonuses": [],
+      "trades": [],
+      "updatedAt": "2026-07-06T18:00:00.000Z",
+      "campaignOptions": [
+        {
+          "id": "gemfall",
+          "title": "Gemfall",
+          "blurb": "Mount Red Sky has erupted, and gemstones are raining across the realm. Everybody is racing north to grab them. Your party is racing too. Nobody has asked yet why the stones hum.",
+          "chapters": 8,
+          "next": {
+            "index": 2,
+            "title": "Green Roads North"
+          }
+        }
+      ],
+      "campaignVotes": {},
+      "campaign": {
+        "id": "gemfall",
+        "title": "Gemfall",
+        "blurb": "Mount Red Sky has erupted, and gemstones are raining across the realm. Everybody is racing north to grab them. Your party is racing too. Nobody has asked yet why the stones hum.",
+        "chapters": 8,
+        "next": {
+          "index": 2,
+          "title": "Green Roads North"
+        }
+      },
+      "fieldGuide": {
+        "location.exchange": {
+          "firstFoundBy": "p_1",
+          "foundAt": "2026-07-05T18:00:00.000Z",
+          "runId": "r_a643e21e5a"
+        },
+        "biome.sunward_fields": {
+          "firstFoundBy": "p_1",
+          "foundAt": "2026-07-05T18:00:00.000Z",
+          "runId": "r_a643e21e5a"
+        },
+        "npc.faun": {
+          "firstFoundBy": "p_1",
+          "foundAt": "2026-07-06T18:00:00.000Z",
+          "runId": "r_50da1967ea"
+        },
+        "creature.cinder_wolf": {
+          "firstFoundBy": "p_1",
+          "foundAt": "2026-07-06T18:00:00.000Z",
+          "runId": "r_50da1967ea"
+        }
+      },
+      "chapterInfo": {
+        "index": 2,
+        "title": "Green Roads North"
+      },
+      "helpSpent": [],
+      "visited": [
+        "scene_song_stops",
+        "encounter_wolves"
+      ],
+      "recap": null,
+      "campaignAttemptId": "gemfall:1:r_a643e21e5a:2026-07-05T18:00:00.000Z",
+      "encounter": {
+        "board": {
+          "width": 10,
+          "height": 8,
+          "terrain": [
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "blocked",
+            "blocked",
+            "blocked",
+            "open",
+            "open",
+            "blocked",
+            "blocked",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "blocked",
+            "blocked",
+            "open",
+            "open",
+            "blocked",
+            "blocked",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open",
+            "open"
+          ],
+          "actors": [
+            {
+              "id": "c_r_a643e21e5a_p_1",
+              "side": "party",
+              "x": 0,
+              "y": 3
+            },
+            {
+              "id": "wolf#1",
+              "side": "enemy",
+              "x": 4,
+              "y": 6
+            },
+            {
+              "id": "wolf#2",
+              "side": "enemy",
+              "x": 5,
+              "y": 7
+            }
+          ]
+        },
+        "combatants": [
+          {
+            "id": "c_r_a643e21e5a_p_1",
+            "side": "party",
+            "name": "Pip",
+            "hp": 10,
+            "maxHp": 10,
+            "guard": 13,
+            "steps": 4,
+            "attackMod": 2,
+            "attackStat": "might",
+            "down": false,
+            "actions": [
+              "attack",
+              "help_up",
+              "ready",
+              "brace",
+              "mending_light"
+            ],
+            "spent": [],
+            "rollBonus": 0,
+            "skipNextTurn": false,
+            "protectedBy": null,
+            "ward": null,
+            "evade": false,
+            "rooted": false,
+            "initiative": 6
+          },
+          {
+            "id": "wolf#1",
+            "side": "enemy",
+            "name": "Cold Cinder Wolf",
+            "hp": 6,
+            "maxHp": 6,
+            "guard": 11,
+            "steps": 5,
+            "attackMod": 3,
+            "down": false,
+            "actions": [
+              "attack"
+            ],
+            "spent": [],
+            "rollBonus": 0,
+            "skipNextTurn": false,
+            "protectedBy": null,
+            "ward": null,
+            "evade": false,
+            "rooted": false,
+            "initiative": 22
+          },
+          {
+            "id": "wolf#2",
+            "side": "enemy",
+            "name": "Cold Cinder Wolf",
+            "hp": 6,
+            "maxHp": 6,
+            "guard": 11,
+            "steps": 5,
+            "attackMod": 3,
+            "down": false,
+            "actions": [
+              "attack"
+            ],
+            "spent": [],
+            "rollBonus": 0,
+            "skipNextTurn": false,
+            "protectedBy": null,
+            "ward": null,
+            "evade": false,
+            "rooted": false,
+            "initiative": 9
+          }
+        ],
+        "order": [
+          "wolf#1",
+          "wolf#2",
+          "c_r_a643e21e5a_p_1"
+        ],
+        "openingOrder": [
+          "wolf#1",
+          "wolf#2",
+          "c_r_a643e21e5a_p_1"
+        ],
+        "round": 1,
+        "turnIndex": 2,
+        "stepsLeft": 4,
+        "actionTaken": false,
+        "moveAfterAction": false,
+        "encores": [],
+        "encoreActor": null,
+        "startedAt": 4
+      }
+    },
+    "run": {
+      "id": "r_50da1967ea",
+      "householdId": "h_test",
+      "roomCode": "LBAF",
+      "campaignId": "gemfall",
+      "status": "active",
+      "createdAt": "2026-07-06T18:00:00.000Z",
+      "lobbyFor": "h_test",
+      "diceSecret": "2d5301a5ce7be34568e80fb4416f13a2"
+    },
+    "room": {
+      "code": "LBAF",
+      "runId": "r_50da1967ea",
+      "householdId": "h_test",
+      "mode": "party",
+      "createdAt": "2026-07-06T18:00:00.000Z",
+      "expiresAt": "2026-07-07T00:00:00.000Z",
+      "ttl": 1783382400
+    },
+    "characters": [
+      {
+        "id": "c_r_a643e21e5a_p_1",
+        "householdId": "h_test",
+        "ownerPlayerId": "p_1",
+        "name": "Pip",
+        "species": "unicorn",
+        "class": "thornguard",
+        "appearance": {
+          "palette": "bark",
+          "accent": "#70CEE0"
+        },
+        "committed": {
+          "level": 1,
+          "xp": 0,
+          "stats": {
+            "might": 2,
+            "quick": 2,
+            "clever": 1,
+            "heart": 2
+          },
+          "tier": "fledgling",
+          "unlockedActions": [
+            "brace"
+          ],
+          "inventory": [],
+          "unspentPoints": 0
+        },
+        "provisional": {
+          "level": 2,
+          "xp": 100,
+          "stats": {
+            "might": 2,
+            "quick": 2,
+            "clever": 1,
+            "heart": 2
+          },
+          "tier": "fledgling",
+          "unlockedActions": [
+            "brace"
+          ],
+          "inventory": [],
+          "unspentPoints": 1,
+          "runId": "gemfall"
+        },
+        "questItems": [],
+        "souvenirs": [],
+        "createdAt": "2026-07-05T18:00:00.000Z"
+      }
+    ],
+    "attempt": {
+      "householdId": "h_test",
+      "campaignId": "gemfall",
+      "status": "active",
+      "setbacks": 0,
+      "lastIndex": 1,
+      "attemptId": "gemfall:1:r_a643e21e5a:2026-07-05T18:00:00.000Z",
+      "version": 2,
+      "updatedAt": "2026-07-05T18:00:00.000Z",
+      "coins": 0
+    },
+    "clock": 1783360800000
+  },
+  "resumed": {
+    "intents": 6,
+    "fight": {
+      "phase": "scene",
+      "sceneId": "scene_plank_bridge",
+      "party": [
+        {
+          "id": "c_r_a643e21e5a_p_1",
+          "hp": 0,
+          "down": true
+        }
+      ],
+      "flags": {}
+    },
+    "beats": [
+      {
+        "kind": "COMBAT_SEQUENCE",
+        "events": [
+          {
+            "type": "moved",
+            "actorId": "c_r_a643e21e5a_p_1",
+            "to": {
+              "x": 4,
+              "y": 5
+            }
+          }
+        ]
+      },
+      {
+        "kind": "COMBAT_SEQUENCE",
+        "events": [
+          {
+            "type": "roll",
+            "roll": {
+              "die": 2,
+              "mod": 2,
+              "total": 4,
+              "tn": 11,
+              "result": "miss",
+              "characterId": "c_r_a643e21e5a_p_1",
+              "stat": "might"
+            }
+          },
+          {
+            "type": "roll",
+            "roll": {
+              "die": 4,
+              "mod": 3,
+              "total": 7,
+              "tn": 13,
+              "result": "miss",
+              "characterId": "wolf#1"
+            }
+          },
+          {
+            "type": "moved",
+            "actorId": "wolf#2",
+            "to": {
+              "x": 5,
+              "y": 6
+            }
+          },
+          {
+            "type": "roll",
+            "roll": {
+              "die": 12,
+              "mod": 3,
+              "total": 15,
+              "tn": 13,
+              "result": "hit",
+              "characterId": "wolf#2"
+            }
+          },
+          {
+            "type": "damage",
+            "actorId": "c_r_a643e21e5a_p_1",
+            "amount": 3,
+            "hp": 7
+          }
+        ]
+      },
+      {
+        "kind": "COMBAT_SEQUENCE",
+        "events": [
+          {
+            "type": "roll",
+            "roll": {
+              "die": 11,
+              "mod": 2,
+              "total": 13,
+              "tn": 11,
+              "result": "hit",
+              "characterId": "c_r_a643e21e5a_p_1",
+              "stat": "might"
+            }
+          },
+          {
+            "type": "damage",
+            "actorId": "wolf#1",
+            "amount": 3,
+            "hp": 3
+          },
+          {
+            "type": "roll",
+            "roll": {
+              "die": 5,
+              "mod": 3,
+              "total": 8,
+              "tn": 13,
+              "result": "miss",
+              "characterId": "wolf#1"
+            }
+          },
+          {
+            "type": "roll",
+            "roll": {
+              "die": 10,
+              "mod": 3,
+              "total": 13,
+              "tn": 13,
+              "result": "hit",
+              "characterId": "wolf#2"
+            }
+          },
+          {
+            "type": "damage",
+            "actorId": "c_r_a643e21e5a_p_1",
+            "amount": 3,
+            "hp": 4
+          }
+        ]
+      },
+      {
+        "kind": "COMBAT_SEQUENCE",
+        "events": [
+          {
+            "type": "roll",
+            "roll": {
+              "die": 1,
+              "mod": 2,
+              "total": 3,
+              "tn": 11,
+              "result": "miss",
+              "characterId": "c_r_a643e21e5a_p_1",
+              "stat": "might"
+            }
+          },
+          {
+            "type": "roll",
+            "roll": {
+              "die": 14,
+              "mod": 3,
+              "total": 17,
+              "tn": 13,
+              "result": "hit",
+              "characterId": "wolf#1"
+            }
+          },
+          {
+            "type": "damage",
+            "actorId": "c_r_a643e21e5a_p_1",
+            "amount": 3,
+            "hp": 1
+          },
+          {
+            "type": "roll",
+            "roll": {
+              "die": 7,
+              "mod": 3,
+              "total": 10,
+              "tn": 13,
+              "result": "miss",
+              "characterId": "wolf#2"
+            }
+          }
+        ]
+      },
+      {
+        "kind": "COMBAT_SEQUENCE",
+        "events": [
+          {
+            "type": "roll",
+            "roll": {
+              "die": 15,
+              "mod": 2,
+              "total": 17,
+              "tn": 11,
+              "result": "hit",
+              "characterId": "c_r_a643e21e5a_p_1",
+              "stat": "might"
+            }
+          },
+          {
+            "type": "damage",
+            "actorId": "wolf#1",
+            "amount": 3,
+            "hp": 0
+          },
+          {
+            "type": "down",
+            "actorId": "wolf#1"
+          },
+          {
+            "type": "roll",
+            "roll": {
+              "die": 5,
+              "mod": 3,
+              "total": 8,
+              "tn": 13,
+              "result": "miss",
+              "characterId": "wolf#2"
+            }
+          }
+        ]
+      },
+      {
+        "kind": "COMBAT_SEQUENCE",
+        "events": [
+          {
+            "type": "roll",
+            "roll": {
+              "die": 10,
+              "mod": 2,
+              "total": 12,
+              "tn": 11,
+              "result": "hit",
+              "characterId": "c_r_a643e21e5a_p_1",
+              "stat": "might"
+            }
+          },
+          {
+            "type": "damage",
+            "actorId": "wolf#2",
+            "amount": 3,
+            "hp": 3
+          },
+          {
+            "type": "roll",
+            "roll": {
+              "die": 18,
+              "mod": 3,
+              "total": 21,
+              "tn": 13,
+              "result": "hit",
+              "characterId": "wolf#2"
+            }
+          },
+          {
+            "type": "damage",
+            "actorId": "c_r_a643e21e5a_p_1",
+            "amount": 1,
+            "hp": 0
+          },
+          {
+            "type": "down",
+            "actorId": "c_r_a643e21e5a_p_1"
+          }
+        ],
+        "after": {
+          "kind": "SCENE_ENTER",
+          "sceneId": "scene_plank_bridge"
+        }
+      }
+    ],
+    "settled": {
+      "householdId": "h_test",
+      "campaignId": "gemfall",
+      "status": "active",
+      "setbacks": 0,
+      "lastIndex": 2,
+      "coins": 0,
+      "keys": [
+        "campaignId",
+        "coins",
+        "householdId",
+        "lastIndex",
+        "setbacks",
+        "status",
+        "updatedAt"
+      ]
+    },
+    "xpEarned": 90
+  }
+}

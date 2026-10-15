@@ -1,0 +1,40 @@
+{
+  "$comment": "Continental Rift slice placeholder (#203) - NOT content, never shipped. Ending node behind the sealed rift: one plain fight against two canon will-o-wisps (no environment) where the Starlight Ward, if a Starweaver attuned the seal, is spent.",
+  "id": "cr-heart",
+  "campaignId": "continental-rift-slice",
+  "index": 4,
+  "title": "The Heart of the Glacier",
+  "biome": "glacier_of_origins",
+  "estimatedMinutes": 10,
+  "xpAward": 150,
+  "entry": "scene_door",
+  "scenes": {
+    "scene_door": {
+      "type": "story",
+      "narration": "Behind the blue door the ice is clear as glass, and in the middle of it the Great River begins as a single bright drop. Two wisps of cold light are guarding it.",
+      "choices": [{ "id": "face", "label": "Face the wisps", "icon": "swords", "goto": "fight_wisps" }]
+    },
+    "fight_wisps": {
+      "type": "encounter",
+      "map": "cr_ice_shelf",
+      "narration": "The wisps flare blue and turn toward you.",
+      "enemies": [
+        { "id": "heart_wisp", "name": "Heartlight Wisp", "creature": "will_o_wisp", "count": 2 }
+      ],
+      "onVictory": { "goto": "scene_song", "narration": "The wisps fade into the ice, and the ice begins to sing." },
+      "onDefeat": { "goto": "scene_pushed", "narration": "The wisps drive you back toward the door." }
+    },
+    "scene_song": {
+      "type": "story",
+      "narration": "The bright drop falls, and the river starts its long run south to the Exchange, singing all the way.",
+      "choices": [],
+      "outcome": "success"
+    },
+    "scene_pushed": {
+      "type": "story",
+      "narration": "You tumble back through the door, but the drop has fallen anyway. The river will find its own way south.",
+      "choices": [],
+      "outcome": "setback"
+    }
+  }
+}
