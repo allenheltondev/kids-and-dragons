@@ -357,7 +357,7 @@
         },
         {
           "id": "search",
-          "label": "Search the crowd yourselves",
+          "label": "Search the crowd on foot",
           "icon": "eye",
           "goto": "check_search"
         }
@@ -492,7 +492,7 @@
         },
         {
           "id": "unload",
-          "label": "Take the sack off and carry it yourselves",
+          "label": "Take the sack off and carry it down the road",
           "icon": "hand",
           "goto": "scene_stubborn_mule_unload"
         },
@@ -514,11 +514,11 @@
       "roller": "party",
       "onSuccess": {
         "goto": "rest_soup_tents",
-        "narration": "You heave together, and the gem sack slips off the mule's back in the struggle. The moment it hits the ground, the mule leaps up, fresh as morning, and trots three steps away from it. \"She'll carry anything,\" says the owner, amazed. \"Anything but that, it seems.\""
+        "narration": "You heave, and the gem sack slips off the mule's back in the struggle. The moment it hits the ground, the mule leaps up, fresh as morning, and trots three steps away from it. \"She'll carry anything,\" says the owner, amazed. \"Anything but that, it seems.\""
       },
       "onFailure": {
         "goto": "rest_soup_tents",
-        "narration": "You push. The mule leans. The mule wins, and you all sit down in the road in a heap. From down there you notice the mule is not glaring at you at all. It is glaring at the gem sack on its own back. Its owner sees it too, and slowly takes the sack off."
+        "narration": "You push. The mule leans. The mule wins, and you sit down in the road in a heap. From down there you notice the mule is not glaring at you at all. It is glaring at the gem sack on its own back. Its owner sees it too, and slowly takes the sack off."
       },
       "art": "scenes/gemfall/downbound-wagon-auction"
     },
@@ -637,7 +637,7 @@
     },
     "scene_wend_pitch_say_later": {
       "type": "story",
-      "narration": "\"Maybe,\" you say. Wend nods as if maybe is a kind of yes, and slides a folded letter into the top of your pack \"in case you change your minds.\" It is sealed with a drop of something that glitters. You can feel it in there for the rest of the day, like a stone in a boot.",
+      "narration": "\"Maybe,\" you say. Wend nods as if maybe is a kind of yes, and slides a folded letter into the top of your pack \"in case you change your mind.\" It is sealed with a drop of something that glitters. You can feel it in there for the rest of the day, like a stone in a boot.",
       "choices": [
         {
           "id": "on",
@@ -1453,7 +1453,7 @@
           "name": "Sergeant Holloway"
         }
       ],
-      "narration": "You duck behind a Skywarden supply wagon and find Sergeant Holloway already there, writing by lantern. \"Ash wind,\" says the sergeant. \"Third this week. Wind from the mountain means the mountain is busy.\" Holloway writes BUSY, underlines it twice, and offers you each a very dry biscuit.",
+      "narration": "You duck behind a Skywarden supply wagon and find Sergeant Holloway already there, writing by lantern. \"Ash wind,\" says the sergeant. \"Third this week. Wind from the mountain means the mountain is busy.\" Holloway writes BUSY, underlines it twice, and offers you a very dry biscuit.",
       "choices": [
         {
           "id": "on",
@@ -1577,7 +1577,7 @@
     },
     "end_scattered": {
       "type": "rest",
-      "narration": "By the time you find each other again, it is almost morning. The wolves have eaten the supplies and run off north, and Sergeant Holloway's patrol finds you and writes you down in the ledger as 'Stragglers, Muddy'. You have lost a day, but the bark strip of verses is safe, and you are all together.",
+      "narration": "By the time you find your feet again, it is almost morning. The wolves have eaten the supplies and run off north, and Sergeant Holloway's patrol finds you and writes you down in the ledger as 'Stragglers, Muddy'. You have lost a day, but the bark strip of verses is safe, and so are you.",
       "cast": [
         {
           "figure": "cast/holloway",

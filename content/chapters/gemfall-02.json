@@ -554,7 +554,7 @@
     "scene_flock_bigfoot": {
       "art": "scenes/gemfall/sheeple-ridge",
       "type": "story",
-      "narration": "Nobody bolts. Nobody even flinches. The whole flock shuffles in around the bigfoot and leans on them like a warm, woolly wall, and a calm flock notices things. It notices, without anybody saying a word, which one of you is the clever one. Thirty heads turn to watch them.",
+      "narration": "Nobody bolts. Nobody even flinches. The whole flock shuffles in around the bigfoot and leans on them like a warm, woolly wall, and a calm flock notices things. It notices, without anybody saying a word, who the clever one is. Thirty heads turn to watch them.",
       "choices": [
         {
           "id": "look",
@@ -829,7 +829,7 @@
     },
     "scene_plank_bridge_carry": {
       "type": "story",
-      "narration": "You wade in and carry the hay across, one bale each, over and over. It takes ages. Everybody sneezes. By the end the far bank is empty, the near bank is stacked high, and every one of you looks like a scarecrow. A jackalope hops past wearing a little hat of hay and does not seem to know.",
+      "narration": "You wade in and carry the hay across, one bale each, over and over. It takes ages. Everybody sneezes. By the end the far bank is empty, the near bank is stacked high, and everybody looks like a scarecrow. A jackalope hops past wearing a little hat of hay and does not seem to know.",
       "cast": [
         {
           "figure": "entities/faun"
@@ -1245,7 +1245,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_medal_ceremony",
-        "narration": "You offer a shiny button, a song, and the last crumb of honeycake. The sprites go into a huddle. They come out of the huddle. It's a deal.",
+        "narration": "You offer a shiny button, a song, and your very best joke. The sprites go into a huddle. They come out of the huddle. It's a deal.",
         "effects": [
           {
             "type": "setFlag",
@@ -1621,7 +1621,7 @@
     },
     "scene_hedge_mob_flock": {
       "type": "story",
-      "narration": "You step up to the hedge and bow. Far back from the shouting, the three sheeple bow too. Then all three throw back their heads in perfect silence. For a minute, nothing happens. Then sheeple start arriving at the edge of the clearing: ten, twenty, thirty, all in the same hat, all bowing to the hedge at once. \"Please may we come in,\" they say, slightly out of step. The mob is so surprised it stops shouting. Pib drops their shears. The hedge has never been asked that politely by that many people, ever. It opens a path wide enough for all of you, and the flock trots in too, very pleased with itself.",
+      "narration": "You step up to the hedge and bow. Far back from the shouting, the three sheeple bow too. Then all three throw back their heads in perfect silence. For a minute, nothing happens. Then sheeple start arriving at the edge of the clearing: ten, twenty, thirty, all in the same hat, all bowing to the hedge at once. \"Please may we come in,\" they say, slightly out of step. The mob is so surprised it stops shouting. Pib drops their shears. The hedge has never been asked that politely by that many people, ever. It opens a path wide enough for {party}, and the flock trots in too, very pleased with itself.",
       "cast": [
         {
           "figure": "cast/pib",

@@ -136,7 +136,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Take a bowl yourselves",
+          "label": "Take a bowl and sit down",
           "icon": "hand",
           "goto": "scene_cult_pitch"
         }
@@ -222,7 +222,7 @@
     },
     "scene_cult_pitch_drop_stone": {
       "type": "story",
-      "narration": "You drop a coin into the jar marked THE BREAK, in among the humming stones. The whole jar hums louder for a moment, like a hive woken up. Hollis's eyes shine. She writes your names in a little book with a soft pencil, and gives each of you a second bowl, and you are not sure how you feel about any of it.",
+      "narration": "You drop a coin into the jar marked THE BREAK, in among the humming stones. The whole jar hums louder for a moment, like a hive woken up. Hollis's eyes shine. She writes your names in a little book with a soft pencil, and gives you a second bowl, and you are not sure how you feel about any of it.",
       "choices": [
         {
           "id": "on",
@@ -439,7 +439,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_outline",
-        "narration": "You draw it in chalk yourselves: the troll's humming bridge, the bent pride roads, the spiralling sashes. Then you draw the cracks over the top.",
+        "narration": "You draw it in chalk: the troll's humming bridge, the bent pride roads, the spiralling sashes. Then you draw the cracks over the top.",
         "effects": [
           {
             "type": "setFlag",
@@ -598,7 +598,7 @@
     },
     "scene_crossing": {
       "type": "choice_point",
-      "narration": "Your turn on the bridge. The cracked span sways a little under each cart, and a warden at the end waves you on, two at a time, with a flag. Below, the river is cold and loud. On the far side the land climbs toward a red sky.",
+      "narration": "Your turn on the bridge. The cracked span sways a little under each cart, and a warden at the end waves you on with a flag. Below, the river is cold and loud. On the far side the land climbs toward a red sky.",
       "choices": [
         {
           "id": "ration",
@@ -1005,7 +1005,7 @@
       },
       "onFailure": {
         "goto": "scene_old_marks",
-        "narration": "You talk to Pepper. Pepper talks back, loudly, and sits down in the road like a dog. In the end Nim gets off and you all push from behind, and Pepper walks on past the carts with her nose in the air, pretending she was always going to."
+        "narration": "You talk to Pepper. Pepper talks back, loudly, and sits down in the road like a dog. In the end Nim gets off and you push from behind, and Pepper walks on past the carts with her nose in the air, pretending she was always going to."
       },
       "art": "scenes/gemfall/northern-bridge-foot"
     },
@@ -1435,7 +1435,7 @@
       "choices": [
         {
           "id": "carry",
-          "label": "Carry them across yourselves",
+          "label": "Carry them across in your own arms",
           "icon": "hand",
           "goto": "scene_pack_crossing_carry"
         },
