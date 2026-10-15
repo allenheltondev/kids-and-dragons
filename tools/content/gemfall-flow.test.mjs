@@ -63,6 +63,8 @@ function intended(chapterId, sceneId, ids) {
 
 describe("Gemfall reads cleanly", () => {
   for (const { id, raw } of chapters) {
+    // Scans the raw file, so narration variants (`variants[].text`) and branch
+    // variants are held to the same rule as everything else.
     it(`${id} has no em or en dashes`, () => {
       const lines = raw.split("\n").map((l, i) => [i + 1, l]).filter(([, l]) => /[–—]/.test(l));
       expect(lines.map(([n, l]) => `${n}: ${l.trim().slice(0, 80)}`)).toEqual([]);
@@ -132,7 +134,9 @@ describe("every Gemfall choice lands on a scene that shows its result", () => {
         const [src] = Object.keys(scenes).filter((o) => o !== sid && sid.startsWith(`${o}_`)).sort((a, b) => b.length - a.length);
         if (!src) continue;
         const choice = (scenes[src].choices ?? []).find((c) => c.goto === sid && sid === `${src}_${c.id}`);
-        if (choice && (s.choices ?? []).length !== 1) busy.push(sid);
+        // A `variants` list on a result scene is fine (it changes how the answer
+        // reads); a `when` on its way out is not (it could hide the one exit).
+        if (choice && ((s.choices ?? []).length !== 1 || s.choices[0].when !== undefined)) busy.push(sid);
       }
       expect(busy).toEqual([]);
     });

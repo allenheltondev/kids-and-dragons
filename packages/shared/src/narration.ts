@@ -12,6 +12,7 @@
  */
 
 import type { NarrationVariant } from "./types/chapter.js";
+import type { NarrationToken } from "./condition-lint.js";
 import { countPartyItems, evaluateCondition, type ChoiceParty } from "./chapter-graph.js";
 
 /** How composed pieces are joined: a paragraph break, as branch narration is. */
@@ -83,12 +84,9 @@ export function partyPhrase(size: number): string {
   return `all ${numberWord(size)} of you`;
 }
 
-/**
- * Every token the engine fills, by name (`{facets}` → `"facets"`). The
- * validator rejects any other `{name}` in authored text.
- */
-export const NARRATION_TOKENS = ["facets", "party"] as const;
-export type NarrationToken = (typeof NARRATION_TOKENS)[number];
+// Every token the engine fills, by name (`{facets}` → `"facets"`). The
+// validator rejects any other `{name}` in authored text.
+export { NARRATION_TOKENS, type NarrationToken } from "./condition-lint.js";
 
 const TOKEN = /\{([a-zA-Z_][a-zA-Z0-9_]*)\}/g;
 

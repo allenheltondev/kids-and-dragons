@@ -25,6 +25,7 @@ import type {
   Scene,
   SceneId,
 } from "./types/chapter.js";
+import { conditionRefs, lintChapterText } from "./condition-lint.js";
 import type { ItemCatalog, ResolvedCharacter } from "./types/domain.js";
 
 export type IssueSeverity = "error" | "warning";
@@ -40,6 +41,7 @@ export type IssueCode =
   | "DUPLICATE_CHOICE_ID"
   | "UNKNOWN_ITEM"
   | "ITEM_KIND_MISMATCH"
+  | "BAD_CONDITION"
   | "NO_SCENES";
 
 export interface ChapterIssue {
@@ -113,7 +115,9 @@ export function isGated(choice: Choice): boolean {
   return (
     choice.requiresSpecies !== undefined ||
     choice.requiresFlag !== undefined ||
-    choice.requiresItem !== undefined
+    choice.requiresItem !== undefined ||
+    // A `when` hides the choice for some parties, however loose it looks.
+    choice.when !== undefined
   );
 }
 
@@ -271,6 +275,46 @@ export function validateChapter(chapter: Chapter, catalog?: ItemCatalog): Chapte
             code: "UNKNOWN_ITEM",
             message: `scene "${sceneId}" choice "${choice.id}" requires unknown item "${choice.requiresItem}"`,
             sceneId,
+          });
+        }
+      }
+    }
+  }
+
+  // --- conditions, variants and tokens (#160) -----------------------------
+  for (const problem of lintChapterText(chapter)) {
+    issues.push({
+      severity: "error",
+      code: "BAD_CONDITION",
+      message: `${problem.path}: ${problem.problem}`,
+      sceneId: problem.path.split("/")[2],
+    });
+  }
+  if (catalog) {
+    for (const { path, when } of conditionRefs(chapter)) {
+      const named = [when.item, when.notItem, ...(typeof when.count?.of === "string" || !when.count ? [] : when.count.of)];
+      for (const id of named) {
+        if (id !== undefined && !catalog[id]) {
+          issues.push({
+            severity: "error",
+            code: "UNKNOWN_ITEM",
+            message: `${path} names unknown item "${id}"`,
+            sceneId: path.split("/")[2],
+          });
+        }
+      }
+      const of = when.count?.of;
+      if (typeof of === "string") {
+        const prefix = of.endsWith("*");
+        const matches = prefix
+          ? Object.keys(catalog).some((id) => id.startsWith(of.slice(0, -1)))
+          : of in catalog;
+        if (!matches) {
+          issues.push({
+            severity: "error",
+            code: "UNKNOWN_ITEM",
+            message: `${path}/count/of "${of}" matches no item in the catalog`,
+            sceneId: path.split("/")[2],
           });
         }
       }
