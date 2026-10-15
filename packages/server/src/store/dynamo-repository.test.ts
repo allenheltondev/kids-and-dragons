@@ -209,3 +209,63 @@ describe("DynamoRepository field guide writes", () => {
     expect(send).not.toHaveBeenCalled();
   });
 });
+
+describe("DynamoRepository graph journeys (#194)", () => {
+  const client = new DynamoDBClient({
+    region: "us-east-1",
+    credentials: { accessKeyId: "test", secretAccessKey: "test" },
+  });
+  const send = vi.fn();
+
+  beforeEach(() => {
+    send.mockReset();
+    vi.spyOn(DynamoDBDocumentClient, "from").mockReturnValue({ send } as unknown as DynamoDBDocumentClient);
+  });
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  const attempt = {
+    householdId: "h_1",
+    campaignId: "rift-sampler",
+    status: "active" as const,
+    setbacks: 0,
+    attemptId: "attempt-1",
+    journey: {
+      version: 1 as const,
+      node: "orchard",
+      visit: 1,
+      status: "playing" as const,
+      chapter: "sampler-orchard",
+      visits: { waystone: 1, orchard: 1 },
+      completions: { waystone: 1 },
+      traversed: { "to-orchard": 1 },
+      lastExit: { node: "waystone", visit: 1, edge: "to-orchard" },
+    },
+    version: 3,
+    updatedAt: "2026-07-04T18:00:00.000Z",
+  };
+
+  it("writes the journey whole inside the attempt's versioned conditional put", async () => {
+    send.mockResolvedValueOnce({});
+    const repo = new DynamoRepository({ tableName: "kad-test", client });
+    await repo.commit({
+      runId: "r_1",
+      expectedSeq: 0,
+      state: state(1),
+      event: { runId: "r_1", seq: 1, patch: [], at: "2026-07-04T18:00:00.000Z" },
+      campaignProgress: attempt,
+      campaignProgressExpectedVersion: 2,
+    });
+    const put = send.mock.calls[0]?.[0].input.TransactItems?.[2]?.Put;
+    expect(put.Item).toMatchObject({ PK: "HH#h_1", SK: "CAMPAIGN#rift-sampler", data: attempt });
+    expect(put.ConditionExpression).toBe("#d.#version = :expectedVersion");
+    expect(put.ExpressionAttributeValues).toEqual({ ":expectedVersion": 2 });
+  });
+
+  it("reads the journey back as it was stored", async () => {
+    send.mockResolvedValueOnce({ Item: { data: structuredClone(attempt) } });
+    const repo = new DynamoRepository({ tableName: "kad-test", client });
+    expect(await repo.getCampaignProgress("h_1", "rift-sampler")).toEqual(attempt);
+  });
+});

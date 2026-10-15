@@ -65,6 +65,25 @@ export type ClientIntent =
    */
   | { type: "CONTINUE_CAMPAIGN"; campaignId?: string }
   /**
+   * Take a way on out of the node a graph campaign's journey is at (#194) —
+   * the choice `CampaignView.journey.exits` draws. Resolved by the server
+   * against the household's attempt, like CONTINUE_CAMPAIGN, and never seen
+   * by the engine: which exits are open is a fact about the journey, which no
+   * phone holds the authority for.
+   *
+   * It moves the journey and nothing else. The party arrives at the new place
+   * and CONTINUE_CAMPAIGN plays it (or, at a `"pass"` revisit, the party is
+   * straight back at a choice). Legal between chapters only — in the lobby or
+   * on the completion screen — because there is no leaving a node mid-chapter.
+   *
+   * `visit` echoes `JourneyView.visit`, and with `edgeId` is the idempotence
+   * key: the same crossing reported twice (a double tap, a retry after a lost
+   * response) is answered as already done, and a crossing from a visit the
+   * journey has since left is refused as stale. `campaignId` defaults to the
+   * run's `campaignId`.
+   */
+  | { type: "CHOOSE_EXIT"; edgeId: string; visit: number; campaignId?: string }
+  /**
    * A lobby vote for which campaign to play (`RunState.campaignVotes`). Tapped
    * on the ready screen; changing your mind is another vote.
    */
