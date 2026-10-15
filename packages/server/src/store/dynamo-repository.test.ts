@@ -241,6 +241,8 @@ describe("DynamoRepository graph journeys (#194)", () => {
       completions: { waystone: 1 },
       traversed: { "to-orchard": 1 },
       lastExit: { node: "waystone", visit: 1, edge: "to-orchard" },
+      // A rift's lifecycle (#196) rides inside the journey, whole.
+      rifts: { "to-quarry": { status: "consumed" as const, crossings: 1, revealed: true as const } },
     },
     version: 3,
     updatedAt: "2026-07-04T18:00:00.000Z",

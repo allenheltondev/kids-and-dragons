@@ -1,0 +1,90 @@
+{
+  "$comment": "Rift lifecycle fixture (#196). NOT CONTENT: it lives outside content/ so neither the loader nor content:validate ever sees it, and nothing ships it. Its chapter ids are placeholders with no files behind them. It shows every rift property at least once - single-use + timed + hidden destination, triggered + one-way, a linked two-way pair with shared uses, an unstable flicker that collapses, and a persistent triggered bridge - on a map that can always still be finished. rifts.test.ts walks it; tools/content/campaign-graph-schema.test.mjs holds it to the schema. docs/campaigns/graph-campaigns.md (Rifts) walks through it.",
+  "id": "rift-lifecycle",
+  "title": "The Rift Lifecycle",
+  "blurb": "A camp, a shore, a drowned isle, sunken ruins and a glass spire, joined by rifts that open, flicker, run out and close. Not a story: a map of every kind of rift.",
+  "chapters": [
+    "lifecycle-camp",
+    "lifecycle-shore",
+    "lifecycle-isle",
+    "lifecycle-ruins",
+    "lifecycle-spire",
+    "lifecycle-dawn"
+  ],
+  "graph": {
+    "version": 1,
+    "entry": "camp",
+    "flags": ["tide_out"],
+    "nodes": {
+      "camp": { "chapter": "lifecycle-camp", "title": "The Camp", "revisit": "pass" },
+      "shore": {
+        "$comment": "Its chapter may send the tide out (sets tide_out), and a replay may bring it back in.",
+        "chapter": "lifecycle-shore",
+        "title": "The Shore"
+      },
+      "isle": { "chapter": "lifecycle-isle", "title": "The Drowned Isle" },
+      "ruins": { "chapter": "lifecycle-ruins", "title": "The Sunken Ruins" },
+      "spire": { "chapter": "lifecycle-spire", "title": "The Glass Spire" },
+      "dawn": { "chapter": "lifecycle-dawn", "ending": { "title": "Dawn Over the Spire" } }
+    },
+    "edges": {
+      "camp-to-shore": { "from": "camp", "to": "shore", "kind": "forward", "label": "Down to the shore" },
+      "camp-to-isle": {
+        "$comment": "Single-use, timed and hidden: open from the start for four moves, crossable once, and nobody knows where it goes until they have been.",
+        "from": "camp",
+        "to": "isle",
+        "kind": "forward",
+        "label": "Step into the shimmer",
+        "blocked": "shown",
+        "rift": { "uses": 1, "lasts": { "unit": "visits", "count": 4 }, "reveal": "when-crossed" }
+      },
+      "camp-to-ruins": {
+        "$comment": "One mouth of the twin gate: wakes once the party has found the ruins, and the pair shares two crossings.",
+        "from": "camp",
+        "to": "ruins",
+        "kind": "forward",
+        "label": "Through the twin gate",
+        "blocked": "shown",
+        "rift": { "linkedTo": "ruins-to-camp", "uses": 2, "opensWhen": { "visited": "ruins" } }
+      },
+      "shore-to-camp": { "from": "shore", "to": "camp", "kind": "return", "label": "Back up to camp" },
+      "shore-to-ruins": {
+        "$comment": "Triggered and one-way: there only while the tide is out, and no rift leads back.",
+        "from": "shore",
+        "to": "ruins",
+        "kind": "forward",
+        "label": "Walk the tide-rift down to the ruins",
+        "rift": { "opensWhen": { "flag": "tide_out" }, "oneWay": true }
+      },
+      "isle-to-camp": { "from": "isle", "to": "camp", "kind": "return", "label": "Swim back to camp" },
+      "isle-to-spire": {
+        "$comment": "Persistent and triggered: once the ruins are done the lantern bridge lights, and stays lit.",
+        "from": "isle",
+        "to": "spire",
+        "kind": "forward",
+        "label": "Cross the lantern bridge",
+        "rift": { "opensWhen": { "completed": "ruins" }, "persistent": true }
+      },
+      "ruins-to-shore": { "from": "ruins", "to": "shore", "kind": "return", "label": "Wade back to the shore" },
+      "ruins-to-camp": {
+        "$comment": "The twin gate's other mouth: crossing either counts for both.",
+        "from": "ruins",
+        "to": "camp",
+        "kind": "return",
+        "label": "Through the twin gate",
+        "blocked": "shown",
+        "rift": { "linkedTo": "camp-to-ruins", "uses": 2, "opensWhen": { "visited": "ruins" } }
+      },
+      "ruins-to-spire": {
+        "$comment": "Unstable: there on odd visits to the ruins, gone on even ones, and it collapses behind the first party through.",
+        "from": "ruins",
+        "to": "spire",
+        "kind": "forward",
+        "label": "Climb the flickering stair",
+        "blocked": "shown",
+        "rift": { "unstable": { "flicker": { "open": 1, "shut": 1 }, "collapsesAfter": 1 } }
+      },
+      "spire-to-dawn": { "from": "spire", "to": "dawn", "kind": "forward", "label": "Greet the dawn", "irreversible": true }
+    }
+  }
+}

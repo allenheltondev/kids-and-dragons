@@ -62,6 +62,20 @@ describe("the Rift Sampler", () => {
   });
 });
 
+describe("the Rift Lifecycle (#196)", () => {
+  const LIFECYCLE = ["packages", "shared", "src", "fixtures", "rift-lifecycle.campaign.json"];
+
+  it("validates: every rift property, as the schema knows them", () => {
+    const { ok, errors } = judge(read(...LIFECYCLE));
+    expect(ok, errors.join("\n")).toBe(true);
+  });
+
+  it("is not content either", () => {
+    const { id } = read(...LIFECYCLE);
+    expect(() => read("content", "campaigns", `${id}.json`)).toThrow();
+  });
+});
+
 describe("what the schema refuses", () => {
   it("a version this build does not read", () => {
     expect(bent((c) => (c.graph.version = 2)).ok).toBe(false);
@@ -82,10 +96,26 @@ describe("what the schema refuses", () => {
   });
 
   it("the reserved extension names until their issues define them", () => {
-    // #196 gives an edge `rift`; until then an author cannot use it early
-    // and have the meaning change under them.
+    // #196 defined `rift`, closed like everything else: a property it does
+    // not define is refused, so an author cannot use one early.
     expect(bent((c) => (c.graph.edges["to-orchard"].rift = { type: "one-way" })).ok).toBe(false);
     expect(bent((c) => (c.graph.nodes.quarry.state = {})).ok).toBe(false);
+  });
+
+  it("a rift whose properties are not the ones #196 defines", () => {
+    const rift = (value) => bent((c) => (c.graph.edges["to-orchard"].rift = value)).ok;
+    expect(rift({})).toBe(true);
+    expect(rift({ uses: 0 })).toBe(false);
+    expect(rift({ uses: 1.5 })).toBe(false);
+    expect(rift({ lasts: { unit: "turns", count: 2 } })).toBe(false);
+    expect(rift({ lasts: { unit: "visits" } })).toBe(false);
+    expect(rift({ unstable: {} })).toBe(false);
+    expect(rift({ unstable: { flicker: { open: 1 } } })).toBe(false);
+    expect(rift({ reveal: "sometimes" })).toBe(false);
+    expect(rift({ oneWay: false })).toBe(false);
+    expect(rift({ persistent: false })).toBe(false);
+    expect(rift({ linkedTo: "Not An Id" })).toBe(false);
+    expect(rift({ opensWhen: { item: "lens" } })).toBe(false);
   });
 
   it("a guard that reads the party rather than the journey", () => {
