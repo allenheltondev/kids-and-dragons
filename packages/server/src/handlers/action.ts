@@ -29,9 +29,10 @@ import type {
   ClientIntent,
   JourneyState,
   NodeId,
+  RunBuff,
   RunState,
 } from "@kad/shared";
-import { currentPlayable, lobbyCampaign, resumeJourney, takeExit } from "@kad/shared";
+import { currentPlayable, lobbyCampaign, resumeJourney, seedRunBuffs, takeExit } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { ApplyIntentResult } from "../engine/port.ts";
 import type { CampaignProgressRecord, EventRecord, RunRecord } from "../store/repository.ts";
@@ -152,6 +153,9 @@ export async function applyAction(
    */
   let campaignFlags: Record<string, boolean> = {};
   let campaignCoins: number | undefined;
+  // A graph campaign's temporary buffs (#200), seeded into the run with its
+  // flags. Undefined for every other start, which then carries none.
+  let campaignBuffs: RunBuff[] | undefined;
   let campaignAttemptId: string | null = null;
   let startedAttempt: StartedAttempt | null = null;
   // The journey visit a graph campaign's chapter plays (#194), stamped on the
@@ -164,6 +168,7 @@ export async function applyAction(
     }
     campaignFlags = road.flags;
     campaignCoins = road.coins;
+    campaignBuffs = road.buffs;
     if (road.campaign) {
       // Join the household's active attempt, or start one — so this room
       // carries the id of the attempt it began under (progression.ts).
@@ -252,6 +257,8 @@ export async function applyAction(
         campaignFlags,
         // The purse, carried the same way. Undefined outside a campaign.
         ...(campaignCoins === undefined ? {} : { campaignCoins }),
+        // Temporary buffs (#200): a graph campaign's chapter start only.
+        ...(campaignBuffs === undefined ? {} : { campaignBuffs }),
         // Seeded per event, never per wall clock — see the header. The run's
         // secret keeps the next roll unguessable from the public run id.
         rng: deps.rng(diceSeed(auth.run, input.runId, nextSeq)),
@@ -816,6 +823,8 @@ async function roadTo(
       journey?: JourneyState;
       /** The visit this start plays — stamped on the run (`RunState.journeyVisit`). */
       visit?: { node: NodeId; visit: number };
+      /** The journey's temporary buffs, resolved for the run (#200). Graph campaigns only. */
+      buffs?: RunBuff[];
     }
   | { refusal: string }
 > {
@@ -860,6 +869,9 @@ async function roadTo(
       attempt,
       journey: resumed.journey,
       visit: { node: playable.node, visit: playable.visit },
+      // Seeded from the journey every time this visit's chapter starts, so a
+      // restart never inherits what an abandoned run had already spent.
+      buffs: seedRunBuffs(graph.buffs, resumed.journey.buffs),
     };
   }
   const flags =

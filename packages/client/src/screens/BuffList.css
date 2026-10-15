@@ -1,0 +1,35 @@
+/*
+ * BuffList (#200): a few short lines, never a panel of their own. Small text,
+ * no scrolling: a party holds a handful of buffs at most, and in a fight the
+ * row sits above the board, so it must not grow the pane by more than it has to.
+ */
+.buffs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-size-sm, 0.875em);
+  flex: none;
+}
+
+.buffs__row {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  min-inline-size: 0;
+}
+
+.buffs__row > .kad-icon {
+  flex: none;
+}
+
+.buffs__text {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.buffs__detail {
+  color: var(--color-text-muted, #b9b3e0);
+}

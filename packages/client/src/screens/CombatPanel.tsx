@@ -84,6 +84,7 @@ import { useEnsureChapter } from "./content";
 import { Button } from "../ui/Button";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
+import { BuffList, combatBuffRows } from "./BuffList";
 import { combatantIcon, combatantLabel, enemyPortraitUrl, gridCells, turnKey, type GridOccupant } from "./combat-grid";
 import type { Facing } from "../world/board-math";
 import "./shared.css";
@@ -492,6 +493,11 @@ export function CombatControls(): ReactElement | null {
           </span>
         </p>
       )}
+
+      {/* Rift powers on this phone's hero (#200), graph campaigns only: what
+          each adds and how long it lasts. Absent in every other fight, so
+          nothing here moves an ordered campaign's board. */}
+      <BuffList rows={combatBuffRows(encounter.buffs, me.character.id)} title="Your rift powers" />
 
       {/* What the last beat did, in words and numbers: every roll on the
           table, whoever threw it. The one place the d20 shows on a phone.

@@ -40,6 +40,7 @@
 
 import type { Arrival, ExitBlock } from "../campaign-graph.js";
 import type { ChapterOutcome } from "./chapter.js";
+import type { ActiveBuff, BuffDef, BuffId, JourneyBuffView } from "./buffs.js";
 
 /** A node's key in `CampaignGraph.nodes`. Stable: saves name it. */
 export type NodeId = string;
@@ -110,6 +111,17 @@ export interface CampaignGraph {
    * #198 — so adding the field bumps nothing.
    */
   facts?: Record<FactId, WorldFact>;
+  /**
+   * Temporary buffs this campaign's rift energy can grant (#200): guard,
+   * damage, movement or roll bonuses that last a few turns or fights and are
+   * gone. Keyed by stable buff id. Granted by the `grantBuff` effect, stored
+   * on the attempt's journey, applied only inside fights. See `BuffDef` and
+   * "Temporary buffs" in graph-campaigns.md.
+   *
+   * Absent means a graph that grants none — every graph written before #200 —
+   * so adding the field bumps nothing.
+   */
+  buffs?: Record<BuffId, BuffDef>;
 }
 
 /** A world fact's key in `CampaignGraph.facts`. Stable: saves name it. */
@@ -615,7 +627,13 @@ export type GraphEffect =
    * Moves a counter fact by `by` (a non-zero integer), clamped to its bounds:
    * a fourth favour owed when the counter stops at three is still three.
    */
-  | { type: "adjustFact"; fact: FactId; by: number };
+  | { type: "adjustFact"; fact: FactId; by: number }
+  /**
+   * Grants a declared temporary buff (#200) — or, for one the party already
+   * holds, refreshes, stacks or ignores it as the buff's `stack` says. Never
+   * read by a guard: a buff changes fights, not where the party can go.
+   */
+  | { type: "grantBuff"; buff: BuffId };
 
 /**
  * What the journey remembers, as guards and exit availability read it.
@@ -729,6 +747,15 @@ export interface JourneyState extends JourneyFacts {
    * is refused (`takeExit`). Absent until the first exit is taken.
    */
   lastExit?: { node: NodeId; visit: number; edge: EdgeId };
+  /**
+   * The temporary buffs the party holds (#200), in the order they were first
+   * granted. Attempt-scoped like everything here, and never a guard's
+   * business. Seeded into each chapter run (`RunState.buffs`), spent by its
+   * fights, and read back when the visit completes — the journey flags'
+   * carry rule. Absent or empty: none, which is every journey saved before
+   * #200 and every one whose buffs have run out.
+   */
+  buffs?: ActiveBuff[];
 }
 
 /**
@@ -771,6 +798,11 @@ export interface JourneyView {
    * world has changed. Present only when the graph declares a visible fact.
    */
   facts?: JourneyFactView[];
+  /**
+   * The temporary buffs the party holds (#200), with what each adds and how
+   * long it has left. Present only while there is one.
+   */
+  buffs?: JourneyBuffView[];
 }
 
 /** One place the party has been (`JourneyView.places`). */

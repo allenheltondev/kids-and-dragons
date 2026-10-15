@@ -24,7 +24,9 @@ Where this document and the TypeScript disagree, the TypeScript wins and this is
 > lifecycles of their own — triggered, single-use, timed, unstable, persistent, linked.
 > `npm run content:journey` draws a graph, reports its route coverage and drives the runtime along
 > it ([tooling](#inspection-and-playtest-tooling-202), #202); a small fixture of its own
-> (`journey-ci`) is the one CI plays.
+> (`journey-ci`) is the one CI plays. Rift energy can grant [temporary buffs](#temporary-buffs-200)
+> (#200) — guard, damage, movement or roll bonuses (or burdens) that last a few turns or fights,
+> never written to a character; the [Humming Spring](#the-humming-spring-fixture) fixture shows them.
 
 ---
 
@@ -93,6 +95,7 @@ author, to test and to read.
 | `edges` | Ways between places, keyed by stable id — unique across the graph so an effect, a guard or a save can name one without naming its node. A node's exits are offered in authored edge order. |
 | `flags` | Journey flags beyond `routeSets` members ([§5](#5-journey-flags)). |
 | `facts` | World facts — typed, bounded, attempt-scoped ([World state](#world-state-198), #198). |
+| `buffs` | Temporary buffs rift energy can grant — fight-only, bounded, never on a character ([Temporary buffs](#temporary-buffs-200), #200). |
 
 Node and edge ids match `^[a-z0-9]+([-_][a-z0-9]+)*$`. **They are stable**: saved attempts name
 them, so renaming one is a content migration, not a tidy-up.
@@ -225,6 +228,7 @@ availability and whether it is drawn (`visible`: available, or blocked and `"sho
 | `{ "type": "lock", "edge": e }` | Closes `e` for the rest of the attempt. |
 | `{ "type": "setFact", "fact": f, "value": v }` | Sets world fact `f` to `v`, a value in its domain (#198). |
 | `{ "type": "adjustFact", "fact": f, "by": n }` | Moves counter fact `f` by a non-zero integer, clamped to its bounds (#198). |
+| `{ "type": "grantBuff", "buff": b }` | Grants temporary buff `b` — or refreshes, stacks or ignores it if held ([Temporary buffs](#temporary-buffs-200), #200). |
 
 The same effects are what a node's `onComplete` rules apply when its chapter completes
 ([World state](#writing-facts-edges-and-completion-rules)).
@@ -776,6 +780,149 @@ combined on a three-place map.
 
 ---
 
+## Temporary buffs (#200)
+
+Rift energy can leave the party stronger **for a while**: steadier (Guard), harder-hitting,
+quicker, luckier — or, as the price of a boon, weaker in one of those ways. A graph declares its
+buffs (`graph.buffs`), an effect grants one (`grantBuff`), the attempt's journey holds it, and the
+next fights use it up. The shapes are [`types/buffs.ts`](../../packages/shared/src/types/buffs.ts);
+the arithmetic is [`buffs.ts`](../../packages/shared/src/buffs.ts). Opt-in like everything here: a
+graph without `buffs`, and every ordered campaign, behaves exactly as before — adding the field bumped
+nothing.
+
+```jsonc
+"buffs": {
+  "rift-shield": { "label": "Rift Shield", "kind": "guard", "amount": 1,
+                   "duration": { "scope": "encounters", "count": 2 }, "expiresOn": ["defeat"] },
+  "rift-surge":  { "label": "Rift Surge", "kind": "damage", "amount": 1, "target": "one",
+                   "duration": { "scope": "turns", "count": 2 }, "stack": "add", "maxStacks": 2, "cap": 2 },
+  "rift-fury":   { "label": "Rift Fury", "kind": "roll", "amount": 2, "duration": { "scope": "encounter" },
+                   "stack": "ignore", "expiresOn": ["travel", "setback"] },
+  "rift-fray":   { "label": "Frayed Nerves", "kind": "guard", "amount": -1, "duration": { "scope": "encounter" },
+                   "stack": "ignore", "expiresOn": ["travel", "setback"] }
+}
+…
+"spring-to-den": { "from": "spring", "to": "den", "kind": "forward", "label": "Step through the rift",
+                   "effects": [{ "type": "grantBuff", "buff": "rift-fury" }, { "type": "grantBuff", "buff": "rift-fray" }] }
+```
+
+### Not a stat, not an item — the decision
+
+A hero's stats live on the stored `Character` and only grow by XP; items and trinkets are folded
+into the character by `resolveCharacter`, in every campaign. A buff rides **neither** path. It is an
+overlay on a fight's combatants (`EncounterState.buffs`), read where the number it changes is used,
+and never written back — so a buff cannot become permanent stat creep, cannot follow the hero into
+Gemfall, and cannot change how any campaign's items resolve. A character row after a buffed chapter
+is byte-for-byte the row before it, except for what the chapter paid.
+
+### The declaration
+
+| Field | Meaning |
+|---|---|
+| `label` | What the screens call it, for an 8-year-old. |
+| `kind` | What it changes, each a number the fight already has: `"guard"` — the hero's Guard, the number an attack on them must reach; `"damage"` — what the hero's **Attack** takes off when it hits (not roll-less ability damage, not thrown items); `"move"` — the steps the hero starts each turn with; `"roll"` — the modifier on the hero's **attack** rolls. Checks outside fights are untouched. |
+| `amount` | Per stack, a non-zero whole number within the kind's limit (`BUFF_LIMITS`: guard 3, damage 2, move 2, roll 3). **Negative is a burden.** |
+| `target` | `"party"` (default) — every hero; `"one"` — the hero holding the story turn (`RunState.storyTurn`'s seat) when the fight begins. |
+| `duration` | `{ "scope": "turns", "count": n }` — the holder's first *n* turns of the next fight (and no longer than it); `{ "scope": "encounter" }` — the whole next fight; `{ "scope": "encounters", "count": n }` — the next *n* fights. *n* is 1–5. |
+| `stack` | A second grant of a held buff: `"refresh"` (default) — its duration starts again; `"add"` — one more stack, up to `maxStacks` (2–5, default 3), and its duration starts again; `"ignore"` — nothing. |
+| `cap` | The most this buff adds (or takes away) however it stacks, 1 up to the kind's limit, and at least one stack's amount. |
+| `expiresOn` | What ends it early: `"defeat"` (a fight lost), `"setback"` (a chapter ending in one), `"rest"` (reaching a Rest scene), `"travel"` (taking any exit). |
+
+**Bounded on purpose.** A level is worth a point; a buff that out-weighed one would be stat creep by
+another name. However many buffs of one kind a hero has, their total is held to the kind's limit, up
+and down. A burden never makes a hero stuck (steps ≥ 1), made of paper (Guard ≥ 1), or hitting for
+nothing (a hit does ≥ 1).
+
+**Tradeoffs** are two grants on one effect list: the boon and the burden that pays for it (the Rift
+Fury and Frayed Nerves above). Both are shown; the burden is marked *Cost*. A tradeoff that costs
+the *world* instead is a `setFact` / `adjustFact` beside the grant.
+
+### Granting
+
+`{ "type": "grantBuff", "buff": id }` is a `GraphEffect` like any other: on an edge (applied as the
+party crosses, after travel has ended what travel ends — so the crossing's own grant survives it),
+in a node's `onComplete` rule (after the run's buffs are read back — below), and in whatever #197's
+rift actions apply. **A guard never reads a buff**: buffs change fights, not where the party can go,
+so the lint's search has nothing to track and a graph's reachability is the same with or without
+them.
+
+### Where a buff lives, and when it moves
+
+| | Held as | Moves when |
+|---|---|---|
+| between chapters | `JourneyState.buffs: ActiveBuff[]` — `{ id, stacks, encountersLeft, grantedAt? }`, counters only | granted by an effect; ended by `"travel"` as an exit is taken; replaced by the run's on completion |
+| in a chapter run | `RunState.buffs: RunBuff[]` — the same, each declaration resolved (label, kind, amount, target, turns, cap, expiresOn) so the engine and phones need no graph | **seeded** from the journey at chapter start (`EngineContext.campaignBuffs`, `seedRunBuffs`), like the journey flags; spent by each fight; ended by a Rest scene (`"rest"`) or a setback ending (`"setback"`) |
+| in a fight | `EncounterState.buffs: CombatBuff[]` — one entry per hero it is on, `{ id, label, kind, heroId, amount, turnsLeft? }` | built when the fight begins (`combatBuffsFor`); a `"turns"` buff loses one as its holder's turn ends (not as an encore ends, and a monster's turn never counts) |
+
+**Spending is one deterministic rule.** When a fight ends — won, lost, or left by a playtest jump —
+every buff the run holds is one fight nearer spent: a `"turns"` or `"encounter"` buff is gone, an
+`"encounters"` one has one fewer (`spendRunBuffs`). A lost fight also ends every `"defeat"` buff.
+What happened inside the fight does not matter. A chapter with no fight costs nothing.
+
+**Read back on completion.** `completeVisit`'s report carries the run's `buffs`; what the run still
+holds **becomes** what the journey holds (the flags' carry rule), and then the node's `onComplete`
+rules grant on top of it. A run with no `buffs` at all (started before #200) leaves the journey's
+buffs as they were.
+
+### Save, resume, and repeats
+
+- **Mid-fight.** The fight's buffs are part of `RunState.encounter`, persisted every seq: a phone
+  that reloads mid-fight resumes the fight's own buffs, turns left and all.
+- **A visit started again** (a second room, a restarted chapter) is seeded from the **journey**,
+  never from what another run spent — seeding replaces, it never appends, so nothing is doubled
+  and nothing is lost.
+- **A duplicate completion** is `completeVisit`'s duplicate: the journey unchanged, nothing read
+  back, nothing granted, nothing spent.
+- **Stored state** reads through the declaration (`storedBuffs` / `seedRunBuffs`): a record that is
+  not a buff is dropped (a misread buff must never grow), a stack count past the declaration's is
+  held to it, an id the declaration no longer has is carried and does nothing.
+  `JOURNEY_VERSION` stays 1: an absent `buffs` is "none", which is what every journey saved before
+  #200 means, and the key is written only while the party holds one.
+- **Attempt-scoped.** A buff dies with the attempt; the next attempt starts with none.
+
+### What the players see
+
+`JourneyView.buffs` (on `CampaignView.journey`, while the party holds any): `{ id, label, kind,
+amount, stacks, target, remaining: { encounters, turns? }, expiresOn? }`, `amount` with stacks and
+caps applied. The journey panel lists them ("Rift powers you carry"); in a fight, the combat panel
+lists the ones on this phone's hero, with turns left ("Your rift powers"). Each line is the glyph,
+the name, a signed amount in words ("+1 Guard", "−1 Guard") and how long it lasts; a burden also
+says *Cost* — never colour alone. Neither appears in an ordered campaign: there is nothing to show.
+
+### Checks
+
+| Check | Where |
+|---|---|
+| each declaration well-formed (kind, amount within its kind's limit, target, duration and count, stack, `maxStacks` only with `"add"`, `cap` sane, expiries known) and every `grantBuff` names a declared buff | schema and `parseCampaignGraph` |
+| `BUFF_NEVER_GRANTED` ⚠ — a declared buff no effect grants | lint (warning) |
+| a stored `buffs` that is not a list → `impossible`; an unreadable or unknown entry, or one past its declaration → ignored (warning) | `checkJourneySave` (#202) |
+
+### The Humming Spring fixture
+
+[`packages/shared/src/fixtures/rift-buffs.campaign.json`](../../packages/shared/src/fixtures/rift-buffs.campaign.json)
+— a camp (pass hub), a humming spring whose completion grants the Rift Shield and Rift Surge, a den
+reached either the long way or by stepping through the rift (which grants Rift Fury *and* Frayed
+Nerves), and a dawn ending; the road to the spring grants Fleet Step. One buff of each kind and
+duration scope, every stacking mode, both targets, every expiry, and a tradeoff. `buffs.test.ts`
+holds it to the parser, the journey, the engine and the fight; `packages/server/src/handlers/buffs.test.ts`
+plays it through the server; the #202 gate walks it like every fixture. Gemfall's numbers are pinned
+by `ordered-campaigns.test.ts`, which hashes resolved trinket-holding heroes and two seeded Gemfall
+fights against a digest taken before buffs existed.
+
+### For #201 and #199
+
+- **#201 (environmental combat)** reaches into the same fight: the seam is `EncounterState.buffs`
+  read through `buffBonus(state.buffs, actorId, kind)` wherever Guard, the attack roll, Attack's
+  damage and turn steps are computed (`encounter.ts`). An environmental modifier that changes one
+  of those numbers can be a node-level list of `CombatBuff`-shaped entries merged into the setup's
+  `buffs` (the clamps then hold the total), or a parallel overlay read at the same four places; the
+  turn tick lives in `endTurn` (`tickCombatBuffs`).
+- **#199 (class rift interaction)**: a class action that empowers the party grants a buff through
+  the same `grantBuff` effect. Targeting stays journey-deterministic because the journey never names
+  a hero — `"one"` is chosen when the fight begins.
+
+---
+
 ## Inspection and playtest tooling (#202)
 
 Validation (#193) says whether a graph *can* be walked; this is what you use to *look* at one, to
@@ -1018,7 +1165,7 @@ its issue defines it. Where each attaches:
 | #197 rift actions | call `openRift` / `closeRift` / `revealRift` (`rifts.ts`; [For #197](#for-197-rift-actions)); new `GraphEffect` types beside `unlock`/`lock` if authored effects should open or close rifts. Final statuses stay final. |
 | #198 world state | **Done** — [World state](#world-state-198): `graph.facts` (typed, bounded, `domain`-tagged, `visible`), `GraphCondition.facts` / `visit`, `setFact` / `adjustFact`, node `onComplete` rules, variant `revisit`, `JourneyFacts.facts`, `JourneyView.facts`, and the lint's search over fact values. The variant selection rule stays first-match. |
 | #199 class rift interaction | edge-level requirements and actions; must stay journey-deterministic or say explicitly why not. A class action that changes the world writes a world fact (a `setFact`/`adjustFact` in its effects), so guards, variants and the lint see it like any other. |
-| #200 temporary buffs | `GraphEffect` granting attempt-scoped buffs, stored on `JourneyState`. |
+| #200 temporary buffs | **Done** — [Temporary buffs](#temporary-buffs-200): `graph.buffs`, the `grantBuff` effect, `JourneyState.buffs`, `RunState.buffs` (seeded via `EngineContext.campaignBuffs`), `EncounterState.buffs` read through `buffBonus`, `JourneyView.buffs`, `BUFF_NEVER_GRANTED`. No guard reads a buff. |
 | #201 environmental combat | node-level (or variant-level) encounter modifiers. A modifier that depends on world state is best keyed by a variant whose `when` reads the fact (the variant *is* the changed place), or by a modifier `when: GraphCondition` evaluated with `{ facts: graph.facts }`. |
 | #202 inspection | **Done** — [Inspection and playtest tooling](#inspection-and-playtest-tooling-202): `npm run content:journey`, `exploreCampaignGraph` (the lint's explorer, exported), `checkJourneySave`. A new exit-blocking reason or journey state must be tracked by `explore` first; the playtest's replay then holds the lint to the runtime. |
 | #203 vertical slice | a real graph campaign under a **new** campaign id, never Gemfall. |
@@ -1064,3 +1211,12 @@ Rifts (#196): from `campaign-graph.ts`, `riftState(graph, edge, journey)` (the s
 `closeRift`, `revealRift` (`RiftChange`, `RiftRefusalCode`), `riftDestinationRevealed`, `riftView`;
 types `GraphRift`, `RiftState`, `RiftStatus`, `RiftClockUnit`, `JourneyRiftView`. See
 [Rifts](#rifts-196).
+
+Temporary buffs (#200): from `buffs.ts` (import-free, loadable by `.mjs` tools through
+`campaign-graph.ts`), `BUFF_KINDS`, `BUFF_EXPIRIES`, `BUFF_LIMITS`, `MAX_BUFF_STACKS`,
+`DEFAULT_BUFF_STACKS`, `MAX_BUFF_DURATION`, `buffDeclarationProblems`, `buffFights`,
+`buffMaxStacks`, `buffContribution`, `storedBuffs`, `grantBuff`, `expireBuffs`, `seedRunBuffs`,
+`readBackBuffs`, `buffViews`, `expireRunBuffs`, `spendRunBuffs`, `oneHeroSeat`, `combatBuffsFor`,
+`buffBonus`, `buffed`, `tickCombatBuffs`; types (`types/buffs.ts`) `BuffId`, `BuffKind`,
+`BuffDuration`, `BuffStacking`, `BuffExpiry`, `BuffTarget`, `BuffDef`, `ActiveBuff`, `RunBuff`,
+`CombatBuff`, `JourneyBuffView`. See [Temporary buffs](#temporary-buffs-200).
