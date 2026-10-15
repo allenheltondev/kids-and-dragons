@@ -76,6 +76,16 @@
   white-space: nowrap;
 }
 
+/* For a chip that carries a sentence (an error, say) rather than a word: it
+   wraps inside its own width instead of pushing the pane into a sideways
+   scroll. Usually a <p>, hence the margin. */
+.kad-chip--wrap {
+  max-inline-size: 100%;
+  margin: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 .kad-chip--ok {
   border-color: var(--color-success, #4ad991);
   color: var(--color-success, #4ad991);
@@ -97,6 +107,9 @@
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   min-height: 0;
+  /* Room for the scrollbar whether or not one is showing, so content growing
+     past the fold does not narrow the column and rewrap everything in it. */
+  scrollbar-gutter: stable;
 }
 
 /*

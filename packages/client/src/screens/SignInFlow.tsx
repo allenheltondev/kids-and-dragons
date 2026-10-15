@@ -81,17 +81,10 @@ export function SignInFlow(): ReactElement | null {
 
         <KeepsakeLantern motes={motes} tone={step === "kept" ? "kept" : "offer"} />
 
-        {error === null ? null : (
-          <p className="keepsake__error" role="alert">
-            <Icon name="close" />
-            <span>{error}</span>
-          </p>
-        )}
-
         {step === "offer" ? <OfferStep motes={motes} fieldGuide={fieldGuide} /> : null}
-        {step === "email" ? <EmailStep busy={busy} /> : null}
-        {step === "code" ? <CodeStep busy={busy} /> : null}
-        {step === "choose" ? <ChooseStep busy={busy} /> : null}
+        {step === "email" ? <EmailStep busy={busy} error={error} /> : null}
+        {step === "code" ? <CodeStep busy={busy} error={error} /> : null}
+        {step === "choose" ? <ChooseStep busy={busy} error={error} /> : null}
         {step === "passkey" ? <PasskeyStep busy={busy} /> : null}
         {step === "kept" ? <KeptStep motes={motes} fieldGuide={fieldGuide} /> : null}
       </div>
@@ -179,7 +172,34 @@ export function OfferStep({
   );
 }
 
-function EmailStep({ busy }: { busy: boolean }): ReactElement {
+/**
+ * Where a step's error goes: under what was typed, over the buttons, and
+ * always there. The panel is centred, so an error that mounted would push the
+ * field and the buttons around just as somebody reaches for them; the seat
+ * keeps two lines for it whether or not anything has gone wrong.
+ *
+ * The alert region is the seat itself, so it is present before the message is
+ * and the message is announced when it lands, as it was when it mounted.
+ */
+export function KeepsakeError({ error }: { error: string | null }): ReactElement {
+  return (
+    <div className="keepsake__error-seat" role="alert">
+      {error === null ? null : (
+        <p className="keepsake__error">
+          <Icon name="close" />
+          <span>{error}</span>
+        </p>
+      )}
+    </div>
+  );
+}
+
+interface StepProps {
+  busy: boolean;
+  error: string | null;
+}
+
+function EmailStep({ busy, error }: StepProps): ReactElement {
   const sendCode = useKeepsakeStore((s) => s.sendCode);
   const close = useKeepsakeStore((s) => s.close);
   const fromHome = useKeepsakeStore((s) => s.entry) === "home";
@@ -236,6 +256,8 @@ function EmailStep({ busy }: { busy: boolean }): ReactElement {
         disabled={busy}
       />
 
+      <KeepsakeError error={error} />
+
       <div className="keepsake__actions">
         <Button
           type="submit"
@@ -255,7 +277,7 @@ function EmailStep({ busy }: { busy: boolean }): ReactElement {
   );
 }
 
-function CodeStep({ busy }: { busy: boolean }): ReactElement {
+function CodeStep({ busy, error }: StepProps): ReactElement {
   const submitCode = useKeepsakeStore((s) => s.submitCode);
   const back = useKeepsakeStore((s) => s.back);
   const challenge = useKeepsakeStore((s) => s.challenge);
@@ -333,6 +355,8 @@ function CodeStep({ busy }: { busy: boolean }): ReactElement {
         </div>
       </div>
 
+      <KeepsakeError error={error} />
+
       <div className="keepsake__actions">
         <Button
           type="submit"
@@ -360,7 +384,7 @@ function CodeStep({ busy }: { busy: boolean }): ReactElement {
  * phone to a child's profile hands her adult's device to her — and binding hers
  * to an adult gives a `role: child` device pairing rights it must never have.
  */
-function ChooseStep({ busy }: { busy: boolean }): ReactElement {
+function ChooseStep({ busy, error }: StepProps): ReactElement {
   const players = useKeepsakeStore((s) => s.players);
   const choosePlayer = useKeepsakeStore((s) => s.choosePlayer);
 
@@ -396,6 +420,8 @@ function ChooseStep({ busy }: { busy: boolean }): ReactElement {
           </li>
         ))}
       </ul>
+
+      <KeepsakeError error={error} />
     </>
   );
 }

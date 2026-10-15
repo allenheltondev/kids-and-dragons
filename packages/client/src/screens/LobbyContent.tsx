@@ -73,16 +73,27 @@ function MemberCard({ member }: { member: PartyMember }): ReactElement {
       {/* The lineup is the one place everyone looks while the room fills up, so
           it is their actual character, at their actual tier — a party of three
           fledglings and a returning Radiant should look like that. */}
-      <span className="lobby-member__portrait" aria-hidden="true">
-        <CharacterPortrait
-          backdrop
-          species={character.species}
-          accent={character.appearance.accent}
-          tier={character.tier}
-          characterClass={character.class}
-          className="lobby-member__art"
-          lit={member.ready}
-        />
+      <span className="lobby-member__seat">
+        <span className="lobby-member__portrait" aria-hidden="true">
+          <CharacterPortrait
+            backdrop
+            species={character.species}
+            accent={character.appearance.accent}
+            tier={character.tier}
+            characterClass={character.class}
+            className="lobby-member__art"
+            lit={member.ready}
+          />
+        </span>
+        {/* Pinned to the portrait rather than added to the card: a phone
+            dropping used to give its card an extra row, and the whole lineup
+            grew and shifted under everybody else's. */}
+        {member.connected ? null : (
+          <span className="kad-chip kad-chip--warn lobby-member__away">
+            <Icon name="close" />
+            <span>Away</span>
+          </span>
+        )}
       </span>
       <span className="lobby-member__text">
         <span className="lobby-member__name">{character.name}</span>
@@ -91,25 +102,19 @@ function MemberCard({ member }: { member: PartyMember }): ReactElement {
           <span>Level {character.level}</span>
         </span>
       </span>
+      {/* Icon + word: readiness never reads as colour alone (spec §11).
+          Both chips are always here, stacked in one cell, and readying up only
+          swaps which is visible: the cell is as wide as the wider word either
+          way, so a tap on somebody's phone cannot reflow the card. */}
       <span className="lobby-member__status">
-        {/* Icon + word: readiness never reads as colour alone (spec §11). */}
-        {member.ready ? (
-          <span className="kad-chip kad-chip--ok">
-            <Icon name="ready" />
-            <span>Ready</span>
-          </span>
-        ) : (
-          <span className="kad-chip">
-            <Icon name="waiting" />
-            <span>Getting ready</span>
-          </span>
-        )}
-        {member.connected ? null : (
-          <span className="kad-chip kad-chip--warn">
-            <Icon name="close" />
-            <span>Away</span>
-          </span>
-        )}
+        <span className={`kad-chip kad-chip--ok${member.ready ? "" : " lobby-member__chip--off"}`}>
+          <Icon name="ready" />
+          <span>Ready</span>
+        </span>
+        <span className={`kad-chip${member.ready ? " lobby-member__chip--off" : ""}`}>
+          <Icon name="waiting" />
+          <span>Getting ready</span>
+        </span>
       </span>
     </li>
   );
