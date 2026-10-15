@@ -1,7 +1,7 @@
 schema_version: "2.0"
 document_type: red_sky_geography_canon
 title: "The Realm of Red Sky Geography Canon"
-updated: "2026-07-30"
+updated: "2026-10-15"
 
 purpose: >-
   Canonical, agent-readable reference for every mapped region, named site,
@@ -18,6 +18,7 @@ agent_instructions:
   - Underground and aerial layers may overlap surface coordinates without being surface neighbors.
   - Approximate anchors may move when the final map art is traced; ids and relationships should remain stable.
   - Coordinates are normalized map-label anchors, not terrain polygons or tactical tiles.
+  - Route map_path points are cartographic courses in the same frame. Approximate courses show direction, not surveyed roads or guaranteed safe passage.
   - Origin is the top-left of the map. X increases east; Y increases south.
 
 controlled_values:
@@ -161,6 +162,9 @@ routes:
     canon_status: confirmed
     map_provenance: map_visible_name_pending
     map_anchor: { x: 655, y: 390 }
+    map_path:
+      accuracy: mapped
+      points: [{ x: 625, y: 358 }, { x: 643, y: 350 }, { x: 660, y: 355 }, { x: 680, y: 370 }]
     crosses: feature.great_river
     connects:
       - biome.red_sky_foothills
@@ -176,6 +180,9 @@ routes:
     canon_status: confirmed
     map_provenance: map_canonical
     map_anchor: { x: 630, y: 680 }
+    map_path:
+      accuracy: mapped
+      points: [{ x: 610, y: 665 }, { x: 630, y: 655 }, { x: 651, y: 656 }, { x: 675, y: 673 }]
     crosses: feature.great_river
     via: location.stone_crossing
     connects:
@@ -191,6 +198,9 @@ routes:
     kind: overland_road
     canon_status: confirmed
     map_provenance: map_implied
+    map_path:
+      accuracy: approximate
+      points: [{ x: 350, y: 855 }, { x: 380, y: 818 }, { x: 401, y: 777 }, { x: 438, y: 740 }, { x: 470, y: 690 }]
     connects:
       - location.exchange
       - biome.sunward_fields
@@ -201,6 +211,9 @@ routes:
     kind: overland_route
     canon_status: confirmed
     map_provenance: map_implied
+    map_path:
+      accuracy: approximate
+      points: [{ x: 350, y: 855 }, { x: 320, y: 816 }, { x: 284, y: 766 }, { x: 252, y: 713 }, { x: 225, y: 620 }]
     connects:
       - location.exchange
       - biome.whispering_marsh

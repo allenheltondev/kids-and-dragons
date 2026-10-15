@@ -94,6 +94,39 @@ function laterSceneOf(chapter) {
 
 // ---------------------------------------------------------------------------
 
+describe("regional atlas content", () => {
+  it.each([
+    ["level ordering", (w) => { w.atlas.levels.reverse(); }, "increase in resolution"],
+    ["native level", (w) => { w.atlas.levels.pop(); }, "native resolution level"],
+    ["unknown route endpoint", (w) => { w.routes[0].connects[0] = "biome.nowhere"; }, "all endpoints must be mapped"],
+    ["detail bounds", (w) => { w.atlas.patches[0].bounds.x = 900; }, "bounds inside the realm"],
+    ["missing detail tile", (w) => { w.atlas.patches[0].tiles[0].src = "/assets/world/atlas/missing.webp"; }, "missing tile"],
+  ])("rejects invalid %s", (_name, mutate, complaint) => {
+    const dir = copyTree();
+    const world = readJson(dir, "content", "world.json");
+    mutate(world);
+    writeJson(dir, ["content", "world.json"], world);
+    const result = validate(dir);
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain(complaint);
+  });
+  it.each([
+    ["canonical identity", (r) => { r.placeId = "biome.sunward_fields"; }, "reference its canonical place"],
+    ["realm bounds", (r) => { r.bounds.width = 1000; }, "outside the realm"],
+    ["missing tile", (r) => { r.tiles[0].src = "/assets/world/atlas/missing.webp"; }, "missing tile"],
+    ["gaps", (r) => { r.tiles[0].width -= 1; }, "without gaps"],
+    ["overlaps", (r) => { r.tiles.push({ ...r.tiles[0] }); }, "tiles overlap"],
+  ])("rejects invalid %s", (_name, mutate, complaint) => {
+    const dir = copyTree();
+    const world = readJson(dir, "content", "world.json");
+    mutate(world.regions.enchanted_woods);
+    writeJson(dir, ["content", "world.json"], world);
+    const result = validate(dir);
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain(complaint);
+  });
+});
+
 describe("the harness itself", () => {
   it("passes an untouched copy of the real content", () => {
     /*

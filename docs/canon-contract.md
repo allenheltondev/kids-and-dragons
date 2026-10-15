@@ -101,7 +101,7 @@ into `biome` and `site` into `location`; D8 added `individual`.
 | `quest` | quests.yaml | `quest.` | 2 | `quest_type`, `difficulty`, `objectives`, `rewards` |
 | `campaign` | campaigns.yaml | `campaign.` | 2 | `campaign_type`, `chapter_count` |
 | `feature` | geography.yaml | `feature.` | 4 | `kind`, `map_anchor`, `flow_direction`, `mouth` |
-| `route` | geography.yaml | `route.` | 4 | `kind`, `map_anchor`, `travel_modes`, `constraints` |
+| `route` | geography.yaml | `route.` | 4 | `kind`, `map_anchor`, optional `map_path`, `travel_modes`, `constraints` |
 
 `biome` and `location` share a `Place` base (map provenance, anchor, access).
 `geography.yaml` now owns only what is neither an ecological region nor a place

@@ -199,6 +199,11 @@ jobs:
       # wrong country.
       - name: Check the world map is up to date
         run: |
+          npm run art:atlas
+          git diff --exit-code -- art/atlas/tiles.json art/atlas/pyramid.json art/atlas/build.json || {
+            echo "::error::Atlas assets are stale — run npm run art:atlas and commit the result."
+            exit 1
+          }
           npm run canon:world
           git diff --exit-code -- content/world.json || {
             echo "::error::content/world.json is stale — run \`npm run canon:world\` and commit the result."

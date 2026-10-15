@@ -200,8 +200,8 @@ export function TravelLayout(): React.JSX.Element {
       <div className="kad-travel__pane" data-pane="player" data-showing={showing === "player"}>
         <PlayerView roomControls={<ModeSwitch />} />
       </div>
-      {/* The map is cheap to draw and holds no state worth keeping, so it is
-          mounted only while it is looked at — and it is the one pane whose
+      {/* Map navigation is remembered separately, so this can stay unmounted
+          until requested — and it is the one pane whose
           chapter fetch (`useEnsureChapter`) should not run on a phone that
           never asked for it. */}
       {showing === "map" ? (

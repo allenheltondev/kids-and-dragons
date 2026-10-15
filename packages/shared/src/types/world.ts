@@ -43,4 +43,52 @@ export interface WorldMap {
    * has not put on the map are absent rather than guessed at.
    */
   places: Record<string, WorldPlace>;
+  /** Optional regional sheets. Older content packs still render the realm. */
+  regions?: Record<string, WorldRegion>;
+  /** Continuous realm tile pyramid; region buttons focus this same canvas. */
+  atlas?: WorldAtlas;
+  routes?: WorldRoute[];
+}
+
+export interface WorldBounds {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/** Bounds crop the overview; they are editorial framing, not biome borders. */
+export interface WorldRegion {
+  placeId: string;
+  bounds: WorldBounds;
+  /** Player-safe canon description, never lore.hidden_truths. */
+  description: string;
+  image: { width: number; height: number };
+  tiles: Array<{ src: string; x: number; y: number; width: number; height: number }>;
+}
+
+export interface WorldTile {
+  src: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface WorldAtlas {
+  image: { width: number; height: number };
+  levels: Array<{ image: { width: number; height: number }; tiles: WorldTile[] }>;
+  /** Detailed sections transition over the continuous base at close zoom. */
+  patches?: Array<{ id: string; bounds: WorldBounds; image: { width: number; height: number }; tiles: WorldTile[] }>;
+}
+
+export interface WorldRoute {
+  id: string;
+  title: string;
+  kind: string;
+  connects: string[];
+  via?: string;
+  travelModes: string[];
+  accuracy: "mapped" | "approximate";
+  points: WorldAnchor[];
 }
