@@ -10,6 +10,7 @@ import type { ResolvedCharacter, StatId } from "./domain.js";
 import type { ChapterOutcome, SceneId, SceneType } from "./chapter.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { JourneyView, NodeId } from "./campaign-graph.js";
+import type { RunBuff } from "./buffs.js";
 
 export type RoomMode = "party" | "travel";
 
@@ -146,6 +147,19 @@ export interface RunState {
    * and moves nothing. Absent on every ordered campaign's run.
    */
   journeyVisit?: { node: NodeId; visit: number } | null;
+  /**
+   * The temporary buffs this chapter run holds (#200), graph campaigns only:
+   * seeded from the journey at chapter start (`EngineContext.campaignBuffs`)
+   * beside the journey flags, each one's declaration resolved so the engine
+   * and the phones can read it without the graph. Fights spend them, a Rest
+   * scene or a setback may end some, and when the visit completes what is
+   * left is read back into the journey (`completeVisit`).
+   *
+   * Absent on every ordered campaign's run — no graph, nothing to seed — and
+   * on every run started before #200; a fight in such a run has no buffs.
+   * Never written to a character: a buff is an overlay on a fight.
+   */
+  buffs?: RunBuff[];
   /**
    * Where the household stands in the campaign this room plays, for the
    * screens: the lobby says which chapter is next, and the completion screen

@@ -65,6 +65,8 @@ import {
   readFact,
   storedFacts,
 } from "./world-state.ts";
+import type { BuffDef, BuffId } from "./types/buffs.js";
+import { buffDeclarationProblems } from "./buffs.ts";
 
 /** The declaration version this build reads (`CampaignGraph.version`). */
 export const CAMPAIGN_GRAPH_VERSION = 1;
@@ -144,6 +146,13 @@ export interface ParsedCampaignGraph {
   facts: Record<FactId, WorldFact>;
   /** Fact ids in authored order. */
   factOrder: FactId[];
+  /**
+   * The temporary buffs (#200), keyed by id in authored order — `{}` for a
+   * graph that declares none.
+   */
+  buffs: Record<BuffId, BuffDef>;
+  /** Buff ids in authored order. */
+  buffOrder: BuffId[];
 }
 
 /**
@@ -252,6 +261,23 @@ export function parseCampaignGraph(
   }
   const factOrder = Object.keys(facts);
 
+  // Temporary buffs (#200), the same way: a broken declaration is reported
+  // once, and a grantBuff naming it is not reported again as dangling.
+  const rawBuffs: unknown = declaration.buffs;
+  const buffs: Record<BuffId, BuffDef> = {};
+  const brokenBuffs = new Set<BuffId>();
+  if (rawBuffs !== undefined && !isRecord(rawBuffs)) {
+    fail("/buffs", "buffs must be an object keyed by buff id");
+  } else if (rawBuffs !== undefined) {
+    for (const [id, buff] of Object.entries(rawBuffs)) {
+      const found = buffDeclarationProblems(buff);
+      for (const { path, problem } of found) fail(`/buffs/${seg(id)}${path}`, problem);
+      if (found.length === 0) buffs[id] = buff as BuffDef;
+      else brokenBuffs.add(id);
+    }
+  }
+  const buffOrder = Object.keys(buffs);
+
   const checkFactName = (path: string, id: string): WorldFact | null => {
     const fact = facts[id];
     if (fact) return fact;
@@ -327,6 +353,10 @@ export function parseCampaignGraph(
       } else if (effect?.type === "setFact" || effect?.type === "adjustFact") {
         const fact = checkFactName(`${path}/fact`, effect.fact);
         if (fact) for (const found of factEffectProblems(fact, effect)) fail(`${path}${found.path}`, found.problem);
+      } else if (effect?.type === "grantBuff") {
+        if (typeof effect.buff !== "string" || (!buffs[effect.buff] && !brokenBuffs.has(effect.buff))) {
+          fail(`${path}/buff`, `${JSON.stringify(effect.buff)} is not a buff (declare it in graph.buffs)`);
+        }
       } else {
         fail(`${path}/type`, `unknown graph effect ${JSON.stringify((effect as { type?: unknown })?.type)}`);
       }
@@ -423,6 +453,8 @@ export function parseCampaignGraph(
       flags,
       facts,
       factOrder,
+      buffs,
+      buffOrder,
     },
     problems,
   };

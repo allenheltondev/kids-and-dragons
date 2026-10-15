@@ -11,6 +11,7 @@
 export * from "./types/domain.js";
 export * from "./types/chapter.js";
 export * from "./types/campaign-graph.js";
+export * from "./types/buffs.js";
 export * from "./types/state.js";
 export * from "./types/protocol.js";
 export * from "./types/world.js";
@@ -34,6 +35,7 @@ export * from "./journey.js";
 export * from "./rifts.js";
 export * from "./campaign-graph-lint.js";
 export * from "./world-state.js";
+export * from "./buffs.js";
 export * from "./chapter-map.js";
 export * from "./grid.js";
 export * from "./encounter.js";

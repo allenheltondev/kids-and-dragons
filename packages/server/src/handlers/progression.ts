@@ -719,7 +719,16 @@ async function settleVisit(input: {
   const step = completeVisit(
     graph,
     resumed.journey,
-    { node: at.node, visit: at.visit, chapterId: chapter.id, outcome, flags: state.flags },
+    {
+      node: at.node,
+      visit: at.visit,
+      chapterId: chapter.id,
+      outcome,
+      flags: state.flags,
+      // What the run's fights left of its temporary buffs (#200), read back
+      // like the flags. A run started before #200 carries none to read.
+      ...(state.buffs === undefined ? {} : { buffs: state.buffs }),
+    },
     campaign,
   );
   if (!step.ok || step.duplicate) return stale;
