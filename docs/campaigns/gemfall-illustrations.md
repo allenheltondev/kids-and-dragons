@@ -596,3 +596,29 @@ Generated with the built-in image-generation tool. Each scene illustration is a 
 **Ford witch stall:** Wide 16:9 rural remedy stall beside a queue: pointed hat hanging off the awning, tiny bell charms, a thick wool sock wrapped around a softly ringing stone, unmarked medicine bottles. Warm storybook watercolor/gouache. Modest stall in upper half toward one side; lower 30% open level ground. Natural hill and tree horizon only. No witch, people, creatures, animals, text, signs, UI, border or watermark.
 
 **West branch ford:** Wide 16:9 storybook environment: a wide brown, fast but fordable river branch through open grassland, with a sequence of low stones and gravel bars showing where a wagon may cross one at a time. Roads approach from both banks; a few blank wooden route posts. Bright overcast light, watercolor/gouache. River in upper half; lower 30% open bank. Natural plains only. No people, wagons, creatures, animals, lettering, UI, border or watermark.
+## Gemfall 04A — Pride country
+
+Generated with the built-in image-generation tool. Six character-free 1920×1080 WebP backdrops at quality 88; prompts below. The Eastern Plains palette shifts from day gold to night indigo. The foreground stays open and level for the stage.
+
+| Asset | Coverage |
+|---|---|
+| `pride-marker-road.webp` | Curved pride-country road markers |
+| `sefa-ridge-camp.webp` | Manticore pride ridge camp |
+| `centaur-sash-barn.webp` | Centaur road-warden waystation |
+| `pride-stone-crater.webp` | Humming gem in the small crater |
+| `abandoned-caravan-rest.webp` | Empty old caravan rest stop |
+| `pride-night-fire.webp` | Night fire below the pride ridge |
+
+### Generation prompts
+
+**Pride marker road:** Wide 16:9 Kids & Dragons storybook environment of golden Eastern Plains at sunset. A dirt road makes a graceful wide curve around an unseen hot spot. Along the curve are low, plainly inanimate stone cairns and painted flat rocks with tiny rust-red fur tufts tied flat to stones; no upright posts. Tiny embermoth lights float above the grass. Warm gouache and watercolor; curve and cairns in upper half; lower 30% open level grass. No upright objects, figures, statues, scarecrows, people, animals, creatures, buildings, signs, text, UI, border or watermark.
+
+**Sefa ridge camp:** Open manticore-pride camp on a low grass ridge in the Eastern Plains: empty fire ring, neatly placed cushions, shared honeycake on a wooden tray, warm plains beyond; road markers below bend away from camp. No den or building. Gentle evening light, welcoming storybook gouache/watercolor, gold grasses and sage shadows. Upper-half landmark; lower 30% open level grass. No people, cubs, animals, creatures, text, UI, border or watermark.
+
+**Centaur sash barn:** Inside a long timber waystation barn, a wall of colorful stitched road-map sashes is being unpicked and resewn; spools and needles on shelves, large shared worktable with blank folded maps, hay lofts at sides. No readable writing or map labels. Warm daylight, tactile storybook gouache/watercolor. Sashes and beams upper half; clear wood floor lower 30%. No centaurs, people, animals, creatures, text, UI, frame or watermark.
+
+**Pride stone crater:** Open golden pride-country grassland with a small round impact crater, no bigger than a wash tub; surrounding grass leans outward. A single warm amber gem rests in shallow crater, with a few tiny paw prints pressed in ash nearby. Mysterious but safe. Painted gouache/watercolor, late-afternoon gold and sage. Crater in upper half and off-center; lower 30% open level grass. No animals, creatures, people, buildings, text, UI, border or watermark.
+
+**Abandoned caravan rest:** Old grassland rest stop with a few long-unused empty wooden carts and covered wagons parked off-road, quiet broken fence posts, and a cold fire ring; open plains beneath blue night sky. Gentle tension, safe storybook gouache/watercolor. Landmark upper half, lower 30% open level grass and dirt. No wolves, creatures, characters, buildings, text, UI, border or watermark.
+
+**Pride night fire:** Single warm campfire on open pride-country grass below a low dark ridge; stars above distant gold plains, ridge curves around the camp, small amber gem glows faintly near the far horizon. Peaceful storybook watercolor/gouache, indigo night and amber firelight. Ridge and fire upper half; lower 30% open level earth. No people, animals, cubs, creatures, shelters, text, UI, frame or watermark.

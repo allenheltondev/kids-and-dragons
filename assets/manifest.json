@@ -1881,7 +1881,13 @@
     "scenes/gemfall/bracken-cart",
     "scenes/gemfall/queue-dusk-camp",
     "scenes/gemfall/ford-witch-stall",
-    "scenes/gemfall/west-branch-ford"
+    "scenes/gemfall/west-branch-ford",
+    "scenes/gemfall/pride-marker-road",
+    "scenes/gemfall/sefa-ridge-camp",
+    "scenes/gemfall/centaur-sash-barn",
+    "scenes/gemfall/pride-stone-crater",
+    "scenes/gemfall/abandoned-caravan-rest",
+    "scenes/gemfall/pride-night-fire"
   ],
   "$castFiguresComment": "Named story characters' own figures, drawn on the story stage opposite the party (content `cast`, docs/briefs/story-cast-art.md). Same contract as entities: assets/cast/<id>/assembled.png, 1024x1024 RGBA, one complete cutout standing on the canvas origin (feet at y=900), facing left toward the party. `basis` is the entity or species the character is one of; `scale` is how big they stand, in the entities' scale words. verify.py checks each entry.",
   "castFigures": [
