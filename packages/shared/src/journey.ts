@@ -59,9 +59,11 @@ import type {
   JourneyExitView,
   JourneyFactView,
   JourneyPlaceView,
+  JourneyRiftActionView,
   JourneyState,
   JourneyView,
   NodeId,
+  RiftActionKind,
   VisitStatus,
 } from "./types/campaign-graph.js";
 import {
@@ -70,12 +72,16 @@ import {
   completionEffects,
   exitAvailability,
   exitsFrom,
+  evaluateGraphCondition,
+  RIFT_ACTION_KINDS,
+  riftDestination,
   type Arrival,
   type ExitBlock,
   type GraphExit,
   type ParsedCampaignGraph,
 } from "./campaign-graph.js";
 import { crossRift, riftDestinationRevealed, riftView, settleRifts, tickRifts } from "./rifts.js";
+import { applyRiftEffect, isRiftEffect, riftActionChange, riftActionsFrom, riftCanReopen } from "./rift-actions.js";
 import { readFact, storedFacts, worldFacts, writeFact } from "./world-state.js";
 
 /**
@@ -251,10 +257,24 @@ function applyEffects(
   const flags = { ...(journey.flags ?? {}) };
   const edges = { ...(journey.edges ?? {}) };
   const facts: Record<FactId, FactValue> = { ...(storedFacts(journey) as Record<FactId, FactValue>) };
+  let rifts = journey.rifts;
   let touchedFlags = false;
   let touchedEdges = false;
   let touchedFacts = false;
+  let touchedRifts = false;
   for (const effect of effects) {
+    if (isRiftEffect(effect)) {
+      // A rift action (#197) reads the journey as the effects before it left
+      // it — a `setFlag` that satisfies an `opensWhen` counts — so it is
+      // applied to that journey, in order, and only its rifts are kept.
+      const now: JourneyState = { ...journey, flags, edges, facts, ...(rifts ? { rifts } : {}) };
+      const after = applyRiftEffect(graph, now, effect);
+      if (after !== now) {
+        rifts = after.rifts;
+        touchedRifts = true;
+      }
+      continue;
+    }
     if (effect.type === "setFact" || effect.type === "adjustFact") {
       const declared = graph.facts[effect.fact];
       if (!declared) continue;
@@ -278,6 +298,7 @@ function applyEffects(
     ...(touchedFlags ? { flags } : {}),
     ...(touchedEdges ? { edges } : {}),
     ...(touchedFacts ? { facts } : {}),
+    ...(touchedRifts ? { rifts } : {}),
   };
 }
 
@@ -575,6 +596,10 @@ export function takeExit(
     return refuse("unavailable", `"${report.edge}" cannot be taken (${availability.reason})`, availability.reason);
   }
 
+  // Where it leads is read *before* the crossing: a redirected rift (#197)
+  // takes the party where it led when they chose it, whatever the crossing's
+  // own effects then do to it.
+  const destination = riftDestination(graph, report.edge, journey);
   // A rift crossing (#196) is this one party-wide move: counted against the
   // rift (and its linked partner) first, then one tick of the move clock for
   // every timed rift, then the edge's own bookkeeping, effects and arrival —
@@ -590,9 +615,130 @@ export function takeExit(
     edge.effects,
     campaign,
   );
-  const entered = enter(graph, crossed, edge.to);
+  const entered = enter(graph, crossed, destination);
   return { ok: true, duplicate: false, journey: settleRifts(graph, entered.journey), arrival: entered.arrival };
 }
+
+/** A rift action, as `RIFT_ACTION` reports it (#197). */
+export interface RiftActionReport {
+  action: RiftActionKind;
+  /** The rift edge acted on — one of the exits of the node the party is at. */
+  edge: EdgeId;
+  /** The visit the party is choosing on — `JourneyView.visit` as the screen saw it. */
+  visit: number;
+  /** For `"redirect"`: where to turn the rift. */
+  to?: NodeId;
+}
+
+/**
+ * Why a rift action was refused (#197), beyond `takeExit`'s own reasons.
+ *
+ * - `"not-a-rift"` — the edge is not a rift.
+ * - `"not-offered"` — this rift offers no such action, or its rule's `when`
+ *   does not hold now.
+ * - `"bad-destination"` — a redirect to somewhere the rift does not declare.
+ * - `"no-change"` — the action would do nothing: a final rift, a persistent
+ *   one that cannot close, a rift already as asked. (A party action is only
+ *   ever offered when it would change something; this is the stale screen.)
+ */
+export type RiftActionRefusalCode =
+  | Extract<JourneyRefusalCode, "unknown-edge" | "not-here" | "stale-visit" | "still-playing" | "ended">
+  | "not-a-rift"
+  | "not-offered"
+  | "bad-destination"
+  | "no-change";
+
+export interface RiftActionRefusal {
+  ok: false;
+  code: RiftActionRefusalCode;
+  message: string;
+}
+
+export type RiftActionResult =
+  | JourneyDuplicate
+  | { ok: true; duplicate: false; journey: JourneyState }
+  | RiftActionRefusal;
+
+const refuseAction = (code: RiftActionRefusalCode, message: string): RiftActionRefusal => ({ ok: false, code, message });
+
+/**
+ * The party acts on a rift (#197) — a fourth transition, beside enter,
+ * complete and take an exit, and like taking an exit only between visits:
+ * while the journey is choosing, at the node the rift leaves from.
+ *
+ * The action happens (`rifts.ts`), then its rule's effects in order, then
+ * whatever that implies for every rift (`settleRifts` — a flag the action
+ * set may wake another). No clock ticks: an action is neither a move nor a
+ * chapter. The party stays where it is, still choosing — the same visit, so
+ * the exits it now offers are answered against this journey.
+ *
+ * Idempotent on `(node, visit, action, edge, to)` — `lastAction`, checked
+ * before anything else can refuse, exactly as `takeExit` checks `lastExit`:
+ * a double tap or a retry after a lost response is the same action, answered
+ * as done, and its effects never apply twice. Anything else is judged on its
+ * merits, and an action is only taken when it would change something — so a
+ * stale screen asking for something already done is refused (`"no-change"`),
+ * never applied again.
+ */
+export function takeRiftAction(
+  graph: ParsedCampaignGraph,
+  journey: JourneyState,
+  report: RiftActionReport,
+  campaign?: JourneyCampaign,
+): RiftActionResult {
+  const edge = graph.edges[report.edge];
+  if (!edge) return refuseAction("unknown-edge", `there is no way called "${report.edge}"`);
+  if (!edge.rift) return refuseAction("not-a-rift", `"${report.edge}" is not a rift`);
+  const last = journey.lastAction;
+  if (
+    last &&
+    last.node === edge.from &&
+    last.visit === report.visit &&
+    last.action === report.action &&
+    last.edge === report.edge &&
+    last.to === report.to
+  ) {
+    return { ok: true, duplicate: true, journey };
+  }
+  if (journey.status === "ended") return refuseAction("ended", "this journey has reached its ending");
+  if (edge.from !== journey.node) {
+    return refuseAction("not-here", `"${report.edge}" leads out of "${edge.from}", and the party is at "${journey.node}"`);
+  }
+  if (report.visit !== journey.visit) {
+    return refuseAction("stale-visit", `the party is on visit ${journey.visit} to "${journey.node}", not visit ${report.visit}`);
+  }
+  if (journey.status === "playing") {
+    return refuseAction("still-playing", `"${journey.node}" has not been finished yet — the rift can wait`);
+  }
+  const rule = (RIFT_ACTION_KINDS as readonly string[]).includes(report.action)
+    ? edge.rift.actions?.[report.action]
+    : undefined;
+  if (!rule) return refuseAction("not-offered", `the rift "${report.edge}" offers no "${String(report.action)}"`);
+  if (!evaluateGraphCondition(rule.when, journey, edge.from, { facts: graph.facts })) {
+    return refuseAction("not-offered", `"${report.action}" on the rift "${report.edge}" is not offered now`);
+  }
+  if (report.action === "redirect" && !riftDestinationRevealed(graph, report.edge, journey)) {
+    return refuseAction("not-offered", `the party does not know where the rift "${report.edge}" leads, so cannot turn it`);
+  }
+  const change = riftActionChange(graph, journey, report.action, report.edge, report.to);
+  if (!change.ok) {
+    return refuseAction(change.code === "bad-destination" ? "bad-destination" : "no-change", change.message);
+  }
+  if (!change.changed) return refuseAction("no-change", `the rift "${report.edge}" is already so`);
+
+  const acted: JourneyState = {
+    ...change.journey,
+    lastAction: {
+      node: journey.node,
+      visit: journey.visit,
+      action: report.action,
+      edge: report.edge,
+      ...(report.to !== undefined ? { to: report.to } : {}),
+    },
+  };
+  return { ok: true, duplicate: false, journey: settleRifts(graph, applyEffects(graph, acted, rule.effects, campaign)) };
+}
+
 
 // ---------------------------------------------------------------------------
 // Reading where the journey is
@@ -693,6 +839,13 @@ export function journeyView(
           });
   const ending = journey.status === "ended" ? (journey.ending ?? journey.node) : undefined;
   const facts = visibleFacts(graph, journey);
+  const riftActions = journey.status === "choosing" ? riftActionViews(graph, journey, exits, placeTitle) : [];
+  // Nowhere to go and nothing to do (#197): the lint refuses content that can
+  // get here, so only content changing under a save can. Said plainly.
+  const stuck =
+    journey.status === "choosing" &&
+    riftActions.length === 0 &&
+    !exitsFrom(graph, journey.node, journey).some((exit) => exit.availability.available);
   const places: JourneyPlaceView[] = graph.nodeOrder
     .filter((node) => count(journey.visits, node) > 0)
     .map((node) => ({
@@ -714,8 +867,54 @@ export function journeyView(
       : {}),
     places,
     ...(facts.length > 0 ? { facts } : {}),
+    ...(riftActions.length > 0 ? { riftActions } : {}),
+    ...(stuck ? { stuck: true as const } : {}),
   };
 }
+
+/** What a rift action's button says when its rule has no `label` (#197). */
+const ACTION_VERB: Readonly<Record<Exclude<RiftActionKind, "redirect">, string>> = {
+  discover: "Search for a hidden way",
+  open: "Open the rift",
+  close: "Close the rift",
+  stabilize: "Steady the rift",
+};
+
+/**
+ * The rift actions offered now, as the screens draw them (#197). A label is
+ * the rule's, else a verb — with the exit's own label when the exit is drawn,
+ * which already keeps a hidden destination hidden (a discover says only
+ * "Search for a hidden way": the rift it finds is not drawn yet). A redirect
+ * names the place it turns toward the way an exit would: the map title for a
+ * place not yet finished, never its chapter's.
+ */
+function riftActionViews(
+  graph: ParsedCampaignGraph,
+  journey: JourneyState,
+  exits: readonly JourneyExitView[],
+  placeTitle: (node: NodeId) => string,
+): JourneyRiftActionView[] {
+  return riftActionsFrom(graph, journey.node, journey).map((offer) => {
+    const exit = exits.find((each) => each.edge === offer.edge);
+    let label = offer.rule.label;
+    if (label === undefined && offer.action === "redirect") {
+      const to = offer.to!;
+      const place = count(journey.completions, to) > 0 ? placeTitle(to) : (graph.nodes[to]?.title ?? "somewhere new");
+      label = `Turn the rift toward ${place}`;
+    } else if (label === undefined) {
+      const verb = ACTION_VERB[offer.action as Exclude<RiftActionKind, "redirect">];
+      label = exit && offer.action !== "discover" ? `${verb}: ${exit.label}` : verb;
+    }
+    return {
+      action: offer.action,
+      edge: offer.edge,
+      label,
+      ...(offer.to !== undefined ? { to: offer.to } : {}),
+      ...(offer.action === "close" && !riftCanReopen(graph, offer.edge) ? { irreversible: true as const } : {}),
+    };
+  });
+}
+
 
 /**
  * The world facts the players may see (#198): those declared `visible`, in

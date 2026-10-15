@@ -29,9 +29,10 @@ import type {
   ClientIntent,
   JourneyState,
   NodeId,
+  ParsedCampaignGraph,
   RunState,
 } from "@kad/shared";
-import { currentPlayable, lobbyCampaign, resumeJourney, takeExit } from "@kad/shared";
+import { currentPlayable, lobbyCampaign, resumeJourney, takeExit, takeRiftAction } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { ApplyIntentResult } from "../engine/port.ts";
 import type { CampaignProgressRecord, EventRecord, RunRecord } from "../store/repository.ts";
@@ -187,15 +188,21 @@ export async function applyAction(
   let spentCharacter: Character | null = null;
   let exitTaken: ExitWrite | null = null;
   let result: ApplyIntentResult;
-  if (input.intent.type === "CHOOSE_EXIT") {
+  if (input.intent.type === "CHOOSE_EXIT" || input.intent.type === "RIFT_ACTION") {
     // A journey transition, not a run one: the engine never sees it, exactly
-    // like SPEND_STAT_POINT below (shared journey.ts decides).
-    const exit = await chooseExit(state, input.intent, auth.run.householdId, deps);
+    // like SPEND_STAT_POINT below (shared journey.ts decides). A rift action
+    // (#197) is CHOOSE_EXIT's sibling: the same read, the same conditional
+    // write, the same answer to a repeat.
+    const exit =
+      input.intent.type === "CHOOSE_EXIT"
+        ? await chooseExit(state, input.intent, auth.run.householdId, deps)
+        : await riftAction(state, input.intent, auth.run.householdId, deps);
     if ("refusal" in exit) {
       return { ok: false, seq: state.seq, error: { code: exit.code, message: exit.refusal } };
     }
-    // The same crossing reported again — a double tap, a retry after a lost
-    // response. It already happened; nothing is written and no seq is burned.
+    // The same crossing (or rift action) reported again — a double tap, a
+    // retry after a lost response. It already happened; nothing is written
+    // and no seq is burned.
     if (exit.duplicate) return { ok: true, seq: state.seq };
     exitTaken = exit.write;
     result = { state: exit.state };
@@ -970,15 +977,71 @@ async function chooseExit(
   intent: Extract<ClientIntent, { type: "CHOOSE_EXIT" }>,
   householdId: string,
   deps: HandlerDeps,
-): Promise<
+): Promise<JourneyMove> {
+  return moveJourney(state, intent.campaignId, householdId, deps, "a way on is chosen", (graph, journey, campaign) =>
+    takeExit(graph, journey, { edge: intent.edgeId, visit: intent.visit }, campaign),
+  );
+}
+
+/**
+ * RIFT_ACTION (#197): discover, open, close, steady or turn a rift where the
+ * party stands — shared `takeRiftAction` decides. Everything else is
+ * CHOOSE_EXIT's: between chapters only, the household's stored journey read
+ * at a version and written back under it in the action's one conditional
+ * commit (so the rift's change and its rule's effects land together or not at
+ * all), a repeat answered as done without a write, and every phone's view of
+ * the campaign refreshed on the same patch — which is how a second phone, or
+ * a phone that dropped and rejoined, sees what the action did.
+ */
+async function riftAction(
+  state: RunState,
+  intent: Extract<ClientIntent, { type: "RIFT_ACTION" }>,
+  householdId: string,
+  deps: HandlerDeps,
+): Promise<JourneyMove> {
+  return moveJourney(state, intent.campaignId, householdId, deps, "a rift is acted on", (graph, journey, campaign) =>
+    takeRiftAction(
+      graph,
+      journey,
+      {
+        action: intent.action,
+        edge: intent.edgeId,
+        visit: intent.visit,
+        ...(typeof intent.to === "string" ? { to: intent.to } : {}),
+      },
+      campaign,
+    ),
+  );
+}
+
+type JourneyMove =
   | { refusal: string; code: "NOT_FOUND" | "ILLEGAL" }
   | { duplicate: true }
-  | { duplicate: false; state: RunState; write: ExitWrite }
-> {
+  | { duplicate: false; state: RunState; write: ExitWrite };
+
+/**
+ * The read-move-write every between-chapters journey intent shares
+ * (CHOOSE_EXIT, RIFT_ACTION): the phase, the campaign and its graph, the
+ * household's active attempt and its readable journey, then `move` — the
+ * shared transition — and, unless it refused or was a repeat, the attempt row
+ * it owes and the room's refreshed views.
+ */
+async function moveJourney(
+  state: RunState,
+  requestedCampaign: string | undefined,
+  householdId: string,
+  deps: HandlerDeps,
+  what: string,
+  move: (
+    graph: ParsedCampaignGraph,
+    journey: JourneyState,
+    campaign: Campaign,
+  ) => { ok: false; code: string; message: string } | { ok: true; duplicate: true } | { ok: true; duplicate: false; journey: JourneyState },
+): Promise<JourneyMove> {
   if (state.phase !== "lobby" && state.phase !== "creation" && state.phase !== "chapter_complete") {
-    return { refusal: "a way on is chosen between chapters, not in the middle of one", code: "ILLEGAL" };
+    return { refusal: `${what} between chapters, not in the middle of one`, code: "ILLEGAL" };
   }
-  const campaignId = intent.campaignId ?? state.campaignId;
+  const campaignId = requestedCampaign ?? state.campaignId;
   if (!campaignId) return { refusal: "no campaign to choose a way through", code: "ILLEGAL" };
   const campaign = deps.content.campaign(campaignId);
   if (!campaign) return { refusal: `unknown campaign "${campaignId}"`, code: "NOT_FOUND" };
@@ -993,7 +1056,7 @@ async function chooseExit(
   if (!resumed.ok) {
     return { refusal: `this party's map of "${campaignId}" cannot be read: ${resumed.message}`, code: "ILLEGAL" };
   }
-  const step = takeExit(graph, resumed.journey, { edge: intent.edgeId, visit: intent.visit }, campaign);
+  const step = move(graph, resumed.journey, campaign);
   if (!step.ok) return { refusal: step.message, code: step.code === "unknown-edge" ? "NOT_FOUND" : "ILLEGAL" };
   if (step.duplicate) return { duplicate: true };
 

@@ -1398,6 +1398,18 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                     busy={busy}
                     onChoose={(exit) => chooseExit(exit, graphJourney.visit, campaignId)}
                     onContinue={() => dispatch({ type: "CONTINUE_CAMPAIGN", campaignId })}
+                    // A rift action (#197) is one idempotent intent; the
+                    // party stays put and the panel redraws from the patch.
+                    onAction={(action) =>
+                      dispatch({
+                        type: "RIFT_ACTION",
+                        action: action.action,
+                        edgeId: action.edge,
+                        visit: graphJourney.visit,
+                        campaignId,
+                        ...(action.to !== undefined ? { to: action.to } : {}),
+                      })
+                    }
                   />
                 ) : everyoneReady && campaignId !== null ? (
                   <Button

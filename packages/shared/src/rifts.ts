@@ -60,12 +60,14 @@
 import type {
   EdgeId,
   JourneyFacts,
+  NodeId,
   JourneyRiftView,
   RiftClockUnit,
   RiftState,
 } from "./types/campaign-graph.js";
 import {
   FINAL_RIFT_STATUSES,
+  riftDestination,
   riftOwner,
   riftState,
   type ParsedCampaignGraph,
@@ -83,6 +85,9 @@ function tidy(state: RiftState): RiftState {
     ...((state.age ?? 0) > 0 ? { age: state.age } : {}),
     ...(state.revealed === true ? { revealed: true as const } : {}),
     ...(state.latched === true ? { latched: true as const } : {}),
+    ...(state.stable === true ? { stable: true as const } : {}),
+    ...(state.discovered === true ? { discovered: true as const } : {}),
+    ...(state.to !== undefined ? { to: state.to } : {}),
   };
 }
 
@@ -151,7 +156,8 @@ export function tickRifts<J extends JourneyFacts>(graph: ParsedCampaignGraph, jo
     const lasts = graph.edges[id]!.rift!.lasts;
     if (!lasts || lasts.unit !== unit) continue;
     const reading = riftState(graph, id, journey)!;
-    if (reading.status !== "open") continue;
+    // A steadied rift's clock has stopped (#197).
+    if (reading.status !== "open" || reading.stable === true) continue;
     const age = (reading.age ?? 0) + 1;
     next = write(graph, next, id, { ...reading, age, status: age >= lasts.count ? "expired" : "open" });
   }
@@ -178,7 +184,7 @@ export function crossRift<J extends JourneyFacts>(graph: ParsedCampaignGraph, jo
       ? reading.status
       : rift.uses !== undefined && crossings >= rift.uses
         ? "consumed"
-        : rift.unstable?.collapsesAfter !== undefined && crossings >= rift.unstable.collapsesAfter
+        : rift.unstable?.collapsesAfter !== undefined && reading.stable !== true && crossings >= rift.unstable.collapsesAfter
           ? "collapsed"
           : reading.status;
   return write(graph, journey, edgeId, {
@@ -199,8 +205,11 @@ export function crossRift<J extends JourneyFacts>(graph: ParsedCampaignGraph, jo
  * - `"not-a-rift"` — the edge has no `rift`.
  * - `"final"` — it is consumed, expired or collapsed, and nothing reopens it.
  * - `"persistent"` — a persistent rift that is open cannot be closed.
+ * - `"bad-destination"` — a redirect to somewhere the rift does not declare
+ *   (#197). The parser refuses an authored one; this is the runtime's answer
+ *   to a hand-built or stale report.
  */
-export type RiftRefusalCode = "not-a-rift" | "final" | "persistent";
+export type RiftRefusalCode = "not-a-rift" | "final" | "persistent" | "bad-destination";
 
 export type RiftChange<J extends JourneyFacts> =
   /** `changed: false` — it already was so; the journey is returned as it was. */
@@ -268,6 +277,69 @@ export function closeRift<J extends JourneyFacts>(graph: ParsedCampaignGraph, jo
   );
 }
 
+/**
+ * Steadies a rift by an explicit act (#197): `stable` — it no longer
+ * flickers, never collapses, its `lasts` clock stops where it stands, and
+ * once open its `opensWhen` no longer gates crossing it. Its `uses` still
+ * count. Bounded and idempotent: one bit, and steadying a steady rift is
+ * `changed: false`. A persistent rift is already as steady as a rift gets
+ * (`changed: false`); a final one is refused — steadying does not bring
+ * back what is gone. A dormant or closed rift may be steadied: it stays shut
+ * until it opens, and is steady from then on.
+ */
+export function stabilizeRift<J extends JourneyFacts>(graph: ParsedCampaignGraph, journey: J, edgeId: EdgeId): RiftChange<J> {
+  const rift = graph.edges[edgeId]?.rift;
+  const reading = riftState(graph, edgeId, journey);
+  if (!rift || !reading) return refuse("not-a-rift", `"${edgeId}" is not a rift`);
+  if (FINAL_RIFT_STATUSES.includes(reading.status)) {
+    return refuse("final", `the rift "${edgeId}" is ${reading.status}, and nothing steadies it now`);
+  }
+  if (rift.persistent === true || reading.stable === true) return changed(journey, journey);
+  return changed(journey, write(graph, journey, edgeId, { ...reading, stable: true }));
+}
+
+/**
+ * Turns a rift to lead somewhere else by an explicit act (#197): to one of
+ * its declared `redirects`, or back to its own `to`. Anywhere else is
+ * refused (`"bad-destination"`) — every destination a rift can have is in
+ * the file. A final rift is refused (it leads nowhere now); a closed or
+ * dormant one may be turned, and leads there when it opens. Turning it where
+ * it already leads is `changed: false`. Redirection does not reveal: a hidden
+ * destination stays hidden until the rift's `reveal` (or a discovery) says.
+ */
+export function redirectRift<J extends JourneyFacts>(
+  graph: ParsedCampaignGraph,
+  journey: J,
+  edgeId: EdgeId,
+  to: NodeId,
+): RiftChange<J> {
+  const edge = graph.edges[edgeId];
+  const reading = riftState(graph, edgeId, journey);
+  if (!edge?.rift || !reading) return refuse("not-a-rift", `"${edgeId}" is not a rift`);
+  if (to !== edge.to && !(edge.rift.redirects ?? []).includes(to)) {
+    return refuse("bad-destination", `the rift "${edgeId}" cannot be turned toward "${to}": it is not one of its destinations`);
+  }
+  if (FINAL_RIFT_STATUSES.includes(reading.status)) {
+    return refuse("final", `the rift "${edgeId}" is ${reading.status}, and leads nowhere now`);
+  }
+  if (riftDestination(graph, edgeId, journey) === to) return changed(journey, journey);
+  const { to: _was, ...rest } = reading;
+  return changed(journey, write(graph, journey, edgeId, to === edge.to ? rest : { ...rest, to }));
+}
+
+/**
+ * The party finds a rift (#197): it is drawn from now on even while it
+ * cannot be crossed (whatever the edge's `blocked` says), and where it leads
+ * is revealed (whatever its `reveal` says). Any status — finding a rift that
+ * is already used up is still finding it. Finding it twice is
+ * `changed: false`.
+ */
+export function discoverRift<J extends JourneyFacts>(graph: ParsedCampaignGraph, journey: J, edgeId: EdgeId): RiftChange<J> {
+  const reading = riftState(graph, edgeId, journey);
+  if (!reading) return refuse("not-a-rift", `"${edgeId}" is not a rift`);
+  return changed(journey, write(graph, journey, edgeId, { ...reading, discovered: true, revealed: true }));
+}
+
 /** Reveals a rift's destination by an explicit act, whatever its `reveal` says. */
 export function revealRift<J extends JourneyFacts>(graph: ParsedCampaignGraph, journey: J, edgeId: EdgeId): RiftChange<J> {
   const reading = riftState(graph, edgeId, journey);
@@ -303,18 +375,21 @@ export function riftView(graph: ParsedCampaignGraph, edgeId: EdgeId, journey: Jo
   if (!rift || !reading) return null;
   const live = reading.status === "open" || reading.status === "dormant";
   const crossings = reading.crossings ?? 0;
+  // A steadied rift (#197) has no clock running and nothing left to collapse.
+  const steady = reading.stable === true;
   return {
     status: reading.status,
     ...(rift.uses !== undefined && live ? { usesLeft: Math.max(rift.uses - crossings, 0) } : {}),
-    ...(rift.lasts && reading.status === "open"
+    ...(rift.lasts && reading.status === "open" && !steady
       ? { expiresIn: { unit: rift.lasts.unit, count: Math.max(rift.lasts.count - (reading.age ?? 0), 0) } }
       : {}),
-    ...(rift.unstable?.collapsesAfter !== undefined && live
+    ...(rift.unstable?.collapsesAfter !== undefined && live && !steady
       ? { collapsesIn: Math.max(rift.unstable.collapsesAfter - crossings, 0) }
       : {}),
     ...(rift.oneWay === true ? { oneWay: true as const } : {}),
-    ...(rift.unstable !== undefined ? { unstable: true as const } : {}),
+    ...(rift.unstable !== undefined && !steady ? { unstable: true as const } : {}),
     ...(rift.persistent === true ? { persistent: true as const } : {}),
     ...(mouths(graph, edgeId).length > 1 ? { linked: true as const } : {}),
+    ...(steady ? { stable: true as const } : {}),
   };
 }
