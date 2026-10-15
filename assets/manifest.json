@@ -1898,7 +1898,13 @@
     "scenes/gemfall/road-bend-grass",
     "scenes/gemfall/north-signpost-fork",
     "scenes/gemfall/north-noon-stop",
-    "scenes/gemfall/north-road-detour"
+    "scenes/gemfall/north-road-detour",
+    "scenes/gemfall/cracked-bridge-span",
+    "scenes/gemfall/bridge-pillar-shallows",
+    "scenes/gemfall/bridge-engineers-tent",
+    "scenes/gemfall/hollis-soup-queue",
+    "scenes/gemfall/northern-bridge-foot",
+    "scenes/gemfall/redspire-rim-lookout"
   ],
   "$castFiguresComment": "Named story characters' own figures, drawn on the story stage opposite the party (content `cast`, docs/briefs/story-cast-art.md). Same contract as entities: assets/cast/<id>/assembled.png, 1024x1024 RGBA, one complete cutout standing on the canvas origin (feet at y=900), facing left toward the party. `basis` is the entity or species the character is one of; `scale` is how big they stand, in the entities' scale words. verify.py checks each entry.",
   "castFigures": [
