@@ -45,7 +45,7 @@
  */
 
 import { reachableScenes, sceneEdges } from "./chapter-graph.js";
-import type { Chapter, Scene, SceneId } from "./types/chapter.js";
+import type { Chapter, Condition, Scene, SceneId } from "./types/chapter.js";
 
 /** Where an edge comes from, which is the same thing as what kind of edge it is. */
 export type EdgeKind = "choice" | "success" | "failure" | "victory" | "defeat";
@@ -93,11 +93,36 @@ export interface ChapterMap {
   depth: number;
 }
 
+/** "2+", "up to 2", "1-2", "0": a bound pair the way an author would say it. */
+function rangeLabel(b: { min?: number; max?: number }): string {
+  const min = b.min ?? 0;
+  if (b.max === undefined) return `${String(min)}+`;
+  if (min === b.max) return String(b.max);
+  if (min === 0) return `up to ${String(b.max)}`;
+  return `${String(min)}-${String(b.max)}`;
+}
+
+/** A `when` condition, one label per field, in the file's own vocabulary. */
+function whenLabels(when: Condition): string[] {
+  const out: string[] = [];
+  if (when.flag !== undefined) out.push(`flag: ${when.flag}`);
+  if (when.notFlag !== undefined) out.push(`not flag: ${when.notFlag}`);
+  if (when.item !== undefined) out.push(`holds: ${when.item}`);
+  if (when.notItem !== undefined) out.push(`lacks: ${when.notItem}`);
+  if (when.count !== undefined) {
+    const of = Array.isArray(when.count.of) ? `[${when.count.of.join(", ")}]` : when.count.of;
+    out.push(`has ${rangeLabel(when.count)} ${of}`);
+  }
+  if (when.partySize !== undefined) out.push(`party ${rangeLabel(when.partySize)}`);
+  return out;
+}
+
 /** The gate on a choice, phrased the way it reads in the file. */
 function gateOf(choice: {
   requiresSpecies?: string | string[];
   requiresFlag?: string;
   requiresItem?: string;
+  when?: Condition;
 }): string | null {
   const gates: string[] = [];
   if (choice.requiresSpecies !== undefined) {
@@ -108,6 +133,7 @@ function gateOf(choice: {
   }
   if (choice.requiresFlag !== undefined) gates.push(`flag: ${choice.requiresFlag}`);
   if (choice.requiresItem !== undefined) gates.push(`holds: ${choice.requiresItem}`);
+  if (choice.when !== undefined) gates.push(...whenLabels(choice.when));
   return gates.length > 0 ? gates.join(", ") : null;
 }
 
