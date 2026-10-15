@@ -8,7 +8,7 @@
  * worse than no pin.
  */
 
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { Profiler } from "react";
 import type { Chapter, WorldMap } from "@kad/shared";
@@ -18,6 +18,8 @@ import { useGameStore } from "../store";
 import { WorldMapPanel, placeOf, whereLine } from "./WorldMapPanel";
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { getAtlasCenter, resetAtlasNavigation } from "../store/atlas-navigation";
+import { revealedClouds, resetRevealedClouds } from "../store/atlas-clouds";
+import { setAudioSink } from "../audio/cue";
 
 const WORLD: WorldMap = {
   title: "The Realm of Red Sky",
@@ -65,6 +67,9 @@ afterEach(() => {
   cleanup();
   setFieldGuideDiscoveries(null);
   resetAtlasNavigation();
+  resetRevealedClouds();
+  setAudioSink(null);
+  vi.unstubAllGlobals();
 });
 
 describe("finding the chapter on the map", () => {
@@ -169,6 +174,55 @@ describe("the panel", () => {
     act(() => screen.getByRole("button", { name: "About The Sunward Fields" }).click());
     act(() => { fireEvent.keyDown(window, { key: "Escape" }); });
     expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("dresses a region's card as a storybook page: its painting, its danger, and a page-turn", async () => {
+    const played: string[] = [];
+    setAudioSink({ cue: (id) => played.push(id), music: () => undefined });
+    vi.stubGlobal("fetch", async () => new Response(JSON.stringify({ entries: {
+      "biome.woods": { id: "biome.woods", category: "places", kind: "biome", title: "Whispering Woods", danger_level: "high", art: "/assets/biomes/woods/portrait.webp" },
+    } })));
+    const woods = { id: "biome.woods", title: "Whispering Woods", kind: "biome" as const, anchor: { x: 200, y: 200 }, parent: null };
+    const { container } = mount({ world: { ...WORLD, places: { ...WORLD.places, woods } } });
+    act(() => screen.getByRole("button", { name: "About Whispering Woods" }).click());
+    expect(played).toEqual(["page-turn"]);
+    // Not found: a misty plate, and the danger kept secret.
+    expect(screen.getByTestId("danger").textContent).toContain("Danger: unknown");
+    await screen.findByText((_, el) => el?.tagName === "IMG" && el.getAttribute("src") === "/assets/biomes/woods/portrait.webp");
+    expect(container.querySelector(".atlas__card-art--mystery")).not.toBeNull();
+    act(() => setFieldGuideDiscoveries({ "biome.woods": { firstFoundBy: "p_1", foundAt: "2026-10-15T12:00:00Z" } }));
+    expect(screen.getByTestId("danger").textContent).toContain("Here be dragons");
+    expect(container.querySelector(".atlas__card-art--mystery")).toBeNull();
+  });
+
+  it("hangs clouds over unfound regions and rolls one back, once, when it is found", () => {
+    const woods = { id: "biome.woods", title: "Whispering Woods", kind: "biome" as const, anchor: { x: 200, y: 200 }, parent: null };
+    const region = (placeId: string) => ({ placeId, description: "", bounds: { x: 100, y: 100, width: 200, height: 200 }, image: { width: 1, height: 1 }, tiles: [] });
+    const world: WorldMap = { ...WORLD, places: { ...WORLD.places, woods },
+      regions: { woods: region("biome.woods"), sunward_fields: region("biome.sunward_fields") } };
+    const { container } = mount({ world });
+    // The party's own ground is never clouded; the woods are.
+    expect(container.querySelector('[data-cloud="biome.sunward_fields"]')).toBeNull();
+    const cloud = container.querySelector('[data-cloud="biome.woods"]') as HTMLElement;
+    expect(cloud.className).toBe("atlas__cloud");
+    expect(cloud.style.left).toBe("10%");
+    act(() => setFieldGuideDiscoveries({ "biome.woods": { firstFoundBy: "p_1", foundAt: "2026-10-15T12:00:00Z" } }));
+    expect(container.querySelector('[data-cloud="biome.woods"]')?.className).toContain("atlas__cloud--lifting");
+    expect(revealedClouds().has("biome.woods")).toBe(true);
+    cleanup();
+    const again = mount({ world });
+    expect(again.container.querySelector('[data-cloud="biome.woods"]')).toBeNull();
+  });
+
+  it("inks the explorer's trail through places in the order they were found", () => {
+    const { container } = mount({});
+    expect(screen.queryByTestId("explorer-trail")).toBeNull();
+    act(() => setFieldGuideDiscoveries({
+      "location.exchange": { firstFoundBy: "p_1", foundAt: "2026-10-15T12:00:00Z" },
+      "biome.sunward_fields": { firstFoundBy: "p_1", foundAt: "2026-10-14T12:00:00Z" },
+    }));
+    const ink = container.querySelector(".atlas__trail-ink");
+    expect(ink?.getAttribute("d")).toMatch(/^M470 690 Q\S+ \S+ 350 855$/);
   });
 
   it("reveals household discoveries live once zoomed in", () => {
