@@ -190,6 +190,13 @@ export function CombatControls(): ReactElement | null {
    */
   const [pending, setPending] = useState(false);
   /*
+   * The same flag, readable the instant it is set. Two taps can land before
+   * React re-renders — on Go!, on a card, on anything in the dock — and the
+   * second one still runs the first render's handler, where `pending` is
+   * false. This is what makes a commit go out once.
+   */
+  const sending = useRef(false);
+  /*
    * Cards to a row, held for the turn. Stepping beside a monster adds Attack
    * and stepping away takes it off, which re-dealt every card into a new
    * shape mid-turn. The count only goes up within a turn: a card leaving
@@ -208,14 +215,20 @@ export function CombatControls(): ReactElement | null {
   useEffect(() => {
     setSelection(IDLE);
     setPending(false);
+    sending.current = false;
   }, [key]);
 
   const dispatch = useCallback(
     async (intent: ClientIntent) => {
+      if (sending.current) return;
+      sending.current = true;
       setPending(true);
       setSelection(IDLE);
       const ok = await send(intent);
-      if (!ok) setPending(false);
+      if (!ok) {
+        sending.current = false;
+        setPending(false);
+      }
     },
     [send],
   );
