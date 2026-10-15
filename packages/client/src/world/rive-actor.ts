@@ -29,6 +29,8 @@ export interface RiveActorHandle {
   setKnockedDown(down: boolean): void;
   /** Fire one of the contract's nine triggers by name. Unknown names are ignored. */
   fire(trigger: string): void;
+  /** How far the idle has stretched the figure up from its feet (rive-rig.ts). */
+  breath(): number;
   destroy(): void;
 }
 
@@ -88,6 +90,9 @@ export async function createRiveActor(
       },
       fire(trigger: string): void {
         if (!destroyed) built.fire(trigger);
+      },
+      breath(): number {
+        return destroyed ? 0 : built.breath();
       },
       destroy(): void {
         if (destroyed) return;

@@ -138,6 +138,31 @@ function rigFile(url: string): Promise<any | null> {
   return file;
 }
 
+/**
+ * How far a rig's root is stretched up from its feet: its world transform's
+ * vertical scale, less 1. Clamped, because a fall rotates the root and its
+ * `yy` then says nothing about breathing.
+ *
+ * `worldTransform()` hands back a fresh WASM-backed `Mat2D` on every call,
+ * and the runtime frees it only on `delete()`. This runs every frame for every
+ * figure, so the matrix is released here, whatever the read did, or the heap
+ * grows by sixty matrices a second per figure for as long as the game is open.
+ */
+export function readBreath(body: {
+  worldTransform(): { yy: number; delete?(): void } | null | undefined;
+}): number {
+  let matrix: { yy: number; delete?(): void } | null | undefined = null;
+  try {
+    matrix = body.worldTransform();
+    const stretch = (matrix?.yy ?? 1) - 1;
+    return Number.isFinite(stretch) ? Math.max(0, Math.min(0.05, stretch)) : 0;
+  } catch {
+    return 0;
+  } finally {
+    matrix?.delete?.();
+  }
+}
+
 export interface RigHandle {
   /** The square buffer the rig draws into, `BUFFER_PX` on a side. */
   readonly canvas: HTMLCanvasElement;
@@ -147,6 +172,13 @@ export interface RigHandle {
   setKnockedDown(down: boolean): void;
   /** Fire one of the contract's nine triggers by name. Unknown names are ignored. */
   fire(trigger: string): void;
+  /**
+   * How far the figure is stretched up from its feet as of the last tick: 0 at
+   * rest, about 0.018 at the top of an idle breath. The idle never lifts the
+   * feet — the rig's root sits on the ground line and scales — so this is what
+   * a contact shadow tightens with. 0 when the rig has no `body` node.
+   */
+  breath(): number;
   destroy(): void;
 }
 
@@ -230,6 +262,18 @@ export async function createRig(
     const drawnRenderer = renderer;
     const drawnArtboard = artboard;
     const drawnMachine = machine;
+    /*
+     * The rig's root bone, named `body` by every generated rig. Its world
+     * transform's vertical scale is the idle's breath. A rig without one just
+     * reports 0 rather than failing the figure.
+     */
+    let body: any = null;
+    try {
+      body = artboard.node?.("body") ?? null;
+    } catch {
+      body = null;
+    }
+    let breath = 0;
 
     const draw = (): void => {
       drawnRenderer.clear();
@@ -255,6 +299,7 @@ export async function createRig(
         if (destroyed) return;
         drawnMachine.advance(dtSeconds);
         drawnArtboard.advance(dtSeconds);
+        if (body) breath = readBreath(body);
         draw();
       },
       setKnockedDown(down: boolean): void {
@@ -265,6 +310,9 @@ export async function createRig(
       fire(trigger: string): void {
         if (destroyed) return;
         triggers.get(trigger)?.fire();
+      },
+      breath(): number {
+        return destroyed ? 0 : breath;
       },
       destroy(): void {
         if (destroyed) return;
