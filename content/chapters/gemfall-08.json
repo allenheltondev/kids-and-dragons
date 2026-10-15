@@ -67,7 +67,7 @@
     },
     "scene_tree_line_stair": {
       "type": "story",
-      "narration": "The stair goes left, then right, then left, then right, about four hundred times. Somebody carved a tiny dragonling face on every hundredth step, and each face looks a little more tired than the last. By the top you are tired too, but you are tired together, and the summit is a lot closer than it was.",
+      "narration": "The stair goes left, then right, then left, then right, about four hundred times. Somebody carved a tiny dragonling face on every hundredth step, and each face looks a little more tired than the last. By the top you are tired too, but it is a good tired, and the summit is a lot closer than it was.",
       "choices": [
         {
           "id": "on",
@@ -89,12 +89,12 @@
       },
       "onFailure": {
         "goto": "scene_faun_family",
-        "narration": "The slope slides, and you slide with it, sideways, like a row of sleds, right onto the old stair halfway up. That was not the plan. It works anyway, and the dragonling face carved on the next step looks very surprised to see you."
+        "narration": "The slope slides, and you slide with it, sideways, like a sled, right onto the old stair halfway up. That was not the plan. It works anyway, and the dragonling face carved on the next step looks very surprised to see you."
       }
     },
     "scene_tree_line_fly": {
       "type": "story",
-      "narration": "You flap up over the mountain's shoulder, where the air is warm and smells of struck matches. From up here you can see the best way: a goat track nobody else noticed, hiding behind a big rock shaped like a sleeping cow. You land, point, and lead everyone up it, trying very hard not to look pleased with yourself.",
+      "narration": "You flap up over the mountain's shoulder, where the air is warm and smells of struck matches. From up here you can see the best way: a goat track nobody else noticed, hiding behind a big rock shaped like a sleeping cow. You land, point, and lead the way up it, trying very hard not to look pleased with yourself.",
       "choices": [
         {
           "id": "on",
@@ -122,6 +122,39 @@
         "npc.faun"
       ],
       "narration": "On the first slope, a faun family comes trotting downhill with everything they own on their backs, including a goat. The smallest one, Tansy, stops right in front of you and holds out a tiny pink stone. \"It hums at night,\" she whispers. \"It hummed louder when the ground shook. Is it my fault?\" Her family waits for her, very politely, and very much wanting to keep running.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "at": "start",
+          "text": "You stop for breath and check your packs one more time. A few loose rush gems hum in the corners, the ordinary kind everybody carries, and that is all. Nothing anybody would climb a mountain to hand over. You came anyway. That is the whole point."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "at": "start",
+          "text": "You stop for breath and check your packs one more time. Down among the rush gems: {facets} of the great stones. You know the story behind every one."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "at": "start",
+          "text": "You stop for breath and check your packs one more time, and they clank. You are carrying {facets} great stones up a mountain. The mountain seems to know. A little shower of pebbles rattles down to meet you, like somebody clearing their throat."
+        }
+      ],
       "cast": [
         {
           "figure": "cast/tansy",
@@ -332,7 +365,7 @@
       "choices": [
         {
           "id": "sign",
-          "label": "Sign in properly, every one of your names",
+          "label": "Sign in properly, in your very best writing",
           "icon": "scroll",
           "goto": "scene_warden_post_sign",
           "effects": [
@@ -344,7 +377,7 @@
         },
         {
           "id": "silly",
-          "label": "Sign in as Sir Pudding and the Biscuit Twins",
+          "label": "Sign in as Sir Crumpet and the Biscuit Twins",
           "icon": "cake",
           "goto": "scene_warden_post_silly"
         },
@@ -378,7 +411,7 @@
     },
     "scene_warden_post_sign": {
       "type": "story",
-      "narration": "You sign in, every one of your names, in your very best writing. Under WHERE TO you write: the bottom. Under BACK BY you write nothing, because nobody knows. The little box clicks open. Inside is a warden's mosslight jar, glowing green, with a label: FOR THE WAY DOWN. Somebody thought about you getting back. That helps more than you expected.",
+      "narration": "You sign in properly, every name at the table, in your very best writing. Under WHERE TO you write: the bottom. Under BACK BY you write nothing, because nobody knows. The little box clicks open. Inside is a warden's mosslight jar, glowing green, with a label: FOR THE WAY DOWN. Somebody thought about you getting back. That helps more than you expected.",
       "choices": [
         {
           "id": "on",
@@ -390,7 +423,7 @@
     },
     "scene_warden_post_silly": {
       "type": "story",
-      "narration": "You sign in as Sir Pudding and the Biscuit Twins, and under REASON FOR CLIMB you write: snacks. You laugh so hard that the next steep bit of path goes by without anyone noticing it was steep. The little box stays shut. It is a warden box. It knows. Somewhere in the future, a warden is going to write a very confused report about three biscuits.",
+      "narration": "You sign in as Sir Crumpet and the Biscuit Twins, and under REASON FOR CLIMB you write: snacks. You laugh so hard that the next steep bit of path goes by without anyone noticing it was steep. The little box stays shut. It is a warden box. It knows. Somewhere in the future, a warden is going to write a very confused report about three biscuits.",
       "choices": [
         {
           "id": "on",
@@ -465,7 +498,7 @@
     },
     "scene_overlook_home": {
       "type": "story",
-      "narration": "You find it: a tiny smudge, very far south, about the size of your thumbnail. Somebody there is probably having dinner. You all stand and look at the thumbnail for a while, and nobody says anything, and that turns out to be exactly the right thing to say. Then you turn around. Home will still be there. That is the whole point of going up.",
+      "narration": "You find it: a tiny smudge, very far south, about the size of your thumbnail. Somebody there is probably having dinner. You stand and look at the thumbnail for a while, and nobody says anything, and that turns out to be exactly the right thing to say. Then you turn around. Home will still be there. That is the whole point of going up.",
       "choices": [
         {
           "id": "on",
@@ -478,6 +511,17 @@
     "scene_overlook_up": {
       "type": "story",
       "narration": "You turn your back on all of it and look up instead. The summit is close now, glowing red at the edges like a coal somebody just blew on. \"Nobody look back,\" somebody says. Then everybody looks back, just once, very quickly. Then up again. Everybody agrees that it still counts as not looking back, if you are quick.",
+      "variants": [
+        {
+          "when": {
+            "partySize": {
+              "max": 1
+            }
+          },
+          "replace": true,
+          "text": "You turn your back on all of it and look up instead. The summit is close now, glowing red at the edges like a coal somebody just blew on. \"Don't look back,\" you tell yourself, out loud, because there is nobody else to tell. Then you look back, just once, very quickly. Then up again. You decide that still counts as not looking back, if you are quick."
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -513,7 +557,7 @@
     },
     "scene_overlook_wild": {
       "type": "story",
-      "narration": "You find the forest, a dark green blanket over half the realm, and somewhere in the middle of it, MossHome. As you look, the whole forest sways at once, every tree together, like a crowd waving. It is probably the wind. It is probably not the wind. You all wave back, just in case, and a little way down the slope a raven pretends not to have seen.",
+      "narration": "You find the forest, a dark green blanket over half the realm, and somewhere in the middle of it, MossHome. As you look, the whole forest sways at once, every tree together, like a crowd waving. It is probably the wind. It is probably not the wind. You wave back, just in case, and a little way down the slope a raven pretends not to have seen.",
       "choices": [
         {
           "id": "on",
@@ -529,7 +573,7 @@
       "choices": [
         {
           "id": "names",
-          "label": "A pebble with all our names on it",
+          "label": "A pebble with every name in the party on it",
           "icon": "star",
           "goto": "choice_cairn_names"
         },
@@ -564,6 +608,17 @@
     "choice_cairn_names": {
       "type": "story",
       "narration": "You scratch all your names onto a pebble and set it carefully near the top. It looks very small up there, among all the other names. But it is there now, and it will still be there tomorrow, and the day after that, whatever happens down below. That is what a cairn is for. The whole pile creaks a little, as if making room.",
+      "variants": [
+        {
+          "when": {
+            "partySize": {
+              "max": 1
+            }
+          },
+          "replace": true,
+          "text": "You scratch your name onto a pebble and set it carefully near the top. One pebble, one name. It looks very small up there, among all the other names. But it is there now, and it will still be there tomorrow, and the day after that, whatever happens down below. That is what a cairn is for. The whole pile creaks a little, as if making room for exactly one more."
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -576,6 +631,17 @@
     "choice_cairn_wish": {
       "type": "story",
       "narration": "Each of you whispers a wish into the same pebble, one after another, and nobody tells anybody what they wished. You set it on the cairn. For a moment the pebble feels warm, though that might just be your hands. You walk on, all of you pretending you are not trying to guess each other's wishes. Everybody is trying to guess.",
+      "variants": [
+        {
+          "when": {
+            "partySize": {
+              "max": 1
+            }
+          },
+          "replace": true,
+          "text": "You whisper a wish into a pebble, so quietly that the mountain has to lean in to hear it. You set it on the cairn. For a moment the pebble feels warm, though that might just be your hands. You walk on and keep the wish to yourself. That is what secret wishes are for."
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -624,6 +690,36 @@
     "scene_bell_hut": {
       "type": "story",
       "narration": "Just below the summit is the highest bell-hut in the foothills, where the dragonlings start the bell-code on its way down. It is empty. The bell rope is tied tight to a hook, with a note: GONE DOWN. TIED SO NOBODY RINGS THE LAST ONE BY ACCIDENT. There is just enough slack for an ordinary ring. Far below, every bell is quiet, holding its breath.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "Your packs are so light on this last steep bit that you could almost run. The wind up here keeps tugging at them, as if it is checking for something. There is nothing inside but rush gems and crumbs, and the wind goes away looking puzzled."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "Up here, your packs hum louder than ever. Inside, carried all this way: {facets} of the great stones. You could tell the story of every one."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "Up here, every step is heavier, and the path knows why. You have carried {facets} great stones nearly to the top. Little stones skitter away from your boots as you pass, and the bell rope sways, though there is no wind."
+        }
+      ],
       "choices": [
         {
           "id": "ring",
@@ -794,6 +890,27 @@
     "scene_crab_field_collection": {
       "type": "story",
       "narration": "You open your pack a crack, and the collection hums. Every crab in the field stops pretending. Hundreds of tiny eyes turn to stare at your pack, as if they have just met the biggest gem deposit in the world, and it is walking. They part to let you through without a single wave. You are not sure that was respect. It felt a little like being a mountain.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "replace": true,
+          "text": "You open your pack a crack, and your few rush gems hum. The crabs stop pretending, just for a moment, and stare. Then they look at each other, and you can almost hear them thinking: is that it? They part to let you through anyway, the way you make room for somebody small. It is not respect, exactly. It is a little bit like kindness."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "Behind you, the whole ash field sinks a finger's width, as if {facets} great stones walking across it were more than it could quite hold."
+        }
+      ],
       "cast": [
         {
           "figure": "entities/glassback_crab"
@@ -881,7 +998,7 @@
     },
     "scene_ember_drift_carry": {
       "type": "story",
-      "narration": "You scoop it up, ash and all, and cup it in your hands. The moth is warm, like holding the last bit of a campfire. It sits there blinking at you, and slowly it glows a little brighter. Nobody can climb with both hands full, so somebody else carries your pack, and you carry the moth, very carefully, the rest of the way up.",
+      "narration": "You scoop it up, ash and all, and cup it in your hands. The moth is warm, like holding the last bit of a campfire. It sits there blinking at you, and slowly it glows a little brighter. Nobody can climb with both hands full, so your pack rides high on your back, and the moth rides in your cupped hands, very carefully, the rest of the way up.",
       "cast": [
         {
           "figure": "entities/embermoth"
@@ -942,9 +1059,27 @@
         },
         {
           "id": "count",
-          "label": "Count the stones, one more time",
+          "label": "Count the great stones, one more time",
           "icon": "gem",
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1
+            }
+          },
           "goto": "choice_last_breath_count"
+        },
+        {
+          "id": "count_brought",
+          "label": "Count what you did bring",
+          "icon": "hand",
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "goto": "choice_last_breath_count_brought"
         },
         {
           "id": "practice",
@@ -972,6 +1107,17 @@
     "choice_last_breath_best": {
       "type": "story",
       "narration": "You each tell the best bit. Nobody picks the same one. One of you picks something so small the others had forgotten it, and then everybody remembers, and laughs. It turns out most of the best bits were the soggy bits. The tube breathes out warm air, patiently, as if it has been listening and does not mind waiting one more minute.",
+      "variants": [
+        {
+          "when": {
+            "partySize": {
+              "max": 1
+            }
+          },
+          "replace": true,
+          "text": "You tell the best bit out loud, to the mountain, since it is the only one here to listen. Then you think of another best bit, and another, and you laugh at one so small you had almost forgotten it. It turns out most of the best bits were the soggy bits. The tube breathes out warm air, patiently, as if it has been listening and does not mind waiting one more minute."
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -984,6 +1130,40 @@
     "choice_last_breath_count": {
       "type": "story",
       "narration": "You tip the stones out on a flat rock and count them, one more time. They hum together, each a little different, like a choir warming up. You remember where every single one came from, and who was there, and what it cost. Then you pack them away again, carefully, the way you pack something that was never exactly yours.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 1
+            }
+          },
+          "replace": true,
+          "text": "You tip out your one great stone on a flat rock and look at it, one more time. It hums by itself, a small steady note. It is the one you would have picked anyway. You remember the day you found it, and who was there, and what it cost. Then you pack it away again, carefully, the way you pack something that was never exactly yours."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 2,
+              "max": 4
+            }
+          },
+          "replace": true,
+          "text": "You tip out the great stones on a flat rock and count them, one more time: {facets}. They hum together, each a little different, like a very small choir warming up. You remember where every one came from, and who was there, and what it cost. Then you pack them away again, carefully, the way you pack something that was never exactly yours."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "replace": true,
+          "text": "You tip out the great stones on a flat rock and count them out loud. It takes a while, because there are {facets} great stones, and the rock creaks under them. They hum together like a whole choir warming up, and far below, the mountain hums back, as if it has been counting along. You remember where every one came from. Then you pack them away again, and the packs are very heavy, the way something is heavy when it was never exactly yours."
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -993,9 +1173,21 @@
         }
       ]
     },
+    "choice_last_breath_count_brought": {
+      "type": "story",
+      "narration": "You turn out your pockets on a flat rock and count what is there. A few rush gems, humming like everybody's. Some crumbs. A bit of string. A keepsake or two from the road that nobody else would look at twice. Then you count the things that do not fit in pockets: the people who waved you on, the promises you made, the friends who helped you along the way and the ones waiting at home. That count is much longer. It takes the whole minute, and it is worth more than a mountain of stones.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go in",
+          "icon": "hand",
+          "goto": "scene_mouth"
+        }
+      ]
+    },
     "choice_last_breath_practice": {
       "type": "story",
-      "narration": "You practice what you will say when you give the stones back. \"Here you are.\" Too short. \"We are very sorry about the whole entire rush.\" Too long. \"These are yours.\" That one is right. You say it together, three times, until it sounds like you mean it. You do mean it. That was never the hard part.",
+      "narration": "You practice what you will say when you give the stones back. \"Here you are.\" Too short. \"We are very sorry about the whole entire rush.\" Too long. \"These are yours.\" That one is right. You say it out loud, three times, until it sounds like you mean it. You do mean it. That was never the hard part.",
       "choices": [
         {
           "id": "on",
@@ -1008,6 +1200,18 @@
     "choice_last_breath_polish": {
       "type": "story",
       "narration": "You polish every stone in the collection on your sleeves until they shine, even in the shadow of the tube. Laid out on the rock, they glow in a rough circle, with one space left at the top. Nobody says anything about the space. Everybody looks at it. Then you pack them up and go in to find what fills it.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "replace": true,
+          "text": "You polish what you have on your sleeves: a few rush gems, the ordinary humming kind. Laid out on the rock, they make a very small circle with a great deal of space in it. Nobody says anything about the space. Everybody looks at it. Then you pack them up and go in, to see what a collection with nothing in it can still do."
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1019,7 +1223,7 @@
     },
     "choice_last_breath_tether": {
       "type": "story",
-      "narration": "You check the tether one last time: what you borrowed, what you promised, what you made up on the way. It is all there, or most of it is. One of you ties a knot in the last bit of string anybody has, for luck. It is not a leash. It might be the start of one. It is going to have to do.",
+      "narration": "You check the tether one last time: what you borrowed, what you promised, what you made up on the way. It is all there, or most of it is. You tie a knot in the last bit of string you have, for luck. It is not a leash. It might be the start of one. It is going to have to do.",
       "choices": [
         {
           "id": "on",
@@ -1036,6 +1240,26 @@
       ],
       "art": "scenes/gemfall/gem-gallery",
       "narration": "You step into the lava tube, a tunnel the mountain made for itself long ago. It opens into a gallery where the walls glitter with gem-veins, like fireworks frozen halfway through going off. Then the old bones set into the rock begin, very slowly, to stand up. They are not looking at you. They are looking at your pockets.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "There is not much in your pockets but rush gems and crumbs. The bones look anyway, puzzled, the way a dog sniffs an empty hand."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "Along the walls, the gem-veins light up one after another as you pass, following your packs. You carry {facets} great stones, and the whole gallery has noticed."
+        }
+      ],
       "cast": [
         {
           "figure": "entities/restless_remains"
@@ -1236,7 +1460,7 @@
         "creature.embermoth"
       ],
       "art": "scenes/gemfall/gem-gallery",
-      "narration": "A side gallery where the air is cool and the gem-veins glow just bright enough to read by. Embermoths are dusting the walls. Eat what you have left, patch each other up, and listen to the mountain breathing below you. It is breathing faster.",
+      "narration": "A side gallery where the air is cool and the gem-veins glow just bright enough to read by. Embermoths are dusting the walls. Eat what you have left, patch up your scrapes, and listen to the mountain breathing below you. It is breathing faster.",
       "heal": 3,
       "choices": [
         {
@@ -1367,6 +1591,36 @@
       ],
       "art": "scenes/gemfall/seal-chamber",
       "narration": "At the bottom of the mountain is a cave as big as the sky, and in it is the Seal-Keeper: a dragon so old its scales have turned to gemstone at the edges, with embermoths dusting its nose. It looks at you for a long time. It has looked at a great many people for a long time, and it is very good at it. Then it asks a question it already knows the answer to. \"What did you carry up my mountain?\"",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "Its great eye moves slowly over your packs, finds nothing in them but rush gems, and comes back to your faces. \"You came with empty hands,\" it says. \"Why?\""
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "Its eye moves to your packs and counts, the way only dragons can: {facets} of the great stones. \"Not many,\" it says, and it does not sound disappointed. \"Then each one has a story. I will want them.\""
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "Its eye moves to your packs and stays there. \"I heard you coming,\" it says. \"On the stair. On the ash field. At the cairn. You carried {facets} great stones up my mountain, and my mountain felt every one of them.\" The floor of the cave trembles a little, as if it is still feeling them."
+        }
+      ],
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -1376,7 +1630,7 @@
       "choices": [
         {
           "id": "truth",
-          "label": "Tell it the truth: every stone, every pocket",
+          "label": "Tell it the truth: everything you carried",
           "icon": "heart",
           "goto": "scene_keeper_truth"
         },
@@ -1385,6 +1639,25 @@
           "label": "Ask it the same question back",
           "icon": "ear",
           "goto": "scene_keeper_ask"
+        },
+        {
+          "id": "came_to_help",
+          "label": "\"We didn't bring any. We came to help.\"",
+          "icon": "heart",
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "goto": "scene_keeper_came_to_help",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "dragon_surprised",
+              "value": true
+            }
+          ]
         },
         {
           "id": "little_stone",
@@ -1412,6 +1685,9 @@
           "label": "Show it the sprites' woven medal",
           "icon": "star",
           "requiresFlag": "sprites_friends",
+          "when": {
+            "item": "facet_harvest"
+          },
           "goto": "scene_keeper_medal",
           "effects": [
             {
@@ -1462,6 +1738,25 @@
           "icon": "gem",
           "requiresItem": "facet_caravan",
           "goto": "scene_keeper_caravan"
+        }
+      ]
+    },
+    "scene_keeper_came_to_help": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "\"We didn't bring any,\" you say. \"We came to help.\" The Seal-Keeper is quiet for a very long time. Then it lowers its huge head until its eye is level with yours. \"Everyone who climbs my mountain brings me stones,\" it says. \"Or excuses for stones. Nobody has ever brought me nothing on purpose.\" An embermoth crawls off its nose and onto your shoulder. \"Help,\" says the dragon, trying out the word. \"Yes. I could use some of that.\"",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear the next question",
+          "icon": "heart",
+          "goto": "scene_q2"
         }
       ]
     },
@@ -1583,6 +1878,37 @@
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
       "narration": "You tell it the truth: every stone, every pocket, where each one came from, and who was there when it did. The Seal-Keeper listens the way the mountain listens, without moving at all. \"Yes,\" it says when you finish, as if checking your answer against a list it has had for a very long time. \"That is what you carried.\"",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "replace": true,
+          "text": "You tell it the truth: a few rush gems, like everybody's, and nothing else in your packs worth a dragon's time. Then you tell it what else you carried: the road, the people on it, and a promise or two. The Seal-Keeper listens the way the mountain listens, without moving at all. \"Yes,\" it says when you finish. \"That is what you carried. It is lighter than most. It is not less.\""
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "There are only {facets} of the great stones to tell about, so you take your time and say every name slowly, and the dragon nods at each name as if it knew them once."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "It takes a long time. With {facets} great stones, the truth always does. Halfway through, the dragon lays its chin on the floor to listen more comfortably, and the cave floor shivers under the weight of it."
+        }
+      ],
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -1656,6 +1982,39 @@
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
       "narration": "The dragon nods, slowly, the way a mountain would nod if it could. \"And on the road,\" it says, \"what did the land ask of you? And what did you answer?\" An embermoth lands on its eyebrow, waiting too.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "at": "start",
+          "text": "\"Empty hands,\" the dragon says again, turning the idea over like a pebble. \"Very well.\""
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "at": "start",
+          "text": "\"A few stones, well carried,\" the dragon says. \"That is not nothing.\""
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "at": "start",
+          "text": "\"You carried {facets} great stones up all those steps,\" the dragon says. \"That is a heavy haul. Heavy things can be hard to put down.\""
+        }
+      ],
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -2111,13 +2470,53 @@
       },
       "onDefeat": {
         "goto": "ending_turned_back",
-        "narration": "The Seal-Keeper scoops your whole party up in one enormous claw, very carefully, the way you would carry a bird's nest."
+        "narration": "The Seal-Keeper scoops you up in one enormous claw, very carefully, the way you would carry a bird's nest.",
+        "variants": [
+          {
+            "when": {
+              "partySize": {
+                "max": 1
+              }
+            },
+            "text": "You are the only one in there, and the claw is big enough for twenty. It is warm, and it holds still, and somehow it is the least alone you have felt all day."
+          }
+        ]
       }
     },
     "scene_seal_chamber": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "Behind the dragon is the seal: a great round window of gemstone, cracked and missing pieces. At its very top sits one stone bigger than your head, the Keystone. Underneath, something vast is waking up. The Seal-Keeper waits. \"Well,\" it says. \"Choose.\"",
+      "narration": "Behind the dragon is the seal: a great round window of gemstone, cracked and missing pieces. At its very top sits one stone bigger than your head, the crown of the whole seal. Underneath, something vast is waking up. The Seal-Keeper waits. \"Well,\" it says. \"Choose.\"",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "You look at the gaps in the seal, and then at your empty hands. Whatever you choose, you will have to do it with what you brought, which is {party}."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "You feel it in your packs: a tug toward the gaps from {facets} of the great stones, like a dog on a lead that has smelled home."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "The moment you step close, your packs start to pull. All {facets} great stones lean toward the gaps in the seal at once, so hard you have to plant your feet. The seal is waiting for exactly what you are carrying."
+        }
+      ],
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -2152,7 +2551,7 @@
         },
         {
           "id": "keystone",
-          "label": "Reach for the Keystone",
+          "label": "Reach for the crown stone at the top",
           "icon": "gem",
           "goto": "scene_keystone"
         }
@@ -2219,7 +2618,7 @@
     "scene_tether_call_voss": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "You shout for the wardens, as loud as you can all shout, and for a long moment nothing happens. Then the wardens' captain, Captain Voss, comes down the last tube at a run, out of breath, with Pellam behind her carrying a ledger. She stops at the seal, salutes the dragon, which nobody has ever done, and holds out both hands for the leash.",
+      "narration": "You shout for the wardens, as loud as you can, and for a long moment nothing happens. Then the wardens' captain, Captain Voss, comes down the last tube at a run, out of breath, with Pellam behind her carrying a ledger. She stops at the seal, salutes the dragon, which nobody has ever done, and holds out both hands for the leash.",
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -2294,48 +2693,332 @@
     "ending_heroes": {
       "type": "rest",
       "narration": "You give the stones back, every one, however you came by it, even the ones you meant to keep. They slide into the seal like puzzle pieces, and the titan sighs and goes back to sleep. When you walk out of the mountain, every bell in the foothills rings the happy ring at once, and the embermoths come home in one enormous glowing cloud. History files you as the Heroes of Red Sky. Your pockets are empty, and nobody minds at all.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "replace": true,
+          "text": "You have no stones of your own to give back, only a handful of humming rush gems. So you give those, and then you give what else you brought: your hands. You hold the cracked pieces of the seal in place while the Seal-Keeper breathes on them, warm and slow, until they set like toffee. It takes all night. The titan sighs and goes back to sleep. When you walk out of the mountain, every bell in the foothills rings the happy ring at once, and the embermoths come home in one enormous glowing cloud. History files you as the Heroes of Red Sky, the ones who came with empty hands, and it underlines that part twice."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "Each stone you give back goes in with a story, and the seal seems to listen to every one. In the history books, under STONES RETURNED, somebody writes {facets}, and then, in smaller letters, where each one came from."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "It takes a long time to give back {facets} great stones. Each one clicks home like a key in its own lock, and the seal fills up from the bottom, brighter and brighter, until the cave is as bright as noon. In the history books, your list of stones takes a whole page."
+        }
+      ],
       "heal": 4,
       "choices": []
     },
     "ending_heroes_destroy": {
       "type": "rest",
       "narration": "You turn the seal all the way round, and the titan does not go back to sleep. It goes away, gently, like the last note of a long song. Whatever it was, nobody will ever know now. The realm keeps its gemstones, the mountain goes quiet, and history files you as the Heroes of Red Sky. And the Seal-Keeper, with nothing left to keep, flies out of the mountain for the first time in forever, with every embermoth in the foothills riding on its back.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "History adds one odd note under your names: they brought no stones to the mountain. Nobody is quite sure what that means. The Seal-Keeper is, and it is the first thing it tells the sky."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "When the titan goes, the humming in your packs stops. You keep the quiet stones anyway, {facets} of them, wrapped up warm, a memory with weight."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "When the titan goes, the humming in your packs stops all at once: {facets} great stones, gone quiet together, like a choir at the end of a song. Carrying them down the mountain is the heaviest thing you ever do."
+        }
+      ],
       "heal": 4,
       "choices": []
     },
     "ending_quiet_fixers": {
       "type": "rest",
       "narration": "You put every stone back, then slip out of the mountain by a side tunnel and never tell a soul. The foothills only know that the tremors stopped and the moths came home. History files it as a lucky year. But four hundred years from now, a warden clerk will find one line in a ledger bound in a different color, and smile, and wonder who. The Quiet Fixers.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "replace": true,
+          "text": "You have nothing to put back but your hands and a few rush gems, so you give those, and hold the cracked pieces still while the Seal-Keeper breathes them whole. Then you slip out of the mountain by a side tunnel and never tell a soul. The foothills only know that the tremors stopped and the moths came home. History files it as a lucky year. But four hundred years from now, a warden clerk will find one line in a ledger bound in a different color: came with empty hands, left the same way. The clerk will smile, and wonder who. The Quiet Fixers."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "The ledger line is short, like you meant it to be: stones put back, {facets}. No names."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "Under the ledger line, in the same tiny writing, is a number: {facets}. The clerk counts the great stones in the old record twice, and still cannot believe somebody carried that many up a mountain and told nobody."
+        }
+      ],
       "heal": 4,
       "choices": []
     },
     "ending_collectors": {
       "type": "rest",
       "narration": "You lift the Keystone. It is warm, and it is yours, and whatever you were collecting, it is complete now. The seal holds, just, the way a door holds without a lock, because the Seal-Keeper lies down across it and stays there, and means to stay. The rush is over and you won it. History files you as The Collectors, and the red sky is no longer the strangest weather in the realm. You are. Somewhere a grandmother adds your names to a very old list, and leaves a space under them, in case.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": [
+                "facet_ember",
+                "facet_harvest",
+                "facet_drakes_rate",
+                "facet_barge",
+                "facet_ford",
+                "facet_pride",
+                "facet_glade",
+                "facet_depot",
+                "facet_clerks",
+                "facet_confiscated",
+                "facet_unassigned",
+                "facet_table",
+                "facet_caravan"
+              ],
+              "max": 0
+            }
+          },
+          "text": "History notes one odd thing about The Collectors: they climbed the mountain with empty hands. The Keystone was the first stone they ever kept, and the last."
+        },
+        {
+          "when": {
+            "count": {
+              "of": [
+                "facet_ember",
+                "facet_harvest",
+                "facet_drakes_rate",
+                "facet_barge",
+                "facet_ford",
+                "facet_pride",
+                "facet_glade",
+                "facet_depot",
+                "facet_clerks",
+                "facet_confiscated",
+                "facet_unassigned",
+                "facet_table",
+                "facet_caravan"
+              ],
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "Your collection is small and very heavy at the top: {facets} great stones, and one of them is bigger than your head."
+        },
+        {
+          "when": {
+            "count": {
+              "of": [
+                "facet_ember",
+                "facet_harvest",
+                "facet_drakes_rate",
+                "facet_barge",
+                "facet_ford",
+                "facet_pride",
+                "facet_glade",
+                "facet_depot",
+                "facet_clerks",
+                "facet_confiscated",
+                "facet_unassigned",
+                "facet_table",
+                "facet_caravan"
+              ],
+              "min": 5
+            }
+          },
+          "text": "With the Keystone, your collection is {facets} great stones. The packs are so heavy that the mountain groans when you lift them, and every crab on the ash field turns to watch you carry them down."
+        }
+      ],
       "heal": 4,
       "choices": []
     },
     "ending_wardens_regret": {
       "type": "rest",
       "narration": "You hand the leash to the wardens, the Skywardens of the citadel. They build a cage of oaths and ledgers around the titan, and it holds: honest, careful and cold. The realm is safe the way a locked room is safe. Years later, the wardens' captain writes one line in a ledger of a different color: I wonder if it was lonely. History calls it The Wardens' Regret. And the embermoths still visit the titan every evening, because nobody ever told them not to.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "In the wardens' ledger, beside your names, the column for STONES SURRENDERED says: none. The captain leaves it like that. She thinks it is the most honest line in the book."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "In the wardens' ledger, beside your names, the column for STONES SURRENDERED says {facets}, written very neatly, and checked twice."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "In the wardens' ledger, the column for STONES SURRENDERED runs off the bottom of the page: {facets} great stones, each one logged twice. It is the longest entry the citadel has ever written, and the wardens are very proud of it."
+        }
+      ],
       "heal": 4,
       "choices": []
     },
     "ending_cure": {
       "type": "rest",
       "narration": "Hessa's people, the Deep Hollow choir, sing their crystal chord into the seal, and you hold them to every word. Something under the mountain hums back. The cult swears the world's broken laws are mending, and maybe they are: the sky is a little less red, and Hessa cries into a pot of soup. History calls it The Cure, with a question mark that nobody has ever quite been able to rub out.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "The choir writes a song about you afterwards: the climbers who carried nothing up the mountain. It is a short song. Hessa says the short ones are the truest."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "Your great stones sing in the chord too, a few small notes of their own, {facets} in all."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "The choir sets your {facets} great stones around the seal in a ring, and the chord gets so loud that windows rattle in the foothills. Hessa says she has never heard a chord like it. She cries again."
+        }
+      ],
       "heal": 4,
       "choices": []
     },
     "ending_new_weather": {
       "type": "rest",
-      "narration": "You hold the leash yourselves, and the power under the mountain lies still in your own hands. The realm gains something new: you. Farmers watch your camp to know if it will rain. Wolf packs set their routes by your fires. History is not sure what to call you, so it calls you The New Weather, and the Seal-Keeper sometimes visits for tea.",
+      "narration": "You hold the leash, and the power under the mountain lies still in your own hands. The realm gains something new: you. Farmers watch your camp to know if it will rain. Wolf packs set their routes by your fires. History is not sure what to call you, so it calls you The New Weather, and the Seal-Keeper sometimes visits for tea.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "People say you came up the mountain with nothing in your packs. It is true, and somehow it is why the farmers trust you."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "You keep what you carried, {facets} of the great stones, in a jar by the fire. On stormy nights the jar hums, and the farmers take that to mean: bring in the washing."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "You keep all {facets} great stones in a row along your windowsill. When they hum together, the whole valley gets a thunderstorm, so people learn to listen for it. The mountain still shivers when you visit."
+        }
+      ],
       "heal": 4,
       "choices": []
     },
     "ending_turned_back": {
       "type": "rest",
       "narration": "The Seal-Keeper does not hurt children who came up the mountain the wrong way. It removes them, and sets you down in the foothills next to everybody else. Then it goes back down to hold the seal alone, for as long as it can. You watch the summit glow all night with the rest of the realm. At dawn an embermoth lands on your hand and stays, which it only does for someone it expects to see again.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "You came down with nothing, the same as you went up. Somehow that makes the embermoth's choice even clearer."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "Your packs still hold {facets} of the great stones. They hum all night, very softly, toward the mountain."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "The Seal-Keeper set you down with all {facets} great stones still in your packs. They hum all night toward the summit, so loudly that nobody nearby gets any sleep, and so the whole foothills keeps watch with you."
+        }
+      ],
       "heal": 3,
       "choices": [],
       "outcome": "setback"
@@ -2343,6 +3026,36 @@
     "ending_last_ring": {
       "type": "rest",
       "narration": "The ring nobody had ever used rings out across the whole realm. The mountain shrugs, and something enormous stretches underneath it, and there is nobody at the seal to answer. The realm does not end. It rearranges: rivers wander, roads bend, the red sky becomes ordinary weather. History files you as the almost-heroes. But down in the foothills, a dragonling child is already learning the bell code backwards, in case there is a ring that puts it all to sleep again.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "History adds that you carried no stones at all. Some people think that makes it sadder. The dragonling child thinks it makes it braver."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "In your packs, the last bell sets off a faint ring from {facets} of the great stones, and then everything goes quiet."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "In your packs, all {facets} great stones ring along with the last bell, loud as a second bell, and every mountain in the realm hears it."
+        }
+      ],
       "heal": 3,
       "choices": [],
       "outcome": "setback"
@@ -2350,6 +3063,36 @@
     "ending_broken_tether": {
       "type": "rest",
       "narration": "The leash snaps. The seal cracks instead of holding, and the titan rolls over, half awake, and the mountain throws gemstones across the whole sky. The Seal-Keeper throws itself across the crack and holds it, and keeps on holding. Everybody who reached for that leash grieves, which is the worst part. But the seal is cracked, not broken, and the Keeper is still holding. Holding is something somebody can help with, someday.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "Later, the Keeper says you had nothing to hold it with but your hands, and you held it anyway. That counts, it says. It counts for a lot."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "Afterward, your packs still hum with {facets} of the great stones, pulling toward the crack as if they want to help hold it. Someday they might."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "Afterward, your packs still hold all {facets} great stones, every one pulling toward the crack. They are exactly what a cracked seal needs. Someday somebody will carry them down to it."
+        }
+      ],
       "heal": 3,
       "choices": [],
       "outcome": "setback"
@@ -2409,7 +3152,27 @@
     "scene_keystone": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "The Keystone is bigger than your head and warm as bread. The Seal-Keeper does not stop you. It only watches, and says: \"Everyone who climbs reaches for it once. Most of them have no idea what they would do with it.\"",
+      "narration": "The crown stone is bigger than your head and warm as bread. The Seal-Keeper does not stop you. It only watches, and says: \"Everyone who climbs reaches for it once. Most of them have no idea what they would do with it.\"",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "Your hands are all you brought to hold it with. They look very small next to it."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "Behind you, {facets} great stones hum in your packs, louder and louder, as if they know exactly what is about to join them."
+        }
+      ],
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -2419,7 +3182,7 @@
       "choices": [
         {
           "id": "collectors",
-          "label": "Lift it: its brothers rode up here in your packs",
+          "label": "Lift it: this is what the whole collection was for",
           "icon": "gem",
           "requiresFlag": "pursuit_hoard",
           "goto": "ending_collectors",
@@ -2449,7 +3212,7 @@
       "art": "scenes/gemfall/seal-chamber",
       "stat": "might",
       "tn": 16,
-      "prompt": "Pry the Keystone out of a seal that does not want to let it go",
+      "prompt": "Pry the crown stone out of a seal that does not want to let it go",
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -2469,7 +3232,7 @@
       },
       "onFailure": {
         "goto": "ending_turned_back",
-        "narration": "The Keystone does not budge. Then the Seal-Keeper puts one claw on it, very gently, and the decision is no longer yours."
+        "narration": "The crown stone does not budge. Then the Seal-Keeper puts one claw on it, very gently, and the decision is no longer yours."
       }
     }
   },
