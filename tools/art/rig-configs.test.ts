@@ -62,11 +62,11 @@ function configFor(v: RigVariant): RigConfig {
 }
 
 describe("class-variant rig configs", () => {
-  it("declares forty-two variants, each with a config", () => {
+  it("declares forty-seven variants, each with a config", () => {
     // The number is pinned on purpose: a variant dropped from the manifest
-    // takes its rig out of every gate at once, and forty-two is the count the
-    // rest of the tooling (art:rig:build's "66/66") is written against.
-    expect(variants).toHaveLength(42);
+    // takes its rig out of every gate at once. The two new Starweaver Bigfoot
+    // tiers and three Songkeeper tiers bring the corpus to 47 variants and 71 rigs.
+    expect(variants).toHaveLength(47);
     for (const v of variants) {
       expect(existsSync(configPath(v)), `${label(v)} has no config at ${configPath(v)}`).toBe(true);
     }

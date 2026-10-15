@@ -747,6 +747,84 @@
   "$rigVariantsComment": "Purpose-drawn class armor that has been split onto a species rig. Each entry lives at assets/character-rigs/<class>/<tier>/<species>/ with assembled.png, rig.riv, and the exact registered PNG part inventory below. The order of parts is draw order. These variants reuse the hero rig contract and species skeleton; undeclared combinations continue to use assets/characters/<species>/<tier>/rig.riv. Thornguard and Duskrunner are complete across all three geared tiers and all six species; Starweaver Sworn is also complete.",
   "rigVariants": [
     {
+      "class": "songkeeper",
+      "tier": "mythic",
+      "species": "bigfoot",
+      "parts": [
+        "leg_l",
+        "leg_r",
+        "body",
+        "arm_l",
+        "arm_r",
+        "head",
+        "mane",
+        "gear_visible"
+      ]
+    },
+    {
+      "class": "songkeeper",
+      "tier": "radiant",
+      "species": "bigfoot",
+      "parts": [
+        "leg_l",
+        "leg_r",
+        "body",
+        "arm_l",
+        "arm_r",
+        "head",
+        "mane",
+        "gear_visible"
+      ]
+    },
+    {
+      "class": "songkeeper",
+      "tier": "sworn",
+      "species": "bigfoot",
+      "parts": [
+        "leg_l",
+        "leg_r",
+        "body",
+        "arm_l",
+        "arm_r",
+        "head",
+        "mane",
+        "gear_visible",
+        "ear_chime"
+      ]
+    },
+    {
+      "class": "starweaver",
+      "tier": "mythic",
+      "species": "bigfoot",
+      "parts": [
+        "leg_l",
+        "leg_r",
+        "body",
+        "arm_l",
+        "arm_r",
+        "head",
+        "gear_visible",
+        "mane",
+        "focus_stone"
+      ]
+    },
+    {
+      "class": "starweaver",
+      "tier": "radiant",
+      "species": "bigfoot",
+      "parts": [
+        "leg_l",
+        "leg_r",
+        "body",
+        "arm_l",
+        "arm_r",
+        "head",
+        "gear_visible",
+        "mane",
+        "focus_stone"
+      ]
+    },
+    {
       "class": "duskrunner",
       "tier": "sworn",
       "species": "unicorn",

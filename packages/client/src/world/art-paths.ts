@@ -56,6 +56,11 @@ export function characterArtUrl(species: SpeciesId, tier: TierId = STARTING_TIER
  * runtime stays tiny while the manifest remains the source of truth.
  */
 const CLASS_RIG_VARIANTS = new Set<string>([
+  "songkeeper/sworn/bigfoot",
+  "songkeeper/radiant/bigfoot",
+  "songkeeper/mythic/bigfoot",
+  "starweaver/radiant/bigfoot",
+  "starweaver/mythic/bigfoot",
   "duskrunner/mythic/bigfoot",
   "duskrunner/mythic/dragonling",
   "duskrunner/mythic/griffin",
