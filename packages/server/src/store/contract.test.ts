@@ -583,6 +583,54 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect((await repo.listCampaignProgress("h_1"))[0]?.journey).toEqual(moved.journey);
       });
 
+      it("round-trips a journey's world facts of every type, falsy values included (#198)", async () => {
+        // A fact's value is a string, an integer or a boolean — and 0 and false
+        // are real values (a counter at its floor, a road closed again), which a
+        // store that dropped falsy attributes would turn back into `initial`.
+        const journey: JourneyState = {
+          version: 1,
+          node: "crossroads",
+          visit: 2,
+          status: "choosing",
+          chapter: "ws-crossroads",
+          visits: { crossroads: 2, lair: 1 },
+          completions: { crossroads: 1, lair: 1 },
+          facts: {
+            "mill-village": "displaced",
+            "ash-wyrm": "raging",
+            "river-folk": 0,
+            "ford-path": false,
+            "scorched-orchard": true,
+          },
+        };
+        const attempt = {
+          householdId: "h_1",
+          campaignId: "world-state-sampler",
+          status: "active" as const,
+          setbacks: 1,
+          attemptId: "world-state-sampler:1:r_1:2026-07-04T18:00:00.000Z",
+          journey,
+          version: 1,
+          updatedAt: "2026-07-04T18:00:00.000Z",
+        };
+        await repo.putCampaignProgress(attempt);
+        expect(await repo.getCampaignProgress("h_1", "world-state-sampler")).toEqual(attempt);
+
+        await repo.putState(state("r_1", 0));
+        const moved = { ...attempt, journey: { ...journey, facts: { ...journey.facts, "river-folk": 3 } }, version: 2 };
+        expect(
+          await repo.commit({
+            runId: "r_1",
+            expectedSeq: 0,
+            state: state("r_1", 1),
+            event: event("r_1", 1),
+            campaignProgress: moved,
+            campaignProgressExpectedVersion: 1,
+          }),
+        ).toBe(true);
+        expect((await repo.getCampaignProgress("h_1", "world-state-sampler"))?.journey?.facts).toEqual(moved.journey.facts);
+      });
+
       it("an attempt without a journey reads back without one — the ordered reading", async () => {
         await repo.putCampaignProgress({
           householdId: "h_1",

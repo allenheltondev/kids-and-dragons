@@ -100,6 +100,152 @@ export interface CampaignGraph {
    * list can notice a guard reading a flag nothing will ever carry.
    */
   flags?: string[];
+  /**
+   * The world's state, as this campaign tracks it (#198): which places are
+   * displaced, which threats are awake, who the party has won over, which
+   * roads are open, what the party's choices cost. Keyed by stable fact id,
+   * in authored order. See `WorldFact`.
+   *
+   * Absent means a graph with no world state — every graph written before
+   * #198 — so adding the field bumps nothing.
+   */
+  facts?: Record<FactId, WorldFact>;
+}
+
+/** A world fact's key in `CampaignGraph.facts`. Stable: saves name it. */
+export type FactId = string;
+
+/**
+ * What a world fact is *about* — for the tools and the screens, never for a
+ * rule. Nothing the runtime decides reads it: a "threat" fact guards an edge
+ * exactly as a "locale" one does. It is how #202's inspection groups a world
+ * panel and how #195/#201 find "the threats" without a naming convention to
+ * grep for.
+ *
+ * - `"locale"` — a place's condition: standing, displaced, flooded, restored.
+ * - `"threat"` — a danger's status: sleeping, raging, cleared.
+ * - `"alliance"` — where the party stands with someone: favours owed, a pact.
+ * - `"route"` — a way that has opened or closed *in the world* (an edge's own
+ *   `locked` is the graph's; a route fact is what a guard reads to say why).
+ * - `"consequence"` — something the party's choices caused that the story
+ *   remembers: the scorched orchard, the broken bell.
+ */
+export type FactDomain = "locale" | "threat" | "alliance" | "route" | "consequence";
+
+/** What a world fact holds: an enum member, a counter's integer, a flag's boolean. */
+export type FactValue = string | number | boolean;
+
+/**
+ * One world fact's declaration (#198). **Typed and bounded**, rather than
+ * more journey flags, for three reasons:
+ *
+ * - A place's condition is one of several states, and only one at a time.
+ *   Three booleans (`village_displaced`, `village_restored`, ...) can all be
+ *   true at once, and every guard that reads them has to rule out the
+ *   combinations nobody meant; an enum cannot be two things.
+ * - A bounded domain can be *enumerated*: the graph lint (#193) walks every
+ *   value a fact can take, so "this road can never open" stays decidable. An
+ *   unbounded counter or a free string would make the search infinite, or a
+ *   guess.
+ * - An initial value is part of the declaration, so "absent in the save"
+ *   always has one meaning — the world as the author wrote it — and a fact
+ *   added to a campaign after a party started reads correctly with no
+ *   migration.
+ *
+ * Journey flags (`flags`) stay what they are: the booleans chapters set and
+ * read. A world fact is the graph's, written by the graph — by an edge's
+ * effects, or by a node's `onComplete` rules reading what a chapter reported
+ * — and read by guards and variants. Chapters do not see facts (they are not
+ * seeded into runs); a chapter that should differ by world state is a
+ * different chapter, chosen by a node variant.
+ */
+export type WorldFact = EnumFact | CounterFact | FlagFact;
+
+interface FactCommon {
+  domain: FactDomain;
+  /** What the screens call it, for an 8-year-old. Absent means the id. */
+  label?: string;
+  /**
+   * Shown to the players (`JourneyView.facts`). Absent means the world
+   * remembers it but the screens do not say so — a surprise the author wants
+   * to keep, or bookkeeping nobody needs to see.
+   */
+  visible?: true;
+}
+
+/** One of a fixed set of states. The usual kind: a locale, a threat. */
+export interface EnumFact extends FactCommon {
+  type: "enum";
+  /** Every state, 2–12 of them, ids in the node/edge id pattern. */
+  values: string[];
+  /** The state before anybody has done anything. One of `values`. */
+  initial: string;
+}
+
+/** An integer between bounds. Favours owed, how far a flood has risen. */
+export interface CounterFact extends FactCommon {
+  type: "counter";
+  /** Integers, `min ≤ initial ≤ max`, at most `MAX_COUNTER_SPAN` apart. */
+  min: number;
+  max: number;
+  initial: number;
+}
+
+/** True or false, with a declared starting value. A road open or closed. */
+export interface FlagFact extends FactCommon {
+  type: "flag";
+  /** Absent means false. */
+  initial?: boolean;
+}
+
+/**
+ * A test of one world fact, inside `GraphCondition.facts`.
+ *
+ * - a bare value — the fact *is* this: an enum member, a counter's integer,
+ *   a flag's boolean;
+ * - `{ "in": [...] }` — an enum (or counter) is one of these;
+ * - `{ "not": v }` — an enum (or counter) is anything but this;
+ * - `{ "min": a, "max": b }` — a counter is within these (inclusive; either
+ *   may be absent).
+ *
+ * Every key present must hold, like the condition around it. Every value
+ * named must be in the fact's domain — a test for a state the fact can never
+ * be in is a typo, refused by `parseCampaignGraph`.
+ */
+export type FactTest =
+  | FactValue
+  | {
+      in?: (string | number)[];
+      not?: string | number;
+      min?: number;
+      max?: number;
+    };
+
+/**
+ * A node's completion rule (#198): when the node's chapter completes and
+ * `when` holds, `effects` apply. This is how a chapter's result reaches the
+ * world state without the chapter schema learning anything new — the chapter
+ * sets a journey flag, or simply succeeds or falls short, and the *graph*
+ * says what that does to the world:
+ *
+ * ```json
+ * "onComplete": [
+ *   { "when": { "outcome": "setback", "facts": { "ash-wyrm": "sleeping" } },
+ *     "effects": [{ "type": "setFact", "fact": "ash-wyrm", "value": "raging" }] }
+ * ]
+ * ```
+ */
+export interface CompletionRule {
+  /**
+   * Read against the journey as the visit completes — the outcome recorded
+   * (`outcome` is this completion's), the journey flags read back from the
+   * run — and before any rule's effects. Every rule is judged against that
+   * same journey, so rules do not see each other's effects, and their order
+   * matters only for effects that write the same thing. Absent always holds.
+   */
+  when?: GraphCondition;
+  /** Applied in order, rule after rule, exactly as an edge's effects apply. */
+  effects: GraphEffect[];
 }
 
 /**
@@ -145,6 +291,13 @@ export interface GraphNode {
    */
   variants?: NodeVariant[];
   /**
+   * What completing this node's chapter does to the journey beyond the
+   * completion itself (#198): every rule whose `when` holds applies its
+   * effects. See `CompletionRule`. A `"pass"` arrival completes nothing and
+   * runs none of them.
+   */
+  onComplete?: CompletionRule[];
+  /**
    * Makes this node an ending of the campaign. Completing its chapter
    * completes the attempt (commitment, spec §8.3) and records which ending
    * the party reached. An ending node has no exits.
@@ -160,6 +313,15 @@ export interface NodeVariant {
   /** A `Campaign.chapters` member. */
   chapter: string;
   when: GraphCondition;
+  /**
+   * What re-entering the node does while this variant is the place (#198),
+   * overriding the node's `revisit`: the restored village needs no replaying,
+   * the raging lair does. Read only for a node already completed — a first
+   * visit always plays — and only `"replay"` or `"pass"`: whether a node is
+   * `"closed"` is decided before the party crosses, and a variant is chosen
+   * on arrival. Absent means the node's `revisit`.
+   */
+  revisit?: "replay" | "pass";
 }
 
 export interface GraphEnding {
@@ -273,6 +435,20 @@ export interface GraphCondition {
    * neither outcome.
    */
   outcome?: ChapterOutcome;
+  /**
+   * The **subject** node's visit ordinal is within these bounds (inclusive;
+   * either may be absent) — #198's "the second time you come here". On an
+   * edge it is the visit to `from` the party is finishing; on a variant it is
+   * the visit being begun (so `{ "min": 2 }` is every revisit); in a node's
+   * `onComplete` it is the visit completing. Positive integers. Without a
+   * subject it does not hold.
+   */
+  visit?: { min?: number; max?: number };
+  /**
+   * World facts (#198), each tested as `FactTest` says: every listed fact must
+   * pass its test. A fact never written reads as its declared `initial`.
+   */
+  facts?: Record<FactId, FactTest>;
 }
 
 /**
@@ -289,7 +465,17 @@ export type GraphEffect =
   /** Opens an edge: a `locked` one becomes available (subject to `when`). */
   | { type: "unlock"; edge: EdgeId }
   /** Closes an edge for the rest of the attempt. */
-  | { type: "lock"; edge: EdgeId };
+  | { type: "lock"; edge: EdgeId }
+  /**
+   * Sets a world fact (#198): an enum member, a counter's integer (within its
+   * bounds), a flag's boolean.
+   */
+  | { type: "setFact"; fact: FactId; value: FactValue }
+  /**
+   * Moves a counter fact by `by` (a non-zero integer), clamped to its bounds:
+   * a fourth favour owed when the counter stops at three is still three.
+   */
+  | { type: "adjustFact"; fact: FactId; by: number };
 
 /**
  * What the journey remembers, as guards and exit availability read it.
@@ -319,6 +505,20 @@ export interface JourneyFacts {
   edges?: Record<EdgeId, "open" | "locked">;
   /** Journey flags: `CampaignGraph.flags` and `routeSets` members. */
   flags?: Record<string, boolean>;
+  /**
+   * World facts this attempt has written (#198). **Attempt-scoped**: the
+   * world as *this* party left it, on this attempt's row and nowhere else —
+   * never the campaign's declaration, never canon, never another household's
+   * attempt or this household's next one, which starts from the declared
+   * `initial` values again.
+   *
+   * Absent, or a fact absent from it, reads as the declared `initial` — every
+   * journey saved before #198 included. A stored value is read through its
+   * declaration (`readFact`): an id the declaration no longer has is ignored;
+   * an enum value it no longer lists, or a value of the wrong type, reads as
+   * `initial`; a counter outside narrowed bounds is clamped into them.
+   */
+  facts?: Record<FactId, FactValue>;
 }
 
 /**
@@ -411,6 +611,22 @@ export interface JourneyView {
   exits: JourneyExitView[];
   /** The ending this journey reached, once `status` is `"ended"`. */
   reachedEnding?: { node: NodeId; title: string };
+  /**
+   * The world facts declared `visible` (#198), in authored order, with their
+   * current values — what the screens may tell the players about how the
+   * world has changed. Present only when the graph declares a visible fact.
+   */
+  facts?: JourneyFactView[];
+}
+
+/** One player-visible world fact (`JourneyView.facts`). */
+export interface JourneyFactView {
+  id: FactId;
+  domain: FactDomain;
+  /** The declaration's `label`, else the id. */
+  label: string;
+  type: WorldFact["type"];
+  value: FactValue;
 }
 
 /** One drawn exit (`JourneyView.exits`). */
