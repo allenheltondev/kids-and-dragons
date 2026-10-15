@@ -987,6 +987,9 @@
     },
     "check_haul_goat": {
       "type": "check",
+      "discovers": [
+        "creature.snowhorn_goat"
+      ],
       "cast": [
         {
           "figure": "entities/snowhorn_goat"
@@ -1337,6 +1340,9 @@
     },
     "scene_morning_slide_goat_path": {
       "type": "story",
+      "discovers": [
+        "creature.snowhorn_goat"
+      ],
       "narration": "There is a goat path above the slide, about as wide as a sandwich. You go round in single file, holding hands, not looking down. A snowhorn goat coming the other way stops, considers you, and steps politely aside onto what appears to be nothing at all.",
       "choices": [
         {
