@@ -64,11 +64,19 @@ async function createCharacter(page: Page, species: string, name: string): Promi
   await page.getByRole("button", { name: /^Ready to play$/i }).click(TAP);
 }
 
-/** End the hero's turn through the combat card, as a player would. */
+/**
+ * Pass the hero's turn, as a player would. A tap commits and a spent turn
+ * ends itself, so passing is the Get Ready card; "End my turn" is offered
+ * only when there is no card to play at all (CombatPanel `canEnd`).
+ */
 async function endTurn(page: Page): Promise<void> {
   await openPlayerTask(page);
+  const ready = page.locator(".combat .choice").filter({ hasText: /get ready/i });
+  if ((await ready.count()) > 0) {
+    await ready.first().click({ timeout: 5_000 }).catch(() => {});
+    return;
+  }
   await page.locator(".combat__end").first().click({ timeout: 5_000 }).catch(() => {});
-  await page.getByRole("button", { name: /do it!/i }).click({ timeout: 5_000 }).catch(() => {});
 }
 
 test.describe("the Field Guide", () => {
@@ -190,8 +198,7 @@ test.describe("the Field Guide", () => {
     await expect(phone.getByRole("button", { name: /^Your turn$/ })).toHaveCount(0);
     const before = await encounterOf(code);
     expect(before).not.toBeNull();
-    await phone.locator(".combat__end").first().click(TAP);
-    await phone.getByRole("button", { name: /do it!/i }).click(TAP);
+    await endTurn(phone);
     await expect
       .poll(async () => {
         const now = await encounterOf(code);

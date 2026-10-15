@@ -165,28 +165,21 @@ async function takeCombatTurn(page: Page): Promise<boolean> {
   // Only the phone actually on the clock has anything to do.
   if ((await panel.getByText(/Your turn,/i).count()) === 0) return false;
 
-  // Up to three steps: action -> target -> confirm. Bounded rather than
-  // `while (true)`, because a driver that cannot get out of a step should fail
-  // the test loudly instead of spinning inside a helper.
-  for (let step = 0; step < 3; step += 1) {
-    const confirm = panel.getByRole("button", { name: /do it!|yes, do that/i });
-    if (await confirm.first().isVisible().catch(() => false)) {
-      // Bounded for the same reason as the roll click above: between the
-      // isVisible check and the click, another phone's action can resolve the
-      // prompt out from under this one, and an unbounded click on a vanished
-      // button waits forever.
-      await confirm.first().click({ timeout: 3_000 }).catch(() => {});
-      await page.waitForTimeout(500);
-      return true;
-    }
-
+  // Up to two steps: action -> target. The target tap is the commit, and a
+  // spent turn ends on its own (engine `finishTurnIfSpent`). Bounded rather
+  // than `while (true)`, because a driver that cannot get out of a step
+  // should fail the test loudly instead of spinning inside a helper.
+  for (let step = 0; step < 2; step += 1) {
     const targets = panel.locator(".combat__targets button");
     if ((await targets.count()) > 0) {
       // First target, whoever it is — for Attack that is an enemy, for Help Up
       // it is the fallen friend, and the server only ever offers legal ones.
+      // Bounded click: between the count and the click, another phone's
+      // action can resolve the turn out from under this one, and an unbounded
+      // click on a vanished button waits forever.
       await targets.first().click({ timeout: 3_000 }).catch(() => {});
-      await page.waitForTimeout(200);
-      continue;
+      await page.waitForTimeout(500);
+      return true;
     }
 
     const cards = panel.locator(".prompt__options > li > button");
@@ -206,17 +199,22 @@ async function takeCombatTurn(page: Page): Promise<boolean> {
     const names = labels.map((label) => label.split("\n")[0] ?? "");
     const help = names.findIndex((name) => /help up/i.test(name));
     const attack = names.findIndex((name) => /^attack$/i.test(name.trim()));
-    const pick = help >= 0 ? help : attack;
+    // Get Ready is how a turn with nothing to hit is passed: it has no
+    // target, so the tap is the whole turn.
+    const ready = names.findIndex((name) => /get ready/i.test(name));
+    const pick = help >= 0 ? help : attack >= 0 ? attack : ready;
     if (pick < 0) {
-      // Ending the turn sits apart from the cards, under them.
+      // Only offered when there is nothing else to do; one tap, no confirm.
       const end = panel.locator(".combat__end");
       if (!(await end.isVisible().catch(() => false))) return false;
       await end.click({ timeout: 3_000 }).catch(() => {});
-      await page.waitForTimeout(200);
-      continue;
+      await page.waitForTimeout(500);
+      return true;
     }
     await cards.nth(pick).click({ timeout: 3_000 }).catch(() => {});
     await page.waitForTimeout(200);
+    // A card with nothing to aim was the whole turn.
+    if (pick === ready) return true;
   }
 
   await page.waitForTimeout(400);
@@ -573,19 +571,19 @@ test.describe("first playable", () => {
       return active && active.side === "party" && !active.down ? active.name : null;
     }
 
-    /** Attack if the card is offered: card → first target → "Do it!". Clicks
-        are tolerant — a miss is retried by the next driver pass. */
+    /** Attack if the card is offered: card → first target, which is the
+        commit. Clicks are tolerant — a miss is retried by the next driver
+        pass. */
     async function tryAttack(page: Page): Promise<boolean> {
-      const card = page.locator(".combat .choice").filter({ hasText: /attack/i });
+      const card = page.locator(".combat .choice").filter({ hasText: /^attack/i });
       if ((await card.count()) === 0) return false;
       await card.first().click({ timeout: 4_000 }).catch(() => {});
       await page.locator(".combat__targets button").first().click({ timeout: 4_000 }).catch(() => {});
-      await page.getByRole("button", { name: /do it!/i }).click({ timeout: 4_000 }).catch(() => {});
       await page.waitForTimeout(800);
       return true;
     }
 
-    /** Step toward the wisps: the reachable tile furthest right, confirmed. */
+    /** Step toward the wisps: the reachable tile furthest right. The tap walks. */
     async function tryMove(page: Page): Promise<boolean> {
       const tiles = page.locator("button[data-move-tile]");
       const count = await tiles.count();
@@ -600,7 +598,6 @@ test.describe("first playable", () => {
         }
       }
       await tiles.nth(bestIndex).click({ timeout: 4_000 }).catch(() => {});
-      await page.getByRole("button", { name: /do it!/i }).click({ timeout: 4_000 }).catch(() => {});
       // The move's own COMBAT_SEQUENCE holds this phone's patch ~700ms
       // (world/presentation.ts); the attack re-check needs the fresh board.
       await page.waitForTimeout(1_000);
@@ -639,20 +636,30 @@ test.describe("first playable", () => {
         .catch(() => false);
       if (!ready) continue; // patches still draining; poll the server again
 
-      const endTurn = async () => {
-        await page.locator(".combat__end").first().click({ timeout: 4_000 }).catch(() => {});
-        await page.getByRole("button", { name: /do it!/i }).click({ timeout: 4_000 }).catch(() => {});
+      /*
+       * Pass. Get Ready is the card for a turn with nothing to hit (it has
+       * no target, so the tap is the turn); End my turn is only offered when
+       * there is no card at all, or steps are left after the action.
+       */
+      const pass = async () => {
+        const ready = page.locator(".combat .choice").filter({ hasText: /get ready/i });
+        if ((await ready.count()) > 0) {
+          await ready.first().click({ timeout: 4_000 }).catch(() => {});
+        } else {
+          await page.locator(".combat__end").first().click({ timeout: 4_000 }).catch(() => {});
+        }
         await page.waitForTimeout(600);
       };
 
       if (enc.actionTaken) {
-        // The one action is spent (§7.2); nothing is left but handing over.
-        await endTurn();
+        // The action is spent and the engine did not end the turn, so steps
+        // are left (Twin Step); hand over.
+        await pass();
         continue;
       }
       if (await tryAttack(page)) continue;
       if (enc.stepsLeft > 0 && (await tryMove(page)) && (await tryAttack(page))) continue;
-      await endTurn();
+      await pass();
     }
 
     // The fight ended and the story branched — victory or defeat both carry

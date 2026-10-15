@@ -4,6 +4,47 @@
  * does not). board.ts re-exports these — callers never notice the split.
  */
 
+import type { Board, EncounterState, Position } from "@kad/shared";
+import { STEP_DIRECTIONS, inBounds, isPassable } from "@kad/shared";
+
+export type Facing = "left" | "right";
+
+/**
+ * Which way a figure should face: toward the nearest standing opponent.
+ *
+ * Every figure is drawn facing left, and a fight where both sides stare at
+ * the left edge reads as two queues rather than a battle. The nearest enemy
+ * (Chebyshev, the board's own step metric) decides; on a tie, the one with
+ * the bigger sideways gap, since turning is a sideways thing. Straight above
+ * or below, or with nobody left to face, the answer is null: keep facing
+ * whatever way you were, rather than snapping to a default.
+ *
+ * Shared by the TV board (board.ts) and the phone grid (combat-grid.ts), so
+ * the two surfaces turn the same figure the same way.
+ */
+export function facingFor(encounter: EncounterState, actorId: string): Facing | null {
+  const me = encounter.board.actors.find((a) => a.id === actorId);
+  const mine = encounter.combatants.find((c) => c.id === actorId);
+  if (!me || !mine) return null;
+  let best: { dx: number; distance: number } | null = null;
+  for (const other of encounter.combatants) {
+    if (other.side === mine.side || other.down) continue;
+    const at = encounter.board.actors.find((a) => a.id === other.id);
+    if (!at) continue;
+    const dx = at.x - me.x;
+    const distance = Math.max(Math.abs(dx), Math.abs(at.y - me.y));
+    if (
+      best === null ||
+      distance < best.distance ||
+      (distance === best.distance && Math.abs(dx) > Math.abs(best.dx))
+    ) {
+      best = { dx, distance };
+    }
+  }
+  if (best === null || best.dx === 0) return null;
+  return best.dx > 0 ? "right" : "left";
+}
+
 /** asset-brief §4.5 — the tile sheets are authored at this size. */
 export const BOARD_TILE_PX = 128;
 
@@ -86,4 +127,75 @@ export function clipForBeat(
     default:
       return null;
   }
+}
+
+/**
+ * A shortest walk from `from` to `to` that looks like walking: of all the
+ * routes that cost the fewest steps, the one that keeps closest to the
+ * straight line between the two. Null when there is no way through.
+ *
+ * `findPath` (grid.ts) breaks ties by a fixed direction order, which is right
+ * for the monsters' planner and wrong to watch: a hero whose route is drawn
+ * square by square went up a row and straight back down to reach a square
+ * level with them. Same crossing rules, same step count, a straighter line.
+ * Includes both ends, like `findPath`.
+ */
+export function naturalPath(board: Board, from: Position, to: Position): Position[] | null {
+  if (!inBounds(board, from) || !inBounds(board, to)) return null;
+  if (from.x === to.x && from.y === to.y) return [{ x: from.x, y: from.y }];
+  const key = (p: Position): number => p.y * board.width + p.x;
+  const mover = board.actors.find((a) => a.x === from.x && a.y === from.y) ?? null;
+  const standing = new Map(board.actors.map((a) => [key(a), a]));
+  // A square a walk may cross: open ground, empty or holding a friend. The
+  // destination must be empty: you cannot finish on anybody.
+  const crossable = (p: Position): boolean => {
+    if (!inBounds(board, p) || !isPassable(board, p)) return false;
+    const who = standing.get(key(p));
+    if (!who) return true;
+    if (p.x === to.x && p.y === to.y) return false;
+    return mover !== null && who.side === mover.side;
+  };
+  if (!crossable(to)) return null;
+
+  // Steps to the destination from every square, flooding back from it.
+  const distance = new Map<number, number>([[key(to), 0]]);
+  let frontier: Position[] = [to];
+  for (let d = 1; frontier.length > 0 && !distance.has(key(from)); d++) {
+    const next: Position[] = [];
+    for (const tile of frontier) {
+      for (const dir of STEP_DIRECTIONS) {
+        const at = { x: tile.x + dir.x, y: tile.y + dir.y };
+        if (distance.has(key(at))) continue;
+        const isStart = at.x === from.x && at.y === from.y;
+        if (!isStart && !crossable(at)) continue;
+        if (!inBounds(board, at)) continue;
+        distance.set(key(at), d);
+        next.push(at);
+      }
+    }
+    frontier = next;
+  }
+  if (!distance.has(key(from))) return null;
+
+  // Walk downhill, taking whichever next square sits nearest the line.
+  const offLine = (p: Position): number => {
+    const lx = to.x - from.x;
+    const ly = to.y - from.y;
+    return Math.abs(ly * (p.x - from.x) - lx * (p.y - from.y)) / Math.hypot(lx, ly);
+  };
+  const path: Position[] = [{ x: from.x, y: from.y }];
+  let here: Position = from;
+  while (here.x !== to.x || here.y !== to.y) {
+    const left = distance.get(key(here)) as number;
+    let best: Position | null = null;
+    for (const dir of STEP_DIRECTIONS) {
+      const at = { x: here.x + dir.x, y: here.y + dir.y };
+      if (distance.get(key(at)) !== left - 1 || !inBounds(board, at)) continue;
+      if (best === null || offLine(at) < offLine(best)) best = at;
+    }
+    if (best === null) return null;
+    path.push(best);
+    here = best;
+  }
+  return path;
 }
