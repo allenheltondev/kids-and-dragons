@@ -249,7 +249,9 @@
  */
 .narration__choice--picked {
   border-color: #6fe6ff;
-  border-width: 0.16em;
+  /* The thicker rim is an outline, not a wider border: a border would grow
+     the pill and rewrap the row every time somebody leaned on a choice. */
+  outline: 0.08em solid #6fe6ff;
   background: rgba(111, 230, 255, 0.14);
   box-shadow: 0 0 0.8em rgba(111, 230, 255, 0.35);
 }
@@ -262,18 +264,14 @@
 }
 
 /*
- * Who has locked in a vote (`RunState.prompt.votes`). Plain text, not the
- * cyan of a pick still being made: cyan means "about to", a name means "done".
+ * Who has locked in a vote (`RunState.prompt.votes`), as ticks in each
+ * voter's color — not the cyan of a pick still being made: cyan means
+ * "about to", a filled tick means "done".
  */
 .narration__voters {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1, 0.25em);
   margin-inline-start: auto;
   color: var(--color-text-muted, #b7b0d8);
   font-size: 0.8em;
-  font-weight: 500;
-  white-space: nowrap;
 }
 
 .narration__picker {

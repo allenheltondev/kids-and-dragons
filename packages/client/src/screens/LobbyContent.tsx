@@ -18,6 +18,7 @@ import { campaignOptionLine, campaignPremise, nextChapterLine } from "./campaign
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
+import { VoteTicks } from "./VoteTicks";
 import "./shared.css";
 import "./LobbyContent.css";
 import { EntryScene, lobbySceneFor } from "./EntryScene";
@@ -150,16 +151,20 @@ export function LobbyContent(): ReactElement {
       {state && lobbyCampaign(state).contested ? (
         <ul className="lobby__campaigns" aria-label="Which adventure?">
           {(state.campaignOptions ?? []).map((option) => {
-            const votes = party.filter(
-              (member) => state.campaignVotes?.[member.playerId] === option.id,
-            ).length;
+            const votedIds = party
+              .filter((member) => state.campaignVotes?.[member.playerId] === option.id)
+              .map((member) => member.playerId);
             return (
               <li className="lobby__next-chapter" key={option.id}>
                 <Icon name={option.id === state.campaign?.id ? "vote" : "map"} />
                 <span>
                   {option.title}: {campaignOptionLine(option)}
-                  {votes > 0 ? ` · ${String(votes)} ${votes === 1 ? "vote" : "votes"}` : ""}
                 </span>
+                <VoteTicks
+                  voterIds={party.map((member) => member.playerId)}
+                  votedIds={votedIds}
+                  party={party}
+                />
               </li>
             );
           })}
