@@ -53,6 +53,7 @@ import type {
   NodeId,
   NodeVariant,
   RevisitPolicy,
+  RiftActionKind,
   RiftState,
   RiftStatus,
   WorldFact,
@@ -353,6 +354,8 @@ export function parseCampaignGraph(
       } else if (effect?.type === "setFact" || effect?.type === "adjustFact") {
         const fact = checkFactName(`${path}/fact`, effect.fact);
         if (fact) for (const found of factEffectProblems(fact, effect)) fail(`${path}${found.path}`, found.problem);
+      } else if (isRiftEffectType(effect?.type)) {
+        checkRiftEffect(path, effect as RiftEffect, rawEdges, nodeSet, fail);
       } else if (effect?.type === "grantBuff") {
         if (typeof effect.buff !== "string" || (!buffs[effect.buff] && !brokenBuffs.has(effect.buff))) {
           fail(`${path}/buff`, `${JSON.stringify(effect.buff)} is not a buff (declare it in graph.buffs)`);
@@ -422,7 +425,7 @@ export function parseCampaignGraph(
     if (nodeSet.has(typed.to)) entrances[typed.to]!.push(id);
     checkCondition(`${at}/when`, typed.when);
     checkEffects(`${at}/effects`, typed.effects);
-    if (typed.rift !== undefined) checkRift(id, typed, rawEdges, fail, checkCondition);
+    if (typed.rift !== undefined) checkRift(id, typed, rawEdges, fail, checkCondition, checkEffects, nodeSet);
     edges[id] = { ...typed, blocked: typed.blocked ?? "hidden" };
   }
 
@@ -478,6 +481,8 @@ function checkRift(
   rawEdges: Record<string, unknown>,
   fail: (path: string, problem: string) => void,
   checkCondition: (path: string, raw: unknown) => void,
+  checkEffects: (path: string, raw: unknown) => void,
+  nodeSet: ReadonlySet<NodeId>,
 ): void {
   const at = `/edges/${seg(id)}/rift`;
   if (!isRecord(edge.rift)) {
@@ -540,6 +545,133 @@ function checkRift(
       if (rift.oneWay === true && other.from === edge.to && other.to === edge.from) {
         fail(`${at}/oneWay`, `"${id}" is one-way, but its partner "${rift.linkedTo}" is the same rift leading back`);
       }
+    }
+  }
+  checkRiftActions(id, edge, rift, fail, checkCondition, checkEffects, nodeSet);
+}
+
+// ---------------------------------------------------------------------------
+// Rift actions (#197) — the declaration's half
+// ---------------------------------------------------------------------------
+
+/** Every `RiftActionKind`, in the order a screen offers them. */
+export const RIFT_ACTION_KINDS: readonly RiftActionKind[] = ["discover", "open", "stabilize", "redirect", "close"];
+
+/** The `GraphEffect` that takes each rift action (#197). */
+export const RIFT_EFFECT_OF: Readonly<Record<RiftActionKind, RiftEffect["type"]>> = {
+  discover: "discoverRift",
+  open: "openRift",
+  close: "closeRift",
+  stabilize: "stabilizeRift",
+  redirect: "redirectRift",
+};
+
+/** The effects that act on a rift (#197). */
+export type RiftEffect = Extract<
+  GraphEffect,
+  { type: "discoverRift" | "openRift" | "closeRift" | "stabilizeRift" | "redirectRift" }
+>;
+
+const RIFT_EFFECT_TYPES: readonly string[] = Object.values(RIFT_EFFECT_OF);
+
+/** Is this effect type one of the rift actions? */
+export function isRiftEffectType(type: unknown): type is RiftEffect["type"] {
+  return typeof type === "string" && RIFT_EFFECT_TYPES.includes(type);
+}
+
+/**
+ * Every destination a rift can lead to: its `to`, then its declared
+ * `redirects` (#197). For an ordinary edge, just `to`. The static checks walk
+ * all of them, because a redirect is a way the party can go.
+ */
+export function edgeDestinations(edge: Pick<GraphEdge, "to" | "rift">): NodeId[] {
+  return [edge.to, ...(edge.rift?.redirects ?? []).filter((each) => each !== edge.to)];
+}
+
+/**
+ * A rift effect (#197): it names a rift, and a redirect names one of that
+ * rift's declared destinations — "invalid destination" is refused here, at
+ * load, rather than discovered by a party mid-journey.
+ */
+function checkRiftEffect(
+  path: string,
+  effect: RiftEffect,
+  rawEdges: Record<string, unknown>,
+  nodeSet: ReadonlySet<NodeId>,
+  fail: (path: string, problem: string) => void,
+): void {
+  const target = typeof effect.edge === "string" ? rawEdges[effect.edge] : undefined;
+  if (!isRecord(target)) {
+    fail(`${path}/edge`, `no edge ${JSON.stringify(effect.edge)}`);
+    return;
+  }
+  const typed = target as unknown as GraphEdge;
+  if (!isRecord(typed.rift)) {
+    fail(`${path}/edge`, `"${effect.edge}" is not a rift, so ${effect.type} has nothing to act on`);
+    return;
+  }
+  if (effect.type !== "redirectRift") return;
+  const to: unknown = effect.to;
+  if (typeof to !== "string" || !nodeSet.has(to)) {
+    fail(`${path}/to`, `no node ${JSON.stringify(to)}`);
+  } else if (!edgeDestinations(typed).includes(to)) {
+    fail(
+      `${path}/to`,
+      `"${to}" is not a destination the rift "${effect.edge}" declares (its "to" or one of its "redirects")`,
+    );
+  }
+}
+
+/** `GraphRift.redirects` and `GraphRift.actions` (#197). */
+function checkRiftActions(
+  id: EdgeId,
+  edge: GraphEdge,
+  rift: GraphRift,
+  fail: (path: string, problem: string) => void,
+  checkCondition: (path: string, raw: unknown) => void,
+  checkEffects: (path: string, raw: unknown) => void,
+  nodeSet: ReadonlySet<NodeId>,
+): void {
+  const at = `/edges/${seg(id)}/rift`;
+  if (rift.redirects !== undefined) {
+    if (!Array.isArray(rift.redirects) || rift.redirects.length === 0) {
+      fail(`${at}/redirects`, "redirects must be a non-empty list of node ids");
+    } else {
+      if (rift.linkedTo !== undefined) {
+        fail(`${at}/redirects`, "a linked rift cannot be redirected: its two mouths share one state, and a destination is one mouth's");
+      }
+      const seen = new Set<string>();
+      rift.redirects.forEach((to, i) => {
+        if (typeof to !== "string" || !nodeSet.has(to)) fail(`${at}/redirects/${i}`, `no node ${JSON.stringify(to)}`);
+        else if (to === edge.to) fail(`${at}/redirects/${i}`, `"${to}" is already where the rift leads`);
+        else if (to === edge.from) fail(`${at}/redirects/${i}`, `a rift cannot be turned to lead back to where it starts ("${to}")`);
+        else if (seen.has(to)) fail(`${at}/redirects/${i}`, `"${to}" is listed twice`);
+        seen.add(String(to));
+      });
+    }
+  }
+  if (rift.actions === undefined) return;
+  if (!isRecord(rift.actions)) {
+    fail(`${at}/actions`, "actions must be an object of action to rule");
+    return;
+  }
+  for (const [kind, rule] of Object.entries(rift.actions)) {
+    const path = `${at}/actions/${seg(kind)}`;
+    if (!(RIFT_ACTION_KINDS as readonly string[]).includes(kind)) {
+      fail(path, `unknown rift action ${JSON.stringify(kind)} (one of ${RIFT_ACTION_KINDS.join(", ")})`);
+      continue;
+    }
+    if (!isRecord(rule)) {
+      fail(path, "a rift action's rule must be an object");
+      continue;
+    }
+    checkCondition(`${path}/when`, rule.when);
+    checkEffects(`${path}/effects`, rule.effects);
+    if (rule.label !== undefined && (typeof rule.label !== "string" || rule.label.trim() === "")) {
+      fail(`${path}/label`, "a label is the words on the button");
+    }
+    if (kind === "redirect" && rift.redirects === undefined) {
+      fail(path, `"${id}" declares no redirects, so there is nowhere to turn it`);
     }
   }
 }
@@ -624,8 +756,10 @@ export interface GraphConditionContext {
  * - `"closed"` — it leads into a `revisit: "closed"` node already completed.
  * - `"guard"` — its `when` does not hold.
  * - then, for a rift (#196), `RiftBlock`: why the rift cannot be crossed.
+ * - `"fallback"` — a `fallback` edge (#197) while another exit from its node
+ *   is available: the long way round is offered only when it is needed.
  */
-export type ExitBlock = "locked" | "spent" | "closed" | "guard" | RiftBlock;
+export type ExitBlock = "locked" | "spent" | "closed" | "guard" | RiftBlock | "fallback";
 
 export type ExitAvailability = { available: true } | { available: false; reason: ExitBlock };
 
@@ -642,7 +776,10 @@ export function exitAvailability(
     return { available: false, reason: "locked" };
   }
   if (edge.once === true && count(journey.traversed, edgeId) > 0) return { available: false, reason: "spent" };
-  if (graph.nodes[edge.to]?.revisit === "closed" && count(journey.completions, edge.to) > 0) {
+  // Where the edge leads *now*: a redirected rift (#197) is closed by its
+  // current destination, not the one it was authored with.
+  const to = riftDestination(graph, edgeId, journey);
+  if (graph.nodes[to]?.revisit === "closed" && count(journey.completions, to) > 0) {
     return { available: false, reason: "closed" };
   }
   if (!evaluateGraphCondition(edge.when, journey, edge.from, { facts: graph.facts })) {
@@ -650,12 +787,22 @@ export function exitAvailability(
   }
   const rift = riftBlock(graph, edgeId, journey);
   if (rift !== null) return { available: false, reason: rift };
+  // A fallback (#197) is the way the party takes when there is no other: it
+  // asks about its siblings last, and only about ordinary ones, so two
+  // fallbacks never wait on each other.
+  if (edge.fallback === true) {
+    const another = (graph.exits[edge.from] ?? []).some(
+      (other) => other !== edgeId && graph.edges[other]?.fallback !== true && exitAvailability(graph, other, journey).available,
+    );
+    if (another) return { available: false, reason: "fallback" };
+  }
   return { available: true };
 }
 
 /** One of a node's exits, as a screen or a transition asks about it. */
 export interface GraphExit {
   edge: EdgeId;
+  /** Where it leads now — a redirected rift's current destination (#197). */
   to: NodeId;
   kind: GraphEdge["kind"];
   availability: ExitAvailability;
@@ -674,10 +821,12 @@ export function exitsFrom(graph: ParsedCampaignGraph, node: NodeId, journey: Jou
     const availability = exitAvailability(graph, id, journey);
     return {
       edge: id,
-      to: edge.to,
+      to: riftDestination(graph, id, journey),
       kind: edge.kind,
       availability,
-      visible: availability.available || edge.blocked === "shown",
+      // A discovered rift (#197) is drawn while blocked, whatever `blocked` says.
+      visible:
+        availability.available || edge.blocked === "shown" || (edge.rift !== undefined && riftState(graph, id, journey)?.discovered === true),
     };
   });
 }
@@ -842,7 +991,7 @@ export function riftState(graph: ParsedCampaignGraph, edgeId: EdgeId, journey: J
       };
     }
   }
-  if (state.status === "open" && rift.lasts && (state.age ?? 0) >= rift.lasts.count) {
+  if (state.status === "open" && rift.lasts && state.stable !== true && (state.age ?? 0) >= rift.lasts.count) {
     state = { ...state, status: "expired" };
   }
   return state;
@@ -859,14 +1008,30 @@ export function riftBlock(graph: ParsedCampaignGraph, edgeId: EdgeId, journey: J
   if (state.status !== "open") return `rift-${state.status}`;
   const edge = graph.edges[edgeId]!;
   const rift = edge.rift!;
-  if (rift.opensWhen && rift.persistent !== true && state.latched !== true) {
+  // A steadied rift (#197) is past flickering and past its trigger.
+  if (rift.opensWhen && rift.persistent !== true && state.latched !== true && state.stable !== true) {
     if (!evaluateGraphCondition(rift.opensWhen, journey, graph.edges[riftOwner(graph, edgeId)]!.from, { facts: graph.facts })) {
       return "rift-dormant";
     }
   }
   const flicker = rift.unstable?.flicker;
-  if (flicker && !flickerOpen(flicker, count(journey.visits, edge.from))) return "rift-faded";
+  if (flicker && state.stable !== true && !flickerOpen(flicker, count(journey.visits, edge.from))) return "rift-faded";
   return null;
+}
+
+/**
+ * Where `edgeId` leads now (#197): a redirected rift's stored destination
+ * when the declaration still lists it among the rift's `redirects`, else the
+ * edge's own `to`. A stored destination the content no longer declares reads
+ * as `to` — content can change under a save, and "where it was authored to
+ * go" is the one answer that is certainly a place. `""` for no such edge.
+ */
+export function riftDestination(graph: ParsedCampaignGraph, edgeId: EdgeId, journey: JourneyFacts): NodeId {
+  const edge = graph.edges[edgeId];
+  if (!edge) return "";
+  if (!edge.rift?.redirects) return edge.to;
+  const to = riftState(graph, edgeId, journey)?.to;
+  return to !== undefined && edge.rift.redirects.includes(to) ? to : edge.to;
 }
 
 /**

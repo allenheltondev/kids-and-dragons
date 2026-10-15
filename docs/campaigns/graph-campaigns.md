@@ -21,7 +21,9 @@ Where this document and the TypeScript disagree, the TypeScript wins and this is
 > only ones in the repo are the [Rift Sampler](#7-the-rift-sampler),
 > [Ash Wyrm Sampler](#the-ash-wyrm-sampler) and [Rift Lifecycle](#the-rift-lifecycle-fixture)
 > fixtures, which live outside `content/`. Edges can be [rifts](#rifts-196) (#196): links with
-> lifecycles of their own — triggered, single-use, timed, unstable, persistent, linked.
+> lifecycles of their own — triggered, single-use, timed, unstable, persistent, linked — that the
+> story and the party can [act on](#rift-actions-197) (#197): discover, open, close, steady, turn;
+> and a `fallback` edge keeps a way on when a rift is gone.
 > `npm run content:journey` draws a graph, reports its route coverage and drives the runtime along
 > it ([tooling](#inspection-and-playtest-tooling-202), #202); a small fixture of its own
 > (`journey-ci`) is the one CI plays. Rift energy can grant [temporary buffs](#temporary-buffs-200)
@@ -188,6 +190,7 @@ finishing Gemfall's last beat — and records which ending was reached. An endin
 | `irreversible: true` | The author's claim that there is no way back to `from` afterwards. Not enforced at runtime: #193 checks the claim, #195 warns before the crossing. |
 | `blocked` | How the exit is drawn while unavailable: `"hidden"` (default — the house rule, unmet requirements hide, architecture §5) or `"shown"` (the locked door is part of the place). |
 | `rift` | Makes the edge a [rift](#rifts-196): a link with a lifecycle (triggered, single-use, timed, unstable, persistent, linked, one-way, hidden destination). Absent: an ordinary edge. |
+| `fallback: true` | Available only while no other exit from `from` is ([Rift actions](#rift-actions-197)): the long way round when a rift is gone. |
 
 ### `kind`, and which cycles are allowed
 
@@ -215,6 +218,7 @@ this order (the first failure is the one reported, `exitAvailability`):
 4. **its `when` holds** → `"guard"`
 5. **its rift, if it is one, can be crossed** → `"rift-dormant"`, `"rift-faded"`, `"rift-closed"`,
    `"rift-consumed"`, `"rift-expired"` or `"rift-collapsed"` ([Rifts](#rifts-196))
+6. **a `fallback` edge: no other exit from its node is available** → `"fallback"` (#197)
 
 `exitsFrom(graph, node, journey)` lists a node's exits in authored order with each one's
 availability and whether it is drawn (`visible`: available, or blocked and `"shown"`).
@@ -228,6 +232,7 @@ availability and whether it is drawn (`visible`: available, or blocked and `"sho
 | `{ "type": "lock", "edge": e }` | Closes `e` for the rest of the attempt. |
 | `{ "type": "setFact", "fact": f, "value": v }` | Sets world fact `f` to `v`, a value in its domain (#198). |
 | `{ "type": "adjustFact", "fact": f, "by": n }` | Moves counter fact `f` by a non-zero integer, clamped to its bounds (#198). |
+| `{ "type": "discoverRift" \| "openRift" \| "closeRift" \| "stabilizeRift", "edge": e }`, `{ "type": "redirectRift", "edge": e, "to": n }` | Acts on rift `e` ([Rift actions](#rift-actions-197), #197). On a final rift: nothing. |
 | `{ "type": "grantBuff", "buff": b }` | Grants temporary buff `b` — or refreshes, stacks or ignores it if held ([Temporary buffs](#temporary-buffs-200), #200). |
 
 The same effects are what a node's `onComplete` rules apply when its chapter completes
@@ -743,8 +748,8 @@ journey } | { ok: false, code: "not-a-rift" | "final" | "persistent", message }`
 | `closeRift` | dormant or open → closed. Already closed or final → unchanged. Open and `persistent` → refused. |
 | `revealRift` | reveals the destination, whatever `reveal` says. |
 
-No authored `GraphEffect` opens or closes a rift yet — a triggered rift is opened by its
-`opensWhen` (which an edge's `setFlag` can satisfy). Effects, discovery and redirection are #197's.
+#197 builds on these, adding `stabilizeRift`, `redirectRift` and `discoverRift` beside them, the
+authored effects that take all five, and the party's `RIFT_ACTION`: [Rift actions](#rift-actions-197).
 
 ### Checks
 
@@ -777,6 +782,171 @@ counting down, the tide-rift there only while the tide is out, the twin gate wak
 are found and sharing two crossings between its mouths, the stair flickering by visit and
 collapsing behind the party, the lantern bridge staying lit — and every property alone and
 combined on a three-place map.
+
+---
+
+## Rift actions (#197)
+
+A rift moves by itself ([Rifts](#rifts-196)); this is what the **story** and the **party** can do
+to one on purpose: find it, open it, close it, steady it, turn it toward somewhere else. Five
+actions, one meaning each wherever they come from — an authored effect or a party's button. The
+moves are in [`rifts.ts`](../../packages/shared/src/rifts.ts); when each may happen is
+[`rift-actions.ts`](../../packages/shared/src/rift-actions.ts); the party's transition is
+`takeRiftAction` in `journey.ts`. Opt-in like everything else: no action declared and no rift effect
+written, no change — and no field bumped `CampaignGraph.version` or `JOURNEY_VERSION`.
+
+| Action | Effect | Does |
+|---|---|---|
+| discover | `{ "type": "discoverRift", "edge": e }` | The party learns the rift is there and where it leads: it is **drawn even while blocked** (whatever `blocked` says) and its destination is **revealed** (whatever `reveal` says). Any status — finding a used-up rift is still finding it. |
+| open | `{ "type": "openRift", "edge": e }` | `openRift`: dormant or closed → open, latched. |
+| close | `{ "type": "closeRift", "edge": e }` | `closeRift`: dormant or open → closed. Not an open `persistent` rift. |
+| stabilize | `{ "type": "stabilizeRift", "edge": e }` | Steadied for good (`RiftState.stable`): no more flicker, never collapses, its `lasts` clock stops where it stands, and once open its `opensWhen` no longer gates crossing it. **`uses` still counts** — steadying a doorway does not make room for more travellers. One bit, set once: bounded, idempotent. Kept through a close and a reopen. |
+| redirect | `{ "type": "redirectRift", "edge": e, "to": n }` | The rift now leads to `n`: one of its declared `redirects`, or its own `to` to turn it back (`RiftState.to`). Does not reveal: a hidden destination stays hidden. |
+
+**Final statuses stay final.** Nothing reopens, steadies or turns a consumed, expired or collapsed
+rift. The two sides answer "cannot" differently, on purpose:
+
+- **An effect never refuses.** It is one step of a move that is happening anyway (a crossing, a
+  completed chapter); refusing would mean undoing the move or stranding it half-done. An effect that
+  cannot apply — a final rift, closing an open persistent one — does nothing, and the lint warns
+  when that is all it ever does (`RIFT_EFFECT_ON_FINAL`).
+- **A party action is offered only when it would change something**: its rule's `when` holds and the
+  move would neither be refused nor be a no-op. A button never does nothing, and a stale retry is
+  refused rather than applied twice.
+
+### Declaring them
+
+```jsonc
+"ferry-rift": {
+  "from": "harbor", "to": "isle", "kind": "forward", "blocked": "shown",
+  "rift": {
+    "uses": 1,
+    "opensWhen": { "facts": { "beacon": "lit" } },
+    "redirects": ["cove"],                                   // where else it can be turned
+    "actions": { "redirect": { "when": { "flag": "read_the_chart" } } }
+  }
+},
+"harbor-row": { "from": "harbor", "to": "isle", "kind": "forward", "fallback": true }
+```
+
+| Field | Meaning |
+|---|---|
+| `rift.redirects: NodeId[]` | Every other destination the rift can be turned to, **declared in advance**: the parser checks the names, the lint walks every one, and a redirect to anywhere else is refused at load (an effect) or at runtime (`"bad-destination"`). Not the rift's own `to`, not its `from`, no repeats, and **not on a linked rift** — two mouths share one state, and a destination is one mouth's. |
+| `rift.actions: { discover?, open?, close?, stabilize?, redirect? }` | What the party may do to this rift while choosing at its `from`. Each is a `RiftActionRule` `{ when?, label?, effects? }`: offered while `when` holds (subject: the rift's `from`, like an edge guard); `label` is the button's words (absent: "Steady the rift: …" with the exit's own spoiler-safe label); `effects` apply after the action, in order, like an edge's. `redirect` needs `redirects`. |
+| `fallback: true` (any edge) | **The long way round**: available only while **no other exit** from its node is available (`ExitBlock` `"fallback"` otherwise), judged after every other check, so it can still be guarded, locked or `once`. The path home a used-up, collapsed or shut rift would otherwise strand the party without — and no guard could say it, because a guard cannot read a rift. |
+
+**Class gating is #199's.** Rules are journey-only, so the lint walks them and every phone sees the
+same buttons. A class requirement attaches to `RiftActionRule` as a further field (`requires`,
+reserved by #199 — the schema refuses it until then), checked by the server against the seated party
+beside the deterministic `when`.
+
+### The story acting on a rift — encounters and scenes
+
+The chapter schema did not change. An encounter or a story scene acts on a rift the way it acts on
+the world (#198): the chapter reports its outcome or sets a journey flag, and the node's
+**`onComplete` rules** apply rift effects — they share the `GraphEffect` union, so every effect
+above works there:
+
+```json
+"lighthouse": { "chapter": "actions-lighthouse", "revisit": "closed",
+  "onComplete": [
+    { "effects": [{ "type": "setFact", "fact": "beacon", "value": "lit" }] },
+    { "when": { "outcome": "setback" }, "effects": [{ "type": "redirectRift", "edge": "ferry-rift", "to": "cove" }] }
+  ] }
+```
+
+Effects apply **in order** with the effects around them: a `setFlag` before an `openRift` is seen by
+it. A rift effect may name any rift, not only one leaving the node.
+
+### The party acting on a rift — `RIFT_ACTION`
+
+`{ type: "RIFT_ACTION", action, edgeId, visit, to?, campaignId? }` — CHOOSE_EXIT's sibling, resolved
+by the server against the household's journey (`takeRiftAction`), never by the engine, and legal at
+the same moments (lobby, creation, completion screen) while the party is **choosing** at the rift's
+`from`. The action happens, then its rule's effects, then `settleRifts` (a flag it set may wake
+another rift). **No clock ticks** — an action is neither a move nor a chapter — and the party stays
+where it is, on the same visit, choosing again.
+
+| Report | Answer |
+|---|---|
+| the action recorded as `lastAction` (same `node`, `visit`, `action`, `edge`, `to`) | **duplicate**, wherever the journey has got to since: `{ ok: true }` at the current seq, no write, no second effect |
+| an edge the graph does not have | refused `"unknown-edge"` (`NOT_FOUND`) |
+| not a rift / from another node / another visit / while `"playing"` / after `"ended"` | refused `"not-a-rift"` / `"not-here"` / `"stale-visit"` / `"still-playing"` / `"ended"` |
+| no such rule, its `when` fails, or a redirect of a rift whose destination is hidden | refused `"not-offered"` |
+| a redirect to an undeclared destination | refused `"bad-destination"` |
+| would change nothing (final, persistent, already so) | refused `"no-change"` |
+
+**Transactional.** The rift's change, the rule's effects and `lastAction` are one new `JourneyState`,
+written in the action's one conditional commit (`campaignProgressExpectedVersion`) — exactly as a
+crossing's count, its effects and the arrival are one `takeExit`. Two phones acting at once: one
+write lands, the other's retry is the duplicate. A phone that dropped, or another player's device,
+reads the attempt row and sees the rift as the server has it; there is no half-applied action to
+find.
+
+**Traversal.** A redirected rift's destination is read **before** the crossing (`riftDestination`),
+so the party goes where it led when they chose it. `exitsFrom`/`JourneyExitView.to` and the
+`"closed"` check use the current destination.
+
+### What the players see
+
+`JourneyView.riftActions?: { action, edge, label, to?, irreversible? }[]` — while choosing, only the
+actions **offered now**, in exit order then discover/open/stabilize/redirect/close. A redirect is
+offered only for a rift whose destination the party already knows (offering "turn it toward the
+Orchard" on a hidden rift would be a spoiler by elimination), once per destination it could turn to,
+labelled with the destination's map title (or "somewhere new"). A discover's default label is "Search
+for a hidden way" — the rift it finds is not drawn yet. `irreversible` marks a close nothing in the
+campaign can undo (no `openRift` effect, no `open` action on either mouth); the phone asks first
+("Once it's shut, it won't open again."). `JourneyRiftView.stable` marks a steadied rift (and drops
+`unstable`, `expiresIn`, `collapsesIn`).
+
+`JourneyView.stuck?: true` — choosing at a non-ending with no exit available and no action offered.
+The lint makes it unreachable for validated content (it is `STRANDED`), so only content changing
+under a save can get there; the phone says so plainly instead of drawing an empty choice.
+
+`JourneyPanel` draws the actions as buttons under the ways on ("Things you can try", icon + words),
+and every rift block reason has its own kid-friendly line (`exitBlockedLine`: "It hasn't woken up
+yet.", "It's all used up.", "There's another way open right now.", …).
+
+### No softlocks after an irreversible crossing
+
+Two guarantees, one for the file and one for the table:
+
+- **The lint proves it.** The softlock search takes a party's rift actions as transitions out of a
+  choosing state (`riftActionsFrom`, the runtime's own list), applies rift effects wherever they are
+  written, tracks what actions change (steadied, found, revealed, turned), and counts a redirectable
+  rift as a way to each declared destination for reachability, dead ends and cycles. `STRANDED` now
+  means *no exit and no action*. So "the single-use ferry is gone and the lighthouse is closed" is
+  `STRANDED` at the harbor — unless a `fallback` edge, or an action, keeps a way on.
+- **The runtime says so.** If a journey ever stands somewhere with nothing to do, the view's `stuck`
+  says it, rather than a silent empty list.
+
+### Checks
+
+| Check | Where |
+|---|---|
+| A rift effect names a rift; `redirectRift.to` is the rift's `to` or one of its `redirects` (an invalid destination refused at load); `redirects` are real, distinct nodes, not `to` or `from`, and not on a linked rift; `actions` keys are the five; each rule's `when` and `effects` resolve like any guard and effect; `redirect` needs `redirects` | schema and `parseCampaignGraph` |
+| `RIFT_ACTION_NEVER_OFFERED` ⚠ — a declared action the party is never offered where it stands | lint (warning) |
+| `RIFT_EFFECT_ON_FINAL` ⚠ — a rift effect that every time it runs meets a used-up, expired or collapsed rift (or closes an open persistent one) | lint (warning) |
+| A single-use or collapsing rift whose loss strands the party; an action that is the only way on | the softlock search (`STRANDED`/`TRAPPED`), actions included |
+
+### The Ferry Rift fixture
+
+[`packages/shared/src/fixtures/rift-actions.campaign.json`](../../packages/shared/src/fixtures/rift-actions.campaign.json)
+— placeholder chapters, not content — walks clean and passes the journey CI gate:
+
+| Edge / node | Shows |
+|---|---|
+| `lighthouse` (closed) `onComplete` | the encounter acting on a rift: lighting the beacon (a world fact) wakes the ferry; a setback **redirects** it to the cove |
+| `ferry-rift` harbor → isle | **one-use crossing** (`uses: 1`), **triggered** by a fact (`opensWhen` beacon lit), drawn as a **consumed exit** once crossed, `redirects: ["cove"]` with a party **redirect** action once the chart is read |
+| `harbor-row` harbor → isle | the **fallback**: offered only when the used-up ferry and the closed lighthouse leave the harbor nothing else |
+| `storm-stair` isle → dawn | flickers 1 on / 1 off; the party **stabilizes** it |
+| `cove-door` cove → dawn | hidden (blocked hidden, revealed when crossed) and asleep: the party **discovers** it and **opens** it (triggered by an action) |
+| `cove` | reached **only** by the turned ferry — no edge's `to` names it |
+
+`rift-actions.test.ts` plays it in shared (and every action alone on a small map, and the lint's
+new readings); `packages/server/src/handlers/rift-actions.test.ts` plays it through the server: the
+double-clicked crossing, the retried action, two phones at once, another player's device joining
+after, an invalid destination and an unknown rift refused with nothing written, and the fallback.
 
 ---
 
@@ -841,8 +1011,9 @@ the *world* instead is a `setFact` / `adjustFact` beside the grant.
 
 `{ "type": "grantBuff", "buff": id }` is a `GraphEffect` like any other: on an edge (applied as the
 party crosses, after travel has ended what travel ends — so the crossing's own grant survives it),
-in a node's `onComplete` rule (after the run's buffs are read back — below), and in whatever #197's
-rift actions apply. **A guard never reads a buff**: buffs change fights, not where the party can go,
+in a node's `onComplete` rule (after the run's buffs are read back — below), and in a
+[rift action](#rift-actions-197) rule's `effects` (#197: the party touches the humming stone and is
+steadied — granted on the visit it acts at, a repeated `RIFT_ACTION` granting nothing twice). **A guard never reads a buff**: buffs change fights, not where the party can go,
 so the lint's search has nothing to track and a graph's reachability is the same with or without
 them.
 
@@ -985,7 +1156,9 @@ Drives the real transitions — `startJourney`, `completeVisit`, `takeExit` — 
 step: the journey is JSON-identical after a round trip and `readJourney` accepts it; `checkJourneySave`
 finds nothing wrong; no counter goes backwards; the current visit is the latest counted; a final rift
 stays final; a `choosing` visit at a non-ending has an open exit and an `ended` journey is at an
-ending; and every completion and exit reported *twice* is a no-op the second time. Strategies:
+ending (or an offered rift action, #197); and every completion, exit and rift action reported
+*twice* is a no-op the second time. Rift actions are steps too: the replay asks the runtime for the
+explorer's own (`step.action`), and the random walks try one now and then. Strategies:
 
 - `--walk random --seed N --runs K` — seeded, deterministic, prefers doors not yet taken;
 - `--path a,b:setback,c` — scripted (chapters succeed and set every flag they can unless an entry
@@ -1101,6 +1274,9 @@ never reach it — Gemfall's validator output is unchanged.
 | `RIFT_ONE_WAY_HAS_WAY_BACK` | a `oneWay` rift has a rift edge leading straight back (`to` → `from`) |
 | `RIFT_ONCE_AND_USES` ⚠ / `RIFT_REVEAL_MOOT` ⚠ | `once` beside `rift.uses` (both count the same crossings); `reveal: "when-open"` on a rift that is open from the start |
 
+A redirectable rift (#197) is a way to each of its declared destinations for `UNREACHABLE_NODE`,
+`DEAD_END`, `CANNOT_FINISH`, `UNINTENTIONAL_CYCLE` and `RIFT_ONE_WAY_HAS_WAY_BACK`.
+
 **The softlock search** is the part a static check cannot do: whether a *sequence* of choices
 leaves the party with nowhere to go. It explores every state a party can be in at an exit choice —
 the node plus the journey facts that can change what is available (flags, visited/completed nodes,
@@ -1117,13 +1293,14 @@ breadth-first, so every path it prints is a shortest one.
 
 | Code | Reported when |
 |---|---|
-| `STRANDED` | a reachable state at a non-ending node has **every** exit unavailable. The message gives the path (`start at "a" -[e1]-> "b" (setback) -[e2]-> ...`) and why each exit is closed (locked / spent / closed / guard / a rift dormant, faded, closed, consumed, expired or collapsed) |
+| `STRANDED` | a reachable state at a non-ending node has **every** exit unavailable **and no rift action offered** (#197). The message gives the path (`start at "a" -[e1]-> "b" (setback) -[e2]-> ...`) and why each exit is closed (locked / spent / closed / guard / a rift dormant, faded, closed, consumed, expired or collapsed) |
 | `TRAPPED` | a state still has exits, but from it **no ending can ever be reached** (a `once` edge used up, a `closed` place completed, a `lock`, a flag that cannot be set back, a rift used up, run out or collapsed). One finding per node, at the first point of no return |
 | `NO_ENDING_WINNABLE` | an ending is connected to the entry but no play-through can enter one |
 | `NODE_NEVER_ENTERED` / `ENDING_NEVER_REACHED` | a node (an ending) has incoming edges but no play-through can enter it — every edge into it is locked, guarded, spent or closed whenever the party stands at its start |
 | `EDGE_NEVER_AVAILABLE` ⚠ | an edge out of a node the party reaches is never available in any state |
 | `VARIANT_NEVER_CHOSEN` ⚠ | a variant of a node the party reaches is never played: on every entry that plays the node its `when` fails, or an earlier variant's holds first (#198) |
 | `IRREVERSIBLE_NOT` | an edge marked `irreversible` can be followed by a path back into its `from` node. The claim is checked against the same search, so a way back closed by a guard, `once` or `lock` counts as closed |
+| `RIFT_ACTION_NEVER_OFFERED` ⚠ / `RIFT_EFFECT_ON_FINAL` ⚠ | a declared rift action the party is never offered; a rift effect that only ever meets a final rift ([Rift actions](#rift-actions-197)) |
 | `SEARCH_TRUNCATED` ⚠ | the search hit its state cap (default 50,000); the "never"/"trapped" checks are skipped because they would be guesses. `STRANDED` findings made before the cap are still real |
 
 What the search **assumes**, so you know what a clean result means:
@@ -1162,9 +1339,9 @@ its issue defines it. Where each attaches:
 | #194 runtime | **Done** ([the runtime](#the-runtime-194)): `JourneyState` stored on `CampaignProgressRecord.journey`; `journey.ts` (`startJourney`, `completeVisit`, `takeExit`, `currentPlayable`, `readJourney`/`migrateJourney`, `journeyView`); `ContentStore.graph`; `RunState.journeyVisit`; `CHOOSE_EXIT`; `CampaignView.journey`. |
 | #195 navigation UX | **Done** ([navigation](#navigation-195)): `CampaignView.journey` (`JourneyView`: visible exits with label, availability, reason, arrival, `irreversible`, `once`, `changed`; `places`) and the `CHOOSE_EXIT` intent, drawn by `JourneyPanel`; underneath, `exitsFrom` / `arrivalAt`. A new exit field (a rift's summary) or view field (a visible world fact) is optional and the panel ignores what it does not know. |
 | #196 rift links | **Done** — [Rifts](#rifts-196): optional `GraphEdge.rift`, `JourneyFacts.rifts`, `rifts.ts`, six `RiftBlock` reasons after the existing four, `JourneyExitView.rift`/`hiddenDestination`, lint tracking. |
-| #197 rift actions | call `openRift` / `closeRift` / `revealRift` (`rifts.ts`; [For #197](#for-197-rift-actions)); new `GraphEffect` types beside `unlock`/`lock` if authored effects should open or close rifts. Final statuses stay final. |
+| #197 rift actions | **Done** — [Rift actions](#rift-actions-197): five rift `GraphEffect`s, `rift.redirects`, `rift.actions` (`RiftActionRule`), `fallback` edges, `RIFT_ACTION` (`takeRiftAction`, `JourneyState.lastAction`), `RiftState.stable`/`discovered`/`to`, `JourneyView.riftActions`/`stuck`, the lint walking actions as transitions. Final statuses stay final. |
 | #198 world state | **Done** — [World state](#world-state-198): `graph.facts` (typed, bounded, `domain`-tagged, `visible`), `GraphCondition.facts` / `visit`, `setFact` / `adjustFact`, node `onComplete` rules, variant `revisit`, `JourneyFacts.facts`, `JourneyView.facts`, and the lint's search over fact values. The variant selection rule stays first-match. |
-| #199 class rift interaction | edge-level requirements and actions; must stay journey-deterministic or say explicitly why not. A class action that changes the world writes a world fact (a `setFact`/`adjustFact` in its effects), so guards, variants and the lint see it like any other. |
+| #199 class rift interaction | a class requirement on a `RiftActionRule` (the `requires` slot, refused by the schema until #199 defines it), checked by the server against the seated party beside the rule's journey-only `when` — the lint keeps walking the `when` half; edge-level requirements likewise; must stay journey-deterministic or say explicitly why not. A class action that changes the world writes a world fact (a `setFact`/`adjustFact` in its effects), so guards, variants and the lint see it like any other. |
 | #200 temporary buffs | **Done** — [Temporary buffs](#temporary-buffs-200): `graph.buffs`, the `grantBuff` effect, `JourneyState.buffs`, `RunState.buffs` (seeded via `EngineContext.campaignBuffs`), `EncounterState.buffs` read through `buffBonus`, `JourneyView.buffs`, `BUFF_NEVER_GRANTED`. No guard reads a buff. |
 | #201 environmental combat | node-level (or variant-level) encounter modifiers. A modifier that depends on world state is best keyed by a variant whose `when` reads the fact (the variant *is* the changed place), or by a modifier `when: GraphCondition` evaluated with `{ facts: graph.facts }`. |
 | #202 inspection | **Done** — [Inspection and playtest tooling](#inspection-and-playtest-tooling-202): `npm run content:journey`, `exploreCampaignGraph` (the lint's explorer, exported), `checkJourneySave`. A new exit-blocking reason or journey state must be tracked by `explore` first; the playtest's replay then holds the lint to the runtime. |
@@ -1211,6 +1388,15 @@ Rifts (#196): from `campaign-graph.ts`, `riftState(graph, edge, journey)` (the s
 `closeRift`, `revealRift` (`RiftChange`, `RiftRefusalCode`), `riftDestinationRevealed`, `riftView`;
 types `GraphRift`, `RiftState`, `RiftStatus`, `RiftClockUnit`, `JourneyRiftView`. See
 [Rifts](#rifts-196).
+
+Rift actions (#197): from `campaign-graph.ts`, `riftDestination(graph, edge, journey)`,
+`edgeDestinations(edge)`, `RIFT_ACTION_KINDS`, `RIFT_EFFECT_OF`, `isRiftEffectType`; from `rifts.ts`,
+`stabilizeRift`, `redirectRift(graph, journey, edge, to)`, `discoverRift`; from `rift-actions.ts`
+(loadable through the lint), `riftActionsFrom(graph, node, journey)` (`RiftActionOffer[]`),
+`riftActionChange`, `applyRiftEffect`, `riftEffectCanApply`, `riftCanReopen`, `isRiftEffect`; from
+`journey.ts`, `takeRiftAction` (`RiftActionReport`, `RiftActionResult`, `RiftActionRefusalCode`); from
+the lint, `describeRiftAction`; types `RiftActionKind`, `RiftActionRule`, `JourneyRiftActionView`.
+See [Rift actions](#rift-actions-197).
 
 Temporary buffs (#200): from `buffs.ts` (import-free, loadable by `.mjs` tools through
 `campaign-graph.ts`), `BUFF_KINDS`, `BUFF_EXPIRIES`, `BUFF_LIMITS`, `MAX_BUFF_STACKS`,
