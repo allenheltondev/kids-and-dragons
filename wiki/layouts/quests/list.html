@@ -1,34 +1,3 @@
 {{ define "main" }}
-<div class="section-index">
-  <h1>{{ .Title }}</h1>
-
-  {{ with .Content }}
-  <div class="section-description">
-    {{ . }}
-  </div>
-  {{ end }}
-
-  {{ $pages := sort (where .Site.RegularPages "Section" .Section) "Title" }}
-  {{ if $pages }}
-  <div class="wiki-tile-grid">
-    {{ range $pages }}
-    {{ $title := .Title }}
-    <a href="{{ .RelPermalink }}" class="wiki-tile-card">
-      {{ with .Params.assets.primary }}
-      <div class="wiki-tile-card__image">
-        <img src="{{ . | relURL }}" alt="{{ $title }}" loading="lazy">
-      </div>
-      {{ else }}
-      <div class="wiki-tile-card__placeholder" aria-hidden="true">
-        {{ partial "tile-placeholder-icon.html" . }}
-      </div>
-      {{ end }}
-      <span class="wiki-tile-card__name">{{ .Title }}</span>
-    </a>
-    {{ end }}
-  </div>
-  {{ else }}
-  <p class="text-secondary">No pages in this section yet.</p>
-  {{ end }}
-</div>
+{{ partial "section-list.html" . }}
 {{ end }}

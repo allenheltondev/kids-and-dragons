@@ -1,0 +1,41 @@
+{{ define "main" }}
+{{/* The Realm of Red Sky: the world in one page — what it is, the map, and
+     a door into every region and place. */}}
+<div class="section-index">
+  <header class="wiki-section-banner">
+    {{ with .Params.icon }}<img class="wiki-section-banner__icon" src="{{ . | relURL }}" alt="" width="72" height="72">{{ end }}
+    <div>
+      <h1 class="wiki-section-banner__title">{{ .Title }}</h1>
+      {{ with .Params.description }}<p class="wiki-section-banner__lede">{{ . }}</p>{{ end }}
+    </div>
+  </header>
+  <div class="section-description prose">{{ .Content }}</div>
+
+  <section class="wiki-home-section">{{ partial "world-map.html" . }}</section>
+
+  {{ range $sec := slice (dict "id" "biomes" "title" "Regions" "icon" "painted/map.webp") (dict "id" "locations" "title" "Places" "icon" "painted/pin.webp") (dict "id" "features" "title" "Rivers & Landmarks" "icon" "painted/drop.webp") (dict "id" "routes" "title" "Roads & Routes" "icon" "painted/boot.webp") }}
+  {{ $pages := sort (where site.RegularPages "Section" $sec.id) "Title" }}
+  {{ if $pages }}
+  <section class="wiki-home-section">
+    <h2><img src="{{ $sec.icon | relURL }}" alt="" width="44" height="44"> {{ $sec.title }} <a href="{{ relURL (printf "%s/" $sec.id) }}">All {{ lower $sec.title }} →</a></h2>
+    <div class="wiki-tile-grid">
+      {{ range $pages }}
+      {{ $art := partial "art-for.html" . }}
+      <a href="{{ .RelPermalink }}" class="wiki-tile-card">
+        {{ if $art.path }}
+        <div class="wiki-tile-card__image{{ if $art.wide }} wiki-tile-card__image--scene{{ end }}">{{ partial "thumb.html" (dict "path" $art.path "width" 280 "alt" "") }}</div>
+        {{ else }}
+        <div class="wiki-tile-card__placeholder" aria-hidden="true">{{ partial "tile-placeholder-icon.html" . }}</div>
+        {{ end }}
+        <span class="wiki-tile-card__body">
+          <span class="wiki-tile-card__name">{{ .Title }}</span>
+          {{ with or .Params.lore_hook .Params.short_description }}<span class="wiki-tile-card__hook">{{ . | plainify | truncate 96 }}</span>{{ end }}
+        </span>
+      </a>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
+  {{ end }}
+</div>
+{{ end }}

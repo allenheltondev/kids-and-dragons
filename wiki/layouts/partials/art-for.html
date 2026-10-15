@@ -1,0 +1,64 @@
+{{/*
+  The best picture for a page, as a path under the repo's assets/ ("" if none).
+
+  Returns a dict:
+    path   the image to render, resized through partials/thumb.html
+    full   the image the lightbox should open (often the same)
+    icon   a painted UI icon (static path) when there is no real art, else ""
+    wide   true for landscape art (a place or a scene), false for a figure
+
+  Order: the page's generated `assets.primary` (the derived portrait the
+  generator already chose), then data/art.yaml by canon id, then a per-type
+  convention for art that exists under a name the generator does not know.
+*/}}
+{{- $p := . -}}
+{{- $path := "" -}}
+{{- $full := "" -}}
+{{- $icon := "" -}}
+{{- $id := $p.Params.id | default "" -}}
+{{- $slug := path.Base (strings.TrimSuffix "/" $p.RelPermalink) -}}
+{{- $type := $p.Params.type | default "" -}}
+
+{{- with $p.Params.assets.primary -}}
+  {{- $path = strings.TrimPrefix "assets/" . -}}
+  {{- $full = strings.TrimPrefix "assets/" (default . $p.Params.assets.primaryFull) -}}
+{{- end -}}
+
+{{- if not $path -}}
+  {{- with index site.Data.art $id -}}{{- $path = . -}}{{- end -}}
+{{- end -}}
+
+{{- if not $path -}}
+  {{- $candidates := slice -}}
+  {{- if eq $type "location" -}}
+    {{- $candidates = slice (printf "biomes/%s/bg.webp" $slug) -}}
+  {{- else if eq $type "item" -}}
+    {{- $candidates = slice (printf "items/%s/assembled.png" $slug) -}}
+  {{- else if eq $type "individual" -}}
+    {{- $candidates = slice (printf "cast/%s/assembled.png" $slug) (printf "entities/%s/assembled.png" $slug) -}}
+  {{- else if eq $type "faction" -}}
+    {{- $candidates = slice (printf "entities/%s/assembled.png" $slug) -}}
+  {{- end -}}
+  {{- range $candidates -}}
+    {{- if and (not $path) (resources.Get (printf "art/%s" .)) -}}{{- $path = . -}}{{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if and $path (not $full) -}}{{- $full = $path -}}{{- end -}}
+
+{{/* No art at all: an item still has the painted icon the game draws for it. */}}
+{{- if and (not $path) (eq $type "item") -}}
+  {{- with index site.Data.game.items $slug -}}
+    {{- $name := .icon -}}
+    {{- if not (resources.Get (printf "painted/%s.webp" $name)) -}}
+      {{- $name = cond (eq .kind "trinket") "trinket" "consumable" -}}
+    {{- end -}}
+    {{- $icon = printf "painted/%s.webp" $name -}}
+  {{- end -}}
+{{- end -}}
+
+{{/* Landscapes (biome backdrops, scene paintings) read as a banner across the
+     top of a page; figures (creatures, folk, items) as a framed portrait. */}}
+{{- $wide := or (strings.Contains $path "biomes/") (strings.Contains $path "scenes/") -}}
+
+{{- return (dict "path" $path "full" $full "icon" $icon "wide" $wide) -}}

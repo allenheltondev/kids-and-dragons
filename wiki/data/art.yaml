@@ -1,0 +1,39 @@
+# The best existing art for wiki pages the generator finds no picture for.
+#
+# tools/wiki/page-generator.ts knows conventions for characters, creatures,
+# peoples and biomes. Everything else (places, routes, rivers, campaigns,
+# quests, factions, named folk) has art somewhere in assets/ under a different
+# name: a place is often a biome backdrop, a road is often a Gemfall scene.
+# This maps a canon id to that art. Paths are under the repo's assets/ and are
+# resized at build time (layouts/partials/thumb.html), so pointing at a 600KB
+# scene painting costs a page a ~40KB thumbnail.
+#
+# Lookup order (layouts/partials/art-for.html): the page's own generated
+# `assets.primary`, then this file, then a per-type convention. Add a line here
+# when new art lands for a page that still shows a placeholder.
+
+location.hollow_gate: scenes/gemfall/hollow-gate.webp
+location.the_whirlpool: biomes/mermaid_cove/bg.webp
+
+route.stone_crossing: scenes/gemfall/stone-crossing-queue.webp
+route.northern_river_bridge: scenes/gemfall/northern-bridge-foot.webp
+route.exchange_to_sunward_fields: scenes/gemfall/north-rush-road.webp
+route.exchange_to_whispering_marsh: biomes/whispering_marsh/bg.webp
+
+feature.great_river: scenes/gemfall/river-mouth-shore.webp
+feature.great_river_west_branch: scenes/gemfall/west-branch-ford.webp
+feature.great_river_source: biomes/glacier_of_origins/bg.webp
+
+campaign.gemfall: scenes/gemfall/redspire-citadel.webp
+campaign.dawn_of_the_red_sky: biomes/mount_red_sky/bg.webp
+campaign.echoes_beneath: biomes/skullwater_cave/bg.webp
+
+quest.crystal_heart_retrieval: items/crystal_heart/assembled.png
+quest.shattered_sky_rite: biomes/redspire_citadel/bg.webp
+
+faction.skywardens: entities/skywardens/assembled.png
+faction.deep_hollow_cult: cast/cult_frogfolk/assembled.png
+
+individual.pib: cast/pib/assembled.png
+individual.old_ossley: cast/old_ossley/assembled.png
+individual.marda_thorn: cast/marda_thorn/assembled.png

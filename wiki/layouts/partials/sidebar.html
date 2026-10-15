@@ -1,49 +1,57 @@
-{{/* Sidebar navigation partial — hierarchical, scalable to 1000+ pages.
-     Top level: entity type sections. Second level: individual entity pages.
-     Only the current section is expanded to keep the DOM manageable. */}}
+{{/* Sidebar navigation — grouped the way a family looks for things.
+
+     Groups and their order come from `params.nav` in hugo.yaml. A section is
+     shown when it has pages, or when its _index sets `landing: true` (a page
+     that is the whole section, like the Art Gallery). Any section with pages
+     that the config forgot is listed under "More", so nothing is orphaned.
+
+     Only the current section expands to show child pages, keeping the DOM
+     small however many pages canon grows to. */}}
+{{ $currentSection := .CurrentSection }}
+{{ $page := . }}
 <div class="wiki-sidebar-backdrop" id="sidebar-backdrop" hidden></div>
 <aside class="wiki-sidebar" id="wiki-sidebar" aria-label="Wiki navigation">
   <nav class="wiki-sidebar__nav">
-    <ul class="wiki-sidebar__sections" role="tree">
-      {{ $currentSection := .CurrentSection }}
-      {{ range .Site.Sections }}
-        {{/* Only render sections that have at least one regular content page (requirement 4.1) */}}
-        {{ if gt (len .RegularPagesRecursive) 0 }}
-        {{ $isActive := or (eq . $currentSection) (.IsAncestor $currentSection) }}
-        <li class="wiki-sidebar__section{{ if $isActive }} wiki-sidebar__section--active{{ end }}" role="treeitem" aria-expanded="{{ if $isActive }}true{{ else }}false{{ end }}">
-          <a href="{{ .RelPermalink }}" class="wiki-sidebar__section-link{{ if $isActive }} wiki-sidebar__section-link--active{{ end }}">
-            {{ .Title }}
-          </a>
-          {{/* Only expand child pages for the active section to keep DOM small */}}
-          {{ if $isActive }}
-            {{ $pages := .Pages.ByTitle }}
-            {{ if $pages }}
-            <ul class="wiki-sidebar__pages" role="group">
-              {{ range $pages }}
-              <li class="wiki-sidebar__page" role="treeitem">
-                <a href="{{ .RelPermalink }}" class="wiki-sidebar__page-link{{ if eq $.RelPermalink .RelPermalink }} wiki-sidebar__page-link--current{{ end }}"{{ if eq $.RelPermalink .RelPermalink }} aria-current="page"{{ end }}>
-                  {{ .Title }}
-                </a>
-                {{/* Support 3rd level nesting */}}
-                {{ if .Sections }}
-                <ul class="wiki-sidebar__subpages" role="group">
-                  {{ range .Sections }}
-                  <li class="wiki-sidebar__page" role="treeitem">
-                    <a href="{{ .RelPermalink }}" class="wiki-sidebar__page-link{{ if eq $.RelPermalink .RelPermalink }} wiki-sidebar__page-link--current{{ end }}"{{ if eq $.RelPermalink .RelPermalink }} aria-current="page"{{ end }}>
-                      {{ .Title }}
-                    </a>
-                  </li>
-                  {{ end }}
-                </ul>
-                {{ end }}
-              </li>
-              {{ end }}
-            </ul>
-            {{ end }}
+    {{ $listed := slice }}
+    {{ range site.Params.nav }}
+      {{ $group := . }}
+      {{ $entries := slice }}
+      {{ range .sections }}
+        {{ $listed = $listed | append .id }}
+        {{ with site.GetPage (printf "/%s" .id) }}
+          {{ if or (gt (len .RegularPagesRecursive) 0) .Params.landing }}
+            {{ $entries = $entries | append (dict "page" . "cfg" $group) }}
           {{ end }}
-        </li>
         {{ end }}
       {{ end }}
+      {{ if $entries }}
+      <p class="wiki-sidebar__group">{{ .name }}</p>
+      <ul class="wiki-sidebar__sections" role="tree" aria-label="{{ .name }}">
+        {{ range .sections }}
+          {{ $cfg := . }}
+          {{ with site.GetPage (printf "/%s" .id) }}
+            {{ if or (gt (len .RegularPagesRecursive) 0) .Params.landing }}
+              {{ partial "sidebar-section.html" (dict "section" . "cfg" $cfg "current" $currentSection "page" $page) }}
+            {{ end }}
+          {{ end }}
+        {{ end }}
+      </ul>
+      {{ end }}
+    {{ end }}
+
+    {{ $more := slice }}
+    {{ range site.Sections }}
+      {{ if and (not (in $listed .Section)) (gt (len .RegularPagesRecursive) 0) }}
+        {{ $more = $more | append . }}
+      {{ end }}
+    {{ end }}
+    {{ with $more }}
+    <p class="wiki-sidebar__group">More</p>
+    <ul class="wiki-sidebar__sections" role="tree" aria-label="More">
+      {{ range . }}
+        {{ partial "sidebar-section.html" (dict "section" . "cfg" dict "current" $currentSection "page" $page) }}
+      {{ end }}
     </ul>
+    {{ end }}
   </nav>
 </aside>
