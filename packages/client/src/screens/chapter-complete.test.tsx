@@ -298,3 +298,33 @@ describe("the chapter that ends the whole campaign", () => {
     expect(screen.getByRole("heading", { name: /Chapter finished!/ })).toBeTruthy();
   });
 });
+
+describe("graph campaigns (#195) leave the summary alone", () => {
+  const ORDERED = { id: "gemfall", title: "Gemfall", chapters: 8, next: { index: 2, title: "The Road" } };
+
+  it("an ordered campaign's summary carries no journey panel", () => {
+    const { container } = mount({ campaign: ORDERED });
+    expect(container.querySelector(".journey")).toBeNull();
+    expect(screen.getByText(/Tap “Keep going” on your phone/)).toBeTruthy();
+  });
+
+  it("a graph campaign's summary is the same summary - the map is on the phones, after 'Back to the lobby'", () => {
+    const { container } = mount({
+      campaign: {
+        ...ORDERED,
+        id: "rift-sampler",
+        next: null,
+        journey: {
+          node: "orchard",
+          title: "The Orchard",
+          visit: 1,
+          status: "choosing",
+          chapter: "sampler-orchard",
+          exits: [],
+        },
+      },
+    });
+    expect(screen.getByRole("heading", { name: "Chapter finished!" })).toBeTruthy();
+    expect(container.querySelector(".journey")).toBeNull();
+  });
+});

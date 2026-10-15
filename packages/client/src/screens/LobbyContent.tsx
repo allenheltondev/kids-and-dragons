@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import type { ReactElement } from "react";
 import { lobbyCampaign, type PartyMember } from "@kad/shared";
 import { useGameStore, useParty, useRunState } from "../store";
-import { campaignOptionLine, campaignPremise, nextChapterLine } from "./campaign-copy";
+import { campaignOptionLine, campaignPremise, journeyLine, nextChapterLine } from "./campaign-copy";
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
@@ -128,6 +128,10 @@ export function LobbyContent(): ReactElement {
   const qr = useJoinQr(code);
 
   const readyCount = party.filter((m) => m.ready).length;
+  // A graph campaign (#195) has a stop, not a numbered chapter: the journey's
+  // line when it has a journey, else the chapter line exactly as before. The
+  // phones hold the choosing; the table just sees where the party stands.
+  const upNext = journeyLine(state?.campaign) ?? nextChapterLine(state?.campaign);
 
   return (
     <section className="lobby entry-scene-host" aria-labelledby="lobby-heading">
@@ -174,10 +178,10 @@ export function LobbyContent(): ReactElement {
             );
           })}
         </ul>
-      ) : nextChapterLine(state?.campaign) !== null ? (
+      ) : upNext !== null ? (
         <p className="lobby__next-chapter">
           <Icon name="map" />
-          <span>{nextChapterLine(state?.campaign)}</span>
+          <span>{upNext}</span>
         </p>
       ) : null}
 

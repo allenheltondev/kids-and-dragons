@@ -612,11 +612,32 @@ export interface JourneyView {
   /** The ending this journey reached, once `status` is `"ended"`. */
   reachedEnding?: { node: NodeId; title: string };
   /**
+   * The places this party has **been** (#195), in authored order: every node
+   * with at least one visit, and only those — an unexplored place is never
+   * listed, so the list cannot spoil the map. What the navigation screen's
+   * "places you've been" draws. Optional so a view built by an older server
+   * (or a test) without it still reads; screens treat absence as empty.
+   */
+  places?: JourneyPlaceView[];
+  /**
    * The world facts declared `visible` (#198), in authored order, with their
    * current values — what the screens may tell the players about how the
    * world has changed. Present only when the graph declares a visible fact.
    */
   facts?: JourneyFactView[];
+}
+
+/** One place the party has been (`JourneyView.places`). */
+export interface JourneyPlaceView {
+  node: NodeId;
+  /** The place's map label — the same one `JourneyView.title` uses. */
+  title: string;
+  /** How many visits have begun, finished or not. */
+  visits: number;
+  /** Its chapter has been finished at least once (it was played, not only reached). */
+  completed: boolean;
+  /** The party is standing here now. */
+  here?: true;
 }
 
 /** One player-visible world fact (`JourneyView.facts`). */
@@ -639,8 +660,27 @@ export interface JourneyExitView {
   available: boolean;
   /** Why not, when `available` is false (`ExitBlock`). */
   reason?: ExitBlock;
-  /** What crossing would be (`arrivalAt`): a new place, a replay, a pass-through. */
+  /**
+   * What crossing would be (`arrivalAt`): a new place, a replay, a
+   * pass-through. For an available exit it is the crossing's own answer,
+   * after the edge's effects — an edge that changes a world fact can change a
+   * variant's `revisit` (#198). `"new"` is the screens' "unexplored" — the party has never
+   * finished a chapter there — and is why such an exit's `label` never falls
+   * back to a title the author did not put on the map (`journeyView`).
+   */
   arrival: Arrival;
-  /** Authored `irreversible` — #195 warns before the crossing. */
+  /** Authored `irreversible` — the screen asks before the crossing (#195). */
   irreversible?: true;
+  /** Authored `once` — the way can be taken one time only; the screen asks first (#195). */
+  once?: true;
+  /**
+   * Going back would find the place **different** from how the party last
+   * played it: the chapter the crossing would resolve there (after the edge's
+   * own effects) is one the party has never played. A flag and nothing more —
+   * which variant, and what changed, is the story's to tell on arrival.
+   * Present only on available exits to places already finished — replayed or,
+   * under a variant's `revisit: "pass"` (#198), walked through — and only when
+   * true.
+   */
+  changed?: true;
 }

@@ -496,6 +496,38 @@ describe("what the players see", () => {
     ]);
   });
 
+  it("tells the exit choice what the place will be: a restored village is a changed pass-through (#195)", () => {
+    let journey = go(play(startJourney(GRAPH)), "to-village");
+    journey = go(play(journey), "village-to-crossroads");
+    journey = wakeTheWyrm(journey);
+    journey = go(play(go(journey, "to-lair"), "success"), "lair-to-crossroads");
+    const view = journeyView(GRAPH, journey);
+    expect(view.exits.find((exit) => exit.edge === "to-village")).toMatchObject({
+      arrival: "pass",
+      changed: true,
+    });
+    expect(view.places?.map((place) => place.node)).toEqual(["crossroads", "village", "lair"]);
+    expect(view.facts?.find((fact) => fact.id === "mill-village")?.value).toBe("restored");
+  });
+
+  it("answers an available exit's arrival after the edge's own effects", () => {
+    const campaign = wyrm();
+    // Taking this road restores the village on the way in.
+    campaign.graph!.edges["to-village"]!.effects = [{ type: "setFact", fact: "mill-village", value: "restored" }];
+    const graph = parsed(campaign);
+    // The party has played the standing village (walked on the unbent map, whose ids are the same).
+    let journey = go(play(startJourney(GRAPH)), "to-village");
+    journey = go(play(journey), "village-to-crossroads");
+    // Before the crossing the village still stands, and would be replayed...
+    expect(arrivalAt(graph, "village", journey)).toBe("replay");
+    // ...but the crossing restores it, so the screen is told the truth.
+    expect(journeyView(graph, journey).exits.find((exit) => exit.edge === "to-village")).toMatchObject({
+      arrival: "pass",
+      changed: true,
+    });
+    expect(go(journey, "to-village", graph)).toMatchObject({ status: "choosing", chapter: "ws-village-restored" });
+  });
+
   it("sends no facts key for a graph that declares none visible", () => {
     const graph = parsed(riftSampler());
     expect(journeyView(graph, startJourney(graph))).not.toHaveProperty("facts");

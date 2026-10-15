@@ -28,6 +28,7 @@ import { checkTarget } from "./DiceOverlay";
 import type {
   ClientIntent,
   InventoryEntry,
+  JourneyExitView,
   ItemCatalog,
   ItemDef,
   PartyMember,
@@ -72,6 +73,7 @@ import "./shared.css";
 import "./PlayerPanel.css";
 import { EntryScene, lobbySceneFor } from "./EntryScene";
 import { FieldGuide } from "./FieldGuide";
+import { JourneyPanel } from "./JourneyPanel";
 
 /** Stable-ish identity for a prompt, so a new one clears any pending choice. */
 function promptKey(prompt: Prompt | null): string {
@@ -438,6 +440,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   const campaignChoice = state ? lobbyCampaign(state) : null;
   const campaignId = campaignChoice?.leader?.id ?? campaign?.id ?? null;
   const waitingOnVotes = campaignChoice?.contested ? campaignChoice.waitingOn : [];
+  // Present only for a graph campaign (#195); an ordered one never has it, and
+  // every screen below takes its existing path when it is undefined.
+  const graphJourney = campaignChoice?.leader?.journey;
 
   const [pendingChoice, setPendingChoice] = useState<string | null>(null);
   const [pendingDrop, setPendingDrop] = useState<string | null | undefined>(undefined);
@@ -546,6 +551,28 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       setBusy(true);
       try {
         await send(intent);
+      } finally {
+        setBusy(false);
+      }
+    },
+    [send],
+  );
+
+  /*
+   * A graph campaign's party takes a way on (#195): CHOOSE_EXIT, then - for a
+   * way that leads somewhere to play - CONTINUE_CAMPAIGN, so one tap on "Down
+   * to the orchard" is the whole of going there. Two idempotent intents rather
+   * than a flag on one: each is already safe to repeat, and if the second is
+   * refused (a "pass" arrival has nothing to play, or the connection dropped)
+   * the party is simply standing at its next stop with the panel's own "Go to"
+   * button, exactly where a returning session would find them.
+   */
+  const chooseExit = useCallback(
+    async (exit: JourneyExitView, visit: number, campaignId: string) => {
+      setBusy(true);
+      try {
+        const moved = await send({ type: "CHOOSE_EXIT", edgeId: exit.edge, visit, campaignId });
+        if (moved && exit.arrival !== "pass") await send({ type: "CONTINUE_CAMPAIGN", campaignId });
       } finally {
         setBusy(false);
       }
@@ -1338,7 +1365,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 </ul>
               </div>
             ) : null}
-            {inLobby && nextChapterLine(state.campaign) !== null ? (
+            {inLobby && !graphJourney && nextChapterLine(state.campaign) !== null ? (
               <p className="player__next-chapter">
                 <Icon name="map" />
                 <span>
@@ -1361,6 +1388,17 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                       pick an adventure
                     </span>
                   </p>
+                ) : everyoneReady && campaignId !== null && graphJourney ? (
+                  /* A graph campaign has a map, not a next chapter: the party
+                     picks where to go (JourneyPanel, #195). An ordered one
+                     takes the Begin button below, exactly as before. */
+                  <JourneyPanel
+                    journey={graphJourney}
+                    ended={campaignChoice?.leader?.ended}
+                    busy={busy}
+                    onChoose={(exit) => chooseExit(exit, graphJourney.visit, campaignId)}
+                    onContinue={() => dispatch({ type: "CONTINUE_CAMPAIGN", campaignId })}
+                  />
                 ) : everyoneReady && campaignId !== null ? (
                   <Button
                     variant="primary"
