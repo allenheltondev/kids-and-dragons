@@ -21,7 +21,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { EFFECT_VERBS, itemCatalog, MAX_PARTY, resolveEnemy } from "@kad/shared";
-import { campaignMode, chapterFor, parseCampaignGraph } from "@kad/shared";
+import { campaignMode, chapterFlagWrites, chapterFor, lintCampaignGraph, parseCampaignGraph } from "@kad/shared";
 import type {
   AbilityCatalog,
   AuthoredEnemySpec,
@@ -423,8 +423,28 @@ function checkCampaign(
   // that is not there would strand a party at an exit leading nowhere — the
   // graph's version of a `goto` pointing nowhere, so it is refused here for
   // the same reason. An ordered campaign has no graph and this adds nothing.
-  for (const { path: at, problem } of parseCampaignGraph(campaign).problems) {
+  const parsed = parseCampaignGraph(campaign);
+  for (const { path: at, problem } of parsed.problems) {
     problems.push(`${label}: ${at}: ${problem}`);
+  }
+  // And one that names everything but cannot be walked (#193): an ending the
+  // party can never reach, an exit set that strands them. Errors only — a
+  // warning is for the author at `content:validate`, and must not stop a
+  // server from starting. The same search the validator runs, so the two
+  // never disagree about whether a content set is playable.
+  if (parsed.graph) {
+    const { findings } = lintCampaignGraph(parsed.graph, {
+      chapterFlags: (id) => {
+        const chapter = chapters.get(id);
+        return chapter ? chapterFlagWrites(chapter) : undefined;
+      },
+      routeSets: campaign.routeSets,
+    });
+    for (const finding of findings) {
+      if (finding.severity === "error") {
+        problems.push(`${label}: ${finding.path}: ${finding.code}: ${finding.message} ${finding.hint}`);
+      }
+    }
   }
   return problems;
 }
