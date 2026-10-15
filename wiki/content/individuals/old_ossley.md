@@ -20,6 +20,9 @@ related:
   - id: item.river_charm
     type: item
     relationship: items
+assets:
+  primary: assets/cast/old_ossley/portrait.webp
+  primaryFull: assets/cast/old_ossley/assembled.png
 ai_context:
   mood: "Takes people over the water at Stone Crossing when the stones are under, and has never once named a price in coin."
   themes: "Stone_crossing, River, Frogfolk, Crossing"

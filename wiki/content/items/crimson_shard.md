@@ -26,6 +26,9 @@ related:
   - id: quest.shattered_sky_rite
     type: quest
     relationship: items
+assets:
+  primary: assets/items/crimson_shard/portrait.webp
+  primaryFull: assets/items/crimson_shard/assembled.png
 ai_context:
   mood: "A jagged fragment of solidified ember energy, pulsing with volcanic heat."
   themes: "Material, Fire, Crafting, Rare"

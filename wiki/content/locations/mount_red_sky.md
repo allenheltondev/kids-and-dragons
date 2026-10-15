@@ -54,6 +54,12 @@ related:
   - id: creature.legend_dragon
     type: creature
     relationship: primary_locations
+assets:
+  primary: assets/biomes/mount_red_sky/portrait.webp
+  primaryFull: assets/biomes/mount_red_sky/bg.webp
+  gallery:
+    - src: assets/biomes/mount_red_sky/tiles.png
+      full: assets/biomes/mount_red_sky/tiles.png
 ai_context:
   mood: "The active volcano at the center of the realm, source of the Gemfalls and territory of rare solitary legendary beasts."
   themes: "Active_volcano, Gemfalls, Legendary, Ash, Lava, Unstable_power"

@@ -46,6 +46,16 @@ describe("art paths", () => {
     expect(sceneBackdropUrl("scenes/gemfall/hollow-gate")).toBe("/assets/scenes/gemfall/hollow-gate.webp");
     expect(sceneBackdropUrl("enemies/will_o_wisp")).toBeNull();
     expect(sceneBackdropUrl("scenes/gemfall/../../other")).toBeNull();
+    expect(sceneBackdropUrl("biomes/../bg")).toBeNull();
+    expect(sceneBackdropUrl("biomes/open_sea/tiles")).toBeNull();
+  });
+  it("can select every declared story illustration, including background-only destinations", () => {
+    for (const art of manifest.sceneIllustrations) {
+      expect(sceneBackdropUrl(art), art).toBe(`/assets/${art}.webp`);
+    }
+    for (const biome of manifest.backgroundOnlyBiomes) {
+      expect(sceneBackdropUrl(`biomes/${biome}/bg`)).toBe(`/assets/biomes/${biome}/bg.webp`);
+    }
   });
   it("addresses a character by species and tier", () => {
     expect(characterArtUrl("unicorn", "mythic")).toBe(

@@ -101,7 +101,7 @@ assets:
   primary: assets/biomes/enchanted_woods/portrait.webp
   primaryFull: assets/biomes/enchanted_woods/bg.webp
   gallery:
-    - src: assets/biomes/enchanted_woods/portrait.webp
+    - src: assets/biomes/enchanted_woods/tiles.png
       full: assets/biomes/enchanted_woods/tiles.png
 ai_context:
   mood: "An ancient living forest whose paths, clearings, and hidden places respond to memory, promises, damage, and the behavior of those who enter."

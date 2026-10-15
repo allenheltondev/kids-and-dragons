@@ -25,6 +25,8 @@ related:
   - id: item.hollow_crown_shard
     type: item
     relationship: found_in
+assets:
+  primary: assets/scenes/gemfall/hollow-gate.webp
 ai_context:
   mood: "A crumbling stone archway in the heart of the Whispering Marsh, said to be a sealed portal to the world before the red sky."
   themes: "Ruins, Marsh, Portal, Mysterious"

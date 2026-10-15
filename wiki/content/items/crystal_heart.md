@@ -23,6 +23,9 @@ related:
   - id: quest.crystal_heart_retrieval
     type: quest
     relationship: items
+assets:
+  primary: assets/items/crystal_heart/portrait.webp
+  primaryFull: assets/items/crystal_heart/assembled.png
 ai_context:
   mood: "A perfectly formed crystal containing a rhythmic inner glow, said to be a fragment of the world's original heart."
   themes: "Artifact, Crystal, Magical, Legendary"

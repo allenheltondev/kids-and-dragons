@@ -40,14 +40,17 @@ Snapshot — regenerate with `npm run art:inventory`.
 | Character part-sets | **224 / 224** | — |
 | Character rigs *(mine)* | **24 / 24** | — |
 | Gear portraits | **72 / 72** | — |
-| **Class rig variants** | **6 / 72** | **66 exact-pose splits** |
+| **Class rig variants** | **42 / 72** | **30 exact-pose splits** |
 | Biome backdrops, tiles + props | **51 / 51** | — |
+| Story-only environments | **5 / 5** | — |
+| Canon place coverage | **23 / 23** | — |
+| Scene illustrations | **70 / 70** | — |
 | Effect sheets, declared | **17 / 17** | — |
-| Entity cutouts | **27 / 27** | — |
+| Entity cutouts | **30 / 30** | — |
 | Effect sheets, specified but undeclared | **0 / 0** | — |
 | **Entity part-sets (combat roster)** | **9 / 9** | — |
 
-**66 rig variants outstanding.** The character-and-gear paintings are complete. What remains is
+**30 rig variants outstanding.** The character-and-gear paintings are complete. What remains is
 splitting those approved exact poses into transparent registered parts and building their rigs.
 
 ---
@@ -58,9 +61,8 @@ splitting those approved exact poses into transparent registered parts and build
 waiting camp, and ready departure are declared in `manifest.sceneIllustrations`.
 Coverage and prompts: [entry-scenes.md](./entry-scenes.md).
 
-**Gemfall scene illustrations — 5 files.** Hollow Gate, Redspire Citadel, the facet table,
-gem gallery, and seal chamber are declared in `manifest.sceneIllustrations` and used across
-34 story scenes. They supplement the existing biome backdrops. Prompts and coverage:
+**Gemfall scene illustrations — 54 files.** Chapter landmarks, camps, roads, and interiors are
+declared in `manifest.sceneIllustrations`. They supplement the existing biome backdrops. Prompts and coverage:
 [gemfall-illustrations.md](./campaigns/gemfall-illustrations.md).
 
 Recorded because "is that finished?" is the question this document exists to stop you asking.
@@ -78,40 +80,50 @@ the dependency below is visible.
 **Gear portraits — 72 files.** Four classes × three geared tiers × six species. Each is an approved,
 purpose-drawn creature-and-gear composite and is the visual source of truth for its exact fit.
 
-**Class rig variants — 6 `.riv`.** The full Thornguard Sworn set is split and rigged for all six
-species. Each build keeps its species skeleton and clip contract while replacing the skin with
+**Class rig variants — 42 `.riv`.** All Thornguard and Duskrunner tiers, plus Starweaver Sworn,
+are split and rigged for all six species. Each build keeps its species skeleton and clip contract while replacing the skin with
 registered transparent parts from the approved exact pose.
 
 **Biomes — 17 destinations.** Each with `bg.webp`, `tiles.png` and six props: 102 prop files, and
 12 unique tile sheets shared across the 17 (several destinations share a terrain family).
 
+**Story-only environments — 5 backdrops.** Sallow Wastelands, Bramblewood, Redspire Citadel,
+Open Sea, and the Whirlpool are declared in `manifest.backgroundOnlyBiomes`. They require
+`bg.webp`, with derived `portrait.webp` for wiki previews, but no tiles or props. They support
+story scenes through `art: "biomes/<id>/bg"`. Combat still uses the chapter biome's tactical kit.
+Promote a destination to `manifest.biomes` only when its tiles and props are required and delivered.
+Redspire Citadel's intentionally undefined canon remains protected; this records its existing art.
+
+**Canon place coverage — 23 entries.** Inventory reads `canon/biomes.yaml` and
+`canon/locations.yaml`, uses the wiki's canonical image lookup, and reports any backdrop
+that is undeclared or missing on disk. Hollow Gate reuses its declared Gemfall illustration.
+Shared artwork is allowed; this count measures coverage, not unique paintings. A new canon
+place therefore appears as a coverage gap even before anyone adds it to the asset manifest.
+
 **Effect sheets — 17.** Six `aura_<species>` loops plus `impact_strike`, `miss_veer`,
 `bonus_spark`, `dust_scuff`, `daze_swirl`, `guard_ward`, `burst_star`, `heal_bloom`,
 `revive_lift`, `down_settle` and `transform_flash`.
 
-**Entity cutouts — 27.** Every canonical creature as a single `assembled.png`. No tier dimension:
-enemies do not level. Together with the six playable species these are the 33 entities in
-`docs/red-sky-creature-canon.yaml`, and the two lists reconcile exactly.
+**Entity cutouts — 30 declared.** Each has a single `assembled.png`. No tier dimension:
+enemies do not level. All 18 creatures and 13 NPC peoples/orders in the current `canon/` files
+have cutouts; additional delivered entities and named cast are covered by the wiki audit.
 
 `portrait.webp` never appears above because portraits are **derived, not drawn** —
 `npm run art:portraits` trims `assembled.png`, squares it and writes 384px WebP. Never commission
-one. UI icons are likewise not on this list: they are hand-authored inline SVG in
-`packages/client/src/screens/icons.tsx`, not raster assets.
+one. Inventory icons are painted WebP assets registered in `packages/client/src/assets/artwork.ts`;
+`packages/client/src/screens/icons.tsx` also supplies SVG glyphs for other interface actions.
 
 ---
 
 ## 4. What is left
 
-### 4.1 Class rig variants — 66 exact-pose splits
+### 4.1 Class rig variants — 30 exact-pose splits
 
-Every approved geared character needs one animated variant. Six of 72 are delivered: the complete
-Thornguard Sworn set. Outstanding:
+Every approved geared character needs one animated variant. Forty-two of 72 are delivered. Outstanding:
 
 | Class | Tiers | Variants |
 |---|---|---:|
-| `thornguard` | radiant, mythic | 12 |
-| `duskrunner` | sworn, radiant, mythic | 18 |
-| `starweaver` | sworn, radiant, mythic | 18 |
+| `starweaver` | radiant, mythic | 12 |
 | `songkeeper` | sworn, radiant, mythic | 18 |
 
 No gear at `fledgling`, by design. This is production work from art already approved, not a new
@@ -120,8 +132,7 @@ declare their draw order in `manifest.rigVariants`, build the species rig, and r
 and all-clip motion gates. Undelivered combinations fall back to the un-geared species rig on
 animated surfaces; still-image surfaces already use the approved gear portrait.
 
-Thornguard Radiant is next, using the same one-species-at-a-time exact-pose review sequence that
-proved Thornguard Sworn.
+Starweaver Radiant is next, using the same one-species-at-a-time exact-pose review sequence.
 
 ### 4.2 Effect sheets — complete
 
@@ -135,7 +146,7 @@ it: that one plays when the fighting has stopped.
 
 ### 4.3 Entity part-sets — 9 delivered
 
-The 27 cutouts are delivered and the board draws them today. The approved `will_o_wisp` ships the
+The 30 declared cutouts are delivered and the board draws them today. The approved `will_o_wisp` ships the
 floating proof (`core`, `halo`, `trail`), and the approved `cinder_wolf` now ships the first shared
 quadruped plan plus its `ruff_alt` pack variant. The approved `glassback_crab` adds the first
 `low_shell` plan, and the approved `mire_mimic` extends it with the retractable `whiskers` sensory

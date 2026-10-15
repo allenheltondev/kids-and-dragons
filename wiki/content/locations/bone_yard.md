@@ -52,6 +52,12 @@ related:
   - id: creature.restless_remains
     type: creature
     relationship: primary_locations
+assets:
+  primary: assets/biomes/bone_yard/portrait.webp
+  primaryFull: assets/biomes/bone_yard/bg.webp
+  gallery:
+    - src: assets/biomes/bone_yard/tiles.png
+      full: assets/biomes/bone_yard/tiles.png
 ai_context:
   mood: "The place at the mouth of the Glacierflow where the current finally loses its strength and lays down everything it carried across the continent - sediment, uprooted trees, animal remains, wreckage, and ruins - and where the bones of enormous ancient creatures collect, settle, and sometimes refuse to remain entirely still."
   themes: "Ancient_remains, Forbidden, Supernatural, River_mouth, Saltrot"

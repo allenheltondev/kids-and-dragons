@@ -20,6 +20,9 @@ related:
   - id: item.honeycake
     type: item
     relationship: items
+assets:
+  primary: assets/cast/pib/portrait.webp
+  primaryFull: assets/cast/pib/assembled.png
 ai_context:
   mood: "A bramble sprite about the size of a teapot who keeps the Bramblewood hedges and takes the job extremely seriously."
   themes: "Bramblewood, Hedges, Sprite, Helpful"
