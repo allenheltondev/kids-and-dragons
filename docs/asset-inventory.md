@@ -40,7 +40,7 @@ Snapshot — regenerate with `npm run art:inventory`.
 | Character part-sets | **224 / 224** | — |
 | Character rigs *(mine)* | **24 / 24** | — |
 | Gear portraits | **72 / 72** | — |
-| **Class rig variants** | **42 / 72** | **30 exact-pose splits** |
+| **Class rig variants** | **47 / 72** | **25 exact-pose splits** |
 | Biome backdrops, tiles + props | **51 / 51** | — |
 | Story-only environments | **5 / 5** | — |
 | Canon place coverage | **23 / 23** | — |
@@ -50,7 +50,7 @@ Snapshot — regenerate with `npm run art:inventory`.
 | Effect sheets, specified but undeclared | **0 / 0** | — |
 | **Entity part-sets (combat roster)** | **9 / 9** | — |
 
-**30 rig variants outstanding.** The character-and-gear paintings are complete. What remains is
+**25 rig variants outstanding.** The character-and-gear paintings are complete. What remains is
 splitting those approved exact poses into transparent registered parts and building their rigs.
 
 ---
@@ -80,8 +80,9 @@ the dependency below is visible.
 **Gear portraits — 72 files.** Four classes × three geared tiers × six species. Each is an approved,
 purpose-drawn creature-and-gear composite and is the visual source of truth for its exact fit.
 
-**Class rig variants — 42 `.riv`.** All Thornguard and Duskrunner tiers, plus Starweaver Sworn,
-are split and rigged for all six species. Each build keeps its species skeleton and clip contract while replacing the skin with
+**Class rig variants — 47 `.riv`.** All Thornguard and Duskrunner tiers, plus Starweaver Sworn,
+are split and rigged for all six species. Bigfoot also has Starweaver Radiant/Mythic and all three
+Songkeeper tiers, reusing its corrected anatomy with builder underpaint disabled. Each build keeps its species skeleton and clip contract while replacing the skin with
 registered transparent parts from the approved exact pose.
 
 **Biomes — 17 destinations.** Each with `bg.webp`, `tiles.png` and six props: 102 prop files, and
@@ -117,14 +118,14 @@ one. Inventory icons are painted WebP assets registered in `packages/client/src/
 
 ## 4. What is left
 
-### 4.1 Class rig variants — 30 exact-pose splits
+### 4.1 Class rig variants — 25 exact-pose splits
 
-Every approved geared character needs one animated variant. Forty-two of 72 are delivered. Outstanding:
+Every approved geared character needs one animated variant. Forty-seven of 72 are delivered. Outstanding:
 
 | Class | Tiers | Variants |
 |---|---|---:|
-| `starweaver` | radiant, mythic | 12 |
-| `songkeeper` | sworn, radiant, mythic | 18 |
+| `starweaver` | radiant, mythic; five species excluding Bigfoot | 10 |
+| `songkeeper` | sworn, radiant, mythic; five species excluding Bigfoot | 15 |
 
 No gear at `fledgling`, by design. This is production work from art already approved, not a new
 painting commission: recover registered transparent body and gear layers from each exact pose,
@@ -132,7 +133,10 @@ declare their draw order in `manifest.rigVariants`, build the species rig, and r
 and all-clip motion gates. Undelivered combinations fall back to the un-geared species rig on
 animated surfaces; still-image surfaces already use the approved gear portrait.
 
-Starweaver Radiant is next, using the same one-species-at-a-time exact-pose review sequence.
+The remaining Starweaver species need a base-mask review before further class splits: the
+Unicorn Radiant attempt exposed detached limb fragments in motion despite passing the existing
+rig gates. Bigfoot's five remaining class variants now reuse its reviewed base recuts.
+See [the Bigfoot wave brief](briefs/bigfoot-class-rig-wave.md).
 
 ### 4.2 Effect sheets — complete
 
