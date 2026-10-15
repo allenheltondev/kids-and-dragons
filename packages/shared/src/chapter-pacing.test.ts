@@ -6,8 +6,10 @@ import {
   fitModel,
   isGatedFor,
   metricRange,
+  PACING_FACET_IDS,
   PACING_SCENARIOS,
   scenarioById,
+  scenarioParty,
   pacingReport,
   pathMetrics,
   predictMinutes,
@@ -206,6 +208,25 @@ describe("pacing scenarios", () => {
     expect(composedWordRange("one two three", only, sc("few-3p"))).toEqual({ min: 5, max: 5 });
     expect(composedWordRange("one two three", only, sc("empty-3p"))).toEqual({ min: 3, max: 3 });
     expect(composedWordRange("one two three", undefined, sc("few-3p"))).toEqual({ min: 3, max: 3 });
+  });
+
+  it("matches an exact list of real facet ids, not only a prefix", () => {
+    // gemfall-08's ending_collectors lists real ids to leave out the Keystone.
+    const list = PACING_FACET_IDS.filter((id) => id !== "facet_keystone");
+    const variants = [
+      { when: { count: { of: list, max: 0 } }, text: "empty hands" },
+      { when: { count: { of: list, min: 5 } }, text: "a heavy haul indeed" },
+    ];
+    expect(composedWordRange("base", variants, sc("empty-3p"))).toEqual({ min: 1 + 2, max: 1 + 2 });
+    expect(composedWordRange("base", variants, sc("collection-3p"))).toEqual({ min: 1 + 4, max: 1 + 4 });
+  });
+
+  it("seats real facets: N distinct ids, never the Keystone in a scenario", () => {
+    for (const scenario of PACING_SCENARIOS) {
+      const held = scenarioParty(scenario).members.flatMap((m) => m.questItems);
+      expect(new Set(held).size).toBe(scenario.facets);
+      expect(held).not.toContain("facet_keystone");
+    }
   });
 
   it("counts filled tokens by the words they become", () => {
