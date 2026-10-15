@@ -107,25 +107,6 @@
   -webkit-user-drag: none;
 }
 
-.atlas__regions {
-  display: flex;
-  gap: var(--kad-space-2);
-  padding: var(--kad-space-2);
-  overflow-x: auto;
-  flex: 0 0 auto;
-  background: var(--kad-bg);
-}
-.atlas__regions button { white-space: nowrap; flex: 0 0 auto; }
-.atlas__regions [aria-pressed="true"] { outline: 2px solid var(--kad-accent); outline-offset: -2px; }
-.atlas__region-note {
-  flex: 0 0 auto;
-  margin: 0;
-  padding: var(--kad-space-2);
-  font-size: var(--kad-text-sm);
-  background: var(--kad-bg);
-  max-block-size: 5em;
-  overflow: auto;
-}
 .atlas__tile { position: absolute; display: block; user-select: none; }
 .atlas__underlay { position: absolute; inset: 0; }
 .atlas__detail-patch {
@@ -175,7 +156,57 @@
   font-size: var(--kad-text-sm);
   cursor: pointer;
 }
-.atlas__landmark--region { opacity: 0.85; min-block-size: 0; cursor: default; }
+/* Not yet found: dimmer, but still a full-size tap target that opens its card. */
+.atlas__landmark--region { opacity: 0.85; }
+.atlas__landmark[aria-pressed="true"] { outline: 2px solid var(--kad-accent); outline-offset: 1px; opacity: 1; }
+.atlas__place--button {
+  pointer-events: auto; min-block-size: 2.75em; padding: 0 0.5em; font: inherit; font-size: var(--kad-text-sm);
+  font-weight: var(--kad-weight-bold); color: inherit; background: none; border: 0; cursor: pointer;
+  text-decoration: underline dotted; text-underline-offset: 0.2em;
+}
+
+/* A region's card: a sheet over the foot of the map, full width so it always
+   fits a phone, with the painting still in view above it. */
+.atlas__card {
+  position: absolute;
+  inset-inline: var(--kad-space-2);
+  inset-block-end: var(--kad-space-2);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-2);
+  max-block-size: 60%;
+  overflow: auto;
+  padding: var(--kad-space-3) var(--kad-space-4) var(--kad-space-4);
+  color: var(--kad-ink);
+  background: var(--kad-bg-raised);
+  border: 1px solid var(--kad-border-strong);
+  border-radius: var(--kad-radius-lg);
+  box-shadow: var(--kad-shadow-lg);
+  animation: atlas-card-in 0.18s var(--kad-ease);
+}
+.atlas__card-head { display: flex; align-items: center; gap: var(--kad-space-3); }
+.atlas__card-words { display: flex; flex-direction: column; align-items: flex-start; gap: var(--kad-space-1); flex: 1 1 auto; min-inline-size: 0; }
+.atlas__card-title { margin: 0; font-size: var(--kad-text-lg); overflow-wrap: anywhere; }
+/* The region's own painting, in a round frame like a journal's pasted-in plate. */
+.atlas__card-art {
+  position: relative; flex: 0 0 auto; display: grid; place-items: center;
+  inline-size: 3.5em; block-size: 3.5em; border-radius: 50%; overflow: hidden; font-size: 1.1em;
+  background: var(--kad-bg-sunken); border: 0.15em solid var(--kad-gold); box-shadow: var(--kad-shadow-sm);
+}
+.atlas__card-art img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+/* Not found yet: only a misty hint of what is there. */
+.atlas__card-art--mystery { border-color: var(--kad-border-strong); }
+.atlas__card-art--mystery img { filter: blur(0.12em) grayscale(0.7) brightness(0.75); transform: scale(1.1); }
+.atlas__card-q { position: absolute; inset: 0; display: grid; place-items: center; font-size: 1.5em; font-weight: 700; color: #fff; text-shadow: 0 0.05em 0.25em rgb(0 0 0 / 0.8); }
+.atlas__badge {
+  display: inline-flex; align-items: center; gap: 0.3em; padding: 0.15em 0.6em; border-radius: 999px;
+  font-size: var(--kad-text-sm); font-weight: 600; background: var(--kad-bg-sunken); border: 1px solid var(--kad-border);
+}
+.atlas__card-text { margin: 0; line-height: 1.5; }
+.atlas__card-hint { margin: 0; font-size: var(--kad-text-sm); color: var(--kad-ink-dim); font-style: italic; }
+@keyframes atlas-card-in { from { opacity: 0; transform: translateY(0.75em); } }
+@media (prefers-reduced-motion: reduce) { .atlas__card { animation: none; } }
 .atlas__read { pointer-events: auto; min-block-size: 2.75em; cursor: pointer; font: inherit; }
 .atlas__entry {
   position: absolute;
@@ -185,6 +216,44 @@
   overflow: auto;
   background: var(--kad-bg);
 }
+
+/* --- Clouds over the country nobody has found yet ------------------------------- */
+
+.atlas__cloud {
+  position: absolute;
+  pointer-events: none;
+}
+/* Soft overlapping puffs; the drift lives on the pseudo-element so the
+   reveal can animate the cloud itself. */
+.atlas__cloud::before {
+  content: "";
+  position: absolute;
+  /* Tucked in from the region's frame: frames overlap, and a cloud should
+     veil its own country rather than spill over a found neighbour. */
+  inset: 10%;
+  background:
+    radial-gradient(closest-side at 32% 42%, rgb(240 236 255 / 0.93), rgb(232 226 250 / 0.74) 60%, transparent),
+    radial-gradient(closest-side at 66% 36%, rgb(244 240 255 / 0.9), rgb(228 222 248 / 0.7) 60%, transparent),
+    radial-gradient(closest-side at 44% 68%, rgb(236 232 252 / 0.88), rgb(222 216 244 / 0.66) 60%, transparent),
+    radial-gradient(closest-side at 72% 70%, rgb(242 238 255 / 0.88), rgb(226 220 246 / 0.64) 60%, transparent);
+  animation: atlas-cloud-drift 14s ease-in-out infinite alternate;
+}
+.atlas__cloud--lifting { animation: atlas-cloud-lift 2.4s var(--kad-ease) 0.4s both; }
+@keyframes atlas-cloud-drift {
+  from { transform: translateX(-2%); }
+  to { transform: translateX(2%); }
+}
+@keyframes atlas-cloud-lift {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateY(-8%) scale(1.25); }
+}
+
+/* --- The explorer's trail: every place found, in the order it was found ----------- */
+
+.atlas__trail { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; pointer-events: none; overflow: visible; }
+.atlas__trail path { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 0.1 11; }
+.atlas__trail-halo { stroke: #f6e7c1; stroke-width: 8px; opacity: 0.9; }
+.atlas__trail-ink { stroke: #4a2c14; stroke-width: 4.5px; }
 
 /* --- The party, standing on the realm ----------------------------------------------- */
 
@@ -267,8 +336,34 @@
   }
 }
 
+/* A few sparks drifting up off the party, so "we are here" feels like magic. */
+.atlas__sparkle {
+  position: absolute;
+  inset-block-start: 10%;
+  inset-inline-start: 50%;
+  z-index: 1;
+  pointer-events: none;
+  font-size: 0.85em;
+  line-height: 1;
+  color: #fff3c4;
+  text-shadow: 0 0 0.25em #ffd76a, 0 0 0.6em #ffb347;
+  opacity: 0;
+  animation: atlas-sparkle 2.6s ease-out infinite;
+  animation-delay: calc(var(--i) * -0.52s);
+}
+.atlas__sparkle::before { content: "✦"; }
+@keyframes atlas-sparkle {
+  0% { opacity: 0; transform: translate(-50%, 0) scale(0.4) rotate(0deg); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), -3em) scale(1.15) rotate(90deg); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .atlas__party {
     animation: none;
   }
+  .atlas__sparkle { display: none; }
+  .atlas__cloud::before { animation: none; }
+  .atlas__cloud--lifting { animation: atlas-cloud-fade 0.4s linear both; }
 }
+@keyframes atlas-cloud-fade { to { opacity: 0; } }

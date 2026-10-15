@@ -10,9 +10,12 @@
 /* PlayerView keeps the creation flow mounted (not unmounted) under the guide. */
 .player-view__creation:not([hidden]) { display: contents; }
 
-.field-guide__tabs { display: flex; gap: 0.4em; padding: 0.5em 0.75em 0; overflow-x: auto; flex: 0 0 auto; }
+/* Every section in view on a phone, never a sideways scroll: the pills are
+   compact enough to share one row and stretch to fill it, and wrap on a
+   screen too narrow even for that. */
+.field-guide__tabs { display: flex; flex-wrap: wrap; gap: 0.3em; padding: 0.5em 0.75em 0; flex: 0 0 auto; }
 .field-guide__tab {
-  flex: 0 0 auto; min-block-size: 2.75em; padding: 0 1em; border-radius: 999px; font: inherit;
+  flex: 1 1 auto; min-block-size: 2.75em; padding: 0 0.45em; font-size: 0.85em; border-radius: 999px; font-family: inherit;
   color: var(--kad-ink-dim); background: var(--kad-bg-raised); border: 0.08em solid var(--kad-border);
 }
 .field-guide__tab[aria-selected="true"] { color: var(--kad-accent-ink); background: var(--kad-gold); border-color: var(--kad-gold); font-weight: 700; }

@@ -95,6 +95,7 @@ export const CUE_TONES: Record<CueId, Tone[]> = {
     { type: "triangle", freq: [C5, G5], at: 0.15, duration: 0.5, gain: 0.08 },
   ],
   tap: [{ type: "square", freq: [A5, A5], at: 0, duration: 0.03, gain: 0.04 }],
+  "page-turn": [{ type: "noise", freq: [0, 0], at: 0, duration: 0.15, gain: 0.04 }],
   // Two low pulses — audibly "no", never harsh.
   error: [
     { type: "square", freq: [196, 196], at: 0, duration: 0.08, gain: 0.06 },

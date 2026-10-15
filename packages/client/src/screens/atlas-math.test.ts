@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { atlasLevel, regionalAnchor, visibleMapPlaces, visibleMapRoutes } from "./atlas-math";
+import { atlasLevel, dangerBadge, explorerTrail, visibleMapPlaces, visibleMapRoutes, wobblyPath } from "./atlas-math";
 import type { WorldAtlas, WorldRoute } from "@kad/shared";
 import type { WorldPlace } from "@kad/shared";
 
@@ -18,18 +18,25 @@ describe("regional atlas coordinates", () => {
     expect(visibleMapRoutes([route], { forest, town }, new Set([town.id]))).toEqual([route]);
     expect(visibleMapRoutes([{ ...route, connects: [forest.id], via: town.id }], { forest, town }, new Set())).toEqual([]);
   });
-  const bounds = { x: 40, y: 265, width: 340, height: 310 };
-  it("preserves realm positions inside a crop without pulling outsiders onto its edge", () => {
-    expect(regionalAnchor({ x: 210, y: 420 }, bounds)).toEqual({ x: 500, y: 500 });
-    expect(regionalAnchor({ x: 40, y: 265 }, bounds)).toEqual({ x: 0, y: 0 });
-    expect(regionalAnchor({ x: 900, y: 420 }, bounds)).toBeNull();
-    expect(regionalAnchor({ x: 210, y: 100 }, bounds)).toBeNull();
-    expect(regionalAnchor({ x: 210, y: 420 }, { ...bounds, width: 0 })).toBeNull();
-  });
   it("shows regions for orientation but requires discovery for specific sites", () => {
     const forest: WorldPlace = { id: "biome.woods", title: "Woods", kind: "biome", anchor: { x: 1, y: 1 }, parent: null };
     const town: WorldPlace = { ...forest, id: "location.town", title: "Town", kind: "location", parent: "woods" };
     expect(visibleMapPlaces({ forest, town }, new Set())).toEqual([forest]);
     expect(visibleMapPlaces({ forest, town }, new Set([town.id]))).toEqual([forest, town]);
   });
+  it("says danger in kid terms, and keeps it secret until found", () => {
+    expect(dangerBadge("high", true).label).toBe("Here be dragons");
+    expect(dangerBadge("None", true).label).toBe("Peaceful");
+    expect(dangerBadge("whatever", true).label).toBe("Nobody knows…");
+    expect(dangerBadge("high", false).label).toBe("Danger: unknown…");
+  });
+  it("walks the explorer's trail in the order places were found", () => {
+    const at = (id: string, x: number): WorldPlace => ({ id, title: id, kind: "biome", anchor: { x, y: 0 }, parent: null });
+    const places = { a: at("biome.a", 1), b: at("biome.b", 2), c: at("biome.c", 3) };
+    const finds = { "biome.c": { foundAt: "2026-01-01" }, "biome.a": { foundAt: "2026-01-02" }, "creature.x": { foundAt: "2025-01-01" } };
+    expect(explorerTrail(places, finds).map((place) => place.id)).toEqual(["biome.c", "biome.a"]);
+    expect(wobblyPath([{ x: 0, y: 0 }])).toBe("");
+    expect(wobblyPath([{ x: 0, y: 0 }, { x: 100, y: 0 }])).toBe("M0 0 Q50 18 100 0");
+  });
 });
+

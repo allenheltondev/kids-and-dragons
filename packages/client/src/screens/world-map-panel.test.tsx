@@ -8,7 +8,7 @@
  * worse than no pin.
  */
 
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { Profiler } from "react";
 import type { Chapter, WorldMap } from "@kad/shared";
@@ -18,6 +18,8 @@ import { useGameStore } from "../store";
 import { WorldMapPanel, placeOf, whereLine } from "./WorldMapPanel";
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { getAtlasCenter, resetAtlasNavigation } from "../store/atlas-navigation";
+import { revealedClouds, resetRevealedClouds } from "../store/atlas-clouds";
+import { setAudioSink } from "../audio/cue";
 
 const WORLD: WorldMap = {
   title: "The Realm of Red Sky",
@@ -65,6 +67,9 @@ afterEach(() => {
   cleanup();
   setFieldGuideDiscoveries(null);
   resetAtlasNavigation();
+  resetRevealedClouds();
+  setAudioSink(null);
+  vi.unstubAllGlobals();
 });
 
 describe("finding the chapter on the map", () => {
@@ -124,13 +129,12 @@ describe("the panel", () => {
     const world: WorldMap = { ...WORLD,
       atlas: { image: { width: 1024, height: 1024 }, levels: [{ image: { width: 1024, height: 1024 }, tiles: [{ src: "/assets/continuous.webp", x: 0, y: 0, width: 1024, height: 1024 }] }],
         patches: [{ id: "northwest", bounds: { x: 0, y: 0, width: 500, height: 500 }, image: { width: 1024, height: 1024 }, tiles: [{ src: "/assets/detail.webp", x: 0, y: 0, width: 1024, height: 1024 }] }] },
-      regions: { sunward_fields: { placeId: "biome.sunward_fields", bounds: { x: 0, y: 0, width: 100, height: 100 }, description: "Sunny grasslands.", image: { width: 100, height: 100 }, tiles: [] } },
       routes: [{ id: "route.road", title: "Exchange Road", kind: "overland_road", connects: ["location.exchange", "biome.sunward_fields"], travelModes: ["foot"], accuracy: "approximate", points: [{ x: 350, y: 855 }, { x: 470, y: 690 }] }],
     };
     const { container } = mount({ world });
-    act(() => screen.getByRole("button", { name: "The Sunward Fields" }).click());
     expect(screen.getByText("You are here")).toBeTruthy();
     expect(container.querySelector(".atlas__tile")?.getAttribute("src")).toBe("/assets/continuous.webp");
+    act(() => screen.getByRole("button", { name: "Closer" }).click());
     expect(container.querySelector("[data-route]")).toBeNull();
     expect(container.querySelector("[data-patch]")).toBeNull();
     act(() => screen.getByRole("button", { name: "Closer" }).click());
@@ -142,35 +146,91 @@ describe("the panel", () => {
     act(() => screen.getByRole("checkbox", { name: "Routes" }).click());
     expect(container.querySelector("[data-route]")).toBeNull();
   });
-  it("navigates a tiled region and reveals household discoveries live", () => {
-    const regional: WorldMap = { ...WORLD, regions: { sunward_fields: {
-      placeId: "biome.sunward_fields", bounds: { x: 300, y: 600, width: 300, height: 300 },
-      description: "Sunny grasslands.", image: { width: 512, height: 512 },
-      tiles: [{ src: "/assets/test-tile.webp", x: 0, y: 0, width: 512, height: 512 }],
-    } } };
-    const { container } = mount({ world: regional });
-    act(() => screen.getByRole("button", { name: "The Sunward Fields" }).click());
-    expect(container.querySelector(".atlas__tile")?.getAttribute("src")).toBe("/assets/test-tile.webp");
-    expect(container.querySelector(".atlas__painting")).toBeNull();
+  it("opens a region's card on tap, found or not, and leads on to the Field Guide once found", () => {
+    const woods = { id: "biome.woods", title: "Whispering Woods", kind: "biome" as const, anchor: { x: 200, y: 200 }, parent: null };
+    const region = (placeId: string, description: string) => ({ placeId, description,
+      bounds: { x: 0, y: 0, width: 100, height: 100 }, image: { width: 100, height: 100 }, tiles: [] });
+    const { container } = mount({ world: { ...WORLD, places: { ...WORLD.places, woods },
+      regions: { woods: region("biome.woods", "Old trees that hum."), sunward_fields: region("biome.sunward_fields", "Sunny grasslands.") } } });
+    act(() => screen.getByRole("button", { name: "About Whispering Woods" }).click());
+    const card = screen.getByRole("dialog", { name: "Whispering Woods" });
+    expect(card.textContent).toContain("Old trees that hum.");
+    expect(card.textContent).toContain("Not explored yet.");
+    expect(screen.queryByRole("button", { name: "Read in Field Guide" })).toBeNull();
+    act(() => screen.getByRole("button", { name: "Close" }).click());
+    expect(screen.queryByRole("dialog")).toBeNull();
+
+    act(() => setFieldGuideDiscoveries({ "biome.woods": { firstFoundBy: "p_1", foundAt: "2026-10-15T12:00:00Z" } }));
+    act(() => screen.getByRole("button", { name: "About Whispering Woods" }).click());
+    act(() => screen.getByRole("button", { name: "Read in Field Guide" }).click());
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getByRole("complementary", { name: "Map discovery" })).toBeTruthy();
+
+    // The party's own region opens from its pin; a tap on the painting or Escape puts it away.
+    act(() => screen.getByRole("button", { name: "About The Sunward Fields" }).click());
+    expect(screen.getByRole("dialog", { name: "The Sunward Fields" }).textContent).toContain("Sunny grasslands.");
+    act(() => { fireEvent.click(container.querySelector(".atlas__viewport") as Element); });
+    expect(screen.queryByRole("dialog")).toBeNull();
+    act(() => screen.getByRole("button", { name: "About The Sunward Fields" }).click());
+    act(() => { fireEvent.keyDown(window, { key: "Escape" }); });
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("dresses a region's card as a storybook page: its painting, its danger, and a page-turn", async () => {
+    const played: string[] = [];
+    setAudioSink({ cue: (id) => played.push(id), music: () => undefined });
+    vi.stubGlobal("fetch", async () => new Response(JSON.stringify({ entries: {
+      "biome.woods": { id: "biome.woods", category: "places", kind: "biome", title: "Whispering Woods", danger_level: "high", art: "/assets/biomes/woods/portrait.webp" },
+    } })));
+    const woods = { id: "biome.woods", title: "Whispering Woods", kind: "biome" as const, anchor: { x: 200, y: 200 }, parent: null };
+    const { container } = mount({ world: { ...WORLD, places: { ...WORLD.places, woods } } });
+    act(() => screen.getByRole("button", { name: "About Whispering Woods" }).click());
+    expect(played).toEqual(["page-turn"]);
+    // Not found: a misty plate, and the danger kept secret.
+    expect(screen.getByTestId("danger").textContent).toContain("Danger: unknown");
+    await screen.findByText((_, el) => el?.tagName === "IMG" && el.getAttribute("src") === "/assets/biomes/woods/portrait.webp");
+    expect(container.querySelector(".atlas__card-art--mystery")).not.toBeNull();
+    act(() => setFieldGuideDiscoveries({ "biome.woods": { firstFoundBy: "p_1", foundAt: "2026-10-15T12:00:00Z" } }));
+    expect(screen.getByTestId("danger").textContent).toContain("Here be dragons");
+    expect(container.querySelector(".atlas__card-art--mystery")).toBeNull();
+  });
+
+  it("hangs clouds over unfound regions and rolls one back, once, when it is found", () => {
+    const woods = { id: "biome.woods", title: "Whispering Woods", kind: "biome" as const, anchor: { x: 200, y: 200 }, parent: null };
+    const region = (placeId: string) => ({ placeId, description: "", bounds: { x: 100, y: 100, width: 200, height: 200 }, image: { width: 1, height: 1 }, tiles: [] });
+    const world: WorldMap = { ...WORLD, places: { ...WORLD.places, woods },
+      regions: { woods: region("biome.woods"), sunward_fields: region("biome.sunward_fields") } };
+    const { container } = mount({ world });
+    // The party's own ground is never clouded; the woods are.
+    expect(container.querySelector('[data-cloud="biome.sunward_fields"]')).toBeNull();
+    const cloud = container.querySelector('[data-cloud="biome.woods"]') as HTMLElement;
+    expect(cloud.className).toBe("atlas__cloud");
+    expect(cloud.style.left).toBe("10%");
+    act(() => setFieldGuideDiscoveries({ "biome.woods": { firstFoundBy: "p_1", foundAt: "2026-10-15T12:00:00Z" } }));
+    expect(container.querySelector('[data-cloud="biome.woods"]')?.className).toContain("atlas__cloud--lifting");
+    expect(revealedClouds().has("biome.woods")).toBe(true);
+    cleanup();
+    const again = mount({ world });
+    expect(again.container.querySelector('[data-cloud="biome.woods"]')).toBeNull();
+  });
+
+  it("inks the explorer's trail through places in the order they were found", () => {
+    const { container } = mount({});
+    expect(screen.queryByTestId("explorer-trail")).toBeNull();
+    act(() => setFieldGuideDiscoveries({
+      "location.exchange": { firstFoundBy: "p_1", foundAt: "2026-10-15T12:00:00Z" },
+      "biome.sunward_fields": { firstFoundBy: "p_1", foundAt: "2026-10-14T12:00:00Z" },
+    }));
+    const ink = container.querySelector(".atlas__trail-ink");
+    expect(ink?.getAttribute("d")).toMatch(/^M470 690 Q\S+ \S+ 350 855$/);
+  });
+
+  it("reveals household discoveries live once zoomed in", () => {
+    mount({});
+    act(() => screen.getByRole("button", { name: "Closer" }).click());
     expect(screen.queryByRole("button", { name: "Read about The Exchange" })).toBeNull();
     act(() => setFieldGuideDiscoveries({ "location.exchange": { firstFoundBy: "p_1", foundAt: "2026-10-15T12:00:00Z" } }));
     expect(screen.getByRole("button", { name: "Read about The Exchange" })).toBeTruthy();
-    const pin = container.querySelector('[aria-current="location"]') as HTMLElement;
-    expect(parseFloat(pin.style.left)).toBeCloseTo(56.6667, 3);
-    expect(pin.style.top).toBe("30%");
-    act(() => screen.getByRole("button", { name: "Whole realm" }).click());
-    expect(container.querySelector(".atlas__painting")).not.toBeNull();
-    expect(pin.style.left).toBe("47%");
-  });
-
-  it("keeps a party outside the selected region off that sheet", () => {
-    mount({ world: { ...WORLD, regions: { sunward_fields: {
-      placeId: "biome.sunward_fields", bounds: { x: 0, y: 0, width: 100, height: 100 },
-      description: "A distant sheet.", image: { width: 100, height: 100 }, tiles: [],
-    } } } });
-    act(() => screen.getByRole("button", { name: "The Sunward Fields" }).click());
-    expect(screen.queryByText("You are here")).toBeNull();
-    expect(screen.getByRole("status").textContent).toContain("The party is in The Sunward Fields");
   });
 
   it("stands the party on the chapter's place, at its anchor", () => {
