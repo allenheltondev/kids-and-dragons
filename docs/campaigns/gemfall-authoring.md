@@ -165,6 +165,38 @@ Follow `content/chapters/bramblewood-01.json`. Each Gemfall chapter:
   chapter-scoped character who speaks.
 - **Scene illustrations are optional.** `art: "scenes/gemfall/<illustration>"` selects a WebP backdrop for that scene. Without it, the backdrop comes from `biome`. Combat always uses the biome environment; a missing illustration falls back to it. See [illustration prompts and coverage](./gemfall-illustrations.md).
 
+### Continuity: names a scene uses that some way in never showed
+
+`npm run content:continuity` (and `tools/content/continuity.test.mjs` in `npm test`) finds
+**dangling references**: a scene that uses a capitalised name (a person, a place, an item)
+which some way into the scene showed and some other way did not. It is a must-analysis. Inside
+a chapter it intersects what every path into a scene showed; across chapters it carries
+knowledge along every history the road weave allows, so a 4C party that arrived from 3B's
+walk-over is judged by what *that* history showed. Routing is read from `gemfall.json` and the
+chapters' route-set `setFlag`s, never from a table. A gated choice (`requiresFlag` /
+`requiresItem`) counts as proof of whatever the setters of its flag or item showed, and a gate
+that cannot hold in a history (a road the party is not on, a facet it never took) is dropped
+rather than judged. What a route flag proves comes from the histories that **end** holding it.
+
+A scene may use a name it introduces itself: `a clerk named Pellam`, `called Gullet`,
+`Tibbet, a goblin`, `his daughter Posy`, `... , the Deep Hollow choir`, `a tower: Redspire
+Citadel`, a `cast` entry. If a scene brings a character on and does not do one of these, the
+sweep will say so at the next merge point.
+
+**What it cannot see.** Only capitalised names. "The jar", "your goat", "that ledger" and
+"the old woman" are invisible to it, so every merge point still needs a human read for
+references that are not names. It does not judge ordinary words (a sentence-opening capital
+that is also a lowercase word elsewhere is skipped; `STOP_WORDS` in the script covers the
+rest), and a name no way in has shown is treated as the scene coining it, not citing it.
+
+**When it fails.** The message names the chapter, the scene, the name and where else the name
+appears. Fix the prose (introduce the name where the party first meets it) or, if the finding is
+a false alarm, add `chapter/scene/name` with a one-line reason to
+`tools/content/continuity-allow.json`. Prefer a fix to an entry. Entries marked `REAL
+CANDIDATE` are real continuity questions someone should settle. The list is checked both ways:
+an entry that no finding matches any more **fails the test** as stale (delete the line), and an
+entry without a reason fails too.
+
 ### Voice
 
 Read bramblewood-01 aloud and match it: short sentences an 8-year-old follows when an adult
