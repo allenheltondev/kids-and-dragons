@@ -232,10 +232,10 @@
      veil its own country rather than spill over a found neighbour. */
   inset: 10%;
   background:
-    radial-gradient(closest-side at 32% 42%, rgb(240 236 255 / 0.78), rgb(232 226 250 / 0.5) 55%, transparent),
-    radial-gradient(closest-side at 66% 36%, rgb(244 240 255 / 0.74), rgb(228 222 248 / 0.45) 55%, transparent),
-    radial-gradient(closest-side at 44% 68%, rgb(236 232 252 / 0.7), rgb(222 216 244 / 0.42) 55%, transparent),
-    radial-gradient(closest-side at 72% 70%, rgb(242 238 255 / 0.7), rgb(226 220 246 / 0.4) 55%, transparent);
+    radial-gradient(closest-side at 32% 42%, rgb(240 236 255 / 0.93), rgb(232 226 250 / 0.74) 60%, transparent),
+    radial-gradient(closest-side at 66% 36%, rgb(244 240 255 / 0.9), rgb(228 222 248 / 0.7) 60%, transparent),
+    radial-gradient(closest-side at 44% 68%, rgb(236 232 252 / 0.88), rgb(222 216 244 / 0.66) 60%, transparent),
+    radial-gradient(closest-side at 72% 70%, rgb(242 238 255 / 0.88), rgb(226 220 246 / 0.64) 60%, transparent);
   animation: atlas-cloud-drift 14s ease-in-out infinite alternate;
 }
 .atlas__cloud--lifting { animation: atlas-cloud-lift 2.4s var(--kad-ease) 0.4s both; }
