@@ -26,7 +26,7 @@ import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
-import { conditionRefs, lintChapterText, unbackedCosts } from "../../packages/shared/src/condition-lint.ts";
+import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "../../packages/shared/src/condition-lint.ts";
 import { chapterStartDiscoveries, sceneDiscoveries } from "../../packages/shared/src/discoveries.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 
@@ -830,6 +830,11 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
   // --- #160: conditions, variants and tokens. A malformed `when` fails here,
   // at the build, rather than at the table.
   for (const problem of lintChapterText(chapter)) fail(problem.path, problem.problem, problem.hint);
+  // Coins a scene charges on arrival (onEnter, or any check/fight outcome) are
+  // a cost of every way in, so they need the same purse gate as a choice's own.
+  for (const problem of unbackedSceneCharges(chapter)) {
+    fail(problem.path, problem.problem, "gate each choice into it on when.coins.min, and reach it only through choices");
+  }
   for (const { path, when } of conditionRefs(chapter)) {
     for (const key of ["flag", "notFlag"]) {
       if (when[key]) flagsRequired.push([when[key], `${path}/${key}`]);

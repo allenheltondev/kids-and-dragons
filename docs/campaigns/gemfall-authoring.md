@@ -142,7 +142,11 @@ actually cost something. Otherwise the party's purse and bag stop meaning anythi
   first and a honeycake only if there is no bundle. Text that names a sausage takes
   `supper_bundle` alone.
 - **The validator holds you to it.** A choice that has `takeItem` or `spendCoins` without a
-  matching gate fails `content:validate`. Because cost gates are gates, every such scene still
+  matching gate fails `content:validate`. Coins a scene charges on arrival also count as a
+  cost of every choice leading into it. That covers its `onEnter` and the highest charge
+  among a check's success and failure (or a fight's victory and defeat), so the haggle
+  choice in chapter 1 is gated on 2 coins. A charging scene may only be reached through
+  choices, since a branch cannot be gated on the purse. Because cost gates are gates, every such scene still
   needs one choice that costs nothing. "Keep your coins and walk on" is a real choice.
 
 ## 4. Shape of a chapter

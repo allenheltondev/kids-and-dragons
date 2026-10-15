@@ -25,7 +25,7 @@ import type {
   Scene,
   SceneId,
 } from "./types/chapter.js";
-import { conditionRefs, lintChapterText, unbackedCosts } from "./condition-lint.js";
+import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "./condition-lint.js";
 import type { ItemCatalog, ResolvedCharacter } from "./types/domain.js";
 
 export type IssueSeverity = "error" | "warning";
@@ -306,6 +306,10 @@ export function validateChapter(chapter: Chapter, catalog?: ItemCatalog): Chapte
         }
       }
     }
+  }
+
+  for (const { path, problem } of unbackedSceneCharges(chapter)) {
+    issues.push({ severity: "error", code: "UNBACKED_COST", message: `${path}: ${problem}`, sceneId: path.split("/")[2] });
   }
 
   // --- conditions, variants and tokens (#160) -----------------------------

@@ -255,3 +255,74 @@ export function unbackedCosts(choice: Choice): string[] {
   }
   return problems;
 }
+
+/** Coins spent by these effects. */
+function coinsSpent(effects: readonly { type: string; amount?: number }[] | undefined): number {
+  let spent = 0;
+  for (const e of effects ?? []) if (e.type === "spendCoins") spent += e.amount ?? 0;
+  return spent;
+}
+
+/**
+ * Coins a scene charges just for being entered: its `onEnter`, plus the
+ * dearest of its outcome branches (a check's success or failure, a fight's
+ * victory or defeat), because the party cannot pick which one it gets.
+ */
+export function sceneCharge(scene: Scene): number {
+  const branches: (Branch | undefined)[] =
+    scene.type === "check"
+      ? [scene.onSuccess, scene.onFailure]
+      : scene.type === "encounter"
+        ? [scene.onVictory, scene.onDefeat]
+        : [];
+  return coinsSpent(scene.onEnter) + Math.max(0, ...branches.map((b) => coinsSpent(b?.effects)));
+}
+
+/**
+ * The charge a scene makes on arrival must be backed by every way in: each
+ * choice leading there is gated on `when.coins.min` covering its own spend
+ * plus the charge, and nothing else (a branch, the chapter entry) may lead
+ * there, since nothing gates those. Without this a haggle check that charges
+ * on both outcomes would hand a broke party the goods for free.
+ */
+export function unbackedSceneCharges(chapter: Chapter): { path: string; problem: string }[] {
+  const problems: { path: string; problem: string }[] = [];
+  const charge = new Map<string, number>();
+  for (const [id, scene] of Object.entries(chapter.scenes)) {
+    const c = sceneCharge(scene);
+    if (c > 0) charge.set(id, c);
+  }
+  if (charge.size === 0) return problems;
+  if (charge.has(chapter.entry)) {
+    problems.push({ path: `/scenes/${chapter.entry}`, problem: `the entry scene charges ${String(charge.get(chapter.entry))} coins, and nothing gates a chapter's start` });
+  }
+  for (const [id, scene] of Object.entries(chapter.scenes)) {
+    if (scene.type === "story" || scene.type === "rest" || scene.type === "choice_point") {
+      scene.choices.forEach((c, i) => {
+        const due = charge.get(c.goto);
+        if (due === undefined) return;
+        const total = due + coinsSpent(c.effects);
+        if ((c.when?.coins?.min ?? 0) < total) {
+          problems.push({
+            path: `/scenes/${id}/choices/${String(i)}`,
+            problem: `choice "${c.id}" leads to "${c.goto}", which charges ${String(due)} coins, but is not gated on when.coins.min >= ${String(total)}`,
+          });
+        }
+      });
+    } else {
+      const branches: [string, Branch | undefined][] =
+        scene.type === "check"
+          ? [["onSuccess", scene.onSuccess], ["onFailure", scene.onFailure]]
+          : [["onVictory", scene.onVictory], ["onDefeat", scene.onDefeat]];
+      for (const [key, b] of branches) {
+        if (b && charge.has(b.goto)) {
+          problems.push({
+            path: `/scenes/${id}/${key}`,
+            problem: `leads to "${b.goto}", which charges coins, and a branch cannot be gated on the purse`,
+          });
+        }
+      }
+    }
+  }
+  return problems;
+}
