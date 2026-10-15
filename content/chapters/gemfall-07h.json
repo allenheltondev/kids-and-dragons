@@ -1478,7 +1478,8 @@
       "prompt": "Read what the glittering lumps are trying to tell you",
       "cast": [
         {
-          "figure": "entities/glassback_crab"
+          "figure": "entities/glassback_crab",
+          "count": 3
         }
       ],
       "roller": "party",

@@ -1558,7 +1558,8 @@
       "narration": "The road zigzags up to the worst bend, and coming down it, the wrong way, is a pack of cinder wolves. They are not hunting. They are leaving the mountain, and you are standing in their way.",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "choices": [
@@ -1630,7 +1631,8 @@
       "prompt": "Roll a smoked sausage down the side trail at exactly the right moment",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "roller": "party",
