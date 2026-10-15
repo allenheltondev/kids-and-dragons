@@ -10,6 +10,7 @@
 
 export * from "./types/domain.js";
 export * from "./types/chapter.js";
+export * from "./types/campaign-graph.js";
 export * from "./types/state.js";
 export * from "./types/protocol.js";
 export * from "./types/world.js";
@@ -28,6 +29,7 @@ export * from "./chapter-graph.js";
 export * from "./chapter-pacing.js";
 export * from "./narration.js";
 export * from "./routes.js";
+export * from "./campaign-graph.js";
 export * from "./chapter-map.js";
 export * from "./grid.js";
 export * from "./encounter.js";

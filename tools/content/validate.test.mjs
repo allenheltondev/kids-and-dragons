@@ -717,3 +717,106 @@ describe("conditions, variants and tokens", { timeout: 30_000 }, () => {
     expect(result.code).not.toBe(0);
   });
 });
+
+// ---------------------------------------------------------------------------
+
+describe("graph campaigns (#192)", { timeout: 30_000 }, () => {
+  const CAMPAIGN = ["content", "campaigns", "the-hollow-crown.json"];
+
+  /**
+   * The reference campaign turned into a three-node graph — the clearing, a
+   * side glade that returns to it, and an ending — by cloning the reference
+   * chapter. Every chapter keeps index 1: in a graph campaign the index
+   * routes nothing, and the beat arithmetic must not run.
+   */
+  function graphTree(mutate = () => {}) {
+    const dir = copyTree();
+    const base = readJson(dir, ...CHAPTER);
+    for (const id of ["graph-glade", "graph-dawn"]) {
+      writeJson(dir, ["content", "chapters", `${id}.json`], { ...structuredClone(base), id, title: id });
+    }
+    const campaign = readJson(dir, ...CAMPAIGN);
+    campaign.chapters = ["bramblewood-01", "graph-glade", "graph-dawn"];
+    campaign.graph = {
+      version: 1,
+      entry: "clearing",
+      flags: ["lantern_lit"],
+      nodes: {
+        clearing: { chapter: "bramblewood-01", revisit: "pass" },
+        glade: { chapter: "graph-glade" },
+        dawn: { chapter: "graph-dawn", ending: { title: "Dawn" } },
+      },
+      edges: {
+        "to-glade": { from: "clearing", to: "glade", kind: "sideways" },
+        "glade-back": {
+          from: "glade",
+          to: "clearing",
+          kind: "return",
+          effects: [{ type: "setFlag", flag: "lantern_lit" }],
+        },
+        "to-dawn": { from: "clearing", to: "dawn", kind: "forward", when: { flag: "lantern_lit" } },
+      },
+    };
+    mutate({ dir, campaign });
+    writeJson(dir, CAMPAIGN, campaign);
+    return validate(dir);
+  }
+
+  it("accepts a whole graph, and skips the beat rules it has no beats for", () => {
+    const { code, out } = graphTree();
+    expect(code, out).toBe(0);
+    expect(out).toMatch(/graph v1: 3 node\(s\), 3 edge\(s\), 1 ending\(s\)/);
+    expect(out).not.toMatch(/out of sequence|only a routed beat may share an index/);
+  });
+
+  it("refuses a dangling name in the declaration, at its path", () => {
+    const { code, out } = graphTree(({ campaign }) => {
+      campaign.graph.edges["to-dawn"].to = "dusk";
+    });
+    expect(code).toBe(1);
+    expect(out).toContain("/graph/edges/to-dawn/to");
+    expect(out).toContain('no node "dusk"');
+  });
+
+  it("refuses a listed chapter no node plays", () => {
+    const { code, out } = graphTree(({ campaign }) => {
+      campaign.graph.nodes.glade.chapter = "graph-dawn";
+    });
+    expect(code).toBe(1);
+    expect(out).toMatch(/chapter "graph-glade" is listed but no graph node plays it/);
+  });
+
+  it("refuses a chapter that still claims a routed beat", () => {
+    const { code, out } = graphTree(({ dir, campaign }) => {
+      campaign.routeSets = { road: ["route_river", "route_wild"] };
+      const file = ["content", "chapters", "graph-glade.json"];
+      writeJson(dir, file, { ...readJson(dir, ...file), route: { set: "road", flag: "route_river" } });
+    });
+    expect(code).toBe(1);
+    expect(out).toMatch(/declares a route, but a graph campaign chooses its chapters by edge/);
+  });
+
+  it("refuses a graph version the schema does not know", () => {
+    const { code, out } = graphTree(({ campaign }) => {
+      campaign.graph.version = 2;
+    });
+    expect(code).toBe(1);
+    expect(out).toContain("the-hollow-crown.json");
+  });
+
+  it("lets a chapter read a journey flag the graph declares, as it may a carried route flag", () => {
+    const { code, out } = graphTree(({ dir }) => {
+      const file = ["content", "chapters", "graph-dawn.json"];
+      const chapter = readJson(dir, ...file);
+      chapter.scenes[chapter.entry].choices.push({
+        id: "remember",
+        label: "Remember the lantern",
+        icon: "map",
+        goto: chapter.entry,
+        requiresFlag: "lantern_lit",
+      });
+      writeJson(dir, file, chapter);
+    });
+    expect(code, out).toBe(0);
+  });
+});

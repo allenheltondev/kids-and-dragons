@@ -2,6 +2,8 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { campaignMode } from "@kad/shared";
+import { contentDir } from "../paths.ts";
 import { makeChapter, makeItems, makeMap, makeRules } from "../test-support.ts";
 import { ContentError, clearContentCache, loadContent } from "./loader.ts";
 
@@ -330,5 +332,87 @@ describe("enemy stats come from the bestiary", () => {
     expect(error).toBeInstanceOf(ContentError);
     if (!(error instanceof ContentError)) return;
     expect(error.problems[0]).toContain("no hp, and no `creature` to inherit it from");
+  });
+});
+
+describe("graph campaigns (#192)", () => {
+  /** A content tree holding one campaign over the fixture chapter and a clone of it. */
+  async function withCampaign(campaign: Record<string, unknown>): Promise<string> {
+    const glade = { ...makeChapter(), id: "glade-01", title: "The Glade" };
+    const root = await tree({ ...good(), chapters: { "bramblewood-01": makeChapter(), "glade-01": glade } });
+    await fs.mkdir(path.join(root, "campaigns"), { recursive: true });
+    await write(path.join(root, "campaigns", "the-hollow-crown.json"), {
+      id: "the-hollow-crown",
+      title: "The Hollow Crown",
+      blurb: "A test campaign.",
+      chapters: ["bramblewood-01", "glade-01"],
+      ...campaign,
+    });
+    return root;
+  }
+
+  const graph = {
+    version: 1,
+    entry: "clearing",
+    nodes: {
+      clearing: { chapter: "bramblewood-01" },
+      glade: { chapter: "glade-01", ending: { title: "The Glade" } },
+    },
+    edges: { onward: { from: "clearing", to: "glade", kind: "forward" } },
+  };
+
+  it("loads a whole graph, and refuses to answer a beat for it", async () => {
+    const content = await loadContent(await withCampaign({ graph }));
+    expect(content.campaign("the-hollow-crown")?.graph?.entry).toBe("clearing");
+    // Both chapters are index 1. Answering by index would start whichever
+    // sorted first; a graph campaign has no beats until the journey runtime
+    // (#194) asks by node, so the answer is the refusal.
+    expect(content.chapterAt("the-hollow-crown", 1, {})).toBeNull();
+  });
+
+  it("refuses at startup a graph whose names do not resolve", async () => {
+    const broken = { ...graph, edges: { onward: { from: "clearing", to: "meadow", kind: "forward" } } };
+    const error = await loadContent(await withCampaign({ graph: broken })).catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(ContentError);
+    if (!(error instanceof ContentError)) return;
+    expect(error.problems).toEqual([
+      'campaigns/the-hollow-crown.json: /graph/edges/onward/to: no node "meadow"',
+    ]);
+  });
+
+  it("refuses a graph version this build cannot read rather than guessing at it", async () => {
+    await expect(loadContent(await withCampaign({ graph: { ...graph, version: 2 } }))).rejects.toThrow(
+      /graph version 2 is not one this build reads/,
+    );
+  });
+});
+
+describe("the shipped campaigns are ordered and play as before (legacy regression)", () => {
+  /*
+   * The whole of Gemfall's compatibility with graph campaigns is that it does
+   * not have one. These read the real content tree the server starts on and
+   * hold it to the answers it gave before #192: no graph, and every beat
+   * resolving by index and road exactly as `chapterFor` always resolved it.
+   */
+  it("Gemfall and the reference campaign load with no graph", async () => {
+    const content = await loadContent(contentDir());
+    for (const id of ["gemfall", "the-hollow-crown"]) {
+      const campaign = content.campaign(id);
+      expect(campaign, id).not.toBeNull();
+      expect(campaign && campaignMode(campaign), id).toBe("ordered");
+    }
+  });
+
+  it("Gemfall's beats still resolve by index and road", async () => {
+    const content = await loadContent(contentDir());
+    const at = (index: number, flags: Record<string, boolean>) => content.chapterAt("gemfall", index, flags)?.id ?? null;
+    expect(at(1, {})).toBe("gemfall-01");
+    expect(at(3, { route_rush: true })).toBe("gemfall-03c");
+    expect(at(5, { route_wild: true })).toBe("gemfall-05b");
+    expect(at(7, { pursuit_leash: true })).toBe("gemfall-07l");
+    expect(at(8, {})).toBe("gemfall-08");
+    // A routed beat with no road chosen still refuses rather than guesses.
+    expect(at(3, {})).toBeNull();
+    expect(at(9, {})).toBeNull();
   });
 });
