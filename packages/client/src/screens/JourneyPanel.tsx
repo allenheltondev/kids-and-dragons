@@ -60,6 +60,7 @@ import {
   riftActionWarning,
 } from "./campaign-copy";
 import { Icon } from "./icons";
+import { BuffList, journeyBuffRows } from "./BuffList";
 import "./shared.css";
 import "./JourneyPanel.css";
 
@@ -338,6 +339,9 @@ export function JourneyPanel({
           )}
         </>
       )}
+
+      {/* What rift energy left the party holding (#200), and for how long. */}
+      {journey.status === "ended" ? null : <BuffList rows={journeyBuffRows(journey.buffs)} title="Rift powers you carry" />}
 
       {places.length === 0 ? null : (
         <details className="journey__places">

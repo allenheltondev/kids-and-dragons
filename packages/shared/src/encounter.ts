@@ -80,6 +80,8 @@ import { resolveAttack, rollD20 } from "./dice.js";
 import type { ItemEffect, ResolvedCharacter, RulesContent, StatId } from "./types/domain.js";
 import type { EnemySpec } from "./types/chapter.js";
 import type { DiceRoll } from "./types/state.js";
+import type { CombatBuff } from "./types/buffs.js";
+import { buffBonus, buffed, tickCombatBuffs } from "./buffs.js";
 
 // ---------------------------------------------------------------------------
 // Abilities as data
@@ -494,6 +496,20 @@ export interface EncounterState {
    * would re-seat everybody downstream of it.
    */
   readonly encoreActor: ActorId | null;
+  /**
+   * Temporary buffs on the party for this fight (#200, graph campaigns only):
+   * one entry per hero a buff is on. An overlay, read where the number it
+   * changes is used — Guard when an attack is aimed at the hero, the attack
+   * roll and its damage when the hero swings, steps when the hero's turn
+   * starts (`buffBonus`) — and never folded into the combatant, so the
+   * combatant (and the character behind it) is exactly what it would have
+   * been without it. A `"turns"` buff loses a turn as the holder's turn ends.
+   *
+   * Absent on every fight without buffs — every ordered campaign's, and
+   * every fight persisted before it existed — which computes exactly what it
+   * always did.
+   */
+  readonly buffs?: readonly CombatBuff[];
 }
 
 /** Something worth animating or narrating. Returned, never stored in state. */
@@ -577,6 +593,12 @@ export interface EncounterSetup {
    * monster starts and this module refuses to guess a formation.
    */
   readonly enemies: readonly EnemyPlacement[];
+  /**
+   * The party's temporary buffs for this fight (#200), already worked out per
+   * hero (`combatBuffsFor`). Absent or empty: none, and no `buffs` key on the
+   * state.
+   */
+  readonly buffs?: readonly CombatBuff[];
 }
 
 /**
@@ -755,6 +777,7 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
     moveAfterAction: false,
     encores: [],
     encoreActor: null,
+    ...(setup.buffs && setup.buffs.length > 0 ? { buffs: [...setup.buffs] } : {}),
   };
   // The first seat may be a character who walked in knocked down (§7.3).
   return startTurnAt(settleCursor(base));
@@ -1486,11 +1509,16 @@ function applyEffect(
           rolled: false,
         };
       }
+      // Temporary buffs (#200): the swinger's roll, the target's Guard. Both
+      // are 0 in a fight without buffs, and `buffed` hands the base back
+      // untouched then, so the arithmetic below is exactly what it was.
+      const rollBuff = buffBonus(state.buffs, actor.id, "roll");
+      const guard = buffed(recipient.guard, buffBonus(state.buffs, recipient.id, "guard"), 1);
       const swing = () =>
         resolveAttack(ctx.rng, {
           characterId: actor.id,
-          mod: actor.attackMod + input.bonus,
-          guard: recipient.guard,
+          mod: actor.attackMod + input.bonus + rollBuff,
+          guard,
           ...(actor.attackStat === undefined ? {} : { stat: actor.attackStat }),
         });
       let roll = swing();
@@ -1507,7 +1535,9 @@ function applyEffect(
       }
       events.push({ type: "roll", roll });
       if (roll.result !== "hit") return { state: working, rolled: true };
-      return { state: dealDamage(working, recipientId, effect.damage, events), rolled: true };
+      // A hit always hurts: a burden takes a damage buff down to 1, not 0.
+      const damage = buffed(effect.damage, buffBonus(state.buffs, actor.id, "damage"), 1);
+      return { state: dealDamage(working, recipientId, damage, events), rolled: true };
     }
 
     case "damage":
@@ -1811,6 +1841,17 @@ export function endTurn(state: EncounterState): EncounterState {
   let working: EncounterState =
     state.encoreActor !== null ? { ...state, encoreActor: null } : state;
 
+  // A turn-limited buff (#200) counts the holder's own turns, so it loses one
+  // as the turn ends — not as an encore ends: a bonus action is not a turn,
+  // the same reason nothing "until your next turn" expires during one.
+  if (state.encoreActor === null && state.buffs && state.buffs.length > 0) {
+    const endingId = currentActorId(state);
+    if (endingId !== null) {
+      const buffs = tickCombatBuffs(state.buffs, endingId);
+      if (buffs !== state.buffs) working = { ...working, buffs };
+    }
+  }
+
   // An owed encore fires before the cursor moves — "right now" on the card.
   // The queue drains past anyone knocked down since they were owed it: a
   // figure on the floor cannot act (§7.3), encore included.
@@ -1889,9 +1930,12 @@ function startTurnAt(state: EncounterState): EncounterState {
   const actor = currentActor(state);
   if (!actor) return { ...state, stepsLeft: 0, actionTaken: false, moveAfterAction: false };
   const rooted = actor.rooted === true;
+  // A move buff (#200) adds to the steps the turn starts with — never below
+  // one, and never through Tanglelight's root.
+  const steps = buffed(actor.steps, buffBonus(state.buffs, actor.id, "move"), 1);
   return {
     ...state,
-    stepsLeft: rooted ? 0 : actor.steps,
+    stepsLeft: rooted ? 0 : steps,
     actionTaken: false,
     moveAfterAction: false,
     combatants: state.combatants.map((c) => {

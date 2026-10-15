@@ -162,6 +162,130 @@
           "additionalProperties": {
             "$ref": "#/$defs/worldFact"
           }
+        },
+        "buffs": {
+          "description": "Temporary buffs (#200): guard, damage, movement or roll bonuses (or burdens) rift energy can grant for a few turns or fights. Granted by the grantBuff effect, stored on the attempt's journey, applied only inside fights. Keyed by stable buff id.",
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/graphId"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/graphBuff"
+          }
+        }
+      }
+    },
+    "graphBuff": {
+      "description": "BuffDef (packages/shared/src/types/buffs.ts). Bounded on purpose: amount within the kind's limit (guard 3, damage 2, move 2, roll 3; parseCampaignGraph checks the per-kind bound), at most 5 turns or fights.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "kind",
+        "amount",
+        "duration"
+      ],
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "label": {
+          "description": "What the screens call it, for an 8-year-old.",
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "guard",
+            "damage",
+            "move",
+            "roll"
+          ]
+        },
+        "amount": {
+          "description": "Per stack. Negative is a burden: the cost side of a tradeoff.",
+          "type": "integer",
+          "minimum": -3,
+          "maximum": 3,
+          "not": {
+            "const": 0
+          }
+        },
+        "target": {
+          "description": "party (default): every hero. one: the hero holding the story turn when the fight begins.",
+          "enum": [
+            "party",
+            "one"
+          ]
+        },
+        "duration": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "scope",
+                "count"
+              ],
+              "properties": {
+                "scope": {
+                  "enum": [
+                    "turns",
+                    "encounters"
+                  ]
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "scope"
+              ],
+              "properties": {
+                "scope": {
+                  "const": "encounter"
+                }
+              }
+            }
+          ]
+        },
+        "stack": {
+          "enum": [
+            "refresh",
+            "add",
+            "ignore"
+          ]
+        },
+        "maxStacks": {
+          "description": "With stack: add only.",
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 5
+        },
+        "cap": {
+          "description": "The most this buff can add (or take away), however it stacks.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3
+        },
+        "expiresOn": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "defeat",
+              "rest",
+              "travel",
+              "setback"
+            ]
+          }
         }
       }
     },
@@ -784,6 +908,23 @@
               "$ref": "#/$defs/graphId"
             },
             "to": {
+              "$ref": "#/$defs/graphId"
+            }
+          }
+        },
+        {
+          "description": "Grants a declared temporary buff (#200), or refreshes, stacks or ignores one already held as its stack says.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "buff"
+          ],
+          "properties": {
+            "type": {
+              "const": "grantBuff"
+            },
+            "buff": {
               "$ref": "#/$defs/graphId"
             }
           }

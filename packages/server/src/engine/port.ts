@@ -29,6 +29,7 @@ import type {
   Rng,
   RoomMode,
   RulesContent,
+  RunBuff,
   RunState,
 } from "@kad/shared";
 
@@ -76,6 +77,12 @@ export interface EngineContext {
    * when a chapter starts. Absent keeps whatever the run holds.
    */
   campaignCoins?: number;
+  /**
+   * A graph campaign's temporary buffs (#200), resolved from its journey and
+   * seeded into the run when a chapter starts. Absent for every ordered
+   * campaign, whose runs therefore never hold a buff.
+   */
+  campaignBuffs?: readonly RunBuff[];
 }
 
 export interface IntentInput {

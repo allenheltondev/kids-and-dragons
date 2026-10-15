@@ -21,6 +21,11 @@
  * choosing, it changes a rift (and whatever its rule's effects write) and
  * leaves the party where it is — no visit begins or ends, no clock ticks.
  *
+ * Temporary buffs (#200) too: granted by effects (an edge's, a completion
+ * rule's), ended by travel when an exit is taken, and read back from the
+ * chapter run when a visit completes — `buffs.ts` does the arithmetic. Inside
+ * a chapter they are the run's and its fights' business, never the journey's.
+ *
  * ---------------------------------------------------------------------------
  * WHY PURE, AND WHY HERE
  *
@@ -86,6 +91,8 @@ import {
 import { crossRift, riftDestinationRevealed, riftView, settleRifts, tickRifts } from "./rifts.js";
 import { applyRiftEffect, isRiftEffect, riftActionChange, riftActionsFrom, riftCanReopen } from "./rift-actions.js";
 import { readFact, storedFacts, worldFacts, writeFact } from "./world-state.js";
+import type { ActiveBuff, RunBuff } from "./types/buffs.js";
+import { buffViews, expireBuffs, grantBuff, readBackBuffs, storedBuffs } from "./buffs.js";
 
 /**
  * The version of the stored journey record (`JourneyState.version`) this
@@ -265,7 +272,19 @@ function applyEffects(
   let touchedEdges = false;
   let touchedFacts = false;
   let touchedRifts = false;
+  // Temporary buffs (#200): granted by the visit applying the effects — the
+  // one being completed, being left by this edge, or taking a rift action.
+  let buffs: ActiveBuff[] | null = null;
   for (const effect of effects) {
+    if (effect.type === "grantBuff") {
+      const declared = graph.buffs[effect.buff];
+      if (!declared) continue;
+      buffs = grantBuff(buffs ?? storedBuffs(journey.buffs), effect.buff, declared, {
+        node: journey.node,
+        visit: journey.visit,
+      });
+      continue;
+    }
     if (isRiftEffect(effect)) {
       // A rift action (#197) reads the journey as the effects before it left
       // it — a `setFlag` that satisfies an `opensWhen` counts — so it is
@@ -296,13 +315,26 @@ function applyEffects(
       touchedEdges = true;
     }
   }
-  return {
+  const next: JourneyState = {
     ...journey,
     ...(touchedFlags ? { flags } : {}),
     ...(touchedEdges ? { edges } : {}),
     ...(touchedFacts ? { facts } : {}),
     ...(touchedRifts ? { rifts } : {}),
   };
+  return buffs === null ? next : withBuffs(next, buffs);
+}
+
+/**
+ * The journey holding `buffs` (#200): the key written only while there is
+ * one, so a journey that never had a buff — every journey of a graph that
+ * declares none — keeps exactly the shape it always had.
+ */
+function withBuffs(journey: JourneyState, buffs: readonly ActiveBuff[]): JourneyState {
+  if (buffs.length > 0) return { ...journey, buffs: [...buffs] };
+  if (journey.buffs === undefined) return journey;
+  const { buffs: _gone, ...rest } = journey;
+  return rest;
 }
 
 /**
@@ -488,6 +520,12 @@ export interface VisitReport {
   outcome: ChapterOutcome;
   /** The run's flags as it ended; the journey flags are read back from these. */
   flags: Readonly<Record<string, boolean>>;
+  /**
+   * The run's temporary buffs as it ended (`RunState.buffs`, #200): what its
+   * fights left of the buffs it was seeded with. Read back like the flags.
+   * Absent (a run started before #200) leaves the journey's buffs as they were.
+   */
+  buffs?: readonly RunBuff[];
 }
 
 /**
@@ -535,8 +573,10 @@ export function completeVisit(
   // completion and its rules, then whatever they opened or ended (`rifts.ts`,
   // "when a rift moves").
   const aged = tickRifts(graph, journey, "chapters");
+  // Temporary buffs (#200): what the run's fights left of them comes back
+  // first, so a buff this completion grants is granted on top of that.
   const settled: JourneyState = {
-    ...aged,
+    ...withBuffs(aged, readBackBuffs(graph.buffs, journey.buffs, report.buffs)),
     completions: bump(journey.completions, journey.node),
     outcomes: { ...(journey.outcomes ?? {}), [journey.node]: report.outcome },
     flags: readBackFlags(graph, journey.flags, report.flags, campaign),
@@ -608,10 +648,13 @@ export function takeExit(
   // every timed rift, then the edge's own bookkeeping, effects and arrival —
   // all in the one journey this returns, so it commits whole or not at all.
   const moved = tickRifts(graph, crossRift(graph, journey, report.edge), "visits");
+  // Leaving is travel (#200): buffs that end on travel end here — before the
+  // edge's own effects, so a buff the crossing itself grants survives it.
+  const departed = withBuffs(moved, expireBuffs(graph.buffs, storedBuffs(moved.buffs), "travel"));
   const crossed = applyEffects(
     graph,
     {
-      ...moved,
+      ...departed,
       traversed: bump(journey.traversed, report.edge),
       lastExit: { node: journey.node, visit: journey.visit, edge: report.edge },
     },
@@ -842,6 +885,7 @@ export function journeyView(
           });
   const ending = journey.status === "ended" ? (journey.ending ?? journey.node) : undefined;
   const facts = visibleFacts(graph, journey);
+  const buffs = buffViews(graph.buffs, journey.buffs);
   const riftActions = journey.status === "choosing" ? riftActionViews(graph, journey, exits, placeTitle) : [];
   // Nowhere to go and nothing to do (#197): the lint refuses content that can
   // get here, so only content changing under a save can. Said plainly.
@@ -872,6 +916,7 @@ export function journeyView(
     ...(facts.length > 0 ? { facts } : {}),
     ...(riftActions.length > 0 ? { riftActions } : {}),
     ...(stuck ? { stuck: true as const } : {}),
+    ...(buffs.length > 0 ? { buffs } : {}),
   };
 }
 
