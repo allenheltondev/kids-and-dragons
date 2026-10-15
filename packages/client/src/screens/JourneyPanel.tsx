@@ -31,6 +31,14 @@
  * confirmation as a one-way crossing. A party with nowhere to go and nothing
  * to try (`journey.stuck`) is told so plainly instead of shown an empty list.
  *
+ * **Whose way it is** (#199). Some ways need a particular hero at the table -
+ * a Starweaver to attune, someone carrying the jar. The server's view lists
+ * them with what they need (`needs`), and this judges them against the party
+ * seated *now* (`party`, with the shared `riftActionsForParty` the server
+ * enforces with): a way this table can take is a button with a chip naming
+ * whose talent it is ("Starweaver"); one it cannot is drawn only when the
+ * author wrote a hint, as words (no dead button), and otherwise not at all.
+ *
  * ---------------------------------------------------------------------------
  * WHAT IT DOES NOT KNOW
  *
@@ -44,7 +52,8 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import type { KeyboardEvent, ReactElement } from "react";
-import type { CampaignView, JourneyExitView, JourneyRiftActionView, JourneyView } from "@kad/shared";
+import { riftActionsForParty } from "@kad/shared";
+import type { CampaignView, JourneyExitView, JourneyRiftActionView, JourneyView, RiftParty } from "@kad/shared";
 import { Button } from "../ui/Button";
 import { ScreenReaderOnly } from "../ui/ScreenReaderOnly";
 import {
@@ -57,6 +66,7 @@ import {
   journeyStuckLine,
   riftActionIcon,
   riftActionNeedsConfirm,
+  riftActionNeedsLine,
   riftActionWarning,
 } from "./campaign-copy";
 import { Icon } from "./icons";
@@ -79,11 +89,18 @@ export interface JourneyPanelProps {
    * is one. Absent: the panel draws no actions (a read-only map).
    */
   onAction?: (action: JourneyRiftActionView) => void | Promise<void>;
+  /**
+   * The heroes seated now (#199): what judges each way's `needs`. Absent:
+   * every way is drawn as offered (a screen that does not know the table).
+   */
+  party?: RiftParty;
+  /** An item's name from the catalog, for a way that needs one carried. */
+  itemName?: (id: string) => string | undefined;
 }
 
 /** A rift action's key in `pending` - never an edge id, which has no colon. */
 const actionKey = (action: JourneyRiftActionView): string =>
-  `action:${action.action}:${action.edge}:${action.to ?? ""}`;
+  `action:${action.action}:${action.edge}:${action.to ?? ""}:${action.way ?? ""}`;
 
 const KIND_ICON: Record<JourneyExitView["kind"], string> = {
   forward: "forward",
@@ -104,6 +121,8 @@ export function JourneyPanel({
   onChoose,
   onContinue,
   onAction,
+  party,
+  itemName,
 }: JourneyPanelProps): ReactElement {
   const ids = useId();
   const headingId = `${ids}-heading`;
@@ -114,8 +133,9 @@ export function JourneyPanel({
   const exitButtons = useRef(new Map<string, HTMLButtonElement>());
 
   const pendingExit = journey.exits.find((exit) => exit.edge === pending && exit.available) ?? null;
-  const actions = onAction ? (journey.riftActions ?? []) : [];
-  const pendingAction = actions.find((action) => actionKey(action) === pending) ?? null;
+  const offered = journey.riftActions ?? [];
+  const actions = onAction ? (party ? riftActionsForParty(offered, party) : offered) : [];
+  const pendingAction = actions.find((action) => actionKey(action) === pending && action.unmet !== true) ?? null;
   // One "are you sure?" for both: a crossing that cannot be undone, and a rift
   // action that cannot (#197).
   const confirm =
@@ -306,31 +326,47 @@ export function JourneyPanel({
                 <ul className="journey__actions" aria-label="Things you can try">
                   {actions.map((action) => (
                     <li key={actionKey(action)}>
-                      <button
-                        type="button"
-                        className="journey-exit journey-exit--open journey-exit--action kad-tap kad-focusable"
-                        disabled={busy}
-                        ref={(node) => {
-                          if (node) exitButtons.current.set(actionKey(action), node);
-                          else exitButtons.current.delete(actionKey(action));
-                        }}
-                        onClick={() => tryAction(action)}
-                      >
-                        <span className="journey-exit__icon" aria-hidden="true">
-                          <Icon name={riftActionIcon(action.action)} size="1.6em" />
-                        </span>
-                        <span className="journey-exit__text">
-                          <b className="journey-exit__label">{action.label}</b>
-                          {action.irreversible ? (
-                            <span className="journey-exit__chips">
-                              <span className="kad-chip kad-chip--warn">
-                                <Icon name="close" />
-                                <span>Can't be undone</span>
+                      {action.unmet ? (
+                        /* A way this table cannot take (#199), drawn only
+                           for its author's hint: words, never a dead button. */
+                        <div className="journey-exit journey-exit--blocked journey-exit--action">
+                          <span className="journey-exit__icon" aria-hidden="true">
+                            <Icon name={riftActionIcon(action.action)} size="1.6em" />
+                          </span>
+                          <span className="journey-exit__text">
+                            <b className="journey-exit__label">{action.label}</b>
+                            <span className="journey-exit__why">{action.hint}</span>
+                            <NeedsChip action={action} itemName={itemName} />
+                          </span>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          className="journey-exit journey-exit--open journey-exit--action kad-tap kad-focusable"
+                          disabled={busy}
+                          ref={(node) => {
+                            if (node) exitButtons.current.set(actionKey(action), node);
+                            else exitButtons.current.delete(actionKey(action));
+                          }}
+                          onClick={() => tryAction(action)}
+                        >
+                          <span className="journey-exit__icon" aria-hidden="true">
+                            <Icon name={riftActionIcon(action.action)} size="1.6em" />
+                          </span>
+                          <span className="journey-exit__text">
+                            <b className="journey-exit__label">{action.label}</b>
+                            {action.irreversible ? (
+                              <span className="journey-exit__chips">
+                                <span className="kad-chip kad-chip--warn">
+                                  <Icon name="close" />
+                                  <span>Can't be undone</span>
+                                </span>
                               </span>
-                            </span>
-                          ) : null}
-                        </span>
-                      </button>
+                            ) : null}
+                            <NeedsChip action={action} itemName={itemName} />
+                          </span>
+                        </button>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -371,6 +407,31 @@ export function JourneyPanel({
         </details>
       )}
     </section>
+  );
+}
+
+/**
+ * Whose way a rift action is (#199): "Starweaver", "Mosslight Jar". Icon and
+ * word, like every other chip; nothing for a way anyone can take. For a way
+ * this table cannot take it reads "Needs a ...", so the hint is never the
+ * only thing that says why.
+ */
+function NeedsChip({
+  action,
+  itemName,
+}: {
+  action: JourneyRiftActionView;
+  itemName?: (id: string) => string | undefined;
+}): ReactElement | null {
+  const who = riftActionNeedsLine(action.needs, itemName);
+  if (who === null) return null;
+  return (
+    <span className="journey-exit__chips">
+      <span className={`kad-chip${action.unmet ? " kad-chip--warn" : " kad-chip--ok"}`}>
+        <Icon name="party" />
+        <span>{action.unmet ? `Needs: ${who}` : who}</span>
+      </span>
+    </span>
   );
 }
 

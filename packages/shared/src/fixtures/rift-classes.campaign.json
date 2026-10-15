@@ -1,0 +1,178 @@
+{
+  "$comment": "Class rift interaction fixture (#199). NOT CONTENT: it lives outside content/ so neither the loader nor content:validate ever sees it, and nothing ships it. Its chapter ids are placeholders with no files behind them. One mandatory goal - getting through the sealed rift to the far shore - that every party composition can reach its own way: a Starweaver senses the rift, studies at the star tower, attunes to it and later weaves it toward Starfall Glade (a progression earned through the campaign, kept as the world fact `attunement`); a Thornguard forces the seal (and leaves it torn: the far shore plays a harder chapter; and the party strained: a Guard -1 burden buff for the next fight); a Songkeeper sings it calm; a Duskrunner scouts a hidden shadow path; anyone carrying a Mosslight Jar holds it to the seal; and a party with none of them befriends the hermit, who opens it for them - the ungated way the lint (CLASS_GATED_ONLY_PATH) requires. class-rifts.test.ts walks it; packages/server/src/handlers/class-rifts.test.ts plays it through the server; docs/campaigns/graph-campaigns.md (Class rift interaction) walks through it.",
+  "id": "rift-classes",
+  "title": "The Sealed Rift",
+  "blurb": "A camp, a star tower, a hermit's hut and a rift sealed shut. Every party gets through its own way. Not a story: a map of class rift interaction.",
+  "chapters": [
+    "rc-camp",
+    "rc-observatory",
+    "rc-hermit",
+    "rc-rift-gate",
+    "rc-far-shore",
+    "rc-far-shore-torn",
+    "rc-starfall",
+    "rc-dawn"
+  ],
+  "graph": {
+    "version": 1,
+    "entry": "camp",
+    "buffs": {
+      "seal-strain": {
+        "$comment": "The Thornguard's cost (#199 with #200): forcing the seal leaves the party bruised - Guard -1 in the next fight, gone after one fight or a rest. A burden is a buff with a negative amount.",
+        "label": "Seal Strain",
+        "kind": "guard",
+        "amount": -1,
+        "target": "party",
+        "duration": { "scope": "encounter" },
+        "stack": "refresh",
+        "expiresOn": ["rest"]
+      }
+    },
+    "facts": {
+      "attunement": {
+        "$comment": "The Starweaver's progression: sense (+1), study at the star tower (+1), attune (needs 2, gives +1), weave (needs 3). Journey state, so it is stored with the attempt and is there next evening.",
+        "domain": "consequence",
+        "type": "counter",
+        "min": 0,
+        "max": 3,
+        "initial": 0,
+        "label": "Rift attunement",
+        "visible": true
+      },
+      "hermit": {
+        "domain": "alliance",
+        "type": "enum",
+        "values": ["stranger", "friend"],
+        "initial": "stranger",
+        "label": "The rift hermit",
+        "visible": true
+      },
+      "veil": {
+        "domain": "consequence",
+        "type": "enum",
+        "values": ["whole", "torn"],
+        "initial": "whole",
+        "label": "The veil",
+        "visible": true
+      }
+    },
+    "nodes": {
+      "camp": { "chapter": "rc-camp", "title": "The Camp", "revisit": "pass" },
+      "observatory": {
+        "$comment": "Played once (closed). Studying the stars raises the party's attunement - the campaign-earned half of the Starweaver's progression, open to every party (only a Starweaver can use it).",
+        "chapter": "rc-observatory",
+        "title": "The Star Tower",
+        "revisit": "closed",
+        "onComplete": [{ "effects": [{ "type": "adjustFact", "fact": "attunement", "by": 1 }] }]
+      },
+      "hermit-hut": {
+        "$comment": "The NPC fallback: finishing the hermit's chapter makes them a friend, and a friend opens the seal for any party.",
+        "chapter": "rc-hermit",
+        "title": "The Hermit's Hut",
+        "revisit": "pass",
+        "onComplete": [{ "effects": [{ "type": "setFact", "fact": "hermit", "value": "friend" }] }]
+      },
+      "rift-gate": { "chapter": "rc-rift-gate", "title": "The Sealed Rift", "revisit": "pass" },
+      "far-shore": {
+        "$comment": "The goal. Forced open by a Thornguard, the veil is torn and the far shore plays its harder chapter.",
+        "chapter": "rc-far-shore",
+        "title": "The Far Shore",
+        "variants": [{ "chapter": "rc-far-shore-torn", "when": { "facts": { "veil": "torn" } } }]
+      },
+      "starfall": { "chapter": "rc-starfall", "title": "Starfall Glade" },
+      "dawn": { "chapter": "rc-dawn", "ending": { "title": "Across the Rift" } }
+    },
+    "edges": {
+      "camp-to-tower": { "from": "camp", "to": "observatory", "kind": "sideways", "label": "Climb the star tower" },
+      "tower-to-camp": { "from": "observatory", "to": "camp", "kind": "return", "label": "Back down to camp" },
+      "camp-to-hut": { "from": "camp", "to": "hermit-hut", "kind": "sideways", "label": "Visit the hermit" },
+      "hut-to-camp": { "from": "hermit-hut", "to": "camp", "kind": "return", "label": "Back to camp" },
+      "camp-to-gate": { "from": "camp", "to": "rift-gate", "kind": "forward", "label": "Walk to the sealed rift" },
+      "gate-to-camp": { "from": "rift-gate", "to": "camp", "kind": "return", "label": "Back to camp" },
+      "veil-rift": {
+        "$comment": "Sealed: asleep until someone has stood on the far side (which only the shadow path allows), so from here only an action opens it. Every open way changes the rift the same way; who can take each, and what else it does, differs.",
+        "from": "rift-gate",
+        "to": "far-shore",
+        "kind": "forward",
+        "label": "The shimmering seal",
+        "blocked": "shown",
+        "rift": {
+          "opensWhen": { "visited": "far-shore" },
+          "reveal": "when-crossed",
+          "redirects": ["starfall"],
+          "actions": {
+            "discover": [
+              {
+                "id": "sense",
+                "requires": { "anyClass": ["starweaver"] },
+                "label": "Sense where the rift leads",
+                "effects": [{ "type": "adjustFact", "fact": "attunement", "by": 1 }]
+              }
+            ],
+            "open": [
+              {
+                "id": "attune",
+                "requires": { "anyClass": ["starweaver"] },
+                "when": { "facts": { "attunement": { "min": 2 } } },
+                "label": "Attune to the rift and open it",
+                "hint": "A Starweaver who has studied the stars could open this.",
+                "effects": [{ "type": "adjustFact", "fact": "attunement", "by": 1 }]
+              },
+              {
+                "id": "force",
+                "requires": { "anyClass": ["thornguard"] },
+                "label": "Force the seal open",
+                "effects": [
+                  { "type": "setFact", "fact": "veil", "value": "torn" },
+                  { "type": "grantBuff", "buff": "seal-strain" }
+                ]
+              },
+              {
+                "id": "calm",
+                "requires": { "anyClass": ["songkeeper"] },
+                "label": "Sing the seal calm until it parts"
+              },
+              {
+                "id": "lantern",
+                "requires": { "anyItem": ["mosslight_jar"] },
+                "label": "Hold the Mosslight Jar to the seal",
+                "hint": "Something that glows like moss might wake this seal."
+              },
+              {
+                "id": "hermit",
+                "when": { "facts": { "hermit": "friend" } },
+                "label": "Ask the hermit to open the seal"
+              }
+            ],
+            "redirect": {
+              "id": "weave",
+              "requires": { "anyClass": ["starweaver"] },
+              "when": { "facts": { "attunement": { "min": 3 } } },
+              "label": "Weave the rift toward the falling stars"
+            }
+          }
+        }
+      },
+      "shadow-path": {
+        "$comment": "Hidden (blocked hidden) and asleep: a Duskrunner scouts it out, and their scouting opens it.",
+        "from": "rift-gate",
+        "to": "far-shore",
+        "kind": "forward",
+        "label": "A narrow shadow path",
+        "rift": {
+          "opensWhen": { "visited": "far-shore" },
+          "actions": {
+            "discover": {
+              "id": "scout",
+              "requires": { "anyClass": ["duskrunner"] },
+              "label": "Scout the cliffs for another way",
+              "effects": [{ "type": "openRift", "edge": "shadow-path" }]
+            }
+          }
+        }
+      },
+      "shore-to-dawn": { "from": "far-shore", "to": "dawn", "kind": "forward", "label": "On toward the dawn" },
+      "starfall-to-dawn": { "from": "starfall", "to": "dawn", "kind": "forward", "label": "Follow the falling stars" }
+    }
+  }
+}

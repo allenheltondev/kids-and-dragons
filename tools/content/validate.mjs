@@ -29,7 +29,7 @@ import addFormats from "ajv-formats";
 import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "../../packages/shared/src/condition-lint.ts";
 import { chapterStartDiscoveries, sceneDiscoveries } from "../../packages/shared/src/discoveries.ts";
 import { checkEncounterEnvironment } from "../../packages/shared/src/environment.ts";
-import { campaignMode, journeyFlags, parseCampaignGraph } from "../../packages/shared/src/campaign-graph.ts";
+import { RIFT_ACTION_KINDS, campaignMode, journeyFlags, parseCampaignGraph, riftActionWays } from "../../packages/shared/src/campaign-graph.ts";
 import { chapterFlagWrites, duplicateJsonKeys, lintCampaignGraph } from "../../packages/shared/src/campaign-graph-lint.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 
@@ -1000,7 +1000,7 @@ function castFigureFile(figure) {
   return join(REPO_ASSETS, kind, id, "assembled.png");
 }
 
-function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds) {
+function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, items = null) {
   const f = rel(file);
   let ok = true;
   const fail = (path, problem, hint) => {
@@ -1061,7 +1061,7 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds) {
     }
   }
 
-  if (campaignMode(campaign) === "graph") return checkGraphCampaign(rep, file, campaign, chaptersById, fail, ok);
+  if (campaignMode(campaign) === "graph") return checkGraphCampaign(rep, file, campaign, chaptersById, fail, ok, items);
 
   /*
    * Beats are the save unit and the player sees "Chapter 3 of 6" - a gap here is
@@ -1170,7 +1170,7 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds) {
  * Ordered campaigns never get here (checkCampaign returns to its beat rules
  * first), so Gemfall's output is untouched.
  */
-function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar) {
+function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar, items = null) {
   const f = rel(file);
   let ok = okSoFar;
   campaign.chapters.forEach((id, i) => {
@@ -1193,6 +1193,21 @@ function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar) {
     ok = false;
   }
   let walked = "";
+  if (graph && items) {
+    // A rift action way that needs a carried item (#199) names one the
+    // catalog has — the same check a chapter choice's `requiresItem` gets.
+    for (const id of graph.edgeOrder) {
+      for (const kind of RIFT_ACTION_KINDS) {
+        for (const { rule, at } of riftActionWays(graph.edges[id].rift, kind)) {
+          (rule.requires?.anyItem ?? []).forEach((item, i) => {
+            if (items[item]) return;
+            fail(`/graph/edges/${id}/rift/${at}/requires/anyItem/${i}`, `item "${item}" is not in content/items.json`);
+            ok = false;
+          });
+        }
+      }
+    }
+  }
   if (graph) {
     // A chapter that did not load is unknown to the search (it may set any
     // flag), the conservative reading; a loaded one is read for its setFlags.
@@ -1439,7 +1454,7 @@ function main() {
     const campaign = readJson(rep, file);
     if (!campaign) continue;
     if (!validateAgainstSchema(rep, ajv, "campaign", file, campaign)) continue;
-    checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds);
+    checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, items);
     for (const id of campaign.chapters) referenced.add(id);
   }
 

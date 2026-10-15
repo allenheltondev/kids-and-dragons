@@ -29,9 +29,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
+  RIFT_ACTION_KINDS,
   campaignMode,
   chapterFlagWrites,
+  describeRequirement,
   parseCampaignGraph,
+  riftActionWays,
 } from "@kad/shared";
 import type {
   Campaign,
@@ -200,9 +203,13 @@ export function describeRift(edge: GraphEdge): string[] {
   if (rift.linkedTo) out.push(`linked to ${rift.linkedTo}`);
   if (rift.reveal && rift.reveal !== "always") out.push(`reveals ${rift.reveal}`);
   if (rift.redirects) out.push(`can be turned toward ${rift.redirects.join(", ")}`);
-  for (const [kind, rule] of Object.entries(rift.actions ?? {})) {
-    const when = describeCondition(rule?.when);
-    out.push(`party may ${kind}${when ? ` when ${when}` : ""}`);
+  for (const kind of RIFT_ACTION_KINDS) {
+    for (const { rule, way } of riftActionWays(rift, kind)) {
+      const when = describeCondition(rule.when);
+      // Whose way it is (#199): the party half, which no guard reads.
+      const who = rule.requires ? ` (${describeRequirement(rule.requires)})` : "";
+      out.push(`party may ${kind}${way !== undefined ? ` [${way}]` : ""}${when ? ` when ${when}` : ""}${who}`);
+    }
   }
   return out;
 }
@@ -267,8 +274,11 @@ export function outline(campaign: Campaign, graph: ParsedCampaignGraph): string 
       for (const effect of edge.effects ?? []) lines.push(`             effect: ${describeEffect(effect)}`);
       const rift = describeRift(edge);
       if (rift.length > 0) lines.push(`             rift: ${rift.join(", ")}`);
-      for (const [kind, rule] of Object.entries(edge.rift?.actions ?? {})) {
-        for (const effect of rule?.effects ?? []) lines.push(`             ${kind} effect: ${describeEffect(effect)}`);
+      for (const kind of RIFT_ACTION_KINDS) {
+        for (const { rule, way } of riftActionWays(edge.rift, kind)) {
+          const name = way !== undefined ? `${kind} [${way}]` : kind;
+          for (const effect of rule.effects ?? []) lines.push(`             ${name} effect: ${describeEffect(effect)}`);
+        }
       }
     }
   }
