@@ -105,6 +105,51 @@ describe("the cast", () => {
     } finally { s.destroy(); load.mockRestore(); }
   });
 
+  it("re-packs a figure that stays while its group grows and shrinks (1 → 3 → 1)", async () => {
+    const load = vi.spyOn(Assets, "load").mockResolvedValue(Texture.WHITE as unknown as Record<string, unknown>);
+    const { scene: s, app } = scene();
+    const wolf = { key: "entities/cinder_wolf|", url: "/assets/entities/cinder_wolf/assembled.png", name: null, scale: 1 };
+    const pack = (size: number) =>
+      Array.from({ length: size }, (_, index) => ({
+        ...wolf,
+        key: index === 0 ? wolf.key : `${wolf.key}#${index}`,
+        ...(size > 1 ? { crowd: { index, size } } : {}),
+      }));
+    // The x of every drawn figure, left to right, once they have settled in.
+    const standIn = async (app: FakeApp): Promise<number[]> => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      app.ticker.frame(5_000);
+      const xs: number[] = [];
+      const walk = (node: Container): void => {
+        if (node instanceof Sprite) xs.push(node.parent!.parent!.x);
+        for (const child of node.children) walk(child as Container);
+      };
+      walk(app.stage);
+      return xs.sort((a, b) => a - b);
+    };
+    const stand = (): Promise<number[]> => standIn(app);
+    try {
+      s.setCast(pack(1));
+      const alone = await stand();
+      s.setCast(pack(3));
+      const group = await stand();
+      expect(group).toHaveLength(3);
+      // Exactly where a group that began as a group stands.
+      const fresh = scene();
+      try {
+        fresh.scene.setCast(pack(3));
+        const expected = await standIn(fresh.app);
+        group.forEach((x, i) => expect(x).toBeCloseTo(expected[i]!, 3));
+      } finally { fresh.scene.destroy(); }
+      const gap = group[2]! - group[0]!;
+      s.setCast(pack(1));
+      const back = await stand();
+      expect(back).toHaveLength(1);
+      expect(back[0]).toBeCloseTo(alone[0]!, 3);
+      expect(gap).toBeGreaterThan(0);
+    } finally { s.destroy(); load.mockRestore(); }
+  });
+
   it("does not draw into a member who finished leaving", async () => {
     let finish!: (texture: Texture) => void;
     const load = vi.spyOn(Assets, "load").mockImplementation(

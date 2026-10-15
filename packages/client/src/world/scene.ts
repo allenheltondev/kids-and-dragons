@@ -322,8 +322,10 @@ interface CastActor {
   label: Text | null;
   shadow: Graphics;
   scale: number;
+  /** One of a group: laid out close together (see `stageSlots`). */
+  crowded: boolean;
   /** For one of a group: 0 or 1, the odd ones standing a step back. */
-  row?: number;
+  row: number;
   /** Where layout wants them, in design units. */
   x: number;
   /** 0 offstage → 1 in place. Eased by tick(). */
@@ -614,7 +616,7 @@ export function createScene(app: Application): PartyScene {
       list.length,
       cast.map((member) => member.scale),
       width,
-      cast.map((member) => member.row !== undefined),
+      cast.map((member) => member.crowded),
     );
     slots.party = slots.party.map((x) => x + left);
     slots.cast = slots.cast.map((x) => x + left);
@@ -778,7 +780,7 @@ export function createScene(app: Application): PartyScene {
       const away = 1 - member.presence;
       member.container.x = member.x + (still ? 0 : away * CAST_ENTRY_OFFSET);
       // A step further back reads as a huddle, not a row of stickers.
-      const rowY = GROUND_Y - (member.row ?? 0) * DESIGN.height * 0.025;
+      const rowY = GROUND_Y - member.row * DESIGN.height * 0.025;
       member.container.y = rowY;
       member.container.zIndex = rowY - 1;
       member.art.alpha = member.presence;
@@ -818,7 +820,8 @@ export function createScene(app: Application): PartyScene {
       label,
       shadow,
       scale: member.scale,
-      ...(member.crowd ? { row: member.crowd.index % 2 } : {}),
+      crowded: member.crowd !== undefined,
+      row: (member.crowd?.index ?? 0) % 2,
       x: DESIGN.width,
       presence: 0,
       leaving: false,
@@ -1164,8 +1167,12 @@ export function createScene(app: Application): PartyScene {
       }
       for (const member of members) {
         const existing = castActors.get(member.key);
-        if (existing && !existing.leaving) continue;
         if (existing) {
+          // The first of a group shares its key with the lone figure, so the
+          // same actor can be a group of three in one scene and alone in the
+          // next: the crowd is the scene's to say, not the actor's to keep.
+          existing.crowded = member.crowd !== undefined;
+          existing.row = (member.crowd?.index ?? 0) % 2;
           // Called back before they had finished leaving: turn round, no reload.
           existing.leaving = false;
           continue;
