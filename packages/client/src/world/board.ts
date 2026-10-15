@@ -750,7 +750,16 @@ export function createBoardLayer(): BoardLayer {
       case "bonus":
         spawnFloater(event.actorId, `+${event.amount}`, 0xffc95c);
         return;
-      case "roll":
+      case "roll": {
+        // The swing's number, over the one who swung: the d20 + stat against
+        // Guard that decides a hit was rolled on the server and shown
+        // nowhere, so a miss looked like a figure waving at the air. The
+        // victim's damage number follows on the next beat, over them.
+        const { roll } = event;
+        const hit = roll.result === "hit" || roll.result === "success";
+        spawnFloater(roll.characterId, hit ? `${roll.total} hit!` : `${roll.total} miss`, hit ? 0xffc95c : 0xb7b0d8);
+        return;
+      }
       case "protected":
       case "evaded":
       case "warded":

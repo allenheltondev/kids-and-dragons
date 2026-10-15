@@ -5,8 +5,12 @@
  * case: ~40% of a phone in Travel Mode. Same rules as every screen — no
  * viewport units, `em`/`%` against the surface, and touch targets that do not
  * shrink (spec §11). The grid cells are the documented exception: ten columns
- * cannot each be 3em on a phone, and the select-then-confirm flow is what
- * makes an imprecise tap free to undo.
+ * cannot each be 3em on a phone, and a step is the cheapest thing in the game
+ * to spend by mistake.
+ *
+ * Nothing here ever appears *below* what is already on screen: the area under
+ * the board swaps between the cards and the question a card asks, in place,
+ * so a tap never pushes the pane and the thumb never has to chase a button.
  */
 
 .combat__party {
@@ -31,10 +35,160 @@
   font-variant-numeric: tabular-nums;
 }
 
-.combat__meters {
-  display: flex;
+.combat__hp--down {
+  text-decoration: line-through;
+  opacity: 0.8;
+}
+
+/* Steps left, on the title row's far end: the one number a turn starts with. */
+.combat__title {
   flex-wrap: wrap;
-  gap: var(--space-2, 0.5em);
+}
+
+.combat__steps {
+  margin-inline-start: auto;
+  gap: 0.3em;
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+/*
+ * The enemies' row, under the party's: a portrait, the name with its
+ * ordinal, and hearts as a number. "How is the fight going" used to need a
+ * look at the TV or a tap into a target list; now it is the second line of
+ * every phone, on every turn, including the turns that are not yours.
+ */
+.combat__enemy-art {
+  inline-size: 1.6em;
+  block-size: 1.6em;
+  border-radius: 0.3em;
+  object-fit: cover;
+}
+
+.combat__enemy-art--large {
+  inline-size: 2em;
+  block-size: 2em;
+}
+
+.combat .combat__enemies .combat__enemy-art {
+  inline-size: 1.3em;
+  block-size: 1.3em;
+}
+
+.combat__enemy--down {
+  opacity: 0.7;
+}
+
+.combat__enemy--down > span:first-of-type {
+  text-decoration: line-through;
+}
+
+/*
+ * Hearts in the square's corner. A number, never a bar (spec §11), small
+ * enough to leave the face readable and big enough to read at a tile's size.
+ */
+.combat__cell-hp {
+  position: absolute;
+  inset-block-end: 2%;
+  inset-inline-start: 3%;
+  min-inline-size: 1.4em;
+  padding-inline: 0.2em;
+  border-radius: 0.5em;
+  background: var(--color-surface-sunken, #120f26);
+  color: var(--color-text, #f4f1ff);
+  font-size: 0.55em;
+  font-weight: 900;
+  line-height: 1.5;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * What just happened. The roll is the thing that was missing: a d20 the
+ * server threw and nobody saw. One list, the latest beat only, each line a
+ * sentence or a roll drawn as its parts — the die, the bonus and its stat,
+ * the total, the Guard it had to beat, the verdict.
+ */
+.combat__log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  margin: 0;
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  list-style: none;
+  border: 0.08em solid var(--color-border, #3a3468);
+  border-inline-start: 0.3em solid var(--color-accent, #ffc95c);
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface-sunken, #120f26);
+  font-size: var(--font-size-sm, 0.875em);
+  max-block-size: 7.5em;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.combat__beat {
+  line-height: 1.3;
+}
+
+.combat__beat--good {
+  color: var(--color-success, #4ad991);
+}
+
+.combat__beat--bad {
+  color: var(--color-danger, #ff6b6b);
+}
+
+.combat__roll {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35em;
+  color: var(--color-text, #f4f1ff);
+  font-variant-numeric: tabular-nums;
+}
+
+.combat__roll-who {
+  font-weight: 800;
+}
+
+.combat__roll-die {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  padding: 0 0.4em;
+  border-radius: 0.4em;
+  background: var(--color-surface, #191534);
+  color: var(--color-accent, #ffc95c);
+  font-size: 1.2em;
+  font-weight: 900;
+}
+
+.combat__roll-mod,
+.combat__roll-total {
+  font-weight: 700;
+}
+
+.combat__roll-stat {
+  color: var(--color-text-muted, #b7b0d8);
+  font-weight: 600;
+}
+
+.combat__roll-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  padding: 0 0.5em;
+  border-radius: var(--radius-pill, 999em);
+  font-weight: 800;
+}
+
+.combat__roll-verdict--hit {
+  background: color-mix(in srgb, var(--color-success, #4ad991) 25%, transparent);
+  color: var(--color-success, #4ad991);
+}
+
+.combat__roll-verdict--miss {
+  background: color-mix(in srgb, var(--color-text-muted, #b7b0d8) 20%, transparent);
+  color: var(--color-text-muted, #b7b0d8);
 }
 
 /*
@@ -187,47 +341,27 @@
 }
 
 /*
- * The two steps of a turn (§7.2): a numbered heading and one line saying what
- * to tap. A finished step keeps its place with a tick, so the order stays
- * readable after the move has been made.
+ * One line under the board saying what to tap, where the two numbered steps
+ * used to be: the headings cost two rows and said the same thing.
  */
-.combat__step {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15em;
-}
-
-.combat__step-title {
+.combat__hint {
   display: flex;
   align-items: center;
   gap: var(--space-2, 0.5em);
   margin: 0;
-  font-size: var(--font-size-md, 1em);
-  font-weight: 800;
-}
-
-.combat__step-num {
-  display: inline-grid;
-  place-items: center;
-  inline-size: 1.5em;
-  block-size: 1.5em;
-  flex: 0 0 auto;
-  border-radius: 50%;
-  background: var(--color-accent, #ffc95c);
-  color: var(--kad-accent-ink, #0d0b1a);
-  font-size: 0.9em;
-  font-weight: 900;
-}
-
-.combat__step-hint {
-  margin: 0;
-  padding-inline-start: 2em;
   color: var(--color-text-muted, #b7b0d8);
   font-size: var(--font-size-sm, 0.875em);
 }
 
-.combat__step--done .combat__step-num {
-  background: var(--color-ok, #6fd39b);
+.combat__ask {
+  font-weight: 700;
+}
+
+.combat__aim-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2, 0.5em);
 }
 
 /* What the board's marks mean, in the same shapes the board draws. */
@@ -315,12 +449,13 @@
  * centred, and never wider than the pane.
  */
 .combat .combat__grid {
-  /* As big as the pane's height allows once the turn header, the chips and
-     the cards have their rows (about 12.5em between them, with gaps), and
-     never wider than the pane. On a tall phone that is width-bound and the
-     board floats in the middle; on a short one it is height-bound and just
-     fits. The pane scrolls only if a phone is shorter than any we know. */
-  inline-size: min(100%, (100cqh - 12.5em) * 1.25);
+  /* As big as the pane's height allows once the turn header, both sides'
+     chips, the hint and the cards have their rows (about 13.5em between
+     them, with gaps), and never wider than the pane. On a tall phone that is
+     width-bound and the board floats in the middle; on a short one it is
+     height-bound and just fits. The pane scrolls only if a phone is shorter
+     than any we know. */
+  inline-size: min(100%, (100cqh - 13.5em) * 1.25);
   margin-inline: auto;
 }
 
@@ -382,9 +517,9 @@
   animation: combat-pop 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-/* A step finished: its number becomes a tick with a little bounce. */
-.combat__step--done .combat__step-num {
-  animation: combat-pop 360ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+/* A fresh beat in the log slides in, so a new roll is noticed. */
+.combat__beat {
+  animation: combat-rise 300ms ease-out both;
 }
 
 /* "Your turn" arrives rather than appears. */
@@ -410,7 +545,7 @@
   .combat__cell--active,
   .combat__cell--aim > .kad-icon,
   .combat__down-badge,
-  .combat__step--done .combat__step-num,
+  .combat__beat,
   .combat > .prompt__title,
   .combat__end {
     animation: none;
