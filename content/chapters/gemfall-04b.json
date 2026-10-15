@@ -321,6 +321,20 @@
           "goto": "scene_forest_objects",
           "requiresItem": "facet_barge"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk prospector"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Faun prospector"
+        },
+        {
+          "figure": "entities/boggart",
+          "name": "Boggart prospector"
+        }
       ]
     },
     "scene_attendance_open_path": {
@@ -348,7 +362,15 @@
       "onFailure": {
         "goto": "scene_hedge",
         "narration": "The trees rustle something long and complicated. It might be an answer. It might be a soup recipe. You walk past the same embarrassed toadstool three times before a path lets you through, and on the far side somebody is shouting at a hedge."
-      }
+      },
+      "cast": [
+        {
+          "figure": "entities/boughkin"
+        }
+      ],
+      "discovers": [
+        "npc.boughkin"
+      ]
     },
     "scene_forest_objects": {
       "type": "story",
@@ -366,6 +388,11 @@
           "label": "Thank the beech and walk on",
           "icon": "leaf",
           "goto": "scene_hedge"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/boughkin"
         }
       ]
     },
