@@ -9,7 +9,9 @@
 - Do not claim that magic can override a rift's fixed one-way / once-only nature. Detailed summoning constraints are still TBD.
 
 ## Riftlight — agreed principle
-Rifts emit colored magical light; **only certain people can see the meaningful spectrum**. Ordinary observers notice an anomaly but may not see its diagnostic colors. Starweavers naturally have a special affinity; select Riftseekers may use attunement or tools. Precisely who perceives what and how those without a Starweaver learn properties is TBD.
+Rifts emit colored magical light. In the fiction **only certain people can see the meaningful spectrum**: ordinary observers notice an anomaly but not its diagnostic colors; Starweavers have a natural affinity; select Riftseekers use attunement or tools.
+
+At the table the reading is **shared**, because every screen shows the same world ([spec.md](../../spec.md)). Everyone sees that a rift shimmers. A Starweaver's *Read the Riftlight* choice narrates its colors to the whole party. A party without a Starweaver gets the same reading another way: a Riftseeker tool (a choice gated on the item) or Orin. In the story only the Starweaver sees; in the game only the Starweaver's choice reveals, to everyone. This needs a class gate on choices (`requiresClass`, beside `requiresSpecies`), which [#199](https://github.com/allenheltondev/kids-and-dragons/issues/199) adds. Exactly which colors each route can read is TBD.
 
 Each color conveys a current property **or state**. Properties compose; a rift might display two or three colors, with unusually complex rifts showing more. Observing colors helps infer rules; it need not reveal a destination, precise activation condition or solution.
 
@@ -19,7 +21,8 @@ Each color conveys a current property **or state**. Properties compose; a rift m
 - The green light tells the party a requirement is outstanding, **not what the requirement is**.
 - As soon as the condition is fulfilled, **green disappears**; the other colors remain and continue to convey the rift's properties.
 - Green is thus a *live state indicator*, **not a permanent 'triggered' rift type**.
-- Conditions could be items, actions, environment, timing, party actions, or story states, but individual puzzle implementations are still TBD.
+- **How it is built:** a green rift is a rift edge whose `when` guard does not hold yet. The UI shows green while the guard fails and drops it once the guard holds; no separate 'triggered' property is needed ([#196](https://github.com/allenheltondev/kids-and-dragons/issues/196)).
+- Conditions could be items, actions, environment, timing, party actions, or story states. Whatever the fiction, the condition is **resolved inside a chapter and recorded as a journey flag** (e.g. `glacier_rift_woken`), and the rift edge guards on that flag. Graph guards read the journey, never the party, so "carrying the frost lens" is a chapter choice gated on the item, and "at dusk" is a story state a chapter sets. Individual puzzle implementations are still TBD.
 
 ### Other colors — proposed palette, awaiting explicit lock
 | Color | Provisional interpretation | Notes |
@@ -42,7 +45,7 @@ A **green + amber + violet** rift starts unavailable, becomes **amber + violet**
 - A fixed set of colors need not disclose what lies on the far side.
 
 ## Fail-forward dice sequence — agreed
-The Glacierflow river washout is a **multi-stage escape challenge**. The party is swept downstream after failing a dangerous crossing. At each subsequent opportunity a successful skill check lets the party exit at a different geographical node; failure advances them downstream to a new encounter, not game over or automatic death. After final failures there is a rescue/refuge fallback. Exact ability selection, TNs, damage, item consequences and handling of different party members' rolls remain TBD.
+The Glacierflow river washout is a **multi-stage escape challenge**. The party is swept downstream after failing a dangerous crossing. At each subsequent opportunity a successful skill check lets the party exit at a different geographical node; failure advances them downstream to a new encounter, not game over or automatic death. After final failures there is a rescue/refuge fallback. Each stage uses an existing check mode: `roller: "best"` when one person can save everyone, `roller: "all"` when everyone has to hold on. Exact ability selection, TNs, damage and item consequences remain TBD.
 
 ## Engine constraints
-See [graph-campaigns.md](../graph-campaigns.md), issue #191 and successors. Graph node transitions happen after a chapter visit finishes. Multi-stage skill checks should be authored as scene/encounter transitions **inside** the washout chapter, with distinct chapter outcomes or persistent flags feeding later edge choices. Preserve deterministic branch testing and no-softlock coverage.
+See [graph-campaigns.md](../graph-campaigns.md), issue #191 and successors. Graph node transitions happen after a chapter visit finishes. Multi-stage skill checks should be authored as scene/encounter transitions **inside** the washout chapter, with journey flags, not chapter outcomes, feeding later edge choices. A graph outcome is only `success` or `setback`, and a setback counts toward `setbackLimit` and pays half XP, so fail-forward branches end as `success` and route by flag. Mutually exclusive exits use a `routeSets` fork. Preserve deterministic branch testing and no-softlock coverage.
