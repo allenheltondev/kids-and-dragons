@@ -2267,6 +2267,54 @@
       "name": "Tansy",
       "basis": "faun",
       "scale": "small_to_medium"
+    },
+    {
+      "id": "odo",
+      "name": "Odo",
+      "basis": "burrowfolk",
+      "scale": "medium"
+    },
+    {
+      "id": "corbin",
+      "name": "Corbin",
+      "basis": "burrowfolk",
+      "scale": "medium"
+    },
+    {
+      "id": "posy",
+      "name": "Posy",
+      "basis": "burrowfolk",
+      "scale": "small"
+    },
+    {
+      "id": "rook",
+      "name": "Rook",
+      "basis": "burrowfolk",
+      "scale": "medium"
+    },
+    {
+      "id": "selkie_grandmother",
+      "name": "Selkie Grandmother",
+      "basis": "selkie",
+      "scale": "medium"
+    },
+    {
+      "id": "path_keeper",
+      "name": "Path-Keeper",
+      "basis": "bigfoot",
+      "scale": "large"
+    },
+    {
+      "id": "young_gatherer",
+      "name": "Young Gatherer",
+      "basis": "dragonling",
+      "scale": "small"
+    },
+    {
+      "id": "courier_griffin",
+      "name": "Courier Griffin",
+      "basis": "griffin",
+      "scale": "medium"
     }
   ],
   "globalPalette": {

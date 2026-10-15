@@ -274,3 +274,94 @@ screenshots from section 3.
 Each PR: the figure list with ids, `basis`, `scale`, every "you decide" call with its reason,
 the verify output, the before/after screenshots, and the prompts used (append to `docs/campaigns/gemfall-illustrations.md` under a
 new "Cast figures" heading).
+
+## 9. Gemfall expansion cast audit — issue #170
+
+Audited all `cast` entries in `content/chapters/gemfall-*.json` against main on 2026-10-15. The table includes every named stand-in, including role names, ensembles and working animals, so an intentional generic figure is visible rather than mistaken for a missed character. Unnamed wildlife stays species art. Counts refer to scenes before this issue’s changes.
+
+### Remaining named stand-ins and visual briefs
+
+| Name | Stand-in | Scenes | Visual brief |
+|---|---|---|---|
+| Bell Courier | `characters/dragonling` | 04c (4) | Young dragonling with a traveling bell harness and letter pouch. |
+| Bell-Code Expert | `characters/dragonling` | 05c (8) | Adult dragonling with bell harness and rhythm sticks, patient teaching expression. |
+| Boggart prospector | `entities/boggart` | 04b (1) | Small boggart with mismatched mining kit and bulging pockets. |
+| Brassbuckle recordkeeper | `entities/burrowfolk` | 03a, 04a, 05a (17) | Burrowfolk with matching brass hat, meticulous blank notebook and pencil. |
+| Brassbuckle scout | `entities/burrowfolk` | 03a, 04a, 05a (17) | Burrowfolk trail scout in matching brass expedition hat, rope coil and alert stance. |
+| Burrowfolk prospector | `entities/burrowfolk` | 04b, 06 (4) | Badger-like Burrowfolk with dusty vest, gem pouch and soup bowl. |
+| Cart donkey | `entities/donkey` | 04a (1) | Ordinary small pack donkey; non-speaking working animal. |
+| Cart driver | `entities/burrowfolk` | 04a (1) | Burrowfolk carter with practical cap, reins and travel waistcoat. |
+| Carter's mule | `entities/mule` | 05a (1) | Ordinary pack mule with worn panniers; non-speaking working animal. |
+| Centaur drover | `entities/centaur` | 06 (2) | Centaur traveler with wagon harness and rolled blanket. |
+| Courier Griffin | `characters/griffin` | 01 (4) | Young cream-and-russet griffin with oversized patched navy mail sack; no spectacles. |
+| Dragonling Runner | `characters/dragonling` | 07h (1) | Young dragonling with light courier harness and running-bell strap. |
+| Faun drover | `entities/faun` | 06 (2) | Faun traveler with rope coil, road cloak and wagon supplies. |
+| Faun prospector | `entities/faun` | 04b (1) | Faun with dusty gem pouch and short mining pick. |
+| Fishmonger | `entities/yeti` | 01 (5) | Broad yeti fish seller with apron, fish basket and chalk-dusted paws. |
+| Gullet's Cousins | `entities/frogfolk` | 03b (8) | Frogfolk ferry crew with poles and practical river hats; ensemble. |
+| Lead Drover | `entities/centaur` | 03c, 04c (2) | Broad centaur with a wagon sash and booming singer’s posture. |
+| Lighthouse Keeper | `entities/merfolk` | 01 (1) | Merfolk keeper with brass lamp and weatherproof sea-green cape. |
+| Masked choir singer | `entities/burrowfolk` | 07l, 07r, 08 (10) | Burrowfolk singer with painted bark mask, humming crystal and plum choir cloak. |
+| Muddy prospector | `entities/burrowfolk` | 05a (2) | Burrowfolk with muddy boots, soup bowl and battered wheelbarrow. |
+| Orange Captain | `entities/yeti` | 01 (1) | Yeti river captain with orange-weathered sailing coat and knotted rope. |
+| Path-Keeper | `characters/bigfoot` | 05b (3) | Old cream-furred bigfoot with greying moss-brown mane and enormous knotted-page visitors book. |
+| Relay Runner | `entities/centaur` | 03c, 04c, 07h, 07l (11) | Centaur relay worker with road sash and letter pouch; recurring occupational role. |
+| Road Boss | `entities/centaur` | 04c (5) | Centaur repair foreman with measuring rod, work apron and bright road sash. |
+| Road mule | `entities/mule` | 07r (3) | Ordinary laden road mule; non-speaking working animal, keep species art. |
+| Road-Warden | `entities/centaur` | 04a (7) | Centaur road warden in road-stitched sash carrying spare marker ribbons. |
+| Rush drover | `entities/centaur` | 02 (4) | Centaur wagon drover with road-dust coat, feed bag and impatient stance. |
+| Rush prospector | `entities/burrowfolk` | 05c (5) | Burrowfolk in dusty workwear with an oversized pry bar; stubborn but approachable. |
+| Seal-Keeper | `entities/legend_dragon` | 08 (31) | Ancient seal dragon, patient eyes and weathered scales; existing legend-dragon silhouette is intentional. |
+| Selkie Grandmother | `entities/selkie` | 01 (5) | Silver-haired selkie elder with seal cloak, teal knit shawl and bundled travel blanket. |
+| Skywardens | `entities/skywardens` | 06, 07r (49) | Mixed silver-and-violet uniformed order; keep ensemble art for the group. |
+| Stall Witch | `entities/witch_order` | 07l (4) | Single market witch with pointed hat, charm bundles and a patient sales smile. |
+| Tib's pony | `entities/pony` | 04c (1) | Ordinary friendly pack pony; non-speaking working animal. |
+| Tired carter | `entities/faun` | 05a (1) | Weary faun with travel pack, rolled sleeves and gem pouch. |
+| Tour Guide | `entities/centaur` | 01 (1) | Centaur quay guide with pointer and blank rolled route map. |
+| Warden Clerk | `entities/skywardens` | 07h (5) | Individual Skywarden clerk, uniform, tidy blank ledger and travel stamp. |
+| Warden Engineers | `entities/skywardens` | 06 (1) | Mixed Skywarden repair crew with measuring rods and blank plans; ensemble. |
+| Young Gatherer | `characters/dragonling` | 05b (4) | Pale mint quadrupedal dragonling girl with orange wings and small stone-gathering bag. |
+
+### Speakers absent from the cast
+
+| Character | Basis | Visual brief |
+|---|---|---|
+| Odo | burrowfolk | Cheerful badger prospector in russet cap and indigo vest beside a gravel-filled wheelbarrow. |
+| Corbin | burrowfolk | Weary badger father in faded olive travel coat and worn shoulder pack; tender expression. |
+| Posy | burrowfolk | Small badger child in ochre pinafore and rust scarf, holding one humming pink stone. |
+| Rook | burrowfolk | Young badger choir scout in plum cloak, bark mask pushed up and rose crystal at the neck. |
+| Boulder claimants | burrowfolk + faun | Two contrasting travelers, badger prospector and russet faun, each insisting on a claim; use existing individual species figures. |
+
+Odo, Corbin, Posy and Rook are assigned Burrowfolk: the established badger-like traveling people fit the gold-rush families and provide a second people within the Deep Hollow faction. Rook’s allegiance is shown by clothing, mask and crystal, not a new species. Posy and Corbin are separate figures so their return on foot still works. No narration, mechanics or canon lore changes.
+
+### Expansion figures already delivered before this issue
+
+| Character | Figure | Visual brief |
+|---|---|---|
+| Old Wick | `cast/old_wick` | Old moss-green frogfolk lamplighter, cloudy eye, indigo coat and lamp charms. |
+| Mrs. Tuft | `cast/mrs_tuft` | Older sheeple barge grocer with spectacles, teal shawl and jar satchel. |
+| Postmaster Quill | `cast/postmaster_quill` | Tawny griffin postmaster with spectacles and leather mail satchel. |
+| Innkeeper Flint | `cast/innkeeper_flint` | Slate-grey stone troll innkeeper with tiny nightcap and apron. |
+| Granny Ash | `cast/granny_ash` | Silver-streaked manticore grandmother with patched violet shawl. |
+| Corporal Tibbet | `cast/corporal_tibbet` | Slate-blue griffin cadet with cream chest, green sash and clipboard. |
+| Old Corran | `cast/old_corran` | Dapple-grey centaur relay singer with silver mane and wooden flute. |
+| Nim | `cast/nim` | Mint dragonling child with bell collar. |
+| Pib | `cast/pib` | Tiny twig-and-leaf bramble sprite. |
+| Bracken | `cast/bracken_swiftmile` | Chestnut centaur relay runner with green sash and letter satchel. |
+| Burdock | `cast/burdock` | Russet faun provisioner with leafy vest, bucket and abacus. |
+| Mother Bracken | `cast/mother_bracken` | Travel-weary faun mother with shawl, braid and bags. |
+| Littlest Bracken | `cast/littlest_bracken` | Cinnamon faun child in oversized blue scarf. |
+| Brisk | `cast/brisk` | Bay centaur scout with blue road sash, map and feather markers. |
+| Perrin Nine-Verse | `cast/perrin_nine_verse` | Russet centaur poet with plum coat and verse book. |
+| Bryony | `cast/bryony` | Mint dragonling collector with cream token pouch. |
+| Lady Fleecewick | `cast/lady_fleecewick` | Older sheeple collector with lavender curls, teal coat and brooch. |
+| Cadet Linnet | `cast/cadet_linnet` | Slate-blue griffin cadet with green cloak and bronze badge. |
+| Tansy | `cast/tansy` | Small russet faun child with yellow scarf and pink humming stone. |
+
+### Issue 170 delivery
+
+Eight new figures replace the expansion’s remaining individually named recurring speakers: `odo`, `corbin`, `posy`, `rook`, `selkie_grandmother`, `path_keeper`, `young_gatherer`, and `courier_griffin`. Together with the figures already delivered above, every proper-named recurring speaker identified in the issue has an individual figure. Role-only stand-ins remain catalogued in the audit table for future commissions; groups and ordinary working animals retain their species figures.
+
+The unnamed boulder claimants now appear as **Burrowfolk Claimant** and **Faun Claimant** in all five scenes of their dispute, using two different existing species figures. This keeps them distinct without inventing names or new lore. Rook joins Linnet in all five scout scenes, including the check and the later crowd callback; Linnet is also restored to the fib branch. Odo, Corbin and Posy appear in both their introduction episodes and their downhill callbacks.
+
+The manifest records basis and scale; the chapters explicitly set the path-keeper to `large`, and Posy and the young gatherer to `small`, as required by the stage lookup. Chapter edits are limited to cast data. Generation prompts and references are recorded in [the illustration log](../campaigns/gemfall-illustrations.md#issue-170--remaining-expansion-speakers-2026-10-15). Review images and validation results are in [the review record](../reviews/issue-170/README.md).

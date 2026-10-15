@@ -503,6 +503,16 @@
           "requiresItem": "facet_unassigned",
           "goto": "scene_claim_boulder_nobodys"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk Claimant"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Faun Claimant"
+        }
       ]
     },
     "check_claim": {
@@ -518,7 +528,17 @@
       "onFailure": {
         "goto": "scene_soup_tent",
         "narration": "You measure the flags, count the footprints, and ask the crowd. Everybody gives a different answer, and two people give three. In the end the boulder settles it by humming so loudly that both prospectors hop off at once, and neither of them wants to get back on."
-      }
+      },
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk Claimant"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Faun Claimant"
+        }
+      ]
     },
     "scene_claim_boulder_share": {
       "type": "story",
@@ -529,6 +549,16 @@
           "label": "Up the road to the soup tent",
           "icon": "hand",
           "goto": "scene_soup_tent"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk Claimant"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Faun Claimant"
         }
       ]
     },
@@ -542,6 +572,16 @@
           "icon": "spark",
           "goto": "scene_soup_tent"
         }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk Claimant"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Faun Claimant"
+        }
       ]
     },
     "scene_claim_boulder_nobodys": {
@@ -553,6 +593,16 @@
           "label": "Up the road to the soup tent",
           "icon": "gem",
           "goto": "scene_soup_tent"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk Claimant"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Faun Claimant"
         }
       ]
     },
