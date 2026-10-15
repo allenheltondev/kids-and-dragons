@@ -470,8 +470,16 @@
       ],
       "cast": [
         {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "cast/cult_frogfolk",
+          "name": "Masked choir singer"
+        },
+        {
           "figure": "entities/burrowfolk",
-          "name": "Burrowfolk choir singer"
+          "name": "Masked choir singer"
         }
       ]
     },
@@ -488,8 +496,16 @@
       ],
       "cast": [
         {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "cast/cult_frogfolk",
+          "name": "Masked choir singer"
+        },
+        {
           "figure": "entities/burrowfolk",
-          "name": "Burrowfolk choir singer"
+          "name": "Masked choir singer"
         }
       ]
     },
@@ -506,8 +522,16 @@
       ],
       "cast": [
         {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "cast/cult_bigfoot",
+          "name": "Masked choir singer"
+        },
+        {
           "figure": "entities/burrowfolk",
-          "name": "Burrowfolk choir singer"
+          "name": "Masked choir singer"
         }
       ]
     },
@@ -524,8 +548,16 @@
       ],
       "cast": [
         {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "cast/cult_frogfolk",
+          "name": "Masked choir singer"
+        },
+        {
           "figure": "entities/burrowfolk",
-          "name": "Burrowfolk choir singer"
+          "name": "Masked choir singer"
         }
       ]
     },
@@ -574,8 +606,16 @@
       },
       "cast": [
         {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "cast/cult_bigfoot",
+          "name": "Masked choir singer"
+        },
+        {
           "figure": "entities/burrowfolk",
-          "name": "Burrowfolk choir singer"
+          "name": "Masked choir singer"
         }
       ]
     },
@@ -1880,6 +1920,12 @@
           "label": "Go back to the table one last time",
           "icon": "forward",
           "goto": "scene_who_keeps_table"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/caravan_master",
+          "name": "Caravan Master"
         }
       ]
     },
