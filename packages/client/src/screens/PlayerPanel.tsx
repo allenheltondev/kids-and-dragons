@@ -255,12 +255,15 @@ function StatRow({ me }: { me: PartyMember }): ReactElement {
 function InventoryGrid({
   entries,
   questItems,
+  coins,
   items,
   selectedIndex,
   onSelect,
 }: {
   entries: InventoryEntry[];
   questItems: string[];
+  /** The party's shared purse — the same number on every phone. */
+  coins: number;
   items: ItemCatalog | null;
   selectedIndex: number | null;
   onSelect: (index: number | null) => void;
@@ -271,6 +274,10 @@ function InventoryGrid({
       <h3 className="inv__heading">
         <Icon name="bag" />
         <span>Your things</span>
+        <span className="inv__purse kad-chip" aria-label={`The party's purse: ${String(coins)} ${coins === 1 ? "coin" : "coins"}`}>
+          <Icon name="coin" />
+          <span aria-hidden="true">{coins}</span>
+        </span>
       </h3>
       <ul className="inv__grid">
         {slots.map((entry, index) => {
@@ -1466,6 +1473,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         <InventoryGrid
           entries={inventory}
           questItems={me.character.questItems}
+          coins={state.coins ?? 0}
           items={items}
           selectedIndex={selectedIndex}
           onSelect={(index) => {

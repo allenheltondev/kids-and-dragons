@@ -231,6 +231,13 @@ const GLYPHS: Record<string, ReactElement> = {
       <path d="M6 19l-3-5 6 2m3-3-2-6 6 2m2-3 4 1" />
     </g>
   ),
+  // The party's purse: a coin with a stamped center.
+  coin: (
+    <g {...S}>
+      <circle cx="12" cy="12" r="8.5" />
+      <circle cx="12" cy="12" r="4.5" />
+    </g>
+  ),
 
   // --- Keeping your characters (architecture §4.5) ----------------------
   // The one adult-facing corner of the game, so these read as *stationery and
@@ -272,6 +279,12 @@ const ALIASES: Record<string, string> = {
   item: "bag",
   inventory: "bag",
   shield: "guard",
+  coins: "coin",
+  // The Supper Bundle borrows the painted cake until it has a painting of its
+  // own; inventory icons must be painted (screens.test.tsx). Drop
+  // painted/supper.webp into artwork.ts and delete this line.
+  supper: "cake",
+  purse: "coin",
   moon: "rest",
   // Interface synonyms.
   roll: "d20",

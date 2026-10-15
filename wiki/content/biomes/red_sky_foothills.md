@@ -3,7 +3,7 @@ title: Red Sky Foothills
 id: biome.red_sky_foothills
 type: biome
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["volcanic_hills", "crystal_veins", "lava_tubes", "caves", "dragonling_homeland"]
 danger_level: high
@@ -96,6 +96,9 @@ related:
   - id: location.redspire_citadel
     type: location
     relationship: biome
+  - id: npc.burrowfolk
+    type: npc
+    relationship: secondary_locations
 assets:
   primary: assets/biomes/red_sky_foothills/portrait.webp
   primaryFull: assets/biomes/red_sky_foothills/bg.webp
@@ -108,7 +111,7 @@ ai_context:
   visual_style: "Ochre and black hills, glowing cracks, crystal outcrops, cave mouths, scorched grasses, volcanic dust, sheltered settlements, and the mountain dominating the northern horizon."
   common_encounters: "Cave exploration, eruption warnings, crystal disputes, rescue routes, dragonling communities, unstable terrain, and changes originating from Mount Red Sky."
   lore_highlights: "The foothills are what the mountain has been building with its tantrums since before anyone kept count - hills of cooled temper, laced with lava tubes and crystal."
-  related_entities: "location.mount_red_sky, biome.eastern_plains, feature.great_river, biome.expanse, biome.enchanted_woods, biome.plains, location.mount_red_sky, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, biome.frostfang_peaks, campaign.dawn_of_the_red_sky, campaign.gemfall, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, faction.skywardens, feature.great_river, route.northern_river_bridge, item.crimson_shard, location.mount_red_sky, location.mount_red_sky, location.redspire_citadel"
+  related_entities: "location.mount_red_sky, biome.eastern_plains, feature.great_river, biome.expanse, biome.enchanted_woods, biome.plains, location.mount_red_sky, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, biome.frostfang_peaks, campaign.dawn_of_the_red_sky, campaign.gemfall, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, faction.skywardens, feature.great_river, route.northern_river_bridge, item.crimson_shard, location.mount_red_sky, location.mount_red_sky, location.redspire_citadel, npc.burrowfolk"
   writing_guidance: "This is the dragonling homeland. Mount Red Sky itself is not. Gemstones are gathered from naturally released material rather than mined from living veins."
   generation_hints: "Tremors, ash, heat, and crystal changes are closely watched. Communities maintain warning systems, safe caves, and evacuation routes."
 layout: biomes
@@ -196,6 +199,9 @@ Every gemstone in the realm started here, which makes the foothills the realm's 
 ### Locations
 - [Mount Red Sky](/locations/mount_red_sky/) `Locations` `Contains Sites` `Biome` `Access From`
 - [Redspire Citadel](/locations/redspire_citadel/) `Biome`
+
+### Npcs
+- [Burrowfolk](/npcs/burrowfolk/) `Secondary Locations`
 
 ### Routes
 - [Northern River Bridge](/routes/northern_river_bridge/) `Connects`

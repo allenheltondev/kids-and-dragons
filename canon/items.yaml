@@ -43,6 +43,7 @@ item_ids:
   - marsh_lantern
   - sunbloom_draught
   - honeycake
+  - supper_bundle
   - mosslight_jar
   - brave_whistle
   - thunder_acorn
@@ -220,6 +221,42 @@ items:
       effect: { type: heal, amount: 2 }
     relationships:
       found_in: [location.bramblewood, biome.sunward_fields]
+      dropped_by: []
+      quests: []
+      factions: []
+
+  - id: item.supper_bundle
+    title: "Supper Bundle"
+    canon_status: newly_defined
+    category: provision
+    rarity: common
+    featured: false
+    tags: [provision, healing, roads, common]
+    short_description: >-
+      Bread, a heel of cheese and a smoked sausage, knotted up in a cloth.
+      Supper for one, or a peace offering for something hungrier.
+    visual_identity: >-
+      A cloth bundle tied at the top, a sausage end poking out of one side and
+      a crust of bread out of the other.
+    acquisition: >-
+      Handed round wherever travelers eat together on the roads north: caravan
+      cookfires, sausage carts, grandmothers' tables. Nobody sells one; it is
+      what you are given when somebody decides you are company.
+    common_story_uses: >-
+      What a party shares with tired couriers, or rolls down a trail to a
+      hungry wolf pack. Feeding someone costs a bundle, and the bundle is gone.
+    canon_constraints: >-
+      Ordinary food. It fills a stomach and calms a hungry animal, and does
+      nothing a meal could not do.
+    standard_behavior: >-
+      Goes stale in about three days, and nobody has ever let one last that long.
+    mechanics:
+      kind: consumable
+      icon: supper
+      text: "Supper for one, or for someone hungry. Heal 1 HP."
+      effect: { type: heal, amount: 1 }
+    relationships:
+      found_in: [biome.eastern_plains, location.exchange]
       dropped_by: []
       quests: []
       factions: []

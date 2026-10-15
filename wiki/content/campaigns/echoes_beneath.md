@@ -3,7 +3,7 @@ title: Echoes Beneath
 id: campaign.echoes_beneath
 type: campaign
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
 draft: true
 tags: ["side_campaign", "underground", "mystery", "cult"]

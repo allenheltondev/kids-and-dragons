@@ -248,7 +248,7 @@
       "discovers": [
         "npc.stone_troll"
       ],
-      "narration": "The toll-troll is called Old Lintel, and he is mostly moss. One huge palm lies flat on the first stone, the way you would rest a hand on a sleeping dog. The toll is a story or a riddle from each of you, and he hears every single one in full. Slowly. A bird builds half a nest on his shoulder while he listens.",
+      "narration": "The toll-troll is called Old Lintel, and he is mostly moss. One huge palm lies flat on the first stone, the way you would rest a hand on a sleeping dog. The toll is a story or a riddle from every traveler, and he hears every single one in full. Slowly. A bird builds half a nest on his shoulder while he listens.",
       "cast": [
         {
           "figure": "cast/old_lintel",
@@ -496,7 +496,13 @@
           "label": "Offer it a honeycake, the way the ferrymen do",
           "icon": "cake",
           "requiresItem": "honeycake",
-          "goto": "scene_drake_deal"
+          "goto": "scene_drake_deal",
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": "honeycake"
+            }
+          ]
         },
         {
           "id": "grab",
@@ -581,7 +587,7 @@
       },
       "onDefeat": {
         "goto": "scene_swept",
-        "narration": "A tail as long as a canoe sweeps you all, quite politely, off the shelf and into the current. Rates are rates."
+        "narration": "A tail as long as a canoe sweeps you, quite politely, off the shelf and into the current. Rates are rates."
       }
     },
     "scene_crossing_bank": {
@@ -653,7 +659,7 @@
       "discovers": [
         "individual.old_ossley"
       ],
-      "narration": "That is Old Ossley. He ferries when the stones are under, and he has never once asked for coin. He looks at each of you in turn and asks for one thing each: the song you hum when nobody is listening, the last thing you were proud of, and a promise to carry something for somebody, someday. He does not say what. He does not say who.",
+      "narration": "That is Old Ossley. He ferries when the stones are under, and he has never once asked for coin. He looks you over and asks for three small things: the song you hum when nobody is listening, the last thing you were proud of, and a promise to carry something for somebody, someday. He does not say what. He does not say who.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -745,7 +751,7 @@
       "choices": [
         {
           "id": "hold_on",
-          "label": "Hold on to each other",
+          "label": "Hold on tight",
           "icon": "hand",
           "goto": "scene_mouth"
         },
@@ -990,7 +996,7 @@
       },
       "onFailure": {
         "goto": "scene_river_view",
-        "narration": "One, two, HEAVE! Nothing. Again! Nothing. The mule sighs, leans into its harness, and pulls the whole wagon out by itself, looking at all of you as if you were luggage."
+        "narration": "One, two, HEAVE! Nothing. Again! Nothing. The mule sighs, leans into its harness, and pulls the whole wagon out by itself, looking at you as if you were luggage."
       },
       "art": "scenes/gemfall/east-road-markers"
     },

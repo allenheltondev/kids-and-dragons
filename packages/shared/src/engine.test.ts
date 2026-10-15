@@ -12,6 +12,7 @@ import {
 import type { EngineContext, EngineResult } from "./engine.js";
 import {
   currentActor,
+  currentActorId,
   legalActions,
   legalItemTargets,
   legalMoves,
@@ -146,10 +147,7 @@ function fightToTheEnd(state: RunState, context: EngineContext): RunState {
       : undefined;
 
     const finish: ClientIntent[] = attack
-      ? [
-          { type: "COMBAT_ACTION", abilityId: attack.abilityId, targetId: attack.targets[0]! } as ClientIntent,
-          { type: "END_TURN" } as ClientIntent,
-        ]
+      ? [{ type: "COMBAT_ACTION", abilityId: attack.abilityId, targetId: attack.targets[0]! } as ClientIntent]
       : [{ type: "END_TURN" } as ClientIntent];
 
     for (const intent of finish) {
@@ -157,6 +155,17 @@ function fightToTheEnd(state: RunState, context: EngineContext): RunState {
       if (result.error) return current;
       current = result.state;
       if (!current.encounter) return current;
+    }
+    // An action with no steps left ends the turn by itself (engine.ts
+    // `finishTurnIfSpent`); one with steps left still has to be handed on.
+    if (attack && current.encounter && currentActorId(current.encounter) === actor.id) {
+      const result = applyIntent(
+        current,
+        { playerId: member.playerId, intent: { type: "END_TURN" } },
+        context,
+      );
+      if (result.error) return current;
+      current = result.state;
     }
   }
   return current;
@@ -762,6 +771,37 @@ describe("species gating at the prompt (architecture §5)", () => {
     const result = applyIntent(state, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "over" } }, context);
     expect(result.error?.code).toBe("ILLEGAL");
   });
+
+  it("refuses a `when`-hidden choice exactly as it refuses a requiresItem-hidden one (#158)", () => {
+    const chapter = makeChapter();
+    const clearing = chapter.scenes["scene_clearing"] as StoryScene;
+    clearing.choices = [
+      ...clearing.choices,
+      { id: "by_key", label: "Use the key", icon: "key", goto: "scene_shrine", requiresItem: "rusted_key" },
+      {
+        id: "by_facets",
+        label: "Set the stones",
+        icon: "gem",
+        goto: "scene_shrine",
+        when: { count: { of: "facet_*", min: 2 } },
+      },
+    ];
+    const context = ctx({ chapter });
+    const state = started(context, [{ playerId: "p_1", intent: CREATE_UNICORN }]);
+    if (state.prompt?.kind !== "choice") throw new Error("expected a choice prompt");
+    // Hidden, not disabled: neither is offered at all.
+    expect(state.prompt.options.map((o) => o.id)).toEqual(["squeeze"]);
+    expect(currentChoices(state, chapter).map((c) => c.id)).toEqual(["squeeze"]);
+
+    const choose = (choiceId: string) =>
+      applyIntent(state, { playerId: "p_1", intent: { type: "CHOOSE", choiceId } }, context);
+    const byItem = choose("by_key");
+    const byWhen = choose("by_facets");
+    expect(byItem.error?.code).toBe("ILLEGAL");
+    expect(byWhen.error?.code).toBe(byItem.error?.code);
+    expect(byWhen.error?.message).toBe(byItem.error?.message.replace("by_key", "by_facets"));
+    expect(byWhen.state).toEqual(state);
+  });
 });
 
 describe("story turns (spec §6.1)", () => {
@@ -1363,6 +1403,57 @@ describe("a full walk of a chapter", () => {
      * playthrough answering it forever instead of ending anybody's turn.
      */
     expect(begun.state.prompt).toBeNull();
+  });
+
+  it("ends a turn by itself once the action is spent, and runs the monsters", () => {
+    /*
+     * Five taps an attack used to take: card, target, confirm, End turn,
+     * confirm. §7.2 is "move, then one action", so once the action is spent
+     * there is nothing a phone could legally send but END_TURN; the engine
+     * sends it for them (`finishTurnIfSpent`). Get Ready, which has no
+     * target, is the simplest action to prove it with.
+     */
+    const context = ctx({ rng: fixedRng(20) });
+    const readying = walk(
+      seatedParty(context),
+      [
+        { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+        { playerId: "p_2", intent: { type: "ROLL" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+        { playerId: "p_1", intent: { type: "READY", ready: true } },
+      ],
+      context,
+    ).state;
+    // The last READY by hand: `walk` would helpfully play the whole fight out.
+    const begun = applyIntent(
+      readying,
+      { playerId: "p_2", intent: { type: "READY", ready: true } },
+      context,
+    ).state;
+    const encounter = begun.encounter!;
+    const actor = currentActor(encounter)!;
+    expect(actor.side).toBe("party");
+    const owner = begun.party.find((m) => m.character.id === actor.id)!;
+
+    const readied = applyIntent(
+      begun,
+      { playerId: owner.playerId, intent: { type: "COMBAT_ACTION", abilityId: "ready" } },
+      context,
+    );
+    expect(readied.error).toBeUndefined();
+    const after = readied.state.encounter!;
+    // The clock moved on, and never stopped on a monster: their turns ran in
+    // the same intent, so the next figure on the clock is a hero again.
+    expect(currentActorId(after)).not.toBe(actor.id);
+    expect(currentActor(after)?.side).toBe("party");
+    // Nothing left for the old phone to say.
+    const late = applyIntent(
+      readied.state,
+      { playerId: owner.playerId, intent: { type: "END_TURN" } },
+      context,
+    );
+    expect(late.error?.code).toBe("FORBIDDEN");
   });
 
   it("refuses a combat intent from a player whose turn it is not", () => {
@@ -2164,6 +2255,154 @@ describe("effects", () => {
     expect(state.xpEarned).toBe(50);
   });
 
+  it("fills and spends the party purse, never below zero", () => {
+    const context = ctx();
+    let state = applyEffects(seatedParty(context), [{ type: "grantCoins", amount: 6 }], context);
+    expect(state.coins).toBe(6);
+    state = applyEffects(state, [{ type: "spendCoins", amount: 4 }], context);
+    expect(state.coins).toBe(2);
+    state = applyEffects(state, [{ type: "spendCoins", amount: 5 }], context);
+    expect(state.coins).toBe(0);
+  });
+
+  it("takes an item from whoever holds it, first preference first", () => {
+    const context = ctx();
+    let state = applyEffects(
+      seatedParty(context),
+      [
+        { type: "grantItem", itemId: "sunbloom_draught", to: "p_2" },
+        { type: "grantItem", itemId: "brave_whistle", to: "p_1" },
+        { type: "grantItem", itemId: "brave_whistle", to: "p_1" },
+      ],
+      context,
+    );
+    // Preference order, not bag order: the whistle is wanted first.
+    state = applyEffects(state, [{ type: "takeItem", itemId: ["brave_whistle", "sunbloom_draught"] }], context);
+    expect(state.party[0]!.character.inventory.map((e) => e.itemId)).toEqual(["brave_whistle"]);
+    expect(state.party[1]!.character.inventory.map((e) => e.itemId)).toEqual(["sunbloom_draught"]);
+
+    // Falls through to the next id once the first is gone.
+    state = applyEffects(state, [{ type: "takeItem", itemId: ["firecracker", "sunbloom_draught"] }], context);
+    expect(state.party[1]!.character.inventory).toEqual([]);
+
+    // Holding none of them is a no-op, not an error.
+    const before = state;
+    state = applyEffects(state, [{ type: "takeItem", itemId: "firecracker" }], context);
+    expect(state.party).toEqual(before.party);
+  });
+
+  it("takes a quest item, and a trinket's bonus goes with it", () => {
+    const context = ctx();
+    let state = applyEffects(
+      seatedParty(context),
+      [
+        { type: "grantQuestItem", itemId: "rusted_key" },
+        { type: "grantItem", itemId: "oak_token", to: "p_1" },
+      ],
+      context,
+    );
+    const withToken = state.party[0]!.character;
+    state = applyEffects(
+      state,
+      [
+        { type: "takeItem", itemId: "rusted_key" },
+        { type: "takeItem", itemId: "oak_token" },
+      ],
+      context,
+    );
+    expect(state.party.flatMap((m) => m.character.questItems)).not.toContain("rusted_key");
+    expect(state.party[0]!.character.inventory).toEqual([]);
+    expect(state.party[0]!.character.maxHp).toBeLessThanOrEqual(withToken.maxHp);
+  });
+
+  it("keeps the purse across a chapter start, seeded from the campaign when given", () => {
+    const start: ClientIntent = { type: "START_CHAPTER", chapterId: "bramblewood-01" };
+    const carried = applyEffects(seatedParty(ctx()), [{ type: "grantCoins", amount: 7 }], ctx());
+    const kept = applyIntent(carried, { playerId: "p_1", intent: start }, ctx());
+    expect(kept.state.coins).toBe(7);
+    const seeded = applyIntent(carried, { playerId: "p_1", intent: start }, ctx({ campaignCoins: 3 }));
+    expect(seeded.state.coins).toBe(3);
+  });
+
+  describe("a cost that is spent while the prompt waits", () => {
+    /** The clearing, plus a choice that hands over the party's draught. */
+    function clearingWithGift(type: "story" | "choice_point"): Chapter {
+      const chapter = makeChapter();
+      const clearing = chapter.scenes["scene_clearing"] as StoryScene;
+      chapter.scenes["scene_clearing"] = {
+        ...clearing,
+        type,
+        choices: [
+          ...clearing.choices,
+          {
+            id: "gift",
+            label: "Leave the draught for the shrine",
+            icon: "potion",
+            goto: "scene_shrine",
+            when: { item: "sunbloom_draught" },
+            effects: [{ type: "takeItem", itemId: "sunbloom_draught" }],
+          },
+        ],
+      } as Scene;
+      return chapter;
+    }
+
+    function atClearing(context: EngineContext): RunState {
+      let state = seatedParty(context);
+      state = applyEffects(
+        state,
+        [
+          { type: "grantItem", itemId: "sunbloom_draught", to: "p_1" },
+          { type: "damage", amount: 4, to: "p_1" },
+        ],
+        context,
+      );
+      state = applyIntent(state, { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }, context).state;
+      expect(state.prompt?.kind === "choice" && state.prompt.options.map((o) => o.id)).toContain("gift");
+      return state;
+    }
+
+    it("drops the option once the item is gone, and refuses a late tap on it", () => {
+      const context = ctx({ chapter: clearingWithGift("story") });
+      const drunk = applyIntent(
+        atClearing(context),
+        { playerId: "p_1", intent: { type: "USE_ITEM", itemId: "sunbloom_draught" } },
+        context,
+      );
+      expect(drunk.error).toBeUndefined();
+      const prompt = drunk.state.prompt;
+      expect(prompt?.kind === "choice" && prompt.options.map((o) => o.id)).not.toContain("gift");
+
+      const chooser = prompt?.kind === "choice" ? (prompt.forPlayerIds[0] ?? "p_1") : "p_1";
+      const late = applyIntent(drunk.state, { playerId: chooser, intent: { type: "CHOOSE", choiceId: "gift" } }, context);
+      expect(late.error?.code).toBe("ILLEGAL");
+      expect(late.state.sceneId).toBe("scene_clearing");
+    });
+
+    it("withdraws a vote cast for it, so the vote cannot carry it", () => {
+      const context = ctx({ chapter: clearingWithGift("choice_point") });
+      const voted = applyIntent(
+        atClearing(context),
+        { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "gift" } },
+        context,
+      );
+      expect(voted.error).toBeUndefined();
+      expect(voted.state.prompt?.kind === "choice" && voted.state.prompt.votes).toEqual({ p_2: "gift" });
+
+      const drunk = applyIntent(
+        voted.state,
+        { playerId: "p_1", intent: { type: "USE_ITEM", itemId: "sunbloom_draught" } },
+        context,
+      ).state;
+      expect(drunk.prompt?.kind === "choice" && drunk.prompt.votes).toEqual({});
+
+      // The vote finishes on what the party can still do.
+      let state = applyIntent(drunk, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } }, context).state;
+      state = applyIntent(state, { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "squeeze" } }, context).state;
+      expect(state.sceneId).toBe("check_squeeze");
+    });
+  });
+
   it("knocks characters down instead of killing them, and never ends the run", () => {
     const context = ctx();
     const state = applyEffects(seatedParty(context), [{ type: "damage", amount: 99, to: "party" }], context);
@@ -2602,19 +2841,22 @@ describe("items in a fight (spec §7.2's fourth universal action)", () => {
     expect(used.error).toBeUndefined();
     const combatant = used.state.encounter?.combatants.find((c) => c.id === member.character.id);
     expect(combatant?.rollBonus).toBe(2);
-    expect(used.state.encounter?.actionTaken).toBe(true);
+    // The item was the turn's one action, and a spent turn hands itself on
+    // (`finishTurnIfSpent`): the clock has moved off this hero.
+    expect(currentActorId(used.state.encounter!)).not.toBe(member.character.id);
     const bag = used.state.party
       .find((m) => m.playerId === member.playerId)!
       .character.inventory.map((e) => e.itemId);
     expect(bag).not.toContain("brave_whistle");
 
-    // The action is spent — a second item this turn is refused, and *kept*.
+    // The turn is over — a second item from the same phone is refused as not
+    // its turn any more, and *kept*.
     const again = applyIntent(
       used.state,
       { playerId: member.playerId, intent: { type: "USE_ITEM", itemId: "firecracker" } },
       context,
     );
-    expect(again.error?.code).toBe("ILLEGAL");
+    expect(again.error?.code).toBe("FORBIDDEN");
     expect(
       again.state.party
         .find((m) => m.playerId === member.playerId)!
@@ -2674,7 +2916,8 @@ describe("items in a fight (spec §7.2's fourth universal action)", () => {
     );
     expect(thrown.error).toBeUndefined();
     expect(thrown.state.encounter?.combatants.find((c) => c.id === targetId)?.hp).toBe(before - 3);
-    expect(thrown.state.encounter?.actionTaken).toBe(true);
+    // The throw was the action; the turn ended with it.
+    expect(currentActorId(thrown.state.encounter!)).not.toBe(member.character.id);
   });
 
   it("a no-op use is refused with the action and the item both intact", () => {
@@ -2709,19 +2952,20 @@ describe("items in a fight (spec §7.2's fourth universal action)", () => {
         .character.inventory.map((e) => e.itemId),
     ).toContain("sunbloom_draught");
 
-    // First whistle lands; a second, no stronger, is refused and kept.
-    const first = applyIntent(
-      state,
-      { playerId: member.playerId, intent: { type: "USE_ITEM", itemId: "brave_whistle" } },
-      context,
-    );
-    expect(first.error).toBeUndefined();
-    const rearmed = { ...first.state, encounter: { ...first.state.encounter!, actionTaken: false } };
-    rearmed.party
-      .find((m) => m.playerId === member.playerId)!
-      .character.inventory = [{ itemId: "brave_whistle", kind: "consumable" }];
+    // A whistle no stronger than the bonus already in place is refused and
+    // kept. The bonus is put there directly: a first whistle would spend the
+    // action and, with it, the turn (`finishTurnIfSpent`).
+    const braced = {
+      ...state,
+      encounter: {
+        ...state.encounter!,
+        combatants: state.encounter!.combatants.map((c) =>
+          c.id === member.character.id ? { ...c, rollBonus: 2 } : c,
+        ),
+      },
+    };
     const second = applyIntent(
-      rearmed,
+      braced,
       { playerId: member.playerId, intent: { type: "USE_ITEM", itemId: "brave_whistle" } },
       context,
     );
@@ -2786,5 +3030,107 @@ describe("items in a fight (spec §7.2's fourth universal action)", () => {
     );
     expect(result.error?.code).toBe("ILLEGAL");
     expect(result.state.party[0]!.character.inventory.map((e) => e.itemId)).toContain("firecracker");
+  });
+});
+
+describe("narration variants and tokens (#159)", () => {
+  /** The fixture chapter with variants and tokens on the shrine and the failed squeeze. */
+  function chapterWithVariants(): Chapter {
+    const chapter = makeChapter();
+    const shrine = chapter.scenes["scene_shrine"] as StoryScene;
+    shrine.variants = [
+      // The shrine's own onEnter grants the key, so this holds on arrival.
+      { when: { item: "rusted_key" }, text: "The key hums for {party}." },
+      { when: { flag: "never_set" }, text: "This never reads." },
+      { when: { count: { of: "facet_*", max: 0 } }, text: "Nothing glitters yet.", at: "start" },
+    ];
+    shrine.choices = [
+      { id: "east", label: "Lead {party} east ({facets} facets)", icon: "arrow", goto: "encounter_wisps" },
+    ];
+    const squeeze = chapter.scenes["check_squeeze"];
+    if (squeeze?.type !== "check") throw new Error("fixture changed");
+    squeeze.onFailure.variants = [
+      { when: { partySize: { min: 2 } }, text: "Luckily, {party} pull each other free." },
+      { when: { partySize: { max: 1 } }, text: "You pull yourself free." },
+    ];
+    return chapter;
+  }
+
+  function atClearing(context: EngineContext): RunState {
+    return walk(
+      seatedParty(context),
+      [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }],
+      context,
+    ).state;
+  }
+
+  it("leaves narration exactly as authored when a scene has no variants or tokens", () => {
+    const context = ctx({ chapter: chapterWithVariants() });
+    expect(atClearing(context).narration).toBe("A wall of thorns twice your height.");
+  });
+
+  it("composes scene variants after onEnter, in order, and fills tokens in text and labels", () => {
+    const context = ctx({ chapter: chapterWithVariants() });
+    const state = walk(
+      atClearing(context),
+      [{ playerId: "p_1", intent: { type: "CHOOSE", choiceId: "over" } }],
+      context,
+    ).state;
+    expect(state.sceneId).toBe("scene_shrine");
+    expect(state.narration).toBe(
+      [
+        "Nothing glitters yet.",
+        "A small stone shrine, half-swallowed by roots.",
+        "The key hums for both of you.",
+      ].join("\n\n"),
+    );
+    if (state.prompt?.kind !== "choice") throw new Error("expected a choice prompt");
+    expect(state.prompt.options.map((o) => o.label)).toEqual(["Lead both of you east (no facets)"]);
+  });
+
+  it("shows branch narration variants on the scene the branch leads to", () => {
+    const context = ctx({ chapter: chapterWithVariants(), rng: fixedRng(1) });
+    const state = walk(
+      atClearing(context),
+      [
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+        { playerId: "p_2", intent: { type: "ROLL" } },
+      ],
+      context,
+    ).state;
+    expect(state.sceneId).toBe("scene_scratched");
+    expect(state.narration).toBe(
+      [
+        "You get through, but the thorns take their toll.",
+        "Luckily, both of you pull each other free.",
+        "Scratched, but through.",
+      ].join("\n\n"),
+    );
+  });
+
+  it("stores the composed text, so a reload mid-scene reads the same words", () => {
+    const context = ctx({ chapter: chapterWithVariants() });
+    const state = walk(
+      atClearing(context),
+      [{ playerId: "p_1", intent: { type: "CHOOSE", choiceId: "over" } }],
+      context,
+    ).state;
+
+    // A reload is a fresh copy of the persisted JSON.
+    const reloaded = JSON.parse(JSON.stringify(state)) as RunState;
+    expect(reloaded.narration).toBe(state.narration);
+    expect(reloaded.prompt).toEqual(state.prompt);
+
+    // And it is not recomputed against a party that has since changed: the
+    // words were fixed when the scene opened.
+    for (const member of reloaded.party) member.character.questItems = ["facet_ember"];
+    const reconnected = applyIntent(
+      reloaded,
+      { playerId: "p_2", intent: { type: "READY", ready: true } },
+      context,
+    ).state;
+    expect(reconnected.sceneId).toBe("scene_shrine");
+    expect(reconnected.narration).toBe(state.narration);
+    expect(reconnected.narration).not.toContain("{");
   });
 });

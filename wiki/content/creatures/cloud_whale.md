@@ -3,7 +3,7 @@ title: Cloud Whale
 id: creature.cloud_whale
 type: creature
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["ambient", "sky", "majestic", "semi_sapient"]
 classification: ambient_creature

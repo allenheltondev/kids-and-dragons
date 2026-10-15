@@ -155,6 +155,58 @@ cast these scenes assumed, for example, that the MossHome runner and the Eldest 
 because MossHome is a bigfoot town). If you think a character is a different people, say so in the
 PR and draw them as that.
 
+### A4. Gemfall expansion: named speakers still on a generic stand-in
+
+Found by auditing every `cast` entry in `content/chapters/gemfall-*.json` after the early/late
+cast-figure PRs (#174 to #176). Those gave figures to Old Wick, Mrs. Tuft, Postmaster Quill,
+Innkeeper Flint, Granny Ash, Corporal Tibbet, Cadet Linnet, Bryony, Lady Fleecewick, Tansy and the
+rest of the table above. What is left is below. "Scenes" counts cast appearances (a scene that
+casts the character), "chapters" the chapters they are in. Same contract as section 3: `id`,
+`basis`, `scale`, `look`, then point the listed `name` at `cast/<id>`. For characters whose `name`
+is a role ("Relay Runner"), the figure stands for that one person wherever the role appears.
+
+**Priority 1: recurring (3 or more chapters, or 10+ scenes). Do these first.**
+
+| id | name(s) in content | basis | scale | look |
+|---|---|---|---|---|
+| `seal_keeper` | Seal-Keeper, The Seal-Keeper (gemfall-08; 31 scenes, 1 chapter, the finale's only speaker) | legend_dragon | colossal | a dragon so old its scales have turned to gemstone at the edges; embermoths dusting its nose; patient, long-looking, heavy-lidded; currently the generic legend dragon, which makes the finale's one speaker look like a poster |
+| `brassbuckle_scout` | Brassbuckle scout (gemfall-03a, 04a, 05a; 17 scenes, 3 chapters) | burrowfolk | small | one of six Burrowfolk in matching brass hats; quick, twitchy, rope-moving; brass hat with a dent, a coil of queue rope over one shoulder |
+| `brassbuckle_recordkeeper` | Brassbuckle recordkeeper (gemfall-03a, 04a, 05a; 17 scenes, 3 chapters) | burrowfolk | small | same brass hat and coat as the scout, but earnest and ink-stained; a thick notebook and a pencil on a string; must read as the scout's colleague, not a copy |
+| `relay_runner` | Relay Runner (gemfall-03c, 04c, 07h, 07l; 11 scenes, 4 chapters) | centaur | large | a she-centaur relay-runner, breathless mid-stride, rolled notes in a chest bandolier, green relay sash. Must differ from `bracken_swiftmile` (chestnut, saddle satchel): lean, dark bay, braided mane tied up for speed |
+| `masked_choir_singer` | Masked choir singer (gemfall-07l, 07r, 08; 10 scenes, 3 chapters) | cult_bigfoot | large | a Deep Hollow choir member mid-note, mouth open behind a painted bark mask pushed half up; robe in the cult's dark palette; a small humming crystal on a string. Match `cult_bigfoot` and `cult_frogfolk` figures, but a third look so a crowd reads as mixed peoples |
+
+**Priority 2: several scenes in one chapter (4 to 8 scenes).**
+
+| id | name(s) in content | basis | scale | look |
+|---|---|---|---|---|
+| `bell_code_expert` | Bell-Code Expert (gemfall-05c; 8 scenes) | dragonling | small | a small, fast-talking dragonling child with a hand bell on each wrist; goes quiet and still when the unrung bell is mentioned. Distinct from `nim` (mint) |
+| `gullets_cousin` | Gullet's Cousins (gemfall-03b; 8 scenes) | frogfolk | small_to_medium | the ribbon-crew foreman: frogfolk wearing three hats stacked; holds a ribbon strung with tiny bells. Family resemblance to `gullet` (notched hat), but not her |
+| `road_warden` | Road-Warden (gemfall-04a; 7 scenes) | centaur | large | centaur waystation warden at a table of sashes, three spools of thread in her mouth, needle pinned to her sleeve, a half-unpicked map sash over one arm |
+| `fishmonger` | Fishmonger (gemfall-01; 5 scenes) | yeti | large | yeti fishmonger looking north at a herring; apron, a pail of fish, an expression of dignified calculation |
+| `selkie_grandmother` | Selkie Grandmother (gemfall-01; 5 scenes) | selkie | medium | grey-pelted selkie grandmother in an oilskin shawl, a bundle of everything the family owns on her back; quiet, dignified, unimpressed by rush prices. Not `tidewell` |
+| `road_boss` | Road Boss (gemfall-04c; 5 scenes) | centaur | large | broad centaur road boss with a marker post on each shoulder and a mud-spattered sash; puffing, good-humoured |
+| `warden_clerk` | Warden Clerk (gemfall-07h; 5 scenes) | skywardens | medium | Skywarden clerk with a heavy pass stamp and ink pad; neat, impassive; must not duplicate `pellam` (different people, different build) |
+| `rush_prospector` | Rush prospector (gemfall-05c; 5 scenes), Muddy prospector (05a; 2), Burrowfolk prospector (04b, 06; 4) | burrowfolk | small | the stubborn "right, right" prospector with an enormous pry bar, mud to the knees, hat full of gem-dust; one figure for the gold-rush crowd's burrowfolk (the 4 `Burrowfolk prospector` entries may share it) |
+| `courier_griffin` | Courier Griffin (gemfall-01; 4 scenes) | griffin | large | young Griffin Post courier who eats a whole loaf in one gulp; wings half-out in a bow, satchel, loaf crumbs on the beak. Not `postmaster_quill` (tawny, spectacles): younger, smaller, ruffled |
+| `bell_courier` | Bell Courier (gemfall-04c; 4 scenes) | dragonling | small | small dragonling on a fat pony (the pony is part of the figure, or draw her standing beside it) ringing a hand bell; puffing. Third dragonling child, so a different colour from `nim` (mint) |
+| `young_gatherer` | Young Gatherer (gemfall-05b; 4 scenes) | dragonling | small | young dragonling girl on a rock, tail wrapped round her knees, a gathering bag; insists she is not lost. Another distinct colour |
+| `stall_witch` | Stall Witch (gemfall-07l; 4 scenes) | witch_order | medium | remedy-stall witch in a patched hat, every charm on her stall ringing; her people your choice (not bigfoot, which is `mother_thrum`); keep the Witch Order trappings |
+
+**Priority 3: one-scene cameos and unnamed-in-content speakers. Do last, or leave as stand-ins.**
+
+| id | name(s) in content | basis | scale | look |
+|---|---|---|---|---|
+| `path_keeper` | Path-Keeper (gemfall-05b; 3 scenes) | bigfoot | large | old MossHome bigfoot path-keeper seated outside a mossy stone hut, an enormous visitors' book open on his knees (oldest pages knotted cord, not writing) |
+| `odo` | Odo (gemfall-07r; 6 scenes, **no cast entry yet**) | burrowfolk | small | cheerful wheelbarrow man, jammed wheel, barrow heaped with painted-gravel glitter and one humming stone. Needs `cast` added to `scene_glitter_barrow` and its 5 siblings |
+| `corbin_and_posy` | Posy, Corbin (gemfall-07r; 5 scenes, **no cast entry yet**) | burrowfolk | small | a tired prospector carrying his small daughter Posy on his shoulders; she holds one stone in both fists. Draw as one figure (Posy is the speaker). Needs `cast` on `scene_posy` and siblings |
+| `rook` | Rook (gemfall-07l; 6 scenes, **no cast entry yet**) | cult_frogfolk | medium | young choir scout, prickly and quick, bark mask pushed up on her forehead; pairs with the existing `cadet_linnet` (same height, opposite palette). Needs `cast` on the `scene_two_scouts` family |
+| `claim_prospectors` | the two prospectors on the shared boulder (gemfall-06, `scene_claim_boulder` and `scene_claim_boulder_nobodys`; **no cast entry at all**) | burrowfolk | small | two prospectors standing back to back, each holding a claim flag, bootlaces tied round the boulder. One two-person figure, or reuse `rush_prospector` twice; your call |
+| `lighthouse_keeper`, `orange_captain`, `tour_guide` | Lighthouse Keeper (merfolk), Orange Captain (yeti), Tour Guide (centaur), all gemfall-01, 1 scene each | as stated | as stated | leave as the generic stand-in unless a later pass finds them recurring |
+| animals | Cart donkey, Carter's mule, Road mule, Tib's pony (1 to 3 scenes each) | as stated | as stated | leave as generic; only the pony in `bell_courier` is worth painting |
+
+Fine as the generic figure and not listed: group entries with no `name` (cinder wolves,
+embermoths, glassback crabs and similar creatures) and "Skywardens"/"Warden Engineers" used as groups.
+
 ---
 
 ## 5. Part B: places

@@ -458,7 +458,7 @@
       },
       "onFailure": {
         "goto": "scene_tallies",
-        "narration": "Wend answers a different question, beautifully, about the right amount of salt in soup. By the end you know a great deal about salt and nothing at all about roots. Wend waves you off to the tally house with a full bowl each."
+        "narration": "Wend answers a different question, beautifully, about the right amount of salt in soup. By the end you know a great deal about salt and nothing at all about roots. Wend waves you off to the tally house with a full bowl."
       }
     },
     "scene_turned_back_share_soup": {
@@ -953,13 +953,20 @@
           "name": "Great-Gran Ashby"
         }
       ],
-      "narration": "Asking forty grandmothers for one recipe gets you forty recipes, all different, and an argument that lasts until the pudding. The only thing they agree on is that you are all too thin. You go to bed carrying three loaves each, and a list of instructions you will never fully understand.",
+      "narration": "Asking forty grandmothers for one recipe gets you forty recipes, all different, and an argument that lasts until the pudding. The only thing they agree on is that you are far too thin. You go to bed carrying a pile of loaves, and a list of instructions you will never fully understand.",
       "choices": [
         {
           "id": "on",
           "label": "Go up to bed, very full",
           "icon": "cake",
           "goto": "rest_bell_house"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "supper_bundle",
+          "to": "party"
         }
       ]
     },
@@ -1422,7 +1429,7 @@
     },
     "scene_who_to_tell": {
       "type": "choice_point",
-      "narration": "The grandmothers come down to the last boundary stone to see you off. \"We've been telling everybody for a thousand years,\" says Great-Gran Ashby. \"Take what the mountain drops. Never pry at what it holds. Nobody listens.\" She looks at each of you in turn. \"Make somebody finally listen.\" Who will you tell?",
+      "narration": "The grandmothers come down to the last boundary stone to see you off. \"We've been telling everybody for a thousand years,\" says Great-Gran Ashby. \"Take what the mountain drops. Never pry at what it holds. Nobody listens.\" She looks you right in the eye. \"Make somebody finally listen.\" Who will you tell?",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
@@ -1565,7 +1572,7 @@
     },
     "end_rolled_down": {
       "type": "rest",
-      "narration": "The grandmothers fish you out of the crowd, bandage your scrapes, and give you each a warm rock and a stern look. You have lost a whole day, and by the time you reach the grandmothers' tally house, it is full of other people's arguments. You keep what you know close, because there is no time today to make anyone listen.",
+      "narration": "The grandmothers fish you out of the crowd, bandage your scrapes, and give you a warm rock and a stern look. You have lost a whole day, and by the time you reach the grandmothers' tally house, it is full of other people's arguments. You keep what you know close, because there is no time today to make anyone listen.",
       "heal": 3,
       "onEnter": [
         {

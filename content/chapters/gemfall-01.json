@@ -63,7 +63,7 @@
     },
     "scene_prologue_party": {
       "type": "choice_point",
-      "narration": "And this is you: a little band of adventurers who met on the docks this week. Nobody has called you heroes yet. You each came here for a reason of your own, and you have not quite told each other what it is. Tonight the harbor lamps are just coming on. So what is our party doing on the docks tonight? Everybody vote.",
+      "narration": "And this is you: a little band of adventurers who met on the docks this week. Nobody has called you heroes yet. You came here for reasons of your own, and you have not quite told anybody what they are. Between you, you have one shared purse with six coins in it, and one supper bundle. Tonight the harbor lamps are just coming on. So what is our party doing on the docks tonight? Everybody vote.",
       "choices": [
         {
           "id": "prologue_begin",
@@ -117,6 +117,17 @@
               "to": "party"
             }
           ]
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantCoins",
+          "amount": 6
+        },
+        {
+          "type": "grantItem",
+          "itemId": "supper_bundle",
+          "to": "party"
         }
       ]
     },
@@ -941,11 +952,27 @@
           "goto": "scene_griffin_post_feed",
           "effects": [
             {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            },
+            {
               "type": "setFlag",
               "flag": "griffin_friends",
               "value": true
             }
-          ]
+          ],
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          }
         },
         {
           "id": "shop",
@@ -1107,9 +1134,27 @@
         },
         {
           "id": "bread",
-          "label": "Offer it a bread roll instead",
+          "label": "Offer it your supper instead",
           "icon": "cake",
-          "goto": "scene_gull_dive_bread"
+          "goto": "scene_gull_dive_bread",
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            }
+          ]
         },
         {
           "id": "sardine",
@@ -1149,7 +1194,7 @@
     },
     "scene_gull_dive_bread": {
       "type": "story",
-      "narration": "You hold out a bread roll. The gull considers the roll. It considers the stone. It takes the roll, and while you are feeling pleased with yourselves, it takes your other roll too. Fair is fair. It flaps away full and happy, and leaves the stone alone. Your tummies rumble all the way to the tavern.",
+      "narration": "You hold out your supper. The gull considers the supper. It considers the stone. It takes the supper, cloth and all. Fair is fair. It flaps away full and happy, and leaves the stone alone. Your tummies rumble all the way to the tavern.",
       "choices": [
         {
           "id": "on",
@@ -1256,7 +1301,7 @@
     },
     "scene_scholar_theory": {
       "type": "story",
-      "narration": "Outside, the scholar draws on a napkin. Professor Tidewell, says the name on her soggy notes. The drawing is a shape with eight sides, like a gem cut by somebody very careful. \"The oldest stories tell of a seal, like a lid on a jar, with eight great facets. I think the mountain just threw seven of them across the realm, and everybody is selling them. The eighth is still in the mountain.\" Then she looks at your pocket, which is glowing slightly. \"Oh,\" she says. \"You've got one.\"",
+      "narration": "Outside, the scholar draws on a napkin. Professor Tidewell, says the name on her soggy notes. The drawing is a shape with eight sides, like a gem cut by somebody very careful. \"The oldest stories tell of a seal, like a lid on a jar, made of facets, eight of them. I think the mountain just threw seven of them across the realm, and everybody is selling them. The eighth is still in the mountain.\" Then she looks at your pocket, which is glowing slightly. \"Oh,\" she says. \"You've got one.\"",
       "cast": [
         {
           "figure": "cast/tidewell",
@@ -1299,6 +1344,10 @@
           "goto": "scene_sold",
           "effects": [
             {
+              "type": "grantCoins",
+              "amount": 15
+            },
+            {
               "type": "setFlag",
               "flag": "ember_sold",
               "value": true
@@ -1312,6 +1361,10 @@
           "requiresFlag": "motive_wealth",
           "goto": "choice_ember_sell_high",
           "effects": [
+            {
+              "type": "grantCoins",
+              "amount": 30
+            },
             {
               "type": "setFlag",
               "flag": "ember_sold",
@@ -1479,7 +1532,7 @@
     },
     "scene_provisions_honey": {
       "type": "story",
-      "narration": "Mrs. Tuft packs six honeycakes into a tin, then a seventh \"for the tin\". You all promise to save them for the road. By the top of the Outfitters' Steps there are five. Nobody knows what happened to the other two, and everybody has crumbs on their chin.",
+      "narration": "Mrs. Tuft packs six honeycakes into a tin, then a seventh \"for the tin\". You promise to save them for the road. By the top of the Outfitters' Steps there are five. Nobody knows what happened to the other two, and everybody has crumbs on their chin.",
       "cast": [
         {
           "figure": "cast/mrs_tuft",
@@ -1570,7 +1623,12 @@
           "id": "haggle",
           "label": "Haggle with Tobble",
           "icon": "note",
-          "goto": "check_haggle"
+          "goto": "check_haggle",
+          "when": {
+            "coins": {
+              "min": 2
+            }
+          }
         },
         {
           "id": "buy_outright",
@@ -1580,11 +1638,20 @@
           "goto": "scene_market_buy_outright",
           "effects": [
             {
+              "type": "spendCoins",
+              "amount": 5
+            },
+            {
               "type": "grantItem",
               "itemId": "quickfoot_lace",
               "to": "party"
             }
-          ]
+          ],
+          "when": {
+            "coins": {
+              "min": 5
+            }
+          }
         },
         {
           "id": "fresh_start",
@@ -1594,11 +1661,20 @@
           "goto": "scene_market_fresh_start",
           "effects": [
             {
+              "type": "spendCoins",
+              "amount": 1
+            },
+            {
               "type": "grantItem",
               "itemId": "quickfoot_lace",
               "to": "party"
             }
-          ]
+          ],
+          "when": {
+            "coins": {
+              "min": 1
+            }
+          }
         },
         {
           "id": "spot_fakes",
@@ -1613,6 +1689,25 @@
               "to": "party"
             }
           ]
+        },
+        {
+          "id": "keep_coins",
+          "label": "Keep your coins and go and find a bed",
+          "icon": "boot",
+          "goto": "scene_market_keep_coins"
+        }
+      ],
+      "art": "scenes/gemfall/outfitters-steps"
+    },
+    "scene_market_keep_coins": {
+      "type": "story",
+      "narration": "You leave the laces on the rack and keep your coins in your pocket. Tobble does not mind a bit. He sings you all the way down the steps anyway, one key lower with every step, until he is humming and you are at the bottom. Your old laces will have to do.",
+      "choices": [
+        {
+          "id": "to_inn",
+          "label": "Find a bed for the night",
+          "icon": "rest",
+          "goto": "scene_inn_full"
         }
       ],
       "art": "scenes/gemfall/outfitters-steps"
@@ -1691,6 +1786,10 @@
         "narration": "You sing back, one key lower. Tobble is so delighted he sells you the laces at last week's price.",
         "effects": [
           {
+            "type": "spendCoins",
+            "amount": 1
+          },
+          {
             "type": "grantItem",
             "itemId": "quickfoot_lace",
             "to": "roller"
@@ -1699,7 +1798,13 @@
       },
       "onFailure": {
         "goto": "scene_lace_tangle",
-        "narration": "You haggle so hard that Tobble loses his place in the song and starts again from the top, twice. Somewhere in the muddle, money changes hands and something is wrapped in paper."
+        "narration": "You haggle so hard that Tobble loses his place in the song and starts again from the top, twice. Somewhere in the muddle, money changes hands and something is wrapped in paper.",
+        "effects": [
+          {
+            "type": "spendCoins",
+            "amount": 2
+          }
+        ]
       },
       "art": "scenes/gemfall/outfitters-steps"
     },
@@ -1782,7 +1887,18 @@
           "label": "Outbid everybody with Madame Fenn's purse",
           "icon": "gem",
           "requiresFlag": "ember_sold",
-          "goto": "scene_inn_full_outbid"
+          "goto": "scene_inn_full_outbid",
+          "when": {
+            "coins": {
+              "min": 8
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 8
+            }
+          ]
         }
       ],
       "art": "scenes/gemfall/empty-chair-tavern"
@@ -2114,7 +2230,7 @@
     },
     "scene_caravan_yard_banner": {
       "type": "story",
-      "narration": "The banner is taller than any of you and heavier than it looks, and the wind off the harbor wants it very badly. You hold it up anyway. The whole yard turns to look at who is carrying the Longstride banner, and Hesper lets them look. \"Front,\" she says. \"Don't drop it.\"",
+      "narration": "The banner is taller than you are and heavier than it looks, and the wind off the harbor wants it very badly. You hold it up anyway. The whole yard turns to look at who is carrying the Longstride banner, and Hesper lets them look. \"Front,\" she says. \"Don't drop it.\"",
       "cast": [
         {
           "figure": "cast/hesper",
@@ -2257,7 +2373,7 @@
     },
     "scene_hired": {
       "type": "story",
-      "narration": "Hesper hands you each a lantern pole. \"Crew,\" she says, which on a caravan means you eat first and sleep last. The wagons begin to roll, and you roll with them, through the crowded streets to the North Gate, where everybody leaving the Exchange stops for one last thing.",
+      "narration": "Hesper hands you a lantern pole. \"Crew,\" she says, which on a caravan means you eat first and sleep last. The wagons begin to roll, and you roll with them, through the crowded streets to the North Gate, where everybody leaving the Exchange stops for one last thing.",
       "cast": [
         {
           "figure": "cast/hesper",

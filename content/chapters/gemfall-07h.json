@@ -92,6 +92,36 @@
         }
       ],
       "narration": "At the mouth of the Pinch stands a price board as tall as a house. A dragonling girl called Bryony is up a ladder with a stick of chalk, rubbing out numbers and writing bigger ones every time the ground shrugs. Every gem-buyer on the road is staring up at it. So is your pack, which has started humming along.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "Bryony looks down at your packs from her ladder and tilts her head. \"Humming pebbles,\" she says kindly. \"Everybody starts with those.\""
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "Bryony squints at your packs and counts on her chalky fingers. \"Only {facets} of the big ones,\" she says. \"Well. Everybody starts somewhere.\""
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "Bryony takes one look at your packs, and her chalk snaps clean in half. \"Nobody has {facets},\" she whispers. Then she climbs to the very top of her board and starts a new column just for you."
+        }
+      ],
       "choices": [
         {
           "id": "read",
@@ -140,7 +170,7 @@
       },
       "onFailure": {
         "goto": "choice_the_race",
-        "narration": "The numbers change faster than you can read them, and a puff of chalk dust makes you all sneeze at once. Bryony laughs so hard she nearly falls off her ladder, and throws you down a stick of chalk, for luck."
+        "narration": "The numbers change faster than you can read them, and a puff of chalk dust sets you sneezing. Bryony laughs so hard she nearly falls off her ladder, and throws you down a stick of chalk, for luck."
       }
     },
     "scene_price_board_ask": {
@@ -171,7 +201,7 @@
           "size": "small"
         }
       ],
-      "narration": "Somebody in your party came north to get rich, and has been doing sums since the docks. In about four seconds they work out what your packs are worth at today's prices, and have to sit down on the ladder. Bryony brings them a cup of water, then climbs up and writes a brand new number at the very top of the board, just to see.",
+      "narration": "You came north to get rich, and you have been doing sums since the docks. In about four seconds you work out what your packs are worth at today's prices, and have to sit down on the ladder. Bryony brings you a cup of water, then climbs up and writes a brand new number at the very top of the board, just to see.",
       "choices": [
         {
           "id": "on",
@@ -310,7 +340,7 @@
     },
     "scene_grandmother_look_give_one": {
       "type": "story",
-      "narration": "You put one stone in her knitting basket. The needles stop. \"Thank you, dear,\" she says, and for a moment her voice is not the knitting voice at all. She digs out a second warm bead and presses it into your palm. \"One for the one you gave,\" she says. Then the needles start again.",
+      "narration": "You put one stone in her knitting basket. The needles stop. \"Thank you, dear,\" she says, and for a moment her voice is not the knitting voice at all. She folds your fingers round the warm bead she gave you and holds them there. \"Keep it close,\" she says. \"It remembers who was kind.\" Then the needles start again.",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -356,6 +386,36 @@
         "npc.sheeple"
       ],
       "narration": "In the middle of the camps you meet your first real rival. Lady Fleecewick is a sheeple in a lace collar, pushing a glass cabinet on wheels. Inside are forty stones on velvet cushions, every one labeled in tiny writing. She peers at your packs through very small spectacles. \"Collectors,\" she says. \"How lovely. I'll trade. My best for your loudest.\"",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "She counts your packs with one gloved finger and pats the glass of her cabinet. \"Humming pebbles,\" she says, kindly. \"Mine started that way too, you know. A very long time ago.\""
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "She counts your packs with one gloved finger. \"{facets} of the real ones,\" she murmurs. \"A lovely start. Do keep going, dear.\""
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "Her spectacles slide right down her nose. \"{facets},\" she says faintly. She looks at her forty cushions, and for the first time ever, they look a little small to her."
+        }
+      ],
       "choices": [
         {
           "id": "trade",
@@ -816,7 +876,7 @@
           "figure": "entities/mosshorn"
         }
       ],
-      "narration": "You set the humming packs down in a heap and carry the calf over between you, one of you at each end and one in the middle for luck. The moment you are away from the packs, the mother comes trotting. She sniffs you all over. Then she licks one of you, very wetly, from chin to eyebrow.",
+      "narration": "You set the humming packs down in a heap and carry the calf over between you, taking turns at the wobbly end. The moment you are away from the packs, the mother comes trotting. She sniffs you all over. Then she licks whoever carried the calf, very wetly, from chin to eyebrow.",
       "choices": [
         {
           "id": "on",
@@ -904,7 +964,37 @@
     },
     "scene_evening_count": {
       "type": "story",
-      "narration": "You lay every stone out on a blanket in one long, glittering line. They hum at each other. You count them twice and get two different answers, because one of them keeps rolling to the end of the line to be counted again. Nobody else at the Pinch has a line like this. Nobody else at the Pinch comes over to look.",
+      "narration": "You lay your stones out on a blanket in one long, glittering line, and they hum at each other.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "You count the real ones first, which takes no time at all, because there are none. The rest of the line is rush gems, loud and pretty and ordinary. A mule wanders over, sniffs the line, and wanders off again, unimpressed."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "You count the real ones first: {facets}. Then you count the whole line twice and get two different answers, because one of the rush gems keeps rolling to the end to be counted again. A few people drift over to look. One of them asks politely where you found them."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "You count the real ones first: {facets}. Then you count the whole line twice and get two different answers, because one of the rush gems keeps rolling to the end to be counted again. Nobody else at the Pinch has a line like this. People stand a respectful distance off with their hats in their hands, and nobody dares come over to look."
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1009,7 +1099,7 @@
       "discovers": [
         "npc.merfolk"
       ],
-      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the warm red stone you sold her on the quay, your very first one. It is right here in a velvet box with a new label, THE EMBER FACET, and its price has gone up a very great deal since then.",
+      "narration": "\"Darlings! From the docks!\" Madame Coralie Fenn is lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the warm red stone you sold her on the quay, your very first one. It is right here in a velvet box with a new label, THE FIRST FACET, and its price has gone up a very great deal since then.",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -1024,10 +1114,19 @@
           "goto": "scene_ember_buy_back",
           "effects": [
             {
+              "type": "spendCoins",
+              "amount": 10
+            },
+            {
               "type": "grantQuestItem",
               "itemId": "facet_ember"
             }
-          ]
+          ],
+          "when": {
+            "coins": {
+              "min": 10
+            }
+          }
         },
         {
           "id": "too_much",
@@ -1246,13 +1345,35 @@
           "id": "buy",
           "label": "Pay him a fair price for it",
           "icon": "gem",
-          "goto": "scene_milestone_boy_buy"
+          "goto": "scene_milestone_boy_buy",
+          "when": {
+            "coins": {
+              "min": 4
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 4
+            }
+          ]
         },
         {
           "id": "fare",
           "label": "Pay his fare home, and let him keep his stone",
           "icon": "heart",
-          "goto": "scene_milestone_boy_fare"
+          "goto": "scene_milestone_boy_fare",
+          "when": {
+            "coins": {
+              "min": 2
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 2
+            }
+          ]
         },
         {
           "id": "fresh_start",
@@ -1260,6 +1381,12 @@
           "icon": "feather",
           "goto": "scene_milestone_boy_fresh_start",
           "requiresFlag": "motive_fresh_start"
+        },
+        {
+          "id": "walk_down",
+          "label": "Tell him you can't buy it, and walk him to the wagons",
+          "icon": "hand",
+          "goto": "scene_milestone_boy_walk_down"
         }
       ]
     },
@@ -1289,12 +1416,24 @@
     },
     "scene_milestone_boy_fresh_start": {
       "type": "story",
-      "narration": "One of you came north for a fresh start, too, and tells him so. Alder listens with his whole face. Then he decides something. \"Then I'll keep mine till I'm bigger,\" he says, \"and come back for a fresh start of my own.\" He shakes your hand like a grown-up and runs to catch the wagon.",
+      "narration": "You came north for a fresh start, too, and tell him so. Alder listens with his whole face. Then he decides something. \"Then I'll keep mine till I'm bigger,\" he says, \"and come back for a fresh start of my own.\" He shakes your hand like a grown-up and runs to catch the wagon.",
       "choices": [
         {
           "id": "on",
           "label": "On toward the bend",
           "icon": "feather",
+          "goto": "scene_roadside_glitter"
+        }
+      ]
+    },
+    "scene_milestone_boy_walk_down": {
+      "type": "story",
+      "narration": "You tell him you can't buy his stone, and you are sorry. Alder nods like he expected it. You walk him down to the wagons anyway, and a drover going home says he can ride on the tailboard for a song. Alder sings it. It is a very long song, and by the end of it the whole wagon is singing along.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "On toward the bend",
+          "icon": "heart",
           "goto": "scene_roadside_glitter"
         }
       ]
@@ -1441,7 +1580,7 @@
     },
     "choice_the_bend": {
       "type": "choice_point",
-      "narration": "The worst bend in the north road: a hairpin over a long drop. Here comes the fattest caravan in the funnel. Wardens are waiting with boxes, grandmothers with knitting, masks with sacks, and you. Four crowds, one wagon, and in the middle of it the Caravan Stone, humming.",
+      "narration": "The worst bend in the north road: a hairpin over a long drop. Here comes the fattest caravan in the funnel. Wardens are waiting with boxes, grandmothers with knitting, masks with sacks, and you. Four crowds, one wagon, and in the middle of it the caravan's masterpiece stone, humming.",
       "choices": [
         {
           "id": "early",
@@ -1527,7 +1666,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Lift the Caravan Stone",
+          "label": "Lift the masterpiece stone",
           "icon": "bigfoot",
           "goto": "scene_caravan_won"
         }
@@ -1539,7 +1678,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Lift the Caravan Stone",
+          "label": "Lift the masterpiece stone",
           "icon": "kitsune",
           "goto": "scene_caravan_won"
         }
@@ -1551,7 +1690,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Lift the Caravan Stone",
+          "label": "Lift the masterpiece stone",
           "icon": "scroll",
           "goto": "scene_caravan_won"
         }
@@ -1575,7 +1714,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Lift the Caravan Stone",
+          "label": "Lift the masterpiece stone",
           "icon": "travel",
           "goto": "scene_caravan_won"
         }
@@ -1587,7 +1726,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Lift the Caravan Stone",
+          "label": "Lift the masterpiece stone",
           "icon": "note",
           "goto": "scene_caravan_won"
         }
@@ -1605,7 +1744,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Lift the Caravan Stone",
+          "label": "Lift the masterpiece stone",
           "icon": "whistle",
           "goto": "scene_caravan_won"
         }
@@ -1617,7 +1756,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Lift the Caravan Stone",
+          "label": "Lift the masterpiece stone",
           "icon": "eye",
           "goto": "scene_caravan_won"
         }
@@ -1629,7 +1768,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Lift the Caravan Stone",
+          "label": "Lift the masterpiece stone",
           "icon": "gem",
           "goto": "scene_caravan_won"
         }
@@ -1647,7 +1786,7 @@
       },
       "onFailure": {
         "goto": "scene_tidewell",
-        "narration": "While you are still counting, a masked wagoneer quietly steers the middle wagon off up a side track. The Caravan Stone is gone, and the masks have it."
+        "narration": "While you are still counting, a masked wagoneer quietly steers the middle wagon off up a side track. The masterpiece stone is gone, and the masks have it."
       }
     },
     "scene_caravan_won": {
@@ -1681,7 +1820,37 @@
           "name": "Professor Tidewell"
         }
       ],
-      "narration": "Everyone on the road is coming down, except one person going up: a selkie with ink on both elbows and a notebook flapping. It is the selkie scholar from the Exchange, the one who stood on a tavern table shouting that the gem-light fell upward. Professor Tidewell, says the name on her notebook. She stops dead. She listens to your packs like a doctor listening to a heartbeat. \"Oh,\" she whispers. \"Oh, you have been busy.\"",
+      "narration": "Everyone on the road is coming down, except one person going up: a selkie with ink on both elbows and a notebook flapping. It is the selkie scholar from the Exchange, the one who stood on a tavern table shouting that the gem-light fell upward. Professor Tidewell, says the name on her notebook. She stops dead. She listens to your packs like a doctor listening to a heartbeat.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "\"Hm,\" she whispers. \"Loud, and lovely, and not one of the real ones. Have you been collecting, or only carrying?\" She winks, to show she is only teasing. Then she starts muttering about \"the eighth one\", to nobody."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "\"Oh,\" she whispers. \"I count {facets} of the real ones in there already.\" She nods slowly. \"A fine beginning.\" Then she starts muttering about \"the eighth one\", to nobody."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "\"Oh,\" she whispers. \"Oh, you have been busy. I count {facets}.\" She steps back, as if the packs might be hot. Then she starts muttering about \"the eighth one\", to nobody."
+        }
+      ],
       "choices": [
         {
           "id": "eighth",
@@ -1718,7 +1887,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_tamsins_offer",
-        "narration": "She grabs a napkin and draws on it, very fast. \"The eighth is the crown of the seal. The Keystone. It isn't lying loose, it isn't for sale, and taking it would be like pulling the lid off a jar.\" She folds the napkin into your hand. \"I only ever wanted to be right,\" she says. \"Not this right.\"",
+        "narration": "She grabs a napkin and draws on it, very fast. \"The eighth is the crown of the seal, the stone the whole arch leans on. It isn't lying loose, it isn't for sale, and taking it would be like pulling the lid off a jar.\" She folds the napkin into your hand. \"I only ever wanted to be right,\" she says. \"Not this right.\"",
         "effects": [
           {
             "type": "setFlag",
@@ -1740,7 +1909,37 @@
           "name": "Professor Tidewell"
         }
       ],
-      "narration": "You lay out the collection on a flat rock. Professor Tidewell counts it with one inky finger, twice, and has to sit down. \"I was right,\" she says, and laughs, and then her eyes go shiny. \"I was right, and you went and found them all. I don't know whether to hug you or scold you.\" She hugs you.",
+      "narration": "You lay out the collection on a flat rock. Professor Tidewell goes down the line with one inky finger.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "She reaches the end very quickly. \"Rush gems,\" she says. \"Loud, lovely, and ordinary. The real ones are still out there, you know, and the eighth most of all.\" She does not scold. She pats the nearest gem, as if it had tried its best."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "\"{facets} of the real ones,\" she says, and nods. \"A good start.\" She counts again, because she cannot help it. \"The eighth is still out there, though. The one that will not be bought.\""
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "She counts it twice and has to sit down. \"{facets},\" she says, and laughs, and then her eyes go shiny. \"I was right, and you went and found them. I don't know whether to hug you or scold you.\" She hugs you."
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1781,6 +1980,10 @@
           "icon": "gem",
           "goto": "scene_sold",
           "effects": [
+            {
+              "type": "grantCoins",
+              "amount": 30
+            },
             {
               "type": "setFlag",
               "flag": "funded_the_break",
@@ -1839,7 +2042,27 @@
     },
     "scene_sold": {
       "type": "story",
-      "narration": "Hessa counts out every coin with great care, and thanks you, and means it. She carries away every stone you traded for at the Pinch, sack after sack. The great stones, the ones the road gave you, she leaves humming in your packs. \"Bring those to the mountain,\" she says. As she goes off into the dark, the ground shakes once, hard, and does not stop for a long time. Down the hill, a bell rope creaks against its ribbon.",
+      "narration": "Hessa counts out every coin with great care, and thanks you, and means it. She carries away every stone you traded for at the Pinch, sack after sack.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "The rush gems you came north with, she leaves humming in your packs. \"Bring those to the mountain,\" she says. As she goes off into the dark, the ground shakes once, hard, and does not stop for a long time. Down the hill, a bell rope creaks against its ribbon."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1
+            }
+          },
+          "text": "The great stones, the ones the road gave you, she leaves humming in your packs. \"Bring those to the mountain,\" she says. As she goes off into the dark, the ground shakes once, hard, and does not stop for a long time. Down the hill, a bell rope creaks against its ribbon."
+        }
+      ],
       "choices": [
         {
           "id": "on",
@@ -1857,7 +2080,27 @@
     },
     "scene_handed_back": {
       "type": "story",
-      "narration": "Hessa puts her mask back on and goes. In the morning you carry every stone you traded for at the Pinch to the grandmothers' cairn and set them down one by one, and a grandmother wraps each in wool. The great stones, the ones the road gave you, she will not take. \"Those are for the mountain, dear,\" she says, and pats your packs, which hum on, heavier than ever.",
+      "narration": "Hessa puts her mask back on and goes. In the morning you carry every stone you traded for at the Pinch to the grandmothers' cairn and set them down one by one, and a grandmother wraps each in wool.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "The rush gems you came north with, she will not take. \"Keep those, dear. The mountain will want to hear them,\" she says, and pats your packs, which hum on."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1
+            }
+          },
+          "text": "The great stones, the ones the road gave you, she will not take. \"Those are for the mountain, dear,\" she says, and pats your packs, which hum on, heavier than ever."
+        }
+      ],
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -1943,7 +2186,7 @@
       "choices": [
         {
           "id": "climb",
-          "label": "Climb for the Keystone",
+          "label": "Climb for the eighth stone",
           "icon": "crown",
           "goto": "rest_the_climb",
           "effects": [
@@ -1996,7 +2239,7 @@
     },
     "walk_scene_tree_line": {
       "type": "story",
-      "narration": "You turn south. Above you the mountain shakes in its slow, patient rhythm. Below you is the green, and everybody else running into it. Your packs are so full of humming stones that you all sound like a walking beehive, and a passing drover gives you a very wide berth.",
+      "narration": "You turn south. Above you the mountain shakes in its slow, patient rhythm. Below you is the green, and everybody else running into it. Your packs are so full of humming stones that you sound like a walking beehive, and a passing drover gives you a very wide berth.",
       "choices": [
         {
           "id": "down",
@@ -2437,14 +2680,77 @@
     },
     "walk_ending_collectors": {
       "type": "rest",
-      "narration": "You walk out of the foothills rich, and the realm holds. Not because of you, but it holds. The last bell never rings. Back home, people ask where you got all those stones, and some of them ask the troll's old question: and where is it going? You are still thinking about the answer. History files you as The Collectors, and leaves the page after it blank, in case.",
+      "narration": "The realm holds. Not because of you, but it holds. The last bell never rings. Back home, people ask where you got all those stones, and some of them ask the troll's old question: and where is it going? You are still thinking about the answer. History files you as The Collectors, and leaves the page after it blank, in case.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "at": "start",
+          "text": "You walk out of the foothills with a pack of loud, ordinary rush gems and not one real facet among them. It is a small collection to show for such a road, and a light walk home."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "at": "start",
+          "text": "You walk out of the foothills with the real ones humming in your packs, {facets} of them, and a pocketful of rush gems besides."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "at": "start",
+          "text": "You walk out of the foothills with the real ones humming in your packs, {facets} of them, the biggest collection anyone has ever carried down that road."
+        }
+      ],
       "heal": 4,
       "choices": [],
       "endsCampaign": true
     },
     "walk_ending_not_there": {
       "type": "rest",
-      "narration": "Behind you, the last bell rings. You are a long way down the road when the mountain shrugs, and you watch the red sky grow redder from somewhere safe. The realm goes on, rearranged, and history files you as The Ones Who Weren't There. But in your pack, one stone has stopped humming. It is pointing north, like a compass, as if it is asking whether you would like to try again.",
+      "narration": "Behind you, the last bell rings. You are a long way down the road when the mountain shrugs, and you watch the red sky grow redder from somewhere safe. The realm goes on, rearranged, and history files you as The Ones Who Weren't There.",
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "text": "You walk home with only your rush gems, and a great deal of quiet. But in your pack, one stone has stopped humming. It is pointing north, like a compass, as if it is asking whether you would like to try again."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1,
+              "max": 4
+            }
+          },
+          "text": "You walk home with the real ones, {facets} of them, which is something, and something is not nothing. But in your pack, one stone has stopped humming. It is pointing north, like a compass, as if it is asking whether you would like to try again."
+        },
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 5
+            }
+          },
+          "text": "You walk home with the real ones, {facets} of them, a collection people will cross a river to see, and it does not feel like enough. But in your pack, one stone has stopped humming. It is pointing north, like a compass, as if it is asking whether you would like to try again."
+        }
+      ],
       "heal": 3,
       "choices": [],
       "outcome": "setback",

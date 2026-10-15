@@ -101,6 +101,14 @@ export interface CampaignProgressRecord {
    */
   routeFlags?: Record<string, boolean>;
   /**
+   * The party's purse as the last finished chapter left it (`RunState.coins`),
+   * seeded back into the next chapter's run. Here for the reason `routeFlags`
+   * is: coins earned on one evening are still in the pack on the next, and the
+   * next evening is a new run. A fresh attempt starts with an empty purse.
+   * Absent on rows written before the purse existed, read as 0.
+   */
+  coins?: number;
+  /**
    * The beat (chapter `index`) this attempt most recently finished — what
    * "continue the campaign" counts from. A campaign spans evenings and every
    * evening is a new run, so where the party got to has to live on the

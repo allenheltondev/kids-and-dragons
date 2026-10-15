@@ -3,7 +3,7 @@ title: Hearthstone Bead
 id: item.hearthstone_bead
 type: item
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: newly_defined
 tags: ["charm", "endurance", "bramblewood", "uncommon"]
 related:

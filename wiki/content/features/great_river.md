@@ -3,7 +3,7 @@ title: The Great River
 id: feature.great_river
 type: feature
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: []
 related:

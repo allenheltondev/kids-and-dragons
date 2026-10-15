@@ -3,7 +3,7 @@ title: Dragonling
 id: character.dragonling
 type: character
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["playable", "volcanic", "explorer", "heat_resistant"]
 scale: small_to_medium
@@ -16,7 +16,7 @@ likes:
   - id: creature.glassback_crab
     title: "Glassback Crab"
     url: "/creatures/glassback_crab/"
-    because: "Good neighbours. You knock, they don't charge, and both parties politely pretend the shell isn't gorgeous."
+    because: "Good neighbors. You knock, they don't charge, and both parties politely pretend the shell isn't gorgeous."
   - id: npc.centaur
     title: "Centaur"
     url: "/npcs/centaur/"
@@ -86,7 +86,7 @@ Loud, warm, and communal. A dragonling settlement adopts visitors first and asse
 ### Likes
 
 - **[Embermoth](/creatures/embermoth/)**: The foothills' weather service, paid in warm rocks.
-- **[Glassback Crab](/creatures/glassback_crab/)**: Good neighbours. You knock, they don't charge, and both parties politely pretend the shell isn't gorgeous.
+- **[Glassback Crab](/creatures/glassback_crab/)**: Good neighbors. You knock, they don't charge, and both parties politely pretend the shell isn't gorgeous.
 - **[Centaur](/npcs/centaur/)**: They bring the whole world to the foothills twice a season and take gemstones politely away.
 
 ### Dislikes

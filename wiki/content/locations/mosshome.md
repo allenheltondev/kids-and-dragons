@@ -3,7 +3,7 @@ title: MossHome
 id: location.mosshome
 type: location
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["forest_settlement", "living_architecture", "bigfoot", "cultivated_moss", "ancient_trees"]
 danger_level: low
@@ -57,13 +57,16 @@ related:
   - id: item.owlfeather_clasp
     type: item
     relationship: found_in
+  - id: npc.boughkin
+    type: npc
+    relationship: secondary_locations
 ai_context:
   mood: "The principal Bigfoot settlement, built into and alongside ancient living trees without severing the forest systems that support it."
   themes: "Forest_settlement, Living_architecture, Bigfoot, Cultivated_moss, Ancient_trees"
   visual_style: "Tall wooden and stone structures woven into trunks and roots, cultivated moss gardens, suspended walkways, natural archives, and warm lights beneath the canopy."
   common_encounters: "Research, healing, historical discovery, community preparation, ecological investigation, and a safe home that can reveal changes elsewhere in the forest."
   lore_highlights: "The accepted account, preserved in the settlement's own archive, is that the first bigfoot families asked the trees, and the asking took forty years."
-  related_entities: "biome.enchanted_woods, biome.enchanted_woods, biome.whispering_marsh, character.bigfoot, creature.mosshorn, biome.enchanted_woods, campaign.gemfall, character.unicorn, character.bigfoot, creature.mosshorn, item.mosslight_jar, item.owlfeather_clasp"
+  related_entities: "biome.enchanted_woods, biome.enchanted_woods, biome.whispering_marsh, character.bigfoot, creature.mosshorn, biome.enchanted_woods, campaign.gemfall, character.unicorn, character.bigfoot, creature.mosshorn, item.mosslight_jar, item.owlfeather_clasp, npc.boughkin"
   writing_guidance: "MossHome is a settlement, not a separate wilderness biome. Bigfoots are not primitive or universally reclusive, and the settlement should look designed, maintained, and knowledgeable."
   generation_hints: "Residents maintain living structures, paths, gardens, historical records, and observation stations while monitoring changes in the wider Enchanted Woods."
 layout: locations
@@ -137,6 +140,9 @@ The realm's memory of the west. Healers, historians, and the politely desperate 
 ### Items
 - [Mosslight Jar](/items/mosslight_jar/) `Found In`
 - [Owlfeather Clasp](/items/owlfeather_clasp/) `Found In`
+
+### Npcs
+- [Boughkin](/npcs/boughkin/) `Secondary Locations`
 <!-- END GENERATED: relationships -->
 
 

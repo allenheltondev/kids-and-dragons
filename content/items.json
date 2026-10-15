@@ -40,6 +40,16 @@
       "amount": 4
     }
   },
+  "supper_bundle": {
+    "kind": "consumable",
+    "icon": "supper",
+    "name": "Supper Bundle",
+    "text": "Supper for one, or for someone hungry. Heal 1 HP.",
+    "effect": {
+      "type": "heal",
+      "amount": 1
+    }
+  },
   "thunder_acorn": {
     "kind": "consumable",
     "icon": "acorn",

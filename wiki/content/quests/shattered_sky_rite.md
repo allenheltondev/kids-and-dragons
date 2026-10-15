@@ -3,7 +3,7 @@ title: The Shattered Sky Rite
 id: quest.shattered_sky_rite
 type: quest
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
 draft: true
 tags: ["main_quest", "ritual", "highlands", "epic"]

@@ -197,6 +197,38 @@ export function expectedIndex(
   return index > finalIndex(campaign, deps) ? 1 : index;
 }
 
+/**
+ * The party purse a chapter of this attempt starts with.
+ *
+ * An active attempt's saved `coins`, or an empty purse for an attempt that is
+ * new or finished. The third case is an attempt that was already under way
+ * when the purse was introduced: it has finished at least one chapter but
+ * never saved a purse, so it missed the coins chapter 1 hands out. Reading
+ * that as 0 would hide every paying choice for the rest of its campaign, so it
+ * gets the campaign's `purseBackfill` instead: the base, plus each carried
+ * flag's amount (Gemfall pays the Ember sale back to a party that sold it).
+ */
+export function purseFor(campaign: Campaign | null, attempt: CampaignProgressRecord | null): number {
+  if (!attempt || attempt.status !== "active") return 0;
+  if (attempt.coins !== undefined) return attempt.coins;
+  if ((attempt.lastIndex ?? 0) < 1) return 0;
+  return backfilledPurse(campaign, attempt.routeFlags);
+}
+
+/** `purseBackfill` for a party holding these carried flags; 0 without one. */
+export function backfilledPurse(
+  campaign: Campaign | null,
+  routeFlags: Readonly<Record<string, boolean>> | undefined,
+): number {
+  const backfill = campaign?.purseBackfill;
+  if (!backfill) return 0;
+  let coins = backfill.coins;
+  for (const [flag, amount] of Object.entries(backfill.byFlag ?? {})) {
+    if (routeFlags?.[flag] === true) coins += amount;
+  }
+  return coins;
+}
+
 /** An attempt a chapter start is creating, and the version its write expects. */
 export interface StartedAttempt {
   attempt: CampaignProgressRecord;
@@ -471,6 +503,11 @@ export async function settleChapterCompletion(
   if (outcome === "setback") attempt.setbacks += 1;
   const roads = routesTaken(campaign, state.flags, attempt.routeFlags);
   if (roads) attempt.routeFlags = roads;
+  // A run started before the purse existed has none, even if it walked past
+  // the scene that hands one out. It gets the attempt's saved purse, or the
+  // backfill (counting the roads this very chapter took), so finishing that
+  // chapter does not save an empty purse the party never got to see.
+  attempt.coins = state.coins ?? attempt.coins ?? backfilledPurse(campaign, attempt.routeFlags);
   attempt.lastIndex = chapter.index;
 
   const limit = campaign.setbackLimit ?? DEFAULT_SETBACK_LIMIT;
