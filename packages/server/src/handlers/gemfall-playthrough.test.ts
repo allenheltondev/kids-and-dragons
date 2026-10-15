@@ -25,8 +25,7 @@
  *   KAD_AUDIT_REPORT=1 npx vitest run packages/server/src/handlers/gemfall-playthrough.test.ts
  *
  * prints every current offender (chapter / scene / line) per party. The
- * `it.skip` assertions are the ones whose content has not been adapted yet;
- * flip each to `it` when its issue lands.
+ * assertions are active: a failure names the chapter, the scene and the line.
  */
 
 import { describe, expect, it } from "vitest";
@@ -38,13 +37,17 @@ import {
   FULL_COLLECTION,
   FULL_COLLECTION_BEFORE_8,
   SOLO,
+  FULL_HANDED_AT_7,
+  onPursuit,
   playCampaign,
   type PartyPlan,
   type Playthrough,
 } from "./playthrough-driver.ts";
 import {
+  countVariantScenesShown,
   facetNamesOf,
   findOffenders,
+  heldFacets,
   formatOffenders,
   type AuditLine,
   type AuditRule,
@@ -151,6 +154,20 @@ const gained = (run: Playthrough) =>
   run.facetLog.filter((f) => f.chapterId !== "gemfall-08").reduce((n, f) => n + (f.atEnd - f.atStart), 0);
 
 describe("Gemfall, played by steered parties (#166)", { timeout: 60_000 }, () => {
+  describe("what a chapter's first scene shows", () => {
+    it("is the party the chapter opens with (strip and top-up land before the entry scene)", async () => {
+      for (const plan of [EMPTY_HANDED, FULL_COLLECTION]) {
+        for (const seed of seedsOf(plan)) {
+          const run = await play(plan, seed);
+          for (const f of run.facetLog) {
+            const first = run.lines.find((l) => l.chapterId === f.chapterId && l.kind === "narration")!;
+            expect(heldFacets(first.party).size, `${plan.label}, seed ${seed}: ${f.chapterId} entry scene`).toBe(f.atStart);
+          }
+        }
+      }
+    });
+  });
+
   describe("the empty-handed party", () => {
     it("refuses what it can, hands the rest back, and reaches an ending", async () => {
       let kept = 0;
@@ -172,10 +189,7 @@ describe("Gemfall, played by steered parties (#166)", { timeout: 60_000 }, () =>
 
     it("sees no unfilled {token}", () => expectNoOffenders(EMPTY_HANDED, ["unfilled_token"]));
 
-    // Content not yet adapted: the chapters name or count stones the party does not hold. #162
-    // (chapters 1-6: "eight great facets", the Pride/Glade/Barge/Table Stone as offered), #164
-    // (chapter 7: Ember Facet, Caravan Stone) and #163 (the finale: the Keystone).
-    it.skip("is never shown a stone it does not hold, or a count other than 'no' (#162/#163/#164)", () =>
+    it("is never shown a stone it does not hold, or a count other than 'no' (#162/#163/#164)", () =>
       expectNoOffenders(EMPTY_HANDED, ["stones_not_held"]));
   });
 
@@ -202,9 +216,9 @@ describe("Gemfall, played by steered parties (#166)", { timeout: 60_000 }, () =>
 
     it("sees no unfilled {token}", () => expectNoOffenders(FULL_COLLECTION, ["unfilled_token"]));
 
-    // Needs gemfall-08's band variants (`count.min >= 5`) in the climb, at the Seal-Keeper and in
-    // the ending: none are authored yet. #163
-    it.skip("sees its band text in the climb, at the Seal-Keeper and in the ending (#163)", () =>
+    // gemfall-08's band variants (`count.min >= 5`): in the climb and the ending always, and at
+    // the Seal-Keeper on the roads that meet one (seed 5 loses the race check and never does).
+    it("sees its band text in the climb, at the Seal-Keeper and in the ending (#163)", () =>
       expectNoOffenders(FULL_COLLECTION, ["band_text_missing"], true));
   });
 
@@ -222,10 +236,61 @@ describe("Gemfall, played by steered parties (#166)", { timeout: 60_000 }, () =>
 
     it("sees no unfilled {token}", () => expectNoOffenders(SOLO, ["unfilled_token"]));
 
-    // "both of you" reaches a party of one in chapter 4 (04a, scene_pride_greeting_cubs_introduce);
-    // more may follow once other roads are walked. #165
-    it.skip("is never counted as 'two of you', 'three of you', 'four of you' or 'both of you' (#165)", () =>
+    it("is never counted as 'two of you', 'three of you', 'four of you' or 'both of you' (#165)", () =>
       expectNoOffenders(SOLO, ["counted_party"]));
+  });
+});
+
+// --- the Collection and the Tether, steered (#164) ----------------------------------
+
+/**
+ * The parties above all take the Restore, so 07h and 07l are walked here: the
+ * same plans with the pursuit overridden, at no facets (the empty-handed party,
+ * stripped every evening) and at nine or more (topped up as chapter 7 opens).
+ * Each must reach an ending, trip no audit rule, and show count-gated wording
+ * (a variant with `count` in its `when`) in at least three scenes of the chapter.
+ */
+describe("Gemfall, the Collection and the Tether, played at both ends of the haul (#164)", { timeout: 60_000 }, () => {
+  const SEEDS = [1, 2, 3];
+  const RULES: AuditRule[] = ["stones_not_held", "counted_party", "unfilled_token"];
+  const cases = [
+    { chapterId: "gemfall-07h", pursuit: "hoard" as const },
+    { chapterId: "gemfall-07l", pursuit: "leash" as const },
+  ];
+  const levels = [
+    { name: "no facets", base: EMPTY_HANDED, check: (n: number) => n === 0 },
+    { name: "nine or more facets", base: FULL_HANDED_AT_7, check: (n: number) => n >= FULL_COLLECTION_BEFORE_8 },
+  ];
+
+  for (const { chapterId, pursuit } of cases) {
+    for (const level of levels) {
+      it(`${chapterId} at ${level.name}: reaches an ending, clean, with count-gated wording in 3+ scenes`, async () => {
+        const plan = onPursuit(level.base, pursuit);
+        const chapter = content.chapter(chapterId) as Chapter;
+        for (const seed of SEEDS) {
+          const run = await playCampaign(content, seed, plan);
+          expect(["complete", "failed"], `seed ${seed}`).toContain(run.status);
+          expect(run.chapters, `seed ${seed}`).toContain(chapterId);
+          expect(run.chapters, `seed ${seed}: only the chosen pursuit`).not.toContain(chapterId === "gemfall-07h" ? "gemfall-07l" : "gemfall-07h");
+          expect(run.chapters, `seed ${seed}`).not.toContain("gemfall-07r");
+          const opened = run.facetLog.find((f) => f.chapterId === chapterId)!.atStart;
+          expect(level.check(opened), `seed ${seed}: opened ${chapterId} holding ${opened}`).toBe(true);
+          const offenders = findOffenders(run.lines, { facetNames, rules: RULES });
+          expect(offenders, `seed ${seed}: ${formatOffenders(offenders)}`).toEqual([]);
+          const shown = countVariantScenesShown(run.lines, chapter);
+          expect(shown.size, `seed ${seed}: count-gated text shown in ${[...shown].join(", ") || "no scene"}`).toBeGreaterThanOrEqual(3);
+        }
+      });
+    }
+  }
+
+  it("07h's Walk (the campaign-ending choice) is taken and ends the campaign cleanly", async () => {
+    const run = await playCampaign(content, 2, onPursuit(FULL_HANDED_AT_7, "hoard", true));
+    expect(run.status).toBe("complete");
+    expect(run.chapters[run.chapters.length - 1]).toBe("gemfall-07h");
+    expect(run.chapters).toHaveLength(7);
+    const offenders = findOffenders(run.lines, { facetNames, rules: RULES });
+    expect(offenders, formatOffenders(offenders)).toEqual([]);
   });
 });
 

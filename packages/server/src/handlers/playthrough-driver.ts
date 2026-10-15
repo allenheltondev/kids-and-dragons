@@ -225,6 +225,35 @@ export const FULL_COLLECTION: PartyPlan = {
 /** Solo: one player plays the whole campaign, chapters 6 to 8 included. */
 export const SOLO: PartyPlan = { label: "solo", size: 1, avoid: CLIMB, steer: ["restore"] };
 
+/**
+ * The Collection and the Tether, steered (#164). The three parties above all
+ * take the Restore, so chapters 07h and 07l are walked by these: the same
+ * plans with the pursuit overridden. `pursuit` is the choice id at chapter 6's
+ * fork ("hoard" or "leash"; pinned to that chapter, because the finale also
+ * offers a "leash" and taking it there loops the Seal-Keeper's chamber); the Walk at 07h's tree line stays refused unless
+ * `walk` is set.
+ */
+export function onPursuit(base: PartyPlan, pursuit: "hoard" | "leash", walk = false): PartyPlan {
+  return {
+    ...base,
+    label: `${base.label}, ${pursuit}${walk ? "+walk" : ""}`,
+    steer: [...(base.steer ?? []).filter((id) => id !== "restore" && id !== "hoard"), `gemfall-06/${pursuit}`, ...(walk ? CLIMB : [])],
+    avoid: walk ? (base.avoid ?? []).filter((id) => !CLIMB.some((c) => c === id)) : base.avoid,
+  };
+}
+
+/** Full-handed for chapter 7: nine facets in the case when the seventh beat opens (evening 6). */
+export const FULL_HANDED_AT_7: PartyPlan = {
+  label: "full-handed",
+  facets: "collect",
+  species: ["dragonling"],
+  avoid: CLIMB,
+  beforeEvening: async ({ evening, repo, householdId, facetIds }) => {
+    if (evening !== 6) return;
+    return topUpFacets(repo, householdId, facetIds.filter((id) => id !== "facet_keystone"), FULL_COLLECTION_BEFORE_8);
+  },
+};
+
 // --- the playthrough --------------------------------------------------------------
 
 export interface Playthrough {
@@ -270,7 +299,24 @@ export async function playCampaign(
   const size = plan.size ?? 3;
   const facetIds = Object.keys(content.items()).filter(isFacet).sort((a, b) => (a === "facet_keystone" ? 1 : b === "facet_keystone" ? -1 : 0));
 
-  const harness = makeHarness({ engine: realEngine, content });
+  // The party as the engine composed the closing scene, before settlement
+  // (`commitCampaign`) clears the quest items off the characters. The state a
+  // phone gets back for the turn that ends a chapter is already settled, so
+  // without this the audit would judge an ending against a party holding
+  // nothing. Keyed by chapter/scene.
+  const composedAt = new Map<string, ChoiceParty>();
+  const engine: Engine = {
+    ...realEngine,
+    applyIntent: (state, input, ctx) => {
+      const result = realEngine.applyIntent(state, input, ctx);
+      const after = result.state;
+      if (state.phase !== "chapter_complete" && after.phase === "chapter_complete" && after.chapterId && after.sceneId) {
+        composedAt.set(`${after.chapterId}/${after.sceneId}`, snapshot(after));
+      }
+      return result;
+    },
+  };
+  const harness = makeHarness({ engine, content });
   // The server seeds each step's dice from `runId:seq`, and a run id is a
   // random UUID. Left alone, "seeded" here would only cover the party's
   // choices, and the dice would differ on every run — so whether any of the
@@ -340,7 +386,7 @@ export async function playCampaign(
   let lastChoices = "";
   const observe = (s: RunState) => {
     if (!s.chapterId || !s.sceneId) return;
-    const party = snapshot(s);
+    const party = (s.phase === "chapter_complete" && composedAt.get(`${s.chapterId}/${s.sceneId}`)) || snapshot(s);
     const narrationKey = `${s.chapterId}/${s.sceneId}/${s.narration}`;
     if (s.narration && narrationKey !== lastNarration) {
       lastNarration = narrationKey;
