@@ -27,7 +27,7 @@ import type {
 import { makeRules } from "../../../shared/src/test-fixtures";
 import { CHAR_WIDTH, installFakeCanvas2D } from "../testing/fake-stage";
 import { nameplatesCollide } from "./nameplate";
-import { BOARD_TILE_PX, createBoardLayer } from "./board";
+import { BOARD_TILE_PX, createBoardLayer, walkRoutes } from "./board";
 import type { BoardLayer, BoardViewState } from "./board";
 
 beforeAll(installFakeCanvas2D);
@@ -311,6 +311,125 @@ describe("facing", () => {
     for (let i = 0; i < 120; i++) layer.tick(1 / 60);
     expect(layer.facings()["c_1"]).toBeCloseTo(1, 2);
     expect(layer.facings()["wisp#1"]).toBeCloseTo(-1, 2);
+  });
+});
+
+describe("walking", () => {
+  /** Where board.ts stands a figure's feet on tile (x, y). */
+  const feet = (x: number, y: number) => ({ x: (x + 0.5) * BOARD_TILE_PX, y: (y + 0.82) * BOARD_TILE_PX });
+
+  it("walks the route a square at a time, a footprint on each, corner to corner in three", () => {
+    /*
+     * Three diagonal steps from (0,0) to (3,3). Counted along the edges that
+     * is six squares; the game charges three (spec §7.1). The walk crossing
+     * (1,1) and (2,2) on its way is what shows the table why.
+     */
+    const hero = character("c_1", "Sparklehoof");
+    const { layer } = board([hero], [{ x: 0, y: 0 }]);
+    layer.playEvents([{ type: "moved", actorId: "c_1", to: { x: 3, y: 3 } }], 700);
+
+    const seen: string[] = [];
+    for (let i = 0; i < 90; i++) {
+      layer.tick(1 / 60);
+      for (const mark of layer.trailMarks()) {
+        const key = `${mark.x},${mark.y}`;
+        if (!seen.includes(key)) seen.push(key);
+      }
+    }
+    expect(seen).toEqual([feet(1, 1), feet(2, 2), feet(3, 3)].map((f) => `${f.x},${f.y}`));
+
+    // And the footprints fade: nothing left a couple of seconds on.
+    for (let i = 0; i < 180; i++) layer.tick(1 / 60);
+    expect(layer.trailMarks()).toEqual([]);
+  });
+
+  it("goes around a wall rather than through it", () => {
+    // A wall in column 1, rows 0 to 2: the only way from (0,1) to (2,1) is
+    // under it, through (1,3). The route says so; a straight glide would not.
+    const hero = character("c_1", "Sparklehoof");
+    const encounter = beginEncounter(
+      {
+        board: parseBoard([".#....", ".#....", ".#....", "......", "......", "......"]),
+        party: [{ character: hero, at: { x: 0, y: 1 } }],
+        enemies: [{ spec: WISP, at: { x: 5, y: 5 } }],
+      },
+      { rules: makeRules(), abilities: {}, rng: { next: () => 0.5 } },
+    );
+    const layer = createBoardLayer();
+    layer.update(viewOf(encounter, [hero]));
+    layer.playEvents([{ type: "moved", actorId: "c_1", to: { x: 2, y: 1 } }], 700);
+
+    const seen: string[] = [];
+    for (let i = 0; i < 120; i++) {
+      layer.tick(1 / 60);
+      for (const mark of layer.trailMarks()) {
+        const key = `${mark.x},${mark.y}`;
+        if (!seen.includes(key)) seen.push(key);
+      }
+    }
+    expect(seen).toEqual([feet(0, 2), feet(1, 3), feet(2, 2), feet(2, 1)].map((f) => `${f.x},${f.y}`));
+  });
+
+  it("still walks the route when the patch lands before the beat plays", () => {
+    /*
+     * The race a slow frame rate causes. The beat is timed on the board's
+     * clock and the patch is released on a wall-clock timer, so on a weak
+     * renderer the patch can arrive first. The route has to be worked out
+     * when the sequence arrives, not when its beat plays.
+     */
+    const hero = character("c_1", "Sparklehoof");
+    const { layer, encounter, draw } = board([hero], [{ x: 0, y: 0 }]);
+    layer.playEvents([{ type: "moved", actorId: "c_1", to: { x: 3, y: 3 } }], 700);
+    const after: EncounterState = {
+      ...encounter,
+      board: {
+        ...encounter.board,
+        actors: encounter.board.actors.map((a) => (a.id === "c_1" ? { ...a, x: 3, y: 3 } : a)),
+      },
+    };
+    draw([hero], after);
+
+    const seen: string[] = [];
+    for (let i = 0; i < 90; i++) {
+      layer.tick(1 / 60);
+      for (const mark of layer.trailMarks()) {
+        const key = `${mark.x},${mark.y}`;
+        if (!seen.includes(key)) seen.push(key);
+      }
+    }
+    expect(seen).toEqual([feet(1, 1), feet(2, 2), feet(3, 3)].map((f) => `${f.x},${f.y}`));
+  });
+
+  it("routes each walk in a sequence around where the earlier ones ended", () => {
+    // A wisp steps into the hero's straight line, then the hero walks. A foe
+    // cannot be crossed, so the hero's route has to bend round the square the
+    // wisp only just took, which the board in view does not show yet.
+    const board = parseBoard(["......", "......", "......"]);
+    const placed = {
+      ...board,
+      actors: [
+        { id: "w1", side: "enemy" as const, x: 2, y: 0 },
+        { id: "h", side: "party" as const, x: 0, y: 1 },
+      ],
+    };
+    const routes = walkRoutes(placed, [
+      { type: "moved", actorId: "w1", to: { x: 1, y: 1 } },
+      { type: "damage", actorId: "c_1", amount: 3, hp: 7 },
+      { type: "moved", actorId: "h", to: { x: 2, y: 1 } },
+    ]);
+    expect(routes[0]).toEqual([{ x: 2, y: 0 }, { x: 1, y: 1 }]);
+    expect(routes[1]).toBeUndefined();
+    expect(routes[2]?.[0]).toEqual({ x: 0, y: 1 });
+    expect(routes[2]).toHaveLength(3);
+    expect(routes[2]).not.toContainEqual({ x: 1, y: 1 });
+  });
+
+  it("leaves no footprints for a shove — a push is not a walk", () => {
+    const hero = character("c_1", "Sparklehoof");
+    const { layer } = board([hero], [{ x: 0, y: 0 }]);
+    layer.playEvents([{ type: "shoved", actorId: "c_1", to: { x: 2, y: 0 } }], 700);
+    for (let i = 0; i < 90; i++) layer.tick(1 / 60);
+    expect(layer.trailMarks()).toEqual([]);
   });
 });
 

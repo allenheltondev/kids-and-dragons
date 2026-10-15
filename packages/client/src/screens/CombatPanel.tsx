@@ -35,7 +35,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { ReactElement } from "react";
+import type { CSSProperties, ReactElement } from "react";
 import type {
   AbilityCatalog,
   ClientIntent,
@@ -171,7 +171,7 @@ export function CombatControls(): ReactElement | null {
 
   // What the grid offers this render: move destinations, or the still-unpicked
   // tiles of the ability being aimed. Never both — one question at a time.
-  const tappable: readonly Position[] =
+  const tappable: readonly (Position & { readonly cost?: number })[] =
     selection.step === "tile"
       ? selection.action.tiles.filter(
           (tile) => !selection.picked.some((p) => samePosition(p, tile)),
@@ -417,7 +417,17 @@ export function CombatControls(): ReactElement | null {
                 aria-label={`${aiming ? "Aim at" : "Move to"} column ${cell.x + 1}, row ${cell.y + 1}`}
                 onClick={() => tapTile({ x: cell.x, y: cell.y })}
               >
-                {figure ?? (aiming ? <Icon name="spark" size="70%" /> : <span className="combat__dot" />)}
+                {figure ??
+                  (aiming ? (
+                    <Icon name="spark" size="70%" />
+                  ) : (
+                    <span
+                      className="combat__dot"
+                      // Near squares get a big dot, the edge of the reach a
+                      // small one (combat-grid.ts `nearness`).
+                      style={{ "--nearness": cell.nearness ?? 1 } as CSSProperties}
+                    />
+                  ))}
               </button>
             );
           }

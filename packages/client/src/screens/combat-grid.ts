@@ -34,6 +34,15 @@ export interface GridCell {
   /** Legal to tap right now — a move destination or an ability's tile. */
   readonly tappable: boolean;
   readonly selected: boolean;
+  /**
+   * How near a walk destination is, from 1 (one step away) down to 0 (the
+   * edge of the reach); null for anything that is not a walk. The dot is
+   * drawn at that size, so a corner four diagonals away reads as far rather
+   * than as a neighbour: the reach is a square (diagonals cost 1, spec
+   * §7.1), and a kid counting squares sees eight where the game charges
+   * four. Size, not colour, so it survives colour blindness (spec §11).
+   */
+  readonly nearness: number | null;
 }
 
 /**
@@ -64,12 +73,17 @@ export function combatantIcon(combatant: Combatant, party: readonly PartyMember[
 export function gridCells(
   encounter: EncounterState,
   party: readonly PartyMember[],
-  tappable: readonly Position[],
+  tappable: readonly (Position & { readonly cost?: number })[],
   selected: readonly Position[],
 ): GridCell[] {
   const { board } = encounter;
   const activeId = currentActorId(encounter);
   const tapKeys = new Set(tappable.map((p) => `${p.x},${p.y}`));
+  // Walk destinations carry a cost (`legalMoves`); an ability's tiles do not.
+  const costs = new Map(
+    tappable.filter((p) => p.cost !== undefined).map((p) => [`${p.x},${p.y}`, p.cost as number]),
+  );
+  const farthest = Math.max(1, ...costs.values());
   const selectedKeys = new Set(selected.map((p) => `${p.x},${p.y}`));
   const byId = new Map(encounter.combatants.map((c) => [c.id, c]));
 
@@ -101,10 +115,21 @@ export function gridCells(
         occupant: occupants.get(key) ?? null,
         tappable: tapKeys.has(key),
         selected: selectedKeys.has(key),
+        nearness: nearnessOf(costs.get(key), farthest),
       });
     }
   }
   return cells;
+}
+
+/**
+ * 1 for a step away, 0 for the farthest tile on offer, evenly between. A
+ * reach of one step has nothing to grade, so everything in it is near.
+ */
+export function nearnessOf(cost: number | undefined, farthest: number): number | null {
+  if (cost === undefined) return null;
+  if (farthest <= 1) return 1;
+  return 1 - (cost - 1) / (farthest - 1);
 }
 
 /**

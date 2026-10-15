@@ -323,6 +323,22 @@ describe("whose turn it is", () => {
     expect(hp(".combat__cell--enemy")).toEqual(["6", "2"]);
   });
 
+  it("draws a near square's dot bigger than one at the edge of the reach", () => {
+    // Diagonals cost one step, so the reach is a square and its corners look
+    // as close as the squares beside you. The dot's size says how far.
+    const { container } = mount();
+    const nearness = (x: number, y: number) =>
+      Number(
+        (container.querySelector(`[data-x="${x}"][data-y="${y}"] .combat__dot`) as HTMLElement)
+          .style.getPropertyValue("--nearness"),
+      );
+    // The hero stands at (1,2) with 4 steps on a 5×5 board: the farthest
+    // square on offer, (4,4), is 3 away.
+    expect(nearness(1, 1)).toBe(1);
+    expect(nearness(4, 4)).toBe(0);
+    expect(nearness(3, 3)).toBeCloseTo(0.5);
+  });
+
   it("turns figures to face the nearest opponent", () => {
     // Art is drawn facing left. The hero at (1,2) has the wisp at (2,2) on
     // her right, so she turns; the wisp's nearest hero is on its left, so it
