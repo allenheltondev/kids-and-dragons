@@ -6,6 +6,8 @@
  * and their direct dependents (entities in other files that reference
  * entities from changed files).
  *
+ * Image files and the asset manifest are tracked too; art changes regenerate all
+ * pages so shared images and newly delivered previews reach every consumer.
  * Chapter files are tracked in the same manifest. Every page carries
  * `played_in` (the chapters that use its entity), and a chapter can bring any
  * entity on stage or take it off, so a changed, added or removed chapter
@@ -33,7 +35,7 @@ export type Manifest = ManifestData;
 export interface IncrementalCheckResult {
   /** Whether changes were detected. */
   hasChanges: boolean;
-  /** Canon file paths that changed (relative to repo root). */
+  /** Input file paths that changed (relative to repo root). */
   changedFiles: string[];
   /** Canon_IDs of entities that need regeneration (from changed files + dependents). */
   entitiesToProcess: Set<string>;
@@ -148,7 +150,7 @@ export function checkIncremental(
   }
 
   const manifest = readManifest(config.manifestPath);
-  const canonFiles = getTrackedFiles(config.canonDir, config.chaptersDir);
+  const canonFiles = getTrackedFiles(config.canonDir, config.chaptersDir, config.assetsDir);
 
   // If no manifest exists (first run or incompatible version), process everything
   if (manifest === null) {
@@ -175,7 +177,7 @@ export function checkIncremental(
     }
 
     const storedMtime = manifest.files[relPath];
-    if (storedMtime === undefined || currentMtime > storedMtime) {
+    if (storedMtime === undefined || currentMtime !== storedMtime) {
       changedFiles.push(relPath);
     }
   }
@@ -193,12 +195,25 @@ export function checkIncremental(
       hasChanges: false,
       changedFiles: [],
       entitiesToProcess: new Set(),
-      message: 'No updates needed — canon and chapter files unchanged since last run',
+      message: 'No updates needed — canon, chapter and artwork files unchanged since last run',
+    };
+  }
+
+  // Images may be shared by pages, galleries and related cards. Rebuild all
+  // pages on art changes, including removals and newly derived previews.
+  const assetPrefix = `${inputDirRel(config.canonDir, config.assetsDir)}/`;
+  const changedAssets = changedFiles.filter(f => f.startsWith(assetPrefix));
+  if (changedAssets.length > 0) {
+    return {
+      hasChanges: true,
+      changedFiles,
+      entitiesToProcess: new Set(registry.entities.keys()),
+      message: `${changedAssets.length} artwork input(s) changed: regenerating all ${registry.entities.size} entities`,
     };
   }
 
   // A chapter change can move any entity's `played_in`: regenerate them all.
-  const chapterPrefix = config.chaptersDir ? `${chaptersRel(config.canonDir, config.chaptersDir)}/` : null;
+  const chapterPrefix = config.chaptersDir ? `${inputDirRel(config.canonDir, config.chaptersDir)}/` : null;
   const changedChapters = chapterPrefix ? changedFiles.filter((f) => f.startsWith(chapterPrefix)) : [];
   if (changedChapters.length > 0) {
     return {
@@ -222,12 +237,12 @@ export function checkIncremental(
 
 /**
  * Get the current mtime (epoch ms) for all canon files, and for every chapter
- * file when `chaptersDir` is given. Used to write the manifest after a
- * successful run.
+ * file when `chaptersDir` is given, plus artwork inputs when `assetsDir` is
+ * given. Used to write the manifest after a successful run.
  */
-export function getCanonFileMtimes(canonDir: string, chaptersDir?: string): Map<string, number> {
+export function getCanonFileMtimes(canonDir: string, chaptersDir?: string, assetsDir?: string): Map<string, number> {
   const mtimes = new Map<string, number>();
-  const files = getTrackedFiles(canonDir, chaptersDir);
+  const files = getTrackedFiles(canonDir, chaptersDir, assetsDir);
 
   for (const relPath of files) {
     const absPath = path.resolve(canonDir, '..', relPath);
@@ -242,25 +257,36 @@ export function getCanonFileMtimes(canonDir: string, chaptersDir?: string): Map<
   return mtimes;
 }
 
-/** content/chapters as a path relative to the repository root (canon's parent). */
-function chaptersRel(canonDir: string, chaptersDir: string): string {
-  return path.relative(path.resolve(canonDir, '..'), chaptersDir).replaceAll('\\', '/');
+/** An input directory relative to the repository root (canon's parent). */
+function inputDirRel(canonDir: string, inputDir: string): string {
+  return path.relative(path.resolve(canonDir, '..'), inputDir).replaceAll('\\', '/');
 }
 
 /**
  * Every file the manifest tracks, relative to the repository root: the canon
- * YAML, plus the chapter JSON when a chapters directory is given.
+ * YAML, chapter JSON, image files and the asset manifest when configured.
  */
-function getTrackedFiles(canonDir: string, chaptersDir?: string): string[] {
+function getTrackedFiles(canonDir: string, chaptersDir?: string, assetsDir?: string): string[] {
   const files = getCanonFiles(canonDir);
-  if (!chaptersDir) return files;
-  try {
-    const rel = chaptersRel(canonDir, chaptersDir);
-    const chapters = fs.readdirSync(chaptersDir).filter((f) => f.endsWith('.json')).sort();
-    return [...files, ...chapters.map((f) => `${rel}/${f}`)];
-  } catch {
-    return files;
+  if (chaptersDir && fs.existsSync(chaptersDir)) {
+    const rel = inputDirRel(canonDir, chaptersDir);
+    const chapters = fs.readdirSync(chaptersDir).filter(f => f.endsWith('.json')).sort();
+    files.push(...chapters.map(f => `${rel}/${f}`));
   }
+  if (assetsDir && fs.existsSync(assetsDir)) {
+    const root = path.resolve(canonDir, '..');
+    const visit = (dir: string): void => {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) visit(full);
+        else if (entry.isFile() && (/\.(png|webp|jpg|svg)$/i.test(entry.name) || full === path.join(assetsDir, 'manifest.json'))) {
+          files.push(path.relative(root, full).replaceAll('\\', '/'));
+        }
+      }
+    };
+    visit(assetsDir);
+  }
+  return files.sort();
 }
 
 /**
