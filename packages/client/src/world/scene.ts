@@ -73,6 +73,7 @@ import {
   characterWorldArtUrl,
   drawContactShadow,
   drawPlaceholder,
+  breathingShadowScale,
   measureFootprint,
   shadowOffset,
   type Footprint,
@@ -731,6 +732,7 @@ export function createScene(app: Application): PartyScene {
         actor.rive.setKnockedDown(actor.down);
         actor.rive.tick(dt);
         actor.art.scale.y = 1;
+        actor.shadow.scale.set(breathingShadowScale(actor.down ? 0 : actor.rive.breath()));
         actor.art.alpha = approach(actor.art.alpha, actor.connected ? 1 : 0.5, FADE_RATE, dt);
         continue;
       }
@@ -740,6 +742,7 @@ export function createScene(app: Application): PartyScene {
         actor.art.rotation = approach(actor.art.rotation, FALLEN_ROTATION, DOWN_RATE, dt);
         actor.art.y = approach(actor.art.y, ACTOR_HEIGHT * 0.18, DOWN_RATE, dt);
         actor.art.scale.y = approach(actor.art.scale.y, 1, DOWN_RATE, dt);
+        actor.shadow.scale.set(1);
         actor.art.alpha = approach(actor.art.alpha, FALLEN_ALPHA, DOWN_RATE, dt);
         continue;
       }
@@ -750,6 +753,8 @@ export function createScene(app: Application): PartyScene {
       actor.art.rotation = approach(actor.art.rotation, bob * 0.02, BOB_RATE, dt);
       actor.art.y = approach(actor.art.y, 0, DOWN_RATE, dt);
       actor.art.scale.y = 1 + bob * 0.015;
+      // The shadow tightens as the body rises and spreads as it settles.
+      actor.shadow.scale.set(breathingShadowScale(actor.art.scale.y - 1));
       actor.art.alpha = approach(actor.art.alpha, actor.connected ? 1 : 0.5, FADE_RATE, dt);
     }
   }
@@ -774,6 +779,7 @@ export function createScene(app: Application): PartyScene {
         // Breathing about the feet — see the party's bob in tick().
         const bob = Math.sin(elapsed * 1.3 + member.phase);
         member.art.scale.y = 1 + bob * 0.012;
+        member.shadow.scale.set(breathingShadowScale(member.art.scale.y - 1));
       }
     }
   }

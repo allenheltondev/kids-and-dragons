@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { drawContactShadow, shadowOffset } from "./actor-art";
+import { breathingShadowScale, drawContactShadow, shadowOffset } from "./actor-art";
 
 describe("contact shadows", () => {
   const H = 300;
@@ -26,5 +26,13 @@ describe("contact shadows", () => {
   it("is offset to wherever the feet are in the canvas", () => {
     expect(shadowOffset(H, { x: -0.2, y: 0, halfWidth: 0.1, lift: 0 })).toBeCloseTo(-0.2 * H);
     expect(shadowOffset(H, null)).toBe(0);
+  });
+
+  it("tightens as the body breathes in and spreads as it breathes out", () => {
+    expect(breathingShadowScale(0)).toBe(1);
+    expect(breathingShadowScale(0.018)).toBeLessThan(0.95);
+    expect(breathingShadowScale(-0.015)).toBeGreaterThan(1);
+    // A fallen rig's rotated root must not shrink the shadow to nothing.
+    expect(breathingShadowScale(1)).toBeGreaterThan(0.75);
   });
 });

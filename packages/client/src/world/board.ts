@@ -71,6 +71,7 @@ import {
   drawContactShadow,
   drawPlaceholder,
   enemyArtUrl,
+  breathingShadowScale,
   measureFootprint,
   shadowOffset,
   type Footprint,
@@ -982,6 +983,8 @@ export function createBoardLayer(): BoardLayer {
           }
 
           actor.rive.tick(dtSeconds);
+          // Breathing with the idle: tighter as the body rises off its feet.
+          actor.shadow.scale.set(breathingShadowScale(actor.down ? 0 : actor.rive.breath()));
           continue;
         }
         if (actor.down) {
