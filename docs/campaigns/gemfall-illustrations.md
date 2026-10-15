@@ -701,3 +701,24 @@ Generated as a painterly 16:9 storybook environment and exported 1920×1080 WebP
 
 Create a painterly fantasy storybook game backdrop for a high rim lookout above the foothills on the road to Redspire. A simple freshly painted wooden road marker stands at a rocky ridge above tiny warm foothill campfires; far away, a black citadel catches the last red-orange light. Wind-bent gold grass, layered blue mountains and a dramatic but gentle twilight. Keep the marker and citadel in the upper half and a broad level platform in the lower 30 percent. No characters, animals, readable signs, text, UI or border.
 
+
+## Cast figures
+
+- **Mrs. Tuft** (`assets/cast/mrs_tuft/assembled.png`): One older sheeple provision-barge grocer, cream and smoke-grey wool, gentle age creases, spectacles, teal shawl, jar satchel, tiny blank price tags. Three-quarter left, full-body, transparent background.
+- **Old Wick** (`assets/cast/old_wick/assembled.png`): One very old moss-green frogfolk lamplighter with age spots, a cloudy eye, faded indigo coat, brass lamp charms and walking stick. Three-quarter left, full-body, transparent background.
+- **Postmaster Quill** (`assets/cast/postmaster_quill/assembled.png`): One individual tawny griffin postmaster with spectacles on a chain and a leather mail satchel holding blank envelopes. Three-quarter left, full-body, transparent background.
+
+- **Bracken** (`assets/cast/bracken_swiftmile/assembled.png`): Chestnut centaur relay runner, green road sash and letter-filled saddle satchel.
+- **Burdock** (`assets/cast/burdock/assembled.png`): Russet faun provisioner with leafy vest, bucket and abacus.
+- **Mother Bracken** (`assets/cast/mother_bracken/assembled.png`): Tired, polite faun mother with travel shawl, braid and bags.
+- **Littlest Bracken** (`assets/cast/littlest_bracken/assembled.png`): Small cinnamon faun child, oversized blue scarf and walking stick.
+
+These figures follow the existing painted storybook cast style. Source prompts specify species silhouette, individual role, left-facing pose, full-body framing and no scenery. The four fauns/centaurs were generated on one transparent 2×2 sheet and cropped into individual cutouts.
+
+- **Innkeeper Flint** (`assets/cast/innkeeper_flint/assembled.png`): Broad, gentle slate-grey stone troll with nightcap and apron.
+
+- **Granny Ash** (`assets/cast/granny_ash/assembled.png`): Older manticore grandmother with silver-streaked rust fur, folded wings, curled tail and patched violet shawl.
+- **Old Corran** (`assets/cast/old_corran/assembled.png`): Elderly dapple-grey centaur relay singer with silver mane and beard, wine-red shawl and wooden flute.
+- **Nim** (`assets/cast/nim/assembled.png`): Small dragonling child with vivid mint-green scales, cream belly, mint wings, horns and bell collar.
+- **Corporal Tibbet** (`assets/cast/corporal_tibbet/assembled.png`): Slate-blue griffin Skywarden with cream chest, green sash, bronze badge and clipboard.
+- **Pib** (`assets/cast/pib/assembled.png`): Tiny bramble sprite made of dark twigs, thorns and fresh leaves.
