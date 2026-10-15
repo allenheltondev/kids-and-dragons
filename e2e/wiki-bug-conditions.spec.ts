@@ -32,7 +32,7 @@ test.use({
 test.describe('Bug 1: Mobile Navbar Overflow (Req 1.1)', () => {
   test('navbar title has overflow hidden on mobile for text truncation', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/creatures/ember_wraith/');
+    await page.goto('/creatures/cinder_wolf/');
     await page.waitForLoadState('domcontentloaded');
 
     const title = page.locator('.wiki-navbar__title');
@@ -58,7 +58,7 @@ test.describe('Bug 1: Mobile Navbar Overflow (Req 1.1)', () => {
 test.describe('Bug 2: Desktop Content Width (Req 1.2)', () => {
   test('main-content does not have max-width: 900px on desktop', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto('/creatures/ember_wraith/');
+    await page.goto('/creatures/cinder_wolf/');
     await page.waitForLoadState('domcontentloaded');
 
     const mainContent = page.locator('.main-content');
@@ -140,7 +140,7 @@ test.describe('Bug 4: Character Portrait/Gallery Duplication (Req 1.4)', () => {
 test.describe('Bug 5: Horizontal Overflow on Mobile (Req 1.5)', () => {
   test('no horizontal scrollbar at 375px viewport', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/creatures/ember_wraith/');
+    await page.goto('/creatures/cinder_wolf/');
     await page.waitForLoadState('domcontentloaded');
 
     const hasOverflow = await page.evaluate(() => {
@@ -163,7 +163,7 @@ test.describe('Bug 5: Horizontal Overflow on Mobile (Req 1.5)', () => {
  */
 test.describe('Bug 6: Navbar Title Link (Req 1.6)', () => {
   test('navbar title link href is not just "/"', async ({ page }) => {
-    await page.goto('/biomes/crimson_highlands/');
+    await page.goto('/biomes/sky_islands/');
     await page.waitForLoadState('domcontentloaded');
 
     const titleLink = page.locator('.wiki-navbar__title');

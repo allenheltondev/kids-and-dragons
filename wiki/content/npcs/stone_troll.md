@@ -5,6 +5,7 @@ type: npc
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-01", "gemfall-03a", "gemfall-05b"]
 tags: ["supporting_people", "river", "bridgekeeper", "masonry"]
 classification: supporting_people
 scale: very_large

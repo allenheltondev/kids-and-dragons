@@ -5,7 +5,7 @@ type: faction
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
-draft: true
+played_in: ["gemfall-04c", "gemfall-05a", "gemfall-05b", "gemfall-05c", "gemfall-06", "gemfall-07h", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["military", "order", "protectors", "highlands"]
 lore_hook: "Sworn to watch the sky. Proudest log entry in four centuries: 'nothing.'"
 likes:

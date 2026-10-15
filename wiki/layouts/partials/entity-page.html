@@ -1,0 +1,71 @@
+{{/*
+  Every canon page — creature, region, hero, item, place, route — is this one
+  template, so the whole wiki reads as one book. What differs by type is the
+  infobox (partials/infobox/<type>.html, or generic.html), and whether the
+  art is a landscape banner or a framed portrait (partials/art-for.html).
+
+  The hidden ai_context block and the plain-markdown relationships list are
+  stripped from the body: the first is for tools, and the second is drawn as
+  the related-entities card grid instead.
+*/}}
+{{ $p := . }}
+{{ $type := .Params.type | default "page" }}
+{{ $art := partial "art-for.html" . }}
+{{ $kinds := dict "creature" "Creature" "biome" "Region" "location" "Place" "npc" "People" "individual" "Named Folk" "character" "Playable Hero" "item" "Item" "faction" "Faction" "quest" "Quest" "campaign" "Campaign" "route" "Road & Route" "feature" "River & Landmark" }}
+
+<article class="entity-page entity-type-{{ $type }}">
+  {{ if and $art.path $art.wide }}
+  <figure class="entity-banner">
+    {{ $wide := $art.path }}
+    {{/* A biome's portrait.webp is a 640px copy; the banner wants the backdrop. */}}
+    {{ if hasSuffix $art.path "portrait.webp" }}{{ $wide = replace $art.path "portrait.webp" "bg.webp" }}{{ end }}
+    {{ partial "thumb.html" (dict "path" $wide "width" 960 "alt" (printf "%s, painted for the game" .Title) "class" "entity-banner__img" "full" true) }}
+  </figure>
+  {{ end }}
+
+  <div class="entity-layout entity-layout--with-infobox">
+    <div class="entity-content">
+      <header class="entity-head">
+        <p class="entity-kicker">
+          <span class="wiki-badge wiki-badge--{{ $type }}">{{ index $kinds $type | default (humanize $type) }}</span>
+          {{ with .Params.danger_level }}<span class="wiki-badge wiki-badge--danger-{{ . }}">{{ partial "title-case.html" . }} danger</span>{{ end }}
+          {{ $story := partial "story-status.html" . }}
+          {{ if $story.unmet }}<span class="wiki-badge wiki-badge--unmet" title="No chapter uses this yet. It is waiting for a future campaign.">Not in a story yet</span>{{ end }}
+          {{ if eq .Params.canon_status "intentionally_undefined" }}<span class="wiki-badge wiki-badge--mystery" title="Canon keeps the full truth of this one a secret, on purpose.">Still a mystery</span>{{ end }}
+        </p>
+        <h1>{{ .Title }}</h1>
+        {{ with .Params.lore_hook }}<p class="entity-hook">{{ . }}</p>{{ end }}
+        {{ with $story.titles }}
+        <p class="entity-met">Met in {{ delimit (first 4 .) ", " (cond (gt (len .) 4) ", " " and ") }}{{ if gt (len .) 4 }}, and {{ sub (len .) 4 }} more {{ cond (eq (sub (len .) 4) 1) "chapter" "chapters" }}{{ end }}.</p>
+        {{ end }}
+        {{ with .Params.tags }}
+        <div class="entity-tags" aria-label="Tags">
+          {{ range . }}<span class="tag">{{ partial "title-case.html" . }}</span>{{ end }}
+        </div>
+        {{ end }}
+      </header>
+
+      {{ if eq $type "character" }}{{ partial "tier-viewer.html" $p }}{{ end }}
+
+      <div class="prose">
+      {{ $content := .Content }}
+      {{ $content = replaceRE `(?s)<!-- BEGIN GENERATED: ai_context -->.*?<!-- END GENERATED: ai_context -->` "" $content }}
+      {{ $content = replaceRE `(?s)<!-- BEGIN GENERATED: relationships -->.*?<!-- END GENERATED: relationships -->` "" $content }}
+      {{ $content | safeHTML }}
+      </div>
+
+      {{ if eq $type "character" }}{{ partial "hero-classes.html" $p }}{{ end }}
+
+      {{ partial "related-entities.html" $p }}
+      {{ partial "ai-context.html" $p }}
+      {{ if not (in (slice "character" "biome") $type) }}{{ partial "gallery.html" $p }}{{ end }}
+    </div>
+
+    {{ $box := printf "infobox/%s.html" $type }}
+    {{ if templates.Exists (printf "partials/%s" $box) }}
+      {{ partial $box $p }}
+    {{ else }}
+      {{ partial "infobox/generic.html" $p }}
+    {{ end }}
+  </div>
+</article>

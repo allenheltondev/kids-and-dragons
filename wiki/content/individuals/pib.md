@@ -5,6 +5,7 @@ type: individual
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: ["bramblewood-01", "gemfall-02"]
 tags: ["bramblewood", "hedges", "sprite", "helpful"]
 related:
   - id: biome.sunward_fields

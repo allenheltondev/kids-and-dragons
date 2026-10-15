@@ -1,0 +1,18 @@
+{{/* The framed portrait at the top of an infobox. Landscape art is drawn as
+     the page banner instead (entity-page.html), so it is skipped here; an
+     item with no painting gets the icon the game draws for it. `data-full`
+     is what the lightbox opens — the commissioned source, not the thumbnail. */}}
+{{ $art := partial "art-for.html" . }}
+{{ if and $art.path (not $art.wide) }}
+<div class="wiki-infobox__portrait">
+  {{ $res := resources.Get (printf "art/%s" $art.path) }}
+  {{ $src := printf "assets/%s" $art.path | relURL }}
+  {{ with $res }}{{ if ne .MediaType.SubType "svg" }}{{ $src = (.Resize "560x webp q82").RelPermalink }}{{ end }}{{ end }}
+  <img src="{{ $src }}" alt="{{ .Title }}" loading="eager" width="280" height="280"
+       class="wiki-infobox__portrait-img" data-full="{{ printf "assets/%s" $art.full | relURL }}">
+</div>
+{{ else if $art.icon }}
+<div class="wiki-infobox__portrait wiki-infobox__portrait--icon">
+  <img src="{{ $art.icon | relURL }}" alt="" width="140" height="140">
+</div>
+{{ end }}

@@ -6,6 +6,7 @@ status: draft
 lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
 draft: true
+played_in: []
 tags: ["main_campaign", "highlands", "epic", "skywardens"]
 related:
   - id: faction.skywardens

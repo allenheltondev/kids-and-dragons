@@ -5,6 +5,7 @@ type: item
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: ["bramblewood-01", "gemfall-01", "gemfall-02", "gemfall-03a", "gemfall-07h"]
 tags: ["charm", "luck", "sky_islands", "rare"]
 related:
   - id: biome.sky_islands

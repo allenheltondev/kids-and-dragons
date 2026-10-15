@@ -1,0 +1,25 @@
+{{/*
+  The Kids & Dragons logo: the approved dragon mark paired with the live-text
+  wordmark, as the app's home screen does (assets/brand/README.md: "Pair the
+  symbol with the live-text wordmark... Use the symbol alone for small icons").
+
+  Pass a dict:
+    size     the mark's CSS width in px (default 48)
+    class    extra class on the lockup ("wiki-logo--hero", "--nav", "--footer")
+    eager    true above the fold
+    stacked  true to break the wordmark over two lines, as on the app
+    nomark   true for the wordmark alone
+
+  The master is 1254px; it is resized at build time to twice its size here.
+*/}}
+{{- $size := .size | default 48 -}}
+<span class="wiki-logo {{ .class }}">
+  {{- if not .nomark }}
+  {{- with resources.Get site.Params.brand.mark }}
+  {{- $img := .Resize (printf "%dx%d webp q90" (mul $size 2) (mul $size 2)) }}
+  <img class="wiki-logo__mark" src="{{ $img.RelPermalink }}" width="{{ $size }}" height="{{ $size }}" alt=""
+       {{ if $.eager }}fetchpriority="high"{{ else }}loading="lazy"{{ end }} decoding="async">
+  {{- end }}
+  {{- end }}
+  <span class="wiki-logo__word">Kids <span class="wiki-logo__amp">&amp;</span>{{ if .stacked }}<br>{{ else }} {{ end }}Dragons</span>
+</span>

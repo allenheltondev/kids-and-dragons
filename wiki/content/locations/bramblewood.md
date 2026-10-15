@@ -5,6 +5,7 @@ type: location
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: ["bramblewood-01", "gemfall-02", "gemfall-05a", "gemfall-05c"]
 tags: ["town", "hedges", "sunward_fields", "waystop"]
 regional_relationships:
   - id: biome.sunward_fields

@@ -6,6 +6,7 @@ status: draft
 lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
 draft: true
+played_in: []
 tags: ["barren", "northern_waste", "forbidden", "unknown", "plateau"]
 danger_level: unknown
 related:

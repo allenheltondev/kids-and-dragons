@@ -326,3 +326,75 @@ describe('getCanonFileMtimes', () => {
     expect(mtimes.size).toBe(0);
   });
 });
+
+describe('checkIncremental — chapters', () => {
+  // Every page records `played_in`, so a chapter edit, addition or removal
+  // with no canon change at all must still regenerate every page.
+  let tempDir: string;
+  let chaptersDir: string;
+  let manifestPath: string;
+  let registry: CanonRegistry;
+
+  const config = (): GeneratorConfig => ({ ...buildConfig(manifestPath), chaptersDir });
+  const writeChapter = (name: string, body: unknown) =>
+    fs.writeFileSync(path.join(chaptersDir, name), JSON.stringify(body));
+  const age = (name: string) => {
+    // Push a file's mtime into the past, so a later touch reads as newer.
+    const past = new Date(Date.now() - 60_000);
+    fs.utimesSync(path.join(chaptersDir, name), past, past);
+  };
+
+  beforeEach(() => {
+    tempDir = makeTempDir();
+    chaptersDir = path.join(tempDir, 'chapters');
+    fs.mkdirSync(chaptersDir);
+    manifestPath = path.join(tempDir, 'manifest.json');
+    registry = buildTestRegistry();
+    writeChapter('ch-01.json', { id: 'ch-01', scenes: {} });
+    age('ch-01.json');
+    updateManifest(manifestPath, getCanonFileMtimes(canonDir, chaptersDir));
+  });
+
+  afterEach(() => {
+    removeTempDir(tempDir);
+  });
+
+  it('records chapter files in the manifest', () => {
+    const tracked = Object.keys(readManifest(manifestPath)!.files);
+    expect(tracked.some((f) => f.endsWith('/ch-01.json'))).toBe(true);
+    expect(tracked.some((f) => f.startsWith('canon/'))).toBe(true);
+  });
+
+  it('reports no changes when neither canon nor chapters changed', () => {
+    expect(checkIncremental(config(), registry).hasChanges).toBe(false);
+  });
+
+  it('regenerates every entity when only a chapter was edited', () => {
+    writeChapter('ch-01.json', { id: 'ch-01', scenes: { a: { cast: [{ figure: 'entities/cinder_wolf' }] } } });
+    const result = checkIncremental(config(), registry);
+    expect(result.hasChanges).toBe(true);
+    expect(result.changedFiles.every((f) => f.endsWith('.json'))).toBe(true);
+    expect(result.entitiesToProcess.size).toBe(registry.entities.size);
+  });
+
+  it('regenerates every entity when a chapter is added', () => {
+    writeChapter('ch-02.json', { id: 'ch-02', scenes: {} });
+    const result = checkIncremental(config(), registry);
+    expect(result.hasChanges).toBe(true);
+    expect(result.entitiesToProcess.size).toBe(registry.entities.size);
+  });
+
+  it('regenerates every entity when a chapter is removed', () => {
+    fs.rmSync(path.join(chaptersDir, 'ch-01.json'));
+    const result = checkIncremental(config(), registry);
+    expect(result.hasChanges).toBe(true);
+    expect(result.entitiesToProcess.size).toBe(registry.entities.size);
+  });
+
+  it('regenerates once from a manifest written before chapters were tracked', () => {
+    updateManifest(manifestPath, getCanonFileMtimes(canonDir));
+    const result = checkIncremental(config(), registry);
+    expect(result.hasChanges).toBe(true);
+    expect(result.entitiesToProcess.size).toBe(registry.entities.size);
+  });
+});
