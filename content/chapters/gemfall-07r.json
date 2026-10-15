@@ -1112,7 +1112,7 @@
     },
     "choice_haul_others": {
       "type": "story",
-      "narration": "You have no great stones of your own to haul, so you carry everybody else's. Travelers press sacks into your arms and tell you which camp they came from. You climb, set a sack down in the way-shelter's yard, and climb down for another. Nobody keeps count of the trips. By dusk the yard is full, and the stones hum like they know who carried them.",
+      "narration": "Your own arms are empty, so you fill them with everybody else's. Travelers press sacks into your arms and tell you which camp they came from. You climb, set a sack down in the way-shelter's yard, and climb down for another. Nobody keeps count of the trips. By dusk the yard is full, and the stones hum like they know who carried them.",
       "choices": [
         {
           "id": "on",
