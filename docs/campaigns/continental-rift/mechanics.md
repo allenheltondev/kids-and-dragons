@@ -24,6 +24,11 @@ Each color conveys a current property **or state**. Properties compose; a rift m
 - **How it is built:** a green rift is a rift edge whose `when` guard does not hold yet. The UI shows green while the guard fails and drops it once the guard holds; no separate 'triggered' property is needed ([#196](https://github.com/allenheltondev/kids-and-dragons/issues/196)).
 - Conditions could be items, actions, environment, timing, party actions, or story states. Whatever the fiction, the condition is **resolved inside a chapter and recorded as a journey flag** (e.g. `glacier_rift_woken`), and the rift edge guards on that flag. Graph guards read the journey, never the party, so "carrying the frost lens" is a chapter choice gated on the item, and "at dusk" is a story state a chapter sets. Individual puzzle implementations are still TBD.
 
+### The first two rifts — agreed
+They are designed to teach opposite lessons:
+- **Washout rift — amber + violet** (single-use, one-way): a gamble taken under pressure that cannot be undone. It leads to the **Sky Islands**, otherwise reachable only by air.
+- **Hidden glacier rift — green + blue** (requirement unmet, then persistent): a puzzle solved by patience that stays open as a way back. It leads to **the Saltrot**. Details in [story.md](story.md).
+
 ### Other colors — proposed palette, awaiting explicit lock
 | Color | Provisional interpretation | Notes |
 | --- | --- | --- |
@@ -45,7 +50,7 @@ A **green + amber + violet** rift starts unavailable, becomes **amber + violet**
 - A fixed set of colors need not disclose what lies on the far side.
 
 ## Fail-forward dice sequence — agreed
-The Glacierflow river washout is a **multi-stage escape challenge**. The party is swept downstream after failing a dangerous crossing. At each subsequent opportunity a successful skill check lets the party exit at a different geographical node; failure advances them downstream to a new encounter, not game over or automatic death. After final failures there is a rescue/refuge fallback. Each stage uses an existing check mode: `roller: "best"` when one person can save everyone, `roller: "all"` when everyone has to hold on. Exact ability selection, TNs, damage and item consequences remain TBD.
+The [headwaters washout](nodes/headwaters-washout.md) on the Great River is a **multi-stage escape challenge**. The party is swept downstream after failing a dangerous crossing. At each subsequent opportunity a successful skill check lets the party exit at a different geographical node; failure advances them downstream to a new encounter, not game over or automatic death. After final failures there is a rescue/refuge fallback. Each stage uses an existing check mode: `roller: "best"` when one person can save everyone, `roller: "all"` when everyone has to hold on. Exact ability selection, TNs, damage and item consequences remain TBD.
 
 ## Engine constraints
 See [graph-campaigns.md](../graph-campaigns.md), issue #191 and successors. Graph node transitions happen after a chapter visit finishes. Multi-stage skill checks should be authored as scene/encounter transitions **inside** the washout chapter, with journey flags, not chapter outcomes, feeding later edge choices. A graph outcome is only `success` or `setback`, and a setback counts toward `setbackLimit` and pays half XP, so fail-forward branches end as `success` and route by flag. Mutually exclusive exits use a `routeSets` fork. Preserve deterministic branch testing and no-softlock coverage.

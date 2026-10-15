@@ -8,25 +8,40 @@
 flowchart TD
   E[exchange-rift] --> G[glacier-survival]
   G --> R[riftseekers-departure]
-  R --> M[mountain-crossing]
+  R --> T[ice-shelf-traverse]
   R --> H[hidden-glacier-rift]
   H -->|return, rift unsolved| R
-  M -->|flag: crossing_made| P[foothills-lead]
-  M -->|flag: crossing_failed| W[glacierflow-washout]
-  W -->|flag: river_escaped_early| F[glacier-foothills]
-  W -->|flag: river_escaped_middle| B[riverbank-encounter]
-  W -->|flag: river_escaped_late| D[downstream-refuge]
-  W -.->|flag: river_took_rift| U[rift-destination-tbd]
-  H -->|flag: glacier_rift_woken, once| U
+  T -->|flag: traverse_made| C[cairnstep-pass]
+  T -->|flag: traverse_failed| W[headwaters-washout]
+  W -->|flag: river_escaped_early| F[frostfang-shore]
+  W -->|flag: river_escaped_middle| B[boundary-stone-bank]
+  W -->|flag: river_escaped_late| D[ashspan-bridge]
+  W -.->|flag: river_took_rift, once| S[sky-islands-arrival]
+  H -->|flag: glacier_rift_woken| L[saltrot-arrival]
+  L -->|return through the rift| H
 ```
 
-The river's multiple escape opportunities are **stages within one authored encounter**; this diagram models the eventual story nodes reached, not every internal dice roll. The hidden rift and river rift need not share a destination: `rift-destination-tbd` here is a placeholder, not an assertion they are the same rift.
+The river's multiple escape opportunities are **stages within one authored encounter**; this diagram models the eventual story nodes reached, not every internal dice roll. The two rifts are different rifts with different destinations ([mechanics.md](mechanics.md#the-first-two-rifts--agreed)).
+
+### Places in the opening — agreed
+| Node | Where (canon) |
+| --- | --- |
+| `ice-shelf-traverse` | The ice shelf above the Great River where it leaves the glacier, on the way to Frostfang. A traverse along the bank, not a river crossing. |
+| `cairnstep-pass` | ***The Cairnstep***, a griffin-cairned pass in Frostfang Peaks (new canon, pending registration). Orin's lead. |
+| `headwaters-washout` | The Great River's headwaters. Not "Glacierflow": canon uses that name only for the lower reaches in the Saltrot. |
+| `frostfang-shore` | The east bank under Frostfang, near the lead. (Not "foothills": that word means the Red Sky Foothills.) |
+| `boundary-stone-bank` | The Red Sky Foothills bank, among canon's boundary stones that are older than the dragonlings and carved with an eruption no one's count matches: a quiet early clue. |
+| `ashspan-bridge` | The Northern River Bridge, named ***Ashspan Bridge*** (canon asks for a name before a campaign uses it; pending registration). |
+| `sky-islands-arrival` | The Sky Islands, through the washout rift. |
+| `saltrot-arrival` | The Sallow Wastelands (the Saltrot), through the hidden glacier rift. |
+
+**Never the west bank below the glacier.** It is the Expanse, a protected mystery; no exit, rescue or rift lands there.
 
 ### Key entry/fail-forward logic
 - Riftseekers provide a lead, but their advice is optional, imperfect and brief.
-- Follow lead → challenge at Glacierflow/mountain crossing. A failed roll opens washout, **not an immediate setback/failure screen**. The crossing's scenes set one member of a `"mountain_crossing": ["crossing_made", "crossing_failed"]` route set, and the two exits guard on those flags. Never guard on `outcome: setback`: a setback counts toward `setbackLimit` and pays half XP, so the chapter ends as `success` either way.
-- Washout → rolls decide exit distance downstream; no failed-roll dead end. The exits guard on the `river_exit` route set ([node spec](nodes/glacierflow-washout.md#consequences--world-state)).
-- Deliberate glacier exploration → conditional hidden rift, possibly bypassing normal geography. A party that explores without solving the condition returns to `riftseekers-departure` by a `kind: "return"` edge (`revisit: "pass"` there, so it goes straight to the exit choice) and can still take the mountain route. The rift edge is `once`.
+- Follow lead → the ice-shelf traverse. A failed roll opens the washout, **not an immediate setback/failure screen**. The traverse's scenes set one member of an `"ice_shelf": ["traverse_made", "traverse_failed"]` route set, and the two exits guard on those flags. Never guard on `outcome: setback`: a setback counts toward `setbackLimit` and pays half XP, so the chapter ends as `success` either way.
+- Washout → rolls decide exit distance downstream; no failed-roll dead end. The exits guard on the `river_exit` route set ([node spec](nodes/headwaters-washout.md#consequences--world-state)).
+- Deliberate glacier exploration → the hidden rift, bypassing normal geography to the Saltrot. A party that explores without solving the condition returns to `riftseekers-departure` by a `kind: "return"` edge (`revisit: "pass"` there, so it goes straight to the exit choice) and can still take the lead. The rift is persistent, so it is not `once`, and the Saltrot side has a return edge back to the glacier.
 - Returning to Glacier later should be meaningful; dormant rift clue may be observed during the initial survival scene.
 - No single regional storyline should be required for access to the endgame; how this is satisfied remains an explicit design problem.
 
@@ -47,9 +62,6 @@ The river's multiple escape opportunities are **stages within one authored encou
 - Avoid authoring the final graph until graph runtime, effects and edge constraints from issues #192–#203 are verified.
 
 ## Decisions still open
-1. Exact mountain destination/griffin lead against canon map.
-2. River stage placement on the Great River; safe exit regions and dice thresholds.
-3. Hidden glacier rift condition (resolved in-chapter as `glacier_rift_woken`), fixed Riftlight colors and destination.
-4. If/where a rift appears during the river sequence; how the party can cross it safely.
-5. Which locations and developments are mandatory for final convergence.
-6. Endgame unlock flags, faction influence rules, return routes and endings.
+1. Dice thresholds for the washout stages.
+2. Which locations and developments are mandatory for final convergence.
+3. Endgame unlock flags, faction influence rules, return routes and endings.
