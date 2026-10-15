@@ -961,6 +961,13 @@
           "icon": "cake",
           "goto": "rest_bell_house"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "supper_bundle",
+          "to": "party"
+        }
       ]
     },
     "scene_bell_house_supper_depot_tag": {

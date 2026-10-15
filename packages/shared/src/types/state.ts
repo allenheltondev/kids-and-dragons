@@ -177,6 +177,16 @@ export interface RunState {
   lastRoll: DiceRoll | null;
   /** Story flags set by effects, scoped to the run. */
   flags: Record<string, boolean>;
+  /**
+   * The party's shared purse. One purse, not one per character, for the same
+   * reason XP is never individual: what the party can afford is a table
+   * decision. Unlike `flags` it outlives the chapter, through
+   * `EngineContext.campaignCoins` and `CampaignProgressRecord.coins`.
+   *
+   * Optional because RunState is persisted as plain JSON and a run written
+   * before the purse existed has to keep loading; read it as `?? 0`.
+   */
+  coins?: number;
   xpEarned: number;
   /**
    * How the chapter now in `chapterId` ended, once it has (spec §8.2). Null

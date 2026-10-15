@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { isGated, validateChapter } from "./chapter-graph.js";
-import { mutuallyExclusive, unknownTokens } from "./condition-lint.js";
+import { mutuallyExclusive, unbackedCosts, unknownTokens } from "./condition-lint.js";
 import { makeChapter, makeItems } from "./test-fixtures.js";
 import type { Chapter, StoryScene } from "./types/chapter.js";
 
@@ -26,6 +26,43 @@ describe("a `when` is a gate", () => {
       for (const c of scene.choices) c.when = { partySize: { min: 1 } };
     });
     expect(codes(validateChapter(chapter, items))).toContain("DEAD_END");
+  });
+});
+
+describe("a cost is a gate", () => {
+  const base = { id: "c", label: "x", icon: "a", goto: "g" };
+
+  it("accepts a take backed by requiresItem, when.item, or a matching count", () => {
+    expect(unbackedCosts({ ...base, requiresItem: "honeycake", effects: [{ type: "takeItem", itemId: "honeycake" }] })).toEqual([]);
+    expect(unbackedCosts({ ...base, when: { item: "honeycake" }, effects: [{ type: "takeItem", itemId: "honeycake" }] })).toEqual([]);
+    expect(
+      unbackedCosts({
+        ...base,
+        when: { count: { of: ["supper_bundle", "honeycake"], min: 1 } },
+        effects: [{ type: "takeItem", itemId: ["supper_bundle", "honeycake"] }],
+      }),
+    ).toEqual([]);
+  });
+
+  it("names a take or a spend the party is not promised to afford", () => {
+    expect(unbackedCosts({ ...base, effects: [{ type: "takeItem", itemId: "honeycake" }] })).toHaveLength(1);
+    expect(
+      unbackedCosts({
+        ...base,
+        when: { count: { of: ["honeycake"], min: 1 } },
+        effects: [{ type: "takeItem", itemId: ["supper_bundle", "honeycake"] }],
+      }),
+    ).toHaveLength(1);
+    expect(unbackedCosts({ ...base, effects: [{ type: "spendCoins", amount: 2 }] })).toHaveLength(1);
+    expect(unbackedCosts({ ...base, when: { coins: { min: 1 } }, effects: [{ type: "spendCoins", amount: 2 }] })).toHaveLength(1);
+    expect(unbackedCosts({ ...base, when: { coins: { min: 2 } }, effects: [{ type: "spendCoins", amount: 2 }] })).toEqual([]);
+  });
+
+  it("fails the chapter", () => {
+    const chapter = withShrine((scene) => {
+      scene.choices[0]!.effects = [{ type: "spendCoins", amount: 3 }];
+    });
+    expect(codes(validateChapter(chapter, items))).toContain("UNBACKED_COST");
   });
 });
 

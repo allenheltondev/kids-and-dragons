@@ -471,6 +471,7 @@ export async function settleChapterCompletion(
   if (outcome === "setback") attempt.setbacks += 1;
   const roads = routesTaken(campaign, state.flags, attempt.routeFlags);
   if (roads) attempt.routeFlags = roads;
+  attempt.coins = state.coins ?? 0;
   attempt.lastIndex = chapter.index;
 
   const limit = campaign.setbackLimit ?? DEFAULT_SETBACK_LIMIT;

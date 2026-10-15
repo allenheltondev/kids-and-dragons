@@ -142,6 +142,26 @@ describe("the server owns the road", () => {
     expect((await harness.repo.getState(runId))?.chapterId).toBe("wild-02");
   });
 
+  it("hands the party back the purse its last chapter left", async () => {
+    const harness = makeHarness({ engine: realEngine, content: routedContent() });
+    const { householdId, players } = await seedHousehold(harness, 1);
+    await harness.repo.putCampaignProgress({
+      householdId,
+      campaignId: CAMPAIGN.id,
+      status: "active",
+      setbacks: 0,
+      lastIndex: 1,
+      routeFlags: { [WILD]: true },
+      coins: 9,
+      version: 1,
+      updatedAt: new Date(T0).toISOString(),
+    });
+
+    const { runId, send } = await readyParty(harness, householdId, players[0]!.principal);
+    await send({ type: "START_CHAPTER", chapterId: "wild-02" });
+    expect((await harness.repo.getState(runId))?.coins).toBe(9);
+  });
+
   it("stops a party at a fork they have never chosen at", async () => {
     // Beat one finished, and no road taken out of it. Better a message than a
     // country picked by sort order (shared/routes.ts).
@@ -255,6 +275,14 @@ describe("what a completed chapter writes down", () => {
   it("carries the road the party took", async () => {
     const settlement = await settle({ [RIVER]: true });
     expect(settlement.campaignProgress?.routeFlags).toEqual({ [RIVER]: true });
+  });
+
+  it("carries the party purse", async () => {
+    const harness = makeHarness({ content: routedContent() });
+    const { householdId } = await seedHousehold(harness, 1);
+    const run = { ...completed({ [RIVER]: true }), coins: 4 } as Parameters<typeof settleChapterCompletion>[0];
+    const settlement = await settleChapterCompletion(run, harness.deps, householdId);
+    expect(settlement.campaignProgress?.coins).toBe(4);
   });
 
   it("does not carry a chapter's own flags", async () => {

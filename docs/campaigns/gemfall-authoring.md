@@ -114,8 +114,30 @@ found), `"kind": "quest"`, `"icon": "gem"`. Grant with `grantQuestItem`. Read wi
 
 Other chapter-only props (a knot-cord, a tuned charm, Ossley's token) get ids prefixed by
 what they are, and must not collide with anything above or in `content/items.json`.
-There is no "remove item" effect: giving a facet back is narration plus a flag, and the
-stone stays in the bag as a memory until the campaign ends and quest items are cleared.
+`takeItem` removes one copy of an item from whoever holds it. The hand-over scenes written
+before it existed (giving a facet back) are still narration plus a flag, and that stone stays
+in the bag as a memory until the campaign ends and quest items are cleared.
+
+### Coins and food are real
+
+If a choice says the party pays, buys, shares supper or hands over a cake, it has to
+actually cost something. Otherwise the party's purse and bag stop meaning anything.
+
+- **The purse.** One shared number per party (`RunState.coins`), carried across chapters on
+  the campaign attempt. Chapter 1 starts it at 6 coins. Selling the Ember Facet adds 15, or
+  30 if haggled up. Hessa's offer in 07h adds 30. `grantCoins` adds coins and `spendCoins`
+  takes them away (never below zero). A choice that spends must also be gated with
+  `when: { coins: { min: N } }`, where N is at least the amount spent. The party sees the
+  purse next to its bag.
+- **Food.** `supper_bundle` is the road's food: bread, cheese and a sausage. Caravan cooks,
+  sausage carts, centaurs and grandmothers hand them out. "Share your supper" is gated with
+  `when: { count: { of: ["supper_bundle", "honeycake"], min: 1 } }` and takes
+  `{ "type": "takeItem", "itemId": ["supper_bundle", "honeycake"] }`, which uses a bundle
+  first and a honeycake only if there is no bundle. Text that names a sausage takes
+  `supper_bundle` alone.
+- **The validator holds you to it.** A choice that has `takeItem` or `spendCoins` without a
+  matching gate fails `content:validate`. Because cost gates are gates, every such scene still
+  needs one choice that costs nothing. "Keep your coins and walk on" is a real choice.
 
 ## 4. Shape of a chapter
 
@@ -247,9 +269,9 @@ malformed one (below), so a mistake fails the build, never the evening.
 offers a buy-back, so a seller may or may not have it again). 06's Table Stone can be left in
 warden custody (`leave_stone`). 07's Caravan Stone is lost if the outbid check fails, and
 and so on down the line. So "holds none" is a real
-party that reaches 08 and needs its own text. Remember also that there is no remove effect
-(§3): a facet "given back" in narration stays in the bag, so a handing-over scene should
-**not** count on the item having left.
+party that reaches 08 and needs its own text. A handing-over scene that should really part
+the party from a stone says so with `takeItem` (§3); one that does not leaves the stone in
+the bag, and must **not** count on the item having left.
 
 ### Patterns
 
@@ -375,7 +397,8 @@ reason.
 - **Distinct counting.** `count` counts distinct item ids the party holds between them, across
   inventories and quest items. Two members carrying the same item is one item. `of` is an
   exact id, a prefix ending in `*` (`"facet_*"`), or a list of ids. Bounds are inclusive and
-  `max: 0` means none. `partySize` counts seated members, connected or not.
+  `max: 0` means none. `partySize` counts seated members, connected or not. `coins` reads the
+  party purse, with the same inclusive bounds.
 - **When it is read.** Variants are evaluated once, as the scene opens, **after** its
   `onEnter` effects (and, for branch narration, after the branch's effects). A facet granted by
   the scene's own `onEnter` counts. The result is stored, so a phone that reloads mid-scene
@@ -398,4 +421,4 @@ reason.
   (`<source>_<choice>`) may carry variants but keeps its single exit: a `when` there fails
   `gemfall-flow.test.mjs`.
 - **Reading the map.** `npm run content:graph` labels `when` gates on the dashed edges:
-  `has 0 facet_*`, `has 2+ facet_*`, `party 2+`, `not flag: x`, `holds: item`, `lacks: item`.
+  `has 0 facet_*`, `has 2+ facet_*`, `party 2+`, `purse 3+ coins`, `not flag: x`, `holds: item`, `lacks: item`.

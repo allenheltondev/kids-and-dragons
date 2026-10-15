@@ -8,7 +8,7 @@
  * `validateChapter`; they walk conditions with `conditionRefs` from here.
  */
 
-import type { Branch, Chapter, Condition, NarrationVariant, Scene } from "./types/chapter.js";
+import type { Branch, Chapter, Choice, Condition, NarrationVariant, Scene } from "./types/chapter.js";
 
 /**
  * Every token the engine fills, by name (`{facets}` -> `"facets"`); narration.ts
@@ -140,7 +140,7 @@ const sameOf = (a: string | string[], b: string | string[]) =>
  * Conservative: true only when the two conditions can **never** hold at the
  * same time. False means "cannot show it", not "overlap exists". Recognised:
  * a flag against its own `notFlag`, an item against its own `notItem`,
- * disjoint `partySize` ranges, and disjoint `count` ranges over the same `of`.
+ * disjoint `partySize` or `coins` ranges, and disjoint `count` ranges over the same `of`.
  */
 export function mutuallyExclusive(a: Condition, b: Condition): boolean {
   if (a.flag !== undefined && a.flag === b.notFlag) return true;
@@ -148,6 +148,7 @@ export function mutuallyExclusive(a: Condition, b: Condition): boolean {
   if (a.item !== undefined && a.item === b.notItem) return true;
   if (b.item !== undefined && b.item === a.notItem) return true;
   if (a.partySize && b.partySize && disjoint(a.partySize, b.partySize)) return true;
+  if (a.coins && b.coins && disjoint(a.coins, b.coins)) return true;
   if (a.count && b.count && sameOf(a.count.of, b.count.of) && disjoint(a.count, b.count)) return true;
   return false;
 }
@@ -169,6 +170,12 @@ export function lintChapterText(chapter: Chapter): LintProblem[] {
       problems.push({
         path: `${path}/count`,
         problem: `count min ${String(when.count.min)} is above max ${String(when.count.max)}, so it can never hold`,
+      });
+    }
+    if (when.coins && empty(when.coins)) {
+      problems.push({
+        path: `${path}/coins`,
+        problem: `coins min ${String(when.coins.min)} is above max ${String(when.coins.max)}, so it can never hold`,
       });
     }
     if (when.partySize && empty(when.partySize)) {
@@ -209,5 +216,42 @@ export function lintChapterText(chapter: Chapter): LintProblem[] {
     }
   }
 
+  return problems;
+}
+
+/**
+ * What a choice costs that its gates do not promise the party has. A
+ * `takeItem` must be backed by `requiresItem`, `when.item`, or a `when.count`
+ * over exactly the same ids with `min >= 1`; a `spendCoins` by
+ * `when.coins.min` at least as large as the total spent. Returns one sentence
+ * per problem, empty when the choice is honest.
+ */
+export function unbackedCosts(choice: Choice): string[] {
+  const problems: string[] = [];
+  let spent = 0;
+  for (const effect of choice.effects ?? []) {
+    if (effect.type === "spendCoins") spent += effect.amount;
+    if (effect.type !== "takeItem") continue;
+    const ids = typeof effect.itemId === "string" ? [effect.itemId] : effect.itemId;
+    const when = choice.when;
+    const single = ids.length === 1 ? ids[0] : undefined;
+    const countOf = when?.count?.of;
+    const countIds = countOf === undefined ? undefined : typeof countOf === "string" ? [countOf] : countOf;
+    const backed =
+      (single !== undefined && (choice.requiresItem === single || when?.item === single)) ||
+      (countIds !== undefined &&
+        (when?.count?.min ?? 0) >= 1 &&
+        !countIds.some((id) => id.endsWith("*")) &&
+        countIds.length === ids.length &&
+        countIds.every((id) => ids.includes(id)));
+    if (!backed) {
+      problems.push(
+        `takes "${ids.join(" or ")}" but is not gated on holding it (requiresItem, when.item, or when.count over the same ids with min >= 1)`,
+      );
+    }
+  }
+  if (spent > 0 && (choice.when?.coins?.min ?? 0) < spent) {
+    problems.push(`spends ${spent} coins but is not gated on when.coins.min >= ${spent}`);
+  }
   return problems;
 }
