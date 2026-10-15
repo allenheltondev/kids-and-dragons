@@ -75,6 +75,7 @@ import { Button } from "../ui/Button";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { combatantIcon, combatantLabel, enemyPortraitUrl, gridCells, turnKey, type GridOccupant } from "./combat-grid";
+import type { Facing } from "../world/board-math";
 import "./shared.css";
 import "./CombatPanel.css";
 
@@ -137,6 +138,7 @@ export function CombatControls(): ReactElement | null {
   const send = useSend();
 
   const [selection, setSelection] = useState<Selection>(IDLE);
+  const lastFacing = useRef<Record<string, Facing>>({});
   /**
    * A commit is on its way, or has landed on the server and its patch has not
    * reached this phone yet (a combat beat holds the patch for up to a few
@@ -203,7 +205,10 @@ export function CombatControls(): ReactElement | null {
         ? [selection.tile]
         : [];
 
-  const cells = gridCells(encounter, party, tappable, selectedTiles);
+  // The facing each figure was last drawn with, so a figure straight above
+  // or below its nearest foe keeps it, exactly as the TV board does.
+  const cells = gridCells(encounter, party, tappable, selectedTiles, lastFacing.current);
+  for (const cell of cells) if (cell.occupant) lastFacing.current[cell.occupant.id] = cell.occupant.facing;
 
   // The consumables this turn could spend the action on (§7.2's fourth
   // universal action). Hidden, never disabled: gone once the action is spent,
@@ -827,10 +832,18 @@ function useBeats(encounter: EncounterState | null, myId: string | null): readon
   usePresentation("COMBAT_SEQUENCE", (presentation, event) => take(presentation.events, event.seq));
   usePresentation("ENCOUNTER_BEGAN", (presentation, event) => take(presentation.events, event.seq));
 
-  // A new fight starts with a clean slate; an ended one takes its log with it.
+  /*
+   * A fight that ends takes its log with it, and so does one replaced by
+   * another. A fight *arriving* does not clear anything: its opening monster
+   * round rides ENCOUNTER_BEGAN, which the channel delivers before the patch
+   * that puts the encounter in state, so by the time `startedAt` appears the
+   * log already holds that round. Clearing on null → fight wiped it.
+   */
   const fightId = encounter?.startedAt ?? null;
+  const previousFight = useRef(fightId);
   useEffect(() => {
-    setLast(null);
+    if (previousFight.current !== null && previousFight.current !== fightId) setLast(null);
+    previousFight.current = fightId;
   }, [fightId]);
 
   return useMemo(

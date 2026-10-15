@@ -1052,7 +1052,8 @@ export function createBoardLayer(): BoardLayer {
  * at that moment is always the one from before it: the patch waits behind the
  * presentation (sync/channel.ts). Walks are replayed in order on a scratch
  * board, so in a monster round the second wisp's route goes round where the
- * first one ended up. A shove moves the board without a route; anything that
+ * first one ended up, and a Bramble Wall grown earlier in the sequence
+ * blocks the walks after it. A shove moves the board without a route; anything that
  * cannot be routed (a figure the board no longer has) simply has none, and
  * slides straight.
  */
@@ -1062,6 +1063,15 @@ export function walkRoutes(
 ): (readonly Position[] | undefined)[] {
   let working = board;
   return events.map((event) => {
+    // Bramble Wall grows mid-sequence, and the monsters' walks that follow it
+    // in the same sequence went round it: so must the routes drawn for them.
+    if (event.type === "walled") {
+      const at = event.at.y * working.width + event.at.x;
+      const terrain = [...working.terrain];
+      terrain[at] = "blocked";
+      working = { ...working, terrain };
+      return undefined;
+    }
     if (event.type !== "moved" && event.type !== "shoved") return undefined;
     const from = working.actors.find((a) => a.id === event.actorId);
     if (!from) return undefined;

@@ -28,6 +28,8 @@ import { makeRules } from "../../../shared/src/test-fixtures";
 import { CHAR_WIDTH, installFakeCanvas2D } from "../testing/fake-stage";
 import { nameplatesCollide } from "./nameplate";
 import { BOARD_TILE_PX, createBoardLayer, walkRoutes } from "./board";
+import { gridCells } from "../screens/combat-grid";
+import type { Facing } from "./board-math";
 import type { BoardLayer, BoardViewState } from "./board";
 
 beforeAll(installFakeCanvas2D);
@@ -424,12 +426,58 @@ describe("walking", () => {
     expect(routes[2]).not.toContainEqual({ x: 1, y: 1 });
   });
 
+  it("routes a walk round a Bramble Wall grown earlier in the same sequence", () => {
+    // A hero's Bramble Wall goes up on (1,1), then a wisp walks from (0,1) to
+    // (2,1). The board in view has no wall yet; the route must not cross it.
+    const board = parseBoard(["......", "......", "......"]);
+    const placed = { ...board, actors: [{ id: "w1", side: "enemy" as const, x: 0, y: 1 }] };
+    const routes = walkRoutes(placed, [
+      { type: "walled", at: { x: 1, y: 1 } },
+      { type: "moved", actorId: "w1", to: { x: 2, y: 1 } },
+    ]);
+    expect(routes[0]).toBeUndefined();
+    expect(routes[1]).toHaveLength(3);
+    expect(routes[1]).not.toContainEqual({ x: 1, y: 1 });
+    // Without the wall it is the straight line, so the bend is the wall's doing.
+    expect(walkRoutes(placed, [{ type: "moved", actorId: "w1", to: { x: 2, y: 1 } }])[0]).toContainEqual({ x: 1, y: 1 });
+  });
+
   it("leaves no footprints for a shove — a push is not a walk", () => {
     const hero = character("c_1", "Sparklehoof");
     const { layer } = board([hero], [{ x: 0, y: 0 }]);
     layer.playEvents([{ type: "shoved", actorId: "c_1", to: { x: 2, y: 0 } }], 700);
     for (let i = 0; i < 90; i++) layer.tick(1 / 60);
     expect(layer.trailMarks()).toEqual([]);
+  });
+});
+
+describe("facing on both surfaces", () => {
+  it("turns every figure the same way on the phone grid and the TV board, patch after patch", () => {
+    // The same walk shown to both: past the wisp, into its column, and back.
+    const hero = character("c_1", "Sparklehoof");
+    const { layer, encounter, draw } = board([hero], [{ x: 0, y: 0 }]);
+    let phoneMemory: Record<string, Facing> = {};
+    const phone = (enc: EncounterState): Record<string, Facing> => {
+      const cells = gridCells(enc, [member(hero)], [], [], phoneMemory);
+      const out: Record<string, Facing> = {};
+      for (const cell of cells) if (cell.occupant) out[cell.occupant.id] = cell.occupant.facing;
+      phoneMemory = { ...phoneMemory, ...out };
+      return out;
+    };
+    const tv = (): Record<string, Facing> =>
+      Object.fromEntries(Object.entries(layer.facings()).map(([id, x]) => [id, x < 0 ? "right" : "left"]));
+    const at = (x: number, y: number): EncounterState => ({
+      ...encounter,
+      board: { ...encounter.board, actors: encounter.board.actors.map((a) => (a.id === "c_1" ? { ...a, x, y } : a)) },
+    });
+
+    expect(phone(encounter)).toEqual(tv());
+    for (const [x, y] of [[3, 3], [5, 3], [5, 1], [2, 1], [2, 5]] as const) {
+      const step = at(x, y);
+      draw([hero], step);
+      for (let i = 0; i < 120; i++) layer.tick(1 / 60);
+      expect(phone(step), `hero at ${x},${y}`).toEqual(tv());
+    }
   });
 });
 

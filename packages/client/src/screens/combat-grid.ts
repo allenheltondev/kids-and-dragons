@@ -75,6 +75,8 @@ export function gridCells(
   party: readonly PartyMember[],
   tappable: readonly (Position & { readonly cost?: number })[],
   selected: readonly Position[],
+  /** How each figure was facing last time, kept when `facingFor` has no answer. */
+  previousFacing: Readonly<Record<string, Facing>> = {},
 ): GridCell[] {
   const { board } = encounter;
   const activeId = currentActorId(encounter);
@@ -99,8 +101,12 @@ export function gridCells(
       icon: combatantIcon(combatant, party),
       active: combatant.id === activeId,
       hp: combatant.hp,
-      // Art is drawn facing left; nobody sideways to face keeps it that way.
-      facing: facingFor(encounter, combatant.id) ?? "left",
+      // Straight above or below its nearest foe, or with nobody left, a
+      // figure keeps the way it was facing, the same rule the TV board
+      // follows (board.ts), so the two surfaces never disagree. A figure
+      // seen for the first time starts as drawn, facing left, as it does
+      // there too.
+      facing: facingFor(encounter, combatant.id) ?? previousFacing[combatant.id] ?? "left",
     });
   }
 
