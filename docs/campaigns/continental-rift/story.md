@@ -3,7 +3,7 @@
 > **AUTHOR-ONLY SPOILERS.** This document contains truths players must not learn until the very end.
 
 ## Premise — agreed
-Some time after Gemfall, a rift unexpectedly opens at the Exchange and deposits the party at the **Glacier of Origins**. Regions of the world are being displaced: fragments of terrain, creatures and entire areas appear where they do not belong. Players learn rift behaviors and how to navigate them through hands-on discovery, while pursuing local problems and exploring the world.
+Some time after Gemfall, a rift unexpectedly opens at the Exchange and deposits the party at the **Glacier of Origins**. Regions of the world are being displaced: fragments of terrain, creatures and entire areas appear where they do not belong. Players learn rift behaviors and how to navigate them through hands-on discovery, while pursuing local problems and exploring the world. The opening must not require Gemfall: a household that never played it, or lost it, starts here with nothing missing.
 
 Gemfall was the introduction to the game. Continental Rift increases gameplay progression: decisions, difficult combats, environmental challenges, conditional paths, revisits, and learned rift mechanics.
 
@@ -40,6 +40,8 @@ Sallow Wastelands are **brackish river-mouth coastal mudflats**, not desert. Sal
 
 ### Forgotten Paths
 Glacier of Origins, yetis and memory in ancient ice. Environmental puzzles and changed revisits. The ice contains subtle ancient anomalies; avoid exposing the whole ancient-world explanation prematurely.
+
+**The hidden glacier rift is not the summer crevasse.** `canon/biomes.yaml` holds a creator-only secret: a crevasse below the oldest layer that preserves a summer, with green light and warm air. Keep the hidden rift somewhere else and never let its green Riftlight read as the explanation for that crevasse. Linking the two would be a canon decision, not an authoring one.
 
 ## Theme — author guidance, not in-game exposition
 You can influence a powerful natural force without being able to command its behavior. Curiosity, judgment, choices and consequences outweigh raw power. Lady Olivia and Orin respond to uncertainty in contrasting ways; the emperor's error is treating influence as complete control.

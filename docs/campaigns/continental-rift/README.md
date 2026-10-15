@@ -1,8 +1,8 @@
 # Continental Rift — design index
 
-**Status:** Creative design in progress, not yet playable campaign data. **Timeline:** follows Gemfall; the opening must accommodate every valid Gemfall ending without asserting that all parties defeated the titan.
+**Status:** Creative design in progress, not yet playable campaign data. **Timeline:** follows Gemfall, but **does not require it**. The opening stands on its own: it works after every valid Gemfall ending, loss endings included, without asserting that all parties defeated the titan, and a household that never played Gemfall misses nothing. Only the late reveal refers to Gemfall's events, in terms a newcomer can follow.
 
-This folder is the source of truth for approved Continental Rift decisions. The campaign is a **nonlinear story graph**, unlike Gemfall's mostly ordered chapter progression.
+This folder is the source of truth for Continental Rift **design** decisions. It is not the source of world canon: `canon/*.yaml` is ([canon-contract.md](../../canon-contract.md)). Once a faction, individual, place or the campaign itself is approved here, register it in `canon/` (`factions.yaml`, `individuals.yaml`, `campaigns.yaml`; secrets as creator-only) before any content references it. The campaign is a **nonlinear story graph**, unlike Gemfall's mostly ordered chapter progression.
 
 ## Documents
 - [story.md](story.md) — player-facing dramatic structure and secret author-only truth.
@@ -25,6 +25,7 @@ Engine epic: [#191](https://github.com/allenheltondev/kids-and-dragons/issues/19
 
 ## Open items
 - Campaign's final public title (Continental Rift is the working choice).
+- Canon registration of the Riftseekers, Orin Vale, Lady Olivia and the campaign once approved.
 - Complete geography and node IDs/routes beyond the opening.
 - Emperor name, ancient empire details, final confrontation and outcomes.
 - Exact rift spectrum beyond the agreed green behavior; destination disclosure and how non-Starweaver parties interpret colors.
