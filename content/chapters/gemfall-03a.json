@@ -70,7 +70,8 @@
           "icon": "arrow",
           "goto": "scene_kettle_camp"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/east-road-markers"
     },
     "check_markers": {
       "type": "check",
@@ -92,7 +93,8 @@
       "onFailure": {
         "goto": "scene_kettle_camp",
         "narration": "Every marker goes back in. MILE 7 goes back in between MILE 2 and MILE 3, so the road now runs backwards for a bit. A centaur thunders past, groans, and fixes it without stopping. No guide for you today."
-      }
+      },
+      "art": "scenes/gemfall/east-road-markers"
     },
     "scene_courtesy": {
       "type": "story",
@@ -102,7 +104,7 @@
       "narration": "You wave first, from far off, tail curled politely away, the way road peoples have done for longer than anybody remembers. A centaur on the ridge stops dead, puts a hand on her heart, and waves back so hard her sash ribbons tangle.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/fennick",
           "name": "Fennick"
         }
       ],
@@ -113,7 +115,8 @@
           "icon": "hand",
           "goto": "scene_fennick"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/east-road-markers"
     },
     "scene_fennick": {
       "type": "story",
@@ -123,7 +126,7 @@
       "narration": "Fennick Longstride is a road-warden centaur with a sash stitched all over with tiny roads. Three of the stitches are new this week, and all three bend away from the same spot. \"Crossing's ahead,\" she says. \"The queue is long, the trolls are slow, and the river is not a metaphor. When you cross, keep to the upstream edge, where the stones are only half under.\" She says it once. Centaurs do not say a warning twice. Then she trots off ahead to check on her detour signs.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/fennick",
           "name": "Fennick"
         }
       ],
@@ -141,7 +144,8 @@
           "icon": "arrow",
           "goto": "scene_kettle_camp"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/east-road-markers"
     },
     "scene_queue": {
       "type": "story",
@@ -168,8 +172,20 @@
         }
       ],
       "discovers": [
-        "location.stone_crossing"
-      ]
+        "location.stone_crossing",
+        "npc.burrowfolk"
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "check_rivals": {
       "type": "check",
@@ -184,7 +200,18 @@
       "onFailure": {
         "goto": "scene_skip_passes",
         "narration": "The Brassbuckles smile, tip their six matching hats, and are somehow forty places ahead of you. Nobody saw anything. Everybody saw everything."
-      }
+      },
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "scene_rivals_caught": {
       "type": "story",
@@ -203,7 +230,18 @@
           "icon": "arrow",
           "goto": "scene_skip_passes"
         }
-      ]
+      ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "scene_troll": {
       "type": "story",
@@ -252,7 +290,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "scene_troll_riddle_account": {
       "type": "story",
@@ -271,7 +310,8 @@
           "icon": "crown",
           "goto": "scene_gem_toll"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "scene_troll_ask_riddle": {
       "type": "story",
@@ -290,7 +330,8 @@
           "icon": "clever",
           "goto": "scene_gem_toll"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "scene_troll_tell_story": {
       "type": "story",
@@ -309,7 +350,8 @@
           "icon": "scroll",
           "goto": "scene_gem_toll"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "scene_troll_hum": {
       "type": "story",
@@ -348,7 +390,8 @@
           "requiresItem": "facet_ember",
           "goto": "scene_troll_hum_show_ember"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "scene_troll_hum_show_ember": {
       "type": "story",
@@ -367,7 +410,8 @@
           "icon": "gem",
           "goto": "choice_camp_spot"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "scene_troll_hum_dont_know": {
       "type": "story",
@@ -386,7 +430,8 @@
           "icon": "ear",
           "goto": "choice_camp_spot"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "scene_troll_hum_answer_honest": {
       "type": "story",
@@ -405,7 +450,8 @@
           "icon": "heart",
           "goto": "choice_camp_spot"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "rest_queue_camp": {
       "type": "rest",
@@ -424,7 +470,8 @@
           "icon": "arrow",
           "goto": "scene_night_rope"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "scene_drake_shelf": {
       "type": "story",
@@ -463,7 +510,8 @@
           "icon": "back",
           "goto": "scene_night_rope"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/drake-rock-shelf"
     },
     "check_drake": {
       "type": "check",
@@ -483,7 +531,8 @@
       "onFailure": {
         "goto": "scene_night_rope",
         "narration": "The drake listens to your offer, then raises its rates. Then it raises them again, just to watch your face. The humming gem stays exactly where it is."
-      }
+      },
+      "art": "scenes/gemfall/drake-rock-shelf"
     },
     "scene_drake_deal": {
       "type": "story",
@@ -511,7 +560,8 @@
           "icon": "arrow",
           "goto": "scene_night_rope"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/drake-rock-shelf"
     },
     "encounter_drake": {
       "type": "encounter",
@@ -595,7 +645,8 @@
           "icon": "ear",
           "goto": "scene_ossley_price"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/drowned-crossing-bank"
     },
     "scene_ossley_price": {
       "type": "story",
@@ -630,7 +681,8 @@
           "icon": "boot",
           "goto": "check_crossing"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/drowned-crossing-bank"
     },
     "check_crossing": {
       "type": "check",
@@ -645,7 +697,8 @@
       "onFailure": {
         "goto": "scene_swept",
         "narration": "One stone is not where it was yesterday. The river decides it wants you more than the bank does, and everybody goes in together with a splash that startles a heron into next week."
-      }
+      },
+      "art": "scenes/gemfall/drowned-crossing-bank"
     },
     "check_crossing_easy": {
       "type": "check",
@@ -660,7 +713,8 @@
       "onFailure": {
         "goto": "scene_swept",
         "narration": "Right at the fastest bit, a drake's wake rolls by, and the river decides it wants you more than the bank does. Everybody goes in together with a splash that startles a heron into next week."
-      }
+      },
+      "art": "scenes/gemfall/drowned-crossing-bank"
     },
     "rest_dry_end": {
       "type": "rest",
@@ -730,7 +784,8 @@
           "icon": "boot",
           "goto": "scene_mouth_shore"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/river-mouth-shore"
     },
     "scene_crawlers": {
       "type": "story",
@@ -762,7 +817,8 @@
           "icon": "swords",
           "goto": "encounter_crawlers"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/river-mouth-shore"
     },
     "check_crawlers": {
       "type": "check",
@@ -782,7 +838,8 @@
       "onFailure": {
         "goto": "encounter_crawlers",
         "narration": "The spoon glitters. Your packs hum. The crawlers are not stupid. They clatter round the spoon and keep coming."
-      }
+      },
+      "art": "scenes/gemfall/river-mouth-shore"
     },
     "check_crawlers_leave": {
       "type": "check",
@@ -802,7 +859,8 @@
       "onFailure": {
         "goto": "encounter_crawlers",
         "narration": "Somebody stomps into a rock pool, sits down very suddenly, and is no longer the biggest thing on the beach. The crawlers notice."
-      }
+      },
+      "art": "scenes/gemfall/river-mouth-shore"
     },
     "encounter_crawlers": {
       "type": "encounter",
@@ -828,14 +886,16 @@
       "type": "rest",
       "narration": "You build a driftwood fire on the eastern shore and steam gently, like puddings. North of here the Eastern Plains are waiting, and you will walk into them from the south, the wet way, the way almost nobody does. Old Ossley's boat is gone. The knot in your pocket is still damp, and you suspect it always will be.",
       "heal": 4,
-      "choices": []
+      "choices": [],
+      "art": "scenes/gemfall/eastern-shore-camp"
     },
     "rest_setback": {
       "type": "rest",
       "narration": "The crawlers carry off the snacks, two bootlaces and the map, none of which hum but all of which they apparently wanted. By the time you've chased your boots down, the whole day is gone. Old Ossley poles past without stopping and nods once, as if to say: you'll still get there. Just later.",
       "heal": 3,
       "outcome": "setback",
-      "choices": []
+      "choices": [],
+      "art": "scenes/gemfall/eastern-shore-camp"
     },
     "scene_kettle_camp": {
       "type": "story",
@@ -860,7 +920,8 @@
           "icon": "heart",
           "goto": "check_kettle"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/east-road-markers"
     },
     "scene_kettle_camp_swap_kindling": {
       "type": "story",
@@ -872,7 +933,8 @@
           "icon": "hand",
           "goto": "scene_stuck_wagon"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/east-road-markers"
     },
     "check_kettle": {
       "type": "check",
@@ -887,7 +949,8 @@
       "onFailure": {
         "goto": "scene_stuck_wagon",
         "narration": "The campers nod, and nod, and say \"oh, absolutely,\" and then set the kettle back down on NOT THAT WAY. You leave them arguing about which way that way is."
-      }
+      },
+      "art": "scenes/gemfall/east-road-markers"
     },
     "scene_stuck_wagon": {
       "type": "story",
@@ -905,7 +968,8 @@
           "icon": "hand",
           "goto": "scene_stuck_wagon_unload"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/east-road-markers"
     },
     "check_wagon": {
       "type": "check",
@@ -927,7 +991,8 @@
       "onFailure": {
         "goto": "scene_river_view",
         "narration": "One, two, HEAVE! Nothing. Again! Nothing. The mule sighs, leans into its harness, and pulls the whole wagon out by itself, looking at all of you as if you were luggage."
-      }
+      },
+      "art": "scenes/gemfall/east-road-markers"
     },
     "scene_stuck_wagon_unload": {
       "type": "story",
@@ -939,7 +1004,8 @@
           "icon": "travel",
           "goto": "scene_river_view"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/east-road-markers"
     },
     "scene_river_view": {
       "type": "story",
@@ -998,7 +1064,8 @@
           "icon": "map",
           "goto": "scene_queue"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "scene_river_view_give_signs": {
       "type": "story",
@@ -1008,7 +1075,7 @@
       "narration": "The centaur is Fennick Longstride, road-warden, and when she sees her signs she hugs them like lost puppies. She hammers each one back on its post, and on the last one she scratches a new arrow pointing at the upstream edge of the crossing, where the stones are only half under. \"For you,\" she says, and gallops off.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/fennick",
           "name": "Fennick"
         }
       ],
@@ -1026,7 +1093,8 @@
           "icon": "map",
           "goto": "scene_queue"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "scene_skip_passes": {
       "type": "story",
@@ -1044,6 +1112,17 @@
           "icon": "heart",
           "goto": "scene_skip_passes_no_thanks"
         }
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
       ]
     },
     "check_small_print": {
@@ -1059,7 +1138,8 @@
       "onFailure": {
         "goto": "scene_first_story",
         "narration": "The print is so small it might just be ants. One of the letters walks away. You hand the pass back politely, and the Brassbuckle moves on down the line, selling briskly."
-      }
+      },
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "scene_skip_passes_no_thanks": {
       "type": "story",
@@ -1070,6 +1150,17 @@
           "label": "Shuffle forward in the queue",
           "icon": "arrow",
           "goto": "scene_first_story"
+        }
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ]
     },
@@ -1096,7 +1187,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "scene_first_story_help_ending": {
       "type": "story",
@@ -1108,7 +1200,8 @@
           "icon": "clever",
           "goto": "scene_troll"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "scene_first_story_give_story": {
       "type": "story",
@@ -1120,7 +1213,8 @@
           "icon": "heart",
           "goto": "scene_troll"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "scene_troll_new_story": {
       "type": "story",
@@ -1139,7 +1233,8 @@
           "icon": "spark",
           "goto": "scene_gem_toll"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "scene_gem_toll": {
       "type": "story",
@@ -1164,7 +1259,8 @@
           "icon": "gem",
           "goto": "scene_gem_toll_lift_gem"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "scene_gem_toll_explain": {
       "type": "story",
@@ -1183,7 +1279,8 @@
           "icon": "scroll",
           "goto": "scene_troll_hum"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "scene_gem_toll_lift_gem": {
       "type": "story",
@@ -1202,7 +1299,8 @@
           "icon": "gem",
           "goto": "scene_troll_hum"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/lintel-toll-stone"
     },
     "choice_camp_spot": {
       "type": "choice_point",
@@ -1247,7 +1345,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "choice_camp_spot_by_goat": {
       "type": "story",
@@ -1259,7 +1358,8 @@
           "icon": "heart",
           "goto": "rest_queue_camp"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "choice_camp_spot_by_brass": {
       "type": "story",
@@ -1270,6 +1370,17 @@
           "label": "Unroll your blankets",
           "icon": "eye",
           "goto": "rest_queue_camp"
+        }
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ]
     },
@@ -1283,7 +1394,8 @@
           "icon": "drop",
           "goto": "rest_queue_camp"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "scene_night_rope": {
       "type": "story",
@@ -1308,6 +1420,17 @@
           "requiresFlag": "camped_by_brass",
           "goto": "scene_night_rope_sit_on_rope"
         }
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
       ]
     },
     "check_night_rope": {
@@ -1323,7 +1446,8 @@
       "onFailure": {
         "goto": "scene_wake_fee",
         "narration": "The rope zips through your hands, but the Brassbuckles grab it too, and everybody ends up in one dripping heap on the bank. One brass hat sails off downstream, spinning. Nobody says anything. Everybody goes back to bed."
-      }
+      },
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "scene_night_rope_wake_troll": {
       "type": "story",
@@ -1333,6 +1457,14 @@
           "figure": "cast/old_lintel",
           "name": "Old Lintel",
           "size": "very_large"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ],
       "choices": [
@@ -1342,7 +1474,8 @@
           "icon": "ear",
           "goto": "scene_wake_fee"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
     },
     "scene_night_rope_sit_on_rope": {
       "type": "story",
@@ -1353,6 +1486,17 @@
           "label": "Sleep till morning",
           "icon": "rest",
           "goto": "scene_wake_fee"
+        }
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ]
     },
@@ -1384,7 +1528,8 @@
           "requiresItem": "facet_drakes_rate",
           "goto": "scene_wake_fee_show_paid"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/drowned-crossing-bank"
     },
     "check_wake_joke": {
       "type": "check",
@@ -1404,7 +1549,8 @@
       "onFailure": {
         "goto": "scene_crossing_bank",
         "narration": "You tell your best joke. The drake looks at you. You explain the joke. The drake looks at you harder. Then it writes NOTED on the slate, which is somehow worse than not laughing, and sinks out of sight."
-      }
+      },
+      "art": "scenes/gemfall/drowned-crossing-bank"
     },
     "scene_wake_fee_pay_fish": {
       "type": "story",
@@ -1421,7 +1567,8 @@
           "icon": "cake",
           "goto": "scene_crossing_bank"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/drowned-crossing-bank"
     },
     "scene_wake_fee_show_paid": {
       "type": "story",
@@ -1438,7 +1585,8 @@
           "icon": "gem",
           "goto": "scene_crossing_bank"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/drowned-crossing-bank"
     },
     "scene_east_landing": {
       "type": "story",
@@ -1456,7 +1604,8 @@
           "icon": "ear",
           "goto": "scene_east_landing_ask_question"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/eastern-bank-landing"
     },
     "scene_east_landing_move_crates": {
       "type": "story",
@@ -1468,7 +1617,8 @@
           "icon": "hand",
           "goto": "rest_dry_end"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/eastern-bank-landing"
     },
     "scene_east_landing_ask_question": {
       "type": "story",
@@ -1480,7 +1630,8 @@
           "icon": "ear",
           "goto": "rest_dry_end"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/eastern-bank-landing"
     },
     "scene_swept_float": {
       "type": "story",
@@ -1492,7 +1643,8 @@
           "icon": "drop",
           "goto": "scene_mouth"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/river-mouth-shore"
     },
     "scene_mouth_shore": {
       "type": "story",
@@ -1510,7 +1662,8 @@
           "icon": "boot",
           "goto": "scene_mouth_shore_dry_dance"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/river-mouth-shore"
     },
     "check_spirals": {
       "type": "check",
@@ -1525,7 +1678,8 @@
       "onFailure": {
         "goto": "scene_crawlers",
         "narration": "You count spirals until you lose count, and start again, and lose count again. The heron watches you do it three times, cannot bear it, and flies off. Somewhere up the beach, something rattles."
-      }
+      },
+      "art": "scenes/gemfall/river-mouth-shore"
     },
     "scene_mouth_shore_dry_dance": {
       "type": "story",
@@ -1537,7 +1691,8 @@
           "icon": "boot",
           "goto": "scene_crawlers"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/river-mouth-shore"
     }
   },
   "llmHints": {

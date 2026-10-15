@@ -11,7 +11,6 @@ entry for them to the scenes listed (check the narration first: some were judged
 | Boy on a ladder | gemfall-01 | `scene_night_docks` | a boy on a ladder rubbing out the rope price and chalking a bigger one |
 | Two stone trolls bouncers | gemfall-01 | `scene_tavern` | two very polite stone trolls carrying Tidewell out, table and all (not cast: would duplicate figure and they leave at once) |
 | Door voice (crown borrower) | bramblewood-01 | `scene_door_listen` | very small, embarrassed voice behind a round door in a hill; kind unknown, unseen |
-| Brassbuckle Expedition | gemfall-03a | `scene_queue`, `check_rivals`, `scene_rivals_caught` | six people in matching brass hats, smooth and smiling, quietly moving the queue rope |
 | Wend | gemfall-03c | `scene_soup_line`, `scene_soup_line_ask_crystal`, `scene_soup_line_thank_wend` | Deep Hollow soup ladler in dark robes with a faintly humming crystal on a string; gentle, generous, 'kindness first' |
 | Wend | gemfall-04c | `rest_soup_tents`, `scene_wend_pitch`, `scene_wend_pitch_say_later`, `scene_wend_pitch_say_no` | Deep Hollow ladler in dark robes with a humming crystal on a string; gentle and warm |
 | Lead Drover | gemfall-03c | `choice_ford` | lead drover with a slow booming voice singing the crossing verse beside the first wagon |
@@ -40,6 +39,26 @@ entry for them to the scenes listed (check the narration first: some were judged
 | Deep Hollow choir / Hessa | gemfall-08 | `check_tether_cult`, `check_tether_cult_bare` | Deep Hollow Cult choir in bark masks singing a crystal chord; Hessa reads the bargain twice |
 | Caravan master | gemfall-07r | `choice_the_bend_heard_it`, `check_caravan_helped`, `check_caravan` | exhausted, practical caravan master (she) with a headache, twelve-wagon caravan, mules with cotton in their ears; species not stated |
 | Crying gem-buyer | gemfall-07r | `scene_grandmothers` | gem-buyer crying into a very expensive hat; species not stated |
+
+
+## Expanded Gemfall characters
+
+| who | chapter | scenes | look |
+|---|---|---|---|
+| Old Wick | gemfall-01 | `scene_prologue_party_lamps`, `scene_long_bridge_lamp_path` | very old frogfolk lamplighter with a cloudy eye, faded indigo coat, brass lamp charms and a walking stick |
+| Postmaster Quill | gemfall-01 | `scene_griffin_post`, `check_post_sort` | tawny griffin postmaster with spectacles on a chain and a leather mail satchel |
+| Mrs. Tuft | gemfall-01 | `scene_provisions`, `scene_provisions_honey`, `scene_provisions_sunbloom`, `scene_provisions_mosslight`, `scene_provisions_stone` | older sheeple grocer with cream-and-smoke-grey wool, spectacles, teal shawl and jar satchel |
+| Fennick | gemfall-03a | `scene_courtesy`, `scene_fennick`, `scene_river_view_give_signs` | recurring centaur with a patient, courteous road manner |
+| Bracken | gemfall-04a, gemfall-05a | `scene_relay_runner`, `scene_relay_runner_news_west`, `check_race`, `scene_rim_lookout`, `scene_rim_lookout_send_word`, `check_fires`, `scene_rim_lookout_fly_redspire` | chestnut centaur relay runner with a green road sash and saddle satchel stuffed with letters |
+| Burdock | gemfall-03c | `scene_number_pebble`, `scene_number_pebble_buy_cake`, `scene_number_pebble_pocket_pebble`, `choice_runaway_goat`, `choice_runaway_goat_sort`, `choice_runaway_goat_crumb` | russet faun provisioner with a leafy vest, bucket and price abacus |
+| Mother Bracken | gemfall-03c | `choice_tolls`, `scene_family`, `scene_family_fix_wheel`, `scene_family_share_cake`, `scene_family_give_pebble` | tired but polite faun mother with a travel shawl, long braid and bags |
+| Littlest Bracken | gemfall-03c | `choice_tolls`, `scene_family`, `scene_family_fix_wheel`, `scene_family_share_cake`, `scene_family_give_pebble` | brave small faun child with a blue scarf and walking stick |
+| Innkeeper Flint | gemfall-01 | `scene_inn_full`, `check_inn_story`, `scene_inn_full_dishes`, `scene_inn_full_selkies`, `scene_inn_full_outbid` | broad slate-grey stone troll in a nightcap and apron |
+| Granny Ash | gemfall-04a | `scene_granny_cake`, `check_cake`, `scene_granny_cake_recipe`, `scene_granny_cake_share_back` | older manticore grandmother with silver-streaked rust fur, folded wings, curled tail and patched violet shawl |
+| Old Corran | gemfall-04c | `scene_relay_sing`, `check_sing`, `scene_relay_sing_listen`, `scene_relay_sing_crew_verse`, `scene_spiral` | elderly dapple-grey centaur relay singer with silver mane and beard, wine-red shawl and wooden flute |
+| Nim | gemfall-05a | `scene_told_gatherers`, `scene_nim_pony`, `scene_nim_pony_hold_pony`, `check_pony`, `scene_nim_pony_bell_greeting` | small vivid mint-green dragonling child with mint wings, horns and a bell collar |
+| Corporal Tibbet | gemfall-05a | `scene_survey_guard`, `check_tibbet`, `scene_survey_guard_write_it`, `scene_survey_guard_clerks_stone` | slate-blue griffin Skywarden with cream chest, green sash, bronze badge and clipboard |
+| Pib | gemfall-02 | `scene_hedge_mob`, `scene_hedge_mob_flock`, `scene_hedge_mob_cousins`, `scene_hedge_mob_help_pib`, `check_hedge`, `scene_long_path`, `choice_pib_gift` and its three outcomes | tiny bramble sprite of dark twigs and fresh leaves, with a moss face who offers a leaf |
 | Brisk | gemfall-07h | `walk_scene_factions` and its subsequent Brisk appearances | alert bay centaur scout with a blue road sash, map and feather markers |
 | Perrin Nine-Verse | gemfall-05c | `scene_centaur_whisper` and its follow-up scenes | russet centaur poet with sandy mane, plum coat and verse book |
 | Bryony | gemfall-07h | `scene_price_board` and its follow-up scenes | mint-green dragonling collector with wings, horns and a cream token pouch |

@@ -185,6 +185,10 @@
         {
           "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Rush prospector"
         }
       ],
       "choices": [
@@ -259,6 +263,10 @@
         {
           "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Rush prospector"
         }
       ],
       "roller": "party",
@@ -278,6 +286,10 @@
         {
           "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Rush prospector"
         }
       ],
       "onEnter": [
@@ -305,6 +317,10 @@
       "cast": [
         {
           "figure": "entities/glassback_crab"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Rush prospector"
         }
       ],
       "choices": [
@@ -355,6 +371,10 @@
       "cast": [
         {
           "figure": "entities/glassback_crab"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Rush prospector"
         }
       ],
       "onEnter": [
