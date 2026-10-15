@@ -129,6 +129,12 @@ actually cost something. Otherwise the party's purse and bag stop meaning anythi
   takes them away (never below zero). A choice that spends must also be gated with
   `when: { coins: { min: N } }`, where N is at least the amount spent. The party sees the
   purse next to its bag.
+- **Campaigns already under way.** An attempt that had finished a chapter before the purse
+  existed never saved one. It gets `purseBackfill` from `campaigns/gemfall.json` instead: 6
+  coins, plus 15 if it holds `ember_sold`. `byFlag` keys must be route-set flags, because
+  those are the only flags an attempt saves. A party in the middle of a chapter when the
+  purse arrives sees an empty purse until that chapter ends. The backfill is saved then, and
+  their next chapter starts with it.
 - **Food.** `supper_bundle` is the road's food: bread, cheese and a sausage. Caravan cooks,
   sausage carts, centaurs and grandmothers hand them out. "Share your supper" is gated with
   `when: { count: { of: ["supper_bundle", "honeycake"], min: 1 } }` and takes

@@ -230,6 +230,18 @@ describe("cross-file rules", () => {
     expect(result.code).not.toBe(0);
   });
 
+  it("catches a purse backfill keyed on a flag no attempt ever saves", () => {
+    const dir = copyTree();
+    const campaign = readJson(dir, "content", "campaigns", "gemfall.json");
+    campaign.purseBackfill = { coins: 6, byFlag: { ember_sold: 15, a_chapter_only_flag: 3 } };
+    writeJson(dir, ["content", "campaigns", "gemfall.json"], campaign);
+
+    const result = validate(dir);
+    expect(result.out).toContain('"a_chapter_only_flag" is not in any routeSets entry');
+    expect(result.out).not.toContain('"ember_sold" is not in any');
+    expect(result.code).not.toBe(0);
+  });
+
   it("catches two maps claiming the same id", () => {
     const dir = copyTree();
     const map = readJson(dir, "content", "maps", "thicket.json");

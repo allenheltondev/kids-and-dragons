@@ -41,6 +41,7 @@ import { prepareStepFinds, recordStepFinds } from "./field-guide.ts";
 import {
   expectedIndex,
   joinOrStartAttempt,
+  purseFor,
   newCharacterWrite,
   prepareStatPointSpend,
   settleChapterCompletion,
@@ -808,9 +809,9 @@ async function roadTo(
       refusal: `this party's road through beat ${chapter.index} is "${road.id}", not "${chapter.id}"`,
     };
   }
-  // The purse rides with the road: an active attempt's coins, or an empty
-  // purse for an attempt that is about to start.
-  const coins = attempt && attempt.status === "active" ? (attempt.coins ?? 0) : 0;
+  // The purse rides with the road (see `purseFor`, which also backfills an
+  // attempt saved before the purse existed).
+  const coins = purseFor(campaign, attempt);
   return { flags, coins, campaign: true, attempt };
 }
 

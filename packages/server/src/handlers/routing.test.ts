@@ -20,10 +20,11 @@ import { applyIntent, createRunState } from "@kad/shared";
 import type { Campaign, Chapter, ClientIntent } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { Engine } from "../engine/port.ts";
+import type { CampaignProgressRecord } from "../store/repository.ts";
 import { makeChapter } from "../../../shared/src/test-fixtures.ts";
 import { makeContent, makeHarness, seedHousehold, T0, type TestHarness } from "../test-support.ts";
 import { applyAction } from "./action.ts";
-import { settleChapterCompletion } from "./progression.ts";
+import { purseFor, settleChapterCompletion } from "./progression.ts";
 import { createRoom, joinRoom } from "./room.ts";
 
 const realEngine: Engine = { applyIntent, createRunState };
@@ -248,6 +249,72 @@ describe("the road survives the drive home", () => {
     expect(response.ok, JSON.stringify(response.ok ? null : response.error)).toBe(true);
     // …with none of the last attempt's roads.
     expect((await harness.repo.getState(runId))?.flags[WILD]).toBeUndefined();
+  });
+});
+
+describe("a campaign already under way when the purse arrived", () => {
+  const PURSED: Campaign = { ...CAMPAIGN, purseBackfill: { coins: 6, byFlag: { [WILD]: 15 } } };
+  const attempt = (patch: Partial<CampaignProgressRecord>): CampaignProgressRecord => ({
+    householdId: "h_1",
+    campaignId: CAMPAIGN.id,
+    status: "active",
+    setbacks: 0,
+    updatedAt: new Date(T0).toISOString(),
+    ...patch,
+  });
+
+  it("gets the backfill, counting the carried flags it holds", () => {
+    expect(purseFor(PURSED, attempt({ lastIndex: 1 }))).toBe(6);
+    expect(purseFor(PURSED, attempt({ lastIndex: 1, routeFlags: { [WILD]: true } }))).toBe(21);
+  });
+
+  it("leaves saved purses, fresh attempts and finished ones alone", () => {
+    expect(purseFor(PURSED, attempt({ lastIndex: 1, coins: 2 }))).toBe(2);
+    expect(purseFor(PURSED, attempt({ lastIndex: 1, coins: 0 }))).toBe(0);
+    expect(purseFor(PURSED, attempt({ lastIndex: 0 }))).toBe(0);
+    expect(purseFor(PURSED, attempt({ lastIndex: 2, status: "complete" }))).toBe(0);
+    expect(purseFor(PURSED, null)).toBe(0);
+    // A campaign that declares no backfill has nothing to give.
+    expect(purseFor(CAMPAIGN, attempt({ lastIndex: 1 }))).toBe(0);
+  });
+
+  it("starts the next chapter with the backfilled purse", async () => {
+    const harness = makeHarness({
+      engine: realEngine,
+      content: makeContent({
+        chapters: [makeChapter(), variant("river-02", RIVER), variant("wild-02", WILD)],
+        campaigns: [PURSED],
+      }),
+    });
+    const { householdId, players } = await seedHousehold(harness, 1);
+    await harness.repo.putCampaignProgress(attempt({ householdId, lastIndex: 1, routeFlags: { [WILD]: true }, version: 1 }));
+
+    const { runId, send } = await readyParty(harness, householdId, players[0]!.principal);
+    await send({ type: "START_CHAPTER", chapterId: "wild-02" });
+    expect((await harness.repo.getState(runId))?.coins).toBe(21);
+  });
+
+  it("saves the backfill, not an empty purse, when a run that predates it finishes", async () => {
+    const harness = makeHarness({
+      content: makeContent({
+        chapters: [makeChapter(), variant("river-02", RIVER), variant("wild-02", WILD)],
+        campaigns: [PURSED],
+      }),
+    });
+    const { householdId } = await seedHousehold(harness, 1);
+    // No `coins` on the run: it was mid-chapter when the purse shipped.
+    const run = {
+      runId: "r_1",
+      campaignId: CAMPAIGN.id,
+      chapterId: "bramblewood-01",
+      chapterOutcome: "success",
+      bonuses: [],
+      xpEarned: 0,
+      flags: { [WILD]: true },
+      party: [],
+    } as unknown as Parameters<typeof settleChapterCompletion>[0];
+    const settlement = await settleChapterCompletion(run, harness.deps, householdId);
+    expect(settlement.campaignProgress?.coins).toBe(21);
   });
 });
 

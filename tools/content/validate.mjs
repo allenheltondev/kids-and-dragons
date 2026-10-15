@@ -1053,6 +1053,16 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds) {
    * than inferred from the files that happen to exist.
    */
   const routeSets = campaign.routeSets ?? {};
+
+  // A backfill flag is read off the attempt's saved flags, and only route-set
+  // members are ever saved. Anything else would silently never pay.
+  const carriedFlags = new Set(Object.values(routeSets).flat());
+  for (const flag of Object.keys(campaign.purseBackfill?.byFlag ?? {})) {
+    if (!carriedFlags.has(flag)) {
+      fail("/purseBackfill/byFlag", `"${flag}" is not in any routeSets entry, so no saved attempt ever holds it`);
+    }
+  }
+
   for (const index of ordered) {
     const members = beats.get(index);
     const routed = members.filter((chapter) => chapter.route);
