@@ -287,11 +287,8 @@
   gap: var(--space-2, 0.5em);
 }
 
-.combat__targets {
-  max-block-size: 14em;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
+/* At most four enemies or three friends, two to a row from three: the list
+   always fits, so it never needs a scroll box of its own. */
 
 /*
  * Fitting a fight on a phone without scrolling (PlayerPanel "deciding"): the
@@ -319,11 +316,21 @@
   font-weight: 700;
 }
 
-.combat__aim-actions {
+/* The question and its Change button share one row. */
+.combat__ask-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-2, 0.5em);
+}
+
+.combat__ask-row > .combat__ask {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.combat__ask-row > .kad-button {
+  flex: 0 0 auto;
 }
 
 /* What the board's marks mean, in the same shapes the board draws. */
@@ -378,25 +385,59 @@
 }
 
 /*
- * Three cards or more (a class action unlocked, an item in the bag) would
- * push the last one under the fold with the board above them. They go two
- * to a row, icon and name only: the names are a word or two, the icon is
- * the thing an eight-year-old reads first (spec §1.5), and the sentence is
- * what the card does *after* you tap it — the who? step still says.
+ * Cards to a row, by how many there are (CombatPanel `cardColumns`). Two to
+ * a row from three cards, three to a row from five: icon and name only, the
+ * icon is what an eight-year-old reads first (spec §1.5), and the sentence
+ * is what the card does *after* you tap it, which the who? step still says.
+ * Every row saved is a row the board keeps.
  */
-.combat .combat__actions:has(> li:nth-child(3)) {
+.combat .prompt__options[data-columns="2"],
+.combat .prompt__options[data-columns="3"] {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: var(--space-2, 0.5em);
 }
 
-.combat .combat__actions:has(> li:nth-child(3)) .choice {
+.combat .prompt__options[data-columns="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.combat .prompt__options[data-columns="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.combat .prompt__options[data-columns="2"] .choice,
+.combat .prompt__options[data-columns="3"] .choice {
   min-block-size: var(--touch-min, 3em);
   padding: var(--space-2, 0.5em);
 }
 
-.combat .combat__actions:has(> li:nth-child(3)) .choice__sub {
+.combat .prompt__options[data-columns="2"] .choice__sub,
+.combat .prompt__options[data-columns="3"] .choice__sub {
   display: none;
+}
+
+/* Three to a row is too narrow for icon beside name: icon over name. */
+.combat .prompt__options[data-columns="3"] .choice {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: var(--space-1, 0.25em);
+  text-align: center;
+}
+
+.combat .prompt__options[data-columns="3"] .choice__text {
+  align-items: center;
+  text-align: center;
+}
+
+.combat .prompt__options[data-columns="3"] .choice__label {
+  font-size: var(--font-size-sm, 0.875em);
+  line-height: 1.15;
+}
+
+/* Two of the same item: one card, and how many. */
+.combat__count {
+  color: var(--color-text-muted, #b7b0d8);
+  font-weight: 600;
 }
 
 .choice__text {
@@ -428,25 +469,78 @@
 }
 
 /*
- * The board gives up width before anything scrolls: on a short pane it is
- * sized by the pane's height (10 × 8 cells, so width is 1.25 × height),
- * centred, and never wider than the pane.
+ * No scrolling, by construction. The fight fills the pane as a column; every
+ * row but the board takes the height it needs, and the board takes what is
+ * left (`flex: 1 1 0`), then sizes itself inside that box as a size
+ * container: as wide as the pane, or as wide as the box's height allows for
+ * the map's shape, whichever is smaller. More cards make a smaller board,
+ * never a taller pane. The old way subtracted a guessed height for
+ * everything else (12.5em, then 14.5em, then 20.5em with the log), and any
+ * turn with more on it than the guess overflowed.
  */
-.combat .combat__grid {
-  /* As big as the pane's height allows once the turn header, the legend,
-     the hint and the cards have their rows (about 14.5em between them, with
-     gaps), and never wider than the pane. On somebody else's turn there are
-     no cards and the board simply takes the width. On a tall phone that is
-     width-bound and the board floats in the middle; on a short one it is
-     height-bound and just fits. The pane scrolls only if a phone is shorter
-     than any we know. */
-  inline-size: min(100%, (100cqh - 14.5em) * 1.25);
-  margin-inline: auto;
+.player--deciding .combat.prompt {
+  flex: 1 1 auto;
+  min-block-size: 0;
 }
 
-/* With the last beat's log above it, the board gives up that much more. */
-.combat:has(.combat__log) .combat__grid {
-  inline-size: min(100%, (100cqh - 20.5em) * 1.25);
+.combat__board {
+  flex: 1 1 0;
+  /* A floor, so a pane crowded past any phone we know keeps a usable map
+     rather than a postage stamp; below it the pane would scroll. */
+  min-block-size: 8em;
+  container-type: size;
+  display: grid;
+  place-items: center;
+}
+
+.combat .combat__grid {
+  /* The grid's padding and gaps add a little height on top of its square
+     cells, hence the 0.7em. */
+  inline-size: min(100cqw, (100cqh - 0.7em) * var(--cols, 10) / var(--rows, 8));
+}
+
+/*
+ * A short pane (a small phone in Travel Mode): everything but the board gets
+ * tighter, so the board keeps a size a finger can use. The legend goes (the
+ * squares carry faces and colours of their own), the roll log keeps its last
+ * two lines, and the cards shrink their padding and icon tiles. Touch targets
+ * stay at the 3em minimum (spec §11).
+ */
+@container prompt (max-height: 34em) {
+  .combat.prompt {
+    gap: var(--space-1, 0.25em);
+  }
+
+  .combat > .prompt__title {
+    font-size: var(--font-size-md, 1em);
+  }
+
+  .combat__legend {
+    display: none;
+  }
+
+  .combat__log {
+    max-block-size: 3.6em;
+    padding-block: var(--space-1, 0.25em);
+  }
+
+  .combat .prompt__options {
+    gap: var(--space-1, 0.25em);
+  }
+
+  .combat .prompt__options .choice {
+    padding: var(--space-1, 0.25em) var(--space-2, 0.5em);
+  }
+
+  .combat .prompt__options .choice__icon {
+    width: 1.6em;
+    height: 1.6em;
+  }
+
+  .combat .prompt__options[data-columns="3"] .choice {
+    gap: 0;
+    padding: var(--space-1, 0.25em);
+  }
 }
 
 /*

@@ -41,7 +41,7 @@ import {
 } from "@kad/shared";
 import { makeItems, makeRules } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
-import { CombatControls, describeBeats, rollWords } from "./CombatPanel";
+import { CombatControls, cardColumns, describeBeats, rollWords } from "./CombatPanel";
 
 const RULES: RulesContent = makeRules();
 const ITEMS: ItemCatalog = makeItems();
@@ -700,6 +700,88 @@ describe("items in a fight", () => {
     };
     mount({ characters: [character({ inventory: [potion] })], encounter: wounded });
     expect(cardNames().some((n) => n.includes("Sunbloom"))).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Fitting on one screen
+// ---------------------------------------------------------------------------
+
+describe("fitting every card on one screen", () => {
+  it("puts more cards to a row as there are more of them", () => {
+    expect([1, 2, 3, 4, 5, 6, 9].map(cardColumns)).toEqual([1, 1, 2, 2, 3, 3, 3]);
+  });
+
+  it("shows two of the same item as one card that says how many", () => {
+    const base = encounterWith();
+    const hurt = {
+      ...base,
+      combatants: base.combatants.map((c) => (c.side === "party" ? { ...c, hp: 4 } : c)),
+    };
+    const potion = { itemId: "sunbloom_draught", kind: "consumable" as const };
+    mount({ characters: [character({ inventory: [potion, potion] })], encounter: hurt });
+    const cards = screen.getAllByRole("button", { name: /Sunbloom/ });
+    expect(cards).toHaveLength(1);
+    expect(cards[0]!.textContent).toContain("×2");
+  });
+
+  it("folds a full bag into one card that opens in place, and the item tap commits", async () => {
+    /*
+     * Seven ability cards and two kinds of item would be nine cards loose.
+     * Past six, the bag folds into "Use an item", so the card rows (and the
+     * board above them) still fit the pane.
+     */
+    const user = userEvent.setup();
+    const hero = character({
+      actions: ["strike", "volley", "thorns", "pounce", "shout"],
+      inventory: [
+        { itemId: "sunbloom_draught", kind: "consumable" },
+        { itemId: "brave_whistle", kind: "consumable" },
+      ],
+    });
+    // The fight is built from this hero, so its combatant carries the five
+    // abilities: seven cards with Attack and Get Ready, nine with the items.
+    const base = encounterWith({ party: [{ character: hero, at: { x: 1, y: 2 } }] });
+    const hurt = {
+      ...base,
+      combatants: base.combatants.map((c) => (c.side === "party" ? { ...c, hp: 4 } : c)),
+    };
+    const { sent, container } = mount({ characters: [hero], encounter: hurt });
+
+    expect(screen.queryByRole("button", { name: /Sunbloom/ })).toBeNull();
+    const list = container.querySelector(".combat__actions")!;
+    expect(list.getAttribute("data-columns")).toBe("3");
+
+    await user.click(screen.getByRole("button", { name: /^Use an item/ }));
+    expect(screen.getByText("Use an item: which one?")).toBeTruthy();
+    // The ability cards stepped aside: one question at a time.
+    expect(screen.queryByRole("button", { name: /^Strike/ })).toBeNull();
+    expect(sent).toEqual([]);
+
+    await user.click(screen.getByRole("button", { name: /Use Sunbloom Draught/ }));
+    expect(sent).toEqual([{ type: "USE_ITEM", itemId: "sunbloom_draught" }]);
+  });
+
+  it("keeps items loose while everything fits", () => {
+    const base = encounterWith();
+    const hurt = {
+      ...base,
+      combatants: base.combatants.map((c) => (c.side === "party" ? { ...c, hp: 4 } : c)),
+    };
+    mount({
+      characters: [
+        character({
+          inventory: [
+            { itemId: "sunbloom_draught", kind: "consumable" },
+            { itemId: "brave_whistle", kind: "consumable" },
+          ],
+        }),
+      ],
+      encounter: hurt,
+    });
+    expect(screen.queryByRole("button", { name: /^Use an item/ })).toBeNull();
+    expect(screen.getByRole("button", { name: /Use Sunbloom Draught/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Use Brave Whistle/ })).toBeTruthy();
   });
 });
 

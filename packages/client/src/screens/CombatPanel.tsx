@@ -35,7 +35,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { CSSProperties, ReactElement } from "react";
+import type { CSSProperties, ReactElement, ReactNode } from "react";
 import type {
   AbilityCatalog,
   ClientIntent,
@@ -93,9 +93,26 @@ type Selection =
   /** Pounce and friends: tile picked, now the figure reachable from it. */
   | { step: "tile-target"; action: LegalAction; tile: Position }
   /** A thrown consumable, waiting on a monster to land on. */
-  | { step: "item-target"; itemId: string };
+  | { step: "item-target"; itemId: string }
+  /** The "Use an item" card, opened: the bag's usable items, in place. */
+  | { step: "items" };
 
 const IDLE: Selection = { step: "idle" };
+
+/** More cards than this and the bag folds into one "Use an item" card. */
+const MAX_LOOSE_CARDS = 6;
+
+/**
+ * Cards to a row, by how many there are: one or two keep their sentence on a
+ * row each; three or four go two to a row; five or more go three to a row,
+ * icon over name. Every row a card list adds is a row the board gives up,
+ * and a pane that scrolls is the one thing the turn screen must not do.
+ */
+export function cardColumns(count: number): 1 | 2 | 3 {
+  if (count <= 2) return 1;
+  if (count <= 4) return 2;
+  return 3;
+}
 
 /**
  * One line of "what just happened", already in words. Built when the beat
@@ -195,18 +212,32 @@ export function CombatControls(): ReactElement | null {
   // in place — never appears at all (useItemInCombat's exact refusals).
   const throwTargets = deciding ? legalItemTargets(encounter, me.character.id) : [];
   const myCombatant = combatantById(encounter, me.character.id);
-  const usableItems =
-    !deciding || encounter.actionTaken || !myCombatant
-      ? []
-      : me.character.inventory
-          .map((entry, index) => ({ entry, index, def: items?.[entry.itemId] }))
-          .filter((x): x is { entry: (typeof x)["entry"]; index: number; def: ItemDef } => {
-            const effect = x.def?.effect;
-            if (x.entry.kind !== "consumable" || !effect) return false;
-            if (effect.type === "damage") return throwTargets.length > 0;
-            if (effect.type === "heal") return myCombatant.hp < myCombatant.maxHp;
-            return effect.amount > myCombatant.rollBonus;
-          });
+  // One card per kind of item, however many of it are in the bag: two
+  // Sunbloom Draughts are one choice, and a second card for the same thing
+  // is a row the pane has to find room for.
+  const usableItems: { itemId: string; def: ItemDef; count: number }[] = [];
+  if (deciding && !encounter.actionTaken && myCombatant) {
+    for (const entry of me.character.inventory) {
+      const def = items?.[entry.itemId];
+      const effect = def?.effect;
+      if (!def || entry.kind !== "consumable" || !effect) continue;
+      if (effect.type === "damage" && throwTargets.length === 0) continue;
+      if (effect.type === "heal" && myCombatant.hp >= myCombatant.maxHp) continue;
+      if (effect.type === "rollBonus" && effect.amount <= myCombatant.rollBonus) continue;
+      const seen = usableItems.find((u) => u.itemId === entry.itemId);
+      if (seen) seen.count += 1;
+      else usableItems.push({ itemId: entry.itemId, def, count: 1 });
+    }
+  }
+  /*
+   * How the cards are laid out, so they always fit under the board (see
+   * the CSS: the board takes whatever height is left). Up to six cards show
+   * as they are; past that the bag folds into one "Use an item" card that
+   * opens in place, which caps a level-9 hero with a full bag at nine cards:
+   * three rows of three.
+   */
+  const bagFolded = usableItems.length > 1 && actions.length + usableItems.length > MAX_LOOSE_CARDS;
+  const cardCount = actions.length + (bagFolded ? 1 : usableItems.length);
 
   function commitAction(
     action: LegalAction,
@@ -345,7 +376,7 @@ export function CombatControls(): ReactElement | null {
           ? `You can still walk ${encounter.stepsLeft} step${encounter.stepsLeft === 1 ? "" : "s"}, or end your turn.`
           : null
         : moves.length > 0
-          ? "Tap a gold square to walk there, or pick one thing to do."
+          ? "Walk on a gold square, or pick one thing."
           : "Pick one thing to do.";
 
   return (
@@ -386,11 +417,21 @@ export function CombatControls(): ReactElement | null {
         each, and a step is the cheapest thing in the game to spend by
         mistake.
       */}
+      {/* The board takes whatever height the pane has left once everything
+          else has its rows (CombatPanel.css), so more cards make a smaller
+          board rather than a pane that scrolls. */}
+      <div className="combat__board">
       <div
         className="combat__grid"
         role="grid"
         aria-label="The battle grid"
-        style={{ gridTemplateColumns: `repeat(${encounter.board.width}, 1fr)` }}
+        style={
+          {
+            gridTemplateColumns: `repeat(${encounter.board.width}, 1fr)`,
+            "--cols": encounter.board.width,
+            "--rows": encounter.board.height,
+          } as CSSProperties
+        }
       >
         {cells.map((cell) => {
           const cellKey = `${cell.x},${cell.y}`;
@@ -438,6 +479,7 @@ export function CombatControls(): ReactElement | null {
           );
         })}
       </div>
+      </div>
 
       {/* What the board's marks mean, once, under the board. */}
       <ul className="combat__legend" aria-hidden="true">
@@ -469,8 +511,8 @@ export function CombatControls(): ReactElement | null {
             </p>
           ) : null}
 
-          {selection.step === "idle" && (actions.length > 0 || usableItems.length > 0) ? (
-            <ul className="prompt__options combat__actions">
+          {selection.step === "idle" && cardCount > 0 ? (
+            <ul className="prompt__options combat__actions" data-columns={cardColumns(cardCount)}>
               {actions.map((action) => (
                 <li key={action.abilityId}>
                   <button
@@ -490,25 +532,52 @@ export function CombatControls(): ReactElement | null {
                   </button>
                 </li>
               ))}
-              {/* §7.2's fourth row — a consumable spends the same one action. */}
-              {usableItems.map(({ entry, index, def }) => (
-                <li key={`item-${entry.itemId}-${index}`}>
+              {bagFolded ? (
+                <li key="bag">
                   <button
                     type="button"
                     className="choice kad-tap kad-focusable"
-                    onClick={() => tapItem(entry.itemId, def)}
+                    onClick={() => setSelection({ step: "items" })}
                   >
                     <span className="choice__icon">
-                      <Icon name={def.icon} size="1.8em" />
+                      <Icon name="bag" size="1.8em" />
                     </span>
                     <span className="choice__text">
-                      <span className="choice__label">Use {def.name}</span>
-                      <span className="choice__sub">{itemSummary(def)}</span>
+                      <span className="choice__label">Use an item</span>
+                      <span className="choice__sub">Pick something from your bag.</span>
                     </span>
                   </button>
                 </li>
-              ))}
+              ) : (
+                usableItems.map((item) => (
+                  <ItemCard
+                    key={`item-${item.itemId}`}
+                    item={item}
+                    onTap={tapItem}
+                    compact={cardColumns(cardCount) > 1}
+                  />
+                ))
+              )}
             </ul>
+          ) : null}
+
+          {/* The bag, opened in place of the cards: same spot, same thumb. */}
+          {selection.step === "items" ? (
+            <div className="combat__aim">
+              <AskRow icon="bag" onChange={() => setSelection(IDLE)}>
+                Use an item: which one?
+              </AskRow>
+              <ul className="prompt__options combat__actions" data-columns={cardColumns(usableItems.length)}>
+                {usableItems.map((item) => (
+                  <ItemCard
+                    key={`item-${item.itemId}`}
+                    item={item}
+                    onTap={tapItem}
+                    compact={cardColumns(usableItems.length) > 1}
+                  />
+                ))}
+              </ul>
+            </div>
           ) : null}
 
           {canEnd ? (
@@ -526,41 +595,27 @@ export function CombatControls(): ReactElement | null {
 
           {selection.step === "tile" ? (
             <div className="combat__aim">
-              <p className="prompt__sub combat__ask">
-                <Icon name={selection.action.icon} />
-                <span>
-                  {selection.action.name}: tap a glowing tile.
-                  {(selection.action.tileCount ?? 1) > 1
-                    ? ` (${selection.picked.length + 1} of ${selection.action.tileCount})`
-                    : ""}
-                </span>
-              </p>
-              <Button
-                variant="ghost"
-                size="md"
-                icon={<Icon name="back" />}
-                onClick={() => setSelection(IDLE)}
-              >
-                Change
-              </Button>
+              <AskRow icon={selection.action.icon} onChange={() => setSelection(IDLE)}>
+                {selection.action.name}: tap a glowing tile.
+                {(selection.action.tileCount ?? 1) > 1
+                  ? ` (${selection.picked.length + 1} of ${selection.action.tileCount})`
+                  : ""}
+              </AskRow>
             </div>
           ) : null}
 
           {aimingWho !== null ? (
             <div className="combat__aim">
-              <p className="prompt__sub combat__ask">
-                <Icon name={aimingWho.icon} />
-                <span>
-                  {aimingWho.name}: who?
-                  {selection.step === "target" && (selection.action.maxTargets ?? 1) > 1
-                    ? ` (${selection.picked.length + 1} of ${Math.min(
-                        selection.action.maxTargets ?? 1,
-                        selection.action.targets.length,
-                      )})`
-                    : ""}
-                </span>
-              </p>
-              <ul className="prompt__options combat__targets">
+              <AskRow icon={aimingWho.icon} onChange={() => setSelection(IDLE)}>
+                {aimingWho.name}: who?
+                {selection.step === "target" && (selection.action.maxTargets ?? 1) > 1
+                  ? ` (${selection.picked.length + 1} of ${Math.min(
+                      selection.action.maxTargets ?? 1,
+                      selection.action.targets.length,
+                    )})`
+                  : ""}
+              </AskRow>
+              <ul className="prompt__options combat__targets" data-columns={targetIds.length >= 3 ? 2 : 1}>
                 {targetIds.map((targetId) => {
                   const target = combatantById(encounter, targetId);
                   if (!target) return null;
@@ -585,32 +640,83 @@ export function CombatControls(): ReactElement | null {
                   );
                 })}
               </ul>
-              <div className="combat__aim-actions">
+              {/* "Up to N": once one is picked, stopping early is allowed. */}
+              {selection.step === "target" && selection.picked.length > 0 ? (
                 <Button
-                  variant="ghost"
+                  variant="primary"
                   size="md"
-                  icon={<Icon name="back" />}
-                  onClick={() => setSelection(IDLE)}
+                  icon={<Icon name="check" />}
+                  onClick={() => commitAction(selection.action, selection.picked)}
                 >
-                  Change
+                  That's everyone. Go!
                 </Button>
-                {/* "Up to N": once one is picked, stopping early is allowed. */}
-                {selection.step === "target" && selection.picked.length > 0 ? (
-                  <Button
-                    variant="primary"
-                    size="md"
-                    icon={<Icon name="check" />}
-                    onClick={() => commitAction(selection.action, selection.picked)}
-                  >
-                    That's everyone. Go!
-                  </Button>
-                ) : null}
-              </div>
+              ) : null}
             </div>
           ) : null}
         </>
       ) : null}
     </div>
+  );
+}
+
+/**
+ * The question an aimed card asks, with its way back on the same row: a
+ * Change button on a row of its own was a row the board had to give up.
+ */
+function AskRow({
+  icon,
+  onChange,
+  children,
+}: {
+  icon: string;
+  onChange: () => void;
+  children: ReactNode;
+}): ReactElement {
+  return (
+    <div className="combat__ask-row">
+      <p className="prompt__sub combat__ask">
+        <Icon name={icon} />
+        <span>{children}</span>
+      </p>
+      <Button variant="ghost" size="md" icon={<Icon name="back" />} onClick={onChange}>
+        Change
+      </Button>
+    </div>
+  );
+}
+
+/** One kind of consumable as an action card, with how many are in the bag. */
+function ItemCard({
+  item,
+  onTap,
+  compact,
+}: {
+  item: { itemId: string; def: ItemDef; count: number };
+  onTap: (itemId: string, def: ItemDef) => void;
+  /** Packed into columns: the name alone, since "Use" costs a wrapped line. */
+  compact: boolean;
+}): ReactElement {
+  const name = `Use ${item.def.name}${item.count > 1 ? ` ×${item.count}` : ""}`;
+  return (
+    <li>
+      <button
+        type="button"
+        className="choice kad-tap kad-focusable"
+        aria-label={name}
+        onClick={() => onTap(item.itemId, item.def)}
+      >
+        <span className="choice__icon">
+          <Icon name={item.def.icon} size="1.8em" />
+        </span>
+        <span className="choice__text">
+          <span className="choice__label">
+            {compact ? item.def.name : `Use ${item.def.name}`}
+            {item.count > 1 ? <span className="combat__count"> ×{item.count}</span> : null}
+          </span>
+          <span className="choice__sub">{itemSummary(item.def)}</span>
+        </span>
+      </button>
+    </li>
   );
 }
 
@@ -924,5 +1030,7 @@ export function previewOf(selection: Selection): IntentPreview | null {
       return { kind: "action", abilityId: selection.action.abilityId, tiles: [selection.tile] };
     case "item-target":
       return { kind: "item", itemId: selection.itemId };
+    case "items":
+      return null;
   }
 }
