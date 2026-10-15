@@ -114,6 +114,24 @@ describe("gates", () => {
     });
     expect(edgesOf("a", empty.scenes["a"] as Scene)[0]?.gate).toBeNull();
   });
+
+  it("labels each `when` field the way the file says it", () => {
+    const gateOf = (when: NonNullable<Extract<Scene, { type: "story" }>["choices"][number]["when"]>) =>
+      edgesOf("a", {
+        type: "story",
+        narration: "…",
+        choices: [{ id: "c", label: "Go", icon: "arrow", goto: "a", when }],
+      })[0]?.gate;
+    expect(gateOf({ count: { of: "facet_*", max: 0 } })).toBe("has 0 facet_*");
+    expect(gateOf({ count: { of: "facet_*", min: 2 } })).toBe("has 2+ facet_*");
+    expect(gateOf({ count: { of: "facet_*", min: 1, max: 3 } })).toBe("has 1-3 facet_*");
+    expect(gateOf({ count: { of: ["a", "b"], max: 1 } })).toBe("has up to 1 [a, b]");
+    expect(gateOf({ partySize: { min: 2 } })).toBe("party 2+");
+    expect(gateOf({ partySize: { max: 1 } })).toBe("party up to 1");
+    expect(gateOf({ notFlag: "x" })).toBe("not flag: x");
+    expect(gateOf({ flag: "x", notItem: "key" })).toBe("flag: x, lacks: key");
+    expect(gateOf({ item: "key" })).toBe("holds: key");
+  });
 });
 
 describe("depth from the entry", () => {
