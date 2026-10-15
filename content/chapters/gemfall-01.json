@@ -63,7 +63,7 @@
     },
     "scene_prologue_party": {
       "type": "choice_point",
-      "narration": "And this is you: a little band of adventurers who met on the docks this week. Nobody has called you heroes yet. You each came here for a reason of your own, and you have not quite told each other what it is. Tonight the harbor lamps are just coming on. So what is our party doing on the docks tonight? Everybody vote.",
+      "narration": "And this is you: a little band of adventurers who met on the docks this week. Nobody has called you heroes yet. You came here for reasons of your own, and you have not quite told anybody what they are. Tonight the harbor lamps are just coming on. So what is our party doing on the docks tonight? Everybody vote.",
       "choices": [
         {
           "id": "prologue_begin",
@@ -1149,7 +1149,7 @@
     },
     "scene_gull_dive_bread": {
       "type": "story",
-      "narration": "You hold out a bread roll. The gull considers the roll. It considers the stone. It takes the roll, and while you are feeling pleased with yourselves, it takes your other roll too. Fair is fair. It flaps away full and happy, and leaves the stone alone. Your tummies rumble all the way to the tavern.",
+      "narration": "You hold out a bread roll. The gull considers the roll. It considers the stone. It takes the roll, and while you are feeling pleased, it takes your other roll too. Fair is fair. It flaps away full and happy, and leaves the stone alone. Your tummies rumble all the way to the tavern.",
       "choices": [
         {
           "id": "on",
@@ -1256,7 +1256,7 @@
     },
     "scene_scholar_theory": {
       "type": "story",
-      "narration": "Outside, the scholar draws on a napkin. Professor Tidewell, says the name on her soggy notes. The drawing is a shape with eight sides, like a gem cut by somebody very careful. \"The oldest stories tell of a seal, like a lid on a jar, with eight great facets. I think the mountain just threw seven of them across the realm, and everybody is selling them. The eighth is still in the mountain.\" Then she looks at your pocket, which is glowing slightly. \"Oh,\" she says. \"You've got one.\"",
+      "narration": "Outside, the scholar draws on a napkin. Professor Tidewell, says the name on her soggy notes. The drawing is a shape with eight sides, like a gem cut by somebody very careful. \"The oldest stories tell of a seal, like a lid on a jar, made of facets, eight of them. I think the mountain just threw seven of them across the realm, and everybody is selling them. The eighth is still in the mountain.\" Then she looks at your pocket, which is glowing slightly. \"Oh,\" she says. \"You've got one.\"",
       "cast": [
         {
           "figure": "cast/tidewell",
@@ -1479,7 +1479,7 @@
     },
     "scene_provisions_honey": {
       "type": "story",
-      "narration": "Mrs. Tuft packs six honeycakes into a tin, then a seventh \"for the tin\". You all promise to save them for the road. By the top of the Outfitters' Steps there are five. Nobody knows what happened to the other two, and everybody has crumbs on their chin.",
+      "narration": "Mrs. Tuft packs six honeycakes into a tin, then a seventh \"for the tin\". You promise to save them for the road. By the top of the Outfitters' Steps there are five. Nobody knows what happened to the other two, and everybody has crumbs on their chin.",
       "cast": [
         {
           "figure": "cast/mrs_tuft",
@@ -2114,7 +2114,7 @@
     },
     "scene_caravan_yard_banner": {
       "type": "story",
-      "narration": "The banner is taller than any of you and heavier than it looks, and the wind off the harbor wants it very badly. You hold it up anyway. The whole yard turns to look at who is carrying the Longstride banner, and Hesper lets them look. \"Front,\" she says. \"Don't drop it.\"",
+      "narration": "The banner is taller than you are and heavier than it looks, and the wind off the harbor wants it very badly. You hold it up anyway. The whole yard turns to look at who is carrying the Longstride banner, and Hesper lets them look. \"Front,\" she says. \"Don't drop it.\"",
       "cast": [
         {
           "figure": "cast/hesper",
@@ -2257,7 +2257,7 @@
     },
     "scene_hired": {
       "type": "story",
-      "narration": "Hesper hands you each a lantern pole. \"Crew,\" she says, which on a caravan means you eat first and sleep last. The wagons begin to roll, and you roll with them, through the crowded streets to the North Gate, where everybody leaving the Exchange stops for one last thing.",
+      "narration": "Hesper hands you a lantern pole. \"Crew,\" she says, which on a caravan means you eat first and sleep last. The wagons begin to roll, and you roll with them, through the crowded streets to the North Gate, where everybody leaving the Exchange stops for one last thing.",
       "cast": [
         {
           "figure": "cast/hesper",

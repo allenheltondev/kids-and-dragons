@@ -1,0 +1,13 @@
+{
+  "_readme": [
+    "Copy this file to docs/review/playtest-timings.json and fill in `timings`; `npm run content:pacing` reads it if present.",
+    "One row per measured session: `chapter` is the chapter id, `minutes` is wall-clock table time from first scene to the ending (exclude breaks).",
+    "`path` is which route the table took: \"typical\" (default; a normal playthrough) or \"shortest\" (they rushed it). It picks which metrics the model is fitted against.",
+    "One or a few rows only rescale the default constants; with seven or more rows it fits words/min, seconds per vote, per check, per fight and per scene separately.",
+    "Timings are fitted against the `few-3p` scenario (a table of three, the party holding three facets), because narration variants change the words read aloud. Note the party size and roughly how many facets the table held in `party` / `notes`; a solo or full-collection table reads a different amount.",
+    "Optional free-text fields (`party`, `notes`) are ignored by the tool."
+  ],
+  "timings": [
+    { "chapter": "gemfall-01", "minutes": 0, "path": "typical", "party": "2 kids + 1 adult", "notes": "replace the 0; rows with minutes <= 0 are ignored" }
+  ]
+}

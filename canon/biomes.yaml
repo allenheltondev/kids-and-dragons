@@ -808,7 +808,7 @@ biomes:
       disputed_beliefs:
         - "Whether the memories in the ice are records or residents. The yetis decline the distinction, which each side counts as support."
       hidden_truths:
-        - "At the bottom of one crevasse, below the oldest catalogued layer, the ice preserves a summer: green light, warm air, the smell of a season the north has not had in living memory. The yetis have not catalogued it, because filing it would mean deciding what it is."
+        - "At the bottom of one crevasse, below the oldest cataloged layer, the ice preserves a summer: green light, warm air, the smell of a season the north has not had in living memory. The yetis have not cataloged it, because filing it would mean deciding what it is."
       regional_relationships:
         - place: feature.great_river_source
           relationship: >-
@@ -823,7 +823,7 @@ biomes:
         - "The melt is changing: channels move seasons early, memories surface out of order, and downstream the river has begun delivering silt the Saltrot guides do not recognize."
         - "A frost wyrm has nested exactly where the next reading room was planned, and the yetis' response - wait a century or two - has, for the first time, struck some younger yetis as slow."
       historical_hooks:
-        - "A newly melted memory shows the river leaving by a different valley. The yetis have re-catalogued it three times, which is yeti for alarm."
+        - "A newly melted memory shows the river leaving by a different valley. The yetis have re-cataloged it three times, which is yeti for alarm."
         - "One meltwater year is never served as tea and never named. The vintage exists; the catalog simply moves past it, and the politeness is glacial in every sense."
     borders: [biome.expanse, biome.frostfang_peaks]
     inhabitants:

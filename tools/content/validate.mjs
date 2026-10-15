@@ -26,6 +26,7 @@ import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
+import { conditionRefs, lintChapterText } from "../../packages/shared/src/condition-lint.ts";
 import { chapterStartDiscoveries, sceneDiscoveries } from "../../packages/shared/src/discoveries.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 
@@ -698,8 +699,10 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
 
     // Requirements *hide* a choice rather than greying it out (architecture §5),
     // so a scene where every choice is gated shows some parties nothing to tap.
-    // Same rule as validateChapter()'s DEAD_END in packages/shared/src/chapter-graph.ts.
-    const gated = (c) => c.requiresSpecies !== undefined || c.requiresFlag !== undefined || c.requiresItem !== undefined;
+    // Same rule as validateChapter()'s DEAD_END in packages/shared/src/chapter-graph.ts
+    // (isGated); a `when` counts as a gate there too. Kept inline because
+    // chapter-graph.ts cannot be loaded straight under Node.
+    const gated = (c) => c.requiresSpecies !== undefined || c.requiresFlag !== undefined || c.requiresItem !== undefined || c.when !== undefined;
     if ((scene.choices ?? []).length > 0 && scene.choices.every(gated)) {
       fail(`/scenes/${id}/choices`, "every choice is gated - a party matching none of the requirements sees nothing to tap");
     }
@@ -808,6 +811,33 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
           `map "${scene.map}" is not in content/maps/`,
           mapIds.size ? `maps available: ${[...mapIds].sort().join(", ")}` : "content/maps/ is empty",
         );
+      }
+    }
+  }
+
+  // --- #160: conditions, variants and tokens. A malformed `when` fails here,
+  // at the build, rather than at the table.
+  for (const problem of lintChapterText(chapter)) fail(problem.path, problem.problem, problem.hint);
+  for (const { path, when } of conditionRefs(chapter)) {
+    for (const key of ["flag", "notFlag"]) {
+      if (when[key]) flagsRequired.push([when[key], `${path}/${key}`]);
+    }
+    for (const key of ["item", "notItem"]) {
+      if (when[key] && !items?.[when[key]]) fail(`${path}/${key}`, `item "${when[key]}" is not in content/items.json`);
+    }
+    const of = when.count?.of;
+    if (of !== undefined) {
+      const catalog = Object.keys(items ?? {});
+      if (Array.isArray(of)) {
+        for (const id of of) {
+          if (!items?.[id]) fail(`${path}/count/of`, `item "${id}" is not in content/items.json`);
+        }
+      } else if (of.endsWith("*")) {
+        if (!catalog.some((id) => id.startsWith(of.slice(0, -1)))) {
+          fail(`${path}/count/of`, `prefix "${of}" matches no item in content/items.json`);
+        }
+      } else if (!items?.[of]) {
+        fail(`${path}/count/of`, `item "${of}" is not in content/items.json`);
       }
     }
   }
