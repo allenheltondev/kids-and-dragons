@@ -167,6 +167,7 @@ import type {
   GraphEffect,
   JourneyFacts,
   NodeId,
+  RiftActionKind,
   WorldFact,
 } from "./types/campaign-graph.js";
 import {
@@ -886,8 +887,16 @@ function lintCycles(graph: ParsedCampaignGraph, depthFromEntry: Map<NodeId, numb
 interface Step {
   edge: EdgeId | null;
   label: string;
-  /** A rift action taken where the party stands (#197): `stabilize "e"`. */
-  action?: string;
+  /**
+   * A rift action taken where the party stands (#197), instead of an edge:
+   * what `takeRiftAction` would be asked, so a replay can ask it.
+   */
+  action?: { action: RiftActionKind; edge: EdgeId; to?: NodeId };
+}
+
+/** `stabilize "storm-stair"`, `redirect "ferry-rift" toward "cove"` — a rift action in words. */
+export function describeRiftAction(step: { action: RiftActionKind; edge: EdgeId; to?: NodeId }): string {
+  return `${step.action} "${step.edge}"${step.to !== undefined ? ` toward "${step.to}"` : ""}`;
 }
 
 interface SearchState {
@@ -1238,11 +1247,10 @@ function explore(
       if (!change.ok) continue;
       const acted = clone(change.journey);
       applyTracked(acted, offer.rule.effects ?? []);
-      const name = `${offer.action} "${offer.edge}"${offer.to !== undefined ? ` toward "${offer.to}"` : ""}`;
       const to = intern(state.node, { facts: settleRifts(graph, acted), ended: false, label: "" }, head, {
         edge: null,
         label: "",
-        action: name,
+        action: { action: offer.action, edge: offer.edge, ...(offer.to !== undefined ? { to: offer.to } : {}) },
       });
       if (to !== null && to !== head) search.succ[head]!.push({ to, edge: `~${offer.action}:${offer.edge}` });
     }
@@ -1292,7 +1300,7 @@ function describePath(search: Search, at: number): string {
     const note = state.step.label !== "" && state.step.label !== "passed through" && state.step.label !== "ending" ? ` (${state.step.label})` : "";
     steps.unshift(
       state.step.action !== undefined
-        ? `~(${state.step.action})~>`
+        ? `~(${describeRiftAction(state.step.action)})~>`
         : state.step.edge === null
           ? `start at "${state.node}"${note}`
           : `-[${state.step.edge}]-> "${state.node}"${note}`,

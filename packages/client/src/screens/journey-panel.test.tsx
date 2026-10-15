@@ -16,7 +16,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { JourneyExitView, JourneyView } from "@kad/shared";
+import type { JourneyExitView, JourneyRiftActionView, JourneyView } from "@kad/shared";
 import { JourneyPanel } from "./JourneyPanel";
 
 const ORCHARD_EXITS: JourneyExitView[] = [
@@ -329,5 +329,62 @@ describe("announcing the move", () => {
     mount(choosing());
     const live = document.querySelector('[aria-live="polite"]') as HTMLElement;
     expect(live.textContent).toBe("The party is at The Orchard.");
+  });
+});
+
+describe("things the party can try (#197)", () => {
+  const STEADY: JourneyRiftActionView = { action: "stabilize", edge: "storm-stair", label: "Steady the flickering stair" };
+  const TURN: JourneyRiftActionView = {
+    action: "redirect",
+    edge: "ferry-rift",
+    label: "Turn the rift toward The Hidden Cove",
+    to: "cove",
+  };
+  const SEAL: JourneyRiftActionView = { action: "close", edge: "ferry-rift", label: "Seal the ferry", irreversible: true };
+
+  it("draws each action as a button under the ways on, and sends it in one tap", async () => {
+    const user = userEvent.setup();
+    const onAction = vi.fn();
+    mount(choosing({ riftActions: [STEADY, TURN] }), { onAction });
+    const list = screen.getByRole("list", { name: "Things you can try" });
+    expect(within(list).getAllByRole("button").map((b) => b.textContent)).toEqual([
+      "Steady the flickering stair",
+      "Turn the rift toward The Hidden Cove",
+    ]);
+    await user.click(screen.getByRole("button", { name: /Turn the rift/ }));
+    expect(onAction).toHaveBeenCalledTimes(1);
+    expect(onAction.mock.calls[0]![0]).toEqual(TURN);
+  });
+
+  it("draws none for a panel that cannot act (no onAction), or a view that carries none", () => {
+    mount(choosing({ riftActions: [STEADY] }));
+    expect(screen.queryByRole("list", { name: "Things you can try" })).toBeNull();
+    cleanup();
+    mount(choosing(), { onAction: vi.fn() });
+    expect(screen.queryByRole("list", { name: "Things you can try" })).toBeNull();
+  });
+
+  it("asks first before a close nothing can undo, and sends nothing until yes", async () => {
+    const user = userEvent.setup();
+    const onAction = vi.fn();
+    mount(choosing({ riftActions: [SEAL] }), { onAction });
+    expect(within(screen.getByRole("button", { name: /Seal the ferry/ })).getByText("Can't be undone")).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: /Seal the ferry/ }));
+    expect(onAction).not.toHaveBeenCalled();
+    const group = screen.getByRole("group", { name: "Seal the ferry?" });
+    expect(within(group).getAllByRole("button").map((b) => b.textContent)).toEqual(["Stay here", "Yes, do it"]);
+    expect(screen.getByText("Once it's shut, it won't open again.")).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: "Yes, do it" }));
+    expect(onAction).toHaveBeenCalledWith(SEAL);
+  });
+
+  it("disables the actions while a tap is in flight", () => {
+    mount(choosing({ riftActions: [STEADY] }), { onAction: vi.fn(), busy: true });
+    expect((screen.getByRole("button", { name: /Steady/ }) as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it("says plainly when there is nowhere to go and nothing to try", () => {
+    mount(choosing({ exits: [], stuck: true }), { onAction: vi.fn() });
+    expect(screen.getByRole("status").textContent).toContain("Every way from here is shut right now.");
   });
 });

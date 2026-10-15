@@ -16,7 +16,10 @@
  *
  * Rifts (#196) move inside these three and nowhere else — crossed, aged and
  * settled by `rifts.ts` in the order its file comment gives — so a rift's
- * lifecycle commits with the journey write that caused it.
+ * lifecycle commits with the journey write that caused it. The one addition
+ * is the party's **rift action** (#197, `takeRiftAction`): taken while
+ * choosing, it changes a rift (and whatever its rule's effects write) and
+ * leaves the party where it is — no visit begins or ends, no clock ticks.
  *
  * ---------------------------------------------------------------------------
  * WHY PURE, AND WHY HERE
