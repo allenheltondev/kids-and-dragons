@@ -340,8 +340,9 @@ presentation. The TV applies the patch *after* playing the animation. State and 
 decoupled, so animation timing never blocks game logic.
 
 **Previews** (`POST /api/preview`, `{ "preview": IntentPreview | null }`) are the one thing on the
-channel that is not state. A phone sends one whenever its player taps a choice, a tile, an ability
-or a target but has not hit "Do it!" yet, and `null` when they back out; the server checks the shape
+channel that is not state. A phone sends one whenever its player has tapped a choice but not confirmed it, or an ability
+that is still being aimed (a target or a tile picked, more still to pick), and `null` when they
+back out; the server checks the shape
 and the seat and publishes `{ "kind": "preview", playerId, preview }` straight to the room. Nothing is
 committed and the seq does not move — a preview that went through `applyAction` would make every
 exploratory tap a STALE_SEQ for whoever confirms next. They are live-only (never logged, never
