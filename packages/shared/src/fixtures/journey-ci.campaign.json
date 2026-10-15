@@ -1,0 +1,57 @@
+{
+  "$comment": "Graph campaign fixture for the inspection and playtest gate (#202). NOT CONTENT: it lives outside content/ so neither the loader nor content:validate ever sees it, and nothing ships it. Its chapter ids are placeholders with no files behind them. It is the smallest graph that has one of each route shape the tooling must cover: a sideways move, a hub revisited as a pass-through, a place that changes on a revisit (variant), a once-only road, a rift good for a single crossing, and two endings. tools/content/journey-tools.test.ts walks it every way.",
+  "id": "journey-ci",
+  "title": "The Journey Gate",
+  "blurb": "A camp, a meadow, a grotto, a ford and a keep: every shape of route the playtest tooling must cover, in seven places.",
+  "chapters": ["jci-camp", "jci-meadow", "jci-meadow-lit", "jci-grotto", "jci-ford", "jci-keep", "jci-harvest", "jci-escape"],
+  "graph": {
+    "version": 1,
+    "entry": "camp",
+    "flags": ["lantern_lit"],
+    "nodes": {
+      "camp": { "$comment": "The hub: played once, then walked straight through.", "chapter": "jci-camp", "title": "The Camp", "revisit": "pass" },
+      "meadow": {
+        "$comment": "A revisit that changes: once the lantern is lit the meadow is a different chapter.",
+        "chapter": "jci-meadow",
+        "title": "The Meadow",
+        "variants": [{ "chapter": "jci-meadow-lit", "when": { "flag": "lantern_lit" } }]
+      },
+      "grotto": { "$comment": "Beside the meadow, not on the way to anything: a sideways move.", "chapter": "jci-grotto", "title": "The Grotto", "revisit": "closed" },
+      "ford": { "chapter": "jci-ford", "title": "The Ford" },
+      "keep": { "chapter": "jci-keep", "title": "The Keep" },
+      "harvest": { "chapter": "jci-harvest", "ending": { "title": "The Harvest" } },
+      "escape": { "chapter": "jci-escape", "ending": { "title": "The Escape" } }
+    },
+    "edges": {
+      "camp-to-meadow": { "from": "camp", "to": "meadow", "kind": "forward", "label": "Out to the meadow" },
+      "meadow-to-grotto": { "from": "meadow", "to": "grotto", "kind": "sideways", "label": "Into the grotto" },
+      "grotto-to-meadow": {
+        "from": "grotto",
+        "to": "meadow",
+        "kind": "return",
+        "label": "Back out, lantern lit",
+        "effects": [{ "type": "setFlag", "flag": "lantern_lit" }]
+      },
+      "meadow-to-camp": { "from": "meadow", "to": "camp", "kind": "return", "label": "Back to camp" },
+      "meadow-to-harvest": {
+        "from": "meadow",
+        "to": "harvest",
+        "kind": "forward",
+        "label": "Bring in the harvest",
+        "when": { "flag": "lantern_lit" }
+      },
+      "camp-to-ford": { "$comment": "The ford washes out behind the party: one crossing.", "from": "camp", "to": "ford", "kind": "forward", "label": "Wade the ford", "once": true },
+      "ford-to-keep": { "from": "ford", "to": "keep", "kind": "forward", "label": "Up to the keep" },
+      "camp-to-keep": {
+        "$comment": "A rift shortcut, good for a single crossing; the ford is the long way round.",
+        "from": "camp",
+        "to": "keep",
+        "kind": "sideways",
+        "label": "Step through the rift",
+        "rift": { "uses": 1 }
+      },
+      "keep-to-camp": { "from": "keep", "to": "camp", "kind": "return", "label": "Back down to camp" },
+      "keep-to-escape": { "from": "keep", "to": "escape", "kind": "forward", "label": "Slip out the back" }
+    }
+  }
+}
