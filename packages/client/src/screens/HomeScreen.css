@@ -34,19 +34,30 @@
   text-align: center;
 }
 
-.home__crest {
+.home__logo {
   display: block;
-  width: min(100%, 28rem);
+  width: clamp(5rem, 22vw, 9rem);
   height: auto;
-  margin: 0 auto;
+  flex-shrink: 0;
   filter: drop-shadow(0 0.24rem 0.6rem rgba(8, 7, 17, 0.55));
 }
 
 .home__title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.75rem, 3vw, 1.5rem);
   margin: 0;
-  font-size: var(--font-size-2xl, 2em);
   font-weight: 800;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.04em;
+}
+
+.home__wordmark {
+  text-align: left;
+}
+
+.home__ampersand {
+  color: #ffe8a3;
 }
 
 .home__field {
@@ -270,9 +281,9 @@
 /* --- Delight: the front door ------------------------------------------- */
 
 .home__title {
-  font-size: clamp(2.2em, 11vw, 3.2em);
+  font-size: clamp(1.7rem, 7vw, 3.2rem);
   line-height: 1.05;
-  color: #ffd95e;
+  color: #f4f1ff;
   /* A dark outline, then a lift: legible over any part of the picture. */
   text-shadow:
     -0.04em -0.04em 0 #2a1458, 0.04em -0.04em 0 #2a1458,

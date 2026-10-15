@@ -26,7 +26,6 @@ import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
 import { SignInFlow } from "./SignInFlow";
 import { EntryScene } from "./EntryScene";
-import titleCrest from "../assets/painted/kids-and-dragons-crest.webp";
 import "./shared.css";
 import "./HomeScreen.css";
 
@@ -58,7 +57,6 @@ export function HomeScreen(): ReactElement {
   const [code, setCode] = useState(() => normalizeCode(pendingCode ?? ""));
   const [busy, setBusy] = useState<null | "create" | "join">(null);
   const [error, setError] = useState<string | null>(null);
-  const [crestFailed, setCrestFailed] = useState(false);
 
   const nameFieldId = useId();
   const nameHintId = useId();
@@ -123,17 +121,18 @@ export function HomeScreen(): ReactElement {
       <div className="home__inner kad-stack">
         <header className="home__masthead">
           <h1 className="home__title">
-            {crestFailed ? "Kids & Dragons" : (
-              <img
-                className="home__crest"
-                src={titleCrest}
-                alt="Kids & Dragons"
-                width={1120}
-                height={560}
-                fetchPriority="high"
-                onError={() => setCrestFailed(true)}
-              />
-            )}
+            <img
+              className="home__logo"
+              src="/brand/dragon-mark.png"
+              alt=""
+              width={512}
+              height={512}
+              fetchPriority="high"
+            />
+            <span className="home__wordmark">
+              Kids <span className="home__ampersand">&amp;</span><br />
+              Dragons
+            </span>
           </h1>
         </header>
 

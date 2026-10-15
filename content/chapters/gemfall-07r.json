@@ -102,6 +102,12 @@
             }
           ]
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/odo",
+          "name": "Odo"
+        }
       ]
     },
     "check_glitter_barrow": {
@@ -124,7 +130,13 @@
       "onFailure": {
         "goto": "choice_how",
         "narration": "You heave. The wheel pops off entirely and rolls away down the hill, and half the Pinch runs after it. In all the fuss the barrow tips, and one real stone rolls out humming at your feet. Odo waves at you to keep it. He is busy chasing a wheel."
-      }
+      },
+      "cast": [
+        {
+          "figure": "cast/odo",
+          "name": "Odo"
+        }
+      ]
     },
     "scene_glitter_barrow_sort": {
       "type": "story",
@@ -136,6 +148,12 @@
           "icon": "clever",
           "goto": "choice_how"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/odo",
+          "name": "Odo"
+        }
       ]
     },
     "scene_glitter_barrow_under": {
@@ -146,6 +164,10 @@
       "cast": [
         {
           "figure": "entities/glassback_crab"
+        },
+        {
+          "figure": "cast/odo",
+          "name": "Odo"
         }
       ],
       "narration": "Your bigfoot crouches and looks where nobody else thought to. The wheel is not jammed. It is sitting on a glassback crab, who has decided Odo's barrow is a gem deposit and is guarding it very seriously. One polite tap on the shell and the crab scuttles off, offended. Odo is so grateful he hands you the one real stone in his barrow.",
@@ -815,6 +837,13 @@
           "goto": "scene_posy_medal",
           "requiresItem": "medal_not"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/corbin_carrying_posy",
+          "name": "Corbin and Posy",
+          "size": "very_large"
+        }
       ]
     },
     "check_posy": {
@@ -837,7 +866,14 @@
             "value": true
           }
         ]
-      }
+      },
+      "cast": [
+        {
+          "figure": "cast/corbin_carrying_posy",
+          "name": "Corbin and Posy",
+          "size": "very_large"
+        }
+      ]
     },
     "scene_posy_let_keep": {
       "type": "story",
@@ -848,6 +884,13 @@
           "label": "Look down the road",
           "icon": "hand",
           "goto": "scene_masks"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/corbin_carrying_posy",
+          "name": "Corbin and Posy",
+          "size": "very_large"
         }
       ]
     },
@@ -860,6 +903,13 @@
           "label": "Look down the road",
           "icon": "ribbon",
           "goto": "scene_masks"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/corbin_carrying_posy",
+          "name": "Corbin and Posy",
+          "size": "very_large"
         }
       ]
     },
@@ -2009,6 +2059,15 @@
         {
           "figure": "entities/faun",
           "size": "small"
+        },
+        {
+          "figure": "cast/corbin",
+          "name": "Corbin"
+        },
+        {
+          "figure": "cast/posy",
+          "name": "Posy",
+          "size": "small"
         }
       ],
       "narration": "It is Posy, running up while everyone else runs down, with Corbin puffing behind her. She pushes her lucky stone into your hand. \"It kept humming at night,\" she says. \"I think it was asking. You take it home.\" Then Corbin gets his shoulder under the faun cart and pops it free, and they all go down together.",
@@ -2027,6 +2086,10 @@
         {
           "figure": "entities/faun",
           "size": "small"
+        },
+        {
+          "figure": "cast/odo",
+          "name": "Odo"
         }
       ],
       "narration": "Odo comes clattering down the hill with his empty wheelbarrow, which turns out to be exactly the right size for six chairs and a small faun. Everyone piles in. Odo wheels the lot round the crack, singing. \"Never carried anything worth this much,\" he says, and he means the fauns.",

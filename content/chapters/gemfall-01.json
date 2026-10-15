@@ -668,7 +668,7 @@
       "narration": "On the way to the docks, a little boat bumps the quay, and off climbs a family of selkies: two grown-ups, a grandmother, and five children, carrying everything they own. They read the rush prices on the chalkboard and go very quiet. They came for a fresh start, in the same week as everybody else in the world. Just along the quay stand the harbor's brass plaques, the ones that say who founded the Exchange. Nobody stops to help. Everybody is busy going north.",
       "cast": [
         {
-          "figure": "entities/selkie",
+          "figure": "cast/selkie_grandmother",
           "name": "Selkie Grandmother"
         }
       ],
@@ -723,7 +723,7 @@
       "prompt": "Carry a whole family's luggage up the busiest street in the realm",
       "cast": [
         {
-          "figure": "entities/selkie",
+          "figure": "cast/selkie_grandmother",
           "name": "Selkie Grandmother"
         }
       ],
@@ -743,7 +743,7 @@
       "narration": "You walk them to the seventeen brass plaques and find the one that names a family of selkies among the founders of the Exchange. The grandmother reads it twice. Then she sits down on her trunk and says, \"Well, then. We're home.\" She unties a river charm from her own wrist and ties it to yours, \"for the road north, since you're going.\"",
       "cast": [
         {
-          "figure": "entities/selkie",
+          "figure": "cast/selkie_grandmother",
           "name": "Selkie Grandmother"
         }
       ],
@@ -761,7 +761,7 @@
       "narration": "\"Us too,\" you tell them, and the whole family relaxes at once, like a sail when the wind drops. You swap the only fresh-start advice you know: eat at Mortar's, ignore the chalkboards, and save the empty chair for whoever comes next. They take a room at the Empty Chair inn and promise to save one for you.",
       "cast": [
         {
-          "figure": "entities/selkie",
+          "figure": "cast/selkie_grandmother",
           "name": "Selkie Grandmother"
         }
       ],
@@ -1025,7 +1025,7 @@
       "narration": "The couriers have been flying since the red night and have not stopped once for supper. You share yours. One young griffin eats a whole loaf in a single gulp, then a second loaf to check the first one was real. He bows to you with his wings out, which in griffin means: I will remember your faces.",
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/courier_griffin",
           "name": "Courier Griffin"
         }
       ],
@@ -1044,7 +1044,7 @@
       "narration": "Your griffin and the couriers talk wing to wing about headwinds, sack straps and the worst roofs to land on. Then they lower their voices. Since the red night, no courier will fly within a day of the mountain. \"The air up there hums,\" says one, \"like a kettle that's thinking about it.\" They make you an honorary courier, which mostly means free gossip.",
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/courier_griffin",
           "name": "Courier Griffin"
         }
       ],
@@ -1066,7 +1066,7 @@
       "narration": "Right on cue, a courier griffin wobbles overhead with a mail sack bigger than it is. The sack splits, and letters flutter down over the market like pigeons. Something heavier lands in the gutter beside your boot with a little plink. It is a red stone the size of a plum, glittering, and warm, like toast just out of the fire. It is also, very faintly, humming.",
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/courier_griffin",
           "name": "Courier Griffin"
         }
       ],
@@ -1097,7 +1097,7 @@
       "narration": "The courier hears you, wobbles round, and lands on a chimney pot with his split sack in his beak. He peers at the red stone. \"Not mine,\" he says. \"That didn't come out of my sack. That came out of the sky, after it.\" He fluffs his feathers. \"Finders keepers. Tell nobody I said so.\"",
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/courier_griffin",
           "name": "Courier Griffin"
         }
       ],
@@ -1949,7 +1949,7 @@
       "narration": "The selkie family you helped today hear your voices and come thundering down the stairs. \"You'll squash in with us,\" says the grandmother, and that is the end of the argument. Their room is tiny, and eight selkies is a lot of selkie, but it is warm. The five children want a bedtime story, and they want it about you.",
       "cast": [
         {
-          "figure": "entities/selkie",
+          "figure": "cast/selkie_grandmother",
           "name": "Selkie Grandmother"
         }
       ],
