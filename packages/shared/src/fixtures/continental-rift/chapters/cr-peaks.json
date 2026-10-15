@@ -1,0 +1,24 @@
+{
+  "$comment": "Continental Rift slice placeholder (#203) - NOT content, never shipped. The side trip from the glacier, played once; its completion rule raises the attunement.",
+  "id": "cr-peaks",
+  "campaignId": "continental-rift-slice",
+  "index": 3,
+  "title": "Under the Cold Stars",
+  "biome": "frostfang_peaks",
+  "estimatedMinutes": 5,
+  "xpAward": 100,
+  "entry": "scene_summit",
+  "scenes": {
+    "scene_summit": {
+      "type": "story",
+      "narration": "Above the Frostfang Peaks the stars are close enough to count. They make a pattern that matches the cracks in the glacier below.",
+      "choices": [{ "id": "study", "label": "Study the pattern", "icon": "star", "goto": "scene_pattern" }]
+    },
+    "scene_pattern": {
+      "type": "story",
+      "narration": "You learn the shape of the stars by heart. The blue door in the ice has the same shape.",
+      "choices": [],
+      "outcome": "success"
+    }
+  }
+}

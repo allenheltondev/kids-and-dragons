@@ -77,8 +77,13 @@ beat, by flag), and it stays that way. A campaign that declares a `graph` — na
 between them, revisits, several endings — is a **graph** campaign instead, and its next chapter is
 chosen by edge. That contract is
 [docs/campaigns/graph-campaigns.md](../docs/campaigns/graph-campaigns.md). None ships yet; the
-illustrative one is a test fixture outside `content/`. A campaign's mode is part of its identity, so
+illustrative ones are test fixtures outside `content/`. A campaign's mode is part of its identity, so
 turning an existing campaign into a graph is a new campaign id, never an edit.
+
+**Writing one?** Start with the
+[graph campaign authoring guide](../docs/campaigns/graph-campaigns-authoring.md): step by step from
+an empty file to a green build, with the Continental Rift vertical slice (#203) as the worked example
+and the checklist a graph campaign has to pass before review.
 
 Tooling for a campaign graph (all read-only; the ordered campaigns are skipped, not inspected):
 
