@@ -1566,7 +1566,8 @@
       "narration": "The oldest jackalope listens with his good ear. Then he thumps his foot: thump, thump, pause, thump. The whole line shuffles apart just enough to let you through, and closes up again behind you. You have no idea what he said. You are fairly sure it was \"on your own head be it.\"",
       "cast": [
         {
-          "figure": "entities/jackalope"
+          "figure": "entities/jackalope",
+          "count": 3
         }
       ],
       "choices": [

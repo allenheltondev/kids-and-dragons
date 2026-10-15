@@ -971,7 +971,8 @@
       "narration": "You lie back in the grass and watch the cloud go by. It takes a long time. Thousands of little lights drift over, south and south and south, until the sky is dark again. Far away to the north, the mountain still glows red, and not one moth is flying toward it. Then you get some sleep.",
       "cast": [
         {
-          "figure": "entities/embermoth"
+          "figure": "entities/embermoth",
+          "count": 4
         }
       ],
       "choices": [
@@ -1159,7 +1160,8 @@
       "narration": "You creep between the cabbages on tiptoe. You get very close. Then a sprite in a bean-pole lookout tower spots you, toots the pea-pod trumpet twice, and the whole guard spins round. Nobody charges. They just look at you, hard, the way a librarian looks at someone eating crisps. Then they step aside, so you can see.",
       "cast": [
         {
-          "figure": "entities/harvest_sprite"
+          "figure": "entities/harvest_sprite",
+          "count": 4
         }
       ],
       "choices": [
@@ -1176,7 +1178,8 @@
       "narration": "You march up the row and salute. The four guards salute back so hard that one of them falls over. Then the whole rotation is introduced to you, one sprite at a time, with their rank, their favorite vegetable, and how many medals they have. It takes a while. At last they step aside, very proudly, so you can see what they are guarding.",
       "cast": [
         {
-          "figure": "entities/harvest_sprite"
+          "figure": "entities/harvest_sprite",
+          "count": 4
         }
       ],
       "choices": [
