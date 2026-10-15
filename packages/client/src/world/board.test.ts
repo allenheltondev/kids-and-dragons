@@ -27,7 +27,9 @@ import type {
 import { makeRules } from "../../../shared/src/test-fixtures";
 import { CHAR_WIDTH, installFakeCanvas2D } from "../testing/fake-stage";
 import { nameplatesCollide } from "./nameplate";
-import { BOARD_TILE_PX, createBoardLayer } from "./board";
+import { BOARD_TILE_PX, createBoardLayer, walkRoutes } from "./board";
+import { gridCells } from "../screens/combat-grid";
+import type { Facing } from "./board-math";
 import type { BoardLayer, BoardViewState } from "./board";
 
 beforeAll(installFakeCanvas2D);
@@ -274,6 +276,232 @@ describe("nameplates on the board", () => {
 // ---------------------------------------------------------------------------
 // The update contract
 // ---------------------------------------------------------------------------
+
+describe("facing", () => {
+  it("stands each side facing the other, and turns round when the fight moves", () => {
+    // Art is drawn facing left. The hero at (0,0) has the wisp at (5,5) on
+    // her right, so she arrives turned; the wisp's nearest hero is on its
+    // left, so it stands as drawn.
+    const hero = character("c_1", "Sparklehoof");
+    const { layer, encounter, draw } = board([hero], [{ x: 0, y: 0 }]);
+    expect(layer.facings()).toEqual({ c_1: -1, "wisp#1": 1 });
+
+    // She walks past the wisp. The turn is eased, not snapped: a frame in it
+    // is between the two, and a second later she has turned round.
+    const past: EncounterState = {
+      ...encounter,
+      board: {
+        ...encounter.board,
+        actors: encounter.board.actors.map((a) => (a.id === "c_1" ? { ...a, x: 5, y: 3 } : a)),
+      },
+    };
+    draw([hero], past);
+    // Same column as the wisp: straight above it, so she keeps facing right.
+    expect(layer.facings()["c_1"]).toBe(-1);
+    const beyond: EncounterState = {
+      ...past,
+      board: {
+        ...past.board,
+        actors: past.board.actors.map((a) => (a.id === "c_1" ? { ...a, x: 5, y: 3 } : a.id === "wisp#1" ? { ...a, x: 2, y: 3 } : a)),
+      },
+    };
+    draw([hero], beyond);
+    layer.tick(1 / 60);
+    const mid = layer.facings()["c_1"]!;
+    expect(mid).toBeGreaterThan(-1);
+    expect(mid).toBeLessThan(1);
+    for (let i = 0; i < 120; i++) layer.tick(1 / 60);
+    expect(layer.facings()["c_1"]).toBeCloseTo(1, 2);
+    expect(layer.facings()["wisp#1"]).toBeCloseTo(-1, 2);
+  });
+});
+
+describe("walking", () => {
+  /** Where board.ts stands a figure's feet on tile (x, y). */
+  const feet = (x: number, y: number) => ({ x: (x + 0.5) * BOARD_TILE_PX, y: (y + 0.82) * BOARD_TILE_PX });
+
+  it("walks the route a square at a time, a footprint on each, corner to corner in three", () => {
+    /*
+     * Three diagonal steps from (0,0) to (3,3). Counted along the edges that
+     * is six squares; the game charges three (spec §7.1). The walk crossing
+     * (1,1) and (2,2) on its way is what shows the table why.
+     */
+    const hero = character("c_1", "Sparklehoof");
+    const { layer } = board([hero], [{ x: 0, y: 0 }]);
+    layer.playEvents([{ type: "moved", actorId: "c_1", to: { x: 3, y: 3 } }], 700);
+
+    const seen: string[] = [];
+    for (let i = 0; i < 90; i++) {
+      layer.tick(1 / 60);
+      for (const mark of layer.trailMarks()) {
+        const key = `${mark.x},${mark.y}`;
+        if (!seen.includes(key)) seen.push(key);
+      }
+    }
+    expect(seen).toEqual([feet(1, 1), feet(2, 2), feet(3, 3)].map((f) => `${f.x},${f.y}`));
+
+    // And the footprints fade: nothing left a couple of seconds on.
+    for (let i = 0; i < 180; i++) layer.tick(1 / 60);
+    expect(layer.trailMarks()).toEqual([]);
+  });
+
+  it("goes around a wall rather than through it", () => {
+    // A wall in column 1, rows 0 to 2: the only way from (0,1) to (2,1) is
+    // under it, through (1,3). The route says so; a straight glide would not.
+    const hero = character("c_1", "Sparklehoof");
+    const encounter = beginEncounter(
+      {
+        board: parseBoard([".#....", ".#....", ".#....", "......", "......", "......"]),
+        party: [{ character: hero, at: { x: 0, y: 1 } }],
+        enemies: [{ spec: WISP, at: { x: 5, y: 5 } }],
+      },
+      { rules: makeRules(), abilities: {}, rng: { next: () => 0.5 } },
+    );
+    const layer = createBoardLayer();
+    layer.update(viewOf(encounter, [hero]));
+    layer.playEvents([{ type: "moved", actorId: "c_1", to: { x: 2, y: 1 } }], 700);
+
+    const seen: string[] = [];
+    for (let i = 0; i < 120; i++) {
+      layer.tick(1 / 60);
+      for (const mark of layer.trailMarks()) {
+        const key = `${mark.x},${mark.y}`;
+        if (!seen.includes(key)) seen.push(key);
+      }
+    }
+    expect(seen).toEqual([feet(0, 2), feet(1, 3), feet(2, 2), feet(2, 1)].map((f) => `${f.x},${f.y}`));
+  });
+
+  it("still walks the route when the patch lands before the beat plays", () => {
+    /*
+     * The race a slow frame rate causes. The beat is timed on the board's
+     * clock and the patch is released on a wall-clock timer, so on a weak
+     * renderer the patch can arrive first. The route has to be worked out
+     * when the sequence arrives, not when its beat plays.
+     */
+    const hero = character("c_1", "Sparklehoof");
+    const { layer, encounter, draw } = board([hero], [{ x: 0, y: 0 }]);
+    layer.playEvents([{ type: "moved", actorId: "c_1", to: { x: 3, y: 3 } }], 700);
+    const after: EncounterState = {
+      ...encounter,
+      board: {
+        ...encounter.board,
+        actors: encounter.board.actors.map((a) => (a.id === "c_1" ? { ...a, x: 3, y: 3 } : a)),
+      },
+    };
+    draw([hero], after);
+
+    const seen: string[] = [];
+    for (let i = 0; i < 90; i++) {
+      layer.tick(1 / 60);
+      for (const mark of layer.trailMarks()) {
+        const key = `${mark.x},${mark.y}`;
+        if (!seen.includes(key)) seen.push(key);
+      }
+    }
+    expect(seen).toEqual([feet(1, 1), feet(2, 2), feet(3, 3)].map((f) => `${f.x},${f.y}`));
+  });
+
+  it("routes each walk in a sequence around where the earlier ones ended", () => {
+    // A wisp steps into the hero's straight line, then the hero walks. A foe
+    // cannot be crossed, so the hero's route has to bend round the square the
+    // wisp only just took, which the board in view does not show yet.
+    const board = parseBoard(["......", "......", "......"]);
+    const placed = {
+      ...board,
+      actors: [
+        { id: "w1", side: "enemy" as const, x: 2, y: 0 },
+        { id: "h", side: "party" as const, x: 0, y: 1 },
+      ],
+    };
+    const routes = walkRoutes(placed, [
+      { type: "moved", actorId: "w1", to: { x: 1, y: 1 } },
+      { type: "damage", actorId: "c_1", amount: 3, hp: 7 },
+      { type: "moved", actorId: "h", to: { x: 2, y: 1 } },
+    ]);
+    expect(routes[0]).toEqual([{ x: 2, y: 0 }, { x: 1, y: 1 }]);
+    expect(routes[1]).toBeUndefined();
+    expect(routes[2]?.[0]).toEqual({ x: 0, y: 1 });
+    expect(routes[2]).toHaveLength(3);
+    expect(routes[2]).not.toContainEqual({ x: 1, y: 1 });
+  });
+
+  it("routes a walk round a Bramble Wall grown earlier in the same sequence", () => {
+    // A hero's Bramble Wall goes up on (1,1), then a wisp walks from (0,1) to
+    // (2,1). The board in view has no wall yet; the route must not cross it.
+    const board = parseBoard(["......", "......", "......"]);
+    const placed = { ...board, actors: [{ id: "w1", side: "enemy" as const, x: 0, y: 1 }] };
+    const routes = walkRoutes(placed, [
+      { type: "walled", at: { x: 1, y: 1 } },
+      { type: "moved", actorId: "w1", to: { x: 2, y: 1 } },
+    ]);
+    expect(routes[0]).toBeUndefined();
+    expect(routes[1]).toHaveLength(3);
+    expect(routes[1]).not.toContainEqual({ x: 1, y: 1 });
+    // Without the wall it is the straight line, so the bend is the wall's doing.
+    expect(walkRoutes(placed, [{ type: "moved", actorId: "w1", to: { x: 2, y: 1 } }])[0]).toContainEqual({ x: 1, y: 1 });
+  });
+
+  it("leaves no footprints for a shove — a push is not a walk", () => {
+    const hero = character("c_1", "Sparklehoof");
+    const { layer } = board([hero], [{ x: 0, y: 0 }]);
+    layer.playEvents([{ type: "shoved", actorId: "c_1", to: { x: 2, y: 0 } }], 700);
+    for (let i = 0; i < 90; i++) layer.tick(1 / 60);
+    expect(layer.trailMarks()).toEqual([]);
+  });
+});
+
+describe("facing on both surfaces", () => {
+  it("turns every figure the same way on the phone grid and the TV board, patch after patch", () => {
+    // The same walk shown to both: past the wisp, into its column, and back.
+    const hero = character("c_1", "Sparklehoof");
+    const { layer, encounter, draw } = board([hero], [{ x: 0, y: 0 }]);
+    let phoneMemory: Record<string, Facing> = {};
+    const phone = (enc: EncounterState): Record<string, Facing> => {
+      const cells = gridCells(enc, [member(hero)], [], [], phoneMemory);
+      const out: Record<string, Facing> = {};
+      for (const cell of cells) if (cell.occupant) out[cell.occupant.id] = cell.occupant.facing;
+      phoneMemory = { ...phoneMemory, ...out };
+      return out;
+    };
+    const tv = (): Record<string, Facing> =>
+      Object.fromEntries(Object.entries(layer.facings()).map(([id, x]) => [id, x < 0 ? "right" : "left"]));
+    const at = (x: number, y: number): EncounterState => ({
+      ...encounter,
+      board: { ...encounter.board, actors: encounter.board.actors.map((a) => (a.id === "c_1" ? { ...a, x, y } : a)) },
+    });
+
+    expect(phone(encounter)).toEqual(tv());
+    for (const [x, y] of [[3, 3], [5, 3], [5, 1], [2, 1], [2, 5]] as const) {
+      const step = at(x, y);
+      draw([hero], step);
+      for (let i = 0; i < 120; i++) layer.tick(1 / 60);
+      expect(phone(step), `hero at ${x},${y}`).toEqual(tv());
+    }
+  });
+});
+
+describe("facing across fights", () => {
+  it("starts a new fight's figures fresh, even when their ids repeat", () => {
+    // Fight one: she faces the wisp on her right. Fight two reuses both ids
+    // and starts her straight above it: she is drawn as painted, facing left,
+    // at once, rather than keeping the last fight's turn.
+    const hero = character("c_1", "Sparklehoof");
+    const { layer, encounter, draw } = board([hero], [{ x: 0, y: 0 }]);
+    draw([hero], { ...encounter, startedAt: 1 });
+    expect(layer.facings()["c_1"]).toBe(-1);
+    const second: EncounterState = {
+      ...encounter,
+      startedAt: 2,
+      board: {
+        ...encounter.board,
+        actors: encounter.board.actors.map((a) => (a.id === "c_1" ? { ...a, x: 5, y: 2 } : a)),
+      },
+    };
+    draw([hero], second);
+    expect(layer.facings()["c_1"]).toBe(1);
+  });
+});
 
 describe("update", () => {
   it("draws the same board twice without drawing it twice", () => {

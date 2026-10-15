@@ -9,6 +9,7 @@
 
 import type { Chapter, Combatant, EncounterState, PartyMember, Position } from "@kad/shared";
 import { currentActorId, enemyArtId } from "@kad/shared";
+import { facingFor, type Facing } from "../world/board-math";
 
 export interface GridOccupant {
   readonly id: string;
@@ -19,6 +20,10 @@ export interface GridOccupant {
   readonly icon: string;
   /** The combat clock is on this figure. */
   readonly active: boolean;
+  /** Hearts left, written in the square's corner. */
+  readonly hp: number;
+  /** Which way the figure faces: toward the nearest opponent (board-math.ts). */
+  readonly facing: Facing;
 }
 
 export interface GridCell {
@@ -29,6 +34,15 @@ export interface GridCell {
   /** Legal to tap right now — a move destination or an ability's tile. */
   readonly tappable: boolean;
   readonly selected: boolean;
+  /**
+   * How near a walk destination is, from 1 (one step away) down to 0 (the
+   * edge of the reach); null for anything that is not a walk. The dot is
+   * drawn at that size, so a corner four diagonals away reads as far rather
+   * than as a neighbour: the reach is a square (diagonals cost 1, spec
+   * §7.1), and a kid counting squares sees eight where the game charges
+   * four. Size, not colour, so it survives colour blindness (spec §11).
+   */
+  readonly nearness: number | null;
 }
 
 /**
@@ -59,12 +73,19 @@ export function combatantIcon(combatant: Combatant, party: readonly PartyMember[
 export function gridCells(
   encounter: EncounterState,
   party: readonly PartyMember[],
-  tappable: readonly Position[],
+  tappable: readonly (Position & { readonly cost?: number })[],
   selected: readonly Position[],
+  /** How each figure was facing last time, kept when `facingFor` has no answer. */
+  previousFacing: Readonly<Record<string, Facing>> = {},
 ): GridCell[] {
   const { board } = encounter;
   const activeId = currentActorId(encounter);
   const tapKeys = new Set(tappable.map((p) => `${p.x},${p.y}`));
+  // Walk destinations carry a cost (`legalMoves`); an ability's tiles do not.
+  const costs = new Map(
+    tappable.filter((p) => p.cost !== undefined).map((p) => [`${p.x},${p.y}`, p.cost as number]),
+  );
+  const farthest = Math.max(1, ...costs.values());
   const selectedKeys = new Set(selected.map((p) => `${p.x},${p.y}`));
   const byId = new Map(encounter.combatants.map((c) => [c.id, c]));
 
@@ -79,6 +100,13 @@ export function gridCells(
       name: combatantLabel(combatant),
       icon: combatantIcon(combatant, party),
       active: combatant.id === activeId,
+      hp: combatant.hp,
+      // Straight above or below its nearest foe, or with nobody left, a
+      // figure keeps the way it was facing, the same rule the TV board
+      // follows (board.ts), so the two surfaces never disagree. A figure
+      // seen for the first time starts as drawn, facing left, as it does
+      // there too.
+      facing: facingFor(encounter, combatant.id) ?? previousFacing[combatant.id] ?? "left",
     });
   }
 
@@ -93,10 +121,21 @@ export function gridCells(
         occupant: occupants.get(key) ?? null,
         tappable: tapKeys.has(key),
         selected: selectedKeys.has(key),
+        nearness: nearnessOf(costs.get(key), farthest),
       });
     }
   }
   return cells;
+}
+
+/**
+ * 1 for a step away, 0 for the farthest tile on offer, evenly between. A
+ * reach of one step has nothing to grade, so everything in it is near.
+ */
+export function nearnessOf(cost: number | undefined, farthest: number): number | null {
+  if (cost === undefined) return null;
+  if (farthest <= 1) return 1;
+  return 1 - (cost - 1) / (farthest - 1);
 }
 
 /**
