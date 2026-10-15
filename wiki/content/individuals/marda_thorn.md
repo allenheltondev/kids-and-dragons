@@ -3,7 +3,7 @@ title: Marda Thorn
 id: individual.marda_thorn
 type: individual
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: newly_defined
 tags: ["bramblewood", "inn", "centaur", "waystop"]
 related:
@@ -19,7 +19,7 @@ related:
 ai_context:
   mood: "Runs the wide-doored inn at the middle of Bramblewood and knows who has come through the hedges in the last month."
   themes: "Bramblewood, Inn, Centaur, Waystop"
-  visual_style: "A grey-dappled centaur in a apron with too many pockets, ducking through doorways built for her and still ducking out of habit."
+  visual_style: "A gray-dappled centaur in a apron with too many pockets, ducking through doorways built for her and still ducking out of habit."
   common_encounters: "Where a chapter starts or ends. Who a party asks when they need to know what happened here before they arrived."
   lore_highlights: ""
   related_entities: "individual.pib, item.honeycake, item.songbird_ribbon"

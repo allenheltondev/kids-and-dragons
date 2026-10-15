@@ -3,7 +3,7 @@ title: Bigfoot
 id: character.bigfoot
 type: character
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["playable", "forest", "strong", "observer"]
 scale: large
@@ -20,7 +20,7 @@ likes:
   - id: npc.boggart
     title: "Boggart"
     url: "/npcs/boggart/"
-    because: "Infuriating and indispensable: the finest catalogue of lost things in the realm, filed by a system that has never once been explained."
+    because: "Infuriating and indispensable: the finest catalog of lost things in the realm, filed by a system that has never once been explained."
 dislikes:
   - id: creature.jackalope
     title: "Jackalope"
@@ -87,7 +87,7 @@ Quiet, deliberate, and much funnier than strangers expect, in the way of people 
 
 - **[Mosshorn](/creatures/mosshorn/)**: A survey of forest health that conducts itself, on legs.
 - **[Unicorn](/characters/unicorn/)**: They feel what the record cannot show. Between the two of them the Woods is fully witnessed.
-- **[Boggart](/npcs/boggart/)**: Infuriating and indispensable: the finest catalogue of lost things in the realm, filed by a system that has never once been explained.
+- **[Boggart](/npcs/boggart/)**: Infuriating and indispensable: the finest catalog of lost things in the realm, filed by a system that has never once been explained.
 
 ### Dislikes
 

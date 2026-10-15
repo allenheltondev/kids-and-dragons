@@ -3,7 +3,7 @@ title: Stone Crossing
 id: location.stone_crossing
 type: location
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["river_crossing", "bridge", "bottleneck", "current", "trade_route"]
 danger_level: moderate

@@ -3,7 +3,7 @@ title: Redspire Citadel
 id: location.redspire_citadel
 type: location
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
 draft: true
 tags: ["fortress", "skywardens", "highlands", "hub"]

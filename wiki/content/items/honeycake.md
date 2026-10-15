@@ -3,7 +3,7 @@ title: Honeycake
 id: item.honeycake
 type: item
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: newly_defined
 tags: ["provision", "healing", "bramblewood", "common"]
 related:
