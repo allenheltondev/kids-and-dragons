@@ -1,0 +1,16 @@
+{{/* Items of one kind (consumable | trinket), with the icon the game draws. */}}
+{{ $kind := .Get "kind" }}
+<div class="wiki-rule-grid">
+  {{ range $id, $it := site.Data.game.items }}
+  {{ if and (not (hasPrefix $id "$")) (eq $it.kind $kind) }}
+  {{ $icon := $it.icon }}
+  {{ if not (resources.Get (printf "painted/%s.webp" $icon)) }}{{ $icon = cond (eq $kind "trinket") "trinket" "consumable" }}{{ end }}
+  {{ $page := site.GetPage (printf "/items/%s" $id) }}
+  <div class="wiki-rule-card">
+    <h4><img src="{{ printf "painted/%s.webp" $icon | relURL }}" alt="" width="40" height="40">
+      {{ with $page }}<a href="{{ .RelPermalink }}">{{ .Title }}</a>{{ else }}{{ $it.name | default (humanize $id) }}{{ end }}</h4>
+    <p>{{ $it.description | default $it.text | default "" }}</p>
+  </div>
+  {{ end }}
+  {{ end }}
+</div>

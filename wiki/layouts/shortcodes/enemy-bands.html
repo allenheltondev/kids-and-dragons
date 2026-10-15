@@ -1,0 +1,16 @@
+{{/* Enemy stat blocks by band (rules.json encounterBands). */}}
+{{ $b := site.Data.game.rules.encounterBands }}
+<table>
+  <thead><tr><th>Kind</th><th>Health</th><th>Guard</th><th>Steps</th><th>Hits for</th><th>Usually</th></tr></thead>
+  <tbody>
+  {{ range $k := slice "skirmisher" "lurker" "brute" "sentinel" "legend" }}
+  {{ with index $b $k }}
+  <tr>
+    <td>{{ title $k }}<div class="wiki-muted" style="font-weight:500;font-size:.85rem">{{ .description }}</div></td>
+    {{ with .stats }}<td>{{ .hp }}</td><td>{{ .guard }}</td><td>{{ .steps }}</td><td>{{ .attack }}</td>{{ else }}<td colspan="4" class="wiki-muted">Written for each legend</td>{{ end }}
+    <td>{{ .usualCount | default 1 }}</td>
+  </tr>
+  {{ end }}
+  {{ end }}
+  </tbody>
+</table>

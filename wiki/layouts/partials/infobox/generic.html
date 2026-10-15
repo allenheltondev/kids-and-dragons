@@ -1,0 +1,48 @@
+{{/* The infobox for any type without its own: places, routes, rivers,
+     factions, quests, campaigns, named folk. Portrait, the danger level if
+     canon gives one, where it sits (its regions) and which stories it is in,
+     then the lore chips. */}}
+{{ $type := .Params.type | default "page" }}
+<aside class="wiki-infobox wiki-infobox--{{ $type }}" role="complementary" aria-label="{{ humanize $type }} information">
+  {{ partial "infobox/portrait.html" . }}
+
+  <h2 class="wiki-infobox__title">{{ .Title }}</h2>
+  {{ with .Params.lore_hook }}<p class="wiki-infobox__hook">{{ . }}</p>{{ end }}
+
+  {{ $regions := slice }}
+  {{ $stories := slice }}
+  {{ range .Params.related }}
+    {{ $slug := index (split .id ".") 1 }}
+    {{ if eq .type "biome" }}
+      {{ with site.GetPage (printf "/biomes/%s" $slug) }}{{ if not (in $regions .) }}{{ $regions = $regions | append . }}{{ end }}{{ end }}
+    {{ else if eq .type "campaign" }}
+      {{ with site.GetPage (printf "/campaigns/%s" $slug) }}{{ if not (in $stories .) }}{{ $stories = $stories | append . }}{{ end }}{{ end }}
+    {{ end }}
+  {{ end }}
+
+  {{ if or .Params.danger_level $regions $stories }}
+  <dl class="wiki-infobox__fields">
+    {{ with .Params.danger_level }}
+    <div class="wiki-infobox__field">
+      <dt>Danger</dt>
+      <dd><span class="wiki-badge wiki-badge--danger-{{ . }}">{{ partial "title-case.html" . }}</span></dd>
+    </div>
+    {{ end }}
+    {{ with $regions }}
+    <div class="wiki-infobox__field">
+      <dt>{{ if eq (len .) 1 }}Region{{ else }}Regions{{ end }}</dt>
+      <dd>{{ range $i, $r := first 4 . }}{{ if $i }}, {{ end }}<a href="{{ $r.RelPermalink }}">{{ $r.Title }}</a>{{ end }}</dd>
+    </div>
+    {{ end }}
+    {{ with $stories }}
+    <div class="wiki-infobox__field">
+      <dt>In the story</dt>
+      <dd>{{ range $i, $s := . }}{{ if $i }}, {{ end }}<a href="{{ $s.RelPermalink }}">{{ $s.Title }}</a>{{ end }}</dd>
+    </div>
+    {{ end }}
+  </dl>
+  {{ end }}
+
+  {{ partial "infobox/place-lore.html" . }}
+  {{ partial "infobox/lore-opinions.html" . }}
+</aside>

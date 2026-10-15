@@ -1,0 +1,15 @@
+{{/*
+  The Kids & Dragons crest — the same painted title the game opens on.
+
+  Pass a dict: (dict "width" 480 "class" "wiki-hero__crest" "eager" true).
+  The source is 1120x560; it is resized at build time to twice the width it
+  renders at, so the navbar does not download the full title art.
+*/}}
+{{- $w := .width | default 240 -}}
+{{- $crest := resources.Get site.Params.brand.crest -}}
+{{- with $crest -}}
+{{- $img := .Resize (printf "%dx webp q85" (mul $w 2)) -}}
+<img src="{{ $img.RelPermalink }}" width="{{ $w }}" height="{{ div (mul $w $img.Height) $img.Width }}"
+     alt="{{ site.Params.brand.name }}" class="{{ $.class }}"
+     {{ if $.eager }}fetchpriority="high"{{ else }}loading="lazy"{{ end }} decoding="async">
+{{- end -}}

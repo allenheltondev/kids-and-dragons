@@ -1,0 +1,23 @@
+{{/* Every playable species, straight from content/rules.json. */}}
+{{ $sp := site.Data.game.rules.species }}
+<div class="wiki-roster">
+  {{ range $id := slice "unicorn" "dragonling" "griffin" "bigfoot" "kitsune" "manticore" }}
+  {{ with index $sp $id }}
+  {{ $page := site.GetPage (printf "/characters/%s" $id) }}
+  <a class="wiki-roster__card" href="{{ with $page }}{{ .RelPermalink }}{{ end }}">
+    <div class="wiki-roster__art">
+      {{ partial "thumb.html" (dict "path" (printf "characters/%s/fledgling/portrait.webp" $id) "width" 220 "alt" "") }}
+    </div>
+    <div class="wiki-roster__body">
+      <h3><img src="{{ printf "painted/%s.webp" $id | relURL }}" alt="" width="34" height="34"> {{ .name }}</h3>
+      <p class="wiki-roster__blurb">{{ .blurb }}</p>
+      <ul class="wiki-roster__list">
+        <li><strong>Born with</strong>{{ with .passive.stat }}<img class="wiki-stat-icon" src="{{ printf "painted/attributes/%s.webp" . | relURL }}" alt="" width="20" height="20">{{ end }}{{ .passive.text }}</li>
+        <li><strong>Only you can: {{ .worldAbility.name }}</strong>{{ .worldAbility.text }}</li>
+        <li><strong>In a fight: {{ .combatAction.name }}</strong>{{ .combatAction.text }}</li>
+      </ul>
+    </div>
+  </a>
+  {{ end }}
+  {{ end }}
+</div>

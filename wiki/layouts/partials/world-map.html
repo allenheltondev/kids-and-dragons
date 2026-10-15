@@ -1,0 +1,51 @@
+{{/* The painted world map with a pin for every anchored region and place.
+     Pins are generated from canon map anchors (canon/biomes.yaml +
+     canon/locations.yaml, mounted as site.Data.canon), so a new anchored
+     place gets a pin without touching this template. Anchors are
+     normalized 0-1000 with origin top-left (geography canon). */}}
+    <figure class="wiki-map">
+      <div class="wiki-map__frame">
+      {{ with resources.Get "art/world/realm_of_red_sky.webp" }}
+      <img class="wiki-map__image" src="{{ .RelPermalink }}"
+           alt="Painted map of the {{ site.Params.brand.world }}, from the Sky Islands in the northwest to the Bone Yard in the southeast"
+           width="{{ .Width }}" height="{{ .Height }}" loading="lazy">
+      {{ end }}
+      <div class="wiki-map__pins">
+      {{- range site.Data.canon.biomes.biomes }}
+        {{- $anchor := .map_anchor }}
+        {{- if $anchor }}
+        {{- /* YAML 1.1 parses the bare key `y` as a boolean, which Hugo
+              stringifies to "true" — accept either spelling. */}}
+        {{- $ax := index $anchor "x" }}
+        {{- $ay := or (index $anchor "y") (index $anchor "true") }}
+        {{- $slug := replace .id "biome." "" }}
+        <a class="wiki-map__pin wiki-map__pin--biome"
+           href="{{ relURL (printf "biomes/%s/" $slug) }}"
+           style="left: {{ div (mul $ax 100.0) 1000.0 }}%; top: {{ div (mul $ay 100.0) 1000.0 }}%;"
+           aria-label="{{ .title }} (region)">
+          <span class="wiki-map__label">{{ .title }}</span>
+        </a>
+        {{- end }}
+      {{- end }}
+      {{- range site.Data.canon.locations.locations }}
+        {{- $anchor := .map_anchor }}
+        {{- if $anchor }}
+        {{- $ax := index $anchor "x" }}
+        {{- $ay := or (index $anchor "y") (index $anchor "true") }}
+        {{- $slug := replace .id "location." "" }}
+        <a class="wiki-map__pin wiki-map__pin--location"
+           href="{{ relURL (printf "locations/%s/" $slug) }}"
+           style="left: {{ div (mul $ax 100.0) 1000.0 }}%; top: {{ div (mul $ay 100.0) 1000.0 }}%;"
+           aria-label="{{ .title }} (place)">
+          <span class="wiki-map__label">{{ .title }}</span>
+        </a>
+        {{- end }}
+      {{- end }}
+      </div>
+      </div>
+      <figcaption class="wiki-map__caption">
+        Every pin is a door: <span class="wiki-map__key wiki-map__key--biome">gold for regions</span>,
+        <span class="wiki-map__key wiki-map__key--location">violet for places</span>.
+        Pick one and start walking.
+      </figcaption>
+    </figure>

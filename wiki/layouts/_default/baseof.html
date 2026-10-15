@@ -4,7 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
-  <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Title }}{{ end }}">
+  <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Params.lore_hook }}{{ . }}{{ else }}The wiki for Kids &amp; Dragons, a family adventure game set in the Realm of Red Sky.{{ end }}{{ end }}">
+  <meta name="theme-color" content="#0d0b1a">
+  <link rel="icon" type="image/svg+xml" href="{{ "favicon.svg" | relURL }}">
+  {{/* Nunito is the rounded face the app uses on every platform that lacks
+       ui-rounded; Fraunces is the storybook serif for titles and lore. */}}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   {{/* Load custom RPG stylesheet via Hugo Pipes */}}
   {{ $css := resources.Get "css/custom.css" }}
   {{ if $css }}
@@ -44,7 +51,16 @@
 
   {{ block "footer" . }}
   <footer class="site-footer">
-    <p>Realm of Red Sky: World Wiki</p>
+    <div class="site-footer__inner">
+      <a href="{{ site.Home.RelPermalink }}" class="site-footer__crest" aria-label="{{ site.Params.brand.name }} wiki home">
+        {{ partial "crest.html" (dict "width" 140) }}
+      </a>
+      <p class="site-footer__line">
+        The wiki for <strong>{{ site.Params.brand.name }}</strong>, a tap-to-play family adventure for the TV and your phones,
+        set in the <a href="{{ relURL "world/" }}">{{ site.Params.brand.world }}</a>.
+      </p>
+      <p class="site-footer__small">Nobody dies. The party is persistent. Every page here is built from the same data the game plays.</p>
+    </div>
   </footer>
   {{ end }}
 
