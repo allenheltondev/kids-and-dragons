@@ -128,7 +128,7 @@ describe("the panel", () => {
       routes: [{ id: "route.road", title: "Exchange Road", kind: "overland_road", connects: ["location.exchange", "biome.sunward_fields"], travelModes: ["foot"], accuracy: "approximate", points: [{ x: 350, y: 855 }, { x: 470, y: 690 }] }],
     };
     const { container } = mount({ world });
-    act(() => screen.getByRole("button", { name: "The Sunward Fields" }).click());
+    act(() => { fireEvent.change(screen.getByRole("combobox", { name: "Region" }), { target: { value: "sunward_fields" } }); });
     expect(screen.getByText("You are here")).toBeTruthy();
     expect(container.querySelector(".atlas__tile")?.getAttribute("src")).toBe("/assets/continuous.webp");
     expect(container.querySelector("[data-route]")).toBeNull();
@@ -149,7 +149,7 @@ describe("the panel", () => {
       tiles: [{ src: "/assets/test-tile.webp", x: 0, y: 0, width: 512, height: 512 }],
     } } };
     const { container } = mount({ world: regional });
-    act(() => screen.getByRole("button", { name: "The Sunward Fields" }).click());
+    act(() => { fireEvent.change(screen.getByRole("combobox", { name: "Region" }), { target: { value: "sunward_fields" } }); });
     expect(container.querySelector(".atlas__tile")?.getAttribute("src")).toBe("/assets/test-tile.webp");
     expect(container.querySelector(".atlas__painting")).toBeNull();
     expect(screen.queryByRole("button", { name: "Read about The Exchange" })).toBeNull();
@@ -158,7 +158,7 @@ describe("the panel", () => {
     const pin = container.querySelector('[aria-current="location"]') as HTMLElement;
     expect(parseFloat(pin.style.left)).toBeCloseTo(56.6667, 3);
     expect(pin.style.top).toBe("30%");
-    act(() => screen.getByRole("button", { name: "Whole realm" }).click());
+    act(() => { fireEvent.change(screen.getByRole("combobox", { name: "Region" }), { target: { value: "" } }); });
     expect(container.querySelector(".atlas__painting")).not.toBeNull();
     expect(pin.style.left).toBe("47%");
   });
@@ -168,7 +168,7 @@ describe("the panel", () => {
       placeId: "biome.sunward_fields", bounds: { x: 0, y: 0, width: 100, height: 100 },
       description: "A distant sheet.", image: { width: 100, height: 100 }, tiles: [],
     } } } });
-    act(() => screen.getByRole("button", { name: "The Sunward Fields" }).click());
+    act(() => { fireEvent.change(screen.getByRole("combobox", { name: "Region" }), { target: { value: "sunward_fields" } }); });
     expect(screen.queryByText("You are here")).toBeNull();
     expect(screen.getByRole("status").textContent).toContain("The party is in The Sunward Fields");
   });
