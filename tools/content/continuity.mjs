@@ -14,10 +14,10 @@
  * a scene may use a name it introduces itself (`named X`, `called X`,
  * `X, a ...`, a cast entry).
  *
- * Gated choices (requiresFlag / requiresItem) are treated as proving whatever
+ * Gated choices (requiresFlag / requiresItem / when: flag, item, count.min>=1) prove whatever
  * the setters of their flag or item showed. All of that lives in ONE function,
- * `gateProves`, so teaching it the `when` conditions and narration `variants`
- * of #160 means editing that function and `gateConditions` only.
+ * `gateProves` (variants share `conditionProves`); `when` and `variants` (#160)
+ * are taught there and in `gateConditions` / `whenConditions`.
  *
  * The road weave is modelled from data, never from a table here. A chapter is
  * selected by the route flag its `route` names (content/campaigns/*.json
@@ -80,6 +80,11 @@ const NAME_THE_NOUN = /\b([A-Z][a-z][\w'’]*) the [a-z]+/g;
 const APPOSITIVE = /\b([A-Z][a-z][\w'’]*),\s+(?:a|an|the|your|their|his|her|its|one)\b/g;
 const OPENERS = /["“‘'(\[]/;
 
+/** `{facets}` and `{party}` are filled in at the table; they are not names. */
+function stripTokens(text) {
+  return String(text ?? "").replace(/\{[a-z_]+\}/g, (m) => " ".repeat(m.length));
+}
+
 /** Strips a possessive or contraction: Gullet's -> Gullet. */
 function stem(token) {
   return token.replace(/['’](?:s|d|ll|re|ve|m)$/i, "").replace(/['’]$/, "");
@@ -115,6 +120,7 @@ export function buildVocabulary(texts) {
 function scanTokens(text) {
   const out = [];
   if (!text) return out;
+  text = stripTokens(text);
   for (const m of text.matchAll(WORD)) {
     const name = stem(m[0]);
     let i = m.index - 1;
@@ -188,6 +194,7 @@ export function knows(known, name) {
 export function introducedNames(text, stop = STOP_WORDS) {
   const names = new Set();
   if (!text) return names;
+  text = stripTokens(text);
   for (const m of text.matchAll(INTRO_VERBS)) {
     for (const w of m[1].split(/\s+/)) if (!stop.has(stem(w))) names.add(stem(w));
   }
@@ -219,6 +226,39 @@ function mainUses(texts, vocab) {
 function shownMain(texts, vocab) {
   const shown = new Set();
   for (const t of texts) for (const n of shownBy(extractNames(t, vocab, STOP_WORDS, shown))) shown.add(n);
+  return shown;
+}
+
+// ---------------------------------------------------------------------------
+// Narration variants (#159): `variants: [{when, text, at, replace}]`
+
+/** A `when` that holds for every party: no keys, or only a trivially true partySize. */
+export function alwaysTrue(when) {
+  if (!when) return true;
+  const keys = Object.keys(when).filter((k) => k !== "partySize");
+  const ps = when.partySize;
+  return keys.length === 0 && (!ps || ((ps.min ?? 0) <= 1 && ps.max === undefined));
+}
+
+/**
+ * What a text with variants shows on EVERY path (a must-analysis), as shown
+ * names. A variant's text is shown only where its `when` held, so it is
+ * conservatively NOT counted as showing anything, except:
+ *   - an always-true variant (counts as part of the text);
+ *   - a `replace` variant, which stands in for the base: only what both the
+ *     base and every replacing variant show is guaranteed (an always-true
+ *     replacement stands in for the base outright).
+ * Uses in variant text are still checked (see `variantChecks`).
+ */
+export function shownWithVariants(texts, variants, vocab) {
+  const list = variants ?? [];
+  let shown = shownMain(texts, vocab);
+  const replacers = list.filter((v) => v.replace);
+  if (replacers.length) {
+    const sole = replacers.find((v) => alwaysTrue(v.when));
+    shown = sole ? shownMain([sole.text], vocab) : intersect([shown, ...replacers.map((v) => shownMain([v.text], vocab))]);
+  }
+  for (const v of list) if (!v.replace && alwaysTrue(v.when)) shown = union(shown, shownMain([v.text], vocab));
   return shown;
 }
 
@@ -255,7 +295,12 @@ export function sceneMain(scene) {
  * choice }`. `choice` is set for player choices, so labels and gates apply.
  */
 export function sceneExits(scene) {
-  const branch = (b) => ({ to: b.goto, effects: b.effects ?? [], text: [b.narration].filter(Boolean) });
+  const branch = (b) => ({
+    to: b.goto,
+    effects: b.effects ?? [],
+    text: [b.narration].filter(Boolean),
+    variants: b.variants ?? [],
+  });
   switch (scene.type) {
     case "check":
       return [branch(scene.onSuccess), branch(scene.onFailure)];
@@ -266,6 +311,7 @@ export function sceneExits(scene) {
         to: choice.goto,
         effects: choice.effects ?? [],
         text: [],
+        variants: [],
         choice,
       }));
   }
@@ -284,15 +330,78 @@ export function gateConditions(choice) {
   const out = [];
   if (choice.requiresFlag) out.push({ kind: "flag", name: choice.requiresFlag });
   if (choice.requiresItem) out.push({ kind: "item", name: choice.requiresItem });
-  // #160: const when = choice.when; flag -> {kind:"flag"}, item -> {kind:"item"},
-  // count.of -> a held item/flag count proves the same as holding it, the rest nothing.
+  return out.concat(whenConditions(choice.when));
+}
+
+/**
+ * The conditions of a #160 `Condition` that PROVE something: a held flag, a
+ * held item, and `count` with `min >= 1` (at least one of `of`). `notFlag`,
+ * `notItem`, `count` with only a max, and `partySize` prove nothing.
+ */
+export function whenConditions(when) {
+  const out = [];
+  if (!when) return out;
+  if (when.flag) out.push({ kind: "flag", name: when.flag });
+  if (when.item) out.push({ kind: "item", name: when.item });
+  const c = when.count;
+  if (c && (c.min ?? 0) >= 1) {
+    const of = Array.isArray(c.of) ? c.of : [c.of];
+    // Several ids, or a `prefix*`: holding the count means holding at least
+    // one of them, so what is proved is what ALL of them would prove.
+    out.push(of.length === 1 && !of[0].endsWith("*") ? { kind: "item", name: of[0] } : { kind: "any", of });
+  }
   return out;
+}
+
+/** What a bare `Condition` proves (variants, `when`): `null` when it cannot hold. */
+export function conditionProves(when, ctx) {
+  return provesAll(whenConditions(when), ctx);
+}
+
+function provesAll(conds, ctx) {
+  let proved = null;
+  for (const cond of conds) {
+    const names = proveOne(cond, ctx);
+    if (names === null) return null;
+    proved = proved ? union(proved, names) : names;
+  }
+  return proved ?? new Set();
+}
+
+/** One condition: names it proves, or `null` if it cannot hold in this history. */
+function proveOne(cond, ctx) {
+  if (cond.kind === "any") {
+    const ids = new Set();
+    for (const id of cond.of) {
+      if (id.endsWith("*")) {
+        for (const known of ctx.itemIds) if (known.startsWith(id.slice(0, -1))) ids.add(known);
+      } else ids.add(id);
+    }
+    const proofs = [];
+    let unknownPossible = false;
+    for (const id of ids) {
+      const p = proveOne({ kind: "item", name: id }, ctx);
+      if (p !== null) proofs.push(p);
+      else if (!ctx.quest.has(`item:${id}`)) unknownPossible = true;
+    }
+    if (proofs.length) return intersect(proofs);
+    return unknownPossible || ids.size === 0 ? new Set() : null;
+  }
+  const key = cond.kind === "item" ? `item:${cond.name}` : cond.name;
+  const sources = [];
+  if (ctx.entry.maybeHeld.has(key)) sources.push(ctx.entry.flagK.get(key) ?? ctx.entry.K);
+  if (ctx.setterK.has(key)) sources.push(ctx.setterK.get(key));
+  if (!sources.length) return cond.kind === "flag" || ctx.quest.has(key) ? null : new Set();
+  return intersect(sources);
 }
 
 /**
  * THE gate function. What taking `choice` proves was shown, beyond what the
  * path already knew: for each condition, the names every possible source of
- * the flag or item showed, taken as the intersection over sources.
+ * the flag or item showed, taken as the intersection over sources. Reads
+ * `requiresFlag`, `requiresItem` and the `when` of #160 (flag, item,
+ * count.min >= 1), and nothing else. Variants go through `conditionProves`,
+ * which shares `proveOne`.
  *
  * Sources of a flag: the histories that arrive holding it (`entry.flagK`,
  * computed from the chapters' ENDINGS that left it standing) and every
@@ -303,22 +412,9 @@ export function gateConditions(choice) {
  * hidden at runtime, so the caller drops it instead of judging its label. A
  * plain item with no visible source proves nothing but stays (the party may
  * carry it from somewhere the analysis does not track).
- *
- * #160 teaches `when` and `variants` here and in `gateConditions`; callers
- * never look at `requiresFlag` themselves.
  */
 export function gateProves(choice, ctx) {
-  let proved = null;
-  for (const cond of gateConditions(choice)) {
-    const key = cond.kind === "item" ? `item:${cond.name}` : cond.name;
-    const sources = [];
-    if (ctx.entry.maybeHeld.has(key)) sources.push(ctx.entry.flagK.get(key) ?? ctx.entry.K);
-    if (ctx.setterK.has(key)) sources.push(ctx.setterK.get(key));
-    if (!sources.length && (cond.kind === "flag" || ctx.quest.has(key))) return null;
-    const names = sources.length ? intersect(sources) : new Set();
-    proved = proved ? union(proved, names) : names;
-  }
-  return proved ?? new Set();
+  return provesAll(gateConditions(choice), ctx);
 }
 
 // ---------------------------------------------------------------------------
@@ -367,9 +463,9 @@ function meetInto(map, key, set) {
  *   endings    [{ scene, written: Map<set,flag|null>, K, granted: Set<item> }]
  *   visited    Set<sceneId>
  */
-export function analyseChapter(chapter, entry, { flagToSet, vocab, quest = new Set(), props = chapter.props ?? {} }) {
+export function analyseChapter(chapter, entry, { flagToSet, vocab, quest = new Set(), itemIds = new Set(), props = chapter.props ?? {} }) {
   const scenes = chapter.scenes ?? {};
-  const ctx = { entry, setterK: new Map(), quest };
+  const ctx = { entry, setterK: new Map(), quest, itemIds };
   const itemNames = (itemId) => {
     const p = props[itemId];
     return p ? shownMain([`${p.name ?? ""}. ${p.text ?? ""}`], vocab) : new Set();
@@ -424,12 +520,13 @@ function onePass(chapter, scenes, entry, ctx, { flagToSet, vocab, itemNames }) {
     const { id } = nodes.get(key);
     const scene = scenes[id];
     const { main } = sceneMain(scene);
-    return union(inK.get(key), shownMain(main, vocab));
+    return union(inK.get(key), shownWithVariants(main, scene.variants, vocab));
   };
   const outMay = (key) => {
     const { id } = nodes.get(key);
     const { main } = sceneMain(scenes[id]);
-    return union(inM.get(key), shownMain(main, vocab));
+    // May-knowledge takes every variant: some party saw each of them.
+    return union(inM.get(key), shownMain([...main, ...(scenes[id].variants ?? []).map((v) => v.text)], vocab));
   };
 
   let guard = 0;
@@ -456,8 +553,8 @@ function onePass(chapter, scenes, entry, ctx, { flagToSet, vocab, itemNames }) {
         known = union(known, gained);
         may = union(may, gained);
       }
-      known = union(known, shownMain(ex.text, vocab));
-      may = union(may, shownMain(ex.text, vocab));
+      known = union(known, shownWithVariants(ex.text, ex.variants, vocab));
+      may = union(may, shownMain([...ex.text, ...ex.variants.map((v) => v.text)], vocab));
       // Effects apply in order: the scene's onEnter first, then the exit's.
       const w = applyWrites(written, [...(scene.onEnter ?? []), ...ex.effects]);
       for (const eff of [...(scene.onEnter ?? []), ...ex.effects]) {
@@ -498,23 +595,34 @@ function onePass(chapter, scenes, entry, ctx, { flagToSet, vocab, itemNames }) {
     const knownM = inM.get(key);
     const { main, intro } = sceneMain(scene);
     const mainSet = mainUses(main, vocab);
-    const base = union(known, shownMain(main, vocab));
+    const base = union(known, shownWithVariants(main, scene.variants, vocab));
     // Dangling means SOME way in showed the name and some way did not (a merge
     // point). A name no way in has shown is the scene coining it, not citing it.
     // A name is recorded as `lack` where some way in missed it and `may` where
     // some way in had it. The campaign pass intersects the two over EVERY
     // history, because one chapter is analysed once per road it can be reached
     // by, and the way in that lacked a name is often a different road's.
-    const miss = (names, have, haveM) => {
+    const miss = (names, have, haveM, extraIntro = intro) => {
       for (const n of names) {
-        if (knows(intro, n)) continue;
+        if (knows(extraIntro, n)) continue;
         if (!dangling.has(id)) dangling.set(id, { lack: new Set(), may: new Set() });
         const rec = dangling.get(id);
         if (!knows(have, n)) rec.lack.add(n);
         if (knows(haveM, n)) rec.may.add(n);
       }
     };
+    // A variant's text is checked against what its own `when` proves, and may
+    // introduce a name itself. A variant that cannot hold in this history is skipped.
+    const variantChecks = (variants, have, haveM, sceneIntro) => {
+      for (const v of variants ?? []) {
+        const gain = conditionProves(v.when, ctx);
+        if (gain === null) continue;
+        const own = union(sceneIntro, introducedNames(v.text));
+        miss(mainUses([v.text], vocab), union(have, gain), union(haveM, gain), own);
+      }
+    };
     miss(mainSet, known, knownM);
+    variantChecks(scene.variants, known, knownM, intro);
     const exits = sceneExits(scene);
     for (const ex of exits) {
       let gained = new Set();
@@ -524,10 +632,11 @@ function onePass(chapter, scenes, entry, ctx, { flagToSet, vocab, itemNames }) {
         miss(mainUses([ex.choice.label], vocab), union(known, gained), union(knownM, gained));
       }
       miss(mainUses(ex.text, vocab), base, union(knownM, shownMain(main, vocab)));
+      variantChecks(ex.variants, base, union(knownM, shownMain(main, vocab)), intro);
       // Setters: the knowledge at the moment the flag or item is granted.
       let k = base;
       if (ex.choice) k = union(union(k, shownMain([ex.choice.label], vocab)), gained);
-      k = union(k, shownMain(ex.text, vocab));
+      k = union(k, shownWithVariants(ex.text, ex.variants, vocab));
       for (const eff of ex.effects) recordSetter(eff, k);
     }
     for (const eff of scene.onEnter ?? []) recordSetter(eff, base);
@@ -602,10 +711,12 @@ export function analyseCampaign(campaign, chapters) {
   // Props are defined where an item is first granted but shown wherever it is.
   const props = Object.assign({}, ...chapters.map((c) => c.props ?? {}));
   const quest = new Set();
+  const itemIds = new Set(Object.keys(props));
   for (const c of chapters) {
     for (const scene of Object.values(c.scenes ?? {})) {
       for (const eff of [...(scene.onEnter ?? []), ...sceneExits(scene).flatMap((e) => e.effects)]) {
         if (eff.type === "grantQuestItem") quest.add(`item:${eff.itemId}`);
+        if (eff.type === "grantItem" || eff.type === "grantQuestItem") itemIds.add(eff.itemId);
       }
     }
   }
@@ -634,7 +745,7 @@ export function analyseCampaign(campaign, chapters) {
         continue;
       }
       reached.add(chapter.id);
-      const res = analyseChapter(chapter, state, { flagToSet, vocab, quest, props });
+      const res = analyseChapter(chapter, state, { flagToSet, vocab, quest, itemIds, props });
       for (const [scene, rec] of res.dangling) {
         const k = `${chapter.id}/${scene}`;
         if (!dangling.has(k)) dangling.set(k, { lack: new Set(), may: new Set() });
