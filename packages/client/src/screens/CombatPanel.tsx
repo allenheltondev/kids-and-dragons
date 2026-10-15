@@ -24,11 +24,14 @@
  * monster. The one real risk, a turn skipped by accident, is gone with the
  * button that caused it: Get Ready is the way to pass, and it does something.
  *
- * Renders inside PlayerPanel's prompt slot whenever `state.encounter` exists;
- * on somebody else's turn it says whose, and always shows both sides' HP —
- * the fight's shared state a controller must carry (a Party Mode phone has no
- * other view of the board) — and what just happened: every roll, hit and miss
- * of the last beat, in words, because a d20 that nobody sees is not a d20.
+ * Renders inside PlayerPanel's prompt slot whenever `state.encounter` exists.
+ * The board is always drawn, on every phone, on every turn: with every
+ * figure's hearts in its corner it is the fight's whole shared state (a Party
+ * Mode phone has no other view of it), and a turn spent looking at a blank
+ * pane is a turn not spent planning the next one. On your turn its squares
+ * become the taps; on anybody else's it is a map to think over. Above it,
+ * what just happened: every roll, hit and miss of the last beat, in words,
+ * because a d20 that nobody sees is not a d20.
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -183,7 +186,7 @@ export function CombatControls(): ReactElement | null {
         ? [selection.tile]
         : [];
 
-  const cells = myTurn ? gridCells(encounter, party, tappable, selectedTiles) : [];
+  const cells = gridCells(encounter, party, tappable, selectedTiles);
 
   // The consumables this turn could spend the action on (§7.2's fourth
   // universal action). Hidden, never disabled: gone once the action is spent,
@@ -376,110 +379,66 @@ export function CombatControls(): ReactElement | null {
       {beats.length > 0 ? <BeatLog beats={beats} /> : null}
 
       {/*
-       * Both sides at a glance — number first, bar never (spec §11). While
-       * waiting: faces and names, since this is a Party Mode phone's only view
-       * of the fight. On your own turn the board below carries every figure
-       * with its hearts in the corner, and these rows would push the cards
-       * under the fold — the one scroll the turn screen must never need.
-       */}
-      {!myTurn ? (
-      <>
-      <ul className="combat__party" aria-label="The party">
-        {partyCombatants.map((c) => {
-          const member = party.find((m) => m.character.id === c.id);
+        The board. Tappable cells are real <button>s; everything else is an
+        inert <span> — hidden-not-disabled, per §7.2 — and on somebody else's
+        turn every cell is inert. Cells are the one deliberate exception to
+        the .kad-tap minimum: ten columns of a phone pane cannot give 3em
+        each, and a step is the cheapest thing in the game to spend by
+        mistake.
+      */}
+      <div
+        className="combat__grid"
+        role="grid"
+        aria-label="The battle grid"
+        style={{ gridTemplateColumns: `repeat(${encounter.board.width}, 1fr)` }}
+      >
+        {cells.map((cell) => {
+          const cellKey = `${cell.x},${cell.y}`;
+          const marks = [
+            cell.blocked ? " combat__cell--blocked" : "",
+            cell.selected ? " combat__cell--selected" : "",
+            cell.occupant?.active ? " combat__cell--active" : "",
+            cell.occupant ? ` combat__cell--${cell.occupant.side}` : "",
+            cell.occupant?.down ? " combat__cell--down" : "",
+            cell.occupant?.facing === "right" ? " combat__cell--faces-right" : "",
+          ].join("");
+          const figure = cell.occupant ? <CellFigure occupant={cell.occupant} /> : null;
+          if (cell.tappable) {
+            const aiming = selection.step === "tile";
+            return (
+              <button
+                key={cellKey}
+                type="button"
+                data-move-tile={aiming ? undefined : true}
+                data-aim-tile={aiming ? true : undefined}
+                data-x={cell.x}
+                data-y={cell.y}
+                className={`combat__cell combat__cell--tap${aiming ? " combat__cell--aim" : " combat__cell--walk"} kad-focusable${marks}`}
+                aria-label={`${aiming ? "Aim at" : "Move to"} column ${cell.x + 1}, row ${cell.y + 1}`}
+                onClick={() => tapTile({ x: cell.x, y: cell.y })}
+              >
+                {figure ?? (aiming ? <Icon name="spark" size="70%" /> : <span className="combat__dot" />)}
+              </button>
+            );
+          }
           return (
-            <li className={`kad-chip${c.down ? " kad-chip--bad" : ""}`} key={c.id}>
-              {member === undefined ? (
-                <Icon name={combatantIcon(c, party)} />
-              ) : (
-                <CharacterPortrait
-                  backdrop
-                  species={member.character.species}
-                  accent={member.character.appearance.accent}
-                  tier={member.character.tier}
-                  characterClass={member.character.class}
-                  className="combat__face"
-                />
-              )}
-              <span>{c.name}</span>
-              <HpBadge combatant={c} />
-            </li>
+            <span key={cellKey} className={`combat__cell${marks}`} aria-hidden="true">
+              {figure}
+            </span>
           );
         })}
+      </div>
+
+      {/* What the board's marks mean, once, under the board. */}
+      <ul className="combat__legend" aria-hidden="true">
+        <li><span className="combat__key combat__key--you" />{myTurn ? "You" : "Whose turn"}</li>
+        <li><span className="combat__key combat__key--friend" />Friend</li>
+        <li><span className="combat__key combat__key--enemy" />Enemy</li>
+        {moves.length > 0 ? <li><span className="combat__key combat__key--walk" />You can walk here</li> : null}
       </ul>
-      <ul className="combat__party combat__enemies" aria-label="The enemies">
-        {enemyCombatants.map((c) => (
-          <li className={`kad-chip combat__enemy${c.down ? " kad-chip--bad combat__enemy--down" : ""}`} key={c.id}>
-            <EnemyFace combatantId={c.id} icon={combatantIcon(c, party)} />
-            <span>{combatantLabel(c)}</span>
-            <HpBadge combatant={c} />
-          </li>
-        ))}
-      </ul>
-      </>
-      ) : null}
 
       {myTurn && active ? (
         <>
-          {/*
-            The input board. Tappable cells are real <button>s; everything else
-            is an inert <span> — hidden-not-disabled, per §7.2. Cells are the
-            one deliberate exception to the .kad-tap minimum: ten columns of a
-            phone pane cannot give 3em each, and a step is the cheapest thing
-            in the game to spend by mistake.
-          */}
-          <div
-            className="combat__grid"
-            role="grid"
-            aria-label="The battle grid"
-            style={{ gridTemplateColumns: `repeat(${encounter.board.width}, 1fr)` }}
-          >
-            {cells.map((cell) => {
-              const cellKey = `${cell.x},${cell.y}`;
-              const marks = [
-                cell.blocked ? " combat__cell--blocked" : "",
-                cell.selected ? " combat__cell--selected" : "",
-                cell.occupant?.active ? " combat__cell--active" : "",
-                cell.occupant ? ` combat__cell--${cell.occupant.side}` : "",
-                cell.occupant?.down ? " combat__cell--down" : "",
-              ].join("");
-              const figure = cell.occupant ? (
-                <CellFigure occupant={cell.occupant} combatant={combatantById(encounter, cell.occupant.id)} />
-              ) : null;
-              if (cell.tappable) {
-                const aiming = selection.step === "tile";
-                return (
-                  <button
-                    key={cellKey}
-                    type="button"
-                    data-move-tile={aiming ? undefined : true}
-                    data-aim-tile={aiming ? true : undefined}
-                    data-x={cell.x}
-                    data-y={cell.y}
-                    className={`combat__cell combat__cell--tap${aiming ? " combat__cell--aim" : " combat__cell--walk"} kad-focusable${marks}`}
-                    aria-label={`${aiming ? "Aim at" : "Move to"} column ${cell.x + 1}, row ${cell.y + 1}`}
-                    onClick={() => tapTile({ x: cell.x, y: cell.y })}
-                  >
-                    {figure ?? (aiming ? <Icon name="spark" size="70%" /> : <span className="combat__dot" />)}
-                  </button>
-                );
-              }
-              return (
-                <span key={cellKey} className={`combat__cell${marks}`} aria-hidden="true">
-                  {figure}
-                </span>
-              );
-            })}
-          </div>
-
-          {/* What the board's marks mean, once, under the board. */}
-          <ul className="combat__legend" aria-hidden="true">
-            <li><span className="combat__key combat__key--you" />You</li>
-            <li><span className="combat__key combat__key--friend" />Friend</li>
-            <li><span className="combat__key combat__key--enemy" />Enemy</li>
-            {moves.length > 0 ? <li><span className="combat__key combat__key--walk" />You can walk here</li> : null}
-          </ul>
-
           {/*
             Under the board, one thing at a time, in the same spot: the cards,
             or the who/where question the tapped card asks. Swapping in place
@@ -689,13 +648,7 @@ function EnemyFace({
  * portrait, a big glyph when there is no picture — and its hearts in the
  * corner, so "which one is nearly done" is read off the map, not looked up.
  */
-function CellFigure({
-  occupant,
-  combatant,
-}: {
-  occupant: GridOccupant;
-  combatant: Combatant | null;
-}): ReactElement {
+function CellFigure({ occupant }: { occupant: GridOccupant }): ReactElement {
   const state = useRunState();
   const party = useParty();
   const chapter = useChapter();
@@ -703,9 +656,9 @@ function CellFigure({
   const member = occupant.side === "party" ? party.find((m) => m.character.id === occupant.id) : undefined;
   const badge = occupant.down ? (
     <span className="combat__down-badge"><Icon name="down" size="100%" /></span>
-  ) : combatant ? (
-    <span className="combat__cell-hp" aria-hidden="true">{combatant.hp}</span>
-  ) : null;
+  ) : (
+    <span className="combat__cell-hp" aria-hidden="true">{occupant.hp}</span>
+  );
   if (member) {
     return (
       <>

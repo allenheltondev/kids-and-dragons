@@ -4,6 +4,46 @@
  * does not). board.ts re-exports these — callers never notice the split.
  */
 
+import type { EncounterState } from "@kad/shared";
+
+export type Facing = "left" | "right";
+
+/**
+ * Which way a figure should face: toward the nearest standing opponent.
+ *
+ * Every figure is drawn facing left, and a fight where both sides stare at
+ * the left edge reads as two queues rather than a battle. The nearest enemy
+ * (Chebyshev, the board's own step metric) decides; on a tie, the one with
+ * the bigger sideways gap, since turning is a sideways thing. Straight above
+ * or below, or with nobody left to face, the answer is null: keep facing
+ * whatever way you were, rather than snapping to a default.
+ *
+ * Shared by the TV board (board.ts) and the phone grid (combat-grid.ts), so
+ * the two surfaces turn the same figure the same way.
+ */
+export function facingFor(encounter: EncounterState, actorId: string): Facing | null {
+  const me = encounter.board.actors.find((a) => a.id === actorId);
+  const mine = encounter.combatants.find((c) => c.id === actorId);
+  if (!me || !mine) return null;
+  let best: { dx: number; distance: number } | null = null;
+  for (const other of encounter.combatants) {
+    if (other.side === mine.side || other.down) continue;
+    const at = encounter.board.actors.find((a) => a.id === other.id);
+    if (!at) continue;
+    const dx = at.x - me.x;
+    const distance = Math.max(Math.abs(dx), Math.abs(at.y - me.y));
+    if (
+      best === null ||
+      distance < best.distance ||
+      (distance === best.distance && Math.abs(dx) > Math.abs(best.dx))
+    ) {
+      best = { dx, distance };
+    }
+  }
+  if (best === null || best.dx === 0) return null;
+  return best.dx > 0 ? "right" : "left";
+}
+
 /** asset-brief §4.5 — the tile sheets are authored at this size. */
 export const BOARD_TILE_PX = 128;
 

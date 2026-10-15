@@ -80,7 +80,7 @@ import {
   nameplateLabel,
   type NameplateBox,
 } from "./nameplate";
-import { BOARD_TILE_PX, beatOffsetsMs, clipForBeat, tileVariant } from "./board-math";
+import { BOARD_TILE_PX, beatOffsetsMs, clipForBeat, facingFor, tileVariant } from "./board-math";
 import type { BoardAim } from "./previews";
 
 export { BOARD_TILE_PX } from "./board-math";
@@ -88,6 +88,12 @@ export { BOARD_TILE_PX } from "./board-math";
 /** A figure's drawn height. Taller than a tile on purpose: creatures overlap
     the tile behind them, which is what the row z-sort exists to make read. */
 const ACTOR_HEIGHT = BOARD_TILE_PX * 1.7;
+/**
+ * How fast a figure turns round (1/s). The same squash-through-edge-on the
+ * story lineup uses (scene.ts), so a figure turns the same way on both
+ * stages.
+ */
+const TURN_RATE = 9;
 
 /** Where feet sit inside a tile — low, so the figure reads as *on* it. */
 const FEET_Y = 0.82;
@@ -170,6 +176,9 @@ export interface BoardLayer {
   /** The party names currently drawn, as boxes in board pixels. See
       `NameplateBox` for why this is readable at all. */
   nameplateBoxes(): NameplateBox[];
+  /** Each figure's drawn `art.scale.x`, by id: 1 as drawn (facing left),
+      -1 turned to face right, in between while turning. For tests. */
+  facings(): Record<string, number>;
   destroy(): void;
 }
 
@@ -209,6 +218,12 @@ interface BoardActor {
   selfMoving: boolean;
   /** Seconds since the walk clip was last re-triggered. */
   sinceStep: number;
+  /**
+   * `art.scale.x`'s target: 1 as drawn (facing left), -1 turned to face
+   * right. Set from `facingFor` on every patch, so a figure squares up to
+   * whoever is nearest rather than staring at the left edge all fight.
+   */
+  facing: 1 | -1;
 }
 
 interface Floater {
@@ -468,7 +483,10 @@ export function createBoardLayer(): BoardLayer {
       labelText: nameplateLabel(named),
       selfMoving: false,
       sinceStep: 0,
+      facing: facingFor(current.encounter, combatant.id) === "right" ? -1 : 1,
     };
+    // Arrive already facing the right way; turning is for mid-fight.
+    art.scale.x = actor.facing;
     actorContainer.x = feet.x;
     actorContainer.y = feet.y;
     actorContainer.zIndex = feet.y;
@@ -566,6 +584,8 @@ export function createBoardLayer(): BoardLayer {
         existing.down = combatant.down;
         existing.targetX = feet.x;
         existing.targetY = feet.y;
+        const facing = facingFor(encounter, combatant.id);
+        if (facing !== null) existing.facing = facing === "right" ? -1 : 1;
         // This module draws what it is given and keeps nothing of its own
         // (see the header), and a name is state like any other.
         //
@@ -825,6 +845,10 @@ export function createBoardLayer(): BoardLayer {
           actor.label.x = actor.container.x;
           actor.label.y = actor.container.y + NAMEPLATE_OFFSET_Y;
         }
+        // Turning to face the nearest opponent: a quick squash through
+        // edge-on, which reads as the figure turning round rather than
+        // flipping (the lineup does the same, scene.ts).
+        actor.art.scale.x = approach(actor.art.scale.x, actor.facing, TURN_RATE, dtSeconds);
         if (actor.rive) {
           // The rig owns the fall: `knockedDown` walks it through `down` into
           // the `down_loop` breathing hold and back out through `revive`
@@ -906,6 +930,10 @@ export function createBoardLayer(): BoardLayer {
       return [...actors.values()]
         .filter((a) => a.label !== null && a.label.visible)
         .map((a) => nameplateBoxOf(a.label!));
+    },
+
+    facings() {
+      return Object.fromEntries([...actors.values()].map((a) => [a.id, a.art.scale.x]));
     },
 
     destroy() {
