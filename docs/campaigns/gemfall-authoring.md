@@ -175,3 +175,10 @@ endures and every loss ends on a spark. The Hollow Gate is witnessed, never expl
 Never count the party. A table seats one to four players, so "all three of you", "your two
 names" and "three pairs of hands" read wrong at most tables; say "all of you", "your names",
 "every hand". `gemfall-flow.test.mjs` fails on the common forms.
+
+Spell everything players read in US English: color, favorite, harbor, neighbor, center, gray,
+traveled, realize, defense, catalog, mom, while, among, cozy. `spelling.test.mjs` scans the
+text of every chapter, the generated content JSON, and the canon YAML, and fails with the file,
+line, field, and the US spelling to use. It reads text, not ids, so `scene_harbor_wall` style
+ids may spell anything. Two documented exceptions: the "Sunbloom Draught" keeps its name, and
+"afterwards" is accepted. The word list and exceptions live in `tools/content/spelling-lint.mjs`.
