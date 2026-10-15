@@ -141,6 +141,36 @@ describe("the panel", () => {
     act(() => screen.getByRole("checkbox", { name: "Routes" }).click());
     expect(container.querySelector("[data-route]")).toBeNull();
   });
+  it("opens a region's card on tap, found or not, and leads on to the Field Guide once found", () => {
+    const woods = { id: "biome.woods", title: "Whispering Woods", kind: "biome" as const, anchor: { x: 200, y: 200 }, parent: null };
+    const region = (placeId: string, description: string) => ({ placeId, description,
+      bounds: { x: 0, y: 0, width: 100, height: 100 }, image: { width: 100, height: 100 }, tiles: [] });
+    const { container } = mount({ world: { ...WORLD, places: { ...WORLD.places, woods },
+      regions: { woods: region("biome.woods", "Old trees that hum."), sunward_fields: region("biome.sunward_fields", "Sunny grasslands.") } } });
+    act(() => screen.getByRole("button", { name: "About Whispering Woods" }).click());
+    const card = screen.getByRole("dialog", { name: "Whispering Woods" });
+    expect(card.textContent).toContain("Old trees that hum.");
+    expect(card.textContent).toContain("Not explored yet.");
+    expect(screen.queryByRole("button", { name: "Read in Field Guide" })).toBeNull();
+    act(() => screen.getByRole("button", { name: "Close" }).click());
+    expect(screen.queryByRole("dialog")).toBeNull();
+
+    act(() => setFieldGuideDiscoveries({ "biome.woods": { firstFoundBy: "p_1", foundAt: "2026-10-15T12:00:00Z" } }));
+    act(() => screen.getByRole("button", { name: "About Whispering Woods" }).click());
+    act(() => screen.getByRole("button", { name: "Read in Field Guide" }).click());
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getByRole("complementary", { name: "Map discovery" })).toBeTruthy();
+
+    // The party's own region opens from its pin; a tap on the painting or Escape puts it away.
+    act(() => screen.getByRole("button", { name: "About The Sunward Fields" }).click());
+    expect(screen.getByRole("dialog", { name: "The Sunward Fields" }).textContent).toContain("Sunny grasslands.");
+    act(() => { fireEvent.click(container.querySelector(".atlas__viewport") as Element); });
+    expect(screen.queryByRole("dialog")).toBeNull();
+    act(() => screen.getByRole("button", { name: "About The Sunward Fields" }).click());
+    act(() => { fireEvent.keyDown(window, { key: "Escape" }); });
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
   it("reveals household discoveries live once zoomed in", () => {
     mount({});
     act(() => screen.getByRole("button", { name: "Closer" }).click());

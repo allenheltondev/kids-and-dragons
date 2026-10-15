@@ -156,7 +156,41 @@
   font-size: var(--kad-text-sm);
   cursor: pointer;
 }
-.atlas__landmark--region { opacity: 0.85; min-block-size: 0; cursor: default; }
+/* Not yet found: dimmer, but still a full-size tap target that opens its card. */
+.atlas__landmark--region { opacity: 0.85; }
+.atlas__landmark[aria-pressed="true"] { outline: 2px solid var(--kad-accent); outline-offset: 1px; opacity: 1; }
+.atlas__place--button {
+  pointer-events: auto; min-block-size: 2.75em; padding: 0 0.5em; font: inherit; font-size: var(--kad-text-sm);
+  font-weight: var(--kad-weight-bold); color: inherit; background: none; border: 0; cursor: pointer;
+  text-decoration: underline dotted; text-underline-offset: 0.2em;
+}
+
+/* A region's card: a sheet over the foot of the map, full width so it always
+   fits a phone, with the painting still in view above it. */
+.atlas__card {
+  position: absolute;
+  inset-inline: var(--kad-space-2);
+  inset-block-end: var(--kad-space-2);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-2);
+  max-block-size: 60%;
+  overflow: auto;
+  padding: var(--kad-space-3) var(--kad-space-4) var(--kad-space-4);
+  color: var(--kad-ink);
+  background: var(--kad-bg-raised);
+  border: 1px solid var(--kad-border-strong);
+  border-radius: var(--kad-radius-lg);
+  box-shadow: var(--kad-shadow-lg);
+  animation: atlas-card-in 0.18s var(--kad-ease);
+}
+.atlas__card-head { display: flex; align-items: center; justify-content: space-between; gap: var(--kad-space-2); }
+.atlas__card-title { margin: 0; font-size: var(--kad-text-lg); }
+.atlas__card-text { margin: 0; line-height: 1.5; }
+.atlas__card-hint { margin: 0; font-size: var(--kad-text-sm); color: var(--kad-ink-dim); font-style: italic; }
+@keyframes atlas-card-in { from { opacity: 0; transform: translateY(0.75em); } }
+@media (prefers-reduced-motion: reduce) { .atlas__card { animation: none; } }
 .atlas__read { pointer-events: auto; min-block-size: 2.75em; cursor: pointer; font: inherit; }
 .atlas__entry {
   position: absolute;
