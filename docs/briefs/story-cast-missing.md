@@ -59,3 +59,9 @@ entry for them to the scenes listed (check the narration first: some were judged
 | Nim | gemfall-05a | `scene_told_gatherers`, `scene_nim_pony`, `scene_nim_pony_hold_pony`, `check_pony`, `scene_nim_pony_bell_greeting` | small vivid mint-green dragonling child with mint wings, horns and a bell collar |
 | Corporal Tibbet | gemfall-05a | `scene_survey_guard`, `check_tibbet`, `scene_survey_guard_write_it`, `scene_survey_guard_clerks_stone` | slate-blue griffin Skywarden with cream chest, green sash, bronze badge and clipboard |
 | Pib | gemfall-02 | `scene_hedge_mob`, `scene_hedge_mob_flock`, `scene_hedge_mob_cousins`, `scene_hedge_mob_help_pib`, `check_hedge`, `scene_long_path`, `choice_pib_gift` and its three outcomes | tiny bramble sprite of dark twigs and fresh leaves, with a moss face who offers a leaf |
+| Brisk | gemfall-07h | `walk_scene_factions` and its subsequent Brisk appearances | alert bay centaur scout with a blue road sash, map and feather markers |
+| Perrin Nine-Verse | gemfall-05c | `scene_centaur_whisper` and its follow-up scenes | russet centaur poet with sandy mane, plum coat and verse book |
+| Bryony | gemfall-07h | `scene_price_board` and its follow-up scenes | mint-green dragonling collector with wings, horns and a cream token pouch |
+| Lady Fleecewick | gemfall-07h | `scene_rival_collector`, `scene_rival_collector_trade`, `check_rival_collector`, `scene_rival_collector_pride` | older sheeple collector with lavender curls, teal coat, jeweled brooch and ledger satchel |
+| Cadet Linnet | gemfall-07l | `scene_two_scouts`, `check_two_scouts`, `scene_two_scouts_table_stone`, `scene_bend_crowds_scouts` | slate-blue griffin Skywarden with a green cadet cloak and bronze badge |
+| Tansy | gemfall-08 | `scene_faun_family`, `scene_faun_family_carry`, `scene_faun_family_hello`, `scene_faun_family_sock` | small russet faun child with a yellow scarf and pink humming stone |

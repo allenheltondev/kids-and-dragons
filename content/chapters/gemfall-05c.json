@@ -1245,7 +1245,7 @@
       "narration": "When the crowd has settled, a centaur guide named Perrin Nine-Verse beckons you behind a boundary stone. He looks left. He looks right. He looks left again, just in case. \"There is a way,\" he whispers, \"through the hills. The Shortcut. My family has argued about it for nine generations. Nobody has ever walked it.\"",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/perrin_nine_verse",
           "name": "Perrin Nine-Verse"
         }
       ],
@@ -1276,7 +1276,7 @@
       "narration": "The Shortcut is real. It goes through a crack in a hill, under a rock arch, and comes out at the very last boundary stone, a whole day ahead of the caravan road. Perrin stares at it with tears in his eyes. \"Never tell anyone,\" he says. \"Not ever. It's the best argument we've got.\"",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/perrin_nine_verse",
           "name": "Perrin Nine-Verse"
         }
       ],
@@ -1300,7 +1300,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/perrin_nine_verse",
           "name": "Perrin Nine-Verse"
         }
       ],
@@ -1318,7 +1318,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/perrin_nine_verse",
           "name": "Perrin Nine-Verse"
         }
       ],
