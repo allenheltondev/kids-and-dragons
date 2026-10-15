@@ -125,7 +125,8 @@
       ],
       "cast": [
         {
-          "figure": "entities/jackalope"
+          "figure": "entities/jackalope",
+          "count": 3
         }
       ],
       "narration": "Out on the open road, jackalopes are everywhere: little antlered hares racing the wagons for fun, and winning. One of them lopes alongside you, looks you up and down, and thumps the road twice with a back foot. On the Plains, everybody knows what that means. It is a challenge.",
@@ -191,7 +192,8 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/jackalope"
+          "figure": "entities/jackalope",
+          "count": 3
         }
       ],
       "narration": "You cheer the wagon horses on, and the horses try their very best. The jackalope wins by a mile, turns round, and runs the whole race again backwards, just to make a point. The drivers laugh. \"That's the Plains,\" one says. \"The jackalopes always win. Always. Everywhere.\"",
@@ -297,7 +299,8 @@
       "prompt": "Count the jackalopes and find where they stop",
       "cast": [
         {
-          "figure": "entities/jackalope"
+          "figure": "entities/jackalope",
+          "count": 3
         }
       ],
       "roller": "party",
@@ -1514,7 +1517,8 @@
       "narration": "Plains folk say never camp where the road bends, because the road knows something. At the bend, a pack of cinder wolves is pacing back and forth across the road, glowing faintly, between you and tonight's camp.",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "choices": [
@@ -1584,7 +1588,8 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "narration": "You sit down in the road and wait, very quietly. The wolves pace, and pace, and then one by one they lift their noses toward the mountain and trot off north into the dark, glowing like a string of lanterns going home. Not one of them comes anywhere near your packs.",

@@ -248,7 +248,8 @@
       "narration": "Embermoths are supposed to crowd toward warm cracks. Today every one of them is sitting on the cold side of a rock, shivering. One has landed in a prospector's soup and will not leave, because the soup is the only warm thing it still trusts, and the prospector has given up and is eating around it.",
       "cast": [
         {
-          "figure": "entities/embermoth"
+          "figure": "entities/embermoth",
+          "count": 4
         },
         {
           "figure": "entities/burrowfolk",
@@ -288,7 +289,8 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/embermoth"
+          "figure": "entities/embermoth",
+          "count": 4
         }
       ],
       "narration": "You follow the moths down the slope. They are not scattered at all. They sit in a line, rock after rock, every one facing the same way, like an arrow somebody drew pointing away from the mountain. At the bottom of the arrow is the caravan road, and in the ruts of the road, something is glowing.",
@@ -323,7 +325,8 @@
       "narration": "Your bigfoot counts them. All of them. It takes a while, and the prospector with the moth in his soup gets quite impatient. Three hundred and twelve embermoths, and every single one is facing away from the mountain, like an audience that has turned its back on the stage.",
       "cast": [
         {
-          "figure": "entities/embermoth"
+          "figure": "entities/embermoth",
+          "count": 4
         },
         {
           "figure": "entities/burrowfolk",
@@ -344,7 +347,8 @@
       "narration": "\"Moths leaving the warm is a warning,\" says your dragonling, out loud, in the voice grandmothers use. A grandmother three tents away hears it, stops in the middle of an argument, and rings her hand bell once, sharp, toward the next town. Then she goes back to arguing with a different man on her own doorstep. He has not moved. Neither have the moths.",
       "cast": [
         {
-          "figure": "entities/embermoth"
+          "figure": "entities/embermoth",
+          "count": 4
         }
       ],
       "choices": [
@@ -364,7 +368,8 @@
       "narration": "Down on the caravan road, a pack of cinder wolves is lying in one big heap in the ruts, glowing faintly, like a pile of coals with ears. They are not hunting. They are cold and hungry, and forty wagons are stuck behind them, with forty drovers yelling.",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         },
         {
           "figure": "entities/centaur",
@@ -409,7 +414,8 @@
       "narration": "You sit on a rock and wait. The drovers yell. The wolves do not care. After an hour the pack gets up, all at once, stretches, and trots off downhill as if that had always been the plan. Forty wagons start moving. Forty drovers decide it was their doing.",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         },
         {
           "figure": "entities/centaur",
@@ -434,7 +440,8 @@
       "narration": "From the air you see it at once: a sausage cart tipped on its side in the ditch, a hundred paces down, with the drover long gone. You come down low over the wolves and fly a slow, obvious line toward it. The biggest wolf lifts its nose, understands you perfectly, and the whole pack flows out of the ruts after it like water finding a drain.",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "choices": [
@@ -453,7 +460,8 @@
       "prompt": "Find the hungry wolves something better than the road",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "roller": "party",

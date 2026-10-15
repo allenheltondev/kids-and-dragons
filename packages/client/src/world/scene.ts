@@ -322,6 +322,8 @@ interface CastActor {
   label: Text | null;
   shadow: Graphics;
   scale: number;
+  /** For one of a group: 0 or 1, the odd ones standing a step back. */
+  row?: number;
   /** Where layout wants them, in design units. */
   x: number;
   /** 0 offstage → 1 in place. Eased by tick(). */
@@ -608,7 +610,12 @@ export function createScene(app: Application): PartyScene {
     // standing in each other.
     const width = stageWidth();
     const left = (DESIGN.width - width) / 2;
-    const slots = stageSlots(list.length, cast.map((member) => member.scale), width);
+    const slots = stageSlots(
+      list.length,
+      cast.map((member) => member.scale),
+      width,
+      cast.map((member) => member.row !== undefined),
+    );
     slots.party = slots.party.map((x) => x + left);
     slots.cast = slots.cast.map((x) => x + left);
     // Heroes are drawn facing left; with company on the right they turn round.
@@ -770,8 +777,10 @@ export function createScene(app: Application): PartyScene {
       }
       const away = 1 - member.presence;
       member.container.x = member.x + (still ? 0 : away * CAST_ENTRY_OFFSET);
-      member.container.y = GROUND_Y;
-      member.container.zIndex = GROUND_Y - 1;
+      // A step further back reads as a huddle, not a row of stickers.
+      const rowY = GROUND_Y - (member.row ?? 0) * DESIGN.height * 0.025;
+      member.container.y = rowY;
+      member.container.zIndex = rowY - 1;
       member.art.alpha = member.presence;
       member.shadow.alpha = member.presence;
       if (member.label) member.label.alpha = member.presence;
@@ -809,6 +818,7 @@ export function createScene(app: Application): PartyScene {
       label,
       shadow,
       scale: member.scale,
+      ...(member.crowd ? { row: member.crowd.index % 2 } : {}),
       x: DESIGN.width,
       presence: 0,
       leaving: false,

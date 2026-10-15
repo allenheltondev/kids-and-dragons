@@ -663,7 +663,8 @@
       "narration": "Under the bridge the stone is warm from the sun, and somebody else has noticed. A pack of cinder wolves lies heaped against the pillars, ember-eyed and cold, a long way from home. They lift their heads at the hum in your packs and do not like it at all.",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "choices": [
@@ -707,7 +708,8 @@
       "prompt": "Get the pack interested in supper instead of you",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "roller": "party",

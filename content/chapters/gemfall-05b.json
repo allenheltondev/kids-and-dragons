@@ -1312,7 +1312,8 @@
       "narration": "The bigfoot high paths climb along the cliffs above the falls, all rope bridges and stone steps worn into bowls. Halfway up, three cinder wolves are lying across the path, glowing faintly, as if the mountain kicked them out. They aren't hunting. They're cross. And they're in the way.",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "choices": [
@@ -1362,7 +1363,8 @@
       "prompt": "Give three cross wolves something more interesting than you",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "roller": "party",
@@ -1382,7 +1384,8 @@
       "prompt": "Dash past three cinder wolves on a narrow cliff path",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "roller": "party",
@@ -1443,7 +1446,8 @@
           "size": "small"
         },
         {
-          "figure": "entities/embermoth"
+          "figure": "entities/embermoth",
+          "count": 4
         }
       ],
       "choices": [
@@ -1499,7 +1503,8 @@
           "size": "small"
         },
         {
-          "figure": "entities/embermoth"
+          "figure": "entities/embermoth",
+          "count": 4
         }
       ],
       "roller": "party",

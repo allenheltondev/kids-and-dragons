@@ -338,7 +338,8 @@
       "narration": "Three bramblewisps (little blue lights with far too much energy) are tossing something shiny back and forth over the water and singing about it. Whatever it is, it is not theirs.",
       "cast": [
         {
-          "figure": "entities/will_o_wisp"
+          "figure": "entities/will_o_wisp",
+          "count": 3
         }
       ],
       "choices": [
@@ -377,7 +378,8 @@
       "prompt": "Talk three excited wisps into handing it over",
       "cast": [
         {
-          "figure": "entities/will_o_wisp"
+          "figure": "entities/will_o_wisp",
+          "count": 3
         }
       ],
       "roller": "party",
@@ -441,7 +443,8 @@
       "narration": "The shiny thing is a jar of mosslight, and the wisps hand it over with great ceremony. Then they point downstream, all three at once, at a hill with a door in it.",
       "cast": [
         {
-          "figure": "entities/will_o_wisp"
+          "figure": "entities/will_o_wisp",
+          "count": 3
         }
       ],
       "onEnter": [
