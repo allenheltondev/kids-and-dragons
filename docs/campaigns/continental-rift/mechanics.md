@@ -6,7 +6,17 @@
 - **Nobody chooses or changes the rift's intrinsic behavior.** Summoning and influence are not equivalent to programming a portal.
 - Behavior is learnable through observing Riftlight, even when the underlying source and cause remain secret.
 - A rift can have **multiple simultaneous properties**, represented by multiple colors.
-- Do not claim that magic can override a rift's fixed one-way / once-only nature. Detailed summoning constraints are still TBD.
+- Do not claim that magic can override a rift's fixed one-way / once-only nature.
+
+## Who summons and shapes rifts — agreed
+**Players never summon rifts in this campaign.**
+
+| Who | Can | Cannot |
+| --- | --- | --- |
+| **Emperor** | Summon rifts: how places are being moved, mostly offstage until the reveal | Choose what a summoned rift does; that is his flaw |
+| **Lady Olivia** | Attempt one summoning, late. It works, and its colors surprise her: the emperor's mistake in miniature, on screen | Control what she summoned |
+| **Orin** | Study rifts; he never summons | — |
+| **Starweaver** | Sense → Attune → Manipulate (below) | Summon, or change amber, blue or violet |
 
 ## Riftlight — agreed principle
 Rifts emit colored magical light. In the fiction **only certain people can see the meaningful spectrum**: ordinary observers notice an anomaly but not its diagnostic colors; Starweavers have a natural affinity; select Riftseekers use attunement or tools.
@@ -56,7 +66,11 @@ Every open rift shows **exactly one of amber or blue**, and violet or not. A typ
 
 ## Discovery and player progression — agreed direction
 - At first, colors are noticed but largely unexplained; repeated encounters help players learn associations.
-- Starweaver: Sense → Attune → Manipulate as planned specialty progression; this must not let them rewrite intrinsic rift rules.
+- **Starweaver: Sense → Attune → Manipulate — agreed.** Earned through the story as journey flags, never through levels: level 6 lands in this campaign and already brings Tanglelight, which must not change.
+  - **Sense:** from the start; *Read the Riftlight*.
+  - **Attune:** earned in the first regional strand entered, whichever it is, so no strand is required. The rift's hum also hints at **what kind** of thing green needs (a sound, an object, a place, a time), never the exact answer.
+  - **Manipulate:** earned at convergence. The Starweaver can **meet or hold a condition**: keep a green requirement met for one crossing, or hold a timed rift open until the whole party is through. Conditions around a rift, never its rules.
+- **Equivalents for every class, so none is required:** the Thornguard holds back cracking ice or rockfall so a shrinking rift stays reachable; the Songkeeper keeps a sung note going; the Duskrunner gets everyone through before a timed rift closes.
 - Thornguard, Duskrunner and Songkeeper should have unique contextual utility; rift puzzle completion must remain feasible for parties without Starweaver.
 - Rift energy may grant temporary buffs, bounded by duration/stacking rules (actual values TBD).
 - Choices to harvest, stabilize or interact may carry risks or sacrifice paths **only when consistent with the immutable behavior rule**. Design any 'stabilize' action as managing external conditions or safe access, not turning a once-only rift into a persistent one.
