@@ -3,7 +3,7 @@ title: Snowhorn Goat
 id: creature.snowhorn_goat
 type: creature
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["ambient", "mountain", "climbing", "indicator"]
 classification: ambient_creature

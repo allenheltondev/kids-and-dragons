@@ -3,14 +3,14 @@ title: Embermoth
 id: creature.embermoth
 type: creature
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["ambient", "foothills", "volcanic", "indicator"]
 classification: ambient_creature
 danger_level: low
 scale: tiny_to_small
 sapience: animal
-lore_hook: "The mountain's mood, printed on ten thousand small grey wings."
+lore_hook: "The mountain's mood, printed on ten thousand small gray wings."
 likes:
   - id: creature.cinder_wolf
     title: "Cinder Wolf"
@@ -49,7 +49,7 @@ ai_context:
   themes: "Ambient, Foothills, Volcanic, Indicator"
   visual_style: "Broad dark wings edged with orange-red light, soft glow rather than open flame, small groups resemble drifting sparks."
   common_encounters: "Environmental clue, atmospheric artwork, warning that the mountain is changing."
-  lore_highlights: "The mountain's mood, printed on ten thousand small grey wings."
+  lore_highlights: "The mountain's mood, printed on ten thousand small gray wings."
   related_entities: "biome.red_sky_foothills, location.mount_red_sky, biome.red_sky_foothills, campaign.gemfall, location.mount_red_sky"
   writing_guidance: "Harmless unless a large frightened swarm obscures vision."
   generation_hints: "Gathers near warm cracks before noticeable volcanic changes, avoids loud movement."
@@ -61,7 +61,7 @@ infobox: creature
 <!-- BEGIN GENERATED: lore -->
 ## Lore
 
-> *The mountain's mood, printed on ten thousand small grey wings.*
+> *The mountain's mood, printed on ten thousand small gray wings.*
 
 Embermoths hatch in the warm cracks of the foothills and spend their whole lives migrating from one warmth to the next. Nobody taught them to predict eruptions; the moths simply have strong opinions about where it is comfortable, and the mountain publishes its plans as heat before it publishes them as smoke. Dragonlings learned to read them generations ago, and treat a settling swarm the way sailors treat a falling barometer.
 

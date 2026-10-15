@@ -3,7 +3,7 @@ title: Loftmire
 id: creature.loftmire
 type: creature
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: newly_defined
 tags: ["supernatural", "marsh", "mist", "hazard", "drift", "lost_things"]
 classification: supernatural_manifestation

@@ -3,7 +3,7 @@ title: Legend Dragon
 id: creature.legend_dragon
 type: creature
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["legendary", "volcano", "sapient", "ancient"]
 classification: legendary_beast

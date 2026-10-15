@@ -3,7 +3,7 @@ title: Mosshorn
 id: creature.mosshorn
 type: creature
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["ambient", "forest", "gentle", "indicator"]
 classification: ambient_creature

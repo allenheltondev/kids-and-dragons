@@ -3,7 +3,7 @@ title: Griffin
 id: character.griffin
 type: character
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["playable", "mountain", "flight", "scout"]
 scale: medium_to_large

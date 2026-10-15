@@ -3,7 +3,7 @@ title: Whispering Marsh
 id: biome.whispering_marsh
 type: biome
 status: draft
-lastReviewed: "2026-10-14"
+lastReviewed: "2026-10-15"
 canon_status: confirmed
 tags: ["wetland", "mist", "spirits", "memory", "waterways", "secrets"]
 danger_level: moderate
@@ -143,7 +143,7 @@ People come to the marsh to consult witches, to leave things behind, and to hear
 ### Disputed Beliefs
 
 - Whether the whispers are the marsh speaking, or just everything the marsh has ever heard, replaying. The witches are split; the frogfolk hold that it is a rude question either way.
-- Whether a loftmire chooses where to stand. It has no discernible reason to favour one bend of a channel over another and it favours them anyway, and every people in the marsh has drawn a different conclusion from that, which is why every people calls it something different.
+- Whether a loftmire chooses where to stand. It has no discernible reason to favor one bend of a channel over another and it favors them anyway, and every people in the marsh has drawn a different conclusion from that, which is why every people calls it something different.
 
 ### Hidden Truths
 
