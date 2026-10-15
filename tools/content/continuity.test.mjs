@@ -1,0 +1,246 @@
+/**
+ * The continuity sweep, as a test (tools/content/continuity.mjs).
+ *
+ * Two halves. The first runs the sweep over Gemfall and fails on any finding
+ * that is not in continuity-allow.json, naming the chapter, the scene, the name
+ * and where else the name appears. It also fails on a STALE allow-list entry
+ * (one no finding matches any more): a list nobody prunes stops being read, and
+ * the fix is deleting one line. The second half is a small synthetic campaign
+ * that shows the analysis does what it says, so a change to it is judged
+ * without needing the real content to break first.
+ */
+
+import { describe, expect, it } from "vitest";
+
+import {
+  analyseCampaign,
+  checkAllowList,
+  describeFinding,
+  extractNames,
+  introducedNames,
+  loadAllowList,
+  loadCampaign,
+} from "./continuity.mjs";
+
+describe("Gemfall continuity", () => {
+  const { campaign, chapters } = loadCampaign("gemfall");
+  const result = analyseCampaign(campaign, chapters);
+  const allow = loadAllowList();
+  const split = checkAllowList(result.findings, allow);
+
+  it("has no dangling reference that is not allow-listed", () => {
+    expect(split.unlisted.map((f) => `${describeFinding(f)}\n    allow-list key: ${f.key}`)).toEqual([]);
+  });
+
+  it("has no stale allow-list entry (delete the line)", () => {
+    expect(split.stale).toEqual([]);
+  });
+
+  it("gives every allow-list entry a reason, and keeps the list short", () => {
+    expect(split.noReason).toEqual([]);
+    expect(Object.keys(allow).length).toBeLessThanOrEqual(80);
+  });
+
+  it("reaches every chapter and strands no road", () => {
+    expect(result.unreached).toEqual([]);
+    expect(result.stranded).toEqual([]);
+  });
+});
+
+/* ------------------------------------------------------------------------- */
+/* A small synthetic campaign.                                                */
+
+const scene = (narration, choices = [], extra = {}) => ({ type: "story", narration, choices, ...extra });
+const go = (goto, label = "On", extra = {}) => ({ id: goto, label, icon: "arrow", goto, ...extra });
+const set = (flag) => ({ type: "setFlag", flag, value: true });
+
+function chapter(id, index, scenes, route) {
+  return { id, index, entry: Object.keys(scenes)[0], ...(route ? { route } : {}), scenes };
+}
+
+/** Prose that makes Pellam, Gullet and Quill known words ("seen mid-sentence"). */
+const PRIMER = scene("You wave at Pellam, then Gullet, then Quill.");
+
+describe("detecting a dangling reference", () => {
+  const diamond = (merge, mergeChoices = []) =>
+    chapter("c1", 1, {
+      start: scene("The road forks.", [go("left", "Left"), go("right", "Right")]),
+      left: scene("Along the left, a clerk named Pellam stamps your pass.", [go("merge")]),
+      right: scene("Along the right, nobody stamps anything.", [go("merge")]),
+      merge: scene(merge, mergeChoices),
+      primer: PRIMER,
+    });
+  const run = (chapters, routeSets = {}) => analyseCampaign({ id: "x", chapters: chapters.map((c) => c.id), routeSets }, chapters);
+
+  it("names the scene and the name when one way in never showed it", () => {
+    const { findings } = run([diamond("You see Pellam again.")]);
+    expect(findings.map((f) => f.key)).toEqual(["c1/merge/Pellam"]);
+    expect(describeFinding(findings[0])).toContain("c1 / merge");
+    expect(describeFinding(findings[0])).toContain("also appears in: c1/left");
+  });
+
+  it("is quiet when every way in showed it", () => {
+    const c = chapter("c1", 1, {
+      start: scene("The road forks.", [go("left", "Left"), go("right", "Right")]),
+      left: scene("A clerk named Pellam stamps your pass.", [go("merge")]),
+      right: scene("A clerk named Pellam waves you on.", [go("merge")]),
+      merge: scene("You see Pellam again."),
+    });
+    expect(run([c]).findings).toEqual([]);
+  });
+
+  it("is quiet when the scene introduces the name itself", () => {
+    expect(run([diamond("A clerk named Pellam is here too.")]).findings).toEqual([]);
+  });
+
+  it("stops reporting once the introduction is put back, and starts when it is taken out", () => {
+    const withIntro = chapter("c1", 1, {
+      start: scene("Begin.", [go("a", "A"), go("b", "B")]),
+      a: scene("Pellam, a clerk, is here.", [go("m")]),
+      b: scene("Nobody is here.", [go("m")]),
+      m: scene("Say hello to Pellam."),
+    });
+    // m is reached by a way that never showed Pellam, and by one that did.
+    expect(run([withIntro]).findings.map((f) => f.key)).toEqual(["c1/m/Pellam"]);
+    const bothShow = chapter("c1", 1, {
+      start: scene("Begin.", [go("a", "A"), go("b", "B")]),
+      a: scene("Pellam, a clerk, is here.", [go("m")]),
+      b: scene("Pellam, a clerk, is also here.", [go("m")]),
+      m: scene("Say hello to Pellam."),
+    });
+    expect(run([bothShow]).findings).toEqual([]);
+  });
+
+  it("does not report a name no way in has shown: that scene is coining it", () => {
+    const c = chapter("c1", 1, { start: scene("You meet Quill at last."), primer: PRIMER });
+    expect(run([c]).findings).toEqual([]);
+  });
+
+  it("treats a gated choice as proof of what its flag's setter showed", () => {
+    const build = (gate) =>
+      chapter("c1", 1, {
+        start: scene("Begin.", [go("a", "A"), go("b", "B")]),
+        a: scene("You meet Pellam on the stairs.", [go("m", "On", { effects: [set("met")] })]),
+        b: scene("You meet nobody.", [go("m")]),
+        m: scene("A landing.", [go("end", "Ask Pellam about it", gate)]),
+        end: scene("Done."),
+      });
+    expect(run([build({ requiresFlag: "met" })]).findings).toEqual([]);
+    expect(run([build({})]).findings.map((f) => f.key)).toEqual(["c1/m/Pellam"]);
+  });
+
+  it("drops a choice nobody can reach, instead of judging its label", () => {
+    const c = chapter("c1", 1, {
+      start: scene("Begin.", [go("a", "A"), go("b", "B")]),
+      a: scene("You meet Pellam.", [go("m")]),
+      b: scene("You meet nobody.", [go("m")]),
+      m: scene("A landing.", [go("end", "Ask Pellam", { requiresFlag: "never_set" }), go("end", "Leave")]),
+      end: scene("Done."),
+    });
+    expect(run([c]).findings).toEqual([]);
+  });
+});
+
+describe("the road weave", () => {
+  /*
+   * Two roads, and the failed ford of the second one re-routes to the first,
+   * exactly as 3C's failed ford sends a party to 4B/5B:
+   *
+   *   c1 : left  sets r_a and shows Gullet;  right sets r_b and does not.
+   *   c2a: (r_a)  carries r_a through.
+   *   c2b: (r_b)  "stay" shows Quill and carries r_b; "ford" fails, sets r_a.
+   *   c3 : reads the flags.
+   */
+  const sets = { road: ["r_a", "r_b"] };
+  const base = (c3) => [
+    chapter("c1", 1, {
+      start: scene("Choose.", [go("left", "Left"), go("right", "Right")]),
+      left: scene("Gullet poles you along.", [go("end_a")], { onEnter: [set("r_a")] }),
+      right: scene("A long quiet walk.", [go("end_b")], { onEnter: [set("r_b")] }),
+      end_a: scene("Done."),
+      end_b: scene("Done."),
+      primer: PRIMER,
+    }),
+    chapter("c2a", 2, { start: scene("The A road."), }, { set: "road", flag: "r_a" }),
+    chapter(
+      "c2b",
+      2,
+      {
+        start: scene("The B road forks.", [go("stay", "Stay"), go("ford", "Try the ford")]),
+        stay: scene("Quill waves from the bank.", [go("end_stay")]),
+        end_stay: scene("Done."),
+        ford: scene("The ford fails.", [go("end_ford")]),
+        end_ford: scene("Done.", [], { onEnter: [set("r_a")] }),
+      },
+      { set: "road", flag: "r_b" },
+    ),
+    c3,
+  ];
+  const run = (c3) => {
+    const chapters = base(c3);
+    return analyseCampaign({ id: "x", chapters: chapters.map((c) => c.id), routeSets: sets }, chapters);
+  };
+
+  it("reaches the chapter the failed ford re-routes to, from either road", () => {
+    const { unreached, stranded } = run(chapter("c3", 3, { start: scene("The end.") }));
+    expect(unreached).toEqual([]);
+    expect(stranded).toEqual([]);
+  });
+
+  it("does not let a road flag prove which earlier chapter was played", () => {
+    // r_a holders: left -> c2a (Gullet) and right -> c2b -> ford (no Gullet).
+    const c3 = chapter("c3", 3, {
+      start: scene("The gate.", [go("end", "Thank Gullet", { requiresFlag: "r_a" }), go("end", "Leave")]),
+      end: scene("Done."),
+    });
+    expect(run(c3).findings.map((f) => f.key)).toEqual(["c3/start/Gullet"]);
+  });
+
+  it("proves a road flag from the histories that END holding it, not every one that visited its chapter", () => {
+    // r_b holders all took "stay" in c2b and saw Quill; c2b's ford path is a
+    // c2b history too, but it ends holding r_a. Credit it to r_b and Quill
+    // would look unproven.
+    const gated = chapter("c3", 3, {
+      start: scene("The gate.", [go("end", "Wave to Quill", { requiresFlag: "r_b" }), go("end", "Leave")]),
+      end: scene("Done."),
+    });
+    expect(run(gated).findings).toEqual([]);
+    // Ungated, the same label is a real merge-point dangle: some parties did see Quill.
+    const ungated = chapter("c3", 3, {
+      start: scene("The gate.", [go("end", "Wave to Quill"), go("end", "Leave")]),
+      end: scene("Done."),
+    });
+    expect(run(ungated).findings.map((f) => f.key)).toEqual(["c3/start/Quill"]);
+  });
+});
+
+describe("reading names", () => {
+  const vocab = { lower: new Set(["then", "gate"]), midCaps: new Set(["Gullet", "Gate"]) };
+
+  it("takes capitalised words mid-sentence and drops ordinary sentence openers", () => {
+    expect([...extractNames("Then you meet Gullet at the Gate.", vocab)].sort()).toEqual(["Gate", "Gullet"]);
+  });
+
+  it("keeps a sentence-opening name the rest of the text capitalises", () => {
+    expect([...extractNames("Gullet stops poling.", vocab)]).toEqual(["Gullet"]);
+  });
+
+  it("reads the introductions authors actually write", () => {
+    expect([...introducedNames("a clerk named Pellam")]).toEqual(["Pellam"]);
+    expect([...introducedNames("a frogfolk ferrywoman called Gullet")]).toEqual(["Gullet"]);
+    expect([...introducedNames("Tibbet, a goblin with a ledger")]).toEqual(["Tibbet"]);
+    expect([...introducedNames("his daughter Posy on his shoulders")]).toEqual(["Posy"]);
+  });
+});
+
+describe("the allow-list", () => {
+  const finding = (key) => ({ key, chapter: "c", scene: "s", name: "n", elsewhere: [] });
+
+  it("splits findings and reports stale and reasonless entries", () => {
+    const out = checkAllowList([finding("a/b/C"), finding("a/b/D")], { "a/b/C": "reason", "a/b/Gone": "reason", "a/b/Blank": " " });
+    expect(out.allowed.map((f) => f.key)).toEqual(["a/b/C"]);
+    expect(out.unlisted.map((f) => f.key)).toEqual(["a/b/D"]);
+    expect(out.stale.sort()).toEqual(["a/b/Blank", "a/b/Gone"]);
+    expect(out.noReason).toEqual(["a/b/Blank"]);
+  });
+});
