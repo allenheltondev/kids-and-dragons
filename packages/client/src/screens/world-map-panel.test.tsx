@@ -9,12 +9,15 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { Profiler } from "react";
 import type { Chapter, WorldMap } from "@kad/shared";
 import { makeChapter } from "../../../shared/src/test-fixtures";
 import { makeMember, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
 import { WorldMapPanel, placeOf, whereLine } from "./WorldMapPanel";
+import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
+import { getAtlasCenter, resetAtlasNavigation } from "../store/atlas-navigation";
 
 const WORLD: WorldMap = {
   title: "The Realm of Red Sky",
@@ -39,7 +42,7 @@ const WORLD: WorldMap = {
 
 const CHAPTER: Chapter = { ...makeChapter(), biome: "sunward_fields" };
 
-function mount(overrides: { chapter?: Chapter | null; world?: WorldMap | null; chapterId?: string | null }) {
+function mount(overrides: { chapter?: Chapter | null; world?: WorldMap | null; chapterId?: string | null; onRender?: () => void }) {
   const chapter = overrides.chapter === undefined ? CHAPTER : overrides.chapter;
   useGameStore.setState({
     session: { runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "travel", sessionToken: "t" },
@@ -55,11 +58,13 @@ function mount(overrides: { chapter?: Chapter | null; world?: WorldMap | null; c
     loadChapter: async () => undefined,
     loadWorld: async () => undefined,
   });
-  return render(<WorldMapPanel />);
+  return render(<Profiler id="atlas" onRender={overrides.onRender ?? (() => undefined)}><WorldMapPanel /></Profiler>);
 }
 
 afterEach(() => {
   cleanup();
+  setFieldGuideDiscoveries(null);
+  resetAtlasNavigation();
 });
 
 describe("finding the chapter on the map", () => {
@@ -76,6 +81,98 @@ describe("finding the chapter on the map", () => {
 });
 
 describe("the panel", () => {
+  it("saves every pan position without re-rendering the atlas at closest zoom", () => {
+    let commits = 0;
+    const world: WorldMap = { ...WORLD, atlas: { image: { width: 1024, height: 1024 }, levels: [{
+      image: { width: 1024, height: 1024 },
+      tiles: Array.from({ length: 4 }, (_, index) => ({ src: `/assets/tile-${index}.webp`,
+        x: index % 2 * 512, y: Math.floor(index / 2) * 512, width: 512, height: 512 })),
+    }] } };
+    const { container } = mount({ world, onRender: () => { commits++; } });
+    while (!(screen.getByRole("button", { name: "Closer" }) as HTMLButtonElement).disabled) {
+      act(() => screen.getByRole("button", { name: "Closer" }).click());
+    }
+    const view = container.querySelector(".atlas__viewport") as HTMLElement;
+    const sheet = screen.getByTestId("atlas-sheet");
+    expect(view.getAttribute("data-zoom")).toBe("4");
+    Object.defineProperties(view, { clientWidth: { value: 200 }, clientHeight: { value: 300 } });
+    Object.defineProperties(sheet, { offsetWidth: { value: 1000 }, offsetHeight: { value: 1000 } });
+    const beforePan = commits;
+    for (let i = 0; i < 30; i++) {
+      view.scrollLeft = i * 5;
+      view.scrollTop = i * 10;
+      fireEvent.scroll(view);
+    }
+    expect(getAtlasCenter(JSON.stringify(["r_1", CHAPTER.id]))).toEqual({ x: 245, y: 440 });
+    expect(commits).toBe(beforePan);
+    // Visual controls still update normally after panning.
+    act(() => screen.getByRole("button", { name: "Further away" }).click());
+    expect(commits).toBeGreaterThan(beforePan);
+    expect(getAtlasCenter(JSON.stringify(["r_1", CHAPTER.id]))).toBeNull();
+  });
+  it("remembers zoom across map closes but resets for another run", () => {
+    const first = mount({});
+    act(() => screen.getByRole("button", { name: "Closer" }).click());
+    expect(screen.getByTestId("atlas-sheet").style.inlineSize).toBe("200%");
+    first.unmount();
+    mount({});
+    expect(screen.getByTestId("atlas-sheet").style.inlineSize).toBe("200%");
+    act(() => useGameStore.setState({ session: { runId: "another-run", roomCode: "EFGH", playerId: "p_1", mode: "travel", sessionToken: "t" } }));
+    expect(screen.getByTestId("atlas-sheet").style.inlineSize).toBe("100%");
+  });
+  it("keeps neighboring terrain and the party on the continuous canvas and shows routes at closest zoom", () => {
+    const world: WorldMap = { ...WORLD,
+      atlas: { image: { width: 1024, height: 1024 }, levels: [{ image: { width: 1024, height: 1024 }, tiles: [{ src: "/assets/continuous.webp", x: 0, y: 0, width: 1024, height: 1024 }] }],
+        patches: [{ id: "northwest", bounds: { x: 0, y: 0, width: 500, height: 500 }, image: { width: 1024, height: 1024 }, tiles: [{ src: "/assets/detail.webp", x: 0, y: 0, width: 1024, height: 1024 }] }] },
+      regions: { sunward_fields: { placeId: "biome.sunward_fields", bounds: { x: 0, y: 0, width: 100, height: 100 }, description: "Sunny grasslands.", image: { width: 100, height: 100 }, tiles: [] } },
+      routes: [{ id: "route.road", title: "Exchange Road", kind: "overland_road", connects: ["location.exchange", "biome.sunward_fields"], travelModes: ["foot"], accuracy: "approximate", points: [{ x: 350, y: 855 }, { x: 470, y: 690 }] }],
+    };
+    const { container } = mount({ world });
+    act(() => screen.getByRole("button", { name: "The Sunward Fields" }).click());
+    expect(screen.getByText("You are here")).toBeTruthy();
+    expect(container.querySelector(".atlas__tile")?.getAttribute("src")).toBe("/assets/continuous.webp");
+    expect(container.querySelector("[data-route]")).toBeNull();
+    expect(container.querySelector("[data-patch]")).toBeNull();
+    act(() => screen.getByRole("button", { name: "Closer" }).click());
+    expect(container.querySelector('[data-patch="northwest"]')).not.toBeNull();
+    act(() => screen.getByRole("button", { name: "Closer" }).click());
+    expect(container.querySelector("[data-route]")).toBeNull();
+    act(() => setFieldGuideDiscoveries({ "location.exchange": { firstFoundBy: "p_1", foundAt: "2026-10-15T12:00:00Z" } }));
+    expect(container.querySelector('[data-route="route.road"]')?.getAttribute("data-accuracy")).toBe("approximate");
+    act(() => screen.getByRole("checkbox", { name: "Routes" }).click());
+    expect(container.querySelector("[data-route]")).toBeNull();
+  });
+  it("navigates a tiled region and reveals household discoveries live", () => {
+    const regional: WorldMap = { ...WORLD, regions: { sunward_fields: {
+      placeId: "biome.sunward_fields", bounds: { x: 300, y: 600, width: 300, height: 300 },
+      description: "Sunny grasslands.", image: { width: 512, height: 512 },
+      tiles: [{ src: "/assets/test-tile.webp", x: 0, y: 0, width: 512, height: 512 }],
+    } } };
+    const { container } = mount({ world: regional });
+    act(() => screen.getByRole("button", { name: "The Sunward Fields" }).click());
+    expect(container.querySelector(".atlas__tile")?.getAttribute("src")).toBe("/assets/test-tile.webp");
+    expect(container.querySelector(".atlas__painting")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Read about The Exchange" })).toBeNull();
+    act(() => setFieldGuideDiscoveries({ "location.exchange": { firstFoundBy: "p_1", foundAt: "2026-10-15T12:00:00Z" } }));
+    expect(screen.getByRole("button", { name: "Read about The Exchange" })).toBeTruthy();
+    const pin = container.querySelector('[aria-current="location"]') as HTMLElement;
+    expect(parseFloat(pin.style.left)).toBeCloseTo(56.6667, 3);
+    expect(pin.style.top).toBe("30%");
+    act(() => screen.getByRole("button", { name: "Whole realm" }).click());
+    expect(container.querySelector(".atlas__painting")).not.toBeNull();
+    expect(pin.style.left).toBe("47%");
+  });
+
+  it("keeps a party outside the selected region off that sheet", () => {
+    mount({ world: { ...WORLD, regions: { sunward_fields: {
+      placeId: "biome.sunward_fields", bounds: { x: 0, y: 0, width: 100, height: 100 },
+      description: "A distant sheet.", image: { width: 100, height: 100 }, tiles: [],
+    } } } });
+    act(() => screen.getByRole("button", { name: "The Sunward Fields" }).click());
+    expect(screen.queryByText("You are here")).toBeNull();
+    expect(screen.getByRole("status").textContent).toContain("The party is in The Sunward Fields");
+  });
+
   it("stands the party on the chapter's place, at its anchor", () => {
     const { container } = mount({});
     const pin = container.querySelector('[aria-current="location"]') as HTMLElement | null;

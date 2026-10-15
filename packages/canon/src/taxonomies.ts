@@ -422,6 +422,11 @@ export const Feature = Mapped.extend({
 });
 
 export const Route = Mapped.extend({
+  /** Cartographic course, separate from label anchors and travel topology. */
+  map_path: z.strictObject({
+    accuracy: z.enum(["mapped", "approximate"]),
+    points: z.array(MapAnchor.extend({ x: z.number().min(0).max(1000), y: z.number().min(0).max(1000) })).min(2).max(256),
+  }).optional(),
   connects: edge("biome", "location"),
   crosses: canonRef("feature").optional(),
   via: canonRef("location").optional(),

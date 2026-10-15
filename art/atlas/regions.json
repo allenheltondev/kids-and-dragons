@@ -1,0 +1,17 @@
+{
+  "eastern_plains": { "placeId": "biome.eastern_plains", "bounds": { "x": 620, "y": 320, "width": 320, "height": 340 } },
+  "enchanted_woods": {
+    "placeId": "biome.enchanted_woods",
+    "bounds": { "x": 40, "y": 265, "width": 340, "height": 310 }
+  },
+  "expanse": { "placeId": "biome.expanse", "bounds": { "x": 260, "y": 0, "width": 450, "height": 270 } },
+  "frostfang_peaks": { "placeId": "biome.frostfang_peaks", "bounds": { "x": 650, "y": 120, "width": 330, "height": 290 } },
+  "glacier_of_origins": { "placeId": "biome.glacier_of_origins", "bounds": { "x": 650, "y": 0, "width": 300, "height": 210 } },
+  "mermaid_cove": { "placeId": "biome.mermaid_cove", "bounds": { "x": 550, "y": 790, "width": 290, "height": 210 } },
+  "plains": { "placeId": "biome.plains", "bounds": { "x": 320, "y": 400, "width": 330, "height": 260 } },
+  "red_sky_foothills": { "placeId": "biome.red_sky_foothills", "bounds": { "x": 280, "y": 240, "width": 380, "height": 290 } },
+  "sallow_wastelands": { "placeId": "biome.sallow_wastelands", "bounds": { "x": 650, "y": 670, "width": 350, "height": 330 } },
+  "sky_islands": { "placeId": "biome.sky_islands", "bounds": { "x": 0, "y": 100, "width": 310, "height": 270 } },
+  "sunward_fields": { "placeId": "biome.sunward_fields", "bounds": { "x": 300, "y": 580, "width": 350, "height": 310 } },
+  "whispering_marsh": { "placeId": "biome.whispering_marsh", "bounds": { "x": 0, "y": 510, "width": 400, "height": 290 } }
+}

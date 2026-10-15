@@ -3,6 +3,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 const repoRoot = fileURLToPath(new URL("../..", import.meta.url));
+const apiTarget = process.env.KAD_DEV_API_TARGET ?? "http://localhost:8787";
 
 /**
  * `/assets` and `/content` are proxied to the dev server in development and
@@ -13,12 +14,12 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: "0.0.0.0",
-    port: 5173,
+    port: Number(process.env.KAD_CLIENT_PORT ?? 5173),
     proxy: {
-      "/api": { target: "http://localhost:8787", changeOrigin: true },
-      "/events": { target: "http://localhost:8787", changeOrigin: true },
-      "/assets": { target: "http://localhost:8787", changeOrigin: true },
-      "/content": { target: "http://localhost:8787", changeOrigin: true },
+      "/api": { target: apiTarget, changeOrigin: true },
+      "/events": { target: apiTarget, changeOrigin: true },
+      "/assets": { target: apiTarget, changeOrigin: true },
+      "/content": { target: apiTarget, changeOrigin: true },
     },
     fs: { allow: [repoRoot] },
   },
