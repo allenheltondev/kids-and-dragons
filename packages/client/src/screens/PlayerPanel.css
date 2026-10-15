@@ -312,15 +312,9 @@
   color: var(--color-primary, #7c5cff);
 }
 
-.choice__votes {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1, 0.25em);
-  padding: var(--space-1, 0.25em) var(--space-2, 0.5em);
-  border-radius: var(--radius-pill, 999em);
-  background: var(--color-surface-sunken, #120f26);
+/* Vote ticks (VoteTicks.tsx) sit in the trail at a fixed width. */
+.choice__trail .kad-vote-ticks {
   color: var(--color-text-muted, #b7b0d8);
-  font-size: var(--font-size-sm, 0.875em);
 }
 
 /*

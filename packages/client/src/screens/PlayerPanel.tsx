@@ -57,6 +57,7 @@ import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { CharacterSheet } from "./CharacterSheet";
 import { Icon } from "./icons";
+import { VoteTicks } from "./VoteTicks";
 import {
   beginLabel,
   campaignEndHeading,
@@ -982,12 +983,12 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
 
             <ul className="prompt__options">
               {myPrompt.options.map((option) => {
-                const voters =
-                  myPrompt.votes === undefined
-                    ? []
-                    : Object.entries(myPrompt.votes)
-                        .filter(([, choiceId]) => choiceId === option.id)
-                        .map(([playerId]) => nameOfPlayer(party, playerId));
+                // Everyone with a say, so every option draws the same seats.
+                const voterIds =
+                  myPrompt.forPlayerIds.length > 0 ? myPrompt.forPlayerIds : party.map((m) => m.playerId);
+                const votedIds = Object.entries(myPrompt.votes ?? {})
+                  .filter(([, choiceId]) => choiceId === option.id)
+                  .map(([playerId]) => playerId);
                 const selected = pendingChoice === option.id || myVote === option.id;
                 return (
                   <li key={option.id}>
@@ -1002,18 +1003,15 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                       </span>
                       <span className="choice__label">{option.label}</span>
                       <span className="choice__trail">
-                        {/* The seat is always here; only the check comes and
-                            goes, so somebody else voting cannot rewrap the
-                            label you are reading. */}
+                        {/* The seats are always here; only the check and the
+                            ticks come and go, so somebody else voting cannot
+                            rewrap the label you are reading. */}
                         <span className="choice__mark">
                           {myVote === option.id ? <Icon name="check" label="Your vote" /> : null}
                         </span>
-                        {voters.length === 0 ? null : (
-                          <span className="choice__votes">
-                            <Icon name="vote" />
-                            <span>{voters.join(", ")}</span>
-                          </span>
-                        )}
+                        {myPrompt.vote ? (
+                          <VoteTicks voterIds={voterIds} votedIds={votedIds} party={party} />
+                        ) : null}
                       </span>
                     </button>
                   </li>
@@ -1246,9 +1244,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 <ul className="prompt__options">
                   {(state.campaignOptions ?? []).map((option) => {
                     const myCampaignVote = state.campaignVotes?.[me.playerId];
-                    const voters = party
+                    const votedIds = party
                       .filter((member) => state.campaignVotes?.[member.playerId] === option.id)
-                      .map((member) => member.character.name);
+                      .map((member) => member.playerId);
                     const selected = myCampaignVote === option.id;
                     return (
                       <li key={option.id}>
@@ -1271,12 +1269,11 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                             <span className="choice__mark">
                               {selected ? <Icon name="check" label="Your vote" /> : null}
                             </span>
-                            {voters.length === 0 ? null : (
-                              <span className="choice__votes">
-                                <Icon name="vote" />
-                                <span>{voters.join(", ")}</span>
-                              </span>
-                            )}
+                            <VoteTicks
+                              voterIds={party.map((member) => member.playerId)}
+                              votedIds={votedIds}
+                              party={party}
+                            />
                           </span>
                         </button>
                       </li>

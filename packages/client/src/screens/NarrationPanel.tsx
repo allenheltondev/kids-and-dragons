@@ -17,6 +17,7 @@ import { useAbilities, useItems, useParty, usePreviews, useRunState } from "../s
 import { describeCombatPreview, tablePreviews } from "../world/previews";
 import { setStageInsetBottom } from "../world/stage-inset";
 import { Icon } from "./icons";
+import { VoteTicks } from "./VoteTicks";
 import { chapterHeading } from "./campaign-copy";
 import "./shared.css";
 import "./NarrationPanel.css";
@@ -228,12 +229,14 @@ export function NarrationPanel(): ReactElement | null {
               // A hover is a light, not a name: it only lights the option, so a
               // name appearing and disappearing cannot rewrap the label.
               const leaningNow = (leaning.choices[choice.id] ?? []).length > 0;
-              // A locked vote is named, the same as on the phones (PlayerPanel).
-              const voters =
-                prompt?.kind === "choice" && prompt.votes !== undefined
-                  ? Object.entries(prompt.votes)
+              // A locked vote is a tick in the voter's color, the same as on
+              // the phones (PlayerPanel): a seat per voter, drawn from the
+              // start, so a vote landing cannot grow the pill and rewrap the row.
+              const votedIds =
+                prompt?.kind === "choice"
+                  ? Object.entries(prompt.votes ?? {})
                       .filter(([, choiceId]) => choiceId === choice.id)
-                      .map(([playerId]) => nameOfPlayer(playerId))
+                      .map(([playerId]) => playerId)
                   : [];
               return (
                 <li
@@ -242,11 +245,15 @@ export function NarrationPanel(): ReactElement | null {
                 >
                   <Icon name={choice.icon} />
                   <span>{choice.label}</span>
-                  {voters.length > 0 ? (
-                    <span className="narration__voters">
-                      <Icon name="vote" />
-                      <span>{voters.join(", ")}</span>
-                    </span>
+                  {prompt?.kind === "choice" && prompt.vote ? (
+                    <VoteTicks
+                      className="narration__voters"
+                      voterIds={
+                        prompt.forPlayerIds.length > 0 ? prompt.forPlayerIds : party.map((m) => m.playerId)
+                      }
+                      votedIds={votedIds}
+                      party={party}
+                    />
                   ) : null}
                 </li>
               );

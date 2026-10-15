@@ -295,17 +295,31 @@ describe("what somebody has picked but not confirmed", () => {
     expect(picked).toHaveLength(1);
     expect(picked[0]?.textContent).toContain("Go west");
     expect(picked[0]?.textContent).not.toContain("Thistle");
-    expect(container.querySelector(".narration__voters")).toBeNull();
+    expect(container.querySelector(".kad-vote-tick--on")).toBeNull();
   });
 
-  it("names who has locked in a vote, on the option they chose, as the phones do", () => {
+  it("ticks who has locked in a vote, on the option they chose, as the phones do", () => {
     const { container } = mount({ prompt: { ...vote.prompt, votes: { p_2: "west" } } });
-    const voters = container.querySelectorAll(".narration__voters");
-    expect(voters).toHaveLength(1);
-    expect(voters[0]?.closest(".narration__choice")?.textContent).toContain("Go west");
-    expect(voters[0]?.textContent).toContain("Thistle");
+    const on = container.querySelectorAll(".kad-vote-tick--on");
+    expect(on).toHaveLength(1);
+    expect(on[0]?.closest(".narration__choice")?.textContent).toContain("Go west");
+    // A tick, not a name — but the name is still there for screen readers.
+    expect(on[0]?.closest(".narration__choice")?.querySelector(".kad-sr-only")?.textContent).toContain(
+      "Thistle",
+    );
     // Locked in is not a pick still being made: no cyan highlight for it.
     expect(container.querySelector(".narration__choice--picked")).toBeNull();
+  });
+
+  it("draws every voter's seat on every option, so a vote cannot grow a pill", () => {
+    const before = mount(vote).container;
+    const seats = (root: HTMLElement) =>
+      [...root.querySelectorAll(".narration__choice")].map((c) => c.querySelectorAll(".kad-vote-tick").length);
+    const empty = seats(before);
+    expect(empty).toEqual([PARTY.length, PARTY.length]);
+    cleanup();
+    const after = mount({ prompt: { ...vote.prompt, votes: { p_2: "west" } } }).container;
+    expect(seats(after)).toEqual(empty);
   });
 
   it("stays dark for a pick made for an earlier question", () => {

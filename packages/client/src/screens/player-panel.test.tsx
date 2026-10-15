@@ -293,7 +293,7 @@ describe("a choice", () => {
     expect(gap.getAttribute("aria-pressed")).toBe("false");
   });
 
-  it("shows who voted for what, by character name", () => {
+  it("shows who voted for what, as a tick in their seat", () => {
     mount({
       party: [
         member(),
@@ -304,7 +304,13 @@ describe("a choice", () => {
 
     expect(screen.getByText("Everyone votes")).toBeTruthy();
     const west = screen.getByRole("button", { name: /Take the west path/ });
-    expect(west.textContent).toContain("Thistle");
+    // A tick in Thistle's seat; the name is for screen readers, not the row.
+    expect(west.querySelectorAll(".kad-vote-tick--on")).toHaveLength(1);
+    expect(west.querySelector(".kad-sr-only")?.textContent).toContain("Thistle");
+    // Every option draws both seats, voted or not, so a vote changes no width.
+    const east = screen.getByRole("button", { name: /Take the east path/ });
+    expect(east.querySelectorAll(".kad-vote-tick")).toHaveLength(2);
+    expect(east.querySelectorAll(".kad-vote-tick--on")).toHaveLength(0);
   });
 
   it("marks my own vote as already cast", () => {
