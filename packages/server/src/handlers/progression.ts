@@ -406,7 +406,7 @@ function graphCampaignView(
   return {
     ...base,
     next: chapter ? { index: chapter.index, title: chapter.title } : null,
-    journey: journeyView(graph, shown, (id) => deps.content.chapter(id)?.title),
+    journey: journeyView(graph, shown, (id) => deps.content.chapter(id)?.title, campaign),
   };
 }
 

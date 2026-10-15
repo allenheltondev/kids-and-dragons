@@ -50,6 +50,7 @@ import type {
   EdgeId,
   GraphEffect,
   JourneyExitView,
+  JourneyPlaceView,
   JourneyState,
   JourneyView,
   NodeId,
@@ -571,11 +572,27 @@ export function currentPlayable(graph: ParsedCampaignGraph, journey: JourneyStat
  * The journey as the screens draw it (`CampaignView.journey`). `titleOf`
  * turns a chapter id into its title, for nodes and exits without their own;
  * without it (or for a chapter it does not know) the node id stands in.
+ * `campaign` is `takeExit`'s: the route sets that make a `setFlag` effect a
+ * fork, needed here only to ask what a crossing *would* find on arrival.
+ *
+ * What it must not do is spoil (#195). Three rules, each the answer to "what
+ * does a kid who has not been there learn from this?":
+ *
+ * - **An unexplored exit's label is the author's.** The edge's `label`, else
+ *   the destination's own map `title`, else a neutral "Somewhere new" - never
+ *   the destination's *chapter* title, which names the story beat ("The
+ *   Dragon's Secret") the way a map label does not. A place the party has
+ *   finished is theirs to name, so there the chapter title is fine.
+ * - **`changed` is a flag, not a variant.** It says the place would be found
+ *   different, not how, and only for a place already finished.
+ * - **Hidden blocked exits are absent** (`exitsFrom`'s `visible`), as they
+ *   were; `places` lists only nodes the party has entered.
  */
 export function journeyView(
   graph: ParsedCampaignGraph,
   journey: JourneyState,
   titleOf: (chapterId: string) => string | undefined = () => undefined,
+  campaign?: JourneyCampaign,
 ): JourneyView {
   const placeTitle = (node: NodeId): string =>
     graph.nodes[node]?.title ?? titleOf(graph.nodes[node]?.chapter ?? "") ?? node;
@@ -586,18 +603,35 @@ export function journeyView(
           .filter((exit) => exit.visible)
           .map((exit) => {
             const edge = graph.edges[exit.edge]!;
+            const arrival = arrivalAt(graph, exit.to, journey);
+            const label =
+              edge.label ??
+              (arrival === "new" ? (graph.nodes[exit.to]?.title ?? "Somewhere new") : placeTitle(exit.to));
+            const changed =
+              exit.availability.available && arrival === "replay" && foundChanged(graph, journey, exit.edge, campaign);
             return {
               edge: exit.edge,
               to: exit.to,
               kind: exit.kind,
-              label: edge.label ?? placeTitle(exit.to),
+              label,
               available: exit.availability.available,
               ...(exit.availability.available ? {} : { reason: exit.availability.reason }),
-              arrival: arrivalAt(graph, exit.to, journey),
+              arrival,
               ...(edge.irreversible === true ? { irreversible: true as const } : {}),
+              ...(edge.once === true ? { once: true as const } : {}),
+              ...(changed ? { changed: true as const } : {}),
             };
           });
   const ending = journey.status === "ended" ? (journey.ending ?? journey.node) : undefined;
+  const places: JourneyPlaceView[] = graph.nodeOrder
+    .filter((node) => count(journey.visits, node) > 0)
+    .map((node) => ({
+      node,
+      title: placeTitle(node),
+      visits: count(journey.visits, node),
+      completed: count(journey.completions, node) > 0,
+      ...(node === journey.node ? { here: true as const } : {}),
+    }));
   return {
     node: journey.node,
     title: placeTitle(journey.node),
@@ -608,5 +642,28 @@ export function journeyView(
     ...(ending !== undefined
       ? { reachedEnding: { node: ending, title: graph.nodes[ending]?.ending?.title ?? placeTitle(ending) } }
       : {}),
+    places,
   };
+}
+
+/**
+ * Would taking `edge` find its (already finished) destination different?
+ *
+ * Asked of `takeExit` itself rather than re-derived, so edge effects - the
+ * mill wheel the crossing starts - count exactly as they will on the real
+ * crossing: the chapter the destination would resolve to, against the
+ * chapters this attempt has completed. "Different" is "a chapter the party has
+ * never played" (`chaptersCompleted`): the journey keeps no per-place
+ * "last played", and a place that flips back to a version they already played
+ * is not news. A refusal (cannot happen for an available exit) is "no".
+ */
+function foundChanged(
+  graph: ParsedCampaignGraph,
+  journey: JourneyState,
+  edge: EdgeId,
+  campaign?: JourneyCampaign,
+): boolean {
+  const crossed = takeExit(graph, journey, { edge, visit: journey.visit }, campaign);
+  if (!crossed.ok || crossed.duplicate) return false;
+  return !(journey.chaptersCompleted ?? []).includes(crossed.journey.chapter);
 }

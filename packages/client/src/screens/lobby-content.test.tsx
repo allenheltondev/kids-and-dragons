@@ -65,3 +65,29 @@ describe("the lobby's campaign premise", () => {
     expect(screen.queryByText(PREMISE)).toBeNull();
   });
 });
+
+describe("the shared screen's line about where a graph campaign stands (#195)", () => {
+  const journey = {
+    node: "orchard",
+    title: "The Orchard",
+    visit: 1,
+    status: "choosing" as const,
+    chapter: "sampler-orchard",
+    exits: [],
+  };
+
+  it("says where the party is deciding from, instead of a chapter number", () => {
+    mount({
+      campaign: { ...FIRST, id: "rift-sampler", title: "The Rift Sampler", next: null, journey },
+      party: [makeMember()],
+    });
+    expect(screen.getByText("Deciding where to go from The Orchard")).toBeTruthy();
+    expect(screen.queryByText(/Chapter \d/)).toBeNull();
+  });
+
+  it("an ordered campaign still gets its chapter line", () => {
+    mount({ campaign: FIRST, party: [makeMember()] });
+    expect(screen.getByText("Chapter 1: The City That Smelled Opportunity")).toBeTruthy();
+    expect(screen.queryByText(/Deciding where to go/)).toBeNull();
+  });
+});

@@ -10,7 +10,7 @@
  * a souvenir, never a loss screen.
  */
 
-import type { CampaignView, RunState } from "@kad/shared";
+import type { CampaignView, JourneyExitView, JourneyView, RunState } from "@kad/shared";
 
 /** "Chapter 4: The Pride Roads", or null when there is nothing to name. */
 export function nextChapterLine(view: CampaignView | null | undefined): string | null {
@@ -86,4 +86,89 @@ export function campaignEndLine(view: CampaignView | null | undefined): string |
     return "This time the road ran out. Everyone goes back to how they began, and keeps a souvenir to remember it by.";
   }
   return null;
+}
+
+// ---------------------------------------------------------------------------
+// Graph campaigns (#195) - the journey's words
+//
+// Everything below reads `CampaignView.journey`, which exists only for a graph
+// campaign. Ordered campaigns never reach it (the callers test `journey`
+// first), so none of this can change what Gemfall says.
+// ---------------------------------------------------------------------------
+
+/** How a way is introduced: the author's `kind`, in a child's words. */
+export function exitKindLabel(kind: JourneyExitView["kind"]): string {
+  switch (kind) {
+    case "forward":
+      return "Onward";
+    case "sideways":
+      return "Side trip";
+    case "return":
+      return "Head back";
+  }
+}
+
+/**
+ * Why a shown-but-blocked way cannot be taken, without saying what would open
+ * it - "something has to happen first" is a nudge, not a spoiler. Unknown
+ * reasons (a later build may add some, as rifts will) get the plainest
+ * sentence, so an old client never shows a raw code.
+ */
+export function exitBlockedLine(reason: JourneyExitView["reason"] | undefined): string {
+  switch (reason) {
+    case "locked":
+      return "It's shut tight for now.";
+    case "spent":
+      return "You've already used this way.";
+    case "closed":
+      return "That place is finished, so there's no going back in.";
+    case "guard":
+      return "Not yet. Something has to happen first.";
+    default:
+      return "You can't go this way right now.";
+  }
+}
+
+/** True when the way asks "are you sure?" before the party crosses it. */
+export function exitNeedsConfirm(exit: Pick<JourneyExitView, "irreversible" | "once">): boolean {
+  return exit.irreversible === true || exit.once === true;
+}
+
+/** The warning before a crossing that cannot be undone, or can only be done once. */
+export function exitWarning(exit: Pick<JourneyExitView, "irreversible" | "once">): string {
+  if (exit.irreversible) return "You won't be able to come back this way.";
+  return "You can only go this way one time.";
+}
+
+/**
+ * What a way leads to, as a chip (icon + words, never colour alone): a place
+ * never seen ("Unexplored"), one the party knows ("Been here"; "It has
+ * changed" when the place will not be as they left it), or - for a blocked
+ * way, where there is nothing to promise - nothing.
+ */
+export function exitArrivalChip(exit: JourneyExitView): { icon: string; text: string } | null {
+  if (!exit.available) return null;
+  if (exit.arrival === "new") return { icon: "star", text: "Unexplored" };
+  if (exit.changed) return { icon: "shuffle", text: "It has changed" };
+  return { icon: "check", text: "Been here" };
+}
+
+/** The lobby button for a journey that has a place to play next. */
+export function journeyBeginLabel(journey: JourneyView, ended?: CampaignView["ended"]): string {
+  if (journey.status === "ended" || ended) return "Start again";
+  const played = (journey.places ?? []).some((place) => place.completed);
+  if (!played) return "Begin the adventure";
+  return journey.visit > 1 ? `Go back to ${journey.title}` : `Go to ${journey.title}`;
+}
+
+/** The one line the shared screen says about where the journey stands. Null for an ordered campaign. */
+export function journeyLine(view: CampaignView | null | undefined): string | null {
+  const journey = view?.journey;
+  if (!journey) return null;
+  if (journey.status === "ended") {
+    return journey.reachedEnding ? `Ending found: ${journey.reachedEnding.title}` : "The adventure is over";
+  }
+  if (journey.status === "choosing") return `Deciding where to go from ${journey.title}`;
+  const played = (journey.places ?? []).some((place) => place.completed);
+  return played ? `Next stop: ${journey.title}` : `The adventure starts at ${journey.title}`;
 }
