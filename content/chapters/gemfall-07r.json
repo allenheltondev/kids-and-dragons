@@ -840,13 +840,9 @@
       ],
       "cast": [
         {
-          "figure": "cast/corbin",
-          "name": "Corbin"
-        },
-        {
-          "figure": "cast/posy",
-          "name": "Posy",
-          "size": "small"
+          "figure": "cast/corbin_carrying_posy",
+          "name": "Corbin and Posy",
+          "size": "very_large"
         }
       ]
     },
@@ -873,13 +869,9 @@
       },
       "cast": [
         {
-          "figure": "cast/corbin",
-          "name": "Corbin"
-        },
-        {
-          "figure": "cast/posy",
-          "name": "Posy",
-          "size": "small"
+          "figure": "cast/corbin_carrying_posy",
+          "name": "Corbin and Posy",
+          "size": "very_large"
         }
       ]
     },
@@ -896,13 +888,9 @@
       ],
       "cast": [
         {
-          "figure": "cast/corbin",
-          "name": "Corbin"
-        },
-        {
-          "figure": "cast/posy",
-          "name": "Posy",
-          "size": "small"
+          "figure": "cast/corbin_carrying_posy",
+          "name": "Corbin and Posy",
+          "size": "very_large"
         }
       ]
     },
@@ -919,13 +907,9 @@
       ],
       "cast": [
         {
-          "figure": "cast/corbin",
-          "name": "Corbin"
-        },
-        {
-          "figure": "cast/posy",
-          "name": "Posy",
-          "size": "small"
+          "figure": "cast/corbin_carrying_posy",
+          "name": "Corbin and Posy",
+          "size": "very_large"
         }
       ]
     },

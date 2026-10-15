@@ -384,7 +384,7 @@ Audited all `cast` entries in `content/chapters/gemfall-*.json` against main on 
 | Rook | burrowfolk | Young badger choir scout in plum cloak, bark mask pushed up and rose crystal at the neck. |
 | Boulder claimants | burrowfolk + faun | Two contrasting travelers, badger prospector and russet faun, each insisting on a claim; use existing individual species figures. |
 
-Odo, Corbin, Posy and Rook are assigned Burrowfolk: the established badger-like traveling people fit the gold-rush families and provide a second people within the Deep Hollow faction. Rook’s allegiance is shown by clothing, mask and crystal, not a new species. Posy and Corbin are separate figures so their return on foot still works. No narration, mechanics or canon lore changes.
+Odo, Corbin, Posy and Rook are assigned Burrowfolk: the established badger-like traveling people fit the gold-rush families and provide a second people within the Deep Hollow faction. Rook’s allegiance is shown by clothing, mask and crystal, not a new species. Posy rides on Corbin’s shoulders in a combined pose variant during the introduction; their separate figures are used for the later return on foot. No narration, mechanics or canon lore changes.
 
 ### Expansion figures already delivered before this issue
 
@@ -412,8 +412,10 @@ Odo, Corbin, Posy and Rook are assigned Burrowfolk: the established badger-like 
 
 ### Issue 170 delivery
 
-Eight new figures replace the expansion’s remaining individually named recurring speakers: `odo`, `corbin`, `posy`, `rook`, `selkie_grandmother`, `path_keeper`, `young_gatherer`, and `courier_griffin`. Together with the figures already delivered above, every proper-named recurring speaker identified in the issue has an individual figure. Role-only stand-ins remain catalogued in the audit table for future commissions; groups and ordinary working animals retain their species figures.
+Eight character designs plus a shoulder-riding pose variant replace the expansion’s remaining individually named recurring speakers: `odo`, `corbin`, `posy`, `rook`, `selkie_grandmother`, `path_keeper`, `young_gatherer`, and `courier_griffin`. Together with the figures already delivered above, every proper-named recurring speaker identified in the issue has an individual figure. Role-only stand-ins remain catalogued in the audit table for future commissions; groups and ordinary working animals retain their species figures.
 
 The unnamed boulder claimants now appear as **Burrowfolk Claimant** and **Faun Claimant** in all five scenes of their dispute, using two different existing species figures. This keeps them distinct without inventing names or new lore. Rook joins Linnet in all five scout scenes, including the check and the later crowd callback; Linnet is also restored to the fib branch. Odo, Corbin and Posy appear in both their introduction episodes and their downhill callbacks.
 
 The manifest records basis and scale; the chapters explicitly set the path-keeper to `large`, and Posy and the young gatherer to `small`, as required by the stage lookup. Chapter edits are limited to cast data. Generation prompts and references are recorded in [the illustration log](../campaigns/gemfall-illustrations.md#issue-170--remaining-expansion-speakers-2026-10-15). Review images and validation results are in [the review record](../reviews/issue-170/README.md).
+
+The `corbin_carrying_posy` variant keeps Posy on Corbin’s shoulders through the four introduction scenes. Its `very_large` stage size describes the combined occupied height; the Burrowfolk remain the same people. The downhill callback retains `cast/corbin` and `cast/posy` separately because Posy runs up the road there.

@@ -1,6 +1,6 @@
 # Issue 170: Gemfall expansion cast review
 
-Eight new left-facing transparent figures, declared in `assets/manifest.json` and wired into five Gemfall chapters. The [brief audit](../../briefs/story-cast-art.md#9-gemfall-expansion-cast-audit--issue-170) lists every named stand-in found, the visual briefs, existing expansion deliveries and the remaining occupational/group figures. [Prompts and references](../../campaigns/gemfall-illustrations.md#issue-170--remaining-expansion-speakers-2026-10-15) record the built-in image-generation calls.
+Nine left-facing transparent figure assets for eight characters, declared in `assets/manifest.json` and wired into five Gemfall chapters. The [brief audit](../../briefs/story-cast-art.md#9-gemfall-expansion-cast-audit--issue-170) lists every named stand-in found, the visual briefs, existing expansion deliveries and the remaining occupational/group figures. [Prompts and references](../../campaigns/gemfall-illustrations.md#issue-170--remaining-expansion-speakers-2026-10-15) record the built-in image-generation calls.
 
 ![Eight new cast figures](contact-sheet.webp)
 
@@ -9,15 +9,16 @@ Eight new left-facing transparent figures, declared in `assets/manifest.json` an
 | Figure | Basis | Scale | Cast entries |
 |---|---|---|---|
 | Odo | burrowfolk | medium | 5 |
-| Corbin | burrowfolk | medium | 5 |
-| Posy | burrowfolk | small | 5 |
+| Corbin (on foot) | burrowfolk | medium | 1 |
+| Posy (on foot) | burrowfolk | small | 1 |
+| Corbin carrying Posy | burrowfolk | very_large (combined height) | 4 |
 | Rook | burrowfolk | medium | 5 |
 | Selkie Grandmother | selkie | medium | 5 |
 | Path-Keeper | bigfoot | large | 3 |
 | Young Gatherer | dragonling | small | 4 |
 | Courier Griffin | griffin | medium | 4 |
 
-The boulder claimants gain ten cast entries across five scenes: a Burrowfolk Claimant and a Faun Claimant using distinct existing species figures. Linnet is restored to the scouts' fib scene. Total: 47 entries added or replaced. Odo's barrow, the path-keeper's book, and the courier's sack belong to their cutouts; no existing species art was replaced. Posy and Corbin have separate figures so they can return on foot.
+The boulder claimants gain ten cast entries across five scenes: a Burrowfolk Claimant and a Faun Claimant using distinct existing species figures. Linnet is restored to the scouts' fib scene. Total: 43 entries added or replaced. Odo's barrow, the path-keeper's book, and the courier's sack belong to their cutouts; no existing species art was replaced. Posy rides on Corbin’s shoulders in all four introduction scenes; their separate figures are used for the later downhill reunion on foot.
 
 ## Before and after
 
@@ -45,4 +46,18 @@ Captured twice with the existing `e2e/cast-shot.spec.ts` against the real dev st
 - Semantic comparison with the original chapter JSON: every scene field except `cast` is identical.
 - `git diff --check`: clean.
 
-Art is ready for Allen's visual acceptance. Remaining generic role figures are explicitly catalogued in the brief; this delivery completes the named recurring expansion speakers requested in #170.
+Allen approved the original character designs; the shoulder-riding variant addresses the subsequent continuity feedback. Remaining generic role figures are explicitly catalogued in the brief; this delivery completes the named recurring expansion speakers requested in #170.
+
+## Continuity follow-up and main update
+
+Merged main at `8c1d771b` without conflicts. The updated PR includes every commit from that main revision. The introduction now uses `cast/corbin_carrying_posy` in all four scenes; the downhill reunion still has separate figures. No narration or mechanics changed.
+
+[Shoulder-pose correction, previous versus corrected TV + phone](posy-shoulders.webp). The introduction comparison above is refreshed with the corrected pose. [The downhill reunion remains on foot](posy-on-foot.webp). These captures use the same review-only chapter-1 fixture described above, with an additional pause for the phone's entrance animation.
+
+Validation after merging main and adding the pose:
+
+- `npm run art:verify -- corbin_carrying_posy`: **728 passed**, including shared effects and gear.
+- `npm run content:validate`: **55 passed**.
+- `npm run typecheck`: passed.
+- Full unit suite: **2665 passed, 1 skipped**, with one existing Windows CRLF-sensitive authoring-guide test failure. Neither that test nor its guide differs from main. Normalizing the guide's local line endings made its six tests pass; the guide normalization is not part of this PR. The targeted rerun of that file plus cast/art-path tests passed **37 tests**.
+- TV and phone review captures passed for both the introduction and the downhill reunion.
