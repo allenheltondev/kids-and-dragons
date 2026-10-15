@@ -8,26 +8,155 @@
  * real family playtest can fit (`tools/content/pacing.ts`).
  *
  * Definitions, all on a path from `entry` to a success ending:
- *  - **Edges** are ungated choices, a check's two branches, and an
+ *  - **Edges** are visible choices, a check's two branches, and an
  *    encounter's *victory* branch. Defeat is a setback route, so it is never
- *    on a success path. Gated choices are skipped: a path that needs a
- *    particular species is not the path every table has.
+ *    on a success path. Choices gated by `requiresSpecies` / `requiresFlag` /
+ *    `requiresItem` are skipped: a path that needs a particular species is not
+ *    the path every table has.
  *  - **Success ending** is a scene with no edges whose `outcome` is not
  *    `"setback"`.
  *  - **Decision** (= vote) is a story/choice_point/rest scene with two or
- *    more ungated choices. A one-button beat is not a decision.
+ *    more visible choices. A one-button beat is not a decision.
  *  - **Check** is a `check` scene; **encounter** an `encounter` scene.
  *  - **Words** are what a grown-up reads aloud: scene narration, a check's
- *    prompt, and the narration of the branch actually taken. Choice labels
- *    are not counted (the vote seconds cover reading the options).
+ *    prompt, and the narration of the branch actually taken, each *as the
+ *    engine composes it* (`composeNarration` + `fillTokens`, so append,
+ *    `at: "start"` and `replace` variants behave exactly as at the table).
+ *    Choice labels are not counted (the vote seconds cover reading the options).
  *  - **Typical path** is the median, per metric, over `walks` seeded random
  *    walks that each pick uniformly among the edges at every scene and reach
  *    a success ending. Walks that hit a setback or wander past `maxSteps`
  *    are discarded.
+ *
+ * **Scenarios.** What is read aloud, and which `when` choices exist, depend on
+ * the party: how many facets it holds and how many players are seated. A
+ * `PacingScenario` fixes both; every metric is computed per scenario and the
+ * report shows the min-max across scenarios. The synthetic party holds
+ * `facets` distinct `facet_*` items and nothing else, and stays fixed along a
+ * path (items granted mid-chapter are not tracked), so a `when` on any other
+ * item is false in every scenario.
+ *
+ * **Flags.** Run flags depend on earlier choices, which a static pass cannot
+ * know. For *words*, the flags named by a scene's variants are enumerated in
+ * every combination and the scene contributes its shortest and longest
+ * composition: `wordsMin` / `words` are sums of those, an outer bound (flag
+ * correlations across scenes are ignored). `words` is the upper bound and is
+ * what the minutes model uses, the conservative side for "will the evening
+ * run long". For *choices*, a `when` that tests a flag is treated like
+ * `requiresFlag`: not part of the path metrics.
  */
 
-import { isGated } from "./chapter-graph.js";
-import type { Branch, Chapter, Scene } from "./types/chapter.js";
+import { evaluateCondition } from "./chapter-graph.js";
+import type { ChoiceParty } from "./chapter-graph.js";
+import { composeNarration, fillTokens } from "./narration.js";
+import type { Branch, Chapter, Choice, Condition, NarrationVariant, Scene } from "./types/chapter.js";
+import type { ResolvedCharacter } from "./types/domain.js";
+
+// ---------------------------------------------------------------------------
+// Scenarios
+// ---------------------------------------------------------------------------
+
+/** A party shape the report is computed for. */
+export interface PacingScenario {
+  id: string;
+  /** Distinct `facet_*` items the party holds between them. */
+  facets: number;
+  /** Seats at the table. */
+  partySize: number;
+}
+
+/** Every scenario: facet buckets (none, a few, a full collection) x (solo, three players). */
+export const PACING_SCENARIOS: readonly PacingScenario[] = [
+  { id: "empty-solo", facets: 0, partySize: 1 },
+  { id: "empty-3p", facets: 0, partySize: 3 },
+  { id: "few-solo", facets: 3, partySize: 1 },
+  { id: "few-3p", facets: 3, partySize: 3 },
+  { id: "collection-solo", facets: 9, partySize: 1 },
+  { id: "collection-3p", facets: 9, partySize: 3 },
+];
+
+/** The small default set: the three facet buckets at a full table, plus a solo player. */
+export const DEFAULT_SCENARIO_IDS: readonly string[] = ["empty-3p", "few-3p", "collection-3p", "few-solo"];
+
+/** The scenario the calibration fitter (and `pathMetrics`' default) uses: a typical family table. */
+export const CALIBRATION_SCENARIO_ID = "few-3p";
+
+export function scenarioById(id: string): PacingScenario | undefined {
+  return PACING_SCENARIOS.find((s) => s.id === id);
+}
+
+export const CALIBRATION_SCENARIO: PacingScenario = scenarioById(CALIBRATION_SCENARIO_ID) as PacingScenario;
+
+/** The synthetic party for a scenario: N seats, the facets in the first seat's pack. */
+export function scenarioParty(scenario: PacingScenario, flags: Record<string, boolean> = {}): ChoiceParty {
+  const members = Array.from({ length: Math.max(1, scenario.partySize) }, (_, i) => ({
+    id: `pacing_${String(i + 1)}`,
+    inventory:
+      i === 0
+        ? Array.from({ length: scenario.facets }, (_unused, f) => ({
+            itemId: `facet_pacing_${String(f + 1)}`,
+            kind: "trinket" as const,
+          }))
+        : [],
+    questItems: [] as string[],
+  })) as unknown as ResolvedCharacter[];
+  return { members, flags };
+}
+
+function conditionFlags(cond: Condition | undefined): string[] {
+  return [cond?.flag, cond?.notFlag].filter((f): f is string => f !== undefined);
+}
+
+/** Cap on enumerated flag combinations per scene (2^8); beyond it only all-off / all-on are tried. */
+const MAX_FLAG_BITS = 8;
+
+/**
+ * Shortest and longest read-aloud length of `base` + `variants` in a scenario,
+ * composed by the engine's own `composeNarration` over every combination of
+ * the flags the variants test.
+ */
+export function composedWordRange(
+  base: string | undefined,
+  variants: readonly NarrationVariant[] | undefined,
+  scenario: PacingScenario,
+): { min: number; max: number } {
+  const flagNames = [...new Set((variants ?? []).flatMap((v) => conditionFlags(v.when)))];
+  const combos: Record<string, boolean>[] = [];
+  if (flagNames.length <= MAX_FLAG_BITS) {
+    for (let mask = 0; mask < 1 << flagNames.length; mask++) {
+      combos.push(Object.fromEntries(flagNames.map((f, i) => [f, (mask & (1 << i)) !== 0])));
+    }
+  } else {
+    combos.push({}, Object.fromEntries(flagNames.map((f) => [f, true])));
+  }
+  let min = Infinity;
+  let max = 0;
+  for (const flags of combos) {
+    const party = scenarioParty(scenario, flags);
+    const n = countWords(fillTokens(composeNarration(base ?? "", variants, party), party));
+    min = Math.min(min, n);
+    max = Math.max(max, n);
+  }
+  return { min: min === Infinity ? 0 : min, max };
+}
+
+/**
+ * Is this choice off the path metrics in this scenario? Species/flag/item
+ * requirements always are (see header). A `when` is checked against the
+ * scenario's party, except one that tests a flag, which is unknowable here.
+ */
+export function isGatedFor(choice: Choice, scenario: PacingScenario): boolean {
+  if (
+    choice.requiresSpecies !== undefined ||
+    choice.requiresFlag !== undefined ||
+    choice.requiresItem !== undefined
+  ) {
+    return true;
+  }
+  if (choice.when === undefined) return false;
+  if (conditionFlags(choice.when).length > 0) return true;
+  return !evaluateCondition(choice.when, scenarioParty(scenario));
+}
 
 export interface PathMetrics {
   /** Scenes visited, entry and ending included. */
@@ -36,16 +165,27 @@ export interface PathMetrics {
   decisions: number;
   checks: number;
   encounters: number;
-  /** Words read aloud: narration, check prompts, taken-branch narration. */
+  /**
+   * Words read aloud: narration, check prompts, taken-branch narration, with
+   * variants composed for the scenario. Upper bound over flag combinations.
+   */
   words: number;
+  /** Lower bound over flag combinations (equal to `words` when no variant tests a flag). */
+  wordsMin: number;
 }
 
-export interface PacingReport {
-  chapterId: string;
+/** Both paths for one scenario. */
+export interface ScenarioPacing {
+  scenario: PacingScenario;
   shortest: PathMetrics | null;
   typical: PathMetrics | null;
   /** Random walks that reached a success ending. */
   walksUsed: number;
+}
+
+export interface PacingReport {
+  chapterId: string;
+  scenarios: ScenarioPacing[];
   estimatedMinutes: number;
 }
 
@@ -53,6 +193,7 @@ interface PacingEdge {
   to: string;
   /** Branch narration read when this edge is taken. */
   narration?: string;
+  variants?: NarrationVariant[];
 }
 
 export function countWords(text: string | undefined): number {
@@ -61,16 +202,16 @@ export function countWords(text: string | undefined): number {
 }
 
 function branchEdge(branch: Branch | undefined): PacingEdge[] {
-  return branch ? [{ to: branch.goto, narration: branch.narration }] : [];
+  return branch ? [{ to: branch.goto, narration: branch.narration, variants: branch.variants }] : [];
 }
 
-/** Success-path edges out of a scene (see module header). */
-export function pacingEdges(scene: Scene): PacingEdge[] {
+/** Success-path edges out of a scene in a scenario (see module header). */
+export function pacingEdges(scene: Scene, scenario: PacingScenario = CALIBRATION_SCENARIO): PacingEdge[] {
   switch (scene.type) {
     case "story":
     case "choice_point":
     case "rest":
-      return scene.choices.filter((c) => !isGated(c)).map((c) => ({ to: c.goto }));
+      return scene.choices.filter((c) => !isGatedFor(c, scenario)).map((c) => ({ to: c.goto }));
     case "check":
       return [...branchEdge(scene.onSuccess), ...branchEdge(scene.onFailure)];
     case "encounter":
@@ -80,56 +221,73 @@ export function pacingEdges(scene: Scene): PacingEdge[] {
   }
 }
 
-function isDecision(scene: Scene): boolean {
+function isDecision(scene: Scene, scenario: PacingScenario): boolean {
   return (
     (scene.type === "story" || scene.type === "choice_point" || scene.type === "rest") &&
-    scene.choices.filter((c) => !isGated(c)).length >= 2
+    scene.choices.filter((c) => !isGatedFor(c, scenario)).length >= 2
   );
 }
 
-function sceneWords(scene: Scene): number {
-  return countWords(scene.type === "check" ? `${scene.narration ?? ""} ${scene.prompt}` : scene.narration);
+function sceneWords(scene: Scene, scenario: PacingScenario): { min: number; max: number } {
+  const own = composedWordRange(scene.narration, "variants" in scene ? scene.variants : undefined, scenario);
+  if (scene.type !== "check") return own;
+  const prompt = countWords(fillTokens(scene.prompt, scenarioParty(scenario)));
+  return { min: own.min + prompt, max: own.max + prompt };
 }
 
 /** True for an ending that counts as a success. */
-function isSuccessEnding(scene: Scene): boolean {
-  if (pacingEdges(scene).length > 0) return false;
+function isSuccessEnding(scene: Scene, scenario: PacingScenario): boolean {
+  if (pacingEdges(scene, scenario).length > 0) return false;
   return !("outcome" in scene && scene.outcome === "setback");
 }
 
 /** Metrics for an explicit path: scene ids in order, so edge i leads to path[i+1]. */
-export function pathMetrics(chapter: Chapter, path: readonly string[]): PathMetrics {
-  const m: PathMetrics = { scenes: 0, decisions: 0, checks: 0, encounters: 0, words: 0 };
+export function pathMetrics(
+  chapter: Chapter,
+  path: readonly string[],
+  scenario: PacingScenario = CALIBRATION_SCENARIO,
+): PathMetrics {
+  const m: PathMetrics = { scenes: 0, decisions: 0, checks: 0, encounters: 0, words: 0, wordsMin: 0 };
   path.forEach((id, i) => {
     const scene = chapter.scenes[id];
     if (!scene) return;
     m.scenes += 1;
-    if (isDecision(scene)) m.decisions += 1;
+    if (isDecision(scene, scenario)) m.decisions += 1;
     if (scene.type === "check") m.checks += 1;
     if (scene.type === "encounter") m.encounters += 1;
-    m.words += sceneWords(scene);
+    const w = sceneWords(scene, scenario);
+    m.words += w.max;
+    m.wordsMin += w.min;
     const next = path[i + 1];
     if (next !== undefined) {
-      m.words += countWords(pacingEdges(scene).find((e) => e.to === next)?.narration);
+      const edge = pacingEdges(scene, scenario).find((e) => e.to === next);
+      if (edge) {
+        const b = composedWordRange(edge.narration, edge.variants, scenario);
+        m.words += b.max;
+        m.wordsMin += b.min;
+      }
     }
   });
   return m;
 }
 
 /** Fewest-scenes path to a success ending (breadth-first, so ties go to authored order). */
-export function shortestSuccessPath(chapter: Chapter): string[] | null {
+export function shortestSuccessPath(
+  chapter: Chapter,
+  scenario: PacingScenario = CALIBRATION_SCENARIO,
+): string[] | null {
   const prev = new Map<string, string | null>([[chapter.entry, null]]);
   const queue = [chapter.entry];
   for (let head = 0; head < queue.length; head++) {
     const id = queue[head] as string;
     const scene = chapter.scenes[id];
     if (!scene) continue;
-    if (isSuccessEnding(scene)) {
+    if (isSuccessEnding(scene, scenario)) {
       const path: string[] = [];
       for (let at: string | null | undefined = id; at != null; at = prev.get(at)) path.push(at);
       return path.reverse();
     }
-    for (const e of pacingEdges(scene)) {
+    for (const e of pacingEdges(scene, scenario)) {
       if (!prev.has(e.to) && chapter.scenes[e.to]) {
         prev.set(e.to, id);
         queue.push(e.to);
@@ -166,6 +324,7 @@ export function typicalMetrics(
   walks = DEFAULT_WALKS,
   seed = DEFAULT_SEED,
   maxSteps = 400,
+  scenario: PacingScenario = CALIBRATION_SCENARIO,
 ): { metrics: PathMetrics | null; used: number } {
   const rand = seededRandom(seed);
   const samples: PathMetrics[] = [];
@@ -175,9 +334,9 @@ export function typicalMetrics(
     for (let step = 0; step < maxSteps; step++) {
       const scene = chapter.scenes[id];
       if (!scene) break;
-      const edges = pacingEdges(scene).filter((e) => chapter.scenes[e.to]);
+      const edges = pacingEdges(scene, scenario).filter((e) => chapter.scenes[e.to]);
       if (edges.length === 0) {
-        if (isSuccessEnding(scene)) samples.push(pathMetrics(chapter, path));
+        if (isSuccessEnding(scene, scenario)) samples.push(pathMetrics(chapter, path, scenario));
         break;
       }
       id = (edges[Math.floor(rand() * edges.length)] as PacingEdge).to;
@@ -193,21 +352,48 @@ export function typicalMetrics(
       checks: pick("checks"),
       encounters: pick("encounters"),
       words: pick("words"),
+      wordsMin: pick("wordsMin"),
     },
     used: samples.length,
   };
 }
 
-export function pacingReport(chapter: Chapter, walks = DEFAULT_WALKS, seed = DEFAULT_SEED): PacingReport {
-  const shortestPath = shortestSuccessPath(chapter);
-  const typical = typicalMetrics(chapter, walks, seed);
+export function pacingReport(
+  chapter: Chapter,
+  scenarios: readonly PacingScenario[] = PACING_SCENARIOS,
+  walks = DEFAULT_WALKS,
+  seed = DEFAULT_SEED,
+): PacingReport {
   return {
     chapterId: chapter.id,
-    shortest: shortestPath ? pathMetrics(chapter, shortestPath) : null,
-    typical: typical.metrics,
-    walksUsed: typical.used,
     estimatedMinutes: chapter.estimatedMinutes,
+    scenarios: scenarios.map((scenario) => {
+      const shortestPath = shortestSuccessPath(chapter, scenario);
+      const typical = typicalMetrics(chapter, walks, seed, 400, scenario);
+      return {
+        scenario,
+        shortest: shortestPath ? pathMetrics(chapter, shortestPath, scenario) : null,
+        typical: typical.metrics,
+        walksUsed: typical.used,
+      };
+    }),
   };
+}
+
+/** Min-max of each metric across the scenarios that have the path (null if none do). */
+export function metricRange(
+  report: PacingReport,
+  which: "shortest" | "typical",
+): Record<keyof PathMetrics, { min: number; max: number }> | null {
+  const all = report.scenarios.flatMap((s) => {
+    const m = s[which];
+    return m ? [m] : [];
+  });
+  if (all.length === 0) return null;
+  const keys = ["scenes", "decisions", "checks", "encounters", "words", "wordsMin"] as const;
+  return Object.fromEntries(
+    keys.map((k) => [k, { min: Math.min(...all.map((m) => m[k])), max: Math.max(...all.map((m) => m[k])) }]),
+  ) as Record<keyof PathMetrics, { min: number; max: number }>;
 }
 
 // ---------------------------------------------------------------------------
