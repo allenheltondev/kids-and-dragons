@@ -26,9 +26,12 @@ import type {
   ActionResponse,
   Campaign,
   Chapter,
+  ClientIntent,
+  JourneyState,
+  NodeId,
   RunState,
 } from "@kad/shared";
-import { lobbyCampaign } from "@kad/shared";
+import { currentPlayable, lobbyCampaign, resumeJourney, takeExit } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { ApplyIntentResult } from "../engine/port.ts";
 import type { CampaignProgressRecord, EventRecord, RunRecord } from "../store/repository.ts";
@@ -39,6 +42,8 @@ import { keepGuestHousehold } from "./account.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 import { prepareStepFinds, recordStepFinds } from "./field-guide.ts";
 import {
+  attemptJourney,
+  campaignView,
   expectedIndex,
   joinOrStartAttempt,
   purseFor,
@@ -149,6 +154,9 @@ export async function applyAction(
   let campaignCoins: number | undefined;
   let campaignAttemptId: string | null = null;
   let startedAttempt: StartedAttempt | null = null;
+  // The journey visit a graph campaign's chapter plays (#194), stamped on the
+  // run below so its completion settles against exactly that visit.
+  let journeyVisit: { node: NodeId; visit: number } | null = null;
   if (input.intent.type === "START_CHAPTER" && chapter) {
     const road = await roadTo(chapter, auth.run.householdId, deps);
     if ("refusal" in road) {
@@ -165,17 +173,33 @@ export async function applyAction(
         chapter.campaignId,
         input.runId,
         iso(deps.now()),
+        // A graph campaign's fresh attempt is created holding its journey.
+        road.journey,
       );
       campaignAttemptId = joined.attemptId;
       startedAttempt = joined.startedAttempt;
+      journeyVisit = road.visit ?? null;
     }
   }
 
   const nowMs = deps.now();
   const nextSeq = state.seq + 1;
   let spentCharacter: Character | null = null;
+  let exitTaken: ExitWrite | null = null;
   let result: ApplyIntentResult;
-  if (input.intent.type === "SPEND_STAT_POINT") {
+  if (input.intent.type === "CHOOSE_EXIT") {
+    // A journey transition, not a run one: the engine never sees it, exactly
+    // like SPEND_STAT_POINT below (shared journey.ts decides).
+    const exit = await chooseExit(state, input.intent, auth.run.householdId, deps);
+    if ("refusal" in exit) {
+      return { ok: false, seq: state.seq, error: { code: exit.code, message: exit.refusal } };
+    }
+    // The same crossing reported again — a double tap, a retry after a lost
+    // response. It already happened; nothing is written and no seq is burned.
+    if (exit.duplicate) return { ok: true, seq: state.seq };
+    exitTaken = exit.write;
+    result = { state: exit.state };
+  } else if (input.intent.type === "SPEND_STAT_POINT") {
     if (auth.run.status !== "active") {
       return {
         ok: false,
@@ -289,7 +313,12 @@ export async function applyAction(
     // A new chapter: whatever the last one ended, that moment has passed.
     const campaign = result.state.campaign ? { ...result.state.campaign } : result.state.campaign;
     if (campaign) delete campaign.ended;
-    result = { ...result, state: { ...result.state, campaignAttemptId, campaign } };
+    const stamped: RunState = { ...result.state, campaignAttemptId, campaign };
+    // Only a graph campaign's run carries a visit; an ordered start leaves the
+    // key absent (and clears one a graph chapter earlier in this room left).
+    if (journeyVisit) stamped.journeyVisit = journeyVisit;
+    else delete stamped.journeyVisit;
+    result = { ...result, state: stamped };
   }
   if (startedCampaign && !finishedChapter) {
     // Campaign entry is a progression transition too. Seed/re-seed every
@@ -323,9 +352,11 @@ export async function applyAction(
         state: { ...result.state, campaign: view, ...(options ? { campaignOptions: options } : {}) },
       };
     }
-    if (settlement.stale) {
-      // Another room already finished this beat for the household. The table
-      // still sees its chapter end; it is not told it earned XP it did not get.
+    if (settlement.stale || settlement.replay) {
+      // Another room already finished this beat for the household — or, in a
+      // graph campaign, this chapter already paid this attempt (a replay). The
+      // table still sees its chapter end; it is not told it earned XP it did
+      // not get.
       result = { ...result, state: { ...result.state, xpEarned: 0, bonuses: [] } };
     }
   }
@@ -396,7 +427,9 @@ export async function applyAction(
    * real one — three walks of the whole RunState per tap where one suffices.
    */
   const trivial = patch.every((op) => op.path === "/seq" || op.path === "/updatedAt");
-  if (!result.presentation && trivial) {
+  // A taken exit is never trivial, even when this room shows nothing of the
+  // campaign it moved: the household's journey changed and must be written.
+  if (!result.presentation && trivial && !exitTaken) {
     return { ok: true, seq: state.seq };
   }
 
@@ -432,7 +465,14 @@ export async function applyAction(
             campaignProgress: startedAttempt.attempt,
             campaignProgressExpectedVersion: startedAttempt.expectedVersion,
           }
-        : {}),
+        : exitTaken
+          ? {
+              // The journey moved, under the version it was read at: two
+              // phones taking different exits at once cannot both land.
+              campaignProgress: exitTaken.attempt,
+              campaignProgressExpectedVersion: exitTaken.expectedVersion,
+            }
+          : {}),
   });
   if (!committed) {
     // Two phones tapped inside the same millisecond. One of them wins; the
@@ -772,6 +812,10 @@ async function roadTo(
       coins?: number;
       campaign: boolean;
       attempt: CampaignProgressRecord | null;
+      /** A graph campaign's journey, as this start finds it (#194). */
+      journey?: JourneyState;
+      /** The visit this start plays — stamped on the run (`RunState.journeyVisit`). */
+      visit?: { node: NodeId; visit: number };
     }
   | { refusal: string }
 > {
@@ -781,6 +825,43 @@ async function roadTo(
   }
 
   const attempt = await deps.repo.getCampaignProgress(householdId, chapter.campaignId);
+  const graph = deps.content.graph(campaign.id);
+  if (graph) {
+    /*
+     * A graph campaign (#194): no beat, no road — the journey says which
+     * chapter is next, and only that chapter may start. The answer is the one
+     * CONTINUE_CAMPAIGN computes (`nextChapter`), from the same read: the
+     * visit under way resumes (same visit, same resolved chapter), and a
+     * party standing at a choice starts nothing until it has chosen.
+     *
+     * Its flags are the journey's, seeded into the run so a chapter can read
+     * what an earlier place decided (§5 of graph-campaigns.md).
+     */
+    const resumed = attemptJourney(campaign, graph, attempt);
+    if (!resumed.ok) return { refusal: `this party's map of "${campaign.id}" cannot be read: ${resumed.message}` };
+    const playable = currentPlayable(graph, resumed.journey);
+    if (playable.kind !== "play") {
+      return {
+        refusal:
+          playable.kind === "choose"
+            ? `this party is at "${playable.node}" choosing a way on, not starting a chapter`
+            : `this party's journey through "${campaign.id}" has reached its ending`,
+      };
+    }
+    if (playable.chapter !== chapter.id) {
+      return {
+        refusal: `this party's next chapter of "${campaign.id}" is "${playable.chapter}" at "${playable.node}", not "${chapter.id}"`,
+      };
+    }
+    return {
+      flags: { ...(resumed.journey.flags ?? {}) },
+      coins: purseFor(campaign, attempt),
+      campaign: true,
+      attempt,
+      journey: resumed.journey,
+      visit: { node: playable.node, visit: playable.visit },
+    };
+  }
   const flags =
     attempt && attempt.status === "active" ? { ...(attempt.routeFlags ?? {}) } : {};
 
@@ -832,6 +913,24 @@ async function nextChapter(
   if (!campaign) return { refusal: `unknown campaign "${campaignId}"`, code: "NOT_FOUND" };
 
   const attempt = await deps.repo.getCampaignProgress(householdId, campaignId);
+  const graph = deps.content.graph(campaignId);
+  if (graph) {
+    // A graph campaign (#194): the journey's current visit — resumed, never
+    // replayed — or the fresh start at the entry. A party choosing a way on
+    // has nothing to continue until it chooses (CHOOSE_EXIT).
+    const resumed = attemptJourney(campaign, graph, attempt);
+    if (!resumed.ok) {
+      return { refusal: `this party's map of "${campaignId}" cannot be read: ${resumed.message}`, code: "ILLEGAL" };
+    }
+    const playable = currentPlayable(graph, resumed.journey);
+    if (playable.kind === "choose") {
+      return { refusal: `this party is at "${playable.node}" and has not chosen a way on yet`, code: "ILLEGAL" };
+    }
+    if (playable.kind === "ended") {
+      return { refusal: `this party's journey through "${campaignId}" has reached its ending`, code: "ILLEGAL" };
+    }
+    return { chapterId: playable.chapter };
+  }
   const flags = attempt && attempt.status === "active" ? { ...(attempt.routeFlags ?? {}) } : {};
   const index = expectedIndex(campaign, attempt, deps);
 
@@ -843,6 +942,80 @@ async function nextChapter(
     };
   }
   return { chapterId: chapter.id };
+}
+
+/** The attempt row a taken exit owes, and the version it was read at. */
+interface ExitWrite {
+  attempt: CampaignProgressRecord;
+  expectedVersion: number;
+}
+
+/**
+ * CHOOSE_EXIT (#194): take a way on out of the node a graph campaign's
+ * journey is at — shared `takeExit` decides, against the household's stored
+ * journey, and this only reads it, writes it back, and shows the result.
+ *
+ * Between chapters only. The journey refuses an exit while its visit is
+ * playing anyway, but a room *in the middle of a chapter* is refused here
+ * first and plainly, because that room is the one place a tap could come from
+ * that thinks it is somewhere it is not.
+ *
+ * The room's views of the campaign — `campaign` (when it is this campaign, or
+ * none yet) and the lobby's option for it — are refreshed on the same patch,
+ * so every phone sees the party arrive. The attempt row is written by the
+ * action's own commit under the version read here (`ExitWrite`).
+ */
+async function chooseExit(
+  state: RunState,
+  intent: Extract<ClientIntent, { type: "CHOOSE_EXIT" }>,
+  householdId: string,
+  deps: HandlerDeps,
+): Promise<
+  | { refusal: string; code: "NOT_FOUND" | "ILLEGAL" }
+  | { duplicate: true }
+  | { duplicate: false; state: RunState; write: ExitWrite }
+> {
+  if (state.phase !== "lobby" && state.phase !== "creation" && state.phase !== "chapter_complete") {
+    return { refusal: "a way on is chosen between chapters, not in the middle of one", code: "ILLEGAL" };
+  }
+  const campaignId = intent.campaignId ?? state.campaignId;
+  if (!campaignId) return { refusal: "no campaign to choose a way through", code: "ILLEGAL" };
+  const campaign = deps.content.campaign(campaignId);
+  if (!campaign) return { refusal: `unknown campaign "${campaignId}"`, code: "NOT_FOUND" };
+  const graph = deps.content.graph(campaignId);
+  if (!graph) return { refusal: `"${campaignId}" has no map to choose a way through`, code: "ILLEGAL" };
+
+  const attempt = await deps.repo.getCampaignProgress(householdId, campaignId);
+  if (!attempt || attempt.status !== "active") {
+    return { refusal: `this party has no journey under way in "${campaignId}"`, code: "ILLEGAL" };
+  }
+  const resumed = resumeJourney(graph, attempt.journey, campaign);
+  if (!resumed.ok) {
+    return { refusal: `this party's map of "${campaignId}" cannot be read: ${resumed.message}`, code: "ILLEGAL" };
+  }
+  const step = takeExit(graph, resumed.journey, { edge: intent.edgeId, visit: intent.visit }, campaign);
+  if (!step.ok) return { refusal: step.message, code: step.code === "unknown-edge" ? "NOT_FOUND" : "ILLEGAL" };
+  if (step.duplicate) return { duplicate: true };
+
+  const now = iso(deps.now());
+  const moved: CampaignProgressRecord = {
+    ...attempt,
+    journey: step.journey,
+    version: (attempt.version ?? 0) + 1,
+    updatedAt: now,
+  };
+  const view = campaignView(campaign, moved, deps);
+  const options = state.campaignOptions?.map((option) => (option.id === view.id ? view : option));
+  const showsThis = !state.campaign || state.campaign.id === view.id;
+  return {
+    duplicate: false,
+    state: {
+      ...state,
+      ...(showsThis ? { campaign: view } : {}),
+      ...(options ? { campaignOptions: options } : {}),
+    },
+    write: { attempt: moved, expectedVersion: attempt.version ?? 0 },
+  };
 }
 
 /**

@@ -32,6 +32,7 @@ import type {
   EncounterMap,
   ItemCatalog,
   ItemDef,
+  ParsedCampaignGraph,
   RulesContent,
   Scene,
   SceneId,
@@ -100,6 +101,19 @@ export interface ContentStore {
    */
   chapterAt(campaignId: string, index: number, flags: Readonly<Record<string, boolean>>): Chapter | null;
   /**
+   * A graph campaign's declaration, parsed (#192) — `chapterAt`'s by-node
+   * sibling (#194). A graph campaign has no beats to ask `chapterAt` about;
+   * the journey runtime (shared `journey.ts`) asks this for the graph and
+   * resolves the node's chapter itself (`currentPlayable`, `chapterAtNode`),
+   * then looks the chapter up with `chapter()` as anything else does.
+   *
+   * `null` for an ordered campaign — which is the answer every caller branches
+   * on, so "has no graph" is written once — and for an unknown id. Never null
+   * for a graph campaign that loaded: an unparseable declaration refuses the
+   * whole content set at startup (`checkCampaign`).
+   */
+  graph(campaignId: string): ParsedCampaignGraph | null;
+  /**
    * What every ability *does on the board*, by id — handed to the engine as
    * `EngineContext.abilities`.
    *
@@ -153,6 +167,17 @@ class LoadedContent implements ContentStore {
     return this._bestiary;
   }
 
+  /** Parsed once per campaign: content is immutable for the life of a load. */
+  private readonly graphs = new Map<string, ParsedCampaignGraph | null>();
+
+  graph(campaignId: string): ParsedCampaignGraph | null {
+    if (!this.graphs.has(campaignId)) {
+      const campaign = this.campaign(campaignId);
+      this.graphs.set(campaignId, campaign ? parseCampaignGraph(campaign).graph : null);
+    }
+    return this.graphs.get(campaignId) ?? null;
+  }
+
   chapterAt(
     campaignId: string,
     index: number,
@@ -162,9 +187,9 @@ class LoadedContent implements ContentStore {
     if (!campaign) return null;
     // A graph campaign has no beats: its chapters are chosen by edge, and an
     // index is only an act number there. Answering by index would start
-    // whichever file happened to sort first, so until the journey runtime
-    // (#194) asks by node instead, there is nothing to start — the refusal
-    // `null` already means.
+    // whichever file happened to sort first, so there is nothing to start by
+    // index — the refusal `null` already means. The journey runtime (#194)
+    // asks by node instead (`graph()` and shared `journey.ts`).
     if (campaignMode(campaign) === "graph") return null;
     const members = campaign.chapters
       .map((id) => this.chapter(id))

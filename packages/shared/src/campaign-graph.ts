@@ -25,9 +25,9 @@
  *
  * It does not move anybody. Entering a node, completing a visit and taking
  * an exit are transitions on persisted attempt state, and their idempotence
- * is a storage question as much as a rules one — #194's. What is here is
- * read-only: everything a transition, a screen or a validator needs to ask,
- * and nothing that writes.
+ * is a storage question as much as a rules one — #194's, in `journey.ts`.
+ * What is here is read-only: everything a transition, a screen or a
+ * validator needs to ask, and nothing that writes.
  *
  * Nor does it judge the graph's *shape* — reachability, softlocks, whether a
  * cycle runs through a return edge, whether an `irreversible` claim is true.
