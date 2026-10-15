@@ -12,6 +12,7 @@ import {
 import type { EngineContext, EngineResult } from "./engine.js";
 import {
   currentActor,
+  currentActorId,
   legalActions,
   legalItemTargets,
   legalMoves,
@@ -146,10 +147,7 @@ function fightToTheEnd(state: RunState, context: EngineContext): RunState {
       : undefined;
 
     const finish: ClientIntent[] = attack
-      ? [
-          { type: "COMBAT_ACTION", abilityId: attack.abilityId, targetId: attack.targets[0]! } as ClientIntent,
-          { type: "END_TURN" } as ClientIntent,
-        ]
+      ? [{ type: "COMBAT_ACTION", abilityId: attack.abilityId, targetId: attack.targets[0]! } as ClientIntent]
       : [{ type: "END_TURN" } as ClientIntent];
 
     for (const intent of finish) {
@@ -157,6 +155,17 @@ function fightToTheEnd(state: RunState, context: EngineContext): RunState {
       if (result.error) return current;
       current = result.state;
       if (!current.encounter) return current;
+    }
+    // An action with no steps left ends the turn by itself (engine.ts
+    // `finishTurnIfSpent`); one with steps left still has to be handed on.
+    if (attack && current.encounter && currentActorId(current.encounter) === actor.id) {
+      const result = applyIntent(
+        current,
+        { playerId: member.playerId, intent: { type: "END_TURN" } },
+        context,
+      );
+      if (result.error) return current;
+      current = result.state;
     }
   }
   return current;
@@ -1396,6 +1405,57 @@ describe("a full walk of a chapter", () => {
     expect(begun.state.prompt).toBeNull();
   });
 
+  it("ends a turn by itself once the action is spent, and runs the monsters", () => {
+    /*
+     * Five taps an attack used to take: card, target, confirm, End turn,
+     * confirm. §7.2 is "move, then one action", so once the action is spent
+     * there is nothing a phone could legally send but END_TURN; the engine
+     * sends it for them (`finishTurnIfSpent`). Get Ready, which has no
+     * target, is the simplest action to prove it with.
+     */
+    const context = ctx({ rng: fixedRng(20) });
+    const readying = walk(
+      seatedParty(context),
+      [
+        { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+        { playerId: "p_2", intent: { type: "ROLL" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+        { playerId: "p_1", intent: { type: "READY", ready: true } },
+      ],
+      context,
+    ).state;
+    // The last READY by hand: `walk` would helpfully play the whole fight out.
+    const begun = applyIntent(
+      readying,
+      { playerId: "p_2", intent: { type: "READY", ready: true } },
+      context,
+    ).state;
+    const encounter = begun.encounter!;
+    const actor = currentActor(encounter)!;
+    expect(actor.side).toBe("party");
+    const owner = begun.party.find((m) => m.character.id === actor.id)!;
+
+    const readied = applyIntent(
+      begun,
+      { playerId: owner.playerId, intent: { type: "COMBAT_ACTION", abilityId: "ready" } },
+      context,
+    );
+    expect(readied.error).toBeUndefined();
+    const after = readied.state.encounter!;
+    // The clock moved on, and never stopped on a monster: their turns ran in
+    // the same intent, so the next figure on the clock is a hero again.
+    expect(currentActorId(after)).not.toBe(actor.id);
+    expect(currentActor(after)?.side).toBe("party");
+    // Nothing left for the old phone to say.
+    const late = applyIntent(
+      readied.state,
+      { playerId: owner.playerId, intent: { type: "END_TURN" } },
+      context,
+    );
+    expect(late.error?.code).toBe("FORBIDDEN");
+  });
+
   it("refuses a combat intent from a player whose turn it is not", () => {
     // The authority check every combat intent goes through. Without it any phone
     // could drive anybody's figure, including a monster's.
@@ -2633,19 +2693,22 @@ describe("items in a fight (spec §7.2's fourth universal action)", () => {
     expect(used.error).toBeUndefined();
     const combatant = used.state.encounter?.combatants.find((c) => c.id === member.character.id);
     expect(combatant?.rollBonus).toBe(2);
-    expect(used.state.encounter?.actionTaken).toBe(true);
+    // The item was the turn's one action, and a spent turn hands itself on
+    // (`finishTurnIfSpent`): the clock has moved off this hero.
+    expect(currentActorId(used.state.encounter!)).not.toBe(member.character.id);
     const bag = used.state.party
       .find((m) => m.playerId === member.playerId)!
       .character.inventory.map((e) => e.itemId);
     expect(bag).not.toContain("brave_whistle");
 
-    // The action is spent — a second item this turn is refused, and *kept*.
+    // The turn is over — a second item from the same phone is refused as not
+    // its turn any more, and *kept*.
     const again = applyIntent(
       used.state,
       { playerId: member.playerId, intent: { type: "USE_ITEM", itemId: "firecracker" } },
       context,
     );
-    expect(again.error?.code).toBe("ILLEGAL");
+    expect(again.error?.code).toBe("FORBIDDEN");
     expect(
       again.state.party
         .find((m) => m.playerId === member.playerId)!
@@ -2705,7 +2768,8 @@ describe("items in a fight (spec §7.2's fourth universal action)", () => {
     );
     expect(thrown.error).toBeUndefined();
     expect(thrown.state.encounter?.combatants.find((c) => c.id === targetId)?.hp).toBe(before - 3);
-    expect(thrown.state.encounter?.actionTaken).toBe(true);
+    // The throw was the action; the turn ended with it.
+    expect(currentActorId(thrown.state.encounter!)).not.toBe(member.character.id);
   });
 
   it("a no-op use is refused with the action and the item both intact", () => {
@@ -2740,19 +2804,20 @@ describe("items in a fight (spec §7.2's fourth universal action)", () => {
         .character.inventory.map((e) => e.itemId),
     ).toContain("sunbloom_draught");
 
-    // First whistle lands; a second, no stronger, is refused and kept.
-    const first = applyIntent(
-      state,
-      { playerId: member.playerId, intent: { type: "USE_ITEM", itemId: "brave_whistle" } },
-      context,
-    );
-    expect(first.error).toBeUndefined();
-    const rearmed = { ...first.state, encounter: { ...first.state.encounter!, actionTaken: false } };
-    rearmed.party
-      .find((m) => m.playerId === member.playerId)!
-      .character.inventory = [{ itemId: "brave_whistle", kind: "consumable" }];
+    // A whistle no stronger than the bonus already in place is refused and
+    // kept. The bonus is put there directly: a first whistle would spend the
+    // action and, with it, the turn (`finishTurnIfSpent`).
+    const braced = {
+      ...state,
+      encounter: {
+        ...state.encounter!,
+        combatants: state.encounter!.combatants.map((c) =>
+          c.id === member.character.id ? { ...c, rollBonus: 2 } : c,
+        ),
+      },
+    };
     const second = applyIntent(
-      rearmed,
+      braced,
       { playerId: member.playerId, intent: { type: "USE_ITEM", itemId: "brave_whistle" } },
       context,
     );

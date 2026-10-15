@@ -60,6 +60,7 @@ import {
   currentActor,
   currentActorId,
   legalActions,
+  legalMoves,
   useItemInCombat,
   type AbilityCatalog,
   type CombatActionRequest,
@@ -1745,7 +1746,7 @@ function doCombatMove(
   draft: RunState,
   playerId: string,
   to: Position,
-  _ctx: EngineContext,
+  ctx: EngineContext,
 ): Presentation | undefined {
   const encounter = requireTurn(draft, playerId);
   const result = moveTo(encounter, to);
@@ -1753,7 +1754,9 @@ function doCombatMove(
   // from a board that has since moved on. Say so and let it resync.
   if (!result.ok) throw new Illegal("ILLEGAL", result.reason);
   draft.encounter = result.state;
-  return combatPresentation(result.events);
+  // Twin Step's second walk is the only move that can be a turn's last act;
+  // when it is, the turn ends here rather than waiting to be told.
+  return finishTurnIfSpent(draft, ctx, result.events);
 }
 
 function doCombatAction(
@@ -1773,9 +1776,7 @@ function doCombatAction(
   const result = performAction(encounter, combatCtx(ctx), request);
   if (!result.ok) throw new Illegal("ILLEGAL", result.reason);
   draft.encounter = result.state;
-  // The fight may have just ended on that swing. The branch waits behind
-  // the ordered roll/damage/down events rather than replacing them.
-  return combatPresentation(result.events, settleEncounter(draft, ctx));
+  return finishTurnIfSpent(draft, ctx, result.events);
 }
 
 function doEndTurn(draft: RunState, playerId: string, ctx: EngineContext): Presentation | undefined {
@@ -1790,6 +1791,44 @@ function doEndTurn(draft: RunState, playerId: string, ctx: EngineContext): Prese
 /** The slice of `EngineContext` a combat call needs. */
 function combatCtx(ctx: EngineContext) {
   return { rules: ctx.rules, abilities: ctx.abilities ?? {}, rng: ctx.rng };
+}
+
+/**
+ * Closes out a turn that has nothing left in it.
+ *
+ * §7.2 is "move up to your steps, then take one action", and once the action
+ * is spent the only thing a phone could still send is END_TURN. Asking for
+ * that tap was two more taps on every turn (the button, then its confirm), so
+ * the engine now hands the clock on itself the moment the active hero has
+ * neither an action nor a legal step left: the action is taken and
+ * `legalMoves` is empty, which already knows about Twin Step's extra walk.
+ *
+ * It runs the monsters' turns in the same intent, so what reaches the table
+ * is one ordered sequence: the hero's swing, then the wisps' answer, then any
+ * branch the fight's end takes. END_TURN stays for the turn a player chooses
+ * to give up early (steps left after acting, or nothing worth doing).
+ *
+ * The fight may have ended on the action itself. `settleEncounter` runs
+ * either way, after the enemy turns when there were any, and the branch waits
+ * behind the ordered roll/damage/down events rather than replacing them.
+ */
+function finishTurnIfSpent(
+  draft: RunState,
+  ctx: EngineContext,
+  events: readonly EncounterEvent[],
+): Presentation | undefined {
+  const encounter = draft.encounter;
+  let all = events;
+  if (
+    encounter &&
+    encounterOutcome(encounter) === "ongoing" &&
+    encounter.actionTaken &&
+    legalMoves(encounter).length === 0
+  ) {
+    draft.encounter = endTurn(encounter);
+    all = [...events, ...runEnemyTurns(draft, ctx)];
+  }
+  return combatPresentation(all, settleEncounter(draft, ctx));
 }
 
 /** Keeps combat spectacle ordered without making it authoritative state. */
@@ -2006,9 +2045,9 @@ function doUseItem(
 
     setBag(member, held.inventory, ctx);
     draft.encounter = applied.state;
-    // The throw may have felled the last wisp; the branch waits behind the
-    // damage beats, exactly as it does for an attack.
-    return combatPresentation(applied.events, settleEncounter(draft, ctx));
+    // A consumable spends the same one action an attack does, and so ends
+    // the turn the same way.
+    return finishTurnIfSpent(draft, ctx, applied.events);
   }
 
   if (def.effect && def.effect.type !== "heal") {
