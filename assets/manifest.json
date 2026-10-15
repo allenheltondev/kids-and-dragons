@@ -1866,7 +1866,15 @@
     "scenes/gemfall/caravan-yard",
     "scenes/gemfall/exchange-long-bridge",
     "scenes/gemfall/exchange-griffin-post",
-    "scenes/gemfall/exchange-north-gate"
+    "scenes/gemfall/exchange-north-gate",
+    "scenes/gemfall/east-road-markers",
+    "scenes/gemfall/stone-crossing-queue",
+    "scenes/gemfall/lintel-toll-stone",
+    "scenes/gemfall/drake-rock-shelf",
+    "scenes/gemfall/drowned-crossing-bank",
+    "scenes/gemfall/river-mouth-shore",
+    "scenes/gemfall/eastern-shore-camp",
+    "scenes/gemfall/eastern-bank-landing"
   ],
   "$castFiguresComment": "Named story characters' own figures, drawn on the story stage opposite the party (content `cast`, docs/briefs/story-cast-art.md). Same contract as entities: assets/cast/<id>/assembled.png, 1024x1024 RGBA, one complete cutout standing on the canvas origin (feet at y=900), facing left toward the party. `basis` is the entity or species the character is one of; `scale` is how big they stand, in the entities' scale words. verify.py checks each entry.",
   "castFigures": [
