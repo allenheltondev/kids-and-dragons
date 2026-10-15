@@ -583,6 +583,37 @@ describe("aiming", () => {
     expect(sent).toEqual([{ type: "COMBAT_ACTION", abilityId: "volley", targetId: "wisp#1" }]);
   });
 
+  it("sends Go once, however fast it is tapped twice before the board catches up", async () => {
+    // The worst case: both taps land before React has re-rendered, so the
+    // second one still finds Go! on screen and the handler from the first.
+    const user = userEvent.setup();
+    const send = vi.fn(() => new Promise<boolean>(() => {}));
+    const archer = character({ actions: ["volley"] });
+    mount({
+      characters: [archer],
+      encounter: encounterWith({
+        party: [{ character: archer, at: { x: 1, y: 2 } }],
+        enemies: [
+          { spec: wisp(), at: { x: 2, y: 2 } },
+          { spec: wisp(), at: { x: 2, y: 3 } },
+        ],
+      }),
+    });
+    useGameStore.setState({ send });
+
+    await user.click(card("Volley"));
+    await user.click(screen.getByRole("button", { name: /Bramblewisp 1/ }));
+    const go = screen.getByRole("button", { name: /Go!/ });
+    act(() => {
+      go.click();
+      go.click();
+    });
+    expect(send).toHaveBeenCalledTimes(1);
+    // And the question row is gone with it: nothing left to Change mid-send.
+    expect(screen.queryByRole("button", { name: /Go!/ })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Change" })).toBeNull();
+  });
+
   it("collects two tiles for a two-tile ability, keeping the first one lit", async () => {
     const user = userEvent.setup();
     const { sent, container } = mount({ characters: [character({ actions: ["thorns"] })] });
