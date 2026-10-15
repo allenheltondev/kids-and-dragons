@@ -2,5 +2,9 @@
   "body/arm_r": {
     "band": 0.88,
     "reason": "The torso ends at the lower armpit and waist taper, so paint beyond its own contour would project in attack."
+  },
+  "body/arm_l": {
+    "band": 0.97,
+    "reason": "The approved waistcoat hides the upper seam, leaving the small lower armpit contour. The missing 2.6% lies outside the unchanged base torso silhouette, not at its shoulder pivot. See docs/reviews/bigfoot-class-seam-contours.webp and the attack contact sheet."
   }
 }

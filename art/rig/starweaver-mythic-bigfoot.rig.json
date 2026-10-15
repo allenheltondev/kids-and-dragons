@@ -42,8 +42,8 @@
     "arm_l",
     "arm_r",
     "head",
-    "gear_visible",
     "mane",
+    "gear_visible",
     "focus_stone"
   ],
   "origin": {
