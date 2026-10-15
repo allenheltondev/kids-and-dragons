@@ -50,7 +50,7 @@ Allen approved the original character designs; the shoulder-riding variant addre
 
 ## Continuity follow-up and main update
 
-Merged main at `8c1d771b` without conflicts. The updated PR includes every commit from that main revision. The introduction now uses `cast/corbin_carrying_posy` in all four scenes; the downhill reunion still has separate figures. No narration or mechanics changed.
+Merged main at `ab97f082` without conflicts. The updated PR includes every commit from that main revision. The introduction now uses `cast/corbin_carrying_posy` in all four scenes; the downhill reunion still has separate figures. No narration or mechanics changed.
 
 [Shoulder-pose correction, previous versus corrected TV + phone](posy-shoulders.webp). The introduction comparison above is refreshed with the corrected pose. [The downhill reunion remains on foot](posy-on-foot.webp). These captures use the same review-only chapter-1 fixture described above, with an additional pause for the phone's entrance animation.
 
@@ -61,3 +61,5 @@ Validation after merging main and adding the pose:
 - `npm run typecheck`: passed.
 - Full unit suite: **2665 passed, 1 skipped**, with one existing Windows CRLF-sensitive authoring-guide test failure. Neither that test nor its guide differs from main. Normalizing the guide's local line endings made its six tests pass; the guide normalization is not part of this PR. The targeted rerun of that file plus cast/art-path tests passed **37 tests**.
 - TV and phone review captures passed for both the introduction and the downhill reunion.
+
+After main advanced again, merged `ab97f082` (phone interaction feedback). Content validation still passes (55 checks); the new phone interaction tests plus cast/art-path tests pass (36 tests).
