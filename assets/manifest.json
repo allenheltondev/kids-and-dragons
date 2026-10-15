@@ -1856,7 +1856,17 @@
     "scenes/gemfall/facet-table",
     "scenes/gemfall/gem-gallery",
     "scenes/gemfall/seal-chamber",
-    "scenes/gemfall/sheeple-ridge"
+    "scenes/gemfall/sheeple-ridge",
+    "scenes/gemfall/exchange-lighthouse",
+    "scenes/gemfall/exchange-docks",
+    "scenes/gemfall/exchange-noodle-stall",
+    "scenes/gemfall/empty-chair-tavern",
+    "scenes/gemfall/exchange-quay",
+    "scenes/gemfall/outfitters-steps",
+    "scenes/gemfall/caravan-yard",
+    "scenes/gemfall/exchange-long-bridge",
+    "scenes/gemfall/exchange-griffin-post",
+    "scenes/gemfall/exchange-north-gate"
   ],
   "$castFiguresComment": "Named story characters' own figures, drawn on the story stage opposite the party (content `cast`, docs/briefs/story-cast-art.md). Same contract as entities: assets/cast/<id>/assembled.png, 1024x1024 RGBA, one complete cutout standing on the canvas origin (feet at y=900), facing left toward the party. `basis` is the entity or species the character is one of; `scale` is how big they stand, in the entities' scale words. verify.py checks each entry.",
   "castFigures": [
