@@ -82,7 +82,8 @@ anybody else on TN 16; a Collection party lifts the Keystone, and anybody else h
 Gate a choice on it with `requiresFlag`. Requirements **hide** choices, and every scene
 needs at least one ungated choice, so a carried flag can only ever **add** an option —
 a callback, a shortcut, a friend who shows up. It can never be the only way forward. That
-is a feature: the ledger rewards, it does not wall off. (There is no "requires NOT flag".)
+is a feature: the ledger rewards, it does not wall off. (`when: { notFlag }` can say "only if
+not", and a `when` choice counts as gated like any other: it needs an ungated sibling. See §5.)
 
 `content:validate` accepts `requiresFlag` on any member of the campaign's route sets even
 though the chapter never sets it; for any other flag the chapter must set it itself.
@@ -213,7 +214,10 @@ endures and every loss ends on a spark. The Hollow Gate is witnessed, never expl
 
 Never count the party. A table seats one to four players, so "all three of you", "your two
 names" and "three pairs of hands" read wrong at most tables; say "all of you", "your names",
-"every hand". `gemfall-flow.test.mjs` fails on the common forms.
+"every hand". `gemfall-flow.test.mjs` fails on the common forms. When a line really has to say
+who, write the `{party}` token and let the engine count: "The gate opens for {party}." reads
+"for you", "for both of you" or "for all four of you" (§5). It is lowercase, so keep it
+mid-sentence.
 
 Spell everything players read in US English: color, favorite, harbor, neighbor, center, gray,
 traveled, realize, defense, catalog, mom, while, among, cozy. `spelling.test.mjs` scans the
@@ -221,3 +225,159 @@ text of every chapter, the generated content JSON, and the canon YAML, and fails
 line, field, and the US spelling to use. It reads text, not ids, so `scene_harbor_wall` style
 ids may spell anything. Two documented exceptions: the "Sunbloom Draught" keeps its name, and
 "afterwards" is accepted. The word list and exceptions live in `tools/content/spelling-lint.mjs`.
+
+## 5. Writing for the party you have
+
+A scene's words and a choice's visibility can depend on who is at the table and what they
+carry: `when` on a choice, `variants` on a scene or a branch, and the `{facets}` / `{party}`
+tokens. This section is the house rules for using them. The shapes are `Condition` and
+`NarrationVariant` in `packages/shared/src/types/chapter.ts`; `content:validate` rejects a
+malformed one (below), so a mistake fails the build, never the evening.
+
+### Two kinds of stone
+
+- **Rush gems.** Every party carries ordinary rush gems. They are loose, uncounted, never an
+  item in anyone's pack, and they hum. "Your packs are humming" is always true; never gate it.
+- **Great stones (facets).** The `facet_*` quest items from §3. Text that **names** a great
+  stone ("the Ember Facet in your pack"), **counts** them ("three stones"), or has the party
+  **hand one over** must read the inventory: `when: { item }`, `when: { count }`, or a variant.
+  Otherwise the line lies to a party that does not have it.
+
+**No chapter guarantees a facet.** 01's Ember can be sold (`ember_sold` grants nothing; 07
+offers a buy-back, so a seller may or may not have it again). 06's Table Stone can be left in
+warden custody (`leave_stone`). 07's Caravan Stone is lost if the outbid check fails, and
+and so on down the line. So "holds none" is a real
+party that reaches 08 and needs its own text. Remember also that there is no remove effect
+(§3): a facet "given back" in narration stays in the bag, so a handing-over scene should
+**not** count on the item having left.
+
+### Patterns
+
+Each example below is checked by `tools/content/authoring-guide.test.mjs`, which pulls the
+fenced blocks tagged `guide-variants` and `guide-choices` out of this file and runs them
+through `content:validate`. Edit the examples and the test follows.
+
+**Absence.** Give the empty-handed party its own words, and something to do. A `max: 0`
+variant that replaces the base, plus a choice only they see:
+
+```json guide-variants
+[
+  {
+    "when": { "count": { "of": "facet_*", "max": 0 } },
+    "replace": true,
+    "text": "The gate keeper looks at your packs. They hum, but no great stone sits in them. \"Then tell me what you do carry,\" says the keeper."
+  }
+]
+```
+
+```json guide-choices
+[
+  {
+    "id": "nothing_to_show",
+    "label": "Tell the keeper about the road",
+    "icon": "scroll",
+    "goto": "NEXT",
+    "when": { "count": { "of": "facet_*", "max": 0 } }
+  }
+]
+```
+
+**Scaling.** Zero, a few and many. Three variants at most per scene, and do not narrate every
+number: nobody at the table can tell eight stones from nine. `{facets}` fills the count as a
+word.
+
+```json guide-variants
+[
+  {
+    "when": { "count": { "of": "facet_*", "max": 0 } },
+    "replace": true,
+    "text": "The wall is bare stone and waits for something to answer it."
+  },
+  {
+    "when": { "count": { "of": "facet_*", "min": 1, "max": 3 } },
+    "text": "{facets} of the wall's sockets glow back at you, and the rest stay dark."
+  },
+  {
+    "when": { "count": { "of": "facet_*", "min": 4 } },
+    "at": "start",
+    "text": "The whole wall is bright before you reach it. You carry {facets} great stones."
+  }
+]
+```
+
+**A callback choice with a fallback.** The callback carries `item`; an ungated sibling serves
+everyone else. A `when` hides the choice, so a scene of nothing but `when` choices is a dead
+end and `content:validate` fails it.
+
+```json guide-choices
+[
+  {
+    "id": "show_ember",
+    "label": "Hold up the Ember Facet",
+    "icon": "gem",
+    "goto": "NEXT",
+    "when": { "item": "facet_ember" }
+  },
+  {
+    "id": "speak_plainly",
+    "label": "Tell it the plain truth",
+    "icon": "heart",
+    "goto": "NEXT"
+  }
+]
+```
+
+**Party size.** Do not write a number of people; use `{party}`. Reach for `partySize` only
+when the moment really differs, for example a lone hero carried by the dragon:
+
+```json guide-variants
+[
+  {
+    "when": { "partySize": { "max": 1 } },
+    "text": "Your dragon pads closer and lets you lean on it. Nobody climbs this alone."
+  },
+  {
+    "when": {},
+    "at": "start",
+    "text": "The bridge creaks, and it holds for {party}."
+  }
+]
+```
+
+**Avoid: variants that change facts later scenes depend on.** A variant says how something
+looks; a choice decides what happened. If a variant says "the warden lets you through", the
+next scene must be true for a party that did not see that variant. Anything later scenes rely
+on (who is friendly, what was given, which door is open) goes in a choice with a `setFlag`,
+not in a variant. Likewise do not hide the only way forward behind a `when`.
+
+### Semantics
+
+- **Fields are ANDed.** Every field present in a `Condition` must hold; an empty `{}` always
+  holds. Use two variants, not one condition, for "either".
+- **Distinct counting.** `count` counts distinct item ids the party holds between them, across
+  inventories and quest items. Two members carrying the same item is one item. `of` is an
+  exact id, a prefix ending in `*` (`"facet_*"`), or a list of ids. Bounds are inclusive and
+  `max: 0` means none. `partySize` counts seated members, connected or not.
+- **When it is read.** Variants are evaluated once, as the scene opens, **after** its
+  `onEnter` effects (and, for branch narration, after the branch's effects). A facet granted by
+  the scene's own `onEnter` counts. The result is stored, so a phone that reloads mid-scene
+  reads what the table is reading. Choice `when`s are checked as the prompt opens.
+- **Composition order.** `at: "start"` variants, then the base narration, then the rest
+  (`at: "end"`, the default), each in authored order, joined by a blank line. `replace: true`
+  puts its text where the base would have been.
+- **One replace per scene.** More than one `replace` on a scene or branch fails the build
+  unless the validator can show they never both match: the same flag against its `notFlag`,
+  the same item against its `notItem`, disjoint `partySize` ranges, or disjoint `count`
+  ranges over the same `of`. Anything cleverer than that, make into a single variant.
+- **Tokens.** Only `{facets}` (the number of distinct `facet_*` the party holds, as a word:
+  "no", "one", "two") and `{party}` ("you", "both of you", "all four of you") exist. They work
+  in narration, variant text, choice labels and check prompts. Any other `{word}` fails the
+  build.
+- **What the validator checks.** Flags in `flag` / `notFlag` must be set somewhere in the
+  chapter or carried by a route set (a `notFlag` on a carried flag is fine). Items and `count`
+  prefixes must exist in `content/items.json`. `min` may not exceed `max`. Choices still need
+  one ungated choice per scene, and a `when` counts as a gate. In Gemfall, a result scene
+  (`<source>_<choice>`) may carry variants but keeps its single exit: a `when` there fails
+  `gemfall-flow.test.mjs`.
+- **Reading the map.** `npm run content:graph` labels `when` gates on the dashed edges:
+  `has 0 facet_*`, `has 2+ facet_*`, `party 2+`, `not flag: x`, `holds: item`, `lacks: item`.
