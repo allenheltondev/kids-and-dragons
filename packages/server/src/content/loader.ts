@@ -21,7 +21,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { EFFECT_VERBS, itemCatalog, MAX_PARTY, resolveEnemy } from "@kad/shared";
-import { chapterFor } from "@kad/shared";
+import { campaignMode, chapterFor, parseCampaignGraph } from "@kad/shared";
 import type {
   AbilityCatalog,
   AuthoredEnemySpec,
@@ -160,6 +160,12 @@ class LoadedContent implements ContentStore {
   ): Chapter | null {
     const campaign = this.campaign(campaignId);
     if (!campaign) return null;
+    // A graph campaign has no beats: its chapters are chosen by edge, and an
+    // index is only an act number there. Answering by index would start
+    // whichever file happened to sort first, so until the journey runtime
+    // (#194) asks by node instead, there is nothing to start — the refusal
+    // `null` already means.
+    if (campaignMode(campaign) === "graph") return null;
     const members = campaign.chapters
       .map((id) => this.chapter(id))
       .filter((chapter): chapter is Chapter => chapter !== null);
@@ -387,6 +393,13 @@ function checkCampaign(
     if (!chapters.has(chapterId)) {
       problems.push(`${label}: names chapter "${chapterId}", which did not load`);
     }
+  }
+  // A graph campaign (#192) whose declaration names a node, edge or chapter
+  // that is not there would strand a party at an exit leading nowhere — the
+  // graph's version of a `goto` pointing nowhere, so it is refused here for
+  // the same reason. An ordered campaign has no graph and this adds nothing.
+  for (const { path: at, problem } of parseCampaignGraph(campaign).problems) {
+    problems.push(`${label}: ${at}: ${problem}`);
   }
   return problems;
 }
