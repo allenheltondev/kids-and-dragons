@@ -254,7 +254,7 @@
     },
     "scene_roll_call_here": {
       "type": "story",
-      "narration": "\"Here!\" you all shout. The trees rustle, satisfied. Then the rustling carries on, slowly, as if it is reading out what is in your packs: socks, crumbs, a spoon, a biscuit you forgot about. Anything that hums gets a long, thoughtful rustle all of its own. At last, with the air of a teacher closing a book, a path opens.",
+      "narration": "\"Here!\" you shout. The trees rustle, satisfied. Then the rustling carries on, slowly, as if it is reading out what is in your packs: socks, crumbs, a spoon, a biscuit you forgot about. Anything that hums gets a long, thoughtful rustle all of its own. At last, with the air of a teacher closing a book, a path opens.",
       "choices": [
         {
           "id": "on",
@@ -728,7 +728,7 @@
     },
     "scene_unicorns_patch": {
       "type": "story",
-      "narration": "You tell them about the crumb you pressed down and the green shoot. The elder unicorn's ears go straight up. \"Down,\" she says. \"Not away. Down.\" She steps aside and lets you start the mending hum yourselves, and the unicorns join in under you, low and steady. The cold-porridge moss turns green from the middle out.",
+      "narration": "You tell them about the crumb you pressed down and the green shoot. The elder unicorn's ears go straight up. \"Down,\" she says. \"Not away. Down.\" She steps aside and lets you start the mending hum, and the unicorns join in under you, low and steady. The cold-porridge moss turns green from the middle out.",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
@@ -1103,7 +1103,7 @@
     },
     "scene_sitting_beech_passing": {
       "type": "story",
-      "narration": "\"Passing through,\" the beech repeats, very slowly. \"Everybody is passing through. Even me. I am just slower about it.\" It gets up one root at a time, which takes long enough for you each to eat a whole biscuit. Then it waves you on with a branch, not at all convinced, but far too polite to say so.",
+      "narration": "\"Passing through,\" the beech repeats, very slowly. \"Everybody is passing through. Even me. I am just slower about it.\" It gets up one root at a time, which takes long enough to eat a whole biscuit. Then it waves you on with a branch, not at all convinced, but far too polite to say so.",
       "choices": [
         {
           "id": "on",
@@ -1304,7 +1304,7 @@
     },
     "scene_glade_heart": {
       "type": "choice_point",
-      "narration": "In the very middle of the worst glade, in a bruise of gray moss, sits the Glade Stone, humming. Every tree leans away from it. Two unicorns watch from the edge. So, very quietly, does the forest. Mend the glade, and the stone sinks back into the ground where the forest keeps it. Take the stone, and this glade will never mend. Everybody vote.",
+      "narration": "In the very middle of the worst glade, in a bruise of gray moss, sits a gem the size of a fist, humming. Every tree leans away from it. Two unicorns watch from the edge. So, very quietly, does the forest. Mend the glade, and the stone sinks back into the ground where the forest keeps it. Take the stone, and this glade will never mend. Everybody vote.",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
@@ -1372,7 +1372,7 @@
     },
     "scene_pocket_stone": {
       "type": "story",
-      "narration": "The stone is warm in your hand and loud in your pocket. Behind you, the glade goes quiet, the way a room goes quiet when somebody says the wrong thing. The unicorns don't say a word. One of them writes something down.",
+      "narration": "The Glade Stone is warm in your hand and loud in your pocket. Behind you, the glade goes quiet, the way a room goes quiet when somebody says the wrong thing. The unicorns don't say a word. One of them writes something down.",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
