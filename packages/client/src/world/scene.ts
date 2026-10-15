@@ -298,9 +298,13 @@ interface Actor {
   phase: number;
   down: boolean;
   connected: boolean;
-  /** Design-space position of the actor's feet. */
+  /** Design-space position of the actor's feet: the slot `layoutActors`
+      gives them. The container glides to it in tick(). */
   x: number;
   y: number;
+  /** Whether the container has stood in a slot yet. A figure's first slot is
+      taken at once; only a move between slots is walked. */
+  placed: boolean;
   /**
    * The rigged figure, once its `.riv` loads. While set, the rig owns the
    * acting — idle breathing, the fall, the get-up — and the procedural bob
@@ -417,8 +421,14 @@ export function createScene(app: Application): PartyScene {
   const castActors = new Map<string, CastActor>();
   /** -1 = facing right, toward a cast on the right; 1 = as drawn. */
   let facing = 1;
-  /** CSS px of pane the narration plate covers. See setStageInset. */
+  /**
+   * CSS px of pane the narration plate covers. See setStageInset. The camera
+   * frames against `insetBottom`, which eases toward `insetTarget` in tick():
+   * a plate that grows a line because somebody leaned on a choice should not
+   * kick the whole stage up by half a line in one frame.
+   */
   let insetBottom = 0;
+  let insetTarget = 0;
   let board: BoardLayer | null = null;
   let encounterView: BoardViewState | null = null;
   /**
@@ -634,6 +644,7 @@ export function createScene(app: Application): PartyScene {
         fitNameplate(member.label, (slots.castSlots[index] ?? slot) * NAMEPLATE_SLOT);
       }
     });
+    const still = prefersReducedMotion();
     list.forEach((actor, index) => {
       if (actor.label) {
         actor.label.visible = nameplatesVisible;
@@ -643,8 +654,14 @@ export function createScene(app: Application): PartyScene {
       // A shallow depth stagger so three characters read as a group rather than
       // a row of stickers. Allen's Chapter 2 lineup composition replaces this.
       actor.y = GROUND_Y + (index % 2 === 0 ? 0 : DESIGN.height * 0.03);
-      actor.container.x = actor.x;
-      actor.container.y = actor.y;
+      // Somebody joining, a cast arriving or the plate changing height moves
+      // every slot; tick() walks the figures there rather than teleporting
+      // them. A figure new to the stage simply stands in its slot.
+      if (!actor.placed || still) {
+        actor.container.x = actor.x;
+        actor.container.y = actor.y;
+        actor.placed = true;
+      }
       // Feet further down the screen = nearer the viewer = drawn in front.
       actor.container.zIndex = actor.y;
     });
@@ -660,6 +677,16 @@ export function createScene(app: Application): PartyScene {
     // set-size check per frame in the ordinary case.
     if (frameListeners.size > 0) {
       for (const listener of frameListeners) listener(app.ticker.deltaMS);
+    }
+
+    // The plate's height, eased like the camera it feeds — and the lineup
+    // re-spread across the frame as it goes, so the party drifts with it.
+    if (insetBottom !== insetTarget) {
+      insetBottom =
+        Math.abs(insetTarget - insetBottom) < 0.5
+          ? insetTarget
+          : approach(insetBottom, insetTarget, CAMERA_RATE, dt);
+      layoutActors();
     }
 
     applyCamera(dt);
@@ -728,7 +755,12 @@ export function createScene(app: Application): PartyScene {
 
     tickCast(dt);
 
+    // No walk between slots for a viewer who asked for reduced motion — the
+    // same rule tickCast keeps for an entrance.
+    const still = prefersReducedMotion();
     for (const actor of actors.values()) {
+      actor.container.x = still ? actor.x : approach(actor.container.x, actor.x, CAMERA_RATE, dt);
+      actor.container.y = still ? actor.y : approach(actor.container.y, actor.y, CAMERA_RATE, dt);
       // Turning to face whoever is here: a quick squash through edge-on, which
       // reads as the figure turning round rather than flipping.
       actor.art.scale.x = approach(actor.art.scale.x, facing, TURN_RATE, dt);
@@ -1001,6 +1033,7 @@ export function createScene(app: Application): PartyScene {
       connected: member.connected,
       x: 0,
       y: GROUND_Y,
+      placed: false,
       rive: null,
       shadow,
       shadowX: 0,
@@ -1192,9 +1225,20 @@ export function createScene(app: Application): PartyScene {
 
     setStageInset(bottomPx) {
       if (destroyed) return;
-      insetBottom = Math.max(0, bottomPx);
-      layoutActors();
-      applyCamera(0);
+      insetTarget = Math.max(0, bottomPx);
+      /*
+       * A plate arriving or going (the first scene, a fight starting or
+       * ending), or a camera that has not framed anything yet, is a cut and
+       * takes effect at once — nobody should watch the party glide up from
+       * the bottom of the pane on first paint. Only a plate that is already
+       * up changing height is eased, in tick().
+       */
+      if (camNow === null || insetBottom === 0 || insetTarget === 0) {
+        insetBottom = insetTarget;
+        camNow = null;
+        layoutActors();
+        applyCamera(0);
+      }
     },
 
     focusCamera(next) {
@@ -1226,9 +1270,10 @@ export function createScene(app: Application): PartyScene {
         .map((actor) => {
           // Lineup labels are children of their actor, so their own x/y is
           // relative to its feet. Lift both into design space, or every box
-          // comes back centred on zero and nothing can be compared.
+          // comes back centred on zero and nothing can be compared. The slot,
+          // not the figure mid-walk to it — the same as the cast below.
           const box = nameplateBoxOf(actor.label!);
-          return { ...box, x: actor.container.x + box.x, y: actor.container.y + box.y };
+          return { ...box, x: actor.x + box.x, y: actor.y + box.y };
         });
       for (const member of castActors.values()) {
         if (member.leaving || member.label === null || !member.label.visible) continue;

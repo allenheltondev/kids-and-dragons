@@ -8,9 +8,14 @@
  * cannot each be 3em on a phone, and a step is the cheapest thing in the game
  * to spend by mistake.
  *
- * Nothing here ever appears *below* what is already on screen: the area under
- * the board swaps between the cards and the question a card asks, in place,
- * so a tap never pushes the pane and the thumb never has to chase a button.
+ * The board keeps its size for the turn. It takes whatever height is left
+ * (`.combat__board`), so every row around it holds still: the title row and
+ * the waiting line share one height, the log is a fixed box from the fight's
+ * first moment, the legend keeps all four keys, and under the board the dock
+ * has a one-line seat for the hint or the question over the answers, which
+ * never get shorter mid-turn (CombatPanel useTallestThisTurn). Whatever comes
+ * and goes inside a seat is hidden with `visibility`, never removed, and one-
+ * line text ends in an ellipsis rather than wrapping onto a second line.
  */
 
 .combat__hp {
@@ -25,15 +30,39 @@
   opacity: 0.8;
 }
 
-/* Steps left, on the title row's far end: the one number a turn starts with. */
-.combat__title {
-  flex-wrap: wrap;
+/*
+ * One line that never wraps: a long name ends in an ellipsis rather than
+ * pushing a second line in, or the chip under itself.
+ */
+.combat__line {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
+/*
+ * The title row and the waiting line take turns in the same seat, so both
+ * get the same height: 1.7em of the title's font, which fits the steps chip.
+ * The waiting line's font is the title's over 1.25 (md against lg), hence
+ * the multiply.
+ */
+.combat > .combat__title {
+  flex-wrap: nowrap;
+  block-size: 1.7em;
+}
+
+.combat > .combat__waiting {
+  block-size: calc(1.7 * var(--font-size-lg, 1.25em));
+}
+
+/* Steps left, on the title row's far end: the one number a turn starts with. */
 .combat__steps {
+  flex: none;
   margin-inline-start: auto;
   gap: 0.3em;
   font-size: var(--font-size-sm, 0.875em);
+  font-variant-numeric: tabular-nums;
 }
 
 /* A monster's portrait in the target list. */
@@ -87,9 +116,12 @@
   border-radius: var(--radius-md, 0.75em);
   background: var(--color-surface-sunken, #120f26);
   font-size: var(--font-size-sm, 0.875em);
-  /* About three lines. A crowded round scrolls, newest at the bottom, and
-     the older lines fade out at the top rather than cutting off mid-word. */
-  max-block-size: 5.6em;
+  /* About three lines, always: the box is there and this tall before the
+     first beat and after a quiet one, so a beat landing never moves the
+     board. A crowded round scrolls, newest at the bottom, and the older
+     lines fade out at the top rather than cutting off mid-word. */
+  flex: none;
+  block-size: 5.6em;
   overflow-y: auto;
   overscroll-behavior: contain;
   mask-image: linear-gradient(to bottom, transparent 0, #000 1.2em);
@@ -97,6 +129,17 @@
 
 .combat__beat {
   line-height: 1.3;
+}
+
+/* A short beat sits at the bottom, out of the fade. An auto margin rather
+   than `justify-content: flex-end`, which would clip an overflowing log's
+   top where it cannot be scrolled back to. */
+.combat__beat:first-child {
+  margin-block-start: auto;
+}
+
+.combat__beat--quiet {
+  color: var(--color-text-muted, #b7b0d8);
 }
 
 .combat__beat--good {
@@ -281,12 +324,6 @@
   box-shadow: inset 0 0 0 0.18em var(--color-primary, #7c5cff);
 }
 
-.combat__aim {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2, 0.5em);
-}
-
 /* At most four enemies or three friends, two to a row from three: the list
    always fits, so it never needs a scroll box of its own. */
 
@@ -297,6 +334,38 @@
  */
 .combat.prompt {
   gap: var(--space-2, 0.5em);
+}
+
+/*
+ * Under the board on your turn (CombatPanel's dock): a seat one line tall
+ * over the answers. The seat is a touch target tall because the question's
+ * Change button lives in it; the hint and "Doing it…" sit in the same line.
+ */
+.combat__dock,
+.combat__answers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+}
+
+.combat__dock {
+  flex: none;
+}
+
+.combat__seat {
+  display: flex;
+  align-items: center;
+  block-size: var(--touch-min, 3em);
+}
+
+.combat__seat > * {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+/* A tap on its way: the cards stay put, dimmed and inert, until it lands. */
+.combat__answers--pending {
+  opacity: 0.5;
 }
 
 /*
@@ -312,7 +381,9 @@
   font-size: var(--font-size-sm, 0.875em);
 }
 
-.combat__ask {
+/* `.combat` for weight: `.prompt__sub` wraps, and a question must not. */
+.combat .combat__ask {
+  flex-wrap: nowrap;
   font-weight: 700;
 }
 
@@ -520,8 +591,13 @@
   }
 
   .combat__log {
-    max-block-size: 3.6em;
+    block-size: 3.6em;
     padding-block: var(--space-1, 0.25em);
+  }
+
+  /* The title drops to md here, so its 1.7em seat does too. */
+  .combat > .combat__waiting {
+    block-size: calc(1.7 * var(--font-size-md, 1em));
   }
 
   .combat .prompt__options {

@@ -233,20 +233,11 @@ export function WorldMapPanel(): ReactElement {
         </div>
       </header>
 
-      {(world.routes?.length ?? 0) > 0 ? <div className="atlas__route-controls">
-        <label><input type="checkbox" checked={showRoutes} onChange={(event) => setShowRoutes(event.target.checked)} /> Routes</label>
-        {atDetail ? <span>Solid: mapped · Dashed: approximate</span> : <span>Routes appear at the closest zoom.</span>}
-        {atDetail && showRoutes ? <details><summary>Roads and crossings ({routes.length})</summary>
-          {routes.length === 0 ? <p>Discover places to learn their routes.</p> : routes.map((route) =>
-            <button type="button" key={route.id} className="atlas__route-choice kad-focusable"
-              aria-pressed={routeId === route.id} onClick={() => setRouteId(route.id)}>{route.title}</button>)}
-        </details> : null}
-        {atDetail && showRoutes && selectedRoute ? <p className="atlas__route-info">{selectedRoute.title} · {selectedRoute.travelModes.join(", ")} ·
-          {selectedRoute.accuracy === "approximate" ? " Approximate course; conditions may vary." : " Mapped crossing."}</p> : null}
-      </div> : null}
 
       {entryId && discoveries[entryId] ? (
-        <aside className="atlas__entry" aria-label="Map discovery">
+        // Keyed so a cross-link to another entry opens at its top, not at
+        // however far down the last one had been read.
+        <aside key={entryId} className="atlas__entry" aria-label="Map discovery">
           {guide?.entries[entryId] ? <FieldGuideDetail guide={guide} entryId={entryId}
             onSelect={selectEntry} backLabel="Back to map" /> : <>
             <Button size="md" variant="secondary" onClick={() => setEntryId(null)}>Back to map</Button>
@@ -279,139 +270,159 @@ export function WorldMapPanel(): ReactElement {
         </aside>
       ) : null}
 
-      <div className="atlas__viewport kad-scroll" ref={viewport} data-zoom={zoom}
-        onClick={(event) => {
-          // A tap on the painting itself puts the card away; a tap on a label opens one.
-          if (!(event.target as Element).closest("button")) setCardId(null);
-        }}
-        onScroll={(event) => {
-          const view = event.currentTarget;
-          const sheet = view.firstElementChild as HTMLElement | null;
-          if (!sheet?.offsetWidth || !sheet.offsetHeight) return;
-          updateAtlasView(scope, { center: {
-            x: (view.scrollLeft + view.clientWidth / 2) / sheet.offsetWidth * 1000,
-            y: (view.scrollTop + view.clientHeight / 2) / sheet.offsetHeight * 1000,
-          } });
-        }}>
-        {/*
-         * The sheet is `zoom` panes wide and keeps the painting's aspect, so
-         * the anchors — percentages of the sheet — stay on their places at
-         * every size.
-         */}
-        <div
-          className="atlas__sheet"
-          style={{
-            inlineSize: world.atlas && canvasWidth > 0 ? `${canvasWidth}px` : `${String(zoom * 100)}%`,
-            aspectRatio: `${String(image?.width)} / ${String(image?.height)}`,
+      {/*
+       * The route strip floats over the top of the painting rather than
+       * sitting above it. In the flow, every line it gained (the key at the
+       * closest zoom, the list opening, a picked route's details) shrank the
+       * viewport, and the map — sized to cover the viewport — rescaled and
+       * slid under the finger that had just zoomed.
+       */}
+      <div className={`atlas__stage${(world.routes?.length ?? 0) > 0 ? " atlas__stage--routes" : ""}`}>
+        {(world.routes?.length ?? 0) > 0 ? <div className="atlas__route-controls">
+          <label><input type="checkbox" checked={showRoutes} onChange={(event) => setShowRoutes(event.target.checked)} /> Routes</label>
+          {atDetail ? <span>Solid: mapped · Dashed: approximate</span> : <span>Routes appear at the closest zoom.</span>}
+          {atDetail && showRoutes ? <details><summary>Roads and crossings ({routes.length})</summary>
+            {routes.length === 0 ? <p>Discover places to learn their routes.</p> : routes.map((route) =>
+              <button type="button" key={route.id} className="atlas__route-choice kad-focusable"
+                aria-pressed={routeId === route.id} onClick={() => setRouteId(route.id)}>{route.title}</button>)}
+          </details> : null}
+          {atDetail && showRoutes && selectedRoute ? <p className="atlas__route-info">{selectedRoute.title} · {selectedRoute.travelModes.join(", ")} ·
+            {selectedRoute.accuracy === "approximate" ? " Approximate course; conditions may vary." : " Mapped crossing."}</p> : null}
+        </div> : null}
+        <div className="atlas__viewport kad-scroll" ref={viewport} data-zoom={zoom}
+          onClick={(event) => {
+            // A tap on the painting itself puts the card away; a tap on a label opens one.
+            if (!(event.target as Element).closest("button")) setCardId(null);
           }}
-          data-testid="atlas-sheet"
-        >
-          {world.atlas ? <img className="atlas__painting atlas__underlay" src={world.image.src} alt="" draggable={false} /> : null}
-          {tiles && tileImage ? tiles.map((tile) => (
-            <img key={tile.src} className="atlas__tile" src={tile.src} alt="" draggable={false}
-              loading="lazy" width={tile.width} height={tile.height}
-              style={{ left: `${tile.x / tileImage.width * 100}%`, top: `${tile.y / tileImage.height * 100}%`,
-                width: `${tile.width / tileImage.width * 100}%`, height: `${tile.height / tileImage.height * 100}%` }} />
-          )) : <img
-            className="atlas__painting"
-            src={world.image.src}
-            width={world.image.width}
-            height={world.image.height}
-            alt=""
-            draggable={false}
-          />}
-          {zoom >= 2 ? world.atlas?.patches?.map((patch) => (
-            <div key={patch.id} className="atlas__detail-patch" data-patch={patch.id}
-              style={{ left: `${patch.bounds.x / 10}%`, top: `${patch.bounds.y / 10}%`,
-                width: `${patch.bounds.width / 10}%`, height: `${patch.bounds.height / 10}%` }}>
-              {patch.tiles.map((tile) => <img key={tile.src} className="atlas__tile" alt="" src={tile.src}
-                draggable={false} loading="lazy" width={tile.width} height={tile.height}
-                style={{ left: `${tile.x / patch.image.width * 100}%`, top: `${tile.y / patch.image.height * 100}%`,
-                  width: `${tile.width / patch.image.width * 100}%`, height: `${tile.height / patch.image.height * 100}%` }} />)}
-            </div>
-          )) : null}
-          {regions.map((r) => {
-            const found = Boolean(discoveries[r.placeId]);
-            const isLifting = lifting.includes(r.placeId);
-            // No cloud over found country, nor over the ground the party stands on.
-            if (!isLifting && (found || r.placeId === place?.id)) return null;
-            return <div key={r.placeId} aria-hidden="true" data-cloud={r.placeId}
-              className={`atlas__cloud${isLifting ? " atlas__cloud--lifting" : ""}`}
-              style={{ left: `${r.bounds.x / 10}%`, top: `${r.bounds.y / 10}%`,
-                width: `${r.bounds.width / 10}%`, height: `${r.bounds.height / 10}%` }} />;
-          })}
-          {trail ? <svg className="atlas__trail" aria-hidden="true" viewBox="0 0 1000 1000" preserveAspectRatio="none"
-            data-testid="explorer-trail">
-            <path className="atlas__trail-halo" d={trail} vectorEffect="non-scaling-stroke" />
-            <path className="atlas__trail-ink" d={trail} vectorEffect="non-scaling-stroke" />
-          </svg> : null}
-          {atDetail && showRoutes ? <svg className="atlas__routes" aria-hidden="true"
-            viewBox="0 0 1000 1000"
-            preserveAspectRatio="none">
-            {routes.map((route) => <g key={route.id} data-route={route.id} data-accuracy={route.accuracy}
-              className={routeId === route.id ? "atlas__route--selected" : undefined}>
-              <polyline className="atlas__route-halo" points={route.points.map((point) => `${point.x},${point.y}`).join(" ")} vectorEffect="non-scaling-stroke" />
-              <polyline className="atlas__route-line" points={route.points.map((point) => `${point.x},${point.y}`).join(" ")} vectorEffect="non-scaling-stroke" />
-            </g>)}
-          </svg> : null}
-          {visibleMapPlaces(world.places, new Set(Object.keys(discoveries))).map((known) => {
-            const anchor = known.anchor;
-            if (known.id === place?.id) return null;
-            const isDiscovered = Boolean(discoveries[known.id]);
-            // Small-scale labels wait until zoomed in.
-            if (step === 0 && known.kind === "location") return null;
-            // Regions open their card, found or not; a found site goes straight to its entry.
-            const isRegion = known.kind === "biome";
-            return (
-              <button key={known.id} type="button"
-                className={`atlas__landmark kad-focusable${isDiscovered ? "" : " atlas__landmark--region"}`}
-                style={{ left: `${anchor.x / 10}%`, top: `${anchor.y / 10}%` }}
-                aria-pressed={isRegion ? cardId === known.id : undefined}
-                onClick={() => (isRegion ? openCard(known.id) : selectEntry(known.id))}
-                aria-label={isRegion ? `About ${known.title}` : `Read about ${known.title}`}>
-                {known.title}
-              </button>
-            );
-          })}
-          {place && partyAnchor ? (
-            <div
-              className="atlas__pin"
-              ref={marker}
-              style={{
-                left: `${String(partyAnchor.x / 10)}%`,
-                top: `${String(partyAnchor.y / 10)}%`,
-              }}
-              data-place={place.id}
-              aria-current="location"
-            >
-              <span className="atlas__party" aria-hidden="true">
-                {[-1.8, 1.6, -0.7, 0.9, 0].map((dx, i) => (
-                  <span key={i} className="atlas__sparkle" style={{ "--dx": `${dx}em`, "--i": i } as CSSProperties} />
-                ))}
-                {party.slice(0, 4).map((member) => (
-                  <span className="atlas__face" key={member.playerId}>
-                    <CharacterPortrait
-                      backdrop
-                      species={member.character.species}
-                      accent={member.character.appearance.accent}
-                      characterClass={member.character.class}
-                      tier={member.character.tier}
-                      lit={false}
-                      className="atlas__face-art"
-                    />
-                  </span>
-                ))}
-              </span>
-              <span className="atlas__label">
-                {place.kind === "biome" ? <button type="button" className="atlas__place atlas__place--button kad-focusable"
-                  aria-label={`About ${place.title}`} onClick={() => openCard(place.id)}>{place.title}</button>
-                  : <span className="atlas__place">{place.title}</span>}
-                <span className="atlas__here">You are here</span>
-                {discoveries[place.id] ? <button type="button" className="atlas__read kad-focusable"
-                  onClick={() => selectEntry(place.id)} aria-label={`Read about ${place.title}`}>Field Guide</button> : null}
-              </span>
-            </div>
-          ) : null}
+          onScroll={(event) => {
+            const view = event.currentTarget;
+            const sheet = view.firstElementChild as HTMLElement | null;
+            if (!sheet?.offsetWidth || !sheet.offsetHeight) return;
+            updateAtlasView(scope, { center: {
+              x: (view.scrollLeft + view.clientWidth / 2) / sheet.offsetWidth * 1000,
+              y: (view.scrollTop + view.clientHeight / 2) / sheet.offsetHeight * 1000,
+            } });
+          }}>
+          {/*
+           * The sheet is `zoom` panes wide and keeps the painting's aspect, so
+           * the anchors — percentages of the sheet — stay on their places at
+           * every size.
+           */}
+          <div
+            className="atlas__sheet"
+            style={{
+              inlineSize: world.atlas && canvasWidth > 0 ? `${canvasWidth}px` : `${String(zoom * 100)}%`,
+              aspectRatio: `${String(image?.width)} / ${String(image?.height)}`,
+            }}
+            data-testid="atlas-sheet"
+          >
+            {world.atlas ? <img className="atlas__painting atlas__underlay" src={world.image.src} alt="" draggable={false} /> : null}
+            {tiles && tileImage ? tiles.map((tile) => (
+              <img key={tile.src} className="atlas__tile" src={tile.src} alt="" draggable={false}
+                loading="lazy" width={tile.width} height={tile.height}
+                style={{ left: `${tile.x / tileImage.width * 100}%`, top: `${tile.y / tileImage.height * 100}%`,
+                  width: `${tile.width / tileImage.width * 100}%`, height: `${tile.height / tileImage.height * 100}%` }} />
+            )) : <img
+              className="atlas__painting"
+              src={world.image.src}
+              width={world.image.width}
+              height={world.image.height}
+              alt=""
+              draggable={false}
+            />}
+            {zoom >= 2 ? world.atlas?.patches?.map((patch) => (
+              <div key={patch.id} className="atlas__detail-patch" data-patch={patch.id}
+                style={{ left: `${patch.bounds.x / 10}%`, top: `${patch.bounds.y / 10}%`,
+                  width: `${patch.bounds.width / 10}%`, height: `${patch.bounds.height / 10}%` }}>
+                {patch.tiles.map((tile) => <img key={tile.src} className="atlas__tile" alt="" src={tile.src}
+                  draggable={false} loading="lazy" width={tile.width} height={tile.height}
+                  style={{ left: `${tile.x / patch.image.width * 100}%`, top: `${tile.y / patch.image.height * 100}%`,
+                    width: `${tile.width / patch.image.width * 100}%`, height: `${tile.height / patch.image.height * 100}%` }} />)}
+              </div>
+            )) : null}
+            {regions.map((r) => {
+              const found = Boolean(discoveries[r.placeId]);
+              const isLifting = lifting.includes(r.placeId);
+              // No cloud over found country, nor over the ground the party stands on.
+              if (!isLifting && (found || r.placeId === place?.id)) return null;
+              return <div key={r.placeId} aria-hidden="true" data-cloud={r.placeId}
+                className={`atlas__cloud${isLifting ? " atlas__cloud--lifting" : ""}`}
+                style={{ left: `${r.bounds.x / 10}%`, top: `${r.bounds.y / 10}%`,
+                  width: `${r.bounds.width / 10}%`, height: `${r.bounds.height / 10}%` }} />;
+            })}
+            {trail ? <svg className="atlas__trail" aria-hidden="true" viewBox="0 0 1000 1000" preserveAspectRatio="none"
+              data-testid="explorer-trail">
+              <path className="atlas__trail-halo" d={trail} vectorEffect="non-scaling-stroke" />
+              <path className="atlas__trail-ink" d={trail} vectorEffect="non-scaling-stroke" />
+            </svg> : null}
+            {atDetail && showRoutes ? <svg className="atlas__routes" aria-hidden="true"
+              viewBox="0 0 1000 1000"
+              preserveAspectRatio="none">
+              {routes.map((route) => <g key={route.id} data-route={route.id} data-accuracy={route.accuracy}
+                className={routeId === route.id ? "atlas__route--selected" : undefined}>
+                <polyline className="atlas__route-halo" points={route.points.map((point) => `${point.x},${point.y}`).join(" ")} vectorEffect="non-scaling-stroke" />
+                <polyline className="atlas__route-line" points={route.points.map((point) => `${point.x},${point.y}`).join(" ")} vectorEffect="non-scaling-stroke" />
+              </g>)}
+            </svg> : null}
+            {visibleMapPlaces(world.places, new Set(Object.keys(discoveries))).map((known) => {
+              const anchor = known.anchor;
+              if (known.id === place?.id) return null;
+              const isDiscovered = Boolean(discoveries[known.id]);
+              // Small-scale labels wait until zoomed in.
+              if (step === 0 && known.kind === "location") return null;
+              // Regions open their card, found or not; a found site goes straight to its entry.
+              const isRegion = known.kind === "biome";
+              return (
+                <button key={known.id} type="button"
+                  className={`atlas__landmark kad-focusable${isDiscovered ? "" : " atlas__landmark--region"}`}
+                  style={{ left: `${anchor.x / 10}%`, top: `${anchor.y / 10}%` }}
+                  aria-pressed={isRegion ? cardId === known.id : undefined}
+                  onClick={() => (isRegion ? openCard(known.id) : selectEntry(known.id))}
+                  aria-label={isRegion ? `About ${known.title}` : `Read about ${known.title}`}>
+                  {known.title}
+                </button>
+              );
+            })}
+            {place && partyAnchor ? (
+              <div
+                className="atlas__pin"
+                ref={marker}
+                style={{
+                  left: `${String(partyAnchor.x / 10)}%`,
+                  top: `${String(partyAnchor.y / 10)}%`,
+                }}
+                data-place={place.id}
+                aria-current="location"
+              >
+                <span className="atlas__party" aria-hidden="true">
+                  {[-1.8, 1.6, -0.7, 0.9, 0].map((dx, i) => (
+                    <span key={i} className="atlas__sparkle" style={{ "--dx": `${dx}em`, "--i": i } as CSSProperties} />
+                  ))}
+                  {party.slice(0, 4).map((member) => (
+                    <span className="atlas__face" key={member.playerId}>
+                      <CharacterPortrait
+                        backdrop
+                        species={member.character.species}
+                        accent={member.character.appearance.accent}
+                        characterClass={member.character.class}
+                        tier={member.character.tier}
+                        lit={false}
+                        className="atlas__face-art"
+                      />
+                    </span>
+                  ))}
+                </span>
+                <span className="atlas__label">
+                  {place.kind === "biome" ? <button type="button" className="atlas__place atlas__place--button kad-focusable"
+                    aria-label={`About ${place.title}`} onClick={() => openCard(place.id)}>{place.title}</button>
+                    : <span className="atlas__place">{place.title}</span>}
+                  <span className="atlas__here">You are here</span>
+                  {discoveries[place.id] ? <button type="button" className="atlas__read kad-focusable"
+                    onClick={() => selectEntry(place.id)} aria-label={`Read about ${place.title}`}>Field Guide</button> : null}
+                </span>
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
     </section>

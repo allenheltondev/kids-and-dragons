@@ -39,7 +39,12 @@
   /* The stage keeps the larger of half the pane and a full-width 16:9 strip
      (stage-inset.ts storyStageHeight); the plate may have the rest. */
   max-block-size: max(50%, calc(100cqh - 56.25cqw));
+  /* Never squeezed by the head: its height is what the stage frames around. */
+  flex-shrink: 0;
   overflow-y: auto;
+  /* A phone's pane can scroll a long scene. The gutter is kept whether or not
+     it does, so the bar arriving cannot narrow the story and rewrap it. */
+  scrollbar-gutter: stable;
   padding: var(--space-6, 1.5em) var(--space-4, 1em) var(--space-4, 1em);
   background: linear-gradient(
     to bottom,
@@ -50,9 +55,13 @@
   pointer-events: auto;
 }
 
-/* The chapter stays at the top; spare space belongs before the story. */
+/* The chapter stays at the top; spare space belongs before the story. It
+   gives way before the plate does on a very short pane, so an offer arriving
+   up here can never shrink the plate the stage is framed around. */
 .narration__head {
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  min-block-size: 0;
+  overflow: hidden;
   padding: var(--space-4, 1em);
   padding-inline-end: 2.5em;
   text-shadow: 0 0.1em 0.5em #0d0b1a;
@@ -79,6 +88,14 @@
   color: var(--kad-ink-dim);
   font-size: 0.85em;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The holder's phone has dropped: the seat stays, the name does not. */
+.narration__turn--empty {
+  visibility: hidden;
 }
 
 .narration__body {
@@ -140,8 +157,15 @@
   pointer-events: none;
 }
 
-.narration--fight .narration__head {
+/* The chapter label goes; a hand-off in the air stays. The strip is anchored
+   to the bottom, so an offer here stacks upward over the board and the
+   caption under it does not move. */
+.narration--fight .narration__chapter {
   display: none;
+}
+
+.narration--fight .narration__head {
+  padding-block: 0;
 }
 
 .narration--fight .narration__body {
@@ -206,11 +230,14 @@
 /*
  * Hand-offs (spec §9.4). Sized a step under the choices: what the party is
  * being *asked* outranks what two of them are passing to each other, and the
- * table should be able to take it in without losing the question.
+ * table should be able to take it in without losing the question. Under the
+ * chapter, over the art — so each one carries a little plate of its own —
+ * and one line apiece, so a long item name cannot make an offer two rows.
  */
 .narration__trades {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: var(--space-2, 0.5em);
   margin: 0;
   padding: 0;
@@ -221,11 +248,25 @@
   display: flex;
   align-items: center;
   gap: var(--space-2, 0.5em);
+  max-inline-size: min(var(--kad-measure, 34em), 100%);
   padding: var(--space-2, 0.5em) var(--space-4, 1em);
   border: 0.08em dashed var(--color-border, rgba(190, 178, 255, 0.16));
   border-radius: var(--radius-pill, 999em);
+  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 78%, transparent);
   font-size: var(--font-size-md, 1em);
   color: var(--color-text-muted, #b7b0d8);
+  text-shadow: none;
+}
+
+.narration__trade > span {
+  min-inline-size: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.narration__trade > svg {
+  flex: 0 0 auto;
 }
 
 .narration__choice,
@@ -249,7 +290,9 @@
  */
 .narration__choice--picked {
   border-color: #6fe6ff;
-  border-width: 0.16em;
+  /* The thicker rim is an outline, not a wider border: a border would grow
+     the pill and rewrap the row every time somebody leaned on a choice. */
+  outline: 0.08em solid #6fe6ff;
   background: rgba(111, 230, 255, 0.14);
   box-shadow: 0 0 0.8em rgba(111, 230, 255, 0.35);
 }
@@ -262,18 +305,14 @@
 }
 
 /*
- * Who has locked in a vote (`RunState.prompt.votes`). Plain text, not the
- * cyan of a pick still being made: cyan means "about to", a name means "done".
+ * Who has locked in a vote (`RunState.prompt.votes`), as ticks in each
+ * voter's color — not the cyan of a pick still being made: cyan means
+ * "about to", a filled tick means "done".
  */
 .narration__voters {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1, 0.25em);
   margin-inline-start: auto;
   color: var(--color-text-muted, #b7b0d8);
   font-size: 0.8em;
-  font-weight: 500;
-  white-space: nowrap;
 }
 
 .narration__picker {
@@ -284,6 +323,7 @@
 
 .narration__aim {
   align-self: flex-start;
+  max-inline-size: 100%;
   margin: 0;
   padding: var(--space-2, 0.5em) var(--space-4, 1em);
   border: 0.16em solid #6fe6ff;
@@ -291,6 +331,24 @@
   background: rgba(111, 230, 255, 0.14);
   font-size: var(--font-size-lg, 1.25em);
   font-weight: 600;
+}
+
+/* One line, always: a long power name is cut short rather than wrapped,
+   because a second line would lift the caption above it. */
+.narration__aim > span {
+  min-inline-size: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.narration__aim > svg {
+  flex: 0 0 auto;
+}
+
+/* Nobody aiming: the seat is held, empty. */
+.narration__aim--empty {
+  visibility: hidden;
 }
 
 .narration__prompt {
@@ -327,7 +385,9 @@
   50% { box-shadow: 0 0 1.2em rgba(111, 230, 255, 0.55); }
 }
 
-.narration__aim {
+/* The seat is always there, so this runs when a pick fills it rather than
+   when the element mounts. */
+.narration__aim:not(.narration__aim--empty) {
   animation: narration-arrive 260ms ease-out;
 }
 
