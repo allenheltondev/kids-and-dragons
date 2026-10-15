@@ -871,7 +871,7 @@
             "to": "roller"
           }
         ],
-        "narration": "One, two, THREE, and the wagon comes out with a noise like a giant boot leaving a puddle. The drover gives you a brave whistle and calls you all \"mudlarks\", which is a compliment."
+        "narration": "One, two, THREE, and the wagon comes out with a noise like a giant boot leaving a puddle. The drover gives you a brave whistle and calls you \"mudlarks\", which is a compliment."
       },
       "onFailure": {
         "goto": "scene_dusk_wolves",
@@ -1430,7 +1430,7 @@
     },
     "scene_charm_walk": {
       "type": "story",
-      "narration": "Walking back to your fire in the dark, the tuned charm will not keep quiet. It sings at every gem wagon you pass. \"Listen with it,\" Mother Thrum told you. \"Then tell yourselves what you heard.\" The queue is asleep, mostly. Where do you hold it up?",
+      "narration": "Walking back to your fire in the dark, the tuned charm will not keep quiet. It sings at every gem wagon you pass. \"Listen with it,\" Mother Thrum told you. \"Then work out what you heard.\" The queue is asleep, mostly. Where do you hold it up?",
       "choices": [
         {
           "id": "wagons",
@@ -1758,11 +1758,11 @@
       ],
       "onVictory": {
         "goto": "end_forded",
-        "narration": "The drakes sulk off downstream with one loaf each, and the drovers cheer as you all shove the wagon up onto the north bank."
+        "narration": "The drakes sulk off downstream with one loaf each, and the drovers cheer as you shove the wagon up onto the north bank."
       },
       "onDefeat": {
         "goto": "end_swept_setback",
-        "narration": "A drake flicks its tail, the wagon goes over, and the whole lot of you go with it, bread and bags and all, off into the current."
+        "narration": "A drake flicks its tail, the wagon goes over, and you go with it, bread and bags and all, off into the current."
       }
     },
     "scene_surge_scarves_help": {
@@ -1817,7 +1817,7 @@
       "discovers": [
         "biome.enchanted_woods"
       ],
-      "narration": "The current takes you a long, long way west, through the marsh's tangles and out the far side, three days later than you meant to arrive anywhere. You wash up on the flooded paths of the Enchanted Woods with wet bags, a cold supper, and a drake-shaped grudge. It is not the road you chose, and it cost you time, but you are all together and the charm is still humming.",
+      "narration": "The current takes you a long, long way west, through the marsh's tangles and out the far side, three days later than you meant to arrive anywhere. You wash up on the flooded paths of the Enchanted Woods with wet bags, a cold supper, and a drake-shaped grudge. It is not the road you chose, and it cost you time, but you made it out and the charm is still humming.",
       "heal": 3,
       "onEnter": [
         {

@@ -47,6 +47,7 @@ import type {
   Effect,
   EncounterMap,
   EndingScene,
+  NarrationVariant,
   Scene,
   SceneId,
 } from "./types/chapter.js";
@@ -88,6 +89,7 @@ import { assignPlayerColors } from "./player-colors.js";
 import { tierForLevel } from "./rules.js";
 import { addItem, addQuestItem, freeSlots, hasItem, removeItem, swapItem, useConsumable } from "./inventory.js";
 import { sceneChoices, visibleChoices } from "./chapter-graph.js";
+import { composeNarration, fillTokens } from "./narration.js";
 import { loadDie, readDie } from "./playtest.js";
 
 // ---------------------------------------------------------------------------
@@ -585,7 +587,8 @@ function openScenePrompt(
       }
       // Hidden, never disabled (architecture §5). A scene where this comes back
       // empty is an authoring bug that validateChapter reports as a DEAD_END.
-      const options = visibleChoices(scene.choices, party(draft));
+      const who = party(draft);
+      const options = visibleChoices(scene.choices, who);
       const isVote = scene.type === "choice_point";
       // choice_point puts it to the party (spec §6.1). A story beat is one
       // player's call, taken in turns, so it is not a race to the first tap.
@@ -595,7 +598,9 @@ function openScenePrompt(
       draft.prompt = {
         kind: "choice",
         sceneId,
-        options: options.map((c) => ({ id: c.id, label: c.label, icon: c.icon })),
+        // Labels take tokens (never variants), filled here so the phones
+        // render the prompt as-is and a reload shows the same words (#159).
+        options: options.map((c) => ({ id: c.id, label: fillTokens(c.label, who), icon: c.icon })),
         forPlayerIds: isVote
           ? draft.party.map((m) => m.playerId)
           : turn
@@ -615,7 +620,7 @@ function openScenePrompt(
           sceneId,
           stat: scene.stat,
           tn: scene.tn,
-          prompt: scene.prompt,
+          prompt: fillTokens(scene.prompt, party(draft)),
           characterId: everyone[0] as string,
           group: { pending: everyone, rolls: [] },
         };
@@ -627,7 +632,7 @@ function openScenePrompt(
         sceneId,
         stat: scene.stat,
         tn: scene.tn,
-        prompt: scene.prompt,
+        prompt: fillTokens(scene.prompt, party(draft)),
         characterId: roller.character.id,
       };
       return undefined;
@@ -642,14 +647,7 @@ function openScenePrompt(
          * of the branch's, so the beat still reads even though the board
          * never goes up.
          */
-        const narration = [scene.narration, scene.onVictory.narration]
-          .filter(Boolean)
-          .join("\n\n");
-        return takeBranch(
-          draft,
-          { ...scene.onVictory, ...(narration ? { narration } : {}) },
-          ctx,
-        );
+        return takeBranch(draft, scene.onVictory, ctx, undefined, scene.narration);
       }
       // An encounter waits on a ready-up before the board goes up. That pause
       // is deliberate: three phones have to swap to a combat UI, and a fight
@@ -661,11 +659,45 @@ function openScenePrompt(
   }
 }
 
+/**
+ * The line that explains *how you got here*: a branch's narration and its
+ * variants, plus (for an auto-resolved fight) the encounter's own text in
+ * front of it.
+ */
+interface Transition {
+  narration?: string;
+  variants?: NarrationVariant[];
+  /** Shown before the branch's text, unconditionally. */
+  lead?: string;
+}
+
+/**
+ * The scene's narration as the table reads it (#159): the branch's line (with
+ * its variants) above the scene's own text (with its variants), then the
+ * `{facets}` / `{party}` tokens filled. Evaluated against the party as it is
+ * now — the caller runs this after the scene's `onEnter`.
+ */
+function composeSceneNarration(draft: RunState, scene: Scene, transition?: Transition): string {
+  const who = party(draft);
+  const base =
+    scene.type === "check" ? (scene.narration ?? scene.prompt) : (scene.narration ?? "");
+  const authored = scene.type === "encounter" ? base : composeNarration(base, scene.variants, who);
+  const branchLine = transition
+    ? [transition.lead, composeNarration(transition.narration ?? "", transition.variants, who)]
+        .filter((part): part is string => !!part)
+        .join("\n\n")
+    : "";
+  // A branch's narration is the line that explains *how you got here*; showing
+  // it above the destination's text is how it reads at the table.
+  const whole = branchLine ? `${branchLine}\n\n${authored}`.trim() : authored;
+  return fillTokens(whole, who);
+}
+
 function enterSceneDraft(
   draft: RunState,
   sceneId: SceneId,
   ctx: EngineContext,
-  transitionNarration?: string,
+  transition?: Transition,
 ): Presentation | undefined {
   const chapter = requireChapter(ctx);
   const scene = requireScene(chapter, sceneId);
@@ -689,12 +721,6 @@ function enterSceneDraft(
   draft.trades = [];
   draft.phase = scene.type === "encounter" ? "encounter" : scene.type === "check" ? "check" : "scene";
 
-  const authored =
-    scene.type === "check" ? (scene.narration ?? scene.prompt) : (scene.narration ?? "");
-  // A branch's narration is the line that explains *how you got here*; showing
-  // it above the destination's text is how it reads at the table.
-  draft.narration = transitionNarration ? `${transitionNarration}\n\n${authored}`.trim() : authored;
-
   /*
    * The trail, for the end-of-chapter recap (roadmap chapter 7).
    *
@@ -716,6 +742,11 @@ function enterSceneDraft(
   if (scene.type === "rest" && scene.heal) {
     for (const member of draft.party) heal(member, scene.heal);
   }
+
+  // Composed after `onEnter`, on purpose: variants and tokens read the party
+  // as it is when the scene opens, so an item this scene grants counts (#159).
+  // Stored rather than recomputed, so a reload mid-scene reads the same words.
+  draft.narration = composeSceneNarration(draft, scene, transition);
 
   const enter: Presentation = {
     kind: "SCENE_ENTER",
@@ -750,9 +781,14 @@ function takeBranch(
   branch: Branch,
   ctx: EngineContext,
   rollerCharacterId?: string,
+  lead?: string,
 ): Presentation | undefined {
   applyEffectsDraft(draft, branch.effects, ctx, rollerCharacterId);
-  return enterSceneDraft(draft, branch.goto, ctx, branch.narration);
+  return enterSceneDraft(draft, branch.goto, ctx, {
+    ...(lead ? { lead } : {}),
+    ...(branch.narration !== undefined ? { narration: branch.narration } : {}),
+    ...(branch.variants ? { variants: branch.variants } : {}),
+  });
 }
 
 // ---------------------------------------------------------------------------

@@ -63,6 +63,8 @@ function intended(chapterId, sceneId, ids) {
 
 describe("Gemfall reads cleanly", () => {
   for (const { id, raw } of chapters) {
+    // Scans the raw file, so narration variants (`variants[].text`) and branch
+    // variants are held to the same rule as everything else.
     it(`${id} has no em or en dashes`, () => {
       const lines = raw.split("\n").map((l, i) => [i + 1, l]).filter(([, l]) => /[–—]/.test(l));
       expect(lines.map(([n, l]) => `${n}: ${l.trim().slice(0, 80)}`)).toEqual([]);
@@ -82,7 +84,22 @@ const PARTY_COUNT = [
   /\byour (?:two|three|four) (?:names|heads|hands)\b/i,
   /\broom for (?:two|three|four)\b/i,
   /\bthe other (?:two|three) heads\b/i,
+  // "both of you", "each of you", "the two of you" count a table of one to four as two.
+  // ("neither of you" is deliberately not here: it reads as party plus an NPC.)
+  /\b(?:both|each) of you\b/i,
+  /\bthe two of you\b/i,
 ];
+
+/**
+ * Party-count wording that is right because it counts the party *and someone
+ * else* (an NPC, a creature), not the table. Exact substring, in the named
+ * chapter, with the reason. Keep it short: most hits should be reworded.
+ */
+const PARTY_COUNT_ALLOWED = [
+  // { chapter: "gemfall-04a", substring: "both of you", reason: "you and Pellam" },
+];
+const allowed = (chapterId, line) =>
+  PARTY_COUNT_ALLOWED.some((a) => a.chapter === chapterId && line.includes(a.substring));
 
 describe("Gemfall never assumes how many players are at the table", () => {
   for (const { id, raw } of chapters) {
@@ -90,7 +107,7 @@ describe("Gemfall never assumes how many players are at the table", () => {
       const lines = raw
         .split("\n")
         .map((l, i) => [i + 1, l])
-        .filter(([, l]) => PARTY_COUNT.some((re) => re.test(l)));
+        .filter(([, l]) => PARTY_COUNT.some((re) => re.test(l)) && !allowed(id, l));
       expect(lines.map(([n, l]) => `${n}: ${l.trim().slice(0, 100)}`)).toEqual([]);
     });
   }
@@ -132,7 +149,9 @@ describe("every Gemfall choice lands on a scene that shows its result", () => {
         const [src] = Object.keys(scenes).filter((o) => o !== sid && sid.startsWith(`${o}_`)).sort((a, b) => b.length - a.length);
         if (!src) continue;
         const choice = (scenes[src].choices ?? []).find((c) => c.goto === sid && sid === `${src}_${c.id}`);
-        if (choice && (s.choices ?? []).length !== 1) busy.push(sid);
+        // A `variants` list on a result scene is fine (it changes how the answer
+        // reads); a `when` on its way out is not (it could hide the one exit).
+        if (choice && ((s.choices ?? []).length !== 1 || s.choices[0].when !== undefined)) busy.push(sid);
       }
       expect(busy).toEqual([]);
     });

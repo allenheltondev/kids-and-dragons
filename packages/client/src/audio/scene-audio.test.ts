@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 import type { Chapter } from "@kad/shared";
 import { makeState, makeMember, makeCharacter } from "../testing/fixtures";
-import { ambienceForScene, sceneCuesFor, musicForScene } from "./scene-audio";
+import { ambienceForScene, sceneCuesFor, musicForScene, reachableScenes } from "./scene-audio";
 import gallery from "../../../../content/chapters/gemfall-08.json";
+import ashfall from "../../../../content/chapters/gemfall-06.json";
 import gate from "../../../../content/chapters/gemfall-03b.json";
 import { musicUrl } from "./paths";
 
@@ -41,10 +42,74 @@ describe("Gemfall scene sound", () => {
     expect(musicUrl("whispering_marsh")).toBe("/assets/audio/music/gemfall-marsh.webm");
     expect(musicUrl("exchange")).toBe("/assets/audio/music/gemfall-citadel.webm");
     expect(musicUrl("mount_red_sky")).toBe("/assets/audio/music/gemfall-mountain.webm");
-    const chapter = { id: "gemfall-06", biome: "red_sky_foothills" } as Chapter;
+    const chapter = ashfall as unknown as Chapter;
     const next = { ...state("scene_truth_table"), chapterId: chapter.id };
     expect(musicForScene(chapter, next)).toBe("gemfall-citadel");
     expect(musicForScene(chapter, { ...next, phase: "lobby" })).toBeNull();
     expect(musicForScene(chapter, { ...next, chapterId: "gemfall-08" })).toBeNull();
+  });
+});
+
+/** Independent of scene-audio.ts: the test walks the JSON itself, so a wrong helper cannot pass its own check. */
+function gotoTargets(node: unknown, out: string[] = []): string[] {
+  if (Array.isArray(node)) node.forEach((child) => gotoTargets(child, out));
+  else if (node && typeof node === "object") {
+    for (const [key, value] of Object.entries(node)) {
+      if (key === "goto" && typeof value === "string") out.push(value);
+      else gotoTargets(value, out);
+    }
+  }
+  return out;
+}
+
+describe("Ashfall citadel music", () => {
+  const chapter = ashfall as unknown as Chapter;
+  const inAshfall = (sceneId: string) => ({ ...state(sceneId), chapterId: chapter.id });
+
+  it("plays the citadel track for the scenes named in issue #168", () => {
+    for (const sceneId of [
+      "scene_ledger", "scene_told_wardens_room", "scene_told_gatherers_room", "scene_kept_close_room",
+      "scene_declared_restore", "scene_declared_hoard", "scene_declared_leash",
+      "scene_record_restore", "scene_record_hoard", "scene_record_leash",
+    ]) {
+      expect(musicForScene(chapter, inAshfall(sceneId)), sceneId).toBe("gemfall-citadel");
+    }
+  });
+
+  it("plays the citadel track for every scene reachable from the gate", () => {
+    const reachable = reachableScenes(chapter, "scene_citadel_gate");
+    expect(reachable.size).toBeGreaterThan(40);
+    for (const sceneId of reachable) {
+      expect(musicForScene(chapter, inAshfall(sceneId)), sceneId).toBe("gemfall-citadel");
+    }
+  });
+
+  it("keeps one continuous track on a path from the gate to rest_end_ashfall", () => {
+    const parent = new Map<string, string | null>([["scene_citadel_gate", null]]);
+    const queue = ["scene_citadel_gate"];
+    for (let i = 0; i < queue.length; i++) {
+      for (const target of gotoTargets(chapter.scenes[queue[i]!])) {
+        if (!parent.has(target) && chapter.scenes[target]) {
+          parent.set(target, queue[i]!);
+          queue.push(target);
+        }
+      }
+    }
+    const path: string[] = [];
+    for (let id: string | null | undefined = "rest_end_ashfall"; id; id = parent.get(id)) path.unshift(id);
+    expect(path[0]).toBe("scene_citadel_gate");
+    for (const sceneId of path) expect(musicForScene(chapter, inAshfall(sceneId)), sceneId).toBe("gemfall-citadel");
+  });
+
+  it("leaves the foothills before the gate on the biome track", () => {
+    for (const sceneId of ["scene_arrival", "scene_crab", "scene_doorstep", "encounter_crab", "rest_end_shut_out"]) {
+      expect(musicForScene(chapter, inAshfall(sceneId)), sceneId).toBe("red_sky_foothills");
+    }
+  });
+
+  it("does not claim same-named scenes in other chapters", () => {
+    const other = gallery as unknown as Chapter;
+    expect(musicForScene(other, { ...state("scene_record_leash"), chapterId: other.id })).toBe(other.biome);
+    expect(musicForScene(other, { ...state("scene_truth_table"), chapterId: other.id })).toBe(other.biome);
   });
 });
