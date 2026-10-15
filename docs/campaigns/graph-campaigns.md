@@ -340,11 +340,74 @@ sees it, and nothing ships it. `campaign-graph.test.ts` holds it to the parser a
 | Shape — fields, kinds, policies, `version: 1`, id patterns, no unknown keys | `schemas/campaign.schema.json` (`content:validate`, editors) |
 | Every name resolves — entry, edge ends, guard and effect targets, flags declared, node/variant chapters listed, every listed chapter played, no exit from an ending, at least one ending | `parseCampaignGraph` — run by `content:validate` **and** at server startup (the loader refuses the content set) |
 | No chapter of a graph campaign declares `route` | `content:validate` |
-| The graph can be walked — reachability, softlocks, unintentional cycles, `irreversible` claims, dead locked edges | #193 |
+| The graph can be walked — reachability, dead ends, softlocks, unintentional cycles, `irreversible` claims, dead locked edges, contradictory guards, repeated ids | `lintCampaignGraph` (`campaign-graph-lint.ts`) — run by `content:validate` (errors fail, warnings print) **and** at server startup (errors only). See [Validation](#validation). |
 
 `parseCampaignGraph` returns `{ graph, problems }`; `graph` is non-null only when there are no
 problems, and is normalized: defaults filled (`revisit`, `blocked`), `nodeOrder`/`edgeOrder`,
 `exits`/`entrances` per node in authored edge order, `endings`, sorted `flags`.
+
+### Validation
+
+Once every name resolves, `lintCampaignGraph(graph, options)` asks whether the graph can be
+*walked*. Every finding has a stable `code`, a JSON-pointer `path`, a `message` naming the node or
+edge, and a `hint` saying what to change. **Errors** fail `content:validate` and refuse the content
+set at server startup; **warnings** (marked ⚠) only print in `content:validate`. Ordered campaigns
+never reach it — Gemfall's validator output is unchanged.
+
+**Static checks** read the edges and ignore guards ("possibly reachable"):
+
+| Code | Error when |
+|---|---|
+| `UNREACHABLE_NODE` | no chain of edges leads to the node from `entry` |
+| `NO_ENDING_REACHABLE` | no ending can be reached from `entry` |
+| `DEAD_END` | a reachable non-ending node has no exits at all |
+| `CANNOT_FINISH` | a reachable node has exits, but none of its routes ever reaches an ending |
+| `UNINTENTIONAL_CYCLE` | a loop uses only `forward`/`sideways` edges (a self-loop counts). The message shows the loop and the edge to mark `"kind": "return"`. Loops through a `return` edge are fine |
+| `LOCKED_EDGE_NEVER_UNLOCKED` | an edge is `locked: true` and no edge has an `unlock` effect for it |
+| `GUARD_CONTRADICTION` | one guard cannot hold: `flag` and `notFlag` the same flag, `visited`/`notVisited`, `completed`/`notCompleted`, `traversed`/`notTraversed` the same id, `completed` with `notVisited`, `outcome` with `notCompleted`/`notVisited` of the same node |
+| `GUARD_FLAG_NEVER_SET` ⚠ | a guard needs a flag no edge effect and no chapter on the graph sets true |
+| `DUPLICATE_KEY` | (`content:validate` only, reads the file text) the same node or edge id appears twice in one object; JSON would keep the last and silently drop the first |
+
+**The softlock search** is the part a static check cannot do: whether a *sequence* of choices
+leaves the party with nowhere to go. It explores every state a party can be in at an exit choice —
+the node plus the journey facts that can change what is available (flags, visited/completed nodes,
+latest outcomes, taken edges, lock overrides) — by calling the same `exitsFrom`, `arrivalAt` and
+`chapterAtNode` the runtime uses, and applying edge effects, `once`, `lock`/`unlock`, `revisit`
+policies and guards exactly as [§4](#4-edges) and [§6](#6-visits-completion-and-resuming) say. The
+search is breadth-first, so every path it prints is a shortest one.
+
+| Code | Reported when |
+|---|---|
+| `STRANDED` | a reachable state at a non-ending node has **every** exit unavailable. The message gives the path (`start at "a" -[e1]-> "b" (setback) -[e2]-> ...`) and why each exit is closed (locked / spent / closed / guard) |
+| `TRAPPED` | a state still has exits, but from it **no ending can ever be reached** (a `once` edge used up, a `closed` place completed, a `lock`, a flag that cannot be set back). One finding per node, at the first point of no return |
+| `NO_ENDING_WINNABLE` | an ending is connected to the entry but no play-through can enter one |
+| `NODE_NEVER_ENTERED` / `ENDING_NEVER_REACHED` | a node (an ending) has incoming edges but no play-through can enter it — every edge into it is locked, guarded, spent or closed whenever the party stands at its start |
+| `EDGE_NEVER_AVAILABLE` ⚠ | an edge out of a node the party reaches is never available in any state |
+| `IRREVERSIBLE_NOT` | an edge marked `irreversible` can be followed by a path back into its `from` node. The claim is checked against the same search, so a way back closed by a guard, `once` or `lock` counts as closed |
+| `SEARCH_TRUNCATED` ⚠ | the search hit its state cap (default 50,000); the "never"/"trapped" checks are skipped because they would be guesses. `STRANDED` findings made before the cap are still real |
+
+What the search **assumes**, so you know what a clean result means:
+
+- **Completion branches.** When a node's chapter finishes, both outcomes (`success`, `setback`) are
+  explored wherever an `outcome` guard reads them. A graph must have an exit for each.
+- **Chapters write flags only on completion**, and the search knows which flags a chapter can
+  write only through `chapterFlags`. `content:validate` and the loader read each chapter's
+  `setFlag` effects (`chapterFlagWrites`): a flag the chapter never writes keeps its value; one it
+  can set true comes out true *or unchanged*; one it can set false, false or unchanged. For a
+  chapter the search cannot see (a placeholder fixture chapter, a chapter that failed to load)
+  **every** flag may come out either way — the conservative reading, so "unreachable" and "cannot
+  finish" are never artefacts of ignorance. A `STRANDED` path can, rarely, rely on a flag value a
+  real chapter would not produce; the path is printed so you can judge.
+- **A chapter's own choices are not modelled** — only the union of what it can set. A chapter that
+  sets `found_the_lens` on one path and not another counts as able to do either.
+- **Route-set forks** (setting a member clears the rest) are applied to edge effects and chapter
+  results when the campaign's `routeSets` are passed, as `content:validate` and the loader do.
+- Only journey facts are tracked, never the party (guards cannot read it anyway, §4).
+
+Severity choices: a guard that can never hold is a **warning** (it strands nobody by itself; if it
+strands somebody, the search says so as an error), a guard that contradicts itself is an **error**
+(it is plainly a typo), and a node or ending nothing can ever enter is an **error** (dead content
+the player can never see).
 
 ---
 
@@ -355,7 +418,7 @@ its issue defines it. Where each attaches:
 
 | Issue | Attaches to |
 |---|---|
-| #193 validation | `ParsedCampaignGraph` (adjacency already built); hooks into `checkGraphCampaign` in `tools/content/validate.mjs`. Uses `kind` to tell an intentional revisit from an accidental cycle. |
+| #193 validation | **Done** — [Validation](#validation). `lintCampaignGraph` reads `ParsedCampaignGraph`; hooked into `checkGraphCampaign` (`tools/content/validate.mjs`) and the server loader's `checkCampaign`. A new field that changes who can go where (a rift, a world-state guard) must teach the search: add it to what `exitAvailability`/`exitsFrom` read and, if it is state, to the tracked facts in `explore`. |
 | #194 runtime | `JourneyState` (shared type, stored on `CampaignProgressRecord`); the three transitions *enter / complete / take exit* with the semantics of [§6](#6-visits-completion-and-resuming); `ContentStore.chapterAt` grows a by-node sibling. |
 | #195 navigation UX | `exitsFrom` (availability, `visible`, reason), `arrivalAt` (revisits), `irreversible`, `blocked`, `label`. |
 | #196 rift links | a new optional `rift` on `GraphEdge` (one-way, single-use, timed, triggered, unstable, persistent, linked). `once` is the counting part of single-use; a rift adds the rest. New `ExitBlock` reasons go *after* the existing four. |
@@ -386,4 +449,7 @@ From `@kad/shared` (and importable directly by `.mjs` tools — type imports onl
 | `exitsFrom(graph, node, journey)` | every exit with availability and visibility |
 | `arrivalAt(graph, node, journey)` | `"new"` \| `"replay"` \| `"pass"` \| `"closed"` |
 | `chapterAtNode(graph, node, journey)` | the chapter entering would play |
+| `lintCampaignGraph(graph, { chapterFlags?, routeSets?, maxStates? })` | `{ findings: { code, severity, path, message, hint }[], search: { states, complete } }` |
+| `chapterFlagWrites(chapter)` | `{ setsTrue, setsFalse }` — what a chapter can write to the journey, for `chapterFlags` |
+| `duplicateJsonKeys(text)` | repeated keys in one JSON object, by pointer |
 | Types | `CampaignGraph`, `GraphNode`, `GraphEdge`, `GraphEdgeKind`, `RevisitPolicy`, `NodeVariant`, `GraphEnding`, `GraphCondition`, `GraphEffect`, `JourneyFacts`, `JourneyState`, `VisitStatus`, `NodeId`, `EdgeId` |
