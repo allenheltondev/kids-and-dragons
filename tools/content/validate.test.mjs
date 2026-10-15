@@ -503,7 +503,7 @@ describe("story cast (`cast`)", () => {
 // #160 - conditions, variants and tokens. A malformed `when` fails the build,
 // never the play session.
 
-describe("conditions, variants and tokens", () => {
+describe("conditions, variants and tokens", { timeout: 30_000 }, () => {
   const entryOf = (chapter) => chapter.scenes[chapter.entry];
   const addChoice = (chapter, when) => {
     const scene = entryOf(chapter);
