@@ -79,6 +79,12 @@
           "goto": "scene_brass_rope"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Cart driver"
+        }
+      ],
       "art": "scenes/gemfall/pride-marker-road"
     },
     "scene_mouthlands_walk": {
