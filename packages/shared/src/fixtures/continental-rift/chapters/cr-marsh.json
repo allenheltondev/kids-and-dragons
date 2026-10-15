@@ -1,0 +1,24 @@
+{
+  "$comment": "Continental Rift slice placeholder (#203) - NOT content, never shipped. The side trip from the Exchange; its completion rule grants Marsh Mettle.",
+  "id": "cr-marsh",
+  "campaignId": "continental-rift-slice",
+  "index": 2,
+  "title": "Mud and Lanterns",
+  "biome": "whispering_marsh",
+  "estimatedMinutes": 5,
+  "xpAward": 100,
+  "entry": "scene_reeds",
+  "scenes": {
+    "scene_reeds": {
+      "type": "story",
+      "narration": "The Marsh Approach squelches. A boggart with a lantern offers you a pot of thick, warm mud for your boots.",
+      "choices": [{ "id": "accept", "label": "Take the mud", "icon": "hand", "goto": "scene_mud" }]
+    },
+    "scene_mud": {
+      "type": "story",
+      "narration": "Your boots feel heavy and sure. Whatever comes next, you will not slip.",
+      "choices": [],
+      "outcome": "success"
+    }
+  }
+}

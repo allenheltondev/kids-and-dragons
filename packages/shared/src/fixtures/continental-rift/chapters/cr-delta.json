@@ -1,0 +1,24 @@
+{
+  "$comment": "Continental Rift slice placeholder (#203) - NOT content, never shipped. Ending node: riding the flood to the river mouth.",
+  "id": "cr-delta",
+  "campaignId": "continental-rift-slice",
+  "index": 4,
+  "title": "Home on the Meltwater",
+  "biome": "exchange",
+  "estimatedMinutes": 5,
+  "xpAward": 100,
+  "entry": "scene_raft",
+  "scenes": {
+    "scene_raft": {
+      "type": "story",
+      "narration": "You lash a raft together from the floating shelf and let the meltwater carry you out to where the river meets the sea.",
+      "choices": [{ "id": "drift", "label": "Drift out to sea", "icon": "arrow", "goto": "scene_home" }]
+    },
+    "scene_home": {
+      "type": "story",
+      "narration": "The river slows. Gulls circle. Behind you, very far away, the glacier gleams.",
+      "choices": [],
+      "outcome": "success"
+    }
+  }
+}
