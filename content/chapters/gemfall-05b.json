@@ -1234,8 +1234,9 @@
       "narration": "Halfway up the high paths stands a stone hut with a mossy roof, and an old bigfoot path-keeper sitting outside it with a book open on his knees. \"Visitors' book,\" he says proudly. \"Everybody who goes up, signs. Been kept since before MossHome had a name.\" The book is enormous. The oldest pages are not written at all. They are knotted.",
       "cast": [
         {
-          "figure": "characters/bigfoot",
-          "name": "Path-Keeper"
+          "figure": "cast/path_keeper",
+          "name": "Path-Keeper",
+          "size": "large"
         }
       ],
       "choices": [
@@ -1258,8 +1259,9 @@
       "narration": "You sign your names, in your best writing. The path-keeper reads them out loud, slowly, as if he is tasting them. Then he turns back a few pages and shows you a long column of names from this season, all going up, more than in any year he can remember. \"Busy mountain,\" he says, and blows on your ink to dry it.",
       "cast": [
         {
-          "figure": "characters/bigfoot",
-          "name": "Path-Keeper"
+          "figure": "cast/path_keeper",
+          "name": "Path-Keeper",
+          "size": "large"
         }
       ],
       "choices": [
@@ -1278,8 +1280,9 @@
       "prompt": "Make sense of the oldest knotted pages of the visitors' book",
       "cast": [
         {
-          "figure": "characters/bigfoot",
-          "name": "Path-Keeper"
+          "figure": "cast/path_keeper",
+          "name": "Path-Keeper",
+          "size": "large"
         }
       ],
       "roller": "party",
@@ -1426,7 +1429,7 @@
       "narration": "Past the wolves the path climbs into cloud, and in it, sitting on a rock with her tail wrapped round her knees, is a young dragonling with a gathering bag. \"I'm not lost,\" she says at once. \"I'm waiting for the cloud to go.\" A flock of embermoths drifts past you both, glowing, heading south, away from the mountain. She stares. \"They never go that way.\"",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/young_gatherer",
           "name": "Young Gatherer",
           "size": "small"
         },
@@ -1461,7 +1464,7 @@
       "narration": "You walk her up through the cloud together. On the way she tells you the one rule, the way every dragonling learns it: \"Take what the mountain drops. Never pry at what it holds.\" She says it twice, to be sure you have it. \"The grandmothers say it at the boundary stones. Nobody listens this year.\" At the top, the cloud ends all at once.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/young_gatherer",
           "name": "Young Gatherer",
           "size": "small"
         }
@@ -1482,7 +1485,7 @@
       "prompt": "Keep up with a drifting flock of embermoths in the cloud",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/young_gatherer",
           "name": "Young Gatherer",
           "size": "small"
         },
@@ -1505,7 +1508,7 @@
       "narration": "Your dragonling touches a claw to their brow and recites the gatherer's greeting: \"What the mountain drops, we keep. What it holds, we leave.\" The young gatherer's whole face lights up. \"You're from the foothills!\" She sticks to your side the rest of the climb, naming every rock, and at the top she points out her town's bell tower.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/young_gatherer",
           "name": "Young Gatherer",
           "size": "small"
         }

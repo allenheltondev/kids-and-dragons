@@ -303,6 +303,10 @@
         {
           "figure": "cast/cadet_linnet",
           "name": "Cadet Linnet"
+        },
+        {
+          "figure": "cast/rook",
+          "name": "Rook"
         }
       ],
       "narration": "Halfway up the side valley, two people step out onto the path at once, from opposite sides: a young warden cadet called Linnet, and a young mask called Rook. They glare at each other. Then they both turn to you. \"What did the other lot give you?\" they say together, and then glare at each other for saying it together.",
@@ -341,6 +345,10 @@
         {
           "figure": "cast/cadet_linnet",
           "name": "Cadet Linnet"
+        },
+        {
+          "figure": "cast/rook",
+          "name": "Rook"
         }
       ],
       "stat": "heart",
@@ -373,6 +381,16 @@
           "icon": "moon",
           "goto": "scene_choir"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/rook",
+          "name": "Rook"
+        },
+        {
+          "figure": "cast/cadet_linnet",
+          "name": "Cadet Linnet"
+        }
       ]
     },
     "scene_two_scouts_table_stone": {
@@ -381,6 +399,10 @@
         {
           "figure": "cast/cadet_linnet",
           "name": "Cadet Linnet"
+        },
+        {
+          "figure": "cast/rook",
+          "name": "Rook"
         }
       ],
       "narration": "You set the Table Stone down on the path, the stone from the truth-table at Redspire, logged twice. It hums. Linnet knows it from the citadel. Rook knows the note from the choir. They crouch on either side of it, listening, and forget to glare. \"It's the same stone,\" says Rook. \"It's the same stone,\" says Linnet.",
@@ -1756,6 +1778,10 @@
         {
           "figure": "cast/cadet_linnet",
           "name": "Cadet Linnet"
+        },
+        {
+          "figure": "cast/rook",
+          "name": "Rook"
         }
       ],
       "narration": "Linnet and Rook come running from opposite ends of the bend and stand beside you, one on each side. The wardens stare. The masks stare. Then, slowly, both sides put down their boxes and sacks, because their own people are standing with you, and you cannot grab something out from under your own people.",
