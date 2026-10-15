@@ -388,3 +388,66 @@ describe("things the party can try (#197)", () => {
     expect(screen.getByRole("status").textContent).toContain("Every way from here is shut right now.");
   });
 });
+
+describe("whose way it is (#199)", () => {
+  const SENSE: JourneyRiftActionView = {
+    action: "discover",
+    edge: "veil-rift",
+    label: "Sense where the rift leads",
+    way: "sense",
+    needs: { anyClass: ["starweaver"] },
+  };
+  const FORCE: JourneyRiftActionView = {
+    action: "open",
+    edge: "veil-rift",
+    label: "Force the seal open",
+    way: "force",
+    needs: { anyClass: ["thornguard"] },
+  };
+  const LANTERN: JourneyRiftActionView = {
+    action: "open",
+    edge: "veil-rift",
+    label: "Hold the Mosslight Jar to the seal",
+    way: "lantern",
+    needs: { anyItem: ["mosslight_jar"] },
+    hint: "Something that glows like moss might wake this seal.",
+  };
+  const HERMIT: JourneyRiftActionView = { action: "open", edge: "veil-rift", label: "Ask the hermit to open the seal", way: "hermit" };
+  const ALL = [SENSE, FORCE, LANTERN, HERMIT];
+  const itemName = (id: string) => (id === "mosslight_jar" ? "Mosslight Jar" : undefined);
+
+  it("draws the ways this table can take as buttons, each naming whose talent it is", () => {
+    mount(choosing({ riftActions: ALL }), { onAction: vi.fn(), party: { classes: ["starweaver"], items: [] }, itemName });
+    const list = screen.getByRole("list", { name: "Things you can try" });
+    const buttons = within(list).getAllByRole("button");
+    expect(buttons).toHaveLength(2);
+    expect(within(buttons[0]!).getByText("Sense where the rift leads")).toBeTruthy();
+    expect(within(buttons[0]!).getByText("Starweaver")).toBeTruthy();
+    // The hermit's way is anyone's: no chip.
+    expect(within(buttons[1]!).getByText("Ask the hermit to open the seal")).toBeTruthy();
+    expect(within(buttons[1]!).queryByText(/Starweaver|Needs/)).toBeNull();
+  });
+
+  it("draws a way the table cannot take only for its hint - words, never a button - and hides the rest", () => {
+    mount(choosing({ riftActions: ALL }), { onAction: vi.fn(), party: { classes: ["starweaver"], items: [] }, itemName });
+    const list = screen.getByRole("list", { name: "Things you can try" });
+    expect(within(list).queryByRole("button", { name: /Mosslight/ })).toBeNull();
+    expect(within(list).getByText("Something that glows like moss might wake this seal.")).toBeTruthy();
+    expect(within(list).getByText("Needs: Mosslight Jar")).toBeTruthy();
+    expect(within(list).queryByText(/Force the seal/)).toBeNull();
+  });
+
+  it("sends the way with the tap", async () => {
+    const user = userEvent.setup();
+    const onAction = vi.fn();
+    mount(choosing({ riftActions: ALL }), { onAction, party: { classes: ["thornguard"], items: ["mosslight_jar"] }, itemName });
+    await user.click(screen.getByRole("button", { name: /Force the seal open/ }));
+    expect(onAction).toHaveBeenCalledWith(FORCE);
+    expect(screen.getByRole("button", { name: /Hold the Mosslight Jar/ })).toBeTruthy();
+  });
+
+  it("without a party, draws every way as offered (a screen that does not know the table)", () => {
+    mount(choosing({ riftActions: ALL }), { onAction: vi.fn() });
+    expect(within(screen.getByRole("list", { name: "Things you can try" })).getAllByRole("button")).toHaveLength(4);
+  });
+});

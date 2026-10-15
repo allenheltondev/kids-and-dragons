@@ -41,6 +41,7 @@
 import type { Arrival, ExitBlock } from "../campaign-graph.js";
 import type { ChapterOutcome } from "./chapter.js";
 import type { ActiveBuff, BuffDef, BuffId, JourneyBuffView } from "./buffs.js";
+import type { ClassId } from "./domain.js";
 
 /** A node's key in `CampaignGraph.nodes`. Stable: saves name it. */
 export type NodeId = string;
@@ -529,8 +530,15 @@ export interface GraphRift {
    * authored effect can also take. Each kind present is offered while its
    * rule's `when` holds and the action would change something; absent kinds
    * are never offered. See `RiftActionRule`.
+   *
+   * A kind may also be a **list of ways** to do the same thing (#199): each
+   * its own rule, with its own `id`, `when`, `requires`, label and effects —
+   * the Starweaver attunes the rift open, the Thornguard forces it, the
+   * hermit the party befriended opens it for them. The rift's change is the
+   * same whichever way does it; what differs is who can, and what else it
+   * costs. See "Class rift interaction" in the authoring contract.
    */
-  actions?: Partial<Record<RiftActionKind, RiftActionRule>>;
+  actions?: Partial<Record<RiftActionKind, RiftActionRule | RiftActionRule[]>>;
 }
 
 // ---------------------------------------------------------------------------
@@ -569,15 +577,31 @@ export type RiftActionKind = "discover" | "open" | "close" | "stabilize" | "redi
  * When the party may take one action on a rift (`GraphRift.actions`), and
  * what else it does.
  *
- * Journey-only, like every graph guard: whether the party *can* steady the
- * rift comes out the same on any evening for any phones. **Class gating is
- * #199's**, and attaches here — a further field (`requires`, say) checked by
- * the server against the seated party, beside this deterministic `when`, so
- * the lint still walks the journey half. Until then every party may attempt
- * what `when` allows; a story that wants "only if the wizard is here" sets a
- * journey flag in a chapter and guards on it.
+ * Two halves, read by different judges (#199):
+ *
+ * - `when` is **journey-only**, like every graph guard: whether the rift can
+ *   be steadied *at this point in the story* comes out the same on any
+ *   evening for any phones, so the lint walks it.
+ * - `requires` is **the party's half**: who is seated (their classes) and
+ *   what they carry. It is never part of a guard — the party changes between
+ *   evenings, a child joins, a hero is left at home — so the server checks it
+ *   against the seated party when the action is taken, and the lint, which
+ *   cannot know who will be at the table, proves instead that the campaign
+ *   stays winnable *without* it (`CLASS_GATED_ONLY_PATH`).
+ *
+ * What a class has *earned* (a Starweaver's attunement, grown chapter by
+ * chapter) is journey state — a world fact (#198), raised by effects, read by
+ * `when` — so guards, variants and the lint see it like any other fact, and
+ * it is stored with the journey on the attempt row.
  */
 export interface RiftActionRule {
+  /**
+   * Which way this is, when the kind lists several (#199): required on every
+   * rule of a list, distinct within it, and echoed by `RIFT_ACTION.way`. A
+   * kind with a single rule may leave it out. Stable: a stored `lastAction`
+   * names it.
+   */
+  id?: string;
   /**
    * Offered only while this holds — subject the rift's `from`, like an edge
    * guard. Absent always holds.
@@ -593,6 +617,42 @@ export interface RiftActionRule {
    * apply — the flag that remembers the party did it, a world fact it moves.
    */
   effects?: GraphEffect[];
+  /**
+   * Who in the party can do it (#199): checked by the server against the
+   * seated party (`partyMeets`), never by a guard. Absent: anyone.
+   */
+  requires?: PartyRequirement;
+  /**
+   * What the screen says when the journey offers this way but the seated
+   * party cannot take it ("A Starweaver could hear this rift's song"). Absent:
+   * a way the party cannot take is not drawn at all — like a chapter choice
+   * whose `requiresSpecies` nobody matches. Like a label, it must not name a
+   * hidden destination.
+   */
+  hint?: string;
+}
+
+/**
+ * What a rift action asks of the seated party (#199). Every field present
+ * must hold (AND); within a list, any one member will do (OR). Not a
+ * `GraphCondition`: it reads the party, which a guard never may.
+ */
+export interface PartyRequirement {
+  /** Someone seated is one of these classes. */
+  anyClass?: ClassId[];
+  /** Someone seated carries one of these items (inventory or quest item). */
+  anyItem?: string[];
+}
+
+/**
+ * The seated party, as far as a `PartyRequirement` reads it (#199): the
+ * classes at the table and the items they carry between them. Built from the
+ * run's party by `riftPartyOf`; the server passes it to `takeRiftAction`, the
+ * screens to `riftActionsForParty`.
+ */
+export interface RiftParty {
+  classes: readonly ClassId[];
+  items: readonly string[];
 }
 
 /**
@@ -870,11 +930,11 @@ export interface JourneyState extends JourneyFacts {
   /**
    * The rift action most recently taken (#197), and the visit it was taken
    * on: `lastExit`'s idempotence for `RIFT_ACTION`. The same
-   * `(node, visit, action, edge, to)` reported again is the same action —
+   * `(node, visit, action, edge, to, way)` (#199) reported again is the same action —
    * answered as done, never applied twice — wherever the journey has got to
    * since. Absent until the first action.
    */
-  lastAction?: { node: NodeId; visit: number; action: RiftActionKind; edge: EdgeId; to?: NodeId };
+  lastAction?: { node: NodeId; visit: number; action: RiftActionKind; edge: EdgeId; to?: NodeId; way?: string };
   /**
    * The temporary buffs the party holds (#200), in the order they were first
    * granted. Attempt-scoped like everything here, and never a guard's
@@ -970,6 +1030,24 @@ export interface JourneyRiftActionView {
    * open action names this rift): the screen asks first.
    */
   irreversible?: true;
+  /** Which way (#199): the rule's `id`, when it has one — `RIFT_ACTION.way`. */
+  way?: string;
+  /**
+   * Who in the party can take it (#199): the rule's `requires`, so a screen
+   * can say whose talent it is ("Starweaver") and judge it against the party
+   * seated *now* (`riftActionsForParty`). The view is built when the journey
+   * moves (and when a room opens, before anyone sits down), and the table
+   * can change after that — so the judging is left to whoever draws it, with
+   * the same function the server enforces with.
+   */
+  needs?: PartyRequirement;
+  /** The rule's `hint`: what to say when the seated party cannot take it. */
+  hint?: string;
+  /**
+   * Set by `riftActionsForParty` (never by the server's view): the seated
+   * party cannot take this way, and it is drawn only for its `hint`.
+   */
+  unmet?: true;
 }
 
 /** One place the party has been (`JourneyView.places`). */

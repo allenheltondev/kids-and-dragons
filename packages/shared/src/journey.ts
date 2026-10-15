@@ -72,6 +72,7 @@ import type {
   JourneyView,
   NodeId,
   RiftActionKind,
+  RiftParty,
   VisitStatus,
 } from "./types/campaign-graph.js";
 import {
@@ -82,6 +83,7 @@ import {
   exitsFrom,
   evaluateGraphCondition,
   RIFT_ACTION_KINDS,
+  riftActionWays,
   riftDestination,
   type Arrival,
   type ExitBlock,
@@ -89,7 +91,16 @@ import {
   type ParsedCampaignGraph,
 } from "./campaign-graph.js";
 import { crossRift, riftDestinationRevealed, riftView, settleRifts, tickRifts } from "./rifts.js";
-import { applyRiftEffect, isRiftEffect, riftActionChange, riftActionsFrom, riftCanReopen } from "./rift-actions.js";
+import {
+  applyRiftEffect,
+  describeRequirement,
+  isRiftEffect,
+  partyMeets,
+  riftActionChange,
+  riftActionsForParty,
+  riftActionsFrom,
+  riftCanReopen,
+} from "./rift-actions.js";
 import { readFact, storedFacts, worldFacts, writeFact } from "./world-state.js";
 import type { ActiveBuff, RunBuff } from "./types/buffs.js";
 import { buffViews, expireBuffs, grantBuff, readBackBuffs, storedBuffs } from "./buffs.js";
@@ -674,25 +685,45 @@ export interface RiftActionReport {
   visit: number;
   /** For `"redirect"`: where to turn the rift. */
   to?: NodeId;
+  /**
+   * Which way (#199), when the kind lists several: the rule's `id`
+   * (`JourneyRiftActionView.way`). A kind's lone rule answers without one.
+   */
+  way?: string;
 }
 
 /**
  * Why a rift action was refused (#197), beyond `takeExit`'s own reasons.
  *
  * - `"not-a-rift"` — the edge is not a rift.
- * - `"not-offered"` — this rift offers no such action, or its rule's `when`
- *   does not hold now.
+ * - `"not-offered"` — this rift offers no such action (or no such way), or
+ *   its rule's `when` does not hold now.
  * - `"bad-destination"` — a redirect to somewhere the rift does not declare.
  * - `"no-change"` — the action would do nothing: a final rift, a persistent
  *   one that cannot close, a rift already as asked. (A party action is only
  *   ever offered when it would change something; this is the stale screen.)
+ * - `"party-cannot"` (#199) — the journey offers this way, but nobody seated
+ *   meets its `requires` (no Starweaver at the table, nobody carrying the
+ *   lantern).
  */
 export type RiftActionRefusalCode =
   | Extract<JourneyRefusalCode, "unknown-edge" | "not-here" | "stale-visit" | "still-playing" | "ended">
   | "not-a-rift"
   | "not-offered"
   | "bad-destination"
-  | "no-change";
+  | "no-change"
+  | "party-cannot";
+
+/**
+ * Who is taking a rift action (#199). `party` is the seated party, judged
+ * against the chosen way's `requires`; the server always passes it. Absent,
+ * requirements are not judged at all — the reading the lint's explorer and
+ * the playtest tools want, which ask what the *journey* allows and prove the
+ * party half separately (`CLASS_GATED_ONLY_PATH`).
+ */
+export interface RiftActionOptions {
+  party?: RiftParty;
+}
 
 export interface RiftActionRefusal {
   ok: false;
@@ -718,23 +749,36 @@ const refuseAction = (code: RiftActionRefusalCode, message: string): RiftActionR
  * chapter. The party stays where it is, still choosing — the same visit, so
  * the exits it now offers are answered against this journey.
  *
- * Idempotent on `(node, visit, action, edge, to)` — `lastAction`, checked
+ * Idempotent on `(node, visit, action, edge, to, way)` — `lastAction`, checked
  * before anything else can refuse, exactly as `takeExit` checks `lastExit`:
  * a double tap or a retry after a lost response is the same action, answered
  * as done, and its effects never apply twice. Anything else is judged on its
  * merits, and an action is only taken when it would change something — so a
  * stale screen asking for something already done is refused (`"no-change"`),
  * never applied again.
+ *
+ * Several ways to the same action (#199) are told apart by `report.way`, and
+ * the chosen way's `requires` is judged against `options.party` — after
+ * every journey check, so a stale screen hears "already so" rather than
+ * "you can't". A party's progress (a Starweaver's attunement) is a world
+ * fact the way's `when` reads and its effects raise, so it is in the
+ * journey this returns and is stored with it.
  */
 export function takeRiftAction(
   graph: ParsedCampaignGraph,
   journey: JourneyState,
   report: RiftActionReport,
   campaign?: JourneyCampaign,
+  options: RiftActionOptions = {},
 ): RiftActionResult {
   const edge = graph.edges[report.edge];
   if (!edge) return refuseAction("unknown-edge", `there is no way called "${report.edge}"`);
   if (!edge.rift) return refuseAction("not-a-rift", `"${report.edge}" is not a rift`);
+  const ways = (RIFT_ACTION_KINDS as readonly string[]).includes(report.action)
+    ? riftActionWays(edge.rift, report.action)
+    : [];
+  // A kind's lone rule answers a report that names no way (the #197 form).
+  const wayId = report.way ?? (ways.length === 1 ? ways[0]!.way : undefined);
   const last = journey.lastAction;
   if (
     last &&
@@ -742,7 +786,8 @@ export function takeRiftAction(
     last.visit === report.visit &&
     last.action === report.action &&
     last.edge === report.edge &&
-    last.to === report.to
+    last.to === report.to &&
+    last.way === wayId
   ) {
     return { ok: true, duplicate: true, journey };
   }
@@ -756,10 +801,17 @@ export function takeRiftAction(
   if (journey.status === "playing") {
     return refuseAction("still-playing", `"${journey.node}" has not been finished yet — the rift can wait`);
   }
-  const rule = (RIFT_ACTION_KINDS as readonly string[]).includes(report.action)
-    ? edge.rift.actions?.[report.action]
-    : undefined;
-  if (!rule) return refuseAction("not-offered", `the rift "${report.edge}" offers no "${String(report.action)}"`);
+  if (ways.length === 0) return refuseAction("not-offered", `the rift "${report.edge}" offers no "${String(report.action)}"`);
+  const chosen = report.way === undefined ? (ways.length === 1 ? ways[0] : undefined) : ways.find((each) => each.way === report.way);
+  if (!chosen) {
+    return refuseAction(
+      "not-offered",
+      report.way === undefined
+        ? `there are ${ways.length} ways to ${report.action} the rift "${report.edge}"; say which (${ways.map((each) => each.way).join(", ")})`
+        : `the rift "${report.edge}" has no way "${report.way}" to ${report.action} it`,
+    );
+  }
+  const rule = chosen.rule;
   if (!evaluateGraphCondition(rule.when, journey, edge.from, { facts: graph.facts })) {
     return refuseAction("not-offered", `"${report.action}" on the rift "${report.edge}" is not offered now`);
   }
@@ -771,6 +823,9 @@ export function takeRiftAction(
     return refuseAction(change.code === "bad-destination" ? "bad-destination" : "no-change", change.message);
   }
   if (!change.changed) return refuseAction("no-change", `the rift "${report.edge}" is already so`);
+  if (options.party !== undefined && !partyMeets(rule.requires, options.party)) {
+    return refuseAction("party-cannot", `nobody in this party can ${report.action} the rift "${report.edge}" that way (${describeRequirement(rule.requires)})`);
+  }
 
   const acted: JourneyState = {
     ...change.journey,
@@ -780,6 +835,7 @@ export function takeRiftAction(
       action: report.action,
       edge: report.edge,
       ...(report.to !== undefined ? { to: report.to } : {}),
+      ...(chosen.way !== undefined ? { way: chosen.way } : {}),
     },
   };
   return { ok: true, duplicate: false, journey: settleRifts(graph, applyEffects(graph, acted, rule.effects, campaign)) };
@@ -829,12 +885,22 @@ export const HIDDEN_RIFT_LABEL = "Into the rift";
  *   different, not how, and only for a place already finished.
  * - **Hidden blocked exits are absent** (`exitsFrom`'s `visible`), as they
  *   were; `places` lists only nodes the party has entered.
+ *
+ * `party` (#199) judges the rift actions' `requires` for one table
+ * (`riftActionsForParty`): a way nobody seated can take is dropped, or kept
+ * `unmet` for its `hint`. **The server does not pass it**: a campaign view is
+ * built when the journey moves and when a room opens — before anyone has sat
+ * down — and the table changes after that, so the stored view carries each
+ * way's `needs` and every phone judges it against the party seated *now*,
+ * with the same function. A test, a tool, or a screen with the party in hand
+ * passes it.
  */
 export function journeyView(
   graph: ParsedCampaignGraph,
   journey: JourneyState,
   titleOf: (chapterId: string) => string | undefined = () => undefined,
   campaign?: JourneyCampaign,
+  party?: RiftParty,
 ): JourneyView {
   const placeTitle = (node: NodeId): string =>
     graph.nodes[node]?.title ?? titleOf(graph.nodes[node]?.chapter ?? "") ?? node;
@@ -886,12 +952,14 @@ export function journeyView(
   const ending = journey.status === "ended" ? (journey.ending ?? journey.node) : undefined;
   const facts = visibleFacts(graph, journey);
   const buffs = buffViews(graph.buffs, journey.buffs);
-  const riftActions = journey.status === "choosing" ? riftActionViews(graph, journey, exits, placeTitle) : [];
+  const offered = journey.status === "choosing" ? riftActionViews(graph, journey, exits, placeTitle) : [];
+  const riftActions = party === undefined ? offered : riftActionsForParty(offered, party);
   // Nowhere to go and nothing to do (#197): the lint refuses content that can
-  // get here, so only content changing under a save can. Said plainly.
+  // get here, so only content changing under a save can. Said plainly. A way
+  // drawn only for its hint (#199) is not something to do.
   const stuck =
     journey.status === "choosing" &&
-    riftActions.length === 0 &&
+    !riftActions.some((action) => action.unmet !== true) &&
     !exitsFrom(graph, journey.node, journey).some((exit) => exit.availability.available);
   const places: JourneyPlaceView[] = graph.nodeOrder
     .filter((node) => count(journey.visits, node) > 0)
@@ -959,6 +1027,9 @@ function riftActionViews(
       label,
       ...(offer.to !== undefined ? { to: offer.to } : {}),
       ...(offer.action === "close" && !riftCanReopen(graph, offer.edge) ? { irreversible: true as const } : {}),
+      ...(offer.way !== undefined ? { way: offer.way } : {}),
+      ...(offer.rule.requires !== undefined ? { needs: offer.rule.requires } : {}),
+      ...(offer.rule.hint !== undefined ? { hint: offer.rule.hint } : {}),
     };
   });
 }

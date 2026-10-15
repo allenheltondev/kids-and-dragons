@@ -33,7 +33,15 @@ import type {
   RunBuff,
   RunState,
 } from "@kad/shared";
-import { currentPlayable, lobbyCampaign, resumeJourney, seedRunBuffs, takeExit, takeRiftAction } from "@kad/shared";
+import {
+  currentPlayable,
+  lobbyCampaign,
+  resumeJourney,
+  riftPartyOf,
+  seedRunBuffs,
+  takeExit,
+  takeRiftAction,
+} from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { ApplyIntentResult } from "../engine/port.ts";
 import type { CampaignProgressRecord, EventRecord, RunRecord } from "../store/repository.ts";
@@ -1004,6 +1012,16 @@ async function chooseExit(
  * all), a repeat answered as done without a write, and every phone's view of
  * the campaign refreshed on the same patch — which is how a second phone, or
  * a phone that dropped and rejoined, sees what the action did.
+ *
+ * A way that needs a particular hero (#199, `requires`) is judged here, and
+ * only here, against the party **seated in this room now** (`state.party`,
+ * the resolved characters: their classes, their inventories and quest
+ * items). Never against the journey — the journey is the household's across
+ * evenings, the table is tonight's — and never by the engine, which never
+ * sees a journey. Nobody seated who can: refused (`"party-cannot"`), nothing
+ * written. What a way earns (a Starweaver's attunement) is a world fact its
+ * effects write, so it is stored on the attempt row with the rest of the
+ * journey and is there on the next evening, whoever comes.
  */
 async function riftAction(
   state: RunState,
@@ -1011,6 +1029,7 @@ async function riftAction(
   householdId: string,
   deps: HandlerDeps,
 ): Promise<JourneyMove> {
+  const party = riftPartyOf(state.party.map((member) => member.character));
   return moveJourney(state, intent.campaignId, householdId, deps, "a rift is acted on", (graph, journey, campaign) =>
     takeRiftAction(
       graph,
@@ -1020,8 +1039,10 @@ async function riftAction(
         edge: intent.edgeId,
         visit: intent.visit,
         ...(typeof intent.to === "string" ? { to: intent.to } : {}),
+        ...(typeof intent.way === "string" ? { way: intent.way } : {}),
       },
       campaign,
+      { party },
     ),
   );
 }

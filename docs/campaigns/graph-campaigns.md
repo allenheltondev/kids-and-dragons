@@ -835,10 +835,9 @@ rift. The two sides answer "cannot" differently, on purpose:
 | `rift.actions: { discover?, open?, close?, stabilize?, redirect? }` | What the party may do to this rift while choosing at its `from`. Each is a `RiftActionRule` `{ when?, label?, effects? }`: offered while `when` holds (subject: the rift's `from`, like an edge guard); `label` is the button's words (absent: "Steady the rift: …" with the exit's own spoiler-safe label); `effects` apply after the action, in order, like an edge's. `redirect` needs `redirects`. |
 | `fallback: true` (any edge) | **The long way round**: available only while **no other exit** from its node is available (`ExitBlock` `"fallback"` otherwise), judged after every other check, so it can still be guarded, locked or `once`. The path home a used-up, collapsed or shut rift would otherwise strand the party without — and no guard could say it, because a guard cannot read a rift. |
 
-**Class gating is #199's.** Rules are journey-only, so the lint walks them and every phone sees the
-same buttons. A class requirement attaches to `RiftActionRule` as a further field (`requires`,
-reserved by #199 — the schema refuses it until then), checked by the server against the seated party
-beside the deterministic `when`.
+**Who can take an action is #199's** — [Class rift interaction](#class-rift-interaction-199): a
+kind may list several ways, each with a `requires` the server checks against the seated party,
+beside the deterministic `when` the lint walks.
 
 ### The story acting on a rift — encounters and scenes
 
@@ -947,6 +946,161 @@ Two guarantees, one for the file and one for the table:
 new readings); `packages/server/src/handlers/rift-actions.test.ts` plays it through the server: the
 double-clicked crossing, the retried action, two phones at once, another player's device joining
 after, an invalid destination and an unknown rift refused with nothing written, and the fallback.
+
+---
+
+## Class rift interaction (#199)
+
+A rift action (#197) says *what* can be done to a rift and *when in the story*; this is **who at the
+table can do it**. The Starweaver attunes the seal open; the Thornguard forces it, and the veil
+tears; the Songkeeper sings it calm; the Duskrunner finds another way round; the hero carrying the
+Mosslight Jar holds it up; and a party with none of them asks the hermit they befriended. One goal,
+reached a different way by each table — and **no class is ever mandatory**. Opt-in like everything
+else: a rift with no `requires` anywhere behaves exactly as under #197, and nothing bumped
+`CampaignGraph.version` or `JOURNEY_VERSION`.
+
+### Declaring it: several ways, each with who can
+
+```jsonc
+"veil-rift": {
+  "from": "rift-gate", "to": "far-shore", "kind": "forward", "blocked": "shown",
+  "rift": {
+    "opensWhen": { "visited": "far-shore" },          // sealed from this side: only an action opens it
+    "reveal": "when-crossed",
+    "redirects": ["starfall"],
+    "actions": {
+      "discover": [{ "id": "sense", "requires": { "anyClass": ["starweaver"] },
+                     "effects": [{ "type": "adjustFact", "fact": "attunement", "by": 1 }] }],
+      "open": [
+        { "id": "attune",  "requires": { "anyClass": ["starweaver"] }, "when": { "facts": { "attunement": { "min": 2 } } },
+          "hint": "A Starweaver who has studied the stars could open this.",
+          "effects": [{ "type": "adjustFact", "fact": "attunement", "by": 1 }] },
+        { "id": "force",   "requires": { "anyClass": ["thornguard"] },
+          "effects": [{ "type": "setFact", "fact": "veil", "value": "torn" }] },
+        { "id": "calm",    "requires": { "anyClass": ["songkeeper"] } },
+        { "id": "lantern", "requires": { "anyItem": ["mosslight_jar"] }, "hint": "Something that glows like moss might wake this seal." },
+        { "id": "hermit",  "when": { "facts": { "hermit": "friend" } } }   // anyone's: the way the lint needs
+      ],
+      "redirect": { "id": "weave", "requires": { "anyClass": ["starweaver"] }, "when": { "facts": { "attunement": { "min": 3 } } } }
+    }
+  }
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `actions.<kind>: RiftActionRule \| RiftActionRule[]` | One rule (#197), or a **list of ways** to take the same action. The rift's change is the same whichever way takes it; what differs is who can, what it says, and what else it does. Ways are offered in authored order. |
+| `RiftActionRule.id` | Which way — required on every rule of a list, distinct within it (graph id pattern). `RIFT_ACTION.way` names it and `JourneyState.lastAction.way` stores it. A kind's lone rule may have one (it is then recorded) or not. |
+| `RiftActionRule.requires: PartyRequirement` | Who at the table can take it: `{ anyClass?: ClassId[], anyItem?: ItemId[] }` — every field present must hold, any one member of a list will do. Classes are the four `ClassId`s (`PARTY_CLASS_IDS`); items are `content/items.json` ids, carried in an inventory or as a quest item. Absent: anyone. |
+| `RiftActionRule.hint` | What a table that **cannot** take this way is shown, instead of nothing — "A Starweaver could…". Absent, a way the table cannot take is not drawn at all (like a chapter choice whose `requiresSpecies` nobody matches). Needs `requires`; must not name a hidden destination. |
+
+### The two halves, and why `requires` is not a guard
+
+**`when` is the journey's; `requires` is the table's.** Every graph guard reads the journey only, so
+the lint can prove a campaign completable and every phone agrees. A party is not like that: the
+table changes between evenings, a child joins, a hero stays home, and the journey is the household's
+across all of them. So `requires` is never part of a condition. It is judged in exactly two places,
+with one function (`partyMeets`):
+
+- **the server** (`RIFT_ACTION`, `handlers/action.ts`), against the heroes **seated in the room now**
+  (`state.party`, resolved characters: class, inventory, quest items, via `riftPartyOf`) — refusing
+  `"party-cannot"` with nothing written, after every journey check (a stale screen hears "already so",
+  not "you can't");
+- **the phone**, which draws the view's actions for its own table (`riftActionsForParty`).
+
+### Progression: earned in the journey, kept with it
+
+What a class *earns* — the Starweaver's sense → attune → weave — is **journey state**, not a
+character's: a world fact (#198), here the counter `attunement` (0..3, `consequence` domain,
+`visible`). Effects raise it (the sense action, the star tower's `onComplete`, the attunement
+itself); `when` reads it (`{ "facts": { "attunement": { "min": 2 } } }`). So a requirement is
+"(a Starweaver is seated) **and** (the journey has come this far)", the two halves each where they
+belong; the lint tracks the fact like any other; and it is stored on the attempt row with the rest of
+the journey — there on the next evening, on another device, whoever comes. A Starweaver who goes home
+leaves the attunement behind: their ways become hints, and the next Starweaver to sit down picks up
+where they left off.
+
+A cost is an effect too: the Thornguard's shove sets `veil: torn`, and the far shore's variant plays
+the harder chapter. A tactical cost is a #200 burden — a buff with a negative amount — granted by
+the way's own `grantBuff` effect: the shove also leaves the party with `seal-strain` (Guard −1 for
+the next fight, gone at a rest). The journey never names a hero, so a burden on `"one"` is still
+chosen when the fight begins, whoever forced the seal.
+
+### No class is mandatory: `CLASS_GATED_ONLY_PATH`
+
+The lint cannot know who will be seated, so it explores with **every** way taken (`requires` treated
+as met — the coverage and the CI gate are of what the journey allows), marks each transition that
+needs someone (`succ[].needs`), and then asks the strong question of the same explored graph:
+
+> from **every** state a party can reach — by any ways, gated ones included — can some ending still
+> be reached using only ways that need nobody (exits, completions, rift actions with no `requires`)?
+
+A state that can be won with the right hero but not without one is `CLASS_GATED_ONLY_PATH` (error),
+reported once per node at the shortest such state, with the gated ways that were its only way on.
+That covers the table that never had the class (the entry is a state like any other) **and** the
+table that lost it half-way (the Starweaver wove the rift toward Starfall Glade and went home; if
+only a Starweaver can leave the glade, the glade is reported). Item requirements are gated the same
+way — a table may not carry the jar any more than it may have a Starweaver. The fix is always the
+same: give the action a way with no `requires` (an ally the story earns, a fact a chapter sets), or
+keep an exit that leads on without it. **A gated way is a better road, never the only one.**
+
+`exploreCampaignGraph(graph, { party })` explores as one table instead (ways it cannot take are not
+taken), and the playtest takes the same `party` and passes it to `takeRiftAction`, as the server
+does. The CI gate uses both: every fixture with a gated way is explored as a table with no heroes and
+nothing carried, must reach an ending with no softlock, and that table's way to it is replayed
+through the runtime.
+
+### What the players see
+
+The view is built when the journey moves — and when a room opens, **before anyone has sat down** —
+and the table changes after that. So the server's `JourneyView.riftActions` carries **every way the
+journey offers**, each with `way`, `needs` (its `requires`) and `hint`; it does **not** judge the
+party (`journeyView`'s `party` parameter exists for tests and tools; the server leaves it out). The
+phone judges with the seated party, using the shared `riftActionsForParty`:
+
+- a way this table can take is a button, with a chip naming whose talent it is ("Starweaver",
+  "Mosslight Jar" — icon and word);
+- a way it cannot take is drawn **only if** it has a `hint`, as words (never a dead button), with a
+  "Needs: Starweaver" chip; otherwise it is not drawn;
+- `stuck` counts only ways someone can take (a hint is not something to do).
+
+The cost of this choice is that a hint-less gated way's label reaches a phone that does not draw
+it. Labels are spoiler-safe by rule (they may not name a hidden destination), so that is accepted.
+
+### Checks
+
+| Check | Where |
+|---|---|
+| A list of ways is non-empty; every way in it has an `id`, distinct; `requires` is `anyClass` (known classes) and/or `anyItem` (ids), each a non-empty list without repeats; a `hint` needs `requires` | schema and `parseCampaignGraph` |
+| `anyItem` names an item in `content/items.json` | `content:validate` |
+| `CLASS_GATED_ONLY_PATH` — winnable only with a particular hero or item | lint (error), so `content:validate` and the server loader |
+| `RIFT_ACTION_NEVER_OFFERED` ⚠ per way (`/rift/actions/open/2`) | lint (warning) |
+| A table with nobody gated reaches an ending, through the runtime | the journey CI gate |
+
+### The Sealed Rift fixture
+
+[`packages/shared/src/fixtures/rift-classes.campaign.json`](../../packages/shared/src/fixtures/rift-classes.campaign.json)
+— placeholder chapters, not content — one mandatory goal (through the sealed rift to the far shore,
+then the dawn), lint-clean and through the CI gate:
+
+| Way | Who | Shows |
+|---|---|---|
+| `veil-rift` discover `sense` | Starweaver | progression: attunement +1, and the destination revealed |
+| `observatory` (closed) `onComplete` | anyone plays it | the campaign-earned half: attunement +1 |
+| `veil-rift` open `attune` (attunement ≥ 2) | Starweaver | opens it, attunement +1; its `hint` shows when the Starweaver is gone |
+| `veil-rift` redirect `weave` (attunement ≥ 3) | Starweaver | manipulation: turns the rift toward Starfall Glade, which only this way reaches |
+| `veil-rift` open `force` | Thornguard | a cost: `veil: torn`, so the far shore plays `rc-far-shore-torn`; and a burden, the `seal-strain` buff (Guard −1, one fight) |
+| `veil-rift` open `calm` | Songkeeper | the plain alternative |
+| `shadow-path` discover `scout` | Duskrunner | a hidden rift found, and the finding opens it (`openRift` in its effects) |
+| `veil-rift` open `lantern` | anyone carrying a Mosslight Jar | the item fallback, with a hint |
+| `veil-rift` open `hermit` (hermit is a friend) | anyone | the NPC fallback: the ungated way the lint requires; befriended at `hermit-hut` (`alliance` fact) |
+
+`class-rifts.test.ts` plays it in shared (each composition to the ending; the Starweaver who leaves
+half-way; the lint refusing the map without the hermit, and refusing a weave into a glade only a
+Starweaver can leave); `packages/server/src/handlers/class-rifts.test.ts` plays it through the
+server: a mixed table, a table refused what nobody seated can do with nothing written, the
+Duskrunner's path, a table with no Starweaver befriending the hermit, and the Starweaver's attunement
+outliving the evening, the device and the hero.
 
 ---
 
@@ -1491,7 +1645,8 @@ breadth-first, so every path it prints is a shortest one.
 | `EDGE_NEVER_AVAILABLE` ⚠ | an edge out of a node the party reaches is never available in any state |
 | `VARIANT_NEVER_CHOSEN` ⚠ | a variant of a node the party reaches is never played: on every entry that plays the node its `when` fails, or an earlier variant's holds first (#198) |
 | `IRREVERSIBLE_NOT` | an edge marked `irreversible` can be followed by a path back into its `from` node. The claim is checked against the same search, so a way back closed by a guard, `once` or `lock` counts as closed |
-| `RIFT_ACTION_NEVER_OFFERED` ⚠ / `RIFT_EFFECT_ON_FINAL` ⚠ | a declared rift action the party is never offered; a rift effect that only ever meets a final rift ([Rift actions](#rift-actions-197)) |
+| `RIFT_ACTION_NEVER_OFFERED` ⚠ / `RIFT_EFFECT_ON_FINAL` ⚠ | a declared rift action (each way of a list on its own, #199) the party is never offered; a rift effect that only ever meets a final rift ([Rift actions](#rift-actions-197)) |
+| `CLASS_GATED_ONLY_PATH` | from some reachable state an ending can be reached, but only through rift action ways that `requires` a class or an item: a table without that hero — or one whose hero went home half-way — would be stuck. One finding per node, at the shortest such state, naming the gated ways ([Class rift interaction](#class-rift-interaction-199)) |
 | `SEARCH_TRUNCATED` ⚠ | the search hit its state cap (default 50,000); the "never"/"trapped" checks are skipped because they would be guesses. `STRANDED` findings made before the cap are still real |
 
 What the search **assumes**, so you know what a clean result means:
@@ -1532,7 +1687,7 @@ its issue defines it. Where each attaches:
 | #196 rift links | **Done** — [Rifts](#rifts-196): optional `GraphEdge.rift`, `JourneyFacts.rifts`, `rifts.ts`, six `RiftBlock` reasons after the existing four, `JourneyExitView.rift`/`hiddenDestination`, lint tracking. |
 | #197 rift actions | **Done** — [Rift actions](#rift-actions-197): five rift `GraphEffect`s, `rift.redirects`, `rift.actions` (`RiftActionRule`), `fallback` edges, `RIFT_ACTION` (`takeRiftAction`, `JourneyState.lastAction`), `RiftState.stable`/`discovered`/`to`, `JourneyView.riftActions`/`stuck`, the lint walking actions as transitions. Final statuses stay final. |
 | #198 world state | **Done** — [World state](#world-state-198): `graph.facts` (typed, bounded, `domain`-tagged, `visible`), `GraphCondition.facts` / `visit`, `setFact` / `adjustFact`, node `onComplete` rules, variant `revisit`, `JourneyFacts.facts`, `JourneyView.facts`, and the lint's search over fact values. The variant selection rule stays first-match. |
-| #199 class rift interaction | a class requirement on a `RiftActionRule` (the `requires` slot, refused by the schema until #199 defines it), checked by the server against the seated party beside the rule's journey-only `when` — the lint keeps walking the `when` half; edge-level requirements likewise; must stay journey-deterministic or say explicitly why not. A class action that changes the world writes a world fact (a `setFact`/`adjustFact` in its effects), so guards, variants and the lint see it like any other. |
+| #199 class rift interaction | **Done** — [Class rift interaction](#class-rift-interaction-199): a kind of `rift.actions` may list several ways (`RiftActionRule.id`), each with `requires` (`PartyRequirement`: `anyClass`, `anyItem`) checked by the server against the seated party and `hint`; `RIFT_ACTION.way`, `lastAction.way`, refusal `"party-cannot"`; `JourneyRiftActionView.way`/`needs`/`hint`/`unmet` judged on the phone (`riftActionsForParty`); progression as world facts; the lint's `CLASS_GATED_ONLY_PATH`. Not done: requirements on plain edges (an exit only a class may take) — the same `requires` and the same class pass would carry over, with `exitsFrom` left journey-only. |
 | #200 temporary buffs | **Done** — [Temporary buffs](#temporary-buffs-200): `graph.buffs`, the `grantBuff` effect, `JourneyState.buffs`, `RunState.buffs` (seeded via `EngineContext.campaignBuffs`), `EncounterState.buffs` read through `buffBonus`, `JourneyView.buffs`, `BUFF_NEVER_GRANTED`. No guard reads a buff. |
 | #201 environmental combat | **Done** — [Environmental combat](#environmental-combat-201): optional `environment` on a chapter's encounter scene (rift clock, hazards, timed exits, a rescue, relocations), `onEscape` / `onTimeout` branches, `endTurnWithEvents`, `EncounterState.environment`, `Combatant.escaped`, `checkEncounterEnvironment`. Consequences reach the graph as flags read back on completion and turned into facts, rift effects or buffs by `onComplete` rules; a place that changes with world state is a node variant. |
 | #202 inspection | **Done** — [Inspection and playtest tooling](#inspection-and-playtest-tooling-202): `npm run content:journey`, `exploreCampaignGraph` (the lint's explorer, exported), `checkJourneySave`. A new exit-blocking reason or journey state must be tracked by `explore` first; the playtest's replay then holds the lint to the runtime. |
@@ -1588,6 +1743,14 @@ Rift actions (#197): from `campaign-graph.ts`, `riftDestination(graph, edge, jou
 `journey.ts`, `takeRiftAction` (`RiftActionReport`, `RiftActionResult`, `RiftActionRefusalCode`); from
 the lint, `describeRiftAction`; types `RiftActionKind`, `RiftActionRule`, `JourneyRiftActionView`.
 See [Rift actions](#rift-actions-197).
+
+Class rift interaction (#199): from `campaign-graph.ts`, `riftActionWays(rift, kind)` (`RiftActionWay[]`:
+`{ rule, way?, at }` — every reader of `actions` goes through it), `riftActionRules(rift)`,
+`PARTY_CLASS_IDS`; from `rift-actions.ts`, `riftPartyOf(members)` (`RiftParty`), `partyMeets(requires,
+party)`, `riftActionsForParty(actions, party)`, `describeRequirement`, `riftActionGated`; `takeRiftAction(graph,
+journey, report, campaign?, { party? })` (`RiftActionReport.way`, refusal `"party-cannot"`);
+`journeyView(graph, journey, titleOf?, campaign?, party?)`; `GraphLintOptions.party`; types
+`PartyRequirement`, `RiftParty`, `RiftActionOptions`. See [Class rift interaction](#class-rift-interaction-199).
 
 Temporary buffs (#200): from `buffs.ts` (import-free, loadable by `.mjs` tools through
 `campaign-graph.ts`), `BUFF_KINDS`, `BUFF_EXPIRIES`, `BUFF_LIMITS`, `MAX_BUFF_STACKS`,

@@ -769,6 +769,30 @@ describe("graph campaigns (#192)", { timeout: 30_000 }, () => {
     expect(out).not.toMatch(/out of sequence|only a routed beat may share an index/);
   });
 
+  it("refuses a rift action way that needs an item the catalog does not have (#199)", () => {
+    const { code, out } = graphTree(({ campaign }) => {
+      campaign.graph.edges["to-dawn"].rift = {
+        opensWhen: { flag: "lantern_lit" },
+        actions: { open: [{ id: "glow", requires: { anyItem: ["mosslight_jar", "moonlight_jar"] } }] },
+      };
+    });
+    expect(code).toBe(1);
+    expect(out).toContain("/graph/edges/to-dawn/rift/actions/open/0/requires/anyItem/1");
+    expect(out).toContain('item "moonlight_jar" is not in content/items.json');
+    expect(out).not.toContain('item "mosslight_jar"');
+  });
+
+  it("refuses a map only a party with the right hero can finish (#199)", () => {
+    const { code, out } = graphTree(({ campaign }) => {
+      campaign.graph.edges["to-dawn"].rift = {
+        opensWhen: { visited: "dawn" },
+        actions: { open: { requires: { anyClass: ["starweaver"] }, label: "Read the stars" } },
+      };
+    });
+    expect(code).toBe(1);
+    expect(out).toMatch(/CLASS_GATED_ONLY_PATH: a party without the right hero/);
+  });
+
   it("refuses a dangling name in the declaration, at its path", () => {
     const { code, out } = graphTree(({ campaign }) => {
       campaign.graph.edges["to-dawn"].to = "dusk";

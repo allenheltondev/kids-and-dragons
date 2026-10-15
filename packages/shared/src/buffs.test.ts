@@ -292,7 +292,10 @@ describe("buffs on the journey", () => {
     const again = takeRiftAction(graph, acted.journey, { action: "open", edge: "camp-to-den", visit: atCamp.visit });
     expect(again).toEqual({ ok: true, duplicate: true, journey: acted.journey });
     // And an action naming a buff nobody declared is refused at load, like any effect.
-    campaign.graph!.edges["camp-to-den"]!.rift!.actions!.open!.effects = [{ type: "grantBuff", buff: "rift-wings" }];
+    campaign.graph!.edges["camp-to-den"]!.rift!.actions!.open = {
+      label: "Touch the humming stone",
+      effects: [{ type: "grantBuff", buff: "rift-wings" }],
+    };
     expect(parseCampaignGraph(campaign).problems.map((p) => p.path)).toEqual([
       "/graph/edges/camp-to-den/rift/actions/open/effects/0/buff",
     ]);
