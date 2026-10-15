@@ -146,7 +146,8 @@ actually cost something. Otherwise the party's purse and bag stop meaning anythi
   cost of every choice leading into it. That covers its `onEnter` and the highest charge
   among a check's success and failure (or a fight's victory and defeat), so the haggle
   choice in chapter 1 is gated on 2 coins. A charging scene may only be reached through
-  choices, since a branch cannot be gated on the purse. Because cost gates are gates, every such scene still
+  choices, since a branch cannot be gated on the purse. Take an item at most once per choice. Gates
+  count distinct items, not copies, so nothing can promise a party holds two bundles. Because cost gates are gates, every such scene still
   needs one choice that costs nothing. "Keep your coins and walk on" is a real choice.
 
 ## 4. Shape of a chapter

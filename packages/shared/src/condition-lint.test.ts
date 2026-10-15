@@ -85,6 +85,40 @@ describe("a cost is a gate", () => {
     expect(unbackedSceneCharges(chapter).map((p) => p.path)).toContain("/scenes/check_squeeze/onFailure");
   });
 
+  it("refuses two takes that could reach the same item, which no gate can back", () => {
+    const twice = unbackedCosts({
+      ...base,
+      when: { item: "supper_bundle" },
+      effects: [
+        { type: "takeItem", itemId: "supper_bundle" },
+        { type: "takeItem", itemId: "supper_bundle" },
+      ],
+    });
+    expect(twice.some((p) => p.includes("more than once"))).toBe(true);
+    // Overlapping preference lists count too.
+    const overlap = unbackedCosts({
+      ...base,
+      when: { count: { of: ["supper_bundle", "honeycake"], min: 1 } },
+      effects: [
+        { type: "takeItem", itemId: ["supper_bundle", "honeycake"] },
+        { type: "takeItem", itemId: "honeycake" },
+      ],
+    });
+    expect(overlap.some((p) => p.includes('takes "honeycake" more than once'))).toBe(true);
+    // Two different items, each gated, are fine.
+    expect(
+      unbackedCosts({
+        ...base,
+        requiresItem: "honeycake",
+        when: { item: "supper_bundle" },
+        effects: [
+          { type: "takeItem", itemId: "honeycake" },
+          { type: "takeItem", itemId: "supper_bundle" },
+        ],
+      }),
+    ).toEqual([]);
+  });
+
   it("fails the chapter", () => {
     const chapter = withShrine((scene) => {
       scene.choices[0]!.effects = [{ type: "spendCoins", amount: 3 }];

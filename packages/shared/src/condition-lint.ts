@@ -229,6 +229,21 @@ export function lintChapterText(chapter: Chapter): LintProblem[] {
 export function unbackedCosts(choice: Choice): string[] {
   const problems: string[] = [];
   let spent = 0;
+  // Gates count distinct items, not copies (`countPartyItems`), so one held
+  // bundle satisfies a gate however many takes ride behind it. Two takes that
+  // could reach the same id would have the second silently take nothing.
+  const takenBefore = new Set<string>();
+  for (const effect of choice.effects ?? []) {
+    if (effect.type !== "takeItem") continue;
+    const ids = typeof effect.itemId === "string" ? [effect.itemId] : effect.itemId;
+    const repeated = ids.filter((id) => takenBefore.has(id));
+    if (repeated.length > 0) {
+      problems.push(
+        `takes "${repeated.join(" or ")}" more than once, and no gate can promise two copies (gates count distinct items); use one takeItem per item`,
+      );
+    }
+    for (const id of ids) takenBefore.add(id);
+  }
   for (const effect of choice.effects ?? []) {
     if (effect.type === "spendCoins") spent += effect.amount;
     if (effect.type !== "takeItem") continue;
