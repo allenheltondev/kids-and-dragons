@@ -5,6 +5,7 @@ type: route
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-01", "gemfall-02"]
 tags: []
 related:
   - id: location.exchange

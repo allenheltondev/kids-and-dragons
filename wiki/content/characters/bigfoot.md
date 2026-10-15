@@ -5,6 +5,7 @@ type: character
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["bramblewood-01", "gemfall-01", "gemfall-02", "gemfall-03b", "gemfall-03c", "gemfall-04b", "gemfall-05a", "gemfall-05b", "gemfall-06", "gemfall-07h", "gemfall-07l", "gemfall-07r"]
 tags: ["playable", "forest", "strong", "observer"]
 scale: large
 lore_hook: "The forest's librarians. The books are alive, and some of them bite."

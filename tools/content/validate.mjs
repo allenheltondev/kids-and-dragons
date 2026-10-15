@@ -959,7 +959,7 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
         );
       }
       const key = `${member.figure}|${member.name ?? ""}`;
-      if (seen.has(key)) fail(at, `chapter "${chapter.id}", scene "${sceneId}": the same cast member twice`, "Name each figure once; two of a kind need two names.");
+      if (seen.has(key)) fail(at, `chapter "${chapter.id}", scene "${sceneId}": the same cast member twice`, "Name each figure once; two of a kind need two names, or one entry with a count.");
       seen.add(key);
     }
   }

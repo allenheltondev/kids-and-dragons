@@ -1,5 +1,7 @@
 baseURL: "https://allenheltondev.github.io/kids-and-dragons/"
-title: "Realm of Red Sky: World Wiki"
+# The game is Kids & Dragons. The Realm of Red Sky is the world it is played in,
+# so it is named on the pages about the world, never as the name of the wiki.
+title: "Kids & Dragons Wiki"
 theme: "github.com/imfing/hextra"
 
 module:
@@ -9,12 +11,61 @@ module:
   mounts:
     - source: content
       target: content
+    - source: layouts
+      target: layouts
+    - source: assets
+      target: assets
+    - source: data
+      target: data             # wiki-only data: art.yaml (best art per page)
     - source: ../assets
       target: static/assets  # mount repo assets into Hugo static
+    # The same art again, as Hugo resources, so galleries of art that has no
+    # derived portrait.webp (the cast, the scene paintings, the gear portraits)
+    # can be resized at build time instead of shipping 1MB PNGs as thumbnails.
+    # Only what a template asks for is processed.
+    - source: ../assets
+      target: assets/art
+    # The app's own painted UI: the crest, the tray objects, species and class
+    # badges, item icons. The wiki wears the same art the game does.
+    - source: ../packages/client/src/assets/painted
+      target: static/painted
+    - source: ../packages/client/src/assets/painted
+      target: assets/painted   # resizable: the crest is 1120px wide at source
+    - source: ../packages/client/src/assets/attributes
+      target: static/painted/attributes
+    # The approved dragon mark as the site's icons (assets/brand/README.md).
+    # Mounted over the theme's root icons, which browsers request by name.
+    - source: ../assets/brand/favicon.ico
+      target: static/favicon.ico
+    - source: ../assets/brand/dragon-16.png
+      target: static/favicon-16x16.png
+    - source: ../assets/brand/dragon-32.png
+      target: static/favicon-32x32.png
+    - source: ../assets/brand/dragon-180.png
+      target: static/apple-touch-icon.png
+    - source: ../assets/brand/dragon-192.png
+      target: static/android-chrome-192x192.png
+    - source: ../assets/brand/dragon-512.png
+      target: static/android-chrome-512x512.png
     - source: ../art/reference
       target: static/map     # world map art served at /map/
     - source: ../canon
       target: data/canon     # canon YAML exposed as site.Data.canon.* (map pins)
+    # The game's rules as data — species, classes, dice targets, the XP curve,
+    # encounter bands, campaigns. The How to Play pages render them from here,
+    # so retuning rules.json retunes the wiki with no copy to drift.
+    - source: ../content/rules.json
+      target: data/game/rules.json
+    - source: ../content/abilities.json
+      target: data/game/abilities.json
+    - source: ../content/campaigns
+      target: data/game/campaigns
+    - source: ../content/items.json
+      target: data/game/items.json      # item icons, as the game draws them
+    - source: ../content/chapters
+      target: data/game/chapters        # who appears where (the Story Cast page)
+    - source: ../assets/manifest.json
+      target: data/game/manifest.json   # castFigures: the cast's names and kinds
 
 params:
   search:
@@ -24,55 +75,41 @@ params:
   navbar:
     displayTitle: true
     displayLogo: true
-
-# Section ordering weights for sidebar navigation
-menu:
-  sidebar:
-    - identifier: world
-      name: World
-      weight: 10
-    - identifier: biomes
-      name: Biomes
-      weight: 20
-    - identifier: locations
-      name: Locations
-      weight: 30
-    - identifier: creatures
-      name: Creatures
-      weight: 40
-    - identifier: characters
-      name: Characters
-      weight: 50
-    - identifier: npcs
-      name: Peoples
-      weight: 60
-    - identifier: individuals
-      name: Named Individuals
-      weight: 65
-    - identifier: factions
-      name: Factions
-      weight: 70
-    - identifier: items
-      name: Items
-      weight: 80
-    - identifier: mechanics
-      name: Mechanics
-      weight: 90
-    - identifier: quests
-      name: Quests
-      weight: 100
-    - identifier: campaigns
-      name: Campaigns
-      weight: 110
-    - identifier: history
-      name: History
-      weight: 120
-    - identifier: art
-      name: Art
-      weight: 130
-    - identifier: development
-      name: Development
-      weight: 140
+  brand:
+    name: "Kids & Dragons"
+    world: "Realm of Red Sky"
+    # The dragon mark, paired with the live-text wordmark (partials/crest.html)
+    # as the app's home screen does. Resized at build time from the master.
+    mark: "art/brand/dragon-mark.png"
+  # The sidebar, grouped the way a family would look for things. A section
+  # listed here and missing from content/ is skipped; a section in content/
+  # with pages but missing here lands in "More" so nothing is ever orphaned.
+  nav:
+    - name: "Play"
+      sections:
+        - { id: guide, icon: "painted/scroll.webp" }
+        - { id: characters, icon: "painted/party.webp", label: "Heroes" }
+        - { id: items, icon: "painted/satchel.webp" }
+        - { id: campaigns, icon: "painted/quest.webp" }
+    - name: "The Realm of Red Sky"
+      sections:
+        - { id: world, icon: "painted/globe.webp", label: "World Map" }
+        - { id: biomes, icon: "painted/map.webp", label: "Regions" }
+        - { id: locations, icon: "painted/pin.webp", label: "Places" }
+        - { id: features, icon: "painted/drop.webp", label: "Rivers & Landmarks" }
+        - { id: routes, icon: "painted/boot.webp", label: "Roads & Routes" }
+    - name: "Who Lives Here"
+      sections:
+        - { id: creatures, icon: "painted/field-guide.webp" }
+        - { id: npcs, icon: "painted/hand.webp", label: "Peoples" }
+        - { id: individuals, icon: "painted/name.webp", label: "Named Folk" }
+        - { id: cast, icon: "painted/note.webp", label: "Story Cast" }
+        - { id: factions, icon: "painted/swords.webp" }
+        - { id: quests, icon: "painted/star.webp" }
+    - name: "Behind the Scenes"
+      sections:
+        - { id: art, icon: "painted/palette.webp", label: "Art Gallery" }
+        - { id: development, icon: "painted/trinket.webp", label: "How It's Made" }
 
 markup:
   goldmark:

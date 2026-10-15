@@ -5,11 +5,15 @@ type: item
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: []
 tags: ["tool", "light", "swamp", "common"]
 related:
   - id: biome.whispering_marsh
     type: biome
     relationship: found_in
+assets:
+  primary: assets/items/marsh_lantern/portrait.webp
+  primaryFull: assets/items/marsh_lantern/assembled.png
 ai_context:
   mood: "A ghostly green lantern that cuts through supernatural fog and reveals hidden paths."
   themes: "Tool, Light, Swamp, Common"

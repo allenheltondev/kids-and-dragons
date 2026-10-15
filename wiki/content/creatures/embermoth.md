@@ -5,6 +5,7 @@ type: creature
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-02", "gemfall-04a", "gemfall-05b", "gemfall-05c", "gemfall-06", "gemfall-07h", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["ambient", "foothills", "volcanic", "indicator"]
 classification: ambient_creature
 danger_level: low

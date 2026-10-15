@@ -225,18 +225,27 @@ export function NarrationPanel(): ReactElement | null {
         {choices !== null && choices.length > 0 ? (
           <ul className="narration__choices">
             {choices.map((choice) => {
-              const who = leaning.choices[choice.id] ?? [];
+              // A hover is a light, not a name: it only lights the option, so a
+              // name appearing and disappearing cannot rewrap the label.
+              const leaningNow = (leaning.choices[choice.id] ?? []).length > 0;
+              // A locked vote is named, the same as on the phones (PlayerPanel).
+              const voters =
+                prompt?.kind === "choice" && prompt.votes !== undefined
+                  ? Object.entries(prompt.votes)
+                      .filter(([, choiceId]) => choiceId === choice.id)
+                      .map(([playerId]) => nameOfPlayer(playerId))
+                  : [];
               return (
                 <li
-                  className={`narration__choice${who.length > 0 ? " narration__choice--picked" : ""}`}
+                  className={`narration__choice${leaningNow ? " narration__choice--picked" : ""}`}
                   key={choice.id}
                 >
                   <Icon name={choice.icon} />
                   <span>{choice.label}</span>
-                  {who.length > 0 ? (
-                    <span className="narration__picker">
-                      <Icon name="hand" />
-                      <span>{who.join(", ")}</span>
+                  {voters.length > 0 ? (
+                    <span className="narration__voters">
+                      <Icon name="vote" />
+                      <span>{voters.join(", ")}</span>
                     </span>
                   ) : null}
                 </li>

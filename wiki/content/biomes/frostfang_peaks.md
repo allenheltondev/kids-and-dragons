@@ -5,6 +5,7 @@ type: biome
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: []
 tags: ["frozen_mountains", "aeries", "griffin_homeland", "cliffs", "rescue"]
 danger_level: high
 regional_relationships:
@@ -73,7 +74,7 @@ assets:
   primary: assets/biomes/frostfang_peaks/portrait.webp
   primaryFull: assets/biomes/frostfang_peaks/bg.webp
   gallery:
-    - src: assets/biomes/frostfang_peaks/portrait.webp
+    - src: assets/biomes/frostfang_peaks/tiles.png
       full: assets/biomes/frostfang_peaks/tiles.png
 ai_context:
   mood: "A vast frozen mountain range of cliffs, passes, and aeries that forms the griffin homeland and watches the northern horizon."

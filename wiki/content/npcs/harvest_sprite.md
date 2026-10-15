@@ -5,6 +5,7 @@ type: npc
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["bramblewood-01", "gemfall-02", "gemfall-03b", "gemfall-08"]
 tags: ["supporting_people", "fields", "tiny", "semi_sapient"]
 classification: supporting_people
 scale: tiny

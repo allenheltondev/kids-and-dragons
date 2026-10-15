@@ -5,6 +5,7 @@ type: location
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: ["bramblewood-01", "gemfall-02", "gemfall-05a", "gemfall-05c"]
 tags: ["town", "hedges", "sunward_fields", "waystop"]
 regional_relationships:
   - id: biome.sunward_fields
@@ -38,6 +39,9 @@ related:
   - id: item.hearthstone_bead
     type: item
     relationship: found_in
+assets:
+  primary: assets/biomes/bramblewood/portrait.webp
+  primaryFull: assets/biomes/bramblewood/bg.webp
 ai_context:
   mood: "A hedged town about two thirds of the way through the Sunward Fields, furthest from the Exchange."
   themes: "Town, Hedges, Sunward_fields, Waystop"

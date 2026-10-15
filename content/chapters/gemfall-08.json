@@ -256,7 +256,8 @@
       "narration": "The path squeezes along a narrow ledge, and a whole pack of cinder wolves is lying across it. They are coming off the mountain like everybody else, and they have stopped to rest on the only warm rock. Nobody is growling. They look like dogs who have heard thunder and are pretending they have not. The biggest one opens one ember-colored eye.",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "choices": [
@@ -292,7 +293,8 @@
       "type": "check",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "stat": "quick",
@@ -313,7 +315,8 @@
       "narration": "You sit down on the warm rock with them. After a while the big wolf leans on you, heavy and toasty as a stove. Every time the ground shakes, the whole pack shivers, and so do you, and then everybody feels a little better about it. When you finally get up to go, the wolves walk you to the end of the ledge, and no further.",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "choices": [
@@ -330,7 +333,8 @@
       "narration": "You give the big wolf the nod: chin down, tail still, one hunter to another, very proper. The big wolf looks at you for a long moment. Then it nods back, gets up, and leads the whole pack off the ledge in single file so you can pass. The smallest wolf stares at your tail the whole way. Professional courtesy is old, and it still works.",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "choices": [
@@ -347,7 +351,8 @@
       "narration": "You let the Pride Stone hum in your pack. The wolves' ears go flat. One by one they get up and slink off the ledge into the rocks, the same way the prides would never den near it. The way is clear. It is also very quiet, and the warm rock is empty, and you are not sure you like being the thing that wolves get out of the way of.",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "choices": [
@@ -801,7 +806,8 @@
       "narration": "The path crosses a field of gray ash, and the field is covered in gems. Big ones, glittering, just lying there. Except every so often, a gem blinks. They are glassback crabs, hundreds of them, pretending to be a gem deposit so nobody will dig them up. It is not a very good plan. Several of them are already waving their claws at you, in a way that clearly means something.",
       "cast": [
         {
-          "figure": "entities/glassback_crab"
+          "figure": "entities/glassback_crab",
+          "count": 3
         }
       ],
       "choices": [
@@ -837,7 +843,8 @@
       "type": "check",
       "cast": [
         {
-          "figure": "entities/glassback_crab"
+          "figure": "entities/glassback_crab",
+          "count": 3
         }
       ],
       "stat": "clever",
@@ -858,7 +865,8 @@
       "narration": "You take the long way round, along the edge of the ash, where nobody is pretending to be anything. It takes ages. Halfway round, the whole field of crabs shuffles slowly sideways to keep an eye on you, glittering, like the world's most suspicious audience. When you reach the far side, they all settle down and go back to being gems.",
       "cast": [
         {
-          "figure": "entities/glassback_crab"
+          "figure": "entities/glassback_crab",
+          "count": 3
         }
       ],
       "choices": [
@@ -875,7 +883,8 @@
       "narration": "You crouch down, go perfectly still, and glitter. Somehow, you glitter. The crabs stare. One by one they decide you are a much better gem deposit than they are, and they shuffle aside in deep professional jealousy. You cross the whole field one sparkly step at a time. Nobody will ever believe this. You are going to tell it anyway.",
       "cast": [
         {
-          "figure": "entities/glassback_crab"
+          "figure": "entities/glassback_crab",
+          "count": 3
         }
       ],
       "choices": [

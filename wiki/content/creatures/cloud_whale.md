@@ -5,6 +5,7 @@ type: creature
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: []
 tags: ["ambient", "sky", "majestic", "semi_sapient"]
 classification: ambient_creature
 danger_level: low

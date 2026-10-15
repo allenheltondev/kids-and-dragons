@@ -782,7 +782,8 @@ test.describe("first playable", () => {
     const picked = tv.locator(".narration__choice--picked");
     await expect(picked).toHaveCount(1, { timeout: 10_000 });
     await expect(picked).toContainText(label);
-    await expect(picked).toContainText("Sparklehoof");
+    // A hover lights the option but does not name the player: names are for locked-in votes.
+    await expect(picked).not.toContainText("Sparklehoof");
     if (process.env.KAD_SHOT) await tv.screenshot({ path: process.env.KAD_SHOT });
 
     // Backing out takes the highlight away again.

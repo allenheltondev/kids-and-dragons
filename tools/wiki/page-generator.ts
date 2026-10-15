@@ -66,6 +66,10 @@ function extractType(id: string): string {
  * Characters  → assets/characters/{name}/fledgling/assembled.png
  * Creatures   → assets/entities/{name}/assembled.png
  * NPCs        → assets/entities/{name}/assembled.png
+ * Individuals → assets/cast/{name}/assembled.png
+ * Items       → assets/items/{name}/assembled.png
+ * Factions    → assets/entities/{name}/assembled.png
+ * Locations/routes → assets/biomes/{name}/bg.webp (when delivered)
  * Biomes      → assets/biomes/{name}/bg.webp
  */
 export function getConventionAssetPath(entityType: string, name: string): string | null {
@@ -74,7 +78,17 @@ export function getConventionAssetPath(entityType: string, name: string): string
       return `assets/characters/${name}/fledgling/assembled.png`;
     case 'creature':
     case 'npc':
+    case 'faction':
       return `assets/entities/${name}/assembled.png`;
+    case 'individual':
+      return `assets/cast/${name}/assembled.png`;
+    case 'item':
+      return `assets/items/${name}/assembled.png`;
+    case 'location':
+      // The Gate already has a chapter illustration; do not commission a duplicate.
+      if (name === 'hollow_gate') return 'assets/scenes/gemfall/hollow-gate.webp';
+      return `assets/biomes/${name}/bg.webp`;
+    case 'route':
     case 'biome':
       return `assets/biomes/${name}/bg.webp`;
     default:
@@ -97,6 +111,10 @@ const PORTRAIT_FILE = 'portrait.webp';
  * broken image.
  */
 function withDisplay(full: string, assetsDir: string): EntityImage {
+  // portrait.webp is derived from the assembled figure or backdrop, never tiles.
+  if (!['assembled.png', 'bg.webp'].includes(path.posix.basename(full))) {
+    return { src: full, full };
+  }
   const portrait = path.posix.join(path.posix.dirname(full), PORTRAIT_FILE);
   const onDisk = path.resolve(assetsDir, '..', portrait);
   return { src: fs.existsSync(onDisk) ? portrait : full, full };
@@ -136,21 +154,13 @@ export function discoverGalleryAssets(
   const name = getAssetName(entity);
   const gallery: string[] = [];
 
-  let scanDir: string;
-  switch (entity.type) {
-    case 'character':
-      scanDir = path.join(assetsDir, 'characters', name);
-      break;
-    case 'creature':
-    case 'npc':
-      scanDir = path.join(assetsDir, 'entities', name);
-      break;
-    case 'biome':
-      scanDir = path.join(assetsDir, 'biomes', name);
-      break;
-    default:
-      return gallery;
-  }
+  const conventionPath = getConventionAssetPath(entity.type, name);
+  // A shared campaign directory contains unrelated scenes, not this place's gallery.
+  if (!conventionPath || conventionPath.startsWith('assets/scenes/')) return gallery;
+  const relativeDir = entity.type === 'character'
+    ? `assets/characters/${name}`
+    : path.posix.dirname(conventionPath);
+  const scanDir = path.resolve(assetsDir, '..', relativeDir);
 
   if (!fs.existsSync(scanDir)) {
     return gallery;
@@ -183,8 +193,7 @@ export function discoverGalleryAssets(
           // A portrait is a smaller copy of its neighbour, not a second
           // picture — listing it would put every creature in the gallery twice.
           if (IMAGE_EXTENSIONS.has(ext) && entry.name !== PORTRAIT_FILE) {
-            const baseDir = entity.type === 'biome' ? 'biomes' : 'entities';
-            const relativePath = path.posix.join('assets', baseDir, name, entry.name);
+            const relativePath = path.posix.join(relativeDir, entry.name);
             gallery.push(relativePath);
           }
         }
@@ -690,6 +699,7 @@ function generateFrontMatter(
   assets: AssetResult,
   relatedEntries: RelatedEntry[],
   allEntities: Map<string, CanonEntity>,
+  playedIn?: string[],
 ): string {
   const lines: string[] = ['---'];
 
@@ -702,9 +712,18 @@ function generateFrontMatter(
   // Canon status
   if (entity.canonStatus) {
     lines.push(`canon_status: ${entity.canonStatus}`);
-    if (entity.canonStatus === 'intentionally_undefined') {
+    // A protected mystery stays unpublished until a chapter brings it on
+    // stage. Once the party can meet it, the family can look it up; canon
+    // keeps its hidden_truths empty, so publishing it spoils nothing.
+    if (entity.canonStatus === 'intentionally_undefined' && !(playedIn && playedIn.length > 0)) {
       lines.push(`draft: true`);
     }
+  }
+
+  // Which chapters use it. Drives the "not in a story yet" badge and the
+  // page's "Met in" line; absent when no chapters were read.
+  if (playedIn) {
+    lines.push(`played_in: [${playedIn.map((id) => `"${id}"`).join(', ')}]`);
   }
 
   // Tags
@@ -1086,7 +1105,9 @@ function parseExistingPage(content: string): {
       frontMatter = content.substring(0, fmEnd);
       body = content.substring(fmEnd);
       // Remove leading newline if present
-      if (body.startsWith('\n')) {
+      if (body.startsWith('\r\n')) {
+        body = body.substring(2);
+      } else if (body.startsWith('\n')) {
         body = body.substring(1);
       }
     }
@@ -1148,7 +1169,7 @@ export function generatePage(
   options: PageGeneratorOptions,
   allEntities: CanonRegistry | Map<string, CanonEntity>,
 ): { content: string; warnings: ValidationMessage[] } {
-  const { entity, assets, reverseRefs, existingContent, bestiary, bands, items } = options;
+  const { entity, assets, reverseRefs, existingContent, bestiary, bands, items, playedIn } = options;
   const warnings: ValidationMessage[] = [];
 
   // Resolve the entities map from either a CanonRegistry or a plain Map
@@ -1159,7 +1180,7 @@ export function generatePage(
   const relatedEntries = buildRelatedEntries(entity, reverseRefs, entitiesMap);
 
   // Generate front matter
-  const frontMatter = generateFrontMatter(entity, assets, relatedEntries, entitiesMap);
+  const frontMatter = generateFrontMatter(entity, assets, relatedEntries, entitiesMap, playedIn);
 
   // Generate section contents
   const loreContent = generateLoreSection(entity, entitiesMap);

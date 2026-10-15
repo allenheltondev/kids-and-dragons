@@ -1,0 +1,34 @@
+{{/*
+  A build-time thumbnail of any repo art.
+
+  Pass a dict:
+    path   path under the repo's assets/ (e.g. "cast/pib/assembled.png"),
+           with or without a leading "assets/"
+    width  the CSS width it renders at; the file is twice that, as WebP
+    alt    alt text ("" for decorative)
+    class  optional class
+    full   true to wrap it in a link to the full-size source (the lightbox
+           opens it)
+
+  Galleries of art without a committed portrait.webp come through here, so a
+  60-portrait cast page costs ~1.5MB of WebP, not 30MB of PNG. Falls back to
+  the static file if the resource cannot be found.
+*/}}
+{{- $p := strings.TrimPrefix "assets/" .path -}}
+{{- $w := .width | default 240 -}}
+{{- $res := resources.Get (printf "art/%s" $p) -}}
+{{- $full := printf "assets/%s" $p | relURL -}}
+{{- $src := $full -}}
+{{- $h := 0 -}}
+{{- with $res -}}
+  {{- if in (slice "image/png" "image/jpeg" "image/webp") .MediaType.Type -}}
+    {{- $img := .Resize (printf "%dx webp q80" (mul $w 2)) -}}
+    {{- $src = $img.RelPermalink -}}
+    {{- $h = div (mul $w $img.Height) $img.Width -}}
+  {{- end -}}
+{{- end -}}
+{{- if .full }}<a href="{{ $full }}" class="wiki-gallery__link">{{ end -}}
+<img src="{{ $src }}" alt="{{ .alt }}" loading="lazy" decoding="async"
+     {{- with .class }} class="{{ . }}"{{ end }}
+     width="{{ $w }}"{{ if $h }} height="{{ $h }}"{{ end }}>
+{{- if .full }}</a>{{ end -}}

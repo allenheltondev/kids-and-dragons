@@ -1,0 +1,65 @@
+{{ define "main" }}
+{{/* The Story Cast: every named character painted for the stage
+     (assets/manifest.json `castFigures`), grouped by the chapter they first
+     step onto it in. "Who appears where" is read from the chapters' own
+     scene `cast` lists, so a new chapter re-sorts this page by itself. */}}
+{{ $cast := dict }}
+{{ range site.Data.game.manifest.castFigures }}{{ $cast = merge $cast (dict .id .) }}{{ end }}
+
+{{/* Chapters in play order: Gemfall by index, then everything else. */}}
+{{ $chapters := slice }}
+{{ range $k, $c := site.Data.game.chapters }}{{ $chapters = $chapters | append $c }}{{ end }}
+{{ $gemfall := sort (where $chapters "campaignId" "gemfall") "id" }}
+{{ $others := sort (where $chapters "campaignId" "ne" "gemfall") "id" }}
+{{ $ordered := $gemfall | append $others }}
+
+{{ $seen := dict }}
+{{ $groups := slice }}
+{{ range $ch := $ordered }}
+  {{ $ids := slice }}
+  {{ range $sid, $scene := $ch.scenes }}
+    {{ range $scene.cast }}
+      {{ if hasPrefix .figure "cast/" }}
+        {{ $id := strings.TrimPrefix "cast/" .figure }}
+        {{ if and (not (index $seen $id)) (index $cast $id) }}
+          {{ $seen = merge $seen (dict $id true) }}
+          {{ $ids = $ids | append $id }}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+  {{ if $ids }}{{ $groups = $groups | append (dict "chapter" $ch "ids" (sort $ids)) }}{{ end }}
+{{ end }}
+{{ $rest := slice }}
+{{ range $id, $_ := $cast }}{{ if not (index $seen $id) }}{{ $rest = $rest | append $id }}{{ end }}{{ end }}
+
+<div class="section-index">
+  <header class="wiki-section-banner">
+    {{ with .Params.icon }}<img class="wiki-section-banner__icon" src="{{ . | relURL }}" alt="" width="72" height="72">{{ end }}
+    <div>
+      <h1 class="wiki-section-banner__title">{{ .Title }}</h1>
+      {{ with .Params.description }}<p class="wiki-section-banner__lede">{{ . }}</p>{{ end }}
+    </div>
+  </header>
+  <div class="section-description prose">{{ .Content }}</div>
+
+  {{ range $groups }}
+  {{ $ch := .chapter }}
+  <section class="wiki-chapter-group" aria-label="{{ $ch.title }}">
+    <h2>{{ $ch.title }} <small>{{ with $ch.campaignId }}{{ humanize . }}{{ end }}{{ with $ch.index }} · chapter {{ . }}{{ end }}</small></h2>
+    <div class="wiki-cast-grid">
+      {{ range .ids }}{{ partial "cast-card.html" (index $cast .) }}{{ end }}
+    </div>
+  </section>
+  {{ end }}
+
+  {{ with $rest }}
+  <section class="wiki-chapter-group" aria-label="Waiting in the wings">
+    <h2>Waiting in the Wings <small>painted, not yet on stage</small></h2>
+    <div class="wiki-cast-grid">
+      {{ range sort . }}{{ partial "cast-card.html" (index $cast .) }}{{ end }}
+    </div>
+  </section>
+  {{ end }}
+</div>
+{{ end }}

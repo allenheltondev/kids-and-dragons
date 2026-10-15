@@ -5,6 +5,7 @@ type: route
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-03a"]
 tags: []
 related:
   - id: feature.great_river
@@ -19,6 +20,12 @@ related:
   - id: feature.great_river
     type: feature
     relationship: crossings
+assets:
+  primary: assets/biomes/stone_crossing/portrait.webp
+  primaryFull: assets/biomes/stone_crossing/bg.webp
+  gallery:
+    - src: assets/biomes/stone_crossing/tiles.png
+      full: assets/biomes/stone_crossing/tiles.png
 ai_context:
   mood: ""
   themes: ""

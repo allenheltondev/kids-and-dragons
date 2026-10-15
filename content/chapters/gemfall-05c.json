@@ -370,7 +370,8 @@
       "narration": "Claws up and a sideways shuffle means: this warm ground is my house. Everybody takes three slow steps back off the warm patch. The crabs stop dancing, settle down, and go back to looking like a very expensive pile of gems. The prospector gives you his pry bar without being asked.",
       "cast": [
         {
-          "figure": "entities/glassback_crab"
+          "figure": "entities/glassback_crab",
+          "count": 3
         },
         {
           "figure": "entities/burrowfolk",
@@ -809,7 +810,8 @@
           "size": "small"
         },
         {
-          "figure": "entities/embermoth"
+          "figure": "entities/embermoth",
+          "count": 4
         }
       ],
       "narration": "Outside, at dusk, the sky over the hills is full of tiny lights. Embermoths, thousands of them, glowing like sparks, are drifting south in one long river, away from the mountain. A bell on a pole rings once. A small dragonling tugs your sleeve. She is the town's bell-code expert, and she will tell you so. \"Moths leaving,\" she whispers. \"Every night this month.\"",

@@ -178,6 +178,12 @@ export interface CastMember {
   name?: string;
   /** How big they stand beside the party. Defaults per figure (world/cast.ts). */
   size?: CastSize;
+  /**
+   * How many of them are there (default 1, at most 6). The stage draws that
+   * many figures huddled together, so "three cinder wolves" in the narration
+   * is three on screen. One nameplate, under the group.
+   */
+  count?: number;
 }
 
 export type CastSize =

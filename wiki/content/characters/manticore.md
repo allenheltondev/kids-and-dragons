@@ -5,6 +5,7 @@ type: character
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["bramblewood-01", "gemfall-02", "gemfall-03a", "gemfall-04a", "gemfall-05a", "gemfall-05b", "gemfall-06", "gemfall-07h", "gemfall-08"]
 tags: ["playable", "plains", "guardian", "proud"]
 scale: medium_to_large
 lore_hook: "The scariest silhouette on the road is the reason the road is safe."

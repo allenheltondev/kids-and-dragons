@@ -5,6 +5,7 @@ type: location
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-01", "gemfall-02", "gemfall-03a", "gemfall-05a", "gemfall-07h", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["coastal_city", "trade", "crossroads", "docks", "mixed_population", "stories"]
 danger_level: low
 regional_relationships:
@@ -105,6 +106,12 @@ related:
   - id: npc.witch_order
     type: npc
     relationship: secondary_locations
+assets:
+  primary: assets/biomes/exchange/portrait.webp
+  primaryFull: assets/biomes/exchange/bg.webp
+  gallery:
+    - src: assets/biomes/exchange/tiles.png
+      full: assets/biomes/exchange/tiles.png
 ai_context:
   mood: "A neutral coastal city where roads, ships, peoples, trade, news, and opportunities from across the realm converge."
   themes: "Coastal_city, Trade, Crossroads, Docks, Mixed_population, Stories"

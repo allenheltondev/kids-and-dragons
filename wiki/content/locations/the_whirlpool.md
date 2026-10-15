@@ -5,6 +5,7 @@ type: location
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: []
 tags: ["ocean", "hazard", "current", "offshore"]
 related:
   - id: biome.open_sea
@@ -19,6 +20,9 @@ related:
   - id: location.bone_yard
     type: location
     relationship: locations
+assets:
+  primary: assets/biomes/the_whirlpool/portrait.webp
+  primaryFull: assets/biomes/the_whirlpool/bg.webp
 ai_context:
   mood: "A standing spiral of water offshore, visible from the Bone Yard and Mermaid Cove coasts."
   themes: "Ocean, Hazard, Current, Offshore"

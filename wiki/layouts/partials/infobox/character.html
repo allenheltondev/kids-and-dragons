@@ -1,0 +1,33 @@
+{{/* A playable hero's infobox — what this species does at the table, read
+     straight from content/rules.json (mounted as site.Data.game.rules). The
+     tier viewer in the page body is the portrait, so there is none here. */}}
+{{ $slug := index (split (.Params.id | default "") ".") 1 }}
+{{ $sp := index site.Data.game.rules.species $slug }}
+<aside class="wiki-infobox wiki-infobox--character" role="complementary" aria-label="Hero information">
+  <div class="wiki-infobox__badge-row">
+    <img class="wiki-infobox__badge" src="{{ printf "painted/%s.webp" $slug | relURL }}" alt="" width="64" height="64">
+    <h2 class="wiki-infobox__title">{{ .Title }}</h2>
+  </div>
+  {{ with $sp }}
+  <p class="wiki-infobox__hook">{{ .blurb }}</p>
+  <dl class="wiki-infobox__fields wiki-infobox__fields--stacked">
+    <div class="wiki-infobox__field">
+      <dt>Born with</dt>
+      <dd>
+        {{ with .passive.stat }}<img class="wiki-stat-icon" src="{{ printf "painted/attributes/%s.webp" . | relURL }}" alt="" width="22" height="22">{{ end }}
+        {{ .passive.text }}
+      </dd>
+    </div>
+    <div class="wiki-infobox__field">
+      <dt>Only you can: {{ .worldAbility.name }}</dt>
+      <dd>{{ .worldAbility.text }}</dd>
+    </div>
+    <div class="wiki-infobox__field">
+      <dt>In a fight: {{ .combatAction.name }}</dt>
+      <dd>{{ .combatAction.text }} <span class="wiki-muted">Once per fight.</span></dd>
+    </div>
+  </dl>
+  {{ end }}
+  <a class="wiki-infobox__more" href="{{ relURL "guide/heroes/" }}">How heroes work →</a>
+  {{ partial "infobox/lore-opinions.html" . }}
+</aside>

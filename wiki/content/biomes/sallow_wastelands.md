@@ -5,6 +5,7 @@ type: biome
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: []
 tags: ["coastal_lowland", "brackish", "mudflats", "saltrot", "unstable_ground"]
 danger_level: high
 regional_relationships:

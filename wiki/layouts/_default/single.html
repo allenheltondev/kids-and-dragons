@@ -1,30 +1,9 @@
 {{ define "main" }}
-<article class="entity-page{{ with .Params.type }} entity-type-{{ . }}{{ end }}">
-  <div class="entity-content">
-    <h1>{{ .Title }}</h1>
-
-    {{ with .Params.lore_hook }}
-    <p class="entity-hook">{{ . }}</p>
-    {{ end }}
-
-    {{ with .Params.tags }}
-    <div class="entity-tags" aria-label="Tags">
-      {{ range . }}
-      <span class="wiki-tag">{{ partial "title-case.html" . }}</span>
-      {{ end }}
-    </div>
-    {{ end }}
-
-    {{ $content := .Content }}
-    {{ $content = replaceRE `(?s)<!-- BEGIN GENERATED: ai_context -->.*?<!-- END GENERATED: ai_context -->` "" $content }}
-    {{ $content = replaceRE `(?s)<!-- BEGIN GENERATED: relationships -->.*?<!-- END GENERATED: relationships -->` "" $content }}
-    {{ $content | safeHTML }}
-
-    {{/* Related entities — visual card grid */}}
-    {{ partial "related-entities.html" $ }}
-
-    {{/* Hidden AI context for AI tools */}}
-    {{ partial "ai-context.html" . }}
-  </div>
-</article>
+{{/* Canon pages carry an id; hand-written pages (How to Play, How It's Made)
+     do not, and read as a plain article. */}}
+{{ if .Params.id }}
+{{ partial "entity-page.html" . }}
+{{ else }}
+{{ partial "article-page.html" . }}
+{{ end }}
 {{ end }}

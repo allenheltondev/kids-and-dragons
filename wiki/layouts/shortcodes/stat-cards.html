@@ -1,0 +1,17 @@
+{{/* The four stats, with the painted attribute art the game uses. Words are
+     the spec's (§4.1); the starting value comes from rules.json. */}}
+{{ $base := site.Data.game.rules.baseStats }}
+{{ $words := dict
+  "might" "Hitting hard, shoving, lifting, holding on."
+  "quick" "Moving far, going first, sneaking, dodging."
+  "clever" "Spells, puzzles, noticing things, tinkering."
+  "heart" "Healing, calming, persuading, helping friends up." }}
+<div class="wiki-rule-grid">
+  {{ range $s := slice "might" "quick" "clever" "heart" }}
+  <div class="wiki-rule-card wiki-rule-card--{{ $s }}">
+    <h3><img src="{{ printf "painted/attributes/%s.webp" $s | relURL }}" alt="" width="40" height="40"> {{ title $s }}</h3>
+    <p>{{ index $words $s }}</p>
+    <p class="wiki-muted" style="margin-top:.4rem;font-size:.8rem">Everyone starts at {{ index $base $s }}.</p>
+  </div>
+  {{ end }}
+</div>

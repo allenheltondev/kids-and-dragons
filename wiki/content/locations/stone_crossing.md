@@ -5,6 +5,7 @@ type: location
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-01", "gemfall-02", "gemfall-03a", "gemfall-04a", "gemfall-05a", "gemfall-05b"]
 tags: ["river_crossing", "bridge", "bottleneck", "current", "trade_route"]
 danger_level: moderate
 regional_relationships:
@@ -84,6 +85,12 @@ related:
   - id: npc.stone_troll
     type: npc
     relationship: primary_locations
+assets:
+  primary: assets/biomes/stone_crossing/portrait.webp
+  primaryFull: assets/biomes/stone_crossing/bg.webp
+  gallery:
+    - src: assets/biomes/stone_crossing/tiles.png
+      full: assets/biomes/stone_crossing/tiles.png
 ai_context:
   mood: "A narrow, strategically important crossing where the Great River compresses travel between the Sunward Fields and Eastern Plains into a single route."
   themes: "River_crossing, Bridge, Bottleneck, Current, Trade_route"

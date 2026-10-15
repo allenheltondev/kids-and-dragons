@@ -284,7 +284,7 @@ describe("what somebody has picked but not confirmed", () => {
 
   afterEach(() => useGameStore.setState({ previews: {} }));
 
-  it("lights up the option and names who is leaning toward it", () => {
+  it("lights up the option someone is leaning toward, without naming them", () => {
     // Stamped with the decision on screen: no chapter or trail in this
     // fixture, the fork scene, story turn 0.
     useGameStore.setState({
@@ -294,7 +294,18 @@ describe("what somebody has picked but not confirmed", () => {
     const picked = container.querySelectorAll(".narration__choice--picked");
     expect(picked).toHaveLength(1);
     expect(picked[0]?.textContent).toContain("Go west");
-    expect(picked[0]?.textContent).toContain("Thistle");
+    expect(picked[0]?.textContent).not.toContain("Thistle");
+    expect(container.querySelector(".narration__voters")).toBeNull();
+  });
+
+  it("names who has locked in a vote, on the option they chose, as the phones do", () => {
+    const { container } = mount({ prompt: { ...vote.prompt, votes: { p_2: "west" } } });
+    const voters = container.querySelectorAll(".narration__voters");
+    expect(voters).toHaveLength(1);
+    expect(voters[0]?.closest(".narration__choice")?.textContent).toContain("Go west");
+    expect(voters[0]?.textContent).toContain("Thistle");
+    // Locked in is not a pick still being made: no cyan highlight for it.
+    expect(container.querySelector(".narration__choice--picked")).toBeNull();
   });
 
   it("stays dark for a pick made for an earlier question", () => {

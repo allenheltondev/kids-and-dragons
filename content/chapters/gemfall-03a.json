@@ -801,7 +801,8 @@
       "narration": "The beach is covered in old bone chips laid out in neat spirals. Then a spiral stands up. Bone crawlers: little scuttlers wearing shells of borrowed fossil, sleeves too long, dignity enormous. They are clattering straight for your humming packs.",
       "cast": [
         {
-          "figure": "entities/bone_crawler"
+          "figure": "entities/bone_crawler",
+          "count": 5
         }
       ],
       "choices": [
@@ -833,7 +834,8 @@
       "prompt": "Fool a bone crawler swarm with something that glitters",
       "cast": [
         {
-          "figure": "entities/bone_crawler"
+          "figure": "entities/bone_crawler",
+          "count": 5
         }
       ],
       "roller": "party",
@@ -854,7 +856,8 @@
       "prompt": "Stomp off the beach looking as big as you possibly can",
       "cast": [
         {
-          "figure": "entities/bone_crawler"
+          "figure": "entities/bone_crawler",
+          "count": 5
         }
       ],
       "roller": "party",

@@ -5,6 +5,7 @@ type: creature
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["bramblewood-01", "gemfall-03b", "gemfall-04b"]
 tags: ["supernatural", "marsh", "memory", "misdirection"]
 classification: supernatural_manifestation
 danger_level: moderate

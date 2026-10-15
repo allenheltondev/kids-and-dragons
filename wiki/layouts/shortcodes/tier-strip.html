@@ -1,0 +1,11 @@
+{{/* One species at all four tiers, side by side. */}}
+{{ $sp := .Get "species" | default "dragonling" }}
+{{ $r := site.Data.game.rules }}
+<div class="wiki-tier-strip">
+  {{ range $t := slice "fledgling" "sworn" "radiant" "mythic" }}
+  <figure>
+    {{ partial "thumb.html" (dict "path" (printf "characters/%s/%s/portrait.webp" $sp $t) "width" 200 "alt" (printf "%s at %s tier" (title $sp) $t)) }}
+    <figcaption>{{ title $t }}<span>from level {{ index $r.tierLevels $t }}</span></figcaption>
+  </figure>
+  {{ end }}
+</div>

@@ -12,6 +12,7 @@ import { makeState } from "../testing/fixtures";
 import {
   ENTITY_SIZES,
   MAX_CAST,
+  MAX_GROUP,
   SIZE_SCALE,
   castFigureUrl,
   castFor,
@@ -34,6 +35,27 @@ const chapter = {
     fight: { type: "encounter", map: "m", enemies: [], onVictory: { goto: "x" }, onDefeat: { goto: "x" } },
   },
 } as unknown as Chapter;
+
+describe("cast groups", () => {
+  it("draws as many figures as the count says, with one nameplate", () => {
+    const out = stageCast([{ figure: "entities/cinder_wolf", name: "Pack", count: 3 }]);
+    expect(out).toHaveLength(3);
+    expect(new Set(out.map((m) => m.key)).size).toBe(3);
+    expect(out.map((m) => m.name)).toEqual(["Pack", null, null]);
+    expect(stageCast([{ figure: "entities/cinder_wolf" }])[0]?.crowd).toBeUndefined();
+  });
+
+  it("clamps a silly count", () => {
+    expect(stageCast([{ figure: "entities/cinder_wolf", count: 99 }])).toHaveLength(MAX_GROUP);
+    expect(stageCast([{ figure: "entities/cinder_wolf", count: 0 }])).toHaveLength(1);
+  });
+
+  it("packs a group tighter than the same number of separate figures", () => {
+    const spread = stageSlots(2, [1, 1, 1], 1600, [false, false, false]).cast;
+    const huddle = stageSlots(2, [1, 1, 1], 1600, [true, true, true]).cast;
+    expect(huddle[2]! - huddle[0]!).toBeLessThan(spread[2]! - spread[0]!);
+  });
+});
 
 describe("cast figures", () => {
   it("resolves every kind of figure to a file under assets/", () => {

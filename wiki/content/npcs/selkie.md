@@ -5,6 +5,7 @@ type: npc
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-01", "gemfall-05b", "gemfall-07h"]
 tags: ["supporting_people", "coastal", "shapeshifter", "courier"]
 classification: supporting_people
 scale: medium

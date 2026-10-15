@@ -5,6 +5,7 @@ type: biome
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: []
 tags: ["aerial", "drifting_islands", "wind", "temples", "open_sky"]
 danger_level: moderate
 regional_relationships:
@@ -43,7 +44,7 @@ assets:
   primary: assets/biomes/sky_islands/portrait.webp
   primaryFull: assets/biomes/sky_islands/bg.webp
   gallery:
-    - src: assets/biomes/sky_islands/portrait.webp
+    - src: assets/biomes/sky_islands/tiles.png
       full: assets/biomes/sky_islands/tiles.png
 ai_context:
   mood: "An archipelago of inhabited islands that drift across the western sky on recurring but imperfect wind routes."

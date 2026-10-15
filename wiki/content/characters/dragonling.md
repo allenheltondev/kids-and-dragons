@@ -5,6 +5,7 @@ type: character
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["bramblewood-01", "gemfall-01", "gemfall-02", "gemfall-03c", "gemfall-04c", "gemfall-05a", "gemfall-05b", "gemfall-05c", "gemfall-06", "gemfall-07h", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["playable", "volcanic", "explorer", "heat_resistant"]
 scale: small_to_medium
 lore_hook: "Small dragons. Big opinions. Absolutely no fear of the correct things."

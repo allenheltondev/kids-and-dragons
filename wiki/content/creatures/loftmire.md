@@ -5,6 +5,7 @@ type: creature
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: []
 tags: ["supernatural", "marsh", "mist", "hazard", "drift", "lost_things"]
 classification: supernatural_manifestation
 danger_level: moderate

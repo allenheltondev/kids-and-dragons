@@ -5,7 +5,7 @@ type: location
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
-draft: true
+played_in: ["gemfall-03b", "gemfall-04b", "gemfall-05a", "gemfall-05b", "gemfall-06", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["ruins", "marsh", "portal", "mysterious"]
 regional_relationships:
   - id: biome.whispering_marsh
@@ -25,6 +25,8 @@ related:
   - id: item.hollow_crown_shard
     type: item
     relationship: found_in
+assets:
+  primary: assets/scenes/gemfall/hollow-gate.webp
 ai_context:
   mood: "A crumbling stone archway in the heart of the Whispering Marsh, said to be a sealed portal to the world before the red sky."
   themes: "Ruins, Marsh, Portal, Mysterious"

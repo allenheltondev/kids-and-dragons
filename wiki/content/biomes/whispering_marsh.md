@@ -5,6 +5,7 @@ type: biome
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-01", "gemfall-02", "gemfall-03b", "gemfall-03c"]
 tags: ["wetland", "mist", "spirits", "memory", "waterways", "secrets"]
 danger_level: moderate
 regional_relationships:
@@ -103,7 +104,7 @@ assets:
   primary: assets/biomes/whispering_marsh/portrait.webp
   primaryFull: assets/biomes/whispering_marsh/bg.webp
   gallery:
-    - src: assets/biomes/whispering_marsh/portrait.webp
+    - src: assets/biomes/whispering_marsh/tiles.png
       full: assets/biomes/whispering_marsh/tiles.png
 ai_context:
   mood: "A mist-covered wetland where voices, memories, and supernatural manifestations collect among drowned roots and hidden waterways."
