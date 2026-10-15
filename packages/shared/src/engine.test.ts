@@ -762,6 +762,37 @@ describe("species gating at the prompt (architecture §5)", () => {
     const result = applyIntent(state, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "over" } }, context);
     expect(result.error?.code).toBe("ILLEGAL");
   });
+
+  it("refuses a `when`-hidden choice exactly as it refuses a requiresItem-hidden one (#158)", () => {
+    const chapter = makeChapter();
+    const clearing = chapter.scenes["scene_clearing"] as StoryScene;
+    clearing.choices = [
+      ...clearing.choices,
+      { id: "by_key", label: "Use the key", icon: "key", goto: "scene_shrine", requiresItem: "rusted_key" },
+      {
+        id: "by_facets",
+        label: "Set the stones",
+        icon: "gem",
+        goto: "scene_shrine",
+        when: { count: { of: "facet_*", min: 2 } },
+      },
+    ];
+    const context = ctx({ chapter });
+    const state = started(context, [{ playerId: "p_1", intent: CREATE_UNICORN }]);
+    if (state.prompt?.kind !== "choice") throw new Error("expected a choice prompt");
+    // Hidden, not disabled: neither is offered at all.
+    expect(state.prompt.options.map((o) => o.id)).toEqual(["squeeze"]);
+    expect(currentChoices(state, chapter).map((c) => c.id)).toEqual(["squeeze"]);
+
+    const choose = (choiceId: string) =>
+      applyIntent(state, { playerId: "p_1", intent: { type: "CHOOSE", choiceId } }, context);
+    const byItem = choose("by_key");
+    const byWhen = choose("by_facets");
+    expect(byItem.error?.code).toBe("ILLEGAL");
+    expect(byWhen.error?.code).toBe(byItem.error?.code);
+    expect(byWhen.error?.message).toBe(byItem.error?.message.replace("by_key", "by_facets"));
+    expect(byWhen.state).toEqual(state);
+  });
 });
 
 describe("story turns (spec §6.1)", () => {

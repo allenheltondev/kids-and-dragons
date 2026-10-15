@@ -20,11 +20,66 @@ export type Effect =
   | { type: "grantXp"; amount: number }
   | { type: "setFlag"; flag: string; value?: boolean };
 
+/**
+ * A test against the party and the run's flags (#158). Every field is
+ * optional and every field present must hold: they are ANDed, and an empty
+ * condition always holds. Evaluated by `evaluateCondition` (chapter-graph.ts),
+ * the one evaluator that choice gating and narration variants share.
+ */
+export interface Condition {
+  /** This run flag is set. */
+  flag?: string;
+  /** This run flag is not set. */
+  notFlag?: string;
+  /** Somebody in the party holds this item (inventory or quest items). */
+  item?: string;
+  /** Nobody in the party holds this item. */
+  notItem?: string;
+  /**
+   * How many **distinct** item ids the party holds between them, across every
+   * member's inventory and quest items: an item two members both carry counts
+   * once. `of` is an exact id, a prefix ending in `*` (`"facet_*"`), or a list
+   * of exact ids. Bounds are inclusive; `max: 0` means "has none".
+   */
+  count?: { of: string | string[]; min?: number; max?: number };
+  /** How many members are seated, connected or not. Bounds are inclusive. */
+  partySize?: { min?: number; max?: number };
+}
+
+/**
+ * Extra narration shown when its condition holds (#159).
+ *
+ * Composed when the scene opens: the base narration plus every variant whose
+ * `when` holds, in authored order. `at: "start"` goes before the base, the
+ * default (`"end"`) after it, and `replace: true` drops the base. If several
+ * matching variants replace, the first one wins (the validator reports it as
+ * an authoring error).
+ *
+ * **Evaluated against the party as it is when the scene opens.** The scene's
+ * own `onEnter` effects have already applied (and, for branch narration, the
+ * branch's effects too), so an item the scene grants on entry counts.
+ *
+ * After composition the `{facets}` and `{party}` tokens are filled
+ * (narration.ts), and the result is stored in `RunState.narration`, so a reload
+ * mid-scene shows the same words rather than recomputing them.
+ */
+export interface NarrationVariant {
+  when: Condition;
+  text: string;
+  at?: "start" | "end";
+  replace?: boolean;
+}
+
 export interface Branch {
   goto: SceneId;
   effects?: Effect[];
   /** Optional narration override shown before the transition. */
   narration?: string;
+  /**
+   * Conditional additions to `narration`, shown on the scene this branch leads
+   * to exactly as `narration` is. See `NarrationVariant`.
+   */
+  variants?: NarrationVariant[];
 }
 
 export interface Choice {
@@ -39,6 +94,13 @@ export interface Choice {
   requiresSpecies?: SpeciesId | SpeciesId[];
   requiresFlag?: string;
   requiresItem?: string;
+  /**
+   * Hidden (never disabled) unless this holds (#158). Checked alongside the
+   * `requires*` gates above; see `Condition`. The label's `{facets}` /
+   * `{party}` tokens are filled when the prompt opens; variants do not apply
+   * to labels.
+   */
+  when?: Condition;
   effects?: Effect[];
 }
 
@@ -116,6 +178,8 @@ export interface StoryScene {
   type: "story";
   art?: string;
   narration: string;
+  /** Conditional narration, composed when the scene opens. See `NarrationVariant`. */
+  variants?: NarrationVariant[];
   onEnter?: Effect[];
   /**
    * Canon ids (keys of `content/field-guide.json` entries) the kids meet in
@@ -138,6 +202,11 @@ export interface CheckScene {
   tn: number;
   prompt: string;
   narration?: string;
+  /**
+   * Conditional narration, composed when the scene opens over the base text
+   * (`narration`, or `prompt` without it). See `NarrationVariant`.
+   */
+  variants?: NarrationVariant[];
   onEnter?: Effect[];
   /**
    * Canon ids (keys of `content/field-guide.json` entries) the kids meet in
@@ -159,6 +228,8 @@ export interface ChoicePointScene {
   type: "choice_point";
   art?: string;
   narration: string;
+  /** Conditional narration, composed when the scene opens. See `NarrationVariant`. */
+  variants?: NarrationVariant[];
   onEnter?: Effect[];
   /**
    * Canon ids (keys of `content/field-guide.json` entries) the kids meet in
@@ -179,6 +250,8 @@ export interface RestScene {
   type: "rest";
   art?: string;
   narration: string;
+  /** Conditional narration, composed when the scene opens. See `NarrationVariant`. */
+  variants?: NarrationVariant[];
   onEnter?: Effect[];
   /**
    * Canon ids (keys of `content/field-guide.json` entries) the kids meet in
