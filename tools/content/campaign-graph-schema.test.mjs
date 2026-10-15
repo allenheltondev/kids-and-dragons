@@ -218,3 +218,38 @@ describe("rift actions (#197)", () => {
     expect(ferry((c) => (c.graph.edges["harbor-row"].fallback = false)).ok).toBe(false);
   });
 });
+
+describe("temporary buffs (#200)", () => {
+  const BUFFS = ["packages", "shared", "src", "fixtures", "rift-buffs.campaign.json"];
+  const buffs = (mutate) => {
+    const campaign = read(...BUFFS);
+    mutate(campaign);
+    return judge(campaign);
+  };
+
+  it("the Humming Spring validates: every kind, duration, stacking mode, target and expiry", () => {
+    const { ok, errors } = judge(read(...BUFFS));
+    expect(ok, errors.join("\n")).toBe(true);
+  });
+
+  it("is not content either", () => {
+    expect(() => read("content", "campaigns", `${read(...BUFFS).id}.json`)).toThrow();
+  });
+
+  it("refuses a buff of a kind, target, stacking or expiry it does not know, and unbounded numbers", () => {
+    expect(buffs((c) => (c.graph.buffs["rift-shield"].kind = "speed")).ok).toBe(false);
+    expect(buffs((c) => (c.graph.buffs["rift-shield"].target = "all")).ok).toBe(false);
+    expect(buffs((c) => (c.graph.buffs["rift-shield"].stack = "merge")).ok).toBe(false);
+    expect(buffs((c) => (c.graph.buffs["rift-shield"].expiresOn = ["dawn"])).ok).toBe(false);
+    expect(buffs((c) => (c.graph.buffs["rift-shield"].amount = 0)).ok).toBe(false);
+    expect(buffs((c) => (c.graph.buffs["rift-shield"].amount = 9)).ok).toBe(false);
+    expect(buffs((c) => (c.graph.buffs["rift-shield"].duration = { scope: "encounters", count: 9 })).ok).toBe(false);
+    expect(buffs((c) => (c.graph.buffs["rift-shield"].duration = { scope: "encounters" })).ok).toBe(false);
+    expect(buffs((c) => (c.graph.buffs["rift-shield"].duration = { scope: "forever" })).ok).toBe(false);
+    expect(buffs((c) => (c.graph.buffs["rift-shield"].glow = true)).ok).toBe(false);
+  });
+
+  it("refuses a grantBuff without its buff", () => {
+    expect(buffs((c) => (c.graph.edges["camp-to-den"].effects = [{ type: "grantBuff" }])).ok).toBe(false);
+  });
+});

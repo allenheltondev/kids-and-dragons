@@ -15,14 +15,38 @@
  * run unchanged.
  */
 
+import { createHash } from "node:crypto";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { applyIntent, createRunState } from "@kad/shared";
-import type { Campaign, ClientIntent, RunState } from "@kad/shared";
+import {
+  applyIntent,
+  beginEncounter,
+  createRunState,
+  currentActor,
+  encounterOutcome,
+  endTurn,
+  legalActions,
+  makeRng,
+  moveTo,
+  parseBoard,
+  performAction,
+  planEnemyTurn,
+  resolveCharacter,
+} from "@kad/shared";
+import type {
+  Campaign,
+  ClientIntent,
+  EncounterEvent,
+  EncounterScene,
+  EncounterState,
+  EnemyPlacement,
+  ResolvedCharacter,
+  RunState,
+} from "@kad/shared";
 import { loadContent } from "../content/loader.ts";
 import type { Engine } from "../engine/port.ts";
 import type { CampaignProgressRecord, GameRepository } from "../store/repository.ts";
-import { makeChapter } from "../../../shared/src/test-fixtures.ts";
+import { makeChapter, makeCharacter } from "../../../shared/src/test-fixtures.ts";
 import { makeContent, makeHarness, seedHousehold, T0 } from "../test-support.ts";
 import { applyAction } from "./action.ts";
 import { playCampaign } from "./playthrough-driver.ts";
@@ -97,6 +121,9 @@ describe("Gemfall, played with the journey runtime in the build", () => {
       if (attempt) expect(attempt).not.toHaveProperty("journey");
       for (const state of runs) {
         expect(state).not.toHaveProperty("journeyVisit");
+        // Temporary buffs (#200) are seeded only from a graph journey.
+        expect(state).not.toHaveProperty("buffs");
+        expect(state.encounter ?? {}).not.toHaveProperty("buffs");
         expect(state.campaign ?? {}).not.toHaveProperty("journey");
         for (const option of state.campaignOptions ?? []) expect(option).not.toHaveProperty("journey");
       }
@@ -225,4 +252,137 @@ describe("ordered settlement writes no journey", () => {
     expect(settlement.campaignProgress?.routeFlags).toEqual({ road_river: true });
     expect(settlement.campaignView).not.toHaveProperty("journey");
   });
+});
+
+/*
+ * Temporary buffs (#200) reach into the fight itself — Guard, attack rolls,
+ * damage, steps — so "no change for ordered campaigns" is pinned at the level
+ * of the numbers, not just the absence of a field: Gemfall heroes holding
+ * real trinkets are resolved, and a real Gemfall fight is played on a fixed
+ * seed, and the whole transcript is hashed. The golden digest was taken from
+ * the build *before* buffs existed (this test uses nothing newer), so any
+ * drift in item/trinket resolution or combat arithmetic fails here.
+ */
+describe("Gemfall's numbers, with temporary buffs in the build (#200)", () => {
+  /** The digest of the transcript below, as the pre-#200 build produced it. */
+  const GOLDEN = "55d9cdf7dc65cb8c06bd6bdf73baebb44b33db03627036c722a7990c2f5f309d";
+
+  const rules = content.rules();
+  const items = content.items();
+  const abilities = content.abilities();
+
+  const HEROES = [
+    makeCharacter({
+      id: "c_thorn",
+      name: "Bramble",
+      species: "bigfoot",
+      class: "thornguard",
+      stats: { might: 3, quick: 1, clever: 0, heart: 1 },
+      inventory: [{ itemId: "thistle_pin", kind: "trinket" }, { itemId: "hearthstone_bead", kind: "trinket" }],
+    }),
+    makeCharacter({
+      id: "c_dusk",
+      name: "Windstep",
+      species: "griffin",
+      class: "duskrunner",
+      stats: { might: 0, quick: 3, clever: 1, heart: 1 },
+      inventory: [{ itemId: "luckstone", kind: "trinket" }, { itemId: "quickfoot_lace", kind: "trinket" }],
+    }),
+    makeCharacter({
+      id: "c_star",
+      name: "Glimmer",
+      species: "kitsune",
+      class: "starweaver",
+      stats: { might: 0, quick: 1, clever: 3, heart: 1 },
+      inventory: [{ itemId: "owlfeather_clasp", kind: "trinket" }],
+    }),
+    makeCharacter({
+      id: "c_song",
+      name: "Sparklehoof",
+      species: "unicorn",
+      class: "songkeeper",
+      stats: { might: 1, quick: 1, clever: 0, heart: 3 },
+      inventory: [{ itemId: "songbird_ribbon", kind: "trinket" }, { itemId: "river_charm", kind: "trinket" }],
+    }),
+  ];
+
+  /** One fight, both sides played by the monsters' own planner, every event kept. */
+  function playFight(party: readonly ResolvedCharacter[], chapterId: string, sceneId: string, seed: string) {
+    const scene = content.chapter(chapterId)!.scenes[sceneId] as EncounterScene;
+    const map = content.map(scene.map)!;
+    const ctx = { rules, abilities, rng: makeRng(seed) };
+    const enemies: EnemyPlacement[] = [];
+    for (const spec of scene.enemies) {
+      for (let n = 0; n < spec.count; n++) enemies.push({ spec, at: map.enemySpawns[enemies.length]! });
+    }
+    let state: EncounterState = beginEncounter(
+      {
+        board: parseBoard(map.rows),
+        party: party.map((character, i) => {
+          // Luckstone charges from the bag, as engine.ts `startEncounter` counts them.
+          const rerollOnes = character.inventory.reduce((n, entry) => {
+            const passive = items[entry.itemId]?.passive;
+            return passive?.type === "rerollOnes" ? n + passive.perEncounter : n;
+          }, 0);
+          return { character, at: map.partySpawns[i]!, ...(rerollOnes > 0 ? { rerollOnes } : {}) };
+        }),
+        enemies,
+      },
+      ctx,
+    );
+    const log: (readonly EncounterEvent[])[] = [];
+    const at = (id: string) => {
+      const actor = state.board.actors.find((a) => a.id === id)!;
+      return { x: actor.x, y: actor.y };
+    };
+    for (let turn = 0; turn < 300 && encounterOutcome(state) === "ongoing"; turn++) {
+      const actor = currentActor(state);
+      if (!actor) break;
+      const foes = state.combatants
+        .filter((c) => c.side !== actor.side && state.board.actors.some((a) => a.id === c.id))
+        .map((c) => ({ id: c.id, at: at(c.id), hp: c.hp, maxHp: c.maxHp, down: c.down }));
+      const plan = planEnemyTurn({
+        board: state.board,
+        enemy: { id: actor.id, at: at(actor.id), steps: state.stepsLeft },
+        party: foes,
+      });
+      if (plan.moveTo) {
+        const moved = moveTo(state, plan.moveTo);
+        if (moved.ok) {
+          state = moved.state;
+          log.push(moved.events);
+        }
+      }
+      const attack = legalActions(state, ctx).find((a) => a.abilityId === "attack" && a.targets.length > 0);
+      if (attack) {
+        const swung = performAction(state, ctx, { abilityId: "attack", targetId: attack.targets[0]! });
+        if (swung.ok) {
+          state = swung.state;
+          log.push(swung.events);
+        }
+      }
+      if (encounterOutcome(state) === "ongoing") state = endTurn(state);
+    }
+    return { log, final: state, outcome: encounterOutcome(state) };
+  }
+
+  it("resolves trinket-holding heroes and plays a seeded Gemfall fight exactly as before", () => {
+    const party = HEROES.map((hero) => resolveCharacter(hero, rules, items));
+    const fights = [
+      playFight(party, "gemfall-02", firstEncounter("gemfall-02"), "gemfall-golden-1"),
+      playFight(party.slice(0, 2), "gemfall-03a", firstEncounter("gemfall-03a"), "gemfall-golden-2"),
+    ];
+    // The fights must be real ones, or the digest pins nothing.
+    for (const fight of fights) {
+      expect(fight.log.flat().some((event) => event.type === "roll")).toBe(true);
+      expect(fight.final).not.toHaveProperty("buffs");
+    }
+    const digest = createHash("sha256").update(JSON.stringify({ party, fights })).digest("hex");
+    expect(digest).toBe(GOLDEN);
+  });
+
+  function firstEncounter(chapterId: string): string {
+    const scenes = content.chapter(chapterId)!.scenes;
+    return Object.keys(scenes).find((id) => scenes[id]!.type === "encounter")!;
+  }
 });
