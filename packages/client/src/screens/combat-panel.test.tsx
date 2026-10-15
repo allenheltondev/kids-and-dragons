@@ -1136,3 +1136,72 @@ describe("what just happened", () => {
     expect(log.textContent).toContain("You take 3. 7 left.");
   });
 });
+
+// ---------------------------------------------------------------------------
+// The place fighting back (#201)
+// ---------------------------------------------------------------------------
+
+describe("the place fighting back (#201)", () => {
+  /** The 5×5 fight, with a clock, an open way out, a hot square and somebody to save. */
+  function riftFight(): EncounterState {
+    return encounterWith({
+      environment: {
+        clock: { rounds: 3, label: "The rift closes", onExpire: "collapse" },
+        exits: [{ id: "tear", label: "The tear", tiles: [{ x: 0, y: 0 }] }],
+        hazards: [{ id: "fire", kind: "fire", label: "Rift fire", tiles: [{ x: 1, y: 1 }], damage: 2 }],
+        rescue: { name: "Pip", at: { x: 4, y: 4 } },
+      },
+    });
+  }
+
+  it("says the clock, the way out, the rescue and the fire in words above the board", () => {
+    mount({ encounter: riftFight() });
+    const rift = screen.getByRole("list", { name: "The rift" });
+    const lines = within(rift).getAllByRole("listitem").map((li) => li.textContent);
+    expect(lines).toEqual([
+      "The rift closes in 3 rounds.",
+      "The tear is open: end your turn on it to escape.",
+      "Free Pip: end your turn next to them. 3 rounds left.",
+      "Rift fire: stopping on it costs 2 hearts.",
+    ]);
+  });
+
+  it("names what a square is on the square's own button, so a screen reader hears it before the tap", () => {
+    mount({ encounter: riftFight() });
+    expect(screen.getByRole("button", { name: "Move to column 1, row 1: The tear, open: stop here to escape" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Move to column 2, row 2: Rift fire, don't stop here" })).toBeTruthy();
+  });
+
+  it("shows none of it in a fight without an environment", () => {
+    mount();
+    expect(screen.queryByRole("list", { name: "The rift" })).toBeNull();
+    expect(screen.queryAllByRole("button", { name: /row \d+: / })).toEqual([]);
+  });
+
+  it("puts the rift's beats into words", () => {
+    const encounter = riftFight();
+    const beats = describeBeats(
+      [
+        { type: "hazard", actorId: "c_hero", hazardId: "fire", label: "Rift fire" },
+        { type: "freed", byId: "c_hero" },
+        { type: "escaped", actorId: "c_hero", exitId: "tear" },
+        { type: "relocated", actorId: "wisp#1", to: { x: 3, y: 3 } },
+        { type: "riftClock", onExpire: "collapse" },
+        { type: "surge", amount: 1 },
+        { type: "captiveLost" },
+      ],
+      encounter,
+      "c_hero",
+      3,
+    );
+    expect(beats.map((b) => b.text)).toEqual([
+      "Rift fire burns you!",
+      "You freed Pip!",
+      "You step through the rift!",
+      "The rift throws Bramblewisp 1 somewhere new!",
+      "The rift is closing!",
+      "The rift surges: everyone still here loses 1.",
+      "Pip is lost to the rift.",
+    ]);
+  });
+});

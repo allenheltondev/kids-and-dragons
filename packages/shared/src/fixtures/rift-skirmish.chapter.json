@@ -1,0 +1,93 @@
+{
+  "$comment": "Sandbox chapter for environmental combat (#201) — NOT content: it lives outside content/chapters/, no campaign lists it, and nothing ships it. One fight, four ways out of it: hold the landing (onVictory), go down (onDefeat), free Pip and get through the rift before it shuts (onEscape), or stay too long (onTimeout). The rift clock, a burning line you may cross but not stop on, a tear that opens in round 2 and shuts after round 4, a captive, and a shade the rift spits beside the way out. Played by packages/shared/src/encounter-environment.test.ts; judged by tools/content/encounter-environment.test.mjs.",
+  "id": "rift-skirmish",
+  "campaignId": "rift-sandbox",
+  "index": 1,
+  "title": "The Drowned Ferry",
+  "biome": "enchanted_woods",
+  "estimatedMinutes": 10,
+  "xpAward": 100,
+  "entry": "scene_landing",
+  "objectives": [
+    { "id": "save_pip", "label": "Get Pip the ferry-sprite out of the rift", "flag": "pip_rescued", "xp": 25 }
+  ],
+  "scenes": {
+    "scene_landing": {
+      "type": "story",
+      "narration": "The ferry is gone. Where it sank, the air has torn open like wet paper, and Pip the ferry-sprite is caught on the far side of it.",
+      "choices": [{ "id": "wade", "label": "Wade in", "icon": "swords", "goto": "fight_rift" }]
+    },
+    "fight_rift": {
+      "type": "encounter",
+      "map": "rift_ferry",
+      "narration": "Two rift shades rise out of the water. Above them, the tear begins to close.",
+      "enemies": [
+        { "id": "shade", "name": "Rift Shade", "count": 2, "hp": 6, "guard": 9, "quick": 0, "steps": 3, "attack": 2 }
+      ],
+      "environment": {
+        "clock": { "rounds": 4, "label": "The rift closes", "onExpire": "collapse" },
+        "hazards": [
+          {
+            "id": "rift-fire",
+            "kind": "fire",
+            "label": "Rift fire",
+            "tiles": [{ "x": 3, "y": 2 }, { "x": 3, "y": 3 }, { "x": 3, "y": 4 }, { "x": 3, "y": 5 }],
+            "damage": 2
+          }
+        ],
+        "exits": [
+          {
+            "id": "north-tear",
+            "label": "The tear in the air",
+            "tiles": [{ "x": 4, "y": 0 }, { "x": 5, "y": 0 }],
+            "opensRound": 2,
+            "closesRound": 4
+          }
+        ],
+        "rescue": {
+          "name": "Pip the ferry-sprite",
+          "at": { "x": 1, "y": 7 },
+          "effects": [{ "type": "setFlag", "flag": "pip_rescued" }]
+        },
+        "relocate": [{ "round": 3, "enemy": "shade#2", "to": { "x": 6, "y": 1 } }]
+      },
+      "onVictory": { "goto": "scene_held", "narration": "The last shade comes apart like smoke." },
+      "onDefeat": { "goto": "scene_swept", "narration": "The water takes your feet from under you." },
+      "onEscape": {
+        "goto": "scene_through",
+        "narration": "You dive through the tear as it snaps shut behind you.",
+        "variants": [
+          { "when": { "flag": "pip_rescued" }, "text": "Pip tumbles through after you, lantern and all." },
+          { "when": { "notFlag": "pip_rescued" }, "text": "Behind you, Pip's lantern winks out." }
+        ]
+      },
+      "onTimeout": { "goto": "scene_collapse", "narration": "The tear folds shut, and the whole landing goes with it." }
+    },
+    "scene_held": {
+      "type": "story",
+      "narration": "The landing is yours. The tear has closed, but the river is quiet.",
+      "variants": [{ "when": { "flag": "pip_rescued" }, "text": "Pip lights the way home." }],
+      "choices": [],
+      "outcome": "success"
+    },
+    "scene_through": {
+      "type": "story",
+      "narration": "You land in soft reeds on the other side of the rift.",
+      "choices": [],
+      "outcome": "success"
+    },
+    "scene_swept": {
+      "type": "story",
+      "narration": "You wake on the bank, soaked and sore. The shades are gone, and so is the tear.",
+      "choices": [],
+      "outcome": "setback"
+    },
+    "scene_collapse": {
+      "type": "story",
+      "narration": "The rift throws you back onto the shore and seals itself.",
+      "variants": [{ "when": { "notFlag": "pip_rescued" }, "text": "Pip did not come with you." }],
+      "choices": [],
+      "outcome": "setback"
+    }
+  }
+}

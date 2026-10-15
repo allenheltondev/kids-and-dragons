@@ -93,6 +93,25 @@ Tooling for a campaign graph (all read-only; the ordered campaigns are skipped, 
 - `npm run content:graph` and `npm run content:continuity` are the *chapter*-level tools and
   are unchanged by any of this.
 
+## Environmental encounters (#201)
+
+An encounter scene may carry an `environment`: a visible rift clock, hazard tiles, timed exits, a
+captive to free and monsters the rift moves — plus `onEscape` / `onTimeout` branches for the
+endings those make possible. None of the shipped chapters uses it, and a scene without it fights
+exactly as before. Everything happens where a figure **stops** (turn ends) or as a round starts,
+never mid-move. `npm run content:validate` checks the tiles against the scene's map (open ground,
+off the party's spawns, reachable) and that exactly the right extra branches are present. The
+contract, with a worked sandbox chapter, is
+[Environmental combat (#201)](../docs/campaigns/graph-campaigns.md#environmental-combat-201).
+
+Guidance:
+
+- Say the rule in the labels: "The rift closes", "Rift fire", "The tear in the air" — the phone
+  builds "The rift closes in 2 rounds" and "stopping on it costs 2 hearts" from them.
+- Make every way out a real choice with a price: an exit that opens late, a captive away from it,
+  fire on the short path. Write the consequence into the branch (`setFlag`, variants) or the
+  rescue's `effects`; a graph campaign turns those flags into world facts with `onComplete`.
+
 ## The Bramblewood chapter is reference content
 
 `campaigns/the-hollow-crown.json` and `chapters/bramblewood-01.json` are **the engine's reference
