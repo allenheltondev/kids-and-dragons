@@ -91,6 +91,8 @@ import { addItem, addQuestItem, freeSlots, hasItem, removeItem, swapItem, useCon
 import { sceneChoices, visibleChoices } from "./chapter-graph.js";
 import { composeNarration, fillTokens } from "./narration.js";
 import { loadDie, readDie } from "./playtest.js";
+import type { RunBuff } from "./types/buffs.js";
+import { combatBuffsFor, expireRunBuffs, oneHeroSeat, spendRunBuffs } from "./buffs.js";
 
 // ---------------------------------------------------------------------------
 // Surface
@@ -174,6 +176,18 @@ export interface EngineContext {
    * the run already holds.
    */
   campaignCoins?: number;
+  /**
+   * The temporary buffs a graph campaign's journey holds (#200), resolved
+   * through the graph's declarations (`seedRunBuffs`), seeded into
+   * `RunState.buffs` when a chapter starts — for `campaignFlags`' reason: the
+   * engine is handed them and never asks a store. Seeding **replaces**: a
+   * chapter started again from the same journey starts from the journey's
+   * buffs, never from what an abandoned run had spent.
+   *
+   * Absent for every ordered campaign and every one-off chapter, which then
+   * carries no buffs at all — so nothing a Gemfall fight computes can change.
+   */
+  campaignBuffs?: readonly RunBuff[];
 }
 
 export type EngineErrorCode = "STALE_SEQ" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN";
@@ -593,6 +607,9 @@ function completeChapter(draft: RunState, scene: EndingScene, ctx: EngineContext
   draft.phase = "chapter_complete";
   draft.prompt = null;
   draft.chapterOutcome = outcome;
+  // A setback ends the temporary buffs (#200) that end on one, before the run
+  // hands its buffs back to the journey.
+  if (outcome === "setback" && draft.buffs !== undefined) draft.buffs = expireRunBuffs(draft.buffs, "setback");
 
   // XP is per chapter, not per kill (spec §8.1). The engine only *records* it;
   // folding it into a character's provisional progress is the persistence
@@ -815,6 +832,9 @@ function enterSceneDraft(
   if (scene.type === "rest" && scene.heal) {
     for (const member of draft.party) heal(member, scene.heal);
   }
+  // A rest ends the temporary buffs (#200) that end on one — whether or not
+  // the scene heals: a rest is the party standing down.
+  if (scene.type === "rest" && draft.buffs !== undefined) draft.buffs = expireRunBuffs(draft.buffs, "rest");
 
   // Composed after `onEnter`, on purpose: variants and tokens read the party
   // as it is when the scene opens, so an item this scene grants counts (#159).
@@ -1053,7 +1073,10 @@ function doPlaytestGoto(
   ctx: EngineContext,
 ): Presentation | undefined {
   requireScene(requireChapter(ctx), sceneId);
-  if (draft.encounter) carryDamageOut(draft, draft.encounter);
+  if (draft.encounter) {
+    carryDamageOut(draft, draft.encounter);
+    spendBuffs(draft, "ongoing");
+  }
   draft.encounter = null;
   for (const member of draft.party) member.ready = false;
   return enterSceneDraft(draft, sceneId, ctx);
@@ -1298,6 +1321,10 @@ function doStartChapter(
   draft.flags = { ...(ctx.campaignFlags ?? {}) };
   // The purse is not chapter-scoped: see `EngineContext.campaignCoins`.
   draft.coins = ctx.campaignCoins ?? draft.coins ?? 0;
+  // Temporary buffs (#200) come only from a graph campaign's journey. Any
+  // other start clears what an earlier graph chapter in this room left.
+  if (ctx.campaignBuffs !== undefined) draft.buffs = structuredClone([...ctx.campaignBuffs]);
+  else delete draft.buffs;
   draft.lastRoll = null;
   // A new chapter is a new day on the road: everyone's help is back.
   draft.helpSpent = [];
@@ -1781,8 +1808,21 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
     }
   }
 
+  // Temporary buffs (#200): the run's, on the heroes they target. Only a
+  // graph campaign's run holds any; for every other fight there is no
+  // `buffs` in the setup and none on the state.
+  const held = draft.buffs ?? [];
+  const heroIds = draft.party.map((member) => member.character.id);
+  const buffs =
+    held.length > 0
+      ? combatBuffsFor(held, heroIds, heroIds[oneHeroSeat(draft.storyTurn, heroIds.length)] ?? null)
+      : [];
+
   draft.encounter = {
-    ...beginEncounter({ board: parseBoard(map.rows), party, enemies }, combatCtx(ctx)),
+    ...beginEncounter(
+      { board: parseBoard(map.rows), party, enemies, ...(buffs.length > 0 ? { buffs } : {}) },
+      combatCtx(ctx),
+    ),
     // The step this fight began on. Unique per fight and replayed identically
     // from the event log, so it is the fight's identity (EncounterState).
     startedAt: draft.seq,
@@ -2043,6 +2083,18 @@ function carryDamageOut(draft: RunState, encounter: EncounterState): void {
   }
 }
 
+/**
+ * A fight is over, however it ended: the run's temporary buffs (#200) are one
+ * fight nearer spent, and a lost one ends those that end on defeat
+ * (`spendRunBuffs`). Like `carryDamageOut`, it runs on every path that drops
+ * `draft.encounter`. A run without buffs — every ordered campaign's — is left
+ * without the key.
+ */
+function spendBuffs(draft: RunState, outcome: "victory" | "defeat" | "ongoing"): void {
+  if (draft.buffs === undefined) return;
+  draft.buffs = spendRunBuffs(draft.buffs, outcome);
+}
+
 function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | undefined {
   const encounter = draft.encounter;
   if (!encounter) return undefined;
@@ -2050,6 +2102,7 @@ function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | un
   if (outcome === "ongoing") return undefined;
 
   carryDamageOut(draft, encounter);
+  spendBuffs(draft, outcome);
 
   const { scene } = currentScene(draft, ctx);
   if (scene.type !== "encounter") throw new Illegal("ILLEGAL", "no encounter is running");

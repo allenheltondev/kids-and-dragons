@@ -54,6 +54,8 @@
  * - `RIFT_ONCE_AND_USES` (warn)   `once` and `rift.uses` count the same crossings.
  * - `RIFT_REVEAL_MOOT` (warn)     `reveal: "when-open"` on a rift open from the
  *                                 start hides nothing.
+ * - `BUFF_NEVER_GRANTED` (warn)   a declared temporary buff (#200) no effect
+ *                                 grants.
  *
  * A rift's `opensWhen` is a guard like any other for the checks above, and so
  * is a rift action rule's `when` (#197). A redirectable rift is a way to each
@@ -236,6 +238,7 @@ export type GraphFindingCode =
   | "RIFT_REVEAL_MOOT"
   | "RIFT_EFFECT_ON_FINAL"
   | "RIFT_ACTION_NEVER_OFFERED"
+  | "BUFF_NEVER_GRANTED"
   | "CLASS_GATED_ONLY_PATH";
 
 export interface GraphFinding {
@@ -652,6 +655,20 @@ export function lintCampaignGraph(graph: ParsedCampaignGraph, options: GraphLint
 
   // --- rift declarations (#196) -------------------------------------------
   lintRifts(graph, error, warn);
+
+  // --- temporary buffs (#200) -----------------------------------------------
+  // A buff changes fights, never where the party can go, so the search has
+  // nothing to track; the one thing to say is a declaration nothing grants.
+  const granted = new Set(effectsOf(graph).flatMap((effect) => (effect.type === "grantBuff" ? [effect.buff] : [])));
+  for (const id of graph.buffOrder) {
+    if (granted.has(id)) continue;
+    warn(
+      "BUFF_NEVER_GRANTED",
+      `/graph/buffs/${seg(id)}`,
+      `buff "${id}" is declared but no edge effect, completion rule or rift action grants it, so the party can never have it`,
+      `Add { "type": "grantBuff", "buff": "${id}" } to the edge, completion rule or rift action that should grant it, or delete the buff.`,
+    );
+  }
 
   // --- the search -----------------------------------------------------------
   const search = explore(graph, options, chapterWrites);
@@ -1128,6 +1145,9 @@ function explore(
         if (tracked.flags.includes(effect.flag)) setFlag(f, effect.flag, effect.value !== false);
       } else if (effect.type === "unlock" || effect.type === "lock") {
         if (tracked.overrides.includes(effect.edge)) f.edges![effect.edge] = effect.type === "unlock" ? "open" : "locked";
+      } else if (effect.type === "grantBuff") {
+        // A temporary buff (#200) changes fights, never where the party can go.
+        continue;
       } else if (tracked.facts.includes(effect.fact)) {
         const fact = graph.facts[effect.fact]!;
         f.facts![effect.fact] = writeFact(fact, readFact(fact, f.facts![effect.fact]), effect);

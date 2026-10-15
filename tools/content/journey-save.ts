@@ -37,7 +37,7 @@
  * verdict: `readBackFlags` and `readFact` drop or coerce them by design.
  */
 
-import { JOURNEY_VERSION, readJourney, readFact } from "@kad/shared";
+import { JOURNEY_VERSION, buffFights, buffMaxStacks, readJourney, readFact, storedBuffs } from "@kad/shared";
 import type { JourneyState, ParsedCampaignGraph } from "@kad/shared";
 
 export type SaveVerdict = "ok" | "unreadable" | "future-version" | "unknown-node" | "dangling" | "impossible";
@@ -281,6 +281,33 @@ export function checkJourneySave(graph: ParsedCampaignGraph, raw: unknown): Save
       }
     }
   }
+  // --- temporary buffs (#200) -----------------------------------------------
+  // Read the way the runtime reads them (`storedBuffs`): a record that is not
+  // a buff is dropped, an id the graph no longer declares is carried and does
+  // nothing, a stack count past the declaration's is held to it.
+  if (j.buffs !== undefined) {
+    if (!Array.isArray(j.buffs)) {
+      error("impossible", "/buffs", `"buffs" must be a list of held buffs`);
+    } else {
+      const seen = new Set<string>();
+      j.buffs.forEach((entry, i) => {
+        const path = `/buffs/${i}`;
+        const read = storedBuffs([entry])[0];
+        if (!read || seen.has(read.id)) {
+          warn("unknown-fact", path, `${JSON.stringify(entry)} is not a held buff the runtime can read (or repeats one); it is ignored`);
+          return;
+        }
+        seen.add(read.id);
+        const def = graph.buffs[read.id];
+        if (!def) {
+          warn("unknown-fact", path, `buff "${read.id}" is not declared by this campaign; it is carried and does nothing`);
+        } else if (read.stacks > buffMaxStacks(def) || read.encountersLeft > buffFights(def.duration)) {
+          warn("unknown-fact", path, `buff "${read.id}" holds more than its declaration allows; it reads as held to it`);
+        }
+      });
+    }
+  }
+
   if (j.chaptersCompleted !== undefined && (!Array.isArray(j.chaptersCompleted) || j.chaptersCompleted.some((c) => typeof c !== "string"))) {
     error("impossible", "/chaptersCompleted", `"chaptersCompleted" must be a list of chapter ids`);
   }
