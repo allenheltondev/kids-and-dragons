@@ -1489,6 +1489,9 @@
     },
     "scene_rope_bridge": {
       "type": "story",
+      "discovers": [
+        "creature.snowhorn_goat"
+      ],
       "cast": [
         {
           "figure": "entities/snowhorn_goat"
