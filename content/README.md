@@ -70,6 +70,16 @@ that the reference chapter below does not:
 - **Facets as quest items.** Quest items outlive the chapter that grants them, which is what makes
   a collection collectable.
 
+## Ordered campaigns and graph campaigns
+
+Gemfall is an **ordered** campaign: its next chapter is chosen by chapter `index` (and, at a routed
+beat, by flag), and it stays that way. A campaign that declares a `graph` — named places, the ways
+between them, revisits, several endings — is a **graph** campaign instead, and its next chapter is
+chosen by edge. That contract is
+[docs/campaigns/graph-campaigns.md](../docs/campaigns/graph-campaigns.md). None ships yet; the
+illustrative one is a test fixture outside `content/`. A campaign's mode is part of its identity, so
+turning an existing campaign into a graph is a new campaign id, never an edit.
+
 ## The Bramblewood chapter is reference content
 
 `campaigns/the-hollow-crown.json` and `chapters/bramblewood-01.json` are **the engine's reference

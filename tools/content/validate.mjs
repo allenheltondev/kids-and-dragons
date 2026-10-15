@@ -28,6 +28,7 @@ import addFormats from "ajv-formats";
 
 import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "../../packages/shared/src/condition-lint.ts";
 import { chapterStartDiscoveries, sceneDiscoveries } from "../../packages/shared/src/discoveries.ts";
+import { campaignMode, journeyFlags, parseCampaignGraph } from "../../packages/shared/src/campaign-graph.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 
 /**
@@ -1032,6 +1033,17 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds) {
     }
   });
 
+  // A backfill flag is read off the attempt's saved flags, and only route-set
+  // members are ever saved. Anything else would silently never pay.
+  const carriedFlags = new Set(Object.values(campaign.routeSets ?? {}).flat());
+  for (const flag of Object.keys(campaign.purseBackfill?.byFlag ?? {})) {
+    if (!carriedFlags.has(flag)) {
+      fail("/purseBackfill/byFlag", `"${flag}" is not in any routeSets entry, so no saved attempt ever holds it`);
+    }
+  }
+
+  if (campaignMode(campaign) === "graph") return checkGraphCampaign(rep, f, campaign, chaptersById, fail, ok);
+
   /*
    * Beats are the save unit and the player sees "Chapter 3 of 6" - a gap here is
    * a bug in the progress UI long before anyone notices the content. Indexes are
@@ -1058,15 +1070,6 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds) {
    * than inferred from the files that happen to exist.
    */
   const routeSets = campaign.routeSets ?? {};
-
-  // A backfill flag is read off the attempt's saved flags, and only route-set
-  // members are ever saved. Anything else would silently never pay.
-  const carriedFlags = new Set(Object.values(routeSets).flat());
-  for (const flag of Object.keys(campaign.purseBackfill?.byFlag ?? {})) {
-    if (!carriedFlags.has(flag)) {
-      fail("/purseBackfill/byFlag", `"${flag}" is not in any routeSets entry, so no saved attempt ever holds it`);
-    }
-  }
 
   for (const index of ordered) {
     const members = beats.get(index);
@@ -1124,6 +1127,45 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds) {
     const routed = ordered.filter((index) => beats.get(index).length > 1).length;
     const shape = routed > 0 ? `, ${routed} routed` : "";
     rep.ok(`${f}  campaign  (${campaign.chapters.length} chapter(s), ${ordered.length} beat(s)${shape})`);
+  }
+  return ok;
+}
+
+/**
+ * The graph half of `checkCampaign` (#192, docs/campaigns/graph-campaigns.md).
+ *
+ * A graph campaign chooses its next chapter by edge, so none of the beat
+ * arithmetic above applies — no 1..n, no route set coverage — and running it
+ * anyway would fail every graph whose chapters share an act number. What
+ * applies instead is that every name in the declaration resolves
+ * (`parseCampaignGraph`, the same check the server makes at startup), and
+ * that no chapter still claims a routed beat nothing would ever read.
+ *
+ * Deliberately only that. Whether the graph can be *walked* — every node
+ * reachable, no softlock, every cycle intentional — is #193's, and hangs off
+ * the parsed graph here.
+ */
+function checkGraphCampaign(rep, f, campaign, chaptersById, fail, okSoFar) {
+  let ok = okSoFar;
+  campaign.chapters.forEach((id, i) => {
+    if (chaptersById.get(id)?.route) {
+      fail(
+        `/chapters/${i}`,
+        `chapter "${id}" declares a route, but a graph campaign chooses its chapters by edge`,
+        "Drop `route` from the chapter and express the choice as edges with `when`.",
+      );
+      ok = false;
+    }
+  });
+  const { graph, problems } = parseCampaignGraph(campaign);
+  for (const { path, problem } of problems) {
+    fail(path, problem);
+    ok = false;
+  }
+  if (ok && graph) {
+    rep.ok(
+      `${f}  campaign  (graph v${graph.version}: ${graph.nodeOrder.length} node(s), ${graph.edgeOrder.length} edge(s), ${graph.endings.length} ending(s))`,
+    );
   }
   return ok;
 }
@@ -1305,9 +1347,11 @@ function main() {
   const brokenChapterIds = new Set();
 
   // Flags each campaign carries between chapters — every member of every
-  // declared route set. Read before the chapters so a chapter may gate on a
-  // flag an earlier chapter of its campaign set. Malformed campaigns are
-  // reported below, in their own section; here they simply carry nothing.
+  // declared route set, and a graph campaign's declared journey flags
+  // (`journeyFlags`: the same carry rule, widened). Read before the chapters
+  // so a chapter may gate on a flag an earlier chapter of its campaign set.
+  // Malformed campaigns are reported below, in their own section; here they
+  // simply carry nothing.
   const carriedByCampaign = new Map();
   for (const file of listJson(join(CONTENT, "campaigns"))) {
     let campaign;
@@ -1316,8 +1360,9 @@ function main() {
     } catch {
       continue;
     }
-    const sets = campaign && typeof campaign.routeSets === "object" ? Object.values(campaign.routeSets ?? {}) : [];
-    carriedByCampaign.set(campaign?.id, new Set(sets.filter(Array.isArray).flat()));
+    const routeSets = campaign && typeof campaign.routeSets === "object" ? campaign.routeSets : undefined;
+    const graph = campaign && typeof campaign.graph === "object" ? campaign.graph : undefined;
+    carriedByCampaign.set(campaign?.id, new Set(journeyFlags({ routeSets: routeSets ?? undefined, graph: graph ?? undefined })));
   }
 
   for (const file of chapterFiles) {
