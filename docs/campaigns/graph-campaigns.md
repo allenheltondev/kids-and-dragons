@@ -15,8 +15,9 @@ Where this document and the TypeScript disagree, the TypeScript wins and this is
 > **Status.** The declaration, its schema, its parser and the load-time checks exist (#192), and
 > so does the journey runtime (#194, [§6](#the-runtime-194)): a graph campaign can be started,
 > played node by node, its exits chosen (`CHOOSE_EXIT`), and its journey is saved on the
-> household's attempt. The navigation screens are #195. No graph campaign ships; the only one in
-> the repo is the [Rift Sampler](#7-the-rift-sampler) fixture, which lives outside `content/`.
+> household's attempt. Edges can be [rifts](#rifts-196) with lifecycles of their own (#196). The
+> navigation screens are #195. No graph campaign ships; the only ones in the repo are the
+> [Rift Sampler](#7-the-rift-sampler) and Rift Lifecycle fixtures, which live outside `content/`.
 
 ---
 
@@ -170,6 +171,7 @@ finishing Gemfall's last beat — and records which ending was reached. An endin
 | `once: true` | May be taken once per attempt; then it is **spent**. |
 | `irreversible: true` | The author's claim that there is no way back to `from` afterwards. Not enforced at runtime: #193 checks the claim, #195 warns before the crossing. |
 | `blocked` | How the exit is drawn while unavailable: `"hidden"` (default — the house rule, unmet requirements hide, architecture §5) or `"shown"` (the locked door is part of the place). |
+| `rift` | Makes the edge a [rift](#rifts-196): a link with a lifecycle (triggered, single-use, timed, unstable, persistent, linked, one-way, hidden destination). Absent: an ordinary edge. |
 
 ### `kind`, and which cycles are allowed
 
@@ -195,6 +197,8 @@ this order (the first failure is the one reported, `exitAvailability`):
 2. **not spent** — a `once` edge already taken → `"spent"`
 3. **not closed** — it leads into a `revisit: "closed"` node already completed → `"closed"`
 4. **its `when` holds** → `"guard"`
+5. **its rift, if it is one, can be crossed** → `"rift-dormant"`, `"rift-faded"`, `"rift-closed"`,
+   `"rift-consumed"`, `"rift-expired"` or `"rift-collapsed"` ([Rifts](#rifts-196))
 
 `exitsFrom(graph, node, journey)` lists a node's exits in authored order with each one's
 availability and whether it is drawn (`visible`: available, or blocked and `"shown"`).
@@ -379,6 +383,170 @@ CHOOSE_EXIT refuse; settlement settles nothing and logs) and never overwritten.
 
 ---
 
+## Rifts (#196)
+
+A **rift** is an edge with a life of its own: it may wait to open, be used up, run out of time,
+flicker, collapse, or hide where it leads. It is declared as an optional `rift` on the edge, every
+property optional and composable; an edge without one is exactly the edge of [§4](#4-edges). The
+shape is `GraphRift`/`RiftState` in `types/campaign-graph.ts`; the read rules are `riftState`/
+`riftBlock` in `campaign-graph.ts`; the moves are
+[`packages/shared/src/rifts.ts`](../../packages/shared/src/rifts.ts). Opt-in like everything
+else here: no `rift`, no change — and adding the field did not bump `CampaignGraph.version`.
+
+```jsonc
+"camp-to-isle": {
+  "from": "camp", "to": "isle", "kind": "forward", "label": "Step into the shimmer", "blocked": "shown",
+  "rift": { "uses": 1, "lasts": { "unit": "visits", "count": 4 }, "reveal": "when-crossed" }
+},
+"shore-to-ruins": {
+  "from": "shore", "to": "ruins", "kind": "forward",
+  "rift": { "opensWhen": { "flag": "tide_out" }, "oneWay": true }
+}
+```
+
+| Property | Name in the issue | Meaning |
+|---|---|---|
+| `opensWhen: GraphCondition` | triggered | `"dormant"` until it holds, then `"open"`. Judged like an edge guard, subject = the edge's `from` (a linked pair: the `from` of its smaller id, so both mouths agree). Unless `persistent`, an open triggered rift can be **crossed only while it still holds** (`"rift-dormant"` otherwise); its lifecycle stays `"open"`. |
+| `persistent: true` | persistent | Once open, open for good: `opensWhen` no longer gates it, and no action closes it. Refused together with `uses`, `lasts` or `unstable` (they would end it). |
+| `uses: n` | single-use (`1`) | `"consumed"` after n crossings. |
+| `lasts: { unit, count }` | timed | `"expired"` once `count` ticks of `unit` have passed since it opened. |
+| `unstable: { flicker?: { open, shut }, collapsesAfter? }` | unstable | `flicker`: there on `open` visits to `from`, gone for `shut`, repeating — visit ordinal v is open when `(v − 1) mod (open + shut) < open` (`"rift-faded"` otherwise). `collapsesAfter: n`: `"collapsed"` after n crossings. No randomness: the rhythm reads the visit ordinal, so a resumed visit gives the same answer. |
+| `linkedTo: edgeId` | linked | Its partner rift. The two are **one rift with two mouths**: one shared state (stored under both ids), so a crossing of either counts for both, and closing, consuming, expiring or collapsing one does the same to the other. Must be mutual, and must declare the same lifecycle (`opensWhen`, `persistent`, `uses`, `lasts`, `unstable`). A pair of opposite edges is a two-way rift. |
+| `oneWay: true` | one-way | The promise that **no rift leads straight back**. Movement on any edge is one-way already; this is the claim, refused with a partner that is its own way back and checked against every rift edge `to → from` (`RIFT_ONE_WAY_HAS_WAY_BACK`), and shown on the screen. (Whether there is any way back at all is `irreversible`'s claim.) |
+| `reveal` | destination reveal | `"always"` (default), `"when-open"` (hidden while dormant) or `"when-crossed"` (hidden until the party has crossed it, by either mouth of a pair). |
+
+`{}` is a rift with no rules: open from the start, forever, and drawn as a rift.
+
+### The lifecycle
+
+```
+  dormant ──(opensWhen holds, or openRift)──▶ open
+     │                                         ├─(crossings reach uses)───────────▶ consumed  ┐
+     │                                         ├─(age reaches lasts.count)────────▶ expired   ├ final
+     │                                         ├─(crossings reach collapsesAfter)─▶ collapsed ┘
+     └───────────(closeRift)──────────▶ closed ◀──(closeRift; not if persistent)──┘
+                                         └──(openRift)──▶ open
+```
+
+- The lifecycle only moves forward. **`consumed`, `expired` and `collapsed` are final**: no
+  condition, no clock, no content change and no explicit open brings one back — a used-up rift that
+  returns is a different edge. A stored final status is never overwritten (closing one is a no-op).
+- **`closed`** is a stop, not an end: only an explicit `openRift` (#197's action) reopens it.
+  Nothing derived does.
+- Absent state reads **as declared**: open, or dormant with `opensWhen`. A stored record that is
+  not one (a corrupted row, a status from a later build) reads `"closed"` — the one thing a misread
+  rift must never do is open by accident.
+- Both `uses` and `collapsesAfter` reached by the same crossing: `consumed`.
+
+### Clocks
+
+There is no wall clock in a journey, and no turn clock between chapters. A timed rift counts the
+moments the journey already has:
+
+| `unit` | One tick | Reads as |
+|---|---|---|
+| `"visits"` | every exit taken and arrived through (a pass-through counts — it is a move) | "for four moves" |
+| `"chapters"` | every chapter completed (a pass-through plays none) | the **session clock**: a chapter is one sitting, so "for two evenings" |
+
+The age counts from the moment the rift **opened** (for an untriggered rift, the start of the
+attempt). Turn-by-turn timing inside an encounter is #201's (environmental combat): the parser
+refuses any other unit today, and `tickRifts(graph, journey, unit)` is the hook a turn clock would
+call.
+
+### When a rift moves, and what a crossing is
+
+Only inside the journey's three transitions, in a fixed order, so the server, the phones and the
+lint search walk a rift through the same states:
+
+| Transition | Rift steps |
+|---|---|
+| start | enter the entry → `settleRifts` |
+| complete a visit | `tickRifts("chapters")` on the journey the chapter played under → the completion (counters, outcome, flags) → `settleRifts` |
+| take an exit | `crossRift` → `tickRifts("visits")` → traversed/`lastExit`/effects → enter → `settleRifts` |
+
+Ticking *before* the transition's own changes means a rift opened by this move or chapter starts at
+age 0; crossing *before* ticking means a timed rift can be taken on its last move. `settleRifts`
+writes back what the journey now implies (a triggered rift opening, a timed one expiring) and
+nothing for a rift still as declared, so a graph with no rifts never grows a `rifts` key.
+
+**A crossing is the `CHOOSE_EXIT` that commits** — one party-wide move. The whole party crosses
+with the exit; there is no per-hero crossing and no half-crossed party, because the journey has no
+such state: the rift's count, the exit and the arrival are one `takeExit`, written in the attempt's
+one conditional commit. So:
+
+- a double tap, or a retry after a lost response, is `takeExit`'s **duplicate** (its `lastExit`
+  check runs before availability) — never a second crossing, and never refused as "consumed";
+- two phones crossing at once: exactly one write lands; the other's retry is the duplicate;
+- a session that resumes after the write finds the rift as the crossing left it; one that resumes
+  before it finds it untouched. There is nothing in between to resume.
+
+### Stored state
+
+`JourneyFacts.rifts?: Record<EdgeId, RiftState>`, `RiftState = { status, crossings?, age?,
+revealed?, latched? }` — stored inside `CampaignProgressRecord.journey`, so it rides the same
+versioned write. `JOURNEY_VERSION` stays 1: an absent `rifts` reads as declared, which is what
+every journey written before rifts means. A record for an edge that is no longer a rift is ignored;
+an edge that becomes a rift under a save starts as declared; a stored final status survives a
+declaration that loosened.
+
+### On the screen
+
+`JourneyExitView` gains (#195 draws them):
+
+- `rift?: JourneyRiftView` — `{ status, usesLeft?, expiresIn?: { unit, count }, collapsesIn?,
+  oneWay?, unstable?, persistent?, linked? }`; `reason` already says why it cannot be crossed now.
+- `hiddenDestination?: true` — the destination is not revealed: **`to` is `""`**, `label` is the
+  authored label (write one that does not name the place) or `"Into the rift"`, and `arrival` is
+  `"new"` (all the party knows). Nothing in the view names the place.
+
+### For #197 (rift actions)
+
+`rifts.ts` exposes the explicit transitions, each `(graph, journey, edgeId) → { ok: true, changed,
+journey } | { ok: false, code: "not-a-rift" | "final" | "persistent", message }`:
+
+| | |
+|---|---|
+| `openRift` | dormant or closed → open, **latched** (its `opensWhen` stops gating it). A timed rift opened from dormant starts at age 0; reopened from closed it keeps its age and count. Final → refused. |
+| `closeRift` | dormant or open → closed. Already closed or final → unchanged. Open and `persistent` → refused. |
+| `revealRift` | reveals the destination, whatever `reveal` says. |
+
+No authored `GraphEffect` opens or closes a rift yet — a triggered rift is opened by its
+`opensWhen` (which an edge's `setFlag` can satisfy). Effects, discovery and redirection are #197's.
+
+### Checks
+
+| Check | Where |
+|---|---|
+| counts are whole numbers ≥ 1, `unit` is `visits`/`chapters`, `unstable` is not empty, `reveal` is known, `opensWhen` names resolve, `persistent` not with `uses`/`lasts`/`unstable`, `linkedTo` exists, is a rift, links back, declares the same lifecycle, and is not a `oneWay` rift's own way back | schema and `parseCampaignGraph` |
+| `RIFT_ONE_WAY_HAS_WAY_BACK` — a one-way rift with a rift edge straight back | lint (error) |
+| `RIFT_ONCE_AND_USES` ⚠ — `once` and `rift.uses` on one edge | lint (warning) |
+| `RIFT_REVEAL_MOOT` ⚠ — `reveal: "when-open"` on a rift open from the start | lint (warning) |
+| contradictory `opensWhen` → `GUARD_CONTRADICTION`; a single-use, timed, collapsing or flickering rift as the only way on → `STRANDED`/`TRAPPED` with the path | the softlock search, which tracks rift state |
+
+### The Rift Lifecycle fixture
+
+[`packages/shared/src/fixtures/rift-lifecycle.campaign.json`](../../packages/shared/src/fixtures/rift-lifecycle.campaign.json)
+shows every property, on placeholder chapters (not content, never loaded), and walks clean:
+
+| Edge | From → to | Rift |
+|---|---|---|
+| `camp-to-shore` / `shore-to-camp` | camp (pass, entry) ⇄ shore | — (plain forward / return) |
+| `camp-to-isle` | camp → isle | `uses: 1`, `lasts: 4 visits`, `reveal: "when-crossed"` — single-use + timed + hidden |
+| `shore-to-ruins` | shore → ruins | `opensWhen: { flag: tide_out }`, `oneWay` — triggered + one-way |
+| `camp-to-ruins` ⇄ `ruins-to-camp` | camp ⇄ ruins | linked pair, `uses: 2`, `opensWhen: { visited: ruins }` — a two-way gate that wakes once the ruins are found |
+| `ruins-to-spire` | ruins → spire | `unstable: { flicker: 1 on / 1 off, collapsesAfter: 1 }` |
+| `isle-to-spire` | isle → spire | `opensWhen: { completed: ruins }`, `persistent` |
+| `isle-to-camp`, `ruins-to-shore` | back | — (plain returns) |
+| `spire-to-dawn` | spire → dawn (ending) | — (`irreversible`) |
+
+`rifts.test.ts` plays it: the shimmer's destination hidden until crossed and its four moves
+counting down, the tide-rift there only while the tide is out, the twin gate waking when the ruins
+are found and sharing two crossings between its mouths, the stair flickering by visit and
+collapsing behind the party, the lantern bridge staying lit — and every property alone and
+combined on a three-place map.
+
+---
+
 ## 7. The Rift Sampler
 
 [`packages/shared/src/fixtures/rift-sampler.campaign.json`](../../packages/shared/src/fixtures/rift-sampler.campaign.json)
@@ -418,9 +586,9 @@ sees it, and nothing ships it. `campaign-graph.test.ts` holds it to the parser a
 | Check | Where |
 |---|---|
 | Shape — fields, kinds, policies, `version: 1`, id patterns, no unknown keys | `schemas/campaign.schema.json` (`content:validate`, editors) |
-| Every name resolves — entry, edge ends, guard and effect targets, flags declared, node/variant chapters listed, every listed chapter played, no exit from an ending, at least one ending | `parseCampaignGraph` — run by `content:validate` **and** at server startup (the loader refuses the content set) |
+| Every name resolves — entry, edge ends, guard and effect targets, flags declared, node/variant chapters listed, every listed chapter played, no exit from an ending, at least one ending, rift declarations ([Rifts](#rifts-196)) | `parseCampaignGraph` — run by `content:validate` **and** at server startup (the loader refuses the content set) |
 | No chapter of a graph campaign declares `route` | `content:validate` |
-| The graph can be walked — reachability, dead ends, softlocks, unintentional cycles, `irreversible` claims, dead locked edges, contradictory guards, repeated ids | `lintCampaignGraph` (`campaign-graph-lint.ts`) — run by `content:validate` (errors fail, warnings print) **and** at server startup (errors only). See [Validation](#validation). |
+| The graph can be walked — reachability, dead ends, softlocks, unintentional cycles, `irreversible` claims, dead locked edges, contradictory guards, repeated ids, rift claims and rift softlocks | `lintCampaignGraph` (`campaign-graph-lint.ts`) — run by `content:validate` (errors fail, warnings print) **and** at server startup (errors only). See [Validation](#validation). |
 
 `parseCampaignGraph` returns `{ graph, problems }`; `graph` is non-null only when there are no
 problems, and is normalized: defaults filled (`revisit`, `blocked`), `nodeOrder`/`edgeOrder`,
@@ -447,19 +615,23 @@ never reach it — Gemfall's validator output is unchanged.
 | `GUARD_CONTRADICTION` | one guard cannot hold: `flag` and `notFlag` the same flag, `visited`/`notVisited`, `completed`/`notCompleted`, `traversed`/`notTraversed` the same id, `completed` with `notVisited`, `outcome` with `notCompleted`/`notVisited` of the same node |
 | `GUARD_FLAG_NEVER_SET` ⚠ | a guard needs a flag no edge effect and no chapter on the graph sets true |
 | `DUPLICATE_KEY` | (`content:validate` only, reads the file text) the same node or edge id appears twice in one object; JSON would keep the last and silently drop the first |
+| `RIFT_ONE_WAY_HAS_WAY_BACK` | a `oneWay` rift has a rift edge leading straight back (`to` → `from`) |
+| `RIFT_ONCE_AND_USES` ⚠ / `RIFT_REVEAL_MOOT` ⚠ | `once` beside `rift.uses` (both count the same crossings); `reveal: "when-open"` on a rift that is open from the start |
 
 **The softlock search** is the part a static check cannot do: whether a *sequence* of choices
 leaves the party with nowhere to go. It explores every state a party can be in at an exit choice —
 the node plus the journey facts that can change what is available (flags, visited/completed nodes,
-latest outcomes, taken edges, lock overrides) — by calling the same `exitsFrom`, `arrivalAt` and
-`chapterAtNode` the runtime uses, and applying edge effects, `once`, `lock`/`unlock`, `revisit`
-policies and guards exactly as [§4](#4-edges) and [§6](#6-visits-completion-and-resuming) say. The
+latest outcomes, taken edges, lock overrides, each rift's lifecycle, and the visit rhythm a
+flickering rift reads) — by calling the same `exitsFrom`, `arrivalAt` and `chapterAtNode` the
+runtime uses, and applying edge effects, `once`, `lock`/`unlock`, `revisit` policies, guards and
+rift crossings, clocks and settling (the same `rifts.ts` functions, in the same order) exactly as
+[§4](#4-edges), [§6](#6-visits-completion-and-resuming) and [Rifts](#rifts-196) say. The
 search is breadth-first, so every path it prints is a shortest one.
 
 | Code | Reported when |
 |---|---|
-| `STRANDED` | a reachable state at a non-ending node has **every** exit unavailable. The message gives the path (`start at "a" -[e1]-> "b" (setback) -[e2]-> ...`) and why each exit is closed (locked / spent / closed / guard) |
-| `TRAPPED` | a state still has exits, but from it **no ending can ever be reached** (a `once` edge used up, a `closed` place completed, a `lock`, a flag that cannot be set back). One finding per node, at the first point of no return |
+| `STRANDED` | a reachable state at a non-ending node has **every** exit unavailable. The message gives the path (`start at "a" -[e1]-> "b" (setback) -[e2]-> ...`) and why each exit is closed (locked / spent / closed / guard / a rift dormant, faded, closed, consumed, expired or collapsed) |
+| `TRAPPED` | a state still has exits, but from it **no ending can ever be reached** (a `once` edge used up, a `closed` place completed, a `lock`, a flag that cannot be set back, a rift used up, run out or collapsed). One finding per node, at the first point of no return |
 | `NO_ENDING_WINNABLE` | an ending is connected to the entry but no play-through can enter one |
 | `NODE_NEVER_ENTERED` / `ENDING_NEVER_REACHED` | a node (an ending) has incoming edges but no play-through can enter it — every edge into it is locked, guarded, spent or closed whenever the party stands at its start |
 | `EDGE_NEVER_AVAILABLE` ⚠ | an edge out of a node the party reaches is never available in any state |
@@ -501,8 +673,8 @@ its issue defines it. Where each attaches:
 | #193 validation | **Done** — [Validation](#validation). `lintCampaignGraph` reads `ParsedCampaignGraph`; hooked into `checkGraphCampaign` (`tools/content/validate.mjs`) and the server loader's `checkCampaign`. A new field that changes who can go where (a rift, a world-state guard) must teach the search: add it to what `exitAvailability`/`exitsFrom` read and, if it is state, to the tracked facts in `explore`. |
 | #194 runtime | **Done** ([the runtime](#the-runtime-194)): `JourneyState` stored on `CampaignProgressRecord.journey`; `journey.ts` (`startJourney`, `completeVisit`, `takeExit`, `currentPlayable`, `readJourney`/`migrateJourney`, `journeyView`); `ContentStore.graph`; `RunState.journeyVisit`; `CHOOSE_EXIT`; `CampaignView.journey`. |
 | #195 navigation UX | `CampaignView.journey` (`JourneyView`: visible exits with label, availability, reason, arrival, `irreversible`) and the `CHOOSE_EXIT` intent; underneath, `exitsFrom` / `arrivalAt`. |
-| #196 rift links | a new optional `rift` on `GraphEdge` (one-way, single-use, timed, triggered, unstable, persistent, linked). `once` is the counting part of single-use; a rift adds the rest. New `ExitBlock` reasons go *after* the existing four. |
-| #197 rift actions | new `GraphEffect` types beside `unlock`/`lock`; per-edge state widens `JourneyFacts.edges`. |
+| #196 rift links | **Done** — [Rifts](#rifts-196): optional `GraphEdge.rift`, `JourneyFacts.rifts`, `rifts.ts`, six `RiftBlock` reasons after the existing four, `JourneyExitView.rift`/`hiddenDestination`, lint tracking. |
+| #197 rift actions | call `openRift` / `closeRift` / `revealRift` (`rifts.ts`; [For #197](#for-197-rift-actions)); new `GraphEffect` types beside `unlock`/`lock` if authored effects should open or close rifts. Final statuses stay final. |
 | #198 world state | new `GraphCondition` fields read by `variants[].when` and edge `when`; the variant selection rule stays first-match. |
 | #199 class rift interaction | edge-level requirements and actions; must stay journey-deterministic or say explicitly why not. |
 | #200 temporary buffs | `GraphEffect` granting attempt-scoped buffs, stored on `JourneyState`. |
@@ -539,3 +711,11 @@ And from `journey.ts` (#194; **not** loadable by `.mjs` tools — it has value i
 `currentPlayable`, `journeyView`, and the types `JourneyRefusal`, `JourneyRefusalCode`,
 `JourneyDuplicate`, `VisitCompletion`, `ExitCrossing`, `Playable`, `VisitReport`, `ExitReport`,
 `JourneyCampaign` — see [the runtime](#the-runtime-194).
+
+Rifts (#196): from `campaign-graph.ts`, `riftState(graph, edge, journey)` (the settled
+`RiftState`, or `null`), `riftBlock(graph, edge, journey)` (`RiftBlock` or `null`), `riftOwner`,
+`flickerOpen`, `FINAL_RIFT_STATUSES`; from `rifts.ts` (loadable by `.mjs` tools through the lint),
+`settleRifts`, `tickRifts(graph, journey, unit)`, `crossRift(graph, journey, edge)`, `openRift`,
+`closeRift`, `revealRift` (`RiftChange`, `RiftRefusalCode`), `riftDestinationRevealed`, `riftView`;
+types `GraphRift`, `RiftState`, `RiftStatus`, `RiftClockUnit`, `JourneyRiftView`. See
+[Rifts](#rifts-196).

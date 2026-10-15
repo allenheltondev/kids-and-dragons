@@ -276,6 +276,105 @@
             "hidden",
             "shown"
           ]
+        },
+        "rift": {
+          "description": "Makes this edge a rift (#196): a stateful link with a lifecycle (dormant, open, closed, consumed, expired, collapsed). Absent means an ordinary edge. See docs/campaigns/graph-campaigns.md, Rifts.",
+          "$ref": "#/$defs/graphRift"
+        }
+      }
+    },
+    "graphRift": {
+      "description": "GraphRift: composable rift properties, every one optional. {} is a rift open from the start, forever.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "oneWay": {
+          "description": "The promise that no rift leads straight back. Checked by tooling, shown by the screens.",
+          "const": true
+        },
+        "uses": {
+          "description": "Crossings before it is consumed. 1 is single-use. One crossing is one party-wide move.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "lasts": {
+          "description": "Timed: expires once count ticks of unit have passed since it opened. visits = places entered; chapters = chapters completed (the session clock). Turn timing is #201's.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "unit",
+            "count"
+          ],
+          "properties": {
+            "unit": {
+              "enum": [
+                "visits",
+                "chapters"
+              ]
+            },
+            "count": {
+              "description": "Ticks it stays open.",
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "opensWhen": {
+          "description": "Triggered: dormant until this holds. Unless persistent, crossable only while it holds.",
+          "$ref": "#/$defs/graphCondition"
+        },
+        "unstable": {
+          "description": "Deterministic instability: a flicker rhythm on visits to `from`, and/or collapse after a number of crossings.",
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "flicker": {
+              "description": "Open on `open` visits to `from`, then gone for `shut`, repeating.",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "open",
+                "shut"
+              ],
+              "properties": {
+                "open": {
+                  "description": "Visits it is there.",
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "shut": {
+                  "description": "Visits it is gone.",
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "collapsesAfter": {
+              "description": "Crossings before it collapses.",
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "persistent": {
+          "description": "Once open, open for good. Cannot also be uses, lasts or unstable.",
+          "const": true
+        },
+        "linkedTo": {
+          "description": "The partner rift: two mouths, one shared state. Must link back and declare the same lifecycle.",
+          "$ref": "#/$defs/graphId"
+        },
+        "reveal": {
+          "description": "When the destination is shown. always (default), when-open, when-crossed.",
+          "enum": [
+            "always",
+            "when-open",
+            "when-crossed"
+          ]
         }
       }
     },
