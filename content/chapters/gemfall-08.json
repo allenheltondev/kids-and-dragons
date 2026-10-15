@@ -2273,8 +2273,12 @@
           "name": "Seal-Keeper"
         },
         {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
           "figure": "entities/burrowfolk",
-          "name": "Burrowfolk choir singer"
+          "name": "Masked choir singer"
         }
       ],
       "roller": "party",
@@ -2384,8 +2388,12 @@
           "name": "Seal-Keeper"
         },
         {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
           "figure": "entities/burrowfolk",
-          "name": "Burrowfolk choir singer"
+          "name": "Masked choir singer"
         }
       ],
       "roller": "party",

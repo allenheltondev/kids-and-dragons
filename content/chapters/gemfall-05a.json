@@ -120,6 +120,10 @@
       ],
       "cast": [
         {
+          "figure": "cast/hollis",
+          "name": "Hollis"
+        },
+        {
           "figure": "entities/burrowfolk",
           "name": "Muddy prospector"
         }
@@ -138,6 +142,10 @@
         }
       ],
       "cast": [
+        {
+          "figure": "cast/hollis",
+          "name": "Hollis"
+        },
         {
           "figure": "entities/burrowfolk",
           "name": "Muddy prospector"
@@ -185,7 +193,13 @@
           "goto": "scene_cult_pitch_finish_soup"
         }
       ],
-      "art": "scenes/gemfall/hollis-soup-queue"
+      "art": "scenes/gemfall/hollis-soup-queue",
+      "cast": [
+        {
+          "figure": "cast/hollis",
+          "name": "Hollis"
+        }
+      ]
     },
     "scene_cult_pitch_finish_soup": {
       "type": "story",
@@ -198,7 +212,13 @@
           "goto": "scene_nim_pony"
         }
       ],
-      "art": "scenes/gemfall/hollis-soup-queue"
+      "art": "scenes/gemfall/hollis-soup-queue",
+      "cast": [
+        {
+          "figure": "cast/hollis",
+          "name": "Hollis"
+        }
+      ]
     },
     "scene_cult_pitch_drop_stone": {
       "type": "story",
@@ -211,7 +231,13 @@
           "goto": "scene_nim_pony"
         }
       ],
-      "art": "scenes/gemfall/hollis-soup-queue"
+      "art": "scenes/gemfall/hollis-soup-queue",
+      "cast": [
+        {
+          "figure": "cast/hollis",
+          "name": "Hollis"
+        }
+      ]
     },
     "scene_cult_pitch_say_no_kindly": {
       "type": "story",
@@ -224,7 +250,13 @@
           "goto": "scene_nim_pony"
         }
       ],
-      "art": "scenes/gemfall/hollis-soup-queue"
+      "art": "scenes/gemfall/hollis-soup-queue",
+      "cast": [
+        {
+          "figure": "cast/hollis",
+          "name": "Hollis"
+        }
+      ]
     },
     "scene_clerk": {
       "type": "story",
@@ -273,6 +305,14 @@
         {
           "figure": "cast/pellam",
           "name": "Pellam"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Tired carter"
+        },
+        {
+          "figure": "entities/mule",
+          "name": "Carter's mule"
         }
       ],
       "roller": "party",
@@ -757,7 +797,17 @@
           "goto": "scene_brass_south_ask_question"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/gemfall/northern-bridge-foot",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ]
     },
     "scene_brass_south_ask_what": {
       "type": "story",
@@ -770,7 +820,17 @@
           "goto": "scene_tremor"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/gemfall/northern-bridge-foot",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ]
     },
     "scene_brass_south_share_supper": {
       "type": "story",
@@ -783,7 +843,17 @@
           "goto": "scene_tremor"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/gemfall/northern-bridge-foot",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ]
     },
     "scene_brass_south_ask_question": {
       "type": "story",
@@ -796,7 +866,17 @@
           "goto": "scene_tremor"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/gemfall/northern-bridge-foot",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ]
     },
     "scene_tremor": {
       "type": "story",

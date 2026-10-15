@@ -535,7 +535,16 @@
           "goto": "scene_soup_line_ask_crystal"
         }
       ],
-      "art": "scenes/gemfall/wend-soup-tent"
+      "art": "scenes/gemfall/wend-soup-tent",
+      "discovers": [
+        "npc.frogfolk"
+      ],
+      "cast": [
+        {
+          "figure": "cast/wend",
+          "name": "Wend"
+        }
+      ]
     },
     "scene_soup_line_ask_crystal": {
       "type": "story",
@@ -548,7 +557,13 @@
           "goto": "scene_queue_jumpers"
         }
       ],
-      "art": "scenes/gemfall/wend-soup-tent"
+      "art": "scenes/gemfall/wend-soup-tent",
+      "cast": [
+        {
+          "figure": "cast/wend",
+          "name": "Wend"
+        }
+      ]
     },
     "scene_soup_line_thank_wend": {
       "type": "story",
@@ -561,7 +576,13 @@
           "goto": "scene_queue_jumpers"
         }
       ],
-      "art": "scenes/gemfall/wend-soup-tent"
+      "art": "scenes/gemfall/wend-soup-tent",
+      "cast": [
+        {
+          "figure": "cast/wend",
+          "name": "Wend"
+        }
+      ]
     },
     "scene_queue_jumpers": {
       "type": "story",
@@ -1622,7 +1643,13 @@
           "goto": "scene_surge"
         }
       ],
-      "art": "scenes/gemfall/west-branch-ford"
+      "art": "scenes/gemfall/west-branch-ford",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Lead Drover"
+        }
+      ]
     },
     "check_ford": {
       "type": "check",

@@ -97,7 +97,13 @@
           "goto": "scene_jackalope_race"
         }
       ],
-      "art": "scenes/gemfall/north-rush-road"
+      "art": "scenes/gemfall/north-rush-road",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Lead Drover"
+        }
+      ]
     },
     "scene_out_of_marsh": {
       "type": "story",
@@ -466,6 +472,10 @@
         {
           "figure": "cast/tib",
           "name": "Tib"
+        },
+        {
+          "figure": "entities/pony",
+          "name": "Tib's pony"
         }
       ],
       "art": "scenes/gemfall/downbound-wagon-auction"
@@ -556,7 +566,13 @@
           "goto": "rest_soup_tents_rest_go"
         }
       ],
-      "art": "scenes/gemfall/downbound-soup-tents"
+      "art": "scenes/gemfall/downbound-soup-tents",
+      "cast": [
+        {
+          "figure": "cast/wend",
+          "name": "Wend"
+        }
+      ]
     },
     "rest_soup_tents_rest_go": {
       "type": "story",
@@ -611,7 +627,13 @@
           ]
         }
       ],
-      "art": "scenes/gemfall/downbound-soup-tents"
+      "art": "scenes/gemfall/downbound-soup-tents",
+      "cast": [
+        {
+          "figure": "cast/wend",
+          "name": "Wend"
+        }
+      ]
     },
     "scene_wend_pitch_say_later": {
       "type": "story",
@@ -624,7 +646,13 @@
           "goto": "scene_road_crew"
         }
       ],
-      "art": "scenes/gemfall/downbound-soup-tents"
+      "art": "scenes/gemfall/downbound-soup-tents",
+      "cast": [
+        {
+          "figure": "cast/wend",
+          "name": "Wend"
+        }
+      ]
     },
     "scene_wend_pitch_say_no": {
       "type": "story",
@@ -637,7 +665,13 @@
           "goto": "scene_road_crew"
         }
       ],
-      "art": "scenes/gemfall/downbound-soup-tents"
+      "art": "scenes/gemfall/downbound-soup-tents",
+      "cast": [
+        {
+          "figure": "cast/wend",
+          "name": "Wend"
+        }
+      ]
     },
     "scene_wend_pitch_coin": {
       "type": "story",
@@ -985,7 +1019,13 @@
           "goto": "scene_depot_leave"
         }
       ],
-      "art": "scenes/gemfall/rush-depot"
+      "art": "scenes/gemfall/rush-depot",
+      "cast": [
+        {
+          "figure": "cast/clerk_pennywhistle",
+          "name": "Clerk Pennywhistle"
+        }
+      ]
     },
     "check_forms": {
       "type": "check",
@@ -1001,7 +1041,13 @@
         "goto": "scene_rumor_fire",
         "narration": "You fill in Form 9. It needed Form 7B first. Clerk Pennywhistle is very sorry. The queue behind you is not."
       },
-      "art": "scenes/gemfall/rush-depot"
+      "art": "scenes/gemfall/rush-depot",
+      "cast": [
+        {
+          "figure": "cast/clerk_pennywhistle",
+          "name": "Clerk Pennywhistle"
+        }
+      ]
     },
     "scene_strongbox": {
       "type": "story",
@@ -1025,7 +1071,13 @@
           "goto": "scene_rumor_fire"
         }
       ],
-      "art": "scenes/gemfall/rush-depot"
+      "art": "scenes/gemfall/rush-depot",
+      "cast": [
+        {
+          "figure": "cast/clerk_pennywhistle",
+          "name": "Clerk Pennywhistle"
+        }
+      ]
     },
     "scene_depot_leave": {
       "type": "story",

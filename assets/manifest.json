@@ -18,7 +18,7 @@
     "originYTolerancePx": 12,
     "alphaThreshold": 8,
     "recompositeIouMin": 0.999,
-    "recompositeMeanRgbDeltaMax": 2.0,
+    "recompositeMeanRgbDeltaMax": 2,
     "minSeamOverlapPx": 2000,
     "silhouetteHeightPx": 120,
     "minSignaturePxAtSilhouette": 40,
@@ -2087,6 +2087,66 @@
       "name": "Dunmore",
       "basis": "burrowfolk",
       "scale": "small_to_medium"
+    },
+    {
+      "id": "hessa_wren",
+      "name": "Hessa Wren",
+      "basis": "harvest_sprite",
+      "scale": "tiny"
+    },
+    {
+      "id": "wend",
+      "name": "Wend",
+      "basis": "frogfolk",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "hollis",
+      "name": "Hollis",
+      "basis": "bigfoot",
+      "scale": "large"
+    },
+    {
+      "id": "soup_woman",
+      "name": "Soup woman",
+      "basis": "selkie",
+      "scale": "medium"
+    },
+    {
+      "id": "clerk_pennywhistle",
+      "name": "Clerk Pennywhistle",
+      "basis": "harvest_sprite",
+      "scale": "tiny"
+    },
+    {
+      "id": "caravan_master",
+      "name": "Caravan Master",
+      "basis": "centaur",
+      "scale": "large"
+    },
+    {
+      "id": "crying_gem_buyer",
+      "name": "Crying gem-buyer",
+      "basis": "merfolk",
+      "scale": "medium"
+    },
+    {
+      "id": "rope_shop_boy",
+      "name": "Rope-shop boy",
+      "basis": "faun",
+      "scale": "medium"
+    },
+    {
+      "id": "cult_frogfolk",
+      "name": "Masked frogfolk singer",
+      "basis": "frogfolk",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "cult_bigfoot",
+      "name": "Masked bigfoot singer",
+      "basis": "bigfoot",
+      "scale": "large"
     }
   ],
   "globalPalette": {

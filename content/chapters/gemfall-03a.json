@@ -1113,7 +1113,17 @@
           "goto": "scene_skip_passes_no_thanks"
         }
       ],
-      "art": "scenes/gemfall/stone-crossing-queue"
+      "art": "scenes/gemfall/stone-crossing-queue",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ]
     },
     "check_small_print": {
       "type": "check",
@@ -1142,7 +1152,17 @@
           "goto": "scene_first_story"
         }
       ],
-      "art": "scenes/gemfall/stone-crossing-queue"
+      "art": "scenes/gemfall/stone-crossing-queue",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ]
     },
     "scene_first_story": {
       "type": "story",
@@ -1352,7 +1372,17 @@
           "goto": "rest_queue_camp"
         }
       ],
-      "art": "scenes/gemfall/stone-crossing-queue"
+      "art": "scenes/gemfall/stone-crossing-queue",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ]
     },
     "choice_camp_spot_by_water": {
       "type": "story",
@@ -1391,7 +1421,17 @@
           "goto": "scene_night_rope_sit_on_rope"
         }
       ],
-      "art": "scenes/gemfall/stone-crossing-queue"
+      "art": "scenes/gemfall/stone-crossing-queue",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ]
     },
     "check_night_rope": {
       "type": "check",
@@ -1417,6 +1457,14 @@
           "figure": "cast/old_lintel",
           "name": "Old Lintel",
           "size": "very_large"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
         }
       ],
       "choices": [
@@ -1440,7 +1488,17 @@
           "goto": "scene_wake_fee"
         }
       ],
-      "art": "scenes/gemfall/stone-crossing-queue"
+      "art": "scenes/gemfall/stone-crossing-queue",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ]
     },
     "scene_wake_fee": {
       "type": "story",

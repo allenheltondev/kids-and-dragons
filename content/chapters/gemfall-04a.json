@@ -83,6 +83,10 @@
         {
           "figure": "entities/burrowfolk",
           "name": "Cart driver"
+        },
+        {
+          "figure": "entities/donkey",
+          "name": "Cart donkey"
         }
       ],
       "art": "scenes/gemfall/pride-marker-road"
@@ -762,7 +766,17 @@
           "goto": "scene_brass_rope_whose_road"
         }
       ],
-      "art": "scenes/gemfall/pride-marker-road"
+      "art": "scenes/gemfall/pride-marker-road",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ]
     },
     "scene_brass_rope_ask_question": {
       "type": "story",
@@ -775,7 +789,17 @@
           "goto": "scene_relay_runner"
         }
       ],
-      "art": "scenes/gemfall/pride-marker-road"
+      "art": "scenes/gemfall/pride-marker-road",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ]
     },
     "scene_brass_rope_walk_round": {
       "type": "story",
@@ -788,7 +812,17 @@
           "goto": "scene_relay_runner"
         }
       ],
-      "art": "scenes/gemfall/pride-marker-road"
+      "art": "scenes/gemfall/pride-marker-road",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ]
     },
     "scene_brass_rope_whose_road": {
       "type": "story",
@@ -801,7 +835,17 @@
           "goto": "scene_relay_runner"
         }
       ],
-      "art": "scenes/gemfall/pride-marker-road"
+      "art": "scenes/gemfall/pride-marker-road",
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ]
     },
     "scene_relay_runner": {
       "type": "story",
