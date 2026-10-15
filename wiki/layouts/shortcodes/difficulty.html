@@ -1,0 +1,11 @@
+{{/* The three target numbers, from rules.json difficultyTn. */}}
+{{ $tn := site.Data.game.rules.difficultyTn }}
+<div class="wiki-rule-grid">
+  {{ range $d := slice "easy" "normal" "hard" }}
+  <div class="wiki-rule-card">
+    <span class="wiki-big-number">{{ index $tn $d }}</span>
+    <h4>{{ title $d }}</h4>
+    <p>Roll the d20, add your stat. Reach {{ index $tn $d }} or more and it works.</p>
+  </div>
+  {{ end }}
+</div>

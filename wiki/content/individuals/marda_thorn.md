@@ -5,6 +5,7 @@ type: individual
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: ["gemfall-02"]
 tags: ["bramblewood", "inn", "centaur", "waystop"]
 related:
   - id: individual.pib
@@ -16,6 +17,9 @@ related:
   - id: item.songbird_ribbon
     type: item
     relationship: items
+assets:
+  primary: assets/cast/marda_thorn/portrait.webp
+  primaryFull: assets/cast/marda_thorn/assembled.png
 ai_context:
   mood: "Runs the wide-doored inn at the middle of Bramblewood and knows who has come through the hedges in the last month."
   themes: "Bramblewood, Inn, Centaur, Waystop"

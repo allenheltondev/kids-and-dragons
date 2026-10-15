@@ -6,6 +6,7 @@ status: draft
 lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
 draft: true
+played_in: []
 tags: ["barren", "northern_waste", "forbidden", "unknown", "plateau"]
 danger_level: unknown
 related:
@@ -28,7 +29,7 @@ assets:
   primary: assets/biomes/expanse/portrait.webp
   primaryFull: assets/biomes/expanse/bg.webp
   gallery:
-    - src: assets/biomes/expanse/portrait.webp
+    - src: assets/biomes/expanse/tiles.png
       full: assets/biomes/expanse/tiles.png
 ai_context:
   mood: "A vast northern waste where nothing visibly grows and no confirmed population, ecology, or civilization has been established."

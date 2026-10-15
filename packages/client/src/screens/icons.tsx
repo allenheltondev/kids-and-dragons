@@ -280,10 +280,6 @@ const ALIASES: Record<string, string> = {
   inventory: "bag",
   shield: "guard",
   coins: "coin",
-  // The Supper Bundle borrows the painted cake until it has a painting of its
-  // own; inventory icons must be painted (screens.test.tsx). Drop
-  // painted/supper.webp into artwork.ts and delete this line.
-  supper: "cake",
   purse: "coin",
   moon: "rest",
   // Interface synonyms.

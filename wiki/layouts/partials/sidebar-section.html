@@ -1,0 +1,27 @@
+{{/* One section row in the sidebar. Expects (dict "section" "cfg" "current" "page"). */}}
+{{ $s := .section }}
+{{ $cfg := .cfg }}
+{{ $page := .page }}
+{{ $isActive := or (eq $s .current) ($s.IsAncestor .current) }}
+<li class="wiki-sidebar__section{{ if $isActive }} wiki-sidebar__section--active{{ end }}" role="treeitem" aria-expanded="{{ if $isActive }}true{{ else }}false{{ end }}">
+  <a href="{{ $s.RelPermalink }}" class="wiki-sidebar__section-link{{ if $isActive }} wiki-sidebar__section-link--active{{ end }}"{{ if eq $page.RelPermalink $s.RelPermalink }} aria-current="page"{{ end }}>
+    {{ with $cfg.icon }}<img class="wiki-sidebar__icon" src="{{ . | relURL }}" alt="" width="28" height="28" loading="lazy">{{ end }}
+    <span>{{ $cfg.label | default $s.Title }}</span>
+    {{ with len $s.RegularPages }}{{ if gt . 0 }}<span class="wiki-sidebar__count">{{ . }}</span>{{ end }}{{ end }}
+  </a>
+  {{ if $isActive }}
+    {{ $pages := $s.Pages.ByWeight }}
+    {{ if not (where $pages "Weight" "gt" 0) }}{{ $pages = $s.Pages.ByTitle }}{{ end }}
+    {{ if $pages }}
+    <ul class="wiki-sidebar__pages" role="group">
+      {{ range $pages }}
+      <li class="wiki-sidebar__page" role="treeitem">
+        <a href="{{ .RelPermalink }}" class="wiki-sidebar__page-link{{ if eq $page.RelPermalink .RelPermalink }} wiki-sidebar__page-link--current{{ end }}"{{ if eq $page.RelPermalink .RelPermalink }} aria-current="page"{{ end }}>
+          {{ .LinkTitle }}
+        </a>
+      </li>
+      {{ end }}
+    </ul>
+    {{ end }}
+  {{ end }}
+</li>

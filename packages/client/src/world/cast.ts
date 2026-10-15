@@ -22,6 +22,11 @@ export interface StageCastMember {
   name: string | null;
   /** Drawn height as a multiple of a party figure's. */
   scale: number;
+  /**
+   * Set when this figure is one of a group (`count` > 1): the group shares a
+   * slot, so layout packs them close, and the odd ones stand a step back.
+   */
+  crowd?: { index: number; size: number };
 }
 
 /**
@@ -91,6 +96,15 @@ export const SIZE_SCALE: Readonly<Record<CastSize, number>> = {
 /** The most a scene casts (schemas/chapter.schema.json `cast.maxItems`). */
 export const MAX_CAST = 3;
 
+/** The most figures one cast entry becomes (`castMember.count` maximum). */
+export const MAX_GROUP = 6;
+
+/**
+ * A group's share of the band, as a multiple of one figure's: a pack of three
+ * takes the room of about two, so they overlap into a huddle, not a row.
+ */
+export const GROUP_SPREAD = 0.62;
+
 /** `entities/selkie` → its art. Null for anything the schema would refuse. */
 export function castFigureUrl(figure: string): string | null {
   const match = /^(entities|characters|cast)\/([a-z0-9_]+)$/.exec(figure);
@@ -113,12 +127,20 @@ export function stageCast(members: readonly CastMember[]): StageCastMember[] {
   for (const member of members.slice(0, MAX_CAST)) {
     const url = castFigureUrl(member.figure);
     if (url === null) continue;
-    out.push({
-      key: `${member.figure}|${member.name ?? ""}`,
-      url,
-      name: member.name ?? null,
-      scale: SIZE_SCALE[sizeOf(member)],
-    });
+    const key = `${member.figure}|${member.name ?? ""}`;
+    const size = Math.max(1, Math.min(Math.floor(member.count ?? 1), MAX_GROUP));
+    for (let index = 0; index < size; index++) {
+      out.push({
+        // The first keeps the plain key, so a one-of-a-kind cast is unchanged
+        // and a group growing from 1 to 3 does not re-enter its first member.
+        key: index === 0 ? key : `${key}#${index}`,
+        url,
+        // One nameplate per group, under its first figure.
+        name: index === 0 ? (member.name ?? null) : null,
+        scale: SIZE_SCALE[sizeOf(member)],
+        ...(size > 1 ? { crowd: { index, size } } : {}),
+      });
+    }
   }
   return out;
 }
@@ -156,6 +178,8 @@ export function stageSlots(
   partyCount: number,
   castScales: readonly number[],
   width: number,
+  /** Parallel to castScales: true for a figure that is one of a group. */
+  crowded: readonly boolean[] = [],
 ): StageSlots {
   if (castScales.length === 0) {
     // 416 is the 26% of the 1600 design width the lineup always used; held
@@ -183,7 +207,7 @@ export function stageSlots(
   const party = Array.from({ length: partyCount }, (_, i) => partyStart + partySpacing * i);
 
   // Each cast figure's share of its band is proportional to how big it is.
-  const weights = castScales.map((s) => Math.max(s, 0.5));
+  const weights = castScales.map((s, i) => Math.max(s, 0.5) * (crowded[i] ? GROUP_SPREAD : 1));
   const total = weights.reduce((a, b) => a + b, 0);
   const bandWidth = castBand.to - castBand.from;
   // A lone figure does not drift to the far edge: it stands near the gap.

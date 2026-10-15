@@ -5,6 +5,7 @@ type: biome
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: []
 tags: ["ancient_ice", "river_source", "frozen_memory", "glacier", "northern"]
 danger_level: high
 regional_relationships:
@@ -63,7 +64,7 @@ assets:
   primary: assets/biomes/glacier_of_origins/portrait.webp
   primaryFull: assets/biomes/glacier_of_origins/bg.webp
   gallery:
-    - src: assets/biomes/glacier_of_origins/portrait.webp
+    - src: assets/biomes/glacier_of_origins/tiles.png
       full: assets/biomes/glacier_of_origins/tiles.png
 ai_context:
   mood: "An ancient northeastern glacier where the Great River begins and fragments of old memory are said to remain preserved in the ice."

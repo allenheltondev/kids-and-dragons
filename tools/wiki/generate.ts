@@ -12,9 +12,10 @@ import path from 'node:path';
 import type { GeneratorConfig, ValidationMessage } from './types.ts';
 import { parseCanonDirectory } from './canon-parser.ts';
 import { validateCanon } from './canon-validator.ts';
-import { discoverAllAssets } from './asset-discovery.ts';
+import { discoverAssets } from './asset-discovery.ts';
 import { generatePage, getEntityPagePath, resolveConventionAssets } from './page-generator.ts';
 import { checkIncremental, updateManifest, getCanonFileMtimes } from './incremental.ts';
+import { loadChapterTexts, findAllChapterUses } from './chapter-uses.ts';
 
 function main(): void {
   // 1. Parse CLI args
@@ -36,6 +37,9 @@ function main(): void {
   const items = itemsFile
     ? Object.fromEntries(Object.entries(itemsFile).filter(([id]) => !id.startsWith('$')))
     : undefined;
+  // Every chapter, to say which entities the stories actually use.
+  const chaptersDir = path.resolve('content', 'chapters');
+  const chapters = loadChapterTexts(chaptersDir);
   const assetsDir = path.resolve('assets');
   const contentDir = path.resolve('wiki', 'content');
   const manifestPath = path.resolve('wiki', '.gen-manifest.json');
@@ -46,6 +50,7 @@ function main(): void {
     contentDir,
     manifestPath,
     forceAll,
+    chaptersDir,
   };
 
   // 3. Check if canon directory exists — fatal error if not
@@ -113,16 +118,9 @@ function main(): void {
     entitiesToProcess = incrementalResult.entitiesToProcess;
   }
 
-  // 9. Discover assets
-  const { results: assetResults, warnings: assetWarnings } = discoverAllAssets(
-    registry.entities,
-    assetsDir,
-  );
-  allWarnings.push(...assetWarnings);
-
-  for (const w of assetWarnings) {
-    process.stderr.write(`[warning] ${w.entityId ?? w.file}: ${w.message}\n`);
-  }
+  // Which chapters use each entity — for the publish rule on protected
+  // mysteries and the "not in a story yet" badge.
+  const chapterUses = chapters.length > 0 ? findAllChapterUses(registry.entities.values(), chapters) : null;
 
   // 10. Generate pages for each entity to process
   let pagesCreated = 0;
@@ -152,17 +150,25 @@ function main(): void {
       existingContent = fs.readFileSync(pagePath, 'utf-8');
     }
 
-    // Get assets and reverse refs for this entity
-    // Prefer explicit assets from asset-discovery, then fall back to convention-based resolution
-    const discoveredAssets = assetResults.get(entityId);
-    const assets = discoveredAssets && discoveredAssets.source === 'explicit'
-      ? discoveredAssets
+    // Use the same disk conventions for primary images and galleries. Artwork
+    // is optional; the legacy plural-directory scan warned even for delivered art.
+    const assets = entity.assets?.length
+      ? discoverAssets(entity, assetsDir).result
       : resolveConventionAssets(entity, assetsDir);
     const reverseRefs = registry.reverseRefs.get(entityId) ?? [];
 
     // Generate the page
     const { content, warnings: pageWarnings } = generatePage(
-      { entity, assets, reverseRefs, existingContent, bestiary, bands, items },
+      {
+        entity,
+        assets,
+        reverseRefs,
+        existingContent,
+        bestiary,
+        bands,
+        items,
+        playedIn: chapterUses?.get(entityId),
+      },
       registry,
     );
 
@@ -183,7 +189,7 @@ function main(): void {
   }
 
   // 11. Update manifest with current file mtimes
-  const canonMtimes = getCanonFileMtimes(canonDir);
+  const canonMtimes = getCanonFileMtimes(canonDir, config.chaptersDir, assetsDir);
   updateManifest(manifestPath, canonMtimes);
 
   // 12. Print summary report and exit 0

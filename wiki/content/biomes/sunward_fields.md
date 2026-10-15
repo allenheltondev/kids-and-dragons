@@ -5,6 +5,7 @@ type: biome
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["bramblewood-01", "gemfall-01", "gemfall-02"]
 tags: ["farmland", "meadows", "orchards", "villages", "food", "seasonal_work"]
 danger_level: low
 regional_relationships:
@@ -131,7 +132,7 @@ assets:
   primary: assets/biomes/sunward_fields/portrait.webp
   primaryFull: assets/biomes/sunward_fields/bg.webp
   gallery:
-    - src: assets/biomes/sunward_fields/portrait.webp
+    - src: assets/biomes/sunward_fields/tiles.png
       full: assets/biomes/sunward_fields/tiles.png
 ai_context:
   mood: "Rolling meadows, farms, orchards, and village cooperatives that produce much of the food used across the realm."

@@ -5,6 +5,7 @@ type: individual
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: ["gemfall-03a", "gemfall-04a", "gemfall-05a", "gemfall-07h", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["stone_crossing", "river", "frogfolk", "crossing"]
 related:
   - id: biome.plains
@@ -19,6 +20,9 @@ related:
   - id: item.river_charm
     type: item
     relationship: items
+assets:
+  primary: assets/cast/old_ossley/portrait.webp
+  primaryFull: assets/cast/old_ossley/assembled.png
 ai_context:
   mood: "Takes people over the water at Stone Crossing when the stones are under, and has never once named a price in coin."
   themes: "Stone_crossing, River, Frogfolk, Crossing"

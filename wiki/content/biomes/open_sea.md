@@ -5,6 +5,7 @@ type: biome
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: []
 tags: ["ocean", "offshore", "deep_water", "weather", "currents"]
 danger_level: moderate
 regional_relationships:
@@ -53,6 +54,9 @@ related:
   - id: location.bone_yard
     type: location
     relationship: locations
+assets:
+  primary: assets/biomes/open_sea/portrait.webp
+  primaryFull: assets/biomes/open_sea/bg.webp
 ai_context:
   mood: "The wide water surrounding the realm, reached from every coast and owned by none of them."
   themes: "Ocean, Offshore, Deep_water, Weather, Currents"

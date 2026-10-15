@@ -5,6 +5,7 @@ type: location
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-03b", "gemfall-03c", "gemfall-04b", "gemfall-05b", "gemfall-06", "gemfall-07h", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["forest_settlement", "living_architecture", "bigfoot", "cultivated_moss", "ancient_trees"]
 danger_level: low
 regional_relationships:
@@ -60,6 +61,12 @@ related:
   - id: npc.boughkin
     type: npc
     relationship: secondary_locations
+assets:
+  primary: assets/biomes/mosshome/portrait.webp
+  primaryFull: assets/biomes/mosshome/bg.webp
+  gallery:
+    - src: assets/biomes/mosshome/tiles.png
+      full: assets/biomes/mosshome/tiles.png
 ai_context:
   mood: "The principal Bigfoot settlement, built into and alongside ancient living trees without severing the forest systems that support it."
   themes: "Forest_settlement, Living_architecture, Bigfoot, Cultivated_moss, Ancient_trees"

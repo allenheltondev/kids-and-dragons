@@ -5,6 +5,7 @@ type: creature
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-04b", "gemfall-07l"]
 tags: ["dangerous", "underground", "blind", "predator"]
 classification: dangerous_creature
 danger_level: high

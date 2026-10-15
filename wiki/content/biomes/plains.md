@@ -5,6 +5,7 @@ type: biome
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-01", "gemfall-02", "gemfall-03a", "gemfall-03c", "gemfall-04a", "gemfall-04c", "gemfall-05a"]
 tags: ["central_plains", "roads", "caravans", "grassland", "crossroads"]
 danger_level: low
 regional_relationships:
@@ -100,7 +101,7 @@ assets:
   primary: assets/biomes/plains/portrait.webp
   primaryFull: assets/biomes/plains/bg.webp
   gallery:
-    - src: assets/biomes/plains/portrait.webp
+    - src: assets/biomes/plains/tiles.png
       full: assets/biomes/plains/tiles.png
 ai_context:
   mood: "The central open country of the realm, crossed by old roads, caravans, and routes connecting the forest, foothills, fields, river, and coast."

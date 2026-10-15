@@ -1,0 +1,24 @@
+{{/* A hand-written page: a banner with the painted icon, the prose, and a
+     "next page" link so a section reads in order like a booklet. */}}
+<article class="article-page">
+  <header class="wiki-section-banner wiki-section-banner--article">
+    {{ with .Params.icon }}<img class="wiki-section-banner__icon" src="{{ . | relURL }}" alt="" width="72" height="72">{{ end }}
+    <div>
+      {{ with .Parent }}{{ if not .IsHome }}<p class="entity-kicker"><span class="wiki-badge">{{ .Title }}</span></p>{{ end }}{{ end }}
+      <h1 class="wiki-section-banner__title">{{ .Title }}</h1>
+      {{ with .Params.description }}<p class="wiki-section-banner__lede">{{ . }}</p>{{ end }}
+    </div>
+  </header>
+  <div class="prose">
+    {{ .Content }}
+  </div>
+  {{/* Hugo's PrevInSection is the next page in weight order. */}}
+  {{ with .PrevInSection }}
+  <nav class="article-next" aria-label="Next page">
+    <a href="{{ .RelPermalink }}" class="article-next__link">
+      <span class="article-next__label">Next</span>
+      <span class="article-next__title">{{ .Title }} →</span>
+    </a>
+  </nav>
+  {{ end }}
+</article>

@@ -5,7 +5,7 @@ type: faction
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
-draft: true
+played_in: ["gemfall-04c", "gemfall-05a", "gemfall-05b", "gemfall-06", "gemfall-07h", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["cult", "underground", "mystical", "antagonist"]
 lore_hook: "They looked at the red sky and asked the question everyone else is sworn not to."
 likes:

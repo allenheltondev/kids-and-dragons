@@ -5,6 +5,7 @@ type: item
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: ["gemfall-01", "gemfall-02"]
 tags: ["charm", "might", "expanse", "common"]
 related:
   - id: biome.expanse

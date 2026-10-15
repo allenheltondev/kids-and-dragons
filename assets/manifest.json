@@ -1834,6 +1834,13 @@
       "bone_yard"
     ]
   },
+  "backgroundOnlyBiomes": [
+    "sallow_wastelands",
+    "bramblewood",
+    "redspire_citadel",
+    "open_sea",
+    "the_whirlpool"
+  ],
   "sceneIllustrations": [
     "scenes/entry/home-market-portrait",
     "scenes/entry/creation-species-portrait",

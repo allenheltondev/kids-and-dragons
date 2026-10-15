@@ -48,7 +48,8 @@
           "size": "small_to_medium"
         },
         {
-          "figure": "entities/will_o_wisp"
+          "figure": "entities/will_o_wisp",
+          "count": 3
         }
       ],
       "choices": [
@@ -90,7 +91,8 @@
           "size": "small_to_medium"
         },
         {
-          "figure": "entities/will_o_wisp"
+          "figure": "entities/will_o_wisp",
+          "count": 3
         }
       ],
       "choices": [
@@ -112,7 +114,8 @@
           "size": "small_to_medium"
         },
         {
-          "figure": "entities/will_o_wisp"
+          "figure": "entities/will_o_wisp",
+          "count": 3
         }
       ],
       "onEnter": [
@@ -164,7 +167,8 @@
           "name": "Gullet's Cousins"
         },
         {
-          "figure": "entities/will_o_wisp"
+          "figure": "entities/will_o_wisp",
+          "count": 3
         }
       ],
       "choices": [
@@ -212,7 +216,8 @@
           "name": "Gullet's Cousins"
         },
         {
-          "figure": "entities/will_o_wisp"
+          "figure": "entities/will_o_wisp",
+          "count": 3
         }
       ],
       "roller": "all",
@@ -239,7 +244,8 @@
           "name": "Gullet's Cousins"
         },
         {
-          "figure": "entities/will_o_wisp"
+          "figure": "entities/will_o_wisp",
+          "count": 3
         }
       ],
       "choices": [

@@ -5,6 +5,7 @@ type: item
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: []
 tags: ["material", "fire", "crafting", "rare"]
 related:
   - id: biome.red_sky_foothills
@@ -25,6 +26,9 @@ related:
   - id: quest.shattered_sky_rite
     type: quest
     relationship: items
+assets:
+  primary: assets/items/crimson_shard/portrait.webp
+  primaryFull: assets/items/crimson_shard/assembled.png
 ai_context:
   mood: "A jagged fragment of solidified ember energy, pulsing with volcanic heat."
   themes: "Material, Fire, Crafting, Rare"

@@ -5,7 +5,7 @@ type: location
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: intentionally_undefined
-draft: true
+played_in: ["gemfall-05b", "gemfall-06"]
 tags: ["fortress", "skywardens", "highlands", "hub"]
 regional_relationships:
   - id: biome.red_sky_foothills
@@ -41,6 +41,9 @@ related:
   - id: quest.shattered_sky_rite
     type: quest
     relationship: locations
+assets:
+  primary: assets/biomes/redspire_citadel/portrait.webp
+  primaryFull: assets/biomes/redspire_citadel/bg.webp
 ai_context:
   mood: "A towering obsidian fortress perched on the highest peak of the foothills, headquarters of the Skywardens."
   themes: "Fortress, Skywardens, Highlands, Hub"

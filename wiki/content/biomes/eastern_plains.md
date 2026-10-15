@@ -5,6 +5,7 @@ type: biome
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-03a", "gemfall-04a", "gemfall-05a"]
 tags: ["eastern_grassland", "manticore_homeland", "roads", "prides", "caravans"]
 danger_level: moderate
 regional_relationships:
@@ -101,7 +102,7 @@ assets:
   primary: assets/biomes/eastern_plains/portrait.webp
   primaryFull: assets/biomes/eastern_plains/bg.webp
   gallery:
-    - src: assets/biomes/eastern_plains/portrait.webp
+    - src: assets/biomes/eastern_plains/tiles.png
       full: assets/biomes/eastern_plains/tiles.png
 ai_context:
   mood: "Wide open country east of the Great River, crossed by roads and pride routes and serving as the manticore homeland."

@@ -525,6 +525,12 @@
             "very_large",
             "colossal"
           ]
+        },
+        "count": {
+          "description": "How many of this figure are present (default 1). Set it whenever the narration gives a number (\"three cinder wolves\"); the stage draws that many, huddled together, under one nameplate.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
         }
       }
     },

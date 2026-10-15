@@ -1,0 +1,30 @@
+{{/* Every class with its signature move and the moves it learns at 3, 6, 9.
+     The art is a kitsune in that class's Mythic gear — the most dressed-up
+     a hero gets. */}}
+{{ $classes := site.Data.game.rules.classes }}
+{{ $model := .Get "species" | default "kitsune" }}
+<div class="wiki-roster">
+  {{ range $id := slice "thornguard" "duskrunner" "starweaver" "songkeeper" }}
+  {{ with index $classes $id }}
+  <div class="wiki-roster__card wiki-class-card--{{ .stat }}">
+    <div class="wiki-roster__art">
+      {{ partial "thumb.html" (dict "path" (printf "gear-portraits/%s/mythic/%s.png" $id $model) "width" 220 "alt" (printf "A %s %s in Mythic gear" $model .name) "full" true) }}
+    </div>
+    <div class="wiki-roster__body">
+      <h3><img src="{{ printf "painted/%s.webp" $id | relURL }}" alt="" width="34" height="34"> {{ .name }}</h3>
+      <p class="wiki-class-card__role"><img class="wiki-stat-icon" src="{{ printf "painted/attributes/%s.webp" .stat | relURL }}" alt="" width="18" height="18"> {{ title .stat }} · {{ .role }}{{ if ne .baseSteps 4 }} · {{ .baseSteps }} steps{{ end }}</p>
+      <p class="wiki-roster__blurb">{{ .blurb }}</p>
+      <ul class="wiki-roster__list">
+        <li><strong>From level 1: {{ .signature.name }}</strong>{{ .signature.text }}</li>
+        {{ $unlocks := .unlocks }}
+        {{ range $lvl := slice "3" "6" "9" }}
+        {{ with index $unlocks $lvl }}
+        <li><strong>Level {{ $lvl }}: {{ .name }}</strong>{{ .text }}</li>
+        {{ end }}
+        {{ end }}
+      </ul>
+    </div>
+  </div>
+  {{ end }}
+  {{ end }}
+</div>

@@ -8,7 +8,9 @@
 # runnable manually via workflow_dispatch.
 #
 # `content/**` is in that list because creature pages show stat blocks, and the
-# numbers behind them live in `content/rules.json` `encounterBands`. Retuning a
+# numbers behind them live in `content/rules.json` `encounterBands` — and the
+# How to Play pages render species, classes, dice and the XP curve straight
+# from rules.json, the Story Cast from the chapters. Retuning a
 # band is the one edit the canon/rules split exists to make easy, and it has to
 # reach the published wiki.
 
@@ -23,6 +25,9 @@ on:
       - "wiki/**"
       - "tools/wiki/**"
       - "assets/**"
+      # The wiki wears the app's painted UI (tray objects, badges, item icons) —
+      # wiki/hugo.yaml mounts it from the client package.
+      - "packages/client/src/assets/**"
       - ".github/workflows/wiki-deploy.yml"
   workflow_dispatch:
 

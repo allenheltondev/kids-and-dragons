@@ -5,6 +5,7 @@ type: location
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: confirmed
+played_in: ["gemfall-01", "gemfall-05a", "gemfall-05b", "gemfall-06", "gemfall-07h", "gemfall-07r", "gemfall-08"]
 tags: ["active_volcano", "gemfalls", "legendary", "ash", "lava", "unstable_power"]
 danger_level: legendary
 regional_relationships:
@@ -53,6 +54,12 @@ related:
   - id: creature.legend_dragon
     type: creature
     relationship: primary_locations
+assets:
+  primary: assets/biomes/mount_red_sky/portrait.webp
+  primaryFull: assets/biomes/mount_red_sky/bg.webp
+  gallery:
+    - src: assets/biomes/mount_red_sky/tiles.png
+      full: assets/biomes/mount_red_sky/tiles.png
 ai_context:
   mood: "The active volcano at the center of the realm, source of the Gemfalls and territory of rare solitary legendary beasts."
   themes: "Active_volcano, Gemfalls, Legendary, Ash, Lava, Unstable_power"

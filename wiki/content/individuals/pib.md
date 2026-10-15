@@ -5,6 +5,7 @@ type: individual
 status: draft
 lastReviewed: "2026-10-15"
 canon_status: newly_defined
+played_in: ["bramblewood-01", "gemfall-02"]
 tags: ["bramblewood", "hedges", "sprite", "helpful"]
 related:
   - id: biome.sunward_fields
@@ -19,6 +20,9 @@ related:
   - id: item.honeycake
     type: item
     relationship: items
+assets:
+  primary: assets/cast/pib/portrait.webp
+  primaryFull: assets/cast/pib/assembled.png
 ai_context:
   mood: "A bramble sprite about the size of a teapot who keeps the Bramblewood hedges and takes the job extremely seriously."
   themes: "Bramblewood, Hedges, Sprite, Helpful"
