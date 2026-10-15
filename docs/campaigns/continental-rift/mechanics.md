@@ -29,17 +29,26 @@ They are designed to teach opposite lessons:
 - **Washout rift — amber + violet** (single-use, one-way): a gamble taken under pressure that cannot be undone. It leads to the **Sky Islands**, otherwise reachable only by air.
 - **Hidden glacier rift — green + blue** (requirement unmet, then persistent): a puzzle solved by patience that stays open as a way back. It leads to **the Saltrot**. Details in [story.md](story.md).
 
-### Other colors — proposed palette, awaiting explicit lock
-| Color | Provisional interpretation | Notes |
-| --- | --- | --- |
-| Amber | Single-use | One coordinated party traversal, then spent/collapses |
-| Violet | One-way | Traversal does not offer an immediate reverse via the same rift |
-| Blue | Persistent | More than one crossing while active |
-| Red | Unstable | Exact meaning needs definition: avoid changing fixed property types unpredictably |
-| White / Silver | Dormant or latent | May overlap with green; resolve semantics before building |
-| Gold | Resonant/attunable | Must not imply users can alter intrinsic behavior |
+### The palette — agreed
+Four colors, each answering one question. Every color has its own **pattern** too, so players who cannot tell colors apart read the same thing.
 
-A **green + amber + violet** rift starts unavailable, becomes **amber + violet** when its requirement is met, then collapses after party crossing. Color is not a shorthand for geographic destination. Use distinctive movement/patterns alongside hues for color-accessible play.
+| Color | Answers | Meaning | Pattern |
+| --- | --- | --- | --- |
+| **Green** | *Can it open yet?* | Not yet: something is needed first (above) | Slow breathing pulse |
+| **Amber** | *How many times?* | Once: one coordinated party traversal, then it collapses | A single candle-like flicker |
+| **Blue** | *How many times?* | It stays open: more than one crossing while active | Steady ripple |
+| **Violet** | *Which way?* | One way only. No violet means both ways | Light spirals inward, like an arrow |
+
+Every open rift shows **exactly one of amber or blue**, and violet or not. A typical rift shows two colors, three while green is lit. A **green + amber + violet** rift starts unavailable, becomes **amber + violet** when its requirement is met, then collapses after the party crosses. Color is never a shorthand for destination.
+
+**Conditions show as motion, not color.** The remaining #196 properties:
+- **Timed:** the rift visibly shrinks.
+- **Unstable:** it stutters. It closes at a point the story sets, without a timed rift's visible countdown. Its rules never change; they are fixed.
+- **Linked:** it pulses in time with its partner rift.
+
+**Attunable shows as sound.** The rift hums back when a Starweaver is near, which is the signal for the Attune progression.
+
+**Not in the palette, deliberately:** red (it already means the red sky, which the Deep Hollow Cult calls "the wrong color"; red rifts would suggest the sky caused them), white/silver (overlaps green, and silver belongs to the Hollow Crown shard), gold (too close to amber on a TV). Violet also colors the Riftseekers' cloaks, which suits them as the rift people.
 
 ## Discovery and player progression — agreed direction
 - At first, colors are noticed but largely unexplained; repeated encounters help players learn associations.

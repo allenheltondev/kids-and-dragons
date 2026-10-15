@@ -29,5 +29,5 @@ Engine epic: [#191](https://github.com/allenheltondev/kids-and-dragons/issues/19
 - Canon registration, in one pass once the names below settle: the Riftseekers, Orin Vale, Lady Olivia, the campaign (with its Gemfall prerequisite), the Cairnstep, Ashspan Bridge (the Northern River Bridge's name), and the creator-only facts about the emperor's prison and the glacier rift.
 - Complete geography and node IDs/routes beyond the opening, one regional strand at a time.
 - Emperor name, ancient empire details, final confrontation and outcomes.
-- Rift spectrum beyond the agreed colors; destination disclosure; the non-Starweaver reading tool.
+- Destination disclosure; the non-Starweaver reading tool.
 - Numeric check TNs, harm, and chapter schema details.
