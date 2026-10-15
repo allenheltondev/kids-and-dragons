@@ -87,18 +87,41 @@ export function scenarioById(id: string): PacingScenario | undefined {
 
 export const CALIBRATION_SCENARIO: PacingScenario = scenarioById(CALIBRATION_SCENARIO_ID) as PacingScenario;
 
-/** The synthetic party for a scenario: N seats, the facets in the first seat's pack. */
+/**
+ * The real facet ids, in the order a party is most likely to pick them up, so
+ * a scenario holding N facets holds the first N. Real ids, not synthetic ones:
+ * content can list exact facets (`count.of: ["facet_ember", ...]`, as
+ * gemfall-08's `ending_collectors` does to leave out the Keystone), and a
+ * synthetic id would never match that list. The Keystone comes last, because
+ * only the finale's last choice can grant it. A test keeps this list in step
+ * with `content/items.json`.
+ */
+export const PACING_FACET_IDS: readonly string[] = [
+  "facet_ember",
+  "facet_harvest",
+  "facet_ford",
+  "facet_pride",
+  "facet_glade",
+  "facet_table",
+  "facet_caravan",
+  "facet_barge",
+  "facet_clerks",
+  "facet_unassigned",
+  "facet_depot",
+  "facet_drakes_rate",
+  "facet_confiscated",
+  "facet_keystone",
+];
+
+/** The synthetic party for a scenario: N seats, the first N real facets in the first seat's quest items. */
 export function scenarioParty(scenario: PacingScenario, flags: Record<string, boolean> = {}): ChoiceParty {
+  if (scenario.facets > PACING_FACET_IDS.length) {
+    throw new Error(`scenario ${scenario.id} holds ${String(scenario.facets)} facets; only ${String(PACING_FACET_IDS.length)} exist`);
+  }
   const members = Array.from({ length: Math.max(1, scenario.partySize) }, (_, i) => ({
     id: `pacing_${String(i + 1)}`,
-    inventory:
-      i === 0
-        ? Array.from({ length: scenario.facets }, (_unused, f) => ({
-            itemId: `facet_pacing_${String(f + 1)}`,
-            kind: "trinket" as const,
-          }))
-        : [],
-    questItems: [] as string[],
+    inventory: [],
+    questItems: i === 0 ? PACING_FACET_IDS.slice(0, scenario.facets) : ([] as string[]),
   })) as unknown as ResolvedCharacter[];
   return { members, flags };
 }
