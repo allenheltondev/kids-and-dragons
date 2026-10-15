@@ -1,8 +1,8 @@
 <header class="wiki-navbar" id="wiki-navbar">
   <nav class="wiki-navbar__inner" aria-label="Main navigation">
-    <!-- Left: the crest, then the word "Wiki" (full on desktop, short on mobile) -->
+    <!-- Left: the dragon mark and wordmark, then a "Wiki" tag -->
     <a href="{{ .Site.BaseURL }}" class="wiki-navbar__title" aria-label="{{ site.Params.brand.name }} Wiki home">
-      {{ partial "crest.html" (dict "width" 112 "class" "wiki-navbar__crest" "eager" true) }}
+      {{ partial "crest.html" (dict "size" 44 "class" "wiki-logo--nav" "eager" true) }}
       <span class="wiki-navbar__title-full">Wiki</span>
       <span class="wiki-navbar__title-short">Wiki</span>
     </a>

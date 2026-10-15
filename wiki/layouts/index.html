@@ -1,6 +1,6 @@
 {{ define "main" }}
 {{/* The front door. It should feel like opening the game: the market the
-     app's home screen is painted on, the crest, and the heroes. Then the two
+     app's home screen is painted on, the logo, and the heroes. Then the two
      ways in — learn to play, or go exploring the Realm of Red Sky. */}}
 {{ $rules := site.Data.game.rules }}
 <div class="wiki-homepage">
@@ -11,7 +11,7 @@
     {{ $bg := .Resize "1600x webp q72" }}
     <img class="wiki-hero__backdrop" src="{{ $bg.RelPermalink }}" alt="" width="{{ $bg.Width }}" height="{{ $bg.Height }}" fetchpriority="high">
     {{ end }}
-    {{ partial "crest.html" (dict "width" 460 "class" "wiki-hero__crest" "eager" true) }}
+    {{ partial "crest.html" (dict "size" 150 "class" "wiki-logo--hero" "eager" true "stacked" true) }}
     <h1 class="wiki-hero__title">{{ .Params.headline | default .Title }}</h1>
     <p class="wiki-hero__subtitle">{{ .Params.subtitle }}</p>
     {{ with .Params.tagline }}<p class="wiki-hero__tagline">{{ . }}</p>{{ end }}
