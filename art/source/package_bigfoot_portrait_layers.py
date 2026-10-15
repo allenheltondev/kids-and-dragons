@@ -31,6 +31,21 @@ def portrait_part(character_class, tier, polygons, size=963, offset=(84, 40), sn
         yy,xx = np.indices(owned.shape)
         # Do not let nearby brown mane become part of the garment.
         snapped[yy < 475] &= owned[yy < 475]
+        if tier == 'sworn':
+            # Sworn's broad lower envelope crosses light torso fur between
+            # tassels. Preserve only the gold fringe there, not a strip of the
+            # portrait's differently posed chest riding along with the shawl.
+            fringe_gold = (rgb[...,0] > 70) & (rgb[...,1] > rgb[...,0] * .48) & (rgb[...,2] < rgb[...,0] * .60)
+            fringe = ndimage.binary_fill_holes(ndimage.binary_dilation(fringe_gold,iterations=1))
+            snapped[yy > 560] &= fringe[yy > 560]
+            # The dark arm/torso crease beside the pendant is anatomy, too.
+            snapped[(xx < 460) & (yy > 645)] = False
+            # The shawl and its pendant are a single piece. Disconnected flecks
+            # are portrait fur/shadow caught by the colour envelope, not trim.
+            labels,count = ndimage.label(snapped)
+            if count:
+                areas = np.bincount(labels.ravel()); areas[0] = 0
+                snapped = labels == areas.argmax()
         mask = Image.fromarray(np.where(snapped,255,0).astype('uint8'))
     if character_class == 'starweaver' and not snap:
         # A fitted backdrop estimate removes navy between the focus-stone rings,
@@ -98,6 +113,8 @@ def package(character_class, tier):
         exceptions['body/arm_l']={'band':.97,'reason':'The approved waistcoat hides the upper seam, leaving the small lower armpit contour. The missing 2.6% lies outside the unchanged base torso silhouette, not at its shoulder pivot. See docs/reviews/bigfoot-class-seam-contours.webp and the attack contact sheet.'}
     if tier == 'radiant' and character_class == 'songkeeper':
         exceptions['body/arm_r']={'band':.68,'reason':'The approved shawl hides the upper seam, leaving only the short lower armpit contour. The missing 31.7% lies outside the unchanged base torso silhouette at that endpoint; extending it would add a torso slab into the arm gap. See docs/reviews/bigfoot-class-seam-contours.webp and the attack contact sheet.'}
+    if tier == 'sworn' and character_class == 'songkeeper':
+        exceptions['body/arm_r']={'band':.85,'reason':'Removing the portrait-fur strip below the shawl reveals the unchanged lower armpit contour. The 24px band reaches outside the torso silhouette there; the shoulder pivot remains covered. See docs/reviews/songkeeper-sworn-seam-contour.webp and the attack contact sheet.'}
     (out/'seam-exceptions.json').write_text(json.dumps(exceptions,indent=2)+'\n',encoding='utf-8')
     if character_class == 'songkeeper':
         polygon = {'sworn': SWORN_SHAWL,'radiant':RADIANT_SHAWL,'mythic':MYTHIC_SHAWL}[tier]
