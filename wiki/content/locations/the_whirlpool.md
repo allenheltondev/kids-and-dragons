@@ -20,6 +20,9 @@ related:
   - id: location.bone_yard
     type: location
     relationship: locations
+assets:
+  primary: assets/biomes/the_whirlpool/portrait.webp
+  primaryFull: assets/biomes/the_whirlpool/bg.webp
 ai_context:
   mood: "A standing spiral of water offshore, visible from the Bone Yard and Mermaid Cove coasts."
   themes: "Ocean, Hazard, Current, Offshore"

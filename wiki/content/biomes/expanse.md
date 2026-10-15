@@ -29,7 +29,7 @@ assets:
   primary: assets/biomes/expanse/portrait.webp
   primaryFull: assets/biomes/expanse/bg.webp
   gallery:
-    - src: assets/biomes/expanse/portrait.webp
+    - src: assets/biomes/expanse/tiles.png
       full: assets/biomes/expanse/tiles.png
 ai_context:
   mood: "A vast northern waste where nothing visibly grows and no confirmed population, ecology, or civilization has been established."

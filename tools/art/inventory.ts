@@ -28,6 +28,7 @@
 
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { environmentCoverage } from "./environment-coverage.ts";
 
 const tty = process.stdout.isTTY;
 const GREEN = tty ? "\x1b[32m" : "";
@@ -53,6 +54,7 @@ interface Manifest {
   }[];
   effects: { id: string; frames: number }[];
   biomes: string[];
+  backgroundOnlyBiomes?: string[];
   sceneIllustrations?: string[];
   entities: { id: string; classification: string }[];
 }
@@ -274,6 +276,23 @@ const delivered = (line: Line): number => line.need - line.missing.length;
 }
 
 // --- Scene illustrations -----------------------------------------------------
+{
+  const backgrounds = manifest.backgroundOnlyBiomes ?? [];
+  lines.push({
+    category: "Story-only environments",
+    need: backgrounds.length,
+    missing: backgrounds.filter(id => !has(`assets/biomes/${id}`, "bg.webp")),
+    note: `${backgrounds.join(", ")}; backdrops only — no tactical tiles or props required`,
+  });
+  const coverage = environmentCoverage(root, manifest);
+  lines.push({
+    category: "Canon place coverage",
+    ...coverage,
+    note: "biomes + named locations; every backdrop must be declared and present (shared art allowed)",
+    missingLabel: "coverage gaps",
+  });
+}
+
 {
   const illustrations = manifest.sceneIllustrations ?? [];
   lines.push({

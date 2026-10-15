@@ -104,7 +104,7 @@ assets:
   primary: assets/biomes/red_sky_foothills/portrait.webp
   primaryFull: assets/biomes/red_sky_foothills/bg.webp
   gallery:
-    - src: assets/biomes/red_sky_foothills/portrait.webp
+    - src: assets/biomes/red_sky_foothills/tiles.png
       full: assets/biomes/red_sky_foothills/tiles.png
 ai_context:
   mood: "Volcanic hills surrounding Mount Red Sky, cut by cooled lava tubes, crystal veins, caves, and long-established dragonling communities."

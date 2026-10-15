@@ -11,6 +11,7 @@ import cleverArt from "./attributes/clever.webp";
 import heartArt from "./attributes/heart.webp";
 import whistleArt from "./painted/whistle.webp";
 import cakeArt from "./painted/cake.webp";
+import supperArt from "./painted/supper.webp";
 import lanternArt from "./painted/lantern.webp";
 import acornArt from "./painted/acorn.webp";
 import beadArt from "./painted/bead.webp";
@@ -55,6 +56,7 @@ export const PAINTED_ART: Record<string, string> = {
   heart: heartArt,
   whistle: whistleArt,
   cake: cakeArt,
+  supper: supperArt,
   lantern: lanternArt,
   acorn: acornArt,
   bead: beadArt,

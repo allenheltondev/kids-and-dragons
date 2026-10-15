@@ -104,7 +104,7 @@ assets:
   primary: assets/biomes/whispering_marsh/portrait.webp
   primaryFull: assets/biomes/whispering_marsh/bg.webp
   gallery:
-    - src: assets/biomes/whispering_marsh/portrait.webp
+    - src: assets/biomes/whispering_marsh/tiles.png
       full: assets/biomes/whispering_marsh/tiles.png
 ai_context:
   mood: "A mist-covered wetland where voices, memories, and supernatural manifestations collect among drowned roots and hidden waterways."
