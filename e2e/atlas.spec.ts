@@ -55,7 +55,12 @@ for (const mode of ["travel", "party"] as const) {
       await expect(page.locator('[data-patch="northwest"]')).toBeAttached();
       await expect(page.locator('[data-route="route.northern_river_bridge"]')).toBeAttached();
       const viewport = page.locator(".atlas__viewport");
-      await viewport.evaluate((view) => view.scrollTo({ left: 180, top: 220 }));
+      await viewport.evaluate(async (view) => {
+        for (let frame = 1; frame <= 30; frame++) {
+          view.scrollTo({ left: 180 * frame / 30, top: 220 * frame / 30 });
+          await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+        }
+      });
       await expect.poll(() => viewport.evaluate((view) => Math.round(view.scrollTop))).toBe(220);
       // Allow the browser's scroll event to save the navigation center.
       await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));

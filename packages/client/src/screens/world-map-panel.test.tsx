@@ -9,14 +9,15 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { Profiler } from "react";
 import type { Chapter, WorldMap } from "@kad/shared";
 import { makeChapter } from "../../../shared/src/test-fixtures";
 import { makeMember, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
 import { WorldMapPanel, placeOf, whereLine } from "./WorldMapPanel";
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
-import { resetAtlasNavigation } from "../store/atlas-navigation";
+import { getAtlasCenter, resetAtlasNavigation } from "../store/atlas-navigation";
 
 const WORLD: WorldMap = {
   title: "The Realm of Red Sky",
@@ -41,7 +42,7 @@ const WORLD: WorldMap = {
 
 const CHAPTER: Chapter = { ...makeChapter(), biome: "sunward_fields" };
 
-function mount(overrides: { chapter?: Chapter | null; world?: WorldMap | null; chapterId?: string | null }) {
+function mount(overrides: { chapter?: Chapter | null; world?: WorldMap | null; chapterId?: string | null; onRender?: () => void }) {
   const chapter = overrides.chapter === undefined ? CHAPTER : overrides.chapter;
   useGameStore.setState({
     session: { runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "travel", sessionToken: "t" },
@@ -57,7 +58,7 @@ function mount(overrides: { chapter?: Chapter | null; world?: WorldMap | null; c
     loadChapter: async () => undefined,
     loadWorld: async () => undefined,
   });
-  return render(<WorldMapPanel />);
+  return render(<Profiler id="atlas" onRender={overrides.onRender ?? (() => undefined)}><WorldMapPanel /></Profiler>);
 }
 
 afterEach(() => {
@@ -80,6 +81,35 @@ describe("finding the chapter on the map", () => {
 });
 
 describe("the panel", () => {
+  it("saves every pan position without re-rendering the atlas at closest zoom", () => {
+    let commits = 0;
+    const world: WorldMap = { ...WORLD, atlas: { image: { width: 1024, height: 1024 }, levels: [{
+      image: { width: 1024, height: 1024 },
+      tiles: Array.from({ length: 4 }, (_, index) => ({ src: `/assets/tile-${index}.webp`,
+        x: index % 2 * 512, y: Math.floor(index / 2) * 512, width: 512, height: 512 })),
+    }] } };
+    const { container } = mount({ world, onRender: () => { commits++; } });
+    while (!(screen.getByRole("button", { name: "Closer" }) as HTMLButtonElement).disabled) {
+      act(() => screen.getByRole("button", { name: "Closer" }).click());
+    }
+    const view = container.querySelector(".atlas__viewport") as HTMLElement;
+    const sheet = screen.getByTestId("atlas-sheet");
+    expect(view.getAttribute("data-zoom")).toBe("4");
+    Object.defineProperties(view, { clientWidth: { value: 200 }, clientHeight: { value: 300 } });
+    Object.defineProperties(sheet, { offsetWidth: { value: 1000 }, offsetHeight: { value: 1000 } });
+    const beforePan = commits;
+    for (let i = 0; i < 30; i++) {
+      view.scrollLeft = i * 5;
+      view.scrollTop = i * 10;
+      fireEvent.scroll(view);
+    }
+    expect(getAtlasCenter(JSON.stringify(["r_1", CHAPTER.id]))).toEqual({ x: 245, y: 440 });
+    expect(commits).toBe(beforePan);
+    // Visual controls still update normally after panning.
+    act(() => screen.getByRole("button", { name: "Further away" }).click());
+    expect(commits).toBeGreaterThan(beforePan);
+    expect(getAtlasCenter(JSON.stringify(["r_1", CHAPTER.id]))).toBeNull();
+  });
   it("remembers zoom across map closes but resets for another run", () => {
     const first = mount({});
     act(() => screen.getByRole("button", { name: "Closer" }).click());
