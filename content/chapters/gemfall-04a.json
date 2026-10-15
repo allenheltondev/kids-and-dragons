@@ -119,7 +119,8 @@
       "narration": "Pride markers stand along the road: painted posts with tufts of tail-fur tied on top. You walk around them, never over. The detour is the point. Overhead, a cloud of embermoths drifts south, away from the mountain, which is a thing embermoths never do.",
       "cast": [
         {
-          "figure": "entities/embermoth"
+          "figure": "entities/embermoth",
+          "count": 4
         }
       ],
       "choices": [
@@ -153,10 +154,12 @@
       "narration": "The moths lead you along the edge of the grass, glowing like slow sparks, and the pride markers curve the same way, bending wide around something you can't see yet. Forty jackalopes have squashed themselves together along the pride edge, for safety. It is mostly ears.",
       "cast": [
         {
-          "figure": "entities/embermoth"
+          "figure": "entities/embermoth",
+          "count": 4
         },
         {
-          "figure": "entities/jackalope"
+          "figure": "entities/jackalope",
+          "count": 3
         }
       ],
       "onEnter": [
@@ -626,7 +629,8 @@
       "narration": "You make camp at the old caravan rest stop, among carts nobody has used since the stone fell. Your little fire is the only warm thing for miles. Out in the dark: ember eyes. A cinder wolf pack, thin and cold and a long way from home, creeping toward the heat. They do not like the humming in your packs. They like the fire very, very much.",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "choices": [
@@ -677,7 +681,8 @@
       "prompt": "Throw supper far enough that the pack takes the easy meal",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "roller": "party",
@@ -734,7 +739,8 @@
       "narration": "By midnight the cinder wolves are stacked in a glowing pile on the far side of your fire, taking turns at the bottom by some rule nobody understands. It is the warmest camp you have ever had. North, tomorrow, the broken bridge.",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "heal": 3,
@@ -754,7 +760,8 @@
       "narration": "You call out toward the ridge. Nothing, for a long moment. Then Elder Sefa's voice comes back out of the dark, from exactly as close as a pride will come to a humming pack and not one step nearer, and the cubs with her start a growl so low you feel it in your boots. Every ember eye on the road turns toward the ridge, thinks about it, and decides your fire is not worth the argument. The pack slinks round to the far side of your camp, as far from the pride as the warm will let them.",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 3
         }
       ],
       "choices": [
@@ -1436,7 +1443,8 @@
       "narration": "At dawn you walk out toward the widest bend, and the sky goes orange in the wrong place. It is embermoths, thousands of them, drifting south in a slow glowing river, away from the mountain. One lands on your pack, flickers, and flutters off again, very fast, as if the pack were too hot to touch.",
       "cast": [
         {
-          "figure": "entities/embermoth"
+          "figure": "entities/embermoth",
+          "count": 4
         }
       ],
       "choices": [
@@ -1475,7 +1483,8 @@
       "prompt": "Cup an embermoth in your hands without squashing it",
       "cast": [
         {
-          "figure": "entities/embermoth"
+          "figure": "entities/embermoth",
+          "count": 4
         }
       ],
       "roller": "party",
@@ -1497,7 +1506,8 @@
       "narration": "Where the grass starts leaning, there is a wall of ears. Fifty jackalopes sit packed together in a long line, all facing outward, away from the middle of the bend. They will not move. The oldest one has a torn ear and the expression of someone who has seen it all and not liked most of it.",
       "cast": [
         {
-          "figure": "entities/jackalope"
+          "figure": "entities/jackalope",
+          "count": 3
         }
       ],
       "choices": [
@@ -1536,7 +1546,8 @@
       "prompt": "Crawl through a wall of jackalopes without stepping on anybody",
       "cast": [
         {
-          "figure": "entities/jackalope"
+          "figure": "entities/jackalope",
+          "count": 3
         }
       ],
       "roller": "party",
@@ -1573,7 +1584,8 @@
       "narration": "You break a honeycake into fifty very small pieces. It takes ages. The jackalopes eat every crumb, very fast and very politely, and then shuffle aside to let you through. As you go, a few of the little ones try to follow, and their mothers pull them back by the ears.",
       "cast": [
         {
-          "figure": "entities/jackalope"
+          "figure": "entities/jackalope",
+          "count": 3
         }
       ],
       "choices": [

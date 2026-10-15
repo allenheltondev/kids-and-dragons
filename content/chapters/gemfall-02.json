@@ -512,7 +512,8 @@
       "narration": "Next, the road is full of jackalopes. Hundreds of them. Usually they race the wagons and win, but today they are just sitting, packed in tight on the open road, every ear pointed the same way: inland, toward the long grass. A jackalope only crowds the road when something on the other side of the grass is worth being able to see coming. Up on the low ridge above the road, a flock of sheeple stands in one woolly knot, all staring the same way.",
       "cast": [
         {
-          "figure": "entities/jackalope"
+          "figure": "entities/jackalope",
+          "count": 3
         }
       ],
       "choices": [
@@ -661,7 +662,8 @@
       "narration": "In the dust by the long grass are big paw prints, and the prints are still warm. Caught on a thistle is a tuft of charcoal fur with a faint glow under it. Cinder wolves, mountain wolves, all the way down here in the farm country. Two of them are lying in the grass, shivering, watching the caravan's sausage wagon the way you might watch a birthday cake.",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 2
         }
       ],
       "choices": [
@@ -701,7 +703,8 @@
       "prompt": "Put down your supper bundle without looking like a snack",
       "cast": [
         {
-          "figure": "entities/cinder_wolf"
+          "figure": "entities/cinder_wolf",
+          "count": 2
         }
       ],
       "roller": "party",
@@ -913,7 +916,8 @@
       "narration": "At sunset a cloud of embermoths drifts overhead, thousands of them, glowing like slow sparks. One lands on your soup and will not get out. But the cloud is drifting south, toward the sea and away from the mountain, which is the wrong way entirely.",
       "cast": [
         {
-          "figure": "entities/embermoth"
+          "figure": "entities/embermoth",
+          "count": 4
         }
       ],
       "choices": [
@@ -984,7 +988,8 @@
       "narration": "\"That's impossible,\" says the dragonling. \"Embermoths go toward warm. Always. The mountain is the warmest thing there is. Back home the grandmothers would be ringing the bells.\" Nobody laughs. A little embermoth settles on the dragonling's horn, as if to say: tell them again.",
       "cast": [
         {
-          "figure": "entities/embermoth"
+          "figure": "entities/embermoth",
+          "count": 4
         }
       ],
       "choices": [
@@ -1123,7 +1128,8 @@
       "narration": "In the morning, near the last farm before Bramblewood, there is one corner row nobody has picked. Every farmer knows to leave the corner rows, and nobody says why. Today the row is guarded. Four harvest sprites in acorn-cup helmets stand to attention, and every time a pea-pod trumpet toots, four new ones march in to take their places.",
       "cast": [
         {
-          "figure": "entities/harvest_sprite"
+          "figure": "entities/harvest_sprite",
+          "count": 4
         }
       ],
       "choices": [
@@ -1187,7 +1193,8 @@
       "narration": "You wave. Every sprite in the row waves back at once. \"The bridge ones!\" one of them shouts. \"The bridge ones are here!\" A pea-pod trumpet plays a little fanfare. Two sprites carry a tiny bench out of the cabbages so you can sit down, even though it is much too small for anyone. Then they lead you to the middle of the row.",
       "cast": [
         {
-          "figure": "entities/harvest_sprite"
+          "figure": "entities/harvest_sprite",
+          "count": 4
         }
       ],
       "choices": [
@@ -1204,7 +1211,8 @@
       "narration": "In the middle of the row sits a green-gold stone the size of a hen's egg. Somebody has pinned a tiny woven medal on it that says BEST. It fell from the sky into the sprites' row, and they have decided that makes it theirs, very seriously. What do we do?",
       "cast": [
         {
-          "figure": "entities/harvest_sprite"
+          "figure": "entities/harvest_sprite",
+          "count": 4
         }
       ],
       "choices": [
@@ -1266,7 +1274,8 @@
       "prompt": "Offer the sprites the best thing in your pockets",
       "cast": [
         {
-          "figure": "entities/harvest_sprite"
+          "figure": "entities/harvest_sprite",
+          "count": 4
         }
       ],
       "roller": "party",
@@ -1297,7 +1306,8 @@
       "prompt": "Pick up every dropped seed before the sprites do",
       "cast": [
         {
-          "figure": "entities/harvest_sprite"
+          "figure": "entities/harvest_sprite",
+          "count": 4
         }
       ],
       "roller": "party",
@@ -1348,7 +1358,8 @@
       "prompt": "Snatch the stone between one trumpet toot and the next",
       "cast": [
         {
-          "figure": "entities/harvest_sprite"
+          "figure": "entities/harvest_sprite",
+          "count": 4
         }
       ],
       "roller": "party",
@@ -1392,7 +1403,8 @@
       "narration": "There is an award ceremony. Attendance is mandatory. The best beetroot gets a medal, the best bean gets a medal, and then the sprites hand you the Harvest Stone, medal and all. They make you promise to keep it somewhere with a nice view.",
       "cast": [
         {
-          "figure": "entities/harvest_sprite"
+          "figure": "entities/harvest_sprite",
+          "count": 4
         }
       ],
       "choices": [
@@ -1409,7 +1421,8 @@
       "narration": "The stone is in your pack. Behind you the corner row has gone very, very quiet. Every sprite in the field has stopped tidying to look at you. Nobody says anything. Harvest sprites do not need to say anything. Harvest sprites remember.",
       "cast": [
         {
-          "figure": "entities/harvest_sprite"
+          "figure": "entities/harvest_sprite",
+          "count": 4
         }
       ],
       "choices": [
@@ -1426,7 +1439,8 @@
       "narration": "You leave the stone exactly where it fell. The sprites look at each other. Then they hold a second, smaller ceremony and pin a very small woven medal on you. It says NOT. Nobody explains.",
       "cast": [
         {
-          "figure": "entities/harvest_sprite"
+          "figure": "entities/harvest_sprite",
+          "count": 4
         }
       ],
       "onEnter": [
@@ -1656,7 +1670,8 @@
           "size": "tiny"
         },
         {
-          "figure": "entities/sheeple"
+          "figure": "entities/sheeple",
+          "count": 3
         }
       ],
       "choices": [
