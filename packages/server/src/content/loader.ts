@@ -20,7 +20,7 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
-import { EFFECT_VERBS, itemCatalog, MAX_PARTY, resolveEnemy } from "@kad/shared";
+import { checkEncounterEnvironment, EFFECT_VERBS, itemCatalog, MAX_PARTY, resolveEnemy } from "@kad/shared";
 import { campaignMode, chapterFlagWrites, chapterFor, lintCampaignGraph, parseCampaignGraph } from "@kad/shared";
 import type {
   AbilityCatalog,
@@ -344,6 +344,11 @@ async function readAll(root: string): Promise<ContentStore> {
         problems.push(
           `chapters/${chapter.id}.json: scene "${sceneId}" names map "${scene.map}", which is not in maps/`,
         );
+      }
+      // The environment (#201), against the board it is on: an exit in a
+      // wall or a captive on a spawn would throw at the table, not here.
+      for (const problem of checkEncounterEnvironment(scene, maps.get(scene.map) ?? null)) {
+        problems.push(`chapters/${chapter.id}.json: scene "${sceneId}" ${problem.path}: ${problem.problem}`);
       }
     }
   }
@@ -707,7 +712,13 @@ function gotoTargets(scene: Scene): SceneId[] {
     case "check":
       return [scene.onSuccess.goto, scene.onFailure.goto];
     case "encounter":
-      return [scene.onVictory.goto, scene.onDefeat.goto];
+      // An environmental fight's other endings (#201) are edges too.
+      return [
+        scene.onVictory.goto,
+        scene.onDefeat.goto,
+        ...(scene.onEscape ? [scene.onEscape.goto] : []),
+        ...(scene.onTimeout ? [scene.onTimeout.goto] : []),
+      ];
     default:
       // An unknown scene type fell out of the switch as `undefined`, and
       // `for (const t of undefined)` threw a raw TypeError out of readAll —

@@ -26,6 +26,7 @@ import type {
   SceneId,
 } from "./types/chapter.js";
 import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "./condition-lint.js";
+import { checkEncounterEnvironment } from "./environment.js";
 import type { ItemCatalog, ResolvedCharacter } from "./types/domain.js";
 
 export type IssueSeverity = "error" | "warning";
@@ -43,6 +44,7 @@ export type IssueCode =
   | "ITEM_KIND_MISMATCH"
   | "BAD_CONDITION"
   | "UNBACKED_COST"
+  | "BAD_ENVIRONMENT"
   | "NO_SCENES";
 
 export interface ChapterIssue {
@@ -73,6 +75,10 @@ export function sceneEdges(scene: Scene): Edge[] {
       return [
         ...(scene.onVictory ? [{ to: scene.onVictory.goto, via: "onVictory" }] : []),
         ...(scene.onDefeat ? [{ to: scene.onDefeat.goto, via: "onDefeat" }] : []),
+        // An environmental fight's other endings (#201) are edges like the
+        // first two: their scenes are reachable, and must reach an ending.
+        ...(scene.onEscape ? [{ to: scene.onEscape.goto, via: "onEscape" }] : []),
+        ...(scene.onTimeout ? [{ to: scene.onTimeout.goto, via: "onTimeout" }] : []),
       ];
     default:
       // Authored JSON, so an unknown type can reach here despite the union.
@@ -95,7 +101,13 @@ function sceneEffects(scene: Scene): Effect[] {
       effects.push(...(scene.onSuccess?.effects ?? []), ...(scene.onFailure?.effects ?? []));
       break;
     case "encounter":
-      effects.push(...(scene.onVictory?.effects ?? []), ...(scene.onDefeat?.effects ?? []));
+      effects.push(
+        ...(scene.onVictory?.effects ?? []),
+        ...(scene.onDefeat?.effects ?? []),
+        ...(scene.onEscape?.effects ?? []),
+        ...(scene.onTimeout?.effects ?? []),
+        ...(scene.environment?.rescue?.effects ?? []),
+      );
       break;
   }
   return effects;
@@ -199,6 +211,17 @@ export function validateChapter(chapter: Chapter, catalog?: ItemCatalog): Chapte
           severity: "error",
           code: "MISSING_BRANCH",
           message: `encounter "${sceneId}" has no onDefeat branch — a wipe branches the story, it never ends the game`,
+          sceneId,
+        });
+      }
+      // The environment (#201), without its map: the branches it needs and
+      // only those, windows that can happen, counts in range.
+      // content:validate runs the same check again with the map.
+      for (const problem of checkEncounterEnvironment(scene)) {
+        issues.push({
+          severity: "error",
+          code: "BAD_ENVIRONMENT",
+          message: `encounter "${sceneId}" ${problem.path}: ${problem.problem}`,
           sceneId,
         });
       }

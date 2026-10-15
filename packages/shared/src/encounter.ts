@@ -78,10 +78,12 @@ import {
 import type { Rng } from "./dice.js";
 import { resolveAttack, rollD20 } from "./dice.js";
 import type { ItemEffect, ResolvedCharacter, RulesContent, StatId } from "./types/domain.js";
-import type { EnemySpec } from "./types/chapter.js";
+import type { EncounterEnvironment, EnemySpec } from "./types/chapter.js";
 import type { DiceRoll } from "./types/state.js";
 import type { CombatBuff } from "./types/buffs.js";
 import { buffBonus, buffed, tickCombatBuffs } from "./buffs.js";
+import type { EnvironmentState } from "./environment.js";
+import { DEFAULT_SURGE, hazardAt, openExitAt, rescueDeadline } from "./environment.js";
 
 // ---------------------------------------------------------------------------
 // Abilities as data
@@ -448,6 +450,13 @@ export interface Combatant {
    * fight. Optional because fights persisted before it existed carry none.
    */
   readonly rerollOnes?: number;
+  /**
+   * Stepped through an open rift exit (#201) and out of the fight: off the
+   * board, never on the clock again, no longer anybody's target. Not down —
+   * a hero who got away has not lost. Absent on every figure in a fight
+   * without an environment, which is every fight before #201.
+   */
+  readonly escaped?: true;
 }
 
 export interface EncounterState {
@@ -510,6 +519,15 @@ export interface EncounterState {
    * always did.
    */
   readonly buffs?: readonly CombatBuff[];
+  /**
+   * The place fighting back (#201): the scene's `environment` as authored,
+   * and what has happened to it — the clock run out, the captive freed or
+   * lost. Read at turn ends and round starts only (`endTurnWithEvents`), so
+   * the moves and actions on offer are the base game's. Absent on every fight
+   * whose scene declared none — every Gemfall fight — which plays exactly as
+   * it always did.
+   */
+  readonly environment?: EnvironmentState;
 }
 
 /** Something worth animating or narrating. Returned, never stored in state. */
@@ -536,7 +554,26 @@ export type EncounterEvent =
   | { readonly type: "evaded"; readonly actorId: ActorId; readonly byId: ActorId }
   | { readonly type: "rooted"; readonly actorId: ActorId }
   | { readonly type: "encore"; readonly actorId: ActorId }
-  | { readonly type: "walled"; readonly at: Position };
+  | { readonly type: "walled"; readonly at: Position }
+  /*
+   * The environment's beats (#201). Each comes from `endTurnWithEvents`, at a
+   * turn's end or a round's start, never from a move or an action; the hurt a
+   * hazard or a surge does follows as an ordinary `damage` (and `down`).
+   */
+  /** `actorId` stopped on an active hazard; its `damage` event follows. */
+  | { readonly type: "hazard"; readonly actorId: ActorId; readonly hazardId: string; readonly label: string }
+  /** A hero stepped through an open exit and left the fight. */
+  | { readonly type: "escaped"; readonly actorId: ActorId; readonly exitId: string }
+  /** The captive is free; `byId` ended a turn beside them. */
+  | { readonly type: "freed"; readonly byId: ActorId }
+  /** The captive's time ran out. */
+  | { readonly type: "captiveLost" }
+  /** The rift moved a monster. */
+  | { readonly type: "relocated"; readonly actorId: ActorId; readonly to: Position }
+  /** The clock ran out: `"collapse"` ends the fight, `"surge"` hurts every hero still here. */
+  | { readonly type: "riftClock"; readonly onExpire: "collapse" | "surge" }
+  /** A surge round began; its `damage` events follow. */
+  | { readonly type: "surge"; readonly amount: number };
 
 /**
  * How the encounter stands *right now*. A query, never a phase.
@@ -546,7 +583,7 @@ export type EncounterEvent =
  * engine reads this and walks; no state in this module can end a run, and
  * there is deliberately nowhere to put a game-over flag.
  */
-export type EncounterOutcome = "ongoing" | "victory" | "defeat";
+export type EncounterOutcome = "ongoing" | "victory" | "defeat" | "escaped" | "timedOut";
 
 export interface EncounterContext {
   readonly rules: RulesContent;
@@ -599,6 +636,11 @@ export interface EncounterSetup {
    * state.
    */
   readonly buffs?: readonly CombatBuff[];
+  /**
+   * The scene's environment (#201), if it declared one. Absent: no
+   * `environment` key on the state, and a fight exactly as before.
+   */
+  readonly environment?: EncounterEnvironment;
 }
 
 /**
@@ -756,9 +798,15 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
     seats.push({ id, side: "enemy", quick: enemyQuick(spec) });
   }
 
+  // A captive (#201) stands on their tile for the whole fight, so nobody else
+  // can: it is walled until they are freed. Done before the figures go down,
+  // so a spawn on it is the authoring error `placeActor` already refuses.
+  const environment = setup.environment;
+  const ground = environment?.rescue ? setTerrain(setup.board, environment.rescue.at, "blocked") : setup.board;
+
   // placeActor is the one that refuses two figures on a tile or a spawn in a
   // wall, so the board is built through it rather than by hand.
-  const board = actors.reduce(placeActor, setup.board);
+  const board = actors.reduce(placeActor, ground);
 
   const rolled = rollInitiative(ctx.rng, seats);
   const initiativeById = new Map(rolled.map((entry) => [entry.id, entry.initiative]));
@@ -778,6 +826,15 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
     encores: [],
     encoreActor: null,
     ...(setup.buffs && setup.buffs.length > 0 ? { buffs: [...setup.buffs] } : {}),
+    ...(environment
+      ? {
+          environment: {
+            spec: environment,
+            expired: false,
+            ...(environment.rescue ? { rescue: "waiting" as const } : {}),
+          },
+        }
+      : {}),
   };
   // The first seat may be a character who walked in knocked down (§7.3).
   return startTurnAt(settleCursor(base));
@@ -849,7 +906,7 @@ export function currentActor(state: EncounterState): Combatant | null {
   const id = currentActorId(state);
   if (id === null) return null;
   const combatant = combatantById(state, id);
-  if (!combatant || combatant.down) return null;
+  if (!combatant || combatant.down || combatant.escaped) return null;
   return combatant;
 }
 
@@ -876,7 +933,16 @@ export function isPartyWiped(state: EncounterState): boolean {
  */
 export function encounterOutcome(state: EncounterState): EncounterOutcome {
   if (enemies(state).every((c) => c.down)) return "victory";
+  // The environment's two endings (#201) only exist on a fight that has one.
+  // An escape outranks a wipe: a hero who got out pulls the fallen through
+  // after them (nobody is left behind on the board, §7.3), so a party that is
+  // partly through and partly down has escaped, not lost.
+  if (state.environment) {
+    const party = partyMembers(state);
+    if (party.some((c) => c.escaped) && party.every((c) => c.down || c.escaped)) return "escaped";
+  }
   if (isPartyWiped(state)) return "defeat";
+  if (state.environment?.expired && state.environment.spec.clock?.onExpire === "collapse") return "timedOut";
   return "ongoing";
 }
 
@@ -1046,6 +1112,8 @@ function legalTargetsFor(
   return state.combatants
     .filter((c) => {
       if (c.id === actor.id) return false;
+      // Out through a rift exit (#201): gone, even for a reach of "board".
+      if (c.escaped) return false;
       if (!isFriendly(actor, c, want)) return false;
       if (!matchesState(c, rule)) return false;
       return inRange(from, positionOf(state, c.id), rule);
@@ -1259,7 +1327,7 @@ function audienceFor(
       // "Every friend" — the caster included. Excluding them would mean a
       // Songkeeper can never be healed by their own Chorus, which is a rule
       // somebody would have to explain.
-      return state.combatants.filter((c) => c.side === actor.side && !c.down).map((c) => c.id);
+      return state.combatants.filter((c) => c.side === actor.side && !c.down && !c.escaped).map((c) => c.id);
     case "adjacent": {
       const from = positionOf(state, actor.id);
       if (!from) return [];
@@ -1742,6 +1810,25 @@ function dealDamage(
     if (dealt <= 0) return working;
   }
 
+  return loseHp(working, victimId, dealt, events);
+}
+
+/**
+ * Hit points off a figure, and the knockdown if that was the last of them —
+ * the part of `dealDamage` that is not about *hits*. The environment (#201)
+ * hurts through here too: a hazard or a surge is not a swing, so Brace does
+ * not step in front of it and a ward does not shave it, but a hero it drops
+ * is knocked down by exactly the rule a monster's hit uses.
+ */
+function loseHp(
+  working: EncounterState,
+  victimId: ActorId,
+  dealt: number,
+  events: EncounterEvent[],
+): EncounterState {
+  const victim = combatantById(working, victimId);
+  if (!victim || victim.down || dealt <= 0) return working;
+
   const hp = Math.max(0, victim.hp - dealt);
   events.push({ type: "damage", actorId: victimId, amount: victim.hp - hp, hp });
   if (hp > 0) {
@@ -1833,6 +1920,160 @@ function updateCombatant(
  * definition of done).
  */
 export function endTurn(state: EncounterState): EncounterState {
+  return endTurnWithEvents(state).state;
+}
+
+/**
+ * `endTurn`, with what the environment did on the way (#201).
+ *
+ * A fight without an environment — every Gemfall fight — is handed straight
+ * to the base hand-over (`passTurn`) and comes back with no events: the same
+ * state `endTurn` always returned, which is what keeps the seeded Gemfall
+ * fights hashing identically (ordered-campaigns.test.ts).
+ *
+ * With one, two moments are added around the hand-over and nothing else:
+ *
+ *   1. **The turn that is ending** (a real turn, not an encore action — a
+ *      bonus action is not "where you stopped"): a hero beside the captive
+ *      frees them; a figure on an active hazard takes its damage; a hero
+ *      still standing on an open exit steps through and leaves the fight.
+ *      In that order, so a hero can free the captive *and* go in one stop,
+ *      and a hazard that drops a hero keeps them from leaving.
+ *   2. **Every round that started**: the clock runs out (a `"collapse"` ends
+ *      the fight — `encounterOutcome` reads `"timedOut"`; a `"surge"` hurts
+ *      every hero on the board, now and each round after), the captive's
+ *      deadline passes, and the rift moves the monsters it was told to.
+ *
+ * If a surge drops whoever the clock had just reached, the cursor settles on
+ * the next figure who can act, exactly as a knockdown at any other moment.
+ */
+export function endTurnWithEvents(state: EncounterState): {
+  readonly state: EncounterState;
+  readonly events: readonly EncounterEvent[];
+} {
+  if (!state.environment) return { state: passTurn(state), events: [] };
+
+  const events: EncounterEvent[] = [];
+  let working = state;
+  if (state.encoreActor === null) {
+    const ending = currentActor(state);
+    if (ending) working = turnEndInEnvironment(working, ending.id, events);
+  }
+
+  const before = working.round;
+  working = passTurn(working);
+  if (working.round > before) {
+    for (let round = before + 1; round <= working.round; round++) {
+      working = roundStartInEnvironment(working, round, events);
+    }
+    const id = currentActorId(working);
+    const now = id === null ? null : combatantById(working, id);
+    if (working.encoreActor === null && (!now || now.down || now.escaped)) {
+      working = startTurnAt(settleCursor(working));
+    }
+  }
+  return { state: working, events };
+}
+
+/** The environment's half of a turn ending (#201). See `endTurnWithEvents`. */
+function turnEndInEnvironment(
+  state: EncounterState,
+  actorId: ActorId,
+  events: EncounterEvent[],
+): EncounterState {
+  const env = state.environment;
+  const actor = combatantById(state, actorId);
+  const at = positionOf(state, actorId);
+  if (!env || !actor || actor.down || !at) return state;
+  const { spec } = env;
+  let working = state;
+
+  // Free the captive: a hero, ending a turn beside them.
+  if (actor.side === "party" && env.rescue === "waiting" && spec.rescue && areAdjacent(at, spec.rescue.at)) {
+    working = {
+      ...working,
+      board: setTerrain(working.board, spec.rescue.at, "open"),
+      environment: { ...env, rescue: "freed" },
+    };
+    events.push({ type: "freed", byId: actorId });
+  }
+
+  // Stopping on the fire.
+  const hazard = hazardAt(spec, working.round, at);
+  if (hazard) {
+    events.push({ type: "hazard", actorId, hazardId: hazard.id, label: hazard.label });
+    working = loseHp(working, actorId, hazard.damage, events);
+  }
+
+  // Stepping through. Only a hero, only standing, only while it is open.
+  const still = combatantById(working, actorId);
+  const exit = actor.side === "party" && still && !still.down ? openExitAt(spec, working.round, at) : null;
+  if (exit) {
+    events.push({ type: "escaped", actorId, exitId: exit.id });
+    working = {
+      ...working,
+      board: removeActor(working.board, actorId),
+      // Gone means gone: nobody they were bracing for or warding keeps the
+      // promise of somebody who is no longer on the board.
+      combatants: working.combatants.map((c) => {
+        if (c.id === actorId) return { ...c, escaped: true as const, protectedBy: null };
+        let next = c;
+        if (next.protectedBy === actorId) next = { ...next, protectedBy: null };
+        if (next.ward && next.ward.byId === actorId) next = { ...next, ward: null };
+        return next;
+      }),
+    };
+  }
+  return working;
+}
+
+/** The environment's half of a round starting (#201). See `endTurnWithEvents`. */
+function roundStartInEnvironment(
+  state: EncounterState,
+  round: number,
+  events: EncounterEvent[],
+): EncounterState {
+  let env = state.environment;
+  if (!env) return state;
+  const { spec } = env;
+  let working = state;
+  const clock = spec.clock;
+
+  if (clock && !env.expired && round > clock.rounds) {
+    env = { ...env, expired: true };
+    working = { ...working, environment: env };
+    events.push({ type: "riftClock", onExpire: clock.onExpire });
+  }
+
+  const deadline = rescueDeadline(spec);
+  if (spec.rescue && env.rescue === "waiting" && deadline !== null && round > deadline) {
+    env = { ...env, rescue: "lost" };
+    working = { ...working, board: setTerrain(working.board, spec.rescue.at, "open"), environment: env };
+    events.push({ type: "captiveLost" });
+  }
+
+  if (clock?.onExpire === "surge" && round > clock.rounds) {
+    const amount = clock.surge ?? DEFAULT_SURGE;
+    events.push({ type: "surge", amount });
+    for (const hero of partyMembers(working)) {
+      if (hero.down || hero.escaped) continue;
+      working = loseHp(working, hero.id, amount, events);
+    }
+  }
+
+  for (const move of spec.relocate ?? []) {
+    if (move.round !== round) continue;
+    const enemy = combatantById(working, move.enemy);
+    if (!enemy || enemy.side !== "enemy" || enemy.down || !positionOf(working, enemy.id)) continue;
+    if (!isOpen(working.board, move.to)) continue;
+    working = { ...working, board: moveActor(working.board, enemy.id, move.to) };
+    events.push({ type: "relocated", actorId: enemy.id, to: { x: move.to.x, y: move.to.y } });
+  }
+  return working;
+}
+
+/** The base hand-over every fight shares, with or without an environment. */
+function passTurn(state: EncounterState): EncounterState {
   // With nobody standing on either side there is no next turn, and advancing
   // would tick the round counter forever behind a client that keeps asking.
   if (!state.combatants.some((c) => !c.down)) return state;
@@ -1861,7 +2102,7 @@ export function endTurn(state: EncounterState): EncounterState {
     queue = queue.slice(1);
     working = { ...working, encores: queue };
     const owed = combatantById(working, owedId);
-    if (owed && !owed.down) {
+    if (owed && !owed.down && !owed.escaped) {
       // An action, no steps — the card says "takes another action", and steps
       // it does not say would be a stronger card than the one she read.
       return {
@@ -1901,7 +2142,7 @@ function settleCursor(state: EncounterState): EncounterState {
   for (let step = 0; step <= laps; step++) {
     const id = currentActorId(working);
     const combatant = id === null ? null : combatantById(working, id);
-    if (!combatant || combatant.down) {
+    if (!combatant || combatant.down || combatant.escaped) {
       working = advanceCursor(working);
       continue;
     }

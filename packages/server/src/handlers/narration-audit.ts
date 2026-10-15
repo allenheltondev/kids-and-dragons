@@ -224,7 +224,7 @@ export function variantsReaching(chapter: Chapter): Map<string, NarrationVariant
       scene.type === "check"
         ? [scene.onSuccess, scene.onFailure]
         : scene.type === "encounter"
-          ? [scene.onVictory, scene.onDefeat]
+          ? [scene.onVictory, scene.onDefeat, scene.onEscape, scene.onTimeout]
           : [];
     for (const branch of branches) if (branch) push(branch.goto, branch.variants);
   }

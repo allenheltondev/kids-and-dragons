@@ -40,7 +40,7 @@ type Bounds = { min?: number; max?: number };
 function branchesOf(scene: Scene): [string, Branch][] {
   const out: [string, Branch][] = [];
   const s = scene as unknown as Record<string, Branch | undefined>;
-  for (const key of ["onSuccess", "onFailure", "onVictory", "onDefeat"]) {
+  for (const key of ["onSuccess", "onFailure", "onVictory", "onDefeat", "onEscape", "onTimeout"]) {
     const branch = s[key];
     if (branch && typeof branch === "object") out.push([key, branch]);
   }
@@ -288,7 +288,7 @@ export function sceneCharge(scene: Scene): number {
     scene.type === "check"
       ? [scene.onSuccess, scene.onFailure]
       : scene.type === "encounter"
-        ? [scene.onVictory, scene.onDefeat]
+        ? [scene.onVictory, scene.onDefeat, scene.onEscape, scene.onTimeout]
         : [];
   return coinsSpent(scene.onEnter) + Math.max(0, ...branches.map((b) => coinsSpent(b?.effects)));
 }
@@ -328,7 +328,12 @@ export function unbackedSceneCharges(chapter: Chapter): { path: string; problem:
       const branches: [string, Branch | undefined][] =
         scene.type === "check"
           ? [["onSuccess", scene.onSuccess], ["onFailure", scene.onFailure]]
-          : [["onVictory", scene.onVictory], ["onDefeat", scene.onDefeat]];
+          : [
+              ["onVictory", scene.onVictory],
+              ["onDefeat", scene.onDefeat],
+              ["onEscape", scene.onEscape],
+              ["onTimeout", scene.onTimeout],
+            ];
       for (const [key, b] of branches) {
         if (b && charge.has(b.goto)) {
           problems.push({

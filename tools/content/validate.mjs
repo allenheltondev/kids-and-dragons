@@ -28,6 +28,7 @@ import addFormats from "ajv-formats";
 
 import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "../../packages/shared/src/condition-lint.ts";
 import { chapterStartDiscoveries, sceneDiscoveries } from "../../packages/shared/src/discoveries.ts";
+import { checkEncounterEnvironment } from "../../packages/shared/src/environment.ts";
 import { RIFT_ACTION_KINDS, campaignMode, journeyFlags, parseCampaignGraph, riftActionWays } from "../../packages/shared/src/campaign-graph.ts";
 import { chapterFlagWrites, duplicateJsonKeys, lintCampaignGraph } from "../../packages/shared/src/campaign-graph-lint.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
@@ -465,6 +466,9 @@ function checkItems(rep, file, items) {
   return ok;
 }
 
+/** Every branch key a scene may carry — an environmental fight's two extra endings (#201) included. */
+const BRANCH_KEYS = ["onSuccess", "onFailure", "onVictory", "onDefeat", "onEscape", "onTimeout"];
+
 /** Every scene id this scene can transition to, with the JSON pointer that named it. */
 function outgoing(scene, sceneId) {
   const edges = [];
@@ -472,7 +476,7 @@ function outgoing(scene, sceneId) {
   if (Array.isArray(scene.choices)) {
     scene.choices.forEach((c, i) => edges.push([c.goto, `${base}/choices/${i}/goto`]));
   }
-  for (const key of ["onSuccess", "onFailure", "onVictory", "onDefeat"]) {
+  for (const key of BRANCH_KEYS) {
     if (scene[key]?.goto) edges.push([scene[key].goto, `${base}/${key}/goto`]);
   }
   return edges;
@@ -485,9 +489,11 @@ function effectsOf(scene, sceneId) {
   const push = (list, at) => (list ?? []).forEach((e, i) => out.push([e, `${at}/${i}`]));
   push(scene.onEnter, `${base}/onEnter`);
   (scene.choices ?? []).forEach((c, i) => push(c.effects, `${base}/choices/${i}/effects`));
-  for (const key of ["onSuccess", "onFailure", "onVictory", "onDefeat"]) {
+  for (const key of BRANCH_KEYS) {
     if (scene[key]) push(scene[key].effects, `${base}/${key}/effects`);
   }
+  // A freed captive's effects (#201) land when the fight ends.
+  push(scene.environment?.rescue?.effects, `${base}/environment/rescue/effects`);
   return out;
 }
 
@@ -548,7 +554,7 @@ function checkMap(rep, file, map) {
   }
 }
 
-function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary, carried = new Set(), fieldGuide = null, world = null) {
+function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary, carried = new Set(), fieldGuide = null, world = null, mapsById = null) {
   const f = rel(file);
   let ok = true;
   const fail = (path, problem, hint) => {
@@ -824,6 +830,18 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
           `/scenes/${id}/map`,
           `map "${scene.map}" is not in content/maps/`,
           mapIds.size ? `maps available: ${[...mapIds].sort().join(", ")}` : "content/maps/ is empty",
+        );
+      }
+
+      // The place fighting back (#201): what the schema cannot say about an
+      // `environment` — tiles on open ground of *this* map, off the spawns,
+      // reachable; windows that can happen before the clock ends the fight;
+      // exactly the extra branches it can end in (onEscape, onTimeout).
+      for (const problem of checkEncounterEnvironment(scene, mapsById?.get(scene.map) ?? null)) {
+        fail(
+          `/scenes/${id}${problem.path}`,
+          problem.problem,
+          "See docs/campaigns/graph-campaigns.md, \"Environmental combat (#201)\".",
         );
       }
     }
@@ -1365,6 +1383,7 @@ function main() {
   console.log(`\n${BOLD}maps${RESET}`);
   const mapFiles = listJson(join(CONTENT, "maps"));
   const mapIds = new Set();
+  const mapsById = new Map();
   for (const file of mapFiles) {
     const map = readJson(rep, file);
     if (!map) continue;
@@ -1372,6 +1391,7 @@ function main() {
     checkMap(rep, file, map);
     if (mapIds.has(map.id)) rep.fail(rel(file), "/id", `duplicate map id "${map.id}"`);
     mapIds.add(map.id);
+    mapsById.set(map.id, map);
   }
   if (mapFiles.length) rep.ok(`content/maps  ${mapFiles.length} map(s)  (10×8 board, spawns open and reachable)`);
 
@@ -1420,7 +1440,7 @@ function main() {
       brokenChapterIds.add(basename(file, ".json"));
       continue;
     }
-    checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary, carriedByCampaign.get(chapter.campaignId), fieldGuide, world);
+    checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary, carriedByCampaign.get(chapter.campaignId), fieldGuide, world, mapsById);
     chaptersById.set(chapter.id, chapter);
   }
 
