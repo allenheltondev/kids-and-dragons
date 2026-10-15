@@ -61,6 +61,7 @@ import {
   edgeDestinations,
   exitAvailability,
   exploreCampaignGraph,
+  partyMeets,
   readFact,
   readJourney,
   riftActionsFrom,
@@ -83,10 +84,11 @@ import type {
   ParsedCampaignGraph,
   RiftActionKind,
   RiftActionOffer,
+  RiftParty,
 } from "@kad/shared";
 
 /** A rift action a walk takes (#197): what `takeRiftAction` is asked. */
-type ActionChoice = { action: RiftActionKind; edge: EdgeId; to?: NodeId };
+type ActionChoice = { action: RiftActionKind; edge: EdgeId; to?: NodeId; way?: string };
 import { checkJourneySave } from "./journey-save.ts";
 
 /** What a walk needs of the campaign beyond the graph: fork sets. */
@@ -390,6 +392,13 @@ interface Driver {
 
 interface WalkOptions {
   maxSteps?: number;
+  /**
+   * The table the walk is played by (#199): rift action ways it cannot take
+   * are not offered to the driver, and `takeRiftAction` judges each one it
+   * takes against it, as the server does. Absent: every way, as the explorer
+   * takes them by default.
+   */
+  party?: RiftParty;
 }
 
 const DEFAULT_MAX_STEPS = 200;
@@ -494,7 +503,9 @@ export function playthrough(
       trail.push(`complete "${prev.node}" (${result.outcome})`);
     } else {
       const open = playable.exits.filter((exit) => exit.availability.available);
-      const offers = riftActionsFrom(graph, j.node, j);
+      const offers = riftActionsFrom(graph, j.node, j).filter(
+        (offer) => options.party === undefined || partyMeets(offer.rule.requires, options.party),
+      );
       if (open.length === 0 && offers.length === 0) {
         flag("NO_OPEN_EXIT", `"${j.node}" is not an ending and none of its exits is open, and no rift action is offered`);
         break;
@@ -502,7 +513,8 @@ export function playthrough(
       const acting = driver.act?.(j, offers, open) ?? null;
       if (acting !== null) {
         const report = { ...acting, visit: j.visit };
-        const done = takeRiftAction(graph, j, report, campaign);
+        const judged = options.party !== undefined ? { party: options.party } : {};
+        const done = takeRiftAction(graph, j, report, campaign, judged);
         if (!done.ok) {
           flag("TRANSITION_REFUSED", `takeRiftAction refused ${describeRiftAction(acting)}: ${done.message}`);
           break;
@@ -511,7 +523,7 @@ export function playthrough(
           flag("FRESH_REPORTED_DUPLICATE", `the first ${describeRiftAction(acting)} was reported as a duplicate`);
           break;
         }
-        const again = takeRiftAction(graph, done.journey, report, campaign);
+        const again = takeRiftAction(graph, done.journey, report, campaign, judged);
         if (!again.ok || !again.duplicate || !isDeepStrictEqual(again.journey, done.journey)) {
           flag("DUPLICATE_NOT_NOOP", `asking for ${describeRiftAction(acting)} twice changed the journey twice`);
         }
@@ -640,7 +652,12 @@ export function randomWalk(
       if (fresh.length === 0 || (open.length > 0 && next() >= 0.3)) return null;
       const pick = fresh[Math.floor(next() * fresh.length)]!;
       acted.set(describeRiftAction(pick), (acted.get(describeRiftAction(pick)) ?? 0) + 1);
-      return { action: pick.action, edge: pick.edge, ...(pick.to !== undefined ? { to: pick.to } : {}) };
+      return {
+        action: pick.action,
+        edge: pick.edge,
+        ...(pick.to !== undefined ? { to: pick.to } : {}),
+        ...(pick.way !== undefined ? { way: pick.way } : {}),
+      };
     },
     chapter: (j) => ({
       outcome: next() < 0.5 ? "success" : "setback",
