@@ -342,6 +342,12 @@
           "icon": "eye",
           "goto": "check_search"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ma_ruddle",
+          "name": "Ma Ruddle"
+        }
       ]
     },
     "scene_downbound_fly_look": {
@@ -433,6 +439,16 @@
           "label": "Thank her and walk on down the lane",
           "icon": "scroll",
           "goto": "scene_stubborn_mule"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ma_ruddle",
+          "name": "Ma Ruddle"
+        },
+        {
+          "figure": "cast/tib",
+          "name": "Tib"
         }
       ]
     },

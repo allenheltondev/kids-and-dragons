@@ -328,6 +328,18 @@
       "scale": "medium"
     },
     {
+      "id": "burrowfolk",
+      "classification": "supporting_people",
+      "primaryBiome": "sunward_fields",
+      "canonicalLocations": [
+        "sunward_fields",
+        "plains",
+        "red_sky_foothills",
+        "exchange"
+      ],
+      "scale": "small_to_medium"
+    },
+    {
       "id": "harvest_sprite",
       "classification": "supporting_people",
       "primaryBiome": "sunward_fields",
@@ -583,6 +595,16 @@
         "bone_yard"
       ],
       "scale": "variable"
+    },
+    {
+      "id": "boughkin",
+      "classification": "supporting_people",
+      "primaryBiome": "enchanted_woods",
+      "canonicalLocations": [
+        "enchanted_woods",
+        "mosshome"
+      ],
+      "scale": "very_large"
     }
   ],
   "gear": [
@@ -1835,6 +1857,16 @@
     "scenes/gemfall/gem-gallery",
     "scenes/gemfall/seal-chamber",
     "scenes/gemfall/sheeple-ridge",
+    "scenes/gemfall/exchange-lighthouse",
+    "scenes/gemfall/exchange-docks",
+    "scenes/gemfall/exchange-noodle-stall",
+    "scenes/gemfall/empty-chair-tavern",
+    "scenes/gemfall/exchange-quay",
+    "scenes/gemfall/outfitters-steps",
+    "scenes/gemfall/caravan-yard",
+    "scenes/gemfall/exchange-long-bridge",
+    "scenes/gemfall/exchange-griffin-post",
+    "scenes/gemfall/exchange-north-gate",
     "scenes/gemfall/east-road-markers",
     "scenes/gemfall/stone-crossing-queue",
     "scenes/gemfall/lintel-toll-stone",
@@ -2007,6 +2039,24 @@
       "name": "Mother Thrum",
       "basis": "witch_order",
       "scale": "medium"
+    },
+    {
+      "id": "ma_ruddle",
+      "name": "Ma Ruddle",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "tib",
+      "name": "Tib",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium"
+    },
+    {
+      "id": "dunmore",
+      "name": "Dunmore",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium"
     }
   ],
   "globalPalette": {
