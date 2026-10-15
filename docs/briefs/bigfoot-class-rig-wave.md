@@ -42,3 +42,13 @@ The corrected files were rebuilt and checked locally:
 - Motion sweep: 208 clips measured, no hard failures. The 117 baseline-change notices concern existing rigs; the golden baseline is unchanged. The new variants' 65 clip hashes are not blessed into the baseline.
 - Art check: 837 passed, three existing Bigfoot palette warnings.
 - Runtime, config, unchanged-anatomy and manifest/config draw-order checks: 34 tests passed.
+
+## Songkeeper Sworn shawl follow-up
+
+The broad mask below Sworn's fringe retained a strip of the portrait's differently posed chest fur and several dark shadow flecks. That strip produced a stiff lower edge across the canonical torso. The Sworn-only mask now follows the gold tassels, excludes the arm/torso crease beside the pendant, and retains the one connected shawl-and-pendant component. No scale, placement, ear ornament, anatomy, or other variant changed.
+
+[Before and after the boundary correction](../reviews/songkeeper-sworn-shawl-fit.webp) and the refreshed Sworn motion sheet show the resulting fit.
+
+Removing the false fur strip exposes the original lower armpit silhouette. The Sworn `body/arm_r` band measures 85.2%; a class-specific 85% contour floor is proposed with the art, replacing the base's 93% floor for the longer visible seam. [The highlighted contour](../reviews/songkeeper-sworn-seam-contour.webp) shows the missing band outside the unchanged torso, not at the shoulder pivot. This is a third class-specific contour exception in this wave; global thresholds and base art remain unchanged.
+
+Sworn follow-up validation: all 65 clips across the five Bigfoot Sworn rigs pass (39 existing baseline notices; baseline unchanged); five rest checks pass at 100%; the changed rig rebuilds byte-identically. The 34 regression tests, 71-rig contract check, direct recomposition, and duplicate-fragment checks pass. The 85% Sworn contour floor remains proposed for visual acceptance with the art.
