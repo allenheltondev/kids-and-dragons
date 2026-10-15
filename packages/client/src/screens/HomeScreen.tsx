@@ -136,7 +136,10 @@ export function HomeScreen(): ReactElement {
           </h1>
         </header>
 
-        <div className="home__body">
+        {/* Hosting anchors the cards to the top: picking Phone Mode adds a
+            name field, and in a centred column that lifted the very tile
+            just tapped. Joining, where nothing grows, stays centred. */}
+        <div className={`home__body${hosting ? " home__body--top" : ""}`}>
           <section className="home__card home__card--join" aria-labelledby="home-join" hidden={hosting}>
             <h2 className="home__card-title" id="home-join">
               <Icon name="qr" />
@@ -229,8 +232,12 @@ export function HomeScreen(): ReactElement {
                   <span className="home__mode-text">
                     <span className="home__mode-name">
                       {m === "party" ? "Party Mode" : "Phone Mode"}
-                      {/* spec §11 — selection is shown by a check glyph, not colour. */}
-                      {mode === m ? <Icon name="check" label="Selected" /> : null}
+                      {/* spec §11 — selection is shown by a check glyph, not
+                          colour. Its seat is always there; only the glyph
+                          comes and goes. */}
+                      <span className="home__mode-mark">
+                        {mode === m ? <Icon name="check" label="Selected" /> : null}
+                      </span>
                     </span>
                     <span className="home__mode-blurb kad-muted">{MODE_BLURB[m]}</span>
                   </span>
@@ -283,21 +290,29 @@ export function HomeScreen(): ReactElement {
             </div>
           </section>
 
-          {busy !== null ? (
-            /* A div, not a p: Spinner renders a div, and a block element inside
-               a <p> is invalid HTML that React warns about at runtime. */
-            <div className="home__busy kad-row" role="status">
-              <Spinner />
-              <span>{busy === "create" ? "Making a room…" : "Looking for that room…"}</span>
-            </div>
-          ) : null}
+          {/*
+           * One seat for "working on it" and "that didn't work", there whether
+           * or not either is. The body is centred, so a line that mounted here
+           * nudged every card above it up by half its height, right under the
+           * button that had just been tapped.
+           */}
+          <div className="home__status">
+            {busy !== null ? (
+              /* A div, not a p: Spinner renders a div, and a block element
+                 inside a <p> is invalid HTML that React warns about at runtime. */
+              <div className="home__busy kad-row" role="status">
+                <Spinner size="sm" />
+                <span>{busy === "create" ? "Making a room…" : "Looking for that room…"}</span>
+              </div>
+            ) : null}
 
-          {error !== null ? (
-            <p className="home__error kad-chip kad-chip--bad" role="alert">
-              <Icon name="close" />
-              <span>{error}</span>
-            </p>
-          ) : null}
+            {error !== null ? (
+              <p className="home__error kad-chip kad-chip--bad kad-chip--wrap" role="alert">
+                <Icon name="close" />
+                <span>{error}</span>
+              </p>
+            ) : null}
+          </div>
 
           {/*
            * Sign in or create an account (§4.5). Always reachable where sign-in

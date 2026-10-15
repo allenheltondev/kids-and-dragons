@@ -10,15 +10,30 @@
 /* PlayerView keeps the creation flow mounted (not unmounted) under the guide. */
 .player-view__creation:not([hidden]) { display: contents; }
 
-/* Every section in view on a phone, never a sideways scroll: the pills are
-   compact enough to share one row and stretch to fill it, and wrap on a
-   screen too narrow even for that. */
-.field-guide__tabs { display: flex; flex-wrap: wrap; gap: 0.3em; padding: 0.5em 0.75em 0; flex: 0 0 auto; }
+/* Every section in view on a phone, never a sideways scroll: equal columns,
+   five abreast where a 5.4em pill fits five times (28.2em with the gaps) and
+   three abreast below that, so a phone gets an even 3 + 2 rather than 4 + 1.
+   The clamp is the switch — its middle term is huge under the threshold and
+   negative over it. The columns come from the pane's width alone, and every
+   tab is the same weight, so picking one never resizes the pills or moves a
+   tab to the next row. (Sized to the content, the bolder chosen tab grew and
+   could wrap.) */
+.field-guide__tabs {
+  --fg-tab-gap: 0.3em;
+  display: grid; gap: var(--fg-tab-gap); padding: 0.5em 0.75em 0; flex: 0 0 auto;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(
+    (100% - 4 * var(--fg-tab-gap)) / 5 - 0.1px,
+    (28.2em - 100%) * 999,
+    (100% - 2 * var(--fg-tab-gap)) / 3 - 0.1px
+  ), 1fr));
+}
 .field-guide__tab {
-  flex: 1 1 auto; min-block-size: 2.75em; padding: 0 0.45em; font-size: 0.85em; border-radius: 999px; font-family: inherit;
+  min-inline-size: 0; min-block-size: 2.75em; padding: 0 0.45em; font-size: 0.85em; font-weight: 700;
+  border-radius: 999px; font-family: inherit;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   color: var(--kad-ink-dim); background: var(--kad-bg-raised); border: 0.08em solid var(--kad-border);
 }
-.field-guide__tab[aria-selected="true"] { color: var(--kad-accent-ink); background: var(--kad-gold); border-color: var(--kad-gold); font-weight: 700; }
+.field-guide__tab[aria-selected="true"] { color: var(--kad-accent-ink); background: var(--kad-gold); border-color: var(--kad-gold); }
 .field-guide__progress { margin: 0 0 0.6em; color: var(--kad-ink-dim); }
 .field-guide__grid {
   list-style: none; margin: 0; padding: 0;
