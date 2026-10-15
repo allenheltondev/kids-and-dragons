@@ -365,9 +365,18 @@ describe("graph campaigns (#192)", () => {
     const content = await loadContent(await withCampaign({ graph }));
     expect(content.campaign("the-hollow-crown")?.graph?.entry).toBe("clearing");
     // Both chapters are index 1. Answering by index would start whichever
-    // sorted first; a graph campaign has no beats until the journey runtime
-    // (#194) asks by node, so the answer is the refusal.
+    // sorted first; a graph campaign has no beats — the journey runtime
+    // (#194) asks by node — so the answer is the refusal.
     expect(content.chapterAt("the-hollow-crown", 1, {})).toBeNull();
+  });
+
+  it("answers the parsed graph by campaign — chapterAt's by-node sibling (#194)", async () => {
+    const content = await loadContent(await withCampaign({ graph }));
+    const parsed = content.graph("the-hollow-crown");
+    expect(parsed).toMatchObject({ entry: "clearing", endings: ["glade"], exits: { clearing: ["onward"], glade: [] } });
+    // Parsed once: the same object every time.
+    expect(content.graph("the-hollow-crown")).toBe(parsed);
+    expect(content.graph("no-such-campaign")).toBeNull();
   });
 
   it("refuses at startup a graph whose names do not resolve", async () => {
@@ -413,6 +422,8 @@ describe("the shipped campaigns are ordered and play as before (legacy regressio
       const campaign = content.campaign(id);
       expect(campaign, id).not.toBeNull();
       expect(campaign && campaignMode(campaign), id).toBe("ordered");
+      // And so no journey runtime: the by-node lookup has nothing to answer.
+      expect(content.graph(id), id).toBeNull();
     }
   });
 

@@ -19,7 +19,7 @@
 import { CreateTableCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import { FIELD_GUIDE_VERSION } from "@kad/shared";
-import type { Character, Household, PlayerProfile, RunState } from "@kad/shared";
+import type { Character, Household, JourneyState, PlayerProfile, RunState } from "@kad/shared";
 import { DynamoRepository, GSI1_NAME } from "./dynamo-repository.ts";
 import { MemoryRepository } from "./memory-repository.ts";
 import type { EventRecord, GameRepository, RoomRecord } from "./repository.ts";
@@ -528,6 +528,75 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect(await repo.getCampaignProgress("h_1", "hollow-crown")).toMatchObject({
           setbacks: 1,
         });
+      });
+
+      it("round-trips a graph campaign's journey on the attempt, put or committed (#194)", async () => {
+        // The journey is the whole of where a graph party got to, so a store
+        // that dropped a key — an empty map, a nested counter, the last exit —
+        // would strand the party somewhere it never was.
+        const journey: JourneyState = {
+          version: 1,
+          node: "orchard",
+          visit: 2,
+          status: "choosing",
+          chapter: "sampler-orchard-flooded",
+          visits: { waystone: 1, orchard: 2, mill: 1 },
+          completions: { waystone: 1, orchard: 2, mill: 1 },
+          outcomes: { waystone: "success", orchard: "success", mill: "setback" },
+          traversed: { "to-orchard": 1, "orchard-to-mill": 1, "mill-to-orchard": 1 },
+          edges: { "orchard-to-tower": "open" },
+          flags: { mill_wheel_turning: true },
+          chaptersCompleted: ["sampler-waystone", "sampler-orchard", "sampler-mill", "sampler-orchard-flooded"],
+          lastExit: { node: "mill", visit: 1, edge: "mill-to-orchard" },
+        };
+        const attempt = {
+          householdId: "h_1",
+          campaignId: "rift-sampler",
+          status: "active" as const,
+          setbacks: 1,
+          attemptId: "rift-sampler:1:r_1:2026-07-04T18:00:00.000Z",
+          journey,
+          version: 1,
+          updatedAt: "2026-07-04T18:00:00.000Z",
+        };
+        await repo.putCampaignProgress(attempt);
+        expect(await repo.getCampaignProgress("h_1", "rift-sampler")).toEqual(attempt);
+
+        // And through the conditional commit, under the version it was read at.
+        await repo.putState(state("r_1", 0));
+        const moved = {
+          ...attempt,
+          journey: { ...journey, node: "tower", visit: 1, status: "playing" as const, chapter: "sampler-tower" },
+          version: 2,
+        };
+        expect(
+          await repo.commit({
+            runId: "r_1",
+            expectedSeq: 0,
+            state: state("r_1", 1),
+            event: event("r_1", 1),
+            campaignProgress: moved,
+            campaignProgressExpectedVersion: 1,
+          }),
+        ).toBe(true);
+        expect(await repo.getCampaignProgress("h_1", "rift-sampler")).toEqual(moved);
+        expect((await repo.listCampaignProgress("h_1"))[0]?.journey).toEqual(moved.journey);
+      });
+
+      it("an attempt without a journey reads back without one — the ordered reading", async () => {
+        await repo.putCampaignProgress({
+          householdId: "h_1",
+          campaignId: "gemfall",
+          status: "active",
+          setbacks: 0,
+          lastIndex: 3,
+          routeFlags: { road_rush: true },
+          version: 4,
+          updatedAt: "2026-07-04T18:00:00.000Z",
+        });
+        const read = await repo.getCampaignProgress("h_1", "gemfall");
+        expect(read).not.toHaveProperty("journey");
+        expect(read).toMatchObject({ lastIndex: 3, routeFlags: { road_rush: true } });
       });
 
       it("serializes one campaign attempt across different runs", async () => {
