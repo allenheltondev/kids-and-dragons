@@ -10,9 +10,9 @@
  * Definitions, all on a path from `entry` to a success ending:
  *  - **Edges** are visible choices, a check's two branches, and an
  *    encounter's *victory* branch. Defeat is a setback route, so it is never
- *    on a success path. Choices gated by `requiresSpecies` / `requiresFlag` /
- *    `requiresItem` are skipped: a path that needs a particular species is not
- *    the path every table has.
+ *    on a success path. Choices gated by `requiresSpecies` / `requiresClass` /
+ *    `requiresFlag` / `requiresItem` are skipped: a path that needs a
+ *    particular species is not the path every table has.
  *  - **Success ending** is a scene with no edges whose `outcome` is not
  *    `"setback"`.
  *  - **Decision** (= vote) is a story/choice_point/rest scene with two or
@@ -171,6 +171,7 @@ export function composedWordRange(
 export function isGatedFor(choice: Choice, scenario: PacingScenario): boolean {
   if (
     choice.requiresSpecies !== undefined ||
+    choice.requiresClass !== undefined ||
     choice.requiresFlag !== undefined ||
     choice.requiresItem !== undefined
   ) {

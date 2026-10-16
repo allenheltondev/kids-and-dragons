@@ -104,6 +104,18 @@ describe("gates", () => {
     );
   });
 
+  it("names a class gate the way the file does", () => {
+    const gateOf = (requiresClass: string | string[]) =>
+      edgesOf("a", {
+        type: "story",
+        narration: "…",
+        choices: [{ id: "c", label: "Go", icon: "arrow", goto: "a", requiresClass }],
+      } as never)[0]?.gate;
+    expect(gateOf("starweaver")).toBe("starweaver");
+    expect(gateOf(["thornguard", "songkeeper"])).toBe("thornguard or songkeeper");
+    expect(gateOf([])).toBeNull();
+  });
+
   it("treats an empty species list as no gate rather than as an impossible one", () => {
     const empty = withScenes({
       a: {
