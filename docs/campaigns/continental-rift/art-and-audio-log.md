@@ -253,3 +253,9 @@ Addressed #242's phone clipping finding: when two or three guests share the stag
 The regular browser suite now includes a 390×844 phone regression with three actual Riftseeker figures and three heroes. It checks six rendered figure bounds inside the viewport and all six nameplates for collisions, then saves a screenshot. This runs in CI rather than only in the optional art capture helper. The targeted browser run passed (42.6 seconds). Cast/scene unit tests passed 42/42; repository and strict review-test typechecks passed. A pure regression also checks full canvas boundaries and separation with mixed species sizes at two stage widths. No tests or timeouts were weakened.
 
 Review follow-up for #246: audio/paths.ts is restored to UTF-8 with LF line endings. The Part E incremental diff is one added MUSIC_SPECS declaration; the 165 pre-existing lines are unchanged. The phone composition fix from #242 is included through the stacked branches.
+
+## CI follow-up — prefetch browser race (2026-10-16)
+
+#246's run 38956779688 passed the build/test/content/art/audio job but failed the production upcoming-art browser test twice. Its trace ends on the You pane, not World; no exchange-docks request was made. The helper reads server state ahead of the client's arriving prompt, and that prompt can switch back to You after the test's one successful World selection. Hidden worlds correctly stop idle prefetching.
+
+The cache assertion now keeps World selected throughout its polling interval. It still requires each expected asset to be saved before advancing the scene, uses the existing 20-second timeout, and exercises the actual production service worker. The corrected production test passed three consecutive runs (1.5 minutes). No product code, timeout or cache expectation changed. An extra standalone strict TypeScript invocation reports the pre-existing assertion in e2e/counting-proxy.ts:44; the new test code produced no diagnostics.
