@@ -11,7 +11,7 @@ This folder is the source of truth for Continental Rift **design** decisions. It
 - [graph.md](graph.md) — planned nodes, directional edges, outcomes, revisits and open topology decisions.
 - [mechanics.md](mechanics.md) — rift magic, Riftlight, failure-forward and player progression.
 - [characters.md](characters.md) — recurring campaign-only Riftseekers, the hidden antagonist, and relationships.
-- [nodes/](nodes/) — implementation-oriented playable node designs, starting with the [headwaters washout](nodes/headwaters-washout.md).
+- [nodes/](nodes/) — implementation-oriented playable node designs, the [headwaters washout](nodes/headwaters-washout.md) and the [Exchange rift](nodes/exchange-rift.md) (draft).
 
 ## Authoring workflow
 1. Discuss a scene or mechanic; distinguish **agreed** facts from **proposals** and **TBD**.
