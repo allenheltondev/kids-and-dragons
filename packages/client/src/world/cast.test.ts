@@ -184,6 +184,15 @@ describe("castFor", () => {
 describe("stageSlots", () => {
   const WIDTH = 1600;
 
+  it("leaves room for full hero rig canvases beside a paged guest on a narrow stage", () => {
+    const slots = stageSlots(3, [1], WIDTH, [], true);
+    for (const x of slots.party) {
+      expect(x - 345).toBeGreaterThanOrEqual(0);
+      expect(x + 345).toBeLessThanOrEqual(WIDTH);
+    }
+    expect(slots.cast[0]).toBe(WIDTH * 0.8);
+  });
+
   it("fits three heroes and three guests' entire canvases inside their slots", () => {
     for (const width of [1600, 2560]) for (const scales of [[1, 1, 1], [0.4, 1.25, 1.45]]) {
       const slots = stageSlots(3, scales, width);
