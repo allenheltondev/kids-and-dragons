@@ -33,6 +33,7 @@ import {
   TurnBanner,
 } from "../screens";
 import { FieldGuideBanner } from "../screens/FieldGuideNews";
+import { RiftStatus } from "../screens/RiftStatus";
 import { useChapter, useGameStore, useMe, useRunState, useSession } from "../store";
 import type { PresentationEvent } from "../store/contract";
 // The hold table lives in world/presentation.ts because the board renderer
@@ -42,7 +43,9 @@ import { presentationDuration } from "../world/presentation";
 // (a cue per beat) and the chapter's biome (the music bed). Roadmap chapter 8.
 import { ambience, cue, cueForPresentation, stopSceneCues } from "../audio";
 import { ambienceForScene, sceneCuesFor } from "../audio/scene-audio";
-import { perfRequested } from "../world/FrameMeter";
+// From the import-free stats module, never from FrameMeter: a static import of
+// the meter is a static import of the scene, Pixi and the rigs (frame-stats.ts).
+import { perfRequested } from "../world/frame-stats";
 import { RendererBoundary } from "../world/RendererFallback";
 
 // Loaded on demand: PixiStage pulls in all of pixi.js, which is most of the
@@ -128,6 +131,9 @@ export function WorldView({ gatesPresentations = true }: { gatesPresentations?: 
       {!creating && (phase === "lobby" || phase === "creation") && <LobbyContent />}
       {isSceneLike(phase) && <NarrationPanel />}
       {isSceneLike(phase) && <TurnBanner />}
+      {/* The rift clock and what the place just did (#201) — only in a fight
+          that has an environment, so an ordinary fight's screen is untouched. */}
+      {isSceneLike(phase) && state?.encounter?.environment ? <RiftStatus /> : null}
       {phase === "chapter_complete" && <ChapterCompletePanel />}
 
       {/* The roll is the centrepiece of whatever pane it lands in. On a TV that

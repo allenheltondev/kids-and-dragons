@@ -72,7 +72,15 @@ export function beatSubjects(event: EncounterEvent): string[] {
     case "warded":
     case "rooted":
     case "encore":
+    // The place fighting back (#201): who stopped on the fire, who stepped
+    // through, which monster the rift threw.
+    case "hazard":
+    case "escaped":
+    case "relocated":
       return [event.actorId];
+    // The hero who freed the captive. The captive is a square, not a figure.
+    case "freed":
+      return [event.byId];
     /*
      * A roll names its roller through the die rather than an `actorId`, and
      * the *swing* is already framed by the damage or evade beat beside it —
