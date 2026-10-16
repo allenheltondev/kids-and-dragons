@@ -36,7 +36,7 @@ import { Icon } from "./icons";
 import { TrayObject } from "./TrayObjects";
 import { Atlas, AtlasUnrolling, placeOf } from "./WorldMapPanel";
 import { loadFieldGuide, useEnsureContent, useEnsureWorld } from "./content";
-import { offlineArtFor, warmOfflineArt } from "../sw/warm";
+import { offlineArtFor, warm } from "../sw/warm";
 import "./shared.css";
 import "./JournalScreen.css";
 
@@ -117,7 +117,7 @@ export function JournalScreen(): ReactElement {
     const loadWorld = useGameStore.getState().loadWorld;
     void Promise.all([loadWorld(), loadFieldGuide().catch(() => null)]).then(([, guide]) => {
       if (!live) return;
-      void warmOfflineArt(offlineArtFor(useGameStore.getState().world, guide, Object.keys(journal.fieldGuide)));
+      void warm(offlineArtFor(useGameStore.getState().world, guide, Object.keys(journal.fieldGuide)), { essential: true });
     });
     return () => {
       live = false;

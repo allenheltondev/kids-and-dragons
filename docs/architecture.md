@@ -602,46 +602,85 @@ last time's) when the request fails for want of a network; a 4xx means the bindi
 discards it. A browser whose binding came from opening a Party Mode room on itself is marked
 `screenOnly` and is never offered the book, until it is seated or adopted as a player.
 
-#### Offline: the service worker
+#### The service worker: offline, and never twice
 
-That saved copy is only half of "opens in the car": the page, its code, the content and the map
-painting have to be on the phone too, or a reload with no signal never gets as far as reading it.
-A service worker (`packages/client/src/sw/`, served as `/sw.js`) holds them. It is registered only
-by a production build, after `load`, and touches nothing the game needs live:
+A service worker (`packages/client/src/sw/`, served as `/sw.js`) does two jobs. It makes the
+adventure book open with no signal, on a reload too: the saved journal is only half of that, since
+the page, its code, the content and the map painting also have to be on the phone. And it makes
+sure nothing a phone already has is downloaded twice. It is registered only by a production build,
+after `load`, and touches nothing the game needs live:
 
 | Request | Answered by |
 |---|---|
 | `/api/*`, `/events/*`, anything cross-origin, non-GET or ranged | the browser, as if there were no worker |
-| a page load (any route) | the network; the saved app when there is none |
+| a page load (any route) | the network (started by navigation preload); the saved app when there is none |
 | `/bundle/*` (hashed) | the saved copy; the network the first time |
-| `/content/*.json` | the network; the saved copy when there is none |
-| art (`.webp`, `.png`, …) | the saved copy at once, refreshed behind it; the network the first time |
+| `/assets/*`, `/content/*.json`, `public/` files | the saved copy **if its fingerprint matches this build's**; else the network, kept if the bytes match |
+| anything else not fingerprinted | content: network first; pictures: saved copy, refreshed behind; otherwise untouched |
 
-Install saves the app, every hashed file but the Rive runtime (about 2 MB, which the book does not
-use; the game saves it the first time it loads it) and the content the book reads, including every
-campaign file: roughly 2.4 MB. Opening the book with a signal then saves the map painting, every
-atlas level and the art of everything found (`sw/warm.ts`). The close-zoom detail patches are left
-out: several megabytes the map works without. Art is capped at 400 pictures, oldest out first.
+**Fingerprints.** Art, rigs, audio and content keep the same URL across deploys, so a cache cannot
+tell from the URL whether a copy is current. Each build therefore fingerprints every file under
+`assets/`, `content/` and the client's `public/` (the first 16 hex digits of SHA-256) into a hashed
+`/bundle/files-*.json`, and writes its URL into `sw.js` (`sw-build.ts`). A saved copy whose
+fingerprint still matches is served without asking the network at all. A deploy that changes a
+file changes its fingerprint, so that file alone is fetched again, past the HTTP cache. The new
+worker drops replaced copies when it takes over. Every download is checked against its
+fingerprint before it is kept, so a CDN edge still serving the old bytes is served but never saved.
 
-Each build's `sw.js` names its own files (`sw-build.ts` writes them in), so every deploy is a new
-worker. It takes over at once, including pages that are already open. Those pages were built
-against the previous build and import its chunks the first time they open the book or a room,
-and the deploy has deleted those chunks from the bucket. So the worker keeps the previous build's
-code as well as its own (`/__kad/bundle-list` records which), and drops only what neither uses.
-A tab left open across two deploys gets the "Try again" a missing chunk always gets, which reloads
-it. Every lookup ignores `Vary`: servers send `Vary: Origin` and module imports send an `Origin`
-header, so a plain lookup would miss every saved script. **To turn it off**, ship a `sw.js` whose
-`activate` deletes every cache and calls `self.registration.unregister()`. Phones pick it up on
-their next page load.
+**Budget.** Fingerprinted art, rigs and audio are capped at 200 MB, least recently used first.
+Content is never evicted: it is small, and it is what the offline book reads. Lookups ignore
+`Vary`: servers send `Vary: Origin`, module scripts send an `Origin` header, and without
+`ignoreVary` every saved script quietly missed and went back to the network.
 
-`e2e/offline.spec.ts` proves it against a real production build (`npm run e2e:offline`, also run
-by CI):
-- **Offline:** play a little, open the book once, drop the network, then reload and open a fresh
-  tab. The hero, the map's painting and an opened Field Guide entry must all be there.
-- **First visit:** the book opens before any worker controls the page, and its art is still saved
-  once one does.
-- **Upgrade:** a tab left open across a staged deploy (a new `sw.js`, the old chunks gone from the
-  server) can still open the book.
+**What is saved when.**
+- **Install:** the app, every hashed file but the Rive runtime, and the content the book reads
+  (including every campaign file), about 2.4 MB. Install fails unless every one of those content
+  files is saved as this build's verified bytes, so a CDN edge still serving the previous deploy
+  cannot let a worker take over without them. The old worker stays in charge with its copies,
+  and the browser tries again later.
+- **When the page is idle:** it tells the worker (`kad:idle`, `sw/register.ts`), which then
+  fetches the Rive runtime (about 2 MB).
+- **When the book opens with a signal:** the map painting, every atlas level and the art of
+  everything found (`sw/warm.ts`).
+- **During play:** whatever the screen draws. The scenes two steps ahead (backdrops, enemies, the
+  biome's tiles, the party's rigs) are fetched at idle priority before the party reaches them
+  (`sw/prefetch.ts`, from `WorldView`) — only while the world is on screen: a phone keeps its world
+  pane mounted behind its controls and map, and the layout tells `WorldView` when it is hidden, so a
+  Party Mode phone (whose world is the TV's job) spends nothing on it. Prefetching is skipped when the phone asks to save data;
+  the book's offline art is not, since it is what makes the book open in the car at all.
+
+**Updates.** Each build's `sw.js` names its own files, so every deploy is a new worker. It takes
+over at once, including pages that are already open. Those pages were built against the previous
+build and import its chunks the first time they open the book or a room, and the deploy has deleted
+those chunks from the bucket. So the worker keeps the previous build's code as well as its own
+(`/__kad/bundle-list` records which), and drops only what neither uses. A tab left open across two
+deploys gets the "Try again" a missing chunk always gets, which reloads it. Pictures an earlier
+worker kept under an old cache name (#224's `kad-image-v1`) are moved into the fingerprinted cache,
+verified, before that cache is dropped. **To turn it off**, ship
+a `sw.js` whose `activate` deletes every cache and calls `self.registration.unregister()`. Phones
+pick it up on their next page load.
+
+**Proof.** Both specs below run against a real production build (`playwright.prod.config.ts`,
+`npm run e2e:prod`, also run by CI).
+- `e2e/offline.spec.ts`. "No signal" there means the page offline *and* the server unreachable:
+  Playwright's offline switch does not reliably cut a service worker's own fetches.
+  - **Offline:** play a little, open the book once, drop the network, then reload and open a fresh
+    tab. The hero, the map's painting and an opened Field Guide entry must all be there.
+  - **First visit:** the book opens before any worker controls the page, and its art is still
+    saved once one does.
+  - **Upgrade:** a tab left open across a staged deploy (a new `sw.js`, the old chunks gone from the
+    server) can still open the book.
+  - **Stale edge:** a deploy whose index gives the Field Guide a new fingerprint while the server
+    still sends the old bytes never takes over, and the book still opens offline with its guide.
+  - **From #224:** pictures in `kad-image-v1` survive the upgrade, and the offline map shows.
+  - **Data Saver:** the book still saves its painting.
+- `e2e/perf.spec.ts` counts every byte through a proxy, the worker's own fetches included. Before
+  the fingerprinted cache, the next evening re-downloaded about 3.8 MB in 41 round trips; now
+  13 KB in 10 (the page, live game traffic and the favicon, which browsers fetch outside any
+  worker). It also checks that:
+  - mismatched bytes are never saved;
+  - the Rive runtime arrives while idle;
+  - a scene's art is saved before the party reaches it.
 
 Three rules keep this from forking into two apps:
 

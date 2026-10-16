@@ -5,16 +5,23 @@
  * must be fixed (`/sw.js`, so its scope is the whole site) while Vite hashes
  * every chunk it emits. So it is not a Vite entry: this concatenates
  * `policy.ts` and `sw.ts`, drops their `import`/`export` lines, transpiles the
- * result to plain JavaScript, and prepends the two lists the worker is given:
+ * result to plain JavaScript, and prepends what the worker is given:
  *
  *   __KAD_BUNDLE__              every `/bundle/*` file this build emitted (no maps)
  *   __KAD_PRECACHE__            the ones saved at install (no wasm either)
  *   __KAD_PRECACHE_CAMPAIGNS__  every `/content/campaigns/*.json` in the repo
+ *   __KAD_FILE_INDEX__          the URL of this build's file index (below)
  *
- * Those lists are also what make each deploy's `sw.js` different bytes, which
- * is how a browser knows to install the new one.
+ * The file index is a fingerprint of every file the deploy uploads under
+ * `/assets/` and `/content/` (scripts/deploy.sh syncs both directories whole)
+ * and of the client's `public/` files (brand art, icons, at the site root),
+ * emitted as a hashed `/bundle/files-*.json`. Those URLs are not hashed, so
+ * this is how the worker knows a saved copy is still the right one without
+ * asking the network. Its URL changes whenever any fingerprint does, which
+ * changes `sw.js`, which is how a browser knows to install the new worker.
  */
 
+import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import ts from "typescript";
@@ -28,14 +35,47 @@ const EXPORT = /^export\s+/gm;
 
 /**
  * What install saves: everything but the Rive runtime (`.wasm`, ~2MB). The
- * book draws no rigs, and the game caches it on first use like any other
- * `/bundle/*` file.
+ * book draws no rigs; the page asks the worker for it once it is idle
+ * (`register.ts`), and the game caches it on first use regardless.
  */
 export function precacheOf(bundleFiles: readonly string[]): string[] {
   return bundleFiles.filter((path) => !path.endsWith(".wasm"));
 }
 
-export function buildServiceWorker(bundleFiles: readonly string[], campaignFiles: readonly string[]): string {
+/**
+ * The fingerprint the worker checks bytes against: the first 16 hex digits of
+ * SHA-256. `sw.ts` `fingerprintOf` must compute exactly this.
+ */
+export function fingerprint(bytes: Uint8Array): string {
+  return createHash("sha256").update(bytes).digest("hex").slice(0, 16);
+}
+
+/**
+ * `/<dir>/<path>` → fingerprint for every file under each of `dirs` (relative
+ * to `root`), skipping dotfiles. Sorted, so the same files give the same JSON.
+ */
+export function fileIndexOf(root: string, dirs: readonly string[]): Record<string, string> {
+  const index: Record<string, string> = {};
+  for (const dir of dirs) {
+    // `""` is the root itself: the client's `public/`, served at `/`.
+    for (const entry of readdirSync(`${root}${dir}`, { recursive: true, withFileTypes: true })) {
+      if (!entry.isFile() || entry.name.startsWith(".")) continue;
+      const full = `${entry.parentPath}/${entry.name}`;
+      const path = full.slice(root.length - 1).replaceAll("\\", "/");
+      if (path.split("/").some((part) => part.startsWith("."))) continue;
+      index[path] = fingerprint(readFileSync(full));
+    }
+  }
+  return Object.fromEntries(Object.entries(index).sort(([a], [b]) => a.localeCompare(b)));
+}
+
+export interface WorkerInputs {
+  bundleFiles: readonly string[];
+  campaignFiles: readonly string[];
+  fileIndexUrl: string;
+}
+
+export function buildServiceWorker({ bundleFiles, campaignFiles, fileIndexUrl }: WorkerInputs): string {
   const policy = readFileSync(`${here}src/sw/policy.ts`, "utf8").replace(EXPORT, "");
   const worker = readFileSync(`${here}src/sw/sw.ts`, "utf8").replace(IMPORT, "");
   const { outputText } = ts.transpileModule(`${policy}\n${worker}`, {
@@ -46,6 +86,7 @@ export function buildServiceWorker(bundleFiles: readonly string[], campaignFiles
     `const __KAD_BUNDLE__ = ${JSON.stringify([...bundleFiles].sort())};`,
     `const __KAD_PRECACHE__ = ${JSON.stringify(precacheOf(bundleFiles).sort())};`,
     `const __KAD_PRECACHE_CAMPAIGNS__ = ${JSON.stringify([...campaignFiles].sort())};`,
+    `const __KAD_FILE_INDEX__ = ${JSON.stringify(fileIndexUrl)};`,
     outputText,
   ].join("\n");
 }
@@ -57,18 +98,34 @@ export function campaignFiles(contentDir: string): string[] {
     .map((name) => `/content/campaigns/${name}`);
 }
 
-/** The Vite plugin: emits `sw.js` beside `index.html`, in builds only. */
-export function serviceWorker(contentDir: string): Plugin {
+/**
+ * The Vite plugin: emits the file index and `sw.js` beside `index.html`, in
+ * builds only. `repoRoot` ends in a slash; `assets/` and `content/` hang off it.
+ */
+export function serviceWorker(repoRoot: string): Plugin {
   return {
     name: "kad-service-worker",
     apply: "build",
     generateBundle(_options, bundle) {
+      const index = JSON.stringify({
+        ...fileIndexOf(repoRoot, ["assets", "content"]),
+        // The client's own static files (brand art, icons), copied to the
+        // site root by the build and uploaded with it.
+        ...fileIndexOf(`${here}public/`, [""]),
+      });
+      const ref = this.emitFile({ type: "asset", name: "files.json", source: index });
+      const fileIndexUrl = `/${this.getFileName(ref)}`;
       const files = Object.keys(bundle)
         // Code, styles and the painted UI art Vite hashes in with them; never
         // the source maps, which only a debugger asks for.
         .filter((name) => name.startsWith("bundle/") && !name.endsWith(".map"))
         .map((name) => `/${name}`);
-      this.emitFile({ type: "asset", fileName: "sw.js", source: buildServiceWorker(files, campaignFiles(contentDir)) });
+      if (!files.includes(fileIndexUrl)) files.push(fileIndexUrl);
+      this.emitFile({
+        type: "asset",
+        fileName: "sw.js",
+        source: buildServiceWorker({ bundleFiles: files, campaignFiles: campaignFiles(`${repoRoot}content`), fileIndexUrl }),
+      });
     },
   };
 }

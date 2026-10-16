@@ -1,7 +1,7 @@
 /**
  * The adventure book with no signal — on a reload, and in a new tab — against
  * a production build, where the service worker lives
- * (playwright.offline.config.ts; `npm run e2e:offline`).
+ * (playwright.prod.config.ts; `npm run e2e:prod`).
  *
  * The review that asked for this was exact about the gap: going offline in a
  * tab that already had everything loaded proves nothing, because the page,
@@ -24,9 +24,12 @@ async function controlled(page: Page): Promise<void> {
   await page.waitForFunction(() => navigator.serviceWorker?.controller != null, undefined, { timeout: 30_000 });
 }
 
-/** Whether the worker has kept `url` in any of its caches. */
+/**
+ * Whether the worker has kept `url` in any of its caches — under any
+ * fingerprint, since art is saved as `path?v=<fingerprint>`.
+ */
 async function kept(page: Page, url: string): Promise<boolean> {
-  return page.evaluate(async (target) => (await caches.match(target)) !== undefined, url);
+  return page.evaluate(async (target) => (await caches.match(target, { ignoreSearch: true })) !== undefined, url);
 }
 
 /** At least one map image actually drawn — a broken image has no natural width. */
@@ -218,6 +221,200 @@ test("a tab left open across a deploy can still open the book", async ({ browser
     });
     await expect(phone.getByText(/your adventure book is empty/i)).toBeVisible(TAP);
     await expect(phone.getByText(/couldn.t open/i)).toHaveCount(0);
+  } finally {
+    await context.close();
+    await proxy.close();
+  }
+});
+
+/** Host Phone Mode, make the hero, start the chapter: a phone that has played. */
+async function playALittle(page: Page): Promise<void> {
+  await page.getByRole("button", { name: /want to host/i }).click();
+  await page.getByText("Phone Mode").click();
+  await page.getByLabel(/your name/i).fill("Ada");
+  await page.getByRole("button", { name: /^start a game$/i }).click();
+  await expect(page).toHaveURL(/\/p\/[A-Z0-9]{4}$/);
+  await createCharacter(page, "unicorn", HERO);
+  await page.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+  await expect(page.getByRole("button", { name: /begin the adventure/i })).toHaveCount(0, TAP);
+}
+
+/** The map painting's URL, from the world key. */
+async function paintingUrl(page: Page): Promise<string> {
+  return page.evaluate(async () => {
+    const world = (await (await fetch("/content/world.json")).json()) as { image: { src: string } };
+    return world.image.src;
+  });
+}
+
+test("a deploy whose content an edge has not caught up with never takes over", async ({ browser, baseURL }) => {
+  const proxy = await startCountingProxy(baseURL ?? "http://localhost:4173");
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, baseURL: proxy.url });
+  const phone = await context.newPage();
+  try {
+    await phone.goto("/");
+    await controlled(phone);
+    await playALittle(phone);
+    await phone.goto("/");
+    await phone.getByRole("button", { name: BOOK }).click(TAP);
+    await studyTheBook(phone);
+
+    // The deploy: its file index gives the Field Guide a new fingerprint, but
+    // the edge still serves the old bytes. (The index URL gains a query so
+    // the new worker fetches it rather than reading the old build's copy.)
+    const worker = await phone.evaluate(async () => (await fetch("/sw.js")).text());
+    const index = /const __KAD_FILE_INDEX__ = "([^"]+)";/.exec(worker)?.[1];
+    expect(index, "sw.js names no file index").toBeTruthy();
+    proxy.configure({
+      rewrite: (path) =>
+        path === "/sw.js"
+          ? (text) =>
+              text.replace(
+                `const __KAD_FILE_INDEX__ = "${index!}";`,
+                `const __KAD_FILE_INDEX__ = "${index!}?deploy=2";`,
+              )
+          : path === index
+            ? (text) => JSON.stringify({ ...(JSON.parse(text) as object), "/content/field-guide.json": "ffffffffffffffff" })
+            : path === "/"
+              ? // The deploy's page: its own entry script, as every build's
+                // is, and marked so the offline app can be told apart.
+                (text) =>
+                  text
+                    .replace("<head>", "<head><!-- deploy 2 -->")
+                    .replace(/(<script\b[^>]*\bsrc=")\/bundle\/[^"]+\.js"/, '$1/bundle/deploy-2.js"')
+              : undefined,
+    });
+    proxy.reset();
+    const after = await phone.evaluate(async () => {
+      const registration = await navigator.serviceWorker.getRegistration();
+      await registration?.update().catch(() => undefined);
+      // Long enough to install (or fail to); a takeover would be over by then.
+      await new Promise((resolve) => setTimeout(resolve, 5_000));
+      return { waiting: registration?.waiting !== null, installing: registration?.installing !== null };
+    });
+    expect(proxy.report().bundle.requests, "the new worker never asked for its file index").toBeGreaterThan(0);
+    expect(after).toEqual({ waiting: false, installing: false });
+
+    // Still online, the phone opens the app and the old worker is handed the
+    // deploy's page. It must not keep it: its scripts are not this build's.
+    await phone.goto("/");
+    expect(await phone.content(), "the deploy's page was not served").toContain("deploy 2");
+    await phone.waitForTimeout(1_000);
+
+    // The old worker is still in charge, with all its copies: the book opens
+    // with no signal, Field Guide and all.
+    await noSignal(context, proxy, phone);
+    await phone.goto("/journal");
+    // The failed install's page was never made the offline app.
+    expect(await phone.content(), "the failed deploy's page became the offline app").not.toContain("deploy 2");
+    await expect(phone.getByText(/no signal/i)).toBeVisible(TAP);
+    await studyTheBook(phone);
+  } finally {
+    await context.close();
+    await proxy.close();
+  }
+});
+
+test("pictures an earlier worker saved survive the upgrade to this one", async ({ browser, baseURL }) => {
+  // #224's worker kept the book's pictures in `kad-image-v1`. The new
+  // worker's script is held back so that cache can be put in place first,
+  // exactly as the earlier worker would have left it.
+  const proxy = await startCountingProxy(baseURL ?? "http://localhost:4173", {
+    delay: (path) => (path === "/sw.js" ? 5_000 : 0),
+  });
+  // A phone that has played and opened its book (so it has a saved journal),
+  // before this worker existed.
+  const earlier = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: "block", baseURL: proxy.url });
+  const before = await earlier.newPage();
+  await before.goto("/");
+  await playALittle(before);
+  await before.goto("/");
+  await before.getByRole("button", { name: BOOK }).click(TAP);
+  await expect(before.getByRole("region", { name: `${HERO}'s character sheet` })).toBeVisible(TAP);
+  const identity = await earlier.storageState();
+  await earlier.close();
+
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, storageState: identity, baseURL: proxy.url });
+  const phone = await context.newPage();
+  try {
+    await phone.goto("/");
+    const painting = await paintingUrl(phone);
+    await phone.evaluate(async (url) => {
+      const legacy = await caches.open("kad-image-v1");
+      await legacy.put(url, await fetch(url));
+    }, painting);
+    expect(await phone.evaluate(() => navigator.serviceWorker.controller === null), "the worker arrived before the old cache was in place").toBe(true);
+
+    await controlled(phone);
+    // Adopted into the fingerprinted cache, and the old cache is gone.
+    await expect.poll(() => phone.evaluate(() => caches.has("kad-image-v1")), { timeout: 20_000 }).toBe(false);
+    expect(await kept(phone, painting)).toBe(true);
+
+    // And the book, opened with no signal, still has its map.
+    await noSignal(context, proxy, phone);
+    await phone.goto("/journal");
+    await expect(phone.getByText(/no signal/i)).toBeVisible(TAP);
+    await phone.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Map" }).click(TAP);
+    await expect.poll(() => paintingShown(phone), { timeout: 20_000 }).toBe(true);
+  } finally {
+    await context.close();
+    await proxy.close();
+  }
+});
+
+test("Data Saver skips guessing ahead, not the book's offline art", async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  await context.addInitScript(() => {
+    Object.defineProperty(navigator, "connection", { value: { saveData: true }, configurable: true });
+  });
+  const phone = await context.newPage();
+  try {
+    await phone.goto("/");
+    await controlled(phone);
+    await playALittle(phone);
+    await phone.goto("/");
+    await phone.getByRole("button", { name: BOOK }).click(TAP);
+    // Only the hero is looked at; the map and the guide are never opened.
+    await expect(phone.getByRole("region", { name: `${HERO}'s character sheet` })).toBeVisible(TAP);
+    const painting = await paintingUrl(phone);
+    await expect.poll(() => kept(phone, painting), { timeout: 30_000 }).toBe(true);
+  } finally {
+    await context.close();
+  }
+});
+
+test("an upgrade with many saved pictures takes over promptly, keeping them all", async ({ browser, baseURL }) => {
+  // #224's worker could keep up to 400 pictures. Adopting them one pause at a
+  // time held the new worker's takeover for minutes; it must be a batch.
+  // No worker until the old cache is in place: putting 60 pictures takes a
+  // while, and the worker would otherwise arrive partway through.
+  const proxy = await startCountingProxy(baseURL ?? "http://localhost:4173", { gone: (path) => path === "/sw.js" });
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, baseURL: proxy.url });
+  const phone = await context.newPage();
+  try {
+    // The build's file index, read straight from the server: the proxy is withholding sw.js.
+    const worker = await (await fetch(`${baseURL ?? "http://localhost:4173"}/sw.js`)).text();
+    const index = /const __KAD_FILE_INDEX__ = "([^"]+)";/.exec(worker)?.[1] ?? "";
+    await phone.goto("/");
+    const pictures = await phone.evaluate(async (index) => {
+      const files = (await (await fetch(index)).json()) as Record<string, string>;
+      const chosen = Object.keys(files).filter((path) => /^\/assets\/characters\/.*\.(?:png|webp)$/.test(path)).slice(0, 60);
+      const legacy = await caches.open("kad-image-v1");
+      for (const path of chosen) await legacy.put(path, await fetch(path));
+      return chosen;
+    }, index);
+    expect(pictures).toHaveLength(60);
+    expect(await phone.evaluate(() => navigator.serviceWorker.controller === null), "the worker arrived before the old cache was in place").toBe(true);
+
+    proxy.configure({});
+    const started = Date.now();
+    await phone.reload();
+    await controlled(phone);
+    await expect.poll(() => phone.evaluate(() => caches.has("kad-image-v1")), { timeout: 60_000 }).toBe(false);
+    const took = Date.now() - started;
+    // Install and adoption together, on a fast local network.
+    expect(took, `taking over took ${String(took)}ms`).toBeLessThan(15_000);
+    for (const path of pictures) expect(await kept(phone, path), `${path} was lost in the upgrade`).toBe(true);
   } finally {
     await context.close();
     await proxy.close();

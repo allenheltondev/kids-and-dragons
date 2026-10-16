@@ -9,8 +9,21 @@ import { Script } from "node:vm";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import type { FieldGuide, WorldMap } from "@kad/shared";
-import { buildServiceWorker, campaignFiles, precacheOf } from "../../sw-build";
-import { swCacheable, swOverLimit, swStaleBundles, swStrategyFor } from "./policy";
+import { createHash } from "node:crypto";
+import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { buildServiceWorker, campaignFiles, fileIndexOf, fingerprint, precacheOf } from "../../sw-build";
+import {
+  swCacheable,
+  swEvictions,
+  swOverLimit,
+  swReadVersionedKey,
+  swShellEntry,
+  swStaleBundles,
+  swStaleVersions,
+  swStrategyFor,
+  swVersionedKey,
+} from "./policy";
 import { offlineArtFor } from "./warm";
 
 const ORIGIN = "https://kad.example";
@@ -29,18 +42,19 @@ describe("what the worker does with a request", () => {
     expect(at("/p/ABCD", { mode: "navigate" })).toBe("shell");
   });
 
-  it("serves hashed code from the cache, content from the network first, art stale-while-revalidate", () => {
+  it("routes hashed code, content, every asset (art, rigs, audio) and unindexed pictures", () => {
     expect(at("/bundle/index-abc123.js")).toBe("bundle");
     expect(at("/content/field-guide.json")).toBe("content");
-    expect(at("/assets/world/realm-atlas-detail-v1.webp")).toBe("image");
+    expect(at("/assets/world/realm-atlas-detail-v1.webp")).toBe("asset");
+    expect(at("/assets/character-rigs/starweaver/sworn/unicorn/rig.riv")).toBe("asset");
+    expect(at("/assets/audio/cues/dice.webm")).toBe("asset");
     expect(at("/brand/dragon-mark.png")).toBe("image");
   });
 
   it("leaves alone what it should not keep: other origins, non-GETs, partial audio, everything else", () => {
     expect(swStrategyFor({ method: "GET", mode: "cors", hasRange: false, url: "https://fonts.example/a.webp" }, ORIGIN)).toBe("passthrough");
     expect(at("/content/items.json", { method: "HEAD" })).toBe("passthrough");
-    expect(at("/assets/audio/theme.webp", { hasRange: true })).toBe("passthrough");
-    expect(at("/assets/audio/theme.ogg")).toBe("passthrough");
+    expect(at("/assets/audio/theme.webm", { hasRange: true })).toBe("passthrough");
     expect(at("/sw.js")).toBe("passthrough");
   });
 
@@ -65,9 +79,71 @@ describe("what the worker does with a request", () => {
   });
 });
 
+describe("the offline app's page", () => {
+  it("is known by its entry script, so a worker saves only its own build's page", () => {
+    const html = '<script type="module" crossorigin src="/bundle/index-a1B2.js"></script><link rel="modulepreload" href="/bundle/jsx-x.js">';
+    expect(swShellEntry(html)).toBe("/bundle/index-a1B2.js");
+    expect(swShellEntry("<html><body>no app here</body></html>")).toBeNull();
+  });
+});
+
+describe("fingerprinted files", () => {
+  it("are saved under their fingerprint, and read back from it", () => {
+    const key = swVersionedKey("/assets/x/rig.riv", "0123456789abcdef");
+    expect(key).toBe("/assets/x/rig.riv?v=0123456789abcdef");
+    expect(swReadVersionedKey(key)).toEqual({ path: "/assets/x/rig.riv", fingerprint: "0123456789abcdef" });
+    expect(swReadVersionedKey("/__kad/files-meta")).toBeNull();
+  });
+
+  it("are dropped when a deploy changes or removes them, and kept when it does not", () => {
+    const index = { "/assets/a.webp": "aaaa", "/assets/b.webp": "bbbb" };
+    expect(swStaleVersions(["/assets/a.webp?v=aaaa", "/assets/b.webp?v=old0", "/assets/gone.webp?v=cccc"], index)).toEqual([
+      "/assets/b.webp?v=old0",
+      "/assets/gone.webp?v=cccc",
+    ]);
+  });
+
+  it("go least recently used first when over budget, down to 90%, and content never goes", () => {
+    const meta = {
+      "/assets/old.riv?v=1": { bytes: 60, used: 1 },
+      "/content/rules.json?v=2": { bytes: 10, used: 0 },
+      "/assets/mid.webp?v=3": { bytes: 30, used: 2 },
+      "/assets/new.webp?v=4": { bytes: 30, used: 3 },
+    };
+    expect(swEvictions(meta, 200)).toEqual([]);
+    expect(swEvictions(meta, 100)).toEqual(["/assets/old.riv?v=1"]);
+    expect(swEvictions(meta, 40)).toEqual(["/assets/old.riv?v=1", "/assets/mid.webp?v=3", "/assets/new.webp?v=4"]);
+  });
+
+  it("fingerprint the way the worker checks them: the first 16 hex digits of SHA-256", () => {
+    const bytes = new TextEncoder().encode("a unicorn");
+    expect(fingerprint(bytes)).toBe(createHash("sha256").update(bytes).digest("hex").slice(0, 16));
+  });
+
+  it("cover every uploaded file under the indexed directories, but no dotfiles", () => {
+    const root = `${mkdtempSync(`${tmpdir()}/kad-index-`)}/`;
+    mkdirSync(`${root}assets/world`, { recursive: true });
+    mkdirSync(`${root}content`, { recursive: true });
+    writeFileSync(`${root}assets/world/realm.webp`, "painting");
+    writeFileSync(`${root}assets/.DS_Store`, "junk");
+    writeFileSync(`${root}content/rules.json`, "{}");
+    expect(fileIndexOf(`${root}assets/`, [""])).toEqual({
+      "/world/realm.webp": fingerprint(new TextEncoder().encode("painting")),
+    });
+    expect(fileIndexOf(root, ["assets", "content"])).toEqual({
+      "/assets/world/realm.webp": fingerprint(new TextEncoder().encode("painting")),
+      "/content/rules.json": fingerprint(new TextEncoder().encode("{}")),
+    });
+  });
+});
+
 describe("the built sw.js", () => {
   const files = ["/bundle/index-a1.js", "/bundle/index-a1.css", "/bundle/rive-z9.wasm", "/bundle/lantern-b2.webp"];
-  const source = buildServiceWorker(files, ["/content/campaigns/gemfall.json"]);
+  const source = buildServiceWorker({
+    bundleFiles: files,
+    campaignFiles: ["/content/campaigns/gemfall.json"],
+    fileIndexUrl: "/bundle/files-x1.json",
+  });
 
   it("is one classic script: no import or export survives", () => {
     expect(() => new Script(source)).not.toThrow();
@@ -78,6 +154,7 @@ describe("the built sw.js", () => {
     expect(source).toContain(`const __KAD_BUNDLE__ = ${JSON.stringify([...files].sort())};`);
     expect(precacheOf(files)).not.toContain("/bundle/rive-z9.wasm");
     expect(source).toContain('"/content/campaigns/gemfall.json"');
+    expect(source).toContain('const __KAD_FILE_INDEX__ = "/bundle/files-x1.json";');
   });
 
   it("precaches every campaign the deploy uploads", () => {
