@@ -91,3 +91,52 @@ Review artifacts are committed under `art/review/riftlight/` despite the normal 
 - New shipped filenames and manifest effect entries checked against the spoiler rule: no forbidden names or ruler hints. Neutral effects have only charcoal RGB; rule layers have only their own fixed hue (plus transparent antialias pixels).
 
 Logs: `art-verify.txt`, `rig-verify.txt`, `content-validate.txt`, `typecheck.txt`, `audio-verify.txt`, `audio-tests.txt`, `tests.txt`, `baseline-tests.txt`, `cast-shot.txt` in the review folder. Visual/taste review and listening approval are outstanding; the implementation does not claim those human checks have passed.
+
+## Part B pilot — Master Orin Vale
+
+**Review gate:** the Riftlight brief's Part B says **“Pilot first and stop for review.”** Orin is the single pilot: he establishes the fellowship cloak, silver fractured-circle emblem and practical scholar equipment, while testing that an older member remains the playable griffin species. The remaining Riftseekers, locals, Skuppers and finale figure have not been drawn. This pilot is a separate Part B PR stacked on Part A, so its diff is limited to the cast pilot and review tooling.
+
+Manifest entry:
+
+```json
+{ "id": "orin_vale", "name": "Master Orin Vale", "basis": "griffin", "scale": "medium" }
+```
+
+Runtime file: `assets/cast/orin_vale/assembled.png`, 1024² RGBA, feet registered near y=900, complete left-facing quadruped, no ground shadow or text. Scale is `medium`, following the existing named adult griffin cast and leaving the broad silhouette to convey age. The notebook and instruments are strapped to expedition gear, leaving every foot planted. The silver emblem and teal/indigo/violet cloak establish the fellowship; these are cast clothing colors, not rift layers. No character/canon/content mappings were changed because Riftlight chapter data does not exist yet.
+
+Source is `art/source/riftlight/orin_vale.png`; `art/source/package_riftlight_cast_pilot.py` reproducibly registers it and produces a comparison with the species stand-in, including 120px thumbnails. Measurement ignores alpha dust at ≤8 but retains original alpha inside the padded crop. No anatomy or coloration was repainted during packaging.
+
+### Generation prompt
+
+Built-in imagegen, real transparent background. Reference 1: `assets/characters/griffin/fledgling/assembled.png` for anatomy/palette. Reference 2: `assets/cast/old_ossley/assembled.png` for mature cast rendering quality, explicitly not anatomy. Exact prompt:
+
+> Create a NEW complete single story-cast figure on real transparent background for Kids & Dragons. Reference 1 is the griffin SPECIES anatomy and palette; reference 2 is the mature supporting-cast storybook rendering quality, NOT anatomy. Character: Master Orin Vale, he/him, an older methodical griffin scholar of the Riftseekers. Patient, warm, careful, modest spectacles over solid dark eyes, slightly weathered slate-blue feather crest and ruff, pale blue-cream coat, gold feather wings folded at his sides, eagle beak and front talons, lion hind paws and tufted tail. Clearly the same QUADRUPED species as reference 1, older and broad/sturdy, not human or biped. All four feet planted, three-quarter view FACING LEFT, head about one third of total body height. Wears a practical dark TEAL cloak with indigo/violet lining and subtle shimmering seams, SILVER FRACTURED-CIRCLE clasp (one ring with a visible gap), asymmetrical expedition satchels, thick notebook strapped at side and a few resonance rings/chimes. No writing on notebook or clothing. One clear scholar silhouette, relaxed, no weapon, no threat. Warm hand-painted children's picture-book illustration, tapered warm dark brown outlines, soft two-tone shading, upper-left light, low detail density, no photorealism, no shiny 3D. Complete cutout, no background, no ground shadow, no text. Entire crest, tail, wings and all feet visible with ample transparent margin on every side. Square canvas. Figure should occupy central 80 percent of canvas height.
+
+### Real-stage review without editing campaign data
+
+`e2e/cast-shot.spec.ts` now accepts optional `KAD_CAST_PREVIEW` (one `CastMember` JSON object) and `KAD_CAST_SHOT_PREFIX`. The opt-in Playwright route replaces only the selected scene's client-side cast in the fetched chapter response; the server, source JSON, saved campaign and ordinary test run are unchanged. Both the TV and phone contexts receive the same review figure. The figure path is validated and encounter scenes are left alone.
+
+Run Gemfall on an isolated dev server, then capture the stand-in and pilot with the same setup:
+
+```powershell
+$env:KAD_CAST_SCENES='scene_tavern'
+$env:KAD_CAST_PREVIEW='{"figure":"characters/griffin","name":"Master Orin Vale"}'
+$env:KAD_CAST_SHOT_PREFIX='art/review/riftlight-cast/stand-in'
+npx playwright test -c playwright.cast-review.config.ts e2e/cast-shot.spec.ts
+$env:KAD_CAST_PREVIEW='{"figure":"cast/orin_vale","name":"Master Orin Vale"}'
+$env:KAD_CAST_SHOT_PREFIX='art/review/riftlight-cast/pilot'
+npx playwright test -c playwright.cast-review.config.ts e2e/cast-shot.spec.ts
+```
+
+These are deliberately staged review captures, not an authored Riftlight scene. They use Gemfall's tavern to compare the two figures at identical stage scale and camera framing. TV, watcher phone and host phone images, contact sheet and verification logs are in `art/review/riftlight-cast/`. Human approval of age/readability and the fellowship design is required before extending the cast.
+
+### Pilot verification results
+
+- Full art verifier: **1490 passed**, 24 existing warnings; Orin's opaque foot row is **897**, with **83px** clear margin.
+- Rig verifier: **79 passed**, 71/71 rigs read; audio verifier: **33/34 real**, only existing `bonk` synthesized, with FFmpeg decoding enabled.
+- Content validator: **55 passed**; repository typecheck passed.
+- Review tool: strict standalone TypeScript check passed (`--strict --target es2022 --module esnext --moduleResolution bundler --skipLibCheck --allowImportingTsExtensions`).
+- Cast/art-path tests: **35 passed**.
+- Real-stage stand-in capture: **1 passed**; pilot capture: **1 passed**.
+- Full suite rerun: **3500 passed, 8 failed, 8 skipped**. Same three files and eight baseline failures documented under Part A; no additional failures.
+- New shipped filename `assets/cast/orin_vale/assembled.png` and manifest name comply with the spoiler rule.

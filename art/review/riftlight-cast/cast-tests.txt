@@ -1,0 +1,12 @@
+
+> kids-and-dragons@0.0.0 test
+> vitest run packages/client/src/world/cast.test.ts packages/client/src/world/art-paths.test.ts
+
+
+ RUN  v4.1.10 C:/Users/allen/.codex/worktrees/riftlight-part-a/kids-and-dragons
+
+
+ Test Files  2 passed (2)
+      Tests  35 passed (35)
+   Start at  06:58:40
+   Duration  447ms (transform 220ms, setup 0ms, import 314ms, tests 29ms, environment 0ms)
