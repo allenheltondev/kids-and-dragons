@@ -505,6 +505,11 @@ td:first-child {
   color: #ffe8a3;
 }
 
+/* The breakable wordmark's line break, off until a breakpoint wants it. */
+.wiki-logo__break {
+  display: none;
+}
+
 html:not(.dark) .wiki-logo--nav .wiki-logo__amp,
 html:not(.dark) .wiki-logo--footer .wiki-logo__amp {
   color: var(--wiki-gold);
@@ -3239,8 +3244,9 @@ a.wiki-stats__item:hover {
     grid-template-columns: 1fr;
   }
 
-  /* No room for the words on the smallest phones: the mark carries it. */
-  .wiki-logo--nav .wiki-logo__word {
-    display: none;
+  /* No room for the words on one line on the smallest phones: "Kids &"
+   * over "Dragons", which fits beside the buttons down to 320px. */
+  .wiki-logo--nav .wiki-logo__break {
+    display: inline;
   }
 }
