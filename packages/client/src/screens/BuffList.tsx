@@ -23,6 +23,8 @@ export interface BuffRow {
   amount: number;
   /** How long it has left, and on whom, in words. */
   detail: string;
+  /** A story-check buff (#222): said as "on a check", not "To hit". */
+  appliesTo?: "check";
   /** A numbing sting (#227): its own glyph, and a chip that says it wears off rather than "Cost". */
   numbed?: true;
 }
@@ -35,7 +37,7 @@ export function BuffList({ rows, title }: { rows: readonly BuffRow[]; title: str
         <li className="buffs__row" key={row.key}>
           <Icon name={row.numbed ? "numbed" : buffIcon(row.kind)} />
           <span className="buffs__text">
-            <b>{row.label}</b>: {buffAmountText(row.kind, row.amount)}
+            <b>{row.label}</b>: {buffAmountText(row.kind, row.amount, row.appliesTo)}
             <span className="buffs__detail"> · {row.detail}</span>
           </span>
           {row.numbed ? (
@@ -62,7 +64,8 @@ export function journeyBuffRows(buffs: readonly JourneyBuffView[] | undefined): 
     label: buff.stacks > 1 ? `${buff.label} ×${buff.stacks}` : buff.label,
     kind: buff.kind,
     amount: buff.amount,
-    detail: `${buffTargetText(buff.target)}, ${buffRemainingText(buff.remaining)}`,
+    detail: `${buffTargetText(buff.target, buff.appliesTo)}, ${buffRemainingText(buff.remaining)}`,
+    ...(buff.appliesTo !== undefined ? { appliesTo: buff.appliesTo } : {}),
   }));
 }
 

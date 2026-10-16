@@ -25,6 +25,7 @@
  * Rest scene is for.
  */
 
+import { useState } from "react";
 import type { CSSProperties, ReactElement } from "react";
 import { INVENTORY_SLOTS, STAT_IDS, TIER_IDS } from "@kad/shared";
 import type { ItemCatalog, PartyMember, TierId } from "@kad/shared";
@@ -120,10 +121,20 @@ export interface CharacterSheetProps {
   /** Whose sheet this is, which changes the words rather than the facts. */
   isMe: boolean;
   items: ItemCatalog | null;
+  /**
+   * Make the bag tappable, each item opening what it is and what it does. The
+   * journal turns this on: between games there is nothing to *use* an item
+   * on, so finding out about one is the whole point of opening the bag.
+   */
+  explore?: boolean;
 }
 
-export function CharacterSheet({ member, isMe, items }: CharacterSheetProps): ReactElement {
+export function CharacterSheet({ member, isMe, items, explore = false }: CharacterSheetProps): ReactElement {
   const { character } = member;
+  /** The item being read about, by id: a slot and a quest item read the same. */
+  const [reading, setReading] = useState<string | null>(null);
+  const read = (itemId: string): void => setReading((open) => (open === itemId ? null : itemId));
+  const readingDef = reading === null ? undefined : items?.[reading];
   const ladder = tierHistory(member);
   const slots = Array.from({ length: INVENTORY_SLOTS }, (_, i) => character.inventory[i] ?? null);
 
@@ -277,8 +288,19 @@ export function CharacterSheet({ member, isMe, items }: CharacterSheetProps): Re
               </li>
             ) : (
               <li className="sheetview__slot" key={`${entry.itemId}-${String(index)}`}>
-                <Icon name={items?.[entry.itemId]?.icon ?? entry.kind} />
-                <span>{items?.[entry.itemId]?.name ?? entry.itemId}</span>
+                {explore ? (
+                  <button type="button" className={`sheetview__item kad-tap kad-focusable${reading === entry.itemId ? " sheetview__item--on" : ""}`}
+                    aria-pressed={reading === entry.itemId} aria-controls={reading === entry.itemId ? "sheetview-reading" : undefined}
+                    onClick={() => read(entry.itemId)}>
+                    <Icon name={items?.[entry.itemId]?.icon ?? entry.kind} />
+                    <span>{items?.[entry.itemId]?.name ?? entry.itemId}</span>
+                  </button>
+                ) : (
+                  <>
+                    <Icon name={items?.[entry.itemId]?.icon ?? entry.kind} />
+                    <span>{items?.[entry.itemId]?.name ?? entry.itemId}</span>
+                  </>
+                )}
               </li>
             ),
           )}
@@ -287,12 +309,41 @@ export function CharacterSheet({ member, isMe, items }: CharacterSheetProps): Re
           <ul className="sheetview__quest">
             {character.questItems.map((itemId) => (
               <li className="kad-chip" key={itemId}>
-                <Icon name={items?.[itemId]?.icon ?? "quest"} />
-                <span>{items?.[itemId]?.name ?? itemId}</span>
+                {explore ? (
+                  <button type="button" className="sheetview__quest-item kad-focusable"
+                    aria-pressed={reading === itemId} onClick={() => read(itemId)}>
+                    <Icon name={items?.[itemId]?.icon ?? "quest"} />
+                    <span>{items?.[itemId]?.name ?? itemId}</span>
+                  </button>
+                ) : (
+                  <>
+                    <Icon name={items?.[itemId]?.icon ?? "quest"} />
+                    <span>{items?.[itemId]?.name ?? itemId}</span>
+                  </>
+                )}
               </li>
             ))}
           </ul>
         )}
+        {explore && reading !== null ? (
+          <div className="sheetview__reading" id="sheetview-reading" role="region" aria-label="About this item">
+            <span className="sheetview__reading-icon" aria-hidden="true">
+              <Icon name={readingDef?.icon ?? "bag"} size="2.2em" />
+            </span>
+            <span className="sheetview__reading-words">
+              <b className="sheetview__reading-name">{readingDef?.name ?? reading}</b>
+              {readingDef ? (
+                <span className="sheetview__reading-kind kad-label">
+                  <Icon name={readingDef.kind} />
+                  <span>{readingDef.kind}</span>
+                </span>
+              ) : null}
+              <span className="sheetview__reading-text">{readingDef?.text ?? "Nobody is quite sure what this does yet."}</span>
+            </span>
+          </div>
+        ) : explore ? (
+          <p className="sheetview__hint kad-muted">Tap something in the bag to read about it.</p>
+        ) : null}
       </div>
 
 

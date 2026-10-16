@@ -255,6 +255,7 @@ describe("pacing scenarios", () => {
     expect(isGatedFor(bonus, sc("few-3p"))).toBe(false);
     expect(isGatedFor({ ...go("f", "x"), when: { flag: "met" } }, sc("collection-3p"))).toBe(true);
     expect(isGatedFor({ ...go("s", "x"), requiresSpecies: "fox" } as never, sc("collection-3p"))).toBe(true);
+    expect(isGatedFor({ ...go("c", "x"), requiresClass: "starweaver" } as never, sc("collection-3p"))).toBe(true);
     const path = ["hub", "mid", "end"];
     expect(pathMetrics(synthetic, path, sc("empty-3p")).decisions).toBe(0); // one visible choice
     expect(pathMetrics(synthetic, path, sc("few-3p")).decisions).toBe(1); // bonus is a real option

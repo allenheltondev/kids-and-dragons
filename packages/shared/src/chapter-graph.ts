@@ -15,6 +15,10 @@
  *   - A scene whose every choice carries a requirement is a `DEAD_END`, because
  *     unmet requirements *hide* choices (§5) rather than disabling them. A party
  *     that matches none of them sees a scene with nothing to tap.
+ *   - A scene whose every choice is class-gated (`requiresClass`) is a
+ *     `CLASS_GATED_ONLY_EXIT` instead: the same failure, named for its fix.
+ *     No class is ever mandatory, so a table without one needs a way on that
+ *     asks for no class (the rule rift actions get as `CLASS_GATED_ONLY_PATH`).
  */
 
 import type {
@@ -37,6 +41,7 @@ export type IssueCode =
   | "UNKNOWN_GOTO"
   | "UNREACHABLE_SCENE"
   | "DEAD_END"
+  | "CLASS_GATED_ONLY_EXIT"
   | "NO_ENDING"
   | "MISSING_BRANCH"
   | "DUPLICATE_CHOICE_ID"
@@ -127,6 +132,7 @@ export function sceneChoices(scene: Scene): Choice[] {
 export function isGated(choice: Choice): boolean {
   return (
     choice.requiresSpecies !== undefined ||
+    choice.requiresClass !== undefined ||
     choice.requiresFlag !== undefined ||
     choice.requiresItem !== undefined ||
     // A `when` hides the choice for some parties, however loose it looks.
@@ -255,8 +261,19 @@ export function validateChapter(chapter: Chapter, catalog?: ItemCatalog): Chapte
       seen.add(choice.id);
     }
 
-    // Dead end: choices exist but every one of them can be hidden (§5).
-    if (choices.length > 0 && choices.every(isGated)) {
+    // No class is ever mandatory (#228): a scene whose every choice needs a
+    // class leaves a table without one with nothing to tap. A dead end under
+    // its own code, so the message can name the fix; mixed with other gates
+    // it is a plain DEAD_END.
+    if (choices.length > 0 && choices.every((c) => c.requiresClass !== undefined)) {
+      issues.push({
+        severity: "error",
+        code: "CLASS_GATED_ONLY_EXIT",
+        message: `scene "${sceneId}" can only be left through class-gated choices — no class is ever mandatory, so add a choice no class is needed for`,
+        sceneId,
+      });
+    } else if (choices.length > 0 && choices.every(isGated)) {
+      // Dead end: choices exist but every one of them can be hidden (§5).
       issues.push({
         severity: "error",
         code: "DEAD_END",
@@ -443,6 +460,14 @@ function speciesMatches(choice: Choice, party: ChoiceParty): boolean {
   return party.members.some((m) => wanted.includes(m.species));
 }
 
+function classMatches(choice: Choice, party: ChoiceParty): boolean {
+  if (choice.requiresClass === undefined) return true;
+  const wanted = Array.isArray(choice.requiresClass)
+    ? choice.requiresClass
+    : [choice.requiresClass];
+  return party.members.some((m) => wanted.includes(m.class));
+}
+
 function partyHolds(party: ChoiceParty, itemId: string): boolean {
   return party.members.some(
     (m) =>
@@ -528,6 +553,7 @@ export function visibleChoices(
   return choices.filter(
     (choice) =>
       speciesMatches(choice, party) &&
+      classMatches(choice, party) &&
       itemMatches(choice, party) &&
       (choice.requiresFlag === undefined || flags[choice.requiresFlag] === true) &&
       evaluateCondition(choice.when, party),

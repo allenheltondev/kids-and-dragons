@@ -93,6 +93,17 @@ export interface RollInput {
   /** Who is rolling. Defaults to "" for previews that have no character yet. */
   characterId?: string;
   stat?: StatId;
+  /**
+   * A story-check buff spent on the roll (#222): a flat amount on the total,
+   * never a die, so a roll with one draws exactly what it would without.
+   */
+  buff?: BuffInput;
+}
+
+export interface BuffInput {
+  id: string;
+  label: string;
+  amount: number;
 }
 
 /**
@@ -117,7 +128,7 @@ export function roll(rng: Rng, input: RollInput): DiceRoll {
     input.help === undefined
       ? undefined
       : { ...input.help, value: rollDie(rng, input.help.sides) };
-  const total = die + input.mod + (help?.value ?? 0);
+  const total = die + input.mod + (help?.value ?? 0) + (input.buff?.amount ?? 0);
   return {
     die,
     mod: input.mod,
@@ -127,6 +138,7 @@ export function roll(rng: Rng, input: RollInput): DiceRoll {
     characterId: input.characterId ?? "",
     ...(input.stat === undefined ? {} : { stat: input.stat }),
     ...(help === undefined ? {} : { help }),
+    ...(input.buff === undefined ? {} : { buff: { id: input.buff.id, label: input.buff.label, amount: input.buff.amount } }),
   };
 }
 
@@ -136,6 +148,8 @@ export interface CheckInput {
   mod: number;
   tn: number;
   help?: HelpInput;
+  /** A story-check buff the roller spends on it (#222). */
+  buff?: BuffInput;
 }
 
 /** A check scene roll: d20 + stat vs. TN. Both outcomes continue the story. */
@@ -146,6 +160,7 @@ export function resolveCheck(rng: Rng, input: CheckInput): DiceRoll {
     characterId: input.characterId,
     stat: input.stat,
     ...(input.help === undefined ? {} : { help: input.help }),
+    ...(input.buff === undefined ? {} : { buff: input.buff }),
   });
 }
 

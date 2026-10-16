@@ -7,7 +7,7 @@
 
 import type { CampaignGraph } from "./campaign-graph.js";
 import type { SlowEffect } from "./buffs.js";
-import type { ItemDef, SpeciesId, StatId } from "./domain.js";
+import type { ClassId, ItemDef, SpeciesId, StatId } from "./domain.js";
 
 export type SceneId = string;
 
@@ -111,6 +111,13 @@ export interface Choice {
    * See architecture §5.
    */
   requiresSpecies?: SpeciesId | SpeciesId[];
+  /**
+   * Same semantics as `requiresSpecies`, for class (#228): offered when anyone
+   * seated has one of the listed classes, hidden otherwise, with no hint. Read
+   * against the seated party each time, never stored — a class-gated choice
+   * that matters later sets a flag, and guards read the flag (#199).
+   */
+  requiresClass?: ClassId | ClassId[];
   requiresFlag?: string;
   requiresItem?: string;
   /**

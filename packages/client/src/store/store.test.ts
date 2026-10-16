@@ -73,6 +73,8 @@ function harness(state: RunState = makeState()): Harness {
     })),
     // This player's saved heroes (spec §5). Empty unless a test says otherwise.
     listHeroes: vi.fn(async () => ({ heroes: [] as ResolvedCharacter[] })),
+    // Between games (screens/JournalScreen). Empty unless a test says otherwise.
+    loadJournal: vi.fn(async () => ({ heroes: [] as ResolvedCharacter[], fieldGuide: {}, finders: {}, whereabouts: null })),
     joinRoom: vi.fn(async () => ({
       runId: state.runId,
       playerId: "p_1",
@@ -237,6 +239,90 @@ describe("joining", () => {
     await h.store.getState().joinRoom("ABCD", "Allen");
     await h.store.getState().listHeroes();
     expect(h.api.listHeroes).toHaveBeenCalledWith("tok_1");
+  });
+
+  it("opens the journal with the device binding, and not on a phone that has never played", async () => {
+    const h = harness();
+    expect(await h.store.getState().loadJournal()).toBeNull();
+    expect(h.api.loadJournal).not.toHaveBeenCalled();
+    // Asking must not mint an identity for a phone that has never played.
+    expect(h.storage.getItem("kad.device")).toBeNull();
+
+    // Hosting is what binds this phone; out of the room, the binding remains.
+    await h.store.getState().createRoom("travel", "Allen");
+    h.store.getState().leave();
+    expect(await h.store.getState().loadJournal()).toMatchObject({
+      journal: { heroes: [], whereabouts: null },
+      savedAt: null,
+    });
+    expect(h.api.loadJournal).toHaveBeenCalledWith("dev_host");
+  });
+
+  it("offers no journal to a screen that only hosted, until it is seated as a player", async () => {
+    const h = harness();
+    await h.store.getState().openOnThisScreen();
+    // The TV keeps its binding for tomorrow's room, but it is nobody.
+    expect(h.storage.getItem("kad.device")).toContain("dev_tv");
+    expect(await h.store.getState().loadJournal()).toBeNull();
+    expect(h.api.loadJournal).not.toHaveBeenCalled();
+
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.store.getState().leave();
+    await h.store.getState().loadJournal();
+    expect(h.api.loadJournal).toHaveBeenCalledWith("dev_tv");
+  });
+
+  it("keeps a player's book when that phone later hosts Party Mode on itself", async () => {
+    const h = harness();
+    await h.store.getState().createRoom("travel", "Allen");
+    h.store.getState().leave();
+
+    await h.store.getState().openOnThisScreen();
+    expect(await h.store.getState().loadJournal()).not.toBeNull();
+    expect(h.api.loadJournal).toHaveBeenLastCalledWith("dev_tv");
+  });
+
+  it("opens last time's journal when the server cannot be reached", async () => {
+    const h = harness();
+    await h.store.getState().createRoom("travel", "Allen");
+    h.store.getState().leave();
+    const fresh = await h.store.getState().loadJournal();
+
+    h.api.loadJournal.mockRejectedValueOnce(new ApiError(0, "The game took too long to answer. Tap again."));
+    const offline = await h.store.getState().loadJournal();
+    expect(offline?.journal).toEqual(fresh?.journal);
+    expect(offline?.savedAt).toEqual(expect.any(String));
+
+    h.api.loadJournal.mockRejectedValueOnce(new TypeError("Failed to fetch"));
+    expect((await h.store.getState().loadJournal())?.savedAt).toEqual(expect.any(String));
+  });
+
+  it("forgets the saved journal when the server refuses the binding", async () => {
+    const h = harness();
+    await h.store.getState().createRoom("travel", "Allen");
+    h.store.getState().leave();
+    await h.store.getState().loadJournal();
+    expect(h.storage.getItem("kad.journal")).not.toBeNull();
+
+    // A guest household swept after its week: last time's heroes are gone.
+    h.api.loadJournal.mockRejectedValueOnce(new ApiError(401, "the journal needs this device's token", "FORBIDDEN"));
+    await expect(h.store.getState().loadJournal()).rejects.toThrow();
+    expect(h.storage.getItem("kad.journal")).toBeNull();
+
+    h.api.loadJournal.mockRejectedValueOnce(new ApiError(0, "timeout"));
+    await expect(h.store.getState().loadJournal()).rejects.toThrow("timeout");
+  });
+
+  it("never shows one binding's saved journal to another", async () => {
+    const h = harness();
+    await h.store.getState().createRoom("travel", "Allen");
+    h.store.getState().leave();
+    await h.store.getState().loadJournal();
+
+    const identity = JSON.parse(h.storage.getItem("kad.device") ?? "{}") as Record<string, unknown>;
+    h.storage.setItem("kad.device", JSON.stringify({ ...identity, deviceToken: "dev_other" }));
+    h.api.loadJournal.mockRejectedValueOnce(new ApiError(0, "timeout"));
+    await expect(h.store.getState().loadJournal()).rejects.toThrow("timeout");
   });
 
   it("surfaces a failure and does not leave a half-built session", async () => {

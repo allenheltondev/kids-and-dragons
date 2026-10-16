@@ -343,8 +343,13 @@ export function parseCampaignGraph(
     played.add(chapter);
   };
 
-  /** An edge's or a completion rule's effects: every name resolves, every fact write fits its fact. */
-  const checkEffects = (at: string, raw: unknown) => {
+  /**
+   * An edge's or a completion rule's effects: every name resolves, every fact
+   * write fits its fact. `onEdge` is true for an edge's own effects — the only
+   * place a crossing is happening, so the only place `firstCrossing` means
+   * anything (#222).
+   */
+  const checkEffects = (at: string, raw: unknown, onEdge = false) => {
     (Array.isArray(raw) ? (raw as GraphEffect[]) : []).forEach((effect, i) => {
       const path = `${at}/${i}`;
       if (effect?.type === "setFlag") {
@@ -361,6 +366,12 @@ export function parseCampaignGraph(
       } else if (effect?.type === "grantBuff") {
         if (typeof effect.buff !== "string" || (!buffs[effect.buff] && !brokenBuffs.has(effect.buff))) {
           fail(`${path}/buff`, `${JSON.stringify(effect.buff)} is not a buff (declare it in graph.buffs)`);
+        }
+        const once: unknown = effect.firstCrossing;
+        if (once !== undefined && once !== true) {
+          fail(`${path}/firstCrossing`, "firstCrossing is true, or left out");
+        } else if (once === true && !onEdge) {
+          fail(`${path}/firstCrossing`, "firstCrossing means something only in an edge's own effects: nothing is being crossed here");
         }
       } else {
         fail(`${path}/type`, `unknown graph effect ${JSON.stringify((effect as { type?: unknown })?.type)}`);
@@ -426,7 +437,7 @@ export function parseCampaignGraph(
     }
     if (nodeSet.has(typed.to)) entrances[typed.to]!.push(id);
     checkCondition(`${at}/when`, typed.when);
-    checkEffects(`${at}/effects`, typed.effects);
+    checkEffects(`${at}/effects`, typed.effects, true);
     if (typed.rift !== undefined) checkRift(id, typed, rawEdges, fail, checkCondition, checkEffects, nodeSet);
     edges[id] = { ...typed, blocked: typed.blocked ?? "hidden" };
   }

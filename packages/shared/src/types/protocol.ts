@@ -19,6 +19,7 @@ import type {
 import type { RiftActionKind } from "./campaign-graph.js";
 import type { ChapterOutcome } from "./chapter.js";
 import type { RoomMode, RunState, DiceRoll } from "./state.js";
+import type { FieldGuideFind } from "../field-guide-record.js";
 import type { EncounterEvent } from "../encounter.js";
 
 // ---------------------------------------------------------------------------
@@ -118,7 +119,13 @@ export type ClientIntent =
    */
   | { type: "VOTE_CAMPAIGN"; campaignId: string }
   | { type: "CHOOSE"; choiceId: string }
-  | { type: "ROLL" }
+  /**
+   * `spendBuff` answers the roll prompt's `"choose"` buff offer (#222): the
+   * offered buff's id spends it on this roll; absent saves it. Naming a buff
+   * the prompt no longer offers (a stale tap: a friend spent it first) rolls
+   * without one, and never spends something else in its place.
+   */
+  | { type: "ROLL"; spendBuff?: string }
   /** Offer your help on the check someone else is about to roll. */
   | { type: "HELP" }
   | { type: "ADVANCE" }
@@ -416,6 +423,31 @@ export interface JoinRoomResponse {
   mode: RoomMode;
   sessionToken: string;
   state: RunState;
+}
+
+/**
+ * `GET /api/journal` — what a phone can study with no game running.
+ *
+ * Authorised by the device token alone, not a room session: between games
+ * there is no room, and the journal is the household's and this player's, not
+ * a run's. Read-only by construction; nothing here can be changed from it.
+ */
+export interface JournalResponse {
+  /** This player's own heroes, furthest-taken first — the same list WelcomeBack offers. */
+  heroes: ResolvedCharacter[];
+  /** The household's Field Guide: canon id → who found it first and when. */
+  fieldGuide: Record<string, FieldGuideFind>;
+  /**
+   * Player id → the name a find is credited to. In play the party names the
+   * finder; out of play there is no party, so the household says who is who.
+   */
+  finders: Record<string, string>;
+  /**
+   * Where the household last adventured — the chapter of its most recent run
+   * that got past the lobby, and that chapter's biome, which is what the atlas
+   * stands the party on. `null` before anybody has set out.
+   */
+  whereabouts: { chapterId: string; biome: string } | null;
 }
 
 export interface StateResponse {
