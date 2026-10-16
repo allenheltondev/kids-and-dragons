@@ -1769,3 +1769,36 @@ describe("choosing where to go in a graph campaign", () => {
     expect(document.querySelector(".journey")).toBeNull();
   });
 });
+
+// ---------------------------------------------------------------------------
+// The end of a chapter
+// ---------------------------------------------------------------------------
+
+describe("the end of a chapter", () => {
+  const twoOfUs = () => [
+    member(),
+    member({ playerId: "p_2", character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Ember" }) }),
+  ];
+
+  it("says this phone is done instead of taking every phone back to the lobby", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({ phase: "chapter_complete", party: twoOfUs() });
+
+    await user.click(screen.getByRole("button", { name: /Back to the lobby/ }));
+    expect(sent).toEqual([{ type: "READY", ready: true }]);
+    expect(sent).not.toContainEqual({ type: "ADVANCE" });
+  });
+
+  it("shows who is still reading, and lets an early tap be taken back", async () => {
+    const user = userEvent.setup();
+    const party = twoOfUs();
+    const { sent } = mount({ phase: "chapter_complete", party: [{ ...party[0]!, ready: true }, party[1]!] });
+
+    const chips = [...document.querySelectorAll(".prompt__party .kad-chip")];
+    const chipOf = (name: string) => chips.find((chip) => chip.textContent === name)?.className ?? "";
+    expect(chipOf("Sparklehoof")).toContain("kad-chip--ok");
+    expect(chipOf("Ember")).not.toContain("kad-chip--ok");
+    await user.click(screen.getByRole("button", { name: /Wait, I'm still looking/ }));
+    expect(sent).toEqual([{ type: "READY", ready: false }]);
+  });
+});

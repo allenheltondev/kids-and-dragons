@@ -2509,6 +2509,24 @@
       "name": "Master Orin Vale",
       "basis": "griffin",
       "scale": "medium"
+    },
+    {
+      "id": "skywarden_griffin",
+      "name": "Skywarden griffin",
+      "basis": "griffin",
+      "scale": "medium_to_large"
+    },
+    {
+      "id": "skywarden_faun",
+      "name": "Skywarden faun",
+      "basis": "faun",
+      "scale": "medium"
+    },
+    {
+      "id": "skywarden_centaur",
+      "name": "Skywarden centaur",
+      "basis": "centaur",
+      "scale": "large"
     }
   ],
   "globalPalette": {
