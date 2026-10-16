@@ -184,6 +184,26 @@ The assets declare both appearances; live state-to-sprite switching is outside t
 
 The reduced-worker full run finished with **3780 passed, 8 failed, 9 skipped**. All failures are the same Windows CLI/CRLF baseline cases in three unchanged content-tool test files; the rig-motion timeout did not recur. No tests were skipped, weakened or deleted to obtain this result.
 
+## Part C — six special places
+
+Built-in imagegen produced six new region-specific backdrop paintings, using the existing glacier, Saltrot and Sky Islands images as material/style references. [Exact prompts and references](art-and-audio-part-c-prompts.json). Source PNGs are under `art/source/riftlight/scenes/`; `package_riftlight_scenes.py` reproducibly fits the almost-16:9 generated canvases to 1920×1080 and exports WebP at quality 88. All six manifest `sceneIllustrations` entries are new; existing backdrop files are unchanged.
+
+| Manifest entry / file under `assets/` | Landmark and standing space |
+| --- | --- |
+| `scenes/riftlight/ice-shelf-headwaters.webp` | River roaring out of an ice arch below a broad, safe foreground shelf. |
+| `scenes/riftlight/reading-room.webp` | Recessed book niches and layered memory ice, open ice-stone floor; no frozen figures. |
+| `scenes/riftlight/cairnstep.webp` | Watch cairns climbing toward the notch in the upper mountains, open pass terrace below. |
+| `scenes/riftlight/buried-bridge.webp` | Old stone arches spanning exposed mud, not a flowing river; firm foreground mud shelf. |
+| `scenes/riftlight/temple-island-squall.webp` | Second island drifting close beyond a wet temple courtyard; rain, no painted creatures. |
+| `scenes/riftlight/stuttering-flats.webp` | Broad empty mudflat for a separately composed rift, with channels and roots behind the standing area. |
+
+The manifest strings omit `.webp`, following the existing convention. Each source prompt reserves the full-width standing band from 70% down, with the figures' floor at 80%; major landmarks remain above the figures. No rifts, figures, lettering, UI or diagnostic rift-color lighting are painted into any of these images. Normal blue ice and sky are environmental color, not Riftlight layers.
+
+`e2e/cast-shot.spec.ts` now accepts an optional `KAD_SCENE_ART_PREVIEW`: a single scene-art path or a JSON scene-id-to-art map. The review route validates paths and changes only client-fetched review chapter data. It never edits authored content. Two cast-shot runs photograph all six backgrounds on TV, watcher phone and host phone with Orin, Olivia and the guide, using three existing Gemfall scenes per run. The unchanged narration is fixture text and does not represent Riftlight story authorship. The 18 stage screenshots and the full painting contact sheet are committed under `art/review/riftlight-places/`.
+
+All images were visually checked for floor/landmark placement and absence of figures/rifts. `scene-audit.txt` records each exact output dimension and byte count; total delivered WebP size is about 2.2 MiB. The strict standalone review-tool TypeScript check and content validator pass. Full art and test outputs accompany the PR; the same Windows baseline test limitations apply. This Part needs no rig, audio, canon or chapter changes.
+
+Part C validation: **1518 art checks passed**, 24 existing warnings; **55 content checks passed**; repository/review typechecks and unchanged audio/rig gates passed. Both three-scene cast-shot runs passed. The concurrent full Windows run reported **3776 passed, 12 failed, 9 skipped**: eight known CLI/CRLF failures and four default-timeout cases under load. All affected files plus environment/art-path checks then passed an isolated serial run (**138 passed**) without changing tests or timeouts. Field-guide regeneration after the Part B image-pointer correction is idempotent.
 ## Review follow-up — three-guest phone composition (2026-10-16)
 
 Addressed #242's phone clipping finding: when two or three guests share the stage, the renderer fits complete figure canvases to their allotted slots using one common scale, preserving relative species sizes. A solo guest and the party-only lineup keep their existing scale. Nameplate width caps account for that scale and their debug bounds use the same transform. The six-person phone lineup necessarily has smaller figures; the committed `three-cast-phone-fixed.png` shows that density for human signoff.
@@ -198,3 +218,5 @@ Long names wrap on narrow stages at the original type size instead of shrinking 
 
 Merged current main into Part B, preserving its Skywarden cast additions and resolving the manifest conflict. The field-guide generator remains idempotent; 55 content checks pass. Cast/scene/nameplate unit checks: 57 passed. Repository and standalone review-tool typechecks pass. Capture logs and current phone fixtures accompany this change. Human visual/listening approval remains outstanding.
 The final stricter phone regression passed (49.4 seconds), including all three guest pages, Previous, resize to 960px and return to 390px. All three cast-shot group runs also passed; their TV/phone/host and per-guest phone captures replace the earlier previews.
+
+Part C preview refresh after the second layout review: regenerated all six location compositions on the current upstream guest-paging layout. Each scene includes TV, host phone, and all three watcher-phone guest pages, so the figures and nameplates now match the implementation reviewers will merge. The original painting sources, manifest ids, packaging and background-only contact sheet are unchanged. The refreshed northern/southern capture logs record the runs.

@@ -24,16 +24,26 @@ const SCENES = (process.env.KAD_CAST_SCENES ?? "scene_tavern,choice_ember,scene_
 // KAD_CAST_PREVIEW='{"figure":"cast/orin_vale","name":"Master Orin Vale"}'
 // KAD_CAST_SHOT_PREFIX=art/review/riftlight-cast/pilot
 async function previewCast(context: BrowserContext): Promise<void> {
-  if (!process.env.KAD_CAST_PREVIEW) return;
-  const input = JSON.parse(process.env.KAD_CAST_PREVIEW) as CastMember | CastMember[];
-  const members = Array.isArray(input) ? input : [input];
-  if (!members.length || members.length > 3 || members.some((member) => !/^(characters|entities|cast)\/[a-z0-9_]+$/.test(member.figure))) throw new Error("Invalid cast preview figures (one to three required)");
+  const castInput = process.env.KAD_CAST_PREVIEW;
+  const artInput = process.env.KAD_SCENE_ART_PREVIEW;
+  if (!castInput && !artInput) return;
+  const input = castInput ? JSON.parse(castInput) as CastMember | CastMember[] : undefined;
+  const members = input ? (Array.isArray(input) ? input : [input]) : undefined;
+  if (members && (!members.length || members.length > 3 || members.some((member) => !/^(characters|entities|cast)\/[a-z0-9_]+$/.test(member.figure)))) throw new Error("Invalid cast preview figures (one to three required)");
+  // Either one backdrop for all selected scenes, or a scene-id -> art map.
+  const art = artInput?.startsWith("{") ? JSON.parse(artInput) as Record<string, string> : artInput;
+  const paths = typeof art === "object" ? Object.values(art) : art ? [art] : [];
+  if (paths.some((path) => !/^scenes\/[a-z0-9_-]+\/[a-z0-9_-]+$/.test(path))) throw new Error("Invalid scene art preview path");
   await context.route("**/content/chapters/*.json", async (route) => {
     const response = await route.fetch();
     const chapter = await response.json() as Chapter;
     for (const id of SCENES) {
       const scene = chapter.scenes[id];
-      if (scene && scene.type !== "encounter") scene.cast = members;
+      if (scene && scene.type !== "encounter") {
+        if (members) scene.cast = members;
+        const backdrop = typeof art === "object" ? art[id] : art;
+        if (backdrop) scene.art = backdrop;
+      }
     }
     await route.fulfill({ response, json: chapter });
   });
