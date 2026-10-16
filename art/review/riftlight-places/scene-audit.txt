@@ -1,0 +1,6 @@
+scenes/riftlight/ice-shelf-headwaters: 1920x1080 WebP, 438,462 bytes
+scenes/riftlight/reading-room: 1920x1080 WebP, 381,584 bytes
+scenes/riftlight/cairnstep: 1920x1080 WebP, 429,974 bytes
+scenes/riftlight/buried-bridge: 1920x1080 WebP, 289,134 bytes
+scenes/riftlight/temple-island-squall: 1920x1080 WebP, 467,968 bytes
+scenes/riftlight/stuttering-flats: 1920x1080 WebP, 249,332 bytes

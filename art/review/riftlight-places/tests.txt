@@ -1,0 +1,245 @@
+
+> kids-and-dragons@0.0.0 test
+> vitest run --maxWorkers=2
+
+
+ RUN  v4.1.10 C:/Users/allen/.codex/worktrees/riftlight-part-a/kids-and-dragons
+
+ ❯ tools/content/journey-tools.test.ts (86 tests | 5 failed | 7 skipped) 874ms
+     × the CLI skips them with status 0 and says so 14ms
+     × --all inspects only the graph campaigns and still exits 0 on the shipped repo 4ms
+     × the CLI draws it, plays it and exits 0 3ms
+     × the CLI checks a save file and exits non-zero when it is broken 6ms
+     × refuses an unknown campaign and a bad option with status 2 3ms
+ ❯ tools/content/authoring-guide.test.mjs (1 test | 1 failed) 12ms
+     × has at least one of each kind 10ms
+ ❯ tools/content/continental-rift.test.ts (14 tests | 2 failed) 2072ms
+     × --playtest runs clean: lint clean, everything covered, every invariant held 8ms
+     × the authoring guide's diagram is the one the tool draws 3ms
+ ❯ tools/art/rig_motion.test.ts (22 tests | 1 failed) 70735ms
+       × ignores a hairline seam however deeply it sits 5575ms
+ ❯ tools/art/verify_seams.test.ts (9 tests | 1 failed) 25930ms
+       × refuses a floor too low, a missing reason, an unknown pair, and the joint zone 6162ms
+ ❯ tools/content/validate.test.mjs (84 tests | 2 failed) 187960ms
+     × catches a music override naming a track MUSIC_SPECS does not know 8143ms
+       × catches a campaign requiring itself, and a requires the schema refuses 6232ms
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tools/art/rig_motion.test.ts > interior_worst > a one-pixel seam is not a hole > ignores a hairline seam however deeply it sits
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tools/art/rig_motion.test.ts:400:5
+    398|     }
+    399|
+    400|     it("ignores a hairline seam however deeply it sits", () => {
+       |     ^
+    401|       // 1px wide, 12px long, dead centre of the torso — walled in by …
+    402|       // under a pure wall ranking this outranks any real tear in the …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯
+
+ FAIL  tools/art/verify_seams.test.ts > verify_seams > reviewed seam exceptions > refuses a floor too low, a missing reason, an unknown pair, and the joint zone
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tools/art/verify_seams.test.ts:142:5
+    140|     });
+    141|
+    142|     it("refuses a floor too low, a missing reason, an unknown pair, an…
+       |     ^
+    143|       const r = run("taper", {
+    144|         "body/arm_l": { band: 0.3, reason: "x" },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/12]⎯
+
+ FAIL  tools/content/authoring-guide.test.mjs > the authoring guide's examples > has at least one of each kind
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tools/content/authoring-guide.test.mjs:63:58
+     61|
+     62|   it("has at least one of each kind", () => {
+     63|     expect(all.some((e) => e.kind === "guide-variants")).toBe(true);
+       |                                                          ^
+     64|     expect(all.some((e) => e.kind === "guide-choices")).toBe(true);
+     65|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/12]⎯
+
+ FAIL  tools/content/continental-rift.test.ts > npm run content:journey on the slice > --playtest runs clean: lint clean, everything covered, every invariant held
+AssertionError: expected null to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+null
+
+ ❯ tools/content/continental-rift.test.ts:209:49
+    207|   it("--playtest runs clean: lint clean, everything covered, every inv…
+    208|     const run = cli(["--campaign", campaign.id, "--playtest"]);
+    209|     expect(run.status, run.stdout + run.stderr).toBe(0);
+       |                                                 ^
+    210|     expect(run.stdout).toContain("Lint\n  clean");
+    211|     expect(run.stdout).toContain("nodes   6/6 entered by some playthro…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/12]⎯
+
+ FAIL  tools/content/continental-rift.test.ts > npm run content:journey on the slice > the authoring guide's diagram is the one the tool draws
+AssertionError: expected null to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+null
+
+ ❯ tools/content/continental-rift.test.ts:219:24
+    217|   it("the authoring guide's diagram is the one the tool draws", () => {
+    218|     const run = cli(["--campaign", campaign.id, "--format", "mermaid"]…
+    219|     expect(run.status).toBe(0);
+       |                        ^
+    220|     expect(run.stdout.trim()).toBe(toMermaid(campaign, graph).trim());
+    221|     const guide = fs.readFileSync(GUIDE, "utf8");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/12]⎯
+
+ FAIL  tools/content/journey-tools.test.ts > ordered campaigns — seen, skipped, unchanged > the CLI skips them with status 0 and says so
+AssertionError: expected null to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+null
+
+ ❯ tools/content/journey-tools.test.ts:194:24
+    192|   it("the CLI skips them with status 0 and says so", () => {
+    193|     const run = cli(["--campaign", "gemfall"]);
+    194|     expect(run.status).toBe(0);
+       |                        ^
+    195|     expect(run.stdout).toContain("ordered campaign (no graph), skipped…
+    196|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/12]⎯
+
+ FAIL  tools/content/journey-tools.test.ts > ordered campaigns — seen, skipped, unchanged > --all inspects only the graph campaigns and still exits 0 on the shipped repo
+AssertionError: expected null to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+null
+
+ ❯ tools/content/journey-tools.test.ts:200:24
+    198|   it("--all inspects only the graph campaigns and still exits 0 on the…
+    199|     const run = cli(["--all"]);
+    200|     expect(run.status).toBe(0);
+       |                        ^
+    201|     expect(run.stdout).toContain("gemfall.json: ordered campaign (no g…
+    202|     expect(run.stdout).toContain("the-hollow-crown.json: ordered campa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/12]⎯
+
+ FAIL  tools/content/journey-tools.test.ts > journey-ci — sideways, revisit and single-use routes > the CLI draws it, plays it and exits 0
+AssertionError: expected null to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+null
+
+ ❯ tools/content/journey-tools.test.ts:357:28
+    355|   it("the CLI draws it, plays it and exits 0", () => {
+    356|     const mermaid = cli(["--campaign", "journey-ci", "--format", "merm…
+    357|     expect(mermaid.status).toBe(0);
+       |                            ^
+    358|     expect(mermaid.stdout.startsWith("%% The Journey Gate")).toBe(true…
+    359|     const play = cli(["--campaign", "journey-ci", "--walk", "random", …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/12]⎯
+
+ FAIL  tools/content/journey-tools.test.ts > checkJourneySave — classifying a stored journey > the CLI checks a save file and exits non-zero when it is broken
+AssertionError: expected null to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+null
+
+ ❯ tools/content/journey-tools.test.ts:637:25
+    635|       fs.writeFileSync(bad, JSON.stringify(mutate((j) => (j.node = "ol…
+    636|       const ok = cli(["--campaign", "rift-sampler", "--save", good]);
+    637|       expect(ok.status).toBe(0);
+       |                         ^
+    638|       expect(ok.stdout).toContain("Save check");
+    639|       const broken = cli(["--campaign", "rift-sampler", "--save", bad]…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/12]⎯
+
+ FAIL  tools/content/journey-tools.test.ts > the CLI > refuses an unknown campaign and a bad option with status 2
+AssertionError: expected null to be 2 // Object.is equality
+
+- Expected:
+2
+
++ Received:
+null
+
+ ❯ tools/content/journey-tools.test.ts:654:60
+    652| describe("the CLI", () => {
+    653|   it("refuses an unknown campaign and a bad option with status 2", () …
+    654|     expect(cli(["--campaign", "no-such-campaign"]).status).toBe(2);
+       |                                                            ^
+    655|     expect(cli(["--campaign", "journey-ci", "--format", "svg"]).status…
+    656|     expect(cli([]).status).toBe(2);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/12]⎯
+
+ FAIL  tools/content/validate.test.mjs > cross-file rules > catches a music override naming a track MUSIC_SPECS does not know
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tools/content/validate.test.mjs:255:3
+    253|   });
+    254|
+    255|   it("catches a music override naming a track MUSIC_SPECS does not kno…
+       |   ^
+    256|     // Music is chosen by name at a table; a track with no spec row is…
+    257|     // the game can be asked for, so the override is refused, not left…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/12]⎯
+
+ FAIL  tools/content/validate.test.mjs > cross-file rules > campaign prerequisites (#221) > catches a campaign requiring itself, and a requires the schema refuses
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tools/content/validate.test.mjs:330:5
+    328|     });
+    329|
+    330|     it("catches a campaign requiring itself, and a requires the schema…
+       |     ^
+    331|       const self = copyTree();
+    332|       const crown = readJson(self, ...CROWN);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/12]⎯
+
+
+ Test Files  6 failed | 197 passed | 1 skipped (204)
+      Tests  12 failed | 3776 passed | 9 skipped (3797)
+   Start at  11:46:39
+   Duration  306.30s (transform 12.66s, setup 0ms, import 65.53s, tests 436.15s, environment 52.40s)
