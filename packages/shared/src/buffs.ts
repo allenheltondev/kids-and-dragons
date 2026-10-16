@@ -450,20 +450,30 @@ export const NUMBED_BUFF_ID = "numbed";
 /** What the screens call it. A numbing sting that wears off, never a wound. */
 export const NUMBED_LABEL = "Numbed";
 
+/** How many of its own turns a puffed enemy stays puffed when `puffTurns` is not authored. */
+export const DEFAULT_PUFF_TURNS = 2;
+
 /**
  * What is wrong with an enemy's `onHit` / `retaliation` block (`{ "slow": {
- * "steps", "turns" } }`). Total over malformed input, like
+ * "steps", "turns" } }`; a `retaliation` also takes `puffTurns`, which
+ * `withPuff` allows). Total over malformed input, like
  * `buffDeclarationProblems`; the limits are the `"move"` kind's own, so a
  * sting can never take more than any buff could.
  */
-export function slowBlockProblems(raw: unknown): BuffProblem[] {
+export function slowBlockProblems(raw: unknown, withPuff = false): BuffProblem[] {
   const problems: BuffProblem[] = [];
   const fail = (path: string, problem: string) => problems.push({ path, problem });
   if (!isRecord(raw)) {
     fail("", 'must be an object like { "slow": { "steps": 2, "turns": 2 } }');
     return problems;
   }
-  for (const key of Object.keys(raw)) if (key !== "slow") fail(`/${key}`, `"${key}" is not something a sting does; only "slow"`);
+  for (const key of Object.keys(raw)) {
+    if (key === "slow" || (withPuff && key === "puffTurns")) continue;
+    fail(`/${key}`, `"${key}" is not something a sting does; only "slow"${withPuff ? ' (and "puffTurns")' : ""}`);
+  }
+  if (withPuff && raw.puffTurns !== undefined && (!isInteger(raw.puffTurns) || raw.puffTurns < 1 || raw.puffTurns > MAX_BUFF_DURATION)) {
+    fail("/puffTurns", `puffTurns must be a whole number from 1 to ${MAX_BUFF_DURATION}`);
+  }
   const slow = raw.slow;
   if (!isRecord(slow)) {
     fail("/slow", 'slow must be { "steps": n, "turns": n }');

@@ -71,6 +71,18 @@ export function numbedLine(who: string, steps: number, turns: number): string {
   return `${who} ${verb} numbed by a sting: ${steps} fewer ${steps === 1 ? "step" : "steps"} for ${turns} ${turns === 1 ? "turn" : "turns"}. It wears off.`;
 }
 
+/**
+ * The combat log's line for an enemy puffing up (#227). It says what to
+ * expect, so nobody is stung without being told it was coming.
+ */
+export function puffedLine(enemy: string): string {
+  return `${enemy} puffs up! Hitting it now means a numbing sting.`;
+}
+
+/** The words on a puffed enemy's marker, wherever it is drawn. */
+export const PUFFED_WORDS = "Puffed";
+export const PUFFED_HINT = "Hitting it numbs you for a while";
+
 /** How long a Numbed has left, in words that promise it ends. */
 export function numbedTurnsText(turnsLeft: number | undefined): string {
   if (turnsLeft === undefined) return "wears off when the fight ends";
