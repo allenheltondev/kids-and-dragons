@@ -9,6 +9,7 @@
 
 import type {
   ResolvedCharacter,
+  JournalResponse,
   AbilityCatalog,
   Campaign,
   Chapter,
@@ -119,6 +120,12 @@ export interface GameStore {
    * new one. Seating one is `send({ type: "SEAT_CHARACTER", characterId })`.
    */
   listHeroes(): Promise<ResolvedCharacter[]>;
+  /**
+   * What this phone can study with no game running (screens/JournalScreen):
+   * its heroes, the household's Field Guide, where the party last was. `null`
+   * when this phone has never played, so there is nobody to look at.
+   */
+  loadJournal(): Promise<JournalResponse | null>;
   /**
    * Fire an intent at the server. Resolves `true` when the server accepted it
    * and `false` when it did not — a rejection is a normal part of the protocol

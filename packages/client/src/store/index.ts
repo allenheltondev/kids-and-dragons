@@ -42,6 +42,7 @@ import type {
 import {
   clearSession,
   defaultStorage,
+  loadDeviceToken,
   loadIdentity,
   loadSession,
   saveIdentity,
@@ -297,7 +298,8 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           onState: (state) => {
             set({ state });
             // The household's Field Guide rides the mirror (`RunState.fieldGuide`);
-            // its own store is a projection of it, never written any other way.
+            // its own store is a projection of it (the journal borrows it only
+            // out of a room — see field-guide-discoveries.ts).
             setFieldGuideDiscoveries(state.fieldGuide);
           },
           onPresentation: (presentation) => set({ presentation }),
@@ -745,6 +747,12 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         if (!session?.playerId) return [];
         const { heroes } = await deps.api.listHeroes(session.sessionToken);
         return heroes;
+      },
+
+      async loadJournal() {
+        const deviceToken = loadDeviceToken(deps.storage);
+        if (!deviceToken) return null;
+        return deps.api.loadJournal(deviceToken);
       },
 
       async joinRoom(code: string, name: string) {

@@ -212,6 +212,22 @@ export function loadIdentity(storage: KeyValueStorage = defaultStorage()): Local
   return identity;
 }
 
+/**
+ * The device binding, if this browser has ever been issued one — read without
+ * minting an identity, unlike `loadIdentity`. A phone that has never played has
+ * nothing to study between games, and asking should not make it somebody.
+ */
+export function loadDeviceToken(storage: KeyValueStorage = defaultStorage()): string | null {
+  const raw = storage.getItem(DEVICE_KEY);
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as Partial<LocalIdentity>;
+    return typeof parsed.deviceToken === "string" && parsed.deviceToken !== "" ? parsed.deviceToken : null;
+  } catch {
+    return null;
+  }
+}
+
 export function saveIdentity(identity: LocalIdentity, storage: KeyValueStorage = defaultStorage()): void {
   try {
     storage.setItem(DEVICE_KEY, JSON.stringify(identity));
