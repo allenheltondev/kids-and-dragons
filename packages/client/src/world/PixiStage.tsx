@@ -110,6 +110,15 @@ export function PixiStage(): React.JSX.Element {
   const session = useSession();
   const chapter = useChapter();
   const previews = usePreviews();
+  const [paneWidth, setPaneWidth] = useState(0);
+  const [guestPage, setGuestPage] = useState({ key: "", index: 0 });
+  const guests = castFor(chapter, state);
+  const guestKey = `${state?.chapterId}/${state?.sceneId}/${guests.map((g) => g.key).join(",")}`;
+  const paging = paneWidth > 0 && paneWidth < 600 && guests.length > 1;
+  const guestIndex = guestPage.key === guestKey ? Math.min(guestPage.index, guests.length - 1) : 0;
+  const visibleGuests = paging ? guests.slice(guestIndex, guestIndex + 1) : guests;
+  const visibleGuestsRef = useRef(visibleGuests);
+  visibleGuestsRef.current = visibleGuests;
   // The board needs the chapter for its biome and enemy art; content is data,
   // fetched over HTTP like rules and items, never baked into the bundle.
   useEnsureChapter();
@@ -185,7 +194,7 @@ export function PixiStage(): React.JSX.Element {
       scene.setNameplatesVisible(nameplatesVisibleIn(live.state?.phase));
       scene.setParty(live.state?.party ?? []);
       scene.setBiome(live.chapter?.biome ?? null, sceneArtFor(live.chapter, live.state));
-      scene.setCast(castFor(live.chapter, live.state));
+      scene.setCast(visibleGuestsRef.current);
       scene.setStageInset(stageInsetBottom());
       scene.setEncounter(boardView(live.state, live.state?.party ?? [], live.chapter, live.previews));
 
@@ -212,6 +221,7 @@ export function PixiStage(): React.JSX.Element {
           instance.ticker.stop();
           return;
         }
+        setPaneWidth(width);
         instance.renderer.resize(width, height);
         scene?.resize(width, height);
         syncTicker();
@@ -252,8 +262,8 @@ export function PixiStage(): React.JSX.Element {
   // Who is standing in the scene with the party. Keyed by the scene, not by
   // every patch: a vote tick must not re-run the cast diff.
   useEffect(() => {
-    sceneRef.current?.setCast(castFor(chapter, state));
-  }, [chapter, state?.chapterId, state?.sceneId, state?.encounter]);
+    sceneRef.current?.setCast(visibleGuestsRef.current);
+  }, [chapter, guestKey, guestIndex, paging, state?.encounter]);
 
   // The narration plate's height, so the story stands above it.
   useEffect(() => onStageInset((px) => sceneRef.current?.setStageInset(px)), []);
@@ -338,5 +348,14 @@ export function PixiStage(): React.JSX.Element {
   });
 
   if (failed) return <RendererFallback />;
-  return <div ref={hostRef} className="kad-stage" aria-hidden="true" />;
+  return <>
+    <div ref={hostRef} className="kad-stage" aria-hidden="true" />
+    {paging && <nav className="kad-cast-browser" aria-label="Scene guests">
+      <button type="button" aria-label="Previous guest" disabled={guestIndex === 0}
+        onClick={() => setGuestPage({ key: guestKey, index: guestIndex - 1 })}>‹</button>
+      <span aria-live="polite">{guests[guestIndex]?.name ?? "Guest"} · {guestIndex + 1}/{guests.length}</span>
+      <button type="button" aria-label="Next guest" disabled={guestIndex === guests.length - 1}
+        onClick={() => setGuestPage({ key: guestKey, index: guestIndex + 1 })}>›</button>
+    </nav>}
+  </>;
 }

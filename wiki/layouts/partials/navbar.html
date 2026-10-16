@@ -2,7 +2,7 @@
   <nav class="wiki-navbar__inner" aria-label="Main navigation">
     <!-- Left: the dragon mark and wordmark, then a "Wiki" tag -->
     <a href="{{ .Site.BaseURL }}" class="wiki-navbar__title" aria-label="{{ site.Params.brand.name }} Wiki home">
-      {{ partial "crest.html" (dict "size" 44 "class" "wiki-logo--nav" "eager" true) }}
+      {{ partial "crest.html" (dict "size" 44 "class" "wiki-logo--nav" "eager" true "breakable" true) }}
       <span class="wiki-navbar__title-full">Wiki</span>
       <span class="wiki-navbar__title-short">Wiki</span>
     </a>
