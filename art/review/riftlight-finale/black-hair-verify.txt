@@ -1,0 +1,6 @@
+
+cast/deep-ice-figure
+  pass  cast/deep-ice-figure basis  faun
+  pass  assets\cast\deep-ice-figure\assembled.png  1024x1024 RGBA  margin=82px
+  pass  cast/deep-ice-figure feet  y=899
+{'failures': [], 'warnings': [], 'passed': 3}

@@ -16,5 +16,10 @@
     "kind": "scene",
     "ref": "assets/biomes/glacier_of_origins/bg.webp",
     "prompt": "Paint ONE wide 16:9 story-stage backdrop for a warm hand-painted children's fantasy game, matching the reference glacier's painterly ice/material language. A NEW place: the deep ice at the HEART of the Glacier of Origins, an immense ancient enclosed ice chamber. Long thick blue-gray layers of memory ice and grand old arched fractures in the upper half, cold dim light diffused through ice from upper left, no green illumination, no warm summer light. Old stillness and wonder, not horror. Broad OPEN LEVEL ice floor across entire width from 70% to bottom; the figures' standing floor is at y=80%. Clear unobstructed space at middle-right where a FINAL RIFT WILL BE COMPOSITED LATER; paint NO rift, portal, colored magical light, tear, person, creature, statue, frozen figure, lettering or symbol anywhere. Landmark arch and layered old ice above, no significant detail at topmost 8% or bottom fifth. Never a summer crevasse, no vegetation or outside sunshine. Crafted painterly detail, soft atmospheric depth, no photorealism/3D, no UI or border."
+  },
+  {
+    "request": "Owner review: give the satyr black hair",
+    "prompt": "Edit this existing storybook satyr/faun cutout. Change ONLY his scalp hair, eyebrows, long sweeping mustache and entire beard from gray/white to natural BLACK hair, charcoal highlights that preserve readable flowing strands. Keep his elderly face, confused sad courtly expression, exact pose facing left, body proportions, horns, skin, clothing, cream fur trim, goat legs and hooves, framing, upper-left lighting and painted style unchanged. Hair should clearly read black even in highlights. Preserve the complete figure with transparent margins. Actual transparent background, no ground shadow, no new objects or lettering.",
+    "source": "Previous accepted deep-ice-figure.png; built-in imagegen edit, transparent background"
   }
 ]
