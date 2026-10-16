@@ -3,6 +3,9 @@
  * three entries (architecture §4.6):
  *
  *   /            → home: create or join a room
+ *   /journal     → between games: study your hero, the map and the Field
+ *                  Guide with nothing at stake, and join a game from there.
+ *                  No room, so no code — the device binding is enough.
  *   /tv/:code    → Party Mode WorldView. A pure display client with no
  *                  authority, refreshable at any time (spec §2.1).
  *   /p/:code     → PlayerView in Party Mode, or the toggled
@@ -19,6 +22,7 @@ import { useSyncExternalStore } from "react";
 
 export type Route =
   | { name: "home" }
+  | { name: "journal" }
   | { name: "tv"; code: string }
   | { name: "player"; code: string }
   | { name: "notFound"; path: string };
@@ -67,6 +71,7 @@ export function parseRoute(input: string): Route {
   const [head, second] = segments;
 
   if (segments.length === 0) return { name: "home" };
+  if (segments.length === 1 && head === "journal") return { name: "journal" };
 
   if (segments.length === 2 && second !== undefined) {
     const code = normalizeCode(second);
@@ -84,6 +89,8 @@ export function formatRoute(route: Route): string {
   switch (route.name) {
     case "home":
       return "/";
+    case "journal":
+      return "/journal";
     case "tv":
       return `/tv/${normalizeCode(route.code)}`;
     case "player":

@@ -128,7 +128,11 @@ export function spokenRoll(roll: DiceRoll, who: string, helperName: string | nul
   const help =
     roll.help === undefined ? "" : ` plus ${String(roll.help.value)} from ${helperName ?? "a friend"}`;
   const group = roll.group === undefined ? "" : ` ${groupLine(roll.group)}`;
-  return `${who} rolled ${String(roll.die)} plus ${String(roll.mod)}${help}, ${String(roll.total)}. ${outcomeWord(roll)}${group}`;
+  const buff =
+    roll.buff === undefined
+      ? ""
+      : ` ${roll.buff.amount < 0 ? "minus" : "plus"} ${String(Math.abs(roll.buff.amount))} from ${roll.buff.label}`;
+  return `${who} rolled ${String(roll.die)} plus ${String(roll.mod)}${help}${buff}, ${String(roll.total)}. ${outcomeWord(roll)}${group}`;
 }
 
 export function DiceOverlay(): ReactElement | null {
@@ -279,6 +283,13 @@ export function DiceOverlay(): ReactElement | null {
           <span className="dice__op">{modLabel}</span>
           {roll.help === undefined ? null : (
             <span className="dice__op">+{roll.help.value}</span>
+          )}
+          {/* A story-check buff (#222): a flat amount, so the sum still adds up. */}
+          {roll.buff === undefined ? null : (
+            <span className="dice__op">
+              {roll.buff.amount < 0 ? "−" : "+"}
+              {Math.abs(roll.buff.amount)}
+            </span>
           )}
           <span className="dice__op">=</span>
           <span className="dice__total">{roll.total}</span>

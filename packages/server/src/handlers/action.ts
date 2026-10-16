@@ -46,7 +46,7 @@ import type { DeviceIdentity } from "../identity.ts";
 import type { ApplyIntentResult } from "../engine/port.ts";
 import type { CampaignProgressRecord, EventRecord, RunRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
-import { arrivalKey, authoredLine, nextMoments } from "../llm/moments.ts";
+import { arrivalKey, authoredLine, mayDecorate, nextMoments } from "../llm/moments.ts";
 import { partyBrief } from "../llm/port.ts";
 import { keepGuestHousehold } from "./account.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
@@ -641,6 +641,7 @@ function liveNarration(
 
   const scene = chapter.scenes[after.sceneId];
   if (!scene) return null;
+  if (!mayDecorate(scene)) return null;
   const authored = authoredLine(scene);
   if (authored.trim().length === 0) return null;
   // Narration variants or `{tokens}` (#159) made the engine's text depend on

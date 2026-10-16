@@ -269,6 +269,7 @@
     },
     "scene_spiral": {
       "type": "story",
+      "priority": 2,
       "narration": "Plotted on the table, the moved paths are not random at all. They spiral, round and round every place a stone fell, like water round a plughole, every path bending away. It is what the land has been saying all the way north. The Woods is not flinching from the mountain. It is flinching from the stones.",
       "cast": [
         {
@@ -383,6 +384,7 @@
     },
     "scene_knot_cords": {
       "type": "story",
+      "priority": 1,
       "narration": "The oldest archivist, whose beard has a bird's nest in it (occupied), brings out a box of cords tied in knots: records so old they were never written down. \"The paths flinched like this once before,\" he says. \"Long, long ago.\" The knots are worn smooth from hands that kept checking. And the stones, he adds, are older than the mountain's name. The unicorns are right.",
       "cast": [
         {
@@ -1062,6 +1064,7 @@
     },
     "scene_soup_tent": {
       "type": "story",
+      "priority": 2,
       "discovers": [
         "faction.deep_hollow_cult",
         "npc.selkie"

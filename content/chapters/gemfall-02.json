@@ -910,6 +910,7 @@
     },
     "scene_embermoths": {
       "type": "story",
+      "priority": 2,
       "discovers": [
         "creature.embermoth"
       ],
@@ -1058,6 +1059,7 @@
     },
     "scene_tremor_heard": {
       "type": "story",
+      "priority": 2,
       "narration": "It is one long, low note, deep under the fields, coming from the north. It is not a rumble. It is more like a hum, very old and very slow. Then it fades, and the crickets start up again. You lie awake for a long time, listening for it to come back. It doesn't.",
       "choices": [
         {
@@ -1094,6 +1096,7 @@
     },
     "choice_night_tremor_stone": {
       "type": "story",
+      "priority": 2,
       "narration": "You take the warm red stone out of your pack. It is humming. You feel it more than hear it: one low note, very old and very slow, buzzing in your fingers. When the ground goes still, the stone goes still too, as if the two of them had been talking and have just stopped. You put it away very carefully.",
       "choices": [
         {

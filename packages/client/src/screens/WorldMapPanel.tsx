@@ -23,7 +23,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactElement } from "react";
-import type { FieldGuide, WorldMap, WorldPlace } from "@kad/shared";
+import type { FieldGuide, PartyMember, WorldMap, WorldPlace } from "@kad/shared";
 import { useChapter, useParty, useRunState, useWorld, useGameStore } from "../store";
 import { getAtlasCenter, updateAtlasView, useAtlasNavigation } from "../store/atlas-navigation";
 import { useFieldGuideDiscoveries } from "../store/field-guide-discoveries";
@@ -68,7 +68,57 @@ export function WorldMapPanel(): ReactElement {
   const party = useParty();
   const runId = useGameStore((store) => store.session?.runId ?? "");
   const chapterId = state?.chapterId ?? null;
-  const scope = JSON.stringify([runId, chapterId]);
+
+  if (state === null || chapterId === null) {
+    return (
+      <section className="atlas atlas--empty" aria-label="World map">
+        <p className="atlas__note kad-muted">
+          <Icon name="map" />
+          <span>The map fills in once the story begins.</span>
+        </p>
+      </section>
+    );
+  }
+
+  if (world === null || chapter === null || chapter.id !== chapterId) return <AtlasUnrolling />;
+
+  return <Atlas world={world} place={placeOf(world, chapter.biome)} party={party}
+    scope={JSON.stringify([runId, chapterId])} here="now" />;
+}
+
+/** The world key is still on its way. */
+export function AtlasUnrolling(): ReactElement {
+  return (
+    <section className="atlas atlas--empty" aria-label="World map" aria-busy="true">
+      <p className="atlas__note kad-muted">
+        <Icon name="map" />
+        <span>Unrolling the map…</span>
+      </p>
+    </section>
+  );
+}
+
+export interface AtlasProps {
+  world: WorldMap;
+  /** Where the party stands, or null when canon has not put it on the map. */
+  place: WorldPlace | null;
+  /** Whose faces stand on the pin. */
+  party: readonly PartyMember[];
+  /** What the zoom, the route and the scroll are remembered against. */
+  scope: string;
+  /**
+   * In play the party *is* somewhere; between games (the journal) the pin is
+   * where they were last, and says so rather than claiming they are there.
+   */
+  here: "now" | "last";
+}
+
+/**
+ * The painting itself — every place, route and cloud — with the party on it.
+ * Reads the household's discoveries and nothing about a run, so the journal
+ * can open it with no game going.
+ */
+export function Atlas({ world, place, party, scope, here }: AtlasProps): ReactElement {
   const { step, routeId, showRoutes } = useAtlasNavigation(scope);
   const setStep = (next: number | ((value: number) => number)) => updateAtlasView(scope, { step: typeof next === "function" ? next(step) : next, center: null });
   const setRouteId = (next: string | null) => updateAtlasView(scope, { routeId: next, center: null });
@@ -83,20 +133,18 @@ export function WorldMapPanel(): ReactElement {
   const viewport = useRef<HTMLDivElement | null>(null);
   const marker = useRef<HTMLDivElement | null>(null);
 
-  const ready = world !== null && chapter !== null && chapter.id === chapterId;
-  const place = ready ? placeOf(world, chapter.biome) : null;
-  const zoomSteps = world?.atlas ? ATLAS_ZOOM_STEPS : ZOOM_STEPS;
+  const zoomSteps = world.atlas ? ATLAS_ZOOM_STEPS : ZOOM_STEPS;
   const zoom = zoomSteps[step] ?? 1;
   const partyAnchor = place?.anchor ?? null;
-  const image = world?.atlas?.image ?? world?.image;
+  const image = world.atlas?.image ?? world.image;
   const aspect = image ? image.width / image.height : 1;
   // Cover the pane at the first step: neighbors fill the screen, with no sheet gutters.
   const canvasWidth = Math.max(viewportSize.width, viewportSize.height * aspect) * zoom;
-  const level = world?.atlas ? atlasLevel(world.atlas, canvasWidth * (globalThis.devicePixelRatio || 1)) : null;
+  const level = world.atlas ? atlasLevel(world.atlas, canvasWidth * (globalThis.devicePixelRatio || 1)) : null;
   const tiles = level?.tiles;
   const tileImage = level?.image;
   const discovered = new Set(Object.keys(discoveries));
-  const routes = world ? visibleMapRoutes(world.routes ?? [], world.places, discovered) : [];
+  const routes = visibleMapRoutes(world.routes ?? [], world.places, discovered);
   const atDetail = step === zoomSteps.length - 1;
   const selectedRoute = routes.find((route) => route.id === routeId);
   const selectEntry = (id: string | null) => {
@@ -107,8 +155,8 @@ export function WorldMapPanel(): ReactElement {
     setCardId(id);
     cue("page-turn");
   };
-  const cardPlace = cardId ? Object.values(world?.places ?? {}).find((known) => known.id === cardId) : undefined;
-  const cardRegion = cardId ? Object.values(world?.regions ?? {}).find((known) => known.placeId === cardId) : undefined;
+  const cardPlace = cardId ? Object.values(world.places ?? {}).find((known) => known.id === cardId) : undefined;
+  const cardRegion = cardId ? Object.values(world.regions ?? {}).find((known) => known.placeId === cardId) : undefined;
 
   useEffect(() => {
     if (!cardId) return;
@@ -125,7 +173,7 @@ export function WorldMapPanel(): ReactElement {
     });
     observer.observe(view);
     return () => observer.disconnect();
-  }, [ready]);
+  }, []);
 
   // The guide feeds an open entry, and a card's painting and danger.
   const wantGuide = Boolean((entryId && discoveries[entryId]) || cardId);
@@ -144,13 +192,13 @@ export function WorldMapPanel(): ReactElement {
    * is taken once per visit, so a lifted cloud stays lifted while it is open.
    */
   const [cloudsAtOpen] = useState(revealedClouds);
-  const regions = Object.values(world?.regions ?? {});
+  const regions = Object.values(world.regions ?? {});
   const lifting = regions.filter((r) => discoveries[r.placeId] && !cloudsAtOpen.has(r.placeId)).map((r) => r.placeId);
   const liftingKey = lifting.join(",");
   useEffect(() => {
     if (liftingKey) markCloudsRevealed(liftingKey.split(","));
   }, [liftingKey]);
-  const trail = world ? wobblyPath(explorerTrail(world.places, discoveries).map((known) => known.anchor)) : "";
+  const trail = wobblyPath(explorerTrail(world.places, discoveries).map((known) => known.anchor));
 
   /*
    * Keep the party in the middle of the pane: on open, and again every time
@@ -164,7 +212,7 @@ export function WorldMapPanel(): ReactElement {
     const pin = marker.current;
     // `scrollTo` is absent on elements in jsdom; the tests are not about panning.
     if (!view || typeof view.scrollTo !== "function") return;
-    if (world?.atlas && canvasWidth <= 0) return;
+    if (world.atlas && canvasWidth <= 0) return;
     const focus = getAtlasCenter(scope) ?? selectedRoute?.points[Math.floor(selectedRoute.points.length / 2)] ?? null;
     view.scrollTo({
       left: focus ? focus.x / 1000 * canvasWidth - view.clientWidth / 2 : pin ? pin.offsetLeft - view.clientWidth / 2 : 0,
@@ -178,28 +226,6 @@ export function WorldMapPanel(): ReactElement {
     setCardId(null);
   }, [scope]);
 
-  if (state === null || chapterId === null) {
-    return (
-      <section className="atlas atlas--empty" aria-label="World map">
-        <p className="atlas__note kad-muted">
-          <Icon name="map" />
-          <span>The map fills in once the story begins.</span>
-        </p>
-      </section>
-    );
-  }
-
-  if (!ready) {
-    return (
-      <section className="atlas atlas--empty" aria-label="World map" aria-busy="true">
-        <p className="atlas__note kad-muted">
-          <Icon name="map" />
-          <span>Unrolling the map…</span>
-        </p>
-      </section>
-    );
-  }
-
   const canCloser = step < zoomSteps.length - 1;
   const canFurther = step > 0;
 
@@ -208,9 +234,13 @@ export function WorldMapPanel(): ReactElement {
       <header className="atlas__head">
         <div className="atlas__words">
           <p className="atlas__where" role="status">
-            {place
-              ? `The party is in ${whereLine(world, place)}.`
-              : "This chapter is somewhere the map does not show."}
+            {here === "now"
+              ? place
+                ? `The party is in ${whereLine(world, place)}.`
+                : "This chapter is somewhere the map does not show."
+              : place
+                ? `Last seen in ${whereLine(world, place)}.`
+                : "Set out on an adventure to put yourself on the map."}
           </p>
         </div>
         <div className="atlas__zoom" role="group" aria-label="Zoom">
@@ -416,7 +446,7 @@ export function WorldMapPanel(): ReactElement {
                   {place.kind === "biome" ? <button type="button" className="atlas__place atlas__place--button kad-focusable"
                     aria-label={`About ${place.title}`} onClick={() => openCard(place.id)}>{place.title}</button>
                     : <span className="atlas__place">{place.title}</span>}
-                  <span className="atlas__here">You are here</span>
+                  <span className="atlas__here">{here === "now" ? "You are here" : "You were here"}</span>
                   {discoveries[place.id] ? <button type="button" className="atlas__read kad-focusable"
                     onClick={() => selectEntry(place.id)} aria-label={`Read about ${place.title}`}>Field Guide</button> : null}
                 </span>

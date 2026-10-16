@@ -6,6 +6,8 @@
  * selects composition; it never forks a feature.
  *
  *   no session          → <HomeScreen/>
+ *   /journal            → <JournalScreen/> (between games: nothing to play,
+ *                         everything to look at — no room, no session)
  *   /tv/:code           → PartyLayout world  (a pure display client, spec §2.1)
  *   /p/:code   party    → PartyLayout player
  *   /p/:code   travel   → TravelLayout       (both surfaces, one at a time)
@@ -74,7 +76,7 @@ function RoomLoading(): React.JSX.Element {
  * URL and the session is in localStorage (architecture §4.3) — so that is
  * the one thing the button does.
  */
-class RoomBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+class RoomBoundary extends Component<{ children: ReactNode; message?: string }, { failed: boolean }> {
   override state = { failed: false };
 
   static getDerivedStateFromError(): { failed: boolean } {
@@ -86,13 +88,19 @@ class RoomBoundary extends Component<{ children: ReactNode }, { failed: boolean 
     return (
       <div className="kad-boot" role="alert">
         <div>
-          <p>The room couldn’t load.</p>
+          <p>{this.props.message ?? "The room couldn’t load."}</p>
           <Button onClick={() => { location.reload(); }}>Try again</Button>
         </div>
       </div>
     );
   }
 }
+
+// The adventure book (`/journal`) is a route of its own, between games, and
+// loads on demand like the room: nobody on the join screen needs it yet.
+const JournalScreen = lazy(() =>
+  import("./screens/JournalScreen").then((module) => ({ default: module.JournalScreen })),
+);
 
 export function App(): React.JSX.Element {
   const route = useRoute();
@@ -142,6 +150,15 @@ export function App(): React.JSX.Element {
   );
 
   function pickLayout(): React.JSX.Element {
+    if (route.name === "journal") {
+      return (
+        <RoomBoundary message="Your adventure book couldn’t open.">
+          <Suspense fallback={<div className="kad-boot"><Spinner size="lg" label="Opening your adventure book" showLabel /></div>}>
+            <JournalScreen />
+          </Suspense>
+        </RoomBoundary>
+      );
+    }
     const code = routeCode(route);
 
     if (!code || !session) {

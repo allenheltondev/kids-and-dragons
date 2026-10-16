@@ -18,6 +18,7 @@ import type {
   ItemCatalog,
   JoinRoomRequest,
   JoinRoomResponse,
+  JournalResponse,
   RoomMode,
   RulesContent,
   RunState,
@@ -136,6 +137,12 @@ export interface Api {
   fetchState(query: StateQuery, token?: string, timeoutMs?: number): Promise<StateResponse>;
   /** This player's saved characters, to bring one back (spec §5). */
   listHeroes(token: string): Promise<{ heroes: ResolvedCharacter[] }>;
+  /**
+   * What this phone can study between games — its heroes, the household's
+   * Field Guide, where the party last was. The device token, not a room
+   * session: there is no room.
+   */
+  loadJournal(deviceToken: string): Promise<JournalResponse>;
   loadRules(): Promise<RulesContent>;
   loadItems(): Promise<ItemCatalog>;
   loadCampaign(id: string): Promise<Campaign>;
@@ -316,6 +323,10 @@ export const api: Api = {
 
   listHeroes(token) {
     return request<{ heroes: ResolvedCharacter[] }>("/api/heroes", { token });
+  },
+
+  loadJournal(deviceToken) {
+    return request<JournalResponse>("/api/journal", { headers: { "x-kad-device-token": deviceToken } });
   },
 
   fetchState(query, token, timeoutMs) {

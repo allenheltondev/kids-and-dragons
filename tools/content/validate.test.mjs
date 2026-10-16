@@ -718,6 +718,52 @@ describe("conditions, variants and tokens", { timeout: 30_000 }, () => {
   });
 });
 
+describe("class-gated choices (#228)", { timeout: 30_000 }, () => {
+  const entryOf = (chapter) => chapter.scenes[chapter.entry];
+  const addClassChoice = (chapter, requiresClass) => {
+    const scene = entryOf(chapter);
+    scene.choices.push({ id: "read_light", label: "Read the light", icon: "star", goto: scene.choices[0].goto, requiresClass });
+  };
+
+  it("accepts a class, and a list of them, beside an ungated choice", () => {
+    for (const requiresClass of ["starweaver", ["thornguard", "songkeeper"]]) {
+      const result = withChapter((chapter) => addClassChoice(chapter, requiresClass));
+      expect(result.code).toBe(0);
+      expect(result.out).toContain("PASS");
+    }
+  });
+
+  it("rejects a class the game does not have", () => {
+    const result = withChapter((chapter) => addClassChoice(chapter, "wizard"));
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("requiresClass");
+  });
+
+  it("rejects an empty list", () => {
+    const result = withChapter((chapter) => addClassChoice(chapter, []));
+    expect(result.code).not.toBe(0);
+  });
+
+  it("fails a scene whose every choice needs a class, and names the fix", () => {
+    const result = withChapter((chapter) => {
+      for (const choice of entryOf(chapter).choices) choice.requiresClass = "starweaver";
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("CLASS_GATED_ONLY_EXIT");
+    expect(result.out).toContain("add a choice no class is needed for");
+  });
+
+  it("still fails when a class gate is mixed with other gates on every choice", () => {
+    const result = withChapter((chapter) => {
+      const choices = entryOf(chapter).choices;
+      choices[0].requiresClass = "starweaver";
+      for (const choice of choices.slice(1)) choice.requiresFlag = "route_wild";
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("every choice is gated");
+  });
+});
+
 // ---------------------------------------------------------------------------
 
 describe("graph campaigns (#192)", { timeout: 30_000 }, () => {
