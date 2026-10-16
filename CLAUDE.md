@@ -9,7 +9,7 @@ contract; where a schema disagrees with them, the schema is wrong.
 - `npm run typecheck` — tsc across shared, server, client and tools
 - `npm test` — vitest (includes the `tools/**/*.test.mjs` content suites)
 - `npm run content:validate` — schemas and scene graphs; a malformed chapter must fail here, never at the table
-- `npm run content:continuity` — names a scene uses that some way in never showed (Gemfall)
+- `npm run content:continuity` — names a scene uses that some way in never showed, across every campaign in `content/campaigns`
 - `npm run content:graph` — a chapter's scene graph, with its gates labeled
 - `npm run content:pacing` — shortest and typical path through each chapter, and its predicted minutes (reports, never gates)
 
@@ -53,9 +53,10 @@ out on Gemfall), and for a nonlinear campaign
   something looks to this party; who is friendly, what was given and which door is open go in a
   choice with a `setFlag`.
 - **In a graph campaign, every place can be reached in more than one order.** Introduce what a
-  chapter needs inside that chapter, or gate the way in (`completed`, a journey flag, a world
-  fact) on the chapter that introduced it. `content:continuity` covers Gemfall only, so this is
-  checked by hand.
+  chapter needs inside that chapter, or gate the way in on the place that introduced it:
+  `completed: X` proves what X showed, a journey flag proves what every setter of it showed, an
+  edge's label counts. `visited`, facts and `outcome` prove nothing to the sweep, so a way chosen
+  by a world fact is judged as if any party could take it.
 - **What the tool cannot see, read for.** `content:continuity` only sees capitalised names. "The
   jar", "your goat" and "that ledger" need a human read at every merge point. Fix findings in the
   prose; an entry in `tools/content/continuity-allow.json` needs a one-line reason.

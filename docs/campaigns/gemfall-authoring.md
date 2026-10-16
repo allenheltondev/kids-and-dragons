@@ -201,8 +201,8 @@ Follow `content/chapters/bramblewood-01.json`. Each Gemfall chapter:
 
 ### Continuity: names a scene uses that some way in never showed
 
-`npm run content:continuity` (and `tools/content/continuity.test.mjs` in `npm test`) finds
-**dangling references**: a scene that uses a capitalised name (a person, a place, an item)
+`npm run content:continuity` (and `tools/content/continuity.test.mjs` in `npm test`) sweeps every
+campaign in `content/campaigns` and finds **dangling references**: a scene that uses a capitalised name (a person, a place, an item)
 which some way into the scene showed and some other way did not. It is a must-analysis. Inside
 a chapter it intersects what every path into a scene showed; across chapters it carries
 knowledge along every history the road weave allows, so a 4C party that arrived from 3B's
