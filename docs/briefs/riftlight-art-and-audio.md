@@ -34,7 +34,7 @@ What is new, in the order it is needed: the rift itself and its sounds (Part A),
 `assets/manifest.json` and every file under `assets/` ship to every phone. A file list is readable
 by anyone, so **no id, filename, manifest name or path may contain "Corvane", "Pangea",
 "emperor" or anything that says there is a hidden ruler.** Use the neutral ids this brief gives
-(`cast/the_old_king`, `music/riftlight-finale`, `scenes/riftlight/glacier-deep-ice`). The
+(`cast/deep-ice-figure`, `music/riftlight-finale`, `scenes/riftlight/glacier-deep-ice`). The
 manifest `name` of a cast figure is shown to nobody but must follow the same rule. Prompts you
 record may name him; they live in docs, not in `assets/`.
 
@@ -88,7 +88,7 @@ brief defines them:
 | `rift_green`, `rift_amber`, `rift_blue`, `rift_violet` | loop | 12 | One color layer each, with its pattern. Any two or three stack over `rift_base` and must still read |
 | `rift_shrink` | loop | 12 | Timed: the rift visibly contracts |
 | `rift_stutter` | loop | 12 | Unstable: it skips and jolts, irregular |
-| `rift_sync` | loop | 12 | Linked: a steady beat, so two rifts can pulse together |
+| `rift_sync` | loop | 12 | Linked: a steady beat, so a rift's two mouths pulse together. Every two-way rift shows it |
 | `rift_open` | one-shot | 12 | |
 | `rift_collapse` | one-shot | 12 | Amber's end: folds closed, gentle, never an explosion |
 
@@ -299,7 +299,7 @@ glacier) have no way to play until the per-chapter music override in
 
 ## Part E — the finale (priority 4)
 
-### E1. `the_old_king`
+### E1. `deep-ice-figure`
 
 Corvane: an ancient ruler, newly woken after a millennium, who wants his old world back and
 does not understand why everything is "wrong". **Confused above all**, courtly, sad and certain:

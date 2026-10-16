@@ -32,7 +32,16 @@ The magical force itself need not be sentient; do not canonize a conscious rift 
 - Three interweaving regional strands, **not three mandatory checklists**.
 - Different discoveries, allies and practical advantages based on route.
 - A late revelation and a finale with meaningfully distinct choices ([below](#finale-and-endings--agreed)).
-- **Size — agreed:** about 22–24 nodes authored, 14–16 played on a playthrough (roughly 1.5× Gemfall), each node 30–40 minutes. A node pays about 125 XP on its first completion only, so a party arriving at Sworn (700) crosses Radiant (2,600, about 1,900 over the campaign) one node before the finale, as spec §8.1 wants. Tune the exact award once the node list exists.
+- **Size — agreed:** about 22–24 nodes authored, 14–16 played on a typical playthrough (roughly 1.5× Gemfall), each node 30–40 minutes. **The shortest valid route to the finale is 12 nodes** (for example the hidden glacier rift to the Coast, the linked rift to the Sky, skipping `stuttering-flats`), so only 11 pay before the finale.
+- **XP — agreed:** awards are sized against that shortest route, so every party arriving at Sworn (700) crosses Radiant (2,600) **at the convergence, one node before the finale**, as spec §8.1 wants. XP pays on first completion only.
+
+  | Node | First-completion XP |
+  | --- | --- |
+  | Every ordinary node | **150** |
+  | The convergence (every route plays it; Radiant lands here) | **450** |
+  | The finale | **150** |
+
+  Shortest route: 10 × 150 + 450 = 1,950 before the finale (50 of slack). Longest (16 nodes): 14 × 150 + 450 + 150 = 2,700, ending near 3,400, still short of level 8 (3,500). A setback halves a node's award, so a run with setbacks can arrive at the finale just short of Radiant; spec §8.2 accepts that.
 
 ## Beginning — agreed
 1. Exchange rift throws players to the Glacier of Origins.

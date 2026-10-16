@@ -28,7 +28,7 @@ A gravel bar, shore signal or environmental opportunity is the final active esca
 - **Ossley's rescue** comes with a **Supper Bundle** (heal 1) and his line "When I'm going your way."
 
 ### The rift under pressure — agreed
-A rift appears within reach along the washout, offering a meaningful choice: commit to an unknown rift route or keep battling the river. Its **Riftlight** is **amber + violet** (single-use, one-way) and tells a perceptive character so, but not where it goes. It leads to the **Sky Islands**, otherwise reachable only by air, which is what makes it a real temptation. Taking it sets `river_took_rift`; the edge is `once`. Which stage it appears at is TBD.
+A rift appears within reach along the washout, offering a meaningful choice: commit to an unknown rift route or keep battling the river. Its **Riftlight** is **amber + violet** (single-use, one-way) and tells a perceptive character so, but not where it goes. It leads to the **Sky Islands**, otherwise reachable only by air, which is what makes it a real temptation. Taking it sets `river_took_rift`. The edge is `rift: { uses: 1, oneWay: true, reveal: "when-crossed" }`, not edge `once`. Which stage it appears at is TBD.
 
 ### The rescuer — agreed
 **Old Ossley**, the frogfolk ferryman of Stone Crossing (canon). He works his ferry in flood years, and the changed melt makes this one. His Gemfall line "Later. When I'm going your way." pays off here. His price is never coin and never cruel.

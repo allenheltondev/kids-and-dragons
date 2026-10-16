@@ -16,7 +16,7 @@ flowchart TD
   W -->|flag: river_escaped_early| F[frostfang-shore]
   W -->|flag: river_escaped_middle| B[boundary-stone-bank]
   W -->|flag: river_escaped_late| D[ashspan-bridge]
-  W -.->|flag: river_took_rift, once| S[sky-islands-arrival]
+  W -.->|flag: river_took_rift; rift uses 1, oneWay| S[sky-islands-arrival]
   H -->|opensWhen: glacier_rift_woken| L[saltrot-arrival]
   L -->|return through the rift| H
 ```
@@ -41,7 +41,7 @@ The river's multiple escape opportunities are **stages within one authored encou
 - Riftseekers provide a lead, but their advice is optional, imperfect and brief.
 - Follow lead → the ice-shelf traverse. A failed roll opens the washout, **not an immediate setback/failure screen**. The traverse's scenes set one member of an `"ice_shelf": ["traverse_made", "traverse_failed"]` route set, and the two exits guard on those flags. Never guard on `outcome: setback`: a setback counts toward `setbackLimit` and pays half XP, so the chapter ends as `success` either way.
 - Washout → rolls decide exit distance downstream; no failed-roll dead end. The exits guard on the `river_exit` route set ([node spec](nodes/headwaters-washout.md#consequences--world-state)).
-- Deliberate glacier exploration → the hidden rift, bypassing normal geography to the Saltrot. A party that explores without solving the condition returns to `riftseekers-departure` by a `kind: "return"` edge (`revisit: "pass"` there, so it goes straight to the exit choice) and can still take the lead. The rift is persistent, so it is not `once`, and the Saltrot side has a return edge back to the glacier.
+- Deliberate glacier exploration → the hidden rift, bypassing normal geography to the Saltrot. A party that explores without solving the condition returns to `riftseekers-departure` by a `kind: "return"` edge (`revisit: "pass"` there, so it goes straight to the exit choice) and can still take the lead. The rift is persistent (`persistent: true`), and it is two-way only because it is authored as a **linked pair** of opposite edges ([mechanics.md](mechanics.md#how-rifts-are-authored--agreed)).
 - Returning to Glacier later should be meaningful; dormant rift clue may be observed during the initial survival scene.
 - No single regional storyline is required for access to the endgame (below).
 
@@ -56,9 +56,9 @@ The river's multiple escape opportunities are **stages within one authored encou
 | Part | Authored | Played on one run |
 | --- | --- | --- |
 | Prologue: exchange, glacier, departure, the traverse / washout / hidden-rift branches | ~10 | 4–6 |
-| Three strands, ~4 nodes each | ~12 | 8 (two strands) |
+| Three strands, ~4 nodes each | ~12 | 6–8 (two strands) |
 | Convergence + finale | 2 | 2 |
-| **Total** | **~24** | **14–16** |
+| **Total** | **~24** | **12–16** (12 is the shortest valid route; XP is sized against it, [story.md](story.md)) |
 
 ### How the prologue feeds the strands
 - **Wandering Sky:** the washout rift; the Cairnstep (griffins trade weather news with the Sky Islands by flag signal).
@@ -119,13 +119,13 @@ The Sallow Wastelands (the Saltrot), Saltrot guides, the Bone Yard and displaced
 - **Protected:** the guides' secret that the flats drain mouth-last stays untouched; the colossal remains stay unidentified; Mermaid Cove's "unknown threat" is never made out to be Corvane.
 
 ## Return routes and revisits — agreed
-**No strand is a trap:** every strand's arrival node has at least one way out to another strand. The one-way washout rift into the Sky is answered by the griffins down to the Cairnstep and the linked rift to the Coast; `lintCampaignGraph` proves there are no softlocks.
+**No strand is a trap:** every strand's arrival node has at least one way out to another strand. The one-way washout rift into the Sky is answered by the griffins down to the Cairnstep and the linked rift to the Coast. **Acceptance criterion, not yet checked:** once the nodes and edges are authored in `content/campaigns/riftlight.json`, `lintCampaignGraph` (`npm run content:validate`) and the playtest paths must pass with no softlocks; nothing has validated this graph yet.
 
 | Return | Between |
 | --- | --- |
 | `kind: "return"` | `hidden-glacier-rift` → `riftseekers-departure` |
-| The glacier rift (blue, two-way) | `saltrot-arrival` ↔ `hidden-glacier-rift` |
-| The linked pair | `whale-road` ↔ `saltrot-arrival` |
+| The glacier rift (blue): a linked pair, `persistent` | `saltrot-arrival` ↔ `hidden-glacier-rift` |
+| The Sky↔Coast rift: a linked pair | `whale-road` ↔ `saltrot-arrival` |
 | The griffins | `squall-temple` → `cairnstep-pass` |
 | Ossley's ferry | `saltrot-arrival` ↔ `ashspan-bridge` |
 | The road | `stone-counters` ↔ `ashspan-bridge` (both ways, so the late washout exit reaches Forgotten Paths) |

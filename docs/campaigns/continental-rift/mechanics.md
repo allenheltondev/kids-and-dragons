@@ -66,10 +66,24 @@ Four colors, each answering one question. Every color has its own **pattern** to
 
 Every open rift shows **exactly one of amber or blue**, and violet or not. A typical rift shows two colors, three while green is lit. A **green + amber + violet** rift starts unavailable, becomes **amber + violet** when its requirement is met, then collapses after the party crosses. Color is never a shorthand for destination.
 
+### How rifts are authored — agreed
+The palette only works if every Riftlight rift is one the palette can describe. On the merged #196 engine:
+
+| Shows | Author as | Notes |
+| --- | --- | --- |
+| **Amber** | `uses: 1` | Consumed after one crossing. Never edge `once` as well (`RIFT_ONCE_AND_USES`); `once` is for ordinary one-off edges |
+| **Blue** | `persistent: true` | Open for good once open |
+| **Violet** | `oneWay: true` | The claim that no rift leads straight back, checked by `RIFT_ONE_WAY_HAS_WAY_BACK` |
+| **Green** | `opensWhen` | Shown while the rift is `dormant` |
+
+- **Every Riftlight rift is either `uses: 1` or `persistent: true`,** so it always shows exactly one of amber or blue. No `uses: 2` or more, and no rift with neither.
+- **Timed (`lasts`) and unstable (`unstable`) rifts are always amber** (`uses: 1`). The engine already refuses either with `persistent`.
+- **No violet does not make a way back.** Edges are directed, so a rift shown without violet must be authored as a **linked pair** of opposite edges: `linkedTo` on both, mutual, with the same lifecycle. This applies to every two-way rift: the blue glacier↔Saltrot rift and the Sky↔Coast pair at `whale-road`. A rift without violet and without a partner is a content bug.
+
 **Conditions show as motion, not color.** The remaining #196 properties:
 - **Timed:** the rift visibly shrinks.
 - **Unstable:** it stutters. It closes at a point the story sets, without a timed rift's visible countdown. Its rules never change; they are fixed.
-- **Linked:** it pulses in time with its partner rift.
+- **Linked:** it pulses in time with its other mouth. Every two-way rift is a linked pair in the engine, so **every two-way rift pulses**: the pulse means "this rift has another mouth somewhere". Wandering Sky still teaches it, because at `whale-road` the party can see both mouths.
 
 **Attunable shows as sound.** The rift hums back when a Starweaver is near, which is the signal for the Attune progression.
 
