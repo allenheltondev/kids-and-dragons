@@ -276,8 +276,12 @@ test("a deploy whose content an edge has not caught up with never takes over", a
           : path === index
             ? (text) => JSON.stringify({ ...(JSON.parse(text) as object), "/content/field-guide.json": "ffffffffffffffff" })
             : path === "/"
-              ? // The deploy's page, marked, so the offline app can be told apart.
-                (text) => text.replace("<head>", "<head><!-- deploy 2 -->")
+              ? // The deploy's page: its own entry script, as every build's
+                // is, and marked so the offline app can be told apart.
+                (text) =>
+                  text
+                    .replace("<head>", "<head><!-- deploy 2 -->")
+                    .replace(/(<script\b[^>]*\bsrc=")\/bundle\/[^"]+\.js"/, '$1/bundle/deploy-2.js"')
               : undefined,
     });
     proxy.reset();
@@ -290,6 +294,12 @@ test("a deploy whose content an edge has not caught up with never takes over", a
     });
     expect(proxy.report().bundle.requests, "the new worker never asked for its file index").toBeGreaterThan(0);
     expect(after).toEqual({ waiting: false, installing: false });
+
+    // Still online, the phone opens the app and the old worker is handed the
+    // deploy's page. It must not keep it: its scripts are not this build's.
+    await phone.goto("/");
+    expect(await phone.content(), "the deploy's page was not served").toContain("deploy 2");
+    await phone.waitForTimeout(1_000);
 
     // The old worker is still in charge, with all its copies: the book opens
     // with no signal, Field Guide and all.
