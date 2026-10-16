@@ -114,3 +114,32 @@
 .journal [data-pane="map"] .atlas__head {
   padding-inline-end: calc(var(--kad-touch-min) + 0.5rem);
 }
+
+/* --- Last time's book, when there is no signal ------------------------- */
+
+/* Chrome above the panes, like the tray: rem, and the top-right corner left to
+   the shell's sound button. */
+.journal__stale {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0.6rem calc(var(--kad-touch-min) + 0.5rem) 0.6rem 1rem;
+  border-block-end: 1px solid var(--kad-border);
+  background: #2a2140;
+  font-size: 0.9rem;
+}
+
+.journal__stale-retry {
+  min-block-size: var(--kad-touch-min);
+  padding: 0 0.8rem;
+  border: 1px solid #f3ddb388;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}

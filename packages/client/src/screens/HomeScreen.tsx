@@ -13,7 +13,7 @@
  * link, for Phone Mode, where the host is seated as a player straight away.
  */
 
-import { useCallback, useEffect, useId, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import type { ChangeEvent, ReactElement } from "react";
 import type { RoomMode } from "@kad/shared";
 import { useGameStore } from "../store";
@@ -21,7 +21,7 @@ import { useKeepsakeStore } from "../store/keepsake";
 // The one normalize helper for typed and prefilled codes — the router owns the
 // code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
 import { ROOM_CODE_LENGTH as CODE_LENGTH, navigate, normalizeCodeInput as normalizeCode } from "../router";
-import { loadDeviceToken } from "../store/persistence";
+import { loadPlayerDeviceToken } from "../store/persistence";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
@@ -59,10 +59,6 @@ export function HomeScreen(): ReactElement {
   const [busy, setBusy] = useState<null | "create" | "join">(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Read once, without minting an identity: a phone that has never played
-  // has no device binding, and nothing in the journal to look at.
-  const [hasPlayed] = useState(() => loadDeviceToken() !== null);
-
   const nameFieldId = useId();
   const nameHintId = useId();
   const hostPanelId = useId();
@@ -76,6 +72,16 @@ export function HomeScreen(): ReactElement {
   useEffect(() => {
     void checkKeepsake();
   }, [checkKeepsake]);
+
+  /*
+   * Whether this phone has a book to open: it has been a player (not only a
+   * TV) and so has a binding. Read without minting an identity. Signing in
+   * from the card below is what binds a brand-new phone to its household, so
+   * this is read again each time that flow moves on — the identity is written
+   * before the step changes — and the book appears the moment it exists.
+   */
+  const keepsakeStep = useKeepsakeStore((s) => s.step);
+  const hasPlayed = useMemo(() => loadPlayerDeviceToken() !== null, [keepsakeStep, account]);
 
   const trimmedName = displayName.trim();
   const codeReady = code.length === CODE_LENGTH;
@@ -209,7 +215,8 @@ export function HomeScreen(): ReactElement {
           {/*
            * Between games (`/journal`): your hero, their bag, the map and the
            * Field Guide, with no game to play. Only for a phone that has played
-           * before — one that never has would open an empty book — and quiet,
+           * before — one that never has, or a TV that only hosted, would open
+           * an empty book — and quiet,
            * second to joining, because joining is what nearly everyone is here
            * to do.
            */}

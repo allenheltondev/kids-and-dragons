@@ -10,7 +10,7 @@
  * (architecture §4.5). Everything else in this file survives that change.
  */
 
-import type { RoomMode } from "@kad/shared";
+import type { JournalResponse, RoomMode } from "@kad/shared";
 import type { ClientSession } from "./contract";
 
 export interface KeyValueStorage {
@@ -176,6 +176,14 @@ export interface LocalIdentity {
    * belongs to this phone is orphaned.
    */
   deviceToken?: string;
+  /**
+   * The binding came from opening a Party Mode room on this screen, and this
+   * browser has never been seated as a player. A TV keeps its binding so the
+   * next room lands in the same household, but it is nobody (spec §2.1) and
+   * has no hero, so it is never offered the journal. Cleared the moment the
+   * device is seated or adopted as a player.
+   */
+  screenOnly?: boolean;
 }
 
 function randomId(prefix: string): string {
@@ -197,6 +205,7 @@ export function loadIdentity(storage: KeyValueStorage = defaultStorage()): Local
           playerId: parsed.playerId,
           displayName: typeof parsed.displayName === "string" ? parsed.displayName : "",
           ...(typeof parsed.deviceToken === "string" ? { deviceToken: parsed.deviceToken } : {}),
+          ...(parsed.screenOnly === true ? { screenOnly: true } : {}),
         };
       }
     } catch {
@@ -213,19 +222,27 @@ export function loadIdentity(storage: KeyValueStorage = defaultStorage()): Local
 }
 
 /**
- * The device binding, if this browser has ever been issued one — read without
- * minting an identity, unlike `loadIdentity`. A phone that has never played has
- * nothing to study between games, and asking should not make it somebody.
+ * The device binding of a browser that has been a *player* — read without
+ * minting an identity, unlike `loadIdentity`. `null` for a phone that has never
+ * played (nothing to study between games, and asking should not make it
+ * somebody) and for a screen that only ever hosted (`screenOnly`).
  */
-export function loadDeviceToken(storage: KeyValueStorage = defaultStorage()): string | null {
+export function loadPlayerDeviceToken(storage: KeyValueStorage = defaultStorage()): string | null {
   const raw = storage.getItem(DEVICE_KEY);
   if (!raw) return null;
   try {
     const parsed = JSON.parse(raw) as Partial<LocalIdentity>;
+    if (parsed.screenOnly === true) return null;
     return typeof parsed.deviceToken === "string" && parsed.deviceToken !== "" ? parsed.deviceToken : null;
   } catch {
     return null;
   }
+}
+
+/** Seated or adopted as a player: keep the binding, and stop being a screen. */
+export function asPlayerIdentity(identity: LocalIdentity, deviceToken?: string): LocalIdentity {
+  const { screenOnly: _screen, ...rest } = identity;
+  return { ...rest, ...(deviceToken ? { deviceToken } : {}) };
 }
 
 export function saveIdentity(identity: LocalIdentity, storage: KeyValueStorage = defaultStorage()): void {
@@ -281,6 +298,51 @@ export function saveAccount(
   }
 }
 
+/**
+ * The last journal this browser read (`GET /api/journal`), so the adventure
+ * book still opens where the signal does not — in the car, which is where it
+ * gets read. Keyed by the device token it was read with: a different binding
+ * (another household, a re-adopted phone) never sees somebody else's book.
+ */
+export interface SavedJournal {
+  deviceToken: string;
+  /** ISO, for "from last time". */
+  savedAt: string;
+  journal: JournalResponse;
+}
+
+const JOURNAL_KEY = "kad.journal";
+
+export function loadSavedJournal(
+  deviceToken: string,
+  storage: KeyValueStorage = defaultStorage(),
+): SavedJournal | null {
+  const raw = storage.getItem(JOURNAL_KEY);
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as Partial<SavedJournal>;
+    if (parsed.deviceToken !== deviceToken || typeof parsed.savedAt !== "string") return null;
+    const journal = parsed.journal;
+    if (typeof journal !== "object" || journal === null || !Array.isArray(journal.heroes)) return null;
+    return { deviceToken, savedAt: parsed.savedAt, journal };
+  } catch {
+    return null;
+  }
+}
+
+export function saveJournal(saved: SavedJournal, storage: KeyValueStorage = defaultStorage()): void {
+  try {
+    storage.setItem(JOURNAL_KEY, JSON.stringify(saved));
+  } catch {
+    /* out of quota: the book just needs the network next time */
+  }
+}
+
+export function clearSavedJournal(storage: KeyValueStorage = defaultStorage()): void {
+  storage.removeItem(JOURNAL_KEY);
+}
+
 export const SESSION_KEY_PREFIX = SESSION_PREFIX;
 export const DEVICE_IDENTITY_KEY = DEVICE_KEY;
 export const ACCOUNT_RECORD_KEY = ACCOUNT_KEY;
+export const SAVED_JOURNAL_KEY = JOURNAL_KEY;

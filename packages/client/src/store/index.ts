@@ -42,9 +42,13 @@ import type {
 import {
   clearSession,
   defaultStorage,
-  loadDeviceToken,
+  asPlayerIdentity,
+  clearSavedJournal,
   loadIdentity,
+  loadPlayerDeviceToken,
+  loadSavedJournal,
   loadSession,
+  saveJournal,
   saveIdentity,
   saveSession,
   type KeyValueStorage,
@@ -557,13 +561,9 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       displayName: string,
     ): Promise<ClientSession> {
       const identity = loadIdentity(deps.storage);
+      // Seated, so a player now — even a browser that had only been a TV.
       saveIdentity(
-        {
-          ...identity,
-          displayName,
-          playerId: seated.playerId,
-          ...(seated.deviceToken ? { deviceToken: seated.deviceToken } : {}),
-        },
+        { ...asPlayerIdentity(identity, seated.deviceToken), displayName, playerId: seated.playerId },
         deps.storage,
       );
 
@@ -735,7 +735,13 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             campaignId: LAUNCH_CAMPAIGN,
             ...(identity.deviceToken ? { deviceToken: identity.deviceToken } : {}),
           });
-          if (room.deviceToken) saveIdentity({ ...identity, deviceToken: room.deviceToken }, deps.storage);
+          // A binding minted here is the room's placeholder household, held by
+          // a screen that is nobody — not a player with a book to open. One
+          // this browser already had (a phone hosting from itself) is kept as
+          // it was.
+          if (room.deviceToken) {
+            saveIdentity({ ...identity, deviceToken: room.deviceToken, screenOnly: true }, deps.storage);
+          }
           deps.navigate({ name: "tv", code: room.code }, { replace: true });
         } catch (error) {
           failWith(error);
@@ -750,9 +756,27 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       },
 
       async loadJournal() {
-        const deviceToken = loadDeviceToken(deps.storage);
+        const deviceToken = loadPlayerDeviceToken(deps.storage);
         if (!deviceToken) return null;
-        return deps.api.loadJournal(deviceToken);
+        try {
+          const journal = await deps.api.loadJournal(deviceToken);
+          saveJournal({ deviceToken, savedAt: new Date().toISOString(), journal }, deps.storage);
+          return { journal, savedAt: null };
+        } catch (error) {
+          /*
+           * The server answering "no" is news: the binding is gone (a guest
+           * household swept after its week away), and a saved copy would show
+           * heroes that no longer exist. Anything else — no signal, a timeout,
+           * a 5xx — is the car, and last time's book is the right answer.
+           */
+          if (error instanceof ApiError && error.status >= 400 && error.status < 500) {
+            clearSavedJournal(deps.storage);
+            throw error;
+          }
+          const saved = loadSavedJournal(deviceToken, deps.storage);
+          if (!saved) throw error;
+          return { journal: saved.journal, savedAt: saved.savedAt };
+        }
       },
 
       async joinRoom(code: string, name: string) {
