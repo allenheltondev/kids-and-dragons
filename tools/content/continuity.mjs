@@ -1156,29 +1156,41 @@ export function describeFinding(f, limit = 6) {
 // ---------------------------------------------------------------------------
 // CLI
 
-function main(argv) {
-  const findings = [];
-  const stranded = [];
-  const unreached = [];
-  const campaigns = loadCampaigns();
-  for (const { campaign, chapters } of campaigns) {
-    const res = analyse(campaign, chapters);
-    findings.push(...res.findings);
-    stranded.push(...res.stranded.map((s) => ({ ...s, campaign: campaign.id })));
-    unreached.push(...res.unreached);
-  }
-  const allow = loadAllowList();
+/**
+ * The sweep's verdict over every campaign: the lines it prints and its exit
+ * code. Fails closed: a campaign whose analysis did not settle (a graph that
+ * ran out of rounds, `settled: false`) fails the run, because its findings
+ * come from an incomplete fixed point and "clean" would be a guess.
+ *
+ * `results` is `[{ id, findings, stranded, unreached, settled? }]`; an
+ * ordered campaign carries no `settled` and is always complete.
+ */
+export function verdict(results, allow, { all = false } = {}) {
+  const findings = results.flatMap((r) => r.findings);
   const { unlisted, allowed, stale, noReason } = checkAllowList(findings, allow);
-  if (argv.includes("--all")) for (const f of allowed) console.log(`allowed  ${f.key}: ${allow[f.key]}`);
-  for (const f of unlisted) console.log(`DANGLING ${describeFinding(f)}\n         key: ${f.key}`);
-  for (const k of stale) console.log(`STALE    allow-list entry no longer matches a finding: ${k}`);
-  for (const k of noReason) console.log(`NOREASON allow-list entry has no reason: ${k}`);
-  for (const s of stranded) console.log(`note     ${s.campaign} index ${s.index}: no chapter for ${s.state}`);
-  for (const c of unreached) console.log(`note     ${c} is reached by no history`);
-  console.log(
-    `${campaigns.length} campaigns (${campaigns.map((c) => c.campaign.id).join(", ")}): ${findings.length} candidates, ${allowed.length} allow-listed, ${unlisted.length} new, ${stale.length} stale allow-list entries.`,
+  const unsettled = results.filter((r) => r.settled === false).map((r) => r.id);
+  const lines = [];
+  if (all) for (const f of allowed) lines.push(`allowed  ${f.key}: ${allow[f.key]}`);
+  for (const f of unlisted) lines.push(`DANGLING ${describeFinding(f)}\n         key: ${f.key}`);
+  for (const k of stale) lines.push(`STALE    allow-list entry no longer matches a finding: ${k}`);
+  for (const k of noReason) lines.push(`NOREASON allow-list entry has no reason: ${k}`);
+  for (const id of unsettled) {
+    lines.push(`UNSETTLED ${id}: the analysis did not reach a fixed point, so its findings are incomplete`);
+  }
+  for (const r of results) for (const s of r.stranded) lines.push(`note     ${r.id} index ${s.index}: no chapter for ${s.state}`);
+  for (const r of results) for (const c of r.unreached) lines.push(`note     ${c} is reached by no history`);
+  lines.push(
+    `${results.length} campaigns (${results.map((r) => r.id).join(", ")}): ${findings.length} candidates, ${allowed.length} allow-listed, ${unlisted.length} new, ${stale.length} stale allow-list entries${unsettled.length ? `, ${unsettled.length} unsettled` : ""}.`,
   );
-  process.exitCode = unlisted.length || stale.length || noReason.length ? 1 : 0;
+  const exitCode = unlisted.length || stale.length || noReason.length || unsettled.length ? 1 : 0;
+  return { lines, exitCode, unlisted, allowed, stale, noReason, unsettled };
+}
+
+function main(argv) {
+  const results = loadCampaigns().map(({ campaign, chapters }) => ({ id: campaign.id, ...analyse(campaign, chapters) }));
+  const { lines, exitCode } = verdict(results, loadAllowList(), { all: argv.includes("--all") });
+  for (const line of lines) console.log(line);
+  process.exitCode = exitCode;
 }
 
 if (process.argv[1] && process.argv[1] === fileURLToPath(import.meta.url)) main(process.argv.slice(2));
