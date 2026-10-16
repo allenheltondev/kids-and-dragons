@@ -44,7 +44,6 @@ These are canon calls, not art calls. **Do not decide them; do not start the ite
 
 | Decision | Blocks |
 | --- | --- |
-| What Corvane is (his `basis`) | E1 |
 | Which people the Saltrot guides are | B2's `saltrot_guide` |
 
 Everything else in this brief can start now.
@@ -205,12 +204,17 @@ glacier) have no way to play until the per-chapter music override in
 
 ## Part E — the finale (priority 4)
 
-### E1. `the_old_king` *(waits on §3)*
+### E1. `the_old_king`
 
 Corvane: an ancient ruler, newly woken after a millennium, who wants his old world back and
 does not understand why everything is "wrong". **Confused above all**, courtly, sad and certain:
-an old king, not a monster. Robes and regalia of a realm that no longer exists, a little
-weathered by ice. Nothing frightening, no weapon that wounds. Cast figure contract as Part B.
+an old king, not a monster. **A faun** (`basis: faun`): half person, half goat, but
+**exceptionally big** (`scale: very_large`; ordinary fauns are `medium`), barrel-chested and
+stocky, with a **long, sweeping mustache** and old curling horns. Gruff and grand on the
+outside, bewildered underneath. Robes and regalia of a realm that no longer exists, a little
+weathered by ice. He must read as the same species as `assets/entities/faun`, older and far
+bigger. Nothing frightening, no weapon that wounds. Cast figure contract as Part B. Do not name
+or imitate any existing film character in prompts; describe him from this text.
 
 ### E2. `glacier-deep-ice`
 
