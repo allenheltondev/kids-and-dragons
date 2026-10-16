@@ -288,6 +288,62 @@ describe("cross-file rules", () => {
     expect(result.code).not.toBe(0);
   });
 
+  describe("campaign prerequisites (#221)", () => {
+    const CROWN = ["content", "campaigns", "the-hollow-crown.json"];
+    const GEMFALL = ["content", "campaigns", "gemfall.json"];
+
+    it("passes a campaign that requires another, and still passes with none", () => {
+      const dir = copyTree();
+      const crown = readJson(dir, ...CROWN);
+      crown.requires = ["gemfall"];
+      writeJson(dir, CROWN, crown);
+      const result = validate(dir);
+      expect(result.out).toContain("PASS");
+      expect(result.code).toBe(0);
+    });
+
+    it("catches a prerequisite naming a campaign that does not exist", () => {
+      const dir = copyTree();
+      const crown = readJson(dir, ...CROWN);
+      crown.requires = ["gemfal"];
+      writeJson(dir, CROWN, crown);
+
+      const result = validate(dir);
+      expect(result.out).toContain('requires campaign "gemfal", which does not exist');
+      expect(result.code).not.toBe(0);
+    });
+
+    it("catches a prerequisite cycle", () => {
+      const dir = copyTree();
+      const crown = readJson(dir, ...CROWN);
+      crown.requires = ["gemfall"];
+      writeJson(dir, CROWN, crown);
+      const gemfall = readJson(dir, ...GEMFALL);
+      gemfall.requires = ["the-hollow-crown"];
+      writeJson(dir, GEMFALL, gemfall);
+
+      const result = validate(dir);
+      expect(result.out).toContain("prerequisite cycle: gemfall -> the-hollow-crown -> gemfall");
+      expect(result.code).not.toBe(0);
+    });
+
+    it("catches a campaign requiring itself, and a requires the schema refuses", () => {
+      const self = copyTree();
+      const crown = readJson(self, ...CROWN);
+      crown.requires = ["the-hollow-crown"];
+      writeJson(self, CROWN, crown);
+      const selfResult = validate(self);
+      expect(selfResult.out).toContain('campaign "the-hollow-crown" cannot require itself');
+      expect(selfResult.code).not.toBe(0);
+
+      const empty = copyTree();
+      const bare = readJson(empty, ...CROWN);
+      bare.requires = [];
+      writeJson(empty, CROWN, bare);
+      expect(validate(empty).code).not.toBe(0);
+    });
+  });
+
   it("catches a purse backfill keyed on a flag no attempt ever saves", () => {
     const dir = copyTree();
     const campaign = readJson(dir, "content", "campaigns", "gemfall.json");

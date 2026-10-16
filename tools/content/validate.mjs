@@ -33,6 +33,7 @@ import { checkEncounterEnvironment } from "../../packages/shared/src/environment
 import { MUSIC_SPECS } from "../../packages/client/src/audio/paths.ts";
 import { RIFT_ACTION_KINDS, campaignMode, journeyFlags, parseCampaignGraph, riftActionWays } from "../../packages/shared/src/campaign-graph.ts";
 import { chapterFlagWrites, duplicateJsonKeys, lintCampaignGraph } from "../../packages/shared/src/campaign-graph-lint.ts";
+import { prerequisiteProblems } from "../../packages/shared/src/campaign-prerequisites.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 
 /**
@@ -1486,12 +1487,27 @@ function main() {
   if (!campaignFiles.length) rep.warn("no campaigns found", "content/campaigns/ is empty.");
   const referenced = new Set();
 
+  const loadedCampaigns = [];
   for (const file of campaignFiles) {
     const campaign = readJson(rep, file);
     if (!campaign) continue;
     if (!validateAgainstSchema(rep, ajv, "campaign", file, campaign)) continue;
     checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, items);
     for (const id of campaign.chapters) referenced.add(id);
+    loadedCampaigns.push({ file, campaign });
+  }
+
+  // Prerequisites (#221) are a fact about the whole set - an unknown campaign
+  // or a cycle cannot be seen from one file - so they are checked once every
+  // campaign has been read. The same function the server's loader runs.
+  const fileOf = new Map(loadedCampaigns.map(({ file, campaign }) => [campaign.id, file]));
+  for (const { campaignId, path, problem } of prerequisiteProblems(loadedCampaigns.map((c) => c.campaign))) {
+    rep.fail(
+      rel(fileOf.get(campaignId)),
+      path,
+      problem,
+      "Campaign.requires lists campaigns the household must finish first; see schemas/campaign.schema.json.",
+    );
   }
 
   for (const [id, chapter] of chaptersById) {

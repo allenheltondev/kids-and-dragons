@@ -26,7 +26,7 @@ This folder is the source of truth for Continental Rift **design** decisions. It
 Engine epic: [#191](https://github.com/allenheltondev/kids-and-dragons/issues/191). **The groundwork #192–#203 has landed** on `main`: graph schema and validation, journey runtime, navigation and revisits, rifts and rift actions, world state, class rift interaction, buffs, environmental combat, inspection tooling and a vertical slice. Author against [graph-campaigns.md](../graph-campaigns.md) as it stands. Multi-stage checks inside a node are ordinary chapter scenes.
 
 **Still needed from the engine** for Riftlight:
-- [#221](https://github.com/allenheltondev/kids-and-dragons/issues/221): the campaign prerequisite (locked until the household has a completed Gemfall attempt).
+- [#221](https://github.com/allenheltondev/kids-and-dragons/issues/221): the campaign prerequisite (locked until the household has a completed Gemfall attempt). **Built:** declare `"requires": ["gemfall"]` in `content/campaigns/riftlight.json`; the loader and `content:validate` refuse an unknown campaign or a cycle, the lobby shows "Finish Gemfall first", and the server refuses the start.
 - [#222](https://github.com/allenheltondev/kids-and-dragons/issues/222): buffs on story checks, for Riftspark.
 - [#226](https://github.com/allenheltondev/kids-and-dragons/issues/226): per-chapter music, for the theme and the finale.
 - [#227](https://github.com/allenheltondev/kids-and-dragons/issues/227): enemy hits that slow, for the Skuppers' sting.
