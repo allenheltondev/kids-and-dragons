@@ -1505,6 +1505,7 @@
     },
     "scene_bells_ringing": {
       "type": "story",
+      "priority": 2,
       "art": "scenes/gemfall/gem-gallery",
       "narration": "Every bell in the foothills is ringing now, one ring after another, counting down toward the ring nobody uses. The floor jumps with every one. Five rings left. Maybe four.",
       "choices": [
@@ -1594,6 +1595,7 @@
     },
     "scene_keeper": {
       "type": "story",
+      "priority": 2,
       "discovers": [
         "creature.legend_dragon",
         "creature.embermoth"
@@ -2494,6 +2496,7 @@
     },
     "scene_seal_chamber": {
       "type": "story",
+      "priority": 1,
       "art": "scenes/gemfall/seal-chamber",
       "narration": "Behind the dragon is the seal: a great round window of gemstone, cracked and missing pieces. At its very top sits one stone bigger than your head, the crown of the whole seal. Underneath, something vast is waking up. The Seal-Keeper waits. \"Well,\" it says. \"Choose.\"",
       "variants": [
@@ -3160,6 +3163,7 @@
     },
     "scene_keystone": {
       "type": "story",
+      "priority": 2,
       "art": "scenes/gemfall/seal-chamber",
       "narration": "The crown stone is bigger than your head and warm as bread. The Seal-Keeper does not stop you. It only watches, and says: \"Everyone who climbs reaches for it once. Most of them have no idea what they would do with it.\"",
       "variants": [

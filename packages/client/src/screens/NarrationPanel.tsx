@@ -13,6 +13,7 @@
 import { useEffect, useRef } from "react";
 import type { ReactElement } from "react";
 import { speak, turnHolderAway } from "@kad/shared";
+import type { ScenePriority } from "@kad/shared";
 import { useAbilities, useItems, useParty, usePreviews, useRunState } from "../store";
 import { describeCombatPreview, tablePreviews } from "../world/previews";
 import { setStageInsetBottom } from "../world/stage-inset";
@@ -49,6 +50,17 @@ function offerLine(
   return `${nameOf(offer.fromPlayerId)} wants to give ${nameOf(offer.toPlayerId)} a ${itemName(offer.itemId)}.`;
 }
 
+/**
+ * The ribbon over a priority scene (chapter.ts `ScenePriority`): what the
+ * table is told, in words an eight-year-old reads at a glance, about how much
+ * this scene matters. A revelation is the one to remember; a clue is one to
+ * notice. Said aloud ahead of the narration, so a listener gets it too.
+ */
+export const PRIORITY_RIBBON: Record<ScenePriority, { label: string; icon: string }> = {
+  1: { label: "Remember this!", icon: "star" },
+  2: { label: "A clue", icon: "eye" },
+};
+
 export function NarrationPanel(): ReactElement | null {
   const state = useRunState();
   const party = useParty();
@@ -58,6 +70,10 @@ export function NarrationPanel(): ReactElement | null {
   const leaning = tablePreviews(state, usePreviews());
   const narration = state?.narration ?? "";
   const sceneId = state?.sceneId ?? null;
+  // Never in a fight: the caption strip has no room for a ribbon, and an
+  // encounter cannot carry a priority anyway.
+  const priority = state?.encounter != null ? null : state?.scenePriority ?? null;
+  const ribbon = priority === null ? null : PRIORITY_RIBBON[priority];
   const prompt = state?.prompt ?? null;
   const choices = prompt !== null && prompt.kind === "choice" ? prompt.options : null;
   /*
@@ -95,7 +111,9 @@ export function NarrationPanel(): ReactElement | null {
     if (narration.trim() === "" || spokenNarration.current === key) return;
     spokenNarration.current = key;
     // A new scene's narration replaces the last one rather than queueing behind it.
-    speak(narration, { source: "narration", interrupt: true });
+    speak(ribbon === null ? narration : `${ribbon.label} ${narration}`, { source: "narration", interrupt: true });
+    // The ribbon follows the scene, so a new one always arrives with new words.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sceneId, narration]);
 
   const choiceText =
@@ -200,7 +218,12 @@ export function NarrationPanel(): ReactElement | null {
   if (state === null) return null;
 
   return (
-    <section className={`narration${fighting ? " narration--fight" : ""}`} aria-live="polite">
+    <section
+      className={`narration${fighting ? " narration--fight" : ""}${
+        priority === null ? "" : ` narration--p${String(priority)}`
+      }`}
+      aria-live="polite"
+    >
       <header className="narration__head">
         {state.chapterId === null ? null : (
           <h2 className="narration__chapter">
@@ -246,6 +269,12 @@ export function NarrationPanel(): ReactElement | null {
               {turnName === null ? "\u00a0" : <>{turnName}&rsquo;s turn to choose</>}
             </p>
           ) : null}
+          {ribbon === null ? null : (
+            <p className="narration__ribbon" key={`ribbon:${narration}`}>
+              <Icon name={ribbon.icon} />
+              <span>{ribbon.label}</span>
+            </p>
+          )}
           <p className="narration__body" key={narration}>
             {narration}
           </p>

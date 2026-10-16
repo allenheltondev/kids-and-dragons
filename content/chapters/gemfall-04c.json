@@ -316,6 +316,7 @@
     },
     "scene_silence_follows": {
       "type": "story",
+      "priority": 2,
       "narration": "You notice it all at once: the warrens go quiet around the depot, and around the gem wagons, and around YOU. Every jackalope within shouting distance of a stone has gone underground. It is not the eruption the land is flinching from. It is the stones.",
       "onEnter": [
         {
@@ -592,6 +593,7 @@
     },
     "scene_wend_pitch": {
       "type": "story",
+      "priority": 2,
       "discovers": [
         "faction.deep_hollow_cult"
       ],
@@ -1412,6 +1414,7 @@
     },
     "scene_spiral": {
       "type": "story",
+      "priority": 1,
       "narration": "You hear the new verses sung in road order, and they are not random. Every new detour bends away from a place where stones fell. Sung end to end, the roads of the realm curl around the gemfalls like a snail shell. Old Corran scratches the new verses onto a strip of bark with a hoof-pick and gives it to you.",
       "cast": [
         {

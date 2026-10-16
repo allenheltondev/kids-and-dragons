@@ -802,6 +802,7 @@ function enterSceneDraft(
   draft.sceneId = sceneId;
   draft.sceneType = scene.type;
   draft.art = scene.art ?? null;
+  draft.scenePriority = scene.type === "encounter" ? null : scene.priority ?? null;
   draft.prompt = carriedSwap ?? null;
   /*
    * Offers do not travel (spec §9.4 — trading is a Rest-scene thing). An
@@ -2174,6 +2175,7 @@ function doAdvance(draft: RunState, ctx: EngineContext): Presentation | undefine
     draft.sceneType = null;
     draft.narration = "";
     draft.art = null;
+    draft.scenePriority = null;
     draft.prompt = null;
     draft.lastRoll = null;
     for (const member of draft.party) member.ready = false;

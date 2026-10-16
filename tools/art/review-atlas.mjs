@@ -76,7 +76,7 @@ try {
  await page.getByRole('button',{name:'Exchange–Sunward Road',exact:true}).click();
  await waitForTiles();
  await page.screenshot({path:'test-results/atlas-routes.png'});
- await page.getByRole('button',{name:'Northern River Bridge',exact:true}).click();
+ await page.getByRole('button',{name:'Ashspan Bridge',exact:true}).click();
  await waitForTiles();
  await page.screenshot({path:'test-results/atlas-bridge.png'});
  await page.getByRole('checkbox',{name:'Routes',exact:true}).uncheck();

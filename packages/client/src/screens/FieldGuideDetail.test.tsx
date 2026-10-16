@@ -96,8 +96,8 @@ describe("FieldGuideDetail sections", () => {
     expect(screen.getByRole("heading", { name: "Where it came from" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Neighbours" })).toBeTruthy();
     // route.* is not in the guide: its title shows as text, not a button.
-    expect(screen.getByText("Northern River Bridge")).toBeTruthy();
-    expect(screen.queryByRole("button", { name: "Northern River Bridge" })).toBeNull();
+    expect(screen.getByText("Ashspan Bridge")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Ashspan Bridge" })).toBeNull();
     expect(screen.queryByRole("heading", { name: "Story" })).toBeNull();
   });
 

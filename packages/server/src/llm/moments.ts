@@ -39,6 +39,18 @@ export function authoredLine(scene: Scene): string {
 }
 
 /**
+ * Whether the live layer may rewrite this scene at all.
+ *
+ * Not a priority scene (chapter.ts `ScenePriority`). One of those exists to
+ * deliver a fact — the gems are a seal, the seal holds a titan — and a
+ * paraphrase is free to soften or drop exactly that. Its authored words always
+ * stand, so a line for it is neither taken nor paid for in advance.
+ */
+export function mayDecorate(scene: Scene): boolean {
+  return scene.type === "encounter" || scene.priority === undefined;
+}
+
+/**
  * Where a scene can lead, as `(label, destination)` pairs.
  *
  * A choice's label is the text on the button, which is both the cache key
@@ -146,8 +158,9 @@ export function nextMoments(state: RunState, chapter: Chapter): Moment[] {
     const destination = chapter.scenes[exit.goto];
     // A dangling goto is a `content:validate` failure, not something to crash a
     // live session over. Skipping it means the layer is quiet for that branch
-    // and the game plays on.
-    if (!destination) continue;
+    // and the game plays on. A priority scene keeps its own words, so there is
+    // nothing to buy ahead for it either.
+    if (!destination || !mayDecorate(destination)) continue;
     const authored = authoredLine(destination);
     // Nothing to decorate, and nothing to fall back to either — the validator's
     // on-topic rule has no vocabulary to work with on a scene with no text.
