@@ -95,8 +95,10 @@ Tooling for a campaign graph (all read-only; the ordered campaigns are skipped, 
   get stuck); `--playtest` / `--walk` / `--path` to drive the real runtime and check its invariants;
   `--save file.json` to check a stored journey. See
   [Inspection and playtest tooling (#202)](../docs/campaigns/graph-campaigns.md#inspection-and-playtest-tooling-202).
-- `npm run content:graph` and `npm run content:continuity` are the *chapter*-level tools and
-  are unchanged by any of this.
+- `npm run content:graph` is a *chapter*-level tool and is unchanged by any of this.
+- `npm run content:continuity` sweeps every campaign file, a graph campaign by its places and ways
+  (what every way into a place guarantees, and what each way's gate proves); see
+  [Continuity in a graph campaign](../docs/campaigns/graph-campaigns-authoring.md#continuity-introduce-before-you-use).
 
 ## Environmental encounters (#201)
 
