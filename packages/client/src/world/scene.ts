@@ -97,7 +97,7 @@ import {
   type NameplateReading,
 } from "./nameplate";
 import type { EncounterEvent } from "@kad/shared";
-import { stageSlots, type StageCastMember } from "./cast";
+import { stageSlots, stageFigureScale, type StageCastMember } from "./cast";
 import { storyStageHeight } from "./stage-inset";
 
 export { characterArtUrl };
@@ -269,6 +269,8 @@ export interface PartyScene {
    * assertable — see `e2e/nameplates.spec.ts`.
    */
   nameplateBoxes(): NameplateReading;
+  /** Actual rendered figure bounds in canvas pixels, for phone framing checks. */
+  storyFigureBoxes?(): { x: number; y: number; width: number; height: number }[];
   /**
    * The camera's attention key (world/camera.ts header): a manual pan/pinch
    * survives everything except this key changing — callers set it to
@@ -630,6 +632,7 @@ export function createScene(app: Application): PartyScene {
     );
     slots.party = slots.party.map((x) => x + left);
     slots.cast = slots.cast.map((x) => x + left);
+    const figureScale = stageFigureScale(slots, cast.map((member) => member.scale), ACTOR_HEIGHT);
     // Heroes are drawn facing left; with company on the right they turn round.
     facing = cast.length > 0 ? -1 : 1;
     // A name may be no wider than the slot its character stands in, less a
@@ -638,17 +641,19 @@ export function createScene(app: Application): PartyScene {
     // because it shrinks as the party grows.
     const slot = slots.partySlot * NAMEPLATE_SLOT;
     cast.forEach((member, index) => {
+      member.container.scale.set(figureScale);
       member.x = slots.cast[index] ?? member.x;
       if (member.label) {
         member.label.visible = nameplatesVisible;
-        fitNameplate(member.label, (slots.castSlots[index] ?? slot) * NAMEPLATE_SLOT);
+        fitNameplate(member.label, (slots.castSlots[index] ?? slot) * NAMEPLATE_SLOT / figureScale);
       }
     });
     const still = prefersReducedMotion();
     list.forEach((actor, index) => {
+      actor.container.scale.set(figureScale);
       if (actor.label) {
         actor.label.visible = nameplatesVisible;
-        fitNameplate(actor.label, slot);
+        fitNameplate(actor.label, slot / figureScale);
       }
       actor.x = slots.party[index] ?? actor.x;
       // A shallow depth stagger so three characters read as a group rather than
@@ -1273,14 +1278,26 @@ export function createScene(app: Application): PartyScene {
           // comes back centred on zero and nothing can be compared. The slot,
           // not the figure mid-walk to it — the same as the cast below.
           const box = nameplateBoxOf(actor.label!);
-          return { ...box, x: actor.x + box.x, y: actor.y + box.y };
+          const scale = actor.container.scale.x;
+          return { ...box, x: actor.x + box.x * scale, y: actor.y + box.y * scale,
+            width: box.width * scale, height: box.height * scale };
         });
       for (const member of castActors.values()) {
         if (member.leaving || member.label === null || !member.label.visible) continue;
         const box = nameplateBoxOf(member.label);
-        boxes.push({ ...box, x: member.x + box.x, y: GROUND_Y + box.y });
+        const scale = member.container.scale.x;
+        boxes.push({ ...box, x: member.x + box.x * scale, y: GROUND_Y + box.y * scale,
+          width: box.width * scale, height: box.height * scale });
       }
       return { space: "story" as const, boxes };
+    },
+
+    storyFigureBoxes() {
+      if (encounterView !== null) return [];
+      return [...actors.values(), ...castActors.values()].map((actor) => {
+        const bounds = actor.art.getBounds();
+        return { x: bounds.x, y: bounds.y, width: bounds.width, height: bounds.height };
+      });
     },
 
     setBiome(next, art) {

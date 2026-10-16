@@ -18,6 +18,7 @@ import {
   castFor,
   stageCast,
   stageSlots,
+  stageFigureScale,
 } from "./cast";
 
 const ASSETS = fileURLToPath(new URL("../../../../assets", import.meta.url));
@@ -131,6 +132,23 @@ describe("castFor", () => {
 
 describe("stageSlots", () => {
   const WIDTH = 1600;
+
+  it("fits three heroes and three guests' entire canvases inside their slots", () => {
+    for (const width of [1600, 2560]) for (const scales of [[1, 1, 1], [0.4, 1.25, 1.45]]) {
+      const slots = stageSlots(3, scales, width);
+      const factor = stageFigureScale(slots, scales, 504);
+      const figures = [...slots.party.map((x) => ({ x, half: 252 * factor })),
+        ...slots.cast.map((x, i) => ({ x, half: 252 * scales[i]! * factor }))];
+      for (const figure of figures) {
+        expect(figure.x - figure.half).toBeGreaterThanOrEqual(0);
+        expect(figure.x + figure.half).toBeLessThanOrEqual(width);
+      }
+      for (let i = 1; i < figures.length; i++) {
+        expect(figures[i]!.x - figures[i]!.half).toBeGreaterThan(figures[i - 1]!.x + figures[i - 1]!.half);
+      }
+    }
+    expect(stageFigureScale(stageSlots(3, [1], WIDTH), [1], 504)).toBe(1);
+  });
 
   it("centres the party when nobody else is there, as it always did", () => {
     const { party, cast } = stageSlots(3, [], WIDTH);
