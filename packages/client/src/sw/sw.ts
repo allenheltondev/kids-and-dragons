@@ -1,10 +1,5 @@
 /**
- * The service worker (`/sw.js`) — see `policy.ts` for whasync function shell(event: SwFetchEvent): Promise<Response> {
-  const cache = await caches.open(SW_CACHES.shell);
-  try {
-    const response = (await event.preloadResponse) ?? (await fetch(event.request));
-    if (swCacheable(response)) event.waitUntil(keepShell(cache, response.clone()));
-    return response;t it is for and what
+ * The service worker (`/sw.js`) — see `policy.ts` for what it is for and what
  * it decides. This file is only the wiring: install, activate, fetch, message.
  *
  * Built by `sw-build.ts` into one classic script with this build's lists
@@ -234,7 +229,7 @@ async function shell(event: SwFetchEvent): Promise<Response> {
   const cache = await caches.open(SW_CACHES.shell);
   try {
     const response = (await event.preloadResponse) ?? (await fetch(event.request));
-    if (swCacheable(response)) event.waitUntil(cache.put(SW_SHELL_KEY, response.clone()));
+    if (swCacheable(response)) event.waitUntil(keepShell(cache, response.clone()));
     return response;
   } catch (error) {
     const saved = await cache.match(SW_SHELL_KEY, SAME);
