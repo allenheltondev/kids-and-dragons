@@ -38,14 +38,9 @@ by anyone, so **no id, filename, manifest name or path may contain "Corvane", "P
 manifest `name` of a cast figure is shown to nobody but must follow the same rule. Prompts you
 record may name him; they live in docs, not in `assets/`.
 
-## 3. Owner decisions this brief waits on
+## 3. Owner decisions
 
-These are canon calls, not art calls. **Do not decide them; do not start the items they block.**
-
-| Decision | Blocks |
-| --- | --- |
-
-Everything else in this brief can start now.
+**None are outstanding: everything in this brief can start now.** A new canon question that comes up while you work (a name, a people, a place) goes to the owner in the PR; make the art meanwhile.
 
 ## 4. Read first
 
@@ -253,6 +248,7 @@ round with spines standing out, which carry a numbing poison (a defense, not a t
 - In `canon/npcs.yaml`, add `biome.sallow_wastelands` to `npc.frogfolk`'s `secondary_locations`.
 - In `canon/biomes.yaml`, `biome.sallow_wastelands` → `inhabitants`: `primary_peoples:
   [npc.skupper]`, `supporting_peoples: [npc.frogfolk]`.
+- Declare the entity in `assets/manifest.json` and add its `ENTITY_SIZES` line (`skupper: "small_to_medium"`) in `packages/client/src/world/cast.ts`; `cast.test.ts` fails until the two match.
 - Run `npm run canon:check`, `canon:field-guide`, `canon:world`, `canon:bestiary`, and add
   `npc.skupper` to `EXPECTED_UNREACHABLE` in `tools/content/field-guide-reach.test.mjs` (no
   chapter reveals them yet). The full test suite must pass.
@@ -329,14 +325,17 @@ Pangea fragment holds the land still; it should sound like the finale's answer t
 
 ---
 
-## 5. What you must not change
+## 5. What you may change
+
+These rules protect what already exists. **They never block new content:** anything this brief asks you to add, you may add, together with the manifest, canon, generated files and tests it needs. If a rule below seems to stand in the way of a deliverable, the deliverable wins; say so in the PR.
 
 | Path | Rule |
 | --- | --- |
-| `assets/biomes/**`, `assets/entities/**`, `assets/characters/**`, `assets/cast/**` (existing), `assets/effects/**` (existing) | Never modified; you add new entries |
-| `canon/*.yaml` | Not at all. Canon questions go to the owner (§3) |
-| `content/**` | Not at all: Riftlight's chapters do not exist yet |
-| `packages/**` | Only the `CUE_SPECS`, `MUSIC_SPECS`, `CueId`, `MUSIC_BY_BIOME` rows and synth recipes Part A3 and Part D name |
+| `assets/**` | Add new entries and their `assets/manifest.json` declarations. Existing art (biomes, entities, characters, cast, effects) is never modified: it is the reference. |
+| `canon/*.yaml` | Add the entries this brief specifies (B3's Skuppers); add any other new canon only with the owner's approval. Never rewrite an existing entry's lore. |
+| `content/**` | Regenerate generated files with the repo's tools when your canon changes them (`npm run canon:field-guide`, `canon:world`, `canon:bestiary`, `canon:items`); never hand-edit them. Riftlight's chapters do not exist yet, so there is nothing to wire scene art into. |
+| `packages/**`, `tools/**` | Only what the deliverables need: the `CUE_SPECS`, `MUSIC_SPECS`, `CueId` and `MUSIC_BY_BIOME` rows and synth recipes (A3, D); the `ENTITY_SIZES` line for a new entity (`packages/client/src/world/cast.ts`, B3); the `EXPECTED_UNREACHABLE` entry for a new people (`tools/content/field-guide-reach.test.mjs`, B3). If a contract is wrong, say so in the PR rather than working around it. |
+| Tests | Never skip, weaken or delete one to get green. Update a pinned list only where this brief says to. |
 
 ## 6. Reporting
 
