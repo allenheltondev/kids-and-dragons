@@ -39,6 +39,17 @@
  * decision and goes back to being a guess. The test that pins `hp`/`maxHp`
  * unread is the tripwire for the most tempting version of getting this wrong.
  *
+ * **A place that fights back gets three more sentences, and only that place.**
+ * A fight whose scene declared an `environment` (#201) has ground that burns,
+ * a way out on a timer and somebody to save, all of it drawn on the board.
+ * There a monster also *does not stop in the fire*, *the one nearest the way
+ * out watches it*, and *the next one watches the captive* — see "In a place
+ * that fights back" below for the exact rules. They pass the same test as the
+ * first sentence: each is about something she can see, none reads hit points,
+ * none involves monsters talking to each other, and the sentence still comes
+ * first (a monster with somebody to hit hits them). A turn handed no
+ * environment never reaches them — that is the line Gemfall stands behind.
+ *
  * **It never targets a knocked-down hero (§7.3).** She is down, not dead, and
  * lying on the grid waiting for a Help Up. An enemy that keeps hitting a fallen
  * friend is both cruel and, worse for this module, unreadable — the picture on
@@ -488,8 +499,7 @@ function planInEnvironment(turn: EnemyTurn, env: EnemyEnvironment, decision: Dec
   }
 
   // 2 and 3. Nobody to hit: the way out, or the captive, if this one watches it.
-  const field = walkField(board, enemy.at);
-  const posted = planPost(turn, env, field, allowance, stops, standing, burn);
+  const posted = planPost(turn, env, allowance, stops, standing, burn);
   if (posted) return posted;
 
   // 1 again, for a walk: the sentence's stop, unless it is burning.
@@ -600,7 +610,6 @@ function postsInForce(env: EnemyEnvironment): Post[] {
 function planPost(
   turn: EnemyTurn,
   env: EnemyEnvironment,
-  field: WalkField,
   allowance: number,
   stops: readonly Stop[],
   standing: readonly PartyTarget[],
@@ -611,6 +620,7 @@ function planPost(
   if (!mover || mover.id !== enemy.id) return null;
   const posts = postsInForce(env);
   if (posts.length === 0) return null;
+  const field = walkField(board, enemy.at);
   const post = assignPosts(posts, board.actors.filter((a) => a.side === mover.side)).get(mover.id);
   if (!post) return null;
 
