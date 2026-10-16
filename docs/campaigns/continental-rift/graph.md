@@ -50,7 +50,7 @@ The river's multiple escape opportunities are **stages within one authored encou
 - **One key node per strand.** Completing its chapter always finds that strand's fragment ([story.md](story.md) lists canon's candidates).
 - **Edges into the convergence guard on `completed: [key node A, key node B]`.** A list means every listed id, so this works in today's engine. (A `flag` guard takes one flag, which is why the guard reads completed key nodes.)
 - **Each strand's last node carries two such edges,** one per other strand it can pair with: six edges in all, so the party heads for the convergence from whichever strand it finishes second.
-- **A third strand is optional and rewarded:** one more piece of proof to bring Corvane in the finale, which can open an extra ending choice.
+- **A third strand is optional and rewarded:** the third fragment overpowers Corvane's final rift, so he starts the battle weakened ([story.md](story.md#finale-and-endings--agreed)).
 
 ### Size check
 | Part | Authored | Played on one run |
@@ -83,4 +83,4 @@ The river's multiple escape opportunities are **stages within one authored encou
 
 ## Decisions still open
 1. Each strand's node list and key node, one strand at a time.
-2. Faction influence rules, return routes and endings.
+2. Faction influence rules and return routes.

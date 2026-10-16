@@ -28,6 +28,5 @@ Engine epic: [#191](https://github.com/allenheltondev/kids-and-dragons/issues/19
 ## Open items
 - Canon registration, in one pass once the names below settle: the Riftseekers, Orin Vale, Lady Olivia, the campaign (with its Gemfall prerequisite), the Cairnstep, Ashspan Bridge (the Northern River Bridge's name), Emperor Corvane and Pangea, and the creator-only facts about the emperor's prison and the glacier rift.
 - Complete geography and node IDs/routes beyond the opening, one regional strand at a time.
-- Final confrontation and outcomes.
 - Destination disclosure.
 - Chapter schema details.
