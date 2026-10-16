@@ -20,8 +20,10 @@
  * anything appears. That number is deterministic, it is a real constraint —
  * the display client loads over house wifi onto a laptop somebody wants
  * working within a minute of sitting down — and it regresses silently, which
- * is exactly what a gate is for. An accidental `import` of Pixi into the entry
- * chunk does not slow a frame down; it triples what a cold start costs.
+ * is exactly what a gate is for. An accidental `import` of Pixi into the first
+ * paint does not slow a frame down; it triples what a cold start costs — and
+ * it happened, silently, for as long as this gate weighed only the entry file
+ * (FIRST_PAINT_BUDGET_KB says how).
  */
 
 import fs from "node:fs";
@@ -33,17 +35,29 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
 /**
  * What the first paint may cost, uncompressed.
  *
- * The entry chunk is what stands between opening the URL and seeing the join
- * screen; everything else — the renderer, the rigs, the scene — is loaded
- * behind `lazy()` and arrives while somebody is already reading something.
- * That split is the architecture (`WorldView` lazily imports `PixiStage`), and
- * this is the number that notices when it stops being true.
+ * The first paint is what stands between opening the URL and seeing the join
+ * screen; everything else — the room's panels (`App` lazily imports both
+ * layouts), the renderer, the rigs, the scene — is loaded behind `lazy()` and
+ * arrives while somebody is already reading something. That split is the
+ * architecture (`WorldView` lazily imports `PixiStage` the same way), and this
+ * is the number that notices when it stops being true.
+ *
+ * It is the entry chunk **and every chunk the entry statically imports**, not
+ * the entry file alone. The bundler hoists modules that the entry shares with
+ * a lazy chunk into chunks of their own, and the entry imports them before it
+ * runs, so they are on the critical path exactly as if they were inlined. The
+ * gate used to weigh the entry file alone, and it was green at 380KB while the
+ * page fetched 915KB before it could paint: one static `import` of a helper
+ * from `FrameMeter.tsx` had pulled the scene, Pixi and the rigs into the
+ * entry's graph, and the bundler had filed all of it under other names. A
+ * lazy `import()` is only lazy if nothing imports the same module eagerly.
  *
  * Set a little above today's measurement rather than at a round figure: a
  * budget with slack for one honest feature is a budget people keep, and one
- * that has to be raised every sprint is a budget people delete.
+ * that has to be raised every sprint is a budget people delete. (Measured at
+ * 287KB when the room went lazy, most of it react-dom.)
  */
-const ENTRY_BUDGET_KB = 380;
+const FIRST_PAINT_BUDGET_KB = 302;
 
 /**
  * Everything, including what is lazily fetched.
@@ -79,18 +93,50 @@ if (!entry) {
   process.exit(1);
 }
 
+/**
+ * The entry and everything it imports before it can run.
+ *
+ * Read from the chunks themselves rather than from the `modulepreload` links
+ * in index.html: the links are an optimisation Vite adds and a config line can
+ * remove, while a static `import` in the entry is fetched either way. The
+ * links are folded in too, since a preloaded chunk is fetched up front even
+ * if nothing imports it. Dynamic `import("./x.js")` is the one form this
+ * deliberately skips — that is the lazy half.
+ */
+const byName = new Map(chunks.map((chunk) => [chunk.name, chunk]));
+const STATIC_IMPORT = /(?:^|[;}\n])\s*import\s*(?:[\w$\s{},*]*?from\s*)?["']\.\/([^"']+\.js)["']/g;
+const firstPaint = new Set<string>();
+const pending = [
+  entry.name,
+  ...[...html.matchAll(/rel="modulepreload"[^>]*href="\/bundle\/([^"]+\.js)"/g)].map((match) => match[1] ?? ""),
+];
+for (let name = pending.pop(); name !== undefined; name = pending.pop()) {
+  if (firstPaint.has(name) || !byName.has(name)) continue;
+  firstPaint.add(name);
+  const code = fs.readFileSync(path.join(bundleDir, name), "utf8");
+  for (const match of code.matchAll(STATIC_IMPORT)) if (match[1]) pending.push(match[1]);
+}
+const firstPaintChunks = [...firstPaint].map((name) => byName.get(name)!).sort((a, b) => b.bytes - a.bytes);
+const firstPaintBytes = firstPaintChunks.reduce((sum, chunk) => sum + chunk.bytes, 0);
+
 const total = chunks.reduce((sum, chunk) => sum + chunk.bytes, 0);
 const biggest = [...chunks].sort((a, b) => b.bytes - a.bytes).slice(0, 5);
 
-console.log(`entry ${String(kb(entry.bytes))}KB / ${String(ENTRY_BUDGET_KB)}KB   ` +
+console.log(`first paint ${String(kb(firstPaintBytes))}KB / ${String(FIRST_PAINT_BUDGET_KB)}KB   ` +
   `total ${String(kb(total))}KB / ${String(TOTAL_BUDGET_KB)}KB   (${String(chunks.length)} chunks)`);
+console.log(`first paint (${String(firstPaintChunks.length)} chunks):`);
+for (const chunk of firstPaintChunks) {
+  console.log(`  ${chunk.name}: ${String(kb(chunk.bytes))}KB${chunk === entry ? "  (entry)" : ""}`);
+}
+console.log("largest overall:");
 for (const chunk of biggest) console.log(`  ${chunk.name}: ${String(kb(chunk.bytes))}KB`);
 
 const problems: string[] = [];
-if (kb(entry.bytes) > ENTRY_BUDGET_KB) {
+if (kb(firstPaintBytes) > FIRST_PAINT_BUDGET_KB) {
   problems.push(
-    `the entry chunk is ${String(kb(entry.bytes))}KB, over its ${String(ENTRY_BUDGET_KB)}KB budget — ` +
-      "something that used to be lazy probably is not any more",
+    `the first paint is ${String(kb(firstPaintBytes))}KB, over its ${String(FIRST_PAINT_BUDGET_KB)}KB budget — ` +
+      "something that used to be lazy probably is not any more (look for a static import of a module a " +
+      "lazy chunk owns, or of a barrel that re-exports one)",
   );
 }
 if (kb(total) > TOTAL_BUDGET_KB) {
