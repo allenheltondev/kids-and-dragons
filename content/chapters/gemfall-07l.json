@@ -1355,6 +1355,7 @@
     },
     "scene_relay_sing": {
       "type": "story",
+      "priority": 2,
       "narration": "The relay singers have new verses about wagons that have not arrived yet, so you hear tomorrow's traffic tonight. Then a grandmother's runner brings you a list of caves nobody may ever dig. It is exactly the list a seal's keeper would keep.",
       "onEnter": [
         {

@@ -85,28 +85,29 @@ const PRE_EPIC = JSON.parse(
  * SHA-256 of each Gemfall file (line endings normalized), as shipped before
  * the epic and unchanged since. The epic's rule is that Gemfall is never
  * edited; a change here is a Gemfall content change and needs its own issue.
+ *
+ * Re-pinned deliberately for the chapters' `priority` marks (the priority-scene
+ * sweep): presentation only — the endings, roads, setbacks and saves below
+ * still match their pre-epic digests.
  */
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
-  "chapters/gemfall-01.json": "e239da9d2b46d89b13a284919ece8f35a53849ae7731c6a55eeb7c1da6b346a7",
-  "chapters/gemfall-02.json": "51f5be2011b5a08410aa884e119df268c3f4d5ce105fceefa149cad9bb3e6542",
-  "chapters/gemfall-03a.json": "2d39d2f511ae9563ce57685f5ea11299173b318454d2c221a1867e979324ed47",
-  "chapters/gemfall-03b.json": "a88689e8527efc74bc0fbf4717d59adbabf4578cd0bfb0772bd8223554fc1c0f",
-  "chapters/gemfall-03c.json": "9d5f6492615742eb1975e7807b59f731aa9948a529b47497eb992fc83b38cd16",
-  "chapters/gemfall-04a.json": "91fa67028e6dce2ae6666eef0bc074269b708e7ee9223f08429a75996ae4f02b",
-  "chapters/gemfall-04b.json": "5cc15ff300b2cb4ba646e2f3fcf18223d152d571cf74d805ad3adce11538ecca",
-  "chapters/gemfall-04c.json": "3a3d210646fae057ba7dc50fa5632c074b5972bada56e49d898456fba4272dea",
-  "chapters/gemfall-05a.json": "3a269ca932ff831f494ee81a95eb861498976de072f3d6c00fbe28742c1ae766",
-  "chapters/gemfall-05b.json": "b315080fdbd206f195aaa43ea036b6149328afae89c726cc2d74909562711d26",
-  "chapters/gemfall-05c.json": "372e68d305983060148b1619ddcc578b0531186f43c39727a65b1730b2441366",
-  // Re-pinned deliberately: `scene_whole_truth` (the seal and the titan) is
-  // marked `priority: 1`. Presentation only — the endings, roads, setbacks and
-  // saves below still match their pre-epic digests.
-  "chapters/gemfall-06.json": "a93a12ce7bc28513f23e1b3c4e87e1a3fd985ad0683942fa609daf9daaf8a0fc",
-  "chapters/gemfall-07h.json": "f46ccaf3911dee0608065fc8ef11101d6745147bf6a04af8bed2e13793a1483b",
-  "chapters/gemfall-07l.json": "76dcd0f99a5420a1a8aef5fd54b1407f46c73b4aa1f64556cd7cd3e219141110",
-  "chapters/gemfall-07r.json": "ba15d19d96fec0770d84c392449eacbc5346f40f0804cbbe025f58267a1d4a03",
-  "chapters/gemfall-08.json": "110575586c0043667e7af2617d59d4986aa388800aff200efeff89603f379070",
+  "chapters/gemfall-01.json": "98d74a1ee1c482e467c39b125b8343f5c42b8b88b4ab89c4abcdd73b96bb8927",
+  "chapters/gemfall-02.json": "3ee767c21520412d014aa7020f9d5e65b77c017127c5fc66ac3a491332988dbe",
+  "chapters/gemfall-03a.json": "e5f5c5457b2a30ebff755eaaad865838777b54f1ab8ad75a06175f937b86bdce",
+  "chapters/gemfall-03b.json": "15b6e6f67d49d243c8087d8b89d9b790f0c4eb43acd6551bd6851ab76cd0355a",
+  "chapters/gemfall-03c.json": "663f600a04b388393a320ad72ef93409ec78b54e4d2ced22e66eea89960b1724",
+  "chapters/gemfall-04a.json": "b249c5dba1d053f346513ada2391f893a731497c8c6acbf13a768e9b9e763e5c",
+  "chapters/gemfall-04b.json": "0f97c7c581bf062378f8e5705ac4a943d14c56307128b353b1e5144e12f778e2",
+  "chapters/gemfall-04c.json": "734023a0b4c4ef34f8872d95701fcc54ee1e3e89a7d739fdf86f9e85ec1fee57",
+  "chapters/gemfall-05a.json": "ddc3a53b4844ce4c6d11725ec73793acb1279b0336d92b1980af01b1cd746989",
+  "chapters/gemfall-05b.json": "b43f4c349a88c3f5b40d32c6b4e9ae2a3cb8c9db6f89bfad2d8e1b84a5ff7f85",
+  "chapters/gemfall-05c.json": "e2715f5d43d9f0c51c714ab274f0497821e4677a3028ea1ecfe497a188c0d475",
+  "chapters/gemfall-06.json": "e59c654289034be27ba303a81c8515223e063201c6e02ce2c68ca4421cfec0fd",
+  "chapters/gemfall-07h.json": "f9f5ebed68f3b03c4bb43d35f881c8b804c74d70049009d4872c12713a26fe10",
+  "chapters/gemfall-07l.json": "49afe8e98c99b4a833002f93148e65790b80c5faf435b74780c89e6e2c722635",
+  "chapters/gemfall-07r.json": "56389c6b60fb44cca02bf60f95438efd3dbf4660beec50272093cafb72f19134",
+  "chapters/gemfall-08.json": "984336426f0039e3c331f9a5334ef0a50ae71400ee53e852784c7def44c79e2c",
 };
 
 describe("Gemfall's files are the files that shipped before the epic", () => {

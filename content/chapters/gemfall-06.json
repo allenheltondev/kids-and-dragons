@@ -616,6 +616,7 @@
     },
     "scene_soup_tent": {
       "type": "story",
+      "priority": 2,
       "discovers": [
         "faction.deep_hollow_cult"
       ],
@@ -864,6 +865,7 @@
     },
     "scene_morning_bells_sock": {
       "type": "story",
+      "priority": 2,
       "cast": [
         {
           "figure": "cast/grandmother_tull",
@@ -1574,6 +1576,7 @@
     },
     "scene_acceptable_losses": {
       "type": "story",
+      "priority": 2,
       "narration": "Captain Voss reads everything. She does not argue with a single word of it. Then she unrolls a map, draws circles around three towns, and says \"acceptable losses\" as calmly as somebody ordering breakfast. The humming stone hums a little louder, as if it disagrees.",
       "cast": [
         {
@@ -2347,6 +2350,7 @@
     },
     "scene_shut_out": {
       "type": "story",
+      "priority": 1,
       "discovers": [
         "location.redspire_citadel",
         "faction.skywardens"
