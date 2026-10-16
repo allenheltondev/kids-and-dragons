@@ -443,6 +443,71 @@ describe("a graph campaign", () => {
     expect(run(campaign({ completed: "left" }), chapters).findings).toEqual([]);
   });
 
+  it("settles possible knowledge too, when an optional introduction reaches a variant a round late", () => {
+    /*
+     *   hub --> w           (w-late, on a return, waves to Pellam)
+     *   hub --> x --> y --(return)--> x --(sideways)--> w
+     *
+     * y may introduce Pellam, on one branch only, and the only way that
+     * possibility reaches w-late is round the loop through x-late. The sweep
+     * meets w before x, and nothing here is guaranteed, so every K is empty
+     * from the first round. A sweep that stopped when K stopped, reading M as
+     * it stood then, could judge w-late's merge point with M from before the
+     * loop was walked (PR #223 review). M is now computed from the graph before
+     * the fixed point, and the fixed point compares K and M both: the finding
+     * is there and the sweep reports it settled.
+     */
+    const late = { visit: { min: 2 } };
+    const campaign = graph(
+      {
+        hub: { chapter: "hub" },
+        w: { chapter: "w", variants: [{ chapter: "w-late", when: late }] },
+        x: { chapter: "x", variants: [{ chapter: "x-late", when: late }] },
+        y: { chapter: "y" },
+      },
+      {
+        a: edge("hub", "w"),
+        b: edge("hub", "x"),
+        c: edge("x", "y"),
+        d: edge("y", "x", { kind: "return" }),
+        e: edge("x", "w", { kind: "sideways" }),
+      },
+    );
+    const chapters = [
+      chapter("hub", 1, { start: scene("A crossroads.") }),
+      chapter("w", 1, { start: scene("A well.") }),
+      chapter("w-late", 1, { start: scene("The well again.", [go("end", "Wave to Pellam"), go("end", "Walk on")]), end: scene("Done.") }),
+      chapter("x", 1, { start: scene("A bridge.") }),
+      chapter("x-late", 1, { start: scene("The bridge again.") }),
+      chapter("y", 1, {
+        start: scene("A market.", [go("meet", "Look around"), go("quiet", "Keep walking")]),
+        meet: scene("A clerk named Pellam waves.", [go("end")]),
+        quiet: scene("Nobody waves.", [go("end")]),
+        end: scene("Done."),
+        primer: PRIMER,
+      }),
+    ];
+    const result = run(campaign, chapters);
+    expect(result.findings.map((f) => f.key)).toEqual(["w-late/start/Pellam"]);
+    expect(result.settled).toBe(true);
+  });
+
+  it("lets a node variant coin a name a return brings back round the loop", () => {
+    // n2 is the only chapter that mentions Pellam, and it introduces him. A party
+    // back from q has never seen n2, so the name cannot have reached it from there.
+    const campaign = graph(
+      { hub: { chapter: "hub" }, n: { chapter: "n", variants: [{ chapter: "n2", when: { visit: { min: 2 } } }] }, q: { chapter: "q" } },
+      { a: edge("hub", "n"), b: edge("n", "q"), c: edge("q", "n", { kind: "return" }) },
+    );
+    const chapters = [
+      chapter("hub", 1, { start: scene("A crossroads.") }),
+      chapter("n", 1, { start: scene("A bridge.") }),
+      chapter("n2", 1, { start: scene("Back at the bridge, you meet Pellam, who waves. Pellam smiles.") }),
+      chapter("q", 1, { start: scene("A field.") }),
+    ];
+    expect(run(campaign, chapters).findings).toEqual([]);
+  });
+
   it("is what `analyse` runs for a campaign with a graph", () => {
     const [campaign, chapters] = diamond("Pellam is at the door.");
     expect(analyse({ ...campaign, chapters: chapters.map((c) => c.id) }, chapters).findings.map((f) => f.key)).toEqual([
@@ -459,8 +524,9 @@ describe("the Continental Rift slice (the worked graph campaign)", () => {
   });
   const result = analyse(campaign, chapters);
 
-  it("plays every chapter from some way in", () => {
+  it("plays every chapter from some way in, and settles", () => {
     expect(result.unreached).toEqual([]);
+    expect(result.settled).toBe(true);
   });
 
   it("finds only the Great River, and says why each one is or is not real", () => {

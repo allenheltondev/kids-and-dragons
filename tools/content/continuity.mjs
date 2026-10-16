@@ -945,13 +945,20 @@ export function analyseGraphCampaign(campaign, chapters) {
   }
 
   /*
-   * "Some way in showed it" counts FIRST arrivals only. A loop brings a party
-   * back to a place knowing what the place (and the way back, "Back to the
-   * Exchange") told it last time, and a scene that coins a name on the first
-   * visit would otherwise look like it cites one on the second. So the
-   * may-knowledge on arrival at `n` is propagated along paths that have not
-   * been to `n` yet (`firstArrivalMay`). What every way in guarantees (K)
-   * still counts every arrival.
+   * "Some way in showed it" counts a chapter's FIRST play only. A loop brings
+   * a party back to a place knowing what the place (and the way back, "Back to
+   * the Exchange") told it last time, and a scene that coins a name on its
+   * first play would otherwise look like it cites one on the next. So:
+   *
+   *   - a place's own chapter is first played on the first arrival: its
+   *     may-knowledge runs along paths that have not been to the place yet
+   *     (`firstArrivalMay`);
+   *   - a node variant is first played on some later arrival: its paths may
+   *     pass through the place (whose other chapters count) but never through
+   *     the variant itself (`firstPlayMay`).
+   *
+   * Both are computed once, from the graph and the text, before the fixed
+   * point; what every way in guarantees (K) still counts every arrival.
    */
   const chapterShows = (cid) => {
     const chapter = byId.get(cid);
@@ -983,6 +990,22 @@ export function analyseGraphCampaign(campaign, chapters) {
     return arrive.get(self) ?? new Set();
   };
   const mayIn = new Map(order.map((id) => [id, firstArrivalMay(id)]));
+  const firstPlayMay = (self, unplayed) => {
+    const shows = (id) => (id === self ? showsOfExcept(g.nodes[id], unplayed) : showsOf.get(id));
+    const arrive = new Map([[g.entry, new Set()]]);
+    for (let changed = true; changed; ) {
+      changed = false;
+      for (const [, e] of edges) {
+        if (!arrive.has(e.from) || !g.nodes[e.to]) continue;
+        const leave = union(arrive.get(e.from), shows(e.from));
+        const next = union(arrive.get(e.to) ?? new Set(), union(leave, shownMain([labelOf(e)], vocab)));
+        if (!arrive.has(e.to) || next.size !== arrive.get(e.to).size) arrive.set(e.to, next), (changed = true);
+      }
+    }
+    return arrive.get(self) ?? new Set();
+  };
+  const variantMay = new Map();
+  for (const id of order) for (const v of g.nodes[id].variants ?? []) variantMay.set(`${id}/${v.chapter}`, firstPlayMay(id, v.chapter));
 
   let kin = new Map(); // node -> { K, M } on arrival
   let kend = new Map(); // node -> { K, M } on leaving
@@ -990,9 +1013,20 @@ export function analyseGraphCampaign(campaign, chapters) {
   let dangling = new Map();
   let played = new Set();
 
+  /*
+   * Settled means nothing moved: what every way in guarantees (K), what some
+   * way in may have shown (M), and the setters. A chapter's M is computed
+   * before the loop (`firstArrivalMay`, `firstPlayMay`), so it cannot go stale
+   * here; it is in the signature anyway, because a fixed point that ignored
+   * half the state it carries would only be one by accident (PR #223 review).
+   */
   const sig = () =>
-    JSON.stringify([kin, kend, setters].map((m) => [...m].map(([k, v]) => [k, [...(v.K ?? v)].sort()]).sort()));
+    JSON.stringify([
+      ...[kin, kend].map((m) => [...m].map(([k, v]) => [k, [...v.K].sort(), [...v.M].sort()]).sort()),
+      [...setters].map(([k, v]) => [k, [...v].sort()]).sort(),
+    ]);
 
+  let settled = false;
   for (let round = 0; round < 60; round++) {
     const before = sig();
     const roundSetters = new Map();
@@ -1035,12 +1069,7 @@ export function analyseGraphCampaign(campaign, chapters) {
       const plays = [{ chapter: node.chapter, entry: { K: arrival.K, M: mayIn.get(id) } }];
       for (const v of node.variants ?? []) {
         const entry = meet([...(couldHoldAtStart(v.when, facts) ? start : []), ...ways], proves(v.when));
-        // A variant is usually first played on a return, so its may-knowledge is every way in,
-        // less what this place's other chapters show (what a return knows only from being here).
-        if (!entry) continue;
-        const here = showsOfExcept(node, v.chapter);
-        const M = new Set([...entry.M].filter((n) => !here.has(n)));
-        plays.push({ chapter: v.chapter, entry: { K: entry.K, M: union(M, mayIn.get(id)) } });
+        if (entry) plays.push({ chapter: v.chapter, entry: { K: entry.K, M: variantMay.get(`${id}/${v.chapter}`) } });
       }
 
       const leaving = [];
@@ -1078,11 +1107,16 @@ export function analyseGraphCampaign(campaign, chapters) {
       for (const eff of e.effects ?? []) if (eff.type === "setFlag" && eff.value !== false) meetInto(roundSetters, eff.flag, at);
     }
     setters = roundSetters;
-    if (sig() === before) break;
+    if (sig() === before) {
+      settled = true;
+      break;
+    }
   }
 
   return {
     findings: toFindings(dangling, appearances),
+    /** The last round changed nothing (K, M or setters); false only if 60 rounds ran out. */
+    settled,
     stranded: [],
     unreached: chapters.filter((c) => !played.has(c.id)).map((c) => c.id),
   };

@@ -137,6 +137,8 @@ sweep can reason per place instead of per journey:
 - **Returning** is not citing. A scene coins a name on a party's first arrival; what a party knows
   only from having been here before does not count as another way in.
 - **A node variant** is entered by the same ways as its place, plus what its own `when` proves.
+  It is usually first played on a return, so the place's other chapters count as seen, but its
+  own text never does: a variant may coin a name.
 
 So: introduce what a chapter needs inside that chapter, or gate the way in on the place that
 introduced it. The Continental Rift slice's two findings, and why one is real and one is the
