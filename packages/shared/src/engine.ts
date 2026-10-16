@@ -2029,6 +2029,19 @@ function runEnemyTurns(draft: RunState, ctx: EngineContext): readonly EncounterE
           maxHp: c.maxHp,
           down: c.down,
         })),
+      // The place, only when the fight has one (#201): the round this turn is
+      // played in and whether the captive still waits. A fight without an
+      // environment hands nothing over, and its monsters plan exactly as
+      // they always did.
+      ...(encounter.environment
+        ? {
+            environment: {
+              spec: encounter.environment.spec,
+              round: encounter.round,
+              ...(encounter.environment.rescue ? { rescue: encounter.environment.rescue } : {}),
+            },
+          }
+        : {}),
     });
 
     if (plan.moveTo) {
