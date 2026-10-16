@@ -140,6 +140,8 @@ test("photograph a cast on the story stage", async ({ browser }) => {
     await host.getByRole("button", { name: /^world$/i }).click(TAP);
     await host.waitForTimeout(200);
     await host.screenshot({ path: `${SHOT_PREFIX}-${scene}-host.png` });
+    // The phone captures also give streamed rig textures time to settle on TV.
+    await tv.screenshot({ path: `${SHOT_PREFIX}-${scene}-tv.png` });
     if (scene !== SCENES.at(-1)) await host.getByRole("button", { name: /^you$/i }).click(TAP);
   }
 

@@ -1,0 +1,13 @@
+
+> kids-and-dragons@0.0.0 test
+> vitest run --maxWorkers=1 packages/client/src/audio/procedural.test.ts -t riftlight-finale
+
+
+ RUN  v4.1.10 C:/Users/allen/.codex/worktrees/riftlight-part-a/kids-and-dragons
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 40 skipped (41)
+   Start at  12:25:51
+   Duration  1.79s (transform 134ms, setup 0ms, import 185ms, tests 1.24s, environment 0ms)
+
