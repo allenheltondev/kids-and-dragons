@@ -124,12 +124,31 @@ export function swCacheable(response: { ok: boolean; status: number; type: strin
 }
 
 /**
- * Hashed code no longer in this build's list. A deploy deletes the old files
- * from the bucket too, so keeping them would only spend the phone's space.
+ * Where the worker records which build's code it last kept, inside the bundle
+ * cache under a path no request can have.
  */
-export function swStaleBundles(cached: readonly string[], current: readonly string[]): string[] {
-  const keep = new Set(current);
-  return cached.filter((path) => !keep.has(path));
+export const SW_BUNDLE_LIST_KEY = "/__kad/bundle-list";
+
+/**
+ * Hashed code to drop when a new build's worker takes over: what is in
+ * neither this build nor the one before it.
+ *
+ * Not "everything this build does not list". The new worker takes over pages
+ * that are already open (`skipWaiting` + `clients.claim`), and those pages
+ * were built against the previous build: the first time one opens the book or
+ * a room, it imports that build's chunks — which the deploy has already
+ * deleted from the bucket (`--delete`). Keeping one build back is what lets
+ * that import still succeed. Two deploys back is a tab left open across two
+ * releases; it gets the "Try again" a missing chunk always gets (App.tsx
+ * `RoomBoundary`), which reloads it onto the current build.
+ */
+export function swStaleBundles(
+  cached: readonly string[],
+  current: readonly string[],
+  previous: readonly string[] = [],
+): string[] {
+  const keep = new Set([...current, ...previous]);
+  return cached.filter((path) => path !== SW_BUNDLE_LIST_KEY && !keep.has(path));
 }
 
 /** The oldest entries to drop to get back under `limit` (cache keys are oldest first). */

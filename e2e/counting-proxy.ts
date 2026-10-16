@@ -49,6 +49,8 @@ export interface CountingProxy {
   /** Everything counted since the last `reset()`. */
   report(): Report;
   reset(): void;
+  /** Change what the proxy tampers with, rewrites or answers 404 — a deploy, mid-test. */
+  configure(options: ProxyOptions): void;
   /** Resolves once nothing but the event stream has been in flight for `quietMs`. */
   settled(quietMs?: number, timeoutMs?: number): Promise<void>;
   close(): Promise<void>;
@@ -61,10 +63,19 @@ export interface ProxyOptions {
    * fingerprinted. The worker must serve it and must never save it.
    */
   tamper?: (path: string) => boolean;
+  /**
+   * Text the proxy rewrites on the way through — a deploy's new `sw.js`,
+   * without building one. Returns the rewrite for a path it applies to, and
+   * nothing for every other path (which then passes byte for byte).
+   */
+  rewrite?: (path: string) => ((text: string) => string) | undefined;
+  /** Paths the proxy answers 404 — what a deploy deleted from the bucket. */
+  gone?: (path: string) => boolean;
 }
 
-export async function startCountingProxy(target: string, options: ProxyOptions = {}): Promise<CountingProxy> {
+export async function startCountingProxy(target: string, initial: ProxyOptions = {}): Promise<CountingProxy> {
   const upstream = new URL(target);
+  let options = initial;
   let tally = emptyReport();
   let inFlight = 0;
   let lastActivity = Date.now();
@@ -78,23 +89,60 @@ export async function startCountingProxy(target: string, options: ProxyOptions =
     lastActivity = Date.now();
     tally[kind].requests += 1;
 
+    if (options.gone?.(path) === true) {
+      if (tracked) inFlight -= 1;
+      res.writeHead(404, { "content-type": "text/plain" }).end("gone");
+      return;
+    }
+    const rewrite = options.rewrite?.(path);
+    // Text that is rewritten is asked for whole: uncompressed, and never as a
+    // conditional request, whose "not modified" would skip the rewrite (a
+    // worker's update check is exactly such a request).
+    const headers = { ...req.headers, host: upstream.host };
+    if (rewrite) {
+      delete headers["accept-encoding"];
+      delete headers["if-none-match"];
+      delete headers["if-modified-since"];
+    }
+
     const forward = request(
       {
         host: upstream.hostname,
         port: upstream.port,
         method: req.method,
         path: req.url,
-        headers: { ...req.headers, host: upstream.host },
+        headers,
       },
       (reply) => {
+        if (rewrite && reply.statusCode === 200) {
+          // Buffered, rewritten, sent whole: the length changes with the text.
+          const chunks: Buffer[] = [];
+          reply.on("data", (chunk: Buffer) => chunks.push(chunk));
+          reply.on("end", () => {
+            const original = Buffer.concat(chunks).toString("utf8");
+            const body = Buffer.from(rewrite(original), "utf8");
+            const sent = { ...reply.headers };
+            delete sent["content-length"];
+            delete sent["content-encoding"];
+            delete sent["etag"];
+            res.writeHead(200, sent);
+            tally[kind].bodies += 1;
+            tally[kind].downloaded.push(path);
+            tally[kind].bytes += body.length;
+            res.end(body);
+            if (tracked) inFlight -= 1;
+            lastActivity = Date.now();
+          });
+          return;
+        }
         const tampered = reply.statusCode === 200 && options.tamper?.(path) === true;
-        const headers = { ...reply.headers };
+        const passed = { ...reply.headers };
         if (tampered) {
           // The length changes, so the framing does too.
-          delete headers["content-length"];
-          delete headers["etag"];
+          delete passed["content-length"];
+          delete passed["etag"];
         }
-        res.writeHead(reply.statusCode ?? 502, headers);
+        res.writeHead(reply.statusCode ?? 502, passed);
         if (reply.statusCode === 200) {
           tally[kind].bodies += 1;
           tally[kind].downloaded.push(path);
@@ -123,6 +171,9 @@ export async function startCountingProxy(target: string, options: ProxyOptions =
 
   return {
     url: `http://localhost:${String(port)}`,
+    configure: (next) => {
+      options = next;
+    },
     report: () => structuredClone(tally),
     reset: () => {
       tally = emptyReport();
