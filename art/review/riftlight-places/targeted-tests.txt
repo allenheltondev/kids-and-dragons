@@ -1,0 +1,12 @@
+
+> kids-and-dragons@0.0.0 test
+> vitest run --maxWorkers=1 tools/art/rig_motion.test.ts tools/art/verify_seams.test.ts tools/content/validate.test.mjs tools/art/environment-coverage.test.ts packages/client/src/world/art-paths.test.ts
+
+
+ RUN  v4.1.10 C:/Users/allen/.codex/worktrees/riftlight-part-a/kids-and-dragons
+
+
+ Test Files  5 passed (5)
+      Tests  138 passed (138)
+   Start at  11:52:46
+   Duration  141.16s (transform 256ms, setup 0ms, import 424ms, tests 139.57s, environment 1ms)

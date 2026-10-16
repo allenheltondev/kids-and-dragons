@@ -183,3 +183,24 @@ The assets declare both appearances; live state-to-sprite switching is outside t
 - New asset filenames and manifest names comply with the spoiler rule. Human visual review remains the final art acceptance step.
 
 The reduced-worker full run finished with **3780 passed, 8 failed, 9 skipped**. All failures are the same Windows CLI/CRLF baseline cases in three unchanged content-tool test files; the rig-motion timeout did not recur. No tests were skipped, weakened or deleted to obtain this result.
+
+## Part C — six special places
+
+Built-in imagegen produced six new region-specific backdrop paintings, using the existing glacier, Saltrot and Sky Islands images as material/style references. [Exact prompts and references](art-and-audio-part-c-prompts.json). Source PNGs are under `art/source/riftlight/scenes/`; `package_riftlight_scenes.py` reproducibly fits the almost-16:9 generated canvases to 1920×1080 and exports WebP at quality 88. All six manifest `sceneIllustrations` entries are new; existing backdrop files are unchanged.
+
+| Manifest entry / file under `assets/` | Landmark and standing space |
+| --- | --- |
+| `scenes/riftlight/ice-shelf-headwaters.webp` | River roaring out of an ice arch below a broad, safe foreground shelf. |
+| `scenes/riftlight/reading-room.webp` | Recessed book niches and layered memory ice, open ice-stone floor; no frozen figures. |
+| `scenes/riftlight/cairnstep.webp` | Watch cairns climbing toward the notch in the upper mountains, open pass terrace below. |
+| `scenes/riftlight/buried-bridge.webp` | Old stone arches spanning exposed mud, not a flowing river; firm foreground mud shelf. |
+| `scenes/riftlight/temple-island-squall.webp` | Second island drifting close beyond a wet temple courtyard; rain, no painted creatures. |
+| `scenes/riftlight/stuttering-flats.webp` | Broad empty mudflat for a separately composed rift, with channels and roots behind the standing area. |
+
+The manifest strings omit `.webp`, following the existing convention. Each source prompt reserves the full-width standing band from 70% down, with the figures' floor at 80%; major landmarks remain above the figures. No rifts, figures, lettering, UI or diagnostic rift-color lighting are painted into any of these images. Normal blue ice and sky are environmental color, not Riftlight layers.
+
+`e2e/cast-shot.spec.ts` now accepts an optional `KAD_SCENE_ART_PREVIEW`: a single scene-art path or a JSON scene-id-to-art map. The review route validates paths and changes only client-fetched review chapter data. It never edits authored content. Two cast-shot runs photograph all six backgrounds on TV, watcher phone and host phone with Orin, Olivia and the guide, using three existing Gemfall scenes per run. The unchanged narration is fixture text and does not represent Riftlight story authorship. The 18 stage screenshots and the full painting contact sheet are committed under `art/review/riftlight-places/`.
+
+All images were visually checked for floor/landmark placement and absence of figures/rifts. `scene-audit.txt` records each exact output dimension and byte count; total delivered WebP size is about 2.2 MiB. The strict standalone review-tool TypeScript check and content validator pass. Full art and test outputs accompany the PR; the same Windows baseline test limitations apply. This Part needs no rig, audio, canon or chapter changes.
+
+Part C validation: **1518 art checks passed**, 24 existing warnings; **55 content checks passed**; repository/review typechecks and unchanged audio/rig gates passed. Both three-scene cast-shot runs passed. The concurrent full Windows run reported **3776 passed, 12 failed, 9 skipped**: eight known CLI/CRLF failures and four default-timeout cases under load. All affected files plus environment/art-path checks then passed an isolated serial run (**138 passed**) without changing tests or timeouts. Field-guide regeneration after the Part B image-pointer correction is idempotent.
