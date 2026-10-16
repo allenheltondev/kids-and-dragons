@@ -1,0 +1,4 @@
+assets/cast/deep-ice-figure/assembled.png: 765729 bytes, (1024, 1024), RGBA
+assets/scenes/riftlight/glacier-deep-ice.webp: 388154 bytes, (1920, 1080), RGB
+assets/audio/music/riftlight-finale.webm: 594518 bytes
+Neutral shipping paths and manifest name: PASS

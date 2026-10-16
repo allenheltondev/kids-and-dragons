@@ -31,7 +31,7 @@ async function previewCast(context: BrowserContext): Promise<void> {
   if (!castInput && !artInput && !musicInput) return;
   const input = castInput ? JSON.parse(castInput) as CastMember | CastMember[] : undefined;
   const members = input ? (Array.isArray(input) ? input : [input]) : undefined;
-  if (members && (!members.length || members.length > 3 || members.some((member) => !/^(characters|entities|cast)\/[a-z0-9_]+$/.test(member.figure)))) throw new Error("Invalid cast preview figures (one to three required)");
+  if (members && (!members.length || members.length > 3 || members.some((member) => !/^(characters|entities|cast)\/[a-z0-9]+(?:[_-][a-z0-9]+)*$/.test(member.figure)))) throw new Error("Invalid cast preview figures (one to three required)");
   // Either one backdrop for all selected scenes, or a scene-id -> art map.
   const art = artInput?.startsWith("{") ? JSON.parse(artInput) as Record<string, string> : artInput;
   const paths = typeof art === "object" ? Object.values(art) : art ? [art] : [];
@@ -140,7 +140,7 @@ test("photograph a cast on the story stage", async ({ browser }) => {
     await host.getByRole("button", { name: /^world$/i }).click(TAP);
     await host.waitForTimeout(200);
     await host.screenshot({ path: `${SHOT_PREFIX}-${scene}-host.png` });
-    await host.getByRole("button", { name: /^you$/i }).click(TAP);
+    if (scene !== SCENES.at(-1)) await host.getByRole("button", { name: /^you$/i }).click(TAP);
   }
 
   await Promise.all(contexts.map((c) => c.close().catch(() => undefined)));

@@ -108,7 +108,7 @@ export const GROUP_SPREAD = 0.62;
 
 /** `entities/selkie` → its art. Null for anything the schema would refuse. */
 export function castFigureUrl(figure: string): string | null {
-  const match = /^(entities|characters|cast)\/([a-z0-9_]+)$/.exec(figure);
+  const match = /^(entities|characters|cast)\/([a-z0-9]+(?:[_-][a-z0-9]+)*)$/.exec(figure);
   if (!match) return null;
   const [, kind, id] = match;
   if (kind === "characters") return `/assets/characters/${id}/fledgling/assembled.png`;

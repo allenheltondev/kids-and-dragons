@@ -1030,7 +1030,7 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
 
 /** `entities/selkie` → its assembled.png under this checkout's assets/. */
 function castFigureFile(figure) {
-  const match = /^(entities|characters|cast)\/([a-z0-9_]+)$/.exec(figure ?? "");
+  const match = /^(entities|characters|cast)\/([a-z0-9]+(?:[_-][a-z0-9]+)*)$/.exec(figure ?? "");
   if (!match) return null;
   const [, kind, id] = match;
   if (kind === "characters") return join(REPO_ASSETS, "characters", id, "fledgling", "assembled.png");

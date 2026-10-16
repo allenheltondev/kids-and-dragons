@@ -411,7 +411,7 @@ describe("music", () => {
     // same pad as a biome nobody composed for, never silence.
     const { engine, contexts } = build();
     engine.unlock();
-    engine.sink.music("riftlight-finale");
+    engine.sink.music("a-track-nobody-produced");
     const tones = contexts[0]!.oscillators.map((osc) => osc.frequency.value);
     expect(tones).toEqual(expect.arrayContaining(DEFAULT_PAD.map((freq) => freq * 1.001)));
   });

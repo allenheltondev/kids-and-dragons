@@ -147,6 +147,7 @@ export const CUE_TONES: Record<CueId, Tone[]> = {
  */
 export const MUSIC_PADS: Record<string, number[]> = {
   // Riftlight's D minor/add9 harmony remains available when samples cannot load.
+  "riftlight-finale": [73.42, 110, 146.83, 164.81],
   "riftlight-theme": [146.83, 220, 293.66, 329.63],
   "riftlight-paths": [73.42, 110, 146.83, 164.81],
   "riftlight-sky": [146.83, 220, 329.63],
