@@ -53,6 +53,13 @@ describe("what the worker does with a request", () => {
 
   it("drops code a deploy replaced, and the oldest art past the cap", () => {
     expect(swStaleBundles(["/bundle/a.js", "/bundle/old.js"], ["/bundle/a.js", "/bundle/b.js"])).toEqual(["/bundle/old.js"]);
+  });
+
+  it("keeps the previous build's code for the pages still running it, and only that far back", () => {
+    const cached = ["/bundle/a1.js", "/bundle/b1.js", "/bundle/c1.js", "/__kad/bundle-list"];
+    // Build C takes over from B: B's chunks stay for B's open tabs; A's go;
+    // the worker's own record of the list is never treated as code.
+    expect(swStaleBundles(cached, ["/bundle/c1.js"], ["/bundle/b1.js"])).toEqual(["/bundle/a1.js"]);
     expect(swOverLimit([1, 2, 3, 4], 3)).toEqual([1]);
     expect(swOverLimit([1, 2], 3)).toEqual([]);
   });

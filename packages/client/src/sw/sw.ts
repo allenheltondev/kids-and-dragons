@@ -13,6 +13,7 @@
  */
 
 import {
+  SW_BUNDLE_LIST_KEY,
   SW_CACHES,
   SW_IMAGE_LIMIT,
   SW_PRECACHE_CONTENT,
@@ -47,6 +48,15 @@ interface SwScope {
 
 const worker = self as unknown as SwScope;
 
+/**
+ * Every lookup ignores `Vary`. Servers mark responses `Vary: Origin`, and a
+ * module script sends an `Origin` header the saved request never had — so a
+ * plain `match` misses every saved script and quietly sends the page back to
+ * the network (where, after a deploy, the old build's chunks no longer are).
+ * Everything this worker saves is the same bytes whatever the origin header.
+ */
+const SAME: CacheQueryOptions = { ignoreVary: true };
+
 worker.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
@@ -80,9 +90,15 @@ worker.addEventListener("activate", (event) => {
       for (const name of await caches.keys()) {
         if (!known.has(name)) await caches.delete(name);
       }
+      // Code no build in use needs: this build's and the previous one's stay,
+      // because the pages this worker is about to take over were built
+      // against the previous one (policy.ts `swStaleBundles`).
       const bundle = await caches.open(SW_CACHES.bundle);
+      const recorded = await bundle.match(SW_BUNDLE_LIST_KEY, SAME);
+      const previous = recorded ? ((await recorded.json()) as string[]) : [];
       const cached = (await bundle.keys()).map((request) => new URL(request.url).pathname);
-      for (const path of swStaleBundles(cached, __KAD_BUNDLE__)) await bundle.delete(path);
+      for (const path of swStaleBundles(cached, __KAD_BUNDLE__, previous)) await bundle.delete(path);
+      await bundle.put(SW_BUNDLE_LIST_KEY, new Response(JSON.stringify(__KAD_BUNDLE__)));
       await worker.clients.claim();
     })(),
   );
@@ -114,7 +130,7 @@ worker.addEventListener("fetch", (event) => {
 
 async function addMissing(cache: Cache, urls: readonly string[]): Promise<void> {
   const missing: string[] = [];
-  for (const url of urls) if (!(await cache.match(url))) missing.push(url);
+  for (const url of urls) if (!(await cache.match(url, SAME))) missing.push(url);
   await cache.addAll(missing);
 }
 
@@ -126,7 +142,7 @@ async function networkFirst(request: Request, cacheName: string, key: string | R
     if (swCacheable(response)) await cache.put(key, response.clone());
     return response;
   } catch (error) {
-    const saved = await cache.match(key);
+    const saved = await cache.match(key, SAME);
     if (saved) return saved;
     throw error;
   }
@@ -134,7 +150,7 @@ async function networkFirst(request: Request, cacheName: string, key: string | R
 
 async function cacheFirst(request: Request, cacheName: string): Promise<Response> {
   const cache = await caches.open(cacheName);
-  const saved = await cache.match(request);
+  const saved = await cache.match(request, SAME);
   if (saved) return saved;
   const response = await fetch(request);
   if (swCacheable(response)) await cache.put(request, response.clone());
@@ -149,7 +165,7 @@ async function cacheFirst(request: Request, cacheName: string): Promise<Response
  */
 async function staleWhileRevalidate(event: SwExtendableEvent, request: Request): Promise<Response> {
   const cache = await caches.open(SW_CACHES.image);
-  const saved = await cache.match(request);
+  const saved = await cache.match(request, SAME);
   const refresh = fetch(request).then((response) => {
     if (swCacheable(response)) event.waitUntil(keepImage(cache, request, response.clone()));
     return response;
