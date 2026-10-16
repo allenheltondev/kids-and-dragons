@@ -521,7 +521,7 @@
         "figure": {
           "description": "entities/<id> (assets/entities/<id>/assembled.png), characters/<species> (that species' fledgling art), or cast/<id> (a named character's own figure, assets/cast/<id>/assembled.png).",
           "type": "string",
-          "pattern": "^(entities|characters|cast)/[a-z0-9]+(_[a-z0-9]+)*$"
+          "pattern": "^(entities|characters|cast)/[a-z0-9]+([_-][a-z0-9]+)*$"
         },
         "name": {
           "description": "What the nameplate under the figure says, e.g. \"Professor Tidewell\". Omit for an unnamed creature, which then stands without a nameplate.",

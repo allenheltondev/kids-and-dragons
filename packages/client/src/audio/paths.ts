@@ -148,6 +148,7 @@ export const CUE_SPECS: Record<CueId, CueSpec> = {
  * arrive playable before anybody composes for them.
  */
 export const MUSIC_SPECS: Record<string, CueSpec> = {
+  "riftlight-finale": { brief: "The D�F�A�G�E rift motif played old and slightly out of step, like a song remembered wrong. Slow, regal and a little sorrowful, with low bowed tones and soft horn-like overtones; never menacing. The anchor cue answers its unresolved ending with E descending to D.", seconds: 45 },
   "riftlight-theme": { brief: "The five-note D–F–A–G–E rift motif stated plainly over warm strings and a soft glassy shimmer. Curious, a little wondering, gentle enough to talk over.", seconds: 40 },
   "riftlight-paths": { brief: "Slow, cold and still: sustained low tones, ice-like bell overtones, the D–F–A–G–E rift motif carried by a low voice. Memory and patience.", seconds: 40 },
   "riftlight-sky": { brief: "Airy and drifting: high breathy winds, slow swells like distant whale song, the D–F–A–G–E rift motif floating in and out.", seconds: 40 },
