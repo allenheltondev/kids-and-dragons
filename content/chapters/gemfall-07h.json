@@ -280,7 +280,7 @@
       "narration": "You told the wardens the truth, and they still trust you. A clerk stamps a pass for you and waves you through without looking in your bags. The stamp feels heavy on your hand all afternoon.",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/skywarden_faun",
           "name": "Warden Clerk"
         }
       ],
@@ -1253,7 +1253,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/skywarden_faun",
           "name": "Warden Clerk"
         }
       ],
@@ -1284,7 +1284,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/skywarden_faun",
           "name": "Warden Clerk"
         }
       ],
@@ -1302,7 +1302,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/skywarden_faun",
           "name": "Warden Clerk"
         }
       ],
@@ -1323,7 +1323,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/skywardens",
+          "figure": "cast/skywarden_faun",
           "name": "Warden Clerk"
         }
       ],

@@ -157,7 +157,7 @@ test.describe("nameplates", () => {
     return context.newPage();
   }
 
-  test("three guests and three heroes fit a 390px phone stage", async ({ browser }, info) => {
+  test("phone guest pages keep heroes and names readable at 390px", async ({ browser }, info) => {
     const guests = [
       { figure: "cast/lady_olivia", name: "Lady Olivia" },
       { figure: "cast/seren_wisp", name: "Seren Wisp" },
@@ -188,22 +188,36 @@ test.describe("nameplates", () => {
     await host.getByRole("button", { name: /begin the adventure/i }).click(TAP);
     const watcher = phones[1]!;
     await watcher.getByRole("button", { name: /^world$/i }).click(TAP);
-    await expect.poll(() => namesOn(watcher, "story"), { timeout: 30_000 })
-      .toBe([...HEROES, ...guests.map((g) => g.name)].sort().join(","));
-    const figures = () => watcher.evaluate(() => {
-      const get = (globalThis as Record<string, unknown>).__kadScene as
-        | (() => { storyFigureBoxes?(): Box[] } | null) | undefined;
-      return get?.()?.storyFigureBoxes?.() as Box[] | undefined;
-    });
-    await expect.poll(async () => {
-      const boxes = await figures();
-      return boxes?.length === 6 && boxes.every((b) => b.width > 0 && b.x >= 0 && b.x + b.width <= 390);
-    }, { timeout: 30_000 }).toBe(true);
-    const labels = (await read(watcher)).boxes;
-    for (let i = 0; i < labels.length; i++) for (let j = i + 1; j < labels.length; j++) {
-      expect(collide(labels[i]!, labels[j]!), `${labels[i]!.text} overlaps ${labels[j]!.text}`).toBe(false);
+    for (const [index, guest] of guests.entries()) {
+      await expect.poll(() => namesOn(watcher, "story"), { timeout: 30_000 })
+        .toBe([...HEROES, guest.name].sort().join(","));
+      const reading = () => watcher.evaluate(() => {
+        const get = (globalThis as Record<string, unknown>).__kadScene as
+          | (() => { storyFigureBoxes?(): Box[]; storyNameplateBoxes?(): (Box & { fontPixels: number })[] } | null) | undefined;
+        return { figures: get?.()?.storyFigureBoxes?.(), labels: get?.()?.storyNameplateBoxes?.() };
+      });
+      await expect.poll(async () => {
+        const { figures, labels } = await reading();
+        return figures?.length === 4 && figures.every((b) => b.height >= 110 && b.x >= 0 && b.x + b.width <= 390) &&
+          labels?.length === 4 && labels.every((b) => b.fontPixels >= 10 && b.x - b.width / 2 >= 0 && b.x + b.width / 2 <= 390);
+      }, { timeout: 30_000 }).toBe(true);
+      const labels = (await reading()).labels!;
+      for (let i = 0; i < labels.length; i++) for (let j = i + 1; j < labels.length; j++) {
+        expect(collide(labels[i]!, labels[j]!), `${labels[i]!.text} overlaps ${labels[j]!.text}`).toBe(false);
+      }
+      await watcher.screenshot({ path: info.outputPath(`guest-${index + 1}-phone.png`) });
+      if (index < guests.length - 1) await watcher.getByRole("button", { name: "Next guest" }).click();
     }
-    await watcher.screenshot({ path: info.outputPath("three-guests-phone.png") });
+    await watcher.getByRole("button", { name: "Previous guest" }).click();
+    await expect.poll(() => namesOn(watcher, "story"), { timeout: 30_000 })
+      .toBe([...HEROES, guests[1]!.name].sort().join(","));
+    await watcher.setViewportSize({ width: 960, height: 844 });
+    await expect.poll(() => namesOn(watcher, "story"), { timeout: 30_000 })
+      .toBe([...HEROES, ...guests.map((guest) => guest.name)].sort().join(","));
+    await expect(watcher.getByRole("navigation", { name: "Scene guests" })).toHaveCount(0);
+    await watcher.setViewportSize({ width: 390, height: 844 });
+    await expect.poll(() => namesOn(watcher, "story"), { timeout: 30_000 })
+      .toBe([...HEROES, guests[1]!.name].sort().join(","));
   });
 
   test("three of the same species are told apart, on the lineup and on the board", async ({
