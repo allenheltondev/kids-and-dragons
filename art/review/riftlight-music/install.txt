@@ -1,0 +1,9 @@
+
+> kids-and-dragons@0.0.0 audio:install
+> tsx tools/audio/procedural-install.ts --only=riftlight-theme,riftlight-paths,riftlight-sky,riftlight-coast
+
+riftlight-theme: 582209 bytes
+riftlight-paths: 578585 bytes
+riftlight-sky: 416404 bytes
+riftlight-coast: 593154 bytes
+Total: 2.07 MiB

@@ -204,6 +204,26 @@ The manifest strings omit `.webp`, following the existing convention. Each sourc
 All images were visually checked for floor/landmark placement and absence of figures/rifts. `scene-audit.txt` records each exact output dimension and byte count; total delivered WebP size is about 2.2 MiB. The strict standalone review-tool TypeScript check and content validator pass. Full art and test outputs accompany the PR; the same Windows baseline test limitations apply. This Part needs no rig, audio, canon or chapter changes.
 
 Part C validation: **1518 art checks passed**, 24 existing warnings; **55 content checks passed**; repository/review typechecks and unchanged audio/rig gates passed. Both three-scene cast-shot runs passed. The concurrent full Windows run reported **3776 passed, 12 failed, 9 skipped**: eight known CLI/CRLF failures and four default-timeout cases under load. All affected files plus environment/art-path checks then passed an isolated serial run (**138 passed**) without changing tests or timeouts. Field-guide regeneration after the Part B image-pointer correction is idempotent.
+
+## Part D — regional music (2026-10-16)
+
+Four new 40-second Opus/WebM loops are composed in `packages/client/src/audio/riftlight.ts` and exported through the existing procedural bank. No external recordings or generation provider were used. The exact production briefs are recorded alongside each `MUSIC_SPECS` row; the source score contains every pitch, timing, envelope, partial and mix decision.
+
+The shared five-note motif is D–F–A–G–E: an unresolved second at the end leaves room for the anchor cue's E-to-D answer. The theme states it over soft additive strings and glass overtones; paths lowers it into a patient ensemble with ice overtones; sky adds breathy noise and a slow low bend; coast uses reed-like odd partials and a deliberately uneven wet pulse. These are synthesized instrumental suggestions, with no voices or threatening creature calls.
+
+| Track / new file under `assets/audio/music/` | Mapping |
+| --- | --- |
+| `riftlight-theme.webm` | Explicit chapter/scene override only |
+| `riftlight-paths.webm` | `glacier_of_origins`, `frostfang_peaks` |
+| `riftlight-sky.webm` | `sky_islands` |
+| `riftlight-coast.webm` | `sallow_wastelands`, `bone_yard` |
+
+Total export size is 2.1 MiB. The production synth has matching fallback chords. Existing scores and samples are unchanged. A test reads every actual Gemfall chapter and verifies none uses a changed mapping. Theme and finale can use the chapter/scene override already delivered by #226.
+
+`tools/audio/riftlight-preview.ts` generates the committed listening page, RMS envelopes and level/seam inventory in `art/review/riftlight-music/`. Each 40-second loop has RMS 0.055, peak below 0.29 and seam discontinuity below 0.00001 in the rendered source. The audio gate finds 37/38 produced files; only the existing `bonk` placeholder remains. Repository and review-tool typechecks and all 55 content checks pass.
+
+The cast-shot review helper accepts an optional validated scene-to-music map and unlocks the TV audio with a keyboard gesture. Four scenes were captured on TV, watcher phone and host phone. The capture run reached all twelve images but timed out on its final navigation/teardown under local load; this limitation is retained in its log. Human listening review remains necessary to approve the instrumental character and across-room audibility. The listening page plays the actual shipped files and pauses other tracks when one starts.
+Local audio tests: 110 passed; three default five-second render timeouts (new sky/coast and existing forest). No assertion failures, skipped tests or changed timeouts. The separate full-score audit passes all four tracks. CI remains the cross-platform full-suite check.
 ## Review follow-up — three-guest phone composition (2026-10-16)
 
 Addressed #242's phone clipping finding: when two or three guests share the stage, the renderer fits complete figure canvases to their allotted slots using one common scale, preserving relative species sizes. A solo guest and the party-only lineup keep their existing scale. Nameplate width caps account for that scale and their debug bounds use the same transform. The six-person phone lineup necessarily has smaller figures; the committed `three-cast-phone-fixed.png` shows that density for human signoff.
@@ -220,3 +240,5 @@ Merged current main into Part B, preserving its Skywarden cast additions and res
 The final stricter phone regression passed (49.4 seconds), including all three guest pages, Previous, resize to 960px and return to 390px. All three cast-shot group runs also passed; their TV/phone/host and per-guest phone captures replace the earlier previews.
 
 Part C preview refresh after the second layout review: regenerated all six location compositions on the current upstream guest-paging layout. Each scene includes TV, host phone, and all three watcher-phone guest pages, so the figures and nameplates now match the implementation reviewers will merge. The original painting sources, manifest ids, packaging and background-only contact sheet are unchanged. The refreshed northern/southern capture logs record the runs.
+
+Part D preview refresh: all four music-assigned scenes were recaptured on TV, watcher phone and host phone after inheriting the readable narrow-stage layout. The four-scene capture run passed (2.0 minutes). Scores, mappings and production audio files are unchanged by this review follow-up.
