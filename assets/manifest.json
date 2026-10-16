@@ -2503,6 +2503,12 @@
       "name": "Corbin and Posy",
       "basis": "burrowfolk",
       "scale": "very_large"
+    },
+    {
+      "id": "orin_vale",
+      "name": "Master Orin Vale",
+      "basis": "griffin",
+      "scale": "medium"
     }
   ],
   "globalPalette": {
