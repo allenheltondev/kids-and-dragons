@@ -27,6 +27,7 @@ import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
 import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "../../packages/shared/src/condition-lint.ts";
+import { slowBlockProblems } from "../../packages/shared/src/buffs.ts";
 import { chapterStartDiscoveries, sceneDiscoveries } from "../../packages/shared/src/discoveries.ts";
 import { checkEncounterEnvironment } from "../../packages/shared/src/environment.ts";
 import { RIFT_ACTION_KINDS, campaignMode, journeyFlags, parseCampaignGraph, riftActionWays } from "../../packages/shared/src/campaign-graph.ts";
@@ -802,6 +803,12 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
       let total = 0;
       for (const enemy of scene.enemies) {
         const where = `/scenes/${id}/enemies/${enemy.id}`;
+        // A numbing sting (#227) is checked with the same arithmetic the fight
+        // uses, so a number the engine would clamp is a build failure instead.
+        for (const key of ["onHit", "retaliation"]) {
+          if (enemy[key] === undefined) continue;
+          for (const problem of slowBlockProblems(enemy[key], key === "retaliation")) fail(`${where}/${key}${problem.path}`, problem.problem);
+        }
         const entry = enemy.creature ? bestiary?.creatures?.[enemy.creature] : null;
 
         if (!enemy.creature) {

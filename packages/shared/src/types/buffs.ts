@@ -246,6 +246,19 @@ export interface CombatBuff {
   turnsLeft?: number;
 }
 
+/**
+ * A numbing sting (#227): the slow a Skupper's spines leave. Authored on an
+ * enemy (`EnemySpec.onHit`, `EnemySpec.retaliation`), applied in a fight as an
+ * ordinary `"move"` `CombatBuff` the fight alone holds — see `applyNumbed`.
+ * It slows; it never roots, and it wears off.
+ */
+export interface SlowEffect {
+  /** Steps taken off the target's turns, 1 to the `"move"` limit. */
+  steps: number;
+  /** How many of the target's own turns it lasts, 1 to `MAX_BUFF_DURATION`. */
+  turns: number;
+}
+
 /** One active buff as the screens show it (`JourneyView.buffs`). */
 export interface JourneyBuffView {
   id: BuffId;

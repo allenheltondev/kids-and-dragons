@@ -6,6 +6,7 @@
  */
 
 import type { CampaignGraph } from "./campaign-graph.js";
+import type { SlowEffect } from "./buffs.js";
 import type { ClassId, ItemDef, SpeciesId, StatId } from "./domain.js";
 
 export type SceneId = string;
@@ -371,6 +372,25 @@ export interface EnemySpec {
   steps: number;
   attack: number;
   art?: string;
+  /**
+   * A numbing sting (#227): every hit this enemy lands leaves the hero
+   * Numbed — `slow.steps` fewer steps for `slow.turns` of their turns, then
+   * full again. A second sting refreshes it and never stacks; it ends with the
+   * fight. Absent on every enemy before it existed, which fights as it always
+   * did.
+   */
+  onHit?: { slow: SlowEffect };
+  /**
+   * The same sting as a defense (#227), pufferfish-style. The enemy starts
+   * the fight NOT puffed; the first hero hit on it puffs it up (that hit does
+   * not sting — it was not puffed when struck). While puffed, a hero who
+   * *hits* it is Numbed. A miss touches nothing, puffed or not.
+   *
+   * It stays puffed for `puffTurns` of its own turns (default
+   * `DEFAULT_PUFF_TURNS`, 2), then deflates; being hit while puffed starts the
+   * count again.
+   */
+  retaliation?: { slow: SlowEffect; puffTurns?: number };
 }
 
 /**
