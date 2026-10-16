@@ -1565,10 +1565,16 @@ export function lobbyCampaign(state: RunState): LobbyCampaignChoice {
   const waitingOn = state.party.filter((m) => m.connected && votes[m.playerId] === undefined);
   const leaderId = Object.keys(votes).length > 0 ? tallyVotes(state, votes) : null;
   // Before anybody votes, the leader is whatever the screens already show
-  // (the room's campaign, or the one this room just played), else the first.
+  // (the room's campaign, or the one this room just played), else the first —
+  // skipping a locked campaign (#221), which a Begin could only be refused
+  // on. With every option locked it falls back as before, and the screens
+  // show the reason instead of a Begin.
   const shownId = state.campaign?.id;
+  const unlocked = (option: CampaignView) => option.locked === undefined;
   const leader =
     options.find((option) => option.id === leaderId) ??
+    options.find((option) => option.id === shownId && unlocked(option)) ??
+    options.find(unlocked) ??
     options.find((option) => option.id === shownId) ??
     options[0] ??
     null;

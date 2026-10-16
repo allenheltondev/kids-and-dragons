@@ -12,14 +12,14 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { applyIntent, createRunState } from "@kad/shared";
+import { applyIntent, createRunState, lobbyCampaign } from "@kad/shared";
 import type { Campaign, Chapter, ClientIntent, RunState } from "@kad/shared";
 import type { Engine } from "../engine/port.ts";
 import type { CampaignProgressRecord } from "../store/repository.ts";
 import { makeChapter } from "../../../shared/src/test-fixtures.ts";
 import { makeContent, makeHarness, seedHousehold, type TestHarness } from "../test-support.ts";
 import { applyAction } from "./action.ts";
-import { campaignLock, campaignView, settleChapterCompletion } from "./progression.ts";
+import { campaignLock, campaignView, joinOrStartAttempt, settleChapterCompletion } from "./progression.ts";
 import { createRoom, joinRoom } from "./room.ts";
 
 const realEngine: Engine = { applyIntent, createRunState };
@@ -256,6 +256,136 @@ describe("an unlocked campaign", () => {
     await room.ok("p_1", { type: "VOTE_CAMPAIGN", campaignId: "rift" });
     await room.ok("p_1", { type: "CONTINUE_CAMPAIGN" });
     expect((await room.state()).chapterId).toBe("rift-02");
+  });
+});
+
+describe("replaying the prerequisite (#221, `everCompleted`)", () => {
+  it("does not re-lock: complete, then a replay starts, and Rift is still open", async () => {
+    const h = harness();
+    const { householdId } = await seedHousehold(h, 1);
+    await h.repo.putCampaignProgress(attempt(householdId, "gems", "complete"));
+
+    // An evening of Gems again: the start replaces the complete row with an
+    // active one, and that row remembers the completion.
+    const replay = await lobby(h, "gems");
+    await replay.ok("p_1", { type: "CONTINUE_CAMPAIGN" });
+    expect((await replay.state()).chapterId).toBe("gems-01");
+    const row = await h.repo.getCampaignProgress(householdId, "gems");
+    expect(row).toMatchObject({ status: "active", lastIndex: 0, everCompleted: true });
+
+    // A Rift room: Gems is under way, so the table votes, and Rift starts.
+    const rift = await lobby(h, "rift");
+    const options = (await rift.state()).campaignOptions ?? [];
+    expect(options.map((o) => [o.id, o.locked !== undefined])).toEqual([
+      ["rift", false],
+      ["gems", false],
+    ]);
+    await rift.ok("p_1", { type: "VOTE_CAMPAIGN", campaignId: "rift" });
+    await rift.ok("p_1", { type: "CONTINUE_CAMPAIGN" });
+    expect((await rift.state()).chapterId).toBe("rift-01");
+  });
+
+  it("is kept through a replay that then fails, and by the attempt after it", async () => {
+    const h = harness();
+    const { householdId } = await seedHousehold(h, 1);
+    await h.repo.putCampaignProgress(
+      attempt(householdId, "gems", "active", { attemptId: "a_2", setbacks: 2, everCompleted: true }),
+    );
+    const finished = {
+      runId: "r_1",
+      campaignId: "gems",
+      campaignAttemptId: "a_2",
+      chapterId: "gems-02",
+      sceneId: "scene_ending",
+      chapterOutcome: "setback",
+      bonuses: [],
+      xpEarned: 50,
+      flags: {},
+      party: [],
+    } as unknown as Parameters<typeof settleChapterCompletion>[0];
+    const settlement = await settleChapterCompletion(finished, h.deps, householdId);
+    expect(settlement.campaignProgress).toMatchObject({ status: "failed", everCompleted: true });
+    expect(campaignLock(RIFT, [settlement.campaignProgress!], h.deps)).toBeNull();
+
+    const next = joinOrStartAttempt(settlement.campaignProgress!, householdId, "gems", "r_2", "2026-07-05T18:00:00.000Z");
+    expect(next.startedAttempt?.attempt).toMatchObject({ status: "active", everCompleted: true });
+  });
+
+  it("is never set by failed or abandoned history: the replay of a failure stays locked", () => {
+    const deps = harness().deps;
+    for (const previous of [attempt("h_test", "gems", "failed", { setbacks: 3 }), attempt("h_test", "gems", "active")]) {
+      const started = joinOrStartAttempt(previous, "h_test", "gems", "r_2", "2026-07-05T18:00:00.000Z");
+      const row = started.startedAttempt?.attempt ?? previous;
+      expect(row, previous.status).not.toHaveProperty("everCompleted");
+      expect(campaignLock(RIFT, [row], deps), previous.status).not.toBeNull();
+    }
+  });
+
+  it("reads a legacy complete row, written before the field, as completed", () => {
+    const deps = harness().deps;
+    const legacy = attempt("h_test", "gems", "complete");
+    expect(legacy).not.toHaveProperty("everCompleted");
+    expect(campaignLock(RIFT, [legacy], deps)).toBeNull();
+  });
+
+  it("writes nothing new on a first attempt, or on the row a completion leaves", async () => {
+    // A campaign's first attempt and its finished row are exactly the shape
+    // they always were (Gemfall's settlement digests pin both).
+    const first = joinOrStartAttempt(null, "h_test", "gems", "r_1", "2026-07-04T18:00:00.000Z");
+    expect(first.startedAttempt?.attempt).not.toHaveProperty("everCompleted");
+
+    const h = harness();
+    const { householdId } = await seedHousehold(h, 1);
+    await h.repo.putCampaignProgress(attempt(householdId, "gems", "active", { attemptId: "a_1" }));
+    const finished = {
+      runId: "r_1",
+      campaignId: "gems",
+      campaignAttemptId: "a_1",
+      chapterId: "gems-02",
+      sceneId: "scene_ending",
+      chapterOutcome: "success",
+      bonuses: [],
+      xpEarned: 150,
+      flags: {},
+      party: [],
+    } as unknown as Parameters<typeof settleChapterCompletion>[0];
+    const settlement = await settleChapterCompletion(finished, h.deps, householdId);
+    expect(settlement.campaignProgress?.status).toBe("complete");
+    expect(settlement.campaignProgress).not.toHaveProperty("everCompleted");
+  });
+});
+
+describe("the lobby's default pick skips a locked campaign (#221)", () => {
+  it("leads with an unlocked campaign before anybody votes", async () => {
+    const h = harness();
+    const { householdId } = await seedHousehold(h, 1);
+    await h.repo.putCampaignProgress(attempt(householdId, "gems", "active"));
+    const { state } = await lobby(h, "rift");
+    const s = await state();
+    // Rift is the room's campaign, and locked: listed first, but not the pick.
+    expect(s.campaignOptions?.[0]).toMatchObject({ id: "rift", locked: { reason: "Finish Gems first" } });
+    expect(s.campaign?.id).toBe("gems");
+    expect(lobbyCampaign(s).leader?.id).toBe("gems");
+    // Even with the screens pointed at the locked one, the pick is not it.
+    expect(lobbyCampaign({ ...s, campaign: s.campaignOptions![0]! }).leader?.id).toBe("gems");
+  });
+
+  it("keeps the old behaviour when every option is locked", () => {
+    const view = (id: string, locked: boolean) => ({
+      id,
+      title: id,
+      chapters: 2,
+      next: { index: 1, title: "x" },
+      ...(locked ? { locked: { requires: ["gems"], reason: "Finish Gems first" } } : {}),
+    });
+    const base = createRunState({ runId: "r", roomCode: "ABCD", mode: "party", now: "2026-10-13T00:00:00.000Z" });
+    const allLocked = { ...base, campaignOptions: [view("a", true), view("b", true)], campaign: view("b", true) };
+    expect(lobbyCampaign(allLocked).leader?.id).toBe("b");
+    expect(lobbyCampaign({ ...allLocked, campaign: null }).leader?.id).toBe("a");
+    // And with no lock anywhere, exactly as before: the shown one, else the first.
+    const none = { ...base, campaignOptions: [view("a", false), view("b", false)], campaign: view("b", false) };
+    expect(lobbyCampaign(none).leader?.id).toBe("b");
+    expect(lobbyCampaign({ ...none, campaign: null }).leader?.id).toBe("a");
   });
 });
 

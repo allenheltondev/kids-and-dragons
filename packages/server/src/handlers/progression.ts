@@ -247,12 +247,23 @@ export interface StartedAttempt {
   expectedVersion: number | null;
 }
 
+/**
+ * Has this household ever completed the campaign this row is for (#221)? A
+ * `complete` row, or one that replaced a completed attempt
+ * (`CampaignProgressRecord.everCompleted`). What a campaign prerequisite reads.
+ */
+export function hasCompleted(record: CampaignProgressRecord | null | undefined): boolean {
+  return record?.status === "complete" || record?.everCompleted === true;
+}
+
 function newAttempt(
   householdId: string,
   campaignId: string,
   runId: string,
   now: string,
   version: number,
+  /** The row this attempt replaces, if any: a completion it records is carried. */
+  previous: CampaignProgressRecord | null,
   journey?: JourneyState,
 ): CampaignProgressRecord {
   return {
@@ -268,6 +279,9 @@ function newAttempt(
     ...(journey ? { journey } : {}),
     version,
     updatedAt: now,
+    // Replaying a finished campaign must not forget it was finished (#221).
+    // Only then is the key written, so every other fresh row is as before.
+    ...(hasCompleted(previous) ? { everCompleted: true as const } : {}),
   };
 }
 
@@ -299,7 +313,7 @@ export function joinOrStartAttempt(
   if (existing && existing.status === "active") {
     return { attemptId: existing.attemptId ?? null, startedAttempt: null };
   }
-  const attempt = newAttempt(householdId, campaignId, runId, now, (existing?.version ?? 0) + 1, journey);
+  const attempt = newAttempt(householdId, campaignId, runId, now, (existing?.version ?? 0) + 1, existing, journey);
   return {
     attemptId: attempt.attemptId ?? null,
     startedAttempt: { attempt, expectedVersion: existing ? (existing.version ?? 0) : null },
@@ -439,8 +453,10 @@ export function attemptJourney(
  * What keeps this household out of a campaign (#221), or null when nothing does.
  *
  * Only a *start* is locked: a household with an active attempt at the campaign
- * is already in it (it could only have started once the prerequisite was met),
- * and replaying Gemfall must not take Riftlight away mid-story. `attempts` is
+ * is already in it (it could only have started once the prerequisite was met).
+ * Replaying Gemfall keeps it unlocked for new starts too, through the replay's
+ * `everCompleted`; the active-attempt rule also covers a replay begun before
+ * that field existed, which carries none. `attempts` is
  * everything the household has on record, so the lobby passes the list it
  * already read and a chapter start reads it once.
  */
@@ -644,7 +660,7 @@ export async function settleChapterCompletion(
       ? { ...existing, version, updatedAt: now }
       : // Only reachable for a run started before chapter start began creating
         // the attempt (isStale admits exactly that case).
-        newAttempt(householdId, campaignId, state.runId, now, version);
+        newAttempt(householdId, campaignId, state.runId, now, version, existing);
   if (outcome === "setback") attempt.setbacks += 1;
   const roads = routesTaken(campaign, state.flags, attempt.routeFlags);
   if (roads) attempt.routeFlags = roads;
