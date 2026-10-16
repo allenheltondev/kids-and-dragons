@@ -19,10 +19,10 @@ Methodical, patient scholar. Wants to learn **why** rifts exist and **how** they
 These names and specific duties are provisional until approved. Avoid overloading the short introductory encounter with the whole roster.
 
 ## Ancient emperor — author-only, secret until final reveal
-**Name and empire TBD.** Once ruled a geographically different realm, was held captive for about a millennium and is newly free after events of Gemfall. Has extensive experience summoning/manipulating ancient rifts but **cannot prescribe behavior**. Wants to relocate today's landscapes to the layout of his old realm, however disruptive. His nostalgia and certainty make him dangerous without needing a child-inappropriate simplistic 'evil' frame. His actions are not explained to players until the very end.
+**Emperor Corvane, of Pangea — agreed** (new canon, pending registration; canon has no emperors or empires yet). The name deliberately does not sound like present-day canon names, which are homely everyday words (Old Ossley, Bracken Swiftmile): his sounds old and a little grand, not villainous. Once ruled a geographically different realm, was held captive for about a millennium and is newly free after events of Gemfall. Has extensive experience summoning/manipulating ancient rifts but **cannot prescribe behavior**. Wants to relocate today's landscapes to the layout of his old realm, however disruptive. His nostalgia and certainty make him dangerous without needing a child-inappropriate simplistic 'evil' frame. His actions are not explained to players until the very end.
 
 ## Character collision — planned
-Orin seeks comprehension; Lady Olivia seeks power; the emperor seeks restoration. Their different reactions to limits of magic can affect allegiance, access to tools, and the finale. Do not expose the emperor's identity by having Riftseekers refer to him early.
+Orin seeks comprehension; Lady Olivia seeks power; the emperor seeks restoration. Their different reactions to limits of magic can affect allegiance, access to tools, and the finale. Do not expose the emperor's identity by having Riftseekers refer to him early: before the reveal he is only "whoever is moving the land".
 
 ## Existing-world canon protections
 Cloud whales are not combat pets; yetis and kitsune possess distinct regional traditions. Do not retroactively attribute the world's protected mysteries to the emperor without an explicit canon decision.
