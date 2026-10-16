@@ -14,7 +14,9 @@
  *
  * Its data is one read (`GET /api/journal`), authorised by this phone's
  * device binding rather than a room, because there is no room. Where there is
- * no signal it opens last time's copy and says so (`JournalLoad.savedAt`).
+ * no signal it opens last time's copy and says so (`JournalLoad.savedAt`);
+ * the service worker (src/sw/) is what lets the page, the map and the guide
+ * open there too.
  */
 
 import { useCallback, useEffect, useState } from "react";
@@ -33,7 +35,8 @@ import { FieldGuide } from "./FieldGuide";
 import { Icon } from "./icons";
 import { TrayObject } from "./TrayObjects";
 import { Atlas, AtlasUnrolling, placeOf } from "./WorldMapPanel";
-import { useEnsureContent, useEnsureWorld } from "./content";
+import { loadFieldGuide, useEnsureContent, useEnsureWorld } from "./content";
+import { offlineArtFor, warmOfflineArt } from "../sw/warm";
 import "./shared.css";
 import "./JournalScreen.css";
 
@@ -101,6 +104,25 @@ export function JournalScreen(): ReactElement {
       selectGuideEntry(null);
     };
   }, [journal]);
+
+  /*
+   * A fresh read means a signal: save the art the book shows offline while
+   * there is one (sw/warm.ts). The map and the guide's index both open
+   * without it, but a painting is what a map is for.
+   */
+  const fresh = load.status === "ready" && load.savedAt === null;
+  useEffect(() => {
+    if (!fresh || journal === null) return;
+    let live = true;
+    const loadWorld = useGameStore.getState().loadWorld;
+    void Promise.all([loadWorld(), loadFieldGuide().catch(() => null)]).then(([, guide]) => {
+      if (!live) return;
+      void warmOfflineArt(offlineArtFor(useGameStore.getState().world, guide, Object.keys(journal.fieldGuide)));
+    });
+    return () => {
+      live = false;
+    };
+  }, [fresh, journal]);
 
   const play = useCallback(() => navigate({ name: "home" }), []);
 

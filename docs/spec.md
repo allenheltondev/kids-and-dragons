@@ -81,7 +81,7 @@ A phone that is not in a game can still open what the games left behind and just
 - **Guide** — the household's Field Guide (§12), finds credited to the hero each player has taken furthest.
 - **Play** — back to the home screen, where joining and hosting live.
 
-Nothing in the book can change anything, so nothing in it can go wrong. It is the book you leaf through in the car — and so it opens without a signal too, showing the last copy this phone read and saying so.
+Nothing in the book can change anything, so nothing in it can go wrong. It is the book you leaf through in the car — and so it opens without a signal too, even on a reload or in a fresh tab, showing the last copy this phone read and saying so. The map's painting and the pictures of everything found come with it, once the book has been opened with a signal.
 
 ---
 

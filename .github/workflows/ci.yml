@@ -532,6 +532,12 @@ jobs:
       - name: Play a chapter
         run: npm run e2e
 
+      # The adventure book with no signal. Against a production build and
+      # `vite preview`, because the service worker exists nowhere else
+      # (playwright.offline.config.ts builds and serves it).
+      - name: Read the book offline
+        run: npm run e2e:offline
+
       - name: Upload traces
         uses: actions/upload-artifact@v7
         if: failure()
