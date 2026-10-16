@@ -839,10 +839,11 @@ def verify_entity(rep: Report, mf: dict, entity: dict) -> None:
         rep.fail(f"{label} assembled.png", "present", "missing")
         return
 
-    if entity.get("primaryBiome") not in mf["biomes"]:
+    declared_biomes = set(mf["biomes"]) | set(mf.get("backgroundOnlyBiomes", []))
+    if entity.get("primaryBiome") not in declared_biomes:
         rep.fail(
             f"{label} primary biome",
-            "an id in manifest.biomes",
+            "an id in manifest.biomes or manifest.backgroundOnlyBiomes",
             entity.get("primaryBiome"),
         )
     else:
@@ -859,6 +860,19 @@ def verify_entity(rep: Report, mf: dict, entity: dict) -> None:
     # Colossal, multi-tile individuals may declare their own canvas while the
     # ordinary one-tile entity contract continues to use manifest.canvas.
     check_format(rep, path, entity.get("canvas", mf["canvas"]), mf["tolerance"])
+
+    # A people may deliver named appearance states beside its ordinary cutout.
+    # Check every declared state, rather than letting a valid assembled.png
+    # conceal a missing or opaque alternate (Riftlight's puffed Skupper).
+    directory = os.path.dirname(path)
+    for state, relative in entity.get("states", {}).items():
+        state_path = os.path.normpath(os.path.join(ROOT, "assets", relative))
+        if os.path.normcase(os.path.dirname(state_path)) != os.path.normcase(directory):
+            rep.fail(f"{label} state {state}", "a file in this entity's directory", relative)
+        elif not os.path.isfile(state_path):
+            rep.fail(f"{label} state {state}", "present", "missing")
+        elif os.path.normcase(state_path) != os.path.normcase(path):
+            check_format(rep, state_path, entity.get("canvas", mf["canvas"]), mf["tolerance"])
 
 
 def check_gear(rep: Report, mf: dict, skipped: list[str]) -> None:

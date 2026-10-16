@@ -1,0 +1,14 @@
+
+> kids-and-dragons@0.0.0 test
+> vitest run --maxWorkers=1 packages/client/src/world/cast.test.ts packages/client/src/world/scene.test.ts packages/client/src/world/nameplate.test.ts
+
+
+ RUN  v4.1.10 C:/Users/allen/.codex/worktrees/riftlight-part-a/kids-and-dragons
+
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+
+ Test Files  3 passed (3)
+      Tests  57 passed (57)
+   Start at  16:50:26
+   Duration  12.61s (transform 2.71s, setup 0ms, import 5.82s, tests 2.36s, environment 3.04s)
+

@@ -41,6 +41,11 @@
           "of": "creature.restless_remains",
           "title": "Restless Remains",
           "because": "Borrowing pieces from the dead is precisely the category of thing it exists to object to. But they are very small. The grievance is noted, indefinitely."
+        },
+        {
+          "of": "npc.skupper",
+          "title": "Skupper",
+          "because": "They swarm anything with fresh magic in it, and the flats are the only way to the Bone Yard, so it is the guides who keep pulling travelers out of the swarm."
         }
       ],
       "tips": [
@@ -1921,6 +1926,11 @@
           "of": "creature.silver_otter",
           "title": "Silver Otter",
           "because": "Pole boats are diving platforms, and a frogfolk pole has never once come down on an otter."
+        },
+        {
+          "of": "npc.skupper",
+          "title": "Skupper",
+          "because": "The neighbors at the fresher edge of the flats. Frogfolk boats bring the river's news down, and skupper guides take it the rest of the way."
         }
       ],
       "dislikedBy": [
@@ -2150,6 +2160,41 @@
         ],
         "hook": "Nobody in the flock has ever had the first idea. The flock has had all of them.",
         "social": "Friendly, warm, and skittish. Meeting a flock starts with a full minute of silence while every sheeple waits for another to say hello, and then twenty hellos at once. They get close quickly and bolt even faster. A shout, a snapping branch, or a jackalope in the grass sends a flock scattering in threes. Then come the Gather calls, the regathering, and a sheepish return that pretends nothing happened. The way to befriend them is to be still, gentle, and patient. Most strangers they simply like. A stranger who is truly clever is different: the flock knows it at once, without a word said, and starts doing whatever that one does."
+      }
+    },
+    "npc.skupper": {
+      "id": "npc.skupper",
+      "category": "peoples",
+      "kind": "people",
+      "title": "Skupper",
+      "short_description": "Amphibious mudskipper-and-pufferfish people of the Saltrot's brackish flats, who guide travelers across mud nobody else can stand on.",
+      "scale": "small_to_medium",
+      "classification": "supporting_people",
+      "asset_id": "skupper",
+      "art": "/assets/entities/skupper/assembled.png",
+      "lore": {
+        "story": "Skuppers move in quick little skips across mud that swallows boots, and they live in burrow towns dug into the flats with air kept in pockets below. Every great flood resets the town, so nothing they build is meant to last and nobody minds. Puffing up is not a choice: a startled skupper goes round and floats, which on the flats is useful. A puffed guide bobbing in a flooded channel is a buoy for anyone stuck, and the polite thing is to hold on and not mention it afterward.",
+        "pastimes": [
+          "Crab clocks. Fiddler crabs wave at the turning tide, and a good skupper can tell the time to the minute by how many are waving.",
+          "Crest signaling. Greetings, warnings and gossip travel across the flats faster than anyone can walk them.",
+          "Flood naming, argued over for a whole season. A flood is not properly over until it has a name everyone can live with."
+        ],
+        "likes": [
+          {
+            "of": "npc.frogfolk",
+            "title": "Frogfolk",
+            "because": "The neighbors at the fresher edge of the flats. Frogfolk boats bring the river's news down, and skupper guides take it the rest of the way."
+          }
+        ],
+        "dislikes": [
+          {
+            "of": "creature.bone_crawler",
+            "title": "Bone Crawler",
+            "because": "They swarm anything with fresh magic in it, and the flats are the only way to the Bone Yard, so it is the guides who keep pulling travelers out of the swarm."
+          }
+        ],
+        "hook": "The only people who can walk on the Saltrot, and the only ones who would want to.",
+        "social": "Friendly, nosy and frank. A skupper guide will tell you your boots are wrong, your route is wrong and your lunch smells interesting, all before you have finished saying hello. Some guides are generous, some strict, a few famously grumpy, and every one of them refuses to take anybody to the buried bridge."
       }
     },
     "npc.stone_troll": {

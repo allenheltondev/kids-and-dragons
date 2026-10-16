@@ -25,14 +25,15 @@ const SCENES = (process.env.KAD_CAST_SCENES ?? "scene_tavern,choice_ember,scene_
 // KAD_CAST_SHOT_PREFIX=art/review/riftlight-cast/pilot
 async function previewCast(context: BrowserContext): Promise<void> {
   if (!process.env.KAD_CAST_PREVIEW) return;
-  const member = JSON.parse(process.env.KAD_CAST_PREVIEW) as CastMember;
-  if (!/^(characters|entities|cast)\/[a-z0-9_]+$/.test(member.figure)) throw new Error("Invalid cast preview figure");
+  const input = JSON.parse(process.env.KAD_CAST_PREVIEW) as CastMember | CastMember[];
+  const members = Array.isArray(input) ? input : [input];
+  if (!members.length || members.length > 3 || members.some((member) => !/^(characters|entities|cast)\/[a-z0-9_]+$/.test(member.figure))) throw new Error("Invalid cast preview figures (one to three required)");
   await context.route("**/content/chapters/*.json", async (route) => {
     const response = await route.fetch();
     const chapter = await response.json() as Chapter;
     for (const id of SCENES) {
       const scene = chapter.scenes[id];
-      if (scene && scene.type !== "encounter") scene.cast = [member];
+      if (scene && scene.type !== "encounter") scene.cast = members;
     }
     await route.fulfill({ response, json: chapter });
   });
@@ -116,12 +117,18 @@ test("photograph a cast on the story stage", async ({ browser }) => {
     const watcher = others[0]!;
     await watcher.getByRole("button", { name: /^world$/i }).click(TAP).catch(() => undefined);
     await watcher.screenshot({ path: `${SHOT_PREFIX}-${scene}-phone.png` });
+    const nextGuest = watcher.getByRole("button", { name: "Next guest" });
+    for (let page = 2; await nextGuest.isVisible() && await nextGuest.isEnabled(); page++) {
+      await nextGuest.click(TAP);
+      await watcher.waitForTimeout(1_000);
+      await watcher.screenshot({ path: `${SHOT_PREFIX}-${scene}-phone-guest-${page}.png` });
+    }
     // The host's phone too, the moment its World tab opens: a pane that was
     // hidden must be framed on its first frame, not zoom out into place.
     await host.getByRole("button", { name: /^world$/i }).click(TAP);
     await host.waitForTimeout(200);
     await host.screenshot({ path: `${SHOT_PREFIX}-${scene}-host.png` });
-    await host.getByRole("button", { name: /^you$/i }).click(TAP);
+    if (scene !== SCENES.at(-1)) await host.getByRole("button", { name: /^you$/i }).click(TAP);
   }
 
   await Promise.all(contexts.map((c) => c.close().catch(() => undefined)));

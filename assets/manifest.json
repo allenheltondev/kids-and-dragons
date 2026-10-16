@@ -605,6 +605,19 @@
         "mosshome"
       ],
       "scale": "very_large"
+    },
+    {
+      "id": "skupper",
+      "classification": "supporting_people",
+      "primaryBiome": "sallow_wastelands",
+      "canonicalLocations": [
+        "sallow_wastelands"
+      ],
+      "scale": "small_to_medium",
+      "states": {
+        "ordinary": "entities/skupper/assembled.png",
+        "puffed": "entities/skupper/puffed.png"
+      }
     }
   ],
   "gear": [
@@ -2509,6 +2522,54 @@
       "name": "Master Orin Vale",
       "basis": "griffin",
       "scale": "medium"
+    },
+    {
+      "id": "lady_olivia",
+      "name": "Lady Olivia",
+      "basis": "unicorn",
+      "scale": "medium"
+    },
+    {
+      "id": "seren_wisp",
+      "name": "Seren Wisp",
+      "basis": "kitsune",
+      "scale": "medium"
+    },
+    {
+      "id": "pip_thistledown",
+      "name": "Pip Thistledown",
+      "basis": "manticore",
+      "scale": "medium"
+    },
+    {
+      "id": "bram_lock",
+      "name": "Bram Lock",
+      "basis": "bigfoot",
+      "scale": "large"
+    },
+    {
+      "id": "yeti_elder",
+      "name": "Reading-room elder",
+      "basis": "yeti",
+      "scale": "large"
+    },
+    {
+      "id": "kitsune_temple_keeper",
+      "name": "Temple keeper",
+      "basis": "kitsune",
+      "scale": "medium"
+    },
+    {
+      "id": "dragonling_stone_keeper",
+      "name": "Boundary-stone keeper",
+      "basis": "dragonling",
+      "scale": "medium"
+    },
+    {
+      "id": "saltrot_guide",
+      "name": "Saltrot guide",
+      "basis": "skupper",
+      "scale": "small_to_medium"
     },
     {
       "id": "skywarden_griffin",
