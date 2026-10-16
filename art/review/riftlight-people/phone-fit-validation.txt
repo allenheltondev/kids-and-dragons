@@ -1,0 +1,4 @@
+Cast/scene unit tests: 42/42 passed.
+Repository typecheck: passed.
+Strict standalone e2e/nameplates.spec.ts typecheck: passed.
+Phone browser regression: 1 passed (42.6s); see phone-fit-test.txt and three-cast-phone-fixed.png.

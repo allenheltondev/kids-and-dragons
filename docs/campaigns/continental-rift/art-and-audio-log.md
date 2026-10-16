@@ -183,3 +183,9 @@ The assets declare both appearances; live state-to-sprite switching is outside t
 - New asset filenames and manifest names comply with the spoiler rule. Human visual review remains the final art acceptance step.
 
 The reduced-worker full run finished with **3780 passed, 8 failed, 9 skipped**. All failures are the same Windows CLI/CRLF baseline cases in three unchanged content-tool test files; the rig-motion timeout did not recur. No tests were skipped, weakened or deleted to obtain this result.
+
+## Review follow-up — three-guest phone composition (2026-10-16)
+
+Addressed #242's phone clipping finding: when two or three guests share the stage, the renderer fits complete figure canvases to their allotted slots using one common scale, preserving relative species sizes. A solo guest and the party-only lineup keep their existing scale. Nameplate width caps account for that scale and their debug bounds use the same transform. The six-person phone lineup necessarily has smaller figures; the committed `three-cast-phone-fixed.png` shows that density for human signoff.
+
+The regular browser suite now includes a 390×844 phone regression with three actual Riftseeker figures and three heroes. It checks six rendered figure bounds inside the viewport and all six nameplates for collisions, then saves a screenshot. This runs in CI rather than only in the optional art capture helper. The targeted browser run passed (42.6 seconds). Cast/scene unit tests passed 42/42; repository and strict review-test typechecks passed. A pure regression also checks full canvas boundaries and separation with mixed species sizes at two stage widths. No tests or timeouts were weakened.
