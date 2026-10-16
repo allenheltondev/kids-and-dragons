@@ -279,6 +279,14 @@ export interface RunState {
    */
   bonuses?: EarnedBonus[];
   /**
+   * How each fight in a place that fought back ended (#220), in the order
+   * they were fought, for the completion screen: through the rift, out of
+   * time, won, lost — and who was freed or lost, what got done. Only a fight
+   * with an `environment` adds one; absent on every other run, so the screen
+   * is exactly what it was. Cleared when a chapter starts.
+   */
+  fightEndings?: FightEnding[];
+  /**
    * Every scene this run has entered, in order — the spine of the story, for
    * the end-of-chapter recap (roadmap chapter 7, architecture §6).
    *
@@ -426,6 +434,18 @@ export interface TradeOffer {
  * the engine clamps against the 25% ceiling (spec §8.2), and a screen that
  * itemised the authored number would not add up to `xpEarned`.
  */
+/** One environmental fight's ending, as the completion screen tells it (#220). */
+export interface FightEnding {
+  outcome: "victory" | "defeat" | "escaped" | "timedOut";
+  /** Won by finishing an objective that ends the fight, while monsters still stood: its label. */
+  byObjective?: string;
+  /** Captives freed, and lost, by name. */
+  freed: string[];
+  lost: string[];
+  /** Objectives done, by label. */
+  done: string[];
+}
+
 export interface EarnedBonus {
   id: string;
   label: string;

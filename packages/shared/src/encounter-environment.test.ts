@@ -611,6 +611,8 @@ describe("the sandbox, through the engine", () => {
     expect(state.narration).toContain("Pip tumbles through after you");
     // The rescue was the chapter's bonus objective, and it paid.
     expect(state.bonuses?.map((b) => b.id)).toContain("save_pip");
+    // And the completion screen is told how the fight ended (#220).
+    expect(state.fightEndings).toEqual([{ outcome: "escaped", freed: ["Pip the ferry-sprite"], lost: [], done: [] }]);
   });
 
   it("the tactical cost — going straight for the tear leaves Pip behind", () => {

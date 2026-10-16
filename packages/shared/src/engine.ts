@@ -1363,6 +1363,7 @@ function doStartChapter(
   // evening's second chapter under the first one's ending banner.
   draft.chapterOutcome = null;
   draft.bonuses = [];
+  delete draft.fightEndings;
   // Not `{}` — see `EngineContext.campaignFlags`. Everything a chapter said
   // about itself dies here; the road the party is on does not.
   draft.flags = { ...(ctx.campaignFlags ?? {}) };
@@ -2262,6 +2263,7 @@ function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | un
   // them. A captive still waiting, or lost, is simply left behind.
   // The place as it was fought (#220): the resolved spec the fight carries.
   const place = encounter.environment?.spec;
+  if (place && encounter.environment) recordFightEnding(draft, encounter, outcome);
   if (place && encounter.environment) {
     const statuses = captiveStatuses(encounter.environment);
     captivesOf(place).forEach((captive, i) => {
@@ -2274,6 +2276,29 @@ function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | un
     });
   }
   return takeBranch(draft, outcomeBranch(scene, outcome), ctx);
+}
+
+/**
+ * What the completion screen will say about a fight that fought back (#220):
+ * how it ended, who was freed or lost, what got done. Only an environmental
+ * fight is recorded, so a run without one never grows the key.
+ */
+function recordFightEnding(draft: RunState, encounter: EncounterState, outcome: Exclude<EncounterOutcome, "ongoing">): void {
+  const env = encounter.environment;
+  if (!env) return;
+  const captives = captivesOf(env.spec);
+  const statuses = captiveStatuses(env);
+  const done = objectivesDone(env);
+  const objectives = env.spec.objectives ?? [];
+  const winner = objectives.find((o, i) => o.endsFight && done[i]);
+  const monstersStanding = encounter.combatants.some((c) => c.side === "enemy" && !c.down);
+  (draft.fightEndings ??= []).push({
+    outcome,
+    ...(outcome === "victory" && winner && monstersStanding ? { byObjective: winner.label } : {}),
+    freed: captives.filter((_, i) => statuses[i] === "freed").map((c) => c.name),
+    lost: captives.filter((_, i) => statuses[i] === "lost").map((c) => c.name),
+    done: objectives.filter((_, i) => done[i]).map((o) => o.label),
+  });
 }
 
 /**
