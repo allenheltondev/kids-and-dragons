@@ -65,6 +65,7 @@ import type {
   CombatBuff,
   JourneyBuffView,
   RunBuff,
+  SlowEffect,
 } from "./types/buffs.js";
 import type { NodeId } from "./types/campaign-graph.js";
 
@@ -433,4 +434,79 @@ export function tickCombatBuffs(buffs: readonly CombatBuff[], heroId: string): r
     else if (buff.turnsLeft > 1) out.push({ ...buff, turnsLeft: buff.turnsLeft - 1 });
   }
   return out;
+}
+
+// ---------------------------------------------------------------------------
+// Numbed (#227) — a buff the fight itself grants
+// ---------------------------------------------------------------------------
+
+/**
+ * The id of the combat buff a numbing sting leaves. Reserved for the fight:
+ * `applyNumbed` is the only thing that writes it, and a graph declaration of
+ * the same key would be refreshed like any other, so authors pick another.
+ */
+export const NUMBED_BUFF_ID = "numbed";
+
+/** What the screens call it. A numbing sting that wears off, never a wound. */
+export const NUMBED_LABEL = "Numbed";
+
+/**
+ * What is wrong with an enemy's `onHit` / `retaliation` block (`{ "slow": {
+ * "steps", "turns" } }`). Total over malformed input, like
+ * `buffDeclarationProblems`; the limits are the `"move"` kind's own, so a
+ * sting can never take more than any buff could.
+ */
+export function slowBlockProblems(raw: unknown): BuffProblem[] {
+  const problems: BuffProblem[] = [];
+  const fail = (path: string, problem: string) => problems.push({ path, problem });
+  if (!isRecord(raw)) {
+    fail("", 'must be an object like { "slow": { "steps": 2, "turns": 2 } }');
+    return problems;
+  }
+  for (const key of Object.keys(raw)) if (key !== "slow") fail(`/${key}`, `"${key}" is not something a sting does; only "slow"`);
+  const slow = raw.slow;
+  if (!isRecord(slow)) {
+    fail("/slow", 'slow must be { "steps": n, "turns": n }');
+    return problems;
+  }
+  const limit = BUFF_LIMITS.move;
+  if (!isInteger(slow.steps) || slow.steps < 1 || slow.steps > limit) {
+    fail("/slow/steps", `steps must be a whole number from 1 to ${limit} (the move limit)`);
+  }
+  if (!isInteger(slow.turns) || slow.turns < 1 || slow.turns > MAX_BUFF_DURATION) {
+    fail("/slow/turns", `turns must be a whole number from 1 to ${MAX_BUFF_DURATION}`);
+  }
+  for (const key of Object.keys(slow)) if (key !== "steps" && key !== "turns") fail(`/slow/${key}`, `"${key}" is not part of a slow`);
+  return problems;
+}
+
+/**
+ * `heroId` has been stung: the fight's buffs with their Numbed in place — a
+ * `"move"` burden of `slow.steps` lasting `slow.turns` of their turns.
+ *
+ * It never stacks. A hero already Numbed keeps one entry, at the larger of the
+ * two stings' steps and the longer of the two durations, so a second sting
+ * refreshes it and cannot dig deeper than one sting does.
+ *
+ * `onOwnTurn` is for a sting that lands while the target is the one taking
+ * their turn (they struck a defended enemy): that turn's end is about to count
+ * one off, so it gets one extra, and the sting still covers `slow.turns` of
+ * the turns that follow. A sting on an enemy's turn has no such turn to spare.
+ */
+export function applyNumbed(
+  buffs: readonly CombatBuff[] | undefined,
+  heroId: string,
+  slow: SlowEffect,
+  onOwnTurn: boolean,
+): CombatBuff[] {
+  const held = buffs ?? [];
+  const index = held.findIndex((buff) => buff.heroId === heroId && buff.id === NUMBED_BUFF_ID);
+  const current = index === -1 ? undefined : held[index];
+  const steps = clamp(Math.max(slow.steps, current ? -current.amount : 0), 1, BUFF_LIMITS.move);
+  const turnsLeft = Math.max(slow.turns + (onOwnTurn ? 1 : 0), current?.turnsLeft ?? 0);
+  const numbed: CombatBuff = { id: NUMBED_BUFF_ID, label: NUMBED_LABEL, kind: "move", heroId, amount: -steps, turnsLeft };
+  if (current === undefined) return [...held, numbed];
+  const next = [...held];
+  next[index] = numbed;
+  return next;
 }

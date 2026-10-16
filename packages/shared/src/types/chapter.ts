@@ -6,6 +6,7 @@
  */
 
 import type { CampaignGraph } from "./campaign-graph.js";
+import type { SlowEffect } from "./buffs.js";
 import type { ItemDef, SpeciesId, StatId } from "./domain.js";
 
 export type SceneId = string;
@@ -364,6 +365,20 @@ export interface EnemySpec {
   steps: number;
   attack: number;
   art?: string;
+  /**
+   * A numbing sting (#227): every hit this enemy lands leaves the hero
+   * Numbed — `slow.steps` fewer steps for `slow.turns` of their turns, then
+   * full again. A second sting refreshes it and never stacks; it ends with the
+   * fight. Absent on every enemy before it existed, which fights as it always
+   * did.
+   */
+  onHit?: { slow: SlowEffect };
+  /**
+   * The same sting as a defense (#227): a hero who strikes this enemy and
+   * *hits* is Numbed — a puffed Skupper's spines. A miss touches nothing. Give
+   * it only to an enemy that is in that stance for the fight.
+   */
+  retaliation?: { slow: SlowEffect };
 }
 
 /**

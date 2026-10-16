@@ -80,8 +80,8 @@ import { resolveAttack, rollD20 } from "./dice.js";
 import type { ItemEffect, ResolvedCharacter, RulesContent, StatId } from "./types/domain.js";
 import type { EncounterEnvironment, EnemySpec } from "./types/chapter.js";
 import type { DiceRoll } from "./types/state.js";
-import type { CombatBuff } from "./types/buffs.js";
-import { buffBonus, buffed, tickCombatBuffs } from "./buffs.js";
+import type { CombatBuff, SlowEffect } from "./types/buffs.js";
+import { applyNumbed, buffBonus, buffed, tickCombatBuffs } from "./buffs.js";
 import type { EnvironmentState } from "./environment.js";
 import { DEFAULT_SURGE, hazardAt, openExitAt, rescueDeadline } from "./environment.js";
 
@@ -446,6 +446,17 @@ export interface Combatant {
   /** The initiative roll, kept so the client can show the order it produced. */
   readonly initiative: number;
   /**
+   * A numbing sting (#227) — a hit this enemy lands Numbs the hero it hits.
+   * Copied from `EnemySpec.onHit`. Absent on every figure without one, which
+   * is every hero and every enemy before it existed.
+   */
+  readonly sting?: SlowEffect;
+  /**
+   * A defensive sting (#227) — a hero who hits this enemy is Numbed. Copied
+   * from `EnemySpec.retaliation`; absent on everyone else.
+   */
+  readonly retaliation?: SlowEffect;
+  /**
    * Luckstone — attack rolls of 1 this figure may still throw again this
    * fight. Optional because fights persisted before it existed carry none.
    */
@@ -514,6 +525,10 @@ export interface EncounterState {
    * combatant (and the character behind it) is exactly what it would have
    * been without it. A `"turns"` buff loses a turn as the holder's turn ends.
    *
+   * A numbing sting (#227) adds a `"numbed"` entry here mid-fight — the one
+   * buff the fight grants itself. Like the rest it lives and dies with this
+   * state, so nothing Numbed carries out of the fight.
+   *
    * Absent on every fight without buffs — every ordered campaign's, and
    * every fight persisted before it existed — which computes exactly what it
    * always did.
@@ -553,6 +568,8 @@ export type EncounterEvent =
    */
   | { readonly type: "evaded"; readonly actorId: ActorId; readonly byId: ActorId }
   | { readonly type: "rooted"; readonly actorId: ActorId }
+  /** A numbing sting (#227): `actorId` is Numbed for `turns` of their turns; `byId` stung them. */
+  | { readonly type: "numbed"; readonly actorId: ActorId; readonly byId: ActorId; readonly steps: number; readonly turns: number }
   | { readonly type: "encore"; readonly actorId: ActorId }
   | { readonly type: "walled"; readonly at: Position }
   /*
@@ -793,6 +810,8 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
       evade: false,
       rooted: false,
       initiative: 0,
+      ...(spec.onHit ? { sting: { ...spec.onHit.slow } } : {}),
+      ...(spec.retaliation ? { retaliation: { ...spec.retaliation.slow } } : {}),
     });
     actors.push({ id, side: "enemy", x: placement.at.x, y: placement.at.y });
     seats.push({ id, side: "enemy", quick: enemyQuick(spec) });
@@ -1543,6 +1562,44 @@ export function performAction(
   return { ok: true, state: working, events, outcome: encounterOutcome(working) };
 }
 
+/**
+ * Who a hit on `targetId` actually landed on: the friend who Braced for them
+ * if a `protected` beat says so, else the target. A sting follows the hurt.
+ */
+function protectedVictim(events: readonly EncounterEvent[], targetId: ActorId): ActorId {
+  for (let i = events.length - 1; i >= 0; i--) {
+    const event = events[i]!;
+    if (event.type === "protected" && event.actorId === targetId) return event.byId;
+    if (event.type === "roll") break;
+  }
+  return targetId;
+}
+
+/**
+ * A numbing sting (#227) on a hero: they are Numbed — `slow.steps` off their
+ * steps for `slow.turns` of their turns (`applyNumbed`: a second sting
+ * refreshes, never stacks) — and the beat says so. A hero already down is left
+ * alone: there is no turn to slow, and getting up should not cost a sting.
+ * Lives in `EncounterState.buffs`, so it ends with the fight and nothing
+ * carries out of it.
+ */
+function numb(
+  state: EncounterState,
+  heroId: ActorId,
+  slow: SlowEffect,
+  byId: ActorId,
+  events: EncounterEvent[],
+): EncounterState {
+  const hero = combatantById(state, heroId);
+  if (!hero || hero.side !== "party" || hero.down || hero.escaped) return state;
+  // Their own turn is running (they struck a defended enemy): its end will
+  // count one off, so the sting is given one to spare. An encore action is not
+  // a turn and ticks nothing.
+  const onOwnTurn = state.encoreActor === null && currentActorId(state) === heroId;
+  events.push({ type: "numbed", actorId: heroId, byId, steps: slow.steps, turns: slow.turns });
+  return { ...state, buffs: applyNumbed(state.buffs, heroId, slow, onOwnTurn) };
+}
+
 interface EffectApplication {
   readonly actorId: ActorId;
   readonly recipientId: ActorId;
@@ -1605,7 +1662,15 @@ function applyEffect(
       if (roll.result !== "hit") return { state: working, rolled: true };
       // A hit always hurts: a burden takes a damage buff down to 1, not 0.
       const damage = buffed(effect.damage, buffBonus(state.buffs, actor.id, "damage"), 1);
-      return { state: dealDamage(working, recipientId, damage, events), rolled: true };
+      working = dealDamage(working, recipientId, damage, events);
+      // A numbing sting (#227): the hit just landed leaves its mark. Neither
+      // exists on a figure that was not given one, so this is a no-op then.
+      if (actor.side === "enemy" && recipient.side === "party" && actor.sting) {
+        working = numb(working, protectedVictim(events, recipientId), actor.sting, actorId, events);
+      } else if (actor.side === "party" && recipient.side === "enemy" && recipient.retaliation) {
+        working = numb(working, actorId, recipient.retaliation, recipientId, events);
+      }
+      return { state: working, rolled: true };
     }
 
     case "damage":
