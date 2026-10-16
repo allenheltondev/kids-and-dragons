@@ -44,7 +44,6 @@ These are canon calls, not art calls. **Do not decide them; do not start the ite
 
 | Decision | Blocks |
 | --- | --- |
-| The species or people of each Riftseeker: Master Orin Vale, Lady Olivia, Seren Wisp, Pip Thistledown, Bram Lock | B1 |
 | What Corvane is (his `basis`) | E1 |
 | Which people the Saltrot guides are | B2's `saltrot_guide` |
 
@@ -132,20 +131,22 @@ The two chime cues must be told apart by ear alone, by a child, from across a ro
 Figure contract: `story-cast-art.md` §3, unchanged (1024², feet at y = 900, three-quarter view
 facing left, no text). Pilot first and stop for review, as there.
 
-### B1. The Riftseekers *(waits on §3)*
+### B1. The Riftseekers
 
 Art direction from canon (`faction.riftseekers`): mystical aura; dark teal, indigo and violet
 cloaks; asymmetrical practical expedition gear; a silver fractured-circle emblem; shimmering
 seams; instruments, resonance rings and chimes. A fellowship that looks like one, and five people
 you can tell apart from across a room.
 
-| id | Who | Read at a glance |
-| --- | --- | --- |
-| `orin_vale` | Master Orin Vale (he/him), methodical scholar | Patient, careful, notebooks and instruments, older |
-| `lady_olivia` | Lady Olivia (she/her), ambitious rival | Bright, confident, mischievous; the most striking cloak. Never sinister |
-| `seren_wisp` | Seren Wisp (she/her), attunement specialist | Calm, listening; resonance rings |
-| `pip_thistledown` | Pip Thistledown (he/him), eager scout | Young, quick, lightly packed, always mid-step |
-| `bram_lock` | Bram Lock (he/him), Orin's guard | Broad, steady, protective; a shield or staff, not a weapon that wounds |
+A mixed fellowship from across the realm, so the rifts visibly touch everyone; with B2's locals, every playable species appears on stage.
+
+| id | basis | Who | Read at a glance |
+| --- | --- | --- | --- |
+| `orin_vale` | `griffin` | Master Orin Vale (he/him), methodical scholar | Patient, careful, notebooks and instruments, older |
+| `lady_olivia` | `unicorn` | Lady Olivia (she/her), ambitious rival | Bright, confident, mischievous; the most striking cloak. Never sinister |
+| `seren_wisp` | `kitsune` | Seren Wisp (she/her), attunement specialist | Calm, listening; resonance rings |
+| `pip_thistledown` | `manticore` | Pip Thistledown (he/him), eager scout | Young, quick, lightly packed, always mid-step |
+| `bram_lock` | `bigfoot` | Bram Lock (he/him), Orin's guard | Broad, steady, protective; a shield or staff, not a weapon that wounds |
 
 ### B2. Locals the strands need
 
@@ -197,8 +198,8 @@ notes, that a child could hum. It is the campaign's signature, the way the rift 
 
 **Code needed, outside this brief:** music is chosen only by a chapter's biome today, so
 `riftlight-theme` (meant for the prologue at the Exchange) and `riftlight-finale` (Part E, at the
-glacier) have no way to play. Both need a small per-chapter music override. Deliver the tracks;
-the override is a separate engine change.
+glacier) have no way to play until the per-chapter music override in
+[#226](https://github.com/allenheltondev/kids-and-dragons/issues/226) lands. Deliver the tracks anyway.
 
 ---
 
