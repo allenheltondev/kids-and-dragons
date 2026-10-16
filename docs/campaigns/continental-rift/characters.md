@@ -60,5 +60,13 @@ A voice guide for his `npcVoices` entry; chapter authors write around it.
 ## Character collision — planned
 Orin seeks comprehension; Lady Olivia seeks power; the emperor seeks restoration. Their different reactions to limits of magic can affect allegiance, access to tools, and the finale. Do not expose the emperor's identity by having Riftseekers refer to him early: before the reveal he is only "whoever is moving the land".
 
+## The Skipperfolk — agreed
+**A new people, the Saltrot's own:** amphibious mudskipper-and-pufferfish folk found **only in brackish water**. Fresh water and dry land dry them out and the open sea is too salty. They are the Saltrot's guides; all of canon's guide lore is theirs ("Trust a path once", naming the floods, the sedimentary secret, refusing to take anyone to the buried bridge).
+- **Mudskipper:** upright on strong front fins, quick little skips across mud nobody else can stand on, periscope eyes, a tall dorsal crest raised to signal across the flats, burrow towns with air kept in pockets that every flood resets.
+- **Pufferfish:** startled or delighted, they **puff up round** and float, which makes a puffed guide a buoy for anyone stuck in a flooded channel; a small fused beak for cracking shellfish on the shell-banks. **No poison, ever:** their spines are soft and puffing is a startle, never an attack.
+- **Voice:** quick, chatty and cheerfully blunt; they tell time by the tide and by how many fiddler crabs are waving. Some guides are generous, some strict, a few famously grumpy.
+- **Neighbors:** frogfolk are present as the Saltrot's supporting people at the fresher edge of the flats (Ossley's contacts); manticore escorts hand travelers over to Skipperfolk guides at the salt line, which is where Pip meets them.
+- **Canon:** the entry is written and waits in the [art brief](../../briefs/riftlight-art-and-audio.md) (B3), to land in the same PR as the entity art, because canon keeps every people 1:1 with its art.
+
 ## Existing-world canon protections
 Cloud whales are not combat pets; yetis and kitsune possess distinct regional traditions. Do not retroactively attribute the world's protected mysteries to the emperor without an explicit canon decision.
