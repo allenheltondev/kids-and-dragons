@@ -21,6 +21,7 @@ import {
 } from "./encounter.js";
 import { checkEncounterEnvironment, environmentView } from "./environment.js";
 import { parseBoard, terrainAt, type Position } from "./grid.js";
+import { buffBonus } from "./buffs.js";
 import type { Rng } from "./dice.js";
 import { resolveCharacter } from "./character.js";
 import { makeCharacter, makeItems, makeRules } from "./test-fixtures.js";
@@ -316,5 +317,55 @@ describe("objectives (#220)", () => {
     expect(
       checkEncounterEnvironment(scene([{ id: "a", kind: "close", label: "A", at: { x: 20, y: 2 }, turns: 0 }])).map((p) => p.path),
     ).toEqual(["/environment/objectives/0/turns", "/environment/objectives/0/at"]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Place-wide numbers
+// ---------------------------------------------------------------------------
+
+describe("place-wide modifiers (#220)", () => {
+  it("become one buff per figure they are on, read like any other and held to the same limit", () => {
+    const env: EncounterEnvironment = {
+      modifiers: [
+        { id: "storm", label: "Storm winds", kind: "guard", amount: -1 },
+        { id: "ice", label: "Ice", kind: "move", amount: -1, on: "monsters" },
+      ],
+    };
+    const state = begin(env);
+    expect(state.buffs).toEqual([
+      { id: "storm", label: "Storm winds", kind: "guard", heroId: "c_a", amount: -1 },
+      { id: "storm", label: "Storm winds", kind: "guard", heroId: "c_b", amount: -1 },
+      { id: "storm", label: "Storm winds", kind: "guard", heroId: "wisp#1", amount: -1 },
+      { id: "ice", label: "Ice", kind: "move", heroId: "wisp#1", amount: -1 },
+    ]);
+    expect(buffBonus(state.buffs, "wisp#1", "move")).toBe(-1);
+    // Beside a party buff that is already at the limit, the total stays at it.
+    const stacked = beginEncounter(
+      { ...setup({ modifiers: [{ id: "calm", label: "Calm", kind: "guard", amount: 2, on: "party" }] }), buffs: [{ id: "shield", label: "Rift Shield", kind: "guard", heroId: "c_a", amount: 3 }] },
+      ctxOf(),
+    );
+    expect(buffBonus(stacked.buffs, "c_a", "guard")).toBe(3);
+    expect(environmentView(state)!.modifiers).toEqual([
+      { id: "storm", label: "Storm winds", kind: "guard", amount: -1, on: "everyone" },
+      { id: "ice", label: "Ice", kind: "move", amount: -1, on: "monsters" },
+    ]);
+  });
+
+  it("a monster under a move modifier starts its turn with fewer steps", () => {
+    const state = until(begin({ modifiers: [{ id: "ice", label: "Ice", kind: "move", amount: -1, on: "monsters" }] }), "wisp#1");
+    expect(state.stepsLeft).toBe(WISP.steps - 1);
+  });
+
+  it("the check holds each to its kind's limit and keeps the fight's own names", () => {
+    const scene = (modifiers: unknown[]) => ({ enemies: [WISP], environment: { modifiers } as EncounterEnvironment });
+    expect(checkEncounterEnvironment(scene([{ id: "a", label: "A", kind: "damage", amount: -2 }]))).toEqual([]);
+    expect(checkEncounterEnvironment(scene([{ id: "a", label: "A", kind: "damage", amount: 3 }])).map((p) => p.path)).toEqual([
+      "/environment/modifiers/0/amount",
+    ]);
+    expect(checkEncounterEnvironment(scene([{ id: "numbed", label: "A", kind: "roll", amount: 0 }])).map((p) => p.path)).toEqual([
+      "/environment/modifiers/0/id",
+      "/environment/modifiers/0/amount",
+    ]);
   });
 });

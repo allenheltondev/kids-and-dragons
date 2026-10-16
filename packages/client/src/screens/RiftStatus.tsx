@@ -46,6 +46,8 @@ import {
   clockReadout,
   environmentBeatLine,
   exitLine,
+  modifierIcon,
+  modifierLine,
   objectiveIcon,
   objectiveLine,
   rescueLine,
@@ -110,6 +112,12 @@ export function RiftStatus(): ReactElement | null {
           <li key={`exit:${exit.id}`} className={exit.open ? "rift-status__line--open" : undefined}>
             <Icon name={EXIT_ICON} />
             <span>{exitLine(exit)}</span>
+          </li>
+        ))}
+        {view.modifiers.map((modifier) => (
+          <li key={`modifier:${modifier.id}`}>
+            <Icon name={modifierIcon(modifier)} />
+            <span>{modifierLine(modifier)}</span>
           </li>
         ))}
         {view.objectives.map((objective) => (

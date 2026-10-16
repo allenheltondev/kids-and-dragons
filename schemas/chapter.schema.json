@@ -1658,6 +1658,55 @@
               }
             ]
           }
+        },
+        "modifiers": {
+          "description": "#220 the place's own numbers for the whole fight (a storm's -1 Guard). Each becomes a combat buff on every figure it is on (default everyone), held to the same per-kind limits as the party's buffs (content:validate checks the amount against them).",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "label",
+              "kind",
+              "amount"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+([-_][a-z0-9]+)*$"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "kind": {
+                "enum": [
+                  "guard",
+                  "damage",
+                  "move",
+                  "roll"
+                ]
+              },
+              "amount": {
+                "type": "integer",
+                "minimum": -3,
+                "maximum": 3,
+                "not": {
+                  "const": 0
+                }
+              },
+              "on": {
+                "enum": [
+                  "everyone",
+                  "party",
+                  "monsters"
+                ]
+              }
+            }
+          }
         }
       }
     },

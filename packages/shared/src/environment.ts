@@ -95,6 +95,9 @@ export const ENVIRONMENT_LIMITS = {
   slowTurns: 5,
 } as const;
 
+/** A modifier's limit per kind (#220): `BUFF_LIMITS` in buffs.ts, kept here because this file imports nothing. */
+export const MODIFIER_LIMITS = { guard: 3, damage: 2, move: 2, roll: 3 } as const;
+
 /** The combat buff a slowing hazard leaves (#220): Numbed's mechanism, the ground's name. */
 export const SLOWED_BUFF_ID = "slowed";
 export const SLOWED_LABEL = "Slowed";
@@ -304,8 +307,18 @@ export interface EnvironmentRescueView {
   readonly maxHp?: number;
 }
 
+export interface EnvironmentModifierView {
+  readonly id: string;
+  readonly label: string;
+  readonly kind: "guard" | "damage" | "move" | "roll";
+  readonly amount: number;
+  readonly on: "everyone" | "party" | "monsters";
+}
+
 export interface EnvironmentView {
   readonly clock?: EnvironmentClockView;
+  /** The place's own numbers (#220), as authored. What they add is in the fight's buffs. */
+  readonly modifiers: readonly EnvironmentModifierView[];
   readonly exits: readonly EnvironmentExitView[];
   readonly hazards: readonly EnvironmentHazardView[];
   /** Every captive, in authored order (#220): one, several, or none. */
@@ -338,6 +351,7 @@ export function environmentView(state: EncounterState): EnvironmentView | null {
   const clock = spec.clock;
   const statuses = captiveStatuses(env);
   return {
+    modifiers: (spec.modifiers ?? []).map((m) => ({ id: m.id, label: m.label, kind: m.kind, amount: m.amount, on: m.on ?? "everyone" })),
     ...(clock
       ? {
           clock: {
@@ -623,6 +637,26 @@ export function checkEncounterEnvironment(
       }
       claim(tile, `objective "${objective.id}"`, where(j));
     });
+  });
+
+  // --- modifiers (#220)
+  const modifiers = env.modifiers ?? [];
+  if (modifiers.length > ENVIRONMENT_LIMITS.objectives) fail("/environment/modifiers", `at most ${ENVIRONMENT_LIMITS.objectives} modifiers`);
+  modifiers.forEach((modifier, i) => {
+    const at = `/environment/modifiers/${i}`;
+    seenId(modifier.id, `${at}/id`);
+    if (modifier.id === "numbed" || modifier.id === SLOWED_BUFF_ID) fail(`${at}/id`, `"${modifier.id}" is a name the fight gives its own stings and slows`);
+    const limit = MODIFIER_LIMITS[modifier.kind as keyof typeof MODIFIER_LIMITS];
+    if (limit === undefined) {
+      fail(`${at}/kind`, 'must be "guard", "damage", "move" or "roll"');
+      return;
+    }
+    if (!isInt(modifier.amount) || modifier.amount === 0 || Math.abs(modifier.amount) > limit) {
+      fail(`${at}/amount`, `must be a non-zero whole number from -${limit} to ${limit} (the ${modifier.kind} limit)`);
+    }
+    if (modifier.on !== undefined && !["everyone", "party", "monsters"].includes(modifier.on)) {
+      fail(`${at}/on`, 'must be "everyone", "party" or "monsters"');
+    }
   });
 
   // --- relocations

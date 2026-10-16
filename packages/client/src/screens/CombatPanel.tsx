@@ -107,6 +107,8 @@ import {
   exitLine,
   hazardIcon,
   hazardLine,
+  modifierIcon,
+  modifierLine,
   objectiveIcon,
   objectiveLine,
   rescueLine,
@@ -859,6 +861,9 @@ function EnvironmentStatus({ encounter }: { encounter: EncounterState }): ReactE
     });
   }
   for (const exit of view.exits) lines.push({ key: `exit:${exit.id}`, icon: EXIT_ICON, text: exitLine(exit) });
+  for (const modifier of view.modifiers) {
+    lines.push({ key: `modifier:${modifier.id}`, icon: modifierIcon(modifier), text: modifierLine(modifier) });
+  }
   view.captives.forEach((captive, i) => lines.push({ key: `rescue:${i}`, icon: CAPTIVE_ICON, text: rescueLine(captive) }));
   for (const objective of view.objectives) {
     lines.push({ key: `objective:${objective.id}`, icon: objectiveIcon(objective.kind), text: objectiveLine(objective) });

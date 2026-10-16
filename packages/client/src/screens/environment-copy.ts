@@ -16,8 +16,10 @@
  * in a child's hand never say the same thing two ways.
  */
 
+import { buffAmountText, buffIcon } from "./buff-copy";
 import type {
   EncounterEvent,
+  EnvironmentModifierView,
   EnvironmentClockView,
   EnvironmentExitView,
   EnvironmentHazardView,
@@ -45,6 +47,16 @@ export const CAPTIVE_ICON = "heart";
 /** An objective's glyph (#220): a shield for ground to hold, a key for a tear to close. */
 export function objectiveIcon(kind: EnvironmentObjectiveView["kind"]): string {
   return kind === "hold" ? "shield" : "key";
+}
+
+/** A place-wide number (#220): "Storm winds: −1 Guard for everyone, all fight." */
+export function modifierLine(modifier: EnvironmentModifierView): string {
+  const who = modifier.on === "party" ? "all of you" : modifier.on === "monsters" ? "every monster" : "everyone";
+  return `${modifier.label}: ${buffAmountText(modifier.kind, modifier.amount)} for ${who}, all fight.`;
+}
+
+export function modifierIcon(modifier: EnvironmentModifierView): string {
+  return buffIcon(modifier.kind);
 }
 
 /** What an objective asks, how far along it is, and what doing it means (#220). */

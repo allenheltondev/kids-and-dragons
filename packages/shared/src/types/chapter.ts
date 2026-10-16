@@ -448,6 +448,28 @@ export interface EncounterEnvironment {
   relocate?: EnemyRelocation[];
   /** Something to do besides surviving (#220): hold ground, close a tear. Up to three. */
   objectives?: EnvironmentObjective[];
+  /** The place's own numbers (#220): "−1 Guard for everyone in the storm". Up to three. */
+  modifiers?: EnvironmentModifier[];
+}
+
+/**
+ * A number the place changes for the whole fight (#220) — the storm that
+ * makes everyone easier to hit, the ice that slows every step. It rides the
+ * temporary-buff seam (#200): at the start of the fight it becomes one
+ * `CombatBuff` per figure it is on, read by `buffBonus` like any other, so
+ * it counts against the same per-kind limit (`BUFF_LIMITS`) as the party's
+ * own buffs — a storm cannot push a number past what any buff could.
+ */
+export interface EnvironmentModifier {
+  /** Unique within the environment; not `"numbed"` or `"slowed"`, which the fight writes itself. */
+  id: string;
+  /** What the phones call it: "Storm winds". */
+  label: string;
+  kind: "guard" | "damage" | "move" | "roll";
+  /** A non-zero whole number within the kind's limit. Negative is a burden. */
+  amount: number;
+  /** Who it is on. Default `"everyone"`: the rift takes no sides. */
+  on?: "everyone" | "party" | "monsters";
 }
 
 /**

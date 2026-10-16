@@ -867,6 +867,20 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
   // so a spawn on it is the authoring error `placeActor` already refuses.
   const environment = setup.environment;
   const captives = environment ? captivesOf(environment) : [];
+
+  // The place's own numbers (#220): one buff per figure each modifier is on,
+  // after the party's own, read by `buffBonus` like theirs and held to the
+  // same per-kind limit. A fight without modifiers keeps the setup's buffs.
+  const modified: CombatBuff[] = [];
+  for (const modifier of environment?.modifiers ?? []) {
+    const on = modifier.on ?? "everyone";
+    for (const seat of seats) {
+      if (on === "party" && seat.side !== "party") continue;
+      if (on === "monsters" && seat.side !== "enemy") continue;
+      modified.push({ id: modifier.id, label: modifier.label, kind: modifier.kind, heroId: seat.id, amount: modifier.amount });
+    }
+  }
+  const buffs: readonly CombatBuff[] = modified.length > 0 ? [...(setup.buffs ?? []), ...modified] : (setup.buffs ?? []);
   const ground = captives.reduce((board, captive) => setTerrain(board, captive.at, "blocked"), setup.board);
 
   // placeActor is the one that refuses two figures on a tile or a spawn in a
@@ -890,7 +904,7 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
     moveAfterAction: false,
     encores: [],
     encoreActor: null,
-    ...(setup.buffs && setup.buffs.length > 0 ? { buffs: [...setup.buffs] } : {}),
+    ...(buffs.length > 0 ? { buffs } : {}),
     ...(environment
       ? {
           environment: {
