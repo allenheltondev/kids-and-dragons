@@ -104,9 +104,20 @@ test("the adventure book opens on a reload and in a new tab with no signal", asy
   await context.close();
 });
 
-test("the book saves its art even when it opens before the worker has taken over", async ({ browser }) => {
+test("the book saves its art even when it opens before the worker has taken over", async ({ browser, baseURL }) => {
+  // The worker's script is held back a few seconds, so the book is certainly
+  // open before any worker controls the page — on a fast machine the race is
+  // otherwise won by the worker, and the test would prove nothing. The book
+  // waits up to a minute for one (warm.ts `controlled`).
+  const proxy = await startCountingProxy(baseURL ?? "http://localhost:4173", {
+    delay: (path) => (path === "/sw.js" ? 5_000 : 0),
+  });
   // A phone that played before it had a worker: an identity, and no worker yet.
-  const earlier = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: "block" });
+  const earlier = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    serviceWorkers: "block",
+    baseURL: proxy.url,
+  });
   const before = await earlier.newPage();
   await before.goto("/");
   await before.getByRole("button", { name: /want to host/i }).click();
@@ -120,10 +131,13 @@ test("the book saves its art even when it opens before the worker has taken over
   const identity = await earlier.storageState();
   await earlier.close();
 
-  // Its first visit with a worker goes straight to the book. The worker
-  // registers after `load` and then has ~2MB to save, so the book is open —
+  // Its first visit with a worker goes straight to the book, which is open —
   // and wants its art saved — before any worker controls the page.
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, storageState: identity });
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    storageState: identity,
+    baseURL: proxy.url,
+  });
   const phone = await context.newPage();
   try {
     await phone.goto("/journal");
@@ -140,6 +154,7 @@ test("the book saves its art even when it opens before the worker has taken over
     await expect.poll(() => kept(phone, painting), { timeout: 60_000 }).toBe(true);
   } finally {
     await context.close();
+    await proxy.close();
   }
 });
 
