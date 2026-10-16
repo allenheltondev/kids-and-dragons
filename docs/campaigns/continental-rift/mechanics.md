@@ -8,6 +8,15 @@
 - A rift can have **multiple simultaneous properties**, represented by multiple colors.
 - Do not claim that magic can override a rift's fixed one-way / once-only nature.
 
+## Where a rift goes — agreed
+| Who | Learns before crossing |
+| --- | --- |
+| **Everyone** | A **sensory glimpse**, one line of chapter narration through the rift: salt wind and gull cries for the Saltrot; thin cold air and distant whale song for the Sky Islands. Enough to choose by, never a place name. |
+| **An attuned Starweaver** | **Direction and distance** on top of the glimpse: "far to the south, low down". |
+| **Nobody** | The destination's name, until someone has crossed. |
+
+**Authoring it on the merged #196 engine:** give every Riftlight rift `reveal: "when-crossed"` and **leave the edge's `label` unset**. Until crossed, the exit then reads "Into the rift" (`HIDDEN_RIFT_LABEL`) and nothing sent to a phone names the destination; once crossed, a two-way blue rift shows the destination's title for return trips. An edge `label` would override both, so the glimpse belongs in the chapter's narration, not the label. One-way and single-use rifts never need a second label.
+
 ## Who summons and shapes rifts — agreed
 **Players never summon rifts in this campaign.**
 
