@@ -255,6 +255,33 @@ describe("temporary buffs (#200)", () => {
   });
 });
 
+describe("story-check buffs (#222)", () => {
+  const SPARK = ["packages", "shared", "src", "fixtures", "rift-spark.campaign.json"];
+  const spark = (mutate) => {
+    const campaign = read(...SPARK);
+    mutate(campaign);
+    return judge(campaign);
+  };
+
+  it("the Glowing Falls validates: appliesTo, spend, a uses duration, the chapter expiry and firstCrossing", () => {
+    const { ok, errors } = judge(read(...SPARK));
+    expect(ok, errors.join("\n")).toBe(true);
+  });
+
+  it("is not content either", () => {
+    expect(() => read("content", "campaigns", `${read(...SPARK).id}.json`)).toThrow();
+  });
+
+  it("refuses what it does not know: another appliesTo, spend or scope, uses without a count, firstCrossing as false", () => {
+    expect(spark((c) => (c.graph.buffs.riftspark.appliesTo = "both")).ok).toBe(false);
+    expect(spark((c) => (c.graph.buffs.riftspark.spend = "later")).ok).toBe(false);
+    expect(spark((c) => (c.graph.buffs.riftspark.duration = { scope: "uses" })).ok).toBe(false);
+    expect(spark((c) => (c.graph.buffs.riftspark.duration = { scope: "uses", count: 6 })).ok).toBe(false);
+    expect(spark((c) => (c.graph.buffs.riftspark.expiresOn = ["dusk"])).ok).toBe(false);
+    expect(spark((c) => (c.graph.edges["camp-to-grove"].effects[0].firstCrossing = false)).ok).toBe(false);
+  });
+});
+
 describe("class rift interaction (#199)", () => {
   const CLASSES = ["packages", "shared", "src", "fixtures", "rift-classes.campaign.json"];
   const sealed = (mutate) => {

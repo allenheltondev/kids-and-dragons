@@ -1,0 +1,60 @@
+{
+  "$comment": "Story-check buffs fixture (#222). NOT CONTENT: it lives outside content/ so neither the loader nor content:validate ever sees it, and nothing ships it. Its chapter ids are placeholders with no files behind them. It declares the Riftspark the Continental Rift design agreed (docs/campaigns/continental-rift/mechanics.md): +2 on one story check, never an attack; held by the party and offered to whoever is about to roll; one use, gone at the end of the next chapter played; at most one held. A two-way glowing rift (a linked pair) grants it on its first crossing only, by either mouth, so walking back and forth through it farms nothing; the grove path shows the same first-crossing grant on a plain edge. check-buffs.test.ts holds it to the parser, the journey and the engine, and tools/content/campaign-graph-schema.test.mjs holds it to the schema.",
+  "id": "rift-spark-sampler",
+  "title": "The Glowing Falls",
+  "blurb": "A camp, a quiet grove, a rift that glows both ways, and the falls beyond it.",
+  "chapters": ["rs-camp", "rs-grove", "rs-falls", "rs-dawn"],
+  "graph": {
+    "version": 1,
+    "entry": "camp",
+    "buffs": {
+      "riftspark": {
+        "$comment": "+2 on one story check, offered before the roll: spend it now or save it. Gone once spent, or when the next chapter played ends; a second spark while one is held is ignored.",
+        "label": "Riftspark",
+        "kind": "roll",
+        "amount": 2,
+        "appliesTo": "check",
+        "spend": "choose",
+        "duration": { "scope": "uses", "count": 1 },
+        "stack": "ignore",
+        "expiresOn": ["chapter"]
+      }
+    },
+    "nodes": {
+      "camp": { "chapter": "rs-camp", "title": "The Camp", "revisit": "pass" },
+      "grove": { "chapter": "rs-grove", "title": "The Quiet Grove", "revisit": "pass" },
+      "falls": { "chapter": "rs-falls", "title": "The Glowing Falls", "revisit": "pass" },
+      "dawn": { "chapter": "rs-dawn", "title": "Dawn", "ending": { "title": "Dawn at the Falls" } }
+    },
+    "edges": {
+      "camp-to-grove": {
+        "$comment": "A plain edge's first walk sparks too; every later one does not.",
+        "from": "camp",
+        "to": "grove",
+        "kind": "sideways",
+        "label": "Into the quiet grove",
+        "effects": [{ "type": "grantBuff", "buff": "riftspark", "firstCrossing": true }]
+      },
+      "grove-to-camp": { "from": "grove", "to": "camp", "kind": "return", "label": "Back to camp" },
+      "camp-to-falls": {
+        "$comment": "One mouth of the glowing rift. Crossing either mouth counts for both, so only the rift's first crossing sparks.",
+        "from": "camp",
+        "to": "falls",
+        "kind": "forward",
+        "label": "Step into the glow",
+        "effects": [{ "type": "grantBuff", "buff": "riftspark", "firstCrossing": true }],
+        "rift": { "linkedTo": "falls-to-camp" }
+      },
+      "falls-to-camp": {
+        "$comment": "The glowing rift's other mouth.",
+        "from": "falls",
+        "to": "camp",
+        "kind": "return",
+        "label": "Step back through the glow",
+        "effects": [{ "type": "grantBuff", "buff": "riftspark", "firstCrossing": true }],
+        "rift": { "linkedTo": "camp-to-falls" }
+      },
+      "falls-to-dawn": { "from": "falls", "to": "dawn", "kind": "forward", "label": "Down past the falls" }
+    }
+  }
+}
