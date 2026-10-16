@@ -16,7 +16,7 @@ import { makeCharacter } from "../testing/fixtures";
 import { useGameStore } from "../store";
 import { getFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { currentRoute, navigate } from "../router";
-import { JournalScreen } from "./JournalScreen";
+import { JournalScreen, savedWhen } from "./JournalScreen";
 
 const ITEMS: ItemCatalog = {
   honey_cake: { kind: "consumable", name: "Honey Cake", text: "Heals a little. Tastes like summer.", icon: "potion" },
@@ -53,10 +53,10 @@ function journal(overrides: Partial<JournalResponse> = {}): JournalResponse {
   };
 }
 
-function mount(found: JournalResponse | null | Error) {
+function mount(found: JournalResponse | null | Error, savedAt: string | null = null) {
   const loadJournal = vi.fn(async () => {
     if (found instanceof Error) throw found;
-    return found;
+    return found === null ? null : { journal: found, savedAt };
   });
   useGameStore.setState({
     loadJournal,
@@ -122,11 +122,36 @@ describe("JournalScreen", () => {
     expect(screen.getByRole("button", { name: /play a game/i })).toBeTruthy();
   });
 
+  it("opens last time's book with no signal, and says so", async () => {
+    const user = userEvent.setup();
+    const { loadJournal } = mount(journal(), "2026-07-04T18:00:00.000Z");
+    expect(await screen.findByRole("region", { name: /sparklehoof's character sheet/i })).toBeTruthy();
+    expect(screen.getByRole("status").textContent).toMatch(/no signal/i);
+    await user.click(screen.getByRole("button", { name: /try again/i }));
+    expect(loadJournal).toHaveBeenCalledTimes(2);
+  });
+
+  it("says nothing about signal when the book is fresh", async () => {
+    mount(journal());
+    await screen.findByRole("region", { name: /character sheet/i });
+    expect(screen.queryByText(/no signal/i)).toBeNull();
+  });
+
   it("offers to try again when the book cannot be fetched", async () => {
     const user = userEvent.setup();
     const { loadJournal } = mount(new Error("offline"));
     expect(await screen.findByText(/would not open/i)).toBeTruthy();
     await user.click(screen.getByRole("button", { name: /try again/i }));
     expect(loadJournal).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("savedWhen", () => {
+  const now = new Date(2026, 6, 10, 15, 0);
+  it("reads a saved copy's age the way a kid would", () => {
+    expect(savedWhen(new Date(2026, 6, 10, 9, 0).toISOString(), now)).toBe("earlier today");
+    expect(savedWhen(new Date(2026, 6, 9, 22, 0).toISOString(), now)).toBe("yesterday");
+    expect(savedWhen(new Date(2026, 6, 2, 12, 0).toISOString(), now)).toMatch(/2/);
+    expect(savedWhen("not a date", now)).toBe("last time");
   });
 });

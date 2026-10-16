@@ -588,7 +588,19 @@ type RoomMode = "party" | "travel";
 //
 // Travel Mode: every device gets both, one at a time behind a toggle
 //   /p/:code     → <TravelLayout><WorldView /><PlayerView /></TravelLayout>
+//
+// Between games: no room, so no code and no mode
+//   /journal     → <JournalScreen />   (spec §2.3)
 ```
+
+`/journal` is the one surface with no room behind it. It reads `GET /api/journal`, authorised by
+the **device token** (`x-kad-device-token`) rather than a room session, which between games does
+not exist: the player's own heroes, the household's Field Guide, a player-id → name map for "found
+by", and the biome of the household's most recent run that left the lobby. It is read-only. The
+client keeps the last answer in `localStorage`, keyed by the device token, and shows it (marked as
+last time's) when the request fails for want of a network; a 4xx means the binding is gone and
+discards it. A browser whose binding came from opening a Party Mode room on itself is marked
+`screenOnly` and is never offered the book, until it is seated or adopted as a player.
 
 Three rules keep this from forking into two apps:
 

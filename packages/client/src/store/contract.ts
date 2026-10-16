@@ -57,6 +57,13 @@ export interface HeldPreview {
   context: string;
 }
 
+/** What `loadJournal` hands the journal: the book, and whether it is last time's. */
+export interface JournalLoad {
+  journal: JournalResponse;
+  /** ISO, when this is a saved copy because the server could not be reached. */
+  savedAt: string | null;
+}
+
 export interface GameStore {
   connection: ConnectionStatus;
   session: ClientSession | null;
@@ -123,9 +130,14 @@ export interface GameStore {
   /**
    * What this phone can study with no game running (screens/JournalScreen):
    * its heroes, the household's Field Guide, where the party last was. `null`
-   * when this phone has never played, so there is nobody to look at.
+   * when this phone has never played (or has only been a TV), so there is
+   * nobody to look at.
+   *
+   * Offline, it is the last book this browser read, with `savedAt` saying
+   * when; `savedAt` is `null` for a fresh read. Throws only when there is
+   * neither, or the server refused the binding outright.
    */
-  loadJournal(): Promise<JournalResponse | null>;
+  loadJournal(): Promise<JournalLoad | null>;
   /**
    * Fire an intent at the server. Resolves `true` when the server accepted it
    * and `false` when it did not — a rejection is a normal part of the protocol

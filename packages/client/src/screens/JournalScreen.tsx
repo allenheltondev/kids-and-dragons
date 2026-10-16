@@ -13,7 +13,8 @@
  * where joining and hosting already live.
  *
  * Its data is one read (`GET /api/journal`), authorised by this phone's
- * device binding rather than a room, because there is no room.
+ * device binding rather than a room, because there is no room. Where there is
+ * no signal it opens last time's copy and says so (`JournalLoad.savedAt`).
  */
 
 import { useCallback, useEffect, useState } from "react";
@@ -55,7 +56,8 @@ export function restingMember(hero: ResolvedCharacter): PartyMember {
 
 type Load =
   | { status: "loading" }
-  | { status: "ready"; journal: JournalResponse }
+  /** `savedAt` set: last time's book, because the server could not be reached. */
+  | { status: "ready"; journal: JournalResponse; savedAt: string | null }
   /** This phone has never played: no binding, so nobody to look at. */
   | { status: "new" }
   | { status: "failed" };
@@ -68,10 +70,11 @@ export function JournalScreen(): ReactElement {
 
   useEffect(() => {
     let live = true;
-    setLoad({ status: "loading" });
+    // A retry over a saved copy keeps showing it until something better lands.
+    setLoad((was) => (was.status === "ready" ? was : { status: "loading" }));
     loadJournal().then(
-      (journal) => {
-        if (live) setLoad(journal === null ? { status: "new" } : { status: "ready", journal });
+      (found) => {
+        if (live) setLoad(found === null ? { status: "new" } : { status: "ready", ...found });
       },
       () => {
         if (live) setLoad({ status: "failed" });
@@ -145,6 +148,15 @@ export function JournalScreen(): ReactElement {
         <TrayTab on={pane === "guide"} object="fieldGuide" label="Guide" onClick={() => setPane("guide")} />
         <TrayTab on={false} object="lantern" label="Play" onClick={play} />
       </nav>
+      {load.savedAt !== null ? (
+        <p className="journal__stale" role="status">
+          <Icon name="waiting" />
+          <span>No signal — this is your book from {savedWhen(load.savedAt)}.</span>
+          <button type="button" className="journal__stale-retry kad-focusable" onClick={() => setAttempt((n) => n + 1)}>
+            Try again
+          </button>
+        </p>
+      ) : null}
       <div className="kad-travel__pane" data-pane={pane} data-showing>
         {pane === "hero" ? <HeroPane journal={load.journal} onPlay={play} /> : null}
         {pane === "map" ? <MapPane journal={load.journal} /> : null}
@@ -156,6 +168,17 @@ export function JournalScreen(): ReactElement {
       </div>
     </div>
   );
+}
+
+/** "earlier today", "yesterday", or a date — a kid reads "from last time", not a timestamp. */
+export function savedWhen(savedAt: string, now: Date = new Date()): string {
+  const saved = new Date(savedAt);
+  if (Number.isNaN(saved.getTime())) return "last time";
+  const day = (d: Date): number => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const days = Math.round((day(now) - day(saved)) / 86_400_000);
+  if (days <= 0) return "earlier today";
+  if (days === 1) return "yesterday";
+  return saved.toLocaleDateString(undefined, { month: "long", day: "numeric" });
 }
 
 function TrayTab({ on, object, label, onClick }: {
