@@ -13,6 +13,7 @@
 
 import { test, expect, type Page } from "@playwright/test";
 import { createCharacter } from "./characters";
+import { startCountingProxy } from "./counting-proxy";
 
 const TAP = { timeout: 20_000 } as const;
 const BOOK = /open your book/i;
@@ -104,4 +105,91 @@ test("the adventure book opens on a reload and in a new tab with no signal", asy
   await studyTheBook(tab);
 
   await context.close();
+});
+
+test("the book saves its art even when it opens before the worker has taken over", async ({ browser }) => {
+  // A phone that played before it had a worker: an identity, and no worker yet.
+  const earlier = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: "block" });
+  const before = await earlier.newPage();
+  await before.goto("/");
+  await before.getByRole("button", { name: /want to host/i }).click();
+  await before.getByText("Phone Mode").click();
+  await before.getByLabel(/your name/i).fill("Ada");
+  await before.getByRole("button", { name: /^start a game$/i }).click();
+  await expect(before).toHaveURL(/\/p\/[A-Z0-9]{4}$/);
+  await createCharacter(before, "unicorn", HERO);
+  await before.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+  await expect(before.getByRole("button", { name: /begin the adventure/i })).toHaveCount(0, TAP);
+  const identity = await earlier.storageState();
+  await earlier.close();
+
+  // Its first visit with a worker goes straight to the book. The worker
+  // registers after `load` and then has ~2MB to save, so the book is open —
+  // and wants its art saved — before any worker controls the page.
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, storageState: identity });
+  const phone = await context.newPage();
+  try {
+    await phone.goto("/journal");
+    await expect(phone.getByRole("region", { name: `${HERO}'s character sheet` })).toBeVisible(TAP);
+    expect(
+      await phone.evaluate(() => navigator.serviceWorker.controller === null),
+      "a worker already controlled the page, so this did not test the race",
+    ).toBe(true);
+
+    const painting = await phone.evaluate(async () => {
+      const world = (await (await fetch("/content/world.json")).json()) as { image: { src: string } };
+      return world.image.src;
+    });
+    await expect.poll(() => kept(phone, painting), { timeout: 60_000 }).toBe(true);
+  } finally {
+    await context.close();
+  }
+});
+
+test("a tab left open across a deploy can still open the book", async ({ browser, baseURL }) => {
+  const proxy = await startCountingProxy(baseURL ?? "http://localhost:4173");
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, baseURL: proxy.url });
+  const phone = await context.newPage();
+  try {
+    // A tab on this build, which has never opened the book: its code for the
+    // book is a chunk it has not imported yet.
+    await phone.goto("/");
+    await controlled(phone);
+    await expect
+      .poll(() => phone.evaluate(async () => (await caches.match("/__kad/bundle-list")) !== undefined), { timeout: 20_000 })
+      .toBe(true);
+
+    // The deploy: a new worker whose build lists none of this build's code,
+    // and a bucket that no longer has it (scripts/deploy.sh syncs `--delete`).
+    proxy.configure({
+      rewrite: (path) =>
+        path === "/sw.js"
+          ? (text) =>
+              text
+                .replace(/const __KAD_BUNDLE__ = \[[^\]]*\];/, "const __KAD_BUNDLE__ = [];")
+                .replace(/const __KAD_PRECACHE__ = \[[^\]]*\];/, "const __KAD_PRECACHE__ = [];")
+          : undefined,
+      gone: (path) => path.startsWith("/bundle/"),
+    });
+    await phone.evaluate(async () => {
+      const taken = new Promise((resolve) => navigator.serviceWorker.addEventListener("controllerchange", resolve, { once: true }));
+      await (await navigator.serviceWorker.getRegistration())?.update();
+      await taken;
+    });
+    // The new worker has recorded its own (empty) list: it has finished taking over.
+    await expect
+      .poll(() => phone.evaluate(async () => (await (await caches.match("/__kad/bundle-list"))?.json()) as unknown), { timeout: 20_000 })
+      .toEqual([]);
+
+    // The old tab opens the book for the first time, importing the old build's chunk.
+    await phone.evaluate(() => {
+      history.pushState(null, "", "/journal");
+      dispatchEvent(new PopStateEvent("popstate"));
+    });
+    await expect(phone.getByText(/your adventure book is empty/i)).toBeVisible(TAP);
+    await expect(phone.getByText(/couldn.t open/i)).toHaveCount(0);
+  } finally {
+    await context.close();
+    await proxy.close();
+  }
 });

@@ -13,6 +13,7 @@
  */
 
 import {
+  SW_BUNDLE_LIST_KEY,
   SW_CACHES,
   SW_FILES_BUDGET_BYTES,
   SW_FILES_META_KEY,
@@ -68,8 +69,9 @@ const worker = self as unknown as SwScope;
  * Every lookup ignores `Vary`. Servers mark responses `Vary: Origin`, and a
  * module script sends an `Origin` header the saved request never had — so a
  * plain `match` misses every saved script and quietly sends the page back to
- * the network. Everything this worker saves is the same bytes for any origin
- * header (hashed code, fingerprinted files), so `Vary` says nothing here.
+ * the network (where, after a deploy, the old build's chunks no longer are).
+ * Everything this worker saves is the same bytes whatever the origin header
+ * (hashed code, fingerprinted files), so `Vary` says nothing here.
  */
 const SAME: CacheQueryOptions = { ignoreVary: true };
 
@@ -122,10 +124,15 @@ worker.addEventListener("activate", (event) => {
         if (!known.has(name)) await caches.delete(name);
       }
 
-      // Code a deploy replaced.
+      // Code no build in use needs: this build's and the previous one's stay,
+      // because the pages this worker is about to take over were built
+      // against the previous one (policy.ts `swStaleBundles`).
       const bundle = await caches.open(SW_CACHES.bundle);
+      const recorded = await bundle.match(SW_BUNDLE_LIST_KEY, SAME);
+      const previous = recorded ? ((await recorded.json()) as string[]) : [];
       const cachedCode = (await bundle.keys()).map((request) => new URL(request.url).pathname);
-      for (const path of swStaleBundles(cachedCode, __KAD_BUNDLE__)) await bundle.delete(path);
+      for (const path of swStaleBundles(cachedCode, __KAD_BUNDLE__, previous)) await bundle.delete(path);
+      await bundle.put(SW_BUNDLE_LIST_KEY, new Response(JSON.stringify(__KAD_BUNDLE__)));
 
       // Art, rigs, audio and content a deploy replaced or removed.
       const fingerprints = await fileIndex();
