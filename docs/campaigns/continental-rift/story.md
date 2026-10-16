@@ -8,7 +8,15 @@ Some time after Gemfall, a rift unexpectedly opens at the Exchange and deposits 
 Gemfall was the introduction to the game. Continental Rift increases gameplay progression: decisions, difficult combats, environmental challenges, conditional paths, revisits, and learned rift mechanics.
 
 ## Secret truth — for the finale only
-An ancient emperor once ruled the land when its geography was different. He was trapped for roughly a millennium. The events surrounding Gemfall's titan/seal have allowed him to escape, **regardless of which valid Gemfall resolution players chose**.
+An ancient emperor, **Corvane**, once ruled the land when its geography was different: the realm of **Pangea** ("all lands"), in which today's regions sat in a different arrangement. He was trapped for roughly a millennium. The events surrounding Gemfall's titan/seal have allowed him to escape, **regardless of which valid Gemfall resolution players chose**.
+
+**Pangea as the clue trail — agreed.** Players discover the old world through **fragments that do not match today's map**. Early on, "Pangea" is **Orin's theory** that the land was once laid out differently: a pattern, not a person, so it reveals nothing about the emperor. At the end the name turns out to describe a real realm, Corvane's, and the clue the party has collected all along becomes the reveal. Canon already supplies the fragments:
+- **Forgotten Paths:** the glacier memory of the river leaving by a different valley; the Red Sky Foothills boundary stones, older than the dragonlings and carved with an eruption no one's count matches.
+- **Restless Coast:** the Saltrot's sealed door and buried bridge; ruins carried into the Bone Yard, where taken objects always come back.
+- **Wandering Sky:** the island that is "due back".
+- **Along the way:** the Plains' vanished ford; a route-song verse that matches no landmark; a Stone Crossing span stone that matches no local rock.
+
+**Guardrails.** Pangea never explains the Expanse ("was not always like this" stays untouched), the Hollow Gate's "world before the red sky", or the Legend Dragon. Corvane wants **places** back and does not care about the sky, which keeps him apart from the Deep Hollow Cult, who want the sky's broken laws set right.
 
 **His prison and the cause — agreed (creator-only canon, pending registration).** He was held in the **Glacier of Origins**. The eruption that opens Gemfall happens in every timeline, before any ending; its tremors started the glacier's changed melt, and the melt loosened his prison. This gives the existing canon tension "the melt is changing" a cause, which is why it is a deliberate canon decision. It explains why the first rift drops the party at the glacier, and it lets the campaign close where it began: a **full-circle ending** back at the glacier is the intended shape of the finale. It does not explain the summer crevasse, the glacier's memories or any other protected mystery; the glacier still never hands out complete historical answers.
 
@@ -52,6 +60,6 @@ Glacier of Origins, yetis and memory in ancient ice. Environmental puzzles and c
 You can influence a powerful natural force without being able to command its behavior. Curiosity, judgment, choices and consequences outweigh raw power. Lady Olivia and Orin respond to uncertainty in contrasting ways; the emperor's error is treating influence as complete control.
 
 ## TBD
-- Clues per regional strand, late convergence trigger, the emperor's identity and dialogue.
+- Late convergence trigger; the emperor's dialogue.
 - Which choices affect faction outcomes and final confrontation.
 - Art and music briefs for region and rift-specific encounters.
