@@ -1,0 +1,146 @@
+/*
+ * The rift on the shared screen (#201 follow-up) — top left, clear of the
+ * turn banner in the middle and the narration strip along the bottom, sized
+ * in `em` against `.kad-surface` like everything in WorldView (no viewport
+ * units: this is a whole TV in Party Mode and 60% of a phone in Travel).
+ *
+ * Every state differs in shape as well as colour (spec §11): the clock's big
+ * figure is a number, then "!", then "0"; the last round doubles the border,
+ * an expired clock fills the pill.
+ */
+
+.rift-status {
+  position: absolute;
+  inset-block-start: 0.6em;
+  inset-inline-start: 0.75em;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35em;
+  max-inline-size: min(36%, 22em);
+  color: var(--color-text, #f4f0ff);
+  pointer-events: none;
+}
+
+.rift-status__clock {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0.3em 0.9em 0.3em 0.35em;
+  border: 0.1em solid var(--color-accent, #ffc95c);
+  border-radius: var(--radius-pill, 999em);
+  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 86%, transparent);
+  box-shadow: 0 0.3em 1em rgba(0, 0, 0, 0.45);
+  font-size: var(--font-size-xl, 1.5em);
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.rift-status__figure {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15em;
+  flex: none;
+  font-size: 1.5em;
+  font-variant-numeric: tabular-nums;
+}
+
+.rift-status__clock--urgent {
+  border-style: double;
+  border-width: 0.25em;
+  animation: rift-status-urgent 1.2s ease-in-out infinite alternate;
+}
+
+.rift-status__clock--expired {
+  border-color: var(--color-danger, #ff6b6b);
+  background: color-mix(in srgb, var(--color-danger, #ff6b6b) 55%, var(--kad-bg, #0d0b1a));
+}
+
+@keyframes rift-status-urgent {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
+}
+
+.rift-status__lines,
+.rift-status__caption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rift-status__lines li {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.15em 0.6em;
+  border-radius: var(--radius-md, 0.75em);
+  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 78%, transparent);
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 700;
+}
+
+.rift-status__lines li > .kad-icon {
+  flex: none;
+}
+
+/* An open way out is the one line that asks for a move now. */
+.rift-status__lines .rift-status__line--open {
+  outline: 0.12em solid var(--color-accent, #ffc95c);
+}
+
+.rift-status__lines:empty {
+  display: none;
+}
+
+.rift-status__caption li {
+  padding: 0.2em 0.7em;
+  border-inline-start: 0.25em solid var(--color-accent, #ffc95c);
+  border-radius: var(--radius-sm, 0.4em);
+  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 86%, transparent);
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 800;
+}
+
+/* A round's words stay for a read, then go; the next round's replace them. */
+.rift-status__caption {
+  animation:
+    rift-status-arrive 320ms ease-out,
+    rift-status-leave 600ms ease-in 6s forwards;
+}
+
+@keyframes rift-status-arrive {
+  from { opacity: 0; transform: translateY(-0.3em); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes rift-status-leave {
+  to { opacity: 0; visibility: hidden; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rift-status__clock--urgent {
+    animation: none;
+  }
+  .rift-status__caption {
+    animation: rift-status-leave 1ms linear 6s forwards;
+  }
+}
+
+/* A phone's world pane: smaller, still readable. */
+@container world (max-width: 40em) {
+  .rift-status {
+    max-inline-size: 60%;
+  }
+  .rift-status__clock {
+    font-size: var(--font-size-md, 1em);
+  }
+  .rift-status__lines li,
+  .rift-status__caption li {
+    font-size: var(--font-size-sm, 0.875em);
+  }
+}

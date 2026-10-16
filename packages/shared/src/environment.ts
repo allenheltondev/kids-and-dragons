@@ -172,6 +172,12 @@ export interface EnvironmentHazardView {
   readonly tiles: readonly MapTile[];
   readonly damage: number;
   readonly active: boolean;
+  /**
+   * Burnt out for good: past its `untilRound`. Without this a reader could
+   * only see "not active" and had to guess between "not yet" and "never
+   * again" — the TV board draws the first faint and the second not at all.
+   */
+  readonly gone?: true;
 }
 
 export interface EnvironmentRescueView {
@@ -231,6 +237,7 @@ export function environmentView(state: EncounterState): EnvironmentView | null {
       tiles: hazard.tiles,
       damage: hazard.damage,
       active: hazardActive(hazard, round),
+      ...(hazard.untilRound !== undefined && round > hazard.untilRound ? { gone: true as const } : {}),
     })),
     ...(spec.rescue && env.rescue
       ? {

@@ -159,6 +159,8 @@ function featuresOf(encounter: EncounterState): Map<string, GridFeature> {
   const view = environmentView(encounter);
   if (!view) return out;
   for (const hazard of view.hazards) {
+    // Burnt out for good: no longer a mark on the ground.
+    if (hazard.gone) continue;
     for (const t of hazard.tiles) {
       out.set(`${t.x},${t.y}`, { kind: "hazard", label: hazard.label, icon: hazardIcon(hazard.kind), active: hazard.active });
     }
