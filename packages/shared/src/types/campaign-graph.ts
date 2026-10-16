@@ -812,8 +812,13 @@ export type GraphEffect =
    * Grants a declared temporary buff (#200) — or, for one the party already
    * holds, refreshes, stacks or ignores it as the buff's `stack` says. Never
    * read by a guard: a buff changes fights, not where the party can go.
+   *
+   * `firstCrossing` (#222, an edge's own effects only): grants only when this
+   * crossing is the edge's first this attempt — for a rift, the rift's first
+   * by either mouth of a linked pair — so a two-way rift cannot be farmed by
+   * walking back and forth through it. Absent: every crossing grants.
    */
-  | { type: "grantBuff"; buff: BuffId };
+  | { type: "grantBuff"; buff: BuffId; firstCrossing?: true };
 
 /**
  * What the journey remembers, as guards and exit availability read it.

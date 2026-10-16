@@ -10,7 +10,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import type { CombatBuff, JourneyBuffView, JourneyView } from "@kad/shared";
 import { BuffList, combatBuffRows, journeyBuffRows } from "./BuffList";
-import { buffAmountText, buffRemainingText, buffTurnsText } from "./buff-copy";
+import { buffAmountText, buffRemainingText, buffTurnsText, checkBuffLine } from "./buff-copy";
 import { JourneyPanel } from "./JourneyPanel";
 
 afterEach(cleanup);
@@ -32,6 +32,14 @@ describe("the words", () => {
     expect(buffTurnsText(undefined)).toBe("this fight");
     expect(buffTurnsText(2)).toBe("2 more turns");
   });
+
+  it("say a story-check buff (#222) changes a check, lasts a number of checks, and ask before spending it", () => {
+    expect(buffAmountText("roll", 2, "check")).toBe("+2 on a check");
+    expect(buffRemainingText({ encounters: 1, uses: 1 })).toBe("one check");
+    expect(buffRemainingText({ encounters: 1, uses: 2 })).toBe("2 checks");
+    expect(checkBuffLine({ id: "riftspark", label: "Riftspark", amount: 2, spend: "choose" })).toBe("Use Riftspark (+2)?");
+    expect(checkBuffLine({ id: "riftspark", label: "Riftspark", amount: 2, spend: "auto" })).toBe("Riftspark: +2 on this roll");
+  });
 });
 
 describe("BuffList", () => {
@@ -45,6 +53,23 @@ describe("BuffList", () => {
       "Frayed Nerves: −1 Guard · everyone, the next fightCost",
     ]);
     expect(within(items[2]!).getByText("Cost")).toBeTruthy();
+  });
+
+  it("lists a story-check buff as the party's, for one check", () => {
+    const spark: JourneyBuffView = {
+      id: "riftspark",
+      label: "Riftspark",
+      kind: "roll",
+      amount: 2,
+      stacks: 1,
+      target: "party",
+      remaining: { encounters: 1, uses: 1 },
+      expiresOn: ["chapter"],
+      appliesTo: "check",
+      spend: "choose",
+    };
+    render(<BuffList rows={journeyBuffRows([spark])} title="Rift powers you carry" />);
+    expect(screen.getByRole("listitem").textContent).toBe("Riftspark: +2 on a check · whoever rolls, one check");
   });
 
   it("draws nothing when there is nothing to draw", () => {

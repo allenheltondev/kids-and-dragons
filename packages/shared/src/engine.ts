@@ -93,8 +93,8 @@ import { addItem, addQuestItem, freeSlots, hasItem, removeItem, swapItem, useCon
 import { sceneChoices, visibleChoices } from "./chapter-graph.js";
 import { composeNarration, fillTokens } from "./narration.js";
 import { loadDie, readDie } from "./playtest.js";
-import type { RunBuff } from "./types/buffs.js";
-import { combatBuffsFor, expireRunBuffs, oneHeroSeat, spendRunBuffs } from "./buffs.js";
+import type { CheckBuffOffer, RunBuff } from "./types/buffs.js";
+import { checkBuffOffer, combatBuffsFor, expireRunBuffs, oneHeroSeat, spendCheckBuff, spendRunBuffs } from "./buffs.js";
 
 // ---------------------------------------------------------------------------
 // Surface
@@ -612,6 +612,9 @@ function completeChapter(draft: RunState, scene: EndingScene, ctx: EngineContext
   // A setback ends the temporary buffs (#200) that end on one, before the run
   // hands its buffs back to the journey.
   if (outcome === "setback" && draft.buffs !== undefined) draft.buffs = expireRunBuffs(draft.buffs, "setback");
+  // And any ending ends the ones that last only until the chapter played
+  // ends (#222's `"chapter"`): an unspent Riftspark is gone with it.
+  if (draft.buffs !== undefined) draft.buffs = expireRunBuffs(draft.buffs, "chapter");
 
   // XP is per chapter, not per kill (spec §8.1). The engine only *records* it;
   // folding it into a character's provisional progress is the persistence
@@ -716,6 +719,7 @@ function openScenePrompt(
           characterId: everyone[0] as string,
           group: { pending: everyone, rolls: [] },
         };
+        offerCheckBuff(draft.prompt, draft);
         return undefined;
       }
       const roller = pickRoller(draft, scene);
@@ -727,6 +731,7 @@ function openScenePrompt(
         prompt: fillTokens(scene.prompt, party(draft)),
         characterId: roller.character.id,
       };
+      offerCheckBuff(draft.prompt, draft);
       return undefined;
     }
 
@@ -1012,7 +1017,7 @@ function dispatch(
       return doChoose(draft, playerId, intent.choiceId, ctx);
 
     case "ROLL":
-      return doRoll(draft, playerId, ctx);
+      return doRoll(draft, playerId, ctx, intent.spendBuff);
 
     case "HELP":
       return doHelp(draft, playerId, ctx);
@@ -1595,6 +1600,39 @@ function tallyVotes(draft: RunState, votes: Record<string, string>): string {
 }
 
 /**
+ * Puts the party's story-check buff (#222) on a roll prompt — the one the
+ * next roll would spend (`checkBuffOffer`) — or takes it off when there is
+ * none left. The key is written only while there is an offer, so a check in
+ * a run without check buffs (every ordered campaign's) keeps its shape.
+ */
+function offerCheckBuff(prompt: Prompt & { kind: "roll" }, draft: RunState): void {
+  const offer = checkBuffOffer(draft.buffs);
+  if (offer) prompt.buff = offer;
+  else delete prompt.buff;
+}
+
+/**
+ * The story-check buff (#222) this roll spends, if any: the prompt's offer
+ * when it is `"auto"`, or when the roller said yes to it (`ROLL.spendBuff`).
+ * A yes to anything the prompt does not offer is refused before a die is
+ * thrown, so a stale phone (a friend spent it first) never spends something
+ * else and never rolls without what it asked for.
+ */
+function checkBuffSpent(prompt: Prompt & { kind: "roll" }, spendBuff: unknown): CheckBuffOffer | undefined {
+  const offer = prompt.buff;
+  if (spendBuff !== undefined && (typeof spendBuff !== "string" || offer?.id !== spendBuff)) {
+    throw new Illegal("ILLEGAL", "that is not on offer for this roll");
+  }
+  if (!offer) return undefined;
+  return offer.spend === "auto" || spendBuff === offer.id ? offer : undefined;
+}
+
+/** The run's buffs once `spent` has been spent on a roll (#222). */
+function spendOnRoll(draft: RunState, spent: CheckBuffOffer | undefined): void {
+  if (spent && draft.buffs !== undefined) draft.buffs = spendCheckBuff(draft.buffs, spent.id);
+}
+
+/**
  * One roll toward a whole-party check (`roller: "all"`). Everyone still pending
  * rolls their own d20 + stat; once nobody is, half or more succeeding takes
  * the success branch. Each roll gets its own dice card, and the last one also
@@ -1610,6 +1648,7 @@ function doGroupRoll(
   ctx: EngineContext,
   prompt: Prompt & { kind: "roll" },
   group: { pending: string[]; rolls: DiceRoll[] },
+  spendBuff: unknown,
 ): Presentation | undefined {
   const me = memberByPlayer(draft, playerId);
   if (!me) throw new Illegal("FORBIDDEN", "only a seated player can roll");
@@ -1625,12 +1664,17 @@ function doGroupRoll(
   const { scene } = currentScene(draft, ctx);
   if (scene.type !== "check") throw new Illegal("ILLEGAL", "the current scene is not a check");
 
+  // One story-check buff is one die's worth (#222): whoever spends it, it is
+  // on their roll alone, and the next roller is offered whatever is left.
+  const spent = checkBuffSpent(prompt, spendBuff);
   const result = resolveCheck(ctx.rng, {
     characterId: me.character.id,
     stat: scene.stat,
     mod: me.character.stats[scene.stat],
     tn: scene.tn,
+    ...(spent === undefined ? {} : { buff: spent }),
   });
+  spendOnRoll(draft, spent);
   group.rolls.push(result);
   group.pending = group.pending.filter((id) => id !== slot);
   // A die rolled in a group check is a turn rolled like any other: it counts
@@ -1643,6 +1687,7 @@ function doGroupRoll(
 
   if (group.pending.length > 0) {
     prompt.characterId = group.pending[0] as string;
+    if (spent) offerCheckBuff(prompt, draft);
     draft.lastRoll = result;
     return { kind: "ROLL", roll: result };
   }
@@ -1685,12 +1730,12 @@ function doHelp(draft: RunState, playerId: string, ctx: EngineContext): Presenta
   return undefined;
 }
 
-function doRoll(draft: RunState, playerId: string, ctx: EngineContext): Presentation | undefined {
+function doRoll(draft: RunState, playerId: string, ctx: EngineContext, spendBuff?: unknown): Presentation | undefined {
   const prompt = draft.prompt;
   if (!prompt || prompt.kind !== "roll") {
     throw new Illegal("ILLEGAL", "nothing is waiting on a roll");
   }
-  if (prompt.group) return doGroupRoll(draft, playerId, ctx, prompt, prompt.group);
+  if (prompt.group) return doGroupRoll(draft, playerId, ctx, prompt, prompt.group, spendBuff);
   const nominated = memberByCharacter(draft, prompt.characterId);
   // The nominee's phone can drop after the prompt opens (presence changes do
   // not run through the engine). Then the check is open to anyone, and whoever
@@ -1713,6 +1758,10 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext): Presenta
   // Nobody helps themselves: a helper who ends up rolling (their nominee's
   // phone dropped) gets the help back instead of adding their own die.
   const helper = prompt.helper?.characterId === roller.character.id ? undefined : prompt.helper;
+  // The party's story-check buff (#222): spent if it is automatic or the
+  // roller said yes, and refused before anything moves if they named one
+  // that is not on offer.
+  const spent = checkBuffSpent(prompt, spendBuff);
   if (prompt.helper && !helper) {
     draft.helpSpent = (draft.helpSpent ?? []).filter((id) => id !== roller.character.id);
   }
@@ -1722,7 +1771,9 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext): Presenta
     mod: roller.character.stats[scene.stat],
     tn: scene.tn,
     ...(helper === undefined ? {} : { help: helper }),
+    ...(spent === undefined ? {} : { buff: spent }),
   });
+  spendOnRoll(draft, spent);
   draft.lastRoll = result;
   draft.prompt = null;
   draft.checkRolls = {
