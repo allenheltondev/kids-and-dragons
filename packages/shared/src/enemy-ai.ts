@@ -76,8 +76,21 @@
  * what lets the client show her, in advance, where a monster would go.
  */
 
-import { isOpen, reachableTiles, stepsBetween, tilesWithinSteps, walkField } from "./grid.js";
-import type { ActorId, Board, Position, WalkField } from "./grid.js";
+import { exitOpen, hazardAt } from "./environment.js";
+import type { RescueStatus } from "./environment.js";
+import {
+  actorAt,
+  inBounds,
+  isOpen,
+  moveActor,
+  reachableTiles,
+  samePosition,
+  stepsBetween,
+  tilesWithinSteps,
+  walkField,
+} from "./grid.js";
+import type { Actor, ActorId, Board, Position, WalkField } from "./grid.js";
+import type { EncounterEnvironment, MapTile } from "./types/chapter.js";
 
 /**
  * The acting monster. Its position is passed in rather than looked up by id
@@ -120,6 +133,28 @@ export interface EnemyTurn {
   readonly board: Board;
   readonly enemy: ActingEnemy;
   readonly party: readonly PartyTarget[];
+  /**
+   * The place the fight is in, when its scene declared one (#201). Absent —
+   * every fight without an environment, every Gemfall fight — and the plan is
+   * the sentence above, computed by exactly the code it always was. Present,
+   * and three more sentences apply on top of it; see "In a place that fights
+   * back" below.
+   */
+  readonly environment?: EnemyEnvironment;
+}
+
+/**
+ * The little of `EncounterState.environment` a monster's decision reads: the
+ * authored place, the round this turn is played in (the round a hazard bites
+ * in when the turn ends, and the one an exit is open in), and whether the
+ * captive is still waiting. A plain shape for the same reason the rest of the
+ * input is one — the client can ask the same question of the same board.
+ */
+export interface EnemyEnvironment {
+  readonly spec: EncounterEnvironment;
+  readonly round: number;
+  /** `EnvironmentState.rescue`. Only `"waiting"` makes the captive worth watching. */
+  readonly rescue?: RescueStatus;
 }
 
 /**
@@ -147,6 +182,30 @@ const DEFAULT_REACH = 1;
  * to, take the nearest, and either hit them or walk at them.
  */
 export function planEnemyTurn(turn: EnemyTurn): EnemyPlan {
+  const decision = decide(turn);
+  // The branch is on the *input*, not on anything the board says: a turn
+  // handed no environment never reaches a line of the code below the sentence,
+  // which is what keeps every fight without one identical by construction
+  // (enemy-ai-environment.test.ts holds this to the frozen pre-#201 planner).
+  return turn.environment ? planInEnvironment(turn, turn.environment, decision) : decision.plan;
+}
+
+/**
+ * What the sentence decided, and — when it could not arrive this turn — where
+ * it was heading, so the environment's rules can pick a different place to
+ * stop on the same way there.
+ */
+interface Decision {
+  readonly plan: EnemyPlan;
+  /**
+   * The attack tile it is walking toward (`walk: true`), or the hero it is
+   * edging toward with no route at all (`walk: false`, measured as the crow
+   * flies, as `closeTheGap` does). Null when it swings this turn or holds.
+   */
+  readonly toward: { readonly tile: Position; readonly walk: boolean } | null;
+}
+
+function decide(turn: EnemyTurn): Decision {
   const { board, enemy } = turn;
   const allowance = wholeSteps(enemy.steps);
   // Floored at 1: a reach of 0 could only ever hit a hero standing on the
@@ -160,7 +219,7 @@ export function planEnemyTurn(turn: EnemyTurn): EnemyPlan {
   const standing = turn.party.filter((hero) => !hero.down);
   // Nobody left upright: the encounter is already over and the story is about to
   // branch (§7.3). Hovering over the bodies would be the wrong picture.
-  if (standing.length === 0) return HOLD;
+  if (standing.length === 0) return { plan: HOLD, toward: null };
 
   /*
    * One flood for the whole turn. Every question this planner asks — how far
@@ -177,27 +236,33 @@ export function planEnemyTurn(turn: EnemyTurn): EnemyPlan {
     .sort(compareApproaches)[0];
   // `standing` is not empty, so there is always a best; the guard is here for
   // the compiler's benefit rather than the game's.
-  if (!best) return HOLD;
+  if (!best) return { plan: HOLD, toward: null };
 
   // Already in reach. It does not shuffle first: moving is optional in §7.2, and
   // a monster that sidesteps a tile before swinging costs her the read on which
   // hero was actually threatened — and can only ever walk itself out of position.
-  if (best.cost === 0) return { moveTo: null, attack: best.target.id };
+  if (best.cost === 0) return { plan: { moveTo: null, attack: best.target.id }, toward: null };
 
   // Close enough to walk up and swing this turn.
-  if (best.cost <= allowance) return { moveTo: best.tile, attack: best.target.id };
+  if (best.cost <= allowance) return { plan: { moveTo: best.tile, attack: best.target.id }, toward: null };
 
   // Too far to arrive, but there is a way through: spend the whole allowance
   // walking that way. Next turn it arrives, which is a thing she can watch
   // coming and move away from — the readable version of "it is coming for you".
   if (Number.isFinite(best.cost) && best.tile) {
-    return { moveTo: walkToward(board, field, best.tile, allowance), attack: null };
+    return {
+      plan: { moveTo: walkToward(board, field, best.tile, allowance), attack: null },
+      toward: { tile: best.tile, walk: true },
+    };
   }
 
   // No route at all — a Bramble Wall across the corridor, or a hero who walled
   // herself in. It walks up to the obstruction and stops there, which is what
   // she expects to see, rather than standing still as if it had given up.
-  return { moveTo: closeTheGap(board, enemy.at, best.target.at, allowance), attack: null };
+  return {
+    plan: { moveTo: closeTheGap(board, enemy.at, best.target.at, allowance), attack: null },
+    toward: { tile: best.target.at, walk: false },
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -331,6 +396,321 @@ function closeTheGap(
     }
   }
   return best;
+}
+
+// ---------------------------------------------------------------------------
+// In a place that fights back (#201)
+// ---------------------------------------------------------------------------
+
+/*
+ * A fight whose scene declared an `environment` has ground that burns, a way
+ * out that opens and shuts, and somebody to save. The sentence alone walks a
+ * monster into the fire and leaves the way out to whoever wants it — the gap
+ * #201 left open. What closes it is not a cleverer policy but three more
+ * sentences, each as short as the first and each about something drawn on
+ * the board, so she can still predict every turn from what she sees:
+ *
+ *   1. **It does not stop in the fire.** Walking across is free for a monster
+ *      exactly as it is for her (a hazard bites a figure that *ends its turn*
+ *      on it, in the round that turn is played — `turnEndInEnvironment`). So
+ *      only where it stops is judged: the same hero from ground that is not
+ *      burning if it can; any hero it can hit from such ground if not; and
+ *      only when every tile it could swing from is burning does it step in and
+ *      swing anyway, on the tile that burns least. A walk that would end in the
+ *      fire stops on the safe tile that gets it closest, and only when no safe
+ *      tile gets it any closer at all does it walk in — on the least-burning
+ *      tile that does. It would rather burn than give up: a monster that waits
+ *      forever at the edge of a fire wider than its stride turns a hazard into
+ *      a wall, and a stalled fight into a clock that runs out on a table that
+ *      did nothing wrong.
+ *   2. **The one nearest the way out watches it.** While an exit is open, or
+ *      opens next round (`EXIT_LOOKAHEAD`), the monster standing nearest to it
+ *      — and only that one, so a pack never abandons the fight for the door —
+ *      goes and stands *beside* it when it has nobody to hit this turn, on the
+ *      side nearest the heroes, and stays there until somebody comes within
+ *      reach. Never *on* an exit tile, and never anywhere that would leave no
+ *      hero a walk to one of its tiles: it contests the escape, it does not
+ *      close it, so every exit the checker proved reachable stays reachable.
+ *   3. **The next one watches the captive.** While somebody still waits to be
+ *      freed, the nearest monster not already watching an exit stands beside
+ *      them the same way, so freeing Pip means stopping next to a monster. The
+ *      captive is never a target — they are walled terrain, not a figure, and
+ *      nothing here swings at terrain — and the same reachability rule keeps
+ *      at least one of the captive's sides open to a hero.
+ *
+ * Who watches what is decided from the board alone (the posts in authored
+ * order, each to the nearest monster as the crow flies, ties by reading
+ * order), so every monster on the board agrees on it without talking — no
+ * coordination, just the same picture read the same way. A monster with
+ * somebody to hit hits them: the sentence always comes first.
+ *
+ * Nothing here is random and nothing reads hit points; every list is ranked
+ * by a fixed rule ending in reading order, like the rest of this file.
+ */
+
+/**
+ * How many rounds ahead a monster starts watching an exit that is not yet
+ * open: 1 is "it opens next round". A tuning dial, not a rule — raise it and
+ * the guard walks over sooner; 0 and it only watches an exit already open.
+ */
+export const EXIT_LOOKAHEAD = 1;
+
+/** A tile it could end its move on this turn — where it stands (cost 0), or one it can walk to. */
+interface Stop extends Position {
+  readonly cost: number;
+}
+
+/** Something on the board worth standing beside: an exit (all its tiles) or the captive. */
+interface Post {
+  readonly kind: "exit" | "captive";
+  readonly tiles: readonly MapTile[];
+}
+
+function planInEnvironment(turn: EnemyTurn, env: EnemyEnvironment, decision: Decision): EnemyPlan {
+  const { board, enemy } = turn;
+  const plan = decision.plan;
+  const standing = turn.party.filter((hero) => !hero.down);
+  if (standing.length === 0) return plan;
+
+  const allowance = wholeSteps(enemy.steps);
+  const reach = Math.max(1, wholeSteps(enemy.reach ?? DEFAULT_REACH));
+  /** What ending its turn here would cost it, this round. */
+  const burn = (at: Position): number => hazardAt(env.spec, env.round, at)?.damage ?? 0;
+  const stops: readonly Stop[] = [
+    { x: enemy.at.x, y: enemy.at.y, cost: 0 },
+    ...reachableTiles(board, enemy.at, allowance),
+  ];
+
+  // 1. A swing this turn: keep it, unless it means standing in the fire.
+  if (plan.attack !== null) {
+    if (burn(plan.moveTo ?? enemy.at) === 0) return plan;
+    return swingFromCoolestTile(enemy.at, reach, stops, standing, plan.attack, burn);
+  }
+
+  // 2 and 3. Nobody to hit: the way out, or the captive, if this one watches it.
+  const field = walkField(board, enemy.at);
+  const posted = planPost(turn, env, field, allowance, stops, standing, burn);
+  if (posted) return posted;
+
+  // 1 again, for a walk: the sentence's stop, unless it is burning.
+  if (!decision.toward || burn(plan.moveTo ?? enemy.at) === 0) return plan;
+  const { tile, walk } = decision.toward;
+  return stopClearOfHazards(enemy.at, stops, walk ? walkDistanceTo(board, enemy, tile) : lineTo(tile), burn);
+}
+
+/**
+ * Every tile it could swing at somebody from, ranked: least burning first —
+ * so any safe one beats every burning one — then the hero the sentence chose,
+ * then the shorter walk, then the hero's own order (the sentence's tie-break:
+ * straight line, reading order, id), then the tile's reading order. There is
+ * always at least one: the sentence's own tile is among them.
+ */
+function swingFromCoolestTile(
+  at: Position,
+  reach: number,
+  stops: readonly Stop[],
+  standing: readonly PartyTarget[],
+  chosen: ActorId,
+  burn: (at: Position) => number,
+): EnemyPlan {
+  const options: { stop: Stop; hero: PartyTarget; burn: number }[] = [];
+  for (const stop of stops) {
+    for (const hero of standing) {
+      if (stepsBetween(stop, hero.at) <= reach) options.push({ stop, hero, burn: burn(stop) });
+    }
+  }
+  options.sort(
+    (a, b) =>
+      a.burn - b.burn ||
+      (a.hero.id === chosen ? 0 : 1) - (b.hero.id === chosen ? 0 : 1) ||
+      a.stop.cost - b.stop.cost ||
+      stepsBetween(at, a.hero.at) - stepsBetween(at, b.hero.at) ||
+      a.hero.at.y - b.hero.at.y ||
+      a.hero.at.x - b.hero.at.x ||
+      compareIds(a.hero.id, b.hero.id) ||
+      a.stop.y - b.stop.y ||
+      a.stop.x - b.stop.x,
+  );
+  const best = options[0];
+  if (!best) return HOLD;
+  return { moveTo: samePosition(best.stop, at) ? null : bare(best.stop), attack: best.hero.id };
+}
+
+/**
+ * Where to stop on a walk that cannot arrive this turn, given how far each
+ * stop leaves it from where it is going. A stop counts only if it gets it
+ * *closer* than staying would — otherwise "avoid the fire" could read as
+ * "walk backwards". Of those: the closest safe one (then the cheaper walk,
+ * then reading order); failing any safe one, the least-burning one that still
+ * gets closer (the fire wider than its stride — it crosses rather than wait
+ * forever); failing any progress at all, it stays, unless where it stands is
+ * burning, in which case it takes the least-burning tile it can reach.
+ */
+function stopClearOfHazards(
+  at: Position,
+  stops: readonly Stop[],
+  distance: (to: Position) => number,
+  burn: (at: Position) => number,
+): EnemyPlan {
+  const here = distance(at);
+  const rank = (byBurn: boolean) => (a: Stop, b: Stop) =>
+    (byBurn ? burn(a) - burn(b) : 0) || distance(a) - distance(b) || a.cost - b.cost || a.y - b.y || a.x - b.x;
+  const closer = stops.filter((stop) => !samePosition(stop, at) && distance(stop) < here);
+  const safe = closer.filter((stop) => burn(stop) === 0).sort(rank(false))[0];
+  const pick = safe ?? [...closer].sort(rank(true))[0] ?? (burn(at) === 0 ? null : [...stops].sort(rank(true))[0]);
+  if (!pick || samePosition(pick, at)) return HOLD;
+  return { moveTo: bare(pick), attack: null };
+}
+
+/**
+ * The walking distance from any tile to `goal`, for this mover — computed
+ * from the goal's end with the mover standing there, which is the same walk
+ * backwards (uniform steps, the same crossing rule: grid.ts). Falls back to
+ * the straight line if the board does not carry the mover where the turn says
+ * it stands (see `ActingEnemy`).
+ */
+function walkDistanceTo(board: Board, enemy: ActingEnemy, goal: Position): (to: Position) => number {
+  const mover = actorAt(board, enemy.at);
+  if (!mover || mover.id !== enemy.id || !(samePosition(goal, enemy.at) || isOpen(board, goal))) return lineTo(goal);
+  const back = walkField(moveActor(board, enemy.id, goal), goal);
+  return (to) => back.dist(to);
+}
+
+function lineTo(goal: Position): (to: Position) => number {
+  return (to) => stepsBetween(to, goal);
+}
+
+/** The posts in force this round, exits first in authored order, then the captive. */
+function postsInForce(env: EnemyEnvironment): Post[] {
+  const posts: Post[] = [];
+  for (const exit of env.spec.exits ?? []) {
+    let watched = false;
+    for (let ahead = 0; ahead <= EXIT_LOOKAHEAD; ahead++) watched ||= exitOpen(exit, env.round + ahead);
+    if (watched && exit.tiles.length > 0) posts.push({ kind: "exit", tiles: exit.tiles });
+  }
+  if (env.spec.rescue && env.rescue === "waiting") posts.push({ kind: "captive", tiles: [env.spec.rescue.at] });
+  return posts;
+}
+
+/**
+ * Rules 2 and 3: the post this monster watches, if any, and how it gets
+ * there. Null when it watches nothing (or nothing it could stand beside), and
+ * the sentence's walk applies instead.
+ */
+function planPost(
+  turn: EnemyTurn,
+  env: EnemyEnvironment,
+  field: WalkField,
+  allowance: number,
+  stops: readonly Stop[],
+  standing: readonly PartyTarget[],
+  burn: (at: Position) => number,
+): EnemyPlan | null {
+  const { board, enemy } = turn;
+  const mover = actorAt(board, enemy.at);
+  if (!mover || mover.id !== enemy.id) return null;
+  const posts = postsInForce(env);
+  if (posts.length === 0) return null;
+  const post = assignPosts(posts, board.actors.filter((a) => a.side === mover.side)).get(mover.id);
+  if (!post) return null;
+
+  const exitTiles = (env.spec.exits ?? []).flatMap((exit) => exit.tiles);
+  const onExit = (at: Position) => exitTiles.some((tile) => samePosition(tile, at));
+  const keepsWay = (stand: Position) => leavesAWay(board, mover, stand, post, standing);
+
+  // Already beside it, on ground that is not burning: it stays. A guard that
+  // shuffled along the wall every time a hero moved would read as restless,
+  // not as watchful.
+  if (besidePost(enemy.at, post) && !onExit(enemy.at) && burn(enemy.at) === 0 && keepsWay(enemy.at)) return HOLD;
+
+  const nearestHero = (at: Position) => Math.min(...standing.map((hero) => stepsBetween(at, hero.at)));
+  const candidates = postTiles(board, post)
+    .filter((tile) => isOpen(board, tile) && !onExit(tile) && burn(tile) === 0 && Number.isFinite(field.dist(tile)))
+    .map((tile) => ({ tile, cost: field.dist(tile), hero: nearestHero(tile) }))
+    .sort(
+      (a, b) =>
+        (a.cost <= allowance ? 0 : 1) - (b.cost <= allowance ? 0 : 1) ||
+        a.hero - b.hero ||
+        a.cost - b.cost ||
+        a.tile.y - b.tile.y ||
+        a.tile.x - b.tile.x,
+    );
+  for (const { tile, cost } of candidates) {
+    if (!keepsWay(tile)) continue;
+    if (cost <= allowance) return { moveTo: bare(tile), attack: null };
+    return stopClearOfHazards(enemy.at, stops, walkDistanceTo(board, enemy, tile), burn);
+  }
+  return null;
+}
+
+/**
+ * Who watches what: each post, in order, to the nearest monster not already
+ * watching one (straight line to the post's nearest tile, then reading
+ * order, then id). Every monster computes the same answer from the same
+ * board, which is the whole of the "coordination".
+ */
+function assignPosts(posts: readonly Post[], monsters: readonly Actor[]): Map<ActorId, Post> {
+  const out = new Map<ActorId, Post>();
+  const lineToPost = (at: Position, post: Post) => Math.min(...post.tiles.map((tile) => stepsBetween(at, tile)));
+  for (const post of posts) {
+    const free = monsters
+      .filter((m) => !out.has(m.id))
+      .sort((a, b) => lineToPost(a, post) - lineToPost(b, post) || a.y - b.y || a.x - b.x || compareIds(a.id, b.id));
+    const nearest = free[0];
+    if (!nearest) break;
+    out.set(nearest.id, post);
+  }
+  return out;
+}
+
+function besidePost(at: Position, post: Post): boolean {
+  return post.tiles.some((tile) => stepsBetween(at, tile) === 1);
+}
+
+/** Every tile next to one of the post's tiles (not one of them), once, in reading order. */
+function postTiles(board: Board, post: Post): Position[] {
+  const out: Position[] = [];
+  for (let y = 0; y < board.height; y++) {
+    for (let x = 0; x < board.width; x++) {
+      const at = { x, y };
+      if (inBounds(board, at) && besidePost(at, post) && !post.tiles.some((tile) => samePosition(tile, at))) out.push(at);
+    }
+  }
+  return out;
+}
+
+/**
+ * With the monster standing on `stand`, can some standing hero still walk to
+ * the post — to one of the exit's tiles, or to a tile beside the captive? The
+ * guarantee the checker's flood fill made for the empty map, kept for the
+ * board as it is, so a guard contests a way out without ever closing it.
+ */
+function leavesAWay(
+  board: Board,
+  mover: Actor,
+  stand: Position,
+  post: Post,
+  standing: readonly PartyTarget[],
+): boolean {
+  const after = samePosition(stand, mover) ? board : moveActor(board, mover.id, stand);
+  const goals =
+    post.kind === "exit"
+      ? post.tiles.filter((tile) => isOpen(after, tile))
+      : postTiles(after, post).filter((tile) => isOpen(after, tile));
+  if (post.kind === "captive" && standing.some((hero) => besidePost(hero.at, post))) return true;
+  return standing.some((hero) => {
+    const walk = walkField(after, hero.at);
+    return goals.some((goal) => Number.isFinite(walk.dist(goal)));
+  });
+}
+
+/** A bare tile, never a `ReachableTile` with its `cost` — see `closeTheGap`. */
+function bare(at: Position): Position {
+  return { x: at.x, y: at.y };
+}
+
+function compareIds(a: string, b: string): number {
+  return a < b ? -1 : a > b ? 1 : 0;
 }
 
 /**
