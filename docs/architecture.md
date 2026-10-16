@@ -602,6 +602,37 @@ last time's) when the request fails for want of a network; a 4xx means the bindi
 discards it. A browser whose binding came from opening a Party Mode room on itself is marked
 `screenOnly` and is never offered the book, until it is seated or adopted as a player.
 
+#### Offline: the service worker
+
+That saved copy is only half of "opens in the car": the page, its code, the content and the map
+painting have to be on the phone too, or a reload with no signal never gets as far as reading it.
+A service worker (`packages/client/src/sw/`, served as `/sw.js`) holds them. It is registered only
+by a production build, after `load`, and touches nothing the game needs live:
+
+| Request | Answered by |
+|---|---|
+| `/api/*`, `/events/*`, anything cross-origin, non-GET or ranged | the browser, as if there were no worker |
+| a page load (any route) | the network; the saved app when there is none |
+| `/bundle/*` (hashed) | the saved copy; the network the first time |
+| `/content/*.json` | the network; the saved copy when there is none |
+| art (`.webp`, `.png`, …) | the saved copy at once, refreshed behind it; the network the first time |
+
+Install saves the app, every hashed file but the Rive runtime (about 2 MB, which the book does not
+use; the game saves it the first time it loads it) and the content the book reads, including every
+campaign file: roughly 2.4 MB. Opening the book with a signal then saves the map painting, every
+atlas level and the art of everything found (`sw/warm.ts`). The close-zoom detail patches are left
+out: several megabytes the map works without. Art is capped at 400 pictures, oldest out first.
+
+Each build's `sw.js` names its own files (`sw-build.ts` writes them in), so every deploy is a new
+worker. It takes over at once and drops code the deploy replaced; every build's worker answers the
+same way, so an open page loses nothing to the switch. **To turn it off**, ship a `sw.js` whose
+`activate` deletes every cache and calls `self.registration.unregister()`. Phones pick it up on
+their next page load.
+
+`e2e/offline.spec.ts` proves it against a real production build (`npm run e2e:offline`, also run
+by CI): play a little, open the book once, drop the network, then reload and open a fresh tab, and
+the hero, the map's painting and an opened Field Guide entry must all be there.
+
 Three rules keep this from forking into two apps:
 
 1. **`WorldView` and `PlayerView` never know the mode.** They read game state and render. A layout shell composes them.
