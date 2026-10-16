@@ -30,4 +30,4 @@ Engine epic: [#191](https://github.com/allenheltondev/kids-and-dragons/issues/19
 - Complete geography and node IDs/routes beyond the opening, one regional strand at a time.
 - Emperor name, ancient empire details, final confrontation and outcomes.
 - Destination disclosure.
-- Numeric check TNs, harm, and chapter schema details.
+- Chapter schema details.

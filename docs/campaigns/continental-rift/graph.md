@@ -62,6 +62,5 @@ The river's multiple escape opportunities are **stages within one authored encou
 - Avoid authoring the final graph until graph runtime, effects and edge constraints from issues #192–#203 are verified.
 
 ## Decisions still open
-1. Dice thresholds for the washout stages.
-2. Which locations and developments are mandatory for final convergence.
-3. Endgame unlock flags, faction influence rules, return routes and endings.
+1. Which locations and developments are mandatory for final convergence.
+2. Endgame unlock flags, faction influence rules, return routes and endings.

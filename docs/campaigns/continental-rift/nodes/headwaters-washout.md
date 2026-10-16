@@ -1,6 +1,6 @@
 # Node design — Headwaters Washout
 
-**Status:** Approved scenario concept, places and rescuer; numeric checks and implementation specifics TBD.
+**Status:** Approved scenario concept, places, rescuer, checks and harm; implementation specifics TBD.
 **Provisional node ID:** `headwaters-washout`
 **Narrative role:** First vivid fail-forward multi-stage skill challenge.
 **Spoiler level:** Early-campaign player-facing; **no emperor reveal**.
@@ -11,15 +11,21 @@ Party follows the Riftseekers' lead toward the Cairnstep and **falls** from the 
 ## Core dramatic rule
 **The dice decide how far downstream the party goes.** A bad result changes their adventure, not their chance to continue playing. There is no drowning/game-over outcome through the required escape sequence. The sequence is a *single encounter with stages*, not three mandatory chapter-level transitions.
 
-## Proposed scene beats
+## Scene beats — agreed
 ### 1. The shelf's edge
-The first opportunity is to grab ice, rope, ledge, or help one another. Success: escape onto the Frostfang shore, close enough to rejoin the lead. Failure: carry onward in the rising current. Example **proposal**: Might check TN 12, `roller: "best"` (one person grabbing hold saves everyone), but allow sensible alternative tactics.
+The first opportunity is to grab ice, rope, ledge, or help one another. Success: escape onto the Frostfang shore, close enough to rejoin the lead. Failure: carry onward in the rising current. **Check:** Might **TN 16**, one roller (normal turn-taking): a desperate grab. About 40%.
 
 ### 2. The fallen tree
-An overhanging branch/tree or shoreline obstacle creates an opportunity to escape. Success: emerge on the Red Sky Foothills bank among the old boundary stones, with its own encounter and discoveries. Failure: reach rapids. Example **proposal**: Quick check TN 12, `roller: "all"` (everyone has to get onto the tree), with class abilities, coordinated actions or tool use as viable alternatives.
+An overhanging branch/tree or shoreline obstacle creates an opportunity to escape. Success: emerge on the Red Sky Foothills bank among the old boundary stones, with its own encounter and discoveries. Failure: reach rapids. **Check:** Quick **TN 12**, `roller: "all"`: everyone has to get onto the tree. About 65% for a party of three (60% solo, 84% for two, 82% for four).
 
 ### 3. The rapids
-A gravel bar, shore signal or environmental opportunity is the final active escape. Success: reach the bank at Ashspan Bridge on their own. Failure: **Old Ossley** pulls them out at the bridge; party remains playable. Both land at `ashspan-bridge` and differ in narration. Example **proposal**: two choices, each its own check, because a check takes one stat: *swim for the gravel bar* (Quick TN 16) or *signal the shore* (Heart TN 16), to be balanced against current stats.
+A gravel bar, shore signal or environmental opportunity is the final active escape. Success: reach the bank at Ashspan Bridge on their own. Failure: **Old Ossley** pulls them out at the bridge; party remains playable. Both land at `ashspan-bridge` and differ in narration. **Check:** two choices, each its own check because a check takes one stat: *swim for the gravel bar* (Quick **TN 12**) or *signal the shore* (Heart **TN 12**), one roller. About 60%.
+
+### Odds, abilities and harm — agreed
+- **Spread:** roughly **40% early, 40% middle, 20% late**, so the river's content is actually played. (A party-best roller at TN 12 on stage 1 succeeds about 90% of the time at Sworn and hides the rest.)
+- **Species abilities lower that stage's TN one step** (16→12, 12→8) and never succeed outright. Each species gets its option at one stage. Griffin and dragonling wings are soaked: they can lift a friend, not the whole party. Bigfoot's Smash breaks off an ice handhold.
+- **Harm:** 1 damage per failed stage, the standard scene damage, so at most 3 against 10+ HP; nobody is knocked down by the river. No items are lost (content rules forbid permanent loss).
+- **Ossley's rescue** comes with a **Supper Bundle** (heal 1) and his line "When I'm going your way."
 
 ### The rift under pressure — agreed
 A rift appears within reach along the washout, offering a meaningful choice: commit to an unknown rift route or keep battling the river. Its **Riftlight** is **amber + violet** (single-use, one-way) and tells a perceptive character so, but not where it goes. It leads to the **Sky Islands**, otherwise reachable only by air, which is what makes it a real temptation. Taking it sets `river_took_rift`; the edge is `once`. Which stage it appears at is TBD.
@@ -61,4 +67,4 @@ No exit lands on the west bank below the glacier (the Expanse, a protected myste
 - River progression can be unit/playtest simulated; Gemfall remains unchanged.
 
 ## Unresolved
-Check TN calibration; harm/resource effects (if any); which stage the rift appears at; exact prose, visuals, audio, rewards.
+Which stage the rift appears at; exact prose, visuals, audio, rewards.
