@@ -3,13 +3,14 @@
  * everybody stands. Pure, so the composition rules are numbers a test holds.
  */
 
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import type { Chapter } from "@kad/shared";
 import manifest from "../../../../assets/manifest.json";
 import { makeState } from "../testing/fixtures";
 import {
+  ENSEMBLES,
   ENTITY_SIZES,
   MAX_CAST,
   MAX_GROUP,
@@ -55,6 +56,58 @@ describe("cast groups", () => {
     const spread = stageSlots(2, [1, 1, 1], 1600, [false, false, false]).cast;
     const huddle = stageSlots(2, [1, 1, 1], 1600, [true, true, true]).cast;
     expect(huddle[2]! - huddle[0]!).toBeLessThan(spread[2]! - spread[0]!);
+  });
+});
+
+describe("cast ensembles", () => {
+  it("stands the Skywardens as three full-size members, not one picture of three", () => {
+    const out = stageCast([{ figure: "entities/skywardens", name: "Skywardens" }]);
+    expect(out.map((m) => m.url)).toEqual([
+      "/assets/cast/skywarden_griffin/assembled.png",
+      "/assets/cast/skywarden_faun/assembled.png",
+      "/assets/cast/skywarden_centaur/assembled.png",
+    ]);
+    expect(out.map((m) => m.name)).toEqual(["Skywardens", null, null]);
+    expect(out.map((m) => m.crowd)).toEqual([0, 1, 2].map((index) => ({ index, size: 3 })));
+    expect(out[1]!.scale).toBe(SIZE_SCALE.medium);
+    expect(out[2]!.scale).toBe(SIZE_SCALE.large);
+    // The first member keeps the entry's plain key, like any group's first.
+    expect(out[0]!.key).toBe("entities/skywardens|Skywardens");
+  });
+
+  it("lets an authored size win for the whole group, and ignores count", () => {
+    const out = stageCast([{ figure: "entities/skywardens", size: "small", count: 5 }]);
+    expect(out).toHaveLength(3);
+    expect(out.every((m) => m.scale === SIZE_SCALE.small)).toBe(true);
+  });
+
+  it("stands the one Warden Clerk as one warden, not the group", () => {
+    const chapters = fileURLToPath(new URL("../../../../content/chapters", import.meta.url));
+    let clerks = 0;
+    for (const file of readdirSync(chapters).filter((f) => f.endsWith(".json"))) {
+      const chapter = JSON.parse(readFileSync(`${chapters}/${file}`, "utf8")) as Chapter;
+      for (const [id, scene] of Object.entries(chapter.scenes)) {
+        if (scene.type === "encounter") continue;
+        for (const member of scene.cast ?? []) {
+          if (member.name !== "Warden Clerk") continue;
+          clerks++;
+          expect(stageCast([member]), `${file} ${id}`).toHaveLength(1);
+        }
+      }
+    }
+    // gemfall-07h's checkpoint; a sweep that finds nobody proves nothing.
+    expect(clerks).toBeGreaterThanOrEqual(5);
+  });
+
+  it("cuts every ensemble into declared, drawn cast figures of their declared size", () => {
+    const declared = new Map(manifest.castFigures.map((f) => [`cast/${f.id}`, f.scale]));
+    for (const [id, parts] of Object.entries(ENSEMBLES)) {
+      expect(existsSync(`${ASSETS}/entities/${id}/assembled.png`), id).toBe(true);
+      for (const part of parts) {
+        expect(declared.get(part.figure), part.figure).toBe(part.size);
+        expect(existsSync(`${ASSETS}${castFigureUrl(part.figure)!.slice("/assets".length)}`), part.figure).toBe(true);
+      }
+    }
   });
 });
 
@@ -132,6 +185,15 @@ describe("castFor", () => {
 
 describe("stageSlots", () => {
   const WIDTH = 1600;
+
+  it("leaves room for full hero rig canvases beside a paged guest on a narrow stage", () => {
+    const slots = stageSlots(3, [1], WIDTH, [], true);
+    for (const x of slots.party) {
+      expect(x - 345).toBeGreaterThanOrEqual(0);
+      expect(x + 345).toBeLessThanOrEqual(WIDTH);
+    }
+    expect(slots.cast[0]).toBe(WIDTH * 0.8);
+  });
 
   it("fits three heroes and three guests' entire canvases inside their slots", () => {
     for (const width of [1600, 2560]) for (const scales of [[1, 1, 1], [0.4, 1.25, 1.45]]) {

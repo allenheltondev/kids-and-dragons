@@ -292,6 +292,29 @@
   touch-action: none;
 }
 
+.kad-cast-browser {
+  position: absolute;
+  inset-block-start: 3rem;
+  inset-inline-end: 0.5rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  max-inline-size: calc(100% - 1rem);
+  border-radius: 1rem;
+  background: #17152cef;
+  color: #f6f3ff;
+  font: 600 0.85rem/1.2 system-ui, sans-serif;
+}
+.kad-cast-browser button {
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 1.5rem;
+}
+.kad-cast-browser button:disabled { opacity: 0.35; }
+
 .kad-stage-fallback {
   position: absolute;
   inset: 0;
