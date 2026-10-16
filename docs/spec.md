@@ -72,6 +72,17 @@ Design consequences, all of which we accept:
 
 Mode is chosen per-room at creation and can be switched mid-session — a phone that had a TV can absorb WorldView if the laptop dies.
 
+### 2.3 Between games — the adventure book
+
+A phone that is not in a game can still open what the games left behind and just look. **Your adventure book** (`/journal`) is offered on the home screen to any phone that has played (never to a TV that only hosted), and opens in the same tray as Travel Mode:
+
+- **Hero** — your character sheet, with a picker when you have more than one. The bag is tappable here: each thing says what it is and what it does, because between games there is nothing to use it on and finding out is the point.
+- **Map** — the realm painting with everything the household has found, and your hero standing where the party was *last*, labelled as such ("You were here").
+- **Guide** — the household's Field Guide (§12), finds credited to the hero each player has taken furthest.
+- **Play** — back to the home screen, where joining and hosting live.
+
+Nothing in the book can change anything, so nothing in it can go wrong. It is the book you leaf through in the car — and so it opens without a signal too, even on a reload or in a fresh tab, showing the last copy this phone read and saying so. The map's painting and the pictures of everything found come with it, once the book has been opened with a signal.
+
 ---
 
 ## 3. Accounts & identity

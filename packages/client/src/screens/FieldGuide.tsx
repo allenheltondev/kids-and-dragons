@@ -30,7 +30,10 @@ const SECTIONS: ReadonlyArray<{ id: FieldGuideCategory; label: string; one: stri
  * sends an intent. #109 replaces `FieldGuideDetailPlaceholder` with the real
  * detail screen for `guideEntry`.
  */
-export function FieldGuide() {
+export function FieldGuide({ backToBag = true }: {
+  /** In play the guide sits beside the bag; the journal has its own way back. */
+  backToBag?: boolean;
+} = {}) {
   const guideEntry = usePlayerNavigation((n) => n.guideEntry);
   const [guide, setGuide] = useState<FieldGuideData | null>(null);
 
@@ -52,10 +55,12 @@ export function FieldGuide() {
       ) : (
         <>
           <FieldGuideIndex guide={guide} />
-          <Button className="field-guide__back" variant="secondary" size="md" block
-            icon={<Icon name="back" />} onClick={() => setPlayerSection("bag")}>
-            Back to your bag
-          </Button>
+          {backToBag ? (
+            <Button className="field-guide__back" variant="secondary" size="md" block
+              icon={<Icon name="back" />} onClick={() => setPlayerSection("bag")}>
+              Back to your bag
+            </Button>
+          ) : null}
         </>
       )}
     </section>
