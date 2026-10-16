@@ -52,10 +52,20 @@ export function campaignPremise(view: CampaignView | null | undefined): string |
 }
 
 /**
+ * Why the household cannot start this campaign yet ("Finish Gemfall first"),
+ * or null when it can (#221). The server writes the sentence from the required
+ * campaigns' titles; the screens only show it, and offer no way to start.
+ */
+export function lockedLine(view: CampaignView | null | undefined): string | null {
+  return view?.locked?.reason ?? null;
+}
+
+/**
  * The line under a campaign in the lobby's "which adventure?" vote: where this
  * household would pick it up, or that it would be a fresh start.
  */
 export function campaignOptionLine(view: CampaignView): string {
+  if (view.locked) return view.locked.reason;
   // `next: null` is a routed fork nobody has chosen yet — only ever past
   // chapter 1, so the campaign is under way.
   if (!view.next) return "Pick up where you left off";

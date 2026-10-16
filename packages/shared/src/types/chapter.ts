@@ -689,6 +689,15 @@ export interface Campaign {
    */
   purseBackfill?: { coins: number; byFlag?: Record<string, number> };
   /**
+   * Campaigns the household must have finished before this one can be started
+   * (#221). Met by a `complete` attempt at each — a loss ending counts, a
+   * `failed` or abandoned attempt does not. Absent means no prerequisite,
+   * which is every campaign authored before it existed, Gemfall included. Per
+   * household, never per character: a late joiner still takes the tier floor
+   * (spec §8.4). See `unmetPrerequisites`.
+   */
+  requires?: string[];
+  /**
    * Makes this a graph campaign (#192): the next chapter is chosen by the
    * graph's edges, not by `index`. Absent — every campaign authored before it
    * existed, Gemfall included — is an ordered campaign, played exactly as it

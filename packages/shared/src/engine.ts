@@ -1511,8 +1511,14 @@ function doVoteCampaign(draft: RunState, playerId: string, campaignId: string): 
     throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
   }
   const options = draft.campaignOptions ?? [];
-  if (!options.some((option) => option.id === campaignId)) {
+  const voted = options.find((option) => option.id === campaignId);
+  if (!voted) {
     throw new Illegal("ILLEGAL", `"${campaignId}" is not one of this room's campaigns`);
+  }
+  // A locked campaign (#221) is shown, not choosable: a vote for it could only
+  // win a Begin the server then refuses.
+  if (voted.locked) {
+    throw new Illegal("ILLEGAL", `"${voted.title}" is locked: ${voted.locked.reason}`);
   }
   draft.campaignVotes = { ...(draft.campaignVotes ?? {}), [playerId]: campaignId };
   const leader = lobbyCampaign(draft).leader;

@@ -409,6 +409,64 @@ describe("graph campaigns (#192)", () => {
   });
 });
 
+describe("campaign prerequisites (#221)", () => {
+  /** Two campaigns over the fixture chapter, each declaring what it is given. */
+  async function withPair(
+    first: Record<string, unknown>,
+    second: Record<string, unknown>,
+  ): Promise<string> {
+    const root = await tree(good());
+    await fs.mkdir(path.join(root, "campaigns"), { recursive: true });
+    for (const [id, extra] of [["gemfall", first], ["riftlight", second]] as const) {
+      await write(path.join(root, "campaigns", `${id}.json`), {
+        id,
+        title: id,
+        blurb: "A test campaign.",
+        chapters: ["bramblewood-01"],
+        ...extra,
+      });
+    }
+    return root;
+  }
+
+  it("loads a campaign that requires another, and one that requires nothing", async () => {
+    const content = await loadContent(await withPair({}, { requires: ["gemfall"] }));
+    expect(content.campaign("riftlight")?.requires).toEqual(["gemfall"]);
+    expect(content.campaign("gemfall")).not.toHaveProperty("requires");
+  });
+
+  it("refuses a prerequisite naming an unknown campaign", async () => {
+    const error = await loadContent(await withPair({}, { requires: ["gemfal"] })).catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(ContentError);
+    expect((error as ContentError).problems).toContain(
+      'campaigns/riftlight.json: /requires/0: requires campaign "gemfal", which does not exist',
+    );
+  });
+
+  it("refuses a prerequisite cycle", async () => {
+    const error = await loadContent(
+      await withPair({ requires: ["riftlight"] }, { requires: ["gemfall"] }),
+    ).catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(ContentError);
+    expect((error as ContentError).problems).toContain(
+      "campaigns/gemfall.json: /requires: prerequisite cycle: gemfall -> riftlight -> gemfall",
+    );
+  });
+
+  it("refuses a campaign that requires itself", async () => {
+    await expect(loadContent(await withPair({}, { requires: ["riftlight"] }))).rejects.toThrow(
+      'campaign "riftlight" cannot require itself',
+    );
+  });
+
+  it("the shipped campaigns declare no prerequisite that Gemfall would be held to", async () => {
+    const content = await loadContent(contentDir());
+    // Gemfall is the prerequisite campaign: it is never locked behind anything.
+    expect(content.campaign("gemfall")).not.toHaveProperty("requires");
+    expect(content.campaign("the-hollow-crown")).not.toHaveProperty("requires");
+  });
+});
+
 describe("the shipped campaigns are ordered and play as before (legacy regression)", () => {
   /*
    * The whole of Gemfall's compatibility with graph campaigns is that it does

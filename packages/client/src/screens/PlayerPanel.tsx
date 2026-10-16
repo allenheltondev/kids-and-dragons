@@ -64,6 +64,7 @@ import {
   campaignEndHeading,
   campaignEndLine,
   campaignOptionLine,
+  lockedLine,
   nextChapterLine,
 } from "./campaign-copy";
 import { KeepsakeOffer } from "./SignInFlow";
@@ -440,6 +441,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   const campaignChoice = state ? lobbyCampaign(state) : null;
   const campaignId = campaignChoice?.leader?.id ?? campaign?.id ?? null;
   const waitingOnVotes = campaignChoice?.contested ? campaignChoice.waitingOn : [];
+  // Set when the household has not unlocked that campaign (#221): there is no
+  // Begin for it, only the reason. The server refuses the start regardless.
+  const campaignLocked = lockedLine(campaignChoice?.leader);
   // Present only for a graph campaign (#195); an ordered one never has it, and
   // every screen below takes its existing path when it is undefined.
   const graphJourney = campaignChoice?.leader?.journey;
@@ -1337,7 +1341,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                           type="button"
                           className={`choice kad-tap kad-focusable${selected ? " choice--on" : ""}`}
                           aria-pressed={selected}
-                          disabled={busy}
+                          disabled={busy || option.locked !== undefined}
                           onClick={() => void dispatch({ type: "VOTE_CAMPAIGN", campaignId: option.id })}
                         >
                           <span className="choice__icon">
@@ -1365,7 +1369,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 </ul>
               </div>
             ) : null}
-            {inLobby && !graphJourney && nextChapterLine(state.campaign) !== null ? (
+            {inLobby && !graphJourney && !campaignLocked && nextChapterLine(state.campaign) !== null ? (
               <p className="player__next-chapter">
                 <Icon name="map" />
                 <span>
@@ -1386,6 +1390,13 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                     <span>
                       Waiting for {waitingOnVotes.map((member) => member.character.name).join(", ")} to
                       pick an adventure
+                    </span>
+                  </p>
+                ) : campaignLocked ? (
+                  <p className="player__next-chapter player__start-wait">
+                    <Icon name="close" />
+                    <span>
+                      {campaignChoice?.leader?.title}: {campaignLocked}
                     </span>
                   </p>
                 ) : everyoneReady && campaignId !== null && graphJourney ? (

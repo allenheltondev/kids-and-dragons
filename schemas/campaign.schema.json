@@ -84,6 +84,16 @@
         }
       }
     },
+    "requires": {
+      "description": "Campaign.requires (#221): campaign ids the household must have finished before this one can be started. Met by a `complete` attempt at each (any ending, a loss ending included); a failed or abandoned attempt does not count. Absent means no prerequisite. Each id must name a campaign that exists, and prerequisites must not form a cycle - content:validate and the loader check both, since only the whole set can say.",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      }
+    },
     "graph": {
       "$ref": "#/$defs/graph"
     }
