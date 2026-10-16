@@ -124,6 +124,21 @@ export interface CampaignProgressRecord {
    */
   attemptId?: string;
   /**
+   * An earlier attempt at this campaign was completed (#221). There is one row
+   * per household campaign, so a replay overwrites the `complete` row it
+   * starts over, and this is what keeps the fact a campaign prerequisite
+   * reads ("the household has finished Gemfall") alive through it.
+   *
+   * Written when a new attempt replaces a `complete` row (or one already
+   * carrying it) and carried by every attempt after, whatever they end in. A
+   * completing attempt does not write it: its `status` already says so, which
+   * keeps a finished row exactly the shape it always was. A failed or
+   * abandoned attempt never sets it. Absent on every row written before it
+   * existed, which still counts as completed when its `status` is `complete`
+   * (`hasCompleted`).
+   */
+  everCompleted?: true;
+  /**
    * Where a **graph** campaign's attempt stands (#194): the node, the visit,
    * whether it is being played or an exit is being chosen, and everything the
    * edges' guards read — visits, completions, outcomes, edges taken, lock

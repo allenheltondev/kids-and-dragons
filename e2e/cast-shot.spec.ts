@@ -11,13 +11,34 @@
  * Shots land in art/review/cast-<scene>-{tv,phone}.png.
  */
 
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Page, type BrowserContext } from "@playwright/test";
+import type { Chapter, CastMember } from "../packages/shared/src/index";
 
 const TAP = { timeout: 20_000 } as const;
 const SCENES = (process.env.KAD_CAST_SCENES ?? "scene_tavern,choice_ember,scene_motive_wealth")
   .split(",")
   .map((id) => id.trim())
   .filter((id) => id.length > 0);
+
+// Review an unreleased figure in the real stage without editing campaign data.
+// KAD_CAST_PREVIEW='{"figure":"cast/orin_vale","name":"Master Orin Vale"}'
+// KAD_CAST_SHOT_PREFIX=art/review/riftlight-cast/pilot
+async function previewCast(context: BrowserContext): Promise<void> {
+  if (!process.env.KAD_CAST_PREVIEW) return;
+  const member = JSON.parse(process.env.KAD_CAST_PREVIEW) as CastMember;
+  if (!/^(characters|entities|cast)\/[a-z0-9_]+$/.test(member.figure)) throw new Error("Invalid cast preview figure");
+  await context.route("**/content/chapters/*.json", async (route) => {
+    const response = await route.fetch();
+    const chapter = await response.json() as Chapter;
+    for (const id of SCENES) {
+      const scene = chapter.scenes[id];
+      if (scene && scene.type !== "encounter") scene.cast = [member];
+    }
+    await route.fulfill({ response, json: chapter });
+  });
+}
+
+const SHOT_PREFIX = process.env.KAD_CAST_SHOT_PREFIX ?? "art/review/cast";
 
 async function createCharacter(page: Page, species: string, name: string): Promise<void> {
   await page.getByRole("button", { name: new RegExp(species, "i") }).first().click(TAP);
@@ -44,6 +65,7 @@ test("photograph a cast on the story stage", async ({ browser }) => {
   const contexts: { close(): Promise<void> }[] = [];
   const phone = async () => {
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    await previewCast(ctx);
     contexts.push(ctx);
     return ctx.newPage();
   };
@@ -73,6 +95,7 @@ test("photograph a cast on the story stage", async ({ browser }) => {
   for (const [page, species, name] of party) await createCharacter(page, species, name);
 
   const tvCtx = await browser.newContext({ viewport: { width: 1920, height: 1080 } });
+  await previewCast(tvCtx);
   contexts.push(tvCtx);
   const tv = await tvCtx.newPage();
   await tv.goto(`/tv/${code}`);
@@ -87,17 +110,17 @@ test("photograph a cast on the story stage", async ({ browser }) => {
     await host.getByRole("button", { name: /^close$/i }).click(TAP);
     // The veil, the entrance, the rigs settling into idle.
     await tv.waitForTimeout(4_000);
-    await tv.screenshot({ path: `art/review/cast-${scene}-tv.png` });
+    await tv.screenshot({ path: `${SHOT_PREFIX}-${scene}-tv.png` });
     // Another seat's phone, parked on its World tab: the host's stays on the
     // tab the Playtest drawer lives on.
     const watcher = others[0]!;
     await watcher.getByRole("button", { name: /^world$/i }).click(TAP).catch(() => undefined);
-    await watcher.screenshot({ path: `art/review/cast-${scene}-phone.png` });
+    await watcher.screenshot({ path: `${SHOT_PREFIX}-${scene}-phone.png` });
     // The host's phone too, the moment its World tab opens: a pane that was
     // hidden must be framed on its first frame, not zoom out into place.
     await host.getByRole("button", { name: /^world$/i }).click(TAP);
     await host.waitForTimeout(200);
-    await host.screenshot({ path: `art/review/cast-${scene}-host.png` });
+    await host.screenshot({ path: `${SHOT_PREFIX}-${scene}-host.png` });
     await host.getByRole("button", { name: /^you$/i }).click(TAP);
   }
 

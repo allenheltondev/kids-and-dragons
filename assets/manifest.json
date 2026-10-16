@@ -1708,6 +1708,103 @@
         "clip": "transform",
         "event": "flash"
       }
+    },
+    {
+      "id": "rift_neutral",
+      "frames": 12,
+      "fps": 12,
+      "size": 256,
+      "startsOn": null,
+      "outOfCombat": true,
+      "loop": true
+    },
+    {
+      "id": "rift_base",
+      "frames": 12,
+      "fps": 12,
+      "size": 256,
+      "startsOn": null,
+      "outOfCombat": true,
+      "loop": true
+    },
+    {
+      "id": "rift_green",
+      "frames": 12,
+      "fps": 12,
+      "size": 256,
+      "startsOn": null,
+      "outOfCombat": true,
+      "loop": true
+    },
+    {
+      "id": "rift_amber",
+      "frames": 12,
+      "fps": 12,
+      "size": 256,
+      "startsOn": null,
+      "outOfCombat": true,
+      "loop": true
+    },
+    {
+      "id": "rift_blue",
+      "frames": 12,
+      "fps": 12,
+      "size": 256,
+      "startsOn": null,
+      "outOfCombat": true,
+      "loop": true
+    },
+    {
+      "id": "rift_violet",
+      "frames": 12,
+      "fps": 12,
+      "size": 256,
+      "startsOn": null,
+      "outOfCombat": true,
+      "loop": true
+    },
+    {
+      "id": "rift_shrink",
+      "frames": 12,
+      "fps": 12,
+      "size": 256,
+      "startsOn": null,
+      "outOfCombat": true,
+      "loop": true
+    },
+    {
+      "id": "rift_stutter",
+      "frames": 12,
+      "fps": 12,
+      "size": 256,
+      "startsOn": null,
+      "outOfCombat": true,
+      "loop": true
+    },
+    {
+      "id": "rift_sync",
+      "frames": 12,
+      "fps": 12,
+      "size": 256,
+      "startsOn": null,
+      "outOfCombat": true,
+      "loop": true
+    },
+    {
+      "id": "rift_open",
+      "frames": 12,
+      "fps": 12,
+      "size": 256,
+      "startsOn": null,
+      "outOfCombat": true
+    },
+    {
+      "id": "rift_collapse",
+      "frames": 12,
+      "fps": 12,
+      "size": 256,
+      "startsOn": null,
+      "outOfCombat": true
     }
   ],
   "$rigContractComment": "docs/asset-brief.md §9.2 as data, read by tools/art/verify-rig.ts. Ticks, not seconds: one tick is one frame at `tickFps`, the same clock the effect sheets run on, so an effect that starts on a tick boundary can never drift against the clip that triggered it. Rive interpolates at 60fps — author to the 12ths-of-a-second grid anyway. Every clip listed in a set is required on every rig of that kind, including rigs for species with no ability that fires it: art-pipeline.md §6.1's rule is that game code never special-cases a species, and a state machine present on two rigs and absent on four is that special case permanently. `shove` deliberately has no clip (§9.2) — a shoved figure is translated by the engine and keeps playing `idle`, because to an 8-year-old a flinch *is* damage and `shove` deals none.",
@@ -2406,6 +2503,12 @@
       "name": "Corbin and Posy",
       "basis": "burrowfolk",
       "scale": "very_large"
+    },
+    {
+      "id": "orin_vale",
+      "name": "Master Orin Vale",
+      "basis": "griffin",
+      "scale": "medium"
     },
     {
       "id": "skywarden_griffin",

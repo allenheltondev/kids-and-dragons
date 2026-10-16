@@ -27,10 +27,13 @@ import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 
 import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "../../packages/shared/src/condition-lint.ts";
+import { slowBlockProblems } from "../../packages/shared/src/buffs.ts";
 import { chapterStartDiscoveries, sceneDiscoveries } from "../../packages/shared/src/discoveries.ts";
 import { checkEncounterEnvironment } from "../../packages/shared/src/environment.ts";
+import { MUSIC_SPECS } from "../../packages/client/src/audio/paths.ts";
 import { RIFT_ACTION_KINDS, campaignMode, journeyFlags, parseCampaignGraph, riftActionWays } from "../../packages/shared/src/campaign-graph.ts";
 import { chapterFlagWrites, duplicateJsonKeys, lintCampaignGraph } from "../../packages/shared/src/campaign-graph-lint.ts";
+import { prerequisiteProblems } from "../../packages/shared/src/campaign-prerequisites.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 
 /**
@@ -802,6 +805,12 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
       let total = 0;
       for (const enemy of scene.enemies) {
         const where = `/scenes/${id}/enemies/${enemy.id}`;
+        // A numbing sting (#227) is checked with the same arithmetic the fight
+        // uses, so a number the engine would clamp is a build failure instead.
+        for (const key of ["onHit", "retaliation"]) {
+          if (enemy[key] === undefined) continue;
+          for (const problem of slowBlockProblems(enemy[key], key === "retaliation")) fail(`${where}/${key}${problem.path}`, problem.problem);
+        }
         const entry = enemy.creature ? bestiary?.creatures?.[enemy.creature] : null;
 
         if (!enemy.creature) {
@@ -952,6 +961,15 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
   if (biomes && !biomes.includes(chapter.biome)) {
     fail("/biome", `biome "${chapter.biome}" is not in assets/manifest.json`, `known biomes: ${biomes.join(", ")}`);
   }
+
+  // Music overrides (#226): a chapter or scene may name a MUSIC_SPECS track in place of its biome's.
+  const checkMusic = (path, track) => {
+    if (track !== undefined && !Object.hasOwn(MUSIC_SPECS, track)) {
+      fail(path, `music "${track}" is not a MUSIC_SPECS track`, `known tracks: ${Object.keys(MUSIC_SPECS).join(", ")}`);
+    }
+  };
+  checkMusic("/music", chapter.music);
+  for (const [sceneId, scene] of Object.entries(scenes)) checkMusic(`/scenes/${sceneId}/music`, scene.music);
 
   // Field Guide tags (#103): `discovers` must name real entries, once each; and
   // so must everything the shared rules would reveal implicitly, so the
@@ -1469,12 +1487,27 @@ function main() {
   if (!campaignFiles.length) rep.warn("no campaigns found", "content/campaigns/ is empty.");
   const referenced = new Set();
 
+  const loadedCampaigns = [];
   for (const file of campaignFiles) {
     const campaign = readJson(rep, file);
     if (!campaign) continue;
     if (!validateAgainstSchema(rep, ajv, "campaign", file, campaign)) continue;
     checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, items);
     for (const id of campaign.chapters) referenced.add(id);
+    loadedCampaigns.push({ file, campaign });
+  }
+
+  // Prerequisites (#221) are a fact about the whole set - an unknown campaign
+  // or a cycle cannot be seen from one file - so they are checked once every
+  // campaign has been read. The same function the server's loader runs.
+  const fileOf = new Map(loadedCampaigns.map(({ file, campaign }) => [campaign.id, file]));
+  for (const { campaignId, path, problem } of prerequisiteProblems(loadedCampaigns.map((c) => c.campaign))) {
+    rep.fail(
+      rel(fileOf.get(campaignId)),
+      path,
+      problem,
+      "Campaign.requires lists campaigns the household must finish first; see schemas/campaign.schema.json.",
+    );
   }
 
   for (const [id, chapter] of chaptersById) {

@@ -25,6 +25,11 @@ Music is keyed by biome, like the backdrops. A biome with no entry still plays
 — `synth.ts`'s default pad — so a new destination is playable before anybody
 composes for it.
 
+A chapter can name a track of its own with `music`, and a scene can override
+that with its own `music`: scene beats chapter beats biome. Both must name a
+`MUSIC_SPECS` key, which `content:validate` checks. The swap still happens only
+at a scene change.
+
 ## Making sounds
 
 ### Procedural listening drafts

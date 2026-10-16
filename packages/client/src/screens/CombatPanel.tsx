@@ -86,6 +86,8 @@ import { Button } from "../ui/Button";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { BuffList, combatBuffRows } from "./BuffList";
+import { PUFFED_HINT, PUFFED_WORDS, numbedLine, puffedLine } from "./buff-copy";
+import { isNumbedHero } from "./combat-grid";
 import {
   combatantIcon,
   combatantLabel,
@@ -516,9 +518,10 @@ export function CombatControls(): ReactElement | null {
       )}
 
       {/* Rift powers on this phone's hero (#200), graph campaigns only: what
-          each adds and how long it lasts. Absent in every other fight, so
-          nothing here moves an ordered campaign's board. */}
-      <BuffList rows={combatBuffRows(encounter.buffs, me.character.id)} title="Your rift powers" />
+          each adds and how long it lasts. A numbing sting (#227) shows here
+          too, as Numbed. Absent in every fight with neither, so nothing here
+          moves an ordered campaign's board. */}
+      <BuffList rows={combatBuffRows(encounter.buffs, me.character.id)} title="Buffs" />
 
       {/* The place fighting back (#201): the rift clock, the way out, who
           needs saving, what burns. Absent in every fight without an
@@ -566,7 +569,9 @@ export function CombatControls(): ReactElement | null {
             cell.feature ? ` combat__cell--${cell.feature.kind}` : "",
             cell.feature && !cell.feature.active ? " combat__cell--quiet" : "",
           ].join("");
-          const figure = cell.occupant ? <CellFigure occupant={cell.occupant} /> : null;
+          const figure = cell.occupant ? (
+            <CellFigure occupant={cell.occupant} numbed={isNumbedHero(encounter, me.character.id, cell.occupant.id)} />
+          ) : null;
           // The environment's mark (#201): a glyph in the corner, its shape
           // the meaning — the captive fills the square, being somebody.
           const mark = cell.feature ? <FeatureMark feature={cell.feature} /> : null;
@@ -624,6 +629,8 @@ export function CombatControls(): ReactElement | null {
             {c.id === me.character.id ? `You (${c.name})` : combatantLabel(c)}
             {c.side === "enemy" ? ", enemy" : ""}
             {c.down ? ": knocked down" : `: ${c.hp} of ${c.maxHp} hearts`}
+            {c.puffed !== undefined ? `, ${PUFFED_WORDS.toLowerCase()} up: ${PUFFED_HINT.toLowerCase()}` : ""}
+            {isNumbedHero(encounter, me.character.id, c.id) ? ", numbed: fewer steps for a while, then it wears off" : ""}
             {c.id === active?.id ? ", taking a turn" : ""}
           </li>
         ))}
@@ -636,6 +643,9 @@ export function CombatControls(): ReactElement | null {
         <li><span className="combat__key combat__key--you" />Whose turn</li>
         <li><span className="combat__key combat__key--friend" />Friend</li>
         <li><span className="combat__key combat__key--enemy" />Enemy</li>
+        {enemyCombatants.some((c) => c.puffed !== undefined && !c.down) ? (
+          <li><Icon name="puffed" />{PUFFED_WORDS}: {PUFFED_HINT.toLowerCase()}</li>
+        ) : null}
         <li style={seat(walkTiles.length > 0)}><span className="combat__key combat__key--walk" />You can walk here</li>
         {legendFeatures(cells).map((feature) => (
           <li key={`${feature.kind}:${feature.label}`}>
@@ -795,6 +805,12 @@ export function CombatControls(): ReactElement | null {
                         </span>
                         <span className="choice__label">{combatantLabel(target)}</span>
                         <HpBadge combatant={target} />
+                        {target.puffed !== undefined ? (
+                          <span className="kad-chip kad-chip--warn combat__puffed">
+                            <Icon name="puffed" />
+                            <span>{PUFFED_WORDS}</span>
+                          </span>
+                        ) : null}
                       </button>
                     </li>
                   );
@@ -1024,7 +1040,7 @@ function EnemyFace({
  * portrait, a big glyph when there is no picture — and its hearts in the
  * corner, so "which one is nearly done" is read off the map, not looked up.
  */
-function CellFigure({ occupant }: { occupant: GridOccupant }): ReactElement {
+function CellFigure({ occupant, numbed = false }: { occupant: GridOccupant; numbed?: boolean }): ReactElement {
   const state = useRunState();
   const party = useParty();
   const chapter = useChapter();
@@ -1035,6 +1051,14 @@ function CellFigure({ occupant }: { occupant: GridOccupant }): ReactElement {
   ) : (
     <span className="combat__cell-hp" aria-hidden="true">{occupant.hp}</span>
   );
+  // Status marks in the square's top corner, glyphs by shape: a puffed enemy
+  // (#227) to everyone, Numbed only on the stung player's own figure.
+  const status =
+    occupant.puffed && !occupant.down ? (
+      <span className="combat__cell-status combat__cell-status--puffed" aria-hidden="true"><Icon name="puffed" size="100%" /></span>
+    ) : numbed && !occupant.down ? (
+      <span className="combat__cell-status combat__cell-status--numbed" aria-hidden="true"><Icon name="numbed" size="100%" /></span>
+    ) : null;
   if (member) {
     return (
       <>
@@ -1047,6 +1071,7 @@ function CellFigure({ occupant }: { occupant: GridOccupant }): ReactElement {
           className="combat__cell-face"
         />
         {badge}
+        {status}
       </>
     );
   }
@@ -1059,6 +1084,7 @@ function CellFigure({ occupant }: { occupant: GridOccupant }): ReactElement {
         <Icon name={occupant.icon} size="72%" />
       )}
       {badge}
+      {status}
     </>
   );
 }
@@ -1195,6 +1221,12 @@ export function describeBeats(
         return;
       case "rooted":
         out.push({ key, text: `${name(event.actorId)} ${name(event.actorId) === "You" ? "are" : "is"} rooted.`, tone: "plain" });
+        return;
+      case "numbed":
+        out.push({ key, text: numbedLine(name(event.actorId), event.steps, event.turns), tone: "plain" });
+        return;
+      case "puffed":
+        out.push({ key, text: puffedLine(name(event.actorId)), tone: "plain" });
         return;
       case "encore":
         out.push({ key, text: `${name(event.actorId)} ${name(event.actorId) === "You" ? "get" : "gets"} another action!`, tone: "good" });

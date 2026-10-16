@@ -56,6 +56,7 @@ import {
   campaignView,
   expectedIndex,
   joinOrStartAttempt,
+  lockedRefusal,
   purseFor,
   newCharacterWrite,
   prepareStatPointSpend,
@@ -849,6 +850,11 @@ async function roadTo(
     return { flags: {}, campaign: false, attempt: null };
   }
 
+  // A campaign the household has not unlocked (#221) starts nothing - whatever
+  // the lobby showed, and whichever intent asked. Absent `requires`, a no-op.
+  const locked = await lockedRefusal(campaign, householdId, deps);
+  if (locked) return { refusal: locked };
+
   const attempt = await deps.repo.getCampaignProgress(householdId, chapter.campaignId);
   const graph = deps.content.graph(campaign.id);
   if (graph) {
@@ -939,6 +945,10 @@ async function nextChapter(
 ): Promise<{ chapterId: string } | { refusal: string; code: "NOT_FOUND" | "ILLEGAL" }> {
   const campaign = deps.content.campaign(campaignId);
   if (!campaign) return { refusal: `unknown campaign "${campaignId}"`, code: "NOT_FOUND" };
+
+  // Refused here too, so a locked Begin answers before it resolves a chapter (#221).
+  const locked = await lockedRefusal(campaign, householdId, deps);
+  if (locked) return { refusal: locked, code: "ILLEGAL" };
 
   const attempt = await deps.repo.getCampaignProgress(householdId, campaignId);
   const graph = deps.content.graph(campaignId);

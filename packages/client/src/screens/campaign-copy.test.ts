@@ -3,6 +3,7 @@ import type { JourneyExitView, JourneyView } from "@kad/shared";
 import {
   beginLabel,
   campaignEndHeading,
+  campaignOptionLine,
   campaignPremise,
   chapterHeading,
   exitArrivalChip,
@@ -13,6 +14,7 @@ import {
   journeyBeginLabel,
   journeyLine,
   journeyStuckLine,
+  lockedLine,
   nextChapterLine,
   riftActionIcon,
   riftActionNeedsConfirm,
@@ -33,6 +35,21 @@ describe("riftActionNeedsLine (#199)", () => {
 });
 
 const VIEW = { id: "gemfall", title: "Gemfall", chapters: 8, next: { index: 4, title: "The Pride Roads" } };
+
+describe("a locked campaign (#221)", () => {
+  const locked = { ...VIEW, id: "rift", title: "Riftlight", locked: { requires: ["gemfall"], reason: "Finish Gemfall first" } };
+
+  it("says why, and only for a campaign that is locked", () => {
+    expect(lockedLine(locked)).toBe("Finish Gemfall first");
+    expect(lockedLine(VIEW)).toBeNull();
+    expect(lockedLine(null)).toBeNull();
+  });
+
+  it("puts the reason where the vote would say where to pick it up", () => {
+    expect(campaignOptionLine(locked)).toBe("Finish Gemfall first");
+    expect(campaignOptionLine(VIEW)).toBe("Pick up at chapter 4 of 8");
+  });
+});
 
 describe("what the screens say about the campaign", () => {
   it("names the next chapter and where it sits", () => {

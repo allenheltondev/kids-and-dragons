@@ -71,6 +71,8 @@ export function beatSubjects(event: EncounterEvent): string[] {
     case "dazed":
     case "warded":
     case "rooted":
+    case "numbed":
+    case "puffed":
     case "encore":
     // The place fighting back (#201): who stopped on the fire, who stepped
     // through, which monster the rift threw.
