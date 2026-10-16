@@ -27,6 +27,7 @@ import {
   loadAllowList,
   loadCampaign,
   loadCampaigns,
+  verdict,
 } from "./continuity.mjs";
 
 describe("continuity across every campaign", () => {
@@ -58,6 +59,26 @@ describe("continuity across every campaign", () => {
       expect(r.unreached, r.id).toEqual([]);
       expect(r.stranded, r.id).toEqual([]);
     }
+  });
+
+  it("settles on every campaign, and the run's verdict passes", () => {
+    for (const r of results) expect(r.settled, r.id).not.toBe(false);
+    expect(verdict(results, allow).exitCode).toBe(0);
+  });
+});
+
+describe("the run's verdict", () => {
+  const clean = { id: "c", findings: [], stranded: [], unreached: [] };
+
+  it("passes a clean run, ordered or settled graph", () => {
+    expect(verdict([clean, { ...clean, id: "g", settled: true }], {}).exitCode).toBe(0);
+  });
+
+  it("fails closed when a campaign's analysis did not settle, and says which", () => {
+    const out = verdict([clean, { ...clean, id: "g", settled: false }], {});
+    expect(out.exitCode).toBe(1);
+    expect(out.unsettled).toEqual(["g"]);
+    expect(out.lines.some((l) => l.startsWith("UNSETTLED g:"))).toBe(true);
   });
 });
 
