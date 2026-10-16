@@ -34,7 +34,7 @@ Rifts emit colored magical light. In the fiction **only certain people can see t
 
 - **A party without a Starweaver** reads rifts with the Listening Chime or Orin, whose answers are shared (below). The TV never shows colors to them either.
 - **Story text never states the colors.** In-chapter narration says the Starweaver studies the light, not what it shows. A *Read the Riftlight* choice still exists so chapters can react to it (it sets journey state, e.g. `starweaver_read_first_rift`).
-- **UI dependency:** a Starweaver-only rift layer in the phone's world view, the menu indicator, and a neutral shimmer everywhere else. Tracked as a UI issue.
+- **UI dependency:** a Starweaver-only rift layer in the phone's world view, the menu indicator, and a neutral shimmer everywhere else. Tracked in [#229](https://github.com/allenheltondev/kids-and-dragons/issues/229).
 
 **Engine state.** [#199](https://github.com/allenheltondev/kids-and-dragons/issues/199) shipped class gates on **rift actions** taken at the exit choice between chapters: a `discover` way with `requires: { anyClass: ["starweaver"] }`, and a `hint` for a table without one ("A Starweaver could read this light"). A reading **inside a chapter** still needs a class gate on chapter choices ([#228](https://github.com/allenheltondev/kids-and-dragons/issues/228)), which does not exist yet: choices have `requiresSpecies`, `requiresFlag` and `requiresItem` only. Until it does, author readings as rift actions wherever the rift sits at an exit; in-chapter readings (the Exchange rift) wait on that gate.
 
