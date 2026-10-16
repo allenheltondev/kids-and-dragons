@@ -1122,17 +1122,36 @@ function doReady(
       ...(after ? { after } : {}),
     };
   }
-  if (draft.phase === "chapter_complete" && draft.party.every((m) => m.ready || !m.connected)) {
-    /*
-     * The chapter's end is read at each phone's own pace: the recap, the
-     * bag, who grew. One player's "done" used to be ADVANCE and pulled every
-     * phone off that screen mid-read, so leaving is the table's vote, like
-     * starting a fight. ADVANCE still leaves at once, for the tools that
-     * drive a whole run.
-     */
-    returnToLobby(draft);
-  }
+  if (chapterEndVoteCarried(draft)) returnToLobby(draft);
   return undefined;
+}
+
+/**
+ * The chapter's end is read at each phone's own pace: the recap, the bag, who
+ * grew. One player's "done" used to be ADVANCE and pulled every phone off that
+ * screen mid-read, so leaving is the table's vote, like starting a fight:
+ * everyone still at the table has said they're done, and at least one of them
+ * is here to have said it (a room whose phones all drop stays where it is).
+ * ADVANCE still leaves at once, for the tools that drive a whole run.
+ */
+function chapterEndVoteCarried(state: RunState): boolean {
+  return (
+    state.phase === "chapter_complete" &&
+    state.party.some((m) => m.ready && m.connected) &&
+    state.party.every((m) => m.ready || !m.connected)
+  );
+}
+
+/**
+ * The chapter-end vote, recounted after something other than a READY changed
+ * who counts: a phone dropping off (server handlers/presence.ts) can be the
+ * last one still reading. The same state back when the vote has not carried.
+ */
+export function settleChapterEndVote(state: RunState): RunState {
+  if (!chapterEndVoteCarried(state)) return state;
+  const draft = draftOf(state);
+  returnToLobby(draft);
+  return draft;
 }
 
 function doCreateCharacter(
