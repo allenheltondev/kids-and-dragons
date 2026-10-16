@@ -272,6 +272,16 @@ describe("joining", () => {
     expect(h.api.loadJournal).toHaveBeenCalledWith("dev_tv");
   });
 
+  it("keeps a player's book when that phone later hosts Party Mode on itself", async () => {
+    const h = harness();
+    await h.store.getState().createRoom("travel", "Allen");
+    h.store.getState().leave();
+
+    await h.store.getState().openOnThisScreen();
+    expect(await h.store.getState().loadJournal()).not.toBeNull();
+    expect(h.api.loadJournal).toHaveBeenLastCalledWith("dev_tv");
+  });
+
   it("opens last time's journal when the server cannot be reached", async () => {
     const h = harness();
     await h.store.getState().createRoom("travel", "Allen");
