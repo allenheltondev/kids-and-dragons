@@ -3058,13 +3058,11 @@ a.wiki-stats__item:hover {
     font-size: 1.05rem;
   }
 
-  .wiki-navbar__title-full {
-    display: none;
-  }
-
+  /* No "Wiki" pill on a phone: beside the search, theme and menu buttons
+   * it was the thing that got cut off. The crest is still the home link. */
+  .wiki-navbar__title-full,
   .wiki-navbar__title-short {
-    display: inline;
-    font-size: 0.85rem;
+    display: none;
   }
 
   .wiki-navbar__controls {
