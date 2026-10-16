@@ -157,6 +157,69 @@ test.describe("nameplates", () => {
     return context.newPage();
   }
 
+  test("phone guest pages keep heroes and names readable at 390px", async ({ browser }, info) => {
+    const guests = [
+      { figure: "cast/lady_olivia", name: "Lady Olivia" },
+      { figure: "cast/seren_wisp", name: "Seren Wisp" },
+      { figure: "cast/pip_thistledown", name: "Pip Thistledown" },
+    ];
+    const phones = [await client(browser, 390, 844), await client(browser, 390, 844), await client(browser, 390, 844)];
+    for (const phone of phones) await phone.context().route("**/content/chapters/*.json", async (route) => {
+      const response = await route.fetch();
+      const chapter = await response.json();
+      chapter.scenes[chapter.entry].cast = guests;
+      await route.fulfill({ response, json: chapter });
+    });
+    const host = phones[0]!;
+    await host.goto("/");
+    await host.getByRole("button", { name: /want to host/i }).click();
+    await host.getByText("Phone Mode").click();
+    await host.fill('input[placeholder="Type your name"]', "Allen");
+    await host.getByRole("button", { name: /start a game/i }).click();
+    await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
+    const code = new URL(host.url()).pathname.split("/").pop()!;
+    for (const page of phones.slice(1)) {
+      await page.goto("/");
+      await page.getByLabel(/room code/i).fill(code);
+      await page.getByRole("button", { name: /join a game/i }).click();
+      await expect(page).toHaveURL(new RegExp(`/p/${code}$`));
+    }
+    for (const [i, page] of phones.entries()) await createCharacter(page, ["unicorn", "kitsune", "bigfoot"][i]!, HEROES[i]!);
+    await host.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    const watcher = phones[1]!;
+    await watcher.getByRole("button", { name: /^world$/i }).click(TAP);
+    for (const [index, guest] of guests.entries()) {
+      await expect.poll(() => namesOn(watcher, "story"), { timeout: 30_000 })
+        .toBe([...HEROES, guest.name].sort().join(","));
+      const reading = () => watcher.evaluate(() => {
+        const get = (globalThis as Record<string, unknown>).__kadScene as
+          | (() => { storyFigureBoxes?(): Box[]; storyNameplateBoxes?(): (Box & { fontPixels: number })[] } | null) | undefined;
+        return { figures: get?.()?.storyFigureBoxes?.(), labels: get?.()?.storyNameplateBoxes?.() };
+      });
+      await expect.poll(async () => {
+        const { figures, labels } = await reading();
+        return figures?.length === 4 && figures.every((b) => b.height >= 110 && b.x >= 0 && b.x + b.width <= 390) &&
+          labels?.length === 4 && labels.every((b) => b.fontPixels >= 10 && b.x - b.width / 2 >= 0 && b.x + b.width / 2 <= 390);
+      }, { timeout: 30_000 }).toBe(true);
+      const labels = (await reading()).labels!;
+      for (let i = 0; i < labels.length; i++) for (let j = i + 1; j < labels.length; j++) {
+        expect(collide(labels[i]!, labels[j]!), `${labels[i]!.text} overlaps ${labels[j]!.text}`).toBe(false);
+      }
+      await watcher.screenshot({ path: info.outputPath(`guest-${index + 1}-phone.png`) });
+      if (index < guests.length - 1) await watcher.getByRole("button", { name: "Next guest" }).click();
+    }
+    await watcher.getByRole("button", { name: "Previous guest" }).click();
+    await expect.poll(() => namesOn(watcher, "story"), { timeout: 30_000 })
+      .toBe([...HEROES, guests[1]!.name].sort().join(","));
+    await watcher.setViewportSize({ width: 960, height: 844 });
+    await expect.poll(() => namesOn(watcher, "story"), { timeout: 30_000 })
+      .toBe([...HEROES, ...guests.map((guest) => guest.name)].sort().join(","));
+    await expect(watcher.getByRole("navigation", { name: "Scene guests" })).toHaveCount(0);
+    await watcher.setViewportSize({ width: 390, height: 844 });
+    await expect.poll(() => namesOn(watcher, "story"), { timeout: 30_000 })
+      .toBe([...HEROES, guests[1]!.name].sort().join(","));
+  });
+
   test("three of the same species are told apart, on the lineup and on the board", async ({
     browser,
   }) => {

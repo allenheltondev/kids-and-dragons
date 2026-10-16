@@ -47,6 +47,7 @@ people_ids:
   - faun
   - harvest_sprite
   - frogfolk
+  - skupper
   - boggart
   - yeti
   - boughkin
@@ -363,8 +364,78 @@ npcs:
           because: "It takes the cloth off the marking poles and leaves the pole, which is a season's work rewritten by something that cannot read. The poles are weighted now. It was not a concession."
     relationships:
       primary_locations: [biome.whispering_marsh]
-      secondary_locations: [location.exchange]
+      secondary_locations: [location.exchange, biome.sallow_wastelands]
       creatures: []
+      items: []
+
+  - id: npc.skupper
+    asset_id: skupper
+    title: "Skupper"
+    canon_status: newly_defined
+    classification: supporting_people
+    sapience: sapient
+    featured: false
+    tags: [supporting_people, saltrot, amphibious, brackish, guide]
+    scale: small_to_medium
+    short_description: >-
+      Amphibious mudskipper-and-pufferfish people of the Saltrot's brackish
+      flats, who guide travelers across mud nobody else can stand on.
+    visual_identity: >-
+      Upright mudskipper-like body on strong front fins used as forearms, with
+      big round eyes set high on the head that pop up to watch the flats, a
+      tall dorsal crest raised to signal, and a small fused beak. Mottled olive
+      and gold skin with dark spots, kept wet with mud. When startled or
+      delighted they puff up perfectly round, soft spines standing out.
+    common_story_uses: >-
+      Saltrot guide, flood-namer, retriever of travelers who tried the flats
+      alone, first to notice that the floods are changing.
+    canon_constraints: >-
+      Found only in brackish water: fresh water and dry land dry them out, and
+      the open sea is too salty, so they do not live anywhere but the
+      Saltrot's flats and channels. They are the Saltrot's guides; the guides'
+      lore in biome.sallow_wastelands is theirs. Their spines carry a numbing
+      poison: anyone stung goes slow and heavy-legged for a while, then is
+      fine. It never does lasting harm and is never fatal. A puffed skupper
+      stings whoever strikes it; puffing is a defense, and a skupper only
+      fights when one has to, like anyone.
+    speech_register: >-
+      Quick and chatty, with cheerful bluntness and times given by the tide
+      rather than the sun ("two crabs past the ebb"). A guide who has gone
+      quiet and very round is a guide who has just seen something.
+    standard_behavior: >-
+      Memorizes each season's safe paths, names the great floods, signals
+      across the flats with raised crests, cracks shellfish on the shell-banks,
+      and keeps the flats crossable for travelers who respect them.
+    lore:
+      hook: "The only people who can walk on the Saltrot, and the only ones who would want to."
+      story: >-
+        Skuppers move in quick little skips across mud that swallows
+        boots, and they live in burrow towns dug into the flats with air kept
+        in pockets below. Every great flood resets the town, so nothing they
+        build is meant to last and nobody minds. Puffing up is not a choice: a
+        startled skupper goes round and floats, which on the flats is useful.
+        A puffed guide bobbing in a flooded channel is a buoy for anyone stuck,
+        and the polite thing is to hold on and not mention it afterward.
+      pastimes:
+        - "Crab clocks. Fiddler crabs wave at the turning tide, and a good skupper can tell the time to the minute by how many are waving."
+        - "Crest signaling. Greetings, warnings and gossip travel across the flats faster than anyone can walk them."
+        - "Flood naming, argued over for a whole season. A flood is not properly over until it has a name everyone can live with."
+      social: >-
+        Friendly, nosy and frank. A skupper guide will tell you your boots
+        are wrong, your route is wrong and your lunch smells interesting, all
+        before you have finished saying hello. Some guides are generous, some
+        strict, a few famously grumpy, and every one of them refuses to take
+        anybody to the buried bridge.
+      likes:
+        - of: npc.frogfolk
+          because: "The neighbors at the fresher edge of the flats. Frogfolk boats bring the river's news down, and skupper guides take it the rest of the way."
+      dislikes:
+        - of: creature.bone_crawler
+          because: "They swarm anything with fresh magic in it, and the flats are the only way to the Bone Yard, so it is the guides who keep pulling travelers out of the swarm."
+    relationships:
+      primary_locations: [biome.sallow_wastelands]
+      secondary_locations: []
+      creatures: [creature.bone_crawler]
       items: []
 
   - id: npc.boggart

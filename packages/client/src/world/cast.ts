@@ -41,6 +41,7 @@ export const ENTITY_SIZES: Readonly<Record<string, CastSize | "variable">> = {
   burrowfolk: "small_to_medium",
   harvest_sprite: "tiny",
   frogfolk: "small_to_medium",
+  skupper: "small_to_medium",
   boughkin: "very_large",
   boggart: "small",
   yeti: "large",
@@ -211,6 +212,7 @@ export function stageSlots(
   width: number,
   /** Parallel to castScales: true for a figure that is one of a group. */
   crowded: readonly boolean[] = [],
+  compact = false,
 ): StageSlots {
   if (castScales.length === 0) {
     // 416 is the 26% of the 1600 design width the lineup always used; held
@@ -227,8 +229,10 @@ export function stageSlots(
 
   // The party's half is the left 54%, the cast's the right 40%, with the
   // remainder as the gap between them that makes it read as two groups.
-  const partyBand = { from: width * 0.03, to: width * 0.55 };
-  const castBand = { from: width * 0.6, to: width * 0.97 };
+  // A narrow stage pages guests one at a time. Leave room for the full rig
+  // canvas at the left edge rather than hanging the first hero offscreen.
+  const partyBand = { from: width * (compact ? 0.13 : 0.03), to: width * (compact ? 0.65 : 0.55) };
+  const castBand = { from: width * (compact ? 0.7 : 0.6), to: width * (compact ? 0.99 : 0.97) };
 
   // Spacing is capped in absolute design units, not as a share of the band:
   // on a wide pane the band grows and the heroes should stay a group.
@@ -248,7 +252,7 @@ export function stageSlots(
   const castSlots: number[] = [];
   for (const weight of weights) {
     const slot = (used * weight) / total;
-    cast.push(cursor + slot / 2);
+    cast.push(compact && weights.length === 1 ? width * 0.8 : cursor + slot / 2);
     // A lone figure's name may use the band's room, not just the figure's:
     // "Madame Coralie Fenn" under a lone merfolk has the right of the stage to
     // itself, and shrinking it to the figure's width made it the smallest text
@@ -257,4 +261,11 @@ export function stageSlots(
     cursor += slot;
   }
   return { party, cast, partySlot: partySpacing, castSlots };
+}
+
+/** Fit full figure canvases into their slots, preserving relative species sizes. */
+export function stageFigureScale(slots: StageSlots, scales: readonly number[], height: number): number {
+  if (scales.length < 2) return 1;
+  return Math.min(1, slots.partySlot * 0.9 / height,
+    ...scales.map((scale, i) => slots.castSlots[i]! * 0.9 / (height * scale)));
 }

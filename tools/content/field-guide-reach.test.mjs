@@ -120,6 +120,7 @@ const EXPECTED_UNREACHABLE = [
   "location.bone_yard",
   "location.skullwater_cave",
   "location.the_whirlpool",
+  "npc.skupper",
 ];
 
 describe("Field Guide reach", () => {

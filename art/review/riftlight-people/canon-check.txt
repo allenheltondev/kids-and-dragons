@@ -1,0 +1,21 @@
+
+> kids-and-dragons@0.0.0 canon:check
+> tsx tools/canon/check.ts
+
+Kids & Dragons — canon check
+canon/ · 99 entities · 598 edges
+
+  pass  biome       13
+  pass  species      6
+  pass  creature    18
+  pass  people      14
+  pass  individual   3
+  pass  faction      3
+  pass  item        17
+  pass  location    10
+  pass  quest        2
+  pass  campaign     4
+  pass  feature      4
+  pass  route        5
+
+PASS — 99 entities, 598 edges.

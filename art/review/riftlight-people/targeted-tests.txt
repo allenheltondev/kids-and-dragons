@@ -1,0 +1,12 @@
+
+> kids-and-dragons@0.0.0 test
+> vitest run tools/art/verify_entity_states.test.ts tools/content/field-guide-reach.test.mjs packages/canon/src/canon.test.ts packages/client/src/world/cast.test.ts
+
+
+ RUN  v4.1.10 C:/Users/allen/.codex/worktrees/riftlight-part-a/kids-and-dragons
+
+
+ Test Files  4 passed (4)
+      Tests  66 passed (66)
+   Start at  11:38:25
+   Duration  3.78s (transform 391ms, setup 0ms, import 775ms, tests 3.50s, environment 0ms)
