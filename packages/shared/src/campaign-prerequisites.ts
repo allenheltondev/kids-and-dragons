@@ -10,7 +10,9 @@
  * `CampaignProgressRecord` for it says `complete`, whichever ending the party
  * reached — a loss ending completes and commits its characters exactly as a
  * win does (spec §8.3). A `failed` attempt (the setback limit) or one still
- * `active` does not count, and neither does no record at all.
+ * `active` does not count, and neither does no record at all — unless an
+ * earlier attempt completed (`everCompleted`): replaying Gemfall replaces its
+ * `complete` row with an active one, and must not lock Riftlight again.
  *
  * The prerequisite belongs to the household, not to a character: a hero who
  * joins a party already underway still comes in at the tier floor (spec §8.4),
@@ -107,19 +109,22 @@ export function prerequisiteProblems(
 export interface PrerequisiteAttempt {
   campaignId: string;
   status: "active" | "complete" | "failed";
+  /** An earlier attempt completed, whatever this one is doing. */
+  everCompleted?: boolean;
 }
 
 /**
- * The prerequisites a household has not met: each required campaign without a
- * `complete` record among `attempts`. Empty means unlocked — always, for a
- * campaign that declares none.
+ * The prerequisites a household has not met: each required campaign whose
+ * record among `attempts` is neither `complete` nor `everCompleted`. Empty
+ * means unlocked — always, for a campaign that declares none.
  */
 export function unmetPrerequisites(
   campaign: Pick<Campaign, "requires">,
   attempts: readonly PrerequisiteAttempt[],
 ): string[] {
   return (campaign.requires ?? []).filter(
-    (id) => !attempts.some((a) => a.campaignId === id && a.status === "complete"),
+    (id) =>
+      !attempts.some((a) => a.campaignId === id && (a.status === "complete" || a.everCompleted === true)),
   );
 }
 

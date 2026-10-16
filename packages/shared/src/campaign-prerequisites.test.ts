@@ -69,6 +69,13 @@ describe("unmetPrerequisites", () => {
     expect(unmetPrerequisites(rift, attempts(["gemfall", "complete"]))).toEqual([]);
   });
 
+  it("is met by a replay of a completed campaign, whatever the replay is doing", () => {
+    const rift = { requires: ["gemfall"] };
+    for (const status of ["active", "failed"] as const) {
+      expect(unmetPrerequisites(rift, [{ campaignId: "gemfall", status, everCompleted: true }]), status).toEqual([]);
+    }
+  });
+
   it("lists only what is still unmet, in declaration order", () => {
     expect(
       unmetPrerequisites({ requires: ["a", "b", "c"] }, attempts(["b", "complete"])),
