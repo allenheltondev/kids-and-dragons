@@ -5,7 +5,7 @@
 **Narrative role:** The campaign's first scene and first rift. It shows that places are moving, teaches **amber** and **violet** by doing, and drops the party at the Glacier of Origins.
 **Spoiler level:** Player-facing opening; **no emperor, no Pangea**. Nobody explains the rift.
 **Biome / art:** `exchange`, reusing Gemfall's Exchange backdrops (`scenes/gemfall/exchange-docks`, `exchange-quay`, `exchange-lighthouse`). Music `riftlight-theme` once the override in #226 lands.
-**Length:** 30–40 minutes; about 125 XP on first completion. **No setback endings.**
+**Length:** 30–40 minutes; 150 XP on first completion ([story.md](../story.md)). **No setback endings.**
 
 ## Why the Exchange
 Gemfall began here, so the series' second campaign begins at the same front door: the party comes back as Sworn heroes to a city they know. It also keeps the opening **ending-neutral**: the Exchange has spent the time since Gemfall "absorbing the rush as a change in prices" whatever happened at the mountain, so no line depends on which ending a party reached. Locals may recognize them ("you're the ones who came back from the mountain") and say nothing about how it went.
@@ -21,9 +21,9 @@ A busy morning on the docks, told through small displacements a child can spot b
 **Check (optional):** Clever TN 8 to piece it together: everything strange is coming from the same direction, the end of the long quay. Success gives a head start in beat 2; failure only means the party finds out the loud way.
 
 ### 2. The shimmer on the quay
-At the end of the quay the air folds. A rift opens on its own, unsummoned by anyone present, with a **sensory glimpse**: cold, still air and the smell of very old ice. Riftlight shows **amber + violet**.
+At the end of the quay the air folds. A rift opens on its own, unsummoned by anyone present, with a **sensory glimpse**: cold, still air and the smell of very old ice. Its Riftlight is **amber + violet**, though only a Starweaver can see the colors.
 - **A Starweaver** may *Read the Riftlight* (a chapter choice gated on class; this needs the chapter class gate in [#228](https://github.com/allenheltondev/kids-and-dragons/issues/228), see [mechanics.md](../mechanics.md)): "Two colors. The amber one flickers like it will only do this once. The violet one is turning inward, like it only goes one way." This is the first time anyone at the table hears what colors mean. It sets the journey flag `starweaver_read_first_rift`, which Seren reacts to at `riftseekers-departure`.
-- **A party without a Starweaver** sees the shimmer and the two colors and learns nothing more yet. The chime comes from Orin later; this rift is not a choice anyway.
+- **A party without a Starweaver** sees only the ordinary shimmer: the diagnostic colors are not theirs to see. The chime comes from Orin later, and this rift is not a choice anyway.
 
 ### 3. The pull
 The rift starts pulling loose things toward it: crates, a noodle-stall awning, and a **little snowhorn goat kid** that wandered off a displaced patch of glacier and is now sliding across the wet quay toward the rift.
@@ -49,7 +49,7 @@ Grants: a **Riftspark** on the first crossing (#222). No items.
 The goat comes through on every path, so it needs no flag: `glacier-survival` always opens with the party holding it, and returning the kid to its herd is the party's first kindness at the glacier and earns the yetis' trust. `stuttering-flats` echoes it later.
 
 ## Exit
-- `exchange-rift` → `glacier-survival`: the rift (amber + violet, `once`, `reveal: "when-crossed"`). The only exit; it is not a choice.
+- `exchange-rift` → `glacier-survival`: the rift: `rift: { uses: 1, oneWay: true, reveal: "when-crossed" }` (amber + violet). No edge `once`: `uses: 1` is what consumes the rift, and the two together trip `RIFT_ONCE_AND_USES`. The only exit; it is not a choice.
 
 ## Encounters
 None. The opening is about noticing and helping, not fighting; the first fight comes at the glacier or later.
