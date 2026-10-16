@@ -1,7 +1,7 @@
 schema_version: "2.0"
 document_type: red_sky_biome_canon
 title: "The Realm of Red Sky Biome Canon"
-updated: "2026-08-01"
+updated: "2026-10-16"
 
 purpose: >-
   Canonical, agent-readable reference for every named environment shown on the
@@ -809,6 +809,8 @@ biomes:
         - "Whether the memories in the ice are records or residents. The yetis decline the distinction, which each side counts as support."
       hidden_truths:
         - "At the bottom of one crevasse, below the oldest cataloged layer, the ice preserves a summer: green light, warm air, the smell of a season the north has not had in living memory. The yetis have not cataloged it, because filing it would mean deciding what it is."
+        - "The melt changed because of Gemfall. The tremors of the eruption that opens it - which happens in every timeline - started the glacier's changed melt, and the melt is loosening a prison: for about a millennium the ice has held Corvane, the ancient emperor of Pangea ('all lands'), a realm in which today's regions sat in a different arrangement. This is Riftlight's secret, revealed only at its finale."
+        - "Somewhere in the glacier, away from the summer crevasse, is a hidden rift that shows green and blue. It needs a sung note before it will open, and once open it stays open, both ways. It leads to the Saltrot, and it is how the unfamiliar glacier silt reaches the Saltrot. It is not the summer crevasse and does not explain it: the crevasse, its green light, and its warm air stay unexplained."
       regional_relationships:
         - place: feature.great_river_source
           relationship: >-
@@ -931,7 +933,7 @@ biomes:
       legendary_beings: []
       supernatural_manifestations: []
     relationships:
-      locations: [biome.glacier_of_origins]
+      locations: [biome.glacier_of_origins, route.cairnstep]
       factions: []
       items: []
 
@@ -1281,6 +1283,7 @@ biomes:
         - "Some say the flats rearrange themselves to steer travelers away from the Bone Yard. The guides say floods are floods, and say it in the tone of people who have been asked before."
       hidden_truths:
         - "The guides' real secret is sedimentary. Each flood drops its coarse, quick-draining material first, along the old channel spines, and carries the finest silt furthest - out toward the mouth, where the Bone Yard stands. Firm ground returns in that order, spines first, mouth last, so the earliest safe paths always run away from the Yard. The flats are not warning anyone. They are draining."
+        - "The silt the guides do not recognize is glacier silt, and the cause is a hidden rift in the Glacier of Origins that comes out in the Saltrot. It shows green and blue: it needs a sung note before it will open, and once open it stays open, both ways. That rift is not the glacier's summer crevasse, which stays unexplained."
       regional_relationships:
         - place: feature.great_river
           relationship: >-
