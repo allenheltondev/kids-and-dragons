@@ -187,6 +187,14 @@
         "manticore"
       ]
     },
+    "classId": {
+      "enum": [
+        "thornguard",
+        "duskrunner",
+        "starweaver",
+        "songkeeper"
+      ]
+    },
     "grantTarget": {
       "description": "\"roller\" (whoever made the check), \"party\" (prompt for a holder), or a playerId. architecture \u00a75.",
       "type": "string",
@@ -606,6 +614,21 @@
               "minItems": 1,
               "items": {
                 "$ref": "#/$defs/speciesId"
+              }
+            }
+          ]
+        },
+        "requiresClass": {
+          "description": "Same as requiresSpecies, for class: offered when anyone seated has one of these classes, hidden otherwise. Judged against the seated party, never stored; set a flag in effects for later guards to read.",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/classId"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/classId"
               }
             }
           ]
