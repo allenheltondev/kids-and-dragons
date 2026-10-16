@@ -50,6 +50,7 @@ import { PlayerView } from "./PlayerView";
 import { MapView } from "./MapView";
 import { ModeSwitch } from "./ModeSwitch";
 import { TrayObject } from "../screens/TrayObjects";
+import { RiftlightIndicator } from "../screens/RiftSight";
 import { useIsMyCombatTurn, useIsMyPrompt, useMe, useMyTurnKey, usePresentation, useProgression } from "../store";
 import { TRANSFORM_BEAT_MS } from "../screens/TransformCutscene";
 import { rollCardMs } from "../world/presentation";
@@ -156,6 +157,9 @@ export function TravelLayout(): React.JSX.Element {
         >
           <span className="kad-tray__object">
             <TrayObject name="globe" />
+            {/* A Starweaver's cue that the world has Riftlight to read (#229);
+                out while they are looking at it. */}
+            <RiftlightIndicator onWorld={showing === "world"} />
           </span>
           <span className="kad-tray__label">World</span>
         </button>
