@@ -73,6 +73,15 @@ export interface ProxyOptions {
   gone?: (path: string) => boolean;
   /** Milliseconds to hold a path's request before forwarding it — a slow network, on purpose. */
   delay?: (path: string) => number;
+  /**
+   * No network at all: every connection is dropped, so a fetch fails as it
+   * does with no signal. Playwright's `context.setOffline` takes the page
+   * offline, but it does not reliably cut a service worker's own fetches:
+   * in testing, a file the worker had not saved was downloaded again under
+   * it. An offline test relying on it alone cannot tell "saved on the
+   * phone" from "quietly fetched".
+   */
+  down?: boolean;
 }
 
 export async function startCountingProxy(target: string, initial: ProxyOptions = {}): Promise<CountingProxy> {
@@ -84,6 +93,10 @@ export async function startCountingProxy(target: string, initial: ProxyOptions =
 
   const server: Server = createServer((req: IncomingMessage, res: ServerResponse) => {
     const path = new URL(req.url ?? "/", "http://proxy").pathname;
+    if (options.down === true) {
+      req.socket.destroy();
+      return;
+    }
     const wait = options.delay?.(path) ?? 0;
     if (wait > 0) {
       setTimeout(() => handle(req, res, path), wait);
