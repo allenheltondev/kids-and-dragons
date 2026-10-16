@@ -1511,15 +1511,50 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
              * the lobby button is still the primary action and still one tap.
              */}
             <KeepsakeOffer />
-            <Button
-              variant="primary"
-              size="lg"
-              icon={<Icon name="forward" />}
-              disabled={busy}
-              onClick={() => void dispatch({ type: "ADVANCE" })}
-            >
-              Back to the lobby
-            </Button>
+            {/*
+             * A vote, like the ready-up before a fight: one phone's tap used
+             * to take every phone off this screen, mid-read. The table goes
+             * back together once everyone has said they're done (engine.ts
+             * doReady), and anyone who tapped early can take it back.
+             */}
+            {me.ready ? (
+              <Button
+                variant="secondary"
+                size="lg"
+                icon={<Icon name="back" />}
+                disabled={busy}
+                onClick={() => void dispatch({ type: "READY", ready: false })}
+              >
+                Wait, I'm still looking
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                size="lg"
+                icon={<Icon name="forward" />}
+                disabled={busy}
+                onClick={() => void dispatch({ type: "READY", ready: true })}
+              >
+                Back to the lobby
+              </Button>
+            )}
+            {party.length > 1 ? (
+              <>
+                <p className="prompt__sub kad-muted">
+                  {me.ready
+                    ? "Everyone goes back when everyone's done."
+                    : "Take your time. Everyone goes back together."}
+                </p>
+                <ul className="prompt__party">
+                  {party.map((member) => (
+                    <li className={`kad-chip${member.ready ? " kad-chip--ok" : ""}`} key={member.playerId}>
+                      <Icon name={member.ready ? "check" : "waiting"} />
+                      <span>{member.character.name}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : null}
           </div>
         ) : null}
 

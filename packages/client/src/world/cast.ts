@@ -106,6 +106,22 @@ export const MAX_GROUP = 6;
  */
 export const GROUP_SPREAD = 0.62;
 
+/**
+ * Entity art that is a whole group in one canvas, and the members it is cut
+ * into (tools/art/split-group.py, assets/manifest.json castFigures). Drawn
+ * as one figure, the Skywardens' griffin, faun and centaur stood at a third
+ * of their width and short of a hero: three tiny guards. A chapter still
+ * casts `entities/skywardens`; the stage stands the members as a group of
+ * their own sizes, with the chapter's one nameplate under the first.
+ */
+export const ENSEMBLES: Readonly<Record<string, readonly { figure: string; size: CastSize }[]>> = {
+  skywardens: [
+    { figure: "cast/skywarden_griffin", size: "medium_to_large" },
+    { figure: "cast/skywarden_faun", size: "medium" },
+    { figure: "cast/skywarden_centaur", size: "large" },
+  ],
+};
+
 /** `entities/selkie` → its art. Null for anything the schema would refuse. */
 export function castFigureUrl(figure: string): string | null {
   const match = /^(entities|characters|cast)\/([a-z0-9_]+)$/.exec(figure);
@@ -129,6 +145,21 @@ export function stageCast(members: readonly CastMember[]): StageCastMember[] {
     const url = castFigureUrl(member.figure);
     if (url === null) continue;
     const key = `${member.figure}|${member.name ?? ""}`;
+    const ensemble = member.figure.startsWith("entities/") ? ENSEMBLES[member.figure.slice("entities/".length)] : undefined;
+    if (ensemble) {
+      // The group is the entry: `count` has nothing to multiply, and an
+      // authored size still wins, for all of them.
+      ensemble.forEach((part, index) => {
+        out.push({
+          key: index === 0 ? key : `${key}#${index}`,
+          url: castFigureUrl(part.figure) ?? url,
+          name: index === 0 ? (member.name ?? null) : null,
+          scale: SIZE_SCALE[member.size ?? part.size],
+          crowd: { index, size: ensemble.length },
+        });
+      });
+      continue;
+    }
     const size = Math.max(1, Math.min(Math.floor(member.count ?? 1), MAX_GROUP));
     for (let index = 0; index < size; index++) {
       out.push({
