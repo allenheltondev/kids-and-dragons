@@ -228,3 +228,10 @@ export function stageSlots(
   }
   return { party, cast, partySlot: partySpacing, castSlots };
 }
+
+/** Fit full figure canvases into their slots, preserving relative species sizes. */
+export function stageFigureScale(slots: StageSlots, scales: readonly number[], height: number): number {
+  if (scales.length < 2) return 1;
+  return Math.min(1, slots.partySlot * 0.9 / height,
+    ...scales.map((scale, i) => slots.castSlots[i]! * 0.9 / (height * scale)));
+}
