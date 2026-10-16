@@ -644,14 +644,23 @@ Content is never evicted: it is small, and it is what the offline book reads. Lo
   (`sw/prefetch.ts`, from `WorldView`). Prefetching is skipped when the phone asks to save data.
 
 **Updates.** Each build's `sw.js` names its own files, so every deploy is a new worker. It takes
-over at once; every build's worker answers the same way, so an open page loses nothing to the
-switch. **To turn it off**, ship a `sw.js` whose `activate` deletes every cache and calls
-`self.registration.unregister()`. Phones pick it up on their next page load.
+over at once, including pages that are already open. Those pages were built against the previous
+build and import its chunks the first time they open the book or a room, and the deploy has deleted
+those chunks from the bucket. So the worker keeps the previous build's code as well as its own
+(`/__kad/bundle-list` records which), and drops only what neither uses. A tab left open across two
+deploys gets the "Try again" a missing chunk always gets, which reloads it. **To turn it off**, ship
+a `sw.js` whose `activate` deletes every cache and calls `self.registration.unregister()`. Phones
+pick it up on their next page load.
 
 **Proof.** Both specs below run against a real production build (`playwright.prod.config.ts`,
 `npm run e2e:prod`, also run by CI).
-- `e2e/offline.spec.ts`: play a little, open the book once, drop the network, then reload and open
-  a fresh tab. The hero, the map's painting and an opened Field Guide entry must all be there.
+- `e2e/offline.spec.ts`:
+  - **Offline:** play a little, open the book once, drop the network, then reload and open a fresh
+    tab. The hero, the map's painting and an opened Field Guide entry must all be there.
+  - **First visit:** the book opens before any worker controls the page, and its art is still
+    saved once one does.
+  - **Upgrade:** a tab left open across a staged deploy (a new `sw.js`, the old chunks gone from the
+    server) can still open the book.
 - `e2e/perf.spec.ts` counts every byte through a proxy, the worker's own fetches included. Before
   the fingerprinted cache, the next evening re-downloaded about 3.8 MB in 41 round trips; now
   13 KB in 10 (the page, live game traffic and the favicon, which browsers fetch outside any
