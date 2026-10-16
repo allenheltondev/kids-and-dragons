@@ -609,6 +609,8 @@ function completeChapter(draft: RunState, scene: EndingScene, ctx: EngineContext
   draft.phase = "chapter_complete";
   draft.prompt = null;
   draft.chapterOutcome = outcome;
+  // Leaving is a vote (doReady), counted from nobody.
+  for (const member of draft.party) member.ready = false;
   // A setback ends the temporary buffs (#200) that end on one, before the run
   // hands its buffs back to the journey.
   if (outcome === "setback" && draft.buffs !== undefined) draft.buffs = expireRunBuffs(draft.buffs, "setback");
@@ -1119,6 +1121,16 @@ function doReady(
       ...(events.length > 0 ? { events } : {}),
       ...(after ? { after } : {}),
     };
+  }
+  if (draft.phase === "chapter_complete" && draft.party.every((m) => m.ready || !m.connected)) {
+    /*
+     * The chapter's end is read at each phone's own pace: the recap, the
+     * bag, who grew. One player's "done" used to be ADVANCE and pulled every
+     * phone off that screen mid-read, so leaving is the table's vote, like
+     * starting a fight. ADVANCE still leaves at once, for the tools that
+     * drive a whole run.
+     */
+    returnToLobby(draft);
   }
   return undefined;
 }
@@ -2205,6 +2217,26 @@ function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | un
   return takeBranch(draft, outcomeBranch(scene, outcome), ctx);
 }
 
+/**
+ * Back to the lobby. The party is intact, everyone re-readies, and the
+ * lobby's button continues the campaign — the server picks the next chapter
+ * from the household's attempt (CONTINUE_CAMPAIGN), so playing on tonight and
+ * playing on next week are the same tap.
+ */
+function returnToLobby(draft: RunState): void {
+  draft.phase = "lobby";
+  draft.chapterId = null;
+  draft.chapterInfo = null;
+  draft.sceneId = null;
+  draft.sceneType = null;
+  draft.narration = "";
+  draft.art = null;
+  draft.scenePriority = null;
+  draft.prompt = null;
+  draft.lastRoll = null;
+  for (const member of draft.party) member.ready = false;
+}
+
 function doAdvance(draft: RunState, ctx: EngineContext): Presentation | undefined {
   if (draft.phase === "encounter") {
     // ADVANCE is the "next" button, and during a fight there is nothing to
@@ -2216,23 +2248,7 @@ function doAdvance(draft: RunState, ctx: EngineContext): Presentation | undefine
     throw new Illegal("ILLEGAL", "the fight is still going — take your turn");
   }
   if (draft.phase === "chapter_complete") {
-    /*
-     * Back to the lobby. The party is intact, everyone re-readies, and the
-     * lobby's button continues the campaign — the server picks the next
-     * chapter from the household's attempt (CONTINUE_CAMPAIGN), so playing
-     * on tonight and playing on next week are the same tap.
-     */
-    draft.phase = "lobby";
-    draft.chapterId = null;
-    draft.chapterInfo = null;
-    draft.sceneId = null;
-    draft.sceneType = null;
-    draft.narration = "";
-    draft.art = null;
-    draft.scenePriority = null;
-    draft.prompt = null;
-    draft.lastRoll = null;
-    for (const member of draft.party) member.ready = false;
+    returnToLobby(draft);
     return undefined;
   }
   if (draft.prompt) {

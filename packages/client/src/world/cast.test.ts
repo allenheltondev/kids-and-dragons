@@ -10,6 +10,7 @@ import type { Chapter } from "@kad/shared";
 import manifest from "../../../../assets/manifest.json";
 import { makeState } from "../testing/fixtures";
 import {
+  ENSEMBLES,
   ENTITY_SIZES,
   MAX_CAST,
   MAX_GROUP,
@@ -54,6 +55,40 @@ describe("cast groups", () => {
     const spread = stageSlots(2, [1, 1, 1], 1600, [false, false, false]).cast;
     const huddle = stageSlots(2, [1, 1, 1], 1600, [true, true, true]).cast;
     expect(huddle[2]! - huddle[0]!).toBeLessThan(spread[2]! - spread[0]!);
+  });
+});
+
+describe("cast ensembles", () => {
+  it("stands the Skywardens as three full-size members, not one picture of three", () => {
+    const out = stageCast([{ figure: "entities/skywardens", name: "Skywardens" }]);
+    expect(out.map((m) => m.url)).toEqual([
+      "/assets/cast/skywarden_griffin/assembled.png",
+      "/assets/cast/skywarden_faun/assembled.png",
+      "/assets/cast/skywarden_centaur/assembled.png",
+    ]);
+    expect(out.map((m) => m.name)).toEqual(["Skywardens", null, null]);
+    expect(out.map((m) => m.crowd)).toEqual([0, 1, 2].map((index) => ({ index, size: 3 })));
+    expect(out[1]!.scale).toBe(SIZE_SCALE.medium);
+    expect(out[2]!.scale).toBe(SIZE_SCALE.large);
+    // The first member keeps the entry's plain key, like any group's first.
+    expect(out[0]!.key).toBe("entities/skywardens|Skywardens");
+  });
+
+  it("lets an authored size win for the whole group, and ignores count", () => {
+    const out = stageCast([{ figure: "entities/skywardens", size: "small", count: 5 }]);
+    expect(out).toHaveLength(3);
+    expect(out.every((m) => m.scale === SIZE_SCALE.small)).toBe(true);
+  });
+
+  it("cuts every ensemble into declared, drawn cast figures of their declared size", () => {
+    const declared = new Map(manifest.castFigures.map((f) => [`cast/${f.id}`, f.scale]));
+    for (const [id, parts] of Object.entries(ENSEMBLES)) {
+      expect(existsSync(`${ASSETS}/entities/${id}/assembled.png`), id).toBe(true);
+      for (const part of parts) {
+        expect(declared.get(part.figure), part.figure).toBe(part.size);
+        expect(existsSync(`${ASSETS}${castFigureUrl(part.figure)!.slice("/assets".length)}`), part.figure).toBe(true);
+      }
+    }
   });
 });
 
