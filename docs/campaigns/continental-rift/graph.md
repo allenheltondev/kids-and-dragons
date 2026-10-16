@@ -70,6 +70,22 @@ The river's multiple escape opportunities are **stages within one authored encou
 - **Restless Coast:** Sallow Wastelands, Saltrot guides, Bone Yard and displaced creatures.
 - **Forgotten Paths:** Glacier memories, yetis, rift patterns, revisiting previously inaccessible routes.
 
+## Strand: Forgotten Paths — agreed
+Glacier, yetis and memory in ice. Entered from `boundary-stone-bank` or a return to the glacier.
+
+| Node | What happens | Canon it uses |
+| --- | --- | --- |
+| `stone-counters` | The Red Sky Foothills dragonlings who keep the boundary stones find one has **moved overnight**: the first displacement seen up close. A **timed** rift (it visibly shrinks) teaches the first motion signal. | The boundary stones older than the dragonlings, carved with an eruption no one's count matches |
+| `the-wrong-valley` | Back toward the glacier, the river briefly runs **down a different valley**: Corvane's pull restoring an old course. An environmental challenge to cross; the glacier is now a changed place to revisit. | The changing melt; memories surfacing out of order |
+| `reading-room` (**key node**) | The yetis' memory ice shows **the river leaving by a different valley**: this strand's Pangea fragment. An elder yeti warns, "Do not shout near the old ice; you don't know what you might wake." Foreshadowing, no name. | Reading rooms; the different-valley memory; "what you might wake" |
+| `wyrm-nest` (**strand end**) | A frost wyrm has nested where the next reading room was planned. A fight with more than one good outcome (#201): drive it off, or move it through a blue rift to a new home. The outcome is world state the **finale at the glacier** reads: the wyrm gone, or an ally. | The wyrm nesting where the next reading room was planned |
+
+- **First strand entered:** Seren teaches Attune at `stone-counters` (a scene gated on not having it yet; every strand carries one), and Pip is there scouting the moved stones.
+- **Sideways exits:** `stone-counters` → downriver to `ashspan-bridge` (toward the Coast); `wyrm-nest` → the Cairnstep (toward the Sky), on canon's yeti-and-griffin rescue partnership.
+- **Each class has a moment:** Songkeeper in the singing halls; Thornguard holding the ice in the wrong valley; Duskrunner beating the timed rift; Starweaver reading the nest's rift.
+- **Each strand teaches one motion signal:** Forgotten Paths teaches **timed**; Wandering Sky **linked** (island rifts pulse together); Restless Coast **unstable**.
+- **Protected:** the memory shows a fragment, never a full history; the summer crevasse and the unnamed meltwater year stay untouched.
+
 ## Graph design constraints
 - Forward, sideways and return edges should all matter.
 - Arrival may depend on prior flags, including region allies, discoveries and changed geography.
@@ -82,5 +98,5 @@ The river's multiple escape opportunities are **stages within one authored encou
 - Avoid authoring the final graph until graph runtime, effects and edge constraints from issues #192–#203 are verified.
 
 ## Decisions still open
-1. Each strand's node list and key node, one strand at a time.
+1. Node lists and key nodes for Wandering Sky and Restless Coast.
 2. Faction influence rules and return routes.
