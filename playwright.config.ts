@@ -16,9 +16,9 @@ export default defineConfig({
   // wiki-* are their own suite. rig-shot is a review tool, not a test: it
   // photographs the party on a TV-sized screen so a human can judge rig size
   // and ground placement (art-pipeline §6.3). Run it by name when the stage,
-  // the anchor or the rigs change. offline.spec needs a production build (the
-  // service worker exists nowhere else): `npm run e2e:offline`.
-  testIgnore: ["wiki-*.spec.ts", "rig-shot.spec.ts", "cast-shot.spec.ts", "offline.spec.ts"],
+  // the anchor or the rigs change. offline.spec and perf.spec need a production
+  // build (the service worker exists nowhere else): `npm run e2e:prod`.
+  testIgnore: ["wiki-*.spec.ts", "rig-shot.spec.ts", "cast-shot.spec.ts", "offline.spec.ts", "perf.spec.ts"],
   // Three players each walking a five-step creation flow, and then a whole
   // chapter with real roll animations, is a lot of genuine interaction — the
   // playthrough spends about two minutes of this on its own.

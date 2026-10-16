@@ -1,9 +1,12 @@
 import { defineConfig } from "@playwright/test";
 
 /**
- * The offline adventure book, against a **production build** — the one place
- * the service worker (packages/client/src/sw/) exists. The main suite runs on
- * the Vite dev server, which never registers one, so it cannot test this.
+ * The specs that need a **production build** — the one place the service
+ * worker (packages/client/src/sw/) exists. The main suite runs on the Vite dev
+ * server, which never registers one, so it cannot test these:
+ *
+ *   offline.spec  the adventure book with no signal, on a reload and a new tab
+ *   perf.spec     what a phone downloads on its first visit and every one after
  *
  * Two servers: the dev API server, and `vite preview` serving the built
  * client, which proxies `/api`, `/events`, `/content` and `/assets` to it
@@ -14,7 +17,7 @@ const PORT = 4173;
 
 export default defineConfig({
   testDir: "./e2e",
-  testMatch: ["offline.spec.ts"],
+  testMatch: ["offline.spec.ts", "perf.spec.ts"],
   timeout: 180_000,
   expect: { timeout: 10_000 },
   fullyParallel: false,
