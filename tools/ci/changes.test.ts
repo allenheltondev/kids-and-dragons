@@ -64,8 +64,8 @@ describe("CI change classification", () => {
   it("tests alone do not deploy staging", () => {
     expect(classify(["e2e/first-playable.spec.ts", "packages/server/src/dice.test.ts"]).deploy).toBe(false);
     expect(classify(["e2e/first-playable.spec.ts"]).e2e).toBe(true);
-    expect(classify(["playwright.offline.config.ts"]).deploy).toBe(false);
-    expect(classify(["playwright.offline.config.ts"]).e2e).toBe(true);
+    expect(classify(["playwright.prod.config.ts"]).deploy).toBe(false);
+    expect(classify(["playwright.prod.config.ts"]).e2e).toBe(true);
   });
 
   it("the motion gate's own code runs only the motion gate (and build)", () => {

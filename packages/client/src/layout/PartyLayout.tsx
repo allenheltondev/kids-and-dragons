@@ -112,7 +112,8 @@ function PhoneLayout(): React.JSX.Element {
         <PlayerView roomControls={<ModeSwitch />} />
       </div>
       <div className="kad-party__pane" data-pane="world" data-showing={showing === "world"}>
-        <WorldView gatesPresentations={false} />
+        {/* Mounted behind the controls, so it says when it is actually seen. */}
+        <WorldView gatesPresentations={false} prefetch={showing === "world"} />
       </div>
       {onMap ? (
         <div className="kad-party__pane" data-pane="map" data-showing>
