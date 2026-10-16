@@ -1,0 +1,116 @@
+
+> kids-and-dragons@0.0.0 build
+> npm run build --workspace @kad/client
+
+
+> @kad/client@0.0.0 build
+> vite build
+
+vite v8.1.5 building client environment for production...
+[2K
+transforming...✓ 987 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                       1.47 kB │ gzip:   0.57 kB
+dist/bundle/arrow-Br_gX9L2.webp                      13.59 kB
+dist/bundle/drop-5UxaCdZZ.webp                       13.77 kB
+dist/bundle/trinket-CwEa__6b.webp                    13.92 kB
+dist/bundle/note-DSzwYNCn.webp                       14.00 kB
+dist/bundle/clever-BYCajmoC.webp                     14.09 kB
+dist/bundle/star-COG8lv7i.webp                       14.67 kB
+dist/bundle/bead-DQxh5HQ5.webp                       14.90 kB
+dist/bundle/duskrunner-DL1VTE4E.webp                 15.30 kB
+dist/bundle/acorn-r6UpRtbH.webp                      15.82 kB
+dist/bundle/heart-gWPKjjKD.webp                      16.23 kB
+dist/bundle/quest-XjQ-2ELh.webp                      16.39 kB
+dist/bundle/map-CktlEYAd.webp                        16.42 kB
+dist/bundle/feather-XuwDAQ26.webp                    16.56 kB
+dist/bundle/charm-Bi0cmrry.webp                      16.98 kB
+dist/bundle/quick-BeKL58xR.webp                      17.21 kB
+dist/bundle/whistle-BstZLWH2.webp                    17.80 kB
+dist/bundle/name-BFF_2Zpx.webp                       18.16 kB
+dist/bundle/starweaver-CSKUyM8u.webp                 18.18 kB
+dist/bundle/lantern-D3u1s8mx.webp                    18.32 kB
+dist/bundle/pin-Dgoft6gu.webp                        18.37 kB
+dist/bundle/ribbon-BgRUN8c-.webp                     19.28 kB
+dist/bundle/might-HkG-JBW5.webp                      19.55 kB
+dist/bundle/crown-CHEfyFlj.webp                      19.91 kB
+dist/bundle/hand-D3bMZYgO.webp                       20.10 kB
+dist/bundle/consumable-DzwcL-80.webp                 20.23 kB
+dist/bundle/thornguard-DryqresY.webp                 20.50 kB
+dist/sw.js                                           20.53 kB
+dist/bundle/scroll-Cwp0sFnO.webp                     20.61 kB
+dist/bundle/cake-DsGm0-Ag.webp                       20.68 kB
+dist/bundle/boot-DliyXo3f.webp                       21.01 kB
+dist/bundle/trophy-Bb1QSLOL.webp                     21.07 kB
+dist/bundle/kitsune-DYTxAhDJ.webp                    21.22 kB
+dist/bundle/unicorn-CJvyzt6H.webp                    22.14 kB
+dist/bundle/globe-CuHL0TEy.webp                      23.00 kB
+dist/bundle/dragonling-Cg3s1Ds3.webp                 23.05 kB
+dist/bundle/griffin-N-CFiqJ2.webp                    24.11 kB
+dist/bundle/manticore-CpoXE7vQ.webp                  24.44 kB
+dist/bundle/swords-B6y0QVD1.webp                     24.48 kB
+dist/bundle/bigfoot-D7s2J3NS.webp                    24.85 kB
+dist/bundle/supper-CIlnM6ZL.webp                     24.86 kB
+dist/bundle/palette-BzjjT_aO.webp                    24.92 kB
+dist/bundle/songkeeper-DaNs7k7L.webp                 25.67 kB
+dist/bundle/satchel-C2hVzD4M.webp                    26.07 kB
+dist/bundle/field-guide-P-JpbSzX.webp                28.13 kB
+dist/bundle/party-Bj4JGlGM.webp                      29.14 kB
+dist/bundle/files-BF71-vOm.json                     123.08 kB │ gzip:  26.91 kB
+dist/bundle/rive-BGgR1knF.wasm                    1,992.57 kB │ gzip: 750.13 kB
+dist/bundle/FrameMeter-DQc_Rx9Z.css                   0.52 kB │ gzip:   0.31 kB
+dist/bundle/JournalScreen-BwDGfBpk.css                2.00 kB │ gzip:   0.76 kB
+dist/bundle/audio-BVbyWy8t.css                        3.05 kB │ gzip:   1.15 kB
+dist/bundle/scene-audio-CSlTHrjI.css                 14.08 kB │ gzip:   3.39 kB
+dist/bundle/index-Cc7q5wyB.css                       19.17 kB │ gzip:   4.94 kB
+dist/bundle/TrayObjects-CXaBGd1B.css                 21.58 kB │ gzip:   5.04 kB
+dist/bundle/GuideTab-LKV68gxg.css                    89.40 kB │ gzip:  14.90 kB
+dist/bundle/webworkerAll-BblnxRGM.js                  0.07 kB │ gzip:   0.08 kB
+dist/bundle/getTextureBatchBindGroup-DtKS5Hqs.js      0.40 kB │ gzip:   0.31 kB │ map:   1.79 kB
+dist/bundle/content-B9oVZmjl.js                       0.64 kB │ gzip:   0.39 kB │ map:   3.23 kB
+dist/bundle/frame-stats-pu5Pb3mW.js                   0.69 kB │ gzip:   0.45 kB │ map:   6.80 kB
+dist/bundle/rolldown-runtime-QTnfLwEv.js              0.69 kB │ gzip:   0.42 kB
+dist/bundle/FrameMeter-BJQUm_X0.js                    0.76 kB │ gzip:   0.48 kB │ map:   4.02 kB
+dist/bundle/CanvasPool-uqBK149o.js                    0.80 kB │ gzip:   0.46 kB │ map:   3.52 kB
+dist/bundle/Cache-B4tEnF5Q.js                         1.14 kB │ gzip:   0.59 kB │ map:   4.87 kB
+dist/bundle/preload-helper-Czpn1I53.js                1.19 kB │ gzip:   0.67 kB
+dist/bundle/PartyLayout-D9fOCtUg.js                   2.59 kB │ gzip:   0.90 kB │ map:   8.36 kB
+dist/bundle/art-paths-B85sn3S_.js                     2.68 kB │ gzip:   0.88 kB │ map:  11.28 kB
+dist/bundle/TravelLayout-tqMFtRy5.js                  3.23 kB │ gzip:   1.12 kB │ map:  13.90 kB
+dist/bundle/stage-inset-hVC0_ZqX.js                   3.39 kB │ gzip:   1.55 kB │ map:  38.94 kB
+dist/bundle/JournalScreen-C-gllnkA.js                 5.97 kB │ gzip:   2.23 kB │ map:  23.06 kB
+dist/bundle/canvasUtils-B-Q-xQ08.js                   6.06 kB │ gzip:   2.07 kB │ map:  21.93 kB
+dist/bundle/RendererFallback-BxHUZ0Pm.js              7.14 kB │ gzip:   3.18 kB │ map:  72.88 kB
+dist/bundle/PixiStage-CpOaJbS5.js                     9.58 kB │ gzip:   3.83 kB │ map:  44.11 kB
+dist/bundle/BufferResource-DuVW7KEL.js               10.61 kB │ gzip:   2.83 kB │ map:  25.66 kB
+dist/bundle/init-C7RtvW_X.js                         15.35 kB │ gzip:   4.81 kB │ map:  53.40 kB
+dist/bundle/jsx-runtime-D_rtgA87.js                  17.08 kB │ gzip:   6.43 kB │ map: 268.06 kB
+dist/bundle/GCManagedHash-DviWSvcA.js                19.40 kB │ gzip:   6.32 kB │ map:  67.42 kB
+dist/bundle/browser-pBwlB2M7.js                      23.52 kB │ gzip:   8.89 kB │ map: 114.64 kB
+dist/bundle/getPo2TextureFromSource-On9P1E0c.js      24.25 kB │ gzip:   8.38 kB │ map: 102.74 kB
+dist/bundle/audio-DfpkYFru.js                        26.36 kB │ gzip:   9.58 kB │ map: 104.86 kB
+dist/bundle/scene-audio-DAzIhEe8.js                  26.48 kB │ gzip:   8.41 kB │ map: 106.72 kB
+dist/bundle/CanvasRenderer-Bw5dK41E.js               26.68 kB │ gzip:   7.84 kB │ map: 117.98 kB
+dist/bundle/BitmapFont-Dfhp2P5I.js                   33.61 kB │ gzip:  11.25 kB │ map: 153.65 kB
+dist/bundle/TrayObjects-D5CIY_Kw.js                  33.62 kB │ gzip:  10.66 kB │ map: 140.13 kB
+dist/bundle/WebGPURenderer-CU94-6hW.js               38.62 kB │ gzip:  10.78 kB │ map: 123.93 kB
+dist/bundle/Filter-DkqVUfin.js                       38.79 kB │ gzip:  11.09 kB │ map: 182.69 kB
+dist/bundle/cue-BW_HeB-s.js                          41.31 kB │ gzip:  13.94 kB │ map: 354.80 kB
+dist/bundle/browserAll-CKg8mHiO.js                   42.67 kB │ gzip:  11.19 kB │ map: 156.69 kB
+dist/bundle/RenderTargetSystem-BpMPsqQ7.js           51.81 kB │ gzip:  14.48 kB │ map: 195.37 kB
+dist/bundle/GraphicsContext-DwJvLA-8.js              61.19 kB │ gzip:  20.44 kB │ map: 345.61 kB
+dist/bundle/Geometry-ptIGNo45.js                     62.55 kB │ gzip:  20.55 kB │ map: 318.05 kB
+dist/bundle/WebGLRenderer-C9Wlbdmp.js                68.16 kB │ gzip:  18.63 kB │ map: 215.95 kB
+dist/bundle/rive-rig-CREda7so.js                     70.05 kB │ gzip:  26.11 kB │ map: 212.56 kB
+dist/bundle/scene-BAvjBfuR.js                        80.03 kB │ gzip:  27.99 kB │ map: 511.88 kB
+dist/bundle/GuideTab-Dbep3EYD.js                    129.68 kB │ gzip:  34.75 kB │ map: 559.57 kB
+dist/bundle/index-lGX_-4Cd.js                       187.41 kB │ gzip:  59.54 kB │ map: 828.79 kB
+
+[PLUGIN_TIMINGS] Your build spent significant time in plugins. Here is a breakdown:
+  - vite:css-post (54%)
+  - kad-service-worker (24%)
+  - vite:asset (10%)
+See https://rolldown.rs/reference/InputOptions.checks#plugintimings for more details.
+
+✓ built in 5.21s
