@@ -55,13 +55,16 @@
 
 import type {
   ActiveBuff,
+  BuffAppliesTo,
   BuffDef,
   BuffDuration,
   BuffExpiry,
   BuffId,
   BuffKind,
   BuffStacking,
+  BuffSpend,
   BuffTarget,
+  CheckBuffOffer,
   CombatBuff,
   JourneyBuffView,
   RunBuff,
@@ -72,7 +75,7 @@ import type { NodeId } from "./types/campaign-graph.js";
 export const BUFF_KINDS: readonly BuffKind[] = ["guard", "damage", "move", "roll"];
 
 /** Every `BuffExpiry`. */
-export const BUFF_EXPIRIES: readonly BuffExpiry[] = ["defeat", "rest", "travel", "setback"];
+export const BUFF_EXPIRIES: readonly BuffExpiry[] = ["defeat", "rest", "travel", "setback", "chapter"];
 
 /**
  * The most a hero's buffs of one kind can add up to — or take away — at
@@ -132,17 +135,48 @@ export function buffDeclarationProblems(raw: unknown): BuffProblem[] {
   if (raw.target !== undefined && raw.target !== "party" && raw.target !== "one") {
     fail("/target", `target ${JSON.stringify(raw.target)} is not "party" or "one"`);
   }
+  // Story-check buffs (#222): opt-in per buff, so every field below is
+  // checked only when it is there, and a buff without them is what it was.
+  const appliesTo = raw.appliesTo as BuffAppliesTo | undefined;
+  const onChecks = appliesTo === "check";
+  if (appliesTo !== undefined) {
+    if (appliesTo !== "attack" && appliesTo !== "check") {
+      fail("/appliesTo", `appliesTo ${JSON.stringify(raw.appliesTo)} is not "attack" or "check"`);
+    } else if (raw.kind !== "roll") {
+      fail("/appliesTo", 'appliesTo means something only on a "roll" buff');
+    }
+  }
+  if (onChecks && raw.target === "one") {
+    fail("/target", 'a "check" buff is the party\'s: whoever is about to roll may spend it, so it takes no "one" target');
+  }
+  const spend = raw.spend as BuffSpend | undefined;
+  if (spend !== undefined) {
+    if (!onChecks) fail("/spend", 'spend means something only with "appliesTo": "check"');
+    else if (spend !== "auto" && spend !== "choose") fail("/spend", `spend ${JSON.stringify(raw.spend)} is not "auto" or "choose"`);
+    else if (spend === "choose" && isInteger(raw.amount) && raw.amount < 0) {
+      fail("/spend", 'a burden is never chosen: a "check" buff with a negative amount is spent "auto"');
+    }
+  }
   const duration = raw.duration;
   if (!isRecord(duration)) {
-    fail("/duration", 'duration must be { "scope": "turns" | "encounter" | "encounters", "count"? }');
+    fail("/duration", 'duration must be { "scope": "turns" | "encounter" | "encounters" | "uses", "count"? }');
   } else if (duration.scope === "encounter") {
     if (duration.count !== undefined) fail("/duration/count", 'an "encounter" buff lasts one fight; it takes no count');
-  } else if (duration.scope === "turns" || duration.scope === "encounters") {
+  } else if (duration.scope === "turns" || duration.scope === "encounters" || duration.scope === "uses") {
     if (!isInteger(duration.count) || duration.count < 1 || duration.count > MAX_BUFF_DURATION) {
       fail("/duration/count", `count must be a whole number from 1 to ${MAX_BUFF_DURATION}`);
     }
   } else {
-    fail("/duration/scope", `scope ${JSON.stringify(duration.scope)} is not "turns", "encounter" or "encounters"`);
+    fail("/duration/scope", `scope ${JSON.stringify(duration.scope)} is not "turns", "encounter", "encounters" or "uses"`);
+  }
+  // A check buff's clock is counted in checks, an attack buff's in fights:
+  // each refuses the other's.
+  if (isRecord(duration)) {
+    if (onChecks && duration.scope !== "uses") {
+      fail("/duration/scope", 'a "check" buff lasts a number of checks: its duration is { "scope": "uses", "count": n }');
+    } else if (!onChecks && duration.scope === "uses") {
+      fail("/duration/scope", '"uses" counts story checks, so it needs "appliesTo": "check"');
+    }
   }
   const stack = raw.stack as BuffStacking | undefined;
   if (stack !== undefined && stack !== "refresh" && stack !== "add" && stack !== "ignore") {
@@ -163,7 +197,7 @@ export function buffDeclarationProblems(raw: unknown): BuffProblem[] {
   }
   if (raw.expiresOn !== undefined) {
     const list = raw.expiresOn;
-    if (!Array.isArray(list) || list.length === 0) fail("/expiresOn", "expiresOn lists at least one of defeat, rest, travel, setback");
+    if (!Array.isArray(list) || list.length === 0) fail("/expiresOn", `expiresOn lists at least one of ${BUFF_EXPIRIES.join(", ")}`);
     else {
       list.forEach((on, i) => {
         if (!BUFF_EXPIRIES.includes(on as BuffExpiry)) fail(`/expiresOn/${i}`, `${JSON.stringify(on)} is not one of ${BUFF_EXPIRIES.join(", ")}`);
@@ -174,9 +208,22 @@ export function buffDeclarationProblems(raw: unknown): BuffProblem[] {
   return problems;
 }
 
-/** How many fights a fresh grant lasts: one for a `"turns"` or `"encounter"` buff. */
+/**
+ * How many fights a fresh grant lasts: one for a `"turns"` or `"encounter"`
+ * buff — and for a `"uses"` one, which no fight spends (#222).
+ */
 export function buffFights(duration: BuffDuration): number {
   return duration.scope === "encounters" ? duration.count : 1;
+}
+
+/** How many checks a fresh grant can be spent on (#222): a `"uses"` buff's count, else none. */
+export function buffUses(duration: BuffDuration): number | undefined {
+  return duration.scope === "uses" ? duration.count : undefined;
+}
+
+/** A story-check buff (#222): one that changes a chapter `Check` and never an attack. */
+export function isCheckBuff(buff: { appliesTo?: BuffAppliesTo }): boolean {
+  return buff.appliesTo === "check";
 }
 
 /** The most stacks this buff can hold: its `maxStacks` when it stacks, else 1. */
@@ -211,12 +258,15 @@ export function storedBuffs(raw: unknown): ActiveBuff[] {
   for (const entry of raw) {
     if (!isRecord(entry) || typeof entry.id !== "string" || seen.has(entry.id)) continue;
     if (!isInteger(entry.stacks) || entry.stacks < 1 || !isInteger(entry.encountersLeft) || entry.encountersLeft < 1) continue;
+    // A spent use is never read back as an unspent one (#222).
+    if (entry.usesLeft !== undefined && (!isInteger(entry.usesLeft) || entry.usesLeft < 1)) continue;
     seen.add(entry.id);
     const at = entry.grantedAt;
     out.push({
       id: entry.id,
       stacks: entry.stacks,
       encountersLeft: entry.encountersLeft,
+      ...(entry.usesLeft !== undefined ? { usesLeft: entry.usesLeft } : {}),
       ...(isRecord(at) && typeof at.node === "string" && isInteger(at.visit) ? { grantedAt: { node: at.node, visit: at.visit } } : {}),
     });
   }
@@ -242,15 +292,17 @@ export function grantBuff(
   at?: { node: NodeId; visit: number },
 ): ActiveBuff[] {
   const fights = buffFights(def.duration);
+  const uses = buffUses(def.duration);
+  const clock = uses === undefined ? { encountersLeft: fights } : { encountersLeft: fights, usesLeft: uses };
   const stamp = at ? { grantedAt: { node: at.node, visit: at.visit } } : {};
   const index = held.findIndex((buff) => buff.id === id);
-  if (index === -1) return [...held, { id, stacks: 1, encountersLeft: fights, ...stamp }];
+  if (index === -1) return [...held, { id, stacks: 1, ...clock, ...stamp }];
   const stack = def.stack ?? "refresh";
   if (stack === "ignore") return [...held];
   const current = held[index]!;
   const stacks = stack === "add" ? Math.min(buffMaxStacks(def), current.stacks + 1) : current.stacks;
   const next = [...held];
-  next[index] = { ...current, stacks, encountersLeft: fights, ...stamp };
+  next[index] = { ...current, stacks, ...clock, ...stamp };
   return next;
 }
 
@@ -276,10 +328,15 @@ export function seedRunBuffs(defs: Readonly<Record<BuffId, BuffDef>>, held: unkn
   for (const buff of storedBuffs(held)) {
     const def = defs[buff.id];
     if (!def) continue;
+    const { usesLeft, ...counters } = buff;
+    const uses = buffUses(def.duration);
     out.push({
-      ...buff,
+      ...counters,
       stacks: Math.min(buff.stacks, buffMaxStacks(def)),
       encountersLeft: Math.min(buff.encountersLeft, buffFights(def.duration)),
+      // A `"uses"` buff's checks left, held to its declaration; any other
+      // buff carries none, whatever a stored record says (#222).
+      ...(uses !== undefined ? { usesLeft: Math.min(usesLeft ?? uses, uses) } : {}),
       label: def.label,
       kind: def.kind,
       amount: def.amount,
@@ -287,6 +344,7 @@ export function seedRunBuffs(defs: Readonly<Record<BuffId, BuffDef>>, held: unkn
       ...(def.duration.scope === "turns" ? { turns: def.duration.count } : {}),
       ...(def.cap !== undefined ? { cap: def.cap } : {}),
       ...(def.expiresOn !== undefined ? { expiresOn: [...def.expiresOn] } : {}),
+      ...(isCheckBuff(def) ? { appliesTo: "check" as const, spend: def.spend ?? "auto" } : {}),
     });
   }
   return out;
@@ -322,8 +380,13 @@ export function buffViews(defs: Readonly<Record<BuffId, BuffDef>>, held: unknown
     amount: buffContribution(buff, buff.stacks),
     stacks: buff.stacks,
     target: buff.target,
-    remaining: { encounters: buff.encountersLeft, ...(buff.turns !== undefined ? { turns: buff.turns } : {}) },
+    remaining: {
+      encounters: buff.encountersLeft,
+      ...(buff.turns !== undefined ? { turns: buff.turns } : {}),
+      ...(buff.usesLeft !== undefined ? { uses: buff.usesLeft } : {}),
+    },
     ...(buff.expiresOn ? { expiresOn: [...buff.expiresOn] } : {}),
+    ...(buff.appliesTo !== undefined ? { appliesTo: buff.appliesTo, spend: buff.spend ?? "auto" } : {}),
   }));
 }
 
@@ -331,7 +394,10 @@ export function buffViews(defs: Readonly<Record<BuffId, BuffDef>>, held: unknown
 // The run's buffs (inside a chapter)
 // ---------------------------------------------------------------------------
 
-/** The run's buffs without those `on` ends — a Rest scene's `"rest"`, a setback's `"setback"`. */
+/**
+ * The run's buffs without those `on` ends — a Rest scene's `"rest"`, a
+ * setback's `"setback"`, the end of any chapter's `"chapter"` (#222).
+ */
 export function expireRunBuffs(held: readonly RunBuff[], on: BuffExpiry): RunBuff[] {
   return held.filter((buff) => !(buff.expiresOn ?? []).includes(on));
 }
@@ -347,6 +413,12 @@ export function spendRunBuffs(held: readonly RunBuff[], result: "victory" | "def
   const out: RunBuff[] = [];
   for (const buff of held) {
     if (result === "defeat" && (buff.expiresOn ?? []).includes("defeat")) continue;
+    // A story-check buff (#222) took no part in the fight: it is spent by
+    // checks, and a fight leaves it as it was.
+    if (isCheckBuff(buff)) {
+      out.push(buff);
+      continue;
+    }
     if (buff.encountersLeft <= 1) continue;
     out.push({ ...buff, encountersLeft: buff.encountersLeft - 1 });
   }
@@ -367,7 +439,8 @@ export function oneHeroSeat(storyTurn: number | undefined, partySize: number): n
 /**
  * The fight's buffs, from the run's, for the heroes in seat order: one entry
  * per hero each buff is on, with what it adds. A buff that adds nothing is
- * left out (there is no such declaration, but a hand-built run could ask).
+ * left out (there is no such declaration, but a hand-built run could ask),
+ * and so is a story-check buff (#222): it never changes an attack.
  */
 export function combatBuffsFor(
   held: readonly RunBuff[],
@@ -376,6 +449,7 @@ export function combatBuffsFor(
 ): CombatBuff[] {
   const out: CombatBuff[] = [];
   for (const buff of held) {
+    if (isCheckBuff(buff)) continue;
     const amount = buffContribution(buff, buff.stacks);
     if (amount === 0) continue;
     const on: readonly string[] =
@@ -390,6 +464,39 @@ export function combatBuffsFor(
         ...(buff.turns !== undefined ? { turnsLeft: buff.turns } : {}),
       });
     }
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// Story checks (#222)
+// ---------------------------------------------------------------------------
+
+/**
+ * The story-check buff a roll would spend (`Prompt.buff`), or null: at most
+ * one per roll — "+2 on one check". An `"auto"` one comes first, so a buff
+ * the party has to spend is never kept waiting behind one it may save; among
+ * equals, the one held longest. A buff that adds nothing is never offered.
+ */
+export function checkBuffOffer(held: readonly RunBuff[] | undefined): CheckBuffOffer | null {
+  if (!held || held.length === 0) return null;
+  const usable = held.filter(
+    (buff) => isCheckBuff(buff) && (buff.usesLeft ?? 0) >= 1 && buffContribution(buff, buff.stacks) !== 0,
+  );
+  const buff = usable.find((b) => (b.spend ?? "auto") === "auto") ?? usable[0];
+  if (!buff) return null;
+  return { id: buff.id, label: buff.label, amount: buffContribution(buff, buff.stacks), spend: buff.spend ?? "auto" };
+}
+
+/**
+ * A story-check buff spent on a roll: one use fewer, and gone once it has
+ * none left. Every other buff is left as it was.
+ */
+export function spendCheckBuff(held: readonly RunBuff[], id: BuffId): RunBuff[] {
+  const out: RunBuff[] = [];
+  for (const buff of held) {
+    if (buff.id !== id || !isCheckBuff(buff)) out.push(buff);
+    else if ((buff.usesLeft ?? 0) > 1) out.push({ ...buff, usesLeft: buff.usesLeft! - 1 });
   }
   return out;
 }

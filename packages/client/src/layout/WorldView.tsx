@@ -47,6 +47,7 @@ import { ambienceForScene, sceneCuesFor } from "../audio/scene-audio";
 // the meter is a static import of the scene, Pixi and the rigs (frame-stats.ts).
 import { perfRequested } from "../world/frame-stats";
 import { RendererBoundary } from "../world/RendererFallback";
+import { usePrefetchUpcoming } from "../sw/prefetch";
 
 // Loaded on demand: PixiStage pulls in all of pixi.js, which is most of the
 // bundle and pure decoration (the stage is aria-hidden). Nothing waits on it —
@@ -65,8 +66,21 @@ const FrameMeter = lazy(() =>
   import("../world/FrameMeter").then((module) => ({ default: module.FrameMeter })),
 );
 
-export function WorldView({ gatesPresentations = true }: { gatesPresentations?: boolean } = {}): React.JSX.Element {
+export function WorldView({
+  gatesPresentations = true,
+  prefetch = true,
+}: {
+  gatesPresentations?: boolean;
+  /**
+   * Whether this world is on screen, so worth fetching the scenes ahead for
+   * (sw/prefetch.ts). A layout that keeps the world mounted behind a phone's
+   * controls says no while it is hidden; this surface still never reads the
+   * mode, only what it is told.
+   */
+  prefetch?: boolean;
+} = {}): React.JSX.Element {
   const phase = useRunState()?.phase ?? "lobby";
+  usePrefetchUpcoming(prefetch);
   // Read once at mount: the meter is asked for when the page is opened, and a
   // URL that changes mid-session is a route change, not a settings panel.
   const [measuring] = useState(() =>

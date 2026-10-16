@@ -588,7 +588,99 @@ type RoomMode = "party" | "travel";
 //
 // Travel Mode: every device gets both, one at a time behind a toggle
 //   /p/:code     → <TravelLayout><WorldView /><PlayerView /></TravelLayout>
+//
+// Between games: no room, so no code and no mode
+//   /journal     → <JournalScreen />   (spec §2.3)
 ```
+
+`/journal` is the one surface with no room behind it. It reads `GET /api/journal`, authorised by
+the **device token** (`x-kad-device-token`) rather than a room session, which between games does
+not exist: the player's own heroes, the household's Field Guide, a player-id → name map for "found
+by", and the biome of the household's most recent run that left the lobby. It is read-only. The
+client keeps the last answer in `localStorage`, keyed by the device token, and shows it (marked as
+last time's) when the request fails for want of a network; a 4xx means the binding is gone and
+discards it. A browser whose binding came from opening a Party Mode room on itself is marked
+`screenOnly` and is never offered the book, until it is seated or adopted as a player.
+
+#### The service worker: offline, and never twice
+
+A service worker (`packages/client/src/sw/`, served as `/sw.js`) does two jobs. It makes the
+adventure book open with no signal, on a reload too: the saved journal is only half of that, since
+the page, its code, the content and the map painting also have to be on the phone. And it makes
+sure nothing a phone already has is downloaded twice. It is registered only by a production build,
+after `load`, and touches nothing the game needs live:
+
+| Request | Answered by |
+|---|---|
+| `/api/*`, `/events/*`, anything cross-origin, non-GET or ranged | the browser, as if there were no worker |
+| a page load (any route) | the network (started by navigation preload); the saved app when there is none |
+| `/bundle/*` (hashed) | the saved copy; the network the first time |
+| `/assets/*`, `/content/*.json`, `public/` files | the saved copy **if its fingerprint matches this build's**; else the network, kept if the bytes match |
+| anything else not fingerprinted | content: network first; pictures: saved copy, refreshed behind; otherwise untouched |
+
+**Fingerprints.** Art, rigs, audio and content keep the same URL across deploys, so a cache cannot
+tell from the URL whether a copy is current. Each build therefore fingerprints every file under
+`assets/`, `content/` and the client's `public/` (the first 16 hex digits of SHA-256) into a hashed
+`/bundle/files-*.json`, and writes its URL into `sw.js` (`sw-build.ts`). A saved copy whose
+fingerprint still matches is served without asking the network at all. A deploy that changes a
+file changes its fingerprint, so that file alone is fetched again, past the HTTP cache. The new
+worker drops replaced copies when it takes over. Every download is checked against its
+fingerprint before it is kept, so a CDN edge still serving the old bytes is served but never saved.
+
+**Budget.** Fingerprinted art, rigs and audio are capped at 200 MB, least recently used first.
+Content is never evicted: it is small, and it is what the offline book reads. Lookups ignore
+`Vary`: servers send `Vary: Origin`, module scripts send an `Origin` header, and without
+`ignoreVary` every saved script quietly missed and went back to the network.
+
+**What is saved when.**
+- **Install:** the app, every hashed file but the Rive runtime, and the content the book reads
+  (including every campaign file), about 2.4 MB. Install fails unless every one of those content
+  files is saved as this build's verified bytes, so a CDN edge still serving the previous deploy
+  cannot let a worker take over without them. The old worker stays in charge with its copies,
+  and the browser tries again later.
+- **When the page is idle:** it tells the worker (`kad:idle`, `sw/register.ts`), which then
+  fetches the Rive runtime (about 2 MB).
+- **When the book opens with a signal:** the map painting, every atlas level and the art of
+  everything found (`sw/warm.ts`).
+- **During play:** whatever the screen draws. The scenes two steps ahead (backdrops, enemies, the
+  biome's tiles, the party's rigs) are fetched at idle priority before the party reaches them
+  (`sw/prefetch.ts`, from `WorldView`) — only while the world is on screen: a phone keeps its world
+  pane mounted behind its controls and map, and the layout tells `WorldView` when it is hidden, so a
+  Party Mode phone (whose world is the TV's job) spends nothing on it. Prefetching is skipped when the phone asks to save data;
+  the book's offline art is not, since it is what makes the book open in the car at all.
+
+**Updates.** Each build's `sw.js` names its own files, so every deploy is a new worker. It takes
+over at once, including pages that are already open. Those pages were built against the previous
+build and import its chunks the first time they open the book or a room, and the deploy has deleted
+those chunks from the bucket. So the worker keeps the previous build's code as well as its own
+(`/__kad/bundle-list` records which), and drops only what neither uses. A tab left open across two
+deploys gets the "Try again" a missing chunk always gets, which reloads it. Pictures an earlier
+worker kept under an old cache name (#224's `kad-image-v1`) are moved into the fingerprinted cache,
+verified, before that cache is dropped. **To turn it off**, ship
+a `sw.js` whose `activate` deletes every cache and calls `self.registration.unregister()`. Phones
+pick it up on their next page load.
+
+**Proof.** Both specs below run against a real production build (`playwright.prod.config.ts`,
+`npm run e2e:prod`, also run by CI).
+- `e2e/offline.spec.ts`. "No signal" there means the page offline *and* the server unreachable:
+  Playwright's offline switch does not reliably cut a service worker's own fetches.
+  - **Offline:** play a little, open the book once, drop the network, then reload and open a fresh
+    tab. The hero, the map's painting and an opened Field Guide entry must all be there.
+  - **First visit:** the book opens before any worker controls the page, and its art is still
+    saved once one does.
+  - **Upgrade:** a tab left open across a staged deploy (a new `sw.js`, the old chunks gone from the
+    server) can still open the book.
+  - **Stale edge:** a deploy whose index gives the Field Guide a new fingerprint while the server
+    still sends the old bytes never takes over, and the book still opens offline with its guide.
+  - **From #224:** pictures in `kad-image-v1` survive the upgrade, and the offline map shows.
+  - **Data Saver:** the book still saves its painting.
+- `e2e/perf.spec.ts` counts every byte through a proxy, the worker's own fetches included. Before
+  the fingerprinted cache, the next evening re-downloaded about 3.8 MB in 41 round trips; now
+  13 KB in 10 (the page, live game traffic and the favicon, which browsers fetch outside any
+  worker). It also checks that:
+  - mismatched bytes are never saved;
+  - the Rive runtime arrives while idle;
+  - a scene's art is saved before the party reaches it.
 
 Three rules keep this from forking into two apps:
 
@@ -687,6 +779,12 @@ a grid of rows plus spawn points, living beside the chapters and validated the s
 `requiresSpecies` is what produces "only my griffin can do this" moments. Choices whose
 requirements aren't met by anyone in the party are **hidden**, not greyed out — no one feels
 locked out of something they can see.
+
+`requiresClass` is the same gate for class (`"starweaver"` or a list): offered when anyone
+seated has one of them, hidden otherwise, with no hint. It is judged against the seated party
+each time and never stored, so a class moment that matters later sets a flag and guards read
+the flag. No class is ever mandatory: a scene whose every choice is class-gated fails the
+build (`CLASS_GATED_ONLY_EXIT`).
 
 `grantItem.to` accepts `"roller"` (whoever made the check), `"party"` (a prompt to choose a holder),
 or a specific `playerId`. If the recipient's six slots are full, the client prompts to swap or leave —

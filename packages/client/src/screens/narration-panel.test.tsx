@@ -368,3 +368,37 @@ describe("a fight", () => {
     expect(container.querySelector(".narration--fight")).toBeNull();
   });
 });
+
+describe("priority scenes (chapter.ts ScenePriority)", () => {
+  const SEAL = "The gemstones are pieces of a seal. The seal holds a titan asleep under Mount Red Sky.";
+
+  it("marks a revelation as one, on the plate and in words", () => {
+    const { container } = mount({ sceneType: "story", narration: SEAL, scenePriority: 1 });
+    expect(container.querySelector(".narration--p1")).not.toBeNull();
+    const ribbon = container.querySelector(".narration__ribbon");
+    expect(ribbon?.textContent).toBe("Remember this!");
+    expect(ribbon?.closest(".narration__plate")).not.toBeNull();
+  });
+
+  it("says the ribbon ahead of the narration, so a listener hears it too", () => {
+    mount({ sceneType: "story", narration: SEAL, scenePriority: 1 });
+    expect(spoken[0]).toBe(`Remember this! ${SEAL}`);
+  });
+
+  it("marks a clue more quietly", () => {
+    const { container } = mount({ sceneType: "story", narration: SEAL, scenePriority: 2 });
+    expect(container.querySelector(".narration--p2")).not.toBeNull();
+    expect(container.querySelector(".narration__ribbon")?.textContent).toBe("A clue");
+  });
+
+  it("leaves an ordinary scene, and a run saved before priorities, unmarked", () => {
+    const { container } = mount({ sceneType: "story", scenePriority: null });
+    expect(container.querySelector(".narration__ribbon")).toBeNull();
+    expect(container.querySelector(".narration--p1, .narration--p2")).toBeNull();
+    cleanup();
+    spoken = [];
+    const legacy = mount({ sceneType: "story" });
+    expect(legacy.container.querySelector(".narration__ribbon")).toBeNull();
+    expect(spoken[0]).toBe("The moss on the bank is warm.");
+  });
+});

@@ -64,7 +64,7 @@ const NOT_GAME = [
 const NOT_SHIPPED = [
   ...NOT_GAME,
   /^e2e\//,
-  /^playwright(\.wiki)?\.config\.ts$/,
+  /^playwright(\.wiki|\.prod)?\.config\.ts$/,
   /^vitest\.config\.ts$/,
   /\.test\.(ts|tsx|mjs|js)$/,
   /(^|\/)__tests__\//,

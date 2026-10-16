@@ -215,6 +215,7 @@
     },
     "scene_bell_code": {
       "type": "story",
+      "priority": 2,
       "narration": "A small dragonling explains the bell code at top speed. One ring for moths leaving. Two for a warm cave. Three for come home now. And there is one ring that has never been rung, ever, and nobody will tell you what it means, and the small dragonling goes very quiet about it.",
       "cast": [
         {
@@ -620,6 +621,7 @@
     },
     "scene_here_first": {
       "type": "story",
+      "priority": 1,
       "narration": "\"One more thing,\" says Great-Gran Ashby. \"The boundary stones were here first. Before the first families. Already marking the line we mark now.\" She taps the floor map. Everything since Bramblewood points one way: the stones are older than the mountain's name, and the land has always known.",
       "cast": [
         {
@@ -1141,6 +1143,7 @@
     },
     "scene_morning_bells_unrung": {
       "type": "story",
+      "priority": 2,
       "cast": [
         {
           "figure": "characters/dragonling",

@@ -85,6 +85,7 @@ import {
   RIFT_ACTION_KINDS,
   riftActionWays,
   riftDestination,
+  riftState,
   type Arrival,
   type ExitBlock,
   type GraphExit,
@@ -267,12 +268,18 @@ function setFlag(
  * The facts written are stored as values on the journey (`JourneyFacts.facts`)
  * — a new record each time, never the declaration's or the previous
  * journey's, so nothing outside this attempt's next journey changes.
+ *
+ * `firstCrossing` is true only for an edge's effects on its first crossing
+ * (#222): a `grantBuff` that says `firstCrossing` grants then and never
+ * otherwise — not on a later crossing, not from a completion rule or a rift
+ * action (the parser refuses it there).
  */
 function applyEffects(
   graph: ParsedCampaignGraph,
   journey: JourneyState,
   effects: readonly GraphEffect[] | undefined,
   campaign: JourneyCampaign | undefined,
+  firstCrossing = false,
 ): JourneyState {
   if (!effects || effects.length === 0) return journey;
   const flags = { ...(journey.flags ?? {}) };
@@ -289,7 +296,7 @@ function applyEffects(
   for (const effect of effects) {
     if (effect.type === "grantBuff") {
       const declared = graph.buffs[effect.buff];
-      if (!declared) continue;
+      if (!declared || (effect.firstCrossing === true && !firstCrossing)) continue;
       buffs = grantBuff(buffs ?? storedBuffs(journey.buffs), effect.buff, declared, {
         node: journey.node,
         visit: journey.visit,
@@ -654,6 +661,10 @@ export function takeExit(
   // takes the party where it led when they chose it, whatever the crossing's
   // own effects then do to it.
   const destination = riftDestination(graph, report.edge, journey);
+  // Whether this is the edge's first crossing (#222), read before it is
+  // counted: never taken this attempt, and for a rift never crossed by
+  // either mouth — a linked pair's crossings are one count.
+  const first = count(journey.traversed, report.edge) === 0 && (riftState(graph, report.edge, journey)?.crossings ?? 0) === 0;
   // A rift crossing (#196) is this one party-wide move: counted against the
   // rift (and its linked partner) first, then one tick of the move clock for
   // every timed rift, then the edge's own bookkeeping, effects and arrival —
@@ -671,6 +682,7 @@ export function takeExit(
     },
     edge.effects,
     campaign,
+    first,
   );
   const entered = enter(graph, crossed, destination);
   return { ok: true, duplicate: false, journey: settleRifts(graph, entered.journey), arrival: entered.arrival };

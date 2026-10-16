@@ -3,7 +3,7 @@ import type { CognitoClient } from "../sync/auth";
 import { AuthError } from "../sync/auth";
 import type { Api, LinkAccountResponse } from "../sync/client";
 import { createKeepsakeStore, type KeepsakeDeps } from "./keepsake";
-import { loadAccount, loadIdentity, saveIdentity, type KeyValueStorage } from "./persistence";
+import { loadAccount, loadIdentity, loadPlayerDeviceToken, saveIdentity, type KeyValueStorage } from "./persistence";
 
 function memoryStorage(): KeyValueStorage {
   const map = new Map<string, string>();
@@ -274,6 +274,20 @@ describe("restoring on a new phone", () => {
     // The write that makes this phone *be* Ada from now on.
     expect(loadIdentity(storage).deviceToken).toBe("dev_new");
     expect(store.getState().step).toBe("kept");
+  });
+
+  it("makes a browser that had only been a TV into a player, so it has a book to open", async () => {
+    const { store, storage } = setup();
+    saveIdentity({ householdId: "hh_tv", playerId: "p_tv", displayName: "", deviceToken: "dev_tv", screenOnly: true }, storage);
+    expect(loadPlayerDeviceToken(storage)).toBeNull();
+    await store.getState().check();
+
+    store.getState().open("restore");
+    await store.getState().sendCode("allen@example.com");
+    await store.getState().submitCode("123456");
+    await store.getState().choosePlayer("p_2");
+
+    expect(loadPlayerDeviceToken(storage)).toBe("dev_new");
   });
 
   it("skips the picker when the server already bound this device", async () => {

@@ -39,6 +39,7 @@
   "scenes": {
     "scene_prologue_realm": {
       "type": "story",
+      "priority": 2,
       "narration": "This is the Realm of Red Sky. Far in the north stands Mount Red Sky, the biggest mountain anybody knows. Old maps call it the Source of the Gemfalls, and add, in much smaller writing, that it is only sleeping.",
       "choices": [
         {
@@ -194,6 +195,7 @@
     },
     "scene_red_sky": {
       "type": "story",
+      "priority": 2,
       "narration": "It is a quiet night at the Exchange, and then it isn't. Far to the north, the sky over Mount Red Sky turns red as a cherry, and a glittering rain of gem-light falls over the foothills. For one blink, some of it seems to fall up. A seagull drops its fish in surprise, and the fish looks surprised too.",
       "choices": [
         {
@@ -1060,6 +1062,7 @@
     },
     "scene_gutter_glint": {
       "type": "story",
+      "priority": 2,
       "discovers": [
         "character.griffin"
       ],
@@ -1301,6 +1304,7 @@
     },
     "scene_scholar_theory": {
       "type": "story",
+      "priority": 1,
       "narration": "Outside, the scholar draws on a napkin. Professor Tidewell, says the name on her soggy notes. The drawing is a shape with eight sides, like a gem cut by somebody very careful. \"The oldest stories tell of a seal, like a lid on a jar, made of facets, eight of them. I think the mountain just threw seven of them across the realm, and everybody is selling them. The eighth is still in the mountain.\" Then she looks at your pocket, which is glowing slightly. \"Oh,\" she says. \"You've got one.\"",
       "cast": [
         {
