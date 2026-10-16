@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   countPartyItems,
   evaluateCondition,
+  isGated,
   reachableScenes,
   validateChapter,
   visibleChoices,
@@ -225,6 +226,91 @@ describe("visibleChoices", () => {
     const before = [...CHOICES];
     visibleChoices(CHOICES, party);
     expect(CHOICES).toEqual(before);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Class gating — #228
+// ---------------------------------------------------------------------------
+
+describe("requiresClass", () => {
+  const CLASS_CHOICES: Choice[] = [
+    { id: "wait", label: "Wait", icon: "eye", goto: "a" },
+    { id: "read", label: "Read the light", icon: "star", requiresClass: "starweaver", goto: "b" },
+    {
+      id: "hold",
+      label: "Hold the line",
+      icon: "shield",
+      requiresClass: ["thornguard", "songkeeper"],
+      goto: "c",
+    },
+  ];
+  const ids = (members: ResolvedCharacter[]) =>
+    visibleChoices(CLASS_CHOICES, { members }).map((c) => c.id);
+
+  it("offers a class choice when a seated character has the class, and not otherwise", () => {
+    expect(ids([resolved({ class: "starweaver" })])).toEqual(["wait", "read"]);
+    expect(ids([resolved({ class: "duskrunner" })])).toEqual(["wait"]);
+  });
+
+  it("shows it when *anyone* seated matches, whoever that is", () => {
+    const party = [resolved({ class: "duskrunner" }), resolved({ id: "c_2", class: "starweaver" })];
+    expect(ids(party)).toEqual(["wait", "read"]);
+  });
+
+  it("treats a list as any of them", () => {
+    expect(ids([resolved({ class: "thornguard" })])).toEqual(["wait", "hold"]);
+    expect(ids([resolved({ class: "songkeeper" })])).toEqual(["wait", "hold"]);
+    const both = [resolved({ class: "starweaver" }), resolved({ id: "c_2", class: "songkeeper" })];
+    expect(ids(both)).toEqual(["wait", "read", "hold"]);
+  });
+
+  it("composes with the other gates: all of them must hold", () => {
+    const gated: Choice[] = [
+      { id: "both", label: "Both", icon: "star", requiresClass: "starweaver", requiresSpecies: "griffin", goto: "a" },
+    ];
+    const visible = (members: ResolvedCharacter[]) => visibleChoices(gated, { members }).length;
+    expect(visible([resolved({ class: "starweaver", species: "griffin" })])).toBe(1);
+    expect(visible([resolved({ class: "starweaver", species: "unicorn" })])).toBe(0);
+    expect(visible([resolved({ class: "songkeeper", species: "griffin" })])).toBe(0);
+  });
+
+  it("is a gate, so a scene of only class choices fails under its own code", () => {
+    expect(isGated(CLASS_CHOICES[1]!)).toBe(true);
+    const chapter = makeChapter();
+    const scene = chapter.scenes["scene_clearing"];
+    if (scene?.type !== "story") throw new Error("fixture changed");
+    for (const choice of scene.choices) choice.requiresClass = ["starweaver"];
+    const issues = validateChapter(chapter, items);
+    const issue = issues.find((i) => i.code === "CLASS_GATED_ONLY_EXIT");
+    expect(issue).toMatchObject({ severity: "error", sceneId: "scene_clearing" });
+    expect(issue?.message).toMatch(/add a choice no class is needed for/);
+    expect(codes(issues)).not.toContain("DEAD_END");
+  });
+
+  it("stays quiet while one choice needs no class", () => {
+    const chapter = makeChapter();
+    const scene = chapter.scenes["scene_clearing"];
+    if (scene?.type !== "story") throw new Error("fixture changed");
+    scene.choices.push({ id: "extra", label: "Read", icon: "star", requiresClass: "starweaver", goto: scene.choices[0]!.goto });
+    expect(validateChapter(chapter, items)).toEqual([]);
+  });
+
+  it("mixed with another gate on every choice is still a dead end", () => {
+    const chapter = makeChapter();
+    const scene = chapter.scenes["scene_clearing"];
+    if (scene?.type !== "story") throw new Error("fixture changed");
+    // The fixture's other choice is already species-gated; this one is class-gated.
+    scene.choices[0]!.requiresClass = "starweaver";
+    const issues = validateChapter(chapter, items);
+    expect(codes(issues)).toContain("DEAD_END");
+    expect(codes(issues)).not.toContain("CLASS_GATED_ONLY_EXIT");
+  });
+
+  it("leaves a chapter that never uses it exactly as it was", () => {
+    expect(validateChapter(makeChapter(), items)).toEqual([]);
+    const party = { members: [resolved({ species: "unicorn" })] };
+    expect(visibleChoices(CHOICES, party).map((c) => c.id)).toEqual(["squeeze"]);
   });
 });
 

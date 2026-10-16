@@ -1192,6 +1192,8 @@ const SHARED = [
   // `dev-auth.ts`. Same handlers, same shapes.
   // A player's saved heroes, to bring one back (handlers/heroes.ts).
   { path: "/api/heroes", method: "GET", probe: "/api/heroes" },
+  // What a phone can study between games (handlers/journal.ts).
+  { path: "/api/journal", method: "GET", probe: "/api/journal" },
   { path: "/api/auth/link", method: "POST", probe: "/api/auth/link" },
   { path: "/api/auth/device", method: "POST", probe: "/api/auth/device" },
 ] as const;
@@ -1370,6 +1372,48 @@ describe("bringing a hero back (spec §5)", () => {
     expect(seated, JSON.stringify(seated)).toMatchObject({ ok: true });
     const state = await harness.repo.getState(String(second.runId));
     expect(state?.party.map((m) => m.character.id)).toEqual([heroes[0]!.id]);
+  });
+
+  it("opens the journal with only the device token, between games", async () => {
+    const harness = makeHarness({ engine: { applyIntent, createRunState } });
+    const rt = runtimeFor(harness);
+    const room = bodyOf(
+      await respond(event("POST", "/api/room", { body: { mode: "travel", displayName: "Ada" } }), rt),
+    ) as Record<string, string>;
+    await respond(
+      event("POST", "/api/action", {
+        body: {
+          runId: room.runId,
+          playerId: room.playerId,
+          seq: 0,
+          intent: {
+            type: "CREATE_CHARACTER",
+            name: "Sparklehoof",
+            species: "unicorn",
+            class: "songkeeper",
+            stats: { might: 0, quick: 0, clever: 0, heart: 3 },
+            appearance: { palette: "meadow", accent: "#7FD4C1" },
+          },
+        },
+        headers: { authorization: `Bearer ${String(room.sessionToken)}` },
+      }),
+      rt,
+    );
+
+    const journal = await respond(
+      event("GET", "/api/journal", { headers: { "x-kad-device-token": String(room.deviceToken) } }),
+      rt,
+    );
+    expect(journal.statusCode).toBe(200);
+    expect(bodyOf(journal)).toMatchObject({
+      heroes: [expect.objectContaining({ name: "Sparklehoof" })],
+      finders: { [String(room.playerId)]: "Sparklehoof" },
+    });
+  });
+
+  it("refuses the journal without a device token", async () => {
+    const result = await respond(event("GET", "/api/journal"), runtimeFor(makeHarness()));
+    expect(result.statusCode).toBe(401);
   });
 
   it("needs a room session to list heroes", async () => {

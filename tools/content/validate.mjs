@@ -681,6 +681,7 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
 
   // --- every itemId exists in the catalog, and is used as the right kind
   const speciesIds = new Set(Object.keys(rules?.species ?? {}));
+  const classIds = new Set(Object.keys(rules?.classes ?? {}));
   const flagsSet = new Set();
   const flagsRequired = [];
 
@@ -716,8 +717,17 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
     // Same rule as validateChapter()'s DEAD_END in packages/shared/src/chapter-graph.ts
     // (isGated); a `when` counts as a gate there too. Kept inline because
     // chapter-graph.ts cannot be loaded straight under Node.
-    const gated = (c) => c.requiresSpecies !== undefined || c.requiresFlag !== undefined || c.requiresItem !== undefined || c.when !== undefined;
-    if ((scene.choices ?? []).length > 0 && scene.choices.every(gated)) {
+    const gated = (c) => c.requiresSpecies !== undefined || c.requiresClass !== undefined || c.requiresFlag !== undefined || c.requiresItem !== undefined || c.when !== undefined;
+    // No class is ever mandatory (#228): a scene whose every choice needs a
+    // class is validateChapter()'s CLASS_GATED_ONLY_EXIT, the same failure
+    // named for its fix; mixed with other gates it is the plain one below.
+    if ((scene.choices ?? []).length > 0 && scene.choices.every((c) => c.requiresClass !== undefined)) {
+      fail(
+        `/scenes/${id}/choices`,
+        "every choice is class-gated (CLASS_GATED_ONLY_EXIT) - a party with none of those classes sees nothing to tap",
+        "No class is ever mandatory: add a choice no class is needed for.",
+      );
+    } else if ((scene.choices ?? []).length > 0 && scene.choices.every(gated)) {
       fail(`/scenes/${id}/choices`, "every choice is gated - a party matching none of the requirements sees nothing to tap");
     }
 
@@ -748,6 +758,15 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
         for (const sp of Array.isArray(req) ? req : [req]) {
           if (!speciesIds.has(sp)) {
             fail(`${at}/requiresSpecies`, `"${sp}" is not a species in content/rules.json`, `known species: ${[...speciesIds].join(", ")}`);
+          }
+        }
+      }
+
+      const reqClass = choice.requiresClass;
+      if (reqClass) {
+        for (const cl of Array.isArray(reqClass) ? reqClass : [reqClass]) {
+          if (!classIds.has(cl)) {
+            fail(`${at}/requiresClass`, `"${cl}" is not a class in content/rules.json`, `known classes: ${[...classIds].join(", ")}`);
           }
         }
       }

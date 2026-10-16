@@ -380,6 +380,32 @@ describe("a roll", () => {
     expect(sent).toEqual([{ type: "ROLL" }]);
   });
 
+  it("offers the roller the party's Riftspark (#222): use it, or save it", async () => {
+    const user = userEvent.setup();
+    const offered: Prompt = { ...roll, buff: { id: "riftspark", label: "Riftspark", amount: 2, spend: "choose" } };
+    const { sent } = mount({ prompt: offered });
+    expect(screen.getByText("Use Riftspark (+2)?")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Roll!" })).toBeNull();
+    await user.click(screen.getByRole("button", { name: "Use it and roll!" }));
+    expect(sent).toEqual([{ type: "ROLL", spendBuff: "riftspark" }]);
+  });
+
+  it("saving the Riftspark rolls without it", async () => {
+    const user = userEvent.setup();
+    const offered: Prompt = { ...roll, buff: { id: "riftspark", label: "Riftspark", amount: 2, spend: "choose" } };
+    const { sent } = mount({ prompt: offered });
+    await user.click(screen.getByRole("button", { name: "Save it and roll" }));
+    expect(sent).toEqual([{ type: "ROLL" }]);
+  });
+
+  it("an automatic check buff is said, not asked", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({ prompt: { ...roll, buff: { id: "steady", label: "Steady", amount: 1, spend: "auto" } } });
+    expect(screen.getByText("Steady: +1 on this roll")).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: "Roll!" }));
+    expect(sent).toEqual([{ type: "ROLL" }]);
+  });
+
   it("offers the other players a Help button with their tier's die", async () => {
     const user = userEvent.setup();
     const friend = member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Windstep" }) });

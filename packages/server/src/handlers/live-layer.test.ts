@@ -25,6 +25,7 @@ import type { Engine } from "../engine/port.ts";
 import { createNarrator } from "../llm/narrator.ts";
 import type { LiveReply } from "../llm/narrator.ts";
 import type { Narrator } from "../llm/port.ts";
+import type { ContentStore } from "../content/loader.ts";
 import { makeHarness, seedHousehold } from "../test-support.ts";
 import { applyAction } from "./action.ts";
 import { createRoom, joinRoom } from "./room.ts";
@@ -52,12 +53,12 @@ function character(name: string, species: string, klass: string): ClientIntent {
 }
 
 /** Drives the reference chapter's opening. Returns every state it passed through. */
-async function playOpening(narrator?: Narrator): Promise<RunState[]> {
+async function playOpening(narrator?: Narrator, content?: ContentStore): Promise<RunState[]> {
   const harness = makeHarness({
     engine: realEngine,
     // The real content tree, because the live layer reads `llmHints` and the
     // fixture chapter has none — a fixture would test the defaults path twice.
-    content: await realContent(),
+    content: content ?? (await realContent()),
     ...(narrator ? { narrator } : {}),
   });
   const { householdId, players } = await seedHousehold(harness, 2);
@@ -129,6 +130,27 @@ function normalise(state: RunState): unknown {
   return JSON.parse(json) as unknown;
 }
 
+/**
+ * The real content, with the opening's second scene (`scene_humming`) marked a
+ * revelation — so the one scene the opening script decorates is one the layer
+ * may not touch.
+ */
+async function withRevelationAtHumming(): Promise<ContentStore> {
+  const store = await realContent();
+  return new Proxy(store, {
+    get(target, key, receiver) {
+      if (key !== "chapter") return Reflect.get(target, key, receiver) as unknown;
+      return (id: string) => {
+        const chapter = target.chapter(id);
+        if (chapter === null || id !== "bramblewood-01") return chapter;
+        const humming = chapter.scenes["scene_humming"];
+        if (!humming || humming.type !== "story") throw new Error("fixture moved");
+        return { ...chapter, scenes: { ...chapter.scenes, scene_humming: { ...humming, priority: 1 } } };
+      };
+    },
+  });
+}
+
 /** The real narrator, with Bedrock replaced by a function that always answers. */
 function talkative(text = LIVE_LINE): Narrator {
   const send = (): Promise<LiveReply> => Promise.resolve({ text, cacheRead: 4200, cacheWrite: 0 });
@@ -176,6 +198,20 @@ describe("the game with the layer", () => {
     const on = await playOpening(talkative());
     const narrations = on.map((state) => state.narration);
     expect(narrations.some((line) => line.includes(LIVE_LINE))).toBe(true);
+  });
+
+  it("never rewrites a priority scene: its authored words stand", async () => {
+    /*
+     * A revelation exists to deliver a fact, and a paraphrase is free to drop
+     * it. The same narrator that decorates `scene_humming` above leaves it
+     * alone once the scene is marked — and the run is otherwise identical.
+     */
+    const off = await playOpening(undefined, await withRevelationAtHumming());
+    const on = await playOpening(talkative(), await withRevelationAtHumming());
+    expect(on.some((state) => state.narration.includes(LIVE_LINE))).toBe(false);
+    expect(on.at(-1)?.sceneId).toBe("scene_humming");
+    expect(on.at(-1)?.scenePriority).toBe(1);
+    expect(on.map((state) => state.narration)).toEqual(off.map((state) => state.narration));
   });
 
   it("keeps the branch's authored line in front of the live one", async () => {

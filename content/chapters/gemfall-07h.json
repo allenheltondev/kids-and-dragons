@@ -1970,6 +1970,7 @@
     },
     "scene_tamsins_offer": {
       "type": "story",
+      "priority": 2,
       "discovers": [
         "faction.deep_hollow_cult"
       ],
@@ -2119,6 +2120,7 @@
     },
     "scene_dawn_bell": {
       "type": "story",
+      "priority": 2,
       "narration": "That morning the ground gives the biggest shake yet. Down in the last dragonling village, the great bell's ribbon slips loose, and the bell begins to swing. Just a little. Then a little more. If it rings now, every town in the foothills will think it is the ring that nobody ever says out loud.",
       "choices": [
         {

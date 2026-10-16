@@ -187,6 +187,14 @@
         "manticore"
       ]
     },
+    "classId": {
+      "enum": [
+        "thornguard",
+        "duskrunner",
+        "starweaver",
+        "songkeeper"
+      ]
+    },
     "grantTarget": {
       "description": "\"roller\" (whoever made the check), \"party\" (prompt for a holder), or a playerId. architecture \u00a75.",
       "type": "string",
@@ -610,6 +618,21 @@
             }
           ]
         },
+        "requiresClass": {
+          "description": "Same as requiresSpecies, for class: offered when anyone seated has one of these classes, hidden otherwise. Judged against the seated party, never stored; set a flag in effects for later guards to read.",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/classId"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/classId"
+              }
+            }
+          ]
+        },
         "requiresFlag": {
           "$ref": "#/$defs/flag"
         },
@@ -851,6 +874,9 @@
           "type": "string",
           "minLength": 1
         },
+        "priority": {
+          "$ref": "#/$defs/priority"
+        },
         "onEnter": {
           "$ref": "#/$defs/effects"
         },
@@ -911,6 +937,9 @@
           "type": "string",
           "minLength": 1
         },
+        "priority": {
+          "$ref": "#/$defs/priority"
+        },
         "onEnter": {
           "$ref": "#/$defs/effects"
         },
@@ -960,6 +989,9 @@
         "narration": {
           "type": "string",
           "minLength": 1
+        },
+        "priority": {
+          "$ref": "#/$defs/priority"
         },
         "onEnter": {
           "$ref": "#/$defs/effects"
@@ -1011,6 +1043,9 @@
         "narration": {
           "type": "string",
           "minLength": 1
+        },
+        "priority": {
+          "$ref": "#/$defs/priority"
         },
         "onEnter": {
           "$ref": "#/$defs/effects"
@@ -1434,6 +1469,13 @@
           }
         }
       }
+    },
+    "priority": {
+      "description": "ScenePriority in chapter.ts. 1 is a revelation the campaign turns on, 2 a clue worth remembering; absent is an ordinary scene. Drawn differently on the shared screen, and never rewritten by the live layer. content/README.md, \"Priority scenes\".",
+      "enum": [
+        1,
+        2
+      ]
     }
   }
 }

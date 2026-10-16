@@ -27,6 +27,7 @@ import type { ActionError, HandlerDeps } from "../handlers/deps.ts";
 import { iso, ok } from "../handlers/deps.ts";
 import { createRoom, joinRoom, settleRoom, watchRoom } from "../handlers/room.ts";
 import { listHeroes } from "../handlers/heroes.ts";
+import { getJournal } from "../handlers/journal.ts";
 import { getState } from "../handlers/state.ts";
 import type { DeviceIdentity, SessionIdentity } from "../identity.ts";
 import type { RoomMode } from "@kad/shared";
@@ -124,6 +125,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
   }
   if (req.method === "GET" && req.path === "/api/state") return (deps) => getStateRoute(req, deps);
   if (req.method === "GET" && req.path === "/api/heroes") return (deps) => getHeroes(req, deps);
+  if (req.method === "GET" && req.path === "/api/journal") return (deps) => getJournalRoute(req, deps);
   return null;
 }
 
@@ -329,6 +331,18 @@ async function getHeroes(req: Req, deps: HandlerDeps) {
   if (!session) return error(401, "FORBIDDEN", "listing heroes needs a room session token");
   const result = await listHeroes({ householdId: session.householdId, playerId: session.playerId }, deps);
   return result.ok ? json(200, result.value) : fromError(result.error);
+}
+
+/**
+ * What this phone can study between games (handlers/journal.ts). The device
+ * token, not a session: there is no room to have a session in.
+ */
+async function getJournalRoute(req: Req, deps: HandlerDeps) {
+  const found = await resolvePrincipal(req, deps);
+  if (!found) return error(401, "FORBIDDEN", "the journal needs this device's token");
+  const { principal } = found;
+  const result = await getJournal({ householdId: principal.householdId, playerId: principal.playerId }, deps);
+  return result.ok ? json(200, result.value, principal) : fromError(result.error);
 }
 
 async function getStateRoute(req: Req, deps: HandlerDeps) {

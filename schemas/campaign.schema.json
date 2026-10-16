@@ -176,7 +176,7 @@
       }
     },
     "graphBuff": {
-      "description": "BuffDef (packages/shared/src/types/buffs.ts). Bounded on purpose: amount within the kind's limit (guard 3, damage 2, move 2, roll 3; parseCampaignGraph checks the per-kind bound), at most 5 turns or fights.",
+      "description": "BuffDef (packages/shared/src/types/buffs.ts). Bounded on purpose: amount within the kind's limit (guard 3, damage 2, move 2, roll 3; parseCampaignGraph checks the per-kind bound), at most 5 turns, fights or uses. A roll buff may opt in to story checks instead of attacks (appliesTo: check, #222); parseCampaignGraph checks that such a buff lasts a number of uses, targets the party and that spend appears only with it.",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -252,6 +252,25 @@
                   "const": "encounter"
                 }
               }
+            },
+            {
+              "description": "A story-check buff's clock (#222): the next count checks it is spent on. Only with appliesTo: check.",
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "scope",
+                "count"
+              ],
+              "properties": {
+                "scope": {
+                  "const": "uses"
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5
+                }
+              }
             }
           ]
         },
@@ -275,6 +294,7 @@
           "maximum": 3
         },
         "expiresOn": {
+          "description": "chapter (#222): the next chapter played ends, however it ends.",
           "type": "array",
           "minItems": 1,
           "uniqueItems": true,
@@ -283,9 +303,24 @@
               "defeat",
               "rest",
               "travel",
-              "setback"
+              "setback",
+              "chapter"
             ]
           }
+        },
+        "appliesTo": {
+          "description": "Roll buffs only (#222): attack (default) - attack rolls in fights, as before; check - one story check (d20 + stat vs TN) instead, never an attack, held by the party and spent by whoever rolls.",
+          "enum": [
+            "attack",
+            "check"
+          ]
+        },
+        "spend": {
+          "description": "With appliesTo: check only (#222): auto (default) - spent on the party's next check; choose - the roller's phone offers it first, to spend now or save.",
+          "enum": [
+            "auto",
+            "choose"
+          ]
         }
       }
     },
@@ -970,7 +1005,7 @@
           }
         },
         {
-          "description": "Grants a declared temporary buff (#200), or refreshes, stacks or ignores one already held as its stack says.",
+          "description": "Grants a declared temporary buff (#200), or refreshes, stacks or ignores one already held as its stack says. firstCrossing (#222, an edge's own effects only; parseCampaignGraph checks where): grants only on the edge's first crossing this attempt (a rift's first, by either mouth of a linked pair).",
           "type": "object",
           "additionalProperties": false,
           "required": [
@@ -983,6 +1018,9 @@
             },
             "buff": {
               "$ref": "#/$defs/graphId"
+            },
+            "firstCrossing": {
+              "const": true
             }
           }
         }
