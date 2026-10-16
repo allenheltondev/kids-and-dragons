@@ -44,6 +44,12 @@ individuals:
   # whole argument for promoting one character and not the other two in that
   # same block. A wisp with a rhyming habit and an embarrassed door belong to
   # the chapter, and they stay there.
+  #
+  # Riftlight's named characters (the Riftseekers and the emperor) are
+  # approved for that campaign and are deliberately NOT here: none of them has
+  # a home location that would miss them, and every entry in this file is
+  # projected into the player-facing field guide, which would spoil the
+  # emperor. They are recorded on faction.riftseekers and campaign.riftlight.
   # -------------------------------------------------------------------------
 
   - id: individual.pib
