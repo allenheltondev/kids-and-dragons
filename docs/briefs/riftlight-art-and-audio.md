@@ -1,7 +1,7 @@
 # Brief: Riftlight's art and audio
 
 **Status:** open; Parts B (cast) and the finale items wait on the owner decisions in §3. For the
-image- and audio-generation agents. This brief is the complete specification for everything new
+image- and audio-generation agent (Codex), which owns all of the art. This brief is the complete specification for everything new
 that Riftlight (working name Continental Rift) needs on screen and in the speakers. The design it
 serves is in `docs/campaigns/continental-rift/`; read the README and `mechanics.md` before
 starting.
@@ -153,31 +153,31 @@ A mixed fellowship from across the realm, so the rifts visibly touch everyone; w
 | `yeti_elder` | `yeti` | An elder of the reading rooms; old, gentle, frost in the fur |
 | `kitsune_temple_keeper` | `kitsune` (species) | A Sky Islands temple keeper. Kind and dignified: kitsune are never drawn as tricksters by default |
 | `dragonling_stone_keeper` | `dragonling` (species) | A grown dragonling who keeps the Red Sky Foothills boundary stones |
-| `saltrot_guide` | `skipperfolk` (B3) | A Skipperfolk guide of the brackish flats, crest half raised, mud-wet and weathered |
+| `saltrot_guide` | `skupper` (B3) | A Skupper guide of the brackish flats, crest half raised, mud-wet and weathered |
 
 An adult of a playable species must be unmistakably that species (`story-cast-art.md` §2).
 
-### B3. A new people: the Skipperfolk (entity and canon in one PR)
+### B3. A new people: the Skuppers (entity and canon in one PR)
 
 The Saltrot's own people, approved by the owner: amphibious **mudskipper-and-pufferfish** folk
 found **only in brackish water**. Canon keeps every people 1:1 with its art
 (`packages/canon/src/canon.test.ts`, "asset_id is a real join"), so the entity and the canon entry
 land **in the same PR**, as `story-cast-art.md` Part C does for new peoples.
 
-**The entity** (`assets/entities/skipperfolk/`, scale `small_to_medium`, the §6.4 entity
+**The entity** (`assets/entities/skupper/`, scale `small_to_medium`, the §6.4 entity
 contract): an upright mudskipper body on strong front fins used as forearms; big round eyes set
 high on the head; a tall dorsal crest; a small fused beak; mottled **olive and gold** skin with
 dark spots, wet with mud. Keep the skin off bright rift green, amber, blue and violet so a
-Skipperfolk never reads as a rift rule. Draw two states: **ordinary**, and **puffed**, perfectly
+Skuppers never reads as a rift rule. Draw two states: **ordinary**, and **puffed**, perfectly
 round with soft spines standing out (a startle, never a threat). Friendly, nosy, a little comic.
 
 **The canon, to land with it:**
-- Add `skipperfolk` to `people_ids` in `canon/npcs.yaml`, and this entry before `npc.boggart`:
+- Add `skupper` to `people_ids` in `canon/npcs.yaml`, and this entry before `npc.boggart`:
 
 ```yaml
-  - id: npc.skipperfolk
-    asset_id: skipperfolk
-    title: "Skipperfolk"
+  - id: npc.skupper
+    asset_id: skupper
+    title: "Skupper"
     canon_status: newly_defined
     classification: supporting_people
     sapience: sapient
@@ -213,26 +213,26 @@ round with soft spines standing out (a startle, never a threat). Friendly, nosy,
     lore:
       hook: "The only people who can walk on the Saltrot, and the only ones who would want to."
       story: >-
-        Skipperfolk move in quick little skips across mud that swallows
+        Skuppers move in quick little skips across mud that swallows
         boots, and they live in burrow towns dug into the flats with air kept
         in pockets below. Every great flood resets the town, so nothing they
         build is meant to last and nobody minds. Puffing up is not a choice: a
-        startled skipper goes round and floats, which on the flats is useful.
+        startled skupper goes round and floats, which on the flats is useful.
         A puffed guide bobbing in a flooded channel is a buoy for anyone stuck,
         and the polite thing is to hold on and not mention it afterward.
       pastimes:
-        - "Crab clocks. Fiddler crabs wave at the turning tide, and a good skipper can tell the time to the minute by how many are waving."
+        - "Crab clocks. Fiddler crabs wave at the turning tide, and a good skupper can tell the time to the minute by how many are waving."
         - "Crest signaling. Greetings, warnings and gossip travel across the flats faster than anyone can walk them."
         - "Flood naming, argued over for a whole season. A flood is not properly over until it has a name everyone can live with."
       social: >-
-        Friendly, nosy and frank. A skipperfolk guide will tell you your boots
+        Friendly, nosy and frank. A skupper guide will tell you your boots
         are wrong, your route is wrong and your lunch smells interesting, all
         before you have finished saying hello. Some guides are generous, some
         strict, a few famously grumpy, and every one of them refuses to take
         anybody to the buried bridge.
       likes:
         - of: npc.frogfolk
-          because: "The neighbors at the fresher edge of the flats. Frogfolk boats bring the river's news down, and skipperfolk guides take it the rest of the way."
+          because: "The neighbors at the fresher edge of the flats. Frogfolk boats bring the river's news down, and skupper guides take it the rest of the way."
       dislikes:
         - of: creature.bone_crawler
           because: "They swarm anything with fresh magic in it, and the flats are the only way to the Bone Yard, so it is the guides who keep pulling travelers out of the swarm."
@@ -245,9 +245,9 @@ round with soft spines standing out (a startle, never a threat). Friendly, nosy,
 
 - In `canon/npcs.yaml`, add `biome.sallow_wastelands` to `npc.frogfolk`'s `secondary_locations`.
 - In `canon/biomes.yaml`, `biome.sallow_wastelands` → `inhabitants`: `primary_peoples:
-  [npc.skipperfolk]`, `supporting_peoples: [npc.frogfolk]`.
+  [npc.skupper]`, `supporting_peoples: [npc.frogfolk]`.
 - Run `npm run canon:check`, `canon:field-guide`, `canon:world`, `canon:bestiary`, and add
-  `npc.skipperfolk` to `EXPECTED_UNREACHABLE` in `tools/content/field-guide-reach.test.mjs` (no
+  `npc.skupper` to `EXPECTED_UNREACHABLE` in `tools/content/field-guide-reach.test.mjs` (no
   chapter reveals them yet). The full test suite must pass.
 
 ---
