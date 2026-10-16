@@ -52,10 +52,36 @@ export function clockLine(clock: EnvironmentClockView): string {
   return `${clock.label} in ${clock.roundsLeft} rounds.`;
 }
 
+/** "a, b and c" — the way a person lists things aloud. */
+function spoken(parts: readonly string[]): string {
+  if (parts.length <= 1) return parts[0] ?? "";
+  return `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`;
+}
+
+/**
+ * Everything stopping on a hazard does, in the order it happens: "costs 2
+ * hearts and holds you still next turn". Ground that slows, holds or throws
+ * (#220) says so in words, beside or instead of the hearts.
+ */
+export function hazardCost(hazard: Pick<EnvironmentHazardView, "damage" | "slow" | "root" | "push">): string {
+  const parts: string[] = [];
+  if (hazard.damage > 0) parts.push(`costs ${hazard.damage} heart${s(hazard.damage)}`);
+  if (hazard.slow) {
+    const { steps, turns } = hazard.slow;
+    parts.push(`slows you ${steps} step${s(steps)} for ${turns === 1 ? "a turn" : `${turns} turns`}`);
+  }
+  if (hazard.root) parts.push("holds you still next turn");
+  if (hazard.push) {
+    const n = hazard.push.tiles;
+    parts.push(`throws you ${n === 1 ? "" : `${n} squares `}${hazard.push.direction}`);
+  }
+  return spoken(parts);
+}
+
 /** What one hazard costs, and whether it is burning yet. */
 export function hazardLine(hazard: EnvironmentHazardView): string {
   if (hazard.gone) return `${hazard.label} has died down.`;
-  const cost = `stopping on it costs ${hazard.damage} heart${s(hazard.damage)}.`;
+  const cost = `stopping on it ${hazardCost(hazard)}.`;
   return hazard.active ? `${hazard.label}: ${cost}` : `${hazard.label} (not yet): soon ${cost}`;
 }
 
@@ -141,7 +167,14 @@ export function environmentBeatLine(
     case "hazard": {
       const who = words.name(event.actorId);
       return {
-        text: `${event.label} ${who === "You" ? "burns you" : `hurts ${who}`}!`,
+        text: `${event.label} ${who === "You" ? "gets you" : `gets ${who}`}!`,
+        tone: words.isParty(event.actorId) ? "bad" : "good",
+      };
+    }
+    case "slowed": {
+      const who = words.name(event.actorId);
+      return {
+        text: `${who} ${who === "You" ? "are" : "is"} stuck: ${event.steps} fewer step${s(event.steps)} for ${event.turns === 1 ? "a turn" : `${event.turns} turns`}.`,
         tone: words.isParty(event.actorId) ? "bad" : "good",
       };
     }

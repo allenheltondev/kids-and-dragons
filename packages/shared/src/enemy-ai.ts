@@ -87,7 +87,7 @@
  * what lets the client show her, in advance, where a monster would go.
  */
 
-import { exitOpen, hazardAt } from "./environment.js";
+import { exitOpen, hazardAt, hazardWeight } from "./environment.js";
 import type { RescueStatus } from "./environment.js";
 import {
   actorAt,
@@ -485,8 +485,8 @@ function planInEnvironment(turn: EnemyTurn, env: EnemyEnvironment, decision: Dec
 
   const allowance = wholeSteps(enemy.steps);
   const reach = Math.max(1, wholeSteps(enemy.reach ?? DEFAULT_REACH));
-  /** What ending its turn here would cost it, this round. */
-  const burn = (at: Position): number => hazardAt(env.spec, env.round, at)?.damage ?? 0;
+  /** What ending its turn here would cost it, this round: damage, and one more for ground that sticks or throws (#220). */
+  const burn = (at: Position): number => hazardWeight(hazardAt(env.spec, env.round, at));
   const stops: readonly Stop[] = [
     { x: enemy.at.x, y: enemy.at.y, cost: 0 },
     ...reachableTiles(board, enemy.at, allowance),

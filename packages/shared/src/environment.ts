@@ -39,7 +39,8 @@
  * world-state.ts and buffs.ts already live by).
  */
 
-import type { Branch, EncounterEnvironment, EncounterScene, EncounterMap, MapTile, RiftExit, EnvironmentHazard } from "./types/chapter.js";
+import type { Branch, EncounterEnvironment, EncounterScene, EncounterMap, MapTile, RiftExit, EnvironmentHazard, HazardPush } from "./types/chapter.js";
+import type { SlowEffect } from "./types/buffs.js";
 import type { Combatant, EncounterState } from "./encounter.js";
 
 /** What became of the person to rescue. */
@@ -65,7 +66,16 @@ export const ENVIRONMENT_LIMITS = {
   clockRounds: 12,
   hazardDamage: 5,
   surge: 3,
+  /** The farthest a pushing hazard throws (#220). */
+  pushTiles: 3,
+  /** A hazard's slow, held to the `"move"` buff limit and the buff duration cap (buffs.ts). */
+  slowSteps: 2,
+  slowTurns: 5,
 } as const;
+
+/** The combat buff a slowing hazard leaves (#220): Numbed's mechanism, the ground's name. */
+export const SLOWED_BUFF_ID = "slowed";
+export const SLOWED_LABEL = "Slowed";
 
 /** How hard a surge hits when the clock does not say. */
 export const DEFAULT_SURGE = 1;
@@ -88,6 +98,35 @@ export function exitOpen(exit: RiftExit, round: number): boolean {
 
 export function hazardActive(hazard: EnvironmentHazard, round: number): boolean {
   return within(round, hazard.fromRound, hazard.untilRound);
+}
+
+/** Anything a hazard does besides hurting (#220). */
+export function hazardHinders(hazard: EnvironmentHazard): boolean {
+  return hazard.slow !== undefined || hazard.root === true || hazard.push !== undefined;
+}
+
+/**
+ * How much a monster minds stopping on a hazard: its damage, and one more if
+ * it also slows, holds or pushes — so ground that only sticks is still ground
+ * worth stepping round, and never worth more than ground that burns harder.
+ */
+export function hazardWeight(hazard: EnvironmentHazard | null): number {
+  if (!hazard) return 0;
+  return (hazard.damage ?? 0) + (hazardHinders(hazard) ? 1 : 0);
+}
+
+/** One tile's step for a push direction; north is up the map (y − 1). */
+export function pushStep(direction: HazardPush["direction"]): MapTile {
+  switch (direction) {
+    case "north":
+      return { x: 0, y: -1 };
+    case "south":
+      return { x: 0, y: 1 };
+    case "east":
+      return { x: 1, y: 0 };
+    default:
+      return { x: -1, y: 0 };
+  }
 }
 
 /** The active hazard on a tile this round, the first authored if several. */
@@ -170,7 +209,12 @@ export interface EnvironmentHazardView {
   readonly kind: EnvironmentHazard["kind"];
   readonly label: string;
   readonly tiles: readonly MapTile[];
+  /** 0 for ground that does not hurt (#220). */
   readonly damage: number;
+  /** What else stopping here does (#220), when it does. */
+  readonly slow?: SlowEffect;
+  readonly root?: true;
+  readonly push?: { readonly direction: HazardPush["direction"]; readonly tiles: number };
   readonly active: boolean;
   /**
    * Burnt out for good: past its `untilRound`. Without this a reader could
@@ -235,7 +279,10 @@ export function environmentView(state: EncounterState): EnvironmentView | null {
       kind: hazard.kind,
       label: hazard.label,
       tiles: hazard.tiles,
-      damage: hazard.damage,
+      damage: hazard.damage ?? 0,
+      ...(hazard.slow ? { slow: { steps: hazard.slow.steps, turns: hazard.slow.turns } } : {}),
+      ...(hazard.root ? { root: true as const } : {}),
+      ...(hazard.push ? { push: { direction: hazard.push.direction, tiles: hazard.push.tiles ?? 1 } } : {}),
       active: hazardActive(hazard, round),
       ...(hazard.untilRound !== undefined && round > hazard.untilRound ? { gone: true as const } : {}),
     })),
@@ -379,8 +426,30 @@ export function checkEncounterEnvironment(
   (env.hazards ?? []).forEach((hazard, i) => {
     const at = `/environment/hazards/${i}`;
     seenId(hazard.id, `${at}/id`);
-    if (!isInt(hazard.damage) || hazard.damage < 1 || hazard.damage > ENVIRONMENT_LIMITS.hazardDamage) {
+    if (hazard.damage !== undefined && (!isInt(hazard.damage) || hazard.damage < 1 || hazard.damage > ENVIRONMENT_LIMITS.hazardDamage)) {
       fail(`${at}/damage`, `must be a whole number from 1 to ${ENVIRONMENT_LIMITS.hazardDamage}`);
+    }
+    if (hazard.damage === undefined && !hazardHinders(hazard)) {
+      fail(at, "a hazard must do something: damage, slow, root or push");
+    }
+    if (hazard.slow !== undefined) {
+      const { steps, turns } = hazard.slow ?? ({} as SlowEffect);
+      if (!isInt(steps) || steps < 1 || steps > ENVIRONMENT_LIMITS.slowSteps) {
+        fail(`${at}/slow/steps`, `must be a whole number from 1 to ${ENVIRONMENT_LIMITS.slowSteps}`);
+      }
+      if (!isInt(turns) || turns < 1 || turns > ENVIRONMENT_LIMITS.slowTurns) {
+        fail(`${at}/slow/turns`, `must be a whole number from 1 to ${ENVIRONMENT_LIMITS.slowTurns}`);
+      }
+    }
+    if (hazard.root !== undefined && hazard.root !== true) fail(`${at}/root`, "is true or absent");
+    if (hazard.push !== undefined) {
+      if (!["north", "south", "east", "west"].includes(hazard.push?.direction)) {
+        fail(`${at}/push/direction`, 'must be "north", "south", "east" or "west"');
+      }
+      const n = hazard.push?.tiles;
+      if (n !== undefined && (!isInt(n) || n < 1 || n > ENVIRONMENT_LIMITS.pushTiles)) {
+        fail(`${at}/push/tiles`, `must be a whole number from 1 to ${ENVIRONMENT_LIMITS.pushTiles}`);
+      }
     }
     roundOk(hazard.fromRound, `${at}/fromRound`);
     roundOk(hazard.untilRound, `${at}/untilRound`);

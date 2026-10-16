@@ -1234,6 +1234,7 @@ export function describeBeats(
       // The place fighting back (#201): words shared with the TV's rift
       // caption (environment-copy.ts), so the two never drift.
       case "hazard":
+      case "slowed":
       case "escaped":
       case "freed":
       case "captiveLost":

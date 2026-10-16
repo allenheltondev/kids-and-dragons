@@ -468,10 +468,14 @@ export interface RiftClock {
 }
 
 /**
- * Ground that hurts. A figure — hero or monster, the rift does not take sides
+ * Ground that bites. A figure — hero or monster, the rift does not take sides
  * — that **ends its turn** on one of `tiles` while the hazard is active takes
- * `damage`. Walking across is free; stopping there is not. Not a hit: Brace
+ * `damage`, and then whatever else the ground does: `slow`, `root`, `push`
+ * (#220). Walking across is free; stopping there is not. Not a hit: Brace
  * does not redirect it and a ward does not shave it.
+ *
+ * A hazard does at least one thing. Damage comes first; a figure it knocks
+ * down is not also slowed, held or pushed.
  */
 export interface EnvironmentHazard {
   id: string;
@@ -480,12 +484,33 @@ export interface EnvironmentHazard {
   /** What the phone calls it: "Rift fire". */
   label: string;
   tiles: MapTile[];
-  /** 1 to 5. */
-  damage: number;
+  /** 1 to 5. Absent: it does not hurt, only slows, holds or pushes (#220). */
+  damage?: number;
+  /**
+   * Sticky ground (#220): the figure is Slowed — `steps` fewer steps for
+   * `turns` of its own turns, the numbing sting's slow (#227) under another
+   * name. A second stop refreshes it; it never stacks.
+   */
+  slow?: SlowEffect;
+  /** Grabbing ground (#220): the figure starts its next turn with no steps, as Tanglelight does. */
+  root?: true;
+  /**
+   * Ground that throws (#220): the figure slides `tiles` (default 1, at most
+   * 3) toward `direction` (north is up the map), stopping early at a wall, the
+   * board's edge or another figure. Where it lands does nothing more this turn.
+   */
+  push?: HazardPush;
   /** Active from this round (default 1) … */
   fromRound?: number;
   /** … through this one (default: the rest of the fight). */
   untilRound?: number;
+}
+
+/** How a pushing hazard throws a figure (#220). */
+export interface HazardPush {
+  direction: "north" | "south" | "east" | "west";
+  /** 1 to 3; default 1. */
+  tiles?: number;
 }
 
 /**

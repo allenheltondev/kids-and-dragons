@@ -83,7 +83,7 @@ import type { DiceRoll } from "./types/state.js";
 import type { CombatBuff, SlowEffect } from "./types/buffs.js";
 import { DEFAULT_PUFF_TURNS, applyNumbed, buffBonus, buffed, tickCombatBuffs } from "./buffs.js";
 import type { EnvironmentState } from "./environment.js";
-import { DEFAULT_SURGE, hazardAt, openExitAt, rescueDeadline } from "./environment.js";
+import { DEFAULT_SURGE, SLOWED_BUFF_ID, SLOWED_LABEL, hazardAt, openExitAt, pushStep, rescueDeadline } from "./environment.js";
 
 // ---------------------------------------------------------------------------
 // Abilities as data
@@ -590,6 +590,8 @@ export type EncounterEvent =
    */
   /** `actorId` stopped on an active hazard; its `damage` event follows. */
   | { readonly type: "hazard"; readonly actorId: ActorId; readonly hazardId: string; readonly label: string }
+  /** A sticky hazard (#220) Slowed `actorId`: `steps` fewer steps for `turns` of their turns. */
+  | { readonly type: "slowed"; readonly actorId: ActorId; readonly hazardId: string; readonly steps: number; readonly turns: number }
   /** A hero stepped through an open exit and left the fight. */
   | { readonly type: "escaped"; readonly actorId: ActorId; readonly exitId: string }
   /** The captive is free; `byId` ended a turn beside them. */
@@ -1976,9 +1978,23 @@ function shove(
   const start = positionOf(state, targetId);
   if (!from || !start || steps < 1) return state;
 
-  const dx = Math.sign(start.x - from.x);
-  const dy = Math.sign(start.y - from.y);
-  if (dx === 0 && dy === 0) return state;
+  return slide(state, targetId, Math.sign(start.x - from.x), Math.sign(start.y - from.y), steps, events);
+}
+
+/**
+ * Slides a figure `steps` tiles along (`dx`, `dy`), stopping at the first
+ * wall, edge or figure: a shove's travel, and a pushing hazard's (#220).
+ */
+function slide(
+  state: EncounterState,
+  targetId: ActorId,
+  dx: number,
+  dy: number,
+  steps: number,
+  events: EncounterEvent[],
+): EncounterState {
+  const start = positionOf(state, targetId);
+  if (!start || steps < 1 || (dx === 0 && dy === 0)) return state;
 
   let at = start;
   for (let i = 0; i < Math.floor(steps); i++) {
@@ -2099,11 +2115,12 @@ function turnEndInEnvironment(
     events.push({ type: "freed", byId: actorId });
   }
 
-  // Stopping on the fire.
+  // Stopping on the fire. Damage first; what it knocks down stays put (#220).
   const hazard = hazardAt(spec, working.round, at);
   if (hazard) {
     events.push({ type: "hazard", actorId, hazardId: hazard.id, label: hazard.label });
-    working = loseHp(working, actorId, hazard.damage, events);
+    if (hazard.damage !== undefined) working = loseHp(working, actorId, hazard.damage, events);
+    if (!combatantById(working, actorId)?.down) working = hinderInEnvironment(working, actorId, hazard, events);
   }
 
   // Stepping through. Only a hero, only standing, only while it is open.
@@ -2124,6 +2141,38 @@ function turnEndInEnvironment(
         return next;
       }),
     };
+  }
+  return working;
+}
+
+/**
+ * What a hazard does besides hurting (#220), to a figure still standing on it
+ * at the end of its own turn: Slowed (the turn about to end does not count
+ * against it — `applyNumbed`'s own-turn rule), held for its next turn, and
+ * thrown. In that order, so a figure can be both stuck and pushed.
+ */
+function hinderInEnvironment(
+  state: EncounterState,
+  actorId: ActorId,
+  hazard: NonNullable<ReturnType<typeof hazardAt>>,
+  events: EncounterEvent[],
+): EncounterState {
+  let working = state;
+  if (hazard.slow) {
+    const { steps, turns } = hazard.slow;
+    events.push({ type: "slowed", actorId, hazardId: hazard.id, steps, turns });
+    working = {
+      ...working,
+      buffs: applyNumbed(working.buffs, actorId, hazard.slow, true, { id: SLOWED_BUFF_ID, label: SLOWED_LABEL }),
+    };
+  }
+  if (hazard.root && !combatantById(working, actorId)?.rooted) {
+    events.push({ type: "rooted", actorId });
+    working = updateCombatant(working, actorId, (c) => ({ ...c, rooted: true }));
+  }
+  if (hazard.push) {
+    const step = pushStep(hazard.push.direction);
+    working = slide(working, actorId, step.x, step.y, hazard.push.tiles ?? 1, events);
   }
   return working;
 }

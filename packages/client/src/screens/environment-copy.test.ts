@@ -50,6 +50,16 @@ describe("exits, hazards and the rescue", () => {
     expect(new Set((["fire", "thorns", "rift"] as const).map(hazardIcon)).size).toBe(3);
   });
 
+  it("says what ground that slows, holds or throws does, in words (#220)", () => {
+    const mud = { id: "m", kind: "rift" as const, label: "Rift mud", tiles: [], damage: 0, active: true };
+    expect(hazardLine({ ...mud, slow: { steps: 1, turns: 2 } })).toBe("Rift mud: stopping on it slows you 1 step for 2 turns.");
+    expect(hazardLine({ ...mud, damage: 2, root: true })).toBe("Rift mud: stopping on it costs 2 hearts and holds you still next turn.");
+    expect(hazardLine({ ...mud, damage: 1, slow: { steps: 2, turns: 1 }, push: { direction: "north", tiles: 2 } })).toBe(
+      "Rift mud: stopping on it costs 1 heart, slows you 2 steps for a turn and throws you 2 squares north.",
+    );
+    expect(hazardLine({ ...mud, push: { direction: "east", tiles: 1 } })).toBe("Rift mud: stopping on it throws you east.");
+  });
+
   it("says how to free the captive, and what became of them", () => {
     const pip = { name: "Pip", at: { x: 0, y: 0 } };
     expect(rescueLine({ ...pip, status: "waiting" })).toBe("Free Pip: end your turn next to them.");
@@ -94,8 +104,8 @@ describe("the place's beats, in words", () => {
 
   it("tells every environmental beat, for the room and for the hero it happened to", () => {
     const fire = { type: "hazard" as const, hazardId: "f", label: "Rift fire" };
-    expect(environmentBeatLine({ ...fire, actorId: "c_1" }, words)).toEqual({ text: "Rift fire hurts Sparklehoof!", tone: "bad" });
-    expect(environmentBeatLine({ ...fire, actorId: "c_1" }, you)!.text).toBe("Rift fire burns you!");
+    expect(environmentBeatLine({ ...fire, actorId: "c_1" }, words)).toEqual({ text: "Rift fire gets Sparklehoof!", tone: "bad" });
+    expect(environmentBeatLine({ ...fire, actorId: "c_1" }, you)!.text).toBe("Rift fire gets you!");
     expect(environmentBeatLine({ ...fire, actorId: "wisp#1" }, words)!.tone).toBe("good");
     expect(environmentBeatLine({ type: "escaped", actorId: "c_1", exitId: "t" }, words)!.text).toBe(
       "Sparklehoof steps through the rift!",

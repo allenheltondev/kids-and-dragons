@@ -983,6 +983,10 @@ export function createBoardLayer(): BoardLayer {
       case "puffed":
         spawnFloater(event.actorId, "Puffed!", 0xffc95c);
         return;
+      case "slowed":
+        // Sticky ground (#220), in words like Numbed.
+        spawnFloater(event.actorId, "Slowed", 0xb7b0d8);
+        return;
       case "roll": {
         // The swing's number, over the one who swung: the d20 + stat against
         // Guard that decides a hit was rolled on the server and shown

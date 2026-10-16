@@ -1396,7 +1396,7 @@
           }
         },
         "hazards": {
-          "description": "Ground that hurts: a figure that ENDS its turn on an active hazard tile takes `damage`.",
+          "description": "Ground that bites: a figure that ENDS its turn on an active hazard tile takes `damage`, then is slowed, held (`root`) or thrown (`push`) if the hazard says so (#220). At least one of the four (content:validate).",
           "type": "array",
           "minItems": 1,
           "items": {
@@ -1406,8 +1406,7 @@
               "id",
               "kind",
               "label",
-              "tiles",
-              "damage"
+              "tiles"
             ],
             "properties": {
               "id": {
@@ -1435,7 +1434,39 @@
               "damage": {
                 "type": "integer",
                 "minimum": 1,
-                "maximum": 5
+                "maximum": 5,
+                "description": "1 to 5. Absent: the ground does not hurt, only slows, holds or pushes (#220)."
+              },
+              "slow": {
+                "description": "#220 sticky ground: Slowed, `steps` fewer steps for `turns` of the figure's own turns. Refreshes, never stacks.",
+                "$ref": "#/$defs/numbingSting/properties/slow"
+              },
+              "root": {
+                "description": "#220 grabbing ground: the figure starts its next turn with no steps.",
+                "const": true
+              },
+              "push": {
+                "description": "#220 ground that throws: the figure slides `tiles` (default 1) toward `direction` (north is up the map), stopping at a wall, the edge or a figure.",
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "direction"
+                ],
+                "properties": {
+                  "direction": {
+                    "enum": [
+                      "north",
+                      "south",
+                      "east",
+                      "west"
+                    ]
+                  },
+                  "tiles": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 3
+                  }
+                }
               },
               "fromRound": {
                 "description": "Active from this round (default 1).",

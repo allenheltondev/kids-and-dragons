@@ -77,6 +77,7 @@ export function beatSubjects(event: EncounterEvent): string[] {
     // The place fighting back (#201): who stopped on the fire, who stepped
     // through, which monster the rift threw.
     case "hazard":
+    case "slowed":
     case "escaped":
     case "relocated":
       return [event.actorId];
