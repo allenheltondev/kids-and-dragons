@@ -33,6 +33,7 @@ import {
   TurnBanner,
 } from "../screens";
 import { FieldGuideBanner } from "../screens/FieldGuideNews";
+import { RiftStatus } from "../screens/RiftStatus";
 import { useChapter, useGameStore, useMe, useRunState, useSession } from "../store";
 import type { PresentationEvent } from "../store/contract";
 // The hold table lives in world/presentation.ts because the board renderer
@@ -128,6 +129,9 @@ export function WorldView({ gatesPresentations = true }: { gatesPresentations?: 
       {!creating && (phase === "lobby" || phase === "creation") && <LobbyContent />}
       {isSceneLike(phase) && <NarrationPanel />}
       {isSceneLike(phase) && <TurnBanner />}
+      {/* The rift clock and what the place just did (#201) — only in a fight
+          that has an environment, so an ordinary fight's screen is untouched. */}
+      {isSceneLike(phase) && state?.encounter?.environment ? <RiftStatus /> : null}
       {phase === "chapter_complete" && <ChapterCompletePanel />}
 
       {/* The roll is the centrepiece of whatever pane it lands in. On a TV that
