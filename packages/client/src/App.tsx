@@ -13,9 +13,8 @@
  *   /p/:code   travel   → TravelLayout       (both surfaces, one at a time)
  */
 
-import { useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { HomeScreen } from "./screens";
-import { JournalScreen } from "./screens/JournalScreen";
 import { PartyLayout } from "./layout/PartyLayout";
 import { TravelLayout } from "./layout/TravelLayout";
 import { routeCode, useRoute } from "./router";
@@ -25,6 +24,13 @@ import { ConnectionBanner, ErrorToast, Spinner } from "./ui";
 import { AudioControl } from "./audio";
 import { musicForScene } from "./audio/scene-audio";
 import { PhoneMagic } from "./ui/PhoneMagic";
+
+// Loaded on demand: the adventure book is its own route, between games, and
+// a phone joining a room should not download it first (perf:bundle's entry
+// budget is exactly that rule).
+const JournalScreen = lazy(() =>
+  import("./screens/JournalScreen").then((module) => ({ default: module.JournalScreen })),
+);
 
 export function App(): React.JSX.Element {
   const route = useRoute();
@@ -73,7 +79,13 @@ export function App(): React.JSX.Element {
   );
 
   function pickLayout(): React.JSX.Element {
-    if (route.name === "journal") return <JournalScreen />;
+    if (route.name === "journal") {
+      return (
+        <Suspense fallback={<div className="kad-boot"><Spinner size="lg" label="Opening your adventure book" showLabel /></div>}>
+          <JournalScreen />
+        </Suspense>
+      );
+    }
     const code = routeCode(route);
 
     if (!code || !session) {
