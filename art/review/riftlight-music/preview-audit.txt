@@ -1,0 +1,46 @@
+[
+  {
+    "id": "riftlight-theme",
+    "seconds": 40,
+    "sampleRate": 24000,
+    "loop": true,
+    "bytes": 582209,
+    "peak": 0.2860703468322754,
+    "rms": 0.055000000000539444,
+    "seam": 0.000002794782631099224,
+    "voices": 40
+  },
+  {
+    "id": "riftlight-paths",
+    "seconds": 40,
+    "sampleRate": 24000,
+    "loop": true,
+    "bytes": 578585,
+    "peak": 0.2490842491388321,
+    "rms": 0.05499999999925441,
+    "seam": 4.3645741243381053e-7,
+    "voices": 40
+  },
+  {
+    "id": "riftlight-sky",
+    "seconds": 40,
+    "sampleRate": 24000,
+    "loop": true,
+    "bytes": 416404,
+    "peak": 0.2730986475944519,
+    "rms": 0.0549999999975523,
+    "seam": 0.000009278002835344523,
+    "voices": 44
+  },
+  {
+    "id": "riftlight-coast",
+    "seconds": 40,
+    "sampleRate": 24000,
+    "loop": true,
+    "bytes": 593154,
+    "peak": 0.26437270641326904,
+    "rms": 0.05499999999998915,
+    "seam": 0.0000030368173611350358,
+    "voices": 84
+  }
+]
