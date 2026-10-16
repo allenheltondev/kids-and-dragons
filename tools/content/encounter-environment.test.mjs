@@ -42,6 +42,7 @@ function judge(validate, doc) {
 }
 
 const sandbox = () => read(...FIXTURES, "rift-skirmish.chapter.json");
+const storm = () => read(...FIXTURES, "rift-storm.chapter.json");
 
 describe("the schema", () => {
   it("accepts the sandbox chapter and its map", () => {
@@ -81,8 +82,35 @@ describe("the schema", () => {
     expect(judge(chapterSchema, chapter).ok).toBe(false);
   });
 
+  it("accepts the storm sandbox (#220), every deferred effect in one fight", () => {
+    const chapter = judge(chapterSchema, storm());
+    expect(chapter.ok, chapter.errors.join("\n")).toBe(true);
+  });
+
+  it.each([
+    ["a push with no direction", (s) => (s.environment.hazards[2].push = { tiles: 1 })],
+    ["a push too far", (s) => (s.environment.hazards[2].push.tiles = 4)],
+    ["a root that is not true", (s) => (s.environment.hazards[1].root = false)],
+    ["four captives", (s) => s.environment.rescue.push({ name: "A", at: { x: 5, y: 5 } }, { name: "B", at: { x: 5, y: 6 } })],
+    ["a captive too tough", (s) => (s.environment.rescue[1].hp = 7)],
+    ["an unknown objective kind", (s) => (s.environment.objectives[0].kind = "guard")],
+    ["a close with no turns", (s) => delete s.environment.objectives[1].turns],
+    ["a modifier of nothing", (s) => (s.environment.modifiers[0].amount = 0)],
+    ["a modifier on nobody", (s) => (s.environment.modifiers[0].on = "nobody")],
+    ["a variant with no when", (s) => delete s.environment.variants[0].when],
+    ["a variant keyed on a flag", (s) => (s.environment.variants[0].when = { flag: "storm" })],
+    ["a relocation naming no enemy", (s) => delete s.environment.relocate[0].enemy],
+    ["an unknown creature behaviour", (s) => (s.enemies[0].rift.flies = true)],
+    ["a creature that watches the door", (s) => (s.enemies[1].rift.post = "door")],
+  ])("refuses %s (#220)", (_name, bend) => {
+    const chapter = storm();
+    bend(chapter.scenes.fight_storm);
+    expect(judge(chapterSchema, chapter).ok).toBe(false);
+  });
+
   it("is not content: neither fixture lives where the loader or the gate reads", () => {
     expect(readdirSync(join(REPO, "content", "chapters"))).not.toContain("rift-skirmish.json");
+    expect(readdirSync(join(REPO, "content", "chapters"))).not.toContain("rift-storm.json");
     expect(readdirSync(join(REPO, "content", "maps"))).not.toContain("rift_ferry.json");
   });
 });
@@ -155,6 +183,24 @@ describe("content:validate", { timeout: 60_000 }, () => {
     ["a collapse with no onTimeout", (s) => delete s.onTimeout, "needs an onTimeout branch"],
     ["a hazard on a party spawn", (s) => (s.environment.hazards[0].tiles[0] = { x: 0, y: 3 }), "party spawn"],
     ["an onEscape that goes nowhere", (s) => (s.onEscape = { goto: "scene_nowhere" }), "scene_nowhere"],
+    // The deferred effects (#220): what the schema lets through and the checker does not.
+    ["a hazard that does nothing", (s) => delete s.environment.hazards[0].damage, "a hazard must do something"],
+    [
+      "a modifier past its kind's limit",
+      (s) => (s.environment.modifiers = [{ id: "fury", label: "Fury", kind: "damage", amount: 3 }]),
+      "the damage limit",
+    ],
+    [
+      "a hold longer than the clock",
+      (s) => (s.environment.objectives = [{ id: "hold", kind: "hold", label: "Hold", tiles: [{ x: 4, y: 4 }], rounds: 5 }]),
+      "can never be held",
+    ],
+    [
+      "a variant whose exit is in the brambles",
+      (s) => (s.environment.variants = [{ when: { facts: { hedge: "open" } }, exits: [{ id: "gap", label: "Gap", tiles: [{ x: 2, y: 1 }] }] }]),
+      "/environment/variants/0/exits/0/tiles/0",
+    ],
+    ["a captive on a spawn", (s) => (s.environment.rescue = [{ name: "Pip", at: { x: 5, y: 5 } }, { name: "Moss", at: { x: 0, y: 3 } }]), "spawn point"],
   ])("refuses %s", (_name, bend, complaint) => {
     const result = withEnvironment(bend);
     expect(result.code).not.toBe(0);

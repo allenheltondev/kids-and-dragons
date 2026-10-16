@@ -717,3 +717,80 @@ describe("the sandbox's endings, in a graph campaign", () => {
     expect(settle(waitOutTheClock().state)).toMatchObject({ "ferry-sprite": "lost", "ferry-landing": "collapsed" });
   });
 });
+
+// ---------------------------------------------------------------------------
+// The storm sandbox (#220): every deferred effect in one fight
+// ---------------------------------------------------------------------------
+
+const STORM: Chapter = read("rift-storm.chapter.json");
+const STORM_FIGHT = "fight_storm";
+const stormFight = () => STORM.scenes[STORM_FIGHT] as EncounterScene;
+
+function stormCtx(die: number, facts?: Record<string, string>): EngineContext {
+  return { ...sandboxCtx(die), chapter: STORM, ...(facts ? { campaignFacts: facts } : {}) };
+}
+
+function intoTheStorm(ctx: EngineContext): RunState {
+  let s = createRunState({ runId: "r_2", roomCode: "WXYZ", mode: "travel", now: "2026-10-15T11:00:00.000Z" });
+  s = must(s, "p_1", CREATE("Pip"), ctx).state;
+  s = must(s, "p_2", CREATE("Wren"), ctx).state;
+  s = must(s, "p_1", { type: "READY", ready: true }, ctx).state;
+  s = must(s, "p_2", { type: "READY", ready: true }, ctx).state;
+  s = must(s, "p_1", { type: "START_CHAPTER", chapterId: STORM.id }, ctx).state;
+  s = must(s, "p_1", { type: "PLAYTEST_GOTO", sceneId: STORM_FIGHT }, ctx).state;
+  s = must(s, "p_1", { type: "READY", ready: true }, ctx).state;
+  return must(s, "p_2", { type: "READY", ready: true }, ctx).state;
+}
+
+describe("the storm sandbox (#220)", () => {
+  it("passes the authoring check, with its map and without, and the chapter check", () => {
+    expect(checkEncounterEnvironment(stormFight(), SANDBOX_MAP)).toEqual([]);
+    expect(checkEncounterEnvironment(stormFight())).toEqual([]);
+    expect(validateChapter(STORM).filter((p) => p.severity === "error")).toEqual([]);
+  });
+
+  it("starts with every part in place: both captives walled, the storm on everyone, the brute's way with the place", () => {
+    const state = intoTheStorm(stormCtx(1));
+    const encounter = state.encounter!;
+    expect(encounter.environment).toMatchObject({ rescue: ["waiting", "waiting"], captiveHp: [0, 2], objectives: [0, 0] });
+    expect(terrainAt(encounter.board, { x: 1, y: 7 })).toBe("blocked");
+    expect(terrainAt(encounter.board, { x: 8, y: 7 })).toBe("blocked");
+    expect(encounter.buffs?.filter((b) => b.id === "storm")).toHaveLength(state.party.length + 2);
+    expect(combatantById(encounter, "brute#1")!.rift).toEqual({ shoves: true, ignores: ["thorns"] });
+    const view = environmentView(encounter)!;
+    expect(view.captives.map((c) => c.name)).toEqual(["Pip", "Moss"]);
+    expect(view.objectives.map((o) => o.id)).toEqual(["beacon", "small-tear"]);
+  });
+
+  it("is a different storm when the world says it is raging", () => {
+    const spec = intoTheStorm(stormCtx(1, { storm: "raging" })).encounter!.environment!.spec;
+    expect(spec.clock).toMatchObject({ rounds: 4, surge: 2 });
+    expect(spec.modifiers!.map((m) => m.id)).toEqual(["rain"]);
+  });
+
+  it("is winnable: heroes who walk up and swing beat it, and the screen is told how", () => {
+    const ctx = stormCtx(20);
+    let state = intoTheStorm(ctx);
+    const hazards = new Set(stormFight().environment!.hazards!.flatMap((h) => h.tiles.map((t) => `${t.x},${t.y}`)));
+    for (let guard = 0; guard < 80 && state.encounter; guard++) {
+      const member = ownerOf(state);
+      const enemies = state.encounter.combatants.filter((c) => c.side === "enemy" && !c.down).map((c) => positionOf(state.encounter!, c.id)!);
+      const at = positionOf(state.encounter, member.character.id)!;
+      const near = (p: Position) => Math.min(...enemies.map((e) => stepsBetween(p, e)));
+      if (near(at) > 1) {
+        const best = [...legalMoves(state.encounter)].filter((t) => !hazards.has(`${t.x},${t.y}`)).sort((a, b) => near(a) - near(b))[0];
+        if (best && near(best) < near(at)) state = must(state, member.playerId, { type: "MOVE", to: { x: best.x, y: best.y } }, ctx).state;
+      }
+      const attack = legalActions(state.encounter!, ctxOf(ALWAYS(20))).find((a) => a.abilityId === "attack");
+      if (attack) state = must(state, member.playerId, { type: "COMBAT_ACTION", abilityId: "attack", targetId: attack.targets[0]! }, ctx).state;
+      if (state.encounter && currentActorId(state.encounter) === member.character.id) {
+        state = must(state, member.playerId, { type: "END_TURN" }, ctx).state;
+      }
+    }
+    expect(state.encounter).toBeNull();
+    expect(state.sceneId).toBe("scene_calm");
+    expect(state.chapterOutcome).toBe("success");
+    expect(state.fightEndings).toHaveLength(1);
+    expect(state.fightEndings![0]!.outcome).toBe("victory");
+  });
+});

@@ -50,6 +50,12 @@
  * first (a monster with somebody to hit hits them). A turn handed no
  * environment never reaches them — that is the line Gemfall stands behind.
  *
+ * #220 added the door this header left open — a creature's own sentence,
+ * `EnemySpec.rift` ("walks through fire", "always guards the way out",
+ * "shoves you into the thorns") — and one about the clock everyone can see:
+ * in the last round of a rift that collapses, every monster with nobody to
+ * hit heads for the way out. Both are read only in a place that fights back.
+ *
  * **It never targets a knocked-down hero (§7.3).** She is down, not dead, and
  * lying on the grid waiting for a Help Up. An enemy that keeps hitting a fallen
  * friend is both cruel and, worse for this module, unreadable — the picture on
@@ -462,7 +468,10 @@ function closeTheGap(
  *      them the same way, so freeing Pip means stopping next to a monster. The
  *      captive is never a target — they are walled terrain, not a figure, and
  *      nothing here swings at terrain — and the same reachability rule keeps
- *      at least one of the captive's sides open to a hero.
+ *      at least one of the captive's sides open to a hero. (A captive with
+ *      `hp`, #220, is dragged at by a monster that *ends its turn* beside them
+ *      without swinging — encounter.ts does that; this planner only gets the
+ *      watcher there.) Several captives are several posts, in authored order.
  *
  * Who watches what is decided from the board alone (the posts in authored
  * order, each to the nearest monster as the crow flies, ties by reading

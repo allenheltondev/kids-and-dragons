@@ -1541,6 +1541,42 @@ read, so the two can never disagree about which exit is open in round 3:
   fight without one; `board-environment.test.ts` pins a SHA-256 digest of every node the board draws
   for Gemfall's wolf fight (gemfall-02 on `roadside`), taken on the board before the overlay existed.
 
+### Done after #201: the deferred effects (#220)
+
+Everything below is opt-in exactly as #201 is: absent, nothing changes (the Gemfall digests and the
+TV board digest are unchanged). Every rule still fires at a turn's end or a round's start. The
+second sandbox, [`rift-storm.chapter.json`](../../packages/shared/src/fixtures/rift-storm.chapter.json)
+on the same board, uses every part at once; `encounter-environment.test.ts` checks it and plays it
+to a win through the engine, `encounter-environment-more.test.ts` holds each rule on its own, and
+`tools/content/encounter-environment.test.mjs` holds the schema and `content:validate` to it.
+
+| Part | Meaning |
+|---|---|
+| hazard `slow: { steps, turns }`, `root: true`, `push: { direction, tiles? }` | Ground that does more than hurt (`damage` is now optional; a hazard does at least one thing). After any damage, a figure still standing is **Slowed** (a `"move"` burden, Numbed's mechanism under its own `"slowed"` entry, so mud and a sting never refresh each other; steps 1–2, turns 1–5), **held** (no steps next turn, as Tanglelight) and **thrown** 1–3 squares north, south, east or west, stopping at a wall, the edge or a figure. Where it lands does nothing more that turn. Monsters weigh such ground as its damage plus one. Beats: `slowed`, `rooted`, `shoved`. |
+| `rescue: [ … ]` | One captive, or a list of up to three, each walled, freed, timed (`byRound`) and rewarded (`effects`) on its own. Events about a captive carry `captive` (its index) only for a list. Monsters watch each waiting captive as a post of its own. |
+| captive `hp` (1–6) | A captive the monsters can get at: a monster that **ends its turn** beside them **without having swung** drags at them, one each such turn (`captiveDragged`); at none they are lost, the same loss as running out of time. No roll, nobody hurt. The watching monster (rule 3) does exactly this when it has nobody to hit. |
+| `objectives: [{ id, kind: "hold", label, tiles, rounds }]` | Hold ground: a round counts when it **ends** with a standing hero on one of `tiles` and no monster on any (not in a row). |
+| `objectives: [{ id, kind: "close", label, at, turns }]` | Close a tear: each hero turn **ended** on or beside `at` counts, any heroes, any order. |
+| objective `effects`, `endsFight` | `effects` apply when the fight ends, however it ends, if done. `endsFight: true` makes done a **victory** (`onVictory`, whose variants can read the effects' flag). Beat: `objective` (`progress` of `target`). |
+| `modifiers: [{ id, label, kind, amount, on? }]` | The place's own numbers for the whole fight: `guard`, `damage`, `move` or `roll`, on `everyone` (default), the `party` or the `monsters`. Each becomes a `CombatBuff` per figure when the fight begins, read through `buffBonus` and so **clamped by the same per-kind limits** (`BUFF_LIMITS`) as the party's own buffs. |
+| `variants: [{ when: { facts }, …parts }]` | The same place changed by the world: the first variant whose world facts hold replaces each part it lists when the fight begins (an empty list removes one); the fight stores the resolved place. The run carries the journey's facts (`RunState.facts`, seeded at chapter start only when the graph declares facts); without facts, or with none holding, it is the place as authored. |
+| relocate `whenHurt: true` | Instead of a `round`: the rift pulls the monster away at the start of the first round (from 2) it has half its hearts or fewer, once. |
+| enemy `rift: { ignores?, post?, shoves? }` | A creature's own way with a place, read only in a fight with an environment. `ignores`: hazard kinds that do nothing to it, which it stops on freely. `post`: `"exit"` (always guards the way out, sharing it if another got there first), `"captive"`, or `"none"` (only ever goes for the heroes). `shoves`: at its turn's end the first hero beside it, in reading order, whose far side is open, active hazard ground goes one square onto it and the ground bites them then; it swings from the side that lines the shove up. |
+| reading the clock | In the last round (`CLOCK_URGENCY = 1`) of a `"collapse"` clock, every monster with nobody to hit and no post of its own heads for the way out. |
+
+**The chapter-complete screen** now says how each environmental fight ended, one line each with an
+icon: "You got out through the rift. You freed Pip." (`RunState.fightEndings`, written only by a
+fight with an environment and cleared when a chapter starts; words in `fight-ending-copy.ts`).
+
+**Checks.** The schema knows every new field. `checkEncounterEnvironment` also wants a hazard to do
+something, holds slows, pushes, captive `hp`, objective counts and modifier amounts (to the kind's
+own limit) in range, refuses a hold longer than a collapse clock, keeps the fight's own buff names
+(`numbed`, `slowed`) for itself, wants exactly one of `round` and `whenHurt`, keeps objectives and
+captives off each other and off spawns, wants them reachable with the map, and judges **every
+variant as a place of its own**, with `onEscape` / `onTimeout` required if any variant can end that
+way. `content:validate` holds a variant's facts to the facts the graph campaign that lists the
+chapter declares.
+
 ### Deferred (not in #201)
 
 - ~~**Enemy AI** does not know about hazards, exits or the captive~~ — **done** (follow-up to #201,
@@ -1569,19 +1605,20 @@ read, so the two can never disagree about which exit is open in round 3:
      could reach them from. The captive is terrain, never a target.
 
   Who watches what is computed from the board alone (posts in authored order, exits first), so
-  every monster reads the same answer — no coordination, no randomness, no hit points. Still
-  deferred: monsters that *use* the place (driving heroes into fire, relocating on purpose), a
-  per-creature `behavior` for environments, and anything reading the clock.
-- **Hazard effects other than damage** (slow, root, push), **several captives**, captives that can
-  be attacked, and objectives other than a rescue.
-- **Environment keyed on world state.** Use a node *variant* whose `when` reads the fact — the
-  variant is a different chapter, so the changed place carries its own environment. A modifier
-  `when: GraphCondition` on the environment itself would need the journey inside a run, which runs
-  do not carry (facts are not seeded into chapter runs).
-- **Environmental number overlays** (a node-wide −1 Guard in the storm): would ride the #200 seam
-  (`buffBonus`) as setup buffs; not needed by anything here.
-- **The chapter-complete screen** does not list which ending the fight took; the branch's
-  narration says it.
+  every monster reads the same answer — no coordination, no randomness, no hit points. Monsters
+  that use the place, per-creature behaviour and reading the clock came with #220 (below).
+- ~~Hazard effects other than damage, several captives, captives that can be attacked, objectives
+  other than a rescue, environment keyed on world state, place-wide number overlays, the
+  chapter-complete screen naming the ending, monsters that use the place, a per-creature
+  behaviour~~ — **done** in #220; see [the deferred effects](#done-after-201-the-deferred-effects-220).
+
+Still deferred, on purpose:
+
+- **A `when` on the environment reading anything but facts.** A run carries the journey's world
+  facts (#220) and nothing else of it; `visited`, `completed` and journey flags inside a fight
+  would need the journey in the run. Use a node variant for those, as before.
+- **Monsters choosing between posts by anything but the board.** A creature's `rift.post` says
+  what it watches; nothing reads hit points to decide it.
 
 ---
 
