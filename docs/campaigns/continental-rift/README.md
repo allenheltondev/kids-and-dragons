@@ -27,5 +27,5 @@ Engine epic: [#191](https://github.com/allenheltondev/kids-and-dragons/issues/19
 
 ## Open items
 - **Canon registered:** the campaign `campaign.riftlight` (with its Gemfall prerequisite, Corvane and Pangea as creator-only constraints), `faction.riftseekers`, Ashspan Bridge (the title of `route.northern_river_bridge`), `route.cairnstep`, and the glacier-prison and rift-silt hidden truths in `biomes.yaml`. The named characters are deliberately not in `individuals.yaml` ([characters.md](characters.md#supporting-riftseekers--agreed)); the Listening Chime goes in a chapter's `props`, as Gemfall's quest items do.
-- Complete geography and node IDs/routes beyond the opening, one regional strand at a time.
+- Node-by-node specs (entry, scenes, checks, flags, exits, revisits) for every node, as the washout has.
 - Chapter schema details.

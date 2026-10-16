@@ -22,6 +22,19 @@ Campaign-only, like the rest of the fellowship. **Not in `canon/individuals.yaml
 
 The glacier scene stays short: Orin, Olivia and Seren, one lead, no lectures. The pairs mirror the theme without saying it: Orin and Bram understand first and go carefully; Olivia and Pip want to harness it; Seren sits between. Seren's reaction hangs off the **flag set by the Starweaver's choice**, not a class check on narration, so it needs no new engine support.
 
+## How the party's choices decide the Riftseekers — agreed
+Four flags: helping Olivia hold the linked rifts (Wandering Sky); sharing the chime's readings with Orin (Restless Coast); helping Bram stop Olivia's summoning (the convergence); and Pip's choice.
+
+| | Helped Bram stop her | Did not stop her |
+| --- | --- | --- |
+| **Helped her in the Sky** | ***Redeemed:*** friends told her no, and she listens. She joins Orin's study. | ***Ally:*** her summoning goes wrong (the colors surprise her), but the party stood by her. She helps hold the land in the finale, humbled. |
+| **Did not, or skipped the Sky** | ***Rival:*** she leaves, unpunished, to try her own way. | ***Rival*** |
+
+- **Pip mirrors the party:** if they helped Bram, Pip stays back; if not, he follows Olivia.
+- **Orin's flag** opens a non-combat option at the convergence: Orin talks Olivia down instead of Bram stopping her.
+- **Skipping the Sky means meeting Olivia cold at the convergence:** a consequence of route choice, never a block on the endgame.
+- **Allies in the finale:** an ally Olivia, or an ally wyrm from Forgotten Paths, **counts as one extra anchor** against Corvane's final rift, so 2 fragments plus an ally reaches "overpowered". The battle keeps its two authored versions.
+
 ## Ancient emperor — author-only, secret until final reveal
 **Emperor Corvane, of Pangea — agreed** (new canon, pending registration; canon has no emperors or empires yet). The name deliberately does not sound like present-day canon names, which are homely everyday words (Old Ossley, Bracken Swiftmile): his sounds old and a little grand, not villainous. Once ruled a geographically different realm, was held captive for about a millennium and is newly free after events of Gemfall. Has extensive experience summoning/manipulating ancient rifts but **cannot prescribe behavior**. Wants to relocate today's landscapes to the layout of his old realm, however disruptive. His nostalgia and certainty make him dangerous without needing a child-inappropriate simplistic 'evil' frame. His actions are not explained to players until the very end.
 
