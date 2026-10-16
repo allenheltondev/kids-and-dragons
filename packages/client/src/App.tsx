@@ -6,6 +6,8 @@
  * selects composition; it never forks a feature.
  *
  *   no session          → <HomeScreen/>
+ *   /journal            → <JournalScreen/> (between games: nothing to play,
+ *                         everything to look at — no room, no session)
  *   /tv/:code           → PartyLayout world  (a pure display client, spec §2.1)
  *   /p/:code   party    → PartyLayout player
  *   /p/:code   travel   → TravelLayout       (both surfaces, one at a time)
@@ -13,6 +15,7 @@
 
 import { useEffect } from "react";
 import { HomeScreen } from "./screens";
+import { JournalScreen } from "./screens/JournalScreen";
 import { PartyLayout } from "./layout/PartyLayout";
 import { TravelLayout } from "./layout/TravelLayout";
 import { routeCode, useRoute } from "./router";
@@ -70,6 +73,7 @@ export function App(): React.JSX.Element {
   );
 
   function pickLayout(): React.JSX.Element {
+    if (route.name === "journal") return <JournalScreen />;
     const code = routeCode(route);
 
     if (!code || !session) {

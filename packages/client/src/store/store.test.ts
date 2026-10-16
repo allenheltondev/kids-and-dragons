@@ -73,6 +73,8 @@ function harness(state: RunState = makeState()): Harness {
     })),
     // This player's saved heroes (spec §5). Empty unless a test says otherwise.
     listHeroes: vi.fn(async () => ({ heroes: [] as ResolvedCharacter[] })),
+    // Between games (screens/JournalScreen). Empty unless a test says otherwise.
+    loadJournal: vi.fn(async () => ({ heroes: [] as ResolvedCharacter[], fieldGuide: {}, finders: {}, whereabouts: null })),
     joinRoom: vi.fn(async () => ({
       runId: state.runId,
       playerId: "p_1",
@@ -237,6 +239,20 @@ describe("joining", () => {
     await h.store.getState().joinRoom("ABCD", "Allen");
     await h.store.getState().listHeroes();
     expect(h.api.listHeroes).toHaveBeenCalledWith("tok_1");
+  });
+
+  it("opens the journal with the device binding, and not on a phone that has never played", async () => {
+    const h = harness();
+    expect(await h.store.getState().loadJournal()).toBeNull();
+    expect(h.api.loadJournal).not.toHaveBeenCalled();
+    // Asking must not mint an identity for a phone that has never played.
+    expect(h.storage.getItem("kad.device")).toBeNull();
+
+    // Hosting is what binds this phone; out of the room, the binding remains.
+    await h.store.getState().createRoom("travel", "Allen");
+    h.store.getState().leave();
+    expect(await h.store.getState().loadJournal()).toMatchObject({ heroes: [], whereabouts: null });
+    expect(h.api.loadJournal).toHaveBeenCalledWith("dev_host");
   });
 
   it("surfaces a failure and does not leave a half-built session", async () => {

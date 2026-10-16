@@ -8,6 +8,13 @@ describe("parseRoute", () => {
     expect(parseRoute("/p/ABCD")).toEqual({ name: "player", code: "ABCD" });
   });
 
+  it("maps /journal, which needs no room code", () => {
+    expect(parseRoute("/journal")).toEqual({ name: "journal" });
+    expect(parseRoute("/journal/")).toEqual({ name: "journal" });
+    expect(formatRoute({ name: "journal" })).toBe("/journal");
+    expect(routeCode({ name: "journal" })).toBeNull();
+  });
+
   it("treats an empty path as home", () => {
     expect(parseRoute("")).toEqual({ name: "home" });
     expect(parseRoute("//")).toEqual({ name: "home" });

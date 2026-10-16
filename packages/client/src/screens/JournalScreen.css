@@ -1,0 +1,116 @@
+/*
+ * JournalScreen — between games. The shell borrows `.kad-travel` (and so its
+ * one `100dvh`); everything inside a pane is a `.kad-surface` and sized in em,
+ * exactly like the game's own panes (architecture §4.6 rule 2).
+ */
+
+/* Loading, a phone that has never played, and a failed read: one card, centred. */
+.journal--waiting {
+  display: grid;
+  place-items: center;
+  min-block-size: 100dvh;
+  padding: var(--kad-safe-top) calc(var(--kad-safe-right) + 1rem) var(--kad-safe-bottom) calc(var(--kad-safe-left) + 1rem);
+  background: var(--kad-bg);
+}
+
+.journal__card {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  inline-size: min(100%, 26rem);
+  padding: 1.25em;
+  border: 0.08em solid var(--color-border, #3a3468);
+  border-radius: var(--radius-lg, 1.25em);
+  background: var(--color-surface, #191534);
+  box-shadow: var(--shadow-lg, 0 1em 3em rgba(0, 0, 0, 0.45));
+}
+
+.journal__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+  font-family: var(--kad-font-display);
+  font-size: 1.3em;
+}
+
+.journal__hint { margin: 0; }
+
+.journal__busy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75em;
+}
+
+/* --- The hero pane ----------------------------------------------------- */
+
+.journal__hero {
+  block-size: 100%;
+  overflow-y: auto;
+  padding: 0.75em;
+}
+
+.journal__heroes {
+  display: flex;
+  gap: 0.6em;
+  margin: 0 0 0.75em;
+  padding: 0 0 0.25em;
+  list-style: none;
+  overflow-x: auto;
+}
+
+.journal__pick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25em;
+  inline-size: 5.5em;
+  padding: 0.4em;
+  border: 0.1em solid transparent;
+  border-radius: 1em;
+  background: #20192f;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Chosen is a border and a lit portrait, never colour alone (spec §11). */
+.journal__pick--on {
+  border-color: #f3ddb3;
+}
+
+.journal__pick-art {
+  display: block;
+  inline-size: 4em;
+  block-size: 4.5em;
+}
+
+.journal__pick-name {
+  max-inline-size: 100%;
+  overflow: hidden;
+  font-size: 0.85em;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.journal__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  block-size: 100%;
+  padding: 1.5em;
+  text-align: center;
+}
+
+/* --- The map pane ------------------------------------------------------ */
+
+/* In play the Atlas/Story-trail flip sits above the atlas; here nothing does,
+   so its zoom buttons would sit under the shell's sound button (fixed, top
+   right). Leave that corner to it. Chrome-sized, so rem like the button. */
+.journal [data-pane="map"] .atlas__head {
+  padding-inline-end: calc(var(--kad-touch-min) + 0.5rem);
+}
