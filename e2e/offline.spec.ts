@@ -290,7 +290,7 @@ test("a deploy whose content an edge has not caught up with never takes over", a
 
     // The old worker is still in charge, with all its copies: the book opens
     // with no signal, Field Guide and all.
-    await context.setOffline(true);
+    await noSignal(context, proxy, phone);
     await phone.goto("/journal");
     await expect(phone.getByText(/no signal/i)).toBeVisible(TAP);
     await studyTheBook(phone);
@@ -336,7 +336,7 @@ test("pictures an earlier worker saved survive the upgrade to this one", async (
     expect(await kept(phone, painting)).toBe(true);
 
     // And the book, opened with no signal, still has its map.
-    await context.setOffline(true);
+    await noSignal(context, proxy, phone);
     await phone.goto("/journal");
     await expect(phone.getByText(/no signal/i)).toBeVisible(TAP);
     await phone.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Map" }).click(TAP);
