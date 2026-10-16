@@ -13,6 +13,7 @@
 
 import { test, expect, type Page, type BrowserContext } from "@playwright/test";
 import type { Chapter, CastMember } from "../packages/shared/src/index";
+import { MUSIC_SPECS } from "../packages/client/src/audio/paths";
 
 const TAP = { timeout: 20_000 } as const;
 const SCENES = (process.env.KAD_CAST_SCENES ?? "scene_tavern,choice_ember,scene_motive_wealth")
@@ -26,7 +27,8 @@ const SCENES = (process.env.KAD_CAST_SCENES ?? "scene_tavern,choice_ember,scene_
 async function previewCast(context: BrowserContext): Promise<void> {
   const castInput = process.env.KAD_CAST_PREVIEW;
   const artInput = process.env.KAD_SCENE_ART_PREVIEW;
-  if (!castInput && !artInput) return;
+  const musicInput = process.env.KAD_SCENE_MUSIC_PREVIEW;
+  if (!castInput && !artInput && !musicInput) return;
   const input = castInput ? JSON.parse(castInput) as CastMember | CastMember[] : undefined;
   const members = input ? (Array.isArray(input) ? input : [input]) : undefined;
   if (members && (!members.length || members.length > 3 || members.some((member) => !/^(characters|entities|cast)\/[a-z0-9_]+$/.test(member.figure)))) throw new Error("Invalid cast preview figures (one to three required)");
@@ -34,6 +36,9 @@ async function previewCast(context: BrowserContext): Promise<void> {
   const art = artInput?.startsWith("{") ? JSON.parse(artInput) as Record<string, string> : artInput;
   const paths = typeof art === "object" ? Object.values(art) : art ? [art] : [];
   if (paths.some((path) => !/^scenes\/[a-z0-9_-]+\/[a-z0-9_-]+$/.test(path))) throw new Error("Invalid scene art preview path");
+  const music = musicInput?.startsWith("{") ? JSON.parse(musicInput) as Record<string, string> : musicInput;
+  const tracks = typeof music === "object" ? Object.values(music) : music ? [music] : [];
+  if (tracks.some((track) => !Object.hasOwn(MUSIC_SPECS, track))) throw new Error("Unknown scene music preview");
   await context.route("**/content/chapters/*.json", async (route) => {
     const response = await route.fetch();
     const chapter = await response.json() as Chapter;
@@ -43,6 +48,8 @@ async function previewCast(context: BrowserContext): Promise<void> {
         if (members) scene.cast = members;
         const backdrop = typeof art === "object" ? art[id] : art;
         if (backdrop) scene.art = backdrop;
+        const track = typeof music === "object" ? music[id] : music;
+        if (track) scene.music = track;
       }
     }
     await route.fulfill({ response, json: chapter });
@@ -110,6 +117,7 @@ test("photograph a cast on the story stage", async ({ browser }) => {
   contexts.push(tvCtx);
   const tv = await tvCtx.newPage();
   await tv.goto(`/tv/${code}`);
+  if (process.env.KAD_SCENE_MUSIC_PREVIEW) await tv.keyboard.press("Shift");
 
   // "Ready to play" at the end of creation already said ready.
   await host.getByRole("button", { name: /begin the adventure/i }).click(TAP);

@@ -33,7 +33,10 @@ export function musicUrl(biome: string): string {
 
 /** Reuse approved arrangements across related places without duplicating files. */
 export const MUSIC_BY_BIOME: Record<string, string> = {
-  enchanted_woods: "forest", mosshome: "forest", bramblewood: "forest", sky_islands: "forest",
+  enchanted_woods: "forest", mosshome: "forest", bramblewood: "forest",
+  glacier_of_origins: "riftlight-paths", frostfang_peaks: "riftlight-paths",
+  sky_islands: "riftlight-sky",
+  sallow_wastelands: "riftlight-coast", bone_yard: "riftlight-coast",
   whispering_marsh: "gemfall-marsh", mermaid_cove: "gemfall-marsh",
   exchange: "gemfall-citadel", sunward_fields: "gemfall-citadel", plains: "gemfall-citadel",
   eastern_plains: "gemfall-citadel", stone_crossing: "gemfall-citadel",
@@ -145,6 +148,10 @@ export const CUE_SPECS: Record<CueId, CueSpec> = {
  * arrive playable before anybody composes for them.
  */
 export const MUSIC_SPECS: Record<string, CueSpec> = {
+  "riftlight-theme": { brief: "The five-note D–F–A–G–E rift motif stated plainly over warm strings and a soft glassy shimmer. Curious, a little wondering, gentle enough to talk over.", seconds: 40 },
+  "riftlight-paths": { brief: "Slow, cold and still: sustained low tones, ice-like bell overtones, the D–F–A–G–E rift motif carried by a low voice. Memory and patience.", seconds: 40 },
+  "riftlight-sky": { brief: "Airy and drifting: high breathy winds, slow swells like distant whale song, the D–F–A–G–E rift motif floating in and out.", seconds: 40 },
+  "riftlight-coast": { brief: "Brackish and restless: low reeds, a slightly uneven pulse, wet percussion, the D–F–A–G–E rift motif slipping in rhythm.", seconds: 40 },
   "entry-home": { brief: "Welcoming acoustic plucks, soft hand percussion and a sparse flute phrase in a lilting six-beat rhythm.", seconds: 36 },
   "entry-lobby": { brief: "Quiet fireside strings and occasional mellow reed answers, with soft outdoor air. Unhurried, no percussion or creature calls.", seconds: 40 },
   "gemfall-marsh": { brief: "Breathy reed phrases over suspended drones and soft marsh air. Curious and unhurried.", seconds: 32 },

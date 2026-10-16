@@ -1,0 +1,35 @@
+
+> kids-and-dragons@0.0.0 test
+> vitest run --maxWorkers=1 packages/client/src/audio tools/audio/riftlight-music.test.ts tools/audio/riftlight.test.ts
+
+
+ RUN  v4.1.10 C:/Users/allen/.codex/worktrees/riftlight-part-a/kids-and-dragons
+
+ ❯ packages/client/src/audio/procedural.test.ts (40 tests | 3 failed) 36843ms
+     × renders audible, bounded PCM for 'riftlight-sky' 5240ms
+     × renders audible, bounded PCM for 'riftlight-coast' 5077ms
+     × renders audible, bounded PCM for 'forest' 6493ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  packages/client/src/audio/procedural.test.ts > procedural audio previews > renders audible, bounded PCM for 'riftlight-sky'
+ FAIL  packages/client/src/audio/procedural.test.ts > procedural audio previews > renders audible, bounded PCM for 'riftlight-coast'
+ FAIL  packages/client/src/audio/procedural.test.ts > procedural audio previews > renders audible, bounded PCM for 'forest'
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ packages/client/src/audio/procedural.test.ts:24:30
+     22|     expect(new Set(sounds.map((s) => s.id)).size).toBe(sounds.length);
+     23|   });
+     24|   it.each(proceduralSounds())("renders audible, bounded PCM for $id", …
+       |                              ^
+     25|       // Loop slope checks use the production sample rate; downsamplin…
+     26|       // legitimate adjacent-sample differences, especially with harmo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+
+ Test Files  1 failed | 8 passed (9)
+      Tests  3 failed | 110 passed (113)
+   Start at  12:14:41
+   Duration  49.89s (transform 4.52s, setup 0ms, import 6.16s, tests 38.31s, environment 2.08s)
+

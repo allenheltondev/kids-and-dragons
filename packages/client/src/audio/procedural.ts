@@ -1,6 +1,7 @@
 /** Approved procedural source bank. Exported samples keep this renderer out of the game bundle. */
 import { CUE_SPECS, MUSIC_SPECS } from "./paths";
 import type { CueId } from "./cue";
+import { riftlightMusic } from "./riftlight";
 
 export interface Voice {
   at: number;
@@ -199,7 +200,7 @@ export function proceduralSounds(): ProceduralSound[] {
     { id: "seal-awakening", label: "Seal awakening", brief: "A gentle deep mineral rumble beneath crystal chimes. Awe rather than alarm.", seconds: 6, voices: [{ at: 0, duration: 6, freq: 0, noise: true, cutoff: 160, gain: 0.2, attack: 1.3 }, { at: 0, duration: 6, freq: 65.41, endFreq: 73.42, gain: 0.18, attack: 1.5 }, ...[523.25, 659.25, 783.99].map((freq, i) => bell(freq, 1.2 + i * 0.8, 2.4, 0.08, i % 2 ? 0.4 : -0.4))], echo: 0.2 },
     { id: "cavern-air", label: "Cavern ambience", brief: "Soft filtered cavern air and occasional resonant mineral droplets.", seconds: 12, voices: [{ at: 0, duration: 12, freq: 0, noise: true, cutoff: 450, gain: 0.09, attack: 1.2 }, ...[0.6, 3.7, 7.3, 10.1].map((at, i) => bell([523.25, 392, 659.25, 440][i]!, at, 1.7, 0.075, i % 2 ? 0.5 : -0.5))], echo: 0.32 },
   ].map((spec) => ({ ...spec, group: "Gemfall effects", loop: false } as ProceduralSound));
-  return [...game, ...extras, ...entryMusic(),
+  return [...game, ...extras, ...entryMusic(), ...riftlightMusic(),
     music("forest", "Enchanted forest", MUSIC_SPECS.forest!.brief, MUSIC_SPECS.forest!.seconds, 130.81, "forest"),
     music("gemfall-marsh", "Marsh mysteries", "Breathy reed phrases over suspended drones and soft marsh air. Curious and unhurried.", 32, 110, "marsh"),
     music("gemfall-citadel", "Citadel discovery", "Light plucked strings, alternating bass, and a gentle travelling pulse. Warm and purposeful.", 32, 146.83, "citadel"),

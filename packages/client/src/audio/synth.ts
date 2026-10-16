@@ -146,6 +146,16 @@ export const CUE_TONES: Record<CueId, Tone[]> = {
  * this table the same way samples replace `CUE_TONES`.
  */
 export const MUSIC_PADS: Record<string, number[]> = {
+  // Riftlight's D minor/add9 harmony remains available when samples cannot load.
+  "riftlight-theme": [146.83, 220, 293.66, 329.63],
+  "riftlight-paths": [73.42, 110, 146.83, 164.81],
+  "riftlight-sky": [146.83, 220, 329.63],
+  "riftlight-coast": [73.42, 110, 174.61, 220],
+  glacier_of_origins: [73.42, 110, 146.83, 164.81],
+  frostfang_peaks: [73.42, 110, 146.83, 164.81],
+  sky_islands: [146.83, 220, 329.63],
+  sallow_wastelands: [73.42, 110, 174.61, 220],
+  bone_yard: [73.42, 110, 174.61, 220],
   // A low add9 — warm, a little mysterious, unmistakably "under the trees".
   forest: [98, 147, 196, 220],
 };
