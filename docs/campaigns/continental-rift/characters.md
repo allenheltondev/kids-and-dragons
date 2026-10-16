@@ -38,6 +38,25 @@ Four flags: helping Olivia hold the linked rifts (Wandering Sky); sharing the ch
 ## Ancient emperor — author-only, secret until final reveal
 **Emperor Corvane, of Pangea — agreed** (new canon, pending registration; canon has no emperors or empires yet). The name deliberately does not sound like present-day canon names, which are homely everyday words (Old Ossley, Bracken Swiftmile): his sounds old and a little grand, not villainous. Once ruled a geographically different realm, was held captive for about a millennium and is newly free after events of Gemfall. Has extensive experience summoning/manipulating ancient rifts but **cannot prescribe behavior**. Wants to relocate today's landscapes to the layout of his old realm, however disruptive. His nostalgia and certainty make him dangerous without needing a child-inappropriate simplistic 'evil' frame. His actions are not explained to players until the very end.
 
+### Corvane's voice — agreed
+A voice guide for his `npcVoices` entry; chapter authors write around it.
+- **Confused above all.** He has woken after a millennium into a world that looks broken to him, and he does not understand why the rivers and valleys are "wrong". He is **certain about what should be and bewildered by what is**: the confusion is what makes him sympathetic, the certainty what makes him dangerous.
+- **Courtly, patient, sad:** an old king, not a monster. Short sentences, age-8 vocabulary.
+- **He calls today's places by Pangea's names and calls them "mine"** ("my rivers", "my valleys"): his tell, heard only after the reveal.
+- **Never threatens the children; never says destroy or hurt.** Forbidden for him, beyond Gemfall's list: conquer, punish, servants, and anything implying the present inhabitants do not matter. He simply does not *see* them yet; in the gentler ending he learns to.
+- **Before the reveal, no voice at all:** only the patterns he leaves. The yeti's "do not shout near the old ice" is the closest hint.
+
+| Moment | Line |
+| --- | --- |
+| The reveal | "Why is the river on the wrong side of the mountain?" Then: "Do you know how long I have waited to see my rivers run the right way again?" |
+| A fragment anchors the land | "Those stones are mine. I set them there." As the land answers: "It listens to *you*?" |
+| His own rift shows colors he did not choose (the theme in one line) | "That is not the color I asked for." |
+| The battle | "I only want to go home." |
+| Defeated | "It was a very good map." |
+| *The Glacier Keepers* | "Wake me if the rivers ever forget their way." |
+| *The Ones Who Listened* | "Then tell me what you call this valley now." |
+| *Rivers Wander* (loss) | He does not get the last word: Orin's "Then we learn the new map" is the spark. |
+
 ## Character collision — planned
 Orin seeks comprehension; Lady Olivia seeks power; the emperor seeks restoration. Their different reactions to limits of magic can affect allegiance, access to tools, and the finale. Do not expose the emperor's identity by having Riftseekers refer to him early: before the reveal he is only "whoever is moving the land".
 
