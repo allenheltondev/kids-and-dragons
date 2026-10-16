@@ -1,0 +1,169 @@
+
+> kids-and-dragons@0.0.0 art:verify:rig
+> node tools/art/verify-rig.ts
+
+Kids & Dragons - rig verify
+manifest: assets/manifest.json   contract: asset-brief.md §9.2
+
+contract
+  pass  clock  12fps tick, 45-tick turn budget
+  pass  clip timings  12 clips, whole ticks, no loop/hold conflict
+  pass  event ticks  8 event(s), all inside their clip
+  pass  inputs  9 trigger(s), 1 bool(s), 1 number(s), no collisions
+  pass  clip sets  hero 12, enemy 5; every required clip defined, every clip required
+  pass  triggers  every trigger plays a clip, every clip is reachable
+
+budget & sync
+  pass  turn budget  worst turn 45/45 ticks  (roll 18 + move 12 + cast 10 + 5 tick(s) of effect tail)
+  effect sync  17 ambient loop(s) skipped (startsOn: null): aura_bigfoot, aura_dragonling, aura_griffin, aura_kitsune, aura_manticore, aura_unicorn, rift_neutral, rift_base, rift_green, rift_amber, rift_blue, rift_violet, rift_shrink, rift_stutter, rift_sync, rift_open, rift_collapse
+  pass  effect sync  11 sheet(s) declare their start, hit a real event, and share the tick
+
+rigs
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/unicorn/fledgling/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/unicorn/sworn/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/unicorn/radiant/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/unicorn/mythic/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/dragonling/fledgling/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/dragonling/sworn/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/dragonling/radiant/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/dragonling/mythic/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/griffin/fledgling/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/griffin/sworn/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/griffin/radiant/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/griffin/mythic/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/bigfoot/fledgling/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/bigfoot/sworn/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/bigfoot/radiant/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/bigfoot/mythic/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/kitsune/fledgling/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/kitsune/sworn/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/kitsune/radiant/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/kitsune/mythic/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/manticore/fledgling/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/manticore/sworn/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/manticore/radiant/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/characters/manticore/mythic/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/songkeeper/mythic/bigfoot/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/songkeeper/radiant/bigfoot/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/songkeeper/sworn/bigfoot/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/starweaver/mythic/bigfoot/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/starweaver/radiant/bigfoot/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/sworn/unicorn/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/sworn/dragonling/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/sworn/griffin/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/sworn/bigfoot/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/sworn/kitsune/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/sworn/manticore/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/starweaver/sworn/unicorn/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/starweaver/sworn/dragonling/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/starweaver/sworn/griffin/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/starweaver/sworn/bigfoot/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/starweaver/sworn/kitsune/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/starweaver/sworn/manticore/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/radiant/unicorn/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/radiant/dragonling/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/radiant/griffin/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/radiant/bigfoot/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/radiant/kitsune/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/radiant/manticore/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/mythic/unicorn/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/mythic/dragonling/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/mythic/griffin/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/mythic/bigfoot/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/mythic/kitsune/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/duskrunner/mythic/manticore/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/sworn/bigfoot/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/sworn/dragonling/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/sworn/griffin/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/sworn/kitsune/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/sworn/manticore/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/sworn/unicorn/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/radiant/unicorn/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/radiant/dragonling/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/radiant/griffin/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/radiant/bigfoot/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/radiant/kitsune/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/radiant/manticore/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/mythic/unicorn/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/mythic/dragonling/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/mythic/griffin/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/mythic/bigfoot/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/mythic/kitsune/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+No WebGL support. Image mesh will not be drawn.
+  pass  rig assets/character-rigs/thornguard/mythic/manticore/rig.riv  13 clips, 11 inputs, 1400x1400 stage, matches the hero set
+
+------------------------------------------------------------
+79 passed
+
+PASS - the contract is coherent and inside the turn budget.
+71/71 rig(s) read and compared clip by clip. See this file's header for where the edge is.
