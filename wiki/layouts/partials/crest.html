@@ -8,6 +8,8 @@
     class    extra class on the lockup ("wiki-logo--hero", "--nav", "--footer")
     eager    true above the fold
     stacked  true to break the wordmark over two lines, as on the app
+    breakable  true for a break the stylesheet turns on (the navbar's, on
+             the smallest phones); otherwise the wordmark stays on one line
     nomark   true for the wordmark alone
 
   The master is 1254px; it is resized at build time to twice its size here.
@@ -21,5 +23,5 @@
        {{ if $.eager }}fetchpriority="high"{{ else }}loading="lazy"{{ end }} decoding="async">
   {{- end }}
   {{- end }}
-  <span class="wiki-logo__word">Kids <span class="wiki-logo__amp">&amp;</span>{{ if .stacked }}<br>{{ else }} {{ end }}Dragons</span>
+  <span class="wiki-logo__word">Kids <span class="wiki-logo__amp">&amp;</span>{{ if .stacked }}<br>{{ else if .breakable }} <br class="wiki-logo__break">{{ else }} {{ end }}Dragons</span>
 </span>

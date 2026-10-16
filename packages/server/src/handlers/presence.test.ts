@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { makeHarness, seedHousehold } from "../test-support.ts";
+import type { PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
+import { makeHarness, seedHousehold, type TestHarness } from "../test-support.ts";
 import { createRoom, joinRoom } from "./room.ts";
 import { setPresence } from "./presence.ts";
 import { applyAction } from "./action.ts";
@@ -72,4 +73,55 @@ describe("setPresence", () => {
     // on a phone that is face-down in a car footwell.
     expect(received).toHaveLength(1);
   });
+
+  it("carries the chapter-end vote when the last phone still reading drops off", async () => {
+    const { harness, runId, playerId } = await seatedRoom();
+    // Two at the table on the chapter's summary: this phone has said it's
+    // done, the other is still reading.
+    await onTheSummary(harness, runId, [seat(playerId, true), seat("p_reader", false)]);
+
+    await setPresence({ runId, playerId: "p_reader", connected: false }, harness.deps);
+
+    const after = await harness.repo.getState(runId);
+    expect(after?.phase).toBe("lobby");
+    expect(after?.chapterId).toBeNull();
+    expect(after?.party.every((m) => !m.ready)).toBe(true);
+    expect(after?.party.find((m) => m.playerId === "p_reader")?.connected).toBe(false);
+  });
+
+  it("leaves the summary up when the phone that drops is the only one done", async () => {
+    const { harness, runId, playerId } = await seatedRoom();
+    await onTheSummary(harness, runId, [seat(playerId, true), seat("p_reader", false)]);
+
+    // The reader is still here, so the one who was done going away settles
+    // nothing: nobody left at the table has voted.
+    await setPresence({ runId, playerId, connected: false }, harness.deps);
+    expect((await harness.repo.getState(runId))?.phase).toBe("chapter_complete");
+  });
 });
+
+/** A party member as presence reads them: who, whether here, whether done. */
+function seat(playerId: string, ready: boolean): PartyMember {
+  return {
+    character: { id: `c_${playerId}`, name: playerId } as unknown as ResolvedCharacter,
+    playerId,
+    hp: 10,
+    down: false,
+    connected: true,
+    ready,
+  };
+}
+
+/** Put the run on a chapter's end summary with this party, committed. */
+async function onTheSummary(harness: TestHarness, runId: string, party: PartyMember[]): Promise<void> {
+  const state = await harness.repo.getState(runId);
+  if (!state) throw new Error("setup failed");
+  const ended: RunState = { ...state, seq: state.seq + 1, phase: "chapter_complete", chapterId: "ch_1", party };
+  const committed = await harness.repo.commit({
+    runId,
+    expectedSeq: state.seq,
+    state: ended,
+    event: { seq: ended.seq, runId, patch: [], at: ended.updatedAt, playerId: party[0]!.playerId },
+  });
+  if (!committed) throw new Error("setup failed");
+}

@@ -13,7 +13,7 @@
  * which at a real table means "we can't carry on because Rosie's phone died".
  */
 
-import type { RunState } from "@kad/shared";
+import { settleChapterEndVote, type RunState } from "@kad/shared";
 import type { EventRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
@@ -65,14 +65,17 @@ async function trySetPresence(
 
   const nowMs = deps.now();
   const nextSeq = state.seq + 1;
-  const next: RunState = {
+  // The phone that drops off can be the last one still reading the chapter's
+  // end; everyone left has said they're done, so the table goes back now
+  // rather than waiting on a tap nobody is there to make.
+  const next: RunState = settleChapterEndVote({
     ...state,
     seq: nextSeq,
     updatedAt: iso(nowMs),
     party: state.party.map((m) =>
       m.playerId === input.playerId ? { ...m, connected: input.connected } : m,
     ),
-  };
+  });
 
   const event: EventRecord = {
     seq: nextSeq,
