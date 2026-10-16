@@ -86,6 +86,22 @@ Glacier, yetis and memory in ice. Entered from `boundary-stone-bank` or a return
 - **Each strand teaches one motion signal:** Forgotten Paths teaches **timed**; Wandering Sky **linked** (island rifts pulse together); Restless Coast **unstable**.
 - **Protected:** the memory shows a fragment, never a full history; the summer crevasse and the unnamed meltwater year stay untouched.
 
+## Strand: Wandering Sky — agreed
+Sky Islands, kitsune and cloud whales; teaches **linked**. Entered by the washout rift (one-way) or from the Cairnstep. `sky-islands-arrival` is this strand's first node (likewise `saltrot-arrival` for the Coast), which keeps the total at about 24.
+
+| Node | What happens | Canon it uses |
+| --- | --- | --- |
+| `sky-islands-arrival` | The party lands on a drifting island **hanging in the wrong part of the sky**; kitsune temple keepers take them in. Two variants: through the rift (no way back), or flown over by the Cairnstep griffins repaying a pass-ledger debt. | Kitsune as the islands' people; griffins trading weather news with the islands by flag signal |
+| `whale-road` | Cloud whales circle, confused, between **two rifts that pulse together** (teaches *linked*). A gentle problem, not a fight: guide the whales clear. **One rift of the pair opens onto the Coast**: the sideways exit. | Cloud whales as semi-sapient navigators, never enemies or mounts; whether the islands follow the whales stays unsettled |
+| `the-island-due-back` (**key node**) | The kitsune have long recorded an island "due back", and it arrives, pulled by Corvane. Its old mooring stone is carved with **the land below as it once lay**: this strand's Pangea fragment. | The island that is "due back" |
+| `squall-temple` (**strand end**) | The returning island drifts toward a temple island in a storm. A fight among displaced creatures with more than one good outcome (#201): push the island clear, or shelter the temple and let it settle. **Bone crawlers** pulled up from the Bone Yard swarm the rift's fresh magic. | Bone crawlers swarming fresh magic |
+
+- **Lady Olivia appears here,** studying the linked pair, and asks the party to help her hold both rifts open "to see what they can do". The answer sets a trust flag that feeds her epilogue, beside the Bram and Pip flags.
+- **First strand entered:** Seren teaches Attune at `sky-islands-arrival`; Pip is here scouting.
+- **Exits:** the linked rift at `whale-road` → the Coast; from `squall-temple` the griffins fly the party back down to the Cairnstep, toward Forgotten Paths.
+- **Each class has a moment:** Starweaver reads the linked pulse; Songkeeper calms the whales; Duskrunner leaps between drifting islands; Thornguard braces the temple in the squall. Kitsune players get Beguile with the temple keepers; griffin players get Skyward.
+- **Protected:** the creator-only secret that the islands were once sea floor stays untouched (the carving shows land, not sea); kitsune are never portrayed as all deceptive.
+
 ## Graph design constraints
 - Forward, sideways and return edges should all matter.
 - Arrival may depend on prior flags, including region allies, discoveries and changed geography.
@@ -98,5 +114,5 @@ Glacier, yetis and memory in ice. Entered from `boundary-stone-bank` or a return
 - Avoid authoring the final graph until graph runtime, effects and edge constraints from issues #192–#203 are verified.
 
 ## Decisions still open
-1. Node lists and key nodes for Wandering Sky and Restless Coast.
+1. Node list and key node for Restless Coast.
 2. Faction influence rules and return routes.
