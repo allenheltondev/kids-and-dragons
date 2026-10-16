@@ -271,6 +271,7 @@ export interface PartyScene {
   nameplateBoxes(): NameplateReading;
   /** Actual rendered figure bounds in canvas pixels, for phone framing checks. */
   storyFigureBoxes?(): { x: number; y: number; width: number; height: number }[];
+  storyNameplateBoxes?(): { text: string; x: number; y: number; width: number; height: number; fontPixels: number }[];
   /**
    * The camera's attention key (world/camera.ts header): a manual pan/pinch
    * survives everything except this key changing — callers set it to
@@ -629,6 +630,7 @@ export function createScene(app: Application): PartyScene {
       cast.map((member) => member.scale),
       width,
       cast.map((member) => member.crowded),
+      viewport.width < 600,
     );
     slots.party = slots.party.map((x) => x + left);
     slots.cast = slots.cast.map((x) => x + left);
@@ -639,13 +641,15 @@ export function createScene(app: Application): PartyScene {
     // gutter — two nameplates that touch are one unreadable name, which is the
     // failure the nameplate was added to fix. The slot is only known here,
     // because it shrinks as the party grows.
-    const slot = slots.partySlot * NAMEPLATE_SLOT;
+    // Wrapped names need a little extra gutter between their taller blocks.
+    const nameplateSlot = viewport.width < 600 ? 0.82 : NAMEPLATE_SLOT;
+    const slot = slots.partySlot * nameplateSlot;
     cast.forEach((member, index) => {
       member.container.scale.set(figureScale);
       member.x = slots.cast[index] ?? member.x;
       if (member.label) {
         member.label.visible = nameplatesVisible;
-        fitNameplate(member.label, (slots.castSlots[index] ?? slot) * NAMEPLATE_SLOT / figureScale);
+        fitNameplate(member.label, (slots.castSlots[index] ?? slot) * nameplateSlot / figureScale, viewport.width < 600);
       }
     });
     const still = prefersReducedMotion();
@@ -653,7 +657,7 @@ export function createScene(app: Application): PartyScene {
       actor.container.scale.set(figureScale);
       if (actor.label) {
         actor.label.visible = nameplatesVisible;
-        fitNameplate(actor.label, slot / figureScale);
+        fitNameplate(actor.label, slot / figureScale, viewport.width < 600);
       }
       actor.x = slots.party[index] ?? actor.x;
       // A shallow depth stagger so three characters read as a group rather than
@@ -1297,6 +1301,16 @@ export function createScene(app: Application): PartyScene {
       return [...actors.values(), ...castActors.values()].map((actor) => {
         const bounds = actor.art.getBounds();
         return { x: bounds.x, y: bounds.y, width: bounds.width, height: bounds.height };
+      });
+    },
+
+    storyNameplateBoxes() {
+      if (encounterView !== null) return [];
+      return [...actors.values(), ...castActors.values()].flatMap((actor) => {
+        if (!actor.label?.visible) return [];
+        const b = actor.label.getBounds();
+        return [{ text: actor.label.text, x: b.x + b.width / 2, y: b.y, width: b.width, height: b.height,
+          fontPixels: Number(actor.label.style.fontSize) * Math.abs(actor.label.worldTransform.d) }];
       });
     },
 

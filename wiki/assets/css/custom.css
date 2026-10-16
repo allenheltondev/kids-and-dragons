@@ -505,6 +505,11 @@ td:first-child {
   color: #ffe8a3;
 }
 
+/* The breakable wordmark's line break, off until a breakpoint wants it. */
+.wiki-logo__break {
+  display: none;
+}
+
 html:not(.dark) .wiki-logo--nav .wiki-logo__amp,
 html:not(.dark) .wiki-logo--footer .wiki-logo__amp {
   color: var(--wiki-gold);
@@ -3058,13 +3063,11 @@ a.wiki-stats__item:hover {
     font-size: 1.05rem;
   }
 
-  .wiki-navbar__title-full {
-    display: none;
-  }
-
+  /* No "Wiki" pill on a phone: beside the search, theme and menu buttons
+   * it was the thing that got cut off. The crest is still the home link. */
+  .wiki-navbar__title-full,
   .wiki-navbar__title-short {
-    display: inline;
-    font-size: 0.85rem;
+    display: none;
   }
 
   .wiki-navbar__controls {
@@ -3241,8 +3244,9 @@ a.wiki-stats__item:hover {
     grid-template-columns: 1fr;
   }
 
-  /* No room for the words on the smallest phones: the mark carries it. */
-  .wiki-logo--nav .wiki-logo__word {
-    display: none;
+  /* No room for the words on one line on the smallest phones: "Kids &"
+   * over "Dragons", which fits beside the buttons down to 320px. */
+  .wiki-logo--nav .wiki-logo__break {
+    display: inline;
   }
 }
