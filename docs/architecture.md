@@ -780,6 +780,12 @@ a grid of rows plus spawn points, living beside the chapters and validated the s
 requirements aren't met by anyone in the party are **hidden**, not greyed out — no one feels
 locked out of something they can see.
 
+`requiresClass` is the same gate for class (`"starweaver"` or a list): offered when anyone
+seated has one of them, hidden otherwise, with no hint. It is judged against the seated party
+each time and never stored, so a class moment that matters later sets a flag and guards read
+the flag. No class is ever mandatory: a scene whose every choice is class-gated fails the
+build (`CLASS_GATED_ONLY_EXIT`).
+
 `grantItem.to` accepts `"roller"` (whoever made the check), `"party"` (a prompt to choose a holder),
 or a specific `playerId`. If the recipient's six slots are full, the client prompts to swap or leave —
 the grant never silently fails and never silently overflows.

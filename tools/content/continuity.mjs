@@ -328,8 +328,9 @@ export function sceneExits(scene) {
 /**
  * The conditions a choice puts on the party, normalised to `{kind, name}`.
  * Only the ones that PROVE something are returned: a held flag, a held item.
- * (`notFlag`, `notItem`, `count`, `partySize` and `requiresSpecies` prove no
- * name was shown.) #160's `when` objects are read here, and only here.
+ * (`notFlag`, `notItem`, `count`, `partySize`, `requiresSpecies` and
+ * `requiresClass` prove no name was shown.) #160's `when` objects are read
+ * here, and only here.
  */
 export function gateConditions(choice) {
   const out = [];
