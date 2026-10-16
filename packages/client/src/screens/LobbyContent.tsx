@@ -22,6 +22,7 @@ import { VoteTicks } from "./VoteTicks";
 import "./shared.css";
 import "./LobbyContent.css";
 import { EntryScene, lobbySceneFor } from "./EntryScene";
+import { RiftSightings } from "./RiftSight";
 
 /** Where a scanning phone lands (architecture §4.6 routes). */
 function joinUrl(code: string): string {
@@ -184,6 +185,9 @@ export function LobbyContent(): ReactElement {
           <span>{upNext}</span>
         </p>
       ) : null}
+      {/* The rifts where the party stands (#229): a shimmer for the room,
+          Riftlight on a Starweaver's own phone. Nothing without a rift. */}
+      <RiftSightings />
 
       {/* The code is the biggest thing on an idle screen (spec §2.1), but the
           moment somebody is actually in the room the party matters more — and

@@ -24,6 +24,7 @@ import { PlayerView } from "./PlayerView";
 import { MapView } from "./MapView";
 import { ModeSwitch } from "./ModeSwitch";
 import { TrayObject } from "../screens/TrayObjects";
+import { RiftlightIndicator } from "../screens/RiftSight";
 import { GuideTab } from "./GuideTab";
 import { useMyTurnKey } from "../store";
 
@@ -74,7 +75,11 @@ function PhoneLayout(): React.JSX.Element {
           aria-pressed={showing === "world"}
           onClick={() => { dismissPlayerSheet(); setShowing("world"); }}
         >
-          <span className="kad-tray__object"><TrayObject name="globe" /></span>
+          <span className="kad-tray__object">
+            <TrayObject name="globe" />
+            {/* A Starweaver's cue that the world has Riftlight to read (#229). */}
+            <RiftlightIndicator />
+          </span>
           <span className="kad-tray__label">World</span>
         </button>
         <button
