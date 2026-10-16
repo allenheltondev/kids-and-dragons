@@ -18,6 +18,7 @@ import {
   SW_FILES_BUDGET_BYTES,
   SW_FILES_META_KEY,
   SW_IMAGE_LIMIT,
+  SW_LEGACY_IMAGE_CACHES,
   SW_PRECACHE_CONTENT,
   SW_SHELL_KEY,
   swCacheable,
@@ -104,8 +105,13 @@ worker.addEventListener("install", (event) => {
           continue;
         }
         if (await files.match(swVersionedKey(path, fingerprint), SAME)) continue;
+        // The book needs every one of these offline. If one cannot be had as
+        // this build's bytes — a CDN edge still serving the previous deploy —
+        // install fails, so this worker never takes over and the old one (and
+        // its copies) stays in charge; the browser tries the update again later.
         const response = await fetch(path, { cache: "no-cache" });
-        if (swCacheable(response)) await keepVersioned(files, path, fingerprint, response);
+        const kept = swCacheable(response) && (await keepVersioned(files, path, fingerprint, response, { replaceOlder: false }));
+        if (!kept) throw new Error(`install: ${path} is not the bytes this build fingerprinted`);
       }
       if (loose.length > 0) await (await caches.open(SW_CACHES.content)).addAll(loose);
 
@@ -119,6 +125,13 @@ worker.addEventListener("install", (event) => {
 worker.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
+      // Pictures an earlier worker kept (#224's offline book: the map and the
+      // finds) move into the fingerprinted cache — verified, like anything
+      // kept — before the cache they were in is dropped below.
+      const fingerprints = await fileIndex();
+      const files = await caches.open(SW_CACHES.files);
+      await adoptLegacyImages(fingerprints, files);
+
       const known = new Set<string>(Object.values(SW_CACHES));
       for (const name of await caches.keys()) {
         if (!known.has(name)) await caches.delete(name);
@@ -135,8 +148,6 @@ worker.addEventListener("activate", (event) => {
       await bundle.put(SW_BUNDLE_LIST_KEY, new Response(JSON.stringify(__KAD_BUNDLE__)));
 
       // Art, rigs, audio and content a deploy replaced or removed.
-      const fingerprints = await fileIndex();
-      const files = await caches.open(SW_CACHES.files);
       const current = await filesMeta();
       const keys = (await files.keys()).map(keyOf).filter((key) => key !== SW_FILES_META_KEY);
       for (const key of swStaleVersions(keys, fingerprints)) {
@@ -312,22 +323,49 @@ function fileIndex(): Promise<FileIndex> {
  * fingerprint names. A CDN edge still serving the previous deploy's copy
  * would otherwise be saved under the new name and kept for good.
  */
-async function keepVersioned(cache: Cache, path: string, fingerprint: string, response: Response): Promise<void> {
+async function keepVersioned(
+  cache: Cache,
+  path: string,
+  fingerprint: string,
+  response: Response,
+  { replaceOlder = true }: { replaceOlder?: boolean } = {},
+): Promise<boolean> {
   const bytes = await response.arrayBuffer();
-  if ((await fingerprintOf(bytes)) !== fingerprint) return;
+  if ((await fingerprintOf(bytes)) !== fingerprint) return false;
   // Re-wrapped, so the saved copy carries no transfer framing from this fetch.
   const headers = new Headers(response.headers);
   headers.delete("content-encoding");
   headers.delete("content-length");
   const current = await filesMeta();
-  for (const older of await cache.keys(path, { ignoreSearch: true, ignoreVary: true })) {
-    await cache.delete(older);
-    delete current[keyOf(older)];
+  // Not during install: the worker in charge is still serving those copies,
+  // and an install that fails must leave them where they were. Activate
+  // drops whatever the new build replaced (`swStaleVersions`).
+  if (replaceOlder) {
+    for (const older of await cache.keys(path, { ignoreSearch: true, ignoreVary: true })) {
+      await cache.delete(older);
+      delete current[keyOf(older)];
+    }
   }
   const key = swVersionedKey(path, fingerprint);
   await cache.put(key, new Response(bytes, { status: 200, headers }));
   current[key] = { bytes: bytes.byteLength, used: Date.now() };
   await saveMeta();
+  return true;
+}
+
+/** Move an earlier worker's saved pictures into the fingerprinted cache, keeping only verified ones. */
+async function adoptLegacyImages(fingerprints: FileIndex, files: Cache): Promise<void> {
+  for (const name of SW_LEGACY_IMAGE_CACHES) {
+    if (!(await caches.has(name))) continue;
+    const legacy = await caches.open(name);
+    for (const request of await legacy.keys()) {
+      const path = new URL(request.url).pathname;
+      const fingerprint = fingerprints[path];
+      if (fingerprint === undefined || (await files.match(swVersionedKey(path, fingerprint), SAME))) continue;
+      const saved = await legacy.match(request, SAME);
+      if (saved) await keepVersioned(files, path, fingerprint, saved, { replaceOlder: false });
+    }
+  }
 }
 
 /** `sw-build.ts` fingerprints with the first 16 hex digits of SHA-256. */

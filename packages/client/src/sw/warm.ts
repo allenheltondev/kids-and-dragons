@@ -37,11 +37,17 @@ export function offlineArtFor(
  * never ahead of the page's own requests: this is background work on a
  * phone, not a race. Nothing at all without a worker in charge of the page
  * (there would be nowhere to keep it) — but one still on its way is waited
- * for (`controlled`) — nor when the phone asks to save data.
+ * for (`controlled`). When the phone asks to save data, only `essential`
+ * fetches go ahead.
  */
-export async function warm(urls: readonly string[], lanes = 3): Promise<void> {
+export async function warm(
+  urls: readonly string[],
+  { lanes = 3, essential = false }: { lanes?: number; essential?: boolean } = {},
+): Promise<void> {
   if (!(await controlled())) return;
-  if ((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData) return;
+  // Data Saver turns off guessing (the scenes ahead), not promises: the
+  // book's offline art is what makes the book open in the car at all.
+  if (!essential && (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData) return;
   const queue = [...urls];
   const lane = async (): Promise<void> => {
     for (let url = queue.shift(); url !== undefined; url = queue.shift()) {

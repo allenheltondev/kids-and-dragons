@@ -99,7 +99,7 @@ export function usePrefetchUpcoming(): void {
     // asked only once started, so a scene left before then is not skipped.
     const start = (): void => {
       for (const url of fresh) asked.add(url);
-      void warm(fresh, 2);
+      void warm(fresh, { lanes: 2 });
     };
     if (typeof window !== "undefined" && "requestIdleCallback" in window) {
       const handle = window.requestIdleCallback(start, { timeout: 4_000 });
