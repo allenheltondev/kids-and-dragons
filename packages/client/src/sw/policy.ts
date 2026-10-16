@@ -48,6 +48,14 @@ export const SW_CACHES = {
   image: "kad-image-v2",
 } as const;
 
+/**
+ * Caches earlier workers kept pictures in, under names this one no longer
+ * uses. Their pictures are adopted into the fingerprinted cache (when they
+ * verify) before the old cache is dropped, so an upgrade does not take the
+ * offline book's map and finds away. `kad-image-v1`: #224's worker.
+ */
+export const SW_LEGACY_IMAGE_CACHES: readonly string[] = ["kad-image-v1"];
+
 /** Every page is the one app: a navigation anywhere is answered by this. */
 export const SW_SHELL_KEY = "/";
 

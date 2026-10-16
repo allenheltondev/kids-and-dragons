@@ -117,7 +117,7 @@ export function JournalScreen(): ReactElement {
     const loadWorld = useGameStore.getState().loadWorld;
     void Promise.all([loadWorld(), loadFieldGuide().catch(() => null)]).then(([, guide]) => {
       if (!live) return;
-      void warm(offlineArtFor(useGameStore.getState().world, guide, Object.keys(journal.fieldGuide)));
+      void warm(offlineArtFor(useGameStore.getState().world, guide, Object.keys(journal.fieldGuide)), { essential: true });
     });
     return () => {
       live = false;
