@@ -122,6 +122,8 @@ describe("cast figures", () => {
   });
 
   it("refuses a figure the schema would refuse", () => {
+    expect(castFigureUrl("cast/deep-ice-figure")).toBe("/assets/cast/deep-ice-figure/assembled.png");
+    expect(castFigureUrl("cast/deep--ice")).toBeNull();
     expect(castFigureUrl("selkie")).toBeNull();
     expect(castFigureUrl("entities/../secrets")).toBeNull();
     expect(stageCast([{ figure: "nonsense" }])).toEqual([]);

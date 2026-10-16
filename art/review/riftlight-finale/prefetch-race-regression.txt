@@ -1,0 +1,120 @@
+
+> kids-and-dragons@0.0.0 e2e:prod
+> playwright test -c playwright.prod.config.ts --grep scenes ahead are on a phone --repeat-each=3
+
+
+[WebServer] (node:47456) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:8716) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:51088) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:38852) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:38852) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:48540) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:43920) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:36752) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] [PLUGIN_TIMINGS] Your build spent significant time in plugins. Here is a breakdown:
+[WebServer]   - kad-service-worker (36%)
+[WebServer]   - vite:css-post (24%)
+[WebServer]   - vite:asset (18%)
+[WebServer] See https://rolldown.rs/reference/InputOptions.checks#plugintimings for more details.
+[WebServer] 
+[WebServer] (node:12760) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] (node:46468) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:21916) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/3] e2e\perf.spec.ts:220:1 › the scenes ahead are on a phone showing the world before the party reaches them
+
+[WebServer] [error] [Error: ENOENT: no such file or directory, stat 'C:\Users\allen\.codex\worktrees\riftlight-part-a\kids-and-dragons\assets\audio\cues\bonk.webm'] {
+[WebServer]   errno: -4058,
+[WebServer]   code: 'ENOENT',
+[WebServer]   syscall: 'stat',
+[WebServer]   path: 'C:\\Users\\allen\\.codex\\worktrees\\riftlight-part-a\\kids-and-dragons\\assets\\audio\\cues\\bonk.webm',
+[WebServer]   expose: false,
+[WebServer]   statusCode: 404,
+[WebServer]   status: 404
+[WebServer] }
+
+[WebServer] [error] [Error: ENOENT: no such file or directory, stat 'C:\Users\allen\.codex\worktrees\riftlight-part-a\kids-and-dragons\assets\audio\cues\bonk.webm'] {
+[WebServer]   errno: -4058,
+[WebServer]   code: 'ENOENT',
+[WebServer]   syscall: 'stat',
+[WebServer]   path: 'C:\\Users\\allen\\.codex\\worktrees\\riftlight-part-a\\kids-and-dragons\\assets\\audio\\cues\\bonk.webm',
+[WebServer]   expose: false,
+[WebServer]   statusCode: 404,
+[WebServer]   status: 404
+[WebServer] }
+(node:37140) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[2/3] e2e\perf.spec.ts:220:1 › the scenes ahead are on a phone showing the world before the party reaches them
+
+[WebServer] [error] [Error: ENOENT: no such file or directory, stat 'C:\Users\allen\.codex\worktrees\riftlight-part-a\kids-and-dragons\assets\audio\cues\bonk.webm'] {
+[WebServer]   errno: -4058,
+[WebServer]   code: 'ENOENT',
+[WebServer]   syscall: 'stat',
+[WebServer]   path: 'C:\\Users\\allen\\.codex\\worktrees\\riftlight-part-a\\kids-and-dragons\\assets\\audio\\cues\\bonk.webm',
+[WebServer]   expose: false,
+[WebServer]   statusCode: 404,
+[WebServer]   status: 404
+[WebServer] }
+[WebServer] [error] [Error: ENOENT: no such file or directory, stat 'C:\Users\allen\.codex\worktrees\riftlight-part-a\kids-and-dragons\assets\audio\cues\bonk.webm'] {
+
+[WebServer]   errno: -4058,
+[WebServer]   code: 'ENOENT',
+[WebServer]   syscall: 'stat',
+[WebServer]   path: 'C:\\Users\\allen\\.codex\\worktrees\\riftlight-part-a\\kids-and-dragons\\assets\\audio\\cues\\bonk.webm',
+[WebServer]   expose: false,
+[WebServer]   statusCode: 404,
+[WebServer]   status: 404
+[WebServer] }
+
+
+(node:58132) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[3/3] e2e\perf.spec.ts:220:1 › the scenes ahead are on a phone showing the world before the party reaches them
+
+[WebServer] [error] [Error: ENOENT: no such file or directory, stat 'C:\Users\allen\.codex\worktrees\riftlight-part-a\kids-and-dragons\assets\audio\cues\bonk.webm'] {
+[WebServer]   errno: -4058,
+[WebServer]   code: 'ENOENT',
+[WebServer]   syscall: 'stat',
+[WebServer]   path: 'C:\\Users\\allen\\.codex\\worktrees\\riftlight-part-a\\kids-and-dragons\\assets\\audio\\cues\\bonk.webm',
+[WebServer]   expose: false,
+[WebServer]   statusCode: 404,
+[WebServer]   status: 404
+[WebServer] }
+
+[WebServer] [error] [Error: ENOENT: no such file or directory, stat 'C:\Users\allen\.codex\worktrees\riftlight-part-a\kids-and-dragons\assets\audio\cues\bonk.webm'] {
+[WebServer]   errno: -4058,
+[WebServer]   code: 'ENOENT',
+[WebServer]   syscall: 'stat',
+[WebServer]   path: 'C:\\Users\\allen\\.codex\\worktrees\\riftlight-part-a\\kids-and-dragons\\assets\\audio\\cues\\bonk.webm',
+[WebServer]   expose: false,
+[WebServer]   statusCode: 404,
+[WebServer]   status: 404
+[WebServer] }
+  3 passed (1.5m)

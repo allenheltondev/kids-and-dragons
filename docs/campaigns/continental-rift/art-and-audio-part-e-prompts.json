@@ -1,0 +1,25 @@
+[
+  {
+    "id": "deep-ice-figure",
+    "kind": "cast",
+    "name": "Deep-ice figure",
+    "basis": "faun",
+    "scale": "very_large",
+    "ref": "assets/entities/faun/assembled.png",
+    "prompt": "Create ONE new complete full-body story-cast figure on REAL TRANSPARENT background for a warm hand-painted children's fantasy game. Use reference ONLY for FAUN species anatomy and supporting-cast painterly style. This is an ancient exceptionally BIG FAUN, half person and half goat, much older and far broader than the ordinary reference: barrel-chested stocky body, goat legs and hooves, old curling horns, pointed ears, a LONG SWEEPING MUSTACHE that curls out to both sides. He has newly woken after a millennium and does not understand why the world changed. Expression CONFUSED above all: courtly, sad, bewildered underneath a gruff grand exterior, never sinister, angry or frightening. Wear old ice-weathered deep burgundy/gray robes and faded ceremonial regalia of a vanished realm, restrained decoration with NO letters or explicit royal emblem. No crown needed, no weapon. Clearly same species as reference, not a monster or a different creature. Relaxed standing pose, three-quarter view FACING LEFT, both hooves planted, complete horns/mustache/robe/hooves well inside ample transparent margins. Warm dark-brown tapered linework, two-tone soft painted shading, upper-left light, not photorealistic or shiny 3D. No background, ground shadow, lettering or border. Square canvas. Do not imitate any existing film character.",
+    "edit": {
+      "prompt": "Edit this single faun cutout so he faces THREE-QUARTER LEFT: his nose and gaze point toward the viewer's LEFT, toward the party. Preserve his identity, old curling horns, very long sweeping mustache, sad confused courtly expression, ice-weathered burgundy robes, goat legs and hooves, and original storybook painted craft. Make his barrel chest and stocky body slightly broader, since he is exceptionally big, never lanky. Keep the light source UPPER LEFT rather than mirroring the lighting to the right. Both hooves planted, full complete figure with generous clear margins all sides, real transparent background, NO ground shadow, letters, additional symbols, weapons, crown, or background. Do not reference any film character."
+    }
+  },
+  {
+    "id": "glacier-deep-ice",
+    "kind": "scene",
+    "ref": "assets/biomes/glacier_of_origins/bg.webp",
+    "prompt": "Paint ONE wide 16:9 story-stage backdrop for a warm hand-painted children's fantasy game, matching the reference glacier's painterly ice/material language. A NEW place: the deep ice at the HEART of the Glacier of Origins, an immense ancient enclosed ice chamber. Long thick blue-gray layers of memory ice and grand old arched fractures in the upper half, cold dim light diffused through ice from upper left, no green illumination, no warm summer light. Old stillness and wonder, not horror. Broad OPEN LEVEL ice floor across entire width from 70% to bottom; the figures' standing floor is at y=80%. Clear unobstructed space at middle-right where a FINAL RIFT WILL BE COMPOSITED LATER; paint NO rift, portal, colored magical light, tear, person, creature, statue, frozen figure, lettering or symbol anywhere. Landmark arch and layered old ice above, no significant detail at topmost 8% or bottom fifth. Never a summer crevasse, no vegetation or outside sunshine. Crafted painterly detail, soft atmospheric depth, no photorealism/3D, no UI or border."
+  },
+  {
+    "request": "Owner review: give the satyr black hair",
+    "prompt": "Edit this existing storybook satyr/faun cutout. Change ONLY his scalp hair, eyebrows, long sweeping mustache and entire beard from gray/white to natural BLACK hair, charcoal highlights that preserve readable flowing strands. Keep his elderly face, confused sad courtly expression, exact pose facing left, body proportions, horns, skin, clothing, cream fur trim, goat legs and hooves, framing, upper-left lighting and painted style unchanged. Hair should clearly read black even in highlights. Preserve the complete figure with transparent margins. Actual transparent background, no ground shadow, no new objects or lettering.",
+    "source": "Previous accepted deep-ice-figure.png; built-in imagegen edit, transparent background"
+  }
+]

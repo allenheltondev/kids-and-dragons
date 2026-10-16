@@ -256,21 +256,21 @@ describe("cross-file rules", () => {
     // Music is chosen by name at a table; a track with no spec row is not one
     // the game can be asked for, so the override is refused, not left to the synth pad.
     const onChapter = withChapter((chapter) => {
-      chapter.music = "riftlight-finale";
+      chapter.music = "a-track-nobody-produced";
     });
-    expect(onChapter.out).toContain('music "riftlight-finale" is not a MUSIC_SPECS track');
+    expect(onChapter.out).toContain('music "a-track-nobody-produced" is not a MUSIC_SPECS track');
     expect(onChapter.code).not.toBe(0);
 
     const onScene = withChapter((chapter) => {
-      chapter.scenes[laterSceneOf(chapter)].music = "riftlight-finale";
+      chapter.scenes[laterSceneOf(chapter)].music = "a-track-nobody-produced";
     });
-    expect(onScene.out).toContain('music "riftlight-finale" is not a MUSIC_SPECS track');
+    expect(onScene.out).toContain('music "a-track-nobody-produced" is not a MUSIC_SPECS track');
     expect(onScene.code).not.toBe(0);
   });
 
   it("accepts music overrides that name real tracks", () => {
     const result = withChapter((chapter) => {
-      chapter.music = "gemfall-marsh";
+      chapter.music = "riftlight-finale";
       chapter.scenes[laterSceneOf(chapter)].music = "forest";
     });
     expect(result.out).not.toContain("MUSIC_SPECS");
@@ -592,6 +592,7 @@ describe("story cast (`cast`)", () => {
       sceneOf(chapter).cast = [
         { figure: "entities/selkie", name: "Professor Tidewell" },
         { figure: "characters/dragonling", name: "Grandmother Tull", size: "small" },
+        { figure: "cast/deep-ice-figure", name: "Deep-ice figure", size: "very_large" },
       ];
     });
     expect(result.out).toContain("PASS");
