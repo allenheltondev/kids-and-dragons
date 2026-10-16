@@ -30,6 +30,7 @@ import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } f
 import { slowBlockProblems } from "../../packages/shared/src/buffs.ts";
 import { chapterStartDiscoveries, sceneDiscoveries } from "../../packages/shared/src/discoveries.ts";
 import { checkEncounterEnvironment } from "../../packages/shared/src/environment.ts";
+import { MUSIC_SPECS } from "../../packages/client/src/audio/paths.ts";
 import { RIFT_ACTION_KINDS, campaignMode, journeyFlags, parseCampaignGraph, riftActionWays } from "../../packages/shared/src/campaign-graph.ts";
 import { chapterFlagWrites, duplicateJsonKeys, lintCampaignGraph } from "../../packages/shared/src/campaign-graph-lint.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
@@ -959,6 +960,15 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
   if (biomes && !biomes.includes(chapter.biome)) {
     fail("/biome", `biome "${chapter.biome}" is not in assets/manifest.json`, `known biomes: ${biomes.join(", ")}`);
   }
+
+  // Music overrides (#226): a chapter or scene may name a MUSIC_SPECS track in place of its biome's.
+  const checkMusic = (path, track) => {
+    if (track !== undefined && !Object.hasOwn(MUSIC_SPECS, track)) {
+      fail(path, `music "${track}" is not a MUSIC_SPECS track`, `known tracks: ${Object.keys(MUSIC_SPECS).join(", ")}`);
+    }
+  };
+  checkMusic("/music", chapter.music);
+  for (const [sceneId, scene] of Object.entries(scenes)) checkMusic(`/scenes/${sceneId}/music`, scene.music);
 
   // Field Guide tags (#103): `discovers` must name real entries, once each; and
   // so must everything the shared rules would reveal implicitly, so the

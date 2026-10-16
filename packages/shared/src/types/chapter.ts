@@ -226,6 +226,7 @@ export type ScenePriority = 1 | 2;
 export interface StoryScene {
   type: "story";
   art?: string;
+  music?: string;
   narration: string;
   /** Conditional narration, composed when the scene opens. See `NarrationVariant`. */
   variants?: NarrationVariant[];
@@ -249,6 +250,7 @@ export interface StoryScene {
 export interface CheckScene {
   type: "check";
   art?: string;
+  music?: string;
   stat: StatId;
   tn: number;
   prompt: string;
@@ -280,6 +282,7 @@ export interface CheckScene {
 export interface ChoicePointScene {
   type: "choice_point";
   art?: string;
+  music?: string;
   narration: string;
   /** Conditional narration, composed when the scene opens. See `NarrationVariant`. */
   variants?: NarrationVariant[];
@@ -304,6 +307,7 @@ export interface ChoicePointScene {
 export interface RestScene {
   type: "rest";
   art?: string;
+  music?: string;
   narration: string;
   /** Conditional narration, composed when the scene opens. See `NarrationVariant`. */
   variants?: NarrationVariant[];
@@ -532,6 +536,7 @@ export interface EncounterScene {
   type: "encounter";
   map: string;
   art?: string;
+  music?: string;
   narration?: string;
   onEnter?: Effect[];
   /**
@@ -627,6 +632,12 @@ export interface Chapter {
   index: number;
   title: string;
   biome: string;
+  /**
+   * A `MUSIC_SPECS` track id (packages/client/src/audio/paths.ts) that plays
+   * instead of the biome's track for this chapter. A scene's own `music` wins
+   * over it. Absent is the normal case: the biome's track, as before (#226).
+   */
+  music?: string;
   estimatedMinutes: number;
   xpAward: number;
   entry: SceneId;
