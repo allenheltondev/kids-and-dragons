@@ -30,7 +30,7 @@ import type {
   SceneId,
 } from "./types/chapter.js";
 import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "./condition-lint.js";
-import { checkEncounterEnvironment } from "./environment.js";
+import { captivesOf, checkEncounterEnvironment } from "./environment.js";
 import type { ItemCatalog, ResolvedCharacter } from "./types/domain.js";
 
 export type IssueSeverity = "error" | "warning";
@@ -111,7 +111,7 @@ function sceneEffects(scene: Scene): Effect[] {
         ...(scene.onDefeat?.effects ?? []),
         ...(scene.onEscape?.effects ?? []),
         ...(scene.onTimeout?.effects ?? []),
-        ...(scene.environment?.rescue?.effects ?? []),
+        ...(scene.environment ? captivesOf(scene.environment).flatMap((captive) => captive.effects ?? []) : []),
       );
       break;
   }

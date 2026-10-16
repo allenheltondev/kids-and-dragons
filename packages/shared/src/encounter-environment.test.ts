@@ -260,7 +260,7 @@ describe("a rescue", () => {
   it("walls the captive's tile until a hero ends a turn beside them", () => {
     let state = begin(PIP);
     expect(terrainAt(state.board, { x: 2, y: 6 })).toBe("blocked");
-    expect(environmentView(state)!.rescue).toEqual({ name: "Pip", at: { x: 2, y: 6 }, status: "waiting", roundsLeft: 2 });
+    expect(environmentView(state)!.captives).toEqual([{ name: "Pip", at: { x: 2, y: 6 }, status: "waiting", roundsLeft: 2 }]);
     state = until(state, "c_b");
     const freed = endTurnWithEvents(walk(state, { x: 1, y: 5 }));
     expect(freed.events).toEqual([{ type: "freed", byId: "c_b" }]);

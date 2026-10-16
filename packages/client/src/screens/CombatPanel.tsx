@@ -62,6 +62,7 @@ import {
   combatantById,
   currentActor,
   currentActorId,
+  captiveName,
   environmentView,
   legalActions,
   legalItemTargets,
@@ -856,7 +857,7 @@ function EnvironmentStatus({ encounter }: { encounter: EncounterState }): ReactE
     });
   }
   for (const exit of view.exits) lines.push({ key: `exit:${exit.id}`, icon: EXIT_ICON, text: exitLine(exit) });
-  if (view.rescue) lines.push({ key: "rescue", icon: CAPTIVE_ICON, text: rescueLine(view.rescue) });
+  view.captives.forEach((captive, i) => lines.push({ key: `rescue:${i}`, icon: CAPTIVE_ICON, text: rescueLine(captive) }));
   for (const hazard of view.hazards) {
     lines.push({ key: `hazard:${hazard.id}`, icon: hazardIcon(hazard.kind), text: hazardLine(hazard) });
   }
@@ -1238,13 +1239,14 @@ export function describeBeats(
       case "escaped":
       case "freed":
       case "captiveLost":
+      case "captiveDragged":
       case "relocated":
       case "riftClock":
       case "surge": {
         const line = environmentBeatLine(event, {
           name,
           isParty: (id) => isParty(encounter, id),
-          captive: captiveName(encounter),
+          captive: (index) => captiveName(encounter.environment?.spec, index),
         });
         if (line) out.push({ key, ...line });
         return;
@@ -1255,10 +1257,6 @@ export function describeBeats(
     }
   });
   return out;
-}
-
-function captiveName(encounter: EncounterState): string {
-  return encounter.environment?.spec.rescue?.name ?? "the captive";
 }
 
 function isParty(encounter: EncounterState, id: string): boolean {

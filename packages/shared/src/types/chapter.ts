@@ -443,7 +443,8 @@ export interface EncounterEnvironment {
   clock?: RiftClock;
   hazards?: EnvironmentHazard[];
   exits?: RiftExit[];
-  rescue?: RescueObjective;
+  /** One captive, or a list of up to three (#220), each freed on its own. */
+  rescue?: RescueObjective | RescueObjective[];
   relocate?: EnemyRelocation[];
 }
 
@@ -544,6 +545,14 @@ export interface RescueObjective {
   at: MapTile;
   byRound?: number;
   effects?: Effect[];
+  /**
+   * A captive the monsters can get at (#220), 1 to 6. A monster that ends
+   * its turn beside a waiting captive *without having swung at anybody*
+   * spends that turn dragging at them, and takes one away; at none, they
+   * are lost to the rift. No roll, nobody hurt: the captive is pulled away,
+   * the same loss as running out of time. Absent: nothing can touch them.
+   */
+  hp?: number;
 }
 
 /**

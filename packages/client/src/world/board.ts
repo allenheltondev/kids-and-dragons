@@ -66,7 +66,7 @@ import type {
   PartyMember,
   Position,
 } from "@kad/shared";
-import { currentActor, currentActorId, legalMoves } from "@kad/shared";
+import { captivesOf, currentActor, currentActorId, legalMoves } from "@kad/shared";
 import {
   ANCHOR_X,
   ANCHOR_Y,
@@ -1030,11 +1030,14 @@ export function createBoardLayer(): BoardLayer {
         return;
       }
       case "freed":
-      case "captiveLost": {
-        const at = view?.encounter.environment?.spec.rescue?.at;
+      case "captiveLost":
+      case "captiveDragged": {
+        const spec = view?.encounter.environment?.spec;
+        const at = spec ? captivesOf(spec)[event.captive ?? 0]?.at : undefined;
         if (at) {
           if (event.type === "freed") spawnTileFloater(at, "Free!", 0x4ad991);
-          else spawnTileFloater(at, "Lost", 0xb7b0d8);
+          else if (event.type === "captiveLost") spawnTileFloater(at, "Lost", 0xb7b0d8);
+          else spawnTileFloater(at, `${event.hp} left`, 0xff6b6b);
         }
         return;
       }

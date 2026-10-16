@@ -496,7 +496,10 @@ function effectsOf(scene, sceneId) {
     if (scene[key]) push(scene[key].effects, `${base}/${key}/effects`);
   }
   // A freed captive's effects (#201) land when the fight ends.
-  push(scene.environment?.rescue?.effects, `${base}/environment/rescue/effects`);
+  // One captive, or a list of them (#220).
+  const rescue = scene.environment?.rescue;
+  if (Array.isArray(rescue)) rescue.forEach((captive, i) => push(captive?.effects, `${base}/environment/rescue/${i}/effects`));
+  else push(rescue?.effects, `${base}/environment/rescue/effects`);
   return out;
 }
 

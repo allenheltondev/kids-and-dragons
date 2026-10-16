@@ -83,7 +83,19 @@ import type { DiceRoll } from "./types/state.js";
 import type { CombatBuff, SlowEffect } from "./types/buffs.js";
 import { DEFAULT_PUFF_TURNS, applyNumbed, buffBonus, buffed, tickCombatBuffs } from "./buffs.js";
 import type { EnvironmentState } from "./environment.js";
-import { DEFAULT_SURGE, SLOWED_BUFF_ID, SLOWED_LABEL, hazardAt, openExitAt, pushStep, rescueDeadline } from "./environment.js";
+import {
+  DEFAULT_SURGE,
+  SLOWED_BUFF_ID,
+  SLOWED_LABEL,
+  captiveIndexField,
+  captiveStatuses,
+  captivesOf,
+  hazardAt,
+  openExitAt,
+  pushStep,
+  rescueDeadline,
+  withCaptiveStatus,
+} from "./environment.js";
 
 // ---------------------------------------------------------------------------
 // Abilities as data
@@ -594,10 +606,15 @@ export type EncounterEvent =
   | { readonly type: "slowed"; readonly actorId: ActorId; readonly hazardId: string; readonly steps: number; readonly turns: number }
   /** A hero stepped through an open exit and left the fight. */
   | { readonly type: "escaped"; readonly actorId: ActorId; readonly exitId: string }
-  /** The captive is free; `byId` ended a turn beside them. */
-  | { readonly type: "freed"; readonly byId: ActorId }
-  /** The captive's time ran out. */
-  | { readonly type: "captiveLost" }
+  /**
+   * The captive is free; `byId` ended a turn beside them. `captive` is the
+   * index into a list of captives (#220), absent for the one captive.
+   */
+  | { readonly type: "freed"; readonly byId: ActorId; readonly captive?: number }
+  /** The captive's time ran out, or the monsters dragged them off (#220). */
+  | { readonly type: "captiveLost"; readonly captive?: number }
+  /** A monster spent its turn dragging at a captive (#220): `hp` is what they have left. */
+  | { readonly type: "captiveDragged"; readonly byId: ActorId; readonly hp: number; readonly captive?: number }
   /** The rift moved a monster. */
   | { readonly type: "relocated"; readonly actorId: ActorId; readonly to: Position }
   /** The clock ran out: `"collapse"` ends the fight, `"surge"` hurts every hero still here. */
@@ -841,7 +858,8 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
   // can: it is walled until they are freed. Done before the figures go down,
   // so a spawn on it is the authoring error `placeActor` already refuses.
   const environment = setup.environment;
-  const ground = environment?.rescue ? setTerrain(setup.board, environment.rescue.at, "blocked") : setup.board;
+  const captives = environment ? captivesOf(environment) : [];
+  const ground = captives.reduce((board, captive) => setTerrain(board, captive.at, "blocked"), setup.board);
 
   // placeActor is the one that refuses two figures on a tile or a spawn in a
   // wall, so the board is built through it rather than by hand.
@@ -870,7 +888,10 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
           environment: {
             spec: environment,
             expired: false,
-            ...(environment.rescue ? { rescue: "waiting" as const } : {}),
+            ...(environment.rescue
+              ? { rescue: Array.isArray(environment.rescue) ? captives.map(() => "waiting" as const) : ("waiting" as const) }
+              : {}),
+            ...(captives.some((c) => c.hp !== undefined) ? { captiveHp: captives.map((c) => c.hp ?? 0) } : {}),
           },
         }
       : {}),
@@ -2105,15 +2126,28 @@ function turnEndInEnvironment(
   const { spec } = env;
   let working = state;
 
-  // Free the captive: a hero, ending a turn beside them.
-  if (actor.side === "party" && env.rescue === "waiting" && spec.rescue && areAdjacent(at, spec.rescue.at)) {
-    working = {
-      ...working,
-      board: setTerrain(working.board, spec.rescue.at, "open"),
-      environment: { ...env, rescue: "freed" },
-    };
-    events.push({ type: "freed", byId: actorId });
-  }
+  // Free a captive: a hero, ending a turn beside them — every one beside them.
+  // A monster ending a turn beside one without having swung drags at them (#220).
+  const captives = captivesOf(spec);
+  captives.forEach((captive, i) => {
+    const now = working.environment as EnvironmentState;
+    if (captiveStatuses(now)[i] !== "waiting" || !areAdjacent(at, captive.at)) return;
+    if (actor.side === "party") {
+      working = {
+        ...working,
+        board: setTerrain(working.board, captive.at, "open"),
+        environment: withCaptiveStatus(now, i, "freed"),
+      };
+      events.push({ type: "freed", byId: actorId, ...captiveIndexField(spec, i) });
+    } else if (captive.hp !== undefined && !state.actionTaken && now.captiveHp) {
+      const hp = Math.max(0, (now.captiveHp[i] ?? 0) - 1);
+      const captiveHp = [...now.captiveHp];
+      captiveHp[i] = hp;
+      working = { ...working, environment: { ...now, captiveHp } };
+      events.push({ type: "captiveDragged", byId: actorId, hp, ...captiveIndexField(spec, i) });
+      if (hp === 0) working = loseCaptive(working, i, events);
+    }
+  });
 
   // Stopping on the fire. Damage first; what it knocks down stays put (#220).
   const hazard = hazardAt(spec, working.round, at);
@@ -2177,6 +2211,15 @@ function hinderInEnvironment(
   return working;
 }
 
+/** Captive `index` is gone to the rift: their square opens and the phones hear it. */
+function loseCaptive(state: EncounterState, index: number, events: EncounterEvent[]): EncounterState {
+  const env = state.environment;
+  const captive = env ? captivesOf(env.spec)[index] : undefined;
+  if (!env || !captive) return state;
+  events.push({ type: "captiveLost", ...captiveIndexField(env.spec, index) });
+  return { ...state, board: setTerrain(state.board, captive.at, "open"), environment: withCaptiveStatus(env, index, "lost") };
+}
+
 /** The environment's half of a round starting (#201). See `endTurnWithEvents`. */
 function roundStartInEnvironment(
   state: EncounterState,
@@ -2195,12 +2238,13 @@ function roundStartInEnvironment(
     events.push({ type: "riftClock", onExpire: clock.onExpire });
   }
 
-  const deadline = rescueDeadline(spec);
-  if (spec.rescue && env.rescue === "waiting" && deadline !== null && round > deadline) {
-    env = { ...env, rescue: "lost" };
-    working = { ...working, board: setTerrain(working.board, spec.rescue.at, "open"), environment: env };
-    events.push({ type: "captiveLost" });
-  }
+  captivesOf(spec).forEach((captive, i) => {
+    const deadline = rescueDeadline(spec, captive);
+    if (captiveStatuses(working.environment!)[i] === "waiting" && deadline !== null && round > deadline) {
+      working = loseCaptive(working, i, events);
+    }
+  });
+  env = working.environment!;
 
   if (clock?.onExpire === "surge" && round > clock.rounds) {
     const amount = clock.surge ?? DEFAULT_SURGE;

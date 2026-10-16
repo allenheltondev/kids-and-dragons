@@ -35,7 +35,7 @@
 
 import { useState, type ReactElement } from "react";
 import type { EncounterEvent, EncounterState } from "@kad/shared";
-import { combatantById, environmentView } from "@kad/shared";
+import { captiveName, combatantById, environmentView } from "@kad/shared";
 import { usePresentation, useRunState } from "../store";
 import { Icon } from "./icons";
 import { combatantLabel } from "./combat-grid";
@@ -64,7 +64,7 @@ export function riftCaption(events: readonly EncounterEvent[], encounter: Encoun
       return c ? combatantLabel(c) : id;
     },
     isParty: (id: string): boolean => combatantById(encounter, id)?.side === "party",
-    captive: encounter.environment?.spec.rescue?.name ?? "the captive",
+    captive: (index?: number) => captiveName(encounter.environment?.spec, index),
   };
   const lines: string[] = [];
   for (const event of events) {
@@ -109,12 +109,12 @@ export function RiftStatus(): ReactElement | null {
             <span>{exitLine(exit)}</span>
           </li>
         ))}
-        {view.rescue ? (
-          <li key="rescue">
+        {view.captives.map((captive, i) => (
+          <li key={`rescue:${i}`}>
             <Icon name={CAPTIVE_ICON} />
-            <span>{rescueLine(view.rescue)}</span>
+            <span>{rescueLine(captive)}</span>
           </li>
-        ) : null}
+        ))}
       </ul>
       {caption ? (
         <ul className="rift-status__caption" key={caption.seq} aria-live="polite">

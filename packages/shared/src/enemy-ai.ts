@@ -87,7 +87,7 @@
  * what lets the client show her, in advance, where a monster would go.
  */
 
-import { exitOpen, hazardAt, hazardWeight } from "./environment.js";
+import { captiveStatuses, captivesOf, exitOpen, hazardAt, hazardWeight } from "./environment.js";
 import type { RescueStatus } from "./environment.js";
 import {
   actorAt,
@@ -164,8 +164,11 @@ export interface EnemyTurn {
 export interface EnemyEnvironment {
   readonly spec: EncounterEnvironment;
   readonly round: number;
-  /** `EnvironmentState.rescue`. Only `"waiting"` makes the captive worth watching. */
-  readonly rescue?: RescueStatus;
+  /**
+   * `EnvironmentState.rescue`: one status, or one per captive (#220). Only
+   * `"waiting"` makes a captive worth watching.
+   */
+  readonly rescue?: RescueStatus | readonly RescueStatus[];
 }
 
 /**
@@ -598,7 +601,11 @@ function postsInForce(env: EnemyEnvironment): Post[] {
     for (let ahead = 0; ahead <= EXIT_LOOKAHEAD; ahead++) watched ||= exitOpen(exit, env.round + ahead);
     if (watched && exit.tiles.length > 0) posts.push({ kind: "exit", tiles: exit.tiles });
   }
-  if (env.spec.rescue && env.rescue === "waiting") posts.push({ kind: "captive", tiles: [env.spec.rescue.at] });
+  // Each captive still waiting is a post of its own (#220), in authored order.
+  const statuses = captiveStatuses(env);
+  captivesOf(env.spec).forEach((captive, i) => {
+    if (statuses[i] === "waiting") posts.push({ kind: "captive", tiles: [captive.at] });
+  });
   return posts;
 }
 

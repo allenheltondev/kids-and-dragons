@@ -184,8 +184,9 @@ function featuresOf(encounter: EncounterState): Map<string, GridFeature> {
       out.set(`${t.x},${t.y}`, { kind: "exit", label: exit.label, icon: EXIT_ICON, active: exit.open });
     }
   }
-  if (view.rescue?.status === "waiting") {
-    const { at, name } = view.rescue;
+  for (const captive of view.captives) {
+    if (captive.status !== "waiting") continue;
+    const { at, name } = captive;
     out.set(`${at.x},${at.y}`, { kind: "captive", label: name, icon: CAPTIVE_ICON, active: true });
   }
   return out;

@@ -70,7 +70,7 @@ import {
   type EnemyPlacement,
   type PartyPlacement,
 } from "./encounter.js";
-import { outcomeBranch } from "./environment.js";
+import { captiveStatuses, captivesOf, outcomeBranch } from "./environment.js";
 import { parseBoard, type Position } from "./grid.js";
 import { planEnemyTurn } from "./enemy-ai.js";
 import type {
@@ -2241,9 +2241,11 @@ function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | un
   // ended — won, lost, escaped or collapsed — so the rescue's own effects land
   // before the branch's, and the branch (and its narration variants) can read
   // them. A captive still waiting, or lost, is simply left behind.
-  const rescue = scene.environment?.rescue;
-  if (rescue?.effects && encounter.environment?.rescue === "freed") {
-    applyEffectsDraft(draft, rescue.effects, ctx);
+  if (scene.environment && encounter.environment) {
+    const statuses = captiveStatuses(encounter.environment);
+    captivesOf(scene.environment).forEach((captive, i) => {
+      if (captive.effects && statuses[i] === "freed") applyEffectsDraft(draft, captive.effects, ctx);
+    });
   }
   return takeBranch(draft, outcomeBranch(scene, outcome), ctx);
 }

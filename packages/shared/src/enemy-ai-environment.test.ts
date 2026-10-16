@@ -431,6 +431,23 @@ describe("the captive", () => {
     expect(planEnemyTurn(input).moveTo).not.toEqual({ x: 0, y: 6 });
     expect(planEnemyTurn(input)).toEqual(planEnemyTurn(bare(input)));
   });
+
+  it("several captives (#220): each is a post of its own, for the next-nearest monster", () => {
+    // Moss walled at (8,0) as well as Pip at (1,7). shade#2 is nearer Moss.
+    const rows = PIPPED.map((row, y) => (y === 0 ? `${row.slice(0, 8)}#${row.slice(9)}` : row));
+    const moss = { name: "Moss", at: { x: 8, y: 0 } };
+    const party = [hero("c_ash", { x: 0, y: 2 }), hero("c_bryn", { x: 0, y: 3 })];
+    const env = place({ rescue: [PIP, moss] }, 1, ["waiting", "waiting"]);
+    const input = turn(rows, { x: 5, y: 7 }, party, { steps: 3, others: [monster({ x: 8, y: 3 }, "shade#2")], environment: env });
+    expect(planEnemyTurn(input)).toEqual({ moveTo: { x: 2, y: 6 }, attack: null });
+    const its = { ...input, enemy: { id: "shade#2", at: { x: 8, y: 3 }, steps: 3 } };
+    const theirs = planEnemyTurn(its);
+    expect(theirs.attack).toBeNull();
+    expect(stepsBetween(theirs.moveTo!, moss.at)).toBe(1);
+    // Once Pip is freed, nothing is left for this one to watch: the sentence again.
+    const freed = { ...input, environment: place({ rescue: [PIP, moss] }, 1, ["freed", "waiting"]) };
+    expect(planEnemyTurn(freed)).toEqual(planEnemyTurn(bare(freed)));
+  });
 });
 
 // ---------------------------------------------------------------------------

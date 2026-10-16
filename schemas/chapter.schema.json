@@ -1523,30 +1523,20 @@
           }
         },
         "rescue": {
-          "description": "Somebody to save, standing on `at`. Freed when a hero ENDS a turn beside them; lost after `byRound` (default: when the clock runs out). `effects` apply when the fight ends, if freed.",
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "name",
-            "at"
-          ],
-          "properties": {
-            "name": {
-              "type": "string",
-              "minLength": 1
+          "description": "Somebody to save, standing on `at`. Freed when a hero ENDS a turn beside them; lost after `byRound` (default: when the clock runs out). `effects` apply when the fight ends, if freed. One captive, or a list of up to three (#220), each freed on its own.",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/rescueObjective"
             },
-            "at": {
-              "$ref": "#/$defs/mapTile"
-            },
-            "byRound": {
-              "description": "The last round they can be freed in.",
-              "type": "integer",
-              "minimum": 1
-            },
-            "effects": {
-              "$ref": "#/$defs/effects"
+            {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 3,
+              "items": {
+                "$ref": "#/$defs/rescueObjective"
+              }
             }
-          }
+          ]
         },
         "relocate": {
           "description": "The rift moves a monster: at the start of `round`, enemy `<spec id>#<n>` goes to `to`, if it still stands and the tile is free.",
@@ -1583,6 +1573,37 @@
         1,
         2
       ]
+    },
+    "rescueObjective": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "at"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "at": {
+          "$ref": "#/$defs/mapTile"
+        },
+        "byRound": {
+          "description": "The last round they can be freed in.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "effects": {
+          "$ref": "#/$defs/effects"
+        },
+        "hp": {
+          "description": "#220 a captive the monsters can get at, 1 to 6: a monster that ends its turn beside them without swinging takes one away; at none they are lost. Absent: nothing can touch them.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        }
+      }
     }
   }
 }

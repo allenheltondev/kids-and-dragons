@@ -99,7 +99,7 @@ describe("the clock on the shared screen", () => {
 
 describe("the place's beats, in words", () => {
   const names: Record<string, string> = { c_1: "Sparklehoof", "wisp#1": "Bramblewisp 1" };
-  const words = { name: (id: string) => names[id] ?? id, isParty: (id: string) => id === "c_1", captive: "Pip" };
+  const words = { name: (id: string) => names[id] ?? id, isParty: (id: string) => id === "c_1", captive: (i?: number) => (i === 1 ? "Moss" : "Pip") };
   const you = { ...words, name: (id: string) => (id === "c_1" ? "You" : words.name(id)) };
 
   it("tells every environmental beat, for the room and for the hero it happened to", () => {
@@ -124,5 +124,19 @@ describe("the place's beats, in words", () => {
   it("says nothing about an ordinary beat", () => {
     expect(environmentBeatLine({ type: "down", actorId: "c_1" }, words)).toBeNull();
     expect(environmentBeatLine({ type: "moved", actorId: "c_1", to: { x: 1, y: 1 } }, words)).toBeNull();
+  });
+});
+
+describe("captives the monsters can get at, and several of them (#220)", () => {
+  const words = { name: (id: string) => (id === "wisp#1" ? "Bramblewisp 1" : id), isParty: () => false, captive: (i?: number) => (i === 1 ? "Moss" : "Pip") };
+  it("names the right captive, and counts the tugs left", () => {
+    expect(environmentBeatLine({ type: "freed", byId: "wisp#1", captive: 1 }, words)!.text).toBe("Bramblewisp 1 freed Moss!");
+    expect(environmentBeatLine({ type: "captiveDragged", byId: "wisp#1", hp: 2 }, words)).toEqual({
+      text: "Bramblewisp 1 drags at Pip! 2 more and they are gone.",
+      tone: "bad",
+    });
+    expect(rescueLine({ name: "Pip", at: { x: 0, y: 0 }, status: "waiting", hp: 2, maxHp: 3 })).toBe(
+      "Free Pip: end your turn next to them. A monster next to them drags them away: 2 more and they are gone.",
+    );
   });
 });

@@ -81,8 +81,10 @@ export function beatSubjects(event: EncounterEvent): string[] {
     case "escaped":
     case "relocated":
       return [event.actorId];
-    // The hero who freed the captive. The captive is a square, not a figure.
+    // The hero who freed the captive, the monster dragging at one (#220).
+    // The captive is a square, not a figure.
     case "freed":
+    case "captiveDragged":
       return [event.byId];
     /*
      * A roll names its roller through the die rather than an `actorId`, and

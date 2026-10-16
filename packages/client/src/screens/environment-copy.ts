@@ -105,7 +105,9 @@ export function rescueLine(rescue: EnvironmentRescueView): string {
     case "lost":
       return `${rescue.name} is lost to the rift.`;
     default: {
-      const how = `Free ${rescue.name}: end your turn next to them.`;
+      const free = `Free ${rescue.name}: end your turn next to them.`;
+      // A captive the monsters can get at (#220) says how many tugs are left.
+      const how = rescue.hp === undefined ? free : `${free} A monster next to them drags them away: ${rescue.hp} more and they are gone.`;
       if (rescue.roundsLeft === undefined) return how;
       return rescue.roundsLeft <= 1 ? `${how} This round is the last chance!` : `${how} ${rescue.roundsLeft} rounds left.`;
     }
@@ -149,8 +151,11 @@ export interface BeatWords {
   /** "You" for the reader's own figure on a phone; a name everywhere else. */
   name(id: string): string;
   isParty(id: string): boolean;
-  /** `rescue.name`, or "the captive" for a fight without one. */
-  readonly captive: string;
+  /**
+   * The captive an event names, by its `captive` index (#220; absent for the
+   * one captive): their `name`, or "the captive" for a fight without one.
+   */
+  captive(index?: number): string;
 }
 
 /**
@@ -183,9 +188,14 @@ export function environmentBeatLine(
       return { text: `${who} ${who === "You" ? "step" : "steps"} through the rift!`, tone: "good" };
     }
     case "freed":
-      return { text: `${words.name(event.byId)} freed ${words.captive}!`, tone: "good" };
+      return { text: `${words.name(event.byId)} freed ${words.captive(event.captive)}!`, tone: "good" };
     case "captiveLost":
-      return { text: `${words.captive} is lost to the rift.`, tone: "bad" };
+      return { text: `${words.captive(event.captive)} is lost to the rift.`, tone: "bad" };
+    case "captiveDragged":
+      return {
+        text: `${words.name(event.byId)} drags at ${words.captive(event.captive)}! ${event.hp === 0 ? "Gone!" : `${event.hp} more and they are gone.`}`,
+        tone: "bad",
+      };
     case "relocated":
       return { text: `The rift throws ${words.name(event.actorId)} somewhere new!`, tone: "plain" };
     case "riftClock":

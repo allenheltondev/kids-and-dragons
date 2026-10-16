@@ -115,8 +115,8 @@ export function environmentOverlay(encounter: EncounterState): EnvironmentOverla
     }
   }
 
-  if (view.rescue) {
-    const { at, name, status, roundsLeft } = view.rescue;
+  for (const captive of view.captives) {
+    const { at, name, status, roundsLeft } = captive;
     mark(at, {
       kind: "captive",
       glyph: "captive",

@@ -39,7 +39,7 @@
  * world-state.ts and buffs.ts already live by).
  */
 
-import type { Branch, EncounterEnvironment, EncounterScene, EncounterMap, MapTile, RiftExit, EnvironmentHazard, HazardPush } from "./types/chapter.js";
+import type { Branch, EncounterEnvironment, EncounterScene, EncounterMap, MapTile, RiftExit, EnvironmentHazard, HazardPush, RescueObjective } from "./types/chapter.js";
 import type { SlowEffect } from "./types/buffs.js";
 import type { Combatant, EncounterState } from "./encounter.js";
 
@@ -56,12 +56,26 @@ export interface EnvironmentState {
   readonly spec: EncounterEnvironment;
   /** The clock ran out: a round started past `clock.rounds`. Never unset. */
   readonly expired: boolean;
-  /** Present exactly when the spec has a `rescue`. */
-  readonly rescue?: RescueStatus;
+  /**
+   * Present exactly when the spec has a `rescue`, in the spec's own form: one
+   * status for one captive, a list (in authored order) for a list (#220).
+   * Read it through `captiveStatuses`.
+   */
+  readonly rescue?: RescueStatus | readonly RescueStatus[];
+  /**
+   * What each captive has left before the monsters drag them off (#220), in
+   * authored order — present only when some captive has `hp`. A captive
+   * without `hp` has no entry worth reading (0) and is never worn down.
+   */
+  readonly captiveHp?: readonly number[];
 }
 
 /** The bounds the checker holds an authored environment to. */
 export const ENVIRONMENT_LIMITS = {
+  /** The most captives one fight holds (#220). */
+  captives: 3,
+  /** The most a captive can take before the monsters drag them off (#220). */
+  captiveHp: 6,
   /** A clock longer than this is not a clock anybody at the table feels. */
   clockRounds: 12,
   hazardDamage: 5,
@@ -139,12 +153,44 @@ export function openExitAt(spec: EncounterEnvironment, round: number, at: MapTil
   return (spec.exits ?? []).find((e) => exitOpen(e, round) && onTile(e.tiles, at)) ?? null;
 }
 
+/** Every captive the spec holds, in authored order: none, the one, or the list (#220). */
+export function captivesOf(spec: Pick<EncounterEnvironment, "rescue">): readonly RescueObjective[] {
+  const rescue = spec.rescue;
+  if (rescue === undefined) return [];
+  return Array.isArray(rescue) ? rescue : [rescue as RescueObjective];
+}
+
+/** What became of each captive, in authored order. */
+export function captiveStatuses(env: Pick<EnvironmentState, "rescue">): readonly RescueStatus[] {
+  const rescue = env.rescue;
+  if (rescue === undefined) return [];
+  return Array.isArray(rescue) ? rescue : [rescue as RescueStatus];
+}
+
+/** The environment with captive `index`'s status changed, kept in the spec's form. */
+export function withCaptiveStatus(env: EnvironmentState, index: number, status: RescueStatus): EnvironmentState {
+  if (!Array.isArray(env.rescue)) return { ...env, rescue: status };
+  const next = [...env.rescue];
+  next[index] = status;
+  return { ...env, rescue: next };
+}
+
+/** The `captive` index an event carries: only for a list, so one captive's events read as they always did. */
+export function captiveIndexField(spec: Pick<EncounterEnvironment, "rescue">, index: number): { captive?: number } {
+  return Array.isArray(spec.rescue) ? { captive: index } : {};
+}
+
+/** The name of the captive an event names (by its `captive` index, else the first). */
+export function captiveName(spec: Pick<EncounterEnvironment, "rescue"> | undefined, index?: number): string {
+  return (spec ? captivesOf(spec)[index ?? 0]?.name : undefined) ?? "the captive";
+}
+
 /**
- * The last round the captive can still be freed in: `byRound`, else the
- * clock's last round, else never lost (null).
+ * The last round a captive can still be freed in: its `byRound`, else the
+ * clock's last round, else never lost (null). Without `captive`, the first.
  */
-export function rescueDeadline(spec: EncounterEnvironment): number | null {
-  return spec.rescue?.byRound ?? spec.clock?.rounds ?? null;
+export function rescueDeadline(spec: EncounterEnvironment, captive?: RescueObjective): number | null {
+  return (captive ?? captivesOf(spec)[0])?.byRound ?? spec.clock?.rounds ?? null;
 }
 
 /** Off the board, by stepping through an exit. */
@@ -230,13 +276,17 @@ export interface EnvironmentRescueView {
   readonly status: RescueStatus;
   /** Rounds left to free them, counting this one, while waiting with a deadline. */
   readonly roundsLeft?: number;
+  /** A captive the monsters can drag off (#220): what they have left, and started with. */
+  readonly hp?: number;
+  readonly maxHp?: number;
 }
 
 export interface EnvironmentView {
   readonly clock?: EnvironmentClockView;
   readonly exits: readonly EnvironmentExitView[];
   readonly hazards: readonly EnvironmentHazardView[];
-  readonly rescue?: EnvironmentRescueView;
+  /** Every captive, in authored order (#220): one, several, or none. */
+  readonly captives: readonly EnvironmentRescueView[];
   /** Heroes already through an exit. */
   readonly escaped: readonly string[];
 }
@@ -248,7 +298,7 @@ export function environmentView(state: EncounterState): EnvironmentView | null {
   const { spec } = env;
   const round = state.round;
   const clock = spec.clock;
-  const deadline = rescueDeadline(spec);
+  const statuses = captiveStatuses(env);
   return {
     ...(clock
       ? {
@@ -286,18 +336,18 @@ export function environmentView(state: EncounterState): EnvironmentView | null {
       active: hazardActive(hazard, round),
       ...(hazard.untilRound !== undefined && round > hazard.untilRound ? { gone: true as const } : {}),
     })),
-    ...(spec.rescue && env.rescue
-      ? {
-          rescue: {
-            name: spec.rescue.name,
-            at: spec.rescue.at,
-            status: env.rescue,
-            ...(env.rescue === "waiting" && deadline !== null
-              ? { roundsLeft: Math.max(0, deadline - round + 1) }
-              : {}),
-          },
-        }
-      : {}),
+    captives: captivesOf(spec).map((captive, i) => {
+      const status = statuses[i] ?? "waiting";
+      const deadline = rescueDeadline(spec, captive);
+      const hp = env.captiveHp?.[i];
+      return {
+        name: captive.name,
+        at: captive.at,
+        status,
+        ...(status === "waiting" && deadline !== null ? { roundsLeft: Math.max(0, deadline - round + 1) } : {}),
+        ...(captive.hp !== undefined ? { hp: hp ?? captive.hp, maxHp: captive.hp } : {}),
+      };
+    }),
     escaped: state.combatants.filter(hasEscaped).map((c) => c.id),
   };
 }
@@ -463,11 +513,17 @@ export function checkEncounterEnvironment(
     });
   });
 
-  // --- rescue
-  const rescue = env.rescue;
-  if (rescue) {
-    const at = "/environment/rescue";
+  // --- rescue: one captive, or a list of them (#220)
+  const captives = captivesOf(env);
+  if (Array.isArray(env.rescue) && (env.rescue.length < 1 || env.rescue.length > ENVIRONMENT_LIMITS.captives)) {
+    fail("/environment/rescue", `a list of 1 to ${ENVIRONMENT_LIMITS.captives} captives`);
+  }
+  captives.forEach((rescue, i) => {
+    const at = Array.isArray(env.rescue) ? `/environment/rescue/${i}` : "/environment/rescue";
     roundOk(rescue.byRound, `${at}/byRound`);
+    if (rescue.hp !== undefined && (!isInt(rescue.hp) || rescue.hp < 1 || rescue.hp > ENVIRONMENT_LIMITS.captiveHp)) {
+      fail(`${at}/hp`, `must be a whole number from 1 to ${ENVIRONMENT_LIMITS.captiveHp}`);
+    }
     if (lastRound !== null && rescue.byRound !== undefined && rescue.byRound > lastRound) {
       fail(`${at}/byRound`, `round ${rescue.byRound} is after the clock collapses the fight at the end of round ${lastRound}`);
     }
@@ -475,13 +531,15 @@ export function checkEncounterEnvironment(
       if (partySpawns.has(key(rescue.at)) || enemySpawns.has(key(rescue.at))) {
         fail(`${at}/at`, `(${rescue.at.x}, ${rescue.at.y}) is a spawn point — the captive stands there, so nobody else can`);
       }
-      claim(rescue.at, "the captive", `${at}/at`);
+      claim(rescue.at, captives.length > 1 ? `the captive ${rescue.name} (${i + 1})` : "the captive", `${at}/at`);
       if (map?.rows) {
-        const beside = neighbours(rescue.at, width, height).filter((t) => map.rows[t.y]?.[t.x] === ".");
+        const beside = neighbours(rescue.at, width, height).filter(
+          (t) => map.rows[t.y]?.[t.x] === "." && !captives.some((c) => c.at.x === t.x && c.at.y === t.y),
+        );
         if (beside.length === 0) fail(`${at}/at`, "nobody can stand next to the captive, so they can never be freed");
       }
     }
-  }
+  });
 
   // --- relocations
   const counts = new Map<string, number>();
@@ -500,23 +558,25 @@ export function checkEncounterEnvironment(
     if (!specId || !Number.isInteger(n) || n < 1 || n > (counts.get(specId) ?? 0)) {
       fail(`${at}/enemy`, `"${move.enemy}" is not one of this scene's enemies (ids are <enemy id>#<n>, from 1)`);
     }
-    if (tileOk(move.to, `${at}/to`) && claimed.get(key(move.to)) === "the captive") {
+    if (tileOk(move.to, `${at}/to`) && claimed.get(key(move.to))?.startsWith("the captive")) {
       fail(`${at}/to`, "that is where the captive stands");
     }
   });
 
   // --- reach: an exit, or the captive, the party cannot walk to is a lie
   if (map?.rows && map.partySpawns?.[0]) {
-    const blocked = new Set<string>(rescue ? [key(rescue.at)] : []);
+    const blocked = new Set<string>(captives.map((c) => key(c.at)));
     const reach = flood(map.rows, map.partySpawns[0], blocked);
     exits.forEach((exit, i) => {
       if ((exit.tiles ?? []).length > 0 && !(exit.tiles ?? []).some((t) => reach.has(key(t)))) {
         fail(`/environment/exits/${i}/tiles`, `no hero can walk to exit "${exit.id}"`);
       }
     });
-    if (rescue && !neighbours(rescue.at, width, height).some((t) => reach.has(key(t)))) {
-      fail("/environment/rescue/at", "no hero can walk to the captive");
-    }
+    captives.forEach((rescue, i) => {
+      if (!neighbours(rescue.at, width, height).some((t) => reach.has(key(t)))) {
+        fail(Array.isArray(env.rescue) ? `/environment/rescue/${i}/at` : "/environment/rescue/at", "no hero can walk to the captive");
+      }
+    });
   }
   return out;
 }

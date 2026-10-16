@@ -19,7 +19,7 @@ import {
   type EncounterState,
 } from "./encounter.js";
 import { checkEncounterEnvironment, environmentView } from "./environment.js";
-import { parseBoard, type Position } from "./grid.js";
+import { parseBoard, terrainAt, type Position } from "./grid.js";
 import type { Rng } from "./dice.js";
 import { resolveCharacter } from "./character.js";
 import { makeCharacter, makeItems, makeRules } from "./test-fixtures.js";
@@ -176,5 +176,71 @@ describe("hazards that slow, hold and push (#220)", () => {
       "/environment/hazards/0/push/direction",
       "/environment/hazards/0/push/tiles",
     ]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Several captives, and captives the monsters can get at
+// ---------------------------------------------------------------------------
+
+describe("several captives (#220)", () => {
+  const TWO: EncounterEnvironment = {
+    rescue: [
+      { name: "Pip", at: { x: 2, y: 6 } },
+      { name: "Moss", at: { x: 2, y: 0 }, byRound: 1 },
+    ],
+  };
+
+  it("walls every captive, and frees each on its own", () => {
+    let state = begin(TWO);
+    expect(terrainAt(state.board, { x: 2, y: 6 })).toBe("blocked");
+    expect(terrainAt(state.board, { x: 2, y: 0 })).toBe("blocked");
+    expect(state.environment!.rescue).toEqual(["waiting", "waiting"]);
+    const freed = endTurnWithEvents(walk(state, { x: 1, y: 1 }));
+    expect(freed.events).toEqual([{ type: "freed", byId: "c_a", captive: 1 }]);
+    expect(freed.state.environment!.rescue).toEqual(["waiting", "freed"]);
+    expect(terrainAt(freed.state.board, { x: 2, y: 0 })).toBe("open");
+    state = freed.state;
+    expect(environmentView(state)!.captives.map((c) => c.status)).toEqual(["waiting", "freed"]);
+  });
+
+  it("each has its own deadline", () => {
+    const events: EncounterEvent[] = [];
+    const state = until(until(begin(TWO), "wisp#1"), "c_a", events);
+    expect(events).toEqual([{ type: "captiveLost", captive: 1 }]);
+    expect(state.environment!.rescue).toEqual(["waiting", "lost"]);
+    expect(terrainAt(state.board, { x: 2, y: 0 })).toBe("open");
+  });
+
+  it("the check holds each captive to the rules, by its own path", () => {
+    const scene = {
+      enemies: [WISP],
+      environment: { rescue: [{ name: "A", at: { x: 2, y: 2 } }, { name: "B", at: { x: 2, y: 2 }, hp: 9 }] } as EncounterEnvironment,
+    };
+    expect(checkEncounterEnvironment(scene).map((p) => p.path)).toEqual(["/environment/rescue/1/hp", "/environment/rescue/1/at"]);
+  });
+});
+
+describe("a captive the monsters can get at (#220)", () => {
+  const PIP: EncounterEnvironment = { rescue: { name: "Pip", at: { x: 8, y: 3 }, hp: 2 } };
+
+  it("loses one each turn a monster ends beside them without swinging, and is lost at none", () => {
+    let state = begin(PIP);
+    expect(environmentView(state)!.captives[0]).toMatchObject({ hp: 2, maxHp: 2 });
+    const first = endTurnWithEvents(until(state, "wisp#1"));
+    expect(first.events).toEqual([{ type: "captiveDragged", byId: "wisp#1", hp: 1 }]);
+    expect(environmentView(first.state)!.captives[0]).toMatchObject({ hp: 1, status: "waiting" });
+    const second = endTurnWithEvents(until(first.state, "wisp#1"));
+    expect(second.events).toEqual([{ type: "captiveDragged", byId: "wisp#1", hp: 0 }, { type: "captiveLost" }]);
+    expect(second.state.environment!.rescue).toBe("lost");
+    expect(terrainAt(second.state.board, { x: 8, y: 3 })).toBe("open");
+    state = second.state;
+  });
+
+  it("is left alone by a monster that swung this turn, and by everyone when it has no hp", () => {
+    const swung = until(begin(PIP), "wisp#1");
+    expect(endTurnWithEvents({ ...swung, actionTaken: true }).events).toEqual([]);
+    const untouchable = until(begin({ rescue: { name: "Pip", at: { x: 8, y: 3 } } }), "wisp#1");
+    expect(endTurnWithEvents(untouchable).events).toEqual([]);
   });
 });
