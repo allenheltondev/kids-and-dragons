@@ -1,0 +1,14 @@
+
+> kids-and-dragons@0.0.0 canon:field-guide
+> tsx tools/canon/field-guide.ts
+
+content\field-guide.json — 66 entries (18 creatures, 20 peoples, 3 folk, 23 places, 2 factions)
+  no lore yet (4): individual.marda_thorn, individual.old_ossley, individual.pib, location.the_whirlpool
+  unresolved: biome.eastern_plains regional_relationships -> route.northern_river_bridge (not in the guide)
+  unresolved: biome.glacier_of_origins regional_relationships -> feature.great_river_source (not in the guide)
+  unresolved: biome.plains regional_relationships -> feature.great_river_west_branch (not in the guide)
+  unresolved: biome.red_sky_foothills regional_relationships -> route.northern_river_bridge (not in the guide)
+  unresolved: biome.sallow_wastelands regional_relationships -> feature.great_river (not in the guide)
+  unresolved: biome.whispering_marsh regional_relationships -> feature.great_river_west_branch (not in the guide)
+  unresolved: location.bone_yard regional_relationships -> feature.great_river (not in the guide)
+  unresolved: location.stone_crossing regional_relationships -> feature.great_river (not in the guide)

@@ -215,8 +215,11 @@
 }
 
 /*
- * The input sits on top of the boxes, transparent: the caret and the native
- * keyboard behave, and the boxes below do the drawing.
+ * The input sits on top of the boxes, transparent: the native keyboard, paste
+ * and backspace behave, and the boxes below do the drawing, the glowing "next"
+ * box included, so the caret is hidden too. Its text is unspaced: letters
+ * spread across the boxes' width ran past the input's own on every phone, and
+ * the field scrolled sideways under the player's thumb as the code went in.
  */
 .home__code-input {
   position: absolute;
@@ -227,11 +230,9 @@
   border: 0;
   background: transparent;
   color: transparent;
-  caret-color: var(--color-accent, #ffc95c);
+  caret-color: transparent;
   font: inherit;
   font-size: var(--font-size-2xl, 2em);
-  letter-spacing: 2.2em;
-  text-indent: 1.05em;
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -249,8 +250,10 @@
 .home__code-box {
   display: grid;
   place-items: center;
+  /* No minimum: the input over all four boxes is the touch target, and a
+     floor in this font's ems made four boxes wider than a 320px phone. */
+  min-width: 0;
   aspect-ratio: 3 / 4;
-  min-height: var(--touch-min, 3em);
   border: 0.12em solid var(--color-border, #3a3468);
   border-radius: var(--radius-md, 0.75em);
   background: var(--color-surface-sunken, #120f26);

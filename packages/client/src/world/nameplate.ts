@@ -141,7 +141,10 @@ export function createNameplate(name: string, spec: NameplateSpec): Text | null 
 }
 
 /** Re-measure and re-fit — for a name that changed under a figure that did not. */
-export function fitNameplate(text: Text, maxWidth: number): void {
+export function fitNameplate(text: Text, maxWidth: number, wrap = false): void {
+  text.style.wordWrap = wrap;
+  text.style.breakWords = wrap;
+  text.style.wordWrapWidth = maxWidth;
   text.scale.set(1);
   text.scale.set(nameplateScale(text.width, maxWidth));
 }
