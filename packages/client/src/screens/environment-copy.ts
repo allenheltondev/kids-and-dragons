@@ -9,9 +9,15 @@
  * apart by colour alone (spec §11). All of it reads `environmentView`, the one
  * shared reading of `EncounterState.environment`; a fight without one shows
  * none of it.
+ *
+ * Two surfaces read it: the phone's combat panel, and the shared screen's rift
+ * status (RiftStatus.tsx) beside the TV board's overlay
+ * (world/environment-overlay.ts). One set of words, so the room and the phone
+ * in a child's hand never say the same thing two ways.
  */
 
 import type {
+  EncounterEvent,
   EnvironmentClockView,
   EnvironmentExitView,
   EnvironmentHazardView,
@@ -48,6 +54,7 @@ export function clockLine(clock: EnvironmentClockView): string {
 
 /** What one hazard costs, and whether it is burning yet. */
 export function hazardLine(hazard: EnvironmentHazardView): string {
+  if (hazard.gone) return `${hazard.label} has died down.`;
   const cost = `stopping on it costs ${hazard.damage} heart${s(hazard.damage)}.`;
   return hazard.active ? `${hazard.label}: ${cost}` : `${hazard.label} (not yet): soon ${cost}`;
 }
@@ -88,5 +95,71 @@ export function tileWords(feature: { kind: "hazard" | "exit" | "captive"; label:
       return feature.active ? `${feature.label}, open: stop here to escape` : `${feature.label}, closed`;
     default:
       return feature.label;
+  }
+}
+
+/**
+ * The clock as the shared screen shows it: one big figure a room can read
+ * from the sofa, the sentence beside it, and how loudly to say it. The figure
+ * is the rounds left; in the last round it becomes "!" and once the rift has
+ * acted, "0" — so "hurry" and "too late" differ in shape as well as in the
+ * style the banner gives them (spec §11: never colour alone).
+ */
+export interface ClockReadout {
+  readonly figure: string;
+  readonly text: string;
+  readonly mood: "calm" | "urgent" | "expired";
+}
+
+export function clockReadout(clock: EnvironmentClockView): ClockReadout {
+  const text = clockLine(clock);
+  if (clock.expired) return { figure: "0", text, mood: "expired" };
+  if (clock.roundsLeft <= 1) return { figure: "!", text, mood: "urgent" };
+  return { figure: String(clock.roundsLeft), text, mood: "calm" };
+}
+
+/** How a beat is told: whose name to use, and whose side they are on. */
+export interface BeatWords {
+  /** "You" for the reader's own figure on a phone; a name everywhere else. */
+  name(id: string): string;
+  isParty(id: string): boolean;
+  /** `rescue.name`, or "the captive" for a fight without one. */
+  readonly captive: string;
+}
+
+/**
+ * One environmental beat (`hazard`, `escaped`, `freed`, `captiveLost`,
+ * `relocated`, `riftClock`, `surge`) as a sentence and a tone, or null for
+ * any other beat. The phone's beat log and the TV's rift caption both say
+ * these, so the words live here once.
+ */
+export function environmentBeatLine(
+  event: EncounterEvent,
+  words: BeatWords,
+): { text: string; tone: "good" | "bad" | "plain" } | null {
+  switch (event.type) {
+    case "hazard": {
+      const who = words.name(event.actorId);
+      return {
+        text: `${event.label} ${who === "You" ? "burns you" : `hurts ${who}`}!`,
+        tone: words.isParty(event.actorId) ? "bad" : "good",
+      };
+    }
+    case "escaped": {
+      const who = words.name(event.actorId);
+      return { text: `${who} ${who === "You" ? "step" : "steps"} through the rift!`, tone: "good" };
+    }
+    case "freed":
+      return { text: `${words.name(event.byId)} freed ${words.captive}!`, tone: "good" };
+    case "captiveLost":
+      return { text: `${words.captive} is lost to the rift.`, tone: "bad" };
+    case "relocated":
+      return { text: `The rift throws ${words.name(event.actorId)} somewhere new!`, tone: "plain" };
+    case "riftClock":
+      return { text: event.onExpire === "collapse" ? "The rift is closing!" : "The rift is surging!", tone: "bad" };
+    case "surge":
+      return { text: `The rift surges: everyone still here loses ${event.amount}.`, tone: "bad" };
+    default:
+      return null;
   }
 }

@@ -43,6 +43,17 @@
  * with blocked tiles hatched — the same "a placeholder looks like a
  * placeholder" rule the character sprites follow. The variant per tile is a
  * deterministic hash of its coordinates so every client lays the same floor.
+ *
+ * THE PLACE FIGHTING BACK (#201): a fight with an `environment` gets one more
+ * layer over the floor — hazard ground, rift exits, the captive's square —
+ * decided square by square in world/environment-overlay.ts and only stroked
+ * here, in procedural shapes (no art: the overlay must read on every biome's
+ * sheet and on the flat fallback alike). A fight without one never builds the
+ * layer, so its scene graph is node for node what it was. A hero who steps
+ * through an exit fades out on the `escaped` beat and leaves the board with the
+ * patch, the way a beaten monster does (§7.3); the clock and the words for
+ * each beat are the shared screen's DOM (screens/RiftStatus.tsx), not Pixi
+ * text, so they stay sharp and size with the pane.
  * ---------------------------------------------------------------------------
  */
 
@@ -87,6 +98,7 @@ import {
   type NameplateBox,
 } from "./nameplate";
 import { BOARD_TILE_PX, beatOffsetsMs, clipForBeat, facingFor, naturalPath, tileVariant } from "./board-math";
+import { dashedSquare, environmentOverlay, type OverlayTile } from "./environment-overlay";
 import type { BoardAim } from "./previews";
 
 export { BOARD_TILE_PX } from "./board-math";
@@ -253,6 +265,12 @@ interface BoardActor {
    * and drops a footprint on each; empty, it eases to `targetX/Y` as before.
    */
   route: { x: number; y: number }[];
+  /**
+   * Stepped through a rift exit (#201): the `escaped` beat sets it, `tick`
+   * fades the figure and its name out, and the patch behind the beat takes
+   * it off the board. Never set in a fight without an environment.
+   */
+  leaving: boolean;
 }
 
 /** A footprint on a square a walk crossed, fading out. */
@@ -345,6 +363,9 @@ const AIM_COLOR = 0x6fe6ff;
 const FLOATER_LIFE_S = 1.1;
 const FLOATER_RISE = BOARD_TILE_PX * 0.5;
 
+/** How fast a hero who stepped through an exit fades away (1/s). */
+const LEAVE_RATE = 5;
+
 export function createBoardLayer(): BoardLayer {
   const container = new Container();
   const tilesLayer = new Container();
@@ -392,6 +413,14 @@ export function createBoardLayer(): BoardLayer {
   let builtFight: number | null | undefined = undefined;
   /** The last moves drawn, as a cheap signature. */
   let movesKey = "";
+  /**
+   * The environment's marks (#201), over the floor and under the reach. Null
+   * — not an empty layer — in a fight without an environment, so such a fight
+   * has exactly the tree it always had.
+   */
+  let envLayer: Container | null = null;
+  /** What `envLayer` was last drawn from (`EnvironmentOverlay.key`). */
+  let envKey = "";
 
   // -------------------------------------------------------------------------
   // Tiles
@@ -535,6 +564,7 @@ export function createBoardLayer(): BoardLayer {
       sinceStep: 0,
       facing: facingFor(current.encounter, combatant.id) === "right" ? -1 : 1,
       route: [],
+      leaving: false,
     };
     // Arrive already facing the right way; turning is for mid-fight.
     art.scale.x = actor.facing;
@@ -664,6 +694,8 @@ export function createBoardLayer(): BoardLayer {
         else if (newFight) existing.facing = 1;
         // A new fight arrives already facing; turning is for mid-fight.
         if (newFight) existing.art.scale.x = existing.facing;
+        // A fade the last fight began (an `escaped` beat, #201) is that fight's.
+        if (newFight) existing.leaving = false;
         // This module draws what it is given and keeps nothing of its own
         // (see the header), and a name is state like any other.
         //
@@ -758,6 +790,39 @@ export function createBoardLayer(): BoardLayer {
   }
 
   // -------------------------------------------------------------------------
+  // The environment (#201) — see world/environment-overlay.ts
+  // -------------------------------------------------------------------------
+
+  function drawEnvironment(encounter: EncounterState): void {
+    const overlay = environmentOverlay(encounter);
+    if (!overlay) {
+      // A new fight without one, on a board that drew one before.
+      if (envLayer) {
+        envLayer.destroy({ children: true });
+        envLayer = null;
+        envKey = "";
+      }
+      return;
+    }
+    if (!envLayer) {
+      envLayer = new Container();
+      envLayer.label = "environment";
+      // Over the floor (art or fallback), under the reach and the figures:
+      // ground, not furniture.
+      container.addChildAt(envLayer, container.getChildIndex(tilesLayer) + 1);
+    }
+    if (overlay.key === envKey) return;
+    envKey = overlay.key;
+    envLayer.removeChildren().forEach((child) => child.destroy({ children: true }));
+    const g = new Graphics();
+    envLayer.addChild(g);
+    for (const tile of overlay.tiles) {
+      drawOverlayTile(g, tile);
+      if (tile.count !== undefined) envLayer.addChild(drawCountBadge(g, tile));
+    }
+  }
+
+  // -------------------------------------------------------------------------
   // Beats
   // -------------------------------------------------------------------------
 
@@ -781,6 +846,27 @@ export function createBoardLayer(): BoardLayer {
     // sheet ever draws can sit behind it.
     const x = actor.container.x;
     const y = actor.targetY - ACTOR_HEIGHT - BOARD_TILE_PX * 0.05;
+    text.x = x;
+    text.y = y;
+    floatLayer.addChild(text);
+    floaters.push({ text, age: 0, x, y });
+  }
+
+  /** A floater over a square rather than a figure — the captive's (#201). */
+  function spawnTileFloater(at: Position, label: string, color: number): void {
+    const text = new Text({
+      text: label,
+      style: {
+        fontFamily: "system-ui, sans-serif",
+        fontWeight: "900",
+        fontSize: BOARD_TILE_PX * 0.42,
+        fill: color,
+        stroke: { color: 0x120f26, width: 6 },
+      },
+    });
+    text.anchor.set(0.5, 1);
+    const x = (at.x + 0.5) * BOARD_TILE_PX;
+    const y = at.y * BOARD_TILE_PX;
     text.x = x;
     text.y = y;
     floatLayer.addChild(text);
@@ -873,6 +959,43 @@ export function createBoardLayer(): BoardLayer {
         // Clip-only or nothing at all; `clipForBeat` above has already said
         // which, and carries the reasoning for the ones that play nothing.
         return;
+      // The place fighting back (#201). Only a fight with an environment
+      // ever carries these beats.
+      case "escaped": {
+        // Through the tear: the figure fades out where it stands, and the
+        // patch behind the beat takes it off the board.
+        const actor = actors.get(event.actorId);
+        if (actor) actor.leaving = true;
+        return;
+      }
+      case "relocated": {
+        // The rift picks a monster up and puts it down elsewhere: a straight
+        // slide, like a shove — nobody chose to walk there.
+        const actor = actors.get(event.actorId);
+        if (actor) {
+          const feet = feetOf(event.to);
+          actor.targetX = feet.x;
+          actor.targetY = feet.y;
+          actor.route = [];
+          actor.selfMoving = false;
+        }
+        return;
+      }
+      case "freed":
+      case "captiveLost": {
+        const at = view?.encounter.environment?.spec.rescue?.at;
+        if (at) {
+          if (event.type === "freed") spawnTileFloater(at, "Free!", 0x4ad991);
+          else spawnTileFloater(at, "Lost", 0xb7b0d8);
+        }
+        return;
+      }
+      case "hazard":
+      case "riftClock":
+      case "surge":
+        // The hurt itself arrives as ordinary `damage` beats right behind
+        // these, with their numbers; the words are RiftStatus's caption.
+        return;
     }
   }
 
@@ -889,6 +1012,7 @@ export function createBoardLayer(): BoardLayer {
         buildTiles(encounter, biome);
       }
       syncActors(next);
+      drawEnvironment(encounter);
       drawHighlights(encounter, next.aim ?? null);
     },
 
@@ -953,6 +1077,15 @@ export function createBoardLayer(): BoardLayer {
         // flipping (the lineup does the same, scene.ts).
         actor.art.scale.x = approach(actor.art.scale.x, actor.facing, TURN_RATE, dtSeconds);
         actor.shadow.x = actor.shadowX * actor.art.scale.x;
+        if (actor.leaving) {
+          // Through the tear (#201): fading out, name and shadow with it,
+          // until the patch takes the figure off the board.
+          actor.art.alpha = approach(actor.art.alpha, 0, LEAVE_RATE, dtSeconds);
+          actor.shadow.alpha = actor.art.alpha;
+          if (actor.label) actor.label.alpha = actor.art.alpha;
+          actor.rive?.tick(dtSeconds);
+          continue;
+        }
         if (actor.rive) {
           // The rig owns the fall: `knockedDown` walks it through `down` into
           // the `down_loop` breathing hold and back out through `revive`
@@ -1117,6 +1250,20 @@ export function walkRoutes(
       working = { ...working, terrain };
       return undefined;
     }
+    // The rift moves figures too (#201): a relocation lands a monster
+    // somewhere new and an escape takes a hero off the board, and the walks
+    // after them in the same sequence go from — and through — the result.
+    if (event.type === "relocated") {
+      working = {
+        ...working,
+        actors: working.actors.map((a) => (a.id === event.actorId ? { ...a, x: event.to.x, y: event.to.y } : a)),
+      };
+      return undefined;
+    }
+    if (event.type === "escaped") {
+      working = { ...working, actors: working.actors.filter((a) => a.id !== event.actorId) };
+      return undefined;
+    }
     if (event.type !== "moved" && event.type !== "shoved") return undefined;
     const from = working.actors.find((a) => a.id === event.actorId);
     if (!from) return undefined;
@@ -1193,4 +1340,204 @@ function drawBlockedMarkers(encounter: EncounterState): Graphics {
     }
   }
   return g;
+}
+
+// ---------------------------------------------------------------------------
+// The environment's marks (#201) — shapes first, colour second (spec §11)
+// ---------------------------------------------------------------------------
+
+/** Per glyph. A hint for the eye that already knows the shape, never the tell. */
+const ENV_COLOR = {
+  fire: 0xff8a3d,
+  thorns: 0x8bd66b,
+  rift: 0xc8a2ff,
+  exit: 0xfff1a8,
+  captive: 0xff9ec4,
+} as const;
+/** The dark the board's other marks outline in, so a glyph reads on any floor. */
+const ENV_INK = 0x120f26;
+
+/**
+ * One marked square. `active` ground is tinted and fully drawn; `pending` is
+ * the same shape, faint and untinted ("soon"); an exit that is `gone` is faint
+ * and crossed out. The captive's square gets a plate of its own first: it is
+ * walled for the fight, and without one it read as one more blocked tile.
+ */
+function drawOverlayTile(g: Graphics, tile: OverlayTile): void {
+  const T = BOARD_TILE_PX;
+  const x = tile.x * T;
+  const y = tile.y * T;
+  const color = ENV_COLOR[tile.glyph];
+  const live = tile.state === "active" || tile.state === "waiting";
+  const alpha = live ? 1 : tile.state === "freed" ? 0.85 : 0.42;
+
+  if (tile.kind === "hazard") {
+    if (live) g.rect(x, y, T, T).fill({ color, alpha: 0.2 });
+    // A dashed border — the phone grid's hazard outline, at TV weight.
+    for (const d of dashedSquare(x + T * 0.06, y + T * 0.06, T * 0.88, T * 0.14, T * 0.08)) {
+      g.moveTo(d.x1, d.y1).lineTo(d.x2, d.y2);
+    }
+    g.stroke({ width: live ? 6 : 4, color, alpha });
+    if (tile.glyph === "fire") {
+      drawFlame(g, x + T * 0.27, y + T * 0.36, T * 0.16, color, alpha);
+      drawFlame(g, x + T * 0.73, y + T * 0.36, T * 0.16, color, alpha);
+      drawFlame(g, x + T * 0.5, y + T * 0.7, T * 0.2, color, alpha);
+    } else if (tile.glyph === "thorns") {
+      drawThorns(g, x, y, color, alpha);
+    } else {
+      drawSpark(g, x + T * 0.5, y + T * 0.5, T * 0.26, color, alpha);
+      drawSpark(g, x + T * 0.22, y + T * 0.24, T * 0.1, color, alpha);
+      drawSpark(g, x + T * 0.78, y + T * 0.76, T * 0.1, color, alpha);
+    }
+    return;
+  }
+
+  if (tile.kind === "exit") {
+    if (live) g.roundRect(x + T * 0.05, y + T * 0.05, T * 0.9, T * 0.9, T * 0.1).fill({ color, alpha: 0.18 });
+    // The doubled border the phone grid gives an exit.
+    g.roundRect(x + T * 0.05, y + T * 0.05, T * 0.9, T * 0.9, T * 0.1).stroke({ width: 6, color, alpha });
+    g.roundRect(x + T * 0.15, y + T * 0.15, T * 0.7, T * 0.7, T * 0.06).stroke({ width: 3, color, alpha });
+    // Two chevrons pointing out of the board: this way out.
+    const cx = x + T * 0.5;
+    for (const dy of [0.38, 0.58]) {
+      g.moveTo(cx - T * 0.18, y + T * (dy + 0.1))
+        .lineTo(cx, y + T * (dy - 0.06))
+        .lineTo(cx + T * 0.18, y + T * (dy + 0.1));
+    }
+    g.stroke({ width: 10, color: ENV_INK, alpha: alpha * 0.7, cap: "round", join: "round" });
+    for (const dy of [0.38, 0.58]) {
+      g.moveTo(cx - T * 0.18, y + T * (dy + 0.1))
+        .lineTo(cx, y + T * (dy - 0.06))
+        .lineTo(cx + T * 0.18, y + T * (dy + 0.1));
+    }
+    g.stroke({ width: 6, color, alpha, cap: "round", join: "round" });
+    if (tile.state === "gone") {
+      // Shut for good: crossed out.
+      g.moveTo(x + T * 0.2, y + T * 0.2).lineTo(x + T * 0.8, y + T * 0.8);
+      g.moveTo(x + T * 0.8, y + T * 0.2).lineTo(x + T * 0.2, y + T * 0.8);
+      g.stroke({ width: 7, color: ENV_INK, alpha: 0.75, cap: "round" });
+    }
+    return;
+  }
+
+  // The captive.
+  const cx = x + T * 0.5;
+  const cy = y + T * 0.5;
+  g.roundRect(x + T * 0.06, y + T * 0.06, T * 0.88, T * 0.88, T * 0.12).fill({
+    color: ENV_INK,
+    alpha: tile.state === "waiting" ? 0.82 : 0.35,
+  });
+  if (tile.state === "lost") {
+    // An empty, broken outline: they were here.
+    drawHeart(g, cx, cy, T * 0.26);
+    g.stroke({ width: 6, color, alpha });
+    g.moveTo(cx, cy - T * 0.12).lineTo(cx - T * 0.05, cy).lineTo(cx + T * 0.05, cy + T * 0.08).lineTo(cx, cy + T * 0.2);
+    g.stroke({ width: 5, color: ENV_INK, alpha: 0.9 });
+    return;
+  }
+  drawHeart(g, cx, cy, T * 0.26);
+  g.fill({ color, alpha }).stroke({ width: 4, color: ENV_INK, alpha: 0.8 });
+  if (tile.state === "waiting") {
+    // Behind bars — caught, not walled.
+    for (const bx of [0.24, 0.41, 0.59, 0.76]) {
+      g.moveTo(x + T * bx, y + T * 0.14).lineTo(x + T * bx, y + T * 0.86);
+    }
+    g.moveTo(x + T * 0.18, y + T * 0.14).lineTo(x + T * 0.82, y + T * 0.14);
+    g.moveTo(x + T * 0.18, y + T * 0.86).lineTo(x + T * 0.82, y + T * 0.86);
+    g.stroke({ width: 7, color: 0xd9d3f2, alpha: 0.95, cap: "round" });
+  } else {
+    // Freed: the bars are gone, and a spark says why.
+    drawSpark(g, x + T * 0.76, y + T * 0.24, T * 0.12, 0xfff1a8, 0.95);
+  }
+}
+
+/**
+ * The rounds a square is counting down, in a dark disc in its top-right
+ * corner, big enough to read from the sofa. The disc goes into `g`; the
+ * numeral is returned for the caller to add over it.
+ */
+function drawCountBadge(g: Graphics, tile: OverlayTile): Text {
+  const T = BOARD_TILE_PX;
+  const cx = (tile.x + 0.8) * T;
+  const cy = (tile.y + 0.2) * T;
+  g.circle(cx, cy, T * 0.18).fill({ color: ENV_INK, alpha: 0.92 }).stroke({ width: 4, color: ENV_COLOR[tile.glyph] });
+  const text = new Text({
+    text: String(tile.count),
+    style: {
+      fontFamily: "system-ui, sans-serif",
+      fontWeight: "900",
+      fontSize: T * 0.28,
+      fill: 0xffffff,
+    },
+  });
+  text.anchor.set(0.5, 0.5);
+  text.x = cx;
+  text.y = cy;
+  return text;
+}
+
+function drawFlame(g: Graphics, cx: number, cy: number, s: number, color: number, alpha: number): void {
+  const flame = (k: number): void => {
+    g.moveTo(cx, cy - s * k)
+      .bezierCurveTo(cx + s * 0.15 * k, cy - s * 0.55 * k, cx + s * 0.62 * k, cy - s * 0.25 * k, cx + s * 0.52 * k, cy + s * 0.28 * k)
+      .bezierCurveTo(cx + s * 0.42 * k, cy + s * 0.66 * k, cx - s * 0.42 * k, cy + s * 0.66 * k, cx - s * 0.52 * k, cy + s * 0.28 * k)
+      .bezierCurveTo(cx - s * 0.62 * k, cy - s * 0.25 * k, cx - s * 0.15 * k, cy - s * 0.55 * k, cx, cy - s * k)
+      .closePath();
+  };
+  flame(1);
+  g.fill({ color, alpha }).stroke({ width: 3, color: ENV_INK, alpha: alpha * 0.8 });
+  // The hot heart of it, so a flame is a flame and not a teardrop.
+  flame(0.5);
+  g.fill({ color: 0xffe08a, alpha });
+}
+
+/** A stem across the square with spikes off both sides. */
+function drawThorns(g: Graphics, x: number, y: number, color: number, alpha: number): void {
+  const T = BOARD_TILE_PX;
+  const stems: [number, number, number, number][] = [
+    [0.12, 0.72, 0.88, 0.3],
+    [0.2, 0.92, 0.62, 0.66],
+  ];
+  for (const [ax, ay, bx, by] of stems) {
+    const x1 = x + T * ax;
+    const y1 = y + T * ay;
+    const x2 = x + T * bx;
+    const y2 = y + T * by;
+    g.moveTo(x1, y1).lineTo(x2, y2);
+    g.stroke({ width: 7, color: ENV_INK, alpha: alpha * 0.7, cap: "round" });
+    g.moveTo(x1, y1).lineTo(x2, y2);
+    g.stroke({ width: 4, color, alpha, cap: "round" });
+    // Spikes: triangles on alternate sides, pointing along the stem.
+    const len = Math.hypot(x2 - x1, y2 - y1);
+    const ux = (x2 - x1) / len;
+    const uy = (y2 - y1) / len;
+    const spikes = Math.max(2, Math.round(len / (T * 0.2)));
+    for (let i = 1; i <= spikes; i++) {
+      const t = i / (spikes + 1);
+      const px = x1 + (x2 - x1) * t;
+      const py = y1 + (y2 - y1) * t;
+      const side = i % 2 === 0 ? 1 : -1;
+      const nx = -uy * side;
+      const ny = ux * side;
+      g.poly([
+        px - ux * T * 0.05, py - uy * T * 0.05,
+        px + ux * T * 0.05, py + uy * T * 0.05,
+        px + nx * T * 0.13 + ux * T * 0.05, py + ny * T * 0.13 + uy * T * 0.05,
+      ]);
+      g.fill({ color, alpha }).stroke({ width: 2, color: ENV_INK, alpha: alpha * 0.8 });
+    }
+  }
+}
+
+/** A four-pointed spark: the rift's own mark. */
+function drawSpark(g: Graphics, cx: number, cy: number, r: number, color: number, alpha: number): void {
+  g.star(cx, cy, 4, r, r * 0.3).fill({ color, alpha }).stroke({ width: 3, color: ENV_INK, alpha: alpha * 0.8 });
+}
+
+/** A heart's path, point down, `s` about half its width. Caller fills or strokes. */
+function drawHeart(g: Graphics, cx: number, cy: number, s: number): void {
+  g.moveTo(cx, cy + s * 0.9)
+    .bezierCurveTo(cx - s * 1.3, cy + s * 0.05, cx - s * 0.65, cy - s * 0.95, cx, cy - s * 0.35)
+    .bezierCurveTo(cx + s * 0.65, cy - s * 0.95, cx + s * 1.3, cy + s * 0.05, cx, cy + s * 0.9)
+    .closePath();
 }

@@ -121,3 +121,21 @@ export function verdictOf(reading: FrameReading): FrameVerdict {
   if (dropRate > 0.1 || reading.worstMs > FRAME_BUDGET_MS * 3) return "uneven";
   return "smooth";
 }
+
+/**
+ * Whether this page was asked to measure itself (`?perf`).
+ *
+ * It lives here, in a module with no imports, and not beside the meter it
+ * switches on, because `WorldView` asks on every first paint and the answer is
+ * almost always no. While it was exported from `FrameMeter.tsx`, that one
+ * static import put the meter in the entry's graph — and the meter reads the
+ * scene's ticker, and the scene is Pixi and the rigs. The lazy `import()`s of
+ * the stage and the meter were still in the code and deferred nothing: the
+ * join screen waited on ~500KB of renderer it does not draw, and
+ * `perf:bundle`, which then weighed only the entry file, stayed green.
+ * Keep this module free of imports and the meter free of eager callers.
+ */
+export function perfRequested(search: string): boolean {
+  const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
+  return params.has("perf");
+}

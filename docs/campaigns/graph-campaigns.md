@@ -1428,10 +1428,42 @@ lost, `onTimeout`) — then feeds the rescue and timeout runs' flags and outcome
 `saved` / the landing `collapsed`). `tools/content/encounter-environment.test.mjs` holds the schema and
 `content:validate` to it.
 
+### Done after #201: the shared screen
+
+The TV board now draws the place fighting back too, from the same `environmentView` the phones
+read, so the two can never disagree about which exit is open in round 3:
+
+- **The overlay** ([`world/environment-overlay.ts`](../../packages/client/src/world/environment-overlay.ts)
+  decides, pure; `board.ts` only strokes it, in procedural shapes over any biome's tiles — no art
+  files). One layer over the floor and under the reach. A **hazard** square gets a dashed border
+  and its kind's shape across it — three flames, a thorned stem, a spark — tinted while it burns,
+  faint and untinted while "not yet", and nothing once it has burnt out (`EnvironmentHazardView.gone`,
+  new and optional; the phone grid drops that square too, and its line now says the hazard "has
+  died down" rather than "not yet"). An **exit** gets the phones' doubled border and two chevrons pointing out:
+  bright while open, faint while not yet open, faint and crossed out once shut for good. The
+  **captive's** square gets a dark plate (it no longer reads as one more wall), a heart behind
+  bars while waiting, the heart free with a spark once freed, a broken outline once lost. A dark
+  disc in a square's corner counts rounds: until an exit opens, until it shuts, until the captive
+  is lost. Static — nothing on the overlay animates.
+- **The clock and the words** are DOM over the board, top left
+  ([`screens/RiftStatus.tsx`](../../packages/client/src/screens/RiftStatus.tsx)): the clock as one
+  big figure (rounds left, then "!" in the last round with a doubled border, then "0" on a filled
+  pill once the rift has acted) beside the phones' sentence, then each exit's and the captive's
+  line. Every word comes from `environment-copy.ts`; the beat sentences moved there
+  (`environmentBeatLine`) so the phone's beat log and the TV say them once. The last-round pulse
+  stops under reduced motion.
+- **Beats.** A round's environmental beats are captioned under the clock for a read, then fade
+  (up to three lines, names not "You"). On the board, a hero who steps through an exit fades out on
+  the `escaped` beat and leaves with the patch, as a beaten monster does; a `relocated` monster
+  slides to where the rift put it (and later walks in the same round route from there); "Free!" or
+  "Lost" rises over the captive's square. The camera holds the figure a hazard, an escape, a
+  relocation or a rescue names (`attention.ts`).
+- **Zero change without an environment.** No layer is built and `RiftStatus` is not mounted for a
+  fight without one; `board-environment.test.ts` pins a SHA-256 digest of every node the board draws
+  for Gemfall's wolf fight (gemfall-02 on `roadside`), taken on the board before the overlay existed.
+
 ### Deferred (not in #201)
 
-- **The TV board** does not draw hazards, exits or the captive (the captive's walled square shows
-  as blocked terrain there); the phones carry the information. A TV overlay is the next step.
 - ~~**Enemy AI** does not know about hazards, exits or the captive~~ — **done** (follow-up to #201,
   [`enemy-ai.ts`](../../packages/shared/src/enemy-ai.ts), "In a place that fights back"). The engine
   hands `planEnemyTurn` the environment (`EnemyTurn.environment: { spec, round, rescue }`) only when

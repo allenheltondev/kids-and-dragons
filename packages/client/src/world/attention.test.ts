@@ -40,6 +40,17 @@ describe("who a beat is about", () => {
     expect(beatSubjects(roll)).toEqual([]);
     expect(beatSubjects(walled)).toEqual([]);
   });
+
+  it("frames the place fighting back by who it happened to (#201)", () => {
+    expect(beatSubjects({ type: "hazard", actorId: "c_1", hazardId: "fire", label: "Rift fire" })).toEqual(["c_1"]);
+    expect(beatSubjects({ type: "escaped", actorId: "c_1", exitId: "tear" })).toEqual(["c_1"]);
+    expect(beatSubjects({ type: "relocated", actorId: "wisp#1", to: { x: 1, y: 1 } })).toEqual(["wisp#1"]);
+    expect(beatSubjects({ type: "freed", byId: "c_2" })).toEqual(["c_2"]);
+    // The clock, a surge and a lost captive happen to the place, not a figure.
+    expect(beatSubjects({ type: "riftClock", onExpire: "collapse" })).toEqual([]);
+    expect(beatSubjects({ type: "surge", amount: 1 })).toEqual([]);
+    expect(beatSubjects({ type: "captiveLost" })).toEqual([]);
+  });
 });
 
 describe("the holds a round asks for", () => {
