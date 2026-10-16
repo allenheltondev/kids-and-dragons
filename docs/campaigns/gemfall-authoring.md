@@ -201,8 +201,8 @@ Follow `content/chapters/bramblewood-01.json`. Each Gemfall chapter:
 
 ### Continuity: names a scene uses that some way in never showed
 
-`npm run content:continuity` (and `tools/content/continuity.test.mjs` in `npm test`) finds
-**dangling references**: a scene that uses a capitalised name (a person, a place, an item)
+`npm run content:continuity` (and `tools/content/continuity.test.mjs` in `npm test`) sweeps every
+campaign in `content/campaigns` and finds **dangling references**: a scene that uses a capitalised name (a person, a place, an item)
 which some way into the scene showed and some other way did not. It is a must-analysis. Inside
 a chapter it intersects what every path into a scene showed; across chapters it carries
 knowledge along every history the road weave allows, so a 4C party that arrived from 3B's
@@ -258,6 +258,29 @@ text of every chapter, the generated content JSON, and the canon YAML, and fails
 line, field, and the US spelling to use. It reads text, not ids, so `scene_harbor_wall` style
 ids may spell anything. Two documented exceptions: the "Sunbloom Draught" keeps its name, and
 "afterwards" is accepted. The word list and exceptions live in `tools/content/spelling-lint.mjs`.
+
+### Priority scenes
+
+Each chapter marks its revelation `priority: 1` and a few supporting clues `priority: 2`
+([content/README.md, "Priority scenes"](../../content/README.md#priority-scenes)). The p1s are the
+beat ladder's sentences, one per road, and no path through a chapter passes two of them:
+
+| Beat | p1 scene(s) |
+| --- | --- |
+| 1 | `scene_scholar_theory`: Tidewell's seal of eight facets (optional, so it is a theory, not the reveal) |
+| 2 | none; the beat is a road choice, not a revelation |
+| 3 | `03a/scene_troll_hum`, `03b/scene_boggart_clue`, `03c/scene_tuned_charm`: the old, old note |
+| 4 | `04a/scene_spiral`, `04b/scene_finding`, `04c/scene_spiral`: the land flinches from the stones |
+| 5 | `05a/scene_outline`, `05b/scene_knot_cords`, `05c/scene_here_first`: older than the mountain's name |
+| 6 | `scene_whole_truth`, or `scene_shut_out` for a party locked outside: seal, titan, rush |
+| 7 | none; the beat is the gathering, and its clues are p2 |
+| 8 | `scene_seal_chamber`: the seal, its crown, and what is waking under it |
+
+The p2s are the cult's pitch on each road, the bell nobody rings, the wrong-way embermoths, the
+Hollow Gate, the forest's pile, and the Seal-Keeper. One reveal cannot be marked:
+Tidewell's "the eighth is the crown of the seal" in 7H is the `onSuccess` narration of
+`check_tidewell`, and a branch has no priority of its own. `scene_tamsins_offer`, where it
+lands, is p2 for the cult's offer.
 
 ## 5. Writing for the party you have
 

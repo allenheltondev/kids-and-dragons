@@ -420,6 +420,7 @@
     },
     "scene_noon_shake": {
       "type": "story",
+      "priority": 2,
       "narration": "At noon the ground gives a big shrug, bigger than the morning ones. Every sack on the road jumps. One splits open, and its stones spill out and start to roll. Not downhill. Uphill. Slowly, all together, toward the mountain, like ducklings following their mother. A warden drops his pencil.",
       "choices": [
         {
@@ -915,6 +916,7 @@
     },
     "scene_masks": {
       "type": "story",
+      "priority": 2,
       "discovers": [
         "faction.deep_hollow_cult"
       ],
@@ -1254,6 +1256,7 @@
     },
     "scene_relay_sing": {
       "type": "story",
+      "priority": 2,
       "narration": "The relay singers have new verses, and the verses are about wagons that have not arrived yet. You can hear tomorrow's traffic tonight. Then a grandmother's runner hands you a list of caves nobody may ever dig, and it is exactly where you would put a seal.",
       "onEnter": [
         {

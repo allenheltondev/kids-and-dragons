@@ -1507,6 +1507,27 @@ describe("rest scenes", () => {
   });
 });
 
+describe("priority scenes", () => {
+  it("carries a scene's priority onto the run while the party stands in it", () => {
+    const chapter = makeChapter();
+    (chapter.scenes["scene_shrine"] as StoryScene).priority = 1;
+    const context = ctx({ rng: fixedRng(20), chapter });
+    const started = walk(
+      seatedParty(context),
+      [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }],
+      context,
+    ).state;
+    expect(started.scenePriority ?? null).toBeNull();
+
+    const revealed = enterScene(started, "scene_shrine", context).state;
+    expect(revealed.scenePriority).toBe(1);
+
+    // An ordinary scene after it is ordinary again, not still gilded.
+    const after = enterScene(revealed, "scene_camp", context).state;
+    expect(after.scenePriority).toBeNull();
+  });
+});
+
 /*
  * Trading — spec §9.4. "At Rest scenes, the party can freely pass items between
  * characters. Drag on your phone, tap to accept on theirs."

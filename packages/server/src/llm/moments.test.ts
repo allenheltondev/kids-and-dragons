@@ -9,7 +9,7 @@
 
 import { describe, expect, it } from "vitest";
 import type { Chapter, RunState, Scene } from "@kad/shared";
-import { PREFETCH_WIDTH, arrivalKey, exitsOf, nextMoments } from "./moments.ts";
+import { PREFETCH_WIDTH, arrivalKey, exitsOf, mayDecorate, nextMoments } from "./moments.ts";
 
 const CHAPTER: Chapter = {
   id: "bramblewood-01",
@@ -145,6 +145,16 @@ describe("what to warm", () => {
     expect(moment?.request.authored).toBe("A wall of thorns blocks the way.");
     expect(moment?.request.flags).toEqual({ freed_sprite: true });
     expect(moment?.request.via).toBe("Take the left path");
+  });
+
+  it("does not pay for a line a priority scene will never use", () => {
+    // A revelation keeps its authored words (`mayDecorate`), so warming it
+    // would be a call bought to be thrown away.
+    const river = { ...(CHAPTER.scenes.scene_river as Scene & { type: "story" }), priority: 1 as const };
+    const marked: Chapter = { ...CHAPTER, scenes: { ...CHAPTER.scenes, scene_river: river } };
+    expect(mayDecorate(river)).toBe(false);
+    expect(mayDecorate(CHAPTER.scenes.scene_hedge!)).toBe(true);
+    expect(nextMoments(runAt("scene_fork"), marked).map((m) => m.key.sceneId)).toEqual(["scene_hedge"]);
   });
 
   it("caps the fan-out at §6.4's three or four", () => {

@@ -24,6 +24,7 @@ import {
   partyBlock,
   promptIsStable,
   recapPrompt,
+  revelationsOf,
   sceneBlock,
   toneBlock,
 } from "./prompt.ts";
@@ -213,6 +214,34 @@ describe("the recap", () => {
     expect(prompt).toContain("scene_clearing → scene_hedge → scene_ending");
     expect(prompt).toContain("triumph");
     expect(prompt).toContain("freed_sprite");
+  });
+
+  it("hands the recap every revelation the party walked through, once each", () => {
+    // A recap that picks "the good bits" by taste skips the scene where the
+    // plot is explained, which is the one the table most needs to hear again.
+    const chapter: Chapter = {
+      ...CHAPTER,
+      scenes: {
+        scene_clearing: { type: "story", narration: "Lantern moths drift about.", choices: [] },
+        scene_pib: { type: "story", priority: 1, narration: "Somebody took the Hollow Crown.", choices: [] },
+        scene_words: { type: "story", priority: 2, narration: "WHAT IS BORROWED HUMS.", choices: [] },
+      },
+    };
+    const request = {
+      runId: "r_1",
+      chapter,
+      party: PARTY,
+      flags: {},
+      visited: ["scene_clearing", "scene_pib", "scene_words", "scene_pib"],
+      outcome: null,
+    };
+    expect(revelationsOf(request)).toEqual(["Somebody took the Hollow Crown."]);
+    const prompt = recapPrompt(request);
+    expect(prompt).toContain("must say plainly");
+    expect(prompt.match(/Somebody took the Hollow Crown\./g)).toHaveLength(1);
+    expect(prompt).not.toContain("WHAT IS BORROWED");
+    // A chapter with no revelation asks for nothing extra.
+    expect(recapPrompt({ ...request, visited: ["scene_clearing"] })).not.toContain("must say plainly");
   });
 
   it("holds itself to the recap cap the validator enforces", () => {
