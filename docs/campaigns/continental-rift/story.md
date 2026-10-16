@@ -32,16 +32,17 @@ The magical force itself need not be sentient; do not canonize a conscious rift 
 - Three interweaving regional strands, **not three mandatory checklists**.
 - Different discoveries, allies and practical advantages based on route.
 - A late revelation and a finale with meaningfully distinct choices ([below](#finale-and-endings--agreed)).
-- **Size — agreed:** about 22–24 nodes authored, 14–16 played on a typical playthrough (roughly 1.5× Gemfall), each node 30–40 minutes. **The shortest valid route to the finale is 12 nodes** (for example the hidden glacier rift to the Coast, the linked rift to the Sky, skipping `stuttering-flats`), so only 11 pay before the finale.
-- **XP — agreed:** awards are sized against that shortest route, so every party arriving at Sworn (700) crosses Radiant (2,600) **at the convergence, one node before the finale**, as spec §8.1 wants. XP pays on first completion only.
+- **Size — agreed:** about 22–24 nodes authored, 14–16 played on a typical playthrough (roughly 1.5× Gemfall), each node 30–40 minutes. **The shortest valid route to the finale is 11 nodes:** `exchange-rift → glacier-survival → riftseekers-departure → hidden-glacier-rift → saltrot-arrival → buried-bridge → (back through the Saltrot hub, a pass revisit) → whale-road → the-island-due-back → squall-temple → convergence → finale`. It skips the Coast's strand end, because the convergence edge needs only both key nodes. So only 10 nodes pay before the finale: 9 ordinary nodes and the convergence.
+- **XP — agreed:** awards are sized so every party arriving at Sworn (700) crosses Radiant (2,600) **at the convergence, one node before the finale** (spec §8.1), and no route reaches level 8 (3,500). The spread between the shortest and longest routes is five paying nodes, which is why the convergence carries the weight. XP pays on first completion only.
 
   | Node | First-completion XP |
   | --- | --- |
-  | Every ordinary node | **150** |
-  | The convergence (every route plays it; Radiant lands here) | **450** |
-  | The finale | **150** |
+  | Every ordinary node | **140** |
+  | The convergence (every route plays it; Radiant lands here) | **650** |
+  | The finale | **140** |
 
-  Shortest route: 10 × 150 + 450 = 1,950 before the finale (50 of slack). Longest (16 nodes): 14 × 150 + 450 + 150 = 2,700, ending near 3,400, still short of level 8 (3,500). A setback halves a node's award, so a run with setbacks can arrive at the finale just short of Radiant; spec §8.2 accepts that.
+  Shortest route: 9 × 140 + 650 = 1,910 before the finale. Longest (16 nodes): 14 × 140 + 650 + 140 = 2,750, ending near 3,450. A setback halves a node's award, so a run with setbacks can arrive at the finale just short of Radiant; spec §8.2 accepts that.
+- **Acceptance test, once the graph is authored:** an executable check that the shortest and longest routes to the finale land between 2,600 and 3,500, so any later change to the graph or the awards is caught.
 
 ## Beginning — agreed
 1. Exchange rift throws players to the Glacier of Origins.
@@ -66,7 +67,7 @@ Glacier of Origins, yetis and memory in ancient ice. Environmental puzzles and c
 **The hidden glacier rift is not the summer crevasse.** `canon/biomes.yaml` holds a creator-only secret: a crevasse below the oldest layer that preserves a summer, with green light and warm air. Keep the hidden rift somewhere else and never let its green Riftlight read as the explanation for that crevasse. Linking the two would be a canon decision, not an authoring one.
 
 ## Finale and endings — agreed
-**1. The final rift.** At the glacier, where his prison was, Corvane opens his biggest rift yet, pulling a whole region back into Pangea's arrangement. Each Pangea fragment the party holds is one choice ("Anchor it with the glacier memory", the sealed door, the island that is due back): it shows the land where it belongs **now** and collapses part of his rift. With 2 anchors his rift is broken but he is still strong; with 3 it is overpowered and he starts the fight weakened. An ally Olivia or an ally wyrm counts as one extra anchor ([characters.md](characters.md#how-the-partys-choices-decide-the-riftseekers--agreed)). The fragments win because the land remembers its present shape, not because the party out-magics him, so the theme holds.
+**1. The final rift.** At the glacier, where his prison was, Corvane opens his biggest rift yet, pulling a whole region back into Pangea's arrangement. **The fragments are knowledge, not items:** a memory, a buried bridge and a carved stone cannot be carried, but the party remembers them. Each fragment the party *learned* is one choice ("Anchor it with what the glacier remembered", the buried bridge, the island that came back), gated on that strand's **key node being completed** (a journey flag the key node sets), never on inventory. Each shows the land where it belongs **now** and collapses part of his rift. **Anchors are fragments plus allies, capped at 3:** an ally Olivia or an ally wyrm adds one, and both together still add only one ([characters.md](characters.md#how-the-partys-choices-decide-the-riftseekers--agreed)). With 2 anchors his rift is broken but he is still strong; with 3 it is overpowered and he starts the fight weakened. The fragments win because the land remembers its present shape, not because the party out-magics him, so the theme holds.
 
 **2. The battle.** With his rift broken, Corvane fights to hold what is left open: Corvane plus displaced creatures pulled through his rift, among open rifts that act as hazards (#201). Manipulate and its class equivalents matter here: shutting a hazard rift, holding back the ice. The party reached Radiant one node earlier, so the climax is fought as the new form (spec §8.1). Two authored versions of the encounter, chosen by flag-gated choices on anchor count: standard, or Corvane weakened with one fewer creature. Defeat means his strength is spent and the rift collapses; nobody dies, and he stays sympathetic, an old man who wanted his home back.
 

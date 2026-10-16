@@ -67,6 +67,8 @@ The campaign's signature visual. One rift, built so its **rules** read as color 
 **conditions** read as motion, and so every color also has a **pattern** for players who cannot
 tell colors apart.
 
+**Where it renders (agreed):** the color layers appear **only in the world view on the Starweaver player's phone**. The TV and every other phone always show `rift_neutral`. Never draw a color layer into a TV composition or a backdrop.
+
 **The palette (agreed, do not change):**
 
 | Layer | Meaning | Pattern (must read in grayscale) |
@@ -84,7 +86,8 @@ brief defines them:
 
 | id | Kind | Frames | Notes |
 | --- | --- | --- | --- |
-| `rift_base` | loop | 12 | The tear itself, colorless and quiet, so color layers compose over it |
+| `rift_neutral` | loop | 12 | What the TV and every non-Starweaver phone show: a colorless, quiet shimmer that gives no rule away. Readable as "a rift is here" and nothing more |
+| `rift_base` | loop | 12 | The tear itself, colorless and quiet, so color layers compose over it (Starweaver's phone only) |
 | `rift_green`, `rift_amber`, `rift_blue`, `rift_violet` | loop | 12 | One color layer each, with its pattern. Any two or three stack over `rift_base` and must still read |
 | `rift_shrink` | loop | 12 | Timed: the rift visibly contracts |
 | `rift_stutter` | loop | 12 | Unstable: it skips and jolts, irregular |
@@ -96,12 +99,13 @@ Acceptance: §9.8 of the asset brief, plus a contact sheet showing every common 
 amber + violet; amber + violet; green + blue; blue) in color **and** grayscale side by side. **The
 grayscale column is the review.**
 
-### A2. Two icons
+### A2. Three icons
 
 Item-icon format, as `assets/items/*`:
 
 - `listening_chime`: a small Riftseeker resonance chime: silver fractured-circle emblem,
   teal or indigo cord. A quest item.
+- `riftlight_indicator`: the Starweaver's menu indicator that lights up when a rift with Riftlight is visible. Small and readable at phone-menu size; must not use any palette color, so it never hints at which rule is showing.
 - `riftspark`: a +2 spark of rift light for the buff list. It must not use a palette color, so
   it never reads as a rift rule.
 
