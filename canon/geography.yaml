@@ -1,7 +1,7 @@
 schema_version: "2.0"
 document_type: red_sky_geography_canon
 title: "The Realm of Red Sky Geography Canon"
-updated: "2026-10-15"
+updated: "2026-10-16"
 
 purpose: >-
   Canonical, agent-readable reference for every mapped region, named site,
@@ -40,6 +40,7 @@ controlled_values:
     bridge_and_narrow_pass: "A crossing that combines a bridge with terrain constraint."
     overland_road: "A maintained road between locations."
     overland_route: "An unmaintained or informal overland path."
+    mountain_pass: "A way through a mountain range, open or closed with the season and the ice."
   canon_status:
     confirmed: "Directly established by worldbuilding decisions and prior canon."
     newly_defined: "Added as canon in this inventory."
@@ -68,6 +69,7 @@ geography_ids:
   - eastern_maelstrom
   - northern_river_bridge
   - stone_crossing
+  - cairnstep
   - exchange_to_sunward_fields
   - exchange_to_whispering_marsh
 
@@ -157,10 +159,10 @@ features:
 
 routes:
   - id: route.northern_river_bridge
-    title: Northern River Bridge
+    title: Ashspan Bridge
     kind: bridge
     canon_status: confirmed
-    map_provenance: map_visible_name_pending
+    map_provenance: visible_unlabeled_feature
     map_anchor: { x: 655, y: 390 }
     map_path:
       accuracy: mapped
@@ -172,7 +174,7 @@ routes:
     travel_modes: [foot, caravan]
     notes:
       - This is the northern mapped bridge between the Foothills and Eastern Plains.
-      - It needs a canonical proper name before a campaign treats it as a named location.
+      - "Its canonical proper name is Ashspan Bridge, settled for Riftlight. It was the Northern River Bridge before it had one, and that descriptive name (Gemfall's) still means the same bridge. The id keeps the old form so every reference stays stable; the map art draws the bridge but does not label it."
 
   - id: route.stone_crossing
     title: Stone Crossing Route
@@ -192,6 +194,21 @@ routes:
     constraints:
       - The river narrows to a single path.
       - Traffic and danger at the crossing can block east-west travel.
+
+  - id: route.cairnstep
+    title: The Cairnstep
+    kind: mountain_pass
+    canon_status: newly_defined
+    map_provenance: map_implied
+    short_description: >-
+      A pass in Frostfang Peaks marked by griffin watch cairns. An aerie's
+      pass ledger records it as a pass that was not there last season.
+    travel_modes: [foot]
+    constraints:
+      - Its course, where it leads, and its map anchor are not yet canon; it is reached from the glacier side of the Peaks.
+    notes:
+      - Registered for Riftlight, where it is Orin's first lead. It sits inside biome.frostfang_peaks, which lists it among its places.
+      - Why the pass is new is not established here. Do not explain it.
 
   - id: route.exchange_to_sunward_fields
     title: Exchange–Sunward Road

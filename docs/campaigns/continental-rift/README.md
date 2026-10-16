@@ -26,7 +26,7 @@ This folder is the source of truth for Continental Rift **design** decisions. It
 Engine epic: [#191](https://github.com/allenheltondev/kids-and-dragons/issues/191), issues #192–#203. These are engine prerequisites, not story authoring. The Gemfall prerequisite needs one more engine piece outside #192–#203: a campaign-level prerequisite (Riftlight locked in the lobby until the household has a completed Gemfall attempt). Nothing like it exists today. Existing graph spec supports static node/edge IDs, conditional edges, once-only traversals, persistent journey flags, and variants; specialized rift behavior and within-node multi-stage roll checks must be verified against runtime support when implemented.
 
 ## Open items
-- Canon registration, in one pass once the names below settle: the Riftseekers, Orin Vale, Lady Olivia, the campaign (with its Gemfall prerequisite), the Cairnstep, Ashspan Bridge (the Northern River Bridge's name), Emperor Corvane and Pangea, and the creator-only facts about the emperor's prison and the glacier rift.
+- **Canon registered:** the campaign `campaign.riftlight` (with its Gemfall prerequisite, Corvane and Pangea as creator-only constraints), `faction.riftseekers`, Ashspan Bridge (the title of `route.northern_river_bridge`), `route.cairnstep`, and the glacier-prison and rift-silt hidden truths in `biomes.yaml`. **Still to register:** the six named characters in `individuals.yaml`, which needs a canon `home` location and pronouns for each (and Corvane must stay out of the player-facing field guide); the Listening Chime goes in a chapter's `props`, as Gemfall's quest items do.
 - Complete geography and node IDs/routes beyond the opening, one regional strand at a time.
 - Destination disclosure.
 - Chapter schema details.

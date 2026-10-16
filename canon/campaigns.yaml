@@ -1,7 +1,7 @@
 schema_version: "2.0"
 document_type: red_sky_campaign_canon
 title: "The Realm of Red Sky Campaign Canon"
-updated: "2026-07-31"
+updated: "2026-10-16"
 
 purpose: >-
   Canonical, agent-readable reference for campaign arcs in the Realm of Red Sky.
@@ -29,6 +29,7 @@ campaign_ids:
   - dawn_of_the_red_sky
   - echoes_beneath
   - gemfall
+  - riftlight
 
 campaigns:
   - id: campaign.dawn_of_the_red_sky
@@ -186,4 +187,97 @@ campaigns:
       items:
         - item.crimson_shard
         - item.hollow_crown_shard
+      quests: []
+
+  # -------------------------------------------------------------------------
+  # Riftlight ("Continental Rift" is the working name of its design folder,
+  # docs/campaigns/continental-rift/, which owns the design; this entry owns
+  # the canon). In design, not yet playable: there is no
+  # content/campaigns/riftlight.json yet. Everything about the emperor, Pangea,
+  # his prison and the finale is creator-only and lives in `canon_constraints`
+  # and `notes`, which nothing player-facing projects (see
+  # tools/canon/field-guide.ts). `short_description` is the public premise and
+  # must stay spoiler-free.
+  # -------------------------------------------------------------------------
+  - id: campaign.riftlight
+    asset_id: riftlight
+    title: "Riftlight"
+    canon_status: newly_defined
+    canon_note: >-
+      In design, not yet playable: the decisions below are approved, but the
+      story graph is still being authored in docs/campaigns/continental-rift/
+      and no campaign content exists yet. chapter_count is the planned length
+      of one playthrough (14-16 of about 24 authored nodes) and will be
+      settled once the node list is. Follows Gemfall and requires it.
+    campaign_type: main_story_arc
+    chapter_count: 16
+    featured: false
+    tags: [main_campaign, rifts, displacement, glacier_of_origins, riftseekers, riftlight]
+    short_description: >-
+      Some time after Gemfall, a rift opens without warning at the Exchange and
+      drops the party at the Glacier of Origins. Regions of the world are being
+      displaced - terrain, creatures, and whole areas turning up where they do
+      not belong - and the party learns how rifts behave by meeting them.
+    visual_identity: >-
+      Shimmering seams of colored light opening in ordinary places, blue-white
+      glacier ice, and fragments of land sitting where the map says they
+      should not be; the Riftseekers' dark teal, indigo, and violet cloaks move
+      through all of it.
+    common_story_uses: >-
+      The second campaign: a nonlinear story graph rather than an ordered
+      chapter list, with three interweaving regional strands (Wandering Sky,
+      Restless Coast, Forgotten Paths), changed revisits, learned rift
+      behavior, and harder decisions, fights, and environmental challenges
+      than Gemfall.
+    canon_constraints: >-
+      CREATOR-ONLY until the finale; never in early player-facing narration.
+      An ancient emperor, Corvane, once ruled Pangea ("all lands"), a realm in
+      which today's regions sat in a different arrangement. He was imprisoned
+      in the Glacier of Origins for about a millennium. The eruption that opens
+      Gemfall happens in every timeline, before any ending; its tremors started
+      the glacier's changed melt, and the melt loosened his prison, so he is
+      free whichever valid Gemfall ending the party reached. He summons rifts
+      to pull the land back into Pangea's arrangement, but rifts are ancient
+      magic and he cannot choose a summoned rift's behavior - his flaw is
+      treating influence as control. He is nostalgic, certain, and
+      sympathetic, never simply evil: he wants places back, not the sky, which
+      keeps him apart from the Deep Hollow Cult. Before the reveal he is only
+      "whoever is moving the land", and early "Pangea" is only Orin's theory
+      that the land was once laid out differently. Pangea never explains the
+      Expanse, the Hollow Gate, or the Legend Dragon. Players never summon
+      rifts, and nobody changes a rift's intrinsic behavior.
+    standard_behavior: >-
+      A shared prologue at the Exchange and the Glacier of Origins, then a
+      nonlinear graph with forward, sideways, and return edges across three
+      regional strands, none of them mandatory. The key Pangea fragment from
+      any two strands unlocks the convergence; a third weakens the finale's
+      enemy. Scene failure routes forward along real geography (the
+      headwaters washout carries the party downriver, never to a dead end),
+      and campaign loss comes only from losing the final battle.
+    notes:
+      - "Prerequisite: Gemfall is the prerequisite campaign for every later campaign. Riftlight unlocks once a household has a completed Gemfall attempt. Every ending reached counts, loss endings included; an attempt that failed at the setback limit, or was abandoned, does not. Nothing may depend on which Gemfall ending a party reached."
+      - "Creator-only - the finale: at the glacier where his prison was, Corvane opens his largest rift yet. The Pangea fragments the party holds show the land where it belongs now and overpower his rift (two break it, three leave him weakened), then a battle against Corvane and creatures pulled through it. Nobody dies."
+      - "Creator-only - the endings: The Glacier Keepers (he is returned to the ice), The Ones Who Listened (he lives with the yetis as the one who remembers Pangea), and the loss ending Rivers Wander (his pull half-works and places stay jumbled 'for now', scoped to this campaign). Every ending completes the campaign and carries the characters over."
+      - "The shared canon map is not changed by this campaign: in both winning endings the displaced places go home, and the Rivers Wander jumble is campaign-scoped, like Gemfall's loss endings."
+      - "The Riftseekers' named members (Master Orin Vale, Lady Olivia, Seren Wisp, Pip Thistledown, Bram Lock) and Emperor Corvane are approved for Riftlight but are not in individuals.yaml: that file's rule is that a location owns an individual, and none of them has a home a place would miss. They are recorded on faction.riftseekers and here."
+      - "The Listening Chime, the Riftseeker tool Orin gives the party, is a chapter prop under D7, not a canon item: it rings sour while a rift's green is lit, and echoes back only when the rift stays open and is two-way."
+    relationships:
+      biomes:
+        - biome.glacier_of_origins
+        - biome.frostfang_peaks
+        - biome.red_sky_foothills
+        - biome.sky_islands
+        - biome.sallow_wastelands
+      locations:
+        - location.exchange
+        - location.bone_yard
+        - feature.great_river
+        - route.northern_river_bridge
+        - route.cairnstep
+      creatures:
+        - creature.cloud_whale
+        - creature.bone_crawler
+      factions:
+        - faction.riftseekers
+      items: []
       quests: []

@@ -1,7 +1,7 @@
 schema_version: "2.0"
 document_type: red_sky_faction_canon
 title: "The Realm of Red Sky Faction Canon"
-updated: "2026-07-31"
+updated: "2026-10-16"
 
 purpose: >-
   Canonical, agent-readable reference for organized groups and factions in the
@@ -25,13 +25,16 @@ controlled_values:
   faction_type:
     military_order: "An organized group with martial purpose and hierarchy."
     secret_society: "A hidden group operating through cells and indirect communication."
+    scholarly_fellowship: "A loose company gathered around a shared question rather than a creed or a chain of command."
   alignment:
     lawful_neutral: "Follows a strict code without inherent moral bias."
     chaotic_neutral: "Prioritizes individual freedom and unconventional methods."
+    divided: "Holds no shared moral line; its members want opposite things from the same work, and each answers for their own choices."
 
 faction_ids:
   - skywardens
   - deep_hollow_cult
+  - riftseekers
 
 factions:
   - id: faction.skywardens
@@ -157,3 +160,71 @@ factions:
       campaigns: [campaign.echoes_beneath]
       items: [item.crystal_heart]
       members: []
+
+  # -------------------------------------------------------------------------
+  # Campaign-only. The Riftseekers exist because of Riftlight's rift crisis and
+  # are registered so that campaign's content can reference them; they are not
+  # a standing world faction and must not be generalized into one. Their named
+  # members are approved for Riftlight but are not canon individuals: D8 makes
+  # `home` a required location, and a traveling fellowship has none. So they
+  # are recorded here, as free text, the way `members` already works.
+  # -------------------------------------------------------------------------
+  - id: faction.riftseekers
+    asset_id: riftseekers
+    title: "The Riftseekers"
+    canon_status: newly_defined
+    canon_note: >-
+      Campaign-only: a fellowship formed around the rift crisis of Riftlight,
+      approved for that campaign and scoped to it. It is not a permanent,
+      generalized world faction, and nothing outside Riftlight should treat it
+      as one. Design source: docs/campaigns/continental-rift/characters.md.
+    faction_type: scholarly_fellowship
+    alignment: divided
+    featured: false
+    tags: [campaign_only, riftlight, rifts, scholars, expedition]
+    short_description: >-
+      An enigmatic fellowship that follows the rifts, studying how they behave
+      - and arguing among themselves about whether a rift is something to
+      understand or something to use.
+    visual_identity: >-
+      A mystical aura; dark teal, indigo, and violet cloaks; asymmetrical,
+      practical expedition gear; a silver fractured-circle emblem; shimmering
+      seams; instruments, resonance rings, and chimes. Exact designs are not
+      yet set.
+    common_story_uses: >-
+      A practical lead offered and never forced, rift knowledge for a party
+      without a Starweaver, a rival who wants the same rift for a different
+      reason, and a mirror for the campaign's theme: Orin and Bram want to
+      understand first, Lady Olivia and Pip want to harness it, and Seren sits
+      between.
+    canon_constraints: >-
+      Not uniformly good or evil: the fellowship holds both Orin's caution and
+      Lady Olivia's ambition, and neither is the villain. Riftseekers never
+      summon or command rifts as a matter of course and cannot change what a
+      rift does; only Lady Olivia attempts one summoning, late, and cannot
+      control it. Advice is brief, optional, and imperfect - a lead, not a
+      lecture. Before the finale they never name the one moving the land.
+    standard_behavior: >-
+      Travel wherever the rifts are, camp near them, listen to them with
+      chimes and rings, and move on; they turn up wherever the party is rather
+      than in one region.
+    notes:
+      - "Master Orin Vale (he/him) - methodical, patient scholar of rifts. Wants to learn why rifts exist and how they work before attempting any large intervention, and fears reckless manipulation. Studies rifts and never summons one. Gives the party its first lead and the Listening Chime."
+      - "Lady Olivia (no surname; she/her) - bright, ambitious, mischievous, and stubborn. Wants to harness rift power for herself, believing that power could let her help repair the world. A nuanced rival, never simply evil and never punished; her arc resolves as ally, rival, or redeemed."
+      - "Seren Wisp - attunement specialist. Notices when one of the party is a Starweaver, and teaches Attune."
+      - "Pip Thistledown - eager scout who hero-worships Lady Olivia; players see Olivia through Pip's eyes."
+      - "Bram Lock - Orin's protective guard, skeptical of reckless experiments."
+      - "All five were approved for Riftlight by the project owner. Pronouns are authored only where the design states them; do not guess the rest."
+    relationships:
+      headquarters: []
+      territory: []
+      enemies: []
+      quests: []
+      campaigns: [campaign.riftlight]
+      items: []
+      members:
+        - Master Orin Vale
+        - Lady Olivia
+        - Seren Wisp
+        - Pip Thistledown
+        - Bram Lock
