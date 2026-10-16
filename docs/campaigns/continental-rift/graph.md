@@ -43,7 +43,27 @@ The river's multiple escape opportunities are **stages within one authored encou
 - Washout → rolls decide exit distance downstream; no failed-roll dead end. The exits guard on the `river_exit` route set ([node spec](nodes/headwaters-washout.md#consequences--world-state)).
 - Deliberate glacier exploration → the hidden rift, bypassing normal geography to the Saltrot. A party that explores without solving the condition returns to `riftseekers-departure` by a `kind: "return"` edge (`revisit: "pass"` there, so it goes straight to the exit choice) and can still take the lead. The rift is persistent, so it is not `once`, and the Saltrot side has a return edge back to the glacier.
 - Returning to Glacier later should be meaningful; dormant rift clue may be observed during the initial survival scene.
-- No single regional storyline should be required for access to the endgame; how this is satisfied remains an explicit design problem.
+- No single regional storyline is required for access to the endgame (below).
+
+## Convergence — agreed
+**The key Pangea fragment from any 2 of the 3 strands unlocks the convergence.**
+- **One key node per strand.** Completing its chapter always finds that strand's fragment ([story.md](story.md) lists canon's candidates).
+- **Edges into the convergence guard on `completed: [key node A, key node B]`.** A list means every listed id, so this works in today's engine. (A `flag` guard takes one flag, which is why the guard reads completed key nodes.)
+- **Each strand's last node carries two such edges,** one per other strand it can pair with: six edges in all, so the party heads for the convergence from whichever strand it finishes second.
+- **A third strand is optional and rewarded:** one more piece of proof to bring Corvane in the finale, which can open an extra ending choice.
+
+### Size check
+| Part | Authored | Played on one run |
+| --- | --- | --- |
+| Prologue: exchange, glacier, departure, the traverse / washout / hidden-rift branches | ~10 | 4–6 |
+| Three strands, ~4 nodes each | ~12 | 8 (two strands) |
+| Convergence + finale | 2 | 2 |
+| **Total** | **~24** | **14–16** |
+
+### How the prologue feeds the strands
+- **Wandering Sky:** the washout rift; the Cairnstep (griffins trade weather news with the Sky Islands by flag signal).
+- **Restless Coast:** the hidden glacier rift; Ashspan Bridge, downriver.
+- **Forgotten Paths:** the boundary-stone bank; a return to the glacier.
 
 ## Regional story strands (narrative clusters, not node list)
 - **Wandering Sky:** Sky Islands and cloud whales; disrupted navigational patterns; displacement encounters.
@@ -62,5 +82,5 @@ The river's multiple escape opportunities are **stages within one authored encou
 - Avoid authoring the final graph until graph runtime, effects and edge constraints from issues #192–#203 are verified.
 
 ## Decisions still open
-1. Which locations and developments are mandatory for final convergence.
-2. Endgame unlock flags, faction influence rules, return routes and endings.
+1. Each strand's node list and key node, one strand at a time.
+2. Faction influence rules, return routes and endings.
