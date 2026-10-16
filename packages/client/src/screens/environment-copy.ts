@@ -21,6 +21,7 @@ import type {
   EnvironmentClockView,
   EnvironmentExitView,
   EnvironmentHazardView,
+  EnvironmentObjectiveView,
   EnvironmentRescueView,
 } from "@kad/shared";
 
@@ -40,6 +41,22 @@ export function hazardIcon(kind: EnvironmentHazardView["kind"]): string {
 export const CLOCK_ICON = "waiting";
 export const EXIT_ICON = "forward";
 export const CAPTIVE_ICON = "heart";
+
+/** An objective's glyph (#220): a shield for ground to hold, a key for a tear to close. */
+export function objectiveIcon(kind: EnvironmentObjectiveView["kind"]): string {
+  return kind === "hold" ? "shield" : "key";
+}
+
+/** What an objective asks, how far along it is, and what doing it means (#220). */
+export function objectiveLine(objective: EnvironmentObjectiveView): string {
+  if (objective.done) return `${objective.label}: done!`;
+  const how =
+    objective.kind === "hold"
+      ? "end a round with one of you on it and no monster there"
+      : "end your turn on it or next to it";
+  const ends = objective.endsFight ? " Do it and the fight is won." : "";
+  return `${objective.label}: ${how}. ${objective.progress} of ${objective.target}.${ends}`;
+}
 
 /** "The rift closes in 3 rounds." — the visible timer. */
 export function clockLine(clock: EnvironmentClockView): string {
@@ -115,8 +132,10 @@ export function rescueLine(rescue: EnvironmentRescueView): string {
 }
 
 /** A board square's mark, as words: what the cell's button and the legend say. */
-export function tileWords(feature: { kind: "hazard" | "exit" | "captive"; label: string; active: boolean }): string {
+export function tileWords(feature: { kind: "hazard" | "exit" | "captive" | "objective"; label: string; active: boolean }): string {
   switch (feature.kind) {
+    case "objective":
+      return feature.active ? `${feature.label}, stop here` : `${feature.label}, done`;
     case "hazard":
       return feature.active ? `${feature.label}, don't stop here` : `${feature.label} (not yet)`;
     case "exit":
@@ -156,6 +175,8 @@ export interface BeatWords {
    * one captive): their `name`, or "the captive" for a fight without one.
    */
   captive(index?: number): string;
+  /** An objective's label, by id (#220). */
+  objective(id: string): string;
 }
 
 /**
@@ -198,6 +219,14 @@ export function environmentBeatLine(
       };
     case "relocated":
       return { text: `The rift throws ${words.name(event.actorId)} somewhere new!`, tone: "plain" };
+    case "objective":
+      return {
+        text:
+          event.progress >= event.target
+            ? `Done: ${words.objective(event.objectiveId)}!`
+            : `${words.objective(event.objectiveId)}: ${event.progress} of ${event.target}.`,
+        tone: "good",
+      };
     case "riftClock":
       return { text: event.onExpire === "collapse" ? "The rift is closing!" : "The rift is surging!", tone: "bad" };
     case "surge":

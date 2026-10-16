@@ -46,6 +46,8 @@ import {
   clockReadout,
   environmentBeatLine,
   exitLine,
+  objectiveIcon,
+  objectiveLine,
   rescueLine,
 } from "./environment-copy";
 import "./RiftStatus.css";
@@ -65,6 +67,7 @@ export function riftCaption(events: readonly EncounterEvent[], encounter: Encoun
     },
     isParty: (id: string): boolean => combatantById(encounter, id)?.side === "party",
     captive: (index?: number) => captiveName(encounter.environment?.spec, index),
+    objective: (id: string) => encounter.environment?.spec.objectives?.find((o) => o.id === id)?.label ?? id,
   };
   const lines: string[] = [];
   for (const event of events) {
@@ -107,6 +110,12 @@ export function RiftStatus(): ReactElement | null {
           <li key={`exit:${exit.id}`} className={exit.open ? "rift-status__line--open" : undefined}>
             <Icon name={EXIT_ICON} />
             <span>{exitLine(exit)}</span>
+          </li>
+        ))}
+        {view.objectives.map((objective) => (
+          <li key={`objective:${objective.id}`} className={objective.done ? "rift-status__line--open" : undefined}>
+            <Icon name={objectiveIcon(objective.kind)} />
+            <span>{objectiveLine(objective)}</span>
           </li>
         ))}
         {view.captives.map((captive, i) => (

@@ -63,6 +63,7 @@
 import type { Position, ReachableTile } from "./grid.js";
 import type { ActorId, ActorSide, Actor, Board } from "./grid.js";
 import {
+  actorAt,
   actorById,
   actorsAdjacentTo,
   areAdjacent,
@@ -91,6 +92,8 @@ import {
   captiveStatuses,
   captivesOf,
   hazardAt,
+  objectiveTarget,
+  objectivesDone,
   openExitAt,
   pushStep,
   rescueDeadline,
@@ -615,6 +618,11 @@ export type EncounterEvent =
   | { readonly type: "captiveLost"; readonly captive?: number }
   /** A monster spent its turn dragging at a captive (#220): `hp` is what they have left. */
   | { readonly type: "captiveDragged"; readonly byId: ActorId; readonly hp: number; readonly captive?: number }
+  /**
+   * An objective moved on (#220): `progress` of `target`. `byId` is the hero
+   * who closed a little of a tear; a held round has nobody in particular.
+   */
+  | { readonly type: "objective"; readonly objectiveId: string; readonly progress: number; readonly target: number; readonly byId?: ActorId }
   /** The rift moved a monster. */
   | { readonly type: "relocated"; readonly actorId: ActorId; readonly to: Position }
   /** The clock ran out: `"collapse"` ends the fight, `"surge"` hurts every hero still here. */
@@ -892,6 +900,7 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
               ? { rescue: Array.isArray(environment.rescue) ? captives.map(() => "waiting" as const) : ("waiting" as const) }
               : {}),
             ...(captives.some((c) => c.hp !== undefined) ? { captiveHp: captives.map((c) => c.hp ?? 0) } : {}),
+            ...(environment.objectives ? { objectives: environment.objectives.map(() => 0) } : {}),
           },
         }
       : {}),
@@ -993,6 +1002,11 @@ export function isPartyWiped(state: EncounterState): boolean {
  */
 export function encounterOutcome(state: EncounterState): EncounterOutcome {
   if (enemies(state).every((c) => c.down)) return "victory";
+  // An objective that ends the fight (#220), done, is a victory too.
+  if (state.environment?.spec.objectives) {
+    const done = objectivesDone(state.environment);
+    if (state.environment.spec.objectives.some((objective, i) => objective.endsFight && done[i])) return "victory";
+  }
   // The environment's two endings (#201) only exist on a fight that has one.
   // An escape outranks a wipe: a hero who got out pulls the fallen through
   // after them (nobody is left behind on the board, §7.3), so a party that is
@@ -2149,6 +2163,9 @@ function turnEndInEnvironment(
     }
   });
 
+  // Closing a tear (#220): a hero, ending a turn on or beside it.
+  if (actor.side === "party") working = advanceObjectives(working, (o) => o.kind === "close" && stepsBetween(at, o.at) <= 1, events, actorId);
+
   // Stopping on the fire. Damage first; what it knocks down stays put (#220).
   const hazard = hazardAt(spec, working.round, at);
   if (hazard) {
@@ -2211,6 +2228,28 @@ function hinderInEnvironment(
   return working;
 }
 
+/** One step on every objective `counts` picks that is not done yet (#220). */
+function advanceObjectives(
+  state: EncounterState,
+  counts: (objective: NonNullable<EncounterEnvironment["objectives"]>[number]) => boolean,
+  events: EncounterEvent[],
+  byId?: ActorId,
+): EncounterState {
+  const env = state.environment;
+  const objectives = env?.spec.objectives;
+  if (!env || !objectives || !env.objectives) return state;
+  let progress: number[] | null = null;
+  objectives.forEach((objective, i) => {
+    const target = objectiveTarget(objective);
+    const now = env.objectives?.[i] ?? 0;
+    if (now >= target || !counts(objective)) return;
+    progress ??= [...(env.objectives ?? [])];
+    progress[i] = now + 1;
+    events.push({ type: "objective", objectiveId: objective.id, progress: now + 1, target, ...(byId ? { byId } : {}) });
+  });
+  return progress ? { ...state, environment: { ...env, objectives: progress } } : state;
+}
+
 /** Captive `index` is gone to the rift: their square opens and the phones hear it. */
 function loseCaptive(state: EncounterState, index: number, events: EncounterEvent[]): EncounterState {
   const env = state.environment;
@@ -2231,6 +2270,23 @@ function roundStartInEnvironment(
   const { spec } = env;
   let working = state;
   const clock = spec.clock;
+
+  // Holding ground (#220): the round that just ended counts if it ended with
+  // a standing hero on the tiles and no monster. Before the clock, so a hold
+  // finished in the last round is finished.
+  const holds = (tiles: readonly Position[]): boolean => {
+    let hero = false;
+    for (const tile of tiles) {
+      const who = actorAt(working.board, tile);
+      const figure = who ? combatantById(working, who.id) : undefined;
+      if (!figure || figure.down) continue;
+      if (figure.side === "enemy") return false;
+      hero = true;
+    }
+    return hero;
+  };
+  working = advanceObjectives(working, (o) => o.kind === "hold" && holds(o.tiles), events);
+  env = working.environment!;
 
   if (clock && !env.expired && round > clock.rounds) {
     env = { ...env, expired: true };

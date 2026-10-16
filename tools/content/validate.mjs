@@ -500,6 +500,8 @@ function effectsOf(scene, sceneId) {
   const rescue = scene.environment?.rescue;
   if (Array.isArray(rescue)) rescue.forEach((captive, i) => push(captive?.effects, `${base}/environment/rescue/${i}/effects`));
   else push(rescue?.effects, `${base}/environment/rescue/effects`);
+  // An objective done (#220), the same way.
+  (scene.environment?.objectives ?? []).forEach((o, i) => push(o?.effects, `${base}/environment/objectives/${i}/effects`));
   return out;
 }
 

@@ -86,6 +86,9 @@ export function beatSubjects(event: EncounterEvent): string[] {
     case "freed":
     case "captiveDragged":
       return [event.byId];
+    // The hero closing a tear (#220); a held round names nobody.
+    case "objective":
+      return event.byId ? [event.byId] : [];
     /*
      * A roll names its roller through the die rather than an `actorId`, and
      * the *swing* is already framed by the damage or evade beat beside it —

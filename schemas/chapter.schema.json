@@ -1564,6 +1564,100 @@
               }
             }
           }
+        },
+        "objectives": {
+          "description": "#220 something to get done besides surviving: hold ground for N rounds, or close a tear in N hero turns. `effects` apply when the fight ends if it was done; `endsFight` makes done a victory.",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "kind",
+                  "label",
+                  "tiles",
+                  "rounds"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9]+([-_][a-z0-9]+)*$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "effects": {
+                    "$ref": "#/$defs/effects"
+                  },
+                  "endsFight": {
+                    "description": "Done ends the fight as a victory (onVictory).",
+                    "const": true
+                  },
+                  "kind": {
+                    "const": "hold"
+                  },
+                  "tiles": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "$ref": "#/$defs/mapTile"
+                    }
+                  },
+                  "rounds": {
+                    "description": "Rounds that END with a standing hero on the tiles and no monster; not in a row.",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 12
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "kind",
+                  "label",
+                  "at",
+                  "turns"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9]+([-_][a-z0-9]+)*$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "effects": {
+                    "$ref": "#/$defs/effects"
+                  },
+                  "endsFight": {
+                    "description": "Done ends the fight as a victory (onVictory).",
+                    "const": true
+                  },
+                  "kind": {
+                    "const": "close"
+                  },
+                  "at": {
+                    "$ref": "#/$defs/mapTile"
+                  },
+                  "turns": {
+                    "description": "Hero turns that END on or beside `at`, any heroes, any order.",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 12
+                  }
+                }
+              }
+            ]
+          }
         }
       }
     },

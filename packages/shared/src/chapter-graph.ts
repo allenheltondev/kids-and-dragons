@@ -112,6 +112,7 @@ function sceneEffects(scene: Scene): Effect[] {
         ...(scene.onEscape?.effects ?? []),
         ...(scene.onTimeout?.effects ?? []),
         ...(scene.environment ? captivesOf(scene.environment).flatMap((captive) => captive.effects ?? []) : []),
+        ...(scene.environment?.objectives ?? []).flatMap((objective) => objective.effects ?? []),
       );
       break;
   }

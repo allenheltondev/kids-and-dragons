@@ -70,7 +70,7 @@ import {
   type EnemyPlacement,
   type PartyPlacement,
 } from "./encounter.js";
-import { captiveStatuses, captivesOf, outcomeBranch } from "./environment.js";
+import { captiveStatuses, captivesOf, objectivesDone, outcomeBranch } from "./environment.js";
 import { parseBoard, type Position } from "./grid.js";
 import { planEnemyTurn } from "./enemy-ai.js";
 import type {
@@ -2245,6 +2245,11 @@ function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | un
     const statuses = captiveStatuses(encounter.environment);
     captivesOf(scene.environment).forEach((captive, i) => {
       if (captive.effects && statuses[i] === "freed") applyEffectsDraft(draft, captive.effects, ctx);
+    });
+    // An objective done (#220) is a story fact the same way.
+    const done = objectivesDone(encounter.environment);
+    (scene.environment.objectives ?? []).forEach((objective, i) => {
+      if (objective.effects && done[i]) applyEffectsDraft(draft, objective.effects, ctx);
     });
   }
   return takeBranch(draft, outcomeBranch(scene, outcome), ctx);

@@ -10,6 +10,7 @@ import {
   beginEncounter,
   combatantById,
   currentActorId,
+  encounterOutcome,
   endTurnWithEvents,
   moveTo,
   positionOf,
@@ -242,5 +243,78 @@ describe("a captive the monsters can get at (#220)", () => {
     expect(endTurnWithEvents({ ...swung, actionTaken: true }).events).toEqual([]);
     const untouchable = until(begin({ rescue: { name: "Pip", at: { x: 8, y: 3 } } }), "wisp#1");
     expect(endTurnWithEvents(untouchable).events).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Objectives besides a rescue
+// ---------------------------------------------------------------------------
+
+describe("objectives (#220)", () => {
+  it("hold: a round counts when it ends with a hero on the ground and no monster", () => {
+    const env: EncounterEnvironment = {
+      objectives: [{ id: "stones", kind: "hold", label: "Hold the stones", tiles: [{ x: 2, y: 3 }], rounds: 2 }],
+    };
+    const events: EncounterEvent[] = [];
+    let state = until(endTurnWithEvents(walk(begin(env), { x: 2, y: 3 })).state, "c_a", events);
+    expect(events).toContainEqual({ type: "objective", objectiveId: "stones", progress: 1, target: 2 });
+    expect(environmentView(state)!.objectives[0]).toMatchObject({ progress: 1, target: 2, done: false });
+    // Stepping off: the next round does not count.
+    events.length = 0;
+    state = until(endTurnWithEvents(walk(state, { x: 3, y: 3 })).state, "c_a", events);
+    expect(types(events)).not.toContain("objective");
+    expect(environmentView(state)!.objectives[0]!.progress).toBe(1);
+  });
+
+  it("hold: a monster on the ground spoils the round", () => {
+    const env: EncounterEnvironment = {
+      objectives: [{ id: "stones", kind: "hold", label: "Hold", tiles: [{ x: 2, y: 3 }, { x: 9, y: 3 }], rounds: 2 }],
+    };
+    const events: EncounterEvent[] = [];
+    const state = until(endTurnWithEvents(walk(begin(env), { x: 2, y: 3 })).state, "c_a", events);
+    expect(state.round).toBe(2);
+    expect(types(events)).not.toContain("objective");
+  });
+
+  it("close: each hero turn ended beside the tear closes it a little, and done can end the fight as a victory", () => {
+    const env: EncounterEnvironment = {
+      objectives: [{ id: "seal", kind: "close", label: "Close the tear", at: { x: 1, y: 3 }, turns: 2, endsFight: true }],
+    };
+    let state = begin(env);
+    const first = endTurnWithEvents(state);
+    expect(first.events).toEqual([{ type: "objective", objectiveId: "seal", progress: 1, target: 2, byId: "c_a" }]);
+    expect(encounterOutcome(first.state)).toBe("ongoing");
+    state = first.state;
+    const second = endTurnWithEvents(state);
+    expect(second.events).toEqual([{ type: "objective", objectiveId: "seal", progress: 2, target: 2, byId: "c_b" }]);
+    expect(encounterOutcome(second.state)).toBe("victory");
+  });
+
+  it("without endsFight, done is only a fact: the fight goes on", () => {
+    const env: EncounterEnvironment = {
+      objectives: [{ id: "seal", kind: "close", label: "Close the tear", at: { x: 1, y: 3 }, turns: 1 }],
+    };
+    const ended = endTurnWithEvents(begin(env));
+    expect(environmentView(ended.state)!.objectives[0]!.done).toBe(true);
+    expect(encounterOutcome(ended.state)).toBe("ongoing");
+    // Done stays done: no more progress events.
+    expect(types(endTurnWithEvents(ended.state).events)).not.toContain("objective");
+  });
+
+  it("the check holds counts, tiles and the clock", () => {
+    const scene = (objectives: unknown[], clock?: object) => ({
+      enemies: [WISP],
+      onTimeout: clock ? { goto: "x" } : undefined,
+      environment: { objectives, ...(clock ? { clock } : {}) } as EncounterEnvironment,
+    });
+    expect(checkEncounterEnvironment(scene([{ id: "a", kind: "hold", label: "A", tiles: [{ x: 2, y: 2 }], rounds: 2 }]))).toEqual([]);
+    expect(
+      checkEncounterEnvironment(
+        scene([{ id: "a", kind: "hold", label: "A", tiles: [{ x: 2, y: 2 }], rounds: 5 }], { rounds: 4, label: "C", onExpire: "collapse" }),
+      ).map((p) => p.path),
+    ).toEqual(["/environment/objectives/0/rounds"]);
+    expect(
+      checkEncounterEnvironment(scene([{ id: "a", kind: "close", label: "A", at: { x: 20, y: 2 }, turns: 0 }])).map((p) => p.path),
+    ).toEqual(["/environment/objectives/0/turns", "/environment/objectives/0/at"]);
   });
 });

@@ -43,20 +43,21 @@ import type { EncounterState, MapTile } from "@kad/shared";
 import { environmentView } from "@kad/shared";
 
 /** The shape a square is marked with. One per kind of thing, never a colour. */
-export type OverlayGlyph = "fire" | "thorns" | "rift" | "exit" | "captive";
+export type OverlayGlyph = "fire" | "thorns" | "rift" | "exit" | "captive" | "objective";
 
 /**
  * - `active`: a hazard burning this round, an exit open this round.
  * - `pending`: a hazard not yet burning, an exit not yet open — drawn faint.
  * - `gone`: an exit closed for good — drawn faint and crossed.
  * - `waiting` / `freed` / `lost`: the captive.
+ * - `done`: an objective finished (#220) — drawn faint, with a tick.
  */
-export type OverlayState = "active" | "pending" | "gone" | "waiting" | "freed" | "lost";
+export type OverlayState = "active" | "pending" | "gone" | "waiting" | "freed" | "lost" | "done";
 
 export interface OverlayTile {
   readonly x: number;
   readonly y: number;
-  readonly kind: "hazard" | "exit" | "captive";
+  readonly kind: "hazard" | "exit" | "captive" | "objective";
   readonly glyph: OverlayGlyph;
   readonly state: OverlayState;
   /** The authored label, or the captive's name. */
@@ -112,6 +113,20 @@ export function environmentOverlay(encounter: EncounterState): EnvironmentOverla
     const count = exit.open ? exit.closesIn : exit.gone ? undefined : exit.opensIn;
     for (const at of exit.tiles) {
       mark(at, { kind: "exit", glyph: "exit", state, label: exit.label, ...(count !== undefined ? { count } : {}) });
+    }
+  }
+
+  // Ground to hold, a tear to close (#220): the count is what is left to do.
+  for (const objective of view.objectives) {
+    const left = objective.target - objective.progress;
+    for (const at of objective.tiles) {
+      mark(at, {
+        kind: "objective",
+        glyph: "objective",
+        state: objective.done ? "done" : "active",
+        label: objective.label,
+        ...(objective.done ? {} : { count: left }),
+      });
     }
   }
 

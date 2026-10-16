@@ -10,7 +10,7 @@
 import type { Chapter, Combatant, EncounterState, PartyMember, Position } from "@kad/shared";
 import { NUMBED_BUFF_ID, currentActorId, enemyArtId, environmentView } from "@kad/shared";
 import { facingFor, type Facing } from "../world/board-math";
-import { CAPTIVE_ICON, EXIT_ICON, hazardIcon } from "./environment-copy";
+import { CAPTIVE_ICON, EXIT_ICON, hazardIcon, objectiveIcon } from "./environment-copy";
 
 /**
  * What the ground on a square is, in a fight with an environment (#201): a
@@ -18,7 +18,7 @@ import { CAPTIVE_ICON, EXIT_ICON, hazardIcon } from "./environment-copy";
  * never lets two share one. Carried as a glyph and words, never a colour.
  */
 export interface GridFeature {
-  readonly kind: "hazard" | "exit" | "captive";
+  readonly kind: "hazard" | "exit" | "captive" | "objective";
   readonly label: string;
   /** icons.tsx name — the shape that marks the square. */
   readonly icon: string;
@@ -182,6 +182,12 @@ function featuresOf(encounter: EncounterState): Map<string, GridFeature> {
     if (exit.gone) continue;
     for (const t of exit.tiles) {
       out.set(`${t.x},${t.y}`, { kind: "exit", label: exit.label, icon: EXIT_ICON, active: exit.open });
+    }
+  }
+  // Ground to hold and tears to close (#220), quiet once done.
+  for (const objective of view.objectives) {
+    for (const t of objective.tiles) {
+      out.set(`${t.x},${t.y}`, { kind: "objective", label: objective.label, icon: objectiveIcon(objective.kind), active: !objective.done });
     }
   }
   for (const captive of view.captives) {

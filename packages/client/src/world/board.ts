@@ -1404,6 +1404,7 @@ const ENV_COLOR = {
   rift: 0xc8a2ff,
   exit: 0xfff1a8,
   captive: 0xff9ec4,
+  objective: 0x4ad991,
 } as const;
 /** The dark the board's other marks outline in, so a glyph reads on any floor. */
 const ENV_INK = 0x120f26;
@@ -1467,6 +1468,26 @@ function drawOverlayTile(g: Graphics, tile: OverlayTile): void {
       g.moveTo(x + T * 0.2, y + T * 0.2).lineTo(x + T * 0.8, y + T * 0.8);
       g.moveTo(x + T * 0.8, y + T * 0.2).lineTo(x + T * 0.2, y + T * 0.8);
       g.stroke({ width: 7, color: ENV_INK, alpha: 0.75, cap: "round" });
+    }
+    return;
+  }
+
+  if (tile.kind === "objective") {
+    // A solid ring with a diamond inside (#220): ground to stand on, a tear
+    // to close. Done, it goes faint and wears a tick.
+    const done = tile.state === "done";
+    const a = done ? 0.42 : 1;
+    if (!done) g.rect(x, y, T, T).fill({ color, alpha: 0.16 });
+    g.circle(x + T * 0.5, y + T * 0.5, T * 0.4).stroke({ width: 6, color, alpha: a });
+    g.moveTo(x + T * 0.5, y + T * 0.28)
+      .lineTo(x + T * 0.72, y + T * 0.5)
+      .lineTo(x + T * 0.5, y + T * 0.72)
+      .lineTo(x + T * 0.28, y + T * 0.5)
+      .closePath();
+    g.fill({ color, alpha: a * 0.85 }).stroke({ width: 4, color: ENV_INK, alpha: 0.8 });
+    if (done) {
+      g.moveTo(x + T * 0.3, y + T * 0.52).lineTo(x + T * 0.45, y + T * 0.66).lineTo(x + T * 0.72, y + T * 0.34);
+      g.stroke({ width: 8, color: 0xffffff, alpha: 0.95, cap: "round", join: "round" });
     }
     return;
   }

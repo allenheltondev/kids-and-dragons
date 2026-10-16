@@ -446,6 +446,8 @@ export interface EncounterEnvironment {
   /** One captive, or a list of up to three (#220), each freed on its own. */
   rescue?: RescueObjective | RescueObjective[];
   relocate?: EnemyRelocation[];
+  /** Something to do besides surviving (#220): hold ground, close a tear. Up to three. */
+  objectives?: EnvironmentObjective[];
 }
 
 /**
@@ -553,6 +555,51 @@ export interface RescueObjective {
    * the same loss as running out of time. Absent: nothing can touch them.
    */
   hp?: number;
+}
+
+/**
+ * A thing the party can get done in the fight (#220), besides beating the
+ * monsters, getting out or freeing somebody. Progress is counted where the
+ * rest of the environment is — at turn ends and round starts — and shown on
+ * every phone as "2 of 3".
+ *
+ * Done is a story fact the same way a rescue is: `effects` apply when the
+ * fight ends, however it ends, if it was done. With `endsFight`, getting it
+ * done ends the fight there and then as a **victory** — the story takes
+ * `onVictory`, whose variants can read the effects' flag.
+ */
+export type EnvironmentObjective = HoldObjective | CloseObjective;
+
+interface ObjectiveBase {
+  /** Unique within the environment (shared with hazards and exits). */
+  id: string;
+  /** What the phones call it: "Hold the beacon stones". */
+  label: string;
+  effects?: Effect[];
+  endsFight?: true;
+}
+
+/**
+ * Hold ground: a round counts when it **ends** with a standing hero on one of
+ * `tiles` and no monster on any of them. `rounds` such rounds (not in a row)
+ * and it is done.
+ */
+export interface HoldObjective extends ObjectiveBase {
+  kind: "hold";
+  tiles: MapTile[];
+  /** 1 to 12. */
+  rounds: number;
+}
+
+/**
+ * Close a tear: each time a hero **ends a turn** on or beside `at`, it
+ * closes a little; `turns` of those (any heroes, any order) and it is done.
+ */
+export interface CloseObjective extends ObjectiveBase {
+  kind: "close";
+  at: MapTile;
+  /** 1 to 12. */
+  turns: number;
 }
 
 /**
