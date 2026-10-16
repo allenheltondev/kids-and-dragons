@@ -44,7 +44,6 @@ These are canon calls, not art calls. **Do not decide them; do not start the ite
 
 | Decision | Blocks |
 | --- | --- |
-| Which people the Saltrot guides are | B2's `saltrot_guide` |
 
 Everything else in this brief can start now.
 
@@ -154,9 +153,102 @@ A mixed fellowship from across the realm, so the rifts visibly touch everyone; w
 | `yeti_elder` | `yeti` | An elder of the reading rooms; old, gentle, frost in the fur |
 | `kitsune_temple_keeper` | `kitsune` (species) | A Sky Islands temple keeper. Kind and dignified: kitsune are never drawn as tricksters by default |
 | `dragonling_stone_keeper` | `dragonling` (species) | A grown dragonling who keeps the Red Sky Foothills boundary stones |
-| `saltrot_guide` | *(waits on §3)* | A guide of the brackish flats, practical and weathered |
+| `saltrot_guide` | `skipperfolk` (B3) | A Skipperfolk guide of the brackish flats, crest half raised, mud-wet and weathered |
 
 An adult of a playable species must be unmistakably that species (`story-cast-art.md` §2).
+
+### B3. A new people: the Skipperfolk (entity and canon in one PR)
+
+The Saltrot's own people, approved by the owner: amphibious **mudskipper-and-pufferfish** folk
+found **only in brackish water**. Canon keeps every people 1:1 with its art
+(`packages/canon/src/canon.test.ts`, "asset_id is a real join"), so the entity and the canon entry
+land **in the same PR**, as `story-cast-art.md` Part C does for new peoples.
+
+**The entity** (`assets/entities/skipperfolk/`, scale `small_to_medium`, the §6.4 entity
+contract): an upright mudskipper body on strong front fins used as forearms; big round eyes set
+high on the head; a tall dorsal crest; a small fused beak; mottled **olive and gold** skin with
+dark spots, wet with mud. Keep the skin off bright rift green, amber, blue and violet so a
+Skipperfolk never reads as a rift rule. Draw two states: **ordinary**, and **puffed**, perfectly
+round with soft spines standing out (a startle, never a threat). Friendly, nosy, a little comic.
+
+**The canon, to land with it:**
+- Add `skipperfolk` to `people_ids` in `canon/npcs.yaml`, and this entry before `npc.boggart`:
+
+```yaml
+  - id: npc.skipperfolk
+    asset_id: skipperfolk
+    title: "Skipperfolk"
+    canon_status: newly_defined
+    classification: supporting_people
+    sapience: sapient
+    featured: false
+    tags: [supporting_people, saltrot, amphibious, brackish, guide]
+    scale: small_to_medium
+    short_description: >-
+      Amphibious mudskipper-and-pufferfish people of the Saltrot's brackish
+      flats, who guide travelers across mud nobody else can stand on.
+    visual_identity: >-
+      Upright mudskipper-like body on strong front fins used as forearms, with
+      big round eyes set high on the head that pop up to watch the flats, a
+      tall dorsal crest raised to signal, and a small fused beak. Mottled olive
+      and gold skin with dark spots, kept wet with mud. When startled or
+      delighted they puff up perfectly round, soft spines standing out.
+    common_story_uses: >-
+      Saltrot guide, flood-namer, retriever of travelers who tried the flats
+      alone, first to notice that the floods are changing.
+    canon_constraints: >-
+      Found only in brackish water: fresh water and dry land dry them out, and
+      the open sea is too salty, so they do not live anywhere but the
+      Saltrot's flats and channels. They are the Saltrot's guides; the guides'
+      lore in biome.sallow_wastelands is theirs. No poison, ever: their spines
+      are soft and harmless, and puffing up is a startle, never an attack.
+    speech_register: >-
+      Quick and chatty, with cheerful bluntness and times given by the tide
+      rather than the sun ("two crabs past the ebb"). A guide who has gone
+      quiet and very round is a guide who has just seen something.
+    standard_behavior: >-
+      Memorizes each season's safe paths, names the great floods, signals
+      across the flats with raised crests, cracks shellfish on the shell-banks,
+      and keeps the flats crossable for travelers who respect them.
+    lore:
+      hook: "The only people who can walk on the Saltrot, and the only ones who would want to."
+      story: >-
+        Skipperfolk move in quick little skips across mud that swallows
+        boots, and they live in burrow towns dug into the flats with air kept
+        in pockets below. Every great flood resets the town, so nothing they
+        build is meant to last and nobody minds. Puffing up is not a choice: a
+        startled skipper goes round and floats, which on the flats is useful.
+        A puffed guide bobbing in a flooded channel is a buoy for anyone stuck,
+        and the polite thing is to hold on and not mention it afterward.
+      pastimes:
+        - "Crab clocks. Fiddler crabs wave at the turning tide, and a good skipper can tell the time to the minute by how many are waving."
+        - "Crest signaling. Greetings, warnings and gossip travel across the flats faster than anyone can walk them."
+        - "Flood naming, argued over for a whole season. A flood is not properly over until it has a name everyone can live with."
+      social: >-
+        Friendly, nosy and frank. A skipperfolk guide will tell you your boots
+        are wrong, your route is wrong and your lunch smells interesting, all
+        before you have finished saying hello. Some guides are generous, some
+        strict, a few famously grumpy, and every one of them refuses to take
+        anybody to the buried bridge.
+      likes:
+        - of: npc.frogfolk
+          because: "The neighbors at the fresher edge of the flats. Frogfolk boats bring the river's news down, and skipperfolk guides take it the rest of the way."
+      dislikes:
+        - of: creature.bone_crawler
+          because: "They swarm anything with fresh magic in it, and the flats are the only way to the Bone Yard, so it is the guides who keep pulling travelers out of the swarm."
+    relationships:
+      primary_locations: [biome.sallow_wastelands]
+      secondary_locations: []
+      creatures: [creature.bone_crawler]
+      items: []
+```
+
+- In `canon/npcs.yaml`, add `biome.sallow_wastelands` to `npc.frogfolk`'s `secondary_locations`.
+- In `canon/biomes.yaml`, `biome.sallow_wastelands` → `inhabitants`: `primary_peoples:
+  [npc.skipperfolk]`, `supporting_peoples: [npc.frogfolk]`.
+- Run `npm run canon:check`, `canon:field-guide`, `canon:world`, `canon:bestiary`, and add
+  `npc.skipperfolk` to `EXPECTED_UNREACHABLE` in `tools/content/field-guide-reach.test.mjs` (no
+  chapter reveals them yet). The full test suite must pass.
 
 ---
 
