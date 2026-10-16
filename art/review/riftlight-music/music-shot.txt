@@ -1,55 +1,15 @@
 
-[WebServer] (node:57340) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (node:13860) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
 
-[WebServer] (node:57856) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (node:40816) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 [WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
 
 Running 1 test using 1 worker
 
-(node:20388) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
-
+(node:53760) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
 
+
 [1/1] e2e\cast-shot.spec.ts:81:1 › photograph a cast on the story stage
-  1) e2e\cast-shot.spec.ts:81:1 › photograph a cast on the story stage ─────────────────────────────
-
-    Test timeout of 300000ms exceeded.
-
-    TimeoutError: locator.click: Timeout 20000ms exceeded.
-    Call log:
-      - waiting for getByRole('button', { name: /^you$/i })
-        - locator resolved to <button type="button" aria-label="You" aria-pressed="false" class="kad-travel__tab kad-tray__tab kad-tray__tab--primary kad-tap kad-focusable">…</button>
-      - attempting click action
-        - waiting for element to be visible, enabled and stable
-        - element is visible, enabled and stable
-        - scrolling into view if needed
-        - done scrolling
-
-
-      141 |     await host.waitForTimeout(200);
-      142 |     await host.screenshot({ path: `${SHOT_PREFIX}-${scene}-host.png` });
-    > 143 |     await host.getByRole("button", { name: /^you$/i }).click(TAP);
-          |                                                        ^
-      144 |   }
-      145 |
-      146 |   await Promise.all(contexts.map((c) => c.close().catch(() => undefined)));
-        at C:\Users\allen\.codex\worktrees\riftlight-part-a\kids-and-dragons\e2e\cast-shot.spec.ts:143:56
-
-    Fixture "trace recording" timeout of 300000ms exceeded during teardown.
-
-    Error Context: test-results\cast-shot-photograph-a-cast-on-the-story-stage\error-context.md
-
-    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
-    test-results\cast-shot-photograph-a-cast-on-the-story-stage\trace.zip
-    Usage:
-
-        npx playwright show-trace test-results\cast-shot-photograph-a-cast-on-the-story-stage\trace.zip
-
-    ────────────────────────────────────────────────────────────────────────────────────────────────
-
-
-  Slow test file: e2e\cast-shot.spec.ts (5.0m)
-  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
-  1 failed
-    e2e\cast-shot.spec.ts:81:1 › photograph a cast on the story stage ──────────────────────────────
+  1 passed (2.0m)
