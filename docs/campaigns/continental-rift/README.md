@@ -30,7 +30,7 @@ Engine epic: [#191](https://github.com/allenheltondev/kids-and-dragons/issues/19
 - [#222](https://github.com/allenheltondev/kids-and-dragons/issues/222): buffs on story checks, for Riftspark.
 - [#226](https://github.com/allenheltondev/kids-and-dragons/issues/226): per-chapter music, for the theme and the finale.
 - [#227](https://github.com/allenheltondev/kids-and-dragons/issues/227): enemy hits that slow, for the Skuppers' sting.
-- A class gate on **chapter choices**, for the Starweaver's in-chapter *Read the Riftlight* ([mechanics.md](mechanics.md)). No issue yet.
+- A class gate on **chapter choices**, for the Starweaver's in-chapter *Read the Riftlight* ([mechanics.md](mechanics.md)): [#228](https://github.com/allenheltondev/kids-and-dragons/issues/228).
 - [#220](https://github.com/allenheltondev/kids-and-dragons/issues/220): environment effects deferred after #201.
 
 ## Open items
