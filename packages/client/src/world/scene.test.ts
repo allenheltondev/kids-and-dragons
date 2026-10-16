@@ -483,6 +483,62 @@ describe("the scene's life", () => {
     // Two figures, two distinct slots — not stacked on the same spot.
     expect(boxes[0]!.x).not.toBeCloseTo(boxes[1]!.x, 1);
   });
+
+  it("puts a rift fight's overlay on the stage, plays its beats, and takes it down after (#201)", () => {
+    const { scene: s, app } = scene();
+    const plain = encounterView();
+    const hero = plain.encounter.combatants.find((c) => c.side === "party")!.id;
+    const encounter = beginEncounter(
+      {
+        board: parseBoard(["....", "....", "....", "...."]),
+        party: [{ character: plain.party[0]!.character, at: { x: 0, y: 0 } }],
+        enemies: [
+          {
+            spec: { id: "wisp", name: "Bramblewisp", count: 1, hp: 6, guard: 11, quick: 3, steps: 5, attack: 3 },
+            at: { x: 3, y: 3 },
+          },
+        ],
+        environment: {
+          clock: { rounds: 3, label: "The rift closes", onExpire: "collapse" },
+          hazards: [{ id: "fire", kind: "thorns", label: "Thornbank", tiles: [{ x: 1, y: 1 }], damage: 1 }],
+          exits: [{ id: "tear", label: "The tear", tiles: [{ x: 3, y: 0 }] }],
+          rescue: { name: "Pip", at: { x: 0, y: 3 } },
+        },
+      },
+      { rules: makeRules(), abilities: {}, rng: { next: () => 0.5 } },
+    );
+    const overlay = (): Container | null => {
+      let found: Container | null = null;
+      const walk = (node: Container): void => {
+        if (node.destroyed || found) return;
+        if (node.label === "environment") found = node;
+        for (const child of node.children) walk(child as Container);
+      };
+      walk(app.stage);
+      return found;
+    };
+
+    s.setEncounter({ ...plain, encounter });
+    expect(overlay()).not.toBeNull();
+    s.playCombatEvents(
+      [
+        { type: "freed", byId: hero },
+        { type: "relocated", actorId: "wisp#1", to: { x: 2, y: 0 } },
+        { type: "escaped", actorId: hero, exitId: "tear" },
+        { type: "riftClock", onExpire: "collapse" },
+      ],
+      1900,
+    );
+    expect(() => {
+      for (let i = 0; i < 180; i++) app.ticker.frame(16);
+    }).not.toThrow();
+
+    // The board outlives fights; the next ordinary one has no overlay on it.
+    s.setEncounter(null);
+    s.setEncounter(plain);
+    expect(overlay()).toBeNull();
+    s.destroy();
+  });
 });
 
 describe("backdropFit: nobody floats", () => {

@@ -323,6 +323,25 @@ describe("state", () => {
     state = until(until(state, "wisp#1"), "c_a");
     expect(environmentView(state)!.exits[0]).toMatchObject({ open: false, gone: true });
   });
+
+  it("tells a hazard that has not started from one that has burnt out", () => {
+    const env: EncounterEnvironment = {
+      hazards: [
+        { id: "late", kind: "fire", label: "Late fire", tiles: [{ x: 5, y: 5 }], damage: 1, fromRound: 2 },
+        { id: "brief", kind: "thorns", label: "Brief thorns", tiles: [{ x: 6, y: 5 }], damage: 1, untilRound: 1 },
+      ],
+    };
+    let state = begin(env);
+    expect(environmentView(state)!.hazards.map((h) => [h.id, h.active, h.gone ?? false])).toEqual([
+      ["late", false, false],
+      ["brief", true, false],
+    ]);
+    state = until(until(state, "wisp#1"), "c_a");
+    expect(environmentView(state)!.hazards.map((h) => [h.id, h.active, h.gone ?? false])).toEqual([
+      ["late", true, false],
+      ["brief", false, true],
+    ]);
+  });
 });
 
 // ---------------------------------------------------------------------------
