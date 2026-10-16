@@ -20,8 +20,10 @@
  * anything appears. That number is deterministic, it is a real constraint —
  * the display client loads over house wifi onto a laptop somebody wants
  * working within a minute of sitting down — and it regresses silently, which
- * is exactly what a gate is for. An accidental `import` of Pixi into the entry
- * chunk does not slow a frame down; it triples what a cold start costs.
+ * is exactly what a gate is for. An accidental `import` of Pixi into the first
+ * paint does not slow a frame down; it triples what a cold start costs — and
+ * it happened, silently, for as long as this gate weighed only the entry file
+ * (FIRST_PAINT_BUDGET_KB says how).
  */
 
 import fs from "node:fs";
