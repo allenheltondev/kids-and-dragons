@@ -200,6 +200,7 @@
     },
     "scene_pib": {
       "type": "story",
+      "priority": 1,
       "discovers": [
         "individual.pib"
       ],
@@ -495,6 +496,7 @@
     },
     "scene_stone_words": {
       "type": "story",
+      "priority": 2,
       "art": "bg/bramblewood/shrine",
       "narration": "The words are worn almost smooth, but you can still read them: WHAT IS BORROWED HUMS UNTIL IT IS HOME. Under that, somebody much less careful has scratched: sorry. sorry. sorry.",
       "choices": [

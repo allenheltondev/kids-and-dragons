@@ -1499,6 +1499,7 @@
     },
     "scene_whole_truth": {
       "type": "story",
+      "priority": 1,
       "art": "scenes/gemfall/facet-table",
       "narration": "Your clues and the wardens' logs click together like a puzzle. The gemstones are pieces of a seal. The seal holds a titan asleep under Mount Red Sky. And the rush is taking the seal apart, one pocket at a time. In the middle of it all, the gemstone on the table hums. The wardens have given it a name and a number, and Pellam has logged it twice. One very old line just says: an old stone gate, far away in a western marsh, hums the same note. Next to it, in three different handwritings: nobody knows why.",
       "cast": [
