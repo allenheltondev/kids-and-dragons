@@ -119,7 +119,13 @@ export type ClientIntent =
    */
   | { type: "VOTE_CAMPAIGN"; campaignId: string }
   | { type: "CHOOSE"; choiceId: string }
-  | { type: "ROLL" }
+  /**
+   * `spendBuff` answers the roll prompt's `"choose"` buff offer (#222): the
+   * offered buff's id spends it on this roll; absent saves it. Naming a buff
+   * the prompt no longer offers (a stale tap: a friend spent it first) rolls
+   * without one, and never spends something else in its place.
+   */
+  | { type: "ROLL"; spendBuff?: string }
   /** Offer your help on the check someone else is about to roll. */
   | { type: "HELP" }
   | { type: "ADVANCE" }

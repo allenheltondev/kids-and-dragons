@@ -65,6 +65,21 @@ describe("the dice card", () => {
     );
   });
 
+  it("adds a spent story-check buff to the sum, and says it", () => {
+    // #222: a flat amount, so the card's sum still adds up to the total.
+    const sparked: DiceRoll = { ...HELPED, total: 16, buff: { id: "riftspark", label: "Riftspark", amount: 2 } };
+    expect(spokenRoll(sparked, "Sparklehoof", "Windstep")).toBe(
+      "Sparklehoof rolled 9 plus 2 plus 3 from Windstep plus 2 from Riftspark, 16. Success!",
+    );
+    render(<DiceOverlay />);
+    throwRoll(sparked);
+    act(() => vi.advanceTimersByTime(ROLL_TUMBLE_MS + ROLL_HELP_TUMBLE_MS));
+    const maths = document.querySelector(".dice__maths")!;
+    expect(maths.textContent).toBe("9+2+3+2=16");
+    act(() => vi.advanceTimersByTime(ROLL_READ_MS + 100));
+    expect(document.querySelector(".dice")).toBeNull();
+  });
+
   it("tallies a whole-party check on its last roll", () => {
     expect(groupLine({ made: 2, of: 3, result: "success" })).toBe("2 of 3 made it. The party makes it!");
     expect(groupLine({ made: 1, of: 3, result: "failure" })).toBe("1 of 3 made it. Not this time for the party.");
