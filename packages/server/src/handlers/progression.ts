@@ -34,6 +34,8 @@ import {
   spendStatPoint as applyStatPointSpend,
   startCampaign,
   startJourney,
+  prerequisiteReason,
+  unmetPrerequisites,
   type Campaign,
   type CampaignView,
   type Character,
@@ -434,6 +436,43 @@ export function attemptJourney(
 }
 
 /**
+ * What keeps this household out of a campaign (#221), or null when nothing does.
+ *
+ * Only a *start* is locked: a household with an active attempt at the campaign
+ * is already in it (it could only have started once the prerequisite was met),
+ * and replaying Gemfall must not take Riftlight away mid-story. `attempts` is
+ * everything the household has on record, so the lobby passes the list it
+ * already read and a chapter start reads it once.
+ */
+export function campaignLock(
+  campaign: Campaign,
+  attempts: readonly CampaignProgressRecord[],
+  deps: HandlerDeps,
+): CampaignView["locked"] | null {
+  if (!campaign.requires?.length) return null;
+  if (attempts.some((a) => a.campaignId === campaign.id && a.status === "active")) return null;
+  const requires = unmetPrerequisites(campaign, attempts);
+  if (requires.length === 0) return null;
+  const titles = requires.map((id) => deps.content.campaign(id)?.title ?? id);
+  return { requires, reason: prerequisiteReason(titles) };
+}
+
+/**
+ * The refusal for starting a campaign the household has not unlocked, or null
+ * to go ahead. The server's half of the lock: the lobby only shows it, so this
+ * is what actually stops a locked start, whichever intent asked for it.
+ */
+export async function lockedRefusal(
+  campaign: Campaign,
+  householdId: string,
+  deps: HandlerDeps,
+): Promise<string | null> {
+  if (!campaign.requires?.length) return null;
+  const lock = campaignLock(campaign, await deps.repo.listCampaignProgress(householdId), deps);
+  return lock ? `"${campaign.title}" is locked: ${lock.reason}` : null;
+}
+
+/**
  * The campaigns a lobby can play (`RunState.campaignOptions`): the one the room
  * was opened for, then every other campaign this household has part-way
  * through, most recently played first — so a party that started something on
@@ -455,7 +494,9 @@ export async function lobbyCampaigns(
   const featured = featuredId ? deps.content.campaign(featuredId) : null;
   if (featured) {
     const attempt = attempts.find((a) => a.campaignId === featured.id) ?? null;
-    options.push(campaignView(featured, attempt, deps));
+    // A locked campaign is still offered: shown with its reason, not startable.
+    const locked = campaignLock(featured, attempts, deps);
+    options.push({ ...campaignView(featured, attempt, deps), ...(locked ? { locked } : {}) });
   }
   const resumable = attempts
     .filter((a) => a.status === "active" && a.campaignId !== featured?.id)
