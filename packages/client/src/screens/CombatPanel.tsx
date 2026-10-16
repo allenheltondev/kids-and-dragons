@@ -100,6 +100,7 @@ import {
   CLOCK_ICON,
   EXIT_ICON,
   clockLine,
+  environmentBeatLine,
   exitLine,
   hazardIcon,
   hazardLine,
@@ -1198,36 +1199,23 @@ export function describeBeats(
       case "encore":
         out.push({ key, text: `${name(event.actorId)} ${name(event.actorId) === "You" ? "get" : "gets"} another action!`, tone: "good" });
         return;
-      // The place fighting back (#201).
-      case "hazard": {
-        const who = name(event.actorId);
-        out.push({
-          key,
-          text: `${event.label} ${who === "You" ? "burns you" : `hurts ${who}`}!`,
-          tone: isParty(encounter, event.actorId) ? "bad" : "good",
-        });
-        return;
-      }
-      case "escaped": {
-        const who = name(event.actorId);
-        out.push({ key, text: `${who} ${who === "You" ? "step" : "steps"} through the rift!`, tone: "good" });
-        return;
-      }
+      // The place fighting back (#201): words shared with the TV's rift
+      // caption (environment-copy.ts), so the two never drift.
+      case "hazard":
+      case "escaped":
       case "freed":
-        out.push({ key, text: `${name(event.byId)} freed ${captiveName(encounter)}!`, tone: "good" });
-        return;
       case "captiveLost":
-        out.push({ key, text: `${captiveName(encounter)} is lost to the rift.`, tone: "bad" });
-        return;
       case "relocated":
-        out.push({ key, text: `The rift throws ${name(event.actorId)} somewhere new!`, tone: "plain" });
-        return;
       case "riftClock":
-        out.push({ key, text: event.onExpire === "collapse" ? "The rift is closing!" : "The rift is surging!", tone: "bad" });
+      case "surge": {
+        const line = environmentBeatLine(event, {
+          name,
+          isParty: (id) => isParty(encounter, id),
+          captive: captiveName(encounter),
+        });
+        if (line) out.push({ key, ...line });
         return;
-      case "surge":
-        out.push({ key, text: `The rift surges: everyone still here loses ${event.amount}.`, tone: "bad" });
-        return;
+      }
       case "moved":
       case "walled":
         return;
