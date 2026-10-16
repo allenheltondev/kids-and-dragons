@@ -273,6 +273,18 @@ const GLYPHS: Record<string, ReactElement> = {
       <path d="M9 8v3m8-7v4m-2-2h4" />
     </g>
   ),
+
+  // --- Riftlight (#229) --------------------------------------------------
+  // The Starweaver's menu indicator: a lens of light with rays. Placeholder
+  // until the painted icon lands (brief Part A2); like that icon it is drawn
+  // in `currentColor`, never a palette colour, so it hints at no rule.
+  riftlight_indicator: (
+    <g {...S}>
+      <path d="M12 3c3.5 4 3.5 14 0 18-3.5-4-3.5-14 0-18Z" />
+      <path d="M4 7.5l2.5 1.5M20 7.5l-2.5 1.5M4 16.5l2.5-1.5M20 16.5l-2.5-1.5" />
+      <circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none" />
+    </g>
+  ),
 };
 
 /**
