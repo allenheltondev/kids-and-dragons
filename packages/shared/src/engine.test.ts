@@ -2472,8 +2472,8 @@ describe("SET_MODE", () => {
 });
 
 describe("the end of a chapter", () => {
-  it("ADVANCE returns the party to the lobby rather than doing nothing", () => {
-    const context = ctx();
+  /** The fixture chapter, played to its end by a party of two. */
+  function toChapterEnd(context: EngineContext): RunState {
     const start = walk(
       seatedParty(context),
       [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: makeChapter().id } }],
@@ -2513,7 +2513,12 @@ describe("the end of a chapter", () => {
       }
     }
     expect(state.phase).toBe("chapter_complete");
+    return state;
+  }
 
+  it("ADVANCE returns the party to the lobby rather than doing nothing", () => {
+    const context = ctx();
+    const state = toChapterEnd(context);
     const result = applyIntent(state, { playerId: "p_1", intent: { type: "ADVANCE" } }, context);
     expect(result.error).toBeUndefined();
 
@@ -2524,6 +2529,43 @@ describe("the end of a chapter", () => {
     expect(result.state.prompt).toBeNull();
     expect(result.state.party).toHaveLength(2);
     expect(result.state.party.every((m) => !m.ready)).toBe(true);
+  });
+
+  it("leaves for the lobby only once everyone still reading has said they're done", () => {
+    const context = ctx();
+    const ended = toChapterEnd(context);
+    // The vote starts from nobody, whatever was readied during the chapter.
+    expect(ended.party.every((m) => !m.ready)).toBe(true);
+
+    const one = applyIntent(ended, { playerId: "p_1", intent: { type: "READY", ready: true } }, context);
+    expect(one.error).toBeUndefined();
+    // p_2 is still on the summary: one phone's tap must not take it away.
+    expect(one.state.phase).toBe("chapter_complete");
+    expect(one.state.chapterId).not.toBeNull();
+
+    const changedMind = applyIntent(one.state, { playerId: "p_1", intent: { type: "READY", ready: false } }, context);
+    expect(changedMind.state.phase).toBe("chapter_complete");
+    expect(changedMind.state.party.every((m) => !m.ready)).toBe(true);
+
+    const both = walk(
+      one.state,
+      [{ playerId: "p_2", intent: { type: "READY", ready: true } }],
+      context,
+    ).state;
+    expect(both.phase).toBe("lobby");
+    expect(both.chapterId).toBeNull();
+    expect(both.party.every((m) => !m.ready)).toBe(true);
+  });
+
+  it("does not wait on a phone that has dropped off", () => {
+    const context = ctx();
+    const ended = toChapterEnd(context);
+    const gone = {
+      ...ended,
+      party: ended.party.map((m) => (m.playerId === "p_2" ? { ...m, connected: false } : m)),
+    };
+    const left = applyIntent(gone, { playerId: "p_1", intent: { type: "READY", ready: true } }, context);
+    expect(left.state.phase).toBe("lobby");
   });
 });
 
