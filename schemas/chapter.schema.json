@@ -40,6 +40,10 @@
       "type": "string",
       "pattern": "^[a-z][a-z0-9_]*$"
     },
+    "music": {
+      "description": "Optional track that replaces the biome's music for this chapter. A scene's own `music` wins over it. Absent means the biome's track.",
+      "$ref": "#/$defs/musicTrack"
+    },
     "estimatedMinutes": {
       "description": "A chapter is one sitting: ~30 minutes, spec \u00a73 of the design principles.",
       "type": "integer",
@@ -159,6 +163,11 @@
     "sceneId": {
       "type": "string",
       "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "musicTrack": {
+      "description": "A MUSIC_SPECS key in packages/client/src/audio/paths.ts. Membership is validated by tools/content/validate.mjs.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
     },
     "itemId": {
       "type": "string",
@@ -922,6 +931,9 @@
           "type": "string",
           "minLength": 1
         },
+        "music": {
+          "$ref": "#/$defs/musicTrack"
+        },
         "narration": {
           "type": "string",
           "minLength": 1
@@ -971,6 +983,9 @@
         "art": {
           "type": "string",
           "minLength": 1
+        },
+        "music": {
+          "$ref": "#/$defs/musicTrack"
         },
         "stat": {
           "$ref": "#/$defs/statId"
@@ -1038,6 +1053,9 @@
           "type": "string",
           "minLength": 1
         },
+        "music": {
+          "$ref": "#/$defs/musicTrack"
+        },
         "narration": {
           "type": "string",
           "minLength": 1
@@ -1091,6 +1109,9 @@
         "art": {
           "type": "string",
           "minLength": 1
+        },
+        "music": {
+          "$ref": "#/$defs/musicTrack"
         },
         "narration": {
           "type": "string",
@@ -1151,6 +1172,9 @@
         "art": {
           "type": "string",
           "minLength": 1
+        },
+        "music": {
+          "$ref": "#/$defs/musicTrack"
         },
         "narration": {
           "type": "string",
