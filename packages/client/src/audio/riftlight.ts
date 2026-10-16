@@ -57,3 +57,25 @@ function arrangement(id: (typeof RIFT_MUSIC_IDS)[number]): ProceduralSound {
 export function riftlightMusic(): ProceduralSound[] {
   return RIFT_MUSIC_IDS.map(arrangement);
 }
+
+/** The same tune remembered slowly, with gently misplaced beats. */
+export function riftlightFinale(): ProceduralSound {
+  const voices: Voice[] = [];
+  const pitch = (step: number) => 146.8324 * 2 ** (step / 12);
+  for (let phrase = 0; phrase < 3; phrase++) {
+    const at = phrase * 15;
+    for (const [i, step] of [0, 7, 14].entries()) voices.push({
+      at, duration: 15, freq: pitch(step) / 2, gain: 0.045,
+      swell: true, pan: (i - 1) * 0.25, vibrato: [0.23, 4],
+      partials: [[1, 1], [2, 0.12]],
+    });
+    for (const [i, step] of RIFT_MOTIF.entries()) voices.push({
+      at: at + 2 + [0, 1.7, 3.2, 5.4, 7.0][i]!, duration: 3.3,
+      freq: pitch(step), gain: 0.075, attack: 0.2, swell: true,
+      vibrato: [3.2, 6], pan: phrase % 2 ? -0.12 : 0.12,
+      partials: [[1, 1], [2, 0.17], [3, 0.035]],
+    });
+  }
+  return { id: "riftlight-finale", label: "Riftlight finale", group: "Music",
+    ...MUSIC_SPECS["riftlight-finale"]!, loop: true, voices, echo: 0.16 };
+}

@@ -1,0 +1,24 @@
+[
+  {
+    "id": "anchor",
+    "seconds": 2,
+    "sampleRate": 24000,
+    "loop": false,
+    "bytes": 15100,
+    "peak": 0.48359787464141846,
+    "rms": 0.11999860597402641,
+    "seam": 0,
+    "voices": 3
+  },
+  {
+    "id": "riftlight-finale",
+    "seconds": 45,
+    "sampleRate": 24000,
+    "loop": true,
+    "bytes": 594518,
+    "peak": 0.2480429708957672,
+    "rms": 0.055000000001134294,
+    "seam": 0.0000011300971891614608,
+    "voices": 24
+  }
+]

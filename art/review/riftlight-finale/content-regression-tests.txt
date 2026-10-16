@@ -1,0 +1,13 @@
+
+> kids-and-dragons@0.0.0 test
+> vitest run --maxWorkers=1 tools/content/validate.test.mjs -t story cast|music override
+
+
+ RUN  v4.1.10 C:/Users/allen/.codex/worktrees/riftlight-part-a/kids-and-dragons
+
+
+ Test Files  1 passed (1)
+      Tests  6 passed | 78 skipped (84)
+   Start at  12:24:17
+   Duration  11.01s (transform 55ms, setup 0ms, import 98ms, tests 10.59s, environment 0ms)
+

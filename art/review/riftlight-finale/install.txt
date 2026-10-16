@@ -1,0 +1,6 @@
+
+> kids-and-dragons@0.0.0 audio:install
+> tsx tools/audio/procedural-install.ts --only=riftlight-finale
+
+riftlight-finale: 594518 bytes
+Total: 0.57 MiB

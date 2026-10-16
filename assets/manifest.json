@@ -2105,7 +2105,8 @@
     "scenes/riftlight/cairnstep",
     "scenes/riftlight/buried-bridge",
     "scenes/riftlight/temple-island-squall",
-    "scenes/riftlight/stuttering-flats"
+    "scenes/riftlight/stuttering-flats",
+    "scenes/riftlight/glacier-deep-ice"
   ],
   "$castFiguresComment": "Named story characters' own figures, drawn on the story stage opposite the party (content `cast`, docs/briefs/story-cast-art.md). Same contract as entities: assets/cast/<id>/assembled.png, 1024x1024 RGBA, one complete cutout standing on the canvas origin (feet at y=900), facing left toward the party. `basis` is the entity or species the character is one of; `scale` is how big they stand, in the entities' scale words. verify.py checks each entry.",
   "castFigures": [
@@ -2576,6 +2577,12 @@
       "name": "Saltrot guide",
       "basis": "skupper",
       "scale": "small_to_medium"
+    },
+    {
+      "id": "deep-ice-figure",
+      "name": "Deep-ice figure",
+      "basis": "faun",
+      "scale": "very_large"
     },
     {
       "id": "skywarden_griffin",

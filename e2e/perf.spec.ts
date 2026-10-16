@@ -238,16 +238,19 @@ test("the scenes ahead are on a phone showing the world before the party reaches
 
     // Looking at the world (the only screen in Phone Mode draws it when shown)…
     // The scene's prompt turns the phone to its controls when it arrives, so
-    // the tap is repeated until the world stays up.
+    // A server scene can arrive before its prompt reaches this client. That
+    // prompt may turn the phone back to You after the first successful tap,
+    // cancelling the idle prefetch. Keep World selected throughout the cache
+    // wait, rather than assuming one aria-pressed check settled the transition.
     const world = phone.getByRole("button", { name: /^world$/i });
-    await expect(async () => {
-      await world.click({ timeout: 2_000 });
-      await expect(world).toHaveAttribute("aria-pressed", "true", { timeout: 1_000 });
-    }).toPass(TAP);
     // …nobody has gone there yet, and its art is already saved.
     for (const url of expected) {
       await expect
-        .poll(() => phone.evaluate(async (target) => (await caches.match(target, { ignoreSearch: true })) !== undefined, url), {
+        .poll(async () => {
+          if (await world.getAttribute("aria-pressed") !== "true") await world.click({ timeout: 2_000 });
+          return await world.getAttribute("aria-pressed") === "true" &&
+            await phone.evaluate(async (target) => (await caches.match(target, { ignoreSearch: true })) !== undefined, url);
+        }, {
           timeout: 20_000,
           message: `${url} was not fetched ahead`,
         })
