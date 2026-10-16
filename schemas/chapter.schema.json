@@ -787,6 +787,39 @@
               "maximum": 5
             }
           }
+        },
+        "rift": {
+          "$comment": "#220 how this creature fights in a place that fights back. Read only in a fight with an environment.",
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "ignores": {
+              "description": "Hazard kinds that do nothing to it; it stops on them freely.",
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "fire",
+                  "thorns",
+                  "rift"
+                ]
+              }
+            },
+            "post": {
+              "description": "What it watches with nobody to hit: always the way out, always a captive, or never anything.",
+              "enum": [
+                "exit",
+                "captive",
+                "none"
+              ]
+            },
+            "shoves": {
+              "description": "At its turn's end, shoves a hero beside it one square onto the active hazard behind them, which bites them then.",
+              "const": true
+            }
+          }
         }
       }
     },
@@ -1539,14 +1572,13 @@
           ]
         },
         "relocate": {
-          "description": "The rift moves a monster: at the start of `round`, enemy `<spec id>#<n>` goes to `to`, if it still stands and the tile is free.",
+          "description": "The rift moves a monster: at the start of `round`, or (#220 `whenHurt`) of the first round it has half its hearts or fewer, enemy `<spec id>#<n>` goes to `to`, if it still stands and the tile is free. Exactly one of round and whenHurt (content:validate).",
           "type": "array",
           "minItems": 1,
           "items": {
             "type": "object",
             "additionalProperties": false,
             "required": [
-              "round",
               "enemy",
               "to"
             ],
@@ -1561,6 +1593,9 @@
               },
               "to": {
                 "$ref": "#/$defs/mapTile"
+              },
+              "whenHurt": {
+                "const": true
               }
             }
           }
@@ -1906,7 +1941,6 @@
                   "type": "object",
                   "additionalProperties": false,
                   "required": [
-                    "round",
                     "enemy",
                     "to"
                   ],
@@ -1921,6 +1955,9 @@
                     },
                     "to": {
                       "$ref": "#/$defs/mapTile"
+                    },
+                    "whenHurt": {
+                      "const": true
                     }
                   }
                 }

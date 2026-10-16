@@ -395,6 +395,35 @@ export interface EnemySpec {
    * count again.
    */
   retaliation?: { slow: SlowEffect; puffTurns?: number };
+  /**
+   * How this creature fights in a place that fights back (#220) — the
+   * "second sentence for a specific creature" enemy-ai.ts leaves the door
+   * open for. Read only in a fight with an `environment`; anywhere else it
+   * fights exactly as if it were not written.
+   */
+  rift?: RiftBehavior;
+}
+
+/**
+ * A creature's own way with the place (#220). Each is a sentence a child can
+ * learn by watching: "the salamander walks through fire", "the gatekeeper
+ * always guards the way out", "the bramble-troll shoves you into the thorns".
+ */
+export interface RiftBehavior {
+  /** Ground it does not mind: hazards of these kinds do nothing to it, and it stops on them freely. */
+  ignores?: EnvironmentHazard["kind"][];
+  /**
+   * What it watches when it has nobody to hit: always the way out, always a
+   * captive, or never anything (it only ever goes for the heroes). Absent:
+   * whichever the board gives it (the nearest monster to each, enemy-ai.ts).
+   */
+  post?: "exit" | "captive" | "none";
+  /**
+   * At the end of its turn, a hero beside it whose far side is active
+   * hazard ground is shoved one square onto it — and the ground bites them
+   * there and then. One shove a turn, the first such hero in reading order.
+   */
+  shoves?: true;
 }
 
 /**
@@ -649,7 +678,14 @@ export interface CloseObjective extends ObjectiveBase {
  * if it is still standing and the tile is free.
  */
 export interface EnemyRelocation {
-  round: number;
+  /** At the start of this round (2 or later). Exactly one of `round` and `whenHurt`. */
+  round?: number;
+  /**
+   * Instead of a round (#220): at the start of the first round in which the
+   * monster has half its hearts or fewer, the rift pulls it away — it picks
+   * its moment. Once, and only if the tile is free then.
+   */
+  whenHurt?: true;
   enemy: string;
   to: MapTile;
 }

@@ -48,6 +48,7 @@ import type {
   EncounterMap,
   EndingScene,
   NarrationVariant,
+  RiftBehavior,
   Scene,
   SceneId,
 } from "./types/chapter.js";
@@ -2136,7 +2137,13 @@ function runEnemyTurns(draft: RunState, ctx: EngineContext): readonly EncounterE
       // turn with zero steps, and a plan drawn against the full budget would
       // walk to a tile `moveTo` then refuses — and swing at a hero it never
       // actually reached.
-      enemy: { id: actor.id, at: positionOfActor(encounter, actor.id), steps: encounter.stepsLeft },
+      enemy: {
+        id: actor.id,
+        at: positionOfActor(encounter, actor.id),
+        steps: encounter.stepsLeft,
+        // Its own way with the place (#220), only where it has one.
+        ...(actor.rift ? { rift: actor.rift } : {}),
+      },
       // A hero through a rift exit (#201) is off the board, and no target.
       party: encounter.combatants
         .filter((c) => c.side === "party" && !c.escaped)
@@ -2157,6 +2164,7 @@ function runEnemyTurns(draft: RunState, ctx: EngineContext): readonly EncounterE
               spec: encounter.environment.spec,
               round: encounter.round,
               ...(encounter.environment.rescue ? { rescue: encounter.environment.rescue } : {}),
+              ...riftBehaviors(encounter),
             },
           }
         : {}),
@@ -2188,6 +2196,13 @@ function runEnemyTurns(draft: RunState, ctx: EngineContext): readonly EncounterE
 
   draft.encounter = encounter;
   return events;
+}
+
+/** Every monster's `rift` behaviour (#220), by id — or nothing, when none has one. */
+function riftBehaviors(encounter: EncounterState): { behaviors?: Record<string, RiftBehavior> } {
+  const behaviors: Record<string, RiftBehavior> = {};
+  for (const c of encounter.combatants) if (c.side === "enemy" && c.rift) behaviors[c.id] = c.rift;
+  return Object.keys(behaviors).length > 0 ? { behaviors } : {};
 }
 
 /** The map the scene in play names. Only called where the scene is an encounter. */

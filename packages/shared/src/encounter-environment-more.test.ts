@@ -405,3 +405,62 @@ describe("an environment keyed on world facts (#220)", () => {
     expect(checkEncounterEnvironment({ enemies: [WISP], environment: BASE })).toEqual([]);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Creatures with their own way with the place, and monsters that use it
+// ---------------------------------------------------------------------------
+
+describe("a creature's rift behaviour (#220)", () => {
+  const FIRE = { id: "fire", kind: "fire" as const, label: "Rift fire", tiles: [{ x: 3, y: 3 }, { x: 9, y: 3 }], damage: 2 };
+
+  it("rides on the combatant only in a fight with an environment", () => {
+    const salamander: EnemySpec = { ...WISP, rift: { ignores: ["fire"] } };
+    const enemies = [{ spec: salamander, at: { x: 9, y: 3 } }];
+    expect(combatantById(begin({ hazards: [FIRE] }, enemies), "wisp#1")!.rift).toEqual({ ignores: ["fire"] });
+    expect(combatantById(begin(undefined, enemies), "wisp#1")).not.toHaveProperty("rift");
+  });
+
+  it("ignores: ground of that kind does nothing to it", () => {
+    const salamander: EnemySpec = { ...WISP, rift: { ignores: ["fire"] } };
+    const ended = endTurnWithEvents(until(begin({ hazards: [FIRE] }, [{ spec: salamander, at: { x: 9, y: 3 } }]), "wisp#1"));
+    expect(ended.events).toEqual([]);
+    expect(combatantById(ended.state, "wisp#1")!.hp).toBe(WISP.hp);
+  });
+
+  it("shoves: a hero beside it with fire behind them goes into the fire, and it bites", () => {
+    const troll: EnemySpec = { ...WISP, rift: { shoves: true } };
+    let state = begin({ hazards: [FIRE] }, [{ spec: troll, at: { x: 5, y: 3 } }]);
+    state = until(endTurnWithEvents(walk(state, { x: 4, y: 3 })).state, "wisp#1");
+    const before = combatantById(state, "c_a")!.hp;
+    const ended = endTurnWithEvents(state);
+    expect(ended.events).toEqual([
+      { type: "shoved", actorId: "c_a", to: { x: 3, y: 3 } },
+      { type: "hazard", actorId: "c_a", hazardId: "fire", label: "Rift fire" },
+      { type: "damage", actorId: "c_a", amount: 2, hp: before - 2 },
+    ]);
+  });
+
+  it("whenHurt: the rift pulls a monster away the first round it starts at half its hearts or fewer, once", () => {
+    const env: EncounterEnvironment = { relocate: [{ whenHurt: true, enemy: "wisp#1", to: { x: 9, y: 0 } }] };
+    let state = begin(env);
+    const events: EncounterEvent[] = [];
+    state = until(endTurnWithEvents(state).state, "c_a", events);
+    expect(types(events)).not.toContain("relocated");
+    state = { ...state, combatants: state.combatants.map((c) => (c.id === "wisp#1" ? { ...c, hp: 3 } : c)) };
+    events.length = 0;
+    state = until(endTurnWithEvents(state).state, "c_a", events);
+    expect(events).toContainEqual({ type: "relocated", actorId: "wisp#1", to: { x: 9, y: 0 } });
+    expect(state.environment!.relocated).toEqual([0]);
+    // Walked back down, it is not pulled again.
+    events.length = 0;
+    until(endTurnWithEvents(state).state, "c_a", events);
+    expect(types(events)).not.toContain("relocated");
+  });
+
+  it("the check wants exactly one of round and whenHurt", () => {
+    const scene = (move: object) => ({ enemies: [WISP], environment: { relocate: [{ enemy: "wisp#1", to: { x: 5, y: 5 }, ...move }] } as EncounterEnvironment });
+    expect(checkEncounterEnvironment(scene({ whenHurt: true }))).toEqual([]);
+    expect(checkEncounterEnvironment(scene({})).map((p) => p.path)).toEqual(["/environment/relocate/0"]);
+    expect(checkEncounterEnvironment(scene({ round: 2, whenHurt: true })).map((p) => p.path)).toEqual(["/environment/relocate/0"]);
+  });
+});

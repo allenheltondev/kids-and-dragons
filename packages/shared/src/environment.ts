@@ -73,6 +73,8 @@ export interface EnvironmentState {
    * turns spent closing. Present exactly when the spec has `objectives`.
    */
   readonly objectives?: readonly number[];
+  /** The `whenHurt` relocations already done (#220), by index: each happens once. */
+  readonly relocated?: readonly number[];
 }
 
 /** The bounds the checker holds an authored environment to. */
@@ -760,6 +762,10 @@ function checkResolved(
   }
   (env.relocate ?? []).forEach((move, i) => {
     const at = `/environment/relocate/${i}`;
+    if ((move.round === undefined) === (move.whenHurt === undefined)) {
+      fail(at, 'needs exactly one of "round" and "whenHurt"');
+    }
+    if (move.whenHurt !== undefined && move.whenHurt !== true) fail(`${at}/whenHurt`, "is true or absent");
     roundOk(move.round, `${at}/round`, 2);
     if (lastRound !== null && isInt(move.round) && move.round > lastRound) {
       fail(`${at}/round`, `round ${move.round} never starts — the clock collapses the fight at the end of round ${lastRound}`);

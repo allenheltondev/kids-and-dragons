@@ -79,7 +79,7 @@ import {
 import type { Rng } from "./dice.js";
 import { resolveAttack, rollD20 } from "./dice.js";
 import type { ItemEffect, ResolvedCharacter, RulesContent, StatId } from "./types/domain.js";
-import type { EncounterEnvironment, EnemySpec } from "./types/chapter.js";
+import type { EncounterEnvironment, EnemySpec, RiftBehavior } from "./types/chapter.js";
 import type { DiceRoll } from "./types/state.js";
 import type { CombatBuff, SlowEffect } from "./types/buffs.js";
 import { DEFAULT_PUFF_TURNS, applyNumbed, buffBonus, buffed, tickCombatBuffs } from "./buffs.js";
@@ -492,6 +492,12 @@ export interface Combatant {
    * without an environment, which is every fight before #201.
    */
   readonly escaped?: true;
+  /**
+   * How this monster fights in a place that fights back (#220), copied from
+   * `EnemySpec.rift` — only in a fight with an environment, so every other
+   * fight's combatants carry no such key.
+   */
+  readonly rift?: RiftBehavior;
 }
 
 export interface EncounterState {
@@ -857,6 +863,8 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
             },
           }
         : {}),
+      // A creature's way with the place (#220): only where there is a place.
+      ...(spec.rift && setup.environment ? { rift: structuredClone(spec.rift) } : {}),
     });
     actors.push({ id, side: "enemy", x: placement.at.x, y: placement.at.y });
     seats.push({ id, side: "enemy", quick: enemyQuick(spec) });
@@ -2181,11 +2189,13 @@ function turnEndInEnvironment(
   if (actor.side === "party") working = advanceObjectives(working, (o) => o.kind === "close" && stepsBetween(at, o.at) <= 1, events, actorId);
 
   // Stopping on the fire. Damage first; what it knocks down stays put (#220).
+  // A creature that does not mind this ground (`rift.ignores`) is untouched.
   const hazard = hazardAt(spec, working.round, at);
-  if (hazard) {
-    events.push({ type: "hazard", actorId, hazardId: hazard.id, label: hazard.label });
-    if (hazard.damage !== undefined) working = loseHp(working, actorId, hazard.damage, events);
-    if (!combatantById(working, actorId)?.down) working = hinderInEnvironment(working, actorId, hazard, events);
+  if (hazard && !actor.rift?.ignores?.includes(hazard.kind)) working = biteInEnvironment(working, actorId, hazard, events);
+
+  // A shover (#220) puts a hero beside it onto the hazard behind them.
+  if (actor.side === "enemy" && actor.rift?.shoves && !combatantById(working, actorId)?.down) {
+    working = shoveIntoHazard(working, actorId, at, events);
   }
 
   // Stepping through. Only a hero, only standing, only while it is open.
@@ -2208,6 +2218,45 @@ function turnEndInEnvironment(
     };
   }
   return working;
+}
+
+/** A hazard biting the figure on it: its beat, its damage, then what else it does (#201, #220). */
+function biteInEnvironment(
+  state: EncounterState,
+  actorId: ActorId,
+  hazard: NonNullable<ReturnType<typeof hazardAt>>,
+  events: EncounterEvent[],
+): EncounterState {
+  let working = state;
+  events.push({ type: "hazard", actorId, hazardId: hazard.id, label: hazard.label });
+  if (hazard.damage !== undefined) working = loseHp(working, actorId, hazard.damage, events);
+  if (!combatantById(working, actorId)?.down) working = hinderInEnvironment(working, actorId, hazard, events);
+  return working;
+}
+
+/**
+ * `rift.shoves` (#220): the first standing hero beside the monster, in
+ * reading order, whose square straight beyond (away from the monster) is
+ * open, active hazard ground goes one square onto it, and it bites them now
+ * — they did not choose to stop there, but they are standing in it.
+ */
+function shoveIntoHazard(state: EncounterState, actorId: ActorId, at: Position, events: EncounterEvent[]): EncounterState {
+  const spec = state.environment?.spec;
+  if (!spec) return state;
+  const heroes = partyMembers(state)
+    .filter((c) => !c.down && !c.escaped)
+    .map((c) => ({ id: c.id, at: positionOf(state, c.id) }))
+    .filter((h): h is { id: ActorId; at: Position } => h.at !== null && areAdjacent(at, h.at))
+    .sort((a, b) => a.at.y - b.at.y || a.at.x - b.at.x);
+  for (const hero of heroes) {
+    const beyond = { x: hero.at.x + Math.sign(hero.at.x - at.x), y: hero.at.y + Math.sign(hero.at.y - at.y) };
+    const hazard = hazardAt(spec, state.round, beyond);
+    if (!hazard || !isOpen(state.board, beyond)) continue;
+    let working = slide(state, hero.id, beyond.x - hero.at.x, beyond.y - hero.at.y, 1, events);
+    working = biteInEnvironment(working, hero.id, hazard, events);
+    return working;
+  }
+  return state;
 }
 
 /**
@@ -2325,14 +2374,22 @@ function roundStartInEnvironment(
     }
   }
 
-  for (const move of spec.relocate ?? []) {
-    if (move.round !== round) continue;
+  (spec.relocate ?? []).forEach((move, i) => {
     const enemy = combatantById(working, move.enemy);
-    if (!enemy || enemy.side !== "enemy" || enemy.down || !positionOf(working, enemy.id)) continue;
-    if (!isOpen(working.board, move.to)) continue;
+    if (!enemy || enemy.side !== "enemy" || enemy.down || !positionOf(working, enemy.id)) return;
+    // A monster that picks its moment (#220): the first round it starts at
+    // half its hearts or fewer, once.
+    const due = move.whenHurt
+      ? round >= 2 && enemy.hp * 2 <= enemy.maxHp && !(working.environment?.relocated ?? []).includes(i)
+      : move.round === round;
+    if (!due || !isOpen(working.board, move.to)) return;
     working = { ...working, board: moveActor(working.board, enemy.id, move.to) };
+    if (move.whenHurt) {
+      const env = working.environment!;
+      working = { ...working, environment: { ...env, relocated: [...(env.relocated ?? []), i] } };
+    }
     events.push({ type: "relocated", actorId: enemy.id, to: { x: move.to.x, y: move.to.y } });
-  }
+  });
   return working;
 }
 
