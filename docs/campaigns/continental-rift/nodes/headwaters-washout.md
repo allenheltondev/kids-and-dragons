@@ -24,7 +24,7 @@ A gravel bar, shore signal or environmental opportunity is the final active esca
 ### Odds, abilities and harm — agreed
 - **Spread:** roughly **40% early, 40% middle, 20% late**, so the river's content is actually played. (A party-best roller at TN 12 on stage 1 succeeds about 90% of the time at Sworn and hides the rest.)
 - **Species abilities lower that stage's TN one step** (16→12, 12→8) and never succeed outright. Each species gets its option at one stage. Griffin and dragonling wings are soaked: they can lift a friend, not the whole party. Bigfoot's Smash breaks off an ice handhold.
-- **Harm:** 1 damage per failed stage, the standard scene damage, so at most 3 against 10+ HP; nobody is knocked down by the river. No items are lost (content rules forbid permanent loss).
+- **Harm:** 1 damage per failed stage, the standard scene damage, **only to anyone above 1 HP**: the river never knocks anyone down, whatever their health going in. Ossley's rescue heals. Story `damage` on `main` can take someone to 0 HP and down them, so this needs either a non-lethal damage option (a floor of 1 HP) or chapter gating on HP; it is a small engine follow-up. Playtest with a party member at 1–3 HP. No items are lost (content rules forbid permanent loss).
 - **Ossley's rescue** comes with a **Supper Bundle** (heal 1) and his line "When I'm going your way."
 
 ### The rift under pressure — agreed

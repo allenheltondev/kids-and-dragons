@@ -58,7 +58,7 @@ The river's multiple escape opportunities are **stages within one authored encou
 | Prologue: exchange, glacier, departure, the traverse / washout / hidden-rift branches | ~10 | 4–6 |
 | Three strands, ~4 nodes each | ~12 | 6–8 (two strands) |
 | Convergence + finale | 2 | 2 |
-| **Total** | **~24** | **12–16** (12 is the shortest valid route; XP is sized against it, [story.md](story.md)) |
+| **Total** | **~24** | **11–16** (11 is the shortest valid route; XP is sized against it, [story.md](story.md)) |
 
 ### How the prologue feeds the strands
 - **Wandering Sky:** the washout rift; the Cairnstep (griffins trade weather news with the Sky Islands by flag signal).
@@ -92,11 +92,11 @@ Sky Islands, kitsune and cloud whales; teaches **linked**. Entered by the washou
 | Node | What happens | Canon it uses |
 | --- | --- | --- |
 | `sky-islands-arrival` | The party lands on a drifting island **hanging in the wrong part of the sky**; kitsune temple keepers take them in. Two variants: through the rift (no way back), or flown over by the Cairnstep griffins repaying a pass-ledger debt. | Kitsune as the islands' people; griffins trading weather news with the islands by flag signal |
-| `whale-road` | Cloud whales circle, confused, between **two rifts that pulse together** (teaches *linked*). A gentle problem, not a fight: guide the whales clear. **One rift of the pair opens onto the Coast**: the sideways exit. | Cloud whales as semi-sapient navigators, never enemies or mounts; whether the islands follow the whales stays unsettled |
+| `whale-road` | Cloud whales circle, confused, between **two rifts that pulse together** (teaches *linked*). A gentle problem, not a fight: guide the whales clear. **One rift of the pair opens onto the Coast**: the sideways exit. The pair is **green + blue**: a linked pair, `persistent: true`, `opensWhen: { flag: whales_guided }`, so it stays dormant until the whales are clear, and the Sky teaches green too. | Cloud whales as semi-sapient navigators, never enemies or mounts; whether the islands follow the whales stays unsettled |
 | `the-island-due-back` (**key node**) | The kitsune have long recorded an island "due back", and it arrives, pulled by Corvane. Its old mooring stone is carved with **the land below as it once lay**: this strand's Pangea fragment. | The island that is "due back" |
 | `squall-temple` (**strand end**) | The returning island drifts toward a temple island in a storm. A fight among displaced creatures with more than one good outcome (#201): push the island clear, or shelter the temple and let it settle. **Bone crawlers** pulled up from the Bone Yard swarm the rift's fresh magic. | Bone crawlers swarming fresh magic |
 
-- **Lady Olivia appears here,** studying the linked pair, and asks the party to help her hold both rifts open "to see what they can do". The answer sets a trust flag that feeds her epilogue, beside the Bram and Pip flags.
+- **Lady Olivia appears here,** studying the dormant pair, and offers a shortcut: **help her force it open now**, before the whales are clear. It is a rift action `open` way ("Lady Olivia's way") offered while `whales_guided` is unset. Forcing it opens the pair at once, sets her trust flag, and scatters the whales (journey state `whales_scattered`, which `the-island-due-back` reads: the kitsune have lost their best sign of where the island is coming in). Refusing means guiding the whales the gentle way, which opens it on its own. Forcing only meets the rift's condition early; its rules never change. The trust flag feeds her epilogue, beside the Bram and Pip flags.
 - **First strand entered:** Seren teaches Attune at `sky-islands-arrival`; Pip is here scouting.
 - **Exits:** the linked rift at `whale-road` → the Coast; from `squall-temple` the griffins fly the party back down to the Cairnstep, toward Forgotten Paths.
 - **Each class has a moment:** Starweaver reads the linked pulse; Songkeeper calms the whales; Duskrunner leaps between drifting islands; Thornguard braces the temple in the squall. Kitsune players get Beguile with the temple keepers; griffin players get Skyward.
@@ -125,7 +125,7 @@ The Sallow Wastelands (the Saltrot), Saltrot guides, the Bone Yard and displaced
 | --- | --- |
 | `kind: "return"` | `hidden-glacier-rift` → `riftseekers-departure` |
 | The glacier rift (blue): a linked pair, `persistent` | `saltrot-arrival` ↔ `hidden-glacier-rift` |
-| The Sky↔Coast rift: a linked pair | `whale-road` ↔ `saltrot-arrival` |
+| The Sky↔Coast rift (green + blue): a linked pair, `persistent`, `opensWhen: whales_guided` | `whale-road` ↔ `saltrot-arrival` |
 | The griffins | `squall-temple` → `cairnstep-pass` |
 | Ossley's ferry | `saltrot-arrival` ↔ `ashspan-bridge` |
 | The road | `stone-counters` ↔ `ashspan-bridge` (both ways, so the late washout exit reaches Forgotten Paths) |
