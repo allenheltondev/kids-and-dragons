@@ -211,9 +211,9 @@ factions:
     notes:
       - "Master Orin Vale (he/him) - methodical, patient scholar of rifts. Wants to learn why rifts exist and how they work before attempting any large intervention, and fears reckless manipulation. Studies rifts and never summons one. Gives the party its first lead and the Listening Chime."
       - "Lady Olivia (no surname; she/her) - bright, ambitious, mischievous, and stubborn. Wants to harness rift power for herself, believing that power could let her help repair the world. A nuanced rival, never simply evil and never punished; her arc resolves as ally, rival, or redeemed."
-      - "Seren Wisp - attunement specialist. Notices when one of the party is a Starweaver, and teaches Attune."
-      - "Pip Thistledown - eager scout who hero-worships Lady Olivia; players see Olivia through Pip's eyes."
-      - "Bram Lock - Orin's protective guard, skeptical of reckless experiments."
+      - "Seren Wisp (she/her) - attunement specialist. Notices when one of the party is a Starweaver, and teaches Attune."
+      - "Pip Thistledown (he/him) - eager scout who hero-worships Lady Olivia; players see Olivia through Pip's eyes."
+      - "Bram Lock (he/him) - Orin's protective guard, skeptical of reckless experiments."
       - "All five were approved for Riftlight by the project owner. Pronouns are authored only where the design states them; do not guess the rest."
     relationships:
       headquarters: []

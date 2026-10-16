@@ -12,13 +12,13 @@ Methodical, patient scholar. Wants to learn **why** rifts exist and **how** they
 **Name: Lady Olivia** (no surname). Bright, ambitious, confidently wants to **harness rift power for herself**; a nuanced, mischievous, stubborn rival, not a caricature or simply 'evil.' She believes power could enable her to help or repair the world. She may unknowingly repeat the emperor's dangerous belief that strong enough manipulation gives control. Her arc diverges on player decisions and resolves as an epilogue variant: ally, rival or redeemed ([story.md](story.md#finale-and-endings--agreed)). She is never punished.
 
 ### Supporting Riftseekers — agreed
-Campaign-only, like the rest of the fellowship (canon registration pending). None is required: each appears wherever the party is, never in one specific strand.
+Campaign-only, like the rest of the fellowship. **Not in `canon/individuals.yaml`, by decision:** that file requires a home location that owns the character, and a travelling fellowship has none. Like Gemfall's recurring Hessa and the wardens' captain, they live in each chapter's `llmHints.npcVoices`, kept consistent by `faction.riftseekers`, which records every member with pronouns. Corvane stays in `campaign.riftlight`'s creator-only constraints so his name never reaches the player-facing field guide. None is required: each appears wherever the party is, never in one specific strand.
 
 | Who | First appears | Role | Ties to |
 | --- | --- | --- | --- |
-| **Seren Wisp**, attunement specialist | The glacier departure, the third face there | If the party's Starweaver uses *Read the Riftlight*, Seren reacts in the next scene: "One of you can see it." She later **teaches Attune** in the first regional strand entered. | The Starweaver progression ([mechanics.md](mechanics.md)) |
-| **Pip Thistledown**, eager scout | The first regional strand entered, scouting the displacements | Hero-worships Lady Olivia; players see Olivia through Pip's eyes. Pip's late choice of whether to follow Olivia's summoning mirrors the party's. | Olivia's arc |
-| **Bram Lock**, protective guard, skeptical of reckless experiments | The convergence | Orin's protector. When Olivia attempts her summoning, Bram tries to stop her, and the party decides whether to help him. | The finale's choices |
+| **Seren Wisp** (she/her), attunement specialist | The glacier departure, the third face there | If the party's Starweaver uses *Read the Riftlight*, Seren reacts in the next scene: "One of you can see it." She later **teaches Attune** in the first regional strand entered. | The Starweaver progression ([mechanics.md](mechanics.md)) |
+| **Pip Thistledown** (he/him), eager scout | The first regional strand entered, scouting the displacements | Hero-worships Lady Olivia; players see Olivia through Pip's eyes. Pip's late choice of whether to follow Olivia's summoning mirrors the party's. | Olivia's arc |
+| **Bram Lock** (he/him), protective guard, skeptical of reckless experiments | The convergence | Orin's protector. When Olivia attempts her summoning, Bram tries to stop her, and the party decides whether to help him. | The finale's choices |
 
 The glacier scene stays short: Orin, Olivia and Seren, one lead, no lectures. The pairs mirror the theme without saying it: Orin and Bram understand first and go carefully; Olivia and Pip want to harness it; Seren sits between. Seren's reaction hangs off the **flag set by the Starweaver's choice**, not a class check on narration, so it needs no new engine support.
 
