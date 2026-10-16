@@ -1,0 +1,15 @@
+
+> kids-and-dragons@0.0.0 canon:bestiary
+> tsx tools/canon/bestiary.ts
+
+content\bestiary.json — 10 creatures
+  glassback_crab       brute       hp 14  guard 12  quick 1  steps 3  attack 4  xp 12
+  cinder_wolf          skirmisher  hp  6  guard 11  quick 3  steps 5  attack 3  xp 5
+  mire_mimic           lurker      hp  9  guard 13  quick 4  steps 4  attack 3  xp 8
+  frost_wyrm           sentinel    hp 20  guard 14  quick 0  steps 3  attack 4  xp 20
+  river_drake          brute       hp 14  guard 12  quick 1  steps 3  attack 4  xp 12
+  bone_crawler         skirmisher  hp  6  guard 11  quick 3  steps 5  attack 3  xp 5
+  echo_hunter          sentinel    hp 20  guard 14  quick 0  steps 3  attack 4  xp 20
+  will_o_wisp          skirmisher  hp  6  guard 11  quick 3  steps 5  attack 3  xp 5
+  restless_remains     brute       hp 14  guard 12  quick 1  steps 3  attack 4  xp 12
+  legend_dragon        legend      hp 36  guard 16  quick 2  steps 4  attack 5  xp 50

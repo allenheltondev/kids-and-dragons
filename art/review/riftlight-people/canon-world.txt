@@ -1,0 +1,5 @@
+
+> kids-and-dragons@0.0.0 canon:world
+> tsx tools/canon/world.ts
+
+canon:world — wrote content\world.json (18 places)

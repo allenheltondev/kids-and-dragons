@@ -1313,8 +1313,8 @@ biomes:
     contains_sites: [location.bone_yard]
     water_features: [feature.great_river]
     inhabitants:
-      primary_peoples: []
-      supporting_peoples: []
+      primary_peoples: [npc.skupper]
+      supporting_peoples: [npc.frogfolk]
       cultural_orders: []
       ambient_creatures: []
       dangerous_creatures: [creature.bone_crawler]

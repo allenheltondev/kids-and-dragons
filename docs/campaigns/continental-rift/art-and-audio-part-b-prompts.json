@@ -1,0 +1,120 @@
+[
+  {
+    "id": "lady_olivia",
+    "basis": "unicorn",
+    "scale": "medium",
+    "name": "Lady Olivia",
+    "prompt": "Create ONE new complete full-body story-cast cutout for Kids & Dragons on real transparent background. Reference 1 supplies the species anatomy/palette; reference 2 is approved Master Orin Vale's fellowship clothing/rendering, NOT anatomy. Match warm hand-painted children's picture-book craft, tapered warm dark brown outlines, softly painted two-tone shading, light from upper left. No photorealism, 3D, chibi or pony-fandom look. Three-quarter view FACING LEFT, relaxed and kind, complete silhouette, no lettering, no ground shadow, no background. All anatomy, feet and tail inside canvas with generous clear margins. Square canvas. Riftseeker fellowship costume: dark teal, indigo and violet practical asymmetric expedition cloak, subtle shimmering seams, SILVER FRACTURED-CIRCLE clasp (ring with a visible gap), a few resonance instruments. Lady Olivia, she/her, an adult UNICORN and ambitious friendly rival: bright confident mischievous expression, proud alert ears, bold blue horn, violet mane, very pale lavender coat with subtle star markings, all FOUR HOOVES planted, quadruped as reference 1. Give her the most striking flowing indigo-violet cloak in the fellowship, with dark teal collar, beautifully asymmetric but practical, light satchel and one resonance ring. Never sinister or sultry; no eyelashes. She must look older and self-assured while unmistakably the same species as the reference.",
+    "refs": [
+      "assets/characters/unicorn/fledgling/assembled.png",
+      "assets/cast/orin_vale/assembled.png"
+    ],
+    "source": "art/source/riftlight/lady_olivia.png",
+    "edit": {
+      "prompt": "Edit ONLY Lady Olivia's eyes in this approved cutout: remove the pointed outer eyelash/eyeliner shapes and any visible white sclera or iris ring. Give her simple solid dark warm-brown eyes with one small upper-left highlight each and a separate simple brow line conveying confident friendly curiosity. No eyelashes, eyeliner or makeup. Preserve every other pixel/design feature as closely as possible: exact anatomy, pose, cloak, fractured silver ring, horn, mane, colors, composition, and real transparency. No other additions.",
+      "ref": "lady_olivia initial generation"
+    }
+  },
+  {
+    "id": "seren_wisp",
+    "basis": "kitsune",
+    "scale": "medium",
+    "name": "Seren Wisp",
+    "prompt": "Create ONE new complete full-body story-cast cutout for Kids & Dragons on real transparent background. Reference 1 supplies the species anatomy/palette; reference 2 is approved Master Orin Vale's fellowship clothing/rendering, NOT anatomy. Match warm hand-painted children's picture-book craft, tapered warm dark brown outlines, softly painted two-tone shading, light from upper left. No photorealism, 3D, chibi or pony-fandom look. Three-quarter view FACING LEFT, relaxed and kind, complete silhouette, no lettering, no ground shadow, no background. All anatomy, feet and tail inside canvas with generous clear margins. Square canvas. Riftseeker fellowship costume: dark teal, indigo and violet practical asymmetric expedition cloak, subtle shimmering seams, SILVER FRACTURED-CIRCLE clasp (ring with a visible gap), a few resonance instruments. Seren Wisp, she/her, adult KITSUNE attunement specialist. Calm attentive listening pose, soft thoughtful brow, cream coat, vermilion crest and ruff, three large teal-tipped tails and fox anatomy exactly as reference 1. QUADRUPED with all four paws grounded. The cloak is short enough that all three tails remain clear. A set of silver resonance rings is suspended from the cloak collar and a small satchel; do not give her human hands. Kind, dignified, no trickster shorthand. Low detail density; identity is listening plus rings.",
+    "refs": [
+      "assets/characters/kitsune/fledgling/assembled.png",
+      "assets/cast/orin_vale/assembled.png"
+    ],
+    "source": "art/source/riftlight/seren_wisp.png"
+  },
+  {
+    "id": "pip_thistledown",
+    "basis": "manticore",
+    "scale": "medium",
+    "name": "Pip Thistledown",
+    "prompt": "Create ONE new complete full-body story-cast cutout for Kids & Dragons on real transparent background. Reference 1 supplies the species anatomy/palette; reference 2 is approved Master Orin Vale's fellowship clothing/rendering, NOT anatomy. Match warm hand-painted children's picture-book craft, tapered warm dark brown outlines, softly painted two-tone shading, light from upper left. No photorealism, 3D, chibi or pony-fandom look. Three-quarter view FACING LEFT, relaxed and kind, complete silhouette, no lettering, no ground shadow, no background. All anatomy, feet and tail inside canvas with generous clear margins. Square canvas. Riftseeker fellowship costume: dark teal, indigo and violet practical asymmetric expedition cloak, subtle shimmering seams, SILVER FRACTURED-CIRCLE clasp (ring with a visible gap), a few resonance instruments. Pip Thistledown, he/him, eager young MANTICORE scout. A pale rose sturdy lion body with deep crimson mane and a bold curved segmented GREEN SCORPION TAIL with rounded leaflike tip, exactly the reference anatomy. QUADRUPED, light eager pose caught just at the start of a step, feet near one common floor, readable full silhouette. Short practical dark teal scout cape with indigo/violet lining leaves tail exposed, one light rolled map case and slim expedition pouch. Young quick bright alert face, never threatening, no teeth bared. No extra wings or human limbs.",
+    "refs": [
+      "assets/characters/manticore/fledgling/assembled.png",
+      "assets/cast/orin_vale/assembled.png"
+    ],
+    "source": "art/source/riftlight/pip_thistledown.png"
+  },
+  {
+    "id": "bram_lock",
+    "basis": "bigfoot",
+    "scale": "large",
+    "name": "Bram Lock",
+    "prompt": "Create ONE new complete full-body story-cast cutout for Kids & Dragons, real transparent background. Reference 1 is species anatomy and palette; reference 2, where present, is approved rendering/style only. Warm hand-painted children's picture-book illustration, tapered warm dark brown outlines, soft two-tone shading, light upper left. Three-quarter view FACING LEFT, relaxed and welcoming, solid dark eyes with one highlight, no lettering, no ground shadow, no background. Complete feet, head and any tail inside generous transparent margins. Square canvas. No photorealism, 3D, chibi, scary face, or weapons that wound. Bram Lock, he/him, broad steady protective adult BIGFOOT guard. Match reference 1's cream/tan fur and dark umber mane, broad nose, bipedal anatomy; older and substantially broader than the fledgling, both feet planted. Wear the Riftseeker fellowship dark teal cloak with indigo/violet lining and SILVER FRACTURED-CIRCLE clasp (one ring with clear gap), asymmetric practical expedition straps. A round wooden shield rests securely at his side, never held as an attack. One stout walking staff. A kind patient face; the silhouette is a dependable wall, not a threatening warrior. Clothing style consistent with Master Orin Vale in reference 2.",
+    "refs": [
+      "assets/characters/bigfoot/fledgling/assembled.png",
+      "assets/cast/orin_vale/assembled.png"
+    ],
+    "source": "art/source/riftlight/bram_lock.png"
+  },
+  {
+    "id": "yeti_elder",
+    "basis": "yeti",
+    "scale": "large",
+    "name": "Reading-room elder",
+    "prompt": "Create ONE new complete full-body story-cast cutout for Kids & Dragons, real transparent background. Reference 1 is species anatomy and palette; reference 2, where present, is approved rendering/style only. Warm hand-painted children's picture-book illustration, tapered warm dark brown outlines, soft two-tone shading, light upper left. Three-quarter view FACING LEFT, relaxed and welcoming, solid dark eyes with one highlight, no lettering, no ground shadow, no background. Complete feet, head and any tail inside generous transparent margins. Square canvas. No photorealism, 3D, chibi, scary face, or weapons that wound. A very old gentle YETI elder of the memory-ice reading rooms. Same yeti species as reference 1: shaggy white/ice-blue fur, wide gentle face, bipedal heavy body, broad feet. Older, slightly stooped but dignified, silvery frost caught in the fur and brows, deep blue wool shawl and a small simple book satchel. Hold one closed heavy blank-covered reading book close to body; no text or glyphs anywhere. Both feet planted. No grand magical staff or heroic weapon, no generic wizard hat. Warm listening expression; an elder librarian who remembers much.",
+    "refs": [
+      "assets/entities/yeti/assembled.png"
+    ],
+    "source": "art/source/riftlight/yeti_elder.png"
+  },
+  {
+    "id": "kitsune_temple_keeper",
+    "basis": "kitsune",
+    "scale": "medium",
+    "name": "Temple keeper",
+    "prompt": "Create ONE new complete full-body story-cast cutout for Kids & Dragons, real transparent background. Reference 1 is species anatomy and palette; reference 2, where present, is approved rendering/style only. Warm hand-painted children's picture-book illustration, tapered warm dark brown outlines, soft two-tone shading, light upper left. Three-quarter view FACING LEFT, relaxed and welcoming, solid dark eyes with one highlight, no lettering, no ground shadow, no background. Complete feet, head and any tail inside generous transparent margins. Square canvas. No photorealism, 3D, chibi, scary face, or weapons that wound. A grown KITSUNE temple keeper of the Sky Islands, kind and dignified, never a trickster. Match reference fox anatomy, cream coat, vermilion crest/ruff, three great teal tails. QUADRUPED, all four paws planted, older and more composed than the fledgling. Wear simple weathered cloud-gray temple mantle and woven slate-blue neck scarf, with a small ceramic wind-bell at the chest. Cloak leaves all three tails unobscured. No human arms, masks, grin, sly expression, or silver fractured-circle emblem; this person is a local keeper, not a Riftseeker.",
+    "refs": [
+      "assets/characters/kitsune/fledgling/assembled.png"
+    ],
+    "source": "art/source/riftlight/kitsune_temple_keeper.png"
+  },
+  {
+    "id": "dragonling_stone_keeper",
+    "basis": "dragonling",
+    "scale": "medium",
+    "name": "Boundary-stone keeper",
+    "refs": [
+      "assets/characters/dragonling/fledgling/assembled.png"
+    ],
+    "prompt": "Create ONE new complete full-body supporting-cast figure on real transparent background for a warm hand-painted children's storybook game. Reference is the dragonling species: pale mint coat, dark emerald dorsal plates and horns, orange wing membranes, sturdy QUADRUPED with four clear feet, long tail. Draw a grown dragonling boundary-stone keeper of the Red Sky Foothills, older and broader but clearly the same anatomy and palette. Three-quarter view FACING LEFT, standing calmly with all four feet down, kind capable expression. Wears a weathered rust-brown practical shoulder mantle and leather pannier holding smooth stone measuring tools, a small stone plumb weight on a cord, and a plain blank wooden tally board strapped at side. No hands or human arms; no text or symbols, no weapon, no rift, no fractured-circle emblem. Warm tapered dark-brown outlines, soft two-tone painted shading, light upper left, no photorealism/3D/chibi. Entire wings, tail, crest and feet visible with ample transparent margins, no ground shadow or background, square canvas.",
+    "source": "art/source/riftlight/dragonling_stone_keeper.png"
+  },
+  {
+    "id": "skupper",
+    "basis": null,
+    "scale": "small_to_medium",
+    "name": "Skupper",
+    "refs": [
+      "assets/cast/old_ossley/assembled.png"
+    ],
+    "prompt": "Create ONE NEW sapient fantasy people species cutout for a warm hand-painted children's storybook game on REAL TRANSPARENT background. Reference supplies mature supporting-cast rendering ONLY; DO NOT copy frog anatomy or clothing. A SKUPPER is a friendly upright mudskipper-and-pufferfish person of brackish mudflats: stout elongated MUDSKIPPER body, two big ROUND EYES mounted HIGH on the head, tall flexible DORSAL CREST, small FUSED BEAK like a pufferfish, strong muscular FRONT FINS used as forearms, short supporting rear fins/feet and tapering fish tail. Mottled dull OLIVE and muted OLD GOLD skin with dark spots, glistening with mud through restrained painted highlights. Keep all colors earthy, away from bright rift green, amber, blue or violet. ORDINARY UNPUFFED state: upright stout but elongated body, not a sphere; soft spines lie flat. Friendly nosy frank expression, slightly comic. No clothes covering its anatomy, no tool, no weapon. Three-quarter view FACING LEFT, relaxed stable standing pose, all fin extremities and tail in frame. Hand-painted storybook craft, warm dark-brown tapered outlines, low detail density, two-tone soft shading, upper-left light. Not photoreal, scary, reptilian, frog, axolotl or human. Complete single cutout with ample transparent margins all sides; no ground shadow, lettering, border or background. Square canvas.",
+    "source": "art/source/riftlight/skupper.png"
+  },
+  {
+    "id": "skupper_puffed",
+    "basis": null,
+    "scale": "small_to_medium",
+    "name": "Skupper puffed state",
+    "prompt": "Use the attached approved SKUPPER species as an anatomy, palette and painterly style reference. Make ONE complete full-body cutout on REAL TRANSPARENT background, three-quarter view FACING LEFT, warm children's storybook craft, dark brown tapered outlines, softly painted two-tone shading, light upper left. Preserve the high round mudskipper eyes, small fused pufferfish beak, dorsal crest, strong front FIN forearms and fish fins/tail, mottled dull olive/old-gold skin with dark spots. No human fingers, no frog change, no bright rift green, amber, blue or violet. No text, background, border or ground shadow; generous transparent margin all sides, complete anatomy in frame, square canvas. Draw the SAME species in its PUFFED defensive state: the torso is inflated into a PERFECTLY ROUND BALL, broad soft spines standing out all around it, big eyes high on the round body, small beak, front fins spread a little and small feet resting below it. Crest and fish tail remain visible. Startled, a little comic and innocent, not angry or threatening. The round silhouette must be unmistakably different from the reference's elongated ordinary body. No clothes or tools. Never draw an explosion or attack.",
+    "refs": [
+      "art/source/riftlight/skupper.png"
+    ],
+    "source": "art/source/riftlight/skupper_puffed.png"
+  },
+  {
+    "id": "saltrot_guide",
+    "basis": "skupper",
+    "scale": "small_to_medium",
+    "name": "Saltrot guide",
+    "prompt": "Use the attached approved SKUPPER species as an anatomy, palette and painterly style reference. Make ONE complete full-body cutout on REAL TRANSPARENT background, three-quarter view FACING LEFT, warm children's storybook craft, dark brown tapered outlines, softly painted two-tone shading, light upper left. Preserve the high round mudskipper eyes, small fused pufferfish beak, dorsal crest, strong front FIN forearms and fish fins/tail, mottled dull olive/old-gold skin with dark spots. No human fingers, no frog change, no bright rift green, amber, blue or violet. No text, background, border or ground shadow; generous transparent margin all sides, complete anatomy in frame, square canvas. Draw a DIFFERENT adult individual of this people: a weathered Saltrot guide, ordinary UNPUFFED elongated upright body, dorsal crest HALF RAISED, mud-wet skin and a calm frank face. Wear a simple rough brown reed-fiber waist satchel and practical short weathered mud-brown shoulder wrap, small plain shell route markers on a cord. One simple walking pole held by broad fin, never human hand. The half-raised crest and mud-worn clothing distinguish this guide from the naked species reference. No fractured-circle badge: local guide, not a Riftseeker. Both fin feet planted.",
+    "refs": [
+      "art/source/riftlight/skupper.png"
+    ],
+    "source": "art/source/riftlight/saltrot_guide.png"
+  }
+]

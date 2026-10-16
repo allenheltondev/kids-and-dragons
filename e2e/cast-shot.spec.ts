@@ -25,14 +25,15 @@ const SCENES = (process.env.KAD_CAST_SCENES ?? "scene_tavern,choice_ember,scene_
 // KAD_CAST_SHOT_PREFIX=art/review/riftlight-cast/pilot
 async function previewCast(context: BrowserContext): Promise<void> {
   if (!process.env.KAD_CAST_PREVIEW) return;
-  const member = JSON.parse(process.env.KAD_CAST_PREVIEW) as CastMember;
-  if (!/^(characters|entities|cast)\/[a-z0-9_]+$/.test(member.figure)) throw new Error("Invalid cast preview figure");
+  const input = JSON.parse(process.env.KAD_CAST_PREVIEW) as CastMember | CastMember[];
+  const members = Array.isArray(input) ? input : [input];
+  if (!members.length || members.length > 3 || members.some((member) => !/^(characters|entities|cast)\/[a-z0-9_]+$/.test(member.figure))) throw new Error("Invalid cast preview figures (one to three required)");
   await context.route("**/content/chapters/*.json", async (route) => {
     const response = await route.fetch();
     const chapter = await response.json() as Chapter;
     for (const id of SCENES) {
       const scene = chapter.scenes[id];
-      if (scene && scene.type !== "encounter") scene.cast = [member];
+      if (scene && scene.type !== "encounter") scene.cast = members;
     }
     await route.fulfill({ response, json: chapter });
   });

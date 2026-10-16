@@ -1,0 +1,12 @@
+
+> kids-and-dragons@0.0.0 test
+> vitest run tools/art/rig_motion.test.ts
+
+
+ RUN  v4.1.10 C:/Users/allen/.codex/worktrees/riftlight-part-a/kids-and-dragons
+
+
+ Test Files  1 passed (1)
+      Tests  22 passed (22)
+   Start at  11:37:22
+   Duration  34.03s (transform 67ms, setup 0ms, import 98ms, tests 33.19s, environment 0ms)
