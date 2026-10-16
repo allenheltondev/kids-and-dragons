@@ -17,7 +17,7 @@ flowchart TD
   W -->|flag: river_escaped_middle| B[boundary-stone-bank]
   W -->|flag: river_escaped_late| D[ashspan-bridge]
   W -.->|flag: river_took_rift, once| S[sky-islands-arrival]
-  H -->|flag: glacier_rift_woken| L[saltrot-arrival]
+  H -->|opensWhen: glacier_rift_woken| L[saltrot-arrival]
   L -->|return through the rift| H
 ```
 
@@ -145,7 +145,7 @@ The Sallow Wastelands (the Saltrot), Saltrot guides, the Bone Yard and displaced
 - A party taking non-Starweaver classes must be able to progress.
 - The emperor should be discoverable **only near the end** despite route order.
 - Balance optional branches and convergences without losing causal coherence.
-- Avoid authoring the final graph until graph runtime, effects and edge constraints from issues #192–#203 are verified.
+- The engine (#192–#203) has landed: check every node against `graph-campaigns.md` and with `lintCampaignGraph` (`npm run content:validate`) as it is authored.
 
 ## Decisions still open
 None at the graph level; node-by-node specs come next.
