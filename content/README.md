@@ -117,6 +117,31 @@ Guidance:
   fire on the short path. Write the consequence into the branch (`setFlag`, variants) or the
   rescue's `effects`; a graph campaign turns those flags into world facts with `onComplete`.
 
+## Priority scenes
+
+Some scenes carry the story and most do not. A non-combat scene (`story`, `check`, `choice_point`,
+`rest`) may say so with `priority`:
+
+| | Means | Example | On the shared screen |
+|---|---|---|---|
+| `1` | A **revelation** — the campaign turns on what the party learns here. | Gemfall's `scene_whole_truth`: the gemstones are a seal, and the seal holds a titan under Mount Red Sky. | A gold **Remember this!** ribbon, a gilded plate, gold words that land slowly. |
+| `2` | A **clue** — worth noticing, but the story survives a party that skims it. | Bramblewood's `scene_stone_words`. | A quieter **A clue** ribbon. |
+
+Leave it off everywhere else, which is nearly everywhere: a p1 that turns up every few scenes
+stops meaning anything. As a rule of thumb, a chapter has at most one p1 on any path through it.
+
+What it does beyond the look:
+
+- **The words are kept exactly.** The live layer never rewrites a priority scene (and never pays
+  to prefetch one), because a paraphrase is free to soften or drop the very fact the scene exists
+  to deliver. Variants and `{tokens}` still apply.
+- **The ribbon is said aloud** ahead of the narration, so a listener gets it too.
+- **The end-of-chapter recap is told every p1 the party walked through** and asked to say it
+  plainly, so the table hears the revelation again before they go to bed.
+
+Put the fact in the narration itself, in plain words. The ribbon tells the room to pay attention;
+it cannot tell them what to pay attention to.
+
 ## The Bramblewood chapter is reference content
 
 `campaigns/the-hollow-crown.json` and `chapters/bramblewood-01.json` are **the engine's reference
@@ -128,8 +153,8 @@ something valid and complete to run against before that happens.
 It is deliberately a superset of what one chapter normally uses: every non-combat scene type
 (`story`, `check`, `choice_point`, `rest`), one `encounter`, species-gated choices for all six
 species, a flag gate, an item gate, item grants, a quest item, a branch that reconverges, bonus
-objectives, and — the one that matters — **a failed roll that keeps the story going.** If a renderer
-handles this chapter, it handles anything.
+objectives, a revelation and a clue (`priority` 1 and 2), and — the one that matters — **a failed
+roll that keeps the story going.** If a renderer handles this chapter, it handles anything.
 
 It carries **two** rest scenes, and the difference between them is the point. `rest_lanternfall`
 ends the chapter; `rest_mossbank` is a waypoint the party passes through on every route out of the

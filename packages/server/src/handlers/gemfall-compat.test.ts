@@ -99,7 +99,10 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-05a.json": "3a269ca932ff831f494ee81a95eb861498976de072f3d6c00fbe28742c1ae766",
   "chapters/gemfall-05b.json": "b315080fdbd206f195aaa43ea036b6149328afae89c726cc2d74909562711d26",
   "chapters/gemfall-05c.json": "372e68d305983060148b1619ddcc578b0531186f43c39727a65b1730b2441366",
-  "chapters/gemfall-06.json": "ae3e95cbebaeb37d758b7fb3a0edcca307cbfb65c8700ef6ab32fa2f4e094e45",
+  // Re-pinned deliberately: `scene_whole_truth` (the seal and the titan) is
+  // marked `priority: 1`. Presentation only — the endings, roads, setbacks and
+  // saves below still match their pre-epic digests.
+  "chapters/gemfall-06.json": "a93a12ce7bc28513f23e1b3c4e87e1a3fd985ad0683942fa609daf9daaf8a0fc",
   "chapters/gemfall-07h.json": "f46ccaf3911dee0608065fc8ef11101d6745147bf6a04af8bed2e13793a1483b",
   "chapters/gemfall-07l.json": "76dcd0f99a5420a1a8aef5fd54b1407f46c73b4aa1f64556cd7cd3e219141110",
   "chapters/gemfall-07r.json": "ba15d19d96fec0770d84c392449eacbc5346f40f0804cbbe025f58267a1d4a03",
