@@ -109,7 +109,7 @@ describe("the words", () => {
       "Green, breathing slowly",
       "Amber, one flicker",
       "Blue, rippling steadily",
-      "Violet, spiralling inward",
+      "Violet, spiraling inward",
       "It is shrinking",
       "It stutters",
       "It pulses to a steady beat",

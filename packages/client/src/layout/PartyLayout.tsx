@@ -77,8 +77,9 @@ function PhoneLayout(): React.JSX.Element {
         >
           <span className="kad-tray__object">
             <TrayObject name="globe" />
-            {/* A Starweaver's cue that the world has Riftlight to read (#229). */}
-            <RiftlightIndicator />
+            {/* A Starweaver's cue that the world has Riftlight to read (#229);
+                out while they are looking at it. */}
+            <RiftlightIndicator onWorld={showing === "world"} />
           </span>
           <span className="kad-tray__label">World</span>
         </button>

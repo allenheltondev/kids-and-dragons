@@ -18,7 +18,8 @@
  * here with a Starweaver's eyes.
  *
  * `RiftlightIndicator` is the other half: the badge on a Starweaver's World
- * tab that lights while there is Riftlight to read, so they know to look.
+ * tab that lights while there is Riftlight to read and they are not already
+ * looking at it, so they know to look.
  *
  * Art: until the effect sheets land (brief Part A1) every layer is a CSS
  * placeholder carrying its sheet's id in `data-effect`, so swapping the art in
@@ -125,13 +126,19 @@ export function RiftSightings(): ReactElement | null {
 
 /**
  * The Starweaver's menu indicator: lit on their World tab while a rift with
- * Riftlight is in view, and absent everywhere else. Its words say there is
- * light to read, never what it shows; its glyph uses no palette colour.
+ * Riftlight is in view and they are looking somewhere else, and absent
+ * everywhere else. Its words say there is light to read, never what it shows;
+ * its glyph uses no palette colour.
+ *
+ * The rule is "in view, and not on World", with no memory of what was seen:
+ * looking at the world clears it, and it lights again the moment they leave
+ * while a lit rift is still there, or when one appears while they are away.
+ * `onWorld` comes from the shell, the only thing that knows what is showing.
  */
-export function RiftlightIndicator(): ReactElement | null {
+export function RiftlightIndicator({ onWorld }: { onWorld: boolean }): ReactElement | null {
   const sees = useSeesRiftlight();
   const lit = useVisibleRifts().length > 0;
-  if (!sees || !lit) return null;
+  if (!sees || !lit || onWorld) return null;
   return (
     <span className="kad-tray__badge kad-tray__badge--riftlight" data-riftlight-indicator="">
       <Icon name="riftlight_indicator" label={RIFTLIGHT_INDICATOR_LABEL} />
