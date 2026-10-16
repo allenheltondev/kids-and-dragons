@@ -81,7 +81,7 @@ Glacier, yetis and memory in ice. Entered from `boundary-stone-bank` or a return
 | `wyrm-nest` (**strand end**) | A frost wyrm has nested where the next reading room was planned. A fight with more than one good outcome (#201): drive it off, or move it through a blue rift to a new home. The outcome is world state the **finale at the glacier** reads: the wyrm gone, or an ally. | The wyrm nesting where the next reading room was planned |
 
 - **First strand entered:** Seren teaches Attune at `stone-counters` (a scene gated on not having it yet; every strand carries one), and Pip is there scouting the moved stones.
-- **Sideways exits:** `stone-counters` → downriver to `ashspan-bridge` (toward the Coast); `wyrm-nest` → the Cairnstep (toward the Sky), on canon's yeti-and-griffin rescue partnership.
+- **Sideways exits:** `stone-counters` ↔ downriver to `ashspan-bridge` (toward the Coast); `wyrm-nest` ↔ the Cairnstep (toward the Sky), on canon's yeti-and-griffin rescue partnership.
 - **Each class has a moment:** Songkeeper in the singing halls; Thornguard holding the ice in the wrong valley; Duskrunner beating the timed rift; Starweaver reading the nest's rift.
 - **Each strand teaches one motion signal:** Forgotten Paths teaches **timed**; Wandering Sky **linked** (island rifts pulse together); Restless Coast **unstable**.
 - **Protected:** the memory shows a fragment, never a full history; the summer crevasse and the unnamed meltwater year stay untouched.
@@ -118,6 +118,24 @@ The Sallow Wastelands (the Saltrot), Saltrot guides, the Bone Yard and displaced
 - **Each class has a moment:** Thornguard shores up the buried bridge; Duskrunner beats the stuttering rift; Songkeeper soothes the goat; Starweaver reads the stutter. Bigfoot's Smash digs the bridge out; Unicorn's Mend helps the goat.
 - **Protected:** the guides' secret that the flats drain mouth-last stays untouched; the colossal remains stay unidentified; Mermaid Cove's "unknown threat" is never made out to be Corvane.
 
+## Return routes and revisits — agreed
+**No strand is a trap:** every strand's arrival node has at least one way out to another strand. The one-way washout rift into the Sky is answered by the griffins down to the Cairnstep and the linked rift to the Coast; `lintCampaignGraph` proves there are no softlocks.
+
+| Return | Between |
+| --- | --- |
+| `kind: "return"` | `hidden-glacier-rift` → `riftseekers-departure` |
+| The glacier rift (blue, two-way) | `saltrot-arrival` ↔ `hidden-glacier-rift` |
+| The linked pair | `whale-road` ↔ `saltrot-arrival` |
+| The griffins | `squall-temple` → `cairnstep-pass` |
+| Ossley's ferry | `saltrot-arrival` ↔ `ashspan-bridge` |
+| The road | `stone-counters` ↔ `ashspan-bridge` (both ways, so the late washout exit reaches Forgotten Paths) |
+| The yeti-and-griffin partnership | `wyrm-nest` ↔ `cairnstep-pass` (both ways) |
+
+| Revisit policy | Nodes |
+| --- | --- |
+| `"pass"` (straight to the exit choice) | Hubs: `riftseekers-departure`, `cairnstep-pass`, `ashspan-bridge`, `sky-islands-arrival`, `saltrot-arrival`; and every key node and strand end once done (the fragment and world state are already recorded) |
+| `"replay"` with **variants** | The glacier: the changed melt, a reading room built or not, the wyrm gone or an ally, setting up the full-circle finale |
+
 ## Graph design constraints
 - Forward, sideways and return edges should all matter.
 - Arrival may depend on prior flags, including region allies, discoveries and changed geography.
@@ -130,4 +148,4 @@ The Sallow Wastelands (the Saltrot), Saltrot guides, the Bone Yard and displaced
 - Avoid authoring the final graph until graph runtime, effects and edge constraints from issues #192–#203 are verified.
 
 ## Decisions still open
-1. Faction influence rules and return routes.
+None at the graph level; node-by-node specs come next.

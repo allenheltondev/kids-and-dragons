@@ -57,9 +57,9 @@ Glacier of Origins, yetis and memory in ancient ice. Environmental puzzles and c
 **The hidden glacier rift is not the summer crevasse.** `canon/biomes.yaml` holds a creator-only secret: a crevasse below the oldest layer that preserves a summer, with green light and warm air. Keep the hidden rift somewhere else and never let its green Riftlight read as the explanation for that crevasse. Linking the two would be a canon decision, not an authoring one.
 
 ## Finale and endings — agreed
-**1. The final rift.** At the glacier, where his prison was, Corvane opens his biggest rift yet, pulling a whole region back into Pangea's arrangement. Each Pangea fragment the party holds is one choice ("Anchor it with the glacier memory", the sealed door, the island that is due back): it shows the land where it belongs **now** and collapses part of his rift. With 2 fragments his rift is broken but he is still strong; with all 3 it is overpowered and he starts the fight weakened. The fragments win because the land remembers its present shape, not because the party out-magics him, so the theme holds.
+**1. The final rift.** At the glacier, where his prison was, Corvane opens his biggest rift yet, pulling a whole region back into Pangea's arrangement. Each Pangea fragment the party holds is one choice ("Anchor it with the glacier memory", the sealed door, the island that is due back): it shows the land where it belongs **now** and collapses part of his rift. With 2 anchors his rift is broken but he is still strong; with 3 it is overpowered and he starts the fight weakened. An ally Olivia or an ally wyrm counts as one extra anchor ([characters.md](characters.md#how-the-partys-choices-decide-the-riftseekers--agreed)). The fragments win because the land remembers its present shape, not because the party out-magics him, so the theme holds.
 
-**2. The battle.** With his rift broken, Corvane fights to hold what is left open: Corvane plus displaced creatures pulled through his rift, among open rifts that act as hazards (#201). Manipulate and its class equivalents matter here: shutting a hazard rift, holding back the ice. The party reached Radiant one node earlier, so the climax is fought as the new form (spec §8.1). Two authored versions of the encounter, chosen by flag-gated choices on fragment count: standard, or Corvane weakened with one fewer creature. Defeat means his strength is spent and the rift collapses; nobody dies, and he stays sympathetic, an old man who wanted his home back.
+**2. The battle.** With his rift broken, Corvane fights to hold what is left open: Corvane plus displaced creatures pulled through his rift, among open rifts that act as hazards (#201). Manipulate and its class equivalents matter here: shutting a hazard rift, holding back the ice. The party reached Radiant one node earlier, so the climax is fought as the new form (spec §8.1). Two authored versions of the encounter, chosen by flag-gated choices on anchor count: standard, or Corvane weakened with one fewer creature. Defeat means his strength is spent and the rift collapses; nobody dies, and he stays sympathetic, an old man who wanted his home back.
 
 **3. His fate — the endings.** History files the party under a name, as in Gemfall:
 
@@ -79,5 +79,4 @@ You can influence a powerful natural force without being able to command its beh
 
 ## TBD
 - The emperor's dialogue.
-- Which choices affect faction outcomes and final confrontation.
 - Art and music briefs for region and rift-specific encounters.
