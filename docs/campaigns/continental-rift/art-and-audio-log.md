@@ -240,3 +240,5 @@ Merged current main into Part B, preserving its Skywarden cast additions and res
 The final stricter phone regression passed (49.4 seconds), including all three guest pages, Previous, resize to 960px and return to 390px. All three cast-shot group runs also passed; their TV/phone/host and per-guest phone captures replace the earlier previews.
 
 Part C preview refresh after the second layout review: regenerated all six location compositions on the current upstream guest-paging layout. Each scene includes TV, host phone, and all three watcher-phone guest pages, so the figures and nameplates now match the implementation reviewers will merge. The original painting sources, manifest ids, packaging and background-only contact sheet are unchanged. The refreshed northern/southern capture logs record the runs.
+
+Part D preview refresh: all four music-assigned scenes were recaptured on TV, watcher phone and host phone after inheriting the readable narrow-stage layout. The four-scene capture run passed (2.0 minutes). Scores, mappings and production audio files are unchanged by this review follow-up.
