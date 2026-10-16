@@ -1270,8 +1270,9 @@ chapter played ends, at most one held, and granted only by a rift's **first** cr
   that, its first `"choose"` one — is put on the prompt (`Prompt.buff`, `checkBuffOffer`). `"auto"`
   is spent on that roll. `"choose"` shows the roller *"Use Riftspark (+2)?"* with **Use it and roll!**
   and **Save it and roll**: the first sends `ROLL { spendBuff: id }`, the second a plain `ROLL`. A
-  `spendBuff` naming anything not on offer is refused before a die is thrown. In a whole-party check
-  each roller is offered what is left; the first to spend it has it.
+  `spendBuff` naming a buff no longer on offer (a stale tap) is a plain roll, without the bonus and
+  without spending anything else. In a whole-party check each roller is offered what is left; the
+  first to spend it has it.
 - **On the dice.** The amount is flat (`DiceRoll.buff`, already in `total`), so a buffed roll draws
   exactly the die it would have drawn without, and the dice card's sum adds up.
 - **`"chapter"` expiry.** Any chapter ending ends it (`completeChapter`), before the run's buffs are

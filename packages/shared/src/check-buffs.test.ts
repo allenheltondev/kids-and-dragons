@@ -404,14 +404,27 @@ describe("the Riftspark through the engine", () => {
     expect(saved.state.buffs).toEqual(spark());
   });
 
-  it("refuses a spend of something the prompt does not offer, before a die is thrown", () => {
+  it("a spend of something no longer on offer is a plain roll: no bonus, nothing else spent", () => {
+    // A buff the prompt does not offer: the roll goes ahead without it, and
+    // the one that is on offer is kept, not spent in its place.
+    const wrong = rolled(atTheCheck(sparkCtx()), sparkCtx(), "rift-wings");
+    const saved = rolled(atTheCheck(sparkCtx()), sparkCtx());
+    expect(wrong.roll).toEqual(saved.roll);
+    expect(wrong.roll).not.toHaveProperty("buff");
+    expect(wrong.state.buffs).toEqual(spark());
+    // A stale tap after the spark is gone (the party holds none now).
+    const none = atTheCheck(engineCtx({ rng: makeRng("spark") }));
+    const stale = rolled(none, engineCtx({ rng: makeRng("spark") }), "riftspark");
+    const plain = rolled(atTheCheck(engineCtx({ rng: makeRng("spark") })), engineCtx({ rng: makeRng("spark") }));
+    expect(stale.roll).toEqual(plain.roll);
+    expect(stale.state).not.toHaveProperty("buffs");
+  });
+
+  it("refuses only a spendBuff that is not a buff id at all, before a die is thrown", () => {
     const state = atTheCheck(sparkCtx());
-    const wrong = attempt(state, rollerOf(state), { type: "ROLL", spendBuff: "rift-wings" }, sparkCtx());
-    expect(wrong.error?.code).toBe("ILLEGAL");
-    expect(wrong.state).toEqual(state);
-    const none = atTheCheck(engineCtx());
-    const stale = attempt(none, rollerOf(none), { type: "ROLL", spendBuff: "riftspark" }, engineCtx());
-    expect(stale.error?.code).toBe("ILLEGAL");
+    const malformed = attempt(state, rollerOf(state), { type: "ROLL", spendBuff: 7 as unknown as string }, sparkCtx());
+    expect(malformed.error?.code).toBe("ILLEGAL");
+    expect(malformed.state).toEqual(state);
   });
 
   it('an "auto" buff is spent on the next check without asking', () => {
@@ -435,6 +448,11 @@ describe("the Riftspark through the engine", () => {
     expect(first.state.prompt?.kind).toBe("roll");
     expect(first.state.prompt).not.toHaveProperty("buff");
     expect(first.state.buffs).toEqual([]);
+    // The second roller's phone still said "Use Riftspark?": their tap rolls
+    // plainly, and the group check carries on.
+    const second = rolled(first.state, ctx(), "riftspark");
+    expect(second.roll).not.toHaveProperty("buff");
+    expect(second.roll.total).toBe(second.roll.die + second.roll.mod);
   });
 
   it("ends with the chapter, unspent", () => {
