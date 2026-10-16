@@ -169,7 +169,7 @@ contract): an upright mudskipper body on strong front fins used as forearms; big
 high on the head; a tall dorsal crest; a small fused beak; mottled **olive and gold** skin with
 dark spots, wet with mud. Keep the skin off bright rift green, amber, blue and violet so a
 Skuppers never reads as a rift rule. Draw two states: **ordinary**, and **puffed**, perfectly
-round with soft spines standing out (a startle, never a threat). Friendly, nosy, a little comic.
+round with spines standing out, which carry a numbing poison (a defense, not a threat). Friendly, nosy, a little comic.
 
 **The canon, to land with it:**
 - Add `skupper` to `people_ids` in `canon/npcs.yaml`, and this entry before `npc.boggart`:
@@ -200,8 +200,11 @@ round with soft spines standing out (a startle, never a threat). Friendly, nosy,
       Found only in brackish water: fresh water and dry land dry them out, and
       the open sea is too salty, so they do not live anywhere but the
       Saltrot's flats and channels. They are the Saltrot's guides; the guides'
-      lore in biome.sallow_wastelands is theirs. No poison, ever: their spines
-      are soft and harmless, and puffing up is a startle, never an attack.
+      lore in biome.sallow_wastelands is theirs. Their spines carry a numbing
+      poison: anyone stung goes slow and heavy-legged for a while, then is
+      fine. It never does lasting harm and is never fatal. A puffed skupper
+      stings whoever strikes it; puffing is a defense, and a skupper only
+      fights when one has to, like anyone.
     speech_register: >-
       Quick and chatty, with cheerful bluntness and times given by the tide
       rather than the sun ("two crabs past the ebb"). A guide who has gone
