@@ -71,6 +71,8 @@ export interface ProxyOptions {
   rewrite?: (path: string) => ((text: string) => string) | undefined;
   /** Paths the proxy answers 404 — what a deploy deleted from the bucket. */
   gone?: (path: string) => boolean;
+  /** Milliseconds to hold a path's request before forwarding it — a slow network, on purpose. */
+  delay?: (path: string) => number;
 }
 
 export async function startCountingProxy(target: string, initial: ProxyOptions = {}): Promise<CountingProxy> {
@@ -82,6 +84,15 @@ export async function startCountingProxy(target: string, initial: ProxyOptions =
 
   const server: Server = createServer((req: IncomingMessage, res: ServerResponse) => {
     const path = new URL(req.url ?? "/", "http://proxy").pathname;
+    const wait = options.delay?.(path) ?? 0;
+    if (wait > 0) {
+      setTimeout(() => handle(req, res, path), wait);
+      return;
+    }
+    handle(req, res, path);
+  });
+
+  function handle(req: IncomingMessage, res: ServerResponse, path: string): void {
     const kind = kindOf(path);
     // The event stream stays open for the whole game; it is not "loading".
     const tracked = !path.startsWith("/events/");
@@ -164,7 +175,7 @@ export async function startCountingProxy(target: string, initial: ProxyOptions =
       res.writeHead(502).end();
     });
     req.pipe(forward);
-  });
+  }
 
   await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
   const { port } = server.address() as AddressInfo;
