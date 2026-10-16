@@ -118,10 +118,10 @@ Run Gemfall on an isolated dev server, then capture the stand-in and pilot with 
 $env:KAD_CAST_SCENES='scene_tavern'
 $env:KAD_CAST_PREVIEW='{"figure":"characters/griffin","name":"Master Orin Vale"}'
 $env:KAD_CAST_SHOT_PREFIX='art/review/riftlight-cast/stand-in'
-npx playwright test -c <review-config> e2e/cast-shot.spec.ts
+npx playwright test -c playwright.cast-review.config.ts e2e/cast-shot.spec.ts
 $env:KAD_CAST_PREVIEW='{"figure":"cast/orin_vale","name":"Master Orin Vale"}'
 $env:KAD_CAST_SHOT_PREFIX='art/review/riftlight-cast/pilot'
-npx playwright test -c <review-config> e2e/cast-shot.spec.ts
+npx playwright test -c playwright.cast-review.config.ts e2e/cast-shot.spec.ts
 ```
 
 These are deliberately staged review captures, not an authored Riftlight scene. They use Gemfall's tavern to compare the two figures at identical stage scale and camera framing. TV, watcher phone and host phone images, contact sheet and verification logs are in `art/review/riftlight-cast/`. Human approval of age/readability and the fellowship design is required before extending the cast.
