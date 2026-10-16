@@ -19,12 +19,6 @@ import { onFrame } from "./scene";
 
 import "./FrameMeter.css";
 
-/** Whether this page was asked to measure itself. */
-export function perfRequested(search: string): boolean {
-  const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
-  return params.has("perf");
-}
-
 /** How often the display refreshes. Four times a second is legible without
     the meter itself becoming the busiest thing on the screen. */
 const REFRESH_MS = 250;
