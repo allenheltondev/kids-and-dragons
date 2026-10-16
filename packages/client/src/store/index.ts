@@ -736,11 +736,15 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             ...(identity.deviceToken ? { deviceToken: identity.deviceToken } : {}),
           });
           // A binding minted here is the room's placeholder household, held by
-          // a screen that is nobody — not a player with a book to open. One
-          // this browser already had (a phone hosting from itself) is kept as
-          // it was.
+          // a screen that is nobody — not a player with a book to open. But a
+          // browser that has already been a player stays one: a phone hosting
+          // Party Mode on itself must not lose its book for doing so.
           if (room.deviceToken) {
-            saveIdentity({ ...identity, deviceToken: room.deviceToken, screenOnly: true }, deps.storage);
+            const wasPlayer = identity.deviceToken !== undefined && identity.screenOnly !== true;
+            saveIdentity(
+              { ...identity, deviceToken: room.deviceToken, ...(wasPlayer ? {} : { screenOnly: true }) },
+              deps.storage,
+            );
           }
           deps.navigate({ name: "tv", code: room.code }, { replace: true });
         } catch (error) {
