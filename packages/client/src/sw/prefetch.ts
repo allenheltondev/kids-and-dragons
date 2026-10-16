@@ -9,8 +9,9 @@
  * which keeps it (warm.ts). Two steps ahead: far enough to cover any choice,
  * near enough not to fetch a whole chapter nobody will see.
  *
- * Only a surface that draws the world asks (layout/WorldView.tsx): a phone in
- * Party Mode shows its controls, and the television draws the scene.
+ * Only a world that is on screen asks (layout/WorldView.tsx `prefetch`): the
+ * television always; a phone only while its world pane is showing, not while
+ * the layout keeps it mounted behind the controls or the map.
  */
 
 import { useEffect } from "react";
@@ -81,8 +82,11 @@ function next(chapter: Chapter, id: SceneId): SceneId[] {
 /** Everything already asked for this page load, so each scene adds only what is new. */
 const asked = new Set<string>();
 
-/** Fetch the scenes ahead of wherever the party is, as the story moves. */
-export function usePrefetchUpcoming(): void {
+/**
+ * Fetch the scenes ahead of wherever the party is, as the story moves — while
+ * `enabled`, which a layout sets only when the world is on screen.
+ */
+export function usePrefetchUpcoming(enabled = true): void {
   const chapter = useChapter();
   const state = useRunState();
   const chapterId = state?.chapterId ?? null;
@@ -92,6 +96,7 @@ export function usePrefetchUpcoming(): void {
   const partyKey = (party ?? []).map((m) => `${m.character.species}/${m.character.tier}/${m.character.class}`).join(",");
 
   useEffect(() => {
+    if (!enabled) return;
     const current = chapter !== null && chapter.id === chapterId ? chapter : null;
     const fresh = upcomingAssets(current, current ? sceneId : null, party ?? []).filter((url) => !asked.has(url));
     if (fresh.length === 0) return;
@@ -108,7 +113,7 @@ export function usePrefetchUpcoming(): void {
     const timer = setTimeout(start, 1_500);
     return () => clearTimeout(timer);
     // `party` is read through `partyKey`: a new array every patch, the same figures.
-  }, [chapter, chapterId, sceneId, partyKey]);
+  }, [enabled, chapter, chapterId, sceneId, partyKey]);
 }
 
 /** Test seam: forget what this page has asked for. */

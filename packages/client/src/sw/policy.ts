@@ -60,6 +60,18 @@ export const SW_LEGACY_IMAGE_CACHES: readonly string[] = ["kad-image-v1"];
 export const SW_SHELL_KEY = "/";
 
 /**
+ * Where an installing worker keeps its build's page until it takes over. The
+ * worker in charge keeps serving its own page offline meanwhile, and keeps it
+ * if the install fails.
+ */
+export const SW_SHELL_STAGED_KEY = "/__kad/shell-next";
+
+/** The build a page belongs to: its entry script (`/bundle/index-*.js`), or null. */
+export function swShellEntry(html: string): string | null {
+  return /<script\b[^>]*\bsrc="(\/bundle\/[^"]+\.js)"/.exec(html)?.[1] ?? null;
+}
+
+/**
  * Where the fingerprinted files' bookkeeping lives (sizes, last use), inside
  * the files cache under a path no request can have.
  */

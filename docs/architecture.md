@@ -644,7 +644,9 @@ Content is never evicted: it is small, and it is what the offline book reads. Lo
   everything found (`sw/warm.ts`).
 - **During play:** whatever the screen draws. The scenes two steps ahead (backdrops, enemies, the
   biome's tiles, the party's rigs) are fetched at idle priority before the party reaches them
-  (`sw/prefetch.ts`, from `WorldView`). Prefetching is skipped when the phone asks to save data;
+  (`sw/prefetch.ts`, from `WorldView`) — only while the world is on screen: a phone keeps its world
+  pane mounted behind its controls and map, and the layout tells `WorldView` when it is hidden, so a
+  Party Mode phone (whose world is the TV's job) spends nothing on it. Prefetching is skipped when the phone asks to save data;
   the book's offline art is not, since it is what makes the book open in the car at all.
 
 **Updates.** Each build's `sw.js` names its own files, so every deploy is a new worker. It takes
