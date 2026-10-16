@@ -1,0 +1,12 @@
+
+> kids-and-dragons@0.0.0 test
+> vitest run packages/client/src/audio tools/audio/riftlight.test.ts
+
+
+ RUN  v4.1.10 C:/Users/allen/.codex/worktrees/riftlight-part-a/kids-and-dragons
+
+
+ Test Files  8 passed (8)
+      Tests  102 passed (102)
+   Start at  06:51:11
+   Duration  16.74s (transform 2.71s, setup 0ms, import 4.30s, tests 17.22s, environment 4.09s)

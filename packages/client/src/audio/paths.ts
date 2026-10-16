@@ -56,6 +56,13 @@ export interface CueSpec {
 }
 
 export const CUE_SPECS: Record<CueId, CueSpec> = {
+  "rift-open": { brief: "A soft inward rush of air and a glassy rising shimmer, like a breath held. Wonder, not threat.", seconds: 2.0 },
+  "rift-collapse": { brief: "The same shimmer folding closed and settling into silence. Gentle, never a bang.", seconds: 1.6 },
+  "chime-sour": { brief: "One small Riftseeker chime struck, its note bending flat and wobbling: not yet. One continuous wavering note, no returning strike.", seconds: 1.4 },
+  "chime-echo": { brief: "The same chime struck, and its note coming cleanly back a moment later: you can come back. Two clearly separated clean strikes, easy to distinguish from chime-sour across a room.", seconds: 1.8 },
+  "attune-hum": { brief: "A low warm hum that answers someone, swelling in once. A short consonant answer, distinct from the Gate's sustained beating drone.", seconds: 3.0 },
+  riftspark: { brief: "A quick bright sparkle and a small rising tone: you got a boost.", seconds: 0.9 },
+  anchor: { brief: "A deep steady settling tone, like a stone set into place: the land holding still. A gentle grounded answer to an old wandering melody.", seconds: 2.0 },
   "party-ready": { brief: "Two soft hand drum taps and a warm rising wooden-string response. Ready to travel, no chimes.", seconds: 1.2 },
   "gem-pickup": { brief: "Three small rising crystal notes with a shimmering tail.", seconds: 1.1 },
   "gate-hum": { brief: "A low warm pulsing hum shared by the Gate and gemstones. Mysterious, not threatening.", seconds: 8 },

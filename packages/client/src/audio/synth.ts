@@ -35,6 +35,40 @@ export interface Tone {
 const C4 = 262, E4 = 330, G4 = 392, C5 = 523, E5 = 659, G5 = 784, A5 = 880;
 
 export const CUE_TONES: Record<CueId, Tone[]> = {
+  "rift-open": [
+    { type: "noise", freq: [0, 0], at: 0, duration: 1.5, gain: 0.025 },
+    { type: "sine", freq: [294, 587], at: 0.12, duration: 1.88, gain: 0.075 },
+    { type: "sine", freq: [880, 1175], at: 0.6, duration: 1.4, gain: 0.025 },
+  ],
+  "rift-collapse": [
+    { type: "sine", freq: [587, 294], at: 0, duration: 1.6, gain: 0.075 },
+    { type: "sine", freq: [1175, 440], at: 0, duration: 1.3, gain: 0.025 },
+    { type: "noise", freq: [0, 0], at: 0.1, duration: 1.2, gain: 0.015 },
+  ],
+  // Close frequencies beat audibly as the single chime bends flat.
+  "chime-sour": [
+    { type: "sine", freq: [784, 698], at: 0, duration: 1.4, gain: 0.10 },
+    { type: "sine", freq: [789, 704], at: 0, duration: 1.4, gain: 0.055 },
+  ],
+  // Silence between strikes carries the answer even on a mono speaker.
+  "chime-echo": [
+    { type: "sine", freq: [784, 784], at: 0, duration: 0.55, gain: 0.12 },
+    { type: "sine", freq: [784, 784], at: 0.85, duration: 0.95, gain: 0.095 },
+  ],
+  "attune-hum": [
+    { type: "sine", freq: [146.83, 146.83], at: 0, duration: 3, gain: 0.04 },
+    { type: "sine", freq: [220, 220], at: 0.25, duration: 2.75, gain: 0.045 },
+    { type: "sine", freq: [293.66, 293.66], at: 0.55, duration: 2.45, gain: 0.035 },
+  ],
+  riftspark: [
+    { type: "sine", freq: [659, 988], at: 0, duration: 0.65, gain: 0.075 },
+    { type: "triangle", freq: [1318, 1568], at: 0.18, duration: 0.72, gain: 0.025 },
+  ],
+  anchor: [
+    { type: "sine", freq: [82.41, 73.42], at: 0, duration: 2, gain: 0.085 },
+    { type: "triangle", freq: [146.83, 146.83], at: 0.12, duration: 1.88, gain: 0.04 },
+    { type: "sine", freq: [220, 220], at: 0.3, duration: 1.7, gain: 0.025 },
+  ],
   "party-ready": [196, 262, 330].map((freq, i) => ({ type: "triangle", freq: [freq, freq], at: i * 0.15, duration: 0.3, gain: 0.08 })),
   "gem-pickup": [659, 784, 1047].map((freq, i) => ({ type: "sine", freq: [freq, freq], at: i * 0.13, duration: 0.6, gain: 0.1 })),
   "gate-hum": [110, 110.7, 165].map((freq) => ({ type: "sine", freq: [freq, freq], at: 0, duration: 8, gain: 0.05 })),
