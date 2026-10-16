@@ -4,6 +4,10 @@
 
 Tracks Part A of #231. Parts B–E remain separate deliveries; Part B requires its pilot review before the remaining cast is drawn. No campaign data, canon, existing art, biome mappings or UI behavior changed here.
 
+### Review polish — Listening Chime at 24px
+
+Addressed PR #233's small-size legibility comment by framing the existing fractured ring and hanging striker closely in `portrait.webp`. The full 1024px assembled illustration is unchanged. The portrait crop ignores barely visible generator alpha dust, removes the long cord from the small-size composition and fits the ring within 460px of the 512px portrait. At 24px its visible silhouette grows from **10×15px to 20×22px** (alpha >32), with clear margins. No new imagery or generation prompt was used. The contact sheet now uses the actual runtime portrait for its 48px and 24px rows; the 256px row still shows the full illustration. Regenerated contact sheet and TV/phone asset previews were visually inspected; the screenshot script's neutral-only TV check passes. Pixel comparison confirms the assembled image is unchanged. This isolated crop/packaging change does not affect code or audio; prior passing CI is recorded on both PRs, with a new CI run triggered by the update.
+
 ### Delivered inventory
 
 All eleven `assets/manifest.json` `effects[]` entries have `frames: 12`, `fps: 12`, `size: 256`, `startsOn: null`, and `outOfCombat: true`. Each has matching `assets/effects/<id>.sheet.png` and `<id>.json`. They describe chapter/world effects, so they do not consume a combat rig event. The two one-shots omit `loop`; the remaining nine declare `loop: true`. Every frame has visible alpha, including the endpoints of the one-shots.

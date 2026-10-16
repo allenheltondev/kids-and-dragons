@@ -20,10 +20,24 @@ def main():
         target = ROOT / f'assets/items/{id}'
         target.mkdir(parents=True,exist_ok=True)
         im.save(target/'assembled.png')
-        im.resize((512,512),Image.Resampling.LANCZOS).save(target/'portrait.webp',quality=95,method=6)
+        portrait = im.resize((512,512),Image.Resampling.LANCZOS)
+        if id == 'listening_chime':
+            # The full pendant's long cord wastes the tiny inventory slot.
+            # Preserve the assembled illustration, but frame its distinctive
+            # fractured ring and striker closely in the runtime portrait.
+            # Very faint generator alpha dust must not determine the crop.
+            visible = source.getchannel('A').point(lambda value: 255 if value > 8 else 0).getbbox()
+            assert visible
+            ring = source.crop(visible)
+            ring = ring.crop((0, round(ring.height * .36), ring.width, ring.height))
+            ring.thumbnail((460,460),Image.Resampling.LANCZOS)
+            portrait = Image.new('RGBA',(512,512))
+            portrait.paste(ring,((512-ring.width)//2,(512-ring.height)//2))
+        portrait.save(target/'portrait.webp',quality=95,method=6)
         draw.text((n*320+12,12),id,fill='#383838')
         for size,y in [(256,38),(48,310),(24,382)]:
-            tile=im.resize((size,size),Image.Resampling.LANCZOS)
+            # Review the actual runtime portrait at menu sizes.
+            tile=(im if size == 256 else portrait).resize((size,size),Image.Resampling.LANCZOS)
             review.paste(tile,(n*320+(320-size)//2,y),tile)
             draw.text((n*320+12,y+8),str(size),fill='#383838')
     path=ROOT/'art/review/riftlight/icons.png'
