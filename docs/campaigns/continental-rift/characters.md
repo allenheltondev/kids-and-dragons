@@ -11,12 +11,16 @@ Methodical, patient scholar. Wants to learn **why** rifts exist and **how** they
 ### Lady Olivia — agreed name and core
 **Name: Lady Olivia** (no surname). Bright, ambitious, confidently wants to **harness rift power for herself**; a nuanced, mischievous, stubborn rival, not a caricature or simply 'evil.' She believes power could enable her to help or repair the world. She may unknowingly repeat the emperor's dangerous belief that strong enough manipulation gives control. Her arc can diverge based on player decisions; no resolution locked yet.
 
-### Supporting Riftseekers — proposed, not locked
-- **Seren Wisp:** attunement specialist; might recognize a Starweaver's ability at first meeting.
-- **Pip Thistledown:** enthusiastic scout.
-- **Bram Lock:** protective guard skeptical of reckless experiments.
+### Supporting Riftseekers — agreed
+Campaign-only, like the rest of the fellowship (canon registration pending). None is required: each appears wherever the party is, never in one specific strand.
 
-These names and specific duties are provisional until approved. Avoid overloading the short introductory encounter with the whole roster.
+| Who | First appears | Role | Ties to |
+| --- | --- | --- | --- |
+| **Seren Wisp**, attunement specialist | The glacier departure, the third face there | If the party's Starweaver uses *Read the Riftlight*, Seren reacts in the next scene: "One of you can see it." She later **teaches Attune** in the first regional strand entered. | The Starweaver progression ([mechanics.md](mechanics.md)) |
+| **Pip Thistledown**, eager scout | The first regional strand entered, scouting the displacements | Hero-worships Lady Olivia; players see Olivia through Pip's eyes. Pip's late choice of whether to follow Olivia's summoning mirrors the party's. | Olivia's arc |
+| **Bram Lock**, protective guard, skeptical of reckless experiments | The convergence | Orin's protector. When Olivia attempts her summoning, Bram tries to stop her, and the party decides whether to help him. | The finale's choices |
+
+The glacier scene stays short: Orin, Olivia and Seren, one lead, no lectures. The pairs mirror the theme without saying it: Orin and Bram understand first and go carefully; Olivia and Pip want to harness it; Seren sits between. Seren's reaction hangs off the **flag set by the Starweaver's choice**, not a class check on narration, so it needs no new engine support.
 
 ## Ancient emperor — author-only, secret until final reveal
 **Emperor Corvane, of Pangea — agreed** (new canon, pending registration; canon has no emperors or empires yet). The name deliberately does not sound like present-day canon names, which are homely everyday words (Old Ossley, Bracken Swiftmile): his sounds old and a little grand, not villainous. Once ruled a geographically different realm, was held captive for about a millennium and is newly free after events of Gemfall. Has extensive experience summoning/manipulating ancient rifts but **cannot prescribe behavior**. Wants to relocate today's landscapes to the layout of his old realm, however disruptive. His nostalgia and certainty make him dangerous without needing a child-inappropriate simplistic 'evil' frame. His actions are not explained to players until the very end.
