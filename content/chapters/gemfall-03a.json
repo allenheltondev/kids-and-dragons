@@ -355,6 +355,7 @@
     },
     "scene_troll_hum": {
       "type": "story",
+      "priority": 1,
       "narration": "Old Lintel stops listening to the queue and starts listening to the bridge. \"The stones are humming,\" he rumbles. \"Every pack in this queue, and the whole road behind it. A note older than this bridge, and this bridge is not young.\" Stories and riddles are not enough this season. Now there is one more toll, and it is a question he asks everyone: \"Where did you get that? And where is it going?\"",
       "cast": [
         {
