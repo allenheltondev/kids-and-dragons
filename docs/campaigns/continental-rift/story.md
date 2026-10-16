@@ -78,5 +78,4 @@ Glacier of Origins, yetis and memory in ancient ice. Environmental puzzles and c
 You can influence a powerful natural force without being able to command its behavior. Curiosity, judgment, choices and consequences outweigh raw power. Lady Olivia and Orin respond to uncertainty in contrasting ways; the emperor's error is treating influence as complete control.
 
 ## TBD
-- The emperor's dialogue.
 - Art and music briefs for region and rift-specific encounters.
