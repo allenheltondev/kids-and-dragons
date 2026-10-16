@@ -43,7 +43,9 @@ import { presentationDuration } from "../world/presentation";
 // (a cue per beat) and the chapter's biome (the music bed). Roadmap chapter 8.
 import { ambience, cue, cueForPresentation, stopSceneCues } from "../audio";
 import { ambienceForScene, sceneCuesFor } from "../audio/scene-audio";
-import { perfRequested } from "../world/FrameMeter";
+// From the import-free stats module, never from FrameMeter: a static import of
+// the meter is a static import of the scene, Pixi and the rigs (frame-stats.ts).
+import { perfRequested } from "../world/frame-stats";
 import { RendererBoundary } from "../world/RendererFallback";
 
 // Loaded on demand: PixiStage pulls in all of pixi.js, which is most of the
