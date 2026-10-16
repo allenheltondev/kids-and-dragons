@@ -275,7 +275,10 @@ test("a deploy whose content an edge has not caught up with never takes over", a
               )
           : path === index
             ? (text) => JSON.stringify({ ...(JSON.parse(text) as object), "/content/field-guide.json": "ffffffffffffffff" })
-            : undefined,
+            : path === "/"
+              ? // The deploy's page, marked, so the offline app can be told apart.
+                (text) => text.replace("<head>", "<head><!-- deploy 2 -->")
+              : undefined,
     });
     proxy.reset();
     const after = await phone.evaluate(async () => {
@@ -292,6 +295,8 @@ test("a deploy whose content an edge has not caught up with never takes over", a
     // with no signal, Field Guide and all.
     await noSignal(context, proxy, phone);
     await phone.goto("/journal");
+    // The failed install's page was never made the offline app.
+    expect(await phone.content(), "the failed deploy's page became the offline app").not.toContain("deploy 2");
     await expect(phone.getByText(/no signal/i)).toBeVisible(TAP);
     await studyTheBook(phone);
   } finally {
@@ -365,5 +370,43 @@ test("Data Saver skips guessing ahead, not the book's offline art", async ({ bro
     await expect.poll(() => kept(phone, painting), { timeout: 30_000 }).toBe(true);
   } finally {
     await context.close();
+  }
+});
+
+test("an upgrade with many saved pictures takes over promptly, keeping them all", async ({ browser, baseURL }) => {
+  // #224's worker could keep up to 400 pictures. Adopting them one pause at a
+  // time held the new worker's takeover for minutes; it must be a batch.
+  // No worker until the old cache is in place: putting 60 pictures takes a
+  // while, and the worker would otherwise arrive partway through.
+  const proxy = await startCountingProxy(baseURL ?? "http://localhost:4173", { gone: (path) => path === "/sw.js" });
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, baseURL: proxy.url });
+  const phone = await context.newPage();
+  try {
+    // The build's file index, read straight from the server: the proxy is withholding sw.js.
+    const worker = await (await fetch(`${baseURL ?? "http://localhost:4173"}/sw.js`)).text();
+    const index = /const __KAD_FILE_INDEX__ = "([^"]+)";/.exec(worker)?.[1] ?? "";
+    await phone.goto("/");
+    const pictures = await phone.evaluate(async (index) => {
+      const files = (await (await fetch(index)).json()) as Record<string, string>;
+      const chosen = Object.keys(files).filter((path) => /^\/assets\/characters\/.*\.(?:png|webp)$/.test(path)).slice(0, 60);
+      const legacy = await caches.open("kad-image-v1");
+      for (const path of chosen) await legacy.put(path, await fetch(path));
+      return chosen;
+    }, index);
+    expect(pictures).toHaveLength(60);
+    expect(await phone.evaluate(() => navigator.serviceWorker.controller === null), "the worker arrived before the old cache was in place").toBe(true);
+
+    proxy.configure({});
+    const started = Date.now();
+    await phone.reload();
+    await controlled(phone);
+    await expect.poll(() => phone.evaluate(() => caches.has("kad-image-v1")), { timeout: 60_000 }).toBe(false);
+    const took = Date.now() - started;
+    // Install and adoption together, on a fast local network.
+    expect(took, `taking over took ${String(took)}ms`).toBeLessThan(15_000);
+    for (const path of pictures) expect(await kept(phone, path), `${path} was lost in the upgrade`).toBe(true);
+  } finally {
+    await context.close();
+    await proxy.close();
   }
 });

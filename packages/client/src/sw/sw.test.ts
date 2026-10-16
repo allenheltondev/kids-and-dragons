@@ -18,6 +18,7 @@ import {
   swEvictions,
   swOverLimit,
   swReadVersionedKey,
+  swShellEntry,
   swStaleBundles,
   swStaleVersions,
   swStrategyFor,
@@ -75,6 +76,14 @@ describe("what the worker does with a request", () => {
     expect(swStaleBundles(cached, ["/bundle/c1.js"], ["/bundle/b1.js"])).toEqual(["/bundle/a1.js"]);
     expect(swOverLimit([1, 2, 3, 4], 3)).toEqual([1]);
     expect(swOverLimit([1, 2], 3)).toEqual([]);
+  });
+});
+
+describe("the offline app's page", () => {
+  it("is known by its entry script, so a worker saves only its own build's page", () => {
+    const html = '<script type="module" crossorigin src="/bundle/index-a1B2.js"></script><link rel="modulepreload" href="/bundle/jsx-x.js">';
+    expect(swShellEntry(html)).toBe("/bundle/index-a1B2.js");
+    expect(swShellEntry("<html><body>no app here</body></html>")).toBeNull();
   });
 });
 

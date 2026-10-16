@@ -1,5 +1,10 @@
 /**
- * The service worker (`/sw.js`) — see `policy.ts` for what it is for and what
+ * The service worker (`/sw.js`) — see `policy.ts` for whasync function shell(event: SwFetchEvent): Promise<Response> {
+  const cache = await caches.open(SW_CACHES.shell);
+  try {
+    const response = (await event.preloadResponse) ?? (await fetch(event.request));
+    if (swCacheable(response)) event.waitUntil(keepShell(cache, response.clone()));
+    return response;t it is for and what
  * it decides. This file is only the wiring: install, activate, fetch, message.
  *
  * Built by `sw-build.ts` into one classic script with this build's lists
@@ -21,10 +26,12 @@ import {
   SW_LEGACY_IMAGE_CACHES,
   SW_PRECACHE_CONTENT,
   SW_SHELL_KEY,
+  SW_SHELL_STAGED_KEY,
   swCacheable,
   swEvictions,
   swIsImage,
   swOverLimit,
+  swShellEntry,
   swStaleBundles,
   swStaleVersions,
   swStrategyFor,
@@ -83,10 +90,13 @@ const SAME: CacheQueryOptions = { ignoreVary: true };
 worker.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
-      // The page itself, fresh past the HTTP cache: it is `no-cache` anyway.
+      // The page itself, fresh past the HTTP cache (it is `no-cache` anyway),
+      // staged rather than saved: the worker in charge still serves its own
+      // build's page offline, and must keep doing so if this install fails.
+      // Activate makes it the saved page.
       const shell = await caches.open(SW_CACHES.shell);
       const page = await fetch(SW_SHELL_KEY, { cache: "reload" });
-      if (swCacheable(page)) await shell.put(SW_SHELL_KEY, page);
+      if (swCacheable(page)) await shell.put(SW_SHELL_STAGED_KEY, page);
 
       // Hashed code: what is already saved from an earlier build is the same
       // bytes, so only what is new is fetched. The file index is one of them.
@@ -110,9 +120,12 @@ worker.addEventListener("install", (event) => {
         // install fails, so this worker never takes over and the old one (and
         // its copies) stays in charge; the browser tries the update again later.
         const response = await fetch(path, { cache: "no-cache" });
-        const kept = swCacheable(response) && (await keepVersioned(files, path, fingerprint, response, { replaceOlder: false }));
+        const kept =
+          swCacheable(response) &&
+          (await keepVersioned(files, path, fingerprint, response, { replaceOlder: false, persist: false }));
         if (!kept) throw new Error(`install: ${path} is not the bytes this build fingerprinted`);
       }
+      await saveMeta();
       if (loose.length > 0) await (await caches.open(SW_CACHES.content)).addAll(loose);
 
       // Take over at once. Every build's worker answers the same way, so an
@@ -125,6 +138,14 @@ worker.addEventListener("install", (event) => {
 worker.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
+      // This build's page, staged at install, becomes the offline app.
+      const shellCache = await caches.open(SW_CACHES.shell);
+      const staged = await shellCache.match(SW_SHELL_STAGED_KEY, SAME);
+      if (staged) {
+        await shellCache.put(SW_SHELL_KEY, staged);
+        await shellCache.delete(SW_SHELL_STAGED_KEY);
+      }
+
       // Pictures an earlier worker kept (#224's offline book: the map and the
       // finds) move into the fingerprinted cache — verified, like anything
       // kept — before the cache they were in is dropped below.
@@ -220,6 +241,17 @@ async function shell(event: SwFetchEvent): Promise<Response> {
     if (saved) return saved;
     throw error;
   }
+}
+
+/**
+ * Save a page fetched online as the offline app — only if it is this build's
+ * page. After a deploy the network serves the next build's page while this
+ * worker is still in charge; saving it would pair the next build's code with
+ * this worker's content offline. The next worker saves its own page.
+ */
+async function keepShell(cache: Cache, response: Response): Promise<void> {
+  const entry = swShellEntry(await response.clone().text());
+  if (entry !== null && __KAD_BUNDLE__.includes(entry)) await cache.put(SW_SHELL_KEY, response);
 }
 
 async function cacheFirst(request: Request, cacheName: string): Promise<Response> {
@@ -328,7 +360,7 @@ async function keepVersioned(
   path: string,
   fingerprint: string,
   response: Response,
-  { replaceOlder = true }: { replaceOlder?: boolean } = {},
+  { replaceOlder = true, persist = true }: { replaceOlder?: boolean; persist?: boolean } = {},
 ): Promise<boolean> {
   const bytes = await response.arrayBuffer();
   if ((await fingerprintOf(bytes)) !== fingerprint) return false;
@@ -349,7 +381,9 @@ async function keepVersioned(
   const key = swVersionedKey(path, fingerprint);
   await cache.put(key, new Response(bytes, { status: 200, headers }));
   current[key] = { bytes: bytes.byteLength, used: Date.now() };
-  await saveMeta();
+  // A batch (install, adoption) saves the bookkeeping once at the end, rather
+  // than waiting out `saveMeta`'s coalescing pause for every file.
+  if (persist) await saveMeta();
   return true;
 }
 
@@ -363,9 +397,10 @@ async function adoptLegacyImages(fingerprints: FileIndex, files: Cache): Promise
       const fingerprint = fingerprints[path];
       if (fingerprint === undefined || (await files.match(swVersionedKey(path, fingerprint), SAME))) continue;
       const saved = await legacy.match(request, SAME);
-      if (saved) await keepVersioned(files, path, fingerprint, saved, { replaceOlder: false });
+      if (saved) await keepVersioned(files, path, fingerprint, saved, { replaceOlder: false, persist: false });
     }
   }
+  await saveMeta();
 }
 
 /** `sw-build.ts` fingerprints with the first 16 hex digits of SHA-256. */
