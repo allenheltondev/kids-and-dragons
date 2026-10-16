@@ -22,6 +22,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { test, expect, type Page } from "@playwright/test";
 import { createCharacter } from "./characters";
+import { openPlayerTask } from "./player-navigation";
 import { formatReport, startCountingProxy, type Report } from "./counting-proxy";
 
 const TAP = { timeout: 20_000 } as const;
@@ -163,4 +164,78 @@ test("the Rive runtime arrives while the phone is idle, before any rig needs it"
       { timeout: 30_000 },
     )
     .toBe(true);
+});
+
+test("the scenes ahead are on the phone before the party reaches them", async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, baseURL });
+  const phone = await context.newPage();
+  try {
+    await phone.goto("/");
+    await controlled(phone);
+    await phone.getByRole("button", { name: /want to host/i }).click();
+    await phone.getByText("Phone Mode").click();
+    await phone.getByLabel(/your name/i).fill("Ada");
+    await phone.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(phone).toHaveURL(/\/p\/[A-Z0-9]{4}$/);
+    const code = new URL(phone.url()).pathname.split("/").pop()!;
+    await createCharacter(phone, "unicorn", HERO);
+    await phone.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    await expect(phone.getByRole("button", { name: /begin the adventure/i })).toHaveCount(0, TAP);
+
+    type Scene = { art?: string; choices?: { goto: string }[] } & Record<string, unknown>;
+    const where = async () =>
+      phone.evaluate(async (room) => {
+        const { state } = (await (await fetch(`/api/state?code=${room}`)).json()) as {
+          state: { chapterId: string | null; sceneId: string | null };
+        };
+        return state;
+      }, code);
+    const chapterOf = (id: string) =>
+      phone.evaluate(async (chapterId) => (await (await fetch(`/content/chapters/${chapterId}.json`)).json()) as {
+        scenes: Record<string, Scene>;
+      }, id);
+    /** The art of the scenes one step on — what this test waits to see saved. */
+    const ahead = (scenes: Record<string, Scene>, id: string): string[] => {
+      const scene = scenes[id];
+      const next = [
+        ...(scene?.choices ?? []).map((choice) => choice.goto),
+        ...(["onSuccess", "onFailure", "onVictory", "onDefeat"] as const).map((key) => (scene?.[key] as { goto?: string } | undefined)?.goto),
+      ].filter((to): to is string => typeof to === "string");
+      return [...new Set(next.map((to) => scenes[to]?.art).filter((art): art is string => !!art?.startsWith("scenes/")))].map(
+        (art) => `/assets/${art}.webp`,
+      );
+    };
+
+    // Read on through the story until a scene's next steps have art of their own.
+    let expected: string[] = [];
+    for (let step = 0; step < 8 && expected.length === 0; step += 1) {
+      await expect.poll(async () => (await where()).sceneId, { timeout: 20_000 }).not.toBeNull();
+      const { chapterId, sceneId } = await where();
+      expected = ahead((await chapterOf(chapterId!)).scenes, sceneId!);
+      if (expected.length > 0) break;
+      // Select, then confirm (spec §11). The confirm can take a moment to
+      // appear, so it is waited for rather than tried once — and it never
+      // stops gently animating, so Playwright's "stable" check is skipped
+      // once it is visible and enabled.
+      await openPlayerTask(phone);
+      const confirm = phone.getByRole("button", { name: /do it!|yes, do that/i }).first();
+      await phone.locator(".prompt button").filter({ hasNotText: /do it!|yes, do that|wait, not yet|change/i }).first().click(TAP);
+      await expect(confirm).toBeEnabled(TAP);
+      await confirm.click({ ...TAP, force: true });
+      await expect.poll(async () => (await where()).sceneId, { timeout: 20_000 }).not.toBe(sceneId);
+    }
+    expect(expected.length, "no scene within reach has art of its own").toBeGreaterThan(0);
+
+    // Nobody has gone there yet, and its art is already saved.
+    for (const url of expected) {
+      await expect
+        .poll(() => phone.evaluate(async (target) => (await caches.match(target, { ignoreSearch: true })) !== undefined, url), {
+          timeout: 20_000,
+          message: `${url} was not fetched ahead`,
+        })
+        .toBe(true);
+    }
+  } finally {
+    await context.close();
+  }
 });
