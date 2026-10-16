@@ -11,9 +11,9 @@
  * painting and the Field Guide must all still be there.
  */
 
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type BrowserContext, type Page } from "@playwright/test";
 import { createCharacter } from "./characters";
-import { startCountingProxy } from "./counting-proxy";
+import { startCountingProxy, type CountingProxy } from "./counting-proxy";
 
 const TAP = { timeout: 20_000 } as const;
 const BOOK = /open your book/i;
@@ -64,8 +64,25 @@ async function studyTheBook(page: Page): Promise<void> {
   throw new Error("the guide says something is found, but no section shows it");
 }
 
-test("the adventure book opens on a reload and in a new tab with no signal", async ({ browser }) => {
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+/**
+ * No signal, for real: the page offline and the server unreachable. Taking the
+ * page offline alone is not enough (counting-proxy.ts `down`): a service
+ * worker's own fetches can still get through Playwright's offline switch.
+ */
+async function noSignal(context: BrowserContext, proxy: CountingProxy, page: Page): Promise<void> {
+  proxy.configure({ down: true });
+  await context.setOffline(true);
+  // Proof: a picture nothing saved, which the worker would fetch itself,
+  // fails outright rather than coming back as the server's 404.
+  const reached = await page.evaluate(() =>
+    fetch(`/assets/never-saved-${String(Date.now())}.png`).then(() => true, () => false),
+  );
+  expect(reached, "the worker could still reach the server").toBe(false);
+}
+
+test("the adventure book opens on a reload and in a new tab with no signal", async ({ browser, baseURL }) => {
+  const proxy = await startCountingProxy(baseURL ?? "http://localhost:4173");
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, baseURL: proxy.url });
   const phone = await context.newPage();
 
   // --- Online: the worker installs, a little play, the book opened once ---
@@ -93,7 +110,7 @@ test("the adventure book opens on a reload and in a new tab with no signal", asy
   await expect.poll(() => kept(phone, painting), { timeout: 30_000 }).toBe(true);
 
   // --- No signal: a reload ---
-  await context.setOffline(true);
+  await noSignal(context, proxy, phone);
   await phone.reload();
   await expect(phone.getByText(/no signal/i)).toBeVisible(TAP);
   await studyTheBook(phone);
@@ -105,6 +122,7 @@ test("the adventure book opens on a reload and in a new tab with no signal", asy
   await studyTheBook(tab);
 
   await context.close();
+  await proxy.close();
 });
 
 test("the book saves its art even when it opens before the worker has taken over", async ({ browser, baseURL }) => {
