@@ -851,6 +851,9 @@
           "type": "string",
           "minLength": 1
         },
+        "priority": {
+          "$ref": "#/$defs/priority"
+        },
         "onEnter": {
           "$ref": "#/$defs/effects"
         },
@@ -911,6 +914,9 @@
           "type": "string",
           "minLength": 1
         },
+        "priority": {
+          "$ref": "#/$defs/priority"
+        },
         "onEnter": {
           "$ref": "#/$defs/effects"
         },
@@ -960,6 +966,9 @@
         "narration": {
           "type": "string",
           "minLength": 1
+        },
+        "priority": {
+          "$ref": "#/$defs/priority"
         },
         "onEnter": {
           "$ref": "#/$defs/effects"
@@ -1011,6 +1020,9 @@
         "narration": {
           "type": "string",
           "minLength": 1
+        },
+        "priority": {
+          "$ref": "#/$defs/priority"
         },
         "onEnter": {
           "$ref": "#/$defs/effects"
@@ -1434,6 +1446,13 @@
           }
         }
       }
+    },
+    "priority": {
+      "description": "ScenePriority in chapter.ts. 1 is a revelation the campaign turns on, 2 a clue worth remembering; absent is an ordinary scene. Drawn differently on the shared screen, and never rewritten by the live layer. content/README.md, \"Priority scenes\".",
+      "enum": [
+        1,
+        2
+      ]
     }
   }
 }

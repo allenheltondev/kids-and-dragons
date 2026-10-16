@@ -471,14 +471,44 @@ export function momentBlock(request: NarrationRequest): string {
     : `They got here by choosing: "${request.via}". Write the line.`;
 }
 
+/**
+ * The revelations the party walked through — the authored text of every
+ * visited scene with `priority: 1` (chapter.ts `ScenePriority`), once each.
+ *
+ * A recap told from scene ids picks "the good bits" by its own taste, and the
+ * good bits of a chapter are rarely the one where somebody explains the plot.
+ * Those are the ones the table most needs to hear again.
+ */
+export function revelationsOf(request: RecapRequest): string[] {
+  const seen = new Set<SceneId>();
+  const lines: string[] = [];
+  for (const sceneId of request.visited) {
+    if (seen.has(sceneId)) continue;
+    seen.add(sceneId);
+    const scene = request.chapter.scenes[sceneId];
+    if (!scene || scene.type === "encounter" || scene.priority !== 1) continue;
+    const text = scene.type === "check" ? (scene.narration ?? scene.prompt) : scene.narration;
+    if (text.trim().length > 0) lines.push(text.trim());
+  }
+  return lines;
+}
+
 /** The recap's one-off prompt. Not cached — it happens once, at the end. */
 export function recapPrompt(request: RecapRequest): string {
+  const revelations = revelationsOf(request);
   return [
     `They have just finished "${request.chapter.title}".`,
     "",
     partyBlock(request.party),
     "",
     `Scenes they went through, in order: ${request.visited.join(" → ")}`,
+    ...(revelations.length > 0
+      ? [
+          "",
+          "What they found out, which the recap must say plainly (it is what the whole story turns on):",
+          ...revelations.map((line) => `- ${line}`),
+        ]
+      : []),
     ...(request.outcome ? ["", `How it ended: ${request.outcome}`] : []),
     ...(Object.keys(request.flags).filter((key) => request.flags[key]).length > 0
       ? ["", `Things they did: ${Object.keys(request.flags).filter((key) => request.flags[key]).join(", ")}`]

@@ -1,32 +1,45 @@
 /**
  * The continuity sweep, as a test (tools/content/continuity.mjs).
  *
- * Two halves. The first runs the sweep over Gemfall and fails on any finding
- * that is not in continuity-allow.json, naming the chapter, the scene, the name
- * and where else the name appears. It also fails on a STALE allow-list entry
- * (one no finding matches any more): a list nobody prunes stops being read, and
- * the fix is deleting one line. The second half is a small synthetic campaign
- * that shows the analysis does what it says, so a change to it is judged
- * without needing the real content to break first.
+ * Two halves. The first runs the sweep over EVERY campaign in
+ * content/campaigns (ordered and graph alike, so the next campaign is covered
+ * the day its file lands) and fails on any finding that is not in
+ * continuity-allow.json, naming the chapter, the scene, the name and where
+ * else the name appears. It also fails on a STALE allow-list entry (one no
+ * finding matches any more): a list nobody prunes stops being read, and the
+ * fix is deleting one line. The second half is small synthetic campaigns that
+ * show the analysis does what it says, so a change to it is judged without
+ * needing the real content to break first.
  */
 
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import {
+  REPO,
+  analyse,
   analyseCampaign,
+  analyseGraphCampaign,
   checkAllowList,
   describeFinding,
   extractNames,
   introducedNames,
   loadAllowList,
   loadCampaign,
+  loadCampaigns,
+  verdict,
 } from "./continuity.mjs";
 
-describe("Gemfall continuity", () => {
-  const { campaign, chapters } = loadCampaign("gemfall");
-  const result = analyseCampaign(campaign, chapters);
+describe("continuity across every campaign", () => {
+  const campaigns = loadCampaigns();
+  const results = campaigns.map(({ campaign, chapters }) => ({ id: campaign.id, ...analyse(campaign, chapters) }));
   const allow = loadAllowList();
-  const split = checkAllowList(result.findings, allow);
+  const split = checkAllowList(results.flatMap((r) => r.findings), allow);
+
+  it("sweeps every campaign file, Gemfall among them", () => {
+    expect(campaigns.map((c) => c.campaign.id)).toContain("gemfall");
+    expect(campaigns.length).toBeGreaterThanOrEqual(2);
+  });
 
   it("has no dangling reference that is not allow-listed", () => {
     expect(split.unlisted.map((f) => `${describeFinding(f)}\n    allow-list key: ${f.key}`)).toEqual([]);
@@ -42,8 +55,30 @@ describe("Gemfall continuity", () => {
   });
 
   it("reaches every chapter and strands no road", () => {
-    expect(result.unreached).toEqual([]);
-    expect(result.stranded).toEqual([]);
+    for (const r of results) {
+      expect(r.unreached, r.id).toEqual([]);
+      expect(r.stranded, r.id).toEqual([]);
+    }
+  });
+
+  it("settles on every campaign, and the run's verdict passes", () => {
+    for (const r of results) expect(r.settled, r.id).not.toBe(false);
+    expect(verdict(results, allow).exitCode).toBe(0);
+  });
+});
+
+describe("the run's verdict", () => {
+  const clean = { id: "c", findings: [], stranded: [], unreached: [] };
+
+  it("passes a clean run, ordered or settled graph", () => {
+    expect(verdict([clean, { ...clean, id: "g", settled: true }], {}).exitCode).toBe(0);
+  });
+
+  it("fails closed when a campaign's analysis did not settle, and says which", () => {
+    const out = verdict([clean, { ...clean, id: "g", settled: false }], {});
+    expect(out.exitCode).toBe(1);
+    expect(out.unsettled).toEqual(["g"]);
+    expect(out.lines.some((l) => l.startsWith("UNSETTLED g:"))).toBe(true);
   });
 });
 
@@ -308,5 +343,226 @@ describe("when conditions and variants", () => {
   it("does not read {facets} or {party} as names", () => {
     expect([...extractNames("You hold {facets} and tell {party} about it.", { lower: new Set(), midCaps: new Set(["Facets", "Party"]) })]).toEqual([]);
     expect([...introducedNames("called {party}")]).toEqual([]);
+  });
+});
+
+/* ------------------------------------------------------------------------- */
+/* Graph campaigns: places and ways, in any order.                           */
+
+describe("a graph campaign", () => {
+  /** A one-scene chapter that ends at once. */
+  const solo = (id, narration, extra = {}) => chapter(id, 1, { start: scene(narration, [], extra), primer: PRIMER });
+  const graph = (nodes, edges, more = {}) => ({
+    id: "g",
+    chapters: [],
+    graph: { version: 1, entry: Object.keys(nodes)[0], nodes, edges, ...more },
+  });
+  const run = (campaign, chapters) => analyseGraphCampaign({ ...campaign, chapters: chapters.map((c) => c.id) }, chapters);
+  const edge = (from, to, extra = {}) => ({ from, to, kind: "forward", ...extra });
+
+  /*
+   *   hub --> left  (meets Pellam) --> door
+   *   hub --> right (meets nobody) --> door
+   */
+  const diamond = (doorNarration, doorEdge = {}) => [
+    graph(
+      { hub: { chapter: "hub" }, left: { chapter: "left" }, right: { chapter: "right" }, door: { chapter: "door" } },
+      {
+        a: edge("hub", "left", { label: "Go left" }),
+        b: edge("hub", "right", { label: "Go right" }),
+        c: edge("left", "door", { label: "On" }),
+        d: edge("right", "door", { label: "On", ...doorEdge }),
+      },
+    ),
+    [
+      solo("hub", "A crossroads."),
+      solo("left", "A clerk named Pellam stamps your pass."),
+      solo("right", "Nobody stamps anything."),
+      solo("door", doorNarration),
+    ],
+  ];
+
+  it("names a place that one way in never introduced", () => {
+    const { findings, unreached } = run(...diamond("Pellam is at the door."));
+    expect(findings.map((f) => f.key)).toEqual(["door/start/Pellam"]);
+    expect(unreached).toEqual([]);
+  });
+
+  it("is quiet when the place introduces the name itself", () => {
+    expect(run(...diamond("A clerk named Pellam is at the door.")).findings).toEqual([]);
+  });
+
+  it("treats `completed` on a way in as proof of what that place showed", () => {
+    expect(run(...diamond("Pellam is at the door.", { when: { completed: "left" } })).findings).toEqual([]);
+    // `visited` proves only the way INTO the place: a visit may not have reached Pellam yet.
+    expect(run(...diamond("Pellam is at the door.", { when: { visited: "left" } })).findings.map((f) => f.key)).toEqual([
+      "door/start/Pellam",
+    ]);
+  });
+
+  it("counts what a way's own label shows", () => {
+    expect(run(...diamond("Pellam is at the door.", { label: "Follow Pellam's footprints" })).findings).toEqual([]);
+  });
+
+  it("proves a journey flag from every setter of it, wherever it is in the graph", () => {
+    const build = (gate) => [
+      graph(
+        { hub: { chapter: "hub" }, left: { chapter: "left" }, right: { chapter: "right" }, door: { chapter: "door" } },
+        { a: edge("hub", "left"), b: edge("hub", "right"), c: edge("left", "door"), d: edge("right", "door") },
+        { flags: ["met_pellam"] },
+      ),
+      [
+        solo("hub", "A crossroads."),
+        chapter("left", 1, {
+          start: scene("A clerk named Pellam stamps your pass.", [go("end", "Thank him", { effects: [set("met_pellam")] })]),
+          end: scene("Done."),
+        }),
+        solo("right", "Nobody stamps anything."),
+        chapter("door", 1, {
+          start: scene("A door.", [go("end", "Ask Pellam to open it", gate), go("end", "Knock")]),
+          end: scene("Done."),
+          primer: PRIMER,
+        }),
+      ],
+    ];
+    expect(run(...build({ requiresFlag: "met_pellam" })).findings).toEqual([]);
+    expect(run(...build({})).findings.map((f) => f.key)).toEqual(["door/start/Pellam"]);
+  });
+
+  it("does not mistake a return to a place for a citation of what it coined", () => {
+    // The hub coins Quill on the first visit; a party back from the side trip knows Quill only from here.
+    const campaign = graph(
+      { hub: { chapter: "hub" }, side: { chapter: "side" } },
+      { out: edge("hub", "side", { kind: "sideways" }), back: edge("side", "hub", { kind: "return", label: "Back to Quill's" }) },
+    );
+    expect(run(campaign, [solo("hub", "You meet Quill at the well."), solo("side", "A quiet field.")]).findings).toEqual([]);
+  });
+
+  it("judges a node variant from the ways that reach it, plus what its own `when` proves", () => {
+    const campaign = (when) =>
+      graph(
+        {
+          hub: { chapter: "hub", variants: [{ chapter: "hub-late", when }] },
+          left: { chapter: "left" },
+          right: { chapter: "right" },
+        },
+        {
+          a: edge("hub", "left"),
+          b: edge("hub", "right"),
+          c: edge("left", "hub", { kind: "return" }),
+          d: edge("right", "hub", { kind: "return" }),
+        },
+      );
+    const chapters = [
+      // No primer at the hub: what the hub itself shows is left out of a variant's ways in.
+      chapter("hub", 1, { start: scene("A crossroads.") }),
+      solo("hub-late", "Pellam waits at the crossroads."),
+      solo("left", "A clerk named Pellam stamps your pass."),
+      solo("right", "Nobody stamps anything."),
+    ];
+    expect(run(campaign({ visit: { min: 2 } }), chapters).findings.map((f) => f.key)).toEqual(["hub-late/start/Pellam"]);
+    expect(run(campaign({ completed: "left" }), chapters).findings).toEqual([]);
+  });
+
+  it("settles possible knowledge too, when an optional introduction reaches a variant a round late", () => {
+    /*
+     *   hub --> w           (w-late, on a return, waves to Pellam)
+     *   hub --> x --> y --(return)--> x --(sideways)--> w
+     *
+     * y may introduce Pellam, on one branch only, and the only way that
+     * possibility reaches w-late is round the loop through x-late. The sweep
+     * meets w before x, and nothing here is guaranteed, so every K is empty
+     * from the first round. A sweep that stopped when K stopped, reading M as
+     * it stood then, could judge w-late's merge point with M from before the
+     * loop was walked (PR #223 review). M is now computed from the graph before
+     * the fixed point, and the fixed point compares K and M both: the finding
+     * is there and the sweep reports it settled.
+     */
+    const late = { visit: { min: 2 } };
+    const campaign = graph(
+      {
+        hub: { chapter: "hub" },
+        w: { chapter: "w", variants: [{ chapter: "w-late", when: late }] },
+        x: { chapter: "x", variants: [{ chapter: "x-late", when: late }] },
+        y: { chapter: "y" },
+      },
+      {
+        a: edge("hub", "w"),
+        b: edge("hub", "x"),
+        c: edge("x", "y"),
+        d: edge("y", "x", { kind: "return" }),
+        e: edge("x", "w", { kind: "sideways" }),
+      },
+    );
+    const chapters = [
+      chapter("hub", 1, { start: scene("A crossroads.") }),
+      chapter("w", 1, { start: scene("A well.") }),
+      chapter("w-late", 1, { start: scene("The well again.", [go("end", "Wave to Pellam"), go("end", "Walk on")]), end: scene("Done.") }),
+      chapter("x", 1, { start: scene("A bridge.") }),
+      chapter("x-late", 1, { start: scene("The bridge again.") }),
+      chapter("y", 1, {
+        start: scene("A market.", [go("meet", "Look around"), go("quiet", "Keep walking")]),
+        meet: scene("A clerk named Pellam waves.", [go("end")]),
+        quiet: scene("Nobody waves.", [go("end")]),
+        end: scene("Done."),
+        primer: PRIMER,
+      }),
+    ];
+    const result = run(campaign, chapters);
+    expect(result.findings.map((f) => f.key)).toEqual(["w-late/start/Pellam"]);
+    expect(result.settled).toBe(true);
+  });
+
+  it("lets a node variant coin a name a return brings back round the loop", () => {
+    // n2 is the only chapter that mentions Pellam, and it introduces him. A party
+    // back from q has never seen n2, so the name cannot have reached it from there.
+    const campaign = graph(
+      { hub: { chapter: "hub" }, n: { chapter: "n", variants: [{ chapter: "n2", when: { visit: { min: 2 } } }] }, q: { chapter: "q" } },
+      { a: edge("hub", "n"), b: edge("n", "q"), c: edge("q", "n", { kind: "return" }) },
+    );
+    const chapters = [
+      chapter("hub", 1, { start: scene("A crossroads.") }),
+      chapter("n", 1, { start: scene("A bridge.") }),
+      chapter("n2", 1, { start: scene("Back at the bridge, you meet Pellam, who waves. Pellam smiles.") }),
+      chapter("q", 1, { start: scene("A field.") }),
+    ];
+    expect(run(campaign, chapters).findings).toEqual([]);
+  });
+
+  it("is what `analyse` runs for a campaign with a graph", () => {
+    const [campaign, chapters] = diamond("Pellam is at the door.");
+    expect(analyse({ ...campaign, chapters: chapters.map((c) => c.id) }, chapters).findings.map((f) => f.key)).toEqual([
+      "door/start/Pellam",
+    ]);
+  });
+});
+
+describe("the Continental Rift slice (the worked graph campaign)", () => {
+  const fixtures = join(REPO, "packages", "shared", "src", "fixtures");
+  const { campaign, chapters } = loadCampaign("continental-rift", REPO, {
+    file: join(fixtures, "continental-rift.campaign.json"),
+    chapters: join(fixtures, "continental-rift", "chapters"),
+  });
+  const result = analyse(campaign, chapters);
+
+  it("plays every chapter from some way in, and settles", () => {
+    expect(result.unreached).toEqual([]);
+    expect(result.settled).toBe(true);
+  });
+
+  it("finds only the Great River, and says why each one is or is not real", () => {
+    /*
+     * cr-heart/scene_door: real by the rule. A party can go Exchange -> tear ->
+     * glacier -> blue door without ever reading "the Great River"; only the
+     * meltwater way home names it. A real campaign would introduce it in the
+     * door scene or allow-list it as world geography.
+     *
+     * cr-exchange-flooded/scene_flood: the analysis's limit. The flooded
+     * Exchange is chosen by a world fact (`great-river: surging`) that only
+     * the glacier sets, so in play it is always first entered down the
+     * meltwater way, whose label names the river. Facts prove nothing here,
+     * so the return from the marsh still counts as a way in.
+     */
+    expect(result.findings.map((f) => f.key)).toEqual(["cr-exchange-flooded/scene_flood/Great", "cr-heart/scene_door/Great"]);
   });
 });

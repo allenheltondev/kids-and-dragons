@@ -1606,8 +1606,9 @@ single-use rift; broken graphs built in the test prove unreachable nodes and sof
 with their paths. Gemfall and the Hollow Crown are asserted ordered and skipped.
 
 This does **not** repeat #167: the continuity sweep (`content:continuity`) checks the prose of
-ordered campaigns for names no route showed the party, and still does. What a graph adds is whether
-it can be walked at all, which is checked here.
+every campaign for names some way in never showed the party, a graph campaign by its places and
+ways (`analyseGraphCampaign`). What a graph adds is whether it can be walked at all, which is
+checked here.
 
 ---
 

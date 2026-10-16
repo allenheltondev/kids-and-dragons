@@ -198,12 +198,31 @@ export type CastSize =
   | "very_large"
   | "colossal";
 
+/**
+ * How much a scene matters to the story — "p1" and "p2" (content/README.md,
+ * "Priority scenes").
+ *
+ * - `1`, a **revelation**: the campaign turns on what the party learns here.
+ *   The gemstones are a seal; the seal holds a titan under the mountain. Miss
+ *   it and the rest of the campaign stops making sense.
+ * - `2`, a **clue**: worth remembering, and worth the table noticing, but the
+ *   story survives a party that skims it.
+ *
+ * Absent is an ordinary scene, which is nearly all of them. Both levels are
+ * drawn differently on the shared screen, and both keep their authored words:
+ * the live layer never rewrites a priority scene, because the one thing a
+ * paraphrase may not do is lose the fact the scene exists to deliver.
+ */
+export type ScenePriority = 1 | 2;
+
 export interface StoryScene {
   type: "story";
   art?: string;
   narration: string;
   /** Conditional narration, composed when the scene opens. See `NarrationVariant`. */
   variants?: NarrationVariant[];
+  /** How much this scene matters to the story. See `ScenePriority`. */
+  priority?: ScenePriority;
   onEnter?: Effect[];
   /**
    * Canon ids (keys of `content/field-guide.json` entries) the kids meet in
@@ -231,6 +250,8 @@ export interface CheckScene {
    * (`narration`, or `prompt` without it). See `NarrationVariant`.
    */
   variants?: NarrationVariant[];
+  /** How much this scene matters to the story. See `ScenePriority`. */
+  priority?: ScenePriority;
   onEnter?: Effect[];
   /**
    * Canon ids (keys of `content/field-guide.json` entries) the kids meet in
@@ -254,6 +275,8 @@ export interface ChoicePointScene {
   narration: string;
   /** Conditional narration, composed when the scene opens. See `NarrationVariant`. */
   variants?: NarrationVariant[];
+  /** How much this scene matters to the story. See `ScenePriority`. */
+  priority?: ScenePriority;
   onEnter?: Effect[];
   /**
    * Canon ids (keys of `content/field-guide.json` entries) the kids meet in
@@ -276,6 +299,8 @@ export interface RestScene {
   narration: string;
   /** Conditional narration, composed when the scene opens. See `NarrationVariant`. */
   variants?: NarrationVariant[];
+  /** How much this scene matters to the story. See `ScenePriority`. */
+  priority?: ScenePriority;
   onEnter?: Effect[];
   /**
    * Canon ids (keys of `content/field-guide.json` entries) the kids meet in

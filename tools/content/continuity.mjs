@@ -1,8 +1,12 @@
 /**
- * Continuity sweep: dangling references in a campaign's prose.
+ * Continuity sweep: dangling references in every campaign's prose.
  *
  *   npm run content:continuity            # fail on anything not allow-listed
  *   npm run content:continuity -- --all   # also list the allow-listed ones
+ *
+ * Every file in content/campaigns is swept: an ordered campaign by its beats
+ * (`analyseCampaign`), a graph campaign by its places and ways
+ * (`analyseGraphCampaign`). One allow-list serves both.
  *
  * A "dangling reference" is a scene that uses a name (a person, a place, an
  * item: any capitalised word) that some way of arriving at the scene never
@@ -37,7 +41,7 @@
  * that no longer matches a finding fails too (stale), so it cannot rot.
  */
 
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -660,13 +664,34 @@ function onePass(chapter, scenes, entry, ctx, { flagToSet, vocab, itemNames }) {
 // ---------------------------------------------------------------------------
 // The whole campaign
 
-/** Reads a campaign and its chapters from disk. */
-export function loadCampaign(campaignId = "gemfall", root = REPO) {
-  const campaign = JSON.parse(readFileSync(join(root, "content", "campaigns", `${campaignId}.json`), "utf8"));
-  const chapters = campaign.chapters.map((id) =>
-    JSON.parse(readFileSync(join(root, "content", "chapters", `${id}.json`), "utf8")),
-  );
+/**
+ * Reads a campaign and its chapters from disk. `from` reads one from
+ * somewhere other than `content/`: `{ file, chapters }`, the campaign file
+ * and its chapters' directory (a fixture keeps both beside its tests).
+ */
+export function loadCampaign(campaignId = "gemfall", root = REPO, from = null) {
+  const file = from?.file ?? join(root, "content", "campaigns", `${campaignId}.json`);
+  const chapterDir = from?.chapters ?? join(root, "content", "chapters");
+  const campaign = JSON.parse(readFileSync(file, "utf8"));
+  const chapters = campaign.chapters.map((id) => JSON.parse(readFileSync(join(chapterDir, `${id}.json`), "utf8")));
   return { campaign, chapters };
+}
+
+/** Every campaign in `content/campaigns`, ordered and graph alike, by id. */
+export function loadCampaigns(root = REPO) {
+  return readdirSync(join(root, "content", "campaigns"))
+    .filter((f) => f.endsWith(".json"))
+    .sort()
+    .map((f) => loadCampaign(f.slice(0, -".json".length), root));
+}
+
+/**
+ * The sweep for any campaign: a graph campaign (`campaign.graph`) by its
+ * places and ways (`analyseGraphCampaign`), an ordered one by its beats
+ * (`analyseCampaign`). Same findings, same allow-list.
+ */
+export function analyse(campaign, chapters) {
+  return campaign.graph ? analyseGraphCampaign(campaign, chapters) : analyseCampaign(campaign, chapters);
 }
 
 /** All text a chapter can show, for the vocabulary and for "where else". */
@@ -686,10 +711,14 @@ function chapterTexts(chapter) {
  *   stranded: states that selected no chapter (content:validate's job, surfaced here)
  *   unreached: chapter ids no history reaches
  */
-export function analyseCampaign(campaign, chapters) {
-  const routeSets = campaign.routeSets ?? {};
+/**
+ * What every sweep needs from a campaign's text before it walks anything: the
+ * route sets, the vocabulary, where each name appears (for messages), the
+ * props, the quest items (which outlive a chapter) and every item id.
+ */
+function campaignContext(campaign, chapters) {
   const flagToSet = new Map();
-  for (const [set, members] of Object.entries(routeSets)) for (const f of members) flagToSet.set(f, set);
+  for (const [set, members] of Object.entries(campaign.routeSets ?? {})) for (const f of members) flagToSet.set(f, set);
 
   const allTexts = chapters.flatMap((c) => chapterTexts(c));
   const vocab = buildVocabulary(allTexts.flatMap((t) => t.texts));
@@ -708,7 +737,6 @@ export function analyseCampaign(campaign, chapters) {
     }
   }
 
-  const selectors = new Set(chapters.map((c) => c.route?.set).filter(Boolean));
   // Props are defined where an item is first granted but shown wherever it is.
   const props = Object.assign({}, ...chapters.map((c) => c.props ?? {}));
   const quest = new Set();
@@ -721,6 +749,38 @@ export function analyseCampaign(campaign, chapters) {
       }
     }
   }
+  return { flagToSet, vocab, appearances, props, quest, itemIds };
+}
+
+/** Merges one chapter analysis's dangling records into the campaign's. */
+function mergeDangling(into, chapterId, dangling) {
+  for (const [scene, rec] of dangling) {
+    const k = `${chapterId}/${scene}`;
+    if (!into.has(k)) into.set(k, { lack: new Set(), may: new Set() });
+    for (const n of rec.lack) into.get(k).lack.add(n);
+    for (const n of rec.may) into.get(k).may.add(n);
+  }
+}
+
+/**
+ * Dangling records as findings: a name some history into the scene lacked
+ * and some history had.
+ */
+function toFindings(dangling, appearances) {
+  const findings = [];
+  for (const [k, rec] of [...dangling].sort(([a], [b]) => a.localeCompare(b))) {
+    const [chapter, scene] = k.split("/");
+    for (const name of [...rec.lack].filter((n) => rec.may.has(n)).sort()) {
+      const elsewhere = (appearances.get(name) ?? []).filter((w) => w !== k);
+      findings.push({ key: `${k}/${name}`, chapter, scene, name, elsewhere });
+    }
+  }
+  return findings;
+}
+
+export function analyseCampaign(campaign, chapters) {
+  const { flagToSet, vocab, appearances, props, quest, itemIds } = campaignContext(campaign, chapters);
+  const selectors = new Set(chapters.map((c) => c.route?.set).filter(Boolean));
   const byIndex = new Map();
   for (const c of chapters) {
     if (!byIndex.has(c.index)) byIndex.set(c.index, []);
@@ -747,12 +807,7 @@ export function analyseCampaign(campaign, chapters) {
       }
       reached.add(chapter.id);
       const res = analyseChapter(chapter, state, { flagToSet, vocab, quest, itemIds, props });
-      for (const [scene, rec] of res.dangling) {
-        const k = `${chapter.id}/${scene}`;
-        if (!dangling.has(k)) dangling.set(k, { lack: new Set(), may: new Set() });
-        for (const n of rec.lack) dangling.get(k).lack.add(n);
-        for (const n of rec.may) dangling.get(k).may.add(n);
-      }
+      mergeDangling(dangling, chapter.id, res.dangling);
       for (const end of res.endings) {
         const held = new Map(state.held);
         const standing = new Set();
@@ -800,18 +855,270 @@ export function analyseCampaign(campaign, chapters) {
     states = next;
   }
 
-  const findings = [];
-  for (const [k, rec] of [...dangling].sort(([a], [b]) => a.localeCompare(b))) {
-    const [chapter, scene] = k.split("/");
-    for (const name of [...rec.lack].filter((n) => rec.may.has(n)).sort()) {
-      const elsewhere = (appearances.get(name) ?? []).filter((w) => w !== k);
-      findings.push({ key: `${k}/${name}`, chapter, scene, name, elsewhere });
-    }
-  }
   return {
-    findings,
+    findings: toFindings(dangling, appearances),
     stranded,
     unreached: chapters.filter((c) => !reached.has(c.id)).map((c) => c.id),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// A graph campaign
+
+/** A graph condition field that names one id or a list of them. */
+const ids = (v) => (v === undefined ? [] : Array.isArray(v) ? v : [v]);
+
+/**
+ * Whether a world-fact test holds for a fact still at its declared `initial`
+ * (`FactTest` in packages/shared/src/types/campaign-graph.ts).
+ */
+function factTestHoldsInitially(test, fact) {
+  const v = fact?.initial ?? (fact?.type === "flag" ? false : fact?.type === "counter" ? fact.min : undefined);
+  if (test === null || typeof test !== "object") return v === test;
+  if (test.in && !test.in.includes(v)) return false;
+  if (test.not !== undefined && v === test.not) return false;
+  if (test.min !== undefined && !(typeof v === "number" && v >= test.min)) return false;
+  if (test.max !== undefined && !(typeof v === "number" && v <= test.max)) return false;
+  return true;
+}
+
+/**
+ * Whether a node variant could be the place on a fresh attempt's very first
+ * arrival: nothing in its `when` needs the journey to have moved, and every
+ * fact it reads is satisfied by its initial value.
+ */
+function couldHoldAtStart(when, facts) {
+  if (!when) return true;
+  if (when.flag || ids(when.visited).length || ids(when.completed).length || ids(when.traversed).length || when.outcome) return false;
+  if (when.visit && (when.visit.min ?? 1) > 1) return false;
+  return Object.entries(when.facts ?? {}).every(([id, test]) => factTestHoldsInitially(test, facts[id]));
+}
+
+/**
+ * The continuity sweep for a graph campaign (docs/campaigns/graph-campaigns.md).
+ *
+ * There are no beats to walk in order, so knowledge is attached to places.
+ * What a party knows only ever grows, which is what makes this sound without
+ * enumerating journeys:
+ *
+ *   - **Entering a place.** Every way in is an edge from somewhere the party
+ *     finished (or the start, for the entry node). What is guaranteed on
+ *     arrival is the intersection, over every edge in, of what the place it
+ *     came from guaranteed on leaving, what the edge's own label shows, and
+ *     what its `when` proves.
+ *   - **Leaving a place.** What every ending of every chapter played there
+ *     guarantees, from that entry knowledge (`analyseChapter`, unchanged).
+ *     A `pass` revisit plays nothing, but the place was completed earlier,
+ *     so the same holds.
+ *   - **What a condition proves.** `completed: X` proves what leaving X
+ *     guarantees; `visited: X` what entering X does; `traversed: E` what
+ *     leaving E's `from` does, plus E's label. A journey flag or a quest
+ *     item proves what EVERY setter of it showed, wherever in the graph the
+ *     setter is (a chapter's `setFlag` or grant, an edge's or a completion
+ *     rule's `setFlag`): holding it means one of them happened. `notFlag`,
+ *     `notVisited`, `outcome`, `visit` and facts prove nothing (facts are
+ *     written by the graph, not shown by any scene).
+ *   - **Variants.** A node variant's chapter is entered from the same edges,
+ *     plus what its own `when` proves. It shares the fresh-attempt start only
+ *     if its `when` could hold before the journey has moved.
+ *
+ * Loops are settled by iterating to a fixed point. Findings are the same
+ * shape as an ordered campaign's, so one allow-list serves both.
+ */
+export function analyseGraphCampaign(campaign, chapters) {
+  const g = campaign.graph;
+  const { flagToSet, vocab, appearances, props, quest, itemIds } = campaignContext(campaign, chapters);
+  const byId = new Map(chapters.map((c) => [c.id, c]));
+  const nodes = Object.entries(g.nodes ?? {});
+  const edges = Object.entries(g.edges ?? {});
+  const facts = g.facts ?? {};
+  const journeyFlags = new Set([...(g.flags ?? []), ...flagToSet.keys()]);
+  const labelOf = (edge) => edge.label ?? g.nodes[edge.to]?.title ?? "";
+
+  // Breadth-first from the entry, so a first pass meets most predecessors before their successors.
+  const order = [];
+  const seen = new Set([g.entry]);
+  for (const queue = [g.entry]; queue.length; ) {
+    const id = queue.shift();
+    order.push(id);
+    for (const [, e] of edges) if (e.from === id && g.nodes[e.to] && !seen.has(e.to)) seen.add(e.to), queue.push(e.to);
+  }
+
+  /*
+   * "Some way in showed it" counts a chapter's FIRST play only. A loop brings
+   * a party back to a place knowing what the place (and the way back, "Back to
+   * the Exchange") told it last time, and a scene that coins a name on its
+   * first play would otherwise look like it cites one on the next. So:
+   *
+   *   - a place's own chapter is first played on the first arrival: its
+   *     may-knowledge runs along paths that have not been to the place yet
+   *     (`firstArrivalMay`);
+   *   - a node variant is first played on some later arrival: its paths may
+   *     pass through the place (whose other chapters count) but never through
+   *     the variant itself (`firstPlayMay`).
+   *
+   * Both are computed once, from the graph and the text, before the fixed
+   * point; what every way in guarantees (K) still counts every arrival.
+   */
+  const chapterShows = (cid) => {
+    const chapter = byId.get(cid);
+    let shown = new Set();
+    if (!chapter) return shown;
+    for (const { texts, cast } of chapterTexts(chapter)) {
+      shown = union(shown, shownMain(texts, vocab));
+      for (const c of cast) for (const n of nameTokens(c)) shown.add(n);
+    }
+    for (const sc of Object.values(chapter.scenes ?? {})) shown = union(shown, shownMain((sc.variants ?? []).map((v) => v.text), vocab));
+    return shown;
+  };
+  const playedAt = (node) => [node.chapter, ...(node.variants ?? []).map((v) => v.chapter)];
+  /** Names a node's chapters show, leaving out one of them (a variant judged on its own). */
+  const showsOfExcept = (node, except = null) =>
+    playedAt(node).filter((cid) => cid !== except).reduce((acc, cid) => union(acc, chapterShows(cid)), new Set());
+  const showsOf = new Map(nodes.map(([id, node]) => [id, showsOfExcept(node)]));
+  const firstArrivalMay = (self) => {
+    const arrive = new Map([[g.entry, new Set()]]);
+    for (let changed = true; changed; ) {
+      changed = false;
+      for (const [, e] of edges) {
+        if (e.from === self || !arrive.has(e.from) || !g.nodes[e.to]) continue;
+        const leave = union(arrive.get(e.from), showsOf.get(e.from));
+        const next = union(arrive.get(e.to) ?? new Set(), union(leave, shownMain([labelOf(e)], vocab)));
+        if (!arrive.has(e.to) || next.size !== arrive.get(e.to).size) arrive.set(e.to, next), (changed = true);
+      }
+    }
+    return arrive.get(self) ?? new Set();
+  };
+  const mayIn = new Map(order.map((id) => [id, firstArrivalMay(id)]));
+  const firstPlayMay = (self, unplayed) => {
+    const shows = (id) => (id === self ? showsOfExcept(g.nodes[id], unplayed) : showsOf.get(id));
+    const arrive = new Map([[g.entry, new Set()]]);
+    for (let changed = true; changed; ) {
+      changed = false;
+      for (const [, e] of edges) {
+        if (!arrive.has(e.from) || !g.nodes[e.to]) continue;
+        const leave = union(arrive.get(e.from), shows(e.from));
+        const next = union(arrive.get(e.to) ?? new Set(), union(leave, shownMain([labelOf(e)], vocab)));
+        if (!arrive.has(e.to) || next.size !== arrive.get(e.to).size) arrive.set(e.to, next), (changed = true);
+      }
+    }
+    return arrive.get(self) ?? new Set();
+  };
+  const variantMay = new Map();
+  for (const id of order) for (const v of g.nodes[id].variants ?? []) variantMay.set(`${id}/${v.chapter}`, firstPlayMay(id, v.chapter));
+
+  let kin = new Map(); // node -> { K, M } on arrival
+  let kend = new Map(); // node -> { K, M } on leaving
+  let setters = new Map(); // journey flag or `item:ID` -> names every setter showed
+  let dangling = new Map();
+  let played = new Set();
+
+  /*
+   * Settled means nothing moved: what every way in guarantees (K), what some
+   * way in may have shown (M), and the setters. A chapter's M is computed
+   * before the loop (`firstArrivalMay`, `firstPlayMay`), so it cannot go stale
+   * here; it is in the signature anyway, because a fixed point that ignored
+   * half the state it carries would only be one by accident (PR #223 review).
+   */
+  const sig = () =>
+    JSON.stringify([
+      ...[kin, kend].map((m) => [...m].map(([k, v]) => [k, [...v.K].sort(), [...v.M].sort()]).sort()),
+      [...setters].map(([k, v]) => [k, [...v].sort()]).sort(),
+    ]);
+
+  let settled = false;
+  for (let round = 0; round < 60; round++) {
+    const before = sig();
+    const roundSetters = new Map();
+    dangling = new Map();
+    played = new Set();
+
+    /** What a graph condition proves was shown, from the last settled knowledge. */
+    const proves = (when) => {
+      let out = new Set();
+      if (!when) return out;
+      for (const n of ids(when.completed)) out = union(out, kend.get(n)?.K ?? new Set());
+      for (const n of ids(when.visited)) out = union(out, kin.get(n)?.K ?? new Set());
+      for (const id of ids(when.traversed)) {
+        const e = g.edges[id];
+        if (e) out = union(union(out, kend.get(e.from)?.K ?? new Set()), shownMain([labelOf(e)], vocab));
+      }
+      if (when.flag) out = union(out, setters.get(when.flag) ?? new Set());
+      return out;
+    };
+
+    for (const id of order) {
+      const node = g.nodes[id];
+      // Every way in that is known so far: an edge from a place with leaving knowledge.
+      const ways = [];
+      for (const [, e] of edges) {
+        if (e.to !== id || !kend.has(e.from)) continue;
+        const label = shownMain([labelOf(e)], vocab);
+        ways.push({
+          K: union(union(kend.get(e.from).K, label), proves(e.when)),
+          M: union(kend.get(e.from).M, label),
+        });
+      }
+      const start = id === g.entry ? [{ K: new Set(), M: new Set() }] : [];
+      const meet = (list, extra = new Set()) =>
+        list.length ? { K: union(intersect(list.map((w) => w.K)), extra), M: union(list.reduce((a, w) => union(a, w.M), new Set()), extra) } : null;
+      const arrival = meet([...start, ...ways]);
+      if (!arrival) continue;
+      kin.set(id, arrival);
+
+      const plays = [{ chapter: node.chapter, entry: { K: arrival.K, M: mayIn.get(id) } }];
+      for (const v of node.variants ?? []) {
+        const entry = meet([...(couldHoldAtStart(v.when, facts) ? start : []), ...ways], proves(v.when));
+        if (entry) plays.push({ chapter: v.chapter, entry: { K: entry.K, M: variantMay.get(`${id}/${v.chapter}`) } });
+      }
+
+      const leaving = [];
+      for (const { chapter: chapterId, entry } of plays) {
+        const chapter = byId.get(chapterId);
+        if (!chapter) continue;
+        played.add(chapterId);
+        // Journey flags and quest items may be held on arrival; each proves what its setters showed.
+        const flagK = new Map();
+        const maybeHeld = new Set();
+        for (const f of journeyFlags) if (setters.has(f)) maybeHeld.add(f), flagK.set(f, setters.get(f));
+        for (const q of quest) if (setters.has(q)) maybeHeld.add(q), flagK.set(q, setters.get(q));
+        const res = analyseChapter(
+          chapter,
+          { K: entry.K, M: entry.M, flagK, maybeHeld, held: new Map() },
+          { flagToSet, vocab, quest, itemIds, props },
+        );
+        mergeDangling(dangling, chapter.id, res.dangling);
+        for (const [key, k] of res.setterK) if (journeyFlags.has(key) || quest.has(key)) meetInto(roundSetters, key, k);
+        for (const end of res.endings) leaving.push({ K: end.K, M: end.M });
+      }
+      const left = meet(leaving);
+      if (!left) continue;
+      kend.set(id, left);
+      // The graph's own setters: a completion rule's flag, an edge's flag.
+      for (const rule of node.onComplete ?? []) {
+        for (const eff of rule.effects ?? []) {
+          if (eff.type === "setFlag" && eff.value !== false) meetInto(roundSetters, eff.flag, union(left.K, proves(rule.when)));
+        }
+      }
+    }
+    for (const [, e] of edges) {
+      if (!kend.has(e.from)) continue;
+      const at = union(union(kend.get(e.from).K, shownMain([labelOf(e)], vocab)), proves(e.when));
+      for (const eff of e.effects ?? []) if (eff.type === "setFlag" && eff.value !== false) meetInto(roundSetters, eff.flag, at);
+    }
+    setters = roundSetters;
+    if (sig() === before) {
+      settled = true;
+      break;
+    }
+  }
+
+  return {
+    findings: toFindings(dangling, appearances),
+    /** The last round changed nothing (K, M or setters); false only if 60 rounds ran out. */
+    settled,
+    stranded: [],
+    unreached: chapters.filter((c) => !played.has(c.id)).map((c) => c.id),
   };
 }
 
@@ -849,21 +1156,41 @@ export function describeFinding(f, limit = 6) {
 // ---------------------------------------------------------------------------
 // CLI
 
-function main(argv) {
-  const { campaign, chapters } = loadCampaign();
-  const { findings, stranded, unreached } = analyseCampaign(campaign, chapters);
-  const allow = loadAllowList();
+/**
+ * The sweep's verdict over every campaign: the lines it prints and its exit
+ * code. Fails closed: a campaign whose analysis did not settle (a graph that
+ * ran out of rounds, `settled: false`) fails the run, because its findings
+ * come from an incomplete fixed point and "clean" would be a guess.
+ *
+ * `results` is `[{ id, findings, stranded, unreached, settled? }]`; an
+ * ordered campaign carries no `settled` and is always complete.
+ */
+export function verdict(results, allow, { all = false } = {}) {
+  const findings = results.flatMap((r) => r.findings);
   const { unlisted, allowed, stale, noReason } = checkAllowList(findings, allow);
-  if (argv.includes("--all")) for (const f of allowed) console.log(`allowed  ${f.key}: ${allow[f.key]}`);
-  for (const f of unlisted) console.log(`DANGLING ${describeFinding(f)}\n         key: ${f.key}`);
-  for (const k of stale) console.log(`STALE    allow-list entry no longer matches a finding: ${k}`);
-  for (const k of noReason) console.log(`NOREASON allow-list entry has no reason: ${k}`);
-  for (const s of stranded) console.log(`note     index ${s.index}: no chapter for ${s.state}`);
-  for (const c of unreached) console.log(`note     ${c} is reached by no history`);
-  console.log(
-    `${findings.length} candidates, ${allowed.length} allow-listed, ${unlisted.length} new, ${stale.length} stale allow-list entries.`,
+  const unsettled = results.filter((r) => r.settled === false).map((r) => r.id);
+  const lines = [];
+  if (all) for (const f of allowed) lines.push(`allowed  ${f.key}: ${allow[f.key]}`);
+  for (const f of unlisted) lines.push(`DANGLING ${describeFinding(f)}\n         key: ${f.key}`);
+  for (const k of stale) lines.push(`STALE    allow-list entry no longer matches a finding: ${k}`);
+  for (const k of noReason) lines.push(`NOREASON allow-list entry has no reason: ${k}`);
+  for (const id of unsettled) {
+    lines.push(`UNSETTLED ${id}: the analysis did not reach a fixed point, so its findings are incomplete`);
+  }
+  for (const r of results) for (const s of r.stranded) lines.push(`note     ${r.id} index ${s.index}: no chapter for ${s.state}`);
+  for (const r of results) for (const c of r.unreached) lines.push(`note     ${c} is reached by no history`);
+  lines.push(
+    `${results.length} campaigns (${results.map((r) => r.id).join(", ")}): ${findings.length} candidates, ${allowed.length} allow-listed, ${unlisted.length} new, ${stale.length} stale allow-list entries${unsettled.length ? `, ${unsettled.length} unsettled` : ""}.`,
   );
-  process.exitCode = unlisted.length || stale.length || noReason.length ? 1 : 0;
+  const exitCode = unlisted.length || stale.length || noReason.length || unsettled.length ? 1 : 0;
+  return { lines, exitCode, unlisted, allowed, stale, noReason, unsettled };
+}
+
+function main(argv) {
+  const results = loadCampaigns().map(({ campaign, chapters }) => ({ id: campaign.id, ...analyse(campaign, chapters) }));
+  const { lines, exitCode } = verdict(results, loadAllowList(), { all: argv.includes("--all") });
+  for (const line of lines) console.log(line);
+  process.exitCode = exitCode;
 }
 
 if (process.argv[1] && process.argv[1] === fileURLToPath(import.meta.url)) main(process.argv.slice(2));
