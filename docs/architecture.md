@@ -624,14 +624,24 @@ atlas level and the art of everything found (`sw/warm.ts`). The close-zoom detai
 out: several megabytes the map works without. Art is capped at 400 pictures, oldest out first.
 
 Each build's `sw.js` names its own files (`sw-build.ts` writes them in), so every deploy is a new
-worker. It takes over at once and drops code the deploy replaced; every build's worker answers the
-same way, so an open page loses nothing to the switch. **To turn it off**, ship a `sw.js` whose
+worker. It takes over at once, including pages that are already open. Those pages were built
+against the previous build and import its chunks the first time they open the book or a room,
+and the deploy has deleted those chunks from the bucket. So the worker keeps the previous build's
+code as well as its own (`/__kad/bundle-list` records which), and drops only what neither uses.
+A tab left open across two deploys gets the "Try again" a missing chunk always gets, which reloads
+it. Every lookup ignores `Vary`: servers send `Vary: Origin` and module imports send an `Origin`
+header, so a plain lookup would miss every saved script. **To turn it off**, ship a `sw.js` whose
 `activate` deletes every cache and calls `self.registration.unregister()`. Phones pick it up on
 their next page load.
 
 `e2e/offline.spec.ts` proves it against a real production build (`npm run e2e:offline`, also run
-by CI): play a little, open the book once, drop the network, then reload and open a fresh tab, and
-the hero, the map's painting and an opened Field Guide entry must all be there.
+by CI):
+- **Offline:** play a little, open the book once, drop the network, then reload and open a fresh
+  tab. The hero, the map's painting and an opened Field Guide entry must all be there.
+- **First visit:** the book opens before any worker controls the page, and its art is still saved
+  once one does.
+- **Upgrade:** a tab left open across a staged deploy (a new `sw.js`, the old chunks gone from the
+  server) can still open the book.
 
 Three rules keep this from forking into two apps:
 
