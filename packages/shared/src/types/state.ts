@@ -9,7 +9,7 @@ import type { EncounterState } from "../encounter.js";
 import type { ResolvedCharacter, StatId } from "./domain.js";
 import type { ChapterOutcome, SceneId, ScenePriority, SceneType } from "./chapter.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
-import type { JourneyView, NodeId } from "./campaign-graph.js";
+import type { FactId, FactValue, JourneyView, NodeId } from "./campaign-graph.js";
 import type { BuffId, CheckBuffOffer, RunBuff } from "./buffs.js";
 
 export type RoomMode = "party" | "travel";
@@ -181,6 +181,15 @@ export interface RunState {
    * Never written to a character: a buff is an overlay on a fight.
    */
   buffs?: RunBuff[];
+  /**
+   * The journey's world facts (#198) as this chapter started (#220), every
+   * declared fact at its current value: what an environment's `variants`
+   * test when a fight begins. Read-only to the run — a chapter changes the
+   * world through flags and the graph's `onComplete`, never by writing here.
+   * Absent on every run without a graph that declares facts, whose fights
+   * are always the place as authored.
+   */
+  facts?: Record<FactId, FactValue>;
   /**
    * Where the household stands in the campaign this room plays, for the
    * screens: the lobby says which chapter is next, and the completion screen

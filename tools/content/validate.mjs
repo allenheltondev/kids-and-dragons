@@ -34,6 +34,7 @@ import { MUSIC_SPECS } from "../../packages/client/src/audio/paths.ts";
 import { RIFT_ACTION_KINDS, campaignMode, journeyFlags, parseCampaignGraph, riftActionWays } from "../../packages/shared/src/campaign-graph.ts";
 import { chapterFlagWrites, duplicateJsonKeys, lintCampaignGraph } from "../../packages/shared/src/campaign-graph-lint.ts";
 import { prerequisiteProblems } from "../../packages/shared/src/campaign-prerequisites.ts";
+import { factTestProblems } from "../../packages/shared/src/world-state.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 
 /**
@@ -1233,6 +1234,31 @@ function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar, it
   for (const { path, problem } of problems) {
     fail(path, problem);
     ok = false;
+  }
+  if (graph) {
+    // An environment keyed on the world (#220) names facts this graph
+    // declares, with tests their values can pass — the same rule a graph
+    // condition's `facts` is held to. Unknown, it could never hold.
+    for (const id of campaign.chapters ?? []) {
+      const chapter = chaptersById.get(id);
+      for (const [sceneId, scene] of Object.entries(chapter?.scenes ?? {})) {
+        (scene?.environment?.variants ?? []).forEach((variant, i) => {
+          for (const [factId, test] of Object.entries(variant?.when?.facts ?? {})) {
+            const at = `content/chapters/${id}.json /scenes/${sceneId}/environment/variants/${i}/when/facts/${factId}`;
+            const fact = graph.facts?.[factId];
+            if (!fact) {
+              fail(at, `"${factId}" is not a world fact this campaign declares, so the variant can never hold`);
+              ok = false;
+              continue;
+            }
+            for (const { path, problem } of factTestProblems(fact, test)) {
+              fail(`${at}${path}`, problem);
+              ok = false;
+            }
+          }
+        });
+      }
+    }
   }
   let walked = "";
   if (graph && items) {

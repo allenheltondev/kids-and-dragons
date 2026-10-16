@@ -19,7 +19,7 @@ import {
   type EncounterSetup,
   type EncounterState,
 } from "./encounter.js";
-import { checkEncounterEnvironment, environmentView } from "./environment.js";
+import { checkEncounterEnvironment, environmentView, resolveEnvironment } from "./environment.js";
 import { parseBoard, terrainAt, type Position } from "./grid.js";
 import { buffBonus } from "./buffs.js";
 import type { Rng } from "./dice.js";
@@ -367,5 +367,41 @@ describe("place-wide modifiers (#220)", () => {
       "/environment/modifiers/0/id",
       "/environment/modifiers/0/amount",
     ]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Keyed on the world
+// ---------------------------------------------------------------------------
+
+describe("an environment keyed on world facts (#220)", () => {
+  const BASE: EncounterEnvironment = {
+    hazards: [{ id: "fire", kind: "fire", label: "Fire", tiles: [{ x: 2, y: 2 }], damage: 1 }],
+    variants: [
+      { when: { facts: { wyrm: "raging" } }, hazards: [{ id: "fire", kind: "fire", label: "Wyrmfire", tiles: [{ x: 2, y: 2 }, { x: 3, y: 2 }], damage: 3 }] },
+      { when: { facts: { wyrm: "gone" } }, hazards: [] },
+    ],
+  };
+  const facts = (values: Record<string, string>) => (when: { facts: Record<string, unknown> }) =>
+    Object.entries(when.facts).every(([id, test]) => values[id] === test);
+
+  it("resolves to the first variant that holds, or the base; an empty list removes the part", () => {
+    expect(resolveEnvironment(BASE, facts({ wyrm: "raging" })).hazards![0]!.label).toBe("Wyrmfire");
+    expect(resolveEnvironment(BASE, facts({ wyrm: "gone" }))).toEqual({});
+    expect(resolveEnvironment(BASE, facts({}))).toEqual({ hazards: BASE.hazards });
+    const plain: EncounterEnvironment = { hazards: BASE.hazards };
+    expect(resolveEnvironment(plain, () => true)).toBe(plain);
+  });
+
+  it("the check judges every variant as a place of its own, and the branches across all of them", () => {
+    const exitIn: EncounterEnvironment = {
+      variants: [
+        { when: { facts: { tear: "open" } }, exits: [{ id: "t", label: "T", tiles: [{ x: 4, y: 0 }] }] },
+        { when: { facts: {} }, hazards: [{ id: "h", kind: "rift", label: "H", tiles: [{ x: 1, y: 1 }], damage: 9 }] },
+      ],
+    };
+    const paths = checkEncounterEnvironment({ enemies: [WISP], environment: exitIn }).map((p) => p.path);
+    expect(paths).toEqual(["/environment/variants/1/when", "/onEscape", "/environment/variants/1/hazards/0/damage"]);
+    expect(checkEncounterEnvironment({ enemies: [WISP], environment: BASE })).toEqual([]);
   });
 });

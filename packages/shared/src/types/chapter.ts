@@ -5,7 +5,7 @@
  * a static asset. A malformed chapter fails the build, never the play session.
  */
 
-import type { CampaignGraph } from "./campaign-graph.js";
+import type { CampaignGraph, FactId, FactTest } from "./campaign-graph.js";
 import type { SlowEffect } from "./buffs.js";
 import type { ClassId, ItemDef, SpeciesId, StatId } from "./domain.js";
 
@@ -450,6 +450,25 @@ export interface EncounterEnvironment {
   objectives?: EnvironmentObjective[];
   /** The place's own numbers (#220): "−1 Guard for everyone in the storm". Up to three. */
   modifiers?: EnvironmentModifier[];
+  /**
+   * The same place, changed by the world (#220): the first variant whose
+   * `when` holds replaces each part it lists when the fight begins — a
+   * raging wyrm sets the grass alight, a sealed rift has no tear to escape
+   * through. Parts it leaves out stay as authored above. None holding (or
+   * a run with no world facts: every ordered campaign) is the place as
+   * authored. Up to four.
+   */
+  variants?: EnvironmentVariant[];
+}
+
+/** A changed version of an environment, and the world facts it needs (#220). */
+export interface EnvironmentVariant extends Omit<EncounterEnvironment, "variants"> {
+  /**
+   * World facts (#198) the variant needs, each tested as a graph condition
+   * tests them; every one must pass. Only facts: a chapter run carries the
+   * journey's facts and nothing else of it.
+   */
+  when: { facts: Record<FactId, FactTest> };
 }
 
 /**

@@ -39,7 +39,7 @@
  * world-state.ts and buffs.ts already live by).
  */
 
-import type { Branch, EncounterEnvironment, EncounterScene, EncounterMap, MapTile, RiftExit, EnvironmentHazard, EnvironmentObjective, HazardPush, RescueObjective } from "./types/chapter.js";
+import type { Branch, EncounterEnvironment, EncounterScene, EncounterMap, MapTile, RiftExit, EnvironmentHazard, EnvironmentObjective, EnvironmentVariant, HazardPush, RescueObjective } from "./types/chapter.js";
 import type { SlowEffect } from "./types/buffs.js";
 import type { Combatant, EncounterState } from "./encounter.js";
 
@@ -79,6 +79,8 @@ export interface EnvironmentState {
 export const ENVIRONMENT_LIMITS = {
   /** The most captives one fight holds (#220). */
   captives: 3,
+  /** The most variants one environment holds (#220). */
+  variants: 4,
   /** The most objectives one fight holds, and the longest any can take (#220). */
   objectives: 3,
   objectiveCount: 12,
@@ -444,6 +446,97 @@ const HEIGHT = 8;
  * carry — `onEscape` / `onTimeout` with nothing that could take them.
  */
 export function checkEncounterEnvironment(
+  scene: Pick<EncounterScene, "environment" | "onEscape" | "onTimeout" | "enemies">,
+  map?: Pick<EncounterMap, "rows" | "partySpawns" | "enemySpawns"> | null,
+): EnvironmentProblem[] {
+  const env = scene.environment;
+  if (!env || env.variants === undefined) return checkResolved(scene, map);
+
+  // An environment with variants (#220) is several places, any of which a
+  // party may fight in: every one must pass, and the branches must cover
+  // what any of them can end in.
+  const out: EnvironmentProblem[] = [];
+  const seen = new Set<string>();
+  const fail = (path: string, problem: string) => {
+    if (seen.has(`${path}\n${problem}`)) return;
+    seen.add(`${path}\n${problem}`);
+    out.push({ path, problem });
+  };
+  const variants = Array.isArray(env.variants) ? env.variants : [];
+  if (variants.length < 1 || variants.length > ENVIRONMENT_LIMITS.variants) {
+    fail("/environment/variants", `a list of 1 to ${ENVIRONMENT_LIMITS.variants} variants`);
+  }
+  variants.forEach((variant, i) => {
+    const facts = variant?.when?.facts;
+    if (!facts || typeof facts !== "object" || Array.isArray(facts) || Object.keys(facts).length === 0) {
+      fail(`/environment/variants/${i}/when`, 'needs { "facts": { ... } } naming at least one world fact');
+    }
+  });
+  const base = withoutVariants(env);
+  const places = [base, ...variants.map((variant) => mergeVariant(base, variant))];
+  const exits = places.some((place) => (place.exits ?? []).length > 0);
+  const collapses = places.some((place) => place.clock?.onExpire === "collapse");
+  if (exits && !scene.onEscape) fail("/onEscape", "an environment with exits (in any variant) needs an onEscape branch — stepping through one ends the fight");
+  if (scene.onEscape && !exits) fail("/onEscape", "onEscape with no environment exits in any variant — nothing can ever take it");
+  if (collapses && !scene.onTimeout) fail("/onTimeout", 'a "collapse" clock (in any variant) needs an onTimeout branch — running out ends the fight');
+  if (scene.onTimeout && !collapses) fail("/onTimeout", 'onTimeout without a "collapse" clock in any variant — nothing can ever take it');
+
+  const stand = { goto: "" } as Branch;
+  places.forEach((place, i) => {
+    const variant = i === 0 ? null : variants[i - 1];
+    const owned = new Set(variant ? Object.keys(variant).filter((key) => key !== "when") : []);
+    // The branches are judged above, across every variant; each place is
+    // handed exactly the ones it needs so it is judged on everything else.
+    const problems = checkResolved(
+      {
+        enemies: scene.enemies,
+        environment: place,
+        ...((place.exits ?? []).length > 0 ? { onEscape: stand } : {}),
+        ...(place.clock?.onExpire === "collapse" ? { onTimeout: stand } : {}),
+      },
+      map,
+    );
+    for (const problem of problems) {
+      const part = /^\/environment\/([^/]+)/.exec(problem.path)?.[1];
+      const path = part && owned.has(part) ? problem.path.replace("/environment/", `/environment/variants/${i - 1}/`) : problem.path;
+      fail(path, problem.problem);
+    }
+  });
+  return out;
+}
+
+/** The environment without its variants: the place as authored. */
+function withoutVariants(env: EncounterEnvironment): EncounterEnvironment {
+  const { variants: _variants, ...base } = env;
+  return base;
+}
+
+/** `base` with each part `variant` lists in its place. An empty list removes the part. */
+function mergeVariant(base: EncounterEnvironment, variant: EnvironmentVariant): EncounterEnvironment {
+  const { when: _when, ...parts } = variant;
+  const out: Record<string, unknown> = { ...base, ...parts };
+  for (const [key, value] of Object.entries(out)) if (Array.isArray(value) && value.length === 0) delete out[key];
+  return out as EncounterEnvironment;
+}
+
+/**
+ * The place a party actually fights in (#220): the first variant whose
+ * `when` holds, laid over the base, else the base. `holds` tests a variant's
+ * facts against the run's (`factTestHolds`, world-state.ts — passed in, as
+ * this file imports nothing). An environment without variants comes back as
+ * the very same object, so a fight without them starts exactly as before.
+ */
+export function resolveEnvironment(
+  env: EncounterEnvironment,
+  holds: (when: EnvironmentVariant["when"]) => boolean,
+): EncounterEnvironment {
+  if (env.variants === undefined) return env;
+  const base = withoutVariants(env);
+  const pick = env.variants.find((variant) => holds(variant.when));
+  return pick ? mergeVariant(base, pick) : base;
+}
+
+function checkResolved(
   scene: Pick<EncounterScene, "environment" | "onEscape" | "onTimeout" | "enemies">,
   map?: Pick<EncounterMap, "rows" | "partySpawns" | "enemySpawns"> | null,
 ): EnvironmentProblem[] {

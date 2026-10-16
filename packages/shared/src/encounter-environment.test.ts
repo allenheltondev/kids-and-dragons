@@ -513,6 +513,47 @@ function waitOutTheClock(): { state: RunState; log: EncounterEvent[] } {
   return { state, log };
 }
 
+describe("the sandbox, keyed on the world (#220)", () => {
+  /** The sandbox with a variant: while the river is "flooded", the fire is out and the tear never opens. */
+  function flooded(facts?: Record<string, string>): RunState {
+    const fight = sandboxFight();
+    const keyed: Chapter = {
+      ...SANDBOX,
+      scenes: {
+        ...SANDBOX.scenes,
+        [FIGHT]: {
+          ...fight,
+          environment: {
+            ...fight.environment!,
+            variants: [{ when: { facts: { river: "flooded" } }, hazards: [], clock: { rounds: 6, label: "The water rises", onExpire: "collapse" } }],
+          },
+        },
+      },
+    };
+    return intoTheRift({ ...sandboxCtx(1), chapter: keyed, ...(facts ? { campaignFacts: facts } : {}) });
+  }
+
+  it("fights in the variant the run's facts satisfy, with the parts it lists replaced", () => {
+    const state = flooded({ river: "flooded" });
+    expect(state.facts).toEqual({ river: "flooded" });
+    const spec = state.encounter!.environment!.spec;
+    expect(spec).not.toHaveProperty("variants");
+    expect(spec).not.toHaveProperty("hazards");
+    expect(spec.clock).toEqual({ rounds: 6, label: "The water rises", onExpire: "collapse" });
+    // Untouched parts stay as authored.
+    expect(spec.exits).toEqual(sandboxFight().environment!.exits);
+  });
+
+  it("fights in the place as authored when no variant holds, or the run has no facts", () => {
+    for (const state of [flooded({ river: "calm" }), flooded()]) {
+      const spec = state.encounter!.environment!.spec;
+      expect(spec).not.toHaveProperty("variants");
+      expect(spec).toEqual(sandboxFight().environment);
+    }
+    expect(flooded()).not.toHaveProperty("facts");
+  });
+});
+
 describe("the sandbox, through the engine", () => {
   it("starts the fight with its environment on the state, the captive walled in", () => {
     const state = intoTheRift(sandboxCtx(1));

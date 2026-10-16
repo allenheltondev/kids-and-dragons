@@ -70,7 +70,7 @@ import {
   type EnemyPlacement,
   type PartyPlacement,
 } from "./encounter.js";
-import { captiveStatuses, captivesOf, objectivesDone, outcomeBranch } from "./environment.js";
+import { captiveStatuses, captivesOf, objectivesDone, outcomeBranch, resolveEnvironment } from "./environment.js";
 import { parseBoard, type Position } from "./grid.js";
 import { planEnemyTurn } from "./enemy-ai.js";
 import type {
@@ -94,6 +94,8 @@ import { sceneChoices, visibleChoices } from "./chapter-graph.js";
 import { composeNarration, fillTokens } from "./narration.js";
 import { loadDie, readDie } from "./playtest.js";
 import type { CheckBuffOffer, RunBuff } from "./types/buffs.js";
+import type { FactId, FactValue } from "./types/campaign-graph.js";
+import { factTestHolds } from "./world-state.js";
 import { checkBuffOffer, combatBuffsFor, expireRunBuffs, oneHeroSeat, spendCheckBuff, spendRunBuffs } from "./buffs.js";
 
 // ---------------------------------------------------------------------------
@@ -190,6 +192,12 @@ export interface EngineContext {
    * carries no buffs at all — so nothing a Gemfall fight computes can change.
    */
   campaignBuffs?: readonly RunBuff[];
+  /**
+   * A graph campaign's world facts (#198), read at chapter start and seeded
+   * into `RunState.facts` (#220) so an environment can be keyed on them.
+   * Absent for every run without declared facts.
+   */
+  campaignFacts?: Readonly<Record<FactId, FactValue>>;
 }
 
 export type EngineErrorCode = "STALE_SEQ" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN";
@@ -1364,6 +1372,9 @@ function doStartChapter(
   // other start clears what an earlier graph chapter in this room left.
   if (ctx.campaignBuffs !== undefined) draft.buffs = structuredClone([...ctx.campaignBuffs]);
   else delete draft.buffs;
+  // World facts (#220), the same way: only a graph campaign's start has any.
+  if (ctx.campaignFacts !== undefined) draft.facts = { ...ctx.campaignFacts };
+  else delete draft.facts;
   draft.lastRoll = null;
   // A new chapter is a new day on the road: everyone's help is back.
   draft.helpSpent = [];
@@ -1925,8 +1936,16 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
         party,
         enemies,
         ...(buffs.length > 0 ? { buffs } : {}),
-        // The place fighting back (#201) — only a scene that declared one.
-        ...(scene.environment ? { environment: scene.environment } : {}),
+        // The place fighting back (#201) — only a scene that declared one —
+        // as the world has left it (#220): the first variant the run's facts
+        // satisfy. No variants, the scene's own object.
+        ...(scene.environment
+          ? {
+              environment: resolveEnvironment(scene.environment, (when) =>
+                Object.entries(when.facts).every(([id, test]) => factTestHolds(test, draft.facts?.[id])),
+              ),
+            }
+          : {}),
       },
       combatCtx(ctx),
     ),
@@ -2241,14 +2260,16 @@ function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | un
   // ended — won, lost, escaped or collapsed — so the rescue's own effects land
   // before the branch's, and the branch (and its narration variants) can read
   // them. A captive still waiting, or lost, is simply left behind.
-  if (scene.environment && encounter.environment) {
+  // The place as it was fought (#220): the resolved spec the fight carries.
+  const place = encounter.environment?.spec;
+  if (place && encounter.environment) {
     const statuses = captiveStatuses(encounter.environment);
-    captivesOf(scene.environment).forEach((captive, i) => {
+    captivesOf(place).forEach((captive, i) => {
       if (captive.effects && statuses[i] === "freed") applyEffectsDraft(draft, captive.effects, ctx);
     });
     // An objective done (#220) is a story fact the same way.
     const done = objectivesDone(encounter.environment);
-    (scene.environment.objectives ?? []).forEach((objective, i) => {
+    (place.objectives ?? []).forEach((objective, i) => {
       if (objective.effects && done[i]) applyEffectsDraft(draft, objective.effects, ctx);
     });
   }
