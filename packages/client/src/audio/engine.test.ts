@@ -10,7 +10,7 @@
 
 import { describe, expect, it } from "vitest";
 import { createAudioEngine, type PrefStore } from "./engine";
-import { padFor } from "./synth";
+import { DEFAULT_PAD, padFor } from "./synth";
 
 class FakeParam {
   value = 0;
@@ -404,6 +404,16 @@ describe("music", () => {
     const ctx = contexts[0]!;
     engine.sink.music(null);
     expect(ctx.oscillators.every((osc) => osc.stoppedAt !== null)).toBe(true);
+  });
+
+  it("hums the default pad for a chapter's track before its file exists", () => {
+    // A chapter may name a track that has no recording yet (#226). It gets the
+    // same pad as a biome nobody composed for, never silence.
+    const { engine, contexts } = build();
+    engine.unlock();
+    engine.sink.music("riftlight-finale");
+    const tones = contexts[0]!.oscillators.map((osc) => osc.frequency.value);
+    expect(tones).toEqual(expect.arrayContaining(DEFAULT_PAD.map((freq) => freq * 1.001)));
   });
 
   it("hums the default pad for a biome nobody wrote a chord for", () => {

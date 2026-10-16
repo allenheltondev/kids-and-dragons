@@ -252,6 +252,31 @@ describe("cross-file rules", () => {
     expect(result.code).not.toBe(0);
   });
 
+  it("catches a music override naming a track MUSIC_SPECS does not know", () => {
+    // Music is chosen by name at a table; a track with no spec row is not one
+    // the game can be asked for, so the override is refused, not left to the synth pad.
+    const onChapter = withChapter((chapter) => {
+      chapter.music = "riftlight-finale";
+    });
+    expect(onChapter.out).toContain('music "riftlight-finale" is not a MUSIC_SPECS track');
+    expect(onChapter.code).not.toBe(0);
+
+    const onScene = withChapter((chapter) => {
+      chapter.scenes[laterSceneOf(chapter)].music = "riftlight-finale";
+    });
+    expect(onScene.out).toContain('music "riftlight-finale" is not a MUSIC_SPECS track');
+    expect(onScene.code).not.toBe(0);
+  });
+
+  it("accepts music overrides that name real tracks", () => {
+    const result = withChapter((chapter) => {
+      chapter.music = "gemfall-marsh";
+      chapter.scenes[laterSceneOf(chapter)].music = "forest";
+    });
+    expect(result.out).not.toContain("MUSIC_SPECS");
+    expect(result.code).toBe(0);
+  });
+
   it("catches a campaign listing a chapter that does not exist", () => {
     const dir = copyTree();
     const campaign = readJson(dir, "content", "campaigns", "the-hollow-crown.json");

@@ -80,6 +80,10 @@ function citadelScenes(chapter: Chapter, gate: string): Set<string> {
 
 export function musicForScene(chapter: Chapter | null, state: RunState | null): string | null {
   if (!state || ["lobby", "creation"].includes(state.phase) || chapter?.id !== state.chapterId) return null;
+  // Scene beats chapter beats biome (#226). Music still changes only when the scene does.
+  const scene = state.sceneId ? chapter?.scenes[state.sceneId] : undefined;
+  if (scene?.music) return scene.music;
+  if (chapter?.music) return chapter.music;
   const citadel = chapter ? CITADEL_GATES[chapter.id] : undefined;
   if (chapter && citadel && state.sceneId && citadelScenes(chapter, citadel.gate).has(state.sceneId)) return citadel.track;
   return chapter?.biome ?? null;
