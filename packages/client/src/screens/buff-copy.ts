@@ -9,6 +9,7 @@
  * without colour (spec §11), and how long it has left.
  */
 
+import { NUMBED_BUFF_ID } from "@kad/shared";
 import type { BuffKind, CheckBuffOffer, JourneyBuffView } from "@kad/shared";
 
 /** The stat word each kind changes, as the character sheet and combat say it. */
@@ -59,6 +60,38 @@ export function buffRemainingText(remaining: JourneyBuffView["remaining"]): stri
 export function buffTurnsText(turnsLeft: number | undefined): string {
   if (turnsLeft === undefined) return "this fight";
   return turnsLeft === 1 ? "1 more turn" : `${turnsLeft} more turns`;
+}
+
+/** Is this combat buff the numbing sting's (#227) rather than a rift power? */
+export function isNumbed(id: string): boolean {
+  return id === NUMBED_BUFF_ID;
+}
+
+/**
+ * The combat log's line for a numbing sting. It says the sting, the cost and
+ * that it wears off — a numbing sting that fades, never lasting harm.
+ */
+export function numbedLine(who: string, steps: number, turns: number): string {
+  const verb = who === "You" ? "are" : "is";
+  return `${who} ${verb} numbed by a sting: ${steps} fewer ${steps === 1 ? "step" : "steps"} for ${turns} ${turns === 1 ? "turn" : "turns"}. It wears off.`;
+}
+
+/**
+ * The combat log's line for an enemy puffing up (#227). It says what to
+ * expect, so nobody is stung without being told it was coming.
+ */
+export function puffedLine(enemy: string): string {
+  return `${enemy} puffs up! Hitting it now means a numbing sting.`;
+}
+
+/** The words on a puffed enemy's marker, wherever it is drawn. */
+export const PUFFED_WORDS = "Puffed";
+export const PUFFED_HINT = "Hitting it numbs you for a while";
+
+/** How long a Numbed has left, in words that promise it ends. */
+export function numbedTurnsText(turnsLeft: number | undefined): string {
+  if (turnsLeft === undefined) return "wears off when the fight ends";
+  return turnsLeft === 1 ? "wears off after 1 more turn" : `wears off after ${turnsLeft} more turns`;
 }
 
 /** Who a buff is on, between fights. A story-check buff (#222) is whoever rolls next. */
