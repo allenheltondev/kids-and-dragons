@@ -122,7 +122,7 @@ const COLOR_WORDS: Record<RiftColor, string> = {
   green: "Green, breathing slowly",
   amber: "Amber, one flicker",
   blue: "Blue, rippling steadily",
-  violet: "Violet, spiralling inward",
+  violet: "Violet, spiraling inward",
 };
 
 const MOTION_WORDS: Record<RiftMotion, string> = {

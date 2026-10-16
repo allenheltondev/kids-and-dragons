@@ -12,7 +12,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { cleanup, render, within } from "@testing-library/react";
+import { act, cleanup, render, within } from "@testing-library/react";
 import {
   completeVisit,
   journeyView,
@@ -203,10 +203,10 @@ describe("a Starweaver's phone", () => {
     const { container } = lobby(STARWEAVER.playerId);
     const readings = [...container.querySelectorAll(".rift-sight__reading")].map((node) => node.textContent);
     expect(readings).toEqual([
-      "Green, breathing slowly · Amber, one flicker · Violet, spiralling inward",
+      "Green, breathing slowly · Amber, one flicker · Violet, spiraling inward",
       "Amber, one flicker",
       "Blue, rippling steadily",
-      "Amber, one flicker · Violet, spiralling inward",
+      "Amber, one flicker · Violet, spiraling inward",
       "Amber, one flicker · It is shrinking",
       "Amber, one flicker · It stutters",
       "Blue, rippling steadily · It pulses to a steady beat",
@@ -339,7 +339,7 @@ describe("the Riftlight indicator", () => {
   const worldTab = (container: HTMLElement): HTMLElement =>
     within(container.querySelector<HTMLElement>("nav")!).getAllByRole("button")[0]!;
 
-  it("lights on a Starweaver's World tab while a rift is in view (Party Mode phone)", () => {
+  it("lights on a Starweaver's World tab while a rift is in view and they are elsewhere (Party Mode phone)", () => {
     store(STARWEAVER.playerId, { campaign: campaignWith(hubView()) });
     const { container } = render(<PartyLayout surface="player" />);
     const tab = worldTab(container);
@@ -347,11 +347,60 @@ describe("the Riftlight indicator", () => {
     expect(within(tab).getByRole("img", { name: "Riftlight to look at" })).toBeTruthy();
   });
 
-  it("lights in Travel Mode too", () => {
-    store(STARWEAVER.playerId, { mode: "travel", campaign: campaignWith(hubView()) });
-    const { container } = render(<TravelLayout />);
-    expect(worldTab(container).querySelector("[data-riftlight-indicator]")).not.toBeNull();
-  });
+  /*
+   * The rule: lit while a lit rift is in view and the Starweaver is not on
+   * World. Looking clears it; leaving World with the rift still there, or a
+   * rift appearing while they are away, lights it again.
+   */
+  const lit = (container: HTMLElement): boolean => worldTab(container).querySelector("[data-riftlight-indicator]") !== null;
+  const tap = (button: HTMLElement): void => act(() => button.click());
+
+  for (const [mode, layout] of [
+    ["Party", () => <PartyLayout surface="player" />],
+    ["Travel", () => <TravelLayout />],
+  ] as const) {
+    describe(`in ${mode} Mode`, () => {
+      const mount = (journey: JourneyView) => {
+        store(STARWEAVER.playerId, { mode: mode === "Party" ? "party" : "travel", campaign: campaignWith(journey) });
+        const { container } = render(layout());
+        // Travel Mode opens on the world; start both from the controls.
+        tap(within(container.querySelector<HTMLElement>("nav")!).getByRole("button", { name: "You" }));
+        return container;
+      };
+
+      it("clears while the Starweaver is on World, and lights again when they leave it", () => {
+        const container = mount(hubView());
+        expect(lit(container)).toBe(true);
+        tap(worldTab(container));
+        expect(lit(container)).toBe(false);
+        tap(within(container.querySelector<HTMLElement>("nav")!).getByRole("button", { name: "Map" }));
+        expect(lit(container)).toBe(true);
+        tap(worldTab(container));
+        tap(within(container.querySelector<HTMLElement>("nav")!).getByRole("button", { name: "You" }));
+        expect(lit(container)).toBe(true);
+      });
+
+      it("lights when a rift comes into view while they are away, and not while they are looking", () => {
+        const container = mount({ ...hubView(), status: "playing", exits: [] });
+        expect(lit(container)).toBe(false);
+        const arrive = () =>
+          act(() => {
+            const state = useGameStore.getState().state!;
+            useGameStore.setState({ state: { ...state, campaign: campaignWith(hubView()) } });
+          });
+        arrive();
+        expect(lit(container)).toBe(true);
+        // Away again, on World this time: the next rift is already in front of them.
+        act(() => {
+          const state = useGameStore.getState().state!;
+          useGameStore.setState({ state: { ...state, campaign: campaignWith({ ...hubView(), status: "playing", exits: [] }) } });
+        });
+        tap(worldTab(container));
+        arrive();
+        expect(lit(container)).toBe(false);
+      });
+    });
+  }
 
   it("goes out when no rift is in view: the party has set off", () => {
     store(STARWEAVER.playerId, { campaign: campaignWith({ ...hubView(), status: "playing", exits: [] }) });
