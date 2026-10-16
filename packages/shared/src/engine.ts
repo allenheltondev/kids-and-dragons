@@ -1614,15 +1614,18 @@ function offerCheckBuff(prompt: Prompt & { kind: "roll" }, draft: RunState): voi
 /**
  * The story-check buff (#222) this roll spends, if any: the prompt's offer
  * when it is `"auto"`, or when the roller said yes to it (`ROLL.spendBuff`).
- * A yes to anything the prompt does not offer is refused before a die is
- * thrown, so a stale phone (a friend spent it first) never spends something
- * else and never rolls without what it asked for.
+ *
+ * A yes to a buff that is no longer on offer — a stale phone, a friend in a
+ * whole-party check spent it first — is a plain roll: the die goes with the
+ * tap, without the bonus, and nothing else is ever spent in its place. Only a
+ * `spendBuff` that is not a buff id at all (no phone sends one) is refused,
+ * before a die is thrown, as the malformed intent it is.
  */
 function checkBuffSpent(prompt: Prompt & { kind: "roll" }, spendBuff: unknown): CheckBuffOffer | undefined {
-  const offer = prompt.buff;
-  if (spendBuff !== undefined && (typeof spendBuff !== "string" || offer?.id !== spendBuff)) {
-    throw new Illegal("ILLEGAL", "that is not on offer for this roll");
+  if (spendBuff !== undefined && typeof spendBuff !== "string") {
+    throw new Illegal("ILLEGAL", "spendBuff names a buff by its id");
   }
+  const offer = prompt.buff;
   if (!offer) return undefined;
   return offer.spend === "auto" || spendBuff === offer.id ? offer : undefined;
 }
@@ -1759,8 +1762,8 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext, spendBuff
   // phone dropped) gets the help back instead of adding their own die.
   const helper = prompt.helper?.characterId === roller.character.id ? undefined : prompt.helper;
   // The party's story-check buff (#222): spent if it is automatic or the
-  // roller said yes, and refused before anything moves if they named one
-  // that is not on offer.
+  // roller said yes to the one on offer; a yes to one no longer on offer is
+  // a plain roll.
   const spent = checkBuffSpent(prompt, spendBuff);
   if (prompt.helper && !helper) {
     draft.helpSpent = (draft.helpSpent ?? []).filter((id) => id !== roller.character.id);
