@@ -7,7 +7,7 @@
 
 import type { EncounterState } from "../encounter.js";
 import type { ResolvedCharacter, StatId } from "./domain.js";
-import type { ChapterOutcome, SceneId, SceneType } from "./chapter.js";
+import type { ChapterOutcome, SceneId, ScenePriority, SceneType } from "./chapter.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { JourneyView, NodeId } from "./campaign-graph.js";
 import type { RunBuff } from "./buffs.js";
@@ -204,6 +204,12 @@ export interface RunState {
    */
   narration: string;
   art: string | null;
+  /**
+   * The current scene's `priority` (chapter.ts `ScenePriority`), so the shared
+   * screen can mark a revelation as one. Null for an ordinary scene and outside
+   * one. Optional: absent on runs persisted before it existed, read as null.
+   */
+  scenePriority?: ScenePriority | null;
   party: PartyMember[];
   prompt: Prompt | null;
   lastRoll: DiceRoll | null;

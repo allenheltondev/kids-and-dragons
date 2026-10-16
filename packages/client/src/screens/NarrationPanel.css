@@ -397,3 +397,98 @@
     animation: none;
   }
 }
+
+/*
+ * Priority scenes (chapter.ts `ScenePriority`). A revelation is the moment the
+ * campaign turns on — the gems are a seal, the seal holds a titan — and it
+ * should not look like the scene where somebody sells you soup. A ribbon says
+ * so in words, and the plate itself changes, so a room that only half looks
+ * up still sees that this one is different.
+ *
+ * p1, a revelation: gold. The ribbon, a gilded rim along the plate's top, a
+ * warm glow behind the words, and an entrance that takes its time.
+ * p2, a clue: the ribbon in the accent violet and nothing else. Noticed, not
+ * announced; a chapter can have several without the screen shouting.
+ */
+.narration__ribbon {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 0.25em);
+  margin: 0 0 0.5em;
+  padding: var(--space-1, 0.25em) var(--space-3, 0.75em);
+  border: 0.08em solid var(--kad-accent-hi, #b7a1ff);
+  border-radius: var(--radius-pill, 999em);
+  background: var(--kad-accent-soft, rgba(139, 108, 245, 0.18));
+  color: var(--kad-accent-hi, #b7a1ff);
+  font-size: var(--font-size-md, 1em);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  animation: narration-arrive 320ms ease-out;
+}
+
+.narration__ribbon > svg {
+  flex: 0 0 auto;
+}
+
+.narration--p1 .narration__ribbon {
+  border-color: var(--kad-gold, #f5c86c);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--kad-gold-hi, #ffe6a8) 30%, transparent),
+    color-mix(in srgb, var(--kad-gold-lo, #c9962f) 22%, transparent)
+  );
+  color: var(--kad-gold-hi, #ffe6a8);
+  font-size: var(--font-size-lg, 1.25em);
+  text-transform: uppercase;
+  box-shadow: 0 0 1em rgba(245, 200, 108, 0.35);
+  animation:
+    narration-arrive 320ms ease-out,
+    narration-revelation-glow 2.4s ease-in-out 320ms infinite;
+}
+
+/* The gilded rim: drawn as a second background layer on the plate's feathered
+   top edge, so the plate keeps its size and the stage its framing. */
+.narration--p1 .narration__plate {
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      var(--kad-gold, #f5c86c) 20%,
+      var(--kad-gold-hi, #ffe6a8) 50%,
+      var(--kad-gold, #f5c86c) 80%,
+      transparent
+    )
+      top var(--space-6, 1.5em) left 0 / 100% 0.12em no-repeat,
+    radial-gradient(
+      ellipse at 30% 60%,
+      rgba(245, 200, 108, 0.14),
+      transparent 70%
+    )
+      0 var(--space-6, 1.5em) / 100% calc(100% - var(--space-6, 1.5em)) no-repeat,
+    linear-gradient(
+      to bottom,
+      transparent 0,
+      color-mix(in srgb, var(--kad-bg, #0d0b1a) 84%, transparent) var(--space-6, 1.5em),
+      color-mix(in srgb, var(--kad-bg, #0d0b1a) 94%, transparent) 100%
+    );
+}
+
+.narration--p1 .narration__body {
+  color: var(--kad-gold-hi, #ffe6a8);
+  text-shadow: 0 0 0.6em rgba(245, 200, 108, 0.3);
+  /* Slower than an ordinary scene: the room should feel it land. */
+  animation: narration-arrive 700ms ease-out;
+}
+
+@keyframes narration-revelation-glow {
+  0%, 100% { box-shadow: 0 0 0.6em rgba(245, 200, 108, 0.25); }
+  50% { box-shadow: 0 0 1.4em rgba(245, 200, 108, 0.55); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .narration__ribbon,
+  .narration--p1 .narration__ribbon,
+  .narration--p1 .narration__body {
+    animation: none;
+  }
+}

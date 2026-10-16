@@ -360,6 +360,7 @@
     },
     "scene_boggart_clue": {
       "type": "story",
+      "priority": 1,
       "narration": "Nan Rummage opens the bag a crack. Inside is a chip of fallen gem, no bigger than a tooth, humming one long, low note. \"Lost things all hum,\" she tells the teapot lid. \"This one hums like the Gate. Same note. Exactly.\" Then, to an umbrella: \"Not that I said.\"",
       "cast": [
         {
@@ -1315,6 +1316,7 @@
     },
     "scene_hollow_gate": {
       "type": "story",
+      "priority": 2,
       "discovers": [
         "location.hollow_gate"
       ],
@@ -1343,6 +1345,7 @@
     },
     "scene_gate_hum": {
       "type": "story",
+      "priority": 2,
       "art": "scenes/gemfall/hollow-gate",
       "narration": "You stand very still. The runes are humming one long, low note. The boggart's note. The barge's note. Not a bit like it. The same. What that means, the Gate does not say. Is it a door? A warning? Something else? It just keeps humming, the way it has hummed since before anyone was here to hear it.",
       "onEnter": [
