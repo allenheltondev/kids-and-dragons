@@ -1,0 +1,6 @@
+
+> kids-and-dragons@0.0.0 audio:verify
+> tsx tools/audio/verify.ts
+
+audio: 37/38 real, 1 still synthesized
+  placeholders: bonk
