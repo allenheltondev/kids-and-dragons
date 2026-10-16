@@ -1547,8 +1547,14 @@ function doVoteCampaign(draft: RunState, playerId: string, campaignId: string): 
     throw new Illegal("NOT_FOUND", `player "${playerId}" is not in this run`);
   }
   const options = draft.campaignOptions ?? [];
-  if (!options.some((option) => option.id === campaignId)) {
+  const voted = options.find((option) => option.id === campaignId);
+  if (!voted) {
     throw new Illegal("ILLEGAL", `"${campaignId}" is not one of this room's campaigns`);
+  }
+  // A locked campaign (#221) is shown, not choosable: a vote for it could only
+  // win a Begin the server then refuses.
+  if (voted.locked) {
+    throw new Illegal("ILLEGAL", `"${voted.title}" is locked: ${voted.locked.reason}`);
   }
   draft.campaignVotes = { ...(draft.campaignVotes ?? {}), [playerId]: campaignId };
   const leader = lobbyCampaign(draft).leader;
@@ -1595,10 +1601,16 @@ export function lobbyCampaign(state: RunState): LobbyCampaignChoice {
   const waitingOn = state.party.filter((m) => m.connected && votes[m.playerId] === undefined);
   const leaderId = Object.keys(votes).length > 0 ? tallyVotes(state, votes) : null;
   // Before anybody votes, the leader is whatever the screens already show
-  // (the room's campaign, or the one this room just played), else the first.
+  // (the room's campaign, or the one this room just played), else the first —
+  // skipping a locked campaign (#221), which a Begin could only be refused
+  // on. With every option locked it falls back as before, and the screens
+  // show the reason instead of a Begin.
   const shownId = state.campaign?.id;
+  const unlocked = (option: CampaignView) => option.locked === undefined;
   const leader =
     options.find((option) => option.id === leaderId) ??
+    options.find((option) => option.id === shownId && unlocked(option)) ??
+    options.find(unlocked) ??
     options.find((option) => option.id === shownId) ??
     options[0] ??
     null;

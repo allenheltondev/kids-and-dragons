@@ -161,6 +161,11 @@ export async function createRoom(
  * and points `campaign` at the first of them — the one a Begin tap plays until
  * somebody votes otherwise. Any votes already cast were cast on a different
  * list, so they go.
+ *
+ * The first *unlocked* one (#221), when the room's own campaign is locked and
+ * something else is on offer: the screens show what a Begin would play, and
+ * `lobbyCampaign` skips a locked campaign for the same reason. With every
+ * option locked it is the first, and its reason is what the screens show.
  */
 async function offerCampaigns(
   state: RunState,
@@ -171,7 +176,8 @@ async function offerCampaigns(
   const options = await lobbyCampaigns(householdId, featuredId, deps);
   state.campaignOptions = options;
   state.campaignVotes = {};
-  if (options[0]) state.campaign = options[0];
+  const shown = options.find((option) => option.locked === undefined) ?? options[0];
+  if (shown) state.campaign = shown;
 }
 
 async function reserveCode(

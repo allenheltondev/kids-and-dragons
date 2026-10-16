@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Riftlight · Part A asset review</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#242724;color:#eee6d7;font:16px/1.5 system-ui}main{max-width:1120px;margin:auto;padding:24px}h1{font:600 32px Georgia;margin:0}p{max-width:74ch;color:#d5cebe}a{color:#eaa6ba}button,select{font:inherit;padding:8px;border-radius:8px;background:#eee6d7;color:#242724}label{display:inline-flex;gap:8px;align-items:center;margin:8px}.stage{height:440px;border:2px solid #6f756c;border-radius:16px;position:relative;overflow:hidden;background:#9aada8 url('../../../assets/biomes/glacier_of_origins/bg.webp') center/cover}.rift{position:absolute;left:calc(50% - 128px);top:calc(50% - 128px);width:256px;height:256px;transform:scale(2)}.layer{position:absolute;inset:0;background-size:3072px 256px;animation:frames 1s steps(12) infinite}@keyframes frames{to{background-position:-3072px 0}}.gray{filter:grayscale(1)}.badge{position:absolute;left:16px;top:12px;padding:6px 12px;border-radius:6px;background:#242724e8}.icons{display:flex;gap:24px;flex-wrap:wrap}.icons img{width:64px;height:64px;object-fit:contain}.sound{display:inline-block;width:48%;padding:10px;vertical-align:top}.sound audio{width:100%}body[data-mode=phone] main{max-width:440px}body[data-mode=phone] .stage{height:440px}body[data-mode=phone] .rift{transform:scale(1.6)}body[data-mode=tv] #phone-controls{display:none}@media(max-width:600px){main{padding:16px}.sound{width:100%}h1{font-size:26px}}
+</style>
+<body><main><h1>Riftlight · the first rift</h1><p id="context"></p>
+<div id="phone-controls"><label>Stack <select id="stack"><option value="green,amber,violet">Green + amber + violet</option><option value="amber,violet">Amber + violet</option><option value="green,blue">Green + blue</option><option value="blue">Blue</option></select></label><label><input id="gray" type="checkbox">Grayscale</label></div>
+<div class="stage"><div class="badge" id="badge"></div><div class="rift" id="rift"></div></div>
+<p>Asset composition preview. Phone visibility and chapter playback are implemented separately in #229; this page does not change gameplay.</p>
+<h2>Icons · 64px</h2><div class="icons" id="icons"></div>
+<h2>Listening review</h2><p>Compare the wavering single chime with the two clean strikes, including on a mono speaker across the room.</p><div id="sounds"></div>
+<p><a href="common-stacks.png">All twelve phases in color and grayscale</a> · <a href="common-stacks.gif">Animated stacks</a> · <a href="effects.png">All effect sheets</a> · <a href="icons.png">Icons at 256 / 48 / 24px</a></p>
+</main><script>
+const mode=new URLSearchParams(location.search).get('mode')==='tv'?'tv':'phone';document.body.dataset.mode=mode;
+document.querySelector('#context').textContent=mode==='tv'?'TV and other phones: quiet neutral shimmer, without diagnostic colors or patterns.':'Starweaver phone: composable patterns, with a grayscale review toggle.';
+document.querySelector('#badge').textContent=mode==='tv'?'TV · neutral only':'Starweaver phone';
+function render(){const rift=document.querySelector('#rift');rift.replaceChildren();for(const id of mode==='tv'?['neutral']:['base',...document.querySelector('#stack').value.split(',')]){const layer=document.createElement('div');layer.className='layer';layer.style.backgroundImage=`url('../../../assets/effects/rift_${id}.sheet.png')`;rift.append(layer)}rift.classList.toggle('gray',document.querySelector('#gray').checked)}
+document.querySelector('#stack').onchange=render;document.querySelector('#gray').onchange=render;render();
+for(const id of ['listening_chime','riftlight_indicator','riftspark']){const img=document.createElement('img');img.src=`../../../assets/items/${id}/portrait.webp`;img.alt=id;document.querySelector('#icons').append(img)}
+for(const id of ['rift-open','rift-collapse','chime-sour','chime-echo','attune-hum','riftspark','anchor']){const card=document.createElement('div');card.className='sound';const label=document.createElement('div');label.textContent=id;const audio=document.createElement('audio');audio.controls=true;audio.preload='none';audio.src=`../../../assets/audio/cues/${id}.webm`;card.append(label,audio);document.querySelector('#sounds').append(card)}
+for(const audio of document.querySelectorAll('audio'))audio.addEventListener('play',()=>{for(const other of document.querySelectorAll('audio'))if(other!==audio)other.pause()});
+</script></body></html>

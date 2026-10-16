@@ -43,6 +43,24 @@ const notes = (frequencies: number[], spacing: number, duration: number): Voice[
   frequencies.map((freq, i) => bell(freq, i * spacing, duration, 0.22, (i % 2 ? 1 : -1) * 0.2));
 
 const cueVoices: Partial<Record<CueId, Voice[]>> = {
+  // Riftlight recipes: no changes to the approved Gemfall arrangements.
+  "rift-open": [
+    { at: 0, duration: 1.8, freq: 0, noise: true, cutoff: 1500, highpass: 250, gain: 0.09, swell: true },
+    { at: 0.1, duration: 1.9, freq: 294, endFreq: 587, gain: 0.12, swell: true, partials: [[1, 1], [2.76, 0.12]] },
+  ],
+  "rift-collapse": [
+    { at: 0, duration: 1.6, freq: 587, endFreq: 294, gain: 0.12, attack: 0.09, partials: [[1, 1], [2.76, 0.12]] },
+    { at: 0, duration: 1.4, freq: 0, noise: true, cutoff: 1100, gain: 0.04, attack: 0.1 },
+  ],
+  "chime-sour": [{ ...bell(784, 0, 1.4, 0.26), endFreq: 698, vibrato: [6, 35] }],
+  "chime-echo": [bell(784, 0, 0.55, 0.26), bell(784, 0.85, 0.95, 0.22)],
+  "attune-hum": [146.83, 220, 293.66].map((freq, i) => ({ at: i * 0.12, duration: 3 - i * 0.12, freq, gain: 0.10, swell: true, partials: [[1, 1], [2, 0.08]] })),
+  riftspark: [bell(1318, 0, 0.4, 0.13), { at: 0.12, duration: 0.78, freq: 659, endFreq: 988, gain: 0.16, attack: 0.02 }],
+  anchor: [
+    { at: 0, duration: 2, freq: 82.41, endFreq: 73.42, gain: 0.22, attack: 0.16 },
+    { at: 0.12, duration: 1.88, freq: 146.83, gain: 0.10, attack: 0.18, partials: [[1, 1], [2, 0.12]] },
+    { at: 0.3, duration: 1.7, freq: 220, gain: 0.06, attack: 0.2 },
+  ],
   "party-ready": [...wood(0, 0.1, 180), ...wood(0.18, 0.08, 220), ...[196, 261.63, 329.63].map((freq, i) => ({ at: 0.25 + i * 0.12, duration: 0.6, freq, gain: 0.1, attack: 0.012, partials: [[1, 1], [2, 0.15]] as [number, number][] }))],
   // Irregular short contacts, rather than a descending pitched percussion scale.
   dice: [0.015, 0.047, 0.105, 0.14, 0.218, 0.256, 0.345, 0.403, 0.515, 0.64, 0.81, 1.04, 1.23].flatMap((at, i) => [

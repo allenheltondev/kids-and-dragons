@@ -6,6 +6,7 @@
  */
 
 import type { CampaignGraph } from "./campaign-graph.js";
+import type { SlowEffect } from "./buffs.js";
 import type { ClassId, ItemDef, SpeciesId, StatId } from "./domain.js";
 
 export type SceneId = string;
@@ -225,6 +226,7 @@ export type ScenePriority = 1 | 2;
 export interface StoryScene {
   type: "story";
   art?: string;
+  music?: string;
   narration: string;
   /** Conditional narration, composed when the scene opens. See `NarrationVariant`. */
   variants?: NarrationVariant[];
@@ -248,6 +250,7 @@ export interface StoryScene {
 export interface CheckScene {
   type: "check";
   art?: string;
+  music?: string;
   stat: StatId;
   tn: number;
   prompt: string;
@@ -279,6 +282,7 @@ export interface CheckScene {
 export interface ChoicePointScene {
   type: "choice_point";
   art?: string;
+  music?: string;
   narration: string;
   /** Conditional narration, composed when the scene opens. See `NarrationVariant`. */
   variants?: NarrationVariant[];
@@ -303,6 +307,7 @@ export interface ChoicePointScene {
 export interface RestScene {
   type: "rest";
   art?: string;
+  music?: string;
   narration: string;
   /** Conditional narration, composed when the scene opens. See `NarrationVariant`. */
   variants?: NarrationVariant[];
@@ -371,6 +376,25 @@ export interface EnemySpec {
   steps: number;
   attack: number;
   art?: string;
+  /**
+   * A numbing sting (#227): every hit this enemy lands leaves the hero
+   * Numbed — `slow.steps` fewer steps for `slow.turns` of their turns, then
+   * full again. A second sting refreshes it and never stacks; it ends with the
+   * fight. Absent on every enemy before it existed, which fights as it always
+   * did.
+   */
+  onHit?: { slow: SlowEffect };
+  /**
+   * The same sting as a defense (#227), pufferfish-style. The enemy starts
+   * the fight NOT puffed; the first hero hit on it puffs it up (that hit does
+   * not sting — it was not puffed when struck). While puffed, a hero who
+   * *hits* it is Numbed. A miss touches nothing, puffed or not.
+   *
+   * It stays puffed for `puffTurns` of its own turns (default
+   * `DEFAULT_PUFF_TURNS`, 2), then deflates; being hit while puffed starts the
+   * count again.
+   */
+  retaliation?: { slow: SlowEffect; puffTurns?: number };
 }
 
 /**
@@ -512,6 +536,7 @@ export interface EncounterScene {
   type: "encounter";
   map: string;
   art?: string;
+  music?: string;
   narration?: string;
   onEnter?: Effect[];
   /**
@@ -607,6 +632,12 @@ export interface Chapter {
   index: number;
   title: string;
   biome: string;
+  /**
+   * A `MUSIC_SPECS` track id (packages/client/src/audio/paths.ts) that plays
+   * instead of the biome's track for this chapter. A scene's own `music` wins
+   * over it. Absent is the normal case: the biome's track, as before (#226).
+   */
+  music?: string;
   estimatedMinutes: number;
   xpAward: number;
   entry: SceneId;
@@ -695,6 +726,15 @@ export interface Campaign {
    * starts its next chapter with an empty purse.
    */
   purseBackfill?: { coins: number; byFlag?: Record<string, number> };
+  /**
+   * Campaigns the household must have finished before this one can be started
+   * (#221). Met by a `complete` attempt at each — a loss ending counts, a
+   * `failed` or abandoned attempt does not. Absent means no prerequisite,
+   * which is every campaign authored before it existed, Gemfall included. Per
+   * household, never per character: a late joiner still takes the tier floor
+   * (spec §8.4). See `unmetPrerequisites`.
+   */
+  requires?: string[];
   /**
    * Makes this a graph campaign (#192): the next chapter is chosen by the
    * graph's edges, not by `index`. Absent — every campaign authored before it

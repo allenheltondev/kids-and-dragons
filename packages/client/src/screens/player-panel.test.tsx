@@ -664,6 +664,41 @@ describe("readying up", () => {
     expect(screen.getByRole("button", { name: /Play chapter 3/ })).toBeTruthy();
   });
 
+  it("shows a locked campaign's reason in place of Begin, and no way to start it (#221)", () => {
+    const locked = {
+      id: "rift",
+      title: "Riftlight",
+      chapters: 6,
+      next: { index: 1, title: "The Crack" },
+      locked: { requires: ["gemfall"], reason: "Finish Gemfall first" },
+    };
+    const { sent } = mount({ phase: "lobby", party: [member({ ready: true })] });
+    serverSends({ campaign: locked, campaignOptions: [locked] });
+    expect(screen.getByText(/Riftlight: Finish Gemfall first/)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Begin the adventure|Play chapter/ })).toBeNull();
+    expect(screen.queryByText("Chapter 1: The Crack")).toBeNull();
+    expect(sent).toEqual([]);
+  });
+
+  it("lists a locked campaign in the vote but cannot be voted for (#221)", async () => {
+    const user = userEvent.setup();
+    const gems = { id: "gems", title: "Gemfall", chapters: 8, next: { index: 3, title: "Roads" } };
+    const locked = {
+      id: "rift",
+      title: "Riftlight",
+      chapters: 6,
+      next: { index: 1, title: "The Crack" },
+      locked: { requires: ["gems"], reason: "Finish Gemfall first" },
+    };
+    const { sent } = mount({ phase: "lobby", party: [member({ ready: true })] });
+    serverSends({ campaign: gems, campaignOptions: [gems, locked], campaignVotes: {} });
+    const button = screen.getByRole("button", { name: /Riftlight/ });
+    expect(button.textContent).toContain("Finish Gemfall first");
+    expect(button.hasAttribute("disabled")).toBe(true);
+    await user.click(button);
+    expect(sent).toEqual([]);
+  });
+
   it("does not offer to begin before the campaign has loaded", () => {
     // Content is data: without a campaign there is nothing to continue, and
     // the panel's job is to not invent one.

@@ -21,7 +21,14 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { checkEncounterEnvironment, EFFECT_VERBS, itemCatalog, MAX_PARTY, resolveEnemy } from "@kad/shared";
-import { campaignMode, chapterFlagWrites, chapterFor, lintCampaignGraph, parseCampaignGraph } from "@kad/shared";
+import {
+  campaignMode,
+  chapterFlagWrites,
+  chapterFor,
+  lintCampaignGraph,
+  parseCampaignGraph,
+  prerequisiteProblems,
+} from "@kad/shared";
 import type {
   AbilityCatalog,
   AuthoredEnemySpec,
@@ -385,6 +392,11 @@ async function readAll(root: string): Promise<ContentStore> {
       continue;
     }
     campaigns.set(campaign.id, campaign);
+  }
+  // A prerequisite (#221) naming a campaign that is not there, or looping back
+  // on itself, would lock a campaign for good - and only the whole set shows it.
+  for (const { campaignId, path: at, problem } of prerequisiteProblems([...campaigns.values()])) {
+    problems.push(`campaigns/${campaignId}.json: ${at}: ${problem}`);
   }
 
   if (rules) problems.push(...checkRules(rules));

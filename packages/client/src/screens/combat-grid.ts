@@ -8,7 +8,7 @@
  */
 
 import type { Chapter, Combatant, EncounterState, PartyMember, Position } from "@kad/shared";
-import { currentActorId, enemyArtId, environmentView } from "@kad/shared";
+import { NUMBED_BUFF_ID, currentActorId, enemyArtId, environmentView } from "@kad/shared";
 import { facingFor, type Facing } from "../world/board-math";
 import { CAPTIVE_ICON, EXIT_ICON, hazardIcon } from "./environment-copy";
 
@@ -39,6 +39,18 @@ export interface GridOccupant {
   readonly hp: number;
   /** Which way the figure faces: toward the nearest opponent (board-math.ts). */
   readonly facing: Facing;
+  /** A puffed-up enemy (#227): hitting it stings. Public, like hearts. Absent otherwise. */
+  readonly puffed?: true;
+}
+
+/**
+ * Is `occupantId` the hero on this phone, and Numbed (#227)? The lasting
+ * marker belongs to the stung player's phone only: `viewerId` is the hero the
+ * phone belongs to, and nobody else's figure ever asks for it.
+ */
+export function isNumbedHero(encounter: EncounterState, viewerId: string | null, occupantId: string): boolean {
+  if (viewerId === null || viewerId !== occupantId) return false;
+  return (encounter.buffs ?? []).some((buff) => buff.heroId === viewerId && buff.id === NUMBED_BUFF_ID);
 }
 
 export interface GridCell {
@@ -118,6 +130,7 @@ export function gridCells(
       icon: combatantIcon(combatant, party),
       active: combatant.id === activeId,
       hp: combatant.hp,
+      ...(combatant.puffed !== undefined && !combatant.down ? { puffed: true as const } : {}),
       // Straight above or below its nearest foe, or with nobody left, a
       // figure keeps the way it was facing, the same rule the TV board
       // follows (board.ts), so the two surfaces never disagree. A figure

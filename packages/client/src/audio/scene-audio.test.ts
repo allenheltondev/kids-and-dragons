@@ -113,3 +113,27 @@ describe("Ashfall citadel music", () => {
     expect(musicForScene(other, { ...state("scene_truth_table"), chapterId: other.id })).toBe(other.biome);
   });
 });
+
+describe("music overrides (#226)", () => {
+  const base = gallery as unknown as Chapter;
+  const at = (chapter: Chapter, sceneId: string) => ({ ...state(sceneId), chapterId: chapter.id });
+
+  it("keeps the biome's track when neither the chapter nor the scene names one", () => {
+    expect(musicForScene(base, at(base, "scene_mouth"))).toBe(base.biome);
+  });
+
+  it("plays the chapter's track in place of the biome's", () => {
+    const chapter: Chapter = { ...base, music: "gemfall-marsh" };
+    expect(musicForScene(chapter, at(chapter, "scene_mouth"))).toBe("gemfall-marsh");
+  });
+
+  it("lets a scene's track win over its chapter's", () => {
+    const chapter: Chapter = {
+      ...base,
+      music: "gemfall-marsh",
+      scenes: { ...base.scenes, scene_mouth: { ...base.scenes.scene_mouth!, music: "forest" } },
+    };
+    expect(musicForScene(chapter, at(chapter, "scene_mouth"))).toBe("forest");
+    expect(musicForScene(chapter, at(chapter, "scene_bells_first"))).toBe("gemfall-marsh");
+  });
+});
