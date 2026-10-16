@@ -102,6 +102,22 @@ Sky Islands, kitsune and cloud whales; teaches **linked**. Entered by the washou
 - **Each class has a moment:** Starweaver reads the linked pulse; Songkeeper calms the whales; Duskrunner leaps between drifting islands; Thornguard braces the temple in the squall. Kitsune players get Beguile with the temple keepers; griffin players get Skyward.
 - **Protected:** the creator-only secret that the islands were once sea floor stays untouched (the carving shows land, not sea); kitsune are never portrayed as all deceptive.
 
+## Strand: Restless Coast — agreed
+The Sallow Wastelands (the Saltrot), Saltrot guides, the Bone Yard and displaced creatures; teaches **unstable**. Begins at `saltrot-arrival`, reached by the hidden glacier rift (persistent, two-way), the linked rift from `whale-road`, or downriver from Ashspan Bridge.
+
+| Node | What happens | Canon it uses |
+| --- | --- | --- |
+| `saltrot-arrival` | The mudflats are piling up with **glacier silt** where it does not belong; players see the effect, the rift as its cause stays creator-only. A Saltrot guide takes them in. Three variants, one per way in. Downriver means **Old Ossley's ferry**: a flood year, and he is "going your way" again. | The unfamiliar glacier silt reaching the Saltrot; Saltrot guides; Ossley's flood-year ferry |
+| `buried-bridge` (**key node**) | A displacement has uncovered the Saltrot's **buried bridge**, built across a river that is not there now: this strand's Pangea fragment. It echoes Forgotten Paths' memory of the river in a different valley, so the clues agree across strands. The **sealed door stays sealed**. | The buried bridge and the sealed door |
+| `stuttering-flats` | An **unstable** rift drops out-of-place creatures onto the flats (teaches *unstable*). A **snowhorn goat** from the glacier is stranded in the mud; get it home before the rift closes. A rescue, not a fight. | Snowhorn goats of the glacier |
+| `bone-yard` (**strand end**) | The displacements have carried **ruins** into the Bone Yard, and bone crawlers swarm their magic. A fight with more than one good outcome (#201). The Bone Yard's rule holds: anything taken comes back, so nothing is carried out. | Ruins carried into the Bone Yard; taken objects always return; bone crawlers |
+
+- **Orin appears here,** studying the silt, the counterpart to Olivia's beat in the Sky. He works out "the glacier is draining somewhere through a rift" but never names Corvane. Sharing the chime's readings with him sets a flag that helps the party back Bram and Orin at the convergence.
+- **First strand entered:** Seren teaches Attune at `saltrot-arrival`; Pip is here scouting.
+- **Exits:** the glacier rift back to `hidden-glacier-rift`; the linked rift back to `whale-road`; Ossley's ferry upriver to Ashspan Bridge, toward Forgotten Paths.
+- **Each class has a moment:** Thornguard shores up the buried bridge; Duskrunner beats the stuttering rift; Songkeeper soothes the goat; Starweaver reads the stutter. Bigfoot's Smash digs the bridge out; Unicorn's Mend helps the goat.
+- **Protected:** the guides' secret that the flats drain mouth-last stays untouched; the colossal remains stay unidentified; Mermaid Cove's "unknown threat" is never made out to be Corvane.
+
 ## Graph design constraints
 - Forward, sideways and return edges should all matter.
 - Arrival may depend on prior flags, including region allies, discoveries and changed geography.
@@ -114,5 +130,4 @@ Sky Islands, kitsune and cloud whales; teaches **linked**. Entered by the washou
 - Avoid authoring the final graph until graph runtime, effects and edge constraints from issues #192–#203 are verified.
 
 ## Decisions still open
-1. Node list and key node for Restless Coast.
-2. Faction influence rules and return routes.
+1. Faction influence rules and return routes.
