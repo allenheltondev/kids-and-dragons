@@ -14,7 +14,7 @@ const apiTarget = process.env.KAD_DEV_API_TARGET ?? "http://localhost:8787";
 export default defineConfig({
   // The service worker (src/sw/) is emitted as `/sw.js` by its own plugin:
   // a fixed URL and a single classic script, which a Vite entry is not.
-  plugins: [react(), serviceWorker(`${repoRoot}content`)],
+  plugins: [react(), serviceWorker(repoRoot)],
   server: {
     host: "0.0.0.0",
     port: Number(process.env.KAD_CLIENT_PORT ?? 5173),

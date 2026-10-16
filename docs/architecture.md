@@ -629,7 +629,7 @@ same way, so an open page loses nothing to the switch. **To turn it off**, ship 
 `activate` deletes every cache and calls `self.registration.unregister()`. Phones pick it up on
 their next page load.
 
-`e2e/offline.spec.ts` proves it against a real production build (`npm run e2e:offline`, also run
+`e2e/offline.spec.ts` proves it against a real production build (`npm run e2e:prod`, also run
 by CI): play a little, open the book once, drop the network, then reload and open a fresh tab, and
 the hero, the map's painting and an opened Field Guide entry must all be there.
 

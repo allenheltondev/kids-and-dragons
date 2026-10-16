@@ -1,7 +1,7 @@
 /**
  * The adventure book with no signal — on a reload, and in a new tab — against
  * a production build, where the service worker lives
- * (playwright.offline.config.ts; `npm run e2e:offline`).
+ * (playwright.prod.config.ts; `npm run e2e:prod`).
  *
  * The review that asked for this was exact about the gap: going offline in a
  * tab that already had everything loaded proves nothing, because the page,
@@ -23,9 +23,12 @@ async function controlled(page: Page): Promise<void> {
   await page.waitForFunction(() => navigator.serviceWorker?.controller != null, undefined, { timeout: 30_000 });
 }
 
-/** Whether the worker has kept `url` in any of its caches. */
+/**
+ * Whether the worker has kept `url` in any of its caches — under any
+ * fingerprint, since art is saved as `path?v=<fingerprint>`.
+ */
 async function kept(page: Page, url: string): Promise<boolean> {
-  return page.evaluate(async (target) => (await caches.match(target)) !== undefined, url);
+  return page.evaluate(async (target) => (await caches.match(target, { ignoreSearch: true })) !== undefined, url);
 }
 
 /** At least one map image actually drawn — a broken image has no natural width. */
