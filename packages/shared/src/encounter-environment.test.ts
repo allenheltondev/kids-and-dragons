@@ -583,6 +583,28 @@ describe("the sandbox, through the engine", () => {
     expect(state.narration).toContain("Pip's lantern winks out");
   });
 
+  it("the shades play the place: one watches the tear, one goes for Pip, neither waits in the fire", () => {
+    /*
+     * The engine hands its monsters the environment (enemy-ai.ts, "In a place
+     * that fights back"). On the waiting run nobody comes near them, so what
+     * they do is all the place: shade#1, nearest the tear, stands beside it
+     * from round 1 (it opens in round 2); shade#2 heads for Pip's side; and
+     * neither ever ends a turn in the fire or on the tear itself. Rigged dice
+     * (every die a 1) mean nobody is hurt, so the runs above still reach the
+     * endings they always did — these shades contest them, they do not close them.
+     */
+    const { log } = waitOutTheClock();
+    const moves = log.filter((e): e is Extract<EncounterEvent, { type: "moved" }> => e.type === "moved");
+    expect(moves.find((m) => m.actorId === "shade#1")?.to).toEqual({ x: 6, y: 0 });
+    expect(moves.filter((m) => m.actorId === "shade#1")).toHaveLength(1);
+    const towardPip = moves.filter((m) => m.actorId === "shade#2").slice(0, 2).map((m) => m.to);
+    expect(towardPip).toEqual([{ x: 6, y: 3 }, { x: 3, y: 6 }]);
+    const stops = moves.map((m) => `${m.to.x},${m.to.y}`);
+    expect(stops.filter((s) => HAZARD_TILES.has(s))).toEqual([]);
+    expect(stops.filter((s) => EXIT_TILES.some((t) => `${t.x},${t.y}` === s))).toEqual([]);
+    expect(log.filter((e) => e.type === "hazard")).toEqual([]);
+  });
+
   it("resolution 3 — stay too long: the clock runs out, Pip is lost, and the fight takes onTimeout", () => {
     const { state, log } = waitOutTheClock();
     expect(state.encounter).toBeNull();

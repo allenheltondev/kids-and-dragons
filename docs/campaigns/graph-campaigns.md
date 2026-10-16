@@ -1464,8 +1464,35 @@ read, so the two can never disagree about which exit is open in round 3:
 
 ### Deferred (not in #201)
 
-- **Enemy AI** does not know about hazards, exits or the captive: monsters stop in the fire and
-  never guard the way out.
+- ~~**Enemy AI** does not know about hazards, exits or the captive~~ — **done** (follow-up to #201,
+  [`enemy-ai.ts`](../../packages/shared/src/enemy-ai.ts), "In a place that fights back"). The engine
+  hands `planEnemyTurn` the environment (`EnemyTurn.environment: { spec, round, rescue }`) only when
+  the fight has one; a turn without it runs the unchanged base sentence ("walk at the nearest hero
+  you can reach and hit them"), held to a frozen copy of the pre-change planner over a seeded corpus
+  (`enemy-ai-environment.test.ts`) as well as by the Gemfall digests. With an environment, three
+  more sentences apply, the base one always first (a monster with somebody to hit hits them):
+  1. **It does not stop in the fire.** Only where it *ends its turn* is judged, in the round the
+     turn is played (the moment a hazard bites); walking across is free. Swinging: the same hero
+     from a tile not burning if it can, else any hero it can hit from such a tile, else — every
+     tile it could swing from burns — it steps in and swings from the one that burns least. Walking
+     without arriving: the safe tile that gets it closest to where it was going; if no safe tile
+     gets it any closer (fire wider than its stride), the least-burning tile that does — it would
+     rather burn than wait at the edge forever; if nothing gets it closer, it stays, unless it is
+     standing in fire.
+  2. **The one nearest the way out watches it.** While an exit is open or opens next round
+     (`EXIT_LOOKAHEAD = 1`), the monster nearest it (straight line; ties by reading order, then id)
+     — only that one — stands *beside* it when it has nobody to hit this turn: on the tile nearest
+     the heroes among those it can reach this turn (else it walks toward that one), never on an
+     exit tile, never on a burning one, never where it would leave no standing hero a walk to one
+     of the exit's tiles. Once there it holds until somebody comes within reach.
+  3. **The next one watches the captive.** While the captive waits, the nearest monster not
+     watching an exit stands beside them by the same rules, never taking the last side a hero
+     could reach them from. The captive is terrain, never a target.
+
+  Who watches what is computed from the board alone (posts in authored order, exits first), so
+  every monster reads the same answer — no coordination, no randomness, no hit points. Still
+  deferred: monsters that *use* the place (driving heroes into fire, relocating on purpose), a
+  per-creature `behavior` for environments, and anything reading the clock.
 - **Hazard effects other than damage** (slow, root, push), **several captives**, captives that can
   be attacked, and objectives other than a rescue.
 - **Environment keyed on world state.** Use a node *variant* whose `when` reads the fact — the
