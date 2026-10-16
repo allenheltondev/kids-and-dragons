@@ -23,7 +23,15 @@ This folder is the source of truth for Continental Rift **design** decisions. It
 **Rules:** Never invent missing canon to make an implementation convenient. Never expose endgame spoilers in early player-facing narration. Preserve protected mysteries of the Expanse, Hollow Gate and Legend Dragon. Do not change Gemfall's existing campaign data or ongoing saves.
 
 ## Implementation boundary
-Engine epic: [#191](https://github.com/allenheltondev/kids-and-dragons/issues/191), issues #192–#203. These are engine prerequisites, not story authoring. The Gemfall prerequisite needs one more engine piece outside #192–#203: a campaign-level prerequisite (Riftlight locked in the lobby until the household has a completed Gemfall attempt). Nothing like it exists today. Existing graph spec supports static node/edge IDs, conditional edges, once-only traversals, persistent journey flags, and variants; specialized rift behavior and within-node multi-stage roll checks must be verified against runtime support when implemented.
+Engine epic: [#191](https://github.com/allenheltondev/kids-and-dragons/issues/191). **The groundwork #192–#203 has landed** on `main`: graph schema and validation, journey runtime, navigation and revisits, rifts and rift actions, world state, class rift interaction, buffs, environmental combat, inspection tooling and a vertical slice. Author against [graph-campaigns.md](../graph-campaigns.md) as it stands. Multi-stage checks inside a node are ordinary chapter scenes.
+
+**Still needed from the engine** for Riftlight:
+- [#221](https://github.com/allenheltondev/kids-and-dragons/issues/221): the campaign prerequisite (locked until the household has a completed Gemfall attempt).
+- [#222](https://github.com/allenheltondev/kids-and-dragons/issues/222): buffs on story checks, for Riftspark.
+- [#226](https://github.com/allenheltondev/kids-and-dragons/issues/226): per-chapter music, for the theme and the finale.
+- [#227](https://github.com/allenheltondev/kids-and-dragons/issues/227): enemy hits that slow, for the Skuppers' sting.
+- A class gate on **chapter choices**, for the Starweaver's in-chapter *Read the Riftlight* ([mechanics.md](mechanics.md)). No issue yet.
+- [#220](https://github.com/allenheltondev/kids-and-dragons/issues/220): environment effects deferred after #201.
 
 ## Open items
 - **Canon registered:** the campaign `campaign.riftlight` (with its Gemfall prerequisite, Corvane and Pangea as creator-only constraints), `faction.riftseekers`, Ashspan Bridge (the title of `route.northern_river_bridge`), `route.cairnstep`, and the glacier-prison and rift-silt hidden truths in `biomes.yaml`. The named characters are deliberately not in `individuals.yaml` ([characters.md](characters.md#supporting-riftseekers--agreed)); the Listening Chime goes in a chapter's `props`, as Gemfall's quest items do.

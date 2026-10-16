@@ -22,7 +22,7 @@ A busy morning on the docks, told through small displacements a child can spot b
 
 ### 2. The shimmer on the quay
 At the end of the quay the air folds. A rift opens on its own, unsummoned by anyone present, with a **sensory glimpse**: cold, still air and the smell of very old ice. Riftlight shows **amber + violet**.
-- **A Starweaver** may *Read the Riftlight* (choice gated on `requiresClass`, #199): "Two colors. The amber one flickers like it will only do this once. The violet one is turning inward, like it only goes one way." This is the first time anyone at the table hears what colors mean. It sets the journey flag `starweaver_read_first_rift`, which Seren reacts to at `riftseekers-departure`.
+- **A Starweaver** may *Read the Riftlight* (a chapter choice gated on class; this needs the chapter class gate that does not exist yet, see [mechanics.md](../mechanics.md)): "Two colors. The amber one flickers like it will only do this once. The violet one is turning inward, like it only goes one way." This is the first time anyone at the table hears what colors mean. It sets the journey flag `starweaver_read_first_rift`, which Seren reacts to at `riftseekers-departure`.
 - **A party without a Starweaver** sees the shimmer and the two colors and learns nothing more yet. The chime comes from Orin later; this rift is not a choice anyway.
 
 ### 3. The pull
