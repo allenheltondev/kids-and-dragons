@@ -1152,13 +1152,15 @@ is byte-for-byte the row before it, except for what the chapter paid.
 | Field | Meaning |
 |---|---|
 | `label` | What the screens call it, for an 8-year-old. |
-| `kind` | What it changes, each a number the fight already has: `"guard"` — the hero's Guard, the number an attack on them must reach; `"damage"` — what the hero's **Attack** takes off when it hits (not roll-less ability damage, not thrown items); `"move"` — the steps the hero starts each turn with; `"roll"` — the modifier on the hero's **attack** rolls. Checks outside fights are untouched. |
+| `kind` | What it changes, each a number the fight already has: `"guard"` — the hero's Guard, the number an attack on them must reach; `"damage"` — what the hero's **Attack** takes off when it hits (not roll-less ability damage, not thrown items); `"move"` — the steps the hero starts each turn with; `"roll"` — the modifier on the hero's **attack** rolls. Checks outside fights are untouched, unless the buff opts in with `appliesTo: "check"` ([Story-check buffs](#story-check-buffs-222)). |
 | `amount` | Per stack, a non-zero whole number within the kind's limit (`BUFF_LIMITS`: guard 3, damage 2, move 2, roll 3). **Negative is a burden.** |
 | `target` | `"party"` (default) — every hero; `"one"` — the hero holding the story turn (`RunState.storyTurn`'s seat) when the fight begins. |
-| `duration` | `{ "scope": "turns", "count": n }` — the holder's first *n* turns of the next fight (and no longer than it); `{ "scope": "encounter" }` — the whole next fight; `{ "scope": "encounters", "count": n }` — the next *n* fights. *n* is 1–5. |
+| `duration` | `{ "scope": "turns", "count": n }` — the holder's first *n* turns of the next fight (and no longer than it); `{ "scope": "encounter" }` — the whole next fight; `{ "scope": "encounters", "count": n }` — the next *n* fights; `{ "scope": "uses", "count": n }` — a story-check buff's only clock: the next *n* checks it is spent on (#222). *n* is 1–5. |
 | `stack` | A second grant of a held buff: `"refresh"` (default) — its duration starts again; `"add"` — one more stack, up to `maxStacks` (2–5, default 3), and its duration starts again; `"ignore"` — nothing. |
 | `cap` | The most this buff adds (or takes away) however it stacks, 1 up to the kind's limit, and at least one stack's amount. |
-| `expiresOn` | What ends it early: `"defeat"` (a fight lost), `"setback"` (a chapter ending in one), `"rest"` (reaching a Rest scene), `"travel"` (taking any exit). |
+| `expiresOn` | What ends it early: `"defeat"` (a fight lost), `"setback"` (a chapter ending in one), `"rest"` (reaching a Rest scene), `"travel"` (taking any exit), `"chapter"` (the next chapter played ending, however it ends — #222). |
+| `appliesTo` | `"roll"` buffs only (#222): `"attack"` (default) — attack rolls, as before; `"check"` — one story check instead, never an attack. |
+| `spend` | `appliesTo: "check"` only (#222): `"auto"` (default) — spent on the party's next check; `"choose"` — the roller is asked first. |
 
 **Bounded on purpose.** A level is worth a point; a buff that out-weighed one would be stat creep by
 another name. However many buffs of one kind a hero has, their total is held to the kind's limit, up
@@ -1227,6 +1229,7 @@ says *Cost* — never colour alone. Neither appears in an ordered campaign: ther
 | Check | Where |
 |---|---|
 | each declaration well-formed (kind, amount within its kind's limit, target, duration and count, stack, `maxStacks` only with `"add"`, `cap` sane, expiries known) and every `grantBuff` names a declared buff | schema and `parseCampaignGraph` |
+| a story-check buff (#222) is a `"roll"` buff lasting `"uses"`, for the party; `"uses"` and `spend` only with `appliesTo: "check"`; a burden is never `"choose"`; `firstCrossing` only in an edge's own effects | schema and `parseCampaignGraph` |
 | `BUFF_NEVER_GRANTED` ⚠ — a declared buff no effect grants | lint (warning) |
 | a stored `buffs` that is not a list → `impossible`; an unreadable or unknown entry, or one past its declaration → ignored (warning) | `checkJourneySave` (#202) |
 
@@ -1241,6 +1244,45 @@ holds it to the parser, the journey, the engine and the fight; `packages/server/
 plays it through the server; the #202 gate walks it like every fixture. Gemfall's numbers are pinned
 by `ordered-campaigns.test.ts`, which hashes resolved trinket-holding heroes and two seeded Gemfall
 fights against a digest taken before buffs existed.
+
+### Story-check buffs (#222)
+
+A `"roll"` buff can opt in to a chapter **Check** (d20 + stat vs TN) instead of attacks — the
+Riftspark the Continental Rift design agreed ([mechanics.md](continental-rift/mechanics.md)): +2 on
+one check, held by the party, offered to whoever is about to roll, gone once used or when the next
+chapter played ends, at most one held, and granted only by a rift's **first** crossing.
+
+```jsonc
+"riftspark": { "label": "Riftspark", "kind": "roll", "amount": 2, "appliesTo": "check", "spend": "choose",
+               "duration": { "scope": "uses", "count": 1 }, "stack": "ignore", "expiresOn": ["chapter"] }
+…
+"camp-to-falls": { …, "effects": [{ "type": "grantBuff", "buff": "riftspark", "firstCrossing": true }],
+                   "rift": { "linkedTo": "falls-to-camp" } }
+```
+
+- **Opt-in per buff.** Without `appliesTo` (or with `"attack"`) a roll buff is exactly the attack
+  buff it always was. There is no `"both"`: an attack is counted in fights and a check in uses, and
+  no one clock says how long a buff on both lasts.
+- **Counted in uses, never in fights.** A check buff is never put on a fight's combatants
+  (`combatBuffsFor` skips it) and a fight never spends it (`spendRunBuffs` keeps it — unless it ends on
+  `"defeat"` and the fight was lost). `ActiveBuff.usesLeft` is its clock; `encountersLeft` stays 1.
+- **One per roll.** When a check's prompt opens, the run's first `"auto"` check buff — or, failing
+  that, its first `"choose"` one — is put on the prompt (`Prompt.buff`, `checkBuffOffer`). `"auto"`
+  is spent on that roll. `"choose"` shows the roller *"Use Riftspark (+2)?"* with **Use it and roll!**
+  and **Save it and roll**: the first sends `ROLL { spendBuff: id }`, the second a plain `ROLL`. A
+  `spendBuff` naming anything not on offer is refused before a die is thrown. In a whole-party check
+  each roller is offered what is left; the first to spend it has it.
+- **On the dice.** The amount is flat (`DiceRoll.buff`, already in `total`), so a buffed roll draws
+  exactly the die it would have drawn without, and the dice card's sum adds up.
+- **`"chapter"` expiry.** Any chapter ending ends it (`completeChapter`), before the run's buffs are
+  read back — so a spark granted on the way in lasts the chapter it leads to and no longer. A visit
+  that plays no chapter (a `"pass"` revisit) ends nothing.
+- **`firstCrossing`** on a `grantBuff` in an edge's own `effects` grants only on that edge's first
+  crossing this attempt — for a rift, its first by **either** mouth of a linked pair — so a two-way
+  rift cannot be farmed. With `stack: "ignore"`, a new crossing while one is held grants nothing.
+- **Fixture:** [`rift-spark.campaign.json`](../../packages/shared/src/fixtures/rift-spark.campaign.json),
+  held by `check-buffs.test.ts`. No ordered campaign holds a buff, so every Gemfall check rolls as
+  before (`ordered-campaigns.test.ts`'s digest is unchanged).
 
 ### For #201 and #199
 

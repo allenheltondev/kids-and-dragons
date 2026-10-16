@@ -37,7 +37,7 @@
  * verdict: `readBackFlags` and `readFact` drop or coerce them by design.
  */
 
-import { JOURNEY_VERSION, buffFights, buffMaxStacks, readJourney, readFact, storedBuffs } from "@kad/shared";
+import { JOURNEY_VERSION, buffFights, buffMaxStacks, buffUses, readJourney, readFact, storedBuffs } from "@kad/shared";
 import type { JourneyState, ParsedCampaignGraph } from "@kad/shared";
 
 export type SaveVerdict = "ok" | "unreadable" | "future-version" | "unknown-node" | "dangling" | "impossible";
@@ -301,7 +301,11 @@ export function checkJourneySave(graph: ParsedCampaignGraph, raw: unknown): Save
         const def = graph.buffs[read.id];
         if (!def) {
           warn("unknown-fact", path, `buff "${read.id}" is not declared by this campaign; it is carried and does nothing`);
-        } else if (read.stacks > buffMaxStacks(def) || read.encountersLeft > buffFights(def.duration)) {
+        } else if (
+          read.stacks > buffMaxStacks(def) ||
+          read.encountersLeft > buffFights(def.duration) ||
+          (read.usesLeft ?? 0) > (buffUses(def.duration) ?? 0)
+        ) {
           warn("unknown-fact", path, `buff "${read.id}" holds more than its declaration allows; it reads as held to it`);
         }
       });

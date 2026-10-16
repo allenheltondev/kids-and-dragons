@@ -25,6 +25,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
 import { DEFAULT_HELP_DIE, INVENTORY_SLOTS, STAT_IDS, lobbyCampaign, riftPartyOf } from "@kad/shared";
 import { checkTarget } from "./DiceOverlay";
+import { checkBuffLine } from "./buff-copy";
 import type {
   ClientIntent,
   InventoryEntry,
@@ -1018,15 +1019,47 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 <span>{helperLine(myPrompt, party, me.character.id) ?? "\u00a0"}</span>
               </p>
             )}
-            <Button
-              variant="primary"
-              size="lg"
-              icon={<Icon name="d20" />}
-              disabled={busy}
-              onClick={() => void dispatch({ type: "ROLL" })}
-            >
-              {busy ? "Rolling…" : "Roll!"}
-            </Button>
+            {/* The party's story-check buff (#222). Spent anyway, it is just
+                said; offered, the roller decides: spend it on this roll, or
+                save it for a harder one. Either way the die goes with the tap. */}
+            {myPrompt.buff ? (
+              <p className="prompt__sub prompt__buff" role="status">
+                <Icon name="star" />
+                <span>{checkBuffLine(myPrompt.buff)}</span>
+              </p>
+            ) : null}
+            {myPrompt.buff?.spend === "choose" ? (
+              <>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  icon={<Icon name="star" />}
+                  disabled={busy}
+                  onClick={() => void dispatch({ type: "ROLL", spendBuff: myPrompt.buff?.id })}
+                >
+                  {busy ? "Rolling…" : "Use it and roll!"}
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  icon={<Icon name="d20" />}
+                  disabled={busy}
+                  onClick={() => void dispatch({ type: "ROLL" })}
+                >
+                  {busy ? "Rolling…" : "Save it and roll"}
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="primary"
+                size="lg"
+                icon={<Icon name="d20" />}
+                disabled={busy}
+                onClick={() => void dispatch({ type: "ROLL" })}
+              >
+                {busy ? "Rolling…" : "Roll!"}
+              </Button>
+            )}
           </div>
         ) : null}
 
