@@ -86,6 +86,7 @@ import { Button } from "../ui/Button";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { BuffList, combatBuffRows } from "./BuffList";
+import { numbedLine } from "./buff-copy";
 import {
   combatantIcon,
   combatantLabel,
@@ -516,9 +517,10 @@ export function CombatControls(): ReactElement | null {
       )}
 
       {/* Rift powers on this phone's hero (#200), graph campaigns only: what
-          each adds and how long it lasts. Absent in every other fight, so
-          nothing here moves an ordered campaign's board. */}
-      <BuffList rows={combatBuffRows(encounter.buffs, me.character.id)} title="Your rift powers" />
+          each adds and how long it lasts. A numbing sting (#227) shows here
+          too, as Numbed. Absent in every fight with neither, so nothing here
+          moves an ordered campaign's board. */}
+      <BuffList rows={combatBuffRows(encounter.buffs, me.character.id)} title="On you right now" />
 
       {/* The place fighting back (#201): the rift clock, the way out, who
           needs saving, what burns. Absent in every fight without an
@@ -1195,6 +1197,9 @@ export function describeBeats(
         return;
       case "rooted":
         out.push({ key, text: `${name(event.actorId)} ${name(event.actorId) === "You" ? "are" : "is"} rooted.`, tone: "plain" });
+        return;
+      case "numbed":
+        out.push({ key, text: numbedLine(name(event.actorId), event.steps, event.turns), tone: "plain" });
         return;
       case "encore":
         out.push({ key, text: `${name(event.actorId)} ${name(event.actorId) === "You" ? "get" : "gets"} another action!`, tone: "good" });

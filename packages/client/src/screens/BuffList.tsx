@@ -11,7 +11,7 @@
 
 import type { ReactElement } from "react";
 import type { BuffKind, CombatBuff, JourneyBuffView } from "@kad/shared";
-import { buffAmountText, buffIcon, buffRemainingText, buffTargetText, buffTurnsText, isBurden } from "./buff-copy";
+import { buffAmountText, buffIcon, buffRemainingText, buffTargetText, buffTurnsText, isBurden, isNumbed, numbedTurnsText } from "./buff-copy";
 import { Icon } from "./icons";
 import "./shared.css";
 import "./BuffList.css";
@@ -23,6 +23,8 @@ export interface BuffRow {
   amount: number;
   /** How long it has left, and on whom, in words. */
   detail: string;
+  /** A numbing sting (#227): its own glyph, and a chip that says it wears off rather than "Cost". */
+  numbed?: true;
 }
 
 export function BuffList({ rows, title }: { rows: readonly BuffRow[]; title: string }): ReactElement | null {
@@ -31,12 +33,17 @@ export function BuffList({ rows, title }: { rows: readonly BuffRow[]; title: str
     <ul className="buffs" aria-label={title}>
       {rows.map((row) => (
         <li className="buffs__row" key={row.key}>
-          <Icon name={buffIcon(row.kind)} />
+          <Icon name={row.numbed ? "numbed" : buffIcon(row.kind)} />
           <span className="buffs__text">
             <b>{row.label}</b>: {buffAmountText(row.kind, row.amount)}
             <span className="buffs__detail"> · {row.detail}</span>
           </span>
-          {isBurden(row.amount) ? (
+          {row.numbed ? (
+            <span className="kad-chip">
+              <Icon name="waiting" />
+              <span>Wears off</span>
+            </span>
+          ) : isBurden(row.amount) ? (
             <span className="kad-chip kad-chip--warn">
               <Icon name="close" />
               <span>Cost</span>
@@ -69,6 +76,7 @@ export function combatBuffRows(buffs: readonly CombatBuff[] | undefined, heroId:
       label: buff.label,
       kind: buff.kind,
       amount: buff.amount,
-      detail: buffTurnsText(buff.turnsLeft),
+      detail: isNumbed(buff.id) ? numbedTurnsText(buff.turnsLeft) : buffTurnsText(buff.turnsLeft),
+      ...(isNumbed(buff.id) ? { numbed: true as const } : {}),
     }));
 }

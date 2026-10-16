@@ -939,6 +939,10 @@ export function createBoardLayer(): BoardLayer {
       case "bonus":
         spawnFloater(event.actorId, `+${event.amount}`, 0xffc95c);
         return;
+      case "numbed":
+        // A numbing sting (#227), in words: colour alone never carries it.
+        spawnFloater(event.actorId, "Numbed", 0xb7b0d8);
+        return;
       case "roll": {
         // The swing's number, over the one who swung: the d20 + stat against
         // Guard that decides a hit was rolled on the server and shown

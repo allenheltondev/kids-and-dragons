@@ -733,6 +733,44 @@
         "art": {
           "type": "string",
           "minLength": 1
+        },
+        "onHit": {
+          "$comment": "A numbing sting (#227): every hit this enemy lands Numbs the hero it hits. Opt-in; absent means the enemy fights as it always did.",
+          "$ref": "#/$defs/numbingSting"
+        },
+        "retaliation": {
+          "$comment": "The same sting as a defense (#227): a hero who hits this enemy is Numbed (a puffed Skupper's spines). Give it only to an enemy in that stance for the fight.",
+          "$ref": "#/$defs/numbingSting"
+        }
+      }
+    },
+    "numbingSting": {
+      "$comment": "SlowEffect in packages/shared/src/types/buffs.ts. Numbed is a \"move\" burden on the hero for their next `turns` turns; it does not stack, ends with the fight, and steps floor at 1. Limits mirror BUFF_LIMITS.move and MAX_BUFF_DURATION in buffs.ts, which tools/content/validate.mjs also enforces.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "slow"
+      ],
+      "properties": {
+        "slow": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "steps",
+            "turns"
+          ],
+          "properties": {
+            "steps": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2
+            },
+            "turns": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            }
+          }
         }
       }
     },
