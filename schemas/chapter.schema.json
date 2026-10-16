@@ -739,8 +739,22 @@
           "$ref": "#/$defs/numbingSting"
         },
         "retaliation": {
-          "$comment": "The same sting as a defense (#227): a hero who hits this enemy is Numbed (a puffed Skupper's spines). Give it only to an enemy in that stance for the fight.",
-          "$ref": "#/$defs/numbingSting"
+          "$comment": "The same sting as a defense (#227), pufferfish-style: the enemy starts un-puffed, the first hero hit puffs it (that hit does not sting), and while puffed a hero who hits it is Numbed. `puffTurns` is how many of its own turns it stays puffed (default 2, DEFAULT_PUFF_TURNS in buffs.ts); another hit while puffed starts the count again.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "slow"
+          ],
+          "properties": {
+            "slow": {
+              "$ref": "#/$defs/numbingSting/properties/slow"
+            },
+            "puffTurns": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            }
+          }
         }
       }
     },

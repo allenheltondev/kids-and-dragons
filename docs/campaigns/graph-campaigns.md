@@ -1218,7 +1218,7 @@ buffs as they were.
 `JourneyView.buffs` (on `CampaignView.journey`, while the party holds any): `{ id, label, kind,
 amount, stacks, target, remaining: { encounters, turns? }, expiresOn? }`, `amount` with stacks and
 caps applied. The journey panel lists them ("Rift powers you carry"); in a fight, the combat panel
-lists the ones on this phone's hero, with turns left ("On you right now"). Each line is the glyph,
+lists the ones on this phone's hero, with turns left ("Buffs"). Each line is the glyph,
 the name, a signed amount in words ("+1 Guard", "−1 Guard") and how long it lasts; a burden also
 says *Cost* — never colour alone. Neither appears in an ordered campaign: there is nothing to show.
 
@@ -1232,9 +1232,13 @@ A buff can also be dealt *by a hit*. An enemy carries `onHit` and/or `retaliatio
   "retaliation": { "slow": { "steps": 2, "turns": 2 } } }
 ```
 
-- `onHit`: a hit this enemy lands leaves the hero **Numbed**. `retaliation`: a hero who *hits* this
-  enemy is Numbed (a puffed Skupper's spines); a miss touches nothing. Give `retaliation` only to an
-  enemy that is in that stance for the fight.
+- `onHit`: a hit this enemy lands leaves the hero **Numbed**.
+- `retaliation`: pufferfish-style. The enemy starts the fight **not puffed**; the first hero *hit*
+  on it puffs it up, and that hit does not sting (it was not puffed when it landed). While puffed, a
+  hero who *hits* it is Numbed. A miss neither puffs nor stings. `puffTurns` (optional, 1 to 5, default
+  2) is how many of the enemy's **own** turns it stays puffed before it deflates; every hit on it while
+  puffed starts the count again. Puffed is `Combatant.puffed` (turns left) and is public: the phones
+  and the TV show it.
 - Numbed is a `"move"` burden of `slow.steps` (1 to the move limit, 2) for `slow.turns` of the
   hero's **own** turns (1 to 5). Steps floor at 1 as for any move buff, and `rooted` is untouched.
 - It does not stack: a second sting keeps one entry at the larger steps and longer duration
@@ -1242,9 +1246,14 @@ A buff can also be dealt *by a hit*. An enemy carries `onHit` and/or `retaliatio
   still covers the next `turns` turns.
 - It lives in `EncounterState.buffs` (id `numbed`) and nowhere else, so it ends with the fight and
   never reaches the run, the journey or a character. A hero who is knocked down is not Numbed.
-- On screen: the hero's "On you right now" list shows **Numbed: −2 Steps · wears off after 2 more
+- On screen, Numbed: the hero's "Buffs" list shows **Numbed: −2 Steps · wears off after 2 more
   turns** with its own glyph and a *Wears off* chip (words, not colour), the combat log says "It
-  wears off", and a "Numbed" floater plays over the figure. Narration should call it a numbing sting
+  wears off", and a "Numbed" floater plays over the figure. The lasting marker (a glyph on the hero's
+  own figure and the Buffs row) is on the stung player's phone only; the TV board shows just the
+  transient floater.
+- On screen, puffed (everyone): a spiked-ball glyph on the enemy's square on the phones, a *Puffed*
+  chip in the "who" picker, a legend line, a "PUFFED" pill over the enemy on the TV board, and a log
+  line ("puffs up! Hitting it now means a numbing sting."). Narration should call it a numbing sting
   that wears off, never lasting harm.
 - `schemas/chapter.schema.json` (`numbingSting`) and `content:validate` (`slowBlockProblems`) check
   the block. An enemy without either field fights exactly as before; Gemfall's digest is unchanged.

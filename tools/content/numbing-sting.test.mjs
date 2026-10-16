@@ -45,6 +45,7 @@ describe("the schema", () => {
       (e) => (e.onHit = STING),
       (e) => (e.retaliation = STING),
       (e) => ((e.onHit = STING), (e.retaliation = { slow: { steps: 1, turns: 3 } })),
+      (e) => (e.retaliation = { ...STING, puffTurns: 3 }),
     ]) {
       expect(chapterSchema(chapterWith(bend)), JSON.stringify(chapterSchema.errors)).toBe(true);
     }
@@ -72,6 +73,9 @@ describe("the schema", () => {
     ["a slow that lasts 6 turns", (e) => (e.onHit = { slow: { steps: 2, turns: 6 } })],
     ["a slow with a stray field", (e) => (e.onHit = { slow: { steps: 2, turns: 2, damage: 1 } })],
     ["a sting that is a bare number", (e) => (e.retaliation = 2)],
+    ["a puff that lasts no turns", (e) => (e.retaliation = { ...STING, puffTurns: 0 })],
+    ["a puff that lasts 6 turns", (e) => (e.retaliation = { ...STING, puffTurns: 6 })],
+    ["puffTurns on an onHit sting", (e) => (e.onHit = { ...STING, puffTurns: 2 })],
   ])("refuses %s", (_name, bend) => {
     expect(chapterSchema(chapterWith(bend))).toBe(false);
   });
@@ -106,7 +110,7 @@ function validateWith(bend) {
 
 describe("content:validate", { timeout: 60_000 }, () => {
   it("accepts a well-formed sting on a real fight", () => {
-    const result = validateWith((e) => ((e.onHit = STING), (e.retaliation = STING)));
+    const result = validateWith((e) => ((e.onHit = STING), (e.retaliation = { ...STING, puffTurns: 3 })));
     expect(result.out).not.toContain("onHit");
     expect(result.code).toBe(0);
   });

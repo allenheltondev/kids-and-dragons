@@ -81,7 +81,7 @@ import type { ItemEffect, ResolvedCharacter, RulesContent, StatId } from "./type
 import type { EncounterEnvironment, EnemySpec } from "./types/chapter.js";
 import type { DiceRoll } from "./types/state.js";
 import type { CombatBuff, SlowEffect } from "./types/buffs.js";
-import { applyNumbed, buffBonus, buffed, tickCombatBuffs } from "./buffs.js";
+import { DEFAULT_PUFF_TURNS, applyNumbed, buffBonus, buffed, tickCombatBuffs } from "./buffs.js";
 import type { EnvironmentState } from "./environment.js";
 import { DEFAULT_SURGE, hazardAt, openExitAt, rescueDeadline } from "./environment.js";
 
@@ -452,10 +452,19 @@ export interface Combatant {
    */
   readonly sting?: SlowEffect;
   /**
-   * A defensive sting (#227) — a hero who hits this enemy is Numbed. Copied
-   * from `EnemySpec.retaliation`; absent on everyone else.
+   * A defensive sting (#227) — while this enemy is `puffed`, a hero who hits
+   * it is Numbed. Copied from `EnemySpec.retaliation` with its `puffTurns`
+   * resolved; absent on everyone else.
    */
-  readonly retaliation?: SlowEffect;
+  readonly retaliation?: { readonly slow: SlowEffect; readonly puffTurns: number };
+  /**
+   * Puffed up (#227): how many of this enemy's own turns it still stays
+   * puffed. Set by the first hero hit on a `retaliation` enemy, started over
+   * by each later hit, counted down as its turns end, gone at 0 — it
+   * deflates. Absent when not puffed, and always on everyone without a
+   * `retaliation`. Public: it is the enemy's visible state.
+   */
+  readonly puffed?: number;
   /**
    * Luckstone — attack rolls of 1 this figure may still throw again this
    * fight. Optional because fights persisted before it existed carry none.
@@ -570,6 +579,8 @@ export type EncounterEvent =
   | { readonly type: "rooted"; readonly actorId: ActorId }
   /** A numbing sting (#227): `actorId` is Numbed for `turns` of their turns; `byId` stung them. */
   | { readonly type: "numbed"; readonly actorId: ActorId; readonly byId: ActorId; readonly steps: number; readonly turns: number }
+  /** A hit puffed `actorId` up (#227); from now until it deflates, hitting it stings. */
+  | { readonly type: "puffed"; readonly actorId: ActorId; readonly byId: ActorId }
   | { readonly type: "encore"; readonly actorId: ActorId }
   | { readonly type: "walled"; readonly at: Position }
   /*
@@ -811,7 +822,14 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
       rooted: false,
       initiative: 0,
       ...(spec.onHit ? { sting: { ...spec.onHit.slow } } : {}),
-      ...(spec.retaliation ? { retaliation: { ...spec.retaliation.slow } } : {}),
+      ...(spec.retaliation
+        ? {
+            retaliation: {
+              slow: { ...spec.retaliation.slow },
+              puffTurns: spec.retaliation.puffTurns ?? DEFAULT_PUFF_TURNS,
+            },
+          }
+        : {}),
     });
     actors.push({ id, side: "enemy", x: placement.at.x, y: placement.at.y });
     seats.push({ id, side: "enemy", quick: enemyQuick(spec) });
@@ -1600,6 +1618,18 @@ function numb(
   return { ...state, buffs: applyNumbed(state.buffs, heroId, slow, onOwnTurn) };
 }
 
+/**
+ * A hit has landed on a `retaliation` enemy (#227): it is puffed for its full
+ * `puffTurns` — newly, with a `puffed` beat, or started over if it already
+ * was. An enemy the hit knocked out has nothing to puff.
+ */
+function puffUp(state: EncounterState, enemyId: ActorId, byId: ActorId, events: EncounterEvent[]): EncounterState {
+  const enemy = combatantById(state, enemyId);
+  if (!enemy?.retaliation || enemy.down) return state;
+  if (enemy.puffed === undefined) events.push({ type: "puffed", actorId: enemyId, byId });
+  return updateCombatant(state, enemyId, (c) => ({ ...c, puffed: c.retaliation?.puffTurns ?? DEFAULT_PUFF_TURNS }));
+}
+
 interface EffectApplication {
   readonly actorId: ActorId;
   readonly recipientId: ActorId;
@@ -1668,7 +1698,13 @@ function applyEffect(
       if (actor.side === "enemy" && recipient.side === "party" && actor.sting) {
         working = numb(working, protectedVictim(events, recipientId), actor.sting, actorId, events);
       } else if (actor.side === "party" && recipient.side === "enemy" && recipient.retaliation) {
-        working = numb(working, actorId, recipient.retaliation, recipientId, events);
+        // Pufferfish: struck while puffed, it stings back; struck while not,
+        // it puffs up — and that first hit does not sting, because it was not
+        // puffed when it landed (`recipient` is the figure before the hit).
+        if (recipient.puffed !== undefined) {
+          working = numb(working, actorId, recipient.retaliation.slow, recipientId, events);
+        }
+        working = puffUp(working, recipientId, actorId, events);
       }
       return { state: working, rolled: true };
     }
@@ -2155,6 +2191,19 @@ function passTurn(state: EncounterState): EncounterState {
     if (endingId !== null) {
       const buffs = tickCombatBuffs(state.buffs, endingId);
       if (buffs !== state.buffs) working = { ...working, buffs };
+    }
+  }
+
+  // A puffed enemy (#227) deflates after `puffTurns` of its own turns, counted
+  // like a buff: not by an encore, which is not a turn.
+  if (state.encoreActor === null) {
+    const endingId = currentActorId(state);
+    const ending = endingId === null ? undefined : combatantById(state, endingId);
+    if (ending?.puffed !== undefined) {
+      working = updateCombatant(working, ending.id, (c) => {
+        const { puffed, ...rest } = c;
+        return puffed !== undefined && puffed > 1 ? { ...rest, puffed: puffed - 1 } : rest;
+      });
     }
   }
 

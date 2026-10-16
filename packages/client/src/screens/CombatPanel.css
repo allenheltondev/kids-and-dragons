@@ -99,6 +99,29 @@
 }
 
 /*
+ * A status glyph in the square's top corner (#227): a puffed-up enemy, or the
+ * Numbed hero on their own phone. Shape is the meaning, in a dark disc so it
+ * reads on any portrait; the words are in the legend, the target list, the
+ * buffs list and the screen-reader list.
+ */
+.combat__cell-status {
+  position: absolute;
+  inset-block-start: 2%;
+  inset-inline-end: 3%;
+  inline-size: 38%;
+  block-size: 38%;
+  padding: 3%;
+  border-radius: 50%;
+  background: var(--color-surface-sunken, #120f26);
+  color: var(--color-text, #f4f1ff);
+  pointer-events: none;
+}
+
+.combat__puffed {
+  flex: none;
+}
+
+/*
  * What just happened. The roll is the thing that was missing: a d20 the
  * server threw and nobody saw. One list, the latest beat only, each line a
  * sentence or a roll drawn as its parts — the die, the bonus and its stat,

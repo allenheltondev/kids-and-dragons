@@ -159,18 +159,32 @@ describe("a hit from a numbing enemy", () => {
   });
 });
 
-describe("striking a defended enemy", () => {
-  const puffed = () => setup({ retaliation: { slow: STING } });
+describe("striking a pufferfish-style enemy", () => {
+  const defended = (puffTurns?: number) => setup({ retaliation: { slow: STING, ...(puffTurns === undefined ? {} : { puffTurns }) } });
+  const puffedOf = (state: EncounterState) => combatantById(state, "skupper#1")!.puffed;
 
-  it("Numbs the attacker on a hit, for 2 of their following turns", () => {
-    const start = beginEncounter(puffed(), ctx(HIT));
-    expect(currentActorId(start)).toBe("c_a");
+  it("starts the fight not puffed, so the first hit it takes does not sting", () => {
+    const start = beginEncounter(defended(), ctx(HIT));
+    expect(puffedOf(start)).toBeUndefined();
     const { state, events } = act(start, HIT, "skupper#1");
-    expect(events).toContainEqual({ type: "numbed", actorId: "c_a", byId: "skupper#1", steps: 2, turns: 2 });
-    // Their own turn is still running, so the sting is given one to spare.
-    expect(numbed(state)[0]!.turnsLeft).toBe(3);
+    expect(events).toContainEqual({ type: "puffed", actorId: "skupper#1", byId: "c_a" });
+    expect(events.some((e) => e.type === "numbed")).toBe(false);
+    expect(state).not.toHaveProperty("buffs");
+    expect(puffedOf(state)).toBe(2);
+  });
 
-    let next = toHero(state);
+  it("once puffed, a hit on it Numbs the attacker for 2 of their following turns", () => {
+    let state = act(beginEncounter(defended(), ctx(HIT)), HIT, "skupper#1").state; // puffs it
+    state = toHero(state);
+    const { state: after, events } = act(state, HIT, "skupper#1");
+    expect(events).toContainEqual({ type: "numbed", actorId: "c_a", byId: "skupper#1", steps: 2, turns: 2 });
+    // Already puffed: no second puffed beat, and the puff starts over.
+    expect(events.some((e) => e.type === "puffed")).toBe(false);
+    expect(puffedOf(after)).toBe(2);
+    // Their own turn is still running, so the sting is given one to spare.
+    expect(numbed(after)[0]!.turnsLeft).toBe(3);
+
+    let next = toHero(after);
     expect(next.stepsLeft).toBe(2);
     next = toHero(next);
     expect(next.stepsLeft).toBe(2);
@@ -179,18 +193,93 @@ describe("striking a defended enemy", () => {
     expect(numbed(next)).toEqual([]);
   });
 
-  it("does nothing on a miss", () => {
-    const { state, events } = act(beginEncounter(puffed(), ctx(MISS)), MISS, "skupper#1");
-    expect(events.some((e) => e.type === "numbed")).toBe(false);
-    expect(state).not.toHaveProperty("buffs");
+  it("a miss neither puffs it nor stings, puffed or not", () => {
+    const miss = act(beginEncounter(defended(), ctx(MISS)), MISS, "skupper#1");
+    expect(miss.events.some((e) => e.type === "puffed" || e.type === "numbed")).toBe(false);
+    expect(puffedOf(miss.state)).toBeUndefined();
+
+    const puffed = toHero(act(beginEncounter(defended(), ctx(HIT)), HIT, "skupper#1").state);
+    const again = act(puffed, MISS, "skupper#1");
+    expect(again.events.some((e) => e.type === "numbed")).toBe(false);
+    expect(again.state).not.toHaveProperty("buffs");
+    // A miss does not start the puff over either.
+    expect(puffedOf(again.state)).toBe(1);
+  });
+
+  it("deflates after puffTurns of its own turns (default 2), and puffs again on the next hit", () => {
+    let state = act(beginEncounter(defended(), ctx(HIT)), HIT, "skupper#1").state;
+    expect(puffedOf(state)).toBe(2);
+    state = toHero(state); // the Skupper's turn ended
+    expect(puffedOf(state)).toBe(1);
+    state = toHero(state); // the hero did nothing; its second turn ended
+    expect(puffedOf(state)).toBeUndefined();
+    const hit = act(state, HIT, "skupper#1");
+    expect(hit.events.some((e) => e.type === "numbed")).toBe(false);
+    expect(hit.events.some((e) => e.type === "puffed")).toBe(true);
+  });
+
+  it("puffTurns is how long it stays puffed", () => {
+    let state = act(beginEncounter(defended(1), ctx(HIT)), HIT, "skupper#1").state;
+    expect(puffedOf(state)).toBe(1);
+    state = toHero(state);
+    expect(puffedOf(state)).toBeUndefined();
+    const long = act(beginEncounter(defended(4), ctx(HIT)), HIT, "skupper#1").state;
+    expect(puffedOf(toHero(toHero(long)))).toBe(2);
+  });
+
+  it("the puffed state rides a JSON round trip, and is gone in the next fight", () => {
+    const puffed = act(beginEncounter(defended(), ctx(HIT)), HIT, "skupper#1").state;
+    const resumed = JSON.parse(JSON.stringify(puffed)) as EncounterState;
+    expect(resumed).toEqual(puffed);
+    expect(puffedOf(toHero(resumed))).toBe(1);
+    expect(puffedOf(beginEncounter(defended(), ctx(HIT)))).toBeUndefined();
   });
 
   it("does not stack with the same enemy's other sting", () => {
     const both = setup({ onHit: { slow: STING }, retaliation: { slow: STING } });
-    let state = act(beginEncounter(both, ctx(HIT)), HIT, "skupper#1").state;
-    state = stung(state, HIT).state;
+    let state = act(beginEncounter(both, ctx(HIT)), HIT, "skupper#1").state; // puffs it
+    state = toHero(state);
+    state = act(state, HIT, "skupper#1").state; // stings
+    state = stung(state, HIT).state; // stings again
     expect(numbed(state)).toHaveLength(1);
     expect(numbed(state)[0]!.amount).toBe(-2);
+  });
+});
+
+describe("a sting a friend took for you", () => {
+  it("lands on the protector who took the hit, not on the one it was aimed at", () => {
+    const base = setup({ onHit: { slow: STING } });
+    const brace: AbilityCatalog = {
+      brace: {
+        id: "brace",
+        name: "Brace",
+        icon: "shield",
+        timing: "action",
+        target: { kind: "ally", range: "adjacent" },
+        effects: [{ effect: { type: "protect" } }],
+      },
+    };
+    const guardian = resolveCharacter(
+      makeCharacter({ id: "c_b", name: "c_b", species: "unicorn", class: "thornguard", stats: { might: 3, quick: 3, clever: 0, heart: 0 } }),
+      RULES,
+      ITEMS,
+    );
+    const two = {
+      ...base,
+      party: [...base.party, { character: { ...guardian, actions: ["brace"] }, at: { x: 0, y: 3 } }],
+    };
+    const bctx = { rules: RULES, abilities: brace, rng: HIT };
+    let state = beginEncounter(two, bctx);
+    // The guardian's turn: Brace for c_a, who stands beside the Skupper.
+    while (currentActorId(state) !== "c_b") state = endTurn(state);
+    const braced = performAction(state, bctx, { abilityId: "brace", targetId: "c_a" });
+    if (!braced.ok) throw new Error(braced.reason);
+    state = braced.state;
+    const swing = stung(state, HIT);
+    expect(swing.events.filter((e) => e.type === "numbed")).toEqual([
+      { type: "numbed", actorId: "c_b", byId: "skupper#1", steps: 2, turns: 2 },
+    ]);
+    expect(numbed(swing.state).map((b) => b.heroId)).toEqual(["c_b"]);
   });
 });
 
@@ -241,8 +330,17 @@ describe("slowBlockProblems", () => {
     ["a turn count over the limit", { slow: { steps: 2, turns: 6 } }, "/slow/turns"],
     ["a root dressed as a slow", { slow: { steps: 2, turns: 2 }, root: true }, "/root"],
     ["a field the sting does not have", { slow: { steps: 2, turns: 2, damage: 1 } }, "/slow/damage"],
+    ["puffTurns on an onHit", { slow: { steps: 2, turns: 2 }, puffTurns: 2 }, "/puffTurns"],
   ])("refuses %s", (_name, block, path) => {
     expect(slowBlockProblems(block).map((p) => p.path)).toContain(path);
+  });
+
+  it("a retaliation may say how long it stays puffed, 1 to 5 of its turns", () => {
+    const block = (puffTurns: unknown) => ({ slow: { steps: 2, turns: 2 }, puffTurns });
+    expect(slowBlockProblems(block(1), true)).toEqual([]);
+    expect(slowBlockProblems(block(5), true)).toEqual([]);
+    expect(slowBlockProblems({ slow: { steps: 2, turns: 2 } }, true)).toEqual([]);
+    for (const bad of [0, 6, 1.5, "2"]) expect(slowBlockProblems(block(bad), true).map((p) => p.path)).toContain("/puffTurns");
   });
 
   it("is total over things that are not objects", () => {

@@ -242,6 +242,12 @@ interface BoardActor {
    * exactly the moment somebody is asking who is down.
    */
   label: Text | null;
+  /**
+   * "PUFFED" over a puffed-up enemy (#227) - words on a dark pill, for the
+   * whole room to read from the sofa. Made when it puffs and destroyed when it
+   * deflates, so a figure that never puffs has no extra child at all.
+   */
+  puffBadge: Container | null;
   /** What `label` is currently saying, so a renamed character is spotted
       without measuring a Text every patch. */
   labelText: string | null;
@@ -559,6 +565,7 @@ export function createBoardLayer(): BoardLayer {
       targetY: feet.y,
       rive: null,
       label,
+      puffBadge: null,
       labelText: nameplateLabel(named),
       selfMoving: false,
       sinceStep: 0,
@@ -683,6 +690,7 @@ export function createBoardLayer(): BoardLayer {
       const feet = feetOf(gridActor);
       if (existing) {
         existing.down = combatant.down;
+        setPuffed(existing, combatant.puffed !== undefined && !combatant.down);
         existing.targetX = feet.x;
         existing.targetY = feet.y;
         // A walk still on its way to where the patch says is left to finish;
@@ -717,7 +725,9 @@ export function createBoardLayer(): BoardLayer {
         }
         continue;
       }
-      actors.set(combatant.id, makeActor(combatant, gridActor, current));
+      const made = makeActor(combatant, gridActor, current);
+      actors.set(combatant.id, made);
+      setPuffed(made, combatant.puffed !== undefined && !combatant.down);
     }
 
     for (const [id, actor] of [...actors.entries()]) {
@@ -825,6 +835,32 @@ export function createBoardLayer(): BoardLayer {
   // -------------------------------------------------------------------------
   // Beats
   // -------------------------------------------------------------------------
+
+  /** Shows or takes down an enemy's puffed badge (#227). A child of the figure's container, above its head. */
+  function setPuffed(actor: BoardActor, on: boolean): void {
+    if (!on) {
+      if (actor.puffBadge) {
+        actor.puffBadge.destroy({ children: true });
+        actor.puffBadge = null;
+      }
+      return;
+    }
+    if (actor.puffBadge) return;
+    const badge = new Container();
+    const text = new Text({
+      text: "PUFFED",
+      style: { fontFamily: "system-ui, sans-serif", fontWeight: "900", fontSize: BOARD_TILE_PX * 0.26, fill: 0xffffff },
+    });
+    text.anchor.set(0.5, 0.5);
+    const pill = new Graphics();
+    const w = text.width + BOARD_TILE_PX * 0.3;
+    const h = text.height + BOARD_TILE_PX * 0.08;
+    pill.roundRect(-w / 2, -h / 2, w, h, h / 2).fill({ color: 0x120f26, alpha: 0.92 }).stroke({ width: 3, color: 0xffc95c });
+    badge.addChild(pill, text);
+    badge.y = -ACTOR_HEIGHT - h / 2;
+    actor.container.addChild(badge);
+    actor.puffBadge = badge;
+  }
 
   function spawnFloater(actorId: string, label: string, color: number): void {
     const actor = actors.get(actorId);
@@ -940,8 +976,12 @@ export function createBoardLayer(): BoardLayer {
         spawnFloater(event.actorId, `+${event.amount}`, 0xffc95c);
         return;
       case "numbed":
-        // A numbing sting (#227), in words: colour alone never carries it.
+        // A numbing sting (#227), in words: colour alone never carries it. The
+        // lasting marker is the stung player's own phone, not the board.
         spawnFloater(event.actorId, "Numbed", 0xb7b0d8);
+        return;
+      case "puffed":
+        spawnFloater(event.actorId, "Puffed!", 0xffc95c);
         return;
       case "roll": {
         // The swing's number, over the one who swung: the d20 + stat against

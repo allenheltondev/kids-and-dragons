@@ -374,11 +374,16 @@ export interface EnemySpec {
    */
   onHit?: { slow: SlowEffect };
   /**
-   * The same sting as a defense (#227): a hero who strikes this enemy and
-   * *hits* is Numbed — a puffed Skupper's spines. A miss touches nothing. Give
-   * it only to an enemy that is in that stance for the fight.
+   * The same sting as a defense (#227), pufferfish-style. The enemy starts
+   * the fight NOT puffed; the first hero hit on it puffs it up (that hit does
+   * not sting — it was not puffed when struck). While puffed, a hero who
+   * *hits* it is Numbed. A miss touches nothing, puffed or not.
+   *
+   * It stays puffed for `puffTurns` of its own turns (default
+   * `DEFAULT_PUFF_TURNS`, 2), then deflates; being hit while puffed starts the
+   * count again.
    */
-  retaliation?: { slow: SlowEffect };
+  retaliation?: { slow: SlowEffect; puffTurns?: number };
 }
 
 /**

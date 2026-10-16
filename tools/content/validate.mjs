@@ -788,7 +788,7 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
         // uses, so a number the engine would clamp is a build failure instead.
         for (const key of ["onHit", "retaliation"]) {
           if (enemy[key] === undefined) continue;
-          for (const problem of slowBlockProblems(enemy[key])) fail(`${where}/${key}${problem.path}`, problem.problem);
+          for (const problem of slowBlockProblems(enemy[key], key === "retaliation")) fail(`${where}/${key}${problem.path}`, problem.problem);
         }
         const entry = enemy.creature ? bestiary?.creatures?.[enemy.creature] : null;
 
