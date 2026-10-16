@@ -89,6 +89,11 @@ const PRE_EPIC = JSON.parse(
  * Re-pinned deliberately for the chapters' `priority` marks (the priority-scene
  * sweep): presentation only — the endings, roads, setbacks and saves below
  * still match their pre-epic digests.
+ *
+ * Re-pinned for gemfall-07h's Warden Clerk: its five checkpoint scenes cast the
+ * one clerk as the single Skywarden faun figure, not the three-warden group
+ * the stage now stands for `entities/skywardens`. Presentation only, like the
+ * priority marks.
  */
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
@@ -104,7 +109,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-05b.json": "b43f4c349a88c3f5b40d32c6b4e9ae2a3cb8c9db6f89bfad2d8e1b84a5ff7f85",
   "chapters/gemfall-05c.json": "e2715f5d43d9f0c51c714ab274f0497821e4677a3028ea1ecfe497a188c0d475",
   "chapters/gemfall-06.json": "e59c654289034be27ba303a81c8515223e063201c6e02ce2c68ca4421cfec0fd",
-  "chapters/gemfall-07h.json": "f9f5ebed68f3b03c4bb43d35f881c8b804c74d70049009d4872c12713a26fe10",
+  "chapters/gemfall-07h.json": "881955f20f510af10f3515089ef0a04934a72f9d7f8a1deb6e15e4371da077c3",
   "chapters/gemfall-07l.json": "49afe8e98c99b4a833002f93148e65790b80c5faf435b74780c89e6e2c722635",
   "chapters/gemfall-07r.json": "56389c6b60fb44cca02bf60f95438efd3dbf4660beec50272093cafb72f19134",
   "chapters/gemfall-08.json": "984336426f0039e3c331f9a5334ef0a50ae71400ee53e852784c7def44c79e2c",

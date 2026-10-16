@@ -3,7 +3,7 @@
  * everybody stands. Pure, so the composition rules are numbers a test holds.
  */
 
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import type { Chapter } from "@kad/shared";
@@ -78,6 +78,24 @@ describe("cast ensembles", () => {
     const out = stageCast([{ figure: "entities/skywardens", size: "small", count: 5 }]);
     expect(out).toHaveLength(3);
     expect(out.every((m) => m.scale === SIZE_SCALE.small)).toBe(true);
+  });
+
+  it("stands the one Warden Clerk as one warden, not the group", () => {
+    const chapters = fileURLToPath(new URL("../../../../content/chapters", import.meta.url));
+    let clerks = 0;
+    for (const file of readdirSync(chapters).filter((f) => f.endsWith(".json"))) {
+      const chapter = JSON.parse(readFileSync(`${chapters}/${file}`, "utf8")) as Chapter;
+      for (const [id, scene] of Object.entries(chapter.scenes)) {
+        if (scene.type === "encounter") continue;
+        for (const member of scene.cast ?? []) {
+          if (member.name !== "Warden Clerk") continue;
+          clerks++;
+          expect(stageCast([member]), `${file} ${id}`).toHaveLength(1);
+        }
+      }
+    }
+    // gemfall-07h's checkpoint; a sweep that finds nobody proves nothing.
+    expect(clerks).toBeGreaterThanOrEqual(5);
   });
 
   it("cuts every ensemble into declared, drawn cast figures of their declared size", () => {
