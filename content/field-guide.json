@@ -2171,6 +2171,7 @@
       "scale": "small_to_medium",
       "classification": "supporting_people",
       "asset_id": "skupper",
+      "art": "/assets/entities/skupper/assembled.png",
       "lore": {
         "story": "Skuppers move in quick little skips across mud that swallows boots, and they live in burrow towns dug into the flats with air kept in pockets below. Every great flood resets the town, so nothing they build is meant to last and nobody minds. Puffing up is not a choice: a startled skupper goes round and floats, which on the flats is useful. A puffed guide bobbing in a flooded channel is a buoy for anyone stuck, and the polite thing is to hold on and not mention it afterward.",
         "pastimes": [
