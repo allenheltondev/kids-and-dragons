@@ -7,10 +7,10 @@
 
 import type { EncounterState } from "../encounter.js";
 import type { ResolvedCharacter, StatId } from "./domain.js";
-import type { ChapterOutcome, SceneId, SceneType } from "./chapter.js";
+import type { ChapterOutcome, SceneId, ScenePriority, SceneType } from "./chapter.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { JourneyView, NodeId } from "./campaign-graph.js";
-import type { RunBuff } from "./buffs.js";
+import type { BuffId, CheckBuffOffer, RunBuff } from "./buffs.js";
 
 export type RoomMode = "party" | "travel";
 
@@ -25,6 +25,11 @@ export interface DiceRoll {
   stat?: StatId;
   /** A friend's die, already counted in `total`. Checks only. */
   help?: { characterId: string; sides: number; value: number };
+  /**
+   * A story-check buff spent on this roll (#222), already counted in `total`.
+   * Checks only; absent on every roll no buff touched.
+   */
+  buff?: { id: BuffId; label: string; amount: number };
   /**
    * On the last roll of a whole-party check (`roller: "all"`): how many made
    * it, out of how many, and so how the party did. Half or more is a success.
@@ -113,6 +118,14 @@ export type Prompt =
        * still has to roll; `characterId` is the first of them.
        */
       group?: { pending: string[]; rolls: DiceRoll[] };
+      /**
+       * The party's story-check buff this roll would spend (#222): with
+       * `spend: "choose"` the roller's phone asks first ("Use Riftspark
+       * (+2)?") and `ROLL.spendBuff` answers; with `"auto"` it is spent on
+       * the roll whatever the phone says. Absent when the party holds none —
+       * every ordered campaign's check, and every graph one's before #222.
+       */
+      buff?: CheckBuffOffer;
     }
   | {
       kind: "item_swap";
@@ -204,6 +217,12 @@ export interface RunState {
    */
   narration: string;
   art: string | null;
+  /**
+   * The current scene's `priority` (chapter.ts `ScenePriority`), so the shared
+   * screen can mark a revelation as one. Null for an ordinary scene and outside
+   * one. Optional: absent on runs persisted before it existed, read as null.
+   */
+  scenePriority?: ScenePriority | null;
   party: PartyMember[];
   prompt: Prompt | null;
   lastRoll: DiceRoll | null;

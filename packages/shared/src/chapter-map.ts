@@ -121,6 +121,7 @@ function whenLabels(when: Condition): string[] {
 /** The gate on a choice, phrased the way it reads in the file. */
 function gateOf(choice: {
   requiresSpecies?: string | string[];
+  requiresClass?: string | string[];
   requiresFlag?: string;
   requiresItem?: string;
   when?: Condition;
@@ -131,6 +132,12 @@ function gateOf(choice: {
       ? choice.requiresSpecies
       : [choice.requiresSpecies];
     if (species.length > 0) gates.push(species.join(" or "));
+  }
+  if (choice.requiresClass !== undefined) {
+    const classes = Array.isArray(choice.requiresClass)
+      ? choice.requiresClass
+      : [choice.requiresClass];
+    if (classes.length > 0) gates.push(classes.join(" or "));
   }
   if (choice.requiresFlag !== undefined) gates.push(`flag: ${choice.requiresFlag}`);
   if (choice.requiresItem !== undefined) gates.push(`holds: ${choice.requiresItem}`);

@@ -310,6 +310,7 @@
     },
     "scene_pride_camp": {
       "type": "story",
+      "priority": 2,
       "narration": "Elder Sefa Tallgrass has a voice like warm gravel. \"We won't den within a day's walk of a gem caravan's rest stop. The cubs sleep badly near the stones. They dream about humming.\" She cannot say why. Nobody can. The prides have simply stopped arguing about it, which for a pride is a very loud thing to do.",
       "cast": [
         {
@@ -463,6 +464,7 @@
     },
     "scene_spiral": {
       "type": "story",
+      "priority": 1,
       "narration": "Side by side, the new detours are not random. They spiral. Every road on every sash bends around the places where the stones fell, like water going round rocks. The roads are flinching. And the widest spiral of all is centered on a patch of grass a short walk from here.",
       "cast": [
         {

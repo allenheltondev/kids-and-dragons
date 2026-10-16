@@ -37,6 +37,7 @@ import type { ActionError, HandlerDeps } from "./handlers/deps.ts";
 import { iso } from "./handlers/deps.ts";
 import { createRoom, joinRoom, settleRoom, watchRoom } from "./handlers/room.ts";
 import { listHeroes } from "./handlers/heroes.ts";
+import { getJournal } from "./handlers/journal.ts";
 import { getState } from "./handlers/state.ts";
 import { DevIdentity, type DeviceIdentity, type SessionIdentity } from "./identity.ts";
 import { installNarrator } from "./llm/install.ts";
@@ -327,6 +328,19 @@ async function main(): Promise<void> {
     const session = await resolveSession(req, base);
     if (!session) return sendError(res, 401, "FORBIDDEN", "listing heroes needs a room session token");
     const result = await listHeroes({ householdId: session.householdId, playerId: session.playerId }, deps);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
+  // What this phone can study between games (see handlers/journal.ts).
+  app.get("/api/journal", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+
+    const found = await resolvePrincipal(req, base);
+    if (!found) return sendError(res, 401, "FORBIDDEN", "the journal needs this device's token");
+    const { principal } = found;
+    const result = await getJournal({ householdId: principal.householdId, playerId: principal.playerId }, deps);
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
   });

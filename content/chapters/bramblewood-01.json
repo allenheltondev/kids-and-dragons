@@ -200,6 +200,7 @@
     },
     "scene_pib": {
       "type": "story",
+      "priority": 1,
       "discovers": [
         "individual.pib"
       ],
@@ -466,7 +467,7 @@
     "scene_shrine_hollow": {
       "type": "story",
       "art": "bg/bramblewood/shrine",
-      "narration": "A small stone shrine sits in a hollow, half swallowed by roots. The stone where the Hollow Crown used to rest is empty, and cold, and there is a rusted key lying in the moss as if somebody dropped it in a hurry.",
+      "narration": "A small stone shrine sits in a hollow, half swallowed by roots. Two old words are carved over it: the Hollow Crown. The stone where it used to rest is empty, and cold, and there is a rusted key lying in the moss as if somebody dropped it in a hurry.",
       "onEnter": [
         {
           "type": "grantQuestItem",
@@ -495,6 +496,7 @@
     },
     "scene_stone_words": {
       "type": "story",
+      "priority": 2,
       "art": "bg/bramblewood/shrine",
       "narration": "The words are worn almost smooth, but you can still read them: WHAT IS BORROWED HUMS UNTIL IT IS HOME. Under that, somebody much less careful has scratched: sorry. sorry. sorry.",
       "choices": [

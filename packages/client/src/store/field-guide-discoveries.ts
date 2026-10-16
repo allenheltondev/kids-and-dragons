@@ -11,6 +11,10 @@ import type { FieldGuideFind } from "@kad/shared";
  * screens that only want the book need not subscribe to the whole run state —
  * and a test can set it as a fixture without building one.
  *
+ * Out of a room there is no mirror, and the journal (screens/JournalScreen)
+ * lends the book from `GET /api/journal` while it is open, clearing it again
+ * on the way out — the one other writer, and never at the same time.
+ *
  * Only the *book*. What is newly found is a separate, live-only signal; see
  * `field-guide-news.ts`.
  */

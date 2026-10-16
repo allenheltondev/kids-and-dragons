@@ -42,8 +42,13 @@ import type {
 import {
   clearSession,
   defaultStorage,
+  asPlayerIdentity,
+  clearSavedJournal,
   loadIdentity,
+  loadPlayerDeviceToken,
+  loadSavedJournal,
   loadSession,
+  saveJournal,
   saveIdentity,
   saveSession,
   type KeyValueStorage,
@@ -297,7 +302,8 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           onState: (state) => {
             set({ state });
             // The household's Field Guide rides the mirror (`RunState.fieldGuide`);
-            // its own store is a projection of it, never written any other way.
+            // its own store is a projection of it (the journal borrows it only
+            // out of a room — see field-guide-discoveries.ts).
             setFieldGuideDiscoveries(state.fieldGuide);
           },
           onPresentation: (presentation) => set({ presentation }),
@@ -555,13 +561,9 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       displayName: string,
     ): Promise<ClientSession> {
       const identity = loadIdentity(deps.storage);
+      // Seated, so a player now — even a browser that had only been a TV.
       saveIdentity(
-        {
-          ...identity,
-          displayName,
-          playerId: seated.playerId,
-          ...(seated.deviceToken ? { deviceToken: seated.deviceToken } : {}),
-        },
+        { ...asPlayerIdentity(identity, seated.deviceToken), displayName, playerId: seated.playerId },
         deps.storage,
       );
 
@@ -733,7 +735,17 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             campaignId: LAUNCH_CAMPAIGN,
             ...(identity.deviceToken ? { deviceToken: identity.deviceToken } : {}),
           });
-          if (room.deviceToken) saveIdentity({ ...identity, deviceToken: room.deviceToken }, deps.storage);
+          // A binding minted here is the room's placeholder household, held by
+          // a screen that is nobody — not a player with a book to open. But a
+          // browser that has already been a player stays one: a phone hosting
+          // Party Mode on itself must not lose its book for doing so.
+          if (room.deviceToken) {
+            const wasPlayer = identity.deviceToken !== undefined && identity.screenOnly !== true;
+            saveIdentity(
+              { ...identity, deviceToken: room.deviceToken, ...(wasPlayer ? {} : { screenOnly: true }) },
+              deps.storage,
+            );
+          }
           deps.navigate({ name: "tv", code: room.code }, { replace: true });
         } catch (error) {
           failWith(error);
@@ -745,6 +757,30 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         if (!session?.playerId) return [];
         const { heroes } = await deps.api.listHeroes(session.sessionToken);
         return heroes;
+      },
+
+      async loadJournal() {
+        const deviceToken = loadPlayerDeviceToken(deps.storage);
+        if (!deviceToken) return null;
+        try {
+          const journal = await deps.api.loadJournal(deviceToken);
+          saveJournal({ deviceToken, savedAt: new Date().toISOString(), journal }, deps.storage);
+          return { journal, savedAt: null };
+        } catch (error) {
+          /*
+           * The server answering "no" is news: the binding is gone (a guest
+           * household swept after its week away), and a saved copy would show
+           * heroes that no longer exist. Anything else — no signal, a timeout,
+           * a 5xx — is the car, and last time's book is the right answer.
+           */
+          if (error instanceof ApiError && error.status >= 400 && error.status < 500) {
+            clearSavedJournal(deps.storage);
+            throw error;
+          }
+          const saved = loadSavedJournal(deviceToken, deps.storage);
+          if (!saved) throw error;
+          return { journal: saved.journal, savedAt: saved.savedAt };
+        }
       },
 
       async joinRoom(code: string, name: string) {

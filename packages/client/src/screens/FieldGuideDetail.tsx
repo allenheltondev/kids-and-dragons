@@ -6,6 +6,7 @@ import { useFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import type { FieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { markFieldGuideSeen } from "../store/field-guide-seen";
 import { useParty } from "../store";
+import { useJournalFinders } from "../store/journal-finders";
 import { Button } from "../ui/Button";
 import { Icon } from "./icons";
 
@@ -60,11 +61,13 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, 
 }) {
   const discoveries = useFieldGuideDiscoveries();
   const party = useParty();
+  // Between games there is no party; the journal names the household instead.
+  const finders = useJournalFinders();
   const entry = guide.entries[entryId];
   const find = discoveries[entryId];
   if (!entry || !find) return null;
 
-  const finder = party.find((m) => m.playerId === find.firstFoundBy)?.character.name;
+  const finder = party.find((m) => m.playerId === find.firstFoundBy)?.character.name ?? finders[find.firstFoundBy];
   const lore = entry.lore;
   const place = entry.place;
   const danger = entry.danger_level ? (DANGER_LABELS[entry.danger_level] ?? prettify(entry.danger_level)) : undefined;

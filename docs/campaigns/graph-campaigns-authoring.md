@@ -112,9 +112,37 @@ three differences: `index` routes nothing (use it as a rough act number), `route
 scene's `endsCampaign` means nothing — only ending *nodes* end a graph campaign. One chapter is one
 sitting; the journey only moves *between* chapters.
 
+Mark the scenes that carry the story with `priority` (`1` for the revelation a chapter turns on,
+`2` for a clue), exactly as Gemfall does: see
+[content/README.md, "Priority scenes"](../../content/README.md#priority-scenes). A graph campaign
+can be entered at many places and in many orders, so put each revelation in the chapter where it
+lands, not in whichever one you expect a party to play first.
+
 The slice's chapters are deliberately short placeholders — a story scene, a choice, an ending —
 except for the two fights. They still pass every chapter check `content:validate` runs, including
 the canon creature join (`"creature": "will_o_wisp"`) and the board checks.
+
+### Continuity: introduce before you use
+
+`npm run content:continuity` reads a graph campaign by its places and ways, and fails on a name a
+scene uses that some way into it never showed. Knowledge only ever grows on a journey, so the
+sweep can reason per place instead of per journey:
+
+- **Arriving somewhere** guarantees what every way in guarantees: what the place it came from
+  showed on leaving, plus the way's own label, plus what its `when` proves.
+- **`completed: X`** proves what X showed; a **journey flag** or **quest item** proves what every
+  setter of it showed, wherever that setter is. `visited`, `outcome`, `visit` and **facts prove
+  nothing**: a way or a variant chosen by a world fact is judged as if any party could take it,
+  and a finding it causes goes in `tools/content/continuity-allow.json` with that reason.
+- **Returning** is not citing. A scene coins a name on a party's first arrival; what a party knows
+  only from having been here before does not count as another way in.
+- **A node variant** is entered by the same ways as its place, plus what its own `when` proves.
+  It is usually first played on a return, so the place's other chapters count as seen, but its
+  own text never does: a variant may coin a name.
+
+So: introduce what a chapter needs inside that chapter, or gate the way in on the place that
+introduced it. The Continental Rift slice's two findings, and why one is real and one is the
+facts limit, are spelled out in `tools/content/continuity.test.mjs`.
 
 ## 5. Give the journey a memory
 
@@ -267,6 +295,9 @@ Before a graph campaign is reviewed:
       `content/campaigns` and every fixture.
 - [ ] Played through the server across evenings, with and without the classes your ways need — the
       slice's `continental-rift.test.ts` is the template.
+- [ ] `npm run content:continuity` — no new finding; every allow-list entry has a reason.
+- [ ] Each chapter's revelation is marked `priority: 1`, at most one per path through it, and its
+      clues `priority: 2`.
 - [ ] Gemfall untouched: `gemfall-compat.test.ts` stays green without its goldens moving.
 
 ---

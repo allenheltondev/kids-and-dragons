@@ -1344,6 +1344,7 @@
     },
     "scene_tuned_charm": {
       "type": "story",
+      "priority": 1,
       "narration": "\"Better question than most,\" says Mother Thrum, and she hands you one bell charm she has tuned to the note the stones are humming. Hold it near a gem and it sings. The note is older than the road, she says, and the centaurs will tell you the road was here before everything. On her shelf, wrapped in a thick wool sock, is a stone that will not stop ringing.",
       "cast": [
         {
