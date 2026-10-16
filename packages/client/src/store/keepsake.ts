@@ -27,6 +27,7 @@ import {
 } from "../sync/auth";
 import { api as defaultApi, type Api } from "../sync/client";
 import {
+  asPlayerIdentity,
   defaultStorage,
   loadAccount,
   loadIdentity,
@@ -238,7 +239,7 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
         // A device token comes back only when the server bound this browser
         // during the link; keeping the existing one otherwise.
         if (result.deviceToken) {
-          saveIdentity({ ...identity, deviceToken: result.deviceToken }, deps.storage);
+          saveIdentity(asPlayerIdentity(identity, result.deviceToken), deps.storage);
         }
 
         const account: AccountRecord = {
@@ -300,7 +301,7 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
         const result = await deps.api.adoptDevice(tokens.idToken, account.householdId, playerId);
         // This is the write that makes the phone *be* that player from now on.
         const identity = loadIdentity(deps.storage);
-        saveIdentity({ ...identity, deviceToken: result.deviceToken }, deps.storage);
+        saveIdentity(asPlayerIdentity(identity, result.deviceToken), deps.storage);
         // Only now is this phone somebody in the household — record the account.
         saveAccount(account, deps.storage);
         pendingAccount = null;

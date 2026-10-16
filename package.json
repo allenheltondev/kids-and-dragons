@@ -52,6 +52,7 @@
     "art:portraits": "python3 tools/art/portraits.py",
     "build": "npm run build --workspace @kad/client",
     "e2e": "playwright test",
+    "e2e:offline": "playwright test -c playwright.offline.config.ts",
     "infra:build": "node infra/build.mjs",
     "infra:lint": "cfn-lint infra/template.yaml --region us-east-1 --ignore-checks I3011",
     "infra:deploy": "./scripts/deploy.sh",

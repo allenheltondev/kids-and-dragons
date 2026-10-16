@@ -588,7 +588,60 @@ type RoomMode = "party" | "travel";
 //
 // Travel Mode: every device gets both, one at a time behind a toggle
 //   /p/:code     → <TravelLayout><WorldView /><PlayerView /></TravelLayout>
+//
+// Between games: no room, so no code and no mode
+//   /journal     → <JournalScreen />   (spec §2.3)
 ```
+
+`/journal` is the one surface with no room behind it. It reads `GET /api/journal`, authorised by
+the **device token** (`x-kad-device-token`) rather than a room session, which between games does
+not exist: the player's own heroes, the household's Field Guide, a player-id → name map for "found
+by", and the biome of the household's most recent run that left the lobby. It is read-only. The
+client keeps the last answer in `localStorage`, keyed by the device token, and shows it (marked as
+last time's) when the request fails for want of a network; a 4xx means the binding is gone and
+discards it. A browser whose binding came from opening a Party Mode room on itself is marked
+`screenOnly` and is never offered the book, until it is seated or adopted as a player.
+
+#### Offline: the service worker
+
+That saved copy is only half of "opens in the car": the page, its code, the content and the map
+painting have to be on the phone too, or a reload with no signal never gets as far as reading it.
+A service worker (`packages/client/src/sw/`, served as `/sw.js`) holds them. It is registered only
+by a production build, after `load`, and touches nothing the game needs live:
+
+| Request | Answered by |
+|---|---|
+| `/api/*`, `/events/*`, anything cross-origin, non-GET or ranged | the browser, as if there were no worker |
+| a page load (any route) | the network; the saved app when there is none |
+| `/bundle/*` (hashed) | the saved copy; the network the first time |
+| `/content/*.json` | the network; the saved copy when there is none |
+| art (`.webp`, `.png`, …) | the saved copy at once, refreshed behind it; the network the first time |
+
+Install saves the app, every hashed file but the Rive runtime (about 2 MB, which the book does not
+use; the game saves it the first time it loads it) and the content the book reads, including every
+campaign file: roughly 2.4 MB. Opening the book with a signal then saves the map painting, every
+atlas level and the art of everything found (`sw/warm.ts`). The close-zoom detail patches are left
+out: several megabytes the map works without. Art is capped at 400 pictures, oldest out first.
+
+Each build's `sw.js` names its own files (`sw-build.ts` writes them in), so every deploy is a new
+worker. It takes over at once, including pages that are already open. Those pages were built
+against the previous build and import its chunks the first time they open the book or a room,
+and the deploy has deleted those chunks from the bucket. So the worker keeps the previous build's
+code as well as its own (`/__kad/bundle-list` records which), and drops only what neither uses.
+A tab left open across two deploys gets the "Try again" a missing chunk always gets, which reloads
+it. Every lookup ignores `Vary`: servers send `Vary: Origin` and module imports send an `Origin`
+header, so a plain lookup would miss every saved script. **To turn it off**, ship a `sw.js` whose
+`activate` deletes every cache and calls `self.registration.unregister()`. Phones pick it up on
+their next page load.
+
+`e2e/offline.spec.ts` proves it against a real production build (`npm run e2e:offline`, also run
+by CI):
+- **Offline:** play a little, open the book once, drop the network, then reload and open a fresh
+  tab. The hero, the map's painting and an opened Field Guide entry must all be there.
+- **First visit:** the book opens before any worker controls the page, and its art is still saved
+  once one does.
+- **Upgrade:** a tab left open across a staged deploy (a new `sw.js`, the old chunks gone from the
+  server) can still open the book.
 
 Three rules keep this from forking into two apps:
 
