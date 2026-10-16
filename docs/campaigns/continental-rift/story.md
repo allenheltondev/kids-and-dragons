@@ -31,7 +31,7 @@ The magical force itself need not be sentient; do not canonize a conscious rift 
 - A nonlinear **story graph** with routes forward, sideways, backwards and changed revisits.
 - Three interweaving regional strands, **not three mandatory checklists**.
 - Different discoveries, allies and practical advantages based on route.
-- A late revelation and a finale with multiple meaningfully distinct choices; specific choices and endings remain TBD.
+- A late revelation and a finale with meaningfully distinct choices ([below](#finale-and-endings--agreed)).
 - **Size — agreed:** about 22–24 nodes authored, 14–16 played on a playthrough (roughly 1.5× Gemfall), each node 30–40 minutes. A node pays about 125 XP on its first completion only, so a party arriving at Sworn (700) crosses Radiant (2,600, about 1,900 over the campaign) one node before the finale, as spec §8.1 wants. Tune the exact award once the node list exists.
 
 ## Beginning — agreed
@@ -55,6 +55,24 @@ Glacier of Origins, yetis and memory in ancient ice. Environmental puzzles and c
 **The hidden glacier rift — agreed.** Green + blue: it needs something first, then stays open. Its requirement is a **sung note**; the yetis carve singing halls, so a Songkeeper has a natural way in, and any party can learn the tune during glacier survival. It leads to **the Saltrot**, which gives canon's "unfamiliar glacier silt reaching the Saltrot" a cause (creator-only canon, pending registration). Because it is persistent, it is also the way back, which is what makes returning to the glacier meaningful.
 
 **The hidden glacier rift is not the summer crevasse.** `canon/biomes.yaml` holds a creator-only secret: a crevasse below the oldest layer that preserves a summer, with green light and warm air. Keep the hidden rift somewhere else and never let its green Riftlight read as the explanation for that crevasse. Linking the two would be a canon decision, not an authoring one.
+
+## Finale and endings — agreed
+**1. The final rift.** At the glacier, where his prison was, Corvane opens his biggest rift yet, pulling a whole region back into Pangea's arrangement. Each Pangea fragment the party holds is one choice ("Anchor it with the glacier memory", the sealed door, the island that is due back): it shows the land where it belongs **now** and collapses part of his rift. With 2 fragments his rift is broken but he is still strong; with all 3 it is overpowered and he starts the fight weakened. The fragments win because the land remembers its present shape, not because the party out-magics him, so the theme holds.
+
+**2. The battle.** With his rift broken, Corvane fights to hold what is left open: Corvane plus displaced creatures pulled through his rift, among open rifts that act as hazards (#201). Manipulate and its class equivalents matter here: shutting a hazard rift, holding back the ice. The party reached Radiant one node earlier, so the climax is fought as the new form (spec §8.1). Two authored versions of the encounter, chosen by flag-gated choices on fragment count: standard, or Corvane weakened with one fewer creature. Defeat means his strength is spent and the rift collapses; nobody dies, and he stays sympathetic, an old man who wanted his home back.
+
+**3. His fate — the endings.** History files the party under a name, as in Gemfall:
+
+| Ending | Reached by |
+| --- | --- |
+| ***The Glacier Keepers*** — he is returned to the ice: "the ice keeps him, and he keeps the memory." The full circle. | Winning, then choosing it |
+| ***The Ones Who Listened*** — he lives with the yetis as the one who remembers Pangea. | Winning, then choosing it |
+| ***Rivers Wander*** (setback) — his pull half-works and places stay jumbled "for now", scoped to this campaign like Gemfall's Last Ring. The Riftseekers spread out to watch the rifts. The spark: Orin's "Then we learn the new map." | Losing the battle: a whole-party knockdown branches here rather than ending the run |
+
+- **Lady Olivia is an epilogue variant, not a separate ending,** read from earlier flags (whether the party helped Bram stop her summoning; Pip's choice): **ally** (she helps hold the land), **rival** (she leaves to try her own way, unpunished) or **redeemed** (she joins Orin's study).
+- In both wins the displaced places go home, so the shared canon map stays intact.
+- Every ending completes the campaign and carries the characters over; reaching the setback limit still fails the attempt, as in Gemfall.
+- **Campaign 3** must work whether Corvane sleeps in the ice or lives with the yetis, as this campaign works after every Gemfall ending.
 
 ## Theme — author guidance, not in-game exposition
 You can influence a powerful natural force without being able to command its behavior. Curiosity, judgment, choices and consequences outweigh raw power. Lady Olivia and Orin respond to uncertainty in contrasting ways; the emperor's error is treating influence as complete control.

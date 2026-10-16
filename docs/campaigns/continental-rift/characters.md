@@ -9,7 +9,7 @@ An enigmatic **campaign-only** fellowship formed around the rift crisis; it shou
 Methodical, patient scholar. Wants to learn **why** rifts exist and **how** they work before attempting large interventions. Fears reckless manipulation. Provides an early exploration lead. His tentative geographical lead is mountain/griffin disturbances; canonical name/location to confirm.
 
 ### Lady Olivia — agreed name and core
-**Name: Lady Olivia** (no surname). Bright, ambitious, confidently wants to **harness rift power for herself**; a nuanced, mischievous, stubborn rival, not a caricature or simply 'evil.' She believes power could enable her to help or repair the world. She may unknowingly repeat the emperor's dangerous belief that strong enough manipulation gives control. Her arc can diverge based on player decisions; no resolution locked yet.
+**Name: Lady Olivia** (no surname). Bright, ambitious, confidently wants to **harness rift power for herself**; a nuanced, mischievous, stubborn rival, not a caricature or simply 'evil.' She believes power could enable her to help or repair the world. She may unknowingly repeat the emperor's dangerous belief that strong enough manipulation gives control. Her arc diverges on player decisions and resolves as an epilogue variant: ally, rival or redeemed ([story.md](story.md#finale-and-endings--agreed)). She is never punished.
 
 ### Supporting Riftseekers — agreed
 Campaign-only, like the rest of the fellowship (canon registration pending). None is required: each appears wherever the party is, never in one specific strand.
