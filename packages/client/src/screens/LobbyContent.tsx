@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import type { ReactElement } from "react";
 import { lobbyCampaign, type PartyMember } from "@kad/shared";
 import { useGameStore, useParty, useRunState } from "../store";
-import { campaignOptionLine, campaignPremise, journeyLine, nextChapterLine } from "./campaign-copy";
+import { campaignOptionLine, campaignPremise, journeyLine, lockedLine, nextChapterLine } from "./campaign-copy";
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
@@ -133,6 +133,8 @@ export function LobbyContent(): ReactElement {
   // line when it has a journey, else the chapter line exactly as before. The
   // phones hold the choosing; the table just sees where the party stands.
   const upNext = journeyLine(state?.campaign) ?? nextChapterLine(state?.campaign);
+  // A campaign the household has not unlocked (#221) says why instead.
+  const locked = lockedLine(state?.campaign);
 
   return (
     <section className="lobby entry-scene-host" aria-labelledby="lobby-heading">
@@ -179,6 +181,13 @@ export function LobbyContent(): ReactElement {
             );
           })}
         </ul>
+      ) : locked !== null ? (
+        <p className="lobby__next-chapter">
+          <Icon name="close" />
+          <span>
+            {state?.campaign?.title}: {locked}
+          </span>
+        </p>
       ) : upNext !== null ? (
         <p className="lobby__next-chapter">
           <Icon name="map" />

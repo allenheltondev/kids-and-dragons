@@ -78,6 +78,14 @@ export interface CampaignView {
    */
   ended?: "complete" | "failed";
   /**
+   * Set while the household cannot start this campaign yet (#221): the
+   * campaigns it still has to finish, and the plain reason the lobby shows
+   * ("Finish Gemfall first"). Absent for every campaign without a prerequisite,
+   * and once it is met. The server refuses the start either way; this is how
+   * the screens know not to offer it.
+   */
+  locked?: { requires: string[]; reason: string };
+  /**
    * A graph campaign's journey (#194): where the party is, whether it is
    * playing that place or choosing a way on, and the exits a screen draws.
    * `next` is null while it is choosing — a fork nobody has chosen at, which

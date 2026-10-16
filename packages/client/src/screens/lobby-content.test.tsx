@@ -66,6 +66,29 @@ describe("the lobby's campaign premise", () => {
   });
 });
 
+describe("a campaign the household has not unlocked (#221)", () => {
+  const LOCKED: CampaignView = {
+    id: "riftlight",
+    title: "Riftlight",
+    blurb: "The ground opens.",
+    chapters: 6,
+    next: { index: 1, title: "The Crack" },
+    locked: { requires: ["gemfall"], reason: "Finish Gemfall first" },
+  };
+
+  it("says why, instead of the chapter it cannot start", () => {
+    mount({ campaign: LOCKED, party: [makeMember()] });
+    expect(screen.getByText(/Riftlight: Finish Gemfall first/)).toBeTruthy();
+    expect(screen.queryByText(/Chapter 1:/)).toBeNull();
+  });
+
+  it("leaves an unlocked campaign's line as it was", () => {
+    mount({ campaign: FIRST, party: [makeMember()] });
+    expect(screen.getByText(/Chapter 1:/)).toBeTruthy();
+    expect(screen.queryByText(/Finish/)).toBeNull();
+  });
+});
+
 describe("the shared screen's line about where a graph campaign stands (#195)", () => {
   const journey = {
     node: "orchard",
