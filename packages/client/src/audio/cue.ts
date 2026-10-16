@@ -30,6 +30,13 @@
  * anything to complain.
  */
 export type CueId =
+  | "rift-open"
+  | "rift-collapse"
+  | "chime-sour"
+  | "chime-echo"
+  | "attune-hum"
+  | "riftspark"
+  | "anchor"
   | "party-ready"
   | "gem-pickup"
   | "gate-hum"

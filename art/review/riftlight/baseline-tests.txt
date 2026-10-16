@@ -1,0 +1,179 @@
+
+> kids-and-dragons@0.0.0 test
+> vitest run tools/content/authoring-guide.test.mjs tools/content/journey-tools.test.ts tools/content/continental-rift.test.ts
+
+
+ RUN  v4.1.10 C:/Users/allen/.codex/worktrees/riftlight-part-a/kids-and-dragons
+
+ ❯ tools/content/authoring-guide.test.mjs (1 test | 1 failed) 10ms
+     × has at least one of each kind 7ms
+ ❯ tools/content/journey-tools.test.ts (80 tests | 5 failed | 6 skipped) 507ms
+     × the CLI skips them with status 0 and says so 10ms
+     × --all inspects only the graph campaigns and still exits 0 on the shipped repo 2ms
+     × the CLI draws it, plays it and exits 0 2ms
+     × the CLI checks a save file and exits non-zero when it is broken 5ms
+     × refuses an unknown campaign and a bad option with status 2 2ms
+ ❯ tools/content/continental-rift.test.ts (14 tests | 2 failed) 1406ms
+     × --playtest runs clean: lint clean, everything covered, every invariant held 6ms
+     × the authoring guide's diagram is the one the tool draws 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tools/content/authoring-guide.test.mjs > the authoring guide's examples > has at least one of each kind
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tools/content/authoring-guide.test.mjs:63:58
+     61|
+     62|   it("has at least one of each kind", () => {
+     63|     expect(all.some((e) => e.kind === "guide-variants")).toBe(true);
+       |                                                          ^
+     64|     expect(all.some((e) => e.kind === "guide-choices")).toBe(true);
+     65|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tools/content/continental-rift.test.ts > npm run content:journey on the slice > --playtest runs clean: lint clean, everything covered, every invariant held
+AssertionError: expected null to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+null
+
+ ❯ tools/content/continental-rift.test.ts:209:49
+    207|   it("--playtest runs clean: lint clean, everything covered, every inv…
+    208|     const run = cli(["--campaign", campaign.id, "--playtest"]);
+    209|     expect(run.status, run.stdout + run.stderr).toBe(0);
+       |                                                 ^
+    210|     expect(run.stdout).toContain("Lint\n  clean");
+    211|     expect(run.stdout).toContain("nodes   6/6 entered by some playthro…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tools/content/continental-rift.test.ts > npm run content:journey on the slice > the authoring guide's diagram is the one the tool draws
+AssertionError: expected null to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+null
+
+ ❯ tools/content/continental-rift.test.ts:219:24
+    217|   it("the authoring guide's diagram is the one the tool draws", () => {
+    218|     const run = cli(["--campaign", campaign.id, "--format", "mermaid"]…
+    219|     expect(run.status).toBe(0);
+       |                        ^
+    220|     expect(run.stdout.trim()).toBe(toMermaid(campaign, graph).trim());
+    221|     const guide = fs.readFileSync(GUIDE, "utf8");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tools/content/journey-tools.test.ts > ordered campaigns — seen, skipped, unchanged > the CLI skips them with status 0 and says so
+AssertionError: expected null to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+null
+
+ ❯ tools/content/journey-tools.test.ts:194:24
+    192|   it("the CLI skips them with status 0 and says so", () => {
+    193|     const run = cli(["--campaign", "gemfall"]);
+    194|     expect(run.status).toBe(0);
+       |                        ^
+    195|     expect(run.stdout).toContain("ordered campaign (no graph), skipped…
+    196|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tools/content/journey-tools.test.ts > ordered campaigns — seen, skipped, unchanged > --all inspects only the graph campaigns and still exits 0 on the shipped repo
+AssertionError: expected null to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+null
+
+ ❯ tools/content/journey-tools.test.ts:200:24
+    198|   it("--all inspects only the graph campaigns and still exits 0 on the…
+    199|     const run = cli(["--all"]);
+    200|     expect(run.status).toBe(0);
+       |                        ^
+    201|     expect(run.stdout).toContain("gemfall.json: ordered campaign (no g…
+    202|     expect(run.stdout).toContain("the-hollow-crown.json: ordered campa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  tools/content/journey-tools.test.ts > journey-ci — sideways, revisit and single-use routes > the CLI draws it, plays it and exits 0
+AssertionError: expected null to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+null
+
+ ❯ tools/content/journey-tools.test.ts:357:28
+    355|   it("the CLI draws it, plays it and exits 0", () => {
+    356|     const mermaid = cli(["--campaign", "journey-ci", "--format", "merm…
+    357|     expect(mermaid.status).toBe(0);
+       |                            ^
+    358|     expect(mermaid.stdout.startsWith("%% The Journey Gate")).toBe(true…
+    359|     const play = cli(["--campaign", "journey-ci", "--walk", "random", …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  tools/content/journey-tools.test.ts > checkJourneySave — classifying a stored journey > the CLI checks a save file and exits non-zero when it is broken
+AssertionError: expected null to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+null
+
+ ❯ tools/content/journey-tools.test.ts:637:25
+    635|       fs.writeFileSync(bad, JSON.stringify(mutate((j) => (j.node = "ol…
+    636|       const ok = cli(["--campaign", "rift-sampler", "--save", good]);
+    637|       expect(ok.status).toBe(0);
+       |                         ^
+    638|       expect(ok.stdout).toContain("Save check");
+    639|       const broken = cli(["--campaign", "rift-sampler", "--save", bad]…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  tools/content/journey-tools.test.ts > the CLI > refuses an unknown campaign and a bad option with status 2
+AssertionError: expected null to be 2 // Object.is equality
+
+- Expected:
+2
+
++ Received:
+null
+
+ ❯ tools/content/journey-tools.test.ts:654:60
+    652| describe("the CLI", () => {
+    653|   it("refuses an unknown campaign and a bad option with status 2", () …
+    654|     expect(cli(["--campaign", "no-such-campaign"]).status).toBe(2);
+       |                                                            ^
+    655|     expect(cli(["--campaign", "journey-ci", "--format", "svg"]).status…
+    656|     expect(cli([]).status).toBe(2);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  8 failed | 81 passed | 6 skipped (95)
+   Start at  06:50:03
+   Duration  2.54s (transform 1.12s, setup 0ms, import 1.75s, tests 1.92s, environment 0ms)
+
