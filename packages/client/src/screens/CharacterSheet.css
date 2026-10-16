@@ -120,3 +120,25 @@
   .sheetview__stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .sheetview__ladder { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
+
+/* The explorable bag (`explore`, the journal): the slot's face becomes a button
+   filling it, and the item being read about opens under the bag. */
+.sheetview__item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.35em;
+  inline-size: 100%; block-size: 100%; min-block-size: 3.8em; padding: 0; border: 0; background: none;
+  color: inherit; font: inherit; text-align: center; cursor: pointer;
+}
+.sheetview__item > .kad-icon { font-size: 2em; color: #e5c281; }
+.sheetview__slot:has(.sheetview__item--on) { border-color: #f3ddb3; box-shadow: 0 0 0 0.15em #f3ddb366, inset 0 -0.25em #0003; }
+.sheetview__quest-item { display: inline-flex; align-items: center; gap: 0.4em; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.sheetview__quest-item[aria-pressed="true"] { text-decoration: underline; }
+.sheetview__reading {
+  display: flex; gap: 0.8em; align-items: flex-start; padding: 0.8em; border: 1px solid #a9835088;
+  border-radius: 0.8em; background: linear-gradient(#3c2d42, #20192f);
+}
+.sheetview__reading-icon { color: #e5c281; flex: none; }
+.sheetview__reading-words { display: flex; flex-direction: column; gap: 0.35em; min-inline-size: 0; }
+.sheetview__reading-name { font-family: var(--kad-font-display); color: #f3ddb3; }
+.sheetview__reading-kind { display: inline-flex; align-items: center; gap: 0.35em; }
+.sheetview__reading-text { line-height: 1.4; }
+.sheetview__hint { margin: 0; font-size: 0.85em; }

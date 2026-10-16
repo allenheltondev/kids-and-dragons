@@ -6,6 +6,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
+import { registerServiceWorker } from "./sw/register";
 import "./styles/theme.css";
 import "./styles/components.css";
 
@@ -20,3 +21,6 @@ createRoot(host).render(
     <App />
   </StrictMode>,
 );
+
+// The offline adventure book (src/sw/). Production builds only.
+registerServiceWorker();

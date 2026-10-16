@@ -49,9 +49,34 @@ export type BuffId = string;
  *   (`Combatant.steps` → `stepsLeft`).
  * - `"roll"` — the modifier on the hero's attack rolls (`attackMod`). Checks
  *   outside a fight are untouched: a buff is a combat thing, and its clock is
- *   counted in fights.
+ *   counted in fights — unless it opts in to story checks instead
+ *   (`appliesTo: "check"`, #222).
  */
 export type BuffKind = "guard" | "damage" | "move" | "roll";
+
+/**
+ * Which rolls a `"roll"` buff changes (#222):
+ *
+ * - `"attack"` (default) — the hero's attack rolls inside a fight, as every
+ *   roll buff did before #222.
+ * - `"check"` — one chapter `Check` (d20 + stat vs TN) instead, and never an
+ *   attack. Held by the party: whoever is about to roll may spend it. Its
+ *   clock is counted in checks (`{ scope: "uses" }`), never in fights, so a
+ *   fight neither spends it nor sees it.
+ *
+ * No "both": an attack is counted in fights and a check in uses, and no one
+ * clock can say how long a buff on both lasts.
+ */
+export type BuffAppliesTo = "attack" | "check";
+
+/**
+ * How a `"check"` buff is spent (#222):
+ *
+ * - `"auto"` (default) — on the party's next check, whoever rolls it.
+ * - `"choose"` — the roller's phone offers it before the roll ("Use
+ *   Riftspark (+2)?"): spend it now, or save it for a harder check.
+ */
+export type BuffSpend = "auto" | "choose";
 
 /**
  * How long a buff lasts, in the only clocks a fight has.
@@ -62,13 +87,18 @@ export type BuffKind = "guard" | "damage" | "move" | "roll";
  * - `{ scope: "encounters", count }` — the next `count` fights, wherever and
  *   whenever they come (another chapter, another evening).
  *
+ * - `{ scope: "uses", count }` — a `"check"` buff's only clock (#222): the
+ *   next `count` story checks it is spent on. Fights do not count, and nor
+ *   does a check the roller chose to save it through.
+ *
  * A buff waits, unspent, until a fight comes: a chapter with no encounter in
- * it costs nothing.
+ * it costs nothing. (A `"uses"` buff waits for a check the same way.)
  */
 export type BuffDuration =
   | { scope: "turns"; count: number }
   | { scope: "encounter" }
-  | { scope: "encounters"; count: number };
+  | { scope: "encounters"; count: number }
+  | { scope: "uses"; count: number };
 
 /**
  * Granting a buff the party already has:
@@ -86,8 +116,11 @@ export type BuffStacking = "refresh" | "add" | "ignore";
  * - `"setback"` — a chapter ends in a setback.
  * - `"rest"` — the party reaches a Rest scene.
  * - `"travel"` — the party takes an exit (any `CHOOSE_EXIT` that commits).
+ * - `"chapter"` — the next chapter played ends, however it ends (#222): "it
+ *   lasts until used, or until the next chapter played ends". A visit that
+ *   plays no chapter (a `"pass"` revisit) ends nothing.
  */
-export type BuffExpiry = "defeat" | "rest" | "travel" | "setback";
+export type BuffExpiry = "defeat" | "rest" | "travel" | "setback" | "chapter";
 
 /**
  * Who a buff lands on, decided when a fight begins:
@@ -130,6 +163,14 @@ export interface BuffDef {
   cap?: number;
   /** What ends it early. Absent: only its duration. */
   expiresOn?: BuffExpiry[];
+  /**
+   * `"roll"` buffs only: which rolls it changes (#222). Default `"attack"`,
+   * which is every roll buff declared before #222. `"check"` needs a
+   * `{ scope: "uses" }` duration and the party as its target.
+   */
+  appliesTo?: BuffAppliesTo;
+  /** `"check"` buffs only: spent on the next check, or offered first. Default `"auto"`. */
+  spend?: BuffSpend;
 }
 
 /**
@@ -144,9 +185,12 @@ export interface ActiveBuff {
   stacks: number;
   /**
    * Fights left before it is spent. A `"turns"` or `"encounter"` buff has 1;
-   * an `"encounters"` one counts down from its `count`.
+   * an `"encounters"` one counts down from its `count`. A `"uses"` buff has 1
+   * and keeps it: no fight spends it, `usesLeft` is its clock.
    */
   encountersLeft: number;
+  /** A `"uses"` buff only (#222): the checks it can still be spent on. */
+  usesLeft?: number;
   /** The visit that granted it (or last refreshed it), for the inspection tools (#202). */
   grantedAt?: { node: NodeId; visit: number };
 }
@@ -166,6 +210,23 @@ export interface RunBuff extends ActiveBuff {
   turns?: number;
   cap?: number;
   expiresOn?: BuffExpiry[];
+  /** Written only for a `"check"` buff (#222): an attack buff carries none. */
+  appliesTo?: "check";
+  /** With `appliesTo` only: how it is spent. */
+  spend?: BuffSpend;
+}
+
+/**
+ * A `"check"` buff offered on a roll prompt (`Prompt.buff`, #222) — the one
+ * this roll would spend: what it is called, what it adds, and whether the
+ * roller is asked first.
+ */
+export interface CheckBuffOffer {
+  id: BuffId;
+  label: string;
+  /** What it adds to the check, stacks and `cap` applied. */
+  amount: number;
+  spend: BuffSpend;
 }
 
 /**
@@ -207,7 +268,15 @@ export interface JourneyBuffView {
   amount: number;
   stacks: number;
   target: BuffTarget;
-  /** How long it has left: fights, and for a `"turns"` buff the turns in its fight. */
-  remaining: { encounters: number; turns?: number };
+  /**
+   * How long it has left: fights, and for a `"turns"` buff the turns in its
+   * fight. A `"uses"` buff (#222) says `uses`, the checks it can still be
+   * spent on — its `encounters` is always 1 and means nothing.
+   */
+  remaining: { encounters: number; turns?: number; uses?: number };
   expiresOn?: BuffExpiry[];
+  /** A story-check buff (#222): it changes one check, not attacks. */
+  appliesTo?: "check";
+  /** With `appliesTo` only. */
+  spend?: BuffSpend;
 }

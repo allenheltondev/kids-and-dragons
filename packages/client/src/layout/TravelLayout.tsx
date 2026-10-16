@@ -195,7 +195,7 @@ export function TravelLayout(): React.JSX.Element {
 
       {/* `hidden` rather than unmounted — see the header. */}
       <div className="kad-travel__pane" data-pane="world" data-showing={showing === "world"}>
-        <WorldView />
+        <WorldView prefetch={showing === "world"} />
       </div>
       <div className="kad-travel__pane" data-pane="player" data-showing={showing === "player"}>
         <PlayerView roomControls={<ModeSwitch />} />
