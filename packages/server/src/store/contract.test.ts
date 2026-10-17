@@ -47,7 +47,7 @@ function guest(id: string, expiresAt: string): Household {
 }
 
 function player(id: string, householdId = "h_1"): PlayerProfile {
-  return { id, householdId, displayName: `Player ${id}`, color: "#7FD4C1", role: "adult" };
+  return { id, householdId, displayName: `Player ${id}`, color: "#7FD4C1" };
 }
 
 function character(id: string, householdId = "h_1"): Character {

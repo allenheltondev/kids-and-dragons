@@ -447,7 +447,7 @@ changes nothing about whether the game works.
 | **AI-optional invariant** | Tested in CI, not assumed. |
 | **Mode-agnostic surfaces** | `WorldView` and `PlayerView` never read the room mode. Container-relative sizing only — no viewport units inside either. |
 | **Travel layout first** | Any new screen is designed for a phone before it's designed for a TV. |
-| **No password for a child** | `role: child` devices authenticate by binding only, can never pair another device, and can never claim a household. |
+| **No password for anyone who plays** | A profile is a player, bound to a device; nobody who only plays signs in. Only owners sign in, and managing anything needs one (#265). |
 | **Play before signing in** | Nothing requires an account. Sign-in only ever *keeps* what anonymous play already created — it is never a gate in front of it. |
 | **One suite, both stores** | `MemoryRepository` and `DynamoRepository` pass the same contract test. A bug found at the table has to be reproducible on a laptop. |
 | **Three-device dev loop** | If a change hasn't been seen on a TV **and** in three-phone Travel Mode, it isn't done. |

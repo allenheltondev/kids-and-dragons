@@ -93,7 +93,8 @@ Characters, levels, and inventory persist across sessions and campaigns, so iden
 
 - **The household** is the account. Owned by an adult, authenticated properly (email + passkey). It owns the party, the characters, the campaign history, the inventory, and the souvenirs.
 - **Player profiles** live inside the household. Each is bound to a device with a long-lived signed token. Her phone simply *is* her — open the app, tap her avatar, play. No password, ever.
-- **Binding a new device** requires either the household owner signing in, or approval from an already-bound adult device. Losing a phone is recoverable; a kid can't accidentally sign herself out of existence.
+- **Binding a new device** to an existing player requires the household owner signing in. Losing a phone is recoverable; a kid can't accidentally sign herself out of existence.
+- **No kid or adult accounts.** A profile is a player. Managing anything needs a signed-in owner; playing needs nothing.
 - **Room codes still exist**, but now they join a *session*, not an identity. You are already you before you join.
 
 Mechanics in [architecture.md §4.5](./architecture.md#45-accounts-devices-and-joining).

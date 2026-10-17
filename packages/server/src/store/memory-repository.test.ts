@@ -178,7 +178,6 @@ describe("MemoryRepository", () => {
       householdId: "h_1",
       displayName: "Allen",
       color: "#7FD4C1",
-      role: "adult",
     });
     await repo.putDevice({
       deviceId: "d_1",

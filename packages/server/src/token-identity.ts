@@ -36,7 +36,6 @@
 
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { GetParameterCommand, PutParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
-import type { Role } from "@kad/shared";
 import {
   hashToken,
   type DeviceIdentity,
@@ -80,7 +79,6 @@ interface DeviceClaims {
   aud: "device";
   hh: string;
   pid: string;
-  role: Role;
   iat: number;
   exp: number;
 }
@@ -91,7 +89,6 @@ interface SessionClaims {
   run: string;
   code: string;
   hh: string;
-  role: Role;
   iat: number;
   exp: number;
 }
@@ -145,7 +142,6 @@ export class TokenIdentity implements IdentityService {
       aud: "device",
       hh: input.householdId,
       pid: input.playerId,
-      role: input.role,
       iat: Math.floor(nowMs / 1000),
       exp: Math.floor((nowMs + DEVICE_TOKEN_TTL_MS) / 1000),
     });
@@ -193,7 +189,6 @@ export class TokenIdentity implements IdentityService {
       ({ token: rotatedToken } = await this.issueDeviceToken({
         householdId: binding.householdId,
         playerId: binding.playerId,
-        role: claims.role,
         deviceId: binding.deviceId,
         ...(binding.userAgent ? { userAgent: binding.userAgent } : {}),
       }));
@@ -213,7 +208,6 @@ export class TokenIdentity implements IdentityService {
       deviceId: binding.deviceId,
       householdId: binding.householdId,
       playerId: binding.playerId,
-      role: claims.role,
       ...(rotatedToken ? { rotatedToken } : {}),
     };
   }
@@ -227,7 +221,6 @@ export class TokenIdentity implements IdentityService {
       run: input.runId,
       code: input.roomCode,
       hh: input.householdId,
-      role: input.role,
       iat: Math.floor(this.now() / 1000),
       // A session can never outlive its room, so the caller's expiry is the cap.
       exp: Math.floor(input.expiresAt / 1000),
@@ -242,7 +235,6 @@ export class TokenIdentity implements IdentityService {
       roomCode: claims.code,
       householdId: claims.hh,
       playerId: claims.sub,
-      role: claims.role,
       expiresAt: claims.exp * 1000,
     };
   }

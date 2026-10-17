@@ -23,7 +23,7 @@
  * (`lambda/http.ts`), which is also the only place that knows Cognito exists.
  */
 
-import type { Character, Household, PlayerProfile, Role } from "@kad/shared";
+import type { Character, Household, PlayerProfile } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { GuestRenewal } from "../store/repository.ts";
 import { newId } from "../ids.ts";
@@ -94,13 +94,7 @@ export interface CreateGuestHouseholdInput {
   userAgent?: string | undefined;
 }
 
-/**
- * The anonymous path: one household, one adult player, one bound device.
- *
- * The first device is always `adult` — it is the one that started the game, and
- * `role: child` devices can never pair another device (§4.5). A phone that
- * cannot invite anyone else cannot be the first phone.
- */
+/** The anonymous path: one household, one player, one bound device. */
 export async function createGuestHousehold(
   input: CreateGuestHouseholdInput,
   deps: AccountDeps,
@@ -118,7 +112,7 @@ export async function createGuestHousehold(
   await deps.repo.putHousehold(household);
 
   const bound = await addPlayer(
-    { householdId, displayName: input.displayName, role: "adult", userAgent: input.userAgent },
+    { householdId, displayName: input.displayName, userAgent: input.userAgent },
     deps,
   );
   return { ...bound, household };
@@ -127,7 +121,6 @@ export async function createGuestHousehold(
 export interface AddPlayerInput {
   householdId: string;
   displayName: string;
-  role: Role;
   userAgent?: string | undefined;
 }
 
@@ -145,18 +138,16 @@ export async function addPlayer(input: AddPlayerInput, deps: AccountDeps): Promi
     householdId: input.householdId,
     displayName: input.displayName,
     color: PLAYER_COLORS[existing.length % PLAYER_COLORS.length] ?? PLAYER_COLORS[0],
-    role: input.role,
   };
   await deps.repo.putPlayer(player);
 
   const { token, deviceId } = await deps.identity.issueDeviceToken({
     householdId: input.householdId,
     playerId: player.id,
-    role: input.role,
     ...(input.userAgent ? { userAgent: input.userAgent } : {}),
   });
   return {
-    principal: { deviceId, householdId: input.householdId, playerId: player.id, role: input.role },
+    principal: { deviceId, householdId: input.householdId, playerId: player.id },
     player,
     deviceToken: token,
   };
@@ -233,13 +224,11 @@ export async function linkAccount(
 
     if (current.guest && claimGuest) {
       /*
-       * Adults only. A child's device claiming a household would put the
-       * household's ownership — and therefore its revocation rights — behind a
-       * credential we promised she would never need (§4.5).
+       * Whoever signs in first from a device playing in a guest household
+       * claims it. There is no "adult device" to require (#265): authority is
+       * the verified sign-in this call already carries, not a label on the
+       * profile. A household somebody else owns is never claimable (below).
        */
-      if (input.principal.role !== "adult") {
-        return fail("FORBIDDEN", "only an adult device can claim a household");
-      }
       const claimed = await deps.repo.claimHousehold(current.id, input.cognitoSub);
       if (claimed) return ok(await describe(current.id, true, true, deps));
       // Someone else's already. Fall through to this account's own household.
@@ -267,7 +256,7 @@ export async function linkAccount(
   await deps.repo.putAccountPointer(input.cognitoSub, householdId);
 
   const bound = await addPlayer(
-    { householdId, displayName: input.email?.split("@")[0] ?? "Grown-up", role: "adult" },
+    { householdId, displayName: input.email?.split("@")[0] ?? "Grown-up" },
     deps,
   );
   return ok({
@@ -308,7 +297,6 @@ export async function adoptDevice(
   const { token } = await deps.identity.issueDeviceToken({
     householdId: input.householdId,
     playerId: player.id,
-    role: player.role,
     ...(input.userAgent ? { userAgent: input.userAgent } : {}),
   });
   return ok({ deviceToken: token, playerId: player.id });

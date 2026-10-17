@@ -69,7 +69,7 @@ import {
 } from "./progression.ts";
 
 /** The part of an identity that authorises an action. */
-export type ActingPrincipal = Pick<DeviceIdentity, "householdId" | "playerId" | "role">;
+export type ActingPrincipal = Pick<DeviceIdentity, "householdId" | "playerId">;
 
 export interface ActionInput extends ActionRequest {
   /**

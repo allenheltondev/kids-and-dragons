@@ -168,7 +168,7 @@ describe("recording discoveries during play", () => {
     const created = await createRoom({ householdId: first.householdId, mode: "party" }, harness.deps);
     if (!created.ok) throw new Error("room");
     const again = await joinRoom(
-      { code: created.value.code, principal: { deviceId: "d", householdId: first.householdId, playerId: "p_2", role: "adult" } },
+      { code: created.value.code, principal: { deviceId: "d", householdId: first.householdId, playerId: "p_2" } },
       harness.deps,
     );
     if (!again.ok) throw new Error("join");
@@ -217,7 +217,7 @@ describe("recording discoveries during play", () => {
 
     // A rejoining phone and a re-attaching TV see the same book too.
     const rejoin = await joinRoom(
-      { code: t.code, principal: { deviceId: "d", householdId: t.householdId, playerId: "p_1", role: "adult" } },
+      { code: t.code, principal: { deviceId: "d", householdId: t.householdId, playerId: "p_1" } },
       harness.deps,
     );
     if (!rejoin.ok) throw new Error("rejoin");

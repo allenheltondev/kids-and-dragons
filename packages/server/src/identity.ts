@@ -23,7 +23,6 @@
  */
 
 import { createHash, randomUUID } from "node:crypto";
-import type { Role } from "@kad/shared";
 import type { GameRepository } from "./store/repository.ts";
 
 /** What a device token resolves to. */
@@ -31,7 +30,6 @@ export interface DeviceIdentity {
   deviceId: string;
   householdId: string;
   playerId: string;
-  role: Role;
   /**
    * A fresh token, when this resolve renewed a sliding expiry (§4.5). Present
    * on a small fraction of requests and never twice for the same token.
@@ -50,7 +48,6 @@ export interface SessionIdentity {
   roomCode: string;
   householdId: string;
   playerId: string;
-  role: Role;
   /** Epoch millis. */
   expiresAt: number;
 }
@@ -58,7 +55,6 @@ export interface SessionIdentity {
 export interface IssueDeviceTokenInput {
   householdId: string;
   playerId: string;
-  role: Role;
   /** Omit to mint a new device binding. */
   deviceId?: string;
   userAgent?: string;
@@ -69,7 +65,6 @@ export interface IssueSessionTokenInput {
   roomCode: string;
   householdId: string;
   playerId: string;
-  role: Role;
   /** Epoch millis. Rooms live ≤ 6 hours, so sessions never outlive them. */
   expiresAt: number;
 }
@@ -122,7 +117,6 @@ interface DevDeviceClaims {
   deviceId: string;
   householdId: string;
   playerId: string;
-  role: Role;
   issuedAt: number;
 }
 
@@ -149,7 +143,6 @@ export class DevIdentity implements IdentityService {
       deviceId,
       householdId: input.householdId,
       playerId: input.playerId,
-      role: input.role,
       issuedAt: this.now(),
     };
     const token = DEVICE_PREFIX + encode(claims);
@@ -188,7 +181,6 @@ export class DevIdentity implements IdentityService {
       deviceId: binding.deviceId,
       householdId: binding.householdId,
       playerId: binding.playerId,
-      role: claims.role,
     };
   }
 

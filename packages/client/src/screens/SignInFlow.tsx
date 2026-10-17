@@ -380,9 +380,8 @@ function CodeStep({ busy, error }: StepProps): ReactElement {
  * The `restore` ending — "which one of you is this phone?"
  *
  * Asked rather than guessed. The server deliberately refuses to pick
- * (`linkAccount` returns players and no token, §4.5), because binding the wrong
- * phone to a child's profile hands her adult's device to her — and binding hers
- * to an adult gives a `role: child` device pairing rights it must never have.
+ * (`linkAccount` returns players and no token, §4.5), because binding a phone
+ * to the wrong profile hands that player somebody else's heroes.
  */
 function ChooseStep({ busy, error }: StepProps): ReactElement {
   const players = useKeepsakeStore((s) => s.players);
