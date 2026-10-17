@@ -27,8 +27,6 @@ export const TIER_IDS: readonly TierId[] = ["fledgling", "sworn", "radiant", "my
 
 export type Stats = Record<StatId, number>;
 
-export type Role = "adult" | "child";
-
 export type Difficulty = "easy" | "normal" | "hard";
 
 // ---------------------------------------------------------------------------
@@ -249,7 +247,10 @@ export interface PlayerProfile {
   displayName: string;
   color: string;
   avatar?: string;
-  role: Role;
+  // No role (#265): a profile is a player, nothing more. Authority comes from
+  // signing in, or from being the device that opened a room, never from a
+  // label on the profile. Rows written before this still carry `role`, and
+  // nothing reads it.
 }
 
 /**

@@ -21,7 +21,6 @@ import type {
   Chapter,
   EncounterMap,
   ItemCatalog,
-  Role,
   RulesContent,
   RunState,
   WorldMap,
@@ -240,7 +239,6 @@ export interface SeededPlayer {
 export async function seedHousehold(
   harness: TestHarness,
   count = 1,
-  role: Role = "adult",
 ): Promise<{ householdId: string; players: SeededPlayer[] }> {
   const householdId = "h_test";
   await harness.repo.putHousehold({
@@ -259,14 +257,9 @@ export async function seedHousehold(
       householdId,
       displayName: `Player ${i + 1}`,
       color: "#7FD4C1",
-      role,
     });
-    const { token, deviceId } = await harness.identity.issueDeviceToken({
-      householdId,
-      playerId,
-      role,
-    });
-    players.push({ principal: { deviceId, householdId, playerId, role }, deviceToken: token });
+    const { token, deviceId } = await harness.identity.issueDeviceToken({ householdId, playerId });
+    players.push({ principal: { deviceId, householdId, playerId }, deviceToken: token });
   }
   return { householdId, players };
 }

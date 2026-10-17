@@ -242,7 +242,6 @@ async function postJoin(req: Req, deps: HandlerDeps, code: string) {
       {
         householdId: room.householdId,
         displayName: String(req.body.displayName ?? "Player"),
-        role: req.body.role === "child" ? "child" : "adult",
         userAgent: req.headers["user-agent"],
       },
       deps,
@@ -314,7 +313,7 @@ async function postAction(req: Req, deps: HandlerDeps) {
   const resolved = session ? null : await resolvePrincipal(req, deps);
   const principal =
     (session
-      ? { householdId: session.householdId, playerId: session.playerId, role: session.role }
+      ? { householdId: session.householdId, playerId: session.playerId }
       : undefined) ?? resolved?.principal;
 
   /*
@@ -369,7 +368,6 @@ async function postProgressionSpend(req: Req, deps: HandlerDeps) {
       principal: {
         householdId: session.householdId,
         playerId: session.playerId,
-        role: session.role,
       },
     },
     deps,

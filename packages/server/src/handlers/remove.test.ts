@@ -113,7 +113,6 @@ describe("removePlayer", () => {
       householdId: "h_test",
       displayName: "New phone",
       color: "#7FD4C1",
-      role: "adult",
     });
     const result = await removePlayer({ code, principal: host.principal, playerId: "p_new" }, harness.deps);
     expect(result.ok).toBe(true);

@@ -390,7 +390,6 @@ export async function joinRoom(
     roomCode: room.code,
     householdId: room.householdId,
     playerId: player.id,
-    role: player.role,
     // A session can never outlive its room.
     expiresAt: Date.parse(room.expiresAt),
   });

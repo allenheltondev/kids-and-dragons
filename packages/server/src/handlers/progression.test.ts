@@ -739,7 +739,6 @@ describe("SPEND_STAT_POINT — authoritative run transaction", () => {
         principal: {
           householdId: fixture.householdId,
           playerId,
-          role: fixture.player.principal.role,
         },
       },
       fixture.harness.deps,

@@ -47,7 +47,6 @@ describe("anonymous play", () => {
     expect(await harness.identity.resolveDevice(host.deviceToken)).toMatchObject({
       householdId: host.household.id,
       playerId: host.player.id,
-      role: "adult",
     });
   });
 
@@ -70,11 +69,10 @@ describe("anonymous play", () => {
     const harness = makeHarness();
     const host = await createGuestHousehold({ displayName: "Allen" }, harness.deps);
     const kid = await addPlayer(
-      { householdId: host.household.id, displayName: "Kid", role: "child" },
+      { householdId: host.household.id, displayName: "Kid" },
       harness.deps,
     );
     expect(kid.player.color).not.toBe(host.player.color);
-    expect(kid.player.role).toBe("child");
   });
 });
 
@@ -135,17 +133,16 @@ describe("linkAccount", () => {
     expect(again.value.householdId).toBe(host.household.id);
   });
 
-  it("will not let a child device claim a household", async () => {
+  it("lets any device playing in a guest household claim it, by signing in (#265)", async () => {
+    // No "adult device" to require: a profile is a player, and authority is
+    // the verified sign-in this call carries. The first phone is not special.
     const harness = makeHarness();
     const host = await createGuestHousehold({ displayName: "Allen" }, harness.deps);
-    const kid = await addPlayer(
-      { householdId: host.household.id, displayName: "Kid", role: "child" },
-      harness.deps,
-    );
+    const second = await addPlayer({ householdId: host.household.id, displayName: "Sam" }, harness.deps);
 
-    const result = await linkAccount({ cognitoSub: "sub_a", principal: kid.principal }, harness.deps);
-    expect(result.ok).toBe(false);
-    expect((await harness.repo.getHousehold(host.household.id))?.guest).toBe(true);
+    const result = await linkAccount({ cognitoSub: "sub_a", principal: second.principal }, harness.deps);
+    expect(result.ok && result.value.claimed).toBe(true);
+    expect((await harness.repo.getHousehold(host.household.id))?.ownerSub).toBe("sub_a");
   });
 
   it("does not hand one family's session to the next person to sign in on that phone", async () => {

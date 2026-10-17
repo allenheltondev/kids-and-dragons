@@ -36,7 +36,6 @@ describe("channel authorizer", () => {
       roomCode: "ABCD",
       householdId: "h_1",
       playerId: "p_1",
-      role: "child",
       expiresAt: clock.now() + ROOM_TTL,
     });
 
@@ -57,7 +56,6 @@ describe("channel authorizer", () => {
       roomCode: "ABCD",
       householdId: "h_1",
       playerId: "p_1",
-      role: "adult",
       expiresAt: clock.now() + ROOM_TTL,
     });
 
@@ -75,7 +73,6 @@ describe("channel authorizer", () => {
       roomCode: "ABCD",
       householdId: "h_1",
       playerId: "p_1",
-      role: "adult",
       expiresAt: clock.now() + ROOM_TTL,
     });
     // "Cannot prove which room this is for" is a deny, not a default-allow.
@@ -106,7 +103,6 @@ describe("channel authorizer", () => {
       roomCode: "ABCD",
       householdId: "h_1",
       playerId: "p_1",
-      role: "adult",
       expiresAt: clock.now() + ROOM_TTL,
     });
     const result = await authorize(event({ token, operation: "PUBLISH" }), identity, clock.now);
@@ -120,7 +116,6 @@ describe("channel authorizer", () => {
       roomCode: "ABCD",
       householdId: "h_1",
       playerId: "p_1",
-      role: "adult",
       expiresAt: clock.now() + ROOM_TTL,
     });
     const result = await authorize(
@@ -143,7 +138,6 @@ describe("channel authorizer", () => {
       roomCode: "ABCD",
       householdId: "h_1",
       playerId: "p_1",
-      role: "adult",
       expiresAt: clock.now() + ROOM_TTL,
     });
     clock.advance(ROOM_TTL + 1000);
@@ -157,7 +151,6 @@ describe("channel authorizer", () => {
       roomCode: "ABCD",
       householdId: "h_1",
       playerId: "p_1",
-      role: "adult",
       expiresAt: clock.now() + 30_000,
     });
 
@@ -176,7 +169,6 @@ describe("channel authorizer", () => {
       roomCode: "ABCD",
       householdId: "h_1",
       playerId: "p_1",
-      role: "adult",
       expiresAt: clock.now() + 3600_000,
     });
     const removed = async (runId: string, playerId: string) => runId === "r_1" && playerId === "p_1";
@@ -192,7 +184,6 @@ describe("channel authorizer", () => {
       roomCode: "ABCD",
       householdId: "h_1",
       playerId: "p_1",
-      role: "adult",
       expiresAt: clock.now() + 3600_000,
     });
     expect((await authorize(event({ token }), identity, clock.now)).ttlOverride).toBe(60);
@@ -205,7 +196,6 @@ describe("channel authorizer", () => {
       roomCode: "abcd",
       householdId: "h_1",
       playerId: "p_1",
-      role: "adult",
       expiresAt: clock.now() + ROOM_TTL,
     });
     expect((await authorize(event({ token }), identity, clock.now)).isAuthorized).toBe(true);
