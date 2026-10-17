@@ -72,6 +72,20 @@ describe("DevIdentity — device tokens (architecture §4.5)", () => {
   });
 });
 
+describe("DevIdentity — shared device tokens (#250)", () => {
+  it("resolves to a household and nobody, and never as a player's device", async () => {
+    const repo = new MemoryRepository();
+    const identity = new DevIdentity(repo);
+    const { token, deviceId } = await identity.issueSharedDeviceToken({ householdId: "h_1" });
+
+    expect(await identity.resolveSharedDevice(token)).toEqual({ kind: "shared", deviceId, householdId: "h_1" });
+    expect(await identity.resolveDevice(token)).toBeNull();
+
+    await repo.revokeDevice("h_1", deviceId);
+    expect(await identity.resolveSharedDevice(token)).toBeNull();
+  });
+});
+
 describe("DevIdentity — session tokens", () => {
   it("round-trips a room-scoped session and expires it", async () => {
     const { clock, identity } = setup();

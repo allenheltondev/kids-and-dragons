@@ -8,6 +8,11 @@
  *   player profile     — permanent, a **device-bound** long-lived token, no password ever
  *   room session       — ≤ 6 hours, scoped to one run
  *
+ * A device more than one kid uses (a family tablet) is bound to the household
+ * instead, and to nobody in it (#250). Its token is a `SharedDeviceIdentity`,
+ * which names no player and so can never stand in for one: each kid picks
+ * themselves on it and is handed a room session, never a device token.
+ *
  * The one invariant every call site depends on: **a device token resolves to
  * `{ householdId, playerId }` on its own.** That is what makes joining a
  * room have no "who are you?" step — you scan the code and your character is
@@ -41,6 +46,30 @@ export interface DeviceIdentity {
    * new token eventually expires while being used every week.
    */
   rotatedToken?: string;
+}
+
+/**
+ * What a **shared device** token resolves to (#250): a household, and nobody in
+ * it. The tablet opens on a "who's playing?" picker, and the kid picked gets a
+ * room session for one run, never a device token of their own.
+ *
+ * Its own type, not a `DeviceIdentity` with the player left blank, for the
+ * reason `ViewerIdentity` is: with no `playerId` it cannot satisfy a code path
+ * that expects a player. Somebody has to be picked first (`seatOnSharedDevice`).
+ */
+export interface SharedDeviceIdentity {
+  kind: "shared";
+  deviceId: string;
+  householdId: string;
+  /** As on `DeviceIdentity`: a renewed token, sent back as `x-kad-shared-token`. */
+  rotatedToken?: string;
+}
+
+export interface IssueSharedDeviceTokenInput {
+  householdId: string;
+  /** Omit to mint a new device binding. */
+  deviceId?: string;
+  userAgent?: string;
 }
 
 /** What a room-session token resolves to. Scoped to one run, short-lived. */
@@ -99,6 +128,13 @@ export interface IdentityService {
   resolveDevice(token: string): Promise<DeviceIdentity | null>;
   /** Binds (or re-binds) a device to a player and returns its token. */
   issueDeviceToken(input: IssueDeviceTokenInput): Promise<{ token: string; deviceId: string }>;
+  /** Binds a device to a household and nobody in it (#250). */
+  issueSharedDeviceToken(input: IssueSharedDeviceTokenInput): Promise<{ token: string; deviceId: string }>;
+  /**
+   * `null` for an unknown, malformed or revoked token, and for a personal
+   * device's token. Never throws. `resolveDevice` likewise refuses a shared one.
+   */
+  resolveSharedDevice(token: string): Promise<SharedDeviceIdentity | null>;
   issueSessionToken(input: IssueSessionTokenInput): Promise<string>;
   resolveSession(token: string): Promise<SessionIdentity | null>;
   /** Read-only, room-scoped, no player. For the TV. */
@@ -113,11 +149,18 @@ export interface IdentityService {
 const DEVICE_PREFIX = "kaddev.d1.";
 const SESSION_PREFIX = "kaddev.s1.";
 const VIEWER_PREFIX = "kaddev.v1.";
+const SHARED_PREFIX = "kaddev.h1.";
 
 interface DevDeviceClaims {
   deviceId: string;
   householdId: string;
   playerId: string;
+  issuedAt: number;
+}
+
+interface DevSharedClaims {
+  deviceId: string;
+  householdId: string;
   issuedAt: number;
 }
 
@@ -165,7 +208,7 @@ export class DevIdentity implements IdentityService {
     // By primary key, like the prod service: the revocation check must never
     // read a stale index copy it could then write back (see `TokenIdentity`).
     const binding = await this.repo.getDevice(claims.householdId, claims.deviceId);
-    if (!binding || binding.revoked) return null;
+    if (!binding || binding.revoked || binding.kind === "shared") return null;
     if (binding.tokenHash !== hashToken(token)) return null;
     if (binding.householdId !== claims.householdId) return null;
 
@@ -183,6 +226,41 @@ export class DevIdentity implements IdentityService {
       householdId: binding.householdId,
       playerId: binding.playerId,
     };
+  }
+
+  async issueSharedDeviceToken(
+    input: IssueSharedDeviceTokenInput,
+  ): Promise<{ token: string; deviceId: string }> {
+    const deviceId = input.deviceId ?? `d_${randomUUID().slice(0, 8)}`;
+    const claims: DevSharedClaims = {
+      deviceId,
+      householdId: input.householdId,
+      issuedAt: this.now(),
+    };
+    const token = SHARED_PREFIX + encode(claims);
+    await this.repo.putDevice({
+      kind: "shared",
+      deviceId,
+      householdId: input.householdId,
+      tokenHash: hashToken(token),
+      lastSeen: new Date(this.now()).toISOString(),
+      ...(input.userAgent ? { userAgent: input.userAgent } : {}),
+    });
+    return { token, deviceId };
+  }
+
+  async resolveSharedDevice(token: string): Promise<SharedDeviceIdentity | null> {
+    const claims = decode<DevSharedClaims>(token, SHARED_PREFIX);
+    if (!claims) return null;
+    const binding = await this.repo.getDevice(claims.householdId, claims.deviceId);
+    if (!binding || binding.revoked || binding.kind !== "shared") return null;
+    if (binding.tokenHash !== hashToken(token)) return null;
+    await this.repo.touchDevice(
+      binding.householdId,
+      binding.deviceId,
+      new Date(this.now()).toISOString(),
+    );
+    return { kind: "shared", deviceId: binding.deviceId, householdId: binding.householdId };
   }
 
   async issueSessionToken(input: IssueSessionTokenInput): Promise<string> {

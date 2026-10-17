@@ -13,7 +13,7 @@
  * link, for Phone Mode, where the host is seated as a player straight away.
  */
 
-import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useId, useMemo, useState } from "react";
 import type { ChangeEvent, ReactElement } from "react";
 import type { RoomMode } from "@kad/shared";
 import { useGameStore } from "../store";
@@ -25,7 +25,6 @@ import { loadPlayerDeviceToken } from "../store/persistence";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
-import { SignInFlow } from "./SignInFlow";
 import { EntryScene } from "./EntryScene";
 import "./shared.css";
 import "./HomeScreen.css";
@@ -39,7 +38,43 @@ const MODE_BLURB: Record<RoomMode, string> = {
 
 const MODE_ICON: Record<RoomMode, string> = { party: "party", travel: "travel" };
 
+/*
+ * A family tablet's home (#250) loads on demand: only a shared tablet ever
+ * draws it, and every phone's first paint would otherwise carry it
+ * (tools/perf/bundle-budget.ts).
+ */
+const SharedHome = lazy(() => import("./SharedHome").then((module) => ({ default: module.SharedHome })));
+
+/*
+ * The sign-in panel loads the first time somebody opens it, for the same
+ * reason: it is a grown-up's errand, and the join screen is what every phone
+ * is waiting to see. Closed, it draws nothing, so nothing waits on it.
+ */
+const SignInFlow = lazy(() => import("./SignInFlow").then((module) => ({ default: module.SignInFlow })));
+
+/** The sign-in panel, fetched only once it is open. Shared by both homes. */
+export function LazySignInFlow(): ReactElement | null {
+  const open = useKeepsakeStore((s) => s.step) !== "closed";
+  if (!open) return null;
+  return (
+    <Suspense fallback={null}>
+      <SignInFlow />
+    </Suspense>
+  );
+}
+
 export function HomeScreen(): ReactElement {
+  // A family tablet is nobody, so it asks who is playing instead (#250).
+  const shared = useKeepsakeStore((s) => s.shared);
+  if (!shared) return <PersonalHome />;
+  return (
+    <Suspense fallback={<div className="kad-boot"><Spinner size="lg" label="Finding your family" showLabel /></div>}>
+      <SharedHome />
+    </Suspense>
+  );
+}
+
+function PersonalHome(): ReactElement {
   const createRoom = useGameStore((s) => s.createRoom);
   const openOnThisScreen = useGameStore((s) => s.openOnThisScreen);
   const joinRoom = useGameStore((s) => s.joinRoom);
@@ -387,12 +422,25 @@ export function HomeScreen(): ReactElement {
                   </Button>
                 </>
               )}
+              {/* A tablet the kids take turns on (#250): bound to the family,
+                  not to whoever played on it last. */}
+              <div className="home__host-toggle">
+                <button
+                  type="button"
+                  className="home__link kad-focusable"
+                  onClick={() => {
+                    openKeepsake("share", "home");
+                  }}
+                >
+                  Do the kids share this device? Make it a family tablet
+                </button>
+              </div>
             </section>
           ) : null}
         </div>
       </div>
 
-      <SignInFlow />
+      <LazySignInFlow />
     </main>
   );
 }

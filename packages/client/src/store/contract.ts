@@ -22,6 +22,8 @@ import type {
   RoomMode,
   RulesContent,
   RunState,
+  SharedDevicePlayer,
+  SharedSeatRequest,
   WorldMap,
 } from "@kad/shared";
 
@@ -144,13 +146,23 @@ export interface GameStore {
   loadChapter(chapterId: string): Promise<void>;
   /** Loads the world map's key. Idempotent; failures are quiet. */
   loadWorld(): Promise<void>;
-  createRoom(mode: RoomMode, displayName: string): Promise<ClientSession>;
+  /**
+   * On a shared tablet (#250), `seat` names the kid picked, and is required:
+   * the tablet itself is nobody.
+   */
+  createRoom(mode: RoomMode, displayName: string, seat?: SharedSeatRequest): Promise<ClientSession>;
   /**
    * Party Mode from the TV: open a room with this device as its screen, seat
    * nobody, and land on `/tv/:code` — the lobby the phones join (spec §2.1).
    */
   openOnThisScreen(): Promise<void>;
-  joinRoom(code: string, displayName: string): Promise<ClientSession>;
+  joinRoom(code: string, displayName: string, seat?: SharedSeatRequest): Promise<ClientSession>;
+  /**
+   * The "who's playing?" picker on a shared tablet (#250). `null` when this
+   * is not one, or no longer is: a forgotten tablet goes back to an ordinary
+   * start, and the caller re-renders as one.
+   */
+  loadSharedPlayers(): Promise<SharedDevicePlayer[] | null>;
   /**
    * This player's saved characters, for bringing one back instead of making a
    * new one. Seating one is `send({ type: "SEAT_CHARACTER", characterId })`.

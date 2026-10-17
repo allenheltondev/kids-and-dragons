@@ -10,7 +10,14 @@ import {
 } from "./index";
 import type { ChannelOptions } from "../sync/channel";
 import { ApiError, type Api } from "../sync/client";
-import type { KeyValueStorage } from "./persistence";
+import {
+  becomeSharedDevice,
+  loadPlayerDeviceToken,
+  loadSession,
+  loadSharedDevice,
+  saveIdentity,
+  type KeyValueStorage,
+} from "./persistence";
 import { makeMember, makeState } from "../testing/fixtures";
 import { getFieldGuideDiscoveries, setFieldGuideDiscoveries } from "./field-guide-discoveries";
 import {
@@ -24,13 +31,28 @@ import {
 // Harness — no network, no DOM, no timers.
 // ---------------------------------------------------------------------------
 
-function memoryStorage(): KeyValueStorage {
+function memoryStorage(): KeyValueStorage & Pick<Storage, "key" | "length"> {
   const map = new Map<string, string>();
   return {
     getItem: (key) => map.get(key) ?? null,
     setItem: (key, value) => void map.set(key, value),
     removeItem: (key) => void map.delete(key),
+    key: (index) => [...map.keys()][index] ?? null,
+    get length() {
+      return map.size;
+    },
   };
+}
+
+/** Every key and value in a storage, for asserting what was never written. */
+function dump(storage: KeyValueStorage): Record<string, string> {
+  const real = storage as KeyValueStorage & Pick<Storage, "key" | "length">;
+  const out: Record<string, string> = {};
+  for (let i = 0; i < real.length; i += 1) {
+    const key = real.key(i);
+    if (key !== null) out[key] = real.getItem(key) ?? "";
+  }
+  return out;
 }
 
 interface Harness {
@@ -38,7 +60,9 @@ interface Harness {
   api: {
     [K in keyof Api]: ReturnType<typeof vi.fn>;
   };
-  storage: KeyValueStorage;
+  storage: KeyValueStorage & Pick<Storage, "key" | "length">;
+  /** This tab's storage: where a shared tablet keeps its sessions (#250). */
+  tab: KeyValueStorage & Pick<Storage, "key" | "length">;
   navigate: ReturnType<typeof vi.fn>;
   /** Push a server message down the open channel. */
   publish(message: ChannelMessage): void;
@@ -92,6 +116,7 @@ function harness(state: RunState = makeState()): Harness {
       state,
     })),
     removePlayer: vi.fn(async (): Promise<void> => undefined),
+    removePlayerShared: vi.fn(async (): Promise<void> => undefined),
     postAction: vi.fn(async (): Promise<ActionResponse> => ({ ok: true, seq: state.seq })),
     postPreview: vi.fn(async (): Promise<void> => undefined),
     fetchState: vi.fn(async () => ({ seq: state.seq, state })),
@@ -116,14 +141,43 @@ function harness(state: RunState = makeState()): Harness {
     probeDevAuth: vi.fn(async () => false),
     linkAccount: vi.fn(),
     adoptDevice: vi.fn(),
+    // A shared tablet (#250): sessions only, never a device token.
+    shareDevice: vi.fn(),
+    forgetDevice: vi.fn(),
+    listSharedPlayers: vi.fn(async () => ({
+      householdId: "h_1",
+      players: [
+        { id: "p_ada", displayName: "Ada", color: "#7FD4C1", heroes: ["Sparklehoof"] },
+        { id: "p_ben", displayName: "Ben", color: "#F2A65A", heroes: [] },
+      ],
+    })),
+    joinRoomShared: vi.fn(async (_code: string, _token: string, seat: { playerId?: string }) => ({
+      runId: state.runId,
+      playerId: seat.playerId ?? "p_new",
+      mode: state.mode,
+      sessionToken: `tok_${seat.playerId ?? "new"}`,
+      state,
+    })),
+    createRoomShared: vi.fn(async (_body: unknown, _token: string, seat: { playerId?: string }) => ({
+      code: state.roomCode,
+      runId: state.runId,
+      mode: state.mode,
+      expiresAt: "2026-07-28T06:00:00.000Z",
+      playerId: seat.playerId ?? "p_new",
+      sessionToken: `tok_${seat.playerId ?? "new"}`,
+      state,
+      host: true,
+    })),
   };
 
   const storage = memoryStorage();
+  const tab = memoryStorage();
   const navigate = vi.fn();
 
   const deps = {
     api: api as unknown as Api,
     storage,
+    tabStorage: tab,
     navigate: navigate as unknown as GameStoreDeps["navigate"],
     eventsUrl: (code: string, sinceSeq: number) => `/events/${code}?sinceSeq=${sinceSeq}`,
     openChannel: (opts: ChannelOptions) => {
@@ -141,6 +195,7 @@ function harness(state: RunState = makeState()): Harness {
     store: createStore<InternalGameStore>(gameStoreCreator(deps)),
     api,
     storage,
+    tab,
     navigate,
     publish: (message) => options?.sequencer.ingest(message),
     channelOptions: () => {
@@ -1569,5 +1624,112 @@ describe("the Field Guide sync", () => {
     h.store.getState().leave();
     expect(getFieldGuideDiscoveries()).toEqual({});
     expect(getFieldGuideNews()).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Shared tablets (#250)
+// ---------------------------------------------------------------------------
+
+describe("a shared tablet", () => {
+  function tablet(): Harness {
+    const h = harness();
+    // As if a phone had played here first, then a grown-up made it shared.
+    saveIdentity({ householdId: "h_1", playerId: "p_old", displayName: "Old", deviceToken: "dev_old" }, h.storage);
+    h.storage.setItem("kad.session.WXYZ", JSON.stringify({ runId: "r_0", roomCode: "WXYZ", playerId: "p_old", mode: "party", sessionToken: "tok_old" }));
+    becomeSharedDevice({ token: "shared_1", householdId: "h_1" }, h.storage, h.tab);
+    return h;
+  }
+
+  it("forgets whoever it was before it became shared", () => {
+    const h = tablet();
+    expect(Object.keys(dump(h.storage))).toEqual(["kad.shared"]);
+  });
+
+  it("seats the kid picked, on the tablet's token and a session alone", async () => {
+    const h = tablet();
+    const session = await h.store.getState().joinRoom("abcd", "", { playerId: "p_ada" });
+
+    expect(h.api.joinRoomShared).toHaveBeenCalledWith("ABCD", "shared_1", { playerId: "p_ada" });
+    expect(h.api.joinRoom).not.toHaveBeenCalled();
+    expect(session.playerId).toBe("p_ada");
+    // In this tab, so the next kid to pick the tablet up is asked who they are.
+    expect(loadSession("ABCD", h.tab)?.playerId).toBe("p_ada");
+    expect(loadSession("ABCD", h.storage)).toBeNull();
+  });
+
+  it("lands each kid in their own seat, taking turns", async () => {
+    const h = tablet();
+    const first = await h.store.getState().joinRoom("ABCD", "", { playerId: "p_ada" });
+    h.store.getState().leave();
+    const second = await h.store.getState().joinRoom("ABCD", "", { playerId: "p_ben" });
+
+    expect(first.sessionToken).toBe("tok_p_ada");
+    expect(second.sessionToken).toBe("tok_p_ben");
+    expect(h.store.getState().session?.playerId).toBe("p_ben");
+  });
+
+  it("never writes a long-lived token for a kid, even if the server sent one", async () => {
+    const h = tablet();
+    h.api.joinRoomShared.mockResolvedValueOnce({
+      runId: "r_1",
+      playerId: "p_ada",
+      mode: "party",
+      sessionToken: "tok_ada",
+      state: makeState(),
+      deviceToken: "dev_leaked",
+    });
+    await h.store.getState().joinRoom("ABCD", "", { playerId: "p_ada" });
+    h.store.getState().leave();
+    await h.store.getState().createRoom("travel", "", { newPlayer: "Cass" });
+
+    const written = JSON.stringify({ ...dump(h.storage), ...dump(h.tab) });
+    expect(written).not.toContain("dev_");
+    expect(dump(h.storage)).toEqual({ "kad.shared": JSON.stringify({ token: "shared_1", householdId: "h_1" }) });
+    expect(loadPlayerDeviceToken(h.storage)).toBeNull();
+  });
+
+  it("will not seat nobody", async () => {
+    const h = tablet();
+    await expect(h.store.getState().joinRoom("ABCD", "Ada")).rejects.toThrow();
+    expect(h.api.joinRoomShared).not.toHaveBeenCalled();
+    expect(h.api.joinRoom).not.toHaveBeenCalled();
+  });
+
+  it("goes back to an ordinary start once it has been forgotten", async () => {
+    const h = tablet();
+    h.api.joinRoomShared.mockRejectedValueOnce(new ApiError(401, "This tablet was forgotten.", "FORBIDDEN"));
+    await expect(h.store.getState().joinRoom("ABCD", "", { playerId: "p_ada" })).rejects.toThrow();
+    expect(loadSharedDevice(h.storage)).toBeNull();
+
+    const h2 = tablet();
+    h2.api.listSharedPlayers.mockRejectedValueOnce(new ApiError(401, "forgotten", "FORBIDDEN"));
+    expect(await h2.store.getState().loadSharedPlayers()).toBeNull();
+    expect(loadSharedDevice(h2.storage)).toBeNull();
+  });
+
+  it("lists the household for the picker, and keeps a renewed token", async () => {
+    const h = tablet();
+    h.api.listSharedPlayers.mockResolvedValueOnce({ householdId: "h_1", players: [], rotatedToken: "shared_2" });
+    expect(await h.store.getState().loadSharedPlayers()).toEqual([]);
+    expect(loadSharedDevice(h.storage)?.token).toBe("shared_2");
+  });
+
+  it("takes a stranger out of a room it opened, on its token and the kid's session", async () => {
+    const h = tablet();
+    await h.store.getState().createRoom("travel", "", { playerId: "p_ada" });
+    expect(h.store.getState().session?.host).toBe(true);
+
+    expect(await h.store.getState().removePlayer("p_stranger")).toBe(true);
+    expect(h.api.removePlayerShared).toHaveBeenCalledWith("ABCD", "p_stranger", "shared_1", "tok_p_ada");
+    expect(h.api.removePlayer).not.toHaveBeenCalled();
+    // Still nobody: asking did not mint an identity on the tablet.
+    expect(Object.keys(dump(h.storage))).toEqual(["kad.shared"]);
+  });
+
+  it("is not a shared tablet unless it was made one", async () => {
+    const h = harness();
+    expect(await h.store.getState().loadSharedPlayers()).toBeNull();
+    expect(h.api.listSharedPlayers).not.toHaveBeenCalled();
   });
 });
