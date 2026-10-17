@@ -22,6 +22,9 @@ import type {
   RoomMode,
   RulesContent,
   RunState,
+  SharedDevicePlayersResponse,
+  SharedSeatRequest,
+  ShareDeviceResponse,
   StateResponse,
   WorldMap,
 } from "@kad/shared";
@@ -123,6 +126,11 @@ export interface WatchRoomResponse {
   host?: boolean;
 }
 
+/** The picker's answer, plus the tablet's renewed token when the server slid it. */
+export interface SharedPlayersLoad extends SharedDevicePlayersResponse {
+  rotatedToken?: string;
+}
+
 export interface Api {
   createRoom(body: CreateRoomInput): Promise<LocalCreateRoomResponse>;
   /** Party Mode, opened from the TV itself: nobody is seated. */
@@ -135,6 +143,11 @@ export interface Api {
   watchRoom(code: string, timeoutMs?: number, deviceToken?: string): Promise<WatchRoomResponse>;
   /** The host taking a player out of the room (#267). The device token names the host. */
   removePlayer(code: string, playerId: string, deviceToken: string): Promise<void>;
+  /**
+   * The same from a shared tablet that opened the room (#250): its own token
+   * names the device, the seated kid's session says who is asking.
+   */
+  removePlayerShared(code: string, playerId: string, sharedToken: string, sessionToken: string): Promise<void>;
   postAction(body: ActionRequest, token: string): Promise<ActionResponse>;
   /** An unconfirmed tap, relayed to the room's screens (`IntentPreview`). */
   postPreview(preview: IntentPreview | null, context: string | null, token: string): Promise<void>;
@@ -193,6 +206,24 @@ export interface Api {
     householdId: string,
     playerId: string,
   ): Promise<{ deviceToken: string; playerId: string }>;
+
+  // --- shared tablets (#250) -------------------------------------------------
+  /**
+   * A signed-in owner makes this device the household's shared tablet. The
+   * device token it held, if any, goes along to be revoked.
+   */
+  shareDevice(idToken: string, deviceToken?: string, sharedToken?: string): Promise<ShareDeviceResponse>;
+  /** "Forget this device": the tablet's own token names it. */
+  forgetDevice(idToken: string, sharedToken: string): Promise<void>;
+  /** The "who's playing?" picker. */
+  listSharedPlayers(sharedToken: string): Promise<SharedPlayersLoad>;
+  /** Seat the kid picked on the tablet. Answers with a session, never a device token. */
+  joinRoomShared(code: string, sharedToken: string, seat: SharedSeatRequest): Promise<JoinRoomResponse>;
+  createRoomShared(
+    body: { mode: RoomMode; campaignId?: string },
+    sharedToken: string,
+    seat: SharedSeatRequest,
+  ): Promise<LocalCreateRoomResponse>;
 }
 
 const JSON_HEADERS = { "content-type": "application/json" };
@@ -222,9 +253,9 @@ export const REQUEST_TIMEOUT_MS = 10_000;
  */
 export async function request<T>(
   path: string,
-  init: RequestInit & { token?: string; timeoutMs?: number } = {},
+  init: RequestInit & { token?: string; timeoutMs?: number; onHeaders?: (headers: Headers) => void } = {},
 ): Promise<T> {
-  const { token, headers, timeoutMs, ...rest } = init;
+  const { token, headers, timeoutMs, onHeaders, ...rest } = init;
   let response: Response;
   try {
     response = await fetch(path, {
@@ -256,6 +287,7 @@ export async function request<T>(
     );
   }
 
+  onHeaders?.(response.headers);
   return body as T;
 }
 
@@ -312,6 +344,15 @@ export const api: Api = {
     await request<{ ok: true }>(`/api/room/${encodeURIComponent(code)}/remove`, {
       method: "POST",
       headers: { ...JSON_HEADERS, "x-kad-device-token": deviceToken },
+      body: JSON.stringify({ playerId }),
+    });
+  },
+
+  async removePlayerShared(code, playerId, sharedToken, sessionToken) {
+    await request<{ ok: true }>(`/api/room/${encodeURIComponent(code)}/remove`, {
+      method: "POST",
+      headers: { ...JSON_HEADERS, "x-kad-shared-token": sharedToken },
+      token: sessionToken,
       body: JSON.stringify({ playerId }),
     });
   },
@@ -431,6 +472,55 @@ export const api: Api = {
       headers: JSON_HEADERS,
       token: idToken,
       body: JSON.stringify({ householdId, playerId }),
+    });
+  },
+
+  shareDevice(idToken, deviceToken, sharedToken) {
+    return request<ShareDeviceResponse>("/api/auth/shared-device", {
+      method: "POST",
+      headers: {
+        ...JSON_HEADERS,
+        ...(deviceToken ? { "x-kad-device-token": deviceToken } : {}),
+        ...(sharedToken ? { "x-kad-shared-token": sharedToken } : {}),
+      },
+      token: idToken,
+      body: JSON.stringify({}),
+    });
+  },
+
+  async forgetDevice(idToken, sharedToken) {
+    await request<unknown>("/api/auth/forget-device", {
+      method: "POST",
+      headers: { ...JSON_HEADERS, "x-kad-shared-token": sharedToken },
+      token: idToken,
+      body: JSON.stringify({}),
+    });
+  },
+
+  async listSharedPlayers(sharedToken) {
+    let rotatedToken: string | null = null;
+    const body = await request<SharedDevicePlayersResponse>("/api/household/players", {
+      headers: { "x-kad-shared-token": sharedToken },
+      onHeaders: (headers) => {
+        rotatedToken = headers.get("x-kad-shared-token");
+      },
+    });
+    return { ...body, ...(rotatedToken ? { rotatedToken } : {}) };
+  },
+
+  joinRoomShared(code, sharedToken, seat) {
+    return request<JoinRoomResponse>(`/api/room/${encodeURIComponent(code)}/join`, {
+      method: "POST",
+      headers: { ...JSON_HEADERS, "x-kad-shared-token": sharedToken },
+      body: JSON.stringify(seat),
+    });
+  },
+
+  createRoomShared(body, sharedToken, seat) {
+    return request<LocalCreateRoomResponse>("/api/room", {
+      method: "POST",
+      headers: { ...JSON_HEADERS, "x-kad-shared-token": sharedToken },
+      body: JSON.stringify({ ...body, ...seat }),
     });
   },
 };

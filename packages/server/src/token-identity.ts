@@ -28,6 +28,9 @@
  *                     the phone opens the app and it is already that player.
  *   **session token** `aud: "room"`, expires with the room (≤ 6 hours). Scoped to
  *                     one run, and what actually authorises play.
+ *   **shared token**  `aud: "shared"`, a family tablet's (#250). The device
+ *                     token's lifetime, but it names a household and no player:
+ *                     every kid on the tablet plays on a session token alone.
  *
  * They are ordinary JWTs on purpose rather than a bespoke envelope — a format
  * worth keeping even now that the signature is symmetric, because it is the one
@@ -42,8 +45,10 @@ import {
   type IdentityService,
   type IssueDeviceTokenInput,
   type IssueSessionTokenInput,
+  type IssueSharedDeviceTokenInput,
   type IssueViewerTokenInput,
   type SessionIdentity,
+  type SharedDeviceIdentity,
   type ViewerIdentity,
 } from "./identity.ts";
 import { newId } from "./ids.ts";
@@ -79,6 +84,15 @@ interface DeviceClaims {
   aud: "device";
   hh: string;
   pid: string;
+  iat: number;
+  exp: number;
+}
+
+/** A shared tablet's (#250): a household, and deliberately no `pid`. */
+interface SharedClaims {
+  sub: string;
+  aud: "shared";
+  hh: string;
   iat: number;
   exp: number;
 }
@@ -175,24 +189,92 @@ export class TokenIdentity implements IdentityService {
      * key is right there in the claims.
      */
     const binding = await this.repo.getDevice(claims.hh, claims.sub);
-    if (!binding || binding.revoked) return null;
+    if (!binding || binding.revoked || binding.kind === "shared") return null;
     if (binding.householdId !== claims.hh) return null;
     if (binding.playerId !== claims.pid) return null;
 
-    const nowMs = this.now();
-    const rotate = claims.exp * 1000 - nowMs < DEVICE_TOKEN_REFRESH_AFTER_MS;
-    let rotatedToken: string | undefined;
-
-    if (rotate) {
-      // Re-issuing writes `lastSeen` as a side effect, so this branch does not
-      // also need to touch the device item.
-      ({ token: rotatedToken } = await this.issueDeviceToken({
+    // Re-issuing writes `lastSeen` as a side effect, so a rotation does not
+    // also need to touch the device item.
+    const rotatedToken = await this.keepFresh(claims.exp, binding, () =>
+      this.issueDeviceToken({
         householdId: binding.householdId,
         playerId: binding.playerId,
         deviceId: binding.deviceId,
         ...(binding.userAgent ? { userAgent: binding.userAgent } : {}),
-      }));
-    } else if (nowMs - Date.parse(binding.lastSeen) >= LAST_SEEN_STALE_MS) {
+      }),
+    );
+
+    return {
+      deviceId: binding.deviceId,
+      householdId: binding.householdId,
+      playerId: binding.playerId,
+      ...(rotatedToken ? { rotatedToken } : {}),
+    };
+  }
+
+  // --- shared device tokens (#250) ------------------------------------------
+
+  async issueSharedDeviceToken(
+    input: IssueSharedDeviceTokenInput,
+  ): Promise<{ token: string; deviceId: string }> {
+    const deviceId = input.deviceId ?? newId("d");
+    const nowMs = this.now();
+    const token = await this.sign<SharedClaims>({
+      sub: deviceId,
+      aud: "shared",
+      hh: input.householdId,
+      iat: Math.floor(nowMs / 1000),
+      exp: Math.floor((nowMs + DEVICE_TOKEN_TTL_MS) / 1000),
+    });
+    await this.repo.putDevice({
+      kind: "shared",
+      deviceId,
+      householdId: input.householdId,
+      tokenHash: hashToken(token),
+      lastSeen: new Date(nowMs).toISOString(),
+      ...(input.userAgent ? { userAgent: input.userAgent } : {}),
+    });
+    return { token, deviceId };
+  }
+
+  async resolveSharedDevice(token: string): Promise<SharedDeviceIdentity | null> {
+    const claims = await this.verify<SharedClaims>(token, "shared");
+    if (!claims) return null;
+    // By primary key, for the reason `resolveDevice` gives: "forget this
+    // device" has to kill a token that still verifies.
+    const binding = await this.repo.getDevice(claims.hh, claims.sub);
+    if (!binding || binding.revoked || binding.kind !== "shared") return null;
+    if (binding.householdId !== claims.hh) return null;
+
+    const rotatedToken = await this.keepFresh(claims.exp, binding, () =>
+      this.issueSharedDeviceToken({
+        householdId: binding.householdId,
+        deviceId: binding.deviceId,
+        ...(binding.userAgent ? { userAgent: binding.userAgent } : {}),
+      }),
+    );
+    return {
+      kind: "shared",
+      deviceId: binding.deviceId,
+      householdId: binding.householdId,
+      ...(rotatedToken ? { rotatedToken } : {}),
+    };
+  }
+
+  /**
+   * The sliding expiry, for either kind of device: a fresh token once this one
+   * is past halfway, else `lastSeen` kept honest. Returns the fresh token, if any.
+   */
+  private async keepFresh(
+    expSeconds: number,
+    binding: { householdId: string; deviceId: string; lastSeen: string },
+    reissue: () => Promise<{ token: string }>,
+  ): Promise<string | undefined> {
+    const nowMs = this.now();
+    if (expSeconds * 1000 - nowMs < DEVICE_TOKEN_REFRESH_AFTER_MS) {
+      return (await reissue()).token;
+    }
+    if (nowMs - Date.parse(binding.lastSeen) >= LAST_SEEN_STALE_MS) {
       /*
        * `touchDevice`, not `putDevice`: a full put wrote back whatever the item
        * held at read time, which is how a revocation could be erased by the
@@ -203,13 +285,7 @@ export class TokenIdentity implements IdentityService {
        */
       await this.repo.touchDevice(binding.householdId, binding.deviceId, new Date(nowMs).toISOString());
     }
-
-    return {
-      deviceId: binding.deviceId,
-      householdId: binding.householdId,
-      playerId: binding.playerId,
-      ...(rotatedToken ? { rotatedToken } : {}),
-    };
+    return undefined;
   }
 
   // --- session tokens --------------------------------------------------------

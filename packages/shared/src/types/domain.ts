@@ -300,14 +300,33 @@ export interface Household {
   awaitingFounder?: true;
 }
 
-export interface DeviceBinding {
+/**
+ * A device's binding (§4.5), one of two kinds (#250):
+ *
+ *   **personal** — one player's phone. The device token *is* that player.
+ *   **shared**   — a family tablet. Bound to the household and nobody in it;
+ *                  each kid picks themselves and gets only a room session.
+ *
+ * Bindings stored before #250 carry no `kind` and are personal.
+ */
+export type DeviceBinding = PersonalDeviceBinding | SharedDeviceBinding;
+
+interface DeviceBindingBase {
   deviceId: string;
   householdId: string;
-  playerId: string;
   tokenHash: string;
   lastSeen: string;
   userAgent?: string;
   revoked?: boolean;
+}
+
+export interface PersonalDeviceBinding extends DeviceBindingBase {
+  kind?: "personal";
+  playerId: string;
+}
+
+export interface SharedDeviceBinding extends DeviceBindingBase {
+  kind: "shared";
 }
 
 // ---------------------------------------------------------------------------

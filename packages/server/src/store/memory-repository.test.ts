@@ -190,7 +190,7 @@ describe("MemoryRepository", () => {
     expect((await repo.getHousehold("h_1"))?.displayName).toBe("Home");
     expect(await repo.listPlayers("h_1")).toHaveLength(1);
     // GSI1: a returning phone resolves from the device id alone (§3).
-    expect((await repo.getDeviceById("d_1"))?.playerId).toBe("p_1");
+    expect(await repo.getDeviceById("d_1")).toMatchObject({ playerId: "p_1" });
 
     await repo.revokeDevice("h_1", "d_1");
     expect((await repo.getDeviceById("d_1"))?.revoked).toBe(true);

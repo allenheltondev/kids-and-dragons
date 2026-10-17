@@ -3,7 +3,15 @@ import type { CognitoClient } from "../sync/auth";
 import { AuthError } from "../sync/auth";
 import type { Api, LinkAccountResponse } from "../sync/client";
 import { createKeepsakeStore, type KeepsakeDeps } from "./keepsake";
-import { loadAccount, loadIdentity, loadPlayerDeviceToken, saveIdentity, type KeyValueStorage } from "./persistence";
+import {
+  becomeSharedDevice,
+  loadAccount,
+  loadIdentity,
+  loadPlayerDeviceToken,
+  loadSharedDevice,
+  saveIdentity,
+  type KeyValueStorage,
+} from "./persistence";
 
 function memoryStorage(): KeyValueStorage {
   const map = new Map<string, string>();
@@ -423,5 +431,113 @@ describe("signing in from the home screen", () => {
     await store.getState().sendCode("allen@example.com");
     await store.getState().submitCode("123456");
     expect(store.getState().step).toBe("kept");
+  });
+});
+
+describe("a family tablet (#250)", () => {
+  async function signIn(store: ReturnType<typeof setup>["store"]) {
+    await store.getState().sendCode("grown-up@example.com");
+    await store.getState().submitCode("12345678");
+  }
+
+  it("makes this device shared, revoking the phone binding it had, and keeps nobody signed in", async () => {
+    const shareDevice = vi.fn(async () => ({ householdId: "h_1", players: [], sharedToken: "shared_1" }));
+    const { store, api, storage, cognito } = setup({ api: { shareDevice }, passkey: true });
+    await store.getState().check();
+    saveIdentity({ householdId: "hh", playerId: "p", displayName: "Ada", deviceToken: "dev_ada" }, storage);
+
+    store.getState().open("share", "home");
+    expect(store.getState().step).toBe("email");
+    await signIn(store);
+
+    expect(shareDevice).toHaveBeenCalledWith("id_tok", "dev_ada", undefined);
+    expect(api.linkAccount).not.toHaveBeenCalled();
+    expect(loadSharedDevice(storage)).toEqual({ token: "shared_1", householdId: "h_1" });
+    expect(loadPlayerDeviceToken(storage)).toBeNull();
+    // No account recorded and no passkey offered: the tablet is everybody's.
+    expect(loadAccount(storage)).toBeNull();
+    expect(store.getState().step).toBe("kept");
+    expect(store.getState().shared).toBe(true);
+    await store.getState().addPasskey();
+    expect(cognito.registerPasskey).not.toHaveBeenCalled();
+  });
+
+  it("keeps the device as it was when sharing fails, and tries again on the same code", async () => {
+    const shareDevice = vi
+      .fn()
+      .mockRejectedValueOnce(new Error("The game took too long to answer. Tap again."))
+      .mockResolvedValueOnce({ householdId: "h_1", players: [], sharedToken: "shared_1" });
+    const { store, storage, cognito } = setup({ api: { shareDevice } });
+    await store.getState().check();
+    saveIdentity({ householdId: "hh", playerId: "p", displayName: "Ada", deviceToken: "dev_ada" }, storage);
+
+    store.getState().open("share", "home");
+    await signIn(store);
+    // Nothing on this device changed: still Ada's phone, not a tablet.
+    expect(store.getState().error).toMatch(/too long/);
+    expect(store.getState().step).toBe("code");
+    expect(loadPlayerDeviceToken(storage)).toBe("dev_ada");
+    expect(loadSharedDevice(storage)).toBeNull();
+
+    // The code was spent; the retry reuses the sign-in rather than asking again.
+    await store.getState().submitCode("12345678");
+    expect(cognito.submitCode).toHaveBeenCalledTimes(1);
+    expect(shareDevice).toHaveBeenCalledTimes(2);
+    expect(loadSharedDevice(storage)?.token).toBe("shared_1");
+    expect(loadPlayerDeviceToken(storage)).toBeNull();
+  });
+
+  it("forgets nothing when the tablet's token cannot be saved", async () => {
+    const shareDevice = vi.fn(async () => ({ householdId: "h_1", players: [], sharedToken: "shared_1" }));
+    const inner = memoryStorage();
+    // A full disk: every write of the tablet's token fails.
+    const storage: KeyValueStorage = {
+      ...inner,
+      setItem: (k, v) => {
+        if (k === "kad.shared") throw new Error("QuotaExceededError");
+        inner.setItem(k, v);
+      },
+    };
+    const { store } = setup({ api: { shareDevice }, storage });
+    await store.getState().check();
+    saveIdentity({ householdId: "hh", playerId: "p", displayName: "Ada", deviceToken: "dev_ada" }, storage);
+
+    store.getState().open("share", "home");
+    await signIn(store);
+    expect(store.getState().error).toMatch(/couldn.t save/);
+    expect(loadPlayerDeviceToken(storage)).toBe("dev_ada");
+    expect(store.getState().shared).toBe(false);
+  });
+
+  it("forgets the tablet", async () => {
+    const forgetDevice = vi.fn(async () => undefined);
+    const storage = memoryStorage();
+    becomeSharedDevice({ token: "shared_1", householdId: "h_1" }, storage);
+    const { store } = setup({ api: { forgetDevice }, storage });
+    expect(store.getState().shared).toBe(true);
+    await store.getState().check();
+
+    store.getState().open("forget", "home");
+    await signIn(store);
+
+    expect(forgetDevice).toHaveBeenCalledWith("id_tok", "shared_1");
+    expect(loadSharedDevice(storage)).toBeNull();
+    expect(store.getState().shared).toBe(false);
+    expect(store.getState().step).toBe("kept");
+  });
+
+  it("stays shared when forgetting fails", async () => {
+    const forgetDevice = vi.fn(async () => {
+      throw new Error("offline");
+    });
+    const storage = memoryStorage();
+    becomeSharedDevice({ token: "shared_1", householdId: "h_1" }, storage);
+    const { store } = setup({ api: { forgetDevice }, storage });
+    await store.getState().check();
+    store.getState().open("forget", "home");
+    await signIn(store);
+
+    expect(loadSharedDevice(storage)).not.toBeNull();
+    expect(store.getState().error).toBe("offline");
   });
 });

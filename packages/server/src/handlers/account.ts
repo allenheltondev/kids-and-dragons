@@ -152,14 +152,7 @@ export interface AddPlayerInput {
  * credential the phone will present forever after.
  */
 export async function addPlayer(input: AddPlayerInput, deps: AccountDeps): Promise<BoundDevice> {
-  const existing = await deps.repo.listPlayers(input.householdId);
-  const player: PlayerProfile = {
-    id: newId("p"),
-    householdId: input.householdId,
-    displayName: input.displayName,
-    color: PLAYER_COLORS[existing.length % PLAYER_COLORS.length] ?? PLAYER_COLORS[0],
-  };
-  await deps.repo.putPlayer(player);
+  const player = await createProfile(input.householdId, input.displayName, deps);
 
   const { token, deviceId } = await deps.identity.issueDeviceToken({
     householdId: input.householdId,
@@ -172,6 +165,27 @@ export async function addPlayer(input: AddPlayerInput, deps: AccountDeps): Promi
     player,
     deviceToken: token,
   };
+}
+
+/**
+ * A player profile and nothing else: no device is bound to it. `addPlayer`
+ * binds the phone that asked; a kid added on a shared tablet gets no binding
+ * at all (#250).
+ */
+export async function createProfile(
+  householdId: string,
+  displayName: string,
+  deps: Pick<AccountDeps, "repo">,
+): Promise<PlayerProfile> {
+  const existing = await deps.repo.listPlayers(householdId);
+  const player: PlayerProfile = {
+    id: newId("p"),
+    householdId,
+    displayName,
+    color: PLAYER_COLORS[existing.length % PLAYER_COLORS.length] ?? PLAYER_COLORS[0],
+  };
+  await deps.repo.putPlayer(player);
+  return player;
 }
 
 /**

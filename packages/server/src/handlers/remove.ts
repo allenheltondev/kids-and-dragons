@@ -37,8 +37,11 @@ import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
 export interface RemovePlayerInput {
   code: string;
-  /** The device asking, resolved from its device token. */
-  principal: DeviceIdentity;
+  /**
+   * The device asking and who is holding it: a phone's own device token, or
+   * a shared tablet's token plus its seated player's session (`tabletHost`).
+   */
+  principal: Pick<DeviceIdentity, "deviceId" | "playerId">;
   playerId: string;
 }
 
@@ -116,7 +119,8 @@ async function unfound(householdId: string, playerId: string, deps: HandlerDeps)
   const household = await deps.repo.getHousehold(householdId);
   if (!household?.founderDeviceId) return; // none, or already dropped
   const device = await deps.repo.getDevice(householdId, household.founderDeviceId);
-  if (device?.playerId === playerId) await deps.repo.dropFounder(householdId, household.founderDeviceId);
+  // A shared tablet is nobody, so taking a kid out never unfounds it (#250).
+  if (device && device.kind !== "shared" && device.playerId === playerId) await deps.repo.dropFounder(householdId, household.founderDeviceId);
 }
 
 /** On `RunState.removed`: taken out of this room, and kept out. */

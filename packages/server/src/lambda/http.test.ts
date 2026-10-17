@@ -1421,6 +1421,8 @@ describe("responses", () => {
     const real = harness.identity;
     const rotating: IdentityService = {
       issueDeviceToken: (input) => real.issueDeviceToken(input),
+      issueSharedDeviceToken: (input) => real.issueSharedDeviceToken(input),
+      resolveSharedDevice: (token) => real.resolveSharedDevice(token),
       issueSessionToken: (input) => real.issueSessionToken(input),
       resolveSession: (token) => real.resolveSession(token),
       issueViewerToken: (input) => real.issueViewerToken(input),
@@ -1570,6 +1572,11 @@ const SHARED = [
   { path: "/api/journal", method: "GET", probe: "/api/journal" },
   { path: "/api/auth/link", method: "POST", probe: "/api/auth/link" },
   { path: "/api/auth/device", method: "POST", probe: "/api/auth/device" },
+  // A family tablet (#250, handlers/shared-device.ts): made shared, its
+  // "who's playing?" picker, and forgotten.
+  { path: "/api/auth/shared-device", method: "POST", probe: "/api/auth/shared-device" },
+  { path: "/api/auth/forget-device", method: "POST", probe: "/api/auth/forget-device" },
+  { path: "/api/household/players", method: "GET", probe: "/api/household/players" },
 ] as const;
 
 /**
