@@ -1,0 +1,13 @@
+{
+  "$comment": "Actual family playtests only. No sessions have been observed yet. See docs/campaigns/continental-rift/opening-playtest.md before declaring pacing complete.",
+  "status": "awaiting-family-playtest",
+  "sessions": [],
+  "sessionFields": {
+    "date": "YYYY-MM-DD",
+    "party": "Player ages/roles, classes, and whether Riftlight was shared",
+    "chapters": "Per chapter: id, observedMinutes excluding breaks, chosen routes, failed checks, discussionMinutes, childEngagement, confusion, and desiredChanges",
+    "combinedMinutes": "Measured time for all played nodes, excluding breaks",
+    "nextInvestigation": "The children's chosen lead and reason, in their words",
+    "pacingDecision": "Accept measured duration, revise through play, or explicitly change the prologue length goal"
+  }
+}
