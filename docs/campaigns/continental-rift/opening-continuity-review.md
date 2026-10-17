@@ -28,6 +28,12 @@ ordinary objects, physical state, and actions that a name-only checker cannot se
 
 ## Regression coverage
 
+The five ability-assisted checks explicitly separate the enabling ability from the roller's
+task: wings carry the kid or rope, Smash supplies a barrier, Brace steadies a post, and a
+Songkeeper supplies the pace. The selected roller manages the line or leads the group. Mixed
+parties are tested with a higher-stat hero who lacks the enabling species/class, on both
+success and failure; damage belongs to the roller without assigning them someone else's ability.
+
 [continuity.json](../../../content/drafts/riftlight/continuity.json) records each scene's narrative
 prerequisites and the introduction wording that establishes them. The chapter walker checks these
 against actual engine-composed narration on every explored path, including both check outcomes,

@@ -187,6 +187,37 @@ describe("Riftlight's authored opening", () => {
     }
   });
 
+  it.each([
+    ["riftlight-exchange-rift", "pull", "fly", "swoop", "griffin", "duskrunner", "quick", "Skyward or Glide"],
+    ["riftlight-exchange-rift", "pull", "crate", "smash", "bigfoot", "duskrunner", "might", "Smash"],
+    ["riftlight-exchange-rift", "pull", "brace", "brace", "unicorn", "thornguard", "might", "Brace"],
+    ["riftlight-glacier-survival", "channel", "glide", "wing_line", "dragonling", "duskrunner", "quick", "Wings"],
+    ["riftlight-glacier-survival", "channel", "song", "song_step", "unicorn", "songkeeper", "heart", "A Songkeeper"],
+  ] as const)("%s/%s: %s enables a team check even when the best roller lacks the ability", (id, source, option, check, species, cls, stat, enabling) => {
+    const chapter = chapters.get(id)!;
+    for (const face of [1, 20]) {
+      const state = start(chapter, species, cls);
+      const friend = newCharacter({ id: "noneligible", householdId: "test", ownerPlayerId: "p2", name: "Quickpaw",
+        species: "kitsune", class: "duskrunner", stats: { might: 0, quick: 0, clever: 0, heart: 0, [stat]: 3 },
+        appearance: APPEARANCE, rules, startingLevel: 4, now: "2026-10-17T12:00:00.000Z" });
+      const resolved = resolveCharacter(friend, rules, items);
+      expect(resolved.stats[stat]).toBeGreaterThan(state.party[0]!.character.stats[stat]);
+      state.party.push({ playerId: "p2", character: resolved, hp: resolved.maxHp, down: false, ready: true, connected: true });
+      const offered = enterScene(state, source, context(chapter)).state;
+      expect(offered.prompt).toMatchObject({ kind: "choice", options: expect.arrayContaining([expect.objectContaining({ id: option })]) });
+      const checking = send(offered, { type: "CHOOSE", choiceId: option }, chapter);
+      expect(checking.sceneId).toBe(check);
+      expect(checking.prompt).toMatchObject({ kind: "roll", characterId: "noneligible", prompt: expect.stringContaining(enabling) });
+      const result = send(checking, { type: "ROLL" }, chapter, face);
+      expect(result.party[0]!.hp).toBe(state.party[0]!.hp);
+      expect(result.party[1]!.hp).toBe(resolved.maxHp - (face === 1 ? 1 : 0));
+      expect(result.narration).not.toMatch(/your wings|your song|you plant your feet and hold/i);
+      const atExchange = id.endsWith("exchange-rift");
+      const success = atExchange ? check === "swoop" ? "caught" : "together" : "dry_bank";
+      expect(result.sceneId).toBe(face === 1 ? atExchange ? "tumbled" : "wet_bank" : success);
+    }
+  });
+
   it("the first crossing carries a spendable +2 Riftspark into the glacier check", () => {
     const graph = parseCampaignGraph(campaign).graph!;
     const first = startJourney(graph);
