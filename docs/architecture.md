@@ -644,7 +644,21 @@ away soon. Nor can a removed phone go on watching: only the screen that opened
 the room may watch it, and reading its state takes a token for it ("The TV,
 which is nobody", below). What removal cannot do is stop a phone that clears
 its storage: it comes back as a new player, is announced again, and can be
-removed again. Locking a room to new joins is #263's.
+removed again. Locking the room to new joins stops that (below).
+
+**The host runs the room** (#263, `handlers/host.ts`). Besides Remove, the
+device that opened the room (the TV, the host's phone, or a family tablet with
+its seated kid's session) may **lock** the room to new joins and unlock it,
+and **close** it for everyone. Its view lists everybody in the room from
+`RunState.seats`, which each join writes (who, and on their own phone or the
+family tablet), so it shows a kid still making a hero and survives a refresh,
+where the arrival notices do not. Locked, a join is refused unless the player
+is already on that roster, so a dropped phone is never locked out of its own
+game. Closing marks the run `closed` (every screen leaves; actions, previews,
+presence and the channel refuse it) and then deletes the room's code. Each
+control is one committed patch with the host as its author, so all of it is
+on the run's event log. Opening a room to visitors (#249) and forgetting a
+device (#273) need a signed-in owner and are not host controls.
 
 Room items carry a **6-hour TTL** so abandoned rooms clean themselves up. Revoking a device does not
 touch any character — characters belong to the household.

@@ -115,8 +115,8 @@ function harness(state: RunState = makeState()): Harness {
       viewerToken: "tok_view",
       state,
     })),
-    removePlayer: vi.fn(async (): Promise<void> => undefined),
-    removePlayerShared: vi.fn(async (): Promise<void> => undefined),
+    // Remove, lock, close (#263, #267): one call, by control.
+    hostControl: vi.fn(async (): Promise<void> => undefined),
     postAction: vi.fn(async (): Promise<ActionResponse> => ({ ok: true, seq: state.seq })),
     postPreview: vi.fn(async (): Promise<void> => undefined),
     fetchState: vi.fn(async () => ({ seq: state.seq, state })),
@@ -592,8 +592,23 @@ describe("arrivals and removal (#267)", () => {
     h.publish({ kind: "arrival", seq: 0, runId: "r_1", playerId: "p_2", name: "Mia", color: "#fff" });
 
     expect(await h.store.getState().removePlayer("p_2")).toBe(true);
-    expect(h.api.removePlayer).toHaveBeenCalledWith("ABCD", "p_2", "dev_host");
+    expect(h.api.hostControl).toHaveBeenCalledWith("ABCD", "remove", { playerId: "p_2" }, { deviceToken: "dev_host" });
     expect(h.store.getState().arrivals).toEqual([]);
+  });
+
+  it("locks, unlocks and closes the room it opened (#263)", async () => {
+    const h = harness();
+    await h.store.getState().createRoom("travel", "Allen");
+    h.store.setState({ session: { ...h.store.getState().session!, host: true } });
+
+    expect(await h.store.getState().lockRoom(true)).toBe(true);
+    expect(await h.store.getState().lockRoom(false)).toBe(true);
+    expect(await h.store.getState().closeRoom()).toBe(true);
+    expect(h.api.hostControl.mock.calls.map((call) => [call[1], call[2]])).toEqual([
+      ["lock", { locked: true }],
+      ["lock", { locked: false }],
+      ["close", {}],
+    ]);
   });
 
   it("never lets a burst push a host's arrival out, though it caps everyone else's", async () => {
@@ -650,7 +665,9 @@ describe("arrivals and removal (#267)", () => {
     const h = harness();
     await h.store.getState().joinRoom("ABCD", "Allen");
     expect(await h.store.getState().removePlayer("p_2")).toBe(false);
-    expect(h.api.removePlayer).not.toHaveBeenCalled();
+    expect(await h.store.getState().lockRoom(true)).toBe(false);
+    expect(await h.store.getState().closeRoom()).toBe(false);
+    expect(h.api.hostControl).not.toHaveBeenCalled();
   });
 
   it("says why when the server refuses", async () => {
@@ -667,7 +684,7 @@ describe("arrivals and removal (#267)", () => {
       host: true,
     }));
     await h.store.getState().createRoom("travel", "Allen");
-    h.api.removePlayer.mockRejectedValueOnce(new ApiError(403, "only the screen or phone that opened this room can take someone out"));
+    h.api.hostControl.mockRejectedValueOnce(new ApiError(403, "only the screen or phone that opened this room can take someone out"));
     expect(await h.store.getState().removePlayer("p_2")).toBe(false);
     expect(h.store.getState().error).toMatch(/only the screen or phone/);
   });
@@ -1721,8 +1738,12 @@ describe("a shared tablet", () => {
     expect(h.store.getState().session?.host).toBe(true);
 
     expect(await h.store.getState().removePlayer("p_stranger")).toBe(true);
-    expect(h.api.removePlayerShared).toHaveBeenCalledWith("ABCD", "p_stranger", "shared_1", "tok_p_ada");
-    expect(h.api.removePlayer).not.toHaveBeenCalled();
+    expect(h.api.hostControl).toHaveBeenCalledWith(
+      "ABCD",
+      "remove",
+      { playerId: "p_stranger" },
+      { sharedToken: "shared_1", sessionToken: "tok_p_ada" },
+    );
     // Still nobody: asking did not mint an identity on the tablet.
     expect(Object.keys(dump(h.storage))).toEqual(["kad.shared"]);
   });

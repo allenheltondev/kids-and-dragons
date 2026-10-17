@@ -25,6 +25,7 @@ import type { ReactNode } from "react";
 import { PlayerPanel, SignInFlow, WelcomeBack } from "../screens";
 import { FieldGuideToast } from "../screens/FieldGuideNews";
 import { ArrivalNotices } from "../screens/ArrivalNotices";
+import { HostControls } from "../screens/HostControls";
 // Imported by path rather than through the `screens` barrel on purpose: the
 // barrel is what every surface pulls in, and the playtest drawer should reach
 // exactly one call site — the one below, behind `import.meta.env.DEV`.
@@ -75,6 +76,9 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
       {/* Who just joined (#267), for the host to keep or remove. In the flow,
           never over this player's own controls. */}
       <ArrivalNotices placement="inline" />
+      {/* Running the room (#263): the roster, Remove, lock and close. Only on
+          the device that opened it, folded away until the host opens it. */}
+      <HostControls placement="inline" />
       {guideOverCreation ? <FieldGuide /> : null}
       {creating ? (
         <div className="player-view__creation" hidden={guideOverCreation}><WelcomeBack /></div>

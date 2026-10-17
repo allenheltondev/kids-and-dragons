@@ -847,8 +847,9 @@ describe("POST /api/action", () => {
       }),
       runtimeFor(harness),
     );
-    const { sessionToken } = bodyOf(join) as unknown as { sessionToken: string };
-    return { ...room, sessionToken };
+    const { sessionToken, state } = bodyOf(join) as unknown as { sessionToken: string; state: { seq: number } };
+    // A first join puts the player on the host's roster (#263), which is a seq.
+    return { ...room, sessionToken, seq: state.seq };
   }
 
   it("refuses an action carrying no credential at all", async () => {
@@ -867,7 +868,7 @@ describe("POST /api/action", () => {
         body: {
           runId: room.runId,
           playerId: room.player.principal.playerId,
-          seq: 0,
+          seq: room.seq,
           intent: { type: "CHOOSE", choiceId: "east" },
         },
       }),
@@ -877,7 +878,7 @@ describe("POST /api/action", () => {
     expect(result.statusCode).toBe(401);
     expect(bodyOf(result).error).toMatchObject({ code: "FORBIDDEN" });
     // And nothing moved.
-    expect((await harness.repo.getState(room.runId))?.seq).toBe(0);
+    expect((await harness.repo.getState(room.runId))?.seq).toBe(room.seq);
   });
 
   it("refuses a valid session token pointed at another run", async () => {
@@ -889,7 +890,7 @@ describe("POST /api/action", () => {
         body: {
           runId: "r_someone_else",
           playerId: room.player.principal.playerId,
-          seq: 0,
+          seq: room.seq,
           intent: { type: "CHOOSE", choiceId: "east" },
         },
         headers: { authorization: `Bearer ${room.sessionToken}` },
@@ -910,7 +911,7 @@ describe("POST /api/action", () => {
     const full = {
       runId: room.runId,
       playerId: room.player.principal.playerId,
-      seq: 0,
+      seq: room.seq,
       intent: { type: "CHOOSE", choiceId: "east" },
     };
 
@@ -940,7 +941,7 @@ describe("POST /api/action", () => {
         body: {
           runId: room.runId,
           playerId: room.player.principal.playerId,
-          seq: 0,
+          seq: room.seq,
           intent: { type: "CHOOSE", choiceId: "east" },
         },
         headers: { authorization: `Bearer ${room.sessionToken}` },
@@ -949,8 +950,8 @@ describe("POST /api/action", () => {
     );
 
     expect(result.statusCode).toBe(200);
-    expect(bodyOf(result)).toEqual({ ok: true, seq: 1 });
-    expect((await harness.repo.getState(room.runId))?.seq).toBe(1);
+    expect(bodyOf(result)).toEqual({ ok: true, seq: room.seq + 1 });
+    expect((await harness.repo.getState(room.runId))?.seq).toBe(room.seq + 1);
   });
 
   it("reads the bearer scheme case-insensitively and ignores a bare token", async () => {
@@ -959,7 +960,7 @@ describe("POST /api/action", () => {
     const body = {
       runId: room.runId,
       playerId: room.player.principal.playerId,
-      seq: 0,
+      seq: room.seq,
       intent: { type: "CHOOSE", choiceId: "east" },
     };
 
@@ -975,7 +976,7 @@ describe("POST /api/action", () => {
     // No scheme is not a credential — it must not be read as one.
     const bare = await respond(
       event("POST", "/api/action", {
-        body: { ...body, seq: 1 },
+        body: { ...body, seq: room.seq + 1 },
         headers: { authorization: room.sessionToken },
       }),
       runtimeFor(harness),
@@ -1559,6 +1560,9 @@ const SHARED = [
   { path: "/api/room/:code/watch", method: "POST", probe: "/api/room/ABCD/watch" },
   // The host taking a player out (#267, handlers/remove.ts).
   { path: "/api/room/:code/remove", method: "POST", probe: "/api/room/ABCD/remove" },
+  // Host controls (#263, handlers/host.ts).
+  { path: "/api/room/:code/lock", method: "POST", probe: "/api/room/ABCD/lock" },
+  { path: "/api/room/:code/close", method: "POST", probe: "/api/room/ABCD/close" },
   { path: "/api/action", method: "POST", probe: "/api/action" },
   { path: "/api/preview", method: "POST", probe: "/api/preview" },
   { path: "/api/progression/spend", method: "POST", probe: "/api/progression/spend" },
@@ -1684,6 +1688,11 @@ describe("route parity with dev-server.ts", () => {
   });
 });
 
+/** The seq a create or join answered with: its state's, which a first join has moved (#263). */
+function seqOf(body: Record<string, unknown>): number {
+  return (body.state as unknown as { seq: number }).seq;
+}
+
 describe("bringing a hero back (spec §5)", () => {
   it("lists a player's saved hero in a later room, and seats it there", async () => {
     // The real engine: this is about a character surviving from one run to the
@@ -1701,7 +1710,7 @@ describe("bringing a hero back (spec §5)", () => {
           body: {
             runId: first.runId,
             playerId: first.playerId,
-            seq: 0,
+            seq: seqOf(first),
             intent: {
               type: "CREATE_CHARACTER",
               name: "Sparklehoof",
@@ -1742,7 +1751,7 @@ describe("bringing a hero back (spec §5)", () => {
           body: {
             runId: second.runId,
             playerId: second.playerId,
-            seq: 0,
+            seq: seqOf(second),
             intent: { type: "SEAT_CHARACTER", characterId: heroes[0]!.id },
           },
           headers: bearer,
@@ -1766,7 +1775,7 @@ describe("bringing a hero back (spec §5)", () => {
         body: {
           runId: room.runId,
           playerId: room.playerId,
-          seq: 0,
+          seq: seqOf(room),
           intent: {
             type: "CREATE_CHARACTER",
             name: "Sparklehoof",

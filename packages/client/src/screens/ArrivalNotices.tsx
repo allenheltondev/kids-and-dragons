@@ -13,7 +13,8 @@
  * and nothing more, and it goes away on its own. The host's stay until the
  * host dismisses one or removes that player: a host who looks away, or only
  * notices a stranger later, must not lose the one control that takes them
- * out. A refresh still loses them; a roster that survives one is #263's.
+ * out. A refresh still loses them; the host's roster (HostControls, #263)
+ * does not, and has the same Remove.
  *
  * Two placements, because the two screens differ in what can be covered:
  *

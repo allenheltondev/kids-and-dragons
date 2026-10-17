@@ -1175,6 +1175,15 @@ async function authorize(
     });
   }
 
+  // Closed by its host (#263): the room is over for everybody.
+  if (state.closed) {
+    return errorResult({
+      ok: false,
+      seq: state.seq,
+      error: { code: "FORBIDDEN", message: "This game was closed." },
+    });
+  }
+
   const run = await deps.repo.getRun(input.runId);
   if (!run) {
     return errorResult({

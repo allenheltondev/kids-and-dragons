@@ -30,10 +30,11 @@ import {
   SLOW_DOWN,
 } from "../handlers/code-guard.ts";
 import { relayPreview } from "../handlers/preview.ts";
-import type { ActionError, HandlerDeps } from "../handlers/deps.ts";
+import type { ActionError, HandlerDeps, HandlerResult } from "../handlers/deps.ts";
 import { iso, ok } from "../handlers/deps.ts";
 import { createRoom, joinRoom, settleRoom, watchRoom } from "../handlers/room.ts";
 import { removePlayer } from "../handlers/remove.ts";
+import { closeRoom, lockRoom, type HostPrincipal } from "../handlers/host.ts";
 import { listHeroes } from "../handlers/heroes.ts";
 import { getJournal } from "../handlers/journal.ts";
 import { getState } from "../handlers/state.ts";
@@ -156,6 +157,16 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
       const code = remove[1].toUpperCase();
       return (deps) => postRemove(req, deps, code);
     }
+    const lock = /^\/api\/room\/([A-Za-z]{4})\/lock$/.exec(req.path);
+    if (lock?.[1]) {
+      const code = lock[1].toUpperCase();
+      return (deps) => postLock(req, deps, code);
+    }
+    const close = /^\/api\/room\/([A-Za-z]{4})\/close$/.exec(req.path);
+    if (close?.[1]) {
+      const code = close[1].toUpperCase();
+      return (deps) => postClose(req, deps, code);
+    }
   }
   if (req.method === "GET" && req.path === "/api/state") return (deps) => getStateRoute(req, deps);
   if (req.method === "GET" && req.path === "/api/heroes") return (deps) => getHeroes(req, deps);
@@ -261,7 +272,7 @@ async function postRoomShared(
     deps,
   );
   if (!created.ok) return fromError(created.error);
-  const joined = await joinRoom({ code: created.value.code, principal: seat.value }, deps);
+  const joined = await joinRoom({ code: created.value.code, principal: seat.value, device: "tablet" }, deps);
   if (!joined.ok) return fromError(joined.error);
   // No `deviceToken`, ever: the kid leaves with the session and nothing else.
   return json(
@@ -291,7 +302,7 @@ async function postJoin(req: Req, deps: HandlerDeps, code: string) {
     if (!shared) return forgottenDevice();
     const seat = await seatOnSharedDevice({ shared, playerId: req.body.playerId, newPlayer: req.body.newPlayer }, deps);
     if (!seat.ok) return fromError(seat.error);
-    const joined = await joinRoom({ code, principal: seat.value }, deps);
+    const joined = await joinRoom({ code, principal: seat.value, device: "tablet" }, deps);
     if (!joined.ok) return fromError(joined.error);
     return json(200, { ...joined.value, code, roomCode: code, expiresAt: found.expiresAt }, shared);
   }
@@ -345,13 +356,27 @@ async function postWatch(req: Req, deps: HandlerDeps, code: string) {
 }
 
 /**
- * The host taking a player out (#267). A phone's device token names the host;
- * a shared tablet's token does, with its seated player's session (#250).
+ * What a host control does once its host is known (#263, #267). It answers
+ * with the run's seq, as every control is one committed change to the run.
  */
-async function postRemove(req: Req, deps: HandlerDeps, code: string) {
+type HostAct = (principal: HostPrincipal) => Promise<HandlerResult<{ seq: number }>>;
+
+/**
+ * Remove, lock and close: the room's host, proved by a phone's device token,
+ * or by a shared tablet's token with its seated player's session (#250). The
+ * body is checked only once the host is, so a stranger learns nothing from
+ * it. Each looks a room up by code, so each spends the wrong-code budget.
+ */
+async function postHostControl(
+  req: Req,
+  deps: HandlerDeps,
+  code: string,
+  invalid: string | null,
+  act: HostAct,
+) {
   const shared = await resolveShared(req, deps);
   if (shared === null) return forgottenDevice();
-  let principal: Pick<DeviceIdentity, "deviceId" | "playerId">;
+  let principal: HostPrincipal;
   // Whose renewed token, if any, rides back on the answer.
   let asker: DeviceIdentity | SharedDeviceIdentity;
   if (shared) {
@@ -361,21 +386,41 @@ async function postRemove(req: Req, deps: HandlerDeps, code: string) {
     principal = seat.value;
   } else {
     const host = await resolvePrincipal(req, deps);
-    if (!host) return error(401, "FORBIDDEN", "taking someone out needs this device's token");
+    if (!host) return error(401, "FORBIDDEN", "running this room needs the device that opened it");
     principal = host.principal;
     asker = host.principal;
   }
-  const playerId = req.body.playerId;
-  if (typeof playerId !== "string" || playerId === "") {
-    return error(400, "ILLEGAL", "expected { playerId }");
-  }
+  if (invalid !== null) return error(400, "ILLEGAL", invalid);
   const lookup = await admitCodeLookup(req.client, deps);
   if (!lookup) return slowDown(deps);
-  const result = await removePlayer({ code, principal, playerId }, deps);
+  const result = await act(principal);
   const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
   if (!missed) await lookup.hit();
   if (result.ok) return json(200, { ok: true, seq: result.value.seq }, asker);
   return fromError(result.error);
+}
+
+/** The host taking a player out (#267). */
+async function postRemove(req: Req, deps: HandlerDeps, code: string) {
+  const playerId = req.body.playerId;
+  const valid = typeof playerId === "string" && playerId !== "";
+  return postHostControl(req, deps, code, valid ? null : "expected { playerId }", (principal) =>
+    removePlayer({ code, principal, playerId: playerId as string }, deps),
+  );
+}
+
+/** The host locking the room to new joins, or opening it again (#263). */
+async function postLock(req: Req, deps: HandlerDeps, code: string) {
+  const locked = req.body.locked;
+  const valid = typeof locked === "boolean";
+  return postHostControl(req, deps, code, valid ? null : "expected { locked: true | false }", (principal) =>
+    lockRoom({ code, principal, locked: locked as boolean }, deps),
+  );
+}
+
+/** The host closing the room for everyone (#263). */
+async function postClose(req: Req, deps: HandlerDeps, code: string) {
+  return postHostControl(req, deps, code, null, (principal) => closeRoom({ code, principal }, deps));
 }
 
 // ---------------------------------------------------------------------------
