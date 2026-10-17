@@ -188,6 +188,17 @@ async function foundIfVacant(householdId: string, deviceId: string, deps: Accoun
   }
 }
 
+/**
+ * Whether `deviceId` may claim this guest household: its founder, or, on a
+ * household made before founders were recorded, any device playing in it (the
+ * old rule). Those households are all gone a week after this shipped, and with
+ * them this exception; the store applies the same rule in the claim's write.
+ */
+export function mayClaim(household: Household, deviceId: string): boolean {
+  const legacy = household.founderDeviceId === undefined && household.awaitingFounder !== true;
+  return legacy || (household.founderDeviceId !== "" && household.founderDeviceId === deviceId);
+}
+
 // ---------------------------------------------------------------------------
 // Optional sign-in
 // ---------------------------------------------------------------------------
@@ -269,7 +280,7 @@ export async function linkAccount(
        * cannot make you. The store checks the founder again in the claim's own
        * write; this read only picks the answer.
        */
-      if (current.founderDeviceId !== input.principal.deviceId) {
+      if (!mayClaim(current, input.principal.deviceId)) {
         // The end-of-chapter offer is drawn only on the founding phone, so this
         // is a stale screen or somebody trying. A sign-in from the home screen
         // goes on to the account's own household, as below.

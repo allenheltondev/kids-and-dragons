@@ -294,7 +294,8 @@ export interface GameRepository {
    * account — one family's guest session cannot be stolen by the next person to
    * sign in on that phone — if the sweeper has already begun deleting it, or if
    * `deviceId` is not the household's founder (`Household.founderDeviceId`,
-   * #265). The founder is checked in the same write as the claim, so a founder
+   * #265). A household from before founders (neither field) is claimable from
+   * any device until it expires. The founder is checked in the same write as the claim, so a founder
    * dropped a moment ago (`dropFounder`) cannot claim on a stale read.
    */
   claimHousehold(householdId: string, cognitoSub: string, deviceId: string): Promise<boolean>;
@@ -307,7 +308,8 @@ export interface GameRepository {
   takeFounding(householdId: string, deviceId: string): Promise<boolean>;
   /**
    * Take `deviceId` off the household as its founder, and leave nobody in its
-   * place: the household can no longer be claimed by signing in. For a host
+   * place (`founderDeviceId: ""`, never absent, which would read as a
+   * household from before founders): the household can no longer be claimed by signing in. For a host
    * taking out a phone that founded a TV's household (#267). A no-op when
    * `deviceId` is not the founder.
    */

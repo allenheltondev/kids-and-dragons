@@ -114,7 +114,7 @@ export async function removePlayer(
  */
 async function unfound(householdId: string, playerId: string, deps: HandlerDeps): Promise<void> {
   const household = await deps.repo.getHousehold(householdId);
-  if (!household?.founderDeviceId) return;
+  if (!household?.founderDeviceId) return; // none, or already dropped
   const device = await deps.repo.getDevice(householdId, household.founderDeviceId);
   if (device?.playerId === playerId) await deps.repo.dropFounder(householdId, household.founderDeviceId);
 }

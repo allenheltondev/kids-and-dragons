@@ -286,8 +286,9 @@ export interface Household {
    * The device that started this household, and the only one that may claim
    * it by signing in (#265). Knowing a room code gets a phone a seat, never the
    * household: a joiner is bound here too, so the claim has to name something a
-   * joiner cannot be. Absent on a household nobody may claim this way, which
-   * includes every household made before this field existed.
+   * joiner cannot be. `""` once a host has taken the founder out: nobody may
+   * claim it. Absent only on a household made before this field existed,
+   * which keeps the old rule (any device in it) until it expires.
    */
   founderDeviceId?: string;
   /**
