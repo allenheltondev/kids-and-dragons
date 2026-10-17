@@ -2163,8 +2163,11 @@ function turnEndInEnvironment(
   let working = state;
 
   // Free a captive: a hero, ending a turn beside them — every one beside them.
-  // A monster ending a turn beside one without having swung drags at them (#220).
+  // A monster ending a turn beside one without having swung drags at them
+  // (#220) — at one only, the first in authored order: a turn spent dragging
+  // is one turn's action.
   const captives = captivesOf(spec);
+  let dragged = false;
   captives.forEach((captive, i) => {
     const now = working.environment as EnvironmentState;
     if (captiveStatuses(now)[i] !== "waiting" || !areAdjacent(at, captive.at)) return;
@@ -2175,7 +2178,8 @@ function turnEndInEnvironment(
         environment: withCaptiveStatus(now, i, "freed"),
       };
       events.push({ type: "freed", byId: actorId, ...captiveIndexField(spec, i) });
-    } else if (captive.hp !== undefined && !state.actionTaken && now.captiveHp) {
+    } else if (captive.hp !== undefined && !state.actionTaken && !dragged && now.captiveHp) {
+      dragged = true;
       const hp = Math.max(0, (now.captiveHp[i] ?? 0) - 1);
       const captiveHp = [...now.captiveHp];
       captiveHp[i] = hp;
@@ -2195,7 +2199,9 @@ function turnEndInEnvironment(
 
   // A shover (#220) puts a hero beside it onto the hazard behind them.
   if (actor.side === "enemy" && actor.rift?.shoves && !combatantById(working, actorId)?.down) {
-    working = shoveIntoHazard(working, actorId, at, events);
+    // Where it stands now: a pushing hazard may just have thrown it.
+    const standing = positionOf(working, actorId);
+    if (standing) working = shoveIntoHazard(working, actorId, standing, events);
   }
 
   // Stepping through. Only a hero, only standing, only while it is open.

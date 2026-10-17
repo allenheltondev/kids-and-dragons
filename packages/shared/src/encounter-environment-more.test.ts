@@ -464,3 +464,39 @@ describe("a creature's rift behaviour (#220)", () => {
     expect(checkEncounterEnvironment(scene({ round: 2, whenHurt: true })).map((p) => p.path)).toEqual(["/environment/relocate/0"]);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Review regressions (#268)
+// ---------------------------------------------------------------------------
+
+describe("review regressions (#220)", () => {
+  it("a monster beside two captives it can drag drags only one, the first authored", () => {
+    const env: EncounterEnvironment = {
+      rescue: [
+        { name: "Pip", at: { x: 8, y: 3 }, hp: 2 },
+        { name: "Moss", at: { x: 9, y: 2 }, hp: 2 },
+      ],
+    };
+    const ended = endTurnWithEvents(until(begin(env), "wisp#1"));
+    expect(ended.events).toEqual([{ type: "captiveDragged", byId: "wisp#1", hp: 1, captive: 0 }]);
+    expect(ended.state.environment!.captiveHp).toEqual([1, 2]);
+  });
+
+  it("a shover thrown off by its own hazard shoves from where it lands, not where it stood", () => {
+    const troll: EnemySpec = { ...WISP, rift: { shoves: true } };
+    const env: EncounterEnvironment = {
+      hazards: [
+        { id: "fire", kind: "fire", label: "Rift fire", tiles: [{ x: 3, y: 3 }], damage: 2 },
+        { id: "gust", kind: "rift", label: "Rift wind", tiles: [{ x: 5, y: 3 }], push: { direction: "east", tiles: 3 } },
+      ],
+    };
+    let state = begin(env, [{ spec: troll, at: { x: 5, y: 3 } }]);
+    state = until(endTurnWithEvents(walk(state, { x: 4, y: 3 })).state, "wisp#1");
+    const ended = endTurnWithEvents(state);
+    expect(ended.events).toEqual([
+      { type: "hazard", actorId: "wisp#1", hazardId: "gust", label: "Rift wind" },
+      { type: "shoved", actorId: "wisp#1", to: { x: 8, y: 3 } },
+    ]);
+    expect(positionOf(ended.state, "c_a")).toEqual({ x: 4, y: 3 });
+  });
+});

@@ -200,6 +200,14 @@ describe("content:validate", { timeout: 60_000 }, () => {
       (s) => (s.environment.variants = [{ when: { facts: { hedge: "open" } }, exits: [{ id: "gap", label: "Gap", tiles: [{ x: 2, y: 1 }] }] }]),
       "/environment/variants/0/exits/0/tiles/0",
     ],
+    [
+      "an unknown item granted by a variant's captive",
+      (s) =>
+        (s.environment.variants = [
+          { when: { facts: { hedge: "open" } }, rescue: { name: "Fern", at: { x: 5, y: 5 }, effects: [{ type: "grantItem", itemId: "no_such_item" }] } },
+        ]),
+      'item "no_such_item" is not in content/items.json',
+    ],
     ["a captive on a spawn", (s) => (s.environment.rescue = [{ name: "Pip", at: { x: 5, y: 5 } }, { name: "Moss", at: { x: 0, y: 3 } }]), "spawn point"],
   ])("refuses %s", (_name, bend, complaint) => {
     const result = withEnvironment(bend);

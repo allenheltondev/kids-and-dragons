@@ -762,6 +762,34 @@ describe("the storm sandbox (#220)", () => {
     expect(view.objectives.map((o) => o.id)).toEqual(["beacon", "small-tear"]);
   });
 
+  it("the chapter check sees the effects of captives and objectives a variant brings (#220)", () => {
+    const fight = stormFight();
+    const bent: Chapter = {
+      ...STORM,
+      scenes: {
+        ...STORM.scenes,
+        [STORM_FIGHT]: {
+          ...fight,
+          environment: {
+            ...fight.environment!,
+            variants: [
+              {
+                when: { facts: { storm: "raging" } },
+                rescue: [{ name: "Fern", at: { x: 5, y: 7 }, effects: [{ type: "grantItem", itemId: "no_such_item" }] }],
+                objectives: [{ id: "o", kind: "close", label: "O", at: { x: 7, y: 0 }, turns: 1, effects: [{ type: "grantItem", itemId: "nor_this" }] }],
+              },
+            ],
+          },
+        },
+      },
+    };
+    const unknown = validateChapter(bent, ITEMS).filter((issue) => issue.code === "UNKNOWN_ITEM").map((issue) => issue.message);
+    expect(unknown).toEqual([
+      `scene "${STORM_FIGHT}" grants unknown item "no_such_item"`,
+      `scene "${STORM_FIGHT}" grants unknown item "nor_this"`,
+    ]);
+  });
+
   it("is a different storm when the world says it is raging", () => {
     const spec = intoTheStorm(stormCtx(1, { storm: "raging" })).encounter!.environment!.spec;
     expect(spec.clock).toMatchObject({ rounds: 4, surge: 2 });

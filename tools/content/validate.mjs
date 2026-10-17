@@ -497,12 +497,17 @@ function effectsOf(scene, sceneId) {
     if (scene[key]) push(scene[key].effects, `${base}/${key}/effects`);
   }
   // A freed captive's effects (#201) land when the fight ends.
-  // One captive, or a list of them (#220).
-  const rescue = scene.environment?.rescue;
-  if (Array.isArray(rescue)) rescue.forEach((captive, i) => push(captive?.effects, `${base}/environment/rescue/${i}/effects`));
-  else push(rescue?.effects, `${base}/environment/rescue/effects`);
-  // An objective done (#220), the same way.
-  (scene.environment?.objectives ?? []).forEach((o, i) => push(o?.effects, `${base}/environment/objectives/${i}/effects`));
+  // One captive, or a list of them (#220), and objectives done, the same
+  // way — in the place as authored and in every variant of it.
+  const places = scene.environment
+    ? [[scene.environment, `${base}/environment`], ...(scene.environment.variants ?? []).map((v, i) => [v, `${base}/environment/variants/${i}`])]
+    : [];
+  for (const [place, at] of places) {
+    const rescue = place?.rescue;
+    if (Array.isArray(rescue)) rescue.forEach((captive, i) => push(captive?.effects, `${at}/rescue/${i}/effects`));
+    else push(rescue?.effects, `${at}/rescue/effects`);
+    (place?.objectives ?? []).forEach((o, i) => push(o?.effects, `${at}/objectives/${i}/effects`));
+  }
   return out;
 }
 

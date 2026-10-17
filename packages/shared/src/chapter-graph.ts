@@ -111,8 +111,16 @@ function sceneEffects(scene: Scene): Effect[] {
         ...(scene.onDefeat?.effects ?? []),
         ...(scene.onEscape?.effects ?? []),
         ...(scene.onTimeout?.effects ?? []),
-        ...(scene.environment ? captivesOf(scene.environment).flatMap((captive) => captive.effects ?? []) : []),
-        ...(scene.environment?.objectives ?? []).flatMap((objective) => objective.effects ?? []),
+        // Captives' and objectives' effects, in the place as authored and in
+        // every variant of it (#220): any of them can be the place fought in.
+        ...[scene.environment, ...(scene.environment?.variants ?? [])].flatMap((place) =>
+          place
+            ? [
+                ...captivesOf(place).flatMap((captive) => captive.effects ?? []),
+                ...(place.objectives ?? []).flatMap((objective) => objective.effects ?? []),
+              ]
+            : [],
+        ),
       );
       break;
   }
