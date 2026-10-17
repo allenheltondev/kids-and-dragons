@@ -1,5 +1,5 @@
 {
-  "$comment": "Human-reviewed narrative dependencies for all 67 opening scenes. Introduction evidence is checked against actual composed engine narration. Entry facts must be established on every path through the preceding chapter. Review and extend when adding scenes.",
+  "$comment": "Human-reviewed narrative dependencies for all 80 opening scenes. Introduction evidence is checked against actual composed engine narration. Entry facts must be established on every path through the preceding chapter. Review and extend when adding scenes.",
   "chapters": {
     "riftlight-exchange-rift": {
       "entryFacts": [],
@@ -85,7 +85,9 @@
           }
         },
         "quay": {
-          "requires": [],
+          "requires": [
+            "lost_landing"
+          ],
           "introduces": {
             "crates": "two stacks of crates",
             "fold": "a thin fold in the air",
@@ -166,6 +168,26 @@
               "requires": [
                 "wedge"
               ]
+            },
+            {
+              "flag": "helped_fish_seller",
+              "requires": [
+                "fish_stall"
+              ]
+            },
+            {
+              "flag": "saved_barge_supper",
+              "requires": [
+                "pilot",
+                "saved_supper"
+              ]
+            },
+            {
+              "flag": "found_barge_mooring",
+              "requires": [
+                "pilot",
+                "safe_mooring"
+              ]
             }
           ]
         },
@@ -242,6 +264,39 @@
           "introduces": {
             "bell": "a bell rings"
           }
+        },
+        "delivery": {
+          "requires": [
+            "exchange"
+          ],
+          "introduces": {
+            "supply_barge": "A supply barge",
+            "pilot": "frogfolk pilot",
+            "lost_landing": "landing steps hanging crooked",
+            "supper_sacks": "Sacks of potatoes"
+          }
+        },
+        "delivery_sacks": {
+          "requires": [
+            "pilot",
+            "supply_barge",
+            "lost_landing",
+            "supper_sacks"
+          ],
+          "introduces": {
+            "saved_supper": "Six crews eating tonight"
+          }
+        },
+        "delivery_moor": {
+          "requires": [
+            "pilot",
+            "supply_barge",
+            "lost_landing",
+            "supper_sacks"
+          ],
+          "introduces": {
+            "safe_mooring": "a low mooring ring"
+          }
         }
       }
     },
@@ -317,7 +372,27 @@
           "introduces": {
             "herder": "A yeti herder",
             "sledge": "an empty sledge"
-          }
+          },
+          "conditional": [
+            {
+              "flag": "marked_glacier_drift",
+              "requires": [
+                "drift_markers"
+              ]
+            },
+            {
+              "flag": "sheltered_kid_on_detour",
+              "requires": [
+                "warm_detour"
+              ]
+            },
+            {
+              "flag": "found_drift_hollow",
+              "requires": [
+                "hollow_found"
+              ]
+            }
+          ]
         },
         "tell_rift": {
           "requires": [
@@ -489,11 +564,27 @@
             "learned_note",
             "seam",
             "hall",
-            "bell"
+            "bell",
+            "seam_tested"
           ],
           "introduces": {
-            "travelers": "Three travelers in dark cloaks"
-          }
+            "travelers": "Three travelers in dark cloaks",
+            "grazing_route": "It led to the herd's sheltered grazing ledge"
+          },
+          "conditional": [
+            {
+              "flag": "made_glacier_shelter",
+              "requires": [
+                "snow_bank"
+              ]
+            },
+            {
+              "flag": "crossed_melt_dry",
+              "requires": [
+                "melt_channel"
+              ]
+            }
+          ]
         },
         "blankets": {
           "requires": [
@@ -517,6 +608,98 @@
             "griffin": "A griffin",
             "unicorn": "a unicorn",
             "map": "a map"
+          },
+          "conditional": [
+            {
+              "flag": "helped_glacier_herder",
+              "requires": [
+                "blankets"
+              ]
+            }
+          ]
+        },
+        "drift": {
+          "requires": [
+            "footprints",
+            "dark_rocks",
+            "bell",
+            "goat",
+            "rope"
+          ],
+          "introduces": {
+            "drift": "a white drift"
+          }
+        },
+        "drift_probe": {
+          "requires": [
+            "drift",
+            "rope",
+            "bell"
+          ],
+          "introduces": {
+            "drift_markers": "small stones marking the safe way"
+          }
+        },
+        "drift_detour": {
+          "requires": [
+            "drift",
+            "dark_rocks",
+            "goat",
+            "coat",
+            "bell"
+          ],
+          "introduces": {
+            "warm_detour": "The walk is longer"
+          }
+        },
+        "drift_slip": {
+          "requires": [
+            "drift",
+            "goat",
+            "rope"
+          ],
+          "introduces": {
+            "hollow_found": "Now you can see the hollow"
+          }
+        },
+        "seam_response": {
+          "requires": [
+            "seam",
+            "learned_note",
+            "herder"
+          ],
+          "introduces": {
+            "seam_frost": "A narrow line of frost"
+          }
+        },
+        "seam_hum": {
+          "requires": [
+            "seam",
+            "learned_note",
+            "herder"
+          ],
+          "introduces": {
+            "seam_tested": "it answers again"
+          }
+        },
+        "seam_touch": {
+          "requires": [
+            "seam",
+            "learned_note",
+            "herder"
+          ],
+          "introduces": {
+            "seam_tested": "You try twice more"
+          }
+        },
+        "seam_listen": {
+          "requires": [
+            "seam",
+            "learned_note",
+            "herder"
+          ],
+          "introduces": {
+            "seam_tested": "Each time the note sounds"
           }
         }
       }
@@ -533,7 +716,13 @@
         "travelers",
         "griffin",
         "unicorn",
-        "map"
+        "map",
+        "seam",
+        "seam_tested",
+        "grazing_route",
+        "herder",
+        "herd",
+        "sledge"
       ],
       "scenes": {
         "map": {
@@ -603,7 +792,10 @@
         "lead": {
           "requires": [
             "orin",
-            "map"
+            "map",
+            "grazing_route",
+            "herder",
+            "herd"
           ],
           "introduces": {
             "frostfang": "Frostfang",
@@ -614,6 +806,9 @@
           "requires": [
             "olivia",
             "orin",
+            "seren",
+            "map",
+            "grazing_route",
             "rifts"
           ],
           "introduces": {}
@@ -623,7 +818,9 @@
             "orin",
             "seren",
             "frostfang",
-            "hall"
+            "hall",
+            "seam",
+            "learned_note"
           ],
           "introduces": {
             "great_river": "The Great River starts here",
@@ -683,9 +880,37 @@
             "glacier",
             "ice_shelf",
             "frostfang",
-            "listening_chime"
+            "listening_chime",
+            "cairnstep",
+            "herd",
+            "seam",
+            "learned_note"
           ],
           "introduces": {}
+        },
+        "help_now": {
+          "requires": [
+            "olivia",
+            "orin",
+            "seren",
+            "herder",
+            "sledge"
+          ],
+          "introduces": {
+            "supper_gift": "a supper bundle from her pack"
+          }
+        },
+        "safe_routes": {
+          "requires": [
+            "orin",
+            "olivia",
+            "seren",
+            "herder",
+            "cairnstep"
+          ],
+          "introduces": {
+            "supper_gift": "a supper bundle for the herder"
+          }
         }
       },
       "entryByFlag": {

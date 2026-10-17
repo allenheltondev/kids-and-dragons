@@ -69,7 +69,7 @@
           "id": "follow",
           "label": "Follow the trail of white grass",
           "icon": "hand",
-          "goto": "quay"
+          "goto": "delivery"
         }
       ]
     },
@@ -81,7 +81,7 @@
           "id": "continue",
           "label": "Follow the hoofprints",
           "icon": "hand",
-          "goto": "quay"
+          "goto": "delivery"
         }
       ],
       "onEnter": [
@@ -106,7 +106,7 @@
           "id": "tracks",
           "label": "Follow the hoofprints",
           "icon": "hand",
-          "goto": "quay"
+          "goto": "delivery"
         }
       ]
     },
@@ -118,7 +118,7 @@
           "id": "continue",
           "label": "Follow the gull's directions",
           "icon": "hand",
-          "goto": "quay"
+          "goto": "delivery"
         }
       ]
     },
@@ -148,7 +148,7 @@
           "id": "continue",
           "label": "Find the source of the cold",
           "icon": "hand",
-          "goto": "quay"
+          "goto": "delivery"
         }
       ]
     },
@@ -160,7 +160,7 @@
           "id": "continue",
           "label": "Go to the crates",
           "icon": "hand",
-          "goto": "quay"
+          "goto": "delivery"
         }
       ]
     },
@@ -329,6 +329,24 @@
             "flag": "quay_head_start"
           },
           "text": "The crate you wedged is still holding. You have a clear space to plant your feet."
+        },
+        {
+          "when": {
+            "flag": "helped_fish_seller"
+          },
+          "text": "\"You saved my fish. Let us save that little one,\" calls the seller. She catches the loose line and passes it over the crates, where you can reach it without stepping into their path."
+        },
+        {
+          "when": {
+            "flag": "saved_barge_supper"
+          },
+          "text": "The barge pilot catches the sliding potato sacks before they can strike your legs. Your path to the kid stays clear."
+        },
+        {
+          "when": {
+            "flag": "found_barge_mooring"
+          },
+          "text": "From his safely moored boat, the pilot calls, \"Watch that crate on your left!\" You see it tilt in time to step clear."
         }
       ]
     },
@@ -497,6 +515,62 @@
       "heal": 0,
       "choices": [],
       "outcome": "success"
+    },
+    "delivery": {
+      "type": "choice_point",
+      "narration": "A supply barge bumps the quay. Its frogfolk pilot points at a flight of stone landing steps hanging crooked above the water. \"Those were under my feet this morning. Now my regular landing is halfway up a wall.\" Sacks of potatoes slide across his deck. \"That is supper for six boats. Help me get it ashore!\"",
+      "choices": [
+        {
+          "id": "sacks",
+          "label": "Pass the supper sacks ashore",
+          "icon": "hand",
+          "goto": "delivery_sacks"
+        },
+        {
+          "id": "moor",
+          "label": "Find the barge a safe place to tie up",
+          "icon": "hand",
+          "goto": "delivery_moor"
+        }
+      ]
+    },
+    "delivery_sacks": {
+      "type": "story",
+      "narration": "You form a line and pass the potato sacks onto the quay. The pilot lets his boat drift clear of the crooked steps. \"Six crews eating tonight,\" he says. Then he looks up at the landing. \"Still need a new way home.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "quay"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "saved_barge_supper",
+          "value": true
+        }
+      ]
+    },
+    "delivery_moor": {
+      "type": "story",
+      "narration": "You guide the pilot toward a low mooring ring and help tie his boat beside the quay. He can carry the sacks ashore without jumping. \"This will do for tonight,\" he says. \"Tomorrow I have to find where my landing went.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "quay"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_barge_mooring",
+          "value": true
+        }
+      ]
     }
   },
   "llmHints": {

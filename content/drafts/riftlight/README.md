@@ -27,9 +27,9 @@ The three files are ordinary chapter JSON, validated with the same gate as shipp
 
 | Node | Chapter | What the party does |
 | --- | --- | --- |
-| `exchange-rift` | `riftlight-exchange-rift` | Investigate snow and displaced arrivals at the quay, help the dockside locals, rescue a snowhorn kid, cross the first rift together. |
-| `glacier-survival` | `riftlight-glacier-survival` | Find shelter, cross a melt channel, return the kid, warm up in a yeti singing hall, learn its note. |
-| `riftseekers-departure` | `riftlight-riftseekers-departure` | Meet Orin, Olivia and Seren as they pack up, hear the Cairnstep lead, receive and test the Listening Chime. |
+| `exchange-rift` | `riftlight-exchange-rift` | Help a supply barge whose landing moved, investigate displaced arrivals, see kindness repaid during the kid rescue, and cross the first rift together. |
+| `glacier-survival` | `riftlight-glacier-survival` | Navigate an unmarked drift, protect the kid, cross a melt channel, and test the singing seam after learning its note. |
+| `riftseekers-departure` | `riftlight-riftseekers-departure` | Choose a priority in Orin and Olivia's practical disagreement, hear two purposeful leads, and receive the Listening Chime. |
 
 The preview stops beside the singing hall **before the regional fork**. Its terminal graph
 node exists only to make this development preview complete. It is not a Riftlight ending and
@@ -56,6 +56,9 @@ for Seren's callback without duplicating that private view in shared text.
 | `made_glacier_shelter` | Built a windbreak; optional return detail. |
 | `crossed_melt_dry` | Crossed the melt channel without the herder's rescue. |
 | `helped_fish_seller` | Moved the fish under cover; optional Exchange callback. |
+| `saved_barge_supper` / `found_barge_mooring` | Which immediate supply rescue the party chose; the pilot helps during the quay rescue. |
+| `marked_glacier_drift` / `sheltered_kid_on_detour` / `found_drift_hollow` | Which self-directed route got the party through the drift. |
+| `tested_singing_seam` | Every route repeats or observes the note response. The ice remains sealed. |
 | `listening_chime` | Guaranteed quest prop from departure. Sour means not ready; echo means an open return route. |
 | `riftspark` | Granted on crossing the one-use rift: +2 on one chosen check; expires after the next chapter. |
 
@@ -65,10 +68,14 @@ there is no goat outcome flag. Attune is **not** earned yet. Olivia has **not** 
 ## Pacing and remaining work
 
 These are compact first drafts, not finished 30–40-minute chapters. The uncalibrated pacing
-model predicts roughly 8 minutes for the Exchange, 10 for survival and 7 for departure, before
+revised model predicts roughly 11 minutes for the Exchange, 15 for survival and 9 for departure, before
 extra table conversation. Metadata budgets 15 / 15 / 10 minutes pending a real table playtest.
 Keep the departure encounter brief as the character bible requests. Expand the first two
 through consequential play if table timing calls for it, rather than adding narration pages.
+The [required family playtest gate](../../../docs/campaigns/continental-rift/opening-playtest.md)
+is not passed. Record actual times and child engagement in `playtest-observations.json`; no
+measurements have been invented. The 30–40-minute ordinary-node goal remains unresolved until
+playtests support it or a shorter prologue goal is explicitly recorded.
 Each pays the agreed 140 XP, with no extra objectives that could push the campaign over its cap.
 
 Next authoring slice: `ice-shelf-traverse`, `hidden-glacier-rift`, then `headwaters-washout` and
@@ -96,7 +103,7 @@ the graph runtime, and exhaust chapter choices with low/high dice across all six
 all four classes. They check the guaranteed song/chime and Seren's carried-flag callback.
 
 The [scene-by-scene continuity review](../../../docs/campaigns/continental-rift/opening-continuity-review.md)
-covers all 67 scenes, including ordinary objects and actions the proper-name sweep cannot detect.
+covers all 80 scenes, including ordinary objects and actions the proper-name sweep cannot detect.
 `continuity.json` records their narrative dependencies and introduction wording. The real-engine
 walker checks that each path establishes what later scenes refer to, including across chapter
 boundaries and conditional callbacks. New scenes require an explicit review entry.

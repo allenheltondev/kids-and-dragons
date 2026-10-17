@@ -1,7 +1,7 @@
 # Riftlight opening: continuity review
 
 Reviewed 2026-10-17 against the composed scene narration, choices, success/failure branches,
-conditional callbacks, and all incoming routes through the three-node preview. All 67 scenes
+conditional callbacks, and all incoming routes through the three-node preview. All 80 scenes
 are accounted for below. This is a review of the authored opening, not the unwritten campaign.
 
 The name sweep found no dangling proper names after corrections. The manual pass also checked
@@ -25,6 +25,16 @@ ordinary objects, physical state, and actions that a name-only checker cannot se
   case. Name the ring case explicitly so the two cases cannot be confused.
 - Unroll the map before pointing to it, introduce the river and ice shelf before directions,
   and name the Listening Chime before its first action label.
+
+## Editorial revision
+
+The expanded opening adds an all-path displaced supply landing with two rescue approaches,
+immediate seller/pilot callbacks, a self-directed snow-drift obstacle, and an interactive
+singing-seam experiment that leaves the ice sealed. The changed melt threatens the herd's
+grazing route. Orin and Olivia respond to that immediate need, and the party expresses a
+priority before receiving two purposeful leads. All added scenes and conditional references
+are included in the ledger below. Pacing remains subject to the
+[family playtest gate](opening-playtest.md); no measured sessions have been claimed.
 
 ## Regression coverage
 
@@ -67,14 +77,14 @@ Entry facts: none.
 | `ship` | captain, early_ship | chart, thimble |
 | `ship_help` | chart, thimble | — |
 | `ship_cold` | captain, noodle_stall | moving_rope |
-| `quay` | none | crates, fold, moving_rope |
+| `quay` | lost_landing | crates, fold, moving_rope |
 | `check_pattern` | crates, fold, moving_rope | — |
 | `pattern_seen` | crates, fold, noodle_stall | wedge, bleat |
 | `pattern_missed` | fold | barrel_lid, bleat |
 | `clear_quay` | fish_stall, noodle_stall, crates | dock_workers, bleat |
 | `shimmer` | fold, bleat | goat |
 | `read_light` | fold, goat | riftlight |
-| `pull` | fold, moving_rope, crates, goat, wedge (if quay_head_start) | rope, dock_worker |
+| `pull` | fold, moving_rope, crates, goat, wedge (if quay_head_start), fish_stall (if helped_fish_seller), pilot, saved_supper (if saved_barge_supper), pilot, safe_mooring (if found_barge_mooring) | rope, dock_worker |
 | `catch` | goat, fold | — |
 | `anchor` | rope | — |
 | `swoop` | goat, crates | — |
@@ -85,6 +95,9 @@ Entry facts: none.
 | `tumbled` | goat, rope | — |
 | `through` | goat, fold | wet_clothes, coat |
 | `white` | goat, coat | bell |
+| `delivery` | exchange | supply_barge, pilot, lost_landing, supper_sacks |
+| `delivery_sacks` | pilot, supply_barge, lost_landing, supper_sacks | saved_supper |
+| `delivery_moor` | pilot, supply_barge, lost_landing, supper_sacks | safe_mooring |
 
 ### riftlight-glacier-survival
 
@@ -97,7 +110,7 @@ Entry facts: exchange, goat, rope, wet_clothes, coat, bell.
 | `windbreak` | snow_bank, goat, dark_rocks | footprints |
 | `rocks` | dark_rocks, bell | footprints, sledge_tracks |
 | `mend` | goat, scraped_knees, coat, dark_rocks | footprints |
-| `tracks` | goat, footprints | herder, sledge |
+| `tracks` | goat, footprints, drift_markers (if marked_glacier_drift), warm_detour (if sheltered_kid_on_detour), hollow_found (if found_drift_hollow) | herder, sledge |
 | `tell_rift` | herder, wet_clothes, rope, exchange, sledge | blanket |
 | `ask_help` | herder, goat, sledge, melt_channel | blanket |
 | `channel` | herder, herd, melt_channel, sledge, rope | stepping_stone, safe_steps |
@@ -115,13 +128,21 @@ Entry facts: exchange, goat, rope, wet_clothes, coat, bell.
 | `listen` | hall, herder, low_note | songbook |
 | `song_answer` | herder, hall, low_note | — |
 | `learn_note` | hall, herder, low_note | learned_note, seam |
-| `changing` | herder, learned_note, seam, hall, bell | travelers |
+| `changing` | herder, learned_note, seam, hall, bell, seam_tested, snow_bank (if made_glacier_shelter), melt_channel (if crossed_melt_dry) | travelers, grazing_route |
 | `blankets` | blankets, herder, rope, goat, herd, travelers | — |
-| `departure` | hall, goat, herd, travelers | griffin, unicorn, map |
+| `departure` | hall, goat, herd, travelers, blankets (if helped_glacier_herder) | griffin, unicorn, map |
+| `drift` | footprints, dark_rocks, bell, goat, rope | drift |
+| `drift_probe` | drift, rope, bell | drift_markers |
+| `drift_detour` | drift, dark_rocks, goat, coat, bell | warm_detour |
+| `drift_slip` | drift, goat, rope | hollow_found |
+| `seam_response` | seam, learned_note, herder | seam_frost |
+| `seam_hum` | seam, learned_note, herder | seam_tested |
+| `seam_touch` | seam, learned_note, herder | seam_tested |
+| `seam_listen` | seam, learned_note, herder | seam_tested |
 
 ### riftlight-riftseekers-departure
 
-Entry facts: exchange, goat, rope, bell, hall, glacier, learned_note, travelers, griffin, unicorn, map.
+Entry facts: exchange, goat, rope, bell, hall, glacier, learned_note, travelers, griffin, unicorn, map, seam, seam_tested, grazing_route, herder, herd, sledge.
 
 | Scene | Needs established on this path | Establishes here |
 | --- | --- | --- |
@@ -130,12 +151,14 @@ Entry facts: exchange, goat, rope, bell, hall, glacier, learned_note, travelers,
 | `arrival_question` | orin, olivia, seren | — |
 | `fellowship` | orin, olivia, seren, ring_case | riftseekers, rifts |
 | `seren` | seren, orin, map, riftlight (if starweaver_read_first_rift), instruments (unless starweaver_read_first_rift) | — |
-| `lead` | orin, map | frostfang, cairnstep |
-| `olivia` | olivia, orin, rifts | — |
-| `route` | orin, seren, frostfang, hall | great_river, ice_shelf |
+| `lead` | orin, map, grazing_route, herder, herd | frostfang, cairnstep |
+| `olivia` | olivia, orin, seren, map, grazing_route, rifts | — |
+| `route` | orin, seren, frostfang, hall, seam, learned_note | great_river, ice_shelf |
 | `chime` | orin, rifts | listening_chime, chime_rules |
 | `test_chime` | listening_chime, orin, chime_rules | — |
 | `ring` | listening_chime, orin, seren, rifts | — |
 | `wrap` | listening_chime, orin, chime_rules | — |
 | `parting` | olivia, seren, orin, map, cairnstep, ring_case, instruments | — |
-| `camp` | hall, glacier, ice_shelf, frostfang, listening_chime | — |
+| `camp` | hall, glacier, ice_shelf, frostfang, listening_chime, cairnstep, herd, seam, learned_note | — |
+| `help_now` | olivia, orin, seren, herder, sledge | supper_gift |
+| `safe_routes` | orin, olivia, seren, herder, cairnstep | supper_gift |
