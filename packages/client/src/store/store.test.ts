@@ -567,6 +567,30 @@ describe("arrivals and removal (#267)", () => {
     expect(guest.store.getState().arrivals).toHaveLength(6);
   });
 
+  it("bounds the host's list in a flood of joins, keeps the newest, and counts what fell off", async () => {
+    // Review of #269: anyone with the code can join as a new player over and over.
+    const h = harness();
+    h.api.createRoom.mockImplementationOnce(async () => ({
+      code: "ABCD",
+      runId: "r_1",
+      mode: "travel",
+      expiresAt: "2026-07-28T06:00:00.000Z",
+      playerId: "p_host",
+      sessionToken: "tok_host",
+      state: makeState(),
+      deviceToken: "dev_host",
+      host: true,
+    }));
+    await h.store.getState().createRoom("travel", "Allen");
+    for (let i = 0; i < 1000; i++) {
+      h.publish({ kind: "arrival", seq: 0, runId: "r_1", playerId: `p_${i}`, name: `P${i}`, color: "#fff" });
+    }
+    const { arrivals, arrivalsDropped } = h.store.getState();
+    expect(arrivals).toHaveLength(50);
+    expect(arrivals.at(-1)?.playerId).toBe("p_999");
+    expect(arrivalsDropped).toBe(950);
+  });
+
   it("does not try when this device is not the host", async () => {
     const h = harness();
     await h.store.getState().joinRoom("ABCD", "Allen");
