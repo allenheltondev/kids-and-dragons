@@ -91,6 +91,7 @@ function harness(state: RunState = makeState()): Harness {
       viewerToken: "tok_view",
       state,
     })),
+    removePlayer: vi.fn(async (): Promise<void> => undefined),
     postAction: vi.fn(async (): Promise<ActionResponse> => ({ ok: true, seq: state.seq })),
     postPreview: vi.fn(async (): Promise<void> => undefined),
     fetchState: vi.fn(async () => ({ seq: state.seq, state })),
@@ -476,6 +477,160 @@ describe("preview", () => {
     h.publish({ kind: "preview", seq: 7, runId: "r_1", playerId: "p_2", preview: null, context: null });
     expect(h.store.getState().previews).toEqual({});
     expect(h.store.getState().state?.seq).toBe(7);
+  });
+});
+
+describe("arrivals and removal (#267)", () => {
+  it("holds who joined, once each, without touching the mirror", async () => {
+    const h = harness(makeState({ seq: 7 }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    const arrival = { kind: "arrival" as const, seq: 7, runId: "r_1", playerId: "p_2", name: "Mia", color: "#7FD4C1" };
+    h.publish(arrival);
+    // A phone that reloads on the join screen joins twice; it is one arrival.
+    h.publish({ ...arrival, name: "Mia again" });
+    expect(h.store.getState().arrivals).toEqual([{ playerId: "p_2", name: "Mia again", color: "#7FD4C1" }]);
+    expect(h.store.getState().state?.seq).toBe(7);
+
+    h.store.getState().dismissArrival("p_2");
+    expect(h.store.getState().arrivals).toEqual([]);
+  });
+
+  it("ignores an arrival for some other run", async () => {
+    const h = harness();
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.publish({ kind: "arrival", seq: 0, runId: "r_other", playerId: "p_2", name: "Mia", color: "#fff" });
+    expect(h.store.getState().arrivals).toEqual([]);
+  });
+
+  it("knows it is the host when the server says so, and keeps knowing after a reload", async () => {
+    const h = harness();
+    h.api.createRoom.mockImplementationOnce(async () => ({
+      code: "ABCD",
+      runId: "r_1",
+      mode: "travel",
+      expiresAt: "2026-07-28T06:00:00.000Z",
+      playerId: "p_host",
+      sessionToken: "tok_host",
+      state: makeState(),
+      deviceToken: "dev_host",
+      host: true,
+    }));
+    await h.store.getState().createRoom("travel", "Allen");
+    expect(h.store.getState().session?.host).toBe(true);
+    expect(JSON.parse(h.storage.getItem("kad.session.ABCD") ?? "{}")).toMatchObject({ host: true });
+  });
+
+  it("lets the host take a player out, with its device binding", async () => {
+    const h = harness();
+    h.api.createRoom.mockImplementationOnce(async () => ({
+      code: "ABCD",
+      runId: "r_1",
+      mode: "travel",
+      expiresAt: "2026-07-28T06:00:00.000Z",
+      playerId: "p_host",
+      sessionToken: "tok_host",
+      state: makeState(),
+      deviceToken: "dev_host",
+      host: true,
+    }));
+    await h.store.getState().createRoom("travel", "Allen");
+    h.publish({ kind: "arrival", seq: 0, runId: "r_1", playerId: "p_2", name: "Mia", color: "#fff" });
+
+    expect(await h.store.getState().removePlayer("p_2")).toBe(true);
+    expect(h.api.removePlayer).toHaveBeenCalledWith("ABCD", "p_2", "dev_host");
+    expect(h.store.getState().arrivals).toEqual([]);
+  });
+
+  it("never lets a burst push a host's arrival out, though it caps everyone else's", async () => {
+    // The host's notices are its only Remove control (review of #269).
+    const hosted = harness();
+    hosted.api.createRoom.mockImplementationOnce(async () => ({
+      code: "ABCD",
+      runId: "r_1",
+      mode: "travel",
+      expiresAt: "2026-07-28T06:00:00.000Z",
+      playerId: "p_host",
+      sessionToken: "tok_host",
+      state: makeState(),
+      deviceToken: "dev_host",
+      host: true,
+    }));
+    await hosted.store.getState().createRoom("travel", "Allen");
+    const guest = harness();
+    await guest.store.getState().joinRoom("ABCD", "Sam");
+    for (const h of [hosted, guest]) {
+      for (let i = 0; i < 10; i++) {
+        h.publish({ kind: "arrival", seq: 0, runId: "r_1", playerId: `p_${i}`, name: `P${i}`, color: "#fff" });
+      }
+    }
+    expect(hosted.store.getState().arrivals).toHaveLength(10);
+    expect(guest.store.getState().arrivals).toHaveLength(6);
+  });
+
+  it("bounds the host's list in a flood of joins, keeps the newest, and counts what fell off", async () => {
+    // Review of #269: anyone with the code can join as a new player over and over.
+    const h = harness();
+    h.api.createRoom.mockImplementationOnce(async () => ({
+      code: "ABCD",
+      runId: "r_1",
+      mode: "travel",
+      expiresAt: "2026-07-28T06:00:00.000Z",
+      playerId: "p_host",
+      sessionToken: "tok_host",
+      state: makeState(),
+      deviceToken: "dev_host",
+      host: true,
+    }));
+    await h.store.getState().createRoom("travel", "Allen");
+    for (let i = 0; i < 1000; i++) {
+      h.publish({ kind: "arrival", seq: 0, runId: "r_1", playerId: `p_${i}`, name: `P${i}`, color: "#fff" });
+    }
+    const { arrivals, arrivalsDropped } = h.store.getState();
+    expect(arrivals).toHaveLength(50);
+    expect(arrivals.at(-1)?.playerId).toBe("p_999");
+    expect(arrivalsDropped).toBe(950);
+  });
+
+  it("does not try when this device is not the host", async () => {
+    const h = harness();
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    expect(await h.store.getState().removePlayer("p_2")).toBe(false);
+    expect(h.api.removePlayer).not.toHaveBeenCalled();
+  });
+
+  it("says why when the server refuses", async () => {
+    const h = harness();
+    h.api.createRoom.mockImplementationOnce(async () => ({
+      code: "ABCD",
+      runId: "r_1",
+      mode: "travel",
+      expiresAt: "2026-07-28T06:00:00.000Z",
+      playerId: "p_host",
+      sessionToken: "tok_host",
+      state: makeState(),
+      deviceToken: "dev_host",
+      host: true,
+    }));
+    await h.store.getState().createRoom("travel", "Allen");
+    h.api.removePlayer.mockRejectedValueOnce(new ApiError(403, "only the screen or phone that opened this room can take someone out"));
+    expect(await h.store.getState().removePlayer("p_2")).toBe(false);
+    expect(h.store.getState().error).toMatch(/only the screen or phone/);
+  });
+
+  it("has a TV that opened the room present its binding, to learn it is still the host", async () => {
+    const h = harness();
+    await h.store.getState().openOnThisScreen();
+    h.api.watchRoom.mockImplementationOnce(async () => ({
+      runId: "r_1",
+      mode: "party",
+      expiresAt: "2026-07-05T00:00:00.000Z",
+      viewerToken: "tok_view",
+      state: makeState(),
+      host: true,
+    }));
+    await h.store.getState().attach("ABCD", "display");
+    expect(h.api.watchRoom).toHaveBeenCalledWith("ABCD", expect.any(Number), "dev_tv");
+    expect(h.store.getState().session).toMatchObject({ playerId: "", host: true });
   });
 });
 

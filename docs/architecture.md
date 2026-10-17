@@ -114,6 +114,7 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Game state | `RUN#<runId>` | `STATE` | Current authoritative snapshot. Single item. |
 | Event log | `RUN#<runId>` | `EVT#<seq>` | Append-only. Enables replay and reconnect. |
 | Room | `ROOM#<code>` | `META` | 4-letter code → runId, mode (`party` \| `travel`). **TTL 6 hours.** |
+| Code misses | `GUESS#<client>` | `WINDOW#<n>` | Wrong room codes from one client in one 15-minute window (§4.5, "Joining a session"). **TTL one window past its own.** |
 
 GSI1 does three jobs, all of them lookups that would otherwise be scans:
 
@@ -239,6 +240,7 @@ Not every record needs a migration path, because most of them expire on their ow
 | Record | Lives for | Needs migration? |
 |---|---|---|
 | Room | 6 hours (TTL) | **No** — wait a day and every row is new |
+| Code misses | ≤ 30 minutes (TTL) | **No** — a counter nobody reads after its window |
 | Guest household and its contents | 7 days since last played, sliding | **No** — the sweeper handles it |
 | Device binding | 30 days, sliding | **No** — an unused phone re-pairs by QR |
 | `RunState`, events, chapter progress | one campaign | **Yes**, but only while it is in flight |
@@ -558,16 +560,57 @@ no avatar picker with a password behind it — her phone knows it's her phone. T
 4. Because identity is resolved from the device, **there is no "who are you?" step.** You scan, and your character is already on the board.
 5. **The first phone to join a claimable room decides whose room it is.** A phone that already belongs to a household takes the room into that household. The `ROOM#` item and the run's `HH#…/RUN#` row move together in one conditional transaction (`claimRoom`), and the lobby is re-read for that household's campaigns. A phone with no binding settles the room on the TV's household first, and is then created in it. Either way the room stops being claimable, and from then on a phone from another household is refused as before. This is what lets any screen host the evening. A new TV, or one whose storage was cleared, no longer starts a fresh guest household that locks the family's phones out of their own campaigns and heroes. Visiting phones from a second household are still refused (deferred).
 
+**The code is the boundary, so guessing it is rationed.** Any phone that names a
+live code can watch the room, read its state or join it, and 24⁴ codes is a
+small space. So every route that looks a room up by code (join, watch, and
+state read by code) counts the codes a client asks for that have no open room
+behind them, and refuses that client, for whatever it asks next, once it has
+missed `CODE_MISS_LIMIT` times in a 15-minute window (`handlers/code-guard.ts`).
+It refuses *before* the lookup, so a right code tells a refused guesser nothing,
+and the lookup is reserved by one conditional write and given back on a hit, so
+a burst of parallel guesses cannot all slip in under the limit together.
+Misses, not attempts, because a family's joins and reconnects are most of the
+traffic; and a state read carrying a token for that room is never counted,
+so a game in progress is never cut off by strangers on the same network. A
+client is its IPv4 address or its IPv6 /64, and behind CloudFront that comes
+from a header CloudFront sets and vouches for (deploy.md, "The origin secret").
+
+**The room sees who arrives, and its host can take one out.** Every join is
+announced on the room's channel (`ArrivalMessage`), live only like a preview,
+so a stranger with the code shows up the moment they are in, not after they
+have made a hero. The shared display shows it, and so does the device that
+opened the room (`RoomRecord.hostDeviceId`: the TV in Party Mode, the host's
+phone in Travel Mode). On the host's device the notice carries a Remove button
+(`handlers/remove.ts`). A removed player stays in `party` with
+`connected: false`, which every turn, vote, roll and ready-gate already reads
+as away, so taking somebody out mid-fight strands nothing, and goes on
+`RunState.removed`, which the join, every action, the preview relay, presence
+and the channel authorizer all refuse. The authorizer holds a player's "yes"
+for a minute rather than five, so a removed phone that reconnects is turned
+away soon. Nor can a removed phone go on watching: only the screen that opened
+the room may watch it, and reading its state takes a token for it ("The TV,
+which is nobody", below). What removal cannot do is stop a phone that clears
+its storage: it comes back as a new player, is announced again, and can be
+removed again. Locking a room to new joins is #263's.
+
 Room items carry a **6-hour TTL** so abandoned rooms clean themselves up. Revoking a device does not
 touch any character — characters belong to the household.
 
 #### The TV, which is nobody
 
-A display client has no device, no player, and no token, because a screen does
-not sign in (spec §2.1). Locally that costs nothing — it just opens the stream.
-In prod the realtime channel is authorised per subscriber, so it needs *something*
-to present: `POST /room/ABCD/watch` returns a **viewer token** naming that room
-and nothing else, valid until the room expires.
+A display client has no player and no session, because a screen does not sign
+in (spec §2.1). The realtime channel is authorised per subscriber, so it needs
+*something* to present: `POST /room/ABCD/watch` returns a **viewer token**
+naming that room and nothing else, valid until the room expires.
+
+Only the screen that opened the room gets one (#267). It presents the device
+binding it was given when it opened the room, which survives a hard refresh.
+Anyone else with the code would otherwise watch the party unannounced, out of
+reach of Remove; to see a room, a stranger has to join it, and be seen doing so.
+For the same reason `GET /state` answers only a session or viewer token for
+that room, and answers anything else as if the room did not exist. The price is
+that a TV whose storage is cleared cannot reattach to its own room: it opens a
+new one.
 
 It is a separate type from a session token rather than a session token with the
 fields blanked out, so that a display credential can never satisfy a code path

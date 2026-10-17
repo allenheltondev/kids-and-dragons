@@ -38,6 +38,18 @@ export interface ClientSession {
   playerId: string;
   mode: RoomMode;
   sessionToken: string;
+  /**
+   * This device opened the room, so it sees who arrives and may take them out
+   * (#267). The server decides; this only says which buttons to draw.
+   */
+  host?: boolean;
+}
+
+/** Somebody who just joined the room (`ArrivalMessage`), held until dismissed. */
+export interface Arrival {
+  playerId: string;
+  name: string;
+  color: string;
 }
 
 /** The last presentation event, with a monotonic id so effects can dedupe. */
@@ -79,6 +91,17 @@ export interface GameStore {
    * possibly stale, so a reader checks a preview still fits the state.
    */
   previews: Readonly<Record<string, HeldPreview>>;
+  /**
+   * Who has joined since this screen attached, newest last (#267). Live only,
+   * like `previews`: an arrival is news, never part of the mirror, so a screen
+   * that attaches later starts with none.
+   */
+  arrivals: readonly Arrival[];
+  /**
+   * Arrivals the host's list let go of because it was full (`arrivals` holds
+   * the newest). Non-zero only in a flood, which is the screen's cue to say so.
+   */
+  arrivalsDropped: number;
   /** Set when an intent was rejected. Cleared by `dismissError()`. */
   error: string | null;
   rules: RulesContent | null;
@@ -154,6 +177,13 @@ export interface GameStore {
    * a highlight on the TV, never a turn, so it neither retries nor reports.
    */
   preview(preview: IntentPreview | null, context: string | null): void;
+  /** Stops showing an arrival. */
+  dismissArrival(playerId: string): void;
+  /**
+   * The host takes a player out of the room (#267). Resolves `true` once the
+   * server has done it; a refusal lands in `error` and resolves `false`.
+   */
+  removePlayer(playerId: string): Promise<boolean>;
   /** Drops the session and disconnects. Does not delete anything server-side. */
   leave(): void;
   dismissError(): void;

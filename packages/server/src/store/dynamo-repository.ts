@@ -70,6 +70,8 @@ import {
   GSI1_GUEST,
   GSI1_GUEST_SK,
   GSI1_RUN,
+  GUESS,
+  GUESS_WINDOW_SK,
   HH,
   META,
   PLAYER_SK,
@@ -86,7 +88,7 @@ interface TableItem {
   SK: string;
   GSI1PK?: string;
   GSI1SK?: string;
-  /** Epoch seconds, DynamoDB's TTL attribute. Only rooms carry it. */
+  /** Epoch seconds, DynamoDB's TTL attribute. Only rooms and code-miss windows carry it. */
   ttl?: number;
   /**
    * Schema version of `data`, per entity (architecture §3.2). A top-level
@@ -979,6 +981,77 @@ export class DynamoRepository implements GameRepository {
     } catch (err) {
       if (isTransactionCancelled(err)) return false;
       throw err;
+    }
+  }
+
+  // --- room-code lookups ----------------------------------------------------
+
+  async reserveCodeLookup(clientKey: string, window: number, limit: number, ttl: number): Promise<boolean> {
+    /*
+     * One conditional `ADD`: the condition and the increment are a single
+     * write, so a burst of parallel guesses is admitted at most `limit` times
+     * however it interleaves, and no read anywhere can be stale.
+     *
+     * A row whose ttl has passed but which TTL has not swept yet (deletion is
+     * eventual) is started over instead of added to. If two requests race to
+     * start it over, the loser goes round once more and adds to the winner's.
+     */
+    const key = { PK: GUESS(clientKey), SK: GUESS_WINDOW_SK(window) };
+    const names = { "#d": "data", "#ttl": "ttl", "#entity": "entity" };
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const nowSeconds = Math.floor(this.now() / 1000);
+      const values = { ":one": 1, ":ttl": ttl, ":entity": "code-lookups", ":now": nowSeconds };
+      try {
+        await this.doc.send(
+          new UpdateCommand({
+            TableName: this.table,
+            Key: key,
+            UpdateExpression: "ADD #d :one SET #ttl = if_not_exists(#ttl, :ttl), #entity = :entity",
+            ConditionExpression: "attribute_not_exists(#d) OR (#d < :limit AND #ttl > :now)",
+            ExpressionAttributeNames: names,
+            ExpressionAttributeValues: { ...values, ":limit": limit },
+          }),
+        );
+        return true;
+      } catch (err) {
+        if (!isConditionalFailure(err)) throw err;
+      }
+      // Refused: the window is full, or the row is expired and unswept. Only
+      // the second may be started over, and only while it is still expired.
+      try {
+        await this.doc.send(
+          new UpdateCommand({
+            TableName: this.table,
+            Key: key,
+            UpdateExpression: "SET #d = :one, #ttl = :ttl, #entity = :entity",
+            ConditionExpression: "#ttl <= :now",
+            ExpressionAttributeNames: names,
+            ExpressionAttributeValues: values,
+          }),
+        );
+        return true;
+      } catch (err) {
+        if (!isConditionalFailure(err)) throw err;
+      }
+    }
+    return false;
+  }
+
+  async refundCodeLookup(clientKey: string, window: number): Promise<void> {
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: GUESS(clientKey), SK: GUESS_WINDOW_SK(window) },
+          UpdateExpression: "ADD #d :minus",
+          ConditionExpression: "#d > :zero",
+          ExpressionAttributeNames: { "#d": "data" },
+          ExpressionAttributeValues: { ":minus": -1, ":zero": 0 },
+        }),
+      );
+    } catch (err) {
+      // Already at zero, or gone: nothing to give back.
+      if (!isConditionalFailure(err)) throw err;
     }
   }
 }

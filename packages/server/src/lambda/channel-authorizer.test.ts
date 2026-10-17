@@ -167,6 +167,37 @@ describe("channel authorizer", () => {
     expect(result.ttlOverride).toBe(30);
   });
 
+  it("refuses a player the host took out of the run, though the token is valid", async () => {
+    // #267. The session token stays well-formed until the room ends; only the
+    // run knows the host removed them, and a reconnect must not get back on.
+    const { identity, clock } = setup();
+    const token = await identity.issueSessionToken({
+      runId: "r_1",
+      roomCode: "ABCD",
+      householdId: "h_1",
+      playerId: "p_1",
+      role: "adult",
+      expiresAt: clock.now() + 3600_000,
+    });
+    const removed = async (runId: string, playerId: string) => runId === "r_1" && playerId === "p_1";
+    expect((await authorize(event({ token }), identity, clock.now, removed)).isAuthorized).toBe(false);
+    const kept = async () => false;
+    expect((await authorize(event({ token }), identity, clock.now, kept)).isAuthorized).toBe(true);
+  });
+
+  it("holds a player's yes for a minute, so a removal reaches a reconnect soon", async () => {
+    const { identity, clock } = setup();
+    const token = await identity.issueSessionToken({
+      runId: "r_1",
+      roomCode: "ABCD",
+      householdId: "h_1",
+      playerId: "p_1",
+      role: "adult",
+      expiresAt: clock.now() + 3600_000,
+    });
+    expect((await authorize(event({ token }), identity, clock.now)).ttlOverride).toBe(60);
+  });
+
   it("matches the room code case-insensitively", async () => {
     const { identity, clock } = setup();
     const token = await identity.issueSessionToken({

@@ -54,6 +54,8 @@ import {
   GSI1_GUEST,
   GSI1_GUEST_SK,
   GSI1_RUN,
+  GUESS,
+  GUESS_WINDOW_SK,
   HH,
   META,
   PLAYER_SK,
@@ -70,7 +72,7 @@ interface TableItem {
   SK: string;
   GSI1PK?: string;
   GSI1SK?: string;
-  /** Epoch seconds, TTL attribute. Only rooms carry it today. */
+  /** Epoch seconds, TTL attribute. Only rooms and code-miss windows carry it. */
   ttl?: number;
   /**
    * Schema version of `data`, per entity (architecture §3.2). A top-level
@@ -645,6 +647,31 @@ export class MemoryRepository implements GameRepository {
       });
     }
     return true;
+  }
+
+  // --- room-code lookups ----------------------------------------------------
+
+  async reserveCodeLookup(clientKey: string, window: number, limit: number, ttl: number): Promise<boolean> {
+    // No await between the read and the write: atomic, as the conditional
+    // `ADD` is in the real store.
+    const existing = this.get(GUESS(clientKey), GUESS_WINDOW_SK(window));
+    const taken = (existing?.data as number | undefined) ?? 0;
+    if (taken >= limit) return false;
+    this.put({
+      PK: GUESS(clientKey),
+      SK: GUESS_WINDOW_SK(window),
+      ttl: existing?.ttl ?? ttl,
+      entity: "code-lookups",
+      data: taken + 1,
+    });
+    return true;
+  }
+
+  async refundCodeLookup(clientKey: string, window: number): Promise<void> {
+    const existing = this.get(GUESS(clientKey), GUESS_WINDOW_SK(window));
+    const taken = (existing?.data as number | undefined) ?? 0;
+    if (!existing || taken <= 0) return;
+    this.put({ ...existing, data: taken - 1 });
   }
 }
 

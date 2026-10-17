@@ -175,8 +175,10 @@ Resources:
           Projection:
             ProjectionType: ALL
       TimeToLiveSpecification:
-        # Rooms only. Everything else that expires does so through the GUEST
-        # index and the sweeper — see the long note in store/keys.ts.
+        # Rooms and code-miss windows (handlers/code-guard.ts) only: each is one
+        # row that nothing else points at. Everything else that expires does so
+        # through the GUEST index and the sweeper — see the long note in
+        # store/keys.ts.
         AttributeName: ttl
         Enabled: true
       # No point-in-time recovery, deliberately. The only restore it offers is
@@ -373,8 +375,9 @@ Resources:
     Properties:
       CodeUri: .build/channel-authorizer
       Description: Decides who may subscribe to room/<code>
-      # Only needs to read device bindings and verify a signature. No publish, no
-      # writes — deliberately the smallest policy in the stack.
+      # Only needs to read device bindings and a run's removed list (#267), and
+      # verify a signature. No publish, no writes — deliberately the smallest
+      # policy in the stack.
       Environment:
         Variables:
           TABLE_NAME: !Ref Table
@@ -449,6 +452,13 @@ Resources:
           # (llm/enabled.ts), because "false" is a non-empty string and every
           # `if (process.env.X)` ever written would turn it on.
           LIVE_LLM_ENABLED: !Ref LiveLlmEnabled
+          # The value CloudFront stamps on every request it forwards, as
+          # x-kad-origin (see the api origin below). It is what lets the API
+          # believe the viewer address CloudFront writes into x-kad-viewer, and
+          # disbelieve one sent straight to the execute-api address
+          # (lambda/http.ts, clientOf). scripts/deploy.sh creates the parameter
+          # before the first deploy that needs it.
+          KAD_ORIGIN_SECRET: !Sub "{{resolve:ssm:/kad/${StageName}/origin-secret}}"
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
@@ -634,6 +644,24 @@ Resources:
           return event.request;
         }
 
+  # Who is asking, for the wrong-code budget (handlers/code-guard.ts). Behind
+  # CloudFront the API sees an edge's address, shared by everyone near it, so
+  # this writes the viewer's own into x-kad-viewer. Assigned, not appended: a
+  # viewer that sends its own x-kad-viewer has it overwritten here.
+  ViewerAddressFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: !Sub "kad-viewer-address-${StageName}"
+      AutoPublish: true
+      FunctionConfig:
+        Comment: Pass the viewer's address to the API
+        Runtime: cloudfront-js-2.0
+      FunctionCode: |
+        function handler(event) {
+          event.request.headers["x-kad-viewer"] = { value: event.viewer.ip };
+          return event.request;
+        }
+
   # The custom domain (prod). CloudFormation writes the DNS validation record
   # itself and waits for the certificate before the distribution uses it.
   SiteCertificate:
@@ -702,6 +730,15 @@ Resources:
             CustomOriginConfig:
               OriginProtocolPolicy: https-only
               OriginSSLProtocols: [TLSv1.2]
+            # Proves a request came through CloudFront (see KAD_ORIGIN_SECRET on
+            # the API function). CloudFront overwrites a viewer's own header of
+            # the same name, so the value never comes from outside. A plain
+            # `ssm` reference rather than `ssm-secure`: CloudFront does not take
+            # SecureString references, and the value is a bearer of nothing
+            # beyond "believe this request's x-kad-viewer".
+            OriginCustomHeaders:
+              - HeaderName: x-kad-origin
+                HeaderValue: !Sub "{{resolve:ssm:/kad/${StageName}/origin-secret}}"
         DefaultCacheBehavior:
           TargetOriginId: site
           ViewerProtocolPolicy: redirect-to-https
@@ -725,8 +762,13 @@ Resources:
             CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad
             # Managed-AllViewerExceptHostHeader — forwards Authorization and
             # x-kad-device-token while letting the origin see its own host,
-            # which API Gateway requires.
+            # which API Gateway requires. Also x-kad-viewer, which the function
+            # below sets: a header a viewer-request function writes is a viewer
+            # header as far as the policy is concerned.
             OriginRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac
+            FunctionAssociations:
+              - EventType: viewer-request
+                FunctionARN: !GetAtt ViewerAddressFunction.FunctionARN
           - PathPattern: /content/*
             TargetOriginId: site
             ViewerProtocolPolicy: redirect-to-https

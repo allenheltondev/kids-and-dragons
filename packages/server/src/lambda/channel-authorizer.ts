@@ -38,6 +38,9 @@ export interface ChannelAuthorizerResult {
 
 const DENY: ChannelAuthorizerResult = { isAuthorized: false };
 
+/** How long AppSync may hold a player's "yes" (see `ttlOverride` below). */
+const SESSION_CACHE_SECONDS = 60;
+
 /**
  * Cached for the life of the container. The signing key is fetched once and
  * every verification after that is local arithmetic — this function sits in
@@ -50,19 +53,31 @@ const DENY: ChannelAuthorizerResult = { isAuthorized: false };
  * rather than new.
  */
 let identity: TokenIdentity | null = null;
+let repo: DynamoRepository | null = null;
+
+function table(): DynamoRepository {
+  repo ??= new DynamoRepository({ tableName: requiredEnv("TABLE_NAME") });
+  return repo;
+}
 
 function service(): TokenIdentity {
   identity ??= new TokenIdentity({
-    repo: new DynamoRepository({ tableName: requiredEnv("TABLE_NAME") }),
+    repo: table(),
     secret: ssmParameterSource(requiredEnv("TOKEN_KEY_PARAMETER")),
   });
   return identity;
 }
 
+/** On the run's `removed` list (#267). A run that cannot be read is not proof of it. */
+async function removedFromRun(runId: string, playerId: string): Promise<boolean> {
+  const state = await table().getState(runId);
+  return state?.removed?.includes(playerId) ?? false;
+}
+
 export async function handler(
   event: ChannelAuthorizerEvent,
 ): Promise<ChannelAuthorizerResult> {
-  return authorize(event, service());
+  return authorize(event, service(), Date.now, removedFromRun);
 }
 
 /** Just the two token kinds a client can present. */
@@ -77,6 +92,12 @@ export async function authorize(
   event: ChannelAuthorizerEvent,
   identity: Resolver,
   now: () => number = Date.now,
+  /**
+   * Was this player taken out of the run by the host (#267)? Their session
+   * token stays well-formed until the room ends, so only the run can say.
+   * Asked of session tokens alone: a viewer token has no player to take out.
+   */
+  removed: (runId: string, playerId: string) => Promise<boolean> = async () => false,
 ): Promise<ChannelAuthorizerResult> {
   const token = event.authorizationToken ?? "";
   if (!token) return DENY;
@@ -97,6 +118,7 @@ export async function authorize(
   const viewer = session ? null : await identity.resolveViewer(token);
   const grant = session ?? viewer;
   if (!grant) return DENY;
+  if (session && (await removed(session.runId, session.playerId))) return DENY;
 
   if (operation === "SUBSCRIBE") {
     const code = roomCodeOf(event);
@@ -116,8 +138,14 @@ export async function authorize(
      * AppSync caches an authorization decision for this long. Capped by the
      * token's own remaining life so a room that has expired — or a device that
      * was just revoked — cannot keep a subscription alive on a stale yes.
+     * A player's yes is held a minute rather than five: it is the one a host
+     * can take back (#267), and a removed phone reconnecting inside the cache
+     * would otherwise be let straight back on.
      */
-    ttlOverride: Math.max(0, Math.min(300, Math.floor((grant.expiresAt - now()) / 1000))),
+    ttlOverride: Math.max(
+      0,
+      Math.min(session ? SESSION_CACHE_SECONDS : 300, Math.floor((grant.expiresAt - now()) / 1000)),
+    ),
   };
 }
 

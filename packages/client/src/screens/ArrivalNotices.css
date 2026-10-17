@@ -1,0 +1,84 @@
+/*
+ * Who just joined (ArrivalNotices.tsx). On the display, a top corner, out of
+ * the way of the error toast (bottom) and the reconnecting banner (top
+ * centre), so all three can be on screen together. That one is shell-level,
+ * so fixed positioning and viewport units are fair, as they are for the toast.
+ */
+.kad-arrivals--float {
+  position: fixed;
+  inset-block-start: calc(var(--kad-safe-top, 0px) + 3.5rem);
+  inset-inline-end: calc(var(--kad-safe-right, 0px) + 1rem);
+  z-index: 100;
+  inline-size: min(24rem, calc(100vw - 2rem));
+}
+
+.kad-arrivals {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/*
+ * A host's phone (PlayerView): in the flow, so it pushes the player's own
+ * controls down rather than covering them. Container-relative, like
+ * everything inside a surface.
+ */
+.kad-arrivals--inline {
+  flex: 0 0 auto;
+  /* Clear of the sound button, which sits in the top corner of every phone. */
+  padding: 0.5rem calc(var(--kad-touch-min) + 0.25rem) 0 0.75rem;
+}
+
+/* All of them, on request: scrolls inside its own box, never pushes the
+   host's controls off the bottom. */
+.kad-arrivals--expanded {
+  max-block-size: 18rem;
+  overflow-y: auto;
+}
+
+.kad-arrivals__flood {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--kad-radius-md);
+  border: 1px solid var(--kad-warn);
+  background: var(--kad-bg-raised);
+  color: var(--kad-ink);
+}
+
+.kad-arrival {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+  border-radius: var(--kad-radius-md);
+  background: var(--kad-bg-raised);
+  border: 1px solid var(--kad-border);
+  box-shadow: var(--kad-shadow-lg);
+  color: var(--kad-ink);
+  font-size: var(--kad-text-md);
+  animation: kad-toast-in var(--kad-dur-base) var(--kad-ease-out);
+}
+
+/* The player's own colour, so the arrival matches their seat on the board. */
+.kad-arrival__mark {
+  display: grid;
+  place-items: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  color: var(--kad-accent-ink);
+}
+
+.kad-arrival__text {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kad-arrival {
+    animation: none;
+  }
+}

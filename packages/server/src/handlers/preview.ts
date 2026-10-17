@@ -42,7 +42,10 @@ export async function relayPreview(input: PreviewInput, deps: PreviewDeps): Prom
   const state = await deps.repo.getState(input.runId);
   if (!state) return { ok: false, status: 404, code: "NOT_FOUND", message: `no run ${input.runId}` };
   // Only a seat at this table has a phone to tap on.
-  if (!state.party.some((member) => member.playerId === input.playerId)) {
+  if (
+    !state.party.some((member) => member.playerId === input.playerId) ||
+    state.removed?.includes(input.playerId)
+  ) {
     return { ok: false, status: 403, code: "FORBIDDEN", message: "not seated at this table" };
   }
 

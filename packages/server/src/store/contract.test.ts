@@ -980,6 +980,52 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect((await repo.getRoom("ABCD"))?.householdId).toBe("h_1");
       });
     });
+
+    describe("room-code lookups", () => {
+      const later = () => Math.floor((Date.now() + HOUR) / 1000);
+      const LIMIT = 5;
+
+      it("admits a client up to the limit in one window, then refuses it", async () => {
+        for (let i = 0; i < LIMIT; i++) {
+          expect(await repo.reserveCodeLookup("192.0.2.1", 7, LIMIT, later()), `lookup ${i}`).toBe(true);
+        }
+        expect(await repo.reserveCodeLookup("192.0.2.1", 7, LIMIT, later())).toBe(false);
+      });
+
+      it("keeps clients and windows apart", async () => {
+        for (let i = 0; i < LIMIT; i++) await repo.reserveCodeLookup("192.0.2.1", 7, LIMIT, later());
+        expect(await repo.reserveCodeLookup("192.0.2.2", 7, LIMIT, later())).toBe(true);
+        expect(await repo.reserveCodeLookup("192.0.2.1", 8, LIMIT, later())).toBe(true);
+      });
+
+      it("admits a burst of parallel lookups exactly up to the limit", async () => {
+        // A guesser fires in parallel. A read before the write let every one
+        // of them see "under the limit"; one conditional write does not.
+        const admitted = await Promise.all(
+          Array.from({ length: LIMIT * 3 }, () => repo.reserveCodeLookup("192.0.2.1", 7, LIMIT, later())),
+        );
+        expect(admitted.filter(Boolean)).toHaveLength(LIMIT);
+      });
+
+      it("gives a lookup back, and never below zero", async () => {
+        for (let i = 0; i < LIMIT; i++) await repo.reserveCodeLookup("192.0.2.1", 7, LIMIT, later());
+        await repo.refundCodeLookup("192.0.2.1", 7);
+        expect(await repo.reserveCodeLookup("192.0.2.1", 7, LIMIT, later())).toBe(true);
+        expect(await repo.reserveCodeLookup("192.0.2.1", 7, LIMIT, later())).toBe(false);
+
+        // A refund on a window nobody used does nothing, and leaves no credit behind.
+        await repo.refundCodeLookup("192.0.2.9", 7);
+        await repo.refundCodeLookup("192.0.2.9", 7);
+        for (let i = 0; i < LIMIT; i++) await repo.reserveCodeLookup("192.0.2.9", 7, LIMIT, later());
+        expect(await repo.reserveCodeLookup("192.0.2.9", 7, LIMIT, later())).toBe(false);
+      });
+
+      it("starts a window over the moment its ttl passes, not when the sweep runs", async () => {
+        const past = Math.floor((Date.now() - HOUR) / 1000);
+        for (let i = 0; i < LIMIT; i++) await repo.reserveCodeLookup("192.0.2.1", 7, LIMIT, past);
+        expect(await repo.reserveCodeLookup("192.0.2.1", 7, LIMIT, later())).toBe(true);
+      });
+    });
   });
 }
 

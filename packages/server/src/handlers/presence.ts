@@ -62,6 +62,8 @@ async function trySetPresence(
 
   const member = state.party.find((m) => m.playerId === input.playerId);
   if (!member || member.connected === input.connected) return null;
+  // Taken out by the host (#267): their stream opening again is not them coming back.
+  if (input.connected && state.removed?.includes(input.playerId)) return null;
 
   const nowMs = deps.now();
   const nextSeq = state.seq + 1;

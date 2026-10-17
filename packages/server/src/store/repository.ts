@@ -217,6 +217,13 @@ export interface RoomRecord {
    * every other room.
    */
   claimable?: boolean;
+  /**
+   * The device that opened the room: the TV in Party Mode, the host's phone in
+   * Travel Mode. It is the one that may take a player out (#267, `removePlayer`).
+   * It stays the host when a phone settles a TV's room on its household. Absent
+   * on rooms opened before it existed, which then have no host.
+   */
+  hostDeviceId?: string;
 }
 
 /**
@@ -448,4 +455,22 @@ export interface GameRepository {
    * caller re-reads the room and goes by what it says now.
    */
   claimRoom(input: { code: string; run: RunRecord; householdId: string }): Promise<boolean>;
+
+  // --- room-code lookups -----------------------------------------------------
+  /**
+   * Takes one of `limit` lookups by code for `clientKey` in one fixed window
+   * (`handlers/code-guard.ts`), atomically: `false`, and nothing written, when
+   * the window already holds `limit`. A window whose `ttl` has passed counts
+   * as empty. `ttl` is epoch **seconds**, set by the window's first lookup.
+   *
+   * One conditional write rather than a read then a write, so a burst of
+   * parallel requests cannot all read "below the limit" before any of them
+   * is counted.
+   */
+  reserveCodeLookup(clientKey: string, window: number, limit: number, ttl: number): Promise<boolean>;
+  /**
+   * Gives one lookup back: the code named an open room, so it was not a guess.
+   * Never takes a window below zero.
+   */
+  refundCodeLookup(clientKey: string, window: number): Promise<void>;
 }
