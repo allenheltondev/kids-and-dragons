@@ -147,6 +147,11 @@ describe("Riftlight's authored opening", () => {
     for (const [index, chapter] of [...chapters.values()].entries()) {
       expect(Object.keys(continuity[chapter.id]!.scenes).sort()).toEqual(Object.keys(chapter.scenes).sort());
       const { ends, endingKnowledge } = allPaths(chapter, species, cls);
+      if (chapter.id.endsWith("exchange-rift")) {
+        for (const end of ends) {
+          expect([end.flags.saved_barge_supper, end.flags.found_barge_mooring].filter(Boolean)).toHaveLength(1);
+        }
+      }
       const nextChapter = [...chapters.values()][index + 1];
       if (nextChapter) {
         for (const [endIndex, known] of endingKnowledge.entries()) {
@@ -158,7 +163,11 @@ describe("Riftlight's authored opening", () => {
         }
       }
       if (chapter.id.endsWith("glacier-survival")) {
-        for (const end of ends) expect(end.flags.learned_glacier_note).toBe(true);
+        for (const end of ends) {
+          expect(end.flags.learned_glacier_note).toBe(true);
+          expect(end.flags.tested_singing_seam).toBe(true);
+          expect([end.flags.marked_glacier_drift, end.flags.sheltered_kid_on_detour, end.flags.found_drift_hollow].filter(Boolean)).toHaveLength(1);
+        }
       }
       if (chapter.id.endsWith("riftseekers-departure")) {
         for (const end of ends) expect(end.party[0]!.character.questItems).toContain("listening_chime");
@@ -249,6 +258,31 @@ describe("Riftlight's authored opening", () => {
       expect(result.error).toBeUndefined();
       expect(result.state.narration.includes("One of you can see it")).toBe(read);
       allPaths(chapter, "manticore", "duskrunner", read ? { starweaver_read_first_rift: true } : {});
+    }
+  });
+
+  it("helping the fish seller pays off during the rescue only on the helping route", () => {
+    const chapter = chapters.get("riftlight-exchange-rift")!;
+    for (const helped of [false, true]) {
+      const state = start(chapter, "manticore", "duskrunner", helped ? { helped_fish_seller: true } : {});
+      const result = enterScene(state, "pull", context(chapter));
+      expect(result.error).toBeUndefined();
+      expect(result.state.narration.includes("You saved my fish")).toBe(helped);
+      expect(result.state.narration.includes("where you can reach it without stepping into their path")).toBe(helped);
+    }
+  });
+
+  it("the glacier remembers a windbreak and the singing discovery stays sealed", () => {
+    const chapter = chapters.get("riftlight-glacier-survival")!;
+    for (const sheltered of [false, true]) {
+      const state = start(chapter, "manticore", "duskrunner", sheltered ? { made_glacier_shelter: true } : {});
+      expect(enterScene(state, "changing", context(chapter)).state.narration.includes("Your windbreak is useful too")).toBe(sheltered);
+    }
+    for (const id of ["seam_hum", "seam_touch", "seam_listen"]) {
+      const state = start(chapter, "manticore", "duskrunner");
+      const result = enterScene(state, id, context(chapter));
+      expect(result.state.flags.tested_singing_seam).toBe(true);
+      expect(result.state.narration).toMatch(/ice stays shut|seam stays shut/i);
     }
   });
 

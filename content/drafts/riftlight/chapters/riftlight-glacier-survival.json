@@ -59,7 +59,7 @@
           "id": "continue",
           "label": "Follow the big footprints",
           "icon": "hand",
-          "goto": "tracks"
+          "goto": "drift"
         }
       ],
       "onEnter": [
@@ -78,7 +78,7 @@
           "id": "continue",
           "label": "Follow the sledge tracks",
           "icon": "hand",
-          "goto": "tracks"
+          "goto": "drift"
         }
       ]
     },
@@ -90,7 +90,7 @@
           "id": "continue",
           "label": "Follow the footprints",
           "icon": "hand",
-          "goto": "tracks"
+          "goto": "drift"
         }
       ]
     },
@@ -119,6 +119,26 @@
       ],
       "discovers": [
         "npc.yeti"
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "marked_glacier_drift"
+          },
+          "text": "She looks back at your line of stones. \"You marked the hollow. That will help the next person through.\""
+        },
+        {
+          "when": {
+            "flag": "sheltered_kid_on_detour"
+          },
+          "text": "She checks the kid with one broad hand. \"Still warm. That long way round was well chosen.\""
+        },
+        {
+          "when": {
+            "flag": "found_drift_hollow"
+          },
+          "text": "You point out the hollow behind you. She nods. \"And you found your own way out. Keep that rope.\""
+        }
       ]
     },
     "tell_rift": {
@@ -414,9 +434,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Ask about the change",
+          "label": "Listen to the seam",
           "icon": "hand",
-          "goto": "changing"
+          "goto": "seam_response"
         }
       ],
       "priority": 2,
@@ -430,7 +450,7 @@
     },
     "changing": {
       "type": "story",
-      "narration": "\"The melt is early,\" she says. \"A path we used last week is water now. Do not follow a track just because it is old.\" Outside, a bell rings twice. Three travelers in dark cloaks are packing their camp beside the hall.",
+      "narration": "\"The melt is early,\" the herder says. \"A path we used last week is water now. It led to the herd's sheltered grazing ledge. We are using stored hay while we find another way, and the pile gets smaller every day.\" She looks at the sealed seam. \"Perhaps listening will tell us where it is safe to look.\" Outside, a bell rings twice. Three travelers in dark cloaks are packing their camp beside the hall.",
       "choices": [
         {
           "id": "help",
@@ -443,6 +463,20 @@
           "label": "Go and meet the travelers",
           "icon": "hand",
           "goto": "departure"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "made_glacier_shelter"
+          },
+          "text": "\"Your windbreak is useful too,\" she adds. \"I can tell the next travelers where to stop if the weather turns.\""
+        },
+        {
+          "when": {
+            "flag": "crossed_melt_dry"
+          },
+          "text": "\"And thank you for keeping everyone steady at the channel. I cannot watch every crossing now.\""
         }
       ]
     },
@@ -470,7 +504,177 @@
       "narration": "Warm and dry, you step out beside the singing hall. The kid stays with its herd. A griffin in a travel cloak is trying to fold a map while a unicorn stands on one corner. Neither has noticed that the corner is under her hoof.",
       "heal": 0,
       "choices": [],
-      "outcome": "success"
+      "outcome": "success",
+      "variants": [
+        {
+          "when": {
+            "flag": "helped_glacier_herder"
+          },
+          "text": "The herder lifts a hand from the newly cleared blanket rail. \"Dry blankets for the next arrivals. That matters.\""
+        }
+      ]
+    },
+    "drift": {
+      "type": "choice_point",
+      "narration": "A gust wipes the footprints smooth. Ahead, a white drift fills the gap between two ridges of dark rock. The bell sounds from beyond it, but you cannot see how deep the snow is. The kid shivers against your chest. How will you get everyone through?",
+      "choices": [
+        {
+          "id": "probe",
+          "label": "Use the rope to test the drift and mark firm ground",
+          "icon": "hand",
+          "goto": "drift_probe"
+        },
+        {
+          "id": "shelter",
+          "label": "Keep the kid tucked in and go around the rocks",
+          "icon": "hand",
+          "goto": "drift_detour"
+        },
+        {
+          "id": "follow",
+          "label": "Try the last place you saw the footprints",
+          "icon": "hand",
+          "goto": "drift_slip"
+        }
+      ]
+    },
+    "drift_probe": {
+      "type": "story",
+      "narration": "You knot the rope around a rock and move a few steps at a time. Beneath a thin crust, the drift is hollow. You back out, find firm ground along its edge, and leave small stones marking the safe way. Beyond the ridge, the bell rings louder.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "tracks"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "marked_glacier_drift",
+          "value": true
+        }
+      ]
+    },
+    "drift_detour": {
+      "type": "story",
+      "narration": "You take turns sheltering the kid inside your coats while you follow the rocks around the drift. The walk is longer, but nobody has to test the hidden hollow. At the far ridge the kid stops shaking and pokes its nose out toward the bell.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "tracks"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "sheltered_kid_on_detour",
+          "value": true
+        }
+      ]
+    },
+    "drift_slip": {
+      "type": "story",
+      "narration": "The crust gives under your first step. You sink to your knees, still holding the kid above the snow. Your party lays the rope across firm rock, and you pull yourself back along it. Now you can see the hollow. You skirt its edge and reach the next ridge together.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "tracks"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_drift_hollow",
+          "value": true
+        }
+      ]
+    },
+    "seam_response": {
+      "type": "choice_point",
+      "narration": "The note fades. So does the trembling under the herder's palm. A narrow line of frost has fallen to the floor beneath the sealed seam. You still remember the note. What do you try?",
+      "choices": [
+        {
+          "id": "hum",
+          "label": "Hum the note again",
+          "icon": "hand",
+          "goto": "seam_hum"
+        },
+        {
+          "id": "touch",
+          "label": "Rest a hand on the ice while the others hum",
+          "icon": "hand",
+          "goto": "seam_touch"
+        },
+        {
+          "id": "ask",
+          "label": "Ask the herder to listen with you",
+          "icon": "hand",
+          "goto": "seam_listen"
+        }
+      ]
+    },
+    "seam_hum": {
+      "type": "story",
+      "narration": "You hum. Frost ticks down the seam in time with the note. You stop; the ticking stops. When you begin again, it answers again. The ice stays shut. The herder brings her cup over and sits beside you. \"Well. That was not an accident.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "changing"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "tested_singing_seam",
+          "value": true
+        }
+      ]
+    },
+    "seam_touch": {
+      "type": "story",
+      "narration": "You rest your hand flat on the ice. As the others hum, a faint tremble reaches your palm. It fades when they stop. You try twice more and get the same answer. The seam stays shut. \"Something we can test,\" says the herder.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "changing"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "tested_singing_seam",
+          "value": true
+        }
+      ]
+    },
+    "seam_listen": {
+      "type": "story",
+      "narration": "The herder kneels beside you. You take turns humming and listening. Each time the note sounds, a low ticking answers from the seam. \"We can hear that much,\" she says. \"What lies beyond it, I do not know.\" The ice stays shut.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "changing"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "tested_singing_seam",
+          "value": true
+        }
+      ]
     }
   },
   "llmHints": {

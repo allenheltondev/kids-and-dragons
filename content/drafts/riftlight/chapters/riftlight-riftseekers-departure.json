@@ -106,17 +106,11 @@
     },
     "lead": {
       "type": "story",
-      "narration": "Orin unrolls his map and points east. \"The griffins at Frostfang keep a ledger of their passes. Last season, no pass here. This season, cairns and a path. They call it the Cairnstep.\" He taps the map. \"It might tell us what is moving. It might also be a bad map. I would like to know which.\"",
+      "narration": "Orin unrolls his map and points east. \"The griffins at Frostfang keep a ledger of their passes. Last season, no pass here. This season, cairns and a path. They call it the Cairnstep.\" He marks the herder's flooded grazing route beside it. \"If the pass reaches this bank, supplies could get through to the herd. It might also show us why a road no longer leads where people expect. We need to find where it really goes.\"",
       "choices": [
         {
-          "id": "route",
-          "label": "Ask how to reach the Cairnstep",
-          "icon": "hand",
-          "goto": "route"
-        },
-        {
-          "id": "olivia",
-          "label": "Ask Olivia what she would do",
+          "id": "continue",
+          "label": "Ask what they would do first",
           "icon": "hand",
           "goto": "olivia"
         }
@@ -124,20 +118,26 @@
       "priority": 2
     },
     "olivia": {
-      "type": "story",
-      "narration": "\"Learn how to hold an opening,\" says Olivia. \"Think what we could carry. Food into a snowbound town. A whole boat past a broken bridge.\" Orin fastens his notebook shut. \"First, learn whether it stays open.\" She lifts her pack. \"Yes, Orin. First.\"",
+      "type": "choice_point",
+      "narration": "Olivia taps the flooded route on the map. \"There is food in my pack. If we could carry it through an opening, the herd could eat today.\" Orin lifts his own pack. \"I will carry food. But I will not send someone into a rift before we know whether they can return.\" Seren watches your faces. \"What would you put first?\"",
       "choices": [
         {
-          "id": "continue",
-          "label": "Ask about the path east",
+          "id": "help",
+          "label": "Help the people waiting now",
           "icon": "hand",
-          "goto": "route"
+          "goto": "help_now"
+        },
+        {
+          "id": "routes",
+          "label": "Find safe routes for the next travelers",
+          "icon": "hand",
+          "goto": "safe_routes"
         }
       ]
     },
     "route": {
       "type": "story",
-      "narration": "Orin points below the ice shelf, where melt channels join into a broad river. \"The Great River starts here. Stay on this bank. The shelf above the headwaters leads toward Frostfang. Test the ice. If it gives, let the river carry you to a place you can get out. Do not fight it under the shelf.\" Seren points toward the hall. \"Or stay and look around. We have not found every opening here.\"",
+      "narration": "Orin points below the ice shelf, where melt channels join into a broad river. \"The Great River starts here. Stay on this bank. The shelf above the headwaters leads toward Frostfang. Test the ice. If it gives, let the river carry you to a place you can get out. Do not fight it under the shelf.\" Seren points toward the hall. \"Or study the seam that answered your song. Look for signs of openings around the glacier. Learning what they need might help you find a way home.\"",
       "choices": [
         {
           "id": "continue",
@@ -221,10 +221,34 @@
     },
     "camp": {
       "type": "rest",
-      "narration": "You sit on a dry stone beside the singing hall and check your packs. East, the ice shelf bends toward Frostfang. Behind you, the glacier holds folds and seams you have not explored. The Listening Chime rests between you. This time, you get to choose where you go.",
+      "narration": "You sit on a dry stone beside the singing hall. East, the ice shelf leads toward the Cairnstep: perhaps a supply route for the herd, if the shifting ice lets you reach it. Behind you, the sealed seam answered your song. Exploring the glacier might teach you how to find another opening. The Listening Chime rests between you. Safe roads for the people already here, or a better understanding of the openings that brought you? Your party has something to talk about before setting out.",
       "heal": 0,
       "choices": [],
       "outcome": "success"
+    },
+    "help_now": {
+      "type": "story",
+      "narration": "Olivia takes a supper bundle from her pack and calls the herder over. \"This much can go by hand.\" Orin makes room for it on the sledge. \"And we can learn the route before we send more.\" Seren nods to you. \"A useful place to begin.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "route"
+        }
+      ]
+    },
+    "safe_routes": {
+      "type": "story",
+      "narration": "Orin draws a careful line beside the Cairnstep. \"A route people can trust. Yes.\" Olivia leaves a supper bundle for the herder. \"We can feed someone while you check it.\" Seren looks at the glacier. \"And listen here, if the road is not the question you want to follow.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "route"
+        }
+      ]
     }
   },
   "llmHints": {

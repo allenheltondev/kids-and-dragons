@@ -21,7 +21,13 @@
       "helped_glacier_herder",
       "made_glacier_shelter",
       "crossed_melt_dry",
-      "helped_fish_seller"
+      "helped_fish_seller",
+      "saved_barge_supper",
+      "found_barge_mooring",
+      "marked_glacier_drift",
+      "sheltered_kid_on_detour",
+      "found_drift_hollow",
+      "tested_singing_seam"
     ],
     "buffs": {
       "riftspark": {
