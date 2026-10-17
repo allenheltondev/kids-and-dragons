@@ -456,16 +456,21 @@ export interface GameRepository {
    */
   claimRoom(input: { code: string; run: RunRecord; householdId: string }): Promise<boolean>;
 
-  // --- room-code misses ------------------------------------------------------
+  // --- room-code lookups -----------------------------------------------------
   /**
-   * How many codes `clientKey` asked for that had no open room behind them, in
-   * one fixed window (`handlers/code-guard.ts`). Zero for a window never
-   * written, or one whose `ttl` has passed.
+   * Takes one of `limit` lookups by code for `clientKey` in one fixed window
+   * (`handlers/code-guard.ts`), atomically: `false`, and nothing written, when
+   * the window already holds `limit`. A window whose `ttl` has passed counts
+   * as empty. `ttl` is epoch **seconds**, set by the window's first lookup.
+   *
+   * One conditional write rather than a read then a write, so a burst of
+   * parallel requests cannot all read "below the limit" before any of them
+   * is counted.
    */
-  countCodeMisses(clientKey: string, window: number): Promise<number>;
+  reserveCodeLookup(clientKey: string, window: number, limit: number, ttl: number): Promise<boolean>;
   /**
-   * One more miss, atomically, and the window's new count. `ttl` is epoch
-   * **seconds**; it is set by the window's first miss and never moved.
+   * Gives one lookup back: the code named an open room, so it was not a guess.
+   * Never takes a window below zero.
    */
-  recordCodeMiss(clientKey: string, window: number, ttl: number): Promise<number>;
+  refundCodeLookup(clientKey: string, window: number): Promise<void>;
 }

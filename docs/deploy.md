@@ -310,8 +310,9 @@ minutes to create the first time. The first pull-request deploy is slow; the
 rest are not.
 
 The wrong-code budget adds a CloudFront function on every `/api/*` request
-($0.10 a million), one DynamoDB read on each join, watch, and state read by code
-from a phone not yet seated, and one write per wrong code.
+($0.10 a million), and one conditional DynamoDB write on each join, watch,
+remove and state read by code from a phone not yet seated, with one more to
+give it back when the code was real.
 
 ---
 

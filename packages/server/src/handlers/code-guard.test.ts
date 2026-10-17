@@ -4,8 +4,7 @@ import {
   CODE_MISS_LIMIT,
   CODE_MISS_WINDOW_MS,
   clientKeyFor,
-  codeLookupAllowed,
-  recordCodeMiss,
+  admitCodeLookup,
   retryAfterSeconds,
 } from "./code-guard.ts";
 
@@ -45,20 +44,36 @@ describe("the wrong-code budget", () => {
   it(`refuses a client after ${CODE_MISS_LIMIT} misses, and only that client`, async () => {
     const { deps } = makeHarness();
     for (let i = 0; i < CODE_MISS_LIMIT; i++) {
-      expect(await codeLookupAllowed("192.0.2.1", deps), `miss ${i}`).toBe(true);
-      await recordCodeMiss("192.0.2.1", deps);
+      expect(await admitCodeLookup("192.0.2.1", deps), `miss ${i}`).not.toBeNull();
     }
-    expect(await codeLookupAllowed("192.0.2.1", deps)).toBe(false);
-    expect(await codeLookupAllowed("192.0.2.2", deps)).toBe(true);
+    expect(await admitCodeLookup("192.0.2.1", deps)).toBeNull();
+    expect(await admitCodeLookup("192.0.2.2", deps)).not.toBeNull();
+  });
+
+  it("never charges a lookup that found a room", async () => {
+    const { deps } = makeHarness();
+    for (let i = 0; i < CODE_MISS_LIMIT * 3; i++) {
+      const lookup = await admitCodeLookup("192.0.2.1", deps);
+      expect(lookup, `lookup ${i}`).not.toBeNull();
+      await lookup?.hit();
+    }
+  });
+
+  it("admits a parallel burst of guesses only up to the limit", async () => {
+    const { deps } = makeHarness();
+    const admitted = await Promise.all(
+      Array.from({ length: CODE_MISS_LIMIT * 2 }, () => admitCodeLookup("192.0.2.1", deps)),
+    );
+    expect(admitted.filter((l) => l !== null)).toHaveLength(CODE_MISS_LIMIT);
   });
 
   it("forgives a client once the window turns over", async () => {
     const { deps, clock } = makeHarness();
-    for (let i = 0; i < CODE_MISS_LIMIT; i++) await recordCodeMiss("192.0.2.1", deps);
-    expect(await codeLookupAllowed("192.0.2.1", deps)).toBe(false);
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) await admitCodeLookup("192.0.2.1", deps);
+    expect(await admitCodeLookup("192.0.2.1", deps)).toBeNull();
 
     clock.advance(CODE_MISS_WINDOW_MS);
-    expect(await codeLookupAllowed("192.0.2.1", deps)).toBe(true);
+    expect(await admitCodeLookup("192.0.2.1", deps)).not.toBeNull();
   });
 
   it("tells a refused client how long until the window turns over", () => {

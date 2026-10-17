@@ -24,9 +24,8 @@ import type {
 import { adoptDevice, addPlayer, createGuestHousehold, linkAccount } from "../handlers/account.ts";
 import { applyAction } from "../handlers/action.ts";
 import {
+  admitCodeLookup,
   clientKeyFor,
-  codeLookupAllowed,
-  recordCodeMiss,
   retryAfterSeconds,
   SLOW_DOWN,
 } from "../handlers/code-guard.ts";
@@ -221,12 +220,11 @@ async function postRoom(req: Req, deps: HandlerDeps) {
 }
 
 async function postJoin(req: Req, deps: HandlerDeps, code: string) {
-  if (!(await codeLookupAllowed(req.client, deps))) return slowDown(deps);
+  const lookup = await admitCodeLookup(req.client, deps);
+  if (!lookup) return slowDown(deps);
   const found = await deps.repo.getRoom(code);
-  if (!found) {
-    await recordCodeMiss(req.client, deps);
-    return error(404, "NOT_FOUND", `no open room ${code}`);
-  }
+  if (!found) return error(404, "NOT_FOUND", `no open room ${code}`);
+  await lookup.hit();
 
   const existing = await resolvePrincipal(req, deps);
   // A new phone joins whichever household the room settles on — and settling
@@ -268,29 +266,29 @@ async function postJoin(req: Req, deps: HandlerDeps, code: string) {
 
 /** The TV attaching. No device, no player, no sign-in — see `watchRoom`. */
 async function postWatch(req: Req, deps: HandlerDeps, code: string) {
-  if (!(await codeLookupAllowed(req.client, deps))) return slowDown(deps);
+  const lookup = await admitCodeLookup(req.client, deps);
+  if (!lookup) return slowDown(deps);
   // Optional: a TV that opened the room presents its binding to learn it is the host.
   const screen = await resolvePrincipal(req, deps);
   const result = await watchRoom({ code, deviceId: screen?.principal.deviceId }, deps);
-  if (result.ok) return json(200, result.value);
-  if (result.error.code === "NOT_FOUND") await recordCodeMiss(req.client, deps);
-  return fromError(result.error);
+  if (result.ok || result.error.code !== "NOT_FOUND") await lookup.hit();
+  return result.ok ? json(200, result.value) : fromError(result.error);
 }
 
 /** The host taking a player out (#267). Device token only: it names the host. */
 async function postRemove(req: Req, deps: HandlerDeps, code: string) {
-  if (!(await codeLookupAllowed(req.client, deps))) return slowDown(deps);
   const host = await resolvePrincipal(req, deps);
   if (!host) return error(401, "FORBIDDEN", "taking someone out needs this device's token");
   const playerId = req.body.playerId;
   if (typeof playerId !== "string" || playerId === "") {
     return error(400, "ILLEGAL", "expected { playerId }");
   }
+  const lookup = await admitCodeLookup(req.client, deps);
+  if (!lookup) return slowDown(deps);
   const result = await removePlayer({ code, principal: host.principal, playerId }, deps);
+  const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
+  if (!missed) await lookup.hit();
   if (result.ok) return json(200, { ok: true, seq: result.value.seq }, host.principal);
-  if (result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room")) {
-    await recordCodeMiss(req.client, deps);
-  }
   return fromError(result.error);
 }
 
@@ -414,13 +412,12 @@ async function getStateRoute(req: Req, deps: HandlerDeps) {
   if (code) {
     // A phone or a TV already seated in this room is not guessing, and the
     // reconnect path must not pay for the guard on every resync.
-    const guarded = !(await holdsRoom(req, deps, code));
-    if (guarded && !(await codeLookupAllowed(req.client, deps))) return slowDown(deps);
+    const seated = await holdsRoom(req, deps, code);
+    const lookup = seated ? null : await admitCodeLookup(req.client, deps);
+    if (!seated && !lookup) return slowDown(deps);
     const room = await deps.repo.getRoom(code);
-    if (!room) {
-      if (guarded) await recordCodeMiss(req.client, deps);
-      return error(404, "NOT_FOUND", `no open room ${code}`);
-    }
+    if (!room) return error(404, "NOT_FOUND", `no open room ${code}`);
+    await lookup?.hit();
     if (runId && room.runId !== runId) {
       return error(404, "NOT_FOUND", `room ${code} is not that run`);
     }
@@ -575,7 +572,10 @@ function clientOf(
   rt: HttpRuntime,
 ): string {
   const viewer = headers["x-kad-viewer"];
-  if (viewer && (!rt.originSecret || sameSecret(headers["x-kad-origin"], rt.originSecret))) {
+  // Fail closed: with no secret configured there is nothing to vouch for the
+  // header, so it is never believed (a stage deployed without the variable
+  // must not hand every direct caller a fresh budget per request).
+  if (viewer && rt.originSecret !== undefined && sameSecret(headers["x-kad-origin"], rt.originSecret)) {
     return clientKeyFor(viewer);
   }
   return clientKeyFor(sourceIp);
