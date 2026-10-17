@@ -329,9 +329,15 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(false);
       });
 
-      it("will not claim a household made before founders, from any device", async () => {
+      it("claims a household made before founders from any device, as before (#265)", async () => {
         const { founderDeviceId: _none, ...legacy } = guest("h_1", new Date(Date.now() + DAY).toISOString());
         await repo.putHousehold(legacy);
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_anyone")).toBe(true);
+      });
+
+      it("will not claim a household still awaiting its founder", async () => {
+        const { founderDeviceId: _none, ...open } = guest("h_1", new Date(Date.now() + DAY).toISOString());
+        await repo.putHousehold({ ...open, awaitingFounder: true });
         expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(false);
       });
 

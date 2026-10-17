@@ -282,7 +282,7 @@ describe("a removed phone and the household it joined (#265)", () => {
     expect(
       (await removePlayer({ code, principal: tv.principal, playerId: stranger.principal.playerId }, harness.deps)).ok,
     ).toBe(true);
-    expect(await harness.repo.getHousehold(householdId)).not.toHaveProperty("founderDeviceId");
+    expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe("");
 
     const claim = await linkAccount({ cognitoSub: "sub_stranger", principal: stranger.principal }, harness.deps);
     expect(claim).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });

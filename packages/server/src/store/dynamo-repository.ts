@@ -283,17 +283,20 @@ export class DynamoRepository implements GameRepository {
           /*
            * And only from the device that started it (#265), unless it is
            * already this account's: a room code gets a phone a seat in the
-           * household, never the household.
+           * household, never the household. A household from before founders
+           * (neither attribute) keeps the old rule until it expires.
            */
           ConditionExpression:
             "attribute_exists(PK) AND attribute_not_exists(sweeping) AND (#d.#owner = :sub OR (" +
-            "(attribute_not_exists(#d.#owner) OR #d.#owner = :null) AND #d.#founder = :device))",
+            "(attribute_not_exists(#d.#owner) OR #d.#owner = :null) AND (#d.#founder = :device OR " +
+            "(attribute_not_exists(#d.#founder) AND attribute_not_exists(#d.#awaiting)))))",
           ExpressionAttributeNames: {
             "#d": "data",
             "#owner": "ownerSub",
             "#guest": "guest",
             "#expires": "expiresAt",
             "#founder": "founderDeviceId",
+            "#awaiting": "awaitingFounder",
           },
           ExpressionAttributeValues: { ":sub": cognitoSub, ":no": false, ":null": null, ":device": deviceId },
         }),
@@ -331,10 +334,11 @@ export class DynamoRepository implements GameRepository {
         new UpdateCommand({
           TableName: this.table,
           Key: { PK: HH(householdId), SK: META },
-          UpdateExpression: "REMOVE #d.#founder",
+          // Empty, not removed: absent reads as a household from before founders.
+          UpdateExpression: "SET #d.#founder = :nobody",
           ConditionExpression: "attribute_exists(PK) AND #d.#founder = :device",
           ExpressionAttributeNames: { "#d": "data", "#founder": "founderDeviceId" },
-          ExpressionAttributeValues: { ":device": deviceId },
+          ExpressionAttributeValues: { ":device": deviceId, ":nobody": "" },
         }),
       );
     } catch (err) {

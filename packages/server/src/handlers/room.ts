@@ -20,7 +20,7 @@ import type { DeviceIdentity } from "../identity.ts";
 import type { EventRecord, RoomRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { newId, newSecret } from "../ids.ts";
-import { keepGuestHousehold } from "./account.ts";
+import { keepGuestHousehold, mayClaim } from "./account.ts";
 import { lobbyCampaigns } from "./progression.ts";
 import { loadBook } from "./field-guide.ts";
 import { isRemoved } from "./remove.ts";
@@ -387,7 +387,7 @@ export async function joinRoom(
   // Which phone may keep this guest household by signing in (#265), so the
   // offer is drawn on that one and no other.
   const household = await deps.repo.getHousehold(room.householdId);
-  const keeper = household?.guest === true && household.founderDeviceId === input.principal.deviceId;
+  const keeper = household?.guest === true && mayClaim(household, input.principal.deviceId);
 
   const sessionToken = await deps.identity.issueSessionToken({
     runId: room.runId,

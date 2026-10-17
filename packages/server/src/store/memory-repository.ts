@@ -257,7 +257,9 @@ export class MemoryRepository implements GameRepository {
     // that family's characters.
     if (household.ownerSub && household.ownerSub !== cognitoSub) return false;
     // Only the device that started it, unless it is already this account's.
-    if (household.ownerSub !== cognitoSub && household.founderDeviceId !== deviceId) return false;
+    // A household from before founders keeps the old rule until it expires.
+    const legacy = household.founderDeviceId === undefined && household.awaitingFounder !== true;
+    if (household.ownerSub !== cognitoSub && !legacy && household.founderDeviceId !== deviceId) return false;
 
     const { expiresAt: _dropped, ...rest } = household;
     // Dropping GSI1PK/GSI1SK is the whole promotion: no sweep entry, no sweep.
@@ -281,8 +283,8 @@ export class MemoryRepository implements GameRepository {
     if (!item) return;
     const household = item.data as Household;
     if (household.founderDeviceId !== deviceId) return;
-    const { founderDeviceId: _dropped, ...rest } = household;
-    await this.putHousehold(rest);
+    // Empty, not absent: absent reads as a household from before founders.
+    await this.putHousehold({ ...household, founderDeviceId: "" });
   }
 
   async extendGuestHousehold(householdId: string, expiresAt: string): Promise<GuestRenewal> {
