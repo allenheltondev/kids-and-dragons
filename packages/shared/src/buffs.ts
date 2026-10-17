@@ -615,13 +615,19 @@ export function applyNumbed(
   heroId: string,
   slow: SlowEffect,
   onOwnTurn: boolean,
+  /**
+   * The entry's id and name. A slowing hazard (#220) leaves the same burden
+   * as its own entry, `"slowed"` / "Slowed", so mud and a sting each refresh
+   * themselves and never each other.
+   */
+  as: { readonly id: string; readonly label: string } = { id: NUMBED_BUFF_ID, label: NUMBED_LABEL },
 ): CombatBuff[] {
   const held = buffs ?? [];
-  const index = held.findIndex((buff) => buff.heroId === heroId && buff.id === NUMBED_BUFF_ID);
+  const index = held.findIndex((buff) => buff.heroId === heroId && buff.id === as.id);
   const current = index === -1 ? undefined : held[index];
   const steps = clamp(Math.max(slow.steps, current ? -current.amount : 0), 1, BUFF_LIMITS.move);
   const turnsLeft = Math.max(slow.turns + (onOwnTurn ? 1 : 0), current?.turnsLeft ?? 0);
-  const numbed: CombatBuff = { id: NUMBED_BUFF_ID, label: NUMBED_LABEL, kind: "move", heroId, amount: -steps, turnsLeft };
+  const numbed: CombatBuff = { id: as.id, label: as.label, kind: "move", heroId, amount: -steps, turnsLeft };
   if (current === undefined) return [...held, numbed];
   const next = [...held];
   next[index] = numbed;

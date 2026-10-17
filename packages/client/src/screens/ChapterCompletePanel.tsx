@@ -39,6 +39,7 @@ import type { ProgressionEvent } from "../store/contract";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { campaignEndHeading, campaignEndLine } from "./campaign-copy";
+import { fightEndingIcon, fightEndingLine } from "./fight-ending-copy";
 import { useEnsureContent } from "./content";
 import "./shared.css";
 import "./ChapterCompletePanel.css";
@@ -102,6 +103,9 @@ export function ChapterCompletePanel(): ReactElement {
     campaignEndHeading(state?.campaign) ?? (setback ? "The story took a turn" : "Chapter finished!");
   const endLine = campaignEndLine(state?.campaign);
   const recap = state?.recap ?? null;
+  // How each fight in a place that fought back ended (#220). Absent on every
+  // run without one, and then nothing below changes shape.
+  const fightEndings = state?.fightEndings ?? [];
 
   // Spoken once — the summary is narration like any other (spec §11).
   const spoken = useRef(false);
@@ -119,10 +123,11 @@ export function ChapterCompletePanel(): ReactElement {
         // a recap nobody hears — the §11 seam is where every line of narration
         // goes and this is narration. Appended to the same utterance rather
         // than spoken separately so it cannot interrupt or be interrupted.
+        ...fightEndings.map(fightEndingLine),
         ...(recap === null ? [] : [recap]),
       ].join(" "),
     );
-  }, [xp, setback, recap, heading, endLine]);
+  }, [xp, setback, recap, heading, endLine, fightEndings]);
 
   const questItems = party.flatMap((m) =>
     m.character.questItems.map((itemId) => ({ itemId, owner: m.character.name })),
@@ -168,6 +173,12 @@ export function ChapterCompletePanel(): ReactElement {
          * `RunState` and null is the ordinary case, so this is a coalesce and
          * never an error state.
          */}
+        {fightEndings.map((ending, i) => (
+          <p className="complete__fight" key={i}>
+            <Icon name={fightEndingIcon(ending)} />
+            <span>{fightEndingLine(ending)}</span>
+          </p>
+        ))}
         {recap === null ? null : (
           <p className="complete__recap">
             <Icon name="scroll" />

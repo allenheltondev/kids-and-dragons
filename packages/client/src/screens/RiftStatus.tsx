@@ -35,7 +35,7 @@
 
 import { useState, type ReactElement } from "react";
 import type { EncounterEvent, EncounterState } from "@kad/shared";
-import { combatantById, environmentView } from "@kad/shared";
+import { captiveName, combatantById, environmentView } from "@kad/shared";
 import { usePresentation, useRunState } from "../store";
 import { Icon } from "./icons";
 import { combatantLabel } from "./combat-grid";
@@ -46,6 +46,10 @@ import {
   clockReadout,
   environmentBeatLine,
   exitLine,
+  modifierIcon,
+  modifierLine,
+  objectiveIcon,
+  objectiveLine,
   rescueLine,
 } from "./environment-copy";
 import "./RiftStatus.css";
@@ -64,7 +68,8 @@ export function riftCaption(events: readonly EncounterEvent[], encounter: Encoun
       return c ? combatantLabel(c) : id;
     },
     isParty: (id: string): boolean => combatantById(encounter, id)?.side === "party",
-    captive: encounter.environment?.spec.rescue?.name ?? "the captive",
+    captive: (index?: number) => captiveName(encounter.environment?.spec, index),
+    objective: (id: string) => encounter.environment?.spec.objectives?.find((o) => o.id === id)?.label ?? id,
   };
   const lines: string[] = [];
   for (const event of events) {
@@ -109,12 +114,24 @@ export function RiftStatus(): ReactElement | null {
             <span>{exitLine(exit)}</span>
           </li>
         ))}
-        {view.rescue ? (
-          <li key="rescue">
-            <Icon name={CAPTIVE_ICON} />
-            <span>{rescueLine(view.rescue)}</span>
+        {view.modifiers.map((modifier) => (
+          <li key={`modifier:${modifier.id}`}>
+            <Icon name={modifierIcon(modifier)} />
+            <span>{modifierLine(modifier)}</span>
           </li>
-        ) : null}
+        ))}
+        {view.objectives.map((objective) => (
+          <li key={`objective:${objective.id}`} className={objective.done ? "rift-status__line--open" : undefined}>
+            <Icon name={objectiveIcon(objective.kind)} />
+            <span>{objectiveLine(objective)}</span>
+          </li>
+        ))}
+        {view.captives.map((captive, i) => (
+          <li key={`rescue:${i}`}>
+            <Icon name={CAPTIVE_ICON} />
+            <span>{rescueLine(captive)}</span>
+          </li>
+        ))}
       </ul>
       {caption ? (
         <ul className="rift-status__caption" key={caption.seq} aria-live="polite">

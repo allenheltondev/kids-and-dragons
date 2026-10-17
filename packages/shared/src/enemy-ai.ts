@@ -50,6 +50,12 @@
  * first (a monster with somebody to hit hits them). A turn handed no
  * environment never reaches them — that is the line Gemfall stands behind.
  *
+ * #220 added the door this header left open — a creature's own sentence,
+ * `EnemySpec.rift` ("walks through fire", "always guards the way out",
+ * "shoves you into the thorns") — and one about the clock everyone can see:
+ * in the last round of a rift that collapses, every monster with nobody to
+ * hit heads for the way out. Both are read only in a place that fights back.
+ *
  * **It never targets a knocked-down hero (§7.3).** She is down, not dead, and
  * lying on the grid waiting for a Help Up. An enemy that keeps hitting a fallen
  * friend is both cruel and, worse for this module, unreadable — the picture on
@@ -87,7 +93,7 @@
  * what lets the client show her, in advance, where a monster would go.
  */
 
-import { exitOpen, hazardAt } from "./environment.js";
+import { captiveStatuses, captivesOf, exitOpen, hazardAt, hazardWeight } from "./environment.js";
 import type { RescueStatus } from "./environment.js";
 import {
   actorAt,
@@ -101,7 +107,7 @@ import {
   walkField,
 } from "./grid.js";
 import type { Actor, ActorId, Board, Position, WalkField } from "./grid.js";
-import type { EncounterEnvironment, MapTile } from "./types/chapter.js";
+import type { EncounterEnvironment, MapTile, RiftBehavior } from "./types/chapter.js";
 
 /**
  * The acting monster. Its position is passed in rather than looked up by id
@@ -123,6 +129,12 @@ export interface ActingEnemy {
    * "standing next to you", the same measure as `areAdjacent`.
    */
   readonly reach?: number;
+  /**
+   * Its own way with the place (#220), in a fight with an environment: what
+   * ground it ignores, what it watches, whether it shoves. Absent: the
+   * shared sentences alone.
+   */
+  readonly rift?: RiftBehavior;
 }
 
 /**
@@ -164,8 +176,17 @@ export interface EnemyTurn {
 export interface EnemyEnvironment {
   readonly spec: EncounterEnvironment;
   readonly round: number;
-  /** `EnvironmentState.rescue`. Only `"waiting"` makes the captive worth watching. */
-  readonly rescue?: RescueStatus;
+  /**
+   * `EnvironmentState.rescue`: one status, or one per captive (#220). Only
+   * `"waiting"` makes a captive worth watching.
+   */
+  readonly rescue?: RescueStatus | readonly RescueStatus[];
+  /**
+   * Every monster's own `rift` behaviour on the board, by id (#220) — so
+   * each can read who else always guards the door. Present only when some
+   * monster has one; absent, every post goes to the nearest monster.
+   */
+  readonly behaviors?: Readonly<Record<ActorId, RiftBehavior>>;
 }
 
 /**
@@ -447,7 +468,10 @@ function closeTheGap(
  *      them the same way, so freeing Pip means stopping next to a monster. The
  *      captive is never a target — they are walled terrain, not a figure, and
  *      nothing here swings at terrain — and the same reachability rule keeps
- *      at least one of the captive's sides open to a hero.
+ *      at least one of the captive's sides open to a hero. (A captive with
+ *      `hp`, #220, is dragged at by a monster that *ends its turn* beside them
+ *      without swinging — encounter.ts does that; this planner only gets the
+ *      watcher there.) Several captives are several posts, in authored order.
  *
  * Who watches what is decided from the board alone (the posts in authored
  * order, each to the nearest monster as the crow flies, ties by reading
@@ -465,6 +489,14 @@ function closeTheGap(
  * the guard walks over sooner; 0 and it only watches an exit already open.
  */
 export const EXIT_LOOKAHEAD = 1;
+
+/**
+ * Reading the rift clock (#220): in the last this-many rounds of a clock
+ * that collapses the fight, every monster with nobody to hit (and no post
+ * of its own) heads for the way out — the heroes will want it now. 1 is the
+ * last round only.
+ */
+export const CLOCK_URGENCY = 1;
 
 /** A tile it could end its move on this turn — where it stands (cost 0), or one it can walk to. */
 interface Stop extends Position {
@@ -485,12 +517,26 @@ function planInEnvironment(turn: EnemyTurn, env: EnemyEnvironment, decision: Dec
 
   const allowance = wholeSteps(enemy.steps);
   const reach = Math.max(1, wholeSteps(enemy.reach ?? DEFAULT_REACH));
-  /** What ending its turn here would cost it, this round. */
-  const burn = (at: Position): number => hazardAt(env.spec, env.round, at)?.damage ?? 0;
+  /**
+   * What ending its turn here would cost it, this round: damage, and one
+   * more for ground that sticks or throws (#220) — nothing for ground this
+   * creature ignores.
+   */
+  const ignores = enemy.rift?.ignores ?? [];
+  const burn = (at: Position): number => {
+    const hazard = hazardAt(env.spec, env.round, at);
+    return hazard && ignores.includes(hazard.kind) ? 0 : hazardWeight(hazard);
+  };
   const stops: readonly Stop[] = [
     { x: enemy.at.x, y: enemy.at.y, cost: 0 },
     ...reachableTiles(board, enemy.at, allowance),
   ];
+
+  // A shover (#220) swings from where the hero ends up with fire behind them.
+  if (plan.attack !== null && enemy.rift?.shoves) {
+    const lined = lineUpShove(board, env, stops, standing, plan.attack, burn);
+    if (lined) return { moveTo: samePosition(lined, enemy.at) ? null : bare(lined), attack: plan.attack };
+  }
 
   // 1. A swing this turn: keep it, unless it means standing in the fire.
   if (plan.attack !== null) {
@@ -506,6 +552,33 @@ function planInEnvironment(turn: EnemyTurn, env: EnemyEnvironment, decision: Dec
   if (!decision.toward || burn(plan.moveTo ?? enemy.at) === 0) return plan;
   const { tile, walk } = decision.toward;
   return stopClearOfHazards(enemy.at, stops, walk ? walkDistanceTo(board, enemy, tile) : lineTo(tile), burn);
+}
+
+/**
+ * `rift.shoves` (#220): of the tiles it could stop on, not burning, right
+ * beside the hero it is swinging at, the cheapest (then reading order) from
+ * which that hero's far side is open, active hazard ground — so the shove
+ * at its turn's end lands. Null when no such tile exists: it swings as the
+ * sentence said.
+ */
+function lineUpShove(
+  board: Board,
+  env: EnemyEnvironment,
+  stops: readonly Stop[],
+  standing: readonly PartyTarget[],
+  chosen: ActorId,
+  burn: (at: Position) => number,
+): Stop | null {
+  const hero = standing.find((h) => h.id === chosen);
+  if (!hero) return null;
+  const lined = stops
+    .filter((stop) => {
+      if (burn(stop) !== 0 || stepsBetween(stop, hero.at) !== 1) return false;
+      const beyond = { x: hero.at.x + Math.sign(hero.at.x - stop.x), y: hero.at.y + Math.sign(hero.at.y - stop.y) };
+      return hazardAt(env.spec, env.round, beyond) !== null && isOpen(board, beyond);
+    })
+    .sort((a, b) => a.cost - b.cost || a.y - b.y || a.x - b.x);
+  return lined[0] ?? null;
 }
 
 /**
@@ -598,7 +671,11 @@ function postsInForce(env: EnemyEnvironment): Post[] {
     for (let ahead = 0; ahead <= EXIT_LOOKAHEAD; ahead++) watched ||= exitOpen(exit, env.round + ahead);
     if (watched && exit.tiles.length > 0) posts.push({ kind: "exit", tiles: exit.tiles });
   }
-  if (env.spec.rescue && env.rescue === "waiting") posts.push({ kind: "captive", tiles: [env.spec.rescue.at] });
+  // Each captive still waiting is a post of its own (#220), in authored order.
+  const statuses = captiveStatuses(env);
+  captivesOf(env.spec).forEach((captive, i) => {
+    if (statuses[i] === "waiting") posts.push({ kind: "captive", tiles: [captive.at] });
+  });
   return posts;
 }
 
@@ -621,7 +698,9 @@ function planPost(
   const posts = postsInForce(env);
   if (posts.length === 0) return null;
   const field = walkField(board, enemy.at);
-  const post = assignPosts(posts, board.actors.filter((a) => a.side === mover.side)).get(mover.id);
+  const clock = env.spec.clock;
+  const urgent = clock?.onExpire === "collapse" && clock.rounds - env.round < CLOCK_URGENCY;
+  const post = assignPosts(posts, board.actors.filter((a) => a.side === mover.side), env.behaviors, urgent).get(mover.id);
   if (!post) return null;
 
   const exitTiles = (env.spec.exits ?? []).flatMap((exit) => exit.tiles);
@@ -659,16 +738,39 @@ function planPost(
  * order, then id). Every monster computes the same answer from the same
  * board, which is the whole of the "coordination".
  */
-function assignPosts(posts: readonly Post[], monsters: readonly Actor[]): Map<ActorId, Post> {
+function assignPosts(
+  posts: readonly Post[],
+  monsters: readonly Actor[],
+  behaviors?: Readonly<Record<ActorId, RiftBehavior>>,
+  urgent = false,
+): Map<ActorId, Post> {
   const out = new Map<ActorId, Post>();
   const lineToPost = (at: Position, post: Post) => Math.min(...post.tiles.map((tile) => stepsBetween(at, tile)));
+  const nearestTo = (post: Post, pool: readonly Actor[]) =>
+    [...pool].sort((a, b) => lineToPost(a, post) - lineToPost(b, post) || a.y - b.y || a.x - b.x || compareIds(a.id, b.id))[0];
+  /** `rift.post` (#220): what this monster always watches, if it says. */
+  const wants = (m: Actor) => behaviors?.[m.id]?.post;
   for (const post of posts) {
-    const free = monsters
-      .filter((m) => !out.has(m.id))
-      .sort((a, b) => lineToPost(a, post) - lineToPost(b, post) || a.y - b.y || a.x - b.x || compareIds(a.id, b.id));
-    const nearest = free[0];
-    if (!nearest) break;
+    // Never one that watches nothing; first one that always watches this
+    // kind of post, else the nearest that has no say — never one that
+    // always watches the other kind. Without behaviours: the nearest.
+    const free = monsters.filter((m) => !out.has(m.id) && wants(m) !== "none");
+    const nearest = nearestTo(post, free.filter((m) => wants(m) === post.kind)) ?? nearestTo(post, free.filter((m) => wants(m) === undefined));
+    if (!nearest) continue;
     out.set(nearest.id, post);
+  }
+  // One that *always* watches a kind of post, and is not yet watching one,
+  // shares the nearest such post (#220) — "the gatekeeper always guards the
+  // way out" even when another monster got there first. Reading the clock,
+  // in a collapse's last round every monster with no say does the same with
+  // the way out.
+  for (const m of monsters) {
+    if (out.has(m.id)) continue;
+    const kind = wants(m) ?? (urgent ? "exit" : undefined);
+    if (kind === undefined || kind === "none") continue;
+    const own = posts.filter((p) => p.kind === kind);
+    const pick = [...own].sort((a, b) => lineToPost(m, a) - lineToPost(m, b))[0];
+    if (pick) out.set(m.id, pick);
   }
   return out;
 }

@@ -13,6 +13,8 @@ import {
   exitLine,
   hazardIcon,
   hazardLine,
+  objectiveIcon,
+  objectiveLine,
   rescueLine,
   tileWords,
 } from "./environment-copy";
@@ -48,6 +50,16 @@ describe("exits, hazards and the rescue", () => {
     expect(hazardLine({ ...fire, active: false })).toBe("Rift fire (not yet): soon stopping on it costs 1 heart.");
     expect(hazardLine({ ...fire, active: false, gone: true })).toBe("Rift fire has died down.");
     expect(new Set((["fire", "thorns", "rift"] as const).map(hazardIcon)).size).toBe(3);
+  });
+
+  it("says what ground that slows, holds or throws does, in words (#220)", () => {
+    const mud = { id: "m", kind: "rift" as const, label: "Rift mud", tiles: [], damage: 0, active: true };
+    expect(hazardLine({ ...mud, slow: { steps: 1, turns: 2 } })).toBe("Rift mud: stopping on it slows you 1 step for 2 turns.");
+    expect(hazardLine({ ...mud, damage: 2, root: true })).toBe("Rift mud: stopping on it costs 2 hearts and holds you still next turn.");
+    expect(hazardLine({ ...mud, damage: 1, slow: { steps: 2, turns: 1 }, push: { direction: "north", tiles: 2 } })).toBe(
+      "Rift mud: stopping on it costs 1 heart, slows you 2 steps for a turn and throws you 2 squares north.",
+    );
+    expect(hazardLine({ ...mud, push: { direction: "east", tiles: 1 } })).toBe("Rift mud: stopping on it throws you east.");
   });
 
   it("says how to free the captive, and what became of them", () => {
@@ -89,13 +101,13 @@ describe("the clock on the shared screen", () => {
 
 describe("the place's beats, in words", () => {
   const names: Record<string, string> = { c_1: "Sparklehoof", "wisp#1": "Bramblewisp 1" };
-  const words = { name: (id: string) => names[id] ?? id, isParty: (id: string) => id === "c_1", captive: "Pip" };
+  const words = { name: (id: string) => names[id] ?? id, isParty: (id: string) => id === "c_1", captive: (i?: number) => (i === 1 ? "Moss" : "Pip"), objective: () => "Hold the stones" };
   const you = { ...words, name: (id: string) => (id === "c_1" ? "You" : words.name(id)) };
 
   it("tells every environmental beat, for the room and for the hero it happened to", () => {
     const fire = { type: "hazard" as const, hazardId: "f", label: "Rift fire" };
-    expect(environmentBeatLine({ ...fire, actorId: "c_1" }, words)).toEqual({ text: "Rift fire hurts Sparklehoof!", tone: "bad" });
-    expect(environmentBeatLine({ ...fire, actorId: "c_1" }, you)!.text).toBe("Rift fire burns you!");
+    expect(environmentBeatLine({ ...fire, actorId: "c_1" }, words)).toEqual({ text: "Rift fire gets Sparklehoof!", tone: "bad" });
+    expect(environmentBeatLine({ ...fire, actorId: "c_1" }, you)!.text).toBe("Rift fire gets you!");
     expect(environmentBeatLine({ ...fire, actorId: "wisp#1" }, words)!.tone).toBe("good");
     expect(environmentBeatLine({ type: "escaped", actorId: "c_1", exitId: "t" }, words)!.text).toBe(
       "Sparklehoof steps through the rift!",
@@ -114,5 +126,37 @@ describe("the place's beats, in words", () => {
   it("says nothing about an ordinary beat", () => {
     expect(environmentBeatLine({ type: "down", actorId: "c_1" }, words)).toBeNull();
     expect(environmentBeatLine({ type: "moved", actorId: "c_1", to: { x: 1, y: 1 } }, words)).toBeNull();
+  });
+});
+
+describe("captives the monsters can get at, and several of them (#220)", () => {
+  const words = { name: (id: string) => (id === "wisp#1" ? "Bramblewisp 1" : id), isParty: () => false, captive: (i?: number) => (i === 1 ? "Moss" : "Pip"), objective: () => "Hold the stones" };
+  it("names the right captive, and counts the tugs left", () => {
+    expect(environmentBeatLine({ type: "freed", byId: "wisp#1", captive: 1 }, words)!.text).toBe("Bramblewisp 1 freed Moss!");
+    expect(environmentBeatLine({ type: "captiveDragged", byId: "wisp#1", hp: 2 }, words)).toEqual({
+      text: "Bramblewisp 1 drags at Pip! 2 more and they are gone.",
+      tone: "bad",
+    });
+    expect(rescueLine({ name: "Pip", at: { x: 0, y: 0 }, status: "waiting", hp: 2, maxHp: 3 })).toBe(
+      "Free Pip: end your turn next to them. A monster next to them drags them away: 2 more and they are gone.",
+    );
+  });
+});
+
+describe("objectives (#220)", () => {
+  const hold = { id: "s", kind: "hold" as const, label: "Hold the stones", tiles: [], progress: 1, target: 3, done: false };
+  it("says what to do, how far along it is, and whether it wins the fight", () => {
+    expect(objectiveLine(hold)).toBe("Hold the stones: end a round with one of you on it and no monster there. 1 of 3.");
+    expect(objectiveLine({ ...hold, kind: "close", label: "Close the tear", endsFight: true })).toBe(
+      "Close the tear: end your turn on it or next to it. 1 of 3. Do it and the fight is won.",
+    );
+    expect(objectiveLine({ ...hold, progress: 3, done: true })).toBe("Hold the stones: done!");
+    expect(objectiveIcon("hold")).not.toBe(objectiveIcon("close"));
+    expect(tileWords({ kind: "objective", label: "Hold the stones", active: true })).toBe("Hold the stones, stop here");
+  });
+  it("tells progress as a beat", () => {
+    const words = { name: (id: string) => id, isParty: () => true, captive: () => "Pip", objective: () => "Hold the stones" };
+    expect(environmentBeatLine({ type: "objective", objectiveId: "s", progress: 2, target: 3 }, words)!.text).toBe("Hold the stones: 2 of 3.");
+    expect(environmentBeatLine({ type: "objective", objectiveId: "s", progress: 3, target: 3 }, words)!.text).toBe("Done: Hold the stones!");
   });
 });

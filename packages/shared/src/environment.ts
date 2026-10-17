@@ -39,7 +39,8 @@
  * world-state.ts and buffs.ts already live by).
  */
 
-import type { Branch, EncounterEnvironment, EncounterScene, EncounterMap, MapTile, RiftExit, EnvironmentHazard } from "./types/chapter.js";
+import type { Branch, EncounterEnvironment, EncounterScene, EncounterMap, MapTile, RiftExit, EnvironmentHazard, EnvironmentObjective, EnvironmentVariant, HazardPush, RescueObjective } from "./types/chapter.js";
+import type { SlowEffect } from "./types/buffs.js";
 import type { Combatant, EncounterState } from "./encounter.js";
 
 /** What became of the person to rescue. */
@@ -55,17 +56,55 @@ export interface EnvironmentState {
   readonly spec: EncounterEnvironment;
   /** The clock ran out: a round started past `clock.rounds`. Never unset. */
   readonly expired: boolean;
-  /** Present exactly when the spec has a `rescue`. */
-  readonly rescue?: RescueStatus;
+  /**
+   * Present exactly when the spec has a `rescue`, in the spec's own form: one
+   * status for one captive, a list (in authored order) for a list (#220).
+   * Read it through `captiveStatuses`.
+   */
+  readonly rescue?: RescueStatus | readonly RescueStatus[];
+  /**
+   * What each captive has left before the monsters drag them off (#220), in
+   * authored order — present only when some captive has `hp`. A captive
+   * without `hp` has no entry worth reading (0) and is never worn down.
+   */
+  readonly captiveHp?: readonly number[];
+  /**
+   * How far along each objective is (#220), in authored order: rounds held,
+   * turns spent closing. Present exactly when the spec has `objectives`.
+   */
+  readonly objectives?: readonly number[];
+  /** The `whenHurt` relocations already done (#220), by index: each happens once. */
+  readonly relocated?: readonly number[];
 }
 
 /** The bounds the checker holds an authored environment to. */
 export const ENVIRONMENT_LIMITS = {
+  /** The most captives one fight holds (#220). */
+  captives: 3,
+  /** The most variants one environment holds (#220). */
+  variants: 4,
+  /** The most objectives one fight holds, and the longest any can take (#220). */
+  objectives: 3,
+  objectiveCount: 12,
+  /** The most a captive can take before the monsters drag them off (#220). */
+  captiveHp: 6,
   /** A clock longer than this is not a clock anybody at the table feels. */
   clockRounds: 12,
   hazardDamage: 5,
   surge: 3,
+  /** The farthest a pushing hazard throws (#220). */
+  pushTiles: 3,
+  /** A hazard's slow, held to the `"move"` buff limit and the buff duration cap (buffs.ts). */
+  slowSteps: 2,
+  slowTurns: 5,
 } as const;
+
+/** A modifier's limit per kind (#220): `BUFF_LIMITS` in buffs.ts, kept here because this file imports nothing. */
+export const MODIFIER_LIMITS = { guard: 3, damage: 2, move: 2, roll: 3 } as const;
+
+/** The combat buff a slowing hazard leaves (#220): Numbed's mechanism, the ground's name. */
+export const SLOWED_BUFF_ID = "slowed";
+export const SLOWED_LABEL = "Slowed";
 
 /** How hard a surge hits when the clock does not say. */
 export const DEFAULT_SURGE = 1;
@@ -90,6 +129,50 @@ export function hazardActive(hazard: EnvironmentHazard, round: number): boolean 
   return within(round, hazard.fromRound, hazard.untilRound);
 }
 
+/** Anything a hazard does besides hurting (#220). */
+export function hazardHinders(hazard: EnvironmentHazard): boolean {
+  return hazard.slow !== undefined || hazard.root === true || hazard.push !== undefined;
+}
+
+/**
+ * How much a monster minds stopping on a hazard: its damage, and one more if
+ * it also slows, holds or pushes — so ground that only sticks is still ground
+ * worth stepping round, and never worth more than ground that burns harder.
+ */
+export function hazardWeight(hazard: EnvironmentHazard | null): number {
+  if (!hazard) return 0;
+  return (hazard.damage ?? 0) + (hazardHinders(hazard) ? 1 : 0);
+}
+
+/** How much an objective needs: rounds held, or turns spent closing (#220). */
+export function objectiveTarget(objective: EnvironmentObjective): number {
+  return objective.kind === "hold" ? objective.rounds : objective.turns;
+}
+
+/** The tiles an objective is drawn on: the ground to hold, or the tear itself. */
+export function objectiveTiles(objective: EnvironmentObjective): readonly MapTile[] {
+  return objective.kind === "hold" ? objective.tiles : [objective.at];
+}
+
+/** Every objective done, by index, in a fight with an environment. */
+export function objectivesDone(env: EnvironmentState): boolean[] {
+  return (env.spec.objectives ?? []).map((objective, i) => (env.objectives?.[i] ?? 0) >= objectiveTarget(objective));
+}
+
+/** One tile's step for a push direction; north is up the map (y − 1). */
+export function pushStep(direction: HazardPush["direction"]): MapTile {
+  switch (direction) {
+    case "north":
+      return { x: 0, y: -1 };
+    case "south":
+      return { x: 0, y: 1 };
+    case "east":
+      return { x: 1, y: 0 };
+    default:
+      return { x: -1, y: 0 };
+  }
+}
+
 /** The active hazard on a tile this round, the first authored if several. */
 export function hazardAt(spec: EncounterEnvironment, round: number, at: MapTile): EnvironmentHazard | null {
   return (spec.hazards ?? []).find((h) => hazardActive(h, round) && onTile(h.tiles, at)) ?? null;
@@ -100,12 +183,44 @@ export function openExitAt(spec: EncounterEnvironment, round: number, at: MapTil
   return (spec.exits ?? []).find((e) => exitOpen(e, round) && onTile(e.tiles, at)) ?? null;
 }
 
+/** Every captive the spec holds, in authored order: none, the one, or the list (#220). */
+export function captivesOf(spec: Pick<EncounterEnvironment, "rescue">): readonly RescueObjective[] {
+  const rescue = spec.rescue;
+  if (rescue === undefined) return [];
+  return Array.isArray(rescue) ? rescue : [rescue as RescueObjective];
+}
+
+/** What became of each captive, in authored order. */
+export function captiveStatuses(env: Pick<EnvironmentState, "rescue">): readonly RescueStatus[] {
+  const rescue = env.rescue;
+  if (rescue === undefined) return [];
+  return Array.isArray(rescue) ? rescue : [rescue as RescueStatus];
+}
+
+/** The environment with captive `index`'s status changed, kept in the spec's form. */
+export function withCaptiveStatus(env: EnvironmentState, index: number, status: RescueStatus): EnvironmentState {
+  if (!Array.isArray(env.rescue)) return { ...env, rescue: status };
+  const next = [...env.rescue];
+  next[index] = status;
+  return { ...env, rescue: next };
+}
+
+/** The `captive` index an event carries: only for a list, so one captive's events read as they always did. */
+export function captiveIndexField(spec: Pick<EncounterEnvironment, "rescue">, index: number): { captive?: number } {
+  return Array.isArray(spec.rescue) ? { captive: index } : {};
+}
+
+/** The name of the captive an event names (by its `captive` index, else the first). */
+export function captiveName(spec: Pick<EncounterEnvironment, "rescue"> | undefined, index?: number): string {
+  return (spec ? captivesOf(spec)[index ?? 0]?.name : undefined) ?? "the captive";
+}
+
 /**
- * The last round the captive can still be freed in: `byRound`, else the
- * clock's last round, else never lost (null).
+ * The last round a captive can still be freed in: its `byRound`, else the
+ * clock's last round, else never lost (null). Without `captive`, the first.
  */
-export function rescueDeadline(spec: EncounterEnvironment): number | null {
-  return spec.rescue?.byRound ?? spec.clock?.rounds ?? null;
+export function rescueDeadline(spec: EncounterEnvironment, captive?: RescueObjective): number | null {
+  return (captive ?? captivesOf(spec)[0])?.byRound ?? spec.clock?.rounds ?? null;
 }
 
 /** Off the board, by stepping through an exit. */
@@ -170,7 +285,12 @@ export interface EnvironmentHazardView {
   readonly kind: EnvironmentHazard["kind"];
   readonly label: string;
   readonly tiles: readonly MapTile[];
+  /** 0 for ground that does not hurt (#220). */
   readonly damage: number;
+  /** What else stopping here does (#220), when it does. */
+  readonly slow?: SlowEffect;
+  readonly root?: true;
+  readonly push?: { readonly direction: HazardPush["direction"]; readonly tiles: number };
   readonly active: boolean;
   /**
    * Burnt out for good: past its `untilRound`. Without this a reader could
@@ -186,15 +306,44 @@ export interface EnvironmentRescueView {
   readonly status: RescueStatus;
   /** Rounds left to free them, counting this one, while waiting with a deadline. */
   readonly roundsLeft?: number;
+  /** A captive the monsters can drag off (#220): what they have left, and started with. */
+  readonly hp?: number;
+  readonly maxHp?: number;
+}
+
+export interface EnvironmentModifierView {
+  readonly id: string;
+  readonly label: string;
+  readonly kind: "guard" | "damage" | "move" | "roll";
+  readonly amount: number;
+  readonly on: "everyone" | "party" | "monsters";
 }
 
 export interface EnvironmentView {
   readonly clock?: EnvironmentClockView;
+  /** The place's own numbers (#220), as authored. What they add is in the fight's buffs. */
+  readonly modifiers: readonly EnvironmentModifierView[];
   readonly exits: readonly EnvironmentExitView[];
   readonly hazards: readonly EnvironmentHazardView[];
-  readonly rescue?: EnvironmentRescueView;
+  /** Every captive, in authored order (#220): one, several, or none. */
+  readonly captives: readonly EnvironmentRescueView[];
   /** Heroes already through an exit. */
   readonly escaped: readonly string[];
+  /** Everything else to get done (#220), in authored order. */
+  readonly objectives: readonly EnvironmentObjectiveView[];
+}
+
+export interface EnvironmentObjectiveView {
+  readonly id: string;
+  readonly kind: EnvironmentObjective["kind"];
+  readonly label: string;
+  readonly tiles: readonly MapTile[];
+  /** Rounds held or turns spent so far, never past `target`. */
+  readonly progress: number;
+  readonly target: number;
+  readonly done: boolean;
+  /** Getting it done ends the fight as a victory. */
+  readonly endsFight?: true;
 }
 
 /** Everything about the fight's environment a phone shows, or null without one. */
@@ -204,8 +353,9 @@ export function environmentView(state: EncounterState): EnvironmentView | null {
   const { spec } = env;
   const round = state.round;
   const clock = spec.clock;
-  const deadline = rescueDeadline(spec);
+  const statuses = captiveStatuses(env);
   return {
+    modifiers: (spec.modifiers ?? []).map((m) => ({ id: m.id, label: m.label, kind: m.kind, amount: m.amount, on: m.on ?? "everyone" })),
     ...(clock
       ? {
           clock: {
@@ -235,23 +385,40 @@ export function environmentView(state: EncounterState): EnvironmentView | null {
       kind: hazard.kind,
       label: hazard.label,
       tiles: hazard.tiles,
-      damage: hazard.damage,
+      damage: hazard.damage ?? 0,
+      ...(hazard.slow ? { slow: { steps: hazard.slow.steps, turns: hazard.slow.turns } } : {}),
+      ...(hazard.root ? { root: true as const } : {}),
+      ...(hazard.push ? { push: { direction: hazard.push.direction, tiles: hazard.push.tiles ?? 1 } } : {}),
       active: hazardActive(hazard, round),
       ...(hazard.untilRound !== undefined && round > hazard.untilRound ? { gone: true as const } : {}),
     })),
-    ...(spec.rescue && env.rescue
-      ? {
-          rescue: {
-            name: spec.rescue.name,
-            at: spec.rescue.at,
-            status: env.rescue,
-            ...(env.rescue === "waiting" && deadline !== null
-              ? { roundsLeft: Math.max(0, deadline - round + 1) }
-              : {}),
-          },
-        }
-      : {}),
+    captives: captivesOf(spec).map((captive, i) => {
+      const status = statuses[i] ?? "waiting";
+      const deadline = rescueDeadline(spec, captive);
+      const hp = env.captiveHp?.[i];
+      return {
+        name: captive.name,
+        at: captive.at,
+        status,
+        ...(status === "waiting" && deadline !== null ? { roundsLeft: Math.max(0, deadline - round + 1) } : {}),
+        ...(captive.hp !== undefined ? { hp: hp ?? captive.hp, maxHp: captive.hp } : {}),
+      };
+    }),
     escaped: state.combatants.filter(hasEscaped).map((c) => c.id),
+    objectives: (spec.objectives ?? []).map((objective, i) => {
+      const target = objectiveTarget(objective);
+      const progress = Math.min(target, env.objectives?.[i] ?? 0);
+      return {
+        id: objective.id,
+        kind: objective.kind,
+        label: objective.label,
+        tiles: objectiveTiles(objective),
+        progress,
+        target,
+        done: progress >= target,
+        ...(objective.endsFight ? { endsFight: true as const } : {}),
+      };
+    }),
   };
 }
 
@@ -281,6 +448,97 @@ const HEIGHT = 8;
  * carry — `onEscape` / `onTimeout` with nothing that could take them.
  */
 export function checkEncounterEnvironment(
+  scene: Pick<EncounterScene, "environment" | "onEscape" | "onTimeout" | "enemies">,
+  map?: Pick<EncounterMap, "rows" | "partySpawns" | "enemySpawns"> | null,
+): EnvironmentProblem[] {
+  const env = scene.environment;
+  if (!env || env.variants === undefined) return checkResolved(scene, map);
+
+  // An environment with variants (#220) is several places, any of which a
+  // party may fight in: every one must pass, and the branches must cover
+  // what any of them can end in.
+  const out: EnvironmentProblem[] = [];
+  const seen = new Set<string>();
+  const fail = (path: string, problem: string) => {
+    if (seen.has(`${path}\n${problem}`)) return;
+    seen.add(`${path}\n${problem}`);
+    out.push({ path, problem });
+  };
+  const variants = Array.isArray(env.variants) ? env.variants : [];
+  if (variants.length < 1 || variants.length > ENVIRONMENT_LIMITS.variants) {
+    fail("/environment/variants", `a list of 1 to ${ENVIRONMENT_LIMITS.variants} variants`);
+  }
+  variants.forEach((variant, i) => {
+    const facts = variant?.when?.facts;
+    if (!facts || typeof facts !== "object" || Array.isArray(facts) || Object.keys(facts).length === 0) {
+      fail(`/environment/variants/${i}/when`, 'needs { "facts": { ... } } naming at least one world fact');
+    }
+  });
+  const base = withoutVariants(env);
+  const places = [base, ...variants.map((variant) => mergeVariant(base, variant))];
+  const exits = places.some((place) => (place.exits ?? []).length > 0);
+  const collapses = places.some((place) => place.clock?.onExpire === "collapse");
+  if (exits && !scene.onEscape) fail("/onEscape", "an environment with exits (in any variant) needs an onEscape branch — stepping through one ends the fight");
+  if (scene.onEscape && !exits) fail("/onEscape", "onEscape with no environment exits in any variant — nothing can ever take it");
+  if (collapses && !scene.onTimeout) fail("/onTimeout", 'a "collapse" clock (in any variant) needs an onTimeout branch — running out ends the fight');
+  if (scene.onTimeout && !collapses) fail("/onTimeout", 'onTimeout without a "collapse" clock in any variant — nothing can ever take it');
+
+  const stand = { goto: "" } as Branch;
+  places.forEach((place, i) => {
+    const variant = i === 0 ? null : variants[i - 1];
+    const owned = new Set(variant ? Object.keys(variant).filter((key) => key !== "when") : []);
+    // The branches are judged above, across every variant; each place is
+    // handed exactly the ones it needs so it is judged on everything else.
+    const problems = checkResolved(
+      {
+        enemies: scene.enemies,
+        environment: place,
+        ...((place.exits ?? []).length > 0 ? { onEscape: stand } : {}),
+        ...(place.clock?.onExpire === "collapse" ? { onTimeout: stand } : {}),
+      },
+      map,
+    );
+    for (const problem of problems) {
+      const part = /^\/environment\/([^/]+)/.exec(problem.path)?.[1];
+      const path = part && owned.has(part) ? problem.path.replace("/environment/", `/environment/variants/${i - 1}/`) : problem.path;
+      fail(path, problem.problem);
+    }
+  });
+  return out;
+}
+
+/** The environment without its variants: the place as authored. */
+function withoutVariants(env: EncounterEnvironment): EncounterEnvironment {
+  const { variants: _variants, ...base } = env;
+  return base;
+}
+
+/** `base` with each part `variant` lists in its place. An empty list removes the part. */
+function mergeVariant(base: EncounterEnvironment, variant: EnvironmentVariant): EncounterEnvironment {
+  const { when: _when, ...parts } = variant;
+  const out: Record<string, unknown> = { ...base, ...parts };
+  for (const [key, value] of Object.entries(out)) if (Array.isArray(value) && value.length === 0) delete out[key];
+  return out as EncounterEnvironment;
+}
+
+/**
+ * The place a party actually fights in (#220): the first variant whose
+ * `when` holds, laid over the base, else the base. `holds` tests a variant's
+ * facts against the run's (`factTestHolds`, world-state.ts — passed in, as
+ * this file imports nothing). An environment without variants comes back as
+ * the very same object, so a fight without them starts exactly as before.
+ */
+export function resolveEnvironment(
+  env: EncounterEnvironment,
+  holds: (when: EnvironmentVariant["when"]) => boolean,
+): EncounterEnvironment {
+  if (env.variants === undefined) return env;
+  const base = withoutVariants(env);
+  const pick = env.variants.find((variant) => holds(variant.when));
+  return pick ? mergeVariant(base, pick) : base;
+}
+
+function checkResolved(
   scene: Pick<EncounterScene, "environment" | "onEscape" | "onTimeout" | "enemies">,
   map?: Pick<EncounterMap, "rows" | "partySpawns" | "enemySpawns"> | null,
 ): EnvironmentProblem[] {
@@ -379,8 +637,30 @@ export function checkEncounterEnvironment(
   (env.hazards ?? []).forEach((hazard, i) => {
     const at = `/environment/hazards/${i}`;
     seenId(hazard.id, `${at}/id`);
-    if (!isInt(hazard.damage) || hazard.damage < 1 || hazard.damage > ENVIRONMENT_LIMITS.hazardDamage) {
+    if (hazard.damage !== undefined && (!isInt(hazard.damage) || hazard.damage < 1 || hazard.damage > ENVIRONMENT_LIMITS.hazardDamage)) {
       fail(`${at}/damage`, `must be a whole number from 1 to ${ENVIRONMENT_LIMITS.hazardDamage}`);
+    }
+    if (hazard.damage === undefined && !hazardHinders(hazard)) {
+      fail(at, "a hazard must do something: damage, slow, root or push");
+    }
+    if (hazard.slow !== undefined) {
+      const { steps, turns } = hazard.slow ?? ({} as SlowEffect);
+      if (!isInt(steps) || steps < 1 || steps > ENVIRONMENT_LIMITS.slowSteps) {
+        fail(`${at}/slow/steps`, `must be a whole number from 1 to ${ENVIRONMENT_LIMITS.slowSteps}`);
+      }
+      if (!isInt(turns) || turns < 1 || turns > ENVIRONMENT_LIMITS.slowTurns) {
+        fail(`${at}/slow/turns`, `must be a whole number from 1 to ${ENVIRONMENT_LIMITS.slowTurns}`);
+      }
+    }
+    if (hazard.root !== undefined && hazard.root !== true) fail(`${at}/root`, "is true or absent");
+    if (hazard.push !== undefined) {
+      if (!["north", "south", "east", "west"].includes(hazard.push?.direction)) {
+        fail(`${at}/push/direction`, 'must be "north", "south", "east" or "west"');
+      }
+      const n = hazard.push?.tiles;
+      if (n !== undefined && (!isInt(n) || n < 1 || n > ENVIRONMENT_LIMITS.pushTiles)) {
+        fail(`${at}/push/tiles`, `must be a whole number from 1 to ${ENVIRONMENT_LIMITS.pushTiles}`);
+      }
     }
     roundOk(hazard.fromRound, `${at}/fromRound`);
     roundOk(hazard.untilRound, `${at}/untilRound`);
@@ -394,11 +674,17 @@ export function checkEncounterEnvironment(
     });
   });
 
-  // --- rescue
-  const rescue = env.rescue;
-  if (rescue) {
-    const at = "/environment/rescue";
+  // --- rescue: one captive, or a list of them (#220)
+  const captives = captivesOf(env);
+  if (Array.isArray(env.rescue) && (env.rescue.length < 1 || env.rescue.length > ENVIRONMENT_LIMITS.captives)) {
+    fail("/environment/rescue", `a list of 1 to ${ENVIRONMENT_LIMITS.captives} captives`);
+  }
+  captives.forEach((rescue, i) => {
+    const at = Array.isArray(env.rescue) ? `/environment/rescue/${i}` : "/environment/rescue";
     roundOk(rescue.byRound, `${at}/byRound`);
+    if (rescue.hp !== undefined && (!isInt(rescue.hp) || rescue.hp < 1 || rescue.hp > ENVIRONMENT_LIMITS.captiveHp)) {
+      fail(`${at}/hp`, `must be a whole number from 1 to ${ENVIRONMENT_LIMITS.captiveHp}`);
+    }
     if (lastRound !== null && rescue.byRound !== undefined && rescue.byRound > lastRound) {
       fail(`${at}/byRound`, `round ${rescue.byRound} is after the clock collapses the fight at the end of round ${lastRound}`);
     }
@@ -406,13 +692,67 @@ export function checkEncounterEnvironment(
       if (partySpawns.has(key(rescue.at)) || enemySpawns.has(key(rescue.at))) {
         fail(`${at}/at`, `(${rescue.at.x}, ${rescue.at.y}) is a spawn point — the captive stands there, so nobody else can`);
       }
-      claim(rescue.at, "the captive", `${at}/at`);
+      claim(rescue.at, captives.length > 1 ? `the captive ${rescue.name} (${i + 1})` : "the captive", `${at}/at`);
       if (map?.rows) {
-        const beside = neighbours(rescue.at, width, height).filter((t) => map.rows[t.y]?.[t.x] === ".");
+        const beside = neighbours(rescue.at, width, height).filter(
+          (t) => map.rows[t.y]?.[t.x] === "." && !captives.some((c) => c.at.x === t.x && c.at.y === t.y),
+        );
         if (beside.length === 0) fail(`${at}/at`, "nobody can stand next to the captive, so they can never be freed");
       }
     }
+  });
+
+  // --- objectives (#220)
+  const objectives = env.objectives ?? [];
+  if (objectives.length > ENVIRONMENT_LIMITS.objectives) {
+    fail("/environment/objectives", `at most ${ENVIRONMENT_LIMITS.objectives} objectives`);
   }
+  objectives.forEach((objective, i) => {
+    const at = `/environment/objectives/${i}`;
+    seenId(objective.id, `${at}/id`);
+    const count = objective.kind === "hold" ? objective.rounds : objective.kind === "close" ? objective.turns : undefined;
+    const countKey = objective.kind === "hold" ? "rounds" : "turns";
+    if (objective.kind !== "hold" && objective.kind !== "close") {
+      fail(`${at}/kind`, 'must be "hold" or "close"');
+      return;
+    }
+    if (!isInt(count) || count < 1 || count > ENVIRONMENT_LIMITS.objectiveCount) {
+      fail(`${at}/${countKey}`, `must be a whole number from 1 to ${ENVIRONMENT_LIMITS.objectiveCount}`);
+    }
+    if (objective.kind === "hold" && lastRound !== null && isInt(count) && count > lastRound) {
+      fail(`${at}/rounds`, `${count} rounds can never be held — the clock collapses the fight at the end of round ${lastRound}`);
+    }
+    if (objective.endsFight !== undefined && objective.endsFight !== true) fail(`${at}/endsFight`, "is true or absent");
+    const tiles = objective.kind === "hold" ? objective.tiles ?? [] : [objective.at];
+    const where = (j: number) => (objective.kind === "hold" ? `${at}/tiles/${j}` : `${at}/at`);
+    tiles.forEach((tile, j) => {
+      if (!tileOk(tile, where(j))) return;
+      if (objective.kind === "hold" && partySpawns.has(key(tile))) {
+        fail(where(j), `(${tile.x}, ${tile.y}) is a party spawn — the party would hold it without moving`);
+      }
+      claim(tile, `objective "${objective.id}"`, where(j));
+    });
+  });
+
+  // --- modifiers (#220)
+  const modifiers = env.modifiers ?? [];
+  if (modifiers.length > ENVIRONMENT_LIMITS.objectives) fail("/environment/modifiers", `at most ${ENVIRONMENT_LIMITS.objectives} modifiers`);
+  modifiers.forEach((modifier, i) => {
+    const at = `/environment/modifiers/${i}`;
+    seenId(modifier.id, `${at}/id`);
+    if (modifier.id === "numbed" || modifier.id === SLOWED_BUFF_ID) fail(`${at}/id`, `"${modifier.id}" is a name the fight gives its own stings and slows`);
+    const limit = MODIFIER_LIMITS[modifier.kind as keyof typeof MODIFIER_LIMITS];
+    if (limit === undefined) {
+      fail(`${at}/kind`, 'must be "guard", "damage", "move" or "roll"');
+      return;
+    }
+    if (!isInt(modifier.amount) || modifier.amount === 0 || Math.abs(modifier.amount) > limit) {
+      fail(`${at}/amount`, `must be a non-zero whole number from -${limit} to ${limit} (the ${modifier.kind} limit)`);
+    }
+    if (modifier.on !== undefined && !["everyone", "party", "monsters"].includes(modifier.on)) {
+      fail(`${at}/on`, 'must be "everyone", "party" or "monsters"');
+    }
+  });
 
   // --- relocations
   const counts = new Map<string, number>();
@@ -422,6 +762,10 @@ export function checkEncounterEnvironment(
   }
   (env.relocate ?? []).forEach((move, i) => {
     const at = `/environment/relocate/${i}`;
+    if ((move.round === undefined) === (move.whenHurt === undefined)) {
+      fail(at, 'needs exactly one of "round" and "whenHurt"');
+    }
+    if (move.whenHurt !== undefined && move.whenHurt !== true) fail(`${at}/whenHurt`, "is true or absent");
     roundOk(move.round, `${at}/round`, 2);
     if (lastRound !== null && isInt(move.round) && move.round > lastRound) {
       fail(`${at}/round`, `round ${move.round} never starts — the clock collapses the fight at the end of round ${lastRound}`);
@@ -431,23 +775,31 @@ export function checkEncounterEnvironment(
     if (!specId || !Number.isInteger(n) || n < 1 || n > (counts.get(specId) ?? 0)) {
       fail(`${at}/enemy`, `"${move.enemy}" is not one of this scene's enemies (ids are <enemy id>#<n>, from 1)`);
     }
-    if (tileOk(move.to, `${at}/to`) && claimed.get(key(move.to)) === "the captive") {
+    if (tileOk(move.to, `${at}/to`) && claimed.get(key(move.to))?.startsWith("the captive")) {
       fail(`${at}/to`, "that is where the captive stands");
     }
   });
 
   // --- reach: an exit, or the captive, the party cannot walk to is a lie
   if (map?.rows && map.partySpawns?.[0]) {
-    const blocked = new Set<string>(rescue ? [key(rescue.at)] : []);
+    const blocked = new Set<string>(captives.map((c) => key(c.at)));
     const reach = flood(map.rows, map.partySpawns[0], blocked);
     exits.forEach((exit, i) => {
       if ((exit.tiles ?? []).length > 0 && !(exit.tiles ?? []).some((t) => reach.has(key(t)))) {
         fail(`/environment/exits/${i}/tiles`, `no hero can walk to exit "${exit.id}"`);
       }
     });
-    if (rescue && !neighbours(rescue.at, width, height).some((t) => reach.has(key(t)))) {
-      fail("/environment/rescue/at", "no hero can walk to the captive");
-    }
+    objectives.forEach((objective, i) => {
+      const goals = objective.kind === "hold" ? objective.tiles ?? [] : [objective.at, ...neighbours(objective.at, width, height)];
+      if (goals.length > 0 && !goals.some((t) => reach.has(key(t)))) {
+        fail(`/environment/objectives/${i}`, `no hero can walk to objective "${objective.id}"`);
+      }
+    });
+    captives.forEach((rescue, i) => {
+      if (!neighbours(rescue.at, width, height).some((t) => reach.has(key(t)))) {
+        fail(Array.isArray(env.rescue) ? `/environment/rescue/${i}/at` : "/environment/rescue/at", "no hero can walk to the captive");
+      }
+    });
   }
   return out;
 }

@@ -9,7 +9,7 @@ import type { EncounterState } from "../encounter.js";
 import type { ResolvedCharacter, StatId } from "./domain.js";
 import type { ChapterOutcome, SceneId, ScenePriority, SceneType } from "./chapter.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
-import type { JourneyView, NodeId } from "./campaign-graph.js";
+import type { FactId, FactValue, JourneyView, NodeId } from "./campaign-graph.js";
 import type { BuffId, CheckBuffOffer, RunBuff } from "./buffs.js";
 
 export type RoomMode = "party" | "travel";
@@ -182,6 +182,15 @@ export interface RunState {
    */
   buffs?: RunBuff[];
   /**
+   * The journey's world facts (#198) as this chapter started (#220), every
+   * declared fact at its current value: what an environment's `variants`
+   * test when a fight begins. Read-only to the run — a chapter changes the
+   * world through flags and the graph's `onComplete`, never by writing here.
+   * Absent on every run without a graph that declares facts, whose fights
+   * are always the place as authored.
+   */
+  facts?: Record<FactId, FactValue>;
+  /**
    * Where the household stands in the campaign this room plays, for the
    * screens: the lobby says which chapter is next, and the completion screen
    * says when the whole campaign has just ended. Computed by the server from
@@ -269,6 +278,14 @@ export interface RunState {
    * second pot.
    */
   bonuses?: EarnedBonus[];
+  /**
+   * How each fight in a place that fought back ended (#220), in the order
+   * they were fought, for the completion screen: through the rift, out of
+   * time, won, lost — and who was freed or lost, what got done. Only a fight
+   * with an `environment` adds one; absent on every other run, so the screen
+   * is exactly what it was. Cleared when a chapter starts.
+   */
+  fightEndings?: FightEnding[];
   /**
    * Every scene this run has entered, in order — the spine of the story, for
    * the end-of-chapter recap (roadmap chapter 7, architecture §6).
@@ -417,6 +434,18 @@ export interface TradeOffer {
  * the engine clamps against the 25% ceiling (spec §8.2), and a screen that
  * itemised the authored number would not add up to `xpEarned`.
  */
+/** One environmental fight's ending, as the completion screen tells it (#220). */
+export interface FightEnding {
+  outcome: "victory" | "defeat" | "escaped" | "timedOut";
+  /** Won by finishing an objective that ends the fight, while monsters still stood: its label. */
+  byObjective?: string;
+  /** Captives freed, and lost, by name. */
+  freed: string[];
+  lost: string[];
+  /** Objectives done, by label. */
+  done: string[];
+}
+
 export interface EarnedBonus {
   id: string;
   label: string;

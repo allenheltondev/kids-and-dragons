@@ -68,7 +68,16 @@
   color: var(--color-text-muted, #b7b0d8);
 }
 
+/* How a fight that fought back ended (#220): one line each, icon and words. */
+.complete__fight {
+  display: block;
+  text-align: center;
+  margin: 0;
+  font-size: var(--font-size-md, 1em);
+}
+
 .complete__campaign-end > .kad-icon,
+.complete__fight > .kad-icon,
 .complete__setback > .kad-icon {
   vertical-align: -0.15em;
   margin-inline-end: var(--space-2, 0.5em);

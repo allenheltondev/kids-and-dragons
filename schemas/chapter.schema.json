@@ -787,6 +787,39 @@
               "maximum": 5
             }
           }
+        },
+        "rift": {
+          "$comment": "#220 how this creature fights in a place that fights back. Read only in a fight with an environment.",
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "ignores": {
+              "description": "Hazard kinds that do nothing to it; it stops on them freely.",
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "fire",
+                  "thorns",
+                  "rift"
+                ]
+              }
+            },
+            "post": {
+              "description": "What it watches with nobody to hit: always the way out, always a captive, or never anything.",
+              "enum": [
+                "exit",
+                "captive",
+                "none"
+              ]
+            },
+            "shoves": {
+              "description": "At its turn's end, shoves a hero beside it one square onto the active hazard behind them, which bites them then.",
+              "const": true
+            }
+          }
         }
       }
     },
@@ -1396,7 +1429,7 @@
           }
         },
         "hazards": {
-          "description": "Ground that hurts: a figure that ENDS its turn on an active hazard tile takes `damage`.",
+          "description": "Ground that bites: a figure that ENDS its turn on an active hazard tile takes `damage`, then is slowed, held (`root`) or thrown (`push`) if the hazard says so (#220). At least one of the four (content:validate).",
           "type": "array",
           "minItems": 1,
           "items": {
@@ -1406,8 +1439,7 @@
               "id",
               "kind",
               "label",
-              "tiles",
-              "damage"
+              "tiles"
             ],
             "properties": {
               "id": {
@@ -1435,7 +1467,39 @@
               "damage": {
                 "type": "integer",
                 "minimum": 1,
-                "maximum": 5
+                "maximum": 5,
+                "description": "1 to 5. Absent: the ground does not hurt, only slows, holds or pushes (#220)."
+              },
+              "slow": {
+                "description": "#220 sticky ground: Slowed, `steps` fewer steps for `turns` of the figure's own turns. Refreshes, never stacks.",
+                "$ref": "#/$defs/numbingSting/properties/slow"
+              },
+              "root": {
+                "description": "#220 grabbing ground: the figure starts its next turn with no steps.",
+                "const": true
+              },
+              "push": {
+                "description": "#220 ground that throws: the figure slides `tiles` (default 1) toward `direction` (north is up the map), stopping at a wall, the edge or a figure.",
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "direction"
+                ],
+                "properties": {
+                  "direction": {
+                    "enum": [
+                      "north",
+                      "south",
+                      "east",
+                      "west"
+                    ]
+                  },
+                  "tiles": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 3
+                  }
+                }
               },
               "fromRound": {
                 "description": "Active from this round (default 1).",
@@ -1492,40 +1556,29 @@
           }
         },
         "rescue": {
-          "description": "Somebody to save, standing on `at`. Freed when a hero ENDS a turn beside them; lost after `byRound` (default: when the clock runs out). `effects` apply when the fight ends, if freed.",
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "name",
-            "at"
-          ],
-          "properties": {
-            "name": {
-              "type": "string",
-              "minLength": 1
+          "description": "Somebody to save, standing on `at`. Freed when a hero ENDS a turn beside them; lost after `byRound` (default: when the clock runs out). `effects` apply when the fight ends, if freed. One captive, or a list of up to three (#220), each freed on its own.",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/rescueObjective"
             },
-            "at": {
-              "$ref": "#/$defs/mapTile"
-            },
-            "byRound": {
-              "description": "The last round they can be freed in.",
-              "type": "integer",
-              "minimum": 1
-            },
-            "effects": {
-              "$ref": "#/$defs/effects"
+            {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 3,
+              "items": {
+                "$ref": "#/$defs/rescueObjective"
+              }
             }
-          }
+          ]
         },
         "relocate": {
-          "description": "The rift moves a monster: at the start of `round`, enemy `<spec id>#<n>` goes to `to`, if it still stands and the tile is free.",
+          "description": "The rift moves a monster: at the start of `round`, or (#220 `whenHurt`) of the first round it has half its hearts or fewer, enemy `<spec id>#<n>` goes to `to`, if it still stands and the tile is free. Exactly one of round and whenHurt (content:validate).",
           "type": "array",
           "minItems": 1,
           "items": {
             "type": "object",
             "additionalProperties": false,
             "required": [
-              "round",
               "enemy",
               "to"
             ],
@@ -1540,6 +1593,534 @@
               },
               "to": {
                 "$ref": "#/$defs/mapTile"
+              },
+              "whenHurt": {
+                "const": true
+              }
+            }
+          }
+        },
+        "objectives": {
+          "description": "#220 something to get done besides surviving: hold ground for N rounds, or close a tear in N hero turns. `effects` apply when the fight ends if it was done; `endsFight` makes done a victory.",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "kind",
+                  "label",
+                  "tiles",
+                  "rounds"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9]+([-_][a-z0-9]+)*$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "effects": {
+                    "$ref": "#/$defs/effects"
+                  },
+                  "endsFight": {
+                    "description": "Done ends the fight as a victory (onVictory).",
+                    "const": true
+                  },
+                  "kind": {
+                    "const": "hold"
+                  },
+                  "tiles": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "$ref": "#/$defs/mapTile"
+                    }
+                  },
+                  "rounds": {
+                    "description": "Rounds that END with a standing hero on the tiles and no monster; not in a row.",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 12
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "kind",
+                  "label",
+                  "at",
+                  "turns"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9]+([-_][a-z0-9]+)*$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "effects": {
+                    "$ref": "#/$defs/effects"
+                  },
+                  "endsFight": {
+                    "description": "Done ends the fight as a victory (onVictory).",
+                    "const": true
+                  },
+                  "kind": {
+                    "const": "close"
+                  },
+                  "at": {
+                    "$ref": "#/$defs/mapTile"
+                  },
+                  "turns": {
+                    "description": "Hero turns that END on or beside `at`, any heroes, any order.",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 12
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "modifiers": {
+          "description": "#220 the place's own numbers for the whole fight (a storm's -1 Guard). Each becomes a combat buff on every figure it is on (default everyone), held to the same per-kind limits as the party's buffs (content:validate checks the amount against them).",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "label",
+              "kind",
+              "amount"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+([-_][a-z0-9]+)*$"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "kind": {
+                "enum": [
+                  "guard",
+                  "damage",
+                  "move",
+                  "roll"
+                ]
+              },
+              "amount": {
+                "type": "integer",
+                "minimum": -3,
+                "maximum": 3,
+                "not": {
+                  "const": 0
+                }
+              },
+              "on": {
+                "enum": [
+                  "everyone",
+                  "party",
+                  "monsters"
+                ]
+              }
+            }
+          }
+        },
+        "variants": {
+          "description": "#220 the same place, changed by the world: the first variant whose `when` holds replaces each part it lists when the fight begins (an empty list removes the part). None holding, or a run without world facts, is the place as authored. Every variant is checked as a place of its own.",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "when"
+            ],
+            "properties": {
+              "$comment": {
+                "type": "string"
+              },
+              "clock": {
+                "description": "The visible rift timer, in rounds. collapse: the fight ends after the last round and takes onTimeout. surge: it goes on, and every later round hurts each hero by `surge` (default 1).",
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "rounds",
+                  "label",
+                  "onExpire"
+                ],
+                "properties": {
+                  "rounds": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 12
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "onExpire": {
+                    "enum": [
+                      "collapse",
+                      "surge"
+                    ]
+                  },
+                  "surge": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 3
+                  }
+                }
+              },
+              "hazards": {
+                "description": "Ground that bites: a figure that ENDS its turn on an active hazard tile takes `damage`, then is slowed, held (`root`) or thrown (`push`) if the hazard says so (#220). At least one of the four (content:validate).",
+                "type": "array",
+                "minItems": 0,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "kind",
+                    "label",
+                    "tiles"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9]+([-_][a-z0-9]+)*$"
+                    },
+                    "kind": {
+                      "enum": [
+                        "fire",
+                        "thorns",
+                        "rift"
+                      ]
+                    },
+                    "label": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "tiles": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "$ref": "#/$defs/mapTile"
+                      }
+                    },
+                    "damage": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 5,
+                      "description": "1 to 5. Absent: the ground does not hurt, only slows, holds or pushes (#220)."
+                    },
+                    "slow": {
+                      "description": "#220 sticky ground: Slowed, `steps` fewer steps for `turns` of the figure's own turns. Refreshes, never stacks.",
+                      "$ref": "#/$defs/numbingSting/properties/slow"
+                    },
+                    "root": {
+                      "description": "#220 grabbing ground: the figure starts its next turn with no steps.",
+                      "const": true
+                    },
+                    "push": {
+                      "description": "#220 ground that throws: the figure slides `tiles` (default 1) toward `direction` (north is up the map), stopping at a wall, the edge or a figure.",
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "direction"
+                      ],
+                      "properties": {
+                        "direction": {
+                          "enum": [
+                            "north",
+                            "south",
+                            "east",
+                            "west"
+                          ]
+                        },
+                        "tiles": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 3
+                        }
+                      }
+                    },
+                    "fromRound": {
+                      "description": "Active from this round (default 1).",
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "untilRound": {
+                      "description": "Active through this round (default: the rest of the fight).",
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  }
+                }
+              },
+              "exits": {
+                "description": "Timed ways out: a hero who ENDS a turn on an open exit tile steps through. When every standing hero is through, the fight takes onEscape.",
+                "type": "array",
+                "minItems": 0,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "label",
+                    "tiles"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9]+([-_][a-z0-9]+)*$"
+                    },
+                    "label": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "tiles": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "$ref": "#/$defs/mapTile"
+                      }
+                    },
+                    "opensRound": {
+                      "description": "Open from this round (default 1).",
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "closesRound": {
+                      "description": "Open through this round (default: the rest of the fight).",
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  }
+                }
+              },
+              "rescue": {
+                "description": "Somebody to save, standing on `at`. Freed when a hero ENDS a turn beside them; lost after `byRound` (default: when the clock runs out). `effects` apply when the fight ends, if freed. One captive, or a list of up to three (#220), each freed on its own.",
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/rescueObjective"
+                  },
+                  {
+                    "type": "array",
+                    "minItems": 0,
+                    "maxItems": 3,
+                    "items": {
+                      "$ref": "#/$defs/rescueObjective"
+                    }
+                  }
+                ]
+              },
+              "relocate": {
+                "description": "The rift moves a monster: at the start of `round`, enemy `<spec id>#<n>` goes to `to`, if it still stands and the tile is free.",
+                "type": "array",
+                "minItems": 0,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "enemy",
+                    "to"
+                  ],
+                  "properties": {
+                    "round": {
+                      "type": "integer",
+                      "minimum": 2
+                    },
+                    "enemy": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]*#[1-9][0-9]*$"
+                    },
+                    "to": {
+                      "$ref": "#/$defs/mapTile"
+                    },
+                    "whenHurt": {
+                      "const": true
+                    }
+                  }
+                }
+              },
+              "objectives": {
+                "description": "#220 something to get done besides surviving: hold ground for N rounds, or close a tear in N hero turns. `effects` apply when the fight ends if it was done; `endsFight` makes done a victory.",
+                "type": "array",
+                "minItems": 0,
+                "maxItems": 3,
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "id",
+                        "kind",
+                        "label",
+                        "tiles",
+                        "rounds"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "pattern": "^[a-z0-9]+([-_][a-z0-9]+)*$"
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "effects": {
+                          "$ref": "#/$defs/effects"
+                        },
+                        "endsFight": {
+                          "description": "Done ends the fight as a victory (onVictory).",
+                          "const": true
+                        },
+                        "kind": {
+                          "const": "hold"
+                        },
+                        "tiles": {
+                          "type": "array",
+                          "minItems": 1,
+                          "items": {
+                            "$ref": "#/$defs/mapTile"
+                          }
+                        },
+                        "rounds": {
+                          "description": "Rounds that END with a standing hero on the tiles and no monster; not in a row.",
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 12
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "id",
+                        "kind",
+                        "label",
+                        "at",
+                        "turns"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "pattern": "^[a-z0-9]+([-_][a-z0-9]+)*$"
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "effects": {
+                          "$ref": "#/$defs/effects"
+                        },
+                        "endsFight": {
+                          "description": "Done ends the fight as a victory (onVictory).",
+                          "const": true
+                        },
+                        "kind": {
+                          "const": "close"
+                        },
+                        "at": {
+                          "$ref": "#/$defs/mapTile"
+                        },
+                        "turns": {
+                          "description": "Hero turns that END on or beside `at`, any heroes, any order.",
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 12
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "modifiers": {
+                "description": "#220 the place's own numbers for the whole fight (a storm's -1 Guard). Each becomes a combat buff on every figure it is on (default everyone), held to the same per-kind limits as the party's buffs (content:validate checks the amount against them).",
+                "type": "array",
+                "minItems": 0,
+                "maxItems": 3,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "label",
+                    "kind",
+                    "amount"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9]+([-_][a-z0-9]+)*$"
+                    },
+                    "label": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "kind": {
+                      "enum": [
+                        "guard",
+                        "damage",
+                        "move",
+                        "roll"
+                      ]
+                    },
+                    "amount": {
+                      "type": "integer",
+                      "minimum": -3,
+                      "maximum": 3,
+                      "not": {
+                        "const": 0
+                      }
+                    },
+                    "on": {
+                      "enum": [
+                        "everyone",
+                        "party",
+                        "monsters"
+                      ]
+                    }
+                  }
+                }
+              },
+              "when": {
+                "description": "World facts (#198) the variant needs, each tested as in a graph condition. Only facts: a run carries the journey's facts and nothing else of it. content:validate checks the names against every graph campaign that lists the chapter.",
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "facts"
+                ],
+                "properties": {
+                  "facts": {
+                    "type": "object",
+                    "minProperties": 1,
+                    "additionalProperties": {
+                      "$ref": "#/$defs/factTest"
+                    }
+                  }
+                }
               }
             }
           }
@@ -1551,6 +2132,78 @@
       "enum": [
         1,
         2
+      ]
+    },
+    "rescueObjective": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "at"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "at": {
+          "$ref": "#/$defs/mapTile"
+        },
+        "byRound": {
+          "description": "The last round they can be freed in.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "effects": {
+          "$ref": "#/$defs/effects"
+        },
+        "hp": {
+          "description": "#220 a captive the monsters can get at, 1 to 6: a monster that ends its turn beside them without swinging takes one away; at none they are lost. Absent: nothing can touch them.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        }
+      }
+    },
+    "factTest": {
+      "description": "FactTest in campaign-graph.ts: a bare value is equality; an object's keys each must hold.",
+      "oneOf": [
+        {
+          "type": [
+            "string",
+            "integer",
+            "boolean"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "in": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": [
+                  "string",
+                  "integer"
+                ]
+              }
+            },
+            "not": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            },
+            "min": {
+              "type": "integer"
+            },
+            "max": {
+              "type": "integer"
+            }
+          }
+        }
       ]
     }
   }

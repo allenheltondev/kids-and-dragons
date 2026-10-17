@@ -1195,7 +1195,7 @@ describe("the place fighting back (#201)", () => {
       3,
     );
     expect(beats.map((b) => b.text)).toEqual([
-      "Rift fire burns you!",
+      "Rift fire gets you!",
       "You freed Pip!",
       "You step through the rift!",
       "The rift throws Bramblewisp 1 somewhere new!",

@@ -142,6 +142,18 @@ describe("how the chapter ended (spec §8.2)", () => {
   });
 });
 
+describe("how a fight that fought back ended (#220)", () => {
+  it("names each ending, who was freed and what got done", () => {
+    mount({ fightEndings: [{ outcome: "escaped", freed: ["Pip"], lost: [], done: [] }] });
+    expect(screen.getByText("You got out through the rift. You freed Pip.")).toBeTruthy();
+  });
+
+  it("is not there at all for a chapter without one", () => {
+    const { container } = mount({});
+    expect(container.querySelector(".complete__fight")).toBeNull();
+  });
+});
+
 describe("bonus objectives (spec §8.2)", () => {
   it("itemises what the party pulled off, so the XP total adds up", () => {
     mount({ xpEarned: 125, bonuses: [bonus(), bonus({ id: "quiet", label: "Nobody went down", xp: 5 })] });

@@ -77,12 +77,18 @@ export function beatSubjects(event: EncounterEvent): string[] {
     // The place fighting back (#201): who stopped on the fire, who stepped
     // through, which monster the rift threw.
     case "hazard":
+    case "slowed":
     case "escaped":
     case "relocated":
       return [event.actorId];
-    // The hero who freed the captive. The captive is a square, not a figure.
+    // The hero who freed the captive, the monster dragging at one (#220).
+    // The captive is a square, not a figure.
     case "freed":
+    case "captiveDragged":
       return [event.byId];
+    // The hero closing a tear (#220); a held round names nobody.
+    case "objective":
+      return event.byId ? [event.byId] : [];
     /*
      * A roll names its roller through the die rather than an `actorId`, and
      * the *swing* is already framed by the damage or evade beat beside it —

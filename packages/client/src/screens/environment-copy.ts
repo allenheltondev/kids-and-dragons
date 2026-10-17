@@ -16,11 +16,14 @@
  * in a child's hand never say the same thing two ways.
  */
 
+import { buffAmountText, buffIcon } from "./buff-copy";
 import type {
   EncounterEvent,
+  EnvironmentModifierView,
   EnvironmentClockView,
   EnvironmentExitView,
   EnvironmentHazardView,
+  EnvironmentObjectiveView,
   EnvironmentRescueView,
 } from "@kad/shared";
 
@@ -41,6 +44,32 @@ export const CLOCK_ICON = "waiting";
 export const EXIT_ICON = "forward";
 export const CAPTIVE_ICON = "heart";
 
+/** An objective's glyph (#220): a shield for ground to hold, a key for a tear to close. */
+export function objectiveIcon(kind: EnvironmentObjectiveView["kind"]): string {
+  return kind === "hold" ? "shield" : "key";
+}
+
+/** A place-wide number (#220): "Storm winds: −1 Guard for everyone, all fight." */
+export function modifierLine(modifier: EnvironmentModifierView): string {
+  const who = modifier.on === "party" ? "all of you" : modifier.on === "monsters" ? "every monster" : "everyone";
+  return `${modifier.label}: ${buffAmountText(modifier.kind, modifier.amount)} for ${who}, all fight.`;
+}
+
+export function modifierIcon(modifier: EnvironmentModifierView): string {
+  return buffIcon(modifier.kind);
+}
+
+/** What an objective asks, how far along it is, and what doing it means (#220). */
+export function objectiveLine(objective: EnvironmentObjectiveView): string {
+  if (objective.done) return `${objective.label}: done!`;
+  const how =
+    objective.kind === "hold"
+      ? "end a round with one of you on it and no monster there"
+      : "end your turn on it or next to it";
+  const ends = objective.endsFight ? " Do it and the fight is won." : "";
+  return `${objective.label}: ${how}. ${objective.progress} of ${objective.target}.${ends}`;
+}
+
 /** "The rift closes in 3 rounds." — the visible timer. */
 export function clockLine(clock: EnvironmentClockView): string {
   if (clock.expired) {
@@ -52,10 +81,36 @@ export function clockLine(clock: EnvironmentClockView): string {
   return `${clock.label} in ${clock.roundsLeft} rounds.`;
 }
 
+/** "a, b and c" — the way a person lists things aloud. */
+function spoken(parts: readonly string[]): string {
+  if (parts.length <= 1) return parts[0] ?? "";
+  return `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`;
+}
+
+/**
+ * Everything stopping on a hazard does, in the order it happens: "costs 2
+ * hearts and holds you still next turn". Ground that slows, holds or throws
+ * (#220) says so in words, beside or instead of the hearts.
+ */
+export function hazardCost(hazard: Pick<EnvironmentHazardView, "damage" | "slow" | "root" | "push">): string {
+  const parts: string[] = [];
+  if (hazard.damage > 0) parts.push(`costs ${hazard.damage} heart${s(hazard.damage)}`);
+  if (hazard.slow) {
+    const { steps, turns } = hazard.slow;
+    parts.push(`slows you ${steps} step${s(steps)} for ${turns === 1 ? "a turn" : `${turns} turns`}`);
+  }
+  if (hazard.root) parts.push("holds you still next turn");
+  if (hazard.push) {
+    const n = hazard.push.tiles;
+    parts.push(`throws you ${n === 1 ? "" : `${n} squares `}${hazard.push.direction}`);
+  }
+  return spoken(parts);
+}
+
 /** What one hazard costs, and whether it is burning yet. */
 export function hazardLine(hazard: EnvironmentHazardView): string {
   if (hazard.gone) return `${hazard.label} has died down.`;
-  const cost = `stopping on it costs ${hazard.damage} heart${s(hazard.damage)}.`;
+  const cost = `stopping on it ${hazardCost(hazard)}.`;
   return hazard.active ? `${hazard.label}: ${cost}` : `${hazard.label} (not yet): soon ${cost}`;
 }
 
@@ -79,7 +134,9 @@ export function rescueLine(rescue: EnvironmentRescueView): string {
     case "lost":
       return `${rescue.name} is lost to the rift.`;
     default: {
-      const how = `Free ${rescue.name}: end your turn next to them.`;
+      const free = `Free ${rescue.name}: end your turn next to them.`;
+      // A captive the monsters can get at (#220) says how many tugs are left.
+      const how = rescue.hp === undefined ? free : `${free} A monster next to them drags them away: ${rescue.hp} more and they are gone.`;
       if (rescue.roundsLeft === undefined) return how;
       return rescue.roundsLeft <= 1 ? `${how} This round is the last chance!` : `${how} ${rescue.roundsLeft} rounds left.`;
     }
@@ -87,8 +144,10 @@ export function rescueLine(rescue: EnvironmentRescueView): string {
 }
 
 /** A board square's mark, as words: what the cell's button and the legend say. */
-export function tileWords(feature: { kind: "hazard" | "exit" | "captive"; label: string; active: boolean }): string {
+export function tileWords(feature: { kind: "hazard" | "exit" | "captive" | "objective"; label: string; active: boolean }): string {
   switch (feature.kind) {
+    case "objective":
+      return feature.active ? `${feature.label}, stop here` : `${feature.label}, done`;
     case "hazard":
       return feature.active ? `${feature.label}, don't stop here` : `${feature.label} (not yet)`;
     case "exit":
@@ -123,8 +182,13 @@ export interface BeatWords {
   /** "You" for the reader's own figure on a phone; a name everywhere else. */
   name(id: string): string;
   isParty(id: string): boolean;
-  /** `rescue.name`, or "the captive" for a fight without one. */
-  readonly captive: string;
+  /**
+   * The captive an event names, by its `captive` index (#220; absent for the
+   * one captive): their `name`, or "the captive" for a fight without one.
+   */
+  captive(index?: number): string;
+  /** An objective's label, by id (#220). */
+  objective(id: string): string;
 }
 
 /**
@@ -141,7 +205,14 @@ export function environmentBeatLine(
     case "hazard": {
       const who = words.name(event.actorId);
       return {
-        text: `${event.label} ${who === "You" ? "burns you" : `hurts ${who}`}!`,
+        text: `${event.label} ${who === "You" ? "gets you" : `gets ${who}`}!`,
+        tone: words.isParty(event.actorId) ? "bad" : "good",
+      };
+    }
+    case "slowed": {
+      const who = words.name(event.actorId);
+      return {
+        text: `${who} ${who === "You" ? "are" : "is"} stuck: ${event.steps} fewer step${s(event.steps)} for ${event.turns === 1 ? "a turn" : `${event.turns} turns`}.`,
         tone: words.isParty(event.actorId) ? "bad" : "good",
       };
     }
@@ -150,11 +221,24 @@ export function environmentBeatLine(
       return { text: `${who} ${who === "You" ? "step" : "steps"} through the rift!`, tone: "good" };
     }
     case "freed":
-      return { text: `${words.name(event.byId)} freed ${words.captive}!`, tone: "good" };
+      return { text: `${words.name(event.byId)} freed ${words.captive(event.captive)}!`, tone: "good" };
     case "captiveLost":
-      return { text: `${words.captive} is lost to the rift.`, tone: "bad" };
+      return { text: `${words.captive(event.captive)} is lost to the rift.`, tone: "bad" };
+    case "captiveDragged":
+      return {
+        text: `${words.name(event.byId)} drags at ${words.captive(event.captive)}! ${event.hp === 0 ? "Gone!" : `${event.hp} more and they are gone.`}`,
+        tone: "bad",
+      };
     case "relocated":
       return { text: `The rift throws ${words.name(event.actorId)} somewhere new!`, tone: "plain" };
+    case "objective":
+      return {
+        text:
+          event.progress >= event.target
+            ? `Done: ${words.objective(event.objectiveId)}!`
+            : `${words.objective(event.objectiveId)}: ${event.progress} of ${event.target}.`,
+        tone: "good",
+      };
     case "riftClock":
       return { text: event.onExpire === "collapse" ? "The rift is closing!" : "The rift is surging!", tone: "bad" };
     case "surge":
