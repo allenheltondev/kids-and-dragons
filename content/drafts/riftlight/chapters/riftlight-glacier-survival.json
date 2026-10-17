@@ -1,0 +1,493 @@
+{
+  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "id": "riftlight-glacier-survival",
+  "campaignId": "riftlight-opening-preview",
+  "index": 2,
+  "title": "A Bell in the Snow",
+  "biome": "glacier_of_origins",
+  "music": "riftlight-theme",
+  "estimatedMinutes": 15,
+  "xpAward": 140,
+  "entry": "arrival",
+  "scenes": {
+    "arrival": {
+      "type": "story",
+      "narration": "The bell rings again. The kid answers with an enormous bleat for such a small goat. You brush snow from its knees, scraped in the scramble on the quay. Across the slope, a herd of snowhorn goats waits on a ledge. A bell hangs from one goat's collar. Between you and the herd, a melt channel cuts through the snow.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look for a safe way to the herd",
+          "icon": "hand",
+          "goto": "shelter"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "discovers": [
+        "creature.snowhorn_goat"
+      ]
+    },
+    "shelter": {
+      "type": "choice_point",
+      "narration": "Wind presses your wet clothes against your knees. The kid is shivering. A bank of packed snow would block the wind; a row of dark rocks would lead you nearer the bell. What do you do first?",
+      "choices": [
+        {
+          "id": "bank",
+          "label": "Make a windbreak in the snow",
+          "icon": "hand",
+          "goto": "windbreak"
+        },
+        {
+          "id": "rocks",
+          "label": "Follow the dark rocks",
+          "icon": "hand",
+          "goto": "rocks"
+        },
+        {
+          "id": "warm",
+          "label": "Use Mend to warm the kid's scraped knees",
+          "icon": "spark",
+          "goto": "mend",
+          "requiresSpecies": "unicorn"
+        }
+      ]
+    },
+    "windbreak": {
+      "type": "story",
+      "narration": "You scrape a hollow behind the bank and huddle shoulder to shoulder. The kid noses under the warmest arm. From here you can see footprints between the dark rocks, each wider than your head.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Follow the big footprints",
+          "icon": "hand",
+          "goto": "tracks"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "made_glacier_shelter",
+          "value": true
+        }
+      ]
+    },
+    "rocks": {
+      "type": "story",
+      "narration": "The rocks give your feet something firm to find under the snow. Beside them are deep footprints. A broad wooden sledge has scraped a second track toward the bell.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Follow the sledge tracks",
+          "icon": "hand",
+          "goto": "tracks"
+        }
+      ]
+    },
+    "mend": {
+      "type": "story",
+      "narration": "Gentle light settles over the kid's scraped knees. It stops shaking long enough to chew the end of your sleeve. You tuck it back into your coat and find broad footprints between the rocks.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Follow the footprints",
+          "icon": "hand",
+          "goto": "tracks"
+        }
+      ]
+    },
+    "tracks": {
+      "type": "story",
+      "narration": "A yeti herder comes around the ridge pulling an empty sledge. She stops at the sight of the kid. \"There you are.\" Then she notices the rest of you. \"There you all are. Did you come with the weather?\"",
+      "choices": [
+        {
+          "id": "truth",
+          "label": "Tell her about the fold on the quay",
+          "icon": "hand",
+          "goto": "tell_rift"
+        },
+        {
+          "id": "herd",
+          "label": "Ask for help getting the kid home",
+          "icon": "hand",
+          "goto": "ask_help"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Yeti herder"
+        }
+      ],
+      "discovers": [
+        "npc.yeti"
+      ]
+    },
+    "tell_rift": {
+      "type": "story",
+      "narration": "The yeti looks at your wet boots, then at the harbor rope. \"The Exchange,\" she says. \"That is a long way to arrive without a hat.\" She lays a folded blanket on the sledge. \"Stand on the dark ice when I say. Walk around the white patches.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Bring the kid to the melt channel",
+          "icon": "hand",
+          "goto": "channel"
+        }
+      ]
+    },
+    "ask_help": {
+      "type": "story",
+      "narration": "\"First we get you warm enough to help,\" says the yeti. She takes a folded blanket from the sledge and wraps it around the kid and your arms together. \"I keep this herd. The glacier keeps surprising me.\" She turns the sledge toward the melt channel.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go with the herder",
+          "icon": "hand",
+          "goto": "channel"
+        }
+      ]
+    },
+    "channel": {
+      "type": "choice_point",
+      "narration": "Meltwater gurgles through a narrow gap. The nearest snow bridge sags when the yeti tests it. A flat stone projects farther upstream. The herder points out dark patches of ice that will hold a careful foot. The herd waits on the other side, bells clinking.",
+      "choices": [
+        {
+          "id": "stone",
+          "label": "Use the stepping stone",
+          "icon": "hand",
+          "goto": "step"
+        },
+        {
+          "id": "sledge",
+          "label": "Make a bridge with the sledge",
+          "icon": "hand",
+          "goto": "sledge"
+        },
+        {
+          "id": "glide",
+          "label": "Carry a rope across on wings",
+          "icon": "wing",
+          "goto": "wing_line",
+          "requiresSpecies": [
+            "griffin",
+            "dragonling"
+          ]
+        },
+        {
+          "id": "song",
+          "label": "Keep everyone in step with a steady song",
+          "icon": "song",
+          "goto": "song_step",
+          "requiresClass": "songkeeper"
+        }
+      ]
+    },
+    "step": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Step across the stone without slipping into the meltwater.",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "dry_bank",
+        "narration": "You land on the far bank and pass the kid across."
+      },
+      "onFailure": {
+        "goto": "wet_bank",
+        "narration": "Your foot slips into icy water. The herder catches your wrist and lifts you onto the bank.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "sledge": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Hold the sledge steady while everyone crosses.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "dry_bank",
+        "narration": "You brace the runners against the stone. The party crawls over one at a time."
+      },
+      "onFailure": {
+        "goto": "wet_bank",
+        "narration": "A runner slips. The herder grabs the sledge and you scramble across, soaked to the elbows.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "wing_line": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Carry the line to the far bank for everyone to hold.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "dry_bank",
+        "narration": "You loop the line around a rock. Everyone crosses holding it."
+      },
+      "onFailure": {
+        "goto": "wet_bank",
+        "narration": "The wind pushes you low. You reach the rock, but one foot splashes through the channel.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "song_step": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Keep the whole party moving on the herder's safe steps.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "dry_bank",
+        "narration": "Your song sets a slow pace. Each friend puts a foot exactly where the herder did."
+      },
+      "onFailure": {
+        "goto": "wet_bank",
+        "narration": "The ice shifts between two notes. The herder pulls you clear and leads the last steps herself.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "dry_bank": {
+      "type": "story",
+      "narration": "The kid sees the herd and wriggles free. A shaggy goat sniffs it from nose to tail, then nudges it firmly between her front legs. The herder checks every one of you before she smiles. \"All back. Good.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Help settle the herd",
+          "icon": "hand",
+          "goto": "herd"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "crossed_melt_dry",
+          "value": true
+        }
+      ]
+    },
+    "wet_bank": {
+      "type": "story",
+      "narration": "The herder wrings the edge of your sleeve out over the channel. \"We will dry that indoors.\" The kid has already run to a shaggy goat, who sniffs it all over and refuses to let it move.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Follow the herd toward shelter",
+          "icon": "hand",
+          "goto": "herd"
+        }
+      ]
+    },
+    "herd": {
+      "type": "choice_point",
+      "narration": "The herder calls the goats toward a low opening in the ice. The kid plants its feet at the entrance. From inside comes a deep note that trembles through your boots. How do you coax it in?",
+      "choices": [
+        {
+          "id": "patient",
+          "label": "Sit beside it and wait",
+          "icon": "hand",
+          "goto": "patient"
+        },
+        {
+          "id": "follow",
+          "label": "Let it follow a friend's sleeve",
+          "icon": "hand",
+          "goto": "sleeve"
+        },
+        {
+          "id": "hum",
+          "label": "Hum back to the low note",
+          "icon": "hand",
+          "goto": "hum"
+        }
+      ]
+    },
+    "patient": {
+      "type": "story",
+      "narration": "You sit in the snow beside the kid. The herd keeps walking. At last it butts your elbow, gets up, and trots after them. The herder waits for you too.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go inside together",
+          "icon": "hand",
+          "goto": "hall"
+        }
+      ]
+    },
+    "sleeve": {
+      "type": "story",
+      "narration": "You offer a loose cuff. The kid gives it an interested nibble. The kid takes the end in its mouth and follows you through the doorway. \"That coat has earned its keep,\" says the herder.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Follow the sound",
+          "icon": "hand",
+          "goto": "hall"
+        }
+      ]
+    },
+    "hum": {
+      "type": "story",
+      "narration": "You hum the low note. The kid tilts its head. From inside the ice, another voice hums back. The kid follows the sound, and you follow the kid.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Meet whoever answered",
+          "icon": "hand",
+          "goto": "hall"
+        }
+      ]
+    },
+    "hall": {
+      "type": "rest",
+      "narration": "The doorway opens into a singing hall carved from ice. Yetis sit on benches around warm cups, holding one low note together. The herder drapes your wet things near a row of warm stones and pours tea. Damp blankets hang over a rail. \"Glacier of Origins,\" she says. \"You may stop arriving now.\"",
+      "heal": 2,
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Listen to the hall",
+          "icon": "hand",
+          "goto": "listen"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Yeti herder"
+        }
+      ]
+    },
+    "listen": {
+      "type": "choice_point",
+      "narration": "A young yeti stops singing to turn a page in an open songbook. The note thins. Another singer joins, and it fills the hall again. The herder taps the bench beside her. \"Low and steady. Try it. Nobody here learned by already knowing.\"",
+      "choices": [
+        {
+          "id": "learn",
+          "label": "Learn the note with the yetis",
+          "icon": "hand",
+          "goto": "learn_note"
+        },
+        {
+          "id": "ask",
+          "label": "Ask what the song is for",
+          "icon": "hand",
+          "goto": "song_answer"
+        }
+      ]
+    },
+    "song_answer": {
+      "type": "story",
+      "narration": "\"For listening,\" says the herder. She puts a hand against the wall. \"A crack makes one sound. Running water makes another. The song helps us hear the difference.\" She hums the note once and waits for you to answer.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Hum the note back",
+          "icon": "hand",
+          "goto": "learn_note"
+        }
+      ]
+    },
+    "learn_note": {
+      "type": "story",
+      "narration": "You find the note together. At first it shakes; then your voices settle. Across the hall, frost trembles off a sealed seam in the wall. The herder lays a palm on it, listening. \"That seam was quiet yesterday.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Ask about the change",
+          "icon": "hand",
+          "goto": "changing"
+        }
+      ],
+      "priority": 2,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "learned_glacier_note",
+          "value": true
+        }
+      ]
+    },
+    "changing": {
+      "type": "story",
+      "narration": "\"The melt is early,\" she says. \"A path we used last week is water now. Do not follow a track just because it is old.\" Outside, a bell rings twice. Three travelers in dark cloaks are packing their camp beside the hall.",
+      "choices": [
+        {
+          "id": "help",
+          "label": "Help the herder dry the last blankets",
+          "icon": "hand",
+          "goto": "blankets"
+        },
+        {
+          "id": "travelers",
+          "label": "Go and meet the travelers",
+          "icon": "hand",
+          "goto": "departure"
+        }
+      ]
+    },
+    "blankets": {
+      "type": "story",
+      "narration": "You spread the last blanket over a rail. The herder packs a dry corner around your rope. \"Bring it back if you pass this way. Bring yourselves back too.\" The kid bumps your knee before returning to the herd.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go outside to the travelers",
+          "icon": "hand",
+          "goto": "departure"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_glacier_herder",
+          "value": true
+        }
+      ]
+    },
+    "departure": {
+      "type": "rest",
+      "narration": "Warm and dry, you step out beside the singing hall. The kid stays with its herd. A griffin in a travel cloak is trying to fold a map while a unicorn stands on one corner. Neither has noticed that the corner is under her hoof.",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success"
+    }
+  },
+  "llmHints": {
+    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
+    "forbidden": [
+      "death",
+      "gore",
+      "Corvane",
+      "emperor",
+      "Pangea",
+      "Hollow Gate",
+      "Legend Dragon"
+    ],
+    "npcVoices": {
+      "Yeti herder": "Chapter-scoped female yeti herder and singer. Patient, dry humor, practical cold-weather care. Gives no complete history, prison hints, or explanation of the rifts.",
+      "Young yeti singer": "Learns and listens; no lore lecture."
+    }
+  }
+}

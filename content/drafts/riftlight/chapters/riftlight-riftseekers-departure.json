@@ -1,0 +1,256 @@
+{
+  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "id": "riftlight-riftseekers-departure",
+  "campaignId": "riftlight-opening-preview",
+  "index": 3,
+  "title": "A Map with a Missing Pass",
+  "biome": "glacier_of_origins",
+  "music": "riftlight-theme",
+  "estimatedMinutes": 10,
+  "xpAward": 140,
+  "entry": "map",
+  "scenes": {
+    "map": {
+      "type": "story",
+      "narration": "The griffin calls to the unicorn. \"Olivia. Your hoof.\" She steps aside. He folds his map, finds another corner stuck under a bag, and gives up. \"Good morning. I'm Orin Vale.\" \"Lady Olivia,\" the unicorn adds. Behind them, a kitsune tightens a strap on a case of small rings. \"Seren Wisp,\" she says, waving. An open case of little brass instruments rests beside Orin's pack. \"Were you the noise over the ridge?\" he asks.",
+      "choices": [
+        {
+          "id": "tell",
+          "label": "Tell them how you arrived",
+          "icon": "hand",
+          "goto": "arrival_story"
+        },
+        {
+          "id": "ask",
+          "label": "Ask whether they saw the fold",
+          "icon": "hand",
+          "goto": "arrival_question"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ]
+    },
+    "arrival_story": {
+      "type": "story",
+      "narration": "You tell Orin about the snow, the kid, and the quay vanishing behind you. He writes down \"goat\" and underlines it. \"A place arrived first. Then you crossed.\" Olivia leans over his shoulder. \"And it reached all the way here.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Ask who they are",
+          "icon": "hand",
+          "goto": "fellowship"
+        }
+      ]
+    },
+    "arrival_question": {
+      "type": "story",
+      "narration": "\"We saw it close,\" says Seren. She checks that everyone is standing steady. \"You all came through together? Good.\" Orin opens his notebook. Olivia is watching the slope where the fold closed.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Ask what they are doing here",
+          "icon": "hand",
+          "goto": "fellowship"
+        }
+      ]
+    },
+    "fellowship": {
+      "type": "story",
+      "narration": "\"Riftseekers,\" says Orin, touching the broken-circle clasp on his cloak. \"We call these openings rifts. We follow them and write down what they do.\" \"Some of us would like to do more than write,\" says Lady Olivia. Seren closes her ring case. \"Some of us would like to arrive with all our luggage.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Show them what you noticed",
+          "icon": "hand",
+          "goto": "seren"
+        }
+      ]
+    },
+    "seren": {
+      "type": "story",
+      "narration": "Seren asks where the opening appeared and how long it lasted. She listens without interrupting. Orin rolls the map around a wooden rod so nobody can stand on it again.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Hear Orin's lead",
+          "icon": "hand",
+          "goto": "lead"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "starweaver_read_first_rift"
+          },
+          "text": "When you describe studying the light around the opening, Seren looks up. \"One of you can see it. Keep looking. Later, I can show you how to listen too.\""
+        },
+        {
+          "when": {
+            "notFlag": "starweaver_read_first_rift"
+          },
+          "text": "\"You can learn a good deal without seeing what I see,\" Seren says. She glances at Orin's instruments. \"He brought half a bag of help.\""
+        }
+      ]
+    },
+    "lead": {
+      "type": "story",
+      "narration": "Orin unrolls his map and points east. \"The griffins at Frostfang keep a ledger of their passes. Last season, no pass here. This season, cairns and a path. They call it the Cairnstep.\" He taps the map. \"It might tell us what is moving. It might also be a bad map. I would like to know which.\"",
+      "choices": [
+        {
+          "id": "route",
+          "label": "Ask how to reach the Cairnstep",
+          "icon": "hand",
+          "goto": "route"
+        },
+        {
+          "id": "olivia",
+          "label": "Ask Olivia what she would do",
+          "icon": "hand",
+          "goto": "olivia"
+        }
+      ],
+      "priority": 2
+    },
+    "olivia": {
+      "type": "story",
+      "narration": "\"Learn how to hold an opening,\" says Olivia. \"Think what we could carry. Food into a snowbound town. A whole boat past a broken bridge.\" Orin fastens his notebook shut. \"First, learn whether it stays open.\" She lifts her pack. \"Yes, Orin. First.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Ask about the path east",
+          "icon": "hand",
+          "goto": "route"
+        }
+      ]
+    },
+    "route": {
+      "type": "story",
+      "narration": "Orin points below the ice shelf, where melt channels join into a broad river. \"The Great River starts here. Stay on this bank. The shelf above the headwaters leads toward Frostfang. Test the ice. If it gives, let the river carry you to a place you can get out. Do not fight it under the shelf.\" Seren points toward the hall. \"Or stay and look around. We have not found every opening here.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Check what you will need",
+          "icon": "hand",
+          "goto": "chime"
+        }
+      ]
+    },
+    "chime": {
+      "type": "story",
+      "narration": "Orin takes a little chime from his bag. \"A Listening Chime, for you. Strike it near an opening. A sour note means it cannot open yet. An echo means it will stay open and let you come back.\" He waits while you take it. \"No echo? Do not promise anybody a return trip.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Try the Listening Chime",
+          "icon": "hand",
+          "goto": "test_chime"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantQuestItem",
+          "itemId": "listening_chime"
+        }
+      ]
+    },
+    "test_chime": {
+      "type": "choice_point",
+      "narration": "The Listening Chime hangs from a short cord. It is light enough to carry in one hand. Orin holds his bag open while you decide how to test it.",
+      "choices": [
+        {
+          "id": "ring",
+          "label": "Ring it beside the empty air",
+          "icon": "hand",
+          "goto": "ring"
+        },
+        {
+          "id": "wrap",
+          "label": "Wrap it carefully and repeat the rules",
+          "icon": "hand",
+          "goto": "wrap"
+        }
+      ]
+    },
+    "ring": {
+      "type": "story",
+      "narration": "You strike it. One clear note rings over the snow and fades. No opening answers. Orin nods. \"Away from a rift, it is a very small bell.\" Seren smiles. \"Still worth keeping.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Get ready to leave",
+          "icon": "hand",
+          "goto": "parting"
+        }
+      ]
+    },
+    "wrap": {
+      "type": "story",
+      "narration": "\"Sour: not ready. Echo: a way back,\" you say. Orin nods and gives you a scrap of soft cloth for the chime. \"And never ask it for the name of a place. It does not know the names.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Pack the chime",
+          "icon": "hand",
+          "goto": "parting"
+        }
+      ]
+    },
+    "parting": {
+      "type": "story",
+      "narration": "Olivia shoulders her pack. Seren counts the cases once, then again. Orin takes the path behind them, holding the map up where everyone can see it. \"If the Cairnstep has moved,\" he calls back, \"do draw it in the right place.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Choose your next direction",
+          "icon": "hand",
+          "goto": "camp"
+        }
+      ]
+    },
+    "camp": {
+      "type": "rest",
+      "narration": "You sit on a dry stone beside the singing hall and check your packs. East, the ice shelf bends toward Frostfang. Behind you, the glacier holds folds and seams you have not explored. The Listening Chime rests between you. This time, you get to choose where you go.",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success"
+    }
+  },
+  "llmHints": {
+    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
+    "forbidden": [
+      "death",
+      "gore",
+      "Corvane",
+      "emperor",
+      "Pangea",
+      "Hollow Gate",
+      "Legend Dragon"
+    ],
+    "npcVoices": {
+      "Orin Vale": "He/him, griffin Riftseeker. Methodical, patient, plain speech, asks questions instead of explaining the world. Offers one optional practical lead; no Pangea theory yet.",
+      "Lady Olivia": "She/her, unicorn Riftseeker. Confident, mischievous, sees useful possibilities in rifts. Wants power to help, no threats and no early summoning.",
+      "Seren Wisp": "She/her, kitsune Riftseeker. Careful, perceptive, kind. Recognizes an earlier Starweaver reading by its flag. Promises teaching later; does not grant Attune here."
+    }
+  },
+  "props": {
+    "listening_chime": {
+      "kind": "quest",
+      "icon": "bell",
+      "name": "Listening Chime",
+      "text": "Near a rift: sour means not ready; an echo means it stays open and offers a way back."
+    }
+  }
+}
