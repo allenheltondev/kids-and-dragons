@@ -55,23 +55,45 @@ export function SharedHome(): ReactElement {
   const [error, setError] = useState<string | null>(null);
   const nameFieldId = useId();
 
+  /*
+   * The faces are read fresh whenever the picker is what is showing: when it
+   * first appears, when somebody taps "Pick again", and when the tablet comes
+   * back into view. A tablet left open on the counter all week otherwise never
+   * shows the cousin a grown-up added from their phone on Tuesday.
+   */
+  const picking = pick === null;
+  const [seen, setSeen] = useState(0);
   useEffect(() => {
+    const onVisible = (): void => {
+      if (document.visibilityState === "visible") setSeen((n) => n + 1);
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, []);
+
+  useEffect(() => {
+    if (!picking) return;
     let live = true;
     loadSharedPlayers().then(
       (found) => {
         if (!live) return;
         // Forgotten since it was set up: HomeScreen goes back to an ordinary start.
         if (found === null) refreshShared();
-        else setPlayers(found);
+        else {
+          setPlayers(found);
+          setLoadError(null);
+        }
       },
       (err: unknown) => {
-        if (live) setLoadError(err instanceof Error ? err.message : "We couldn’t find your family.");
+        // A refresh that fails keeps the faces already showing; only an empty
+        // picker has nothing better to say than the error.
+        if (live) setLoadError((current) => current ?? (err instanceof Error ? err.message : "We couldn\u2019t find your family."));
       },
     );
     return () => {
       live = false;
     };
-  }, [loadSharedPlayers, refreshShared]);
+  }, [picking, seen, loadSharedPlayers, refreshShared]);
 
   useEffect(() => {
     if (pendingCode === null) return;
@@ -119,7 +141,7 @@ export function SharedHome(): ReactElement {
                   <span>Finding your family…</span>
                 </div>
               ) : null}
-              {loadError !== null ? (
+              {loadError !== null && players === null ? (
                 <p className="home__error kad-chip kad-chip--bad kad-chip--wrap" role="alert">
                   <Icon name="close" />
                   <span>{loadError}</span>

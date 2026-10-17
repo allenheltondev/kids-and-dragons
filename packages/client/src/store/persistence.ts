@@ -329,12 +329,22 @@ export function becomeSharedDevice(
   storage: KeyValueStorage = defaultStorage(),
   tab: KeyValueStorage = tabStorage(),
 ): void {
+  /*
+   * The tablet's token is written first, and a failure to write it throws
+   * before anything is forgotten. The other order could leave a browser that
+   * is neither: no shared token, no identity, and the next join would make it
+   * a brand-new player without anybody noticing.
+   */
+  try {
+    storage.setItem(SHARED_KEY, JSON.stringify(record));
+  } catch {
+    throw new Error("This device couldn\u2019t save its new setup. Free up some space and try again.");
+  }
   storage.removeItem(DEVICE_KEY);
   storage.removeItem(JOURNAL_KEY);
   storage.removeItem(ACCOUNT_KEY);
   clearAllSessions(storage);
   clearAllSessions(tab);
-  saveSharedDevice(record, storage);
 }
 
 /** Forgotten (or never real): back to an ordinary device, nobody yet. */
