@@ -5,6 +5,7 @@ import { applyAction } from "./action.ts";
 import { setPresence } from "./presence.ts";
 import { relayPreview } from "./preview.ts";
 import { removePlayer } from "./remove.ts";
+import { getState } from "./state.ts";
 import { createRoom, joinRoom, watchRoom } from "./room.ts";
 
 function member(playerId: string): PartyMember {
@@ -159,6 +160,15 @@ describe("a removed player stays out", () => {
       harness.deps,
     );
     expect(result).toMatchObject({ ok: false, code: "FORBIDDEN" });
+  });
+
+  it("cannot read the room with the session it already holds", async () => {
+    const { harness, runId, guest, other } = await removed();
+    expect(await getState({ runId, playerId: guest.principal.playerId }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "FORBIDDEN" },
+    });
+    expect((await getState({ runId, playerId: other.principal.playerId }, harness.deps)).ok).toBe(true);
   });
 
   it("is not brought back by its stream reopening", async () => {

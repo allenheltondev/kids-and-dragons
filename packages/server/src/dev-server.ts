@@ -423,7 +423,7 @@ async function main(): Promise<void> {
     const raw = req.query.sinceSeq;
     const sinceSeq = typeof raw === "string" && raw !== "" ? Number(raw) : undefined;
 
-    const result = await getState({ runId, sinceSeq }, deps);
+    const result = await getState({ runId, sinceSeq, playerId: reader.playerId }, deps);
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
   });
