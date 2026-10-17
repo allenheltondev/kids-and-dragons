@@ -30,7 +30,7 @@ import type {
   SceneId,
 } from "./types/chapter.js";
 import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "./condition-lint.js";
-import { checkEncounterEnvironment } from "./environment.js";
+import { captivesOf, checkEncounterEnvironment } from "./environment.js";
 import type { ItemCatalog, ResolvedCharacter } from "./types/domain.js";
 
 export type IssueSeverity = "error" | "warning";
@@ -111,7 +111,16 @@ function sceneEffects(scene: Scene): Effect[] {
         ...(scene.onDefeat?.effects ?? []),
         ...(scene.onEscape?.effects ?? []),
         ...(scene.onTimeout?.effects ?? []),
-        ...(scene.environment?.rescue?.effects ?? []),
+        // Captives' and objectives' effects, in the place as authored and in
+        // every variant of it (#220): any of them can be the place fought in.
+        ...[scene.environment, ...(scene.environment?.variants ?? [])].flatMap((place) =>
+          place
+            ? [
+                ...captivesOf(place).flatMap((captive) => captive.effects ?? []),
+                ...(place.objectives ?? []).flatMap((objective) => objective.effects ?? []),
+              ]
+            : [],
+        ),
       );
       break;
   }

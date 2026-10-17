@@ -1,0 +1,78 @@
+{
+  "$comment": "Sandbox chapter for the deferred environment effects (#220) — NOT content: it lives outside content/chapters/, no campaign lists it, and nothing ships it. The same flooded landing as rift-skirmish (map rift_ferry), in a storm: mud that slows, briars that hold, a gust that throws, two captives (one the monsters can drag off), ground to hold and a small tear to close (closing it wins the fight), a storm that makes everyone easier to hit, a variant for when the storm is raging, a brute that shoves heroes into the briars and walks through them, a shade that always watches a captive, and a brute the rift pulls away once it is hurt. Played by packages/shared/src/encounter-environment.test.ts; judged by tools/content/encounter-environment.test.mjs.",
+  "id": "rift-storm",
+  "campaignId": "rift-sandbox",
+  "index": 2,
+  "title": "The Storm Landing",
+  "biome": "enchanted_woods",
+  "estimatedMinutes": 10,
+  "xpAward": 100,
+  "entry": "scene_landing",
+  "objectives": [
+    { "id": "save_pip", "label": "Get Pip out of the storm", "flag": "pip_rescued", "xp": 10 },
+    { "id": "save_moss", "label": "Get Moss out of the storm", "flag": "moss_rescued", "xp": 10 }
+  ],
+  "scenes": {
+    "scene_landing": {
+      "type": "story",
+      "narration": "The storm has the landing now. Rain hisses on the water, and a small tear crackles near the top of the bank.",
+      "choices": [{ "id": "wade", "label": "Wade in", "icon": "swords", "goto": "fight_storm" }]
+    },
+    "fight_storm": {
+      "type": "encounter",
+      "map": "rift_ferry",
+      "narration": "A storm brute and a rift shade wade out of the rain. Pip and Moss are caught at the water's edge.",
+      "enemies": [
+        { "id": "brute", "name": "Storm Brute", "count": 1, "hp": 6, "guard": 9, "quick": 0, "steps": 3, "attack": 1, "rift": { "shoves": true, "ignores": ["thorns"] } },
+        { "id": "shade", "name": "Rift Shade", "count": 1, "hp": 4, "guard": 9, "quick": 0, "steps": 3, "attack": 1, "rift": { "post": "captive" } }
+      ],
+      "environment": {
+        "clock": { "rounds": 6, "label": "The storm breaks", "onExpire": "surge" },
+        "hazards": [
+          { "id": "mud", "kind": "rift", "label": "Sucking mud", "tiles": [{ "x": 4, "y": 3 }, { "x": 4, "y": 4 }], "slow": { "steps": 1, "turns": 2 } },
+          { "id": "briars", "kind": "thorns", "label": "Grabbing briars", "tiles": [{ "x": 3, "y": 6 }, { "x": 4, "y": 6 }], "damage": 1, "root": true },
+          { "id": "gust", "kind": "rift", "label": "A rift gust", "tiles": [{ "x": 5, "y": 1 }], "push": { "direction": "north" } }
+        ],
+        "rescue": [
+          { "name": "Pip", "at": { "x": 1, "y": 7 }, "effects": [{ "type": "setFlag", "flag": "pip_rescued" }] },
+          { "name": "Moss", "at": { "x": 8, "y": 7 }, "hp": 2, "byRound": 5, "effects": [{ "type": "setFlag", "flag": "moss_rescued" }] }
+        ],
+        "objectives": [
+          { "id": "beacon", "kind": "hold", "label": "Hold the beacon stone", "tiles": [{ "x": 2, "y": 1 }], "rounds": 2, "effects": [{ "type": "setFlag", "flag": "beacon_held" }] },
+          { "id": "small-tear", "kind": "close", "label": "Close the small tear", "at": { "x": 7, "y": 0 }, "turns": 3, "endsFight": true }
+        ],
+        "modifiers": [{ "id": "storm", "label": "Storm winds", "kind": "guard", "amount": -1 }],
+        "relocate": [{ "whenHurt": true, "enemy": "brute#1", "to": { "x": 9, "y": 0 } }],
+        "variants": [
+          {
+            "when": { "facts": { "storm": "raging" } },
+            "clock": { "rounds": 4, "label": "The storm breaks", "onExpire": "surge", "surge": 2 },
+            "modifiers": [{ "id": "rain", "label": "Driving rain", "kind": "roll", "amount": -1, "on": "party" }]
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "scene_calm",
+        "narration": "The storm drains away like bathwater.",
+        "variants": [{ "when": { "flag": "beacon_held" }, "text": "The beacon stone glows behind you." }]
+      },
+      "onDefeat": { "goto": "scene_swept", "narration": "The wind knocks your feet from under you." }
+    },
+    "scene_calm": {
+      "type": "story",
+      "narration": "The landing is quiet. Somewhere a frog starts up again, very pleased with itself.",
+      "variants": [
+        { "when": { "flag": "pip_rescued" }, "text": "Pip wrings out her lantern." },
+        { "when": { "flag": "moss_rescued" }, "text": "Moss shakes like a wet dog." }
+      ],
+      "choices": [],
+      "outcome": "success"
+    },
+    "scene_swept": {
+      "type": "story",
+      "narration": "You wake on the bank, soaked and sore. The storm has moved on.",
+      "choices": [],
+      "outcome": "setback"
+    }
+  }
+}

@@ -63,6 +63,7 @@
 import type { Position, ReachableTile } from "./grid.js";
 import type { ActorId, ActorSide, Actor, Board } from "./grid.js";
 import {
+  actorAt,
   actorById,
   actorsAdjacentTo,
   areAdjacent,
@@ -78,12 +79,26 @@ import {
 import type { Rng } from "./dice.js";
 import { resolveAttack, rollD20 } from "./dice.js";
 import type { ItemEffect, ResolvedCharacter, RulesContent, StatId } from "./types/domain.js";
-import type { EncounterEnvironment, EnemySpec } from "./types/chapter.js";
+import type { EncounterEnvironment, EnemySpec, RiftBehavior } from "./types/chapter.js";
 import type { DiceRoll } from "./types/state.js";
 import type { CombatBuff, SlowEffect } from "./types/buffs.js";
 import { DEFAULT_PUFF_TURNS, applyNumbed, buffBonus, buffed, tickCombatBuffs } from "./buffs.js";
 import type { EnvironmentState } from "./environment.js";
-import { DEFAULT_SURGE, hazardAt, openExitAt, rescueDeadline } from "./environment.js";
+import {
+  DEFAULT_SURGE,
+  SLOWED_BUFF_ID,
+  SLOWED_LABEL,
+  captiveIndexField,
+  captiveStatuses,
+  captivesOf,
+  hazardAt,
+  objectiveTarget,
+  objectivesDone,
+  openExitAt,
+  pushStep,
+  rescueDeadline,
+  withCaptiveStatus,
+} from "./environment.js";
 
 // ---------------------------------------------------------------------------
 // Abilities as data
@@ -477,6 +492,12 @@ export interface Combatant {
    * without an environment, which is every fight before #201.
    */
   readonly escaped?: true;
+  /**
+   * How this monster fights in a place that fights back (#220), copied from
+   * `EnemySpec.rift` — only in a fight with an environment, so every other
+   * fight's combatants carry no such key.
+   */
+  readonly rift?: RiftBehavior;
 }
 
 export interface EncounterState {
@@ -590,12 +611,24 @@ export type EncounterEvent =
    */
   /** `actorId` stopped on an active hazard; its `damage` event follows. */
   | { readonly type: "hazard"; readonly actorId: ActorId; readonly hazardId: string; readonly label: string }
+  /** A sticky hazard (#220) Slowed `actorId`: `steps` fewer steps for `turns` of their turns. */
+  | { readonly type: "slowed"; readonly actorId: ActorId; readonly hazardId: string; readonly steps: number; readonly turns: number }
   /** A hero stepped through an open exit and left the fight. */
   | { readonly type: "escaped"; readonly actorId: ActorId; readonly exitId: string }
-  /** The captive is free; `byId` ended a turn beside them. */
-  | { readonly type: "freed"; readonly byId: ActorId }
-  /** The captive's time ran out. */
-  | { readonly type: "captiveLost" }
+  /**
+   * The captive is free; `byId` ended a turn beside them. `captive` is the
+   * index into a list of captives (#220), absent for the one captive.
+   */
+  | { readonly type: "freed"; readonly byId: ActorId; readonly captive?: number }
+  /** The captive's time ran out, or the monsters dragged them off (#220). */
+  | { readonly type: "captiveLost"; readonly captive?: number }
+  /** A monster spent its turn dragging at a captive (#220): `hp` is what they have left. */
+  | { readonly type: "captiveDragged"; readonly byId: ActorId; readonly hp: number; readonly captive?: number }
+  /**
+   * An objective moved on (#220): `progress` of `target`. `byId` is the hero
+   * who closed a little of a tear; a held round has nobody in particular.
+   */
+  | { readonly type: "objective"; readonly objectiveId: string; readonly progress: number; readonly target: number; readonly byId?: ActorId }
   /** The rift moved a monster. */
   | { readonly type: "relocated"; readonly actorId: ActorId; readonly to: Position }
   /** The clock ran out: `"collapse"` ends the fight, `"surge"` hurts every hero still here. */
@@ -830,6 +863,8 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
             },
           }
         : {}),
+      // A creature's way with the place (#220): only where there is a place.
+      ...(spec.rift && setup.environment ? { rift: structuredClone(spec.rift) } : {}),
     });
     actors.push({ id, side: "enemy", x: placement.at.x, y: placement.at.y });
     seats.push({ id, side: "enemy", quick: enemyQuick(spec) });
@@ -839,7 +874,22 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
   // can: it is walled until they are freed. Done before the figures go down,
   // so a spawn on it is the authoring error `placeActor` already refuses.
   const environment = setup.environment;
-  const ground = environment?.rescue ? setTerrain(setup.board, environment.rescue.at, "blocked") : setup.board;
+  const captives = environment ? captivesOf(environment) : [];
+
+  // The place's own numbers (#220): one buff per figure each modifier is on,
+  // after the party's own, read by `buffBonus` like theirs and held to the
+  // same per-kind limit. A fight without modifiers keeps the setup's buffs.
+  const modified: CombatBuff[] = [];
+  for (const modifier of environment?.modifiers ?? []) {
+    const on = modifier.on ?? "everyone";
+    for (const seat of seats) {
+      if (on === "party" && seat.side !== "party") continue;
+      if (on === "monsters" && seat.side !== "enemy") continue;
+      modified.push({ id: modifier.id, label: modifier.label, kind: modifier.kind, heroId: seat.id, amount: modifier.amount });
+    }
+  }
+  const buffs: readonly CombatBuff[] = modified.length > 0 ? [...(setup.buffs ?? []), ...modified] : (setup.buffs ?? []);
+  const ground = captives.reduce((board, captive) => setTerrain(board, captive.at, "blocked"), setup.board);
 
   // placeActor is the one that refuses two figures on a tile or a spawn in a
   // wall, so the board is built through it rather than by hand.
@@ -862,13 +912,17 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
     moveAfterAction: false,
     encores: [],
     encoreActor: null,
-    ...(setup.buffs && setup.buffs.length > 0 ? { buffs: [...setup.buffs] } : {}),
+    ...(buffs.length > 0 ? { buffs } : {}),
     ...(environment
       ? {
           environment: {
             spec: environment,
             expired: false,
-            ...(environment.rescue ? { rescue: "waiting" as const } : {}),
+            ...(environment.rescue
+              ? { rescue: Array.isArray(environment.rescue) ? captives.map(() => "waiting" as const) : ("waiting" as const) }
+              : {}),
+            ...(captives.some((c) => c.hp !== undefined) ? { captiveHp: captives.map((c) => c.hp ?? 0) } : {}),
+            ...(environment.objectives ? { objectives: environment.objectives.map(() => 0) } : {}),
           },
         }
       : {}),
@@ -970,6 +1024,11 @@ export function isPartyWiped(state: EncounterState): boolean {
  */
 export function encounterOutcome(state: EncounterState): EncounterOutcome {
   if (enemies(state).every((c) => c.down)) return "victory";
+  // An objective that ends the fight (#220), done, is a victory too.
+  if (state.environment?.spec.objectives) {
+    const done = objectivesDone(state.environment);
+    if (state.environment.spec.objectives.some((objective, i) => objective.endsFight && done[i])) return "victory";
+  }
   // The environment's two endings (#201) only exist on a fight that has one.
   // An escape outranks a wipe: a hero who got out pulls the fallen through
   // after them (nobody is left behind on the board, §7.3), so a party that is
@@ -1976,9 +2035,23 @@ function shove(
   const start = positionOf(state, targetId);
   if (!from || !start || steps < 1) return state;
 
-  const dx = Math.sign(start.x - from.x);
-  const dy = Math.sign(start.y - from.y);
-  if (dx === 0 && dy === 0) return state;
+  return slide(state, targetId, Math.sign(start.x - from.x), Math.sign(start.y - from.y), steps, events);
+}
+
+/**
+ * Slides a figure `steps` tiles along (`dx`, `dy`), stopping at the first
+ * wall, edge or figure: a shove's travel, and a pushing hazard's (#220).
+ */
+function slide(
+  state: EncounterState,
+  targetId: ActorId,
+  dx: number,
+  dy: number,
+  steps: number,
+  events: EncounterEvent[],
+): EncounterState {
+  const start = positionOf(state, targetId);
+  if (!start || steps < 1 || (dx === 0 && dy === 0)) return state;
 
   let at = start;
   for (let i = 0; i < Math.floor(steps); i++) {
@@ -2089,21 +2162,46 @@ function turnEndInEnvironment(
   const { spec } = env;
   let working = state;
 
-  // Free the captive: a hero, ending a turn beside them.
-  if (actor.side === "party" && env.rescue === "waiting" && spec.rescue && areAdjacent(at, spec.rescue.at)) {
-    working = {
-      ...working,
-      board: setTerrain(working.board, spec.rescue.at, "open"),
-      environment: { ...env, rescue: "freed" },
-    };
-    events.push({ type: "freed", byId: actorId });
-  }
+  // Free a captive: a hero, ending a turn beside them — every one beside them.
+  // A monster ending a turn beside one without having swung drags at them
+  // (#220) — at one only, the first in authored order: a turn spent dragging
+  // is one turn's action.
+  const captives = captivesOf(spec);
+  let dragged = false;
+  captives.forEach((captive, i) => {
+    const now = working.environment as EnvironmentState;
+    if (captiveStatuses(now)[i] !== "waiting" || !areAdjacent(at, captive.at)) return;
+    if (actor.side === "party") {
+      working = {
+        ...working,
+        board: setTerrain(working.board, captive.at, "open"),
+        environment: withCaptiveStatus(now, i, "freed"),
+      };
+      events.push({ type: "freed", byId: actorId, ...captiveIndexField(spec, i) });
+    } else if (captive.hp !== undefined && !state.actionTaken && !dragged && now.captiveHp) {
+      dragged = true;
+      const hp = Math.max(0, (now.captiveHp[i] ?? 0) - 1);
+      const captiveHp = [...now.captiveHp];
+      captiveHp[i] = hp;
+      working = { ...working, environment: { ...now, captiveHp } };
+      events.push({ type: "captiveDragged", byId: actorId, hp, ...captiveIndexField(spec, i) });
+      if (hp === 0) working = loseCaptive(working, i, events);
+    }
+  });
 
-  // Stopping on the fire.
+  // Closing a tear (#220): a hero, ending a turn on or beside it.
+  if (actor.side === "party") working = advanceObjectives(working, (o) => o.kind === "close" && stepsBetween(at, o.at) <= 1, events, actorId);
+
+  // Stopping on the fire. Damage first; what it knocks down stays put (#220).
+  // A creature that does not mind this ground (`rift.ignores`) is untouched.
   const hazard = hazardAt(spec, working.round, at);
-  if (hazard) {
-    events.push({ type: "hazard", actorId, hazardId: hazard.id, label: hazard.label });
-    working = loseHp(working, actorId, hazard.damage, events);
+  if (hazard && !actor.rift?.ignores?.includes(hazard.kind)) working = biteInEnvironment(working, actorId, hazard, events, true);
+
+  // A shover (#220) puts a hero beside it onto the hazard behind them.
+  if (actor.side === "enemy" && actor.rift?.shoves && !combatantById(working, actorId)?.down) {
+    // Where it stands now: a pushing hazard may just have thrown it.
+    const standing = positionOf(working, actorId);
+    if (standing) working = shoveIntoHazard(working, actorId, standing, events);
   }
 
   // Stepping through. Only a hero, only standing, only while it is open.
@@ -2128,6 +2226,117 @@ function turnEndInEnvironment(
   return working;
 }
 
+/**
+ * A hazard biting the figure on it: its beat, its damage, then what else it
+ * does (#201, #220). `onOwnTurn`: the figure's own turn is the one ending —
+ * true when it stopped there itself, false when a monster shoved it there.
+ */
+function biteInEnvironment(
+  state: EncounterState,
+  actorId: ActorId,
+  hazard: NonNullable<ReturnType<typeof hazardAt>>,
+  events: EncounterEvent[],
+  onOwnTurn: boolean,
+): EncounterState {
+  let working = state;
+  events.push({ type: "hazard", actorId, hazardId: hazard.id, label: hazard.label });
+  if (hazard.damage !== undefined) working = loseHp(working, actorId, hazard.damage, events);
+  if (!combatantById(working, actorId)?.down) working = hinderInEnvironment(working, actorId, hazard, events, onOwnTurn);
+  return working;
+}
+
+/**
+ * `rift.shoves` (#220): the first standing hero beside the monster, in
+ * reading order, whose square straight beyond (away from the monster) is
+ * open, active hazard ground goes one square onto it, and it bites them now
+ * — they did not choose to stop there, but they are standing in it.
+ */
+function shoveIntoHazard(state: EncounterState, actorId: ActorId, at: Position, events: EncounterEvent[]): EncounterState {
+  const spec = state.environment?.spec;
+  if (!spec) return state;
+  const heroes = partyMembers(state)
+    .filter((c) => !c.down && !c.escaped)
+    .map((c) => ({ id: c.id, at: positionOf(state, c.id) }))
+    .filter((h): h is { id: ActorId; at: Position } => h.at !== null && areAdjacent(at, h.at))
+    .sort((a, b) => a.at.y - b.at.y || a.at.x - b.at.x);
+  for (const hero of heroes) {
+    const beyond = { x: hero.at.x + Math.sign(hero.at.x - at.x), y: hero.at.y + Math.sign(hero.at.y - at.y) };
+    const hazard = hazardAt(spec, state.round, beyond);
+    if (!hazard || !isOpen(state.board, beyond)) continue;
+    let working = slide(state, hero.id, beyond.x - hero.at.x, beyond.y - hero.at.y, 1, events);
+    // On the monster's turn: the hero's own turn is not about to count one off.
+    working = biteInEnvironment(working, hero.id, hazard, events, false);
+    return working;
+  }
+  return state;
+}
+
+/**
+ * What a hazard does besides hurting (#220), to a figure still standing on it
+ * at the end of its own turn: Slowed (the turn about to end does not count
+ * against it — `applyNumbed`'s own-turn rule), held for its next turn, and
+ * thrown. In that order, so a figure can be both stuck and pushed.
+ * `onOwnTurn` false (a shove, on a monster's turn) gives the slow no spare
+ * turn: nothing is about to count one off it.
+ */
+function hinderInEnvironment(
+  state: EncounterState,
+  actorId: ActorId,
+  hazard: NonNullable<ReturnType<typeof hazardAt>>,
+  events: EncounterEvent[],
+  onOwnTurn: boolean,
+): EncounterState {
+  let working = state;
+  if (hazard.slow) {
+    const { steps, turns } = hazard.slow;
+    events.push({ type: "slowed", actorId, hazardId: hazard.id, steps, turns });
+    working = {
+      ...working,
+      buffs: applyNumbed(working.buffs, actorId, hazard.slow, onOwnTurn, { id: SLOWED_BUFF_ID, label: SLOWED_LABEL }),
+    };
+  }
+  if (hazard.root && !combatantById(working, actorId)?.rooted) {
+    events.push({ type: "rooted", actorId });
+    working = updateCombatant(working, actorId, (c) => ({ ...c, rooted: true }));
+  }
+  if (hazard.push) {
+    const step = pushStep(hazard.push.direction);
+    working = slide(working, actorId, step.x, step.y, hazard.push.tiles ?? 1, events);
+  }
+  return working;
+}
+
+/** One step on every objective `counts` picks that is not done yet (#220). */
+function advanceObjectives(
+  state: EncounterState,
+  counts: (objective: NonNullable<EncounterEnvironment["objectives"]>[number]) => boolean,
+  events: EncounterEvent[],
+  byId?: ActorId,
+): EncounterState {
+  const env = state.environment;
+  const objectives = env?.spec.objectives;
+  if (!env || !objectives || !env.objectives) return state;
+  let progress: number[] | null = null;
+  objectives.forEach((objective, i) => {
+    const target = objectiveTarget(objective);
+    const now = env.objectives?.[i] ?? 0;
+    if (now >= target || !counts(objective)) return;
+    progress ??= [...(env.objectives ?? [])];
+    progress[i] = now + 1;
+    events.push({ type: "objective", objectiveId: objective.id, progress: now + 1, target, ...(byId ? { byId } : {}) });
+  });
+  return progress ? { ...state, environment: { ...env, objectives: progress } } : state;
+}
+
+/** Captive `index` is gone to the rift: their square opens and the phones hear it. */
+function loseCaptive(state: EncounterState, index: number, events: EncounterEvent[]): EncounterState {
+  const env = state.environment;
+  const captive = env ? captivesOf(env.spec)[index] : undefined;
+  if (!env || !captive) return state;
+  events.push({ type: "captiveLost", ...captiveIndexField(env.spec, index) });
+  return { ...state, board: setTerrain(state.board, captive.at, "open"), environment: withCaptiveStatus(env, index, "lost") };
+}
+
 /** The environment's half of a round starting (#201). See `endTurnWithEvents`. */
 function roundStartInEnvironment(
   state: EncounterState,
@@ -2140,18 +2349,36 @@ function roundStartInEnvironment(
   let working = state;
   const clock = spec.clock;
 
+  // Holding ground (#220): the round that just ended counts if it ended with
+  // a standing hero on the tiles and no monster. Before the clock, so a hold
+  // finished in the last round is finished.
+  const holds = (tiles: readonly Position[]): boolean => {
+    let hero = false;
+    for (const tile of tiles) {
+      const who = actorAt(working.board, tile);
+      const figure = who ? combatantById(working, who.id) : undefined;
+      if (!figure || figure.down) continue;
+      if (figure.side === "enemy") return false;
+      hero = true;
+    }
+    return hero;
+  };
+  working = advanceObjectives(working, (o) => o.kind === "hold" && holds(o.tiles), events);
+  env = working.environment!;
+
   if (clock && !env.expired && round > clock.rounds) {
     env = { ...env, expired: true };
     working = { ...working, environment: env };
     events.push({ type: "riftClock", onExpire: clock.onExpire });
   }
 
-  const deadline = rescueDeadline(spec);
-  if (spec.rescue && env.rescue === "waiting" && deadline !== null && round > deadline) {
-    env = { ...env, rescue: "lost" };
-    working = { ...working, board: setTerrain(working.board, spec.rescue.at, "open"), environment: env };
-    events.push({ type: "captiveLost" });
-  }
+  captivesOf(spec).forEach((captive, i) => {
+    const deadline = rescueDeadline(spec, captive);
+    if (captiveStatuses(working.environment!)[i] === "waiting" && deadline !== null && round > deadline) {
+      working = loseCaptive(working, i, events);
+    }
+  });
+  env = working.environment!;
 
   if (clock?.onExpire === "surge" && round > clock.rounds) {
     const amount = clock.surge ?? DEFAULT_SURGE;
@@ -2162,14 +2389,22 @@ function roundStartInEnvironment(
     }
   }
 
-  for (const move of spec.relocate ?? []) {
-    if (move.round !== round) continue;
+  (spec.relocate ?? []).forEach((move, i) => {
     const enemy = combatantById(working, move.enemy);
-    if (!enemy || enemy.side !== "enemy" || enemy.down || !positionOf(working, enemy.id)) continue;
-    if (!isOpen(working.board, move.to)) continue;
+    if (!enemy || enemy.side !== "enemy" || enemy.down || !positionOf(working, enemy.id)) return;
+    // A monster that picks its moment (#220): the first round it starts at
+    // half its hearts or fewer, once.
+    const due = move.whenHurt
+      ? round >= 2 && enemy.hp * 2 <= enemy.maxHp && !(working.environment?.relocated ?? []).includes(i)
+      : move.round === round;
+    if (!due || !isOpen(working.board, move.to)) return;
     working = { ...working, board: moveActor(working.board, enemy.id, move.to) };
+    if (move.whenHurt) {
+      const env = working.environment!;
+      working = { ...working, environment: { ...env, relocated: [...(env.relocated ?? []), i] } };
+    }
     events.push({ type: "relocated", actorId: enemy.id, to: { x: move.to.x, y: move.to.y } });
-  }
+  });
   return working;
 }
 

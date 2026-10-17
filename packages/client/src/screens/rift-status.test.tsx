@@ -120,7 +120,7 @@ describe("riftCaption", () => {
     );
     expect(lines).toEqual([
       "Pip is lost to the rift.",
-      "Rift fire hurts Bramblewisp 1!",
+      "Rift fire gets Bramblewisp 1!",
       "The rift surges: everyone still here loses 1.",
     ]);
   });

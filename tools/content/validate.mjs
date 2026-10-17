@@ -34,6 +34,7 @@ import { MUSIC_SPECS } from "../../packages/client/src/audio/paths.ts";
 import { RIFT_ACTION_KINDS, campaignMode, journeyFlags, parseCampaignGraph, riftActionWays } from "../../packages/shared/src/campaign-graph.ts";
 import { chapterFlagWrites, duplicateJsonKeys, lintCampaignGraph } from "../../packages/shared/src/campaign-graph-lint.ts";
 import { prerequisiteProblems } from "../../packages/shared/src/campaign-prerequisites.ts";
+import { factTestProblems } from "../../packages/shared/src/world-state.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 
 /**
@@ -496,7 +497,17 @@ function effectsOf(scene, sceneId) {
     if (scene[key]) push(scene[key].effects, `${base}/${key}/effects`);
   }
   // A freed captive's effects (#201) land when the fight ends.
-  push(scene.environment?.rescue?.effects, `${base}/environment/rescue/effects`);
+  // One captive, or a list of them (#220), and objectives done, the same
+  // way — in the place as authored and in every variant of it.
+  const places = scene.environment
+    ? [[scene.environment, `${base}/environment`], ...(scene.environment.variants ?? []).map((v, i) => [v, `${base}/environment/variants/${i}`])]
+    : [];
+  for (const [place, at] of places) {
+    const rescue = place?.rescue;
+    if (Array.isArray(rescue)) rescue.forEach((captive, i) => push(captive?.effects, `${at}/rescue/${i}/effects`));
+    else push(rescue?.effects, `${at}/rescue/effects`);
+    (place?.objectives ?? []).forEach((o, i) => push(o?.effects, `${at}/objectives/${i}/effects`));
+  }
   return out;
 }
 
@@ -1228,6 +1239,31 @@ function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar, it
   for (const { path, problem } of problems) {
     fail(path, problem);
     ok = false;
+  }
+  if (graph) {
+    // An environment keyed on the world (#220) names facts this graph
+    // declares, with tests their values can pass — the same rule a graph
+    // condition's `facts` is held to. Unknown, it could never hold.
+    for (const id of campaign.chapters ?? []) {
+      const chapter = chaptersById.get(id);
+      for (const [sceneId, scene] of Object.entries(chapter?.scenes ?? {})) {
+        (scene?.environment?.variants ?? []).forEach((variant, i) => {
+          for (const [factId, test] of Object.entries(variant?.when?.facts ?? {})) {
+            const at = `content/chapters/${id}.json /scenes/${sceneId}/environment/variants/${i}/when/facts/${factId}`;
+            const fact = graph.facts?.[factId];
+            if (!fact) {
+              fail(at, `"${factId}" is not a world fact this campaign declares, so the variant can never hold`);
+              ok = false;
+              continue;
+            }
+            for (const { path, problem } of factTestProblems(fact, test)) {
+              fail(`${at}${path}`, problem);
+              ok = false;
+            }
+          }
+        });
+      }
+    }
   }
   let walked = "";
   if (graph && items) {

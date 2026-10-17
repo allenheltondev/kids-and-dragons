@@ -11,7 +11,7 @@
 
 import { describe, expect, it } from "vitest";
 
-import { EXIT_LOOKAHEAD, planEnemyTurn } from "./enemy-ai.js";
+import { CLOCK_URGENCY, EXIT_LOOKAHEAD, planEnemyTurn } from "./enemy-ai.js";
 import type { EnemyEnvironment, EnemyTurn, PartyTarget } from "./enemy-ai.js";
 import { createBoard, parseBoard, placeActor, setTerrain, stepsBetween, walkField } from "./grid.js";
 import type { Actor, Board, Position } from "./grid.js";
@@ -431,6 +431,23 @@ describe("the captive", () => {
     expect(planEnemyTurn(input).moveTo).not.toEqual({ x: 0, y: 6 });
     expect(planEnemyTurn(input)).toEqual(planEnemyTurn(bare(input)));
   });
+
+  it("several captives (#220): each is a post of its own, for the next-nearest monster", () => {
+    // Moss walled at (8,0) as well as Pip at (1,7). shade#2 is nearer Moss.
+    const rows = PIPPED.map((row, y) => (y === 0 ? `${row.slice(0, 8)}#${row.slice(9)}` : row));
+    const moss = { name: "Moss", at: { x: 8, y: 0 } };
+    const party = [hero("c_ash", { x: 0, y: 2 }), hero("c_bryn", { x: 0, y: 3 })];
+    const env = place({ rescue: [PIP, moss] }, 1, ["waiting", "waiting"]);
+    const input = turn(rows, { x: 5, y: 7 }, party, { steps: 3, others: [monster({ x: 8, y: 3 }, "shade#2")], environment: env });
+    expect(planEnemyTurn(input)).toEqual({ moveTo: { x: 2, y: 6 }, attack: null });
+    const its = { ...input, enemy: { id: "shade#2", at: { x: 8, y: 3 }, steps: 3 } };
+    const theirs = planEnemyTurn(its);
+    expect(theirs.attack).toBeNull();
+    expect(stepsBetween(theirs.moveTo!, moss.at)).toBe(1);
+    // Once Pip is freed, nothing is left for this one to watch: the sentence again.
+    const freed = { ...input, environment: place({ rescue: [PIP, moss] }, 1, ["freed", "waiting"]) };
+    expect(planEnemyTurn(freed)).toEqual(planEnemyTurn(bare(freed)));
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -476,5 +493,68 @@ describe("determinism", () => {
         expect(stepsBetween(plan.moveTo ?? base.enemy.at, target.at)).toBeLessThanOrEqual(Math.max(1, Math.floor(base.enemy.reach ?? 1)));
       }
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// A creature's own way with the place, and monsters that use it (#220)
+// ---------------------------------------------------------------------------
+
+describe("a creature's rift behaviour (#220)", () => {
+  const ROWAN = hero("c_rowan", { x: 4, y: 2 });
+  const TEAR = { id: "north-tear", label: "The tear in the air", tiles: [{ x: 4, y: 0 }, { x: 5, y: 0 }] };
+  const FAR = hero("c_rowan", { x: 0, y: 4 });
+  const withRift = (input: EnemyTurn, rift: EnemyTurn["enemy"]["rift"]): EnemyTurn => ({ ...input, enemy: { ...input.enemy, rift } });
+
+  it("ignores: it stops on ground it does not mind as if it were not there", () => {
+    const input = turn(FIELD, { x: 0, y: 2 }, [ROWAN], { environment: place({ hazards: [fire([{ x: 3, y: 1 }])] }, 2) });
+    expect(planEnemyTurn(input).moveTo).toEqual({ x: 3, y: 2 });
+    expect(planEnemyTurn(withRift(input, { ignores: ["fire"] }))).toEqual(planEnemyTurn(bare(input)));
+    // Ignoring thorns is no help in fire.
+    expect(planEnemyTurn(withRift(input, { ignores: ["thorns"] })).moveTo).toEqual({ x: 3, y: 2 });
+  });
+
+  it("shoves: it swings from the side that puts the fire behind the hero", () => {
+    // Fire at (5,2), right of Rowan: swinging from (3,2) lines the shove up.
+    const input = turn(FIELD, { x: 0, y: 2 }, [ROWAN], { environment: place({ hazards: [fire([{ x: 5, y: 2 }])] }, 2) });
+    expect(planEnemyTurn(input)).toEqual({ moveTo: { x: 3, y: 1 }, attack: "c_rowan" });
+    expect(planEnemyTurn(withRift(input, { shoves: true }))).toEqual({ moveTo: { x: 3, y: 2 }, attack: "c_rowan" });
+  });
+
+  it('post "none": the nearest monster leaves the way out to the next one', () => {
+    const behaviors = { [MONSTER]: { post: "none" as const } };
+    const input = turn(OPEN, { x: 9, y: 3 }, [FAR], {
+      steps: 3,
+      others: [monster({ x: 9, y: 7 }, "shade#2")],
+      environment: { ...place({ exits: [TEAR] }, 2), behaviors },
+    });
+    expect(planEnemyTurn(withRift(input, { post: "none" }))).toEqual(planEnemyTurn(bare(input)));
+    const its = { ...input, enemy: { id: "shade#2", at: { x: 9, y: 7 }, steps: 3 } };
+    expect(planEnemyTurn(its).moveTo).not.toEqual(planEnemyTurn(bare(its)).moveTo);
+  });
+
+  it('post "exit": it always guards the way out, even when another got there first', () => {
+    const behaviors = { [MONSTER]: { post: "exit" as const } };
+    // shade#2 already stands beside the tear and is nearer it.
+    const input = turn(OPEN, { x: 9, y: 6 }, [FAR], {
+      steps: 3,
+      others: [monster({ x: 6, y: 0 }, "shade#2")],
+      environment: { ...place({ exits: [TEAR] }, 2), behaviors },
+    });
+    expect(planEnemyTurn({ ...input, environment: place({ exits: [TEAR] }, 2) })).toEqual(planEnemyTurn(bare(input)));
+    const plan = planEnemyTurn(withRift(input, { post: "exit" }));
+    expect(plan.attack).toBeNull();
+    expect(plan.moveTo!.y).toBeLessThan(6);
+  });
+
+  it(`reading the clock: in the last ${CLOCK_URGENCY} round of a collapse, every monster with nobody to hit heads for the way out`, () => {
+    const spec = (rounds: number): EncounterEnvironment => ({ exits: [TEAR], clock: { rounds, label: "The rift closes", onExpire: "collapse" } });
+    const at = (round: number, rounds: number) =>
+      turn(OPEN, { x: 9, y: 6 }, [FAR], { steps: 3, others: [monster({ x: 6, y: 0 }, "shade#2")], environment: place(spec(rounds), round) });
+    // Not yet the last round: shade#2 watches the tear, this one chases Rowan.
+    expect(planEnemyTurn(at(2, 4))).toEqual(planEnemyTurn(bare(at(2, 4))));
+    // The last round: it goes for the tear too.
+    expect(planEnemyTurn(at(4, 4))).not.toEqual(planEnemyTurn(bare(at(4, 4))));
+    expect(planEnemyTurn(at(4, 4)).moveTo!.y).toBeLessThan(6);
   });
 });

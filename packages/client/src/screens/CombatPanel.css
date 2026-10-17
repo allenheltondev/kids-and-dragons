@@ -769,6 +769,11 @@
   outline-offset: -0.3em;
 }
 
+/* Ground to hold, a tear to close (#220): a solid ring and a glyph, never colour alone. */
+.combat__cell--objective {
+  box-shadow: inset 0 0 0 0.18em var(--color-success, #4ad991);
+}
+
 .combat__cell--exit {
   box-shadow:
     inset 0 0 0 0.1em var(--color-accent, #ffc95c),

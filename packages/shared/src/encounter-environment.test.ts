@@ -260,7 +260,7 @@ describe("a rescue", () => {
   it("walls the captive's tile until a hero ends a turn beside them", () => {
     let state = begin(PIP);
     expect(terrainAt(state.board, { x: 2, y: 6 })).toBe("blocked");
-    expect(environmentView(state)!.rescue).toEqual({ name: "Pip", at: { x: 2, y: 6 }, status: "waiting", roundsLeft: 2 });
+    expect(environmentView(state)!.captives).toEqual([{ name: "Pip", at: { x: 2, y: 6 }, status: "waiting", roundsLeft: 2 }]);
     state = until(state, "c_b");
     const freed = endTurnWithEvents(walk(state, { x: 1, y: 5 }));
     expect(freed.events).toEqual([{ type: "freed", byId: "c_b" }]);
@@ -513,6 +513,47 @@ function waitOutTheClock(): { state: RunState; log: EncounterEvent[] } {
   return { state, log };
 }
 
+describe("the sandbox, keyed on the world (#220)", () => {
+  /** The sandbox with a variant: while the river is "flooded", the fire is out and the tear never opens. */
+  function flooded(facts?: Record<string, string>): RunState {
+    const fight = sandboxFight();
+    const keyed: Chapter = {
+      ...SANDBOX,
+      scenes: {
+        ...SANDBOX.scenes,
+        [FIGHT]: {
+          ...fight,
+          environment: {
+            ...fight.environment!,
+            variants: [{ when: { facts: { river: "flooded" } }, hazards: [], clock: { rounds: 6, label: "The water rises", onExpire: "collapse" } }],
+          },
+        },
+      },
+    };
+    return intoTheRift({ ...sandboxCtx(1), chapter: keyed, ...(facts ? { campaignFacts: facts } : {}) });
+  }
+
+  it("fights in the variant the run's facts satisfy, with the parts it lists replaced", () => {
+    const state = flooded({ river: "flooded" });
+    expect(state.facts).toEqual({ river: "flooded" });
+    const spec = state.encounter!.environment!.spec;
+    expect(spec).not.toHaveProperty("variants");
+    expect(spec).not.toHaveProperty("hazards");
+    expect(spec.clock).toEqual({ rounds: 6, label: "The water rises", onExpire: "collapse" });
+    // Untouched parts stay as authored.
+    expect(spec.exits).toEqual(sandboxFight().environment!.exits);
+  });
+
+  it("fights in the place as authored when no variant holds, or the run has no facts", () => {
+    for (const state of [flooded({ river: "calm" }), flooded()]) {
+      const spec = state.encounter!.environment!.spec;
+      expect(spec).not.toHaveProperty("variants");
+      expect(spec).toEqual(sandboxFight().environment);
+    }
+    expect(flooded()).not.toHaveProperty("facts");
+  });
+});
+
 describe("the sandbox, through the engine", () => {
   it("starts the fight with its environment on the state, the captive walled in", () => {
     const state = intoTheRift(sandboxCtx(1));
@@ -570,6 +611,8 @@ describe("the sandbox, through the engine", () => {
     expect(state.narration).toContain("Pip tumbles through after you");
     // The rescue was the chapter's bonus objective, and it paid.
     expect(state.bonuses?.map((b) => b.id)).toContain("save_pip");
+    // And the completion screen is told how the fight ended (#220).
+    expect(state.fightEndings).toEqual([{ outcome: "escaped", freed: ["Pip the ferry-sprite"], lost: [], done: [] }]);
   });
 
   it("the tactical cost — going straight for the tear leaves Pip behind", () => {
@@ -672,5 +715,110 @@ describe("the sandbox's endings, in a graph campaign", () => {
 
   it("a timeout: Pip is lost, and the landing collapsed behind the party", () => {
     expect(settle(waitOutTheClock().state)).toMatchObject({ "ferry-sprite": "lost", "ferry-landing": "collapsed" });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The storm sandbox (#220): every deferred effect in one fight
+// ---------------------------------------------------------------------------
+
+const STORM: Chapter = read("rift-storm.chapter.json");
+const STORM_FIGHT = "fight_storm";
+const stormFight = () => STORM.scenes[STORM_FIGHT] as EncounterScene;
+
+function stormCtx(die: number, facts?: Record<string, string>): EngineContext {
+  return { ...sandboxCtx(die), chapter: STORM, ...(facts ? { campaignFacts: facts } : {}) };
+}
+
+function intoTheStorm(ctx: EngineContext): RunState {
+  let s = createRunState({ runId: "r_2", roomCode: "WXYZ", mode: "travel", now: "2026-10-15T11:00:00.000Z" });
+  s = must(s, "p_1", CREATE("Pip"), ctx).state;
+  s = must(s, "p_2", CREATE("Wren"), ctx).state;
+  s = must(s, "p_1", { type: "READY", ready: true }, ctx).state;
+  s = must(s, "p_2", { type: "READY", ready: true }, ctx).state;
+  s = must(s, "p_1", { type: "START_CHAPTER", chapterId: STORM.id }, ctx).state;
+  s = must(s, "p_1", { type: "PLAYTEST_GOTO", sceneId: STORM_FIGHT }, ctx).state;
+  s = must(s, "p_1", { type: "READY", ready: true }, ctx).state;
+  return must(s, "p_2", { type: "READY", ready: true }, ctx).state;
+}
+
+describe("the storm sandbox (#220)", () => {
+  it("passes the authoring check, with its map and without, and the chapter check", () => {
+    expect(checkEncounterEnvironment(stormFight(), SANDBOX_MAP)).toEqual([]);
+    expect(checkEncounterEnvironment(stormFight())).toEqual([]);
+    expect(validateChapter(STORM).filter((p) => p.severity === "error")).toEqual([]);
+  });
+
+  it("starts with every part in place: both captives walled, the storm on everyone, the brute's way with the place", () => {
+    const state = intoTheStorm(stormCtx(1));
+    const encounter = state.encounter!;
+    expect(encounter.environment).toMatchObject({ rescue: ["waiting", "waiting"], captiveHp: [0, 2], objectives: [0, 0] });
+    expect(terrainAt(encounter.board, { x: 1, y: 7 })).toBe("blocked");
+    expect(terrainAt(encounter.board, { x: 8, y: 7 })).toBe("blocked");
+    expect(encounter.buffs?.filter((b) => b.id === "storm")).toHaveLength(state.party.length + 2);
+    expect(combatantById(encounter, "brute#1")!.rift).toEqual({ shoves: true, ignores: ["thorns"] });
+    const view = environmentView(encounter)!;
+    expect(view.captives.map((c) => c.name)).toEqual(["Pip", "Moss"]);
+    expect(view.objectives.map((o) => o.id)).toEqual(["beacon", "small-tear"]);
+  });
+
+  it("the chapter check sees the effects of captives and objectives a variant brings (#220)", () => {
+    const fight = stormFight();
+    const bent: Chapter = {
+      ...STORM,
+      scenes: {
+        ...STORM.scenes,
+        [STORM_FIGHT]: {
+          ...fight,
+          environment: {
+            ...fight.environment!,
+            variants: [
+              {
+                when: { facts: { storm: "raging" } },
+                rescue: [{ name: "Fern", at: { x: 5, y: 7 }, effects: [{ type: "grantItem", itemId: "no_such_item" }] }],
+                objectives: [{ id: "o", kind: "close", label: "O", at: { x: 7, y: 0 }, turns: 1, effects: [{ type: "grantItem", itemId: "nor_this" }] }],
+              },
+            ],
+          },
+        },
+      },
+    };
+    const unknown = validateChapter(bent, ITEMS).filter((issue) => issue.code === "UNKNOWN_ITEM").map((issue) => issue.message);
+    expect(unknown).toEqual([
+      `scene "${STORM_FIGHT}" grants unknown item "no_such_item"`,
+      `scene "${STORM_FIGHT}" grants unknown item "nor_this"`,
+    ]);
+  });
+
+  it("is a different storm when the world says it is raging", () => {
+    const spec = intoTheStorm(stormCtx(1, { storm: "raging" })).encounter!.environment!.spec;
+    expect(spec.clock).toMatchObject({ rounds: 4, surge: 2 });
+    expect(spec.modifiers!.map((m) => m.id)).toEqual(["rain"]);
+  });
+
+  it("is winnable: heroes who walk up and swing beat it, and the screen is told how", () => {
+    const ctx = stormCtx(20);
+    let state = intoTheStorm(ctx);
+    const hazards = new Set(stormFight().environment!.hazards!.flatMap((h) => h.tiles.map((t) => `${t.x},${t.y}`)));
+    for (let guard = 0; guard < 80 && state.encounter; guard++) {
+      const member = ownerOf(state);
+      const enemies = state.encounter.combatants.filter((c) => c.side === "enemy" && !c.down).map((c) => positionOf(state.encounter!, c.id)!);
+      const at = positionOf(state.encounter, member.character.id)!;
+      const near = (p: Position) => Math.min(...enemies.map((e) => stepsBetween(p, e)));
+      if (near(at) > 1) {
+        const best = [...legalMoves(state.encounter)].filter((t) => !hazards.has(`${t.x},${t.y}`)).sort((a, b) => near(a) - near(b))[0];
+        if (best && near(best) < near(at)) state = must(state, member.playerId, { type: "MOVE", to: { x: best.x, y: best.y } }, ctx).state;
+      }
+      const attack = legalActions(state.encounter!, ctxOf(ALWAYS(20))).find((a) => a.abilityId === "attack");
+      if (attack) state = must(state, member.playerId, { type: "COMBAT_ACTION", abilityId: "attack", targetId: attack.targets[0]! }, ctx).state;
+      if (state.encounter && currentActorId(state.encounter) === member.character.id) {
+        state = must(state, member.playerId, { type: "END_TURN" }, ctx).state;
+      }
+    }
+    expect(state.encounter).toBeNull();
+    expect(state.sceneId).toBe("scene_calm");
+    expect(state.chapterOutcome).toBe("success");
+    expect(state.fightEndings).toHaveLength(1);
+    expect(state.fightEndings![0]!.outcome).toBe("victory");
   });
 });

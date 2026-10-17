@@ -5,7 +5,7 @@
  * a static asset. A malformed chapter fails the build, never the play session.
  */
 
-import type { CampaignGraph } from "./campaign-graph.js";
+import type { CampaignGraph, FactId, FactTest } from "./campaign-graph.js";
 import type { SlowEffect } from "./buffs.js";
 import type { ClassId, ItemDef, SpeciesId, StatId } from "./domain.js";
 
@@ -395,6 +395,35 @@ export interface EnemySpec {
    * count again.
    */
   retaliation?: { slow: SlowEffect; puffTurns?: number };
+  /**
+   * How this creature fights in a place that fights back (#220) — the
+   * "second sentence for a specific creature" enemy-ai.ts leaves the door
+   * open for. Read only in a fight with an `environment`; anywhere else it
+   * fights exactly as if it were not written.
+   */
+  rift?: RiftBehavior;
+}
+
+/**
+ * A creature's own way with the place (#220). Each is a sentence a child can
+ * learn by watching: "the salamander walks through fire", "the gatekeeper
+ * always guards the way out", "the bramble-troll shoves you into the thorns".
+ */
+export interface RiftBehavior {
+  /** Ground it does not mind: hazards of these kinds do nothing to it, and it stops on them freely. */
+  ignores?: EnvironmentHazard["kind"][];
+  /**
+   * What it watches when it has nobody to hit: always the way out, always a
+   * captive, or never anything (it only ever goes for the heroes). Absent:
+   * whichever the board gives it (the nearest monster to each, enemy-ai.ts).
+   */
+  post?: "exit" | "captive" | "none";
+  /**
+   * At the end of its turn, a hero beside it whose far side is active
+   * hazard ground is shoved one square onto it — and the ground bites them
+   * there and then. One shove a turn, the first such hero in reading order.
+   */
+  shoves?: true;
 }
 
 /**
@@ -443,8 +472,52 @@ export interface EncounterEnvironment {
   clock?: RiftClock;
   hazards?: EnvironmentHazard[];
   exits?: RiftExit[];
-  rescue?: RescueObjective;
+  /** One captive, or a list of up to three (#220), each freed on its own. */
+  rescue?: RescueObjective | RescueObjective[];
   relocate?: EnemyRelocation[];
+  /** Something to do besides surviving (#220): hold ground, close a tear. Up to three. */
+  objectives?: EnvironmentObjective[];
+  /** The place's own numbers (#220): "−1 Guard for everyone in the storm". Up to three. */
+  modifiers?: EnvironmentModifier[];
+  /**
+   * The same place, changed by the world (#220): the first variant whose
+   * `when` holds replaces each part it lists when the fight begins — a
+   * raging wyrm sets the grass alight, a sealed rift has no tear to escape
+   * through. Parts it leaves out stay as authored above. None holding (or
+   * a run with no world facts: every ordered campaign) is the place as
+   * authored. Up to four.
+   */
+  variants?: EnvironmentVariant[];
+}
+
+/** A changed version of an environment, and the world facts it needs (#220). */
+export interface EnvironmentVariant extends Omit<EncounterEnvironment, "variants"> {
+  /**
+   * World facts (#198) the variant needs, each tested as a graph condition
+   * tests them; every one must pass. Only facts: a chapter run carries the
+   * journey's facts and nothing else of it.
+   */
+  when: { facts: Record<FactId, FactTest> };
+}
+
+/**
+ * A number the place changes for the whole fight (#220) — the storm that
+ * makes everyone easier to hit, the ice that slows every step. It rides the
+ * temporary-buff seam (#200): at the start of the fight it becomes one
+ * `CombatBuff` per figure it is on, read by `buffBonus` like any other, so
+ * it counts against the same per-kind limit (`BUFF_LIMITS`) as the party's
+ * own buffs — a storm cannot push a number past what any buff could.
+ */
+export interface EnvironmentModifier {
+  /** Unique within the environment; not `"numbed"` or `"slowed"`, which the fight writes itself. */
+  id: string;
+  /** What the phones call it: "Storm winds". */
+  label: string;
+  kind: "guard" | "damage" | "move" | "roll";
+  /** A non-zero whole number within the kind's limit. Negative is a burden. */
+  amount: number;
+  /** Who it is on. Default `"everyone"`: the rift takes no sides. */
+  on?: "everyone" | "party" | "monsters";
 }
 
 /**
@@ -468,10 +541,14 @@ export interface RiftClock {
 }
 
 /**
- * Ground that hurts. A figure — hero or monster, the rift does not take sides
+ * Ground that bites. A figure — hero or monster, the rift does not take sides
  * — that **ends its turn** on one of `tiles` while the hazard is active takes
- * `damage`. Walking across is free; stopping there is not. Not a hit: Brace
+ * `damage`, and then whatever else the ground does: `slow`, `root`, `push`
+ * (#220). Walking across is free; stopping there is not. Not a hit: Brace
  * does not redirect it and a ward does not shave it.
+ *
+ * A hazard does at least one thing. Damage comes first; a figure it knocks
+ * down is not also slowed, held or pushed.
  */
 export interface EnvironmentHazard {
   id: string;
@@ -480,12 +557,33 @@ export interface EnvironmentHazard {
   /** What the phone calls it: "Rift fire". */
   label: string;
   tiles: MapTile[];
-  /** 1 to 5. */
-  damage: number;
+  /** 1 to 5. Absent: it does not hurt, only slows, holds or pushes (#220). */
+  damage?: number;
+  /**
+   * Sticky ground (#220): the figure is Slowed — `steps` fewer steps for
+   * `turns` of its own turns, the numbing sting's slow (#227) under another
+   * name. A second stop refreshes it; it never stacks.
+   */
+  slow?: SlowEffect;
+  /** Grabbing ground (#220): the figure starts its next turn with no steps, as Tanglelight does. */
+  root?: true;
+  /**
+   * Ground that throws (#220): the figure slides `tiles` (default 1, at most
+   * 3) toward `direction` (north is up the map), stopping early at a wall, the
+   * board's edge or another figure. Where it lands does nothing more this turn.
+   */
+  push?: HazardPush;
   /** Active from this round (default 1) … */
   fromRound?: number;
   /** … through this one (default: the rest of the fight). */
   untilRound?: number;
+}
+
+/** How a pushing hazard throws a figure (#220). */
+export interface HazardPush {
+  direction: "north" | "south" | "east" | "west";
+  /** 1 to 3; default 1. */
+  tiles?: number;
 }
 
 /**
@@ -519,6 +617,59 @@ export interface RescueObjective {
   at: MapTile;
   byRound?: number;
   effects?: Effect[];
+  /**
+   * A captive the monsters can get at (#220), 1 to 6. A monster that ends
+   * its turn beside a waiting captive *without having swung at anybody*
+   * spends that turn dragging at them, and takes one away; at none, they
+   * are lost to the rift. No roll, nobody hurt: the captive is pulled away,
+   * the same loss as running out of time. Absent: nothing can touch them.
+   */
+  hp?: number;
+}
+
+/**
+ * A thing the party can get done in the fight (#220), besides beating the
+ * monsters, getting out or freeing somebody. Progress is counted where the
+ * rest of the environment is — at turn ends and round starts — and shown on
+ * every phone as "2 of 3".
+ *
+ * Done is a story fact the same way a rescue is: `effects` apply when the
+ * fight ends, however it ends, if it was done. With `endsFight`, getting it
+ * done ends the fight there and then as a **victory** — the story takes
+ * `onVictory`, whose variants can read the effects' flag.
+ */
+export type EnvironmentObjective = HoldObjective | CloseObjective;
+
+interface ObjectiveBase {
+  /** Unique within the environment (shared with hazards and exits). */
+  id: string;
+  /** What the phones call it: "Hold the beacon stones". */
+  label: string;
+  effects?: Effect[];
+  endsFight?: true;
+}
+
+/**
+ * Hold ground: a round counts when it **ends** with a standing hero on one of
+ * `tiles` and no monster on any of them. `rounds` such rounds (not in a row)
+ * and it is done.
+ */
+export interface HoldObjective extends ObjectiveBase {
+  kind: "hold";
+  tiles: MapTile[];
+  /** 1 to 12. */
+  rounds: number;
+}
+
+/**
+ * Close a tear: each time a hero **ends a turn** on or beside `at`, it
+ * closes a little; `turns` of those (any heroes, any order) and it is done.
+ */
+export interface CloseObjective extends ObjectiveBase {
+  kind: "close";
+  at: MapTile;
+  /** 1 to 12. */
+  turns: number;
 }
 
 /**
@@ -527,7 +678,14 @@ export interface RescueObjective {
  * if it is still standing and the tile is free.
  */
 export interface EnemyRelocation {
-  round: number;
+  /** At the start of this round (2 or later). Exactly one of `round` and `whenHurt`. */
+  round?: number;
+  /**
+   * Instead of a round (#220): at the start of the first round in which the
+   * monster has half its hearts or fewer, the rift pulls it away — it picks
+   * its moment. Once, and only if the tile is free then.
+   */
+  whenHurt?: true;
   enemy: string;
   to: MapTile;
 }

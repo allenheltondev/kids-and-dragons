@@ -62,6 +62,7 @@ import {
   combatantById,
   currentActor,
   currentActorId,
+  captiveName,
   environmentView,
   legalActions,
   legalItemTargets,
@@ -106,6 +107,10 @@ import {
   exitLine,
   hazardIcon,
   hazardLine,
+  modifierIcon,
+  modifierLine,
+  objectiveIcon,
+  objectiveLine,
   rescueLine,
   tileWords,
 } from "./environment-copy";
@@ -856,7 +861,13 @@ function EnvironmentStatus({ encounter }: { encounter: EncounterState }): ReactE
     });
   }
   for (const exit of view.exits) lines.push({ key: `exit:${exit.id}`, icon: EXIT_ICON, text: exitLine(exit) });
-  if (view.rescue) lines.push({ key: "rescue", icon: CAPTIVE_ICON, text: rescueLine(view.rescue) });
+  for (const modifier of view.modifiers) {
+    lines.push({ key: `modifier:${modifier.id}`, icon: modifierIcon(modifier), text: modifierLine(modifier) });
+  }
+  view.captives.forEach((captive, i) => lines.push({ key: `rescue:${i}`, icon: CAPTIVE_ICON, text: rescueLine(captive) }));
+  for (const objective of view.objectives) {
+    lines.push({ key: `objective:${objective.id}`, icon: objectiveIcon(objective.kind), text: objectiveLine(objective) });
+  }
   for (const hazard of view.hazards) {
     lines.push({ key: `hazard:${hazard.id}`, icon: hazardIcon(hazard.kind), text: hazardLine(hazard) });
   }
@@ -1234,16 +1245,20 @@ export function describeBeats(
       // The place fighting back (#201): words shared with the TV's rift
       // caption (environment-copy.ts), so the two never drift.
       case "hazard":
+      case "slowed":
       case "escaped":
       case "freed":
       case "captiveLost":
+      case "captiveDragged":
+      case "objective":
       case "relocated":
       case "riftClock":
       case "surge": {
         const line = environmentBeatLine(event, {
           name,
           isParty: (id) => isParty(encounter, id),
-          captive: captiveName(encounter),
+          captive: (index) => captiveName(encounter.environment?.spec, index),
+          objective: (id) => objectiveLabel(encounter, id),
         });
         if (line) out.push({ key, ...line });
         return;
@@ -1256,8 +1271,8 @@ export function describeBeats(
   return out;
 }
 
-function captiveName(encounter: EncounterState): string {
-  return encounter.environment?.spec.rescue?.name ?? "the captive";
+function objectiveLabel(encounter: EncounterState, id: string): string {
+  return encounter.environment?.spec.objectives?.find((o) => o.id === id)?.label ?? id;
 }
 
 function isParty(encounter: EncounterState, id: string): boolean {

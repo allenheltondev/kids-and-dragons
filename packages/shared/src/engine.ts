@@ -48,6 +48,7 @@ import type {
   EncounterMap,
   EndingScene,
   NarrationVariant,
+  RiftBehavior,
   Scene,
   SceneId,
 } from "./types/chapter.js";
@@ -70,7 +71,7 @@ import {
   type EnemyPlacement,
   type PartyPlacement,
 } from "./encounter.js";
-import { outcomeBranch } from "./environment.js";
+import { captiveStatuses, captivesOf, objectivesDone, outcomeBranch, resolveEnvironment } from "./environment.js";
 import { parseBoard, type Position } from "./grid.js";
 import { planEnemyTurn } from "./enemy-ai.js";
 import type {
@@ -94,6 +95,8 @@ import { sceneChoices, visibleChoices } from "./chapter-graph.js";
 import { composeNarration, fillTokens } from "./narration.js";
 import { loadDie, readDie } from "./playtest.js";
 import type { CheckBuffOffer, RunBuff } from "./types/buffs.js";
+import type { FactId, FactValue } from "./types/campaign-graph.js";
+import { factTestHolds } from "./world-state.js";
 import { checkBuffOffer, combatBuffsFor, expireRunBuffs, oneHeroSeat, spendCheckBuff, spendRunBuffs } from "./buffs.js";
 
 // ---------------------------------------------------------------------------
@@ -190,6 +193,12 @@ export interface EngineContext {
    * carries no buffs at all — so nothing a Gemfall fight computes can change.
    */
   campaignBuffs?: readonly RunBuff[];
+  /**
+   * A graph campaign's world facts (#198), read at chapter start and seeded
+   * into `RunState.facts` (#220) so an environment can be keyed on them.
+   * Absent for every run without declared facts.
+   */
+  campaignFacts?: Readonly<Record<FactId, FactValue>>;
 }
 
 export type EngineErrorCode = "STALE_SEQ" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN";
@@ -1355,6 +1364,7 @@ function doStartChapter(
   // evening's second chapter under the first one's ending banner.
   draft.chapterOutcome = null;
   draft.bonuses = [];
+  delete draft.fightEndings;
   // Not `{}` — see `EngineContext.campaignFlags`. Everything a chapter said
   // about itself dies here; the road the party is on does not.
   draft.flags = { ...(ctx.campaignFlags ?? {}) };
@@ -1364,6 +1374,9 @@ function doStartChapter(
   // other start clears what an earlier graph chapter in this room left.
   if (ctx.campaignBuffs !== undefined) draft.buffs = structuredClone([...ctx.campaignBuffs]);
   else delete draft.buffs;
+  // World facts (#220), the same way: only a graph campaign's start has any.
+  if (ctx.campaignFacts !== undefined) draft.facts = { ...ctx.campaignFacts };
+  else delete draft.facts;
   draft.lastRoll = null;
   // A new chapter is a new day on the road: everyone's help is back.
   draft.helpSpent = [];
@@ -1925,8 +1938,16 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
         party,
         enemies,
         ...(buffs.length > 0 ? { buffs } : {}),
-        // The place fighting back (#201) — only a scene that declared one.
-        ...(scene.environment ? { environment: scene.environment } : {}),
+        // The place fighting back (#201) — only a scene that declared one —
+        // as the world has left it (#220): the first variant the run's facts
+        // satisfy. No variants, the scene's own object.
+        ...(scene.environment
+          ? {
+              environment: resolveEnvironment(scene.environment, (when) =>
+                Object.entries(when.facts).every(([id, test]) => factTestHolds(test, draft.facts?.[id])),
+              ),
+            }
+          : {}),
       },
       combatCtx(ctx),
     ),
@@ -2116,7 +2137,13 @@ function runEnemyTurns(draft: RunState, ctx: EngineContext): readonly EncounterE
       // turn with zero steps, and a plan drawn against the full budget would
       // walk to a tile `moveTo` then refuses — and swing at a hero it never
       // actually reached.
-      enemy: { id: actor.id, at: positionOfActor(encounter, actor.id), steps: encounter.stepsLeft },
+      enemy: {
+        id: actor.id,
+        at: positionOfActor(encounter, actor.id),
+        steps: encounter.stepsLeft,
+        // Its own way with the place (#220), only where it has one.
+        ...(actor.rift ? { rift: actor.rift } : {}),
+      },
       // A hero through a rift exit (#201) is off the board, and no target.
       party: encounter.combatants
         .filter((c) => c.side === "party" && !c.escaped)
@@ -2137,6 +2164,7 @@ function runEnemyTurns(draft: RunState, ctx: EngineContext): readonly EncounterE
               spec: encounter.environment.spec,
               round: encounter.round,
               ...(encounter.environment.rescue ? { rescue: encounter.environment.rescue } : {}),
+              ...riftBehaviors(encounter),
             },
           }
         : {}),
@@ -2168,6 +2196,13 @@ function runEnemyTurns(draft: RunState, ctx: EngineContext): readonly EncounterE
 
   draft.encounter = encounter;
   return events;
+}
+
+/** Every monster's `rift` behaviour (#220), by id — or nothing, when none has one. */
+function riftBehaviors(encounter: EncounterState): { behaviors?: Record<string, RiftBehavior> } {
+  const behaviors: Record<string, RiftBehavior> = {};
+  for (const c of encounter.combatants) if (c.side === "enemy" && c.rift) behaviors[c.id] = c.rift;
+  return Object.keys(behaviors).length > 0 ? { behaviors } : {};
 }
 
 /** The map the scene in play names. Only called where the scene is an encounter. */
@@ -2241,11 +2276,44 @@ function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | un
   // ended — won, lost, escaped or collapsed — so the rescue's own effects land
   // before the branch's, and the branch (and its narration variants) can read
   // them. A captive still waiting, or lost, is simply left behind.
-  const rescue = scene.environment?.rescue;
-  if (rescue?.effects && encounter.environment?.rescue === "freed") {
-    applyEffectsDraft(draft, rescue.effects, ctx);
+  // The place as it was fought (#220): the resolved spec the fight carries.
+  const place = encounter.environment?.spec;
+  if (place && encounter.environment) recordFightEnding(draft, encounter, outcome);
+  if (place && encounter.environment) {
+    const statuses = captiveStatuses(encounter.environment);
+    captivesOf(place).forEach((captive, i) => {
+      if (captive.effects && statuses[i] === "freed") applyEffectsDraft(draft, captive.effects, ctx);
+    });
+    // An objective done (#220) is a story fact the same way.
+    const done = objectivesDone(encounter.environment);
+    (place.objectives ?? []).forEach((objective, i) => {
+      if (objective.effects && done[i]) applyEffectsDraft(draft, objective.effects, ctx);
+    });
   }
   return takeBranch(draft, outcomeBranch(scene, outcome), ctx);
+}
+
+/**
+ * What the completion screen will say about a fight that fought back (#220):
+ * how it ended, who was freed or lost, what got done. Only an environmental
+ * fight is recorded, so a run without one never grows the key.
+ */
+function recordFightEnding(draft: RunState, encounter: EncounterState, outcome: Exclude<EncounterOutcome, "ongoing">): void {
+  const env = encounter.environment;
+  if (!env) return;
+  const captives = captivesOf(env.spec);
+  const statuses = captiveStatuses(env);
+  const done = objectivesDone(env);
+  const objectives = env.spec.objectives ?? [];
+  const winner = objectives.find((o, i) => o.endsFight && done[i]);
+  const monstersStanding = encounter.combatants.some((c) => c.side === "enemy" && !c.down);
+  (draft.fightEndings ??= []).push({
+    outcome,
+    ...(outcome === "victory" && winner && monstersStanding ? { byObjective: winner.label } : {}),
+    freed: captives.filter((_, i) => statuses[i] === "freed").map((c) => c.name),
+    lost: captives.filter((_, i) => statuses[i] === "lost").map((c) => c.name),
+    done: objectives.filter((_, i) => done[i]).map((o) => o.label),
+  });
 }
 
 /**

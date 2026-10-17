@@ -31,6 +31,7 @@ import type {
   RulesContent,
   RunBuff,
   RunState,
+  FactValue,
 } from "@kad/shared";
 
 /** `ctx` as handed to `applyIntent`. */
@@ -83,6 +84,11 @@ export interface EngineContext {
    * campaign, whose runs therefore never hold a buff.
    */
   campaignBuffs?: readonly RunBuff[];
+  /**
+   * A graph campaign's world facts (#220), when its graph declares any:
+   * what an environment's variants test when a fight begins.
+   */
+  campaignFacts?: Readonly<Record<string, FactValue>>;
 }
 
 export interface IntentInput {
