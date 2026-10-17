@@ -599,6 +599,34 @@ describe("a preview on the channel", () => {
   });
 });
 
+describe("arrivals (#267)", () => {
+  it("are handed over at once and never move seq or the mirror", () => {
+    const arrivals: unknown[] = [];
+    const sequencer = new MessageSequencer({
+      handlers: {
+        onState: () => undefined,
+        onPresentation: () => undefined,
+        onProgression: () => undefined,
+        onGap: () => undefined,
+        onArrival: (message) => void arrivals.push(message),
+      },
+    });
+    sequencer.reset(makeState({ seq: 4 }), 4);
+    const message = { kind: "arrival" as const, seq: 9, runId: "r_1", playerId: "p_2", name: "Mia", color: "#fff" };
+    sequencer.ingest(message);
+    expect(arrivals).toEqual([message]);
+    expect(sequencer.seq).toBe(4);
+    expect(sequencer.buffered).toEqual([]);
+  });
+
+  it("parse, and a malformed one is dropped", () => {
+    const good = { kind: "arrival", seq: 3, runId: "r_1", playerId: "p_2", name: "Mia", color: "#fff" };
+    expect(parseChannelMessage(JSON.stringify(good))).toEqual(good);
+    expect(parseChannelMessage(JSON.stringify({ ...good, name: undefined }))).toBeNull();
+    expect(parseChannelMessage(JSON.stringify({ ...good, playerId: 7 }))).toBeNull();
+  });
+});
+
 describe("parseChannelMessage", () => {
   it("parses a patch message", () => {
     const parsed = parseChannelMessage(

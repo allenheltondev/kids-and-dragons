@@ -28,6 +28,7 @@ import {
 } from "../test-support.ts";
 import { applyIntent, createRunState } from "@kad/shared";
 import { createRoom } from "../handlers/room.ts";
+import { CODE_MISS_LIMIT } from "../handlers/code-guard.ts";
 import { respond, type HttpRuntime } from "./http.ts";
 import type { VerifiedAccount } from "./runtime.ts";
 
@@ -343,7 +344,13 @@ describe("POST /api/room", () => {
     // Nobody was seated: no player, no session, and the lobby is empty.
     expect(payload.playerId).toBeUndefined();
     expect(payload.sessionToken).toBeUndefined();
-    const watched = await respond(event("POST", `/api/room/${String(payload.code)}/watch`, { body: {} }), rt);
+    const watched = await respond(
+      event("POST", `/api/room/${String(payload.code)}/watch`, {
+        body: {},
+        headers: { "x-kad-device-token": String(payload.deviceToken) },
+      }),
+      rt,
+    );
     expect(bodyOf(watched)).toMatchObject({ state: { party: [] } });
   });
 
@@ -481,6 +488,32 @@ describe("POST /api/room/:code/join", () => {
 });
 
 describe("POST /api/room/:code/watch", () => {
+  it("shows a room only to the screen that opened it (#267)", async () => {
+    // Anybody else with the code would watch the party unannounced, out of
+    // reach of Remove. To see the room, a stranger now has to join it.
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    const opened = await respond(event("POST", "/api/room", { body: { mode: "party", display: true } }), rt);
+    const tv = bodyOf(opened) as unknown as { code: string; deviceToken: string };
+
+    const asTv = await respond(
+      event("POST", `/api/room/${tv.code}/watch`, { headers: { "x-kad-device-token": tv.deviceToken } }),
+      rt,
+    );
+    expect(asTv.statusCode).toBe(200);
+    expect(bodyOf(asTv)).toMatchObject({ host: true });
+
+    const anonymous = await respond(event("POST", `/api/room/${tv.code}/watch`), rt);
+    expect(anonymous.statusCode).toBe(403);
+    const phone = await respond(event("POST", `/api/room/${tv.code}/join`, { body: {} }), rt);
+    const { deviceToken } = bodyOf(phone) as unknown as { deviceToken: string };
+    const asPhone = await respond(
+      event("POST", `/api/room/${tv.code}/watch`, { headers: { "x-kad-device-token": deviceToken } }),
+      rt,
+    );
+    expect(asPhone.statusCode).toBe(403);
+  });
+
   it("hands the TV a viewer token and no player", async () => {
     const harness = makeHarness();
     const room = await seedRoom(harness);
@@ -495,6 +528,311 @@ describe("POST /api/room/:code/watch", () => {
     // A screen is not a player (spec §2.1) — nothing here may name one.
     expect(payload).not.toHaveProperty("playerId");
     expect(payload).not.toHaveProperty("sessionToken");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Wrong room codes (#267) — the code is the real boundary
+// ---------------------------------------------------------------------------
+
+describe("the wrong-code budget", () => {
+  /** What CloudFront sends: the viewer's address, vouched for by the origin secret. */
+  const SECRET = "s3cret-from-ssm";
+  const from = (address: string) => ({ "x-kad-viewer": address, "x-kad-origin": SECRET });
+
+  /** Spend one client's whole budget on codes no room has. */
+  async function exhaust(rt: HttpRuntime, address: string) {
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) {
+      const missed = await respond(
+        event("POST", `/api/room/${unusedCode(i)}/join`, { headers: from(address) }),
+        rt,
+      );
+      expect(missed.statusCode, `miss ${i}`).toBe(404);
+    }
+  }
+
+  /** Codes `seedRoom` will never have rolled — every one a miss. */
+  function unusedCode(i: number): string {
+    return `QQ${"ABCDEFGHJKLMNPQRSTUVWXYZ"[Math.floor(i / 24) % 24]}${"ABCDEFGHJKLMNPQRSTUVWXYZ"[i % 24]}`;
+  }
+
+  it("refuses a guesser before the lookup, so even a right code tells it nothing", async () => {
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    const rt = runtimeFor(harness, { originSecret: SECRET });
+    await exhaust(rt, "198.51.100.7");
+
+    // The live code now gets the same answer a dead one would.
+    for (const path of [`/api/room/${room.code}/join`, `/api/room/${room.code}/watch`]) {
+      const refused = await respond(event("POST", path, { headers: from("198.51.100.7") }), rt);
+      expect(refused.statusCode, path).toBe(429);
+      expect(bodyOf(refused).error, path).toMatchObject({ code: "SLOW_DOWN" });
+      expect(Number(refused.headers?.["retry-after"]), path).toBeGreaterThan(0);
+    }
+  });
+
+  it("counts misses on every route that looks a room up by code", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness, { originSecret: SECRET });
+    const headers = from("198.51.100.7");
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) {
+      const code = unusedCode(i);
+      const missed =
+        i % 2 === 0
+          ? await respond(event("POST", `/api/room/${code}/join`, { headers }), rt)
+          : await respond(event("POST", `/api/room/${code}/watch`, { headers }), rt);
+      expect(missed.statusCode, code).toBe(404);
+    }
+    const refused = await respond(event("POST", "/api/room/WXYZ/join", { headers }), rt);
+    expect(refused.statusCode).toBe(429);
+  });
+
+  it("never counts a family's right codes against it", async () => {
+    // Joins and reconnects are most of the traffic; only misses spend the budget.
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    const rt = runtimeFor(harness, { originSecret: SECRET });
+    for (let i = 0; i < CODE_MISS_LIMIT * 2; i++) {
+      const joined = await respond(
+        event("POST", `/api/room/${room.code}/join`, {
+          headers: { ...from("198.51.100.7"), "x-kad-device-token": room.player.deviceToken },
+        }),
+        rt,
+      );
+      expect(joined.statusCode).toBe(200);
+    }
+  });
+
+  it("keeps one client's budget its own", async () => {
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    const rt = runtimeFor(harness, { originSecret: SECRET });
+    await exhaust(rt, "198.51.100.7");
+
+    const joined = await respond(
+      event("POST", `/api/room/${room.code}/join`, {
+        headers: { ...from("203.0.113.9"), "x-kad-device-token": room.player.deviceToken },
+      }),
+      rt,
+    );
+    expect(joined.statusCode).toBe(200);
+  });
+
+  it("falls back to the connection's address when nothing set the header", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness, { originSecret: SECRET });
+    const direct = (path: string) => {
+      const e = event("POST", path);
+      (e.requestContext.http as { sourceIp?: string }).sourceIp = "198.51.100.7";
+      return e;
+    };
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) await respond(direct(`/api/room/${unusedCode(i)}/join`), rt);
+    expect((await respond(direct("/api/room/WXYZ/join"), rt)).statusCode).toBe(429);
+    // The header is a different client.
+    expect(
+      (await respond(event("POST", "/api/room/WXYZ/join", { headers: from("203.0.113.9") }), rt))
+        .statusCode,
+    ).toBe(404);
+  });
+
+  it("lets a seated phone or TV reconnect even once its address is out of budget", async () => {
+    /*
+     * A building shares one IPv4 address. Strangers in it spending the budget
+     * must not cut off a game already in progress: a session or viewer token
+     * for this room is not a guess.
+     */
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    const rt = runtimeFor(harness, { originSecret: SECRET });
+    const joined = await respond(
+      event("POST", `/api/room/${room.code}/join`, {
+        headers: { ...from("198.51.100.7"), "x-kad-device-token": room.player.deviceToken },
+      }),
+      rt,
+    );
+    const { sessionToken } = bodyOf(joined) as unknown as { sessionToken: string };
+    const watched = await respond(
+      event("POST", `/api/room/${room.code}/watch`, { headers: from("198.51.100.7") }),
+      rt,
+    );
+    const { viewerToken } = bodyOf(watched) as unknown as { viewerToken: string };
+    await exhaust(rt, "198.51.100.7");
+
+    for (const token of [sessionToken, viewerToken]) {
+      const read = await respond(
+        event("GET", "/api/state", {
+          query: { code: room.code },
+          headers: { ...from("198.51.100.7"), authorization: `Bearer ${token}` },
+        }),
+        rt,
+      );
+      expect(read.statusCode).toBe(200);
+    }
+  });
+
+});
+
+/** A well-formed code no test room has, distinct for each `i` below 576. */
+function missCode(i: number): string {
+  const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  return `QQ${letters[Math.floor(i / 24) % 24]}${letters[i % 24]}`;
+}
+
+describe("POST /api/room/:code/remove", () => {
+  /** A Travel Mode room opened over HTTP, so it has a host, and a second phone in it. */
+  async function hosted(harness: TestHarness) {
+    const rt = runtimeFor(harness);
+    const opened = await respond(event("POST", "/api/room", { body: { mode: "travel" } }), rt);
+    const host = bodyOf(opened) as unknown as { code: string; runId: string; deviceToken: string; host?: boolean };
+    const joined = await respond(event("POST", `/api/room/${host.code}/join`, { body: {} }), rt);
+    const guest = bodyOf(joined) as unknown as { playerId: string; deviceToken: string; sessionToken: string };
+    return { rt, host, guest };
+  }
+
+  it("tells the device that opened a room it is the host, and nobody else", async () => {
+    const harness = makeHarness();
+    const { host, rt } = await hosted(harness);
+    expect(host.host).toBe(true);
+    const joined = await respond(event("POST", `/api/room/${host.code}/join`, { body: {} }), rt);
+    expect(bodyOf(joined)).not.toHaveProperty("host");
+
+    const tv = await respond(event("POST", "/api/room", { body: { mode: "party", display: true } }), rt);
+    expect(bodyOf(tv)).toMatchObject({ host: true });
+  });
+
+  it("lets the host take a player out, by its device token", async () => {
+    const harness = makeHarness();
+    const { rt, host, guest } = await hosted(harness);
+    const result = await respond(
+      event("POST", `/api/room/${host.code}/remove`, {
+        body: { playerId: guest.playerId },
+        headers: { "x-kad-device-token": host.deviceToken },
+      }),
+      rt,
+    );
+    expect(result.statusCode).toBe(200);
+
+    // And that phone cannot come back in.
+    const back = await respond(
+      event("POST", `/api/room/${host.code}/join`, { headers: { "x-kad-device-token": guest.deviceToken } }),
+      rt,
+    );
+    expect(back.statusCode).toBe(403);
+
+    // Nor go on reading the room with the session token it already holds,
+    // by code or by run.
+    for (const query of [{ code: host.code }, { runId: host.runId }] as Record<string, string>[]) {
+      const read = await respond(
+        event("GET", "/api/state", { query, headers: { authorization: `Bearer ${guest.sessionToken}` } }),
+        rt,
+      );
+      expect(read.statusCode).toBe(403);
+    }
+  });
+
+  it("refuses anybody else, and a request with no token at all", async () => {
+    const harness = makeHarness();
+    const { rt, host, guest } = await hosted(harness);
+    const asGuest = await respond(
+      event("POST", `/api/room/${host.code}/remove`, {
+        body: { playerId: guest.playerId },
+        headers: { "x-kad-device-token": guest.deviceToken },
+      }),
+      rt,
+    );
+    expect(asGuest.statusCode).toBe(403);
+    const anonymous = await respond(
+      event("POST", `/api/room/${host.code}/remove`, { body: { playerId: guest.playerId } }),
+      rt,
+    );
+    expect(anonymous.statusCode).toBe(401);
+  });
+
+  it("insists on being told whom", async () => {
+    const harness = makeHarness();
+    const { rt, host } = await hosted(harness);
+    const result = await respond(
+      event("POST", `/api/room/${host.code}/remove`, { headers: { "x-kad-device-token": host.deviceToken } }),
+      rt,
+    );
+    expect(result.statusCode).toBe(400);
+  });
+
+  it("counts a wrong code like any other lookup, so it is no way to test codes", async () => {
+    // "No room" and "not your room" are different answers; without the guard
+    // that difference would tell a guesser which codes are live.
+    const harness = makeHarness();
+    const { rt, host } = await hosted(harness);
+    const headers = { "x-kad-device-token": host.deviceToken, "x-kad-viewer": "198.51.100.7" };
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) {
+      const code = missCode(i);
+      const missed = await respond(event("POST", `/api/room/${code}/remove`, { body: { playerId: "p" }, headers }), rt);
+      expect(missed.statusCode, code).toBe(404);
+    }
+    const refused = await respond(
+      event("POST", `/api/room/${host.code}/remove`, { body: { playerId: "p" }, headers }),
+      rt,
+    );
+    expect(refused.statusCode).toBe(429);
+  });
+});
+
+describe("whose address a miss is counted against", () => {
+  /** A miss from the given headers, at the given connection address. */
+  function miss(code: string, headers: Record<string, string>, sourceIp = "192.0.2.50") {
+    const e = event("POST", `/api/room/${code}/join`, { headers });
+    (e.requestContext.http as { sourceIp?: string }).sourceIp = sourceIp;
+    return e;
+  }
+
+  it("believes CloudFront's viewer address when CloudFront's secret came with it", async () => {
+    const rt = runtimeFor(makeHarness(), { originSecret: "s3cret-from-ssm" });
+    const viaCloudFront = { "x-kad-viewer": "198.51.100.7", "x-kad-origin": "s3cret-from-ssm" };
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) await respond(miss(missCode(i), viaCloudFront), rt);
+
+    expect((await respond(miss("WXYZ", viaCloudFront), rt)).statusCode).toBe(429);
+    // The edge's own address is everyone near that edge; it was not the one counted.
+    expect((await respond(miss("WXYZ", {}), rt)).statusCode).toBe(404);
+  });
+
+  it("believes no viewer address at all when no secret is configured", async () => {
+    // Fail closed: a stage deployed without KAD_ORIGIN_SECRET must not let a
+    // direct caller name a fresh address per guess.
+    const rt = runtimeFor(makeHarness());
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) {
+      await respond(miss(missCode(i), { "x-kad-viewer": `203.0.113.${i}` }, "198.51.100.66"), rt);
+    }
+    expect(
+      (await respond(miss("WXYZ", { "x-kad-viewer": "203.0.113.250" }, "198.51.100.66"), rt)).statusCode,
+    ).toBe(429);
+  });
+
+  it("refuses a parallel burst past the limit, however it interleaves", async () => {
+    // Every request is admitted by one conditional write before its lookup,
+    // so a burst cannot all read "under the limit" first.
+    const rt = runtimeFor(makeHarness());
+    const results = await Promise.all(
+      Array.from({ length: CODE_MISS_LIMIT * 2 }, (_, i) => respond(miss(missCode(i), {}, "198.51.100.66"), rt)),
+    );
+    const statuses = results.map((r) => r.statusCode);
+    expect(statuses.filter((s) => s === 404)).toHaveLength(CODE_MISS_LIMIT);
+    expect(statuses.filter((s) => s === 429)).toHaveLength(CODE_MISS_LIMIT);
+  });
+
+  it("ignores a viewer address a caller sent around CloudFront", async () => {
+    /*
+     * The API's own execute-api address skips CloudFront. A caller there can
+     * name a fresh `x-kad-viewer` on every guess; its connection address is the
+     * one thing it cannot change, so that is what is counted.
+     */
+    const rt = runtimeFor(makeHarness(), { originSecret: "s3cret-from-ssm" });
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) {
+      const forged = { "x-kad-viewer": `203.0.113.${i}`, "x-kad-origin": "wrong" };
+      await respond(miss(missCode(i), forged, "198.51.100.66"), rt);
+    }
+    expect(
+      (await respond(miss("WXYZ", { "x-kad-viewer": "203.0.113.200" }, "198.51.100.66"), rt)).statusCode,
+    ).toBe(429);
   });
 });
 
@@ -788,17 +1126,53 @@ describe("GET /api/state", () => {
     expect(bodyOf(result).error).toMatchObject({ message: "runId or code is required" });
   });
 
-  it("resolves a room code, upper-cased, with no identity at all", async () => {
-    // How the TV reattaches after a hard refresh (spec §2.1).
-    const harness = makeHarness();
+  /** A seeded room and the session token its player gets on joining. */
+  async function seated(harness: TestHarness) {
     const room = await seedRoom(harness);
+    const joined = await respond(
+      event("POST", `/api/room/${room.code}/join`, { headers: { "x-kad-device-token": room.player.deviceToken } }),
+      runtimeFor(harness),
+    );
+    const { sessionToken } = bodyOf(joined) as unknown as { sessionToken: string };
+    return { room, bearer: { authorization: `Bearer ${sessionToken}` } };
+  }
+
+  it("resolves a room code, upper-cased, for somebody in the room", async () => {
+    const harness = makeHarness();
+    const { room, bearer } = await seated(harness);
     const result = await respond(
-      event("GET", "/api/state", { query: { code: room.code.toLowerCase() } }),
+      event("GET", "/api/state", { query: { code: room.code.toLowerCase() }, headers: bearer }),
       runtimeFor(harness),
     );
 
     expect(result.statusCode).toBe(200);
-    expect(bodyOf(result)).toMatchObject({ seq: 0 });
+    expect(bodyOf(result)).toHaveProperty("state");
+  });
+
+  it("reads nothing for a caller with only the code, and says so as if there were no room", async () => {
+    // #267. A code alone let anyone read the party's names and every move
+    // without showing up in the room. The answer matches an unknown code's, so
+    // it tells a guesser nothing about which codes are live.
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    for (const query of [{ code: room.code }, { runId: room.runId }] as Record<string, string>[]) {
+      const result = await respond(event("GET", "/api/state", { query }), runtimeFor(harness));
+      expect(result.statusCode).toBe(404);
+      expect(bodyOf(result).error).toMatchObject({ code: "NOT_FOUND" });
+    }
+    const unknown = await respond(event("GET", "/api/state", { query: { code: "WXYZ" } }), runtimeFor(harness));
+    expect(bodyOf(unknown).error).toMatchObject({ message: "no open room WXYZ" });
+  });
+
+  it("does not let a token for one room read another", async () => {
+    const harness = makeHarness();
+    const { bearer } = await seated(harness);
+    const other = await createRoom({ householdId: "h_test", mode: "party" }, harness.deps);
+    if (!other.ok) throw new Error("setup failed");
+    for (const query of [{ code: other.value.code }, { runId: other.value.runId }] as Record<string, string>[]) {
+      const result = await respond(event("GET", "/api/state", { query, headers: bearer }), runtimeFor(harness));
+      expect(result.statusCode).toBe(404);
+    }
   });
 
   it("refuses a code whose room is gone even when the caller also knows the runId", async () => {
@@ -822,31 +1196,29 @@ describe("GET /api/state", () => {
 
   it("refuses a code and a runId that name different runs", async () => {
     const harness = makeHarness();
-    const room = await seedRoom(harness);
+    const { room, bearer } = await seated(harness);
     const result = await respond(
-      event("GET", "/api/state", { query: { code: room.code, runId: "r_other" } }),
+      event("GET", "/api/state", { query: { code: room.code, runId: "r_other" }, headers: bearer }),
       runtimeFor(harness),
     );
     expect(result.statusCode).toBe(404);
-    expect(bodyOf(result).error).toMatchObject({
-      message: `room ${room.code} is not that run`,
-    });
   });
 
   it("passes sinceSeq through as a number, and omits it when absent", async () => {
     const harness = makeHarness();
-    const room = await seedRoom(harness);
+    const { room, bearer } = await seated(harness);
+    const seq = (await harness.repo.getState(room.runId))?.seq ?? 0;
 
-    // seq 0 and sinceSeq 0 — caught up, so events rather than a snapshot.
+    // Caught up, so events rather than a snapshot.
     const caught = await respond(
-      event("GET", "/api/state", { query: { runId: room.runId, sinceSeq: "0" } }),
+      event("GET", "/api/state", { query: { runId: room.runId, sinceSeq: String(seq) }, headers: bearer }),
       runtimeFor(harness),
     );
-    expect(bodyOf(caught)).toEqual({ seq: 0, events: [] });
+    expect(bodyOf(caught)).toEqual({ seq, events: [] });
 
     // No sinceSeq is a cold client, which must get the whole state.
     const cold = await respond(
-      event("GET", "/api/state", { query: { runId: room.runId } }),
+      event("GET", "/api/state", { query: { runId: room.runId }, headers: bearer }),
       runtimeFor(harness),
     );
     expect(bodyOf(cold)).toHaveProperty("state");
@@ -1183,6 +1555,8 @@ const SHARED = [
   { path: "/api/room", method: "POST", probe: "/api/room" },
   { path: "/api/room/:code/join", method: "POST", probe: "/api/room/ABCD/join" },
   { path: "/api/room/:code/watch", method: "POST", probe: "/api/room/ABCD/watch" },
+  // The host taking a player out (#267, handlers/remove.ts).
+  { path: "/api/room/:code/remove", method: "POST", probe: "/api/room/ABCD/remove" },
   { path: "/api/action", method: "POST", probe: "/api/action" },
   { path: "/api/preview", method: "POST", probe: "/api/preview" },
   { path: "/api/progression/spend", method: "POST", probe: "/api/progression/spend" },

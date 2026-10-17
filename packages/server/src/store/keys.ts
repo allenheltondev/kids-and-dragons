@@ -19,6 +19,7 @@
  * | Game state       | RUN#<runId>     | STATE              |
  * | Event log        | RUN#<runId>     | EVT#<seq>          |
  * | Room             | ROOM#<code>     | META               |
+ * | Code misses      | GUESS#<client>  | WINDOW#<n>         |
  *
  * GSI1 indexes devices by device id so a returning phone resolves to its
  * household without a scan (§3), and runs by id so `runId` alone is enough to
@@ -41,6 +42,13 @@ export const DEVICE_SK = (deviceId: string) => `DEVICE#${deviceId}`;
 export const CHAR_SK = (characterId: string) => `CHAR#${characterId}`;
 export const RUN_SK = (runId: string) => `RUN#${runId}`;
 export const CHAPTER_SK = (index: number) => `CHAPTER#${index}`;
+
+/**
+ * Wrong room codes from one client, one row per window (`handlers/code-guard.ts`).
+ * Carries a `ttl`, like a room: it is one row, and nothing else points at it.
+ */
+export const GUESS = (clientKey: string) => `GUESS#${clientKey}`;
+export const GUESS_WINDOW_SK = (window: number) => `WINDOW#${window}`;
 
 /** Campaign setback counter, household-scoped — see `CampaignProgressRecord`. */
 export const CAMPAIGN_SK = (campaignId: string) => `CAMPAIGN#${campaignId}`;

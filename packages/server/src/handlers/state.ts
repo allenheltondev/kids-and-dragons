@@ -27,6 +27,12 @@ export interface GetStateInput {
   runId: string;
   /** Omit (or send a negative) to force a snapshot — a cold client's default. */
   sinceSeq?: number | undefined;
+  /**
+   * The player reading, when the reader is a seated phone rather than the
+   * host's screen. A player the host took out (`RunState.removed`, #267) is
+   * refused: their session token stays well-formed until the room ends.
+   */
+  playerId?: string | undefined;
 }
 
 export async function getState(
@@ -35,6 +41,9 @@ export async function getState(
 ): Promise<HandlerResult<StateResponse>> {
   const state = await deps.repo.getState(input.runId);
   if (!state) return fail("NOT_FOUND", `no run ${input.runId}`);
+  if (input.playerId !== undefined && state.removed?.includes(input.playerId)) {
+    return fail("FORBIDDEN", "This phone was taken out of the game.");
+  }
 
   const sinceSeq = input.sinceSeq;
   const snapshot = (): HandlerResult<StateResponse> =>

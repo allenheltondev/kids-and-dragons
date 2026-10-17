@@ -1,0 +1,104 @@
+/**
+ * Taking a player out of a room — issue #267.
+ *
+ * A room code is read aloud across a living room, typed by a child, printed on
+ * a TV. Somebody who should not be in the game will sometimes have it. The
+ * room shows who arrives (`ArrivalMessage`), and this is what the host does
+ * about one: one tap, and that player is out.
+ *
+ * Only the device that opened the room may do it (`RoomRecord.hostDeviceId`):
+ * the TV in Party Mode, the host's phone in Travel Mode. That is the host
+ * authority #265 settles on for room-level controls, which are low-stakes and
+ * recoverable.
+ *
+ * "Out" is `connected: false` plus a place on `RunState.removed`, not a hole in
+ * `party`. Every turn, vote, roll and ready-gate already reads a disconnected
+ * member as away (`storyTurnHolder`, `turnHolderAway`, `rollerAway`, the ready
+ * gate), so a player taken out mid-fight leaves nothing waiting on them.
+ * Deleting the member instead would leave an encounter's turn order pointing
+ * at nobody. `removed` is what keeps them away: `joinRoom`, `applyAction`,
+ * `relayPreview`, presence and the channel authorizer all refuse a player on it.
+ *
+ * What it cannot do: a phone that clears its storage is a new phone, with a
+ * new player, and can join again with the code. It shows up as a new arrival,
+ * and can be taken out again. Locking a room to new joins is #263's.
+ */
+
+import { settleChapterEndVote, type RunState } from "@kad/shared";
+import type { DeviceIdentity } from "../identity.ts";
+import type { EventRecord } from "../store/repository.ts";
+import { diff } from "../json-patch.ts";
+import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
+
+export interface RemovePlayerInput {
+  code: string;
+  /** The device asking, resolved from its device token. */
+  principal: DeviceIdentity;
+  playerId: string;
+}
+
+/** Lost seq races retried before giving up, as presence does. */
+const COMMIT_ATTEMPTS = 3;
+
+export async function removePlayer(
+  input: RemovePlayerInput,
+  deps: HandlerDeps,
+): Promise<HandlerResult<{ seq: number }>> {
+  const room = await deps.repo.getRoom(input.code);
+  if (!room) return fail("NOT_FOUND", `no open room ${input.code.toUpperCase()}`);
+  if (!room.hostDeviceId || room.hostDeviceId !== input.principal.deviceId) {
+    return fail("FORBIDDEN", "only the screen or phone that opened this room can take someone out");
+  }
+  if (input.playerId === input.principal.playerId) {
+    return fail("ILLEGAL", "the host cannot take themselves out");
+  }
+  // Somebody who joined this room has a profile in its household, whether or
+  // not they made a character. An id that names nobody is refused rather than
+  // written down, so `removed` only ever lists real players.
+  const player = await deps.repo.getPlayer(room.householdId, input.playerId);
+  if (!player) return fail("NOT_FOUND", `no player ${input.playerId} in this room`);
+
+  for (let attempt = 1; ; attempt++) {
+    const state = await deps.repo.getState(room.runId);
+    if (!state) return fail("NOT_FOUND", `run ${room.runId} has no state`);
+    if (state.removed?.includes(input.playerId)) return ok({ seq: state.seq });
+
+    const nowMs = deps.now();
+    // Out of any vote at the chapter's end too: if they were the last one still
+    // reading, the table goes on now, as it does when a phone drops.
+    const next: RunState = settleChapterEndVote({
+      ...state,
+      seq: state.seq + 1,
+      updatedAt: iso(nowMs),
+      removed: [...(state.removed ?? []), input.playerId],
+      party: state.party.map((m) =>
+        m.playerId === input.playerId ? { ...m, connected: false, ready: false } : m,
+      ),
+    });
+    const event: EventRecord = {
+      seq: next.seq,
+      runId: next.runId,
+      patch: diff(state, next),
+      at: iso(nowMs),
+      playerId: input.principal.playerId,
+    };
+
+    if (await deps.repo.commit({ runId: next.runId, expectedSeq: state.seq, state: next, event })) {
+      await deps.channel.publish(next.roomCode, {
+        kind: "patch",
+        seq: event.seq,
+        runId: event.runId,
+        patch: event.patch,
+      });
+      return ok({ seq: next.seq });
+    }
+    if (attempt >= COMMIT_ATTEMPTS) {
+      return fail("STALE_SEQ", "the game moved on while taking them out; try again");
+    }
+  }
+}
+
+/** On `RunState.removed`: taken out of this room, and kept out. */
+export function isRemoved(state: Pick<RunState, "removed">, playerId: string): boolean {
+  return state.removed?.includes(playerId) ?? false;
+}

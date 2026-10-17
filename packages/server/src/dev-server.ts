@@ -30,12 +30,19 @@ import { ContentError, loadContent, type ContentStore } from "./content/loader.t
 import { loadSharedRuntime } from "./engine/shared-engine.ts";
 import { addPlayer, adoptDevice, createGuestHousehold, linkAccount } from "./handlers/account.ts";
 import { applyAction } from "./handlers/action.ts";
+import {
+  admitCodeLookup,
+  clientKeyFor,
+  retryAfterSeconds,
+  SLOW_DOWN,
+} from "./handlers/code-guard.ts";
 import { relayPreview } from "./handlers/preview.ts";
 import { setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps } from "./handlers/deps.ts";
 import { iso } from "./handlers/deps.ts";
 import { createRoom, joinRoom, settleRoom, watchRoom } from "./handlers/room.ts";
+import { removePlayer } from "./handlers/remove.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
 import { getState } from "./handlers/state.ts";
@@ -137,6 +144,7 @@ async function main(): Promise<void> {
         mode,
         campaignId: req.body?.campaignId ?? null,
         claimable: display,
+        hostDeviceId: host.principal.deviceId,
       },
       deps,
     );
@@ -147,6 +155,7 @@ async function main(): Promise<void> {
       return res.json({
         ...created.value,
         roomCode: created.value.code,
+        host: true,
         ...(host.deviceToken ? { deviceToken: host.deviceToken } : {}),
       });
     }
@@ -170,8 +179,11 @@ async function main(): Promise<void> {
     if (!deps) return;
 
     const code = String(req.params.code ?? "").toUpperCase();
+    const lookup = await admitCodeLookup(clientOf(req), deps);
+    if (!lookup) return slowDown(res, deps);
     const found = await base.repo.getRoom(code);
     if (!found) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+    await lookup.hit();
 
     const existing = await resolvePrincipal(req, base);
     // Settled first for a new phone — see lambda/http.ts.
@@ -219,11 +231,37 @@ async function main(): Promise<void> {
     if (!deps) return;
 
     const code = String(req.params.code ?? "").toUpperCase();
-    const result = await watchRoom({ code }, deps);
+    const lookup = await admitCodeLookup(clientOf(req), deps);
+    if (!lookup) return slowDown(res, deps);
+    // Optional: a TV that opened the room presents its binding to learn it is the host.
+    const screen = await resolvePrincipal(req, base);
+    const result = await watchRoom({ code, deviceId: screen?.principal.deviceId }, deps);
+    if (result.ok || result.error.code !== "NOT_FOUND") await lookup.hit();
     if (!result.ok) {
       return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     }
     res.json(result.value);
+  });
+
+  /** The host taking a player out (#267) — see lambda/http.ts. */
+  app.post("/api/room/:code/remove", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+
+    const code = String(req.params.code ?? "").toUpperCase();
+    const host = await resolvePrincipal(req, base);
+    if (!host) return sendError(res, 401, "FORBIDDEN", "taking someone out needs this device's token");
+    const playerId = req.body?.playerId;
+    if (typeof playerId !== "string" || playerId === "") {
+      return sendError(res, 400, "ILLEGAL", "expected { playerId }");
+    }
+    const lookup = await admitCodeLookup(clientOf(req), deps);
+    if (!lookup) return slowDown(res, deps);
+    const result = await removePlayer({ code, principal: host.principal, playerId }, deps);
+    const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
+    if (!missed) await lookup.hit();
+    if (result.ok) return res.json({ ok: true, seq: result.value.seq });
+    sendError(res, statusFor(result.error), result.error.code, result.error.message);
   });
 
   // -------------------------------------------------------------------------
@@ -365,6 +403,15 @@ async function main(): Promise<void> {
      * leaving a phone showing an old game it cannot play instead of saying
      * the room is gone.
      */
+    // Only somebody in the room may read it — see lambda/http.ts.
+    const reader = await roomReader(req, base);
+    const named = code ? `no open room ${code}` : `no run ${runId}`;
+    if (!reader) return sendError(res, 404, "NOT_FOUND", named);
+    if ((code && reader.roomCode.toUpperCase() !== code) || (runId && reader.runId !== runId)) {
+      return sendError(res, 404, "NOT_FOUND", named);
+    }
+    if (!runId) runId = reader.runId;
+
     if (code) {
       const room = await base.repo.getRoom(code);
       if (!room) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
@@ -376,7 +423,7 @@ async function main(): Promise<void> {
     const raw = req.query.sinceSeq;
     const sinceSeq = typeof raw === "string" && raw !== "" ? Number(raw) : undefined;
 
-    const result = await getState({ runId, sinceSeq }, deps);
+    const result = await getState({ runId, sinceSeq, playerId: reader.playerId }, deps);
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
   });
@@ -387,11 +434,22 @@ async function main(): Promise<void> {
 
   app.get("/events/:code", async (req: Request, res: Response) => {
     const code = String(req.params.code ?? "").toUpperCase();
+    // The same rule as the AppSync authorizer (lambda/channel-authorizer.ts):
+    // a session or viewer token for this room, and not a player the host took
+    // out. A stream open to anyone with the code would be a laptop testing a
+    // room that production does not have.
+    const reader = await roomReader(req, base);
+    if (!reader || reader.roomCode.toUpperCase() !== code) {
+      return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+    }
     const room = await base.repo.getRoom(code);
     if (!room) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
 
     const state = await base.repo.getState(room.runId);
     if (!state) return sendError(res, 404, "NOT_FOUND", `run ${room.runId} has no state`);
+    if (reader.playerId !== undefined && state.removed?.includes(reader.playerId)) {
+      return sendError(res, 403, "FORBIDDEN", "This phone was taken out of the game.");
+    }
 
     // Snapshot on connect, then patches from that snapshot's seq. Anything
     // published between the read and the attach is covered by the channel's
@@ -585,6 +643,32 @@ async function resolveSession(req: Request, deps: BaseDeps): Promise<SessionIden
   return deps.identity.resolveSession(token);
 }
 
+/** The room a request's session or viewer token was issued for. Same as lambda/http.ts. */
+async function roomReader(
+  req: Request,
+  deps: BaseDeps,
+): Promise<{ runId: string; roomCode: string; playerId?: string } | null> {
+  const header = req.get("authorization") ?? "";
+  const query = typeof req.query?.token === "string" ? req.query.token : "";
+  const token = /^Bearer\s+(.+)$/i.exec(header.trim())?.[1] ?? query;
+  if (!token) return null;
+  return (await deps.identity.resolveSession(token)) ?? (await deps.identity.resolveViewer(token));
+}
+
+/**
+ * Who is asking, for the wrong-code budget: the socket. Prod believes
+ * `x-kad-viewer` only alongside CloudFront's secret (lambda/http.ts,
+ * `clientOf`), and a laptop has no CloudFront to vouch for it.
+ */
+function clientOf(req: Request): string {
+  return clientKeyFor(req.socket.remoteAddress);
+}
+
+function slowDown(res: Response, deps: HandlerDeps): void {
+  res.set("retry-after", String(retryAfterSeconds(deps.now())));
+  sendError(res, SLOW_DOWN.status, SLOW_DOWN.code, SLOW_DOWN.message);
+}
+
 // ---------------------------------------------------------------------------
 // Plumbing
 // ---------------------------------------------------------------------------
@@ -621,7 +705,12 @@ function statusFor(error: ActionError): number {
   }
 }
 
-function sendError(res: Response, status: number, code: ActionError["code"], message: string): void {
+function sendError(
+  res: Response,
+  status: number,
+  code: ActionError["code"] | typeof SLOW_DOWN.code,
+  message: string,
+): void {
   res.status(status).json({ ok: false, error: { code, message } });
 }
 

@@ -1,4 +1,5 @@
 import { openPlayerTask } from "./player-navigation";
+import { roomState } from "./room-state";
 /**
  * The end-to-end check the roadmap's cross-cutting table is really asking for:
  * "a change hasn't been seen on a TV *and* in three-phone Travel Mode, it isn't
@@ -66,13 +67,10 @@ async function waitForAdventurePrompt(page: Page): Promise<void> {
 }
 
 async function serverState(
+  page: Page,
   code: string,
 ): Promise<{ phase: string; xpEarned: number; sceneId: string | null; encounter?: unknown }> {
-  const response = await fetch(`http://localhost:8787/api/state?code=${code}`);
-  const body = (await response.json()) as {
-    state: { phase: string; xpEarned: number; sceneId: string | null; encounter?: unknown };
-  };
-  return body.state;
+  return roomState(page, code);
 }
 
 /**
@@ -451,7 +449,7 @@ test.describe("first playable", () => {
           continue;
         }
 
-        const state = await serverState(code);
+        const state = await serverState(phones[0]!, code);
         if (state.phase === "chapter_complete") {
           completed = state;
           break;
@@ -508,7 +506,7 @@ test.describe("first playable", () => {
     }
     await host.getByRole("button", { name: /begin the adventure/i }).click({ timeout: 20_000 });
 
-    const at = (sceneId: string) => async () => (await serverState(code)).sceneId === sceneId;
+    const at = (sceneId: string) => async () => (await serverState(phones[0]!, code)).sceneId === sceneId;
     const heroOf = (page: Page): string => heroes[phones.indexOf(page)]!;
 
     /*
@@ -523,7 +521,7 @@ test.describe("first playable", () => {
     // what resolves the prompt or the party has already moved on.
     for (const page of phones) {
       await chooseUntil(page, /follow the singing stream/i, async () => {
-        const s = await serverState(code);
+        const s = await serverState(phones[0]!, code);
         if (s.sceneId !== "choice_point_path") return true; // resolved
         return await page
           .locator(".prompt button")
@@ -533,11 +531,11 @@ test.describe("first playable", () => {
           .catch(() => false);
       });
     }
-    await expect.poll(async () => (await serverState(code)).sceneId).toBe("scene_singing_stream");
+    await expect.poll(async () => (await serverState(phones[0]!, code)).sceneId).toBe("scene_singing_stream");
     await chooseUntil(phones, /chase them off/i, at("encounter_bramblewisps"));
 
     const encounterOf = async () =>
-      ((await serverState(code)).encounter ?? null) as {
+      ((await serverState(phones[0]!, code)).encounter ?? null) as {
         round: number;
         turnIndex: number;
         actionTaken: boolean;
@@ -667,7 +665,7 @@ test.describe("first playable", () => {
     // The fight ended and the story branched — victory or defeat both carry
     // on (spec §7.3); there is no game over to assert against.
     expect(over, "the encounter never resolved").toBe(true);
-    const after = await serverState(code);
+    const after = await serverState(phones[0]!, code);
     expect(after.encounter ?? null).toBeNull();
     expect(after.sceneId).not.toBe("encounter_bramblewisps");
     expect(["scene_wisp_friends", "scene_bundled"]).toContain(after.sceneId);
@@ -722,8 +720,7 @@ test.describe("first playable", () => {
     // Seated and ready — "Ready to play" is the one tap, with no creation
     // flow between.
     await expect(host.getByRole("button", { name: /wait, not yet/i })).toBeVisible({ timeout: 15_000 });
-    const response = await fetch(`http://localhost:8787/api/state?code=${second}`);
-    const { state } = (await response.json()) as { state: { party: { character: { name: string } }[] } };
+    const state = await roomState<{ party: { character: { name: string } }[] }>(host, second);
     expect(state.party.map((m) => m.character.name)).toEqual(["Sparklehoof"]);
   });
 

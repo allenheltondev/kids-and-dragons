@@ -101,6 +101,28 @@ else
   node infra/build.mjs
 fi
 
+# The secret CloudFront adds to every request it forwards to the API, so the
+# API knows which viewer addresses to believe (infra/template.yaml,
+# KAD_ORIGIN_SECRET). The template reads it with a dynamic reference, which
+# fails the deploy if the parameter does not exist, so it is made here, once
+# per stage, and never changed. Never printed: this repository's Actions logs
+# are public. `--no-overwrite` makes two first deploys racing converge on one
+# value; the loser's error is the expected one and is swallowed.
+ORIGIN_SECRET_PARAM="/kad/$STAGE/origin-secret"
+if ! aws ssm get-parameter --name "$ORIGIN_SECRET_PARAM" --region "$AWS_REGION" \
+  --query Parameter.Version --output text >/dev/null 2>&1; then
+  say "Creating $ORIGIN_SECRET_PARAM"
+  if ! err="$(aws ssm put-parameter --name "$ORIGIN_SECRET_PARAM" --region "$AWS_REGION" \
+    --type String --no-overwrite \
+    --value "$(node -e 'process.stdout.write(require("node:crypto").randomBytes(32).toString("hex"))')" \
+    2>&1 >/dev/null)"; then
+    case "$err" in
+      *ParameterAlreadyExists*) ;;
+      *) echo "$err" >&2; exit 1 ;;
+    esac
+  fi
+fi
+
 say "Deploying the stack ($STACK)"
 
 # Every parameter, every time.

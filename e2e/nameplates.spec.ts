@@ -1,4 +1,5 @@
 import { openPlayerTask } from "./player-navigation";
+import { roomState } from "./room-state";
 /**
  * The names under the figures — the thing that tells two players apart when
  * they picked the same species (`packages/client/src/world/nameplate.ts`).
@@ -91,10 +92,8 @@ async function namesOn(page: Page, space: string): Promise<string> {
  */
 const collide = nameplatesCollide;
 
-async function serverState(code: string): Promise<{ sceneId: string | null; encounter?: unknown }> {
-  const response = await fetch(`http://localhost:8787/api/state?code=${code}`);
-  return ((await response.json()) as { state: { sceneId: string | null; encounter?: unknown } })
-    .state;
+async function serverState(page: Page, code: string): Promise<{ sceneId: string | null; encounter?: unknown }> {
+  return roomState(page, code);
 }
 
 async function chooseUntil(
@@ -280,14 +279,14 @@ test.describe("nameplates", () => {
     }
 
     // --- The board: the case both real defects appeared in ---
-    const at = (sceneId: string) => async () => (await serverState(code)).sceneId === sceneId;
+    const at = (sceneId: string) => async () => (await serverState(host, code)).sceneId === sceneId;
     const heroOf = (page: Page): string => HEROES[phones.indexOf(page)]!;
 
     await chooseUntil(phones, /walk right through the thorns/i, at("scene_first_clearing"));
     await chooseUntil(phones, /head deeper into the wood/i, at("choice_point_path"));
     for (const page of phones) {
       await chooseUntil(page, /follow the singing stream/i, async () => {
-        const state = await serverState(code);
+        const state = await serverState(host, code);
         if (state.sceneId !== "choice_point_path") return true;
         return await page
           .locator(".prompt button")
@@ -298,11 +297,11 @@ test.describe("nameplates", () => {
       });
     }
     await expect
-      .poll(async () => (await serverState(code)).sceneId, { timeout: 30_000 })
+      .poll(async () => (await serverState(host, code)).sceneId, { timeout: 30_000 })
       .toBe("scene_singing_stream");
     await chooseUntil(phones, /chase them off/i, at("encounter_bramblewisps"));
 
-    const encounterUp = async () => Boolean((await serverState(code)).encounter);
+    const encounterUp = async () => Boolean((await serverState(host, code)).encounter);
     for (const page of phones) {
       for (let attempt = 0; attempt < 5; attempt++) {
         if (await encounterUp()) break;

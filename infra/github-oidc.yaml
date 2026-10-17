@@ -247,10 +247,11 @@ Resources:
               - !Sub "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/kad-${!aws:PrincipalTag/kad:stage}"
               - !Sub "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/kad-${!aws:PrincipalTag/kad:stage}/index/*"
 
-          # The token-signing SecureString lives at /kad/<stage>/…. Nothing in
-          # the deploy path writes it today (the API function mints it at
-          # runtime), but the teardown documented in docs/deploy.md deletes it,
-          # and scoping it here costs nothing.
+          # /kad/<stage>/… holds the token-signing SecureString, which the API
+          # function mints at runtime, and the CloudFront origin secret, which
+          # scripts/deploy.sh creates on a stage's first deploy and the template
+          # then reads with a dynamic reference. The teardown documented in
+          # docs/deploy.md deletes both.
           - Sid: SsmKadParameters
             Effect: Allow
             Action: ssm:*

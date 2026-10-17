@@ -15,6 +15,7 @@
 import type { Operation } from "fast-json-patch";
 import { readIntentPreview } from "@kad/shared";
 import type {
+  ArrivalMessage,
   ChannelMessage,
   Presentation,
   PreviewMessage,
@@ -60,6 +61,8 @@ export interface SequencerHandlers {
    * waits for a gap to fill nor moves `seq`.
    */
   onPreview?(message: PreviewMessage): void;
+  /** Somebody joined the room (`ArrivalMessage`, #267). Live, unordered, like a preview. */
+  onArrival?(message: ArrivalMessage): void;
 }
 
 export type TimerHandle = ReturnType<typeof setTimeout> | number;
@@ -135,6 +138,10 @@ export class MessageSequencer {
 
     if (message.kind === "preview") {
       this.handlers.onPreview?.(message);
+      return;
+    }
+    if (message.kind === "arrival") {
+      this.handlers.onArrival?.(message);
       return;
     }
 
@@ -318,6 +325,12 @@ export function parseChannelMessage(raw: string): ChannelMessage | null {
       preview,
       context: preview === null ? null : (context as string),
     };
+  }
+
+  if (candidate.kind === "arrival") {
+    const { playerId, name, color } = candidate as Partial<ArrivalMessage>;
+    if (typeof playerId !== "string" || typeof name !== "string" || typeof color !== "string") return null;
+    return { kind: "arrival", seq: candidate.seq, runId: candidate.runId, playerId, name, color };
   }
 
   if (candidate.kind === "snapshot" || (candidate.kind === undefined && candidate.state)) {

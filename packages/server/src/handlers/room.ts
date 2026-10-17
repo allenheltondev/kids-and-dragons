@@ -23,6 +23,7 @@ import { newId, newSecret } from "../ids.ts";
 import { keepGuestHousehold } from "./account.ts";
 import { lobbyCampaigns } from "./progression.ts";
 import { loadBook } from "./field-guide.ts";
+import { isRemoved } from "./remove.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
 /**
@@ -62,6 +63,8 @@ export interface CreateRoomInput {
    * placeholder, and the first phone to join decides whose room it is.
    */
   claimable?: boolean;
+  /** The device asking for the room, which becomes its host (`RoomRecord.hostDeviceId`). */
+  hostDeviceId?: string;
 }
 
 export async function createRoom(
@@ -108,6 +111,7 @@ export async function createRoom(
     input.householdId,
     input.mode,
     input.claimable === true,
+    input.hostDeviceId,
     nowMs,
     deps,
   );
@@ -185,6 +189,7 @@ async function reserveCode(
   householdId: string,
   mode: RoomMode,
   claimable: boolean,
+  hostDeviceId: string | undefined,
   nowMs: number,
   deps: HandlerDeps,
 ): Promise<RoomRecord | null> {
@@ -198,6 +203,7 @@ async function reserveCode(
       expiresAt: iso(nowMs + ROOM_TTL_MS),
       ttl: Math.floor((nowMs + ROOM_TTL_MS) / 1000),
       ...(claimable ? { claimable: true } : {}),
+      ...(hostDeviceId ? { hostDeviceId } : {}),
     };
     // Conditional create: whoever writes the code first owns it.
     if (await deps.repo.putRoomIfAbsent(room)) return room;
@@ -369,9 +375,15 @@ export async function joinRoom(
 
   const lobby = await refreshLobby(room, deps);
   if (!lobby) return fail("NOT_FOUND", `run ${room.runId} has no state`);
+  // Taken out by the host (#267, `removePlayer`): no seat, and no way back in.
+  if (isRemoved(lobby, player.id)) {
+    return fail("FORBIDDEN", "This phone was taken out of that game.");
+  }
   const state = await withFieldGuide(lobby, room, deps);
 
   const joined = await markConnected(state, input.principal.playerId, deps);
+  const host = room.hostDeviceId !== undefined && room.hostDeviceId === input.principal.deviceId;
+  if (!host) await announceArrival(joined, player, deps);
 
   const sessionToken = await deps.identity.issueSessionToken({
     runId: room.runId,
@@ -389,7 +401,34 @@ export async function joinRoom(
     mode: room.mode,
     sessionToken,
     state: joined,
+    ...(host ? { host: true } : {}),
   });
+}
+
+/**
+ * Tells the room who just arrived (`ArrivalMessage`, #267), so a stranger with
+ * the code is seen the moment they are in, not after they have made a hero.
+ * The host's own join is not news. A failed publish costs the notice, never
+ * the join: the phone is already seated by the time this runs.
+ */
+async function announceArrival(
+  state: RunState,
+  player: { id: string; displayName: string; color: string },
+  deps: HandlerDeps,
+): Promise<void> {
+  const hero = state.party.find((m) => m.playerId === player.id)?.character.name;
+  try {
+    await deps.channel.publish(state.roomCode, {
+      kind: "arrival",
+      seq: state.seq,
+      runId: state.runId,
+      playerId: player.id,
+      name: hero ?? player.displayName,
+      color: player.color,
+    });
+  } catch (err) {
+    console.warn("[room] arrival notice not sent", err);
+  }
 }
 
 export interface WatchRoomResult {
@@ -399,15 +438,19 @@ export interface WatchRoomResult {
   /** Read-only, room-scoped, expires with the room. */
   viewerToken: string;
   state: RunState;
+  /** This screen opened the room, so it may take a player out (#267). */
+  host?: boolean;
 }
 
 /**
  * How a display client attaches — the TV in Party Mode (spec §2.1).
  *
- * It has no device, no player, and no token, and that is the design: the TV is
- * a screen, and screens do not sign in. But in prod the realtime channel is
- * authorised per subscriber, so it still needs *something* to present, and this
- * is where it gets it: a token naming this room and nothing else.
+ * It has no player and no session, and that is the design: the TV is a
+ * screen, and screens do not sign in. What it does have is the device binding
+ * it was given when it opened the room, and that is what lets it watch: only
+ * the room's host may (#267). In prod the realtime channel is authorised per
+ * subscriber, so it gets *something* to present here: a token naming this
+ * room and nothing else.
  *
  * Deliberately not a `joinRoom` variant. A viewer is not a party member — it
  * must not appear in `party`, must not affect presence, and must not satisfy any
@@ -415,11 +458,26 @@ export interface WatchRoomResult {
  * end up doing one of those by accident.
  */
 export async function watchRoom(
-  input: { code: string },
+  input: {
+    code: string;
+    /**
+     * The screen's own device binding. A TV that opened the room keeps it, and
+     * presenting it is what lets the TV watch, after a hard refresh too.
+     */
+    deviceId?: string | undefined;
+  },
   deps: HandlerDeps,
 ): Promise<HandlerResult<WatchRoomResult>> {
   const room = await deps.repo.getRoom(input.code);
   if (!room) return fail("NOT_FOUND", `no open room ${input.code.toUpperCase()}`);
+
+  // Only the screen that opened the room may show it (#267). Otherwise anyone
+  // with the code could watch the party, unannounced and beyond the reach of
+  // Remove; to see the room, a stranger now has to join it, and be seen. A room
+  // opened before rooms had a host keeps the old rule until it expires.
+  if (room.hostDeviceId !== undefined && room.hostDeviceId !== input.deviceId) {
+    return fail("FORBIDDEN", "Only the screen that opened this room can show it.");
+  }
 
   const state = await deps.repo.getState(room.runId);
   if (!state) return fail("NOT_FOUND", `run ${room.runId} has no state`);
@@ -429,7 +487,15 @@ export async function watchRoom(
     roomCode: room.code,
     expiresAt: Date.parse(room.expiresAt),
   });
-  return ok({ runId: room.runId, mode: room.mode, expiresAt: room.expiresAt, viewerToken, state });
+  const host = input.deviceId !== undefined && room.hostDeviceId === input.deviceId;
+  return ok({
+    runId: room.runId,
+    mode: room.mode,
+    expiresAt: room.expiresAt,
+    viewerToken,
+    state,
+    ...(host ? { host: true } : {}),
+  });
 }
 
 /**
