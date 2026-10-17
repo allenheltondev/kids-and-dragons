@@ -15,6 +15,7 @@ Open http://localhost:5173 and start a Party or Travel game. Stop other dev serv
 the preview uses the normal ports. The launcher selects **Riftlight — opening preview**, stages
 the chapters and Listening Chime catalog in a temporary content tree, and uses a separate
 temporary save directory. Each launch starts fresh; leave it running to resume between sessions.
+Stopping the preview removes its staged content and saves after both dev processes close.
 The preview skips the Gemfall prerequisite so you can test immediately. New preview characters
 are stand-ins at the usual creation level; tests also walk the content as Sworn characters.
 
@@ -37,6 +38,9 @@ the full graph will supply its onward exits.
 
 Failed rolls cost a little harm and change the immediate result; every path continues. No
 setback ending, early antagonist reveal, or assumption about the party's Gemfall ending.
+The wing, Smash, Brace and Songkeeper options enable team checks: the qualified hero supplies
+the ability while the best roller handles the line or guides the group. Failure harms that
+roller, without pretending they have their teammate's wings or class ability.
 Story narration never announces diagnostic rift colors. The first rift's colors appear through
 the existing private Starweaver view at the exit; the in-chapter reading records the choice
 for Seren's callback without duplicating that private view in shared text.

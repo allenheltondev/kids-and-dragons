@@ -228,15 +228,15 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Carry the line to the far bank for everyone to hold.",
+      "prompt": "Wings carry the rope to the far bank. Can you guide the loose line around the sharp ice?",
       "roller": "best",
       "onSuccess": {
         "goto": "dry_bank",
-        "narration": "You loop the line around a rock. Everyone crosses holding it."
+        "narration": "You guide the line clear of sharp ice. Secured around a rock on the far bank, it steadies everyone crossing."
       },
       "onFailure": {
         "goto": "wet_bank",
-        "narration": "The wind pushes you low. You reach the rock, but one foot splashes through the channel.",
+        "narration": "The line snags on sharp ice. You free it, splashing one foot into the channel.",
         "effects": [
           {
             "type": "damage",
@@ -250,15 +250,15 @@
       "type": "check",
       "stat": "heart",
       "tn": 8,
-      "prompt": "Keep the whole party moving on the herder's safe steps.",
+      "prompt": "A Songkeeper sets a steady pace. Can you lead the party along the dark patches in time with the song?",
       "roller": "best",
       "onSuccess": {
         "goto": "dry_bank",
-        "narration": "Your song sets a slow pace. Each friend puts a foot exactly where the herder did."
+        "narration": "You call the steps in time with the song. Each friend follows the herder's safe footholds."
       },
       "onFailure": {
         "goto": "wet_bank",
-        "narration": "The ice shifts between two notes. The herder pulls you clear and leads the last steps herself.",
+        "narration": "Your foot slips between two beats. The herder pulls you clear and leads the last steps herself.",
         "effects": [
           {
             "type": "damage",

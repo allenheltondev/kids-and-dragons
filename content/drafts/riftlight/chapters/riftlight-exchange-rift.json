@@ -380,15 +380,15 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Lift the kid clear of the sliding crates.",
+      "prompt": "Skyward or Glide lifts the kid. Can you keep the loose line clear of the sliding crates?",
       "roller": "best",
       "onSuccess": {
         "goto": "caught",
-        "narration": "Wings beat over the boards. You lift the kid clear and reach the others."
+        "narration": "Wings carry the kid clear of the crates. You guide the loose line past the wheels of a cart, keeping everyone together."
       },
       "onFailure": {
         "goto": "tumbled",
-        "narration": "You lift the kid, but the pull catches your wings. You bump the crate and fold them tight.",
+        "narration": "The line catches your foot and you bump your shoulder against a crate. Wings carry the kid clear anyway.",
         "effects": [
           {
             "type": "damage",
@@ -402,15 +402,15 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "Break the crate and wedge it across the gap.",
+      "prompt": "Smash breaks a crate into a barrier. Can you guide the loose line around it?",
       "roller": "best",
       "onSuccess": {
         "goto": "together",
-        "narration": "Wood cracks. The broken crate catches the line long enough for everyone to hold on."
+        "narration": "Wood cracks. You thread the line around the broken crate, buying time for everyone to hold on."
       },
       "onFailure": {
         "goto": "tumbled",
-        "narration": "The crate breaks, but the pull tears it free. You shield the kid from a flying board.",
+        "narration": "The broken crate skids away. The line pulls tight against your knee as you grab it.",
         "effects": [
           {
             "type": "damage",
@@ -424,15 +424,15 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "Brace against the post and keep everyone together.",
+      "prompt": "Brace holds the post steady. Can you keep the line taut while everyone gets a grip?",
       "roller": "best",
       "onSuccess": {
         "goto": "together",
-        "narration": "You plant your feet and hold until every friend has the line. Then the post tilts."
+        "narration": "The braced post holds. You take up the slack until every friend has the line. Then the boards lift."
       },
       "onFailure": {
         "goto": "tumbled",
-        "narration": "The boards lift under your feet. You keep the line, even as the post tips you forward.",
+        "narration": "The braced post holds, but the wet line slips through your hands and knocks you onto your knees.",
         "effects": [
           {
             "type": "damage",

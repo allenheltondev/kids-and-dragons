@@ -2,7 +2,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { spawn } from "node:child_process";
+import concurrently from "concurrently";
 import { fileURLToPath } from "node:url";
 import type { Campaign, Chapter, ItemCatalog } from "@kad/shared";
 
@@ -40,19 +40,30 @@ export function stageRiftlightOpening(options: { unlockPreview?: boolean } = {})
   return root;
 }
 
+/** The runner handles signals and settles only after its commands close. */
+export async function runRiftlightPreview(root: string, run = concurrently): Promise<void> {
+  // Refuse cleanup of an arbitrary directory, even if called with a bad path.
+  const target = path.resolve(root);
+  if (path.dirname(target) !== path.resolve(os.tmpdir()) || !path.basename(target).startsWith("kad-riftlight-opening-")) {
+    throw new Error(`Not a staged Riftlight preview: ${target}`);
+  }
+  try {
+    // The API forwards Ctrl-C/SIGTERM to the command trees and waits for them;
+    // a separate CLI child could leave its parent exiting before cleanup.
+    const env = { KAD_CONTENT_DIR: path.join(root, "content"), KAD_DATA_DIR: path.join(root, "saves"),
+      VITE_LAUNCH_CAMPAIGN: "riftlight-opening-preview" };
+    await run([{ command: "npm run dev:server", env }, { command: "npm run dev:client", env }], {
+      cwd: ROOT,
+      killOthersOn: ["success", "failure"],
+    }).result;
+  } finally {
+    fs.rmSync(target, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+  }
+}
+
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const root = stageRiftlightOpening({ unlockPreview: true });
   console.log("Riftlight opening preview: three authored nodes; stops before the regional fork.");
   console.log("Gemfall lock skipped for this preview. Saves are isolated from your normal games.");
-  const child = spawn(process.execPath, [path.join(ROOT, "node_modules/concurrently/dist/bin/index.js"),
-    "--kill-others", "npm run dev:server", "npm run dev:client"], {
-    cwd: ROOT,
-    stdio: "inherit",
-    env: { ...process.env, KAD_CONTENT_DIR: path.join(root, "content"), KAD_DATA_DIR: path.join(root, "saves"),
-      VITE_LAUNCH_CAMPAIGN: "riftlight-opening-preview" },
-  });
-  // Keep the temporary files while the dev processes are using them. A new
-  // invocation gets a new content tree and new saves; no normal save is touched.
-  child.on("error", (error) => { console.error(error); process.exitCode = 1; });
-  child.on("exit", (code) => { process.exitCode = code ?? 1; });
+  runRiftlightPreview(root).catch((error: unknown) => { console.error(error); process.exitCode = 1; });
 }
