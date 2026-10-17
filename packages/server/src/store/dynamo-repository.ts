@@ -70,6 +70,8 @@ import {
   GSI1_GUEST,
   GSI1_GUEST_SK,
   GSI1_RUN,
+  GUESS,
+  GUESS_WINDOW_SK,
   HH,
   META,
   PLAYER_SK,
@@ -86,7 +88,7 @@ interface TableItem {
   SK: string;
   GSI1PK?: string;
   GSI1SK?: string;
-  /** Epoch seconds, DynamoDB's TTL attribute. Only rooms carry it. */
+  /** Epoch seconds, DynamoDB's TTL attribute. Only rooms and code-miss windows carry it. */
   ttl?: number;
   /**
    * Schema version of `data`, per entity (architecture §3.2). A top-level
@@ -980,6 +982,37 @@ export class DynamoRepository implements GameRepository {
       if (isTransactionCancelled(err)) return false;
       throw err;
     }
+  }
+
+  // --- room-code misses -----------------------------------------------------
+
+  async countCodeMisses(clientKey: string, window: number): Promise<number> {
+    const item = await this.get(GUESS(clientKey), GUESS_WINDOW_SK(window));
+    if (!item) return 0;
+    // TTL deletion is eventual, reads are not — same rule as `getRoom`.
+    if (item.ttl !== undefined && item.ttl * 1000 <= this.now()) return 0;
+    return typeof item.data === "number" ? item.data : 0;
+  }
+
+  async recordCodeMiss(clientKey: string, window: number, ttl: number): Promise<number> {
+    /*
+     * One `ADD`, so concurrent misses from one client are each counted: a
+     * read-then-put would let a burst of parallel guesses all read the same
+     * count and write it back once. The window's first miss sets `ttl`; later
+     * ones leave it, so a window always expires when it was going to.
+     */
+    const out = await this.doc.send(
+      new UpdateCommand({
+        TableName: this.table,
+        Key: { PK: GUESS(clientKey), SK: GUESS_WINDOW_SK(window) },
+        UpdateExpression: "ADD #d :one SET #ttl = if_not_exists(#ttl, :ttl), #entity = :entity",
+        ExpressionAttributeNames: { "#d": "data", "#ttl": "ttl", "#entity": "entity" },
+        ExpressionAttributeValues: { ":one": 1, ":ttl": ttl, ":entity": "code-misses" },
+        ReturnValues: "UPDATED_NEW",
+      }),
+    );
+    const misses: unknown = out.Attributes?.data;
+    return typeof misses === "number" ? misses : 1;
   }
 }
 

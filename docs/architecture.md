@@ -114,6 +114,7 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Game state | `RUN#<runId>` | `STATE` | Current authoritative snapshot. Single item. |
 | Event log | `RUN#<runId>` | `EVT#<seq>` | Append-only. Enables replay and reconnect. |
 | Room | `ROOM#<code>` | `META` | 4-letter code → runId, mode (`party` \| `travel`). **TTL 6 hours.** |
+| Code misses | `GUESS#<client>` | `WINDOW#<n>` | Wrong room codes from one client in one 15-minute window (§4.5, "Joining a session"). **TTL one window past its own.** |
 
 GSI1 does three jobs, all of them lookups that would otherwise be scans:
 
@@ -239,6 +240,7 @@ Not every record needs a migration path, because most of them expire on their ow
 | Record | Lives for | Needs migration? |
 |---|---|---|
 | Room | 6 hours (TTL) | **No** — wait a day and every row is new |
+| Code misses | ≤ 30 minutes (TTL) | **No** — a counter nobody reads after its window |
 | Guest household and its contents | 7 days since last played, sliding | **No** — the sweeper handles it |
 | Device binding | 30 days, sliding | **No** — an unused phone re-pairs by QR |
 | `RunState`, events, chapter progress | one campaign | **Yes**, but only while it is in flight |
@@ -557,6 +559,19 @@ no avatar picker with a password behind it — her phone knows it's her phone. T
 3. Other devices scan → `POST /room/ABCD/join`, presenting their **device token**. The server resolves device → player → household, verifies the household owns the run, and issues a room-scoped session token.
 4. Because identity is resolved from the device, **there is no "who are you?" step.** You scan, and your character is already on the board.
 5. **The first phone to join a claimable room decides whose room it is.** A phone that already belongs to a household takes the room into that household. The `ROOM#` item and the run's `HH#…/RUN#` row move together in one conditional transaction (`claimRoom`), and the lobby is re-read for that household's campaigns. A phone with no binding settles the room on the TV's household first, and is then created in it. Either way the room stops being claimable, and from then on a phone from another household is refused as before. This is what lets any screen host the evening. A new TV, or one whose storage was cleared, no longer starts a fresh guest household that locks the family's phones out of their own campaigns and heroes. Visiting phones from a second household are still refused (deferred).
+
+**The code is the boundary, so guessing it is rationed.** Any phone that names a
+live code can watch the room, read its state or join it, and 24⁴ codes is a
+small space. So every route that looks a room up by code (join, watch, and
+state read by code) counts the codes a client asks for that have no open room
+behind them, and refuses that client, for whatever it asks next, once it has
+missed `CODE_MISS_LIMIT` times in a 15-minute window (`handlers/code-guard.ts`).
+It refuses *before* the lookup, so a right code tells a refused guesser nothing.
+Misses, not attempts, because a family's joins and reconnects are most of the
+traffic; and a state read carrying a token for that room is never counted,
+so a game in progress is never cut off by strangers on the same network. A
+client is its IPv4 address or its IPv6 /64, and behind CloudFront that comes
+from a header CloudFront sets and vouches for (deploy.md, "The origin secret").
 
 Room items carry a **6-hour TTL** so abandoned rooms clean themselves up. Revoking a device does not
 touch any character — characters belong to the household.

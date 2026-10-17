@@ -28,6 +28,7 @@ import {
 } from "../test-support.ts";
 import { applyIntent, createRunState } from "@kad/shared";
 import { createRoom } from "../handlers/room.ts";
+import { CODE_MISS_LIMIT } from "../handlers/code-guard.ts";
 import { respond, type HttpRuntime } from "./http.ts";
 import type { VerifiedAccount } from "./runtime.ts";
 
@@ -495,6 +496,205 @@ describe("POST /api/room/:code/watch", () => {
     // A screen is not a player (spec §2.1) — nothing here may name one.
     expect(payload).not.toHaveProperty("playerId");
     expect(payload).not.toHaveProperty("sessionToken");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Wrong room codes (#267) — the code is the real boundary
+// ---------------------------------------------------------------------------
+
+describe("the wrong-code budget", () => {
+  const from = (address: string) => ({ "x-kad-viewer": address });
+
+  /** Spend one client's whole budget on codes no room has. */
+  async function exhaust(rt: HttpRuntime, address: string) {
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) {
+      const missed = await respond(
+        event("POST", `/api/room/${unusedCode(i)}/join`, { headers: from(address) }),
+        rt,
+      );
+      expect(missed.statusCode, `miss ${i}`).toBe(404);
+    }
+  }
+
+  /** Codes `seedRoom` will never have rolled — every one a miss. */
+  function unusedCode(i: number): string {
+    return `QQ${"ABCDEFGHJKLMNPQRSTUVWXYZ"[Math.floor(i / 24) % 24]}${"ABCDEFGHJKLMNPQRSTUVWXYZ"[i % 24]}`;
+  }
+
+  it("refuses a guesser before the lookup, so even a right code tells it nothing", async () => {
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    const rt = runtimeFor(harness);
+    await exhaust(rt, "198.51.100.7");
+
+    // The live code now gets the same answer a dead one would.
+    for (const path of [`/api/room/${room.code}/join`, `/api/room/${room.code}/watch`]) {
+      const refused = await respond(event("POST", path, { headers: from("198.51.100.7") }), rt);
+      expect(refused.statusCode, path).toBe(429);
+      expect(bodyOf(refused).error, path).toMatchObject({ code: "SLOW_DOWN" });
+      expect(Number(refused.headers?.["retry-after"]), path).toBeGreaterThan(0);
+    }
+    const read = await respond(
+      event("GET", "/api/state", { query: { code: room.code }, headers: from("198.51.100.7") }),
+      rt,
+    );
+    expect(read.statusCode).toBe(429);
+  });
+
+  it("counts misses on every route that looks a room up by code", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    const headers = from("198.51.100.7");
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) {
+      const pick = i % 3;
+      const code = unusedCode(i);
+      const missed =
+        pick === 0
+          ? await respond(event("POST", `/api/room/${code}/join`, { headers }), rt)
+          : pick === 1
+            ? await respond(event("POST", `/api/room/${code}/watch`, { headers }), rt)
+            : await respond(event("GET", "/api/state", { query: { code }, headers }), rt);
+      expect(missed.statusCode, code).toBe(404);
+    }
+    const refused = await respond(event("POST", "/api/room/WXYZ/join", { headers }), rt);
+    expect(refused.statusCode).toBe(429);
+  });
+
+  it("never counts a family's right codes against it", async () => {
+    // Joins and reconnects are most of the traffic; only misses spend the budget.
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    const rt = runtimeFor(harness);
+    for (let i = 0; i < CODE_MISS_LIMIT * 2; i++) {
+      const joined = await respond(
+        event("POST", `/api/room/${room.code}/join`, {
+          headers: { ...from("198.51.100.7"), "x-kad-device-token": room.player.deviceToken },
+        }),
+        rt,
+      );
+      expect(joined.statusCode).toBe(200);
+    }
+  });
+
+  it("keeps one client's budget its own", async () => {
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    const rt = runtimeFor(harness);
+    await exhaust(rt, "198.51.100.7");
+
+    const joined = await respond(
+      event("POST", `/api/room/${room.code}/join`, {
+        headers: { ...from("203.0.113.9"), "x-kad-device-token": room.player.deviceToken },
+      }),
+      rt,
+    );
+    expect(joined.statusCode).toBe(200);
+  });
+
+  it("falls back to the connection's address when nothing set the header", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    const direct = (path: string) => {
+      const e = event("POST", path);
+      (e.requestContext.http as { sourceIp?: string }).sourceIp = "198.51.100.7";
+      return e;
+    };
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) await respond(direct(`/api/room/${unusedCode(i)}/join`), rt);
+    expect((await respond(direct("/api/room/WXYZ/join"), rt)).statusCode).toBe(429);
+    // The header is a different client.
+    expect(
+      (await respond(event("POST", "/api/room/WXYZ/join", { headers: from("203.0.113.9") }), rt))
+        .statusCode,
+    ).toBe(404);
+  });
+
+  it("lets a seated phone or TV reconnect even once its address is out of budget", async () => {
+    /*
+     * A building shares one IPv4 address. Strangers in it spending the budget
+     * must not cut off a game already in progress: a session or viewer token
+     * for this room is not a guess.
+     */
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    const rt = runtimeFor(harness);
+    const joined = await respond(
+      event("POST", `/api/room/${room.code}/join`, {
+        headers: { ...from("198.51.100.7"), "x-kad-device-token": room.player.deviceToken },
+      }),
+      rt,
+    );
+    const { sessionToken } = bodyOf(joined) as unknown as { sessionToken: string };
+    const watched = await respond(
+      event("POST", `/api/room/${room.code}/watch`, { headers: from("198.51.100.7") }),
+      rt,
+    );
+    const { viewerToken } = bodyOf(watched) as unknown as { viewerToken: string };
+    await exhaust(rt, "198.51.100.7");
+
+    for (const token of [sessionToken, viewerToken]) {
+      const read = await respond(
+        event("GET", "/api/state", {
+          query: { code: room.code },
+          headers: { ...from("198.51.100.7"), authorization: `Bearer ${token}` },
+        }),
+        rt,
+      );
+      expect(read.statusCode).toBe(200);
+    }
+  });
+
+  it("does not let a token for one room exempt a guess at another", async () => {
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    const rt = runtimeFor(harness);
+    const watched = await respond(event("POST", `/api/room/${room.code}/watch`), rt);
+    const { viewerToken } = bodyOf(watched) as unknown as { viewerToken: string };
+
+    const headers = { ...from("198.51.100.7"), authorization: `Bearer ${viewerToken}` };
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) {
+      await respond(event("GET", "/api/state", { query: { code: unusedCode(i) }, headers }), rt);
+    }
+    const refused = await respond(
+      event("GET", "/api/state", { query: { code: "WXYZ" }, headers }),
+      rt,
+    );
+    expect(refused.statusCode).toBe(429);
+  });
+});
+
+describe("whose address a miss is counted against", () => {
+  /** A miss from the given headers, at the given connection address. */
+  function miss(code: string, headers: Record<string, string>, sourceIp = "192.0.2.50") {
+    const e = event("POST", `/api/room/${code}/join`, { headers });
+    (e.requestContext.http as { sourceIp?: string }).sourceIp = sourceIp;
+    return e;
+  }
+
+  it("believes CloudFront's viewer address when CloudFront's secret came with it", async () => {
+    const rt = runtimeFor(makeHarness(), { originSecret: "s3cret-from-ssm" });
+    const viaCloudFront = { "x-kad-viewer": "198.51.100.7", "x-kad-origin": "s3cret-from-ssm" };
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) await respond(miss(`QQA${"ABCDEFGHJKLM"[i]}`, viaCloudFront), rt);
+
+    expect((await respond(miss("WXYZ", viaCloudFront), rt)).statusCode).toBe(429);
+    // The edge's own address is everyone near that edge; it was not the one counted.
+    expect((await respond(miss("WXYZ", {}), rt)).statusCode).toBe(404);
+  });
+
+  it("ignores a viewer address a caller sent around CloudFront", async () => {
+    /*
+     * The API's own execute-api address skips CloudFront. A caller there can
+     * name a fresh `x-kad-viewer` on every guess; its connection address is the
+     * one thing it cannot change, so that is what is counted.
+     */
+    const rt = runtimeFor(makeHarness(), { originSecret: "s3cret-from-ssm" });
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) {
+      const forged = { "x-kad-viewer": `203.0.113.${i}`, "x-kad-origin": "wrong" };
+      await respond(miss(`QQA${"ABCDEFGHJKLM"[i]}`, forged, "198.51.100.66"), rt);
+    }
+    expect(
+      (await respond(miss("WXYZ", { "x-kad-viewer": "203.0.113.200" }, "198.51.100.66"), rt)).statusCode,
+    ).toBe(429);
   });
 });
 

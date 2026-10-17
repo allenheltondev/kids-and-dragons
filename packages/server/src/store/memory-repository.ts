@@ -54,6 +54,8 @@ import {
   GSI1_GUEST,
   GSI1_GUEST_SK,
   GSI1_RUN,
+  GUESS,
+  GUESS_WINDOW_SK,
   HH,
   META,
   PLAYER_SK,
@@ -70,7 +72,7 @@ interface TableItem {
   SK: string;
   GSI1PK?: string;
   GSI1SK?: string;
-  /** Epoch seconds, TTL attribute. Only rooms carry it today. */
+  /** Epoch seconds, TTL attribute. Only rooms and code-miss windows carry it. */
   ttl?: number;
   /**
    * Schema version of `data`, per entity (architecture §3.2). A top-level
@@ -645,6 +647,26 @@ export class MemoryRepository implements GameRepository {
       });
     }
     return true;
+  }
+
+  // --- room-code misses -----------------------------------------------------
+
+  async countCodeMisses(clientKey: string, window: number): Promise<number> {
+    return (this.get(GUESS(clientKey), GUESS_WINDOW_SK(window))?.data as number | undefined) ?? 0;
+  }
+
+  async recordCodeMiss(clientKey: string, window: number, ttl: number): Promise<number> {
+    // No await between the read and the write: atomic, as `ADD` is in the real store.
+    const existing = this.get(GUESS(clientKey), GUESS_WINDOW_SK(window));
+    const misses = ((existing?.data as number | undefined) ?? 0) + 1;
+    this.put({
+      PK: GUESS(clientKey),
+      SK: GUESS_WINDOW_SK(window),
+      ttl: existing?.ttl ?? ttl,
+      entity: "code-misses",
+      data: misses,
+    });
+    return misses;
   }
 }
 

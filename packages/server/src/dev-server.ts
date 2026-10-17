@@ -30,6 +30,13 @@ import { ContentError, loadContent, type ContentStore } from "./content/loader.t
 import { loadSharedRuntime } from "./engine/shared-engine.ts";
 import { addPlayer, adoptDevice, createGuestHousehold, linkAccount } from "./handlers/account.ts";
 import { applyAction } from "./handlers/action.ts";
+import {
+  clientKeyFor,
+  codeLookupAllowed,
+  recordCodeMiss,
+  retryAfterSeconds,
+  SLOW_DOWN,
+} from "./handlers/code-guard.ts";
 import { relayPreview } from "./handlers/preview.ts";
 import { setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
@@ -170,8 +177,13 @@ async function main(): Promise<void> {
     if (!deps) return;
 
     const code = String(req.params.code ?? "").toUpperCase();
+    const client = clientOf(req);
+    if (!(await codeLookupAllowed(client, deps))) return slowDown(res, deps);
     const found = await base.repo.getRoom(code);
-    if (!found) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+    if (!found) {
+      await recordCodeMiss(client, deps);
+      return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+    }
 
     const existing = await resolvePrincipal(req, base);
     // Settled first for a new phone — see lambda/http.ts.
@@ -219,8 +231,11 @@ async function main(): Promise<void> {
     if (!deps) return;
 
     const code = String(req.params.code ?? "").toUpperCase();
+    const client = clientOf(req);
+    if (!(await codeLookupAllowed(client, deps))) return slowDown(res, deps);
     const result = await watchRoom({ code }, deps);
     if (!result.ok) {
+      if (result.error.code === "NOT_FOUND") await recordCodeMiss(client, deps);
       return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     }
     res.json(result.value);
@@ -366,8 +381,15 @@ async function main(): Promise<void> {
      * the room is gone.
      */
     if (code) {
+      // Seated callers are not guessing — see lambda/http.ts.
+      const guarded = !(await holdsRoom(req, base, code));
+      const client = clientOf(req);
+      if (guarded && !(await codeLookupAllowed(client, deps))) return slowDown(res, deps);
       const room = await base.repo.getRoom(code);
-      if (!room) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+      if (!room) {
+        if (guarded) await recordCodeMiss(client, deps);
+        return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+      }
       if (runId && room.runId !== runId) {
         return sendError(res, 404, "NOT_FOUND", `room ${code} is not that run`);
       }
@@ -585,6 +607,31 @@ async function resolveSession(req: Request, deps: BaseDeps): Promise<SessionIden
   return deps.identity.resolveSession(token);
 }
 
+/** Does the request carry a session or viewer token for this room? Same as lambda/http.ts. */
+async function holdsRoom(req: Request, deps: BaseDeps, code: string): Promise<boolean> {
+  const header = req.get("authorization") ?? "";
+  const query = typeof req.query?.token === "string" ? req.query.token : "";
+  const token = /^Bearer\s+(.+)$/i.exec(header.trim())?.[1] ?? query;
+  if (!token) return false;
+  const session = await deps.identity.resolveSession(token);
+  if (session) return session.roomCode.toUpperCase() === code;
+  const viewer = await deps.identity.resolveViewer(token);
+  return viewer?.roomCode.toUpperCase() === code;
+}
+
+/**
+ * Who is asking, for the wrong-code budget. The header first, as in prod,
+ * where CloudFront sets it; nothing sets it locally, so this is the socket.
+ */
+function clientOf(req: Request): string {
+  return clientKeyFor(req.get("x-kad-viewer") ?? req.socket.remoteAddress);
+}
+
+function slowDown(res: Response, deps: HandlerDeps): void {
+  res.set("retry-after", String(retryAfterSeconds(deps.now())));
+  sendError(res, SLOW_DOWN.status, SLOW_DOWN.code, SLOW_DOWN.message);
+}
+
 // ---------------------------------------------------------------------------
 // Plumbing
 // ---------------------------------------------------------------------------
@@ -621,7 +668,12 @@ function statusFor(error: ActionError): number {
   }
 }
 
-function sendError(res: Response, status: number, code: ActionError["code"], message: string): void {
+function sendError(
+  res: Response,
+  status: number,
+  code: ActionError["code"] | typeof SLOW_DOWN.code,
+  message: string,
+): void {
   res.status(status).json({ ok: false, error: { code, message } });
 }
 
