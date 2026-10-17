@@ -218,8 +218,12 @@ describe("when the recap arrives", () => {
      */
     const { final } = await playToTheEnd(narrator(RECAP), (harness) => {
       const real = harness.repo.commit.bind(harness.repo);
+      // Armed by the first player action, so the join's own write (it puts the
+      // player on the host's roster, #263) is not the commit under test.
+      let armed = false;
       vi.spyOn(harness.repo, "commit").mockImplementation(async (input) => {
-        if (input.event.intent === undefined) throw new Error("throughput exceeded");
+        if (input.event.intent !== undefined) armed = true;
+        if (armed && input.event.intent === undefined) throw new Error("throughput exceeded");
         return real(input);
       });
     });

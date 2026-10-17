@@ -44,7 +44,8 @@ export async function relayPreview(input: PreviewInput, deps: PreviewDeps): Prom
   // Only a seat at this table has a phone to tap on.
   if (
     !state.party.some((member) => member.playerId === input.playerId) ||
-    state.removed?.includes(input.playerId)
+    state.removed?.includes(input.playerId) ||
+    state.closed
   ) {
     return { ok: false, status: 403, code: "FORBIDDEN", message: "not seated at this table" };
   }
