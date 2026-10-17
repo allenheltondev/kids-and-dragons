@@ -53,6 +53,11 @@ export async function hostedRoom(
  * stands and returns the next one, or `null` when there is nothing to do (the
  * change has already happened), which answers with the current seq. Retried on
  * a lost seq race, since the room may be mid-turn while the host taps.
+ *
+ * A closed run is terminal: it takes no change at all. Only the no-op answer
+ * still goes through, which is what lets a second Close finish deleting a code
+ * the first one left behind (`closeRoom`) while a Lock or Remove sent to that
+ * code is refused rather than written onto a run that is over.
  */
 export async function commitRoomChange(
   room: RoomRecord,
@@ -65,6 +70,7 @@ export async function commitRoomChange(
     if (!state) return fail("NOT_FOUND", `run ${room.runId} has no state`);
     const changed = change(state);
     if (!changed) return ok({ seq: state.seq, state, changed: false });
+    if (isClosed(state)) return fail("NOT_FOUND", `no open room ${room.code.toUpperCase()}`);
 
     const nowMs = deps.now();
     const next: RunState = { ...changed, seq: state.seq + 1, updatedAt: iso(nowMs) };
