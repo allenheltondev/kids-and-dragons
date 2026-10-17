@@ -29,6 +29,22 @@
   padding: 0.5rem calc(var(--kad-touch-min) + 0.25rem) 0 0.75rem;
 }
 
+/* All of them, on request: scrolls inside its own box, never pushes the
+   host's controls off the bottom. */
+.kad-arrivals--expanded {
+  max-block-size: 18rem;
+  overflow-y: auto;
+}
+
+.kad-arrivals__flood {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--kad-radius-md);
+  border: 1px solid var(--kad-warn);
+  background: var(--kad-bg-raised);
+  color: var(--kad-ink);
+}
+
 .kad-arrival {
   display: flex;
   align-items: center;

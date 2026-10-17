@@ -241,10 +241,16 @@ const BROADCAST_GRACE_MS = 4_000;
 
 /**
  * Arrivals a non-host screen holds at once. A burst of phones joining a lobby
- * is a handful; past this, the oldest notice goes. The host keeps every one
- * until it dismisses or removes them (see `onArrival`).
+ * is a handful; past this, the oldest notice goes.
  */
 const MAX_ARRIVALS = 6;
+
+/**
+ * Arrivals the host holds until it dismisses or removes them (see
+ * `onArrival`). Far more than any real table, and still a bound: past it the
+ * host is being flooded, and the oldest go, counted in `arrivalsDropped`.
+ */
+const MAX_HOST_ARRIVALS = 50;
 
 export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGameStore> {
   return (set, get) => {
@@ -330,9 +336,17 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             // A phone that joins twice (a reload on the join screen) is one arrival.
             const others = get().arrivals.filter((a) => a.playerId !== playerId);
             const arrivals = [...others, { playerId, name, color }];
-            // The host's are its way to remove somebody, so a burst never
-            // pushes one out; everywhere else they are only news.
-            set({ arrivals: get().session?.host ? arrivals : arrivals.slice(-MAX_ARRIVALS) });
+            // The host's are its way to remove somebody, so they hold far more
+            // than news does. Still bounded: anyone with the code can join as a
+            // new player over and over, and an unbounded list would bury the
+            // very controls the host needs. What falls off is counted, so the
+            // screen can say a flood is happening rather than hide it.
+            const cap = get().session?.host ? MAX_HOST_ARRIVALS : MAX_ARRIVALS;
+            const dropped = Math.max(0, arrivals.length - cap);
+            set({
+              arrivals: arrivals.slice(-cap),
+              ...(dropped > 0 && get().session?.host ? { arrivalsDropped: get().arrivalsDropped + dropped } : {}),
+            });
           },
           onGap: (sinceSeq) => {
             // Repeated hole notifications must respect a failed fetch's backoff.
@@ -424,7 +438,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
     function disconnect(): void {
       // Previews and arrivals are live-only: a fresh channel starts from nobody
       // picking and nobody new.
-      set({ previews: {}, arrivals: [] });
+      set({ previews: {}, arrivals: [], arrivalsDropped: 0 });
       runtime.previewSent = "[null,null]";
       runtime.previewNext = null;
       runtime.channel?.close();
@@ -617,6 +631,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       progression: null,
       previews: {},
       arrivals: [],
+      arrivalsDropped: 0,
       error: null,
       rules: null,
       items: null,

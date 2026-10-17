@@ -97,6 +97,11 @@ export interface GameStore {
    * that attaches later starts with none.
    */
   arrivals: readonly Arrival[];
+  /**
+   * Arrivals the host's list let go of because it was full (`arrivals` holds
+   * the newest). Non-zero only in a flood, which is the screen's cue to say so.
+   */
+  arrivalsDropped: number;
   /** Set when an intent was rejected. Cleared by `dismissError()`. */
   error: string | null;
   rules: RulesContent | null;

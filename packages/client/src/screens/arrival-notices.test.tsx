@@ -25,7 +25,7 @@ afterEach(() => {
   cleanup();
   vi.useRealTimers();
   act(() => {
-    useGameStore.setState({ session: null, arrivals: [] });
+    useGameStore.setState({ session: null, arrivals: [], arrivalsDropped: 0 });
   });
 });
 
@@ -68,6 +68,34 @@ describe("arrival notices", () => {
     expect(container.querySelectorAll(".kad-arrivals--float")).toHaveLength(1);
     expect(container.querySelectorAll(".kad-arrivals--inline")).toHaveLength(0);
     expect(screen.getByRole("button", { name: "Remove Mia from this game" })).toBeTruthy();
+  });
+
+  it("draw only the newest few for the host, with the rest behind one control", () => {
+    // Review of #269: hundreds of cards would bury the host's own controls.
+    const many = Array.from({ length: 50 }, (_, i) => ({ playerId: `p_${i}`, name: `Kid ${i}`, color: "#fff" }));
+    seat({ host: true });
+    act(() => {
+      useGameStore.setState({ arrivals: many });
+    });
+    render(<ArrivalNotices placement="inline" />);
+    expect(screen.getAllByRole("button", { name: /^Remove .* from this game$/ })).toHaveLength(3);
+    // Newest first.
+    expect(screen.getByText("Kid 49")).toBeTruthy();
+    expect(screen.queryByText("Kid 0")).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "47 more joined" }));
+    expect(screen.getAllByRole("button", { name: /^Remove .* from this game$/ })).toHaveLength(50);
+    fireEvent.click(screen.getByRole("button", { name: "Show fewer" }));
+    expect(screen.getAllByRole("button", { name: /^Remove .* from this game$/ })).toHaveLength(3);
+  });
+
+  it("tell the host plainly when a flood has pushed arrivals off its list", () => {
+    seat({ host: true });
+    act(() => {
+      useGameStore.setState({ arrivalsDropped: 12 });
+    });
+    render(<ArrivalNotices placement="inline" />);
+    expect(screen.getByRole("alert").textContent).toMatch(/start a new room/i);
   });
 
   it("go away on their own", () => {

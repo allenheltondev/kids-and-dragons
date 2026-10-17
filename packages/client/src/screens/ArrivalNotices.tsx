@@ -24,7 +24,7 @@
  *    for as long as it was shown.
  */
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useGameStore } from "../store";
 import type { Arrival } from "../store/contract";
 import { Button } from "../ui";
@@ -34,9 +34,18 @@ import "./ArrivalNotices.css";
 /** Long enough to read across a room. A host's notices do not expire. */
 const SHOWN_MS = 8_000;
 
+/**
+ * Cards drawn before the rest fold behind "N more". A busy lobby is a handful
+ * of arrivals; a flood is hundreds, and drawing them all would bury the host's
+ * own controls, Remove included.
+ */
+const SHOWN_AT_ONCE = 3;
+
 export function ArrivalNotices({ placement }: { placement: "float" | "inline" }): React.JSX.Element | null {
   const session = useGameStore((store) => store.session);
   const arrivals = useGameStore((store) => store.arrivals);
+  const dropped = useGameStore((store) => store.arrivalsDropped);
+  const [expanded, setExpanded] = useState(false);
   const display = session?.playerId === "";
   const host = session?.host === true;
   // The display floats its notices; a seated host gets them in its own view.
@@ -44,11 +53,35 @@ export function ArrivalNotices({ placement }: { placement: "float" | "inline" })
 
   if (!session || !mine || arrivals.length === 0) return null;
 
+  // Newest first, and only a few unless the host asks for the rest.
+  const newest = [...arrivals].reverse();
+  const shown = expanded ? newest : newest.slice(0, SHOWN_AT_ONCE);
+  const folded = newest.length - shown.length;
+
   return (
-    <div className={`kad-arrivals kad-arrivals--${placement}`} aria-live="polite">
-      {arrivals.map((arrival) => (
+    <div
+      className={`kad-arrivals kad-arrivals--${placement}${expanded ? " kad-arrivals--expanded" : ""}`}
+      aria-live="polite"
+    >
+      {host && dropped > 0 ? (
+        <p className="kad-arrivals__flood" role="alert">
+          A lot of phones are joining. If you don't know them, start a new room.
+        </p>
+      ) : null}
+      {shown.map((arrival) => (
         <ArrivalNotice key={arrival.playerId} arrival={arrival} host={host} />
       ))}
+      {folded > 0 || expanded ? (
+        <Button
+          variant="ghost"
+          size="md"
+          icon={<Icon name="players" />}
+          aria-expanded={expanded}
+          onClick={() => setExpanded(!expanded)}
+        >
+          {expanded ? "Show fewer" : `${folded} more joined`}
+        </Button>
+      ) : null}
     </div>
   );
 }
