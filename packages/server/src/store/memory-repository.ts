@@ -246,7 +246,7 @@ export class MemoryRepository implements GameRepository {
     return (this.get(HH(householdId), META)?.data as Household | undefined) ?? null;
   }
 
-  async claimHousehold(householdId: string, cognitoSub: string): Promise<boolean> {
+  async claimHousehold(householdId: string, cognitoSub: string, deviceId: string): Promise<boolean> {
     const item = this.get(HH(householdId), META);
     if (!item) return false;
     // Deletion has already begun. Succeeding here would tell a family their
@@ -256,12 +256,35 @@ export class MemoryRepository implements GameRepository {
     // Already someone else's. Signing in on a borrowed phone must not hand you
     // that family's characters.
     if (household.ownerSub && household.ownerSub !== cognitoSub) return false;
+    // Only the device that started it, unless it is already this account's.
+    // A household from before founders keeps the old rule until it expires.
+    const legacy = household.founderDeviceId === undefined && household.awaitingFounder !== true;
+    if (household.ownerSub !== cognitoSub && !legacy && household.founderDeviceId !== deviceId) return false;
 
     const { expiresAt: _dropped, ...rest } = household;
     // Dropping GSI1PK/GSI1SK is the whole promotion: no sweep entry, no sweep.
     await this.putHousehold({ ...rest, ownerSub: cognitoSub, guest: false });
     await this.putAccountPointer(cognitoSub, householdId);
     return true;
+  }
+
+  async takeFounding(householdId: string, deviceId: string): Promise<boolean> {
+    const item = this.get(HH(householdId), META);
+    if (!item || item.sweeping) return false;
+    const household = item.data as Household;
+    if (household.awaitingFounder !== true) return false;
+    const { awaitingFounder: _taken, ...rest } = household;
+    await this.putHousehold({ ...rest, founderDeviceId: deviceId });
+    return true;
+  }
+
+  async dropFounder(householdId: string, deviceId: string): Promise<void> {
+    const item = this.get(HH(householdId), META);
+    if (!item) return;
+    const household = item.data as Household;
+    if (household.founderDeviceId !== deviceId) return;
+    // Empty, not absent: absent reads as a household from before founders.
+    await this.putHousehold({ ...household, founderDeviceId: "" });
   }
 
   async extendGuestHousehold(householdId: string, expiresAt: string): Promise<GuestRenewal> {

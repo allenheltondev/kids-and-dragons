@@ -27,7 +27,7 @@ import {
   type FieldGuideDiscoveries,
 } from "../store/field-guide-discoveries";
 import { useKeepsakeStore } from "../store/keepsake";
-import { useParty } from "../store";
+import { useGameStore, useParty } from "../store";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
@@ -380,9 +380,8 @@ function CodeStep({ busy, error }: StepProps): ReactElement {
  * The `restore` ending — "which one of you is this phone?"
  *
  * Asked rather than guessed. The server deliberately refuses to pick
- * (`linkAccount` returns players and no token, §4.5), because binding the wrong
- * phone to a child's profile hands her adult's device to her — and binding hers
- * to an adult gives a `role: child` device pairing rights it must never have.
+ * (`linkAccount` returns players and no token, §4.5), because binding a phone
+ * to the wrong profile hands that player somebody else's heroes.
  */
 function ChooseStep({ busy, error }: StepProps): ReactElement {
   const players = useKeepsakeStore((s) => s.players);
@@ -531,18 +530,22 @@ export function shouldOfferKeepsake(
   available: boolean | null,
   claimed: boolean,
   partySize: number,
+  keeper: boolean,
 ): boolean {
-  return available === true && !claimed && partySize > 0;
+  return available === true && !claimed && partySize > 0 && keeper;
 }
 
 export function KeepsakeOffer(): ReactElement | null {
   const available = useKeepsakeStore((s) => s.available);
   const account = useKeepsakeStore((s) => s.account);
   const open = useKeepsakeStore((s) => s.open);
+  // Only the phone that started this household may keep it (#265); every
+  // other phone at the table would be offered a sign-in that is refused.
+  const keeper = useGameStore((s) => s.session?.keeper === true);
   const party = useParty();
   const fieldGuide = guideAtStake(useFieldGuideDiscoveries());
 
-  if (!shouldOfferKeepsake(available, account !== null, party.length)) return null;
+  if (!shouldOfferKeepsake(available, account !== null, party.length, keeper)) return null;
 
   const motes = party.map((member) => ({
     id: member.playerId,

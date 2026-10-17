@@ -23,7 +23,7 @@
  * (`lambda/http.ts`), which is also the only place that knows Cognito exists.
  */
 
-import type { Character, Household, PlayerProfile, Role } from "@kad/shared";
+import type { Character, Household, PlayerProfile } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { GuestRenewal } from "../store/repository.ts";
 import { newId } from "../ids.ts";
@@ -92,14 +92,17 @@ export interface BoundDevice {
 export interface CreateGuestHouseholdInput {
   displayName: string;
   userAgent?: string | undefined;
+  /**
+   * A TV is opening the room. Its household is a placeholder, so the TV does
+   * not found it: the first phone to join does (`Household.awaitingFounder`).
+   */
+  display?: boolean;
 }
 
 /**
- * The anonymous path: one household, one adult player, one bound device.
- *
- * The first device is always `adult` — it is the one that started the game, and
- * `role: child` devices can never pair another device (§4.5). A phone that
- * cannot invite anyone else cannot be the first phone.
+ * The anonymous path: one household, one player, one bound device. That device
+ * is the household's founder, the one that may later keep it by signing in,
+ * unless it is a TV.
  */
 export async function createGuestHousehold(
   input: CreateGuestHouseholdInput,
@@ -114,21 +117,31 @@ export async function createGuestHousehold(
     guest: true,
     expiresAt: iso(nowMs + GUEST_HOUSEHOLD_TTL_MS),
     createdAt: iso(nowMs),
+    awaitingFounder: true,
   };
   await deps.repo.putHousehold(household);
 
   const bound = await addPlayer(
-    { householdId, displayName: input.displayName, role: "adult", userAgent: input.userAgent },
+    {
+      householdId,
+      displayName: input.displayName,
+      userAgent: input.userAgent,
+      founding: input.display !== true,
+    },
     deps,
   );
-  return { ...bound, household };
+  return { ...bound, household: (await deps.repo.getHousehold(householdId)) ?? household };
 }
 
 export interface AddPlayerInput {
   householdId: string;
   displayName: string;
-  role: Role;
   userAgent?: string | undefined;
+  /**
+   * Found the household if it is still awaiting a founder (default). False
+   * only for a TV's own binding, which is a screen, not somebody who plays.
+   */
+  founding?: boolean;
 }
 
 /**
@@ -145,21 +158,45 @@ export async function addPlayer(input: AddPlayerInput, deps: AccountDeps): Promi
     householdId: input.householdId,
     displayName: input.displayName,
     color: PLAYER_COLORS[existing.length % PLAYER_COLORS.length] ?? PLAYER_COLORS[0],
-    role: input.role,
   };
   await deps.repo.putPlayer(player);
 
   const { token, deviceId } = await deps.identity.issueDeviceToken({
     householdId: input.householdId,
     playerId: player.id,
-    role: input.role,
     ...(input.userAgent ? { userAgent: input.userAgent } : {}),
   });
+  if (input.founding !== false) await foundIfVacant(input.householdId, deviceId, deps);
   return {
-    principal: { deviceId, householdId: input.householdId, playerId: player.id, role: input.role },
+    principal: { deviceId, householdId: input.householdId, playerId: player.id },
     player,
     deviceToken: token,
   };
+}
+
+/**
+ * The first phone into a household that is awaiting a founder founds it. On
+ * every other household this is a refused conditional write and nothing more.
+ * Never fails the join it rides on: a store error costs this household its
+ * claim (logged), not the phone its seat.
+ */
+async function foundIfVacant(householdId: string, deviceId: string, deps: AccountDeps): Promise<void> {
+  try {
+    await deps.repo.takeFounding(householdId, deviceId);
+  } catch (err) {
+    console.error(`addPlayer: could not record a founder for ${householdId}:`, err);
+  }
+}
+
+/**
+ * Whether `deviceId` may claim this guest household: its founder, or, on a
+ * household made before founders were recorded, any device playing in it (the
+ * old rule). Those households are all gone a week after this shipped, and with
+ * them this exception; the store applies the same rule in the claim's write.
+ */
+export function mayClaim(household: Household, deviceId: string): boolean {
+  const legacy = household.founderDeviceId === undefined && household.awaitingFounder !== true;
+  return legacy || (household.founderDeviceId !== "" && household.founderDeviceId === deviceId);
 }
 
 // ---------------------------------------------------------------------------
@@ -206,16 +243,20 @@ export interface LinkAccountResult {
  * different rather than three spellings of one thing:
  *
  * 1. **Playing anonymously right now** → claim this household. The characters on
- *    screen become permanent. This is the case the whole design is for.
+ *    screen become permanent. This is the case the whole design is for, and
+ *    only the device that started the household may do it (#265).
  * 2. **Signing in on a fresh device with an existing account** → resolve their
  *    household and hand back its players. Binding this device to one of them is
  *    a separate, explicit step (`adoptDevice`) because only the human knows
  *    which player they are.
  * 3. **Signing in with no account and no game** → create a permanent household
- *    and bind this device as its first adult.
+ *    and bind this device as its first player.
  *
  * A guest household whose owner is someone *else* is not claimable — you can be
  * a visitor in another family's session without inheriting it by signing in.
+ * Nor is one this device did not start: a room code is an invitation to play,
+ * and every phone that joins with it is bound into the household, so being in
+ * it proves nothing about whose it is.
  */
 export async function linkAccount(
   input: LinkAccountInput,
@@ -233,16 +274,25 @@ export async function linkAccount(
 
     if (current.guest && claimGuest) {
       /*
-       * Adults only. A child's device claiming a household would put the
-       * household's ownership — and therefore its revocation rights — behind a
-       * credential we promised she would never need (§4.5).
+       * The device that started a guest household claims it by signing in.
+       * There is no "adult device" to require (#265): authority is the
+       * verified sign-in this call carries, from the one device a room code
+       * cannot make you. The store checks the founder again in the claim's own
+       * write; this read only picks the answer.
        */
-      if (input.principal.role !== "adult") {
-        return fail("FORBIDDEN", "only an adult device can claim a household");
+      if (!mayClaim(current, input.principal.deviceId)) {
+        // The end-of-chapter offer is drawn only on the founding phone, so this
+        // is a stale screen or somebody trying. A sign-in from the home screen
+        // goes on to the account's own household, as below.
+        if (!input.preferExisting) {
+          return fail("FORBIDDEN", "Only the phone that started this game can keep it. Sign in on that one.");
+        }
+      } else {
+        const claimed = await deps.repo.claimHousehold(current.id, input.cognitoSub, input.principal.deviceId);
+        if (claimed) return ok(await describe(current.id, true, true, deps));
       }
-      const claimed = await deps.repo.claimHousehold(current.id, input.cognitoSub);
-      if (claimed) return ok(await describe(current.id, true, true, deps));
-      // Someone else's already. Fall through to this account's own household.
+      // Someone else's already, or not this device's to claim. Fall through to
+      // this account's own household.
     } else if (current.ownerSub === input.cognitoSub) {
       // Already theirs — signing in again is not an event.
       return ok(await describe(current.id, false, true, deps));
@@ -267,7 +317,7 @@ export async function linkAccount(
   await deps.repo.putAccountPointer(input.cognitoSub, householdId);
 
   const bound = await addPlayer(
-    { householdId, displayName: input.email?.split("@")[0] ?? "Grown-up", role: "adult" },
+    { householdId, displayName: input.email?.split("@")[0] ?? "Grown-up" },
     deps,
   );
   return ok({
@@ -308,7 +358,6 @@ export async function adoptDevice(
   const { token } = await deps.identity.issueDeviceToken({
     householdId: input.householdId,
     playerId: player.id,
-    role: player.role,
     ...(input.userAgent ? { userAgent: input.userAgent } : {}),
   });
   return ok({ deviceToken: token, playerId: player.id });

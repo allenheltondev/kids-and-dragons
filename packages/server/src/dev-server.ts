@@ -134,6 +134,7 @@ async function main(): Promise<void> {
         {
           displayName: String(req.body?.displayName ?? "Host"),
           userAgent: req.get("user-agent"),
+          display,
         },
         base,
       ));
@@ -201,7 +202,6 @@ async function main(): Promise<void> {
         {
           householdId: room.householdId,
           displayName: String(req.body?.displayName ?? "Player"),
-          role: req.body?.role === "child" ? "child" : "adult",
           userAgent: req.get("user-agent"),
         },
         base,
@@ -284,7 +284,7 @@ async function main(): Promise<void> {
     }
     const principal =
       (session
-        ? { householdId: session.householdId, playerId: session.playerId, role: session.role }
+        ? { householdId: session.householdId, playerId: session.playerId }
         : undefined) ?? (await resolvePrincipal(req, base))?.principal;
 
     /*
@@ -350,7 +350,6 @@ async function main(): Promise<void> {
         principal: {
           householdId: session.householdId,
           playerId: session.playerId,
-          role: session.role,
         },
       },
       deps,

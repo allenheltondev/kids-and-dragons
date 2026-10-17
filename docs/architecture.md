@@ -105,7 +105,7 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 |---|---|---|---|
 | Account → household | `ACCT#<cognitoSub>` | `HH#<hhId>` | Written only when somebody signs in. An adult may own more than one. |
 | Household | `HH#<hhId>` | `META` | The family. `ownerSub` (null while anonymous), `guest`, `expiresAt`, display name. |
-| Player profile | `HH#<hhId>` | `PLAYER#<playerId>` | Display name, color, avatar, `role: adult \| child`. |
+| Player profile | `HH#<hhId>` | `PLAYER#<playerId>` | Display name, color, avatar. No role (#265): rows written before still carry `role`, and nothing reads it. |
 | Device binding | `HH#<hhId>` | `DEVICE#<deviceId>` | → playerId, token hash, last seen, user agent. Revocable. |
 | Character | `HH#<hhId>` | `CHAR#<charId>` | Owned by a playerId. Persistent across campaigns. See §3.1. |
 | Campaign run | `HH#<hhId>` | `RUN#<runId>` | One playthrough of one campaign. |
@@ -433,14 +433,14 @@ Four layers of identity, deliberately separated:
 | Layer | Lifetime | Auth |
 |---|---|---|
 | **Household** | 7 days after last play while anonymous → permanent when claimed | None, then a Cognito sub. |
-| **Account** *(optional)* | Permanent | Cognito user pool — emailed code, then a passkey. Adults only. |
+| **Account** *(optional)* | Permanent | Cognito user pool — emailed code, then a passkey. For whoever keeps and manages the game; nobody needs one to play. |
 | **Player profile** | As long as its household | A device-bound long-lived token. **No password, ever.** |
 | **Room session** | ≤ 6 hours | Short-lived token scoped to one run. |
 
 #### Anonymous play, which is the default
 
 1. A device nobody has seen before calls `POST /api/room`. The server creates
-   `HH#<hhId>` with `guest: true` and an `expiresAt` seven days out, one adult
+   `HH#<hhId>` with `guest: true` and an `expiresAt` seven days out, one
    player profile, and one `DEVICE#<deviceId>` binding.
 2. It gets a **device token** back and stores it in `localStorage`. It is that
    player from then on.
@@ -470,12 +470,29 @@ Three cases, and they are genuinely different:
 |---|---|
 | Playing anonymously right now | That household becomes theirs. *This is the case the design is for.* |
 | Existing account, fresh phone | Their household and its players come back; `POST /api/auth/device` binds this phone to whichever player they say they are. |
-| New account, no game yet | A permanent household is created and this device becomes its first adult. |
+| New account, no game yet | A permanent household is created and this device becomes its first player. |
 
 A guest household already owned by **somebody else** is not claimable, so signing
-in on a borrowed phone never hands you that family's game. A `role: child` device
-cannot claim at all — household ownership must not sit behind a credential we
-promised she would never need.
+in on a borrowed phone never hands you that family's game.
+
+**Authority comes from signing in, not from a profile (#265).** There are no kid
+or adult profiles: a profile is a player, and nothing more. Managing a household
+(claiming it, binding a phone to an existing player, and whatever is added
+later: profiles, devices, deletion) needs a signed-in owner, and an anonymous
+household has nothing to manage; it expires. A guest household is claimed by
+signing in on the device that started it (`Household.founderDeviceId`), and on
+no other: a room code is an invitation to play, and every phone that joins with
+it is bound into the household, so being in it proves nothing about whose it
+is. A phone that opens a room founds its household then; a TV's placeholder
+household is founded by the first phone to join, the one that decides whose
+evening it is. A host taking out the founding phone leaves the household with no
+founder, and it can no longer be claimed. The join tells the founding phone it is
+the keeper, and only that phone is shown the offer to keep the party. Guest
+households from before founders were recorded keep the old rule (any device
+playing in one may claim it) until they expire, within a week of shipping. The device that opened a room may take a
+player out of that room, a low-stakes control that a TV or a kid's phone may
+hold. Playing needs nothing. Tokens issued before #265 carry a `role` claim, and
+nothing reads it, so no phone had to re-pair.
 
 #### If nobody signs in
 
@@ -549,8 +566,8 @@ no avatar picker with a password behind it — her phone knows it's her phone. T
 #### Recovery and revocation
 
 - **Lost phone** → the household owner revokes `DEVICE#<deviceId>` from their own device. That token is dead immediately.
-- **New phone** → re-pair via QR from an already-bound *adult* device, or by the owner signing in.
-- **A child device can never bind another device.** `role: child` tokens cannot issue pairing codes. She cannot sign herself out of existence or add a stranger.
+- **New phone** → join the room, which makes it a new player, or the owner signs in on it and binds it to an existing player (`POST /api/auth/device`) to bring that player's heroes back.
+- **Nobody who only plays can manage anything.** Without a sign-in a phone cannot claim the household, bind another phone to a player, or revoke one.
 
 #### Joining a session
 

@@ -58,7 +58,7 @@ describe("applyAction — the seq gate (architecture §4.2)", () => {
         playerId: "p_somebody_else",
         seq: 0,
         intent: choose("east"),
-        principal: { householdId: me.householdId, playerId: me.playerId, role: me.role },
+        principal: { householdId: me.householdId, playerId: me.playerId },
       },
       harness.deps,
     );

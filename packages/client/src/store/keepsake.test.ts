@@ -18,8 +18,8 @@ const LINKED: LinkAccountResponse = {
   householdId: "h_1",
   claimed: true,
   players: [
-    { id: "p_1", displayName: "Allen", color: "#7FD4C1", role: "adult" },
-    { id: "p_2", displayName: "Ada", color: "#F2A65A", role: "child" },
+    { id: "p_1", displayName: "Allen", color: "#7FD4C1" },
+    { id: "p_2", displayName: "Ada", color: "#F2A65A" },
   ],
   characters: [
     { id: "c_1", name: "Sparklehoof", species: "unicorn", ownerPlayerId: "p_2" },
@@ -298,7 +298,7 @@ describe("restoring on a new phone", () => {
         linkAccount: vi.fn(async () => ({
           householdId: "h_new",
           claimed: false,
-          players: [{ id: "p_1", displayName: "Allen", color: "#7FD4C1", role: "adult" }],
+          players: [{ id: "p_1", displayName: "Allen", color: "#7FD4C1" }],
           characters: [],
           deviceToken: "dev_fresh",
           playerId: "p_1",
@@ -394,7 +394,7 @@ describe("signing in from the home screen", () => {
     householdId: "h_saved",
     claimed: false,
     deviceBound: false,
-    players: [{ id: "p_1", displayName: "Allen", color: "#7FD4C1", role: "adult" }],
+    players: [{ id: "p_1", displayName: "Allen", color: "#7FD4C1" }],
     characters: [{ id: "c_1", name: "Sparklehoof", species: "unicorn", ownerPlayerId: "p_1" }],
   };
 

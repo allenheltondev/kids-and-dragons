@@ -3,6 +3,7 @@ import { GetParameterCommand, PutParameterCommand } from "@aws-sdk/client-ssm";
 import { describe, expect, it, vi } from "vitest";
 import { MemoryRepository } from "./store/memory-repository.ts";
 import { makeClock, T0 } from "./test-support.ts";
+import { hashToken } from "./identity.ts";
 import { DEVICE_TOKEN_TTL_MS, ssmParameterSource, TokenIdentity } from "./token-identity.ts";
 
 /**
@@ -58,7 +59,7 @@ function setup(startMs = T0) {
   return { clock, repo, identity };
 }
 
-const device = { householdId: "h_1", playerId: "p_1", role: "adult" as const };
+const device = { householdId: "h_1", playerId: "p_1" };
 
 function tamper(token: string, payload: object): string {
   const [header, , signature] = token.split(".") as [string, string, string];
@@ -203,7 +204,6 @@ describe("TokenIdentity — device tokens", () => {
       deviceId,
       householdId: "h_1",
       playerId: "p_1",
-      role: "adult",
     });
   });
 
@@ -217,7 +217,6 @@ describe("TokenIdentity — device tokens", () => {
       aud: "device",
       hh: "h_1",
       pid: "p_2",
-      role: "adult",
       iat: 0,
       exp: 4_000_000_000,
     });
@@ -247,7 +246,6 @@ describe("TokenIdentity — device tokens", () => {
       roomCode: "ABCD",
       householdId: "h_1",
       playerId: "p_1",
-      role: "adult",
       expiresAt: clock.now() + 3600_000,
     });
     // Correctly signed, wrong audience — a room token must not become a
@@ -353,6 +351,78 @@ describe("TokenIdentity — device tokens", () => {
   });
 });
 
+describe("TokenIdentity — tokens from before profiles lost their role (#265)", () => {
+  /** A token signed exactly as the code before #265 signed it, `role` claim and all. */
+  function legacyToken(claims: Record<string, unknown>): string {
+    const header = Buffer.from(JSON.stringify({ alg: "HS256", typ: "JWT" })).toString("base64url");
+    const payload = Buffer.from(JSON.stringify(claims)).toString("base64url");
+    const mac = createHmac("sha256", SECRET).update(`${header}.${payload}`).digest("base64url");
+    return `${header}.${payload}.${mac}`;
+  }
+
+  it("still resolves a device token carrying a role, so no phone has to re-pair", async () => {
+    const { identity, repo, clock } = setup();
+    const now = Math.floor(clock.now() / 1000);
+    const token = legacyToken({
+      sub: "d_old",
+      aud: "device",
+      hh: "h_1",
+      pid: "p_1",
+      role: "child",
+      iat: now,
+      exp: now + 30 * 86_400,
+    });
+    await repo.putDevice({
+      deviceId: "d_old",
+      householdId: "h_1",
+      playerId: "p_1",
+      tokenHash: hashToken(token),
+      lastSeen: new Date(clock.now()).toISOString(),
+    });
+
+    expect(await identity.resolveDevice(token)).toEqual({ deviceId: "d_old", householdId: "h_1", playerId: "p_1" });
+  });
+
+  it("still resolves a session token carrying a role, mid-game across the deploy", async () => {
+    const { identity, clock } = setup();
+    const now = Math.floor(clock.now() / 1000);
+    const token = legacyToken({
+      sub: "p_1",
+      aud: "room",
+      run: "r_1",
+      code: "ABCD",
+      hh: "h_1",
+      role: "adult",
+      iat: now,
+      exp: now + 3600,
+    });
+
+    expect(await identity.resolveSession(token)).toEqual({
+      runId: "r_1",
+      roomCode: "ABCD",
+      householdId: "h_1",
+      playerId: "p_1",
+      expiresAt: (now + 3600) * 1000,
+    });
+  });
+
+  it("writes no role into a token it issues", async () => {
+    const { identity, clock } = setup();
+    const { token } = await identity.issueDeviceToken(device);
+    const session = await identity.issueSessionToken({
+      runId: "r_1",
+      roomCode: "ABCD",
+      householdId: "h_1",
+      playerId: "p_1",
+      expiresAt: clock.now() + 3600_000,
+    });
+    for (const t of [token, session]) {
+      const claims = JSON.parse(Buffer.from(t.split(".")[1] ?? "", "base64url").toString("utf8")) as object;
+      expect(claims).not.toHaveProperty("role");
+    }
+  });
+});
+
 describe("TokenIdentity — session tokens", () => {
   it("round-trips the run it is scoped to", async () => {
     const { identity, clock } = setup();
@@ -362,7 +432,6 @@ describe("TokenIdentity — session tokens", () => {
       roomCode: "ABCD",
       householdId: "h_1",
       playerId: "p_1",
-      role: "child",
       expiresAt,
     });
 
@@ -371,7 +440,6 @@ describe("TokenIdentity — session tokens", () => {
       roomCode: "ABCD",
       householdId: "h_1",
       playerId: "p_1",
-      role: "child",
       expiresAt,
     });
   });
@@ -383,7 +451,6 @@ describe("TokenIdentity — session tokens", () => {
       roomCode: "ABCD",
       householdId: "h_1",
       playerId: "p_1",
-      role: "adult",
       expiresAt: clock.now() + 6 * 3600_000,
     });
 

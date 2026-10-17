@@ -276,7 +276,7 @@ export interface GameRepository {
   // --- household, players, devices -----------------------------------------
   putHousehold(household: Household): Promise<void>;
   getHousehold(householdId: string): Promise<Household | null>;
-  /** `ACCT#<sub>` → households. Sign-in lookup; an adult may own more than one. */
+  /** `ACCT#<sub>` → households. Sign-in lookup; an account may own more than one. */
   putAccountPointer(cognitoSub: string, householdId: string): Promise<void>;
   listHouseholdsForAccount(cognitoSub: string): Promise<string[]>;
 
@@ -292,9 +292,28 @@ export interface GameRepository {
    *
    * Returns `false` if the household is already claimed by a **different**
    * account — one family's guest session cannot be stolen by the next person to
-   * sign in on that phone — or if the sweeper has already begun deleting it.
+   * sign in on that phone — if the sweeper has already begun deleting it, or if
+   * `deviceId` is not the household's founder (`Household.founderDeviceId`,
+   * #265). A household from before founders (neither field) is claimable from
+   * any device until it expires. The founder is checked in the same write as the claim, so a founder
+   * dropped a moment ago (`dropFounder`) cannot claim on a stale read.
    */
-  claimHousehold(householdId: string, cognitoSub: string): Promise<boolean>;
+  claimHousehold(householdId: string, cognitoSub: string, deviceId: string): Promise<boolean>;
+  /**
+   * Make `deviceId` the household's founder, if it is still awaiting one
+   * (`Household.awaitingFounder`). One conditional write, so of two phones
+   * joining a TV's room at once exactly one founds it. False when the
+   * household already has a founder, never had a vacancy, or is being swept.
+   */
+  takeFounding(householdId: string, deviceId: string): Promise<boolean>;
+  /**
+   * Take `deviceId` off the household as its founder, and leave nobody in its
+   * place (`founderDeviceId: ""`, never absent, which would read as a
+   * household from before founders): the household can no longer be claimed by signing in. For a host
+   * taking out a phone that founded a TV's household (#267). A no-op when
+   * `deviceId` is not the founder.
+   */
+  dropFounder(householdId: string, deviceId: string): Promise<void>;
   /**
    * Push a guest household's expiry out to `expiresAt` because somebody is
    * playing in it (§4.5): the 7-day window runs from the last time the family
