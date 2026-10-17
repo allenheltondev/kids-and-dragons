@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ChannelMessage, PartyMember } from "@kad/shared";
 import { makeHarness, seedHousehold } from "../test-support.ts";
+import { addPlayer, createGuestHousehold, linkAccount } from "./account.ts";
 import { applyAction } from "./action.ts";
 import { setPresence } from "./presence.ts";
 import { relayPreview } from "./preview.ts";
@@ -245,5 +246,61 @@ describe("arrivals", () => {
       error: { code: "FORBIDDEN" },
     });
     expect(await watchRoom({ code }, harness.deps)).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+  });
+});
+
+describe("a removed phone and the household it joined (#265)", () => {
+  /** A TV's room, where the first phone to join founds the household. */
+  async function tvRoom() {
+    const harness = makeHarness();
+    const tv = await createGuestHousehold({ displayName: "Host", display: true }, harness.deps);
+    const created = await createRoom(
+      { householdId: tv.household.id, mode: "party", claimable: true, hostDeviceId: tv.principal.deviceId },
+      harness.deps,
+    );
+    if (!created.ok) throw new Error("setup failed");
+    return { harness, tv, code: created.value.code, householdId: tv.household.id };
+  }
+
+  it("tells only the founding phone it may keep the household", async () => {
+    const { harness, code, householdId } = await tvRoom();
+    const first = await addPlayer({ householdId, displayName: "Mia" }, harness.deps);
+    const second = await addPlayer({ householdId, displayName: "Sam" }, harness.deps);
+    const a = await joinRoom({ code, principal: first.principal }, harness.deps);
+    const b = await joinRoom({ code, principal: second.principal }, harness.deps);
+    expect(a.ok && a.value.keeper).toBe(true);
+    expect(b.ok && b.value.keeper).toBeUndefined();
+  });
+
+  it("cannot claim it after the host takes them out, though they were first in", async () => {
+    // Review of #271: a stranger who beat the family to the code founded the
+    // TV's household. Taking them out has to take that away too.
+    const { harness, tv, code, householdId } = await tvRoom();
+    const stranger = await addPlayer({ householdId, displayName: "Who?" }, harness.deps);
+    await joinRoom({ code, principal: stranger.principal }, harness.deps);
+
+    expect(
+      (await removePlayer({ code, principal: tv.principal, playerId: stranger.principal.playerId }, harness.deps)).ok,
+    ).toBe(true);
+    expect(await harness.repo.getHousehold(householdId)).not.toHaveProperty("founderDeviceId");
+
+    const claim = await linkAccount({ cognitoSub: "sub_stranger", principal: stranger.principal }, harness.deps);
+    expect(claim).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+    expect(await harness.repo.getHousehold(householdId)).toMatchObject({ guest: true, ownerSub: null });
+  });
+
+  it("leaves the founder in place when somebody else is taken out", async () => {
+    const { harness, tv, code, householdId } = await tvRoom();
+    const family = await addPlayer({ householdId, displayName: "Mia" }, harness.deps);
+    const stranger = await addPlayer({ householdId, displayName: "Who?" }, harness.deps);
+    for (const p of [family, stranger]) await joinRoom({ code, principal: p.principal }, harness.deps);
+
+    await removePlayer({ code, principal: tv.principal, playerId: stranger.principal.playerId }, harness.deps);
+    expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe(family.principal.deviceId);
+    expect(
+      await linkAccount({ cognitoSub: "sub_stranger", principal: stranger.principal }, harness.deps),
+    ).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+    const kept = await linkAccount({ cognitoSub: "sub_family", principal: family.principal }, harness.deps);
+    expect(kept.ok && kept.value.claimed).toBe(true);
   });
 });

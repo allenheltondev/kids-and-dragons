@@ -3,12 +3,13 @@
  *
  * Two layers of identity, deliberately separated:
  *
- *   household account  — permanent, Cognito, adults only
+ *   household account  — permanent, Cognito, claimed by signing in on the
+ *                        device that started the household (#265)
  *   player profile     — permanent, a **device-bound** long-lived token, no password ever
  *   room session       — ≤ 6 hours, scoped to one run
  *
  * The one invariant every call site depends on: **a device token resolves to
- * `{ householdId, playerId, role }` on its own.** That is what makes joining a
+ * `{ householdId, playerId }` on its own.** That is what makes joining a
  * room have no "who are you?" step — you scan the code and your character is
  * already on the board (§4.5). Nothing above this file ever asks a player to
  * identify themselves, so replacing the implementation cannot reintroduce a

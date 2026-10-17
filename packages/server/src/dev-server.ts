@@ -134,6 +134,7 @@ async function main(): Promise<void> {
         {
           displayName: String(req.body?.displayName ?? "Host"),
           userAgent: req.get("user-agent"),
+          display,
         },
         base,
       ));

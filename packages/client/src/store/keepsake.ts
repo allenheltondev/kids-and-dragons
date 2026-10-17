@@ -252,7 +252,7 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
          * The `restore` ending needs a player picked before this phone is
          * anybody. Skipped when the server already bound us — that happens on a
          * brand-new account, where it created the household and made this
-         * device its first adult, so there is nothing to choose between.
+         * device its first player, so there is nothing to choose between.
          */
         const needsPlayer =
           get().purpose === "restore" &&

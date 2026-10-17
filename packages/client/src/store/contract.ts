@@ -43,6 +43,12 @@ export interface ClientSession {
    * (#267). The server decides; this only says which buttons to draw.
    */
   host?: boolean;
+  /**
+   * This device started the guest household the room plays in, so it is the
+   * one phone that may keep it by signing in (#265). The server decides, and
+   * checks again on the claim; this only says whether to draw the offer.
+   */
+  keeper?: boolean;
 }
 
 /** Somebody who just joined the room (`ArrivalMessage`), held until dismissed. */

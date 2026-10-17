@@ -275,13 +275,28 @@ export interface PlayerProfile {
 export interface Household {
   id: string;
   displayName: string;
-  /** The Cognito sub of the adult who claimed it. `null` while anonymous. */
+  /** The Cognito sub of the account that claimed it. `null` while anonymous. */
   ownerSub: string | null;
   /** True until an account claims it. Guests are swept; claimed ones never are. */
   guest: boolean;
   /** ISO. Present only while `guest` — when the sweeper may delete everything. */
   expiresAt?: string;
   createdAt: string;
+  /**
+   * The device that started this household, and the only one that may claim
+   * it by signing in (#265). Knowing a room code gets a phone a seat, never the
+   * household: a joiner is bound here too, so the claim has to name something a
+   * joiner cannot be. Absent on a household nobody may claim this way, which
+   * includes every household made before this field existed.
+   */
+  founderDeviceId?: string;
+  /**
+   * Set at creation and cleared by the first device to found the household
+   * (`founderDeviceId`). A phone that opens a room founds its household on the
+   * spot; a TV's placeholder household is founded by the first phone to join,
+   * the same phone that decides whose evening it is (`RoomRecord.claimable`).
+   */
+  awaitingFounder?: true;
 }
 
 export interface DeviceBinding {

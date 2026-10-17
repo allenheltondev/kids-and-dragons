@@ -384,6 +384,10 @@ export async function joinRoom(
   const joined = await markConnected(state, input.principal.playerId, deps);
   const host = room.hostDeviceId !== undefined && room.hostDeviceId === input.principal.deviceId;
   if (!host) await announceArrival(joined, player, deps);
+  // Which phone may keep this guest household by signing in (#265), so the
+  // offer is drawn on that one and no other.
+  const household = await deps.repo.getHousehold(room.householdId);
+  const keeper = household?.guest === true && household.founderDeviceId === input.principal.deviceId;
 
   const sessionToken = await deps.identity.issueSessionToken({
     runId: room.runId,
@@ -401,6 +405,7 @@ export async function joinRoom(
     sessionToken,
     state: joined,
     ...(host ? { host: true } : {}),
+    ...(keeper ? { keeper: true } : {}),
   });
 }
 

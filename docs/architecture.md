@@ -479,8 +479,17 @@ in on a borrowed phone never hands you that family's game.
 or adult profiles: a profile is a player, and nothing more. Managing a household
 (claiming it, binding a phone to an existing player, and whatever is added
 later: profiles, devices, deletion) needs a signed-in owner, and an anonymous
-household has nothing to manage; it expires. Any device playing in a guest
-household can claim it by signing in. The device that opened a room may take a
+household has nothing to manage; it expires. A guest household is claimed by
+signing in on the device that started it (`Household.founderDeviceId`), and on
+no other: a room code is an invitation to play, and every phone that joins with
+it is bound into the household, so being in it proves nothing about whose it
+is. A phone that opens a room founds its household then; a TV's placeholder
+household is founded by the first phone to join, the one that decides whose
+evening it is. A host taking out the founding phone leaves the household with no
+founder, and it can no longer be claimed. The join tells the founding phone it is
+the keeper, and only that phone is shown the offer to keep the party. Guest
+households from before founders were recorded cannot be claimed; they expire
+within the week. The device that opened a room may take a
 player out of that room, a low-stakes control that a TV or a kid's phone may
 hold. Playing needs nothing. Tokens issued before #265 carry a `role` claim, and
 nothing reads it, so no phone had to re-pair.
