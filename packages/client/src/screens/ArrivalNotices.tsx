@@ -10,8 +10,10 @@
  *
  * On the host's device each notice has a Remove button: one tap and that
  * phone is out of the game (`removePlayer`). Everywhere else it is a notice
- * and nothing more. Notices go away on their own, the host's more slowly, so
- * a busy lobby does not pile up on the TV.
+ * and nothing more, and it goes away on its own. The host's stay until the
+ * host dismisses one or removes that player: a host who looks away, or only
+ * notices a stranger later, must not lose the one control that takes them
+ * out. A refresh still loses them; a roster that survives one is #263's.
  *
  * Two placements, because the two screens differ in what can be covered:
  *
@@ -29,10 +31,8 @@ import { Button } from "../ui";
 import { Icon } from "./icons";
 import "./ArrivalNotices.css";
 
-/** Long enough to read across a room. */
+/** Long enough to read across a room. A host's notices do not expire. */
 const SHOWN_MS = 8_000;
-/** Long enough to decide that is not somebody you know, and to reach the button. */
-const HOST_SHOWN_MS = 30_000;
 
 export function ArrivalNotices({ placement }: { placement: "float" | "inline" }): React.JSX.Element | null {
   const session = useGameStore((store) => store.session);
@@ -58,7 +58,8 @@ function ArrivalNotice({ arrival, host }: { arrival: Arrival; host: boolean }): 
   const removePlayer = useGameStore((store) => store.removePlayer);
 
   useEffect(() => {
-    const timer = setTimeout(() => dismissArrival(arrival.playerId), host ? HOST_SHOWN_MS : SHOWN_MS);
+    if (host) return;
+    const timer = setTimeout(() => dismissArrival(arrival.playerId), SHOWN_MS);
     return () => clearTimeout(timer);
   }, [arrival.playerId, host, dismissArrival]);
 

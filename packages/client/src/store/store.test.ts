@@ -541,6 +541,32 @@ describe("arrivals and removal (#267)", () => {
     expect(h.store.getState().arrivals).toEqual([]);
   });
 
+  it("never lets a burst push a host's arrival out, though it caps everyone else's", async () => {
+    // The host's notices are its only Remove control (review of #269).
+    const hosted = harness();
+    hosted.api.createRoom.mockImplementationOnce(async () => ({
+      code: "ABCD",
+      runId: "r_1",
+      mode: "travel",
+      expiresAt: "2026-07-28T06:00:00.000Z",
+      playerId: "p_host",
+      sessionToken: "tok_host",
+      state: makeState(),
+      deviceToken: "dev_host",
+      host: true,
+    }));
+    await hosted.store.getState().createRoom("travel", "Allen");
+    const guest = harness();
+    await guest.store.getState().joinRoom("ABCD", "Sam");
+    for (const h of [hosted, guest]) {
+      for (let i = 0; i < 10; i++) {
+        h.publish({ kind: "arrival", seq: 0, runId: "r_1", playerId: `p_${i}`, name: `P${i}`, color: "#fff" });
+      }
+    }
+    expect(hosted.store.getState().arrivals).toHaveLength(10);
+    expect(guest.store.getState().arrivals).toHaveLength(6);
+  });
+
   it("does not try when this device is not the host", async () => {
     const h = harness();
     await h.store.getState().joinRoom("ABCD", "Allen");

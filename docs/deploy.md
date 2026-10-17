@@ -464,8 +464,9 @@ room is never counted or refused. Joining or watching from scratch is. The rows 
 that client at once.
 
 **Somebody got into a game who should not be there.** The TV, or the phone
-that opened the room, showed them arriving, with a Remove button for 30
-seconds. After that, the same thing by hand: append their playerId to
+that opened the room, showed them arriving, with a Remove button that stays
+until the host dismisses it. After a refresh of the host's screen, or once
+dismissed, the same thing by hand: append their playerId to
 `removed` on the run's `RUN#<runId>` / `STATE` item and set their party member's
 `connected` to `false`. Their joins, actions and channel subscriptions are
 refused from then on. A room opened before #267 has no host and no button.

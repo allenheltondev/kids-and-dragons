@@ -80,17 +80,19 @@ describe("arrival notices", () => {
     expect(screen.queryByText("Mia")).toBeNull();
   });
 
-  it("stay longer for the host, who may need to reach the button", () => {
+  it("stay for the host until dismissed, so a stranger noticed late can still be removed", () => {
+    // Review of #269: a 30-second notice was the host's only Remove control.
     vi.useFakeTimers();
+    const removePlayer = vi.fn(async () => true);
+    act(() => {
+      useGameStore.setState({ removePlayer });
+    });
     seat({ host: true });
     render(<ArrivalNotices placement="inline" />);
     act(() => {
-      vi.advanceTimersByTime(8_000);
+      vi.advanceTimersByTime(60 * 60_000);
     });
-    expect(screen.getByText("Mia")).toBeTruthy();
-    act(() => {
-      vi.advanceTimersByTime(22_000);
-    });
-    expect(screen.queryByText("Mia")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Remove Mia from this game" }));
+    expect(removePlayer).toHaveBeenCalledWith("p_2");
   });
 });

@@ -240,8 +240,9 @@ interface Runtime {
 const BROADCAST_GRACE_MS = 4_000;
 
 /**
- * Arrivals a screen holds at once. A burst of phones joining a lobby is a
- * handful; past this, the oldest notice goes. It is news, not a roster.
+ * Arrivals a non-host screen holds at once. A burst of phones joining a lobby
+ * is a handful; past this, the oldest notice goes. The host keeps every one
+ * until it dismisses or removes them (see `onArrival`).
  */
 const MAX_ARRIVALS = 6;
 
@@ -328,7 +329,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             if (runtime.sequencer !== sequencer || get().state?.runId !== runId) return;
             // A phone that joins twice (a reload on the join screen) is one arrival.
             const others = get().arrivals.filter((a) => a.playerId !== playerId);
-            set({ arrivals: [...others, { playerId, name, color }].slice(-MAX_ARRIVALS) });
+            const arrivals = [...others, { playerId, name, color }];
+            // The host's are its way to remove somebody, so a burst never
+            // pushes one out; everywhere else they are only news.
+            set({ arrivals: get().session?.host ? arrivals : arrivals.slice(-MAX_ARRIVALS) });
           },
           onGap: (sinceSeq) => {
             // Repeated hole notifications must respect a failed fetch's backoff.
