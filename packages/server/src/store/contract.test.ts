@@ -980,6 +980,40 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect((await repo.getRoom("ABCD"))?.householdId).toBe("h_1");
       });
     });
+
+    describe("room-code misses", () => {
+      const later = () => Math.floor((Date.now() + HOUR) / 1000);
+
+      it("counts nothing for a client it has never seen", async () => {
+        expect(await repo.countCodeMisses("192.0.2.1", 7)).toBe(0);
+      });
+
+      it("counts one client's misses in one window, and returns each new total", async () => {
+        expect(await repo.recordCodeMiss("192.0.2.1", 7, later())).toBe(1);
+        expect(await repo.recordCodeMiss("192.0.2.1", 7, later())).toBe(2);
+        expect(await repo.countCodeMisses("192.0.2.1", 7)).toBe(2);
+      });
+
+      it("keeps clients and windows apart", async () => {
+        await repo.recordCodeMiss("192.0.2.1", 7, later());
+        expect(await repo.countCodeMisses("192.0.2.2", 7)).toBe(0);
+        expect(await repo.countCodeMisses("192.0.2.1", 8)).toBe(0);
+      });
+
+      it("counts every one of a burst of parallel misses", async () => {
+        // A guesser fires in parallel. A read-then-write would count them once.
+        await Promise.all(
+          Array.from({ length: 8 }, () => repo.recordCodeMiss("192.0.2.1", 7, later())),
+        );
+        expect(await repo.countCodeMisses("192.0.2.1", 7)).toBe(8);
+      });
+
+      it("forgets a window the moment its ttl passes, not when the sweep runs", async () => {
+        const past = Math.floor((Date.now() - HOUR) / 1000);
+        await repo.recordCodeMiss("192.0.2.1", 7, past);
+        expect(await repo.countCodeMisses("192.0.2.1", 7)).toBe(0);
+      });
+    });
   });
 }
 

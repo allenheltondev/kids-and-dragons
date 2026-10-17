@@ -501,8 +501,9 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
     function worthRetrying(error: unknown): boolean {
       if (!(error instanceof ApiError)) return true;
       // 404/410: no such room, or it has expired. 401/403: this token cannot
-      // have it. None of those change by asking twice.
-      return ![401, 403, 404, 410].includes(error.status);
+      // have it. 429: too many wrong codes from here, and every retry would
+      // ask again. None of those change by asking twice.
+      return ![401, 403, 404, 410, 429].includes(error.status);
     }
 
     /**

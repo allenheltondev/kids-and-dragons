@@ -202,17 +202,18 @@ API bundle, which is load-bearing — see below.
 |---|---|
 | **DynamoDB** `kad-<stage>` | Single table, GSI1, TTL on `ttl`. `DeletionPolicy: Retain`. |
 | **SSM SecureString** `/kad/<stage>/token-signing-key` | Signs device, session, and viewer tokens. Not a stack resource — see below. |
+| **SSM String** `/kad/<stage>/origin-secret` | Proves a request came through CloudFront. Made by `deploy.sh` — see below. |
 | **Cognito** user pool | Optional sign-in. Essentials tier (passwordless needs it). `Retain`. |
 | **AppSync Events** | `room/<code>`. IAM publishes; the authorizer admits subscribers. |
 | **HTTP API** + 4 Lambdas | `api`, `channel-authorizer`, `sweep`, and the inline Cognito `PreSignUp` trigger. |
-| **S3 + CloudFront** | SPA, art, content. OAC — the bucket is not public. |
+| **S3 + CloudFront** | SPA, art, content. OAC — the bucket is not public. Two CloudFront functions: the SPA router, and one that passes the viewer's address to `/api/*`. |
 
 The table and the user pool are `Retain` on purpose: a family's characters are
 not recreatable, and `sam delete` on the wrong stack should not be able to take
-them. The signing key is not a stack resource at all, so it survives for a
-different reason — nothing in the stack owns it.
+them. The signing key and the origin secret are not stack resources at all, so
+they survive for a different reason — nothing in the stack owns them.
 
-The flip side of both is that tearing a stack down properly means three things by
+The flip side is that tearing a stack down properly means four things by
 hand afterwards. To be clear about what actually happens day to day: **staging is
 a single long-lived stack that every pull request updates in place** — no
 automation creates or destroys it, so the commands below are for the rare manual
@@ -222,11 +223,13 @@ teardown, not part of any workflow:
 aws dynamodb delete-table --table-name kad-staging
 aws cognito-idp delete-user-pool --user-pool-id <from the stack outputs>
 aws ssm delete-parameter --name /kad/staging/token-signing-key
+aws ssm delete-parameter --name /kad/staging/origin-secret
 ```
 
-Leaving the parameter behind is harmless and usually what you want: redeploy the
-same stage and every paired phone still works. Delete it and they re-pair by QR,
-which takes about ten seconds and costs nothing else.
+Leaving the parameters behind is harmless and usually what you want: redeploy the
+same stage and every paired phone still works. Delete the signing key and they
+re-pair by QR, which takes about ten seconds and costs nothing else. Delete the
+origin secret and the next `deploy.sh` makes a new one.
 
 ### No KMS keys, on purpose
 
@@ -270,6 +273,30 @@ device token issued by the old KMS key stops verifying — phones re-pair by
 scanning the room QR, and nothing else is affected. Characters, households, and
 sign-ins all live in the table and the pool.
 
+### The origin secret, and why it *is* a deploy step
+
+A room code is the only thing between a stranger and a game, so the API counts
+wrong codes per client and refuses a client that has asked for too many
+(`handlers/code-guard.ts`, issue #267). That needs to know who the client is.
+Behind CloudFront the API sees an edge's address, so a CloudFront function
+writes the viewer's own into `x-kad-viewer`. But the HTTP API also answers on
+its own `execute-api` address, where anyone can send any `x-kad-viewer` they
+like, a fresh one per guess.
+
+So CloudFront also adds `x-kad-origin`, a secret, to everything it forwards, and
+the API believes `x-kad-viewer` only alongside it. A request without it is not
+refused: it is counted against the connection's own address, which for a direct
+caller is the caller.
+
+This one is a `deploy.sh` step, which the signing key deliberately is not,
+because CloudFront needs the value **at deploy time**. Nothing can mint it at
+runtime first. The template reads it with a `{{resolve:ssm:…}}` reference, so a
+bare `sam deploy` on a stage that never ran `deploy.sh` fails loudly on the
+missing parameter rather than deploying something half-configured. It is a plain
+`String`, not a `SecureString`: CloudFront does not accept `ssm-secure`
+references, and the value only ever means "believe this request's viewer
+address". It is never printed, because this repository's Actions logs are public.
+
 ### Cost
 
 Everything here is within, or a rounding error above, the always-free tier at
@@ -281,6 +308,10 @@ Staging roughly doubles that, which is to say it is still approximately nothing
 — but it is a second CloudFront distribution, and a distribution takes several
 minutes to create the first time. The first pull-request deploy is slow; the
 rest are not.
+
+The wrong-code budget adds a CloudFront function on every `/api/*` request
+($0.10 a million), one DynamoDB read on each join, watch, and state read by code
+from a phone not yet seated, and one write per wrong code.
 
 ---
 
@@ -422,6 +453,14 @@ the snapshot arrives over HTTP and the patches do not. Check the
 `kad-channel-authorizer` logs — a deny there means the token names a different
 room, the room has expired, or the device was revoked. `sync/appsync-socket.ts`
 logs `closed before subscribing` on the browser side for the same case.
+
+**Somebody is told "Too many wrong codes".** That network asked for more codes
+with no room behind them than `CODE_MISS_LIMIT` allows in 15 minutes
+(`handlers/code-guard.ts`). It clears by itself when the window turns over;
+the response's `Retry-After` says when. A phone or TV reconnecting to a room
+it is already in is not affected: reading a room's state with a token for that
+room is never counted or refused. Joining or watching from scratch is. The rows are `GUESS#<client>` / `WINDOW#<n>`, and deleting one forgives
+that client at once.
 
 **A room is stuck.** Rooms expire on their own after six hours. `getRoom` filters
 expired rooms at read time rather than waiting for the TTL sweep, so a stale code

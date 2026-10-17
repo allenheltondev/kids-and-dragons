@@ -448,4 +448,17 @@ export interface GameRepository {
    * caller re-reads the room and goes by what it says now.
    */
   claimRoom(input: { code: string; run: RunRecord; householdId: string }): Promise<boolean>;
+
+  // --- room-code misses ------------------------------------------------------
+  /**
+   * How many codes `clientKey` asked for that had no open room behind them, in
+   * one fixed window (`handlers/code-guard.ts`). Zero for a window never
+   * written, or one whose `ttl` has passed.
+   */
+  countCodeMisses(clientKey: string, window: number): Promise<number>;
+  /**
+   * One more miss, atomically, and the window's new count. `ttl` is epoch
+   * **seconds**; it is set by the window's first miss and never moved.
+   */
+  recordCodeMiss(clientKey: string, window: number, ttl: number): Promise<number>;
 }

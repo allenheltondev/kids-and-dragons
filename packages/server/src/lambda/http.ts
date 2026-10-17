@@ -15,6 +15,7 @@
  * different blast radius — the channel authorizer and the sweeper — are separate.
  */
 
+import { timingSafeEqual } from "node:crypto";
 import type {
   APIGatewayProxyEventV2,
   APIGatewayProxyStructuredResultV2,
@@ -22,6 +23,13 @@ import type {
 } from "aws-lambda";
 import { adoptDevice, addPlayer, createGuestHousehold, linkAccount } from "../handlers/account.ts";
 import { applyAction } from "../handlers/action.ts";
+import {
+  clientKeyFor,
+  codeLookupAllowed,
+  recordCodeMiss,
+  retryAfterSeconds,
+  SLOW_DOWN,
+} from "../handlers/code-guard.ts";
 import { relayPreview } from "../handlers/preview.ts";
 import type { ActionError, HandlerDeps } from "../handlers/deps.ts";
 import { iso, ok } from "../handlers/deps.ts";
@@ -40,6 +48,8 @@ interface Req {
   query: Record<string, string>;
   body: Record<string, unknown>;
   headers: Record<string, string>;
+  /** Who is asking, as the wrong-code budget sees it (`handlers/code-guard.ts`). */
+  client: string;
 }
 
 /**
@@ -56,9 +66,19 @@ interface Req {
 export interface HttpRuntime {
   deps(): Promise<HandlerDeps>;
   verifyAccount(token: string): Promise<VerifiedAccount | null>;
+  /**
+   * The value CloudFront stamps on every request it forwards here, as
+   * `x-kad-origin` (`infra/template.yaml`). Only a request carrying it has a
+   * viewer address worth believing — see `clientOf`.
+   */
+  originSecret?: string | undefined;
 }
 
-const AWS_RUNTIME: HttpRuntime = { deps: runtime, verifyAccount: verifyAccountToken };
+const AWS_RUNTIME: HttpRuntime = {
+  deps: runtime,
+  verifyAccount: verifyAccountToken,
+  originSecret: process.env.KAD_ORIGIN_SECRET || undefined,
+};
 
 export async function handler(
   event: APIGatewayProxyEventV2,
@@ -72,7 +92,7 @@ export async function respond(
   event: APIGatewayProxyEventV2,
   rt: HttpRuntime,
 ): Promise<APIGatewayProxyStructuredResultV2> {
-  const req = parse(event);
+  const req = parse(event, rt);
   try {
     return await route(req, rt);
   } catch (err) {
@@ -193,8 +213,12 @@ async function postRoom(req: Req, deps: HandlerDeps) {
 }
 
 async function postJoin(req: Req, deps: HandlerDeps, code: string) {
+  if (!(await codeLookupAllowed(req.client, deps))) return slowDown(deps);
   const found = await deps.repo.getRoom(code);
-  if (!found) return error(404, "NOT_FOUND", `no open room ${code}`);
+  if (!found) {
+    await recordCodeMiss(req.client, deps);
+    return error(404, "NOT_FOUND", `no open room ${code}`);
+  }
 
   const existing = await resolvePrincipal(req, deps);
   // A new phone joins whichever household the room settles on — and settling
@@ -235,9 +259,12 @@ async function postJoin(req: Req, deps: HandlerDeps, code: string) {
 }
 
 /** The TV attaching. No device, no player, no sign-in — see `watchRoom`. */
-async function postWatch(_req: Req, deps: HandlerDeps, code: string) {
+async function postWatch(req: Req, deps: HandlerDeps, code: string) {
+  if (!(await codeLookupAllowed(req.client, deps))) return slowDown(deps);
   const result = await watchRoom({ code }, deps);
-  return result.ok ? json(200, result.value) : fromError(result.error);
+  if (result.ok) return json(200, result.value);
+  if (result.error.code === "NOT_FOUND") await recordCodeMiss(req.client, deps);
+  return fromError(result.error);
 }
 
 // ---------------------------------------------------------------------------
@@ -358,8 +385,15 @@ async function getStateRoute(req: Req, deps: HandlerDeps) {
    * old game it cannot play instead of saying the room is gone.
    */
   if (code) {
+    // A phone or a TV already seated in this room is not guessing, and the
+    // reconnect path must not pay for the guard on every resync.
+    const guarded = !(await holdsRoom(req, deps, code));
+    if (guarded && !(await codeLookupAllowed(req.client, deps))) return slowDown(deps);
     const room = await deps.repo.getRoom(code);
-    if (!room) return error(404, "NOT_FOUND", `no open room ${code}`);
+    if (!room) {
+      if (guarded) await recordCodeMiss(req.client, deps);
+      return error(404, "NOT_FOUND", `no open room ${code}`);
+    }
     if (runId && room.runId !== runId) {
       return error(404, "NOT_FOUND", `room ${code} is not that run`);
     }
@@ -451,7 +485,7 @@ function health(): APIGatewayProxyStructuredResultV2 {
 // Plumbing
 // ---------------------------------------------------------------------------
 
-function parse(event: APIGatewayProxyEventV2): Req {
+function parse(event: APIGatewayProxyEventV2, rt: HttpRuntime): Req {
   const headers: Record<string, string> = {};
   for (const [key, value] of Object.entries(event.headers ?? {})) {
     if (value !== undefined) headers[key.toLowerCase()] = value;
@@ -472,6 +506,7 @@ function parse(event: APIGatewayProxyEventV2): Req {
   }
 
   return {
+    client: clientOf(headers, event.requestContext.http.sourceIp, rt),
     method: event.requestContext.http.method,
     // `rawPath` includes the stage prefix on a non-default stage; the stack
     // deploys to `$default`, so it does not here.
@@ -491,6 +526,48 @@ async function resolvePrincipal(
   if (typeof token !== "string" || token === "") return null;
   const principal = await deps.identity.resolveDevice(token);
   return principal ? { principal } : null;
+}
+
+/**
+ * Who is asking, for the wrong-code budget (`handlers/code-guard.ts`).
+ *
+ * Behind CloudFront, the connection's address is an edge's, shared by everyone
+ * near it. So CloudFront writes the viewer's own address into `x-kad-viewer`,
+ * overwriting anything the viewer sent (`infra/template.yaml`,
+ * ViewerAddressFunction).
+ *
+ * But the HTTP API also answers on its own `execute-api` address, where a
+ * caller can send any `x-kad-viewer` it likes, a new one per guess. So the
+ * header counts only alongside `x-kad-origin`, a secret CloudFront adds to
+ * everything it forwards. Without it, the connection's address is used, and
+ * for a direct caller that *is* the caller, which it cannot change per request.
+ */
+function clientOf(
+  headers: Record<string, string>,
+  sourceIp: string | undefined,
+  rt: HttpRuntime,
+): string {
+  const viewer = headers["x-kad-viewer"];
+  if (viewer && (!rt.originSecret || sameSecret(headers["x-kad-origin"], rt.originSecret))) {
+    return clientKeyFor(viewer);
+  }
+  return clientKeyFor(sourceIp);
+}
+
+function sameSecret(sent: string | undefined, expected: string): boolean {
+  const a = Buffer.from(sent ?? "");
+  const b = Buffer.from(expected);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
+/** Does the request carry a session or viewer token for this room? */
+async function holdsRoom(req: Req, deps: HandlerDeps, code: string): Promise<boolean> {
+  const token = bearer(req) || (typeof req.query.token === "string" ? req.query.token : "");
+  if (!token) return false;
+  const session = await deps.identity.resolveSession(token);
+  if (session) return session.roomCode.toUpperCase() === code;
+  const viewer = await deps.identity.resolveViewer(token);
+  return viewer?.roomCode.toUpperCase() === code;
 }
 
 /** The room-scoped token issued at join. This is what authenticates play. */
@@ -534,10 +611,19 @@ function json(
 
 function error(
   statusCode: number,
-  code: ActionError["code"],
+  code: ActionError["code"] | typeof SLOW_DOWN.code,
   message: string,
 ): APIGatewayProxyStructuredResultV2 {
   return json(statusCode, { ok: false, error: { code, message } });
+}
+
+/** Refused by the wrong-code budget (`handlers/code-guard.ts`). */
+function slowDown(deps: HandlerDeps): APIGatewayProxyStructuredResultV2 {
+  const refused = error(SLOW_DOWN.status, SLOW_DOWN.code, SLOW_DOWN.message);
+  return {
+    ...refused,
+    headers: { ...refused.headers, "retry-after": String(retryAfterSeconds(deps.now())) },
+  };
 }
 
 function fromError(err: ActionError): APIGatewayProxyStructuredResultV2 {
