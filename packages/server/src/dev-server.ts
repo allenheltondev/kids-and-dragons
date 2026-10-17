@@ -31,9 +31,8 @@ import { loadSharedRuntime } from "./engine/shared-engine.ts";
 import { addPlayer, adoptDevice, createGuestHousehold, linkAccount } from "./handlers/account.ts";
 import { applyAction } from "./handlers/action.ts";
 import {
+  admitCodeLookup,
   clientKeyFor,
-  codeLookupAllowed,
-  recordCodeMiss,
   retryAfterSeconds,
   SLOW_DOWN,
 } from "./handlers/code-guard.ts";
@@ -180,13 +179,11 @@ async function main(): Promise<void> {
     if (!deps) return;
 
     const code = String(req.params.code ?? "").toUpperCase();
-    const client = clientOf(req);
-    if (!(await codeLookupAllowed(client, deps))) return slowDown(res, deps);
+    const lookup = await admitCodeLookup(clientOf(req), deps);
+    if (!lookup) return slowDown(res, deps);
     const found = await base.repo.getRoom(code);
-    if (!found) {
-      await recordCodeMiss(client, deps);
-      return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
-    }
+    if (!found) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+    await lookup.hit();
 
     const existing = await resolvePrincipal(req, base);
     // Settled first for a new phone — see lambda/http.ts.
@@ -234,13 +231,13 @@ async function main(): Promise<void> {
     if (!deps) return;
 
     const code = String(req.params.code ?? "").toUpperCase();
-    const client = clientOf(req);
-    if (!(await codeLookupAllowed(client, deps))) return slowDown(res, deps);
+    const lookup = await admitCodeLookup(clientOf(req), deps);
+    if (!lookup) return slowDown(res, deps);
     // Optional: a TV that opened the room presents its binding to learn it is the host.
     const screen = await resolvePrincipal(req, base);
     const result = await watchRoom({ code, deviceId: screen?.principal.deviceId }, deps);
+    if (result.ok || result.error.code !== "NOT_FOUND") await lookup.hit();
     if (!result.ok) {
-      if (result.error.code === "NOT_FOUND") await recordCodeMiss(client, deps);
       return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     }
     res.json(result.value);
@@ -252,19 +249,18 @@ async function main(): Promise<void> {
     if (!deps) return;
 
     const code = String(req.params.code ?? "").toUpperCase();
-    const client = clientOf(req);
-    if (!(await codeLookupAllowed(client, deps))) return slowDown(res, deps);
     const host = await resolvePrincipal(req, base);
     if (!host) return sendError(res, 401, "FORBIDDEN", "taking someone out needs this device's token");
     const playerId = req.body?.playerId;
     if (typeof playerId !== "string" || playerId === "") {
       return sendError(res, 400, "ILLEGAL", "expected { playerId }");
     }
+    const lookup = await admitCodeLookup(clientOf(req), deps);
+    if (!lookup) return slowDown(res, deps);
     const result = await removePlayer({ code, principal: host.principal, playerId }, deps);
+    const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
+    if (!missed) await lookup.hit();
     if (result.ok) return res.json({ ok: true, seq: result.value.seq });
-    if (result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room")) {
-      await recordCodeMiss(client, deps);
-    }
     sendError(res, statusFor(result.error), result.error.code, result.error.message);
   });
 
@@ -409,14 +405,12 @@ async function main(): Promise<void> {
      */
     if (code) {
       // Seated callers are not guessing — see lambda/http.ts.
-      const guarded = !(await holdsRoom(req, base, code));
-      const client = clientOf(req);
-      if (guarded && !(await codeLookupAllowed(client, deps))) return slowDown(res, deps);
+      const seated = await holdsRoom(req, base, code);
+      const lookup = seated ? null : await admitCodeLookup(clientOf(req), deps);
+      if (!seated && !lookup) return slowDown(res, deps);
       const room = await base.repo.getRoom(code);
-      if (!room) {
-        if (guarded) await recordCodeMiss(client, deps);
-        return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
-      }
+      if (!room) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+      await lookup?.hit();
       if (runId && room.runId !== runId) {
         return sendError(res, 404, "NOT_FOUND", `room ${code} is not that run`);
       }
@@ -647,11 +641,12 @@ async function holdsRoom(req: Request, deps: BaseDeps, code: string): Promise<bo
 }
 
 /**
- * Who is asking, for the wrong-code budget. The header first, as in prod,
- * where CloudFront sets it; nothing sets it locally, so this is the socket.
+ * Who is asking, for the wrong-code budget: the socket. Prod believes
+ * `x-kad-viewer` only alongside CloudFront's secret (lambda/http.ts,
+ * `clientOf`), and a laptop has no CloudFront to vouch for it.
  */
 function clientOf(req: Request): string {
-  return clientKeyFor(req.get("x-kad-viewer") ?? req.socket.remoteAddress);
+  return clientKeyFor(req.socket.remoteAddress);
 }
 
 function slowDown(res: Response, deps: HandlerDeps): void {

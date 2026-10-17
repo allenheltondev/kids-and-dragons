@@ -7,11 +7,11 @@
  * given a player on the spot (`lambda/http.ts`, `postJoin`). Four letters from
  * `ROOM_CODE_ALPHABET` is 331,776 codes, which a script walks in minutes.
  *
- * So every route that looks a room up by code asks this file first, and tells
- * it about every code that had no open room behind it. A client that has
- * missed too many in the current window is refused **before the lookup**,
- * whatever it asks for next: answering a right code while refusing wrong ones
- * would still tell a guesser which codes are live.
+ * So every route that looks a room up by code asks this file first for a
+ * lookup, and gives it back when the code was real. A client that has missed
+ * too many in the current window is refused **before the lookup**, whatever
+ * it asks for next: answering a right code while refusing wrong ones would
+ * still tell a guesser which codes are live.
  *
  * Misses, not attempts, because a family's correct joins and reconnects are
  * most of the traffic and must never be what runs a budget down. Misses also
@@ -85,20 +85,33 @@ export function retryAfterSeconds(nowMs: number): number {
   return Math.max(1, Math.ceil((closes - nowMs) / 1000));
 }
 
-/** `false` when this client has spent its budget. Ask before every lookup by code. */
-export async function codeLookupAllowed(clientKey: string, deps: GuardDeps): Promise<boolean> {
-  const misses = await deps.repo.countCodeMisses(clientKey, windowAt(deps.now()));
-  return misses < CODE_MISS_LIMIT;
+/** A lookup this client may make. Hand it back with `hit()` if the code was real. */
+export interface CodeLookupTicket {
+  /** The code named an open room, so it was not a guess: the lookup is given back. */
+  hit(): Promise<void>;
 }
 
-/** A code with no open room behind it. */
-export async function recordCodeMiss(clientKey: string, deps: GuardDeps): Promise<void> {
-  const nowMs = deps.now();
-  const window = windowAt(nowMs);
+/**
+ * Takes one lookup from this client's budget, or `null` when it is spent.
+ * Ask before every lookup by code, and call `hit()` when the code was real.
+ *
+ * Reserved *before* the lookup and given back after, not counted after a
+ * miss: a count taken after the lookup let a burst of parallel guesses all
+ * read "under the limit" first and all reach the table. A reservation is one
+ * conditional write, so at most `CODE_MISS_LIMIT` lookups are ever admitted
+ * at once, and a refund afterwards means a right code still costs nothing.
+ */
+export async function admitCodeLookup(
+  clientKey: string,
+  deps: GuardDeps,
+): Promise<CodeLookupTicket | null> {
+  const window = windowAt(deps.now());
   // The row outlives its window by one more, so a clock skewed between two
   // Lambdas never reads a window as empty that another is still counting.
   const ttl = Math.floor(((window + 2) * CODE_MISS_WINDOW_MS) / 1000);
-  await deps.repo.recordCodeMiss(clientKey, window, ttl);
+  const admitted = await deps.repo.reserveCodeLookup(clientKey, window, CODE_MISS_LIMIT, ttl);
+  if (!admitted) return null;
+  return { hit: () => deps.repo.refundCodeLookup(clientKey, window) };
 }
 
 /** Eight hextets, or null for anything that is not an IPv6 address. */

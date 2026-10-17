@@ -566,7 +566,9 @@ small space. So every route that looks a room up by code (join, watch, and
 state read by code) counts the codes a client asks for that have no open room
 behind them, and refuses that client, for whatever it asks next, once it has
 missed `CODE_MISS_LIMIT` times in a 15-minute window (`handlers/code-guard.ts`).
-It refuses *before* the lookup, so a right code tells a refused guesser nothing.
+It refuses *before* the lookup, so a right code tells a refused guesser nothing,
+and the lookup is reserved by one conditional write and given back on a hit, so
+a burst of parallel guesses cannot all slip in under the limit together.
 Misses, not attempts, because a family's joins and reconnects are most of the
 traffic; and a state read carrying a token for that room is never counted,
 so a game in progress is never cut off by strangers on the same network. A

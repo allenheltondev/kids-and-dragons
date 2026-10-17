@@ -504,7 +504,9 @@ describe("POST /api/room/:code/watch", () => {
 // ---------------------------------------------------------------------------
 
 describe("the wrong-code budget", () => {
-  const from = (address: string) => ({ "x-kad-viewer": address });
+  /** What CloudFront sends: the viewer's address, vouched for by the origin secret. */
+  const SECRET = "s3cret-from-ssm";
+  const from = (address: string) => ({ "x-kad-viewer": address, "x-kad-origin": SECRET });
 
   /** Spend one client's whole budget on codes no room has. */
   async function exhaust(rt: HttpRuntime, address: string) {
@@ -525,7 +527,7 @@ describe("the wrong-code budget", () => {
   it("refuses a guesser before the lookup, so even a right code tells it nothing", async () => {
     const harness = makeHarness();
     const room = await seedRoom(harness);
-    const rt = runtimeFor(harness);
+    const rt = runtimeFor(harness, { originSecret: SECRET });
     await exhaust(rt, "198.51.100.7");
 
     // The live code now gets the same answer a dead one would.
@@ -544,7 +546,7 @@ describe("the wrong-code budget", () => {
 
   it("counts misses on every route that looks a room up by code", async () => {
     const harness = makeHarness();
-    const rt = runtimeFor(harness);
+    const rt = runtimeFor(harness, { originSecret: SECRET });
     const headers = from("198.51.100.7");
     for (let i = 0; i < CODE_MISS_LIMIT; i++) {
       const pick = i % 3;
@@ -565,7 +567,7 @@ describe("the wrong-code budget", () => {
     // Joins and reconnects are most of the traffic; only misses spend the budget.
     const harness = makeHarness();
     const room = await seedRoom(harness);
-    const rt = runtimeFor(harness);
+    const rt = runtimeFor(harness, { originSecret: SECRET });
     for (let i = 0; i < CODE_MISS_LIMIT * 2; i++) {
       const joined = await respond(
         event("POST", `/api/room/${room.code}/join`, {
@@ -580,7 +582,7 @@ describe("the wrong-code budget", () => {
   it("keeps one client's budget its own", async () => {
     const harness = makeHarness();
     const room = await seedRoom(harness);
-    const rt = runtimeFor(harness);
+    const rt = runtimeFor(harness, { originSecret: SECRET });
     await exhaust(rt, "198.51.100.7");
 
     const joined = await respond(
@@ -594,7 +596,7 @@ describe("the wrong-code budget", () => {
 
   it("falls back to the connection's address when nothing set the header", async () => {
     const harness = makeHarness();
-    const rt = runtimeFor(harness);
+    const rt = runtimeFor(harness, { originSecret: SECRET });
     const direct = (path: string) => {
       const e = event("POST", path);
       (e.requestContext.http as { sourceIp?: string }).sourceIp = "198.51.100.7";
@@ -617,7 +619,7 @@ describe("the wrong-code budget", () => {
      */
     const harness = makeHarness();
     const room = await seedRoom(harness);
-    const rt = runtimeFor(harness);
+    const rt = runtimeFor(harness, { originSecret: SECRET });
     const joined = await respond(
       event("POST", `/api/room/${room.code}/join`, {
         headers: { ...from("198.51.100.7"), "x-kad-device-token": room.player.deviceToken },
@@ -647,7 +649,7 @@ describe("the wrong-code budget", () => {
   it("does not let a token for one room exempt a guess at another", async () => {
     const harness = makeHarness();
     const room = await seedRoom(harness);
-    const rt = runtimeFor(harness);
+    const rt = runtimeFor(harness, { originSecret: SECRET });
     const watched = await respond(event("POST", `/api/room/${room.code}/watch`), rt);
     const { viewerToken } = bodyOf(watched) as unknown as { viewerToken: string };
 
@@ -774,6 +776,30 @@ describe("whose address a miss is counted against", () => {
     expect((await respond(miss("WXYZ", viaCloudFront), rt)).statusCode).toBe(429);
     // The edge's own address is everyone near that edge; it was not the one counted.
     expect((await respond(miss("WXYZ", {}), rt)).statusCode).toBe(404);
+  });
+
+  it("believes no viewer address at all when no secret is configured", async () => {
+    // Fail closed: a stage deployed without KAD_ORIGIN_SECRET must not let a
+    // direct caller name a fresh address per guess.
+    const rt = runtimeFor(makeHarness());
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) {
+      await respond(miss(missCode(i), { "x-kad-viewer": `203.0.113.${i}` }, "198.51.100.66"), rt);
+    }
+    expect(
+      (await respond(miss("WXYZ", { "x-kad-viewer": "203.0.113.250" }, "198.51.100.66"), rt)).statusCode,
+    ).toBe(429);
+  });
+
+  it("refuses a parallel burst past the limit, however it interleaves", async () => {
+    // Every request is admitted by one conditional write before its lookup,
+    // so a burst cannot all read "under the limit" first.
+    const rt = runtimeFor(makeHarness());
+    const results = await Promise.all(
+      Array.from({ length: CODE_MISS_LIMIT * 2 }, (_, i) => respond(miss(missCode(i), {}, "198.51.100.66"), rt)),
+    );
+    const statuses = results.map((r) => r.statusCode);
+    expect(statuses.filter((s) => s === 404)).toHaveLength(CODE_MISS_LIMIT);
+    expect(statuses.filter((s) => s === 429)).toHaveLength(CODE_MISS_LIMIT);
   });
 
   it("ignores a viewer address a caller sent around CloudFront", async () => {

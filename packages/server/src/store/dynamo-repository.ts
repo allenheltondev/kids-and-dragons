@@ -984,35 +984,75 @@ export class DynamoRepository implements GameRepository {
     }
   }
 
-  // --- room-code misses -----------------------------------------------------
+  // --- room-code lookups ----------------------------------------------------
 
-  async countCodeMisses(clientKey: string, window: number): Promise<number> {
-    const item = await this.get(GUESS(clientKey), GUESS_WINDOW_SK(window));
-    if (!item) return 0;
-    // TTL deletion is eventual, reads are not — same rule as `getRoom`.
-    if (item.ttl !== undefined && item.ttl * 1000 <= this.now()) return 0;
-    return typeof item.data === "number" ? item.data : 0;
+  async reserveCodeLookup(clientKey: string, window: number, limit: number, ttl: number): Promise<boolean> {
+    /*
+     * One conditional `ADD`: the condition and the increment are a single
+     * write, so a burst of parallel guesses is admitted at most `limit` times
+     * however it interleaves, and no read anywhere can be stale.
+     *
+     * A row whose ttl has passed but which TTL has not swept yet (deletion is
+     * eventual) is started over instead of added to. If two requests race to
+     * start it over, the loser goes round once more and adds to the winner's.
+     */
+    const key = { PK: GUESS(clientKey), SK: GUESS_WINDOW_SK(window) };
+    const names = { "#d": "data", "#ttl": "ttl", "#entity": "entity" };
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const nowSeconds = Math.floor(this.now() / 1000);
+      const values = { ":one": 1, ":ttl": ttl, ":entity": "code-lookups", ":now": nowSeconds };
+      try {
+        await this.doc.send(
+          new UpdateCommand({
+            TableName: this.table,
+            Key: key,
+            UpdateExpression: "ADD #d :one SET #ttl = if_not_exists(#ttl, :ttl), #entity = :entity",
+            ConditionExpression: "attribute_not_exists(#d) OR (#d < :limit AND #ttl > :now)",
+            ExpressionAttributeNames: names,
+            ExpressionAttributeValues: { ...values, ":limit": limit },
+          }),
+        );
+        return true;
+      } catch (err) {
+        if (!isConditionalFailure(err)) throw err;
+      }
+      // Refused: the window is full, or the row is expired and unswept. Only
+      // the second may be started over, and only while it is still expired.
+      try {
+        await this.doc.send(
+          new UpdateCommand({
+            TableName: this.table,
+            Key: key,
+            UpdateExpression: "SET #d = :one, #ttl = :ttl, #entity = :entity",
+            ConditionExpression: "#ttl <= :now",
+            ExpressionAttributeNames: names,
+            ExpressionAttributeValues: values,
+          }),
+        );
+        return true;
+      } catch (err) {
+        if (!isConditionalFailure(err)) throw err;
+      }
+    }
+    return false;
   }
 
-  async recordCodeMiss(clientKey: string, window: number, ttl: number): Promise<number> {
-    /*
-     * One `ADD`, so concurrent misses from one client are each counted: a
-     * read-then-put would let a burst of parallel guesses all read the same
-     * count and write it back once. The window's first miss sets `ttl`; later
-     * ones leave it, so a window always expires when it was going to.
-     */
-    const out = await this.doc.send(
-      new UpdateCommand({
-        TableName: this.table,
-        Key: { PK: GUESS(clientKey), SK: GUESS_WINDOW_SK(window) },
-        UpdateExpression: "ADD #d :one SET #ttl = if_not_exists(#ttl, :ttl), #entity = :entity",
-        ExpressionAttributeNames: { "#d": "data", "#ttl": "ttl", "#entity": "entity" },
-        ExpressionAttributeValues: { ":one": 1, ":ttl": ttl, ":entity": "code-misses" },
-        ReturnValues: "UPDATED_NEW",
-      }),
-    );
-    const misses: unknown = out.Attributes?.data;
-    return typeof misses === "number" ? misses : 1;
+  async refundCodeLookup(clientKey: string, window: number): Promise<void> {
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: GUESS(clientKey), SK: GUESS_WINDOW_SK(window) },
+          UpdateExpression: "ADD #d :minus",
+          ConditionExpression: "#d > :zero",
+          ExpressionAttributeNames: { "#d": "data" },
+          ExpressionAttributeValues: { ":minus": -1, ":zero": 0 },
+        }),
+      );
+    } catch (err) {
+      // Already at zero, or gone: nothing to give back.
+      if (!isConditionalFailure(err)) throw err;
+    }
   }
 }
 

@@ -649,24 +649,29 @@ export class MemoryRepository implements GameRepository {
     return true;
   }
 
-  // --- room-code misses -----------------------------------------------------
+  // --- room-code lookups ----------------------------------------------------
 
-  async countCodeMisses(clientKey: string, window: number): Promise<number> {
-    return (this.get(GUESS(clientKey), GUESS_WINDOW_SK(window))?.data as number | undefined) ?? 0;
-  }
-
-  async recordCodeMiss(clientKey: string, window: number, ttl: number): Promise<number> {
-    // No await between the read and the write: atomic, as `ADD` is in the real store.
+  async reserveCodeLookup(clientKey: string, window: number, limit: number, ttl: number): Promise<boolean> {
+    // No await between the read and the write: atomic, as the conditional
+    // `ADD` is in the real store.
     const existing = this.get(GUESS(clientKey), GUESS_WINDOW_SK(window));
-    const misses = ((existing?.data as number | undefined) ?? 0) + 1;
+    const taken = (existing?.data as number | undefined) ?? 0;
+    if (taken >= limit) return false;
     this.put({
       PK: GUESS(clientKey),
       SK: GUESS_WINDOW_SK(window),
       ttl: existing?.ttl ?? ttl,
-      entity: "code-misses",
-      data: misses,
+      entity: "code-lookups",
+      data: taken + 1,
     });
-    return misses;
+    return true;
+  }
+
+  async refundCodeLookup(clientKey: string, window: number): Promise<void> {
+    const existing = this.get(GUESS(clientKey), GUESS_WINDOW_SK(window));
+    const taken = (existing?.data as number | undefined) ?? 0;
+    if (!existing || taken <= 0) return;
+    this.put({ ...existing, data: taken - 1 });
   }
 }
 
