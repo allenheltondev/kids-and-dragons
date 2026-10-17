@@ -98,6 +98,16 @@ describe("arrival notices", () => {
     expect(screen.getByRole("alert").textContent).toMatch(/start a new room/i);
   });
 
+  it("keep the flood warning after the host clears every card it could see", () => {
+    // Review of #269: players who fell off the list may still be in the room.
+    seat({ host: true });
+    act(() => {
+      useGameStore.setState({ arrivals: [], arrivalsDropped: 12 });
+    });
+    render(<ArrivalNotices placement="inline" />);
+    expect(screen.getByRole("alert").textContent).toMatch(/start a new room/i);
+  });
+
   it("go away on their own", () => {
     vi.useFakeTimers();
     seat({ playerId: "" });
