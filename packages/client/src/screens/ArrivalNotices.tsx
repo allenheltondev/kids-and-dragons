@@ -51,7 +51,11 @@ export function ArrivalNotices({ placement }: { placement: "float" | "inline" })
   // The display floats its notices; a seated host gets them in its own view.
   const mine = placement === "float" ? display : host && !display;
 
-  if (!session || !mine || arrivals.length === 0) return null;
+  // A flood's warning outlives the cards: players who fell off the list may
+  // still be in the room after the host clears the ones it could see. It goes
+  // when this screen leaves the room (`arrivalsDropped` resets on disconnect).
+  const flooded = host && dropped > 0;
+  if (!session || !mine || (arrivals.length === 0 && !flooded)) return null;
 
   // Newest first, and only a few unless the host asks for the rest.
   const newest = [...arrivals].reverse();
@@ -63,7 +67,7 @@ export function ArrivalNotices({ placement }: { placement: "float" | "inline" })
       className={`kad-arrivals kad-arrivals--${placement}${expanded ? " kad-arrivals--expanded" : ""}`}
       aria-live="polite"
     >
-      {host && dropped > 0 ? (
+      {flooded ? (
         <p className="kad-arrivals__flood" role="alert">
           A lot of phones are joining. If you don't know them, start a new room.
         </p>
