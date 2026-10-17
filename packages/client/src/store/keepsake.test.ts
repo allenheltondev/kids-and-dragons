@@ -462,6 +462,53 @@ describe("a family tablet (#250)", () => {
     expect(cognito.registerPasskey).not.toHaveBeenCalled();
   });
 
+  it("keeps the device as it was when sharing fails, and tries again on the same code", async () => {
+    const shareDevice = vi
+      .fn()
+      .mockRejectedValueOnce(new Error("The game took too long to answer. Tap again."))
+      .mockResolvedValueOnce({ householdId: "h_1", players: [], sharedToken: "shared_1" });
+    const { store, storage, cognito } = setup({ api: { shareDevice } });
+    await store.getState().check();
+    saveIdentity({ householdId: "hh", playerId: "p", displayName: "Ada", deviceToken: "dev_ada" }, storage);
+
+    store.getState().open("share", "home");
+    await signIn(store);
+    // Nothing on this device changed: still Ada's phone, not a tablet.
+    expect(store.getState().error).toMatch(/too long/);
+    expect(store.getState().step).toBe("code");
+    expect(loadPlayerDeviceToken(storage)).toBe("dev_ada");
+    expect(loadSharedDevice(storage)).toBeNull();
+
+    // The code was spent; the retry reuses the sign-in rather than asking again.
+    await store.getState().submitCode("12345678");
+    expect(cognito.submitCode).toHaveBeenCalledTimes(1);
+    expect(shareDevice).toHaveBeenCalledTimes(2);
+    expect(loadSharedDevice(storage)?.token).toBe("shared_1");
+    expect(loadPlayerDeviceToken(storage)).toBeNull();
+  });
+
+  it("forgets nothing when the tablet's token cannot be saved", async () => {
+    const shareDevice = vi.fn(async () => ({ householdId: "h_1", players: [], sharedToken: "shared_1" }));
+    const inner = memoryStorage();
+    // A full disk: every write of the tablet's token fails.
+    const storage: KeyValueStorage = {
+      ...inner,
+      setItem: (k, v) => {
+        if (k === "kad.shared") throw new Error("QuotaExceededError");
+        inner.setItem(k, v);
+      },
+    };
+    const { store } = setup({ api: { shareDevice }, storage });
+    await store.getState().check();
+    saveIdentity({ householdId: "hh", playerId: "p", displayName: "Ada", deviceToken: "dev_ada" }, storage);
+
+    store.getState().open("share", "home");
+    await signIn(store);
+    expect(store.getState().error).toMatch(/couldn.t save/);
+    expect(loadPlayerDeviceToken(storage)).toBe("dev_ada");
+    expect(store.getState().shared).toBe(false);
+  });
+
   it("forgets the tablet", async () => {
     const forgetDevice = vi.fn(async () => undefined);
     const storage = memoryStorage();

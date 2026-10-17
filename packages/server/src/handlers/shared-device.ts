@@ -55,14 +55,28 @@ export async function shareDevice(
     return fail("NOT_FOUND", "This account has no family yet. Play a game and keep it first.");
   }
 
-  if (input.principal) await deps.repo.revokeDevice(input.principal.householdId, input.principal.deviceId);
-  if (input.shared) await deps.repo.revokeDevice(input.shared.householdId, input.shared.deviceId);
-
-  const { token } = await deps.identity.issueSharedDeviceToken({
+  /*
+   * New binding first, old ones revoked last. Anything that fails before the
+   * revocations leaves the device exactly as it was: its old token still
+   * works, the new one was never handed over, and the owner can simply try
+   * again. Revoking first meant a failure in between left a phone holding a
+   * dead token, which the next join quietly turned into a brand-new player.
+   */
+  const { token, deviceId } = await deps.identity.issueSharedDeviceToken({
     householdId,
     ...(input.userAgent ? { userAgent: input.userAgent } : {}),
   });
-  return ok({ sharedToken: token, ...(await describePlayers(householdId, deps)) });
+  try {
+    const players = await describePlayers(householdId, deps);
+    if (input.principal) await deps.repo.revokeDevice(input.principal.householdId, input.principal.deviceId);
+    if (input.shared) await deps.repo.revokeDevice(input.shared.householdId, input.shared.deviceId);
+    return ok({ sharedToken: token, ...players });
+  } catch (err) {
+    // The new token is never delivered, so its binding is dead weight. A retry
+    // mints another; the device keeps whichever old binding survived.
+    await deps.repo.revokeDevice(householdId, deviceId).catch(() => undefined);
+    throw err;
+  }
 }
 
 /** The picker: everybody in the tablet's household, as big avatars. */

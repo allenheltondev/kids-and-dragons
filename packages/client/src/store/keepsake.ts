@@ -147,6 +147,8 @@ export function defaultKeepsakeDeps(): KeepsakeDeps {
 export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) {
   let cognito: CognitoClient | null = null;
   let tokens: AuthTokens | null = null;
+  /** The code `tokens` came from: a retry on the same code reuses them (a code works once). */
+  let tokensFor: PendingChallenge | null = null;
   /**
    * The account a `restore` sign-in found, held here — not saved — until a
    * player is picked. Saving it before adoption would mark this phone as
@@ -207,6 +209,12 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
     },
 
     close() {
+      // A tablet's errand never leaves the grown-up signed in, even half done.
+      const purpose = get().purpose;
+      if (purpose === "share" || purpose === "forget") {
+        tokens = null;
+        tokensFor = null;
+      }
       // Deliberately keeps `account` and `passkeyAdded`: closing is "not now",
       // not "undo". Reopening after a successful claim should still say kept.
       set({ step: "closed", error: null, challenge: null, busy: false });
@@ -242,14 +250,19 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
 
       set({ busy: true, error: null });
       try {
-        tokens = await cognito.submitCode(challenge, code);
+        /*
+         * A second tap on the same code, after the step below failed, reuses
+         * the sign-in: the code was spent the first time, and asking for a new
+         * email just because the network blinked is how a setup gets abandoned.
+         */
+        if (!tokens || tokensFor !== challenge) {
+          tokens = await cognito.submitCode(challenge, code);
+          tokensFor = challenge;
+        }
 
         const purpose = get().purpose;
         if (purpose === "share" || purpose === "forget") {
           const idToken = tokens.idToken;
-          // Not kept: the grown-up signed in to do one thing on a device
-          // every kid in the house picks up.
-          tokens = null;
           const shared = loadSharedDevice(deps.storage);
           if (purpose === "share") {
             // The phone binding this browser held goes along to be revoked.
@@ -260,6 +273,14 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
             await deps.api.forgetDevice(idToken, shared.token);
             clearSharedDevice(deps.storage);
           }
+          // Not kept once done: the grown-up signed in to do one thing on a
+          // device every kid in the house picks up. Until then a failure keeps
+          // them, so "try again" needs no new code, and nothing above has
+          // changed this device: the server revokes the old binding last, and
+          // `becomeSharedDevice` forgets the old identity only once the new
+          // token is saved.
+          tokens = null;
+          tokensFor = null;
           set({
             step: "kept",
             busy: false,

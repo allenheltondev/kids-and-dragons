@@ -8,7 +8,7 @@
  *   - no long-lived token for a kid is ever handed to a shared device.
  */
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { APIGatewayProxyEventV2, APIGatewayProxyStructuredResultV2 } from "aws-lambda";
 import { makeCharacter } from "../../../shared/src/test-fixtures.ts";
 import { createRoom } from "../handlers/room.ts";
@@ -127,6 +127,34 @@ describe("making a device shared", () => {
     ]);
     // Ada's own token, left on the tablet, is dead: it would have been a
     // month-long credential for her on a device everybody uses.
+    expect(await harness.identity.resolveDevice(ada.deviceToken)).toBeNull();
+  });
+
+  it("leaves the device as it was when setting up fails partway", async () => {
+    const { harness, householdId, ada } = await family();
+    const headers = { authorization: "Bearer id-token", "x-kad-device-token": ada.deviceToken };
+
+    // The new token cannot be minted: nothing has been revoked yet.
+    const minting = vi.spyOn(harness.identity, "issueSharedDeviceToken").mockRejectedValueOnce(new Error("store down"));
+    const first = await respond(event("POST", "/api/auth/shared-device", { headers }), runtime(harness));
+    expect(first.statusCode).toBe(500);
+    expect(await harness.identity.resolveDevice(ada.deviceToken)).not.toBeNull();
+    minting.mockRestore();
+
+    // Minted, then the answer cannot be built: the old binding survives, and
+    // the new one, never delivered, is revoked rather than left lying around.
+    const reading = vi.spyOn(harness.repo, "listCharacters").mockRejectedValueOnce(new Error("store down"));
+    const second = await respond(event("POST", "/api/auth/shared-device", { headers }), runtime(harness));
+    expect(second.statusCode).toBe(500);
+    expect(await harness.identity.resolveDevice(ada.deviceToken)).not.toBeNull();
+    const shared = (await harness.repo.listDevices(householdId)).filter((d) => d.kind === "shared");
+    expect(shared.length).toBe(1);
+    expect(shared.every((d) => d.revoked === true)).toBe(true);
+    reading.mockRestore();
+
+    // And trying again simply works.
+    const third = await respond(event("POST", "/api/auth/shared-device", { headers }), runtime(harness));
+    expect(third.statusCode).toBe(200);
     expect(await harness.identity.resolveDevice(ada.deviceToken)).toBeNull();
   });
 
