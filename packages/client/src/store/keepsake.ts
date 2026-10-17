@@ -28,9 +28,12 @@ import {
 import { api as defaultApi, type Api } from "../sync/client";
 import {
   asPlayerIdentity,
+  becomeSharedDevice,
+  clearSharedDevice,
   defaultStorage,
   loadAccount,
   loadIdentity,
+  loadSharedDevice,
   saveAccount,
   saveIdentity,
   type AccountRecord,
@@ -63,8 +66,18 @@ export type KeepsakeStep =
  * They are one flow because the middle is genuinely identical, and two endings
  * because claiming and adopting are different things happening to different
  * rows.
+ *
+ * Two more endings for a shared tablet (#250), both a grown-up's:
+ *
+ *   `share`   — make this device the family's tablet. It stops being anybody
+ *               and opens on a "who's playing?" picker from then on.
+ *   `forget`  — the reverse: revoke the tablet. Nobody's heroes go with it.
+ *
+ * Neither leaves the grown-up signed in on the tablet, and neither offers a
+ * passkey: a tablet that remembered the owner's face would hand every kid who
+ * picks it up the owner's account.
  */
-export type KeepsakePurpose = "keep" | "restore";
+export type KeepsakePurpose = "keep" | "restore" | "share" | "forget";
 
 /** A household member offered by the picker in the `restore` ending. */
 export interface KeepsakePlayer {
@@ -91,6 +104,8 @@ export interface KeepsakeStore {
   /** Set once claimed, so the offer does not come back every chapter. */
   account: AccountRecord | null;
   challenge: PendingChallenge | null;
+  /** This browser is the family's shared tablet (#250). Re-read by `refreshShared`. */
+  shared: boolean;
   /** Whether this browser can register a passkey; false skips that step. */
   passkeyPossible: boolean;
   passkeyAdded: boolean;
@@ -114,6 +129,8 @@ export interface KeepsakeStore {
   addPasskey(): Promise<void>;
   skipPasskey(): void;
   dismissError(): void;
+  /** Re-reads whether this is a shared tablet, after the game store found it forgotten. */
+  refreshShared(): void;
 }
 
 export interface KeepsakeDeps {
@@ -148,6 +165,7 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
     busy: false,
     error: null,
     account: loadAccount(deps.storage),
+    shared: loadSharedDevice(deps.storage) !== null,
     challenge: null,
     passkeyPossible: false,
     passkeyAdded: false,
@@ -225,6 +243,32 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
       set({ busy: true, error: null });
       try {
         tokens = await cognito.submitCode(challenge, code);
+
+        const purpose = get().purpose;
+        if (purpose === "share" || purpose === "forget") {
+          const idToken = tokens.idToken;
+          // Not kept: the grown-up signed in to do one thing on a device
+          // every kid in the house picks up.
+          tokens = null;
+          const shared = loadSharedDevice(deps.storage);
+          if (purpose === "share") {
+            // The phone binding this browser held goes along to be revoked.
+            const deviceToken = loadIdentity(deps.storage).deviceToken;
+            const result = await deps.api.shareDevice(idToken, deviceToken, shared?.token);
+            becomeSharedDevice({ token: result.sharedToken, householdId: result.householdId }, deps.storage);
+          } else if (shared) {
+            await deps.api.forgetDevice(idToken, shared.token);
+            clearSharedDevice(deps.storage);
+          }
+          set({
+            step: "kept",
+            busy: false,
+            challenge: null,
+            account: loadAccount(deps.storage),
+            shared: loadSharedDevice(deps.storage) !== null,
+          });
+          return;
+        }
 
         /*
          * The claim itself. The device token goes along because it is what
@@ -338,6 +382,10 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
 
     dismissError() {
       set({ error: null });
+    },
+
+    refreshShared() {
+      set({ shared: loadSharedDevice(deps.storage) !== null });
     },
   }));
 }

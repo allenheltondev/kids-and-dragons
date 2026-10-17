@@ -25,6 +25,7 @@ import type {
   Presentation,
   Prompt,
   RoomMode,
+  SharedSeatRequest,
   RulesContent,
   RunState,
   WorldMap,
@@ -41,7 +42,11 @@ import type {
 } from "./contract";
 import {
   clearSession,
+  clearSharedDevice,
   defaultStorage,
+  loadSharedDevice,
+  saveSharedDevice,
+  tabStorage,
   asPlayerIdentity,
   clearSavedJournal,
   loadIdentity,
@@ -113,6 +118,12 @@ export type SurfaceRole = "player" | "display";
 export interface GameStoreDeps {
   api: Api;
   storage: KeyValueStorage;
+  /**
+   * Where a shared tablet keeps its room session (#250): this tab only, so
+   * the next kid to pick it up is asked who they are. Defaults to
+   * `sessionStorage`.
+   */
+  tabStorage?: KeyValueStorage;
   openChannel: typeof defaultOpenChannel;
   eventsUrl: typeof defaultEventsUrl;
   /** Injected so tests can assert routing without a DOM. */
@@ -123,6 +134,7 @@ export function defaultDeps(): GameStoreDeps {
   return {
     api: defaultApi,
     storage: defaultStorage(),
+    tabStorage: tabStorage(),
     openChannel: defaultOpenChannel,
     eventsUrl: defaultEventsUrl,
     navigate,
@@ -483,8 +495,26 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       }, BROADCAST_GRACE_MS);
     }
 
+    /**
+     * Where this device keeps room sessions. A shared tablet's live in the tab
+     * (#250); everybody else's survive a closed browser, as §4.3 wants.
+     */
+    function sessions(): KeyValueStorage {
+      return loadSharedDevice(deps.storage) ? (deps.tabStorage ?? tabStorage()) : deps.storage;
+    }
+
+    /**
+     * A shared tablet the server no longer knows (forgotten by its owner):
+     * stop being one, so the home screen is an ordinary start again.
+     */
+    function forgottenIf(error: unknown): void {
+      if (error instanceof ApiError && error.status === 401) {
+        clearSharedDevice(deps.storage, deps.tabStorage ?? tabStorage());
+      }
+    }
+
     async function establish(session: ClientSession, snapshot: RunState): Promise<void> {
-      saveSession(session, deps.storage);
+      saveSession(session, sessions());
       set({ session, error: null, pendingCode: null });
       await connect(session, snapshot, snapshot.seq);
     }
@@ -592,12 +622,16 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       seated: JoinRoomResponse & { deviceToken?: string },
       displayName: string,
     ): Promise<ClientSession> {
-      const identity = loadIdentity(deps.storage);
-      // Seated, so a player now — even a browser that had only been a TV.
-      saveIdentity(
-        { ...asPlayerIdentity(identity, seated.deviceToken), displayName, playerId: seated.playerId },
-        deps.storage,
-      );
+      // A shared tablet is nobody, whoever is sitting at it (#250): it keeps
+      // no identity, and the server sends it no device token to keep.
+      if (!loadSharedDevice(deps.storage)) {
+        const identity = loadIdentity(deps.storage);
+        // Seated, so a player now — even a browser that had only been a TV.
+        saveIdentity(
+          { ...asPlayerIdentity(identity, seated.deviceToken), displayName, playerId: seated.playerId },
+          deps.storage,
+        );
+      }
 
       const session: ClientSession = {
         runId: seated.runId,
@@ -736,8 +770,23 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
        * server issued — after which this browser rejoins as a stranger instead
        * of recovering its own character (architecture §4.5).
        */
-      async createRoom(mode: RoomMode, displayName: string) {
+      async createRoom(mode: RoomMode, displayName: string, seat?: SharedSeatRequest) {
         set({ connection: "connecting", error: null });
+        const shared = loadSharedDevice(deps.storage);
+        if (shared) {
+          try {
+            if (!seat) throw new ApiError(400, "Pick who is playing first.");
+            const room = await deps.api.createRoomShared(
+              { mode, campaignId: LAUNCH_CAMPAIGN },
+              shared.token,
+              seat,
+            );
+            return await adopt(room.code, room, displayName);
+          } catch (error) {
+            forgottenIf(error);
+            return failWith(error);
+          }
+        }
         const identity = loadIdentity(deps.storage);
         saveIdentity({ ...identity, displayName }, deps.storage);
         try {
@@ -819,9 +868,35 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         }
       },
 
-      async joinRoom(code: string, name: string) {
+      async loadSharedPlayers() {
+        const shared = loadSharedDevice(deps.storage);
+        if (!shared) return null;
+        try {
+          const { players, rotatedToken } = await deps.api.listSharedPlayers(shared.token);
+          // The tablet's 30 days slide like a phone's, and this is where it hears.
+          if (rotatedToken) saveSharedDevice({ ...shared, token: rotatedToken }, deps.storage);
+          return players;
+        } catch (error) {
+          forgottenIf(error);
+          if (error instanceof ApiError && error.status === 401) return null;
+          throw error;
+        }
+      },
+
+      async joinRoom(code: string, name: string, seat?: SharedSeatRequest) {
         const roomCode = code.trim().toUpperCase();
         set({ connection: "connecting", error: null });
+        const shared = loadSharedDevice(deps.storage);
+        if (shared) {
+          try {
+            if (!seat) throw new ApiError(400, "Pick who is playing first.");
+            const joined = await deps.api.joinRoomShared(roomCode, shared.token, seat);
+            return await adopt(roomCode, joined, name.trim());
+          } catch (error) {
+            forgottenIf(error);
+            return failWith(error);
+          }
+        }
         const identity = loadIdentity(deps.storage);
         // The home screen no longer asks for a name when joining; the character
         // flow does. Keep whatever this phone used last, else a placeholder.
@@ -863,7 +938,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           disconnect();
         }
 
-        const stored = loadSession(roomCode, deps.storage);
+        const stored = loadSession(roomCode, sessions());
         set({ connection: "connecting", pendingCode: roomCode });
 
         /** Still the newest attach? Checked after every await — a resolved
@@ -1058,7 +1133,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         const session = get().session;
         runtime.attaching = null;
         disconnect();
-        if (session) clearSession(session.roomCode, deps.storage);
+        if (session) clearSession(session.roomCode, sessions());
         // The book and its news belong to the room's household; out of the
         // room there is neither.
         setFieldGuideDiscoveries(null);
@@ -1085,9 +1160,11 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
       async removePlayer(playerId: string) {
         const session = get().session;
+        // A shared tablet holds no device binding, and must not mint one (#250).
+        if (!session?.host || loadSharedDevice(deps.storage)) return false;
         // The device binding is what names the host; a TV holds one too.
         const deviceToken = loadIdentity(deps.storage).deviceToken;
-        if (!session?.host || !deviceToken) return false;
+        if (!deviceToken) return false;
         try {
           await deps.api.removePlayer(session.roomCode, playerId, deviceToken);
           set({ arrivals: get().arrivals.filter((a) => a.playerId !== playerId) });

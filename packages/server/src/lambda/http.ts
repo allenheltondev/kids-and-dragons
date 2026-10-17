@@ -37,7 +37,14 @@ import { removePlayer } from "../handlers/remove.ts";
 import { listHeroes } from "../handlers/heroes.ts";
 import { getJournal } from "../handlers/journal.ts";
 import { getState } from "../handlers/state.ts";
-import type { DeviceIdentity, SessionIdentity } from "../identity.ts";
+import {
+  asSharedSeat,
+  forgetDevice,
+  listSharedPlayers,
+  seatOnSharedDevice,
+  shareDevice,
+} from "../handlers/shared-device.ts";
+import type { DeviceIdentity, SessionIdentity, SharedDeviceIdentity } from "../identity.ts";
 import type { RoomMode } from "@kad/shared";
 import { requiredEnv, runtime, verifyAccountToken, type VerifiedAccount } from "./runtime.ts";
 
@@ -131,6 +138,8 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (req.path === "/api/progression/spend") return (deps) => postProgressionSpend(req, deps);
     if (req.path === "/api/auth/link") return (deps) => postLink(req, deps, rt);
     if (req.path === "/api/auth/device") return (deps) => postAdopt(req, deps, rt);
+    if (req.path === "/api/auth/shared-device") return (deps) => postShareDevice(req, deps, rt);
+    if (req.path === "/api/auth/forget-device") return (deps) => postForgetDevice(req, deps, rt);
 
     const join = /^\/api\/room\/([A-Za-z]{4})\/join$/.exec(req.path);
     if (join?.[1]) {
@@ -151,6 +160,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
   if (req.method === "GET" && req.path === "/api/state") return (deps) => getStateRoute(req, deps);
   if (req.method === "GET" && req.path === "/api/heroes") return (deps) => getHeroes(req, deps);
   if (req.method === "GET" && req.path === "/api/journal") return (deps) => getJournalRoute(req, deps);
+  if (req.method === "GET" && req.path === "/api/household/players") return (deps) => getSharedPlayers(req, deps);
   return null;
 }
 
@@ -163,6 +173,10 @@ async function postRoom(req: Req, deps: HandlerDeps) {
   if (!mode) return error(400, "ILLEGAL", 'mode must be "party" or "travel"');
   const display = req.body.display === true;
   if (display && mode !== "party") return error(400, "ILLEGAL", "only a Party Mode room has a TV");
+
+  // A shared tablet opens a room for whichever kid was picked on it (#250).
+  const shared = await resolveShared(req, deps);
+  if (shared !== undefined) return postRoomShared(req, deps, mode, display, shared);
 
   // Anonymous play (§4.5): a device nobody has seen before gets a household on
   // the spot. Nobody signs up to start a game.
@@ -219,12 +233,68 @@ async function postRoom(req: Req, deps: HandlerDeps) {
   );
 }
 
+/**
+ * `POST /api/room` from a shared tablet (#250): seated as the kid it names, on
+ * a session token alone. Never a TV: a screen that is nobody has no need of a
+ * household's tablet binding, and a TV opened here would be one more thing on
+ * the tablet a kid could not tell apart from their own seat.
+ */
+async function postRoomShared(
+  req: Req,
+  deps: HandlerDeps,
+  mode: RoomMode,
+  display: boolean,
+  shared: SharedDeviceIdentity | null,
+) {
+  if (!shared) return forgottenDevice();
+  if (display) return error(400, "ILLEGAL", "a shared tablet plays; open the TV on the TV");
+  const seat = await seatOnSharedDevice({ shared, playerId: req.body.playerId, newPlayer: req.body.newPlayer }, deps);
+  if (!seat.ok) return fromError(seat.error);
+
+  const created = await createRoom(
+    {
+      householdId: shared.householdId,
+      mode,
+      campaignId: (req.body.campaignId as string | null | undefined) ?? null,
+      hostDeviceId: shared.deviceId,
+    },
+    deps,
+  );
+  if (!created.ok) return fromError(created.error);
+  const joined = await joinRoom({ code: created.value.code, principal: seat.value }, deps);
+  if (!joined.ok) return fromError(joined.error);
+  // No `deviceToken`, ever: the kid leaves with the session and nothing else.
+  return json(
+    200,
+    {
+      ...asSharedSeat(joined.value),
+      code: created.value.code,
+      roomCode: created.value.code,
+      expiresAt: created.value.expiresAt,
+    },
+    shared,
+  );
+}
+
 async function postJoin(req: Req, deps: HandlerDeps, code: string) {
   const lookup = await admitCodeLookup(req.client, deps);
   if (!lookup) return slowDown(deps);
   const found = await deps.repo.getRoom(code);
   if (!found) return error(404, "NOT_FOUND", `no open room ${code}`);
   await lookup.hit();
+
+  // A shared tablet seats the kid picked on it, with a session and nothing
+  // longer-lived (#250). It never falls through to `addPlayer` below, which
+  // would bind the tablet to that kid for a month.
+  const shared = await resolveShared(req, deps);
+  if (shared !== undefined) {
+    if (!shared) return forgottenDevice();
+    const seat = await seatOnSharedDevice({ shared, playerId: req.body.playerId, newPlayer: req.body.newPlayer }, deps);
+    if (!seat.ok) return fromError(seat.error);
+    const joined = await joinRoom({ code, principal: seat.value }, deps);
+    if (!joined.ok) return fromError(joined.error);
+    return json(200, { ...asSharedSeat(joined.value), code, roomCode: code, expiresAt: found.expiresAt }, shared);
+  }
 
   const existing = await resolvePrincipal(req, deps);
   // A new phone joins whichever household the room settles on — and settling
@@ -465,6 +535,53 @@ async function postLink(req: Req, deps: HandlerDeps, rt: HttpRuntime) {
   return result.ok ? json(200, result.value, existing?.principal) : fromError(result.error);
 }
 
+/**
+ * A signed-in owner makes this device the household's shared tablet (#250).
+ * Whatever binding it held, personal or shared, is revoked on the way.
+ */
+async function postShareDevice(req: Req, deps: HandlerDeps, rt: HttpRuntime) {
+  const account = await rt.verifyAccount(bearer(req));
+  if (!account) return error(401, "FORBIDDEN", "a verified Cognito id token is required");
+
+  const existing = await resolvePrincipal(req, deps);
+  const shared = await resolveShared(req, deps);
+  const result = await shareDevice(
+    {
+      cognitoSub: account.cognitoSub,
+      principal: existing?.principal ?? null,
+      shared: shared ?? null,
+      userAgent: req.headers["user-agent"],
+    },
+    deps,
+  );
+  return result.ok ? json(200, result.value) : fromError(result.error);
+}
+
+/**
+ * "Forget this device" (#250): an owner revokes a shared tablet. The tablet's
+ * own token names it; `{ deviceId }` names one that is not in hand.
+ */
+async function postForgetDevice(req: Req, deps: HandlerDeps, rt: HttpRuntime) {
+  const account = await rt.verifyAccount(bearer(req));
+  if (!account) return error(401, "FORBIDDEN", "a verified Cognito id token is required");
+
+  const shared = await resolveShared(req, deps);
+  const deviceId = shared?.deviceId ?? req.body.deviceId;
+  if (typeof deviceId !== "string" || deviceId === "") {
+    return error(400, "ILLEGAL", "expected this tablet's x-kad-shared-token, or { deviceId }");
+  }
+  const result = await forgetDevice({ cognitoSub: account.cognitoSub, deviceId }, deps);
+  return result.ok ? json(200, result.value) : fromError(result.error);
+}
+
+/** The "who's playing?" picker on a shared tablet (#250). Its token, nothing else. */
+async function getSharedPlayers(req: Req, deps: HandlerDeps) {
+  const shared = await resolveShared(req, deps);
+  if (!shared) return forgottenDevice();
+  const result = await listSharedPlayers(shared, deps);
+  return result.ok ? json(200, result.value, shared) : fromError(result.error);
+}
+
 async function postAdopt(req: Req, deps: HandlerDeps, rt: HttpRuntime) {
   const account = await rt.verifyAccount(bearer(req));
   if (!account) return error(401, "FORBIDDEN", "a verified Cognito id token is required");
@@ -565,6 +682,23 @@ async function resolvePrincipal(
 }
 
 /**
+ * A shared tablet's token (#250): `undefined` when the request carries none,
+ * `null` when it carries one that no longer resolves (forgotten, or never
+ * real). The difference matters: a forgotten tablet must be told so, never
+ * quietly treated as a new phone and bound to whoever is holding it.
+ */
+async function resolveShared(req: Req, deps: HandlerDeps): Promise<SharedDeviceIdentity | null | undefined> {
+  const token = req.headers["x-kad-shared-token"];
+  if (typeof token !== "string" || token === "") return undefined;
+  return deps.identity.resolveSharedDevice(token);
+}
+
+/** What a shared tablet whose binding is gone is told. The client goes back to an ordinary start. */
+function forgottenDevice(): APIGatewayProxyStructuredResultV2 {
+  return error(401, "FORBIDDEN", "This tablet was forgotten. Ask a grown-up to set it up again.");
+}
+
+/**
  * Who is asking, for the wrong-code budget (`handlers/code-guard.ts`).
  *
  * Behind CloudFront, the connection's address is an edge's, shared by everyone
@@ -636,16 +770,21 @@ function readMode(value: unknown): RoomMode | null {
 function json(
   statusCode: number,
   body: unknown,
-  principal?: DeviceIdentity | undefined,
+  principal?: DeviceIdentity | SharedDeviceIdentity | undefined,
 ): APIGatewayProxyStructuredResultV2 {
   return {
     statusCode,
     headers: {
       "content-type": "application/json",
-      ...(principal?.rotatedToken ? { "x-kad-device-token": principal.rotatedToken } : {}),
+      ...(principal?.rotatedToken ? { [rotationHeader(principal)]: principal.rotatedToken } : {}),
     },
     body: JSON.stringify(body),
   };
+}
+
+/** A shared tablet's renewed token rides on its own header, never the player one. */
+function rotationHeader(principal: DeviceIdentity | SharedDeviceIdentity): string {
+  return "kind" in principal ? "x-kad-shared-token" : "x-kad-device-token";
 }
 
 function error(

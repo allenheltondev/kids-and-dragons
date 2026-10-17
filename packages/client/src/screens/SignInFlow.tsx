@@ -203,6 +203,7 @@ function EmailStep({ busy, error }: StepProps): ReactElement {
   const sendCode = useKeepsakeStore((s) => s.sendCode);
   const close = useKeepsakeStore((s) => s.close);
   const fromHome = useKeepsakeStore((s) => s.entry) === "home";
+  const purpose = useKeepsakeStore((s) => s.purpose);
   const [email, setEmail] = useState("");
   const fieldId = useId();
 
@@ -217,9 +218,26 @@ function EmailStep({ busy, error }: StepProps): ReactElement {
   return (
     <form className="keepsake__form" onSubmit={onSubmit}>
       <h2 className="keepsake__title" id="keepsake-title">
-        {fromHome ? "Sign in or create an account" : "What\u2019s your email?"}
+        {purpose === "share"
+          ? "Make this a family tablet"
+          : purpose === "forget"
+            ? "Forget this tablet?"
+            : fromHome
+              ? "Sign in or create an account"
+              : "What\u2019s your email?"}
       </h2>
-      {fromHome ? (
+      {purpose === "share" ? (
+        /* #250: what changes, said plainly to the grown-up deciding it. */
+        <p className="keepsake__body">
+          Sign in as the grown-up who keeps your family&rsquo;s heroes. After that, anyone in the
+          family can tap their face here and play. Nobody stays signed in on it, you included.
+        </p>
+      ) : purpose === "forget" ? (
+        <p className="keepsake__body">
+          Sign in to stop this tablet being your family&rsquo;s. Everyone&rsquo;s heroes stay safe;
+          they were never on the tablet.
+        </p>
+      ) : fromHome ? (
         /* One flow for both, so say so: there is no "sign up" screen to hunt
            for, and no password to forget. */
         <p className="keepsake__body">
@@ -282,6 +300,7 @@ function CodeStep({ busy, error }: StepProps): ReactElement {
   const back = useKeepsakeStore((s) => s.back);
   const challenge = useKeepsakeStore((s) => s.challenge);
   const fromHome = useKeepsakeStore((s) => s.entry) === "home";
+  const purpose = useKeepsakeStore((s) => s.purpose);
   const [code, setCode] = useState("");
   const fieldId = useId();
   const submitted = useRef("");
@@ -366,7 +385,13 @@ function CodeStep({ busy, error }: StepProps): ReactElement {
           disabled={busy || !ready}
           icon={busy ? <Spinner /> : <Icon name="check" />}
         >
-          {fromHome ? (busy ? "Signing in…" : "Sign in") : busy ? "Keeping…" : "Keep them"}
+          {purpose === "share"
+            ? busy ? "Setting it up…" : "Set it up"
+            : purpose === "forget"
+              ? busy ? "Forgetting…" : "Forget it"
+              : fromHome
+                ? busy ? "Signing in…" : "Sign in"
+                : busy ? "Keeping…" : "Keep them"}
         </Button>
         <Button variant="ghost" icon={<Icon name="back" />} onClick={back} disabled={busy}>
           Different email
@@ -471,6 +496,26 @@ function KeptStep({ motes, fieldGuide }: { motes: Mote[]; fieldGuide: boolean })
   // On the home screen there is no room and therefore no party to name — the
   // characters are in the household, waiting, not on the board yet.
   const restored = purpose === "restore" || motes.length === 0;
+
+  if (purpose === "share" || purpose === "forget") {
+    return (
+      <>
+        <h2 className="keepsake__title" id="keepsake-title">
+          {purpose === "share" ? "This is your family tablet now." : "This tablet is forgotten."}
+        </h2>
+        <p className="keepsake__body">
+          {purpose === "share"
+            ? "Anyone in the family can tap their face and play. When a game ends, it asks who\u2019s playing again."
+            : "Everyone\u2019s heroes are safe. Sign in again any time to make it the family\u2019s."}
+        </p>
+        <div className="keepsake__actions">
+          <Button variant="primary" size="lg" block icon={<Icon name="forward" />} onClick={close}>
+            Done
+          </Button>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>

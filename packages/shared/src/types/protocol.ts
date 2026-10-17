@@ -462,6 +462,43 @@ export interface JoinRoomResponse extends RoomHostFlag, KeeperFlag {
 }
 
 /**
+ * One face on a shared tablet's "who's playing?" picker (#250): a household
+ * profile, drawn as a big avatar with no typing.
+ */
+export interface SharedDevicePlayer {
+  id: string;
+  displayName: string;
+  color: string;
+  /** This kid's heroes' names, furthest-taken first, for "Ada · Sparklehoof". */
+  heroes: string[];
+}
+
+/** `GET /api/household/players`, on a shared tablet's token. */
+export interface SharedDevicePlayersResponse {
+  householdId: string;
+  players: SharedDevicePlayer[];
+}
+
+/**
+ * `POST /api/auth/shared-device`: a signed-in owner makes this device the
+ * household's shared tablet. The token names the household and nobody in it.
+ */
+export interface ShareDeviceResponse extends SharedDevicePlayersResponse {
+  sharedToken: string;
+}
+
+/**
+ * On a shared tablet, a join or a create names who is playing (#250): one of
+ * the household's profiles, or a new kid by name. Sent with the tablet's
+ * `x-kad-shared-token`; the answer carries a session token and never a
+ * device token.
+ */
+export interface SharedSeatRequest {
+  playerId?: string;
+  newPlayer?: string;
+}
+
+/**
  * `GET /api/journal` — what a phone can study with no game running.
  *
  * Authorised by the device token alone, not a room session: between games
