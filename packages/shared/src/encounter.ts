@@ -2195,7 +2195,7 @@ function turnEndInEnvironment(
   // Stopping on the fire. Damage first; what it knocks down stays put (#220).
   // A creature that does not mind this ground (`rift.ignores`) is untouched.
   const hazard = hazardAt(spec, working.round, at);
-  if (hazard && !actor.rift?.ignores?.includes(hazard.kind)) working = biteInEnvironment(working, actorId, hazard, events);
+  if (hazard && !actor.rift?.ignores?.includes(hazard.kind)) working = biteInEnvironment(working, actorId, hazard, events, true);
 
   // A shover (#220) puts a hero beside it onto the hazard behind them.
   if (actor.side === "enemy" && actor.rift?.shoves && !combatantById(working, actorId)?.down) {
@@ -2226,17 +2226,22 @@ function turnEndInEnvironment(
   return working;
 }
 
-/** A hazard biting the figure on it: its beat, its damage, then what else it does (#201, #220). */
+/**
+ * A hazard biting the figure on it: its beat, its damage, then what else it
+ * does (#201, #220). `onOwnTurn`: the figure's own turn is the one ending —
+ * true when it stopped there itself, false when a monster shoved it there.
+ */
 function biteInEnvironment(
   state: EncounterState,
   actorId: ActorId,
   hazard: NonNullable<ReturnType<typeof hazardAt>>,
   events: EncounterEvent[],
+  onOwnTurn: boolean,
 ): EncounterState {
   let working = state;
   events.push({ type: "hazard", actorId, hazardId: hazard.id, label: hazard.label });
   if (hazard.damage !== undefined) working = loseHp(working, actorId, hazard.damage, events);
-  if (!combatantById(working, actorId)?.down) working = hinderInEnvironment(working, actorId, hazard, events);
+  if (!combatantById(working, actorId)?.down) working = hinderInEnvironment(working, actorId, hazard, events, onOwnTurn);
   return working;
 }
 
@@ -2259,7 +2264,8 @@ function shoveIntoHazard(state: EncounterState, actorId: ActorId, at: Position, 
     const hazard = hazardAt(spec, state.round, beyond);
     if (!hazard || !isOpen(state.board, beyond)) continue;
     let working = slide(state, hero.id, beyond.x - hero.at.x, beyond.y - hero.at.y, 1, events);
-    working = biteInEnvironment(working, hero.id, hazard, events);
+    // On the monster's turn: the hero's own turn is not about to count one off.
+    working = biteInEnvironment(working, hero.id, hazard, events, false);
     return working;
   }
   return state;
@@ -2270,12 +2276,15 @@ function shoveIntoHazard(state: EncounterState, actorId: ActorId, at: Position, 
  * at the end of its own turn: Slowed (the turn about to end does not count
  * against it — `applyNumbed`'s own-turn rule), held for its next turn, and
  * thrown. In that order, so a figure can be both stuck and pushed.
+ * `onOwnTurn` false (a shove, on a monster's turn) gives the slow no spare
+ * turn: nothing is about to count one off it.
  */
 function hinderInEnvironment(
   state: EncounterState,
   actorId: ActorId,
   hazard: NonNullable<ReturnType<typeof hazardAt>>,
   events: EncounterEvent[],
+  onOwnTurn: boolean,
 ): EncounterState {
   let working = state;
   if (hazard.slow) {
@@ -2283,7 +2292,7 @@ function hinderInEnvironment(
     events.push({ type: "slowed", actorId, hazardId: hazard.id, steps, turns });
     working = {
       ...working,
-      buffs: applyNumbed(working.buffs, actorId, hazard.slow, true, { id: SLOWED_BUFF_ID, label: SLOWED_LABEL }),
+      buffs: applyNumbed(working.buffs, actorId, hazard.slow, onOwnTurn, { id: SLOWED_BUFF_ID, label: SLOWED_LABEL }),
     };
   }
   if (hazard.root && !combatantById(working, actorId)?.rooted) {

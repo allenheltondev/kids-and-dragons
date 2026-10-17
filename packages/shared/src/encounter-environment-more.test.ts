@@ -482,6 +482,24 @@ describe("review regressions (#220)", () => {
     expect(ended.state.environment!.captiveHp).toEqual([1, 2]);
   });
 
+  it("a hero shoved into one-turn mud on a monster's turn is slowed for exactly one of their own turns", () => {
+    const troll: EnemySpec = { ...WISP, rift: { shoves: true } };
+    const env: EncounterEnvironment = {
+      hazards: [{ id: "mud", kind: "rift", label: "Rift mud", tiles: [{ x: 3, y: 3 }], slow: { steps: 1, turns: 1 } }],
+    };
+    let state = begin(env, [{ spec: troll, at: { x: 5, y: 3 } }]);
+    state = until(endTurnWithEvents(walk(state, { x: 4, y: 3 })).state, "wisp#1");
+    const shoved = endTurnWithEvents(state);
+    expect(shoved.events).toContainEqual({ type: "slowed", actorId: "c_a", hazardId: "mud", steps: 1, turns: 1 });
+    expect(shoved.state.buffs).toEqual([{ id: "slowed", label: "Slowed", kind: "move", heroId: "c_a", amount: -1, turnsLeft: 1 }]);
+    const next = until(shoved.state, "c_a");
+    const full = combatantById(next, "c_a")!.steps;
+    expect(next.stepsLeft).toBe(full - 1);
+    // Off the mud, the next turn has every step back.
+    const after = until(endTurnWithEvents(walk(next, { x: 2, y: 2 })).state, "c_a");
+    expect(after.stepsLeft).toBe(full);
+  });
+
   it("a shover thrown off by its own hazard shoves from where it lands, not where it stood", () => {
     const troll: EnemySpec = { ...WISP, rift: { shoves: true } };
     const env: EncounterEnvironment = {
