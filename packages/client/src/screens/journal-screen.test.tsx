@@ -9,7 +9,7 @@
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ItemCatalog, JournalResponse, WorldMap } from "@kad/shared";
 import { makeCharacter } from "../testing/fixtures";
@@ -103,7 +103,7 @@ describe("JournalScreen", () => {
   it("lends the guide the household's book while open, and takes it back on the way out", async () => {
     const { unmount } = mount(journal());
     await screen.findByRole("region", { name: /character sheet/i });
-    expect(Object.keys(getFieldGuideDiscoveries())).toEqual(["biome.sunward_fields"]);
+    await waitFor(() => expect(Object.keys(getFieldGuideDiscoveries())).toEqual(["biome.sunward_fields"]));
     unmount();
     expect(getFieldGuideDiscoveries()).toEqual({});
   });

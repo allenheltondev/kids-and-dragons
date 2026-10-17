@@ -60,7 +60,8 @@
     "test:ddb": "KAD_DDB_ENDPOINT=http://localhost:8000 vitest run packages/server/src/store/contract.test.ts",
     "wiki:generate": "tsx tools/wiki/generate.ts",
     "wiki:build": "tsx tools/wiki/generate.ts && hugo --source wiki && pagefind --site wiki/public",
-    "spike:rive": "npm run spike:rive --workspace @kad/client"
+    "spike:rive": "npm run spike:rive --workspace @kad/client",
+    "riftlight:preview": "tsx tools/content/riftlight-preview.ts"
   },
   "_comment_overrides": "@anthropic-ai/bedrock-sdk brings a second @smithy/types, nested under @smithy/core. Two copies means the DynamoDB client's PutCommand and its own middleware stack are typed from different files, and packages/server stops compiling on a change that has nothing to do with it. Pinned to one.",
   "overrides": {

@@ -1,0 +1,923 @@
+{
+  "$comment": "Human-reviewed narrative dependencies for all 80 opening scenes. Introduction evidence is checked against actual composed engine narration. Entry facts must be established on every path through the preceding chapter. Review and extend when adding scenes.",
+  "chapters": {
+    "riftlight-exchange-rift": {
+      "entryFacts": [],
+      "scenes": {
+        "market": {
+          "requires": [],
+          "introduces": {
+            "exchange": "The Exchange",
+            "noodle_stall": "A noodle seller",
+            "snow": "a snowflake"
+          }
+        },
+        "morning": {
+          "requires": [
+            "exchange",
+            "snow"
+          ],
+          "introduces": {
+            "fish_stall": "one fish stall",
+            "gull": "a gull",
+            "captain": "kitsune captain",
+            "early_ship": "a ship has docked a day early"
+          }
+        },
+        "fish": {
+          "requires": [
+            "fish_stall",
+            "snow"
+          ],
+          "introduces": {
+            "white_grass": "stiff white grass"
+          }
+        },
+        "fish_help": {
+          "requires": [
+            "fish_stall",
+            "noodle_stall",
+            "white_grass"
+          ],
+          "introduces": {
+            "hoofprints": "wet hoofprints"
+          }
+        },
+        "gull": {
+          "requires": [
+            "gull"
+          ],
+          "introduces": {
+            "hoofprints": "A small white hoofprint"
+          }
+        },
+        "gull_help": {
+          "requires": [
+            "gull",
+            "hoofprints"
+          ],
+          "introduces": {}
+        },
+        "ship": {
+          "requires": [
+            "captain",
+            "early_ship"
+          ],
+          "introduces": {
+            "chart": "a route chart",
+            "thimble": "Captain Thimble"
+          }
+        },
+        "ship_help": {
+          "requires": [
+            "chart",
+            "thimble"
+          ],
+          "introduces": {}
+        },
+        "ship_cold": {
+          "requires": [
+            "captain",
+            "noodle_stall"
+          ],
+          "introduces": {
+            "moving_rope": "A coil of rope"
+          }
+        },
+        "quay": {
+          "requires": [
+            "lost_landing"
+          ],
+          "introduces": {
+            "crates": "two stacks of crates",
+            "fold": "a thin fold in the air",
+            "moving_rope": "A loose rope"
+          }
+        },
+        "check_pattern": {
+          "requires": [
+            "crates",
+            "fold",
+            "moving_rope"
+          ],
+          "introduces": {}
+        },
+        "pattern_seen": {
+          "requires": [
+            "crates",
+            "fold",
+            "noodle_stall"
+          ],
+          "introduces": {
+            "wedge": "You kick a wedge",
+            "bleat": "something small bleats"
+          }
+        },
+        "pattern_missed": {
+          "requires": [
+            "fold"
+          ],
+          "introduces": {
+            "barrel_lid": "A barrel lid",
+            "bleat": "something small bleats"
+          }
+        },
+        "clear_quay": {
+          "requires": [
+            "fish_stall",
+            "noodle_stall",
+            "crates"
+          ],
+          "introduces": {
+            "dock_workers": "The dock workers",
+            "bleat": "something small bleats"
+          }
+        },
+        "shimmer": {
+          "requires": [
+            "fold",
+            "bleat"
+          ],
+          "introduces": {
+            "goat": "a snowhorn goat kid"
+          }
+        },
+        "read_light": {
+          "requires": [
+            "fold",
+            "goat"
+          ],
+          "introduces": {
+            "riftlight": "Riftlight"
+          }
+        },
+        "pull": {
+          "requires": [
+            "fold",
+            "moving_rope",
+            "crates",
+            "goat"
+          ],
+          "introduces": {
+            "rope": "a loose line",
+            "dock_worker": "A dock worker"
+          },
+          "conditional": [
+            {
+              "flag": "quay_head_start",
+              "requires": [
+                "wedge"
+              ]
+            },
+            {
+              "flag": "helped_fish_seller",
+              "requires": [
+                "fish_stall"
+              ]
+            },
+            {
+              "flag": "saved_barge_supper",
+              "requires": [
+                "pilot",
+                "saved_supper"
+              ]
+            },
+            {
+              "flag": "found_barge_mooring",
+              "requires": [
+                "pilot",
+                "safe_mooring"
+              ]
+            }
+          ]
+        },
+        "catch": {
+          "requires": [
+            "goat",
+            "fold"
+          ],
+          "introduces": {}
+        },
+        "anchor": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "swoop": {
+          "requires": [
+            "goat",
+            "crates"
+          ],
+          "introduces": {}
+        },
+        "smash": {
+          "requires": [
+            "crates",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "brace": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "caught": {
+          "requires": [
+            "goat",
+            "dock_worker",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "together": {
+          "requires": [
+            "goat",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "tumbled": {
+          "requires": [
+            "goat",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "through": {
+          "requires": [
+            "goat",
+            "fold"
+          ],
+          "introduces": {
+            "wet_clothes": "wet snow against your knees",
+            "coat": "inside your coat"
+          }
+        },
+        "white": {
+          "requires": [
+            "goat",
+            "coat"
+          ],
+          "introduces": {
+            "bell": "a bell rings"
+          }
+        },
+        "delivery": {
+          "requires": [
+            "exchange"
+          ],
+          "introduces": {
+            "supply_barge": "A supply barge",
+            "pilot": "frogfolk pilot",
+            "lost_landing": "landing steps hanging crooked",
+            "supper_sacks": "Sacks of potatoes"
+          }
+        },
+        "delivery_sacks": {
+          "requires": [
+            "pilot",
+            "supply_barge",
+            "lost_landing",
+            "supper_sacks"
+          ],
+          "introduces": {
+            "saved_supper": "Six crews eating tonight"
+          }
+        },
+        "delivery_moor": {
+          "requires": [
+            "pilot",
+            "supply_barge",
+            "lost_landing",
+            "supper_sacks"
+          ],
+          "introduces": {
+            "safe_mooring": "a low mooring ring"
+          }
+        }
+      }
+    },
+    "riftlight-glacier-survival": {
+      "entryFacts": [
+        "exchange",
+        "goat",
+        "rope",
+        "wet_clothes",
+        "coat",
+        "bell"
+      ],
+      "scenes": {
+        "arrival": {
+          "requires": [
+            "goat",
+            "bell"
+          ],
+          "introduces": {
+            "scraped_knees": "knees, scraped",
+            "herd": "a herd of snowhorn goats",
+            "melt_channel": "a melt channel"
+          }
+        },
+        "shelter": {
+          "requires": [
+            "goat",
+            "wet_clothes",
+            "bell",
+            "scraped_knees"
+          ],
+          "introduces": {
+            "snow_bank": "A bank of packed snow",
+            "dark_rocks": "a row of dark rocks"
+          }
+        },
+        "windbreak": {
+          "requires": [
+            "snow_bank",
+            "goat",
+            "dark_rocks"
+          ],
+          "introduces": {
+            "footprints": "footprints"
+          }
+        },
+        "rocks": {
+          "requires": [
+            "dark_rocks",
+            "bell"
+          ],
+          "introduces": {
+            "footprints": "deep footprints",
+            "sledge_tracks": "A broad wooden sledge"
+          }
+        },
+        "mend": {
+          "requires": [
+            "goat",
+            "scraped_knees",
+            "coat",
+            "dark_rocks"
+          ],
+          "introduces": {
+            "footprints": "broad footprints"
+          }
+        },
+        "tracks": {
+          "requires": [
+            "goat",
+            "footprints"
+          ],
+          "introduces": {
+            "herder": "A yeti herder",
+            "sledge": "an empty sledge"
+          },
+          "conditional": [
+            {
+              "flag": "marked_glacier_drift",
+              "requires": [
+                "drift_markers"
+              ]
+            },
+            {
+              "flag": "sheltered_kid_on_detour",
+              "requires": [
+                "warm_detour"
+              ]
+            },
+            {
+              "flag": "found_drift_hollow",
+              "requires": [
+                "hollow_found"
+              ]
+            }
+          ]
+        },
+        "tell_rift": {
+          "requires": [
+            "herder",
+            "wet_clothes",
+            "rope",
+            "exchange",
+            "sledge"
+          ],
+          "introduces": {
+            "blanket": "a folded blanket"
+          }
+        },
+        "ask_help": {
+          "requires": [
+            "herder",
+            "goat",
+            "sledge",
+            "melt_channel"
+          ],
+          "introduces": {
+            "blanket": "a folded blanket"
+          }
+        },
+        "channel": {
+          "requires": [
+            "herder",
+            "herd",
+            "melt_channel",
+            "sledge",
+            "rope"
+          ],
+          "introduces": {
+            "stepping_stone": "A flat stone",
+            "safe_steps": "dark patches of ice"
+          }
+        },
+        "step": {
+          "requires": [
+            "stepping_stone",
+            "melt_channel",
+            "herder"
+          ],
+          "introduces": {}
+        },
+        "sledge": {
+          "requires": [
+            "sledge",
+            "stepping_stone",
+            "herder"
+          ],
+          "introduces": {}
+        },
+        "wing_line": {
+          "requires": [
+            "rope",
+            "melt_channel"
+          ],
+          "introduces": {}
+        },
+        "song_step": {
+          "requires": [
+            "herder",
+            "safe_steps"
+          ],
+          "introduces": {}
+        },
+        "dry_bank": {
+          "requires": [
+            "goat",
+            "herd",
+            "herder"
+          ],
+          "introduces": {}
+        },
+        "wet_bank": {
+          "requires": [
+            "goat",
+            "herd",
+            "herder",
+            "melt_channel"
+          ],
+          "introduces": {}
+        },
+        "herd": {
+          "requires": [
+            "herder",
+            "herd",
+            "goat"
+          ],
+          "introduces": {
+            "hall_entrance": "a low opening in the ice",
+            "low_note": "a deep note"
+          }
+        },
+        "patient": {
+          "requires": [
+            "goat",
+            "herd",
+            "herder",
+            "hall_entrance"
+          ],
+          "introduces": {}
+        },
+        "sleeve": {
+          "requires": [
+            "goat",
+            "herder",
+            "hall_entrance"
+          ],
+          "introduces": {
+            "nibbled_cuff": "The kid gives it an interested nibble"
+          }
+        },
+        "hum": {
+          "requires": [
+            "goat",
+            "low_note",
+            "hall_entrance"
+          ],
+          "introduces": {}
+        },
+        "hall": {
+          "requires": [
+            "hall_entrance",
+            "herder",
+            "wet_clothes",
+            "low_note"
+          ],
+          "introduces": {
+            "hall": "a singing hall",
+            "warm_stones": "a row of warm stones",
+            "blankets": "Damp blankets hang over a rail",
+            "glacier": "Glacier of Origins"
+          }
+        },
+        "listen": {
+          "requires": [
+            "hall",
+            "herder",
+            "low_note"
+          ],
+          "introduces": {
+            "songbook": "an open songbook"
+          }
+        },
+        "song_answer": {
+          "requires": [
+            "herder",
+            "hall",
+            "low_note"
+          ],
+          "introduces": {}
+        },
+        "learn_note": {
+          "requires": [
+            "hall",
+            "herder",
+            "low_note"
+          ],
+          "introduces": {
+            "learned_note": "You find the note together",
+            "seam": "a sealed seam"
+          }
+        },
+        "changing": {
+          "requires": [
+            "herder",
+            "learned_note",
+            "seam",
+            "hall",
+            "bell",
+            "seam_tested"
+          ],
+          "introduces": {
+            "travelers": "Three travelers in dark cloaks",
+            "grazing_route": "It led to the herd's sheltered grazing ledge"
+          },
+          "conditional": [
+            {
+              "flag": "made_glacier_shelter",
+              "requires": [
+                "snow_bank"
+              ]
+            },
+            {
+              "flag": "crossed_melt_dry",
+              "requires": [
+                "melt_channel"
+              ]
+            }
+          ]
+        },
+        "blankets": {
+          "requires": [
+            "blankets",
+            "herder",
+            "rope",
+            "goat",
+            "herd",
+            "travelers"
+          ],
+          "introduces": {}
+        },
+        "departure": {
+          "requires": [
+            "hall",
+            "goat",
+            "herd",
+            "travelers"
+          ],
+          "introduces": {
+            "griffin": "A griffin",
+            "unicorn": "a unicorn",
+            "map": "a map"
+          },
+          "conditional": [
+            {
+              "flag": "helped_glacier_herder",
+              "requires": [
+                "blankets"
+              ]
+            }
+          ]
+        },
+        "drift": {
+          "requires": [
+            "footprints",
+            "dark_rocks",
+            "bell",
+            "goat",
+            "rope"
+          ],
+          "introduces": {
+            "drift": "a white drift"
+          }
+        },
+        "drift_probe": {
+          "requires": [
+            "drift",
+            "rope",
+            "bell"
+          ],
+          "introduces": {
+            "drift_markers": "small stones marking the safe way"
+          }
+        },
+        "drift_detour": {
+          "requires": [
+            "drift",
+            "dark_rocks",
+            "goat",
+            "coat",
+            "bell"
+          ],
+          "introduces": {
+            "warm_detour": "The walk is longer"
+          }
+        },
+        "drift_slip": {
+          "requires": [
+            "drift",
+            "goat",
+            "rope"
+          ],
+          "introduces": {
+            "hollow_found": "Now you can see the hollow"
+          }
+        },
+        "seam_response": {
+          "requires": [
+            "seam",
+            "learned_note",
+            "herder"
+          ],
+          "introduces": {
+            "seam_frost": "A narrow line of frost"
+          }
+        },
+        "seam_hum": {
+          "requires": [
+            "seam",
+            "learned_note",
+            "herder"
+          ],
+          "introduces": {
+            "seam_tested": "it answers again"
+          }
+        },
+        "seam_touch": {
+          "requires": [
+            "seam",
+            "learned_note",
+            "herder"
+          ],
+          "introduces": {
+            "seam_tested": "You try twice more"
+          }
+        },
+        "seam_listen": {
+          "requires": [
+            "seam",
+            "learned_note",
+            "herder"
+          ],
+          "introduces": {
+            "seam_tested": "Each time the note sounds"
+          }
+        }
+      }
+    },
+    "riftlight-riftseekers-departure": {
+      "entryFacts": [
+        "exchange",
+        "goat",
+        "rope",
+        "bell",
+        "hall",
+        "glacier",
+        "learned_note",
+        "travelers",
+        "griffin",
+        "unicorn",
+        "map",
+        "seam",
+        "seam_tested",
+        "grazing_route",
+        "herder",
+        "herd",
+        "sledge"
+      ],
+      "scenes": {
+        "map": {
+          "requires": [
+            "griffin",
+            "unicorn",
+            "map"
+          ],
+          "introduces": {
+            "orin": "I'm Orin Vale",
+            "olivia": "Lady Olivia",
+            "seren": "Seren Wisp",
+            "instruments": "little brass instruments",
+            "ring_case": "a case of small rings"
+          }
+        },
+        "arrival_story": {
+          "requires": [
+            "orin",
+            "olivia",
+            "goat"
+          ],
+          "introduces": {}
+        },
+        "arrival_question": {
+          "requires": [
+            "orin",
+            "olivia",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "fellowship": {
+          "requires": [
+            "orin",
+            "olivia",
+            "seren",
+            "ring_case"
+          ],
+          "introduces": {
+            "riftseekers": "Riftseekers",
+            "rifts": "these openings rifts"
+          }
+        },
+        "seren": {
+          "requires": [
+            "seren",
+            "orin",
+            "map"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "starweaver_read_first_rift",
+              "requires": [
+                "riftlight"
+              ]
+            },
+            {
+              "notFlag": "starweaver_read_first_rift",
+              "requires": [
+                "instruments"
+              ]
+            }
+          ]
+        },
+        "lead": {
+          "requires": [
+            "orin",
+            "map",
+            "grazing_route",
+            "herder",
+            "herd"
+          ],
+          "introduces": {
+            "frostfang": "Frostfang",
+            "cairnstep": "They call it the Cairnstep"
+          }
+        },
+        "olivia": {
+          "requires": [
+            "olivia",
+            "orin",
+            "seren",
+            "map",
+            "grazing_route",
+            "rifts"
+          ],
+          "introduces": {}
+        },
+        "route": {
+          "requires": [
+            "orin",
+            "seren",
+            "frostfang",
+            "hall",
+            "seam",
+            "learned_note"
+          ],
+          "introduces": {
+            "great_river": "The Great River starts here",
+            "ice_shelf": "the ice shelf"
+          }
+        },
+        "chime": {
+          "requires": [
+            "orin",
+            "rifts"
+          ],
+          "introduces": {
+            "listening_chime": "A Listening Chime",
+            "chime_rules": "An echo means it will stay open and let you come back"
+          }
+        },
+        "test_chime": {
+          "requires": [
+            "listening_chime",
+            "orin",
+            "chime_rules"
+          ],
+          "introduces": {}
+        },
+        "ring": {
+          "requires": [
+            "listening_chime",
+            "orin",
+            "seren",
+            "rifts"
+          ],
+          "introduces": {}
+        },
+        "wrap": {
+          "requires": [
+            "listening_chime",
+            "orin",
+            "chime_rules"
+          ],
+          "introduces": {}
+        },
+        "parting": {
+          "requires": [
+            "olivia",
+            "seren",
+            "orin",
+            "map",
+            "cairnstep",
+            "ring_case",
+            "instruments"
+          ],
+          "introduces": {}
+        },
+        "camp": {
+          "requires": [
+            "hall",
+            "glacier",
+            "ice_shelf",
+            "frostfang",
+            "listening_chime",
+            "cairnstep",
+            "herd",
+            "seam",
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "help_now": {
+          "requires": [
+            "olivia",
+            "orin",
+            "seren",
+            "herder",
+            "sledge"
+          ],
+          "introduces": {
+            "supper_gift": "a supper bundle from her pack"
+          }
+        },
+        "safe_routes": {
+          "requires": [
+            "orin",
+            "olivia",
+            "seren",
+            "herder",
+            "cairnstep"
+          ],
+          "introduces": {
+            "supper_gift": "a supper bundle for the herder"
+          }
+        }
+      },
+      "entryByFlag": {
+        "starweaver_read_first_rift": [
+          "riftlight"
+        ]
+      }
+    }
+  }
+}
