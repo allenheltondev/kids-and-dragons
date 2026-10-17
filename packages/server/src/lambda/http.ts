@@ -409,15 +409,25 @@ async function getStateRoute(req: Req, deps: HandlerDeps) {
    * subscription is dead and whose token has expired, leaving a phone showing an
    * old game it cannot play instead of saying the room is gone.
    */
+  /*
+   * Only somebody in the room may read it (#267): a seated phone's session
+   * token, or the host screen's viewer token, naming this run. Without one the
+   * answer is the one an unknown code gets, so this route says nothing about
+   * which codes are live and needs no wrong-code budget. A code alone used to
+   * be enough, which let anyone with it read the party's names and every move
+   * without ever showing up in the room.
+   */
+  const reader = await roomReader(req, deps);
+  const named = code ? `no open room ${code}` : `no run ${runId}`;
+  if (!reader) return error(404, "NOT_FOUND", named);
+  if ((code && reader.roomCode.toUpperCase() !== code) || (runId && reader.runId !== runId)) {
+    return error(404, "NOT_FOUND", named);
+  }
+  if (!runId) runId = reader.runId;
+
   if (code) {
-    // A phone or a TV already seated in this room is not guessing, and the
-    // reconnect path must not pay for the guard on every resync.
-    const seated = await holdsRoom(req, deps, code);
-    const lookup = seated ? null : await admitCodeLookup(req.client, deps);
-    if (!seated && !lookup) return slowDown(deps);
     const room = await deps.repo.getRoom(code);
     if (!room) return error(404, "NOT_FOUND", `no open room ${code}`);
-    await lookup?.hit();
     if (runId && room.runId !== runId) {
       return error(404, "NOT_FOUND", `room ${code} is not that run`);
     }
@@ -587,14 +597,14 @@ function sameSecret(sent: string | undefined, expected: string): boolean {
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
-/** Does the request carry a session or viewer token for this room? */
-async function holdsRoom(req: Req, deps: HandlerDeps, code: string): Promise<boolean> {
+/** The room a request's session or viewer token was issued for, if it carries one. */
+async function roomReader(
+  req: Req,
+  deps: HandlerDeps,
+): Promise<{ runId: string; roomCode: string } | null> {
   const token = bearer(req) || (typeof req.query.token === "string" ? req.query.token : "");
-  if (!token) return false;
-  const session = await deps.identity.resolveSession(token);
-  if (session) return session.roomCode.toUpperCase() === code;
-  const viewer = await deps.identity.resolveViewer(token);
-  return viewer?.roomCode.toUpperCase() === code;
+  if (!token) return null;
+  return (await deps.identity.resolveSession(token)) ?? (await deps.identity.resolveViewer(token));
 }
 
 /** The room-scoped token issued at join. This is what authenticates play. */

@@ -1,4 +1,5 @@
 import { openPlayerTask } from "./player-navigation";
+import { roomState } from "./room-state";
 /**
  * The Field Guide at the table (epic #101, launch #112).
  *
@@ -29,10 +30,9 @@ interface Encounter {
   combatants: { id: string; side: string; down: boolean; name: string }[];
 }
 
-async function encounterOf(code: string): Promise<Encounter | null> {
-  const response = await fetch(`http://localhost:8787/api/state?code=${code}`);
-  const body = (await response.json()) as { state: { encounter?: Encounter | null } };
-  return body.state.encounter ?? null;
+async function encounterOf(page: Page, code: string): Promise<Encounter | null> {
+  const state = await roomState<{ encounter?: Encounter | null }>(page, code);
+  return state.encounter ?? null;
 }
 
 /** Is the server waiting on our hero right now? */
@@ -146,12 +146,12 @@ test.describe("the Field Guide", () => {
     await expect
       .poll(async () => {
         for (const page of [phone, friend]) {
-          if (await encounterOf(code)) return true;
+          if (await encounterOf(phone, code)) return true;
           if (await page.getByRole("button", { name: /wait, not yet/i }).isVisible().catch(() => false)) continue;
           await openPlayerTask(page);
           await page.getByRole("button", { name: /i'm ready/i }).click({ timeout: 3_000 }).catch(() => {});
         }
-        return Boolean(await encounterOf(code));
+        return Boolean(await encounterOf(phone, code));
       }, { timeout: 60_000 })
       .toBe(true);
 
@@ -163,12 +163,12 @@ test.describe("the Field Guide", () => {
     await expect
       .poll(async () => {
         if (toastShown) return true;
-        if (heroUp(await encounterOf(code), HERO)) await endTurn(phone);
+        if (heroUp(await encounterOf(phone, code), HERO)) await endTurn(phone);
         return toastShown;
       }, { timeout: 90_000, intervals: [1_000] })
       .toBe(true);
     expect(await toastSeen, "the phone never showed the Field Guide toast").toBe(true);
-    expect(await encounterOf(code), "the fight should still be on").not.toBeNull();
+    expect(await encounterOf(phone, code), "the fight should still be on").not.toBeNull();
 
     // --- Open the guide from the tray, mid-combat ---
     await tray.getByRole("button", { name: /^Guide$/ }).click(TAP);
@@ -181,7 +181,7 @@ test.describe("the Field Guide", () => {
     await expect(guide.getByRole("heading", { name: "Story", exact: true })).toBeVisible();
     await expect(guide.getByText(/tangle in marsh magic/)).toBeVisible();
     await expect(guide.getByRole("heading", { name: "Likes", exact: true })).toBeVisible();
-    expect(await encounterOf(code), "reading the guide must not end the fight").not.toBeNull();
+    expect(await encounterOf(phone, code), "reading the guide must not end the fight").not.toBeNull();
 
     // --- Back to the fight, and take the turn ---
     await tray.getByRole("button", { name: /^You$/ }).click(TAP);
@@ -189,19 +189,19 @@ test.describe("the Field Guide", () => {
     // The friend finishes their turn; ours comes round.
     await expect
       .poll(async () => {
-        const enc = await encounterOf(code);
+        const enc = await encounterOf(phone, code);
         if (heroUp(enc, FRIEND)) await endTurn(friend);
-        return heroUp(await encounterOf(code), HERO);
+        return heroUp(await encounterOf(phone, code), HERO);
       }, { timeout: 90_000, intervals: [1_000] })
       .toBe(true);
     // The turn opens the controls by itself — no "Your turn" tap in between.
     await expect(phone.getByRole("button", { name: /^Your turn$/ })).toHaveCount(0);
-    const before = await encounterOf(code);
+    const before = await encounterOf(phone, code);
     expect(before).not.toBeNull();
     await endTurn(phone);
     await expect
       .poll(async () => {
-        const now = await encounterOf(code);
+        const now = await encounterOf(phone, code);
         return now === null || now.round !== before!.round || now.turnIndex !== before!.turnIndex;
       }, { timeout: 30_000 })
       .toBe(true);

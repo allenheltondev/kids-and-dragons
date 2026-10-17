@@ -445,10 +445,12 @@ export interface WatchRoomResult {
 /**
  * How a display client attaches — the TV in Party Mode (spec §2.1).
  *
- * It has no device, no player, and no token, and that is the design: the TV is
- * a screen, and screens do not sign in. But in prod the realtime channel is
- * authorised per subscriber, so it still needs *something* to present, and this
- * is where it gets it: a token naming this room and nothing else.
+ * It has no player and no session, and that is the design: the TV is a
+ * screen, and screens do not sign in. What it does have is the device binding
+ * it was given when it opened the room, and that is what lets it watch: only
+ * the room's host may (#267). In prod the realtime channel is authorised per
+ * subscriber, so it gets *something* to present here: a token naming this
+ * room and nothing else.
  *
  * Deliberately not a `joinRoom` variant. A viewer is not a party member — it
  * must not appear in `party`, must not affect presence, and must not satisfy any
@@ -459,9 +461,8 @@ export async function watchRoom(
   input: {
     code: string;
     /**
-     * The screen's own device binding, when it has one: a TV that opened the
-     * room keeps it, and presenting it is how a hard-refreshed TV learns it is
-     * still the host. It grants nothing else; the viewer token is the same.
+     * The screen's own device binding. A TV that opened the room keeps it, and
+     * presenting it is what lets the TV watch, after a hard refresh too.
      */
     deviceId?: string | undefined;
   },
@@ -469,6 +470,14 @@ export async function watchRoom(
 ): Promise<HandlerResult<WatchRoomResult>> {
   const room = await deps.repo.getRoom(input.code);
   if (!room) return fail("NOT_FOUND", `no open room ${input.code.toUpperCase()}`);
+
+  // Only the screen that opened the room may show it (#267). Otherwise anyone
+  // with the code could watch the party, unannounced and beyond the reach of
+  // Remove; to see the room, a stranger now has to join it, and be seen. A room
+  // opened before rooms had a host keeps the old rule until it expires.
+  if (room.hostDeviceId !== undefined && room.hostDeviceId !== input.deviceId) {
+    return fail("FORBIDDEN", "Only the screen that opened this room can show it.");
+  }
 
   const state = await deps.repo.getState(room.runId);
   if (!state) return fail("NOT_FOUND", `run ${room.runId} has no state`);

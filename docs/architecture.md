@@ -587,20 +587,30 @@ as away, so taking somebody out mid-fight strands nothing, and goes on
 `RunState.removed`, which the join, every action, the preview relay, presence
 and the channel authorizer all refuse. The authorizer holds a player's "yes"
 for a minute rather than five, so a removed phone that reconnects is turned
-away soon. What removal cannot do is stop a phone that clears its storage: it
-comes back as a new player, is announced again, and can be removed again.
-Locking a room to new joins is #263's.
+away soon. Nor can a removed phone go on watching: only the screen that opened
+the room may watch it, and reading its state takes a token for it ("The TV,
+which is nobody", below). What removal cannot do is stop a phone that clears
+its storage: it comes back as a new player, is announced again, and can be
+removed again. Locking a room to new joins is #263's.
 
 Room items carry a **6-hour TTL** so abandoned rooms clean themselves up. Revoking a device does not
 touch any character — characters belong to the household.
 
 #### The TV, which is nobody
 
-A display client has no device, no player, and no token, because a screen does
-not sign in (spec §2.1). Locally that costs nothing — it just opens the stream.
-In prod the realtime channel is authorised per subscriber, so it needs *something*
-to present: `POST /room/ABCD/watch` returns a **viewer token** naming that room
-and nothing else, valid until the room expires.
+A display client has no player and no session, because a screen does not sign
+in (spec §2.1). The realtime channel is authorised per subscriber, so it needs
+*something* to present: `POST /room/ABCD/watch` returns a **viewer token**
+naming that room and nothing else, valid until the room expires.
+
+Only the screen that opened the room gets one (#267). It presents the device
+binding it was given when it opened the room, which survives a hard refresh.
+Anyone else with the code would otherwise watch the party unannounced, out of
+reach of Remove; to see a room, a stranger has to join it, and be seen doing so.
+For the same reason `GET /state` answers only a session or viewer token for
+that room, and answers anything else as if the room did not exist. The price is
+that a TV whose storage is cleared cannot reattach to its own room: it opens a
+new one.
 
 It is a separate type from a session token rather than a session token with the
 fields blanked out, so that a display credential can never satisfy a code path
