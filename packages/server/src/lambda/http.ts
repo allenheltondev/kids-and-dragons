@@ -34,6 +34,7 @@ import { relayPreview } from "../handlers/preview.ts";
 import type { ActionError, HandlerDeps } from "../handlers/deps.ts";
 import { iso, ok } from "../handlers/deps.ts";
 import { createRoom, joinRoom, settleRoom, watchRoom } from "../handlers/room.ts";
+import { removePlayer } from "../handlers/remove.ts";
 import { listHeroes } from "../handlers/heroes.ts";
 import { getJournal } from "../handlers/journal.ts";
 import { getState } from "../handlers/state.ts";
@@ -142,6 +143,11 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
       const code = watch[1].toUpperCase();
       return (deps) => postWatch(req, deps, code);
     }
+    const remove = /^\/api\/room\/([A-Za-z]{4})\/remove$/.exec(req.path);
+    if (remove?.[1]) {
+      const code = remove[1].toUpperCase();
+      return (deps) => postRemove(req, deps, code);
+    }
   }
   if (req.method === "GET" && req.path === "/api/state") return (deps) => getStateRoute(req, deps);
   if (req.method === "GET" && req.path === "/api/heroes") return (deps) => getHeroes(req, deps);
@@ -176,6 +182,7 @@ async function postRoom(req: Req, deps: HandlerDeps) {
       campaignId: (req.body.campaignId as string | null | undefined) ?? null,
       // The TV's household is a placeholder until a phone joins (RoomRecord.claimable).
       claimable: display,
+      hostDeviceId: host.principal.deviceId,
     },
     deps,
   );
@@ -190,6 +197,7 @@ async function postRoom(req: Req, deps: HandlerDeps) {
       {
         ...created.value,
         roomCode: created.value.code,
+        host: true,
         ...(host.deviceToken ? { deviceToken: host.deviceToken } : {}),
       },
       host.principal,
@@ -261,9 +269,28 @@ async function postJoin(req: Req, deps: HandlerDeps, code: string) {
 /** The TV attaching. No device, no player, no sign-in — see `watchRoom`. */
 async function postWatch(req: Req, deps: HandlerDeps, code: string) {
   if (!(await codeLookupAllowed(req.client, deps))) return slowDown(deps);
-  const result = await watchRoom({ code }, deps);
+  // Optional: a TV that opened the room presents its binding to learn it is the host.
+  const screen = await resolvePrincipal(req, deps);
+  const result = await watchRoom({ code, deviceId: screen?.principal.deviceId }, deps);
   if (result.ok) return json(200, result.value);
   if (result.error.code === "NOT_FOUND") await recordCodeMiss(req.client, deps);
+  return fromError(result.error);
+}
+
+/** The host taking a player out (#267). Device token only: it names the host. */
+async function postRemove(req: Req, deps: HandlerDeps, code: string) {
+  if (!(await codeLookupAllowed(req.client, deps))) return slowDown(deps);
+  const host = await resolvePrincipal(req, deps);
+  if (!host) return error(401, "FORBIDDEN", "taking someone out needs this device's token");
+  const playerId = req.body.playerId;
+  if (typeof playerId !== "string" || playerId === "") {
+    return error(400, "ILLEGAL", "expected { playerId }");
+  }
+  const result = await removePlayer({ code, principal: host.principal, playerId }, deps);
+  if (result.ok) return json(200, { ok: true, seq: result.value.seq }, host.principal);
+  if (result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room")) {
+    await recordCodeMiss(req.client, deps);
+  }
   return fromError(result.error);
 }
 

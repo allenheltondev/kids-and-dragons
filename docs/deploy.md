@@ -462,6 +462,13 @@ it is already in is not affected: reading a room's state with a token for that
 room is never counted or refused. Joining or watching from scratch is. The rows are `GUESS#<client>` / `WINDOW#<n>`, and deleting one forgives
 that client at once.
 
+**Somebody got into a game who should not be there.** The TV, or the phone
+that opened the room, showed them arriving, with a Remove button for 30
+seconds. After that, the same thing by hand: append their playerId to
+`removed` on the run's `RUN#<runId>` / `STATE` item and set their party member's
+`connected` to `false`. Their joins, actions and channel subscriptions are
+refused from then on. A room opened before #267 has no host and no button.
+
 **A room is stuck.** Rooms expire on their own after six hours. `getRoom` filters
 expired rooms at read time rather than waiting for the TTL sweep, so a stale code
 reads as gone immediately even though the row may live for up to 48 hours more.

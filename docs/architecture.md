@@ -573,6 +573,22 @@ so a game in progress is never cut off by strangers on the same network. A
 client is its IPv4 address or its IPv6 /64, and behind CloudFront that comes
 from a header CloudFront sets and vouches for (deploy.md, "The origin secret").
 
+**The room sees who arrives, and its host can take one out.** Every join is
+announced on the room's channel (`ArrivalMessage`), live only like a preview,
+so a stranger with the code shows up the moment they are in, not after they
+have made a hero. The shared display shows it, and so does the device that
+opened the room (`RoomRecord.hostDeviceId`: the TV in Party Mode, the host's
+phone in Travel Mode). On the host's device the notice carries a Remove button
+(`handlers/remove.ts`). A removed player stays in `party` with
+`connected: false`, which every turn, vote, roll and ready-gate already reads
+as away, so taking somebody out mid-fight strands nothing, and goes on
+`RunState.removed`, which the join, every action, the preview relay, presence
+and the channel authorizer all refuse. The authorizer holds a player's "yes"
+for a minute rather than five, so a removed phone that reconnects is turned
+away soon. What removal cannot do is stop a phone that clears its storage: it
+comes back as a new player, is announced again, and can be removed again.
+Locking a room to new joins is #263's.
+
 Room items carry a **6-hour TTL** so abandoned rooms clean themselves up. Revoking a device does not
 touch any character — characters belong to the household.
 

@@ -1153,6 +1153,16 @@ async function authorize(
     });
   }
 
+  // Taken out by the host (#267, `removePlayer`). Their session token is still
+  // well-formed until the room ends; this is what makes it worthless.
+  if (state.removed?.includes(input.playerId)) {
+    return errorResult({
+      ok: false,
+      seq: state.seq,
+      error: { code: "FORBIDDEN", message: "This phone was taken out of the game." },
+    });
+  }
+
   const run = await deps.repo.getRun(input.runId);
   if (!run) {
     return errorResult({

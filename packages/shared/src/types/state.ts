@@ -379,6 +379,15 @@ export interface RunState {
    * broadcast only (`ServerMessage.discovered`).
    */
   fieldGuide?: Record<string, FieldGuideFind>;
+  /**
+   * Players the room's host took out of this game (#267). They stay in `party`
+   * with `connected: false`, which every turn, vote, roll and ready-gate
+   * already reads as away, so taking someone out mid-fight cannot strand the
+   * table. What this list adds is that they cannot come back: the server
+   * refuses their join, their actions and their channel subscription.
+   * Absent until somebody is removed.
+   */
+  removed?: string[];
   updatedAt: string;
 }
 
