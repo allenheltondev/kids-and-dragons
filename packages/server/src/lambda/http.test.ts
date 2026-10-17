@@ -663,6 +663,12 @@ describe("the wrong-code budget", () => {
   });
 });
 
+/** A well-formed code no test room has, distinct for each `i` below 576. */
+function missCode(i: number): string {
+  const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  return `QQ${letters[Math.floor(i / 24) % 24]}${letters[i % 24]}`;
+}
+
 describe("POST /api/room/:code/remove", () => {
   /** A Travel Mode room opened over HTTP, so it has a host, and a second phone in it. */
   async function hosted(harness: TestHarness) {
@@ -740,7 +746,7 @@ describe("POST /api/room/:code/remove", () => {
     const { rt, host } = await hosted(harness);
     const headers = { "x-kad-device-token": host.deviceToken, "x-kad-viewer": "198.51.100.7" };
     for (let i = 0; i < CODE_MISS_LIMIT; i++) {
-      const code = `QQA${"ABCDEFGHJKLM"[i]}`;
+      const code = missCode(i);
       const missed = await respond(event("POST", `/api/room/${code}/remove`, { body: { playerId: "p" }, headers }), rt);
       expect(missed.statusCode, code).toBe(404);
     }
@@ -763,7 +769,7 @@ describe("whose address a miss is counted against", () => {
   it("believes CloudFront's viewer address when CloudFront's secret came with it", async () => {
     const rt = runtimeFor(makeHarness(), { originSecret: "s3cret-from-ssm" });
     const viaCloudFront = { "x-kad-viewer": "198.51.100.7", "x-kad-origin": "s3cret-from-ssm" };
-    for (let i = 0; i < CODE_MISS_LIMIT; i++) await respond(miss(`QQA${"ABCDEFGHJKLM"[i]}`, viaCloudFront), rt);
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) await respond(miss(missCode(i), viaCloudFront), rt);
 
     expect((await respond(miss("WXYZ", viaCloudFront), rt)).statusCode).toBe(429);
     // The edge's own address is everyone near that edge; it was not the one counted.
@@ -779,7 +785,7 @@ describe("whose address a miss is counted against", () => {
     const rt = runtimeFor(makeHarness(), { originSecret: "s3cret-from-ssm" });
     for (let i = 0; i < CODE_MISS_LIMIT; i++) {
       const forged = { "x-kad-viewer": `203.0.113.${i}`, "x-kad-origin": "wrong" };
-      await respond(miss(`QQA${"ABCDEFGHJKLM"[i]}`, forged, "198.51.100.66"), rt);
+      await respond(miss(missCode(i), forged, "198.51.100.66"), rt);
     }
     expect(
       (await respond(miss("WXYZ", { "x-kad-viewer": "203.0.113.200" }, "198.51.100.66"), rt)).statusCode,
