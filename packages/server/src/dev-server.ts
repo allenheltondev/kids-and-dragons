@@ -47,11 +47,11 @@ import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
 import { getState } from "./handlers/state.ts";
 import {
-  asSharedSeat,
   forgetDevice,
   listSharedPlayers,
   seatOnSharedDevice,
   shareDevice,
+  tabletHost,
 } from "./handlers/shared-device.ts";
 import {
   DevIdentity,
@@ -155,7 +155,7 @@ async function main(): Promise<void> {
       const seated = await joinRoom({ code: opened.value.code, principal: seat.value }, deps);
       if (!seated.ok) return sendError(res, statusFor(seated.error), seated.error.code, seated.error.message);
       return res.json({
-        ...asSharedSeat(seated.value),
+        ...seated.value,
         code: opened.value.code,
         roomCode: opened.value.code,
         expiresAt: opened.value.expiresAt,
@@ -236,7 +236,7 @@ async function main(): Promise<void> {
       if (!seat.ok) return sendError(res, statusFor(seat.error), seat.error.code, seat.error.message);
       const seated = await joinRoom({ code, principal: seat.value }, deps);
       if (!seated.ok) return sendError(res, statusFor(seated.error), seated.error.code, seated.error.message);
-      return res.json({ ...asSharedSeat(seated.value), code, roomCode: code, expiresAt: found.expiresAt });
+      return res.json({ ...seated.value, code, roomCode: code, expiresAt: found.expiresAt });
     }
 
     const existing = await resolvePrincipal(req, base);
@@ -302,15 +302,26 @@ async function main(): Promise<void> {
     if (!deps) return;
 
     const code = String(req.params.code ?? "").toUpperCase();
-    const host = await resolvePrincipal(req, base);
-    if (!host) return sendError(res, 401, "FORBIDDEN", "taking someone out needs this device's token");
+    // A phone's device token, or a tablet's token plus its seated player's session (#250).
+    const shared = await resolveShared(req, base);
+    if (shared === null) return forgottenDevice(res);
+    let principal: Pick<DeviceIdentity, "deviceId" | "playerId">;
+    if (shared) {
+      const seat = tabletHost(shared, await resolveSession(req, base), code);
+      if (!seat.ok) return sendError(res, 401, seat.error.code, seat.error.message);
+      principal = seat.value;
+    } else {
+      const host = await resolvePrincipal(req, base);
+      if (!host) return sendError(res, 401, "FORBIDDEN", "taking someone out needs this device's token");
+      principal = host.principal;
+    }
     const playerId = req.body?.playerId;
     if (typeof playerId !== "string" || playerId === "") {
       return sendError(res, 400, "ILLEGAL", "expected { playerId }");
     }
     const lookup = await admitCodeLookup(clientOf(req), deps);
     if (!lookup) return slowDown(res, deps);
-    const result = await removePlayer({ code, principal: host.principal, playerId }, deps);
+    const result = await removePlayer({ code, principal, playerId }, deps);
     const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
     if (!missed) await lookup.hit();
     if (result.ok) return res.json({ ok: true, seq: result.value.seq });

@@ -1160,13 +1160,19 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
       async removePlayer(playerId: string) {
         const session = get().session;
-        // A shared tablet holds no device binding, and must not mint one (#250).
-        if (!session?.host || loadSharedDevice(deps.storage)) return false;
-        // The device binding is what names the host; a TV holds one too.
-        const deviceToken = loadIdentity(deps.storage).deviceToken;
-        if (!deviceToken) return false;
+        if (!session?.host) return false;
+        // A shared tablet holds no device binding, and must not mint one: its
+        // own token and the seated kid's session name the host (#250).
+        const shared = loadSharedDevice(deps.storage);
+        // The device binding is what names the host anywhere else; a TV holds one too.
+        const deviceToken = shared ? null : loadIdentity(deps.storage).deviceToken;
+        if (!shared && !deviceToken) return false;
         try {
-          await deps.api.removePlayer(session.roomCode, playerId, deviceToken);
+          if (shared) {
+            await deps.api.removePlayerShared(session.roomCode, playerId, shared.token, session.sessionToken);
+          } else if (deviceToken) {
+            await deps.api.removePlayer(session.roomCode, playerId, deviceToken);
+          }
           set({ arrivals: get().arrivals.filter((a) => a.playerId !== playerId) });
           return true;
         } catch (error) {

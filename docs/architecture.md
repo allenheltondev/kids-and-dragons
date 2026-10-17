@@ -590,6 +590,10 @@ storage was cleared, nobody. So a device binding comes in two kinds (#250):
   `ViewerIdentity` is: with no player it cannot satisfy a code path that
   expects one. `resolveDevice` refuses a shared token, and `resolveSharedDevice`
   a personal one. A seat exists only for the one request that picked it.
+- **A tablet that opens a room is its host** (#267), like a phone. Remove
+  takes the tablet's token plus the seated kid's session for that room, so
+  the device is proved by its binding and the host still cannot take
+  themselves out.
 - **Forget this device** (`POST /api/auth/forget-device`): a signed-in owner
   revokes a shared binding. Heroes are untouched, because characters belong to
   the household. A forgotten tablet is told so (401) and goes back to an
