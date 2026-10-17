@@ -277,6 +277,18 @@
   color: var(--kad-ink-dim);
 }
 
+/* A phone the host took out of the game (App.tsx, #267). */
+.kad-removed {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  max-inline-size: 22rem;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: var(--kad-text-lg);
+  color: var(--kad-ink);
+}
+
 /* The canvas fills its surface and nothing more. */
 .kad-stage {
   position: absolute;

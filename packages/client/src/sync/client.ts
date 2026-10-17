@@ -70,6 +70,8 @@ export interface LocalCreateRoomResponse extends CreateRoomResponse, JoinRoomRes
  */
 export interface LocalOpenDisplayResponse extends CreateRoomResponse {
   deviceToken?: string;
+  /** Always true: the screen that opens a room is its host (#267). */
+  host?: boolean;
 }
 
 export interface StateQuery {
@@ -117,6 +119,8 @@ export interface WatchRoomResponse {
   expiresAt: string;
   viewerToken: string;
   state: RunState;
+  /** This screen opened the room, so it may take a player out (#267). */
+  host?: boolean;
 }
 
 export interface Api {
@@ -124,7 +128,13 @@ export interface Api {
   /** Party Mode, opened from the TV itself: nobody is seated. */
   openDisplayRoom(body: Omit<CreateRoomInput, "mode" | "display">): Promise<LocalOpenDisplayResponse>;
   joinRoom(code: string, body: LocalJoinRequest): Promise<JoinRoomResponse>;
-  watchRoom(code: string, timeoutMs?: number): Promise<WatchRoomResponse>;
+  /**
+   * `deviceToken`, when this screen has one, is how a TV that opened the room
+   * learns after a refresh that it is still the host (#267). It grants nothing else.
+   */
+  watchRoom(code: string, timeoutMs?: number, deviceToken?: string): Promise<WatchRoomResponse>;
+  /** The host taking a player out of the room (#267). The device token names the host. */
+  removePlayer(code: string, playerId: string, deviceToken: string): Promise<void>;
   postAction(body: ActionRequest, token: string): Promise<ActionResponse>;
   /** An unconfirmed tap, relayed to the room's screens (`IntentPreview`). */
   postPreview(preview: IntentPreview | null, context: string | null, token: string): Promise<void>;
@@ -289,12 +299,20 @@ export const api: Api = {
     });
   },
 
-  watchRoom(code, timeoutMs) {
+  watchRoom(code, timeoutMs, deviceToken) {
     return request<WatchRoomResponse>(`/api/room/${encodeURIComponent(code)}/watch`, {
       method: "POST",
-      headers: JSON_HEADERS,
+      headers: { ...JSON_HEADERS, ...(deviceToken ? { "x-kad-device-token": deviceToken } : {}) },
       body: JSON.stringify({}),
       ...(timeoutMs !== undefined ? { timeoutMs } : {}),
+    });
+  },
+
+  async removePlayer(code, playerId, deviceToken) {
+    await request<{ ok: true }>(`/api/room/${encodeURIComponent(code)}/remove`, {
+      method: "POST",
+      headers: { ...JSON_HEADERS, "x-kad-device-token": deviceToken },
+      body: JSON.stringify({ playerId }),
     });
   },
 

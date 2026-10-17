@@ -19,6 +19,7 @@ import { Component, Suspense, lazy, useEffect, type ReactNode } from "react";
 // the barrel is a static import of all of them — the lazy room below would
 // still be fetched before the join screen could paint.
 import { HomeScreen } from "./screens/HomeScreen";
+import { ArrivalNotices } from "./screens/ArrivalNotices";
 import { routeCode, useRoute } from "./router";
 import { useGameStore, useLayoutMode, useRunState, useChapter, useMe } from "./store";
 import { Button, ConnectionBanner, ErrorToast, Spinner } from "./ui";
@@ -146,6 +147,9 @@ export function App(): React.JSX.Element {
       {/* Shell-level like the toast, and for the same reason: a dropped
           connection is true on every surface in every mode at once. */}
       <ConnectionBanner />
+      {/* Who just joined (#267), on the shared display. A host's phone shows
+          them in its own view instead (layout/PlayerView). */}
+      <ArrivalNotices placement="float" />
     </PhoneMagic>
   );
 
@@ -174,6 +178,12 @@ export function App(): React.JSX.Element {
       return <HomeScreen />;
     }
 
+    // Taken out of the game by whoever opened the room (#267). The server
+    // already refuses this phone everything; this is what it says about it.
+    if (session.playerId && state?.removed?.includes(session.playerId)) {
+      return <RemovedScreen />;
+    }
+
     return (
       <RoomBoundary>
         <Suspense fallback={<RoomLoading />}>
@@ -188,4 +198,17 @@ export function App(): React.JSX.Element {
       </RoomBoundary>
     );
   }
+}
+
+/** What a phone the host took out of the game sees, instead of the game. */
+function RemovedScreen(): React.JSX.Element {
+  const leave = useGameStore((store) => store.leave);
+  return (
+    <div className="kad-boot" role="alert">
+      <div className="kad-removed">
+        <p>The person running this game took this phone out of it.</p>
+        <Button onClick={leave}>Back to the start</Button>
+      </div>
+    </div>
+  );
 }

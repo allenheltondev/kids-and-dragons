@@ -372,10 +372,28 @@ export interface PreviewMessage {
   context: string | null;
 }
 
+/**
+ * Somebody joined the room (#267). Live only, like a preview: it is not a step
+ * of the state and never moves `seq`, so a screen that attaches later never
+ * sees it. It exists so the room sees who arrived, at the moment they arrive,
+ * including a phone that has not made a character yet and so is nowhere in
+ * `RunState.party`.
+ */
+export interface ArrivalMessage {
+  /** The state's seq when they arrived. Ordering only; never applied. */
+  seq: number;
+  runId: string;
+  playerId: string;
+  /** Their hero's name when they have one seated, else the name the phone gave. */
+  name: string;
+  color: string;
+}
+
 export type ChannelMessage =
   | ({ kind: "patch" } & ServerMessage)
   | ({ kind: "snapshot" } & SnapshotMessage)
-  | ({ kind: "preview" } & PreviewMessage);
+  | ({ kind: "preview" } & PreviewMessage)
+  | ({ kind: "arrival" } & ArrivalMessage);
 
 // ---------------------------------------------------------------------------
 // Transport seam — architecture §4.4
@@ -411,13 +429,22 @@ export interface CreateRoomResponse {
   expiresAt: string;
 }
 
+/**
+ * On a create, a join or a watch: whether the device that asked is the one
+ * that opened this room (`RoomRecord.hostDeviceId`), and so may take a player
+ * out of it (#267). Absent means no.
+ */
+export interface RoomHostFlag {
+  host?: boolean;
+}
+
 export interface JoinRoomRequest {
   /** The device-bound token. In local dev, a playerId is accepted directly. */
   deviceToken?: string;
   playerId?: string;
 }
 
-export interface JoinRoomResponse {
+export interface JoinRoomResponse extends RoomHostFlag {
   runId: string;
   playerId: string;
   mode: RoomMode;

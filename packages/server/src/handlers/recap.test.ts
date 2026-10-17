@@ -164,7 +164,8 @@ describe("when the recap arrives", () => {
     const { final } = await playToTheEnd(narrator(RECAP), (harness) => {
       const real = harness.channel.publish.bind(harness.channel);
       vi.spyOn(harness.channel, "publish").mockImplementation(async (room, message) => {
-        sent.push(message as unknown as Published);
+        // Patches only: the channel also carries live news (an arrival, #267).
+        if (message.kind === "patch") sent.push(message as unknown as Published);
         await real(room, message);
       });
     });

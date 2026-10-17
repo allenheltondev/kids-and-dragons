@@ -663,6 +663,95 @@ describe("the wrong-code budget", () => {
   });
 });
 
+describe("POST /api/room/:code/remove", () => {
+  /** A Travel Mode room opened over HTTP, so it has a host, and a second phone in it. */
+  async function hosted(harness: TestHarness) {
+    const rt = runtimeFor(harness);
+    const opened = await respond(event("POST", "/api/room", { body: { mode: "travel" } }), rt);
+    const host = bodyOf(opened) as unknown as { code: string; deviceToken: string; host?: boolean };
+    const joined = await respond(event("POST", `/api/room/${host.code}/join`, { body: {} }), rt);
+    const guest = bodyOf(joined) as unknown as { playerId: string; deviceToken: string };
+    return { rt, host, guest };
+  }
+
+  it("tells the device that opened a room it is the host, and nobody else", async () => {
+    const harness = makeHarness();
+    const { host, rt } = await hosted(harness);
+    expect(host.host).toBe(true);
+    const joined = await respond(event("POST", `/api/room/${host.code}/join`, { body: {} }), rt);
+    expect(bodyOf(joined)).not.toHaveProperty("host");
+
+    const tv = await respond(event("POST", "/api/room", { body: { mode: "party", display: true } }), rt);
+    expect(bodyOf(tv)).toMatchObject({ host: true });
+  });
+
+  it("lets the host take a player out, by its device token", async () => {
+    const harness = makeHarness();
+    const { rt, host, guest } = await hosted(harness);
+    const result = await respond(
+      event("POST", `/api/room/${host.code}/remove`, {
+        body: { playerId: guest.playerId },
+        headers: { "x-kad-device-token": host.deviceToken },
+      }),
+      rt,
+    );
+    expect(result.statusCode).toBe(200);
+
+    // And that phone cannot come back in.
+    const back = await respond(
+      event("POST", `/api/room/${host.code}/join`, { headers: { "x-kad-device-token": guest.deviceToken } }),
+      rt,
+    );
+    expect(back.statusCode).toBe(403);
+  });
+
+  it("refuses anybody else, and a request with no token at all", async () => {
+    const harness = makeHarness();
+    const { rt, host, guest } = await hosted(harness);
+    const asGuest = await respond(
+      event("POST", `/api/room/${host.code}/remove`, {
+        body: { playerId: guest.playerId },
+        headers: { "x-kad-device-token": guest.deviceToken },
+      }),
+      rt,
+    );
+    expect(asGuest.statusCode).toBe(403);
+    const anonymous = await respond(
+      event("POST", `/api/room/${host.code}/remove`, { body: { playerId: guest.playerId } }),
+      rt,
+    );
+    expect(anonymous.statusCode).toBe(401);
+  });
+
+  it("insists on being told whom", async () => {
+    const harness = makeHarness();
+    const { rt, host } = await hosted(harness);
+    const result = await respond(
+      event("POST", `/api/room/${host.code}/remove`, { headers: { "x-kad-device-token": host.deviceToken } }),
+      rt,
+    );
+    expect(result.statusCode).toBe(400);
+  });
+
+  it("counts a wrong code like any other lookup, so it is no way to test codes", async () => {
+    // "No room" and "not your room" are different answers; without the guard
+    // that difference would tell a guesser which codes are live.
+    const harness = makeHarness();
+    const { rt, host } = await hosted(harness);
+    const headers = { "x-kad-device-token": host.deviceToken, "x-kad-viewer": "198.51.100.7" };
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) {
+      const code = `QQA${"ABCDEFGHJKLM"[i]}`;
+      const missed = await respond(event("POST", `/api/room/${code}/remove`, { body: { playerId: "p" }, headers }), rt);
+      expect(missed.statusCode, code).toBe(404);
+    }
+    const refused = await respond(
+      event("POST", `/api/room/${host.code}/remove`, { body: { playerId: "p" }, headers }),
+      rt,
+    );
+    expect(refused.statusCode).toBe(429);
+  });
+});
+
 describe("whose address a miss is counted against", () => {
   /** A miss from the given headers, at the given connection address. */
   function miss(code: string, headers: Record<string, string>, sourceIp = "192.0.2.50") {
@@ -1383,6 +1472,8 @@ const SHARED = [
   { path: "/api/room", method: "POST", probe: "/api/room" },
   { path: "/api/room/:code/join", method: "POST", probe: "/api/room/ABCD/join" },
   { path: "/api/room/:code/watch", method: "POST", probe: "/api/room/ABCD/watch" },
+  // The host taking a player out (#267, handlers/remove.ts).
+  { path: "/api/room/:code/remove", method: "POST", probe: "/api/room/ABCD/remove" },
   { path: "/api/action", method: "POST", probe: "/api/action" },
   { path: "/api/preview", method: "POST", probe: "/api/preview" },
   { path: "/api/progression/spend", method: "POST", probe: "/api/progression/spend" },

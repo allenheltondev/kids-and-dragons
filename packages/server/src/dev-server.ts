@@ -43,6 +43,7 @@ import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps } from "./handlers/deps.ts";
 import { iso } from "./handlers/deps.ts";
 import { createRoom, joinRoom, settleRoom, watchRoom } from "./handlers/room.ts";
+import { removePlayer } from "./handlers/remove.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
 import { getState } from "./handlers/state.ts";
@@ -144,6 +145,7 @@ async function main(): Promise<void> {
         mode,
         campaignId: req.body?.campaignId ?? null,
         claimable: display,
+        hostDeviceId: host.principal.deviceId,
       },
       deps,
     );
@@ -154,6 +156,7 @@ async function main(): Promise<void> {
       return res.json({
         ...created.value,
         roomCode: created.value.code,
+        host: true,
         ...(host.deviceToken ? { deviceToken: host.deviceToken } : {}),
       });
     }
@@ -233,12 +236,36 @@ async function main(): Promise<void> {
     const code = String(req.params.code ?? "").toUpperCase();
     const client = clientOf(req);
     if (!(await codeLookupAllowed(client, deps))) return slowDown(res, deps);
-    const result = await watchRoom({ code }, deps);
+    // Optional: a TV that opened the room presents its binding to learn it is the host.
+    const screen = await resolvePrincipal(req, base);
+    const result = await watchRoom({ code, deviceId: screen?.principal.deviceId }, deps);
     if (!result.ok) {
       if (result.error.code === "NOT_FOUND") await recordCodeMiss(client, deps);
       return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     }
     res.json(result.value);
+  });
+
+  /** The host taking a player out (#267) — see lambda/http.ts. */
+  app.post("/api/room/:code/remove", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+
+    const code = String(req.params.code ?? "").toUpperCase();
+    const client = clientOf(req);
+    if (!(await codeLookupAllowed(client, deps))) return slowDown(res, deps);
+    const host = await resolvePrincipal(req, base);
+    if (!host) return sendError(res, 401, "FORBIDDEN", "taking someone out needs this device's token");
+    const playerId = req.body?.playerId;
+    if (typeof playerId !== "string" || playerId === "") {
+      return sendError(res, 400, "ILLEGAL", "expected { playerId }");
+    }
+    const result = await removePlayer({ code, principal: host.principal, playerId }, deps);
+    if (result.ok) return res.json({ ok: true, seq: result.value.seq });
+    if (result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room")) {
+      await recordCodeMiss(client, deps);
+    }
+    sendError(res, statusFor(result.error), result.error.code, result.error.message);
   });
 
   // -------------------------------------------------------------------------

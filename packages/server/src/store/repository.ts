@@ -217,6 +217,13 @@ export interface RoomRecord {
    * every other room.
    */
   claimable?: boolean;
+  /**
+   * The device that opened the room: the TV in Party Mode, the host's phone in
+   * Travel Mode. It is the one that may take a player out (#267, `removePlayer`).
+   * It stays the host when a phone settles a TV's room on its household. Absent
+   * on rooms opened before it existed, which then have no host.
+   */
+  hostDeviceId?: string;
 }
 
 /**

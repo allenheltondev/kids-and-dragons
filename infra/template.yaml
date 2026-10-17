@@ -375,8 +375,9 @@ Resources:
     Properties:
       CodeUri: .build/channel-authorizer
       Description: Decides who may subscribe to room/<code>
-      # Only needs to read device bindings and verify a signature. No publish, no
-      # writes — deliberately the smallest policy in the stack.
+      # Only needs to read device bindings and a run's removed list (#267), and
+      # verify a signature. No publish, no writes — deliberately the smallest
+      # policy in the stack.
       Environment:
         Variables:
           TABLE_NAME: !Ref Table

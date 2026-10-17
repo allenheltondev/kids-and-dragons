@@ -239,6 +239,12 @@ interface Runtime {
  */
 const BROADCAST_GRACE_MS = 4_000;
 
+/**
+ * Arrivals a screen holds at once. A burst of phones joining a lobby is a
+ * handful; past this, the oldest notice goes. It is news, not a roster.
+ */
+const MAX_ARRIVALS = 6;
+
 export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGameStore> {
   return (set, get) => {
     const runtime: Runtime = {
@@ -317,6 +323,12 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
               previews:
                 preview === null || context === null ? rest : { ...rest, [playerId]: { preview, context } },
             });
+          },
+          onArrival: ({ runId, playerId, name, color }) => {
+            if (runtime.sequencer !== sequencer || get().state?.runId !== runId) return;
+            // A phone that joins twice (a reload on the join screen) is one arrival.
+            const others = get().arrivals.filter((a) => a.playerId !== playerId);
+            set({ arrivals: [...others, { playerId, name, color }].slice(-MAX_ARRIVALS) });
           },
           onGap: (sinceSeq) => {
             // Repeated hole notifications must respect a failed fetch's backoff.
@@ -406,8 +418,9 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
     }
 
     function disconnect(): void {
-      // Previews are live-only: a fresh channel starts from nobody picking.
-      set({ previews: {} });
+      // Previews and arrivals are live-only: a fresh channel starts from nobody
+      // picking and nobody new.
+      set({ previews: {}, arrivals: [] });
       runtime.previewSent = "[null,null]";
       runtime.previewNext = null;
       runtime.channel?.close();
@@ -574,6 +587,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         playerId: seated.playerId,
         mode: seated.mode,
         sessionToken: seated.sessionToken,
+        ...(seated.host ? { host: true } : {}),
       };
       await establish(session, seated.state);
       deps.navigate({ name: "player", code: roomCode }, { replace: true });
@@ -598,6 +612,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       presentation: null,
       progression: null,
       previews: {},
+      arrivals: [],
       error: null,
       rules: null,
       items: null,
@@ -884,7 +899,12 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
            * biggest screen on an error card for the rest of the evening.
            */
           await withRetry(current, async (timeoutMs) => {
-            const response = await deps.api.watchRoom(roomCode, timeoutMs);
+            // A TV that opened this room still holds the binding it was given,
+            // and presenting it is how it learns it is still the host (#267).
+            const screenToken = loadIdentity(deps.storage).deviceToken;
+            const response = screenToken
+              ? await deps.api.watchRoom(roomCode, timeoutMs, screenToken)
+              : await deps.api.watchRoom(roomCode, timeoutMs);
             if (!current()) return;
             const display: ClientSession = {
               runId: response.runId,
@@ -892,6 +912,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
               playerId: "", // no player on this device — it is a screen, not a seat
               mode: response.mode,
               sessionToken: response.viewerToken,
+              ...(response.host ? { host: true } : {}),
             };
             // Deliberately not persisted: a display client has nothing worth
             // storing, and it recovers from the URL alone.
@@ -1036,6 +1057,25 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
       dismissError() {
         set({ error: null });
+      },
+
+      dismissArrival(playerId: string) {
+        set({ arrivals: get().arrivals.filter((a) => a.playerId !== playerId) });
+      },
+
+      async removePlayer(playerId: string) {
+        const session = get().session;
+        // The device binding is what names the host; a TV holds one too.
+        const deviceToken = loadIdentity(deps.storage).deviceToken;
+        if (!session?.host || !deviceToken) return false;
+        try {
+          await deps.api.removePlayer(session.roomCode, playerId, deviceToken);
+          set({ arrivals: get().arrivals.filter((a) => a.playerId !== playerId) });
+          return true;
+        } catch (error) {
+          set({ error: error instanceof Error ? error.message : "Could not take them out." });
+          return false;
+        }
       },
 
       registerPresentationPlayer(gate: PresentationGate | null) {
