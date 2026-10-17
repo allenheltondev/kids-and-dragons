@@ -468,12 +468,10 @@ describe("POST /api/room/:code/join", () => {
       householdId: "h_other",
       displayName: "Stranger",
       color: "#7FD4C1",
-      role: "adult",
     });
     const { token } = await harness.identity.issueDeviceToken({
       householdId: "h_other",
       playerId: "p_x",
-      role: "adult",
     });
 
     const result = await respond(
@@ -1277,32 +1275,34 @@ describe("POST /api/auth/link", () => {
     expect(bodyOf(result)).toMatchObject({ claimed: true });
   });
 
-  it("will not let a child's device claim a household", async () => {
-    // Ownership — and therefore revocation — must not end up behind a
-    // credential a child was promised she would never need (§4.5).
+  it("refuses a phone that only joined with the room code, and tells only the host it may keep (#265)", async () => {
+    // Review of #271: the join hands a stranger a real device token for the
+    // household, and signing in to their own account must not claim it.
     const harness = makeHarness();
-    const { players } = await seedHousehold(harness, 1, "child");
-    const player = players[0];
-    if (!player) throw new Error("setup failed");
-    await harness.repo.putHousehold({
-      id: "h_test",
-      displayName: "Guests",
-      ownerSub: null,
-      guest: true,
-      createdAt: new Date(harness.clock.now()).toISOString(),
-    });
+    const created = await respond(
+      event("POST", "/api/room", { body: { mode: "travel" } }),
+      runtimeFor(harness),
+    );
+    const host = bodyOf(created) as unknown as { code: string; keeper?: boolean };
+    expect(host.keeper).toBe(true);
+
+    const joined = await respond(
+      event("POST", `/api/room/${host.code}/join`, { body: { displayName: "Who?" } }),
+      runtimeFor(harness),
+    );
+    const stranger = bodyOf(joined) as unknown as { deviceToken: string; keeper?: boolean };
+    expect(joined.statusCode).toBe(200);
+    expect(stranger.keeper).toBeUndefined();
 
     const rt = runtimeFor(harness);
-    rt.account = { cognitoSub: "sub-child" };
+    rt.account = { cognitoSub: "sub-stranger" };
     const result = await respond(
       event("POST", "/api/auth/link", {
-        headers: { authorization: "Bearer good", "x-kad-device-token": player.deviceToken },
+        headers: { authorization: "Bearer good", "x-kad-device-token": stranger.deviceToken },
       }),
       rt,
     );
-
     expect(result.statusCode).toBe(403);
-    expect(bodyOf(result).error).toMatchObject({ code: "FORBIDDEN" });
   });
 });
 

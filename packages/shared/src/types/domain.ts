@@ -27,8 +27,6 @@ export const TIER_IDS: readonly TierId[] = ["fledgling", "sworn", "radiant", "my
 
 export type Stats = Record<StatId, number>;
 
-export type Role = "adult" | "child";
-
 export type Difficulty = "easy" | "normal" | "hard";
 
 // ---------------------------------------------------------------------------
@@ -249,7 +247,10 @@ export interface PlayerProfile {
   displayName: string;
   color: string;
   avatar?: string;
-  role: Role;
+  // No role (#265): a profile is a player, nothing more. Authority comes from
+  // signing in, or from being the device that opened a room, never from a
+  // label on the profile. Rows written before this still carry `role`, and
+  // nothing reads it.
 }
 
 /**
@@ -274,13 +275,29 @@ export interface PlayerProfile {
 export interface Household {
   id: string;
   displayName: string;
-  /** The Cognito sub of the adult who claimed it. `null` while anonymous. */
+  /** The Cognito sub of the account that claimed it. `null` while anonymous. */
   ownerSub: string | null;
   /** True until an account claims it. Guests are swept; claimed ones never are. */
   guest: boolean;
   /** ISO. Present only while `guest` — when the sweeper may delete everything. */
   expiresAt?: string;
   createdAt: string;
+  /**
+   * The device that started this household, and the only one that may claim
+   * it by signing in (#265). Knowing a room code gets a phone a seat, never the
+   * household: a joiner is bound here too, so the claim has to name something a
+   * joiner cannot be. `""` once a host has taken the founder out: nobody may
+   * claim it. Absent only on a household made before this field existed,
+   * which keeps the old rule (any device in it) until it expires.
+   */
+  founderDeviceId?: string;
+  /**
+   * Set at creation and cleared by the first device to found the household
+   * (`founderDeviceId`). A phone that opens a room founds its household on the
+   * spot; a TV's placeholder household is founded by the first phone to join,
+   * the same phone that decides whose evening it is (`RoomRecord.claimable`).
+   */
+  awaitingFounder?: true;
 }
 
 export interface DeviceBinding {

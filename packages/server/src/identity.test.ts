@@ -10,12 +10,11 @@ function setup() {
 }
 
 describe("DevIdentity — device tokens (architecture §4.5)", () => {
-  it("resolves a bound device to its household, player, and role", async () => {
+  it("resolves a bound device to its household and player", async () => {
     const { identity } = setup();
     const { token, deviceId } = await identity.issueDeviceToken({
       householdId: "h_1",
       playerId: "p_2",
-      role: "child",
     });
 
     // The whole point: this is all a phone needs to be itself again.
@@ -23,7 +22,6 @@ describe("DevIdentity — device tokens (architecture §4.5)", () => {
       deviceId,
       householdId: "h_1",
       playerId: "p_2",
-      role: "child",
     });
   });
 
@@ -32,7 +30,6 @@ describe("DevIdentity — device tokens (architecture §4.5)", () => {
     const { token, deviceId } = await identity.issueDeviceToken({
       householdId: "h_1",
       playerId: "p_1",
-      role: "adult",
     });
     const binding = await repo.getDeviceById(deviceId);
     expect(binding?.tokenHash).toBe(hashToken(token));
@@ -44,14 +41,13 @@ describe("DevIdentity — device tokens (architecture §4.5)", () => {
     const { token, deviceId } = await identity.issueDeviceToken({
       householdId: "h_1",
       playerId: "p_1",
-      role: "adult",
     });
 
     expect(await identity.resolveDevice("")).toBeNull();
     expect(await identity.resolveDevice("not-a-token")).toBeNull();
     // A payload that was not the one we issued fails the stored-hash check.
     const forged = `kaddev.d1.${Buffer.from(
-      JSON.stringify({ deviceId, householdId: "h_1", playerId: "p_9", role: "adult" }),
+      JSON.stringify({ deviceId, householdId: "h_1", playerId: "p_9" }),
     ).toString("base64url")}`;
     expect(await identity.resolveDevice(forged)).toBeNull();
 
@@ -66,7 +62,6 @@ describe("DevIdentity — device tokens (architecture §4.5)", () => {
     const { token, deviceId } = await identity.issueDeviceToken({
       householdId: "h_1",
       playerId: "p_1",
-      role: "adult",
     });
     const before = (await repo.getDeviceById(deviceId))?.lastSeen;
 
@@ -86,7 +81,6 @@ describe("DevIdentity — session tokens", () => {
       roomCode: "ABCD",
       householdId: "h_1",
       playerId: "p_1",
-      role: "adult",
       expiresAt,
     });
 

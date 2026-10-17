@@ -98,7 +98,7 @@ export interface LinkAccountResponse {
   householdId: string;
   /** True when a guest household just became permanent. The thing worth saying. */
   claimed: boolean;
-  players: { id: string; displayName: string; color: string; role: string }[];
+  players: { id: string; displayName: string; color: string }[];
   characters: { id: string; name: string; species: string; ownerPlayerId: string }[];
   deviceToken?: string;
   playerId?: string;

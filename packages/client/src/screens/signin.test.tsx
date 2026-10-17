@@ -128,26 +128,32 @@ describe("shouldOfferKeepsake", () => {
    * exists to prevent — so each way of *not* showing it is its own case.
    */
   it("offers when there is a pool, a party, and no account yet", () => {
-    expect(shouldOfferKeepsake(true, false, 3)).toBe(true);
+    expect(shouldOfferKeepsake(true, false, 3, true)).toBe(true);
   });
 
   it("stays silent while availability is still unknown", () => {
     // `null`, not `false`. Showing the offer and then withdrawing it is worse
     // than showing it a moment late.
-    expect(shouldOfferKeepsake(null, false, 3)).toBe(false);
+    expect(shouldOfferKeepsake(null, false, 3, true)).toBe(false);
   });
 
   it("stays silent where there is no user pool at all", () => {
-    expect(shouldOfferKeepsake(false, false, 3)).toBe(false);
+    expect(shouldOfferKeepsake(false, false, 3, true)).toBe(false);
   });
 
   it("stays silent once the household has been claimed", () => {
     // Never becomes a permanent "manage your account" affordance.
-    expect(shouldOfferKeepsake(true, true, 3)).toBe(false);
+    expect(shouldOfferKeepsake(true, true, 3, true)).toBe(false);
   });
 
   it("stays silent before anybody has a character to keep", () => {
-    expect(shouldOfferKeepsake(true, false, 0)).toBe(false);
+    expect(shouldOfferKeepsake(true, false, 0, true)).toBe(false);
+  });
+
+  it("stays silent on every phone but the one that started the household", () => {
+    // #265: the server refuses a claim from any other phone, so offering it
+    // there would only end in "only the phone that started this game".
+    expect(shouldOfferKeepsake(true, false, 3, false)).toBe(false);
   });
 });
 

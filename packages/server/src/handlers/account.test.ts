@@ -47,7 +47,6 @@ describe("anonymous play", () => {
     expect(await harness.identity.resolveDevice(host.deviceToken)).toMatchObject({
       householdId: host.household.id,
       playerId: host.player.id,
-      role: "adult",
     });
   });
 
@@ -70,11 +69,10 @@ describe("anonymous play", () => {
     const harness = makeHarness();
     const host = await createGuestHousehold({ displayName: "Allen" }, harness.deps);
     const kid = await addPlayer(
-      { householdId: host.household.id, displayName: "Kid", role: "child" },
+      { householdId: host.household.id, displayName: "Kid" },
       harness.deps,
     );
     expect(kid.player.color).not.toBe(host.player.color);
-    expect(kid.player.role).toBe("child");
   });
 });
 
@@ -135,17 +133,73 @@ describe("linkAccount", () => {
     expect(again.value.householdId).toBe(host.household.id);
   });
 
-  it("will not let a child device claim a household", async () => {
+  it("is founded by the phone that started it, and not by one that joined (#265)", async () => {
     const harness = makeHarness();
     const host = await createGuestHousehold({ displayName: "Allen" }, harness.deps);
-    const kid = await addPlayer(
-      { householdId: host.household.id, displayName: "Kid", role: "child" },
+    expect(host.household).toMatchObject({ founderDeviceId: host.principal.deviceId });
+    expect(host.household).not.toHaveProperty("awaitingFounder");
+
+    await addPlayer({ householdId: host.household.id, displayName: "Sam" }, harness.deps);
+    expect((await harness.repo.getHousehold(host.household.id))?.founderDeviceId).toBe(host.principal.deviceId);
+  });
+
+  it("leaves a TV's household to be founded by the first phone to join it", async () => {
+    // The TV is a screen, not somebody who signs in at the end of a chapter.
+    const harness = makeHarness();
+    const tv = await createGuestHousehold({ displayName: "Host", display: true }, harness.deps);
+    expect(tv.household).toMatchObject({ awaitingFounder: true });
+    expect(tv.household).not.toHaveProperty("founderDeviceId");
+
+    const first = await addPlayer({ householdId: tv.household.id, displayName: "Mia" }, harness.deps);
+    await addPlayer({ householdId: tv.household.id, displayName: "Sam" }, harness.deps);
+    expect((await harness.repo.getHousehold(tv.household.id))?.founderDeviceId).toBe(first.principal.deviceId);
+  });
+
+  it("refuses a claim from a phone that only joined with the room code (#265)", async () => {
+    // Review of #271: a stranger with the code is bound into the household
+    // like anybody else, and signing in to their own account must not make
+    // them its owner.
+    const harness = makeHarness();
+    const host = await guestParty(harness);
+    const stranger = await addPlayer({ householdId: host.household.id, displayName: "Who?" }, harness.deps);
+
+    const result = await linkAccount({ cognitoSub: "sub_stranger", principal: stranger.principal }, harness.deps);
+    expect(result).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+    expect(await harness.repo.getHousehold(host.household.id)).toMatchObject({ guest: true, ownerSub: null });
+    expect(await harness.repo.listHouseholdsForAccount("sub_stranger")).toEqual([]);
+
+    // The family's own phone still keeps it.
+    const kept = await linkAccount({ cognitoSub: "sub_a", principal: host.principal }, harness.deps);
+    expect(kept.ok && kept.value.claimed).toBe(true);
+  });
+
+  it("sends a joiner signing in from the home screen to their own household, not this one", async () => {
+    const harness = makeHarness();
+    const host = await guestParty(harness);
+    const joiner = await addPlayer({ householdId: host.household.id, displayName: "Sam" }, harness.deps);
+
+    const result = await linkAccount(
+      { cognitoSub: "sub_b", email: "b@example.com", principal: joiner.principal, preferExisting: true },
       harness.deps,
     );
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.value.claimed).toBe(false);
+    expect(result.value.householdId).not.toBe(host.household.id);
+    expect(await harness.repo.getHousehold(host.household.id)).toMatchObject({ guest: true, ownerSub: null });
+  });
 
-    const result = await linkAccount({ cognitoSub: "sub_a", principal: kid.principal }, harness.deps);
-    expect(result.ok).toBe(false);
-    expect((await harness.repo.getHousehold(host.household.id))?.guest).toBe(true);
+  it("keeps the old rule on a guest household made before founders, until it expires", async () => {
+    // Any device playing in it may claim, as before #265. Those households
+    // are gone within a week of this shipping.
+    const harness = makeHarness();
+    const host = await guestParty(harness);
+    const { founderDeviceId: _gone, ...legacy } = host.household;
+    await harness.repo.putHousehold(legacy);
+    const joiner = await addPlayer({ householdId: host.household.id, displayName: "Sam" }, harness.deps);
+
+    const result = await linkAccount({ cognitoSub: "sub_a", principal: joiner.principal }, harness.deps);
+    expect(result.ok && result.value.claimed).toBe(true);
   });
 
   it("does not hand one family's session to the next person to sign in on that phone", async () => {

@@ -3,12 +3,13 @@
  *
  * Two layers of identity, deliberately separated:
  *
- *   household account  — permanent, Cognito, adults only
+ *   household account  — permanent, Cognito, claimed by signing in on the
+ *                        device that started the household (#265)
  *   player profile     — permanent, a **device-bound** long-lived token, no password ever
  *   room session       — ≤ 6 hours, scoped to one run
  *
  * The one invariant every call site depends on: **a device token resolves to
- * `{ householdId, playerId, role }` on its own.** That is what makes joining a
+ * `{ householdId, playerId }` on its own.** That is what makes joining a
  * room have no "who are you?" step — you scan the code and your character is
  * already on the board (§4.5). Nothing above this file ever asks a player to
  * identify themselves, so replacing the implementation cannot reintroduce a
@@ -23,7 +24,6 @@
  */
 
 import { createHash, randomUUID } from "node:crypto";
-import type { Role } from "@kad/shared";
 import type { GameRepository } from "./store/repository.ts";
 
 /** What a device token resolves to. */
@@ -31,7 +31,6 @@ export interface DeviceIdentity {
   deviceId: string;
   householdId: string;
   playerId: string;
-  role: Role;
   /**
    * A fresh token, when this resolve renewed a sliding expiry (§4.5). Present
    * on a small fraction of requests and never twice for the same token.
@@ -50,7 +49,6 @@ export interface SessionIdentity {
   roomCode: string;
   householdId: string;
   playerId: string;
-  role: Role;
   /** Epoch millis. */
   expiresAt: number;
 }
@@ -58,7 +56,6 @@ export interface SessionIdentity {
 export interface IssueDeviceTokenInput {
   householdId: string;
   playerId: string;
-  role: Role;
   /** Omit to mint a new device binding. */
   deviceId?: string;
   userAgent?: string;
@@ -69,7 +66,6 @@ export interface IssueSessionTokenInput {
   roomCode: string;
   householdId: string;
   playerId: string;
-  role: Role;
   /** Epoch millis. Rooms live ≤ 6 hours, so sessions never outlive them. */
   expiresAt: number;
 }
@@ -122,7 +118,6 @@ interface DevDeviceClaims {
   deviceId: string;
   householdId: string;
   playerId: string;
-  role: Role;
   issuedAt: number;
 }
 
@@ -149,7 +144,6 @@ export class DevIdentity implements IdentityService {
       deviceId,
       householdId: input.householdId,
       playerId: input.playerId,
-      role: input.role,
       issuedAt: this.now(),
     };
     const token = DEVICE_PREFIX + encode(claims);
@@ -188,7 +182,6 @@ export class DevIdentity implements IdentityService {
       deviceId: binding.deviceId,
       householdId: binding.householdId,
       playerId: binding.playerId,
-      role: claims.role,
     };
   }
 

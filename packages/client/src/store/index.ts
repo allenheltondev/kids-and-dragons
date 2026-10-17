@@ -606,6 +606,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         mode: seated.mode,
         sessionToken: seated.sessionToken,
         ...(seated.host ? { host: true } : {}),
+        ...(seated.keeper ? { keeper: true } : {}),
       };
       await establish(session, seated.state);
       deps.navigate({ name: "player", code: roomCode }, { replace: true });

@@ -258,7 +258,7 @@ export class DynamoRepository implements GameRepository {
     return ((await this.get(HH(householdId), META))?.data as Household | undefined) ?? null;
   }
 
-  async claimHousehold(householdId: string, cognitoSub: string): Promise<boolean> {
+  async claimHousehold(householdId: string, cognitoSub: string, deviceId: string): Promise<boolean> {
     try {
       /*
        * The entire promotion, in one conditional write. `REMOVE GSI1PK, GSI1SK`
@@ -280,16 +280,25 @@ export class DynamoRepository implements GameRepository {
            * are already being deleted, and the family is told their party is
            * kept while it disappears.
            */
+          /*
+           * And only from the device that started it (#265), unless it is
+           * already this account's: a room code gets a phone a seat in the
+           * household, never the household. A household from before founders
+           * (neither attribute) keeps the old rule until it expires.
+           */
           ConditionExpression:
-            "attribute_exists(PK) AND attribute_not_exists(sweeping) " +
-            "AND (attribute_not_exists(#d.#owner) OR #d.#owner = :null OR #d.#owner = :sub)",
+            "attribute_exists(PK) AND attribute_not_exists(sweeping) AND (#d.#owner = :sub OR (" +
+            "(attribute_not_exists(#d.#owner) OR #d.#owner = :null) AND (#d.#founder = :device OR " +
+            "(attribute_not_exists(#d.#founder) AND attribute_not_exists(#d.#awaiting)))))",
           ExpressionAttributeNames: {
             "#d": "data",
             "#owner": "ownerSub",
             "#guest": "guest",
             "#expires": "expiresAt",
+            "#founder": "founderDeviceId",
+            "#awaiting": "awaitingFounder",
           },
-          ExpressionAttributeValues: { ":sub": cognitoSub, ":no": false, ":null": null },
+          ExpressionAttributeValues: { ":sub": cognitoSub, ":no": false, ":null": null, ":device": deviceId },
         }),
       );
     } catch (err) {
@@ -298,6 +307,43 @@ export class DynamoRepository implements GameRepository {
     }
     await this.putAccountPointer(cognitoSub, householdId);
     return true;
+  }
+
+  async takeFounding(householdId: string, deviceId: string): Promise<boolean> {
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: HH(householdId), SK: META },
+          UpdateExpression: "SET #d.#founder = :device REMOVE #d.#awaiting",
+          ConditionExpression: "attribute_exists(PK) AND attribute_not_exists(sweeping) AND #d.#awaiting = :true",
+          ExpressionAttributeNames: { "#d": "data", "#founder": "founderDeviceId", "#awaiting": "awaitingFounder" },
+          ExpressionAttributeValues: { ":device": deviceId, ":true": true },
+        }),
+      );
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+  }
+
+  async dropFounder(householdId: string, deviceId: string): Promise<void> {
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: HH(householdId), SK: META },
+          // Empty, not removed: absent reads as a household from before founders.
+          UpdateExpression: "SET #d.#founder = :nobody",
+          ConditionExpression: "attribute_exists(PK) AND #d.#founder = :device",
+          ExpressionAttributeNames: { "#d": "data", "#founder": "founderDeviceId" },
+          ExpressionAttributeValues: { ":device": deviceId, ":nobody": "" },
+        }),
+      );
+    } catch (err) {
+      if (!isConditionalFailure(err)) throw err;
+    }
   }
 
   async extendGuestHousehold(householdId: string, expiresAt: string): Promise<GuestRenewal> {
