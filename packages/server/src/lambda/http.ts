@@ -436,7 +436,11 @@ async function getStateRoute(req: Req, deps: HandlerDeps) {
 
   const raw = req.query.sinceSeq;
   const result = await getState(
-    { runId, ...(raw ? { sinceSeq: Number(raw) } : {}) },
+    {
+      runId,
+      ...(raw ? { sinceSeq: Number(raw) } : {}),
+      ...("playerId" in reader ? { playerId: reader.playerId } : {}),
+    },
     deps,
   );
   return result.ok ? json(200, result.value) : fromError(result.error);
@@ -601,7 +605,7 @@ function sameSecret(sent: string | undefined, expected: string): boolean {
 async function roomReader(
   req: Req,
   deps: HandlerDeps,
-): Promise<{ runId: string; roomCode: string } | null> {
+): Promise<{ runId: string; roomCode: string; playerId?: string } | null> {
   const token = bearer(req) || (typeof req.query.token === "string" ? req.query.token : "");
   if (!token) return null;
   return (await deps.identity.resolveSession(token)) ?? (await deps.identity.resolveViewer(token));

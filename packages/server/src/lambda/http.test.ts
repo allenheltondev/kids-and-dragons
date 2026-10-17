@@ -683,9 +683,9 @@ describe("POST /api/room/:code/remove", () => {
   async function hosted(harness: TestHarness) {
     const rt = runtimeFor(harness);
     const opened = await respond(event("POST", "/api/room", { body: { mode: "travel" } }), rt);
-    const host = bodyOf(opened) as unknown as { code: string; deviceToken: string; host?: boolean };
+    const host = bodyOf(opened) as unknown as { code: string; runId: string; deviceToken: string; host?: boolean };
     const joined = await respond(event("POST", `/api/room/${host.code}/join`, { body: {} }), rt);
-    const guest = bodyOf(joined) as unknown as { playerId: string; deviceToken: string };
+    const guest = bodyOf(joined) as unknown as { playerId: string; deviceToken: string; sessionToken: string };
     return { rt, host, guest };
   }
 
@@ -718,6 +718,16 @@ describe("POST /api/room/:code/remove", () => {
       rt,
     );
     expect(back.statusCode).toBe(403);
+
+    // Nor go on reading the room with the session token it already holds,
+    // by code or by run.
+    for (const query of [{ code: host.code }, { runId: host.runId }] as Record<string, string>[]) {
+      const read = await respond(
+        event("GET", "/api/state", { query, headers: { authorization: `Bearer ${guest.sessionToken}` } }),
+        rt,
+      );
+      expect(read.statusCode).toBe(403);
+    }
   });
 
   it("refuses anybody else, and a request with no token at all", async () => {
