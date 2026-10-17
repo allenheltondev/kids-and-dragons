@@ -54,23 +54,27 @@ export async function hostedRoom(
  * change has already happened), which answers with the current seq. Retried on
  * a lost seq race, since the room may be mid-turn while the host taps.
  *
- * A closed run is terminal: it takes no change at all. Only the no-op answer
- * still goes through, which is what lets a second Close finish deleting a code
- * the first one left behind (`closeRoom`) while a Lock or Remove sent to that
- * code is refused rather than written onto a run that is over.
+ * A closed run is terminal: every control sent to it is refused, a no-op
+ * included, so a Lock or Remove never reports success on a run that is over.
+ * The one exception is Close itself (`closing`), whose no-op on a closed run
+ * is what lets a second Close finish deleting a code the first one left
+ * behind.
  */
 export async function commitRoomChange(
   room: RoomRecord,
   actor: string,
   change: (state: RunState) => RunState | null,
   deps: HandlerDeps,
+  options: { closing?: boolean } = {},
 ): Promise<HandlerResult<{ seq: number; state: RunState; changed: boolean }>> {
   for (let attempt = 1; ; attempt++) {
     const state = await deps.repo.getState(room.runId);
     if (!state) return fail("NOT_FOUND", `run ${room.runId} has no state`);
+    if (isClosed(state) && options.closing !== true) {
+      return fail("NOT_FOUND", `no open room ${room.code.toUpperCase()}`);
+    }
     const changed = change(state);
     if (!changed) return ok({ seq: state.seq, state, changed: false });
-    if (isClosed(state)) return fail("NOT_FOUND", `no open room ${room.code.toUpperCase()}`);
 
     const nowMs = deps.now();
     const next: RunState = { ...changed, seq: state.seq + 1, updatedAt: iso(nowMs) };
@@ -159,6 +163,7 @@ export async function closeRoom(
     input.principal.playerId,
     (state) => (state.closed ? null : { ...state, closed: true }),
     deps,
+    { closing: true },
   );
   if (!result.ok) return result;
   await deps.repo.deleteRoom(hosted.value.code);

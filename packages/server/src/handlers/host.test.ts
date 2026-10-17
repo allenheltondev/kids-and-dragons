@@ -218,6 +218,21 @@ describe("a host's change landing in the middle of a join", () => {
 });
 
 describe("a closed run is terminal", () => {
+  it("refuses a removal it would not even have to write", async () => {
+    const { harness, code, runId, host, guest } = await hostedRoom();
+    await removePlayer({ code, principal: host.principal, playerId: guest.principal.playerId }, harness.deps);
+    const room = await harness.repo.getRoom(code);
+    await closeRoom({ code, principal: host.principal }, harness.deps);
+    if (room) await harness.repo.putRoomIfAbsent(room);
+    const seq = (await harness.repo.getState(runId))?.seq;
+
+    // The guest is already out, so this is a no-op, and still refused.
+    expect(
+      await removePlayer({ code, principal: host.principal, playerId: guest.principal.playerId }, harness.deps),
+    ).toMatchObject({ ok: false, error: { code: "NOT_FOUND" } });
+    expect((await harness.repo.getState(runId))?.seq).toBe(seq);
+  });
+
   it("takes no lock or removal once closed, even if its code outlived the close", async () => {
     const { harness, code, runId, host, guest } = await hostedRoom();
     const room = await harness.repo.getRoom(code);
@@ -237,6 +252,14 @@ describe("a closed run is terminal", () => {
     expect(state?.seq).toBe(seq);
     expect(state?.locked).toBeUndefined();
     expect(state?.removed).toBeUndefined();
+
+    // Nor does a control that would change nothing report success on it: an
+    // unlock of a room that is not locked, a removal of somebody already out.
+    expect(await lockRoom({ code, principal: host.principal, locked: false }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "NOT_FOUND" },
+    });
+    expect((await harness.repo.getState(runId))?.seq).toBe(seq);
 
     // And Close still finishes its own job.
     expect(await closeRoom({ code, principal: host.principal }, harness.deps)).toMatchObject({ ok: true });
