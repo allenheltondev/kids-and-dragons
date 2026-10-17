@@ -19,9 +19,13 @@
  * Those are a handful per evening, nowhere near the limit.
  *
  * The budget per client is `CODE_MISS_LIMIT` per `CODE_MISS_WINDOW_MS`, which
- * caps one client at under a thousand guesses a day. With 36 rooms live at
- * once, finding any one of them takes about 9,000 guesses: minutes for a
- * script before, days per address now. That raises the cost of
+ * caps one client at under four thousand guesses a day. It is that generous
+ * because a client is an address, and a school's, a library's or a hotel's
+ * Wi-Fi puts every device in the building behind one: its typos and stale
+ * tabs share the budget, and running it out stops every new join and every
+ * TV there for the rest of the window. With 36 rooms live at once, finding
+ * any one of them takes about 9,000 guesses: minutes for a script before,
+ * days per address now. That raises the cost of
  * guessing; it does not make it impossible, which is why rooms open to
  * visitors are meant to get longer codes (#267, #249).
  *
@@ -33,7 +37,7 @@
 import type { HandlerDeps } from "./deps.ts";
 
 /** Wrong codes one client may ask for in a window before it is refused. */
-export const CODE_MISS_LIMIT = 10;
+export const CODE_MISS_LIMIT = 40;
 
 /** 15 minutes. Long enough to stop a script, short enough to forgive a typo. */
 export const CODE_MISS_WINDOW_MS = 15 * 60 * 1000;
