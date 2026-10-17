@@ -19,6 +19,11 @@
  * at nobody. `removed` is what keeps them away: `joinRoom`, `applyAction`,
  * `relayPreview`, presence and the channel authorizer all refuse a player on it.
  *
+ * A removed phone that founded the household (a TV's, whose founder is the
+ * first phone to join) stops being its founder, and nobody takes its place:
+ * the household can no longer be kept by signing in (#265). A stranger who
+ * beat the family to the code must not leave with the family's heroes.
+ *
  * What it cannot do: a phone that clears its storage is a new phone, with a
  * new player, and can join again with the code. It shows up as a new arrival,
  * and can be taken out again. Locking a room to new joins is #263's.
@@ -61,7 +66,10 @@ export async function removePlayer(
   for (let attempt = 1; ; attempt++) {
     const state = await deps.repo.getState(room.runId);
     if (!state) return fail("NOT_FOUND", `run ${room.runId} has no state`);
-    if (state.removed?.includes(input.playerId)) return ok({ seq: state.seq });
+    if (state.removed?.includes(input.playerId)) {
+      await unfound(room.householdId, input.playerId, deps);
+      return ok({ seq: state.seq });
+    }
 
     const nowMs = deps.now();
     // Out of any vote at the chapter's end too: if they were the last one still
@@ -84,6 +92,7 @@ export async function removePlayer(
     };
 
     if (await deps.repo.commit({ runId: next.runId, expectedSeq: state.seq, state: next, event })) {
+      await unfound(room.householdId, input.playerId, deps);
       await deps.channel.publish(next.roomCode, {
         kind: "patch",
         seq: event.seq,
@@ -96,6 +105,18 @@ export async function removePlayer(
       return fail("STALE_SEQ", "the game moved on while taking them out; try again");
     }
   }
+}
+
+/**
+ * If the household's founder is a device of the player just taken out, it is
+ * not the founder any more. Run on every removal, including a repeat that
+ * finds them already out, so a failure here is mended by tapping Remove again.
+ */
+async function unfound(householdId: string, playerId: string, deps: HandlerDeps): Promise<void> {
+  const household = await deps.repo.getHousehold(householdId);
+  if (!household?.founderDeviceId) return;
+  const device = await deps.repo.getDevice(householdId, household.founderDeviceId);
+  if (device?.playerId === playerId) await deps.repo.dropFounder(householdId, household.founderDeviceId);
 }
 
 /** On `RunState.removed`: taken out of this room, and kept out. */

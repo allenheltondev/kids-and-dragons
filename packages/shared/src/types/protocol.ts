@@ -438,13 +438,22 @@ export interface RoomHostFlag {
   host?: boolean;
 }
 
+/**
+ * On a create or a join: whether this device started the guest household the
+ * room plays in (`Household.founderDeviceId`), and so is the one phone that
+ * may keep it by signing in (#265). Absent means no, and the offer is not drawn.
+ */
+export interface KeeperFlag {
+  keeper?: boolean;
+}
+
 export interface JoinRoomRequest {
   /** The device-bound token. In local dev, a playerId is accepted directly. */
   deviceToken?: string;
   playerId?: string;
 }
 
-export interface JoinRoomResponse extends RoomHostFlag {
+export interface JoinRoomResponse extends RoomHostFlag, KeeperFlag {
   runId: string;
   playerId: string;
   mode: RoomMode;

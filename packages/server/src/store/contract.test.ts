@@ -42,8 +42,9 @@ function household(overrides: Partial<Household> = {}): Household {
   };
 }
 
+/** A guest household started by device `d_1`, the only one that may claim it. */
 function guest(id: string, expiresAt: string): Household {
-  return household({ id, displayName: "Guests", guest: true, expiresAt });
+  return household({ id, displayName: "Guests", guest: true, expiresAt, founderDeviceId: "d_1" });
 }
 
 function player(id: string, householdId = "h_1"): PlayerProfile {
@@ -249,7 +250,7 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         const now = Date.now();
         await repo.putHousehold(guest("h_1", new Date(now - DAY).toISOString()));
 
-        expect(await repo.claimHousehold("h_1", "sub_a")).toBe(true);
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(true);
 
         const claimed = await repo.getHousehold("h_1");
         expect(claimed).toMatchObject({ guest: false, ownerSub: "sub_a" });
@@ -260,9 +261,9 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
 
       it("is idempotent for the same account and refuses a different one", async () => {
         await repo.putHousehold(guest("h_1", new Date(Date.now() + DAY).toISOString()));
-        expect(await repo.claimHousehold("h_1", "sub_a")).toBe(true);
-        expect(await repo.claimHousehold("h_1", "sub_a")).toBe(true);
-        expect(await repo.claimHousehold("h_1", "sub_b")).toBe(false);
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(true);
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(true);
+        expect(await repo.claimHousehold("h_1", "sub_b", "d_1")).toBe(false);
         expect((await repo.getHousehold("h_1"))?.ownerSub).toBe("sub_a");
       });
 
@@ -316,8 +317,39 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect(await repo.extendGuestHousehold("h_nope", new Date(Date.now() + DAY).toISOString())).toBe("swept");
       });
 
+      it("claims only from the device that started the household (#265)", async () => {
+        await repo.putHousehold(guest("h_1", new Date(Date.now() + DAY).toISOString()));
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_joiner")).toBe(false);
+        expect(await repo.getHousehold("h_1")).toMatchObject({ guest: true, ownerSub: null });
+
+        // A founder taken off (a host removing them) claims nothing after.
+        await repo.dropFounder("h_1", "d_other");
+        expect((await repo.getHousehold("h_1"))?.founderDeviceId).toBe("d_1");
+        await repo.dropFounder("h_1", "d_1");
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(false);
+      });
+
+      it("will not claim a household made before founders, from any device", async () => {
+        const { founderDeviceId: _none, ...legacy } = guest("h_1", new Date(Date.now() + DAY).toISOString());
+        await repo.putHousehold(legacy);
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(false);
+      });
+
+      it("lets exactly one device found a household awaiting a founder", async () => {
+        const { founderDeviceId: _none, ...open } = guest("h_1", new Date(Date.now() + DAY).toISOString());
+        await repo.putHousehold({ ...open, awaitingFounder: true });
+        const won = await Promise.all([repo.takeFounding("h_1", "d_a"), repo.takeFounding("h_1", "d_b")]);
+        expect(won.filter(Boolean)).toHaveLength(1);
+        const founded = await repo.getHousehold("h_1");
+        expect(founded).not.toHaveProperty("awaitingFounder");
+        expect(founded?.founderDeviceId).toBe(won[0] ? "d_a" : "d_b");
+        // Never again, once taken.
+        expect(await repo.takeFounding("h_1", "d_c")).toBe(false);
+        expect(await repo.takeFounding("h_nope", "d_c")).toBe(false);
+      });
+
       it("will not claim a household that does not exist", async () => {
-        expect(await repo.claimHousehold("h_nope", "sub_a")).toBe(false);
+        expect(await repo.claimHousehold("h_nope", "sub_a", "d_1")).toBe(false);
       });
 
       it("refuses to sweep a household that was claimed first", async () => {
@@ -332,7 +364,7 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         await repo.putHousehold(guest("h_1", new Date(now - DAY).toISOString()));
         await repo.putCharacter(character("c_1"));
 
-        expect(await repo.claimHousehold("h_1", "sub_a")).toBe(true);
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(true);
         expect(await repo.deleteGuestHousehold("h_1", new Date(now).toISOString())).toBe(false);
 
         // Nothing was touched.
@@ -347,7 +379,7 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         await repo.putHousehold(guest("h_1", new Date(now - DAY).toISOString()));
         await repo.deleteGuestHousehold("h_1", new Date(now).toISOString());
 
-        expect(await repo.claimHousehold("h_1", "sub_a")).toBe(false);
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(false);
       });
 
       it("will not sweep a guest whose expiry has not passed", async () => {
@@ -892,7 +924,7 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         const now = Date.now();
         await repo.putHousehold(guest("h_1", new Date(now - DAY).toISOString()));
         await repo.recordDiscoveries("h_1", [{ canonId: "moth", playerId: "p_1", foundAt: T1 }]);
-        expect(await repo.claimHousehold("h_1", "sub_a")).toBe(true);
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(true);
         expect(await repo.deleteGuestHousehold("h_1", new Date(now).toISOString())).toBe(false);
         expect(Object.keys((await repo.getFieldGuide("h_1")).entries)).toEqual(["moth"]);
       });

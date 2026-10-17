@@ -27,7 +27,7 @@ import {
   type FieldGuideDiscoveries,
 } from "../store/field-guide-discoveries";
 import { useKeepsakeStore } from "../store/keepsake";
-import { useParty } from "../store";
+import { useGameStore, useParty } from "../store";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
@@ -530,18 +530,22 @@ export function shouldOfferKeepsake(
   available: boolean | null,
   claimed: boolean,
   partySize: number,
+  keeper: boolean,
 ): boolean {
-  return available === true && !claimed && partySize > 0;
+  return available === true && !claimed && partySize > 0 && keeper;
 }
 
 export function KeepsakeOffer(): ReactElement | null {
   const available = useKeepsakeStore((s) => s.available);
   const account = useKeepsakeStore((s) => s.account);
   const open = useKeepsakeStore((s) => s.open);
+  // Only the phone that started this household may keep it (#265); every
+  // other phone at the table would be offered a sign-in that is refused.
+  const keeper = useGameStore((s) => s.session?.keeper === true);
   const party = useParty();
   const fieldGuide = guideAtStake(useFieldGuideDiscoveries());
 
-  if (!shouldOfferKeepsake(available, account !== null, party.length)) return null;
+  if (!shouldOfferKeepsake(available, account !== null, party.length, keeper)) return null;
 
   const motes = party.map((member) => ({
     id: member.playerId,

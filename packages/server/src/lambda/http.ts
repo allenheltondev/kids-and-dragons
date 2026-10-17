@@ -170,7 +170,7 @@ async function postRoom(req: Req, deps: HandlerDeps) {
   const host =
     existing ??
     (await createGuestHousehold(
-      { displayName: String(req.body.displayName ?? "Host"), userAgent: req.headers["user-agent"] },
+      { displayName: String(req.body.displayName ?? "Host"), userAgent: req.headers["user-agent"], display },
       deps,
     ));
 

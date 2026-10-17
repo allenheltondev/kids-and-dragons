@@ -1274,6 +1274,36 @@ describe("POST /api/auth/link", () => {
     expect(result.statusCode).toBe(200);
     expect(bodyOf(result)).toMatchObject({ claimed: true });
   });
+
+  it("refuses a phone that only joined with the room code, and tells only the host it may keep (#265)", async () => {
+    // Review of #271: the join hands a stranger a real device token for the
+    // household, and signing in to their own account must not claim it.
+    const harness = makeHarness();
+    const created = await respond(
+      event("POST", "/api/room", { body: { mode: "travel" } }),
+      runtimeFor(harness),
+    );
+    const host = bodyOf(created) as unknown as { code: string; keeper?: boolean };
+    expect(host.keeper).toBe(true);
+
+    const joined = await respond(
+      event("POST", `/api/room/${host.code}/join`, { body: { displayName: "Who?" } }),
+      runtimeFor(harness),
+    );
+    const stranger = bodyOf(joined) as unknown as { deviceToken: string; keeper?: boolean };
+    expect(joined.statusCode).toBe(200);
+    expect(stranger.keeper).toBeUndefined();
+
+    const rt = runtimeFor(harness);
+    rt.account = { cognitoSub: "sub-stranger" };
+    const result = await respond(
+      event("POST", "/api/auth/link", {
+        headers: { authorization: "Bearer good", "x-kad-device-token": stranger.deviceToken },
+      }),
+      rt,
+    );
+    expect(result.statusCode).toBe(403);
+  });
 });
 
 describe("POST /api/auth/device", () => {
