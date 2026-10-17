@@ -21,7 +21,7 @@ import { ROOM_CODE_LENGTH as CODE_LENGTH, normalizeCodeInput as normalizeCode } 
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
-import { SignInFlow } from "./SignInFlow";
+import { LazySignInFlow } from "./HomeScreen";
 import { EntryScene } from "./EntryScene";
 import "./shared.css";
 import "./HomeScreen.css";
@@ -297,7 +297,7 @@ export function SharedHome(): ReactElement {
         </div>
       </div>
 
-      <SignInFlow />
+      <LazySignInFlow />
     </main>
   );
 }
