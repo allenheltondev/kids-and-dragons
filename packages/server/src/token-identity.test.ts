@@ -351,6 +351,41 @@ describe("TokenIdentity — device tokens", () => {
   });
 });
 
+describe("TokenIdentity — shared device tokens (#250)", () => {
+  it("names a household and no player, and is never mistaken for a device token", async () => {
+    const { identity } = setup();
+    const { token: shared, deviceId } = await identity.issueSharedDeviceToken({ householdId: "h_1" });
+    const { token: personal } = await identity.issueDeviceToken(device);
+
+    const [, payload] = shared.split(".") as [string, string];
+    const claims = JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as Record<string, unknown>;
+    expect(claims.aud).toBe("shared");
+    expect(claims).not.toHaveProperty("pid");
+
+    expect(await identity.resolveSharedDevice(shared)).toEqual({ kind: "shared", deviceId, householdId: "h_1" });
+    expect(await identity.resolveDevice(shared)).toBeNull();
+    expect(await identity.resolveSharedDevice(personal)).toBeNull();
+  });
+
+  it("stops resolving the moment it is forgotten", async () => {
+    const { identity, repo } = setup();
+    const { token, deviceId } = await identity.issueSharedDeviceToken({ householdId: "h_1" });
+    await repo.revokeDevice("h_1", deviceId);
+    expect(await identity.resolveSharedDevice(token)).toBeNull();
+  });
+
+  it("slides like a device token, keeping its device id", async () => {
+    const { identity, clock } = setup();
+    const { token, deviceId } = await identity.issueSharedDeviceToken({ householdId: "h_1" });
+    clock.advance(DEVICE_TOKEN_TTL_MS / 2 + 1000);
+
+    const resolved = await identity.resolveSharedDevice(token);
+    expect(resolved?.rotatedToken).toBeTypeOf("string");
+    const renewed = await identity.resolveSharedDevice(resolved?.rotatedToken ?? "");
+    expect(renewed).toEqual({ kind: "shared", deviceId, householdId: "h_1" });
+  });
+});
+
 describe("TokenIdentity — tokens from before profiles lost their role (#265)", () => {
   /** A token signed exactly as the code before #265 signed it, `role` claim and all. */
   function legacyToken(claims: Record<string, unknown>): string {

@@ -23,16 +23,21 @@ const SESSION_PREFIX = "kad.session.";
 const DEVICE_KEY = "kad.device";
 
 /** A no-op store so SSR, tests, and Safari private mode never throw. */
-const memoryStorage = (): KeyValueStorage => {
+const memoryStorage = (): KeyValueStorage & Pick<Storage, "key" | "length"> => {
   const map = new Map<string, string>();
   return {
     getItem: (key) => map.get(key) ?? null,
     setItem: (key, value) => void map.set(key, value),
     removeItem: (key) => void map.delete(key),
+    key: (index) => [...map.keys()][index] ?? null,
+    get length() {
+      return map.size;
+    },
   };
 };
 
 const fallback = memoryStorage();
+const tabFallback = memoryStorage();
 
 /**
  * Sessions are useless once the room they name has long expired, but they used
@@ -63,6 +68,30 @@ export function defaultStorage(): KeyValueStorage {
     resolvedDefault = fallback;
   }
   return resolvedDefault;
+}
+
+let resolvedTab: KeyValueStorage | null = null;
+
+/**
+ * Storage that lives as long as this tab: `sessionStorage`. Where a shared
+ * tablet keeps its room session (#250), so the next kid to pick up the tablet
+ * (or scan the room's QR, which opens a fresh tab) is asked who they are
+ * instead of landing in the last kid's seat. A refresh keeps it.
+ */
+export function tabStorage(): KeyValueStorage {
+  if (resolvedTab) return resolvedTab;
+  try {
+    if (typeof sessionStorage === "undefined") {
+      resolvedTab = tabFallback;
+      return resolvedTab;
+    }
+    sessionStorage.setItem("kad.probe", "1");
+    sessionStorage.removeItem("kad.probe");
+    resolvedTab = sessionStorage;
+  } catch {
+    resolvedTab = tabFallback;
+  }
+  return resolvedTab;
 }
 
 /** Sweep expired `kad.session.*` entries. Only ever called on real Storage —
@@ -254,6 +283,82 @@ export function saveIdentity(identity: LocalIdentity, storage: KeyValueStorage =
 }
 
 /**
+ * This browser is its household's **shared device** (#250): a family tablet
+ * the kids take turns on. It holds the tablet's own token, which names the
+ * household and nobody in it, and never a kid's device token: each kid picks
+ * themselves on it and plays on a room session alone.
+ */
+export interface SharedDeviceRecord {
+  token: string;
+  householdId: string;
+}
+
+const SHARED_KEY = "kad.shared";
+
+export function loadSharedDevice(storage: KeyValueStorage = defaultStorage()): SharedDeviceRecord | null {
+  const raw = storage.getItem(SHARED_KEY);
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as Partial<SharedDeviceRecord>;
+    if (typeof parsed.token !== "string" || parsed.token === "" || typeof parsed.householdId !== "string") {
+      return null;
+    }
+    return { token: parsed.token, householdId: parsed.householdId };
+  } catch {
+    return null;
+  }
+}
+
+/** The tablet's token was renewed (a sliding expiry, like a phone's). */
+export function saveSharedDevice(record: SharedDeviceRecord, storage: KeyValueStorage = defaultStorage()): void {
+  try {
+    storage.setItem(SHARED_KEY, JSON.stringify(record));
+  } catch {
+    /* the old token keeps working until its 30 days are up */
+  }
+}
+
+/**
+ * Make this browser the shared tablet. Whatever made it *somebody* goes: the
+ * device identity and the journal read with it (the server has already revoked
+ * that binding), the record of who signed in here, and every room session
+ * saved here, each of which is some kid's seat.
+ */
+export function becomeSharedDevice(
+  record: SharedDeviceRecord,
+  storage: KeyValueStorage = defaultStorage(),
+  tab: KeyValueStorage = tabStorage(),
+): void {
+  storage.removeItem(DEVICE_KEY);
+  storage.removeItem(JOURNAL_KEY);
+  storage.removeItem(ACCOUNT_KEY);
+  clearAllSessions(storage);
+  clearAllSessions(tab);
+  saveSharedDevice(record, storage);
+}
+
+/** Forgotten (or never real): back to an ordinary device, nobody yet. */
+export function clearSharedDevice(
+  storage: KeyValueStorage = defaultStorage(),
+  tab: KeyValueStorage = tabStorage(),
+): void {
+  storage.removeItem(SHARED_KEY);
+  clearAllSessions(tab);
+}
+
+function clearAllSessions(storage: KeyValueStorage): void {
+  const keys = (storage as Partial<Storage>).key;
+  const length = (storage as Partial<Storage>).length;
+  if (typeof keys !== "function" || typeof length !== "number") return;
+  const stale: string[] = [];
+  for (let i = 0; i < length; i += 1) {
+    const key = keys.call(storage, i);
+    if (key?.startsWith(SESSION_PREFIX)) stale.push(key);
+  }
+  for (const key of stale) storage.removeItem(key);
+}
+
+/**
  * That this browser's household has been claimed by an account (§4.5).
  *
  * Stored so the keepsake offer does not come back every chapter once somebody
@@ -346,3 +451,4 @@ export const SESSION_KEY_PREFIX = SESSION_PREFIX;
 export const DEVICE_IDENTITY_KEY = DEVICE_KEY;
 export const ACCOUNT_RECORD_KEY = ACCOUNT_KEY;
 export const SAVED_JOURNAL_KEY = JOURNAL_KEY;
+export const SHARED_DEVICE_KEY = SHARED_KEY;

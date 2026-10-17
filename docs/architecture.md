@@ -563,6 +563,38 @@ A bound device opens the app and **it is already that player.** No login screen,
 no avatar picker with a password behind it — her phone knows it's her phone. Tap
 "play."
 
+#### Shared devices: a family tablet
+
+A device more than one kid uses (a family tablet, a borrowed phone, a pool of
+tablets) cannot be one player: it would be whoever used it last, or, once its
+storage was cleared, nobody. So a device binding comes in two kinds (#250):
+
+| Kind | Bound to | Its token | Where it lands |
+|---|---|---|---|
+| **personal** (the default) | one player | `aud: "device"`, 30-day sliding | already that player |
+| **shared** | the household, nobody in it | `aud: "shared"`, 30-day sliding | a "who's playing?" picker |
+
+- **Only a signed-in owner makes a device shared** (`POST /api/auth/shared-device`).
+  Whatever binding the device held is revoked on the way, so a kid's month-long
+  token never lingers on a device everybody picks up. Nobody stays signed in on
+  it, and it is never offered a passkey.
+- **Kids pick freely.** The tablet opens on the household's profiles as big
+  faces (`GET /api/household/players`); tapping one (or "Someone new", which adds a
+  profile with no device) sends the tablet's `x-kad-shared-token` and that
+  `playerId` with the join or create. The answer is a **room session token and
+  never a device token**, and the client keeps that session in the tab
+  (`sessionStorage`), so the next kid, or the room's QR opened fresh, gets the
+  picker again. When the room ends, the tablet is back at the picker.
+- **The shared principal is its own type** (`SharedDeviceIdentity`), not a
+  `DeviceIdentity` with the player left blank, for the reason the TV's
+  `ViewerIdentity` is: with no player it cannot satisfy a code path that
+  expects one. `resolveDevice` refuses a shared token, and `resolveSharedDevice`
+  a personal one. A seat exists only for the one request that picked it.
+- **Forget this device** (`POST /api/auth/forget-device`): a signed-in owner
+  revokes a shared binding. Heroes are untouched, because characters belong to
+  the household. A forgotten tablet is told so (401) and goes back to an
+  ordinary start; it is never quietly bound to whoever is holding it.
+
 #### Recovery and revocation
 
 - **Lost phone** → the household owner revokes `DEVICE#<deviceId>` from their own device. That token is dead immediately.

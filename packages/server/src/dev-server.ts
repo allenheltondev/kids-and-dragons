@@ -46,7 +46,19 @@ import { removePlayer } from "./handlers/remove.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
 import { getState } from "./handlers/state.ts";
-import { DevIdentity, type DeviceIdentity, type SessionIdentity } from "./identity.ts";
+import {
+  asSharedSeat,
+  forgetDevice,
+  listSharedPlayers,
+  seatOnSharedDevice,
+  shareDevice,
+} from "./handlers/shared-device.ts";
+import {
+  DevIdentity,
+  type DeviceIdentity,
+  type SessionIdentity,
+  type SharedDeviceIdentity,
+} from "./identity.ts";
 import { installNarrator } from "./llm/install.ts";
 import { assetsDir, contentDir, dataDir } from "./paths.ts";
 import { verifyDevToken } from "./dev-auth.ts";
@@ -124,6 +136,32 @@ async function main(): Promise<void> {
     const display = req.body?.display === true;
     if (display && mode !== "party") return sendError(res, 400, "ILLEGAL", "only a Party Mode room has a TV");
 
+    // A shared tablet opens a room for the kid picked on it (#250), as in
+    // lambda/http.ts: a session token back, never a device token.
+    const shared = await resolveShared(req, base);
+    if (shared !== undefined) {
+      if (!shared) return forgottenDevice(res);
+      if (display) return sendError(res, 400, "ILLEGAL", "a shared tablet plays; open the TV on the TV");
+      const seat = await seatOnSharedDevice(
+        { shared, playerId: req.body?.playerId, newPlayer: req.body?.newPlayer },
+        base,
+      );
+      if (!seat.ok) return sendError(res, statusFor(seat.error), seat.error.code, seat.error.message);
+      const opened = await createRoom(
+        { householdId: shared.householdId, mode, campaignId: req.body?.campaignId ?? null, hostDeviceId: shared.deviceId },
+        deps,
+      );
+      if (!opened.ok) return sendError(res, statusFor(opened.error), opened.error.code, opened.error.message);
+      const seated = await joinRoom({ code: opened.value.code, principal: seat.value }, deps);
+      if (!seated.ok) return sendError(res, statusFor(seated.error), seated.error.code, seated.error.message);
+      return res.json({
+        ...asSharedSeat(seated.value),
+        code: opened.value.code,
+        roomCode: opened.value.code,
+        expiresAt: opened.value.expiresAt,
+      });
+    }
+
     // Anonymous play (§4.5): a device nobody has seen before gets a household on
     // the spot. It is a real household — the only thing it lacks is an owner,
     // and the only consequence is that it expires unless somebody signs in.
@@ -185,6 +223,21 @@ async function main(): Promise<void> {
     const found = await base.repo.getRoom(code);
     if (!found) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
     await lookup.hit();
+
+    // A shared tablet seats the kid picked on it, and never falls through to
+    // `addPlayer` (#250, see lambda/http.ts).
+    const shared = await resolveShared(req, base);
+    if (shared !== undefined) {
+      if (!shared) return forgottenDevice(res);
+      const seat = await seatOnSharedDevice(
+        { shared, playerId: req.body?.playerId, newPlayer: req.body?.newPlayer },
+        base,
+      );
+      if (!seat.ok) return sendError(res, statusFor(seat.error), seat.error.code, seat.error.message);
+      const seated = await joinRoom({ code, principal: seat.value }, deps);
+      if (!seated.ok) return sendError(res, statusFor(seated.error), seated.error.code, seated.error.message);
+      return res.json({ ...asSharedSeat(seated.value), code, roomCode: code, expiresAt: found.expiresAt });
+    }
 
     const existing = await resolvePrincipal(req, base);
     // Settled first for a new phone — see lambda/http.ts.
@@ -382,6 +435,15 @@ async function main(): Promise<void> {
     res.json(result.value);
   });
 
+  // The "who's playing?" picker on a shared tablet (#250).
+  app.get("/api/household/players", async (req: Request, res: Response) => {
+    const shared = await resolveShared(req, base);
+    if (!shared) return forgottenDevice(res);
+    const result = await listSharedPlayers(shared, base);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
   app.get("/api/state", async (req: Request, res: Response) => {
     const deps = await withRuntime(base, res);
     if (!deps) return;
@@ -543,6 +605,41 @@ async function main(): Promise<void> {
     res.json(result.value);
   });
 
+  // A signed-in owner makes this device the household's shared tablet (#250).
+  app.post("/api/auth/shared-device", async (req: Request, res: Response) => {
+    const account = verifyDevToken(bearerToken(req));
+    if (!account) return sendError(res, 401, "FORBIDDEN", "a dev id token is required");
+
+    const existing = await resolvePrincipal(req, base);
+    const shared = await resolveShared(req, base);
+    const result = await shareDevice(
+      {
+        cognitoSub: account.cognitoSub,
+        principal: existing?.principal ?? null,
+        shared: shared ?? null,
+        userAgent: req.get("user-agent"),
+      },
+      base,
+    );
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
+  // "Forget this device" (#250).
+  app.post("/api/auth/forget-device", async (req: Request, res: Response) => {
+    const account = verifyDevToken(bearerToken(req));
+    if (!account) return sendError(res, 401, "FORBIDDEN", "a dev id token is required");
+
+    const shared = await resolveShared(req, base);
+    const deviceId = shared?.deviceId ?? req.body?.deviceId;
+    if (typeof deviceId !== "string" || deviceId === "") {
+      return sendError(res, 400, "ILLEGAL", "expected this tablet's x-kad-shared-token, or { deviceId }");
+    }
+    const result = await forgetDevice({ cognitoSub: account.cognitoSub, deviceId }, base);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
   // -------------------------------------------------------------------------
   // Static + health
   // -------------------------------------------------------------------------
@@ -618,6 +715,17 @@ async function resolvePrincipal(
   if (typeof token !== "string" || token === "") return null;
   const principal = await deps.identity.resolveDevice(token);
   return principal ? { principal } : null;
+}
+
+/** A shared tablet's token (#250): `undefined` when absent, `null` when it no longer resolves. */
+async function resolveShared(req: Request, deps: BaseDeps): Promise<SharedDeviceIdentity | null | undefined> {
+  const token = req.get("x-kad-shared-token");
+  if (typeof token !== "string" || token === "") return undefined;
+  return deps.identity.resolveSharedDevice(token);
+}
+
+function forgottenDevice(res: Response): void {
+  sendError(res, 401, "FORBIDDEN", "This tablet was forgotten. Ask a grown-up to set it up again.");
 }
 
 /**
@@ -731,7 +839,7 @@ function requestLog(req: Request, res: Response, next: NextFunction): void {
  */
 function devCors(req: Request, res: Response, next: NextFunction): void {
   res.setHeader("Access-Control-Allow-Origin", req.get("origin") ?? "*");
-  res.setHeader("Access-Control-Allow-Headers", "content-type, authorization, x-kad-device-token");
+  res.setHeader("Access-Control-Allow-Headers", "content-type, authorization, x-kad-device-token, x-kad-shared-token");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   if (req.method === "OPTIONS") {
     res.status(204).end();

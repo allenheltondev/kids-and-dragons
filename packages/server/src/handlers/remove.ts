@@ -116,7 +116,8 @@ async function unfound(householdId: string, playerId: string, deps: HandlerDeps)
   const household = await deps.repo.getHousehold(householdId);
   if (!household?.founderDeviceId) return; // none, or already dropped
   const device = await deps.repo.getDevice(householdId, household.founderDeviceId);
-  if (device?.playerId === playerId) await deps.repo.dropFounder(householdId, household.founderDeviceId);
+  // A shared tablet is nobody, so taking a kid out never unfounds it (#250).
+  if (device && device.kind !== "shared" && device.playerId === playerId) await deps.repo.dropFounder(householdId, household.founderDeviceId);
 }
 
 /** On `RunState.removed`: taken out of this room, and kept out. */
