@@ -403,14 +403,18 @@ async function main(): Promise<void> {
      * leaving a phone showing an old game it cannot play instead of saying
      * the room is gone.
      */
+    // Only somebody in the room may read it — see lambda/http.ts.
+    const reader = await roomReader(req, base);
+    const named = code ? `no open room ${code}` : `no run ${runId}`;
+    if (!reader) return sendError(res, 404, "NOT_FOUND", named);
+    if ((code && reader.roomCode.toUpperCase() !== code) || (runId && reader.runId !== runId)) {
+      return sendError(res, 404, "NOT_FOUND", named);
+    }
+    if (!runId) runId = reader.runId;
+
     if (code) {
-      // Seated callers are not guessing — see lambda/http.ts.
-      const seated = await holdsRoom(req, base, code);
-      const lookup = seated ? null : await admitCodeLookup(clientOf(req), deps);
-      if (!seated && !lookup) return slowDown(res, deps);
       const room = await base.repo.getRoom(code);
       if (!room) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
-      await lookup?.hit();
       if (runId && room.runId !== runId) {
         return sendError(res, 404, "NOT_FOUND", `room ${code} is not that run`);
       }
@@ -430,11 +434,22 @@ async function main(): Promise<void> {
 
   app.get("/events/:code", async (req: Request, res: Response) => {
     const code = String(req.params.code ?? "").toUpperCase();
+    // The same rule as the AppSync authorizer (lambda/channel-authorizer.ts):
+    // a session or viewer token for this room, and not a player the host took
+    // out. A stream open to anyone with the code would be a laptop testing a
+    // room that production does not have.
+    const reader = await roomReader(req, base);
+    if (!reader || reader.roomCode.toUpperCase() !== code) {
+      return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+    }
     const room = await base.repo.getRoom(code);
     if (!room) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
 
     const state = await base.repo.getState(room.runId);
     if (!state) return sendError(res, 404, "NOT_FOUND", `run ${room.runId} has no state`);
+    if (reader.playerId !== undefined && state.removed?.includes(reader.playerId)) {
+      return sendError(res, 403, "FORBIDDEN", "This phone was taken out of the game.");
+    }
 
     // Snapshot on connect, then patches from that snapshot's seq. Anything
     // published between the read and the attach is covered by the channel's
@@ -628,16 +643,16 @@ async function resolveSession(req: Request, deps: BaseDeps): Promise<SessionIden
   return deps.identity.resolveSession(token);
 }
 
-/** Does the request carry a session or viewer token for this room? Same as lambda/http.ts. */
-async function holdsRoom(req: Request, deps: BaseDeps, code: string): Promise<boolean> {
+/** The room a request's session or viewer token was issued for. Same as lambda/http.ts. */
+async function roomReader(
+  req: Request,
+  deps: BaseDeps,
+): Promise<{ runId: string; roomCode: string; playerId?: string } | null> {
   const header = req.get("authorization") ?? "";
   const query = typeof req.query?.token === "string" ? req.query.token : "";
   const token = /^Bearer\s+(.+)$/i.exec(header.trim())?.[1] ?? query;
-  if (!token) return false;
-  const session = await deps.identity.resolveSession(token);
-  if (session) return session.roomCode.toUpperCase() === code;
-  const viewer = await deps.identity.resolveViewer(token);
-  return viewer?.roomCode.toUpperCase() === code;
+  if (!token) return null;
+  return (await deps.identity.resolveSession(token)) ?? (await deps.identity.resolveViewer(token));
 }
 
 /**

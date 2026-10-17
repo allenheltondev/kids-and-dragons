@@ -226,13 +226,15 @@ describe("arrivals", () => {
     expect(joined.ok && joined.value.host).toBeUndefined();
   });
 
-  it("tells a TV that opened the room it is still the host, after a refresh", async () => {
+  it("lets only the screen that opened the room watch it, after a refresh too", async () => {
     const { harness, code, host, guest } = await hostedRoom();
     const asHost = await watchRoom({ code, deviceId: host.principal.deviceId }, harness.deps);
-    const asOther = await watchRoom({ code, deviceId: guest.principal.deviceId }, harness.deps);
-    const anonymous = await watchRoom({ code }, harness.deps);
     expect(asHost.ok && asHost.value.host).toBe(true);
-    expect(asOther.ok && asOther.value.host).toBeUndefined();
-    expect(anonymous.ok && anonymous.value.host).toBeUndefined();
+    // Anybody else, a removed phone included, would watch unannounced.
+    expect(await watchRoom({ code, deviceId: guest.principal.deviceId }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "FORBIDDEN" },
+    });
+    expect(await watchRoom({ code }, harness.deps)).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
   });
 });

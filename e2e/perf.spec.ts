@@ -68,7 +68,10 @@ function artAhead(scenes: Record<string, Scene>, id: string): string[] {
 async function readOnUntilArtAhead(phone: Page, code: string): Promise<string[]> {
   const where = async () =>
     phone.evaluate(async (room) => {
-      const { state } = (await (await fetch(`/api/state?code=${room}`)).json()) as {
+      // Only somebody in the room may read it (#267): this phone's own token.
+      const saved = JSON.parse(localStorage.getItem(`kad.session.${room}`) ?? "{}") as { sessionToken?: string };
+      const headers: Record<string, string> = saved.sessionToken ? { authorization: `Bearer ${saved.sessionToken}` } : {};
+      const { state } = (await (await fetch(`/api/state?code=${room}`, { headers })).json()) as {
         state: { chapterId: string | null; sceneId: string | null };
       };
       return state;
