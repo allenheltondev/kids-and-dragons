@@ -1,0 +1,520 @@
+{
+  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "id": "riftlight-exchange-rift",
+  "campaignId": "riftlight-opening-preview",
+  "index": 1,
+  "title": "Snow on the Quay",
+  "biome": "exchange",
+  "music": "riftlight-theme",
+  "estimatedMinutes": 15,
+  "xpAward": 140,
+  "entry": "market",
+  "scenes": {
+    "market": {
+      "type": "story",
+      "narration": "The Exchange has put its market stalls back along the quay. Fish slap in buckets. A noodle seller lifts her awning with a broom. You have come back from the mountain, and three different people wave before you reach the water. Then a snowflake lands in your breakfast.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Find out where the snow came from",
+          "icon": "hand",
+          "goto": "morning"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-docks"
+    },
+    "morning": {
+      "type": "choice_point",
+      "narration": "Snow falls over one fish stall. The sky above it is clear. On a mooring post, a gull shakes frost from its wings. Beyond it, a ship has docked a day early. Its kitsune captain is arguing with the harbor clock. Where do you look first?",
+      "choices": [
+        {
+          "id": "snow",
+          "label": "Look at the snowy fish stall",
+          "icon": "hand",
+          "goto": "fish"
+        },
+        {
+          "id": "gull",
+          "label": "Ask the frosty gull",
+          "icon": "hand",
+          "goto": "gull"
+        },
+        {
+          "id": "ship",
+          "label": "Talk to the early ship captain",
+          "icon": "hand",
+          "goto": "ship",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "noticed_the_sky_ship",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/gemfall/exchange-docks"
+    },
+    "fish": {
+      "type": "story",
+      "narration": "The fish seller holds up a scoop of snow. \"I ordered ice. Ice stays where you put it.\" Snow lands in the scoop. Under her table, a patch of pebbles and stiff white grass has pushed up between the boards. It is cold enough to sting your fingers.",
+      "choices": [
+        {
+          "id": "help",
+          "label": "Move the fish out of the snow",
+          "icon": "hand",
+          "goto": "fish_help"
+        },
+        {
+          "id": "follow",
+          "label": "Follow the trail of white grass",
+          "icon": "hand",
+          "goto": "quay"
+        }
+      ]
+    },
+    "fish_help": {
+      "type": "story",
+      "narration": "You carry the buckets under the noodle awning. The fish seller tucks a dry cloth around your wet fingers. \"Something else stepped off that patch of grass,\" she says. \"Little hooves. Went that way.\" She points along the quay, where wet hoofprints trail between stacks of crates.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Follow the hoofprints",
+          "icon": "hand",
+          "goto": "quay"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_fish_seller",
+          "value": true
+        }
+      ]
+    },
+    "gull": {
+      "type": "story",
+      "narration": "The gull stands on one foot. \"Cold,\" it says. It changes feet. \"Still cold.\" You ask where it has been. It points its beak toward the far end of the quay. \"Here! I was here the whole time!\" A small white hoofprint marks the boards below it.",
+      "choices": [
+        {
+          "id": "warm",
+          "label": "Let it warm its feet on a sleeve",
+          "icon": "hand",
+          "goto": "gull_help"
+        },
+        {
+          "id": "tracks",
+          "label": "Follow the hoofprints",
+          "icon": "hand",
+          "goto": "quay"
+        }
+      ]
+    },
+    "gull_help": {
+      "type": "story",
+      "narration": "The gull settles on your sleeve, tucking its icy feet into the fold. \"For the record,\" it says, \"I did not ask to become a winter bird.\" From your arm, it spots more hoofprints between the crates and calls them out.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Follow the gull's directions",
+          "icon": "hand",
+          "goto": "quay"
+        }
+      ]
+    },
+    "ship": {
+      "type": "story",
+      "narration": "The captain spreads a route chart over a barrel. \"Our island was here yesterday.\" She taps a mark. \"This morning the dock was over there. Same island. Same laundry on the line. Wrong patch of sky.\" She catches the chart by one corner before the wind takes it. \"Captain Thimble. If you find a sensible explanation, save me a copy.\"",
+      "choices": [
+        {
+          "id": "help",
+          "label": "Help her pin the chart down",
+          "icon": "hand",
+          "goto": "ship_help"
+        },
+        {
+          "id": "quay",
+          "label": "Ask about the cold on the quay",
+          "icon": "hand",
+          "goto": "ship_cold"
+        }
+      ]
+    },
+    "ship_help": {
+      "type": "story",
+      "narration": "You hold the corners while Captain Thimble ties the chart to the barrel. She gives you a quick, grateful nod. \"Look for me if you reach the islands. You will recognize the washing.\" A gust lifts the smell of snow from the far end of the quay.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Find the source of the cold",
+          "icon": "hand",
+          "goto": "quay"
+        }
+      ]
+    },
+    "ship_cold": {
+      "type": "story",
+      "narration": "\"There.\" The captain points past the noodle stall. \"The wind is coming from between those crates. Wind should have more room than that.\" A coil of rope begins sliding across the wet boards toward them.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go to the crates",
+          "icon": "hand",
+          "goto": "quay"
+        }
+      ]
+    },
+    "quay": {
+      "type": "choice_point",
+      "narration": "At the end of the quay, two stacks of crates lean toward a thin fold in the air. A loose rope slides across the wet boards. You can hear the harbor behind you, but from the fold comes only a deep, slow creak.",
+      "choices": [
+        {
+          "id": "study",
+          "label": "Work out what is being pulled",
+          "icon": "eye",
+          "goto": "check_pattern"
+        },
+        {
+          "id": "clear",
+          "label": "Get people away from the crates",
+          "icon": "hand",
+          "goto": "clear_quay"
+        }
+      ]
+    },
+    "check_pattern": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Can you spot which loose things will slide first?",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "pattern_seen",
+        "narration": "The rope, the barrel lid, the crates: everything leans toward the fold.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "quay_head_start",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "pattern_missed",
+        "narration": "A barrel lid shoots past your ankle before you can point."
+      }
+    },
+    "pattern_seen": {
+      "type": "story",
+      "narration": "You kick a wedge under the nearest crate and call a warning. The noodle seller catches her awning before it tears free. Beyond the crates, something small bleats.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look between the crates",
+          "icon": "hand",
+          "goto": "shimmer"
+        }
+      ]
+    },
+    "pattern_missed": {
+      "type": "story",
+      "narration": "The lid rolls upright, circles twice, and drops flat beside the fold. You pull everyone back from its path. Beyond the crates, something small bleats.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Find what made that sound",
+          "icon": "hand",
+          "goto": "shimmer"
+        }
+      ]
+    },
+    "clear_quay": {
+      "type": "story",
+      "narration": "You wave the fish seller back and lift the noodle awning clear of a sliding crate. The dock workers start passing buckets out of the way. Beyond the crates, something small bleats.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look for the animal",
+          "icon": "hand",
+          "goto": "shimmer"
+        }
+      ]
+    },
+    "shimmer": {
+      "type": "story",
+      "narration": "The fold opens. Cold, still air presses against your face, carrying the smell of very old ice. On the other side, snow lies under a white sky. Beside your boots stands a snowhorn goat kid, hardly taller than a bucket. It tries to climb your leg. A faint light traces its edge.",
+      "choices": [
+        {
+          "id": "read",
+          "label": "Read the Riftlight",
+          "icon": "spark",
+          "goto": "read_light",
+          "requiresClass": "starweaver",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "starweaver_read_first_rift",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "kid",
+          "label": "Get the kid away from the opening",
+          "icon": "hand",
+          "goto": "pull"
+        }
+      ],
+      "priority": 1,
+      "discovers": [
+        "creature.snowhorn_goat"
+      ]
+    },
+    "read_light": {
+      "type": "story",
+      "narration": "Your Starweaver studies the light around the fold: Riftlight. The others watch a faint shimmer bend the air. The kid stamps twice, impatient to be picked up. Behind you, a mooring rope draws tight.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Reach for the kid",
+          "icon": "hand",
+          "goto": "pull"
+        }
+      ]
+    },
+    "pull": {
+      "type": "choice_point",
+      "narration": "The rope snaps straight. Crates scrape over the boards. The kid skids toward the opening, all four hooves spread. A dock worker throws you a loose line. You have time to make one move.",
+      "choices": [
+        {
+          "id": "catch",
+          "label": "Catch the goat",
+          "icon": "hand",
+          "goto": "catch"
+        },
+        {
+          "id": "anchor",
+          "label": "Anchor the line",
+          "icon": "hand",
+          "goto": "anchor"
+        },
+        {
+          "id": "fly",
+          "label": "Swoop in with Skyward or Glide",
+          "icon": "wing",
+          "goto": "swoop",
+          "requiresSpecies": [
+            "griffin",
+            "dragonling"
+          ]
+        },
+        {
+          "id": "crate",
+          "label": "Smash a crate into the path",
+          "icon": "fist",
+          "goto": "smash",
+          "requiresSpecies": "bigfoot"
+        },
+        {
+          "id": "brace",
+          "label": "Brace and hold the rope",
+          "icon": "shield",
+          "goto": "brace",
+          "requiresClass": "thornguard"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "quay_head_start"
+          },
+          "text": "The crate you wedged is still holding. You have a clear space to plant your feet."
+        }
+      ]
+    },
+    "catch": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Catch the kid before it reaches the fold.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "caught",
+        "narration": "You scoop the kid up. Its hooves drum on your coat."
+      },
+      "onFailure": {
+        "goto": "tumbled",
+        "narration": "You catch a hoof, then the rest of the goat. A crate clips your shoulder.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "anchor": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Hold the line while everyone grabs on.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "together",
+        "narration": "You wrap the line around a mooring post. Everyone has a hand on it before the post gives."
+      },
+      "onFailure": {
+        "goto": "tumbled",
+        "narration": "The wet line slips. You grab the last loop, knock your knee, and pull the others with you.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "swoop": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Lift the kid clear of the sliding crates.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "caught",
+        "narration": "Wings beat over the boards. You lift the kid clear and reach the others."
+      },
+      "onFailure": {
+        "goto": "tumbled",
+        "narration": "You lift the kid, but the pull catches your wings. You bump the crate and fold them tight.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "smash": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Break the crate and wedge it across the gap.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "together",
+        "narration": "Wood cracks. The broken crate catches the line long enough for everyone to hold on."
+      },
+      "onFailure": {
+        "goto": "tumbled",
+        "narration": "The crate breaks, but the pull tears it free. You shield the kid from a flying board.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "brace": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Brace against the post and keep everyone together.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "together",
+        "narration": "You plant your feet and hold until every friend has the line. Then the post tilts."
+      },
+      "onFailure": {
+        "goto": "tumbled",
+        "narration": "The boards lift under your feet. You keep the line, even as the post tips you forward.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "caught": {
+      "type": "story",
+      "narration": "You tuck the kid against your chest. The dock worker lets go of the line before it can take her too. Your friends grab hold of you. The quay folds out of sight.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Hold on to each other",
+          "icon": "hand",
+          "goto": "through"
+        }
+      ]
+    },
+    "together": {
+      "type": "story",
+      "narration": "The kid scrambles into the loop of rope between you. You pull it close. The line holds your party together as the quay folds out of sight.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Keep hold of the line",
+          "icon": "hand",
+          "goto": "through"
+        }
+      ]
+    },
+    "tumbled": {
+      "type": "story",
+      "narration": "The kid lands against your chest. Someone catches your sleeve; someone else catches theirs. You tumble through together, dragging the loose end of the rope.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Keep the kid close",
+          "icon": "hand",
+          "goto": "through"
+        }
+      ]
+    },
+    "through": {
+      "type": "story",
+      "narration": "For one breath there is no sound. Then your boots hit snow. You pull the kid inside your coat as the wind flings wet snow against your knees. It sneezes into your collar. Behind you the fold pinches shut, taking the harbor noise with it. A small pulse warms your hands, then waits there.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Find shelter from the wind",
+          "icon": "hand",
+          "goto": "white"
+        }
+      ],
+      "priority": 2
+    },
+    "white": {
+      "type": "rest",
+      "narration": "White slopes rise around you. Far below, water runs under a skin of ice. The goat kid wriggles out of your coat, takes one look at the empty snowfield, and climbs straight back in. You gather in the shelter of a low ridge. Somewhere beyond it, a bell rings.",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success"
+    }
+  },
+  "llmHints": {
+    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
+    "forbidden": [
+      "death",
+      "gore",
+      "Corvane",
+      "emperor",
+      "Pangea",
+      "Hollow Gate",
+      "Legend Dragon"
+    ],
+    "npcVoices": {
+      "Captain Thimble": "Chapter-scoped kitsune Sky Island captain, practical and brisk. Frustrated with a displaced island, kind to helpers. No explanation for the displacement.",
+      "The gull": "Indignant, literal, chilly. Brief complaints; never explains the magic.",
+      "Fish seller": "Practical, protective of fish and helpers. Short dockside speech."
+    }
+  }
+}
