@@ -1,9 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { ChannelMessage, PartyMember } from "@kad/shared";
 import { makeHarness, seedHousehold } from "../test-support.ts";
 import { addPlayer } from "./account.ts";
 import { applyAction } from "./action.ts";
 import { closeRoom, lockRoom } from "./host.ts";
+import { removePlayer } from "./remove.ts";
 import { setPresence } from "./presence.ts";
 import { relayPreview } from "./preview.ts";
 import { createRoom, joinRoom } from "./room.ts";
@@ -168,5 +169,77 @@ describe("closeRoom", () => {
     expect(await closeRoom({ code, principal: host.principal }, harness.deps)).toMatchObject({ ok: true });
     expect(await harness.repo.getRoom(code)).toBeNull();
     expect((await harness.repo.getState(runId))?.seq).toBe(seq);
+  });
+});
+
+describe("a host's change landing in the middle of a join", () => {
+  /**
+   * The newcomer's join reads the room open, and then, before its own write
+   * lands, the host's change does: exactly the gap a lock used to slip
+   * through. The hook runs `hostChange` the first time the newcomer's seat is
+   * committed, so the order is the same on every run.
+   */
+  async function raced(hostChange: (room: Awaited<ReturnType<typeof hostedRoom>>) => Promise<unknown>) {
+    const room = await hostedRoom();
+    const { harness, householdId, code } = room;
+    const stranger = await addPlayer({ householdId, displayName: "Who?" }, harness.deps);
+    const real = harness.repo.commit.bind(harness.repo);
+    let fired = false;
+    vi.spyOn(harness.repo, "commit").mockImplementation(async (input) => {
+      if (!fired && input.event.playerId === stranger.player.id) {
+        fired = true;
+        await hostChange(room);
+      }
+      return real(input);
+    });
+    const joined = await joinRoom({ code, principal: stranger.principal }, harness.deps);
+    return { ...room, joined, stranger, fired: () => fired };
+  }
+
+  it("refuses the newcomer when the lock lands first, and writes no seat for them", async () => {
+    const { harness, runId, joined, stranger, fired } = await raced(({ harness, code, host }) =>
+      lockRoom({ code, principal: host.principal, locked: true }, harness.deps),
+    );
+    expect(fired()).toBe(true);
+    expect(joined).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+    const state = await harness.repo.getState(runId);
+    expect(state?.locked).toBe(true);
+    expect(state?.seats?.[stranger.player.id]).toBeUndefined();
+  });
+
+  it("refuses the newcomer when the close lands first", async () => {
+    const { harness, runId, joined, stranger, fired } = await raced(({ harness, code, host }) =>
+      closeRoom({ code, principal: host.principal }, harness.deps),
+    );
+    expect(fired()).toBe(true);
+    expect(joined).toMatchObject({ ok: false, error: { code: "NOT_FOUND" } });
+    expect((await harness.repo.getState(runId))?.seats?.[stranger.player.id]).toBeUndefined();
+  });
+});
+
+describe("a closed run is terminal", () => {
+  it("takes no lock or removal once closed, even if its code outlived the close", async () => {
+    const { harness, code, runId, host, guest } = await hostedRoom();
+    const room = await harness.repo.getRoom(code);
+    await closeRoom({ code, principal: host.principal }, harness.deps);
+    // The supported recovery case: the run is closed but the code was not deleted.
+    if (room) await harness.repo.putRoomIfAbsent(room);
+    const seq = (await harness.repo.getState(runId))?.seq;
+
+    expect(await lockRoom({ code, principal: host.principal, locked: true }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "NOT_FOUND" },
+    });
+    expect(
+      await removePlayer({ code, principal: host.principal, playerId: guest.principal.playerId }, harness.deps),
+    ).toMatchObject({ ok: false, error: { code: "NOT_FOUND" } });
+    const state = await harness.repo.getState(runId);
+    expect(state?.seq).toBe(seq);
+    expect(state?.locked).toBeUndefined();
+    expect(state?.removed).toBeUndefined();
+
+    // And Close still finishes its own job.
+    expect(await closeRoom({ code, principal: host.principal }, harness.deps)).toMatchObject({ ok: true });
+    expect(await harness.repo.getRoom(code)).toBeNull();
   });
 });
