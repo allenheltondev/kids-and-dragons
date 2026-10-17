@@ -1,0 +1,119 @@
+/*
+ * Running the room (HostControls.tsx, #263). Inline in a host's PlayerView it
+ * sizes against its surface like everything there (no viewport units); on the
+ * display it floats in a corner, which is shell-level, as the arrival notices
+ * and the error toast are.
+ */
+
+.kad-host--inline {
+  flex: 0 0 auto;
+  margin: 0.5rem 0.75rem 0;
+  border: 1px solid var(--kad-border);
+  border-radius: var(--kad-radius-md);
+  background: var(--kad-bg-raised);
+  color: var(--kad-ink);
+}
+
+/* Bottom corner, clear of the arrival notices (top) and the toast (bottom centre). */
+.kad-host--float {
+  position: fixed;
+  inset-block-end: calc(var(--kad-safe-bottom, 0px) + 1rem);
+  inset-inline-end: calc(var(--kad-safe-right, 0px) + 1rem);
+  z-index: 100;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  gap: 0.5rem;
+  inline-size: min(24rem, calc(100vw - 2rem));
+}
+
+.kad-host--float .kad-host__panel {
+  inline-size: 100%;
+  max-block-size: 70vh;
+  overflow-y: auto;
+  border: 1px solid var(--kad-border);
+  border-radius: var(--kad-radius-md);
+  background: var(--kad-bg-raised);
+  box-shadow: var(--kad-shadow-lg);
+  color: var(--kad-ink);
+}
+
+.kad-host__summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-block-size: var(--kad-touch-min);
+  padding: 0 0.75rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.kad-host__badge {
+  margin-inline-start: auto;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--kad-warn);
+  font-size: var(--kad-text-sm);
+  font-weight: 600;
+}
+
+.kad-host__panel {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.kad-host__empty,
+.kad-host__hint {
+  margin: 0;
+  color: var(--kad-ink-dim);
+  font-size: var(--kad-text-sm);
+}
+
+.kad-host__roster {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kad-host__row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.kad-host__row--out,
+.kad-host__row--away {
+  opacity: 0.65;
+}
+
+.kad-host__dot {
+  flex: 0 0 auto;
+  inline-size: 0.9rem;
+  block-size: 0.9rem;
+  border-radius: 50%;
+}
+
+.kad-host__who {
+  display: grid;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.kad-host__meta {
+  color: var(--kad-ink-dim);
+  font-size: var(--kad-text-sm);
+}
+
+.kad-host__actions,
+.kad-host__confirm {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.kad-host__confirm p {
+  margin: 0;
+}

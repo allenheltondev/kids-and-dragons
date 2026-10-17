@@ -14,6 +14,7 @@ import type {
   CreateRoomResponse,
   JoinRoomResponse,
   RoomMode,
+  RoomSeat,
   RunState,
 } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
@@ -24,6 +25,7 @@ import { keepGuestHousehold, mayClaim } from "./account.ts";
 import { lobbyCampaigns } from "./progression.ts";
 import { loadBook } from "./field-guide.ts";
 import { isRemoved } from "./remove.ts";
+import { isClosed } from "./host.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
 /**
@@ -218,7 +220,12 @@ export interface JoinRoomInput {
    * Gateway authorizer, in dev by `dev-server.ts`. The handler never sees a raw
    * token and never sees a display name.
    */
-  principal: DeviceIdentity;
+  principal: Pick<DeviceIdentity, "deviceId" | "householdId" | "playerId">;
+  /**
+   * What the player is joining on, for the host's roster (`RunState.seats`):
+   * a family tablet (#250) says so; anything else is their own phone.
+   */
+  device?: RoomSeat["device"];
 }
 
 /**
@@ -375,13 +382,17 @@ export async function joinRoom(
 
   const lobby = await refreshLobby(room, deps);
   if (!lobby) return fail("NOT_FOUND", `run ${room.runId} has no state`);
-  // Taken out by the host (#267, `removePlayer`): no seat, and no way back in.
-  if (isRemoved(lobby, player.id)) {
-    return fail("FORBIDDEN", "This phone was taken out of that game.");
-  }
+  // Checked here so a refused join writes nothing, and again on every write
+  // that seats them (`seatAndConnect`), so a host's lock or close landing in
+  // between is never missed.
+  const refused = admission(lobby, player.id, room.code);
+  if (refused) return refused;
   const state = await withFieldGuide(lobby, room, deps);
 
-  const joined = await markConnected(state, input.principal.playerId, deps);
+  const seat: RoomSeat = { name: player.displayName, color: player.color, device: input.device ?? "phone" };
+  const seated = await seatAndConnect(state, player.id, seat, room.code, deps);
+  if (!seated.ok) return seated;
+  const joined = seated.value;
   const host = room.hostDeviceId !== undefined && room.hostDeviceId === input.principal.deviceId;
   if (!host) await announceArrival(joined, player, deps);
   // Which phone may keep this guest household by signing in (#265), so the
@@ -503,31 +514,77 @@ export async function watchRoom(
 }
 
 /**
- * Flips `connected` on this player's party member and broadcasts the patch.
+ * Whether the run, as it now stands, lets this player in. `null` when it does.
  *
- * A player who has not built a character yet is not in `party` at all, so there
- * is nothing to patch and nothing to say — the join is silent and the client
- * goes on to send CREATE_CHARACTER. When there *is* a member, the rest of the
- * table has to see them come back: this is the reconnect half of "hard-refresh
- * the TV mid-encounter and recover" (§4.3).
+ *  - taken out by the host (#267): no seat, and no way back in
+ *  - closed by the host (#263): its code goes with it, so this is the rare
+ *    join that read the room in the moment between the two
+ *  - locked by the host (#263): only somebody already in the room comes back.
+ *    The party counts as well as the roster, for a hero seated in a run from
+ *    before the roster existed.
  */
-async function markConnected(
+function admission(state: RunState, playerId: string, code: string): HandlerResult<never> | null {
+  if (isRemoved(state, playerId)) return fail("FORBIDDEN", "This phone was taken out of that game.");
+  if (isClosed(state)) return fail("NOT_FOUND", `no open room ${code.toUpperCase()}`);
+  const inRoom = state.seats?.[playerId] !== undefined || state.party.some((m) => m.playerId === playerId);
+  if (state.locked && !inRoom) {
+    return fail("FORBIDDEN", "This game is locked. Ask whoever is running it to unlock it.");
+  }
+  return null;
+}
+
+/**
+ * Puts this player on the room's roster (`RunState.seats`, #263), flips
+ * `connected` on their party member, and broadcasts the patch: one patch for
+ * both, and none when neither changed.
+ *
+ * A player who has not built a character yet is not in `party` at all, so the
+ * roster is the only place the host can see them. When there *is* a member,
+ * the rest of the table has to see them come back: this is the reconnect half
+ * of "hard-refresh the TV mid-encounter and recover" (§4.3).
+ *
+ * Admission (`admission`) is checked against every state this writes on top
+ * of. The write is conditional on that state's seq, so a lock, close or
+ * removal the host commits first makes it lose the race, and the retry reads
+ * the run as the host left it and refuses. Checking only the state the join
+ * started from let a lock that landed in between seat a newcomer anyway.
+ */
+async function seatAndConnect(
   state: RunState,
   playerId: string,
+  seat: RoomSeat,
+  code: string,
   deps: HandlerDeps,
-): Promise<RunState> {
-  const member = state.party.find((m) => m.playerId === playerId);
-  if (!member || member.connected) return state;
+): Promise<HandlerResult<RunState>> {
+  // Retried, unlike most of the room's own writes: a seat lost to a race is a
+  // kid a locked room would later refuse, so it is worth a second go.
+  let current = state;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const refused = admission(current, playerId, code);
+    if (refused) return refused;
+    const member = current.party.find((m) => m.playerId === playerId);
+    const reconnecting = member !== undefined && !member.connected;
+    const was = current.seats?.[playerId];
+    const reseat =
+      was === undefined || was.name !== seat.name || was.color !== seat.color || was.device !== seat.device;
+    if (!reconnecting && !reseat) return ok(current);
 
-  return advanceRoom(
-    state,
-    {
-      ...state,
-      party: state.party.map((m) => (m.playerId === playerId ? { ...m, connected: true } : m)),
-    },
-    playerId,
-    deps,
-  );
+    current = await advanceRoom(
+      current,
+      {
+        ...current,
+        seats: { ...current.seats, [playerId]: seat },
+        party: reconnecting
+          ? current.party.map((m) => (m.playerId === playerId ? { ...m, connected: true } : m))
+          : current.party,
+      },
+      playerId,
+      deps,
+    );
+  }
+  // Whatever the last attempt left, it is still checked: three lost races
+  // must not end in a seat the run as it now stands would refuse.
+  return admission(current, playerId, code) ?? ok(current);
 }
 
 /**

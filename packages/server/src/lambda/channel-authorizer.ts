@@ -68,10 +68,11 @@ function service(): TokenIdentity {
   return identity;
 }
 
-/** On the run's `removed` list (#267). A run that cannot be read is not proof of it. */
+/** On the run's `removed` list (#267), or the run closed (#263). A run that cannot be read is not proof of either. */
 async function removedFromRun(runId: string, playerId: string): Promise<boolean> {
   const state = await table().getState(runId);
-  return state?.removed?.includes(playerId) ?? false;
+  // A run its host closed (#263) has nobody left to subscribe for.
+  return state?.closed === true || (state?.removed?.includes(playerId) ?? false);
 }
 
 export async function handler(

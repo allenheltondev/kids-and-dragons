@@ -112,7 +112,11 @@ describe("joinRoom", () => {
     if (!joined.ok) return;
     expect(joined.value.playerId).toBe(player.principal.playerId);
     expect(joined.value.runId).toBe(created.value.runId);
-    expect(joined.value.state.seq).toBe(0);
+    // One patch: the join put them on the host's roster (#263), nothing else.
+    expect(joined.value.state.seq).toBe(1);
+    expect(joined.value.state.seats).toEqual({
+      [player.principal.playerId]: { name: "Player 2", color: "#7FD4C1", device: "phone" },
+    });
 
     const session = await harness.identity.resolveSession(joined.value.sessionToken);
     expect(session?.runId).toBe(created.value.runId);

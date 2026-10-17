@@ -26,37 +26,27 @@
  *
  * What it cannot do: a phone that clears its storage is a new phone, with a
  * new player, and can join again with the code. It shows up as a new arrival,
- * and can be taken out again. Locking a room to new joins is #263's.
+ * and can be taken out again, and a host who has seen enough locks the room
+ * (`lockRoom`, #263).
  */
 
 import { settleChapterEndVote, type RunState } from "@kad/shared";
-import type { DeviceIdentity } from "../identity.ts";
-import type { EventRecord } from "../store/repository.ts";
-import { diff } from "../json-patch.ts";
-import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
+import { fail, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
+import { commitRoomChange, hostedRoom, type HostPrincipal } from "./host.ts";
 
 export interface RemovePlayerInput {
   code: string;
-  /**
-   * The device asking and who is holding it: a phone's own device token, or
-   * a shared tablet's token plus its seated player's session (`tabletHost`).
-   */
-  principal: Pick<DeviceIdentity, "deviceId" | "playerId">;
+  principal: HostPrincipal;
   playerId: string;
 }
-
-/** Lost seq races retried before giving up, as presence does. */
-const COMMIT_ATTEMPTS = 3;
 
 export async function removePlayer(
   input: RemovePlayerInput,
   deps: HandlerDeps,
 ): Promise<HandlerResult<{ seq: number }>> {
-  const room = await deps.repo.getRoom(input.code);
-  if (!room) return fail("NOT_FOUND", `no open room ${input.code.toUpperCase()}`);
-  if (!room.hostDeviceId || room.hostDeviceId !== input.principal.deviceId) {
-    return fail("FORBIDDEN", "only the screen or phone that opened this room can take someone out");
-  }
+  const hosted = await hostedRoom(input.code, input.principal, deps);
+  if (!hosted.ok) return hosted;
+  const room = hosted.value;
   if (input.playerId === input.principal.playerId) {
     return fail("ILLEGAL", "the host cannot take themselves out");
   }
@@ -66,48 +56,33 @@ export async function removePlayer(
   const player = await deps.repo.getPlayer(room.householdId, input.playerId);
   if (!player) return fail("NOT_FOUND", `no player ${input.playerId} in this room`);
 
-  for (let attempt = 1; ; attempt++) {
-    const state = await deps.repo.getState(room.runId);
-    if (!state) return fail("NOT_FOUND", `run ${room.runId} has no state`);
-    if (state.removed?.includes(input.playerId)) {
-      await unfound(room.householdId, input.playerId, deps);
-      return ok({ seq: state.seq });
-    }
-
-    const nowMs = deps.now();
-    // Out of any vote at the chapter's end too: if they were the last one still
-    // reading, the table goes on now, as it does when a phone drops.
-    const next: RunState = settleChapterEndVote({
-      ...state,
-      seq: state.seq + 1,
-      updatedAt: iso(nowMs),
-      removed: [...(state.removed ?? []), input.playerId],
-      party: state.party.map((m) =>
-        m.playerId === input.playerId ? { ...m, connected: false, ready: false } : m,
-      ),
-    });
-    const event: EventRecord = {
-      seq: next.seq,
-      runId: next.runId,
-      patch: diff(state, next),
-      at: iso(nowMs),
-      playerId: input.principal.playerId,
-    };
-
-    if (await deps.repo.commit({ runId: next.runId, expectedSeq: state.seq, state: next, event })) {
-      await unfound(room.householdId, input.playerId, deps);
-      await deps.channel.publish(next.roomCode, {
-        kind: "patch",
-        seq: event.seq,
-        runId: event.runId,
-        patch: event.patch,
+  const result = await commitRoomChange(
+    room,
+    input.principal.playerId,
+    (state): RunState | null => {
+      if (state.removed?.includes(input.playerId)) return null;
+      // Out of any vote at the chapter's end too: if they were the last one
+      // still reading, the table goes on now, as it does when a phone drops.
+      return settleChapterEndVote({
+        ...state,
+        removed: [...(state.removed ?? []), input.playerId],
+        party: state.party.map((m) =>
+          m.playerId === input.playerId ? { ...m, connected: false, ready: false } : m,
+        ),
       });
-      return ok({ seq: next.seq });
-    }
-    if (attempt >= COMMIT_ATTEMPTS) {
-      return fail("STALE_SEQ", "the game moved on while taking them out; try again");
-    }
+    },
+    deps,
+  );
+  if (!result.ok) {
+    // Kept from before the shared loop, so a phone that showed this keeps reading it.
+    return result.error.code === "STALE_SEQ"
+      ? fail("STALE_SEQ", "the game moved on while taking them out; try again")
+      : result;
   }
+  // Also on a repeat that finds them already out, so a failure here is mended
+  // by tapping Remove again.
+  await unfound(room.householdId, input.playerId, deps);
+  return ok({ seq: result.value.seq });
 }
 
 /**
