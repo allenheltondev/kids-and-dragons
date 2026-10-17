@@ -116,6 +116,7 @@ function harness(state: RunState = makeState()): Harness {
       state,
     })),
     removePlayer: vi.fn(async (): Promise<void> => undefined),
+    removePlayerShared: vi.fn(async (): Promise<void> => undefined),
     postAction: vi.fn(async (): Promise<ActionResponse> => ({ ok: true, seq: state.seq })),
     postPreview: vi.fn(async (): Promise<void> => undefined),
     fetchState: vi.fn(async () => ({ seq: state.seq, state })),
@@ -1712,6 +1713,18 @@ describe("a shared tablet", () => {
     h.api.listSharedPlayers.mockResolvedValueOnce({ householdId: "h_1", players: [], rotatedToken: "shared_2" });
     expect(await h.store.getState().loadSharedPlayers()).toEqual([]);
     expect(loadSharedDevice(h.storage)?.token).toBe("shared_2");
+  });
+
+  it("takes a stranger out of a room it opened, on its token and the kid's session", async () => {
+    const h = tablet();
+    await h.store.getState().createRoom("travel", "", { playerId: "p_ada" });
+    expect(h.store.getState().session?.host).toBe(true);
+
+    expect(await h.store.getState().removePlayer("p_stranger")).toBe(true);
+    expect(h.api.removePlayerShared).toHaveBeenCalledWith("ABCD", "p_stranger", "shared_1", "tok_p_ada");
+    expect(h.api.removePlayer).not.toHaveBeenCalled();
+    // Still nobody: asking did not mint an identity on the tablet.
+    expect(Object.keys(dump(h.storage))).toEqual(["kad.shared"]);
   });
 
   it("is not a shared tablet unless it was made one", async () => {

@@ -180,7 +180,7 @@ describe("taking turns on one tablet", () => {
     }
   });
 
-  it("opens a room for the kid picked, which only the tablet may watch", async () => {
+  it("opens a room for the kid picked, as its host, which nobody else may watch", async () => {
     const { harness } = await family();
     const tablet = recorder(harness);
     const shared = await makeShared(tablet.send);
@@ -190,12 +190,9 @@ describe("taking turns on one tablet", () => {
     );
     expect(created.statusCode).toBe(200);
     const body = bodyOf(created);
-    expect(body).toMatchObject({ playerId: "p_2" });
+    expect(body).toMatchObject({ playerId: "p_2", host: true });
     expect(body.sessionToken).toEqual(expect.any(String));
-    // Not told it is the host: Remove needs a phone's own token, which no tablet holds.
-    expect(body).not.toHaveProperty("host");
 
-    // But it is the host on the server, so a stranger with the code still cannot watch.
     const watched = await respond(event("POST", `/api/room/${String(body.code)}/watch`), runtime(harness));
     expect(watched.statusCode).toBe(403);
   });
@@ -256,6 +253,94 @@ describe("taking turns on one tablet", () => {
       event("GET", "/api/heroes", { headers: { authorization: `Bearer ${String(bodyOf(joined).sessionToken)}` } }),
     );
     expect((bodyOf(heroes).heroes as Array<{ name: string }>).map((h) => h.name)).toEqual(["Rumble"]);
+  });
+});
+
+describe("taking a player out of a room the tablet opened (#267)", () => {
+  /** The tablet opens a room for Ada; a stranger's phone joins it with the code. */
+  async function hostedRoom() {
+    const { harness, householdId } = await family();
+    const rt = runtime(harness);
+    const shared = await makeShared((e) => respond(e, rt));
+    const created = bodyOf(
+      await respond(
+        event("POST", "/api/room", { body: { mode: "travel", playerId: "p_1" }, headers: { "x-kad-shared-token": shared } }),
+        rt,
+      ),
+    );
+    const code = String(created.code);
+    const stranger = bodyOf(
+      await respond(event("POST", `/api/room/${code}/join`, { body: { displayName: "Who?" } }), rt),
+    );
+    return { harness, householdId, rt, shared, code, session: String(created.sessionToken), stranger: String(stranger.playerId) };
+  }
+
+  function remove(code: string, playerId: string, headers: Record<string, string>) {
+    return event("POST", `/api/room/${code}/remove`, { body: { playerId }, headers });
+  }
+
+  it("takes the stranger out on the tablet's token and the seated kid's session", async () => {
+    const { harness, rt, shared, code, session, stranger } = await hostedRoom();
+    const result = await respond(
+      remove(code, stranger, { "x-kad-shared-token": shared, authorization: `Bearer ${session}` }),
+      rt,
+    );
+    expect(result.statusCode).toBe(200);
+    const room = await harness.repo.getRoom(code);
+    expect((await harness.repo.getState(room?.runId ?? ""))?.removed).toContain(stranger);
+  });
+
+  it("will not let the seated kid take themselves out", async () => {
+    const { rt, shared, code, session } = await hostedRoom();
+    const result = await respond(remove(code, "p_1", { "x-kad-shared-token": shared, authorization: `Bearer ${session}` }), rt);
+    expect(result.statusCode).toBe(409);
+  });
+
+  it("needs a session for this room, and a tablet that is still the family's", async () => {
+    const { harness, householdId, rt, shared, code, stranger } = await hostedRoom();
+
+    const bare = await respond(remove(code, stranger, { "x-kad-shared-token": shared }), rt);
+    expect(bare.statusCode).toBe(401);
+
+    // A session for a different room, even this family's, is not this room's host.
+    const other = await openRoom(harness, householdId);
+    const elsewhere = bodyOf(
+      await respond(
+        event("POST", `/api/room/${other}/join`, { body: { playerId: "p_2" }, headers: { "x-kad-shared-token": shared } }),
+        rt,
+      ),
+    );
+    const wrong = await respond(
+      remove(code, stranger, { "x-kad-shared-token": shared, authorization: `Bearer ${String(elsewhere.sessionToken)}` }),
+      rt,
+    );
+    expect(wrong.statusCode).toBe(401);
+
+    await respond(
+      event("POST", "/api/auth/forget-device", { headers: { authorization: "Bearer id-token", "x-kad-shared-token": shared } }),
+      rt,
+    );
+    const forgotten = await respond(remove(code, stranger, { "x-kad-shared-token": shared }), rt);
+    expect(forgotten.statusCode).toBe(401);
+  });
+
+  it("is refused to a tablet that did not open the room", async () => {
+    const { harness, householdId } = await family();
+    const rt = runtime(harness);
+    const shared = await makeShared((e) => respond(e, rt));
+    const code = await openRoom(harness, householdId);
+    const seated = bodyOf(
+      await respond(
+        event("POST", `/api/room/${code}/join`, { body: { playerId: "p_1" }, headers: { "x-kad-shared-token": shared } }),
+        rt,
+      ),
+    );
+    expect(seated).not.toHaveProperty("host");
+    const result = await respond(
+      remove(code, "p_2", { "x-kad-shared-token": shared, authorization: `Bearer ${String(seated.sessionToken)}` }),
+      rt,
+    );
+    expect(result.statusCode).toBe(403);
   });
 });
 

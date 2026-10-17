@@ -38,11 +38,11 @@ import { listHeroes } from "../handlers/heroes.ts";
 import { getJournal } from "../handlers/journal.ts";
 import { getState } from "../handlers/state.ts";
 import {
-  asSharedSeat,
   forgetDevice,
   listSharedPlayers,
   seatOnSharedDevice,
   shareDevice,
+  tabletHost,
 } from "../handlers/shared-device.ts";
 import type { DeviceIdentity, SessionIdentity, SharedDeviceIdentity } from "../identity.ts";
 import type { RoomMode } from "@kad/shared";
@@ -267,7 +267,7 @@ async function postRoomShared(
   return json(
     200,
     {
-      ...asSharedSeat(joined.value),
+      ...joined.value,
       code: created.value.code,
       roomCode: created.value.code,
       expiresAt: created.value.expiresAt,
@@ -293,7 +293,7 @@ async function postJoin(req: Req, deps: HandlerDeps, code: string) {
     if (!seat.ok) return fromError(seat.error);
     const joined = await joinRoom({ code, principal: seat.value }, deps);
     if (!joined.ok) return fromError(joined.error);
-    return json(200, { ...asSharedSeat(joined.value), code, roomCode: code, expiresAt: found.expiresAt }, shared);
+    return json(200, { ...joined.value, code, roomCode: code, expiresAt: found.expiresAt }, shared);
   }
 
   const existing = await resolvePrincipal(req, deps);
@@ -344,20 +344,37 @@ async function postWatch(req: Req, deps: HandlerDeps, code: string) {
   return result.ok ? json(200, result.value) : fromError(result.error);
 }
 
-/** The host taking a player out (#267). Device token only: it names the host. */
+/**
+ * The host taking a player out (#267). A phone's device token names the host;
+ * a shared tablet's token does, with its seated player's session (#250).
+ */
 async function postRemove(req: Req, deps: HandlerDeps, code: string) {
-  const host = await resolvePrincipal(req, deps);
-  if (!host) return error(401, "FORBIDDEN", "taking someone out needs this device's token");
+  const shared = await resolveShared(req, deps);
+  if (shared === null) return forgottenDevice();
+  let principal: Pick<DeviceIdentity, "deviceId" | "playerId">;
+  // Whose renewed token, if any, rides back on the answer.
+  let asker: DeviceIdentity | SharedDeviceIdentity;
+  if (shared) {
+    asker = shared;
+    const seat = tabletHost(shared, await resolveSession(req, deps), code);
+    if (!seat.ok) return error(401, seat.error.code, seat.error.message);
+    principal = seat.value;
+  } else {
+    const host = await resolvePrincipal(req, deps);
+    if (!host) return error(401, "FORBIDDEN", "taking someone out needs this device's token");
+    principal = host.principal;
+    asker = host.principal;
+  }
   const playerId = req.body.playerId;
   if (typeof playerId !== "string" || playerId === "") {
     return error(400, "ILLEGAL", "expected { playerId }");
   }
   const lookup = await admitCodeLookup(req.client, deps);
   if (!lookup) return slowDown(deps);
-  const result = await removePlayer({ code, principal: host.principal, playerId }, deps);
+  const result = await removePlayer({ code, principal, playerId }, deps);
   const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
   if (!missed) await lookup.hit();
-  if (result.ok) return json(200, { ok: true, seq: result.value.seq }, host.principal);
+  if (result.ok) return json(200, { ok: true, seq: result.value.seq }, asker);
   return fromError(result.error);
 }
 

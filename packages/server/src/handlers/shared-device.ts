@@ -20,7 +20,7 @@
  */
 
 import type { PlayerProfile, SharedDevicePlayer, SharedDevicePlayersResponse, ShareDeviceResponse } from "@kad/shared";
-import type { DeviceIdentity, SharedDeviceIdentity } from "../identity.ts";
+import type { DeviceIdentity, SessionIdentity, SharedDeviceIdentity } from "../identity.ts";
 import { createProfile, type AccountDeps } from "./account.ts";
 import { fail, ok, type HandlerResult } from "./deps.ts";
 
@@ -118,14 +118,22 @@ export async function seatOnSharedDevice(
 }
 
 /**
- * A join as a tablet seat sees it. The tablet stays the room's host on the
- * server, so nobody else may watch a room it opened (#267), but it is not told
- * so: taking a player out is proved with a phone's own device token, which no
- * tablet holds, so a Remove button drawn there could only fail.
+ * The tablet as a room's host (#267), for taking a player out of a room it
+ * opened. The tablet's token proves the device; the room session of the kid
+ * sitting at it says who is asking, so the host still cannot take themselves
+ * out. The session must be for this room and this household: a session from
+ * another tablet's room proves nothing here.
  */
-export function asSharedSeat<T extends { host?: boolean }>(joined: T): Omit<T, "host"> {
-  const { host: _host, ...seat } = joined;
-  return seat;
+export function tabletHost(
+  shared: SharedDeviceIdentity,
+  session: SessionIdentity | null,
+  code: string,
+): HandlerResult<Seat> {
+  if (!session) return fail("FORBIDDEN", "taking someone out from a tablet needs the seated player's session");
+  if (session.roomCode.toUpperCase() !== code.toUpperCase() || session.householdId !== shared.householdId) {
+    return fail("FORBIDDEN", "that session is not for this room");
+  }
+  return ok({ deviceId: shared.deviceId, householdId: shared.householdId, playerId: session.playerId });
 }
 
 export interface ForgetDeviceInput {

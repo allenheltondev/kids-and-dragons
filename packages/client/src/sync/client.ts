@@ -143,6 +143,11 @@ export interface Api {
   watchRoom(code: string, timeoutMs?: number, deviceToken?: string): Promise<WatchRoomResponse>;
   /** The host taking a player out of the room (#267). The device token names the host. */
   removePlayer(code: string, playerId: string, deviceToken: string): Promise<void>;
+  /**
+   * The same from a shared tablet that opened the room (#250): its own token
+   * names the device, the seated kid's session says who is asking.
+   */
+  removePlayerShared(code: string, playerId: string, sharedToken: string, sessionToken: string): Promise<void>;
   postAction(body: ActionRequest, token: string): Promise<ActionResponse>;
   /** An unconfirmed tap, relayed to the room's screens (`IntentPreview`). */
   postPreview(preview: IntentPreview | null, context: string | null, token: string): Promise<void>;
@@ -339,6 +344,15 @@ export const api: Api = {
     await request<{ ok: true }>(`/api/room/${encodeURIComponent(code)}/remove`, {
       method: "POST",
       headers: { ...JSON_HEADERS, "x-kad-device-token": deviceToken },
+      body: JSON.stringify({ playerId }),
+    });
+  },
+
+  async removePlayerShared(code, playerId, sharedToken, sessionToken) {
+    await request<{ ok: true }>(`/api/room/${encodeURIComponent(code)}/remove`, {
+      method: "POST",
+      headers: { ...JSON_HEADERS, "x-kad-shared-token": sharedToken },
+      token: sessionToken,
       body: JSON.stringify({ playerId }),
     });
   },

@@ -37,8 +37,11 @@ import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
 export interface RemovePlayerInput {
   code: string;
-  /** The device asking, resolved from its device token. */
-  principal: DeviceIdentity;
+  /**
+   * The device asking and who is holding it: a phone's own device token, or
+   * a shared tablet's token plus its seated player's session (`tabletHost`).
+   */
+  principal: Pick<DeviceIdentity, "deviceId" | "playerId">;
   playerId: string;
 }
 
