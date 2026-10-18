@@ -10,8 +10,9 @@
  *     groups), "Start a new group", and "Have an organizer code?" for joining
  *     somebody else's as a co-organizer.
  *   - **one household**: its kids (add, rename, retire, bring back, move one
- *     to another home) with their heroes, and its organizers (invite one,
- *     take one off, leave).
+ *     to another home, delete) with their heroes, its organizers (invite one,
+ *     take one off, leave), and keeping and deleting (#252): how long a kid
+ *     who stops playing is kept, what the game stores, and deleting it all.
  *
  * A move code (#251) is made on one kid's row and redeemed from either view:
  * the picker takes her into a brand-new home, a household takes her into it.
@@ -22,6 +23,7 @@
 
 import { useEffect, useId, useState } from "react";
 import type { FormEvent, ReactElement } from "react";
+import { RETENTION_CHOICES } from "@kad/shared";
 import type {
   OrganizerDevice,
   OrganizerHero,
@@ -36,6 +38,7 @@ import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
 import { PairingCodeCard } from "./PairDevice";
 import { lastUsed, tabletName } from "./tablet-label";
+import { WhatWeStoreLink } from "./WhatWeStore";
 import { KeepsakeError } from "./SignInFlow";
 import { savedHeroLine } from "./save-copy";
 import "./OrganizerPanel.css";
@@ -49,10 +52,18 @@ export function OrganizerPanel({ onDone }: { onDone: () => void }): ReactElement
   const email = useOrganizerStore((s) => s.email);
   const busy = useOrganizerStore((s) => s.busy);
   const error = useOrganizerStore((s) => s.error);
+  const cleanupPending = useOrganizerStore((s) => s.cleanupPending);
 
   return (
     <div className="organizer">
       {view ? <HouseholdView view={view} busy={busy} /> : <HouseholdPicker busy={busy} />}
+      {/* #252: deleted here, and still being taken out of another family's game. */}
+      {cleanupPending ? (
+        <p className="keepsake__fine kad-muted" role="status">
+          Deleted. Another family&rsquo;s game still has the name in it; that is being cleaned up and finishes on its
+          own.
+        </p>
+      ) : null}
       <KeepsakeError error={error} />
       <div className="keepsake__actions">
         <Button variant="primary" size="lg" block icon={<Icon name="check" />} onClick={onDone} disabled={busy}>
@@ -253,6 +264,8 @@ function HouseholdView({ view, busy }: { view: OrganizerHouseholdView; busy: boo
       <TabletsSection busy={busy} />
 
       <OrganizersSection view={view} busy={busy} />
+
+      <KeepingSection view={view} busy={busy} />
     </>
   );
 }
@@ -263,6 +276,7 @@ function PlayerRow({ player, busy }: { player: OrganizerPlayer; busy: boolean })
   const makePairing = useOrganizerStore((s) => s.makePairing);
   const pairing = useOrganizerStore((s) => (s.pairing?.playerId === player.id ? s.pairing.code : null));
   const [renaming, setRenaming] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   if (renaming) {
     return (
@@ -340,7 +354,35 @@ function PlayerRow({ player, busy }: { player: OrganizerPlayer; busy: boolean })
         >
           Move home
         </button>
+        <button
+          type="button"
+          className="organizer__link kad-focusable"
+          disabled={busy}
+          aria-label={`Delete ${player.displayName}`}
+          onClick={() => setDeleting(true)}
+        >
+          Delete
+        </button>
       </span>
+      {deleting ? (
+        <span className="organizer__confirm organizer__row-confirm" role="group" aria-label={`Delete ${player.displayName}?`}>
+          <span className="kad-muted">
+            {player.displayName} and {player.heroes.length === 1 ? "their hero go" : "all their heroes go"}, everywhere they
+            played. This can&rsquo;t be undone.
+          </span>
+          <button
+            type="button"
+            className="organizer__link kad-focusable"
+            disabled={busy}
+            onClick={() => void edit({ action: "delete-player", playerId: player.id }).then(() => setDeleting(false))}
+          >
+            Delete {player.displayName}
+          </button>
+          <button type="button" className="organizer__link kad-focusable" disabled={busy} onClick={() => setDeleting(false)}>
+            Keep {player.displayName}
+          </button>
+        </span>
+      ) : null}
     </li>
     {pairing ? (
       <li className="organizer__row organizer__pairing">
@@ -478,6 +520,77 @@ function OrganizersSection({ view, busy }: { view: OrganizerHouseholdView; busy:
       ) : (
         <Button variant="secondary" block icon={<Icon name="plus" />} disabled={busy} onClick={() => void makeInvite()}>
           Invite another grown-up
+        </Button>
+      )}
+    </section>
+  );
+}
+
+/** How each retention window reads on the picker. */
+const RETENTION_LABEL: Record<(typeof RETENTION_CHOICES)[number], string> = {
+  30: "A month",
+  90: "Three months",
+  180: "Six months",
+  365: "A year",
+};
+
+/**
+ * Keeping and deleting (#252): how long a kid who stops playing is kept, the
+ * page that says what the game stores, and deleting the household and
+ * everything in it. A delete asks first, and says what goes.
+ */
+function KeepingSection({ view, busy }: { view: OrganizerHouseholdView; busy: boolean }): ReactElement {
+  const edit = useOrganizerStore((s) => s.edit);
+  const deleteHousehold = useOrganizerStore((s) => s.deleteHousehold);
+  const [asking, setAsking] = useState(false);
+  const fieldId = useId();
+
+  return (
+    <section className="organizer__section" aria-label="Keeping and deleting">
+      <h3 className="organizer__heading">
+        <Icon name="scroll" />
+        <span>Keeping and deleting</span>
+      </h3>
+      <label className="keepsake__label" htmlFor={fieldId}>
+        <span>Keep a kid who stops playing for</span>
+      </label>
+      <select
+        className="keepsake__input organizer__select"
+        id={fieldId}
+        value={view.retentionDays === null ? "" : String(view.retentionDays)}
+        disabled={busy}
+        onChange={(e) =>
+          void edit({ action: "set-retention", retentionDays: e.target.value === "" ? null : Number(e.target.value) })
+        }
+      >
+        <option value="">Until a grown-up deletes them</option>
+        {RETENTION_CHOICES.map((days) => (
+          <option key={days} value={String(days)}>
+            {RETENTION_LABEL[days]} without playing
+          </option>
+        ))}
+      </select>
+      <p className="keepsake__fine kad-muted">
+        Counted from the last time each kid played, anywhere. A kid deleted this way goes with their heroes.
+      </p>
+      <WhatWeStoreLink />
+
+      {asking ? (
+        <div className="organizer__invite organizer__danger" role="group" aria-label={`Delete ${view.displayName}?`}>
+          <p className="keepsake__body">
+            This deletes every kid, hero, tablet and saved game in <b>{view.displayName}</b>, for good. A kid visiting from
+            another family keeps their hero.
+          </p>
+          <Button variant="danger" block icon={<Icon name="close" />} disabled={busy} onClick={() => void deleteHousehold()}>
+            Delete {view.displayName}
+          </Button>
+          <Button variant="ghost" block disabled={busy} onClick={() => setAsking(false)}>
+            Keep it
+          </Button>
+        </div>
+      ) : (
+        <Button variant="secondary" block icon={<Icon name="close" />} disabled={busy} onClick={() => setAsking(true)}>
+          Delete {view.displayName} and everything in it
         </Button>
       )}
     </section>

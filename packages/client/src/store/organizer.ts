@@ -48,6 +48,11 @@ export interface OrganizerStore {
   pendingMove: string | null;
   /** The last pairing code made, and for which kid (#281). */
   pairing: { playerId: string; code: PairingCode } | null;
+  /**
+   * The last delete (#252) left another household's game or guide still
+   * naming a kid, for now: the cleanup is recorded and finishes on its own.
+   */
+  cleanupPending: boolean;
   busy: boolean;
   error: string | null;
 
@@ -79,6 +84,8 @@ export interface OrganizerStore {
   forgetDevice(deviceId: string): Promise<void>;
   /** Take a co-organizer off; your own id is "leave this group". */
   removeOrganizer(ownerId: string): Promise<void>;
+  /** Delete the household on screen and everything in it (#252), then back to the picker. */
+  deleteHousehold(): Promise<void>;
   dismissError(): void;
 }
 
@@ -127,6 +134,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
       arrived: null,
       pendingMove: null,
       pairing: null,
+      cleanupPending: false,
       busy: false,
       error: null,
 
@@ -200,7 +208,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
         if (!householdId) return;
         await run(async (t) => {
           const view = await api.editHousehold(t, { ...change, householdId } as OrganizerEdit);
-          set({ view });
+          set({ view, cleanupPending: view.cleanupPending === true });
         });
       },
 
@@ -265,6 +273,24 @@ export function createOrganizerStore(api: Api = defaultApi) {
           } else {
             await show(t, householdId);
           }
+        });
+      },
+
+      async deleteHousehold() {
+        const householdId = get().view?.id;
+        if (!householdId) return;
+        await run(async (t) => {
+          const { households, cleanupPending } = await api.deleteHousehold(t, householdId);
+          set({
+            view: null,
+            devices: [],
+            invite: null,
+            transfer: null,
+            arrived: null,
+            pairing: null,
+            households,
+            cleanupPending: cleanupPending === true,
+          });
         });
       },
 

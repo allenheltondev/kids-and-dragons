@@ -164,8 +164,8 @@ Resources:
         - AttributeName: SK
           KeyType: RANGE
       GlobalSecondaryIndexes:
-        # Three jobs, one index (store/keys.ts): device id → household, run id →
-        # household, and the GUEST partition the sweeper reads.
+        # Four jobs, one index (store/keys.ts): device id → household, run id →
+        # household, and the GUEST and IDLE partitions the sweeper reads.
         - IndexName: GSI1
           KeySchema:
             - AttributeName: GSI1PK
@@ -175,10 +175,11 @@ Resources:
           Projection:
             ProjectionType: ALL
       TimeToLiveSpecification:
-        # Rooms and code-miss windows (handlers/code-guard.ts) only: each is one
-        # row that nothing else points at. Everything else that expires does so
-        # through the GUEST index and the sweeper — see the long note in
-        # store/keys.ts.
+        # Single rows nothing else points at only: rooms, code-miss windows
+        # (handlers/code-guard.ts), invites, transfer and pairing codes, moved-
+        # device forwards, presence. Everything else that expires spans rows and
+        # partitions, and does so through the GUEST and IDLE indexes and the
+        # sweeper — see the long note in store/keys.ts.
         AttributeName: ttl
         Enabled: true
       # No point-in-time recovery, deliberately. The only restore it offers is
@@ -531,7 +532,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .build/sweep
-      Description: Deletes anonymous households nobody signed in to keep
+      Description: Deletes anonymous households nobody signed in to keep, and kids past their household's retention window
       Environment:
         Variables:
           TABLE_NAME: !Ref Table

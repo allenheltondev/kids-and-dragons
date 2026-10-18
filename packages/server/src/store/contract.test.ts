@@ -16,9 +16,9 @@
  * failure this suite exists to prevent.
  */
 
-import { CreateTableCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { CreateTableCommand, DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
-import { FIELD_GUIDE_VERSION } from "@kad/shared";
+import { FIELD_GUIDE_VERSION, FORGOTTEN_FINDER } from "@kad/shared";
 import type { Character, Household, JourneyState, PlayerProfile, RunState } from "@kad/shared";
 import { DynamoRepository, GSI1_NAME } from "./dynamo-repository.ts";
 import { MemoryRepository } from "./memory-repository.ts";
@@ -124,7 +124,10 @@ function room(overrides: Partial<RoomRecord> = {}): RoomRecord {
 // The suite
 // ---------------------------------------------------------------------------
 
-function contract(name: string, open: () => Promise<GameRepository>): void {
+/** Every row in the store, as `PK SK`: what "nothing is left" is checked against. */
+type Rows = (repo: GameRepository) => Promise<string[]>;
+
+function contract(name: string, open: () => Promise<GameRepository>, rows: Rows): void {
   describe(`GameRepository contract — ${name}`, () => {
     let repo: GameRepository;
     beforeEach(async () => {
@@ -361,6 +364,10 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
       }
       const later = new Date(Date.now() + DAY).toISOString();
       const ben = { cognitoSub: "sub_b", email: "b@example.com", addedAt: "2026-07-04T18:00:00.000Z" };
+      // A code names a household that is there (#252): redeeming checks it.
+      beforeEach(async () => {
+        await repo.putHousehold(household({ id: "h_g", ownerSub: "sub_a" }));
+      });
       const eve = { cognitoSub: "sub_e", addedAt: "2026-07-04T18:00:00.000Z" };
 
       it("is spent exactly once, and makes whoever spends it an owner in the same write", async () => {
@@ -849,6 +856,247 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
          * call refuses outright. The pointer cleanup inside it is belt and
          * braces for a future path, not a case reachable today.
          */
+      });
+    });
+
+    describe("deleting and keeping (#252)", () => {
+      const at = "2026-07-04T18:00:00.000Z";
+      function run(id: string, householdId: string, roomCode = "ABCD") {
+        return { id, householdId, roomCode, campaignId: null, status: "active" as const, createdAt: at };
+      }
+
+      /** A kept household with one of everything a household can hold. */
+      async function fullHousehold(): Promise<void> {
+        await repo.putHousehold(household({ ownerSub: "sub_a" }));
+        await repo.putOwner({ householdId: "h_1", cognitoSub: "sub_a", addedAt: at });
+        await repo.putOwner({ householdId: "h_1", cognitoSub: "sub_b", addedAt: at });
+        await repo.putPlayer(player("p_1"));
+        await repo.touchPlayer("h_1", "p_1", at, new Date(Date.now() + DAY).toISOString());
+        await repo.putDevice({ deviceId: "d_1", householdId: "h_1", playerId: "p_1", tokenHash: "x", lastSeen: at });
+        await repo.putDevice({ kind: "shared", deviceId: "d_tab", householdId: "h_1", tokenHash: "y", lastSeen: at });
+        await repo.putCharacter(character("c_1"));
+        await repo.recordDiscoveries("h_1", [{ canonId: "lore.x", playerId: "p_1" }]);
+        await repo.putCampaignProgress({ householdId: "h_1", campaignId: "gemfall", status: "active", setbacks: 0, updatedAt: at });
+        await repo.putRun(run("r_1", "h_1"));
+        await repo.putState(state("r_1", 0));
+        await repo.commit({ runId: "r_1", expectedSeq: 0, state: state("r_1", 1), event: event("r_1", 1) });
+        await repo.putChapterProgress({ runId: "r_1", index: 0, chapterId: "ch", status: "complete", xpEarned: 10, updatedAt: at });
+        await repo.touchPresence("r_1", "p_1", at, Math.floor(Date.now() / 1000) + 3600);
+        await repo.putRoomIfAbsent(room());
+        await repo.putVisit("p_1", "h_other", at);
+      }
+
+      /** Somebody else's household, which no delete of h_1 may touch. */
+      async function neighbour(): Promise<string[]> {
+        await repo.putHousehold(household({ id: "h_other", ownerSub: "sub_o" }));
+        await repo.putOwner({ householdId: "h_other", cognitoSub: "sub_o", addedAt: at });
+        await repo.putPlayer(player("p_o", "h_other"));
+        await repo.putCharacter({ ...character("c_o", "h_other"), ownerPlayerId: "p_o" });
+        await repo.putRun(run("r_o", "h_other", "WXYZ"));
+        await repo.putState(state("r_o", 0));
+        await repo.putVisit("p_o", "h_1", at);
+        return (await rows(repo)).sort();
+      }
+
+      it("deletes a household and every row under it, its runs and its owners' pointers included", async () => {
+        const before = await neighbour();
+        await fullHousehold();
+
+        expect(await repo.deleteHousehold("h_1")).toBe(true);
+
+        // Nothing is left but the neighbour's rows, exactly as they were.
+        expect((await rows(repo)).sort()).toEqual(before);
+        expect(await repo.listHouseholdsForAccount("sub_a")).toEqual([]);
+        expect(await repo.listHouseholdsForAccount("sub_b")).toEqual([]);
+        expect(await repo.listVisits("p_1")).toEqual([]);
+        expect(await repo.getRun("r_1")).toBeNull();
+        expect(await repo.getDeviceById("d_tab")).toBeNull();
+        // A visitor's hero lives at her own home, which is not touched.
+        expect(await repo.getCharacter("h_other", "c_o")).not.toBeNull();
+        expect(await repo.listVisits("p_o")).toEqual(["h_1"]);
+      });
+
+      it("is refused for a household that is not there", async () => {
+        expect(await repo.deleteHousehold("h_nope")).toBe(false);
+      });
+
+      it("hands out nothing for an organizer code made before the delete", async () => {
+        await repo.putHousehold(household({ ownerSub: "sub_a" }));
+        const expiresAt = new Date(Date.now() + DAY).toISOString();
+        await repo.putOrganizerInviteIfAbsent({
+          code: "ABCDEFGHJK",
+          householdId: "h_1",
+          createdBy: "sub_a",
+          createdAt: at,
+          expiresAt,
+          ttl: Math.floor(Date.parse(expiresAt) / 1000),
+        });
+        await repo.deleteHousehold("h_1");
+        expect(await repo.redeemOrganizerInvite("ABCDEFGHJK", new Date().toISOString(), { cognitoSub: "sub_b", addedAt: at })).toBeNull();
+        expect(await repo.listHouseholdsForAccount("sub_b")).toEqual([]);
+      });
+
+      it("deletes one kid: her profile, heroes, own phones and visits, and nobody else's", async () => {
+        await fullHousehold();
+        await repo.putPlayer(player("p_2"));
+        await repo.putCharacter({ ...character("c_2"), ownerPlayerId: "p_2" });
+        await repo.putDevice({ deviceId: "d_2", householdId: "h_1", playerId: "p_2", tokenHash: "z", lastSeen: at });
+
+        expect(await repo.deleteProfile("h_1", "p_1")).toBe(true);
+
+        expect(await repo.getPlayer("h_1", "p_1")).toBeNull();
+        expect((await repo.listPlayers("h_1")).map((p) => p.id)).toEqual(["p_2"]);
+        expect(await repo.getCharacter("h_1", "c_1")).toBeNull();
+        expect(await repo.getDevice("h_1", "d_1")).toBeNull();
+        expect(await repo.listVisits("p_1")).toEqual([]);
+        expect(await repo.listIdlePlayers(new Date(Date.now() + 2 * DAY).toISOString())).toEqual([]);
+        // Hers only: her sister, the family tablet and the table's save stay.
+        expect(await repo.getCharacter("h_1", "c_2")).not.toBeNull();
+        expect(await repo.getDevice("h_1", "d_2")).not.toBeNull();
+        expect(await repo.getDevice("h_1", "d_tab")).not.toBeNull();
+        expect(await repo.getState("r_1")).not.toBeNull();
+        expect((await rows(repo)).filter((r) => r.includes("p_1") && !r.startsWith("RUN#"))).toEqual([]);
+        expect(await repo.deleteProfile("h_1", "p_1")).toBe(false);
+      });
+
+      it("never brings a deleted kid back by renewing her", async () => {
+        await repo.putHousehold(household({ ownerSub: "sub_a" }));
+        await repo.putPlayer(player("p_1"));
+        await repo.touchPlayer("h_1", "p_1", at, null);
+        // A gate she does not meet marks nothing.
+        expect(await repo.deleteProfile("h_1", "p_1", "2026-01-01T00:00:00.000Z")).toBe(false);
+        expect(await repo.getPlayer("h_1", "p_1")).not.toBeNull();
+
+        expect(await repo.deleteProfile("h_1", "p_1")).toBe(true);
+        // A join that read her a moment before the delete lands after it.
+        await repo.touchPlayer("h_1", "p_1", new Date().toISOString(), new Date(Date.now() + DAY).toISOString());
+        expect(await repo.getPlayer("h_1", "p_1")).toBeNull();
+        expect(await repo.getLastPlayed("h_1", "p_1")).toBeNull();
+        expect(await repo.readProfileMove("h_1", "p_1")).toBeNull();
+        expect(await rows(repo)).not.toContain("HH#h_1 PLAYER#p_1");
+      });
+
+      it("deletes an idle kid only if she has not played since the cutoff", async () => {
+        await repo.putHousehold(household({ ownerSub: "sub_a", retentionDays: 30 }));
+        await repo.putPlayer(player("p_1"));
+        const now = Date.now();
+        const played = new Date(now - 40 * DAY).toISOString();
+        await repo.touchPlayer("h_1", "p_1", played, new Date(now - 10 * DAY).toISOString());
+
+        expect(await repo.listIdlePlayers(new Date(now).toISOString())).toEqual([
+          { householdId: "h_1", playerId: "p_1", lastPlayedAt: played },
+        ]);
+        // She came back an hour ago: the gate in the delete itself spares her.
+        await repo.touchPlayer("h_1", "p_1", new Date(now - HOUR).toISOString(), new Date(now + 29 * DAY).toISOString());
+        expect(await repo.deleteProfile("h_1", "p_1", new Date(now - 30 * DAY).toISOString())).toBe(false);
+        expect(await repo.getPlayer("h_1", "p_1")).not.toBeNull();
+        expect(await repo.listIdlePlayers(new Date(now).toISOString())).toEqual([]);
+        expect(await repo.deleteProfile("h_1", "p_1", new Date(now).toISOString())).toBe(true);
+      });
+
+      it("keeps when she last played and her sweep entry through a rename", async () => {
+        await repo.putHousehold(household({ ownerSub: "sub_a", retentionDays: 30 }));
+        await repo.putPlayer(player("p_1"));
+        await repo.touchPlayer("h_1", "p_1", at, "2026-08-03T18:00:00.000Z");
+        await repo.putPlayer({ ...player("p_1"), displayName: "Ada" });
+
+        expect(await repo.getLastPlayed("h_1", "p_1")).toBe(at);
+        expect(await repo.listIdlePlayers("2026-09-01T00:00:00.000Z")).toHaveLength(1);
+        // Out of the sweep when her household keeps everybody.
+        await repo.touchPlayer("h_1", "p_1", at, null);
+        expect(await repo.listIdlePlayers("2026-09-01T00:00:00.000Z")).toEqual([]);
+        expect((await repo.getPlayer("h_1", "p_1"))?.displayName).toBe("Ada");
+      });
+
+      it("writes a visit once per table, keyed by the kid", async () => {
+        await repo.putVisit("p_1", "h_a", at);
+        await repo.putVisit("p_1", "h_a", "2026-07-05T18:00:00.000Z");
+        await repo.putVisit("p_1", "h_b", at);
+        expect((await repo.listVisits("p_1")).sort()).toEqual(["h_a", "h_b"]);
+        expect(await repo.listVisits("p_2")).toEqual([]);
+      });
+
+      it("rewrites an event in place, and never adds one", async () => {
+        await repo.putRun(run("r_1", "h_1"));
+        await repo.putState(state("r_1", 0));
+        await repo.commit({ runId: "r_1", expectedSeq: 0, state: state("r_1", 1), event: event("r_1", 1) });
+
+        const scrubbed = { ...event("r_1", 1), patch: [{ op: "replace" as const, path: "/narration", value: "A friend" }] };
+        await repo.rewriteEvent(scrubbed);
+        await repo.rewriteEvent({ ...event("r_1", 2), patch: [] });
+
+        expect(await repo.listEvents("r_1", 0)).toEqual([scrubbed]);
+        expect((await repo.getState("r_1"))?.seq).toBe(1);
+      });
+
+      it("re-credits her finds in a book, and nobody else's", async () => {
+        await repo.recordDiscoveries("h_1", [
+          { canonId: "lore.a", playerId: "p_1", foundAt: at },
+          { canonId: "lore.b", playerId: "p_2", foundAt: at },
+          { canonId: "lore.c", playerId: "p_1", foundAt: at, runId: "r_1" },
+        ]);
+        expect(await repo.forgetFinder("h_1", "p_1")).toBe(2);
+        expect((await repo.getFieldGuide("h_1")).entries).toEqual({
+          "lore.a": { firstFoundBy: FORGOTTEN_FINDER, foundAt: at },
+          "lore.b": { firstFoundBy: "p_2", foundAt: at },
+          "lore.c": { firstFoundBy: FORGOTTEN_FINDER, foundAt: at, runId: "r_1" },
+        });
+        expect(await repo.forgetFinder("h_1", "p_1")).toBe(0);
+        expect(await repo.forgetFinder("h_none", "p_1")).toBe(0);
+      });
+
+      it("never brings a deleted kid back by a change read before the delete", async () => {
+        /*
+         * The race: an owner's rename reads her, the delete lands, the rename
+         * writes. An update that made a row would bring her back as a profile
+         * nothing is marked on, and nobody would ever delete her again.
+         */
+        await repo.putHousehold(household({ ownerSub: "sub_a" }));
+        await repo.putPlayer(player("p_1"));
+        const read = (await repo.getPlayer("h_1", "p_1"))!;
+        expect(await repo.updatePlayer({ ...read, displayName: "Ada" })).toBe(true);
+
+        expect(await repo.deleteProfile("h_1", "p_1")).toBe(true);
+        expect(await repo.updatePlayer({ ...read, displayName: "Ada again" })).toBe(false);
+        expect(await repo.updatePlayer({ ...read, retired: true })).toBe(false);
+
+        expect(await repo.getPlayer("h_1", "p_1")).toBeNull();
+        expect(await rows(repo)).not.toContain("HH#h_1 PLAYER#p_1");
+        expect(await repo.updatePlayer(player("p_never"))).toBe(false);
+        expect(await repo.getPlayer("h_1", "p_never")).toBeNull();
+      });
+
+      it("keeps forget jobs until they are done, oldest first", async () => {
+        const job = (playerId: string, createdAt: string) => ({
+          playerId,
+          home: "h_1",
+          reason: "kid" as const,
+          nicknames: ["Ada"],
+          heroes: ["Sparklehoof"],
+          tables: ["h_rue", "h_bo"],
+          createdAt,
+          attempts: 0,
+        });
+        await repo.putForget(job("p_2", "2026-07-05T18:00:00.000Z"));
+        await repo.putForget(job("p_1", at));
+        expect((await repo.listForgets()).map((j) => j.playerId)).toEqual(["p_1", "p_2"]);
+
+        // A scrub that cleaned one table and not the other rewrites it.
+        await repo.putForget({ ...job("p_1", at), tables: ["h_bo"], attempts: 1 });
+        expect((await repo.listForgets())[0]).toMatchObject({ playerId: "p_1", tables: ["h_bo"], attempts: 1 });
+
+        await repo.deleteForget("p_1");
+        await repo.deleteForget("p_2");
+        expect(await repo.listForgets()).toEqual([]);
+        expect(await rows(repo)).toEqual([]);
+      });
+
+      it("takes the kids' visits with a swept guest household", async () => {
+        await repo.putHousehold(guest("h_1", new Date(Date.now() - DAY).toISOString()));
+        await repo.putPlayer(player("p_1"));
+        await repo.putVisit("p_1", "h_other", at);
+        expect(await repo.deleteGuestHousehold("h_1", new Date().toISOString())).toBe(true);
+        expect(await rows(repo)).toEqual([]);
       });
     });
 
@@ -1736,7 +1984,10 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
 // Implementations under test
 // ---------------------------------------------------------------------------
 
-contract("MemoryRepository", async () => new MemoryRepository());
+contract("MemoryRepository", async () => new MemoryRepository(), async (repo) =>
+  // The store's own rows; reading them is the point of the check.
+  [...(repo as unknown as { items: Map<string, { PK: string; SK: string }> }).items.values()].map((i) => `${i.PK} ${i.SK}`),
+);
 
 /**
  * DynamoDB Local, when there is one. Skipped rather than failed without it so
@@ -1797,7 +2048,21 @@ if (!endpoint) {
     return tableName;
   }
 
-  contract("DynamoRepository", async () => new DynamoRepository({ tableName: await freshTable(), client }));
+  contract(
+    "DynamoRepository",
+    async () => new DynamoRepository({ tableName: await freshTable(), client }),
+    async (repo) => {
+      const tableName = (repo as unknown as { table: string }).table;
+      const out: string[] = [];
+      let start: Record<string, unknown> | undefined;
+      do {
+        const page = await client.send(new ScanCommand({ TableName: tableName, ...(start ? { ExclusiveStartKey: start as never } : {}) }));
+        for (const item of page.Items ?? []) out.push(`${item.PK?.S ?? ""} ${item.SK?.S ?? ""}`);
+        start = page.LastEvaluatedKey;
+      } while (start);
+      return out;
+    },
+  );
 
   describe("DynamoRepository — an invite redemption that fails part-way (#248)", () => {
     it("spends nothing: the code still works, and nobody was made an owner", async () => {
@@ -1821,6 +2086,7 @@ if (!endpoint) {
         { step: "initialize", name: "injectTransactFault" },
       );
       const repo = new DynamoRepository({ tableName, client: faulty });
+      await repo.putHousehold(household({ id: "h_g", ownerSub: "sub_a" }));
       const expiresAt = new Date(Date.now() + DAY).toISOString();
       await repo.putOrganizerInviteIfAbsent({
         code: "ABCDEFGHJK",

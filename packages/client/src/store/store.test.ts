@@ -182,6 +182,7 @@ function harness(state: RunState = makeState()): Harness {
     createTransferCode: vi.fn(),
     acceptTransfer: vi.fn(),
     removeOrganizer: vi.fn(),
+    deleteHousehold: vi.fn(),
     // Pairing (#281): the game store never calls these.
     createPairingCode: vi.fn(),
     pairProfile: vi.fn(),
