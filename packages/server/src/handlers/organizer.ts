@@ -268,7 +268,8 @@ export async function deleteProfile(
   if (typeof input.playerId !== "string" || input.playerId === "") return fail("ILLEGAL", "expected { playerId }");
   const deleted = await deleteKid(owned.value, input.playerId, deps);
   if (!deleted.ok) return deleted;
-  return ok(await describe(owned.value, input, deps));
+  const view = await describe(owned.value, input, deps);
+  return ok(deleted.value.cleanupPending ? { ...view, cleanupPending: true } : view);
 }
 
 /** "Delete our data" (#252): the household and everything under it, for its only owner. */

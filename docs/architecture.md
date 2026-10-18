@@ -1132,7 +1132,9 @@ scene id cannot break a save.
   authorized, and a sweep's is asked again under its own gate. Then, if she
   is gone, it cleans the tables still owed. A kid who is still there (the
   guest family kept their household in time, or she played inside her
-  window) is forgotten nowhere, and her job is dropped. Each run's state
+  window) is forgotten nowhere, and her job is dropped. A delete whose scrub
+  is still owed does not answer a plain success: the organizer route says
+  `cleanupPending`, and the panel says the cleanup finishes on its own. Each run's state
   change is one committed turn of its own, published to the run's room if
   that room still points at it.
 - **A change never brings her back.** `putPlayer` makes a profile and never

@@ -51,10 +51,18 @@ export function OrganizerPanel({ onDone }: { onDone: () => void }): ReactElement
   const email = useOrganizerStore((s) => s.email);
   const busy = useOrganizerStore((s) => s.busy);
   const error = useOrganizerStore((s) => s.error);
+  const cleanupPending = useOrganizerStore((s) => s.cleanupPending);
 
   return (
     <div className="organizer">
       {view ? <HouseholdView view={view} busy={busy} /> : <HouseholdPicker busy={busy} />}
+      {/* #252: deleted here, and still being taken out of another family's game. */}
+      {cleanupPending ? (
+        <p className="keepsake__fine kad-muted" role="status">
+          Deleted. Another family&rsquo;s game still has the name in it; that is being cleaned up and finishes on its
+          own.
+        </p>
+      ) : null}
       <KeepsakeError error={error} />
       <div className="keepsake__actions">
         <Button variant="primary" size="lg" block icon={<Icon name="check" />} onClick={onDone} disabled={busy}>
