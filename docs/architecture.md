@@ -919,9 +919,12 @@ finished, and her Field Guide finds. Both are now hers.
   does not exist yet (#250's "forget this device" is by device id).
 
 **What is collected about a kid, and for how long.** Kept current as features
-land. The app's own "what we store" page (`/what-we-store`,
-`screens/what-we-store.ts`) says the same in plain words, and its test fails
-when a row is added to §3 or written by a store without being described there.
+land. The app's own "what we store" page (`screens/WhatWeStore.tsx`, words
+in `what-we-store.ts`) says the same in plain words, and its test fails when
+a row is added to §3 or written by a store without being described there. It
+opens inside the sign-in panel, from its first step (so before anybody signs
+in) and from the organizer screen; that panel is loaded on demand, so the
+page costs first paint nothing.
 
 | Data | Where | Kept |
 |---|---|---|

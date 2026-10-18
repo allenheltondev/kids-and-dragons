@@ -22,14 +22,14 @@ test("a grown-up keeps, then deletes, a group's data", async ({ browser }) => {
   const ctx = await browser.newContext({ viewport: { width: 820, height: 1100 } });
   const page = await ctx.newPage();
 
-  // What the game stores is a page anybody can read, from the home screen.
+  // What the game stores can be read before anybody signs in.
   await page.goto("/");
-  await page.getByRole("link", { name: /what we store/i }).click(TAP);
-  await expect(page.getByRole("heading", { name: "What we store", level: 1 })).toBeVisible(TAP);
-  await expect(page.getByText(/no kid ever has a login/i)).toBeVisible();
-  await page.getByRole("button", { name: /back to the game/i }).click();
-
   await page.getByRole("button", { name: /run a group/i }).click(TAP);
+  await page.getByRole("button", { name: /what we store about your family/i }).click(TAP);
+  await expect(page.getByRole("heading", { name: "What we store" })).toBeVisible(TAP);
+  await expect(page.getByText(/no kid ever has a login/i)).toBeVisible();
+  await page.getByRole("button", { name: /^close$/i }).click();
+
   await signIn(page, `del-${run}@example.com`);
   await page.getByLabel("Start a new group").fill(club);
   await page.getByRole("button", { name: /start it/i }).click();

@@ -1,15 +1,18 @@
 /*
- * The "what we store" page (#252): a document for a grown-up, so a readable
- * column on the app's own surface rather than a game screen.
+ * The "what we store" page (#252): a document for a grown-up, opened in place
+ * inside the sign-in panel, so a readable column rather than a game screen.
  */
 
 .stored {
   display: flex;
   justify-content: center;
-  min-block-size: 100dvh;
-  padding: var(--kad-space-4) var(--kad-space-3);
-  background: var(--kad-bg);
+  inline-size: 100%;
   color: var(--kad-ink);
+  text-align: start;
+}
+
+.stored__open {
+  align-self: center;
 }
 
 .stored__page {
@@ -23,7 +26,7 @@
 
 .stored__title {
   margin: 0;
-  font-size: var(--kad-text-2xl);
+  font-size: var(--kad-text-xl);
   font-weight: var(--kad-weight-black);
 }
 
