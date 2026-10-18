@@ -82,6 +82,7 @@ export function computeChapterXp(state: RunState, _chapter: Chapter): number {
 export interface AwardChapterXpInput {
   state: RunState;
   chapter: Chapter;
+  /** The run's household. A visiting member's row is read from its own (`PartyMember.homeHouseholdId`). */
   householdId: string;
   repo: Pick<GameRepository, "getCharacter">;
   rules: RulesContent;
@@ -118,7 +119,8 @@ export async function awardChapterXpDetails(
   const stored = await Promise.all(
     input.state.party.map(async (member) => {
       try {
-        return await input.repo.getCharacter(input.householdId, member.character.id);
+        // The member's own household: the room's, or a visitor's (#249).
+        return await input.repo.getCharacter(member.homeHouseholdId ?? input.householdId, member.character.id);
       } catch (err) {
         console.error(`awardChapterXp: skipping character ${member.character.id}:`, err);
         return null;

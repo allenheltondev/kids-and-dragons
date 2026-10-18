@@ -53,6 +53,7 @@ import { arrivalKey, authoredLine, mayDecorate, nextMoments } from "../llm/momen
 import { partyBrief } from "../llm/port.ts";
 import { keepGuestHousehold } from "./account.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
+import { closedIfIdle } from "./host.ts";
 import { prepareStepFinds, recordStepFinds } from "./field-guide.ts";
 import {
   attemptJourney,
@@ -91,10 +92,12 @@ export async function applyAction(
   deps: HandlerDeps,
 ): Promise<ActionResponse> {
   let input = received;
-  const state = await deps.repo.getState(input.runId);
-  if (!state) {
+  const stored = await deps.repo.getState(input.runId);
+  if (!stored) {
     return { ok: false, seq: input.seq, error: { code: "NOT_FOUND", message: `no run ${input.runId}` } };
   }
+  // An open room idle too long closes now (#249), and `authorize` refuses.
+  const state = await closedIfIdle(stored, deps);
 
   const auth = await authorize(input, state, deps);
   if ("error" in auth) return auth.error;
@@ -254,7 +257,7 @@ export async function applyAction(
     // engine's call (doSeatCharacter).
     const savedCharacter =
       input.intent.type === "SEAT_CHARACTER"
-        ? await deps.repo.getCharacter(auth.run.householdId, input.intent.characterId)
+        ? await deps.repo.getCharacter(auth.home, input.intent.characterId)
         : undefined;
     // One game at a time per hero (#282): a hero another adventure holds is
     // refused here, before the engine seats anybody.
@@ -281,8 +284,9 @@ export async function applyAction(
         // every turn and needs the whole catalog anyway.
         abilities: deps.content.abilities(),
         // Characters belong to the household, not the run (architecture §3), so
-        // CREATE_CHARACTER needs to know which household it is building into.
-        householdId: auth.run.householdId,
+        // CREATE_CHARACTER needs to know which household it is building into:
+        // the player's own, which is the run's unless they are visiting (#249).
+        householdId: auth.home,
         ...(savedCharacter === undefined ? {} : { savedCharacter }),
         // The roads this campaign attempt has already taken, which a chapter
         // start seeds its flags from rather than starting empty. Empty for
@@ -310,6 +314,11 @@ export async function applyAction(
     // An illegal intent leaves the run exactly where it was. No seq is burned:
     // a rejected tap must not force everyone else to resync.
     return { ok: false, seq: state.seq, error: result.error };
+  }
+  // A visitor's hero sat down (#249): it says where it lives, so everything
+  // it earns here is written back there.
+  if (auth.home !== auth.run.householdId) {
+    result = { ...result, state: withHome(result.state, input.playerId, auth.home) };
   }
 
   /*
@@ -344,7 +353,7 @@ export async function applyAction(
     };
   }
   if (result.created) {
-    characters.push(...(await newCharacterWrite(result.created, deps, auth.run.householdId)));
+    characters.push(...(await newCharacterWrite(result.created, deps, auth.home)));
   }
   /*
    * Keyed off the phase transition, not the presentation.
@@ -549,7 +558,7 @@ export async function applyAction(
   // after the commit, so only a chapter that really landed counts — and
   // awaited only after the broadcast below, so a slow store call can never
   // hold the completion back from the table.
-  const renewal = finishedChapter ? keepGuestHousehold(auth.run.householdId, deps) : null;
+  const renewal = finishedChapter ? keepHomes(auth.run.householdId, next, deps) : null;
 
   /*
    * The finds land in the household's book now that the step has, and what the
@@ -1178,14 +1187,18 @@ export function diceSeed(run: Pick<RunRecord, "diceSecret">, runId: string, seq:
 
 /**
  * A player may only act as themselves, and only inside their own household's
- * run (§4.5). In prod the principal comes from the authorizer; in local dev it
- * may be absent, in which case the household membership check still holds.
+ * run (§4.5), or as a visitor the run has seated (#249). In prod the principal
+ * comes from the authorizer; in local dev it may be absent, in which case the
+ * household membership check still holds.
+ *
+ * `home` is the household the player's hero lives in: the run's, or a
+ * visitor's own. Every character read and write for this player goes there.
  */
 async function authorize(
   input: ActionInput,
   state: RunState,
   deps: HandlerDeps,
-): Promise<{ run: RunRecord } | { error: ActionResponse }> {
+): Promise<{ run: RunRecord; home: string } | { error: ActionResponse }> {
   if (input.principal && input.principal.playerId !== input.playerId) {
     return errorResult({
       ok: false,
@@ -1221,7 +1234,10 @@ async function authorize(
       error: { code: "NOT_FOUND", message: `no run ${input.runId}` },
     });
   }
-  if (input.principal && input.principal.householdId !== run.householdId) {
+  const home = input.principal?.householdId ?? run.householdId;
+  // A visitor is somebody the join seated from that household (`RoomSeat`).
+  // Their session reaches this room and their own heroes, nothing more.
+  if (home !== run.householdId && state.seats?.[input.playerId]?.homeHouseholdId !== home) {
     return errorResult({
       ok: false,
       seq: state.seq,
@@ -1229,7 +1245,7 @@ async function authorize(
     });
   }
 
-  const player = await deps.repo.getPlayer(run.householdId, input.playerId);
+  const player = await deps.repo.getPlayer(home, input.playerId);
   if (!player) {
     return errorResult({
       ok: false,
@@ -1246,7 +1262,28 @@ async function authorize(
       error: { code: "FORBIDDEN", message: "This player was taken off the list." },
     });
   }
-  return { run };
+  return { run, home };
+}
+
+/** The player's party member, marked as living in `home` (`PartyMember.homeHouseholdId`). */
+function withHome(state: RunState, playerId: string, home: string): RunState {
+  const at = state.party.findIndex((m) => m.playerId === playerId);
+  const member = state.party[at];
+  if (!member || member.homeHouseholdId === home) return state;
+  const party = [...state.party];
+  party[at] = { ...member, homeHouseholdId: home };
+  return { ...state, party };
+}
+
+/**
+ * A finished chapter renews every guest household that played in it: the
+ * room's, and each visitor's (#249), whose heroes were played here too. All
+ * at once, and awaited together, so none is left running after the response.
+ * None of them throws (`keepGuestHousehold`).
+ */
+async function keepHomes(runHousehold: string, state: RunState, deps: HandlerDeps): Promise<void> {
+  const homes = new Set([runHousehold, ...state.party.flatMap((m) => (m.homeHouseholdId ? [m.homeHouseholdId] : []))]);
+  await Promise.all([...homes].map((home) => keepGuestHousehold(home, deps)));
 }
 
 function errorResult(error: ActionResponse): { error: ActionResponse } {
