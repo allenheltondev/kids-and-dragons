@@ -250,20 +250,25 @@ export async function recordStepFinds(
   deps: Pick<HandlerDeps, "repo">,
 ): Promise<string[]> {
   if (!finds) return [];
-  // A visitor's book is theirs to keep, and nothing here waits on it or
-  // celebrates it: the room's book is the one every screen shows.
-  for (const visit of finds.visitors) {
-    try {
-      await deps.repo.recordDiscoveries(visit.householdId, visit.report);
-    } catch (err) {
-      console.error(`field guide: recording ${visit.report.length} find(s) for visitor ${visit.householdId} failed:`, err);
-    }
-  }
-  if (finds.report.length === 0) return [];
+  // A visitor's book is theirs to keep (#249), written beside the room's and
+  // never celebrated: the room's book is the one every screen shows.
+  const [news] = await Promise.all([
+    finds.report.length === 0 ? Promise.resolve([]) : record(finds.householdId, finds.report, deps),
+    ...finds.visitors.map((visit) => record(visit.householdId, visit.report, deps)),
+  ]);
+  return news ?? [];
+}
+
+/** One household's finds, first finder wins; a failure is logged, never thrown. */
+async function record(
+  householdId: string,
+  report: FieldGuideDiscovery[],
+  deps: Pick<HandlerDeps, "repo">,
+): Promise<string[]> {
   try {
-    return await deps.repo.recordDiscoveries(finds.householdId, finds.report);
+    return await deps.repo.recordDiscoveries(householdId, report);
   } catch (err) {
-    console.error(`field guide: recording ${finds.report.length} find(s) for ${finds.householdId} failed:`, err);
+    console.error(`field guide: recording ${report.length} find(s) for ${householdId} failed:`, err);
     return [];
   }
 }
