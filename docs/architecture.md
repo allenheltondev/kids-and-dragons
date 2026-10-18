@@ -851,10 +851,11 @@ the real one (`handlers/transfer.ts`).
 - **Not mid-campaign.** A hero whose `provisional` names an adventure still
   in flight is that table's until it ends (the claim, above). Moving her would
   strand the gains its last chapter commits or reverts. So making the code
-  and redeeming it both refuse while her claim names a run that is not
-  complete, failed or closed, or (today, when the claim is the campaign id) a
-  campaign attempt still `active` in her home. The conditional delete covers
-  a claim taken between that check and the move.
+  and redeeming it both refuse while her claim names a campaign attempt
+  still `active`. The claim is parsed first: a bare campaign id is her home's
+  table, and `<campaignId>@<tableHouseholdId>` (#282) is that visiting
+  table's attempt, which is the one read. The conditional delete covers a
+  claim taken between that check and the move.
 - **The old home's open rooms let her go.** A room session issued there
   outlives the move, so redeeming takes her out of every room it has open, as
   a host's Remove does (`takeOutEverywhere`). The move is already done by

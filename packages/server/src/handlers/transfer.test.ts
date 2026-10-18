@@ -209,6 +209,38 @@ describe("taking a hero home (#251)", () => {
     value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
   });
 
+  it("refuses to move a hero in the middle of an adventure at a table that is not her home", async () => {
+    const { harness, club, ada, hero } = await adaAtTheClub();
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+    const progress = (status: "active" | "complete") =>
+      harness.repo.putCampaignProgress({
+        householdId: "h_rue",
+        campaignId: "gemfall",
+        status,
+        setbacks: 0,
+        updatedAt: new Date(harness.clock.now()).toISOString(),
+      });
+
+    // Visiting Rue's table, her claim names Rue's attempt (#282, #291).
+    await harness.repo.putCharacter({ ...hero, provisional: { ...hero.committed, runId: "gemfall@h_rue" } });
+    await progress("active");
+    // The club playing the same campaign is not what holds her.
+    await harness.repo.putCampaignProgress({
+      householdId: club.id,
+      campaignId: "gemfall",
+      status: "complete",
+      setbacks: 0,
+      updatedAt: new Date(harness.clock.now()).toISOString(),
+    });
+    const busy = { ok: false, error: { code: "ILLEGAL", message: expect.stringMatching(/middle of an adventure/) } };
+    expect(await acceptTransfer({ ...MUM, code: code.code }, harness.deps)).toMatchObject(busy);
+    expect(await harness.repo.getPlayer(club.id, ada.player.id)).not.toBeNull();
+
+    // Rue's table finishes the campaign, and she can go.
+    await progress("complete");
+    value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
+  });
+
   it("leaves the club's tablet behind, and brings a kid who was taken off the list back onto one", async () => {
     const { harness, club, ada } = await adaAtTheClub();
     const tablet = value(await shareDevice({ cognitoSub: LEADER.cognitoSub }, harness.deps));
