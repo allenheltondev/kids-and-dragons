@@ -8,11 +8,14 @@
  * is never told it again (campaign-copy `campaignPremise`).
  */
 
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import type { CampaignView, RunState } from "@kad/shared";
 import { makeMember, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
+import { resetHelpCache } from "../help/content";
 import { LobbyContent } from "./LobbyContent";
 
 const PREMISE = "Mount Red Sky has erupted, and gemstones are raining across the realm.";
@@ -164,5 +167,34 @@ describe("a lobby card", () => {
     const away = card({ connected: false });
     expect(away.querySelector(".lobby-member__seat")?.textContent).toContain("Away");
     expect(away.querySelector(".lobby-member__status")?.textContent).not.toContain("Away");
+  });
+});
+
+describe("the join step on the shared screen (#256)", () => {
+  const help = JSON.parse(readFileSync(join(import.meta.dirname, "..", "..", "..", "..", "content", "help.json"), "utf8")) as { join: { text: string } };
+
+  beforeEach(() => {
+    resetHelpCache();
+    vi.stubGlobal("fetch", vi.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve(help) })));
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("says how to get in, in one line, under the code", async () => {
+    mount({ campaign: FIRST });
+    expect(await screen.findByText(help.join.text)).toBeTruthy();
+  });
+
+  it("is the same line for a family room and a visitor room, whatever the length of the code", async () => {
+    cleanup();
+    mount({ campaign: FIRST, visitorCode: "ABCDEF" });
+    expect(await screen.findByText(help.join.text)).toBeTruthy();
+    expect(screen.getByLabelText("Room code A B C D E F")).toBeTruthy();
+  });
+
+  it("stays while the room fills, because the next kid at the table needs it too", async () => {
+    mount({ campaign: FIRST, party: [makeMember()] });
+    expect(await screen.findByText(help.join.text)).toBeTruthy();
   });
 });

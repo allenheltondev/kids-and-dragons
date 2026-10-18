@@ -50,7 +50,9 @@ Every player surface, on a phone held in either hand:
 | Combat panel | Grid and action bar in the pane | Taps only |
 | Map / atlas | Zoom is Closer / Further away buttons; pan is native one-finger scrolling | No pinch required |
 | Display settings | Bottom sheet; also in Room settings on the You tab | Taps only |
-| Corner row (sound, read-aloud, settings) | Top corner by default; under the tray with one-handed play | Taps only |
+| Corner row (help, settings, read-aloud, sound) | Top corner by default; under the tray with one-handed play | Taps only |
+| Help "?" (#256) | One button in the corner row, so it can never sit on a surface's own controls at any text size; a bottom sheet with Hear it again and Got it | Taps only |
+| Press and hold a card, buff or item (#256) | Never calls preventDefault on a pointer or touch event, so taps and scrolling are untouched; a drift of more than 8px, or the browser taking the gesture, cancels the hold | Every one of these also has its words in the "?" for the screen |
 
 Not done, and why:
 

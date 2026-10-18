@@ -1489,6 +1489,20 @@ last time's) when the request fails for want of a network; a 4xx means the bindi
 discards it. A browser whose binding came from opening a Party Mode room on itself is marked
 `screenOnly` and is never offered the book, until it is seated or adopted as a player.
 
+#### Help on every screen (#256)
+
+Every phone in a room has one "?" in the corner row (`help/HelpControl`), never one per surface, so it
+cannot cover a surface's own controls or be covered by them at any text size. Which screen it names is
+`useHelpSurface()` (`help/focus.ts`): the layout shell says which pane is up, a surface that is mounted
+only while it shows (the character sheet) claims itself, and the rest is read off the run (no hero yet,
+a fight, the bag, a question). Press and hold is one document-level listener (`help/longpress.ts`) that
+finds anything wearing `helpAttrs(...)`; it never prevents a pointer or touch event, so taps and
+scrolling are untouched, and the click after a hold is swallowed once so showing a card never plays it.
+The words are `content/help.json` (fetched on first use, saved by the service worker with the rest of
+the content), and the whole control is a lazy chunk. Nothing is stored. The shared screen's join line
+under the code and QR is `help.join`; it never counts letters, because a visitor room's code is six and
+a family room's is four.
+
 #### The service worker: offline, and never twice
 
 A service worker (`packages/client/src/sw/`, served as `/sw.js`) does two jobs. It makes the

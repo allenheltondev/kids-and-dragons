@@ -1,0 +1,74 @@
+/* The "?" sits in the shared row (styles/theme.css .kad-corner) beside display settings, read-aloud and sound. */
+.kad-help__button {
+  display: grid;
+  place-items: center;
+  inline-size: var(--kad-touch-min);
+  block-size: var(--kad-touch-min);
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--kad-ink-dim);
+  font-size: 1em;
+  font-weight: var(--kad-weight-black);
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 120ms ease;
+}
+.kad-help__button:hover,
+.kad-help__button:focus-visible,
+.kad-help__button[aria-expanded="true"] { opacity: 1; }
+html[data-contrast="high"] .kad-help__button { opacity: 1; }
+.kad-help__glyph { font-size: 1.25em; line-height: 1; }
+
+/* Cards, buffs and things can be pressed and held (help/longpress.ts). Taps and scrolling are left alone:
+   no touch-action here. Only the browser's own hold behavior (a menu, a text selection) is turned off. */
+[data-help-kind] {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* A bottom sheet like display settings: the buttons are under the thumb. */
+.kad-help__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: var(--kad-bg-overlay);
+}
+.kad-help__sheet {
+  box-sizing: border-box;
+  inline-size: min(100%, 32rem);
+  /* Grows with the text only as far as "Large": at the largest size its own buttons would be taller than a small phone. */
+  font-size: calc(16px * min(var(--kad-text-scale), 1.25));
+  max-block-size: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-3);
+  padding: var(--kad-space-4) var(--kad-space-4) calc(var(--kad-space-4) + env(safe-area-inset-bottom, 0px));
+  border: 1px solid var(--kad-border);
+  border-radius: var(--kad-radius-lg) var(--kad-radius-lg) 0 0;
+  background: var(--kad-bg-raised);
+  color: var(--kad-ink);
+  box-shadow: var(--kad-shadow-lg);
+}
+@media (min-width: 700px) and (min-height: 700px) {
+  .kad-help__scrim { align-items: center; }
+  .kad-help__sheet { border-radius: var(--kad-radius-lg); max-block-size: 90%; }
+}
+.kad-help__body { display: flex; align-items: flex-start; gap: var(--kad-space-3); }
+.kad-help__picture { flex: none; display: grid; place-items: center; color: var(--kad-ink); }
+.kad-help__words { min-inline-size: 0; }
+.kad-help__title { margin: 0; font-size: var(--kad-text-xl); overflow-wrap: anywhere; }
+.kad-help__text { margin: var(--kad-space-1, 0.25em) 0 0; font-size: var(--kad-text-lg); line-height: 1.4; }
+.kad-help__actions { display: flex; flex-wrap: wrap; gap: var(--kad-space-2); }
+.kad-help__actions > * { flex: 1 1 8em; }
+html[data-hand="left"] .kad-help__actions { flex-direction: row-reverse; }
+@media (prefers-reduced-motion: reduce) {
+  .kad-help__button { transition: none; }
+}
