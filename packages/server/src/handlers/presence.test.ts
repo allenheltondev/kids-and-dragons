@@ -175,6 +175,15 @@ describe("beatPresence", () => {
     expect(await connectedOf(harness, runId, "p_rosie")).toBe(true);
   });
 
+  it("takes a shorter timeout when the server sets one", async () => {
+    const { harness, runId, playerId } = await seatedRoom();
+    await withParty(harness, runId, [seat(playerId, false), seat("p_rosie", false)]);
+    await beatPresence({ runId, playerId: "p_rosie" }, harness.deps);
+    harness.clock.advance(46_000);
+    await beatPresence({ runId, playerId, awayAfterMs: 45_000 }, harness.deps);
+    expect(await connectedOf(harness, runId, "p_rosie")).toBe(false);
+  });
+
   it("marks a phone away at once when its page says goodbye", async () => {
     const { harness, runId, playerId } = await seatedRoom();
     await withParty(harness, runId, [seat(playerId, false), seat("p_rosie", false)]);

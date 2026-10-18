@@ -158,6 +158,11 @@ export interface PresenceBeatInput {
   householdId?: string;
   /** The page is closing: away now. */
   leaving?: boolean;
+  /**
+   * `AWAY_AFTER_MS` unless the server says otherwise. Only the dev server
+   * does (`KAD_PRESENCE_AWAY_MS`), so an e2e test can wait a phone out.
+   */
+  awayAfterMs?: number;
 }
 
 export type PresenceBeatResult =
@@ -193,7 +198,7 @@ export async function beatPresence(input: PresenceBeatInput, deps: PresenceDeps)
   for (const member of state.party) {
     if (member.playerId === input.playerId || !member.connected) continue;
     const seen = beats[member.playerId];
-    if (seen === undefined || nowMs - Date.parse(seen) <= AWAY_AFTER_MS) continue;
+    if (seen === undefined || nowMs - Date.parse(seen) <= (input.awayAfterMs ?? AWAY_AFTER_MS)) continue;
     await setPresence({ runId: input.runId, playerId: member.playerId, connected: false }, deps);
   }
   return { ok: true, connected: true };
