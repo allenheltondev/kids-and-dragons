@@ -211,6 +211,12 @@ The carryover rule from [spec §8.2](./spec.md#82-carryover--the-commitment-rule
     { "id": "cracked_pendant", "fromRun": "r_51a", "earnedAt": "2026-07-14" }
   ],
 
+  // Her own record of finished campaigns (#283, §4.5 "Her own record"). One
+  // line per campaign, the latest completion kept. Absent until she finishes one.
+  "finished": [
+    { "campaignId": "gemfall", "outcome": "setback", "at": "2026-07-30T19:12:00.000Z", "table": "h_rue" }
+  ],
+
   "appearance": {
     "palette": "meadow",
     "accent": "#7FD4C1",
@@ -220,7 +226,7 @@ The carryover rule from [spec §8.2](./spec.md#82-carryover--the-commitment-rule
 }
 ```
 
-- **Campaign success** → `provisional` is copied over `committed`, `provisional` cleared, `questItems` cleared.
+- **Campaign success** → `provisional` is copied over `committed`, `provisional` cleared, `questItems` cleared, and the campaign goes on `finished`.
 - **Campaign failure** → `provisional` cleared, `questItems` cleared, souvenir appended. `committed` untouched.
 - **Effective character** = `provisional ?? committed`. Resolved in one place, `resolveCharacter()`.
 
@@ -750,8 +756,56 @@ that is hers is lost when she leaves.
 **Everything that is hers comes with her.** When she plays at a table that
 is not her home, her XP, items and finds are written back to her home, never
 to the host's (#249, `homeHouseholdId` on the party member). Campaign
-prerequisites (#221) read her own finished-campaign record, not the table's.
-The table keeps its shared Field Guide, and her finds also go to her own.
+prerequisites (#221) read her own finished-campaign record as well as the
+table's. The table keeps its shared Field Guide, and her finds also go to her
+own. Built in #283: "Her own record" below.
+
+##### Her own record (#283)
+
+Two pieces of hers used to live only on the table: which campaigns she has
+finished, and her Field Guide finds. Both are now hers.
+
+- **Finished campaigns live on her hero.** `Character.finished` (character
+  schema v3, §3.2): one line per campaign, `{ campaignId, outcome, at, table }`,
+  the latest completion kept. It is written by `commitCampaign`'s caller
+  (`finish` in `progression.ts`), so it lands in the **same write** that
+  commits her provisional state and releases her claim, inside the run's
+  commit, at her home whichever table she finished at. Only a completed
+  campaign counts, a loss ending included (spec §8.3); a failed one leaves a
+  souvenir and no line. A hero another adventure holds is not settled by this
+  table (`settleParty`), so she gets no line from it either. The table's save
+  (`CampaignProgressRecord`) is written as before and stays the table's.
+- **Prerequisites read the party as well as the table.** A campaign's
+  `requires` is met when the table's household has completed it (#221, as
+  before) **or when any hero seated at the table has it in her own record**
+  (`unmetPrerequisites`'s `finished`, read by `partyFinished` from each
+  member's home). *Any*, not every: a prerequisite says the story has
+  happened, and one hero who was there carries it for the party, the way the
+  household's record already carries every kid at its table. Requiring every
+  hero would lock a family's own new kid out of the campaign the family
+  finished. Keeping the household's record beside hers is the conservative
+  half: no record was backfilled, so a household that finished Gemfall before
+  heroes kept one plays exactly as it did. The server's refusal at a chapter
+  start or a Begin reads the party seated then; the lobby's lock is recomputed
+  whenever the party in the lobby changes (`relockLobby`), and a vote for a
+  campaign that locks again is dropped. A host's Remove does not recompute the
+  lobby, so the screens can show a campaign open that the next Begin refuses.
+  None of this reads anything for a campaign without `requires`, so Gemfall's
+  lobby and starts are untouched.
+- **Her finds go to her home book too.** When the finder of a step
+  (`firstFinder`) is a visitor, everything her step revealed is also recorded in
+  her home household's book, credited to her, first finder wins; the table's
+  book is written as before. Only the finder's: a find another hero made at
+  the table is not hers and goes to no visitor's book. (#249 first wrote every
+  find to every visiting household; this narrows it.)
+- **It moves with her.** The record is on her `CHAR#` row and her finds are
+  credited to her in her home book, so #251's move carries both with no new
+  code: her heroes move as stored, and the finds she was first to are added to
+  her new home's book.
+- **Her adventure book shows it.** `GET /api/journal` answers `finished`, her
+  heroes' lines with each campaign's title, and the hero page lists them under
+  the sheet ("Adventures finished"). Her finds are already in the Field Guide
+  the journal opens, since it reads her home book.
 
 **Kid "accounts" are profiles, thin by design, and nobody logs in as one.**
 - Every kid already has one: a profile is made the moment they play. Making
@@ -834,7 +888,7 @@ land, and the source for #252's "what we store" page.
 | Data | Where | Kept |
 |---|---|---|
 | Nickname, color, avatar | `PLAYER#` row | With the household: 7 days after last play while a guest, until deleted once kept |
-| Hero: name, appearance, progression, items, souvenirs | `CHAR#` row | Same |
+| Hero: name, appearance, progression, items, souvenirs, finished campaigns (each naming the household whose table it was) | `CHAR#` row | Same |
 | Gameplay: choices, rolls, the event log | `RUN#` partition | Same |
 | Field Guide finds, credited to a profile | `FIELDGUIDE` row | Same |
 | Device binding: device id, user agent, last seen, token hash | `DEVICE#` row | Same, revocable |

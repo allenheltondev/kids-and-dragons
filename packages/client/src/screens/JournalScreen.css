@@ -95,6 +95,34 @@
   white-space: nowrap;
 }
 
+.journal__finished {
+  margin: 0.75em 0 0;
+  padding: 0.6em 0.75em;
+  border-radius: 0.6em;
+  background: color-mix(in srgb, currentColor 6%, transparent);
+}
+
+.journal__finished-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0 0 0.4em;
+  font-size: 1em;
+}
+
+.journal__finished-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.journal__finished-line {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.15em 0;
+}
+
 .journal__empty {
   display: flex;
   flex-direction: column;

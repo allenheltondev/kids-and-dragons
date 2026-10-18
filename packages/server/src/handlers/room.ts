@@ -180,7 +180,7 @@ async function offerCampaigns(
   featuredId: string | null,
   deps: HandlerDeps,
 ): Promise<void> {
-  const options = await lobbyCampaigns(householdId, featuredId, deps);
+  const options = await lobbyCampaigns(householdId, featuredId, deps, state.party);
   state.campaignOptions = options;
   state.campaignVotes = {};
   const shown = options.find((option) => option.locked === undefined) ?? options[0];
