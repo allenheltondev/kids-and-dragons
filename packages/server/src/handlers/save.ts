@@ -36,6 +36,7 @@
 import {
   claimFor,
   claimOf,
+  isPracticeCampaign,
   parseClaim,
   memberHome,
   resolveCharacter,
@@ -210,6 +211,10 @@ export async function stopForToday(
       "ILLEGAL",
       "There is nothing to save right now. Between chapters the game is already safe, so you can just close the room.",
     );
+  }
+  if (isPracticeCampaign(state.campaignId)) {
+    // The practice keeps nothing to take back up (#255): it starts over next time.
+    return fail("ILLEGAL", "The practice is not saved. You can just close the room, and play it again next time.");
   }
 
   const run = await deps.repo.getRun(room.runId);

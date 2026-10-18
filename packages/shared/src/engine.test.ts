@@ -1539,6 +1539,33 @@ describe("priority scenes", () => {
   });
 });
 
+describe("scene hints (#255)", () => {
+  it("carries a scene's hint onto the run while the party stands in it, and no key otherwise", () => {
+    const chapter = makeChapter();
+    (chapter.scenes["scene_shrine"] as StoryScene).hint = "Tap what you want to do.";
+    const context = ctx({ rng: fixedRng(20), chapter });
+    const started = walk(
+      seatedParty(context),
+      [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }],
+      context,
+    ).state;
+    expect(started).not.toHaveProperty("hint");
+
+    const hinted = enterScene(started, "scene_shrine", context).state;
+    expect(hinted.hint).toBe("Tap what you want to do.");
+
+    // The next scene has none, and the key goes with it.
+    expect(enterScene(hinted, "scene_camp", context).state).not.toHaveProperty("hint");
+  });
+
+  it("leaves the practice to the server", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    expect(() => walk(seatedParty(context), [{ playerId: "p_1", intent: { type: "START_PRACTICE" } }], context)).toThrow(
+      /resolved by the server/,
+    );
+  });
+});
+
 /*
  * Trading — spec §9.4. "At Rest scenes, the party can freely pass items between
  * characters. Drag on your phone, tap to accept on theirs."

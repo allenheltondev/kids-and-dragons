@@ -223,6 +223,16 @@ export type CastSize =
  */
 export type ScenePriority = 1 | 2;
 
+/**
+ * What to tap here, for a player who is still learning (#255): "Tap a gold
+ * square to walk there." The screens show it under the narration and read
+ * it aloud after it (`speak()`, with a button for `hear()`), and it is never
+ * part of the narration itself, so the live layer and the recap never see it.
+ * Only the practice (`PRACTICE_CAMPAIGN_ID`) uses it: a real chapter trusts
+ * the table to know the game. One sentence or two, in the game's voice.
+ */
+export type SceneHint = string;
+
 export interface StoryScene {
   type: "story";
   art?: string;
@@ -232,6 +242,8 @@ export interface StoryScene {
   variants?: NarrationVariant[];
   /** How much this scene matters to the story. See `ScenePriority`. */
   priority?: ScenePriority;
+  /** One line for a player still learning what to tap. See `SceneHint`. */
+  hint?: SceneHint;
   onEnter?: Effect[];
   /**
    * Canon ids (keys of `content/field-guide.json` entries) the kids meet in
@@ -262,6 +274,8 @@ export interface CheckScene {
   variants?: NarrationVariant[];
   /** How much this scene matters to the story. See `ScenePriority`. */
   priority?: ScenePriority;
+  /** One line for a player still learning what to tap. See `SceneHint`. */
+  hint?: SceneHint;
   onEnter?: Effect[];
   /**
    * Canon ids (keys of `content/field-guide.json` entries) the kids meet in
@@ -288,6 +302,8 @@ export interface ChoicePointScene {
   variants?: NarrationVariant[];
   /** How much this scene matters to the story. See `ScenePriority`. */
   priority?: ScenePriority;
+  /** One line for a player still learning what to tap. See `SceneHint`. */
+  hint?: SceneHint;
   onEnter?: Effect[];
   /**
    * Canon ids (keys of `content/field-guide.json` entries) the kids meet in
@@ -313,6 +329,8 @@ export interface RestScene {
   variants?: NarrationVariant[];
   /** How much this scene matters to the story. See `ScenePriority`. */
   priority?: ScenePriority;
+  /** One line for a player still learning what to tap. See `SceneHint`. */
+  hint?: SceneHint;
   onEnter?: Effect[];
   /**
    * Canon ids (keys of `content/field-guide.json` entries) the kids meet in
@@ -696,6 +714,8 @@ export interface EncounterScene {
   art?: string;
   music?: string;
   narration?: string;
+  /** One line for a player still learning what to tap. See `SceneHint`. */
+  hint?: SceneHint;
   onEnter?: Effect[];
   /**
    * Canon ids (keys of `content/field-guide.json` entries) the kids meet in

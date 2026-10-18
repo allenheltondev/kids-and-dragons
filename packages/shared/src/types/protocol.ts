@@ -67,6 +67,13 @@ export type ClientIntent =
    */
   | { type: "CONTINUE_CAMPAIGN"; campaignId?: string }
   /**
+   * "Play the practice first" (#255). Like CONTINUE_CAMPAIGN, the server
+   * answers it: it plays the practice's chapter (`PRACTICE_CAMPAIGN_ID`)
+   * when a seated hero is a newcomer, and refuses it when none is. The lobby's
+   * campaign vote is not spent: the party comes back to the same lobby.
+   */
+  | { type: "START_PRACTICE" }
+  /**
    * Take a way on out of the node a graph campaign's journey is at (#194) —
    * the choice `CampaignView.journey.exits` draws. Resolved by the server
    * against the household's attempt, like CONTINUE_CAMPAIGN, and never seen

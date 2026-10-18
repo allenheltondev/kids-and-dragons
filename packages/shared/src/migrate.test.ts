@@ -83,6 +83,24 @@ describe("migrateCharacter — her finished campaigns (v3, #283)", () => {
   });
 });
 
+describe("migrateCharacter — the practice (v4, #255)", () => {
+  it("reads a v3 row, from before the practice, as not having played it, and adds no key", () => {
+    const migrated = migrateCharacter({ ...current() }, 3);
+    expect(migrated).not.toHaveProperty("practiced");
+  });
+
+  it("keeps a current row's mark exactly", () => {
+    const character = { ...current(), practiced: true as const };
+    expect(migrateCharacter(character, CHARACTER_VERSION)).toEqual(character);
+  });
+
+  it("reads anything but true as not played, rather than inventing a mark", () => {
+    for (const practiced of [false, "yes", 1, null]) {
+      expect(migrateCharacter({ ...current(), practiced }, CHARACTER_VERSION)).not.toHaveProperty("practiced");
+    }
+  });
+});
+
 describe("migrateCharacter — refusals", () => {
   it("refuses a row from a version it does not understand", () => {
     /*

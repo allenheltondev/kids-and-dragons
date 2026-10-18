@@ -822,6 +822,10 @@ function enterSceneDraft(
   draft.sceneType = scene.type;
   draft.art = scene.art ?? null;
   draft.scenePriority = scene.type === "encounter" ? null : scene.priority ?? null;
+  // The practice's one line of what to tap (#255). Absent, not null, on every
+  // other scene, so a run that never meets a hint never grows the key.
+  if (scene.hint !== undefined) draft.hint = scene.hint;
+  else delete draft.hint;
   draft.prompt = carriedSwap ?? null;
   /*
    * Offers do not travel (spec §9.4 — trading is a Rest-scene thing). An
@@ -1013,6 +1017,11 @@ function dispatch(
       // which chapter comes next is a fact about the household's campaign
       // attempt, which the engine never sees.
       throw new Illegal("ILLEGAL", "continuing a campaign is resolved by the server");
+
+    case "START_PRACTICE":
+      // The server's too (handlers/action.ts): who is new is a fact about the
+      // stored heroes, and which chapter is the practice is content.
+      throw new Illegal("ILLEGAL", "starting the practice is resolved by the server");
 
     case "CHOOSE_EXIT":
       // Moves the household's journey (handlers/action.ts, shared journey.ts),
@@ -2344,6 +2353,7 @@ function returnToLobby(draft: RunState): void {
   draft.narration = "";
   draft.art = null;
   draft.scenePriority = null;
+  delete draft.hint;
   draft.prompt = null;
   draft.lastRoll = null;
   for (const member of draft.party) member.ready = false;
