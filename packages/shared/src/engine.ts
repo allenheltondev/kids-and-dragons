@@ -1350,7 +1350,10 @@ function doStartChapter(
   if (draft.phase !== "lobby" && draft.phase !== "creation") {
     throw new Illegal("ILLEGAL", "a chapter starts from the lobby");
   }
-  if (!draft.party.every((member) => member.ready)) {
+  // Everybody at the table, that is: a player who stepped away (#258) is not
+  // waited on, and their hero comes along. With everybody present this is
+  // exactly "every member is ready".
+  if (!readyWithoutAway(draft.party)) {
     throw new Illegal("ILLEGAL", "everybody has to be ready first");
   }
 
@@ -1536,6 +1539,49 @@ export function rollerAway(
   };
   // A whole-party check is stuck only once *everybody* still to roll is away.
   return prompt.group ? prompt.group.pending.every(away) : away(prompt.characterId);
+}
+
+/**
+ * A full bag's "keep it or leave it" whose owner has since stepped away
+ * (#258). Open to anyone, but only to leave it (`doResolveItemSwap`).
+ */
+export function swapOwnerAway(
+  party: readonly PartyMember[],
+  prompt: Prompt & { kind: "item_swap" },
+): boolean {
+  const member = party.find((m) => m.character.id === prompt.characterId);
+  return !member || !member.connected;
+}
+
+/**
+ * A Choice point's vote whose every outstanding voter has stepped away
+ * (#258), with at least one vote cast. `doChoose` already does not wait on
+ * them, but it only counts when a vote lands, so a voter who already chose
+ * re-sends their pick to close it. The phones offer that tap.
+ */
+export function voteWaitsOnlyOnAway(
+  party: readonly PartyMember[],
+  prompt: Prompt & { kind: "choice" },
+): boolean {
+  if (!prompt.vote) return false;
+  const votes = prompt.votes ?? {};
+  if (Object.keys(votes).length === 0) return false;
+  const voters = prompt.forPlayerIds.length > 0 ? prompt.forPlayerIds : party.map((m) => m.playerId);
+  const outstanding = voters.filter((id) => votes[id] === undefined);
+  return (
+    outstanding.length > 0 &&
+    outstanding.every((id) => !(party.find((m) => m.playerId === id)?.connected ?? false))
+  );
+}
+
+/**
+ * The ready-gate's rule (spec §8.1's ready-up, the pre-fight pause and the
+ * chapter start): everybody still at the table is ready, and at least one of
+ * them is here to have said so. A player who stepped away is not waited on
+ * (#258); a room whose phones have all dropped stays where it is.
+ */
+export function readyWithoutAway(party: readonly PartyMember[]): boolean {
+  return party.some((m) => m.ready && m.connected) && party.every((m) => m.ready || !m.connected);
 }
 
 function passStoryTurn(draft: RunState, fromPlayerId: string): void {
@@ -1987,7 +2033,7 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
  * a phone may only ever act as the character it owns, on that character's turn.
  * Without it, any player could drive anybody's figure — including a monster's.
  */
-function requireTurn(draft: RunState, playerId: string): EncounterState {
+function requireTurn(draft: RunState, playerId: string, standIn = false): EncounterState {
   const encounter = draft.encounter;
   if (!encounter) throw new Illegal("ILLEGAL", "there is no fight going on");
   const actor = currentActor(encounter);
@@ -1996,10 +2042,34 @@ function requireTurn(draft: RunState, playerId: string): EncounterState {
 
   const member = draft.party.find((m) => m.character.id === actor.id);
   if (!member) throw new Illegal("ILLEGAL", `no party member for actor "${actor.id}"`);
-  if (member.playerId !== playerId) {
+  // Passing the turn of a hero whose player has stepped away (#258) is the
+  // one thing a stand-in may do: never their move, never their action.
+  if (member.playerId !== playerId && !(standIn && combatTurnAway(draft) && memberByPlayer(draft, playerId))) {
     throw new Illegal("FORBIDDEN", `it is ${member.character.name}'s turn, not yours`);
   }
   return encounter;
+}
+
+/**
+ * The fight's clock is on a hero whose player has stepped away (#258): their
+ * phone dropped, or the host took them out. Anybody still seated may then
+ * pass that turn (END_TURN), so a fight never waits on an empty chair, the
+ * way `turnHolderAway` opens a Story beat and `rollerAway` a check.
+ *
+ * A pass, not an automatic skip. A phone that has gone to sleep while its kid
+ * watches the TV reads as away too, and a turn skipped the moment it arrived
+ * would cost that kid their go; the table can see who is missing and decide.
+ * The hero stays on the board, in the turn order, and acts again the moment
+ * their phone is back. Nothing here reads anything but `connected`, so a
+ * table with everybody present plays exactly as before.
+ */
+export function combatTurnAway(state: Pick<RunState, "encounter" | "party">): boolean {
+  const encounter = state.encounter;
+  if (!encounter) return false;
+  const actor = currentActor(encounter);
+  if (!actor || actor.side !== "party") return false;
+  const member = state.party.find((m) => m.character.id === actor.id);
+  return member !== undefined && !member.connected;
 }
 
 function doCombatMove(
@@ -2040,7 +2110,7 @@ function doCombatAction(
 }
 
 function doEndTurn(draft: RunState, playerId: string, ctx: EngineContext): Presentation | undefined {
-  const encounter = requireTurn(draft, playerId);
+  const encounter = requireTurn(draft, playerId, true);
   // What the place did as the turn ended (#201) — nothing, without an
   // environment — goes first in the queue, before the monsters' answer.
   const ended = endTurnWithEvents(encounter);
@@ -2457,7 +2527,12 @@ function doResolveItemSwap(
   const member = memberByCharacter(draft, prompt.characterId);
   if (!member) throw new Illegal("NOT_FOUND", "the character holding the prompt has left");
   if (member.playerId !== playerId) {
-    throw new Illegal("FORBIDDEN", `this is ${member.character.name}'s bag`);
+    // Its owner stepped away mid-find (#258): anyone seated may let it go, so
+    // the scene behind the prompt can open. Only "leave it": nobody empties a
+    // friend's bag for them, and they come back to the hero they left.
+    if (!(swapOwnerAway(draft.party, prompt) && memberByPlayer(draft, playerId) && dropItemId === null)) {
+      throw new Illegal("FORBIDDEN", `this is ${member.character.name}'s bag`);
+    }
   }
 
   if (dropItemId !== null) {
