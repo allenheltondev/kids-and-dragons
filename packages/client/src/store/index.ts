@@ -1167,6 +1167,12 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         void pump();
       },
 
+      beat(leaving = false) {
+        const session = get().session;
+        if (!session?.playerId || !session.sessionToken) return;
+        void deps.api.postPresence(leaving, session.sessionToken).catch(() => undefined);
+      },
+
       leave() {
         const session = get().session;
         runtime.attaching = null;

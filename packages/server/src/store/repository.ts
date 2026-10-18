@@ -570,4 +570,14 @@ export interface GameRepository {
    * Never takes a window below zero.
    */
   refundCodeLookup(clientKey: string, window: number): Promise<void>;
+
+  // --- presence beats (#258) -------------------------------------------------
+  /**
+   * Records that `playerId`'s phone is here at `at` (ISO), in the run's one
+   * presence row, and returns every seated phone's last word, this one's
+   * included: player id to ISO time. `ttl` is epoch **seconds**, renewed by
+   * every beat. One write, so beats from several phones at once never lose
+   * one another's times.
+   */
+  touchPresence(runId: string, playerId: string, at: string, ttl: number): Promise<Record<string, string>>;
 }
