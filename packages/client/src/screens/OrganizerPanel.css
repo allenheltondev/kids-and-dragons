@@ -142,3 +142,8 @@
   letter-spacing: 0.12em;
   user-select: all;
 }
+
+/* A pairing code under the kid it is for (#281). */
+.organizer__pairing {
+  justify-content: center;
+}

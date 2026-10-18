@@ -164,3 +164,35 @@ if (typeof window !== "undefined") {
 export function useRoute(): Route {
   return useSyncExternalStore(subscribeRoute, currentRoute, currentRoute);
 }
+
+// ---------------------------------------------------------------------------
+// Pairing links (#281)
+//
+// Here, with the other URL shapes the home screen reads on first paint, rather
+// than in the pairing module: the home screen must read `?pair=` without
+// pulling the rest of pairing into the first-paint payload.
+// ---------------------------------------------------------------------------
+
+/** Query parameter a pairing link carries. The home screen reads it and clears it. */
+export const PAIR_PARAM = "pair";
+
+/** Eight letters, as the server mints them. */
+export const PAIRING_CODE_LENGTH = 8;
+
+/** What a QR holds: the app's home with the code ready to spend, one tap away. */
+export function pairingUrl(origin: string, code: string): string {
+  return `${origin}/?${PAIR_PARAM}=${encodeURIComponent(code)}`;
+}
+
+/** As typed, pasted or scanned: any case, dash or spaces dropped, capped at the code's length. */
+export function normalizePairingInput(raw: string): string {
+  return raw.toUpperCase().replace(/[^A-Z]/g, "").slice(0, PAIRING_CODE_LENGTH);
+}
+
+/** The code a `?pair=` link carries, or `null` if the URL has none. */
+export function pairingFromSearch(search: string): string | null {
+  const raw = new URLSearchParams(search).get(PAIR_PARAM);
+  if (raw === null) return null;
+  const code = normalizePairingInput(raw);
+  return code === "" ? null : code;
+}

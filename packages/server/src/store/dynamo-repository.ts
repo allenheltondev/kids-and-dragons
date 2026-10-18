@@ -56,6 +56,7 @@ import type {
   GuestRenewal,
   HouseholdOwnerRecord,
   OrganizerInviteRecord,
+  PairingCodeRecord,
   RoomRecord,
   RunRecord,
 } from "./repository.ts";
@@ -78,6 +79,7 @@ import {
   INVITE,
   META,
   OWNER_SK,
+  PAIR,
   PLAYER_SK,
   PREFIX,
   ROOM,
@@ -627,6 +629,50 @@ export class DynamoRepository implements GameRepository {
       return invite;
     } catch (err) {
       if (isTransactionCancelled(err)) return null;
+      throw err;
+    }
+  }
+
+  async putPairingCodeIfAbsent(pairing: PairingCodeRecord): Promise<boolean> {
+    try {
+      await this.doc.send(
+        new PutCommand({
+          TableName: this.table,
+          Item: {
+            PK: PAIR(pairing.code),
+            SK: META,
+            ttl: pairing.ttl,
+            entity: "pairing",
+            data: pairing,
+          } satisfies TableItem,
+          ConditionExpression: "attribute_not_exists(PK)",
+        }),
+      );
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+  }
+
+  async redeemPairingCode(code: string, nowIso: string): Promise<PairingCodeRecord | null> {
+    try {
+      // One conditional delete that returns what it deleted: spent, and read,
+      // in the same write. Expiry is in the condition because TTL deletion is
+      // eventual, so an expired code can sit there for a day or two.
+      const { Attributes } = await this.doc.send(
+        new DeleteCommand({
+          TableName: this.table,
+          Key: { PK: PAIR(code), SK: META },
+          ConditionExpression: "attribute_exists(PK) AND #d.#exp > :now",
+          ExpressionAttributeNames: { "#d": "data", "#exp": "expiresAt" },
+          ExpressionAttributeValues: { ":now": nowIso },
+          ReturnValues: "ALL_OLD",
+        }),
+      );
+      return (Attributes?.data as PairingCodeRecord | undefined) ?? null;
+    } catch (err) {
+      if (isConditionalFailure(err)) return null;
       throw err;
     }
   }
