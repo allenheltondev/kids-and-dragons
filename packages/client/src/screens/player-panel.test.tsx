@@ -1817,3 +1817,49 @@ describe("the end of a chapter", () => {
     expect(sent).toEqual([{ type: "READY", ready: false }]);
   });
 });
+
+describe("a friend who stepped away (#258)", () => {
+  const friend = (overrides: Partial<PartyMember> = {}) =>
+    member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }), ...overrides });
+
+  it("lets a ready phone start the fight without them", async () => {
+    const user = userEvent.setup();
+    const ready: Prompt = { kind: "ready", forPlayerIds: [] };
+    const { sent } = mount({ phase: "encounter", prompt: ready, party: [member({ ready: true }), friend()] });
+    expect(screen.queryByRole("button", { name: /^Start without/ })).toBeNull();
+
+    serverSends({ party: [member({ ready: true }), friend({ connected: false })] });
+    expect(screen.getByText("Thistle stepped away")).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: "Start without Thistle" }));
+    expect(sent).toEqual([{ type: "READY", ready: true }]);
+  });
+
+  it("lets a voter close a vote that only waits on them", async () => {
+    const user = userEvent.setup();
+    const vote = choicePrompt({ vote: true, votes: { p_1: "east" }, forPlayerIds: ["p_1", "p_2"] });
+    const { sent } = mount({ prompt: vote, party: [member(), friend()] });
+    expect(screen.queryByRole("button", { name: /^Decide without/ })).toBeNull();
+
+    serverSends({ party: [member(), friend({ connected: false })] });
+    await user.click(screen.getByRole("button", { name: "Decide without Thistle" }));
+    expect(sent).toEqual([{ type: "CHOOSE", choiceId: "east" }]);
+  });
+
+  it("lets anyone leave a find that waits on them, and only leave it", async () => {
+    const user = userEvent.setup();
+    const swap: Prompt = { kind: "item_swap", characterId: "c_2", incomingItemId: "sunbloom_draught" };
+    const { sent } = mount({ prompt: swap, party: [member(), friend()] });
+    expect(screen.queryByRole("button", { name: "Leave it and go on" })).toBeNull();
+
+    serverSends({ party: [member(), friend({ connected: false })] });
+    // Not this phone's question, so the way in is on the bag page.
+    await user.click(screen.getByRole("button", { name: "Help Thistle's bag" }));
+    await user.click(screen.getByRole("button", { name: "Leave it and go on" }));
+    expect(sent).toEqual([{ type: "RESOLVE_ITEM_SWAP", dropItemId: null }]);
+  });
+
+  it("offers Begin without a friend who stepped away before readying", () => {
+    mount({ phase: "lobby", party: [member({ ready: true }), friend({ connected: false })] });
+    expect(screen.getByRole("button", { name: /Begin the adventure/ })).toBeTruthy();
+  });
+});

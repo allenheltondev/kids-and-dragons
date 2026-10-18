@@ -1228,6 +1228,32 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect(await repo.reserveCodeLookup("192.0.2.1", 7, LIMIT, later())).toBe(true);
       });
     });
+
+    describe("presence beats (#258)", () => {
+      const later = () => Math.floor((Date.now() + HOUR) / 1000);
+
+      it("keeps every phone's last word, and hands the whole map back", async () => {
+        expect(await repo.touchPresence("r_1", "p_1", "2026-10-18T12:00:00.000Z", later())).toEqual({
+          p_1: "2026-10-18T12:00:00.000Z",
+        });
+        await repo.touchPresence("r_1", "p_2", "2026-10-18T12:00:05.000Z", later());
+        expect(await repo.touchPresence("r_1", "p_1", "2026-10-18T12:00:20.000Z", later())).toEqual({
+          p_1: "2026-10-18T12:00:20.000Z",
+          p_2: "2026-10-18T12:00:05.000Z",
+        });
+        // Runs are kept apart.
+        expect(await repo.touchPresence("r_2", "p_1", "2026-10-18T12:00:30.000Z", later())).toEqual({
+          p_1: "2026-10-18T12:00:30.000Z",
+        });
+      });
+
+      it("loses nobody's beat when every phone's first one lands at once", async () => {
+        const ids = ["p_1", "p_2", "p_3", "p_4"];
+        await Promise.all(ids.map((id) => repo.touchPresence("r_9", id, "2026-10-18T12:00:00.000Z", later())));
+        const beats = await repo.touchPresence("r_9", "p_1", "2026-10-18T12:00:01.000Z", later());
+        expect(Object.keys(beats).sort()).toEqual(ids);
+      });
+    });
   });
 }
 

@@ -402,3 +402,13 @@ describe("priority scenes (chapter.ts ScenePriority)", () => {
     expect(spoken[0]).toBe("The moss on the bank is warm.");
   });
 });
+
+describe("a friend who stepped away (#258)", () => {
+  it("says so on the shared screen, and nothing while everyone is here", () => {
+    mount({ sceneType: "story" });
+    expect(screen.queryByTestId("stepped-away")).toBeNull();
+    cleanup();
+    mount({ sceneType: "story", party: [PARTY[0]!, { ...PARTY[1]!, connected: false }] });
+    expect(screen.getByTestId("stepped-away").textContent).toBe("Thistle stepped away.");
+  });
+});
