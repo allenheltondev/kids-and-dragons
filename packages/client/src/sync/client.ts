@@ -29,6 +29,7 @@ import type {
   RoomMode,
   RulesContent,
   RunState,
+  SetVisitorsResponse,
   SharedDevicePlayersResponse,
   SharedSeatRequest,
   ShareDeviceResponse,
@@ -130,13 +131,15 @@ export type OrganizerEdit =
   | { action: "rename-household"; householdId: string; displayName: string }
   | { action: "add-player"; householdId: string; displayName: string }
   | { action: "rename-player"; householdId: string; playerId: string; displayName: string }
-  | { action: "retire-player"; householdId: string; playerId: string; retired: boolean };
+  | { action: "retire-player"; householdId: string; playerId: string; retired: boolean }
+  | { action: "leave-adventure"; householdId: string; characterId: string };
 
 const ORGANIZER_EDIT_PATH: Record<OrganizerEdit["action"], string> = {
   "rename-household": "/api/organizer/household/rename",
   "add-player": "/api/organizer/players",
   "rename-player": "/api/organizer/players/rename",
   "retire-player": "/api/organizer/players/retire",
+  "leave-adventure": "/api/organizer/heroes/leave",
 };
 
 /**
@@ -269,6 +272,11 @@ export interface Api {
   ): Promise<ShareDeviceResponse>;
   /** "Forget this device": the tablet's own token names it. */
   forgetDevice(idToken: string, sharedToken: string): Promise<void>;
+  /**
+   * A signed-in owner opening a room to visitors, or closing it to new ones
+   * (#249). The id token is the grown-up's; the room is named by its code.
+   */
+  setVisitors(idToken: string, code: string, open: boolean): Promise<SetVisitorsResponse>;
   /** The "who's playing?" picker. */
   listSharedPlayers(sharedToken: string): Promise<SharedPlayersLoad>;
   /** Seat the kid picked on the tablet. Answers with a session, never a device token. */
@@ -583,6 +591,15 @@ export const api: Api = {
       headers: { ...JSON_HEADERS, "x-kad-shared-token": sharedToken },
       token: idToken,
       body: JSON.stringify({}),
+    });
+  },
+
+  setVisitors(idToken, code, open) {
+    return request<SetVisitorsResponse>(`/api/room/${encodeURIComponent(code)}/visitors`, {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ open }),
     });
   },
 

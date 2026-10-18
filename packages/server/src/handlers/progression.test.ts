@@ -84,9 +84,9 @@ describe("newCharacterWrite", () => {
 
     const writes = await newCharacterWrite(character, harness.deps, householdId);
 
-    expect(writes).toEqual([character]);
+    expect(writes).toEqual([{ character, expectedVersion: null, expectedClaim: null }]);
     // 2 assigned + 1 base, with the unicorn's +1 Heart *not* baked in.
-    expect(writes[0]?.committed.stats.heart).toBe(3);
+    expect(writes[0]?.character.committed.stats.heart).toBe(3);
   });
 
   it("does not overwrite a character the household already has", async () => {
@@ -399,7 +399,8 @@ describe("startPartyCampaign", () => {
     };
     await harness.repo.putCharacter(veteran);
 
-    const writes = await startPartyCampaign(state, harness.deps, householdId);
+    const started = await startPartyCampaign(state, harness.deps, householdId);
+    const writes = started.ok ? started.value.map((w) => w.character) : [];
 
     expect(writes[0]?.provisional).toMatchObject({
       runId: "the-hollow-crown",
@@ -474,8 +475,8 @@ describe("settleChapterCompletion — the campaign boundary", () => {
     expect(settlement.campaignProgress).toMatchObject({ status: "active", setbacks: 0 });
     // Mid-campaign: the gains stay provisional. Committing early is the bug
     // the whole commitment rule exists to prevent.
-    expect(settlement.characters[0]?.provisional?.xp).toBe(300);
-    expect(settlement.characters[0]?.committed.xp).toBe(0);
+    expect(settlement.characters[0]?.character.provisional?.xp).toBe(300);
+    expect(settlement.characters[0]?.character.committed.xp).toBe(0);
   });
 
   it("counts a setback, and half-XP still folds provisionally", async () => {
@@ -490,7 +491,7 @@ describe("settleChapterCompletion — the campaign boundary", () => {
 
     expect(settlement.chapterProgress?.outcome).toBe("setback");
     expect(settlement.campaignProgress).toMatchObject({ status: "active", setbacks: 1 });
-    expect(settlement.characters[0]?.provisional?.xp).toBe(150);
+    expect(settlement.characters[0]?.character.provisional?.xp).toBe(150);
   });
 
   it("fails the campaign at the third setback: revert to committed, keep a souvenir", async () => {
@@ -512,7 +513,7 @@ describe("settleChapterCompletion — the campaign boundary", () => {
     const settlement = await settleChapterCompletion(state, harness.deps, householdId);
 
     expect(settlement.campaignProgress).toMatchObject({ status: "failed", setbacks: 3 });
-    const [failed] = settlement.characters;
+    const [failed] = settlement.characters.map((w) => w.character);
     // The revert: provisional gone, committed exactly what it was, and the
     // attempt leaves a visible mark (spec §8.3).
     expect(failed?.provisional).toBeNull();
@@ -558,7 +559,7 @@ describe("settleChapterCompletion — the campaign boundary", () => {
 
     const settlement = await settleChapterCompletion(state, harness.deps, householdId);
 
-    const [failed] = settlement.characters;
+    const [failed] = settlement.characters.map((w) => w.character);
     expect(failed?.souvenirs[0]?.id).toBe("the-hollow-crown#sworn");
     expect(failed?.committed.tier).toBe("fledgling");
   });
@@ -575,7 +576,7 @@ describe("settleChapterCompletion — the campaign boundary", () => {
     const settlement = await settleChapterCompletion(state, harness.deps, householdId);
 
     expect(settlement.campaignProgress).toMatchObject({ status: "complete", setbacks: 0 });
-    const [committed] = settlement.characters;
+    const [committed] = settlement.characters.map((w) => w.character);
     expect(committed?.provisional).toBeNull();
     expect(committed?.committed.xp).toBe(300);
     expect(committed?.committed.level).toBe(2);
@@ -616,8 +617,8 @@ describe("settleChapterCompletion — the campaign boundary", () => {
     const settlement = await settleChapterCompletion(state, harness.deps, householdId);
 
     expect(settlement.campaignProgress?.status).toBe("complete");
-    expect(settlement.characters[0]?.committed.xp).toBe(300);
-    expect(settlement.characters[0]?.provisional).toBeNull();
+    expect(settlement.characters[0]?.character.committed.xp).toBe(300);
+    expect(settlement.characters[0]?.character.provisional).toBeNull();
   });
 
   it("a finished attempt does not haunt the next one", async () => {
@@ -646,7 +647,7 @@ describe("settleChapterCompletion — the campaign boundary", () => {
     const settlement = await settleChapterCompletion(state, harness.deps, householdId);
 
     expect(settlement.campaignProgress).toMatchObject({ status: "active", setbacks: 1 });
-    expect(settlement.characters[0]?.provisional?.xp).toBe(150);
+    expect(settlement.characters[0]?.character.provisional?.xp).toBe(150);
   });
 
   it("an unknown campaign settles XP and the chapter record only", async () => {
@@ -663,8 +664,8 @@ describe("settleChapterCompletion — the campaign boundary", () => {
 
     expect(settlement.campaignProgress).toBeUndefined();
     expect(settlement.chapterProgress?.outcome).toBe("success");
-    expect(settlement.characters[0]?.provisional?.xp).toBe(300);
-    expect(settlement.characters[0]?.committed.xp).toBe(0);
+    expect(settlement.characters[0]?.character.provisional?.xp).toBe(300);
+    expect(settlement.characters[0]?.character.committed.xp).toBe(0);
   });
 
   it("respects a campaign's own setback limit", async () => {
@@ -678,7 +679,7 @@ describe("settleChapterCompletion — the campaign boundary", () => {
     const settlement = await settleChapterCompletion(state, harness.deps, householdId);
 
     expect(settlement.campaignProgress).toMatchObject({ status: "failed", setbacks: 1 });
-    expect(settlement.characters[0]?.provisional).toBeNull();
+    expect(settlement.characters[0]?.character.provisional).toBeNull();
   });
 });
 

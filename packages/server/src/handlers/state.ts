@@ -15,6 +15,7 @@
 
 import type { StateResponse } from "@kad/shared";
 import { fail, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
+import { closedIfIdle } from "./host.ts";
 import { isOut } from "./remove.ts";
 
 /**
@@ -42,8 +43,10 @@ export async function getState(
   input: GetStateInput,
   deps: HandlerDeps,
 ): Promise<HandlerResult<StateResponse>> {
-  const state = await deps.repo.getState(input.runId);
-  if (!state) return fail("NOT_FOUND", `no run ${input.runId}`);
+  const stored = await deps.repo.getState(input.runId);
+  if (!stored) return fail("NOT_FOUND", `no run ${input.runId}`);
+  // An open room idle too long is closed now (#249), and the reader is told.
+  const state = await closedIfIdle(stored, deps);
   // Taken out by the host (#267), or retired by an organizer (#248).
   if (input.playerId !== undefined && (await isOut(state, input.playerId, input.householdId ?? null, deps.repo))) {
     return fail("FORBIDDEN", "This phone was taken out of the game.");
