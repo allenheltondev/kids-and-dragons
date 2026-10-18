@@ -102,6 +102,44 @@ describe("the settings sheet", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
+  it("keeps focus where it was opened from, however many settings are changed", async () => {
+    const user = userEvent.setup();
+    render(<A11yControl />);
+    const opener = screen.getByRole("button", { name: "Display settings" });
+    await user.click(opener);
+    const largest = screen.getByRole("button", { name: "Largest" });
+    largest.focus();
+    await user.keyboard("{Enter}");
+    // A change must not pull focus back to the first button.
+    expect(document.activeElement).toBe(largest);
+    await user.keyboard("{Tab}{Enter}");
+    expect(document.activeElement).not.toBe(screen.getByRole("button", { name: "Normal" }));
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(document.activeElement).toBe(opener);
+  });
+
+  it("contains Tab inside the sheet and makes the page behind inert", async () => {
+    const root = document.createElement("div");
+    root.id = "root";
+    document.body.append(root);
+    const user = userEvent.setup();
+    render(<A11yControl />, { container: root.appendChild(document.createElement("div")) });
+    await user.click(screen.getByRole("button", { name: "Display settings" }));
+    expect(root.hasAttribute("inert")).toBe(true);
+
+    const done = screen.getByRole("button", { name: "Done" });
+    done.focus();
+    await user.keyboard("{Tab}");
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Normal" }));
+    await user.keyboard("{Shift>}{Tab}{/Shift}");
+    expect(document.activeElement).toBe(done);
+
+    await user.keyboard("{Escape}");
+    expect(root.hasAttribute("inert")).toBe(false);
+    root.remove();
+  });
+
   it("says when the device already asks for what a setting does", async () => {
     device(["prefers-reduced-motion"]);
     const user = userEvent.setup();

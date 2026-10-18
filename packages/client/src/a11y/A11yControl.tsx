@@ -1,6 +1,6 @@
 /** The display-settings button in the corner row, and the sheet it opens (#262). */
 
-import { useEffect, useId, useRef } from "react";
+import { useCallback, useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "../ui/Button";
 import { deviceWantsContrast, deviceWantsLessMotion, type Hand, type TextSize } from "./prefs";
@@ -24,6 +24,8 @@ const HANDS: readonly { id: Hand; label: string; name: string }[] = [
 export function A11yControl(): React.JSX.Element {
   const open = useA11y((state) => state.open);
   const setOpen = useA11y((state) => state.setOpen);
+  // Stable, so the sheet's focus handling runs once per opening and not once per setting.
+  const close = useCallback(() => { setOpen(false); }, [setOpen]);
   return (
     <>
       <button
@@ -36,7 +38,7 @@ export function A11yControl(): React.JSX.Element {
       >
         <span aria-hidden="true" className="kad-a11y__glyph">Aa</span>
       </button>
-      {open ? <A11ySheet onClose={() => setOpen(false)} /> : null}
+      {open ? <A11ySheet onClose={close} /> : null}
     </>
   );
 }
@@ -46,19 +48,47 @@ function A11ySheet({ onClose }: { onClose: () => void }): React.JSX.Element {
   const titleId = useId();
   const sheet = useRef<HTMLDivElement>(null);
 
-  // Focus moves in, Escape closes, and focus goes back to the button that opened it.
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
+  // Once per opening: focus moves in, the page behind goes inert, Tab stays inside, Escape
+  // closes, and focus goes back to whatever opened the sheet, whatever was changed in it.
   useEffect(() => {
     const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    sheet.current?.querySelector<HTMLElement>("button")?.focus();
+    const app = document.getElementById("root");
+    app?.setAttribute("inert", "");
+    const focusable = (): HTMLElement[] =>
+      [...(sheet.current?.querySelectorAll<HTMLElement>("button:not([disabled])") ?? [])];
+    focusable()[0]?.focus();
     const onKey = (event: KeyboardEvent): void => {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") {
+        onCloseRef.current();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const items = focusable();
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (!first || !last) return;
+      const active = document.activeElement;
+      if (!sheet.current?.contains(active)) {
+        event.preventDefault();
+        first.focus();
+      } else if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("keydown", onKey);
+      app?.removeAttribute("inert");
       opener?.focus();
     };
-  }, [onClose]);
+  }, []);
 
   // In the body, not the corner row: the row is a stacking context below the toast and the dice.
   return createPortal(
