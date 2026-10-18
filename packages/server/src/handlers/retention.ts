@@ -65,7 +65,7 @@ export async function deleteKid(
   household: Household,
   playerId: string,
   deps: Owned,
-): Promise<HandlerResult<{ forgotten: number }>> {
+): Promise<HandlerResult<{ cleanupPending: boolean }>> {
   // Read before the delete takes her rows with it, and written down before
   // anything goes, so an interrupted delete or a failed scrub is finished by
   // the sweep (`retryForgets`). Forgotten after, so a delete that is refused
@@ -76,7 +76,8 @@ export async function deleteKid(
     await deps.repo.deleteForget(playerId);
     return fail("NOT_FOUND", `no player ${playerId}`);
   }
-  return ok({ forgotten: await forgetEverywhere([job], deps) });
+  const { owed } = await forgetEverywhere([job], deps);
+  return ok({ cleanupPending: owed.length > 0 });
 }
 
 // ---------------------------------------------------------------------------
@@ -109,10 +110,11 @@ export async function deleteOwnedHousehold(
   const kids = await kidsOf(household.id, "household", deps);
   for (const kid of kids) await deps.repo.putForget(kid);
   await deps.repo.deleteHousehold(household.id);
-  await forgetEverywhere(kids, deps);
+  const { owed } = await forgetEverywhere(kids, deps);
   return ok({
     householdId: household.id,
     households: await summaries(await deps.repo.listHouseholdsForAccount(cognitoSub), deps),
+    ...(owed.length > 0 ? { cleanupPending: true as const } : {}),
   });
 }
 
@@ -295,10 +297,15 @@ export async function tablesOf(
  * gone, so every room door already treats her as out (`isOut`). Each kid's
  * forget job (`ForgetJob`) is what makes it finish: a table that could not be
  * cleaned is kept on it, and the sweep tries again (`retryForgets`); once
- * every table is clean the job is removed. Returns the runs changed.
+ * every table is clean the job is removed. Returns the runs changed, and the
+ * kids some table still names (`owed`), whose jobs stay for the sweep.
  */
-export async function forgetEverywhere(kids: readonly ForgetJob[], deps: ForgetDeps): Promise<number> {
+export async function forgetEverywhere(
+  kids: readonly ForgetJob[],
+  deps: ForgetDeps,
+): Promise<{ changed: number; owed: string[] }> {
   let changed = 0;
+  const pending: string[] = [];
   for (const kid of kids) {
     const owed: string[] = [];
     for (const table of kid.tables) {
@@ -313,10 +320,14 @@ export async function forgetEverywhere(kids: readonly ForgetJob[], deps: ForgetD
         owed.push(table);
       }
     }
-    if (owed.length === 0) await deps.repo.deleteForget(kid.playerId);
-    else await deps.repo.putForget({ ...kid, tables: owed, attempts: kid.attempts + 1 });
+    if (owed.length === 0) {
+      await deps.repo.deleteForget(kid.playerId);
+    } else {
+      await deps.repo.putForget({ ...kid, tables: owed, attempts: kid.attempts + 1 });
+      pending.push(kid.playerId);
+    }
   }
-  return changed;
+  return { changed, owed: pending };
 }
 
 export interface ForgetRetryResult {
@@ -358,9 +369,8 @@ export async function retryForgets(deps: ForgetDeps): Promise<ForgetRetryResult>
         result.dropped.push(job.playerId);
         continue;
       }
-      await forgetEverywhere([job], deps);
-      const left = (await deps.repo.listForgets(FORGET_BATCH)).some((j) => j.playerId === job.playerId);
-      (left ? result.owed : result.finished).push(job.playerId);
+      const { owed } = await forgetEverywhere([job], deps);
+      (owed.length > 0 ? result.owed : result.finished).push(job.playerId);
     } catch (err) {
       console.error(`[sweep] could not finish forgetting ${job.playerId}:`, err);
       result.owed.push(job.playerId);

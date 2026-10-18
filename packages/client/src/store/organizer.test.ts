@@ -139,6 +139,17 @@ describe("the organizer store", () => {
     expect(api.deleteHousehold).toHaveBeenCalledWith("id_tok", "h_club");
     expect(store.getState().view).toBeNull();
     expect(store.getState().households.map((h) => h.id)).toEqual(["h_1"]);
+    expect(store.getState().cleanupPending).toBe(false);
+  });
+
+  it("says when a delete still owes another household its cleanup (#252)", async () => {
+    const { store, api } = setup();
+    await store.getState().begin("id_tok", "ana@example.com");
+    api.editHousehold.mockResolvedValueOnce({ ...view("h_club"), cleanupPending: true });
+    await store.getState().edit({ action: "delete-player", playerId: "p_ada" });
+    expect(store.getState().cleanupPending).toBe(true);
+    await store.getState().edit({ action: "rename-household", displayName: "Club" });
+    expect(store.getState().cleanupPending).toBe(false);
   });
 
   it("goes back to the picker after leaving a group", async () => {

@@ -105,7 +105,8 @@ function suite(name: string, open: (now: () => number) => Promise<Store>): void 
       expect(before).toContain(ada.playerId);
 
       const done = await deleteProfile({ cognitoSub: "sub_h_ada", householdId: "h_ada", playerId: ada.playerId }, harness.deps);
-      expect(done.ok).toBe(true);
+      expect(done.ok && done.value.cleanupPending).toBeUndefined();
+      expect(await harness.deps.repo.listForgets()).toEqual([]);
 
       const after = JSON.stringify(await rues());
       expect(after).not.toContain("Sparklehoof");
@@ -120,8 +121,8 @@ function suite(name: string, open: (now: () => number) => Promise<Store>): void 
       fault.on = true;
       const done = await deleteProfile({ cognitoSub: "sub_h_ada", householdId: "h_ada", playerId: ada.playerId }, harness.deps);
       // Her own rows are gone; Rue's event log still names her, and the job
-      // says so, though her visits went with her.
-      expect(done.ok).toBe(true);
+      // says so, though her visits went with her. The answer says it is pending.
+      expect(done.ok && done.value.cleanupPending).toBe(true);
       expect(await repo.getPlayer("h_ada", ada.playerId)).toBeNull();
       expect(await repo.listVisits(ada.playerId)).toEqual([]);
       expect(JSON.stringify(await rues())).toContain("Sparklehoof");

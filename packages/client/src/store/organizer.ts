@@ -48,6 +48,11 @@ export interface OrganizerStore {
   pendingMove: string | null;
   /** The last pairing code made, and for which kid (#281). */
   pairing: { playerId: string; code: PairingCode } | null;
+  /**
+   * The last delete (#252) left another household's game or guide still
+   * naming a kid, for now: the cleanup is recorded and finishes on its own.
+   */
+  cleanupPending: boolean;
   busy: boolean;
   error: string | null;
 
@@ -129,6 +134,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
       arrived: null,
       pendingMove: null,
       pairing: null,
+      cleanupPending: false,
       busy: false,
       error: null,
 
@@ -202,7 +208,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
         if (!householdId) return;
         await run(async (t) => {
           const view = await api.editHousehold(t, { ...change, householdId } as OrganizerEdit);
-          set({ view });
+          set({ view, cleanupPending: view.cleanupPending === true });
         });
       },
 
@@ -274,8 +280,17 @@ export function createOrganizerStore(api: Api = defaultApi) {
         const householdId = get().view?.id;
         if (!householdId) return;
         await run(async (t) => {
-          const { households } = await api.deleteHousehold(t, householdId);
-          set({ view: null, devices: [], invite: null, transfer: null, arrived: null, pairing: null, households });
+          const { households, cleanupPending } = await api.deleteHousehold(t, householdId);
+          set({
+            view: null,
+            devices: [],
+            invite: null,
+            transfer: null,
+            arrived: null,
+            pairing: null,
+            households,
+            cleanupPending: cleanupPending === true,
+          });
         });
       },
 

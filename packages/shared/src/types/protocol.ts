@@ -570,6 +570,12 @@ export interface OrganizerHouseholdView {
    * until an owner deletes them, which is the default.
    */
   retentionDays: number | null;
+  /**
+   * Answering a delete (#252): the kid is gone from here, but another
+   * household's game or Field Guide still says her name. The cleanup is
+   * recorded and the daily tidy-up finishes it. Absent when it is done.
+   */
+  cleanupPending?: true;
 }
 
 /**
@@ -592,6 +598,8 @@ export interface OrganizerHouseholdDeleted {
   householdId: string;
   /** Every household the account still owns. */
   households: OrganizerHouseholdSummary[];
+  /** As on `OrganizerHouseholdView`: another household still names one of its kids, for now. */
+  cleanupPending?: true;
 }
 
 /** A tablet bound to the household, as its owners see it. */
