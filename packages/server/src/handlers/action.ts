@@ -37,6 +37,7 @@ import type {
 import {
   currentPlayable,
   lobbyCampaign,
+  resolveCharacter,
   resumeJourney,
   riftPartyOf,
   seedRunBuffs,
@@ -46,7 +47,7 @@ import {
 } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { ApplyIntentResult } from "../engine/port.ts";
-import type { CampaignProgressRecord, EventRecord, RunRecord } from "../store/repository.ts";
+import type { CampaignProgressRecord, CharacterWrite, EventRecord, RunRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { arrivalKey, authoredLine, mayDecorate, nextMoments } from "../llm/moments.ts";
 import { partyBrief } from "../llm/port.ts";
@@ -62,6 +63,7 @@ import {
   purseFor,
   newCharacterWrite,
   prepareStatPointSpend,
+  seatHero,
   settleChapterCompletion,
   startPartyCampaign,
   type ChapterSettlement,
@@ -205,7 +207,9 @@ export async function applyAction(
 
   const nowMs = deps.now();
   const nextSeq = state.seq + 1;
-  let spentCharacter: Character | null = null;
+  let spentCharacter: CharacterWrite | null = null;
+  // A saved hero seated into a chapter under way, acquiring her claim (#282).
+  let seated: CharacterWrite | null = null;
   let exitTaken: ExitWrite | null = null;
   let result: ApplyIntentResult;
   if (input.intent.type === "CHOOSE_EXIT" || input.intent.type === "RIFT_ACTION") {
@@ -252,6 +256,13 @@ export async function applyAction(
       input.intent.type === "SEAT_CHARACTER"
         ? await deps.repo.getCharacter(auth.run.householdId, input.intent.characterId)
         : undefined;
+    // One game at a time per hero (#282): a hero another adventure holds is
+    // refused here, before the engine seats anybody.
+    if (savedCharacter && savedCharacter.ownerPlayerId === input.playerId) {
+      const seat = await seatHero(state, deps, auth.run.householdId, savedCharacter);
+      if (!seat.ok) return { ok: false, seq: state.seq, error: seat.error };
+      seated = seat.value;
+    }
     result = deps.engine.applyIntent(
       state,
       // The engine re-checks seq itself; passing it keeps that guard armed even
@@ -316,8 +327,22 @@ export async function applyAction(
    * same conditional transaction as the state and the event, so a turn that
    * loses the seq race cannot leave its XP behind on a character.
    */
-  const characters: Character[] = [];
+  const characters: CharacterWrite[] = [];
   if (spentCharacter) characters.push(spentCharacter);
+  if (seated) {
+    const hero = seated.character;
+    characters.push(seated);
+    // She plays this chapter's gains from her first tap, and every phone sees
+    // her as she now stands: provisional, at this table.
+    const resolved = resolveCharacter(hero, deps.content.rules(), deps.content.items());
+    result = {
+      ...result,
+      state: {
+        ...result.state,
+        party: result.state.party.map((m) => (m.character.id === hero.id ? { ...m, character: resolved } : m)),
+      },
+    };
+  }
   if (result.created) {
     characters.push(...(await newCharacterWrite(result.created, deps, auth.run.householdId)));
   }
@@ -357,7 +382,11 @@ export async function applyAction(
     // action patch exposes isProvisional and committedLevel to clients. An
     // entry scene that immediately completes is handled by settlement below,
     // avoiding two writes to the same character in one transaction.
-    characters.push(...(await startPartyCampaign(result.state, deps, auth.run.householdId)));
+    const started = await startPartyCampaign(result.state, deps, auth.run.householdId);
+    // A hero another adventure holds cannot start this one (#282): nothing is
+    // written, no seq is burned, and the table is told who.
+    if (!started.ok) return { ok: false, seq: state.seq, error: started.error };
+    characters.push(...started.value);
   }
   let settlement: ChapterSettlement | null = null;
   if (finishedChapter) {

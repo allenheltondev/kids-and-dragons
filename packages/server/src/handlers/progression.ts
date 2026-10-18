@@ -55,7 +55,8 @@ import {
   type AwardChapterXpResult,
 } from "../engine/shared-engine.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
-import type { CampaignProgressRecord, ChapterProgressRecord } from "../store/repository.ts";
+import type { CampaignProgressRecord, ChapterProgressRecord, CharacterWrite } from "../store/repository.ts";
+import { busyMessage, claimFor, claimOf, create, parseClaim, rewrite, standing } from "./claim.ts";
 
 /**
  * The identity a provisional gain is scoped to.
@@ -107,14 +108,14 @@ export async function newCharacterWrite(
   created: Character,
   deps: HandlerDeps,
   householdId: string,
-): Promise<Character[]> {
+): Promise<CharacterWrite[]> {
   if (created.householdId !== householdId) {
     // The engine builds this from `ctx.householdId`, so a mismatch means the
     // handler and the engine disagree about whose run this is.
     throw new Error(`character ${created.id} belongs to ${created.householdId}, not ${householdId}`);
   }
   const existing = await deps.repo.getCharacter(householdId, created.id);
-  return existing ? [] : [created];
+  return existing ? [] : [create(created)];
 }
 
 /**
@@ -160,7 +161,7 @@ async function foldChapterXpDetails(
   householdId: string,
   chapter: Chapter | null,
 ): Promise<AwardChapterXpResult> {
-  if (!chapter) return { characters: [], awards: [] };
+  if (!chapter) return { characters: [], writes: [], awards: [] };
 
   return awardChapterXpDetails({
     state,
@@ -169,6 +170,16 @@ async function foldChapterXpDetails(
     repo: deps.repo,
     rules: deps.content.rules(),
     items: deps.content.items(),
+    claim: (row) => claimFor(campaignKey(state), householdId, row),
+    // A hero another adventure holds is not this table's to write (#282).
+    // Seating and chapter start refuse her, so this is only ever a race lost
+    // between them and here: she keeps what she has, and the chapter ends.
+    admit: async (row) => {
+      if (!state.campaignId) return true;
+      const busy = (await standing(row, claimFor(campaignKey(state), householdId, row), deps)) === "busy";
+      if (busy) console.error(`settle: ${row.id} is claimed by ${row.provisional?.runId}; not writing her`);
+      return !busy;
+    },
   });
 }
 
@@ -185,9 +196,47 @@ export async function startPartyCampaign(
   state: RunState,
   deps: HandlerDeps,
   householdId: string,
-): Promise<Character[]> {
-  if (!state.campaignId) return [];
-  return transformParty(state, deps, householdId, [], (character) => character);
+): Promise<HandlerResult<CharacterWrite[]>> {
+  if (!state.campaignId) return ok([]);
+  const { writes, busy } = await transformParty(state, deps, householdId, [], (character) => character);
+  // Acquiring the claim (#282): a hero another adventure still holds cannot
+  // start this one, and nothing is written for anybody.
+  if (busy.length > 0) return fail("HERO_BUSY", busyMessage(busy[0]!));
+  return ok(writes);
+}
+
+/** Phases a chapter is under way in, where a hero seated now plays it. */
+const UNDER_WAY: ReadonlySet<RunState["phase"]> = new Set(["scene", "check", "encounter"]);
+
+/**
+ * Seating a saved hero, against her claim (#282, architecture §4.5). Every
+ * path that seats one comes through here: a lobby pick and a join mid-chapter
+ * are both SEAT_CHARACTER.
+ *
+ * In a campaign chapter already under way she plays it from the first tap, so
+ * seating her acquires the claim: the write returned rides the seat's own
+ * commit, conditioned on the row as read. Anywhere else (a lobby, between
+ * chapters) nothing is written, and the chapter start acquires her with the
+ * rest of the party; she is refused here only when a different table holds
+ * her, because which of this table's campaigns is next is not decided yet.
+ */
+export async function seatHero(
+  state: RunState,
+  deps: HandlerDeps,
+  householdId: string,
+  hero: Character,
+): Promise<HandlerResult<CharacterWrite | null>> {
+  const underWay = Boolean(state.campaignId) && UNDER_WAY.has(state.phase);
+  const claim = underWay ? claimFor(campaignKey(state), householdId, hero) : null;
+  const where = await standing(hero, claim, deps);
+  if (where === "busy") {
+    const held = claimOf(hero)!;
+    if (underWay || parseClaim(held, hero).table !== householdId) {
+      return fail("HERO_BUSY", busyMessage(hero));
+    }
+  }
+  if (!claim || where === "mine") return ok(null);
+  return ok(rewrite(hero, startCampaign(hero, claim)));
 }
 
 /**
@@ -539,7 +588,7 @@ const DEFAULT_SETBACK_LIMIT = 3;
 
 /** Everything a chapter completion owes the store, for one `repo.commit()`. */
 export interface ChapterSettlement {
-  characters: Character[];
+  characters: CharacterWrite[];
   /** Award metadata retained for level-up and tier-transformation UI triggers. */
   awards: ProgressionAward[];
   chapterProgress?: ChapterProgressRecord;
@@ -627,7 +676,7 @@ export async function settleChapterCompletion(
   }
 
   const award = await foldChapterXpDetails(state, deps, householdId, chapter);
-  const characters = award.characters;
+  const characters = award.writes;
   const xpEarned = chapter ? computeChapterXp(state, chapter) : 0;
 
   const chapterProgress: ChapterProgressRecord | undefined = chapter
@@ -683,7 +732,7 @@ export async function settleChapterCompletion(
   if (attempt.setbacks >= limit) {
     attempt.status = "failed";
     return {
-      characters: await transformParty(state, deps, householdId, characters, (c) => {
+      characters: await settleParty(state, deps, householdId, characters, (c) => {
         // The souvenir reads the tier *before* the revert takes it away —
         // "she goes back to Fledgling and keeps something visible that says
         // she was Sworn once" (spec §8.3). The id is a display key for the
@@ -703,7 +752,7 @@ export async function settleChapterCompletion(
   if (finalChapter) {
     attempt.status = "complete";
     return {
-      characters: await transformParty(state, deps, householdId, characters, commitCampaign),
+      characters: await settleParty(state, deps, householdId, characters, commitCampaign),
       awards: award.awards,
       ...(chapterProgress ? { chapterProgress } : {}),
       campaignProgress: attempt,
@@ -794,7 +843,7 @@ async function settleVisit(input: {
   // A shallow copy shares the party, so the fold still re-resolves the room's
   // characters in place; only the amount it reads is withheld on a replay.
   const award = await foldChapterXpDetails(replay ? { ...state, xpEarned: 0 } : state, deps, householdId, chapter);
-  const characters = award.characters;
+  const characters = award.writes;
   const chapterProgress: ChapterProgressRecord = {
     runId: state.runId,
     index: chapter.index,
@@ -823,7 +872,7 @@ async function settleVisit(input: {
     attempt.status = "failed";
     return {
       ...settled,
-      characters: await transformParty(state, deps, householdId, characters, (c) => {
+      characters: await settleParty(state, deps, householdId, characters, (c) => {
         const reached = c.provisional?.tier;
         const flavored = reached && reached !== c.committed.tier;
         return failCampaign(c, flavored ? `${campaign.id}#${reached}` : campaign.id, now);
@@ -836,7 +885,7 @@ async function settleVisit(input: {
     attempt.status = "complete";
     return {
       ...settled,
-      characters: await transformParty(state, deps, householdId, characters, commitCampaign),
+      characters: await settleParty(state, deps, householdId, characters, commitCampaign),
       campaignProgress: attempt,
       campaignView: campaignView(campaign, attempt, deps, "complete"),
     };
@@ -929,34 +978,58 @@ async function transformParty(
   state: RunState,
   deps: HandlerDeps,
   householdId: string,
-  awarded: Character[],
+  awarded: CharacterWrite[],
   fate: (character: Character) => Character,
-): Promise<Character[]> {
+): Promise<{ writes: CharacterWrite[]; busy: Character[] }> {
   const rules = deps.content.rules();
   const items = deps.content.items();
-  const byId = new Map(awarded.map((c) => [c.id, c]));
-  const writes: Character[] = [];
+  const byId = new Map(awarded.map((w) => [w.character.id, w]));
+  const writes: CharacterWrite[] = [];
+  const busy: Character[] = [];
 
   for (const member of state.party) {
-    let base = byId.get(member.character.id) ?? null;
-    if (!base) {
+    let write = byId.get(member.character.id) ?? null;
+    if (!write) {
+      let read: Character | null = null;
       try {
-        base = await deps.repo.getCharacter(householdId, member.character.id);
+        read = await deps.repo.getCharacter(householdId, member.character.id);
       } catch (err) {
         // Same policy as foldChapterXp: one bad row must not take the table
         // down at the moment the campaign ends.
         console.error(`settle: skipping character ${member.character.id}:`, err);
       }
-      if (!base) continue;
+      if (!read) continue;
+      // Held by another adventure (#282): not this table's to seed or settle.
+      if ((await standing(read, claimFor(campaignKey(state), householdId, read), deps)) === "busy") {
+        busy.push(read);
+        continue;
+      }
+      write = rewrite(read, read);
     }
-    const settled = fate(startCampaign(base, campaignKey(state)));
-    writes.push(settled);
+    const base = write.character;
+    const settled = fate(startCampaign(base, claimFor(campaignKey(state), householdId, base)));
+    writes.push({ ...write, character: settled });
     // The revert (or the commit) has to reach the phones on the same patch —
     // a failed campaign whose party still *looks* levelled is a lie the next
     // chapter would expose anyway.
     member.character = resolveCharacter(settled, rules, items);
   }
-  return writes;
+  return { writes, busy };
+}
+
+/**
+ * `transformParty` at a campaign's end. A hero another adventure holds is left
+ * out rather than refused: the chapter has already ended at this table, and
+ * she was never this table's to settle.
+ */
+async function settleParty(
+  state: RunState,
+  deps: HandlerDeps,
+  householdId: string,
+  awarded: CharacterWrite[],
+  fate: (character: Character) => Character,
+): Promise<CharacterWrite[]> {
+  return (await transformParty(state, deps, householdId, awarded, fate)).writes;
 }
 
 
@@ -965,8 +1038,8 @@ async function transformParty(
 // ---------------------------------------------------------------------------
 
 export interface PreparedStatPointSpend {
-  /** The unresolved durable row written by the run transaction. */
-  character: Character;
+  /** The unresolved durable row written by the run transaction, under her claim. */
+  character: CharacterWrite;
   /** A fresh run snapshot whose party member has been re-resolved. */
   state: RunState;
 }
@@ -999,6 +1072,12 @@ export async function prepareStatPointSpend(
   if (character.householdId !== householdId || character.ownerPlayerId !== playerId) {
     return fail("FORBIDDEN", "this session cannot spend points for that character");
   }
+  if (
+    state.campaignId &&
+    (await standing(character, claimFor(campaignKey(state), householdId, character), deps)) === "busy"
+  ) {
+    return fail("HERO_BUSY", busyMessage(character));
+  }
 
   const rules = deps.content.rules();
   try {
@@ -1006,7 +1085,7 @@ export async function prepareStatPointSpend(
     const updated = applyStatPointSpend(character, rules, stat as StatId);
     const resolved = resolveCharacter(updated, rules, deps.content.items());
     return ok({
-      character: updated,
+      character: rewrite(character, updated),
       state: {
         ...state,
         party: state.party.map((candidate) =>
