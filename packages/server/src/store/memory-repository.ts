@@ -14,6 +14,7 @@
  */
 
 import fs from "node:fs/promises";
+import { isDeepStrictEqual } from "node:util";
 import {
   CHARACTER_VERSION,
   FIELD_GUIDE_VERSION,
@@ -40,10 +41,15 @@ import type {
   GameRepository,
   GuestRenewal,
   HouseholdOwnerRecord,
+  MoveOutcome,
+  MoveProfileInput,
   OrganizerInviteRecord,
+  ProfileMove,
   RoomRecord,
   RunRecord,
+  TransferCodeRecord,
 } from "./repository.ts";
+import { collectMove, fieldGuideItem, planMove } from "./profile-move.ts";
 import {
   ACCT,
   CAMPAIGN_SK,
@@ -61,6 +67,7 @@ import {
   HH,
   INVITE,
   META,
+  MOVED_SK,
   OWNER_SK,
   PLAYER_SK,
   PREFIX,
@@ -68,6 +75,7 @@ import {
   RUN,
   RUN_SK,
   STATE,
+  TRANSFER,
 } from "./keys.ts";
 
 /** One row. Mirrors a DynamoDB item: keys are attributes, not metadata. */
@@ -76,7 +84,7 @@ interface TableItem {
   SK: string;
   GSI1PK?: string;
   GSI1SK?: string;
-  /** Epoch seconds, TTL attribute. Only rooms, code-miss windows and organizer invites carry it. */
+  /** Epoch seconds, TTL attribute. Only rooms, code-miss windows, invites, transfer codes and moved-device forwards carry it. */
   ttl?: number;
   /**
    * Schema version of `data`, per entity (architecture §3.2). A top-level
@@ -405,6 +413,78 @@ export class MemoryRepository implements GameRepository {
     this.items.delete(rowKey(INVITE(code), META));
     await this.putOwner({ ...owner, householdId: invite.householdId });
     return invite;
+  }
+
+  async putTransferCodeIfAbsent(record: TransferCodeRecord): Promise<boolean> {
+    if (this.get(TRANSFER(record.code), META)) return false;
+    this.put({ PK: TRANSFER(record.code), SK: META, ttl: record.ttl, entity: "transfer", data: record });
+    return true;
+  }
+
+  async getTransferCode(code: string, nowIso: string): Promise<TransferCodeRecord | null> {
+    const record = this.get(TRANSFER(code), META)?.data as TransferCodeRecord | undefined;
+    return record && record.expiresAt > nowIso ? record : null;
+  }
+
+  async readProfileMove(householdId: string, playerId: string): Promise<ProfileMove | null> {
+    const player = this.get(HH(householdId), PLAYER_SK(playerId));
+    if (!player) return null;
+    return collectMove(householdId, playerId, {
+      player,
+      characters: this.query(HH(householdId), PREFIX.character),
+      devices: this.query(HH(householdId), PREFIX.device),
+      book: this.readFieldGuide(householdId),
+    });
+  }
+
+  async moveProfile(input: MoveProfileInput): Promise<MoveOutcome> {
+    const steps = planMove(input);
+    if (!steps) return "too-big";
+
+    // Every condition the real transaction carries, checked before anything
+    // is written, and no await from here to the last write: one transaction.
+    for (const step of steps) {
+      if (step.op === "spend") {
+        const code = this.get(TRANSFER(step.code), META)?.data as TransferCodeRecord | undefined;
+        const good =
+          code !== undefined &&
+          code.expiresAt > step.nowIso &&
+          code.householdId === step.householdId &&
+          code.playerId === step.playerId;
+        if (!good) return "spent";
+      } else if (step.op === "check") {
+        if (!this.get(step.PK, step.SK)) return "changed";
+      } else if (step.op === "delete") {
+        const row = this.get(step.PK, step.SK);
+        if (!row || !isDeepStrictEqual(row.data, step.data)) return "changed";
+      } else if (step.op === "put") {
+        if (step.ifAbsent && this.get(step.item.PK, step.item.SK)) return "changed";
+      }
+    }
+
+    for (const step of steps) {
+      if (step.op === "spend") {
+        this.items.delete(rowKey(TRANSFER(step.code), META));
+      } else if (step.op === "delete") {
+        this.items.delete(rowKey(step.PK, step.SK));
+      } else if (step.op === "put") {
+        this.put(step.item);
+      } else if (step.op === "finds") {
+        // First finder wins in her new home's book too.
+        const entries = { ...this.readFieldGuide(step.householdId).entries };
+        for (const [canonId, find] of Object.entries(step.entries)) {
+          if (!Object.hasOwn(entries, canonId)) entries[canonId] = find;
+        }
+        this.put(fieldGuideItem(step.householdId, entries));
+      }
+    }
+    this.persist();
+    return "moved";
+  }
+
+  async getMovedDevice(householdId: string, deviceId: string): Promise<string | null> {
+    const forward = this.get(HH(householdId), MOVED_SK(deviceId))?.data as { householdId?: string } | undefined;
+    return forward?.householdId ?? null;
   }
 
   async putPlayer(player: PlayerProfile): Promise<void> {

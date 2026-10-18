@@ -15,9 +15,11 @@ import type {
   ClientIntent,
   DeviceBinding,
   FieldGuideDiscovery,
+  FieldGuideFind,
   FieldGuideRecord,
   Household,
   JourneyState,
+  PersonalDeviceBinding,
   PlayerProfile,
   RoomMode,
   RunState,
@@ -296,6 +298,64 @@ export interface OrganizerInviteRecord {
   ttl: number;
 }
 
+/**
+ * `TRANSFER#<code>` / `META`: a single-use code that moves one kid, her heroes
+ * and her finds out of `householdId` and into whichever home redeems it (#251).
+ * TTL'd like an invite.
+ */
+export interface TransferCodeRecord {
+  code: string;
+  /** The home she is moving out of. */
+  householdId: string;
+  playerId: string;
+  /** The owner of that home who asked for it. */
+  createdBy: string;
+  createdAt: string;
+  expiresAt: string;
+  /** Epoch seconds. DynamoDB deletes it some time after; reads check `expiresAt`. */
+  ttl: number;
+}
+
+/**
+ * Everything that moves with one kid, as `readProfileMove` found it: what a
+ * handler needs to judge the move, and (`rows`) what the store needs to carry
+ * it out exactly as read.
+ */
+export interface ProfileMove {
+  householdId: string;
+  player: PlayerProfile;
+  /** Her heroes that read cleanly. A row that does not still moves, as it is. */
+  characters: Character[];
+  /** Her own phones, revoked ones included: those are dropped, not moved. */
+  devices: PersonalDeviceBinding[];
+  /** The entries in the household's Field Guide she found first. */
+  finds: Record<string, FieldGuideFind>;
+  /** The rows as stored. The store's own; nothing above it reads this. */
+  readonly rows: unknown;
+}
+
+export interface MoveProfileInput {
+  move: ProfileMove;
+  /** Spent by the same transaction. It must name this kid in this household. */
+  code: string;
+  nowIso: string;
+  /** A home the redeemer owns, or a new one made for her with them as its owner. */
+  to: { householdId: string } | { household: Household; owner: HouseholdOwnerRecord };
+  /**
+   * Epoch seconds the forwarding rows for her phones live until
+   * (`getMovedDevice`): past the life of any token naming her old home.
+   */
+  forwardTtl: number;
+}
+
+/**
+ * What `moveProfile` did. `spent`: the code is gone, expired, or names
+ * somebody else. `changed`: a row was written since `readProfileMove`, or the
+ * new home went, and nothing moved (read again and retry). `too-big`: more
+ * rows than one transaction holds (`MOVE_ITEM_LIMIT`), and nothing moved.
+ */
+export type MoveOutcome = "moved" | "spent" | "changed" | "too-big";
+
 export interface GameRepository {
   // --- household, players, devices -----------------------------------------
   putHousehold(household: Household): Promise<void>;
@@ -332,6 +392,38 @@ export interface GameRepository {
     nowIso: string,
     owner: Omit<HouseholdOwnerRecord, "householdId">,
   ): Promise<OrganizerInviteRecord | null>;
+
+  /** A new transfer code (#251). `false`, and nothing written, if the code is taken. */
+  putTransferCodeIfAbsent(record: TransferCodeRecord): Promise<boolean>;
+  /** A transfer code that is still good at `nowIso`, or `null`. Spends nothing. */
+  getTransferCode(code: string, nowIso: string): Promise<TransferCodeRecord | null>;
+  /**
+   * Everything that would move with one kid (`ProfileMove`): her profile,
+   * the characters she owns, her personal device bindings, and her first
+   * finds in the household's Field Guide. `null` when she is not there.
+   */
+  readProfileMove(householdId: string, playerId: string): Promise<ProfileMove | null>;
+  /**
+   * Move a kid to another home (#251), in **one transaction**: the code is
+   * spent; her profile, heroes and live personal bindings are deleted from the
+   * old home and written under the new one with every id unchanged; each moved
+   * binding leaves a forward behind (`getMovedDevice`); her finds are added to
+   * the new home's book, first finder wins; and a new home, when that is where
+   * she is going, is created with its owner's two rows.
+   *
+   * Every row deleted is conditioned on being exactly the row read, so a hero
+   * written in between (a level, a claim) cancels the move instead of being
+   * flattened back. Nothing is copied: she is in one home or the other, never
+   * both, and never neither. Table saves (runs, campaign progress) are not
+   * hers and do not move. See `MoveOutcome` for the refusals.
+   */
+  moveProfile(input: MoveProfileInput): Promise<MoveOutcome>;
+  /**
+   * Where a phone that was moved out of `householdId` went: the household its
+   * binding now lives in, or `null`. Strongly consistent, like `getDevice`,
+   * because a moved phone's token is resolved through it.
+   */
+  getMovedDevice(householdId: string, deviceId: string): Promise<string | null>;
 
   /**
    * Claim a guest household for a signed-in account (§4.5). Writes the
