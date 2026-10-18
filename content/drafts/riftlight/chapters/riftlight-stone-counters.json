@@ -20,7 +20,8 @@
           "icon": "hand",
           "goto": "marks"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/stone-counters"
     },
     "marks": {
       "type": "story",
@@ -32,7 +33,8 @@
           "icon": "hand",
           "goto": "lesson"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/stone-counters"
     },
     "lesson": {
       "type": "story",
@@ -60,7 +62,8 @@
           "replace": true,
           "text": "A kitsune named Seren Wisp and a manticore named Pip Thistledown are checking another displaced route. Seren asks you to compare the sounds with what she taught you before. Pip adds the new place to his notes."
         }
-      ]
+      ],
+      "art": "scenes/riftlight/stone-counters"
     },
     "motion": {
       "type": "choice_point",
@@ -78,7 +81,8 @@
           "icon": "hand",
           "goto": "sound"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/stone-counters"
     },
     "measure": {
       "type": "story",
@@ -90,7 +94,8 @@
           "icon": "hand",
           "goto": "rest"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/stone-counters"
     },
     "sound": {
       "type": "story",
@@ -102,14 +107,16 @@
           "icon": "hand",
           "goto": "rest"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/stone-counters"
     },
     "rest": {
       "type": "rest",
       "narration": "The keepers lay a cord around the moved stone. Pip gives them the measurements so tomorrow's count has a starting point. The road back to Ashspan Bridge remains open. The shrinking fold is an optional crossing; you can also pause here.",
       "heal": 0,
       "choices": [],
-      "outcome": "success"
+      "outcome": "success",
+      "art": "scenes/riftlight/stone-counters"
     }
   },
   "llmHints": {

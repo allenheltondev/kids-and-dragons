@@ -132,3 +132,9 @@ her eventual epilogue, and `orin_chime_shared` into the convergence's noncombat 
 completion. Neither creates an item. Convergence and the other two key nodes remain unwritten.
 The `saltrot_arrival_*` flags identify the latest crossing and are reset together on entry.
 These compact chapters have unmeasured pacing; the family playtest gate remains open.
+
+The regional chapters now use dedicated `stone-counters`, `whale-road`, and
+`buried-bridge-dry-channel` scene illustrations. The whales' cleared ending returns to the
+Sky Islands backdrop so departed whales do not remain pictured. The original wet-flat bridge
+illustration is preserved. [Generation prompts and references](../../../art/source/riftlight/scenes/regional-generation.md)
+accompany the source PNGs; runtime exports are 1920×1080 WebP.

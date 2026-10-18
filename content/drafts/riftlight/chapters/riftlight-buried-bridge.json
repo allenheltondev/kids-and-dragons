@@ -21,7 +21,7 @@
           "goto": "orin"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats"
+      "art": "scenes/riftlight/buried-bridge-dry-channel"
     },
     "orin": {
       "type": "choice_point",
@@ -40,7 +40,7 @@
           "goto": "keep"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats"
+      "art": "scenes/riftlight/buried-bridge-dry-channel"
     },
     "share": {
       "type": "story",
@@ -60,7 +60,7 @@
           ]
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats"
+      "art": "scenes/riftlight/buried-bridge-dry-channel"
     },
     "keep": {
       "type": "story",
@@ -73,7 +73,7 @@
           "goto": "work"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats"
+      "art": "scenes/riftlight/buried-bridge-dry-channel"
     },
     "work": {
       "type": "choice_point",
@@ -92,7 +92,7 @@
           "goto": "brace"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats"
+      "art": "scenes/riftlight/buried-bridge-dry-channel"
     },
     "clear": {
       "type": "story",
@@ -105,7 +105,7 @@
           "goto": "rest"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats"
+      "art": "scenes/riftlight/buried-bridge-dry-channel"
     },
     "brace": {
       "type": "story",
@@ -118,7 +118,7 @@
           "goto": "rest"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats"
+      "art": "scenes/riftlight/buried-bridge-dry-channel"
     },
     "rest": {
       "type": "rest",
@@ -133,7 +133,7 @@
           "value": true
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats"
+      "art": "scenes/riftlight/buried-bridge-dry-channel"
     }
   },
   "llmHints": {
