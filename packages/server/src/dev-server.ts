@@ -28,7 +28,7 @@ import type { ChannelMessage, RoomMode } from "@kad/shared";
 import { LocalSseChannel } from "./channel/room-channel.ts";
 import { ContentError, loadContent, type ContentStore } from "./content/loader.ts";
 import { loadSharedRuntime } from "./engine/shared-engine.ts";
-import { addPlayer, adoptDevice, createGuestHousehold, linkAccount } from "./handlers/account.ts";
+import { addPlayer, adoptDevice, createGuestHousehold, linkAccount, vetTypedName } from "./handlers/account.ts";
 import { applyAction } from "./handlers/action.ts";
 import {
   admitCodeLookup,
@@ -170,11 +170,13 @@ async function main(): Promise<void> {
     // the spot. It is a real household — the only thing it lacks is an owner,
     // and the only consequence is that it expires unless somebody signs in.
     const existing = await resolvePrincipal(req, base);
+    const hostName = vetTypedName(req.body?.displayName, "Host");
+    if (!existing && !hostName.ok) return sendError(res, statusFor(hostName.error), hostName.error.code, hostName.error.message);
     const host =
       existing ??
       (await createGuestHousehold(
         {
-          displayName: String(req.body?.displayName ?? "Host"),
+          displayName: hostName.ok ? hostName.value : "Host",
           userAgent: req.get("user-agent"),
           display,
         },
@@ -253,12 +255,14 @@ async function main(): Promise<void> {
     if (!room) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
     // An unbound device joining a room gets a player created for it on the spot,
     // so a phone that has never seen this game can still join in one tap.
+    const joinerName = vetTypedName(req.body?.displayName, "Player");
+    if (!existing && !joinerName.ok) return sendError(res, statusFor(joinerName.error), joinerName.error.code, joinerName.error.message);
     const joiner =
       existing ??
       (await addPlayer(
         {
           householdId: room.householdId,
-          displayName: String(req.body?.displayName ?? "Player"),
+          displayName: joinerName.ok ? joinerName.value : "Player",
           userAgent: req.get("user-agent"),
         },
         base,
