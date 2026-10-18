@@ -6,13 +6,10 @@ import {
   createRunState,
   currentChoices,
   enterScene,
-  combatTurnAway,
   isPartyDown,
-  readyWithoutAway,
   storyTurnHolder,
-  swapOwnerAway,
-  voteWaitsOnlyOnAway,
 } from "./engine.js";
+import { combatTurnAway, readyWithoutAway, swapOwnerAway, voteWaitsOnlyOnAway } from "./away.js";
 import type { EngineContext, EngineResult } from "./engine.js";
 import {
   currentActor,
