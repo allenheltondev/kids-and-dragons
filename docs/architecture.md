@@ -367,8 +367,8 @@ hard-refreshed mid-encounter and recover in under a second.
 #### Stepping away: absence is `connected: false`
 
 A player who is not at the table is a party member with `connected: false`
-(spec §8.5): presence sets it when their stream closes (`handlers/presence.ts`),
-Remove sets it with `removed` (§4.5), and the join that brings them back
+(spec §8.5): presence sets it (`handlers/presence.ts`, below), Remove sets it
+with `removed` (§4.5), and the join or the heartbeat that brings them back
 clears it. The member, the hero and its place in the fight all stay, so a
 returning phone needs nothing put back.
 
@@ -400,12 +400,33 @@ knocked-down pose), and a phone that opens on a chapter in progress, or whose
 channel came back after the story moved, shows a one-line catch-up
 (`screens/CatchUp.tsx`).
 
-**Production has no presence yet.** Only the dev server's SSE stream calls
-`setPresence`; AppSync Events gives the Lambda no connect or disconnect hook,
-so in production a member goes away only when the host removes them. Every
-rule above still holds for a removed player. Marking a silent phone away in
-production needs its own signal (a heartbeat, say), with a threshold that
-does not mistake a sleeping phone for a kid who left.
+**How the server learns a phone has gone: heartbeats.** AppSync Events tells
+the Lambda nothing when a socket opens or closes, so every seated phone says
+"still here" itself: `POST /api/presence` with its session token, every 20
+seconds while its page is on screen and once more the moment it comes back on
+screen (`client/src/sync/presence-beat.ts`). A page that closes says
+`{ leaving: true }` (sent `keepalive`), which marks it away at once. A phone
+that dies, loses signal or is put away simply goes quiet, and the next beat
+from anyone at the table finds it: a friend whose last beat is older than
+`AWAY_AFTER_MS` (two minutes) is marked away. No timer runs on the server,
+and none is needed, since a table with nobody beating has nobody to stall.
+
+The beats live in one row per run (`RUN#<id>` / `PRESENCE`, a map of player
+to time, with the room's TTL), written by one nested `SET` per beat
+(`touchPresence`), so phones beating at once never lose one another's times,
+and a beat that changes nothing burns no seq. A friend with no beat on record
+is never swept: there is no evidence their phone was ever here.
+
+The timeout is long on purpose. A phone set down on the sofa sleeps and stops
+beating, and it beats again as soon as it wakes; reading it as away for a
+while costs a "stepped away" line on the TV and a tap the table does not have
+to take, never a turn, because nothing is skipped automatically.
+
+The dev server also keeps the stream-based presence it always had (an SSE
+stream opening or closing); the two agree and heal one another.
+`KAD_STREAM_PRESENCE=off` turns the stream half off and `KAD_PRESENCE_AWAY_MS`
+shortens the timeout, which is how the e2e suite runs: presence exactly as
+production has it, in a test that can wait for it.
 
 #### The Field Guide: the book on the state, the news on the wire
 

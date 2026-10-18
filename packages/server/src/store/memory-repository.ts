@@ -64,6 +64,7 @@ import {
   OWNER_SK,
   PLAYER_SK,
   PREFIX,
+  PRESENCE,
   ROOM,
   RUN,
   RUN_SK,
@@ -741,6 +742,15 @@ export class MemoryRepository implements GameRepository {
     const taken = (existing?.data as number | undefined) ?? 0;
     if (!existing || taken <= 0) return;
     this.put({ ...existing, data: taken - 1 });
+  }
+
+  async touchPresence(runId: string, playerId: string, at: string, ttl: number): Promise<Record<string, string>> {
+    // No await between the read and the write: one atomic step, as the
+    // nested `SET` is in the real store.
+    const existing = this.get(RUN(runId), PRESENCE);
+    const beats = { ...((existing?.data as Record<string, string> | undefined) ?? {}), [playerId]: at };
+    this.put({ PK: RUN(runId), SK: PRESENCE, ttl, entity: "presence", data: beats });
+    return { ...beats };
   }
 }
 

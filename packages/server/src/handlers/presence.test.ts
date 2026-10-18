@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
 import { makeHarness, seedHousehold, type TestHarness } from "../test-support.ts";
 import { createRoom, joinRoom } from "./room.ts";
-import { setPresence } from "./presence.ts";
+import { AWAY_AFTER_MS, beatPresence, setPresence } from "./presence.ts";
 import { applyAction } from "./action.ts";
 
 /** A room with one seated player, which is what presence is about. */
@@ -125,3 +125,121 @@ async function onTheSummary(harness: TestHarness, runId: string, party: PartyMem
   });
   if (!committed) throw new Error("setup failed");
 }
+
+/** Commit this party onto the run, mid-chapter. */
+async function withParty(harness: TestHarness, runId: string, party: PartyMember[]): Promise<void> {
+  const state = await harness.repo.getState(runId);
+  if (!state) throw new Error("setup failed");
+  const next: RunState = { ...state, seq: state.seq + 1, phase: "scene", party };
+  const committed = await harness.repo.commit({
+    runId,
+    expectedSeq: state.seq,
+    state: next,
+    event: { seq: next.seq, runId, patch: [], at: next.updatedAt, playerId: party[0]!.playerId },
+  });
+  if (!committed) throw new Error("setup failed");
+}
+
+const connectedOf = async (harness: TestHarness, runId: string, playerId: string) =>
+  (await harness.repo.getState(runId))?.party.find((m) => m.playerId === playerId)?.connected;
+
+/*
+ * Heartbeats (#258): presence where no stream reports it, which is
+ * production. Each phone beats; the next beat from anyone notices a friend
+ * who has gone quiet.
+ */
+describe("beatPresence", () => {
+  it("marks a friend away once they have been quiet past the timeout, and back on their next beat", async () => {
+    const { harness, runId, playerId } = await seatedRoom();
+    await withParty(harness, runId, [seat(playerId, false), seat("p_rosie", false)]);
+    expect(await beatPresence({ runId, playerId }, harness.deps)).toEqual({ ok: true, connected: true });
+    await beatPresence({ runId, playerId: "p_rosie" }, harness.deps);
+
+    // Just inside the timeout: a phone set down for a moment is still here.
+    harness.clock.advance(AWAY_AFTER_MS);
+    await beatPresence({ runId, playerId }, harness.deps);
+    expect(await connectedOf(harness, runId, "p_rosie")).toBe(true);
+
+    // Past it, the next beat from anybody marks Rosie away, on the channel.
+    harness.clock.advance(1_000);
+    const received: unknown[] = [];
+    const stop = harness.channel.subscribe((await harness.repo.getState(runId))!.roomCode, (m) => received.push(m));
+    await beatPresence({ runId, playerId }, harness.deps);
+    stop();
+    expect(await connectedOf(harness, runId, "p_rosie")).toBe(false);
+    expect(received).toHaveLength(1);
+    expect(await connectedOf(harness, runId, playerId)).toBe(true);
+
+    // Her phone wakes: its first beat brings her back.
+    await beatPresence({ runId, playerId: "p_rosie" }, harness.deps);
+    expect(await connectedOf(harness, runId, "p_rosie")).toBe(true);
+  });
+
+  it("marks a phone away at once when its page says goodbye", async () => {
+    const { harness, runId, playerId } = await seatedRoom();
+    await withParty(harness, runId, [seat(playerId, false), seat("p_rosie", false)]);
+    expect(await beatPresence({ runId, playerId: "p_rosie", leaving: true }, harness.deps)).toEqual({
+      ok: true,
+      connected: false,
+    });
+    expect(await connectedOf(harness, runId, "p_rosie")).toBe(false);
+  });
+
+  it("leaves alone a friend whose phone has never beaten", async () => {
+    const { harness, runId, playerId } = await seatedRoom();
+    await withParty(harness, runId, [seat(playerId, false), seat("p_rosie", false)]);
+    harness.clock.advance(AWAY_AFTER_MS * 10);
+    await beatPresence({ runId, playerId }, harness.deps);
+    expect(await connectedOf(harness, runId, "p_rosie")).toBe(true);
+  });
+
+  it("burns no seq while everybody keeps beating", async () => {
+    const { harness, runId, playerId } = await seatedRoom();
+    await withParty(harness, runId, [seat(playerId, false), seat("p_rosie", false)]);
+    const before = (await harness.repo.getState(runId))!.seq;
+    for (let i = 0; i < 5; i++) {
+      harness.clock.advance(20_000);
+      await beatPresence({ runId, playerId }, harness.deps);
+      await beatPresence({ runId, playerId: "p_rosie" }, harness.deps);
+    }
+    expect((await harness.repo.getState(runId))!.seq).toBe(before);
+  });
+
+  it("carries the chapter-end vote when the quiet phone was the last one reading", async () => {
+    const { harness, runId, playerId } = await seatedRoom();
+    await onTheSummary(harness, runId, [seat(playerId, true), seat("p_reader", false)]);
+    await beatPresence({ runId, playerId: "p_reader" }, harness.deps);
+    harness.clock.advance(AWAY_AFTER_MS + 1_000);
+    await beatPresence({ runId, playerId }, harness.deps);
+    expect((await harness.repo.getState(runId))?.phase).toBe("lobby");
+  });
+
+  it("refuses a phone that is not at this table, or was taken out", async () => {
+    const { harness, runId, playerId } = await seatedRoom();
+    expect(await beatPresence({ runId, playerId: "p_nobody" }, harness.deps)).toMatchObject({ ok: false, status: 403 });
+    expect(await beatPresence({ runId: "r_nope", playerId }, harness.deps)).toMatchObject({ ok: false, status: 404 });
+
+    const state = (await harness.repo.getState(runId))!;
+    const out: RunState = { ...state, seq: state.seq + 1, removed: [playerId] };
+    await harness.repo.commit({
+      runId,
+      expectedSeq: state.seq,
+      state: out,
+      event: { seq: out.seq, runId, patch: [], at: out.updatedAt, playerId },
+    });
+    expect(await beatPresence({ runId, playerId }, harness.deps)).toMatchObject({ ok: false, status: 403 });
+  });
+
+  it("refuses a beat for a closed room", async () => {
+    const { harness, runId, playerId } = await seatedRoom();
+    const state = (await harness.repo.getState(runId))!;
+    const closed: RunState = { ...state, seq: state.seq + 1, closed: true };
+    await harness.repo.commit({
+      runId,
+      expectedSeq: state.seq,
+      state: closed,
+      event: { seq: closed.seq, runId, patch: [], at: closed.updatedAt, playerId },
+    });
+    expect(await beatPresence({ runId, playerId }, harness.deps)).toMatchObject({ ok: false, status: 403 });
+  });
+});

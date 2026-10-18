@@ -352,7 +352,7 @@ A kid who sits down mid-chapter plays from the scene the party is in (mid-fight,
 
 ### 8.5 Stepping away and coming back
 
-Dinner, a bath, a phone call: a kid leaving partway through is a normal part of an evening, and so is coming back. **Nothing in a chapter waits on a chair nobody is sitting in.** A player whose phone has gone (it dropped, or the host took them out) is **stepped away**, and the table goes on without them:
+Dinner, a bath, a phone call: a kid leaving partway through is a normal part of an evening, and so is coming back. **Nothing in a chapter waits on a chair nobody is sitting in.** A player whose phone has gone is **stepped away**, and the table goes on without them. Gone means the game page was closed, the phone has been quiet for a couple of minutes (it died, lost signal, or was put down and went to sleep), or the host took them out:
 
 | Where the game was waiting | What happens |
 |---|---|

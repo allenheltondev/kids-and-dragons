@@ -18,6 +18,7 @@ import type { EventRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 import { isOut } from "./remove.ts";
+import { ROOM_TTL_MS } from "./room.ts";
 
 /** Presence needs no engine and no dice — just the table and the channel. */
 export type PresenceDeps = Pick<HandlerDeps, "repo" | "channel" | "now">;
@@ -107,4 +108,93 @@ async function trySetPresence(
   });
 
   return nextSeq;
+}
+
+// ---------------------------------------------------------------------------
+// Heartbeats: presence where no stream says it (#258)
+// ---------------------------------------------------------------------------
+
+/*
+ * In production a phone listens on AppSync Events, which tells the Lambda
+ * nothing when a socket opens or closes, so nothing above ever ran there and a
+ * phone that died stayed `connected` until the host removed it. So every
+ * seated phone also says "still here" on a timer (`POST /api/presence`), and
+ * whichever phone beats next notices a friend who has gone quiet.
+ *
+ * - **A beat** marks its own player here, if they were away.
+ * - **A quiet friend** is one whose last beat is older than `AWAY_AFTER_MS`.
+ *   The beat that finds them marks them away: there is no timer on the server
+ *   to do it, and none is needed, because a table with nobody beating has
+ *   nobody to stall.
+ * - **A goodbye** (`leaving`, sent as the page closes) marks its player away
+ *   at once, rather than a timeout later.
+ *
+ * The timeout is long on purpose. A phone set down while its kid watches the
+ * TV goes to sleep and stops beating, and the moment it wakes it beats again
+ * (the client beats on becoming visible). Marking it away in between costs
+ * little, since nothing is skipped automatically (spec §8.5: a friend's turn
+ * is passed by a tap), but the screen saying "stepped away" about a kid on
+ * the sofa should take a couple of minutes, not seconds.
+ *
+ * A friend with no beat on record is left alone: their phone has not said
+ * anything yet (it is still joining, or predates beats), and the sweep only
+ * acts on evidence that a phone *was* here and stopped.
+ *
+ * The dev server keeps its stream-based presence as well; the two agree, and
+ * a beat heals a stream close that misread a refresh, and the other way round.
+ */
+
+/** How often a seated phone says it is here. */
+export const HEARTBEAT_MS = 20_000;
+
+/** How long a phone may be quiet before it counts as stepped away. */
+export const AWAY_AFTER_MS = 120_000;
+
+export interface PresenceBeatInput {
+  /** From the room session token, never the body. */
+  runId: string;
+  playerId: string;
+  /** The player's household, from the same token. Absent, the run's is used. */
+  householdId?: string;
+  /** The page is closing: away now. */
+  leaving?: boolean;
+}
+
+export type PresenceBeatResult =
+  | { ok: true; connected: boolean }
+  | { ok: false; status: 403 | 404; code: "FORBIDDEN" | "NOT_FOUND"; message: string };
+
+export async function beatPresence(input: PresenceBeatInput, deps: PresenceDeps): Promise<PresenceBeatResult> {
+  const state = await deps.repo.getState(input.runId);
+  if (!state) return { ok: false, status: 404, code: "NOT_FOUND", message: `no run ${input.runId}` };
+  // Somebody in this room: at the table, or on its roster still making a hero.
+  const seated =
+    state.party.some((m) => m.playerId === input.playerId) || state.seats?.[input.playerId] !== undefined;
+  if (!seated || state.closed || (await isOut(state, input.playerId, input.householdId ?? null, deps.repo))) {
+    return { ok: false, status: 403, code: "FORBIDDEN", message: "not seated at this table" };
+  }
+
+  if (input.leaving) {
+    await setPresence({ runId: input.runId, playerId: input.playerId, connected: false }, deps);
+    return { ok: true, connected: false };
+  }
+
+  const nowMs = deps.now();
+  const beats = await deps.repo.touchPresence(
+    input.runId,
+    input.playerId,
+    iso(nowMs),
+    Math.floor((nowMs + ROOM_TTL_MS) / 1000),
+  );
+  const me = state.party.find((m) => m.playerId === input.playerId);
+  if (me && !me.connected) {
+    await setPresence({ runId: input.runId, playerId: input.playerId, connected: true }, deps);
+  }
+  for (const member of state.party) {
+    if (member.playerId === input.playerId || !member.connected) continue;
+    const seen = beats[member.playerId];
+    if (seen === undefined || nowMs - Date.parse(seen) <= AWAY_AFTER_MS) continue;
+    await setPresence({ runId: input.runId, playerId: member.playerId, connected: false }, deps);
+  }
+  return { ok: true, connected: true };
 }

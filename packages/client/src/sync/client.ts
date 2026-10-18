@@ -186,6 +186,11 @@ export interface Api {
   /** An unconfirmed tap, relayed to the room's screens (`IntentPreview`). */
   postPreview(preview: IntentPreview | null, context: string | null, token: string): Promise<void>;
   /**
+   * "Still here", or "leaving" (#258). A goodbye is sent `keepalive`, so it
+   * survives the page that sends it closing.
+   */
+  postPresence(leaving: boolean, token: string): Promise<void>;
+  /**
    * `timeoutMs` narrows the request funnel's default bound for this one call.
    * Refresh recovery passes the *remaining* recovery budget here, so five
    * retries against a dead connection share one deadline instead of each
@@ -430,6 +435,16 @@ export const api: Api = {
       headers: JSON_HEADERS,
       token,
       body: JSON.stringify({ preview, context }),
+    });
+  },
+
+  async postPresence(leaving, token) {
+    await request<{ ok: boolean }>("/api/presence", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token,
+      body: JSON.stringify({ leaving }),
+      ...(leaving ? { keepalive: true } : {}),
     });
   },
 

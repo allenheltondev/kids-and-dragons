@@ -30,6 +30,7 @@ import {
   SLOW_DOWN,
 } from "../handlers/code-guard.ts";
 import { relayPreview } from "../handlers/preview.ts";
+import { beatPresence } from "../handlers/presence.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "../handlers/deps.ts";
 import { iso, ok } from "../handlers/deps.ts";
 import { createRoom, joinRoom, settleRoom, watchRoom } from "../handlers/room.ts";
@@ -137,6 +138,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (req.path === "/api/room") return (deps) => postRoom(req, deps);
     if (req.path === "/api/action") return (deps) => postAction(req, deps);
     if (req.path === "/api/preview") return (deps) => postPreview(req, deps);
+    if (req.path === "/api/presence") return (deps) => postPresence(req, deps);
     if (req.path === "/api/progression/spend") return (deps) => postProgressionSpend(req, deps);
     if (req.path === "/api/auth/link") return (deps) => postLink(req, deps, rt);
     if (req.path === "/api/auth/device") return (deps) => postAdopt(req, deps, rt);
@@ -497,6 +499,28 @@ async function postPreview(req: Req, deps: HandlerDeps) {
   );
   if (!result.ok) return error(result.status, result.code, result.message);
   return json(200, { ok: true });
+}
+
+/**
+ * A seated phone saying it is still here, or that it is leaving
+ * (handlers/presence.ts). The only presence production has: AppSync Events
+ * tells this Lambda nothing when a socket closes (#258). Session token only,
+ * so a phone can speak for nobody but itself.
+ */
+async function postPresence(req: Req, deps: HandlerDeps) {
+  const session = await resolveSession(req, deps);
+  if (!session) return error(401, "FORBIDDEN", "presence needs a room session token");
+  const result = await beatPresence(
+    {
+      runId: session.runId,
+      playerId: session.playerId,
+      householdId: session.householdId,
+      leaving: req.body.leaving === true,
+    },
+    deps,
+  );
+  if (!result.ok) return error(result.status, result.code, result.message);
+  return json(200, { ok: true, connected: result.connected });
 }
 
 async function postProgressionSpend(req: Req, deps: HandlerDeps) {

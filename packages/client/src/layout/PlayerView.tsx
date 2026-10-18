@@ -35,11 +35,15 @@ import { useMe, useSession } from "../store";
 import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigation";
 import { FieldGuide } from "../screens/FieldGuide";
 import { useKeepsakeStore } from "../store/keepsake";
+import { usePresenceBeat } from "../sync/presence-beat";
 
 export function PlayerView({ roomControls }: { roomControls?: ReactNode }): React.JSX.Element {
   const me = useMe();
   const runId = useSession()?.runId;
   useEffect(() => { dismissPlayerSheet(); }, [runId]);
+  // "Still here" to the server, the only way production learns a phone has
+  // gone (#258). A phone only: the TV renders no PlayerView.
+  usePresenceBeat();
 
   /*
    * Ask once whether this deployment can offer sign-in at all (§4.5). It is a
