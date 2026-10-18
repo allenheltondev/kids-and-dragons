@@ -1002,6 +1002,38 @@ describe("whose address a miss is counted against", () => {
 });
 
 // ---------------------------------------------------------------------------
+// Presence beats (#258): production's only presence
+// ---------------------------------------------------------------------------
+
+describe("POST /api/presence", () => {
+  it("takes a beat from a seated phone's session token, and nothing without one", async () => {
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    const join = await respond(
+      event("POST", `/api/room/${room.code}/join`, { headers: { "x-kad-device-token": room.player.deviceToken } }),
+      runtimeFor(harness),
+    );
+    const { sessionToken } = bodyOf(join) as unknown as { sessionToken: string };
+
+    const anonymous = await respond(event("POST", "/api/presence", { body: {} }), runtimeFor(harness));
+    expect(anonymous.statusCode).toBe(401);
+
+    const beat = await respond(
+      event("POST", "/api/presence", { body: {}, headers: { authorization: `Bearer ${sessionToken}` } }),
+      runtimeFor(harness),
+    );
+    expect(beat.statusCode).toBe(200);
+    expect(bodyOf(beat)).toMatchObject({ ok: true, connected: true });
+
+    const leaving = await respond(
+      event("POST", "/api/presence", { body: { leaving: true }, headers: { authorization: `Bearer ${sessionToken}` } }),
+      runtimeFor(harness),
+    );
+    expect(bodyOf(leaving)).toMatchObject({ ok: true, connected: false });
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Play — the authorization surface
 // ---------------------------------------------------------------------------
 
@@ -1892,6 +1924,8 @@ const SHARED = [
   { path: "/api/room/:code/visitors", method: "POST", probe: "/api/room/ABCD/visitors" },
   { path: "/api/action", method: "POST", probe: "/api/action" },
   { path: "/api/preview", method: "POST", probe: "/api/preview" },
+  // A phone saying it is still here, or leaving (#258, handlers/presence.ts).
+  { path: "/api/presence", method: "POST", probe: "/api/presence" },
   { path: "/api/progression/spend", method: "POST", probe: "/api/progression/spend" },
   { path: "/api/state", method: "GET", probe: "/api/state" },
   { path: "/api/health", method: "GET", probe: "/api/health" },
