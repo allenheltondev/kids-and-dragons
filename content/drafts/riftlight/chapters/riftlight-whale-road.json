@@ -20,7 +20,8 @@
           "icon": "hand",
           "goto": "olivia"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/whale-road"
     },
     "olivia": {
       "type": "choice_point",
@@ -38,7 +39,8 @@
           "icon": "hand",
           "goto": "offer"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/whale-road"
     },
     "guide": {
       "type": "story",
@@ -50,7 +52,8 @@
           "icon": "hand",
           "goto": "gentle"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/whale-road"
     },
     "gentle": {
       "type": "rest",
@@ -64,14 +67,16 @@
           "flag": "whales_guided",
           "value": true
         }
-      ]
+      ],
+      "art": "biomes/sky_islands/bg"
     },
     "offer": {
       "type": "rest",
       "narration": "Olivia waits beside the rope. Nothing has opened yet. At the rift, Lady Olivia's way will wake the pair early and scatter the whales. You can still choose to guide them clear instead. The keeper leaves the broad lane open.",
       "heal": 0,
       "choices": [],
-      "outcome": "success"
+      "outcome": "success",
+      "art": "scenes/riftlight/whale-road"
     }
   },
   "llmHints": {
