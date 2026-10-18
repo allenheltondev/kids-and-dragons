@@ -36,7 +36,9 @@ import {
   memberHome,
   startJourney,
   prerequisiteReason,
+  recordFinished,
   unmetPrerequisites,
+  lobbyCampaign,
   type Campaign,
   type CampaignView,
   type Character,
@@ -45,6 +47,7 @@ import {
   type JourneyRefusal,
   type JourneyState,
   type ParsedCampaignGraph,
+  type PartyMember,
   type ProgressionAward,
   type RunState,
   type StatId,
@@ -513,29 +516,117 @@ export function attemptJourney(
 export function campaignLock(
   campaign: Campaign,
   attempts: readonly CampaignProgressRecord[],
-  deps: HandlerDeps,
+  deps: Pick<HandlerDeps, "content">,
+  /** Campaign ids the party's heroes have finished, from their own records (#283). */
+  finished: readonly string[] = [],
 ): CampaignView["locked"] | null {
   if (!campaign.requires?.length) return null;
   if (attempts.some((a) => a.campaignId === campaign.id && a.status === "active")) return null;
-  const requires = unmetPrerequisites(campaign, attempts);
+  const requires = unmetPrerequisites(campaign, attempts, finished);
   if (requires.length === 0) return null;
   const titles = requires.map((id) => deps.content.campaign(id)?.title ?? id);
   return { requires, reason: prerequisiteReason(titles) };
 }
 
 /**
- * The refusal for starting a campaign the household has not unlocked, or null
+ * The heroes a prerequisite counts: the party, less anybody the host or a
+ * grown-up has taken out (`RunState.removed`). Taking a player out leaves
+ * them in `party`, disconnected (remove.ts), so the list alone would let a
+ * removed hero's record keep a campaign open for the table she left. A hero
+ * who is only disconnected still counts: she is still the table's.
+ */
+export function seatedParty(state: Pick<RunState, "party" | "removed">): PartyMember[] {
+  const out = new Set(state.removed ?? []);
+  return state.party.filter((member) => !out.has(member.playerId));
+}
+
+/**
+ * The campaigns any hero in `party` has finished, from her own record (#283),
+ * read from her row at her home: a visitor's at hers (#249). A resolved party
+ * member does not carry the record, so this reads; callers only ask when a
+ * campaign declares `requires`, which Gemfall does not.
+ *
+ * A row that cannot be read is left out, as settlement does: it can only make
+ * a lock stand that her record would have lifted, never lift one wrongly.
+ */
+export async function partyFinished(
+  party: readonly PartyMember[],
+  householdId: string,
+  deps: Pick<HandlerDeps, "repo">,
+): Promise<string[]> {
+  const ids = new Set<string>();
+  await Promise.all(
+    party.map(async (member) => {
+      try {
+        const hero = await deps.repo.getCharacter(memberHome(member, householdId), member.character.id);
+        for (const entry of hero?.finished ?? []) ids.add(entry.campaignId);
+      } catch (err) {
+        console.error(`prerequisites: skipping character ${member.character.id}:`, err);
+      }
+    }),
+  );
+  return [...ids].sort();
+}
+
+/**
+ * The refusal for starting a campaign this table has not unlocked, or null
  * to go ahead. The server's half of the lock: the lobby only shows it, so this
- * is what actually stops a locked start, whichever intent asked for it.
+ * is what actually stops a locked start, whichever intent asked for it. Met by
+ * the household's own record or by any hero in `party` (#283).
  */
 export async function lockedRefusal(
   campaign: Campaign,
   householdId: string,
   deps: HandlerDeps,
+  party: readonly PartyMember[] = [],
 ): Promise<string | null> {
   if (!campaign.requires?.length) return null;
-  const lock = campaignLock(campaign, await deps.repo.listCampaignProgress(householdId), deps);
+  const [attempts, finished] = await Promise.all([
+    deps.repo.listCampaignProgress(householdId),
+    partyFinished(party, householdId, deps),
+  ]);
+  const lock = campaignLock(campaign, attempts, deps, finished);
   return lock ? `"${campaign.title}" is locked: ${lock.reason}` : null;
+}
+
+/**
+ * The lobby's locks, again, for the party now seated (#283): a hero who
+ * finished a prerequisite herself unlocks it for the table the moment she
+ * sits down, and the lock comes back if she is the one who leaves. Returns
+ * the state unchanged (the same object) when no option declares `requires`,
+ * so a lobby of campaigns without prerequisites (Gemfall's) reads nothing and
+ * changes nothing.
+ *
+ * A vote for a campaign that is locked again goes, as `doVoteCampaign` would
+ * have refused it, and the screens follow the lobby's pick (`lobbyCampaign`).
+ */
+export async function relockLobby(
+  state: RunState,
+  householdId: string,
+  deps: Pick<HandlerDeps, "repo" | "content">,
+): Promise<RunState> {
+  const options = state.campaignOptions ?? [];
+  const gated = options.filter((o) => deps.content.campaign(o.id)?.requires?.length);
+  if (gated.length === 0) return state;
+  const [attempts, finished] = await Promise.all([
+    deps.repo.listCampaignProgress(householdId),
+    partyFinished(seatedParty(state), householdId, deps),
+  ]);
+  const relocked = options.map((option): CampaignView => {
+    const campaign = deps.content.campaign(option.id);
+    if (!campaign?.requires?.length) return option;
+    const { locked: _was, ...open } = option;
+    const locked = campaignLock(campaign, attempts, deps, finished);
+    return locked ? { ...open, locked } : open;
+  });
+  const lockedIds = new Set(relocked.filter((o) => o.locked).map((o) => o.id));
+  const votes = Object.fromEntries(
+    Object.entries(state.campaignVotes ?? {}).filter(([, id]) => !lockedIds.has(id)),
+  );
+  const shown = state.campaign ? (relocked.find((o) => o.id === state.campaign!.id) ?? state.campaign) : null;
+  const next: RunState = { ...state, campaignOptions: relocked, campaignVotes: votes, campaign: shown };
+  const leader = lobbyCampaign(next).leader;
+  return leader ? { ...next, campaign: leader } : next;
 }
 
 /**
@@ -554,6 +645,8 @@ export async function lobbyCampaigns(
   householdId: string,
   featuredId: string | null,
   deps: HandlerDeps,
+  /** The party already seated, whose own records can unlock it (#283). */
+  party: readonly PartyMember[] = [],
 ): Promise<CampaignView[]> {
   const attempts = await deps.repo.listCampaignProgress(householdId);
   const options: CampaignView[] = [];
@@ -561,7 +654,8 @@ export async function lobbyCampaigns(
   if (featured) {
     const attempt = attempts.find((a) => a.campaignId === featured.id) ?? null;
     // A locked campaign is still offered: shown with its reason, not startable.
-    const locked = campaignLock(featured, attempts, deps);
+    const finished = featured.requires?.length ? await partyFinished(party, householdId, deps) : [];
+    const locked = campaignLock(featured, attempts, deps, finished);
     options.push({ ...campaignView(featured, attempt, deps), ...(locked ? { locked } : {}) });
   }
   const resumable = attempts
@@ -753,7 +847,7 @@ export async function settleChapterCompletion(
   if (finalChapter) {
     attempt.status = "complete";
     return {
-      characters: await settleParty(state, deps, householdId, characters, commitCampaign),
+      characters: await settleParty(state, deps, householdId, characters, finish(campaignId, outcome, householdId, now)),
       awards: award.awards,
       ...(chapterProgress ? { chapterProgress } : {}),
       campaignProgress: attempt,
@@ -886,12 +980,27 @@ async function settleVisit(input: {
     attempt.status = "complete";
     return {
       ...settled,
-      characters: await settleParty(state, deps, householdId, characters, commitCampaign),
+      characters: await settleParty(state, deps, householdId, characters, finish(campaign.id, outcome, householdId, now)),
       campaignProgress: attempt,
       campaignView: campaignView(campaign, attempt, deps, "complete"),
     };
   }
   return { ...settled, characters, campaignProgress: attempt, campaignView: campaignView(campaign, attempt, deps) };
+}
+
+/**
+ * A completed campaign's fate for each hero: her gains become who she is
+ * (`commitCampaign`), and the campaign goes on her own record (#283), in the
+ * same write, at her home, whichever table this is. Only heroes this table
+ * settles get it: one another adventure holds is left out (`settleParty`).
+ */
+function finish(
+  campaignId: string,
+  outcome: ChapterOutcome,
+  table: string,
+  at: string,
+): (character: Character) => Character {
+  return (character) => recordFinished(commitCampaign(character), { campaignId, outcome, at, table });
 }
 
 /**

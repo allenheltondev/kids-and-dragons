@@ -356,11 +356,12 @@ describe("two households, one chapter (#249)", () => {
     // Nothing of the visitor's leaked into the host's household.
     expect(await t.harness.repo.getCharacter(t.householdId, visitorHero)).toBeNull();
 
-    // Both books have the gate: the room's, and the visitor's own, credited
-    // to one of their own.
+    // The host's start revealed the gate, so it is the room's find and not
+    // the visitor's: her own book gets only what her own taps reveal (#283,
+    // hero-record.test.ts).
     const hostBook = await t.harness.repo.getFieldGuide(t.householdId);
     const visitorBook = await t.harness.repo.getFieldGuide("h_visit");
-    expect(Object.keys(hostBook.entries)).toContain(GATE);
-    expect(visitorBook.entries[GATE]).toMatchObject({ firstFoundBy: t.visitor.playerId, runId: t.runId });
+    expect(hostBook.entries[GATE]).toMatchObject({ firstFoundBy: t.host.playerId, runId: t.runId });
+    expect(visitorBook.entries[GATE]).toBeUndefined();
   });
 });

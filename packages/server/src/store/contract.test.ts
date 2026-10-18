@@ -521,6 +521,20 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect(Object.keys((await repo.getFieldGuide("h_new")).entries)).toEqual(["moth"]);
       });
 
+      it("carries her own record with her hero: her finished campaigns, and the finds she made visiting (#283)", async () => {
+        await club();
+        const finished = [{ campaignId: "gemfall", outcome: "success" as const, at: T, table: "h_rue" }];
+        await repo.putCharacter({ ...hero("c_spark", "p_ada", 3), finished });
+        // A find she made at Rue's table, written to her home book, credited to her.
+        await repo.recordDiscoveries("h_club", [{ canonId: "lark", playerId: "p_ada", runId: "r_rue", foundAt: T }]);
+        expect(await move({ householdId: "h_home" })).toBe("moved");
+
+        expect((await repo.getCharacter("h_home", "c_spark"))?.finished).toEqual(finished);
+        expect((await repo.listCharacters("h_home")).find((c) => c.id === "c_spark")?.finished).toEqual(finished);
+        expect((await repo.getCharacter("h_home", "c_moth"))).not.toHaveProperty("finished");
+        expect((await repo.getFieldGuide("h_home")).entries["lark"]).toEqual({ firstFoundBy: "p_ada", foundAt: T, runId: "r_rue" });
+      });
+
       it("keeps the first finder in her new home's book", async () => {
         await club();
         await repo.recordDiscoveries("h_home", [{ canonId: "moth", playerId: "p_sis", foundAt: "2026-01-01T00:00:00.000Z" }]);
@@ -1366,6 +1380,98 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         // A re-sent create cannot flatten the hero it already made.
         expect(await turn("r_a", 2, [create])).toBe(false);
         expect(await repo.writeCharacter(create)).toBe(false);
+      });
+    });
+
+    describe("a hero's own record (#283)", () => {
+      /*
+       * Her finished campaigns live on her row, at her home, and are written
+       * by the run's commit beside the release of her claim, whichever table
+       * that run is at. These pin that the record round-trips every path a
+       * hero row takes through both stores.
+       */
+      const line = (campaignId: string, table: string) => ({
+        campaignId,
+        outcome: "success" as const,
+        at: "2026-07-04T18:00:00.000Z",
+        table,
+      });
+      const turn = async (runId: string, seq: number, characters: CharacterWrite[]) =>
+        repo.commit({ runId, expectedSeq: seq - 1, state: state(runId, seq), event: event(runId, seq), characters });
+
+      it("reads back a hero with no record without one", async () => {
+        await repo.putCharacter(character("c_1"));
+        expect(await repo.getCharacter("h_1", "c_1")).not.toHaveProperty("finished");
+        expect((await repo.listCharacters("h_1"))[0]).not.toHaveProperty("finished");
+      });
+
+      it("round-trips the record through put, get and list", async () => {
+        const finished = [line("gemfall", "h_rue"), line("riftlight", "h_1")];
+        await repo.putCharacter({ ...character("c_1"), finished });
+        expect((await repo.getCharacter("h_1", "c_1"))?.finished).toEqual(finished);
+        expect((await repo.listCharacters("h_1"))[0]?.finished).toEqual(finished);
+      });
+
+      it("is written by a visiting table's commit, at her home, as it releases her claim", async () => {
+        // Her home is h_home; the table is h_rue's run, which holds her claim.
+        await repo.putState(state("r_rue", 0));
+        await repo.putCharacter({
+          ...character("c_1", "h_home"),
+          provisional: { ...character("c_1").committed, level: 2, runId: "gemfall@h_rue" },
+        });
+        const read = (await repo.getCharacter("h_home", "c_1"))!;
+        const settled: Character = {
+          ...read,
+          committed: { ...read.committed, level: 2 },
+          provisional: null,
+          finished: [line("gemfall", "h_rue")],
+        };
+        const write: CharacterWrite = { character: settled, expectedVersion: read.version ?? 0, expectedClaim: "gemfall@h_rue" };
+        expect(await turn("r_rue", 1, [write])).toBe(true);
+
+        const hero = await repo.getCharacter("h_home", "c_1");
+        expect(hero?.finished).toEqual([line("gemfall", "h_rue")]);
+        expect(hero?.provisional ?? null).toBeNull();
+        expect(hero?.committed.level).toBe(2);
+        // A retry of the same settlement, on the read it already used, writes nothing twice.
+        expect(await turn("r_rue", 2, [write])).toBe(false);
+        expect((await repo.getCharacter("h_home", "c_1"))?.finished).toHaveLength(1);
+      });
+
+      it("is not written when the settling commit loses its seq race", async () => {
+        await repo.putState(state("r_rue", 0));
+        await repo.putCharacter(character("c_1", "h_home"));
+        const read = (await repo.getCharacter("h_home", "c_1"))!;
+        const write: CharacterWrite = {
+          character: { ...read, finished: [line("gemfall", "h_rue")] },
+          expectedVersion: read.version ?? 0,
+          expectedClaim: null,
+        };
+        expect(await turn("r_rue", 2, [write])).toBe(false);
+        expect(await repo.getCharacter("h_home", "c_1")).not.toHaveProperty("finished");
+      });
+
+      it("rides writeCharacter too, conditioned like any other hero write", async () => {
+        await repo.putCharacter(character("c_1"));
+        const read = (await repo.getCharacter("h_1", "c_1"))!;
+        const next = { ...read, finished: [line("gemfall", "h_1")] };
+        expect(await repo.writeCharacter({ character: next, expectedVersion: read.version ?? 0, expectedClaim: null })).toBe(true);
+        expect((await repo.getCharacter("h_1", "c_1"))?.finished).toEqual([line("gemfall", "h_1")]);
+        // A write from the old read is refused and cannot drop it.
+        const stale = { ...read, finished: [] };
+        expect(await repo.writeCharacter({ character: stale, expectedVersion: read.version ?? 0, expectedClaim: null })).toBe(false);
+        expect((await repo.getCharacter("h_1", "c_1"))?.finished).toHaveLength(1);
+      });
+
+      it("keeps her own finds in her home book beside the table's, each first-finder-wins", async () => {
+        // The table's book and hers both get her find; a later find by
+        // somebody else at the table is the table's alone.
+        await repo.recordDiscoveries("h_rue", [{ canonId: "lark", playerId: "p_ada", runId: "r_rue" }]);
+        await repo.recordDiscoveries("h_home", [{ canonId: "lark", playerId: "p_ada", runId: "r_rue" }]);
+        await repo.recordDiscoveries("h_rue", [{ canonId: "newt", playerId: "p_rue", runId: "r_rue" }]);
+        expect((await repo.getFieldGuide("h_home")).entries["lark"]?.firstFoundBy).toBe("p_ada");
+        expect((await repo.getFieldGuide("h_rue")).entries["lark"]?.firstFoundBy).toBe("p_ada");
+        expect(Object.keys((await repo.getFieldGuide("h_home")).entries)).toEqual(["lark"]);
       });
     });
 

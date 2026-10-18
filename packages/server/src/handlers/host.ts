@@ -64,7 +64,8 @@ export async function hostedRoom(
 export async function commitRoomChange(
   room: RoomRecord,
   actor: string,
-  change: (state: RunState) => RunState | null,
+  /** May read (a removal relocks the lobby, #283); it is re-run on every retry. */
+  change: (state: RunState) => RunState | null | Promise<RunState | null>,
   deps: Pick<HandlerDeps, "repo" | "now" | "channel">,
   options: { closing?: boolean } = {},
 ): Promise<HandlerResult<{ seq: number; state: RunState; changed: boolean }>> {
@@ -74,7 +75,7 @@ export async function commitRoomChange(
     if (isClosed(state) && options.closing !== true) {
       return fail("NOT_FOUND", `no open room ${room.code.toUpperCase()}`);
     }
-    const changed = change(state);
+    const changed = await change(state);
     if (!changed) return ok({ seq: state.seq, state, changed: false });
 
     const nowMs = deps.now();
