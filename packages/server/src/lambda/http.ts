@@ -21,7 +21,7 @@ import type {
   APIGatewayProxyStructuredResultV2,
   Context,
 } from "aws-lambda";
-import { adoptDevice, addPlayer, createGuestHousehold, linkAccount } from "../handlers/account.ts";
+import { adoptDevice, addPlayer, createGuestHousehold, linkAccount, vetTypedName } from "../handlers/account.ts";
 import { applyAction } from "../handlers/action.ts";
 import {
   admitCodeLookup,
@@ -219,10 +219,12 @@ async function postRoom(req: Req, deps: HandlerDeps) {
   // Anonymous play (§4.5): a device nobody has seen before gets a household on
   // the spot. Nobody signs up to start a game.
   const existing = await resolvePrincipal(req, deps);
+  const hostName = vetTypedName(req.body.displayName, "Host");
+  if (!existing && !hostName.ok) return fromError(hostName.error);
   const host =
     existing ??
     (await createGuestHousehold(
-      { displayName: String(req.body.displayName ?? "Host"), userAgent: req.headers["user-agent"], display },
+      { displayName: hostName.ok ? hostName.value : "Host", userAgent: req.headers["user-agent"], display },
       deps,
     ));
 
@@ -350,7 +352,10 @@ async function postJoin(req: Req, deps: HandlerDeps, typed: string) {
   // so a phone that has never seen this game joins in one tap. On a visitor
   // code it is a visitor, in a guest household of its own (#249).
   // Never-seen phones are admitted *before* anything is bound to them
-  // (`admitNewPhone`): a refused one must leave no membership behind.
+  // (`admitNewPhone`): a refused one must leave no membership behind. Its
+  // name is vetted first (#253), which refuses without writing anything.
+  const joinerName = vetTypedName(req.body.displayName, "Player");
+  if (!existing && !joinerName.ok) return fromError(joinerName.error);
   let admitted: "family" | "visitor" | null = null;
   if (!existing) {
     const admission = await admitNewPhone(room, named.visitorCode, deps);
@@ -362,7 +367,7 @@ async function postJoin(req: Req, deps: HandlerDeps, typed: string) {
     (await bindNewPhone(
       room,
       admitted ?? "family",
-      { displayName: String(req.body.displayName ?? "Player"), userAgent: req.headers["user-agent"] },
+      { displayName: joinerName.ok ? joinerName.value : "Player", userAgent: req.headers["user-agent"] },
       deps,
     ));
 

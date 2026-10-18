@@ -12,6 +12,7 @@
  * is "Forget this tablet", at the bottom and quiet, behind a sign-in.
  */
 
+import { randomName } from "./creationContent";
 import { useCallback, useEffect, useId, useState } from "react";
 import type { ChangeEvent, ReactElement } from "react";
 import type { SharedDevicePlayer, SharedSeatRequest } from "@kad/shared";
@@ -175,7 +176,10 @@ export function SharedHome(): ReactElement {
                       type="button"
                       className="shared-home__face shared-home__face--new kad-tap kad-focusable"
                       aria-expanded={addingNew}
-                      onClick={() => setAddingNew(true)}
+                      onClick={() => {
+                        setNewName((current) => (current === "" ? randomName() : current));
+                        setAddingNew(true);
+                      }}
                     >
                       <span className="shared-home__avatar" aria-hidden="true">
                         <Icon name="plus" size="1.2em" />
@@ -197,7 +201,7 @@ export function SharedHome(): ReactElement {
                 >
                   <label className="home__label" htmlFor={nameFieldId}>
                     <Icon name="name" />
-                    <span>Your name</span>
+                    <span>Your adventurer name</span>
                   </label>
                   <input
                     id={nameFieldId}
@@ -210,6 +214,17 @@ export function SharedHome(): ReactElement {
                     enterKeyHint="go"
                     maxLength={NAME_MAX}
                   />
+                  <Button
+                    variant="secondary"
+                    size="md"
+                    icon={<Icon name="shuffle" />}
+                    onClick={() => setNewName(randomName())}
+                  >
+                    Surprise me
+                  </Button>
+                  <p className="home__hint kad-muted">
+                    Pick a nickname or an adventurer name, never your real name.
+                  </p>
                   <Button type="submit" variant="primary" size="lg" icon={<Icon name="forward" />} disabled={!newName.trim()}>
                     That&rsquo;s me
                   </Button>
