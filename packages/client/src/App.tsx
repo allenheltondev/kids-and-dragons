@@ -165,10 +165,14 @@ export function App(): React.JSX.Element {
 
   return (
     <PhoneMagic enabled={route.name !== "tv"}>
-      <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
-      <Suspense fallback={null}>
-        <ReadAloudControl />
-      </Suspense>
+      {/* One corner row for the device's own controls, so they share a place instead of
+          fighting over it: read-aloud (#261) to the left of sound, sound anchored right. */}
+      <div className="kad-corner">
+        <Suspense fallback={null}>
+          <ReadAloudControl />
+        </Suspense>
+        <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
+      </div>
       {pickLayout()}
       <ErrorToast />
       {/* Shell-level like the toast, and for the same reason: a dropped
