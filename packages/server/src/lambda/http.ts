@@ -453,15 +453,6 @@ async function postLock(req: Req, deps: HandlerDeps, code: string) {
   );
 }
 
-/** The host turning quiet mode on for the room, or off again (#260). */
-async function postQuiet(req: Req, deps: HandlerDeps, code: string) {
-  const quiet = req.body.quiet;
-  const valid = typeof quiet === "boolean";
-  return postHostControl(req, deps, code, valid ? null : "expected { quiet: true | false }", (principal) =>
-    setQuiet({ code, principal, quiet: quiet as boolean }, deps),
-  );
-}
-
 /**
  * A signed-in owner opening the room to visitors, or closing it to new ones
  * (#249, handlers/visitors.ts). An owner, not the host: it lowers the barrier
@@ -477,6 +468,15 @@ async function postVisitors(req: Req, deps: HandlerDeps, rt: HttpRuntime, code: 
   const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
   if (!missed) await lookup.hit();
   return result.ok ? json(200, result.value) : fromError(result.error);
+}
+
+/** The host turning quiet mode on for the room, or off again (#260). */
+async function postQuiet(req: Req, deps: HandlerDeps, code: string) {
+  const quiet = req.body.quiet;
+  const valid = typeof quiet === "boolean";
+  return postHostControl(req, deps, code, valid ? null : "expected { quiet: true | false }", (principal) =>
+    setQuiet({ code, principal, quiet: quiet as boolean }, deps),
+  );
 }
 
 /** The host closing the room for everyone (#263). */
