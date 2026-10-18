@@ -171,31 +171,32 @@ export async function acceptTransfer(
 
 /**
  * The first of her heroes still in the middle of an adventure: a provisional
- * whose claim names a run or a campaign attempt that has not ended. Today the
- * claim is the campaign (`campaignKey` in progression.ts), read in her home
- * household, which is where every one of her games is played until visitors
- * (#249); #282 makes it a run id, which `getRun` answers first.
+ * whose claim names a campaign attempt that is still `active`. The claim is
+ * the campaign id at home (`campaignKey` in progression.ts) and, at a table
+ * that is not her home, `<campaignId>@<tableHouseholdId>` (#282, #291), so it
+ * is parsed into the attempt it names and that table's attempt is read, never
+ * her home's. A complete, failed or vanished attempt holds nothing.
  */
 export async function busyHero(
   move: Pick<ProfileMove, "householdId" | "characters">,
-  repo: Pick<GameRepository, "getRun" | "getState" | "getCampaignProgress">,
+  repo: Pick<GameRepository, "getCampaignProgress">,
 ): Promise<Character | null> {
   for (const character of move.characters) {
     const claim = character.provisional?.runId;
-    if (claim && (await inFlight(move.householdId, claim, repo))) return character;
+    if (!claim) continue;
+    const { campaignId, table } = parseClaim(claim, move.householdId);
+    if ((await repo.getCampaignProgress(table, campaignId))?.status === "active") return character;
   }
   return null;
 }
 
-/** Not complete, failed or closed. A claim that names nothing is no claim. */
-async function inFlight(
-  householdId: string,
-  claim: string,
-  repo: Pick<GameRepository, "getRun" | "getState" | "getCampaignProgress">,
-): Promise<boolean> {
-  const run = await repo.getRun(claim);
-  if (run) return run.status === "active" && (await repo.getState(claim))?.closed !== true;
-  return (await repo.getCampaignProgress(householdId, claim))?.status === "active";
+/**
+ * The attempt a claim names: `parseClaim` in #291's handlers/claim.ts, which
+ * replaces this once both have landed. A bare claim is her home's table.
+ */
+export function parseClaim(claim: string, home: string): { campaignId: string; table: string } {
+  const at = claim.lastIndexOf("@");
+  return at < 0 ? { campaignId: claim, table: home } : { campaignId: claim.slice(0, at), table: claim.slice(at + 1) };
 }
 
 function midAdventure(hero: Character, move: ProfileMove): HandlerResult<never> {
