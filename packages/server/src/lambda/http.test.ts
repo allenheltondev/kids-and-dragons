@@ -1245,6 +1245,8 @@ describe("/api/organizer/* (#248)", () => {
       ["POST", "/api/organizer/players/retire"],
       ["POST", "/api/organizer/invite"],
       ["POST", "/api/organizer/invite/accept"],
+      ["POST", "/api/organizer/transfer"],
+      ["POST", "/api/organizer/transfer/accept"],
       ["POST", "/api/organizer/owners/remove"],
     ] as const) {
       const result = await respond(event(method, path), rt);

@@ -38,6 +38,7 @@ import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { ROOM_CODE_ALPHABET } from "./room.ts";
 import { NEW_PLAYER_NAME_MAX } from "./shared-device.ts";
 import { takeOutEverywhere } from "./remove.ts";
+import { acceptTransfer, createTransferCode } from "./transfer.ts";
 
 export type OrganizerDeps = AccountDeps & Pick<HandlerDeps, "random" | "channel">;
 
@@ -346,7 +347,7 @@ async function profileName(
   return clash ? fail("ILLEGAL", `Someone called ${name} is already here.`) : ok(name);
 }
 
-function ownerRow(householdId: string, who: Organizer, nowMs: number): HouseholdOwnerRecord {
+export function ownerRow(householdId: string, who: Organizer, nowMs: number): HouseholdOwnerRecord {
   return {
     householdId,
     cognitoSub: who.cognitoSub,
@@ -409,7 +410,7 @@ function heroesOf(playerId: string, characters: readonly Character[]): Organizer
     .map((c) => ({ id: c.id, name: c.name, species: c.species, class: c.class, level: c.committed.level }));
 }
 
-function inviteCode(random: () => number): string {
+export function inviteCode(random: () => number): string {
   let code = "";
   for (let i = 0; i < INVITE_CODE_LENGTH; i++) {
     code += ROOM_CODE_ALPHABET[Math.floor(random() * ROOM_CODE_ALPHABET.length)] ?? "A";
@@ -472,6 +473,10 @@ export function organizerRoute(
       return (who, deps) => createOrganizerInvite({ ...who, householdId: body.householdId }, deps);
     case "POST /api/organizer/invite/accept":
       return (who, deps) => acceptOrganizerInvite({ ...who, code: body.code }, deps);
+    case "POST /api/organizer/transfer":
+      return (who, deps) => createTransferCode({ ...who, householdId: body.householdId, playerId: body.playerId }, deps);
+    case "POST /api/organizer/transfer/accept":
+      return (who, deps) => acceptTransfer({ ...who, code: body.code, householdId: body.householdId }, deps);
     case "POST /api/organizer/owners/remove":
       return (who, deps) => removeOrganizer({ ...who, householdId: body.householdId, ownerId: body.ownerId }, deps);
     default:

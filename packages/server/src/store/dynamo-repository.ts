@@ -37,6 +37,7 @@ import {
   TransactWriteCommand,
   UpdateCommand,
   type QueryCommandInput,
+  type TransactWriteCommandInput,
 } from "@aws-sdk/lib-dynamodb";
 import type {
   Character,
@@ -55,10 +56,15 @@ import type {
   GameRepository,
   GuestRenewal,
   HouseholdOwnerRecord,
+  MoveOutcome,
+  MoveProfileInput,
   OrganizerInviteRecord,
+  ProfileMove,
   RoomRecord,
   RunRecord,
+  TransferCodeRecord,
 } from "./repository.ts";
+import { collectMove, fieldGuideItem, planMove, transferKey, type MoveStep, type StoredRow } from "./profile-move.ts";
 import {
   ACCT,
   CAMPAIGN_SK,
@@ -77,6 +83,7 @@ import {
   HH,
   INVITE,
   META,
+  MOVED_SK,
   OWNER_SK,
   PLAYER_SK,
   PREFIX,
@@ -84,7 +91,11 @@ import {
   RUN,
   RUN_SK,
   STATE,
+  TRANSFER,
 } from "./keys.ts";
+
+/** One item of a TransactWriteItems, as the document client takes it. */
+type TransactItem = NonNullable<TransactWriteCommandInput["TransactItems"]>[number];
 
 /** One row. Identical to the local store's `TableItem` — that is the point. */
 interface TableItem {
@@ -92,7 +103,7 @@ interface TableItem {
   SK: string;
   GSI1PK?: string;
   GSI1SK?: string;
-  /** Epoch seconds, DynamoDB's TTL attribute. Only rooms, code-miss windows and organizer invites carry it. */
+  /** Epoch seconds, DynamoDB's TTL attribute. Only rooms, code-miss windows, invites, transfer codes and moved-device forwards carry it. */
   ttl?: number;
   /**
    * Schema version of `data`, per entity (architecture §3.2). A top-level
@@ -629,6 +640,163 @@ export class DynamoRepository implements GameRepository {
       if (isTransactionCancelled(err)) return null;
       throw err;
     }
+  }
+
+  async putTransferCodeIfAbsent(record: TransferCodeRecord): Promise<boolean> {
+    try {
+      await this.doc.send(
+        new PutCommand({
+          TableName: this.table,
+          Item: { ...transferKey(record.code), ttl: record.ttl, entity: "transfer", data: record } satisfies TableItem,
+          ConditionExpression: "attribute_not_exists(PK)",
+        }),
+      );
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+  }
+
+  async getTransferCode(code: string, nowIso: string): Promise<TransferCodeRecord | null> {
+    // TTL deletion is eventual, so an expired code can still be sitting there.
+    const record = (await this.get(TRANSFER(code), META))?.data as TransferCodeRecord | undefined;
+    return record && record.expiresAt > nowIso ? record : null;
+  }
+
+  async readProfileMove(householdId: string, playerId: string): Promise<ProfileMove | null> {
+    // Consistent, because every delete in the move is conditioned on these
+    // rows being exactly what was read: a stale copy would only cancel it.
+    const player = await this.consistentGet(HH(householdId), PLAYER_SK(playerId));
+    if (!player) return null;
+    const [characters, devices, book] = await Promise.all([
+      this.query({
+        KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+        ExpressionAttributeValues: { ":pk": HH(householdId), ":sk": PREFIX.character },
+        ConsistentRead: true,
+      }),
+      this.query({
+        KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+        ExpressionAttributeValues: { ":pk": HH(householdId), ":sk": PREFIX.device },
+        ConsistentRead: true,
+      }),
+      this.getFieldGuide(householdId),
+    ]);
+    return collectMove(householdId, playerId, { player, characters, devices, book });
+  }
+
+  /*
+   * One TransactWriteItems, built from the plan both stores share. Its first
+   * item is always the code, which is how a cancellation says which refusal
+   * it was: the code's condition failing is `spent`, any other is `changed`.
+   */
+  async moveProfile(input: MoveProfileInput): Promise<MoveOutcome> {
+    const steps = planMove(input);
+    if (!steps) return "too-big";
+    // Her finds go into the new home's book with a nested `if_not_exists`,
+    // which needs the book's map to exist (see `recordDiscoveries`). Making
+    // an empty one first is idempotent and reads exactly like no book.
+    const merge = steps.find((step) => step.op === "finds" && !step.fresh);
+    if (merge?.op === "finds") await this.ensureFieldGuide(merge.householdId);
+
+    try {
+      await this.doc.send(new TransactWriteCommand({ TransactItems: steps.map((step) => this.moveItem(step)) }));
+      return "moved";
+    } catch (err) {
+      if (nameOf(err) !== "TransactionCanceledException") throw err;
+      const reasons = (err as { CancellationReasons?: { Code?: string }[] }).CancellationReasons ?? [];
+      const lost = (r: { Code?: string } | undefined) => r?.Code === "ConditionalCheckFailed" || r?.Code === "TransactionConflict";
+      if (!reasons.some(lost)) throw err;
+      return reasons[0]?.Code === "ConditionalCheckFailed" ? "spent" : "changed";
+    }
+  }
+
+  private moveItem(step: MoveStep): TransactItem {
+    const TableName = this.table;
+    switch (step.op) {
+      case "spend":
+        return {
+          Delete: {
+            TableName,
+            Key: transferKey(step.code),
+            ConditionExpression: "attribute_exists(PK) AND #d.#exp > :now AND #d.#hh = :hh AND #d.#pid = :pid",
+            ExpressionAttributeNames: { "#d": "data", "#exp": "expiresAt", "#hh": "householdId", "#pid": "playerId" },
+            ExpressionAttributeValues: { ":now": step.nowIso, ":hh": step.householdId, ":pid": step.playerId },
+          },
+        };
+      case "check":
+        return { ConditionCheck: { TableName, Key: { PK: step.PK, SK: step.SK }, ConditionExpression: "attribute_exists(PK)" } };
+      case "delete":
+        // A map compared whole: any write since the read, to any field, fails it.
+        return {
+          Delete: {
+            TableName,
+            Key: { PK: step.PK, SK: step.SK },
+            ConditionExpression: "#d = :d",
+            ExpressionAttributeNames: { "#d": "data" },
+            ExpressionAttributeValues: { ":d": step.data },
+          },
+        };
+      case "put":
+        return {
+          Put: {
+            TableName,
+            Item: step.item satisfies StoredRow,
+            ...(step.ifAbsent ? { ConditionExpression: "attribute_not_exists(PK)" } : {}),
+          },
+        };
+      case "finds": {
+        if (step.fresh) {
+          return {
+            Put: { TableName, Item: fieldGuideItem(step.householdId, step.entries), ConditionExpression: "attribute_not_exists(PK)" },
+          };
+        }
+        const names: Record<string, string> = { "#d": "data", "#e": "entries" };
+        const values: Record<string, unknown> = {};
+        const sets = Object.entries(step.entries).map(([canonId, find], i) => {
+          names[`#k${i}`] = canonId;
+          values[`:e${i}`] = find;
+          return `#d.#e.#k${i} = if_not_exists(#d.#e.#k${i}, :e${i})`;
+        });
+        return {
+          Update: {
+            TableName,
+            Key: { PK: HH(step.householdId), SK: FIELDGUIDE },
+            UpdateExpression: `SET ${sets.join(", ")}`,
+            ExpressionAttributeNames: names,
+            ExpressionAttributeValues: values,
+          },
+        };
+      }
+    }
+  }
+
+  async getMovedDevice(householdId: string, deviceId: string): Promise<string | null> {
+    const item = await this.consistentGet(HH(householdId), MOVED_SK(deviceId));
+    // Reads check the expiry, as for every TTL'd row: deletion is eventual.
+    if (!item || (item.ttl !== undefined && item.ttl * 1000 <= this.now())) return null;
+    return (item.data as { householdId?: string }).householdId ?? null;
+  }
+
+  private async consistentGet(pk: string, sk: string): Promise<TableItem | undefined> {
+    const out = await this.doc.send(
+      new GetCommand({ TableName: this.table, Key: { PK: pk, SK: sk }, ConsistentRead: true }),
+    );
+    return out.Item as TableItem | undefined;
+  }
+
+  /** An empty book, if the household has none: the map nested writes need. */
+  private async ensureFieldGuide(householdId: string): Promise<void> {
+    await this.doc.send(
+      new UpdateCommand({
+        TableName: this.table,
+        Key: { PK: HH(householdId), SK: FIELDGUIDE },
+        UpdateExpression:
+          "SET #d = if_not_exists(#d, :empty), v = if_not_exists(v, :v), entity = if_not_exists(entity, :entity)",
+        ExpressionAttributeNames: { "#d": "data" },
+        ExpressionAttributeValues: { ":empty": { entries: {} }, ":v": FIELD_GUIDE_VERSION, ":entity": "field-guide" },
+      }),
+    );
   }
 
   async putPlayer(player: PlayerProfile): Promise<void> {
