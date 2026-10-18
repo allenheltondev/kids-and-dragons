@@ -95,6 +95,34 @@ test.describe("a family tablet", () => {
     await expect(next.getByRole("button", { name: /^Ada/ })).toBeVisible();
     expect(Object.keys((await storage(next)).tab)).not.toContain(`kad.session.${code}`);
   });
+  test("offers to show the game on its own screen, and still seats nobody and keeps nothing", async ({ browser }) => {
+    test.setTimeout(180_000);
+    const email = `grown-up-${Date.now()}@example.com`;
+
+    const phone = await (await context(browser)).newPage();
+    await phone.goto("/");
+    await phone.getByRole("button", { name: /sign in or create an account/i }).click(TAP);
+    await signIn(phone, email);
+    await phone.getByRole("button", { name: /back to the game/i }).click(TAP);
+
+    const tablet = await (await context(browser)).newPage();
+    await tablet.goto("/");
+    await tablet.getByRole("button", { name: /make it a family tablet/i }).click(TAP);
+    await signIn(tablet, email);
+    await tablet.getByRole("button", { name: /^done$/i }).click(TAP);
+    await expect(tablet.getByRole("heading", { name: WHO })).toBeVisible(TAP);
+
+    // No kid is picked: the tablet is the TV, and goes straight to the lobby.
+    await tablet.getByRole("button", { name: /show the game on this screen/i }).click();
+    await expect(tablet).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
+    await expect(tablet.getByText(/room code/i).first()).toBeVisible(TAP);
+
+    // Still only the shared token: no device binding, no kid's session.
+    const kept = await storage(tablet);
+    expect(Object.keys(kept.local)).toEqual(["kad.shared"]);
+    expect(Object.keys(kept.tab).filter((key) => key.startsWith("kad.session."))).toEqual([]);
+  });
+
   test("an owner forgets the tablet from their phone, and the tablet goes back to an ordinary home", async ({ browser }) => {
     test.setTimeout(180_000);
     const email = `grown-up-${Date.now()}@example.com`;

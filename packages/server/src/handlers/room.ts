@@ -69,6 +69,8 @@ export interface CreateRoomInput {
   claimable?: boolean;
   /** The device asking for the room, which becomes its host (`RoomRecord.hostDeviceId`). */
   hostDeviceId?: string;
+  /** A family tablet is the TV (`RoomRecord.display`): nobody seated, not claimable. */
+  display?: boolean;
 }
 
 export async function createRoom(
@@ -116,6 +118,7 @@ export async function createRoom(
     input.mode,
     input.claimable === true,
     input.hostDeviceId,
+    input.display === true,
     nowMs,
     deps,
   );
@@ -194,6 +197,7 @@ async function reserveCode(
   mode: RoomMode,
   claimable: boolean,
   hostDeviceId: string | undefined,
+  display: boolean,
   nowMs: number,
   deps: HandlerDeps,
 ): Promise<RoomRecord | null> {
@@ -208,6 +212,7 @@ async function reserveCode(
       ttl: Math.floor((nowMs + ROOM_TTL_MS) / 1000),
       ...(claimable ? { claimable: true } : {}),
       ...(hostDeviceId ? { hostDeviceId } : {}),
+      ...(display ? { display: true as const } : {}),
     };
     // Conditional create: whoever writes the code first owns it.
     if (await deps.repo.putRoomIfAbsent(room)) return room;
@@ -533,6 +538,12 @@ export async function watchRoom(
      * presenting it is what lets the TV watch, after a hard refresh too.
      */
     deviceId?: string | undefined;
+    /**
+     * A shared tablet's household, when the proof is its shared token (#274):
+     * the room must be that household's. The tablet's device id is unique to
+     * it already; this is the second lock, on the room-code boundary.
+     */
+    householdId?: string | undefined;
   },
   deps: HandlerDeps,
 ): Promise<HandlerResult<WatchRoomResult>> {
@@ -544,6 +555,9 @@ export async function watchRoom(
   // Remove; to see the room, a stranger now has to join it, and be seen. A room
   // opened before rooms had a host keeps the old rule until it expires.
   if (room.hostDeviceId !== undefined && room.hostDeviceId !== input.deviceId) {
+    return fail("FORBIDDEN", "Only the screen that opened this room can show it.");
+  }
+  if (input.householdId !== undefined && room.householdId !== input.householdId) {
     return fail("FORBIDDEN", "Only the screen that opened this room can show it.");
   }
 

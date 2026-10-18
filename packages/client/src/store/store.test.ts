@@ -1797,6 +1797,54 @@ describe("a shared tablet", () => {
     expect(Object.keys(dump(h.storage))).toEqual(["kad.shared"]);
   });
 
+  describe("opening the TV on the tablet (#274)", () => {
+    const watched = () => ({
+      runId: "r_1",
+      mode: "party" as const,
+      expiresAt: "2026-07-05T00:00:00.000Z",
+      viewerToken: "tok_view",
+      state: makeState(),
+      host: true,
+    });
+
+    it("opens a display room on its shared token, seating nobody and keeping nothing", async () => {
+      const h = tablet();
+      await h.store.getState().openOnThisScreen();
+
+      expect(h.api.openDisplayRoom).toHaveBeenCalledWith({ campaignId: expect.any(String) }, "shared_1");
+      expect(h.api.createRoomShared).not.toHaveBeenCalled();
+      expect(h.api.joinRoomShared).not.toHaveBeenCalled();
+      expect(h.store.getState().session).toBeNull();
+      expect(h.navigate).toHaveBeenCalledWith({ name: "tv", code: "ABCD" }, { replace: true });
+      // No device token, no kid's session: the tablet is still only a shared token.
+      expect(Object.keys(dump(h.storage))).toEqual(["kad.shared"]);
+    });
+
+    it("attaches presenting the shared token, again after a refresh, and holds only a viewer token", async () => {
+      const h = tablet();
+      h.api.watchRoom.mockImplementationOnce(async () => watched());
+      await h.store.getState().attach("ABCD", "display");
+      expect(h.api.watchRoom).toHaveBeenCalledWith("ABCD", expect.any(Number), undefined, "shared_1");
+      expect(h.store.getState().session).toMatchObject({ playerId: "", host: true, sessionToken: "tok_view" });
+      expect(Object.keys(dump(h.storage))).toEqual(["kad.shared"]);
+    });
+
+    it("runs host controls on the shared token alone", async () => {
+      const h = tablet();
+      h.api.watchRoom.mockImplementationOnce(async () => watched());
+      await h.store.getState().attach("ABCD", "display");
+      expect(await h.store.getState().removePlayer("p_stranger")).toBe(true);
+      expect(h.api.hostControl).toHaveBeenCalledWith("ABCD", "remove", { playerId: "p_stranger" }, { sharedToken: "shared_1" });
+    });
+
+    it("goes back to an ordinary start when the tablet was forgotten", async () => {
+      const h = tablet();
+      h.api.openDisplayRoom.mockRejectedValueOnce(new ApiError(401, "forgotten", "FORBIDDEN"));
+      await expect(h.store.getState().openOnThisScreen()).rejects.toBeInstanceOf(ApiError);
+      expect(loadSharedDevice(h.storage)).toBeNull();
+    });
+  });
+
   it("is not a shared tablet unless it was made one", async () => {
     const h = harness();
     expect(await h.store.getState().loadSharedPlayers()).toBeNull();
