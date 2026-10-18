@@ -486,6 +486,62 @@ describe("forget this device", () => {
   });
 });
 
+describe("forgetting a tablet from another device (#273)", () => {
+  const list = (householdId: string) =>
+    event("GET", `/api/organizer/devices?householdId=${householdId}`, { headers: { authorization: "Bearer id-token" } });
+  const forget = (deviceId: string) =>
+    event("POST", "/api/auth/forget-device", { body: { deviceId }, headers: { authorization: "Bearer id-token" } });
+
+  /** The query string is parsed by the entry point, so give it the way API Gateway does. */
+  function withQuery(e: APIGatewayProxyEventV2, householdId: string): APIGatewayProxyEventV2 {
+    return { ...e, rawPath: "/api/organizer/devices", queryStringParameters: { householdId } };
+  }
+
+  it("lets an owner on their phone list the shared tablets and forget one, and the tablet gets the 401", async () => {
+    const { harness, householdId, ada } = await family();
+    const rt = runtime(harness);
+    const shared = await makeShared((e) => respond(e, rt), { "user-agent": "Mozilla/5.0 (iPad; CPU OS 17_0)" });
+    const sharedDevice = await harness.identity.resolveSharedDevice(shared);
+    if (!sharedDevice) throw new Error("tablet did not resolve");
+
+    // From the owner's phone: the tablet is listed, and Ada's own phone is not.
+    const listed = await respond(withQuery(list(householdId), householdId), rt);
+    expect(listed.statusCode).toBe(200);
+    expect(bodyOf(listed).devices).toEqual([
+      expect.objectContaining({ deviceId: sharedDevice.deviceId, revoked: false, lastSeen: expect.any(String) }),
+    ]);
+    expect(JSON.stringify(bodyOf(listed))).not.toContain(ada.principal.deviceId);
+
+    const forgot = await respond(forget(sharedDevice.deviceId), rt);
+    expect(forgot.statusCode).toBe(200);
+
+    // The tablet's next request is refused, and the list says it is gone.
+    const picker = await respond(event("GET", "/api/household/players", { headers: { "x-kad-shared-token": shared } }), rt);
+    expect(picker.statusCode).toBe(401);
+    const after = await respond(withQuery(list(householdId), householdId), rt);
+    expect(bodyOf(after).devices).toEqual([expect.objectContaining({ deviceId: sharedDevice.deviceId, revoked: true })]);
+  });
+
+  it("is refused to an account that does not own the household", async () => {
+    const { harness, householdId } = await family();
+    const shared = await makeShared((e) => respond(e, runtime(harness)));
+    const sharedDevice = await harness.identity.resolveSharedDevice(shared);
+    if (!sharedDevice) throw new Error("tablet did not resolve");
+    const stranger = runtime(harness, { cognitoSub: "sub-nobody" });
+
+    const listed = await respond(withQuery(list(householdId), householdId), stranger);
+    expect(listed.statusCode).toBe(403);
+    expect(listed.body).not.toContain(sharedDevice.deviceId);
+
+    const forgot = await respond(forget(sharedDevice.deviceId), stranger);
+    expect(forgot.statusCode).toBe(404);
+    expect(await harness.identity.resolveSharedDevice(shared)).not.toBeNull();
+
+    const anonymous = await respond(withQuery(list(householdId), householdId), runtime(harness, null));
+    expect(anonymous.statusCode).toBe(401);
+  });
+});
+
 describe("no long-lived token for a kid, ever", () => {
   it("hands a shared tablet nothing but its own token and room sessions", async () => {
     const { harness, householdId } = await family();
