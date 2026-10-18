@@ -232,8 +232,12 @@ export async function stopForToday(
 
   // One save per campaign: an older stop of the same one is the game as it
   // was an evening ago, and must not come back once this one is taken up.
+  // The campaign is the stopped state's own, never the run row's: a room
+  // opened for one campaign can resume another (`resumeGame`).
   for (const other of await deps.repo.listRuns(run.householdId)) {
-    if (other.id === run.id || other.stoppedAt === undefined || other.campaignId !== run.campaignId) continue;
+    if (other.id === run.id || other.stoppedAt === undefined) continue;
+    const otherState = await deps.repo.getState(other.id);
+    if ((otherState?.campaignId ?? other.campaignId) !== state.campaignId) continue;
     const { stoppedAt: _old, stoppedBy: _oldBy, ...cleared } = other;
     await deps.repo.putRun(cleared);
   }
@@ -323,9 +327,26 @@ export async function resumeGame(
         patch: event.patch,
       });
       await spend(found.record, deps);
+      await alignRun(run.id, found.state.campaignId, deps);
       return ok({ seq: next.seq });
     }
     if (attempt >= COMMIT_ATTEMPTS) return fail("STALE_SEQ", "the game moved on just then; try again");
+  }
+}
+
+/**
+ * The room's run row names the campaign it now plays. A room opened for no
+ * campaign, or another, that resumes a saved chapter is playing the saved
+ * one, and the row says so. Best effort and re-read fresh: nothing here
+ * depends on it (stop and release read the state's own campaign), it only
+ * keeps the record honest for whatever lists runs.
+ */
+async function alignRun(runId: string, campaignId: string | null, deps: Pick<HandlerDeps, "repo">): Promise<void> {
+  try {
+    const current = await deps.repo.getRun(runId);
+    if (current && current.campaignId !== campaignId) await deps.repo.putRun({ ...current, campaignId });
+  } catch (err) {
+    console.error(`save: could not align ${runId} with its resumed campaign:`, err);
   }
 }
 
@@ -449,14 +470,17 @@ export async function releaseSavedHero(
   const held = claimOf(hero);
   const { campaignId, table } = held === null ? { campaignId: "", table: "" } : parseClaim(held, hero);
   const runs = held === null || table !== input.householdId ? [] : await deps.repo.listRuns(table);
-  const stopped = runs.find(
-    (run) => run.stoppedAt !== undefined && run.stoppedBy === input.deviceId && run.campaignId === campaignId,
-  );
-  if (!stopped) {
-    return fail("FORBIDDEN", "Only the screen or phone that stopped this game can let a hero go from it.");
+  // Matched on the stopped state's own campaign and party, not the run row's.
+  let holds = false;
+  for (const run of runs) {
+    if (run.stoppedAt === undefined || run.stoppedBy !== input.deviceId) continue;
+    const saved = await readSaved(run, table, deps);
+    if (saved?.state.campaignId === campaignId && saved.state.party.some((member) => member.character.id === hero.id)) {
+      holds = true;
+      break;
+    }
   }
-  const saved = await readSaved(stopped, table, deps);
-  if (!saved?.state.party.some((member) => member.character.id === hero.id)) {
+  if (!holds) {
     return fail("FORBIDDEN", "Only the screen or phone that stopped this game can let a hero go from it.");
   }
   return releaseClaim(home, hero.id, deps);

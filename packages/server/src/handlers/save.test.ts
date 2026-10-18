@@ -35,7 +35,7 @@ async function household(players = 2) {
 type Household = Awaited<ReturnType<typeof household>>;
 
 /** A room for `campaignId`, opened by player `host`'s device. */
-async function room(h: Household, campaignId = GEMFALL, host = 0) {
+async function room(h: Household, campaignId: string | null = GEMFALL, host = 0) {
   const created = await createRoom(
     { householdId: h.householdId, mode: "party", campaignId, hostDeviceId: h.players[host]!.principal.deviceId },
     h.harness.deps,
@@ -516,5 +516,53 @@ describe("letting a saved hero go (#259)", () => {
     const one = await sit(h, created.code, created.runId, 0);
     await one.must({ type: "SEAT_CHARACTER", characterId: pip.id });
     expect((await h.harness.repo.getCharacter(h.householdId, pip.id))?.provisional?.runId).toBe(GEMFALL);
+  });
+
+  it("stays releasable by the original host after a resume into a room opened for no campaign, and a second stop", async () => {
+    const { h, e, pip, host } = await stopped();
+    h.harness.clock.advance(3 * DAY);
+    // Opened by the other device, for no campaign at all.
+    const created = await room(h, null, 1);
+    expect((await h.harness.repo.getRun(created.runId))?.campaignId).toBeNull();
+    const two = await sit(h, created.code, created.runId, 1);
+    await sit(h, created.code, created.runId, 0);
+    expect(await two.resume()).toMatchObject({ ok: true });
+    // The room's record now names the campaign it is playing.
+    expect((await h.harness.repo.getRun(created.runId))?.campaignId).toBe(GEMFALL);
+
+    // Stopped again by the resumed room's host; the first save is long spent.
+    h.harness.clock.advance(60 * 60 * 1000);
+    expect(
+      await stopForToday({ code: created.code, principal: h.players[1]!.principal }, h.harness.deps),
+    ).toMatchObject({ ok: true });
+    const stops = (await h.harness.repo.listRuns(h.householdId)).filter((r) => r.stoppedAt !== undefined);
+    expect(stops.map((r) => r.id)).toEqual([created.runId]);
+    expect(stops[0]!.id).not.toBe(e.runId);
+
+    // The device that stopped it this time lets her go; the original host cannot.
+    expect(
+      await releaseSavedHero({ deviceId: host.deviceId, householdId: h.householdId, characterId: pip.id }, h.harness.deps),
+    ).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+    expect(
+      await releaseSavedHero(
+        { deviceId: h.players[1]!.principal.deviceId, householdId: h.householdId, characterId: pip.id },
+        h.harness.deps,
+      ),
+    ).toMatchObject({ ok: true, value: { left: GEMFALL } });
+  });
+
+  it("supersedes an older save of the same campaign even when the newer room was opened for none", async () => {
+    const { h, e } = await stopped();
+    h.harness.clock.advance(3 * DAY);
+    const created = await room(h, null, 1);
+    const two = await sit(h, created.code, created.runId, 1);
+    await two.resume();
+    // Un-spend the first save to prove the stop clears it by the state's campaign.
+    const first = (await h.harness.repo.getRun(e.runId))!;
+    await h.harness.repo.putRun({ ...first, stoppedAt: "2026-07-01T00:00:00.000Z", stoppedBy: "d_old" });
+    h.harness.clock.advance(60 * 60 * 1000);
+    await stopForToday({ code: created.code, principal: h.players[1]!.principal }, h.harness.deps);
+    expect((await h.harness.repo.getRun(e.runId))?.stoppedAt).toBeUndefined();
+    expect((await h.harness.repo.getRun(created.runId))?.stoppedAt).toBeTypeOf("string");
   });
 });
