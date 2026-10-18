@@ -29,12 +29,14 @@ import type {
   OrganizerHouseholdView,
   OrganizerInvite,
   OrganizerOwner,
+  PairingCode,
   PlayerProfile,
 } from "@kad/shared";
 import { newId } from "../ids.ts";
 import type { HouseholdOwnerRecord } from "../store/repository.ts";
 import { createProfile, summaries, type AccountDeps } from "./account.ts";
 import { admitCodeLookup } from "./code-guard.ts";
+import { createPairingCode } from "./pairing.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { ROOM_CODE_ALPHABET } from "./room.ts";
 import { NEW_PLAYER_NAME_MAX } from "./shared-device.ts";
@@ -226,6 +228,24 @@ export async function setProfileRetired(
     await deps.repo.putPlayer(active);
   }
   return ok(await describe(household, input, deps));
+}
+
+/**
+ * A code that makes the next device to redeem it this kid (#281): "Play as
+ * Ada on another device", from a grown-up who owns her household. It needs no
+ * sign-in on the kid's side, so it is the way in for a hospital tablet
+ * nobody has bound yet. A retired profile cannot be paired.
+ */
+export async function pairProfile(
+  input: Organizer & { householdId: unknown; playerId: unknown },
+  deps: OrganizerDeps,
+): Promise<HandlerResult<PairingCode>> {
+  const target = await ownedProfile(input, deps);
+  if (!target.ok) return target;
+  return createPairingCode(
+    { householdId: target.value.household.id, playerId: target.value.player.id, createdBy: `owner:${input.cognitoSub}` },
+    deps,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -495,6 +515,8 @@ export function organizerRoute(
           { ...who, householdId: body.householdId, playerId: body.playerId, retired: body.retired },
           deps,
         );
+    case "POST /api/organizer/players/pair":
+      return (who, deps) => pairProfile({ ...who, householdId: body.householdId, playerId: body.playerId }, deps);
     case "POST /api/organizer/invite":
       return (who, deps) => createOrganizerInvite({ ...who, householdId: body.householdId }, deps);
     case "POST /api/organizer/invite/accept":
