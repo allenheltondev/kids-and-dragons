@@ -56,8 +56,17 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
  * budget with slack for one honest feature is a budget people keep, and one
  * that has to be raised every sprint is a budget people delete. (Measured at
  * 287KB when the room went lazy, most of it react-dom.)
+ *
+ * Raised from 302 to 315 on 2026-10-18, deliberately. The slack went to the
+ * features that have to be on the home screen: sign-in and groups (#248),
+ * shared tablets (#250), host controls and quiet mode (#263, #260), with
+ * visitors, safe names and pairing (#249, #253, #281) each adding about a KB
+ * more. main sat at exactly 302. 315 is that plus slack for those, not a new
+ * round number; a large accidental import (Pixi, the rigs, the scene) still
+ * fails it by a wide margin. Lazy-loading the sign-in client when a grown-up
+ * opens it would win back about 10KB.
  */
-const FIRST_PAINT_BUDGET_KB = 302;
+const FIRST_PAINT_BUDGET_KB = 315;
 
 /**
  * Everything, including what is lazily fetched.
