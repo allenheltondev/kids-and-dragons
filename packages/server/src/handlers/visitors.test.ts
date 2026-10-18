@@ -305,8 +305,12 @@ describe("two households, one chapter (#249)", () => {
     const back = await t.act(t.visitor, { type: "OFFER_ITEM", itemId: "sunbloom_draught", toPlayerId: t.host.playerId });
     expect(back).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
 
+    const week = (await t.harness.repo.getHousehold("h_visit"))?.expiresAt ?? "";
+    t.harness.clock.advance(60_000);
     await choose("on");
     expect((await t.state()).phase).toBe("chapter_complete");
+    // A finished chapter is play for the visiting guest household too.
+    expect(((await t.harness.repo.getHousehold("h_visit"))?.expiresAt ?? "") > week).toBe(true);
 
     const visitorRow = await t.harness.repo.getCharacter("h_visit", visitorHero);
     const hostHero = (await t.state()).party.find((m) => m.playerId === t.host.playerId)!.character.id;

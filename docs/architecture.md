@@ -108,13 +108,13 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Player profile | `HH#<hhId>` | `PLAYER#<playerId>` | Display name, color, avatar, and `retired` once an owner takes the kid off the pickers (#248). No role (#265): rows written before still carry `role`, and nothing reads it. |
 | Device binding | `HH#<hhId>` | `DEVICE#<deviceId>` | → playerId, token hash, last seen, user agent. Revocable. |
 | Owner | `HH#<hhId>` | `OWNER#<cognitoSub>` | One grown-up who may manage the household (#248), with the email they signed in with. Written in one transaction with that account's `ACCT#` pointer, and removed with it. |
-| Character | `HH#<hhId>` | `CHAR#<charId>` | Owned by a playerId. Persistent across campaigns. See §3.1. |
+| Character | `HH#<hhId>` | `CHAR#<charId>` | Owned by a playerId. Persistent across campaigns. See §3.1. A visitor's hero (#249) stays in its own household, whichever room it plays in. |
 | Campaign run | `HH#<hhId>` | `RUN#<runId>` | One playthrough of one campaign. |
 | Field Guide | `HH#<hhId>` | `FIELDGUIDE` | The household's permanent record of discoveries: `entries` keyed by canon id → `{ firstFoundBy, foundAt, runId? }`. One item, written with per-key `if_not_exists` so the first finder always wins and concurrent writers merge. Versioned (`FIELD_GUIDE_VERSION`). |
 | Chapter progress | `RUN#<runId>` | `CHAPTER#<n>` | Status, branch taken, XP earned. |
 | Game state | `RUN#<runId>` | `STATE` | Current authoritative snapshot. Single item. |
 | Event log | `RUN#<runId>` | `EVT#<seq>` | Append-only. Enables replay and reconnect. |
-| Room | `ROOM#<code>` | `META` | 4-letter code → runId, mode (`party` \| `travel`). **TTL 6 hours.** |
+| Room | `ROOM#<code>` | `META` | 4-letter code → runId, mode (`party` \| `travel`). **TTL 6 hours.** A room open to visitors (#249) keeps this row; its longer code lives on the run (`RunState.visitorCode`). |
 | Code misses | `GUESS#<client>` | `WINDOW#<n>` | Wrong room codes from one client in one 15-minute window (§4.5, "Joining a session"). Wrong organizer codes are counted the same way, per account. **TTL one window past its own.** |
 | Organizer invite | `INVITE#<code>` | `META` | A single-use code that makes whoever signs in with it an owner of one household (§4.5, "Groups"). Spent by a conditional delete. **TTL 3 days.** |
 
@@ -128,6 +128,14 @@ GSI1 does three jobs, all of them lookups that would otherwise be scans:
 
 Note that **characters hang off the household, not off a run.** That was already true and is what makes
 persistence across sessions fall out for free — the only thing that was ever session-scoped is the room.
+
+A run still belongs to one household (its campaign progress, journey and lobby are that household's),
+but its party need not (#249). A party member from another household names its hero's home
+(`PartyMember.homeHouseholdId`, absent for the room's own), and every character read and write for
+that member goes there: the engine's create and seat, a chapter's XP and items, the campaign's commit
+or fail, a stat point. So a hero is never copied into the room's household, and goes home with
+everything it earned. The household stays the unit (#266 is open); this names a hero's home without
+deepening it.
 
 ### 3.0 Anonymous households and how they expire
 
@@ -662,7 +670,7 @@ has nothing extra to undo.
 2. In **Party Mode** the TV renders the code + QR; in **Travel Mode** the host's phone does.
 3. Other devices scan → `POST /room/ABCD/join`, presenting their **device token**. The server resolves device → player → household, verifies the household owns the run, and issues a room-scoped session token.
 4. Because identity is resolved from the device, **there is no "who are you?" step.** You scan, and your character is already on the board.
-5. **The first phone to join a claimable room decides whose room it is.** A phone that already belongs to a household takes the room into that household. The `ROOM#` item and the run's `HH#…/RUN#` row move together in one conditional transaction (`claimRoom`), and the lobby is re-read for that household's campaigns. A phone with no binding settles the room on the TV's household first, and is then created in it. Either way the room stops being claimable, and from then on a phone from another household is refused as before. This is what lets any screen host the evening. A new TV, or one whose storage was cleared, no longer starts a fresh guest household that locks the family's phones out of their own campaigns and heroes. Visiting phones from a second household are still refused (deferred).
+5. **The first phone to join a claimable room decides whose room it is.** A phone that already belongs to a household takes the room into that household. The `ROOM#` item and the run's `HH#…/RUN#` row move together in one conditional transaction (`claimRoom`), and the lobby is re-read for that household's campaigns. A phone with no binding settles the room on the TV's household first, and is then created in it. Either way the room stops being claimable, and from then on a phone from another household is refused as before. This is what lets any screen host the evening. A new TV, or one whose storage was cleared, no longer starts a fresh guest household that locks the family's phones out of their own campaigns and heroes. A phone from a second household joins only a room open to visitors ("Visitors", below).
 
 **The code is the boundary, so guessing it is rationed.** Any phone that names a
 live code can watch the room, read its state or join it, and 24⁴ codes is a
@@ -708,11 +716,59 @@ is already on that roster, so a dropped phone is never locked out of its own
 game. Closing marks the run `closed` (every screen leaves; actions, previews,
 presence and the channel refuse it) and then deletes the room's code. Each
 control is one committed patch with the host as its author, so all of it is
-on the run's event log. Opening a room to visitors (#249) and forgetting a
+on the run's event log. Opening a room to visitors (#249, below) and forgetting a
 device (#273) need a signed-in owner and are not host controls.
 
-Room items carry a **6-hour TTL** so abandoned rooms clean themselves up. Revoking a device does not
-touch any character — characters belong to the household.
+Room items carry a **6-hour TTL** so abandoned rooms clean themselves up, and a
+room open to visitors closes sooner (below). Revoking a device does not touch
+any character — characters belong to the household.
+
+#### Visitors: a room open to more than one household
+
+A kid who brings their own phone to a friend's game, or two families sharing an
+adventure (#249). **One room-level switch**, not an approval for each visitor,
+and only a signed-in owner of the room's household may turn it on
+(`POST /api/room/:code/visitors`, `{ open }`, `handlers/visitors.ts`): it lowers
+the barrier to joining, so a TV or a kid's phone that opened the room cannot do
+it alone. The switch sits in the host's view, which opens the sign-in for it and
+leaves nobody signed in afterwards. A TV's room must be settled by a phone first.
+
+- **A longer code.** Opening the room gives it a visitor code, the room's four
+  letters and two more (`RunState.visitorCode`). Every screen in the room shows
+  it in place of the short one, QR included. The short code still works for the
+  room's own household exactly as before, and a phone from anywhere else needs
+  the long one. The join route takes either (`findRoom`). A six-letter code
+  names the room only while it is open with exactly that code, so a wrong
+  ending is an unknown code and spends the wrong-code budget, and guessing
+  one is a search of 24⁶. Everything after the join (the session, the channel,
+  the state read, the phone's path) names the room's own four letters, so
+  opening a room re-keys nothing and every phone already in it stays.
+- **Who a visitor is.** The join writes the visitor's home on their seat
+  (`RoomSeat.homeHouseholdId`), and the engine's create or seat puts it on their
+  party member. Their room session names **their own household**, never the
+  room's. It reaches their own heroes (`GET /api/heroes`) and this one room, and
+  nothing in the host household: claiming, binding and revoking all take a
+  device token or a sign-in, and an action is accepted from another household
+  only for a player the run has seated from it. A visitor is never the keeper.
+- **Closing it again** takes the long code away: no new visitor can join. The
+  visitors already on the roster stay in the game and can come back to it, as
+  anybody on a locked room's roster can. The host's Remove works on a visitor
+  like anybody else: it finds their profile through the roster.
+- **Idle close.** An open room that has seen nothing happen for 30 minutes
+  (`OPEN_ROOM_IDLE_MS`, read off `RunState.updatedAt`) closes itself, as the
+  host's Close does, well inside the six hours a closed room keeps. It happens
+  lazily: the next join, watch, state read or action finds the room idle,
+  closes it and is refused. A code nobody uses again is harmless, and every way
+  of using one closes it first.
+- **What a visitor takes home.** XP, items and every character change go to the
+  hero's own household (§3). The room's Field Guide is the host household's,
+  and it is the one every screen shows; each step's finds are also written to
+  every visiting household's own book, credited to one of their own
+  (`StepFinds.visitors`), first finder wins. A finished chapter renews each
+  visiting guest household's week too.
+- **No trades across households** in v1. The engine refuses an offer between
+  heroes from different households (`sameHome`), and the give list leaves them
+  out. Trades within a household, visitors' included, work as before.
 
 #### The TV, which is nobody
 

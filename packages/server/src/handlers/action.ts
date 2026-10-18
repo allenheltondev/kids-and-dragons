@@ -1248,14 +1248,13 @@ function withHome(state: RunState, playerId: string, home: string): RunState {
 
 /**
  * A finished chapter renews every guest household that played in it: the
- * room's, and each visitor's (#249), whose heroes were played here too. The
- * room's answer is the one the caller waits on; a visitor's is best effort.
+ * room's, and each visitor's (#249), whose heroes were played here too. All
+ * at once, and awaited together, so none is left running after the response.
+ * None of them throws (`keepGuestHousehold`).
  */
-function keepHomes(runHousehold: string, state: RunState, deps: HandlerDeps): ReturnType<typeof keepGuestHousehold> {
-  const visitors = new Set(state.party.map((m) => m.homeHouseholdId).filter((h): h is string => h !== undefined));
-  visitors.delete(runHousehold);
-  for (const home of visitors) void keepGuestHousehold(home, deps).catch(() => undefined);
-  return keepGuestHousehold(runHousehold, deps);
+async function keepHomes(runHousehold: string, state: RunState, deps: HandlerDeps): Promise<void> {
+  const homes = new Set([runHousehold, ...state.party.flatMap((m) => (m.homeHouseholdId ? [m.homeHouseholdId] : []))]);
+  await Promise.all([...homes].map((home) => keepGuestHousehold(home, deps)));
 }
 
 function errorResult(error: ActionResponse): { error: ActionResponse } {
