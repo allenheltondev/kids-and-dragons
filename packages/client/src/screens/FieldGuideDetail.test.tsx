@@ -117,16 +117,24 @@ describe("FieldGuideDetail sections", () => {
     expect(screen.getByText("First found by someone in your household")).toBeTruthy();
   });
 
-  it("Read aloud goes through the speak seam as ui", async () => {
-    const speaker = vi.fn();
-    setSpeaker(speaker);
-    const e = guide.entries["creature.bone_crawler"]!;
-    setFieldGuideDiscoveries({ [e.id]: find() });
-    render(<FieldGuideDetail guide={guide} entryId={e.id} />);
-    await userEvent.setup().click(screen.getByRole("button", { name: /Read aloud/ }));
-    expect(speaker).toHaveBeenCalledTimes(1);
-    expect(speaker.mock.calls[0]![0]).toContain(e.title);
-    expect(speaker.mock.calls[0]![1]).toMatchObject({ source: "ui" });
+  it("Read aloud speaks on tap even with the read-aloud switch off", async () => {
+    const spoken: string[] = [];
+    Object.defineProperty(window, "speechSynthesis", {
+      value: { speak: (u: { text: string }) => void spoken.push(u.text), cancel() {}, getVoices: () => [] },
+      configurable: true,
+    });
+    vi.stubGlobal("SpeechSynthesisUtterance", class { constructor(public text: string) {} });
+    try {
+      const e = guide.entries["creature.bone_crawler"]!;
+      setFieldGuideDiscoveries({ [e.id]: find() });
+      render(<FieldGuideDetail guide={guide} entryId={e.id} />);
+      await userEvent.setup().click(screen.getByRole("button", { name: /Read aloud/ }));
+      await vi.waitFor(() => expect(spoken.length).toBeGreaterThan(0));
+      expect(spoken.join(" ")).toContain(e.title);
+    } finally {
+      vi.unstubAllGlobals();
+      Reflect.deleteProperty(window, "speechSynthesis");
+    }
   });
 });
 
