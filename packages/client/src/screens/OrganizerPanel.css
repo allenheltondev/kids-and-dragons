@@ -94,6 +94,19 @@
   font-size: var(--kad-text-sm);
 }
 
+/* "End Gemfall for Pip" and its question (#282), under the heroes they name. */
+.organizer__who > .organizer__link {
+  align-self: flex-start;
+}
+
+.organizer__confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kad-space-2);
+  font-size: var(--kad-text-sm);
+}
+
 .organizer__row-actions,
 .organizer__form-actions {
   display: flex;

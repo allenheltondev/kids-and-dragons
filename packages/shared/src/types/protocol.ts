@@ -515,6 +515,11 @@ export interface OrganizerHero {
   species: string;
   class: string;
   level: number;
+  /**
+   * The campaign she is in the middle of, by title (#282): her claim, while
+   * it is in flight. Absent when she is free to join any table.
+   */
+  adventure?: string;
 }
 
 export interface OrganizerPlayer {
