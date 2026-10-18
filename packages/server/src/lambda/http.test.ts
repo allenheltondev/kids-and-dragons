@@ -1700,6 +1700,7 @@ const SHARED = [
   { path: "/api/room/:code/remove", method: "POST", probe: "/api/room/ABCD/remove" },
   // Host controls (#263, handlers/host.ts).
   { path: "/api/room/:code/lock", method: "POST", probe: "/api/room/ABCD/lock" },
+  { path: "/api/room/:code/quiet", method: "POST", probe: "/api/room/ABCD/quiet" },
   { path: "/api/room/:code/close", method: "POST", probe: "/api/room/ABCD/close" },
   { path: "/api/action", method: "POST", probe: "/api/action" },
   { path: "/api/preview", method: "POST", probe: "/api/preview" },
