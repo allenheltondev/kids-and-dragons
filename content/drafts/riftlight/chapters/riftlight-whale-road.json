@@ -1,0 +1,91 @@
+{
+  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "id": "riftlight-whale-road",
+  "campaignId": "riftlight-opening-preview",
+  "index": 5,
+  "title": "The Whales' Turning Place",
+  "biome": "sky_islands",
+  "music": "riftlight-paths",
+  "estimatedMinutes": 12,
+  "xpAward": 140,
+  "entry": "whales",
+  "scenes": {
+    "whales": {
+      "type": "story",
+      "narration": "Cloud whales turn slowly above a grassy island. Their long fins sweep the mist. Two folds hang over empty ground, pulsing at exactly the same moment. Each time they pulse, the whales turn back. A kitsune keeper keeps travelers behind a rope.",
+      "choices": [
+        {
+          "id": "watch",
+          "label": "Watch one full circle",
+          "icon": "hand",
+          "goto": "olivia"
+        }
+      ]
+    },
+    "olivia": {
+      "type": "choice_point",
+      "narration": "Lady Olivia, the unicorn Riftseeker you met on the glacier, waits with a notebook. \"Those openings answer each other. I want to open them now.\" The keeper shakes her head. \"The whales are using this space.\" Olivia points to the rope. \"Help me hold the note and I can wake the pair early. It will scatter them. Or guide them clear first. Your choice.\"",
+      "choices": [
+        {
+          "id": "guide",
+          "label": "Guide the whales clear first",
+          "icon": "hand",
+          "goto": "guide"
+        },
+        {
+          "id": "consider",
+          "label": "Hear the shortcut before deciding at the rift",
+          "icon": "hand",
+          "goto": "offer"
+        }
+      ]
+    },
+    "guide": {
+      "type": "story",
+      "narration": "You leave a broad lane across the grass. The keeper sings a low note; you answer only when the nearest whale faces the lane. Nobody climbs aboard. One whale turns, then the others follow its slow sweep into clear sky.",
+      "choices": [
+        {
+          "id": "finish",
+          "label": "Wait until the last whale is clear",
+          "icon": "hand",
+          "goto": "gentle"
+        }
+      ]
+    },
+    "gentle": {
+      "type": "rest",
+      "narration": "The last tail slips beyond the folds. Both openings spread at once and hold steady. The keeper lowers the rope. \"Now they can travel without circling us.\" Olivia closes her notebook. The pair is ready to cross, or you can pause on the island.",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "whales_guided",
+          "value": true
+        }
+      ]
+    },
+    "offer": {
+      "type": "rest",
+      "narration": "Olivia waits beside the rope. Nothing has opened yet. At the rift, Lady Olivia's way will wake the pair early and scatter the whales. You can still choose to guide them clear instead. The keeper leaves the broad lane open.",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success"
+    }
+  },
+  "llmHints": {
+    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
+    "forbidden": [
+      "death",
+      "gore",
+      "Corvane",
+      "emperor",
+      "Pangea",
+      "Hollow Gate",
+      "Legend Dragon"
+    ],
+    "npcVoices": {}
+  }
+}

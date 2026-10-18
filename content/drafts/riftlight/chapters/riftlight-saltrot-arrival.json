@@ -30,9 +30,15 @@
         },
         {
           "when": {
-            "notFlag": "saltrot_arrival_ferry"
+            "flag": "saltrot_arrival_glacier"
           },
           "text": "Behind you the fold still hums with cold glacier air."
+        },
+        {
+          "when": {
+            "flag": "saltrot_arrival_whales"
+          },
+          "text": "Behind you the linked fold carries the cloud whales' distant song. Its echo still answers from the island."
         }
       ],
       "art": "scenes/riftlight/stuttering-flats"
