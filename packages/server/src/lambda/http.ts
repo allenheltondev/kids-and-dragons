@@ -21,7 +21,7 @@ import type {
   APIGatewayProxyStructuredResultV2,
   Context,
 } from "aws-lambda";
-import { adoptDevice, addPlayer, createGuestHousehold, linkAccount } from "../handlers/account.ts";
+import { adoptDevice, addPlayer, createGuestHousehold, linkAccount, vetTypedName } from "../handlers/account.ts";
 import { applyAction } from "../handlers/action.ts";
 import {
   admitCodeLookup,
@@ -212,10 +212,12 @@ async function postRoom(req: Req, deps: HandlerDeps) {
   // Anonymous play (§4.5): a device nobody has seen before gets a household on
   // the spot. Nobody signs up to start a game.
   const existing = await resolvePrincipal(req, deps);
+  const hostName = vetTypedName(req.body.displayName, "Host");
+  if (!existing && !hostName.ok) return fromError(hostName.error);
   const host =
     existing ??
     (await createGuestHousehold(
-      { displayName: String(req.body.displayName ?? "Host"), userAgent: req.headers["user-agent"], display },
+      { displayName: hostName.ok ? hostName.value : "Host", userAgent: req.headers["user-agent"], display },
       deps,
     ));
 
@@ -337,12 +339,14 @@ async function postJoin(req: Req, deps: HandlerDeps, code: string) {
   if (!room) return error(404, "NOT_FOUND", `no open room ${code}`);
   // An unbound device joining a room gets a player created for it on the spot,
   // so a phone that has never seen this game joins in one tap.
+  const joinerName = vetTypedName(req.body.displayName, "Player");
+  if (!existing && !joinerName.ok) return fromError(joinerName.error);
   const joiner =
     existing ??
     (await addPlayer(
       {
         householdId: room.householdId,
-        displayName: String(req.body.displayName ?? "Player"),
+        displayName: joinerName.ok ? joinerName.value : "Player",
         userAgent: req.headers["user-agent"],
       },
       deps,

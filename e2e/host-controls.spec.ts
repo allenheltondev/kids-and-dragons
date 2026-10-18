@@ -34,7 +34,7 @@ test.describe("running the room", () => {
     await host.goto("/");
     await host.getByRole("button", { name: /want to host/i }).click();
     await host.getByText("Phone Mode").click();
-    await host.getByLabel(/your name/i).fill("Grown-up");
+    await host.getByLabel(/adventurer name/i).fill("Grown-up");
     await host.getByRole("button", { name: /^start a game$/i }).click();
     await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
     const code = new URL(host.url()).pathname.split("/").pop() ?? "";

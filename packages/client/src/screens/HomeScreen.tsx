@@ -13,6 +13,7 @@
  * link, for Phone Mode, where the host is seated as a player straight away.
  */
 
+import { randomName } from "./creationContent";
 import { Suspense, lazy, useCallback, useEffect, useId, useMemo, useState } from "react";
 import type { ChangeEvent, ReactElement } from "react";
 import type { RoomMode } from "@kad/shared";
@@ -109,7 +110,7 @@ function PersonalHome(): ReactElement {
     window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
   }, [pairCode]);
 
-  const [displayName, setDisplayName] = useState("");
+  const [displayName, setDisplayName] = useState(() => randomName());
   const [hosting, setHosting] = useState(false);
   const [mode, setMode] = useState<RoomMode>("party");
   const [code, setCode] = useState(() => normalizeCode(pendingCode ?? ""));
@@ -357,7 +358,7 @@ function PersonalHome(): ReactElement {
               <div className="home__field">
                 <label className="home__label" htmlFor={nameFieldId}>
                   <Icon name="name" />
-                  <span>Your name</span>
+                  <span>Your adventurer name</span>
                 </label>
                 <input
                   id={nameFieldId}
@@ -371,8 +372,16 @@ function PersonalHome(): ReactElement {
                   maxLength={20}
                   aria-describedby={nameHintId}
                 />
+                <Button
+                  variant="secondary"
+                  size="md"
+                  icon={<Icon name="shuffle" />}
+                  onClick={() => setDisplayName(randomName())}
+                >
+                  Surprise me
+                </Button>
                 <p id={nameHintId} className="home__hint kad-muted">
-                  This is the name the others see.
+                  Everyone sees this one. Pick a nickname or an adventurer name, never your real name.
                 </p>
               </div>
             ) : null}
