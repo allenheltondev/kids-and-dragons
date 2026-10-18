@@ -261,6 +261,11 @@ describe("the story turn (spec §6.1)", () => {
     expect(spoken.some((line) => line.startsWith("Thistle's turn."))).toBe(true);
   });
 
+  it("leaves the options to the phone that owns them", () => {
+    mount(storyChoice(["p_2"]));
+    expect(spoken.some((line) => line.includes("Push the gate"))).toBe(false);
+  });
+
   it("names nobody when the choice is open to anyone", () => {
     mount(storyChoice([]));
     expect(screen.queryByText(/turn to choose/)).toBeNull();

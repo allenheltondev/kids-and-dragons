@@ -66,6 +66,8 @@ import {
 import { biomeBackdropUrl, sceneArtFor, sceneBackdropUrl } from "../world/art-paths";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
+import { hear, useReadAloudOn } from "../speech/read-aloud";
+import { speak } from "@kad/shared";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { CharacterSheet } from "./CharacterSheet";
 import { Icon } from "./icons";
@@ -568,13 +570,30 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   }, [key]);
 
   /*
-   * Nothing is spoken from here on purpose. Narration, choice labels and roll
-   * prompts all go through `speak()` in NarrationPanel — the shared surface,
-   * which every player has exactly one of in either mode. Speaking them here as
-   * well would make a Travel Mode phone (both surfaces, one device) say every
-   * line twice. spec §11's requirement is that the text *flows through the
-   * seam*, not that every component calls it.
+   * Narration and roll prompts are spoken in NarrationPanel, the shared surface
+   * (one voice per player in either mode). What is spoken here is only what
+   * belongs to this phone: its own choices. A TV does not read them out, so in
+   * Party Mode each phone with read-aloud on says its own player's options
+   * without talking over the room's narration; a Travel Mode phone renders the
+   * narration pane first, so its choices queue up behind the story.
+   *
+   * Said once per question (not per vote landing), and never interrupting.
    */
+  const readAloud = useReadAloudOn();
+  const choiceLine =
+    myPrompt !== null && myPrompt.kind === "choice"
+      ? myPrompt.options.map((option) => option.label).join(". ")
+      : "";
+  const spokenChoices = useRef<string | null>(null);
+  useEffect(() => {
+    if (!readAloud || choiceLine === "") {
+      if (choiceLine === "") spokenChoices.current = null;
+      return;
+    }
+    if (spokenChoices.current === choiceLine) return;
+    spokenChoices.current = choiceLine;
+    speak(choiceLine, { source: "choice" });
+  }, [readAloud, choiceLine]);
 
   const dispatch = useCallback(
     async (intent: ClientIntent) => {
@@ -962,7 +981,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   .map(([playerId]) => playerId);
                 const selected = pendingChoice === option.id || myVote === option.id;
                 return (
-                  <li key={option.id}>
+                  <li key={option.id} className={readAloud ? "prompt__option--hear" : undefined}>
                     <button
                       type="button"
                       className={`choice kad-tap kad-focusable${selected ? " choice--on" : ""}`}
@@ -985,6 +1004,18 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                         ) : null}
                       </span>
                     </button>
+                    {/* Hear it before picking it: a separate target, so tapping the
+                        card still only chooses (spec §11: icon, big target). */}
+                    {readAloud ? (
+                      <button
+                        type="button"
+                        className="choice__hear kad-tap kad-focusable"
+                        aria-label={`Hear: ${option.label}`}
+                        onClick={() => hear(option.label, { source: "choice" })}
+                      >
+                        <Icon name="sound" size="1.5em" />
+                      </button>
+                    ) : null}
                   </li>
                 );
               })}

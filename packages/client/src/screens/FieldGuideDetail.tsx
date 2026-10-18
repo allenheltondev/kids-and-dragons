@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { speak } from "@kad/shared";
 import type { FieldGuide as FieldGuideData, FieldGuideEntry } from "@kad/shared";
+import { hear } from "../speech/read-aloud";
 import { selectGuideEntry } from "../store/player-navigation";
 import { useFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import type { FieldGuideDiscoveries } from "../store/field-guide-discoveries";
@@ -101,7 +101,7 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, 
             </ul>
           )}
           <Button variant="secondary" size="md" icon={<Icon name="sound" />}
-            onClick={() => speak(spoken, { source: "ui", interrupt: true })}>
+            onClick={() => hear(spoken, { source: "ui" })}>
             Read aloud
           </Button>
         </header>

@@ -1,9 +1,5 @@
 /* Small outline control, with a full touch target, above the game chrome. */
 .kad-audio-control {
-  position: fixed;
-  top: calc(0.25rem + env(safe-area-inset-top, 0px));
-  right: calc(0.25rem + env(safe-area-inset-right, 0px));
-  z-index: 5;
   display: flex;
   align-items: center;
   gap: 0.5em;
