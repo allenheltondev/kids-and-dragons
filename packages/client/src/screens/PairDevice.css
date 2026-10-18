@@ -1,0 +1,44 @@
+/* Pairing a new device to a kid (#281). Sits on the home card. */
+
+.pair__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3, 0.75em);
+  text-align: center;
+}
+
+.pair__note,
+.pair__fine {
+  margin: 0;
+}
+
+/* Read out across a room, so big and spaced. */
+.pair__code {
+  margin: 0;
+  font-size: var(--font-size-2xl, 2em);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  user-select: all;
+}
+
+.pair__qr {
+  width: min(16rem, 70%);
+  height: auto;
+  border-radius: var(--radius-md, 0.75em);
+  background: #ffffff;
+}
+
+.pair__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+}
+
+.pair__input {
+  text-align: center;
+  font-size: var(--font-size-xl, 1.5em);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}

@@ -1260,6 +1260,54 @@ describe("GET /api/state", () => {
 // Sign-in — the routes with no dev-server twin
 // ---------------------------------------------------------------------------
 
+describe("/api/pair/* (#281)", () => {
+  const post = (path: string, headers: Record<string, string>, body: Record<string, unknown> = {}) =>
+    event("POST", path, { headers, body });
+
+  it("pairs a new browser from a bound phone, with no sign-in anywhere", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    const { players } = await seedHousehold(harness, 1);
+    const phone = players[0]!;
+
+    const made = await respond(post("/api/pair/code", { "x-kad-device-token": phone.deviceToken }), rt);
+    expect(made.statusCode).toBe(200);
+    const { code } = bodyOf(made) as unknown as { code: string };
+
+    const redeemed = await respond(post("/api/pair/redeem", {}, { code }), rt);
+    expect(redeemed.statusCode).toBe(200);
+    const bound = bodyOf(redeemed) as unknown as { deviceToken: string; playerId: string; householdId: string };
+    expect(bound).toMatchObject({ playerId: "p_1", householdId: "h_test" });
+    expect(await harness.identity.resolveDevice(bound.deviceToken)).toMatchObject({ playerId: "p_1" });
+
+    // Single use.
+    const again = await respond(post("/api/pair/redeem", {}, { code }), rt);
+    expect(again.statusCode).toBe(404);
+  });
+
+  it("makes no code for a device that is not her: unbound is 401, a shared tablet 403", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    const { householdId } = await seedHousehold(harness, 1);
+
+    expect((await respond(post("/api/pair/code", {}), rt)).statusCode).toBe(401);
+    const tablet = await harness.identity.issueSharedDeviceToken({ householdId });
+    const refused = await respond(post("/api/pair/code", { "x-kad-shared-token": tablet.token }), rt);
+    expect(refused.statusCode).toBe(403);
+  });
+
+  it("answers 429 once a client has missed too many codes", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) {
+      expect((await respond(post("/api/pair/redeem", {}, { code: "ZZZZZZZZ" }), rt)).statusCode).toBe(404);
+    }
+    const slow = await respond(post("/api/pair/redeem", {}, { code: "ZZZZZZZZ" }), rt);
+    expect(slow.statusCode).toBe(429);
+    expect(slow.headers?.["retry-after"]).toBeTruthy();
+  });
+});
+
 describe("/api/organizer/* (#248)", () => {
   const signedIn = (token: string) => ({ authorization: `Bearer ${token}` });
   const answer = (result: APIGatewayProxyStructuredResultV2) =>
@@ -1275,6 +1323,7 @@ describe("/api/organizer/* (#248)", () => {
       ["POST", "/api/organizer/players"],
       ["POST", "/api/organizer/players/rename"],
       ["POST", "/api/organizer/players/retire"],
+      ["POST", "/api/organizer/players/pair"],
       ["POST", "/api/organizer/invite"],
       ["POST", "/api/organizer/invite/accept"],
       ["POST", "/api/organizer/owners/remove"],
@@ -1722,6 +1771,10 @@ const SHARED = [
   { path: "/api/auth/shared-device", method: "POST", probe: "/api/auth/shared-device" },
   { path: "/api/auth/forget-device", method: "POST", probe: "/api/auth/forget-device" },
   { path: "/api/household/players", method: "GET", probe: "/api/household/players" },
+  // Pairing a new device to a kid (#281, handlers/pairing.ts): her own phone
+  // makes a code, the new device redeems it.
+  { path: "/api/pair/code", method: "POST", probe: "/api/pair/code" },
+  { path: "/api/pair/redeem", method: "POST", probe: "/api/pair/redeem" },
 ] as const;
 
 /**

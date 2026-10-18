@@ -40,6 +40,7 @@ import { listHeroes } from "../handlers/heroes.ts";
 import { getJournal } from "../handlers/journal.ts";
 import { getState } from "../handlers/state.ts";
 import { organizerRoute } from "../handlers/organizer.ts";
+import { isSlowDown, pairFromDevice, redeemPairingCode } from "../handlers/pairing.ts";
 import {
   forgetDevice,
   listSharedPlayers,
@@ -143,6 +144,8 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (req.path === "/api/auth/link") return (deps) => postLink(req, deps, rt);
     if (req.path === "/api/auth/device") return (deps) => postAdopt(req, deps, rt);
     if (req.path === "/api/auth/shared-device") return (deps) => postShareDevice(req, deps, rt);
+    if (req.path === "/api/pair/code") return (deps) => postPairCode(req, deps);
+    if (req.path === "/api/pair/redeem") return (deps) => postPairRedeem(req, deps);
     if (req.path === "/api/auth/forget-device") return (deps) => postForgetDevice(req, deps, rt);
 
     const join = /^\/api\/room\/([A-Za-z]{4})\/join$/.exec(req.path);
@@ -700,6 +703,38 @@ async function getSharedPlayers(req: Req, deps: HandlerDeps) {
   if (!shared) return forgottenDevice();
   const result = await listSharedPlayers(shared, deps);
   return result.ok ? json(200, result.value, shared) : fromError(result.error);
+}
+
+/**
+ * "Play as me on another device" (#281): her own phone asks for a one-time
+ * code. A personal device token only: a shared tablet is nobody, so it is
+ * told so rather than treated as unbound.
+ */
+async function postPairCode(req: Req, deps: HandlerDeps) {
+  const found = await resolvePrincipal(req, deps);
+  if (!found) {
+    if (req.headers["x-kad-shared-token"]) {
+      return error(403, "FORBIDDEN", "A shared tablet isn't one kid. Ask a grown-up to make the code.");
+    }
+    return error(401, "FORBIDDEN", "Only a device that is already her can make a code.");
+  }
+  const result = await pairFromDevice(found.principal, deps);
+  return result.ok ? json(200, result.value, found.principal) : fromError(result.error);
+}
+
+/**
+ * The new device redeems a code. No sign-in: the code is the credential.
+ * A token the device already holds, if it still resolves, is the binding that
+ * gets replaced.
+ */
+async function postPairRedeem(req: Req, deps: HandlerDeps) {
+  const previous = await resolvePrincipal(req, deps);
+  const result = await redeemPairingCode(
+    { code: req.body.code, client: req.client, userAgent: req.headers["user-agent"], previous: previous?.principal },
+    deps,
+  );
+  if (isSlowDown(result)) return slowDown(deps);
+  return result.ok ? json(200, result.value) : fromError(result.error);
 }
 
 async function postAdopt(req: Req, deps: HandlerDeps, rt: HttpRuntime) {
