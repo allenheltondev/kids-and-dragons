@@ -34,7 +34,7 @@ import type {
 } from "@kad/shared";
 import { newId } from "../ids.ts";
 import type { HouseholdOwnerRecord } from "../store/repository.ts";
-import { createProfile, summaries, type AccountDeps } from "./account.ts";
+import { createProfile, summaries, vetTypedName, type AccountDeps } from "./account.ts";
 import { admitCodeLookup } from "./code-guard.ts";
 import { createPairingCode } from "./pairing.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
@@ -385,6 +385,8 @@ async function profileName(
   if (name === "" || name.length > NEW_PLAYER_NAME_MAX) {
     return fail("ILLEGAL", `a name of 1 to ${NEW_PLAYER_NAME_MAX} letters`);
   }
+  const vetted = vetTypedName(name, name);
+  if (!vetted.ok) return vetted;
   const players = await deps.repo.listPlayers(householdId);
   const clash = players.some(
     (p) => p.id !== self && !p.retired && p.displayName.trim().toLocaleLowerCase() === name.toLocaleLowerCase(),
