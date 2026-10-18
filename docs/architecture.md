@@ -1073,6 +1073,19 @@ tables her heroes' claims name, and her home (when only she is deleted):
 | `FIELDGUIDE` of each of those tables | Her player id as `firstFoundBy` | Replaced with `FORGOTTEN_FINDER` (`forgetFinder`) |
 | A visitor's room session or seat token on a phone | Her player id and home | Turned away at every door: no profile (`isOut`) |
 
+**Why a visit record, and why keyed by her.** A table's copies cannot be
+reached from her ids alone: nothing under her home says where she played
+besides the last table each hero's claim names. Two ways out were weighed:
+(a) write down the tables she plays at, and visit each on delete; (b) have
+other households store only her ids and resolve her name at render time.
+(b) would still need a sweep of every event log written before it, and a
+save has to carry a hero's name to replay without her home, so (a) it is.
+The record is a `VISIT#<playerId>` row per table rather than a list on her
+character, so a kid with no hero yet is covered, a move (#251) carries
+nothing, and two tables seating her at once never contend on her hero's row.
+A table one of her heroes is claimed by is visited too, which covers visits
+from before the record existed.
+
 Her player id is a random id, never anything about her, so where a save
 needs it to stay well formed (a turn order, a vote, a trade, an event's
 author) it stays, and names nobody. Her nickname is replaced only in fields
