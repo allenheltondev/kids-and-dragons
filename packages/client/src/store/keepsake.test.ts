@@ -380,6 +380,53 @@ describe("restoring on a new phone", () => {
   });
 });
 
+describe("fetching the sign-in code", () => {
+  function lazy(overrides: Partial<Api> = {}) {
+    const base = setup({ api: overrides });
+    const cognito = base.cognito;
+    const loadAuth = vi.fn(async () => {
+      const real = await import("../sync/auth");
+      return { ...real, createCognitoClient: () => cognito, createDevAuthClient: () => cognito };
+    });
+    const store = createKeepsakeStore({ api: base.api, storage: base.storage, organizer: base.organizer, loadAuth });
+    return { store, loadAuth, cognito };
+  }
+
+  it("is not fetched by the home screen's check, with a pool or without", async () => {
+    const withPool = lazy();
+    await withPool.store.getState().check();
+    expect(withPool.store.getState().available).toBe(true);
+    expect(withPool.loadAuth).not.toHaveBeenCalled();
+
+    const none = lazy({ fetchConfig: vi.fn(async () => null), probeDevAuth: vi.fn(async () => false) });
+    await none.store.getState().check();
+    expect(none.loadAuth).not.toHaveBeenCalled();
+  });
+
+  it("is fetched once a grown-up opens sign-in, and the code is sent with it", async () => {
+    const { store, loadAuth, cognito } = lazy();
+    await store.getState().check();
+    store.getState().open("organize", "home");
+    await store.getState().sendCode("allen@example.com");
+    expect(loadAuth).toHaveBeenCalledTimes(1);
+    expect(cognito.requestCode).toHaveBeenCalledWith("allen@example.com");
+    expect(store.getState().step).toBe("code");
+  });
+
+  it("says so plainly when it will not load, and fetches it again on the next try", async () => {
+    const { store, loadAuth } = lazy();
+    // Opening the panel starts the fetch, and sending the code waits on that same one.
+    loadAuth.mockRejectedValueOnce(new Error("Failed to fetch dynamically imported module"));
+    await store.getState().check();
+    store.getState().open("organize", "home");
+    await store.getState().sendCode("allen@example.com");
+    expect(store.getState().error).toMatch(/couldn't load/);
+    expect(store.getState().step).toBe("email");
+    await store.getState().sendCode("allen@example.com");
+    expect(store.getState().step).toBe("code");
+  });
+});
+
 describe("local dev sign-in", () => {
   it("is offered when the dev server answers the probe, without a user pool", async () => {
     const { store } = setup({

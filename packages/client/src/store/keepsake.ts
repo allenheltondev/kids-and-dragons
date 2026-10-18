@@ -17,16 +17,8 @@
  */
 
 import { create } from "zustand";
-import {
-  AuthError,
-  createCognitoClient,
-  createDevAuthClient,
-  type AuthTokens,
-  type CognitoClient,
-  type PendingChallenge,
-} from "../sync/auth";
+import type { AuthTokens, CognitoClient, PendingChallenge, createCognitoClient } from "../sync/auth";
 import { api as defaultApi, type Api, type LinkAccountResponse } from "../sync/client";
-import { useOrganizerStore } from "./organizer";
 import {
   asPlayerIdentity,
   becomeSharedDevice,
@@ -163,8 +155,18 @@ export interface KeepsakeStore {
 export interface KeepsakeDeps {
   api: Api;
   storage: KeyValueStorage;
-  /** Built from `/api/config` on first use; injected whole by tests. */
-  makeCognito: typeof createCognitoClient;
+  /**
+   * Built from `/api/config` on first use; injected whole by tests. Left out,
+   * the real client is fetched with `check()`: the sign-in code and the
+   * organizer store stay off the first paint (tools/perf/bundle-budget.ts).
+   */
+  makeCognito?: typeof createCognitoClient;
+  /**
+   * How the sign-in code arrives: on the first sign-in action, never with
+   * `check()`, which every home screen runs on mount. Injected by tests to
+   * prove the home screen alone does not fetch it.
+   */
+  loadAuth?: () => Promise<typeof import("../sync/auth")>;
   /** Where the `organize` sign-in goes on to (#248). */
   organizer: { begin(idToken: string, email: string): Promise<void>; end(): void };
 }
@@ -173,10 +175,11 @@ export function defaultKeepsakeDeps(): KeepsakeDeps {
   return {
     api: defaultApi,
     storage: defaultStorage(),
-    makeCognito: createCognitoClient,
     organizer: {
-      begin: (idToken, email) => useOrganizerStore.getState().begin(idToken, email),
-      end: () => useOrganizerStore.getState().end(),
+      begin: async (idToken, email) => (await import("./organizer")).useOrganizerStore.getState().begin(idToken, email),
+      end: () => {
+        void import("./organizer").then(({ useOrganizerStore }) => useOrganizerStore.getState().end());
+      },
     },
   };
 }
@@ -199,8 +202,35 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
    */
   let pendingAccount: AccountRecord | null = null;
   let checking: Promise<void> | null = null;
+  /** What `check()` found: which client to build when a grown-up starts signing in. */
+  let pool: { region: string; userPoolId: string; clientId: string } | "dev" | null = null;
+  let building: Promise<CognitoClient | null> | null = null;
+  const loadAuth = deps.loadAuth ?? (() => import("../sync/auth"));
 
   return create<KeepsakeStore>()((set, get) => {
+    /**
+     * The sign-in client, fetched and built on the first sign-in action (or
+     * warmed when the panel opens). A failed fetch is asked again next time.
+     */
+    function client(): Promise<CognitoClient | null> {
+      if (cognito) return Promise.resolve(cognito);
+      if (pool === null) return Promise.resolve(null);
+      const found = pool;
+      building ??= loadAuth()
+        .then((auth) => {
+          cognito = found === "dev" ? auth.createDevAuthClient() : (deps.makeCognito ?? auth.createCognitoClient)(found);
+          set({ passkeyPossible: cognito.canUsePasskey() });
+          return cognito;
+        })
+        .catch(() => {
+          // A chunk that would not load (offline, or a deploy mid-session):
+          // say so plainly, and fetch it again on the next try.
+          building = null;
+          throw new Error("Sign-in couldn't load. Check the connection and try again.");
+        });
+      return building;
+    }
+
     /**
      * What a sign-in or a picked household (#248) came back with: bind this
      * phone if the server did, ask which household or which player if there
@@ -322,24 +352,22 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
       // Idempotent and concurrency-safe: several screens mount at once and all
       // of them want to know whether to show the offer.
       checking ??= (async () => {
+        // Availability only. The sign-in code itself waits for a grown-up to
+        // start signing in (`client()`), so the home screen never fetches it.
         const config = await deps.api.fetchConfig();
         if (!config?.auth.userPoolId) {
           // No user pool: either a deployment without sign-in, or the local dev
           // server, which offers its own pool-free one.
           if (await deps.api.probeDevAuth()) {
-            cognito = createDevAuthClient();
+            pool = "dev";
             set({ available: true, passkeyPossible: false });
           } else {
             set({ available: false });
           }
           return;
         }
-        cognito = deps.makeCognito({
-          region: config.region,
-          userPoolId: config.auth.userPoolId,
-          clientId: config.auth.clientId,
-        });
-        set({ available: true, passkeyPossible: cognito.canUsePasskey() });
+        pool = { region: config.region, userPoolId: config.auth.userPoolId, clientId: config.auth.clientId };
+        set({ available: true });
       })().catch(() => {
         set({ available: false });
         checking = null;
@@ -352,10 +380,13 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
       // sign in has already decided, and there is no party on screen to show.
       const step = purpose === "keep" && entry === "offer" ? "offer" : "email";
       set({ purpose, entry, step, error: null, players: [], households: [], visitorRoom: null });
+      // Warm the sign-in code while the email is typed; `sendCode` waits for it.
+      client().catch(() => undefined);
     },
 
     openVisitors(code: string, open: boolean) {
       set({ purpose: "visitors", entry: "home", step: "email", error: null, players: [], households: [], visitorRoom: { code, open } });
+      client().catch(() => undefined);
     },
 
     close() {
@@ -381,14 +412,14 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
         set({ error: "That email address doesn't look right." });
         return;
       }
-      if (!cognito) {
-        set({ error: "Sign-in isn't available here." });
-        return;
-      }
-
       set({ busy: true, error: null });
       try {
-        const challenge = await cognito.requestCode(trimmed);
+        const signIn = await client();
+        if (!signIn) {
+          set({ busy: false, error: "Sign-in isn't available here." });
+          return;
+        }
+        const challenge = await signIn.requestCode(trimmed);
         set({ step: "code", challenge, busy: false });
       } catch (err) {
         set({ busy: false, error: messageFor(err) });
@@ -535,8 +566,8 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
   });
 }
 
+/** An `AuthError` is an `Error` whose message is written for the grown-up, so it reads as one. */
 function messageFor(err: unknown): string {
-  if (err instanceof AuthError) return err.message;
   if (err instanceof Error && err.message) return err.message;
   return "Something went wrong. Try again in a moment.";
 }
