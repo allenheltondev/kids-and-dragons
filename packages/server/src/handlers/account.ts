@@ -23,7 +23,7 @@
  * (`lambda/http.ts`), which is also the only place that knows Cognito exists.
  */
 
-import type { Character, Household, PlayerProfile } from "@kad/shared";
+import type { Character, Household, OrganizerHouseholdSummary, PlayerProfile } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { GuestRenewal } from "../store/repository.ts";
 import { newId } from "../ids.ts";
@@ -233,10 +233,24 @@ export interface LinkAccountInput {
    * these".
    */
   preferExisting?: boolean;
+  /**
+   * Which of the account's households to sign in to, picked from
+   * `households` on an earlier answer (#248). An account that runs a group as
+   * well as its own family has more than one, and only the grown-up knows
+   * which this phone is for. Absent, the first is used, as before.
+   */
+  householdId?: string | undefined;
 }
 
 export interface LinkAccountResult {
-  householdId: string;
+  /**
+   * The household signed in to. `null` when the account owns more than one
+   * and nothing said which (#248): `households` lists them, `players` and
+   * `characters` are empty, and the caller asks again with a `householdId`.
+   * Never a guess, because the wrong one binds a phone into somebody else's
+   * family or group.
+   */
+  householdId: string | null;
   /** True when a guest household just became permanent — the thing worth saying. */
   claimed: boolean;
   players: PlayerProfile[];
@@ -250,6 +264,11 @@ export interface LinkAccountResult {
    * False means the phone is not yet anybody in this household.
    */
   deviceBound: boolean;
+  /**
+   * Every household this account owns (#248), for the picker. More than one
+   * means the answer is for `householdId` and the grown-up may want another.
+   */
+  households: OrganizerHouseholdSummary[];
 }
 
 /**
@@ -278,11 +297,14 @@ export async function linkAccount(
 ): Promise<HandlerResult<LinkAccountResult>> {
   const owned = await deps.repo.listHouseholdsForAccount(input.cognitoSub);
   const playsIn = (householdId: string) => input.principal?.householdId === householdId;
+  if (input.householdId !== undefined && !owned.includes(input.householdId)) {
+    return fail("FORBIDDEN", "that household belongs to a different account");
+  }
 
   // Case 1 — a device is already playing. Try to claim what it is playing in,
   // unless this is a sign-in to an account that already has a household.
-  const claimGuest = !(input.preferExisting && owned.length > 0);
-  if (input.principal) {
+  const claimGuest = !(input.preferExisting && owned.length > 0) && input.householdId === undefined;
+  if (input.principal && (input.householdId === undefined || input.householdId === input.principal.householdId)) {
     const current = await deps.repo.getHousehold(input.principal.householdId);
     if (!current) return fail("NOT_FOUND", `no household ${input.principal.householdId}`);
 
@@ -303,20 +325,30 @@ export async function linkAccount(
         }
       } else {
         const claimed = await deps.repo.claimHousehold(current.id, input.cognitoSub, input.principal.deviceId);
-        if (claimed) return ok(await describe(current.id, true, true, deps));
+        if (claimed) return ok(await describe(current.id, true, true, input.cognitoSub, deps));
       }
       // Someone else's already, or not this device's to claim. Fall through to
       // this account's own household.
-    } else if (current.ownerSub === input.cognitoSub) {
-      // Already theirs — signing in again is not an event.
-      return ok(await describe(current.id, false, true, deps));
+    } else if (owned.includes(current.id)) {
+      // Already theirs (founding or co-organizer) — signing in again is not an event.
+      return ok(await describe(current.id, false, true, input.cognitoSub, deps));
     }
   }
 
   // Case 2 — an existing account, on a device that is not (or no longer) bound
   // to a household of theirs.
-  const first = owned[0];
-  if (first) return ok(await describe(first, false, playsIn(first), deps));
+  if (input.householdId === undefined && owned.length > 1) {
+    return ok({
+      householdId: null,
+      claimed: false,
+      deviceBound: false,
+      players: [],
+      characters: [],
+      households: await summaries(owned, deps),
+    });
+  }
+  const chosen = input.householdId ?? owned[0];
+  if (chosen) return ok(await describe(chosen, false, playsIn(chosen), input.cognitoSub, deps));
 
   // Case 3 — a brand new account with nothing to claim.
   const nowMs = deps.now();
@@ -335,7 +367,7 @@ export async function linkAccount(
     deps,
   );
   return ok({
-    ...(await describe(householdId, false, true, deps)),
+    ...(await describe(householdId, false, true, input.cognitoSub, deps)),
     deviceToken: bound.deviceToken,
     playerId: bound.player.id,
   });
@@ -368,6 +400,7 @@ export async function adoptDevice(
   }
   const player = await deps.repo.getPlayer(input.householdId, input.playerId);
   if (!player) return fail("NOT_FOUND", `no player ${input.playerId}`);
+  if (player.retired) return fail("ILLEGAL", `${player.displayName} is retired. Bring them back first.`);
 
   const { token } = await deps.identity.issueDeviceToken({
     householdId: input.householdId,
@@ -377,15 +410,40 @@ export async function adoptDevice(
   return ok({ deviceToken: token, playerId: player.id });
 }
 
+/** Households as the picker draws them (#248): name, and how many kids are still on it. */
+export async function summaries(
+  householdIds: readonly string[],
+  deps: Pick<AccountDeps, "repo">,
+): Promise<OrganizerHouseholdSummary[]> {
+  const rows = await Promise.all(
+    householdIds.map(async (id): Promise<OrganizerHouseholdSummary | null> => {
+      const [household, players] = await Promise.all([deps.repo.getHousehold(id), deps.repo.listPlayers(id)]);
+      if (!household) return null;
+      return { id, displayName: household.displayName, players: players.filter((p) => !p.retired).length };
+    }),
+  );
+  return rows.filter((row): row is OrganizerHouseholdSummary => row !== null);
+}
+
 async function describe(
   householdId: string,
   claimed: boolean,
   deviceBound: boolean,
+  cognitoSub: string,
   deps: AccountDeps,
 ): Promise<LinkAccountResult> {
-  const [players, characters] = await Promise.all([
+  const [players, characters, owned] = await Promise.all([
     deps.repo.listPlayers(householdId),
     deps.repo.listCharacters(householdId),
+    deps.repo.listHouseholdsForAccount(cognitoSub),
   ]);
-  return { householdId, claimed, deviceBound, players, characters };
+  return {
+    householdId,
+    claimed,
+    deviceBound,
+    // A retired kid is not somebody this phone can become (#248).
+    players: players.filter((p) => !p.retired),
+    characters,
+    households: await summaries(owned, deps),
+  };
 }

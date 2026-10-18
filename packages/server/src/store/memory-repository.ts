@@ -39,6 +39,8 @@ import type {
   EventRecord,
   GameRepository,
   GuestRenewal,
+  HouseholdOwnerRecord,
+  OrganizerInviteRecord,
   RoomRecord,
   RunRecord,
 } from "./repository.ts";
@@ -57,7 +59,9 @@ import {
   GUESS,
   GUESS_WINDOW_SK,
   HH,
+  INVITE,
   META,
+  OWNER_SK,
   PLAYER_SK,
   PREFIX,
   ROOM,
@@ -72,7 +76,7 @@ interface TableItem {
   SK: string;
   GSI1PK?: string;
   GSI1SK?: string;
-  /** Epoch seconds, TTL attribute. Only rooms and code-miss windows carry it. */
+  /** Epoch seconds, TTL attribute. Only rooms, code-miss windows and organizer invites carry it. */
   ttl?: number;
   /**
    * Schema version of `data`, per entity (architecture §3.2). A top-level
@@ -359,6 +363,48 @@ export class MemoryRepository implements GameRepository {
 
   async listHouseholdsForAccount(cognitoSub: string): Promise<string[]> {
     return this.query(ACCT(cognitoSub), "HH#").map((i) => i.SK.slice("HH#".length));
+  }
+
+  async putOwner(owner: HouseholdOwnerRecord): Promise<void> {
+    // No await between the two: one transaction, as in the real store.
+    this.put({ PK: HH(owner.householdId), SK: OWNER_SK(owner.cognitoSub), entity: "owner", data: owner });
+    this.put({
+      PK: ACCT(owner.cognitoSub),
+      SK: HH(owner.householdId),
+      entity: "account",
+      data: { cognitoSub: owner.cognitoSub, householdId: owner.householdId },
+    });
+  }
+
+  async listOwners(householdId: string): Promise<HouseholdOwnerRecord[]> {
+    return this.query(HH(householdId), PREFIX.owner).map((i) => i.data as HouseholdOwnerRecord);
+  }
+
+  async removeOwner(householdId: string, cognitoSub: string): Promise<void> {
+    this.items.delete(rowKey(HH(householdId), OWNER_SK(cognitoSub)));
+    this.items.delete(rowKey(ACCT(cognitoSub), HH(householdId)));
+    this.persist();
+  }
+
+  async putOrganizerInviteIfAbsent(invite: OrganizerInviteRecord): Promise<boolean> {
+    if (this.get(INVITE(invite.code), META)) return false;
+    this.put({ PK: INVITE(invite.code), SK: META, ttl: invite.ttl, entity: "invite", data: invite });
+    return true;
+  }
+
+  async redeemOrganizerInvite(
+    code: string,
+    nowIso: string,
+    owner: Omit<HouseholdOwnerRecord, "householdId">,
+  ): Promise<OrganizerInviteRecord | null> {
+    // Nothing yields from the read to the last write (`putOwner` writes before
+    // its first await): one transaction, as in the real store.
+    const item = this.get(INVITE(code), META);
+    const invite = item?.data as OrganizerInviteRecord | undefined;
+    if (!invite || invite.expiresAt <= nowIso) return null;
+    this.items.delete(rowKey(INVITE(code), META));
+    await this.putOwner({ ...owner, householdId: invite.householdId });
+    return invite;
   }
 
   async putPlayer(player: PlayerProfile): Promise<void> {

@@ -98,7 +98,81 @@ async function unfound(householdId: string, playerId: string, deps: HandlerDeps)
   if (device && device.kind !== "shared" && device.playerId === playerId) await deps.repo.dropFounder(householdId, household.founderDeviceId);
 }
 
+/**
+ * Take a player out of every room their household has open, as `removePlayer`
+ * does for one: on `removed`, away, out of any vote (#248, a retired profile).
+ * Nobody's host control, so there is no host to check; the caller has already
+ * proved a signed-in owner. A room they never sat in, a closed run, and a
+ * room already showing them out are left alone. Stops at the first room it
+ * could not write, so the caller can say so and be asked again.
+ */
+export async function takeOutEverywhere(
+  householdId: string,
+  playerId: string,
+  deps: Pick<HandlerDeps, "repo" | "now" | "channel">,
+): Promise<HandlerResult<{ rooms: number }>> {
+  let rooms = 0;
+  for (const run of await deps.repo.listRuns(householdId)) {
+    if (run.status !== "active") continue;
+    // Codes recycle: only the room that still points at this run is this run's.
+    const room = await deps.repo.getRoom(run.roomCode);
+    if (!room || room.runId !== run.id) continue;
+    const result = await commitRoomChange(
+      room,
+      playerId,
+      (state): RunState | null => {
+        const seated = state.party.some((m) => m.playerId === playerId) || state.seats?.[playerId] !== undefined;
+        if (!seated || isRemoved(state, playerId)) return null;
+        return settleChapterEndVote({
+          ...state,
+          removed: [...(state.removed ?? []), playerId],
+          party: state.party.map((m) => (m.playerId === playerId ? { ...m, connected: false, ready: false } : m)),
+        });
+      },
+      deps,
+    );
+    if (!result.ok) {
+      if (result.error.code === "NOT_FOUND") continue; // closed, or gone
+      return fail(result.error.code, "Couldn't take them out of a game in progress. Try again.");
+    }
+    if (result.value.changed) rooms++;
+  }
+  return ok({ rooms });
+}
+
 /** On `RunState.removed`: taken out of this room, and kept out. */
 export function isRemoved(state: Pick<RunState, "removed">, playerId: string): boolean {
   return state.removed?.includes(playerId) ?? false;
+}
+
+/**
+ * Retired by an organizer (#248), read from the profile itself. Checked beside
+ * `isRemoved` everywhere a room accepts a player, because `takeOutEverywhere`
+ * runs after the profile is retired and can fail: the profile is the record,
+ * and the run's `removed` list only the tidy-up. A profile that cannot be
+ * found is not retired (the caller's own checks decide what a missing player
+ * means).
+ */
+export async function isRetired(
+  repo: Pick<HandlerDeps["repo"], "getPlayer">,
+  householdId: string,
+  playerId: string,
+): Promise<boolean> {
+  return (await repo.getPlayer(householdId, playerId))?.retired === true;
+}
+
+/**
+ * Out of this run, either way: taken out by its host, or retired. The
+ * household is the player's own, from their session; without one it is the
+ * run's, which is the same household for anybody seated in it.
+ */
+export async function isOut(
+  state: Pick<RunState, "removed" | "runId">,
+  playerId: string,
+  householdId: string | null,
+  repo: Pick<HandlerDeps["repo"], "getPlayer" | "getRun">,
+): Promise<boolean> {
+  if (isRemoved(state, playerId)) return true;
+  const household = householdId ?? (await repo.getRun(state.runId))?.householdId;
+  return household !== undefined && (await isRetired(repo, household, playerId));
 }

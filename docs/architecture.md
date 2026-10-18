@@ -103,10 +103,11 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 
 | Entity | PK | SK | Notes |
 |---|---|---|---|
-| Account → household | `ACCT#<cognitoSub>` | `HH#<hhId>` | Written only when somebody signs in. An adult may own more than one. |
+| Account → household | `ACCT#<cognitoSub>` | `HH#<hhId>` | Written only when somebody signs in. An adult may own more than one. **This pointer is the authority**: every "may this account manage it?" reads it. |
 | Household | `HH#<hhId>` | `META` | The family. `ownerSub` (null while anonymous), `guest`, `expiresAt`, display name. |
-| Player profile | `HH#<hhId>` | `PLAYER#<playerId>` | Display name, color, avatar. No role (#265): rows written before still carry `role`, and nothing reads it. |
+| Player profile | `HH#<hhId>` | `PLAYER#<playerId>` | Display name, color, avatar, and `retired` once an owner takes the kid off the pickers (#248). No role (#265): rows written before still carry `role`, and nothing reads it. |
 | Device binding | `HH#<hhId>` | `DEVICE#<deviceId>` | → playerId, token hash, last seen, user agent. Revocable. |
+| Owner | `HH#<hhId>` | `OWNER#<cognitoSub>` | One grown-up who may manage the household (#248), with the email they signed in with. Written in one transaction with that account's `ACCT#` pointer, and removed with it. |
 | Character | `HH#<hhId>` | `CHAR#<charId>` | Owned by a playerId. Persistent across campaigns. See §3.1. |
 | Campaign run | `HH#<hhId>` | `RUN#<runId>` | One playthrough of one campaign. |
 | Field Guide | `HH#<hhId>` | `FIELDGUIDE` | The household's permanent record of discoveries: `entries` keyed by canon id → `{ firstFoundBy, foundAt, runId? }`. One item, written with per-key `if_not_exists` so the first finder always wins and concurrent writers merge. Versioned (`FIELD_GUIDE_VERSION`). |
@@ -114,7 +115,8 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Game state | `RUN#<runId>` | `STATE` | Current authoritative snapshot. Single item. |
 | Event log | `RUN#<runId>` | `EVT#<seq>` | Append-only. Enables replay and reconnect. |
 | Room | `ROOM#<code>` | `META` | 4-letter code → runId, mode (`party` \| `travel`). **TTL 6 hours.** |
-| Code misses | `GUESS#<client>` | `WINDOW#<n>` | Wrong room codes from one client in one 15-minute window (§4.5, "Joining a session"). **TTL one window past its own.** |
+| Code misses | `GUESS#<client>` | `WINDOW#<n>` | Wrong room codes from one client in one 15-minute window (§4.5, "Joining a session"). Wrong organizer codes are counted the same way, per account. **TTL one window past its own.** |
+| Organizer invite | `INVITE#<code>` | `META` | A single-use code that makes whoever signs in with it an owner of one household (§4.5, "Groups"). Spent by a conditional delete. **TTL 3 days.** |
 
 GSI1 does three jobs, all of them lookups that would otherwise be scans:
 
@@ -598,6 +600,55 @@ storage was cleared, nobody. So a device binding comes in two kinds (#250):
   revokes a shared binding. Heroes are untouched, because characters belong to
   the household. A forgotten tablet is told so (401) and goes back to an
   ordinary start; it is never quietly bound to whoever is holding it.
+
+#### Groups: one household, several grown-ups
+
+A club leader, a teacher, a grandparent with a gaggle of cousins: one adult,
+or several, running games for kids who are not all their family (#248). **A
+group is an ordinary household with more than one owner.** Its players,
+devices, characters and runs are a household's, and nothing below the auth
+layer can tell a group from a family, the same way nothing can tell a guest
+from a claimed household (§3.0). There is no group type and no second code
+path, which keeps it thin enough that revisiting the household itself (#266)
+has nothing extra to undo.
+
+- **An owner is an `ACCT#` pointer**, the same row every guard already read,
+  plus an `OWNER#` row in the household so it can list who runs it. The two are
+  written and removed together. `Household.ownerSub` stays the founding owner,
+  the one who claimed or created it; nobody can remove them, which is also what
+  keeps every group with at least one owner. An owner from before #248 has a
+  pointer and no row until they first open the organizer panel.
+- **A second grown-up joins with an organizer code.** Any owner makes one
+  (`POST /api/organizer/invite`): ten letters from the room-code alphabet,
+  single use, three days. The other adult signs in, taps "Run a group", and
+  types it (`POST /api/organizer/invite/accept`). Redeeming needs a verified
+  sign-in, and wrong codes are counted against the account. Spending the code
+  and writing the new owner's two rows are **one transaction**, so a failed
+  write never spends a code without the membership it pays for; trying again
+  is the whole recovery.
+- **Owners manage profiles** (`/api/organizer/*`, `handlers/organizer.ts`):
+  start a group, rename it, add a kid ahead of the first game, rename one, see
+  each kid's heroes, and retire a kid who stopped coming. A retired profile is
+  off every picker, cannot be seated or adopted, and its own phone's binding is
+  revoked. A room session already issued would outlive all of that, so every
+  door a room has (action, join, state read, preview, presence, the realtime
+  channel's authorizer) reads the profile's `retired` beside the run's
+  `removed` list, and the profile is the record: a retired kid is refused even
+  if the tidy-up has not reached the run. That tidy-up puts them on every open
+  room's `removed` list, as a host's Remove does; if it fails, retiring again
+  finishes it. Its heroes stay, and an owner can bring it back.
+- **Kids never sign in.** They reach their profiles through the group's shared
+  tablet or their own phone, exactly as before.
+- **An account with more than one household is asked which**, never guessed
+  for: signing in (`linkAccount` answers `householdId: null` with the list in
+  `households` unless the phone already plays in one of them, and takes a
+  `householdId` on the second ask) and making a tablet shared (`shareDevice`
+  takes a `householdId`, and refuses to pick when there is more than one).
+  Keeping tonight's guest game from the end-of-chapter offer is unaffected: it
+  names its household by the phone that started it.
+- **The organizer panel keeps nobody signed in.** The id token lives in memory
+  while it is open, and closing it drops the token, because the device is often
+  one the kids pick up next.
 
 #### Recovery and revocation
 

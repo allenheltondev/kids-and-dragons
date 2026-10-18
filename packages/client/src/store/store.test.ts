@@ -168,6 +168,14 @@ function harness(state: RunState = makeState()): Harness {
       state,
       host: true,
     })),
+    // Organizers (#248): the game store never calls these.
+    listHouseholds: vi.fn(),
+    createGroup: vi.fn(),
+    viewHousehold: vi.fn(),
+    editHousehold: vi.fn(),
+    createOrganizerInvite: vi.fn(),
+    acceptOrganizerInvite: vi.fn(),
+    removeOrganizer: vi.fn(),
   };
 
   const storage = memoryStorage();
