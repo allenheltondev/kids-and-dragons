@@ -37,6 +37,7 @@ function room(session: Partial<ClientSession>, run: Partial<RunState> = RUN) {
   const removePlayer = vi.fn(async () => true);
   const lockRoom = vi.fn(async () => true);
   const closeRoom = vi.fn(async () => true);
+  const quietRoom = vi.fn(async () => true);
   act(() => {
     useGameStore.setState({
       session: { runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "travel", sessionToken: "t", ...session },
@@ -44,9 +45,10 @@ function room(session: Partial<ClientSession>, run: Partial<RunState> = RUN) {
       removePlayer,
       lockRoom,
       closeRoom,
+      quietRoom,
     });
   });
-  return { removePlayer, lockRoom, closeRoom };
+  return { removePlayer, lockRoom, closeRoom, quietRoom };
 }
 
 afterEach(() => {
@@ -94,6 +96,19 @@ describe("host controls", () => {
     render(<HostControls placement="inline" />);
     fireEvent.click(screen.getByRole("button", { name: "Remove Player from this game" }));
     expect(removePlayer).toHaveBeenCalledWith("p_3");
+  });
+
+  it("turn quiet mode on, and off again once it is on (#260)", () => {
+    const { quietRoom } = room({ host: true });
+    render(<HostControls placement="inline" />);
+    fireEvent.click(screen.getByRole("button", { name: "Quiet mode" }));
+    expect(quietRoom).toHaveBeenCalledWith(true);
+
+    cleanup();
+    const again = room({ host: true }, { ...RUN, quiet: true });
+    render(<HostControls placement="inline" />);
+    fireEvent.click(screen.getByRole("button", { name: "Turn quiet mode off" }));
+    expect(again.quietRoom).toHaveBeenCalledWith(false);
   });
 
   it("lock the room, and say so", () => {
