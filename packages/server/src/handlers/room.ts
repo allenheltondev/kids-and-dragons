@@ -27,6 +27,7 @@ import { lobbyCampaigns } from "./progression.ts";
 import { loadBook } from "./field-guide.ts";
 import { isRemoved } from "./remove.ts";
 import { closeIfIdle, isClosed } from "./host.ts";
+import { savedGameView } from "./save.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
 /**
@@ -183,6 +184,11 @@ async function offerCampaigns(
   const options = await lobbyCampaigns(householdId, featuredId, deps);
   state.campaignOptions = options;
   state.campaignVotes = {};
+  // A chapter this household stopped partway, if it left one (#259): the
+  // lobby offers to keep going from it.
+  const saved = await savedGameView(householdId, deps);
+  if (saved) state.saved = saved;
+  else delete state.saved;
   const shown = options.find((option) => option.locked === undefined) ?? options[0];
   if (shown) state.campaign = shown;
 }
@@ -300,10 +306,13 @@ async function refreshLobby(room: RoomRecord, deps: HandlerDeps): Promise<RunSta
     campaignOptions: rebuilt.campaignOptions ?? [],
     campaignVotes: {},
     ...(rebuilt.campaign ? { campaign: rebuilt.campaign } : {}),
+    ...(rebuilt.saved ? { saved: rebuilt.saved } : {}),
   };
   let current = state;
   for (let attempt = 0; attempt < 3; attempt++) {
-    const next = await advanceRoom(current, { ...current, ...lobby }, "", deps);
+    const refreshed: RunState = { ...current, ...lobby };
+    if (!rebuilt.saved) delete refreshed.saved;
+    const next = await advanceRoom(current, refreshed, "", deps);
     if (next.campaignOptions === lobby.campaignOptions) {
       // Stamped only once the state has landed. If this write is what fails,
       // the next join rebuilds the same lobby again — a wasted patch, not a

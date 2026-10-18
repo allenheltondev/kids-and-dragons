@@ -605,6 +605,36 @@ describe("an item swap", () => {
 // Ready and starting
 // ---------------------------------------------------------------------------
 
+describe("keeping going from a saved game (#259)", () => {
+  const SAVED = {
+    campaignId: "c",
+    campaignTitle: "Gemfall",
+    chapter: { index: 2, title: "The Honey Bridge" },
+    recap: "Bees hummed over the water.",
+    heroes: ["Pip"],
+    savedAt: "2026-10-18T18:00:00.000Z",
+  };
+
+  it("offers it in the lobby, with the recap, to anyone, ready or not", async () => {
+    const user = userEvent.setup();
+    const resumeGame = vi.fn(async () => true);
+    mount({ phase: "lobby" });
+    act(() => useGameStore.setState({ resumeGame }));
+    serverSends({ saved: SAVED });
+
+    expect(screen.getByText(/You stopped partway through The Honey Bridge\. Bees hummed over the water\./)).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: /Keep going/ }));
+    expect(resumeGame).toHaveBeenCalledTimes(1);
+  });
+
+  it("is not there once a chapter is under way, or when nothing was stopped", () => {
+    mount({ phase: "lobby" });
+    expect(screen.queryByRole("button", { name: /Keep going/ })).toBeNull();
+    serverSends({ saved: SAVED, phase: "scene" });
+    expect(screen.queryByRole("button", { name: /Keep going/ })).toBeNull();
+  });
+});
+
 describe("readying up", () => {
   it("readies with the one Ready to play tap, and can take it back", async () => {
     const user = userEvent.setup();

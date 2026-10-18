@@ -1,0 +1,442 @@
+/**
+ * Stop anytime, pick up where you left off (#259), through the handlers and
+ * the shipped Gemfall: a chapter stopped midway in one room resumes in a new
+ * room days later, on different devices, with nothing lost.
+ */
+
+import path from "node:path";
+import { applyIntent, createRunState, makeRng, type ChannelMessage, type ClientIntent, type RunState } from "@kad/shared";
+import { describe, expect, it } from "vitest";
+import { loadContent } from "../content/loader.ts";
+import type { Engine } from "../engine/port.ts";
+import { makeHarness, seedHousehold } from "../test-support.ts";
+import { applyAction } from "./action.ts";
+import { closeRoom } from "./host.ts";
+import { leaveAdventure } from "./organizer.ts";
+import { createRoom, joinRoom } from "./room.ts";
+import { firstSentence, recapOf, resumeGame, savedGame, stopForToday } from "./save.ts";
+
+const ROOT = path.resolve(import.meta.dirname, "..", "..", "..", "..");
+const content = await loadContent(path.join(ROOT, "content"));
+const realEngine: Engine = { applyIntent, createRunState };
+const GEMFALL = "gemfall";
+const DAY = 24 * 60 * 60 * 1000;
+
+async function household(players = 2) {
+  const harness = makeHarness({ engine: realEngine, playtest: true, content });
+  harness.deps.rng = (key) => makeRng(`save:${String(key).split(":").pop()}`);
+  const seeded = await seedHousehold(harness, players);
+  await harness.repo.putAccountPointer("sub-test", seeded.householdId);
+  return { harness, ...seeded };
+}
+
+type Household = Awaited<ReturnType<typeof household>>;
+
+/** A room for `campaignId`, opened by player `host`'s device. */
+async function room(h: Household, campaignId = GEMFALL, host = 0) {
+  const created = await createRoom(
+    { householdId: h.householdId, mode: "party", campaignId, hostDeviceId: h.players[host]!.principal.deviceId },
+    h.harness.deps,
+  );
+  if (!created.ok) throw new Error(`room: ${JSON.stringify(created)}`);
+  return created.value;
+}
+
+/** Player `seat` (0-based) joins the open room, and can act in it. */
+async function sit(h: Household, code: string, runId: string, seat: number) {
+  const joined = await joinRoom({ code, principal: h.players[seat]!.principal }, h.harness.deps);
+  if (!joined.ok) throw new Error(`join: ${JSON.stringify(joined)}`);
+  const playerId = joined.value.playerId;
+  const state = async (): Promise<RunState> => (await h.harness.repo.getState(runId))!;
+  const send = async (intent: ClientIntent) =>
+    applyAction({ runId, playerId, seq: (await state()).seq, intent }, h.harness.deps);
+  const must = async (intent: ClientIntent) => {
+    const response = await send(intent);
+    if (!response.ok) throw new Error(`${intent.type}: ${JSON.stringify(response.error)}`);
+    return response;
+  };
+  const resume = () => resumeGame({ runId, playerId, householdId: h.householdId }, h.harness.deps);
+  return { code, runId, playerId, state, send, must, resume };
+}
+
+type Seat = Awaited<ReturnType<typeof sit>>;
+
+const SPECS = [
+  { name: "Pip", species: "unicorn", class: "thornguard", stats: { might: 1, quick: 1, clever: 0, heart: 1 } },
+  { name: "Bo", species: "unicorn", class: "thornguard", stats: { might: 1, quick: 0, clever: 1, heart: 1 } },
+] as const;
+
+/** Both players make a hero in a fresh Gemfall room and begin chapter 1. */
+async function evening(h: Household) {
+  const created = await room(h);
+  const one = await sit(h, created.code, created.runId, 0);
+  const two = await sit(h, created.code, created.runId, 1);
+  for (const [seat, spec] of [
+    [one, SPECS[0]],
+    [two, SPECS[1]],
+  ] as const) {
+    await seat.must({ type: "CREATE_CHARACTER", ...spec });
+    await seat.must({ type: "READY", ready: true });
+  }
+  await one.must({ type: "CONTINUE_CAMPAIGN", campaignId: GEMFALL });
+  return { ...created, one, two };
+}
+
+/** The table makes its way a few scenes into the chapter. */
+async function walkIn(seats: Seat[], steps = 3) {
+  for (let i = 0; i < steps; i++) {
+    const state = await seats[0]!.state();
+    const prompt = state.prompt;
+    const byPlayer = (playerId: string | undefined) => seats.find((s) => s.playerId === playerId) ?? seats[0]!;
+    let seat = byPlayer(state.party[(state.storyTurn ?? 0) % state.party.length]?.playerId);
+    let intent: ClientIntent = { type: "ADVANCE" };
+    if (prompt?.kind === "choice") {
+      if (prompt.forPlayerIds[0]) seat = byPlayer(prompt.forPlayerIds[0]);
+      intent = { type: "CHOOSE", choiceId: prompt.options[0]!.id };
+    } else if (prompt?.kind === "roll") {
+      seat = byPlayer(state.party.find((m) => m.character.id === prompt.characterId)?.playerId);
+      intent = { type: "ROLL" };
+    }
+    if (!(await seat.send(intent)).ok) break;
+  }
+}
+
+describe("firstSentence", () => {
+  it("takes the first sentence and nothing more", () => {
+    expect(firstSentence("The bridge hums.  Bees drift by. Then more.")).toBe("The bridge hums.");
+    expect(firstSentence("")).toBe("");
+  });
+
+  it("trims a long one at a word, to one breath", () => {
+    const long = `A ${"very ".repeat(60)}long sentence.`;
+    const line = firstSentence(long);
+    expect(line.length).toBeLessThanOrEqual(143);
+    expect(line.endsWith("...")).toBe(true);
+    expect(line).not.toMatch(/ \.\.\.$/);
+  });
+
+  it("falls back to the chapter's name when a scene says nothing", () => {
+    expect(recapOf({ narration: "", chapterInfo: { index: 2, title: "The Honey Bridge" } })).toBe(
+      "You were in The Honey Bridge.",
+    );
+  });
+});
+
+describe("stopping for today (#259)", () => {
+  it("saves the chapter, closes the room, frees the code, and keeps every claim", async () => {
+    const h = await household();
+    const e = await evening(h);
+    await walkIn([e.one, e.two]);
+    const before = await e.one.state();
+    expect(before.phase).not.toBe("lobby");
+    const heroesBefore = await h.harness.repo.listCharacters(h.householdId);
+    expect(heroesBefore.map((c) => c.provisional?.runId)).toEqual([GEMFALL, GEMFALL]);
+
+    const received: ChannelMessage[] = [];
+    const unsubscribe = h.harness.channel.subscribe(e.code, (m) => received.push(m));
+    const stopped = await stopForToday({ code: e.code, principal: h.players[0]!.principal }, h.harness.deps);
+    unsubscribe();
+    expect(stopped.ok).toBe(true);
+
+    // Every screen is told, once, and the code is free for another family.
+    expect(received.map((m) => m.kind)).toEqual(["patch"]);
+    expect(await h.harness.repo.getRoom(e.code)).toBeNull();
+    const state = await e.one.state();
+    expect(state.closed).toBe(true);
+    expect(state.stopped).toBe(true);
+    // The game is exactly where it was.
+    const { closed: _c, stopped: _s, ...kept } = state;
+    expect({ ...kept, seq: 0, updatedAt: "" }).toEqual({ ...before, seq: 0, updatedAt: "" });
+    const run = await h.harness.repo.getRun(e.runId);
+    expect(run?.stoppedAt).toBeTypeOf("string");
+
+    // Claims are kept on purpose: the heroes still hold Gemfall, gains and all.
+    expect(await h.harness.repo.listCharacters(h.householdId)).toEqual(heroesBefore);
+    expect((await h.harness.repo.getCampaignProgress(h.householdId, GEMFALL))?.status).toBe("active");
+  });
+
+  it("is the host's alone, and only once a chapter is under way", async () => {
+    const h = await household();
+    const created = await room(h);
+    const one = await sit(h, created.code, created.runId, 0);
+    await sit(h, created.code, created.runId, 1);
+
+    // A lobby has nothing to save.
+    const early = await stopForToday({ code: created.code, principal: h.players[0]!.principal }, h.harness.deps);
+    expect(early).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+    expect(early.ok === false && early.error.message).toMatch(/nothing to save/i);
+
+    await one.must({ type: "CREATE_CHARACTER", ...SPECS[0] });
+    await one.must({ type: "READY", ready: true });
+    await one.must({ type: "CONTINUE_CAMPAIGN", campaignId: GEMFALL });
+
+    const other = await stopForToday({ code: created.code, principal: h.players[1]!.principal }, h.harness.deps);
+    expect(other).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+    expect((await one.state()).closed).toBeUndefined();
+    expect((await h.harness.repo.getRun(created.runId))?.stoppedAt).toBeUndefined();
+
+    expect(await stopForToday({ code: created.code, principal: h.players[0]!.principal }, h.harness.deps)).toMatchObject({
+      ok: true,
+    });
+    // And a second tap on a room that is gone is just a gone room.
+    expect(await stopForToday({ code: created.code, principal: h.players[0]!.principal }, h.harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "NOT_FOUND" },
+    });
+  });
+
+  it("can stop at a rest scene, the natural place to", async () => {
+    const h = await household();
+    const e = await evening(h);
+    const chapter = content.chapter((await e.one.state()).chapterId!)!;
+    const rest = Object.entries(chapter.scenes).find(([, scene]) => scene.type === "rest");
+    expect(rest, "chapter 1 has a rest waypoint").toBeDefined();
+    await e.one.must({ type: "PLAYTEST_GOTO", sceneId: rest![0] });
+    expect((await e.one.state()).sceneType).toBe("rest");
+    expect(await stopForToday({ code: e.code, principal: h.players[0]!.principal }, h.harness.deps)).toMatchObject({
+      ok: true,
+    });
+  });
+
+  it("does not save when the host simply closes the room", async () => {
+    const h = await household();
+    const e = await evening(h);
+    await closeRoom({ code: e.code, principal: h.players[0]!.principal }, h.harness.deps);
+    expect(await savedGame(h.householdId, h.harness.deps)).toBeNull();
+  });
+});
+
+describe("picking up where you left off (#259)", () => {
+  /** Stopped on one evening, with a new room opened days later. */
+  async function nextTime(days = 3) {
+    const h = await household();
+    const e = await evening(h);
+    await walkIn([e.one, e.two]);
+    const stoppedAt = await e.one.state();
+    await stopForToday({ code: e.code, principal: h.players[0]!.principal }, h.harness.deps);
+    h.harness.clock.advance(days * DAY);
+    const created = await room(h, GEMFALL, 1);
+    return { h, e, stoppedAt, created };
+  }
+
+  it("offers to keep going, with a recap, in the household's next room", async () => {
+    const { h, stoppedAt, created } = await nextTime();
+    const lobby = (await h.harness.repo.getState(created.runId))!;
+    expect(lobby.phase).toBe("lobby");
+    expect(lobby.saved).toEqual({
+      campaignId: GEMFALL,
+      campaignTitle: content.campaign(GEMFALL)!.title,
+      chapter: stoppedAt.chapterInfo,
+      recap: recapOf(stoppedAt),
+      heroes: ["Pip", "Bo"],
+      savedAt: expect.any(String),
+    });
+    expect(lobby.saved!.recap.length).toBeGreaterThan(0);
+    expect(lobby.saved!.recap.length).toBeLessThanOrEqual(143);
+  });
+
+  it("lands the party back where it was, on different devices, with nothing lost", async () => {
+    const { h, e, stoppedAt, created } = await nextTime();
+    // Player 2 opened this room and Player 1 joins late, on another device:
+    // a seat belongs to a player, never to a device.
+    const two = await sit(h, created.code, created.runId, 1);
+    const phone = await h.harness.identity.issueDeviceToken({ householdId: h.householdId, playerId: "p_1" });
+    const one = await sit(
+      { ...h, players: [{ principal: { deviceId: phone.deviceId, householdId: h.householdId, playerId: "p_1" }, deviceToken: phone.token }, h.players[1]!] },
+      created.code,
+      created.runId,
+      0,
+    );
+
+    const resumed = await two.resume();
+    expect(resumed.ok).toBe(true);
+    const state = await two.state();
+    const was = stoppedAt;
+    // The chapter, scene, words, prompt, flags and purse are the old room's.
+    for (const key of ["phase", "chapterId", "chapterInfo", "sceneId", "sceneType", "narration", "prompt", "flags", "coins", "xpEarned", "visited", "campaignId", "campaignAttemptId"] as const) {
+      expect(state[key], key).toEqual(was[key]);
+    }
+    // The room is the new one.
+    expect(state.runId).toBe(created.runId);
+    expect(state.roomCode).toBe(created.code);
+    expect(state.closed).toBeUndefined();
+    expect(state.stopped).toBeUndefined();
+    expect(state.saved).toBeUndefined();
+    // Same heroes, hp and all, nobody ready by default.
+    expect(state.party.map((m) => [m.playerId, m.character.name, m.hp])).toEqual(was.party.map((m) => [m.playerId, m.character.name, m.hp]));
+    expect(state.party.every((m) => !m.ready)).toBe(true);
+    // Both phones are in this room, and so both count as here.
+    expect(state.party.map((m) => m.connected)).toEqual([true, true]);
+    expect(one.playerId).toBe("p_1");
+
+    // The save is spent: no later room offers it, and the old run is still the log of its evening.
+    expect((await h.harness.repo.getRun(e.runId))?.stoppedAt).toBeUndefined();
+    expect(await savedGame(h.householdId, h.harness.deps)).toBeNull();
+
+    // And the game goes on from there.
+    await walkIn([one, two], 2);
+    expect((await two.state()).seq).toBeGreaterThan(state.seq);
+  });
+
+  it("brings back a player whose phone is not in the room yet as away, and welcomes them when it joins", async () => {
+    const { h, created } = await nextTime();
+    const two = await sit(h, created.code, created.runId, 1);
+    expect(await two.resume()).toMatchObject({ ok: true });
+    expect((await two.state()).party.map((m) => [m.playerId, m.connected])).toEqual([
+      ["p_1", false],
+      ["p_2", true],
+    ]);
+    await sit(h, created.code, created.runId, 0);
+    expect((await two.state()).party.map((m) => m.connected)).toEqual([true, true]);
+  });
+
+  it("completes the chapter the way a chapter always does, against the same attempt", async () => {
+    const { h, created } = await nextTime();
+    const attemptBefore = await h.harness.repo.getCampaignProgress(h.householdId, GEMFALL);
+    const two = await sit(h, created.code, created.runId, 1);
+    await two.resume();
+    const chapterId = (await two.state()).chapterId!;
+    const chapter = content.chapter(chapterId)!;
+    const [ending] = Object.entries(chapter.scenes).find(
+      ([, s]) => "choices" in s && Array.isArray(s.choices) && s.choices.length === 0 && !("outcome" in s && s.outcome === "setback"),
+    )!;
+    await two.must({ type: "PLAYTEST_GOTO", sceneId: ending });
+    expect((await two.state()).phase).toBe("chapter_complete");
+    const attempt = await h.harness.repo.getCampaignProgress(h.householdId, GEMFALL);
+    expect(attempt?.attemptId).toBe(attemptBefore?.attemptId);
+    expect(attempt?.lastIndex).toBe(chapter.index);
+  });
+
+  it("is refused outside a lobby, with nothing saved, or by someone not in the room", async () => {
+    const h = await household();
+    const e = await evening(h);
+    // Under way: already playing.
+    expect(await e.one.resume()).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+
+    const lobby = await room(h);
+    const two = await sit(h, lobby.code, lobby.runId, 1);
+    // Nothing is saved yet.
+    expect(await two.resume()).toMatchObject({ ok: false, error: { code: "NOT_FOUND" } });
+    // Not seated.
+    const stranger = await resumeGame({ runId: lobby.runId, playerId: "p_9", householdId: h.householdId }, h.harness.deps);
+    expect(stranger).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+  });
+
+  it("is not offered once another room has finished that chapter", async () => {
+    const h = await household();
+    const e = await evening(h);
+    await walkIn([e.one, e.two]);
+    await stopForToday({ code: e.code, principal: h.players[0]!.principal }, h.harness.deps);
+    expect((await savedGame(h.householdId, h.harness.deps))?.view.chapter.index).toBe(1);
+
+    // The household plays chapter 1 afresh in a new room and finishes it.
+    const again = await room(h);
+    const one = await sit(h, again.code, again.runId, 0);
+    const [pip] = (await h.harness.repo.listCharacters(h.householdId)).filter((c) => c.ownerPlayerId === "p_1");
+    await one.must({ type: "SEAT_CHARACTER", characterId: pip!.id });
+    await one.must({ type: "READY", ready: true });
+    await one.must({ type: "CONTINUE_CAMPAIGN", campaignId: GEMFALL });
+    const chapter = content.chapter((await one.state()).chapterId!)!;
+    const [ending] = Object.entries(chapter.scenes).find(
+      ([, s]) => "choices" in s && Array.isArray(s.choices) && s.choices.length === 0 && !("outcome" in s && s.outcome === "setback"),
+    )!;
+    await one.must({ type: "PLAYTEST_GOTO", sceneId: ending });
+
+    expect(await savedGame(h.householdId, h.harness.deps)).toBeNull();
+    const next = await room(h);
+    expect((await h.harness.repo.getState(next.runId))?.saved).toBeUndefined();
+    const two = await sit(h, next.code, next.runId, 1);
+    expect(await two.resume()).toMatchObject({ ok: false, error: { code: "NOT_FOUND" } });
+  });
+
+  it("leaves a hero out whose grown-up ended her adventure, and she can sit down like anyone", async () => {
+    const { h, created } = await nextTime();
+    const [pip] = (await h.harness.repo.listCharacters(h.householdId)).filter((c) => c.ownerPlayerId === "p_1");
+    const left = await leaveAdventure({ cognitoSub: "sub-test", householdId: h.householdId, characterId: pip!.id }, h.harness.deps);
+    expect(left.ok).toBe(true);
+
+    const two = await sit(h, created.code, created.runId, 1);
+    expect(await two.resume()).toMatchObject({ ok: true });
+    expect((await two.state()).party.map((m) => m.character.name)).toEqual(["Bo"]);
+
+    const one = await sit(h, created.code, created.runId, 0);
+    await one.must({ type: "SEAT_CHARACTER", characterId: pip!.id });
+    expect((await one.state()).party.map((m) => m.character.name).sort()).toEqual(["Bo", "Pip"]);
+    expect((await h.harness.repo.getCharacter(h.householdId, pip!.id))?.provisional?.runId).toBe(GEMFALL);
+  });
+
+  it("takes in a hero already seated in the new room, and claims the adventure for her", async () => {
+    const h = await household(3);
+    const e = await evening(h);
+    await walkIn([e.one, e.two]);
+    await stopForToday({ code: e.code, principal: h.players[0]!.principal }, h.harness.deps);
+    h.harness.clock.advance(3 * DAY);
+
+    // Cy, a third player's hero, free and saved, sits down in the lobby.
+    const [pip] = await h.harness.repo.listCharacters(h.householdId);
+    await h.harness.repo.putCharacter({ ...pip!, id: "c_cy", name: "Cy", ownerPlayerId: "p_3", provisional: null, version: 1 });
+    const created = await room(h, GEMFALL, 1);
+    const two = await sit(h, created.code, created.runId, 1);
+    const three = await sit(h, created.code, created.runId, 2);
+    await three.must({ type: "SEAT_CHARACTER", characterId: "c_cy" });
+    expect((await three.state()).phase).toBe("creation");
+
+    expect(await two.resume()).toMatchObject({ ok: true });
+    const state = await two.state();
+    expect(state.party.map((m) => [m.character.name, m.connected])).toEqual([
+      ["Pip", false],
+      ["Bo", true],
+      ["Cy", true],
+    ]);
+    const cy = (await h.harness.repo.getCharacter(h.householdId, "c_cy"))!;
+    expect(cy.provisional?.runId).toBe(GEMFALL);
+    expect(state.party.find((m) => m.character.name === "Cy")?.character.isProvisional).toBe(true);
+  });
+
+  it("leaves out a hero another adventure holds, rather than refuse the whole table", async () => {
+    const h = await household(3);
+    const e = await evening(h);
+    await walkIn([e.one, e.two]);
+    await stopForToday({ code: e.code, principal: h.players[0]!.principal }, h.harness.deps);
+    h.harness.clock.advance(3 * DAY);
+
+    const [pip] = await h.harness.repo.listCharacters(h.householdId);
+    await h.harness.repo.putCampaignProgress({
+      householdId: h.householdId,
+      campaignId: "the-hollow-crown",
+      status: "active",
+      setbacks: 0,
+      updatedAt: new Date(h.harness.clock.now()).toISOString(),
+    });
+    const held = { ...pip!, id: "c_cy", name: "Cy", ownerPlayerId: "p_3", provisional: { ...pip!.committed, runId: "the-hollow-crown" }, version: 1 };
+    await h.harness.repo.putCharacter(held);
+    const created = await room(h, GEMFALL, 1);
+    const two = await sit(h, created.code, created.runId, 1);
+    const three = await sit(h, created.code, created.runId, 2);
+    await three.must({ type: "SEAT_CHARACTER", characterId: "c_cy" });
+
+    expect(await two.resume()).toMatchObject({ ok: true });
+    expect((await two.state()).party.map((m) => m.character.name)).toEqual(["Pip", "Bo"]);
+    expect(await h.harness.repo.getCharacter(h.householdId, "c_cy")).toEqual(held);
+  });
+
+  it("keeps only the newest stop of a campaign", async () => {
+    const h = await household();
+    const first = await evening(h);
+    await walkIn([first.one, first.two]);
+    await stopForToday({ code: first.code, principal: h.players[0]!.principal }, h.harness.deps);
+
+    h.harness.clock.advance(DAY);
+    const second = await room(h);
+    const one = await sit(h, second.code, second.runId, 0);
+    await sit(h, second.code, second.runId, 1);
+    expect(await one.resume()).toMatchObject({ ok: true });
+    await walkIn([one], 2);
+    h.harness.clock.advance(60 * 60 * 1000);
+    const again = await stopForToday({ code: second.code, principal: h.players[0]!.principal }, h.harness.deps);
+    expect(again, JSON.stringify(again)).toMatchObject({ ok: true });
+
+    const runs = (await h.harness.repo.listRuns(h.householdId)).filter((r) => r.stoppedAt !== undefined);
+    expect(runs.map((r) => r.id)).toEqual([second.runId]);
+  });
+});

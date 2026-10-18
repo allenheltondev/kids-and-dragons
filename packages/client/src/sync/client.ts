@@ -167,7 +167,7 @@ export interface SharedPlayersLoad extends SharedDevicePlayersResponse {
 }
 
 /** What the host may do to its room (#263, #267). */
-export type HostControl = "remove" | "lock" | "quiet" | "close";
+export type HostControl = "remove" | "lock" | "quiet" | "close" | "stop";
 
 /**
  * How the host proves it is the host: a phone's (or TV's) own device token,
@@ -198,6 +198,12 @@ export interface Api {
    * survives the page that sends it closing.
    */
   postPresence(leaving: boolean, token: string): Promise<void>;
+  /**
+   * Take the household's stopped chapter into this room (#259, server
+   * handlers/save.ts). The answer is the run's patch like any other change;
+   * a refusal rejects with the server's own words.
+   */
+  postResume(token: string): Promise<void>;
   /**
    * `timeoutMs` narrows the request funnel's default bound for this one call.
    * Refresh recovery passes the *remaining* recovery budget here, so five
@@ -477,6 +483,15 @@ export const api: Api = {
       token,
       body: JSON.stringify({ leaving }),
       ...(leaving ? { keepalive: true } : {}),
+    });
+  },
+
+  async postResume(token) {
+    await request<{ ok: true }>("/api/resume", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token,
+      body: JSON.stringify({}),
     });
   },
 

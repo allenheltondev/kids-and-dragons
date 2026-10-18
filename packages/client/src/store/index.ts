@@ -1224,6 +1224,22 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         return hostControl("close", {}, "Could not close the room.");
       },
 
+      stopForToday() {
+        return hostControl("stop", {}, "Could not save the game.");
+      },
+
+      async resumeGame() {
+        const token = get().session?.sessionToken;
+        if (!token) return false;
+        try {
+          await deps.api.postResume(token);
+          return true;
+        } catch (error) {
+          set({ error: error instanceof Error ? error.message : "Could not pick the game back up." });
+          return false;
+        }
+      },
+
       registerPresentationPlayer(gate: PresentationGate | null) {
         runtime.gate = gate;
         runtime.sequencer?.setGate(gate);

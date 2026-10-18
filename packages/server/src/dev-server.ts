@@ -45,6 +45,7 @@ import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom
 import { setVisitors } from "./handlers/visitors.ts";
 import { removePlayer } from "./handlers/remove.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "./handlers/host.ts";
+import { resumeGame, stopForToday } from "./handlers/save.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
 import { getState } from "./handlers/state.ts";
@@ -380,6 +381,12 @@ async function main(): Promise<void> {
     (code, principal, _body, deps) => closeRoom({ code, principal }, deps),
   ));
 
+  // Save the chapter and close the room, to pick it up another day (#259).
+  app.post("/api/room/:code/stop", hostControl(
+    () => null,
+    (code, principal, _body, deps) => stopForToday({ code, principal }, deps),
+  ));
+
   // A signed-in owner opening the room to visitors (#249), as in lambda/http.ts.
   app.post("/api/room/:code/visitors", async (req: Request, res: Response) => {
     const account = verifyDevToken(bearerToken(req));
@@ -486,6 +493,20 @@ async function main(): Promise<void> {
     );
     if (!result.ok) return sendError(res, result.status, result.code, result.message);
     res.json({ ok: true, connected: result.connected });
+  });
+
+  // A seated phone taking the household's saved chapter into this room (#259).
+  app.post("/api/resume", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const session = await resolveSession(req, base);
+    if (!session) return sendError(res, 401, "FORBIDDEN", "keeping going needs a room session token");
+    const result = await resumeGame(
+      { runId: session.runId, playerId: session.playerId, householdId: session.householdId },
+      deps,
+    );
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json({ ok: true, seq: result.value.seq });
   });
 
   app.post("/api/progression/spend", async (req: Request, res: Response) => {

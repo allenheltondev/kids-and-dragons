@@ -222,6 +222,17 @@ export interface GameStore {
   quietRoom(quiet: boolean): Promise<boolean>;
   /** The host closes the room for everybody (#263). Resolves like `removePlayer`. */
   closeRoom(): Promise<boolean>;
+  /**
+   * The host saves the chapter and closes the room, to pick it up another day
+   * (#259). Resolves like `removePlayer`.
+   */
+  stopForToday(): Promise<boolean>;
+  /**
+   * Any seated player takes the household's saved chapter into this room
+   * (#259). Resolves `true` once the server has put the party back; a
+   * refusal lands in `error` and resolves `false`.
+   */
+  resumeGame(): Promise<boolean>;
   /** Drops the session and disconnects. Does not delete anything server-side. */
   leave(): void;
   dismissError(): void;

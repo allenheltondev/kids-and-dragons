@@ -9,6 +9,8 @@
  *   - take a player out, in one tap (#267)
  *   - lock the room to new joins, and open it again
  *   - quiet mode for every device in the room, and back (#260)
+ *   - stop for today (#259): save the chapter and close the room, to pick it
+ *     up another day, and offered by itself at a Rest scene
  *   - close the room for everyone, after one "are you sure?"
  *
  * And one that is not the host's alone: opening the room to visitors (#249),
@@ -31,6 +33,7 @@ import { useKeepsakeStore } from "../store/keepsake";
 import { Button } from "../ui";
 import { Icon } from "./icons";
 import { SignInFlow } from "./SignInFlow";
+import { STOP_CONFIRM, STOP_OFFER } from "./save-copy";
 import "./HostControls.css";
 
 export type RosterStatus = "here" | "away" | "creating" | "out";
@@ -86,6 +89,43 @@ const STATUS: Record<RosterStatus, string> = {
   out: "Taken out",
 };
 
+/** A chapter is under way: there is something to save (#259). */
+export function canStop(state: Pick<RunState, "phase" | "campaignId">): boolean {
+  return state.campaignId !== null && (state.phase === "scene" || state.phase === "check" || state.phase === "encounter");
+}
+
+/**
+ * "Stop here for today?" at a Rest scene (#259): the natural place to stop,
+ * offered to the host without opening the panel. "Keep playing" puts it away
+ * until the next rest.
+ */
+function StopOffer({ state }: { state: RunState }): React.JSX.Element | null {
+  const stopForToday = useGameStore((store) => store.stopForToday);
+  const [busy, setBusy] = useState(false);
+  const [putAway, setPutAway] = useState<string | null>(null);
+  if (state.sceneType !== "rest" || !canStop(state) || putAway === state.sceneId) return null;
+  return (
+    <div className="kad-host__offer" role="status">
+      <p>{STOP_OFFER}</p>
+      <Button
+        variant="primary"
+        size="md"
+        block
+        disabled={busy}
+        onClick={() => {
+          setBusy(true);
+          void stopForToday().finally(() => setBusy(false));
+        }}
+      >
+        Stop here for today
+      </Button>
+      <Button variant="ghost" size="md" block disabled={busy} onClick={() => setPutAway(state.sceneId)}>
+        Keep playing
+      </Button>
+    </div>
+  );
+}
+
 export function HostControls({ placement }: { placement: "inline" | "float" }): React.JSX.Element | null {
   const session = useSession();
   const state = useRunState();
@@ -95,18 +135,24 @@ export function HostControls({ placement }: { placement: "inline" | "float" }): 
   const panel = <HostPanel state={state} me={session.playerId} code={session.roomCode} />;
   if (placement === "inline") {
     return (
-      <details className="kad-host kad-host--inline">
-        <summary className="kad-host__summary kad-focusable">
-          <Icon name="players" />
-          <span>Running this room</span>
-          {state.locked ? <span className="kad-host__badge">Locked</span> : null}
-        </summary>
-        {panel}
-      </details>
+      <>
+        <div className="kad-host--inline-offer">
+          <StopOffer state={state} />
+        </div>
+        <details className="kad-host kad-host--inline">
+          <summary className="kad-host__summary kad-focusable">
+            <Icon name="players" />
+            <span>Running this room</span>
+            {state.locked ? <span className="kad-host__badge">Locked</span> : null}
+          </summary>
+          {panel}
+        </details>
+      </>
     );
   }
   return (
     <div className="kad-host kad-host--float">
+      <StopOffer state={state} />
       <Button
         variant="secondary"
         size="md"
@@ -128,9 +174,11 @@ function HostPanel({ state, me, code }: { state: RunState; me: string; code: str
   const removePlayer = useGameStore((store) => store.removePlayer);
   const lockRoom = useGameStore((store) => store.lockRoom);
   const closeRoom = useGameStore((store) => store.closeRoom);
+  const stopForToday = useGameStore((store) => store.stopForToday);
   const quietRoom = useGameStore((store) => store.quietRoom);
   const [busy, setBusy] = useState(false);
   const [closing, setClosing] = useState(false);
+  const [stopping, setStopping] = useState(false);
   const rows = rosterOf(state, me);
   const locked = state.locked === true;
   const quiet = state.quiet === true;
@@ -213,6 +261,30 @@ function HostPanel({ state, me, code }: { state: RunState; me: string; code: str
             ? "Quiet: softer sound, no sudden noises, no shaking, and a dimmer screen on every device."
             : "For a sleeping sibling or a car ride: softer, calmer and dimmer on every device."}
         </p>
+
+        {canStop(state) ? (
+          stopping ? (
+            <div className="kad-host__confirm" role="alertdialog" aria-label="Stop for today?">
+              <p>{STOP_CONFIRM}</p>
+              <Button
+                variant="primary"
+                size="md"
+                block
+                disabled={busy}
+                onClick={() => void run(stopForToday).then(() => setStopping(false))}
+              >
+                Save and stop
+              </Button>
+              <Button variant="ghost" size="md" block disabled={busy} onClick={() => setStopping(false)}>
+                Keep playing
+              </Button>
+            </div>
+          ) : (
+            <Button variant="secondary" size="md" block disabled={busy} onClick={() => setStopping(true)}>
+              Stop for today
+            </Button>
+          )
+        ) : null}
 
         {closing ? (
           <div className="kad-host__confirm" role="alertdialog" aria-label="Close the room?">

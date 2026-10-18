@@ -39,6 +39,7 @@ function room(session: Partial<ClientSession>, run: Partial<RunState> = RUN) {
   const lockRoom = vi.fn(async () => true);
   const closeRoom = vi.fn(async () => true);
   const quietRoom = vi.fn(async () => true);
+  const stopForToday = vi.fn(async () => true);
   act(() => {
     useGameStore.setState({
       session: { runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "travel", sessionToken: "t", ...session },
@@ -47,9 +48,10 @@ function room(session: Partial<ClientSession>, run: Partial<RunState> = RUN) {
       lockRoom,
       closeRoom,
       quietRoom,
+      stopForToday,
     });
   });
-  return { removePlayer, lockRoom, closeRoom, quietRoom };
+  return { removePlayer, lockRoom, closeRoom, quietRoom, stopForToday };
 }
 
 afterEach(() => {
@@ -152,6 +154,61 @@ describe("host controls", () => {
     room({ host: true }, visiting);
     render(<HostControls placement="inline" />);
     expect(screen.getByText(/visiting/)).toBeTruthy();
+  });
+});
+
+describe("stopping for today (#259)", () => {
+  const UNDER_WAY: Partial<RunState> = { ...RUN, phase: "scene", campaignId: "gemfall", sceneId: "s_1", sceneType: "story" };
+
+  it("saves and stops only after one 'are you sure?', while a chapter is under way", () => {
+    const { stopForToday, closeRoom } = room({ host: true }, UNDER_WAY);
+    render(<HostControls placement="inline" />);
+    fireEvent.click(screen.getByRole("button", { name: "Stop for today" }));
+    expect(screen.getByText(/tap Keep going and you will be right back/)).toBeTruthy();
+    expect(stopForToday).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Keep playing" }));
+    expect(stopForToday).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole("button", { name: "Stop for today" }));
+    fireEvent.click(screen.getByRole("button", { name: "Save and stop" }));
+    expect(stopForToday).toHaveBeenCalledTimes(1);
+    expect(closeRoom).not.toHaveBeenCalled();
+  });
+
+  it("has nothing to save in a lobby or between chapters", () => {
+    room({ host: true }, { ...RUN, phase: "lobby", campaignId: "gemfall" });
+    render(<HostControls placement="inline" />);
+    expect(screen.queryByRole("button", { name: "Stop for today" })).toBeNull();
+    cleanup();
+    room({ host: true }, { ...RUN, phase: "chapter_complete", campaignId: "gemfall" });
+    render(<HostControls placement="inline" />);
+    expect(screen.queryByRole("button", { name: "Stop for today" })).toBeNull();
+  });
+
+  it("offers 'stop here for today?' at a Rest scene, without opening the panel", () => {
+    const { stopForToday } = room({ host: true }, { ...UNDER_WAY, sceneType: "rest" });
+    render(<HostControls placement="float" />);
+    expect(screen.getByText(/cozy place to stop for today/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Stop here for today" }));
+    expect(stopForToday).toHaveBeenCalledTimes(1);
+  });
+
+  it("puts the offer away until the next rest, and never offers it on an ordinary scene", () => {
+    room({ host: true }, { ...UNDER_WAY, sceneType: "rest" });
+    render(<HostControls placement="float" />);
+    fireEvent.click(screen.getByRole("button", { name: "Keep playing" }));
+    expect(screen.queryByText(/cozy place to stop/)).toBeNull();
+
+    cleanup();
+    room({ host: true }, UNDER_WAY);
+    render(<HostControls placement="float" />);
+    expect(screen.queryByText(/cozy place to stop/)).toBeNull();
+  });
+
+  it("is not offered to a phone that did not open the room", () => {
+    room({}, { ...UNDER_WAY, sceneType: "rest" });
+    render(<HostControls placement="float" />);
+    expect(screen.queryByText(/cozy place to stop/)).toBeNull();
   });
 });
 

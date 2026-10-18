@@ -907,6 +907,18 @@ visiting table to write to a hero it does not own. #282 builds it
   abandoned without a release stays claimed until it becomes terminal or she
   leaves it. Nothing times a claim out behind a family's back, because that
   would discard gains they meant to keep.
+- **Stopping for today keeps the claims, deliberately (#259).** A stopped
+  table's heroes still hold their adventure, exactly as after a Close. The
+  claim is what carries every chapter's gains so far, and releasing it would
+  discard them, so "nothing lost" and "released" cannot both be true. What
+  keeps a stopped table from locking a kid out indefinitely is that it never
+  was a new lock: it is the same claim an active attempt has always held
+  between evenings, and the same ways out apply. Her grown-up can **end the
+  adventure** (`POST /api/organizer/heroes/leave`), which releases her; the
+  attempt completing or failing releases everyone. A hero released that way is
+  not brought back by a resume (below): she is left out of the restored party
+  and can sit down mid-chapter like anyone. A hero held by another table
+  stays refused with the usual "in the middle of another adventure".
 - **Gemfall at home** runs through exactly the same path, with home equal to
   the table, so nothing about a one-household game changes.
 
@@ -1083,6 +1095,49 @@ presence and the channel refuse it) and then deletes the room's code. Each
 control is one committed patch with the host as its author, so all of it is
 on the run's event log. Opening a room to visitors (#249, below) and forgetting a
 device (#273) need a signed-in owner and are not host controls.
+
+**Stop for today, and pick it up another day** (#259, `handlers/save.ts`). A
+chapter is one sitting and a room lasts six hours, but evenings end early.
+The host's **Stop for today** (`POST /api/room/:code/stop`, a host control like
+the rest, so the TV or a kid's phone may hold it) saves the chapter and closes
+the room: it marks the run `RunRecord.stoppedAt`, then closes it (`closed` and
+`stopped`, so the leaving screens say "your game is saved" rather than "closed")
+and deletes the code. Nothing is copied: a run's `STATE` carries no TTL, so the
+stopped run *is* the save and lasts as long as its household (seven days past
+the last play for a guest household, which every play extends; for good once a
+grown-up keeps it). It is legal at any point a campaign chapter is under way. A
+roll is settled whole in the action that rolls it, so the run never holds one
+half done, and the host's screen simply waits out the dice animation on its own.
+The host's panel always has it; a **Rest** scene also offers "stop here for
+today?" without opening anything. Between chapters there is nothing to save (the
+campaign attempt already holds where the party got to), so it is refused with a
+line saying so.
+
+Only a stop saves. A plain **Close**, an idle close and a room that simply
+expires do not, and still mean "done for now; the chapter starts fresh".
+
+The household's next room, whoever opens it and on whichever device, **offers
+"keep going"**: `savedGame` finds the newest stopped run that can still be
+picked up and the lobby carries a `RunState.saved` view (campaign, chapter, the
+heroes who were playing, and a one-line recap taken from the scene's first
+sentence). It is offered only while the chapter is still the household's next
+one: the run is closed, its campaign attempt is still active and the same one
+it began under (`campaignAttemptId`), and the attempt is still at that beat
+(that visit, for a graph campaign). Another room finishing the chapter, or
+replaying the campaign, retires the offer without touching the run.
+**Keep going** (`POST /api/resume`, any seated player's room session) takes the
+saved game into the lobby in one committed change: the scene, narration,
+prompt, flags, purse, trail, fight and story turn are the saved run's; the
+code, roster, lock, quiet mode, visitor code and lobby stay the new room's. The
+party comes back as the household's party, with the hp it stopped with. A
+player whose phone has not joined this room yet is *away* until it does (the
+rules of #258 carry the table meanwhile), and a seat belongs to a player, never
+to a device, so a different phone resumes seamlessly. A hero already seated in
+the new room who was not in the game joins it, claiming the adventure in the
+same transaction as a hero who sits down mid-chapter does. The save is spent
+once taken up, one save is kept per campaign, and a chapter finished or stopped
+again just replaces it. The chapter then settles against the same attempt as
+ever.
 
 Room items carry a **6-hour TTL** so abandoned rooms clean themselves up, and a
 room open to visitors closes sooner (below). Revoking a device does not touch

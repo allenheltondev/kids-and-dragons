@@ -26,6 +26,7 @@ import { Button, ConnectionBanner, ErrorToast, Spinner } from "./ui";
 
 import { AudioControl } from "./audio";
 import { setQuiet } from "./quiet";
+import { STOPPED_MESSAGE } from "./screens/save-copy";
 import { musicForScene } from "./audio/scene-audio";
 import { PhoneMagic } from "./ui/PhoneMagic";
 
@@ -241,10 +242,16 @@ export function App(): React.JSX.Element {
 /** What every screen shows once the host closes the room (#263). */
 function ClosedScreen(): React.JSX.Element {
   const leave = useGameStore((store) => store.leave);
+  // Stopped for today (#259) is a save, not an ending.
+  const stopped = useGameStore((store) => store.state?.stopped === true);
   return (
     <div className="kad-boot" role="alert">
       <div className="kad-removed">
-        <p>The person running this game closed the room. Your heroes are kept, ready for next time.</p>
+        <p>
+          {stopped
+            ? STOPPED_MESSAGE
+            : "The person running this game closed the room. Your heroes are kept, ready for next time."}
+        </p>
         <Button onClick={leave}>Back to the start</Button>
       </div>
     </div>
