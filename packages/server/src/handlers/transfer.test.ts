@@ -252,6 +252,64 @@ describe("taking a hero home (#251)", () => {
     value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
   });
 
+  it("refuses, rather than moves, a hero a visiting table claims while the move is under way", async () => {
+    const { harness, club, ada, hero } = await adaAtTheClub();
+    knowsGemfall(harness);
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+
+    // Rue's table seats her between the move's read and its write.
+    const realMove = harness.repo.moveProfile.bind(harness.repo);
+    let raced = false;
+    harness.repo.moveProfile = async (input) => {
+      if (!raced) {
+        raced = true;
+        const read = (await harness.repo.getCharacter(club.id, hero.id))!;
+        expect(
+          await harness.repo.writeCharacter({
+            character: { ...read, provisional: { ...read.committed, runId: "gemfall@h_rue" } },
+            expectedVersion: read.version ?? 0,
+            expectedClaim: null,
+          }),
+        ).toBe(true);
+        await harness.repo.putCampaignProgress({
+          householdId: "h_rue",
+          campaignId: "gemfall",
+          status: "active",
+          setbacks: 0,
+          updatedAt: new Date(harness.clock.now()).toISOString(),
+        });
+      }
+      return realMove(input);
+    };
+
+    // The move read her free; its write finds her claimed, cancels, reads again, and refuses.
+    expect(await acceptTransfer({ ...MUM, code: code.code }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "ILLEGAL", message: expect.stringMatching(/middle of an adventure/) },
+    });
+    expect(raced).toBe(true);
+    expect((await harness.repo.getCharacter(club.id, hero.id))?.provisional?.runId).toBe("gemfall@h_rue");
+    expect(await harness.repo.listHouseholdsForAccount(MUM.cognitoSub)).toEqual([]);
+    // The code is not spent: once Rue's adventure ends, it works.
+    expect(await harness.repo.getTransferCode(code.code, new Date(harness.clock.now()).toISOString())).not.toBeNull();
+  });
+
+  it("does not bring her back to the club when a table holding an old read writes her afterwards", async () => {
+    const { harness, club, ada, hero } = await adaAtTheClub();
+    const stale = (await harness.repo.getCharacter(club.id, hero.id))!;
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+    const moved = value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
+
+    const late = await harness.repo.writeCharacter({
+      character: { ...stale, committed: { ...stale.committed, xp: stale.committed.xp + 50 } },
+      expectedVersion: stale.version ?? 0,
+      expectedClaim: null,
+    });
+    expect(late).toBe(false);
+    expect(await harness.repo.getCharacter(club.id, hero.id)).toBeNull();
+    expect((await harness.repo.getCharacter(moved.household.id, hero.id))?.committed.xp).toBe(stale.committed.xp);
+  });
+
   it("keeps her out of a visiting table's room the move's tidy-up cannot find", async () => {
     const { harness, club, ada } = await adaAtTheClub();
     // Rue's table seated her as a visitor from the club (#249).

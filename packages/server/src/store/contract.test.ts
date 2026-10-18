@@ -550,6 +550,21 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect(await repo.getMovedDevice("h_club", "d_ada")).toBe("h_home");
       });
 
+      it("will not let a write from a read before the move bring a hero back to her old home", async () => {
+        await club();
+        const stale = await repo.getCharacter("h_club", "c_spark");
+        if (!stale) throw new Error("no hero");
+        expect(await move({ householdId: "h_home" })).toBe("moved");
+        const late = await repo.writeCharacter({
+          character: { ...stale, committed: { ...stale.committed, xp: 9999 } },
+          expectedVersion: stale.version ?? 0,
+          expectedClaim: stale.provisional?.runId ?? null,
+        });
+        expect(late).toBe(false);
+        expect(await repo.getCharacter("h_club", "c_spark")).toBeNull();
+        expect((await repo.getCharacter("h_home", "c_spark"))?.committed.xp).toBe(900);
+      });
+
       it("refuses a transfer code that is already taken, and reads one in any case", async () => {
         expect(await repo.putTransferCodeIfAbsent(code())).toBe(true);
         expect(await repo.putTransferCodeIfAbsent(code({ playerId: "p_bo" }))).toBe(false);
