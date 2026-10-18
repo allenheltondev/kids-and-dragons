@@ -32,7 +32,8 @@ export type Effect =
    * `when: { coins: { min } }` so a party that cannot pay never sees it.
    */
   | { type: "spendCoins"; amount: number }
-  | { type: "damage"; amount: number; to?: GrantTarget }
+  /** Nonlethal story hazards leave a standing hero at 1 HP; never revive a downed hero. */
+  | { type: "damage"; amount: number; to?: GrantTarget; nonlethal?: boolean }
   | { type: "heal"; amount: number; to?: GrantTarget }
   | { type: "grantXp"; amount: number }
   | { type: "setFlag"; flag: string; value?: boolean };
