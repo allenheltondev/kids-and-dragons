@@ -140,6 +140,20 @@ or fail, a stat point. So a hero is never copied into the room's household, and 
 everything it earned. The household stays the unit (#266 is open); this names a hero's home without
 deepening it.
 
+### A kid's own record, where it lives (for deletion, #252)
+
+Everything #283 writes about a kid is keyed by her **home household id** and
+her **player id**, and needs no index or scan to find:
+
+| What | Where | Found by |
+|---|---|---|
+| Her finished campaigns (`finished`: campaign, outcome, when, which table) | On each of her heroes: `HH#<home>` / `CHAR#<charId>`, `data.finished` | Her heroes are the `CHAR#` rows under `HH#<home>` whose `ownerPlayerId` is her. Deleting the hero deletes the record; there is no copy elsewhere |
+| Her finds in her own book, including the ones made visiting | `HH#<home>` / `FIELDGUIDE`, `entries[canonId].firstFoundBy = <playerId>` | The one book row of her home; her entries are those naming her player id |
+| Her finds in a table's book, where she was first finder there | `HH#<table>` / `FIELDGUIDE`, `firstFoundBy = <playerId>` | Not reachable from her ids alone. The tables she *finished a campaign at* are named in `finished[].table`; a table she only played at is not recorded anywhere on her side. This copy predates #283 (#106, #249) |
+
+`finished[].table` names another household's id, not a person, and is the
+kid's own data: it goes when her hero does.
+
 ### 3.0 Anonymous households and how they expire
 
 An anonymous household is an ordinary household with `guest: true` and an
@@ -783,7 +797,9 @@ finished, and her Field Guide finds. Both are now hers.
   happened, and one hero who was there carries it for the party, the way the
   household's record already carries every kid at its table. Requiring every
   hero would lock a family's own new kid out of the campaign the family
-  finished. Keeping the household's record beside hers is the conservative
+  finished. (The owner confirmed "any hero in the party" for #283; a mixed
+  party where only one hero finished it is tested in `hero-record.test.ts`.)
+  Keeping the household's record beside hers is the conservative
   half: no record was backfilled, so a household that finished Gemfall before
   heroes kept one plays exactly as it did. The server's refusal at a chapter
   start or a Begin reads the party seated then; the lobby's lock is recomputed

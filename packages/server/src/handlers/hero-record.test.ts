@@ -193,7 +193,7 @@ describe("a visiting hero finishes a campaign at another household's table (#283
     expect(Object.keys(journal.value.fieldGuide)).toContain(GATE);
   });
 
-  it("meets the prerequisite at her home, which never played it, and only with her at the table", async () => {
+  it("any hero in a mixed party meets the prerequisite: her home never played it, her sister never did, and with Wren seated it opens", async () => {
     const { harness, wren, wrenHero } = await wrenFinishesGemsAway();
     const [sis] = await (async () => {
       await harness.repo.putPlayer({ id: "p_sis", householdId: "h_visit", displayName: "Sis", color: "#7FD4C1" });
