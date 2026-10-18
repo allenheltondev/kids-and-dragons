@@ -175,6 +175,8 @@ function harness(state: RunState = makeState()): Harness {
     editHousehold: vi.fn(),
     createOrganizerInvite: vi.fn(),
     acceptOrganizerInvite: vi.fn(),
+    createTransferCode: vi.fn(),
+    acceptTransfer: vi.fn(),
     removeOrganizer: vi.fn(),
   };
 
