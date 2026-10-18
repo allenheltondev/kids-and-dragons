@@ -41,3 +41,4 @@ body:has(.kad-audio-control) .kad-map__flip { padding-inline-end: 3.25rem; }
 @media (prefers-reduced-motion: reduce) {
   .kad-audio-control { transition: none; }
 }
+.kad-audio-control__volume { inline-size: 6rem; accent-color: var(--kad-ink-dim); }

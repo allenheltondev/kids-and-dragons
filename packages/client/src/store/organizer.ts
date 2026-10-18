@@ -12,7 +12,13 @@
  */
 
 import { create } from "zustand";
-import type { OrganizerHouseholdSummary, OrganizerHouseholdView, OrganizerInvite, PairingCode } from "@kad/shared";
+import type {
+  OrganizerDevice,
+  OrganizerHouseholdSummary,
+  OrganizerHouseholdView,
+  OrganizerInvite,
+  PairingCode,
+} from "@kad/shared";
 import { api as defaultApi, type Api, type OrganizerEdit } from "../sync/client";
 
 /** An edit, minus the household it applies to: always the one on screen. */
@@ -28,6 +34,8 @@ export interface OrganizerStore {
   households: OrganizerHouseholdSummary[];
   /** The household being managed. `null` is the picker. */
   view: OrganizerHouseholdView | null;
+  /** The shared tablets of the household on screen (#273), forgotten ones left out. */
+  devices: OrganizerDevice[];
   /** The last code made for the household on screen, to read out or send. */
   invite: OrganizerInvite | null;
   /** The last pairing code made, and for which kid (#281). */
@@ -48,6 +56,8 @@ export interface OrganizerStore {
   makeInvite(): Promise<void>;
   /** "Play as Ada on another device": a one-time code for one kid of this household. */
   makePairing(playerId: string): Promise<void>;
+  /** Forget one of the household's shared tablets; its next request is refused. */
+  forgetDevice(deviceId: string): Promise<void>;
   /** Take a co-organizer off; your own id is "leave this group". */
   removeOrganizer(ownerId: string): Promise<void>;
   dismissError(): void;
@@ -74,14 +84,23 @@ export function createOrganizerStore(api: Api = defaultApi) {
     }
 
     async function show(token: string, householdId: string): Promise<void> {
-      const view = await api.viewHousehold(token, householdId);
-      set({ view, invite: get().view?.id === householdId ? get().invite : null, pairing: null });
+      const [view, { devices }] = await Promise.all([
+        api.viewHousehold(token, householdId),
+        api.listSharedDevices(token, householdId),
+      ]);
+      set({
+        view,
+        devices: devices.filter((d) => !d.revoked),
+        invite: get().view?.id === householdId ? get().invite : null,
+        pairing: null,
+      });
     }
 
     return {
       email: null,
       households: [],
       view: null,
+      devices: [],
       invite: null,
       pairing: null,
       busy: false,
@@ -89,7 +108,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
 
       async begin(token, email) {
         idToken = token;
-        set({ email, households: [], view: null, invite: null, pairing: null, error: null });
+        set({ email, households: [], view: null, devices: [], invite: null, pairing: null, error: null });
         await run(async (t) => {
           const { households } = await api.listHouseholds(t);
           set({ households });
@@ -100,7 +119,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
 
       end() {
         idToken = null;
-        set({ email: null, households: [], view: null, invite: null, pairing: null, busy: false, error: null });
+        set({ email: null, households: [], view: null, devices: [], invite: null, pairing: null, busy: false, error: null });
       },
 
       async openHousehold(householdId) {
@@ -108,7 +127,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
       },
 
       async backToList() {
-        set({ view: null, invite: null, pairing: null });
+        set({ view: null, devices: [], invite: null, pairing: null });
         await run(async (t) => {
           set({ households: (await api.listHouseholds(t)).households });
         });
@@ -155,13 +174,22 @@ export function createOrganizerStore(api: Api = defaultApi) {
         });
       },
 
+      async forgetDevice(deviceId) {
+        const householdId = get().view?.id;
+        if (!householdId) return;
+        await run(async (t) => {
+          await api.forgetDeviceById(t, deviceId);
+          await show(t, householdId);
+        });
+      },
+
       async removeOrganizer(ownerId) {
         const householdId = get().view?.id;
         if (!householdId) return;
         await run(async (t) => {
           const { left } = await api.removeOrganizer(t, householdId, ownerId);
           if (left) {
-            set({ view: null, invite: null, households: (await api.listHouseholds(t)).households });
+            set({ view: null, devices: [], invite: null, households: (await api.listHouseholds(t)).households });
           } else {
             await show(t, householdId);
           }
