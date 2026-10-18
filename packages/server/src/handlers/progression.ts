@@ -33,6 +33,7 @@ import {
   resumeJourney,
   spendStatPoint as applyStatPointSpend,
   startCampaign,
+  memberHome,
   startJourney,
   prerequisiteReason,
   unmetPrerequisites,
@@ -941,7 +942,9 @@ async function transformParty(
     let base = byId.get(member.character.id) ?? null;
     if (!base) {
       try {
-        base = await deps.repo.getCharacter(householdId, member.character.id);
+        // A visitor's hero is read from, and so written back to, its own
+        // household (#249).
+        base = await deps.repo.getCharacter(memberHome(member, householdId), member.character.id);
       } catch (err) {
         // Same policy as foldChapterXp: one bad row must not take the table
         // down at the moment the campaign ends.
@@ -994,9 +997,10 @@ export async function prepareStatPointSpend(
   const member = state.party.find((candidate) => candidate.playerId === playerId);
   if (!member) return fail("NOT_FOUND", `player ${playerId} has no character in this run`);
 
-  const character = await deps.repo.getCharacter(householdId, member.character.id);
+  const home = memberHome(member, householdId);
+  const character = await deps.repo.getCharacter(home, member.character.id);
   if (!character) return fail("NOT_FOUND", `no character ${member.character.id}`);
-  if (character.householdId !== householdId || character.ownerPlayerId !== playerId) {
+  if (character.householdId !== home || character.ownerPlayerId !== playerId) {
     return fail("FORBIDDEN", "this session cannot spend points for that character");
   }
 

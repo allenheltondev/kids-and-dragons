@@ -145,6 +145,7 @@ function harness(state: RunState = makeState()): Harness {
     // A shared tablet (#250): sessions only, never a device token.
     shareDevice: vi.fn(),
     forgetDevice: vi.fn(),
+    setVisitors: vi.fn(),
     listSharedPlayers: vi.fn(async () => ({
       householdId: "h_1",
       players: [

@@ -99,6 +99,7 @@ import type { CheckBuffOffer, RunBuff } from "./types/buffs.js";
 import type { FactId, FactValue } from "./types/campaign-graph.js";
 import { factTestHolds } from "./world-state.js";
 import { checkBuffOffer, combatBuffsFor, expireRunBuffs, oneHeroSeat, spendCheckBuff, spendRunBuffs } from "./buffs.js";
+import { sameHome } from "./visitors.js";
 import { checkTypedName } from "./names.js";
 
 // ---------------------------------------------------------------------------
@@ -2569,6 +2570,11 @@ function doOfferItem(
   if (!to) throw new Illegal("NOT_FOUND", `player "${toPlayerId}" is not in this run`);
   if (to.playerId === from.playerId) {
     throw new Illegal("ILLEGAL", "you already have it");
+  }
+  // A visitor's hero lives in another household (#249), and nothing moves
+  // between households in v1: the bag it went home in would not be theirs.
+  if (!sameHome(from, to)) {
+    throw new Illegal("FORBIDDEN", `${to.character.name} is from another home, and items can only be passed within one`);
   }
 
   const def = ctx.items[itemId];
