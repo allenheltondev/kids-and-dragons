@@ -867,9 +867,9 @@ leaves nobody signed in afterwards. A TV's room must be settled by a phone first
 
 - **A longer code.** Opening the room gives it a visitor code, the room's four
   letters and two more (`RunState.visitorCode`). Every screen in the room shows
-  it in place of the short one, QR included. The short code still works for the
-  room's own household exactly as before, and a phone from anywhere else needs
-  the long one. The join route takes either (`findRoom`). A six-letter code
+  it in place of the short one, QR included. The short code still works for
+  phones already bound to the room's own household, and a phone from anywhere
+  else needs the long one. The join route takes either (`findRoom`). A six-letter code
   names the room only while it is open with exactly that code, so a wrong
   ending is an unknown code and spends the wrong-code budget, and guessing
   one is a search of 24⁶. Everything after the join (the session, the channel,
@@ -882,10 +882,17 @@ leaves nobody signed in afterwards. A TV's room must be settled by a phone first
   nothing in the host household: claiming, binding and revoking all take a
   device token or a sign-in, and an action is accepted from another household
   only for a player the run has seated from it. A visitor is never the keeper.
-  A phone nobody has seen before that joins with the visitor code is a visitor
-  too: it is given a guest household of its own, which it founds, and never
-  made a player in the host's (`bindNewPhone`). The room's own four letters
-  still bind a new phone into the room's household, as before.
+- **A phone nobody has seen before** is admitted *before* anything is bound to
+  it (`admitNewPhone`), so a refused one leaves no membership behind. In a room
+  that has ever been open to visitors (`RunState.visitorsOpened`, which never
+  clears), the room's four letters prove nothing: every visitor was shown them,
+  inside the long code, in the room's path and on every screen. There, a new
+  phone comes in only as a visitor: on the visitor code, while the room is
+  open, with a guest household of its own that it founds (`bindNewPhone`). Any
+  other way in is refused, while open and after the switch is off. A family's
+  own new phone does the same, and can be moved home later (#251). In a room
+  never opened, a new phone is bound into the room's household as before,
+  unless the room is locked, which now refuses it unbound.
 - **Closing it again** takes the long code away: no new visitor can join. The
   visitors already on the roster stay in the game and can come back to it, as
   anybody on a locked room's roster can. The join checks this against every

@@ -41,7 +41,7 @@ import { setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "./handlers/deps.ts";
 import { iso } from "./handlers/deps.ts";
-import { bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, watchRoom } from "./handlers/room.ts";
+import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, watchRoom } from "./handlers/room.ts";
 import { setVisitors } from "./handlers/visitors.ts";
 import { removePlayer } from "./handlers/remove.ts";
 import { closeRoom, lockRoom, type HostPrincipal } from "./handlers/host.ts";
@@ -258,11 +258,20 @@ async function main(): Promise<void> {
     // An unbound device joining a room gets a player created for it on the spot,
     // so a phone that has never seen this game joins in one tap. On a visitor
     // code it is a visitor, in a guest household of its own (#249).
+    // Admitted before anything is bound — see lambda/http.ts.
+    let admitted: "family" | "visitor" | null = null;
+    if (!existing) {
+      const admission = await admitNewPhone(room, named.visitorCode, deps);
+      if (!admission.ok) {
+        return sendError(res, statusFor(admission.error), admission.error.code, admission.error.message);
+      }
+      admitted = admission.value;
+    }
     const joiner =
       existing ??
       (await bindNewPhone(
         room,
-        named.visitorCode !== undefined,
+        admitted ?? "family",
         { displayName: String(req.body?.displayName ?? "Player"), userAgent: req.get("user-agent") },
         base,
       ));

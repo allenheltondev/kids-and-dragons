@@ -441,6 +441,16 @@ export interface RunState {
    * once it has been idle for `OPEN_ROOM_IDLE_MS`.
    */
   visitorCode?: string;
+  /**
+   * This room has been open to visitors at some point, and never forgets it.
+   * Whoever was given its visitor code was also shown its own four letters
+   * (they are inside the long code, in the room's URL, on every screen), so
+   * from then on knowing the short code proves nothing. A phone nobody has
+   * seen before is never made a member of the room's household here: it comes
+   * in as a visitor, on the visitor code, while the room is open, and not at
+   * all otherwise (`admitNewPhone`). Absent on a room never opened.
+   */
+  visitorsOpened?: true;
   updatedAt: string;
 }
 

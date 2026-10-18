@@ -710,8 +710,50 @@ export async function findRoom(
 }
 
 /**
- * A phone nobody has seen before, joining `room`: bound on the spot, so it
- * joins in one tap. Into the room's household when it came with the room's
+ * Whether a phone nobody has seen before may come into `room`, and as whom,
+ * decided **before** anything is bound to it. Binding first and letting
+ * `joinRoom` refuse afterwards would leave a refused phone a member of the
+ * room's household anyway, with a month-long token to prove it.
+ *
+ *  - `family`: a room never opened to visitors, as it always was. Its code is
+ *    the family's invitation, and the phone becomes a player in the room's
+ *    household. Unless the room is locked (#263): then it is refused, unbound.
+ *  - `visitor`: the room is open and the phone brought its visitor code. It
+ *    gets a guest household of its own (`bindNewPhone`).
+ *  - refused: any other way into a room that has ever been open
+ *    (`RunState.visitorsOpened`). The room's four letters were shown to every
+ *    visitor, so they no longer prove somebody is family, while the room is
+ *    open or after the switch is off. A family's own new phone comes in on the
+ *    visitor code while the room is open, and can be moved home later (#251).
+ */
+export async function admitNewPhone(
+  room: RoomRecord,
+  visitorCode: string | undefined,
+  deps: Pick<HandlerDeps, "repo" | "now" | "channel">,
+): Promise<HandlerResult<"family" | "visitor">> {
+  const state = await deps.repo.getState(room.runId);
+  if (!state) return fail("NOT_FOUND", `run ${room.runId} has no state`);
+  // An idle open room is closed by the join that finds it, as `joinRoom`
+  // would, and nothing is bound on the way to that.
+  if (isClosed(state) || (await closeIfIdle(room, state, deps))) {
+    return fail("NOT_FOUND", `no open room ${room.code.toUpperCase()}`);
+  }
+  if (state.visitorsOpened === true || state.visitorCode !== undefined) {
+    if (visitorCode !== undefined && state.visitorCode === visitorCode) return ok("visitor");
+    return fail(
+      "FORBIDDEN",
+      state.visitorCode !== undefined
+        ? "New players join this game with its visitor code. Ask whoever is running it."
+        : "This game isn't taking new players. Ask whoever is running it.",
+    );
+  }
+  if (state.locked) return fail("FORBIDDEN", "This game is locked. Ask whoever is running it to unlock it.");
+  return ok("family");
+}
+
+/**
+ * A phone nobody has seen before, joining `room`, once `admitNewPhone` has
+ * said how: bound on the spot, so it joins in one tap. Into the room's household when it came with the room's
  * own code, as it always was. With a visitor code (#249) it is a visitor, so
  * it gets a guest household of its own instead and joins from there: a
  * friend's new phone must never become a member of the host family, and
@@ -719,10 +761,10 @@ export async function findRoom(
  */
 export async function bindNewPhone(
   room: RoomRecord,
-  visiting: boolean,
+  admitted: "family" | "visitor",
   input: { displayName: string; userAgent?: string | undefined },
   deps: Pick<HandlerDeps, "repo" | "identity" | "now">,
 ): Promise<BoundDevice> {
-  if (visiting) return createGuestHousehold({ displayName: input.displayName, userAgent: input.userAgent }, deps);
+  if (admitted === "visitor") return createGuestHousehold({ displayName: input.displayName, userAgent: input.userAgent }, deps);
   return addPlayer({ householdId: room.householdId, displayName: input.displayName, userAgent: input.userAgent }, deps);
 }
