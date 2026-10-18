@@ -42,7 +42,7 @@ import type {
  * commit — a bump without a step is a silent no-op migration, which is the one
  * failure this whole mechanism cannot detect.
  */
-export const CHARACTER_VERSION = 1;
+export const CHARACTER_VERSION = 2;
 
 /** Thrown for a stored row that cannot be repaired into a playable character. */
 export class StoredCharacterError extends Error {
@@ -78,6 +78,12 @@ const STEPS: Record<number, Step> = {
       provisional: withPoints(raw["provisional"]),
     };
   },
+  /*
+   * v1 → v2. The hero's claim (#282, architecture §4.5) conditions every write
+   * on a monotonic `version`. Rows from before it never had one, and they are
+   * version 0: nothing has written them under the claim yet.
+   */
+  1: (raw) => ({ ...raw, version: typeof raw["version"] === "number" ? raw["version"] : 0 }),
 };
 
 /**
@@ -136,6 +142,9 @@ export function assertCharacter(value: unknown): Character {
     questItems: strings(raw["questItems"] ?? [], "questItems"),
     souvenirs: souvenirs(raw["souvenirs"] ?? []),
     createdAt: str(raw["createdAt"], "createdAt"),
+    // Kept only when present, so a row the ladder did not touch reads back as
+    // it was stored. Absent reads as 0 wherever it is compared.
+    ...(typeof raw["version"] === "number" ? { version: raw["version"] } : {}),
   };
 }
 

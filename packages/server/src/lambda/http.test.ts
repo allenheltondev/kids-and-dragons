@@ -1394,6 +1394,7 @@ describe("/api/organizer/* (#248)", () => {
       ["POST", "/api/organizer/transfer"],
       ["POST", "/api/organizer/transfer/accept"],
       ["POST", "/api/organizer/owners/remove"],
+      ["POST", "/api/organizer/heroes/leave"],
     ] as const) {
       const result = await respond(event(method, path), rt);
       expect(result.statusCode, `${method} ${path}`).toBe(401);

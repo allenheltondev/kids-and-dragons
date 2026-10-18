@@ -21,7 +21,7 @@ import {
   migrateCharacter,
   migrateFieldGuide,
 } from "@kad/shared";
-import { readAll } from "./character-io.ts";
+import { claimHolds, claimedRow, readAll } from "./character-io.ts";
 import path from "node:path";
 import type {
   Character,
@@ -36,6 +36,7 @@ import type {
 import type {
   CampaignProgressRecord,
   ChapterProgressRecord,
+  CharacterWrite,
   CommitInput,
   EventRecord,
   GameRepository,
@@ -568,6 +569,13 @@ export class MemoryRepository implements GameRepository {
     return readAll(this.query(HH(householdId), PREFIX.character), householdId);
   }
 
+  async writeCharacter(write: CharacterWrite): Promise<boolean> {
+    const { householdId, id } = write.character;
+    if (!claimHolds(this.get(HH(householdId), CHAR_SK(id)), write)) return false;
+    this.put(characterItem(claimedRow(write)));
+    return true;
+  }
+
   // --- runs, state, events ---------------------------------------------------
 
   async putRun(run: RunRecord): Promise<void> {
@@ -705,13 +713,18 @@ export class MemoryRepository implements GameRepository {
           : stored !== null && (stored.version ?? 0) === campaignProgressExpectedVersion;
       if (!matches) return false;
     }
+    // Each hero still stands as this turn read her: her claim and her version.
+    for (const write of characters) {
+      const { householdId, id } = write.character;
+      if (!claimHolds(this.get(HH(householdId), CHAR_SK(id)), write)) return false;
+    }
 
     // No await from here through the final row: this is the local equivalent of
     // one TransactWriteItems, including across two different run partitions.
     this.put({ PK: RUN(runId), SK: EVT_SK(event.seq), entity: "event", data: event });
     this.put({ PK: RUN(runId), SK: STATE, entity: "state", data: state });
-    for (const character of characters) {
-      this.put(characterItem(character));
+    for (const write of characters) {
+      this.put(characterItem(claimedRow(write)));
     }
     if (chapterProgress) {
       this.put({

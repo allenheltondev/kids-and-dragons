@@ -68,6 +68,24 @@ describe("WelcomeBack", () => {
     await waitFor(() => expect(screen.getByRole("alert")).toBeTruthy());
   });
 
+  it("names a hero busy in another adventure, and offers a new hero for this one (#282)", async () => {
+    const user = userEvent.setup();
+    const send = vi.fn(async () => {
+      // As the store does with the server's HERO_BUSY refusal.
+      useGameStore.setState({ error: "Sparklehoof is in the middle of another adventure" });
+      return false;
+    });
+    useGameStore.setState({ send, listHeroes: async () => [SPARKLEHOOF], rules: null, loadContent: async () => undefined });
+    render(<WelcomeBack />);
+
+    await user.click(await screen.findByRole("button", { name: /Sparklehoof/ }));
+    await user.click(screen.getByRole("button", { name: /play as sparklehoof/i }));
+    expect((await screen.findByRole("alert")).textContent).toMatch(/Sparklehoof is in the middle of another adventure/);
+
+    await user.click(screen.getByRole("button", { name: /make a new hero for this one/i }));
+    expect(await screen.findByText(/getting the character sheet ready/i)).toBeTruthy();
+  });
+
   it("still lets them make someone new", async () => {
     const user = userEvent.setup();
     mount([SPARKLEHOOF]);
