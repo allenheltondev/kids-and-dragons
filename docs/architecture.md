@@ -364,6 +364,49 @@ Every client tracks the last `seq` it applied. On reconnect it calls `GET /state
 which returns either the missed events or a full snapshot if the gap is too large. The TV can be
 hard-refreshed mid-encounter and recover in under a second.
 
+#### Stepping away: absence is `connected: false`
+
+A player who is not at the table is a party member with `connected: false`
+(spec §8.5): presence sets it when their stream closes (`handlers/presence.ts`),
+Remove sets it with `removed` (§4.5), and the join that brings them back
+clears it. The member, the hero and its place in the fight all stay, so a
+returning phone needs nothing put back.
+
+Every wait in the engine reads it (shared `engine.ts`), and none of them read
+anything else, so a table with everybody present plays exactly as it always
+did and the Gemfall digests do not move:
+
+- **Opened on someone here.** A story turn skips an away holder
+  (`storyTurnHolder`); a check never nominates one (`rollerPool`).
+- **Open to anyone once the one it names is away.** A held story choice
+  (`turnHolderAway`), a check (`rollerAway`), a combat turn (`combatTurnAway`:
+  END_TURN only, never a move or an action), and a full bag's swap prompt
+  (`swapOwnerAway`: "leave it" only).
+- **Not waited on.** A vote's outstanding voters, the ready-up before a fight,
+  the lobby's Begin (`readyWithoutAway`) and the chapter's end.
+
+A gate the engine only counts when a tap lands (a vote, the pre-fight ready)
+cannot close itself when the last one it waited on drops: presence does not
+run the engine (it has no chapter, map or dice), and an automatic pass would
+also fire for a phone that is merely asleep. So the phones offer the tap that
+closes it (`voteWaitsOnlyOnAway`; a READY sent again), and the chapter's end,
+which needs no engine context, is settled by presence itself
+(`settleChapterEndVote`). The combat pass is offered rather than automatic for
+the sleeping-phone reason too.
+
+What the screens draw from it: the TV names who stepped away in the narration
+header and fades their figure on the board and in the lineup (never the
+knocked-down pose), and a phone that opens on a chapter in progress, or whose
+channel came back after the story moved, shows a one-line catch-up
+(`screens/CatchUp.tsx`).
+
+**Production has no presence yet.** Only the dev server's SSE stream calls
+`setPresence`; AppSync Events gives the Lambda no connect or disconnect hook,
+so in production a member goes away only when the host removes them. Every
+rule above still holds for a removed player. Marking a silent phone away in
+production needs its own signal (a heartbeat, say), with a threshold that
+does not mistake a sleeping phone for a kid who left.
+
 #### The Field Guide: the book on the state, the news on the wire
 
 The household's Field Guide (`HH#…/FIELDGUIDE`, §3) is household data, not run data, but every
