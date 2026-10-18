@@ -71,6 +71,8 @@ const PORT = Number(process.env.PORT ?? 8787);
 const HOST = process.env.HOST ?? "0.0.0.0";
 /** Stream-based presence beside the heartbeats; off to run as production does. */
 const STREAM_PRESENCE = process.env.KAD_STREAM_PRESENCE !== "off";
+/** How long a quiet phone stays here; the handler's two minutes when unset. */
+const PRESENCE_AWAY_MS = Number(process.env.KAD_PRESENCE_AWAY_MS) || undefined;
 
 /** Everything that does not come out of `@kad/shared`; see `withRuntime()`. */
 type BaseDeps = Omit<HandlerDeps, "engine" | "rng">;
@@ -443,6 +445,7 @@ async function main(): Promise<void> {
         playerId: session.playerId,
         householdId: session.householdId,
         leaving: (req.body ?? {}).leaving === true,
+        ...(PRESENCE_AWAY_MS === undefined ? {} : { awayAfterMs: PRESENCE_AWAY_MS }),
       },
       deps,
     );
