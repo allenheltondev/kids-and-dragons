@@ -381,6 +381,34 @@ export class DynamoRepository implements GameRepository {
     }
   }
 
+  async setFounder(householdId: string, deviceId: string): Promise<boolean> {
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: HH(householdId), SK: META },
+          UpdateExpression: "SET #d.#founder = :device REMOVE #d.#awaiting",
+          // Still a guest nobody has kept, and not being deleted (the claim's own conditions).
+          ConditionExpression:
+            "attribute_exists(PK) AND attribute_not_exists(sweeping) AND #d.#guest = :true " +
+            "AND (attribute_not_exists(#d.#owner) OR #d.#owner = :null)",
+          ExpressionAttributeNames: {
+            "#d": "data",
+            "#founder": "founderDeviceId",
+            "#awaiting": "awaitingFounder",
+            "#guest": "guest",
+            "#owner": "ownerSub",
+          },
+          ExpressionAttributeValues: { ":device": deviceId, ":true": true, ":null": null },
+        }),
+      );
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+  }
+
   async extendGuestHousehold(householdId: string, expiresAt: string): Promise<GuestRenewal> {
     try {
       /*

@@ -314,6 +314,16 @@ export class MemoryRepository implements GameRepository {
     await this.putHousehold({ ...household, founderDeviceId: "" });
   }
 
+  async setFounder(householdId: string, deviceId: string): Promise<boolean> {
+    const item = this.get(HH(householdId), META);
+    if (!item || item.sweeping) return false;
+    const household = item.data as Household;
+    if (!household.guest || household.ownerSub) return false;
+    const { awaitingFounder: _taken, ...rest } = household;
+    await this.putHousehold({ ...rest, founderDeviceId: deviceId });
+    return true;
+  }
+
   async extendGuestHousehold(householdId: string, expiresAt: string): Promise<GuestRenewal> {
     // The same condition the real store writes under.
     const item = this.get(HH(householdId), META);

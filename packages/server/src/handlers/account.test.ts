@@ -7,6 +7,7 @@ import {
   GUEST_HOUSEHOLD_TTL_MS,
   linkAccount,
 } from "./account.ts";
+import { shareDevice } from "./shared-device.ts";
 
 async function guestParty(harness: TestHarness) {
   const host = await createGuestHousehold({ displayName: "Allen" }, harness.deps);
@@ -187,6 +188,36 @@ describe("linkAccount", () => {
     expect(result.value.claimed).toBe(false);
     expect(result.value.householdId).not.toBe(host.household.id);
     expect(await harness.repo.getHousehold(host.household.id)).toMatchObject({ guest: true, ownerSub: null });
+  });
+
+  it("leaves a joiner who signs in from the home screen bound to the table they joined (#272, item 6)", async () => {
+    // The sign-in answers with the account's own household; it moves nothing.
+    // The phone still plays at the table it joined, and the table's game is
+    // still the founder's to keep.
+    const harness = makeHarness();
+    const host = await guestParty(harness);
+    const joiner = await addPlayer({ householdId: host.household.id, displayName: "Sam" }, harness.deps);
+
+    await linkAccount(
+      { cognitoSub: "sub_b", email: "b@example.com", principal: joiner.principal, preferExisting: true },
+      harness.deps,
+    );
+    expect(await harness.repo.getDevice(host.household.id, joiner.principal.deviceId)).toMatchObject({
+      playerId: joiner.principal.playerId,
+    });
+    expect((await harness.repo.getDevice(host.household.id, joiner.principal.deviceId))?.revoked).toBeFalsy();
+    const kept = await linkAccount({ cognitoSub: "sub_a", principal: host.principal }, harness.deps);
+    expect(kept.ok && kept.value.claimed).toBe(true);
+  });
+
+  it("has no shared tablet to be the founder for every kid: only a kept household can make one (#272, item 3)", async () => {
+    const harness = makeHarness();
+    // An account with nothing kept yet, however many guest games it joined.
+    await guestParty(harness);
+    expect(await shareDevice({ cognitoSub: "sub_a" }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "NOT_FOUND" },
+    });
   });
 
   it("keeps the old rule on a guest household made before founders, until it expires", async () => {

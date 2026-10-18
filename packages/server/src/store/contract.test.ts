@@ -775,6 +775,32 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         expect(await repo.takeFounding("h_nope", "d_c")).toBe(false);
       });
 
+      it("lets a host hand the founding to another device, once the first is gone (#272)", async () => {
+        await repo.putHousehold(guest("h_1", new Date(Date.now() + DAY).toISOString()));
+        await repo.dropFounder("h_1", "d_1");
+        expect(await repo.setFounder("h_1", "d_family")).toBe(true);
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(false);
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_family")).toBe(true);
+      });
+
+      it("hands the founding over a founder who is still there, and ends the wait for one (#272)", async () => {
+        const { founderDeviceId: _none, ...open } = guest("h_1", new Date(Date.now() + DAY).toISOString());
+        await repo.putHousehold({ ...open, awaitingFounder: true });
+        expect(await repo.setFounder("h_1", "d_a")).toBe(true);
+        expect(await repo.getHousehold("h_1")).toMatchObject({ founderDeviceId: "d_a" });
+        expect(await repo.getHousehold("h_1")).not.toHaveProperty("awaitingFounder");
+        expect(await repo.setFounder("h_1", "d_b")).toBe(true);
+        expect((await repo.getHousehold("h_1"))?.founderDeviceId).toBe("d_b");
+      });
+
+      it("will not hand the founding of a kept household, or one that does not exist (#272)", async () => {
+        await repo.putHousehold(guest("h_1", new Date(Date.now() + DAY).toISOString()));
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(true);
+        expect(await repo.setFounder("h_1", "d_other")).toBe(false);
+        expect((await repo.getHousehold("h_1"))?.founderDeviceId).toBe("d_1");
+        expect(await repo.setFounder("h_nope", "d_other")).toBe(false);
+      });
+
       it("will not claim a household that does not exist", async () => {
         expect(await repo.claimHousehold("h_nope", "sub_a", "d_1")).toBe(false);
       });

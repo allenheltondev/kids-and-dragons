@@ -652,13 +652,27 @@ export function shouldOfferKeepsake(
   return available === true && !claimed && partySize > 0 && keeper;
 }
 
+/**
+ * Whether this phone is the one that may keep the game (#265, #272): the player
+ * a host handed the role to when it has (`RunState.keeperPlayerId`), else what
+ * the join said, which is all a session restored from storage has.
+ */
+export function isKeeper(
+  handed: string | undefined,
+  session: { playerId: string; keeper?: boolean } | null,
+): boolean {
+  return handed !== undefined ? handed === session?.playerId : session?.keeper === true;
+}
+
 export function KeepsakeOffer(): ReactElement | null {
   const available = useKeepsakeStore((s) => s.available);
   const account = useKeepsakeStore((s) => s.account);
   const open = useKeepsakeStore((s) => s.open);
   // Only the phone that started this household may keep it (#265); every
   // other phone at the table would be offered a sign-in that is refused.
-  const keeper = useGameStore((s) => s.session?.keeper === true);
+  // A host's handing it over (`RunState.keeperPlayerId`, #272) outranks what
+  // the join said, which is all a restored session has.
+  const keeper = useGameStore((s) => isKeeper(s.state?.keeperPlayerId, s.session));
   const party = useParty();
   const fieldGuide = guideAtStake(useFieldGuideDiscoveries());
 

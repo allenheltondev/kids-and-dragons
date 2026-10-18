@@ -592,9 +592,37 @@ is. A phone that opens a room founds its household then; a TV's placeholder
 household is founded by the first phone to join, the one that decides whose
 evening it is. A host taking out the founding phone leaves the household with no
 founder, and it can no longer be claimed. The join tells the founding phone it is
-the keeper, and only that phone is shown the offer to keep the party. Guest
-households from before founders were recorded keep the old rule (any device
-playing in one may claim it) until they expire, within a week of shipping. The device that opened a room may take a
+the keeper, and only that phone is shown the offer to keep the party.
+
+**The host can hand the keeper role to a phone in the room (#272).** The
+device that opened the room already holds its low-stakes controls, and
+"whose game is this" is answered by who is sitting in it, so the roster has a
+"Make keeper" beside Remove (`POST /api/room/:code/keeper`, `handKeeper`). It
+moves `founderDeviceId` to the chosen player's own phone in one conditional
+write (`setFounder`: a guest household nobody has kept, not being swept), so
+it mends a stranger who beat the family to a TV's code, a founder taken out,
+and a founding phone that was lost. Conservatively: only the room's host; only
+a phone that is in the room, in its own household, not taken out (never a
+visitor, never a family tablet, which is nobody); nothing is claimed by it,
+the new keeper still signs in on that phone to keep the game; and a household
+an account already keeps is refused. The change is also written to the run
+(`RunState.keeperPlayerId`), so every screen hears it at once: the old
+keeper's offer goes, the new one's comes, and a phone restored from storage
+(which has only what its join said) draws the right one without joining
+again. Deleting a player (#252) takes her id out of it. Left as it is on
+purpose: the founder is still a device and not a person. A guest game is a
+table's save (see "Who owns what", below), a kid's hero is hers and is not lost
+with it, and a family tablet exists only in a household an account already
+keeps, so none can found a guest game for every kid who uses it.
+
+Guest households from before founders were recorded keep the old rule (any
+device playing in one may claim it). #265 shipped it on 2026-10-17 and a guest
+household expires a week after it was last played, but a game still being
+played keeps renewing, so the rule goes only once none is left to find: delete
+the `legacy` branches in `mayClaim`, the memory store's `claimHousehold` and
+the DynamoDB claim condition then (#272).
+
+The device that opened a room may take a
 player out of that room, a low-stakes control that a TV or a kid's phone may
 hold. Playing needs nothing. Tokens issued before #265 carry a `role` claim, and
 nothing reads it, so no phone had to re-pair.

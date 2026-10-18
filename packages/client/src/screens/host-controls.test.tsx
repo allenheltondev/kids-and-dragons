@@ -36,6 +36,7 @@ const RUN: Partial<RunState> = {
 
 function room(session: Partial<ClientSession>, run: Partial<RunState> = RUN) {
   const removePlayer = vi.fn(async () => true);
+  const handKeeper = vi.fn(async () => true);
   const lockRoom = vi.fn(async () => true);
   const closeRoom = vi.fn(async () => true);
   const quietRoom = vi.fn(async () => true);
@@ -45,13 +46,14 @@ function room(session: Partial<ClientSession>, run: Partial<RunState> = RUN) {
       session: { runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "travel", sessionToken: "t", ...session },
       state: { ...makeState(), ...run },
       removePlayer,
+      handKeeper,
       lockRoom,
       closeRoom,
       quietRoom,
       stopForToday,
     });
   });
-  return { removePlayer, lockRoom, closeRoom, quietRoom, stopForToday };
+  return { removePlayer, handKeeper, lockRoom, closeRoom, quietRoom, stopForToday };
 }
 
 afterEach(() => {
@@ -64,15 +66,15 @@ afterEach(() => {
 describe("rosterOf", () => {
   it("lists everybody who joined, a hero's name once there is one, and where they are", () => {
     expect(rosterOf({ ...RUN, party: RUN.party ?? [], removed: ["p_3"] }, "p_1")).toEqual([
-      { playerId: "p_1", name: "Ember", color: "#7FD4C1", device: "phone", status: "here", me: true, visitor: false },
-      { playerId: "p_2", name: "Sparklehoof", color: "#F2A65A", device: "tablet", status: "away", me: false, visitor: false },
-      { playerId: "p_3", name: "Player", color: "#9A8CF2", device: "phone", status: "out", me: false, visitor: false },
+      { playerId: "p_1", name: "Ember", color: "#7FD4C1", device: "phone", status: "here", me: true, visitor: false, keeper: false },
+      { playerId: "p_2", name: "Sparklehoof", color: "#F2A65A", device: "tablet", status: "away", me: false, visitor: false, keeper: false },
+      { playerId: "p_3", name: "Player", color: "#9A8CF2", device: "phone", status: "out", me: false, visitor: false, keeper: false },
     ]);
   });
 
   it("still lists a seated hero from a run older than the roster", () => {
     expect(rosterOf({ party: [member("p_9", "Rumble")] }, "")).toEqual([
-      { playerId: "p_9", name: "Rumble", color: "#123456", device: null, status: "here", me: false, visitor: false },
+      { playerId: "p_9", name: "Rumble", color: "#123456", device: null, status: "here", me: false, visitor: false, keeper: false },
     ]);
   });
 });
@@ -99,6 +101,23 @@ describe("host controls", () => {
     render(<HostControls placement="inline" />);
     fireEvent.click(screen.getByRole("button", { name: "Remove Player from this game" }));
     expect(removePlayer).toHaveBeenCalledWith("p_3");
+  });
+
+  it("hands the keeper role to a phone in the room, never to a tablet or the host (#272)", () => {
+    const { handKeeper } = room({ host: true });
+    render(<HostControls placement="inline" />);
+    // p_1 is the host's own seat and p_2 is the family tablet.
+    expect(screen.queryByRole("button", { name: "Let Ember keep this game" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Let Sparklehoof keep this game" })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Let Player keep this game" }));
+    expect(handKeeper).toHaveBeenCalledWith("p_3");
+  });
+
+  it("says who keeps the game once the role is handed over (#272)", () => {
+    room({ host: true }, { ...RUN, keeperPlayerId: "p_3" });
+    render(<HostControls placement="inline" />);
+    expect(screen.getByText(/keeps the game/)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Let Player keep this game" })).toBeNull();
   });
 
   it("turn quiet mode on, and off again once it is on (#260)", () => {

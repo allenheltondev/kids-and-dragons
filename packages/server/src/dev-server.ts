@@ -44,6 +44,7 @@ import { iso } from "./handlers/deps.ts";
 import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, watchRoom } from "./handlers/room.ts";
 import { setVisitors } from "./handlers/visitors.ts";
 import { removePlayer } from "./handlers/remove.ts";
+import { handKeeper } from "./handlers/keeper.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "./handlers/host.ts";
 import { releaseSavedHero, resumeGame, stopForToday } from "./handlers/save.ts";
 import { listHeroes } from "./handlers/heroes.ts";
@@ -382,6 +383,10 @@ async function main(): Promise<void> {
   app.post("/api/room/:code/remove", hostControl(
     (body) => (typeof body.playerId === "string" && body.playerId !== "" ? null : "expected { playerId }"),
     (code, principal, body, deps) => removePlayer({ code, principal, playerId: body.playerId as string }, deps),
+  ));
+  app.post("/api/room/:code/keeper", hostControl(
+    (body) => (typeof body.playerId === "string" && body.playerId !== "" ? null : "expected { playerId }"),
+    (code, principal, body, deps) => handKeeper({ code, principal, playerId: body.playerId as string }, deps),
   ));
   app.post("/api/room/:code/lock", hostControl(
     (body) => (typeof body.locked === "boolean" ? null : "expected { locked: true | false }"),
