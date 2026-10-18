@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { makeHarness, type TestHarness } from "../test-support.ts";
 import { addPlayer, adoptDevice, linkAccount } from "./account.ts";
 import type { HandlerResult } from "./deps.ts";
@@ -16,6 +16,7 @@ import {
   setProfileRetired,
   viewHousehold,
 } from "./organizer.ts";
+import { applyAction } from "./action.ts";
 import { joinRoom, createRoom } from "./room.ts";
 import { listSharedPlayers, seatOnSharedDevice, shareDevice } from "./shared-device.ts";
 
@@ -201,6 +202,52 @@ describe("profiles an organizer manages", () => {
     ]);
   });
 
+  it("takes a retired kid out of a room they are already sitting in", async () => {
+    const harness = makeHarness();
+    const group = await twoOrganizers(harness);
+    value(await addProfile({ ...ANA, householdId: group.id, displayName: "Posy" }, harness.deps));
+    value(await addProfile({ ...ANA, householdId: group.id, displayName: "Gullet" }, harness.deps));
+    const tablet = value(await shareDevice({ cognitoSub: ANA.cognitoSub }, harness.deps));
+    const shared = await harness.identity.resolveSharedDevice(tablet.sharedToken);
+    if (!shared) throw new Error("tablet did not resolve");
+    const faces = value(await listSharedPlayers(shared, harness.deps)).players;
+    const room = value(await createRoom({ householdId: group.id, mode: "party" }, harness.deps));
+    const sessions: Record<string, string> = {};
+    for (const face of faces) {
+      const seat = value(await seatOnSharedDevice({ shared, playerId: face.id }, harness.deps));
+      sessions[face.displayName] = value(
+        await joinRoom({ code: room.code, principal: seat, device: "tablet" }, harness.deps),
+      ).sessionToken;
+    }
+    const posy = faces.find((f) => f.displayName === "Posy");
+    if (!posy) throw new Error("no Posy");
+
+    // Posy is seated, with a live session, when an organizer retires her.
+    expect(await harness.identity.resolveSession(sessions.Posy ?? "")).toMatchObject({ playerId: posy.id });
+    value(await setProfileRetired({ ...BEN, householdId: group.id, playerId: posy.id, retired: true }, harness.deps));
+
+    const state = await harness.repo.getState(room.runId);
+    expect(state?.removed).toEqual([posy.id]);
+    expect(state?.party.find((m) => m.playerId === posy.id)?.connected ?? false).toBe(false);
+    // Her session is refused at the room boundary: no move, no way back in.
+    const move = await applyAction(
+      { runId: room.runId, playerId: posy.id, seq: state?.seq ?? 0, intent: { type: "READY", ready: true } },
+      harness.deps,
+    );
+    expect(move.error?.code).toBe("FORBIDDEN");
+    const back = await joinRoom(
+      { code: room.code, principal: { deviceId: shared.deviceId, householdId: group.id, playerId: posy.id } },
+      harness.deps,
+    );
+    expect(back).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+    // Gullet plays on.
+    expect(state?.removed).not.toContain(faces.find((f) => f.displayName === "Gullet")?.id);
+
+    // Retiring again finds nothing left to do, and says so quietly.
+    value(await setProfileRetired({ ...ANA, householdId: group.id, playerId: posy.id, retired: true }, harness.deps));
+    expect((await harness.repo.getState(room.runId))?.seq).toBe(state?.seq);
+  });
+
   it("will not bring a kid back onto a name somebody took meanwhile", async () => {
     const harness = makeHarness();
     const group = value(await createGroup({ ...ANA, displayName: "Club" }, harness.deps));
@@ -226,6 +273,22 @@ describe("organizer invites", () => {
     const again = await acceptOrganizerInvite({ ...EVE, code: invite.code }, harness.deps);
     expect(again).toMatchObject({ ok: false, error: { code: "NOT_FOUND" } });
     expect(await harness.repo.listHouseholdsForAccount(EVE.cognitoSub)).toEqual([]);
+  });
+
+  it("keep working when the write that redeems one fails", async () => {
+    const harness = makeHarness();
+    const group = value(await createGroup({ ...ANA, displayName: "Club" }, harness.deps));
+    const invite = value(await createOrganizerInvite({ ...ANA, householdId: group.id }, harness.deps));
+
+    // The redemption's one write fails on its way to the store.
+    const redeem = vi.spyOn(harness.repo, "redeemOrganizerInvite").mockRejectedValueOnce(new Error("throttled"));
+    await expect(acceptOrganizerInvite({ ...BEN, code: invite.code }, harness.deps)).rejects.toThrow("throttled");
+    expect(await harness.repo.listHouseholdsForAccount(BEN.cognitoSub)).toEqual([]);
+
+    // Ben taps Join again with the same code, and he is in.
+    value(await acceptOrganizerInvite({ ...BEN, code: invite.code }, harness.deps));
+    expect(redeem).toHaveBeenCalledTimes(2);
+    expect(await harness.repo.listHouseholdsForAccount(BEN.cognitoSub)).toEqual([group.id]);
   });
 
   it("go dead after three days", async () => {

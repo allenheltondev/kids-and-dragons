@@ -98,6 +98,48 @@ async function unfound(householdId: string, playerId: string, deps: HandlerDeps)
   if (device && device.kind !== "shared" && device.playerId === playerId) await deps.repo.dropFounder(householdId, household.founderDeviceId);
 }
 
+/**
+ * Take a player out of every room their household has open, as `removePlayer`
+ * does for one: on `removed`, away, out of any vote (#248, a retired profile).
+ * Nobody's host control, so there is no host to check; the caller has already
+ * proved a signed-in owner. A room they never sat in, a closed run, and a
+ * room already showing them out are left alone. Stops at the first room it
+ * could not write, so the caller can say so and be asked again.
+ */
+export async function takeOutEverywhere(
+  householdId: string,
+  playerId: string,
+  deps: Pick<HandlerDeps, "repo" | "now" | "channel">,
+): Promise<HandlerResult<{ rooms: number }>> {
+  let rooms = 0;
+  for (const run of await deps.repo.listRuns(householdId)) {
+    if (run.status !== "active") continue;
+    // Codes recycle: only the room that still points at this run is this run's.
+    const room = await deps.repo.getRoom(run.roomCode);
+    if (!room || room.runId !== run.id) continue;
+    const result = await commitRoomChange(
+      room,
+      playerId,
+      (state): RunState | null => {
+        const seated = state.party.some((m) => m.playerId === playerId) || state.seats?.[playerId] !== undefined;
+        if (!seated || isRemoved(state, playerId)) return null;
+        return settleChapterEndVote({
+          ...state,
+          removed: [...(state.removed ?? []), playerId],
+          party: state.party.map((m) => (m.playerId === playerId ? { ...m, connected: false, ready: false } : m)),
+        });
+      },
+      deps,
+    );
+    if (!result.ok) {
+      if (result.error.code === "NOT_FOUND") continue; // closed, or gone
+      return fail(result.error.code, "Couldn't take them out of a game in progress. Try again.");
+    }
+    if (result.value.changed) rooms++;
+  }
+  return ok({ rooms });
+}
+
 /** On `RunState.removed`: taken out of this room, and kept out. */
 export function isRemoved(state: Pick<RunState, "removed">, playerId: string): boolean {
   return state.removed?.includes(playerId) ?? false;

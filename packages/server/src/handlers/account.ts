@@ -243,7 +243,14 @@ export interface LinkAccountInput {
 }
 
 export interface LinkAccountResult {
-  householdId: string;
+  /**
+   * The household signed in to. `null` when the account owns more than one
+   * and nothing said which (#248): `households` lists them, `players` and
+   * `characters` are empty, and the caller asks again with a `householdId`.
+   * Never a guess, because the wrong one binds a phone into somebody else's
+   * family or group.
+   */
+  householdId: string | null;
   /** True when a guest household just became permanent — the thing worth saying. */
   claimed: boolean;
   players: PlayerProfile[];
@@ -330,6 +337,16 @@ export async function linkAccount(
 
   // Case 2 — an existing account, on a device that is not (or no longer) bound
   // to a household of theirs.
+  if (input.householdId === undefined && owned.length > 1) {
+    return ok({
+      householdId: null,
+      claimed: false,
+      deviceBound: false,
+      players: [],
+      characters: [],
+      households: await summaries(owned, deps),
+    });
+  }
   const chosen = input.householdId ?? owned[0];
   if (chosen) return ok(await describe(chosen, false, playsIn(chosen), input.cognitoSub, deps));
 

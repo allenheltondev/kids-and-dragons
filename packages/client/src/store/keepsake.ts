@@ -198,19 +198,15 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
      * phone if the server did, ask which household or which player if there
      * is a choice to make, and otherwise it is done.
      */
-    async function afterLink(result: LinkAccountResponse, email: string, picked: boolean): Promise<void> {
+    async function afterLink(result: LinkAccountResponse, email: string): Promise<void> {
       const identity = loadIdentity(deps.storage);
-      const households = result.households ?? [];
-      if (
-        get().purpose === "restore" &&
-        !picked &&
-        !result.deviceToken &&
-        result.deviceBound !== true &&
-        households.length > 1
-      ) {
-        set({ step: "household", busy: false, challenge: null, households });
+      // The server will not guess between an account's households, and
+      // neither do we: the grown-up picks, and the link is asked again.
+      if (result.householdId === null) {
+        set({ step: "household", busy: false, challenge: null, households: result.households ?? [] });
         return;
       }
+      const householdId = result.householdId;
 
       // A device token comes back only when the server bound this browser
       // during the link; keeping the existing one otherwise.
@@ -219,7 +215,7 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
       }
 
       const account: AccountRecord = {
-        householdId: result.householdId,
+        householdId,
         email,
         claimedAt: new Date().toISOString(),
       };
@@ -439,7 +435,7 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
         const identity = loadIdentity(deps.storage);
         const fromHome = get().entry === "home";
         const result = await deps.api.linkAccount(tokens.idToken, identity.deviceToken, fromHome);
-        await afterLink(result, challenge.email, false);
+        await afterLink(result, challenge.email);
       } catch (err) {
         set({ busy: false, error: messageFor(err) });
       }
@@ -455,7 +451,7 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
         }
         const identity = loadIdentity(deps.storage);
         const result = await deps.api.linkAccount(tokens.idToken, identity.deviceToken, true, householdId);
-        await afterLink(result, tokensFor?.email ?? get().account?.email ?? "", true);
+        await afterLink(result, tokensFor?.email ?? get().account?.email ?? "");
       } catch (err) {
         set({ busy: false, error: messageFor(err) });
       }

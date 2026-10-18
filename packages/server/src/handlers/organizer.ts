@@ -37,8 +37,9 @@ import { admitCodeLookup } from "./code-guard.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { ROOM_CODE_ALPHABET } from "./room.ts";
 import { NEW_PLAYER_NAME_MAX } from "./shared-device.ts";
+import { takeOutEverywhere } from "./remove.ts";
 
-export type OrganizerDeps = AccountDeps & Pick<HandlerDeps, "random">;
+export type OrganizerDeps = AccountDeps & Pick<HandlerDeps, "random" | "channel">;
 
 /** Long enough for "Thursday Dragon Club at the library". */
 export const HOUSEHOLD_NAME_MAX = 40;
@@ -166,10 +167,16 @@ export async function renameProfile(
  * should not keep a working seat in it, and a phone left playing as a profile
  * nobody can see is the confusing half of that. Bringing them back does not
  * re-bind it: an owner signs in on it (`adoptDevice`), or the kid joins again.
+ *
+ * And it takes them out of every room the household has open, the way a
+ * host's Remove does (`takeOutEverywhere`): a room session already issued
+ * lives as long as its room, and revoking the phone does not end it. Retired
+ * first, rooms second, so a rejoin in between is refused at the seat. A room
+ * that could not be written answers with an error; retiring again finishes it.
  */
 export async function setProfileRetired(
   input: Organizer & { householdId: unknown; playerId: unknown; retired: unknown },
-  deps: AccountDeps,
+  deps: OrganizerDeps,
 ): Promise<HandlerResult<OrganizerHouseholdView>> {
   if (typeof input.retired !== "boolean") return fail("ILLEGAL", "expected { retired: true | false }");
   const target = await ownedProfile(input, deps);
@@ -184,6 +191,8 @@ export async function setProfileRetired(
         await deps.repo.revokeDevice(household.id, device.deviceId);
       }
     }
+    const out = await takeOutEverywhere(household.id, player.id, deps);
+    if (!out.ok) return out;
   } else {
     // A name somebody else took while they were away is a clash on the picker.
     const name = await profileName(household.id, player.displayName, player.id, deps);
@@ -242,14 +251,14 @@ export async function acceptOrganizerInvite(
   const ticket = await admitCodeLookup(`invite:${input.cognitoSub}`, deps);
   if (!ticket) return fail("FORBIDDEN", "Too many wrong codes. Wait a few minutes, then try again.");
 
-  const invite = await deps.repo.takeOrganizerInvite(code, iso(deps.now()));
+  // Spent and joined in one transaction: a failure here leaves the code
+  // working, so trying again is the whole recovery.
+  const { householdId: _named, ...owner } = ownerRow("", input, deps.now());
+  const invite = await deps.repo.redeemOrganizerInvite(code, iso(deps.now()), owner);
   if (!invite) return fail("NOT_FOUND", "That code didn't work. It may be used up or too old; ask for a new one.");
   await ticket.hit();
 
-  const household = await deps.repo.getHousehold(invite.householdId);
-  if (!household) return fail("NOT_FOUND", "That group is gone.");
-  await deps.repo.putOwner(ownerRow(household.id, input, deps.now()));
-  const [summary] = await summaries([household.id], deps);
+  const [summary] = await summaries([invite.householdId], deps);
   return summary ? ok(summary) : fail("NOT_FOUND", "That group is gone.");
 }
 

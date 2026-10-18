@@ -64,7 +64,7 @@ export async function commitRoomChange(
   room: RoomRecord,
   actor: string,
   change: (state: RunState) => RunState | null,
-  deps: HandlerDeps,
+  deps: Pick<HandlerDeps, "repo" | "now" | "channel">,
   options: { closing?: boolean } = {},
 ): Promise<HandlerResult<{ seq: number; state: RunState; changed: boolean }>> {
   for (let attempt = 1; ; attempt++) {

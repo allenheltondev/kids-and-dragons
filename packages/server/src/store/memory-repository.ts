@@ -392,13 +392,18 @@ export class MemoryRepository implements GameRepository {
     return true;
   }
 
-  async takeOrganizerInvite(code: string, nowIso: string): Promise<OrganizerInviteRecord | null> {
-    // No await between the read and the delete: the conditional delete.
+  async redeemOrganizerInvite(
+    code: string,
+    nowIso: string,
+    owner: Omit<HouseholdOwnerRecord, "householdId">,
+  ): Promise<OrganizerInviteRecord | null> {
+    // Nothing yields from the read to the last write (`putOwner` writes before
+    // its first await): one transaction, as in the real store.
     const item = this.get(INVITE(code), META);
     const invite = item?.data as OrganizerInviteRecord | undefined;
     if (!invite || invite.expiresAt <= nowIso) return null;
     this.items.delete(rowKey(INVITE(code), META));
-    this.persist();
+    await this.putOwner({ ...owner, householdId: invite.householdId });
     return invite;
   }
 
