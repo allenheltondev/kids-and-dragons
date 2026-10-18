@@ -170,7 +170,9 @@ describe("a lobby card", () => {
   });
 });
 
-describe("the join step on the shared screen (#256)", () => {
+// The first lobby render in a cold worker loads the QR encoder and the art table; on a busy CI runner that
+// outlasts the default 5s, and it is the render that is slow, not the line.
+describe("the join step on the shared screen (#256)", { timeout: 30_000 }, () => {
   const help = JSON.parse(readFileSync(join(import.meta.dirname, "..", "..", "..", "..", "content", "help.json"), "utf8")) as { join: { text: string } };
 
   beforeEach(() => {
@@ -183,18 +185,18 @@ describe("the join step on the shared screen (#256)", () => {
 
   it("says how to get in, in one line, under the code", async () => {
     mount({ campaign: FIRST });
-    expect(await screen.findByText(help.join.text)).toBeTruthy();
+    expect(await screen.findByText(help.join.text, {}, { timeout: 10_000 })).toBeTruthy();
   });
 
   it("is the same line for a family room and a visitor room, whatever the length of the code", async () => {
     cleanup();
     mount({ campaign: FIRST, visitorCode: "ABCDEF" });
-    expect(await screen.findByText(help.join.text)).toBeTruthy();
+    expect(await screen.findByText(help.join.text, {}, { timeout: 10_000 })).toBeTruthy();
     expect(screen.getByLabelText("Room code A B C D E F")).toBeTruthy();
   });
 
   it("stays while the room fills, because the next kid at the table needs it too", async () => {
     mount({ campaign: FIRST, party: [makeMember()] });
-    expect(await screen.findByText(help.join.text)).toBeTruthy();
+    expect(await screen.findByText(help.join.text, {}, { timeout: 10_000 })).toBeTruthy();
   });
 });
