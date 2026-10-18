@@ -23,6 +23,7 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
   CHARACTER_VERSION,
   FIELD_GUIDE_VERSION,
+  FORGOTTEN_FINDER,
   migrateCharacter,
   migrateFieldGuide,
 } from "@kad/shared";
@@ -129,6 +130,9 @@ interface TableItem {
 }
 
 export const GSI1_NAME = "GSI1";
+
+/** Field Guide entries re-credited per update by `forgetFinder` (#252). */
+const FORGET_FINDS_PER_UPDATE = 50;
 
 /** BatchWriteItem's hard limit. */
 const BATCH_SIZE = 25;
@@ -643,6 +647,45 @@ export class DynamoRepository implements GameRepository {
       playerId: (i.data as PlayerProfile).id,
       lastPlayedAt: i.lastPlayedAt ?? "",
     }));
+  }
+
+  async rewriteEvent(event: EventRecord): Promise<void> {
+    try {
+      await this.doc.send(
+        new PutCommand({
+          TableName: this.table,
+          Item: { PK: RUN(event.runId), SK: EVT_SK(event.seq), entity: "event", data: event } satisfies TableItem,
+          ConditionExpression: "attribute_exists(SK)",
+        }),
+      );
+    } catch (err) {
+      if (!isConditionalFailure(err)) throw err;
+    }
+  }
+
+  async forgetFinder(householdId: string, playerId: string): Promise<number> {
+    const book = await this.getFieldGuide(householdId);
+    const hers = Object.entries(book.entries)
+      .filter(([, find]) => find.firstFoundBy === playerId)
+      .map(([canonId]) => canonId);
+    // A handful of finds per update, so a kid who found everything still fits one expression.
+    for (let i = 0; i < hers.length; i += FORGET_FINDS_PER_UPDATE) {
+      const chunk = hers.slice(i, i + FORGET_FINDS_PER_UPDATE);
+      const names: Record<string, string> = { "#d": "data", "#e": "entries", "#f": "firstFoundBy" };
+      chunk.forEach((canonId, k) => {
+        names[`#k${k}`] = canonId;
+      });
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: HH(householdId), SK: FIELDGUIDE },
+          UpdateExpression: `SET ${chunk.map((_, k) => `#d.#e.#k${k}.#f = :forgotten`).join(", ")}`,
+          ExpressionAttributeNames: names,
+          ExpressionAttributeValues: { ":forgotten": FORGOTTEN_FINDER },
+        }),
+      );
+    }
+    return hers.length;
   }
 
   async putVisit(playerId: string, tableHouseholdId: string, at: string): Promise<void> {

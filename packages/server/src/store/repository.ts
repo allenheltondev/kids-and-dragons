@@ -612,6 +612,19 @@ export interface GameRepository {
   /** Kids whose `keepUntil` has passed: one GSI1 query, like the guest sweep. */
   listIdlePlayers(nowIso: string, limit?: number): Promise<IdlePlayer[]>;
 
+  /**
+   * Put an event back with its contents changed and its seq unchanged: a
+   * deleted kid's names taken out of a table's log (#252). Only an event
+   * that is there; the log never grows by this.
+   */
+  rewriteEvent(event: EventRecord): Promise<void>;
+  /**
+   * Every entry in the household's Field Guide that `playerId` found first
+   * now credits `FORGOTTEN_FINDER` instead (#252): the entry is the table's
+   * book and stays, and stops naming her. Returns how many changed.
+   */
+  forgetFinder(householdId: string, playerId: string): Promise<number>;
+
   /** She sat down at `tableHouseholdId`, a household that is not her home (#249). Idempotent. */
   putVisit(playerId: string, tableHouseholdId: string, at: string): Promise<void>;
   /** Every table she has visited, as households. */

@@ -19,7 +19,7 @@
  * still find their kids gone from a friend's game.
  */
 
-import { forgetEverywhere, sweepIdleProfiles, tablesOf, type IdleSweepResult } from "../handlers/retention.ts";
+import { forgetEverywhere, kidsOf, sweepIdleProfiles, type IdleSweepResult } from "../handlers/retention.ts";
 import { DynamoRepository } from "../store/dynamo-repository.ts";
 import type { GameRepository } from "../store/repository.ts";
 import { requiredEnv } from "./runtime.ts";
@@ -62,7 +62,7 @@ export async function sweep(repo: GameRepository, now: () => number): Promise<Sw
        * write instead, and returns false when the claim got there first.
        */
       // Read before the delete takes the kids' visits with it.
-      const kids = await tablesAway(household.id, repo);
+      const kids = await kidsOf(household.id, { repo });
       const deleted = await repo.deleteGuestHousehold(household.id, nowIso);
       if (deleted) {
         result.deleted.push(household.id);
@@ -87,17 +87,4 @@ export async function sweep(repo: GameRepository, now: () => number): Promise<Sw
       `idle kids deleted ${idle.deleted.length}, kept ${idle.kept.length}, failed ${idle.failed.length}`,
   );
   return { ...result, idle };
-}
-
-/** Each kid of a household, and the other tables whose saves may name her. */
-async function tablesAway(householdId: string, repo: GameRepository) {
-  const [players, heroes] = await Promise.all([repo.listPlayers(householdId), repo.listCharacters(householdId)]);
-  return Promise.all(
-    players.map(async (p) => ({
-      playerId: p.id,
-      tables: (await tablesOf(p.id, householdId, heroes.filter((c) => c.ownerPlayerId === p.id), { repo })).filter(
-        (t) => t !== householdId,
-      ),
-    })),
-  );
 }

@@ -18,6 +18,7 @@ import { isDeepStrictEqual } from "node:util";
 import {
   CHARACTER_VERSION,
   FIELD_GUIDE_VERSION,
+  FORGOTTEN_FINDER,
   migrateCharacter,
   migrateFieldGuide,
 } from "@kad/shared";
@@ -438,6 +439,24 @@ export class MemoryRepository implements GameRepository {
     return this.queryIndex(GSI1_IDLE, GSI1_IDLE_SK(nowIso, "", ""))
       .slice(0, limit)
       .map(idlePlayer);
+  }
+
+  async rewriteEvent(event: EventRecord): Promise<void> {
+    if (!this.get(RUN(event.runId), EVT_SK(event.seq))) return;
+    this.put({ PK: RUN(event.runId), SK: EVT_SK(event.seq), entity: "event", data: event });
+  }
+
+  async forgetFinder(householdId: string, playerId: string): Promise<number> {
+    if (!this.get(HH(householdId), FIELDGUIDE)) return 0;
+    const entries = { ...this.readFieldGuide(householdId).entries };
+    let changed = 0;
+    for (const [canonId, find] of Object.entries(entries)) {
+      if (find.firstFoundBy !== playerId) continue;
+      entries[canonId] = { ...find, firstFoundBy: FORGOTTEN_FINDER };
+      changed++;
+    }
+    if (changed > 0) this.put(fieldGuideItem(householdId, entries));
+    return changed;
   }
 
   async putVisit(playerId: string, tableHouseholdId: string, at: string): Promise<void> {

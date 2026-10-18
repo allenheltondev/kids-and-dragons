@@ -68,7 +68,7 @@ export const STORED: readonly StoredThing[] = [
   {
     title: "Saved games",
     what:
-      "Where the party is in each adventure: the chapter, the road taken, the setbacks, the coins. Every choice and dice roll in a game is kept in order (the event log), so a phone that drops out can catch up. The hero names of whoever played are in it.",
+      "Where the party is in each adventure: the chapter, the road taken, the setbacks, the coins. Every choice and dice roll in a game is kept in order (the event log), so a phone that drops out can catch up. The hero names of whoever played are in it, until that kid is deleted.",
     kept: UNTIL_DELETED,
     owner: "table",
     rows: ["Campaign run", "Chapter progress", "Game state", "Event log", "Campaign attempt"],
@@ -149,8 +149,8 @@ export const ELSEWHERE: readonly { title: string; what: string }[] = [
 
 /** What deleting does, in the order a grown-up would ask. */
 export const DELETING: readonly string[] = [
-  "Deleting a kid removes her profile, her heroes and her phones, everywhere. Other households' saved games stop naming her.",
+  "Deleting a kid removes her profile, her heroes and her phones. Other households' saved games and Field Guides keep their story, and call her \"a friend\" instead.",
   "Deleting a household removes everything in it: its kids, their heroes, its devices, its Field Guide and its saved games. A kid visiting from another household keeps her hero; it lives at her home.",
-  "A hero in the middle of an adventure is never deleted from under the table playing it. End the adventure first.",
-  "A group run by more than one grown-up is deleted only once the others have left it.",
+  "A hero in the middle of an adventure is deleted too. The table she was playing at carries on without her.",
+  "Any grown-up who runs a group can delete one of its kids. The whole group can be deleted only by the last grown-up left in it.",
 ];
