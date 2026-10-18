@@ -74,42 +74,65 @@ test("the ? and press-and-hold, on the smallest phone at the largest text", asyn
     }
 
     // The bag is up: the sheet says so, and closes.
-    const things = page.locator(".inv__button");
-    await expect(things.first()).toBeVisible(TAP);
+    await expect(page.getByRole("heading", { name: /Your things/ })).toBeVisible(TAP);
     await help.click(TAP);
     await expect(page.getByRole("dialog", { name: "Help" })).toContainText(/These are your things/);
     await page.getByRole("button", { name: "Got it" }).click(TAP);
     await expect(page.getByRole("dialog")).toHaveCount(0);
 
-    // A tap on a thing still selects it, and a tap is not a hold.
-    const first = things.first();
+    // A new hero holds nothing yet, so the hold is proven on a scrolling list of the same shape as the
+    // cards and the bag: real buttons wearing the same data attributes, in a box that scrolls.
+    await page.evaluate(() => {
+      const list = document.createElement("ul");
+      list.id = "held-list";
+      list.style.cssText = "position:fixed;inset:80px 40px 120px 40px;z-index:3;margin:0;padding:0;overflow-y:auto;background:#222;list-style:none";
+      for (let i = 0; i < 12; i++) {
+        const item = document.createElement("li");
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = `Card ${String(i)}`;
+        button.style.cssText = "display:block;width:100%;height:90px";
+        button.setAttribute("aria-pressed", "false");
+        button.dataset.helpKind = "card";
+        button.dataset.helpName = `Card ${String(i)}`;
+        button.dataset.helpText = "Does a card thing.";
+        button.addEventListener("click", () => { button.setAttribute("aria-pressed", "true"); });
+        item.append(button);
+        list.append(item);
+      }
+      document.getElementById("root")!.append(list);
+    });
+    const first = page.getByRole("button", { name: "Card 0" });
     const at = await centerOf(first);
-    await expect(first).toHaveAttribute("aria-pressed", "false");
+
+    // A tap still taps, and is not a hold.
     await touch(cdp, "touchStart", at);
     await touch(cdp, "touchEnd");
     await expect(first).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByRole("dialog")).toHaveCount(0);
-    await first.click(TAP); // put it back
+    await first.evaluate((button) => { button.setAttribute("aria-pressed", "false"); });
 
-    // A finger that slides is a scroll: no sheet, and no tap on the thing it started on.
-    await touch(cdp, "touchStart", at);
-    for (let step = 1; step <= 8; step++) {
-      await touch(cdp, "touchMove", { x: at.x, y: at.y + step * 12 });
-      await page.waitForTimeout(90);
+    // A finger that slides is a scroll: the list moves, there is no sheet, and no tap on what it started on.
+    const scrolled = () => page.evaluate(() => document.getElementById("held-list")!.scrollTop);
+    await touch(cdp, "touchStart", { x: at.x, y: at.y + 150 });
+    for (let step = 1; step <= 10; step++) {
+      await touch(cdp, "touchMove", { x: at.x, y: at.y + 150 - step * 15 });
+      await page.waitForTimeout(80);
     }
     await touch(cdp, "touchEnd");
     await page.waitForTimeout(200);
+    expect(await scrolled(), "the list scrolled under the finger").toBeGreaterThan(0);
     await expect(page.getByRole("dialog")).toHaveCount(0);
-    await expect(first).toHaveAttribute("aria-pressed", "false");
+    await expect(page.getByRole("button", { name: /^Card/ }).filter({ has: page.locator("xpath=self::*[@aria-pressed='true']") })).toHaveCount(0);
 
-    // A finger that stays is a hold: the sheet names the thing, and the hold did not also select it.
-    const name = (await first.locator(".inv__slot-name").textContent())!.trim();
+    // A finger that stays is a hold: the sheet names the card, and the hold did not also play it.
+    await page.evaluate(() => { document.getElementById("held-list")!.scrollTop = 0; });
     await touch(cdp, "touchStart", at);
     await page.waitForTimeout(700);
     await touch(cdp, "touchEnd");
-    const sheet = page.getByRole("dialog", { name });
+    const sheet = page.getByRole("dialog", { name: "Card 0" });
     await expect(sheet).toBeVisible(TAP);
-    await expect(sheet.getByRole("button", { name: "Got it" })).toBeVisible();
+    await expect(sheet).toContainText("Does a card thing.");
     await sheet.getByRole("button", { name: "Got it" }).click(TAP);
     await expect(first).toHaveAttribute("aria-pressed", "false");
   } finally {
