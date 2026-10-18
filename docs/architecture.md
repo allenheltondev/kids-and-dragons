@@ -372,7 +372,7 @@ with `removed` (§4.5), and the join or the heartbeat that brings them back
 clears it. The member, the hero and its place in the fight all stay, so a
 returning phone needs nothing put back.
 
-Every wait in the engine reads it (shared `engine.ts`), and none of them read
+Every wait in the engine reads it (shared `engine.ts`, and `away.ts` for the rules the screens read too), and none of them read
 anything else, so a table with everybody present plays exactly as it always
 did and the Gemfall digests do not move:
 
