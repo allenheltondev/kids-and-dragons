@@ -23,6 +23,7 @@ import type {
   Character,
   Household,
   OrganizerHero,
+  OrganizerDevicesResponse,
   OrganizerHouseholdSummary,
   OrganizerHouseholdsResponse,
   OrganizerHouseholdView,
@@ -109,6 +110,30 @@ export async function viewHousehold(
   const owned = await ownedHousehold(input, input.householdId, deps);
   if (!owned.ok) return owned;
   return ok(await describe(owned.value, input, deps));
+}
+
+/**
+ * The household's shared tablets (#273), so an owner can find the one to forget
+ * (`forgetDevice`) when it is lost or left at a grandparent's. Only shared
+ * bindings: a kid's own phone is not forgotten from here.
+ */
+export async function listSharedDevices(
+  input: Organizer & { householdId: unknown },
+  deps: AccountDeps,
+): Promise<HandlerResult<OrganizerDevicesResponse>> {
+  const owned = await ownedHousehold(input, input.householdId, deps);
+  if (!owned.ok) return owned;
+  const bindings = await deps.repo.listDevices(owned.value.id);
+  const devices = bindings
+    .filter((d) => d.kind === "shared")
+    .sort((a, b) => b.lastSeen.localeCompare(a.lastSeen))
+    .map((d) => ({
+      deviceId: d.deviceId,
+      ...(d.userAgent ? { userAgent: d.userAgent } : {}),
+      lastSeen: d.lastSeen,
+      revoked: d.revoked === true,
+    }));
+  return ok({ devices });
 }
 
 export async function renameHousehold(
@@ -506,6 +531,8 @@ export function organizerRoute(
       return (who, deps) => createGroup({ ...who, displayName: body.displayName }, deps);
     case "GET /api/organizer/household":
       return (who, deps) => viewHousehold({ ...who, householdId: query.householdId }, deps);
+    case "GET /api/organizer/devices":
+      return (who, deps) => listSharedDevices({ ...who, householdId: query.householdId }, deps);
     case "POST /api/organizer/household/rename":
       return (who, deps) =>
         renameHousehold({ ...who, householdId: body.householdId, displayName: body.displayName }, deps);

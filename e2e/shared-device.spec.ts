@@ -95,4 +95,42 @@ test.describe("a family tablet", () => {
     await expect(next.getByRole("button", { name: /^Ada/ })).toBeVisible();
     expect(Object.keys((await storage(next)).tab)).not.toContain(`kad.session.${code}`);
   });
+  test("an owner forgets the tablet from their phone, and the tablet goes back to an ordinary home", async ({ browser }) => {
+    test.setTimeout(180_000);
+    const email = `grown-up-${Date.now()}@example.com`;
+
+    // --- A grown-up's phone: an account and a family ---
+    const phone = await (await context(browser)).newPage();
+    await phone.goto("/");
+    await phone.getByRole("button", { name: /sign in or create an account/i }).click(TAP);
+    await signIn(phone, email);
+    await phone.getByRole("button", { name: /back to the game/i }).click(TAP);
+    await phone.getByRole("button", { name: /want to host/i }).click();
+    await phone.getByText("Phone Mode").click();
+    await phone.getByLabel(/your name/i).fill("Grown-up");
+    await phone.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(phone).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
+
+    // --- The family tablet ---
+    const tablet = await (await context(browser)).newPage();
+    await tablet.goto("/");
+    await tablet.getByRole("button", { name: /make it a family tablet/i }).click(TAP);
+    await signIn(tablet, email);
+    await tablet.getByRole("button", { name: /^done$/i }).click(TAP);
+    await expect(tablet.getByRole("heading", { name: WHO })).toBeVisible(TAP);
+
+    // --- Another device of the grown-up's lists it and forgets it ---
+    const other = await (await context(browser)).newPage();
+    await other.goto("/");
+    await other.getByRole("button", { name: /run a group/i }).click(TAP);
+    await signIn(other, email);
+    await expect(other.getByRole("heading", { name: "Family tablets" })).toBeVisible(TAP);
+    await other.getByRole("button", { name: /^forget this/i }).first().click();
+    await expect(other.getByText(/no family tablets set up yet/i)).toBeVisible(TAP);
+
+    // --- The tablet's next request is refused, and it is an ordinary home again ---
+    await tablet.reload();
+    await expect(tablet.getByRole("heading", { name: WHO })).toHaveCount(0, TAP);
+    await expect(tablet.getByRole("button", { name: /want to host/i })).toBeVisible(TAP);
+  });
 });
