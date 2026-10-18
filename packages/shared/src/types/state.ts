@@ -413,6 +413,14 @@ export interface RunState {
    */
   removed?: string[];
   /**
+   * The player the host handed the keeper role to (#272): the one phone that
+   * may keep this guest game by signing in. It overrides what each phone was
+   * told when it joined, so a phone restored from storage, or one that had the
+   * offer before the host moved it, draws it right without a fresh join.
+   * Absent until a host hands it over, and then only the join's word stands.
+   */
+  keeperPlayerId?: string;
+  /**
    * Everybody who has joined this room, by player id, for the host's view
    * (#263): who is in, on what, including a kid still making their hero, who
    * is not in `party` yet. Written by the join, so it survives a refresh of

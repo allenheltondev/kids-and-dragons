@@ -573,6 +573,15 @@ export interface GameRepository {
    */
   dropFounder(householdId: string, deviceId: string): Promise<void>;
   /**
+   * Make `deviceId` the household's founder, whoever it was, or was not, until
+   * now (#272): the host of a room handing the keeper role to a phone in it.
+   * One conditional write on a guest household nobody has claimed and the
+   * sweeper has not begun on, so it can never move a household that is already
+   * an account's. False when any of that does not hold. Authority is the
+   * caller's: the store only keeps the household from changing hands twice.
+   */
+  setFounder(householdId: string, deviceId: string): Promise<boolean>;
+  /**
    * Push a guest household's expiry out to `expiresAt` because somebody is
    * playing in it (§4.5): the 7-day window runs from the last time the family
    * played, not from the first, so an eight-evening campaign is never swept
