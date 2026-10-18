@@ -50,7 +50,7 @@ export const STORED: readonly StoredThing[] = [
   {
     title: "Each hero",
     what:
-      "The hero's name, kind and look, and everything earned: level, points, items and keepsakes, and which adventure the hero is in the middle of. It belongs to the kid and goes wherever she plays.",
+      "The hero's name, kind and look, and everything earned: level, points, items and keepsakes, which adventures the hero has finished and is in the middle of, and whether the hero has played the practice. It belongs to the kid and goes wherever she plays.",
     kept: UNTIL_DELETED,
     owner: "hero",
     rows: ["Character"],

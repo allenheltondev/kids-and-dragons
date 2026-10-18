@@ -27,6 +27,8 @@ import {
   DEFAULT_HELP_DIE,
   INVENTORY_SLOTS,
   STAT_IDS,
+  isNewcomer,
+  isPracticeCampaign,
   lobbyCampaign,
   readyWithoutAway,
   riftPartyOf,
@@ -81,6 +83,8 @@ import {
   campaignOptionLine,
   lockedLine,
   nextChapterLine,
+  practiceOfferLine,
+  skipPracticeLabel,
 } from "./campaign-copy";
 import { KeepsakeOffer } from "./SignInFlow";
 import { CombatControls } from "./CombatPanel";
@@ -472,6 +476,11 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   // Present only for a graph campaign (#195); an ordered one never has it, and
   // every screen below takes its existing path when it is undefined.
   const graphJourney = campaignChoice?.leader?.journey;
+  // The practice (#255): offered while anybody seated is new to the game, and
+  // played by the whole table. Begin stays, as the skip.
+  const newcomers = inLobby ? party.filter((member) => isNewcomer(member.character)) : [];
+  // In the practice a banked point waits for a real rest (the server refuses it).
+  const practicing = isPracticeCampaign(state?.campaignId);
 
   const [pendingChoice, setPendingChoice] = useState<string | null>(null);
   const [pendingDrop, setPendingDrop] = useState<string | null | undefined>(undefined);
@@ -534,7 +543,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   // Who that help would go to, so the way in can say so.
   const helping = canHelp && state.prompt?.kind === "roll" ? nameOfCharacter(party, state.prompt.characterId) : null;
   const hasTask = myPrompt !== null || canHelp || awaySwap !== null || state?.encounter != null || inLobby || state?.phase === "chapter_complete" ||
-    (state?.phase === "scene" && state.sceneType === "rest" && (me?.character.unspentPoints ?? 0) > 0) ||
+    (state?.phase === "scene" && state.sceneType === "rest" && !practicing && (me?.character.unspentPoints ?? 0) > 0) ||
     (state?.trades ?? []).some((offer) => offer.toPlayerId === me?.playerId);
   useEffect(() => {
     if (!hasTask && section === "turn") setPlayerSection("bag");
@@ -710,7 +719,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
     inLobby || chapter === null || chapter.id !== state.chapterId
       ? null
       : (sceneArt ? sceneBackdropUrl(sceneArt) : null) ?? biomeBackdropUrl(chapter.biome);
-  const banked = me.character.unspentPoints;
+  const banked = practicing ? 0 : me.character.unspentPoints;
   /*
    * A party snapshot persisted before `spendableStats` existed has no list at
    * all — `getState` returns the stored JSON verbatim and a member is only
@@ -867,6 +876,23 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         !(myPrompt.kind === "roll" && myPrompt.prompt === state.narration) ? (
           <p className="player__echo" aria-hidden="true">
             {state.narration}
+          </p>
+        ) : null}
+        {/* The practice's hint (#255), where the tapping happens, with its own
+            "read it to me" button: the shared screen says it once, and a kid
+            who missed it should not need a grown-up to say it again. */}
+        {state.hint ? (
+          <p className="player__hint" data-testid="player-hint">
+            <Icon name="star" />
+            <span>{state.hint}</span>
+            <button
+              type="button"
+              className="choice__hear kad-tap kad-focusable"
+              aria-label="Hear the hint"
+              onClick={() => hear(state.hint ?? "", { source: "ui" })}
+            >
+              <Icon name="sound" size="1.5em" />
+            </button>
           </p>
         ) : null}
 
@@ -1557,6 +1583,23 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 right now: nothing, who the vote is waiting on, or Begin. They
                 change as other people tap, and appended they pushed the whole
                 card up under whoever was about to vote. */}
+            {inLobby && everyoneReady && newcomers.length > 0 ? (
+              <div className="player__practice">
+                <p className="player__next-chapter">
+                  <Icon name="star" />
+                  <span>{practiceOfferLine(newcomers.map((member) => member.character.name))}</span>
+                </p>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  icon={<Icon name="star" />}
+                  disabled={busy}
+                  onClick={() => void dispatch({ type: "START_PRACTICE" })}
+                >
+                  Play the practice
+                </Button>
+              </div>
+            ) : null}
             {inLobby ? (
               <div className="player__start">
                 {everyoneReady && waitingOnVotes.length > 0 ? (
@@ -1604,13 +1647,13 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   />
                 ) : everyoneReady && campaignId !== null ? (
                   <Button
-                    variant="primary"
+                    variant={newcomers.length > 0 ? "secondary" : "primary"}
                     size="lg"
                     icon={<Icon name="forward" />}
                     disabled={busy}
                     onClick={() => void dispatch({ type: "CONTINUE_CAMPAIGN", campaignId })}
                   >
-                    {beginLabel(state.campaign)}
+                    {newcomers.length > 0 ? skipPracticeLabel(state.campaign) : beginLabel(state.campaign)}
                   </Button>
                 ) : null}
               </div>

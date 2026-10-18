@@ -971,6 +971,9 @@
           "type": "string",
           "minLength": 1
         },
+        "hint": {
+          "$ref": "#/$defs/hint"
+        },
         "priority": {
           "$ref": "#/$defs/priority"
         },
@@ -1037,6 +1040,9 @@
           "type": "string",
           "minLength": 1
         },
+        "hint": {
+          "$ref": "#/$defs/hint"
+        },
         "priority": {
           "$ref": "#/$defs/priority"
         },
@@ -1092,6 +1098,9 @@
         "narration": {
           "type": "string",
           "minLength": 1
+        },
+        "hint": {
+          "$ref": "#/$defs/hint"
         },
         "priority": {
           "$ref": "#/$defs/priority"
@@ -1149,6 +1158,9 @@
         "narration": {
           "type": "string",
           "minLength": 1
+        },
+        "hint": {
+          "$ref": "#/$defs/hint"
         },
         "priority": {
           "$ref": "#/$defs/priority"
@@ -1212,6 +1224,9 @@
         "narration": {
           "type": "string",
           "minLength": 1
+        },
+        "hint": {
+          "$ref": "#/$defs/hint"
         },
         "onEnter": {
           "$ref": "#/$defs/effects"
@@ -2205,6 +2220,12 @@
           }
         }
       ]
+    },
+    "hint": {
+      "description": "One line for a player who is still learning (#255): what to tap here, in the game's own voice. Shown under the narration and read aloud after it. Only the practice uses it today.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
     }
   }
 }

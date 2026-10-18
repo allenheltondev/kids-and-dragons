@@ -104,7 +104,7 @@ Tooling for a campaign graph (all read-only; the ordered campaigns are skipped, 
 
 An encounter scene may carry an `environment`: a visible rift clock, hazard tiles, timed exits, a
 captive to free and monsters the rift moves — plus `onEscape` / `onTimeout` branches for the
-endings those make possible. None of the shipped chapters uses it, and a scene without it fights
+endings those make possible. Only the practice uses it (an exit and a friend to help up; see "The practice" below), and a scene without it fights
 exactly as before. Everything happens where a figure **stops** (turn ends) or as a round starts,
 never mid-move. `npm run content:validate` checks the tiles against the scene's map (open ground,
 off the party's spawns, reachable) and that exactly the right extra branches are present. The
@@ -118,6 +118,33 @@ Guidance:
 - Make every way out a real choice with a price: an exit that opens late, a captive away from it,
   fire on the short path. Write the consequence into the branch (`setFlag`, variants) or the
   rescue's `effects`; a graph campaign turns those flags into world facts with `onComplete`.
+
+## The practice
+
+`campaigns/first-steps.json` and `chapters/first-steps-01.json` are the practice (#255): one short
+chapter, offered in the lobby while any seated hero is new, that teaches by doing. The server never
+plays it as a campaign (no attempt, no claim, no XP, nothing carried) and marks every seated hero
+`practiced` when it ends; that wiring is
+[architecture §4.5, "The practice"](../docs/architecture.md#the-practice-255). The content rules,
+held by `tools/content/first-steps.test.mjs`:
+
+- **It teaches in order, by doing:** pick a choice, roll a check, take a story turn, move on the
+  board, use a card, help a knocked-down friend, rest. Each step is a scene where the party does
+  the thing, and that scene carries one `hint`, on every path.
+- **A `hint`** is one or two sentences of what to tap, in the game's voice: "This is the board. On
+  your turn, tap a gold square to walk there." The shared screen shows it under the narration and
+  reads it after it; the phone shows it with a button that reads it again. It is never narration,
+  so the live layer and the recap never see it. Only the practice has hints: a real chapter trusts
+  the table to know the game.
+- **Nothing costs anything.** `xpAward` is 0, no objectives or props, and no `damage`, item,
+  coin or XP effects. Every failed roll and every lost fight goes on to the same next step, and
+  every fight branch heals the party, because HP outlives a scene and a hero knocked down in one
+  fight would otherwise start the next one down. The captive has no deadline and nothing can drag
+  her away.
+- **It is short.** About 15 minutes, so a mixed party is not slowed down much: the 30-scene bar in
+  [gemfall-authoring.md §4](../docs/campaigns/gemfall-authoring.md#4-shape-of-a-chapter) is for a
+  real evening's chapter, not this. Its fights are the only ones in a shipped chapter with an
+  `environment` (an exit to walk to, a friend to help up), because those are the lessons.
 
 ## Priority scenes
 

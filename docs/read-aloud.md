@@ -46,6 +46,10 @@ hear("Tap the glowing card.", { source: "ui" });
   read-aloud on, without being asked. A silent no-op otherwise.
 - `stopSpeaking()` cuts off the current line.
 
+The practice (#255) uses both: each step's `hint` is `speak()`-ed by the shared screen after the
+scene's narration (`NarrationPanel`), and the phone shows it with a "Hear the hint" button that
+calls `hear()` (`PlayerPanel`), so a kid who missed it does not need a grown-up to say it again.
+
 ## Swapping the voice
 
 The engine is `packages/client/src/speech/synth-speaker.ts`, loaded on demand so the entry chunk

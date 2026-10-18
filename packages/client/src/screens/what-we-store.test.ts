@@ -49,6 +49,12 @@ describe("what we store (#252)", () => {
     expect([...described].filter((row) => !modelRows().includes(row))).toEqual([]);
   });
 
+  it("names what a hero row remembers about her, the practice included (#255)", () => {
+    const hero = STORED.find((s) => s.rows.includes("Character"))!;
+    expect(hero.what).toMatch(/finished/);
+    expect(hero.what).toMatch(/played the practice/);
+  });
+
   it("describes every kind of row the stores write", () => {
     const described = new Set(STORED.flatMap((s) => s.entities));
     expect(storeEntities().filter((entity) => !described.has(entity))).toEqual([]);
