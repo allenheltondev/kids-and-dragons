@@ -10,17 +10,20 @@
 .kad-readaloud:hover,
 .kad-readaloud:focus-within,
 .kad-readaloud:has([aria-pressed="true"]) { opacity: 1; }
-.kad-readaloud .kad-readaloud__button {
+.kad-readaloud__button {
+  display: grid;
+  place-items: center;
   inline-size: var(--kad-touch-min);
   block-size: var(--kad-touch-min);
-  min-inline-size: var(--kad-touch-min);
   padding: 0;
   border: 0;
+  border-radius: 999px;
   background: transparent;
   color: var(--kad-ink-dim);
+  font-size: 1.15rem;
+  cursor: pointer;
 }
 .kad-readaloud__button[aria-pressed="true"] { color: var(--kad-ink); }
-.kad-readaloud__button .kad-button__icon { font-size: 1.15rem; }
 @media (prefers-reduced-motion: reduce) {
   .kad-readaloud { transition: none; }
 }

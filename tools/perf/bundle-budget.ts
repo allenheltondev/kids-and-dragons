@@ -55,9 +55,12 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
  * Set a little above today's measurement rather than at a round figure: a
  * budget with slack for one honest feature is a budget people keep, and one
  * that has to be raised every sprint is a budget people delete. (Measured at
- * 287KB when the room went lazy, most of it react-dom.)
+ * 287KB when the room went lazy, most of it react-dom.) 304KB since read-aloud
+ * (#261): its switch and engine are lazy and cost the entry nothing, but one
+ * more lazy chunk makes the bundler split the shared react and encounter code
+ * into chunks of their own, about 1KB of overhead on a tree already at 302.
  */
-const FIRST_PAINT_BUDGET_KB = 302;
+const FIRST_PAINT_BUDGET_KB = 304;
 
 /**
  * Everything, including what is lazily fetched.
