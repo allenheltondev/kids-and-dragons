@@ -550,6 +550,28 @@ export interface OrganizerInvite {
 }
 
 /**
+ * `POST /api/pair/code` and `POST /api/organizer/players/pair` (#281): a
+ * one-time code that makes the device redeeming it a kid. Single use, about
+ * ten minutes.
+ */
+export interface PairingCode {
+  code: string;
+  expiresAt: string;
+  /** Whose code it is, for the screen showing it. */
+  playerName: string;
+}
+
+/**
+ * `POST /api/pair/redeem` (#281): the new device's binding, as `adoptDevice`
+ * gives one, and who it now is.
+ */
+export interface PairingResult {
+  householdId: string;
+  playerId: string;
+  displayName: string;
+}
+
+/**
  * On a shared tablet, a join or a create names who is playing (#250): one of
  * the household's profiles, or a new kid by name. Sent with the tablet's
  * `x-kad-shared-token`; the answer carries a session token and never a
