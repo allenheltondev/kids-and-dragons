@@ -14,7 +14,9 @@ import { applyAction } from "./action.ts";
 import { closeRoom } from "./host.ts";
 import { leaveAdventure } from "./organizer.ts";
 import { createRoom, joinRoom } from "./room.ts";
-import { firstSentence, recapOf, resumeGame, savedGame, stopForToday } from "./save.ts";
+import { firstSentence, heroSaved, recapOf, releaseSavedHero, resumeGame, savedGame, stopForToday } from "./save.ts";
+import { listHeroes } from "./heroes.ts";
+import { viewHousehold } from "./organizer.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..", "..");
 const content = await loadContent(path.join(ROOT, "content"));
@@ -438,5 +440,81 @@ describe("picking up where you left off (#259)", () => {
 
     const runs = (await h.harness.repo.listRuns(h.householdId)).filter((r) => r.stoppedAt !== undefined);
     expect(runs.map((r) => r.id)).toEqual([second.runId]);
+  });
+});
+
+describe("letting a saved hero go (#259)", () => {
+  async function stopped() {
+    const h = await household();
+    const e = await evening(h);
+    await walkIn([e.one, e.two]);
+    await stopForToday({ code: e.code, principal: h.players[0]!.principal }, h.harness.deps);
+    const [pip] = (await h.harness.repo.listCharacters(h.householdId)).filter((c) => c.ownerPlayerId === "p_1");
+    const host = h.players[0]!.principal;
+    return { h, e, pip: pip!, host };
+  }
+
+  it("says where a hero is saved, on her own screen and the organizer's", async () => {
+    const { h, pip } = await stopped();
+    expect(await heroSaved(pip, h.harness.deps)).toEqual({ at: null });
+    const heroes = await listHeroes({ householdId: h.householdId, playerId: "p_1" }, h.harness.deps);
+    expect(heroes.ok && heroes.value.saved).toEqual({ [pip.id]: {} });
+    const view = await viewHousehold({ cognitoSub: "sub-test", householdId: h.householdId }, h.harness.deps);
+    expect(view.ok && view.value.players[0]!.heroes[0]).toMatchObject({ name: "Pip", saved: {} });
+  });
+
+  it("names the table when she is saved at someone else's", async () => {
+    const { h, pip, host } = await stopped();
+    await h.harness.repo.putHousehold({ id: "h_ada", displayName: "Ada's", ownerSub: null, guest: false, createdAt: "2026-07-04T18:00:00.000Z" });
+    const visiting = { ...pip, householdId: "h_ada", provisional: { ...pip.provisional!, runId: `${GEMFALL}@${h.householdId}` } };
+    await h.harness.repo.putCharacter(visiting);
+    expect(await heroSaved(visiting, h.harness.deps)).toEqual({ at: "Test household" });
+
+    // The stopped table's host lets her go, from her own home.
+    const left = await releaseSavedHero(
+      { deviceId: host.deviceId, householdId: h.householdId, characterId: pip.id, homeHouseholdId: "h_ada" },
+      h.harness.deps,
+    );
+    expect(left).toMatchObject({ ok: true, value: { left: `${GEMFALL}@${h.householdId}` } });
+    expect((await h.harness.repo.getCharacter("h_ada", pip.id))?.provisional).toBeNull();
+  });
+
+  it("is the stopped table's host's alone, for a hero its stopped game holds", async () => {
+    const { h, pip, host } = await stopped();
+    const asGuest = { deviceId: h.players[1]!.principal.deviceId, householdId: h.householdId, characterId: pip.id };
+    expect(await releaseSavedHero(asGuest, h.harness.deps)).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+    expect((await h.harness.repo.getCharacter(h.householdId, pip.id))?.provisional?.runId).toBe(GEMFALL);
+
+    // A hero the game never held cannot be let go by its host.
+    await h.harness.repo.putCharacter({ ...pip, id: "c_other", name: "Other", provisional: { ...pip.provisional!, runId: "the-hollow-crown" } });
+    expect(
+      await releaseSavedHero({ deviceId: host.deviceId, householdId: h.householdId, characterId: "c_other" }, h.harness.deps),
+    ).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+    expect(
+      await releaseSavedHero({ deviceId: host.deviceId, householdId: h.householdId, characterId: "c_nobody" }, h.harness.deps),
+    ).toMatchObject({ ok: false, error: { code: "NOT_FOUND" } });
+  });
+
+  it("frees her at once, drops her gains, and a resume leaves her out until she rejoins as she is", async () => {
+    const { h, pip, host } = await stopped();
+    const released = await releaseSavedHero(
+      { deviceId: host.deviceId, householdId: h.householdId, characterId: pip.id },
+      h.harness.deps,
+    );
+    expect(released).toMatchObject({ ok: true, value: { left: GEMFALL } });
+    const free = (await h.harness.repo.getCharacter(h.householdId, pip.id))!;
+    expect(free.provisional).toBeNull();
+    expect(free.committed).toEqual(pip.committed);
+    expect(await heroSaved(free, h.harness.deps)).toBeNull();
+
+    h.harness.clock.advance(3 * DAY);
+    const created = await room(h, GEMFALL, 1);
+    const two = await sit(h, created.code, created.runId, 1);
+    expect(await two.resume()).toMatchObject({ ok: true });
+    expect((await two.state()).party.map((m) => m.character.name)).toEqual(["Bo"]);
+
+    const one = await sit(h, created.code, created.runId, 0);
+    await one.must({ type: "SEAT_CHARACTER", characterId: pip.id });
+    expect((await h.harness.repo.getCharacter(h.householdId, pip.id))?.provisional?.runId).toBe(GEMFALL);
   });
 });

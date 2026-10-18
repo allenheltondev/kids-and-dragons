@@ -233,6 +233,16 @@ export interface GameStore {
    * refusal lands in `error` and resolves `false`.
    */
   resumeGame(): Promise<boolean>;
+  /**
+   * Where each of this player's heroes is saved in a stopped game (#259),
+   * by hero id, as the last `listHeroes` found it. `at` names another table.
+   */
+  savedHeroes: Record<string, { at?: string }>;
+  /**
+   * The host of a stopped game lets a hero go from it (#259). Resolves like
+   * `removePlayer`.
+   */
+  releaseSavedHero(characterId: string, homeHouseholdId?: string): Promise<boolean>;
   /** Drops the session and disconnects. Does not delete anything server-side. */
   leave(): void;
   dismissError(): void;

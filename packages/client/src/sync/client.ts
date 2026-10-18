@@ -212,7 +212,13 @@ export interface Api {
    */
   fetchState(query: StateQuery, token?: string, timeoutMs?: number): Promise<StateResponse>;
   /** This player's saved characters, to bring one back (spec §5). */
-  listHeroes(token: string): Promise<{ heroes: ResolvedCharacter[] }>;
+  listHeroes(token: string): Promise<{ heroes: ResolvedCharacter[]; saved?: Record<string, { at?: string }> }>;
+  /**
+   * The host of a stopped game lets one of its heroes go (#259): her gains
+   * from that adventure are dropped and she is free at once. The device
+   * token, since the room is closed.
+   */
+  releaseSavedHero(characterId: string, homeHouseholdId: string | undefined, deviceToken: string): Promise<void>;
   /**
    * What this phone can study between games — its heroes, the household's
    * Field Guide, where the party last was. The device token, not a room
@@ -496,7 +502,15 @@ export const api: Api = {
   },
 
   listHeroes(token) {
-    return request<{ heroes: ResolvedCharacter[] }>("/api/heroes", { token });
+    return request<{ heroes: ResolvedCharacter[]; saved?: Record<string, { at?: string }> }>("/api/heroes", { token });
+  },
+
+  async releaseSavedHero(characterId, homeHouseholdId, deviceToken) {
+    await request<{ ok: true }>("/api/save/release", {
+      method: "POST",
+      headers: { ...JSON_HEADERS, "x-kad-device-token": deviceToken },
+      body: JSON.stringify({ characterId, ...(homeHouseholdId ? { homeHouseholdId } : {}) }),
+    });
   },
 
   loadJournal(deviceToken) {

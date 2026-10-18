@@ -35,16 +35,19 @@
 
 import {
   claimFor,
+  claimOf,
+  parseClaim,
   memberHome,
   resolveCharacter,
   startCampaign,
+  type Character,
   type PartyMember,
   type RunState,
   type SavedGameView,
 } from "@kad/shared";
 import type { CharacterWrite, EventRecord, RunRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
-import { standing, rewrite } from "./claim.ts";
+import { claimIsLive, releaseClaim, standing, rewrite } from "./claim.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { commitRoomChange, hostedRoom, isClosed, type HostPrincipal } from "./host.ts";
 import { expectedIndex, UNDER_WAY } from "./progression.ts";
@@ -211,7 +214,11 @@ export async function stopForToday(
 
   const run = await deps.repo.getRun(room.runId);
   if (!run) return fail("NOT_FOUND", `no run ${room.runId}`);
-  await deps.repo.putRun({ ...run, stoppedAt: iso(deps.now()) });
+  await deps.repo.putRun({
+    ...run,
+    stoppedAt: iso(deps.now()),
+    ...(room.hostDeviceId ? { stoppedBy: room.hostDeviceId } : {}),
+  });
 
   const result = await commitRoomChange(
     room,
@@ -227,7 +234,7 @@ export async function stopForToday(
   // was an evening ago, and must not come back once this one is taken up.
   for (const other of await deps.repo.listRuns(run.householdId)) {
     if (other.id === run.id || other.stoppedAt === undefined || other.campaignId !== run.campaignId) continue;
-    const { stoppedAt: _old, ...cleared } = other;
+    const { stoppedAt: _old, stoppedBy: _oldBy, ...cleared } = other;
     await deps.repo.putRun(cleared);
   }
   return ok({ seq: result.value.seq });
@@ -332,7 +339,7 @@ async function spend(record: RunRecord, deps: Pick<HandlerDeps, "repo">): Promis
   try {
     const current = await deps.repo.getRun(record.id);
     if (!current) return;
-    const { stoppedAt: _taken, ...spent } = current;
+    const { stoppedAt: _taken, stoppedBy: _by, ...spent } = current;
     await deps.repo.putRun(spent);
   } catch (err) {
     console.error(`save: could not mark ${record.id} as taken up:`, err);
@@ -391,4 +398,66 @@ async function restoreParty(
     });
   }
   return { party, writes };
+}
+
+/**
+ * Where a hero is saved, when a stopped game is what holds her (#259): the
+ * name of the table, when it is not her own home ("Ada is saved in a game at
+ * Rue's"), else `at: null`. Null when she is free, or held by a game that is
+ * not stopped.
+ */
+export async function heroSaved(
+  hero: Character,
+  deps: Pick<HandlerDeps, "repo" | "content">,
+): Promise<{ at: string | null } | null> {
+  const held = claimOf(hero);
+  if (held === null || !(await claimIsLive(held, hero, deps))) return null;
+  const { campaignId, table } = parseClaim(held, hero);
+  const saved = await savedGame(table, deps);
+  if (!saved || saved.state.campaignId !== campaignId) return null;
+  if (!saved.state.party.some((member) => member.character.id === hero.id)) return null;
+  if (table === hero.householdId) return { at: null };
+  return { at: (await deps.repo.getHousehold(table))?.displayName ?? "another table" };
+}
+
+export interface ReleaseSavedHeroInput {
+  /** The device asking: it must be the one that opened the stopped room. */
+  deviceId: string;
+  /** The table's household: the asking device's own. */
+  householdId: string;
+  characterId: string;
+  /** Where the hero lives, when it is not the table's (a visitor). */
+  homeHouseholdId?: string;
+}
+
+/**
+ * The stopped table's host lets a hero go (#259): her unfinished gains from
+ * the adventure are dropped and her claim is freed at once, exactly as her
+ * own grown-up's "end this adventure" does (`releaseClaim`). Only for a hero
+ * a stopped game of *this* table holds, and only for the device that stopped
+ * it. A resume after that finds her no longer holding the adventure and
+ * leaves her out; she is in it again only by sitting down as she is now.
+ * There is no timeout: this and her grown-up are the only ways.
+ */
+export async function releaseSavedHero(
+  input: ReleaseSavedHeroInput,
+  deps: HandlerDeps,
+): Promise<HandlerResult<{ left: string | null }>> {
+  const home = input.homeHouseholdId ?? input.householdId;
+  const hero = await deps.repo.getCharacter(home, input.characterId);
+  if (!hero) return fail("NOT_FOUND", `no hero ${input.characterId}`);
+  const held = claimOf(hero);
+  const { campaignId, table } = held === null ? { campaignId: "", table: "" } : parseClaim(held, hero);
+  const runs = held === null || table !== input.householdId ? [] : await deps.repo.listRuns(table);
+  const stopped = runs.find(
+    (run) => run.stoppedAt !== undefined && run.stoppedBy === input.deviceId && run.campaignId === campaignId,
+  );
+  if (!stopped) {
+    return fail("FORBIDDEN", "Only the screen or phone that stopped this game can let a hero go from it.");
+  }
+  const saved = await readSaved(stopped, table, deps);
+  if (!saved?.state.party.some((member) => member.character.id === hero.id)) {
+    return fail("FORBIDDEN", "Only the screen or phone that stopped this game can let a hero go from it.");
+  }
+  return releaseClaim(home, hero.id, deps);
 }

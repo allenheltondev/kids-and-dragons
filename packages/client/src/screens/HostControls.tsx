@@ -33,7 +33,7 @@ import { useKeepsakeStore } from "../store/keepsake";
 import { Button } from "../ui";
 import { Icon } from "./icons";
 import { SignInFlow } from "./SignInFlow";
-import { STOP_CONFIRM, STOP_OFFER } from "./save-copy";
+import { LET_GO_NOTE, STOP_CONFIRM, STOP_OFFER } from "./save-copy";
 import "./HostControls.css";
 
 export type RosterStatus = "here" | "away" | "creating" | "out";
@@ -123,6 +123,64 @@ function StopOffer({ state }: { state: RunState }): React.JSX.Element | null {
         Keep playing
       </Button>
     </div>
+  );
+}
+
+/**
+ * On the screen that stopped the game (#259): let a hero go from it. Her
+ * gains from the adventure are dropped and she is free to join any game at
+ * once; a resume leaves her out unless she sits down again as she is now.
+ */
+export function LetHeroGo(): React.JSX.Element | null {
+  const state = useRunState();
+  const release = useGameStore((store) => store.releaseSavedHero);
+  const [asking, setAsking] = useState<string | null>(null);
+  const [gone, setGone] = useState<string[]>([]);
+  const [busy, setBusy] = useState(false);
+  if (!state || state.party.length === 0) return null;
+  return (
+    <details className="kad-host__letgo">
+      <summary className="kad-focusable">Let a hero go</summary>
+      <ul>
+        {state.party.map((member) => {
+          const name = member.character.name;
+          const id = member.character.id;
+          if (gone.includes(id)) return <li key={id}>{name} is free.</li>;
+          return (
+            <li key={id}>
+              {asking === id ? (
+                <span role="group" aria-label={`Let ${name} go`}>
+                  <span className="kad-muted">{LET_GO_NOTE}</span>
+                  <Button
+                    variant="danger"
+                    size="md"
+                    disabled={busy}
+                    onClick={() => {
+                      setBusy(true);
+                      void release(id, member.homeHouseholdId)
+                        .then((done) => {
+                          if (done) setGone([...gone, id]);
+                          setAsking(null);
+                        })
+                        .finally(() => setBusy(false));
+                    }}
+                  >
+                    {`Yes, let ${name} go`}
+                  </Button>
+                  <Button variant="ghost" size="md" disabled={busy} onClick={() => setAsking(null)}>
+                    Keep {name} in the game
+                  </Button>
+                </span>
+              ) : (
+                <Button variant="secondary" size="md" onClick={() => setAsking(id)}>
+                  {`Let ${name} go`}
+                </Button>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </details>
   );
 }
 

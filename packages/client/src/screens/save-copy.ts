@@ -17,6 +17,13 @@ export function savedHeroes(saved: Pick<SavedGameView, "heroes">): string {
   return `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
 }
 
+/** Where a hero is saved, on her own screen and the organizer's. */
+export function savedHeroLine(name: string, saved: { at?: string }): string {
+  return saved.at ? `${name} is saved in a game at ${saved.at}.` : `${name} is saved in a game.`;
+}
+
+export const LET_GO_NOTE = "What they gained in this adventure goes away, and they are free to join any game.";
+
 export const STOP_OFFER = "This is a cozy place to stop for today. Your adventure will wait for you.";
 export const STOP_CONFIRM = "Stop here and save? Next time, tap Keep going and you will be right back.";
 export const STOPPED_MESSAGE = "Your game is saved. Next time, tap Keep going and you will be right back here.";

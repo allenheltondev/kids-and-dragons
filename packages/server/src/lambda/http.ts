@@ -37,7 +37,7 @@ import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom
 import { setVisitors } from "../handlers/visitors.ts";
 import { removePlayer } from "../handlers/remove.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "../handlers/host.ts";
-import { resumeGame, stopForToday } from "../handlers/save.ts";
+import { releaseSavedHero, resumeGame, stopForToday } from "../handlers/save.ts";
 import { listHeroes } from "../handlers/heroes.ts";
 import { getJournal } from "../handlers/journal.ts";
 import { getState } from "../handlers/state.ts";
@@ -144,6 +144,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (req.path === "/api/presence") return (deps) => postPresence(req, deps);
     if (req.path === "/api/progression/spend") return (deps) => postProgressionSpend(req, deps);
     if (req.path === "/api/resume") return (deps) => postResume(req, deps);
+    if (req.path === "/api/save/release") return (deps) => postReleaseHero(req, deps);
     if (req.path === "/api/auth/link") return (deps) => postLink(req, deps, rt);
     if (req.path === "/api/auth/device") return (deps) => postAdopt(req, deps, rt);
     if (req.path === "/api/auth/shared-device") return (deps) => postShareDevice(req, deps, rt);
@@ -506,6 +507,31 @@ async function postClose(req: Req, deps: HandlerDeps, code: string) {
  */
 async function postStop(req: Req, deps: HandlerDeps, code: string) {
   return postHostControl(req, deps, code, null, (principal) => stopForToday({ code, principal }, deps));
+}
+
+/**
+ * The host of a stopped game letting a hero go from it (#259). The device
+ * token, not a session: the room is closed. A personal device only; the
+ * hero's own grown-up uses the organizer screen.
+ */
+async function postReleaseHero(req: Req, deps: HandlerDeps) {
+  const { characterId, homeHouseholdId } = req.body;
+  if (typeof characterId !== "string" || characterId === "") return error(400, "ILLEGAL", "expected { characterId }");
+  if (homeHouseholdId !== undefined && typeof homeHouseholdId !== "string") {
+    return error(400, "ILLEGAL", "homeHouseholdId must be a string");
+  }
+  const host = await resolvePrincipal(req, deps);
+  if (!host) return error(401, "FORBIDDEN", "letting a hero go needs the device that stopped the game");
+  const result = await releaseSavedHero(
+    {
+      deviceId: host.principal.deviceId,
+      householdId: host.principal.householdId,
+      characterId,
+      ...(homeHouseholdId ? { homeHouseholdId } : {}),
+    },
+    deps,
+  );
+  return result.ok ? json(200, { ok: true, left: result.value.left }, host.principal) : fromError(result.error);
 }
 
 /**

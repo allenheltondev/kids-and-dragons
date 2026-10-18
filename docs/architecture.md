@@ -910,15 +910,30 @@ visiting table to write to a hero it does not own. #282 builds it
 - **Stopping for today keeps the claims, deliberately (#259).** A stopped
   table's heroes still hold their adventure, exactly as after a Close. The
   claim is what carries every chapter's gains so far, and releasing it would
-  discard them, so "nothing lost" and "released" cannot both be true. What
-  keeps a stopped table from locking a kid out indefinitely is that it never
-  was a new lock: it is the same claim an active attempt has always held
-  between evenings, and the same ways out apply. Her grown-up can **end the
-  adventure** (`POST /api/organizer/heroes/leave`), which releases her; the
-  attempt completing or failing releases everyone. A hero released that way is
-  not brought back by a resume (below): she is left out of the restored party
-  and can sit down mid-chapter like anyone. A hero held by another table
-  stays refused with the usual "in the middle of another adventure".
+  discard them, so "nothing lost" and "released" cannot both be true. It is
+  never hidden: her own screen (the "who are you bringing?" list,
+  `GET /api/heroes` `saved`) and the organizer view (`OrganizerHero.saved`) say
+  where she is, e.g. "Ada is saved in a game at Rue's" (`heroSaved`). A held
+  hero refused elsewhere still reads "in the middle of another adventure".
+  **There is no automatic timeout.** Two people can **release** her, and
+  either frees her at once and drops her unfinished gains from that
+  adventure, exactly as "end this adventure" always did (`releaseClaim`):
+  - **an owner of her home household**, from the organizer screen
+    (`POST /api/organizer/heroes/leave`), whoever hosted the game; and
+  - **the stopped table's host**, the device that stopped the game
+    (`RunRecord.stoppedBy`, kept because the room's code and host go with the
+    room): `POST /api/save/release` `{ characterId, homeHouseholdId? }` with
+    its device token, only for a hero that game's party holds
+    (`releaseSavedHero`). The stopping screen offers it as "Let a hero go",
+    after one "are you sure?" that says what is lost. A shared tablet's host
+    (#250) has no device token of its own to prove this with, so a tablet's
+    stopped game is released by an owner instead.
+
+  If the game resumes after that, she is not in it: a resume leaves out any
+  saved hero who no longer holds the adventure, and she is in it again only by
+  sitting down as she is now, like anyone joining mid-chapter. Stopped runs
+  stay under the household's own keys (`RUN#`), as every run is, so a
+  household's deletion (#252) takes them with it.
 - **Gemfall at home** runs through exactly the same path, with home equal to
   the table, so nothing about a one-household game changes.
 

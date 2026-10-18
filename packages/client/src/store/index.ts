@@ -709,6 +709,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       previews: {},
       arrivals: [],
       arrivalsDropped: 0,
+      savedHeroes: {},
       error: null,
       rules: null,
       items: null,
@@ -882,7 +883,8 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       async listHeroes() {
         const session = get().session;
         if (!session?.playerId) return [];
-        const { heroes } = await deps.api.listHeroes(session.sessionToken);
+        const { heroes, saved } = await deps.api.listHeroes(session.sessionToken);
+        set({ savedHeroes: saved ?? {} });
         return heroes;
       },
 
@@ -1222,6 +1224,21 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
       closeRoom() {
         return hostControl("close", {}, "Could not close the room.");
+      },
+
+      async releaseSavedHero(characterId: string, homeHouseholdId?: string) {
+        const deviceToken = loadIdentity(deps.storage).deviceToken;
+        if (!deviceToken) {
+          set({ error: "Only the phone that stopped this game can let a hero go." });
+          return false;
+        }
+        try {
+          await deps.api.releaseSavedHero(characterId, homeHouseholdId, deviceToken);
+          return true;
+        } catch (error) {
+          set({ error: error instanceof Error ? error.message : "Could not let them go." });
+          return false;
+        }
       },
 
       stopForToday() {

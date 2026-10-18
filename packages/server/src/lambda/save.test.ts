@@ -211,3 +211,34 @@ describe("POST /api/resume", () => {
     expect(bodyOf(result).error).toMatchObject({ message: expect.stringMatching(/no saved game/i) });
   });
 });
+
+describe("POST /api/save/release", () => {
+  it("lets the stopped table's host free a hero, and nobody else", async () => {
+    const w = await setup();
+    const { host, guest } = await beginChapter(w);
+    await respond(event("POST", `/api/room/${host.code}/stop`, { headers: { "x-kad-device-token": host.deviceToken } }), w.rt);
+    const [pip] = (await w.harness.repo.listCharacters(w.householdId)).filter((c) => c.name === "Pip");
+    const body = { characterId: pip!.id };
+
+    expect((await respond(event("POST", "/api/save/release", { body }), w.rt)).statusCode).toBe(401);
+    expect((await respond(event("POST", "/api/save/release", { body: {}, headers: { "x-kad-device-token": host.deviceToken } }), w.rt)).statusCode).toBe(400);
+    const stranger = await respond(
+      event("POST", "/api/save/release", { body, headers: { "x-kad-device-token": guest.deviceToken } }),
+      w.rt,
+    );
+    expect(stranger.statusCode).toBe(403);
+    expect((await w.harness.repo.getCharacter(w.householdId, pip!.id))?.provisional?.runId).toBe("gemfall");
+
+    const freed = await respond(
+      event("POST", "/api/save/release", { body, headers: { "x-kad-device-token": host.deviceToken } }),
+      w.rt,
+    );
+    expect(freed.statusCode).toBe(200);
+    expect(bodyOf(freed)).toMatchObject({ ok: true, left: "gemfall" });
+    expect((await w.harness.repo.getCharacter(w.householdId, pip!.id))?.provisional).toBeNull();
+
+    // Her own screen no longer says she is saved.
+    const heroes = await respond(event("GET", "/api/heroes", { headers: bearer(host) }), w.rt);
+    expect(bodyOf(heroes).saved).toBeUndefined();
+  });
+});

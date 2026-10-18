@@ -1925,6 +1925,7 @@ const SHARED = [
   // Stop for today, and keep going another day (#259, handlers/save.ts).
   { path: "/api/room/:code/stop", method: "POST", probe: "/api/room/ABCD/stop" },
   { path: "/api/resume", method: "POST", probe: "/api/resume" },
+  { path: "/api/save/release", method: "POST", probe: "/api/save/release" },
   // A signed-in owner opening the room to visitors (#249, handlers/visitors.ts).
   { path: "/api/room/:code/visitors", method: "POST", probe: "/api/room/ABCD/visitors" },
   { path: "/api/action", method: "POST", probe: "/api/action" },

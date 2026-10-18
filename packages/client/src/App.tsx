@@ -109,6 +109,10 @@ class RoomBoundary extends Component<{ children: ReactNode; message?: string }, 
 const HostControls = lazy(() =>
   import("./screens/HostControls").then((module) => ({ default: module.HostControls })),
 );
+// The same chunk: the host of a stopped game may let a hero go (#259).
+const LetHeroGo = lazy(() =>
+  import("./screens/HostControls").then((module) => ({ default: module.LetHeroGo })),
+);
 
 // The adventure book (`/journal`) is a route of its own, between games, and
 // loads on demand like the room: nobody on the join screen needs it yet.
@@ -244,6 +248,7 @@ function ClosedScreen(): React.JSX.Element {
   const leave = useGameStore((store) => store.leave);
   // Stopped for today (#259) is a save, not an ending.
   const stopped = useGameStore((store) => store.state?.stopped === true);
+  const host = useGameStore((store) => store.session?.host === true);
   return (
     <div className="kad-boot" role="alert">
       <div className="kad-removed">
@@ -252,6 +257,11 @@ function ClosedScreen(): React.JSX.Element {
             ? STOPPED_MESSAGE
             : "The person running this game closed the room. Your heroes are kept, ready for next time."}
         </p>
+        {stopped && host ? (
+          <Suspense fallback={null}>
+            <LetHeroGo />
+          </Suspense>
+        ) : null}
         <Button onClick={leave}>Back to the start</Button>
       </div>
     </div>

@@ -87,10 +87,8 @@ test.describe("stop anytime, pick up where you left off", () => {
     await page.getByRole("button", { name: /^Ready to play$/i }).click(TAP);
   }
 
-  test("a chapter stopped at a Rest scene resumes in a new room, on the other phone", async ({ browser }) => {
-    test.setTimeout(420_000);
-
-    // --- Night one: Allen opens a Phone Mode room; Sam joins; both make heroes ---
+  /** Night one: Allen opens a Phone Mode room, Sam joins, both make heroes and begin. */
+  async function nightOne(browser: Browser) {
     const allen = await phone(browser);
     await allen.goto("/");
     await allen.getByRole("button", { name: /want to host/i }).click();
@@ -110,6 +108,13 @@ test.describe("stop anytime, pick up where you left off", () => {
 
     await allen.getByRole("button", { name: /begin the adventure/i }).click(TAP);
     await expect.poll(async () => (await roomState<State>(allen, first)).phase, TAP).toBe("scene");
+    return { allen, sam, first };
+  }
+
+  test("a chapter stopped at a Rest scene resumes in a new room, on the other phone", async ({ browser }) => {
+    test.setTimeout(420_000);
+
+    const { allen, sam, first } = await nightOne(browser);
 
     // --- A Rest scene: the host is offered a place to stop, and may say no ---
     await jumpTo(allen, first, REST_SCENE);
@@ -183,5 +188,47 @@ test.describe("stop anytime, pick up where you left off", () => {
       await sam.waitForTimeout(700);
     }
     expect((await roomState<State>(sam, second)).sceneId).not.toBe(REST_SCENE);
+  });
+
+  test("the host who stopped it lets a hero go, and the resumed game leaves her out", async ({ browser }) => {
+    test.setTimeout(420_000);
+    const { allen, sam, first } = await nightOne(browser);
+    await allen.getByText("Running this room").click();
+    await allen.getByRole("button", { name: "Stop for today" }).click(TAP);
+    await allen.getByRole("button", { name: "Save and stop" }).click(TAP);
+    await expect(allen.getByText(/your game is saved/i)).toBeVisible(TAP);
+
+    // Only the screen that stopped the game is offered the release.
+    await expect(sam.getByText(/your game is saved/i)).toBeVisible(TAP);
+    await expect(sam.getByText("Let a hero go")).toHaveCount(0);
+    await allen.getByText("Let a hero go").click();
+    await allen.getByRole("button", { name: "Let Bo go" }).click(TAP);
+    await expect(allen.getByText(/gained in this adventure goes away/i)).toBeVisible(TAP);
+    await allen.getByRole("button", { name: "Yes, let Bo go" }).click(TAP);
+    await expect(allen.getByText("Bo is free.")).toBeVisible(TAP);
+    await allen.getByRole("button", { name: /back to the start/i }).click(TAP);
+    await sam.getByRole("button", { name: /back to the start/i }).click(TAP);
+
+    // Night two: Allen's own screen says Pip is saved, and Bo's does not.
+    await allen.goto("/");
+    await allen.getByRole("button", { name: /want to host/i }).click();
+    await allen.getByText("Phone Mode").click();
+    await allen.getByLabel(/adventurer name/i).fill("Allen");
+    await allen.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(allen).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
+    const second = new URL(allen.url()).pathname.split("/").pop() ?? "";
+    await expect(allen.getByText("Pip is saved in a game.")).toBeVisible({ timeout: 15_000 });
+    await bringHero(allen, "Pip");
+
+    await sam.goto("/");
+    await sam.getByLabel(/room code/i).fill(second);
+    await sam.getByRole("button", { name: /join a game/i }).click();
+    await expect(sam.getByText(/welcome back/i)).toBeVisible({ timeout: 15_000 });
+    await expect(sam.getByText(/is saved in a game/i)).toHaveCount(0);
+
+    // Keep going: the game comes back without Bo, who sits down as she is now.
+    await allen.getByRole("button", { name: /keep going/i }).click(TAP);
+    await expect.poll(async () => (await roomState<State>(allen, second)).phase, TAP).toBe("scene");
+    expect((await roomState<State>(allen, second)).party.map((m) => m.character.name)).toEqual(["Pip"]);
   });
 });

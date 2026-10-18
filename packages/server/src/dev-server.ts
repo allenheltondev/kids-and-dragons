@@ -45,7 +45,7 @@ import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom
 import { setVisitors } from "./handlers/visitors.ts";
 import { removePlayer } from "./handlers/remove.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "./handlers/host.ts";
-import { resumeGame, stopForToday } from "./handlers/save.ts";
+import { releaseSavedHero, resumeGame, stopForToday } from "./handlers/save.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
 import { getState } from "./handlers/state.ts";
@@ -507,6 +507,32 @@ async function main(): Promise<void> {
     );
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json({ ok: true, seq: result.value.seq });
+  });
+
+  // The host of a stopped game letting a hero go from it (#259), as in lambda/http.ts.
+  app.post("/api/save/release", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const { characterId, homeHouseholdId } = (req.body ?? {}) as Record<string, unknown>;
+    if (typeof characterId !== "string" || characterId === "") {
+      return sendError(res, 400, "ILLEGAL", "expected { characterId }");
+    }
+    if (homeHouseholdId !== undefined && typeof homeHouseholdId !== "string") {
+      return sendError(res, 400, "ILLEGAL", "homeHouseholdId must be a string");
+    }
+    const host = await resolvePrincipal(req, base);
+    if (!host) return sendError(res, 401, "FORBIDDEN", "letting a hero go needs the device that stopped the game");
+    const result = await releaseSavedHero(
+      {
+        deviceId: host.principal.deviceId,
+        householdId: host.principal.householdId,
+        characterId,
+        ...(homeHouseholdId ? { homeHouseholdId } : {}),
+      },
+      deps,
+    );
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json({ ok: true, left: result.value.left });
   });
 
   app.post("/api/progression/spend", async (req: Request, res: Response) => {

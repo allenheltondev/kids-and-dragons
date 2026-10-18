@@ -12,7 +12,7 @@ import { useGameStore } from "../store";
 import type { ClientSession } from "../store/contract";
 import { makeState } from "../testing/fixtures";
 import { useKeepsakeStore } from "../store/keepsake";
-import { HostControls, rosterOf } from "./HostControls";
+import { HostControls, LetHeroGo, rosterOf } from "./HostControls";
 
 function member(playerId: string, name: string, connected = true): PartyMember {
   return {
@@ -209,6 +209,34 @@ describe("stopping for today (#259)", () => {
     room({}, { ...UNDER_WAY, sceneType: "rest" });
     render(<HostControls placement="float" />);
     expect(screen.queryByText(/cozy place to stop/)).toBeNull();
+  });
+});
+
+const withId = (m: PartyMember, id: string): PartyMember => ({ ...m, character: { ...m.character, id } });
+
+describe("letting a hero go from a stopped game (#259)", () => {
+  it("asks first, says what is lost, and then frees only that hero", async () => {
+    const releaseSavedHero = vi.fn(async () => true);
+    act(() => {
+      useGameStore.setState({
+        session: { runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "travel", sessionToken: "t", host: true },
+        state: { ...makeState(), stopped: true, closed: true, party: [withId(member("p_1", "Ember"), "c_1"), withId(member("p_2", "Sparklehoof"), "c_2")] },
+        releaseSavedHero,
+      });
+    });
+    render(<LetHeroGo />);
+    fireEvent.click(screen.getByText("Let a hero go"));
+    fireEvent.click(screen.getByRole("button", { name: "Let Sparklehoof go" }));
+    expect(screen.getByText(/gained in this adventure goes away/)).toBeTruthy();
+    expect(releaseSavedHero).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Keep Sparklehoof in the game" }));
+    expect(releaseSavedHero).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole("button", { name: "Let Sparklehoof go" }));
+    fireEvent.click(screen.getByRole("button", { name: "Yes, let Sparklehoof go" }));
+    expect(releaseSavedHero).toHaveBeenCalledWith("c_2", undefined);
+    expect(await screen.findByText("Sparklehoof is free.")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Let Ember go" })).toBeTruthy();
   });
 });
 

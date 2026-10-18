@@ -535,6 +535,11 @@ export interface OrganizerHero {
    * it is in flight. Absent when she is free to join any table.
    */
   adventure?: string;
+  /**
+   * Her adventure is a stopped game (#259): saved at another table (`at`, its
+   * name) or at home (empty). "End" still frees her, and drops those gains.
+   */
+  saved?: { at?: string };
 }
 
 export interface OrganizerPlayer {

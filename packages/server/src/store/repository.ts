@@ -67,6 +67,13 @@ export interface RunRecord {
    * that was not stopped, which is nearly all of them.
    */
   stoppedAt?: string;
+  /**
+   * The device that opened the room it was stopped in (`RoomRecord.hostDeviceId`,
+   * which is gone with the code). It is how the stopped table's host is still
+   * known to be the host, to let a hero go from the game (handlers/save.ts,
+   * `releaseSavedHero`). Written and cleared with `stoppedAt`.
+   */
+  stoppedBy?: string;
 }
 
 /**
