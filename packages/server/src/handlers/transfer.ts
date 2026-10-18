@@ -36,6 +36,7 @@ import { newId } from "../ids.ts";
 import type { GameRepository, MoveProfileInput, ProfileMove } from "../store/repository.ts";
 import { DEVICE_TOKEN_TTL_MS } from "../token-identity.ts";
 import { summaries } from "./account.ts";
+import { claimIsLive, claimOf } from "./claim.ts";
 import { admitCodeLookup } from "./code-guard.ts";
 import { fail, iso, ok, type HandlerResult } from "./deps.ts";
 import {
@@ -75,7 +76,7 @@ export async function createTransferCode(
   if (typeof input.playerId !== "string" || input.playerId === "") return fail("ILLEGAL", "expected { playerId }");
   const move = await deps.repo.readProfileMove(owned.value.id, input.playerId);
   if (!move) return fail("NOT_FOUND", `no player ${input.playerId}`);
-  const busy = await busyHero(move, deps.repo);
+  const busy = await busyHero(move, deps);
   if (busy) return midAdventure(busy, move);
 
   const nowMs = deps.now();
@@ -130,7 +131,7 @@ export async function acceptTransfer(
     const move = await deps.repo.readProfileMove(record.householdId, record.playerId);
     if (!move) return fail("NOT_FOUND", "That kid has already moved, or isn't there any more.");
     const name = move.player.displayName;
-    const busy = await busyHero(move, deps.repo);
+    const busy = await busyHero(move, deps);
     if (busy) return midAdventure(busy, move);
     if (into && (await nameTaken(into.id, name, deps.repo))) {
       return fail("ILLEGAL", `Someone called ${name} is already here. Rename one of them first.`);
@@ -170,33 +171,20 @@ export async function acceptTransfer(
 }
 
 /**
- * The first of her heroes still in the middle of an adventure: a provisional
- * whose claim names a campaign attempt that is still `active`. The claim is
- * the campaign id at home (`campaignKey` in progression.ts) and, at a table
- * that is not her home, `<campaignId>@<tableHouseholdId>` (#282, #291), so it
- * is parsed into the attempt it names and that table's attempt is read, never
- * her home's. A complete, failed or vanished attempt holds nothing.
+ * The first of her heroes still in the middle of an adventure: her claim
+ * (#282, `handlers/claim.ts`) names a campaign attempt that is still in
+ * flight. At a table that is not her home the claim names that table, and
+ * `claimIsLive` reads that table's attempt, never her home's.
  */
 export async function busyHero(
-  move: Pick<ProfileMove, "householdId" | "characters">,
-  repo: Pick<GameRepository, "getCampaignProgress">,
+  move: Pick<ProfileMove, "characters">,
+  deps: Pick<OrganizerDeps, "repo" | "content">,
 ): Promise<Character | null> {
   for (const character of move.characters) {
-    const claim = character.provisional?.runId;
-    if (!claim) continue;
-    const { campaignId, table } = parseClaim(claim, move.householdId);
-    if ((await repo.getCampaignProgress(table, campaignId))?.status === "active") return character;
+    const held = claimOf(character);
+    if (held !== null && (await claimIsLive(held, character, deps))) return character;
   }
   return null;
-}
-
-/**
- * The attempt a claim names: `parseClaim` in #291's handlers/claim.ts, which
- * replaces this once both have landed. A bare claim is her home's table.
- */
-export function parseClaim(claim: string, home: string): { campaignId: string; table: string } {
-  const at = claim.lastIndexOf("@");
-  return at < 0 ? { campaignId: claim, table: home } : { campaignId: claim.slice(0, at), table: claim.slice(at + 1) };
 }
 
 function midAdventure(hero: Character, move: ProfileMove): HandlerResult<never> {

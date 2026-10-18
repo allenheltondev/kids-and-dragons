@@ -882,15 +882,21 @@ the real one (`handlers/transfer.ts`).
 - **Not mid-campaign.** A hero whose `provisional` names an adventure still
   in flight is that table's until it ends (the claim, above). Moving her would
   strand the gains its last chapter commits or reverts. So making the code
-  and redeeming it both refuse while her claim names a campaign attempt
-  still `active`. The claim is parsed first: a bare campaign id is her home's
-  table, and `<campaignId>@<tableHouseholdId>` (#282) is that visiting
-  table's attempt, which is the one read. The conditional delete covers a
-  claim taken between that check and the move.
-- **The old home's open rooms let her go.** A room session issued there
-  outlives the move, so redeeming takes her out of every room it has open, as
-  a host's Remove does (`takeOutEverywhere`). The move is already done by
-  then, so a room that cannot be written is logged, not retried.
+  and redeeming it both refuse while her claim is live (`claimIsLive`): a
+  bare campaign id names her home's attempt, and `<campaignId>@<table>`
+  names that visiting table's, which is the one read. The conditional delete
+  covers a claim taken between that check and the move, and a table's write
+  to her old row afterwards fails the claim's version condition on a row
+  that is gone, so it cannot bring her back there.
+- **Rooms she was seated in let her go.** A session or seat minted before
+  the move still names the home she left, and her profile is no longer
+  there. Every room door treats that as out (`isOut`, and the action door's
+  own profile read), the way a retired profile is: the profile is the
+  record. That holds at a visiting table in a household she never belonged
+  to, too, which nothing on her side could list. Redeeming also puts her on
+  the `removed` list of every room her old home has open
+  (`takeOutEverywhere`), so its screens show her gone; that is tidy-up only,
+  and a room it cannot write is logged, not retried.
 
 #### Recovery and revocation
 

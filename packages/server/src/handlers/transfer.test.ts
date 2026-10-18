@@ -7,7 +7,7 @@
 
 import { describe, expect, it } from "vitest";
 import { applyIntent, awardXp, createRunState } from "@kad/shared";
-import type { ClientIntent, RunState } from "@kad/shared";
+import type { Campaign, ClientIntent, RunState } from "@kad/shared";
 import type { Engine } from "../engine/port.ts";
 import { makeHarness, type TestHarness } from "../test-support.ts";
 import { addPlayer } from "./account.ts";
@@ -67,6 +67,15 @@ async function adaAtTheClub() {
   await harness.repo.recordDiscoveries(club.id, [{ canonId: "moth", playerId: ada.player.id, runId: evening.runId }]);
 
   return { harness, club, ada, hero: levelled, evening };
+}
+
+/** Content that ships Gemfall, which a claim on it needs to count as live (`claimIsLive`). */
+function knowsGemfall(harness: TestHarness): void {
+  const content = harness.deps.content;
+  harness.deps.content = {
+    ...content,
+    campaign: (id) => (id === "gemfall" ? ({ id: "gemfall", title: "Gemfall" } as Campaign) : content.campaign(id)),
+  };
 }
 
 describe("taking a hero home (#251)", () => {
@@ -182,6 +191,7 @@ describe("taking a hero home (#251)", () => {
 
   it("refuses to move a hero in the middle of an adventure", async () => {
     const { harness, club, ada, hero } = await adaAtTheClub();
+    knowsGemfall(harness);
     const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
 
     // The club starts a campaign and she is in it: her gains are provisional.
@@ -211,6 +221,7 @@ describe("taking a hero home (#251)", () => {
 
   it("refuses to move a hero in the middle of an adventure at a table that is not her home", async () => {
     const { harness, club, ada, hero } = await adaAtTheClub();
+    knowsGemfall(harness);
     const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
     const progress = (status: "active" | "complete") =>
       harness.repo.putCampaignProgress({
@@ -239,6 +250,29 @@ describe("taking a hero home (#251)", () => {
     // Rue's table finishes the campaign, and she can go.
     await progress("complete");
     value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
+  });
+
+  it("keeps her out of a visiting table's room the move's tidy-up cannot find", async () => {
+    const { harness, club, ada } = await adaAtTheClub();
+    // Rue's table seated her as a visitor from the club (#249).
+    value(await createGroup({ cognitoSub: "sub_rue", displayName: "Rue's house" }, harness.deps));
+    const [rueHome] = await harness.repo.listHouseholdsForAccount("sub_rue");
+    const rue = value(await createRoom({ householdId: rueHome!, mode: "travel" }, harness.deps));
+    const seated = await harness.repo.getState(rue.runId);
+    const visiting: RunState = {
+      ...seated!,
+      seats: { ...seated!.seats, [ada.player.id]: { name: "Ada", color: "#7FD4C1", device: "phone", homeHouseholdId: club.id } },
+    };
+    await harness.repo.putState(visiting);
+    expect(await isOut(visiting, ada.player.id, null, harness.repo)).toBe(false);
+
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+    value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
+
+    // Not on its `removed` list, and still out: her profile is not where the seat says.
+    expect((await harness.repo.getState(rue.runId))?.removed ?? []).not.toContain(ada.player.id);
+    expect(await isOut(visiting, ada.player.id, null, harness.repo)).toBe(true);
+    expect(await isOut(visiting, ada.player.id, club.id, harness.repo)).toBe(true);
   });
 
   it("leaves the club's tablet behind, and brings a kid who was taken off the list back onto one", async () => {
