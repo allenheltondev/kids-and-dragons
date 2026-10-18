@@ -12,7 +12,13 @@
  */
 
 import { create } from "zustand";
-import type { OrganizerDevice, OrganizerHouseholdSummary, OrganizerHouseholdView, OrganizerInvite } from "@kad/shared";
+import type {
+  OrganizerDevice,
+  OrganizerHouseholdSummary,
+  OrganizerHouseholdView,
+  OrganizerInvite,
+  PairingCode,
+} from "@kad/shared";
 import { api as defaultApi, type Api, type OrganizerEdit } from "../sync/client";
 
 /** An edit, minus the household it applies to: always the one on screen. */
@@ -32,6 +38,8 @@ export interface OrganizerStore {
   devices: OrganizerDevice[];
   /** The last code made for the household on screen, to read out or send. */
   invite: OrganizerInvite | null;
+  /** The last pairing code made, and for which kid (#281). */
+  pairing: { playerId: string; code: PairingCode } | null;
   busy: boolean;
   error: string | null;
 
@@ -46,6 +54,8 @@ export interface OrganizerStore {
   acceptInvite(code: string): Promise<void>;
   edit(change: OrganizerChange): Promise<void>;
   makeInvite(): Promise<void>;
+  /** "Play as Ada on another device": a one-time code for one kid of this household. */
+  makePairing(playerId: string): Promise<void>;
   /** Forget one of the household's shared tablets; its next request is refused. */
   forgetDevice(deviceId: string): Promise<void>;
   /** Take a co-organizer off; your own id is "leave this group". */
@@ -82,6 +92,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
         view,
         devices: devices.filter((d) => !d.revoked),
         invite: get().view?.id === householdId ? get().invite : null,
+        pairing: null,
       });
     }
 
@@ -91,12 +102,13 @@ export function createOrganizerStore(api: Api = defaultApi) {
       view: null,
       devices: [],
       invite: null,
+      pairing: null,
       busy: false,
       error: null,
 
       async begin(token, email) {
         idToken = token;
-        set({ email, households: [], view: null, devices: [], invite: null, error: null });
+        set({ email, households: [], view: null, devices: [], invite: null, pairing: null, error: null });
         await run(async (t) => {
           const { households } = await api.listHouseholds(t);
           set({ households });
@@ -107,7 +119,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
 
       end() {
         idToken = null;
-        set({ email: null, households: [], view: null, devices: [], invite: null, busy: false, error: null });
+        set({ email: null, households: [], view: null, devices: [], invite: null, pairing: null, busy: false, error: null });
       },
 
       async openHousehold(householdId) {
@@ -115,7 +127,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
       },
 
       async backToList() {
-        set({ view: null, devices: [], invite: null });
+        set({ view: null, devices: [], invite: null, pairing: null });
         await run(async (t) => {
           set({ households: (await api.listHouseholds(t)).households });
         });
@@ -151,6 +163,14 @@ export function createOrganizerStore(api: Api = defaultApi) {
         if (!householdId) return;
         await run(async (t) => {
           set({ invite: await api.createOrganizerInvite(t, householdId) });
+        });
+      },
+
+      async makePairing(playerId) {
+        const householdId = get().view?.id;
+        if (!householdId) return;
+        await run(async (t) => {
+          set({ pairing: { playerId, code: await api.pairProfile(t, householdId, playerId) } });
         });
       },
 
