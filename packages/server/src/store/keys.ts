@@ -12,6 +12,7 @@
  * | Household        | HH#<hhId>       | META               |
  * | Player profile   | HH#<hhId>       | PLAYER#<playerId>  |
  * | Device binding   | HH#<hhId>       | DEVICE#<deviceId>  |
+ * | Co-organizer     | HH#<hhId>       | OWNER#<sub>        |
  * | Character        | HH#<hhId>       | CHAR#<charId>      |
  * | Campaign run     | HH#<hhId>       | RUN#<runId>        |
  * | Field guide      | HH#<hhId>       | FIELDGUIDE         |
@@ -20,6 +21,7 @@
  * | Event log        | RUN#<runId>     | EVT#<seq>          |
  * | Room             | ROOM#<code>     | META               |
  * | Code misses      | GUESS#<client>  | WINDOW#<n>         |
+ * | Organizer invite | INVITE#<code>   | META               |
  *
  * GSI1 indexes devices by device id so a returning phone resolves to its
  * household without a scan (§3), and runs by id so `runId` alone is enough to
@@ -42,6 +44,14 @@ export const DEVICE_SK = (deviceId: string) => `DEVICE#${deviceId}`;
 export const CHAR_SK = (characterId: string) => `CHAR#${characterId}`;
 export const RUN_SK = (runId: string) => `RUN#${runId}`;
 export const CHAPTER_SK = (index: number) => `CHAPTER#${index}`;
+/** One owner of a household (#248), beside the `ACCT#` pointer that is its authority. */
+export const OWNER_SK = (cognitoSub: string) => `OWNER#${cognitoSub}`;
+
+/**
+ * A single-use code that makes a second grown-up an owner (#248). Carries a
+ * `ttl`, like a room: one row, and nothing else points at it.
+ */
+export const INVITE = (code: string) => `INVITE#${code.toUpperCase()}`;
 
 /**
  * Wrong room codes from one client, one row per window (`handlers/code-guard.ts`).
@@ -57,6 +67,7 @@ export const CAMPAIGN_SK = (campaignId: string) => `CAMPAIGN#${campaignId}`;
 export const PREFIX = {
   player: "PLAYER#",
   device: "DEVICE#",
+  owner: "OWNER#",
   character: "CHAR#",
   run: "RUN#",
   campaign: "CAMPAIGN#",

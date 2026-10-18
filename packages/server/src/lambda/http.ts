@@ -38,6 +38,7 @@ import { closeRoom, lockRoom, type HostPrincipal } from "../handlers/host.ts";
 import { listHeroes } from "../handlers/heroes.ts";
 import { getJournal } from "../handlers/journal.ts";
 import { getState } from "../handlers/state.ts";
+import { organizerRoute } from "../handlers/organizer.ts";
 import {
   forgetDevice,
   listSharedPlayers,
@@ -172,6 +173,17 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
   if (req.method === "GET" && req.path === "/api/heroes") return (deps) => getHeroes(req, deps);
   if (req.method === "GET" && req.path === "/api/journal") return (deps) => getJournalRoute(req, deps);
   if (req.method === "GET" && req.path === "/api/household/players") return (deps) => getSharedPlayers(req, deps);
+
+  // A grown-up running a household or a group (#248). Signed in, always.
+  const organizer = organizerRoute(req);
+  if (organizer) {
+    return async (deps) => {
+      const account = await rt.verifyAccount(bearer(req));
+      if (!account) return error(401, "FORBIDDEN", "a verified Cognito id token is required");
+      const result = await organizer(account, deps);
+      return result.ok ? json(200, result.value) : fromError(result.error);
+    };
+  }
   return null;
 }
 
@@ -591,6 +603,7 @@ async function postLink(req: Req, deps: HandlerDeps, rt: HttpRuntime) {
       email: account.email,
       principal: existing?.principal ?? null,
       preferExisting: req.body.preferExisting === true,
+      householdId: typeof req.body.householdId === "string" ? req.body.householdId : undefined,
     },
     deps,
   );
@@ -613,6 +626,7 @@ async function postShareDevice(req: Req, deps: HandlerDeps, rt: HttpRuntime) {
       principal: existing?.principal ?? null,
       shared: shared ?? null,
       userAgent: req.headers["user-agent"],
+      householdId: typeof req.body.householdId === "string" ? req.body.householdId : undefined,
     },
     deps,
   );
