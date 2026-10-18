@@ -19,6 +19,7 @@ import type {
   JoinRoomRequest,
   JoinRoomResponse,
   JournalResponse,
+  OrganizerDevicesResponse,
   OrganizerHouseholdsResponse,
   OrganizerHouseholdSummary,
   OrganizerHouseholdView,
@@ -161,7 +162,7 @@ export interface SharedPlayersLoad extends SharedDevicePlayersResponse {
 }
 
 /** What the host may do to its room (#263, #267). */
-export type HostControl = "remove" | "lock" | "close";
+export type HostControl = "remove" | "lock" | "quiet" | "close";
 
 /**
  * How the host proves it is the host: a phone's (or TV's) own device token,
@@ -279,6 +280,10 @@ export interface Api {
   /** A new group, owned by this account, with nobody in it yet. */
   createGroup(idToken: string, displayName: string): Promise<OrganizerHouseholdSummary>;
   viewHousehold(idToken: string, householdId: string): Promise<OrganizerHouseholdView>;
+  /** The household's shared tablets (#273). */
+  listSharedDevices(idToken: string, householdId: string): Promise<OrganizerDevicesResponse>;
+  /** Forget a shared tablet by id, from any signed-in device (#273). */
+  forgetDeviceById(idToken: string, deviceId: string): Promise<void>;
   editHousehold(idToken: string, edit: OrganizerEdit): Promise<OrganizerHouseholdView>;
   createOrganizerInvite(idToken: string, householdId: string): Promise<OrganizerInvite>;
   acceptOrganizerInvite(idToken: string, code: string): Promise<OrganizerHouseholdSummary>;
@@ -597,6 +602,22 @@ export const api: Api = {
       `/api/organizer/household?${new URLSearchParams({ householdId }).toString()}`,
       { token: idToken },
     );
+  },
+
+  listSharedDevices(idToken, householdId) {
+    return request<OrganizerDevicesResponse>(
+      `/api/organizer/devices?${new URLSearchParams({ householdId }).toString()}`,
+      { token: idToken },
+    );
+  },
+
+  async forgetDeviceById(idToken, deviceId) {
+    await request<unknown>("/api/auth/forget-device", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ deviceId }),
+    });
   },
 
   editHousehold(idToken, edit) {
