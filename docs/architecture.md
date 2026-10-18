@@ -108,7 +108,7 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Player profile | `HH#<hhId>` | `PLAYER#<playerId>` | Display name, color, avatar, and `retired` once an owner takes the kid off the pickers (#248). No role (#265): rows written before still carry `role`, and nothing reads it. |
 | Device binding | `HH#<hhId>` | `DEVICE#<deviceId>` | → playerId, token hash, last seen, user agent. Revocable. |
 | Owner | `HH#<hhId>` | `OWNER#<cognitoSub>` | One grown-up who may manage the household (#248), with the email they signed in with. Written in one transaction with that account's `ACCT#` pointer, and removed with it. |
-| Character | `HH#<hhId>` | `CHAR#<charId>` | Owned by a playerId. Persistent across campaigns. See §3.1. |
+| Character | `HH#<hhId>` | `CHAR#<charId>` | Owned by a playerId, and stored under that kid's **home** household wherever she plays (§4.5, "Who owns what"). Persistent across campaigns. See §3.1. |
 | Campaign run | `HH#<hhId>` | `RUN#<runId>` | One playthrough of one campaign. |
 | Field Guide | `HH#<hhId>` | `FIELDGUIDE` | The household's permanent record of discoveries: `entries` keyed by canon id → `{ firstFoundBy, foundAt, runId? }`. One item, written with per-key `if_not_exists` so the first finder always wins and concurrent writers merge. Versioned (`FIELD_GUIDE_VERSION`). |
 | Chapter progress | `RUN#<runId>` | `CHAPTER#<n>` | Status, branch taken, XP earned. |
@@ -609,8 +609,8 @@ group is an ordinary household with more than one owner.** Its players,
 devices, characters and runs are a household's, and nothing below the auth
 layer can tell a group from a family, the same way nothing can tell a guest
 from a claimed household (§3.0). There is no group type and no second code
-path, which keeps it thin enough that revisiting the household itself (#266)
-has nothing extra to undo.
+path, which keeps it thin enough that the household can become just the
+table a kid plays at (#266, "Who owns what" below) with nothing extra to undo.
 
 - **An owner is an `ACCT#` pointer**, the same row every guard already read,
   plus an `OWNER#` row in the household so it can list who runs it. The two are
@@ -649,6 +649,82 @@ has nothing extra to undo.
 - **The organizer panel keeps nobody signed in.** The id token lives in memory
   while it is open, and closing it drops the token, because the device is often
   one the kids pick up next.
+
+#### Who owns what: the kid, her hero, and the table (#266)
+
+The household was built as the one box everything hangs off: profiles,
+heroes, devices, runs, the Field Guide, expiry. That fits one family at one
+table, and it strains when a kid plays anywhere else. Ada brings her unicorn
+to Rue's house, Ada plays from a hospital bed with her brother at home, or a
+club kid goes home at the end of term. Decided (#266): **a kid's gameplay is
+three different things, and each has its own owner.**
+
+| | What it is | Owned by |
+|---|---|---|
+| **The kid** | A player profile: nickname, color, avatar. No email, password, birthday, or real name | Herself, kept by the grown-up who keeps her household |
+| **Her hero's record** | Level, XP, stats, items, souvenirs, her Field Guide finds, the campaigns she has finished | The kid. It goes wherever she plays |
+| **A table's save** | Where a party is in a campaign: chapter, journey, route flags, setbacks (`CampaignProgressRecord`, runs) | The household or group playing it |
+
+**A save stays with its table.** It is the group's story, and two tables'
+saves cannot be merged into one hero. Ada at chapter 4 at Rue's and chapter 1
+at home is two stories. She continues the first next time she is at Rue's,
+and plays the second at home with a stronger, better-equipped hero. Nothing
+that is hers is lost when she leaves.
+
+**Everything that is hers comes with her.** When she plays at a table that
+is not her home, her XP, items and finds are written back to her home, never
+to the host's (#249, `homeHouseholdId` on the party member). Campaign
+prerequisites (#221) read her own finished-campaign record, not the table's.
+The table keeps its shared Field Guide, and her finds also go to her own.
+
+**Kid "accounts" are profiles, thin by design, and nobody logs in as one.**
+- Every kid already has one: a profile is made the moment they play. Making
+  it portable means the profile, not the household, owns the hero. It does
+  not mean a sign-up.
+- It holds nothing personal. Names are nicknames, filtered (#253). A grown-up
+  is the account holder and the kid is a record they keep. That keeps us out
+  of collecting personal information from children (COPPA's
+  verifiable-consent regime) entirely.
+- **A new device becomes her by pairing, never by something she types.** Her
+  own phone, or a grown-up's signed-in phone, shows a one-time code or QR. It
+  is single use, lives for minutes, and the device that scans it is bound to
+  her. A hospital tablet, a borrowed phone, or a wiped one is her again in one
+  scan, and losing it loses nothing. Whoever sees a code can, at worst, play as
+  her on one device, which a grown-up can revoke.
+- A grown-up's sign-in (`adoptDevice`) remains the other way in.
+
+**One game at a time per hero.** A character carries one `provisional`
+snapshot, stamped with one `runId` (§3.1). So a hero is in at most one
+in-flight campaign: she finishes or leaves the club's Riftlight before
+joining the family's Gemfall, and her gains from each are never interleaved.
+
+**A hero who outranks the party.** A newcomer joins at the party's tier floor
+([spec §8.4](./spec.md)). The reverse, a strong visiting hero at a young
+table, plays at her own level. The party's challenge does not rescale for
+one guest, so a table may prefer to start a new hero for the evening. Revisit
+this with real tables.
+
+**Expiry and deletion.** An unkept kid expires with her guest household, as
+today (§3.0). A kept one lives as long as a grown-up keeps her. Retiring her
+from a group (#248) takes her off that table only. Deleting her (#252) is her
+grown-up's call and removes her everywhere, her hero's record included.
+
+**Staged, so nothing is rewritten up front.**
+1. **Now.** Heroes stay in their home household's partition. A visiting
+   member carries `homeHouseholdId` (#249), and every character read and write
+   uses it. Pairing and the one-game rule land as their own issues.
+2. **Moving a kid (#251)** is changing her home household: her profile, her
+   heroes and her finds move under the new one, ids unchanged, in one
+   transaction, behind a single-use code like an organizer invite.
+3. **Later, when two homes are real** (two households, grandparents who host):
+   the profile and its heroes move to their own `PROFILE#<id>` partition, with
+   a guardian link per grown-up who keeps her, and households become the
+   tables she plays at. Ids do not change, so this is a mechanical migration
+   (§3.2), not a re-model. Not built until a family needs it.
+
+New work keeps to this split: a hero's own record is named by the kid's home,
+never by the room's household, and nothing new is added that only makes sense
+if the household owns the kid.
 
 #### Recovery and revocation
 
