@@ -28,7 +28,7 @@ import type { ChannelMessage, RoomMode } from "@kad/shared";
 import { LocalSseChannel } from "./channel/room-channel.ts";
 import { ContentError, loadContent, type ContentStore } from "./content/loader.ts";
 import { loadSharedRuntime } from "./engine/shared-engine.ts";
-import { addPlayer, adoptDevice, createGuestHousehold, linkAccount } from "./handlers/account.ts";
+import { addPlayer, adoptDevice, createGuestHousehold, linkAccount, vetTypedName } from "./handlers/account.ts";
 import { applyAction } from "./handlers/action.ts";
 import {
   admitCodeLookup,
@@ -171,11 +171,13 @@ async function main(): Promise<void> {
     // the spot. It is a real household — the only thing it lacks is an owner,
     // and the only consequence is that it expires unless somebody signs in.
     const existing = await resolvePrincipal(req, base);
+    const hostName = vetTypedName(req.body?.displayName, "Host");
+    if (!existing && !hostName.ok) return sendError(res, statusFor(hostName.error), hostName.error.code, hostName.error.message);
     const host =
       existing ??
       (await createGuestHousehold(
         {
-          displayName: String(req.body?.displayName ?? "Host"),
+          displayName: hostName.ok ? hostName.value : "Host",
           userAgent: req.get("user-agent"),
           display,
         },
@@ -259,7 +261,10 @@ async function main(): Promise<void> {
     // An unbound device joining a room gets a player created for it on the spot,
     // so a phone that has never seen this game joins in one tap. On a visitor
     // code it is a visitor, in a guest household of its own (#249).
-    // Admitted before anything is bound — see lambda/http.ts.
+    // Admitted before anything is bound, its name vetted before that (#253):
+    // see lambda/http.ts.
+    const joinerName = vetTypedName(req.body?.displayName, "Player");
+    if (!existing && !joinerName.ok) return sendError(res, statusFor(joinerName.error), joinerName.error.code, joinerName.error.message);
     let admitted: "family" | "visitor" | null = null;
     if (!existing) {
       const admission = await admitNewPhone(room, named.visitorCode, deps);
@@ -273,7 +278,7 @@ async function main(): Promise<void> {
       (await bindNewPhone(
         room,
         admitted ?? "family",
-        { displayName: String(req.body?.displayName ?? "Player"), userAgent: req.get("user-agent") },
+        { displayName: joinerName.ok ? joinerName.value : "Player", userAgent: req.get("user-agent") },
         base,
       ));
 
