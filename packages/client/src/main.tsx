@@ -5,10 +5,14 @@
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { startA11y } from "./a11y/prefs";
 import { App } from "./App";
 import { registerServiceWorker } from "./sw/register";
 import "./styles/theme.css";
 import "./styles/components.css";
+
+// Saved text size, contrast, motion and reach, before the first paint (#262).
+startA11y();
 
 const host = document.getElementById("root");
 if (!host) throw new Error("#root is missing from index.html");

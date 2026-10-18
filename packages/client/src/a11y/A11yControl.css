@@ -1,0 +1,65 @@
+/* The corner button sits in the shared row (styles/theme.css .kad-corner) beside read-aloud and sound. */
+.kad-a11y__button {
+  display: grid;
+  place-items: center;
+  inline-size: var(--kad-touch-min);
+  block-size: var(--kad-touch-min);
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--kad-ink-dim);
+  font-size: 1em;
+  font-weight: var(--kad-weight-black);
+  opacity: 0.5;
+  cursor: pointer;
+}
+.kad-a11y__button:hover,
+.kad-a11y__button:focus-visible,
+.kad-a11y__button[aria-expanded="true"] { opacity: 1; }
+html[data-contrast="high"] .kad-a11y__button { opacity: 1; }
+.kad-a11y__glyph { font-size: 1.05em; letter-spacing: -0.04em; }
+
+/* A bottom sheet: the choices are under the thumb, and the scrim's top is the way out. */
+.kad-a11y__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: var(--kad-bg-overlay);
+}
+.kad-a11y__sheet {
+  box-sizing: border-box;
+  inline-size: min(100%, 32rem);
+  /* The sheet grows with the text, but only as far as "Large": at the largest size its own
+     buttons would be taller than a small phone. Everything in it is em, so this one line sets it. */
+  font-size: calc(16px * min(var(--kad-text-scale), 1.25));
+  max-block-size: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-2);
+  padding: var(--kad-space-3) var(--kad-space-4) var(--kad-space-4) calc(var(--kad-space-4) + env(safe-area-inset-bottom, 0px));
+  border: 1px solid var(--kad-border);
+  border-radius: var(--kad-radius-lg) var(--kad-radius-lg) 0 0;
+  background: var(--kad-bg-raised);
+  color: var(--kad-ink);
+  box-shadow: var(--kad-shadow-lg);
+}
+@media (min-width: 700px) and (min-height: 700px) {
+  .kad-a11y__scrim { align-items: center; }
+  .kad-a11y__sheet { border-radius: var(--kad-radius-lg); max-block-size: 90%; }
+}
+.kad-a11y__title { margin: 0; font-size: var(--kad-text-xl); }
+.kad-a11y__heading { margin: 0; font-size: var(--kad-text-lg); }
+.kad-a11y__note { margin: 0; color: var(--kad-ink-dim); font-size: var(--kad-text-sm); }
+.kad-a11y__group { display: flex; flex-direction: column; gap: var(--kad-space-2); border: 0; }
+.kad-a11y__row { display: flex; gap: var(--kad-space-2); }
+.kad-a11y__row > .kad-a11y__option { flex: 1 1 0; min-inline-size: 0; padding-inline: var(--kad-space-2); }
+/* The size buttons show what they do. */
+.kad-a11y__option--large { font-size: 1.15em; }
+.kad-a11y__option--largest { font-size: 1.3em; }
+html[data-hand="left"] .kad-a11y__done { order: -1; }
