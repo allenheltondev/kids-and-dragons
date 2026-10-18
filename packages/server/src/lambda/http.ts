@@ -277,9 +277,10 @@ async function postRoom(req: Req, deps: HandlerDeps) {
 
 /**
  * `POST /api/room` from a shared tablet (#250): seated as the kid it names, on
- * a session token alone. Never a TV: a screen that is nobody has no need of a
- * household's tablet binding, and a TV opened here would be one more thing on
- * the tablet a kid could not tell apart from their own seat.
+ * a session token alone. With `display` (#274) it is the TV instead: the room
+ * opens under the tablet's own household with the tablet as its host, nobody
+ * seated and nothing claimable, and the tablet is handed no device token and
+ * no session. Its shared token is the proof of host from then on.
  */
 async function postRoomShared(
   req: Req,
@@ -289,7 +290,20 @@ async function postRoomShared(
   shared: SharedDeviceIdentity | null,
 ) {
   if (!shared) return forgottenDevice();
-  if (display) return error(400, "ILLEGAL", "a shared tablet plays; open the TV on the TV");
+  if (display) {
+    const created = await createRoom(
+      {
+        householdId: shared.householdId,
+        mode,
+        campaignId: (req.body.campaignId as string | null | undefined) ?? null,
+        hostDeviceId: shared.deviceId,
+        display: true,
+      },
+      deps,
+    );
+    if (!created.ok) return fromError(created.error);
+    return json(200, { ...created.value, roomCode: created.value.code, host: true }, shared);
+  }
   const seat = await seatOnSharedDevice({ shared, playerId: req.body.playerId, newPlayer: req.body.newPlayer }, deps);
   if (!seat.ok) return fromError(seat.error);
 
@@ -392,11 +406,19 @@ async function postJoin(req: Req, deps: HandlerDeps, typed: string) {
 async function postWatch(req: Req, deps: HandlerDeps, code: string) {
   const lookup = await admitCodeLookup(req.client, deps);
   if (!lookup) return slowDown(deps);
-  // Optional: a TV that opened the room presents its binding to learn it is the host.
-  const screen = await resolvePrincipal(req, deps);
-  const result = await watchRoom({ code, deviceId: screen?.principal.deviceId }, deps);
+  // Optional: a TV that opened the room presents its binding to learn it is the
+  // host: its device token, or a family tablet's shared token (#274). A tablet
+  // whose binding is gone is told so rather than watched as a stranger.
+  const tablet = await resolveShared(req, deps);
+  if (tablet === null) return forgottenDevice();
+  const screen = tablet ? null : await resolvePrincipal(req, deps);
+  const result = await watchRoom(
+    { code, deviceId: tablet?.deviceId ?? screen?.principal.deviceId, ...(tablet ? { householdId: tablet.householdId } : {}) },
+    deps,
+  );
   if (result.ok || result.error.code !== "NOT_FOUND") await lookup.hit();
-  return result.ok ? json(200, result.value) : fromError(result.error);
+  // The answer is a viewer token whoever asked; a tablet's own token is only renewed.
+  return result.ok ? json(200, result.value, tablet ?? undefined) : fromError(result.error);
 }
 
 /**
@@ -425,7 +447,7 @@ async function postHostControl(
   let asker: DeviceIdentity | SharedDeviceIdentity;
   if (shared) {
     asker = shared;
-    const seat = tabletHost(shared, await resolveSession(req, deps), code);
+    const seat = tabletHost(shared, await resolveSession(req, deps), code, await deps.repo.getRoom(code));
     if (!seat.ok) return error(401, seat.error.code, seat.error.message);
     principal = seat.value;
   } else {

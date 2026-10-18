@@ -672,6 +672,16 @@ storage was cleared, nobody. So a device binding comes in two kinds (#250):
   takes the tablet's token plus the seated kid's session for that room, so
   the device is proved by its binding and the host still cannot take
   themselves out.
+- **A tablet can be the TV** (#274). "Show the game on this screen" opens a
+  Party Mode room with `display: true` on the shared token alone. The room is
+  the tablet's own household's, so it is never claimable; the tablet is its
+  `hostDeviceId`, `RoomRecord.display` marks that nobody is seated, and no kid
+  is picked, no session minted, no device token handed back. `/watch` takes the
+  shared token as proof of host, and only for a room in the tablet's household
+  that this very tablet opened; its answer is still a viewer token. Remove,
+  lock, quiet and close take the shared token **alone** there, as a TV's device
+  token does (`tabletHost`); on a room the tablet opened to *play*, they still
+  need the seated kid's session, so a token cannot become a TV after the fact.
 - **Forget this device** (`POST /api/auth/forget-device`): a signed-in owner
   revokes a shared binding. Heroes are untouched, because characters belong to
   the household. A forgotten tablet is told so (401) and goes back to an
@@ -1157,7 +1167,8 @@ in (spec §2.1). The realtime channel is authorised per subscriber, so it needs
 naming that room and nothing else, valid until the room expires.
 
 Only the screen that opened the room gets one (#267). It presents the device
-binding it was given when it opened the room, which survives a hard refresh.
+binding it was given when it opened the room, which survives a hard refresh; a
+family tablet acting as the TV presents its shared token instead (#274).
 Anyone else with the code would otherwise watch the party unannounced, out of
 reach of Remove; to see a room, a stranger has to join it, and be seen doing so.
 For the same reason `GET /state` answers only a session or viewer token for
