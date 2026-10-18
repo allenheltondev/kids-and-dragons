@@ -298,33 +298,42 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         };
       }
       const later = new Date(Date.now() + DAY).toISOString();
+      const ben = { cognitoSub: "sub_b", email: "b@example.com", addedAt: "2026-07-04T18:00:00.000Z" };
+      const eve = { cognitoSub: "sub_e", addedAt: "2026-07-04T18:00:00.000Z" };
 
-      it("is spent exactly once", async () => {
+      it("is spent exactly once, and makes whoever spends it an owner in the same write", async () => {
         expect(await repo.putOrganizerInviteIfAbsent(invite("ABCDEFGHJK", later))).toBe(true);
         const nowIso = new Date().toISOString();
-        expect(await repo.takeOrganizerInvite("ABCDEFGHJK", nowIso)).toEqual(invite("ABCDEFGHJK", later));
-        expect(await repo.takeOrganizerInvite("ABCDEFGHJK", nowIso)).toBeNull();
+        expect(await repo.redeemOrganizerInvite("ABCDEFGHJK", nowIso, ben)).toEqual(invite("ABCDEFGHJK", later));
+        expect(await repo.listHouseholdsForAccount("sub_b")).toEqual(["h_g"]);
+        expect(await repo.listOwners("h_g")).toEqual([{ ...ben, householdId: "h_g" }]);
+
+        expect(await repo.redeemOrganizerInvite("ABCDEFGHJK", nowIso, eve)).toBeNull();
+        expect(await repo.listHouseholdsForAccount("sub_e")).toEqual([]);
       });
 
       it("reads a code in any case", async () => {
         await repo.putOrganizerInviteIfAbsent(invite("ABCDEFGHJK", later));
-        expect((await repo.takeOrganizerInvite("abcdefghjk", new Date().toISOString()))?.householdId).toBe("h_g");
+        expect((await repo.redeemOrganizerInvite("abcdefghjk", new Date().toISOString(), ben))?.householdId).toBe("h_g");
       });
 
       it("refuses a code that is already taken", async () => {
         expect(await repo.putOrganizerInviteIfAbsent(invite("ABCDEFGHJK", later))).toBe(true);
         expect(await repo.putOrganizerInviteIfAbsent({ ...invite("ABCDEFGHJK", later), householdId: "h_x" })).toBe(false);
-        expect((await repo.takeOrganizerInvite("ABCDEFGHJK", new Date().toISOString()))?.householdId).toBe("h_g");
+        expect((await repo.redeemOrganizerInvite("ABCDEFGHJK", new Date().toISOString(), ben))?.householdId).toBe("h_g");
       });
 
-      it("will not spend an invite past its expiry, even before it is swept", async () => {
+      it("will not spend an invite past its expiry, even before it is swept, and writes nothing", async () => {
         const expiresAt = new Date(Date.now() + HOUR).toISOString();
         await repo.putOrganizerInviteIfAbsent(invite("ABCDEFGHJK", expiresAt));
-        expect(await repo.takeOrganizerInvite("ABCDEFGHJK", new Date(Date.now() + 2 * HOUR).toISOString())).toBeNull();
+        const late = new Date(Date.now() + 2 * HOUR).toISOString();
+        expect(await repo.redeemOrganizerInvite("ABCDEFGHJK", late, ben)).toBeNull();
+        expect(await repo.listHouseholdsForAccount("sub_b")).toEqual([]);
+        expect(await repo.listOwners("h_g")).toEqual([]);
       });
 
       it("knows nothing of a code never issued", async () => {
-        expect(await repo.takeOrganizerInvite("ZZZZZZZZZZ", new Date().toISOString())).toBeNull();
+        expect(await repo.redeemOrganizerInvite("ZZZZZZZZZZ", new Date().toISOString(), ben)).toBeNull();
       });
     });
 
@@ -1189,10 +1198,12 @@ if (!endpoint) {
     client.destroy();
   });
 
-  contract("DynamoRepository", async () => {
-    // A fresh table per test: DynamoDB has no truncate, and a suite that leaks
-    // rows between cases fails in an order-dependent way that is miserable to
-    // read. Creation is milliseconds against the local jar.
+  /**
+   * A fresh table per test: DynamoDB has no truncate, and a suite that leaks
+   * rows between cases fails in an order-dependent way that is miserable to
+   * read. Creation is milliseconds against the local jar.
+   */
+  async function freshTable(): Promise<string> {
     const tableName = `kad-test-${process.pid}-${n++}`;
     await client.send(
       new CreateTableCommand({
@@ -1220,6 +1231,56 @@ if (!endpoint) {
         ],
       }),
     );
-    return new DynamoRepository({ tableName, client });
+    return tableName;
+  }
+
+  contract("DynamoRepository", async () => new DynamoRepository({ tableName: await freshTable(), client }));
+
+  describe("DynamoRepository — an invite redemption that fails part-way (#248)", () => {
+    it("spends nothing: the code still works, and nobody was made an owner", async () => {
+      const tableName = await freshTable();
+      // Its own client, so the fault below reaches no other test.
+      const faulty = new DynamoDBClient({
+        endpoint,
+        region: process.env.AWS_REGION ?? "us-east-1",
+        credentials: { accessKeyId: "local", secretAccessKey: "local" },
+      });
+      let failing = true;
+      // The membership write fails on its way to the table: a throttle, a
+      // dropped connection, a Lambda that times out.
+      faulty.middlewareStack.add(
+        (next, context) => async (args) => {
+          if (failing && context.commandName === "TransactWriteItemsCommand") {
+            throw Object.assign(new Error("throttled"), { name: "ThrottlingException" });
+          }
+          return next(args);
+        },
+        { step: "initialize", name: "injectTransactFault" },
+      );
+      const repo = new DynamoRepository({ tableName, client: faulty });
+      const expiresAt = new Date(Date.now() + DAY).toISOString();
+      await repo.putOrganizerInviteIfAbsent({
+        code: "ABCDEFGHJK",
+        householdId: "h_g",
+        createdBy: "sub_a",
+        createdAt: new Date().toISOString(),
+        expiresAt,
+        ttl: Math.floor(Date.parse(expiresAt) / 1000),
+      });
+      const ben = { cognitoSub: "sub_b", addedAt: new Date().toISOString() };
+
+      try {
+        await expect(repo.redeemOrganizerInvite("ABCDEFGHJK", new Date().toISOString(), ben)).rejects.toThrow("throttled");
+      } finally {
+        failing = false;
+      }
+
+      expect(await repo.listHouseholdsForAccount("sub_b")).toEqual([]);
+      expect(await repo.listOwners("h_g")).toEqual([]);
+      // The same grown-up tries again, and it works.
+      expect((await repo.redeemOrganizerInvite("ABCDEFGHJK", new Date().toISOString(), ben))?.householdId).toBe("h_g");
+      expect(await repo.listHouseholdsForAccount("sub_b")).toEqual(["h_g"]);
+      faulty.destroy();
+    });
   });
 }

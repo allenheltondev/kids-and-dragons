@@ -622,18 +622,27 @@ has nothing extra to undo.
   (`POST /api/organizer/invite`): ten letters from the room-code alphabet,
   single use, three days. The other adult signs in, taps "Run a group", and
   types it (`POST /api/organizer/invite/accept`). Redeeming needs a verified
-  sign-in, and wrong codes are counted against the account.
+  sign-in, and wrong codes are counted against the account. Spending the code
+  and writing the new owner's two rows are **one transaction**, so a failed
+  write never spends a code without the membership it pays for; trying again
+  is the whole recovery.
 - **Owners manage profiles** (`/api/organizer/*`, `handlers/organizer.ts`):
   start a group, rename it, add a kid ahead of the first game, rename one, see
   each kid's heroes, and retire a kid who stopped coming. A retired profile is
   off every picker, cannot be seated or adopted, and its own phone's binding is
-  revoked; its heroes stay, and an owner can bring it back.
+  revoked. A room session already issued would outlive all of that, so retiring
+  also takes the kid out of every room the household has open, onto the same
+  `RunState.removed` a host's Remove writes, which every action, join and
+  channel check refuses. Its heroes stay, and an owner can bring it back.
 - **Kids never sign in.** They reach their profiles through the group's shared
   tablet or their own phone, exactly as before.
 - **An account with more than one household is asked which**, never guessed
-  for: signing in on a new phone (`linkAccount` returns `households` and takes a
-  `householdId`) and making a tablet shared (`shareDevice` takes a
-  `householdId`, and refuses to pick when there is more than one).
+  for: signing in (`linkAccount` answers `householdId: null` with the list in
+  `households` unless the phone already plays in one of them, and takes a
+  `householdId` on the second ask) and making a tablet shared (`shareDevice`
+  takes a `householdId`, and refuses to pick when there is more than one).
+  Keeping tonight's guest game from the end-of-chapter offer is unaffected: it
+  names its household by the phone that started it.
 - **The organizer panel keeps nobody signed in.** The id token lives in memory
   while it is open, and closing it drops the token, because the device is often
   one the kids pick up next.

@@ -558,7 +558,7 @@ describe("an account with more than one household (#248)", () => {
   it("asks which household a new phone is for, then who is holding it", async () => {
     const linkAccount = vi
       .fn()
-      .mockResolvedValueOnce({ ...LINKED, claimed: false, deviceBound: false, households: TWO })
+      .mockResolvedValueOnce({ householdId: null, claimed: false, deviceBound: false, households: TWO, players: [], characters: [] })
       .mockResolvedValueOnce({
         householdId: "h_club",
         claimed: false,
@@ -586,6 +586,21 @@ describe("an account with more than one household (#248)", () => {
     await store.getState().choosePlayer("p_9");
     expect(api.adoptDevice).toHaveBeenCalledWith("id_tok", "h_club", "p_9");
     expect(loadAccount(storage)?.householdId).toBe("h_club");
+  });
+
+  it("asks on the end-of-chapter offer too, when the server cannot keep tonight's game", async () => {
+    const linkAccount = vi
+      .fn()
+      .mockResolvedValueOnce({ householdId: null, claimed: false, deviceBound: false, households: TWO, players: [], characters: [] })
+      .mockResolvedValueOnce({ ...LINKED, householdId: "h_1", claimed: false, deviceBound: true, households: TWO });
+    const { store, storage } = setup({ api: { linkAccount } });
+    await store.getState().check();
+    store.getState().open("keep", "home");
+    await signIn(store);
+    expect(store.getState().step).toBe("household");
+    await store.getState().chooseHousehold("h_1");
+    expect(store.getState().step).toBe("kept");
+    expect(loadAccount(storage)?.householdId).toBe("h_1");
   });
 
   it("does not ask when the phone is already somebody in the household signed in to", async () => {

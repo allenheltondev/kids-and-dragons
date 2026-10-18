@@ -102,7 +102,11 @@ export interface ClientConfig {
 
 /** What `POST /api/auth/link` gives back — architecture §4.5. */
 export interface LinkAccountResponse {
-  householdId: string;
+  /**
+   * `null` when the account owns more than one household and nothing said
+   * which (#248): `households` lists them, and the client asks.
+   */
+  householdId: string | null;
   /** True when a guest household just became permanent. The thing worth saying. */
   claimed: boolean;
   players: { id: string; displayName: string; color: string }[];

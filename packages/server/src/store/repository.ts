@@ -320,11 +320,18 @@ export interface GameRepository {
   /** A new organizer invite. `false`, and nothing written, if the code is taken. */
   putOrganizerInviteIfAbsent(invite: OrganizerInviteRecord): Promise<boolean>;
   /**
-   * Spend an invite: delete it and return it, in one conditional write, so of
-   * two grown-ups typing one code exactly one gets it. `null` for a code that
-   * was never issued, is spent, or has expired (`nowIso` past `expiresAt`).
+   * Redeem an invite: spend it and make `owner` an owner of its household
+   * (both halves of `putOwner`), in **one transaction**. A code is never spent
+   * without the membership it pays for, so a failure leaves it redeemable, and
+   * of two grown-ups typing one code exactly one gets it. `null`, and nothing
+   * written, for a code that was never issued, is spent, or has expired
+   * (`nowIso` past `expiresAt`).
    */
-  takeOrganizerInvite(code: string, nowIso: string): Promise<OrganizerInviteRecord | null>;
+  redeemOrganizerInvite(
+    code: string,
+    nowIso: string,
+    owner: Omit<HouseholdOwnerRecord, "householdId">,
+  ): Promise<OrganizerInviteRecord | null>;
 
   /**
    * Claim a guest household for a signed-in account (§4.5). Writes the

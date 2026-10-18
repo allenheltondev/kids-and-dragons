@@ -574,23 +574,59 @@ export class DynamoRepository implements GameRepository {
     }
   }
 
-  async takeOrganizerInvite(code: string, nowIso: string): Promise<OrganizerInviteRecord | null> {
+  async redeemOrganizerInvite(
+    code: string,
+    nowIso: string,
+    owner: Omit<HouseholdOwnerRecord, "householdId">,
+  ): Promise<OrganizerInviteRecord | null> {
+    // Read first, for the household the membership rows name. The transaction
+    // re-checks everything the read decided, so a code spent in between loses.
+    const invite = (await this.get(INVITE(code), META))?.data as OrganizerInviteRecord | undefined;
+    if (!invite || invite.expiresAt <= nowIso) return null;
+    const row: HouseholdOwnerRecord = { ...owner, householdId: invite.householdId };
     try {
-      const out = await this.doc.send(
-        new DeleteCommand({
-          TableName: this.table,
-          Key: { PK: INVITE(code), SK: META },
-          // Spent and expired in one condition: TTL deletion is eventual, so an
-          // expired invite can still be sitting there for a day or two.
-          ConditionExpression: "attribute_exists(PK) AND #d.#exp > :now",
-          ExpressionAttributeNames: { "#d": "data", "#exp": "expiresAt" },
-          ExpressionAttributeValues: { ":now": nowIso },
-          ReturnValues: "ALL_OLD",
+      await this.doc.send(
+        new TransactWriteCommand({
+          TransactItems: [
+            {
+              Delete: {
+                TableName: this.table,
+                Key: { PK: INVITE(code), SK: META },
+                // Spent and expired in one condition: TTL deletion is eventual,
+                // so an expired invite can still be sitting there for a day or two.
+                ConditionExpression: "attribute_exists(PK) AND #d.#exp > :now AND #d.#hh = :hh",
+                ExpressionAttributeNames: { "#d": "data", "#exp": "expiresAt", "#hh": "householdId" },
+                ExpressionAttributeValues: { ":now": nowIso, ":hh": invite.householdId },
+              },
+            },
+            {
+              Put: {
+                TableName: this.table,
+                Item: {
+                  PK: HH(row.householdId),
+                  SK: OWNER_SK(row.cognitoSub),
+                  entity: "owner",
+                  data: row,
+                } satisfies TableItem,
+              },
+            },
+            {
+              Put: {
+                TableName: this.table,
+                Item: {
+                  PK: ACCT(row.cognitoSub),
+                  SK: HH(row.householdId),
+                  entity: "account",
+                  data: { cognitoSub: row.cognitoSub, householdId: row.householdId },
+                } satisfies TableItem,
+              },
+            },
+          ],
         }),
       );
-      return ((out.Attributes as TableItem | undefined)?.data as OrganizerInviteRecord | undefined) ?? null;
+      return invite;
     } catch (err) {
-      if (isConditionalFailure(err)) return null;
+      if (isTransactionCancelled(err)) return null;
       throw err;
     }
   }
