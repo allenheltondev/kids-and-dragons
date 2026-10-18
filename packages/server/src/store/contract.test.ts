@@ -399,6 +399,242 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
       });
     });
 
+    describe("moving a kid to another home (#251)", () => {
+      const T = "2026-07-04T18:00:00.000Z";
+      const later = () => new Date(Date.now() + DAY).toISOString();
+      const nowIso = () => new Date().toISOString();
+      const forwardTtl = () => Math.floor((Date.now() + 31 * DAY) / 1000);
+
+      function code(overrides: Partial<{ code: string; householdId: string; playerId: string; expiresAt: string }> = {}) {
+        const expiresAt = overrides.expiresAt ?? later();
+        return {
+          code: "MOVEHERNOW",
+          householdId: "h_club",
+          playerId: "p_ada",
+          createdBy: "sub_leader",
+          createdAt: T,
+          ttl: Math.floor(Date.parse(expiresAt) / 1000),
+          ...overrides,
+          expiresAt,
+        };
+      }
+
+      function hero(id: string, ownerPlayerId: string, level = 1): Character {
+        return {
+          ...character(id, "h_club"),
+          ownerPlayerId,
+          committed: { ...character(id).committed, level, xp: level * 300 },
+        };
+      }
+
+      /** A club with Ada (two heroes, her phone, a dead phone, a find), Bo, and the club tablet. */
+      async function club(): Promise<void> {
+        await repo.putHousehold(household({ id: "h_club", displayName: "Dragon Club", ownerSub: "sub_leader" }));
+        await repo.putHousehold(household({ id: "h_home", displayName: "Ada's house", ownerSub: "sub_mum" }));
+        await repo.putPlayer({ ...player("p_ada", "h_club"), displayName: "Ada", retired: true });
+        await repo.putPlayer({ ...player("p_bo", "h_club"), displayName: "Bo" });
+        await repo.putCharacter(hero("c_spark", "p_ada", 3));
+        await repo.putCharacter(hero("c_moth", "p_ada"));
+        await repo.putCharacter(hero("c_bo", "p_bo"));
+        await repo.putDevice({ deviceId: "d_ada", householdId: "h_club", playerId: "p_ada", tokenHash: "h1", lastSeen: T });
+        await repo.putDevice({ deviceId: "d_old", householdId: "h_club", playerId: "p_ada", tokenHash: "h2", lastSeen: T, revoked: true });
+        await repo.putDevice({ deviceId: "d_bo", householdId: "h_club", playerId: "p_bo", tokenHash: "h3", lastSeen: T });
+        await repo.putDevice({ kind: "shared", deviceId: "d_tab", householdId: "h_club", tokenHash: "h4", lastSeen: T });
+        await repo.recordDiscoveries("h_club", [
+          { canonId: "moth", playerId: "p_ada", runId: "r_1", foundAt: T },
+          { canonId: "newt", playerId: "p_bo", foundAt: T },
+        ]);
+        await repo.putRun({ id: "r_1", householdId: "h_club", roomCode: "ABCD", campaignId: "gemfall", status: "complete", createdAt: T });
+        await repo.putCampaignProgress({ householdId: "h_club", campaignId: "gemfall", status: "active", setbacks: 1, updatedAt: T });
+        expect(await repo.putTransferCodeIfAbsent(code())).toBe(true);
+      }
+
+      async function move(to: Parameters<GameRepository["moveProfile"]>[0]["to"], at = nowIso()) {
+        const read = await repo.readProfileMove("h_club", "p_ada");
+        if (!read) throw new Error("Ada is not in the club");
+        return repo.moveProfile({ move: read, code: "MOVEHERNOW", nowIso: at, to, forwardTtl: forwardTtl() });
+      }
+
+      it("reads what is hers and nothing else", async () => {
+        await club();
+        const read = await repo.readProfileMove("h_club", "p_ada");
+        expect(read?.player.displayName).toBe("Ada");
+        expect(read?.characters.map((c) => c.id).sort()).toEqual(["c_moth", "c_spark"]);
+        expect(read?.devices.map((d) => d.deviceId).sort()).toEqual(["d_ada", "d_old"]);
+        expect(Object.keys(read?.finds ?? {})).toEqual(["moth"]);
+        expect(await repo.readProfileMove("h_club", "p_nobody")).toBeNull();
+      });
+
+      it("moves her profile, heroes, phone and finds, with every id unchanged, and leaves the table's save", async () => {
+        await club();
+        await repo.recordDiscoveries("h_home", [{ canonId: "owl", playerId: "p_sis", foundAt: T }]);
+        expect(await move({ householdId: "h_home" })).toBe("moved");
+
+        // She lives at home now, back on the pickers.
+        const ada = await repo.getPlayer("h_home", "p_ada");
+        expect(ada).toMatchObject({ id: "p_ada", householdId: "h_home", displayName: "Ada" });
+        expect(ada?.retired).toBeUndefined();
+        expect((await repo.getCharacter("h_home", "c_spark"))?.committed.level).toBe(3);
+        expect((await repo.getCharacter("h_home", "c_spark"))?.householdId).toBe("h_home");
+        expect((await repo.listCharacters("h_home")).map((c) => c.id).sort()).toEqual(["c_moth", "c_spark"]);
+        expect(await repo.getDevice("h_home", "d_ada")).toMatchObject({ householdId: "h_home", playerId: "p_ada", tokenHash: "h1" });
+        expect(await repo.getDeviceById("d_ada")).toMatchObject({ householdId: "h_home" });
+        expect((await repo.getFieldGuide("h_home")).entries).toEqual({
+          owl: { firstFoundBy: "p_sis", foundAt: T },
+          moth: { firstFoundBy: "p_ada", foundAt: T, runId: "r_1" },
+        });
+
+        // Gone from the club: a move, never a copy.
+        expect(await repo.getPlayer("h_club", "p_ada")).toBeNull();
+        expect(await repo.getCharacter("h_club", "c_spark")).toBeNull();
+        expect((await repo.listCharacters("h_club")).map((c) => c.id)).toEqual(["c_bo"]);
+        expect(await repo.getDevice("h_club", "d_ada")).toBeNull();
+        // Her dead phone is dropped, not carried.
+        expect(await repo.getDevice("h_club", "d_old")).toBeNull();
+        expect(await repo.getDevice("h_home", "d_old")).toBeNull();
+        // Her old token finds her binding by key.
+        expect(await repo.getMovedDevice("h_club", "d_ada")).toBe("h_home");
+        expect(await repo.getMovedDevice("h_club", "d_bo")).toBeNull();
+
+        // Everybody else, the tablet, the table's book and its save stay.
+        expect((await repo.listPlayers("h_club")).map((p) => p.id)).toEqual(["p_bo"]);
+        expect((await repo.listDevices("h_club")).map((d) => d.deviceId).sort()).toEqual(["d_bo", "d_tab"]);
+        expect(Object.keys((await repo.getFieldGuide("h_club")).entries).sort()).toEqual(["moth", "newt"]);
+        expect(await repo.getRun("r_1")).toMatchObject({ householdId: "h_club" });
+        expect(await repo.getCampaignProgress("h_club", "gemfall")).toMatchObject({ setbacks: 1 });
+        expect(await repo.listCampaignProgress("h_home")).toEqual([]);
+
+        // The code is spent.
+        expect(await repo.getTransferCode("MOVEHERNOW", nowIso())).toBeNull();
+      });
+
+      it("moves her into a brand-new home owned by whoever redeemed it", async () => {
+        await club();
+        const home = household({ id: "h_new", displayName: "Ada's household", ownerSub: "sub_dad" });
+        const owner = { householdId: "h_new", cognitoSub: "sub_dad", email: "dad@example.com", addedAt: T };
+        expect(await move({ household: home, owner })).toBe("moved");
+
+        expect(await repo.getHousehold("h_new")).toEqual(home);
+        expect(await repo.listHouseholdsForAccount("sub_dad")).toEqual(["h_new"]);
+        expect(await repo.listOwners("h_new")).toEqual([owner]);
+        expect((await repo.listCharacters("h_new")).map((c) => c.id).sort()).toEqual(["c_moth", "c_spark"]);
+        expect(Object.keys((await repo.getFieldGuide("h_new")).entries)).toEqual(["moth"]);
+      });
+
+      it("keeps the first finder in her new home's book", async () => {
+        await club();
+        await repo.recordDiscoveries("h_home", [{ canonId: "moth", playerId: "p_sis", foundAt: "2026-01-01T00:00:00.000Z" }]);
+        expect(await move({ householdId: "h_home" })).toBe("moved");
+        expect((await repo.getFieldGuide("h_home")).entries["moth"]?.firstFoundBy).toBe("p_sis");
+      });
+
+      it("is spent exactly once", async () => {
+        await club();
+        const read = await repo.readProfileMove("h_club", "p_ada");
+        if (!read) throw new Error("no Ada");
+        const input = { move: read, code: "MOVEHERNOW", nowIso: nowIso(), forwardTtl: forwardTtl() };
+        expect(await repo.moveProfile({ ...input, to: { householdId: "h_home" } })).toBe("moved");
+        await repo.putHousehold(household({ id: "h_other", ownerSub: "sub_eve" }));
+        expect(await repo.moveProfile({ ...input, to: { householdId: "h_other" } })).toBe("spent");
+        expect(await repo.getPlayer("h_other", "p_ada")).toBeNull();
+      });
+
+      it("refuses an expired code, or one for somebody else, and moves nothing", async () => {
+        await club();
+        expect(await move({ householdId: "h_home" }, new Date(Date.now() + 2 * DAY).toISOString())).toBe("spent");
+        expect(await repo.getTransferCode("MOVEHERNOW", new Date(Date.now() + 2 * DAY).toISOString())).toBeNull();
+
+        await repo.putTransferCodeIfAbsent(code({ code: "FORBOBONLY", playerId: "p_bo" }));
+        const read = await repo.readProfileMove("h_club", "p_ada");
+        if (!read) throw new Error("no Ada");
+        const outcome = await repo.moveProfile({
+          move: read,
+          code: "FORBOBONLY",
+          nowIso: nowIso(),
+          to: { householdId: "h_home" },
+          forwardTtl: forwardTtl(),
+        });
+        expect(outcome).toBe("spent");
+        expect(await repo.getPlayer("h_club", "p_ada")).not.toBeNull();
+        expect(await repo.listCharacters("h_home")).toEqual([]);
+        expect(await repo.getTransferCode("FORBOBONLY", nowIso())).not.toBeNull();
+      });
+
+      it("cancels, moving nothing and spending nothing, when a hero changed since the read", async () => {
+        await club();
+        const read = await repo.readProfileMove("h_club", "p_ada");
+        if (!read) throw new Error("no Ada");
+        // A level lands between the read and the move.
+        await repo.putCharacter(hero("c_spark", "p_ada", 4));
+        const input = { code: "MOVEHERNOW", nowIso: nowIso(), to: { householdId: "h_home" }, forwardTtl: forwardTtl() };
+        expect(await repo.moveProfile({ ...input, move: read })).toBe("changed");
+        expect(await repo.getPlayer("h_home", "p_ada")).toBeNull();
+        expect(await repo.listCharacters("h_home")).toEqual([]);
+        expect(await repo.getTransferCode("MOVEHERNOW", nowIso())).not.toBeNull();
+
+        // Read again, and the level comes with her.
+        const fresh = await repo.readProfileMove("h_club", "p_ada");
+        if (!fresh) throw new Error("no Ada");
+        expect(await repo.moveProfile({ ...input, move: fresh })).toBe("moved");
+        expect((await repo.getCharacter("h_home", "c_spark"))?.committed.level).toBe(4);
+      });
+
+      it("cancels when the home she is going to is gone", async () => {
+        await club();
+        expect(await move({ householdId: "h_nowhere" })).toBe("changed");
+        expect(await repo.getPlayer("h_club", "p_ada")).not.toBeNull();
+      });
+
+      it("refuses a move bigger than one transaction, and moves nothing", async () => {
+        await club();
+        for (let i = 0; i < 48; i++) await repo.putCharacter(hero(`c_${String(i).padStart(2, "0")}`, "p_ada"));
+        expect(await move({ householdId: "h_home" })).toBe("too-big");
+        expect(await repo.getPlayer("h_club", "p_ada")).not.toBeNull();
+        expect(await repo.getTransferCode("MOVEHERNOW", nowIso())).not.toBeNull();
+      });
+
+      it("can move her again, and back", async () => {
+        await club();
+        expect(await move({ householdId: "h_home" })).toBe("moved");
+        await repo.putTransferCodeIfAbsent(code({ code: "BACKTOCLUB", householdId: "h_home" }));
+        const back = await repo.readProfileMove("h_home", "p_ada");
+        if (!back) throw new Error("no Ada");
+        const input = { nowIso: nowIso(), forwardTtl: forwardTtl() };
+        expect(await repo.moveProfile({ ...input, move: back, code: "BACKTOCLUB", to: { householdId: "h_club" } })).toBe("moved");
+        expect(await repo.getDevice("h_club", "d_ada")).toMatchObject({ householdId: "h_club" });
+        expect(await repo.getMovedDevice("h_home", "d_ada")).toBe("h_club");
+
+        // Out of the club a second time: the forward it left last time is written over.
+        await repo.putTransferCodeIfAbsent(code({ code: "SECONDMOVE" }));
+        const again = await repo.readProfileMove("h_club", "p_ada");
+        if (!again) throw new Error("no Ada");
+        expect(await repo.moveProfile({ ...input, move: again, code: "SECONDMOVE", to: { householdId: "h_home" } })).toBe("moved");
+        expect(await repo.getMovedDevice("h_club", "d_ada")).toBe("h_home");
+      });
+
+      it("will not let a write from a read before the move bring a hero back to her old home", async () => {
+        await club();
+        const stale = await repo.getCharacter("h_club", "c_spark");
+        if (!stale) throw new Error("no hero");
+        expect(await move({ householdId: "h_home" })).toBe("moved");
+        const late = await repo.writeCharacter({
+          character: { ...stale, committed: { ...stale.committed, xp: 9999 } },
+          expectedVersion: stale.version ?? 0,
+          expectedClaim: stale.provisional?.runId ?? null,
+        });
+        expect(late).toBe(false);
+        expect(await repo.getCharacter("h_club", "c_spark")).toBeNull();
+        expect((await repo.getCharacter("h_home", "c_spark"))?.committed.xp).toBe(900);
+      });
+
+      it("refuses a transfer code that is already taken, and reads one in any case", async () => {
+        expect(await repo.putTransferCodeIfAbsent(code())).toBe(true);
+        expect(await repo.putTransferCodeIfAbsent(code({ playerId: "p_bo" }))).toBe(false);
+        expect((await repo.getTransferCode("movehernow", nowIso()))?.playerId).toBe("p_ada");
+        expect(await repo.getTransferCode("ZZZZZZZZZZ", nowIso())).toBeNull();
+      });
+    });
+
     describe("guest households", () => {
       it("lists only guests whose expiry has passed", async () => {
         const now = Date.now();

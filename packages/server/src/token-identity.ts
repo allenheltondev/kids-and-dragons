@@ -41,6 +41,7 @@ import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { GetParameterCommand, PutParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
 import {
   hashToken,
+  movedBinding,
   type DeviceIdentity,
   type IdentityService,
   type IssueDeviceTokenInput,
@@ -188,9 +189,13 @@ export class TokenIdentity implements IdentityService {
      * copy from before the revocation. The token carries the household, so the
      * key is right there in the claims.
      */
-    const binding = await this.repo.getDevice(claims.hh, claims.sub);
+    const here = await this.repo.getDevice(claims.hh, claims.sub);
+    // A kid who moved home took this binding with her (#251). The token names
+    // the household she left, so a binding found by following her is the only
+    // one allowed to name a different one.
+    const binding = here ?? (await movedBinding(this.repo, claims.hh, claims.sub));
     if (!binding || binding.revoked || binding.kind === "shared") return null;
-    if (binding.householdId !== claims.hh) return null;
+    if (here && binding.householdId !== claims.hh) return null;
     if (binding.playerId !== claims.pid) return null;
 
     // Re-issuing writes `lastSeen` as a side effect, so a rotation does not

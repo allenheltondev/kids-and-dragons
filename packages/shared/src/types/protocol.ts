@@ -590,6 +590,29 @@ export interface OrganizerInvite {
 }
 
 /**
+ * `POST /api/organizer/transfer`: a single-use code that moves one kid, her
+ * heroes and her Field Guide finds to another home (#251). Shown as a QR and
+ * as the same ten letters an organizer invite uses.
+ */
+export interface TransferCode {
+  code: string;
+  expiresAt: string;
+  playerId: string;
+  /** The kid it moves, so the screen can say whose code it is. */
+  displayName: string;
+}
+
+/** `POST /api/organizer/transfer/accept`: she lives here now. */
+export interface TransferAccepted {
+  /** Her new home: the household named, or the one just made for her. */
+  household: OrganizerHouseholdSummary;
+  /** Unchanged by the move, like every id under it. */
+  playerId: string;
+  displayName: string;
+  heroes: number;
+}
+
+/**
  * `POST /api/pair/code` and `POST /api/organizer/players/pair` (#281): a
  * one-time code that makes the device redeeming it a kid. Single use, about
  * ten minutes.

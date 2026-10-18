@@ -1493,6 +1493,8 @@ describe("/api/organizer/* (#248)", () => {
       ["POST", "/api/organizer/players/pair"],
       ["POST", "/api/organizer/invite"],
       ["POST", "/api/organizer/invite/accept"],
+      ["POST", "/api/organizer/transfer"],
+      ["POST", "/api/organizer/transfer/accept"],
       ["POST", "/api/organizer/owners/remove"],
       ["POST", "/api/organizer/heroes/leave"],
     ] as const) {

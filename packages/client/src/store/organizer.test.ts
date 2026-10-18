@@ -31,6 +31,18 @@ function setup(households = [{ id: "h_club", displayName: "Thursday Club", playe
     createOrganizerInvite: vi.fn(async () => ({ code: "ABCDEFGHJK", expiresAt: "2026-07-07T18:00:00.000Z" })),
     acceptOrganizerInvite: vi.fn(async () => ({ id: "h_other", displayName: "Cousins", players: 3 })),
     removeOrganizer: vi.fn(async () => ({ householdId: "h_club", left: true })),
+    createTransferCode: vi.fn(async (_t: string, _h: string, playerId: string) => ({
+      code: "MOVEHERNOW",
+      expiresAt: "2026-07-05T18:00:00.000Z",
+      playerId,
+      displayName: "Ada",
+    })),
+    acceptTransfer: vi.fn(async (_t: string, _code: string, householdId?: string) => ({
+      household: { id: householdId ?? "h_ada", displayName: householdId ? "Thursday Club" : "Ada's household", players: 1 },
+      playerId: "p_ada",
+      displayName: "Ada",
+      heroes: 2,
+    })),
     pairProfile: vi.fn(async () => ({ code: "ABCDEFGH", expiresAt: "2026-07-04T18:10:00.000Z", playerName: "Posy" })),
   };
   return { store: createOrganizerStore(api as unknown as Api), api };
@@ -83,6 +95,32 @@ describe("the organizer store", () => {
     await store.getState().acceptInvite("ABCDE-FGHJK");
     expect(store.getState().view?.id).toBe("h_other");
     expect(store.getState().households.map((h) => h.id)).toEqual(["h_new", "h_other"]);
+  });
+
+  it("makes a move code for one kid of the household on screen (#251)", async () => {
+    const { store, api } = setup();
+    await store.getState().begin("id_tok", "ana@example.com");
+    await store.getState().makeTransfer("p_ada");
+    expect(api.createTransferCode).toHaveBeenCalledWith("id_tok", "h_club", "p_ada");
+    expect(store.getState().transfer).toMatchObject({ code: "MOVEHERNOW", displayName: "Ada" });
+    store.getState().dismissTransfer();
+    expect(store.getState().transfer).toBeNull();
+  });
+
+  it("takes a moving kid into a new home from the picker, and into the household on screen from there", async () => {
+    const { store, api } = setup([]);
+    await store.getState().begin("id_tok", "mum@example.com");
+    store.getState().setPendingMove("MOVEHERNOW");
+    await store.getState().acceptTransfer("MOVEH-ERNOW");
+    expect(api.acceptTransfer).toHaveBeenLastCalledWith("id_tok", "MOVEH-ERNOW", undefined);
+    expect(store.getState().view?.id).toBe("h_ada");
+    expect(store.getState().arrived).toMatchObject({ displayName: "Ada", heroes: 2 });
+    expect(store.getState().pendingMove).toBeNull();
+    expect(store.getState().households.map((h) => h.id)).toEqual(["h_ada"]);
+
+    await store.getState().openHousehold("h_club");
+    await store.getState().acceptTransfer("OTHERKIDCD");
+    expect(api.acceptTransfer).toHaveBeenLastCalledWith("id_tok", "OTHERKIDCD", "h_club");
   });
 
   it("goes back to the picker after leaving a group", async () => {

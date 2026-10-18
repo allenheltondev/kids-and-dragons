@@ -23,6 +23,8 @@
  * | Room             | ROOM#<code>     | META               |
  * | Code misses      | GUESS#<client>  | WINDOW#<n>         |
  * | Organizer invite | INVITE#<code>   | META               |
+ * | Transfer code    | TRANSFER#<code> | META               |
+ * | Moved device     | HH#<hhId>       | MOVED#<deviceId>   |
  * | Pairing code     | PAIR#<code>     | META               |
  *
  * GSI1 indexes devices by device id so a returning phone resolves to its
@@ -60,6 +62,21 @@ export const OWNER_SK = (cognitoSub: string) => `OWNER#${cognitoSub}`;
  * `ttl`, like a room: one row, and nothing else points at it.
  */
 export const INVITE = (code: string) => `INVITE#${code.toUpperCase()}`;
+
+/**
+ * A single-use code that moves one kid to another home (#251). Carries a
+ * `ttl`, like an invite: one row, and nothing else points at it.
+ */
+export const TRANSFER = (code: string) => `TRANSFER#${code.toUpperCase()}`;
+
+/**
+ * Where a moved kid's phone went (#251): left in the household she moved
+ * out of, naming the one she moved into. Her phone's token names the old
+ * household, and this is how it finds her binding by primary key, never by
+ * the index. Not under `DEVICE#`, so nothing that lists devices sees it.
+ * Carries a `ttl` no shorter than any token it could forward.
+ */
+export const MOVED_SK = (deviceId: string) => `MOVED#${deviceId}`;
 
 /**
  * A single-use code that makes a new device a kid (#281). Carries a `ttl`,

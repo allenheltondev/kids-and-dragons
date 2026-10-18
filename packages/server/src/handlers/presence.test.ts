@@ -13,6 +13,12 @@ async function seatedRoom() {
   if (!created.ok || !players[0]) throw new Error("setup failed");
   const principal = players[0].principal;
   await joinRoom({ code: created.value.code, principal }, harness.deps);
+  // The friends the tests seat beside them are household profiles too, as a
+  // join makes them: a seat with no profile behind it is a kid who moved
+  // away (#251), and every room door counts that as out.
+  for (const id of ["p_rosie", "p_reader"]) {
+    await harness.repo.putPlayer({ id, householdId, displayName: id.slice(2), color: "#7FD4C1" });
+  }
 
   // The test engine seats a member for any intent it does not understand, so
   // drive one accepted action to get a party to talk about.

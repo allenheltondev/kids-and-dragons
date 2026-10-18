@@ -24,6 +24,8 @@ import type {
   OrganizerHouseholdSummary,
   OrganizerHouseholdView,
   OrganizerInvite,
+  TransferAccepted,
+  TransferCode,
   PairingCode,
   PairingResult,
   RoomMode,
@@ -300,6 +302,10 @@ export interface Api {
   editHousehold(idToken: string, edit: OrganizerEdit): Promise<OrganizerHouseholdView>;
   createOrganizerInvite(idToken: string, householdId: string): Promise<OrganizerInvite>;
   acceptOrganizerInvite(idToken: string, code: string): Promise<OrganizerHouseholdSummary>;
+  /** A single-use code that moves one kid to another home (#251). */
+  createTransferCode(idToken: string, householdId: string, playerId: string): Promise<TransferCode>;
+  /** Redeem one: into `householdId`, which you own, or a new home when it is absent. */
+  acceptTransfer(idToken: string, code: string, householdId?: string): Promise<TransferAccepted>;
   /** Take a co-organizer off, or leave (`ownerId` is your own). */
   removeOrganizer(idToken: string, householdId: string, ownerId: string): Promise<{ householdId: string; left: boolean }>;
 
@@ -677,6 +683,24 @@ export const api: Api = {
       headers: JSON_HEADERS,
       token: idToken,
       body: JSON.stringify({ code }),
+    });
+  },
+
+  createTransferCode(idToken, householdId, playerId) {
+    return request<TransferCode>("/api/organizer/transfer", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ householdId, playerId }),
+    });
+  },
+
+  acceptTransfer(idToken, code, householdId) {
+    return request<TransferAccepted>("/api/organizer/transfer/accept", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify(householdId ? { code, householdId } : { code }),
     });
   },
 

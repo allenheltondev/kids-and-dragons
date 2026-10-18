@@ -117,6 +117,8 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Room | `ROOM#<code>` | `META` | 4-letter code → runId, mode (`party` \| `travel`). **TTL 6 hours.** A room open to visitors (#249) keeps this row; its longer code lives on the run (`RunState.visitorCode`). |
 | Code misses | `GUESS#<client>` | `WINDOW#<n>` | Wrong room codes from one client in one 15-minute window (§4.5, "Joining a session"). Wrong organizer codes are counted the same way, per account. **TTL one window past its own.** |
 | Organizer invite | `INVITE#<code>` | `META` | A single-use code that makes whoever signs in with it an owner of one household (§4.5, "Groups"). Spent by a conditional delete. **TTL 3 days.** |
+| Transfer code | `TRANSFER#<code>` | `META` | A single-use code that moves one kid to another home (§4.5, "Moving a kid"): → source household, playerId. Spent in the move's own transaction. **TTL 1 day.** |
+| Moved device | `HH#<hhId>` | `MOVED#<deviceId>` | Left in the household a kid moved out of, naming the one her phone's binding moved into, so a token minted before the move still finds it by primary key. Not under `DEVICE#`, so no device list sees it. **TTL 31 days**, past any token it could forward. |
 | Pairing code | `PAIR#<code>` | `META` | A single-use code that makes whoever redeems it a device bound to one kid (§4.5, "Pairing a new device"). Spent by a conditional delete. **TTL 10 minutes.** |
 
 GSI1 does three jobs, all of them lookups that would otherwise be scans:
@@ -252,6 +254,7 @@ Not every record needs a migration path, because most of them expire on their ow
 |---|---|---|
 | Room | 6 hours (TTL) | **No** — wait a day and every row is new |
 | Code misses | ≤ 30 minutes (TTL) | **No** — a counter nobody reads after its window |
+| Transfer code, moved-device forward | 1 day, 31 days (TTL) | **No** — a code is used or dead within a day, and a forward outlives only the tokens it serves |
 | Guest household and its contents | 7 days since last played, sliding | **No** — the sweeper handles it |
 | Device binding | 30 days, sliding | **No** — an unused phone re-pairs by QR |
 | `RunState`, events, chapter progress | one campaign | **Yes**, but only while it is in flight |
@@ -835,6 +838,7 @@ land, and the source for #252's "what we store" page.
 | Gameplay: choices, rolls, the event log | `RUN#` partition | Same |
 | Field Guide finds, credited to a profile | `FIELDGUIDE` row | Same |
 | Device binding: device id, user agent, last seen, token hash | `DEVICE#` row | Same, revocable |
+| A moved kid's device id → her new household | `MOVED#` row, in the household she left | 31 days (TTL) |
 | Long-lived device token, room session token | The device's own storage | Until it expires (30-day sliding, room's 6 hours) or is cleared |
 | Address (IPv4, or the IPv6 /64) as a wrong-code counter key | `GUESS#` row | About two 15-minute windows (TTL) |
 | Request logs (address, path, errors) | CloudWatch | Account-wide retention, set outside this repo (`infra/template.yaml`, "Logs") |
@@ -923,7 +927,8 @@ grown-up's call and removes her everywhere, her hero's record included.
    uses it. Pairing and the one-game rule land as their own issues.
 2. **Moving a kid (#251)** is changing her home household: her profile, her
    heroes and her finds move under the new one, ids unchanged, in one
-   transaction, behind a single-use code like an organizer invite.
+   transaction, behind a single-use code like an organizer invite. Built:
+   "Moving a kid" below.
 3. **Later, when two homes are real** (two households, grandparents who host):
    the profile and its heroes move to their own `PROFILE#<id>` partition, with
    a guardian link per grown-up who keeps her, and households become the
@@ -933,6 +938,90 @@ grown-up's call and removes her everywhere, her hero's record included.
 New work keeps to this split: a hero's own record is named by the kid's home,
 never by the room's household, and nothing new is added that only makes sense
 if the household owns the kid.
+
+#### Moving a kid: take your hero home (#251)
+
+A hero made at a club, a friend's house or a cousin's goes home with the kid
+who plays her. Moving a kid **changes her home household**, as staged above,
+and it is a move, never a copy, so there is never a question of which hero is
+the real one (`handlers/transfer.ts`).
+
+- **A single-use code, like an organizer invite.** A signed-in owner of her
+  home taps "Move home" on her row (`POST /api/organizer/transfer`): ten
+  letters from the room-code alphabet, shown as text and as a QR of
+  `/?move=<code>`, which opens "Run a group" with the code typed in. It works
+  once and lives a day. Making one refuses a hero mid-adventure (below).
+- **Redeeming needs a sign-in too** (`POST /api/organizer/transfer/accept`),
+  and wrong codes are counted against the account (`code-guard.ts`). From the
+  picker it takes her into a **brand-new home** owned by that account; from a
+  household the account owns, into that one. A name already on that
+  household's picker is refused ("rename one of them first"), and so is her
+  own home.
+- **What moves**, with every id unchanged: her `PLAYER#` row (back on the
+  pickers if a group had taken her off), every `CHAR#` row she owns, her
+  **live personal** device bindings, and the entries in the Field Guide she
+  found first, added to the new home's book with first-finder-wins. Rows move
+  as stored, `v` and all, so an old row migrates on its next read as any
+  other does (§3.2).
+- **What stays**: runs, chapter progress and `CAMPAIGN#` rows, because a save
+  is its table's; the old home's own Field Guide, because it is the table's
+  book too (her finds there stay credited to her, by an id it no longer
+  lists); its shared tablets; and her revoked bindings, which are dropped.
+- **One transaction.** `readProfileMove` reads her rows strongly
+  consistent, and `moveProfile` sends one TransactWriteItems
+  (`store/profile-move.ts` builds the plan both stores carry out): the code's
+  delete, conditioned on it being unexpired and naming her; a delete of each
+  of her rows conditioned on its `data` being **exactly the map read**, so a
+  level, a stat point or a claim landing in between cancels the move rather
+  than being flattened; a put of each under the new home, conditioned on the
+  key being free; a forward per moved phone; the new home's three rows when
+  she is going to a new one (`META`, `OWNER#`, `ACCT#`); and her finds. A
+  cancellation on the code is "used up or too old"; on anything else the
+  handler reads again and retries, up to three times. A move that fails
+  spends nothing, and trying again is the whole recovery.
+- **The 100-item limit.** That is 1 for the code, 2 for her profile, 2 per
+  hero, 3 per live phone, 1 per revoked one, 1 for her finds, and 1 for the
+  new home's check or 3 for its rows: room for well over 40 heroes, against
+  the handful a kid has. Past it, `planMove` refuses before writing anything
+  and she does not move ("more heroes and phones than one move can carry").
+  Splitting the move would break the guarantee that she is always in exactly
+  one home, so the answer past the limit is a bespoke migration (§3.2), not a
+  partial move.
+- **Her phone moves with her, and keeps working.** A personal binding is
+  hers, not the household's: it lands on her face with no picker, so the
+  phone that went to the club with her goes home with her. Revoking it would
+  leave her own phone a stranger in the home she just moved into, with
+  nothing gained, since whoever held it was already her. Its token still
+  names the old household, so the move leaves a `MOVED#` forward there, and
+  `resolveDevice` follows it **only on a miss**, by primary key, up to four
+  hops (`movedBinding` in identity.ts): the revocation check still reads the
+  binding itself, strongly consistent, never an index copy. Her new home can
+  revoke it like any other. The next sliding rotation mints a token naming the
+  new home; until then every resolve takes the forward, which lives longer
+  than any token minted before the move. A **shared tablet** is the
+  household's and stays.
+- **Not mid-campaign.** A hero whose `provisional` names an adventure still
+  in flight is that table's until it ends (the claim, above). Moving her would
+  strand the gains its last chapter commits or reverts. So making the code
+  and redeeming it both refuse while her claim is live (`claimIsLive`): a
+  bare campaign id names her home's attempt, and `<campaignId>@<table>`
+  names that visiting table's, which is the one read. The conditional delete
+  covers a claim taken between that check and the move, and a table's write
+  to her old row afterwards fails the claim's version condition on a row
+  that is gone, so it cannot bring her back there.
+- **Rooms she was seated in let her go.** A session or seat minted before
+  the move still names the home she left, and her profile is no longer
+  there. Every room door treats that as out (`isOut`, and the action door's
+  own profile read), the way a retired profile is: the profile is the
+  record. That holds at a visiting table in a household she never belonged
+  to, too, which nothing on her side could list. Redeeming also puts her on
+  the `removed` list of every room her old home has open
+  (`takeOutEverywhere`), so its screens show her gone; that is tidy-up only,
+  and a room it cannot write is logged, not retried.
+- **A pairing code her old home made is dead.** A pairing code (#281) names
+  her household and is re-read at redeem; after the move she is not there, so
+  it is refused rather than binding a device into either home. Her new home
+  pairs her anew.
 
 #### Recovery and revocation
 
