@@ -22,6 +22,8 @@ import { resetFieldGuideCache } from "./content";
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { setSpeaker } from "@kad/shared";
+import { setReadAloud } from "../speech";
 import { act, cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type {
@@ -355,6 +357,52 @@ describe("a choice", () => {
 // ---------------------------------------------------------------------------
 // Roll
 // ---------------------------------------------------------------------------
+
+describe("read-aloud on this phone (#261)", () => {
+  function readAloud(on: boolean) {
+    const said: Array<[string, unknown]> = [];
+    Object.defineProperty(window, "speechSynthesis", { value: { speak() {}, cancel() {}, getVoices: () => [] }, configurable: true });
+    vi.stubGlobal("SpeechSynthesisUtterance", class { constructor(public text: string) {} });
+    setReadAloud(on);
+    setSpeaker((text, opts) => void said.push([text, opts]));
+    return said;
+  }
+  afterEach(() => {
+    setReadAloud(false);
+    setSpeaker(null);
+    vi.unstubAllGlobals();
+    Reflect.deleteProperty(window, "speechSynthesis");
+  });
+
+  it("says its own choices once, without interrupting the story", () => {
+    const said = readAloud(true);
+    const { rerender } = mount({ prompt: choicePrompt() });
+    expect(said).toHaveLength(1);
+    expect(said[0]![0]).toContain("Take the east path");
+    expect(said[0]![1]).toMatchObject({ source: "choice" });
+    expect(said[0]![1]).not.toHaveProperty("interrupt", true);
+    rerender(<></>);
+    expect(said).toHaveLength(1);
+  });
+
+  it("puts a speaker beside each choice that reads just that choice, and picks nothing", async () => {
+    const user = userEvent.setup();
+    const said = readAloud(true);
+    const { sent } = mount({ prompt: choicePrompt() });
+    said.length = 0;
+    await user.click(screen.getByRole("button", { name: "Hear: Take the east path" }));
+    expect(said).toEqual([]); // the engine, not the seam, speaks a tap (hear)
+    expect(sent).toEqual([]);
+    expect(screen.queryByRole("button", { name: /Do it/ })?.hasAttribute("disabled") ?? true).toBe(true);
+  });
+
+  it("changes nothing when read-aloud is off: no speaker icons, nothing said", () => {
+    const said = readAloud(false);
+    mount({ prompt: choicePrompt() });
+    expect(said).toEqual([]);
+    expect(screen.queryByRole("button", { name: /^Hear:/ })).toBeNull();
+  });
+});
 
 describe("a roll", () => {
   const roll: Prompt = {

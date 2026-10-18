@@ -6,8 +6,9 @@
  * pane of Travel Mode. Container query units do both from one rule.
  *
  * spec §11: every line of narration and every choice label goes through
- * `speak()`. It is a no-op today; the point is that when it stops being one,
- * no game code changes.
+ * `speak()` (a no-op until a device turns read-aloud on, speech/read-aloud.ts).
+ * The shared surface speaks the story; the options are spoken by the phone
+ * that owns them (PlayerPanel).
  */
 
 import { useEffect, useRef } from "react";
@@ -116,15 +117,17 @@ export function NarrationPanel(): ReactElement | null {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sceneId, narration]);
 
-  const choiceText =
-    choices === null ? "" : [turnName === null ? null : `${turnName}'s turn.`, ...choices.map((c) => c.label)]
-      .filter((line): line is string => line !== null)
-      .join(". ");
+  /*
+   * Whose turn it is, and no more. The options themselves are read by the phone
+   * that owns them (PlayerPanel), so a table of phones does not hear every
+   * list twice; the shared screen announces only what is the room's business.
+   */
+  const choiceText = choices === null || turnName === null ? "" : `${turnName}'s turn.`;
   const spokenChoices = useRef<string | null>(null);
   useEffect(() => {
     if (choiceText === "" || spokenChoices.current === choiceText) return;
     spokenChoices.current = choiceText;
-    speak(choiceText, { source: "choice" });
+    speak(choiceText, { source: "prompt" });
   }, [choiceText]);
 
   const rollText = prompt !== null && prompt.kind === "roll" ? prompt.prompt : "";

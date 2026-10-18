@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { getSpeaker, setSpeaker, speak } from "./speak.js";
+import { getSpeaker, setSpeaker, speak, stopSpeaking } from "./speak.js";
 
 afterEach(() => setSpeaker(null));
 
@@ -37,5 +37,27 @@ describe("speak (spec §11)", () => {
       throw new Error("TTS engine exploded");
     });
     expect(() => speak("the shrine glints in the moss")).not.toThrow();
+  });
+});
+
+describe("cancelling", () => {
+  it("stopSpeaking asks the installed speaker to stop, and is silent without one", () => {
+    expect(() => stopSpeaking()).not.toThrow();
+    const cancel = vi.fn();
+    setSpeaker(Object.assign(vi.fn(), { cancel }));
+    stopSpeaking();
+    expect(cancel).toHaveBeenCalledTimes(1);
+  });
+
+  it("cuts the old speaker off when it is replaced or removed", () => {
+    const cancel = vi.fn();
+    setSpeaker(Object.assign(vi.fn(), { cancel }));
+    setSpeaker(null);
+    expect(cancel).toHaveBeenCalledTimes(1);
+  });
+
+  it("never lets a broken cancel throw", () => {
+    setSpeaker(Object.assign(vi.fn(), { cancel: () => { throw new Error("boom"); } }));
+    expect(() => stopSpeaking()).not.toThrow();
   });
 });
