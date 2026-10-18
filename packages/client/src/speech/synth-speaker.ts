@@ -33,9 +33,33 @@ export interface SynthSpeakerEnv {
 const DEFAULT_RATE = 0.92;
 const MAX_PIECE = 180;
 
-/** "One. Two! Three?" into pieces no longer than MAX_PIECE where a sentence allows. */
+/** One sentence into pieces within MAX_PIECE: at word boundaries, and mid-word only for a token that is itself too long. */
+function splitLong(sentence: string): string[] {
+  if (sentence.length <= MAX_PIECE) return [sentence];
+  const pieces: string[] = [];
+  let line = "";
+  const flush = (): void => {
+    if (line !== "") pieces.push(line);
+    line = "";
+  };
+  for (const word of sentence.split(" ")) {
+    if (word.length > MAX_PIECE) {
+      flush();
+      for (let at = 0; at < word.length; at += MAX_PIECE) pieces.push(word.slice(at, at + MAX_PIECE));
+    } else if (line === "") line = word;
+    else if (line.length + 1 + word.length <= MAX_PIECE) line += ` ${word}`;
+    else {
+      flush();
+      line = word;
+    }
+  }
+  flush();
+  return pieces;
+}
+
+/** "One. Two! Three?" into pieces no longer than MAX_PIECE, kept to sentence ends where a sentence allows. */
 export function sentencePieces(text: string): string[] {
-  const sentences = text.replace(/\s+/g, " ").trim().split(/(?<=[.!?…])\s+/).filter((s) => s !== "");
+  const sentences = text.replace(/\s+/g, " ").trim().split(/(?<=[.!?…])\s+/).filter((s) => s !== "").flatMap(splitLong);
   const pieces: string[] = [];
   for (const sentence of sentences) {
     const last = pieces[pieces.length - 1];

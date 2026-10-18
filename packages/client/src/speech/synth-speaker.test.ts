@@ -53,6 +53,24 @@ describe("sentencePieces", () => {
   });
 });
 
+describe("sentencePieces on long text", () => {
+  it("splits a long sentence with no punctuation at word boundaries", () => {
+    const text = Array.from({ length: 80 }, (_, i) => `word${String(i)}`).join(" ");
+    const pieces = sentencePieces(text);
+    expect(text.length).toBeGreaterThan(400);
+    expect(pieces.length).toBeGreaterThan(1);
+    expect(pieces.every((p) => p.length > 0 && p.length <= 180)).toBe(true);
+    expect(pieces.join(" ")).toBe(text);
+  });
+
+  it("hard-splits a single token longer than a piece, and keeps every piece within the limit", () => {
+    const text = `Hear ${"a".repeat(400)} now. ${"b".repeat(50)}`;
+    const pieces = sentencePieces(text);
+    expect(pieces.every((p) => p.length <= 180)).toBe(true);
+    expect(pieces.join("").replace(/ /g, "")).toBe(text.replace(/ /g, ""));
+  });
+});
+
 describe("createSynthSpeaker", () => {
   it("speaks at a gentle rate in US English", () => {
     const { synth, speaker } = setup();
