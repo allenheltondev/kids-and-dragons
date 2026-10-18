@@ -466,6 +466,21 @@ export interface JoinRoomResponse extends RoomHostFlag, KeeperFlag {
 }
 
 /**
+ * `POST /api/room/:code/visitors` (#249), with a signed-in owner's id token:
+ * open the room to phones from other households, or stop letting new ones in.
+ */
+export interface SetVisitorsRequest {
+  open: boolean;
+}
+
+export interface SetVisitorsResponse {
+  ok: true;
+  seq: number;
+  /** The code a visitor types, while the room is open (`RunState.visitorCode`). */
+  visitorCode?: string;
+}
+
+/**
  * One face on a shared tablet's "who's playing?" picker (#250): a household
  * profile, drawn as a big avatar with no typing.
  */
