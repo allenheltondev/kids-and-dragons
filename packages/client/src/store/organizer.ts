@@ -17,6 +17,8 @@ import type {
   OrganizerHouseholdSummary,
   OrganizerHouseholdView,
   OrganizerInvite,
+  TransferAccepted,
+  TransferCode,
   PairingCode,
 } from "@kad/shared";
 import { api as defaultApi, type Api, type OrganizerEdit } from "../sync/client";
@@ -38,6 +40,12 @@ export interface OrganizerStore {
   devices: OrganizerDevice[];
   /** The last code made for the household on screen, to read out or send. */
   invite: OrganizerInvite | null;
+  /** The last move code made on this screen, to show as a QR (#251). */
+  transfer: TransferCode | null;
+  /** The kid who just moved in, to say so. */
+  arrived: TransferAccepted | null;
+  /** A move code that came in on the URL (`/?move=`), waiting for a sign-in. */
+  pendingMove: string | null;
   /** The last pairing code made, and for which kid (#281). */
   pairing: { playerId: string; code: PairingCode } | null;
   busy: boolean;
@@ -54,6 +62,17 @@ export interface OrganizerStore {
   acceptInvite(code: string): Promise<void>;
   edit(change: OrganizerChange): Promise<void>;
   makeInvite(): Promise<void>;
+  /** A code that moves this kid, her heroes and her finds to another home. */
+  makeTransfer(playerId: string): Promise<void>;
+  /** Hide the move code: shown once, for the grown-up taking her home. */
+  dismissTransfer(): void;
+  /**
+   * Redeem a move code: into the household on screen, or a brand-new home for
+   * her from the picker. Either way, her new home is opened.
+   */
+  acceptTransfer(code: string): Promise<void>;
+  /** Hold a code from the URL until the panel opens. */
+  setPendingMove(code: string | null): void;
   /** "Play as Ada on another device": a one-time code for one kid of this household. */
   makePairing(playerId: string): Promise<void>;
   /** Forget one of the household's shared tablets; its next request is refused. */
@@ -88,10 +107,12 @@ export function createOrganizerStore(api: Api = defaultApi) {
         api.viewHousehold(token, householdId),
         api.listSharedDevices(token, householdId),
       ]);
+      const same = get().view?.id === householdId;
       set({
         view,
         devices: devices.filter((d) => !d.revoked),
-        invite: get().view?.id === householdId ? get().invite : null,
+        invite: same ? get().invite : null,
+        transfer: same ? get().transfer : null,
         pairing: null,
       });
     }
@@ -102,13 +123,26 @@ export function createOrganizerStore(api: Api = defaultApi) {
       view: null,
       devices: [],
       invite: null,
+      transfer: null,
+      arrived: null,
+      pendingMove: null,
       pairing: null,
       busy: false,
       error: null,
 
       async begin(token, email) {
         idToken = token;
-        set({ email, households: [], view: null, devices: [], invite: null, pairing: null, error: null });
+        set({
+          email,
+          households: [],
+          view: null,
+          devices: [],
+          invite: null,
+          transfer: null,
+          arrived: null,
+          pairing: null,
+          error: null,
+        });
         await run(async (t) => {
           const { households } = await api.listHouseholds(t);
           set({ households });
@@ -119,7 +153,19 @@ export function createOrganizerStore(api: Api = defaultApi) {
 
       end() {
         idToken = null;
-        set({ email: null, households: [], view: null, devices: [], invite: null, pairing: null, busy: false, error: null });
+        set({
+          email: null,
+          households: [],
+          view: null,
+          devices: [],
+          invite: null,
+          transfer: null,
+          arrived: null,
+          pendingMove: null,
+          pairing: null,
+          busy: false,
+          error: null,
+        });
       },
 
       async openHousehold(householdId) {
@@ -127,7 +173,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
       },
 
       async backToList() {
-        set({ view: null, devices: [], invite: null, pairing: null });
+        set({ view: null, devices: [], invite: null, transfer: null, arrived: null, pairing: null });
         await run(async (t) => {
           set({ households: (await api.listHouseholds(t)).households });
         });
@@ -164,6 +210,32 @@ export function createOrganizerStore(api: Api = defaultApi) {
         await run(async (t) => {
           set({ invite: await api.createOrganizerInvite(t, householdId) });
         });
+      },
+
+      async makeTransfer(playerId) {
+        const householdId = get().view?.id;
+        if (!householdId) return;
+        await run(async (t) => {
+          set({ transfer: await api.createTransferCode(t, householdId, playerId) });
+        });
+      },
+
+      dismissTransfer() {
+        set({ transfer: null });
+      },
+
+      async acceptTransfer(code) {
+        const into = get().view?.id;
+        await run(async (t) => {
+          const arrived = await api.acceptTransfer(t, code, into);
+          const home = arrived.household;
+          set({ arrived, pendingMove: null, households: [...get().households.filter((h) => h.id !== home.id), home] });
+          await show(t, home.id);
+        });
+      },
+
+      setPendingMove(code) {
+        set({ pendingMove: code });
       },
 
       async makePairing(playerId) {

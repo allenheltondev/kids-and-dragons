@@ -1,0 +1,367 @@
+/**
+ * Take your hero home (#251), through the handlers with the real engine: a
+ * kid plays at a club, a grown-up there makes her a move code, her mum signs
+ * in at home and redeems it, and she picks up where she left off on the same
+ * phone. Then everything that has to say no.
+ */
+
+import { describe, expect, it } from "vitest";
+import { applyIntent, awardXp, createRunState } from "@kad/shared";
+import type { Campaign, ClientIntent, RunState } from "@kad/shared";
+import type { Engine } from "../engine/port.ts";
+import { makeHarness, type TestHarness } from "../test-support.ts";
+import { addPlayer } from "./account.ts";
+import { applyAction } from "./action.ts";
+import { CODE_MISS_LIMIT } from "./code-guard.ts";
+import type { HandlerResult } from "./deps.ts";
+import { addProfile, createGroup, setProfileRetired, viewHousehold } from "./organizer.ts";
+import { isOut } from "./remove.ts";
+import { createPairingCode, redeemPairingCode } from "./pairing.ts";
+import { createRoom, joinRoom } from "./room.ts";
+import { shareDevice } from "./shared-device.ts";
+import { acceptTransfer, createTransferCode, TRANSFER_TTL_MS } from "./transfer.ts";
+
+const realEngine: Engine = { applyIntent, createRunState };
+
+const LEADER = { cognitoSub: "sub_leader", email: "leader@example.com" };
+const MUM = { cognitoSub: "sub_mum", email: "mum@example.com" };
+const EVE = { cognitoSub: "sub_eve", email: "eve@example.com" };
+
+function value<T>(result: HandlerResult<T>): T {
+  if (!result.ok) throw new Error(`expected ok, got ${result.error.code}: ${result.error.message}`);
+  return result.value;
+}
+
+/** A room in `householdId` with the given phones seated, and a way to act in it. */
+async function room(harness: TestHarness, householdId: string, principal: Parameters<typeof joinRoom>[0]["principal"]) {
+  const created = value(await createRoom({ householdId, mode: "travel" }, harness.deps));
+  const joined = value(await joinRoom({ code: created.code, principal }, harness.deps));
+  const state = async (): Promise<RunState> => (await harness.repo.getState(created.runId))!;
+  const send = async (intent: ClientIntent) =>
+    applyAction({ runId: created.runId, playerId: joined.playerId, seq: (await state()).seq, intent }, harness.deps);
+  return { ...created, state, send };
+}
+
+/** The club, with Ada on her own phone and a hero she has played to level 3. */
+async function adaAtTheClub() {
+  const harness = makeHarness({ engine: realEngine });
+  const club = value(await createGroup({ ...LEADER, displayName: "Dragon Club" }, harness.deps));
+  const ada = await addPlayer({ householdId: club.id, displayName: "Ada" }, harness.deps);
+  value(await addProfile({ ...LEADER, householdId: club.id, displayName: "Bo" }, harness.deps));
+
+  const evening = await room(harness, club.id, ada.principal);
+  const made = await evening.send({
+    type: "CREATE_CHARACTER",
+    name: "Sparklehoof",
+    species: "unicorn",
+    class: "songkeeper",
+    stats: { might: 1, quick: 1, clever: 0, heart: 1 },
+    appearance: { palette: "meadow", accent: "#7FD4C1" },
+  });
+  expect(made.ok).toBe(true);
+  // Three levels of chapters, folded the way a chapter's end folds them.
+  const [hero] = await harness.repo.listCharacters(club.id);
+  if (!hero) throw new Error("no hero");
+  let levelled = hero;
+  while (levelled.committed.level < 3) levelled = awardXp(levelled, harness.deps.content.rules(), 25).character;
+  await harness.repo.putCharacter(levelled);
+  await harness.repo.recordDiscoveries(club.id, [{ canonId: "moth", playerId: ada.player.id, runId: evening.runId }]);
+
+  return { harness, club, ada, hero: levelled, evening };
+}
+
+/** Content that ships Gemfall, which a claim on it needs to count as live (`claimIsLive`). */
+function knowsGemfall(harness: TestHarness): void {
+  const content = harness.deps.content;
+  harness.deps.content = {
+    ...content,
+    campaign: (id) => (id === "gemfall" ? ({ id: "gemfall", title: "Gemfall" } as Campaign) : content.campaign(id)),
+  };
+}
+
+describe("taking a hero home (#251)", () => {
+  it("moves a level 3 hero into a new home, where she carries on, and is gone from the club", async () => {
+    const { harness, club, ada, evening } = await adaAtTheClub();
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+    expect(code).toMatchObject({ playerId: ada.player.id, displayName: "Ada" });
+    expect(code.code).toMatch(/^[A-Z]{10}$/);
+
+    // Her mum has never signed in before: she has no household at all.
+    const moved = value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
+    expect(moved).toMatchObject({ playerId: ada.player.id, displayName: "Ada", heroes: 1 });
+    expect(moved.household).toMatchObject({ displayName: "Ada's household", players: 1 });
+    const home = moved.household.id;
+
+    // Gone from the club. Bo, and the club's save, stay.
+    const left = value(await viewHousehold({ ...LEADER, householdId: club.id }, harness.deps));
+    expect(left.players.map((p) => p.displayName)).toEqual(["Bo"]);
+    expect(await harness.repo.listCharacters(club.id)).toEqual([]);
+    expect(await harness.repo.getRun(evening.runId)).toMatchObject({ householdId: club.id });
+    // She was still seated in the club's room; she is out of it now.
+    expect(await isOut(await evening.state(), ada.player.id, club.id, harness.repo)).toBe(true);
+
+    // Her phone, holding the token it was given at the club, is still her.
+    const phone = await harness.identity.resolveDevice(ada.deviceToken);
+    expect(phone).toMatchObject({ householdId: home, playerId: ada.player.id });
+
+    // She opens a game at home and seats the same hero, at level 3.
+    const tonight = await room(harness, home, phone!);
+    const [hero] = await harness.repo.listCharacters(home);
+    expect(hero).toMatchObject({ name: "Sparklehoof", householdId: home, committed: { level: 3 } });
+    expect((await tonight.send({ type: "SEAT_CHARACTER", characterId: hero!.id })).ok).toBe(true);
+    expect((await tonight.state()).party[0]?.character).toMatchObject({ name: "Sparklehoof", level: 3 });
+    expect(Object.keys((await harness.repo.getFieldGuide(home)).entries)).toEqual(["moth"]);
+  });
+
+  it("works once", async () => {
+    const { harness, club, ada } = await adaAtTheClub();
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+    value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
+    const again = await acceptTransfer({ ...EVE, code: code.code }, harness.deps);
+    expect(again).toMatchObject({ ok: false, error: { code: "NOT_FOUND" } });
+    expect(await harness.repo.listHouseholdsForAccount(EVE.cognitoSub)).toEqual([]);
+  });
+
+  it("goes dead after a day", async () => {
+    const { harness, club, ada } = await adaAtTheClub();
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+    harness.clock.advance(TRANSFER_TTL_MS + 1);
+    expect(await acceptTransfer({ ...MUM, code: code.code }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "NOT_FOUND" },
+    });
+    expect(await harness.repo.getPlayer(club.id, ada.player.id)).not.toBeNull();
+  });
+
+  it("is made only by an owner of her home, and counts wrong codes against the account", async () => {
+    const { harness, club, ada } = await adaAtTheClub();
+    expect(await createTransferCode({ ...EVE, householdId: club.id, playerId: ada.player.id }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "FORBIDDEN" },
+    });
+
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) {
+      const letter = (n: number) => "ABCDEFGHJKLMNPQRSTUVWXYZ"[Math.floor(n) % 24];
+      const miss = await acceptTransfer({ ...EVE, code: `WRONGCOD${letter(i)}${letter(i / 24)}` }, harness.deps);
+      expect(miss).toMatchObject({ ok: false, error: { code: "NOT_FOUND" } });
+    }
+    // Even the right code is refused now, so guessing cannot find it.
+    expect(await acceptTransfer({ ...EVE, code: code.code }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "FORBIDDEN" },
+    });
+    // Somebody else's misses are not hers.
+    value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
+  });
+
+  it("moves her into a home the redeemer already owns, and only one they own", async () => {
+    const { harness, club, ada } = await adaAtTheClub();
+    const home = value(await createGroup({ ...MUM, displayName: "Our house" }, harness.deps));
+    value(await addProfile({ ...MUM, householdId: home.id, displayName: "Rue" }, harness.deps));
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+
+    expect(await acceptTransfer({ ...EVE, code: code.code, householdId: home.id }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "FORBIDDEN" },
+    });
+    expect(await acceptTransfer({ ...LEADER, code: code.code, householdId: club.id }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "ILLEGAL" },
+    });
+
+    const moved = value(await acceptTransfer({ ...MUM, code: code.code, householdId: home.id }, harness.deps));
+    expect(moved.household).toEqual({ id: home.id, displayName: "Our house", players: 2 });
+    expect(await harness.repo.listHouseholdsForAccount(MUM.cognitoSub)).toEqual([home.id]);
+    const view = value(await viewHousehold({ ...MUM, householdId: home.id }, harness.deps));
+    expect(view.players.find((p) => p.displayName === "Ada")?.heroes).toMatchObject([{ name: "Sparklehoof", level: 3 }]);
+  });
+
+  it("will not put two kids with one name on a picker", async () => {
+    const { harness, club, ada } = await adaAtTheClub();
+    const home = value(await createGroup({ ...MUM, displayName: "Our house" }, harness.deps));
+    value(await addProfile({ ...MUM, householdId: home.id, displayName: "ada" }, harness.deps));
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+    expect(await acceptTransfer({ ...MUM, code: code.code, householdId: home.id }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "ILLEGAL", message: expect.stringMatching(/already here/) },
+    });
+    // The code still works, into a new home.
+    value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
+  });
+
+  it("refuses to move a hero in the middle of an adventure", async () => {
+    const { harness, club, ada, hero } = await adaAtTheClub();
+    knowsGemfall(harness);
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+
+    // The club starts a campaign and she is in it: her gains are provisional.
+    await harness.repo.putCharacter({ ...hero, provisional: { ...hero.committed, runId: "gemfall" } });
+    await harness.repo.putCampaignProgress({
+      householdId: club.id,
+      campaignId: "gemfall",
+      status: "active",
+      setbacks: 0,
+      updatedAt: new Date(harness.clock.now()).toISOString(),
+    });
+    const busy = { ok: false, error: { code: "ILLEGAL", message: expect.stringMatching(/middle of an adventure/) } };
+    expect(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps)).toMatchObject(busy);
+    expect(await acceptTransfer({ ...MUM, code: code.code }, harness.deps)).toMatchObject(busy);
+    expect(await harness.repo.getPlayer(club.id, ada.player.id)).not.toBeNull();
+
+    // The campaign ends, and she can go.
+    await harness.repo.putCampaignProgress({
+      householdId: club.id,
+      campaignId: "gemfall",
+      status: "complete",
+      setbacks: 0,
+      updatedAt: new Date(harness.clock.now()).toISOString(),
+    });
+    value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
+  });
+
+  it("refuses to move a hero in the middle of an adventure at a table that is not her home", async () => {
+    const { harness, club, ada, hero } = await adaAtTheClub();
+    knowsGemfall(harness);
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+    const progress = (status: "active" | "complete") =>
+      harness.repo.putCampaignProgress({
+        householdId: "h_rue",
+        campaignId: "gemfall",
+        status,
+        setbacks: 0,
+        updatedAt: new Date(harness.clock.now()).toISOString(),
+      });
+
+    // Visiting Rue's table, her claim names Rue's attempt (#282, #291).
+    await harness.repo.putCharacter({ ...hero, provisional: { ...hero.committed, runId: "gemfall@h_rue" } });
+    await progress("active");
+    // The club playing the same campaign is not what holds her.
+    await harness.repo.putCampaignProgress({
+      householdId: club.id,
+      campaignId: "gemfall",
+      status: "complete",
+      setbacks: 0,
+      updatedAt: new Date(harness.clock.now()).toISOString(),
+    });
+    const busy = { ok: false, error: { code: "ILLEGAL", message: expect.stringMatching(/middle of an adventure/) } };
+    expect(await acceptTransfer({ ...MUM, code: code.code }, harness.deps)).toMatchObject(busy);
+    expect(await harness.repo.getPlayer(club.id, ada.player.id)).not.toBeNull();
+
+    // Rue's table finishes the campaign, and she can go.
+    await progress("complete");
+    value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
+  });
+
+  it("refuses, rather than moves, a hero a visiting table claims while the move is under way", async () => {
+    const { harness, club, ada, hero } = await adaAtTheClub();
+    knowsGemfall(harness);
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+
+    // Rue's table seats her between the move's read and its write.
+    const realMove = harness.repo.moveProfile.bind(harness.repo);
+    let raced = false;
+    harness.repo.moveProfile = async (input) => {
+      if (!raced) {
+        raced = true;
+        const read = (await harness.repo.getCharacter(club.id, hero.id))!;
+        expect(
+          await harness.repo.writeCharacter({
+            character: { ...read, provisional: { ...read.committed, runId: "gemfall@h_rue" } },
+            expectedVersion: read.version ?? 0,
+            expectedClaim: null,
+          }),
+        ).toBe(true);
+        await harness.repo.putCampaignProgress({
+          householdId: "h_rue",
+          campaignId: "gemfall",
+          status: "active",
+          setbacks: 0,
+          updatedAt: new Date(harness.clock.now()).toISOString(),
+        });
+      }
+      return realMove(input);
+    };
+
+    // The move read her free; its write finds her claimed, cancels, reads again, and refuses.
+    expect(await acceptTransfer({ ...MUM, code: code.code }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "ILLEGAL", message: expect.stringMatching(/middle of an adventure/) },
+    });
+    expect(raced).toBe(true);
+    expect((await harness.repo.getCharacter(club.id, hero.id))?.provisional?.runId).toBe("gemfall@h_rue");
+    expect(await harness.repo.listHouseholdsForAccount(MUM.cognitoSub)).toEqual([]);
+    // The code is not spent: once Rue's adventure ends, it works.
+    expect(await harness.repo.getTransferCode(code.code, new Date(harness.clock.now()).toISOString())).not.toBeNull();
+  });
+
+  it("does not bring her back to the club when a table holding an old read writes her afterwards", async () => {
+    const { harness, club, ada, hero } = await adaAtTheClub();
+    const stale = (await harness.repo.getCharacter(club.id, hero.id))!;
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+    const moved = value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
+
+    const late = await harness.repo.writeCharacter({
+      character: { ...stale, committed: { ...stale.committed, xp: stale.committed.xp + 50 } },
+      expectedVersion: stale.version ?? 0,
+      expectedClaim: null,
+    });
+    expect(late).toBe(false);
+    expect(await harness.repo.getCharacter(club.id, hero.id)).toBeNull();
+    expect((await harness.repo.getCharacter(moved.household.id, hero.id))?.committed.xp).toBe(stale.committed.xp);
+  });
+
+  it("refuses a pairing code her old home made before she moved", async () => {
+    const { harness, club, ada } = await adaAtTheClub();
+    const pairing = value(
+      await createPairingCode({ householdId: club.id, playerId: ada.player.id, createdBy: `owner:${LEADER.cognitoSub}` }, harness.deps),
+    );
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+    const moved = value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
+
+    // The club's code cannot bind a device into the club, where she no longer is, or into her new home.
+    expect(await redeemPairingCode({ code: pairing.code, client: "1.2.3.4" }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "NOT_FOUND" },
+    });
+    expect((await harness.repo.listDevices(club.id)).filter((d) => d.kind !== "shared")).toEqual([]);
+    expect((await harness.repo.listDevices(moved.household.id)).map((d) => d.deviceId)).toEqual([ada.principal.deviceId]);
+  });
+
+  it("keeps her out of a visiting table's room the move's tidy-up cannot find", async () => {
+    const { harness, club, ada } = await adaAtTheClub();
+    // Rue's table seated her as a visitor from the club (#249).
+    value(await createGroup({ cognitoSub: "sub_rue", displayName: "Rue's house" }, harness.deps));
+    const [rueHome] = await harness.repo.listHouseholdsForAccount("sub_rue");
+    const rue = value(await createRoom({ householdId: rueHome!, mode: "travel" }, harness.deps));
+    const seated = await harness.repo.getState(rue.runId);
+    const visiting: RunState = {
+      ...seated!,
+      seats: { ...seated!.seats, [ada.player.id]: { name: "Ada", color: "#7FD4C1", device: "phone", homeHouseholdId: club.id } },
+    };
+    await harness.repo.putState(visiting);
+    expect(await isOut(visiting, ada.player.id, null, harness.repo)).toBe(false);
+
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+    value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
+
+    // Not on its `removed` list, and still out: her profile is not where the seat says.
+    expect((await harness.repo.getState(rue.runId))?.removed ?? []).not.toContain(ada.player.id);
+    expect(await isOut(visiting, ada.player.id, null, harness.repo)).toBe(true);
+    expect(await isOut(visiting, ada.player.id, club.id, harness.repo)).toBe(true);
+  });
+
+  it("leaves the club's tablet behind, and brings a kid who was taken off the list back onto one", async () => {
+    const { harness, club, ada } = await adaAtTheClub();
+    const tablet = value(await shareDevice({ cognitoSub: LEADER.cognitoSub }, harness.deps));
+    value(await setProfileRetired({ ...LEADER, householdId: club.id, playerId: ada.player.id, retired: true }, harness.deps));
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+
+    const moved = value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
+    expect(await harness.identity.resolveSharedDevice(tablet.sharedToken)).toMatchObject({ householdId: club.id });
+    expect((await harness.repo.getPlayer(moved.household.id, ada.player.id))?.retired).toBeUndefined();
+    // Retiring revoked her phone, and a revoked phone does not come back by moving.
+    expect(await harness.identity.resolveDevice(ada.deviceToken)).toBeNull();
+    expect(await harness.repo.listDevices(moved.household.id)).toEqual([]);
+  });
+});

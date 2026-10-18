@@ -165,10 +165,17 @@ export async function isRetired(
 }
 
 /**
- * Out of this run, either way: taken out by its host, or retired. The
- * household is the player's own, from their session; without one it is a
- * visitor's own from the roster (#249), else the run's, which is the same
- * household for everybody else seated in it.
+ * Out of this run, any of three ways: taken out by its host, retired, or
+ * moved to another home (#251). The household is the player's own, from their
+ * session; without one it is a visitor's own from the roster (#249), else the
+ * run's, which is the same household for everybody else seated in it.
+ *
+ * A profile that is no longer in that household is a kid who moved: her
+ * profile went with her, and a session or seat minted before the move still
+ * names the home she left. The profile is the record, as it is for
+ * retiring, so this holds at every door whether or not the move's tidy-up
+ * (`takeOutEverywhere`) reached the room, and at a table in a household she
+ * never belonged to, which that tidy-up cannot find.
  */
 export async function isOut(
   state: Pick<RunState, "removed" | "runId" | "seats">,
@@ -179,5 +186,7 @@ export async function isOut(
   if (isRemoved(state, playerId)) return true;
   const household =
     householdId ?? state.seats?.[playerId]?.homeHouseholdId ?? (await repo.getRun(state.runId))?.householdId;
-  return household !== undefined && (await isRetired(repo, household, playerId));
+  if (household === undefined) return false;
+  const profile = await repo.getPlayer(household, playerId);
+  return profile === null || profile.retired === true;
 }

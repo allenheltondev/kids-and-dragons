@@ -29,6 +29,7 @@
  */
 
 import { createHash, randomUUID } from "node:crypto";
+import type { DeviceBinding } from "@kad/shared";
 import type { GameRepository } from "./store/repository.ts";
 
 /** What a device token resolves to. */
@@ -207,10 +208,13 @@ export class DevIdentity implements IdentityService {
 
     // By primary key, like the prod service: the revocation check must never
     // read a stale index copy it could then write back (see `TokenIdentity`).
-    const binding = await this.repo.getDevice(claims.householdId, claims.deviceId);
+    // A kid who moved home took this binding with her (#251).
+    const binding =
+      (await this.repo.getDevice(claims.householdId, claims.deviceId)) ??
+      (await movedBinding(this.repo, claims.householdId, claims.deviceId));
     if (!binding || binding.revoked || binding.kind === "shared") return null;
     if (binding.tokenHash !== hashToken(token)) return null;
-    if (binding.householdId !== claims.householdId) return null;
+    if (binding.playerId !== claims.playerId) return null;
 
     // Real tokens rotate on use with a sliding expiry; locally we just keep
     // `lastSeen` honest so the revocation UI has something to show. `touch`,
@@ -297,6 +301,35 @@ function decode<T>(token: string, prefix: string): T | null {
   } catch {
     return null;
   }
+}
+
+/** A chain of moves longer than this is not a kid going home; it is a loop. */
+const MAX_MOVES = 4;
+
+/**
+ * The binding a phone's token names when its kid has moved home since the
+ * token was minted (#251). The token still names the household she left, and
+ * her binding went with her, so the old household keeps a forward
+ * (`getMovedDevice`) naming the new one. Followed by primary key, hop by hop,
+ * so the revocation check reads what it always read: the binding itself,
+ * strongly consistent, never an index copy. `null` when nothing moved.
+ *
+ * Only on a miss, so a phone that never moved pays nothing for this.
+ */
+export async function movedBinding(
+  repo: Pick<GameRepository, "getDevice" | "getMovedDevice">,
+  householdId: string,
+  deviceId: string,
+): Promise<DeviceBinding | null> {
+  let from = householdId;
+  for (let hop = 0; hop < MAX_MOVES; hop++) {
+    const to = await repo.getMovedDevice(from, deviceId);
+    if (!to) return null;
+    const binding = await repo.getDevice(to, deviceId);
+    if (binding) return binding;
+    from = to;
+  }
+  return null;
 }
 
 /** Tokens are stored hashed, never in the clear — true in dev and in prod. */

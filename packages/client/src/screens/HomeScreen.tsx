@@ -19,6 +19,7 @@ import type { ChangeEvent, ReactElement } from "react";
 import type { RoomMode } from "@kad/shared";
 import { useGameStore } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
+import { useOrganizerStore } from "../store/organizer";
 // The one normalize helper for typed and prefilled codes — the router owns the
 // code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
 import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, normalizeCodeInput as normalizeCode, pairingFromSearch } from "../router";
@@ -129,6 +130,23 @@ function PersonalHome(): ReactElement {
   useEffect(() => {
     void checkKeepsake();
   }, [checkKeepsake]);
+
+  /*
+   * A scanned move code (#251) lands here as `/?move=…`: straight into "Run a
+   * group", where it waits, typed in, for the grown-up to sign in and choose
+   * where the kid is going. Taken off the URL so a refresh does not ask again.
+   */
+  const setPendingMove = useOrganizerStore((s) => s.setPendingMove);
+  useEffect(() => {
+    if (!signInAvailable || typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    const move = url.searchParams.get("move");
+    if (!move) return;
+    url.searchParams.delete("move");
+    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+    setPendingMove(move.toUpperCase().replace(/[^A-Z]/g, ""));
+    openKeepsake("organize", "home");
+  }, [signInAvailable, setPendingMove, openKeepsake]);
 
   /*
    * Whether this phone has a book to open: it has been a player (not only a

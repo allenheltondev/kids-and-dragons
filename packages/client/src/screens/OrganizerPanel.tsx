@@ -9,14 +9,18 @@
  *   - **the picker**: every household this account owns (its family, its
  *     groups), "Start a new group", and "Have an organizer code?" for joining
  *     somebody else's as a co-organizer.
- *   - **one household**: its kids (add, rename, retire, bring back) with
- *     their heroes, and its organizers (invite one, take one off, leave).
+ *   - **one household**: its kids (add, rename, retire, bring back, move one
+ *     to another home) with their heroes, and its organizers (invite one,
+ *     take one off, leave).
+ *
+ * A move code (#251) is made on one kid's row and redeemed from either view:
+ * the picker takes her into a brand-new home, a household takes her into it.
  *
  * Written for the adult holding it, in the plain words the rest of the
  * sign-in flow uses. Kids never see this; they tap their face on a tablet.
  */
 
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import type { FormEvent, ReactElement } from "react";
 import type {
   OrganizerDevice,
@@ -24,6 +28,7 @@ import type {
   OrganizerHouseholdView,
   OrganizerOwner,
   OrganizerPlayer,
+  TransferCode,
 } from "@kad/shared";
 import { formatInviteCode, useOrganizerStore } from "../store/organizer";
 import { Button } from "../ui/Button";
@@ -71,6 +76,8 @@ function HouseholdPicker({ busy }: { busy: boolean }): ReactElement {
   const openHousehold = useOrganizerStore((s) => s.openHousehold);
   const createGroup = useOrganizerStore((s) => s.createGroup);
   const acceptInvite = useOrganizerStore((s) => s.acceptInvite);
+  const acceptTransfer = useOrganizerStore((s) => s.acceptTransfer);
+  const pendingMove = useOrganizerStore((s) => s.pendingMove);
 
   return (
     <>
@@ -123,6 +130,17 @@ function HouseholdPicker({ busy }: { busy: boolean }): ReactElement {
         code
         onSubmit={(code) => acceptInvite(code)}
       />
+      <NameForm
+        label="Taking a kid home? Their move code"
+        placeholder="ABCDE-FGHJK"
+        maxLength={11}
+        submit="Bring them home"
+        icon="forward"
+        busy={busy}
+        code
+        {...(pendingMove ? { initial: formatInviteCode(pendingMove) } : {})}
+        onSubmit={(code) => acceptTransfer(code)}
+      />
     </>
   );
 }
@@ -135,6 +153,10 @@ function HouseholdView({ view, busy }: { view: OrganizerHouseholdView; busy: boo
   const households = useOrganizerStore((s) => s.households);
   const backToList = useOrganizerStore((s) => s.backToList);
   const edit = useOrganizerStore((s) => s.edit);
+  const transfer = useOrganizerStore((s) => s.transfer);
+  const arrived = useOrganizerStore((s) => s.arrived);
+  const acceptTransfer = useOrganizerStore((s) => s.acceptTransfer);
+  const pendingMove = useOrganizerStore((s) => s.pendingMove);
   const [renaming, setRenaming] = useState(false);
 
   const active = view.players.filter((p) => !p.retired);
@@ -178,6 +200,11 @@ function HouseholdView({ view, busy }: { view: OrganizerHouseholdView; busy: boo
           <Icon name="party" />
           <span>Kids</span>
         </h3>
+        {arrived && arrived.household.id === view.id ? (
+          <p className="keepsake__body organizer__arrived" role="status">
+            {arrived.displayName} lives here now, with {heroesCount(arrived.heroes)}.
+          </p>
+        ) : null}
         {active.length === 0 ? (
           <p className="keepsake__body">
             Nobody yet. Add the kids here, or they can tap &ldquo;Someone new&rdquo; on the group&rsquo;s tablet.
@@ -197,6 +224,18 @@ function HouseholdView({ view, busy }: { view: OrganizerHouseholdView; busy: boo
           icon="plus"
           busy={busy}
           onSubmit={(displayName) => edit({ action: "add-player", displayName })}
+        />
+        {transfer ? <TransferCard transfer={transfer} /> : null}
+        <NameForm
+          label="Bringing a kid here? Their move code"
+          placeholder="ABCDE-FGHJK"
+          maxLength={11}
+          submit="Bring them here"
+          icon="forward"
+          busy={busy}
+          code
+          {...(pendingMove ? { initial: formatInviteCode(pendingMove) } : {})}
+          onSubmit={(code) => acceptTransfer(code)}
         />
         {retired.length > 0 ? (
           <>
@@ -219,6 +258,7 @@ function HouseholdView({ view, busy }: { view: OrganizerHouseholdView; busy: boo
 
 function PlayerRow({ player, busy }: { player: OrganizerPlayer; busy: boolean }): ReactElement {
   const edit = useOrganizerStore((s) => s.edit);
+  const makeTransfer = useOrganizerStore((s) => s.makeTransfer);
   const makePairing = useOrganizerStore((s) => s.makePairing);
   const pairing = useOrganizerStore((s) => (s.pairing?.playerId === player.id ? s.pairing.code : null));
   const [renaming, setRenaming] = useState(false);
@@ -287,6 +327,14 @@ function PlayerRow({ player, busy }: { player: OrganizerPlayer; busy: boolean })
           onClick={() => void edit({ action: "retire-player", playerId: player.id, retired: !player.retired })}
         >
           {player.retired ? "Bring back" : "Take off"}
+        </button>
+        <button
+          type="button"
+          className="organizer__link kad-focusable"
+          disabled={busy}
+          onClick={() => void makeTransfer(player.id)}
+        >
+          Move home
         </button>
       </span>
     </li>
@@ -432,6 +480,61 @@ function OrganizersSection({ view, busy }: { view: OrganizerHouseholdView; busy:
   );
 }
 
+/**
+ * One kid's move code (#251), for the grown-up taking her home: a QR to scan
+ * from this screen and the same code to type or text. Shown once; making
+ * another is a new code, and the old one still works until it is used.
+ */
+function TransferCard({ transfer }: { transfer: TransferCode }): ReactElement {
+  const dismiss = useOrganizerStore((s) => s.dismissTransfer);
+  const qr = useQr(moveUrl(transfer.code));
+  const name = transfer.displayName;
+  return (
+    <div className="organizer__invite organizer__transfer" role="status" aria-label={`${name}'s move code`}>
+      <p className="keepsake__body">
+        To move <b>{name}</b> to another home, give this to the grown-up taking {name} home:
+      </p>
+      {qr ? <img className="organizer__qr" src={qr} alt={`QR code to move ${name}`} /> : null}
+      <p className="organizer__code">{formatInviteCode(transfer.code)}</p>
+      <p className="keepsake__fine kad-muted">
+        They sign in, tap &ldquo;Run a group&rdquo;, and scan or type it. {name}&rsquo;s heroes, finds and own phone
+        go too, and leave here. Saved games stay here. It works once, for a day.
+      </p>
+      <Button variant="ghost" icon={<Icon name="close" />} onClick={dismiss}>
+        Hide the code
+      </Button>
+    </div>
+  );
+}
+
+/** Where a scanned move code lands: home, which opens the organizer panel with it typed in. */
+function moveUrl(code: string): string {
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  return `${origin}/?move=${encodeURIComponent(code)}`;
+}
+
+/** A QR, loaded on demand like the lobby's, and simply absent if it cannot be drawn. */
+function useQr(text: string): string | null {
+  const [dataUrl, setDataUrl] = useState<string | null>(null);
+  useEffect(() => {
+    let live = true;
+    void import("qrcode")
+      .then(({ toDataURL }) =>
+        toDataURL(text, { margin: 1, width: 384, errorCorrectionLevel: "M", color: { dark: "#12102a", light: "#ffffff" } }),
+      )
+      .then((url) => {
+        if (live) setDataUrl(url);
+      })
+      .catch(() => {
+        if (live) setDataUrl(null);
+      });
+    return () => {
+      live = false;
+    };
+  }, [text]);
+  return dataUrl;
+}
+
 // ---------------------------------------------------------------------------
 // Pieces
 // ---------------------------------------------------------------------------
@@ -495,6 +598,10 @@ function NameForm(props: NameFormProps): ReactElement {
       </div>
     </form>
   );
+}
+
+function heroesCount(n: number): string {
+  return n === 0 ? "no heroes yet" : n === 1 ? "1 hero" : `${n} heroes`;
 }
 
 function kidsCount(n: number): string {
