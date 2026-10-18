@@ -38,8 +38,9 @@ import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { ROOM_CODE_ALPHABET } from "./room.ts";
 import { NEW_PLAYER_NAME_MAX } from "./shared-device.ts";
 import { takeOutEverywhere } from "./remove.ts";
+import { claimIsLive, claimOf, parseClaim, releaseClaim } from "./claim.ts";
 
-export type OrganizerDeps = AccountDeps & Pick<HandlerDeps, "random" | "channel">;
+export type OrganizerDeps = AccountDeps & Pick<HandlerDeps, "random" | "channel" | "content">;
 
 /** Long enough for "Thursday Dragon Club at the library". */
 export const HOUSEHOLD_NAME_MAX = 40;
@@ -103,7 +104,7 @@ export async function createGroup(
 /** Everything an owner manages, in one read. */
 export async function viewHousehold(
   input: Organizer & { householdId: unknown },
-  deps: AccountDeps,
+  deps: OrganizerDeps,
 ): Promise<HandlerResult<OrganizerHouseholdView>> {
   const owned = await ownedHousehold(input, input.householdId, deps);
   if (!owned.ok) return owned;
@@ -112,7 +113,7 @@ export async function viewHousehold(
 
 export async function renameHousehold(
   input: Organizer & { householdId: unknown; displayName: unknown },
-  deps: AccountDeps,
+  deps: OrganizerDeps,
 ): Promise<HandlerResult<OrganizerHouseholdView>> {
   const owned = await ownedHousehold(input, input.householdId, deps);
   if (!owned.ok) return owned;
@@ -133,7 +134,7 @@ export async function renameHousehold(
 /** A kid an owner adds ahead of the first game, so their face is on the tablet. */
 export async function addProfile(
   input: Organizer & { householdId: unknown; displayName: unknown },
-  deps: AccountDeps,
+  deps: OrganizerDeps,
 ): Promise<HandlerResult<OrganizerHouseholdView>> {
   const owned = await ownedHousehold(input, input.householdId, deps);
   if (!owned.ok) return owned;
@@ -146,7 +147,7 @@ export async function addProfile(
 
 export async function renameProfile(
   input: Organizer & { householdId: unknown; playerId: unknown; displayName: unknown },
-  deps: AccountDeps,
+  deps: OrganizerDeps,
 ): Promise<HandlerResult<OrganizerHouseholdView>> {
   const target = await ownedProfile(input, deps);
   if (!target.ok) return target;
@@ -358,13 +359,14 @@ function ownerRow(householdId: string, who: Organizer, nowMs: number): Household
 async function describe(
   household: Household,
   who: Organizer,
-  deps: Pick<AccountDeps, "repo" | "now">,
+  deps: Pick<OrganizerDeps, "repo" | "now" | "content">,
 ): Promise<OrganizerHouseholdView> {
   const [stored, players, characters] = await Promise.all([
     deps.repo.listOwners(household.id),
     deps.repo.listPlayers(household.id),
     deps.repo.listCharacters(household.id),
   ]);
+  const adventures = await heroAdventures(characters, deps);
 
   /*
    * An owner from before #248 (or who only ever claimed) has a pointer and no
@@ -397,16 +399,69 @@ async function describe(
       displayName: player.displayName,
       color: player.color,
       retired: player.retired === true,
-      heroes: heroesOf(player.id, characters),
+      heroes: heroesOf(player.id, characters, adventures),
     })),
   };
 }
 
-function heroesOf(playerId: string, characters: readonly Character[]): OrganizerHero[] {
+function heroesOf(
+  playerId: string,
+  characters: readonly Character[],
+  adventures: ReadonlyMap<string, string>,
+): OrganizerHero[] {
   return characters
     .filter((c) => c.ownerPlayerId === playerId)
     .sort((a, b) => b.committed.xp - a.committed.xp || a.name.localeCompare(b.name))
-    .map((c) => ({ id: c.id, name: c.name, species: c.species, class: c.class, level: c.committed.level }));
+    .map((c) => {
+      const adventure = adventures.get(c.id);
+      return {
+        id: c.id,
+        name: c.name,
+        species: c.species,
+        class: c.class,
+        level: c.committed.level,
+        ...(adventure ? { adventure } : {}),
+      };
+    });
+}
+
+/**
+ * The campaign each hero is in the middle of (#282), by title: the adventure
+ * her claim names, while it is still in flight. What "End this adventure"
+ * offers to end.
+ */
+async function heroAdventures(
+  characters: readonly Character[],
+  deps: Pick<OrganizerDeps, "repo" | "content">,
+): Promise<Map<string, string>> {
+  const out = new Map<string, string>();
+  for (const hero of characters) {
+    const held = claimOf(hero);
+    if (held === null || !(await claimIsLive(held, hero, deps))) continue;
+    const { campaignId } = parseClaim(held, hero);
+    out.set(hero.id, deps.content.campaign(campaignId)?.title ?? campaignId);
+  }
+  return out;
+}
+
+/**
+ * End the adventure a hero is in (#282, architecture §4.5): her provisional
+ * gains from it are discarded and her claim released, so another table may
+ * seat her. A grown-up's call, from this screen: the phone at a table that
+ * refused her offers a new hero instead.
+ */
+export async function leaveAdventure(
+  input: Organizer & { householdId: unknown; characterId: unknown },
+  deps: OrganizerDeps,
+): Promise<HandlerResult<OrganizerHouseholdView>> {
+  const owned = await ownedHousehold(input, input.householdId, deps);
+  if (!owned.ok) return owned;
+  if (typeof input.characterId !== "string" || input.characterId === "") {
+    return fail("ILLEGAL", "expected { characterId }");
+  }
+  const left = await releaseClaim(owned.value.id, input.characterId, deps);
+  if (!left.ok) return left;
+  return ok(await describe(owned.value, input, deps));
 }
 
 function inviteCode(random: () => number): string {
@@ -472,6 +527,9 @@ export function organizerRoute(
       return (who, deps) => createOrganizerInvite({ ...who, householdId: body.householdId }, deps);
     case "POST /api/organizer/invite/accept":
       return (who, deps) => acceptOrganizerInvite({ ...who, code: body.code }, deps);
+    case "POST /api/organizer/heroes/leave":
+      return (who, deps) =>
+        leaveAdventure({ ...who, householdId: body.householdId, characterId: body.characterId }, deps);
     case "POST /api/organizer/owners/remove":
       return (who, deps) => removeOrganizer({ ...who, householdId: body.householdId, ownerId: body.ownerId }, deps);
     default:

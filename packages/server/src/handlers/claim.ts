@@ -16,7 +16,7 @@
 
 import type { Character } from "@kad/shared";
 import type { CharacterWrite } from "../store/repository.ts";
-import type { HandlerDeps } from "./deps.ts";
+import { fail, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
 /** Between a campaign and the table playing it, in a visiting table's claim. */
 const AT = "@";
@@ -95,4 +95,33 @@ export function rewrite(read: Character, next: Character): CharacterWrite {
 /** A brand-new hero's row, which must not exist yet. */
 export function create(character: Character): CharacterWrite {
   return { character, expectedVersion: null, expectedClaim: null };
+}
+
+/** Lost races a release retries before giving up, as host controls do. */
+const RELEASE_ATTEMPTS = 3;
+
+/**
+ * Leave the adventure a hero is in (#282): discard its provisional gains and
+ * quest items and clear her claim, conditioned on the claim and version read.
+ * Only the adventure she was in when this started is left; if the row has
+ * since moved to another, that one is not touched. `left` is the claim
+ * released, or null when there was nothing to leave.
+ */
+export async function releaseClaim(
+  householdId: string,
+  characterId: string,
+  deps: Pick<HandlerDeps, "repo">,
+): Promise<HandlerResult<{ left: string | null }>> {
+  let leaving: string | null = null;
+  for (let attempt = 1; ; attempt++) {
+    const hero = await deps.repo.getCharacter(householdId, characterId);
+    if (!hero) return fail("NOT_FOUND", `no hero ${characterId}`);
+    const held = claimOf(hero);
+    if (held === null || (leaving !== null && held !== leaving)) return ok({ left: null });
+    leaving = held;
+    if (await deps.repo.writeCharacter(rewrite(hero, { ...hero, provisional: null, questItems: [] }))) {
+      return ok({ left: held });
+    }
+    if (attempt >= RELEASE_ATTEMPTS) return fail("STALE_SEQ", "the hero moved on just then; try again");
+  }
 }
