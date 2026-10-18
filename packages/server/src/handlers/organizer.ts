@@ -43,6 +43,7 @@ import { NEW_PLAYER_NAME_MAX } from "./shared-device.ts";
 import { takeOutEverywhere } from "./remove.ts";
 import { acceptTransfer, createTransferCode } from "./transfer.ts";
 import { claimIsLive, claimOf, parseClaim, releaseClaim } from "./claim.ts";
+import { heroSaved } from "./save.ts";
 
 export type OrganizerDeps = AccountDeps & Pick<HandlerDeps, "random" | "channel" | "content">;
 
@@ -415,6 +416,7 @@ async function describe(
     deps.repo.listCharacters(household.id),
   ]);
   const adventures = await heroAdventures(characters, deps);
+  const saves = await heroSaves(characters, adventures, deps);
 
   /*
    * An owner from before #248 (or who only ever claimed) has a pointer and no
@@ -447,7 +449,7 @@ async function describe(
       displayName: player.displayName,
       color: player.color,
       retired: player.retired === true,
-      heroes: heroesOf(player.id, characters, adventures),
+      heroes: heroesOf(player.id, characters, adventures, saves),
     })),
   };
 }
@@ -456,6 +458,7 @@ function heroesOf(
   playerId: string,
   characters: readonly Character[],
   adventures: ReadonlyMap<string, string>,
+  saves: ReadonlyMap<string, { at?: string }>,
 ): OrganizerHero[] {
   return characters
     .filter((c) => c.ownerPlayerId === playerId)
@@ -469,8 +472,24 @@ function heroesOf(
         class: c.class,
         level: c.committed.level,
         ...(adventure ? { adventure } : {}),
+        ...(saves.has(c.id) ? { saved: saves.get(c.id)! } : {}),
       };
     });
+}
+
+/** Which of those heroes are saved in a stopped game, and where (#259). */
+async function heroSaves(
+  characters: readonly Character[],
+  adventures: ReadonlyMap<string, string>,
+  deps: Pick<OrganizerDeps, "repo" | "content">,
+): Promise<Map<string, { at?: string }>> {
+  const out = new Map<string, { at?: string }>();
+  for (const hero of characters) {
+    if (!adventures.has(hero.id)) continue;
+    const saved = await heroSaved(hero, deps);
+    if (saved) out.set(hero.id, saved.at === null ? {} : { at: saved.at });
+  }
+  return out;
 }
 
 /**

@@ -50,6 +50,7 @@ import type {
 import {
   useCampaign,
   useChapter,
+  useGameStore,
   useIsMyCombatTurn,
   useIsMyPrompt,
   useMyTurnKey,
@@ -71,6 +72,7 @@ import { speak } from "@kad/shared";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { CharacterSheet } from "./CharacterSheet";
 import { Icon } from "./icons";
+import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
 import {
   beginLabel,
@@ -606,6 +608,18 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
     },
     [send],
   );
+
+  // Pick the household's stopped chapter back up (#259). The room's own patch
+  // carries the party and the scene in; a refusal shows in the toast.
+  const resumeGame = useGameStore((store) => store.resumeGame);
+  const keepGoing = useCallback(async () => {
+    setBusy(true);
+    try {
+      await resumeGame();
+    } finally {
+      setBusy(false);
+    }
+  }, [resumeGame]);
 
   /*
    * A graph campaign's party takes a way on (#195): CHOOSE_EXIT, then - for a
@@ -1515,6 +1529,29 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   {nextChapterLine(state.campaign)}
                 </span>
               </p>
+            ) : null}
+            {/* A chapter this household stopped partway (#259): anyone may take
+                it back up, and it needs nobody to be ready first. Begin below
+                still starts the next chapter fresh. */}
+            {inLobby && state.saved ? (
+              <div className="player__saved">
+                <p className="player__next-chapter">
+                  <Icon name="scroll" />
+                  <span>
+                    {savedHeading(state.saved)} {state.saved.recap}
+                  </span>
+                </p>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  icon={<Icon name="forward" />}
+                  disabled={busy}
+                  aria-label={`Keep going with ${savedHeroes(state.saved)}`}
+                  onClick={() => void keepGoing()}
+                >
+                  Keep going
+                </Button>
+              </div>
             ) : null}
             {/* One seat, held from the start, for whatever "go" looks like
                 right now: nothing, who the vote is waiting on, or Begin. They

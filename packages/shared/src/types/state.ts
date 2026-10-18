@@ -433,11 +433,25 @@ export interface RunState {
    */
   quiet?: true;
   /**
+   * A chapter this household stopped partway and can pick up again (#259):
+   * the lobby offers "keep going", and the one-line recap is what it says.
+   * Written when a room opens or refreshes its lobby (`offerCampaigns`) and
+   * gone from the room once it is taken up. Absent when there is nothing
+   * saved, which is nearly every room.
+   */
+  saved?: SavedGameView;
+  /**
    * The host closed the room (#263). Every screen leaves, nothing more is
    * accepted, and the code is free again. Terminal: a closed room never
    * reopens.
    */
   closed?: true;
+  /**
+   * The host stopped the game to pick it up another day (#259), rather than
+   * just closing it. Always beside `closed`, and it only changes what the
+   * leaving screens say: the game is saved, not over.
+   */
+  stopped?: true;
   /**
    * The room is open to visitors (#249): phones from other households may
    * join it, with this code. It is the room's code and two more letters,
@@ -459,6 +473,18 @@ export interface RunState {
    */
   visitorsOpened?: true;
   updatedAt: string;
+}
+
+/** A stopped chapter, as the lobby offers it (`RunState.saved`, #259). */
+export interface SavedGameView {
+  campaignId: string;
+  campaignTitle: string;
+  chapter: { index: number; title: string };
+  /** Where the party was, in a sentence or two read aloud: "Last time, ...". */
+  recap: string;
+  /** The heroes who were playing, by name. */
+  heroes: string[];
+  savedAt: string;
 }
 
 /** One entry on the host's roster (`RunState.seats`, #263). */

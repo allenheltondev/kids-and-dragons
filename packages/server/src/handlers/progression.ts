@@ -210,7 +210,7 @@ export async function startPartyCampaign(
 }
 
 /** Phases a chapter is under way in, where a hero seated now plays it. */
-const UNDER_WAY: ReadonlySet<RunState["phase"]> = new Set(["scene", "check", "encounter"]);
+export const UNDER_WAY: ReadonlySet<RunState["phase"]> = new Set(["scene", "check", "encounter"]);
 
 /**
  * Seating a saved hero, against her claim (#282, architecture §4.5). Every

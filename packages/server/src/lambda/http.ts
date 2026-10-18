@@ -37,6 +37,7 @@ import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom
 import { setVisitors } from "../handlers/visitors.ts";
 import { removePlayer } from "../handlers/remove.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "../handlers/host.ts";
+import { releaseSavedHero, resumeGame, stopForToday } from "../handlers/save.ts";
 import { listHeroes } from "../handlers/heroes.ts";
 import { getJournal } from "../handlers/journal.ts";
 import { getState } from "../handlers/state.ts";
@@ -142,6 +143,8 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (req.path === "/api/preview") return (deps) => postPreview(req, deps);
     if (req.path === "/api/presence") return (deps) => postPresence(req, deps);
     if (req.path === "/api/progression/spend") return (deps) => postProgressionSpend(req, deps);
+    if (req.path === "/api/resume") return (deps) => postResume(req, deps);
+    if (req.path === "/api/save/release") return (deps) => postReleaseHero(req, deps);
     if (req.path === "/api/auth/link") return (deps) => postLink(req, deps, rt);
     if (req.path === "/api/auth/device") return (deps) => postAdopt(req, deps, rt);
     if (req.path === "/api/auth/shared-device") return (deps) => postShareDevice(req, deps, rt);
@@ -179,6 +182,11 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (close?.[1]) {
       const code = close[1].toUpperCase();
       return (deps) => postClose(req, deps, code);
+    }
+    const stop = /^\/api\/room\/([A-Za-z]{4})\/stop$/.exec(req.path);
+    if (stop?.[1]) {
+      const code = stop[1].toUpperCase();
+      return (deps) => postStop(req, deps, code);
     }
     const visitors = /^\/api\/room\/([A-Za-z]{4})\/visitors$/.exec(req.path);
     if (visitors?.[1]) {
@@ -513,6 +521,53 @@ async function postQuiet(req: Req, deps: HandlerDeps, code: string) {
 /** The host closing the room for everyone (#263). */
 async function postClose(req: Req, deps: HandlerDeps, code: string) {
   return postHostControl(req, deps, code, null, (principal) => closeRoom({ code, principal }, deps));
+}
+
+/**
+ * The host saving the chapter and closing the room, to pick it up another day
+ * (#259, handlers/save.ts).
+ */
+async function postStop(req: Req, deps: HandlerDeps, code: string) {
+  return postHostControl(req, deps, code, null, (principal) => stopForToday({ code, principal }, deps));
+}
+
+/**
+ * The host of a stopped game letting a hero go from it (#259). The device
+ * token, not a session: the room is closed. A personal device only; the
+ * hero's own grown-up uses the organizer screen.
+ */
+async function postReleaseHero(req: Req, deps: HandlerDeps) {
+  const { characterId, homeHouseholdId } = req.body;
+  if (typeof characterId !== "string" || characterId === "") return error(400, "ILLEGAL", "expected { characterId }");
+  if (homeHouseholdId !== undefined && typeof homeHouseholdId !== "string") {
+    return error(400, "ILLEGAL", "homeHouseholdId must be a string");
+  }
+  const host = await resolvePrincipal(req, deps);
+  if (!host) return error(401, "FORBIDDEN", "letting a hero go needs the device that stopped the game");
+  const result = await releaseSavedHero(
+    {
+      deviceId: host.principal.deviceId,
+      householdId: host.principal.householdId,
+      characterId,
+      ...(homeHouseholdId ? { homeHouseholdId } : {}),
+    },
+    deps,
+  );
+  return result.ok ? json(200, { ok: true, left: result.value.left }, host.principal) : fromError(result.error);
+}
+
+/**
+ * A seated phone taking the household's saved chapter into this room (#259).
+ * Session token only, so a phone can keep going for nobody but its own seat.
+ */
+async function postResume(req: Req, deps: HandlerDeps) {
+  const session = await resolveSession(req, deps);
+  if (!session) return error(401, "FORBIDDEN", "keeping going needs a room session token");
+  const result = await resumeGame(
+    { runId: session.runId, playerId: session.playerId, householdId: session.householdId },
+    deps,
+  );
+  return result.ok ? json(200, { ok: true, seq: result.value.seq }) : fromError(result.error);
 }
 
 // ---------------------------------------------------------------------------
