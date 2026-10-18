@@ -8,6 +8,7 @@
  *
  *   - take a player out (`removePlayer`, #267)
  *   - lock the room to new joins, and unlock it again
+ *   - turn quiet mode on for every device in the room, and off again (#260)
  *   - close the room for everyone
  *
  * Anything that lowers the barrier to joining (opening a room to visitors,
@@ -127,6 +128,40 @@ export async function lockRoom(
       if (input.locked) return { ...state, locked: true };
       const { locked: _locked, ...open } = state;
       return open;
+    },
+    deps,
+  );
+  return result.ok ? ok({ seq: result.value.seq }) : result;
+}
+
+export interface SetQuietInput {
+  code: string;
+  principal: HostPrincipal;
+  /** True for quiet mode, false to go back to the usual sound and motion. */
+  quiet: boolean;
+}
+
+/**
+ * Quiet mode for the whole room (#260): a sleeping sibling, a car, a late
+ * evening. It is a flag on the run, so every screen gets it in the same patch
+ * and a device that joins or reconnects later reads it from its first state.
+ * What it changes is each device's own business (client/src/quiet.ts); the
+ * server only says whether the room is quiet.
+ */
+export async function setQuiet(
+  input: SetQuietInput,
+  deps: HandlerDeps,
+): Promise<HandlerResult<{ seq: number }>> {
+  const hosted = await hostedRoom(input.code, input.principal, deps);
+  if (!hosted.ok) return hosted;
+  const result = await commitRoomChange(
+    hosted.value,
+    input.principal.playerId,
+    (state) => {
+      if ((state.quiet === true) === input.quiet) return null;
+      if (input.quiet) return { ...state, quiet: true };
+      const { quiet: _quiet, ...loud } = state;
+      return loud;
     },
     deps,
   );
