@@ -8,6 +8,8 @@ import {
   failCampaign,
   MAX_STAT_GAIN,
   newCharacter,
+  recordFinished,
+  hasFinished,
   withInventory,
   resolveCharacter,
   spendStatPoint,
@@ -410,6 +412,23 @@ describe("the commitment rule", () => {
     const once = failCampaign(midCampaign(), "cracked_pendant", "2026-07-14");
     const twice = failCampaign(startCampaign(once, "r_90a"), "singed_feather", "2026-08-01");
     expect(twice.souvenirs.map((s) => s.id)).toEqual(["cracked_pendant", "singed_feather"]);
+  });
+
+  it("records a finished campaign once per campaign, keeping the latest (#283)", () => {
+    const fresh = commitCampaign(midCampaign());
+    expect(fresh).not.toHaveProperty("finished");
+    expect(hasFinished(fresh, "gemfall")).toBe(false);
+
+    const away = recordFinished(fresh, { campaignId: "gemfall", outcome: "setback", at: "2026-07-14", table: "h_club" });
+    const other = recordFinished(away, { campaignId: "riftlight", outcome: "success", at: "2026-08-01", table: "h_4k2" });
+    const again = recordFinished(other, { campaignId: "gemfall", outcome: "success", at: "2026-09-01", table: "h_4k2" });
+    expect(again.finished).toEqual([
+      { campaignId: "riftlight", outcome: "success", at: "2026-08-01", table: "h_4k2" },
+      { campaignId: "gemfall", outcome: "success", at: "2026-09-01", table: "h_4k2" },
+    ]);
+    expect(hasFinished(again, "gemfall")).toBe(true);
+    // Pure: the hero it was handed is untouched.
+    expect(away.finished).toHaveLength(1);
   });
 
   it("clears quest items on both outcomes — they are campaign-scoped either way", () => {

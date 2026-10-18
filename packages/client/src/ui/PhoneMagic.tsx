@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import type { MouseEvent, ReactNode } from "react";
+import { reducedMotion } from "../a11y/prefs";
 import "./phone-magic.css";
 
 /** One feedback layer for creation, choices, inventory, maps and the tray. */
@@ -11,7 +12,7 @@ export function PhoneMagic({ enabled, children }: { enabled: boolean; children: 
     if (!enabled || event.defaultPrevented || !(event.target instanceof Element)) return;
     const control = event.target.closest<HTMLElement>("button, a[href], summary, input[type=checkbox], input[type=radio], [role=button], [role=tab]");
     if (!control || control.closest(":disabled, [aria-disabled=true], [inert]")) return;
-    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    if (reducedMotion()) return;
 
     // Individual scale composes with existing lifts and translations. Never
     // delay the action, move focus, or remount a game surface for decoration.

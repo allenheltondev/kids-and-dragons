@@ -274,8 +274,9 @@ export async function sweepIdleProfiles(deps: ForgetDeps): Promise<IdleSweepResu
 
 /**
  * Every table whose saves may name her: her home, each table she visited
- * (`putVisit`), and any table one of her heroes is claimed by, which also
- * finds a visit from before visits were written down.
+ * (`putVisit`), and any table one of her heroes is claimed by or finished a
+ * campaign at (`finished[].table`, #283), which also finds a visit from
+ * before visits were written down.
  */
 export async function tablesOf(
   playerId: string,
@@ -287,6 +288,7 @@ export async function tablesOf(
   for (const hero of heroes) {
     const held = claimOf(hero);
     if (held !== null) tables.add(parseClaim(held, hero).table);
+    for (const done of hero.finished ?? []) tables.add(done.table);
   }
   return [...tables];
 }

@@ -36,6 +36,28 @@ afterEach(() => {
   cleanup();
 });
 
+describe("a saved game (#259)", () => {
+  const SAVED = {
+    campaignId: "gemfall",
+    campaignTitle: "Gemfall",
+    chapter: { index: 2, title: "The Honey Bridge" },
+    recap: "Bees hummed over the water.",
+    heroes: ["Pip", "Bo"],
+    savedAt: "2026-10-18T18:00:00.000Z",
+  };
+
+  it("tells the room where it stopped and who can pick it up", () => {
+    mount({ campaign: FIRST, saved: SAVED });
+    expect(screen.getByText("You stopped partway through The Honey Bridge.")).toBeTruthy();
+    expect(screen.getByText(/Bees hummed over the water\. Pip and Bo can tap Keep going on a phone\./)).toBeTruthy();
+  });
+
+  it("says nothing when nothing was stopped", () => {
+    mount({ campaign: FIRST });
+    expect(screen.queryByText(/You stopped partway/)).toBeNull();
+  });
+});
+
 describe("the lobby's campaign premise", () => {
   it("tells an empty lobby what it is about to start", () => {
     mount({ campaign: FIRST });

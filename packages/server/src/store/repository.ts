@@ -91,6 +91,23 @@ export interface RunRecord {
    * rolling from the public seed so their event logs still replay.
    */
   diceSecret?: string;
+  /**
+   * The host stopped this run partway through a chapter to pick it up another
+   * day (#259, handlers/save.ts). With the run's state closed, this is what
+   * makes it a saved game the household's next room offers. On the run row
+   * for the reason `lobbyFor` is: a household id and a clock have no business
+   * on the state every screen receives. Cleared when the game is taken up, or
+   * when a later stop of the same campaign replaces it. Absent on every run
+   * that was not stopped, which is nearly all of them.
+   */
+  stoppedAt?: string;
+  /**
+   * The device that opened the room it was stopped in (`RoomRecord.hostDeviceId`,
+   * which is gone with the code). It is how the stopped table's host is still
+   * known to be the host, to let a hero go from the game (handlers/save.ts,
+   * `releaseSavedHero`). Written and cleared with `stoppedAt`.
+   */
+  stoppedBy?: string;
 }
 
 /**

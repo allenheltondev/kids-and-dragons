@@ -117,3 +117,25 @@
 .kad-host__confirm p {
   margin: 0;
 }
+
+/* "Stop here for today?" at a Rest scene (#259). */
+.kad-host--inline-offer:not(:empty) {
+  flex: 0 0 auto;
+  margin: 0.5rem 0.75rem 0;
+}
+
+.kad-host__offer {
+  inline-size: 100%;
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--kad-border);
+  border-radius: var(--kad-radius-md);
+  background: var(--kad-bg-raised);
+  box-shadow: var(--kad-shadow-lg);
+  color: var(--kad-ink);
+}
+
+.kad-host__offer p {
+  margin: 0;
+}

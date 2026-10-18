@@ -535,6 +535,11 @@ export interface OrganizerHero {
    * it is in flight. Absent when she is free to join any table.
    */
   adventure?: string;
+  /**
+   * Her adventure is a stopped game (#259): saved at another table (`at`, its
+   * name) or at home (empty). "End" still frees her, and drops those gains.
+   */
+  saved?: { at?: string };
 }
 
 export interface OrganizerPlayer {
@@ -703,6 +708,21 @@ export interface JournalResponse {
    * stands the party on. `null` before anybody has set out.
    */
   whereabouts: { chapterId: string; biome: string } | null;
+  /**
+   * Hero id → the campaigns that hero has finished, from her own record
+   * (#283), wherever she finished them, oldest first. Only heroes with one are
+   * listed. Optional because a server from before the record sends none.
+   */
+  finished?: Record<string, JournalFinishedCampaign[]>;
+}
+
+/** One line of a hero's finished campaigns, as her adventure book shows it. */
+export interface JournalFinishedCampaign {
+  campaignId: string;
+  /** The campaign's title, or its id when the content no longer ships it. */
+  title: string;
+  outcome: "success" | "setback";
+  at: string;
 }
 
 export interface StateResponse {

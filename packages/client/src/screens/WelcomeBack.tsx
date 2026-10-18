@@ -25,6 +25,7 @@ import { CreationFlow } from "./CreationFlow";
 import { Icon } from "./icons";
 import "./shared.css";
 import "./CreationFlow.css";
+import { savedHeroLine } from "./save-copy";
 import "./WelcomeBack.css";
 
 function tierName(tier: string): string {
@@ -33,6 +34,7 @@ function tierName(tier: string): string {
 
 export function WelcomeBack(): ReactElement {
   const listHeroes = useGameStore((s) => s.listHeroes);
+  const savedHeroes = useGameStore((s) => s.savedHeroes);
   const send = useSend();
   const [heroes, setHeroes] = useState<ResolvedCharacter[] | null>(null);
   const [makeNew, setMakeNew] = useState(false);
@@ -122,6 +124,9 @@ export function WelcomeBack(): ReactElement {
                         {on ? <Icon name="check" label="Chosen" /> : null}
                       </span>
                     </span>
+                    {savedHeroes[h.id] ? (
+                      <span className="creation-card__line kad-muted">{savedHeroLine(h.name, savedHeroes[h.id]!)}</span>
+                    ) : null}
                     <span className="creation-card__line kad-muted">
                       <Icon name={h.class} />
                       <span>

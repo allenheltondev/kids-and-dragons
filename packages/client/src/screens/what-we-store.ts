@@ -68,7 +68,7 @@ export const STORED: readonly StoredThing[] = [
   {
     title: "Saved games",
     what:
-      "Where the party is in each adventure: the chapter, the road taken, the setbacks, the coins. Every choice and dice roll in a game is kept in order (the event log), so a phone that drops out can catch up. The hero names of whoever played are in it, until that kid is deleted.",
+      "Where the party is in each adventure: the chapter, the road taken, the setbacks, the coins. A game stopped for today is kept as it stood, to pick up another day. Every choice and dice roll in a game is kept in order (the event log), so a phone that drops out can catch up. The hero names of whoever played are in it, until that kid is deleted.",
     kept: UNTIL_DELETED,
     owner: "table",
     rows: ["Campaign run", "Chapter progress", "Game state", "Event log", "Campaign attempt"],

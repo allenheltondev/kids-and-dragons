@@ -42,6 +42,9 @@
  *
  * First finder wins for good: the store never overwrites an entry.
  *
+ * A visiting finder's step is also recorded in her own home's book (#283,
+ * `StepFinds.visitors`): her finds are hers. Nobody else's home book gets it.
+ *
  * ---------------------------------------------------------------------------
  * WHOSE BOOK (`discoveryHousehold`)
  *
@@ -149,11 +152,12 @@ export interface StepFinds {
   /** Only ids the book did not already have; empty when nothing is new. */
   report: FieldGuideDiscovery[];
   /**
-   * The same step's finds for each visitor's own household (#249), which
-   * keeps its own book: everything the step revealed, credited to that
-   * household's own player. Recorded first-finder-wins like the room's, so
-   * what that book already has is left alone. Empty in a room with no
-   * visitors.
+   * The step's finds for its finder's own home, when she is visiting (#249,
+   * #283): everything her step revealed, credited to her, in her home's book.
+   * Her finds are hers and go wherever she plays; a find another hero made is
+   * not, so nobody else's home book gets it. Recorded first-finder-wins like
+   * the room's, so what her home book already has is left alone. Empty unless
+   * the finder is a visitor; the room's own book is written as before.
    */
   visitors: { householdId: string; report: FieldGuideDiscovery[] }[];
 }
@@ -210,7 +214,12 @@ export async function prepareStepFinds(
   return { householdId, book, report, visitors: visitorFinds(after, householdId, found, finder, run.id, now) };
 }
 
-/** `StepFinds.visitors`: one report per visiting household at the table. */
+/**
+ * `StepFinds.visitors`: the finder's own home book, when the finder is a
+ * visitor. Everything her step revealed, not only what was new to the table:
+ * the table's book may already credit someone else, and her own book is
+ * still missing it. A visitor who did not make the find gets nothing from it.
+ */
 function visitorFinds(
   state: RunState,
   householdId: string,
@@ -219,18 +228,10 @@ function visitorFinds(
   runId: string,
   now: string,
 ): StepFinds["visitors"] {
-  if (found.length === 0) return [];
-  const homes = new Map<string, string>();
-  for (const member of state.party) {
-    const home = member.homeHouseholdId;
-    if (home === undefined || home === householdId) continue;
-    // Their own finder when one of theirs made the find, else their first hero.
-    if (!homes.has(home) || member.playerId === finder) homes.set(home, member.playerId);
-  }
-  return [...homes].map(([home, playerId]) => ({
-    householdId: home,
-    report: found.map((canonId) => ({ canonId, playerId, runId, foundAt: now })),
-  }));
+  if (found.length === 0 || finder === null) return [];
+  const home = state.party.find((member) => member.playerId === finder)?.homeHouseholdId;
+  if (home === undefined || home === householdId) return [];
+  return [{ householdId: home, report: found.map((canonId) => ({ canonId, playerId: finder, runId, foundAt: now })) }];
 }
 
 /**

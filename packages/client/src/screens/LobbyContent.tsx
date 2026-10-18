@@ -18,6 +18,7 @@ import { campaignOptionLine, campaignPremise, journeyLine, lockedLine, nextChapt
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
+import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
 import "./shared.css";
 import "./LobbyContent.css";
@@ -147,6 +148,19 @@ export function LobbyContent(): ReactElement {
         <Icon name="party" />
         <span>Everyone in?</span>
       </h2>
+      {/* A chapter this household stopped partway (#259): said to the room, and
+          taken up from any phone. */}
+      {state?.saved ? (
+        <div className="lobby__premise">
+          <p className="lobby__premise-title">
+            <Icon name="scroll" />
+            <span>{savedHeading(state.saved)}</span>
+          </p>
+          <p className="lobby__premise-text">
+            {state.saved.recap} {savedHeroes(state.saved)} can tap Keep going on a phone.
+          </p>
+        </div>
+      ) : null}
       {/* Before chapter 1 the table needs to know what it is setting out on —
           otherwise the first scene is the first anyone hears of the story.
           Told while the room is filling, and gone once the lineup starts:

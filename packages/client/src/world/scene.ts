@@ -101,6 +101,7 @@ import {
 import type { EncounterEvent } from "@kad/shared";
 import { stageSlots, stageFigureScale, type StageCastMember } from "./cast";
 import { storyStageHeight } from "./stage-inset";
+import { reducedMotion } from "../a11y/prefs";
 
 export { characterArtUrl };
 
@@ -1564,9 +1565,5 @@ export function sceneStep(ms: number): void {
  * the very next beat.
  */
 function prefersReducedMotion(): boolean {
-  try {
-    return typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  } catch {
-    return false;
-  }
+  return reducedMotion();
 }

@@ -178,6 +178,39 @@ describe("deleting a kid (#252)", () => {
     expect((await h.repo.getFieldGuide(ada.householdId)).entries["lore.a"]?.firstFoundBy).toBe(FORGOTTEN_FINDER);
   });
 
+  it("finds a table from a campaign she finished there, with no visit written down (#283)", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    const rue = await homeOf(h, "h_rue", "Rue");
+    await h.repo.putCharacter({
+      id: "c_ada",
+      householdId: ada.householdId,
+      ownerPlayerId: ada.playerId,
+      name: "Sparklehoof",
+      species: "unicorn",
+      class: "songkeeper",
+      appearance: { palette: "meadow", accent: "#7FD4C1" },
+      committed: {
+        level: 2,
+        xp: 30,
+        stats: { might: 1, quick: 2, clever: 2, heart: 4 },
+        tier: "fledgling",
+        unlockedActions: [],
+        inventory: [],
+      },
+      questItems: [],
+      souvenirs: [],
+      finished: [{ campaignId: GEMFALL, outcome: "success", at: new Date(h.clock.now()).toISOString(), table: rue.householdId }],
+      createdAt: new Date(h.clock.now()).toISOString(),
+    } as Character);
+    await h.repo.recordDiscoveries(rue.householdId, [{ canonId: "lore.a", playerId: ada.playerId }]);
+    expect(await h.repo.listVisits(ada.playerId)).toEqual([]);
+
+    value(await deleteProfile({ ...ada.owner, householdId: ada.householdId, playerId: ada.playerId }, h.deps));
+
+    expect((await h.repo.getFieldGuide(rue.householdId)).entries["lore.a"]?.firstFoundBy).toBe(FORGOTTEN_FINDER);
+  });
+
   it("is only her household's owners' to do", async () => {
     const h = harness();
     const ada = await homeOf(h, "h_ada", "Ada");

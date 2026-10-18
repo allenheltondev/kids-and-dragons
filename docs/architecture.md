@@ -146,6 +146,20 @@ or fail, a stat point. So a hero is never copied into the room's household, and 
 everything it earned. The household stays the unit (#266 is open); this names a hero's home without
 deepening it.
 
+### A kid's own record, where it lives (for deletion, #252)
+
+Everything #283 writes about a kid is keyed by her **home household id** and
+her **player id**, and needs no index or scan to find:
+
+| What | Where | Found by |
+|---|---|---|
+| Her finished campaigns (`finished`: campaign, outcome, when, which table) | On each of her heroes: `HH#<home>` / `CHAR#<charId>`, `data.finished` | Her heroes are the `CHAR#` rows under `HH#<home>` whose `ownerPlayerId` is her. Deleting the hero deletes the record; there is no copy elsewhere |
+| Her finds in her own book, including the ones made visiting | `HH#<home>` / `FIELDGUIDE`, `entries[canonId].firstFoundBy = <playerId>` | The one book row of her home; her entries are those naming her player id |
+| Her finds in a table's book, where she was first finder there | `HH#<table>` / `FIELDGUIDE`, `firstFoundBy = <playerId>` | Through her `VISIT#<playerId>` rows (#252), one per table she sat down at, and `finished[].table` for the tables she finished a campaign at. Deleting her re-credits these to `FORGOTTEN_FINDER` (§4.5, "Deleting and keeping"). This copy predates #283 (#106, #249) |
+
+`finished[].table` names another household's id, not a person, and is the
+kid's own data: it goes when her hero does.
+
 ### 3.0 Anonymous households and how they expire
 
 An anonymous household is an ordinary household with `guest: true` and an
@@ -217,6 +231,12 @@ The carryover rule from [spec §8.2](./spec.md#82-carryover--the-commitment-rule
     { "id": "cracked_pendant", "fromRun": "r_51a", "earnedAt": "2026-07-14" }
   ],
 
+  // Her own record of finished campaigns (#283, §4.5 "Her own record"). One
+  // line per campaign, the latest completion kept. Absent until she finishes one.
+  "finished": [
+    { "campaignId": "gemfall", "outcome": "setback", "at": "2026-07-30T19:12:00.000Z", "table": "h_rue" }
+  ],
+
   "appearance": {
     "palette": "meadow",
     "accent": "#7FD4C1",
@@ -226,7 +246,7 @@ The carryover rule from [spec §8.2](./spec.md#82-carryover--the-commitment-rule
 }
 ```
 
-- **Campaign success** → `provisional` is copied over `committed`, `provisional` cleared, `questItems` cleared.
+- **Campaign success** → `provisional` is copied over `committed`, `provisional` cleared, `questItems` cleared, and the campaign goes on `finished`.
 - **Campaign failure** → `provisional` cleared, `questItems` cleared, souvenir appended. `committed` untouched.
 - **Effective character** = `provisional ?? committed`. Resolved in one place, `resolveCharacter()`.
 
@@ -767,8 +787,61 @@ that is hers is lost when she leaves.
 **Everything that is hers comes with her.** When she plays at a table that
 is not her home, her XP, items and finds are written back to her home, never
 to the host's (#249, `homeHouseholdId` on the party member). Campaign
-prerequisites (#221) read her own finished-campaign record, not the table's.
-The table keeps its shared Field Guide, and her finds also go to her own.
+prerequisites (#221) read her own finished-campaign record as well as the
+table's. The table keeps its shared Field Guide, and her finds also go to her
+own. Built in #283: "Her own record" below.
+
+##### Her own record (#283)
+
+Two pieces of hers used to live only on the table: which campaigns she has
+finished, and her Field Guide finds. Both are now hers.
+
+- **Finished campaigns live on her hero.** `Character.finished` (character
+  schema v3, §3.2): one line per campaign, `{ campaignId, outcome, at, table }`,
+  the latest completion kept. It is written by `commitCampaign`'s caller
+  (`finish` in `progression.ts`), so it lands in the **same write** that
+  commits her provisional state and releases her claim, inside the run's
+  commit, at her home whichever table she finished at. Only a completed
+  campaign counts, a loss ending included (spec §8.3); a failed one leaves a
+  souvenir and no line. A hero another adventure holds is not settled by this
+  table (`settleParty`), so she gets no line from it either. The table's save
+  (`CampaignProgressRecord`) is written as before and stays the table's.
+- **Prerequisites read the party as well as the table.** A campaign's
+  `requires` is met when the table's household has completed it (#221, as
+  before) **or when any hero seated at the table has it in her own record**
+  (`unmetPrerequisites`'s `finished`, read by `partyFinished` from each
+  member's home). *Any*, not every: a prerequisite says the story has
+  happened, and one hero who was there carries it for the party, the way the
+  household's record already carries every kid at its table. Requiring every
+  hero would lock a family's own new kid out of the campaign the family
+  finished. (The owner confirmed "any hero in the party" for #283; a mixed
+  party where only one hero finished it is tested in `hero-record.test.ts`.)
+  Keeping the household's record beside hers is the conservative
+  half: no record was backfilled, so a household that finished Gemfall before
+  heroes kept one plays exactly as it did. The server's refusal at a chapter
+  start or a Begin reads the party seated then; the lobby's lock is recomputed
+  whenever the party in the lobby changes (`relockLobby`), and a vote for a
+  campaign that locks again is dropped. A hero who has been **taken out**
+  (a host's Remove, or a grown-up retiring her: `RunState.removed`) counts for
+  nothing (`seatedParty`), at the start and in the lobby, which a removal
+  relocks; she stays in `party` disconnected, so reading `party` alone would
+  let her record hold a campaign open for the table she left. A hero who is
+  only disconnected still counts: a dropped phone is not leaving. None of this reads anything for a campaign without `requires`, so Gemfall's
+  lobby and starts are untouched.
+- **Her finds go to her home book too.** When the finder of a step
+  (`firstFinder`) is a visitor, everything her step revealed is also recorded in
+  her home household's book, credited to her, first finder wins; the table's
+  book is written as before. Only the finder's: a find another hero made at
+  the table is not hers and goes to no visitor's book. (#249 first wrote every
+  find to every visiting household; this narrows it.)
+- **It moves with her.** The record is on her `CHAR#` row and her finds are
+  credited to her in her home book, so #251's move carries both with no new
+  code: her heroes move as stored, and the finds she was first to are added to
+  her new home's book.
+- **Her adventure book shows it.** `GET /api/journal` answers `finished`, her
+  heroes' lines with each campaign's title, and the hero page lists them under
+  the sheet ("Adventures finished"). Her finds are already in the Field Guide
+  the journal opens, since it reads her home book.
 
 **Kid "accounts" are profiles, thin by design, and nobody logs in as one.**
 - Every kid already has one: a profile is made the moment they play. Making
@@ -853,7 +926,7 @@ when a row is added to §3 or written by a store without being described there.
 | Data | Where | Kept |
 |---|---|---|
 | Nickname, color, avatar, when she last played | `PLAYER#` row | With the household: 7 days after last play while a guest, until deleted once kept, or the owner's retention window (#252) |
-| Hero: name, appearance, progression, items, souvenirs | `CHAR#` row | Same |
+| Hero: name, appearance, progression, items, souvenirs, finished campaigns (each naming the household whose table it was) | `CHAR#` row | Same |
 | Gameplay: choices, rolls, the event log | `RUN#` partition | Same |
 | Field Guide finds, credited to a profile | `FIELDGUIDE` row | Same |
 | Device binding: device id, user agent, last seen, token hash | `DEVICE#` row | Same, revocable |
@@ -929,6 +1002,33 @@ visiting table to write to a hero it does not own. #282 builds it
   abandoned without a release stays claimed until it becomes terminal or she
   leaves it. Nothing times a claim out behind a family's back, because that
   would discard gains they meant to keep.
+- **Stopping for today keeps the claims, deliberately (#259).** A stopped
+  table's heroes still hold their adventure, exactly as after a Close. The
+  claim is what carries every chapter's gains so far, and releasing it would
+  discard them, so "nothing lost" and "released" cannot both be true. It is
+  never hidden: her own screen (the "who are you bringing?" list,
+  `GET /api/heroes` `saved`) and the organizer view (`OrganizerHero.saved`) say
+  where she is, e.g. "Ada is saved in a game at Rue's" (`heroSaved`). A held
+  hero refused elsewhere still reads "in the middle of another adventure".
+  **There is no automatic timeout.** Two people can **release** her, and
+  either frees her at once and drops her unfinished gains from that
+  adventure, exactly as "end this adventure" always did (`releaseClaim`):
+  - **an owner of her home household**, from the organizer screen
+    (`POST /api/organizer/heroes/leave`), whoever hosted the game; and
+  - **the stopped table's host**, the device that stopped the game
+    (`RunRecord.stoppedBy`, kept because the room's code and host go with the
+    room): `POST /api/save/release` `{ characterId, homeHouseholdId? }` with
+    its device token, only for a hero that game's party holds
+    (`releaseSavedHero`). The stopping screen offers it as "Let a hero go",
+    after one "are you sure?" that says what is lost. A shared tablet's host
+    (#250) has no device token of its own to prove this with, so a tablet's
+    stopped game is released by an owner instead.
+
+  If the game resumes after that, she is not in it: a resume leaves out any
+  saved hero who no longer holds the adventure, and she is in it again only by
+  sitting down as she is now, like anyone joining mid-chapter. Stopped runs
+  stay under the household's own keys (`RUN#`), as every run is, so a
+  household's deletion (#252) takes them with it.
 - **Gemfall at home** runs through exactly the same path, with home equal to
   the table, so nothing about a one-household game changes.
 
@@ -1069,7 +1169,7 @@ the profile row last.
 | Deleting | Removed | Kept, and why |
 |---|---|---|
 | **A kid** | Her `PLAYER#` row, every `CHAR#` she owns, her personal `DEVICE#` bindings (revoked or not), her `VISIT#` rows. Her names everywhere they were copied (below) | The saves of the tables she played at, which are the tables'. Before play begins she is taken out of the party; after, her party member stays as "A friend", on `removed` and away, because an encounter's turn order and the table's votes point at it (as with Remove). Field Guide entries she found first, which are the table's book: they now credit `FORGOTTEN_FINDER`, shown as "a friend" |
-| **A household** | Every row under `HH#<id>`: kids whose home it is, their heroes and phones, shared tablets, the Field Guide, campaign attempts, `MOVED#` forwards; every run with its state, event log, chapter progress and presence; rooms still pointing at those runs; every owner's `ACCT#` pointer; its kids' `VISIT#` rows. Its kids' names everywhere they were copied, as for one kid | A **visiting** kid's hero, which lives at her own home (§3) and is not touched. Her claim on this table's attempt is released by the attempt going with it (`claimIsLive` reads no attempt as over). Codes already handed out (`INVITE#`, `TRANSFER#`, `PAIR#`) expire on their own TTL, and each now finds nothing to act on: an invite's redemption checks the household is there and not being deleted |
+| **A household** | Every row under `HH#<id>`: kids whose home it is, their heroes and phones, shared tablets, the Field Guide, campaign attempts, `MOVED#` forwards; every run with its state, event log, chapter progress and presence, a game stopped for today (#259) included; rooms still pointing at those runs; every owner's `ACCT#` pointer; its kids' `VISIT#` rows. Its kids' names everywhere they were copied, as for one kid | A **visiting** kid's hero, which lives at her own home (§3) and is not touched. Her claim on this table's attempt is released by the attempt going with it (`claimIsLive` reads no attempt as over). Codes already handed out (`INVITE#`, `TRANSFER#`, `PAIR#`) expire on their own TTL, and each now finds nothing to act on: an invite's redemption checks the household is there and not being deleted |
 
 **Where a kid's names and ids are copied outside her home.** The list
 `forgetEverywhere` works through, at every table in her `VISIT#` rows, the
@@ -1096,8 +1196,9 @@ save has to carry a hero's name to replay without her home, so (a) it is.
 The record is a `VISIT#<playerId>` row per table rather than a list on her
 character, so a kid with no hero yet is covered, a move (#251) carries
 nothing, and two tables seating her at once never contend on her hero's row.
-A table one of her heroes is claimed by is visited too, which covers visits
-from before the record existed.
+A table one of her heroes is claimed by, or finished a campaign at
+(`finished[].table`, #283), is visited too, which covers visits from before
+the record existed.
 
 Her player id is a random id, never anything about her, so where a save
 needs it to stay well formed (a turn order, a vote, a trade, an event's
@@ -1226,6 +1327,49 @@ presence and the channel refuse it) and then deletes the room's code. Each
 control is one committed patch with the host as its author, so all of it is
 on the run's event log. Opening a room to visitors (#249, below) and forgetting a
 device (#273) need a signed-in owner and are not host controls.
+
+**Stop for today, and pick it up another day** (#259, `handlers/save.ts`). A
+chapter is one sitting and a room lasts six hours, but evenings end early.
+The host's **Stop for today** (`POST /api/room/:code/stop`, a host control like
+the rest, so the TV or a kid's phone may hold it) saves the chapter and closes
+the room: it marks the run `RunRecord.stoppedAt`, then closes it (`closed` and
+`stopped`, so the leaving screens say "your game is saved" rather than "closed")
+and deletes the code. Nothing is copied: a run's `STATE` carries no TTL, so the
+stopped run *is* the save and lasts as long as its household (seven days past
+the last play for a guest household, which every play extends; for good once a
+grown-up keeps it). It is legal at any point a campaign chapter is under way. A
+roll is settled whole in the action that rolls it, so the run never holds one
+half done, and the host's screen simply waits out the dice animation on its own.
+The host's panel always has it; a **Rest** scene also offers "stop here for
+today?" without opening anything. Between chapters there is nothing to save (the
+campaign attempt already holds where the party got to), so it is refused with a
+line saying so.
+
+Only a stop saves. A plain **Close**, an idle close and a room that simply
+expires do not, and still mean "done for now; the chapter starts fresh".
+
+The household's next room, whoever opens it and on whichever device, **offers
+"keep going"**: `savedGame` finds the newest stopped run that can still be
+picked up and the lobby carries a `RunState.saved` view (campaign, chapter, the
+heroes who were playing, and a one-line recap taken from the scene's first
+sentence). It is offered only while the chapter is still the household's next
+one: the run is closed, its campaign attempt is still active and the same one
+it began under (`campaignAttemptId`), and the attempt is still at that beat
+(that visit, for a graph campaign). Another room finishing the chapter, or
+replaying the campaign, retires the offer without touching the run.
+**Keep going** (`POST /api/resume`, any seated player's room session) takes the
+saved game into the lobby in one committed change: the scene, narration,
+prompt, flags, purse, trail, fight and story turn are the saved run's; the
+code, roster, lock, quiet mode, visitor code and lobby stay the new room's. The
+party comes back as the household's party, with the hp it stopped with. A
+player whose phone has not joined this room yet is *away* until it does (the
+rules of #258 carry the table meanwhile), and a seat belongs to a player, never
+to a device, so a different phone resumes seamlessly. A hero already seated in
+the new room who was not in the game joins it, claiming the adventure in the
+same transaction as a hero who sits down mid-chapter does. The save is spent
+once taken up, one save is kept per campaign, and a chapter finished or stopped
+again just replaces it. The chapter then settles against the same attempt as
+ever.
 
 Room items carry a **6-hour TTL** so abandoned rooms clean themselves up, and a
 room open to visitors closes sooner (below). Revoking a device does not touch
