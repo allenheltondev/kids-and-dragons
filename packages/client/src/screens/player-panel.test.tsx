@@ -1123,6 +1123,21 @@ describe("passing an item to a friend", () => {
     expect(screen.getByText("Waiting for an answer")).toBeTruthy();
   });
 
+  it("leaves out a visitor from another household, whose things go home with them (#249)", async () => {
+    const user = userEvent.setup();
+    mount({
+      party: [
+        member({ character: character({ inventory: [POTION] }) }),
+        member({ character: THISTLE, homeHouseholdId: "h_next_door" }),
+      ],
+      sceneType: "rest",
+    });
+
+    await openThePotion(user);
+    expect(screen.queryByRole("button", { name: /Give to Thistle/ })).toBeNull();
+    expect(screen.getByText(/Visitors keep their own things/)).toBeTruthy();
+  });
+
   it("says so when there is nobody to give anything to", async () => {
     const user = userEvent.setup();
     mount({ party: [member({ character: character({ inventory: [POTION] }) })], sceneType: "rest" });

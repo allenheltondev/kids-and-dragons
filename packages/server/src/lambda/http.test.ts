@@ -446,14 +446,14 @@ describe("POST /api/room/:code/join", () => {
     expect(bodyOf(result)).toMatchObject({ code: room.code, runId: room.runId });
   });
 
-  it("is a four-letter route and nothing else", async () => {
+  it("is a four-letter route, or six for a visitor code (#249), and nothing else", async () => {
     /*
      * The path regex is the only validation a room code gets before it reaches
      * the table. Anything it lets through that `generateRoomCode` cannot
      * produce is a lookup that can only miss — so the shape is the guard.
      */
     const rt = runtimeFor(makeHarness());
-    for (const code of ["ABC", "ABCDE", "AB1D", "ABCD5", "", "../.."]) {
+    for (const code of ["ABC", "ABCDE", "AB1D", "ABCD5", "ABCDEFG", "ABCDE1", "", "../.."]) {
       const result = await respond(event("POST", `/api/room/${code}/join`), rt);
       expect(result.statusCode, code).toBe(404);
       expect(bodyOf(result).error, code).toMatchObject({ message: `no route POST /api/room/${code}/join` });
@@ -503,6 +503,152 @@ describe("POST /api/room/:code/join", () => {
     );
     expect(result.statusCode).toBe(403);
     expect(bodyOf(result).error).toMatchObject({ code: "FORBIDDEN" });
+  });
+});
+
+describe("a room open to visitors (#249)", () => {
+  const OWNER: VerifiedAccount = { cognitoSub: "sub-test", email: "owner@example.com" };
+
+  /** A room of household h_test, whose owner is signed in, and a phone from h_other. */
+  async function openable() {
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    await harness.repo.putAccountPointer(OWNER.cognitoSub, room.householdId);
+    await harness.repo.putHousehold({
+      id: "h_other",
+      displayName: "Next door",
+      ownerSub: "sub-other",
+      guest: false,
+      createdAt: new Date(harness.clock.now()).toISOString(),
+    });
+    await harness.repo.putPlayer({ id: "p_x", householdId: "h_other", displayName: "Wren", color: "#E8A33D" });
+    const { token } = await harness.identity.issueDeviceToken({ householdId: "h_other", playerId: "p_x" });
+    const rt = runtimeFor(harness);
+    // The room's own phone joins first, which settles it.
+    await respond(
+      event("POST", `/api/room/${room.code}/join`, { headers: { "x-kad-device-token": room.player.deviceToken } }),
+      rt,
+    );
+    return { harness, room, rt, visitorToken: token };
+  }
+
+  const opening = (code: string, open: unknown, token = "good") =>
+    event("POST", `/api/room/${code}/visitors`, { body: { open }, headers: { authorization: `Bearer ${token}` } });
+
+  it("needs a verified sign-in, and an owner of the room's household", async () => {
+    const { room, rt } = await openable();
+    expect((await respond(opening(room.code, true, ""), rt)).statusCode).toBe(401);
+    rt.account = { cognitoSub: "sub-stranger" };
+    const stranger = await respond(opening(room.code, true), rt);
+    expect(stranger.statusCode).toBe(403);
+    rt.account = OWNER;
+    expect((await respond(opening(room.code, "yes"), rt)).statusCode).toBe(400);
+    expect((await respond(opening("WXYZ", true), rt)).statusCode).toBe(404);
+  });
+
+  it("lets a phone from another household join with the six-letter code only", async () => {
+    const { room, rt, visitorToken } = await openable();
+    const join = (code: string) =>
+      respond(event("POST", `/api/room/${code}/join`, { headers: { "x-kad-device-token": visitorToken } }), rt);
+    expect((await join(room.code)).statusCode).toBe(403);
+
+    rt.account = OWNER;
+    const opened = await respond(opening(room.code, true), rt);
+    expect(opened.statusCode).toBe(200);
+    const visitorCode = String(bodyOf(opened).visitorCode);
+    expect(visitorCode).toMatch(new RegExp(`^${room.code}[A-Z]{2}$`));
+
+    // Still refused on the short code; in on the long one, answered with the
+    // room's own code, which every later call names.
+    expect((await join(room.code)).statusCode).toBe(403);
+    const joined = await join(visitorCode.toLowerCase());
+    expect(joined.statusCode).toBe(200);
+    expect(bodyOf(joined)).toMatchObject({ code: room.code, roomCode: room.code, playerId: "p_x" });
+    // A wrong last two letters is an unknown code.
+    const wrong = room.code + (visitorCode.endsWith("ZZ") ? "YY" : "ZZ");
+    const missed = await join(wrong);
+    expect(missed.statusCode).toBe(404);
+    expect(bodyOf(missed).error).toMatchObject({ message: `no open room ${wrong}` });
+  });
+
+  it("gives a brand-new phone on the long code a household of its own, never the host's", async () => {
+    const { harness, room, rt } = await openable();
+    rt.account = OWNER;
+    const visitorCode = String(bodyOf(await respond(opening(room.code, true), rt)).visitorCode);
+
+    const joined = await respond(event("POST", `/api/room/${visitorCode}/join`, { body: { displayName: "Wren" } }), rt);
+    expect(joined.statusCode).toBe(200);
+    const device = await harness.identity.resolveDevice(String(bodyOf(joined).deviceToken));
+    expect(device?.householdId).toBeTruthy();
+    expect(device?.householdId).not.toBe(room.householdId);
+    expect(await harness.repo.getPlayer(room.householdId, device!.playerId)).toBeNull();
+    const state = await harness.repo.getState(room.runId);
+    expect(state?.seats?.[device!.playerId]).toMatchObject({ homeHouseholdId: device!.householdId });
+    // It founded that household, so it, and only it, may keep it later.
+    expect((await harness.repo.getHousehold(device!.householdId))?.founderDeviceId).toBe(device!.deviceId);
+
+  });
+
+  /** Everybody the room's household has, so a test can prove nobody was added. */
+  async function members(harness: ReturnType<typeof makeHarness>, householdId: string) {
+    const [players, devices] = await Promise.all([
+      harness.repo.listPlayers(householdId),
+      harness.repo.listDevices(householdId),
+    ]);
+    return { players: players.length, devices: devices.length };
+  }
+
+  it("never makes a brand-new phone family because it knows the room's four letters, while open or after", async () => {
+    const { harness, room, rt } = await openable();
+    rt.account = OWNER;
+    const visitorCode = String(bodyOf(await respond(opening(room.code, true), rt)).visitorCode);
+    // Every visitor has been shown the four letters: they are the long code's first four.
+    const prefix = visitorCode.slice(0, 4);
+    expect(prefix).toBe(room.code);
+    const before = await members(harness, room.householdId);
+
+    const whileOpen = await respond(event("POST", `/api/room/${prefix}/join`, { body: { displayName: "Stranger" } }), rt);
+    expect(whileOpen.statusCode).toBe(403);
+    expect(bodyOf(whileOpen).deviceToken).toBeUndefined();
+    expect(await members(harness, room.householdId)).toEqual(before);
+
+    // The switch goes off. The four letters are still out there, and still prove nothing.
+    expect((await respond(opening(room.code, false), rt)).statusCode).toBe(200);
+    const afterOff = await respond(event("POST", `/api/room/${prefix}/join`, { body: { displayName: "Stranger" } }), rt);
+    expect(afterOff.statusCode).toBe(403);
+    expect(bodyOf(afterOff).deviceToken).toBeUndefined();
+    // Nor does the old long code, which is a wrong code now.
+    const oldLong = await respond(event("POST", `/api/room/${visitorCode}/join`, { body: { displayName: "Stranger" } }), rt);
+    expect(oldLong.statusCode).toBe(404);
+    expect(await members(harness, room.householdId)).toEqual(before);
+
+    // The family's own phone, already bound, still comes back on the four letters.
+    const family = await respond(
+      event("POST", `/api/room/${room.code}/join`, { headers: { "x-kad-device-token": room.player.deviceToken } }),
+      rt,
+    );
+    expect(family.statusCode).toBe(200);
+  });
+
+  it("binds nothing to a brand-new phone a locked room turns away", async () => {
+    const { harness, room, rt } = await openable();
+    const state = await harness.repo.getState(room.runId);
+    if (!state) throw new Error("no state");
+    await harness.repo.putState({ ...state, locked: true });
+    const before = await members(harness, room.householdId);
+
+    const refused = await respond(event("POST", `/api/room/${room.code}/join`, { body: { displayName: "Late" } }), rt);
+    expect(refused.statusCode).toBe(403);
+    expect(bodyOf(refused).deviceToken).toBeUndefined();
+    expect(await members(harness, room.householdId)).toEqual(before);
+  });
+
+  it("still makes a brand-new phone family in a room that was never opened", async () => {
+    const { harness, room, rt } = await openable();
+    const joined = await respond(event("POST", `/api/room/${room.code}/join`, { body: { displayName: "Kid" } }), rt);
+    expect(joined.statusCode).toBe(200);
+    const kin = await harness.identity.resolveDevice(String(bodyOf(joined).deviceToken));
+    expect(kin?.householdId).toBe(room.householdId);
   });
 });
 
@@ -1748,8 +1894,9 @@ function httpRoutePaths(): Set<string> {
   for (const [, path] of source.matchAll(/\breq\.path === "([^"]+)"/g)) {
     if (path) found.add(path);
   }
-  // The two parameterised ones, spelled as regexes: `([A-Za-z]{4})\/join$`.
-  for (const [, segment] of source.matchAll(/\(\[A-Za-z\]\{4\}\)\\\/(\w+)\$/g)) {
+  // The parameterised ones, spelled as regexes: `([A-Za-z]{4})\/watch$`, or
+  // `([A-Za-z]{4}|[A-Za-z]{6})\/join$` where a visitor code is taken too.
+  for (const [, segment] of source.matchAll(/\(\[A-Za-z\]\{4\}(?:\|\[A-Za-z\]\{6\})?\)\\\/(\w+)\$/g)) {
     if (segment) found.add(`/api/room/:code/${segment}`);
   }
   return found;
@@ -1772,6 +1919,8 @@ const SHARED = [
   { path: "/api/room/:code/lock", method: "POST", probe: "/api/room/ABCD/lock" },
   { path: "/api/room/:code/quiet", method: "POST", probe: "/api/room/ABCD/quiet" },
   { path: "/api/room/:code/close", method: "POST", probe: "/api/room/ABCD/close" },
+  // A signed-in owner opening the room to visitors (#249, handlers/visitors.ts).
+  { path: "/api/room/:code/visitors", method: "POST", probe: "/api/room/ABCD/visitors" },
   { path: "/api/action", method: "POST", probe: "/api/action" },
   { path: "/api/preview", method: "POST", probe: "/api/preview" },
   // A phone saying it is still here, or leaving (#258, handlers/presence.ts).

@@ -620,10 +620,14 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
      * the same shape — and keep the device binding that came with it.
      */
     async function adopt(
-      roomCode: string,
+      typed: string,
       seated: JoinRoomResponse & { deviceToken?: string },
       displayName: string,
     ): Promise<ClientSession> {
+      // The room's own four letters, whichever code was typed: a visitor code
+      // (#249) is the way in, and the room's code is what everything after
+      // names (the session, the channel, the path).
+      const roomCode = seated.state.roomCode || typed;
       // A shared tablet is nobody, whoever is sitting at it (#250): it keeps
       // no identity, and the server sends it no device token to keep.
       if (!loadSharedDevice(deps.storage)) {
