@@ -208,6 +208,11 @@ export interface GameStore {
    * `removePlayer`.
    */
   lockRoom(locked: boolean): Promise<boolean>;
+  /**
+   * The host turns quiet mode on for every device in the room, or off again
+   * (#260). Resolves like `removePlayer`.
+   */
+  quietRoom(quiet: boolean): Promise<boolean>;
   /** The host closes the room for everybody (#263). Resolves like `removePlayer`. */
   closeRoom(): Promise<boolean>;
   /** Drops the session and disconnects. Does not delete anything server-side. */
