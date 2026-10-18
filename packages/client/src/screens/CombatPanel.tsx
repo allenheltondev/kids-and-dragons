@@ -60,6 +60,7 @@ import type {
 import {
   UNIVERSAL_ABILITIES,
   combatantById,
+  combatTurnAway,
   currentActor,
   currentActorId,
   captiveName,
@@ -274,6 +275,8 @@ export function CombatControls(): ReactElement | null {
   const active = currentActor(encounter);
   const myTurn = active !== null && active.side === "party" && active.id === me.character.id;
   const deciding = myTurn && !pending;
+  // A friend's turn, and their phone is gone (#258): anybody here can pass it.
+  const standIn = !myTurn && state !== null && combatTurnAway(state);
 
   // The rules boundary, verbatim (see the header). The catalog rides the same
   // content fetch as the rules; until both land the cards simply wait. Read on
@@ -515,7 +518,9 @@ export function CombatControls(): ReactElement | null {
           <span className="combat__line">
             {active
               ? active.side === "party"
-                ? `It's ${combatantLabel(active)}'s turn.`
+                ? standIn
+                  ? `${combatantLabel(active)} stepped away.`
+                  : `It's ${combatantLabel(active)}'s turn.`
                 : `${combatantLabel(active)} is taking its turn…`
               : "The dust is settling…"}
           </span>
@@ -836,6 +841,30 @@ export function CombatControls(): ReactElement | null {
               </Button>
             ) : null}
           </div>
+        </div>
+      ) : standIn && active ? (
+        /*
+          Somebody else's turn, with nobody holding the phone (#258). The
+          engine lets anyone here pass it and nothing more, so a fight never
+          waits on an empty chair. Their hero keeps its place on the board and
+          in the order, and plays again the moment their phone is back.
+        */
+        <div className="combat__dock combat__standin">
+          <p className="combat__hint" role="status">
+            <Icon name="waiting" />
+            <span className="combat__line">Their hero will wait right here.</span>
+          </p>
+          <Button
+            variant="secondary"
+            size="md"
+            block
+            className="combat__end"
+            icon={<Icon name="forward" />}
+            disabled={pending}
+            onClick={() => void dispatch({ type: "END_TURN" })}
+          >
+            Pass {combatantLabel(active)}&rsquo;s turn
+          </Button>
         </div>
       ) : null}
     </div>

@@ -1,0 +1,25 @@
+/*
+ * The catch-up (CatchUp.tsx): one line at the top of a returning or late
+ * kid's phone, in the flow like the arrival notices, so it pushes their own
+ * controls down rather than covering them. Container-relative units only.
+ */
+.catch-up {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: var(--space-2, 0.5em) calc(var(--kad-touch-min, 44px) + 0.25rem) 0 var(--space-3, 0.75em);
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  border: 0.1em solid var(--color-accent, #ffc95c);
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface-raised, #1e1a3a);
+  color: var(--color-text, #f4f0ff);
+}
+
+.catch-up__line {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.3;
+}
