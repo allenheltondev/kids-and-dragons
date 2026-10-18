@@ -17,16 +17,8 @@
  */
 
 import { create } from "zustand";
-import {
-  AuthError,
-  createCognitoClient,
-  createDevAuthClient,
-  type AuthTokens,
-  type CognitoClient,
-  type PendingChallenge,
-} from "../sync/auth";
+import type { AuthTokens, CognitoClient, PendingChallenge, createCognitoClient } from "../sync/auth";
 import { api as defaultApi, type Api, type LinkAccountResponse } from "../sync/client";
-import { useOrganizerStore } from "./organizer";
 import {
   asPlayerIdentity,
   becomeSharedDevice,
@@ -163,8 +155,12 @@ export interface KeepsakeStore {
 export interface KeepsakeDeps {
   api: Api;
   storage: KeyValueStorage;
-  /** Built from `/api/config` on first use; injected whole by tests. */
-  makeCognito: typeof createCognitoClient;
+  /**
+   * Built from `/api/config` on first use; injected whole by tests. Left out,
+   * the real client is fetched with `check()`: the sign-in code and the
+   * organizer store stay off the first paint (tools/perf/bundle-budget.ts).
+   */
+  makeCognito?: typeof createCognitoClient;
   /** Where the `organize` sign-in goes on to (#248). */
   organizer: { begin(idToken: string, email: string): Promise<void>; end(): void };
 }
@@ -173,10 +169,11 @@ export function defaultKeepsakeDeps(): KeepsakeDeps {
   return {
     api: defaultApi,
     storage: defaultStorage(),
-    makeCognito: createCognitoClient,
     organizer: {
-      begin: (idToken, email) => useOrganizerStore.getState().begin(idToken, email),
-      end: () => useOrganizerStore.getState().end(),
+      begin: async (idToken, email) => (await import("./organizer")).useOrganizerStore.getState().begin(idToken, email),
+      end: () => {
+        void import("./organizer").then(({ useOrganizerStore }) => useOrganizerStore.getState().end());
+      },
     },
   };
 }
@@ -322,19 +319,19 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
       // Idempotent and concurrency-safe: several screens mount at once and all
       // of them want to know whether to show the offer.
       checking ??= (async () => {
-        const config = await deps.api.fetchConfig();
+        const [config, auth] = await Promise.all([deps.api.fetchConfig(), import("../sync/auth")]);
         if (!config?.auth.userPoolId) {
           // No user pool: either a deployment without sign-in, or the local dev
           // server, which offers its own pool-free one.
           if (await deps.api.probeDevAuth()) {
-            cognito = createDevAuthClient();
+            cognito = auth.createDevAuthClient();
             set({ available: true, passkeyPossible: false });
           } else {
             set({ available: false });
           }
           return;
         }
-        cognito = deps.makeCognito({
+        cognito = (deps.makeCognito ?? auth.createCognitoClient)({
           region: config.region,
           userPoolId: config.auth.userPoolId,
           clientId: config.auth.clientId,
@@ -535,8 +532,8 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
   });
 }
 
+/** An `AuthError` is an `Error` whose message is written for the grown-up, so it reads as one. */
 function messageFor(err: unknown): string {
-  if (err instanceof AuthError) return err.message;
   if (err instanceof Error && err.message) return err.message;
   return "Something went wrong. Try again in a moment.";
 }
