@@ -99,6 +99,10 @@ function harness(state: RunState = makeState()): Harness {
     listHeroes: vi.fn(async () => ({ heroes: [] as ResolvedCharacter[] })),
     // Between games (screens/JournalScreen). Empty unless a test says otherwise.
     loadJournal: vi.fn(async () => ({ heroes: [] as ResolvedCharacter[], fieldGuide: {}, finders: {}, whereabouts: null })),
+    // What a kid picked for her own page (#299): echoes the choice back as her page.
+    saveFlair: vi.fn(async (choice: Record<string, unknown>) => ({
+      displayName: "Allen", badges: [], finds: { count: 0, recent: [] }, flair: { v: 1, ...choice },
+    })),
     joinRoom: vi.fn(async () => ({
       runId: state.runId,
       playerId: "p_1",
@@ -333,6 +337,23 @@ describe("joining", () => {
       savedAt: null,
     });
     expect(h.api.loadJournal).toHaveBeenCalledWith("dev_host");
+  });
+
+  it("saves what she picked with the device binding, and keeps the saved book in step (#299)", async () => {
+    const h = harness();
+    await expect(h.store.getState().saveFlair({ color: "sky" })).rejects.toMatchObject({ status: 401 });
+    expect(h.api.saveFlair).not.toHaveBeenCalled();
+
+    await h.store.getState().createRoom("travel", "Allen");
+    h.store.getState().leave();
+    await h.store.getState().loadJournal();
+    const page = await h.store.getState().saveFlair({ color: "sky" });
+    expect(h.api.saveFlair).toHaveBeenCalledWith({ color: "sky" }, "dev_host");
+    expect(page.flair).toEqual({ v: 1, color: "sky" });
+
+    // Offline afterwards, the book opens with what she picked.
+    h.api.loadJournal.mockRejectedValueOnce(new TypeError("Failed to fetch"));
+    expect(await h.store.getState().loadJournal()).toMatchObject({ journal: { profile: { flair: { color: "sky" } } } });
   });
 
   it("offers no journal to a screen that only hosted, until it is seated as a player", async () => {

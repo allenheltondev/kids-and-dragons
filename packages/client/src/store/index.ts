@@ -931,6 +931,15 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         }
       },
 
+      async saveFlair(choice) {
+        const deviceToken = loadPlayerDeviceToken(deps.storage);
+        if (!deviceToken) throw new ApiError(401, "This phone is not signed in as anyone yet.");
+        const profile = await deps.api.saveFlair(choice, deviceToken);
+        const saved = loadSavedJournal(deviceToken, deps.storage);
+        if (saved) saveJournal({ ...saved, journal: { ...saved.journal, profile } }, deps.storage);
+        return profile;
+      },
+
       async loadSharedPlayers() {
         const shared = loadSharedDevice(deps.storage);
         if (!shared) return null;

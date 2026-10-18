@@ -48,6 +48,7 @@ import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "./handlers/ho
 import { releaseSavedHero, resumeGame, stopForToday } from "./handlers/save.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
+import { saveFlair } from "./handlers/profile.ts";
 import { getState } from "./handlers/state.ts";
 import { organizerRoute } from "./handlers/organizer.ts";
 import { isSlowDown, pairFromDevice, redeemPairingCode } from "./handlers/pairing.ts";
@@ -600,6 +601,19 @@ async function main(): Promise<void> {
     if (!found) return sendError(res, 401, "FORBIDDEN", "the journal needs this device's token");
     const { principal } = found;
     const result = await getJournal({ householdId: principal.householdId, playerId: principal.playerId }, deps);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
+  // What a kid picked for her own page (see handlers/profile.ts).
+  app.post("/api/profile/flair", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+
+    const found = await resolvePrincipal(req, base);
+    if (!found) return sendError(res, 401, "FORBIDDEN", "your page needs this device's token");
+    const { principal } = found;
+    const result = await saveFlair({ householdId: principal.householdId, playerId: principal.playerId, body: req.body ?? {} }, deps);
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
   });

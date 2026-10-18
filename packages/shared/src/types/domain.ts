@@ -6,6 +6,8 @@
  * live in content/rules.json, per the "content as data" rule in the roadmap.
  */
 
+import type { ProfileFlair } from "../kid-profile.js";
+
 export type StatId = "might" | "quick" | "clever" | "heart";
 
 export const STAT_IDS: readonly StatId[] = ["might", "quick", "clever", "heart"] as const;
@@ -289,6 +291,13 @@ export interface PlayerProfile {
    * bring it back; nobody can pick it or bind a phone to it until then.
    */
   retired?: true;
+  /**
+   * What she chose for her own page (#299): a color, a frame for each hero, a
+   * title from her badges. Presets only, versioned (`PROFILE_FLAIR_VERSION`),
+   * and read through `readFlair`. Seen by her own household and her own devices
+   * and by nobody at a table; it goes with the profile when she is deleted or moves.
+   */
+  flair?: ProfileFlair;
 }
 
 /**
