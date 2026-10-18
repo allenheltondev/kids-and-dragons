@@ -486,7 +486,13 @@ async function postPreview(req: Req, deps: HandlerDeps) {
   const session = await resolveSession(req, deps);
   if (!session) return error(401, "FORBIDDEN", "a preview needs a room session token");
   const result = await relayPreview(
-    { runId: session.runId, playerId: session.playerId, preview: req.body.preview, context: req.body.context },
+    {
+      runId: session.runId,
+      playerId: session.playerId,
+      householdId: session.householdId,
+      preview: req.body.preview,
+      context: req.body.context,
+    },
     deps,
   );
   if (!result.ok) return error(result.status, result.code, result.message);
@@ -581,7 +587,7 @@ async function getStateRoute(req: Req, deps: HandlerDeps) {
     {
       runId,
       ...(raw ? { sinceSeq: Number(raw) } : {}),
-      ...("playerId" in reader ? { playerId: reader.playerId } : {}),
+      ...("playerId" in reader ? { playerId: reader.playerId, householdId: reader.householdId } : {}),
     },
     deps,
   );
@@ -813,7 +819,7 @@ function sameSecret(sent: string | undefined, expected: string): boolean {
 async function roomReader(
   req: Req,
   deps: HandlerDeps,
-): Promise<{ runId: string; roomCode: string; playerId?: string } | null> {
+): Promise<{ runId: string; roomCode: string; playerId?: string; householdId?: string } | null> {
   const token = bearer(req) || (typeof req.query.token === "string" ? req.query.token : "");
   if (!token) return null;
   return (await deps.identity.resolveSession(token)) ?? (await deps.identity.resolveViewer(token));

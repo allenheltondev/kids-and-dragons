@@ -48,6 +48,7 @@ import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
 import { getState } from "./handlers/state.ts";
 import { organizerRoute } from "./handlers/organizer.ts";
+import { isOut } from "./handlers/remove.ts";
 import {
   forgetDevice,
   listSharedPlayers,
@@ -410,7 +411,13 @@ async function main(): Promise<void> {
     const session = await resolveSession(req, base);
     if (!session) return sendError(res, 401, "FORBIDDEN", "a preview needs a room session token");
     const result = await relayPreview(
-      { runId: session.runId, playerId: session.playerId, preview: (req.body ?? {}).preview, context: (req.body ?? {}).context },
+      {
+        runId: session.runId,
+        playerId: session.playerId,
+        householdId: session.householdId,
+        preview: (req.body ?? {}).preview,
+        context: (req.body ?? {}).context,
+      },
       deps,
     );
     if (!result.ok) return sendError(res, result.status, result.code, result.message);
@@ -520,7 +527,10 @@ async function main(): Promise<void> {
     const raw = req.query.sinceSeq;
     const sinceSeq = typeof raw === "string" && raw !== "" ? Number(raw) : undefined;
 
-    const result = await getState({ runId, sinceSeq, playerId: reader.playerId }, deps);
+    const result = await getState(
+      { runId, sinceSeq, playerId: reader.playerId, householdId: reader.householdId },
+      deps,
+    );
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
   });
@@ -544,7 +554,11 @@ async function main(): Promise<void> {
 
     const state = await base.repo.getState(room.runId);
     if (!state) return sendError(res, 404, "NOT_FOUND", `run ${room.runId} has no state`);
-    if (reader.playerId !== undefined && state.removed?.includes(reader.playerId)) {
+    // Taken out by the host (#267), or retired by an organizer (#248).
+    if (
+      reader.playerId !== undefined &&
+      (await isOut(state, reader.playerId, reader.householdId ?? null, base.repo))
+    ) {
       return sendError(res, 403, "FORBIDDEN", "This phone was taken out of the game.");
     }
 
@@ -809,7 +823,7 @@ async function resolveSession(req: Request, deps: BaseDeps): Promise<SessionIden
 async function roomReader(
   req: Request,
   deps: BaseDeps,
-): Promise<{ runId: string; roomCode: string; playerId?: string } | null> {
+): Promise<{ runId: string; roomCode: string; playerId?: string; householdId?: string } | null> {
   const header = req.get("authorization") ?? "";
   const query = typeof req.query?.token === "string" ? req.query.token : "";
   const token = /^Bearer\s+(.+)$/i.exec(header.trim())?.[1] ?? query;

@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import type { PartyMember, ResolvedCharacter } from "@kad/shared";
 import { makeHarness, type TestHarness } from "../test-support.ts";
 import { addPlayer, adoptDevice, linkAccount } from "./account.ts";
 import type { HandlerResult } from "./deps.ts";
@@ -17,7 +18,11 @@ import {
   viewHousehold,
 } from "./organizer.ts";
 import { applyAction } from "./action.ts";
+import { setPresence } from "./presence.ts";
+import { relayPreview } from "./preview.ts";
+import { isOut } from "./remove.ts";
 import { joinRoom, createRoom } from "./room.ts";
+import { getState } from "./state.ts";
 import { listSharedPlayers, seatOnSharedDevice, shareDevice } from "./shared-device.ts";
 
 const ANA = { cognitoSub: "sub_ana", email: "ana@example.com" };
@@ -246,6 +251,80 @@ describe("profiles an organizer manages", () => {
     // Retiring again finds nothing left to do, and says so quietly.
     value(await setProfileRetired({ ...ANA, householdId: group.id, playerId: posy.id, retired: true }, harness.deps));
     expect((await harness.repo.getState(room.runId))?.seq).toBe(state?.seq);
+  });
+
+  it("keeps a retired kid out even when taking them out of the room failed", async () => {
+    const harness = makeHarness();
+    const group = await twoOrganizers(harness);
+    value(await addProfile({ ...ANA, householdId: group.id, displayName: "Posy" }, harness.deps));
+    const tablet = value(await shareDevice({ cognitoSub: ANA.cognitoSub }, harness.deps));
+    const shared = await harness.identity.resolveSharedDevice(tablet.sharedToken);
+    if (!shared) throw new Error("tablet did not resolve");
+    const posy = value(await listSharedPlayers(shared, harness.deps)).players[0];
+    if (!posy) throw new Error("no Posy");
+    const room = value(await createRoom({ householdId: group.id, mode: "party" }, harness.deps));
+    const seat = value(await seatOnSharedDevice({ shared, playerId: posy.id }, harness.deps));
+    const joined = value(await joinRoom({ code: room.code, principal: seat, device: "tablet" }, harness.deps));
+    const session = await harness.identity.resolveSession(joined.sessionToken);
+    if (!session) throw new Error("no session");
+    // Her hero is at the table, and her phone has just dropped off: so a
+    // preview from her, or her stream reopening, would be accepted if the
+    // retirement were not checked.
+    const seated = await harness.repo.getState(room.runId);
+    if (!seated) throw new Error("no state");
+    await harness.repo.putState({
+      ...seated,
+      party: [
+        {
+          character: { id: "c_posy", name: "Sparklehoof" } as unknown as ResolvedCharacter,
+          playerId: posy.id,
+          hp: 10,
+          down: false,
+          connected: false,
+          ready: false,
+        } as PartyMember,
+      ],
+    });
+
+    // Every write to the run loses its race: the room cannot be updated.
+    const commit = vi.spyOn(harness.repo, "commit").mockResolvedValue(false);
+    const retired = await setProfileRetired(
+      { ...BEN, householdId: group.id, playerId: posy.id, retired: true },
+      harness.deps,
+    );
+    commit.mockRestore();
+    // The organizer is told it did not finish, but the profile is retired...
+    expect(retired).toMatchObject({ ok: false, error: { code: "STALE_SEQ" } });
+    expect((await harness.repo.getPlayer(group.id, posy.id))?.retired).toBe(true);
+    // ...and the room never heard: she is not on its `removed` list.
+    const state = await harness.repo.getState(room.runId);
+    expect(state?.removed ?? []).not.toContain(posy.id);
+
+    // Her live session is refused anyway, at every door the room has.
+    const move = await applyAction(
+      { runId: room.runId, playerId: posy.id, seq: state?.seq ?? 0, intent: { type: "READY", ready: true } },
+      harness.deps,
+    );
+    expect(move.error?.code).toBe("FORBIDDEN");
+    const read = await getState({ runId: room.runId, playerId: posy.id, householdId: session.householdId }, harness.deps);
+    expect(read).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+    const tap = await relayPreview(
+      { runId: room.runId, playerId: posy.id, householdId: session.householdId, preview: null, context: null },
+      harness.deps,
+    );
+    expect(tap).toMatchObject({ ok: false, code: "FORBIDDEN" });
+    const back = await joinRoom({ code: room.code, principal: seat, device: "tablet" }, harness.deps);
+    expect(back).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+    // What the realtime channel's authorizer asks, with and without her session's household.
+    if (!state) throw new Error("no state");
+    expect(await isOut(state, posy.id, session.householdId, harness.repo)).toBe(true);
+    expect(await isOut(state, posy.id, null, harness.repo)).toBe(true);
+    // And her stream reopening does not mark her back at the table.
+    expect(await setPresence({ runId: room.runId, playerId: posy.id, connected: true }, harness.deps)).toBeNull();
+
+    // Retiring again, with the room writable, finishes the tidy-up.
+    value(await setProfileRetired({ ...BEN, householdId: group.id, playerId: posy.id, retired: true }, harness.deps));
+    expect((await harness.repo.getState(room.runId))?.removed).toEqual([posy.id]);
   });
 
   it("will not bring a kid back onto a name somebody took meanwhile", async () => {

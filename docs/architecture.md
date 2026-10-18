@@ -630,10 +630,13 @@ has nothing extra to undo.
   start a group, rename it, add a kid ahead of the first game, rename one, see
   each kid's heroes, and retire a kid who stopped coming. A retired profile is
   off every picker, cannot be seated or adopted, and its own phone's binding is
-  revoked. A room session already issued would outlive all of that, so retiring
-  also takes the kid out of every room the household has open, onto the same
-  `RunState.removed` a host's Remove writes, which every action, join and
-  channel check refuses. Its heroes stay, and an owner can bring it back.
+  revoked. A room session already issued would outlive all of that, so every
+  door a room has (action, join, state read, preview, presence, the realtime
+  channel's authorizer) reads the profile's `retired` beside the run's
+  `removed` list, and the profile is the record: a retired kid is refused even
+  if the tidy-up has not reached the run. That tidy-up puts them on every open
+  room's `removed` list, as a host's Remove does; if it fails, retiring again
+  finishes it. Its heroes stay, and an owner can bring it back.
 - **Kids never sign in.** They reach their profiles through the group's shared
   tablet or their own phone, exactly as before.
 - **An account with more than one household is asked which**, never guessed
