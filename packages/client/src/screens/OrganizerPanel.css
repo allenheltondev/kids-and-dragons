@@ -142,3 +142,22 @@
   letter-spacing: 0.12em;
   user-select: all;
 }
+
+/* A move code (#251): scanned off this screen by the grown-up taking her home. */
+.organizer__qr {
+  width: min(12rem, 60vw);
+  height: auto;
+  border-radius: var(--kad-radius-sm);
+  background: #ffffff;
+  image-rendering: pixelated;
+}
+
+.organizer__transfer .keepsake__body,
+.organizer__transfer .keepsake__fine {
+  text-align: center;
+}
+
+.organizer__arrived {
+  color: var(--kad-ink);
+  font-weight: var(--kad-weight-bold);
+}
