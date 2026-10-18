@@ -44,7 +44,7 @@ import { iso } from "./handlers/deps.ts";
 import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, watchRoom } from "./handlers/room.ts";
 import { setVisitors } from "./handlers/visitors.ts";
 import { removePlayer } from "./handlers/remove.ts";
-import { closeRoom, lockRoom, type HostPrincipal } from "./handlers/host.ts";
+import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "./handlers/host.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
 import { getState } from "./handlers/state.ts";
@@ -361,6 +361,10 @@ async function main(): Promise<void> {
   app.post("/api/room/:code/lock", hostControl(
     (body) => (typeof body.locked === "boolean" ? null : "expected { locked: true | false }"),
     (code, principal, body, deps) => lockRoom({ code, principal, locked: body.locked as boolean }, deps),
+  ));
+  app.post("/api/room/:code/quiet", hostControl(
+    (body) => (typeof body.quiet === "boolean" ? null : "expected { quiet: true | false }"),
+    (code, principal, body, deps) => setQuiet({ code, principal, quiet: body.quiet as boolean }, deps),
   ));
   app.post("/api/room/:code/close", hostControl(
     () => null,

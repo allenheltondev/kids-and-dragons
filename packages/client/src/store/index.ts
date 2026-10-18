@@ -1210,6 +1210,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         return hostControl("lock", { locked }, locked ? "Could not lock the room." : "Could not unlock the room.");
       },
 
+      quietRoom(quiet: boolean) {
+        return hostControl("quiet", { quiet }, "Could not change quiet mode.");
+      },
+
       closeRoom() {
         return hostControl("close", {}, "Could not close the room.");
       },

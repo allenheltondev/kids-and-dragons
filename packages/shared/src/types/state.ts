@@ -426,6 +426,13 @@ export interface RunState {
    */
   locked?: true;
   /**
+   * The host turned quiet mode on (#260): every device in the room caps its
+   * volume, drops sudden stingers and impacts, skips screen shake, softens
+   * flashes and dims the display. A device can still go lower on its own.
+   * Absent when off.
+   */
+  quiet?: true;
+  /**
    * The host closed the room (#263). Every screen leaves, nothing more is
    * accepted, and the code is free again. Terminal: a closed room never
    * reopens.

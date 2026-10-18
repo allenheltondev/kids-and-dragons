@@ -8,6 +8,7 @@
  *
  *   - take a player out, in one tap (#267)
  *   - lock the room to new joins, and open it again
+ *   - quiet mode for every device in the room, and back (#260)
  *   - close the room for everyone, after one "are you sure?"
  *
  * And one that is not the host's alone: opening the room to visitors (#249),
@@ -127,10 +128,12 @@ function HostPanel({ state, me, code }: { state: RunState; me: string; code: str
   const removePlayer = useGameStore((store) => store.removePlayer);
   const lockRoom = useGameStore((store) => store.lockRoom);
   const closeRoom = useGameStore((store) => store.closeRoom);
+  const quietRoom = useGameStore((store) => store.quietRoom);
   const [busy, setBusy] = useState(false);
   const [closing, setClosing] = useState(false);
   const rows = rosterOf(state, me);
   const locked = state.locked === true;
+  const quiet = state.quiet === true;
 
   const run = async (task: () => Promise<boolean>): Promise<void> => {
     setBusy(true);
@@ -193,6 +196,22 @@ function HostPanel({ state, me, code }: { state: RunState; me: string; code: str
           {locked
             ? "Locked: nobody new can join. Everyone here can still come back."
             : "Lock it once everyone is in, and nobody else can join with the code."}
+        </p>
+
+        <Button
+          variant="secondary"
+          size="md"
+          block
+          disabled={busy}
+          aria-pressed={quiet}
+          onClick={() => void run(() => quietRoom(!quiet))}
+        >
+          {quiet ? "Turn quiet mode off" : "Quiet mode"}
+        </Button>
+        <p className="kad-host__hint">
+          {quiet
+            ? "Quiet: softer sound, no sudden noises, no shaking, and a dimmer screen on every device."
+            : "For a sleeping sibling or a car ride: softer, calmer and dimmer on every device."}
         </p>
 
         {closing ? (
