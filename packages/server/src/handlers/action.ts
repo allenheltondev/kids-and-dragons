@@ -1208,6 +1208,15 @@ async function authorize(
       error: { code: "FORBIDDEN", message: `player ${input.playerId} is not in this household` },
     });
   }
+  // Retired by an organizer (#248). Read from the profile, so it holds even
+  // before (or without) the run's `removed` list catching up.
+  if (player.retired) {
+    return errorResult({
+      ok: false,
+      seq: state.seq,
+      error: { code: "FORBIDDEN", message: "This player was taken off the list." },
+    });
+  }
   return { run };
 }
 

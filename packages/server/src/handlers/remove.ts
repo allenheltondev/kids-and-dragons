@@ -144,3 +144,35 @@ export async function takeOutEverywhere(
 export function isRemoved(state: Pick<RunState, "removed">, playerId: string): boolean {
   return state.removed?.includes(playerId) ?? false;
 }
+
+/**
+ * Retired by an organizer (#248), read from the profile itself. Checked beside
+ * `isRemoved` everywhere a room accepts a player, because `takeOutEverywhere`
+ * runs after the profile is retired and can fail: the profile is the record,
+ * and the run's `removed` list only the tidy-up. A profile that cannot be
+ * found is not retired (the caller's own checks decide what a missing player
+ * means).
+ */
+export async function isRetired(
+  repo: Pick<HandlerDeps["repo"], "getPlayer">,
+  householdId: string,
+  playerId: string,
+): Promise<boolean> {
+  return (await repo.getPlayer(householdId, playerId))?.retired === true;
+}
+
+/**
+ * Out of this run, either way: taken out by its host, or retired. The
+ * household is the player's own, from their session; without one it is the
+ * run's, which is the same household for anybody seated in it.
+ */
+export async function isOut(
+  state: Pick<RunState, "removed" | "runId">,
+  playerId: string,
+  householdId: string | null,
+  repo: Pick<HandlerDeps["repo"], "getPlayer" | "getRun">,
+): Promise<boolean> {
+  if (isRemoved(state, playerId)) return true;
+  const household = householdId ?? (await repo.getRun(state.runId))?.householdId;
+  return household !== undefined && (await isRetired(repo, household, playerId));
+}

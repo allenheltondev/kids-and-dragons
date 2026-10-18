@@ -17,6 +17,7 @@ import { settleChapterEndVote, type RunState } from "@kad/shared";
 import type { EventRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
+import { isOut } from "./remove.ts";
 
 /** Presence needs no engine and no dice — just the table and the channel. */
 export type PresenceDeps = Pick<HandlerDeps, "repo" | "channel" | "now">;
@@ -62,8 +63,9 @@ async function trySetPresence(
 
   const member = state.party.find((m) => m.playerId === input.playerId);
   if (!member || member.connected === input.connected) return null;
-  // Taken out by the host (#267): their stream opening again is not them coming back.
-  if (input.connected && state.removed?.includes(input.playerId)) return null;
+  // Taken out by the host (#267), or retired (#248): their stream opening
+  // again is not them coming back.
+  if (input.connected && (await isOut(state, input.playerId, null, deps.repo))) return null;
   // Closed by its host (#263): nothing more is written to it.
   if (state.closed) return null;
 
