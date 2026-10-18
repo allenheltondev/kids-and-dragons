@@ -661,7 +661,13 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
      */
     function hostAuth(session: ClientSession): HostAuth | null {
       const shared = loadSharedDevice(deps.storage);
-      if (shared) return { sharedToken: shared.token, sessionToken: session.sessionToken };
+      // A tablet showing the game (#274) seats nobody: its viewer token is no
+      // session, so the shared token goes alone.
+      if (shared) {
+        return session.playerId === ""
+          ? { sharedToken: shared.token }
+          : { sharedToken: shared.token, sessionToken: session.sessionToken };
+      }
       const deviceToken = loadIdentity(deps.storage).deviceToken;
       return deviceToken ? { deviceToken } : null;
     }
@@ -856,6 +862,19 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
        */
       async openOnThisScreen() {
         set({ connection: "connecting", error: null });
+        // A family tablet (#250, #274) shows the game under its own household:
+        // no kid is seated, and it keeps no device token and no session.
+        const shared = loadSharedDevice(deps.storage);
+        if (shared) {
+          try {
+            const room = await deps.api.openDisplayRoom({ campaignId: LAUNCH_CAMPAIGN }, shared.token);
+            deps.navigate({ name: "tv", code: room.code }, { replace: true });
+          } catch (error) {
+            forgottenIf(error);
+            failWith(error);
+          }
+          return;
+        }
         const identity = loadIdentity(deps.storage);
         try {
           const room = await deps.api.openDisplayRoom({
@@ -1040,10 +1059,14 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           await withRetry(current, async (timeoutMs) => {
             // A TV that opened this room still holds the binding it was given,
             // and presenting it is how it learns it is still the host (#267).
-            const screenToken = loadIdentity(deps.storage).deviceToken;
-            const response = screenToken
-              ? await deps.api.watchRoom(roomCode, timeoutMs, screenToken)
-              : await deps.api.watchRoom(roomCode, timeoutMs);
+            // A family tablet holds a shared token instead (#274), and no binding.
+            const tablet = loadSharedDevice(deps.storage);
+            const screenToken = tablet ? undefined : loadIdentity(deps.storage).deviceToken;
+            const response = tablet
+              ? await deps.api.watchRoom(roomCode, timeoutMs, undefined, tablet.token)
+              : screenToken
+                ? await deps.api.watchRoom(roomCode, timeoutMs, screenToken)
+                : await deps.api.watchRoom(roomCode, timeoutMs);
             if (!current()) return;
             const display: ClientSession = {
               runId: response.runId,

@@ -171,20 +171,23 @@ export type HostControl = "remove" | "lock" | "quiet" | "close" | "stop";
 
 /**
  * How the host proves it is the host: a phone's (or TV's) own device token,
- * or a shared tablet's token with the seated kid's room session (#250).
+ * or a shared tablet's token with the seated kid's room session (#250). A
+ * tablet acting as the TV (#274) seats nobody, so its token stands alone.
  */
-export type HostAuth = { deviceToken: string } | { sharedToken: string; sessionToken: string };
+export type HostAuth = { deviceToken: string } | { sharedToken: string; sessionToken?: string };
 
 export interface Api {
   createRoom(body: CreateRoomInput): Promise<LocalCreateRoomResponse>;
   /** Party Mode, opened from the TV itself: nobody is seated. */
-  openDisplayRoom(body: Omit<CreateRoomInput, "mode" | "display">): Promise<LocalOpenDisplayResponse>;
+  openDisplayRoom(body: Omit<CreateRoomInput, "mode" | "display" | "householdId"> & { householdId?: string }, sharedToken?: string): Promise<LocalOpenDisplayResponse>;
   joinRoom(code: string, body: LocalJoinRequest): Promise<JoinRoomResponse>;
   /**
    * `deviceToken`, when this screen has one, is how a TV that opened the room
    * learns after a refresh that it is still the host (#267). It grants nothing else.
+   * A family tablet acting as the TV presents its `sharedToken` instead (#274),
+   * and the answer is still only a viewer token.
    */
-  watchRoom(code: string, timeoutMs?: number, deviceToken?: string): Promise<WatchRoomResponse>;
+  watchRoom(code: string, timeoutMs?: number, deviceToken?: string, sharedToken?: string): Promise<WatchRoomResponse>;
   /**
    * The host running the room (#263, #267): take a player out
    * (`{ playerId }`), lock it to new joins (`{ locked }`), or close it.
@@ -422,10 +425,10 @@ export const api: Api = {
     });
   },
 
-  openDisplayRoom(body) {
+  openDisplayRoom(body, sharedToken) {
     return request<LocalOpenDisplayResponse>("/api/room", {
       method: "POST",
-      headers: JSON_HEADERS,
+      headers: { ...JSON_HEADERS, ...(sharedToken ? { "x-kad-shared-token": sharedToken } : {}) },
       body: JSON.stringify({ ...body, mode: "party", display: true }),
     });
   },
@@ -438,10 +441,17 @@ export const api: Api = {
     });
   },
 
-  watchRoom(code, timeoutMs, deviceToken) {
+  watchRoom(code, timeoutMs, deviceToken, sharedToken) {
     return request<WatchRoomResponse>(`/api/room/${encodeURIComponent(code)}/watch`, {
       method: "POST",
-      headers: { ...JSON_HEADERS, ...(deviceToken ? { "x-kad-device-token": deviceToken } : {}) },
+      headers: {
+        ...JSON_HEADERS,
+        ...(sharedToken
+          ? { "x-kad-shared-token": sharedToken }
+          : deviceToken
+            ? { "x-kad-device-token": deviceToken }
+            : {}),
+      },
       body: JSON.stringify({}),
       ...(timeoutMs !== undefined ? { timeoutMs } : {}),
     });
@@ -454,7 +464,7 @@ export const api: Api = {
         ...JSON_HEADERS,
         ...("deviceToken" in auth ? { "x-kad-device-token": auth.deviceToken } : { "x-kad-shared-token": auth.sharedToken }),
       },
-      ...("sessionToken" in auth ? { token: auth.sessionToken } : {}),
+      ...("sessionToken" in auth && auth.sessionToken ? { token: auth.sessionToken } : {}),
       body: JSON.stringify(body),
     });
   },

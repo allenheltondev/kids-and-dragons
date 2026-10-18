@@ -151,7 +151,16 @@ async function main(): Promise<void> {
     const shared = await resolveShared(req, base);
     if (shared !== undefined) {
       if (!shared) return forgottenDevice(res);
-      if (display) return sendError(res, 400, "ILLEGAL", "a shared tablet plays; open the TV on the TV");
+      if (display) {
+        // The tablet as the TV (#274): its own household, nobody seated, no
+        // device token or session handed back.
+        const tv = await createRoom(
+          { householdId: shared.householdId, mode, campaignId: req.body?.campaignId ?? null, hostDeviceId: shared.deviceId, display: true },
+          deps,
+        );
+        if (!tv.ok) return sendError(res, statusFor(tv.error), tv.error.code, tv.error.message);
+        return res.json({ ...tv.value, roomCode: tv.value.code, host: true });
+      }
       const seat = await seatOnSharedDevice(
         { shared, playerId: req.body?.playerId, newPlayer: req.body?.newPlayer },
         base,
@@ -313,8 +322,14 @@ async function main(): Promise<void> {
     const lookup = await admitCodeLookup(clientOf(req), deps);
     if (!lookup) return slowDown(res, deps);
     // Optional: a TV that opened the room presents its binding to learn it is the host.
-    const screen = await resolvePrincipal(req, base);
-    const result = await watchRoom({ code, deviceId: screen?.principal.deviceId }, deps);
+    // ...or a family tablet's shared token (#274).
+    const tablet = await resolveShared(req, base);
+    if (tablet === null) return forgottenDevice(res);
+    const screen = tablet ? null : await resolvePrincipal(req, base);
+    const result = await watchRoom(
+      { code, deviceId: tablet?.deviceId ?? screen?.principal.deviceId, ...(tablet ? { householdId: tablet.householdId } : {}) },
+      deps,
+    );
     if (result.ok || result.error.code !== "NOT_FOUND") await lookup.hit();
     if (!result.ok) {
       return sendError(res, statusFor(result.error), result.error.code, result.error.message);
@@ -344,7 +359,7 @@ async function main(): Promise<void> {
       if (shared === null) return forgottenDevice(res);
       let principal: HostPrincipal;
       if (shared) {
-        const seat = tabletHost(shared, await resolveSession(req, base), code);
+        const seat = tabletHost(shared, await resolveSession(req, base), code, await deps.repo.getRoom(code));
         if (!seat.ok) return sendError(res, 401, seat.error.code, seat.error.message);
         principal = seat.value;
       } else {
