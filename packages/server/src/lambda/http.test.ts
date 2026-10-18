@@ -1815,6 +1815,7 @@ const SHARED = [
   { path: "/api/room/:code/remove", method: "POST", probe: "/api/room/ABCD/remove" },
   // Host controls (#263, handlers/host.ts).
   { path: "/api/room/:code/lock", method: "POST", probe: "/api/room/ABCD/lock" },
+  { path: "/api/room/:code/quiet", method: "POST", probe: "/api/room/ABCD/quiet" },
   { path: "/api/room/:code/close", method: "POST", probe: "/api/room/ABCD/close" },
   // A signed-in owner opening the room to visitors (#249, handlers/visitors.ts).
   { path: "/api/room/:code/visitors", method: "POST", probe: "/api/room/ABCD/visitors" },
