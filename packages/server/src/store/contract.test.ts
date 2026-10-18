@@ -22,7 +22,7 @@ import { FIELD_GUIDE_VERSION } from "@kad/shared";
 import type { Character, Household, JourneyState, PlayerProfile, RunState } from "@kad/shared";
 import { DynamoRepository, GSI1_NAME } from "./dynamo-repository.ts";
 import { MemoryRepository } from "./memory-repository.ts";
-import type { EventRecord, GameRepository, RoomRecord } from "./repository.ts";
+import type { CharacterWrite, EventRecord, GameRepository, RoomRecord } from "./repository.ts";
 
 const HOUR = 3600_000;
 const DAY = 24 * HOUR;
@@ -935,6 +935,139 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
         expect((await repo.listEvents("r_1", 8)).map((e) => e.seq)).toEqual([9, 10, 11, 12]);
         expect((await repo.listEvents("r_1", 0, 3)).map((e) => e.seq)).toEqual([1, 2, 3]);
         expect(await repo.listEvents("r_1", 12)).toEqual([]);
+      });
+    });
+
+    describe("the hero's claim (#282)", () => {
+      /*
+       * One game at a time per hero (architecture §4.5): her claim is
+       * `provisional.runId`, next to a monotonic `version` on her row, and
+       * every write from a run rides its commit conditioned on both as read.
+       * These are the races that rule exists for, run against both stores.
+       */
+      const claimedBy = (hero: Character, claim: string | null): Character => ({
+        ...hero,
+        provisional: claim === null ? null : { ...hero.committed, runId: claim },
+      });
+      /** One run's turn: its seq gate plus the hero writes it owes. */
+      const turn = async (runId: string, seq: number, characters: CharacterWrite[]) =>
+        repo.commit({ runId, expectedSeq: seq - 1, state: state(runId, seq), event: event(runId, seq), characters });
+      const read = async () => (await repo.getCharacter("h_1", "c_1"))!;
+      /** The write a run makes after reading her as she now stands. */
+      const from = (as: Character, next: Character): CharacterWrite => ({
+        character: next,
+        expectedVersion: as.version ?? 0,
+        expectedClaim: as.provisional?.runId ?? null,
+      });
+
+      beforeEach(async () => {
+        await repo.putState(state("r_a", 0));
+        await repo.putState(state("r_b", 0));
+        // As written before the claim: no version, which is version 0.
+        await repo.putCharacter(character("c_1"));
+      });
+
+      it("reads a row from before the claim as version 0 with no claim", async () => {
+        const hero = await read();
+        expect(hero.version ?? 0).toBe(0);
+        expect(hero.provisional ?? null).toBeNull();
+      });
+
+      it("two runs racing for one hero: exactly one wins, and the loser writes nothing", async () => {
+        const seenByA = await read();
+        const seenByB = await read();
+
+        expect(await turn("r_a", 1, [from(seenByA, claimedBy(seenByA, "gemfall"))])).toBe(true);
+        expect(await turn("r_b", 1, [from(seenByB, claimedBy(seenByB, "riftlight@h_2"))])).toBe(false);
+
+        const hero = await read();
+        expect(hero.provisional?.runId).toBe("gemfall");
+        expect(hero.version).toBe(1);
+        // The loser's whole turn failed with it, as a lost seq race does.
+        expect((await repo.getState("r_b"))?.seq).toBe(0);
+        expect(await repo.listEvents("r_b", 0)).toEqual([]);
+      });
+
+      it("refuses a stale write after the claim moved, from the old version or the current one", async () => {
+        const free = await read();
+        expect(await turn("r_a", 1, [from(free, claimedBy(free, "gemfall"))])).toBe(true);
+        const held = await read();
+        // Gemfall finished elsewhere; another table reclaims her.
+        expect(await turn("r_b", 1, [from(held, claimedBy(held, "riftlight@h_2"))])).toBe(true);
+
+        // A worker still holding Gemfall's read tries to bank a level.
+        const gains = { ...claimedBy(held, "gemfall"), provisional: { ...held.provisional!, xp: 300 } };
+        expect(await turn("r_a", 2, [from(held, gains)])).toBe(false);
+        // Even at the row's current version, the claim alone refuses it.
+        expect(
+          await turn("r_a", 2, [{ character: gains, expectedVersion: 2, expectedClaim: "gemfall" }]),
+        ).toBe(false);
+        // And outside a run, the same.
+        expect(await repo.writeCharacter(from(held, gains))).toBe(false);
+
+        const hero = await read();
+        expect(hero.provisional).toMatchObject({ runId: "riftlight@h_2", xp: 0 });
+        expect(hero.version).toBe(2);
+        expect((await repo.getState("r_a"))?.seq).toBe(1);
+      });
+
+      it("an acquire retried after it landed fails on the old read and lands on a new one", async () => {
+        const free = await read();
+        const acquire = from(free, claimedBy(free, "gemfall"));
+        expect(await turn("r_a", 1, [acquire])).toBe(true);
+
+        // The response was lost and the same acquire is sent again: it fails
+        // cleanly, leaving the row as the first one left it.
+        expect(await turn("r_a", 2, [acquire])).toBe(false);
+        expect(await repo.writeCharacter(acquire)).toBe(false);
+        expect((await read()).version).toBe(1);
+
+        // Re-read: she already names this run, so the retry holds her and lands.
+        const mine = await read();
+        expect(await turn("r_a", 2, [from(mine, claimedBy(mine, "gemfall"))])).toBe(true);
+        const hero = await read();
+        expect(hero.provisional?.runId).toBe("gemfall");
+        expect(hero.version).toBe(2);
+      });
+
+      it("reclaims from a terminal run on its old claim and version, and only once", async () => {
+        const free = await read();
+        expect(await turn("r_a", 1, [from(free, claimedBy(free, "gemfall"))])).toBe(true);
+        // Gemfall's attempt is over and she was not there to settle: two
+        // tables both read her, stale claim and all, and both reclaim.
+        const seenByB = await read();
+        const seenByC = await read();
+        expect(await turn("r_b", 1, [from(seenByB, claimedBy(seenByB, "riftlight@h_2"))])).toBe(true);
+        await repo.putState(state("r_c", 0));
+        expect(await turn("r_c", 1, [from(seenByC, claimedBy(seenByC, "riftlight@h_3"))])).toBe(false);
+
+        expect((await read()).provisional?.runId).toBe("riftlight@h_2");
+      });
+
+      it("releases a claim only for the run that holds it", async () => {
+        const free = await read();
+        expect(await turn("r_a", 1, [from(free, claimedBy(free, "gemfall"))])).toBe(true);
+        const held = await read();
+
+        // Leaving an adventure she is not in changes nothing.
+        expect(
+          await repo.writeCharacter({ character: claimedBy(held, null), expectedVersion: 1, expectedClaim: "riftlight" }),
+        ).toBe(false);
+        expect(await repo.writeCharacter(from(held, claimedBy(held, null)))).toBe(true);
+
+        const hero = await read();
+        expect(hero.provisional ?? null).toBeNull();
+        expect(hero.version).toBe(2);
+      });
+
+      it("creates a new hero only where none exists", async () => {
+        const fresh = { ...character("c_2"), name: "Pip" };
+        const create: CharacterWrite = { character: fresh, expectedVersion: null, expectedClaim: null };
+        expect(await turn("r_a", 1, [create])).toBe(true);
+        expect((await repo.getCharacter("h_1", "c_2"))?.version).toBe(1);
+        // A re-sent create cannot flatten the hero it already made.
+        expect(await turn("r_a", 2, [create])).toBe(false);
+        expect(await repo.writeCharacter(create)).toBe(false);
       });
     });
 
