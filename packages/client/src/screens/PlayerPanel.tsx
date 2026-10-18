@@ -23,7 +23,17 @@ import { setPlayerSection, usePlayerNavigation } from "../store/player-navigatio
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
-import { DEFAULT_HELP_DIE, INVENTORY_SLOTS, STAT_IDS, lobbyCampaign, riftPartyOf, sameHome } from "@kad/shared";
+import {
+  DEFAULT_HELP_DIE,
+  INVENTORY_SLOTS,
+  STAT_IDS,
+  lobbyCampaign,
+  readyWithoutAway,
+  riftPartyOf,
+  sameHome,
+  swapOwnerAway,
+  voteWaitsOnlyOnAway,
+} from "@kad/shared";
 import { checkTarget } from "./DiceOverlay";
 import { checkBuffLine } from "./buff-copy";
 import type {
@@ -143,10 +153,19 @@ function waitingLine(prompt: Prompt, party: PartyMember[]): string {
     case "item_swap":
       return `${nameOfCharacter(party, prompt.characterId)} found something.`;
     case "ready": {
-      const waiting = party.filter((m) => !m.ready).map((m) => m.character.name);
+      const waiting = party.filter((m) => !m.ready && m.connected).map((m) => m.character.name);
       return waiting.length === 0 ? "Everyone is ready." : `Waiting for ${waiting.join(" and ")}.`;
     }
   }
+}
+
+/**
+ * The friends who stepped away (#258) that a "Start without …" or "Decide
+ * without …" tap goes on without, by name. The caller shows the tap only
+ * once everybody it would wait on is away.
+ */
+function awayNames(waitingOn: readonly PartyMember[]): string {
+  return waitingOn.map((m) => m.character.name).join(" and ");
 }
 
 /** The die this player would add as a helper (content/rules.json `helpDie`). */
@@ -428,8 +447,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   const send = useSend();
 
   // Nobody starts until everybody is in and ready — an empty party would
-  // otherwise let one person start the chapter alone.
-  const everyoneReady = party.length > 0 && party.every((member) => member.ready);
+  // otherwise let one person start the chapter alone. A friend who stepped
+  // away is not waited on (#258), the same rule the server holds Begin to.
+  const everyoneReady = readyWithoutAway(party);
   const inLobby = state?.phase === "lobby" || state?.phase === "creation";
   // The chapter in play, for its art — fetched by id, idempotent, quiet on
   // failure (the pane just has no picture, which is what it had before).
@@ -502,9 +522,14 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
     !me.down &&
     !state.prompt.helper &&
     !(state.helpSpent ?? []).includes(me.character.id);
+  // A friend's find waiting on a phone that is gone (#258): anybody may leave it.
+  const awaySwap =
+    myPrompt === null && state?.prompt?.kind === "item_swap" && swapOwnerAway(party, state.prompt)
+      ? nameOfCharacter(party, state.prompt.characterId)
+      : null;
   // Who that help would go to, so the way in can say so.
   const helping = canHelp && state.prompt?.kind === "roll" ? nameOfCharacter(party, state.prompt.characterId) : null;
-  const hasTask = myPrompt !== null || canHelp || state?.encounter != null || inLobby || state?.phase === "chapter_complete" ||
+  const hasTask = myPrompt !== null || canHelp || awaySwap !== null || state?.encounter != null || inLobby || state?.phase === "chapter_complete" ||
     (state?.phase === "scene" && state.sceneType === "rest" && (me?.character.unspentPoints ?? 0) > 0) ||
     (state?.trades ?? []).some((offer) => offer.toPlayerId === me?.playerId);
   useEffect(() => {
@@ -965,6 +990,28 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               })}
             </ul>
 
+            {/* Everyone who has not voted stepped away (#258). A vote only
+                counts when one lands, so this phone's own vote, sent again,
+                closes it. Only for a phone that has voted: its pick stands. */}
+            {myPrompt.vote && myVote !== null && voteWaitsOnlyOnAway(party, myPrompt) ? (
+              <Button
+                variant="secondary"
+                size="md"
+                block
+                icon={<Icon name="forward" />}
+                disabled={busy}
+                onClick={() => void dispatch({ type: "CHOOSE", choiceId: myVote })}
+              >
+                {`Decide without ${awayNames(
+                  party.filter(
+                    (m) =>
+                      myPrompt.votes?.[m.playerId] === undefined &&
+                      (myPrompt.forPlayerIds.length === 0 || myPrompt.forPlayerIds.includes(m.playerId)),
+                  ),
+                )}`}
+              </Button>
+            ) : null}
+
             {/* Nothing is final until this bar is tapped (spec §11). */}
             <ConfirmBar
               open={chosenOption !== null}
@@ -1344,13 +1391,36 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               </Button>
             )}
             <ul className="prompt__party">
-              {party.map((member) => (
-                <li className={`kad-chip${member.ready ? " kad-chip--ok" : ""}`} key={member.playerId}>
-                  <Icon name={member.ready ? "check" : "waiting"} />
-                  <span>{member.character.name}</span>
-                </li>
-              ))}
+              {party.map((member) => {
+                // Stepped away (#258): not waited on, so not "waiting" either.
+                const gone = !member.ready && !member.connected;
+                return (
+                  <li
+                    className={`kad-chip${member.ready ? " kad-chip--ok" : gone ? " kad-chip--warn" : ""}`}
+                    key={member.playerId}
+                  >
+                    <Icon name={member.ready ? "check" : gone ? "close" : "waiting"} />
+                    <span>{gone ? `${member.character.name} stepped away` : member.character.name}</span>
+                  </li>
+                );
+              })}
             </ul>
+
+            {/* The fight waits on everyone here, and only somebody's READY
+                counts it (engine.ts doReady). A friend who drops after the
+                rest said yes leaves nobody to tap, so a ready phone says it
+                again for the table (#258). */}
+            {!inLobby && me.ready && readyWithoutAway(party) && party.some((m) => !m.ready) ? (
+              <Button
+                variant="primary"
+                size="lg"
+                icon={<Icon name="swords" />}
+                disabled={busy}
+                onClick={() => void dispatch({ type: "READY", ready: true })}
+              >
+                {`Start without ${awayNames(party.filter((m) => !m.ready))}`}
+              </Button>
+            ) : null}
 
             {/* Somebody has to say go. It appears only once the whole party is
                 ready, so it can't be tapped out from under anyone, and the
@@ -1570,6 +1640,27 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </p>
         ) : null}
 
+        {/* A friend's full bag found something, and their phone is gone
+            (#258). The story waits behind the question, so anybody here may
+            leave it; nobody empties a friend's bag for them. */}
+        {myPrompt === null && globalPrompt !== null && globalPrompt.kind === "item_swap" && swapOwnerAway(party, globalPrompt) ? (
+          <div className="prompt prompt--help">
+            <p className="prompt__sub kad-muted">
+              <Icon name="bag" />
+              <span>{`${nameOfCharacter(party, globalPrompt.characterId)} stepped away, and their bag is full.`}</span>
+            </p>
+            <Button
+              variant="secondary"
+              size="lg"
+              icon={<Icon name="forward" />}
+              disabled={busy}
+              onClick={() => void dispatch({ type: "RESOLVE_ITEM_SWAP", dropItemId: null })}
+            >
+              Leave it and go on
+            </Button>
+          </div>
+        ) : null}
+
         {/* ---------------- help a friend's check ----------------
             Held at the big button's height whichever line is showing, so
             helping — yours or somebody quicker's — does not shrink the card. */}
@@ -1617,7 +1708,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             {hasTask ? (
               <Button variant="primary" size="lg" block className="player__task-entry"
                 icon={<Icon name="hand" />} onClick={() => setPlayerSection("turn")}>
-                {offersToMe.length > 0 ? "A gift for you" : state.phase === "chapter_complete" ? "Chapter rewards" : atRest && banked > 0 ? banked === 1 ? "Spend your stat point" : "Spend your stat points" : myPrompt !== null || isMyCombatTurn ? "Your turn" : helping !== null ? `Help ${helping}` : "View the fight"}
+                {offersToMe.length > 0 ? "A gift for you" : state.phase === "chapter_complete" ? "Chapter rewards" : atRest && banked > 0 ? banked === 1 ? "Spend your stat point" : "Spend your stat points" : myPrompt !== null || isMyCombatTurn ? "Your turn" : helping !== null ? `Help ${helping}` : awaySwap !== null ? `Help ${awaySwap}'s bag` : "View the fight"}
               </Button>
             ) : (
               <p className="player__waiting" role="status"><Icon name="waiting" />
