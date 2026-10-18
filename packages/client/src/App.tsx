@@ -25,6 +25,7 @@ import { useGameStore, useLayoutMode, useRunState, useChapter, useMe } from "./s
 import { Button, ConnectionBanner, ErrorToast, Spinner } from "./ui";
 
 import { AudioControl } from "./audio";
+import { setQuiet } from "./quiet";
 import { musicForScene } from "./audio/scene-audio";
 import { PhoneMagic } from "./ui/PhoneMagic";
 
@@ -131,6 +132,13 @@ export function App(): React.JSX.Element {
   useEffect(() => {
     void loadContent();
   }, [loadContent]);
+
+  // The host's quiet mode (#260) reaches every device in the room as run state.
+  const roomQuiet = state?.quiet === true;
+  useEffect(() => {
+    setQuiet(roomQuiet);
+    return () => setQuiet(false);
+  }, [roomQuiet]);
 
   /**
    * Recover from the URL alone. This is what makes "hard-refresh anything
