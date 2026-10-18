@@ -19,7 +19,7 @@
  * open there too.
  */
 
-import { useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import type { ReactElement } from "react";
 import type { JournalFinishedCampaign, JournalResponse, PartyMember, ResolvedCharacter } from "@kad/shared";
 import { navigate } from "../router";
@@ -40,7 +40,14 @@ import { offlineArtFor, warm } from "../sw/warm";
 import "./shared.css";
 import "./JournalScreen.css";
 
-export type JournalPane = "hero" | "map" | "guide";
+export type JournalPane = "hero" | "map" | "guide" | "me";
+
+/**
+ * Her own page (#299) is a chunk of its own, fetched the first time "Me" is
+ * opened: the book's first look stays the hero, and nothing of the page is in
+ * the journal chunk, let alone the first paint.
+ */
+const ProfilePane = lazy(() => import("./ProfilePane"));
 
 /**
  * A saved hero as the sheet and the atlas want them: a party member at full
@@ -168,6 +175,9 @@ export function JournalScreen(): ReactElement {
         <TrayTab on={pane === "hero"} object="satchel" label="Hero" onClick={() => setPane("hero")} />
         <TrayTab on={pane === "map"} object="map" label="Map" onClick={() => setPane("map")} />
         <TrayTab on={pane === "guide"} object="fieldGuide" label="Guide" onClick={() => setPane("guide")} />
+        {load.journal.profile ? (
+          <TrayTab on={pane === "me"} object="scroll" label="Me" onClick={() => setPane("me")} />
+        ) : null}
         <TrayTab on={false} object="lantern" label="Play" onClick={play} />
       </nav>
       {load.savedAt !== null ? (
@@ -182,6 +192,11 @@ export function JournalScreen(): ReactElement {
       <div className="kad-travel__pane" data-pane={pane} data-showing>
         {pane === "hero" ? <HeroPane journal={load.journal} onPlay={play} /> : null}
         {pane === "map" ? <MapPane journal={load.journal} /> : null}
+        {pane === "me" ? (
+          <Suspense fallback={<div className="journal__busy" role="status"><Spinner /><span>Opening your page…</span></div>}>
+            <ProfilePane journal={load.journal} />
+          </Suspense>
+        ) : null}
         {pane === "guide" ? (
           <div className="kad-surface kad-surface--player" data-surface="player">
             <FieldGuide backToBag={false} />
