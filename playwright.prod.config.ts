@@ -5,8 +5,9 @@ import { defineConfig } from "@playwright/test";
  * worker (packages/client/src/sw/) exists. The main suite runs on the Vite dev
  * server, which never registers one, so it cannot test these:
  *
- *   offline.spec  the adventure book with no signal, on a reload and a new tab
- *   perf.spec     what a phone downloads on its first visit and every one after
+ *   offline.spec           the adventure book with no signal, on a reload and a new tab
+ *   perf.spec              what a phone downloads on its first visit and every one after
+ *   production-locks.spec  the playtest drawer did not ship (#263)
  *
  * Two servers: the dev API server, and `vite preview` serving the built
  * client, which proxies `/api`, `/events`, `/content` and `/assets` to it
@@ -17,7 +18,7 @@ const PORT = 4173;
 
 export default defineConfig({
   testDir: "./e2e",
-  testMatch: ["offline.spec.ts", "perf.spec.ts"],
+  testMatch: ["offline.spec.ts", "perf.spec.ts", "production-locks.spec.ts"],
   timeout: 180_000,
   expect: { timeout: 10_000 },
   fullyParallel: false,

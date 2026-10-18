@@ -97,6 +97,12 @@ class RoomBoundary extends Component<{ children: ReactNode; message?: string }, 
   }
 }
 
+// Running the room from the TV that opened it (#263). Only a host display draws
+// it, so no phone's first paint pays for it.
+const HostControls = lazy(() =>
+  import("./screens/HostControls").then((module) => ({ default: module.HostControls })),
+);
+
 // The adventure book (`/journal`) is a route of its own, between games, and
 // loads on demand like the room: nobody on the join screen needs it yet.
 const JournalScreen = lazy(() =>
@@ -150,6 +156,11 @@ export function App(): React.JSX.Element {
       {/* Who just joined (#267), on the shared display. A host's phone shows
           them in its own view instead (layout/PlayerView). */}
       <ArrivalNotices placement="float" />
+      {route.name === "tv" && session?.host ? (
+        <Suspense fallback={null}>
+          <HostControls placement="float" />
+        </Suspense>
+      ) : null}
     </PhoneMagic>
   );
 
@@ -183,6 +194,8 @@ export function App(): React.JSX.Element {
     if (session.playerId && state?.removed?.includes(session.playerId)) {
       return <RemovedScreen />;
     }
+    // Closed by whoever opened it (#263): over for every screen, the TV too.
+    if (state?.closed) return <ClosedScreen />;
 
     return (
       <RoomBoundary>
@@ -198,6 +211,19 @@ export function App(): React.JSX.Element {
       </RoomBoundary>
     );
   }
+}
+
+/** What every screen shows once the host closes the room (#263). */
+function ClosedScreen(): React.JSX.Element {
+  const leave = useGameStore((store) => store.leave);
+  return (
+    <div className="kad-boot" role="alert">
+      <div className="kad-removed">
+        <p>The person running this game closed the room. Your heroes are kept, ready for next time.</p>
+        <Button onClick={leave}>Back to the start</Button>
+      </div>
+    </div>
+  );
 }
 
 /** What a phone the host took out of the game sees, instead of the game. */
