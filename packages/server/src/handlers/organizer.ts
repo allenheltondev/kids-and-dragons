@@ -24,6 +24,7 @@ import type {
   Household,
   OrganizerHero,
   OrganizerDevicesResponse,
+  OrganizerHouseholdDeleted,
   OrganizerHouseholdSummary,
   OrganizerHouseholdsResponse,
   OrganizerHouseholdView,
@@ -43,6 +44,7 @@ import { NEW_PLAYER_NAME_MAX } from "./shared-device.ts";
 import { takeOutEverywhere } from "./remove.ts";
 import { acceptTransfer, createTransferCode } from "./transfer.ts";
 import { claimIsLive, claimOf, parseClaim, releaseClaim } from "./claim.ts";
+import { deleteKid, deleteOwnedHousehold, retentionChoice, setRetention } from "./retention.ts";
 
 export type OrganizerDeps = AccountDeps & Pick<HandlerDeps, "random" | "channel" | "content">;
 
@@ -250,6 +252,48 @@ export async function pairProfile(
   );
 }
 
+/**
+ * Delete a kid (#252): her profile, her heroes, her phones, and her name from
+ * every save that had it (`deleteKid`). Her grown-up's call, so any owner of
+ * her home may make it; refused while a hero of hers is mid-adventure. Not
+ * through `ownedProfile`, so a delete that died part-way, whose profile
+ * already reads as gone, can still be finished by asking again.
+ */
+export async function deleteProfile(
+  input: Organizer & { householdId: unknown; playerId: unknown },
+  deps: OrganizerDeps,
+): Promise<HandlerResult<OrganizerHouseholdView>> {
+  const owned = await ownedHousehold(input, input.householdId, deps);
+  if (!owned.ok) return owned;
+  if (typeof input.playerId !== "string" || input.playerId === "") return fail("ILLEGAL", "expected { playerId }");
+  const deleted = await deleteKid(owned.value, input.playerId, deps);
+  if (!deleted.ok) return deleted;
+  return ok(await describe(owned.value, input, deps));
+}
+
+/** "Delete our data" (#252): the household and everything under it, for its only owner. */
+export async function deleteHousehold(
+  input: Organizer & { householdId: unknown },
+  deps: OrganizerDeps,
+): Promise<HandlerResult<OrganizerHouseholdDeleted>> {
+  const owned = await ownedHousehold(input, input.householdId, deps);
+  if (!owned.ok) return owned;
+  return deleteOwnedHousehold(owned.value, input.cognitoSub, deps);
+}
+
+/** How long a kid who stops playing is kept (#252): a window in days, or `null` for until deleted. */
+export async function setHouseholdRetention(
+  input: Organizer & { householdId: unknown; retentionDays: unknown },
+  deps: OrganizerDeps,
+): Promise<HandlerResult<OrganizerHouseholdView>> {
+  const owned = await ownedHousehold(input, input.householdId, deps);
+  if (!owned.ok) return owned;
+  const days = retentionChoice(input.retentionDays);
+  if (!days.ok) return days;
+  const household = await setRetention(owned.value, days.value, deps);
+  return ok(await describe(household, input, deps));
+}
+
 // ---------------------------------------------------------------------------
 // Owners
 // ---------------------------------------------------------------------------
@@ -449,6 +493,7 @@ async function describe(
       retired: player.retired === true,
       heroes: heroesOf(player.id, characters, adventures),
     })),
+    retentionDays: household.retentionDays ?? null,
   };
 }
 
@@ -573,6 +618,13 @@ export function organizerRoute(
           { ...who, householdId: body.householdId, playerId: body.playerId, retired: body.retired },
           deps,
         );
+    case "POST /api/organizer/players/delete":
+      return (who, deps) => deleteProfile({ ...who, householdId: body.householdId, playerId: body.playerId }, deps);
+    case "POST /api/organizer/household/delete":
+      return (who, deps) => deleteHousehold({ ...who, householdId: body.householdId }, deps);
+    case "POST /api/organizer/household/retention":
+      return (who, deps) =>
+        setHouseholdRetention({ ...who, householdId: body.householdId, retentionDays: body.retentionDays }, deps);
     case "POST /api/organizer/players/pair":
       return (who, deps) => pairProfile({ ...who, householdId: body.householdId, playerId: body.playerId }, deps);
     case "POST /api/organizer/invite":

@@ -79,6 +79,8 @@ export interface OrganizerStore {
   forgetDevice(deviceId: string): Promise<void>;
   /** Take a co-organizer off; your own id is "leave this group". */
   removeOrganizer(ownerId: string): Promise<void>;
+  /** Delete the household on screen and everything in it (#252), then back to the picker. */
+  deleteHousehold(): Promise<void>;
   dismissError(): void;
 }
 
@@ -265,6 +267,15 @@ export function createOrganizerStore(api: Api = defaultApi) {
           } else {
             await show(t, householdId);
           }
+        });
+      },
+
+      async deleteHousehold() {
+        const householdId = get().view?.id;
+        if (!householdId) return;
+        await run(async (t) => {
+          const { households } = await api.deleteHousehold(t, householdId);
+          set({ view: null, devices: [], invite: null, transfer: null, arrived: null, pairing: null, households });
         });
       },
 

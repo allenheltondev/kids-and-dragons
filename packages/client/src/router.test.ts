@@ -8,6 +8,12 @@ describe("parseRoute", () => {
     expect(parseRoute("/p/ABCD")).toEqual({ name: "player", code: "ABCD" });
   });
 
+  it("maps /what-we-store, which needs no room code (#252)", () => {
+    expect(parseRoute("/what-we-store")).toEqual({ name: "whatWeStore" });
+    expect(formatRoute({ name: "whatWeStore" })).toBe("/what-we-store");
+    expect(routeCode({ name: "whatWeStore" })).toBeNull();
+  });
+
   it("maps /journal, which needs no room code", () => {
     expect(parseRoute("/journal")).toEqual({ name: "journal" });
     expect(parseRoute("/journal/")).toEqual({ name: "journal" });

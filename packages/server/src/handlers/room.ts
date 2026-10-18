@@ -23,6 +23,7 @@ import type { EventRecord, RoomRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { newId, newSecret } from "../ids.ts";
 import { addPlayer, createGuestHousehold, keepGuestHousehold, mayClaim, type BoundDevice } from "./account.ts";
+import { notePlayed } from "./retention.ts";
 import { lobbyCampaigns } from "./progression.ts";
 import { loadBook } from "./field-guide.ts";
 import { isRemoved } from "./remove.ts";
@@ -413,6 +414,9 @@ export async function joinRoom(
   const seated = await seatAndConnect(state, player.id, seat, room.code, visit, deps);
   if (!seated.ok) return seated;
   const joined = seated.value;
+  // Her retention clock starts again, and a table that is not her home is
+  // written down so deleting her later can find it (#252).
+  await notePlayed(input.principal.householdId, player.id, room.householdId, deps);
   const host = room.hostDeviceId !== undefined && room.hostDeviceId === input.principal.deviceId;
   if (!host) await announceArrival(joined, player, deps);
   // Which phone may keep this guest household by signing in (#265), so the

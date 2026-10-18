@@ -316,6 +316,14 @@ export interface Household {
    * the same phone that decides whose evening it is (`RoomRecord.claimable`).
    */
   awaitingFounder?: true;
+  /**
+   * How long a kid who stops playing is kept, in days (#252), set by a
+   * signed-in owner. Absent is the behavior from before it existed: a kept
+   * household keeps every kid until an owner deletes one. Only a kept
+   * household has it; a guest household is swept whole a week after it last
+   * played (`expiresAt`), whoever is in it.
+   */
+  retentionDays?: number;
 }
 
 /**

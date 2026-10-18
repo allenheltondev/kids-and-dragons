@@ -1,0 +1,96 @@
+/*
+ * The "what we store" page (#252): a document for a grown-up, so a readable
+ * column on the app's own surface rather than a game screen.
+ */
+
+.stored {
+  display: flex;
+  justify-content: center;
+  min-block-size: 100dvh;
+  padding: var(--kad-space-4) var(--kad-space-3);
+  background: var(--kad-bg);
+  color: var(--kad-ink);
+}
+
+.stored__page {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--kad-space-4);
+  inline-size: 100%;
+  max-inline-size: 40em;
+}
+
+.stored__title {
+  margin: 0;
+  font-size: var(--kad-text-2xl);
+  font-weight: var(--kad-weight-black);
+}
+
+.stored__lede,
+.stored__what,
+.stored__kept {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.stored__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-2);
+  inline-size: 100%;
+}
+
+.stored__heading {
+  margin: 0;
+  font-size: var(--kad-text-lg);
+  font-weight: var(--kad-weight-black);
+}
+
+.stored__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stored__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-1);
+  padding: var(--kad-space-3);
+  border-radius: var(--kad-radius-md);
+  background: var(--kad-bg-raised);
+}
+
+.stored__item-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--kad-space-2);
+  margin: 0;
+  font-size: var(--kad-text-md);
+}
+
+.stored__owner {
+  color: var(--kad-ink-dim);
+  font-size: var(--kad-text-sm);
+  font-weight: normal;
+}
+
+.stored__kept {
+  color: var(--kad-ink-dim);
+  font-size: var(--kad-text-sm);
+}
+
+.stored__bullets {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-2);
+  margin: 0;
+  padding-inline-start: 1.2em;
+  line-height: 1.5;
+}

@@ -1497,6 +1497,9 @@ describe("/api/organizer/* (#248)", () => {
       ["POST", "/api/organizer/transfer/accept"],
       ["POST", "/api/organizer/owners/remove"],
       ["POST", "/api/organizer/heroes/leave"],
+      ["POST", "/api/organizer/players/delete"],
+      ["POST", "/api/organizer/household/delete"],
+      ["POST", "/api/organizer/household/retention"],
     ] as const) {
       const result = await respond(event(method, path), rt);
       expect(result.statusCode, `${method} ${path}`).toBe(401);
@@ -1549,6 +1552,63 @@ describe("/api/organizer/* (#248)", () => {
       rt,
     );
     expect(eve.statusCode).toBe(403);
+  });
+
+  it("deletes a kid, sets how long kids are kept, and deletes the household (#252)", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    const as = (account: VerifiedAccount) => {
+      rt.account = account;
+      return signedIn(account.cognitoSub);
+    };
+    const ana = { cognitoSub: "sub_ana" };
+    const ben = { cognitoSub: "sub_ben" };
+    const groupId = answer(
+      await respond(event("POST", "/api/organizer/households", { headers: as(ana), body: { displayName: "Club" } }), rt),
+    ).id as string;
+    const added = await respond(
+      event("POST", "/api/organizer/players", { headers: as(ana), body: { householdId: groupId, displayName: "Posy" } }),
+      rt,
+    );
+    const posy = (answer(added).players as { id: string }[])[0]!.id;
+
+    const kept = await respond(
+      event("POST", "/api/organizer/household/retention", { headers: as(ana), body: { householdId: groupId, retentionDays: 90 } }),
+      rt,
+    );
+    expect(answer(kept).retentionDays).toBe(90);
+    const odd = await respond(
+      event("POST", "/api/organizer/household/retention", { headers: as(ana), body: { householdId: groupId, retentionDays: 3 } }),
+      rt,
+    );
+    expect(odd.statusCode).toBe(409);
+
+    // Only an owner of her home.
+    const stranger = await respond(
+      event("POST", "/api/organizer/players/delete", { headers: as(ben), body: { householdId: groupId, playerId: posy } }),
+      rt,
+    );
+    expect(stranger.statusCode).toBe(403);
+    const gone = await respond(
+      event("POST", "/api/organizer/players/delete", { headers: as(ana), body: { householdId: groupId, playerId: posy } }),
+      rt,
+    );
+    expect(gone.statusCode).toBe(200);
+    expect(answer(gone).players).toEqual([]);
+    expect(await harness.repo.getPlayer(groupId, posy)).toBeNull();
+
+    const deleted = await respond(
+      event("POST", "/api/organizer/household/delete", { headers: as(ana), body: { householdId: groupId } }),
+      rt,
+    );
+    expect(deleted.statusCode).toBe(200);
+    expect(answer(deleted)).toEqual({ householdId: groupId, households: [] });
+    expect(await harness.repo.getHousehold(groupId)).toBeNull();
+    const again = await respond(
+      event("POST", "/api/organizer/household/delete", { headers: as(ana), body: { householdId: groupId } }),
+      rt,
+    );
+    expect(again.statusCode).toBe(403);
   });
 
   it("passes the picked household through sign-in and tablet set-up", async () => {

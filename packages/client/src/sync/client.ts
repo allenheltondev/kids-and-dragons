@@ -22,6 +22,7 @@ import type {
   OrganizerDevicesResponse,
   OrganizerHouseholdsResponse,
   OrganizerHouseholdSummary,
+  OrganizerHouseholdDeleted,
   OrganizerHouseholdView,
   OrganizerInvite,
   TransferAccepted,
@@ -134,7 +135,9 @@ export type OrganizerEdit =
   | { action: "add-player"; householdId: string; displayName: string }
   | { action: "rename-player"; householdId: string; playerId: string; displayName: string }
   | { action: "retire-player"; householdId: string; playerId: string; retired: boolean }
-  | { action: "leave-adventure"; householdId: string; characterId: string };
+  | { action: "leave-adventure"; householdId: string; characterId: string }
+  | { action: "delete-player"; householdId: string; playerId: string }
+  | { action: "set-retention"; householdId: string; retentionDays: number | null };
 
 const ORGANIZER_EDIT_PATH: Record<OrganizerEdit["action"], string> = {
   "rename-household": "/api/organizer/household/rename",
@@ -142,6 +145,8 @@ const ORGANIZER_EDIT_PATH: Record<OrganizerEdit["action"], string> = {
   "rename-player": "/api/organizer/players/rename",
   "retire-player": "/api/organizer/players/retire",
   "leave-adventure": "/api/organizer/heroes/leave",
+  "delete-player": "/api/organizer/players/delete",
+  "set-retention": "/api/organizer/household/retention",
 };
 
 /**
@@ -308,6 +313,8 @@ export interface Api {
   acceptTransfer(idToken: string, code: string, householdId?: string): Promise<TransferAccepted>;
   /** Take a co-organizer off, or leave (`ownerId` is your own). */
   removeOrganizer(idToken: string, householdId: string, ownerId: string): Promise<{ householdId: string; left: boolean }>;
+  /** Delete the household and everything under it (#252). Only its one owner may. */
+  deleteHousehold(idToken: string, householdId: string): Promise<OrganizerHouseholdDeleted>;
 
   // --- pairing a new device to a kid (#281) ----------------------------------
   /** Her own phone makes a one-time code. Only a personal device token can. */
@@ -710,6 +717,15 @@ export const api: Api = {
       headers: JSON_HEADERS,
       token: idToken,
       body: JSON.stringify({ householdId, ownerId }),
+    });
+  },
+
+  deleteHousehold(idToken, householdId) {
+    return request<OrganizerHouseholdDeleted>("/api/organizer/household/delete", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ householdId }),
     });
   },
 

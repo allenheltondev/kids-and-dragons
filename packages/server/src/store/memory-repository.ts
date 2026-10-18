@@ -42,6 +42,7 @@ import type {
   GameRepository,
   GuestRenewal,
   HouseholdOwnerRecord,
+  IdlePlayer,
   MoveOutcome,
   MoveProfileInput,
   OrganizerInviteRecord,
@@ -63,6 +64,8 @@ import {
   GSI1_DEVICE,
   GSI1_GUEST,
   GSI1_GUEST_SK,
+  GSI1_IDLE,
+  GSI1_IDLE_SK,
   GSI1_RUN,
   GUESS,
   GUESS_WINDOW_SK,
@@ -80,6 +83,7 @@ import {
   RUN_SK,
   STATE,
   TRANSFER,
+  VISIT,
 } from "./keys.ts";
 
 /** One row. Mirrors a DynamoDB item: keys are attributes, not metadata. */
@@ -103,6 +107,8 @@ interface TableItem {
    * than a field on `data` so the domain type stays free of storage bookkeeping.
    */
   sweeping?: boolean;
+  /** ISO. On a `PLAYER#` row: when she last joined a room (#252). Bookkeeping, like `sweeping`. */
+  lastPlayedAt?: string;
   entity: string;
   data: unknown;
 }
@@ -333,6 +339,24 @@ export class MemoryRepository implements GameRepository {
     if (!household.guest) return false;
     if (!household.expiresAt || household.expiresAt > nowIso) return false;
     this.put({ ...meta, sweeping: true });
+    await this.purge(householdId);
+    return true;
+  }
+
+  async deleteHousehold(householdId: string): Promise<boolean> {
+    // The same mark, gated only on the household being there: the caller
+    // proved an owner. Re-entrant like the sweep, so a delete that died
+    // part-way is finished by the next.
+    const meta = this.get(HH(householdId), META);
+    if (!meta) return false;
+    this.put({ ...meta, sweeping: true });
+    await this.purge(householdId);
+    return true;
+  }
+
+  /** Everything under a marked household, in the order that keeps an interrupted delete findable. */
+  private async purge(householdId: string): Promise<void> {
+    const household = this.get(HH(householdId), META)?.data as Household | undefined;
 
     // Phase 2 — runs first: they live in their own partitions and are only
     // reachable through the household, so deleting the household row first
@@ -349,8 +373,15 @@ export class MemoryRepository implements GameRepository {
         this.items.delete(rowKey(ROOM(run.roomCode), META));
       }
     }
-    if (household.ownerSub) {
-      this.items.delete(rowKey(ACCT(household.ownerSub), HH(householdId)));
+    // Every owner's pointer: the founding one, and each co-organizer's (#248).
+    const subs = new Set(this.query(HH(householdId), PREFIX.owner).map((i) => (i.data as HouseholdOwnerRecord).cognitoSub));
+    if (household?.ownerSub) subs.add(household.ownerSub);
+    for (const sub of subs) this.items.delete(rowKey(ACCT(sub), HH(householdId)));
+    // Each kid's visits, which are keyed by her and not by this household.
+    for (const item of this.query(HH(householdId), PREFIX.player)) {
+      for (const visit of this.query(VISIT((item.data as PlayerProfile).id))) {
+        this.items.delete(rowKey(visit.PK, visit.SK));
+      }
     }
 
     // Phase 3 — the rest of the household partition, META last: it carries the
@@ -361,7 +392,60 @@ export class MemoryRepository implements GameRepository {
     }
     this.items.delete(rowKey(HH(householdId), META));
     this.persist();
+  }
+
+  async deleteProfile(householdId: string, playerId: string, idleBefore?: string): Promise<boolean> {
+    // Phase 1 — the mark, conditional as the real store's is. Not on
+    // `sweeping` being absent: an interrupted delete must be re-enterable.
+    const row = this.items.get(rowKey(HH(householdId), PLAYER_SK(playerId)));
+    if (!row) return false;
+    if (idleBefore !== undefined && !(row.lastPlayedAt !== undefined && row.lastPlayedAt <= idleBefore)) return false;
+    this.put({ ...row, sweeping: true });
+
+    // Phase 2 — hers, by what each row says.
+    for (const item of this.query(HH(householdId), PREFIX.character)) {
+      if ((item.data as { ownerPlayerId?: string }).ownerPlayerId === playerId) this.items.delete(rowKey(item.PK, item.SK));
+    }
+    for (const item of this.query(HH(householdId), PREFIX.device)) {
+      const device = item.data as DeviceBinding;
+      if (device.kind !== "shared" && device.playerId === playerId) this.items.delete(rowKey(item.PK, item.SK));
+    }
+    for (const visit of this.query(VISIT(playerId))) this.items.delete(rowKey(visit.PK, visit.SK));
+
+    // Phase 3 — the profile, which is what marks her and what indexes her.
+    this.items.delete(rowKey(HH(householdId), PLAYER_SK(playerId)));
+    this.persist();
     return true;
+  }
+
+  async touchPlayer(householdId: string, playerId: string, lastPlayedAt: string, keepUntil: string | null): Promise<void> {
+    const row = this.items.get(rowKey(HH(householdId), PLAYER_SK(playerId)));
+    if (!row || row.sweeping) return;
+    const { GSI1PK: _pk, GSI1SK: _sk, ...rest } = row;
+    this.put({
+      ...rest,
+      lastPlayedAt,
+      ...(keepUntil ? { GSI1PK: GSI1_IDLE, GSI1SK: GSI1_IDLE_SK(keepUntil, householdId, playerId) } : {}),
+    });
+  }
+
+  async getLastPlayed(householdId: string, playerId: string): Promise<string | null> {
+    const row = this.get(HH(householdId), PLAYER_SK(playerId));
+    return row && !row.sweeping ? (row.lastPlayedAt ?? null) : null;
+  }
+
+  async listIdlePlayers(nowIso: string, limit = 25): Promise<IdlePlayer[]> {
+    return this.queryIndex(GSI1_IDLE, GSI1_IDLE_SK(nowIso, "", ""))
+      .slice(0, limit)
+      .map(idlePlayer);
+  }
+
+  async putVisit(playerId: string, tableHouseholdId: string, at: string): Promise<void> {
+    this.put({ PK: VISIT(playerId), SK: HH(tableHouseholdId), entity: "visit", data: { playerId, householdId: tableHouseholdId, at } });
+  }
+
+  async listVisits(playerId: string): Promise<string[]> {
+    return this.query(VISIT(playerId), "HH#").map((i) => i.SK.slice("HH#".length));
   }
 
   async putAccountPointer(cognitoSub: string, householdId: string): Promise<void> {
@@ -414,6 +498,10 @@ export class MemoryRepository implements GameRepository {
     const item = this.get(INVITE(code), META);
     const invite = item?.data as OrganizerInviteRecord | undefined;
     if (!invite || invite.expiresAt <= nowIso) return null;
+    // The real store's condition check on the household (#252): a code made
+    // before its household was deleted hands out nothing.
+    const household = this.get(HH(invite.householdId), META);
+    if (!household || household.sweeping) return null;
     this.items.delete(rowKey(INVITE(code), META));
     await this.putOwner({ ...owner, householdId: invite.householdId });
     return invite;
@@ -446,7 +534,7 @@ export class MemoryRepository implements GameRepository {
 
   async readProfileMove(householdId: string, playerId: string): Promise<ProfileMove | null> {
     const player = this.get(HH(householdId), PLAYER_SK(playerId));
-    if (!player) return null;
+    if (!player || player.sweeping) return null;
     return collectMove(householdId, playerId, {
       player,
       characters: this.query(HH(householdId), PREFIX.character),
@@ -506,7 +594,12 @@ export class MemoryRepository implements GameRepository {
   }
 
   async putPlayer(player: PlayerProfile): Promise<void> {
+    // `data` only, like the real store's update: when she last played, her
+    // retention entry and a delete's mark are not the profile's to clear.
+    const { PK: _pk, SK: _sk, entity: _entity, data: _data, ...kept } =
+      this.items.get(rowKey(HH(player.householdId), PLAYER_SK(player.id))) ?? ({} as Partial<TableItem>);
     this.put({
+      ...kept,
       PK: HH(player.householdId),
       SK: PLAYER_SK(player.id),
       entity: "player",
@@ -515,13 +608,15 @@ export class MemoryRepository implements GameRepository {
   }
 
   async getPlayer(householdId: string, playerId: string): Promise<PlayerProfile | null> {
-    return (
-      (this.get(HH(householdId), PLAYER_SK(playerId))?.data as PlayerProfile | undefined) ?? null
-    );
+    // A profile being deleted (#252) is gone to every reader already.
+    const row = this.get(HH(householdId), PLAYER_SK(playerId));
+    return row && !row.sweeping ? (row.data as PlayerProfile) : null;
   }
 
   async listPlayers(householdId: string): Promise<PlayerProfile[]> {
-    return this.query(HH(householdId), PREFIX.player).map((i) => i.data as PlayerProfile);
+    return this.query(HH(householdId), PREFIX.player)
+      .filter((i) => !i.sweeping)
+      .map((i) => i.data as PlayerProfile);
   }
 
   async putDevice(device: DeviceBinding): Promise<void> {
@@ -872,6 +967,16 @@ function characterItem(character: Character): TableItem {
     // builder so neither path can omit progression fields or the schema stamp.
     v: CHARACTER_VERSION,
     data: character,
+  };
+}
+
+function idlePlayer(item: TableItem): IdlePlayer {
+  // From the row itself, not the index key: a kid who moved (#251) took her
+  // entry with her, and her row names where she lives now.
+  return {
+    householdId: item.PK.slice("HH#".length),
+    playerId: (item.data as PlayerProfile).id,
+    lastPlayedAt: item.lastPlayedAt ?? "",
   };
 }
 
