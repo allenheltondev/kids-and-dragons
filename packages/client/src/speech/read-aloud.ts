@@ -19,7 +19,6 @@
 
 import { create } from "zustand";
 import { setSpeaker, stopSpeaking, type SpeakOptions } from "@kad/shared";
-import { defaultStorage } from "../store/persistence";
 
 export const READ_ALOUD_KEY = "kad.readaloud";
 
@@ -28,9 +27,11 @@ export function readAloudSupported(): boolean {
   return typeof window !== "undefined" && "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined";
 }
 
+// Straight to localStorage (in try/catch, as private mode throws): importing the store's persistence
+// helper would tie this lazy module to the entry chunk and cost first-paint bytes for one string.
 function loadStored(): boolean {
   try {
-    return defaultStorage().getItem(READ_ALOUD_KEY) === "1";
+    return localStorage.getItem(READ_ALOUD_KEY) === "1";
   } catch {
     return false;
   }
@@ -77,7 +78,7 @@ export function setReadAloud(on: boolean): void {
   const next = on && readAloudSupported();
   useStore.setState({ on: next });
   try {
-    defaultStorage().setItem(READ_ALOUD_KEY, next ? "1" : "0");
+    localStorage.setItem(READ_ALOUD_KEY, next ? "1" : "0");
   } catch {
     // Private mode: it holds until the page closes, which is the best it can do.
   }

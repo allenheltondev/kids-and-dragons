@@ -6,7 +6,8 @@
  */
 .kad-arrivals--float {
   position: fixed;
-  inset-block-start: calc(var(--kad-safe-top, 0px) + 3.5rem);
+  /* Below the sound and read-aloud buttons stacked in the corner (#261). */
+  inset-block-start: calc(var(--kad-safe-top, 0px) + 3.5rem + var(--kad-touch-min));
   inset-inline-end: calc(var(--kad-safe-right, 0px) + 1rem);
   z-index: 100;
   inline-size: min(24rem, calc(100vw - 2rem));

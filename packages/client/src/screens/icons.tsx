@@ -142,20 +142,6 @@ const GLYPHS: Record<string, ReactElement> = {
       <path d="M17 10l5 5m0-5-5 5" />
     </g>
   ),
-  // Read-aloud (#261): a speech bubble with lines of text; off is crossed out.
-  // Shape, not colour, tells the two apart (spec §11).
-  readaloud: (
-    <g {...S}>
-      <path d="M3 4h18v12h-9l-5 4v-4H3Z" />
-      <path d="M7 8h10M7 12h6M3 21 21 3" />
-    </g>
-  ),
-  "readaloud-on": (
-    <g {...S}>
-      <path d="M3 4h18v12h-9l-5 4v-4H3Z" />
-      <path d="M7 8h10M7 12h6" />
-    </g>
-  ),
   plus: (
     <g {...S}>
       <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6Z" />
@@ -350,7 +336,6 @@ const ALIASES: Record<string, string> = {
   email: "envelope",
   code: "envelope",
   signin: "lantern",
-  hear: "sound",
 };
 
 const DEFAULT_SIZE = "1em";

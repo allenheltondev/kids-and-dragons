@@ -25,7 +25,6 @@ import { useGameStore, useLayoutMode, useRunState, useChapter, useMe } from "./s
 import { Button, ConnectionBanner, ErrorToast, Spinner } from "./ui";
 
 import { AudioControl } from "./audio";
-import { ReadAloudControl, startReadAloud } from "./speech";
 import { setQuiet } from "./quiet";
 import { musicForScene } from "./audio/scene-audio";
 import { PhoneMagic } from "./ui/PhoneMagic";
@@ -45,6 +44,11 @@ import { PhoneMagic } from "./ui/PhoneMagic";
  * anyway. The import promises are the module cache — calling them again from
  * `lazy()` costs nothing.
  */
+// Read-aloud (#261) loads after first paint: nobody on the join screen can hear it yet,
+// and the entry chunk is at its budget (tools/perf/bundle-budget.ts).
+const loadSpeech = () => import("./speech");
+const ReadAloudControl = lazy(() => loadSpeech().then((module) => ({ default: module.ReadAloudControl })));
+
 const loadPartyLayout = () => import("./layout/PartyLayout");
 const loadTravelLayout = () => import("./layout/TravelLayout");
 const PartyLayout = lazy(() => loadPartyLayout().then((module) => ({ default: module.PartyLayout })));
@@ -136,7 +140,7 @@ export function App(): React.JSX.Element {
 
   // This device's read-aloud switch, if it was left on (#261).
   useEffect(() => {
-    startReadAloud();
+    void loadSpeech().then((module) => module.startReadAloud()).catch(() => undefined);
   }, []);
 
   // The host's quiet mode (#260) reaches every device in the room as run state.
@@ -162,7 +166,9 @@ export function App(): React.JSX.Element {
   return (
     <PhoneMagic enabled={route.name !== "tv"}>
       <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
-      <ReadAloudControl />
+      <Suspense fallback={null}>
+        <ReadAloudControl />
+      </Suspense>
       {pickLayout()}
       <ErrorToast />
       {/* Shell-level like the toast, and for the same reason: a dropped

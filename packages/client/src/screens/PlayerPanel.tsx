@@ -984,7 +984,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                         aria-label={`Hear: ${option.label}`}
                         onClick={() => hear(option.label, { source: "choice" })}
                       >
-                        <Icon name="hear" size="1.5em" />
+                        <Icon name="sound" size="1.5em" />
                       </button>
                     ) : null}
                   </li>
