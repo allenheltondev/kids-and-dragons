@@ -352,8 +352,7 @@ async function postJoin(req: Req, deps: HandlerDeps, typed: string) {
   // so a phone that has never seen this game joins in one tap. On a visitor
   // code it is a visitor, in a guest household of its own (#249).
   // Never-seen phones are admitted *before* anything is bound to them
-  // (`admitNewPhone`): a refused one must leave no membership behind. Its
-  // name is vetted first (#253), which refuses without writing anything.
+  // (`admitNewPhone`): a refused one must leave no membership behind.
   const joinerName = vetTypedName(req.body.displayName, "Player");
   if (!existing && !joinerName.ok) return fromError(joinerName.error);
   let admitted: "family" | "visitor" | null = null;
