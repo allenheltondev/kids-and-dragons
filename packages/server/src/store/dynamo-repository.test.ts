@@ -129,7 +129,7 @@ describe("DynamoRepository character persistence", () => {
           patch: [{ op: "replace", path: "/seq", value: 1 }],
           at: "2026-07-04T18:00:00.000Z",
         },
-        characters: [hero],
+        characters: [{ character: hero, expectedVersion: 3, expectedClaim: "campaign-1" }],
       }),
     ).resolves.toBe(true);
 
@@ -141,7 +141,12 @@ describe("DynamoRepository character persistence", () => {
       SK: "CHAR#c_1",
       entity: "character",
       v: CHARACTER_VERSION,
-      data: hero,
+      data: { ...hero, version: 4 },
+    });
+    // The claim and the version read, on the hero's own row (#282).
+    expect(command.input.TransactItems?.[2]?.Put).toMatchObject({
+      ConditionExpression: "#d.#version = :version AND #d.#provisional.#runId = :claim",
+      ExpressionAttributeValues: { ":version": 3, ":claim": "campaign-1" },
     });
   });
 });
