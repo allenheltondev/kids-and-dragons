@@ -157,6 +157,12 @@ export function PixiStage(): React.JSX.Element {
       const instance = new Application();
       app = instance;
       await instance.init({
+        // WebGL or nothing. Left alone, Pixi quietly falls back to WebGPU and
+        // then to its 2D-canvas renderer, and a TV without WebGL would run the
+        // whole animated scene on the CPU, which this scene (filters, masks,
+        // thirty-odd sprites a frame) was never built or measured for. A
+        // rejection here lands in the still board instead (RendererFallback).
+        preference: ["webgl"],
         antialias: true,
         backgroundAlpha: 0,
         // The TV may be a modest mini-PC; capping DPR keeps fill rate sane.

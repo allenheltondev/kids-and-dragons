@@ -83,6 +83,68 @@ describe("asking for the gesture", () => {
   });
 });
 
+describe("Tap for sound on the shared screen (#264)", () => {
+  class BlockedContext {
+    currentTime = 0;
+    state: "suspended" | "running" = "suspended";
+    destination = {};
+    listeners = new Set<() => void>();
+    addEventListener(_: string, fn: () => void): void { this.listeners.add(fn); }
+    removeEventListener(_: string, fn: () => void): void { this.listeners.delete(fn); }
+    createGain() { return { gain: { setValueAtTime() {}, linearRampToValueAtTime() {} }, connect() {} }; }
+    createBufferSource() { return { connect() {}, start() {}, stop() {} }; }
+    resume(): Promise<void> {
+      // The TV browser lets sound start only on the second try.
+      if (BlockedContext.allowed) {
+        this.state = "running";
+        for (const fn of this.listeners) fn();
+      }
+      return Promise.resolve();
+    }
+    close(): Promise<void> { return Promise.resolve(); }
+    static allowed = false;
+  }
+
+  afterEach(() => { vi.unstubAllGlobals(); BlockedContext.allowed = false; });
+
+  it("shows one plain button while sound is blocked, and drops it once sound is running", async () => {
+    vi.stubGlobal("AudioContext", BlockedContext);
+    render(<AudioControl display />);
+    expect(screen.getAllByRole("button", { name: "Tap for sound" })).toHaveLength(1);
+    expect(screen.queryByText("Click or press a key for sound")).toBeNull();
+
+    // A first tap that the browser still refuses leaves the ask on screen.
+    fireEvent.click(screen.getByRole("button", { name: "Tap for sound" }));
+    expect(screen.getByRole("button", { name: "Tap for sound" })).toBeTruthy();
+
+    BlockedContext.allowed = true;
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Tap for sound" }));
+      await Promise.resolve();
+    });
+    expect(screen.queryByRole("button", { name: "Tap for sound" })).toBeNull();
+  });
+
+  it("stays out of the way when sound is off", () => {
+    vi.stubGlobal("AudioContext", BlockedContext);
+    render(<AudioControl display />);
+    fireEvent.click(screen.getByRole("button", { name: "Turn sound off" }));
+    expect(screen.queryByRole("button", { name: "Tap for sound" })).toBeNull();
+  });
+
+  it("does not ask a browser with no audio at all for a tap that cannot help", () => {
+    // jsdom: no AudioContext. Silent play is the whole story there.
+    render(<AudioControl display />);
+    expect(screen.queryByRole("button", { name: "Tap for sound" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Turn sound off" })).toBeTruthy();
+  });
+
+  it("does not put the button on a phone", () => {
+    vi.stubGlobal("AudioContext", BlockedContext);
+    render(<AudioControl />);
+    expect(screen.queryByRole("button", { name: "Tap for sound" })).toBeNull();
+  });
+});
 
 describe("entry screen continuity", () => {
   it("keeps the same sink while moving from home through creation and lobby to a quest", () => {
