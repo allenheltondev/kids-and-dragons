@@ -418,6 +418,38 @@ describe("whose turn it is", () => {
 // The rule: a tap on a legal thing does it
 // ---------------------------------------------------------------------------
 
+describe("a friend who stepped away (#258)", () => {
+  /** Sparklehoof (Quick 9) leads; this phone is Thistle's. */
+  function onAwayFriendsTurn(connected: boolean) {
+    const lead = character();
+    const friend = character({ id: "c_friend", ownerPlayerId: "p_2", name: "Thistle", stats: { might: 2, quick: 1, clever: 1, heart: 1 } });
+    const mounted = mount({ characters: [lead, friend], playerId: "p_2" });
+    const current = useGameStore.getState().state!;
+    act(() => {
+      useGameStore.setState({
+        state: { ...current, party: current.party.map((m) => (m.playerId === "p_1" ? { ...m, connected } : m)) },
+      });
+    });
+    return mounted;
+  }
+
+  it("says they stepped away and lets this phone pass their turn, one tap", async () => {
+    const user = userEvent.setup();
+    const { sent } = onAwayFriendsTurn(false);
+    expect(screen.getByText("Sparklehoof stepped away.")).toBeTruthy();
+    // Passing is all a stand-in may do: no cards, no squares.
+    expect(cardNames()).toEqual(["Pass Sparklehoof\u2019s turn"]);
+    await user.click(screen.getByRole("button", { name: /^Pass Sparklehoof/ }));
+    expect(sent).toEqual([{ type: "END_TURN" }]);
+  });
+
+  it("offers nothing while they are still here", () => {
+    onAwayFriendsTurn(true);
+    expect(screen.getByText("It's Sparklehoof's turn.")).toBeTruthy();
+    expect(screen.queryAllByRole("button")).toEqual([]);
+  });
+});
+
 describe("a tap does the thing (spec §11)", () => {
   it("walks on the tile tap — no confirm bar, nothing else appears", async () => {
     const user = userEvent.setup();
