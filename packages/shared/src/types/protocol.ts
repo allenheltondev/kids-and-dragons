@@ -487,6 +487,68 @@ export interface ShareDeviceResponse extends SharedDevicePlayersResponse {
   sharedToken: string;
 }
 
+// ---------------------------------------------------------------------------
+// Organizers (#248): one or more signed-in grown-ups running a household
+// ---------------------------------------------------------------------------
+
+/** One household an account owns: a family, or a group of kids from many. */
+export interface OrganizerHouseholdSummary {
+  id: string;
+  displayName: string;
+  /** Profiles still on the pickers. */
+  players: number;
+}
+
+/** `GET /api/organizer/households`. */
+export interface OrganizerHouseholdsResponse {
+  households: OrganizerHouseholdSummary[];
+}
+
+/** A hero, as an organizer sees it on a profile. */
+export interface OrganizerHero {
+  id: string;
+  name: string;
+  species: string;
+  class: string;
+  level: number;
+}
+
+export interface OrganizerPlayer {
+  id: string;
+  displayName: string;
+  color: string;
+  /** Off the pickers (`PlayerProfile.retired`). */
+  retired: boolean;
+  /** Furthest-taken first. */
+  heroes: OrganizerHero[];
+}
+
+/** A grown-up who may manage the household. */
+export interface OrganizerOwner {
+  /** Opaque. What `POST /api/organizer/owners/remove` names. */
+  id: string;
+  /** As they signed in, when known. */
+  email?: string;
+  /** The account asking. */
+  you: boolean;
+  /** Claimed or created the household. Nobody can remove them. */
+  founding: boolean;
+}
+
+/** `GET /api/organizer/household?householdId=`: everything an owner manages. */
+export interface OrganizerHouseholdView {
+  id: string;
+  displayName: string;
+  owners: OrganizerOwner[];
+  players: OrganizerPlayer[];
+}
+
+/** `POST /api/organizer/invite`: a code a second grown-up signs in with to co-organize. */
+export interface OrganizerInvite {
+  code: string;
+  expiresAt: string;
+}
+
 /**
  * On a shared tablet, a join or a create names who is playing (#250): one of
  * the household's profiles, or a new kid by name. Sent with the tablet's

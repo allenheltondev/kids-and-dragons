@@ -379,6 +379,9 @@ export async function joinRoom(
   const player =
     early ?? (await deps.repo.getPlayer(input.principal.householdId, input.principal.playerId));
   if (!player) return fail("NOT_FOUND", `no player ${input.principal.playerId}`);
+  // Retired by an organizer (#248): no seat anywhere, whatever this run's
+  // `removed` list says yet.
+  if (player.retired) return fail("FORBIDDEN", "This player was taken off the list. Ask a grown-up to bring them back.");
 
   const lobby = await refreshLobby(room, deps);
   if (!lobby) return fail("NOT_FOUND", `run ${room.runId} has no state`);

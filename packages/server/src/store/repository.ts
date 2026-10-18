@@ -272,6 +272,30 @@ export interface CommitInput {
   campaignProgressExpectedVersion?: number | null;
 }
 
+/** `HH#<hhId>` / `OWNER#<sub>`: one grown-up who may manage the household (#248). */
+export interface HouseholdOwnerRecord {
+  householdId: string;
+  cognitoSub: string;
+  /** As they signed in, so the other owners can tell who is who. */
+  email?: string;
+  addedAt: string;
+}
+
+/**
+ * `INVITE#<code>` / `META`: a single-use code that makes whoever signs in
+ * with it an owner of `householdId` (#248). TTL'd like a room.
+ */
+export interface OrganizerInviteRecord {
+  code: string;
+  householdId: string;
+  /** The owner who asked for it. */
+  createdBy: string;
+  createdAt: string;
+  expiresAt: string;
+  /** Epoch seconds. DynamoDB deletes it some time after; reads check `expiresAt`. */
+  ttl: number;
+}
+
 export interface GameRepository {
   // --- household, players, devices -----------------------------------------
   putHousehold(household: Household): Promise<void>;
@@ -279,6 +303,35 @@ export interface GameRepository {
   /** `ACCT#<sub>` → households. Sign-in lookup; an account may own more than one. */
   putAccountPointer(cognitoSub: string, householdId: string): Promise<void>;
   listHouseholdsForAccount(cognitoSub: string): Promise<string[]>;
+
+  /**
+   * Make `owner.cognitoSub` an owner of the household (#248): its `ACCT#`
+   * pointer, which is the authority every guard reads, and an `OWNER#` row in
+   * the household, which is how the household lists its owners. One
+   * transaction, so neither exists without the other. Idempotent; a second
+   * call refreshes the row (an email learned later).
+   */
+  putOwner(owner: HouseholdOwnerRecord): Promise<void>;
+  /** The household's `OWNER#` rows. A founding owner from before #248 has none. */
+  listOwners(householdId: string): Promise<HouseholdOwnerRecord[]>;
+  /** Both halves of `putOwner`, together. A no-op for somebody who is not an owner. */
+  removeOwner(householdId: string, cognitoSub: string): Promise<void>;
+
+  /** A new organizer invite. `false`, and nothing written, if the code is taken. */
+  putOrganizerInviteIfAbsent(invite: OrganizerInviteRecord): Promise<boolean>;
+  /**
+   * Redeem an invite: spend it and make `owner` an owner of its household
+   * (both halves of `putOwner`), in **one transaction**. A code is never spent
+   * without the membership it pays for, so a failure leaves it redeemable, and
+   * of two grown-ups typing one code exactly one gets it. `null`, and nothing
+   * written, for a code that was never issued, is spent, or has expired
+   * (`nowIso` past `expiresAt`).
+   */
+  redeemOrganizerInvite(
+    code: string,
+    nowIso: string,
+    owner: Omit<HouseholdOwnerRecord, "householdId">,
+  ): Promise<OrganizerInviteRecord | null>;
 
   /**
    * Claim a guest household for a signed-in account (§4.5). Writes the

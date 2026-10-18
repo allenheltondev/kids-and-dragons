@@ -15,6 +15,7 @@
 
 import type { StateResponse } from "@kad/shared";
 import { fail, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
+import { isOut } from "./remove.ts";
 
 /**
  * Above this many missed events, one snapshot is cheaper than the patches —
@@ -33,6 +34,8 @@ export interface GetStateInput {
    * refused: their session token stays well-formed until the room ends.
    */
   playerId?: string | undefined;
+  /** That player's household, from their session. Absent, the run's is used. */
+  householdId?: string | undefined;
 }
 
 export async function getState(
@@ -41,7 +44,8 @@ export async function getState(
 ): Promise<HandlerResult<StateResponse>> {
   const state = await deps.repo.getState(input.runId);
   if (!state) return fail("NOT_FOUND", `no run ${input.runId}`);
-  if (input.playerId !== undefined && state.removed?.includes(input.playerId)) {
+  // Taken out by the host (#267), or retired by an organizer (#248).
+  if (input.playerId !== undefined && (await isOut(state, input.playerId, input.householdId ?? null, deps.repo))) {
     return fail("FORBIDDEN", "This phone was taken out of the game.");
   }
 

@@ -25,7 +25,8 @@ import {
   type CognitoClient,
   type PendingChallenge,
 } from "../sync/auth";
-import { api as defaultApi, type Api } from "../sync/client";
+import { api as defaultApi, type Api, type LinkAccountResponse } from "../sync/client";
+import { useOrganizerStore } from "./organizer";
 import {
   asPlayerIdentity,
   becomeSharedDevice,
@@ -49,9 +50,11 @@ export type KeepsakeStep =
   | "offer"
   | "email"
   | "code"
+  | "household"
   | "choose"
   | "passkey"
-  | "kept";
+  | "kept"
+  | "organize";
 
 /**
  * Two reasons to sign in, sharing one email-and-code middle.
@@ -77,7 +80,19 @@ export type KeepsakeStep =
  * passkey: a tablet that remembered the owner's face would hand every kid who
  * picks it up the owner's account.
  */
-export type KeepsakePurpose = "keep" | "restore" | "share" | "forget";
+export type KeepsakePurpose = "keep" | "restore" | "share" | "forget" | "organize";
+/*
+ * And one for an organizer (#248): `organize` signs a grown-up in to manage
+ * their households and groups, in the organizer panel (store/organizer.ts).
+ * Like a tablet's errands it keeps nobody signed in once the panel closes.
+ */
+
+/** A household offered by the `household` step (#248), for an account that owns more than one. */
+export interface KeepsakeHousehold {
+  id: string;
+  displayName: string;
+  players: number;
+}
 
 /** A household member offered by the picker in the `restore` ending. */
 export interface KeepsakePlayer {
@@ -93,6 +108,8 @@ export interface KeepsakeStore {
   purpose: KeepsakePurpose;
   /** Populated for the `restore` ending only. */
   players: KeepsakePlayer[];
+  /** Populated for the `household` step only. */
+  households: KeepsakeHousehold[];
   /**
    * Whether this deployment can offer sign-in at all. `null` until checked —
    * distinct from `false`, because "we don't know yet" must not render as
@@ -126,6 +143,8 @@ export interface KeepsakeStore {
   submitCode(code: string): Promise<void>;
   /** The `restore` ending: bind this phone to one of the household's players. */
   choosePlayer(playerId: string): Promise<void>;
+  /** The `household` step: which of the account's households this is for (#248). */
+  chooseHousehold(householdId: string): Promise<void>;
   addPasskey(): Promise<void>;
   skipPasskey(): void;
   dismissError(): void;
@@ -138,10 +157,25 @@ export interface KeepsakeDeps {
   storage: KeyValueStorage;
   /** Built from `/api/config` on first use; injected whole by tests. */
   makeCognito: typeof createCognitoClient;
+  /** Where the `organize` sign-in goes on to (#248). */
+  organizer: { begin(idToken: string, email: string): Promise<void>; end(): void };
 }
 
 export function defaultKeepsakeDeps(): KeepsakeDeps {
-  return { api: defaultApi, storage: defaultStorage(), makeCognito: createCognitoClient };
+  return {
+    api: defaultApi,
+    storage: defaultStorage(),
+    makeCognito: createCognitoClient,
+    organizer: {
+      begin: (idToken, email) => useOrganizerStore.getState().begin(idToken, email),
+      end: () => useOrganizerStore.getState().end(),
+    },
+  };
+}
+
+/** A tablet's errands and the organizer's panel never leave the grown-up signed in. */
+function transient(purpose: KeepsakePurpose): boolean {
+  return purpose === "share" || purpose === "forget" || purpose === "organize";
 }
 
 export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) {
@@ -158,11 +192,114 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
   let pendingAccount: AccountRecord | null = null;
   let checking: Promise<void> | null = null;
 
-  return create<KeepsakeStore>()((set, get) => ({
+  return create<KeepsakeStore>()((set, get) => {
+    /**
+     * What a sign-in or a picked household (#248) came back with: bind this
+     * phone if the server did, ask which household or which player if there
+     * is a choice to make, and otherwise it is done.
+     */
+    async function afterLink(result: LinkAccountResponse, email: string): Promise<void> {
+      const identity = loadIdentity(deps.storage);
+      // The server will not guess between an account's households, and
+      // neither do we: the grown-up picks, and the link is asked again.
+      if (result.householdId === null) {
+        set({ step: "household", busy: false, challenge: null, households: result.households ?? [] });
+        return;
+      }
+      const householdId = result.householdId;
+
+      // A device token comes back only when the server bound this browser
+      // during the link; keeping the existing one otherwise.
+      if (result.deviceToken) {
+        saveIdentity(asPlayerIdentity(identity, result.deviceToken), deps.storage);
+      }
+
+      const account: AccountRecord = {
+        householdId,
+        email,
+        claimedAt: new Date().toISOString(),
+      };
+
+      /*
+       * The `restore` ending needs a player picked before this phone is
+       * anybody. Skipped when the server already bound us — that happens on a
+       * brand-new account, where it created the household and made this
+       * device its first player, so there is nothing to choose between.
+       */
+      const needsPlayer =
+        get().purpose === "restore" &&
+        !result.deviceToken &&
+        result.deviceBound !== true &&
+        result.players.length > 0;
+      if (needsPlayer) {
+        const byOwner = new Map<string, string[]>();
+        for (const character of result.characters) {
+          const owned = byOwner.get(character.ownerPlayerId) ?? [];
+          owned.push(character.name);
+          byOwner.set(character.ownerPlayerId, owned);
+        }
+        pendingAccount = account;
+        set({
+          step: "choose",
+          busy: false,
+          challenge: null,
+          players: result.players.map((p) => ({
+            id: p.id,
+            displayName: p.displayName,
+            color: p.color,
+            characters: byOwner.get(p.id) ?? [],
+          })),
+        });
+        return;
+      }
+
+      // This phone is bound to the household now, so the account is real.
+      saveAccount(account, deps.storage);
+      pendingAccount = null;
+      // Offer the passkey only where it can work — otherwise this is done.
+      const next = get().passkeyPossible ? "passkey" : "kept";
+      set({ account, step: next, busy: false, challenge: null });
+    }
+
+    /** The `share` ending, once it is known which household the tablet is for. */
+    async function finishShare(householdId: string | undefined): Promise<void> {
+      if (!tokens) return;
+      const shared = loadSharedDevice(deps.storage);
+      // The phone binding this browser held goes along to be revoked.
+      const deviceToken = loadIdentity(deps.storage).deviceToken;
+      const result = householdId
+        ? await deps.api.shareDevice(tokens.idToken, deviceToken, shared?.token, householdId)
+        : await deps.api.shareDevice(tokens.idToken, deviceToken, shared?.token);
+      becomeSharedDevice({ token: result.sharedToken, householdId: result.householdId }, deps.storage);
+      doneOnTablet();
+    }
+
+    /**
+     * Not kept once done: the grown-up signed in to do one thing on a device
+     * every kid in the house picks up. Until then a failure keeps them, so
+     * "try again" needs no new code, and nothing has changed this device: the
+     * server revokes the old binding last, and `becomeSharedDevice` forgets
+     * the old identity only once the new token is saved.
+     */
+    function doneOnTablet(): void {
+      tokens = null;
+      tokensFor = null;
+      set({
+        step: "kept",
+        busy: false,
+        challenge: null,
+        households: [],
+        account: loadAccount(deps.storage),
+        shared: loadSharedDevice(deps.storage) !== null,
+      });
+    }
+
+    return {
     step: "closed",
     purpose: "keep",
     entry: "offer",
     players: [],
+    households: [],
     available: null,
     busy: false,
     error: null,
@@ -205,16 +342,17 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
       // `restore` and the home button skip the offer: somebody who tapped to
       // sign in has already decided, and there is no party on screen to show.
       const step = purpose === "keep" && entry === "offer" ? "offer" : "email";
-      set({ purpose, entry, step, error: null, players: [] });
+      set({ purpose, entry, step, error: null, players: [], households: [] });
     },
 
     close() {
       // A tablet's errand never leaves the grown-up signed in, even half done.
       const purpose = get().purpose;
-      if (purpose === "share" || purpose === "forget") {
+      if (transient(purpose)) {
         tokens = null;
         tokensFor = null;
       }
+      if (purpose === "organize") deps.organizer.end();
       // Deliberately keeps `account` and `passkeyAdded`: closing is "not now",
       // not "undo". Reopening after a successful claim should still say kept.
       set({ step: "closed", error: null, challenge: null, busy: false });
@@ -261,33 +399,30 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
         }
 
         const purpose = get().purpose;
-        if (purpose === "share" || purpose === "forget") {
-          const idToken = tokens.idToken;
+        if (purpose === "organize") {
+          // The panel takes the token from here; this flow is done with it.
+          await deps.organizer.begin(tokens.idToken, challenge.email);
+          set({ step: "organize", busy: false, challenge: null });
+          return;
+        }
+        if (purpose === "share") {
+          // An account running a group as well as a family is asked which
+          // one this tablet is for (#248), never guessed for.
+          const { households } = await deps.api.listHouseholds(tokens.idToken);
+          if (households.length > 1) {
+            set({ step: "household", busy: false, challenge: null, households });
+            return;
+          }
+          await finishShare(undefined);
+          return;
+        }
+        if (purpose === "forget") {
           const shared = loadSharedDevice(deps.storage);
-          if (purpose === "share") {
-            // The phone binding this browser held goes along to be revoked.
-            const deviceToken = loadIdentity(deps.storage).deviceToken;
-            const result = await deps.api.shareDevice(idToken, deviceToken, shared?.token);
-            becomeSharedDevice({ token: result.sharedToken, householdId: result.householdId }, deps.storage);
-          } else if (shared) {
-            await deps.api.forgetDevice(idToken, shared.token);
+          if (shared) {
+            await deps.api.forgetDevice(tokens.idToken, shared.token);
             clearSharedDevice(deps.storage);
           }
-          // Not kept once done: the grown-up signed in to do one thing on a
-          // device every kid in the house picks up. Until then a failure keeps
-          // them, so "try again" needs no new code, and nothing above has
-          // changed this device: the server revokes the old binding last, and
-          // `becomeSharedDevice` forgets the old identity only once the new
-          // token is saved.
-          tokens = null;
-          tokensFor = null;
-          set({
-            step: "kept",
-            busy: false,
-            challenge: null,
-            account: loadAccount(deps.storage),
-            shared: loadSharedDevice(deps.storage) !== null,
-          });
+          doneOnTablet();
           return;
         }
 
@@ -300,58 +435,23 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
         const identity = loadIdentity(deps.storage);
         const fromHome = get().entry === "home";
         const result = await deps.api.linkAccount(tokens.idToken, identity.deviceToken, fromHome);
+        await afterLink(result, challenge.email);
+      } catch (err) {
+        set({ busy: false, error: messageFor(err) });
+      }
+    },
 
-        // A device token comes back only when the server bound this browser
-        // during the link; keeping the existing one otherwise.
-        if (result.deviceToken) {
-          saveIdentity(asPlayerIdentity(identity, result.deviceToken), deps.storage);
-        }
-
-        const account: AccountRecord = {
-          householdId: result.householdId,
-          email: challenge.email,
-          claimedAt: new Date().toISOString(),
-        };
-
-        /*
-         * The `restore` ending needs a player picked before this phone is
-         * anybody. Skipped when the server already bound us — that happens on a
-         * brand-new account, where it created the household and made this
-         * device its first player, so there is nothing to choose between.
-         */
-        const needsPlayer =
-          get().purpose === "restore" &&
-          !result.deviceToken &&
-          result.deviceBound !== true &&
-          result.players.length > 0;
-        if (needsPlayer) {
-          const byOwner = new Map<string, string[]>();
-          for (const character of result.characters) {
-            const owned = byOwner.get(character.ownerPlayerId) ?? [];
-            owned.push(character.name);
-            byOwner.set(character.ownerPlayerId, owned);
-          }
-          pendingAccount = account;
-          set({
-            step: "choose",
-            busy: false,
-            challenge: null,
-            players: result.players.map((p) => ({
-              id: p.id,
-              displayName: p.displayName,
-              color: p.color,
-              characters: byOwner.get(p.id) ?? [],
-            })),
-          });
+    async chooseHousehold(householdId: string) {
+      if (!tokens) return;
+      set({ busy: true, error: null });
+      try {
+        if (get().purpose === "share") {
+          await finishShare(householdId);
           return;
         }
-
-        // This phone is bound to the household now, so the account is real.
-        saveAccount(account, deps.storage);
-        pendingAccount = null;
-        // Offer the passkey only where it can work — otherwise this is done.
-        const next = get().passkeyPossible ? "passkey" : "kept";
-        set({ account, step: next, busy: false, challenge: null });
+        const identity = loadIdentity(deps.storage);
+        const result = await deps.api.linkAccount(tokens.idToken, identity.deviceToken, true, householdId);
+        await afterLink(result, tokensFor?.email ?? get().account?.email ?? "");
       } catch (err) {
         set({ busy: false, error: messageFor(err) });
       }
@@ -408,7 +508,8 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
     refreshShared() {
       set({ shared: loadSharedDevice(deps.storage) !== null });
     },
-  }));
+  };
+  });
 }
 
 function messageFor(err: unknown): string {

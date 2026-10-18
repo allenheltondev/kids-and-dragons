@@ -235,6 +235,108 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
       });
     });
 
+    describe("multi-owner households (#248)", () => {
+      const at = "2026-07-04T18:00:00.000Z";
+
+      it("gives every owner the household, and lists them all", async () => {
+        await repo.putHousehold(household({ id: "h_g", ownerSub: "sub_a" }));
+        await repo.putAccountPointer("sub_a", "h_g");
+        await repo.putOwner({ householdId: "h_g", cognitoSub: "sub_a", email: "a@example.com", addedAt: at });
+        await repo.putOwner({ householdId: "h_g", cognitoSub: "sub_b", email: "b@example.com", addedAt: at });
+
+        expect(await repo.listHouseholdsForAccount("sub_a")).toEqual(["h_g"]);
+        expect(await repo.listHouseholdsForAccount("sub_b")).toEqual(["h_g"]);
+        const owners = await repo.listOwners("h_g");
+        expect(owners.map((o) => [o.cognitoSub, o.email]).sort()).toEqual([
+          ["sub_a", "a@example.com"],
+          ["sub_b", "b@example.com"],
+        ]);
+        // An owner row is not a player, a device, or anything else in the partition.
+        expect(await repo.listPlayers("h_g")).toEqual([]);
+        expect(await repo.listDevices("h_g")).toEqual([]);
+      });
+
+      it("keeps an owner's own family beside the group", async () => {
+        await repo.putAccountPointer("sub_b", "h_family");
+        await repo.putOwner({ householdId: "h_g", cognitoSub: "sub_b", addedAt: at });
+        expect((await repo.listHouseholdsForAccount("sub_b")).sort()).toEqual(["h_family", "h_g"]);
+      });
+
+      it("is idempotent, and a second put refreshes the row", async () => {
+        await repo.putOwner({ householdId: "h_g", cognitoSub: "sub_b", addedAt: at });
+        await repo.putOwner({ householdId: "h_g", cognitoSub: "sub_b", email: "b@example.com", addedAt: at });
+        expect(await repo.listOwners("h_g")).toEqual([
+          { householdId: "h_g", cognitoSub: "sub_b", email: "b@example.com", addedAt: at },
+        ]);
+        expect(await repo.listHouseholdsForAccount("sub_b")).toEqual(["h_g"]);
+      });
+
+      it("removes both halves of an owner, and only that owner", async () => {
+        await repo.putOwner({ householdId: "h_g", cognitoSub: "sub_a", addedAt: at });
+        await repo.putOwner({ householdId: "h_g", cognitoSub: "sub_b", addedAt: at });
+        await repo.putAccountPointer("sub_b", "h_family");
+
+        await repo.removeOwner("h_g", "sub_b");
+        expect(await repo.listHouseholdsForAccount("sub_b")).toEqual(["h_family"]);
+        expect((await repo.listOwners("h_g")).map((o) => o.cognitoSub)).toEqual(["sub_a"]);
+        expect(await repo.listHouseholdsForAccount("sub_a")).toEqual(["h_g"]);
+
+        // Somebody who was never an owner: nothing to remove, nothing thrown.
+        await repo.removeOwner("h_g", "sub_nobody");
+      });
+    });
+
+    describe("organizer invites (#248)", () => {
+      function invite(code: string, expiresAt: string) {
+        return {
+          code,
+          householdId: "h_g",
+          createdBy: "sub_a",
+          createdAt: "2026-07-04T18:00:00.000Z",
+          expiresAt,
+          ttl: Math.floor(Date.parse(expiresAt) / 1000),
+        };
+      }
+      const later = new Date(Date.now() + DAY).toISOString();
+      const ben = { cognitoSub: "sub_b", email: "b@example.com", addedAt: "2026-07-04T18:00:00.000Z" };
+      const eve = { cognitoSub: "sub_e", addedAt: "2026-07-04T18:00:00.000Z" };
+
+      it("is spent exactly once, and makes whoever spends it an owner in the same write", async () => {
+        expect(await repo.putOrganizerInviteIfAbsent(invite("ABCDEFGHJK", later))).toBe(true);
+        const nowIso = new Date().toISOString();
+        expect(await repo.redeemOrganizerInvite("ABCDEFGHJK", nowIso, ben)).toEqual(invite("ABCDEFGHJK", later));
+        expect(await repo.listHouseholdsForAccount("sub_b")).toEqual(["h_g"]);
+        expect(await repo.listOwners("h_g")).toEqual([{ ...ben, householdId: "h_g" }]);
+
+        expect(await repo.redeemOrganizerInvite("ABCDEFGHJK", nowIso, eve)).toBeNull();
+        expect(await repo.listHouseholdsForAccount("sub_e")).toEqual([]);
+      });
+
+      it("reads a code in any case", async () => {
+        await repo.putOrganizerInviteIfAbsent(invite("ABCDEFGHJK", later));
+        expect((await repo.redeemOrganizerInvite("abcdefghjk", new Date().toISOString(), ben))?.householdId).toBe("h_g");
+      });
+
+      it("refuses a code that is already taken", async () => {
+        expect(await repo.putOrganizerInviteIfAbsent(invite("ABCDEFGHJK", later))).toBe(true);
+        expect(await repo.putOrganizerInviteIfAbsent({ ...invite("ABCDEFGHJK", later), householdId: "h_x" })).toBe(false);
+        expect((await repo.redeemOrganizerInvite("ABCDEFGHJK", new Date().toISOString(), ben))?.householdId).toBe("h_g");
+      });
+
+      it("will not spend an invite past its expiry, even before it is swept, and writes nothing", async () => {
+        const expiresAt = new Date(Date.now() + HOUR).toISOString();
+        await repo.putOrganizerInviteIfAbsent(invite("ABCDEFGHJK", expiresAt));
+        const late = new Date(Date.now() + 2 * HOUR).toISOString();
+        expect(await repo.redeemOrganizerInvite("ABCDEFGHJK", late, ben)).toBeNull();
+        expect(await repo.listHouseholdsForAccount("sub_b")).toEqual([]);
+        expect(await repo.listOwners("h_g")).toEqual([]);
+      });
+
+      it("knows nothing of a code never issued", async () => {
+        expect(await repo.redeemOrganizerInvite("ZZZZZZZZZZ", new Date().toISOString(), ben)).toBeNull();
+      });
+    });
+
     describe("guest households", () => {
       it("lists only guests whose expiry has passed", async () => {
         const now = Date.now();
@@ -1096,10 +1198,12 @@ if (!endpoint) {
     client.destroy();
   });
 
-  contract("DynamoRepository", async () => {
-    // A fresh table per test: DynamoDB has no truncate, and a suite that leaks
-    // rows between cases fails in an order-dependent way that is miserable to
-    // read. Creation is milliseconds against the local jar.
+  /**
+   * A fresh table per test: DynamoDB has no truncate, and a suite that leaks
+   * rows between cases fails in an order-dependent way that is miserable to
+   * read. Creation is milliseconds against the local jar.
+   */
+  async function freshTable(): Promise<string> {
     const tableName = `kad-test-${process.pid}-${n++}`;
     await client.send(
       new CreateTableCommand({
@@ -1127,6 +1231,56 @@ if (!endpoint) {
         ],
       }),
     );
-    return new DynamoRepository({ tableName, client });
+    return tableName;
+  }
+
+  contract("DynamoRepository", async () => new DynamoRepository({ tableName: await freshTable(), client }));
+
+  describe("DynamoRepository — an invite redemption that fails part-way (#248)", () => {
+    it("spends nothing: the code still works, and nobody was made an owner", async () => {
+      const tableName = await freshTable();
+      // Its own client, so the fault below reaches no other test.
+      const faulty = new DynamoDBClient({
+        endpoint,
+        region: process.env.AWS_REGION ?? "us-east-1",
+        credentials: { accessKeyId: "local", secretAccessKey: "local" },
+      });
+      let failing = true;
+      // The membership write fails on its way to the table: a throttle, a
+      // dropped connection, a Lambda that times out.
+      faulty.middlewareStack.add(
+        (next, context) => async (args) => {
+          if (failing && context.commandName === "TransactWriteItemsCommand") {
+            throw Object.assign(new Error("throttled"), { name: "ThrottlingException" });
+          }
+          return next(args);
+        },
+        { step: "initialize", name: "injectTransactFault" },
+      );
+      const repo = new DynamoRepository({ tableName, client: faulty });
+      const expiresAt = new Date(Date.now() + DAY).toISOString();
+      await repo.putOrganizerInviteIfAbsent({
+        code: "ABCDEFGHJK",
+        householdId: "h_g",
+        createdBy: "sub_a",
+        createdAt: new Date().toISOString(),
+        expiresAt,
+        ttl: Math.floor(Date.parse(expiresAt) / 1000),
+      });
+      const ben = { cognitoSub: "sub_b", addedAt: new Date().toISOString() };
+
+      try {
+        await expect(repo.redeemOrganizerInvite("ABCDEFGHJK", new Date().toISOString(), ben)).rejects.toThrow("throttled");
+      } finally {
+        failing = false;
+      }
+
+      expect(await repo.listHouseholdsForAccount("sub_b")).toEqual([]);
+      expect(await repo.listOwners("h_g")).toEqual([]);
+      // The same grown-up tries again, and it works.
+      expect((await repo.redeemOrganizerInvite("ABCDEFGHJK", new Date().toISOString(), ben))?.householdId).toBe("h_g");
+      expect(await repo.listHouseholdsForAccount("sub_b")).toEqual(["h_g"]);
+      faulty.destroy();
+    });
   });
 }

@@ -251,6 +251,12 @@ export interface PlayerProfile {
   // signing in, or from being the device that opened a room, never from a
   // label on the profile. Rows written before this still carry `role`, and
   // nothing reads it.
+  /**
+   * An owner took this kid off the household's pickers (#248): a group's kid
+   * who stopped coming. The profile and its heroes stay, and an owner can
+   * bring it back; nobody can pick it or bind a phone to it until then.
+   */
+  retired?: true;
 }
 
 /**
@@ -275,7 +281,12 @@ export interface PlayerProfile {
 export interface Household {
   id: string;
   displayName: string;
-  /** The Cognito sub of the account that claimed it. `null` while anonymous. */
+  /**
+   * The Cognito sub of the account that claimed or created it. `null` while
+   * anonymous. A group (#248) may have more owners than this one: each is an
+   * `ACCT#` pointer plus an `OWNER#` row, and the pointer is the authority.
+   * This one is the founding owner, whom no other owner can remove.
+   */
   ownerSub: string | null;
   /** True until an account claims it. Guests are swept; claimed ones never are. */
   guest: boolean;
