@@ -15,6 +15,12 @@ describe("the typed-name filter (#253)", () => {
     }
   });
 
+  it("does not treat an identity word as profanity, and still blocks slurs", () => {
+    expect(isBlockedName("gay")).toBe(false);
+    expect(isBlockedName("fag")).toBe(true);
+    expect(isBlockedName("f4ggot")).toBe(true);
+  });
+
   it("says 'pick another one' without saying why", () => {
     const result = checkTypedName("poop");
     expect(result).toEqual({ ok: false, message: NAME_REFUSED_MESSAGE });
