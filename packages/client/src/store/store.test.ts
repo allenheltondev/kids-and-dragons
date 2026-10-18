@@ -119,6 +119,7 @@ function harness(state: RunState = makeState()): Harness {
     hostControl: vi.fn(async (): Promise<void> => undefined),
     postAction: vi.fn(async (): Promise<ActionResponse> => ({ ok: true, seq: state.seq })),
     postPreview: vi.fn(async (): Promise<void> => undefined),
+    postPresence: vi.fn(async (): Promise<void> => undefined),
     fetchState: vi.fn(async () => ({ seq: state.seq, state })),
     loadRules: vi.fn(async () => ({ version: 1 })),
     loadItems: vi.fn(async () => ({})),
@@ -511,6 +512,23 @@ describe("the mirror", () => {
     await h.channelOptions().resync(1);
 
     expect(h.store.getState().state?.narration).toBe("three");
+  });
+});
+
+describe("beat (#258)", () => {
+  it("says still here, or leaving, with this phone's session, and shrugs off a failure", async () => {
+    const h = harness(makeState({ seq: 7 }));
+    h.store.getState().beat();
+    // Not in a room yet: nobody to speak for.
+    expect(h.api.postPresence).not.toHaveBeenCalled();
+
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.api.postPresence.mockRejectedValueOnce(new Error("offline"));
+    h.store.getState().beat();
+    h.store.getState().beat(true);
+    expect(h.api.postPresence).toHaveBeenNthCalledWith(1, false, "tok_1");
+    expect(h.api.postPresence).toHaveBeenNthCalledWith(2, true, "tok_1");
+    expect(h.store.getState().error).toBeNull();
   });
 });
 

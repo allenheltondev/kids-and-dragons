@@ -37,7 +37,7 @@ import {
   SLOW_DOWN,
 } from "./handlers/code-guard.ts";
 import { relayPreview } from "./handlers/preview.ts";
-import { setPresence } from "./handlers/presence.ts";
+import { beatPresence, setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "./handlers/deps.ts";
 import { iso } from "./handlers/deps.ts";
@@ -70,6 +70,10 @@ import { MemoryRepository } from "./store/memory-repository.ts";
 
 const PORT = Number(process.env.PORT ?? 8787);
 const HOST = process.env.HOST ?? "0.0.0.0";
+/** Stream-based presence beside the heartbeats; off to run as production does. */
+const STREAM_PRESENCE = process.env.KAD_STREAM_PRESENCE !== "off";
+/** How long a quiet phone stays here; the handler's two minutes when unset. */
+const PRESENCE_AWAY_MS = Number(process.env.KAD_PRESENCE_AWAY_MS) || undefined;
 
 /** Everything that does not come out of `@kad/shared`; see `withRuntime()`. */
 type BaseDeps = Omit<HandlerDeps, "engine" | "rng">;
@@ -433,6 +437,27 @@ async function main(): Promise<void> {
     res.json({ ok: true });
   });
 
+  // "Still here", or "leaving" (handlers/presence.ts): production's only
+  // presence, and alongside the stream's here, so both paths are exercised.
+  app.post("/api/presence", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const session = await resolveSession(req, base);
+    if (!session) return sendError(res, 401, "FORBIDDEN", "presence needs a room session token");
+    const result = await beatPresence(
+      {
+        runId: session.runId,
+        playerId: session.playerId,
+        householdId: session.householdId,
+        leaving: (req.body ?? {}).leaving === true,
+        ...(PRESENCE_AWAY_MS === undefined ? {} : { awayAfterMs: PRESENCE_AWAY_MS }),
+      },
+      deps,
+    );
+    if (!result.ok) return sendError(res, result.status, result.code, result.message);
+    res.json({ ok: true, connected: result.connected });
+  });
+
   app.post("/api/progression/spend", async (req: Request, res: Response) => {
     const deps = await withRuntime(base, res);
     if (!deps) return;
@@ -592,9 +617,13 @@ async function main(): Promise<void> {
      * ready-gate waits on a device that is gone (see handlers/presence.ts).
      *
      * A display client carries no session and is nobody's presence.
+     *
+     * `KAD_STREAM_PRESENCE=off` leaves presence to the phones' heartbeats
+     * alone (`POST /api/presence`), which is how production runs: AppSync
+     * Events reports no stream opening or closing (#258).
      */
     const viewer = await resolveSession(req, base);
-    if (viewer && viewer.runId === room.runId) {
+    if (STREAM_PRESENCE && viewer && viewer.runId === room.runId) {
       const runId = room.runId;
       const playerId = viewer.playerId;
       // Counted, not toggled: a refresh overlaps two streams and the old one

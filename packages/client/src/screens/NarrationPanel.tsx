@@ -13,7 +13,8 @@
 
 import { useEffect, useRef } from "react";
 import type { ReactElement } from "react";
-import { speak, turnHolderAway } from "@kad/shared";
+import { combatTurnAway, currentActorId, speak, turnHolderAway } from "@kad/shared";
+import type { PartyMember } from "@kad/shared";
 import type { ScenePriority } from "@kad/shared";
 import { useAbilities, useItems, useParty, usePreviews, useRunState } from "../store";
 import { describeCombatPreview, tablePreviews } from "../world/previews";
@@ -21,6 +22,7 @@ import { setStageInsetBottom } from "../world/stage-inset";
 import { Icon } from "./icons";
 import { VoteTicks } from "./VoteTicks";
 import { chapterHeading } from "./campaign-copy";
+import { steppedAwayLine } from "./presence-copy";
 import "./shared.css";
 import "./NarrationPanel.css";
 
@@ -93,6 +95,12 @@ export function NarrationPanel(): ReactElement | null {
     turnPrompt && !turnHolderAway(party, prompt)
       ? party.find((m) => m.playerId === prompt.forPlayerIds[0])?.character.name ?? null
       : null;
+
+  // Who stepped away (#258), and whether the fight is waiting on one of them.
+  const away = party.filter((m) => !m.connected);
+  const awayTurnId =
+    away.length > 0 && state?.encounter && combatTurnAway(state) ? currentActorId(state.encounter) : null;
+  const awayHoldsTurn = (member: PartyMember): boolean => member.character.id === awayTurnId;
 
   /*
    * Everything read aloud is read here, and only here.
@@ -244,6 +252,23 @@ export function NarrationPanel(): ReactElement | null {
           business, and it used to arrive under the story and push the words
           the room was reading up the screen.
         */}
+        {/*
+          Who stepped away (#258): their phone dropped, or the host took them
+          out. Not knocked down, which the board draws lying on the grid: up
+          here, as words, with the figure faded on the stage. When the fight's
+          clock is on one of them it says how the table goes on.
+        */}
+        {away.length === 0 ? null : (
+          <ul className="narration__trades narration__away" data-testid="stepped-away">
+            {away.map((member) => (
+              <li className="narration__trade" key={member.playerId}>
+                <Icon name="waiting" />
+                <span>{steppedAwayLine(member.character.name, awayHoldsTurn(member))}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+
         {trades.length === 0 ? null : (
           <ul className="narration__trades">
             {trades.map((offer) => (
