@@ -1658,7 +1658,15 @@
       }
     },
     "riftlight-stone-counters": {
-      "entryFacts": [],
+      "entryFacts": [
+        "orin",
+        "olivia",
+        "listening_chime",
+        "chime_rules",
+        "learned_note",
+        "hall",
+        "riftseekers"
+      ],
       "scenes": {
         "stone": {
           "requires": [],
@@ -1674,7 +1682,10 @@
         },
         "lesson": {
           "requires": [
-            "stone"
+            "stone",
+            "learned_note",
+            "hall",
+            "riftseekers"
           ],
           "introduces": {
             "lesson": "Seren"
@@ -1696,7 +1707,8 @@
         },
         "sound": {
           "requires": [
-            "motion"
+            "motion",
+            "listening_chime"
           ],
           "introduces": {}
         },
@@ -1709,7 +1721,15 @@
       }
     },
     "riftlight-whale-road": {
-      "entryFacts": [],
+      "entryFacts": [
+        "orin",
+        "olivia",
+        "listening_chime",
+        "chime_rules",
+        "learned_note",
+        "hall",
+        "riftseekers"
+      ],
       "scenes": {
         "whales": {
           "requires": [],
@@ -1719,7 +1739,8 @@
         },
         "olivia": {
           "requires": [
-            "whales"
+            "whales",
+            "olivia"
           ],
           "introduces": {
             "olivia": "Lady Olivia"
@@ -1749,10 +1770,20 @@
       }
     },
     "riftlight-buried-bridge": {
-      "entryFacts": [],
+      "entryFacts": [
+        "orin",
+        "olivia",
+        "listening_chime",
+        "chime_rules",
+        "learned_note",
+        "hall",
+        "riftseekers"
+      ],
       "scenes": {
         "bank": {
-          "requires": [],
+          "requires": [
+            "orin"
+          ],
           "introduces": {
             "bank": "Buried bridge"
           }
@@ -1768,7 +1799,8 @@
         "share": {
           "requires": [
             "bank",
-            "orin"
+            "orin",
+            "listening_chime"
           ],
           "introduces": {}
         },
