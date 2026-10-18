@@ -30,6 +30,7 @@ import type {
   JourneyState,
   NodeId,
   ParsedCampaignGraph,
+  PartyMember,
   RunBuff,
   RunState,
   FactValue,
@@ -63,6 +64,8 @@ import {
   lockedRefusal,
   purseFor,
   newCharacterWrite,
+  relockLobby,
+  seatedParty,
   prepareStatPointSpend,
   seatHero,
   settleChapterCompletion,
@@ -134,7 +137,7 @@ export async function applyAction(
     if (!campaignId) {
       return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: "no campaign to continue" } };
     }
-    const next = await nextChapter(campaignId, auth.run.householdId, deps);
+    const next = await nextChapter(campaignId, auth.run.householdId, seatedParty(state), deps);
     if ("refusal" in next) {
       return { ok: false, seq: state.seq, error: { code: next.code, message: next.refusal } };
     }
@@ -182,7 +185,7 @@ export async function applyAction(
   // run below so its completion settles against exactly that visit.
   let journeyVisit: { node: NodeId; visit: number } | null = null;
   if (input.intent.type === "START_CHAPTER" && chapter) {
-    const road = await roadTo(chapter, auth.run.householdId, deps);
+    const road = await roadTo(chapter, auth.run.householdId, seatedParty(state), deps);
     if ("refusal" in road) {
       return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: road.refusal } };
     }
@@ -319,6 +322,15 @@ export async function applyAction(
   // it earns here is written back there.
   if (auth.home !== auth.run.householdId) {
     result = { ...result, state: withHome(result.state, input.playerId, auth.home) };
+  }
+  // A hero sat down or got up in the lobby: her own finished campaigns can
+  // unlock one the household has not finished (#283), so the lobby's locks
+  // follow who is seated. A no-op unless an option declares `requires`.
+  if (
+    (result.state.phase === "lobby" || result.state.phase === "creation") &&
+    !sameParty(state.party, result.state.party)
+  ) {
+    result = { ...result, state: await relockLobby(result.state, auth.run.householdId, deps) };
   }
 
   /*
@@ -875,6 +887,8 @@ function resolveChapter(
 async function roadTo(
   chapter: Chapter,
   householdId: string,
+  /** Who is starting it: any one hero's own record can meet a prerequisite (#283). */
+  party: readonly PartyMember[],
   deps: HandlerDeps,
 ): Promise<
   | {
@@ -898,9 +912,10 @@ async function roadTo(
     return { flags: {}, campaign: false, attempt: null };
   }
 
-  // A campaign the household has not unlocked (#221) starts nothing - whatever
+  // A campaign this table has not unlocked (#221) starts nothing - whatever
   // the lobby showed, and whichever intent asked. Absent `requires`, a no-op.
-  const locked = await lockedRefusal(campaign, householdId, deps);
+  // The household's record or any seated hero's own meets it (#283).
+  const locked = await lockedRefusal(campaign, householdId, deps, party);
   if (locked) return { refusal: locked };
 
   const attempt = await deps.repo.getCampaignProgress(householdId, chapter.campaignId);
@@ -991,13 +1006,14 @@ async function roadTo(
 async function nextChapter(
   campaignId: string,
   householdId: string,
+  party: readonly PartyMember[],
   deps: HandlerDeps,
 ): Promise<{ chapterId: string } | { refusal: string; code: "NOT_FOUND" | "ILLEGAL" }> {
   const campaign = deps.content.campaign(campaignId);
   if (!campaign) return { refusal: `unknown campaign "${campaignId}"`, code: "NOT_FOUND" };
 
   // Refused here too, so a locked Begin answers before it resolves a chapter (#221).
-  const locked = await lockedRefusal(campaign, householdId, deps);
+  const locked = await lockedRefusal(campaign, householdId, deps, party);
   if (locked) return { refusal: locked, code: "ILLEGAL" };
 
   const attempt = await deps.repo.getCampaignProgress(householdId, campaignId);
@@ -1263,6 +1279,12 @@ async function authorize(
     });
   }
   return { run, home };
+}
+
+/** Do two parties seat the same heroes? */
+function sameParty(a: readonly PartyMember[], b: readonly PartyMember[]): boolean {
+  const ids = (party: readonly PartyMember[]) => party.map((m) => m.character.id).sort().join(" ");
+  return ids(a) === ids(b);
 }
 
 /** The player's party member, marked as living in `home` (`PartyMember.homeHouseholdId`). */

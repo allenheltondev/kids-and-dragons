@@ -23,6 +23,7 @@ import type {
   CharacterProgress,
   ClassDef,
   ClassId,
+  FinishedCampaign,
   InventoryEntry,
   ItemCatalog,
   ProvisionalProgress,
@@ -115,6 +116,21 @@ export function commitCampaign(character: Character): Character {
     provisional: null,
     questItems: [],
   };
+}
+
+/**
+ * Adds a completed campaign to her own record (#283), replacing an earlier
+ * completion of the same campaign so the record stays one line per campaign.
+ * Pure; the caller passes it the commit's character, at the commit.
+ */
+export function recordFinished(character: Character, entry: FinishedCampaign): Character {
+  const others = (character.finished ?? []).filter((f) => f.campaignId !== entry.campaignId);
+  return { ...character, finished: [...others, { ...entry }] };
+}
+
+/** Has this hero finished `campaignId`, anywhere? What a prerequisite reads (#283). */
+export function hasFinished(character: Pick<Character, "finished">, campaignId: string): boolean {
+  return (character.finished ?? []).some((f) => f.campaignId === campaignId);
 }
 
 /**

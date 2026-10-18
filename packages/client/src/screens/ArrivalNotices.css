@@ -25,8 +25,8 @@
  */
 .kad-arrivals--inline {
   flex: 0 0 auto;
-  /* Clear of the sound button, which sits in the top corner of every phone. */
-  padding: 0.5rem calc(var(--kad-touch-min) + 0.25rem) 0 0.75rem;
+  /* Clear of the corner row (settings, read-aloud, sound) in the top corner of every phone. */
+  padding: 0.5rem var(--kad-corner-reserve) 0 0.75rem;
 }
 
 /* All of them, on request: scrolls inside its own box, never pushes the

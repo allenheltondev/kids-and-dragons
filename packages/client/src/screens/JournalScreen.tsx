@@ -21,7 +21,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { ReactElement } from "react";
-import type { JournalResponse, PartyMember, ResolvedCharacter } from "@kad/shared";
+import type { JournalFinishedCampaign, JournalResponse, PartyMember, ResolvedCharacter } from "@kad/shared";
 import { navigate } from "../router";
 import { useGameStore, useItems, useWorld } from "../store";
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
@@ -277,8 +277,34 @@ function HeroPane({ journal, onPlay }: { journal: JournalResponse; onPlay: () =>
           </ul>
         ) : null}
         <CharacterSheet key={hero.id} member={restingMember(hero)} isMe items={items} explore />
+        <FinishedAdventures lines={journal.finished?.[hero.id] ?? []} />
       </section>
     </div>
+  );
+}
+
+/**
+ * The adventures this hero has seen to the end (#283). Her own record, so one
+ * she finished at a friend's table is here too. Nothing shows until there is
+ * one: a new hero's book has no empty list in it.
+ */
+function FinishedAdventures({ lines }: { lines: readonly JournalFinishedCampaign[] }): ReactElement | null {
+  if (lines.length === 0) return null;
+  return (
+    <section className="journal__finished" aria-label="Adventures finished">
+      <h2 className="journal__finished-title">
+        <Icon name="star" />
+        <span>Adventures finished</span>
+      </h2>
+      <ul className="journal__finished-list">
+        {lines.map((line) => (
+          <li key={line.campaignId} className="journal__finished-line">
+            <Icon name="check" />
+            <span>{line.title}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

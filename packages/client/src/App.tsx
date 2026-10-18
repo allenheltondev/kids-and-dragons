@@ -26,6 +26,7 @@ import { Button, ConnectionBanner, ErrorToast, Spinner } from "./ui";
 
 import { AudioControl } from "./audio";
 import { setQuiet } from "./quiet";
+import { STOPPED_MESSAGE } from "./screens/save-copy";
 import { musicForScene } from "./audio/scene-audio";
 import { PhoneMagic } from "./ui/PhoneMagic";
 
@@ -48,6 +49,11 @@ import { PhoneMagic } from "./ui/PhoneMagic";
 // and the entry chunk is at its budget (tools/perf/bundle-budget.ts).
 const loadSpeech = () => import("./speech");
 const ReadAloudControl = lazy(() => loadSpeech().then((module) => ({ default: module.ReadAloudControl })));
+
+// Display settings (#262): the panel loads after first paint like read-aloud. The saved
+// settings themselves are applied in main.tsx, before the first paint, from a few hundred bytes.
+const loadA11y = () => import("./a11y");
+const A11yControl = lazy(() => loadA11y().then((module) => ({ default: module.A11yControl })));
 
 const loadPartyLayout = () => import("./layout/PartyLayout");
 const loadTravelLayout = () => import("./layout/TravelLayout");
@@ -107,6 +113,10 @@ class RoomBoundary extends Component<{ children: ReactNode; message?: string }, 
 // it, so no phone's first paint pays for it.
 const HostControls = lazy(() =>
   import("./screens/HostControls").then((module) => ({ default: module.HostControls })),
+);
+// The same chunk: the host of a stopped game may let a hero go (#259).
+const LetHeroGo = lazy(() =>
+  import("./screens/HostControls").then((module) => ({ default: module.LetHeroGo })),
 );
 
 // The adventure book (`/journal`) is a route of its own, between games, and
@@ -172,9 +182,10 @@ export function App(): React.JSX.Element {
   return (
     <PhoneMagic enabled={route.name !== "tv"}>
       {/* One corner row for the device's own controls, so they share a place instead of
-          fighting over it: read-aloud (#261) to the left of sound, sound anchored right. */}
+          fighting over it: display settings (#262) and read-aloud (#261) to the left of sound, sound anchored right. */}
       <div className="kad-corner">
         <Suspense fallback={null}>
+          <A11yControl />
           <ReadAloudControl />
         </Suspense>
         <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
@@ -254,10 +265,22 @@ export function App(): React.JSX.Element {
 /** What every screen shows once the host closes the room (#263). */
 function ClosedScreen(): React.JSX.Element {
   const leave = useGameStore((store) => store.leave);
+  // Stopped for today (#259) is a save, not an ending.
+  const stopped = useGameStore((store) => store.state?.stopped === true);
+  const host = useGameStore((store) => store.session?.host === true);
   return (
     <div className="kad-boot" role="alert">
       <div className="kad-removed">
-        <p>The person running this game closed the room. Your heroes are kept, ready for next time.</p>
+        <p>
+          {stopped
+            ? STOPPED_MESSAGE
+            : "The person running this game closed the room. Your heroes are kept, ready for next time."}
+        </p>
+        {stopped && host ? (
+          <Suspense fallback={null}>
+            <LetHeroGo />
+          </Suspense>
+        ) : null}
         <Button onClick={leave}>Back to the start</Button>
       </div>
     </div>
