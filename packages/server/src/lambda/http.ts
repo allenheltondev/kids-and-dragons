@@ -35,7 +35,7 @@ import type { ActionError, HandlerDeps, HandlerResult } from "../handlers/deps.t
 import { iso, ok } from "../handlers/deps.ts";
 import { createRoom, joinRoom, settleRoom, watchRoom } from "../handlers/room.ts";
 import { removePlayer } from "../handlers/remove.ts";
-import { closeRoom, lockRoom, type HostPrincipal } from "../handlers/host.ts";
+import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "../handlers/host.ts";
 import { listHeroes } from "../handlers/heroes.ts";
 import { getJournal } from "../handlers/journal.ts";
 import { getState } from "../handlers/state.ts";
@@ -164,6 +164,11 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (lock?.[1]) {
       const code = lock[1].toUpperCase();
       return (deps) => postLock(req, deps, code);
+    }
+    const quiet = /^\/api\/room\/([A-Za-z]{4})\/quiet$/.exec(req.path);
+    if (quiet?.[1]) {
+      const code = quiet[1].toUpperCase();
+      return (deps) => postQuiet(req, deps, code);
     }
     const close = /^\/api\/room\/([A-Za-z]{4})\/close$/.exec(req.path);
     if (close?.[1]) {
@@ -429,6 +434,15 @@ async function postLock(req: Req, deps: HandlerDeps, code: string) {
   const valid = typeof locked === "boolean";
   return postHostControl(req, deps, code, valid ? null : "expected { locked: true | false }", (principal) =>
     lockRoom({ code, principal, locked: locked as boolean }, deps),
+  );
+}
+
+/** The host turning quiet mode on for the room, or off again (#260). */
+async function postQuiet(req: Req, deps: HandlerDeps, code: string) {
+  const quiet = req.body.quiet;
+  const valid = typeof quiet === "boolean";
+  return postHostControl(req, deps, code, valid ? null : "expected { quiet: true | false }", (principal) =>
+    setQuiet({ code, principal, quiet: quiet as boolean }, deps),
   );
 }
 
