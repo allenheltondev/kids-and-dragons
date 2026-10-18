@@ -41,9 +41,10 @@ import { setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "./handlers/deps.ts";
 import { iso } from "./handlers/deps.ts";
-import { createRoom, joinRoom, settleRoom, watchRoom } from "./handlers/room.ts";
+import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, watchRoom } from "./handlers/room.ts";
+import { setVisitors } from "./handlers/visitors.ts";
 import { removePlayer } from "./handlers/remove.ts";
-import { closeRoom, lockRoom, type HostPrincipal } from "./handlers/host.ts";
+import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "./handlers/host.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
 import { getState } from "./handlers/state.ts";
@@ -220,12 +221,16 @@ async function main(): Promise<void> {
     const deps = await withRuntime(base, res);
     if (!deps) return;
 
-    const code = String(req.params.code ?? "").toUpperCase();
+    const typed = String(req.params.code ?? "").toUpperCase();
     const lookup = await admitCodeLookup(clientOf(req), deps);
     if (!lookup) return slowDown(res, deps);
-    const found = await base.repo.getRoom(code);
-    if (!found) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+    // Four letters, or an open room's six-letter visitor code (#249).
+    const named = await findRoom(typed, base);
+    if (!named) return sendError(res, 404, "NOT_FOUND", `no open room ${typed}`);
     await lookup.hit();
+    const found = named.room;
+    const code = found.code;
+    const visitor = named.visitorCode ? { visitorCode: named.visitorCode } : {};
 
     // A shared tablet seats the kid picked on it, and never falls through to
     // `addPlayer` (#250, see lambda/http.ts).
@@ -237,7 +242,7 @@ async function main(): Promise<void> {
         base,
       );
       if (!seat.ok) return sendError(res, statusFor(seat.error), seat.error.code, seat.error.message);
-      const seated = await joinRoom({ code, principal: seat.value, device: "tablet" }, deps);
+      const seated = await joinRoom({ code, principal: seat.value, device: "tablet", ...visitor }, deps);
       if (!seated.ok) return sendError(res, statusFor(seated.error), seated.error.code, seated.error.message);
       return res.json({ ...seated.value, code, roomCode: code, expiresAt: found.expiresAt });
     }
@@ -251,19 +256,27 @@ async function main(): Promise<void> {
     const room = settled ? settled.value : found;
     if (!room) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
     // An unbound device joining a room gets a player created for it on the spot,
-    // so a phone that has never seen this game can still join in one tap.
+    // so a phone that has never seen this game joins in one tap. On a visitor
+    // code it is a visitor, in a guest household of its own (#249).
+    // Admitted before anything is bound — see lambda/http.ts.
+    let admitted: "family" | "visitor" | null = null;
+    if (!existing) {
+      const admission = await admitNewPhone(room, named.visitorCode, deps);
+      if (!admission.ok) {
+        return sendError(res, statusFor(admission.error), admission.error.code, admission.error.message);
+      }
+      admitted = admission.value;
+    }
     const joiner =
       existing ??
-      (await addPlayer(
-        {
-          householdId: room.householdId,
-          displayName: String(req.body?.displayName ?? "Player"),
-          userAgent: req.get("user-agent"),
-        },
+      (await bindNewPhone(
+        room,
+        admitted ?? "family",
+        { displayName: String(req.body?.displayName ?? "Player"), userAgent: req.get("user-agent") },
         base,
       ));
 
-    const joined = await joinRoom({ code, principal: joiner.principal }, deps);
+    const joined = await joinRoom({ code, principal: joiner.principal, ...visitor }, deps);
     if (!joined.ok) return sendError(res, statusFor(joined.error), joined.error.code, joined.error.message);
 
     res.json({
@@ -349,10 +362,31 @@ async function main(): Promise<void> {
     (body) => (typeof body.locked === "boolean" ? null : "expected { locked: true | false }"),
     (code, principal, body, deps) => lockRoom({ code, principal, locked: body.locked as boolean }, deps),
   ));
+  app.post("/api/room/:code/quiet", hostControl(
+    (body) => (typeof body.quiet === "boolean" ? null : "expected { quiet: true | false }"),
+    (code, principal, body, deps) => setQuiet({ code, principal, quiet: body.quiet as boolean }, deps),
+  ));
   app.post("/api/room/:code/close", hostControl(
     () => null,
     (code, principal, _body, deps) => closeRoom({ code, principal }, deps),
   ));
+
+  // A signed-in owner opening the room to visitors (#249), as in lambda/http.ts.
+  app.post("/api/room/:code/visitors", async (req: Request, res: Response) => {
+    const account = verifyDevToken(bearerToken(req));
+    if (!account) return sendError(res, 401, "FORBIDDEN", "a dev id token is required");
+    if (typeof req.body?.open !== "boolean") return sendError(res, 400, "ILLEGAL", "expected { open: true | false }");
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const code = String(req.params.code ?? "").toUpperCase();
+    const lookup = await admitCodeLookup(clientOf(req), deps);
+    if (!lookup) return slowDown(res, deps);
+    const result = await setVisitors({ cognitoSub: account.cognitoSub, code, open: req.body?.open }, deps);
+    const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
+    if (!missed) await lookup.hit();
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
 
   // -------------------------------------------------------------------------
   // Actions and reconnect

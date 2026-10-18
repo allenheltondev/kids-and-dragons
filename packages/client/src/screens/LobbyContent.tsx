@@ -125,7 +125,11 @@ export function LobbyContent(): ReactElement {
   const state = useRunState();
   const party = useParty();
   const sessionCode = useGameStore((s) => s.session?.roomCode ?? null);
-  const code = state?.roomCode ?? sessionCode;
+  // A room open to visitors (#249) shows its longer code, which anybody can
+  // join with: a phone from another household needs it, and one from the
+  // room's own takes it as well as the short one.
+  const visiting = state?.visitorCode !== undefined;
+  const code = state?.visitorCode ?? state?.roomCode ?? sessionCode;
   const qr = useJoinQr(code);
 
   const readyCount = party.filter((m) => m.ready).length;
@@ -205,7 +209,7 @@ export function LobbyContent(): ReactElement {
           full three-person party is on screen without scrolling. */}
       <div className={`lobby__join${party.length > 0 ? " lobby__join--compact" : ""}`}>
         <div className="lobby__code-block">
-          <p className="lobby__code-label kad-label">Room code</p>
+          <p className="lobby__code-label kad-label">{visiting ? "Room code (visitors welcome)" : "Room code"}</p>
           <p className="lobby__code" aria-label={code === null ? "No room code yet" : `Room code ${code.split("").join(" ")}`}>
             {code === null
               ? "----"

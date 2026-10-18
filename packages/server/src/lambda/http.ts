@@ -32,9 +32,10 @@ import {
 import { relayPreview } from "../handlers/preview.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "../handlers/deps.ts";
 import { iso, ok } from "../handlers/deps.ts";
-import { createRoom, joinRoom, settleRoom, watchRoom } from "../handlers/room.ts";
+import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, watchRoom } from "../handlers/room.ts";
+import { setVisitors } from "../handlers/visitors.ts";
 import { removePlayer } from "../handlers/remove.ts";
-import { closeRoom, lockRoom, type HostPrincipal } from "../handlers/host.ts";
+import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "../handlers/host.ts";
 import { listHeroes } from "../handlers/heroes.ts";
 import { getJournal } from "../handlers/journal.ts";
 import { getState } from "../handlers/state.ts";
@@ -143,7 +144,8 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (req.path === "/api/auth/shared-device") return (deps) => postShareDevice(req, deps, rt);
     if (req.path === "/api/auth/forget-device") return (deps) => postForgetDevice(req, deps, rt);
 
-    const join = /^\/api\/room\/([A-Za-z]{4})\/join$/.exec(req.path);
+    // Four letters, or an open room's six-letter visitor code (#249).
+    const join = /^\/api\/room\/([A-Za-z]{4}|[A-Za-z]{6})\/join$/.exec(req.path);
     if (join?.[1]) {
       const code = join[1].toUpperCase();
       return (deps) => postJoin(req, deps, code);
@@ -163,10 +165,20 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
       const code = lock[1].toUpperCase();
       return (deps) => postLock(req, deps, code);
     }
+    const quiet = /^\/api\/room\/([A-Za-z]{4})\/quiet$/.exec(req.path);
+    if (quiet?.[1]) {
+      const code = quiet[1].toUpperCase();
+      return (deps) => postQuiet(req, deps, code);
+    }
     const close = /^\/api\/room\/([A-Za-z]{4})\/close$/.exec(req.path);
     if (close?.[1]) {
       const code = close[1].toUpperCase();
       return (deps) => postClose(req, deps, code);
+    }
+    const visitors = /^\/api\/room\/([A-Za-z]{4})\/visitors$/.exec(req.path);
+    if (visitors?.[1]) {
+      const code = visitors[1].toUpperCase();
+      return (deps) => postVisitors(req, deps, rt, code);
     }
   }
   if (req.method === "GET" && req.path === "/api/state") return (deps) => getStateRoute(req, deps);
@@ -299,12 +311,16 @@ async function postRoomShared(
   );
 }
 
-async function postJoin(req: Req, deps: HandlerDeps, code: string) {
+async function postJoin(req: Req, deps: HandlerDeps, typed: string) {
   const lookup = await admitCodeLookup(req.client, deps);
   if (!lookup) return slowDown(deps);
-  const found = await deps.repo.getRoom(code);
-  if (!found) return error(404, "NOT_FOUND", `no open room ${code}`);
+  const named = await findRoom(typed, deps);
+  if (!named) return error(404, "NOT_FOUND", `no open room ${typed}`);
   await lookup.hit();
+  // The room's own four letters from here on, whichever code was typed.
+  const found = named.room;
+  const code = found.code;
+  const visitor = named.visitorCode ? { visitorCode: named.visitorCode } : {};
 
   // A shared tablet seats the kid picked on it, with a session and nothing
   // longer-lived (#250). It never falls through to `addPlayer` below, which
@@ -314,7 +330,7 @@ async function postJoin(req: Req, deps: HandlerDeps, code: string) {
     if (!shared) return forgottenDevice();
     const seat = await seatOnSharedDevice({ shared, playerId: req.body.playerId, newPlayer: req.body.newPlayer }, deps);
     if (!seat.ok) return fromError(seat.error);
-    const joined = await joinRoom({ code, principal: seat.value, device: "tablet" }, deps);
+    const joined = await joinRoom({ code, principal: seat.value, device: "tablet", ...visitor }, deps);
     if (!joined.ok) return fromError(joined.error);
     return json(200, { ...joined.value, code, roomCode: code, expiresAt: found.expiresAt }, shared);
   }
@@ -328,19 +344,26 @@ async function postJoin(req: Req, deps: HandlerDeps, code: string) {
   const room = settled.value;
   if (!room) return error(404, "NOT_FOUND", `no open room ${code}`);
   // An unbound device joining a room gets a player created for it on the spot,
-  // so a phone that has never seen this game joins in one tap.
+  // so a phone that has never seen this game joins in one tap. On a visitor
+  // code it is a visitor, in a guest household of its own (#249).
+  // Never-seen phones are admitted *before* anything is bound to them
+  // (`admitNewPhone`): a refused one must leave no membership behind.
+  let admitted: "family" | "visitor" | null = null;
+  if (!existing) {
+    const admission = await admitNewPhone(room, named.visitorCode, deps);
+    if (!admission.ok) return fromError(admission.error);
+    admitted = admission.value;
+  }
   const joiner =
     existing ??
-    (await addPlayer(
-      {
-        householdId: room.householdId,
-        displayName: String(req.body.displayName ?? "Player"),
-        userAgent: req.headers["user-agent"],
-      },
+    (await bindNewPhone(
+      room,
+      admitted ?? "family",
+      { displayName: String(req.body.displayName ?? "Player"), userAgent: req.headers["user-agent"] },
       deps,
     ));
 
-  const joined = await joinRoom({ code, principal: joiner.principal }, deps);
+  const joined = await joinRoom({ code, principal: joiner.principal, ...visitor }, deps);
   if (!joined.ok) return fromError(joined.error);
 
   return json(
@@ -427,6 +450,32 @@ async function postLock(req: Req, deps: HandlerDeps, code: string) {
   const valid = typeof locked === "boolean";
   return postHostControl(req, deps, code, valid ? null : "expected { locked: true | false }", (principal) =>
     lockRoom({ code, principal, locked: locked as boolean }, deps),
+  );
+}
+
+/**
+ * A signed-in owner opening the room to visitors, or closing it to new ones
+ * (#249, handlers/visitors.ts). An owner, not the host: it lowers the barrier
+ * to joining. Looks a room up by code, so it spends the wrong-code budget.
+ */
+async function postVisitors(req: Req, deps: HandlerDeps, rt: HttpRuntime, code: string) {
+  const account = await rt.verifyAccount(bearer(req));
+  if (!account) return error(401, "FORBIDDEN", "a verified Cognito id token is required");
+  if (typeof req.body.open !== "boolean") return error(400, "ILLEGAL", "expected { open: true | false }");
+  const lookup = await admitCodeLookup(req.client, deps);
+  if (!lookup) return slowDown(deps);
+  const result = await setVisitors({ cognitoSub: account.cognitoSub, email: account.email, code, open: req.body.open }, deps);
+  const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
+  if (!missed) await lookup.hit();
+  return result.ok ? json(200, result.value) : fromError(result.error);
+}
+
+/** The host turning quiet mode on for the room, or off again (#260). */
+async function postQuiet(req: Req, deps: HandlerDeps, code: string) {
+  const quiet = req.body.quiet;
+  const valid = typeof quiet === "boolean";
+  return postHostControl(req, deps, code, valid ? null : "expected { quiet: true | false }", (principal) =>
+    setQuiet({ code, principal, quiet: quiet as boolean }, deps),
   );
 }
 

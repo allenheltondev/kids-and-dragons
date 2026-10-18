@@ -39,3 +39,44 @@ export const PRESENTATION_CUES: Record<Presentation["kind"], CueId | null> = {
 export function cueForPresentation(presentation: Presentation): CueId | null {
   return PRESENTATION_CUES[presentation.kind] ?? null;
 }
+
+/**
+ * What a quiet room (#260, quiet.ts) does with each cue: `keep` it, or `drop`
+ * it. A `Record` over every cue for the same reason as the table above: a new
+ * cue has to decide, or it does not compile.
+ *
+ * `drop` is for the sudden ones: the impacts, stingers and fanfares that start
+ * at full strength with no lead-in. Everything kept is soft or slow to arrive,
+ * and the engine scales it down on top (audio/engine.ts). The test beside this
+ * table walks a whole encounter through it.
+ */
+export const CUE_QUIET: Record<CueId, "keep" | "drop"> = {
+  "rift-open": "keep",
+  "rift-collapse": "keep",
+  "chime-sour": "keep",
+  "chime-echo": "keep",
+  "attune-hum": "keep",
+  riftspark: "keep",
+  anchor: "keep",
+  "party-ready": "keep",
+  "gem-pickup": "keep",
+  "gate-hum": "keep",
+  "citadel-bell": "drop",
+  "seal-awakening": "keep",
+  "cavern-air": "keep",
+  dice: "keep",
+  bonk: "drop",
+  attack: "drop",
+  heal: "keep",
+  down: "drop",
+  revive: "keep",
+  "level-up": "drop",
+  transform: "drop",
+  "scene-enter": "keep",
+  choice: "keep",
+  "encounter-begin": "drop",
+  victory: "drop",
+  tap: "keep",
+  "page-turn": "keep",
+  error: "drop",
+};

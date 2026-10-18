@@ -21,7 +21,7 @@ import { useKeepsakeStore } from "../store/keepsake";
 import { useOrganizerStore } from "../store/organizer";
 // The one normalize helper for typed and prefilled codes — the router owns the
 // code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
-import { ROOM_CODE_LENGTH as CODE_LENGTH, navigate, normalizeCodeInput as normalizeCode } from "../router";
+import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, normalizeCodeInput as normalizeCode } from "../router";
 import { loadPlayerDeviceToken } from "../store/persistence";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
@@ -30,7 +30,6 @@ import { EntryScene } from "./EntryScene";
 import "./shared.css";
 import "./HomeScreen.css";
 
-const CODE_SLOTS = [0, 1, 2, 3];
 
 const MODE_BLURB: Record<RoomMode, string> = {
   party: "This screen becomes the TV. Everyone joins from their phones.",
@@ -137,7 +136,7 @@ function PersonalHome(): ReactElement {
   const hasPlayed = useMemo(() => loadPlayerDeviceToken() !== null, [keepsakeStep, account]);
 
   const trimmedName = displayName.trim();
-  const codeReady = code.length === CODE_LENGTH;
+  const codeReady = codeComplete(code);
   // Party Mode is started from the TV, and the TV is nobody (spec §2.1): it
   // needs no name. Phone Mode seats the host as a player, so it does.
   const startReady = mode === "party" || trimmedName.length > 0;
@@ -228,10 +227,10 @@ function PersonalHome(): ReactElement {
                 spellCheck={false}
                 maxLength={CODE_LENGTH}
                 enterKeyHint="go"
-                aria-label="Room code, four letters"
+                aria-label="Room code, four letters, or six for a visitor"
               />
-              <div className="home__code-boxes" aria-hidden="true">
-                {CODE_SLOTS.map((i) => (
+              <div className="home__code-boxes" aria-hidden="true" data-slots={codeSlots(code)}>
+                {Array.from({ length: codeSlots(code) }, (_, i) => i).map((i) => (
                   <span
                     key={i}
                     className={`home__code-box${code.length === i ? " home__code-box--next" : ""}${code[i] ? " home__code-box--filled" : ""}`}

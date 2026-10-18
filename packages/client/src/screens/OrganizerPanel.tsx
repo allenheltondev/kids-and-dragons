@@ -22,11 +22,12 @@
 
 import { useEffect, useId, useState } from "react";
 import type { FormEvent, ReactElement } from "react";
-import type { OrganizerHouseholdView, OrganizerOwner, OrganizerPlayer, TransferCode } from "@kad/shared";
+import type { OrganizerDevice, OrganizerHouseholdView, OrganizerOwner, OrganizerPlayer, TransferCode } from "@kad/shared";
 import { formatInviteCode, useOrganizerStore } from "../store/organizer";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
+import { lastUsed, tabletName } from "./tablet-label";
 import { KeepsakeError } from "./SignInFlow";
 import "./OrganizerPanel.css";
 
@@ -240,6 +241,8 @@ function HouseholdView({ view, busy }: { view: OrganizerHouseholdView; busy: boo
         ) : null}
       </section>
 
+      <TabletsSection busy={busy} />
+
       <OrganizersSection view={view} busy={busy} />
     </>
   );
@@ -302,6 +305,56 @@ function PlayerRow({ player, busy }: { player: OrganizerPlayer; busy: boolean })
           onClick={() => void makeTransfer(player.id)}
         >
           Move home
+        </button>
+      </span>
+    </li>
+  );
+}
+
+/**
+ * The household's shared tablets (#273): the way to forget one that is lost,
+ * broken or left at a grandparent's, from any signed-in device.
+ */
+function TabletsSection({ busy }: { busy: boolean }): ReactElement {
+  const devices = useOrganizerStore((s) => s.devices);
+  const forgetDevice = useOrganizerStore((s) => s.forgetDevice);
+
+  return (
+    <section className="organizer__section" aria-label="Family tablets">
+      <h3 className="organizer__heading">
+        <Icon name="travel" />
+        <span>Family tablets</span>
+      </h3>
+      {devices.length === 0 ? (
+        <p className="keepsake__body">No family tablets set up yet.</p>
+      ) : (
+        <ul className="organizer__list">
+          {devices.map((device) => (
+            <TabletRow key={device.deviceId} device={device} busy={busy} onForget={() => void forgetDevice(device.deviceId)} />
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+function TabletRow({ device, busy, onForget }: { device: OrganizerDevice; busy: boolean; onForget(): void }): ReactElement {
+  const name = tabletName(device.userAgent);
+  return (
+    <li className="organizer__row">
+      <span className="organizer__who">
+        <b>{name}</b>
+        <span className="organizer__heroes kad-muted">Last used {lastUsed(device.lastSeen, Date.now())}</span>
+      </span>
+      <span className="organizer__row-actions">
+        <button
+          type="button"
+          className="organizer__link kad-focusable"
+          disabled={busy}
+          aria-label={`Forget this ${name}`}
+          onClick={onForget}
+        >
+          Forget
         </button>
       </span>
     </li>

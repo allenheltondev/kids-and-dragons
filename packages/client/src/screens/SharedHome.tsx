@@ -17,7 +17,7 @@ import type { ChangeEvent, ReactElement } from "react";
 import type { SharedDevicePlayer, SharedSeatRequest } from "@kad/shared";
 import { useGameStore } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
-import { ROOM_CODE_LENGTH as CODE_LENGTH, normalizeCodeInput as normalizeCode } from "../router";
+import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, normalizeCodeInput as normalizeCode } from "../router";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
@@ -27,7 +27,6 @@ import "./shared.css";
 import "./HomeScreen.css";
 import "./SharedHome.css";
 
-const CODE_SLOTS = [0, 1, 2, 3];
 
 /** Mirrors the server's `NEW_PLAYER_NAME_MAX`. */
 const NAME_MAX = 24;
@@ -103,7 +102,7 @@ export function SharedHome(): ReactElement {
   const seat: SharedSeatRequest | null =
     pick === null ? null : "player" in pick ? { playerId: pick.player.id } : { newPlayer: pick.newName };
   const name = pick === null ? "" : "player" in pick ? pick.player.displayName : pick.newName;
-  const codeReady = code.length === CODE_LENGTH;
+  const codeReady = codeComplete(code);
 
   const go = useCallback(
     async (how: "join" | "create") => {
@@ -238,10 +237,10 @@ export function SharedHome(): ReactElement {
                   spellCheck={false}
                   maxLength={CODE_LENGTH}
                   enterKeyHint="go"
-                  aria-label="Room code, four letters"
+                  aria-label="Room code, four letters, or six for a visitor"
                 />
-                <div className="home__code-boxes" aria-hidden="true">
-                  {CODE_SLOTS.map((i) => (
+                <div className="home__code-boxes" aria-hidden="true" data-slots={codeSlots(code)}>
+                  {Array.from({ length: codeSlots(code) }, (_, i) => i).map((i) => (
                     <span
                       key={i}
                       className={`home__code-box${code.length === i ? " home__code-box--next" : ""}${code[i] ? " home__code-box--filled" : ""}`}
