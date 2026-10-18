@@ -14,38 +14,13 @@
  * decided against a read that has since moved fails and is decided again.
  */
 
-import type { Character } from "@kad/shared";
+import { claimOf, parseClaim, type Character } from "@kad/shared";
 import type { CharacterWrite } from "../store/repository.ts";
 import { fail, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
-/** Between a campaign and the table playing it, in a visiting table's claim. */
-const AT = "@";
-
-/**
- * The claim a table's adventure stamps on a hero. `adventure` is the campaign
- * id (a one-off chapter's run id, which never goes provisional); the hero's
- * home is `hero.householdId`, so a hero at home carries the bare id, as every
- * row written before the claim does, and a visiting hero carries the table.
- */
-export function claimFor(adventure: string, tableHouseholdId: string, hero: Pick<Character, "householdId">): string {
-  return hero.householdId === tableHouseholdId ? adventure : `${adventure}${AT}${tableHouseholdId}`;
-}
-
-/** The adventure a claim names, and the household whose table plays it. */
-export function parseClaim(
-  claim: string,
-  hero: Pick<Character, "householdId">,
-): { campaignId: string; table: string } {
-  const at = claim.lastIndexOf(AT);
-  return at < 0
-    ? { campaignId: claim, table: hero.householdId }
-    : { campaignId: claim.slice(0, at), table: claim.slice(at + 1) };
-}
-
-/** The claim a hero's row carries, or null when she is free. */
-export function claimOf(hero: Pick<Character, "provisional">): string | null {
-  return hero.provisional?.runId ?? null;
-}
+// The claim's shape lives in shared (`claim.ts`), so #251's move reads it the
+// same way; re-exported for the handlers that already import it from here.
+export { claimFor, claimOf, parseClaim } from "@kad/shared";
 
 /**
  * Is the adventure `claim` names still in flight? Only an active campaign
