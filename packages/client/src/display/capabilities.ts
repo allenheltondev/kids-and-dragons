@@ -4,7 +4,7 @@
  * normal, and a report that throws would be no use on the device it is for.
  */
 
-import { audioStatus, type AudioStatus } from "../audio/status";
+import { getAudioProbe, type AudioState } from "../audio/cue";
 import type { WakeLockState } from "./wake-lock";
 
 export type CapabilityId = "webgl" | "rive" | "wakeLock" | "audio" | "serviceWorker";
@@ -59,7 +59,7 @@ export function describeWakeLock(state: WakeLockState): Pick<Capability, "ok" | 
   }
 }
 
-export function describeAudio(status: AudioStatus): Pick<Capability, "ok" | "detail"> {
+export function describeAudio(status: AudioState | "unknown"): Pick<Capability, "ok" | "detail"> {
   switch (status) {
     case "running": return { ok: true, detail: "Playing" };
     case "locked": return { ok: false, detail: "Waiting for a tap" };
@@ -81,7 +81,7 @@ export async function probeCapabilities(wakeLock: WakeLockState): Promise<Capabi
     { id: "webgl", label: "WebGL", ...probeWebGL() },
     { id: "rive", label: "Rive animation", ...(await probeRive()) },
     { id: "wakeLock", label: "Wake lock", ...describeWakeLock(wakeLock) },
-    { id: "audio", label: "Audio", ...describeAudio(audioStatus()) },
+    { id: "audio", label: "Audio", ...describeAudio(getAudioProbe()?.state() ?? "unknown") },
     { id: "serviceWorker", label: "Service worker", ...probeServiceWorker() },
   ];
 }

@@ -35,3 +35,15 @@
 .kad-about__panel small { color: var(--kad-ink-dim); }
 .kad-about__device { margin: 0.8em 0; color: var(--kad-ink-dim); font-size: 0.75em; word-break: break-word; }
 .kad-about__panel button { font: inherit; padding: 0.3em 0.9em; }
+
+/* The shared screen's one clear ask for sound: top centre, where a room looks first. */
+.kad-tap-for-sound {
+  position: fixed;
+  inset-block-start: calc(var(--kad-safe-top, 0px) + 0.75rem);
+  inset-inline: 0;
+  z-index: 30;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.kad-tap-for-sound > * { pointer-events: auto; }
