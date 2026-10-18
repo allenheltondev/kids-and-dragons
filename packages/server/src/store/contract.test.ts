@@ -876,7 +876,7 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
             expectedSeq: 0,
             state: state("r_1", 1),
             event: event("r_1", 1),
-            characters: [hero],
+            characters: [{ character: hero, expectedVersion: null, expectedClaim: null }],
           }),
         ).toBe(true);
         expect((await repo.getCharacter("h_1", "c_win"))?.id).toBe("c_win");
@@ -899,7 +899,7 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
             expectedSeq: 0,
             state: state("r_1", 1),
             event: event("r_1", 1),
-            characters: [loser],
+            characters: [{ character: loser, expectedVersion: null, expectedClaim: null }],
           }),
         ).toBe(false);
         expect(await repo.getCharacter("h_1", "c_loser")).toBeNull();

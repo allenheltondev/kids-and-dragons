@@ -24,7 +24,7 @@ import type {
   RulesContent,
   RunState,
 } from "@kad/shared";
-import type { GameRepository } from "../store/repository.ts";
+import type { CharacterWrite, GameRepository } from "../store/repository.ts";
 import type { Engine } from "./port.ts";
 
 export interface SharedRuntime {
@@ -86,10 +86,22 @@ export interface AwardChapterXpInput {
   repo: Pick<GameRepository, "getCharacter">;
   rules: RulesContent;
   items: ItemCatalog;
+  /**
+   * The claim this table's campaign stamps on a stored hero (#282, handlers/
+   * claim.ts). Defaults to the campaign id, which is the claim at home.
+   */
+  claim?: (row: Character) => string;
+  /**
+   * Whether this table may write a stored hero at all. A hero another
+   * adventure holds is left as she is: nothing folded, nothing written.
+   */
+  admit?: (row: Character) => Promise<boolean>;
 }
 
 export interface AwardChapterXpResult {
   characters: Character[];
+  /** `characters`, each conditioned on the row as it was read (#282). */
+  writes: CharacterWrite[];
   awards: ProgressionAward[];
 }
 
@@ -115,13 +127,16 @@ export async function awardChapterXpDetails(
   );
 
   const characters: Character[] = [];
+  const writes: CharacterWrite[] = [];
   const awards: ProgressionAward[] = [];
   for (const [index, member] of input.state.party.entries()) {
     const row = stored[index];
     if (!row) continue;
+    if (input.admit && !(await input.admit(row))) continue;
 
-    const target = input.state.campaignId
-      ? progression.startCampaign(row, input.state.campaignId)
+    const campaignId = input.state.campaignId;
+    const target = campaignId
+      ? progression.startCampaign(row, input.claim ? input.claim(row) : campaignId)
       : row;
     const carried = progression.syncRunInventory(
       target,
@@ -131,6 +146,11 @@ export async function awardChapterXpDetails(
     const awarded: AwardXpResult =
       amount > 0 ? progression.awardXp(carried, input.rules, amount) : { character: carried };
     characters.push(awarded.character);
+    writes.push({
+      character: awarded.character,
+      expectedVersion: row.version ?? 0,
+      expectedClaim: row.provisional?.runId ?? null,
+    });
     if (amount > 0) {
       awards.push({
         characterId: awarded.character.id,
@@ -140,7 +160,7 @@ export async function awardChapterXpDetails(
     }
     member.character = progression.resolveCharacter(awarded.character, input.rules, input.items);
   }
-  return { characters, awards };
+  return { characters, writes, awards };
 }
 
 /**

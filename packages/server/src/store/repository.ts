@@ -239,6 +239,30 @@ export interface EventRecord extends Omit<ServerMessage, "discovered"> {
   intent?: ClientIntent;
 }
 
+/**
+ * One write to a hero's row under her claim (#282, architecture §4.5, "One
+ * game at a time per hero: the claim"). The row lands only if it still stands
+ * as it was read: its `version` is `expectedVersion` and its claim
+ * (`provisional.runId`) is `expectedClaim`. A different table, a run that lost
+ * the claim, or a worker holding an old read fails, and re-reads.
+ *
+ * Acquiring the claim, holding it and releasing it are all this one shape: the
+ * row written names the new claim (or none), and the conditions name the one
+ * read. Because every write bumps the version, two runs that read the same free
+ * or finished hero cannot both win her.
+ */
+export interface CharacterWrite {
+  /**
+   * The row as it should stand. Its `version` is ignored: the store writes
+   * `expectedVersion + 1`, or 1 for a new hero.
+   */
+  character: Character;
+  /** The version read; absent on the row is 0. Null: a new hero, whose row must not exist. */
+  expectedVersion: number | null;
+  /** The claim read (`provisional.runId`), null for none. Not checked for a new hero. */
+  expectedClaim: string | null;
+}
+
 export interface CommitInput {
   runId: string;
   /** The seq the caller read. The commit fails if the run has moved on. */
@@ -253,8 +277,12 @@ export interface CommitInput {
    * ends a chapter, and writing it separately means a turn that loses the seq
    * race — or hits a transient failure and is retried — can still leave the
    * award on the character. Either the whole turn lands or none of it does.
+   *
+   * Each one is conditioned on the hero's claim and the version read
+   * (`CharacterWrite`), so a hero another table has since claimed, or written,
+   * fails the whole transaction exactly as a lost seq race does.
    */
-  characters?: Character[];
+  characters?: CharacterWrite[];
   /**
    * The progress rows a chapter completion owes, in the same transaction and
    * for the same reason as `characters`: the seq gate is what makes reading
@@ -448,6 +476,9 @@ export interface GameRepository {
    * Unconditionally persists the complete character snapshot, including both
    * committed and provisional progression. Implementations stamp the row with
    * the current character schema version; this is a replacement, not a patch.
+   *
+   * Outside the claim (#282): it writes `version` as given and checks nothing.
+   * For fixtures and tools; a run writes heroes only through `commit()`.
    */
   putCharacter(character: Character): Promise<void>;
   /**
@@ -456,6 +487,13 @@ export interface GameRepository {
    */
   getCharacter(householdId: string, characterId: string): Promise<Character | null>;
   listCharacters(householdId: string): Promise<Character[]>;
+  /**
+   * One conditional write to a hero outside a run's commit, under the same
+   * conditions `commit()` puts on its `characters` (`CharacterWrite`). For
+   * leaving an adventure (#282), which releases a claim with no run turn to
+   * ride. `false`, and nothing written, when the row no longer stands as read.
+   */
+  writeCharacter(write: CharacterWrite): Promise<boolean>;
 
   // --- runs, state, event log ----------------------------------------------
   putRun(run: RunRecord): Promise<void>;

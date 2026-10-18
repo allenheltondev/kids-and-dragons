@@ -26,7 +26,7 @@ import {
   migrateCharacter,
   migrateFieldGuide,
 } from "@kad/shared";
-import { readAll } from "./character-io.ts";
+import { claimedRow, readAll } from "./character-io.ts";
 import {
   BatchWriteCommand,
   DeleteCommand,
@@ -50,6 +50,7 @@ import type {
 import type {
   CampaignProgressRecord,
   ChapterProgressRecord,
+  CharacterWrite,
   CommitInput,
   EventRecord,
   GameRepository,
@@ -759,6 +760,16 @@ export class DynamoRepository implements GameRepository {
     return readAll(items, householdId);
   }
 
+  async writeCharacter(write: CharacterWrite): Promise<boolean> {
+    try {
+      await this.doc.send(new PutCommand(characterTransaction(this.table, write).Put));
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+  }
+
   // --- runs, state, events ---------------------------------------------------
 
   async putRun(run: RunRecord): Promise<void> {
@@ -969,21 +980,11 @@ export class DynamoRepository implements GameRepository {
                 ExpressionAttributeValues: { ":expected": expectedSeq },
               },
             },
-            // Unconditional, and safe because the two above are not: if the run
-            // has moved on, the whole transaction is rejected and these never
-            // land. That is the entire point of putting them here.
-            ...characters.map((character) => ({
-              Put: {
-                TableName: this.table,
-                Item: {
-                  PK: HH(character.householdId),
-                  SK: CHAR_SK(character.id),
-                  entity: "character",
-                  v: CHARACTER_VERSION,
-                  data: character,
-                } satisfies TableItem,
-              },
-            })),
+            // If the run has moved on, the whole transaction is rejected and
+            // these never land: that is the point of putting them here. Each
+            // also carries its hero's claim and the version read (#282), since
+            // another table writing her has a different seq gate.
+            ...characters.map((write) => characterTransaction(this.table, write)),
             // Progress rows ride the run gate. The campaign row also has its
             // own version condition because a second run has a different seq gate.
             ...(chapterProgress
@@ -1254,6 +1255,52 @@ function campaignProgressTransaction(
       TableName: table,
       Item: campaignProgressItem(progress),
       ...condition,
+    },
+  };
+}
+
+/**
+ * A hero's write under her claim (`CharacterWrite`), for `commit` and
+ * `writeCharacter` both: a new hero's row must not exist; any other must carry
+ * the version (absent is 0) and the claim (`provisional.runId`, absent or null
+ * is none) that were read. `claimHolds` in character-io.ts is the same rule for
+ * the memory store.
+ */
+function characterTransaction(table: string, write: CharacterWrite) {
+  const character = claimedRow(write);
+  const item: TableItem = {
+    PK: HH(character.householdId),
+    SK: CHAR_SK(character.id),
+    entity: "character",
+    v: CHARACTER_VERSION,
+    data: character,
+  };
+  if (write.expectedVersion === null) {
+    return { Put: { TableName: table, Item: item, ConditionExpression: "attribute_not_exists(PK)" } };
+  }
+  const version =
+    write.expectedVersion === 0
+      ? "attribute_exists(PK) AND (attribute_not_exists(#d.#version) OR #d.#version = :version)"
+      : "#d.#version = :version";
+  const claim =
+    write.expectedClaim === null
+      ? "attribute_not_exists(#d.#provisional.#runId)"
+      : "#d.#provisional.#runId = :claim";
+  return {
+    Put: {
+      TableName: table,
+      Item: item,
+      ConditionExpression: `${version} AND ${claim}`,
+      ExpressionAttributeNames: {
+        "#d": "data",
+        "#version": "version",
+        "#provisional": "provisional",
+        "#runId": "runId",
+      },
+      ExpressionAttributeValues: {
+        ":version": write.expectedVersion,
+        ...(write.expectedClaim === null ? {} : { ":claim": write.expectedClaim }),
+      },
     },
   };
 }

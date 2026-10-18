@@ -214,8 +214,12 @@ export interface ActionRequest {
 export interface ActionResponse {
   ok: boolean;
   seq: number;
-  /** Set when ok is false. Clients resync rather than retrying blindly. */
-  error?: { code: "STALE_SEQ" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN"; message: string };
+  /**
+   * Set when ok is false. Clients resync rather than retrying blindly.
+   * `HERO_BUSY`: the hero is in another table's adventure (#282), and the
+   * message names her.
+   */
+  error?: { code: "STALE_SEQ" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN" | "HERO_BUSY"; message: string };
 }
 
 // ---------------------------------------------------------------------------

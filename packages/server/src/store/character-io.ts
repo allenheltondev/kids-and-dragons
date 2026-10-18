@@ -8,6 +8,7 @@
  */
 
 import { migrateCharacter, type Character } from "@kad/shared";
+import type { CharacterWrite } from "./repository.ts";
 
 /** The part of an item envelope this cares about. Both stores' items satisfy it. */
 export interface StoredItem {
@@ -43,4 +44,29 @@ export function readAll(items: readonly StoredItem[], householdId: string): Char
     }
   }
   return characters;
+}
+
+/**
+ * The row a `CharacterWrite` puts: the character, at the version after the one
+ * read. Both stores build it here, so the claim's version moves the same way
+ * whichever one is under the game.
+ */
+export function claimedRow(write: CharacterWrite): Character {
+  return { ...write.character, version: (write.expectedVersion ?? 0) + 1 };
+}
+
+/**
+ * Does the stored row still stand as `write` read it? The memory store's half
+ * of the conditions DynamoRepository puts on the same write
+ * (`characterCondition`): absent for a new hero; otherwise its version (absent
+ * is 0) and its claim (`provisional.runId`, absent or null is none) as read.
+ * Read off the raw item, unmigrated, as a DynamoDB condition would be.
+ */
+export function claimHolds(stored: StoredItem | undefined, write: CharacterWrite): boolean {
+  if (write.expectedVersion === null) return stored === undefined;
+  if (stored === undefined) return false;
+  const row = (stored.data ?? {}) as { version?: unknown; provisional?: { runId?: unknown } | null };
+  const version = typeof row.version === "number" ? row.version : 0;
+  const claim = typeof row.provisional?.runId === "string" ? row.provisional.runId : null;
+  return version === write.expectedVersion && claim === write.expectedClaim;
 }
