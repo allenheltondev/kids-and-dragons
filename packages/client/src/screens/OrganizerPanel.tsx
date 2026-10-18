@@ -37,6 +37,7 @@ import { Icon } from "./icons";
 import { PairingCodeCard } from "./PairDevice";
 import { lastUsed, tabletName } from "./tablet-label";
 import { KeepsakeError } from "./SignInFlow";
+import { savedHeroLine } from "./save-copy";
 import "./OrganizerPanel.css";
 
 /** Matches the server's limits (handlers/organizer.ts, shared-device.ts). */
@@ -293,7 +294,10 @@ function PlayerRow({ player, busy }: { player: OrganizerPlayer; busy: boolean })
           {player.heroes.length === 0
             ? "No hero yet"
             : player.heroes
-                .map((h) => `${h.name}, level ${h.level}${h.adventure ? `, in ${h.adventure}` : ""}`)
+                .map(
+                  (h) =>
+                    `${h.name}, level ${h.level}${h.adventure ? `, in ${h.adventure}` : ""}${h.saved ? ` (${savedHeroLine(h.name, h.saved)})` : ""}`,
+                )
                 .join(" · ")}
         </span>
         {player.heroes

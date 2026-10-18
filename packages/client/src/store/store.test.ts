@@ -120,6 +120,8 @@ function harness(state: RunState = makeState()): Harness {
     postAction: vi.fn(async (): Promise<ActionResponse> => ({ ok: true, seq: state.seq })),
     postPreview: vi.fn(async (): Promise<void> => undefined),
     postPresence: vi.fn(async (): Promise<void> => undefined),
+    postResume: vi.fn(async (): Promise<void> => undefined),
+    releaseSavedHero: vi.fn(async (): Promise<void> => undefined),
     fetchState: vi.fn(async () => ({ seq: state.seq, state })),
     loadRules: vi.fn(async () => ({ version: 1 })),
     loadItems: vi.fn(async () => ({})),
@@ -644,6 +646,40 @@ describe("arrivals and removal (#267)", () => {
       ["lock", { locked: false }],
       ["close", {}],
     ]);
+  });
+
+  it("stops for today from the room it opened (#259)", async () => {
+    const h = harness();
+    await h.store.getState().createRoom("travel", "Allen");
+    expect(await h.store.getState().stopForToday()).toBe(false);
+    h.store.setState({ session: { ...h.store.getState().session!, host: true } });
+    expect(await h.store.getState().stopForToday()).toBe(true);
+    expect(h.api.hostControl.mock.calls.map((call) => [call[1], call[2]])).toEqual([["stop", {}]]);
+  });
+
+  it("lets a hero go from the game it stopped, with the device token, and says why when it cannot (#259)", async () => {
+    const h = harness();
+    expect(await h.store.getState().releaseSavedHero("c_1")).toBe(false);
+    expect(h.store.getState().error).toMatch(/phone that stopped/);
+    await h.store.getState().createRoom("travel", "Allen");
+    expect(await h.store.getState().releaseSavedHero("c_1", "h_ada")).toBe(true);
+    expect(h.api.releaseSavedHero).toHaveBeenCalledWith("c_1", "h_ada", expect.any(String));
+
+    h.api.releaseSavedHero.mockRejectedValueOnce(new ApiError(403, "Only the screen or phone that stopped this game can let a hero go from it."));
+    expect(await h.store.getState().releaseSavedHero("c_1")).toBe(false);
+    expect(h.store.getState().error).toMatch(/stopped this game/);
+  });
+
+  it("keeps going from a saved game with the room session, and says why when it cannot (#259)", async () => {
+    const h = harness();
+    expect(await h.store.getState().resumeGame()).toBe(false);
+    await h.store.getState().createRoom("travel", "Allen");
+    expect(await h.store.getState().resumeGame()).toBe(true);
+    expect(h.api.postResume).toHaveBeenCalledWith(h.store.getState().session!.sessionToken);
+
+    h.api.postResume.mockRejectedValueOnce(new ApiError(409, "This game is already under way."));
+    expect(await h.store.getState().resumeGame()).toBe(false);
+    expect(h.store.getState().error).toBe("This game is already under way.");
   });
 
   it("turns quiet mode on and off for the room it opened (#260)", async () => {
