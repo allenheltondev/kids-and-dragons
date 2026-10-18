@@ -11,15 +11,15 @@
  *   - close the room for everyone
  *
  * Anything that lowers the barrier to joining (opening a room to visitors,
- * #249) or reaches beyond the room (forgetting a device, #250) needs a
- * signed-in owner instead, and is not here.
+ * #249, `handlers/visitors.ts`) or reaches beyond the room (forgetting a
+ * device, #250) needs a signed-in owner instead, and is not here.
  *
  * Every control is one committed change to the run: one seq, one logged
  * patch with the host's player as its author, one broadcast. That is what
  * puts it on the run's event log, and what makes every screen see it at once.
  */
 
-import type { RunState } from "@kad/shared";
+import { idleOpenRoom, type RunState } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { EventRecord, RoomRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
@@ -173,4 +173,49 @@ export async function closeRoom(
 /** Closed by its host (`closeRoom`): nothing more is accepted from anybody. */
 export function isClosed(state: Pick<RunState, "closed">): boolean {
   return state.closed === true;
+}
+
+/**
+ * Closes an open room that has sat idle past `OPEN_ROOM_IDLE_MS` (#249), the
+ * way the host's Close does, with nobody as its author. True when the room is
+ * (now) closed for that reason, and the caller refuses whatever it was asked.
+ *
+ * Lazy, on purpose: every way into a room (a join, a watch, a state read, an
+ * action) passes through here first, so an idle room is closed the moment
+ * anybody tries to use it, and a code nobody uses is harmless. A lost race
+ * means somebody else just did something in the room, which is activity; the
+ * caller then reads the room as open, as it is.
+ */
+export async function closeIfIdle(
+  room: RoomRecord,
+  state: RunState,
+  deps: Pick<HandlerDeps, "repo" | "now" | "channel">,
+): Promise<boolean> {
+  if (!idleOpenRoom(state, deps.now())) return false;
+  const result = await commitRoomChange(
+    room,
+    "",
+    (current) => (current.closed || !idleOpenRoom(current, deps.now()) ? null : { ...current, closed: true }),
+    deps,
+    { closing: true },
+  );
+  if (!result.ok || !isClosed(result.value.state)) return false;
+  await deps.repo.deleteRoom(room.code);
+  return true;
+}
+
+/**
+ * `closeIfIdle` for a caller that holds the run rather than the room: a state
+ * read or an action. Returns the run as it now stands, closed when it was idle.
+ */
+export async function closedIfIdle(
+  state: RunState,
+  deps: Pick<HandlerDeps, "repo" | "now" | "channel">,
+): Promise<RunState> {
+  if (!idleOpenRoom(state, deps.now())) return state;
+  const room = await deps.repo.getRoom(state.roomCode);
+  // Codes recycle: only the room that still points at this run is this run's.
+  if (!room || room.runId !== state.runId) return state;
+  if (!(await closeIfIdle(room, state, deps))) return state;
+  return (await deps.repo.getState(state.runId)) ?? state;
 }

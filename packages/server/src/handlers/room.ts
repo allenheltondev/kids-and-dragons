@@ -10,6 +10,7 @@
  * and its character is already on the board.
  */
 
+import { VISITOR_CODE_EXTRA } from "@kad/shared";
 import type {
   CreateRoomResponse,
   JoinRoomResponse,
@@ -25,7 +26,7 @@ import { keepGuestHousehold, mayClaim } from "./account.ts";
 import { lobbyCampaigns } from "./progression.ts";
 import { loadBook } from "./field-guide.ts";
 import { isRemoved } from "./remove.ts";
-import { isClosed } from "./host.ts";
+import { closeIfIdle, isClosed } from "./host.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
 /**
@@ -226,6 +227,11 @@ export interface JoinRoomInput {
    * a family tablet (#250) says so; anything else is their own phone.
    */
   device?: RoomSeat["device"];
+  /**
+   * The six-letter code the phone was given, when it was given one: what lets
+   * a phone from another household into a room open to visitors (#249).
+   */
+  visitorCode?: string;
 }
 
 /**
@@ -371,8 +377,10 @@ export async function joinRoom(
   const room = settled.value;
   if (!room) return fail("NOT_FOUND", `no open room ${input.code.toUpperCase()}`);
 
-  // The device resolves to a household; that household must own this run (§4.5).
-  if (room.householdId !== input.principal.householdId) {
+  // The device resolves to a household; that household must own this run
+  // (§4.5), unless the room is open to visitors and this phone is one (#249).
+  const visiting = room.householdId !== input.principal.householdId;
+  if (visiting && !(await mayVisit(room, input, deps))) {
     return fail("FORBIDDEN", "this device belongs to a different household");
   }
 
@@ -385,6 +393,9 @@ export async function joinRoom(
 
   const lobby = await refreshLobby(room, deps);
   if (!lobby) return fail("NOT_FOUND", `run ${room.runId} has no state`);
+  // An open room nobody has touched for a while closes rather than let one
+  // more phone in (#249), and its code reads as unknown from then on.
+  if (await closeIfIdle(room, lobby, deps)) return fail("NOT_FOUND", `no open room ${room.code.toUpperCase()}`);
   // Checked here so a refused join writes nothing, and again on every write
   // that seats them (`seatAndConnect`), so a host's lock or close landing in
   // between is never missed.
@@ -392,7 +403,12 @@ export async function joinRoom(
   if (refused) return refused;
   const state = await withFieldGuide(lobby, room, deps);
 
-  const seat: RoomSeat = { name: player.displayName, color: player.color, device: input.device ?? "phone" };
+  const seat: RoomSeat = {
+    name: player.displayName,
+    color: player.color,
+    device: input.device ?? "phone",
+    ...(visiting ? { homeHouseholdId: input.principal.householdId } : {}),
+  };
   const seated = await seatAndConnect(state, player.id, seat, room.code, deps);
   if (!seated.ok) return seated;
   const joined = seated.value;
@@ -401,12 +417,16 @@ export async function joinRoom(
   // Which phone may keep this guest household by signing in (#265), so the
   // offer is drawn on that one and no other.
   const household = await deps.repo.getHousehold(room.householdId);
-  const keeper = household?.guest === true && mayClaim(household, input.principal.deviceId);
+  // A visitor never is: the household is somebody else's.
+  const keeper = !visiting && household?.guest === true && mayClaim(household, input.principal.deviceId);
 
   const sessionToken = await deps.identity.issueSessionToken({
     runId: room.runId,
     roomCode: room.code,
-    householdId: room.householdId,
+    // The player's own household, which is the room's for everybody but a
+    // visitor (#249). A visitor's session names their home, so it reaches
+    // their own heroes and, in the room's household, nothing at all.
+    householdId: input.principal.householdId,
     playerId: player.id,
     // A session can never outlive its room.
     expiresAt: Date.parse(room.expiresAt),
@@ -421,6 +441,24 @@ export async function joinRoom(
     ...(host ? { host: true } : {}),
     ...(keeper ? { keeper: true } : {}),
   });
+}
+
+/**
+ * Whether a phone from another household may join this room (#249): it is a
+ * visitor already on the roster, coming back, or the room is open and the
+ * phone has its visitor code. Read from the run, which is where the switch
+ * lives, so turning it off stops new visitors at once and leaves the ones
+ * already playing in the game.
+ */
+async function mayVisit(room: RoomRecord, input: JoinRoomInput, deps: HandlerDeps): Promise<boolean> {
+  const state = await deps.repo.getState(room.runId);
+  if (!state) return false;
+  if (state.seats?.[input.principal.playerId]?.homeHouseholdId === input.principal.householdId) return true;
+  return (
+    state.visitorCode !== undefined &&
+    input.visitorCode !== undefined &&
+    input.visitorCode.toUpperCase() === state.visitorCode
+  );
 }
 
 /**
@@ -499,6 +537,7 @@ export async function watchRoom(
 
   const state = await deps.repo.getState(room.runId);
   if (!state) return fail("NOT_FOUND", `run ${room.runId} has no state`);
+  if (await closeIfIdle(room, state, deps)) return fail("NOT_FOUND", `no open room ${input.code.toUpperCase()}`);
 
   const viewerToken = await deps.identity.issueViewerToken({
     runId: room.runId,
@@ -629,4 +668,28 @@ async function advanceRoom(
     patch: event.patch,
   });
   return next;
+}
+
+/**
+ * The room a typed code names, and the visitor code when that is what was
+ * typed (#249). Four letters are a room's own code. Six are an open room's
+ * visitor code, and name the room only while it is open with exactly that
+ * code: anything else reads as no room, so a guess at the last two letters
+ * is a wrong code like any other, and spends the wrong-code budget.
+ */
+export async function findRoom(
+  code: string,
+  deps: Pick<HandlerDeps, "repo">,
+): Promise<{ room: RoomRecord; visitorCode?: string } | null> {
+  const typed = code.toUpperCase();
+  if (typed.length === ROOM_CODE_LENGTH) {
+    const room = await deps.repo.getRoom(typed);
+    return room ? { room } : null;
+  }
+  if (typed.length !== ROOM_CODE_LENGTH + VISITOR_CODE_EXTRA) return null;
+  const room = await deps.repo.getRoom(typed.slice(0, ROOM_CODE_LENGTH));
+  if (!room) return null;
+  const state = await deps.repo.getState(room.runId);
+  if (state?.visitorCode !== typed || state.closed === true) return null;
+  return { room, visitorCode: typed };
 }
