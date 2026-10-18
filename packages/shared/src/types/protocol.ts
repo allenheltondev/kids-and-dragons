@@ -579,6 +579,14 @@ export interface OrganizerHouseholdView {
  */
 export const RETENTION_CHOICES = [30, 90, 180, 365] as const;
 
+/**
+ * What a deleted kid is called in what other people keep (#252): her seat
+ * and hero in another table's save, and her finds in its Field Guide, which
+ * credit `FORGOTTEN_FINDER` in place of her id.
+ */
+export const FORGOTTEN_NAME = "A friend";
+export const FORGOTTEN_FINDER = "forgotten";
+
 /** `POST /api/organizer/household/delete`: what is left once it is gone. */
 export interface OrganizerHouseholdDeleted {
   householdId: string;

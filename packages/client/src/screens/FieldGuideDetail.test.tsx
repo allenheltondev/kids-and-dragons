@@ -2,7 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { setSpeaker } from "@kad/shared";
+import { FORGOTTEN_FINDER, setSpeaker } from "@kad/shared";
 import type { FieldGuide as FieldGuideData } from "@kad/shared";
 import real from "../../../../content/field-guide.json";
 import { FieldGuide } from "./FieldGuide";
@@ -115,6 +115,13 @@ describe("FieldGuideDetail sections", () => {
     setFieldGuideDiscoveries({ [e.id]: find("ghost") });
     render(<FieldGuideDetail guide={guide} entryId={e.id} />);
     expect(screen.getByText("First found by someone in your household")).toBeTruthy();
+  });
+
+  it("credits a kid who has since been deleted to a friend (#252)", () => {
+    const e = guide.entries["creature.bone_crawler"]!;
+    setFieldGuideDiscoveries({ [e.id]: find(FORGOTTEN_FINDER) });
+    render(<FieldGuideDetail guide={guide} entryId={e.id} />);
+    expect(screen.getByText("First found by a friend")).toBeTruthy();
   });
 
   it("Read aloud speaks on tap even with the read-aloud switch off", async () => {

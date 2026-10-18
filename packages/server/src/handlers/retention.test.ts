@@ -9,7 +9,7 @@
  */
 
 import path from "node:path";
-import { applyIntent, createRunState, makeRng, type Character, type ClientIntent, type RunState } from "@kad/shared";
+import { applyIntent, createRunState, FORGOTTEN_FINDER, makeRng, type Character, type ClientIntent, type RunState } from "@kad/shared";
 import { describe, expect, it } from "vitest";
 import { loadContent } from "../content/loader.ts";
 import type { Engine } from "../engine/port.ts";
@@ -23,12 +23,11 @@ import {
   createOrganizerInvite,
   deleteHousehold,
   deleteProfile,
-  leaveAdventure,
   removeOrganizer,
   setHouseholdRetention,
   viewHousehold,
 } from "./organizer.ts";
-import { FORGOTTEN_NAME, forgetPlayer } from "./retention.ts";
+import { FORGOTTEN_NAME, forgetPlayer, scrubNames } from "./retention.ts";
 import { createRoom, joinRoom } from "./room.ts";
 import { setVisitors } from "./visitors.ts";
 
@@ -134,21 +133,49 @@ describe("deleting a kid (#252)", () => {
     expect(await h.repo.listCharacters(rue.householdId)).toHaveLength(1);
   });
 
-  it("is refused while her hero is mid-adventure, and allowed once the adventure is ended", async () => {
+  it("wins over an adventure in flight: the table plays on without her", async () => {
     const h = harness();
     const ada = await homeOf(h, "h_ada", "Ada");
     const rue = await homeOf(h, "h_rue", "Rue");
-    await visit(h, rue, ada);
+    const room = await visit(h, rue, ada);
     const hero = await midAdventure(h, ada, rue.householdId);
 
-    const refused = await deleteProfile({ ...ada.owner, householdId: ada.householdId, playerId: ada.playerId }, h.deps);
-    expect(refused).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
-    expect(!refused.ok && refused.error.message).toContain(hero.name);
-    expect(await h.repo.getPlayer(ada.householdId, ada.playerId)).not.toBeNull();
-
-    value(await leaveAdventure({ ...ada.owner, householdId: ada.householdId, characterId: hero.id }, h.deps));
     value(await deleteProfile({ ...ada.owner, householdId: ada.householdId, playerId: ada.playerId }, h.deps));
+
+    expect(await h.repo.getCharacter(ada.householdId, hero.id)).toBeNull();
     expect(await h.repo.getPlayer(ada.householdId, ada.playerId)).toBeNull();
+    // Rue's attempt is Rue's, and goes on.
+    expect((await h.repo.getCampaignProgress(rue.householdId, GEMFALL))?.status).toBe("active");
+    expect(JSON.stringify(await room.state())).not.toContain(hero.name);
+  });
+
+  it("takes her names out of the table's event log and its Field Guide", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    const rue = await homeOf(h, "h_rue", "Rue");
+    const room = await visit(h, rue, ada);
+    await h.repo.recordDiscoveries(rue.householdId, [
+      { canonId: "lore.a", playerId: ada.playerId },
+      { canonId: "lore.b", playerId: rue.playerId },
+    ]);
+    await h.repo.recordDiscoveries(ada.householdId, [{ canonId: "lore.a", playerId: ada.playerId }]);
+    const log = JSON.stringify(await h.repo.listEvents(room.runId, 0));
+    expect(log).toContain("Hero of h_ada");
+    const seqs = (await h.repo.listEvents(room.runId, 0)).map((e) => e.seq);
+
+    value(await deleteProfile({ ...ada.owner, householdId: ada.householdId, playerId: ada.playerId }, h.deps));
+
+    const events = await h.repo.listEvents(room.runId, 0);
+    expect(JSON.stringify(events)).not.toContain("Hero of h_ada");
+    expect(JSON.stringify(events)).not.toMatch(/"name":"Ada"/);
+    // Rewritten in place: the same seqs, and one more for the forgetting.
+    expect(events.map((e) => e.seq)).toEqual([...seqs, seqs[seqs.length - 1]! + 1]);
+    expect(JSON.stringify(events)).toContain("Hero of h_rue");
+    const book = await h.repo.getFieldGuide(rue.householdId);
+    expect(book.entries["lore.a"]?.firstFoundBy).toBe(FORGOTTEN_FINDER);
+    expect(book.entries["lore.b"]?.firstFoundBy).toBe(rue.playerId);
+    // Her home's book is her home's: the entry stays, and names nobody.
+    expect((await h.repo.getFieldGuide(ada.householdId)).entries["lore.a"]?.firstFoundBy).toBe(FORGOTTEN_FINDER);
   });
 
   it("is only her household's owners' to do", async () => {
@@ -226,16 +253,17 @@ describe("deleting a household (#252)", () => {
     expect(await h.repo.listVisits(ada.playerId)).toEqual([]);
   });
 
-  it("is refused while one of its kids' heroes is mid-adventure at another table", async () => {
+  it("goes through while one of its kids' heroes is mid-adventure at another table", async () => {
     const h = harness();
     const ada = await homeOf(h, "h_ada", "Ada");
     const rue = await homeOf(h, "h_rue", "Rue");
-    await visit(h, rue, ada);
-    await midAdventure(h, ada, rue.householdId);
+    const room = await visit(h, rue, ada);
+    const hero = await midAdventure(h, ada, rue.householdId);
 
-    const refused = await deleteHousehold({ ...ada.owner, householdId: ada.householdId }, h.deps);
-    expect(refused).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
-    expect(await h.repo.getHousehold(ada.householdId)).not.toBeNull();
+    value(await deleteHousehold({ ...ada.owner, householdId: ada.householdId }, h.deps));
+    expect(await h.repo.getHousehold(ada.householdId)).toBeNull();
+    expect(JSON.stringify(await room.state())).not.toContain(hero.name);
+    expect(JSON.stringify(await h.repo.listEvents(room.runId, 0))).not.toContain(hero.name);
   });
 
   it("is not stopped by its own table's adventure, which goes with it", async () => {
@@ -313,16 +341,37 @@ describe("retention (#252)", () => {
 });
 
 describe("forgetPlayer", () => {
+  const kid = { playerId: "p_1", nicknames: ["Ada"], heroes: ["Sparklehoof"] };
+
   it("keeps a hero in a party past the lobby, as somebody nobody can name", () => {
     const state = {
       phase: "scene",
-      party: [{ playerId: "p_1", connected: true, ready: true, character: { name: "Sparklehoof" } }],
-      seats: { p_1: { name: "Ada", color: "#fff", device: "phone" } },
+      sceneId: "sparklehoof-gate",
+      narration: "Sparklehoof and Pip reach the gate. Sparklehoofish is not a word.",
+      party: [
+        { playerId: "p_1", connected: true, ready: true, character: { name: "Sparklehoof" } },
+        { playerId: "p_2", connected: true, ready: true, character: { name: "Pip" } },
+      ],
+      seats: { p_1: { name: "Ada", color: "#fff", device: "phone" }, p_2: { name: "Bo", color: "#000", device: "phone" } },
     } as unknown as RunState;
-    const out = forgetPlayer(state, "p_1")!;
+    const out = forgetPlayer(state, kid)!;
     expect(out.party[0]).toMatchObject({ playerId: "p_1", connected: false, character: { name: FORGOTTEN_NAME } });
-    expect(out.seats).toEqual({});
+    expect(out.party[1]?.character.name).toBe("Pip");
+    expect(out.seats).toEqual({ p_2: { name: "Bo", color: "#000", device: "phone" } });
     expect(out.removed).toEqual(["p_1"]);
-    expect(forgetPlayer(out, "p_1")).toBeNull();
+    expect(out.narration).toBe(`${FORGOTTEN_NAME} and Pip reach the gate. Sparklehoofish is not a word.`);
+    // An id is never rewritten, whatever it shares with her names.
+    expect(out.sceneId).toBe("sparklehoof-gate");
+    expect(forgetPlayer(out, kid)).toBeNull();
+  });
+
+  it("leaves a save that never had her alone", () => {
+    const state = { phase: "lobby", party: [], narration: "Hello" } as unknown as RunState;
+    expect(forgetPlayer(state, kid)).toBeNull();
+  });
+
+  it("takes a nickname out of name fields only", () => {
+    const names = { heroes: [], nicknames: ["Max"] };
+    expect(scrubNames({ name: "Max", narration: "Max power!" }, names)).toEqual({ name: FORGOTTEN_NAME, narration: "Max power!" });
   });
 });

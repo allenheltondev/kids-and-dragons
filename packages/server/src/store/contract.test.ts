@@ -18,7 +18,7 @@
 
 import { CreateTableCommand, DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
-import { FIELD_GUIDE_VERSION } from "@kad/shared";
+import { FIELD_GUIDE_VERSION, FORGOTTEN_FINDER } from "@kad/shared";
 import type { Character, Household, JourneyState, PlayerProfile, RunState } from "@kad/shared";
 import { DynamoRepository, GSI1_NAME } from "./dynamo-repository.ts";
 import { MemoryRepository } from "./memory-repository.ts";
@@ -1000,6 +1000,35 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         await repo.putVisit("p_1", "h_b", at);
         expect((await repo.listVisits("p_1")).sort()).toEqual(["h_a", "h_b"]);
         expect(await repo.listVisits("p_2")).toEqual([]);
+      });
+
+      it("rewrites an event in place, and never adds one", async () => {
+        await repo.putRun(run("r_1", "h_1"));
+        await repo.putState(state("r_1", 0));
+        await repo.commit({ runId: "r_1", expectedSeq: 0, state: state("r_1", 1), event: event("r_1", 1) });
+
+        const scrubbed = { ...event("r_1", 1), patch: [{ op: "replace" as const, path: "/narration", value: "A friend" }] };
+        await repo.rewriteEvent(scrubbed);
+        await repo.rewriteEvent({ ...event("r_1", 2), patch: [] });
+
+        expect(await repo.listEvents("r_1", 0)).toEqual([scrubbed]);
+        expect((await repo.getState("r_1"))?.seq).toBe(1);
+      });
+
+      it("re-credits her finds in a book, and nobody else's", async () => {
+        await repo.recordDiscoveries("h_1", [
+          { canonId: "lore.a", playerId: "p_1", foundAt: at },
+          { canonId: "lore.b", playerId: "p_2", foundAt: at },
+          { canonId: "lore.c", playerId: "p_1", foundAt: at, runId: "r_1" },
+        ]);
+        expect(await repo.forgetFinder("h_1", "p_1")).toBe(2);
+        expect((await repo.getFieldGuide("h_1")).entries).toEqual({
+          "lore.a": { firstFoundBy: FORGOTTEN_FINDER, foundAt: at },
+          "lore.b": { firstFoundBy: "p_2", foundAt: at },
+          "lore.c": { firstFoundBy: FORGOTTEN_FINDER, foundAt: at, runId: "r_1" },
+        });
+        expect(await repo.forgetFinder("h_1", "p_1")).toBe(0);
+        expect(await repo.forgetFinder("h_none", "p_1")).toBe(0);
       });
 
       it("takes the kids' visits with a swept guest household", async () => {
