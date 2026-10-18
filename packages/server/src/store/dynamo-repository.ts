@@ -82,6 +82,7 @@ import {
   PAIR,
   PLAYER_SK,
   PREFIX,
+  PRESENCE,
   ROOM,
   RUN,
   RUN_SK,
@@ -1274,6 +1275,44 @@ export class DynamoRepository implements GameRepository {
     } catch (err) {
       // Already at zero, or gone: nothing to give back.
       if (!isConditionalFailure(err)) throw err;
+    }
+  }
+
+  /**
+   * One nested `SET` per beat, so phones beating at once each land their own
+   * key. The first beat in a run finds no map to set into (a
+   * ValidationException), creates it with `if_not_exists`, so a racing first
+   * beat can never wipe another's, and goes again: the field guide's
+   * bootstrap (`recordDiscoveries`). `ALL_NEW` is the whole map after this
+   * beat, which is what the sweep reads.
+   */
+  async touchPresence(runId: string, playerId: string, at: string, ttl: number): Promise<Record<string, string>> {
+    const key = { PK: RUN(runId), SK: PRESENCE };
+    for (let attempt = 0; ; attempt++) {
+      try {
+        const out = await this.doc.send(
+          new UpdateCommand({
+            TableName: this.table,
+            Key: key,
+            UpdateExpression: "SET #d.#p = :at, #ttl = :ttl",
+            ExpressionAttributeNames: { "#d": "data", "#p": playerId, "#ttl": "ttl" },
+            ExpressionAttributeValues: { ":at": at, ":ttl": ttl },
+            ReturnValues: "ALL_NEW",
+          }),
+        );
+        return { ...((out.Attributes?.["data"] as Record<string, string> | undefined) ?? {}) };
+      } catch (err) {
+        if (nameOf(err) !== "ValidationException" || attempt >= 2) throw err;
+        await this.doc.send(
+          new UpdateCommand({
+            TableName: this.table,
+            Key: key,
+            UpdateExpression: "SET #d = if_not_exists(#d, :empty), entity = if_not_exists(entity, :entity)",
+            ExpressionAttributeNames: { "#d": "data" },
+            ExpressionAttributeValues: { ":empty": {}, ":entity": "presence" },
+          }),
+        );
+      }
     }
   }
 }

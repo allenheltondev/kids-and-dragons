@@ -365,6 +365,70 @@ Every client tracks the last `seq` it applied. On reconnect it calls `GET /state
 which returns either the missed events or a full snapshot if the gap is too large. The TV can be
 hard-refreshed mid-encounter and recover in under a second.
 
+#### Stepping away: absence is `connected: false`
+
+A player who is not at the table is a party member with `connected: false`
+(spec §8.5): presence sets it (`handlers/presence.ts`, below), Remove sets it
+with `removed` (§4.5), and the join or the heartbeat that brings them back
+clears it. The member, the hero and its place in the fight all stay, so a
+returning phone needs nothing put back.
+
+Every wait in the engine reads it (shared `engine.ts`, and `away.ts` for the rules the screens read too), and none of them read
+anything else, so a table with everybody present plays exactly as it always
+did and the Gemfall digests do not move:
+
+- **Opened on someone here.** A story turn skips an away holder
+  (`storyTurnHolder`); a check never nominates one (`rollerPool`).
+- **Open to anyone once the one it names is away.** A held story choice
+  (`turnHolderAway`), a check (`rollerAway`), a combat turn (`combatTurnAway`:
+  END_TURN only, never a move or an action), and a full bag's swap prompt
+  (`swapOwnerAway`: "leave it" only).
+- **Not waited on.** A vote's outstanding voters, the ready-up before a fight,
+  the lobby's Begin (`readyWithoutAway`) and the chapter's end.
+
+A gate the engine only counts when a tap lands (a vote, the pre-fight ready)
+cannot close itself when the last one it waited on drops: presence does not
+run the engine (it has no chapter, map or dice), and an automatic pass would
+also fire for a phone that is merely asleep. So the phones offer the tap that
+closes it (`voteWaitsOnlyOnAway`; a READY sent again), and the chapter's end,
+which needs no engine context, is settled by presence itself
+(`settleChapterEndVote`). The combat pass is offered rather than automatic for
+the sleeping-phone reason too.
+
+What the screens draw from it: the TV names who stepped away in the narration
+header and fades their figure on the board and in the lineup (never the
+knocked-down pose), and a phone that opens on a chapter in progress, or whose
+channel came back after the story moved, shows a one-line catch-up
+(`screens/CatchUp.tsx`).
+
+**How the server learns a phone has gone: heartbeats.** AppSync Events tells
+the Lambda nothing when a socket opens or closes, so every seated phone says
+"still here" itself: `POST /api/presence` with its session token, every 20
+seconds while its page is on screen and once more the moment it comes back on
+screen (`client/src/sync/presence-beat.ts`). A page that closes says
+`{ leaving: true }` (sent `keepalive`), which marks it away at once. A phone
+that dies, loses signal or is put away simply goes quiet, and the next beat
+from anyone at the table finds it: a friend whose last beat is older than
+`AWAY_AFTER_MS` (two minutes) is marked away. No timer runs on the server,
+and none is needed, since a table with nobody beating has nobody to stall.
+
+The beats live in one row per run (`RUN#<id>` / `PRESENCE`, a map of player
+to time, with the room's TTL), written by one nested `SET` per beat
+(`touchPresence`), so phones beating at once never lose one another's times,
+and a beat that changes nothing burns no seq. A friend with no beat on record
+is never swept: there is no evidence their phone was ever here.
+
+The timeout is long on purpose. A phone set down on the sofa sleeps and stops
+beating, and it beats again as soon as it wakes; reading it as away for a
+while costs a "stepped away" line on the TV and a tap the table does not have
+to take, never a turn, because nothing is skipped automatically.
+
+The dev server also keeps the stream-based presence it always had (an SSE
+stream opening or closing); the two agree and heal one another.
+`KAD_STREAM_PRESENCE=off` turns the stream half off and `KAD_PRESENCE_AWAY_MS`
+shortens the timeout, which is how the e2e suite runs: presence exactly as
+production has it, in a test that can wait for it.
+
 #### The Field Guide: the book on the state, the news on the wire
 
 The household's Field Guide (`HH#…/FIELDGUIDE`, §3) is household data, not run data, but every
