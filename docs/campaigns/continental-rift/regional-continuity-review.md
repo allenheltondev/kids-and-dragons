@@ -37,6 +37,14 @@ on each incoming edge so old arrival history cannot describe the current trip.
 Verification exhausts chapter paths across all species/classes, checks literal introduction
 wording on each path, runs the proper-name graph sweep, tests actual rift actions and lifecycle,
 and runs the real staged content validator. No pacing observations have been collected.
+The [regional pacing gate](regional-pacing-gate.md) classifies these as short preview episodes
+and records expansion and measurement requirements before production; it remains unpassed.
+The cross-chapter prerequisite test derives mandatory introductions from every actual ending,
+then propagates their intersection through all graph entrances, including return and guarded
+edges. Contract entry facts do not count as new introductions. It verifies the Orin, Olivia,
+chime, hall-note and fellowship prerequisites and includes negative bypass cases. Departure
+must actually grant the chime, and downstream chapter paths must retain it. First/later Attune
+and shared/unshared initial reading variants participate in the chapter-path audit.
 Next work: wrong valley, island-due-back, stuttering flats, then the remaining key nodes and
 convergence. Class-specific regional utility and longer table pacing can be expanded in that
 work; these chapters currently provide party-wide methods without class requirements.
