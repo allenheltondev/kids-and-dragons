@@ -39,6 +39,7 @@ export function SharedHome(): ReactElement {
   const loadSharedPlayers = useGameStore((s) => s.loadSharedPlayers);
   const joinRoom = useGameStore((s) => s.joinRoom);
   const createRoom = useGameStore((s) => s.createRoom);
+  const openOnThisScreen = useGameStore((s) => s.openOnThisScreen);
   const pendingCode = useGameStore((s) => s.pendingCode);
   const refreshShared = useKeepsakeStore((s) => s.refreshShared);
   const openKeepsake = useKeepsakeStore((s) => s.open);
@@ -51,7 +52,7 @@ export function SharedHome(): ReactElement {
   const [addingNew, setAddingNew] = useState(false);
   const [newName, setNewName] = useState("");
   const [code, setCode] = useState(() => normalizeCode(pendingCode ?? ""));
-  const [busy, setBusy] = useState<null | "join" | "create">(null);
+  const [busy, setBusy] = useState<null | "join" | "create" | "screen">(null);
   const [error, setError] = useState<string | null>(null);
   const nameFieldId = useId();
 
@@ -123,6 +124,21 @@ export function SharedHome(): ReactElement {
     },
     [seat, code, name, joinRoom, createRoom, refreshShared],
   );
+
+  /** The tablet becomes the TV (#274): nobody is picked, nobody is seated. */
+  const showOnThisScreen = useCallback(async () => {
+    setError(null);
+    setBusy("screen");
+    try {
+      await openOnThisScreen();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "That didn’t work. Try again?");
+      // A forgotten tablet is told so by the server, and stops being one.
+      refreshShared();
+    } finally {
+      setBusy(null);
+    }
+  }, [openOnThisScreen, refreshShared]);
 
   return (
     <main className="home entry-scene-host">
@@ -230,6 +246,17 @@ export function SharedHome(): ReactElement {
                   </Button>
                 </form>
               ) : null}
+
+              <div className="home__host-toggle">
+                <button
+                  type="button"
+                  className="home__link kad-focusable"
+                  disabled={busy !== null}
+                  onClick={() => void showOnThisScreen()}
+                >
+                  Show the game on this screen
+                </button>
+              </div>
             </section>
           ) : (
             <section className="home__card home__card--join" aria-labelledby="shared-home-join">
@@ -305,7 +332,7 @@ export function SharedHome(): ReactElement {
             {busy !== null ? (
               <div className="home__busy kad-row" role="status">
                 <Spinner size="sm" />
-                <span>{busy === "create" ? "Making a room…" : "Looking for that room…"}</span>
+                <span>{busy === "join" ? "Looking for that room…" : "Making a room…"}</span>
               </div>
             ) : null}
             {error !== null ? (
