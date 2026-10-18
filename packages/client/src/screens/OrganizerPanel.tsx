@@ -22,7 +22,14 @@
 
 import { useEffect, useId, useState } from "react";
 import type { FormEvent, ReactElement } from "react";
-import type { OrganizerDevice, OrganizerHouseholdView, OrganizerOwner, OrganizerPlayer, TransferCode } from "@kad/shared";
+import type {
+  OrganizerDevice,
+  OrganizerHero,
+  OrganizerHouseholdView,
+  OrganizerOwner,
+  OrganizerPlayer,
+  TransferCode,
+} from "@kad/shared";
 import { formatInviteCode, useOrganizerStore } from "../store/organizer";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
@@ -281,8 +288,15 @@ function PlayerRow({ player, busy }: { player: OrganizerPlayer; busy: boolean })
         <span className="organizer__heroes kad-muted">
           {player.heroes.length === 0
             ? "No hero yet"
-            : player.heroes.map((h) => `${h.name}, level ${h.level}`).join(" · ")}
+            : player.heroes
+                .map((h) => `${h.name}, level ${h.level}${h.adventure ? `, in ${h.adventure}` : ""}`)
+                .join(" · ")}
         </span>
+        {player.heroes
+          .filter((h) => h.adventure)
+          .map((h) => (
+            <EndAdventure key={h.id} hero={h} busy={busy} />
+          ))}
       </span>
       <span className="organizer__row-actions">
         {player.retired ? null : (
@@ -308,6 +322,38 @@ function PlayerRow({ player, busy }: { player: OrganizerPlayer; busy: boolean })
         </button>
       </span>
     </li>
+  );
+}
+
+/**
+ * End the campaign a hero is in (#282), so she can join another table. Her
+ * gains from it go, so the first tap only asks.
+ */
+function EndAdventure({ hero, busy }: { hero: OrganizerHero; busy: boolean }): ReactElement {
+  const edit = useOrganizerStore((s) => s.edit);
+  const [asking, setAsking] = useState(false);
+  if (!asking) {
+    return (
+      <button type="button" className="organizer__link kad-focusable" disabled={busy} onClick={() => setAsking(true)}>
+        End {hero.adventure} for {hero.name}
+      </button>
+    );
+  }
+  return (
+    <span className="organizer__confirm" role="group" aria-label={`End ${hero.adventure} for ${hero.name}`}>
+      <span className="kad-muted">What {hero.name} gained in {hero.adventure} goes away.</span>
+      <button
+        type="button"
+        className="organizer__link kad-focusable"
+        disabled={busy}
+        onClick={() => void edit({ action: "leave-adventure", characterId: hero.id })}
+      >
+        End it
+      </button>
+      <button type="button" className="organizer__link kad-focusable" disabled={busy} onClick={() => setAsking(false)}>
+        Keep playing it
+      </button>
+    </span>
   );
 }
 

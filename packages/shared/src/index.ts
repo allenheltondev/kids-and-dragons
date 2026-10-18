@@ -18,6 +18,7 @@ export * from "./types/world.js";
 
 export * from "./rules.js";
 export * from "./character.js";
+export * from "./claim.js";
 export * from "./player-colors.js";
 export * from "./migrate.js";
 export * from "./field-guide-record.js";

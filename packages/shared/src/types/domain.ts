@@ -144,6 +144,13 @@ export interface Character {
   /** Permanent, cosmetic-only, grows on campaign failure. */
   souvenirs: Souvenir[];
   createdAt: string;
+  /**
+   * The row's monotonic version, which the claim conditions every write on
+   * (#282, architecture §4.5, "One game at a time per hero: the claim"). The
+   * claim itself is `provisional.runId`. The store sets this on every write;
+   * nothing else does. Absent on rows written before it, which are version 0.
+   */
+  version?: number;
 }
 
 /** Result of applying an XP award to a character's effective progress. */

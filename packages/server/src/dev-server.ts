@@ -911,6 +911,7 @@ function statusFor(error: ActionError): number {
       return 403;
     case "STALE_SEQ":
     case "ILLEGAL":
+    case "HERO_BUSY":
       return 409;
   }
 }

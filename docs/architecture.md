@@ -728,21 +728,38 @@ The grown-up's email lives in Cognito, never in the table.
 **One game at a time per hero: the claim.** A character carries one
 `provisional` snapshot, stamped with one `runId` (§3.1). That stamp is the
 hero's **claim**, and it is both the one-game rule and the authority for a
-visiting table to write to a hero it does not own. #282 builds it. These are
-its invariants and failure semantics:
+visiting table to write to a hero it does not own. #282 builds it
+(`handlers/claim.ts`). These are its invariants and failure semantics:
 
+- **What it names.** The table's campaign attempt, not one evening's room. A
+  campaign spans evenings and every evening is a new run, so
+  `provisional.runId` has always held the campaign id (`campaignKey` in
+  `progression.ts`): scoping it to the room threw away Tuesday's levels on
+  Saturday. The claim keeps exactly that value at home, so no stored row
+  changes. At a table that is not her home (a visitor, whose party member
+  carries `homeHouseholdId`, #249) it is `<campaignId>@<tableHouseholdId>`,
+  so two tables playing the same campaign hold different claims. The hero is
+  always read and written at her home; the table only names the claim.
+  `claimFor`/`parseClaim` live in `@kad/shared` (`claim.ts`). "The run"
+  below means that attempt.
 - **Where it lives.** On the character row, in the hero's home partition
-  (`HH#<home>`/`CHAR#<id>`), next to a monotonic `version` on the row. Every
-  decision about the hero is made against that one row, whichever table is
-  playing.
-- **Acquire.** When a run first writes the hero (seating her in a started
-  campaign), it is one conditional write on the character. It succeeds if
-  there is no claim, if the claim already names this run (an idempotent
-  retry), or if the claimed run is terminal (complete, failed or closed). In
-  that last case the write is conditioned on the old `runId` and `version`, so
-  two runs reclaiming one stale hero cannot both win. Otherwise the seat is
-  refused ("Sparklehoof is in the middle of another adventure"), and nothing
-  is written.
+  (`HH#<home>`/`CHAR#<id>`), next to a monotonic `version` on the row
+  (`Character.version`, character schema v2; rows without it are version 0).
+  Every decision about the hero is made against that one row, whichever table
+  is playing.
+- **Acquire.** When a run first writes the hero, it is one conditional write
+  on the character, in the commit of the turn that seats her in a started
+  campaign: the chapter start for everybody at the table, or the seat itself
+  for a hero who joins a chapter under way. It succeeds if there is no claim,
+  if the claim already names this run (an idempotent retry: a retry re-reads
+  and finds itself), or if the claimed run is terminal: its attempt is
+  complete or failed, or gone (no attempt, or a campaign the content no longer
+  ships). In that last case the write is conditioned on the old `runId` and
+  `version`, so two runs reclaiming one stale hero cannot both win. Otherwise
+  the seat or the start is refused (`HERO_BUSY`, "Sparklehoof is in the middle
+  of another adventure"), and nothing is written. A lobby seat is refused only
+  for another table's claim, since which of this table's campaigns is next is
+  not decided until the start.
 - **Write.** Every progression write from a run to a hero (XP, items, finds,
   the provisional snapshot) rides in the run's commit transaction (§4.1)
   with two extra conditions on the character row: `provisional.runId` is this
@@ -754,10 +771,16 @@ its invariants and failure semantics:
 - **Release.** Completing the campaign commits `provisional` into `committed`
   and clears the claim. Failing it discards `provisional` and clears the
   claim. Either way it happens in the same transaction as the run's final
-  commit. A host closing the room (#263) makes the run terminal. Her own
-  grown-up, or the kid on her own device, can also **leave that adventure**,
-  which discards that run's provisional gains and clears the claim,
-  conditioned on its `runId`.
+  commit. Her own grown-up can also **leave that adventure** from the
+  organizer screen (`POST /api/organizer/heroes/leave`), which discards that
+  run's provisional gains and clears the claim, conditioned on its `runId`.
+  The phone at a table that refused her offers "Make a new hero for this one"
+  instead; a kid-side leave is not built.
+- **A host closing the room does not release.** Closing (#263) ends the
+  evening, not the attempt: "closing costs the table this evening's room and
+  nothing else" (`host.ts`), and the next evening continues the campaign. Were
+  it terminal, every Gemfall evening that ended with Close would throw away
+  the gains it was meant to keep.
 - **Disconnects never release.** A dropped phone, a closed tab or an expired
   room is not leaving. The claim holds, so the table can resume (#259). A run
   abandoned without a release stays claimed until it becomes terminal or she

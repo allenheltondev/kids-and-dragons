@@ -131,13 +131,15 @@ export type OrganizerEdit =
   | { action: "rename-household"; householdId: string; displayName: string }
   | { action: "add-player"; householdId: string; displayName: string }
   | { action: "rename-player"; householdId: string; playerId: string; displayName: string }
-  | { action: "retire-player"; householdId: string; playerId: string; retired: boolean };
+  | { action: "retire-player"; householdId: string; playerId: string; retired: boolean }
+  | { action: "leave-adventure"; householdId: string; characterId: string };
 
 const ORGANIZER_EDIT_PATH: Record<OrganizerEdit["action"], string> = {
   "rename-household": "/api/organizer/household/rename",
   "add-player": "/api/organizer/players",
   "rename-player": "/api/organizer/players/rename",
   "retire-player": "/api/organizer/players/retire",
+  "leave-adventure": "/api/organizer/heroes/leave",
 };
 
 /**
