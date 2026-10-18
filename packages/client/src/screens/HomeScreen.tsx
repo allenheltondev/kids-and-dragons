@@ -20,14 +20,12 @@ import { useGameStore } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
 // The one normalize helper for typed and prefilled codes — the router owns the
 // code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
-import { ROOM_CODE_LENGTH as CODE_LENGTH, navigate, normalizeCodeInput as normalizeCode } from "../router";
+import { ROOM_CODE_LENGTH as CODE_LENGTH, navigate, normalizeCodeInput as normalizeCode, pairingFromSearch } from "../router";
 import { loadPlayerDeviceToken } from "../store/persistence";
-import { pairingFromSearch } from "../store/pairing";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
 import { EntryScene } from "./EntryScene";
-import { PairHere, PlayAsMe } from "./PairDevice";
 import "./shared.css";
 import "./HomeScreen.css";
 
@@ -46,6 +44,13 @@ const MODE_ICON: Record<RoomMode, string> = { party: "party", travel: "travel" }
  * (tools/perf/bundle-budget.ts).
  */
 const SharedHome = lazy(() => import("./SharedHome").then((module) => ({ default: module.SharedHome })));
+
+/*
+ * Pairing (#281) loads on demand too: it is an errand of a minute, and the
+ * join screen is what every phone is waiting to see.
+ */
+const PairHere = lazy(() => import("./PairDevice").then((module) => ({ default: module.PairHere })));
+const PlayAsMe = lazy(() => import("./PairDevice").then((module) => ({ default: module.PlayAsMe })));
 
 /*
  * The sign-in panel loads the first time somebody opens it, for the same
@@ -271,8 +276,10 @@ function PersonalHome(): ReactElement {
             </div>
           </section>
 
-          {pairing === "here" ? <PairHere initialCode={pairCode ?? ""} onClose={() => setPairing("none")} /> : null}
-          {pairing === "share" ? <PlayAsMe onClose={() => setPairing("none")} /> : null}
+          <Suspense fallback={null}>
+            {pairing === "here" ? <PairHere initialCode={pairCode ?? ""} onClose={() => setPairing("none")} /> : null}
+            {pairing === "share" ? <PlayAsMe onClose={() => setPairing("none")} /> : null}
+          </Suspense>
 
           {/*
            * Between games (`/journal`): your hero, their bag, the map and the

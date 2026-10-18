@@ -20,30 +20,6 @@ import {
   type KeyValueStorage,
 } from "./persistence";
 
-/** Query parameter a pairing link carries. The home screen reads it and clears it. */
-export const PAIR_PARAM = "pair";
-
-/** Eight letters, as the server mints them. */
-export const PAIRING_CODE_LENGTH = 8;
-
-/** What a QR holds: the app's home with the code ready to spend, one tap away. */
-export function pairingUrl(origin: string, code: string): string {
-  return `${origin}/?${PAIR_PARAM}=${encodeURIComponent(code)}`;
-}
-
-/** As typed, pasted or scanned: any case, dash or spaces dropped, capped at the code's length. */
-export function normalizePairingInput(raw: string): string {
-  return raw.toUpperCase().replace(/[^A-Z]/g, "").slice(0, PAIRING_CODE_LENGTH);
-}
-
-/** The code a `?pair=` link carries, or `null` if the URL has none. */
-export function pairingFromSearch(search: string): string | null {
-  const raw = new URLSearchParams(search).get(PAIR_PARAM);
-  if (raw === null) return null;
-  const code = normalizePairingInput(raw);
-  return code === "" ? null : code;
-}
-
 export interface PairDeps {
   api: Pick<Api, "redeemPairingCode">;
   storage: KeyValueStorage;
@@ -76,4 +52,9 @@ export async function pairThisDevice(
   const account = loadAccount(deps.storage);
   if (account && account.householdId !== bound.householdId) deps.storage.removeItem(ACCOUNT_RECORD_KEY);
   return { displayName: bound.displayName };
+}
+
+/** "ABCDEFGH" → "ABCD-EFGH": four and four, easier to read out across a ward. */
+export function formatPairingCode(code: string): string {
+  return code.length > 4 ? `${code.slice(0, 4)}-${code.slice(4)}` : code;
 }
