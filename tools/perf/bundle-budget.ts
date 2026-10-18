@@ -65,6 +65,9 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
  * round number; a large accidental import (Pixi, the rigs, the scene) still
  * fails it by a wide margin. Lazy-loading the sign-in client when a grown-up
  * opens it would win back about 10KB.
+ *
+ * Pairing (#281) had raised it from 302 to 305 on main; the owner's 315 below
+ * supersedes that and covers it.
  */
 const FIRST_PAINT_BUDGET_KB = 315;
 
