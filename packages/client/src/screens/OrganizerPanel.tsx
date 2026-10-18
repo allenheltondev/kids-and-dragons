@@ -23,6 +23,7 @@ import { formatInviteCode, useOrganizerStore } from "../store/organizer";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
+import { PairingCodeCard } from "./PairDevice";
 import { lastUsed, tabletName } from "./tablet-label";
 import { KeepsakeError } from "./SignInFlow";
 import "./OrganizerPanel.css";
@@ -212,6 +213,8 @@ function HouseholdView({ view, busy }: { view: OrganizerHouseholdView; busy: boo
 
 function PlayerRow({ player, busy }: { player: OrganizerPlayer; busy: boolean }): ReactElement {
   const edit = useOrganizerStore((s) => s.edit);
+  const makePairing = useOrganizerStore((s) => s.makePairing);
+  const pairing = useOrganizerStore((s) => (s.pairing?.playerId === player.id ? s.pairing.code : null));
   const [renaming, setRenaming] = useState(false);
 
   if (renaming) {
@@ -235,6 +238,7 @@ function PlayerRow({ player, busy }: { player: OrganizerPlayer; busy: boolean })
   }
 
   return (
+    <>
     <li className={`organizer__row${player.retired ? " organizer__row--retired" : ""}`}>
       <span className="keepsake__dot" style={{ background: player.color }} aria-hidden="true" />
       <span className="organizer__who">
@@ -251,6 +255,18 @@ function PlayerRow({ player, busy }: { player: OrganizerPlayer; busy: boolean })
             Rename
           </button>
         )}
+        {/* A one-time code for a new device (#281): a hospital tablet, a borrowed phone. */}
+        {player.retired ? null : (
+          <button
+            type="button"
+            className="organizer__link kad-focusable"
+            onClick={() => void makePairing(player.id)}
+            disabled={busy}
+            aria-label={`Play as ${player.displayName} on another device`}
+          >
+            Pair a device
+          </button>
+        )}
         <button
           type="button"
           className="organizer__link kad-focusable"
@@ -261,6 +277,12 @@ function PlayerRow({ player, busy }: { player: OrganizerPlayer; busy: boolean })
         </button>
       </span>
     </li>
+    {pairing ? (
+      <li className="organizer__row organizer__pairing">
+        <PairingCodeCard pairing={pairing} busy={busy} onNew={() => void makePairing(player.id)} />
+      </li>
+    ) : null}
+    </>
   );
 }
 

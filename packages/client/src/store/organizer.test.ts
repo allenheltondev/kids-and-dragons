@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { OrganizerDevice, OrganizerHouseholdView } from "@kad/shared";
 import type { Api } from "../sync/client";
 import { createOrganizerStore, formatInviteCode } from "./organizer";
+import { formatPairingCode } from "./pairing";
 
 function view(id: string, overrides: Partial<OrganizerHouseholdView> = {}): OrganizerHouseholdView {
   return {
@@ -30,6 +31,7 @@ function setup(households = [{ id: "h_club", displayName: "Thursday Club", playe
     createOrganizerInvite: vi.fn(async () => ({ code: "ABCDEFGHJK", expiresAt: "2026-07-07T18:00:00.000Z" })),
     acceptOrganizerInvite: vi.fn(async () => ({ id: "h_other", displayName: "Cousins", players: 3 })),
     removeOrganizer: vi.fn(async () => ({ householdId: "h_club", left: true })),
+    pairProfile: vi.fn(async () => ({ code: "ABCDEFGH", expiresAt: "2026-07-04T18:10:00.000Z", playerName: "Posy" })),
   };
   return { store: createOrganizerStore(api as unknown as Api), api };
 }
@@ -106,5 +108,32 @@ describe("the organizer store", () => {
 
   it("splits a code for reading aloud", () => {
     expect(formatInviteCode("ABCDEFGHJK")).toBe("ABCDE-FGHJK");
+  });
+});
+
+describe("pairing a kid's new device (#281)", () => {
+  it("asks for a code for the kid it was tapped on, and drops it when the household changes", async () => {
+    const { store, api } = setup();
+    await store.getState().begin("id_tok", "ana@example.com");
+
+    await store.getState().makePairing("p_posy");
+    expect(api.pairProfile).toHaveBeenCalledWith("id_tok", "h_club", "p_posy");
+    expect(store.getState().pairing).toMatchObject({ playerId: "p_posy", code: { code: "ABCDEFGH" } });
+
+    await store.getState().openHousehold("h_club");
+    expect(store.getState().pairing).toBeNull();
+  });
+
+  it("says why when the code could not be made", async () => {
+    const { store, api } = setup();
+    api.pairProfile.mockRejectedValueOnce(new Error("Posy is retired. Bring them back first."));
+    await store.getState().begin("id_tok", "ana@example.com");
+    await store.getState().makePairing("p_posy");
+    expect(store.getState().pairing).toBeNull();
+    expect(store.getState().error).toBe("Posy is retired. Bring them back first.");
+  });
+
+  it("shows a code four and four", () => {
+    expect(formatPairingCode("ABCDEFGH")).toBe("ABCD-EFGH");
   });
 });
