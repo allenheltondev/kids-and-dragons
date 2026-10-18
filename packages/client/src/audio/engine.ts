@@ -31,7 +31,7 @@
  * keeping it running means unmute is instant instead of a rebuild.
  */
 
-import type { AmbienceId, AudioSink, CueId } from "./cue";
+import type { AmbienceId, AudioSink, AudioState, CueId } from "./cue";
 import { createSampleLibrary, type SampleLibrary, type SampleLoaderOptions } from "./samples";
 import { CUE_QUIET } from "./cues";
 import { QUIET_VOLUME_SCALE, isQuiet } from "../quiet";
@@ -74,8 +74,6 @@ export interface AudioEngineOptions {
   samples?: ((ctx: BaseAudioContext) => SampleLibrary) | undefined;
   sampleOptions?: SampleLoaderOptions | undefined;
 }
-
-export type AudioState = "unsupported" | "locked" | "suspended" | "running";
 
 export interface AudioEngine {
   sink: AudioSink;

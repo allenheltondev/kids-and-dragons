@@ -188,7 +188,7 @@ export function App(): React.JSX.Element {
           <A11yControl />
           <ReadAloudControl />
         </Suspense>
-        <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} display={route.name === "tv"} />
+        <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
       </div>
       {pickLayout()}
       <ErrorToast />

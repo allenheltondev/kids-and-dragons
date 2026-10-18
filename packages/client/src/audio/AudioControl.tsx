@@ -7,26 +7,17 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui";
 import { Icon } from "../screens/icons";
 import { isQuiet, onQuietChange } from "../quiet";
-import { setAudioSink } from "./cue";
-import { createAudioEngine, type AudioEngine, type AudioState } from "./engine";
-import { reportAudioStatus } from "./status";
+import { setAudioProbe, setAudioSink } from "./cue";
+import { createAudioEngine, type AudioEngine } from "./engine";
 
 import "./AudioControl.css";
 
-/**
- * `display` is the shared screen (#264): a TV browser often holds sound back
- * until something is tapped, and nobody is looking at the screen's small hint,
- * so there it is one plain "Tap for sound" button for as long as the browser
- * is still holding sound back. Silent play is untouched: the game never waits
- * on it, and a browser with no audio at all is never asked for a tap.
- */
-export function AudioControl({ enabled = true, soundtrack = null, ready = false, readinessKey = "", display = false }: { enabled?: boolean; soundtrack?: string | null; ready?: boolean; readinessKey?: string; display?: boolean }): React.JSX.Element | null {
+export function AudioControl({ enabled = true, soundtrack = null, ready = false, readinessKey = "" }: { enabled?: boolean; soundtrack?: string | null; ready?: boolean; readinessKey?: string }): React.JSX.Element | null {
   const wasReady = useRef(ready);
   const previousKey = useRef(readinessKey);
   const engineRef = useRef<AudioEngine | null>(null);
   const [muted, setMuted] = useState(false);
   const [locked, setLocked] = useState(true);
-  const [audio, setAudio] = useState<AudioState>("locked");
   const [quiet, setQuiet] = useState(isQuiet());
   const [volume, setVolume] = useState(0.8);
 
@@ -40,13 +31,7 @@ export function AudioControl({ enabled = true, soundtrack = null, ready = false,
     setQuiet(isQuiet());
     setLocked(!engine.unlocked());
     setAudioSink(engine.sink);
-    const syncAudio = (): void => {
-      const next = engine.state();
-      setAudio(next);
-      reportAudioStatus(next);
-    };
-    syncAudio();
-    const stopAudioWatch = engine.onStateChange(syncAudio);
+    setAudioProbe(engine);
 
     const unlock = (): void => {
       engine.unlock();
@@ -54,10 +39,7 @@ export function AudioControl({ enabled = true, soundtrack = null, ready = false,
       // context leaves this locked, and the prompt stays honest rather than
       // vanishing on a gesture that achieved nothing.
       setLocked(!engine.unlocked());
-      syncAudio();
     };
-    // A hidden tab can re-suspend a running context; on coming back, say so.
-    document.addEventListener("visibilitychange", syncAudio);
     window.addEventListener("pointerdown", unlock);
     window.addEventListener("keydown", unlock);
     // The room went quiet, or came back: the engine scales and drops, and the
@@ -68,12 +50,10 @@ export function AudioControl({ enabled = true, soundtrack = null, ready = false,
     });
     return () => {
       stopQuiet();
-      stopAudioWatch();
-      document.removeEventListener("visibilitychange", syncAudio);
-      reportAudioStatus("unknown");
       window.removeEventListener("pointerdown", unlock);
       window.removeEventListener("keydown", unlock);
       setAudioSink(null);
+      setAudioProbe(null);
       engine.dispose();
       engineRef.current = null;
     };
@@ -106,18 +86,7 @@ export function AudioControl({ enabled = true, soundtrack = null, ready = false,
 
   return (
     <div className="kad-audio-control">
-      {display ? (
-        !muted && (audio === "locked" || audio === "suspended") ? (
-          <Button
-            className="kad-audio-control__tap"
-            variant="primary"
-            size="lg"
-            onClick={() => { engineRef.current?.unlock(); }}
-          >
-            Tap for sound
-          </Button>
-        ) : null
-      ) : locked && !muted ? (
+      {locked && !muted ? (
         <p className="kad-audio-control__hint">Click or press a key for sound</p>
       ) : null}
       {quiet && !muted ? (

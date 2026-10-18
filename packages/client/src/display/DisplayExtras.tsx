@@ -8,7 +8,8 @@
 import { useEffect, useState } from "react";
 import { useGameStore } from "../store";
 import { perfRequested } from "../world/frame-stats";
-import { onAudioStatus } from "../audio/status";
+import { getAudioProbe, onAudioProbe } from "../audio/cue";
+import { Button } from "../ui/Button";
 import { probeCapabilities, type Capability } from "./capabilities";
 import { keepAwake, type KeepAwake, type WakeLockState } from "./wake-lock";
 import { onWake } from "./wake";
@@ -33,12 +34,58 @@ export function DisplayExtras(): React.JSX.Element {
   }, []);
 
   return (
-    <div className="kad-about">
+    <>
+      <SoundPrompt />
+      <div className="kad-about">
       {open ? <CapabilityReport wake={wake} onClose={() => { setOpen(false); }} /> : (
         <button type="button" className="kad-about__open" onClick={() => { setOpen(true); }}>
           About this screen
         </button>
       )}
+      </div>
+    </>
+  );
+}
+
+/**
+ * The one clear ask when the browser is holding sound back (#264). A TV often
+ * waits for a tap before it lets a page make a sound, and nobody looks at a
+ * small hint. Shown only while sound is `locked` or `suspended` and not turned
+ * off; a browser with no audio at all (`unsupported`) is never asked, since a
+ * tap cannot mend it, and the game never waits on the answer.
+ */
+function SoundPrompt(): React.JSX.Element | null {
+  const [, refresh] = useState(0);
+  useEffect(() => {
+    let stopState = (): void => undefined;
+    const attach = (): void => {
+      stopState();
+      stopState = getAudioProbe()?.onStateChange(() => { refresh((n) => n + 1); }) ?? (() => undefined);
+      refresh((n) => n + 1);
+    };
+    attach();
+    const stopProbe = onAudioProbe(attach);
+    // Turning sound off or on is a tap, not an event: read again after any.
+    const reread = (): void => { refresh((n) => n + 1); };
+    window.addEventListener("click", reread);
+    window.addEventListener("keydown", reread);
+    document.addEventListener("visibilitychange", reread);
+    return () => {
+      stopProbe();
+      stopState();
+      window.removeEventListener("click", reread);
+      window.removeEventListener("keydown", reread);
+      document.removeEventListener("visibilitychange", reread);
+    };
+  }, []);
+
+  const probe = getAudioProbe();
+  if (!probe || probe.muted()) return null;
+  const state = probe.state();
+  if (state !== "locked" && state !== "suspended") return null;
+  return (
+    <div className="kad-tap-for-sound">
+      <Button size="lg" onClick={() => { probe.unlock(); }}>Tap for sound</Button>
     </div>
   );
 }
@@ -47,7 +94,17 @@ function CapabilityReport({ wake, onClose }: { wake: WakeLockState; onClose: () 
   const [rows, setRows] = useState<Capability[] | null>(null);
   const [tick, setTick] = useState(0);
 
-  useEffect(() => onAudioStatus(() => { setTick((n) => n + 1); }), []);
+  useEffect(() => {
+    let stopState = (): void => undefined;
+    const attach = (): void => {
+      stopState();
+      stopState = getAudioProbe()?.onStateChange(() => { setTick((n) => n + 1); }) ?? (() => undefined);
+      setTick((n) => n + 1);
+    };
+    attach();
+    const stopProbe = onAudioProbe(attach);
+    return () => { stopProbe(); stopState(); };
+  }, []);
   useEffect(() => {
     let live = true;
     void probeCapabilities(wake).then((next) => { if (live) setRows(next); });

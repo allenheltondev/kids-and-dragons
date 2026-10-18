@@ -35,6 +35,3 @@
   .kad-audio-control { transition: none; }
 }
 .kad-audio-control__volume { inline-size: 6em; accent-color: var(--kad-ink-dim); }
-/* The shared screen's one clear ask (#264): big enough to hit with a TV remote's pointer. */
-.kad-audio-control .kad-audio-control__tap { opacity: 1; }
-.kad-audio-control:has(.kad-audio-control__tap) { opacity: 1; }
