@@ -52,9 +52,11 @@ export async function removePlayer(
     return fail("ILLEGAL", "the host cannot take themselves out");
   }
   // Somebody who joined this room has a profile in its household, whether or
-  // not they made a character. An id that names nobody is refused rather than
-  // written down, so `removed` only ever lists real players.
-  const player = await deps.repo.getPlayer(room.householdId, input.playerId);
+  // not they made a character, and a visitor one in their own (#249), which
+  // the roster names. An id that names nobody is refused rather than written
+  // down, so `removed` only ever lists real players.
+  const visitorHome = (await deps.repo.getState(room.runId))?.seats?.[input.playerId]?.homeHouseholdId;
+  const player = await deps.repo.getPlayer(visitorHome ?? room.householdId, input.playerId);
   if (!player) return fail("NOT_FOUND", `no player ${input.playerId} in this room`);
 
   const result = await commitRoomChange(
@@ -81,8 +83,8 @@ export async function removePlayer(
       : result;
   }
   // Also on a repeat that finds them already out, so a failure here is mended
-  // by tapping Remove again.
-  await unfound(room.householdId, input.playerId, deps);
+  // by tapping Remove again. A visitor never founded this household.
+  if (visitorHome === undefined) await unfound(room.householdId, input.playerId, deps);
   return ok({ seq: result.value.seq });
 }
 
@@ -164,16 +166,18 @@ export async function isRetired(
 
 /**
  * Out of this run, either way: taken out by its host, or retired. The
- * household is the player's own, from their session; without one it is the
- * run's, which is the same household for anybody seated in it.
+ * household is the player's own, from their session; without one it is a
+ * visitor's own from the roster (#249), else the run's, which is the same
+ * household for everybody else seated in it.
  */
 export async function isOut(
-  state: Pick<RunState, "removed" | "runId">,
+  state: Pick<RunState, "removed" | "runId" | "seats">,
   playerId: string,
   householdId: string | null,
   repo: Pick<HandlerDeps["repo"], "getPlayer" | "getRun">,
 ): Promise<boolean> {
   if (isRemoved(state, playerId)) return true;
-  const household = householdId ?? (await repo.getRun(state.runId))?.householdId;
+  const household =
+    householdId ?? state.seats?.[playerId]?.homeHouseholdId ?? (await repo.getRun(state.runId))?.householdId;
   return household !== undefined && (await isRetired(repo, household, playerId));
 }
