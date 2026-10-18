@@ -109,10 +109,10 @@
 /* --- The map pane ------------------------------------------------------ */
 
 /* In play the Atlas/Story-trail flip sits above the atlas; here nothing does,
-   so its zoom buttons would sit under the shell's sound button (fixed, top
-   right). Leave that corner to it. Chrome-sized, so rem like the button. */
+   so its zoom buttons would sit under the shell's corner row (fixed, top
+   right: settings, read-aloud, sound). Leave that corner to it. */
 .journal [data-pane="map"] .atlas__head {
-  padding-inline-end: calc(var(--kad-touch-min) + 0.5rem);
+  padding-inline-end: var(--kad-corner-reserve);
 }
 
 /* --- Last time's book, when there is no signal ------------------------- */
@@ -126,7 +126,7 @@
   gap: 0.4rem 0.6rem;
   flex: 0 0 auto;
   margin: 0;
-  padding: 0.6rem calc(var(--kad-touch-min) + 0.5rem) 0.6rem 1rem;
+  padding: 0.6rem var(--kad-corner-reserve) 0.6rem 1rem;
   border-block-end: 1px solid var(--kad-border);
   background: #2a2140;
   font-size: 0.9rem;

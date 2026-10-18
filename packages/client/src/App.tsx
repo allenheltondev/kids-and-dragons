@@ -49,6 +49,11 @@ import { PhoneMagic } from "./ui/PhoneMagic";
 const loadSpeech = () => import("./speech");
 const ReadAloudControl = lazy(() => loadSpeech().then((module) => ({ default: module.ReadAloudControl })));
 
+// Display settings (#262): the panel loads after first paint like read-aloud. The saved
+// settings themselves are applied in main.tsx, before the first paint, from a few hundred bytes.
+const loadA11y = () => import("./a11y");
+const A11yControl = lazy(() => loadA11y().then((module) => ({ default: module.A11yControl })));
+
 const loadPartyLayout = () => import("./layout/PartyLayout");
 const loadTravelLayout = () => import("./layout/TravelLayout");
 const PartyLayout = lazy(() => loadPartyLayout().then((module) => ({ default: module.PartyLayout })));
@@ -166,9 +171,10 @@ export function App(): React.JSX.Element {
   return (
     <PhoneMagic enabled={route.name !== "tv"}>
       {/* One corner row for the device's own controls, so they share a place instead of
-          fighting over it: read-aloud (#261) to the left of sound, sound anchored right. */}
+          fighting over it: display settings (#262) and read-aloud (#261) to the left of sound, sound anchored right. */}
       <div className="kad-corner">
         <Suspense fallback={null}>
+          <A11yControl />
           <ReadAloudControl />
         </Suspense>
         <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />

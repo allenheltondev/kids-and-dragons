@@ -1969,6 +1969,11 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           <details className="player__room-settings">
             <summary className="kad-focusable">Room settings</summary>
             {roomControls}
+            {/* Text size, contrast and one-handed play (#262), reachable from the bottom of the phone. */}
+            <Button variant="secondary" size="md" block
+              onClick={() => { void import("../a11y").then((module) => { module.openA11ySettings(); }); }}>
+              Display settings
+            </Button>
           </details>
         ) : null}
 
