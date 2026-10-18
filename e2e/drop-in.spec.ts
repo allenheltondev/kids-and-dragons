@@ -208,8 +208,11 @@ test.describe("drop in, drop out", () => {
     await pip.getByRole("button", { name: /that's me/i }).click(TAP);
     await expect(pip.getByTestId("catch-up")).toContainText("Welcome, Pip!", TAP);
     // Pip is somebody the rest of this spec does not wait on: off they go.
+    // Closing says goodbye when the browser gets it out in time; when it does
+    // not, Pip simply goes quiet and the table's next beat after the timeout
+    // notices. Either way Pip is away within the timeout and one heartbeat.
     await pip.context().close();
-    await expect.poll(async () => (await memberNamed("Pip")).connected, TAP).toBe(false);
+    await expect.poll(async () => (await memberNamed("Pip")).connected, { timeout: 120_000 }).toBe(false);
 
     // --- A vote: Sam votes, Rosie steps away, Sam closes it ---
     await act(samSession, code, { type: "PLAYTEST_GOTO", sceneId: "choice_point_path" });
