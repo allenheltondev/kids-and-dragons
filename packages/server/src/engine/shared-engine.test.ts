@@ -247,7 +247,7 @@ describe("campaign state-transition transactions", () => {
     );
 
     expect(response.ok).toBe(true);
-    expect(transaction?.characters?.[0]?.provisional?.runId).toBe("campaign-1");
+    expect(transaction?.characters?.[0]?.character.provisional?.runId).toBe("campaign-1");
     expect(transaction?.state.party[0]?.character).toMatchObject({
       isProvisional: true,
       committedLevel: 1,
@@ -322,7 +322,7 @@ describe("campaign state-transition transactions", () => {
       awards: [{ characterId: character.id, leveledTo: 2 }],
     });
     expect(transaction?.characters).toHaveLength(1);
-    expect(transaction?.characters?.[0]?.provisional?.xp).toBe(makeChapter().xpAward);
+    expect(transaction?.characters?.[0]?.character.provisional?.xp).toBe(makeChapter().xpAward);
     const [broadcast] = harness.channel.replay(created.value.code, 0) ?? [];
     expect(broadcast?.kind).toBe("patch");
     if (broadcast?.kind === "patch") {

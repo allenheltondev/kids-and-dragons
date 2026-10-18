@@ -38,7 +38,9 @@ export function WelcomeBack(): ReactElement {
   const [makeNew, setMakeNew] = useState(false);
   const [chosen, setChosen] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [refused, setRefused] = useState(false);
+  // Why the server would not seat the hero, in its words: "Sparklehoof is in
+  // the middle of another adventure" (#282) names her, so it is shown as is.
+  const [refused, setRefused] = useState<string | null>(null);
 
   useEffect(() => {
     let live = true;
@@ -72,12 +74,14 @@ export function WelcomeBack(): ReactElement {
   const bring = async (): Promise<void> => {
     if (hero === null) return;
     setBusy(true);
-    setRefused(false);
+    setRefused(null);
     // On success the server seats them and this screen gives way to the
     // player panel on the next patch; there is nothing to do here.
     const accepted = await send({ type: "SEAT_CHARACTER", characterId: hero.id });
     setBusy(false);
-    if (!accepted) setRefused(true);
+    if (!accepted) {
+      setRefused(useGameStore.getState().error ?? "That hero could not join this game.");
+    }
   };
 
   return (
@@ -134,14 +138,14 @@ export function WelcomeBack(): ReactElement {
         {refused ? (
           <p className="kad-chip kad-chip--bad kad-chip--wrap" role="alert">
             <Icon name="close" />
-            <span>That hero could not join this game. Try another, or make someone new.</span>
+            <span>{refused.replace(/\.$/, "")}. Try another, or make a new hero for this one.</span>
           </p>
         ) : null}
       </div>
 
       <footer className="creation__foot">
         <Button variant="secondary" size="lg" icon={<Icon name="play" />} disabled={busy} onClick={() => setMakeNew(true)}>
-          Make someone new
+          {refused ? "Make a new hero for this one" : "Make someone new"}
         </Button>
         <Button
           variant="primary"
