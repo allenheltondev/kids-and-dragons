@@ -621,6 +621,19 @@ describe("arrivals and removal (#267)", () => {
     ]);
   });
 
+  it("turns quiet mode on and off for the room it opened (#260)", async () => {
+    const h = harness();
+    await h.store.getState().createRoom("travel", "Allen");
+    h.store.setState({ session: { ...h.store.getState().session!, host: true } });
+
+    expect(await h.store.getState().quietRoom(true)).toBe(true);
+    expect(await h.store.getState().quietRoom(false)).toBe(true);
+    expect(h.api.hostControl.mock.calls.map((call) => [call[1], call[2]])).toEqual([
+      ["quiet", { quiet: true }],
+      ["quiet", { quiet: false }],
+    ]);
+  });
+
   it("never lets a burst push a host's arrival out, though it caps everyone else's", async () => {
     // The host's notices are its only Remove control (review of #269).
     const hosted = harness();

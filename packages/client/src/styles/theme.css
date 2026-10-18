@@ -389,3 +389,27 @@ ol {
   background: var(--kad-bg-overlay);
   backdrop-filter: blur(0.15em);
 }
+
+/* --------------------------------------------------------------------------
+ * Quiet mode (#260): the host's room-wide switch, set on <html> by quiet.ts.
+ * Sound and shake are handled in script; this is the display. A veil rather
+ * than a filter so it dims everything, canvas included, without making the
+ * root a containing block for fixed children.
+ * ----------------------------------------------------------------------- */
+
+html[data-quiet]::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  background: #000;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* The CSS flashes and blinks hold still; the glow they carried is not needed. */
+html[data-quiet] .dice__stage--good::before,
+html[data-quiet] .transform--after .transform__burst,
+html[data-quiet] .rift-status__clock--urgent {
+  animation: none;
+}
