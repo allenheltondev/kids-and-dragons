@@ -543,6 +543,22 @@ export interface OrganizerHouseholdView {
   players: OrganizerPlayer[];
 }
 
+/** A tablet bound to the household, as its owners see it. */
+export interface OrganizerDevice {
+  /** What `POST /api/auth/forget-device` names. */
+  deviceId: string;
+  /** As the tablet's browser announced itself; absent when it did not. */
+  userAgent?: string;
+  /** ISO time of the tablet's last request. */
+  lastSeen: string;
+  revoked: boolean;
+}
+
+/** `GET /api/organizer/devices?householdId=`: the household's shared tablets, most recently used first. */
+export interface OrganizerDevicesResponse {
+  devices: OrganizerDevice[];
+}
+
 /** `POST /api/organizer/invite`: a code a second grown-up signs in with to co-organize. */
 export interface OrganizerInvite {
   code: string;

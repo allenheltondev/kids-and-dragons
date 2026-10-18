@@ -176,6 +176,8 @@ function harness(state: RunState = makeState()): Harness {
     createOrganizerInvite: vi.fn(),
     acceptOrganizerInvite: vi.fn(),
     removeOrganizer: vi.fn(),
+    listSharedDevices: vi.fn(),
+    forgetDeviceById: vi.fn(),
   };
 
   const storage = memoryStorage();
