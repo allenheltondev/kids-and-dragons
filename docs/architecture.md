@@ -681,10 +681,13 @@ The table keeps its shared Field Guide, and her finds also go to her own.
 - Every kid already has one: a profile is made the moment they play. Making
   it portable means the profile, not the household, owns the hero. It does
   not mean a sign-up.
-- It holds nothing personal. Names are nicknames, filtered (#253). A grown-up
-  is the account holder and the kid is a record they keep. That keeps us out
-  of collecting personal information from children (COPPA's
-  verifiable-consent regime) entirely.
+- **Data minimization by design.** The profile asks for no real name, email,
+  birthday or contact detail. Names are nicknames, filtered (#253). A grown-up
+  is the account holder, and the kid is a record they keep. This is a design
+  intent, not a legal conclusion. Whether and how children's-privacy law
+  (COPPA in the US, and its equivalents elsewhere) applies is reserved for a
+  privacy review before the game is offered beyond our own tables. That review
+  starts from what the system actually collects, below.
 - **A new device becomes her by pairing, never by something she types.** Her
   own phone, or a grown-up's signed-in phone, shows a one-time code or QR. It
   is single use, lives for minutes, and the device that scans it is bound to
@@ -693,10 +696,63 @@ The table keeps its shared Field Guide, and her finds also go to her own.
   her on one device, which a grown-up can revoke.
 - A grown-up's sign-in (`adoptDevice`) remains the other way in.
 
-**One game at a time per hero.** A character carries one `provisional`
-snapshot, stamped with one `runId` (§3.1). So a hero is in at most one
-in-flight campaign: she finishes or leaves the club's Riftlight before
-joining the family's Gemfall, and her gains from each are never interleaved.
+**What is collected about a kid, and for how long.** Kept current as features
+land, and the source for #252's "what we store" page.
+
+| Data | Where | Kept |
+|---|---|---|
+| Nickname, color, avatar | `PLAYER#` row | With the household: 7 days after last play while a guest, until deleted once kept |
+| Hero: name, appearance, progression, items, souvenirs | `CHAR#` row | Same |
+| Gameplay: choices, rolls, the event log | `RUN#` partition | Same |
+| Field Guide finds, credited to a profile | `FIELDGUIDE` row | Same |
+| Device binding: device id, user agent, last seen, token hash | `DEVICE#` row | Same, revocable |
+| Long-lived device token, room session token | The device's own storage | Until it expires (30-day sliding, room's 6 hours) or is cleared |
+| Address (IPv4, or the IPv6 /64) as a wrong-code counter key | `GUESS#` row | About two 15-minute windows (TTL) |
+| Request logs (address, path, errors) | CloudWatch | Account-wide retention, set outside this repo (`infra/template.yaml`, "Logs") |
+| Hero and player names, inside narration prompts | Sent to the model provider | Only while live narration is on (§6, #254) |
+
+The grown-up's email lives in Cognito, never in the table.
+
+**One game at a time per hero: the claim.** A character carries one
+`provisional` snapshot, stamped with one `runId` (§3.1). That stamp is the
+hero's **claim**, and it is both the one-game rule and the authority for a
+visiting table to write to a hero it does not own. #282 builds it. These are
+its invariants and failure semantics:
+
+- **Where it lives.** On the character row, in the hero's home partition
+  (`HH#<home>`/`CHAR#<id>`), next to a monotonic `version` on the row. Every
+  decision about the hero is made against that one row, whichever table is
+  playing.
+- **Acquire.** When a run first writes the hero (seating her in a started
+  campaign), it is one conditional write on the character. It succeeds if
+  there is no claim, if the claim already names this run (an idempotent
+  retry), or if the claimed run is terminal (complete, failed or closed). In
+  that last case the write is conditioned on the old `runId` and `version`, so
+  two runs reclaiming one stale hero cannot both win. Otherwise the seat is
+  refused ("Sparklehoof is in the middle of another adventure"), and nothing
+  is written.
+- **Write.** Every progression write from a run to a hero (XP, items, finds,
+  the provisional snapshot) rides in the run's commit transaction (§4.1)
+  with two extra conditions on the character row: `provisional.runId` is this
+  run, and `version` is the one read. The run's own seq condition is still
+  there. A different table, a run that lost its claim, or a stale worker
+  holding an old read fails the transaction and re-reads, exactly as a lost
+  seq race does today. A visiting table needs no other permission to write a
+  hero. The claim *is* the permission, and it names one run.
+- **Release.** Completing the campaign commits `provisional` into `committed`
+  and clears the claim. Failing it discards `provisional` and clears the
+  claim. Either way it happens in the same transaction as the run's final
+  commit. A host closing the room (#263) makes the run terminal. Her own
+  grown-up, or the kid on her own device, can also **leave that adventure**,
+  which discards that run's provisional gains and clears the claim,
+  conditioned on its `runId`.
+- **Disconnects never release.** A dropped phone, a closed tab or an expired
+  room is not leaving. The claim holds, so the table can resume (#259). A run
+  abandoned without a release stays claimed until it becomes terminal or she
+  leaves it. Nothing times a claim out behind a family's back, because that
+  would discard gains they meant to keep.
+- **Gemfall at home** runs through exactly the same path, with home equal to
+  the table, so nothing about a one-household game changes.
 
 **A hero who outranks the party.** A newcomer joins at the party's tier floor
 ([spec §8.4](./spec.md)). The reverse, a strong visiting hero at a young
