@@ -65,6 +65,7 @@ import {
   purseFor,
   newCharacterWrite,
   relockLobby,
+  seatedParty,
   prepareStatPointSpend,
   seatHero,
   settleChapterCompletion,
@@ -136,7 +137,7 @@ export async function applyAction(
     if (!campaignId) {
       return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: "no campaign to continue" } };
     }
-    const next = await nextChapter(campaignId, auth.run.householdId, state.party, deps);
+    const next = await nextChapter(campaignId, auth.run.householdId, seatedParty(state), deps);
     if ("refusal" in next) {
       return { ok: false, seq: state.seq, error: { code: next.code, message: next.refusal } };
     }
@@ -184,7 +185,7 @@ export async function applyAction(
   // run below so its completion settles against exactly that visit.
   let journeyVisit: { node: NodeId; visit: number } | null = null;
   if (input.intent.type === "START_CHAPTER" && chapter) {
-    const road = await roadTo(chapter, auth.run.householdId, state.party, deps);
+    const road = await roadTo(chapter, auth.run.householdId, seatedParty(state), deps);
     if ("refusal" in road) {
       return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: road.refusal } };
     }

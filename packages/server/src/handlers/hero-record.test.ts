@@ -19,6 +19,7 @@ import type { DeviceIdentity } from "../identity.ts";
 import { makeChapter, makeContent, makeHarness, seedHousehold, type TestHarness } from "../test-support.ts";
 import { applyAction } from "./action.ts";
 import { getJournal } from "./journal.ts";
+import { removePlayer } from "./remove.ts";
 import { createRoom, joinRoom } from "./room.ts";
 import { setVisitors } from "./visitors.ts";
 
@@ -218,6 +219,67 @@ describe("a visiting hero finishes a campaign at another household's table (#283
     await alone.must(sis!, { type: "CONTINUE_CAMPAIGN" });
     expect((await alone.state()).chapterId).toBe("rift-01");
     expect((await harness.repo.getCampaignProgress("h_visit", "rift"))?.status).toBe("active");
+  });
+});
+
+describe("a hero who is taken out does not carry the table (#283)", () => {
+  /** Wren home again, seated beside her sister, with Rift open because of her. */
+  async function wrenAtHome() {
+    const run = await wrenFinishesGemsAway();
+    const { harness, wren, wrenHero } = run;
+    await harness.repo.putPlayer({ id: "p_sis", householdId: "h_visit", displayName: "Sis", color: "#7FD4C1" });
+    const { deviceId } = await harness.identity.issueDeviceToken({ householdId: "h_visit", playerId: "p_sis" });
+    const sis: DeviceIdentity = { deviceId, householdId: "h_visit", playerId: "p_sis" };
+    const home = await table(harness, "h_visit", "rift", sis);
+    await joinRoom({ code: home.code, principal: sis }, harness.deps);
+    await home.must(sis, hero("Bramble"));
+    await joinRoom({ code: home.code, principal: wren }, harness.deps);
+    await home.must(wren, { type: "SEAT_CHARACTER", characterId: wrenHero });
+    await home.must(sis, { type: "READY", ready: true });
+    await home.must(wren, { type: "READY", ready: true });
+    expect((await home.state()).campaignOptions?.[0]).not.toHaveProperty("locked");
+    return { ...run, sis, home };
+  }
+
+  it("locks again when the host removes the only hero who finished it, and Begin is refused", async () => {
+    const { harness, wren, sis, home } = await wrenAtHome();
+    expect(await removePlayer({ code: home.code, principal: sis, playerId: wren.playerId }, harness.deps)).toMatchObject({ ok: true });
+
+    // She is still in `party`, disconnected and on `removed`: the lobby says locked again.
+    const s = await home.state();
+    expect(s.party.some((m) => m.playerId === wren.playerId)).toBe(true);
+    expect(s.campaignOptions?.[0]?.locked?.reason).toBe("Finish Gems first");
+    expect(s.campaign?.locked?.reason).toBe("Finish Gems first");
+    expect(await home.act(sis, { type: "CONTINUE_CAMPAIGN" })).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+    expect(await home.act(sis, { type: "START_CHAPTER", chapterId: "rift-01" })).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+    expect(await harness.repo.getCampaignProgress("h_visit", "rift")).toBeNull();
+  });
+
+  it("is refused by the server even on a lobby that still shows it open", async () => {
+    // The authority is the start's own read, not the lobby: a lobby that
+    // missed the relock (a stale screen, a write that lost) still cannot Begin.
+    const { harness, wren, sis, home } = await wrenAtHome();
+    const open = await home.state();
+    await harness.repo.putState({
+      ...open,
+      removed: [wren.playerId],
+      party: open.party.map((m) => (m.playerId === wren.playerId ? { ...m, connected: false, ready: false } : m)),
+    });
+    expect((await home.state()).campaignOptions?.[0]).not.toHaveProperty("locked");
+    const begin = await home.act(sis, { type: "CONTINUE_CAMPAIGN" });
+    expect(begin).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+    expect(begin.ok ? "" : begin.error?.message).toContain("Finish Gems first");
+  });
+
+  it("still counts her while she is only disconnected: a dropped phone is not leaving", async () => {
+    const { harness, wren, sis, home } = await wrenAtHome();
+    const open = await home.state();
+    await harness.repo.putState({
+      ...open,
+      party: open.party.map((m) => (m.playerId === wren.playerId ? { ...m, connected: false } : m)),
+    });
+    await home.must(sis, { type: "CONTINUE_CAMPAIGN" });
+    expect((await home.state()).chapterId).toBe("rift-01");
   });
 });
 

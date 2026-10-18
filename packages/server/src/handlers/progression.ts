@@ -516,7 +516,7 @@ export function attemptJourney(
 export function campaignLock(
   campaign: Campaign,
   attempts: readonly CampaignProgressRecord[],
-  deps: HandlerDeps,
+  deps: Pick<HandlerDeps, "content">,
   /** Campaign ids the party's heroes have finished, from their own records (#283). */
   finished: readonly string[] = [],
 ): CampaignView["locked"] | null {
@@ -526,6 +526,18 @@ export function campaignLock(
   if (requires.length === 0) return null;
   const titles = requires.map((id) => deps.content.campaign(id)?.title ?? id);
   return { requires, reason: prerequisiteReason(titles) };
+}
+
+/**
+ * The heroes a prerequisite counts: the party, less anybody the host or a
+ * grown-up has taken out (`RunState.removed`). Taking a player out leaves
+ * them in `party`, disconnected (remove.ts), so the list alone would let a
+ * removed hero's record keep a campaign open for the table she left. A hero
+ * who is only disconnected still counts: she is still the table's.
+ */
+export function seatedParty(state: Pick<RunState, "party" | "removed">): PartyMember[] {
+  const out = new Set(state.removed ?? []);
+  return state.party.filter((member) => !out.has(member.playerId));
 }
 
 /**
@@ -540,7 +552,7 @@ export function campaignLock(
 export async function partyFinished(
   party: readonly PartyMember[],
   householdId: string,
-  deps: HandlerDeps,
+  deps: Pick<HandlerDeps, "repo">,
 ): Promise<string[]> {
   const ids = new Set<string>();
   await Promise.all(
@@ -588,13 +600,17 @@ export async function lockedRefusal(
  * A vote for a campaign that is locked again goes, as `doVoteCampaign` would
  * have refused it, and the screens follow the lobby's pick (`lobbyCampaign`).
  */
-export async function relockLobby(state: RunState, householdId: string, deps: HandlerDeps): Promise<RunState> {
+export async function relockLobby(
+  state: RunState,
+  householdId: string,
+  deps: Pick<HandlerDeps, "repo" | "content">,
+): Promise<RunState> {
   const options = state.campaignOptions ?? [];
   const gated = options.filter((o) => deps.content.campaign(o.id)?.requires?.length);
   if (gated.length === 0) return state;
   const [attempts, finished] = await Promise.all([
     deps.repo.listCampaignProgress(householdId),
-    partyFinished(state.party, householdId, deps),
+    partyFinished(seatedParty(state), householdId, deps),
   ]);
   const relocked = options.map((option): CampaignView => {
     const campaign = deps.content.campaign(option.id);

@@ -23,7 +23,7 @@ import type { EventRecord, RoomRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { newId, newSecret } from "../ids.ts";
 import { addPlayer, createGuestHousehold, keepGuestHousehold, mayClaim, type BoundDevice } from "./account.ts";
-import { lobbyCampaigns } from "./progression.ts";
+import { lobbyCampaigns, seatedParty } from "./progression.ts";
 import { loadBook } from "./field-guide.ts";
 import { isRemoved } from "./remove.ts";
 import { closeIfIdle, isClosed } from "./host.ts";
@@ -180,7 +180,7 @@ async function offerCampaigns(
   featuredId: string | null,
   deps: HandlerDeps,
 ): Promise<void> {
-  const options = await lobbyCampaigns(householdId, featuredId, deps, state.party);
+  const options = await lobbyCampaigns(householdId, featuredId, deps, seatedParty(state));
   state.campaignOptions = options;
   state.campaignVotes = {};
   const shown = options.find((option) => option.locked === undefined) ?? options[0];

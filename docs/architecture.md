@@ -804,9 +804,12 @@ finished, and her Field Guide finds. Both are now hers.
   heroes kept one plays exactly as it did. The server's refusal at a chapter
   start or a Begin reads the party seated then; the lobby's lock is recomputed
   whenever the party in the lobby changes (`relockLobby`), and a vote for a
-  campaign that locks again is dropped. A host's Remove does not recompute the
-  lobby, so the screens can show a campaign open that the next Begin refuses.
-  None of this reads anything for a campaign without `requires`, so Gemfall's
+  campaign that locks again is dropped. A hero who has been **taken out**
+  (a host's Remove, or a grown-up retiring her: `RunState.removed`) counts for
+  nothing (`seatedParty`), at the start and in the lobby, which a removal
+  relocks; she stays in `party` disconnected, so reading `party` alone would
+  let her record hold a campaign open for the table she left. A hero who is
+  only disconnected still counts: a dropped phone is not leaving. None of this reads anything for a campaign without `requires`, so Gemfall's
   lobby and starts are untouched.
 - **Her finds go to her home book too.** When the finder of a step
   (`firstFinder`) is a visitor, everything her step revealed is also recorded in
