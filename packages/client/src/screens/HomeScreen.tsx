@@ -19,6 +19,7 @@ import type { ChangeEvent, ReactElement } from "react";
 import type { RoomMode } from "@kad/shared";
 import { useGameStore } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
+import { takeMoveLink } from "./move-link";
 // The one normalize helper for typed and prefilled codes — the router owns the
 // code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
 import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, normalizeCodeInput as normalizeCode, pairingFromSearch } from "../router";
@@ -133,21 +134,24 @@ function PersonalHome(): ReactElement {
   /*
    * A scanned move code (#251) lands here as `/?move=…`: straight into "Run a
    * group", where it waits, typed in, for the grown-up to sign in and choose
-   * where the kid is going. Taken off the URL so a refresh does not ask again.
+   * where the kid is going. The organizer store is fetched for it, never for
+   * the first paint. The link comes off the URL only once the code is held
+   * (move-link.ts), and a home screen left before then opens nothing.
    */
   useEffect(() => {
     if (!signInAvailable || typeof window === "undefined") return;
-    const url = new URL(window.location.href);
-    const move = url.searchParams.get("move");
-    if (!move) return;
-    url.searchParams.delete("move");
-    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
-    const code = move.toUpperCase().replace(/[^A-Z]/g, "");
-    // The organizer store is fetched with the panel, never for the first paint.
-    void import("../store/organizer").then(({ useOrganizerStore }) => {
-      useOrganizerStore.getState().setPendingMove(code);
-      openKeepsake("organize", "home");
+    let left = false;
+    void takeMoveLink({
+      location: window.location,
+      replaceUrl: (next) => window.history.replaceState(window.history.state, "", next),
+      load: () => import("../store/organizer").then((module) => module.useOrganizerStore.getState()),
+      wait: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+    }).then((code) => {
+      if (code && !left) openKeepsake("organize", "home");
     });
+    return () => {
+      left = true;
+    };
   }, [signInAvailable, openKeepsake]);
 
   /*
