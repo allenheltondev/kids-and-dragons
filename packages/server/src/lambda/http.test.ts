@@ -1228,6 +1228,104 @@ describe("GET /api/state", () => {
 // Sign-in — the routes with no dev-server twin
 // ---------------------------------------------------------------------------
 
+describe("/api/organizer/* (#248)", () => {
+  const signedIn = (token: string) => ({ authorization: `Bearer ${token}` });
+
+  it("needs a verified sign-in on every route, and says which route it is not", async () => {
+    const rt = runtimeFor(makeHarness());
+    for (const [method, path] of [
+      ["GET", "/api/organizer/households"],
+      ["POST", "/api/organizer/households"],
+      ["GET", "/api/organizer/household"],
+      ["POST", "/api/organizer/household/rename"],
+      ["POST", "/api/organizer/players"],
+      ["POST", "/api/organizer/players/rename"],
+      ["POST", "/api/organizer/players/retire"],
+      ["POST", "/api/organizer/invite"],
+      ["POST", "/api/organizer/invite/accept"],
+      ["POST", "/api/organizer/owners/remove"],
+    ] as const) {
+      const result = await respond(event(method, path), rt);
+      expect(result.statusCode, `${method} ${path}`).toBe(401);
+    }
+    const unknown = await respond(event("GET", "/api/organizer/nope", { headers: signedIn("t") }), rt);
+    expect(unknown.statusCode).toBe(404);
+  });
+
+  it("lets two signed-in grown-ups run one group", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    const as = (account: VerifiedAccount) => {
+      rt.account = account;
+      return signedIn(account.cognitoSub);
+    };
+    const ana = { cognitoSub: "sub_ana", email: "ana@example.com" };
+    const ben = { cognitoSub: "sub_ben", email: "ben@example.com" };
+
+    const created = await respond(
+      event("POST", "/api/organizer/households", { headers: as(ana), body: { displayName: "Club" } }),
+      rt,
+    );
+    expect(created.statusCode).toBe(200);
+    const groupId = bodyOf(created).id as string;
+
+    const invite = await respond(
+      event("POST", "/api/organizer/invite", { headers: as(ana), body: { householdId: groupId } }),
+      rt,
+    );
+    const accepted = await respond(
+      event("POST", "/api/organizer/invite/accept", { headers: as(ben), body: { code: bodyOf(invite).code } }),
+      rt,
+    );
+    expect(accepted.statusCode).toBe(200);
+
+    await respond(
+      event("POST", "/api/organizer/players", { headers: as(ben), body: { householdId: groupId, displayName: "Posy" } }),
+      rt,
+    );
+    const view = await respond(
+      event("GET", "/api/organizer/household", { headers: as(ana), query: { householdId: groupId } }),
+      rt,
+    );
+    expect(view.statusCode).toBe(200);
+    expect((bodyOf(view).players as { displayName: string }[]).map((p) => p.displayName)).toEqual(["Posy"]);
+
+    // A third account is refused, with the status the client shows.
+    const eve = await respond(
+      event("GET", "/api/organizer/household", { headers: as({ cognitoSub: "sub_eve" }), query: { householdId: groupId } }),
+      rt,
+    );
+    expect(eve.statusCode).toBe(403);
+  });
+
+  it("passes the picked household through sign-in and tablet set-up", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    rt.account = { cognitoSub: "sub_ana" };
+    const make = async (displayName: string) =>
+      bodyOf(
+        await respond(event("POST", "/api/organizer/households", { headers: signedIn("t"), body: { displayName } }), rt),
+      ).id as string;
+    await make("Family");
+    const club = await make("Club");
+
+    const link = await respond(
+      event("POST", "/api/auth/link", { headers: signedIn("t"), body: { householdId: club, preferExisting: true } }),
+      rt,
+    );
+    expect(bodyOf(link).householdId).toBe(club);
+    expect((bodyOf(link).households as unknown[]).length).toBe(2);
+
+    const unsure = await respond(event("POST", "/api/auth/shared-device", { headers: signedIn("t") }), rt);
+    expect(unsure.statusCode).toBe(409);
+    const tablet = await respond(
+      event("POST", "/api/auth/shared-device", { headers: signedIn("t"), body: { householdId: club } }),
+      rt,
+    );
+    expect(bodyOf(tablet).householdId).toBe(club);
+  });
+});
+
 describe("POST /api/auth/link", () => {
   it("refuses a request with no bearer token", async () => {
     const result = await respond(event("POST", "/api/auth/link"), runtimeFor(makeHarness()));
@@ -1553,7 +1651,13 @@ function httpRoutePaths(): Set<string> {
   return found;
 }
 
-/** Same paths, written the way each side spells them. */
+/**
+ * Same paths, written the way each side spells them.
+ *
+ * The organizer routes (#248) are not here, and need not be: both sides
+ * dispatch them through one table, `organizerRoute` in handlers/organizer.ts,
+ * so they cannot drift apart.
+ */
 const SHARED = [
   { path: "/api/room", method: "POST", probe: "/api/room" },
   { path: "/api/room/:code/join", method: "POST", probe: "/api/room/ABCD/join" },

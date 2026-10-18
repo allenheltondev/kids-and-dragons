@@ -47,6 +47,7 @@ import { closeRoom, lockRoom, type HostPrincipal } from "./handlers/host.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
 import { getState } from "./handlers/state.ts";
+import { organizerRoute } from "./handlers/organizer.ts";
 import {
   forgetDevice,
   listSharedPlayers,
@@ -617,6 +618,7 @@ async function main(): Promise<void> {
         email: account.email,
         principal: existing?.principal ?? null,
         preferExisting: req.body?.preferExisting === true,
+        householdId: typeof req.body?.householdId === "string" ? req.body.householdId : undefined,
       },
       base,
     );
@@ -653,6 +655,7 @@ async function main(): Promise<void> {
         principal: existing?.principal ?? null,
         shared: shared ?? null,
         userAgent: req.get("user-agent"),
+        householdId: typeof req.body?.householdId === "string" ? req.body.householdId : undefined,
       },
       base,
     );
@@ -671,6 +674,23 @@ async function main(): Promise<void> {
       return sendError(res, 400, "ILLEGAL", "expected this tablet's x-kad-shared-token, or { deviceId }");
     }
     const result = await forgetDevice({ cognitoSub: account.cognitoSub, deviceId }, base);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
+  // A grown-up running a household or a group (#248): the same table the
+  // Lambda routes through, behind the dev token.
+  app.use("/api/organizer", async (req: Request, res: Response, next: NextFunction) => {
+    const route = organizerRoute({
+      method: req.method,
+      path: `/api/organizer${req.path === "/" ? "" : req.path}`,
+      query: req.query as Record<string, unknown>,
+      body: (req.body ?? {}) as Record<string, unknown>,
+    });
+    if (!route) return next();
+    const account = verifyDevToken(bearerToken(req));
+    if (!account) return sendError(res, 401, "FORBIDDEN", "a dev id token is required");
+    const result = await route(account, base);
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
   });

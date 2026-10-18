@@ -235,6 +235,99 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
       });
     });
 
+    describe("multi-owner households (#248)", () => {
+      const at = "2026-07-04T18:00:00.000Z";
+
+      it("gives every owner the household, and lists them all", async () => {
+        await repo.putHousehold(household({ id: "h_g", ownerSub: "sub_a" }));
+        await repo.putAccountPointer("sub_a", "h_g");
+        await repo.putOwner({ householdId: "h_g", cognitoSub: "sub_a", email: "a@example.com", addedAt: at });
+        await repo.putOwner({ householdId: "h_g", cognitoSub: "sub_b", email: "b@example.com", addedAt: at });
+
+        expect(await repo.listHouseholdsForAccount("sub_a")).toEqual(["h_g"]);
+        expect(await repo.listHouseholdsForAccount("sub_b")).toEqual(["h_g"]);
+        const owners = await repo.listOwners("h_g");
+        expect(owners.map((o) => [o.cognitoSub, o.email]).sort()).toEqual([
+          ["sub_a", "a@example.com"],
+          ["sub_b", "b@example.com"],
+        ]);
+        // An owner row is not a player, a device, or anything else in the partition.
+        expect(await repo.listPlayers("h_g")).toEqual([]);
+        expect(await repo.listDevices("h_g")).toEqual([]);
+      });
+
+      it("keeps an owner's own family beside the group", async () => {
+        await repo.putAccountPointer("sub_b", "h_family");
+        await repo.putOwner({ householdId: "h_g", cognitoSub: "sub_b", addedAt: at });
+        expect((await repo.listHouseholdsForAccount("sub_b")).sort()).toEqual(["h_family", "h_g"]);
+      });
+
+      it("is idempotent, and a second put refreshes the row", async () => {
+        await repo.putOwner({ householdId: "h_g", cognitoSub: "sub_b", addedAt: at });
+        await repo.putOwner({ householdId: "h_g", cognitoSub: "sub_b", email: "b@example.com", addedAt: at });
+        expect(await repo.listOwners("h_g")).toEqual([
+          { householdId: "h_g", cognitoSub: "sub_b", email: "b@example.com", addedAt: at },
+        ]);
+        expect(await repo.listHouseholdsForAccount("sub_b")).toEqual(["h_g"]);
+      });
+
+      it("removes both halves of an owner, and only that owner", async () => {
+        await repo.putOwner({ householdId: "h_g", cognitoSub: "sub_a", addedAt: at });
+        await repo.putOwner({ householdId: "h_g", cognitoSub: "sub_b", addedAt: at });
+        await repo.putAccountPointer("sub_b", "h_family");
+
+        await repo.removeOwner("h_g", "sub_b");
+        expect(await repo.listHouseholdsForAccount("sub_b")).toEqual(["h_family"]);
+        expect((await repo.listOwners("h_g")).map((o) => o.cognitoSub)).toEqual(["sub_a"]);
+        expect(await repo.listHouseholdsForAccount("sub_a")).toEqual(["h_g"]);
+
+        // Somebody who was never an owner: nothing to remove, nothing thrown.
+        await repo.removeOwner("h_g", "sub_nobody");
+      });
+    });
+
+    describe("organizer invites (#248)", () => {
+      function invite(code: string, expiresAt: string) {
+        return {
+          code,
+          householdId: "h_g",
+          createdBy: "sub_a",
+          createdAt: "2026-07-04T18:00:00.000Z",
+          expiresAt,
+          ttl: Math.floor(Date.parse(expiresAt) / 1000),
+        };
+      }
+      const later = new Date(Date.now() + DAY).toISOString();
+
+      it("is spent exactly once", async () => {
+        expect(await repo.putOrganizerInviteIfAbsent(invite("ABCDEFGHJK", later))).toBe(true);
+        const nowIso = new Date().toISOString();
+        expect(await repo.takeOrganizerInvite("ABCDEFGHJK", nowIso)).toEqual(invite("ABCDEFGHJK", later));
+        expect(await repo.takeOrganizerInvite("ABCDEFGHJK", nowIso)).toBeNull();
+      });
+
+      it("reads a code in any case", async () => {
+        await repo.putOrganizerInviteIfAbsent(invite("ABCDEFGHJK", later));
+        expect((await repo.takeOrganizerInvite("abcdefghjk", new Date().toISOString()))?.householdId).toBe("h_g");
+      });
+
+      it("refuses a code that is already taken", async () => {
+        expect(await repo.putOrganizerInviteIfAbsent(invite("ABCDEFGHJK", later))).toBe(true);
+        expect(await repo.putOrganizerInviteIfAbsent({ ...invite("ABCDEFGHJK", later), householdId: "h_x" })).toBe(false);
+        expect((await repo.takeOrganizerInvite("ABCDEFGHJK", new Date().toISOString()))?.householdId).toBe("h_g");
+      });
+
+      it("will not spend an invite past its expiry, even before it is swept", async () => {
+        const expiresAt = new Date(Date.now() + HOUR).toISOString();
+        await repo.putOrganizerInviteIfAbsent(invite("ABCDEFGHJK", expiresAt));
+        expect(await repo.takeOrganizerInvite("ABCDEFGHJK", new Date(Date.now() + 2 * HOUR).toISOString())).toBeNull();
+      });
+
+      it("knows nothing of a code never issued", async () => {
+        expect(await repo.takeOrganizerInvite("ZZZZZZZZZZ", new Date().toISOString())).toBeNull();
+      });
+    });
+
     describe("guest households", () => {
       it("lists only guests whose expiry has passed", async () => {
         const now = Date.now();

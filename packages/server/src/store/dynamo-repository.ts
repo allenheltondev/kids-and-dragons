@@ -54,6 +54,8 @@ import type {
   EventRecord,
   GameRepository,
   GuestRenewal,
+  HouseholdOwnerRecord,
+  OrganizerInviteRecord,
   RoomRecord,
   RunRecord,
 } from "./repository.ts";
@@ -73,7 +75,9 @@ import {
   GUESS,
   GUESS_WINDOW_SK,
   HH,
+  INVITE,
   META,
+  OWNER_SK,
   PLAYER_SK,
   PREFIX,
   ROOM,
@@ -88,7 +92,7 @@ interface TableItem {
   SK: string;
   GSI1PK?: string;
   GSI1SK?: string;
-  /** Epoch seconds, DynamoDB's TTL attribute. Only rooms and code-miss windows carry it. */
+  /** Epoch seconds, DynamoDB's TTL attribute. Only rooms, code-miss windows and organizer invites carry it. */
   ttl?: number;
   /**
    * Schema version of `data`, per entity (architecture §3.2). A top-level
@@ -499,6 +503,96 @@ export class DynamoRepository implements GameRepository {
   async listHouseholdsForAccount(cognitoSub: string): Promise<string[]> {
     const items = await this.partition(ACCT(cognitoSub), "HH#");
     return items.map((i) => i.SK.slice("HH#".length));
+  }
+
+  async putOwner(owner: HouseholdOwnerRecord): Promise<void> {
+    await this.doc.send(
+      new TransactWriteCommand({
+        TransactItems: [
+          {
+            Put: {
+              TableName: this.table,
+              Item: {
+                PK: HH(owner.householdId),
+                SK: OWNER_SK(owner.cognitoSub),
+                entity: "owner",
+                data: owner,
+              } satisfies TableItem,
+            },
+          },
+          {
+            Put: {
+              TableName: this.table,
+              Item: {
+                PK: ACCT(owner.cognitoSub),
+                SK: HH(owner.householdId),
+                entity: "account",
+                data: { cognitoSub: owner.cognitoSub, householdId: owner.householdId },
+              } satisfies TableItem,
+            },
+          },
+        ],
+      }),
+    );
+  }
+
+  async listOwners(householdId: string): Promise<HouseholdOwnerRecord[]> {
+    const items = await this.partition(HH(householdId), PREFIX.owner);
+    return items.map((i) => i.data as HouseholdOwnerRecord);
+  }
+
+  async removeOwner(householdId: string, cognitoSub: string): Promise<void> {
+    await this.doc.send(
+      new TransactWriteCommand({
+        TransactItems: [
+          { Delete: { TableName: this.table, Key: { PK: HH(householdId), SK: OWNER_SK(cognitoSub) } } },
+          { Delete: { TableName: this.table, Key: { PK: ACCT(cognitoSub), SK: HH(householdId) } } },
+        ],
+      }),
+    );
+  }
+
+  async putOrganizerInviteIfAbsent(invite: OrganizerInviteRecord): Promise<boolean> {
+    try {
+      await this.doc.send(
+        new PutCommand({
+          TableName: this.table,
+          Item: {
+            PK: INVITE(invite.code),
+            SK: META,
+            ttl: invite.ttl,
+            entity: "invite",
+            data: invite,
+          } satisfies TableItem,
+          ConditionExpression: "attribute_not_exists(PK)",
+        }),
+      );
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+  }
+
+  async takeOrganizerInvite(code: string, nowIso: string): Promise<OrganizerInviteRecord | null> {
+    try {
+      const out = await this.doc.send(
+        new DeleteCommand({
+          TableName: this.table,
+          Key: { PK: INVITE(code), SK: META },
+          // Spent and expired in one condition: TTL deletion is eventual, so an
+          // expired invite can still be sitting there for a day or two.
+          ConditionExpression: "attribute_exists(PK) AND #d.#exp > :now",
+          ExpressionAttributeNames: { "#d": "data", "#exp": "expiresAt" },
+          ExpressionAttributeValues: { ":now": nowIso },
+          ReturnValues: "ALL_OLD",
+        }),
+      );
+      return ((out.Attributes as TableItem | undefined)?.data as OrganizerInviteRecord | undefined) ?? null;
+    } catch (err) {
+      if (isConditionalFailure(err)) return null;
+      throw err;
+    }
   }
 
   async putPlayer(player: PlayerProfile): Promise<void> {

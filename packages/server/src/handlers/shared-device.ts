@@ -34,6 +34,12 @@ export interface ShareDeviceInput {
   principal?: DeviceIdentity | null;
   /** A shared binding it already holds (re-sharing), likewise revoked. */
   shared?: SharedDeviceIdentity | null;
+  /**
+   * Which household the tablet is for, when the account owns more than one
+   * (#248): a family and a group. Required then; a tablet put in the wrong
+   * one shows a club's kids a family's faces.
+   */
+  householdId?: string | undefined;
   userAgent?: string | undefined;
 }
 
@@ -50,10 +56,17 @@ export async function shareDevice(
   input: ShareDeviceInput,
   deps: AccountDeps,
 ): Promise<HandlerResult<ShareDeviceResponse>> {
-  const householdId = (await deps.repo.listHouseholdsForAccount(input.cognitoSub))[0];
-  if (!householdId) {
+  const owned = await deps.repo.listHouseholdsForAccount(input.cognitoSub);
+  if (owned.length === 0) {
     return fail("NOT_FOUND", "This account has no family yet. Play a game and keep it first.");
   }
+  if (input.householdId !== undefined && !owned.includes(input.householdId)) {
+    return fail("FORBIDDEN", "that household belongs to a different account");
+  }
+  if (input.householdId === undefined && owned.length > 1) {
+    return fail("ILLEGAL", "This account runs more than one group. Pick which one this tablet is for.");
+  }
+  const householdId = input.householdId ?? owned[0] ?? "";
 
   /*
    * New binding first, old ones revoked last. Anything that fails before the
@@ -112,7 +125,8 @@ export async function seatOnSharedDevice(
   let player: PlayerProfile | null;
   if (typeof input.playerId === "string" && input.playerId !== "") {
     player = await deps.repo.getPlayer(shared.householdId, input.playerId);
-    if (!player) return fail("NOT_FOUND", `no player ${input.playerId}`);
+    // A retired face is not on the picker (#248), so a tap on one is a stale screen.
+    if (!player || player.retired) return fail("NOT_FOUND", `no player ${input.playerId}`);
   } else if (typeof input.newPlayer === "string") {
     const name = input.newPlayer.trim();
     if (name === "" || name.length > NEW_PLAYER_NAME_MAX) {
@@ -121,7 +135,7 @@ export async function seatOnSharedDevice(
     // Two faces with one name on the picker is two kids who cannot tell
     // which is theirs. Somebody new with a name already here taps that face.
     const players = await deps.repo.listPlayers(shared.householdId);
-    if (players.some((p) => p.displayName.trim().toLocaleLowerCase() === name.toLocaleLowerCase())) {
+    if (players.some((p) => !p.retired && p.displayName.trim().toLocaleLowerCase() === name.toLocaleLowerCase())) {
       return fail("ILLEGAL", `Someone called ${name} is already here. Tap that face instead.`);
     }
     player = await createProfile(shared.householdId, name, deps);
@@ -186,7 +200,7 @@ async function describePlayers(householdId: string, deps: AccountDeps): Promise<
   const ranked = [...characters].sort(
     (a, b) => b.committed.xp - a.committed.xp || a.name.localeCompare(b.name),
   );
-  const faces: SharedDevicePlayer[] = players.map((player) => ({
+  const faces: SharedDevicePlayer[] = players.filter((p) => !p.retired).map((player) => ({
     id: player.id,
     displayName: player.displayName,
     color: player.color,
