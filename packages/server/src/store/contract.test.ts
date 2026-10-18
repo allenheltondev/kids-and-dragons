@@ -1031,6 +1031,52 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         expect(await repo.forgetFinder("h_none", "p_1")).toBe(0);
       });
 
+      it("never brings a deleted kid back by a change read before the delete", async () => {
+        /*
+         * The race: an owner's rename reads her, the delete lands, the rename
+         * writes. An update that made a row would bring her back as a profile
+         * nothing is marked on, and nobody would ever delete her again.
+         */
+        await repo.putHousehold(household({ ownerSub: "sub_a" }));
+        await repo.putPlayer(player("p_1"));
+        const read = (await repo.getPlayer("h_1", "p_1"))!;
+        expect(await repo.updatePlayer({ ...read, displayName: "Ada" })).toBe(true);
+
+        expect(await repo.deleteProfile("h_1", "p_1")).toBe(true);
+        expect(await repo.updatePlayer({ ...read, displayName: "Ada again" })).toBe(false);
+        expect(await repo.updatePlayer({ ...read, retired: true })).toBe(false);
+
+        expect(await repo.getPlayer("h_1", "p_1")).toBeNull();
+        expect(await rows(repo)).not.toContain("HH#h_1 PLAYER#p_1");
+        expect(await repo.updatePlayer(player("p_never"))).toBe(false);
+        expect(await repo.getPlayer("h_1", "p_never")).toBeNull();
+      });
+
+      it("keeps forget jobs until they are done, oldest first", async () => {
+        const job = (playerId: string, createdAt: string) => ({
+          playerId,
+          home: "h_1",
+          reason: "kid" as const,
+          nicknames: ["Ada"],
+          heroes: ["Sparklehoof"],
+          tables: ["h_rue", "h_bo"],
+          createdAt,
+          attempts: 0,
+        });
+        await repo.putForget(job("p_2", "2026-07-05T18:00:00.000Z"));
+        await repo.putForget(job("p_1", at));
+        expect((await repo.listForgets()).map((j) => j.playerId)).toEqual(["p_1", "p_2"]);
+
+        // A scrub that cleaned one table and not the other rewrites it.
+        await repo.putForget({ ...job("p_1", at), tables: ["h_bo"], attempts: 1 });
+        expect((await repo.listForgets())[0]).toMatchObject({ playerId: "p_1", tables: ["h_bo"], attempts: 1 });
+
+        await repo.deleteForget("p_1");
+        await repo.deleteForget("p_2");
+        expect(await repo.listForgets()).toEqual([]);
+        expect(await rows(repo)).toEqual([]);
+      });
+
       it("takes the kids' visits with a swept guest household", async () => {
         await repo.putHousehold(guest("h_1", new Date(Date.now() - DAY).toISOString()));
         await repo.putPlayer(player("p_1"));

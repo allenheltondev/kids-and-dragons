@@ -92,6 +92,15 @@ export const STORED: readonly StoredThing[] = [
     entities: ["visit"],
   },
   {
+    title: "A delete still being finished",
+    what:
+      "While a kid is being deleted: her nickname, her heroes' names and the other households' games still to clean, so that taking her name out of them always finishes, even if something fails part-way.",
+    kept: "Until every one of those games is clean, usually moments; if one fails, the next day's tidy-up tries again.",
+    owner: "kid",
+    rows: ["Forget job"],
+    entities: ["forget"],
+  },
+  {
     title: "Phones and tablets",
     what:
       "A random id for each device, which kid it plays as (or that it is a family tablet), when it was last used, and its browser's own description of itself (the user agent), so a grown-up can tell which tablet is which. The device keeps a token in its own storage; the game keeps only a scrambled copy.",

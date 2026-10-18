@@ -41,6 +41,7 @@ import type {
   CommitInput,
   EventRecord,
   GameRepository,
+  ForgetJob,
   GuestRenewal,
   HouseholdOwnerRecord,
   IdlePlayer,
@@ -62,7 +63,10 @@ import {
   DEVICE_SK,
   EVT_SK,
   FIELDGUIDE,
+  FORGET,
   GSI1_DEVICE,
+  GSI1_FORGET,
+  GSI1_FORGET_SK,
   GSI1_GUEST,
   GSI1_GUEST_SK,
   GSI1_IDLE,
@@ -459,6 +463,28 @@ export class MemoryRepository implements GameRepository {
     return changed;
   }
 
+  async putForget(job: ForgetJob): Promise<void> {
+    this.put({
+      PK: FORGET(job.playerId),
+      SK: META,
+      GSI1PK: GSI1_FORGET,
+      GSI1SK: GSI1_FORGET_SK(job.createdAt, job.playerId),
+      entity: "forget",
+      data: job,
+    });
+  }
+
+  async listForgets(limit = 25): Promise<ForgetJob[]> {
+    return this.queryIndex(GSI1_FORGET)
+      .slice(0, limit)
+      .map((i) => i.data as ForgetJob);
+  }
+
+  async deleteForget(playerId: string): Promise<void> {
+    this.items.delete(rowKey(FORGET(playerId), META));
+    this.persist();
+  }
+
   async putVisit(playerId: string, tableHouseholdId: string, at: string): Promise<void> {
     this.put({ PK: VISIT(playerId), SK: HH(tableHouseholdId), entity: "visit", data: { playerId, householdId: tableHouseholdId, at } });
   }
@@ -613,10 +639,25 @@ export class MemoryRepository implements GameRepository {
   }
 
   async putPlayer(player: PlayerProfile): Promise<void> {
-    // `data` only, like the real store's update: when she last played, her
-    // retention entry and a delete's mark are not the profile's to clear.
-    const { PK: _pk, SK: _sk, entity: _entity, data: _data, ...kept } =
-      this.items.get(rowKey(HH(player.householdId), PLAYER_SK(player.id))) ?? ({} as Partial<TableItem>);
+    const row = this.items.get(rowKey(HH(player.householdId), PLAYER_SK(player.id)));
+    // Never over a profile being deleted, as the real store's condition says.
+    if (row?.sweeping) return;
+    this.writePlayer(row, player);
+  }
+
+  async updatePlayer(player: PlayerProfile): Promise<boolean> {
+    const row = this.items.get(rowKey(HH(player.householdId), PLAYER_SK(player.id)));
+    if (!row || row.sweeping) return false;
+    this.writePlayer(row, player);
+    return true;
+  }
+
+  /**
+   * `data` only, like the real store's update: when she last played, her
+   * retention entry and a delete's mark are not the profile's to clear.
+   */
+  private writePlayer(row: TableItem | undefined, player: PlayerProfile): void {
+    const { PK: _pk, SK: _sk, entity: _entity, data: _data, ...kept } = row ?? ({} as Partial<TableItem>);
     this.put({
       ...kept,
       PK: HH(player.householdId),

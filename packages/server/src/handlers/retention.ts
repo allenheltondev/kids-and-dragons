@@ -27,7 +27,7 @@
 import { claimOf, FORGOTTEN_NAME, parseClaim, RETENTION_CHOICES, settleChapterEndVote } from "@kad/shared";
 import type { Character, Household, OrganizerHouseholdDeleted, RoomChannel, RunState } from "@kad/shared";
 import { diff } from "../json-patch.ts";
-import type { EventRecord } from "../store/repository.ts";
+import type { EventRecord, ForgetJob } from "../store/repository.ts";
 import { summaries } from "./account.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
@@ -47,14 +47,10 @@ export type ForgetDeps = Pick<HandlerDeps, "repo" | "now"> & { channel?: RoomCha
 type Owned = Pick<HandlerDeps, "repo" | "now"> & { channel?: RoomChannel };
 
 /** One kid to forget: the names she went by, and the tables that may have kept them. */
-export interface Forgetting {
-  playerId: string;
-  /** Her nickname, as her profile last had it. */
-  nicknames: string[];
-  /** Every hero she owned. */
-  heroes: string[];
-  tables: string[];
-}
+export type Forgetting = Pick<ForgetJob, "playerId" | "nicknames" | "heroes" | "tables">;
+
+/** Forget jobs the sweep retries per invocation. */
+const FORGET_BATCH = 25;
 
 // ---------------------------------------------------------------------------
 // Deleting one kid
@@ -70,11 +66,17 @@ export async function deleteKid(
   playerId: string,
   deps: Owned,
 ): Promise<HandlerResult<{ forgotten: number }>> {
-  // Read before the delete takes her rows with it; forgotten after, so a
-  // delete that is refused never touches another table's save.
-  const kid = await forgetting(playerId, household.id, deps);
-  if (!(await deps.repo.deleteProfile(household.id, playerId))) return fail("NOT_FOUND", `no player ${playerId}`);
-  return ok({ forgotten: await forgetEverywhere([kid], deps) });
+  // Read before the delete takes her rows with it, and written down before
+  // anything goes, so an interrupted delete or a failed scrub is finished by
+  // the sweep (`retryForgets`). Forgotten after, so a delete that is refused
+  // never touches another table's save.
+  const job = await forgetJob(playerId, household.id, "kid", deps);
+  await deps.repo.putForget(job);
+  if (!(await deps.repo.deleteProfile(household.id, playerId))) {
+    await deps.repo.deleteForget(playerId);
+    return fail("NOT_FOUND", `no player ${playerId}`);
+  }
+  return ok({ forgotten: await forgetEverywhere([job], deps) });
 }
 
 // ---------------------------------------------------------------------------
@@ -104,7 +106,8 @@ export async function deleteOwnedHousehold(
     return fail("ILLEGAL", "Other grown-ups help run this one. It can be deleted once you are the only one left.");
   }
 
-  const kids = await kidsOf(household.id, deps);
+  const kids = await kidsOf(household.id, "household", deps);
+  for (const kid of kids) await deps.repo.putForget(kid);
   await deps.repo.deleteHousehold(household.id);
   await forgetEverywhere(kids, deps);
   return ok({
@@ -118,21 +121,34 @@ export async function deleteOwnedHousehold(
  * kept her names: its own saves go with it. For a household about to be
  * deleted, by the owner or the guest sweep.
  */
-export async function kidsOf(householdId: string, deps: Pick<HandlerDeps, "repo">): Promise<Forgetting[]> {
+export async function kidsOf(
+  householdId: string,
+  reason: "household" | "guest",
+  deps: Pick<HandlerDeps, "repo" | "now">,
+): Promise<ForgetJob[]> {
   const players = await deps.repo.listPlayers(householdId);
-  const kids = await Promise.all(players.map((p) => forgetting(p.id, householdId, deps)));
+  const kids = await Promise.all(players.map((p) => forgetJob(p.id, householdId, reason, deps)));
   return kids.map((kid) => ({ ...kid, tables: kid.tables.filter((t) => t !== householdId) }));
 }
 
 /** What forgetting her takes: her names and her tables, read before her rows go. */
-async function forgetting(playerId: string, home: string, deps: Pick<HandlerDeps, "repo">): Promise<Forgetting> {
+async function forgetJob(
+  playerId: string,
+  home: string,
+  reason: ForgetJob["reason"],
+  deps: Pick<HandlerDeps, "repo" | "now">,
+): Promise<ForgetJob> {
   const [player, characters] = await Promise.all([deps.repo.getPlayer(home, playerId), deps.repo.listCharacters(home)]);
   const heroes = characters.filter((c) => c.ownerPlayerId === playerId);
   return {
     playerId,
+    home,
+    reason,
     nicknames: player ? [player.displayName] : [],
     heroes: heroes.map((c) => c.name),
     tables: await tablesOf(playerId, home, heroes, deps),
+    createdAt: iso(deps.now()),
+    attempts: 0,
   };
 }
 
@@ -231,13 +247,15 @@ export async function sweepIdleProfiles(deps: ForgetDeps): Promise<IdleSweepResu
         result.kept.push(idle.playerId);
         continue;
       }
-      const kid = await forgetting(idle.playerId, idle.householdId, deps);
       const cutoff = iso(nowMs - (household.retentionDays ?? 0) * DAY_MS);
+      const job = { ...(await forgetJob(idle.playerId, idle.householdId, "idle", deps)), idleBefore: cutoff };
+      await deps.repo.putForget(job);
       if (!(await deps.repo.deleteProfile(idle.householdId, idle.playerId, cutoff))) {
+        await deps.repo.deleteForget(idle.playerId);
         result.kept.push(idle.playerId);
         continue;
       }
-      await forgetEverywhere([kid], deps);
+      await forgetEverywhere([job], deps);
       result.deleted.push(idle.playerId);
     } catch (err) {
       const reason = err instanceof Error ? err.message : String(err);
@@ -274,30 +292,81 @@ export async function tablesOf(
 /**
  * Take each kid's names out of every table that kept them: every run there
  * (its state and its event log) and its Field Guide. After her profile is
- * gone, so it is tidy-up: every room door already treats a kid with no
- * profile as out (`isOut`). A run it cannot write is logged and left, as a
- * move's tidy-up is (`takeOutEverywhere`). Returns the runs changed.
+ * gone, so every room door already treats her as out (`isOut`). Each kid's
+ * forget job (`ForgetJob`) is what makes it finish: a table that could not be
+ * cleaned is kept on it, and the sweep tries again (`retryForgets`); once
+ * every table is clean the job is removed. Returns the runs changed.
  */
-export async function forgetEverywhere(kids: readonly Forgetting[], deps: ForgetDeps): Promise<number> {
+export async function forgetEverywhere(kids: readonly ForgetJob[], deps: ForgetDeps): Promise<number> {
   let changed = 0;
   for (const kid of kids) {
+    const owed: string[] = [];
     for (const table of kid.tables) {
       try {
         await deps.repo.forgetFinder(table, kid.playerId);
-      } catch (err) {
-        console.error(`forget: could not re-credit ${kid.playerId}'s finds in ${table}:`, err);
-      }
-      for (const run of await deps.repo.listRuns(table)) {
-        try {
+        for (const run of await deps.repo.listRuns(table)) {
           if (await forgetInRun(run.id, kid, deps)) changed++;
           await forgetInLog(run.id, kid, deps);
-        } catch (err) {
-          console.error(`forget: could not take ${kid.playerId} out of run ${run.id}:`, err);
         }
+      } catch (err) {
+        console.error(`forget: could not take ${kid.playerId} out of ${table}; the sweep will try again:`, err);
+        owed.push(table);
       }
     }
+    if (owed.length === 0) await deps.repo.deleteForget(kid.playerId);
+    else await deps.repo.putForget({ ...kid, tables: owed, attempts: kid.attempts + 1 });
   }
   return changed;
+}
+
+export interface ForgetRetryResult {
+  finished: string[];
+  /** Still here: the delete that wrote the job never happened. Nothing to forget. */
+  dropped: string[];
+  owed: string[];
+}
+
+/**
+ * Finish every forget job still owed (#252), from the sweep. First the delete
+ * that wrote it, in case it died before or during its rows going: an owner's
+ * delete is finished (it was asked for and authorized), a sweep's is asked
+ * again under its own gate. Then, if she is gone, the tables still owed. A
+ * kid still here (the delete was refused, or a guest household was kept in
+ * time) is not forgotten anywhere, and her job is dropped.
+ */
+export async function retryForgets(deps: ForgetDeps): Promise<ForgetRetryResult> {
+  const result: ForgetRetryResult = { finished: [], dropped: [], owed: [] };
+  const nowIso = iso(deps.now());
+  for (const job of await deps.repo.listForgets(FORGET_BATCH)) {
+    try {
+      switch (job.reason) {
+        case "kid":
+          await deps.repo.deleteProfile(job.home, job.playerId);
+          break;
+        case "household":
+          await deps.repo.deleteHousehold(job.home);
+          break;
+        case "guest":
+          await deps.repo.deleteGuestHousehold(job.home, nowIso);
+          break;
+        case "idle":
+          await deps.repo.deleteProfile(job.home, job.playerId, job.idleBefore);
+          break;
+      }
+      if (await deps.repo.getPlayer(job.home, job.playerId)) {
+        await deps.repo.deleteForget(job.playerId);
+        result.dropped.push(job.playerId);
+        continue;
+      }
+      await forgetEverywhere([job], deps);
+      const left = (await deps.repo.listForgets(FORGET_BATCH)).some((j) => j.playerId === job.playerId);
+      (left ? result.owed : result.finished).push(job.playerId);
+    } catch (err) {
+      console.error(`[sweep] could not finish forgetting ${job.playerId}:`, err);
+      result.owed.push(job.playerId);
+    }
+  }
+  return result;
 }
 
 /** `forgetPlayer` on one run, committed as a turn of its own. False when there was nothing to forget. */

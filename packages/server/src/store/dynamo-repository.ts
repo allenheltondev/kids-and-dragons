@@ -56,6 +56,7 @@ import type {
   CommitInput,
   EventRecord,
   GameRepository,
+  ForgetJob,
   GuestRenewal,
   HouseholdOwnerRecord,
   IdlePlayer,
@@ -78,7 +79,10 @@ import {
   EVT_SK,
   EVT_SK_MAX,
   FIELDGUIDE,
+  FORGET,
   GSI1_DEVICE,
+  GSI1_FORGET,
+  GSI1_FORGET_SK,
   GSI1_GUEST,
   GSI1_GUEST_SK,
   GSI1_IDLE,
@@ -688,6 +692,33 @@ export class DynamoRepository implements GameRepository {
     return hers.length;
   }
 
+  async putForget(job: ForgetJob): Promise<void> {
+    await this.put({
+      PK: FORGET(job.playerId),
+      SK: META,
+      GSI1PK: GSI1_FORGET,
+      GSI1SK: GSI1_FORGET_SK(job.createdAt, job.playerId),
+      entity: "forget",
+      data: job,
+    });
+  }
+
+  async listForgets(limit = 25): Promise<ForgetJob[]> {
+    const items = await this.query(
+      {
+        IndexName: this.index,
+        KeyConditionExpression: "GSI1PK = :forget",
+        ExpressionAttributeValues: { ":forget": GSI1_FORGET },
+      },
+      limit,
+    );
+    return items.map((i) => i.data as ForgetJob);
+  }
+
+  async deleteForget(playerId: string): Promise<void> {
+    await this.doc.send(new DeleteCommand({ TableName: this.table, Key: { PK: FORGET(playerId), SK: META } }));
+  }
+
   async putVisit(playerId: string, tableHouseholdId: string, at: string): Promise<void> {
     await this.put({
       PK: VISIT(playerId),
@@ -1056,17 +1087,36 @@ export class DynamoRepository implements GameRepository {
     /*
      * An update of `data` rather than a Put of the row: when she last played,
      * her retention entry (#252) and a delete's mark sit beside the profile,
-     * and a rename from an older read must not take them away.
+     * and a write from an older read must not take them away. Never over a
+     * profile being deleted.
      */
-    await this.doc.send(
-      new UpdateCommand({
-        TableName: this.table,
-        Key: { PK: HH(player.householdId), SK: PLAYER_SK(player.id) },
-        UpdateExpression: "SET #d = :data, entity = :entity",
-        ExpressionAttributeNames: { "#d": "data" },
-        ExpressionAttributeValues: { ":data": player, ":entity": "player" },
-      }),
-    );
+    try {
+      await this.doc.send(this.playerWrite(player, "attribute_not_exists(sweeping)"));
+    } catch (err) {
+      if (!isConditionalFailure(err)) throw err;
+    }
+  }
+
+  async updatePlayer(player: PlayerProfile): Promise<boolean> {
+    // There, and not being deleted: an update never makes a row (#252).
+    try {
+      await this.doc.send(this.playerWrite(player, "attribute_exists(PK) AND attribute_not_exists(sweeping)"));
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+  }
+
+  private playerWrite(player: PlayerProfile, condition: string): UpdateCommand {
+    return new UpdateCommand({
+      TableName: this.table,
+      Key: { PK: HH(player.householdId), SK: PLAYER_SK(player.id) },
+      UpdateExpression: "SET #d = :data, entity = :entity",
+      ConditionExpression: condition,
+      ExpressionAttributeNames: { "#d": "data" },
+      ExpressionAttributeValues: { ":data": player, ":entity": "player" },
+    });
   }
 
   async getPlayer(householdId: string, playerId: string): Promise<PlayerProfile | null> {

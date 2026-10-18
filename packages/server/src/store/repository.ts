@@ -26,6 +26,33 @@ import type {
   ServerMessage,
 } from "@kad/shared";
 
+/**
+ * `FORGET#<playerId>` (#252): a kid being deleted, and every table that may
+ * still say her names. Written before any of her rows go; rewritten with the
+ * tables still owed when a scrub fails part-way; removed when none are. The
+ * sweeper finishes whatever is left (`retryForgets`).
+ */
+export interface ForgetJob {
+  playerId: string;
+  /** Her home: where her own rows were. */
+  home: string;
+  /**
+   * What deleted her, which says how to finish an interrupted delete: an
+   * owner deleting her (`kid`) or her household (`household`), the guest
+   * sweep (`guest`), or the retention sweep (`idle`, gated on `idleBefore`).
+   */
+  reason: "kid" | "household" | "guest" | "idle";
+  idleBefore?: string;
+  /** The names to take out. */
+  nicknames: string[];
+  heroes: string[];
+  /** Tables still to clean. */
+  tables: string[];
+  createdAt: string;
+  /** Scrubs that have failed so far. */
+  attempts: number;
+}
+
 /** One kid the retention sweep may forget (#252): where she lives, and when she last played. */
 export interface IdlePlayer {
   householdId: string;
@@ -625,12 +652,29 @@ export interface GameRepository {
    */
   forgetFinder(householdId: string, playerId: string): Promise<number>;
 
+  /** Write (or rewrite) a forget job (#252). */
+  putForget(job: ForgetJob): Promise<void>;
+  /** Forget jobs still owed, oldest first: one GSI1 query. */
+  listForgets(limit?: number): Promise<ForgetJob[]>;
+  deleteForget(playerId: string): Promise<void>;
+
   /** She sat down at `tableHouseholdId`, a household that is not her home (#249). Idempotent. */
   putVisit(playerId: string, tableHouseholdId: string, at: string): Promise<void>;
   /** Every table she has visited, as households. */
   listVisits(playerId: string): Promise<string[]>;
 
+  /**
+   * Write a profile, a new one or over the one there. Never over one being
+   * deleted (#252): a profile marked `sweeping` is left as it is. For making
+   * a profile; a change to one that exists goes through `updatePlayer`.
+   */
   putPlayer(player: PlayerProfile): Promise<void>;
+  /**
+   * Change a profile that is there and not being deleted (#252): a rename,
+   * retiring, bringing back. `false`, and nothing written, otherwise, so a
+   * change read before a delete can never bring the kid back after it.
+   */
+  updatePlayer(player: PlayerProfile): Promise<boolean>;
   getPlayer(householdId: string, playerId: string): Promise<PlayerProfile | null>;
   listPlayers(householdId: string): Promise<PlayerProfile[]>;
 

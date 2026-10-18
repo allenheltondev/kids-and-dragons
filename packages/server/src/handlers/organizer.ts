@@ -185,7 +185,7 @@ export async function renameProfile(
   const name = await profileName(household.id, input.displayName, player.id, deps);
   if (!name.ok) return name;
 
-  await deps.repo.putPlayer({ ...player, displayName: name.value });
+  if (!(await deps.repo.updatePlayer({ ...player, displayName: name.value }))) return gone(player);
   return ok(await describe(household, input, deps));
 }
 
@@ -215,7 +215,7 @@ export async function setProfileRetired(
   const { household, player } = target.value;
 
   if (input.retired) {
-    await deps.repo.putPlayer({ ...player, retired: true });
+    if (!(await deps.repo.updatePlayer({ ...player, retired: true }))) return gone(player);
     const devices = await deps.repo.listDevices(household.id);
     for (const device of devices) {
       if (device.kind !== "shared" && device.playerId === player.id && !device.revoked) {
@@ -229,7 +229,7 @@ export async function setProfileRetired(
     const name = await profileName(household.id, player.displayName, player.id, deps);
     if (!name.ok) return name;
     const { retired: _back, ...active } = player;
-    await deps.repo.putPlayer(active);
+    if (!(await deps.repo.updatePlayer(active))) return gone(player);
   }
   return ok(await describe(household, input, deps));
 }
@@ -404,6 +404,11 @@ async function ownedProfile(
   if (typeof input.playerId !== "string" || input.playerId === "") return fail("ILLEGAL", "expected { playerId }");
   const player = await deps.repo.getPlayer(owned.value.id, input.playerId);
   return player ? ok({ household: owned.value, player }) : fail("NOT_FOUND", `no player ${input.playerId}`);
+}
+
+/** A kid deleted (#252) or moved between reading her and writing her. */
+function gone(player: PlayerProfile): HandlerResult<never> {
+  return fail("NOT_FOUND", `${player.displayName} isn't here any more.`);
 }
 
 function householdName(raw: unknown): HandlerResult<string> {

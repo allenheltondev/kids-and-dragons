@@ -21,6 +21,7 @@ import type { MemoryRepository } from "../store/memory-repository.ts";
 import type { GameRepository } from "../store/repository.ts";
 import { makeHarness, type TestHarness } from "../test-support.ts";
 import { applyAction } from "./action.ts";
+import { sweep } from "../lambda/sweep.ts";
 import { deleteHousehold, deleteProfile } from "./organizer.ts";
 import { createRoom, joinRoom } from "./room.ts";
 import { setVisitors } from "./visitors.ts";
@@ -42,7 +43,18 @@ function suite(name: string, open: (now: () => number) => Promise<Store>): void 
     async function table() {
       const h = makeHarness({ engine: realEngine, playtest: true, content });
       h.deps.rng = (key) => makeRng(`retention-stores:${String(key).split(":").pop()}`);
-      const store = await open(h.clock.now);
+      const backing = await open(h.clock.now);
+      // A store that can be made to fail the event-log rewrite, the way a
+      // throttle or a dying Lambda would part-way through a scrub.
+      const fault = { on: false };
+      const repo = new Proxy(backing.repo, {
+        get(target, key, receiver) {
+          if (key === "rewriteEvent" && fault.on) return () => Promise.reject(new Error("throttled"));
+          const value: unknown = Reflect.get(target, key, receiver);
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      });
+      const store = { ...backing, repo };
       // The same harness on this store: every handler reads and writes it.
       const identity = new DevIdentity(store.repo, h.clock.now);
       h.deps.repo = store.repo;
@@ -82,7 +94,7 @@ function suite(name: string, open: (now: () => number) => Promise<Store>): void 
         const runs = (await store.repo.listRuns("h_rue")).map((r) => `RUN#${r.id}`);
         return (await store.rows()).filter((row) => row.PK === "HH#h_rue" || runs.includes(row.PK));
       };
-      return { harness, ada, rue, runId, rues };
+      return { harness, ada, rue, runId, rues, fault, repo };
     }
 
     it("deleting her leaves her names nowhere in the household she visited", async () => {
@@ -101,6 +113,69 @@ function suite(name: string, open: (now: () => number) => Promise<Store>): void 
       expect(after).toContain("Thistledown");
       // Nothing of hers is left at home either.
       expect((await harness.deps.repo.listCharacters("h_ada")).map((c) => c.name)).toEqual([]);
+    });
+
+    it("a scrub that fails part-way is finished by the sweep", async () => {
+      const { harness, ada, rues, fault, repo } = await table();
+      fault.on = true;
+      const done = await deleteProfile({ cognitoSub: "sub_h_ada", householdId: "h_ada", playerId: ada.playerId }, harness.deps);
+      // Her own rows are gone; Rue's event log still names her, and the job
+      // says so, though her visits went with her.
+      expect(done.ok).toBe(true);
+      expect(await repo.getPlayer("h_ada", ada.playerId)).toBeNull();
+      expect(await repo.listVisits(ada.playerId)).toEqual([]);
+      expect(JSON.stringify(await rues())).toContain("Sparklehoof");
+      expect(await repo.listForgets()).toMatchObject([{ playerId: ada.playerId, tables: ["h_rue"], attempts: 1 }]);
+
+      // Still failing: the sweep keeps it owed rather than dropping it.
+      expect((await sweep(repo, () => harness.clock.now())).forgets.owed).toEqual([ada.playerId]);
+      expect(await repo.listForgets()).toMatchObject([{ attempts: 2 }]);
+
+      fault.on = false;
+      expect((await sweep(repo, () => harness.clock.now())).forgets.finished).toEqual([ada.playerId]);
+      expect(await repo.listForgets()).toEqual([]);
+      expect(JSON.stringify(await rues())).not.toContain("Sparklehoof");
+      expect(JSON.stringify(await rues())).not.toContain('"Ada"');
+    });
+
+    it("a delete that died after writing its job is finished by the sweep", async () => {
+      const { harness, ada, rues, repo } = await table();
+      // The owner's delete wrote its job and nothing else.
+      await repo.putForget({
+        playerId: ada.playerId,
+        home: "h_ada",
+        reason: "kid",
+        nicknames: ["Ada"],
+        heroes: ["Sparklehoof"],
+        tables: ["h_ada", "h_rue"],
+        createdAt: new Date(harness.clock.now()).toISOString(),
+        attempts: 0,
+      });
+
+      expect((await sweep(repo, () => harness.clock.now())).forgets.finished).toEqual([ada.playerId]);
+      expect(await repo.getPlayer("h_ada", ada.playerId)).toBeNull();
+      expect(await repo.listCharacters("h_ada")).toEqual([]);
+      expect(JSON.stringify(await rues())).not.toContain("Sparklehoof");
+    });
+
+    it("a job for a kid who was never deleted forgets nothing", async () => {
+      const { harness, ada, rues, repo } = await table();
+      // A guest sweep that wrote its job and then found the household kept.
+      await repo.putForget({
+        playerId: ada.playerId,
+        home: "h_ada",
+        reason: "guest",
+        nicknames: ["Ada"],
+        heroes: ["Sparklehoof"],
+        tables: ["h_rue"],
+        createdAt: new Date(harness.clock.now()).toISOString(),
+        attempts: 0,
+      });
+
+      expect((await sweep(repo, () => harness.clock.now())).forgets.dropped).toEqual([ada.playerId]);
+      expect(await repo.listForgets()).toEqual([]);
+      expect(await repo.getPlayer("h_ada", ada.playerId)).not.toBeNull();
+      expect(JSON.stringify(await rues())).toContain("Sparklehoof");
     });
 
     it("deleting her household does the same", async () => {
