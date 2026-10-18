@@ -345,6 +345,22 @@ export interface TransferCodeRecord {
 }
 
 /**
+ * `PAIR#<code>` / `META`: a single-use code that makes whoever redeems it a
+ * device bound to one kid (#281). TTL'd like an invite, but minutes, not days.
+ */
+export interface PairingCodeRecord {
+  code: string;
+  householdId: string;
+  playerId: string;
+  /** `device:<deviceId>` for her own phone, `owner:<cognitoSub>` for a grown-up. */
+  createdBy: string;
+  createdAt: string;
+  expiresAt: string;
+  /** Epoch seconds. DynamoDB deletes it some time after; reads check `expiresAt`. */
+  ttl: number;
+}
+
+/**
  * Everything that moves with one kid, as `readProfileMove` found it: what a
  * handler needs to judge the move, and (`rows`) what the store needs to carry
  * it out exactly as read.
@@ -452,6 +468,14 @@ export interface GameRepository {
    * because a moved phone's token is resolved through it.
    */
   getMovedDevice(householdId: string, deviceId: string): Promise<string | null>;
+  /** A new pairing code. `false`, and nothing written, if the code is taken. */
+  putPairingCodeIfAbsent(pairing: PairingCodeRecord): Promise<boolean>;
+  /**
+   * Spend a pairing code: a conditional delete, so of two devices redeeming
+   * one code exactly one gets it. `null`, and nothing written, for a code that
+   * was never issued, is spent, or has expired (`nowIso` past `expiresAt`).
+   */
+  redeemPairingCode(code: string, nowIso: string): Promise<PairingCodeRecord | null>;
 
   /**
    * Claim a guest household for a signed-in account (§4.5). Writes the

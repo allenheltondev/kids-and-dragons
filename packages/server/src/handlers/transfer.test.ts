@@ -16,6 +16,7 @@ import { CODE_MISS_LIMIT } from "./code-guard.ts";
 import type { HandlerResult } from "./deps.ts";
 import { addProfile, createGroup, setProfileRetired, viewHousehold } from "./organizer.ts";
 import { isOut } from "./remove.ts";
+import { createPairingCode, redeemPairingCode } from "./pairing.ts";
 import { createRoom, joinRoom } from "./room.ts";
 import { shareDevice } from "./shared-device.ts";
 import { acceptTransfer, createTransferCode, TRANSFER_TTL_MS } from "./transfer.ts";
@@ -308,6 +309,23 @@ describe("taking a hero home (#251)", () => {
     expect(late).toBe(false);
     expect(await harness.repo.getCharacter(club.id, hero.id)).toBeNull();
     expect((await harness.repo.getCharacter(moved.household.id, hero.id))?.committed.xp).toBe(stale.committed.xp);
+  });
+
+  it("refuses a pairing code her old home made before she moved", async () => {
+    const { harness, club, ada } = await adaAtTheClub();
+    const pairing = value(
+      await createPairingCode({ householdId: club.id, playerId: ada.player.id, createdBy: `owner:${LEADER.cognitoSub}` }, harness.deps),
+    );
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+    const moved = value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
+
+    // The club's code cannot bind a device into the club, where she no longer is, or into her new home.
+    expect(await redeemPairingCode({ code: pairing.code, client: "1.2.3.4" }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "NOT_FOUND" },
+    });
+    expect((await harness.repo.listDevices(club.id)).filter((d) => d.kind !== "shared")).toEqual([]);
+    expect((await harness.repo.listDevices(moved.household.id)).map((d) => d.deviceId)).toEqual([ada.principal.deviceId]);
   });
 
   it("keeps her out of a visiting table's room the move's tidy-up cannot find", async () => {

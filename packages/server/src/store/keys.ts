@@ -24,6 +24,7 @@
  * | Organizer invite | INVITE#<code>   | META               |
  * | Transfer code    | TRANSFER#<code> | META               |
  * | Moved device     | HH#<hhId>       | MOVED#<deviceId>   |
+ * | Pairing code     | PAIR#<code>     | META               |
  *
  * GSI1 indexes devices by device id so a returning phone resolves to its
  * household without a scan (§3), and runs by id so `runId` alone is enough to
@@ -69,6 +70,12 @@ export const TRANSFER = (code: string) => `TRANSFER#${code.toUpperCase()}`;
  * Carries a `ttl` no shorter than any token it could forward.
  */
 export const MOVED_SK = (deviceId: string) => `MOVED#${deviceId}`;
+
+/**
+ * A single-use code that makes a new device a kid (#281). Carries a `ttl`,
+ * like an invite: one row, and nothing else points at it.
+ */
+export const PAIR = (code: string) => `PAIR#${code.toUpperCase()}`;
 
 /**
  * Wrong room codes from one client, one row per window (`handlers/code-guard.ts`).

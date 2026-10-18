@@ -174,3 +174,8 @@
   color: var(--kad-ink);
   font-weight: var(--kad-weight-bold);
 }
+
+/* A pairing code under the kid it is for (#281). */
+.organizer__pairing {
+  justify-content: center;
+}

@@ -45,6 +45,7 @@ import type {
   MoveOutcome,
   MoveProfileInput,
   OrganizerInviteRecord,
+  PairingCodeRecord,
   ProfileMove,
   RoomRecord,
   RunRecord,
@@ -70,6 +71,7 @@ import {
   META,
   MOVED_SK,
   OWNER_SK,
+  PAIR,
   PLAYER_SK,
   PREFIX,
   ROOM,
@@ -414,6 +416,20 @@ export class MemoryRepository implements GameRepository {
     this.items.delete(rowKey(INVITE(code), META));
     await this.putOwner({ ...owner, householdId: invite.householdId });
     return invite;
+  }
+
+  async putPairingCodeIfAbsent(pairing: PairingCodeRecord): Promise<boolean> {
+    if (this.get(PAIR(pairing.code), META)) return false;
+    this.put({ PK: PAIR(pairing.code), SK: META, ttl: pairing.ttl, entity: "pairing", data: pairing });
+    return true;
+  }
+
+  async redeemPairingCode(code: string, nowIso: string): Promise<PairingCodeRecord | null> {
+    const pairing = this.get(PAIR(code), META)?.data as PairingCodeRecord | undefined;
+    if (!pairing || pairing.expiresAt <= nowIso) return null;
+    this.items.delete(rowKey(PAIR(code), META));
+    this.persist();
+    return pairing;
   }
 
   async putTransferCodeIfAbsent(record: TransferCodeRecord): Promise<boolean> {
