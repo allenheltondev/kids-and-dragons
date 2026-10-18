@@ -19,7 +19,14 @@
  * still find their kids gone from a friend's game.
  */
 
-import { forgetEverywhere, kidsOf, sweepIdleProfiles, type IdleSweepResult } from "../handlers/retention.ts";
+import {
+  forgetEverywhere,
+  kidsOf,
+  retryForgets,
+  sweepIdleProfiles,
+  type ForgetRetryResult,
+  type IdleSweepResult,
+} from "../handlers/retention.ts";
 import { DynamoRepository } from "../store/dynamo-repository.ts";
 import type { GameRepository } from "../store/repository.ts";
 import { requiredEnv } from "./runtime.ts";
@@ -35,6 +42,8 @@ export interface SweepResult {
   failed: { householdId: string; reason: string }[];
   /** Kids past their household's retention window (#252). */
   idle: IdleSweepResult;
+  /** Deletes whose scrub of other tables failed before, tried again (#252). */
+  forgets: ForgetRetryResult;
 }
 
 export async function handler(): Promise<SweepResult> {
@@ -46,7 +55,7 @@ export async function sweep(repo: GameRepository, now: () => number): Promise<Sw
   const nowIso = new Date(now()).toISOString();
 
   const expired = await repo.listExpiredGuestHouseholds(nowIso, BATCH);
-  const result: Omit<SweepResult, "idle"> = { scanned: expired.length, deleted: [], spared: [], failed: [] };
+  const result: Omit<SweepResult, "idle" | "forgets"> = { scanned: expired.length, deleted: [], spared: [], failed: [] };
 
   for (const household of expired) {
     try {
@@ -61,14 +70,17 @@ export async function sweep(repo: GameRepository, now: () => number): Promise<Sw
        * `deleteGuestHousehold` gates the whole operation on a conditional
        * write instead, and returns false when the claim got there first.
        */
-      // Read before the delete takes the kids' visits with it.
-      const kids = await kidsOf(household.id, { repo });
+      // Read before the delete takes the kids' visits with it, and each kid's
+      // forget job written first, so a sweep that dies after the delete is
+      // finished by the next one rather than lost with her visits.
+      const kids = await kidsOf(household.id, "guest", { repo, now });
+      for (const kid of kids) await repo.putForget(kid);
       const deleted = await repo.deleteGuestHousehold(household.id, nowIso);
       if (deleted) {
         result.deleted.push(household.id);
         await forgetEverywhere(kids, { repo, now });
-      }
-      else {
+      } else {
+        for (const kid of kids) await repo.deleteForget(kid.playerId);
         console.log(`[sweep] sparing ${household.id}: claimed since the index query`);
         result.spared.push(household.id);
       }
@@ -81,10 +93,12 @@ export async function sweep(repo: GameRepository, now: () => number): Promise<Sw
   }
 
   const idle = await sweepIdleProfiles({ repo, now });
+  const forgets = await retryForgets({ repo, now });
   console.log(
     `[sweep] scanned ${result.scanned}, deleted ${result.deleted.length}, ` +
       `spared ${result.spared.length}, failed ${result.failed.length}; ` +
-      `idle kids deleted ${idle.deleted.length}, kept ${idle.kept.length}, failed ${idle.failed.length}`,
+      `idle kids deleted ${idle.deleted.length}, kept ${idle.kept.length}, failed ${idle.failed.length}; ` +
+      `forgets finished ${forgets.finished.length}, dropped ${forgets.dropped.length}, owed ${forgets.owed.length}`,
   );
-  return { ...result, idle };
+  return { ...result, idle, forgets };
 }

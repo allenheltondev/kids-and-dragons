@@ -123,8 +123,9 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Moved device | `HH#<hhId>` | `MOVED#<deviceId>` | Left in the household a kid moved out of, naming the one her phone's binding moved into, so a token minted before the move still finds it by primary key. Not under `DEVICE#`, so no device list sees it. **TTL 31 days**, past any token it could forward. |
 | Pairing code | `PAIR#<code>` | `META` | A single-use code that makes whoever redeems it a device bound to one kid (§4.5, "Pairing a new device"). Spent by a conditional delete. **TTL 10 minutes.** |
 | Visit | `VISIT#<playerId>` | `HH#<tableHhId>` | A table that is not her home that a kid sat down at (#249), written by the join. Keyed by the kid, so a move (#251) never carries it. Only so that deleting her can find the saves that name her (§4.5, "Deleting and keeping"). Deleted with her or her home. |
+| Forget job | `FORGET#<playerId>` | `META` | A kid being deleted (#252): her nicknames, her heroes' names, the tables still to clean, and how to finish the delete that wrote it. Written before any of her rows go, rewritten with the tables a scrub could not clean, removed when none are left. In GSI1's `FORGET` partition, so the sweeper finishes what is owed. |
 
-GSI1 does four jobs, all of them lookups that would otherwise be scans:
+GSI1 does five jobs, all of them lookups that would otherwise be scans:
 
 | `GSI1PK` | `GSI1SK` | On | Answers |
 |---|---|---|---|
@@ -132,6 +133,7 @@ GSI1 does four jobs, all of them lookups that would otherwise be scans:
 | `RUN#<runId>` | `HH#<hhId>` | run items | a runId alone → the household that owns it |
 | `GUEST` | `<expiresAt>#<hhId>` | **guest** household items only | which anonymous households may be swept |
 | `IDLE` | `<keepUntil>#<hhId>#<playerId>` | player items, while their household keeps a retention window | which kids have not played for that window (#252) |
+| `FORGET` | `<createdAt>#<playerId>` | forget job items | which deletes still owe another table its scrub (#252) |
 
 Note that **characters hang off the household, not off a run.** That was already true and is what makes
 persistence across sessions fall out for free — the only thing that was ever session-scoped is the room.
@@ -847,6 +849,7 @@ when a row is added to §3 or written by a store without being described there.
 | Device binding: device id, user agent, last seen, token hash | `DEVICE#` row | Same, revocable |
 | A moved kid's device id → her new household | `MOVED#` row, in the household she left | 31 days (TTL) |
 | The other tables she played at | `VISIT#` rows | Until she or her home is deleted; only so deleting her can find them |
+| While she is being deleted: her names and the tables still to clean | `FORGET#` row | Until every table is clean; the daily sweep retries a failed one |
 | When her phone last said it was at the table | `PRESENCE` row of a run | 6 hours (TTL) |
 | Long-lived device token, room session token | The device's own storage | Until it expires (30-day sliding, room's 6 hours) or is cleared |
 | Address (IPv4, or the IPv6 /64) as a wrong-code counter key | `GUESS#` row | About two 15-minute windows (TTL) |
@@ -1105,13 +1108,28 @@ scene id cannot break a save.
   is refused by the server. The others leave first, or the founder takes
   them off (#248), which they see on their own screen. Any owner may delete
   one kid.
-- **Forgetting at other tables is tidy-up.** It runs after the delete has
-  landed, never before: before it, a guest family signing in at the last
+- **Forgetting at other tables runs after the delete, and always finishes.**
+  After, never before: before it, a guest family signing in at the last
   moment would keep their household and find their kids gone from a friend's
-  game. Each run's state change is one committed turn of its own, published
-  to the run's room if that room still points at it. A run it cannot write
-  is logged and left, as a move's tidy-up is: her profile is already gone,
-  which is what every door reads. Visits from before visits were written down are found
+  game. But her visits go with the delete, so a scrub that failed then
+  could never find those tables again. So every delete first writes a
+  **forget job** (`FORGET#<playerId>`, `ForgetJob`): her names, the tables to
+  clean, and what deleted her. The scrub rewrites it with the tables it
+  could not clean, and removes it when none are left. The daily sweep
+  (`retryForgets`) reads GSI1's `FORGET` partition and first finishes the
+  delete that wrote the job, in case it died before or during its rows
+  going: an owner's delete is completed, since it was asked for and
+  authorized, and a sweep's is asked again under its own gate. Then, if she
+  is gone, it cleans the tables still owed. A kid who is still there (the
+  guest family kept their household in time, or she played inside her
+  window) is forgotten nowhere, and her job is dropped. Each run's state
+  change is one committed turn of its own, published to the run's room if
+  that room still points at it.
+- **A change never brings her back.** `putPlayer` makes a profile and never
+  writes over one being deleted. A rename, a retire or a bring-back goes
+  through `updatePlayer`, which writes only a profile that is there and not
+  marked. So a change an owner read before the delete fails after it, rather
+  than making a new row with no mark on it that nothing would delete again. Visits from before visits were written down are found
   through her heroes' claims, which name the last table each played at.
 - **Keeping.** `Household.retentionDays` is null by default, which is the
   behavior from before: a kept household keeps every kid until an owner

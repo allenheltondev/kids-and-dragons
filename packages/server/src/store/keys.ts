@@ -27,6 +27,7 @@
  * | Moved device     | HH#<hhId>       | MOVED#<deviceId>   |
  * | Pairing code     | PAIR#<code>     | META               |
  * | Visit            | VISIT#<playerId>| HH#<tableHhId>     |
+ * | Forget job       | FORGET#<playerId>| META              |
  *
  * GSI1 indexes devices by device id so a returning phone resolves to its
  * household without a scan (§3), and runs by id so `runId` alone is enough to
@@ -102,6 +103,18 @@ export const CAMPAIGN_SK = (campaignId: string) => `CAMPAIGN#${campaignId}`;
  * name her, which nothing else in the table can list.
  */
 export const VISIT = (playerId: string) => `VISIT#${playerId}`;
+
+/**
+ * A delete still owed to the tables a kid played at (#252): written before
+ * her rows go, and removed once every table has stopped naming her. What
+ * makes a scrub that failed part-way something the sweeper finishes, rather
+ * than something nobody can find again once her visits are gone.
+ */
+export const FORGET = (playerId: string) => `FORGET#${playerId}`;
+
+/** GSI1: every forget job still owed, oldest first. */
+export const GSI1_FORGET = "FORGET";
+export const GSI1_FORGET_SK = (createdAt: string, playerId: string) => `${createdAt}#${playerId}`;
 
 /** Sort-key prefixes, for range queries. */
 export const PREFIX = {
