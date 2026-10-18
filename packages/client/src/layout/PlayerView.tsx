@@ -25,6 +25,7 @@ import type { ReactNode } from "react";
 import { PlayerPanel, SignInFlow, WelcomeBack } from "../screens";
 import { FieldGuideToast } from "../screens/FieldGuideNews";
 import { ArrivalNotices } from "../screens/ArrivalNotices";
+import { CatchUp } from "../screens/CatchUp";
 import { HostControls } from "../screens/HostControls";
 // Imported by path rather than through the `screens` barrel on purpose: the
 // barrel is what every surface pulls in, and the playtest drawer should reach
@@ -34,11 +35,15 @@ import { useMe, useSession } from "../store";
 import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigation";
 import { FieldGuide } from "../screens/FieldGuide";
 import { useKeepsakeStore } from "../store/keepsake";
+import { usePresenceBeat } from "../sync/presence-beat";
 
 export function PlayerView({ roomControls }: { roomControls?: ReactNode }): React.JSX.Element {
   const me = useMe();
   const runId = useSession()?.runId;
   useEffect(() => { dismissPlayerSheet(); }, [runId]);
+  // "Still here" to the server, the only way production learns a phone has
+  // gone (#258). A phone only: the TV renders no PlayerView.
+  usePresenceBeat();
 
   /*
    * Ask once whether this deployment can offer sign-in at all (§4.5). It is a
@@ -79,6 +84,10 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
       {/* Running the room (#263): the roster, Remove, lock and close. Only on
           the device that opened it, folded away until the host opens it. */}
       <HostControls placement="inline" />
+      {/* Back mid-chapter, or joining partway (#258): what the party is doing
+          and where your hero is, in one line. Nothing until it has something
+          to say. */}
+      <CatchUp />
       {guideOverCreation ? <FieldGuide /> : null}
       {creating ? (
         <div className="player-view__creation" hidden={guideOverCreation}><WelcomeBack /></div>
