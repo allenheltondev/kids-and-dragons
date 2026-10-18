@@ -12,7 +12,7 @@
  */
 
 import { create } from "zustand";
-import type { OrganizerHouseholdSummary, OrganizerHouseholdView, OrganizerInvite } from "@kad/shared";
+import type { OrganizerHouseholdSummary, OrganizerHouseholdView, OrganizerInvite, PairingCode } from "@kad/shared";
 import { api as defaultApi, type Api, type OrganizerEdit } from "../sync/client";
 
 /** An edit, minus the household it applies to: always the one on screen. */
@@ -30,6 +30,8 @@ export interface OrganizerStore {
   view: OrganizerHouseholdView | null;
   /** The last code made for the household on screen, to read out or send. */
   invite: OrganizerInvite | null;
+  /** The last pairing code made, and for which kid (#281). */
+  pairing: { playerId: string; code: PairingCode } | null;
   busy: boolean;
   error: string | null;
 
@@ -44,6 +46,8 @@ export interface OrganizerStore {
   acceptInvite(code: string): Promise<void>;
   edit(change: OrganizerChange): Promise<void>;
   makeInvite(): Promise<void>;
+  /** "Play as Ada on another device": a one-time code for one kid of this household. */
+  makePairing(playerId: string): Promise<void>;
   /** Take a co-organizer off; your own id is "leave this group". */
   removeOrganizer(ownerId: string): Promise<void>;
   dismissError(): void;
@@ -71,7 +75,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
 
     async function show(token: string, householdId: string): Promise<void> {
       const view = await api.viewHousehold(token, householdId);
-      set({ view, invite: get().view?.id === householdId ? get().invite : null });
+      set({ view, invite: get().view?.id === householdId ? get().invite : null, pairing: null });
     }
 
     return {
@@ -79,12 +83,13 @@ export function createOrganizerStore(api: Api = defaultApi) {
       households: [],
       view: null,
       invite: null,
+      pairing: null,
       busy: false,
       error: null,
 
       async begin(token, email) {
         idToken = token;
-        set({ email, households: [], view: null, invite: null, error: null });
+        set({ email, households: [], view: null, invite: null, pairing: null, error: null });
         await run(async (t) => {
           const { households } = await api.listHouseholds(t);
           set({ households });
@@ -95,7 +100,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
 
       end() {
         idToken = null;
-        set({ email: null, households: [], view: null, invite: null, busy: false, error: null });
+        set({ email: null, households: [], view: null, invite: null, pairing: null, busy: false, error: null });
       },
 
       async openHousehold(householdId) {
@@ -103,7 +108,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
       },
 
       async backToList() {
-        set({ view: null, invite: null });
+        set({ view: null, invite: null, pairing: null });
         await run(async (t) => {
           set({ households: (await api.listHouseholds(t)).households });
         });
@@ -142,6 +147,14 @@ export function createOrganizerStore(api: Api = defaultApi) {
         });
       },
 
+      async makePairing(playerId) {
+        const householdId = get().view?.id;
+        if (!householdId) return;
+        await run(async (t) => {
+          set({ pairing: { playerId, code: await api.pairProfile(t, householdId, playerId) } });
+        });
+      },
+
       async removeOrganizer(ownerId) {
         const householdId = get().view?.id;
         if (!householdId) return;
@@ -163,6 +176,11 @@ export function createOrganizerStore(api: Api = defaultApi) {
 }
 
 export const useOrganizerStore = createOrganizerStore();
+
+/** "ABCDEFGH" → "ABCD-EFGH": four and four, easier to read out across a ward. */
+export function formatPairingCode(code: string): string {
+  return code.length > 4 ? `${code.slice(0, 4)}-${code.slice(4)}` : code;
+}
 
 /** "ABCDEFGHJK" → "ABCDE-FGHJK": easier to read out across a room. */
 export function formatInviteCode(code: string): string {

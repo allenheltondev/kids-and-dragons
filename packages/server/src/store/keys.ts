@@ -22,6 +22,7 @@
  * | Room             | ROOM#<code>     | META               |
  * | Code misses      | GUESS#<client>  | WINDOW#<n>         |
  * | Organizer invite | INVITE#<code>   | META               |
+ * | Pairing code     | PAIR#<code>     | META               |
  *
  * GSI1 indexes devices by device id so a returning phone resolves to its
  * household without a scan (§3), and runs by id so `runId` alone is enough to
@@ -52,6 +53,12 @@ export const OWNER_SK = (cognitoSub: string) => `OWNER#${cognitoSub}`;
  * `ttl`, like a room: one row, and nothing else points at it.
  */
 export const INVITE = (code: string) => `INVITE#${code.toUpperCase()}`;
+
+/**
+ * A single-use code that makes a new device a kid (#281). Carries a `ttl`,
+ * like an invite: one row, and nothing else points at it.
+ */
+export const PAIR = (code: string) => `PAIR#${code.toUpperCase()}`;
 
 /**
  * Wrong room codes from one client, one row per window (`handlers/code-guard.ts`).
