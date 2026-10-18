@@ -195,6 +195,13 @@ export interface GameStore {
    * a highlight on the TV, never a turn, so it neither retries nor reports.
    */
   preview(preview: IntentPreview | null, context: string | null): void;
+  /**
+   * Tell the room this phone is still here, or (`leaving`) that its page is
+   * closing (#258, server handlers/presence.ts). Production's only presence:
+   * nothing else tells the server a phone has gone. Fire-and-forget, like a
+   * preview: the next beat says it again.
+   */
+  beat(leaving?: boolean): void;
   /** Stops showing an arrival. */
   dismissArrival(playerId: string): void;
   /**
