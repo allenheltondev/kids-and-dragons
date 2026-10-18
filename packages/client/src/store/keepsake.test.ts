@@ -647,3 +647,37 @@ describe("the organizer's panel (#248)", () => {
     expect(organizer.end).toHaveBeenCalled();
   });
 });
+
+describe("the visitor switch's sign-in (#249)", () => {
+  async function signIn(store: ReturnType<typeof setup>["store"]) {
+    await store.getState().sendCode("grown-up@example.com");
+    await store.getState().submitCode("12345678");
+  }
+
+  it("opens the room as the grown-up, then leaves nobody signed in", async () => {
+    const setVisitors = vi.fn(async () => ({ ok: true as const, seq: 4, visitorCode: "ABCDXY" }));
+    const { store } = setup({ api: { setVisitors }, storage: memoryStorage() });
+    await store.getState().check();
+
+    store.getState().openVisitors("ABCD", true);
+    expect(store.getState().step).toBe("email");
+    await signIn(store);
+
+    expect(setVisitors).toHaveBeenCalledWith("id_tok", "ABCD", true);
+    expect(store.getState().step).toBe("closed");
+    expect(store.getState().account).toBeNull();
+  });
+
+  it("says why when the server refuses somebody who does not run the game", async () => {
+    const setVisitors = vi.fn(async () => {
+      throw new Error("Only a grown-up who runs this game can open it to visitors.");
+    });
+    const { store } = setup({ api: { setVisitors }, storage: memoryStorage() });
+    await store.getState().check();
+    store.getState().openVisitors("ABCD", true);
+    await signIn(store);
+
+    expect(store.getState().error).toMatch(/Only a grown-up/);
+    expect(store.getState().step).not.toBe("closed");
+  });
+});

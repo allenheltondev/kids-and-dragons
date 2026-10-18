@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatRoute, isRoomCode, normalizeCode, parseRoute, routeCode } from "./router";
+import { codeComplete, codeSlots, formatRoute, isRoomCode, normalizeCode, normalizeCodeInput, parseRoute, routeCode } from "./router";
 
 describe("parseRoute", () => {
   it("maps the three routes from architecture §4.6", () => {
@@ -87,5 +87,21 @@ describe("room codes", () => {
     // reach the server and get "no such room", not a blank page.
     expect(isRoomCode("IO01")).toBe(true);
     expect(isRoomCode("AB")).toBe(false);
+  });
+
+  it("accepts an open room's six-letter visitor code, and nothing in between (#249)", () => {
+    expect(isRoomCode("ABCDXY")).toBe(true);
+    expect(isRoomCode("ABCDE")).toBe(false);
+    expect(isRoomCode("ABCDXYZ")).toBe(false);
+    expect(parseRoute("/p/abcdxy")).toEqual({ name: "player", code: "ABCDXY" });
+  });
+
+  it("lets a typed code run to six letters, and calls four or six complete", () => {
+    expect(normalizeCodeInput("ab-cd xy z")).toBe("ABCDXY");
+    expect(codeComplete("ABCD")).toBe(true);
+    expect(codeComplete("ABCDX")).toBe(false);
+    expect(codeComplete("ABCDXY")).toBe(true);
+    expect(codeSlots("ABCD")).toBe(4);
+    expect(codeSlots("ABCDX")).toBe(6);
   });
 });

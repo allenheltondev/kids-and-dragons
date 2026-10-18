@@ -3,7 +3,7 @@ import type { ChannelMessage, PartyMember } from "@kad/shared";
 import { makeHarness, seedHousehold } from "../test-support.ts";
 import { addPlayer } from "./account.ts";
 import { applyAction } from "./action.ts";
-import { closeRoom, lockRoom } from "./host.ts";
+import { closeRoom, lockRoom, setQuiet } from "./host.ts";
 import { removePlayer } from "./remove.ts";
 import { setPresence } from "./presence.ts";
 import { relayPreview } from "./preview.ts";
@@ -111,6 +111,47 @@ describe("lockRoom", () => {
       error: { code: "FORBIDDEN" },
     });
     expect((await harness.repo.getState(runId))?.locked).toBeUndefined();
+  });
+});
+
+describe("setQuiet", () => {
+  it("sets the flag as one logged patch every screen receives, and clears it", async () => {
+    const { harness, code, runId, host } = await hostedRoom();
+    const received: ChannelMessage[] = [];
+    const stop = harness.channel.subscribe(code, (m) => received.push(m));
+    expect(await setQuiet({ code, principal: host.principal, quiet: true }, harness.deps)).toMatchObject({ ok: true });
+    stop();
+    expect((await harness.repo.getState(runId))?.quiet).toBe(true);
+    expect(received.map((m) => m.kind)).toEqual(["patch"]);
+    const log = await harness.repo.listEvents(runId, 0);
+    expect(log[log.length - 1]).toMatchObject({ playerId: host.principal.playerId });
+
+    await setQuiet({ code, principal: host.principal, quiet: false }, harness.deps);
+    expect((await harness.repo.getState(runId))?.quiet).toBeUndefined();
+  });
+
+  it("costs nothing when the room is already as asked", async () => {
+    const { harness, code, runId, host } = await hostedRoom();
+    await setQuiet({ code, principal: host.principal, quiet: true }, harness.deps);
+    const seq = (await harness.repo.getState(runId))?.seq;
+    await setQuiet({ code, principal: host.principal, quiet: true }, harness.deps);
+    expect((await harness.repo.getState(runId))?.seq).toBe(seq);
+  });
+
+  it("is something only the device that opened the room can do", async () => {
+    const { harness, code, runId, guest } = await hostedRoom();
+    expect(await setQuiet({ code, principal: guest.principal, quiet: true }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "FORBIDDEN" },
+    });
+    expect((await harness.repo.getState(runId))?.quiet).toBeUndefined();
+  });
+
+  it("is refused once the room is closed", async () => {
+    const { harness, code, runId, host } = await hostedRoom();
+    await closeRoom({ code, principal: host.principal }, harness.deps);
+    expect(await setQuiet({ code, principal: host.principal, quiet: true }, harness.deps)).toMatchObject({ ok: false });
+    expect((await harness.repo.getState(runId))?.quiet).toBeUndefined();
   });
 });
 

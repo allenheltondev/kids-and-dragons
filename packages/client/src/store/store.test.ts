@@ -144,6 +144,7 @@ function harness(state: RunState = makeState()): Harness {
     // A shared tablet (#250): sessions only, never a device token.
     shareDevice: vi.fn(),
     forgetDevice: vi.fn(),
+    setVisitors: vi.fn(),
     listSharedPlayers: vi.fn(async () => ({
       householdId: "h_1",
       players: [
@@ -178,6 +179,8 @@ function harness(state: RunState = makeState()): Harness {
     createTransferCode: vi.fn(),
     acceptTransfer: vi.fn(),
     removeOrganizer: vi.fn(),
+    listSharedDevices: vi.fn(),
+    forgetDeviceById: vi.fn(),
   };
 
   const storage = memoryStorage();
@@ -618,6 +621,19 @@ describe("arrivals and removal (#267)", () => {
       ["lock", { locked: true }],
       ["lock", { locked: false }],
       ["close", {}],
+    ]);
+  });
+
+  it("turns quiet mode on and off for the room it opened (#260)", async () => {
+    const h = harness();
+    await h.store.getState().createRoom("travel", "Allen");
+    h.store.setState({ session: { ...h.store.getState().session!, host: true } });
+
+    expect(await h.store.getState().quietRoom(true)).toBe(true);
+    expect(await h.store.getState().quietRoom(false)).toBe(true);
+    expect(h.api.hostControl.mock.calls.map((call) => [call[1], call[2]])).toEqual([
+      ["quiet", { quiet: true }],
+      ["quiet", { quiet: false }],
     ]);
   });
 

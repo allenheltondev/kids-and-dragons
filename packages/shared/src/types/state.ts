@@ -46,6 +46,13 @@ export interface PartyMember {
   down: boolean;
   connected: boolean;
   ready: boolean;
+  /**
+   * The household this hero lives in, when it is not the room's (#249): a
+   * visitor's. Its XP, items and Field Guide finds are written back there.
+   * Absent for everybody from the room's own household, which is every member
+   * of a room that was never opened to visitors (`memberHome`).
+   */
+  homeHouseholdId?: string;
 }
 
 export type PhaseKind =
@@ -419,11 +426,38 @@ export interface RunState {
    */
   locked?: true;
   /**
+   * The host turned quiet mode on (#260): every device in the room caps its
+   * volume, drops sudden stingers and impacts, skips screen shake, softens
+   * flashes and dims the display. A device can still go lower on its own.
+   * Absent when off.
+   */
+  quiet?: true;
+  /**
    * The host closed the room (#263). Every screen leaves, nothing more is
    * accepted, and the code is free again. Terminal: a closed room never
    * reopens.
    */
   closed?: true;
+  /**
+   * The room is open to visitors (#249): phones from other households may
+   * join it, with this code. It is the room's code and two more letters,
+   * which every screen in the room shows in place of the short one, and it
+   * works only while it is here. Turned on by a signed-in owner of the room's
+   * household, never the host alone. Absent on a room that is not open,
+   * which is every room until an owner opens it. An open room closes itself
+   * once it has been idle for `OPEN_ROOM_IDLE_MS`.
+   */
+  visitorCode?: string;
+  /**
+   * This room has been open to visitors at some point, and never forgets it.
+   * Whoever was given its visitor code was also shown its own four letters
+   * (they are inside the long code, in the room's URL, on every screen), so
+   * from then on knowing the short code proves nothing. A phone nobody has
+   * seen before is never made a member of the room's household here: it comes
+   * in as a visitor, on the visitor code, while the room is open, and not at
+   * all otherwise (`admitNewPhone`). Absent on a room never opened.
+   */
+  visitorsOpened?: true;
   updatedAt: string;
 }
 
@@ -434,6 +468,12 @@ export interface RoomSeat {
   color: string;
   /** What they joined on: their own phone, or the family's shared tablet (#250). */
   device: "phone" | "tablet";
+  /**
+   * A visitor's own household (#249), when it is not the room's. A visitor
+   * who has joined may come back to the room from then on, as anybody on
+   * the roster can.
+   */
+  homeHouseholdId?: string;
 }
 
 /**

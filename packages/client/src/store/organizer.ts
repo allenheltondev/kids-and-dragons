@@ -13,6 +13,7 @@
 
 import { create } from "zustand";
 import type {
+  OrganizerDevice,
   OrganizerHouseholdSummary,
   OrganizerHouseholdView,
   OrganizerInvite,
@@ -34,6 +35,8 @@ export interface OrganizerStore {
   households: OrganizerHouseholdSummary[];
   /** The household being managed. `null` is the picker. */
   view: OrganizerHouseholdView | null;
+  /** The shared tablets of the household on screen (#273), forgotten ones left out. */
+  devices: OrganizerDevice[];
   /** The last code made for the household on screen, to read out or send. */
   invite: OrganizerInvite | null;
   /** The last move code made on this screen, to show as a QR (#251). */
@@ -67,6 +70,8 @@ export interface OrganizerStore {
   acceptTransfer(code: string): Promise<void>;
   /** Hold a code from the URL until the panel opens. */
   setPendingMove(code: string | null): void;
+  /** Forget one of the household's shared tablets; its next request is refused. */
+  forgetDevice(deviceId: string): Promise<void>;
   /** Take a co-organizer off; your own id is "leave this group". */
   removeOrganizer(ownerId: string): Promise<void>;
   dismissError(): void;
@@ -93,15 +98,24 @@ export function createOrganizerStore(api: Api = defaultApi) {
     }
 
     async function show(token: string, householdId: string): Promise<void> {
-      const view = await api.viewHousehold(token, householdId);
+      const [view, { devices }] = await Promise.all([
+        api.viewHousehold(token, householdId),
+        api.listSharedDevices(token, householdId),
+      ]);
       const same = get().view?.id === householdId;
-      set({ view, invite: same ? get().invite : null, transfer: same ? get().transfer : null });
+      set({
+        view,
+        devices: devices.filter((d) => !d.revoked),
+        invite: same ? get().invite : null,
+        transfer: same ? get().transfer : null,
+      });
     }
 
     return {
       email: null,
       households: [],
       view: null,
+      devices: [],
       invite: null,
       transfer: null,
       arrived: null,
@@ -111,7 +125,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
 
       async begin(token, email) {
         idToken = token;
-        set({ email, households: [], view: null, invite: null, transfer: null, arrived: null, error: null });
+        set({ email, households: [], view: null, devices: [], invite: null, transfer: null, arrived: null, error: null });
         await run(async (t) => {
           const { households } = await api.listHouseholds(t);
           set({ households });
@@ -126,6 +140,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
           email: null,
           households: [],
           view: null,
+          devices: [],
           invite: null,
           transfer: null,
           arrived: null,
@@ -140,7 +155,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
       },
 
       async backToList() {
-        set({ view: null, invite: null, transfer: null, arrived: null });
+        set({ view: null, devices: [], invite: null, transfer: null, arrived: null });
         await run(async (t) => {
           set({ households: (await api.listHouseholds(t)).households });
         });
@@ -205,13 +220,22 @@ export function createOrganizerStore(api: Api = defaultApi) {
         set({ pendingMove: code });
       },
 
+      async forgetDevice(deviceId) {
+        const householdId = get().view?.id;
+        if (!householdId) return;
+        await run(async (t) => {
+          await api.forgetDeviceById(t, deviceId);
+          await show(t, householdId);
+        });
+      },
+
       async removeOrganizer(ownerId) {
         const householdId = get().view?.id;
         if (!householdId) return;
         await run(async (t) => {
           const { left } = await api.removeOrganizer(t, householdId, ownerId);
           if (left) {
-            set({ view: null, invite: null, households: (await api.listHouseholds(t)).households });
+            set({ view: null, devices: [], invite: null, households: (await api.listHouseholds(t)).households });
           } else {
             await show(t, householdId);
           }

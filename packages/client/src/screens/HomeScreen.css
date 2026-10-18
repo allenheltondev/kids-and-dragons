@@ -247,6 +247,11 @@
   gap: var(--space-2, 0.5em);
 }
 
+/* A visitor code (#249): six letters, in the same width as four. */
+.home__code-boxes[data-slots="6"] {
+  grid-template-columns: repeat(6, 1fr);
+}
+
 .home__code-box {
   display: grid;
   place-items: center;

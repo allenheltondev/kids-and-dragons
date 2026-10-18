@@ -462,6 +462,21 @@ export interface JoinRoomResponse extends RoomHostFlag, KeeperFlag {
 }
 
 /**
+ * `POST /api/room/:code/visitors` (#249), with a signed-in owner's id token:
+ * open the room to phones from other households, or stop letting new ones in.
+ */
+export interface SetVisitorsRequest {
+  open: boolean;
+}
+
+export interface SetVisitorsResponse {
+  ok: true;
+  seq: number;
+  /** The code a visitor types, while the room is open (`RunState.visitorCode`). */
+  visitorCode?: string;
+}
+
+/**
  * One face on a shared tablet's "who's playing?" picker (#250): a household
  * profile, drawn as a big avatar with no typing.
  */
@@ -541,6 +556,22 @@ export interface OrganizerHouseholdView {
   displayName: string;
   owners: OrganizerOwner[];
   players: OrganizerPlayer[];
+}
+
+/** A tablet bound to the household, as its owners see it. */
+export interface OrganizerDevice {
+  /** What `POST /api/auth/forget-device` names. */
+  deviceId: string;
+  /** As the tablet's browser announced itself; absent when it did not. */
+  userAgent?: string;
+  /** ISO time of the tablet's last request. */
+  lastSeen: string;
+  revoked: boolean;
+}
+
+/** `GET /api/organizer/devices?householdId=`: the household's shared tablets, most recently used first. */
+export interface OrganizerDevicesResponse {
+  devices: OrganizerDevice[];
 }
 
 /** `POST /api/organizer/invite`: a code a second grown-up signs in with to co-organize. */
