@@ -66,8 +66,14 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
  * tablets (#250), host controls and quiet mode (#263, #260), with visitors
  * and safe names (#249, #253) each adding about a KB more. 315 is that plus
  * slack for those, not a new round number; a large accidental import (Pixi,
- * the rigs, the scene) still fails it by a wide margin. Lazy-loading the
- * sign-in client when a grown-up opens it would win back about 10KB.
+ * the rigs, the scene) still fails it by a wide margin.
+ *
+ * Back to about 310 measured, the same day, with the cap left at 315 (#300):
+ * the Cognito client (sync/auth) and the organizer store now load when a
+ * grown-up starts signing in (store/keepsake.ts), not with the home screen.
+ * Only the keepsake store's small state stays eager, because the home screen
+ * reads it. This gate weighs the static graph only; e2e/lazy-sign-in.spec.ts
+ * proves the home screen does not fetch them at runtime either.
  */
 const FIRST_PAINT_BUDGET_KB = 315;
 
