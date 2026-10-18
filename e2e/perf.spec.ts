@@ -110,7 +110,7 @@ test("later visits download none of the art, rigs, audio or content a phone alre
     await controlled(phone);
     await phone.getByRole("button", { name: /want to host/i }).click();
     await phone.getByText("Phone Mode").click();
-    await phone.getByLabel(/your name/i).fill("Ada");
+    await phone.getByLabel(/adventurer name/i).fill("Ada");
     await phone.getByRole("button", { name: /^start a game$/i }).click();
     await expect(phone).toHaveURL(/\/p\/[A-Z0-9]{4}$/);
     await createCharacter(phone, "unicorn", HERO);
@@ -228,7 +228,7 @@ test("the scenes ahead are on a phone showing the world before the party reaches
     await controlled(phone);
     await phone.getByRole("button", { name: /want to host/i }).click();
     await phone.getByText("Phone Mode").click();
-    await phone.getByLabel(/your name/i).fill("Ada");
+    await phone.getByLabel(/adventurer name/i).fill("Ada");
     await phone.getByRole("button", { name: /^start a game$/i }).click();
     await expect(phone).toHaveURL(/\/p\/[A-Z0-9]{4}$/);
     const code = new URL(phone.url()).pathname.split("/").pop()!;
