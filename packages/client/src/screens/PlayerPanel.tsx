@@ -159,9 +159,9 @@ function waitingLine(prompt: Prompt, party: PartyMember[]): string {
 }
 
 /**
- * The friends a gate is still waiting on who have stepped away (#258), by
- * name: the ones a "Start without …" or "Decide without …" tap goes on
- * without. Empty when anybody it waits on is still here.
+ * The friends who stepped away (#258) that a "Start without …" or "Decide
+ * without …" tap goes on without, by name. The caller shows the tap only
+ * once everybody it would wait on is away.
  */
 function awayNames(waitingOn: readonly PartyMember[]): string {
   return waitingOn.map((m) => m.character.name).join(" and ");
