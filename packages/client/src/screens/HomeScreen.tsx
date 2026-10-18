@@ -20,7 +20,14 @@ import { useGameStore } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
 // The one normalize helper for typed and prefilled codes — the router owns the
 // code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
-import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, normalizeCodeInput as normalizeCode } from "../router";
+import {
+  VISITOR_CODE_LENGTH as CODE_LENGTH,
+  codeComplete,
+  codeSlots,
+  navigate,
+  normalizeCodeInput as normalizeCode,
+  pairingFromSearch,
+} from "../router";
 import { loadPlayerDeviceToken } from "../store/persistence";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
@@ -43,6 +50,13 @@ const MODE_ICON: Record<RoomMode, string> = { party: "party", travel: "travel" }
  * (tools/perf/bundle-budget.ts).
  */
 const SharedHome = lazy(() => import("./SharedHome").then((module) => ({ default: module.SharedHome })));
+
+/*
+ * Pairing (#281) loads on demand too: it is an errand of a minute, and the
+ * join screen is what every phone is waiting to see.
+ */
+const PairHere = lazy(() => import("./PairDevice").then((module) => ({ default: module.PairHere })));
+const PlayAsMe = lazy(() => import("./PairDevice").then((module) => ({ default: module.PlayAsMe })));
 
 /*
  * The sign-in panel loads the first time somebody opens it, for the same
@@ -85,6 +99,21 @@ function PersonalHome(): ReactElement {
    * the field and the join section leads.
    */
   const pendingCode = useGameStore((s) => s.pendingCode);
+
+  /*
+   * Pairing (#281): a scanned QR opens `/?pair=CODE`. The code is read once
+   * and then taken out of the address bar, so a reload or a shared screenshot
+   * of the URL does not carry it around. It is not spent here: spending is a
+   * tap, so a link preview that fetches the page cannot use up the code.
+   */
+  const [pairCode] = useState(() => (typeof window === "undefined" ? null : pairingFromSearch(window.location.search)));
+  const [pairing, setPairing] = useState<"none" | "here" | "share">(pairCode === null ? "none" : "here");
+  useEffect(() => {
+    if (pairCode === null) return;
+    const url = new URL(window.location.href);
+    url.searchParams.delete("pair");
+    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+  }, [pairCode]);
 
   const [displayName, setDisplayName] = useState("");
   const [hosting, setHosting] = useState(false);
@@ -185,7 +214,7 @@ function PersonalHome(): ReactElement {
             name field, and in a centred column that lifted the very tile
             just tapped. Joining, where nothing grows, stays centred. */}
         <div className={`home__body${hosting ? " home__body--top" : ""}`}>
-          <section className="home__card home__card--join" aria-labelledby="home-join" hidden={hosting}>
+          <section className="home__card home__card--join" aria-labelledby="home-join" hidden={hosting || pairing !== "none"}>
             <h2 className="home__card-title" id="home-join">
               <Icon name="qr" />
               <span>Join a game</span>
@@ -244,7 +273,19 @@ function PersonalHome(): ReactElement {
                 Want to host? Set up a game
               </button>
             </div>
+            {/* A fresh device that is already somebody's (#281): a hospital
+                tablet, a borrowed phone. Her code makes it hers. */}
+            <div className="home__host-toggle">
+              <button type="button" className="home__link kad-focusable" onClick={() => setPairing("here")}>
+                I play here already
+              </button>
+            </div>
           </section>
+
+          <Suspense fallback={null}>
+            {pairing === "here" ? <PairHere initialCode={pairCode ?? ""} onClose={() => setPairing("none")} /> : null}
+            {pairing === "share" ? <PlayAsMe onClose={() => setPairing("none")} /> : null}
+          </Suspense>
 
           {/*
            * Between games (`/journal`): your hero, their bag, the map and the
@@ -255,7 +296,7 @@ function PersonalHome(): ReactElement {
            * to do.
            */}
           {hasPlayed ? (
-            <section className="home__card home__journal" aria-labelledby="home-journal" hidden={hosting}>
+            <section className="home__card home__journal" aria-labelledby="home-journal" hidden={hosting || pairing !== "none"}>
               <h2 className="home__card-title" id="home-journal">
                 <Icon name="scroll" />
                 <span>Your adventure book</span>
@@ -265,6 +306,12 @@ function PersonalHome(): ReactElement {
                 onClick={() => navigate({ name: "journal" })}>
                 Open your book
               </Button>
+              {/* Her own phone hands her to another device (#281). */}
+              <div className="home__host-toggle">
+                <button type="button" className="home__link kad-focusable" onClick={() => setPairing("share")}>
+                  Play as me on another device
+                </button>
+              </div>
             </section>
           ) : null}
 
