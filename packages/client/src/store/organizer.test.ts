@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import type { OrganizerHouseholdView } from "@kad/shared";
+import type { OrganizerDevice, OrganizerHouseholdView } from "@kad/shared";
 import type { Api } from "../sync/client";
 import { createOrganizerStore, formatInviteCode } from "./organizer";
 
@@ -14,9 +14,17 @@ function view(id: string, overrides: Partial<OrganizerHouseholdView> = {}): Orga
 }
 
 function setup(households = [{ id: "h_club", displayName: "Thursday Club", players: 0 }]) {
+  let devices: OrganizerDevice[] = [
+    { deviceId: "d_ipad", userAgent: "iPad", lastSeen: "2026-10-13T10:00:00.000Z", revoked: false },
+    { deviceId: "d_old", lastSeen: "2026-09-01T10:00:00.000Z", revoked: true },
+  ];
   const api = {
     listHouseholds: vi.fn(async () => ({ households })),
     viewHousehold: vi.fn(async (_t: string, id: string) => view(id)),
+    listSharedDevices: vi.fn(async () => ({ devices })),
+    forgetDeviceById: vi.fn(async (_t: string, id: string) => {
+      devices = devices.filter((d) => d.deviceId !== id);
+    }),
     createGroup: vi.fn(async (_t: string, displayName: string) => ({ id: "h_new", displayName, players: 0 })),
     editHousehold: vi.fn(async (_t: string, edit: { householdId: string }) => view(edit.householdId, { displayName: "Renamed" })),
     createOrganizerInvite: vi.fn(async () => ({ code: "ABCDEFGHJK", expiresAt: "2026-07-07T18:00:00.000Z" })),
@@ -32,6 +40,17 @@ describe("the organizer store", () => {
     await store.getState().begin("id_tok", "ana@example.com");
     expect(api.viewHousehold).toHaveBeenCalledWith("id_tok", "h_club");
     expect(store.getState().view?.displayName).toBe("Thursday Club");
+  });
+
+  it("lists the household's tablets without the forgotten ones, and forgets one", async () => {
+    const { store, api } = setup();
+    await store.getState().begin("id_tok", "ana@example.com");
+    expect(api.listSharedDevices).toHaveBeenCalledWith("id_tok", "h_club");
+    expect(store.getState().devices.map((d) => d.deviceId)).toEqual(["d_ipad"]);
+
+    await store.getState().forgetDevice("d_ipad");
+    expect(api.forgetDeviceById).toHaveBeenCalledWith("id_tok", "d_ipad");
+    expect(store.getState().devices).toEqual([]);
   });
 
   it("shows the picker when there is more than one", async () => {
