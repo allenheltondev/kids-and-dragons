@@ -148,6 +148,14 @@ export interface StepFinds {
   book: FieldGuideBook;
   /** Only ids the book did not already have; empty when nothing is new. */
   report: FieldGuideDiscovery[];
+  /**
+   * The same step's finds for each visitor's own household (#249), which
+   * keeps its own book: everything the step revealed, credited to that
+   * household's own player. Recorded first-finder-wins like the room's, so
+   * what that book already has is left alone. Empty in a room with no
+   * visitors.
+   */
+  visitors: { householdId: string; report: FieldGuideDiscovery[] }[];
 }
 
 /**
@@ -199,7 +207,30 @@ export async function prepareStepFinds(
     book[canonId] = { firstFoundBy: finder!, foundAt: now, runId: run.id };
     report.push({ canonId, playerId: finder!, runId: run.id, foundAt: now });
   }
-  return { householdId, book, report };
+  return { householdId, book, report, visitors: visitorFinds(after, householdId, found, finder, run.id, now) };
+}
+
+/** `StepFinds.visitors`: one report per visiting household at the table. */
+function visitorFinds(
+  state: RunState,
+  householdId: string,
+  found: readonly string[],
+  finder: string | null,
+  runId: string,
+  now: string,
+): StepFinds["visitors"] {
+  if (found.length === 0) return [];
+  const homes = new Map<string, string>();
+  for (const member of state.party) {
+    const home = member.homeHouseholdId;
+    if (home === undefined || home === householdId) continue;
+    // Their own finder when one of theirs made the find, else their first hero.
+    if (!homes.has(home) || member.playerId === finder) homes.set(home, member.playerId);
+  }
+  return [...homes].map(([home, playerId]) => ({
+    householdId: home,
+    report: found.map((canonId) => ({ canonId, playerId, runId, foundAt: now })),
+  }));
 }
 
 /**
@@ -218,7 +249,17 @@ export async function recordStepFinds(
   finds: StepFinds | null,
   deps: Pick<HandlerDeps, "repo">,
 ): Promise<string[]> {
-  if (!finds || finds.report.length === 0) return [];
+  if (!finds) return [];
+  // A visitor's book is theirs to keep, and nothing here waits on it or
+  // celebrates it: the room's book is the one every screen shows.
+  for (const visit of finds.visitors) {
+    try {
+      await deps.repo.recordDiscoveries(visit.householdId, visit.report);
+    } catch (err) {
+      console.error(`field guide: recording ${visit.report.length} find(s) for visitor ${visit.householdId} failed:`, err);
+    }
+  }
+  if (finds.report.length === 0) return [];
   try {
     return await deps.repo.recordDiscoveries(finds.householdId, finds.report);
   } catch (err) {
