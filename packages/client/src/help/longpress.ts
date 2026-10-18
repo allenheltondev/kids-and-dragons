@@ -1,0 +1,104 @@
+/**
+ * Press and hold on a card, a buff or an item, without breaking taps or scrolling.
+ *
+ * Things say they can be held by wearing `helpAttrs(...)`; one listener on the document finds them,
+ * so a list of cards needs no hook per card and a thing added later is held for free. The listener is
+ * installed by the lazy help control, so a phone pays nothing until that has loaded.
+ *
+ * The hold is a timer a finger can lose: it is cancelled when the pointer drifts more than a few
+ * pixels (that is a scroll or a swipe), lifts, or the browser takes the gesture (`pointercancel`,
+ * which is what a scroll becomes). Nothing here calls preventDefault on a pointer or touch event, so a
+ * tap still clicks and a list still scrolls. When the hold does fire, the click that follows the finger
+ * lifting is swallowed once, so showing what a card does never also plays the card.
+ */
+
+import type { HelpThingKind } from "@kad/shared";
+import { HELP_THING_KINDS } from "@kad/shared";
+import type { HelpThing } from "./focus";
+
+/** Long enough that no ordinary tap or scroll start reaches it, short enough that nobody wonders. */
+export const HOLD_MS = 500;
+/** How far a finger may drift and still be holding. */
+export const HOLD_SLOP_PX = 8;
+
+const SELECTOR = "[data-help-kind]";
+
+/** Spread onto a card, a buff row or an item: it can now be pressed and held. */
+export function helpAttrs(thing: HelpThing): Record<string, string> {
+  return {
+    "data-help-kind": thing.kind,
+    "data-help-name": thing.name,
+    ...(thing.text !== undefined ? { "data-help-text": thing.text } : {}),
+    ...(thing.icon !== undefined ? { "data-help-icon": thing.icon } : {}),
+  };
+}
+
+function thingOf(target: EventTarget | null): HelpThing | null {
+  const element = target instanceof Element ? target.closest<HTMLElement>(SELECTOR) : null;
+  const kind = element?.dataset.helpKind;
+  if (!element || !kind || !(HELP_THING_KINDS as readonly string[]).includes(kind)) return null;
+  const { helpName, helpText, helpIcon } = element.dataset;
+  return {
+    kind: kind as HelpThingKind,
+    name: helpName ?? "",
+    ...(helpText ? { text: helpText } : {}),
+    ...(helpIcon ? { icon: helpIcon } : {}),
+  };
+}
+
+/** Starts listening. Returns the function that stops. */
+export function installLongPress(onHold: (thing: HelpThing) => void, root: Document = document): () => void {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  let origin: { x: number; y: number } | null = null;
+  let fired = false;
+
+  const cancel = (): void => {
+    if (timer !== null) clearTimeout(timer);
+    timer = null;
+    origin = null;
+  };
+  const down = (event: PointerEvent): void => {
+    // A mouse's other buttons are not a hold.
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    cancel();
+    fired = false;
+    const thing = thingOf(event.target);
+    if (thing === null) return;
+    origin = { x: event.clientX, y: event.clientY };
+    timer = setTimeout(() => {
+      timer = null;
+      fired = true;
+      onHold(thing);
+    }, HOLD_MS);
+  };
+  const move = (event: PointerEvent): void => {
+    if (origin === null) return;
+    if (Math.hypot(event.clientX - origin.x, event.clientY - origin.y) > HOLD_SLOP_PX) cancel();
+  };
+  const click = (event: MouseEvent): void => {
+    if (!fired) return;
+    fired = false;
+    event.preventDefault();
+    event.stopPropagation();
+  };
+  // Android shows a menu on a long press; the sheet is the answer to it instead.
+  const menu = (event: Event): void => {
+    if (thingOf(event.target) !== null) event.preventDefault();
+  };
+
+  root.addEventListener("pointerdown", down, { passive: true });
+  root.addEventListener("pointermove", move, { passive: true });
+  root.addEventListener("pointerup", cancel, { passive: true });
+  root.addEventListener("pointercancel", cancel, { passive: true });
+  root.addEventListener("click", click, true);
+  root.addEventListener("contextmenu", menu);
+  return () => {
+    cancel();
+    root.removeEventListener("pointerdown", down);
+    root.removeEventListener("pointermove", move);
+    root.removeEventListener("pointerup", cancel);
+    root.removeEventListener("pointercancel", cancel);
+    root.removeEventListener("click", click, true);
+    root.removeEventListener("contextmenu", menu);
+  };
+}

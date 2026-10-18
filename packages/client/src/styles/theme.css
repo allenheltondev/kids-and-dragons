@@ -171,9 +171,9 @@
 
   /* --- accessibility, set by a11y/prefs.ts (#262) ------------------------ */
   --kad-text-scale: 1;
-  /* The corner row (App.tsx) is three 44px controls and the gaps between them. Pixels, not
+  /* The corner row (App.tsx) is four 44px controls (help, settings, read-aloud, sound) and the gaps between them. Pixels, not
      em: the row does not grow with the text, so what clears it never has to guess. */
-  --kad-corner-reserve: 148px;
+  --kad-corner-reserve: 196px;
   --kad-corner-bottom: 52px;
 
   color-scheme: dark;

@@ -88,6 +88,7 @@ export const SW_PRECACHE_CONTENT: readonly string[] = [
   "/content/abilities.json",
   "/content/world.json",
   "/content/field-guide.json",
+  "/content/help.json",
 ];
 
 /**
