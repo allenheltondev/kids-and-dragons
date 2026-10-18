@@ -6,6 +6,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui";
 import { Icon } from "../screens/icons";
+import { isQuiet, onQuietChange } from "../quiet";
 import { setAudioSink } from "./cue";
 import { createAudioEngine, type AudioEngine } from "./engine";
 
@@ -17,12 +18,17 @@ export function AudioControl({ enabled = true, soundtrack = null, ready = false,
   const engineRef = useRef<AudioEngine | null>(null);
   const [muted, setMuted] = useState(false);
   const [locked, setLocked] = useState(true);
+  const [quiet, setQuiet] = useState(isQuiet());
+  const [volume, setVolume] = useState(0.8);
 
   useEffect(() => {
     if (!enabled) return;
     const engine = createAudioEngine();
     engineRef.current = engine;
     setMuted(engine.muted());
+    setVolume(engine.volume());
+    engine.setQuiet(isQuiet());
+    setQuiet(isQuiet());
     setLocked(!engine.unlocked());
     setAudioSink(engine.sink);
 
@@ -35,7 +41,14 @@ export function AudioControl({ enabled = true, soundtrack = null, ready = false,
     };
     window.addEventListener("pointerdown", unlock);
     window.addEventListener("keydown", unlock);
+    // The room went quiet, or came back: the engine scales and drops, and the
+    // slider appears so this device can still go lower than the room's cap.
+    const stopQuiet = onQuietChange((next) => {
+      engine.setQuiet(next);
+      setQuiet(next);
+    });
     return () => {
+      stopQuiet();
       window.removeEventListener("pointerdown", unlock);
       window.removeEventListener("keydown", unlock);
       setAudioSink(null);
@@ -62,12 +75,29 @@ export function AudioControl({ enabled = true, soundtrack = null, ready = false,
     setMuted(next);
   };
 
+  const changeVolume = (next: number): void => {
+    engineRef.current?.setVolume(next);
+    setVolume(next);
+  };
+
   if (!enabled) return null;
 
   return (
     <div className="kad-audio-control">
       {locked && !muted ? (
         <p className="kad-audio-control__hint">Click or press a key for sound</p>
+      ) : null}
+      {quiet && !muted ? (
+        <input
+          className="kad-audio-control__volume"
+          type="range"
+          min={0}
+          max={1}
+          step={0.05}
+          value={volume}
+          aria-label="Volume on this device"
+          onChange={(event) => changeVolume(Number(event.target.value))}
+        />
       ) : null}
       <Button
         className="kad-audio-control__button"

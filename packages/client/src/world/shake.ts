@@ -95,6 +95,15 @@ export function impactBeats(
   return beats;
 }
 
+/**
+ * The strength a jolt actually gets, given what this viewer needs: none when
+ * they asked the OS for reduced motion, none in a quiet room (#260). The one
+ * gate every jolt passes, scheduled or immediate.
+ */
+export function joltStrength(strength: number, calm: { reducedMotion: boolean; quiet: boolean }): number {
+  return calm.reducedMotion || calm.quiet ? 0 : strength;
+}
+
 export interface Shake {
   /** 0..1, scales the peak displacement. */
   strength: number;
