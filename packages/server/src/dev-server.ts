@@ -39,10 +39,11 @@ import {
 import { relayPreview } from "./handlers/preview.ts";
 import { setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
-import type { ActionError, HandlerDeps } from "./handlers/deps.ts";
+import type { ActionError, HandlerDeps, HandlerResult } from "./handlers/deps.ts";
 import { iso } from "./handlers/deps.ts";
 import { createRoom, joinRoom, settleRoom, watchRoom } from "./handlers/room.ts";
 import { removePlayer } from "./handlers/remove.ts";
+import { closeRoom, lockRoom, type HostPrincipal } from "./handlers/host.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
 import { getState } from "./handlers/state.ts";
@@ -152,7 +153,7 @@ async function main(): Promise<void> {
         deps,
       );
       if (!opened.ok) return sendError(res, statusFor(opened.error), opened.error.code, opened.error.message);
-      const seated = await joinRoom({ code: opened.value.code, principal: seat.value }, deps);
+      const seated = await joinRoom({ code: opened.value.code, principal: seat.value, device: "tablet" }, deps);
       if (!seated.ok) return sendError(res, statusFor(seated.error), seated.error.code, seated.error.message);
       return res.json({
         ...seated.value,
@@ -234,7 +235,7 @@ async function main(): Promise<void> {
         base,
       );
       if (!seat.ok) return sendError(res, statusFor(seat.error), seat.error.code, seat.error.message);
-      const seated = await joinRoom({ code, principal: seat.value }, deps);
+      const seated = await joinRoom({ code, principal: seat.value, device: "tablet" }, deps);
       if (!seated.ok) return sendError(res, statusFor(seated.error), seated.error.code, seated.error.message);
       return res.json({ ...seated.value, code, roomCode: code, expiresAt: found.expiresAt });
     }
@@ -296,37 +297,60 @@ async function main(): Promise<void> {
     res.json(result.value);
   });
 
-  /** The host taking a player out (#267) — see lambda/http.ts. */
-  app.post("/api/room/:code/remove", async (req: Request, res: Response) => {
-    const deps = await withRuntime(base, res);
-    if (!deps) return;
+  /*
+   * Host controls (#263, #267): remove, lock, close. As in lambda/http.ts, the
+   * host is a phone's device token or a tablet's token plus its seated
+   * player's session (#250), and the body is checked only once the host is.
+   */
+  type HostAct = (
+    code: string,
+    principal: HostPrincipal,
+    body: Record<string, unknown>,
+    deps: HandlerDeps,
+  ) => Promise<HandlerResult<{ seq: number }>>;
+  const hostControl =
+    (validate: (body: Record<string, unknown>) => string | null, act: HostAct) =>
+    async (req: Request, res: Response) => {
+      const deps = await withRuntime(base, res);
+      if (!deps) return;
 
-    const code = String(req.params.code ?? "").toUpperCase();
-    // A phone's device token, or a tablet's token plus its seated player's session (#250).
-    const shared = await resolveShared(req, base);
-    if (shared === null) return forgottenDevice(res);
-    let principal: Pick<DeviceIdentity, "deviceId" | "playerId">;
-    if (shared) {
-      const seat = tabletHost(shared, await resolveSession(req, base), code);
-      if (!seat.ok) return sendError(res, 401, seat.error.code, seat.error.message);
-      principal = seat.value;
-    } else {
-      const host = await resolvePrincipal(req, base);
-      if (!host) return sendError(res, 401, "FORBIDDEN", "taking someone out needs this device's token");
-      principal = host.principal;
-    }
-    const playerId = req.body?.playerId;
-    if (typeof playerId !== "string" || playerId === "") {
-      return sendError(res, 400, "ILLEGAL", "expected { playerId }");
-    }
-    const lookup = await admitCodeLookup(clientOf(req), deps);
-    if (!lookup) return slowDown(res, deps);
-    const result = await removePlayer({ code, principal, playerId }, deps);
-    const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
-    if (!missed) await lookup.hit();
-    if (result.ok) return res.json({ ok: true, seq: result.value.seq });
-    sendError(res, statusFor(result.error), result.error.code, result.error.message);
-  });
+      const code = String(req.params.code ?? "").toUpperCase();
+      const shared = await resolveShared(req, base);
+      if (shared === null) return forgottenDevice(res);
+      let principal: HostPrincipal;
+      if (shared) {
+        const seat = tabletHost(shared, await resolveSession(req, base), code);
+        if (!seat.ok) return sendError(res, 401, seat.error.code, seat.error.message);
+        principal = seat.value;
+      } else {
+        const host = await resolvePrincipal(req, base);
+        if (!host) return sendError(res, 401, "FORBIDDEN", "running this room needs the device that opened it");
+        principal = host.principal;
+      }
+      const body = (req.body ?? {}) as Record<string, unknown>;
+      const invalid = validate(body);
+      if (invalid !== null) return sendError(res, 400, "ILLEGAL", invalid);
+      const lookup = await admitCodeLookup(clientOf(req), deps);
+      if (!lookup) return slowDown(res, deps);
+      const result = await act(code, principal, body, deps);
+      const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
+      if (!missed) await lookup.hit();
+      if (result.ok) return res.json({ ok: true, seq: result.value.seq });
+      sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    };
+
+  app.post("/api/room/:code/remove", hostControl(
+    (body) => (typeof body.playerId === "string" && body.playerId !== "" ? null : "expected { playerId }"),
+    (code, principal, body, deps) => removePlayer({ code, principal, playerId: body.playerId as string }, deps),
+  ));
+  app.post("/api/room/:code/lock", hostControl(
+    (body) => (typeof body.locked === "boolean" ? null : "expected { locked: true | false }"),
+    (code, principal, body, deps) => lockRoom({ code, principal, locked: body.locked as boolean }, deps),
+  ));
+  app.post("/api/room/:code/close", hostControl(
+    () => null,
+    (code, principal, _body, deps) => closeRoom({ code, principal }, deps),
+  ));
 
   // -------------------------------------------------------------------------
   // Actions and reconnect

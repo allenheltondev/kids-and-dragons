@@ -300,7 +300,15 @@ describe("taking a player out of a room the tablet opened (#267)", () => {
     const stranger = bodyOf(
       await respond(event("POST", `/api/room/${code}/join`, { body: { displayName: "Who?" } }), rt),
     );
-    return { harness, householdId, rt, shared, code, session: String(created.sessionToken), stranger: String(stranger.playerId) };
+    return {
+      harness,
+      householdId,
+      rt,
+      shared,
+      code,
+      session: String(created.sessionToken),
+      stranger: String(stranger.playerId),
+    };
   }
 
   function remove(code: string, playerId: string, headers: Record<string, string>) {
@@ -369,6 +377,55 @@ describe("taking a player out of a room the tablet opened (#267)", () => {
       rt,
     );
     expect(result.statusCode).toBe(403);
+  });
+});
+
+describe("locking and closing a room (#263)", () => {
+  async function tabletRoom() {
+    const { harness } = await family();
+    const rt = runtime(harness);
+    const shared = await makeShared((e) => respond(e, rt));
+    const created = bodyOf(
+      await respond(
+        event("POST", "/api/room", { body: { mode: "travel", playerId: "p_1" }, headers: { "x-kad-shared-token": shared } }),
+        rt,
+      ),
+    );
+    const host = { "x-kad-shared-token": shared, authorization: `Bearer ${String(created.sessionToken)}` };
+    return { harness, rt, code: String(created.code), runId: String(created.runId), host };
+  }
+
+  it("lets the tablet that opened the room lock it, then close it", async () => {
+    const { harness, rt, code, runId, host } = await tabletRoom();
+
+    const locked = await respond(event("POST", `/api/room/${code}/lock`, { body: { locked: true }, headers: host }), rt);
+    expect(locked.statusCode).toBe(200);
+    const newcomer = await respond(event("POST", `/api/room/${code}/join`, { body: {} }), rt);
+    expect(newcomer.statusCode).toBe(403);
+    expect(bodyOf(newcomer).error).toMatchObject({ message: expect.stringMatching(/locked/) });
+
+    const closed = await respond(event("POST", `/api/room/${code}/close`, { headers: host }), rt);
+    expect(closed.statusCode).toBe(200);
+    expect((await harness.repo.getState(runId))?.closed).toBe(true);
+    const again = await respond(event("POST", `/api/room/${code}/join`, { body: {} }), rt);
+    expect(again.statusCode).toBe(404);
+  });
+
+  it("refuses everybody else, and reads the body only once the host is proved", async () => {
+    const { rt, code, host } = await tabletRoom();
+    const guest = bodyOf(await respond(event("POST", `/api/room/${code}/join`, { body: {} }), rt));
+    const asGuest = { "x-kad-device-token": String(guest.deviceToken) };
+
+    for (const path of ["lock", "close"]) {
+      const nobody = await respond(event("POST", `/api/room/${code}/${path}`, { body: { locked: true } }), rt);
+      expect(nobody.statusCode, path).toBe(401);
+      const player = await respond(event("POST", `/api/room/${code}/${path}`, { body: { locked: true }, headers: asGuest }), rt);
+      expect(player.statusCode, path).toBe(403);
+    }
+    const garbled = await respond(event("POST", `/api/room/${code}/lock`, { body: { locked: "yes" } }), rt);
+    expect(garbled.statusCode).toBe(401);
+    const hostGarbled = await respond(event("POST", `/api/room/${code}/lock`, { body: { locked: "yes" }, headers: host }), rt);
+    expect(hostGarbled.statusCode).toBe(400);
   });
 });
 

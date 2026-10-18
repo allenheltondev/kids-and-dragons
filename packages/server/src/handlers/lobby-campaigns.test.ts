@@ -251,8 +251,12 @@ describe("a TV's room belongs to the first phone that joins", () => {
     // The household id stays off the wire: every screen, the TV included, reads this.
     expect(JSON.stringify(state)).not.toContain(householdId);
 
-    // And once it is right, a join changes nothing.
-    const seq = state?.seq;
+    // And once it is right, a join changes nothing but the roster (#263), and
+    // a rejoin not even that. The first phone's join above threw before it
+    // was seated, so this is its first.
+    await joinRoom({ code, principal: players[0]!.principal }, h.deps);
+    const seq = (await h.repo.getState(runId))?.seq;
+    expect(seq).toBe((state?.seq ?? 0) + 1);
     await joinRoom({ code, principal: players[0]!.principal }, h.deps);
     expect((await h.repo.getState(runId))?.seq).toBe(seq);
   });

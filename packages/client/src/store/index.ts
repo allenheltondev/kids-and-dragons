@@ -65,6 +65,8 @@ import {
   REQUEST_TIMEOUT_MS,
   type Api,
   type ClientConfig,
+  type HostAuth,
+  type HostControl,
 } from "../sync/client";
 import {
   MessageSequencer,
@@ -647,6 +649,42 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       return session;
     }
 
+    /**
+     * How this screen proves it opened the room (#263, #267). A shared tablet
+     * holds no device binding and must not mint one: its own token and the
+     * seated kid's session name the host (#250). Anywhere else it is the
+     * device binding, which a TV holds too. `null` when there is neither.
+     */
+    function hostAuth(session: ClientSession): HostAuth | null {
+      const shared = loadSharedDevice(deps.storage);
+      if (shared) return { sharedToken: shared.token, sessionToken: session.sessionToken };
+      const deviceToken = loadIdentity(deps.storage).deviceToken;
+      return deviceToken ? { deviceToken } : null;
+    }
+
+    /**
+     * One host control, start to finish. Resolves `true` once the server has
+     * done it; a refusal lands in `error` and resolves `false`. What changed
+     * reaches this screen the way it reaches every other: as the run's patch.
+     */
+    async function hostControl(
+      control: HostControl,
+      body: Record<string, unknown>,
+      failure: string,
+    ): Promise<boolean> {
+      const session = get().session;
+      if (!session?.host) return false;
+      const auth = hostAuth(session);
+      if (!auth) return false;
+      try {
+        await deps.api.hostControl(session.roomCode, control, body, auth);
+        return true;
+      } catch (error) {
+        set({ error: error instanceof Error ? error.message : failure });
+        return false;
+      }
+    }
+
     function failWith(error: unknown): never {
       const message =
         error instanceof ApiError
@@ -1159,26 +1197,17 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       },
 
       async removePlayer(playerId: string) {
-        const session = get().session;
-        if (!session?.host) return false;
-        // A shared tablet holds no device binding, and must not mint one: its
-        // own token and the seated kid's session name the host (#250).
-        const shared = loadSharedDevice(deps.storage);
-        // The device binding is what names the host anywhere else; a TV holds one too.
-        const deviceToken = shared ? null : loadIdentity(deps.storage).deviceToken;
-        if (!shared && !deviceToken) return false;
-        try {
-          if (shared) {
-            await deps.api.removePlayerShared(session.roomCode, playerId, shared.token, session.sessionToken);
-          } else if (deviceToken) {
-            await deps.api.removePlayer(session.roomCode, playerId, deviceToken);
-          }
-          set({ arrivals: get().arrivals.filter((a) => a.playerId !== playerId) });
-          return true;
-        } catch (error) {
-          set({ error: error instanceof Error ? error.message : "Could not take them out." });
-          return false;
-        }
+        const done = await hostControl("remove", { playerId }, "Could not take them out.");
+        if (done) set({ arrivals: get().arrivals.filter((a) => a.playerId !== playerId) });
+        return done;
+      },
+
+      lockRoom(locked: boolean) {
+        return hostControl("lock", { locked }, locked ? "Could not lock the room." : "Could not unlock the room.");
+      },
+
+      closeRoom() {
+        return hostControl("close", {}, "Could not close the room.");
       },
 
       registerPresentationPlayer(gate: PresentationGate | null) {

@@ -405,7 +405,35 @@ export interface RunState {
    * Absent until somebody is removed.
    */
   removed?: string[];
+  /**
+   * Everybody who has joined this room, by player id, for the host's view
+   * (#263): who is in, on what, including a kid still making their hero, who
+   * is not in `party` yet. Written by the join, so it survives a refresh of
+   * the host's screen, where the arrival notices do not.
+   */
+  seats?: Record<string, RoomSeat>;
+  /**
+   * The host locked the room (#263): nobody new may join. Everybody already
+   * seated (`seats`) can still come back to it, from any device. Absent when
+   * open.
+   */
+  locked?: true;
+  /**
+   * The host closed the room (#263). Every screen leaves, nothing more is
+   * accepted, and the code is free again. Terminal: a closed room never
+   * reopens.
+   */
+  closed?: true;
   updatedAt: string;
+}
+
+/** One entry on the host's roster (`RunState.seats`, #263). */
+export interface RoomSeat {
+  /** The profile's name; a hero's name, once there is one, is in `party`. */
+  name: string;
+  color: string;
+  /** What they joined on: their own phone, or the family's shared tablet (#250). */
+  device: "phone" | "tablet";
 }
 
 /**

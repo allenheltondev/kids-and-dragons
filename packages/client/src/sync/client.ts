@@ -131,6 +131,15 @@ export interface SharedPlayersLoad extends SharedDevicePlayersResponse {
   rotatedToken?: string;
 }
 
+/** What the host may do to its room (#263, #267). */
+export type HostControl = "remove" | "lock" | "close";
+
+/**
+ * How the host proves it is the host: a phone's (or TV's) own device token,
+ * or a shared tablet's token with the seated kid's room session (#250).
+ */
+export type HostAuth = { deviceToken: string } | { sharedToken: string; sessionToken: string };
+
 export interface Api {
   createRoom(body: CreateRoomInput): Promise<LocalCreateRoomResponse>;
   /** Party Mode, opened from the TV itself: nobody is seated. */
@@ -141,13 +150,11 @@ export interface Api {
    * learns after a refresh that it is still the host (#267). It grants nothing else.
    */
   watchRoom(code: string, timeoutMs?: number, deviceToken?: string): Promise<WatchRoomResponse>;
-  /** The host taking a player out of the room (#267). The device token names the host. */
-  removePlayer(code: string, playerId: string, deviceToken: string): Promise<void>;
   /**
-   * The same from a shared tablet that opened the room (#250): its own token
-   * names the device, the seated kid's session says who is asking.
+   * The host running the room (#263, #267): take a player out
+   * (`{ playerId }`), lock it to new joins (`{ locked }`), or close it.
    */
-  removePlayerShared(code: string, playerId: string, sharedToken: string, sessionToken: string): Promise<void>;
+  hostControl(code: string, control: HostControl, body: Record<string, unknown>, auth: HostAuth): Promise<void>;
   postAction(body: ActionRequest, token: string): Promise<ActionResponse>;
   /** An unconfirmed tap, relayed to the room's screens (`IntentPreview`). */
   postPreview(preview: IntentPreview | null, context: string | null, token: string): Promise<void>;
@@ -340,20 +347,15 @@ export const api: Api = {
     });
   },
 
-  async removePlayer(code, playerId, deviceToken) {
-    await request<{ ok: true }>(`/api/room/${encodeURIComponent(code)}/remove`, {
+  async hostControl(code, control, body, auth) {
+    await request<{ ok: true }>(`/api/room/${encodeURIComponent(code)}/${control}`, {
       method: "POST",
-      headers: { ...JSON_HEADERS, "x-kad-device-token": deviceToken },
-      body: JSON.stringify({ playerId }),
-    });
-  },
-
-  async removePlayerShared(code, playerId, sharedToken, sessionToken) {
-    await request<{ ok: true }>(`/api/room/${encodeURIComponent(code)}/remove`, {
-      method: "POST",
-      headers: { ...JSON_HEADERS, "x-kad-shared-token": sharedToken },
-      token: sessionToken,
-      body: JSON.stringify({ playerId }),
+      headers: {
+        ...JSON_HEADERS,
+        ...("deviceToken" in auth ? { "x-kad-device-token": auth.deviceToken } : { "x-kad-shared-token": auth.sharedToken }),
+      },
+      ...("sessionToken" in auth ? { token: auth.sessionToken } : {}),
+      body: JSON.stringify(body),
     });
   },
 

@@ -202,6 +202,14 @@ export interface GameStore {
    * server has done it; a refusal lands in `error` and resolves `false`.
    */
   removePlayer(playerId: string): Promise<boolean>;
+  /**
+   * The host locks the room to new joins, or opens it again (#263). Everybody
+   * on the roster (`RunState.seats`) can still come back. Resolves like
+   * `removePlayer`.
+   */
+  lockRoom(locked: boolean): Promise<boolean>;
+  /** The host closes the room for everybody (#263). Resolves like `removePlayer`. */
+  closeRoom(): Promise<boolean>;
   /** Drops the session and disconnects. Does not delete anything server-side. */
   leave(): void;
   dismissError(): void;
