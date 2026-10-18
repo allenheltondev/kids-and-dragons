@@ -1,0 +1,113 @@
+import { describe, expect, it } from "vitest";
+import { createSynthSpeaker, sentencePieces } from "./synth-speaker";
+
+/** A SpeechSynthesis that records what it is told and lets a test finish or refuse lines. */
+class FakeSynth {
+  queue: FakeUtterance[] = [];
+  spoken: string[] = [];
+  cancels = 0;
+  voices: SpeechSynthesisVoice[] = [];
+  speak(u: SpeechSynthesisUtterance): void {
+    this.queue.push(u as unknown as FakeUtterance);
+    this.spoken.push(u.text);
+  }
+  cancel(): void {
+    this.cancels += 1;
+    this.queue = [];
+  }
+  getVoices(): SpeechSynthesisVoice[] {
+    return this.voices;
+  }
+}
+class FakeUtterance {
+  rate = 1;
+  lang = "";
+  voice: unknown = null;
+  onerror: ((e: { error: string }) => void) | null = null;
+  constructor(public text: string) {}
+}
+
+function setup() {
+  const synth = new FakeSynth();
+  const listeners = new Map<string, () => void>();
+  const gestureTarget = {
+    addEventListener: (type: string, fn: EventListenerOrEventListenerObject) => void listeners.set(type, fn as () => void),
+    removeEventListener: (type: string) => void listeners.delete(type),
+  };
+  const speaker = createSynthSpeaker({
+    synth,
+    createUtterance: (text) => new FakeUtterance(text) as unknown as SpeechSynthesisUtterance,
+    gestureTarget,
+  });
+  return { synth, speaker, listeners };
+}
+
+describe("sentencePieces", () => {
+  it("keeps a short line whole and splits a long one at sentence ends", () => {
+    expect(sentencePieces("The gate creaks.  It opens!")).toEqual(["The gate creaks. It opens!"]);
+    const long = Array.from({ length: 8 }, (_, i) => `Sentence number ${String(i)} is here and goes on a while.`).join(" ");
+    const pieces = sentencePieces(long);
+    expect(pieces.length).toBeGreaterThan(1);
+    expect(pieces.every((p) => p.length <= 180)).toBe(true);
+    expect(pieces.join(" ")).toBe(long);
+  });
+});
+
+describe("createSynthSpeaker", () => {
+  it("speaks at a gentle rate in US English", () => {
+    const { synth, speaker } = setup();
+    speaker("Hello there.");
+    expect(synth.spoken).toEqual(["Hello there."]);
+    const u = synth.queue[0]!;
+    expect(u.lang).toBe("en-US");
+    expect(u.rate).toBeLessThan(1);
+  });
+
+  it("queues behind the current line by default and cancels first when interrupting", () => {
+    const { synth, speaker } = setup();
+    speaker("One.");
+    speaker("Two.");
+    expect(synth.cancels).toBe(0);
+    expect(synth.queue).toHaveLength(2);
+    speaker("Three.", { interrupt: true });
+    expect(synth.cancels).toBe(1);
+    expect(synth.queue.map((u) => u.text)).toEqual(["Three."]);
+  });
+
+  it("cancel() silences everything", () => {
+    const { synth, speaker } = setup();
+    speaker("One.");
+    speaker.cancel?.();
+    expect(synth.queue).toEqual([]);
+  });
+
+  it("uses the requested voice and rate when it exists", () => {
+    const { synth, speaker } = setup();
+    const voice = { name: "Kindly", voiceURI: "kindly" } as SpeechSynthesisVoice;
+    synth.voices = [voice];
+    speaker("Hi.", { voice: "kindly", rate: 1.1 });
+    expect(synth.queue[0]!.voice).toBe(voice);
+    expect(synth.queue[0]!.rate).toBe(1.1);
+  });
+
+  it("holds a line the browser refused and says it on the first tap", () => {
+    const { synth, speaker, listeners } = setup();
+    speaker("Before any tap.");
+    synth.queue[0]!.onerror?.({ error: "not-allowed" });
+    expect([...listeners.keys()].sort()).toEqual(["keydown", "pointerdown"]);
+    synth.spoken.length = 0;
+    listeners.get("pointerdown")?.();
+    expect(synth.spoken).toEqual(["Before any tap."]);
+    expect(listeners.size).toBe(0);
+  });
+
+  it("drops a refused line that was cancelled before the tap", () => {
+    const { synth, speaker, listeners } = setup();
+    speaker("Refused.");
+    synth.queue[0]!.onerror?.({ error: "not-allowed" });
+    speaker.cancel?.();
+    synth.spoken.length = 0;
+    listeners.get("keydown")?.();
+    expect(synth.spoken).toEqual([]);
+  });
+});

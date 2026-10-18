@@ -25,6 +25,7 @@ import { useGameStore, useLayoutMode, useRunState, useChapter, useMe } from "./s
 import { Button, ConnectionBanner, ErrorToast, Spinner } from "./ui";
 
 import { AudioControl } from "./audio";
+import { ReadAloudControl, startReadAloud } from "./speech";
 import { musicForScene } from "./audio/scene-audio";
 import { PhoneMagic } from "./ui/PhoneMagic";
 
@@ -132,6 +133,11 @@ export function App(): React.JSX.Element {
     void loadContent();
   }, [loadContent]);
 
+  // This device's read-aloud switch, if it was left on (#261).
+  useEffect(() => {
+    startReadAloud();
+  }, []);
+
   /**
    * Recover from the URL alone. This is what makes "hard-refresh anything
    * without losing state" true on every surface (architecture §4.3, roadmap
@@ -148,6 +154,7 @@ export function App(): React.JSX.Element {
   return (
     <PhoneMagic enabled={route.name !== "tv"}>
       <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
+      <ReadAloudControl />
       {pickLayout()}
       <ErrorToast />
       {/* Shell-level like the toast, and for the same reason: a dropped
