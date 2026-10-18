@@ -53,8 +53,11 @@ export async function setVisitors(
     room,
     "",
     (state) => {
-      if (input.open) return state.visitorCode !== undefined ? null : { ...state, visitorCode: visitorCode! };
+      if (input.open) {
+        return state.visitorCode !== undefined ? null : { ...state, visitorCode: visitorCode!, visitorsOpened: true };
+      }
       if (state.visitorCode === undefined) return null;
+      // `visitorsOpened` stays: the four letters are out, whatever the switch says.
       const { visitorCode: _gone, ...closed } = state;
       return closed;
     },

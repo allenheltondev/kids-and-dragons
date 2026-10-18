@@ -107,6 +107,18 @@ test.describe("a room open to visitors", () => {
 
     // --- A brand-new phone that has never played joins on the long code ---
     // It gets a household of its own, never the host's.
+    // A brand-new phone that types only the room's four letters (the first
+    // four of the visitor code everybody was shown) is turned away, and is
+    // left holding no identity in the host's household.
+    const stranger = await phone(browser);
+    await join(stranger, visitorCode.slice(0, 4));
+    await expect(stranger.getByText(/visitor code/i).first()).toBeVisible(TAP);
+    const strangerToken = await stranger.evaluate(() => {
+      const raw = localStorage.getItem("kad.device");
+      return raw ? ((JSON.parse(raw) as { deviceToken?: string }).deviceToken ?? "") : "";
+    });
+    expect(strangerToken).toBe("");
+
     const fresh = await phone(browser);
     await join(fresh, visitorCode);
     await expect(fresh).toHaveURL(new RegExp(`/p/${code}$`), TAP);

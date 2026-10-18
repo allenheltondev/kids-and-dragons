@@ -566,9 +566,67 @@ describe("a room open to visitors (#249)", () => {
     // It founded that household, so it, and only it, may keep it later.
     expect((await harness.repo.getHousehold(device!.householdId))?.founderDeviceId).toBe(device!.deviceId);
 
-    // A brand-new phone on the room's own four letters still joins the room's household.
-    const family = await respond(event("POST", `/api/room/${room.code}/join`, { body: { displayName: "Kid" } }), rt);
-    const kin = await harness.identity.resolveDevice(String(bodyOf(family).deviceToken));
+  });
+
+  /** Everybody the room's household has, so a test can prove nobody was added. */
+  async function members(harness: ReturnType<typeof makeHarness>, householdId: string) {
+    const [players, devices] = await Promise.all([
+      harness.repo.listPlayers(householdId),
+      harness.repo.listDevices(householdId),
+    ]);
+    return { players: players.length, devices: devices.length };
+  }
+
+  it("never makes a brand-new phone family because it knows the room's four letters, while open or after", async () => {
+    const { harness, room, rt } = await openable();
+    rt.account = OWNER;
+    const visitorCode = String(bodyOf(await respond(opening(room.code, true), rt)).visitorCode);
+    // Every visitor has been shown the four letters: they are the long code's first four.
+    const prefix = visitorCode.slice(0, 4);
+    expect(prefix).toBe(room.code);
+    const before = await members(harness, room.householdId);
+
+    const whileOpen = await respond(event("POST", `/api/room/${prefix}/join`, { body: { displayName: "Stranger" } }), rt);
+    expect(whileOpen.statusCode).toBe(403);
+    expect(bodyOf(whileOpen).deviceToken).toBeUndefined();
+    expect(await members(harness, room.householdId)).toEqual(before);
+
+    // The switch goes off. The four letters are still out there, and still prove nothing.
+    expect((await respond(opening(room.code, false), rt)).statusCode).toBe(200);
+    const afterOff = await respond(event("POST", `/api/room/${prefix}/join`, { body: { displayName: "Stranger" } }), rt);
+    expect(afterOff.statusCode).toBe(403);
+    expect(bodyOf(afterOff).deviceToken).toBeUndefined();
+    // Nor does the old long code, which is a wrong code now.
+    const oldLong = await respond(event("POST", `/api/room/${visitorCode}/join`, { body: { displayName: "Stranger" } }), rt);
+    expect(oldLong.statusCode).toBe(404);
+    expect(await members(harness, room.householdId)).toEqual(before);
+
+    // The family's own phone, already bound, still comes back on the four letters.
+    const family = await respond(
+      event("POST", `/api/room/${room.code}/join`, { headers: { "x-kad-device-token": room.player.deviceToken } }),
+      rt,
+    );
+    expect(family.statusCode).toBe(200);
+  });
+
+  it("binds nothing to a brand-new phone a locked room turns away", async () => {
+    const { harness, room, rt } = await openable();
+    const state = await harness.repo.getState(room.runId);
+    if (!state) throw new Error("no state");
+    await harness.repo.putState({ ...state, locked: true });
+    const before = await members(harness, room.householdId);
+
+    const refused = await respond(event("POST", `/api/room/${room.code}/join`, { body: { displayName: "Late" } }), rt);
+    expect(refused.statusCode).toBe(403);
+    expect(bodyOf(refused).deviceToken).toBeUndefined();
+    expect(await members(harness, room.householdId)).toEqual(before);
+  });
+
+  it("still makes a brand-new phone family in a room that was never opened", async () => {
+    const { harness, room, rt } = await openable();
+    const joined = await respond(event("POST", `/api/room/${room.code}/join`, { body: { displayName: "Kid" } }), rt);
+    expect(joined.statusCode).toBe(200);
+    const kin = await harness.identity.resolveDevice(String(bodyOf(joined).deviceToken));
     expect(kin?.householdId).toBe(room.householdId);
   });
 });
