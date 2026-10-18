@@ -26,6 +26,13 @@ import type {
   ServerMessage,
 } from "@kad/shared";
 
+/** One kid the retention sweep may forget (#252): where she lives, and when she last played. */
+export interface IdlePlayer {
+  householdId: string;
+  playerId: string;
+  lastPlayedAt: string;
+}
+
 /** What `extendGuestHousehold` did, and why. */
 export type GuestRenewal = "extended" | "kept" | "swept";
 
@@ -425,7 +432,9 @@ export interface GameRepository {
   putOrganizerInviteIfAbsent(invite: OrganizerInviteRecord): Promise<boolean>;
   /**
    * Redeem an invite: spend it and make `owner` an owner of its household
-   * (both halves of `putOwner`), in **one transaction**. A code is never spent
+   * (both halves of `putOwner`), in **one transaction**, which also checks the
+   * household is there and not being deleted (#252), so a code made before a
+   * delete never hands out a pointer to nothing. A code is never spent
    * without the membership it pays for, so a failure leaves it redeemable, and
    * of two grown-ups typing one code exactly one gets it. `null`, and nothing
    * written, for a code that was never issued, is spent, or has expired
@@ -539,7 +548,8 @@ export interface GameRepository {
   /**
    * Deletes a household and everything under it — players, devices, characters,
    * runs, and each run's state and event log. Only the sweeper calls this, and
-   * only for expired guests; a claimed household has no delete path at all.
+   * only for expired guests; a claimed household is deleted only by its owner
+   * (`deleteHousehold`), which shares every step below but the gate.
    *
    * **The expiry check is part of this call, not the caller's job.** Reading a
    * household, deciding it is an expired guest, and then deleting it is a race
@@ -559,6 +569,53 @@ export interface GameRepository {
    * find.
    */
   deleteGuestHousehold(householdId: string, nowIso: string): Promise<boolean>;
+
+  /**
+   * An owner's "delete our data" (#252): the household and everything under
+   * it, exactly as the sweep deletes an expired guest, by the same path and
+   * behind the same `sweeping` mark, so a claim, a renewal, a founding or an
+   * organizer invite landing during it is refused. Also every owner's `ACCT#`
+   * pointer to it. The only difference from the sweep is the gate: the caller
+   * has proved a signed-in owner, so nothing about expiry is checked. A
+   * visiting kid's hero is not here (it lives at her own home) and is not
+   * touched. `false` when there is no household.
+   */
+  deleteHousehold(householdId: string): Promise<boolean>;
+
+  /**
+   * Delete one kid (#252): her profile, every hero she owns, her own phones'
+   * bindings and her visits, all from her home `householdId`. The profile is
+   * marked first (`sweeping`, as a household is), and a marked profile reads
+   * as gone from then on (`getPlayer`, `listPlayers`), so every room door
+   * treats her as out while the rest goes; the profile row goes last, so an
+   * interrupted delete is found and finished by the next. Her credit in a
+   * Field Guide is an id that names nobody afterwards; the entry is the
+   * table's book and stays, as it does when she moves (#251).
+   *
+   * `idleBefore`: the retention sweep's gate, checked in the marking write.
+   * Only a kid whose `lastPlayedAt` is at or before it is deleted, so a kid
+   * who played a moment ago is spared. `false` when the gate fails or she is
+   * not there.
+   */
+  deleteProfile(householdId: string, playerId: string, idleBefore?: string): Promise<boolean>;
+
+  /**
+   * A kid just played (#252): `lastPlayedAt`, and her place in the retention
+   * sweep (`GSI1_IDLE`) at `keepUntil`, or out of it when `null` (her
+   * household keeps everybody). Bookkeeping beside the profile, never in it,
+   * so it survives a `putPlayer`. A no-op for a profile that is gone or being
+   * deleted.
+   */
+  touchPlayer(householdId: string, playerId: string, lastPlayedAt: string, keepUntil: string | null): Promise<void>;
+  /** When she last played, or `null` when no join has said so since #252. */
+  getLastPlayed(householdId: string, playerId: string): Promise<string | null>;
+  /** Kids whose `keepUntil` has passed: one GSI1 query, like the guest sweep. */
+  listIdlePlayers(nowIso: string, limit?: number): Promise<IdlePlayer[]>;
+
+  /** She sat down at `tableHouseholdId`, a household that is not her home (#249). Idempotent. */
+  putVisit(playerId: string, tableHouseholdId: string, at: string): Promise<void>;
+  /** Every table she has visited, as households. */
+  listVisits(playerId: string): Promise<string[]>;
 
   putPlayer(player: PlayerProfile): Promise<void>;
   getPlayer(householdId: string, playerId: string): Promise<PlayerProfile | null>;

@@ -1,5 +1,6 @@
 /**
- * The guest sweeper — what makes "anonymous play is not remembered" true.
+ * The sweeper — what makes "anonymous play is not remembered" true, and an
+ * owner's retention window (#252) true for a kid who stopped playing.
  *
  * Runs on a schedule, queries the `GUEST` partition of GSI1 for households whose
  * expiry has passed, and deletes each one along with everything under it. A
@@ -11,9 +12,16 @@
  * Bounded per run rather than looping to exhaustion: this is a family game, the
  * backlog is measured in tens, and a sweeper that cannot run long enough to be
  * dangerous is a sweeper that cannot be woken up at 2am by a bug in itself.
+ *
+ * Each household's kids are also taken out of the saves of the other tables
+ * they visited (`forgetEverywhere`, #252), once the delete has landed: before
+ * it, a family signing in at the last moment would keep their household and
+ * still find their kids gone from a friend's game.
  */
 
+import { forgetEverywhere, sweepIdleProfiles, tablesOf, type IdleSweepResult } from "../handlers/retention.ts";
 import { DynamoRepository } from "../store/dynamo-repository.ts";
+import type { GameRepository } from "../store/repository.ts";
 import { requiredEnv } from "./runtime.ts";
 
 /** Households deleted per invocation. The schedule catches up if it overflows. */
@@ -25,14 +33,20 @@ export interface SweepResult {
   /** Claimed between the index query and the delete. Not an error — a save. */
   spared: string[];
   failed: { householdId: string; reason: string }[];
+  /** Kids past their household's retention window (#252). */
+  idle: IdleSweepResult;
 }
 
 export async function handler(): Promise<SweepResult> {
-  const repo = new DynamoRepository({ tableName: requiredEnv("TABLE_NAME") });
-  const nowIso = new Date().toISOString();
+  return sweep(new DynamoRepository({ tableName: requiredEnv("TABLE_NAME") }), Date.now);
+}
+
+/** One sweep, against any store; the handler is this on DynamoDB. */
+export async function sweep(repo: GameRepository, now: () => number): Promise<SweepResult> {
+  const nowIso = new Date(now()).toISOString();
 
   const expired = await repo.listExpiredGuestHouseholds(nowIso, BATCH);
-  const result: SweepResult = { scanned: expired.length, deleted: [], spared: [], failed: [] };
+  const result: Omit<SweepResult, "idle"> = { scanned: expired.length, deleted: [], spared: [], failed: [] };
 
   for (const household of expired) {
     try {
@@ -47,8 +61,13 @@ export async function handler(): Promise<SweepResult> {
        * `deleteGuestHousehold` gates the whole operation on a conditional
        * write instead, and returns false when the claim got there first.
        */
+      // Read before the delete takes the kids' visits with it.
+      const kids = await tablesAway(household.id, repo);
       const deleted = await repo.deleteGuestHousehold(household.id, nowIso);
-      if (deleted) result.deleted.push(household.id);
+      if (deleted) {
+        result.deleted.push(household.id);
+        await forgetEverywhere(kids, { repo, now });
+      }
       else {
         console.log(`[sweep] sparing ${household.id}: claimed since the index query`);
         result.spared.push(household.id);
@@ -61,9 +80,24 @@ export async function handler(): Promise<SweepResult> {
     }
   }
 
+  const idle = await sweepIdleProfiles({ repo, now });
   console.log(
     `[sweep] scanned ${result.scanned}, deleted ${result.deleted.length}, ` +
-      `spared ${result.spared.length}, failed ${result.failed.length}`,
+      `spared ${result.spared.length}, failed ${result.failed.length}; ` +
+      `idle kids deleted ${idle.deleted.length}, kept ${idle.kept.length}, failed ${idle.failed.length}`,
   );
-  return result;
+  return { ...result, idle };
+}
+
+/** Each kid of a household, and the other tables whose saves may name her. */
+async function tablesAway(householdId: string, repo: GameRepository) {
+  const [players, heroes] = await Promise.all([repo.listPlayers(householdId), repo.listCharacters(householdId)]);
+  return Promise.all(
+    players.map(async (p) => ({
+      playerId: p.id,
+      tables: (await tablesOf(p.id, householdId, heroes.filter((c) => c.ownerPlayerId === p.id), { repo })).filter(
+        (t) => t !== householdId,
+      ),
+    })),
+  );
 }

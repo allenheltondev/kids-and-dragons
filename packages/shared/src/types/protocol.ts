@@ -565,6 +565,25 @@ export interface OrganizerHouseholdView {
   displayName: string;
   owners: OrganizerOwner[];
   players: OrganizerPlayer[];
+  /**
+   * How long a kid who stops playing is kept, in days (#252), or `null`:
+   * until an owner deletes them, which is the default.
+   */
+  retentionDays: number | null;
+}
+
+/**
+ * The retention windows an owner may pick (#252), in days, beside "until I
+ * delete them" (`null`). The shortest is a month: anything less would forget a
+ * kid who missed two club meetings.
+ */
+export const RETENTION_CHOICES = [30, 90, 180, 365] as const;
+
+/** `POST /api/organizer/household/delete`: what is left once it is gone. */
+export interface OrganizerHouseholdDeleted {
+  householdId: string;
+  /** Every household the account still owns. */
+  households: OrganizerHouseholdSummary[];
 }
 
 /** A tablet bound to the household, as its owners see it. */

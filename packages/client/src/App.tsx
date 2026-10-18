@@ -115,6 +115,12 @@ const JournalScreen = lazy(() =>
   import("./screens/JournalScreen").then((module) => ({ default: module.JournalScreen })),
 );
 
+// What the game keeps about a family (#252): a page for grown-ups, loaded only
+// when one opens it.
+const WhatWeStore = lazy(() =>
+  import("./screens/WhatWeStore").then((module) => ({ default: module.WhatWeStore })),
+);
+
 export function App(): React.JSX.Element {
   const route = useRoute();
   const session = useGameStore((store) => store.session);
@@ -190,6 +196,13 @@ export function App(): React.JSX.Element {
   );
 
   function pickLayout(): React.JSX.Element {
+    if (route.name === "whatWeStore") {
+      return (
+        <Suspense fallback={<div className="kad-boot"><Spinner size="lg" label="Opening" showLabel /></div>}>
+          <WhatWeStore />
+        </Suspense>
+      );
+    }
     if (route.name === "journal") {
       return (
         <RoomBoundary message="Your adventure book couldn’t open.">

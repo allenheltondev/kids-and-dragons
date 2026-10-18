@@ -179,3 +179,20 @@
 .organizer__pairing {
   justify-content: center;
 }
+
+/* "Delete Ada?" (#252), on its own line under the row it asks about. */
+.organizer__row-confirm {
+  flex: 1 1 100%;
+}
+
+.organizer__select {
+  inline-size: 100%;
+}
+
+/* The household delete's question (#252): the one thing here that cannot be undone. */
+.organizer__danger {
+  gap: var(--kad-space-2);
+  padding: var(--kad-space-3);
+  border: 0.12em solid var(--kad-danger);
+  border-radius: var(--kad-radius-md);
+}

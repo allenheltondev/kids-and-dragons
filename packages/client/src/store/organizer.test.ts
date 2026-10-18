@@ -10,6 +10,7 @@ function view(id: string, overrides: Partial<OrganizerHouseholdView> = {}): Orga
     displayName: id === "h_club" ? "Thursday Club" : "Home",
     owners: [{ id: "sub_ana", email: "ana@example.com", you: true, founding: true }],
     players: [],
+    retentionDays: null,
     ...overrides,
   };
 }
@@ -44,6 +45,10 @@ function setup(households = [{ id: "h_club", displayName: "Thursday Club", playe
       heroes: 2,
     })),
     pairProfile: vi.fn(async () => ({ code: "ABCDEFGH", expiresAt: "2026-07-04T18:10:00.000Z", playerName: "Posy" })),
+    deleteHousehold: vi.fn(async (_t: string, householdId: string) => ({
+      householdId,
+      households: households.filter((h) => h.id !== householdId),
+    })),
   };
   return { store: createOrganizerStore(api as unknown as Api), api };
 }
@@ -121,6 +126,19 @@ describe("the organizer store", () => {
     await store.getState().openHousehold("h_club");
     await store.getState().acceptTransfer("OTHERKIDCD");
     expect(api.acceptTransfer).toHaveBeenLastCalledWith("id_tok", "OTHERKIDCD", "h_club");
+  });
+
+  it("deletes the household on screen and goes back to what is left (#252)", async () => {
+    const { store, api } = setup([
+      { id: "h_1", displayName: "Home", players: 2 },
+      { id: "h_club", displayName: "Thursday Club", players: 5 },
+    ]);
+    await store.getState().begin("id_tok", "ana@example.com");
+    await store.getState().openHousehold("h_club");
+    await store.getState().deleteHousehold();
+    expect(api.deleteHousehold).toHaveBeenCalledWith("id_tok", "h_club");
+    expect(store.getState().view).toBeNull();
+    expect(store.getState().households.map((h) => h.id)).toEqual(["h_1"]);
   });
 
   it("goes back to the picker after leaving a group", async () => {
