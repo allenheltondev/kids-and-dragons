@@ -658,8 +658,8 @@ describe("the CLI", () => {
 });
 
 function cli(args: string[]): { status: number | null; stdout: string; stderr: string } {
-  const tsx = path.join(REPO_ROOT, "node_modules", ".bin", "tsx");
-  const run = spawnSync(tsx, [path.join(REPO_ROOT, "tools", "content", "journey.ts"), ...args], {
+  const tsx = path.join(REPO_ROOT, "node_modules", "tsx", "dist", "cli.mjs");
+  const run = spawnSync(process.execPath, [tsx, path.join(REPO_ROOT, "tools", "content", "journey.ts"), ...args], {
     cwd: REPO_ROOT,
     encoding: "utf8",
     timeout: 90_000,
