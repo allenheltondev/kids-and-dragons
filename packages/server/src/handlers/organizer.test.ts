@@ -52,10 +52,10 @@ describe("a group is a household with more than one owner (#248)", () => {
       { id: BEN.cognitoSub, email: BEN.email, you: true, founding: false },
     ]);
     // Both see it, and neither sees anything else of the other's.
-    expect(value(await listOwnedHouseholds(ANA, harness.deps)).map((h) => h.id)).toEqual([group.id]);
-    expect(value(await listOwnedHouseholds(BEN, harness.deps))).toEqual([
-      { id: group.id, displayName: "Thursday Dragon Club", players: 2 },
-    ]);
+    expect(value(await listOwnedHouseholds(ANA, harness.deps)).households.map((h) => h.id)).toEqual([group.id]);
+    expect(value(await listOwnedHouseholds(BEN, harness.deps))).toEqual({
+      households: [{ id: group.id, displayName: "Thursday Dragon Club", players: 2 }],
+    });
   });
 
   it("seats the group's kids on its tablet and runs a room with them", async () => {

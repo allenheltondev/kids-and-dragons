@@ -435,6 +435,18 @@ function PersonalHome(): ReactElement {
                   Do the kids share this device? Make it a family tablet
                 </button>
               </div>
+              {/* #248: a club, a class, the cousins. One grown-up or several. */}
+              <div className="home__host-toggle">
+                <button
+                  type="button"
+                  className="home__link kad-focusable"
+                  onClick={() => {
+                    openKeepsake("organize", "home");
+                  }}
+                >
+                  Running games for kids from other families? Run a group
+                </button>
+              </div>
             </section>
           ) : null}
         </div>
