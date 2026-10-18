@@ -34,6 +34,7 @@
 import { settleChapterEndVote, type RunState } from "@kad/shared";
 import { fail, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { commitRoomChange, hostedRoom, type HostPrincipal } from "./host.ts";
+import { relockLobby } from "./progression.ts";
 
 export interface RemovePlayerInput {
   code: string;
@@ -62,17 +63,21 @@ export async function removePlayer(
   const result = await commitRoomChange(
     room,
     input.principal.playerId,
-    (state): RunState | null => {
+    async (state): Promise<RunState | null> => {
       if (state.removed?.includes(input.playerId)) return null;
       // Out of any vote at the chapter's end too: if they were the last one
       // still reading, the table goes on now, as it does when a phone drops.
-      return settleChapterEndVote({
-        ...state,
-        removed: [...(state.removed ?? []), input.playerId],
-        party: state.party.map((m) =>
-          m.playerId === input.playerId ? { ...m, connected: false, ready: false } : m,
-        ),
-      });
+      return relockOut(
+        settleChapterEndVote({
+          ...state,
+          removed: [...(state.removed ?? []), input.playerId],
+          party: state.party.map((m) =>
+            m.playerId === input.playerId ? { ...m, connected: false, ready: false } : m,
+          ),
+        }),
+        room.householdId,
+        deps,
+      );
     },
     deps,
   );
@@ -112,7 +117,7 @@ async function unfound(householdId: string, playerId: string, deps: HandlerDeps)
 export async function takeOutEverywhere(
   householdId: string,
   playerId: string,
-  deps: Pick<HandlerDeps, "repo" | "now" | "channel">,
+  deps: Pick<HandlerDeps, "repo" | "now" | "channel" | "content">,
 ): Promise<HandlerResult<{ rooms: number }>> {
   let rooms = 0;
   for (const run of await deps.repo.listRuns(householdId)) {
@@ -123,14 +128,18 @@ export async function takeOutEverywhere(
     const result = await commitRoomChange(
       room,
       playerId,
-      (state): RunState | null => {
+      async (state): Promise<RunState | null> => {
         const seated = state.party.some((m) => m.playerId === playerId) || state.seats?.[playerId] !== undefined;
         if (!seated || isRemoved(state, playerId)) return null;
-        return settleChapterEndVote({
-          ...state,
-          removed: [...(state.removed ?? []), playerId],
-          party: state.party.map((m) => (m.playerId === playerId ? { ...m, connected: false, ready: false } : m)),
-        });
+        return relockOut(
+          settleChapterEndVote({
+            ...state,
+            removed: [...(state.removed ?? []), playerId],
+            party: state.party.map((m) => (m.playerId === playerId ? { ...m, connected: false, ready: false } : m)),
+          }),
+          room.householdId,
+          deps,
+        );
       },
       deps,
     );
@@ -141,6 +150,21 @@ export async function takeOutEverywhere(
     if (result.value.changed) rooms++;
   }
   return ok({ rooms });
+}
+
+/**
+ * A lobby whose hero was just taken out, with its locks read again (#283): if
+ * she was the only one who had finished a prerequisite, the campaign it opened
+ * locks for the table she left. Only in the lobby, where locks are shown; a
+ * Begin re-reads the party anyway (`lockedRefusal`, without the removed).
+ */
+async function relockOut(
+  state: RunState,
+  householdId: string,
+  deps: Pick<HandlerDeps, "repo" | "content">,
+): Promise<RunState> {
+  if (state.phase !== "lobby" && state.phase !== "creation") return state;
+  return relockLobby(state, householdId, deps);
 }
 
 /** On `RunState.removed`: taken out of this room, and kept out. */

@@ -14,9 +14,15 @@
  * earlier attempt completed (`everCompleted`): replaying Gemfall replaces its
  * `complete` row with an active one, and must not lock Riftlight again.
  *
- * The prerequisite belongs to the household, not to a character: a hero who
- * joins a party already underway still comes in at the tier floor (spec §8.4),
- * and nothing here reads a character.
+ * Or when any hero in the party has finished it herself (#283): her own record
+ * (`Character.finished`) goes wherever she plays, so a kid who finished
+ * Gemfall at her club can start Riftlight at home, and brings it to a friend's
+ * table too. **Any** hero, not every one: a prerequisite says the story has
+ * happened, and one hero who was there carries it for the party, the way the
+ * household's own record already carries every kid at its table. Requiring
+ * every hero would lock a family's own new kid out of the campaign the family
+ * finished. The table's record still counts beside hers, so a household that
+ * finished Gemfall before heroes kept a record plays exactly as it did.
  *
  * ---------------------------------------------------------------------------
  * WHY IT LIVES HERE
@@ -114,16 +120,19 @@ export interface PrerequisiteAttempt {
 }
 
 /**
- * The prerequisites a household has not met: each required campaign whose
- * record among `attempts` is neither `complete` nor `everCompleted`. Empty
- * means unlocked — always, for a campaign that declares none.
+ * The prerequisites a table has not met: each required campaign whose record
+ * among `attempts` is neither `complete` nor `everCompleted`, and that no hero
+ * at the table has finished (`finished`, the campaign ids in the party's own
+ * records). Empty means unlocked — always, for a campaign that declares none.
  */
 export function unmetPrerequisites(
   campaign: Pick<Campaign, "requires">,
   attempts: readonly PrerequisiteAttempt[],
+  finished: readonly string[] = [],
 ): string[] {
   return (campaign.requires ?? []).filter(
     (id) =>
+      !finished.includes(id) &&
       !attempts.some((a) => a.campaignId === id && (a.status === "complete" || a.everCompleted === true)),
   );
 }

@@ -129,6 +129,25 @@ export interface Souvenir {
   earnedAt: string;
 }
 
+/**
+ * One campaign a hero has finished (#283, architecture §4.5, "Who owns what"):
+ * her own record, kept on her row at her home whichever table she finished it
+ * at. Written beside the commit of her provisional state, so only a campaign
+ * that *completed* is here; a failed one leaves a souvenir instead.
+ */
+export interface FinishedCampaign {
+  campaignId: string;
+  /**
+   * How its last chapter ended. A loss ending completes a campaign exactly as a
+   * win does (spec §8.3), so both are finished.
+   */
+  outcome: "success" | "setback";
+  /** ISO timestamp of the completion. */
+  at: string;
+  /** The household whose table she finished it at: her home, or one she visited. */
+  table: string;
+}
+
 export interface Character {
   id: string;
   householdId: string;
@@ -143,6 +162,12 @@ export interface Character {
   questItems: string[];
   /** Permanent, cosmetic-only, grows on campaign failure. */
   souvenirs: Souvenir[];
+  /**
+   * The campaigns she has finished, one entry per campaign, the latest
+   * completion kept (#283). Absent until she finishes one, and on every row
+   * written before the record existed (character schema v3).
+   */
+  finished?: FinishedCampaign[];
   createdAt: string;
   /**
    * The row's monotonic version, which the claim conditions every write on
