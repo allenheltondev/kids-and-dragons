@@ -286,6 +286,68 @@ function contract(name: string, open: () => Promise<GameRepository>): void {
       });
     });
 
+    describe("pairing codes (#281)", () => {
+      function pairing(code: string, expiresAt: string) {
+        return {
+          code,
+          householdId: "h_g",
+          playerId: "p_ada",
+          createdBy: "device:d_ada",
+          createdAt: "2026-07-04T18:00:00.000Z",
+          expiresAt,
+          ttl: Math.floor(Date.parse(expiresAt) / 1000),
+        };
+      }
+      const later = new Date(Date.now() + HOUR).toISOString();
+
+      it("is spent exactly once, and says whom it names", async () => {
+        expect(await repo.putPairingCodeIfAbsent(pairing("ABCDEFGH", later))).toBe(true);
+        const nowIso = new Date().toISOString();
+        expect(await repo.redeemPairingCode("ABCDEFGH", nowIso)).toEqual(pairing("ABCDEFGH", later));
+        expect(await repo.redeemPairingCode("ABCDEFGH", nowIso)).toBeNull();
+      });
+
+      it("lets exactly one of two simultaneous redeemers have it", async () => {
+        await repo.putPairingCodeIfAbsent(pairing("ABCDEFGH", later));
+        const nowIso = new Date().toISOString();
+        const results = await Promise.all([
+          repo.redeemPairingCode("ABCDEFGH", nowIso),
+          repo.redeemPairingCode("ABCDEFGH", nowIso),
+        ]);
+        expect(results.filter((r) => r !== null)).toHaveLength(1);
+      });
+
+      it("reads a code in any case", async () => {
+        await repo.putPairingCodeIfAbsent(pairing("ABCDEFGH", later));
+        expect((await repo.redeemPairingCode("abcdefgh", new Date().toISOString()))?.playerId).toBe("p_ada");
+      });
+
+      it("refuses a code that is already taken", async () => {
+        expect(await repo.putPairingCodeIfAbsent(pairing("ABCDEFGH", later))).toBe(true);
+        expect(await repo.putPairingCodeIfAbsent({ ...pairing("ABCDEFGH", later), playerId: "p_other" })).toBe(false);
+        expect((await repo.redeemPairingCode("ABCDEFGH", new Date().toISOString()))?.playerId).toBe("p_ada");
+      });
+
+      it("will not spend a code past its expiry, even before it is swept", async () => {
+        await repo.putPairingCodeIfAbsent(pairing("ABCDEFGH", new Date(Date.now() + 10 * 60 * 1000).toISOString()));
+        const late = new Date(Date.now() + HOUR).toISOString();
+        expect(await repo.redeemPairingCode("ABCDEFGH", late)).toBeNull();
+      });
+
+      it("knows nothing of a code never issued, and is not an organizer invite", async () => {
+        expect(await repo.redeemPairingCode("ZZZZZZZZ", new Date().toISOString())).toBeNull();
+        await repo.putOrganizerInviteIfAbsent({
+          code: "ABCDEFGH",
+          householdId: "h_g",
+          createdBy: "sub_a",
+          createdAt: "2026-07-04T18:00:00.000Z",
+          expiresAt: later,
+          ttl: Math.floor(Date.parse(later) / 1000),
+        });
+        expect(await repo.redeemPairingCode("ABCDEFGH", new Date().toISOString())).toBeNull();
+      });
+    });
+
     describe("organizer invites (#248)", () => {
       function invite(code: string, expiresAt: string) {
         return {

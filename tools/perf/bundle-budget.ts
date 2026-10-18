@@ -56,8 +56,12 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
  * budget with slack for one honest feature is a budget people keep, and one
  * that has to be raised every sprint is a budget people delete. (Measured at
  * 287KB when the room went lazy, most of it react-dom.)
+ *
+ * 302 -> 305 for pairing (#281): the three `Api` methods ride in the shared
+ * client every phone loads, and the home screen reads `?pair=` and draws two
+ * links. The pairing screens themselves, and their QR, are lazy chunks.
  */
-const FIRST_PAINT_BUDGET_KB = 302;
+const FIRST_PAINT_BUDGET_KB = 305;
 
 /**
  * Everything, including what is lazily fetched.

@@ -24,6 +24,8 @@ import type {
   OrganizerHouseholdSummary,
   OrganizerHouseholdView,
   OrganizerInvite,
+  PairingCode,
+  PairingResult,
   RoomMode,
   RulesContent,
   RunState,
@@ -292,6 +294,17 @@ export interface Api {
   acceptOrganizerInvite(idToken: string, code: string): Promise<OrganizerHouseholdSummary>;
   /** Take a co-organizer off, or leave (`ownerId` is your own). */
   removeOrganizer(idToken: string, householdId: string, ownerId: string): Promise<{ householdId: string; left: boolean }>;
+
+  // --- pairing a new device to a kid (#281) ----------------------------------
+  /** Her own phone makes a one-time code. Only a personal device token can. */
+  createPairingCode(deviceToken: string): Promise<PairingCode>;
+  /** A signed-in owner makes one for a kid of hers. */
+  pairProfile(idToken: string, householdId: string, playerId: string): Promise<PairingCode>;
+  /**
+   * The new device spends a code. No sign-in: the code is the credential. A
+   * binding the device already holds goes along, to be revoked.
+   */
+  redeemPairingCode(code: string, deviceToken?: string): Promise<PairingResult & { deviceToken: string }>;
 }
 
 const JSON_HEADERS = { "content-type": "application/json" };
@@ -656,6 +669,31 @@ export const api: Api = {
       headers: JSON_HEADERS,
       token: idToken,
       body: JSON.stringify({ householdId, ownerId }),
+    });
+  },
+
+  createPairingCode(deviceToken) {
+    return request<PairingCode>("/api/pair/code", {
+      method: "POST",
+      headers: { ...JSON_HEADERS, "x-kad-device-token": deviceToken },
+      body: JSON.stringify({}),
+    });
+  },
+
+  pairProfile(idToken, householdId, playerId) {
+    return request<PairingCode>("/api/organizer/players/pair", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ householdId, playerId }),
+    });
+  },
+
+  redeemPairingCode(code, deviceToken) {
+    return request<PairingResult & { deviceToken: string }>("/api/pair/redeem", {
+      method: "POST",
+      headers: { ...JSON_HEADERS, ...(deviceToken ? { "x-kad-device-token": deviceToken } : {}) },
+      body: JSON.stringify({ code }),
     });
   },
 

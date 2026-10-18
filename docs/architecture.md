@@ -117,6 +117,7 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Room | `ROOM#<code>` | `META` | 4-letter code → runId, mode (`party` \| `travel`). **TTL 6 hours.** |
 | Code misses | `GUESS#<client>` | `WINDOW#<n>` | Wrong room codes from one client in one 15-minute window (§4.5, "Joining a session"). Wrong organizer codes are counted the same way, per account. **TTL one window past its own.** |
 | Organizer invite | `INVITE#<code>` | `META` | A single-use code that makes whoever signs in with it an owner of one household (§4.5, "Groups"). Spent by a conditional delete. **TTL 3 days.** |
+| Pairing code | `PAIR#<code>` | `META` | A single-use code that makes whoever redeems it a device bound to one kid (§4.5, "Pairing a new device"). Spent by a conditional delete. **TTL 10 minutes.** |
 
 GSI1 does three jobs, all of them lookups that would otherwise be scans:
 
@@ -759,6 +760,62 @@ The table keeps its shared Field Guide, and her finds also go to her own.
   scan, and losing it loses nothing. Whoever sees a code can, at worst, play as
   her on one device, which a grown-up can revoke.
 - A grown-up's sign-in (`adoptDevice`) remains the other way in.
+
+##### Pairing a new device (#281)
+
+`handlers/pairing.ts`. Three routes, and the first two make the same code:
+
+| Route | Who | Needs |
+|---|---|---|
+| `POST /api/pair/code` | Her own phone ("Play as me on another device") | A **personal** device token. The profile is the one the device already is; the request cannot name another. |
+| `POST /api/organizer/players/pair` | A signed-in owner of her household ("Pair a device" on her row of the organizer panel) | The sign-in, through `organizerRoute` like every other organizer route. |
+| `POST /api/pair/redeem` | The new device | **Nothing.** The code is the credential. |
+
+- **The code.** Eight letters from the room-code alphabet (about 37 bits),
+  shown `ABCD-EFGH`, naming one profile. Stored as `PAIR#<code>` with a
+  10-minute `expiresAt` and TTL, written by `putPairingCodeIfAbsent` (a
+  collision is re-rolled, never overwritten). A QR carries
+  `/?pair=<code>`, which opens the home screen with the code filled in. It is
+  **not** spent on load: a link preview or prefetcher fetches URLs nobody
+  tapped, and a spent code is a code the kid never gets to use. Spending is a
+  tap ("That's me").
+- **Spent once.** `redeemPairingCode` is a conditional delete that returns the
+  row it deleted, with the expiry in the condition because TTL deletion is
+  eventual. Of two devices holding one code exactly one is bound. A used, expired or never-issued
+  code all answer the same "didn't work".
+- **Spending and binding are not one transaction**, unlike an organizer invite
+  (which writes rows in the table beside the code). The binding is a device
+  token the identity service signs and stores, so the code is spent first and
+  the binding issued second. If issuing fails the code is gone and the kid
+  asks for another: the safe way to lose, since the reverse would leave a code
+  that could be redeemed twice.
+- **Who may make one.** A device bound to that profile, or an owner of her
+  household. A shared tablet is nobody: `resolveDevice` refuses its token, and
+  the route says so (403) rather than treating it as unbound. A retired
+  profile cannot be paired at the making (`ILLEGAL`) **or the redeeming**: the
+  profile is re-read when the code is spent, so a kid retired in the minutes
+  between is refused and the code is spent with nothing bound.
+- **Wrong codes** are counted like wrong room codes, per client address
+  (`code-guard.ts`, key `pair:<client>`), with the reservation-then-refund
+  shape: a right code costs nothing, and a client out of budget gets a 429
+  before any lookup. The address is the key rather than the account because
+  redeeming has no account.
+- **The binding.** The new device gets what `adoptDevice` gives: a personal
+  30-day sliding device token, a `DEVICE#` row under her household, and it
+  lands on her hero (`/journal`). It is a binding like any other: an owner
+  revokes it the way they revoke a lost phone. Her own phone is untouched,
+  and she can have several devices.
+- **A binding the device already held is revoked**, once the new one exists.
+  The client replaces its stored token with the new one anyway, so the old
+  token would stay valid on the server with nobody holding it, a working
+  credential on an owner's list for a kid who is not using it. The device
+  proves it holds it by sending it with the redeem, so only a device can
+  retire its own binding this way. A shared tablet's binding is not touched.
+  If the revoke fails the pairing still succeeds (logged).
+- **Not built here:** an in-app camera scanner. A phone's own camera reads the
+  QR and opens the link; typing the code is the fallback. A list of a kid's
+  paired devices for the organizer panel waits on the device screen that
+  does not exist yet (#250's "forget this device" is by device id).
 
 **What is collected about a kid, and for how long.** Kept current as features
 land, and the source for #252's "what we store" page.
