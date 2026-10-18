@@ -21,7 +21,7 @@
 
 import type { PlayerProfile, SharedDevicePlayer, SharedDevicePlayersResponse, ShareDeviceResponse } from "@kad/shared";
 import type { DeviceIdentity, SessionIdentity, SharedDeviceIdentity } from "../identity.ts";
-import { createProfile, type AccountDeps } from "./account.ts";
+import { createProfile, vetTypedName, type AccountDeps } from "./account.ts";
 import { fail, ok, type HandlerResult } from "./deps.ts";
 
 /** Long enough for any kid's name, short enough to fit under an avatar. */
@@ -132,6 +132,8 @@ export async function seatOnSharedDevice(
     if (name === "" || name.length > NEW_PLAYER_NAME_MAX) {
       return fail("ILLEGAL", `a new player needs a name of 1 to ${NEW_PLAYER_NAME_MAX} letters`);
     }
+    const vetted = vetTypedName(name, name);
+    if (!vetted.ok) return vetted;
     // Two faces with one name on the picker is two kids who cannot tell
     // which is theirs. Somebody new with a name already here taps that face.
     const players = await deps.repo.listPlayers(shared.householdId);

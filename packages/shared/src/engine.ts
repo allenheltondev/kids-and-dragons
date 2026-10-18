@@ -99,6 +99,7 @@ import type { FactId, FactValue } from "./types/campaign-graph.js";
 import { factTestHolds } from "./world-state.js";
 import { checkBuffOffer, combatBuffsFor, expireRunBuffs, oneHeroSeat, spendCheckBuff, spendRunBuffs } from "./buffs.js";
 import { sameHome } from "./visitors.js";
+import { checkTypedName } from "./names.js";
 
 // ---------------------------------------------------------------------------
 // Surface
@@ -1198,6 +1199,11 @@ function doCreateCharacter(
       `startingLevel ${intent.startingLevel} is above this party's tier floor (${joinCap})`,
     );
   }
+
+  // A typed name is vetted here, not only on the phone (#253): this is the one
+  // place every hero's name passes, so a hand-written client gets no way round.
+  const vetted = checkTypedName(intent.name);
+  if (!vetted.ok) throw new Illegal("ILLEGAL", vetted.message);
 
   const character: Character = newCharacter({
     /*

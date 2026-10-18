@@ -443,6 +443,16 @@ describe("createRunState", () => {
 });
 
 describe("CREATE_CHARACTER", () => {
+  it("refuses a blocked hero name with a kid-friendly sentence, and seats nobody", () => {
+    const result = applyIntent(
+      newRun(),
+      { playerId: "p_1", intent: { ...CREATE_UNICORN, name: "Poopface" } },
+      ctx(),
+    );
+    expect(result.error).toMatchObject({ code: "ILLEGAL", message: "Hmm, let's pick another one!" });
+    expect(result.state.party).toHaveLength(0);
+  });
+
   it("seats a resolved character at full HP", () => {
     const state = seatedParty();
     expect(state.phase).toBe("creation");

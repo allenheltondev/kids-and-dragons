@@ -91,7 +91,7 @@ test("the adventure book opens on a reload and in a new tab with no signal", asy
 
   await phone.getByRole("button", { name: /want to host/i }).click();
   await phone.getByText("Phone Mode").click();
-  await phone.getByLabel(/your name/i).fill("Ada");
+  await phone.getByLabel(/adventurer name/i).fill("Ada");
   await phone.getByRole("button", { name: /^start a game$/i }).click();
   await expect(phone).toHaveURL(/\/p\/[A-Z0-9]{4}$/);
   await createCharacter(phone, "unicorn", HERO);
@@ -143,7 +143,7 @@ test("the book saves its art even when it opens before the worker has taken over
   await before.goto("/");
   await before.getByRole("button", { name: /want to host/i }).click();
   await before.getByText("Phone Mode").click();
-  await before.getByLabel(/your name/i).fill("Ada");
+  await before.getByLabel(/adventurer name/i).fill("Ada");
   await before.getByRole("button", { name: /^start a game$/i }).click();
   await expect(before).toHaveURL(/\/p\/[A-Z0-9]{4}$/);
   await createCharacter(before, "unicorn", HERO);
@@ -231,7 +231,7 @@ test("a tab left open across a deploy can still open the book", async ({ browser
 async function playALittle(page: Page): Promise<void> {
   await page.getByRole("button", { name: /want to host/i }).click();
   await page.getByText("Phone Mode").click();
-  await page.getByLabel(/your name/i).fill("Ada");
+  await page.getByLabel(/adventurer name/i).fill("Ada");
   await page.getByRole("button", { name: /^start a game$/i }).click();
   await expect(page).toHaveURL(/\/p\/[A-Z0-9]{4}$/);
   await createCharacter(page, "unicorn", HERO);

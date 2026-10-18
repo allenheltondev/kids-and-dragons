@@ -409,6 +409,27 @@ describe("POST /api/room", () => {
   });
 });
 
+describe("blocked names at the HTTP door (#253)", () => {
+  it("refuses a host or a joiner who types one, with the kid-friendly sentence", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+
+    const host = await respond(event("POST", "/api/room", { body: { mode: "travel", displayName: "Poopface" } }), rt);
+    expect(host.statusCode).toBe(409);
+    expect(bodyOf(host).error).toMatchObject({ code: "ILLEGAL", message: "Hmm, let's pick another one!" });
+
+    const opened = bodyOf(
+      await respond(event("POST", "/api/room", { body: { mode: "party", display: true } }), rt),
+    ) as unknown as { code: string };
+    const joined = await respond(
+      event("POST", `/api/room/${opened.code}/join`, { body: { displayName: "sh1t" } }),
+      rt,
+    );
+    expect(joined.statusCode).toBe(409);
+    expect(bodyOf(joined).error).toMatchObject({ code: "ILLEGAL", message: "Hmm, let's pick another one!" });
+  });
+});
+
 describe("POST /api/room/:code/join", () => {
   it("accepts a lower-case code and upper-cases it", async () => {
     // The QR carries upper case; a child typing it in does not.
