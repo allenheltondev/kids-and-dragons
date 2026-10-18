@@ -39,7 +39,7 @@ test.describe("a room open to visitors", () => {
   async function hostPhoneMode(page: Page, name: string): Promise<string> {
     await page.getByRole("button", { name: /want to host/i }).click();
     await page.getByText("Phone Mode").click();
-    await page.getByLabel(/your name/i).fill(name);
+    await page.getByLabel(/adventurer name/i).fill(name);
     await page.getByRole("button", { name: /^start a game$/i }).click();
     await expect(page).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
     return new URL(page.url()).pathname.split("/").pop() ?? "";

@@ -41,7 +41,7 @@ test.describe("the adventure book", () => {
     // --- Play a little: Phone Mode, a hero, the chapter begins ---
     await phone.getByRole("button", { name: /want to host/i }).click();
     await phone.getByText("Phone Mode").click();
-    await phone.getByLabel(/your name/i).fill("Ada");
+    await phone.getByLabel(/adventurer name/i).fill("Ada");
     await phone.getByRole("button", { name: /^start a game$/i }).click();
     await expect(phone).toHaveURL(/\/p\/[A-Z0-9]{4}$/);
     await createCharacter(phone, "unicorn", HERO);
