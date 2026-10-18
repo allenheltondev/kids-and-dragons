@@ -11,6 +11,7 @@ import type { PartyMember, RunState } from "@kad/shared";
 import { useGameStore } from "../store";
 import type { ClientSession } from "../store/contract";
 import { makeState } from "../testing/fixtures";
+import { useKeepsakeStore } from "../store/keepsake";
 import { HostControls, rosterOf } from "./HostControls";
 
 function member(playerId: string, name: string, connected = true): PartyMember {
@@ -59,15 +60,15 @@ afterEach(() => {
 describe("rosterOf", () => {
   it("lists everybody who joined, a hero's name once there is one, and where they are", () => {
     expect(rosterOf({ ...RUN, party: RUN.party ?? [], removed: ["p_3"] }, "p_1")).toEqual([
-      { playerId: "p_1", name: "Ember", color: "#7FD4C1", device: "phone", status: "here", me: true },
-      { playerId: "p_2", name: "Sparklehoof", color: "#F2A65A", device: "tablet", status: "away", me: false },
-      { playerId: "p_3", name: "Player", color: "#9A8CF2", device: "phone", status: "out", me: false },
+      { playerId: "p_1", name: "Ember", color: "#7FD4C1", device: "phone", status: "here", me: true, visitor: false },
+      { playerId: "p_2", name: "Sparklehoof", color: "#F2A65A", device: "tablet", status: "away", me: false, visitor: false },
+      { playerId: "p_3", name: "Player", color: "#9A8CF2", device: "phone", status: "out", me: false, visitor: false },
     ]);
   });
 
   it("still lists a seated hero from a run older than the roster", () => {
     expect(rosterOf({ party: [member("p_9", "Rumble")] }, "")).toEqual([
-      { playerId: "p_9", name: "Rumble", color: "#123456", device: null, status: "here", me: false },
+      { playerId: "p_9", name: "Rumble", color: "#123456", device: null, status: "here", me: false, visitor: false },
     ]);
   });
 });
@@ -128,5 +129,47 @@ describe("host controls", () => {
     expect(screen.queryByRole("list", { name: "Who is in this room" })).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Room" }));
     expect(screen.getByRole("list", { name: "Who is in this room" })).toBeTruthy();
+  });
+
+  it("mark a visitor on the roster (#249)", () => {
+    const visiting = { ...RUN, seats: { ...RUN.seats, p_3: { name: "Wren", color: "#9A8CF2", device: "phone" as const, homeHouseholdId: "h_next_door" } } };
+    expect(rosterOf({ ...visiting, party: [] }, "p_1").find((r) => r.playerId === "p_3")?.visitor).toBe(true);
+    room({ host: true }, visiting);
+    render(<HostControls placement="inline" />);
+    expect(screen.getByText(/visiting/)).toBeTruthy();
+  });
+});
+
+describe("the visitor switch (#249)", () => {
+  function signIn(available: boolean) {
+    const openVisitors = vi.fn();
+    act(() => {
+      useKeepsakeStore.setState({ available, check: async () => undefined, openVisitors });
+    });
+    return openVisitors;
+  }
+
+  it("asks a grown-up to sign in to let visitors join", () => {
+    const openVisitors = signIn(true);
+    room({ host: true });
+    render(<HostControls placement="inline" />);
+    fireEvent.click(screen.getByRole("button", { name: "Let visitors join" }));
+    expect(openVisitors).toHaveBeenCalledWith("ABCD", true);
+  });
+
+  it("shows the visitor code once the room is open, and can stop new visitors", () => {
+    const openVisitors = signIn(true);
+    room({ host: true }, { ...RUN, visitorCode: "ABCDXY" });
+    render(<HostControls placement="inline" />);
+    expect(screen.getByText("ABCDXY")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Stop new visitors" }));
+    expect(openVisitors).toHaveBeenCalledWith("ABCD", false);
+  });
+
+  it("is not offered where nobody can sign in", () => {
+    signIn(false);
+    room({ host: true });
+    render(<HostControls placement="inline" />);
+    expect(screen.queryByRole("button", { name: "Let visitors join" })).toBeNull();
   });
 });

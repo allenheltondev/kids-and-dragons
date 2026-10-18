@@ -209,6 +209,7 @@ function EmailStep({ busy, error }: StepProps): ReactElement {
   const close = useKeepsakeStore((s) => s.close);
   const fromHome = useKeepsakeStore((s) => s.entry) === "home";
   const purpose = useKeepsakeStore((s) => s.purpose);
+  const visitorRoom = useKeepsakeStore((s) => s.visitorRoom);
   const [email, setEmail] = useState("");
   const fieldId = useId();
 
@@ -229,6 +230,10 @@ function EmailStep({ busy, error }: StepProps): ReactElement {
             ? "Forget this tablet?"
             : purpose === "organize"
               ? "Run a group"
+              : purpose === "visitors"
+              ? visitorRoom?.open === false
+                ? "No new visitors"
+                : "Let visitors join"
               : fromHome
               ? "Sign in or create an account"
               : "What\u2019s your email?"}
@@ -244,6 +249,13 @@ function EmailStep({ busy, error }: StepProps): ReactElement {
         <p className="keepsake__body">
           For grown-ups running games for kids from more than one family. Sign in to start a group,
           add the kids, and invite another grown-up to help. The kids never need an account.
+        </p>
+      ) : purpose === "visitors" ? (
+        /* #249: it lowers the barrier to joining, so a grown-up decides. */
+        <p className="keepsake__body">
+          {visitorRoom?.open === false
+            ? "Sign in as a grown-up who runs this game. Visitors already playing stay; nobody new can join with the long code."
+            : "Sign in as a grown-up who runs this game. Kids from other families can then join with their own phones and heroes, using a longer code."}
         </p>
       ) : purpose === "forget" ? (
         <p className="keepsake__body">

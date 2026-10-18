@@ -23,7 +23,7 @@ import { setPlayerSection, usePlayerNavigation } from "../store/player-navigatio
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
-import { DEFAULT_HELP_DIE, INVENTORY_SLOTS, STAT_IDS, lobbyCampaign, riftPartyOf } from "@kad/shared";
+import { DEFAULT_HELP_DIE, INVENTORY_SLOTS, STAT_IDS, lobbyCampaign, riftPartyOf, sameHome } from "@kad/shared";
 import { checkTarget } from "./DiceOverlay";
 import { checkBuffLine } from "./buff-copy";
 import type {
@@ -722,13 +722,17 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
    * (§9.2), so they are never `InventoryEntry`s and never selectable in the
    * bag. The engine refuses them anyway, for the client that does not go
    * through this grid.
+   *
+   * Nor is a hero from another household (#249): a visitor's things go home
+   * with them, so items only pass between heroes of one household, and the
+   * server refuses the rest.
    */
+  const homeFriends = party.filter((member) => member.playerId !== me.playerId && sameHome(member, me));
   const canReceive =
     selectedEntry === null
       ? []
-      : party.filter(
+      : homeFriends.filter(
           (member) =>
-            member.playerId !== me.playerId &&
             !trades.some(
               (offer) =>
                 offer.fromPlayerId === me.playerId &&
@@ -1764,7 +1768,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                     <span>
                       {party.length < 2
                         ? "Nobody else is here to give it to."
-                        : "Everyone is already being offered this one."}
+                        : homeFriends.length === 0
+                          ? "Visitors keep their own things, so nobody here can take it."
+                          : "Everyone is already being offered this one."}
                     </span>
                   </p>
                 ) : (
