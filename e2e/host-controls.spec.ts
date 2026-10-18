@@ -59,6 +59,13 @@ test.describe("running the room", () => {
     await join(newcomer, code);
     await expect(newcomer.getByText(/this game is locked/i).first()).toBeVisible(TAP);
 
+    // --- Quiet: the host's switch reaches the guest's phone, and goes again ---
+    const quietOn = () => guest.locator("html[data-quiet]");
+    await host.getByRole("button", { name: "Quiet mode" }).click();
+    await expect(quietOn()).toHaveCount(1, TAP);
+    await host.getByRole("button", { name: "Turn quiet mode off" }).click();
+    await expect(quietOn()).toHaveCount(0, TAP);
+
     // --- Removed: the guest is out ---
     await guestRow.getByRole("button", { name: /^Remove .* from this game$/ }).click();
     await expect(guest.getByText(/took this phone out/i)).toBeVisible(TAP);
