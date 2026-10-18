@@ -6,10 +6,11 @@
  * seat with its hero, told in one line what is going on. A third kid joins
  * partway and gets the same line.
  *
- * "Stepping away" is the phone leaving the game page, which closes its event
- * stream: the dev server's presence (handlers/presence.ts) marks it away, the
- * way a phone that walks out of Wi-Fi is. Coming back is opening the room
- * again. The scene each step needs is reached with the dev playtest jump
+ * Presence runs as production has it (playwright.config.ts): heartbeats only,
+ * no stream-based presence, with a shorter timeout so a test can wait for it.
+ * "Stepping away" is the phone leaving the game page, which says goodbye; one
+ * phone also goes silently offline, as a phone that dies does, and is noticed
+ * by the timeout. Coming back is opening the room again. The scene each step needs is reached with the dev playtest jump
  * (playtest.ts), so the spec is about absence, not about the route.
  */
 
@@ -176,6 +177,16 @@ test.describe("drop in, drop out", () => {
     await rosie.getByRole("button", { name: /do it!/i }).click(TAP);
     await expect.poll(async () => (await state()).sceneId, TAP).not.toBe(firstScene);
     await comeBack(sam, "Sam");
+
+    // --- A phone that dies: no goodbye, it just goes quiet ---
+    // Offline, its heartbeats stop; Sam's next beat after the timeout notices.
+    await rosie.context().setOffline(true);
+    await expect.poll(async () => (await memberNamed("Rosie")).connected, { timeout: 120_000 }).toBe(false);
+    await tvSaysAway("Rosie");
+    // Signal back: her next beat marks her here again, without a tap.
+    await rosie.context().setOffline(false);
+    await expect.poll(async () => (await memberNamed("Rosie")).connected, { timeout: 60_000 }).toBe(true);
+    await expect(tv.getByTestId("stepped-away").filter({ hasText: "Rosie" })).toHaveCount(0, TAP);
 
     // --- A late joiner: Pip sits down partway, and is told what is going on ---
     const pip = await device(browser);
