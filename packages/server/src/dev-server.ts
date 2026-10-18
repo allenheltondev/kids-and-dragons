@@ -48,6 +48,7 @@ import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
 import { getState } from "./handlers/state.ts";
 import { organizerRoute } from "./handlers/organizer.ts";
+import { isSlowDown, pairFromDevice, redeemPairingCode } from "./handlers/pairing.ts";
 import { isOut } from "./handlers/remove.ts";
 import {
   forgetDevice,
@@ -696,6 +697,32 @@ async function main(): Promise<void> {
     res.json(result.value);
   });
 
+  // "Play as me on another device" (#281). Her own phone asks for a one-time code.
+  app.post("/api/pair/code", async (req: Request, res: Response) => {
+    const found = await resolvePrincipal(req, base);
+    if (!found) {
+      if (req.get("x-kad-shared-token")) {
+        return sendError(res, 403, "FORBIDDEN", "A shared tablet isn't one kid. Ask a grown-up to make the code.");
+      }
+      return sendError(res, 401, "FORBIDDEN", "Only a device that is already her can make a code.");
+    }
+    const result = await pairFromDevice(found.principal, base);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
+  // The new device redeems it. No sign-in: the code is the credential.
+  app.post("/api/pair/redeem", async (req: Request, res: Response) => {
+    const previous = await resolvePrincipal(req, base);
+    const result = await redeemPairingCode(
+      { code: req.body?.code, client: clientOf(req), userAgent: req.get("user-agent"), previous: previous?.principal },
+      base,
+    );
+    if (isSlowDown(result)) return slowDown(res, base);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
   // A grown-up running a household or a group (#248): the same table the
   // Lambda routes through, behind the dev token.
   app.use("/api/organizer", async (req: Request, res: Response, next: NextFunction) => {
@@ -844,7 +871,7 @@ function clientOf(req: Request): string {
   return clientKeyFor(req.socket.remoteAddress);
 }
 
-function slowDown(res: Response, deps: HandlerDeps): void {
+function slowDown(res: Response, deps: Pick<HandlerDeps, "now">): void {
   res.set("retry-after", String(retryAfterSeconds(deps.now())));
   sendError(res, SLOW_DOWN.status, SLOW_DOWN.code, SLOW_DOWN.message);
 }
