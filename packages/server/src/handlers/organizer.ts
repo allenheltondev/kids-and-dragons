@@ -24,6 +24,7 @@ import type {
   Household,
   OrganizerHero,
   OrganizerHouseholdSummary,
+  OrganizerHouseholdsResponse,
   OrganizerHouseholdView,
   OrganizerInvite,
   OrganizerOwner,
@@ -69,8 +70,8 @@ export interface Organizer {
 export async function listOwnedHouseholds(
   who: Organizer,
   deps: AccountDeps,
-): Promise<HandlerResult<OrganizerHouseholdSummary[]>> {
-  return ok(await summaries(await deps.repo.listHouseholdsForAccount(who.cognitoSub), deps));
+): Promise<HandlerResult<OrganizerHouseholdsResponse>> {
+  return ok({ households: await summaries(await deps.repo.listHouseholdsForAccount(who.cognitoSub), deps) });
 }
 
 /**

@@ -1230,6 +1230,8 @@ describe("GET /api/state", () => {
 
 describe("/api/organizer/* (#248)", () => {
   const signedIn = (token: string) => ({ authorization: `Bearer ${token}` });
+  const answer = (result: APIGatewayProxyStructuredResultV2) =>
+    JSON.parse(result.body ?? "{}") as Record<string, unknown>;
 
   it("needs a verified sign-in on every route, and says which route it is not", async () => {
     const rt = runtimeFor(makeHarness());
@@ -1267,14 +1269,14 @@ describe("/api/organizer/* (#248)", () => {
       rt,
     );
     expect(created.statusCode).toBe(200);
-    const groupId = bodyOf(created).id as string;
+    const groupId = answer(created).id as string;
 
     const invite = await respond(
       event("POST", "/api/organizer/invite", { headers: as(ana), body: { householdId: groupId } }),
       rt,
     );
     const accepted = await respond(
-      event("POST", "/api/organizer/invite/accept", { headers: as(ben), body: { code: bodyOf(invite).code } }),
+      event("POST", "/api/organizer/invite/accept", { headers: as(ben), body: { code: answer(invite).code } }),
       rt,
     );
     expect(accepted.statusCode).toBe(200);
@@ -1288,7 +1290,7 @@ describe("/api/organizer/* (#248)", () => {
       rt,
     );
     expect(view.statusCode).toBe(200);
-    expect((bodyOf(view).players as { displayName: string }[]).map((p) => p.displayName)).toEqual(["Posy"]);
+    expect((answer(view).players as { displayName: string }[]).map((p) => p.displayName)).toEqual(["Posy"]);
 
     // A third account is refused, with the status the client shows.
     const eve = await respond(
@@ -1303,7 +1305,7 @@ describe("/api/organizer/* (#248)", () => {
     const rt = runtimeFor(harness);
     rt.account = { cognitoSub: "sub_ana" };
     const make = async (displayName: string) =>
-      bodyOf(
+      answer(
         await respond(event("POST", "/api/organizer/households", { headers: signedIn("t"), body: { displayName } }), rt),
       ).id as string;
     await make("Family");
@@ -1313,8 +1315,8 @@ describe("/api/organizer/* (#248)", () => {
       event("POST", "/api/auth/link", { headers: signedIn("t"), body: { householdId: club, preferExisting: true } }),
       rt,
     );
-    expect(bodyOf(link).householdId).toBe(club);
-    expect((bodyOf(link).households as unknown[]).length).toBe(2);
+    expect(answer(link).householdId).toBe(club);
+    expect((answer(link).households as unknown[]).length).toBe(2);
 
     const unsure = await respond(event("POST", "/api/auth/shared-device", { headers: signedIn("t") }), rt);
     expect(unsure.statusCode).toBe(409);
@@ -1322,7 +1324,7 @@ describe("/api/organizer/* (#248)", () => {
       event("POST", "/api/auth/shared-device", { headers: signedIn("t"), body: { householdId: club } }),
       rt,
     );
-    expect(bodyOf(tablet).householdId).toBe(club);
+    expect(answer(tablet).householdId).toBe(club);
   });
 });
 

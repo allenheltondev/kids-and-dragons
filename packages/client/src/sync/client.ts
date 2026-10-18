@@ -19,6 +19,10 @@ import type {
   JoinRoomRequest,
   JoinRoomResponse,
   JournalResponse,
+  OrganizerHouseholdsResponse,
+  OrganizerHouseholdSummary,
+  OrganizerHouseholdView,
+  OrganizerInvite,
   RoomMode,
   RulesContent,
   RunState,
@@ -107,7 +111,26 @@ export interface LinkAccountResponse {
   playerId?: string;
   /** This phone already plays in `householdId`; no player to pick. Absent from older servers. */
   deviceBound?: boolean;
+  /**
+   * Every household the account owns (#248): more than one is a grown-up who
+   * runs a group as well as a family, and is asked which. Absent from older servers.
+   */
+  households?: OrganizerHouseholdSummary[];
 }
+
+/** One change an organizer makes to a household (#248). Each answers with the whole household. */
+export type OrganizerEdit =
+  | { action: "rename-household"; householdId: string; displayName: string }
+  | { action: "add-player"; householdId: string; displayName: string }
+  | { action: "rename-player"; householdId: string; playerId: string; displayName: string }
+  | { action: "retire-player"; householdId: string; playerId: string; retired: boolean };
+
+const ORGANIZER_EDIT_PATH: Record<OrganizerEdit["action"], string> = {
+  "rename-household": "/api/organizer/household/rename",
+  "add-player": "/api/organizer/players",
+  "rename-player": "/api/organizer/players/rename",
+  "retire-player": "/api/organizer/players/retire",
+};
 
 /**
  * How a display client attaches — architecture §4.5, "The TV, which is nobody".
@@ -206,7 +229,13 @@ export interface Api {
    * `preferExisting` is the home-screen sign-in: an account that already has a
    * household returns to it rather than claiming this phone's guest game.
    */
-  linkAccount(idToken: string, deviceToken?: string, preferExisting?: boolean): Promise<LinkAccountResponse>;
+  linkAccount(
+    idToken: string,
+    deviceToken?: string,
+    preferExisting?: boolean,
+    /** One of `households` from an earlier answer (#248). */
+    householdId?: string,
+  ): Promise<LinkAccountResponse>;
   /** Binds this device to an existing player — the new-phone path (§4.5). */
   adoptDevice(
     idToken: string,
@@ -219,7 +248,13 @@ export interface Api {
    * A signed-in owner makes this device the household's shared tablet. The
    * device token it held, if any, goes along to be revoked.
    */
-  shareDevice(idToken: string, deviceToken?: string, sharedToken?: string): Promise<ShareDeviceResponse>;
+  shareDevice(
+    idToken: string,
+    deviceToken?: string,
+    sharedToken?: string,
+    /** Which household, when the account owns more than one (#248). */
+    householdId?: string,
+  ): Promise<ShareDeviceResponse>;
   /** "Forget this device": the tablet's own token names it. */
   forgetDevice(idToken: string, sharedToken: string): Promise<void>;
   /** The "who's playing?" picker. */
@@ -231,6 +266,18 @@ export interface Api {
     sharedToken: string,
     seat: SharedSeatRequest,
   ): Promise<LocalCreateRoomResponse>;
+
+  // --- organizers (#248) -----------------------------------------------------
+  /** Every household the signed-in account owns. */
+  listHouseholds(idToken: string): Promise<OrganizerHouseholdsResponse>;
+  /** A new group, owned by this account, with nobody in it yet. */
+  createGroup(idToken: string, displayName: string): Promise<OrganizerHouseholdSummary>;
+  viewHousehold(idToken: string, householdId: string): Promise<OrganizerHouseholdView>;
+  editHousehold(idToken: string, edit: OrganizerEdit): Promise<OrganizerHouseholdView>;
+  createOrganizerInvite(idToken: string, householdId: string): Promise<OrganizerInvite>;
+  acceptOrganizerInvite(idToken: string, code: string): Promise<OrganizerHouseholdSummary>;
+  /** Take a co-organizer off, or leave (`ownerId` is your own). */
+  removeOrganizer(idToken: string, householdId: string, ownerId: string): Promise<{ householdId: string; left: boolean }>;
 }
 
 const JSON_HEADERS = { "content-type": "application/json" };
@@ -454,7 +501,7 @@ export const api: Api = {
     }
   },
 
-  linkAccount(idToken, deviceToken, preferExisting = false) {
+  linkAccount(idToken, deviceToken, preferExisting = false, householdId) {
     return request<LinkAccountResponse>("/api/auth/link", {
       method: "POST",
       headers: {
@@ -464,7 +511,10 @@ export const api: Api = {
       // The *Cognito* id token, not a room session token — this is the one
       // request in the client that carries an account credential.
       token: idToken,
-      body: JSON.stringify(preferExisting ? { preferExisting: true } : {}),
+      body: JSON.stringify({
+        ...(preferExisting ? { preferExisting: true } : {}),
+        ...(householdId ? { householdId } : {}),
+      }),
     });
   },
 
@@ -477,7 +527,7 @@ export const api: Api = {
     });
   },
 
-  shareDevice(idToken, deviceToken, sharedToken) {
+  shareDevice(idToken, deviceToken, sharedToken, householdId) {
     return request<ShareDeviceResponse>("/api/auth/shared-device", {
       method: "POST",
       headers: {
@@ -486,7 +536,7 @@ export const api: Api = {
         ...(sharedToken ? { "x-kad-shared-token": sharedToken } : {}),
       },
       token: idToken,
-      body: JSON.stringify({}),
+      body: JSON.stringify(householdId ? { householdId } : {}),
     });
   },
 
@@ -508,6 +558,65 @@ export const api: Api = {
       },
     });
     return { ...body, ...(rotatedToken ? { rotatedToken } : {}) };
+  },
+
+  // --- organizers (#248): every one carries the *Cognito* id token ----------
+
+  listHouseholds(idToken) {
+    return request<OrganizerHouseholdsResponse>("/api/organizer/households", { token: idToken });
+  },
+
+  createGroup(idToken, displayName) {
+    return request<OrganizerHouseholdSummary>("/api/organizer/households", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ displayName }),
+    });
+  },
+
+  viewHousehold(idToken, householdId) {
+    return request<OrganizerHouseholdView>(
+      `/api/organizer/household?${new URLSearchParams({ householdId }).toString()}`,
+      { token: idToken },
+    );
+  },
+
+  editHousehold(idToken, edit) {
+    const { action, ...body } = edit;
+    return request<OrganizerHouseholdView>(ORGANIZER_EDIT_PATH[action], {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify(body),
+    });
+  },
+
+  createOrganizerInvite(idToken, householdId) {
+    return request<OrganizerInvite>("/api/organizer/invite", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ householdId }),
+    });
+  },
+
+  acceptOrganizerInvite(idToken, code) {
+    return request<OrganizerHouseholdSummary>("/api/organizer/invite/accept", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ code }),
+    });
+  },
+
+  removeOrganizer(idToken, householdId, ownerId) {
+    return request<{ householdId: string; left: boolean }>("/api/organizer/owners/remove", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ householdId, ownerId }),
+    });
   },
 
   joinRoomShared(code, sharedToken, seat) {
