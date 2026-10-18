@@ -6,8 +6,6 @@
  *   /journal     → between games: study your hero, the map and the Field
  *                  Guide with nothing at stake, and join a game from there.
  *                  No room, so no code — the device binding is enough.
- *   /what-we-store → for grown-ups, in plain words: what the game keeps
- *                  about a family, who it belongs to, and for how long (#252).
  *   /tv/:code    → Party Mode WorldView. A pure display client with no
  *                  authority, refreshable at any time (spec §2.1).
  *   /p/:code     → PlayerView in Party Mode, or the toggled
@@ -25,7 +23,6 @@ import { useSyncExternalStore } from "react";
 export type Route =
   | { name: "home" }
   | { name: "journal" }
-  | { name: "whatWeStore" }
   | { name: "tv"; code: string }
   | { name: "player"; code: string }
   | { name: "notFound"; path: string };
@@ -44,8 +41,6 @@ const ROOM_CODE = /^(?:[A-Z0-9]{4}|[A-Z0-9]{6})$/;
 
 export const ROOM_CODE_LENGTH = 4;
 
-/** The plain-language page of what the game keeps (#252). */
-export const WHAT_WE_STORE_PATH = "/what-we-store";
 export const VISITOR_CODE_LENGTH = 6;
 
 /** A code with nothing left to type: a room's four letters, or a visitor code's six. */
@@ -97,7 +92,6 @@ export function parseRoute(input: string): Route {
 
   if (segments.length === 0) return { name: "home" };
   if (segments.length === 1 && head === "journal") return { name: "journal" };
-  if (segments.length === 1 && head === WHAT_WE_STORE_PATH.slice(1)) return { name: "whatWeStore" };
 
   if (segments.length === 2 && second !== undefined) {
     const code = normalizeCode(second);
@@ -117,8 +111,6 @@ export function formatRoute(route: Route): string {
       return "/";
     case "journal":
       return "/journal";
-    case "whatWeStore":
-      return WHAT_WE_STORE_PATH;
     case "tv":
       return `/tv/${normalizeCode(route.code)}`;
     case "player":

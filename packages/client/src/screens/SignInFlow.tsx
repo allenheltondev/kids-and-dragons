@@ -33,6 +33,7 @@ import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
 import { KeepsakeLantern } from "./KeepsakeLantern";
 import { OrganizerPanel } from "./OrganizerPanel";
+import { WhatWeStoreLink } from "./WhatWeStore";
 import "./shared.css";
 import "./SignInFlow.css";
 
@@ -316,6 +317,8 @@ function EmailStep({ busy, error }: StepProps): ReactElement {
           Not now
         </Button>
       </div>
+      {/* #252: what the game keeps, readable before anybody signs in. */}
+      <WhatWeStoreLink label="What we store about your family" />
     </form>
   );
 }

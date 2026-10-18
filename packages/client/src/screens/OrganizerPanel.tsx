@@ -38,7 +38,7 @@ import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
 import { PairingCodeCard } from "./PairDevice";
 import { lastUsed, tabletName } from "./tablet-label";
-import { WHAT_WE_STORE_PATH } from "../router";
+import { WhatWeStoreLink } from "./WhatWeStore";
 import { KeepsakeError } from "./SignInFlow";
 import { savedHeroLine } from "./save-copy";
 import "./OrganizerPanel.css";
@@ -573,9 +573,7 @@ function KeepingSection({ view, busy }: { view: OrganizerHouseholdView; busy: bo
       <p className="keepsake__fine kad-muted">
         Counted from the last time each kid played, anywhere. A kid deleted this way goes with their heroes.
       </p>
-      <a className="organizer__link kad-focusable" href={WHAT_WE_STORE_PATH} target="_blank" rel="noreferrer">
-        What we store, and for how long
-      </a>
+      <WhatWeStoreLink />
 
       {asking ? (
         <div className="organizer__invite organizer__danger" role="group" aria-label={`Delete ${view.displayName}?`}>

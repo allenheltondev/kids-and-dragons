@@ -22,7 +22,7 @@ import { useKeepsakeStore } from "../store/keepsake";
 import { useOrganizerStore } from "../store/organizer";
 // The one normalize helper for typed and prefilled codes — the router owns the
 // code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
-import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, WHAT_WE_STORE_PATH, normalizeCodeInput as normalizeCode, pairingFromSearch } from "../router";
+import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, normalizeCodeInput as normalizeCode, pairingFromSearch } from "../router";
 import { loadPlayerDeviceToken } from "../store/persistence";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
@@ -512,19 +512,6 @@ function PersonalHome(): ReactElement {
                 >
                   Running games for kids from other families? Run a group
                 </button>
-              </div>
-              {/* #252: what the game keeps, in plain words, for whoever asks. */}
-              <div className="home__host-toggle">
-                <a
-                  className="home__link kad-focusable"
-                  href={WHAT_WE_STORE_PATH}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate(WHAT_WE_STORE_PATH);
-                  }}
-                >
-                  What we store about your family
-                </a>
               </div>
             </section>
           ) : null}
