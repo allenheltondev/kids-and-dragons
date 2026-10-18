@@ -22,7 +22,7 @@ import type { DeviceIdentity } from "../identity.ts";
 import type { EventRecord, RoomRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { newId, newSecret } from "../ids.ts";
-import { keepGuestHousehold, mayClaim } from "./account.ts";
+import { addPlayer, createGuestHousehold, keepGuestHousehold, mayClaim, type BoundDevice } from "./account.ts";
 import { lobbyCampaigns } from "./progression.ts";
 import { loadBook } from "./field-guide.ts";
 import { isRemoved } from "./remove.ts";
@@ -380,7 +380,8 @@ export async function joinRoom(
   // The device resolves to a household; that household must own this run
   // (§4.5), unless the room is open to visitors and this phone is one (#249).
   const visiting = room.householdId !== input.principal.householdId;
-  if (visiting && !(await mayVisit(room, input, deps))) {
+  const visit: Visit = visiting ? { householdId: input.principal.householdId, visitorCode: input.visitorCode } : null;
+  if (visit && !(await mayVisit(room, input.principal.playerId, visit, deps))) {
     return fail("FORBIDDEN", "this device belongs to a different household");
   }
 
@@ -399,7 +400,7 @@ export async function joinRoom(
   // Checked here so a refused join writes nothing, and again on every write
   // that seats them (`seatAndConnect`), so a host's lock or close landing in
   // between is never missed.
-  const refused = admission(lobby, player.id, room.code);
+  const refused = admission(lobby, player.id, room.code, visit);
   if (refused) return refused;
   const state = await withFieldGuide(lobby, room, deps);
 
@@ -409,7 +410,7 @@ export async function joinRoom(
     device: input.device ?? "phone",
     ...(visiting ? { homeHouseholdId: input.principal.householdId } : {}),
   };
-  const seated = await seatAndConnect(state, player.id, seat, room.code, deps);
+  const seated = await seatAndConnect(state, player.id, seat, room.code, visit, deps);
   if (!seated.ok) return seated;
   const joined = seated.value;
   const host = room.hostDeviceId !== undefined && room.hostDeviceId === input.principal.deviceId;
@@ -443,22 +444,29 @@ export async function joinRoom(
   });
 }
 
+/** A join from another household (#249): whose, and the code it came with. Null for the room's own. */
+type Visit = { householdId: string; visitorCode?: string | undefined } | null;
+
 /**
- * Whether a phone from another household may join this room (#249): it is a
+ * Whether a phone from another household may join this run (#249): it is a
  * visitor already on the roster, coming back, or the room is open and the
  * phone has its visitor code. Read from the run, which is where the switch
  * lives, so turning it off stops new visitors at once and leaves the ones
  * already playing in the game.
  */
-async function mayVisit(room: RoomRecord, input: JoinRoomInput, deps: HandlerDeps): Promise<boolean> {
-  const state = await deps.repo.getState(room.runId);
-  if (!state) return false;
-  if (state.seats?.[input.principal.playerId]?.homeHouseholdId === input.principal.householdId) return true;
+function visitorAdmitted(state: RunState, playerId: string, visit: NonNullable<Visit>): boolean {
+  if (state.seats?.[playerId]?.homeHouseholdId === visit.householdId) return true;
   return (
     state.visitorCode !== undefined &&
-    input.visitorCode !== undefined &&
-    input.visitorCode.toUpperCase() === state.visitorCode
+    visit.visitorCode !== undefined &&
+    visit.visitorCode.toUpperCase() === state.visitorCode
   );
+}
+
+/** `visitorAdmitted`, against the run as it stands before anything is read for the join. */
+async function mayVisit(room: RoomRecord, playerId: string, visit: NonNullable<Visit>, deps: HandlerDeps): Promise<boolean> {
+  const state = await deps.repo.getState(room.runId);
+  return state !== null && visitorAdmitted(state, playerId, visit);
 }
 
 /**
@@ -564,9 +572,14 @@ export async function watchRoom(
  *  - locked by the host (#263): only somebody already in the room comes back.
  *    The party counts as well as the roster, for a hero seated in a run from
  *    before the roster existed.
+ *  - a visitor (#249), when the room has stopped letting new ones in and
+ *    this one is not on the roster already (`visitorAdmitted`)
  */
-function admission(state: RunState, playerId: string, code: string): HandlerResult<never> | null {
+function admission(state: RunState, playerId: string, code: string, visit: Visit): HandlerResult<never> | null {
   if (isRemoved(state, playerId)) return fail("FORBIDDEN", "This phone was taken out of that game.");
+  if (visit && !visitorAdmitted(state, playerId, visit)) {
+    return fail("FORBIDDEN", "this device belongs to a different household");
+  }
   if (isClosed(state)) return fail("NOT_FOUND", `no open room ${code.toUpperCase()}`);
   const inRoom = state.seats?.[playerId] !== undefined || state.party.some((m) => m.playerId === playerId);
   if (state.locked && !inRoom) {
@@ -588,7 +601,8 @@ function admission(state: RunState, playerId: string, code: string): HandlerResu
  * Admission (`admission`) is checked against every state this writes on top
  * of. The write is conditional on that state's seq, so a lock, close or
  * removal the host commits first makes it lose the race, and the retry reads
- * the run as the host left it and refuses. Checking only the state the join
+ * the run as the host left it and refuses. So does an owner turning visitors
+ * off (#249). Checking only the state the join
  * started from let a lock that landed in between seat a newcomer anyway.
  */
 async function seatAndConnect(
@@ -596,13 +610,14 @@ async function seatAndConnect(
   playerId: string,
   seat: RoomSeat,
   code: string,
+  visit: Visit,
   deps: HandlerDeps,
 ): Promise<HandlerResult<RunState>> {
   // Retried, unlike most of the room's own writes: a seat lost to a race is a
   // kid a locked room would later refuse, so it is worth a second go.
   let current = state;
   for (let attempt = 0; attempt < 3; attempt++) {
-    const refused = admission(current, playerId, code);
+    const refused = admission(current, playerId, code, visit);
     if (refused) return refused;
     const member = current.party.find((m) => m.playerId === playerId);
     const reconnecting = member !== undefined && !member.connected;
@@ -626,7 +641,7 @@ async function seatAndConnect(
   }
   // Whatever the last attempt left, it is still checked: three lost races
   // must not end in a seat the run as it now stands would refuse.
-  return admission(current, playerId, code) ?? ok(current);
+  return admission(current, playerId, code, visit) ?? ok(current);
 }
 
 /**
@@ -692,4 +707,22 @@ export async function findRoom(
   const state = await deps.repo.getState(room.runId);
   if (state?.visitorCode !== typed || state.closed === true) return null;
   return { room, visitorCode: typed };
+}
+
+/**
+ * A phone nobody has seen before, joining `room`: bound on the spot, so it
+ * joins in one tap. Into the room's household when it came with the room's
+ * own code, as it always was. With a visitor code (#249) it is a visitor, so
+ * it gets a guest household of its own instead and joins from there: a
+ * friend's new phone must never become a member of the host family, and
+ * whatever its hero earns has to go home with it, not stay behind.
+ */
+export async function bindNewPhone(
+  room: RoomRecord,
+  visiting: boolean,
+  input: { displayName: string; userAgent?: string | undefined },
+  deps: Pick<HandlerDeps, "repo" | "identity" | "now">,
+): Promise<BoundDevice> {
+  if (visiting) return createGuestHousehold({ displayName: input.displayName, userAgent: input.userAgent }, deps);
+  return addPlayer({ householdId: room.householdId, displayName: input.displayName, userAgent: input.userAgent }, deps);
 }

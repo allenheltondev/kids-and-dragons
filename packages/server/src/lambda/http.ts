@@ -32,7 +32,7 @@ import {
 import { relayPreview } from "../handlers/preview.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "../handlers/deps.ts";
 import { iso, ok } from "../handlers/deps.ts";
-import { createRoom, findRoom, joinRoom, settleRoom, watchRoom } from "../handlers/room.ts";
+import { bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, watchRoom } from "../handlers/room.ts";
 import { setVisitors } from "../handlers/visitors.ts";
 import { removePlayer } from "../handlers/remove.ts";
 import { closeRoom, lockRoom, type HostPrincipal } from "../handlers/host.ts";
@@ -339,15 +339,14 @@ async function postJoin(req: Req, deps: HandlerDeps, typed: string) {
   const room = settled.value;
   if (!room) return error(404, "NOT_FOUND", `no open room ${code}`);
   // An unbound device joining a room gets a player created for it on the spot,
-  // so a phone that has never seen this game joins in one tap.
+  // so a phone that has never seen this game joins in one tap. On a visitor
+  // code it is a visitor, in a guest household of its own (#249).
   const joiner =
     existing ??
-    (await addPlayer(
-      {
-        householdId: room.householdId,
-        displayName: String(req.body.displayName ?? "Player"),
-        userAgent: req.headers["user-agent"],
-      },
+    (await bindNewPhone(
+      room,
+      named.visitorCode !== undefined,
+      { displayName: String(req.body.displayName ?? "Player"), userAgent: req.headers["user-agent"] },
       deps,
     ));
 
