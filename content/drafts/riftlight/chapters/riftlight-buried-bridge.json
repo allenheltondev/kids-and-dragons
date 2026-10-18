@@ -1,0 +1,153 @@
+{
+  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "id": "riftlight-buried-bridge",
+  "campaignId": "riftlight-opening-preview",
+  "index": 5,
+  "title": "A Bridge Without a River",
+  "biome": "sallow_wastelands",
+  "music": "riftlight-paths",
+  "estimatedMinutes": 12,
+  "xpAward": 140,
+  "entry": "bank",
+  "scenes": {
+    "bank": {
+      "type": "story",
+      "narration": "A Skupper guide stops at a slope of fresh silt. Below it, stone arches cross a dry channel. \"Buried bridge,\" says the guide. \"I will show the bank. I will not walk on that.\" Master Orin Vale, the griffin Riftseeker you met on the glacier, is brushing pale grit from a joint in the stone.",
+      "choices": [
+        {
+          "id": "ask",
+          "label": "Ask Orin what he has found",
+          "icon": "hand",
+          "goto": "orin"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "orin": {
+      "type": "choice_point",
+      "narration": "\"This grit does not belong in the local mud,\" Orin says. \"It matches glacier silt. I think the glacier is draining somewhere through a rift.\" He points across the arches. A sealed door stands beyond the far bank. \"That stays shut. We can learn from this side.\"",
+      "choices": [
+        {
+          "id": "share",
+          "label": "Share the listening chime's readings with Orin",
+          "icon": "hand",
+          "goto": "share"
+        },
+        {
+          "id": "keep",
+          "label": "Keep your readings and compare the stonework",
+          "icon": "hand",
+          "goto": "keep"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "share": {
+      "type": "story",
+      "narration": "You sound the listening chime and let Orin copy its rhythm. He writes down which sounds you heard near the glacier, keeping your observations separate from his guess. \"When we compare this with another opening, I can use your measurements.\"",
+      "choices": [
+        {
+          "id": "work",
+          "label": "Inspect the bridge from the bank",
+          "icon": "hand",
+          "goto": "work",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "orin_chime_shared",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "keep": {
+      "type": "story",
+      "narration": "You keep the chime readings in your own notes. Orin puts his pencil away. \"Then I will work from the silt.\" He shows you a chipped arch visible from the bank. You can still examine it together.",
+      "choices": [
+        {
+          "id": "work",
+          "label": "Inspect the bridge from the bank",
+          "icon": "hand",
+          "goto": "work"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "work": {
+      "type": "choice_point",
+      "narration": "Loose silt hides the foot of the nearest arch. The guide points out firm ground, then stays there. You can clear a small patch from the bank or brace a plank to see the channel from above. No one needs to cross the bridge.",
+      "choices": [
+        {
+          "id": "clear",
+          "label": "Clear the arch a handful at a time",
+          "icon": "hand",
+          "goto": "clear"
+        },
+        {
+          "id": "brace",
+          "label": "Brace a viewing plank together",
+          "icon": "hand",
+          "goto": "brace"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "clear": {
+      "type": "story",
+      "narration": "You work from firm ground, passing the loosened silt back. A carved waterline appears under the arch. Below it lies an old bed of smooth river pebbles. The bridge was built over running water; this channel is dry.",
+      "choices": [
+        {
+          "id": "record",
+          "label": "Draw the waterline and dry channel",
+          "icon": "hand",
+          "goto": "rest"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "brace": {
+      "type": "story",
+      "narration": "You wedge the plank between two firm stones and check it together before leaning out. From above, smooth river pebbles run beneath every arch. A carved waterline marks their sides. The bridge was built over running water; this channel is dry.",
+      "choices": [
+        {
+          "id": "record",
+          "label": "Draw the waterline and dry channel",
+          "icon": "hand",
+          "goto": "rest"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "rest": {
+      "type": "rest",
+      "narration": "You draw the arches, the waterline, and the dry riverbed on one page. The river this bridge served is gone from here. Orin copies only what the stones show. The sealed door remains shut. Your guide leads you back along the firm bank.",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "fragment_coast_learned",
+          "value": true
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    }
+  },
+  "llmHints": {
+    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
+    "forbidden": [
+      "death",
+      "gore",
+      "Corvane",
+      "emperor",
+      "Pangea",
+      "Hollow Gate",
+      "Legend Dragon"
+    ],
+    "npcVoices": {}
+  }
+}

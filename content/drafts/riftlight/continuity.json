@@ -1656,6 +1656,190 @@
           "introduces": {}
         }
       }
+    },
+    "riftlight-stone-counters": {
+      "entryFacts": [],
+      "scenes": {
+        "stone": {
+          "requires": [],
+          "introduces": {
+            "stone": "boundary stone"
+          }
+        },
+        "marks": {
+          "requires": [
+            "stone"
+          ],
+          "introduces": {}
+        },
+        "lesson": {
+          "requires": [
+            "stone"
+          ],
+          "introduces": {
+            "lesson": "Seren"
+          }
+        },
+        "motion": {
+          "requires": [
+            "lesson"
+          ],
+          "introduces": {
+            "motion": "edges creep inward"
+          }
+        },
+        "measure": {
+          "requires": [
+            "motion"
+          ],
+          "introduces": {}
+        },
+        "sound": {
+          "requires": [
+            "motion"
+          ],
+          "introduces": {}
+        },
+        "rest": {
+          "requires": [
+            "stone"
+          ],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-whale-road": {
+      "entryFacts": [],
+      "scenes": {
+        "whales": {
+          "requires": [],
+          "introduces": {
+            "whales": "Cloud whales"
+          }
+        },
+        "olivia": {
+          "requires": [
+            "whales"
+          ],
+          "introduces": {
+            "olivia": "Lady Olivia"
+          }
+        },
+        "guide": {
+          "requires": [
+            "whales",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "gentle": {
+          "requires": [
+            "whales",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "offer": {
+          "requires": [
+            "whales",
+            "olivia"
+          ],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-buried-bridge": {
+      "entryFacts": [],
+      "scenes": {
+        "bank": {
+          "requires": [],
+          "introduces": {
+            "bank": "Buried bridge"
+          }
+        },
+        "orin": {
+          "requires": [
+            "bank"
+          ],
+          "introduces": {
+            "orin": "sealed door"
+          }
+        },
+        "share": {
+          "requires": [
+            "bank",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "keep": {
+          "requires": [
+            "bank",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "work": {
+          "requires": [
+            "bank",
+            "orin"
+          ],
+          "introduces": {
+            "work": "Loose silt"
+          }
+        },
+        "clear": {
+          "requires": [
+            "work"
+          ],
+          "introduces": {
+            "river_evidence": "river pebbles"
+          }
+        },
+        "brace": {
+          "requires": [
+            "work"
+          ],
+          "introduces": {
+            "river_evidence": "river pebbles"
+          }
+        },
+        "rest": {
+          "requires": [
+            "bank",
+            "orin",
+            "river_evidence"
+          ],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-preview-pause-stone-counters": {
+      "entryFacts": [],
+      "scenes": {
+        "pause": {
+          "requires": [],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-preview-pause-whale-road": {
+      "entryFacts": [],
+      "scenes": {
+        "pause": {
+          "requires": [],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-preview-pause-buried-bridge": {
+      "entryFacts": [],
+      "scenes": {
+        "pause": {
+          "requires": [],
+          "introduces": {}
+        }
+      }
     }
   }
 }

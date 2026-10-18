@@ -1,0 +1,129 @@
+{
+  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "id": "riftlight-stone-counters",
+  "campaignId": "riftlight-opening-preview",
+  "index": 5,
+  "title": "The Stone That Moved",
+  "biome": "red_sky_foothills",
+  "music": "riftlight-paths",
+  "estimatedMinutes": 12,
+  "xpAward": 140,
+  "entry": "stone",
+  "scenes": {
+    "stone": {
+      "type": "story",
+      "narration": "Three dragonlings count marks cut into a boundary stone. A pale hollow lies several steps away. \"It stood there yesterday,\" says one keeper. A young manticore introduces himself as Pip Thistledown, a Riftseeker scouting the stones. \"The grass underneath is still flat.\"",
+      "choices": [
+        {
+          "id": "look",
+          "label": "Compare the hollow and the stone",
+          "icon": "hand",
+          "goto": "marks"
+        }
+      ]
+    },
+    "marks": {
+      "type": "story",
+      "narration": "The keeper traces a carved mountain throwing sparks. \"An eruption. These stones were here before our people kept them. Our counts disagree about when it happened.\" Pip measures the hollow. The stone fits it exactly; nobody has found drag marks.",
+      "choices": [
+        {
+          "id": "note",
+          "label": "Record the marks without choosing a date",
+          "icon": "hand",
+          "goto": "lesson"
+        }
+      ]
+    },
+    "lesson": {
+      "type": "story",
+      "narration": "A kitsune named Seren Wisp is comparing notes with a young manticore named Pip Thistledown. They wear the Riftseekers' clasps. \"I am finding what has moved,\" says Pip. Seren asks you to hum the hall note, then listen for an answering sound. \"A starweaver can learn to answer a rift's hum. That is called Attune. No one here chooses a rift's rules.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Listen together",
+          "icon": "hand",
+          "goto": "motion",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "attune_taught",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "attune_taught"
+          },
+          "replace": true,
+          "text": "A kitsune named Seren Wisp and a manticore named Pip Thistledown are checking another displaced route. Seren asks you to compare the sounds with what she taught you before. Pip adds the new place to his notes."
+        }
+      ]
+    },
+    "motion": {
+      "type": "choice_point",
+      "narration": "Beside the stone, a fold in the air narrows. Its edges creep inward while you watch. Seren holds two fingers apart, then brings them together. \"That movement means it is running out of time. We can study it from here. Nobody has to cross.\"",
+      "choices": [
+        {
+          "id": "measure",
+          "label": "Mark its width on Pip's slate",
+          "icon": "hand",
+          "goto": "measure"
+        },
+        {
+          "id": "sound",
+          "label": "Compare its hum with the listening chime",
+          "icon": "hand",
+          "goto": "sound"
+        }
+      ]
+    },
+    "measure": {
+      "type": "story",
+      "narration": "Pip holds the slate while you mark the gap. Before he finishes the next line, the opening is narrower. The keeper moves the counting circle clear of it. Your marks show which way it is changing.",
+      "choices": [
+        {
+          "id": "finish",
+          "label": "Leave the rift room to shrink",
+          "icon": "hand",
+          "goto": "rest"
+        }
+      ]
+    },
+    "sound": {
+      "type": "story",
+      "narration": "You hold the listening chime near the fold without touching it. The beats crowd together as the opening narrows. Seren copies the rhythm beside Pip's measurements. The keeper moves the counting circle clear.",
+      "choices": [
+        {
+          "id": "finish",
+          "label": "Leave the rift room to shrink",
+          "icon": "hand",
+          "goto": "rest"
+        }
+      ]
+    },
+    "rest": {
+      "type": "rest",
+      "narration": "The keepers lay a cord around the moved stone. Pip gives them the measurements so tomorrow's count has a starting point. The road back to Ashspan Bridge remains open. The shrinking fold is an optional crossing; you can also pause here.",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success"
+    }
+  },
+  "llmHints": {
+    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
+    "forbidden": [
+      "death",
+      "gore",
+      "Corvane",
+      "emperor",
+      "Pangea",
+      "Hollow Gate",
+      "Legend Dragon"
+    ],
+    "npcVoices": {}
+  }
+}
