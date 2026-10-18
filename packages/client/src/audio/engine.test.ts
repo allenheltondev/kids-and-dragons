@@ -10,6 +10,9 @@
 
 import { describe, expect, it } from "vitest";
 import { createAudioEngine, type PrefStore } from "./engine";
+import { QUIET_VOLUME_SCALE, setQuiet } from "../quiet";
+import type { CueId } from "./cue";
+import { CUE_QUIET } from "./cues";
 import { DEFAULT_PAD, padFor } from "./synth";
 
 class FakeParam {
@@ -474,5 +477,52 @@ describe("dispose", () => {
     const ctx = contexts[0]!;
     expect(ctx.closed).toBe(true);
     expect(ctx.oscillators.every((osc) => osc.stoppedAt !== null)).toBe(true);
+  });
+});
+
+describe("quiet mode (#260)", () => {
+  function unlocked() {
+    const built = build();
+    built.engine.unlock();
+    return { ...built, ctx: built.contexts[0]!, master: built.contexts[0]!.gains[0]! };
+  }
+
+  it("scales the master level down, and the device can still go lower", () => {
+    const { engine, master } = unlocked();
+    engine.setVolume(1);
+    expect(master.gain.value).toBe(1);
+    engine.setQuiet(true);
+    expect(master.gain.value).toBeCloseTo(QUIET_VOLUME_SCALE);
+    engine.setVolume(0.5);
+    expect(master.gain.value).toBeCloseTo(0.5 * QUIET_VOLUME_SCALE);
+    engine.setQuiet(false);
+    expect(master.gain.value).toBe(0.5);
+  });
+
+  it("starts quiet when the room already was, and never stores it", () => {
+    setQuiet(true);
+    try {
+      const storage = memoryStore();
+      const { engine, contexts } = build({ storage });
+      engine.unlock();
+      expect(contexts[0]!.gains[0]!.gain.value).toBeCloseTo(0.8 * QUIET_VOLUME_SCALE);
+      expect(storage.getItem("kad-audio")).toBeNull();
+    } finally {
+      setQuiet(false);
+    }
+  });
+
+  it("drops the sudden cues and still plays the soft ones", () => {
+    const { engine, ctx } = unlocked();
+    engine.setQuiet(true);
+    const before = ctx.oscillators.length;
+    for (const id of Object.keys(CUE_QUIET) as CueId[]) {
+      if (CUE_QUIET[id] !== "drop") continue;
+      engine.sink.cue(id);
+    }
+    expect(ctx.oscillators.length).toBe(before);
+
+    engine.sink.cue("heal");
+    expect(ctx.oscillators.length).toBeGreaterThan(before);
   });
 });
