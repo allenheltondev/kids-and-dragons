@@ -261,8 +261,7 @@ async function main(): Promise<void> {
     // An unbound device joining a room gets a player created for it on the spot,
     // so a phone that has never seen this game joins in one tap. On a visitor
     // code it is a visitor, in a guest household of its own (#249).
-    // Admitted before anything is bound, its name vetted before that (#253):
-    // see lambda/http.ts.
+    // Admitted before anything is bound — see lambda/http.ts.
     const joinerName = vetTypedName(req.body?.displayName, "Player");
     if (!existing && !joinerName.ok) return sendError(res, statusFor(joinerName.error), joinerName.error.code, joinerName.error.message);
     let admitted: "family" | "visitor" | null = null;
