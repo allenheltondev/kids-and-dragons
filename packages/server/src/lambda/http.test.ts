@@ -549,6 +549,28 @@ describe("a room open to visitors (#249)", () => {
     expect(missed.statusCode).toBe(404);
     expect(bodyOf(missed).error).toMatchObject({ message: `no open room ${wrong}` });
   });
+
+  it("gives a brand-new phone on the long code a household of its own, never the host's", async () => {
+    const { harness, room, rt } = await openable();
+    rt.account = OWNER;
+    const visitorCode = String(bodyOf(await respond(opening(room.code, true), rt)).visitorCode);
+
+    const joined = await respond(event("POST", `/api/room/${visitorCode}/join`, { body: { displayName: "Wren" } }), rt);
+    expect(joined.statusCode).toBe(200);
+    const device = await harness.identity.resolveDevice(String(bodyOf(joined).deviceToken));
+    expect(device?.householdId).toBeTruthy();
+    expect(device?.householdId).not.toBe(room.householdId);
+    expect(await harness.repo.getPlayer(room.householdId, device!.playerId)).toBeNull();
+    const state = await harness.repo.getState(room.runId);
+    expect(state?.seats?.[device!.playerId]).toMatchObject({ homeHouseholdId: device!.householdId });
+    // It founded that household, so it, and only it, may keep it later.
+    expect((await harness.repo.getHousehold(device!.householdId))?.founderDeviceId).toBe(device!.deviceId);
+
+    // A brand-new phone on the room's own four letters still joins the room's household.
+    const family = await respond(event("POST", `/api/room/${room.code}/join`, { body: { displayName: "Kid" } }), rt);
+    const kin = await harness.identity.resolveDevice(String(bodyOf(family).deviceToken));
+    expect(kin?.householdId).toBe(room.householdId);
+  });
 });
 
 describe("POST /api/room/:code/watch", () => {

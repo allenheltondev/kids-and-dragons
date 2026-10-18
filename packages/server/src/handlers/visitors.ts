@@ -21,7 +21,7 @@
 import type { SetVisitorsResponse } from "@kad/shared";
 import { VISITOR_CODE_EXTRA } from "@kad/shared";
 import { fail, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
-import { commitRoomChange } from "./host.ts";
+import { closeIfIdle, commitRoomChange } from "./host.ts";
 import { ownedHousehold, type Organizer } from "./organizer.ts";
 import { ROOM_CODE_ALPHABET } from "./room.ts";
 
@@ -41,6 +41,12 @@ export async function setVisitors(
   if (room.claimable === true) return fail("ILLEGAL", "Somebody has to join the room before it can be opened.");
   const owned = await ownedHousehold(input, room.householdId, deps);
   if (!owned.ok) return owned.error.code === "FORBIDDEN" ? fail("FORBIDDEN", "Only a grown-up who runs this game can open it to visitors.") : owned;
+  // An open room already past its idle window is over (`closeIfIdle`): the
+  // switch must not stamp it fresh and bring it back.
+  const before = await deps.repo.getState(room.runId);
+  if (before && (await closeIfIdle(room, before, deps))) {
+    return fail("NOT_FOUND", `no open room ${input.code.toUpperCase()}`);
+  }
 
   const visitorCode = input.open ? room.code + extraLetters(deps.random) : null;
   const result = await commitRoomChange(

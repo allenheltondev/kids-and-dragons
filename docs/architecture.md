@@ -882,15 +882,21 @@ leaves nobody signed in afterwards. A TV's room must be settled by a phone first
   nothing in the host household: claiming, binding and revoking all take a
   device token or a sign-in, and an action is accepted from another household
   only for a player the run has seated from it. A visitor is never the keeper.
+  A phone nobody has seen before that joins with the visitor code is a visitor
+  too: it is given a guest household of its own, which it founds, and never
+  made a player in the host's (`bindNewPhone`). The room's own four letters
+  still bind a new phone into the room's household, as before.
 - **Closing it again** takes the long code away: no new visitor can join. The
   visitors already on the roster stay in the game and can come back to it, as
-  anybody on a locked room's roster can. The host's Remove works on a visitor
-  like anybody else: it finds their profile through the roster.
+  anybody on a locked room's roster can. The join checks this against every
+  state it writes its seat on top of, as it does a lock, so a visitor whose
+  join races the switch going off is refused. The host's Remove works on a
+  visitor like anybody else: it finds their profile through the roster.
 - **Idle close.** An open room that has seen nothing happen for 30 minutes
   (`OPEN_ROOM_IDLE_MS`, read off `RunState.updatedAt`) closes itself, as the
   host's Close does, well inside the six hours a closed room keeps. It happens
-  lazily: the next join, watch, state read or action finds the room idle,
-  closes it and is refused. A code nobody uses again is harmless, and every way
+  lazily: the next join, watch, state read, action or turn of the switch finds
+  the room idle, closes it and is refused. A code nobody uses again is harmless, and every way
   of using one closes it first.
 - **What a visitor takes home.** XP, items and every character change go to the
   hero's own household (§3; "Who owns what", above, is the rule this is stage
