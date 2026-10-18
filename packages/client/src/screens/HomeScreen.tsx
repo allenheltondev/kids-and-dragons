@@ -21,14 +21,7 @@ import { useKeepsakeStore } from "../store/keepsake";
 import { useOrganizerStore } from "../store/organizer";
 // The one normalize helper for typed and prefilled codes — the router owns the
 // code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
-import {
-  VISITOR_CODE_LENGTH as CODE_LENGTH,
-  codeComplete,
-  codeSlots,
-  navigate,
-  normalizeCodeInput as normalizeCode,
-  pairingFromSearch,
-} from "../router";
+import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, normalizeCodeInput as normalizeCode, pairingFromSearch } from "../router";
 import { loadPlayerDeviceToken } from "../store/persistence";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
