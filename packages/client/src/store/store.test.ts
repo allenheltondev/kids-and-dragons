@@ -176,6 +176,10 @@ function harness(state: RunState = makeState()): Harness {
     createOrganizerInvite: vi.fn(),
     acceptOrganizerInvite: vi.fn(),
     removeOrganizer: vi.fn(),
+    // Pairing (#281): the game store never calls these.
+    createPairingCode: vi.fn(),
+    pairProfile: vi.fn(),
+    redeemPairingCode: vi.fn(),
     listSharedDevices: vi.fn(),
     forgetDeviceById: vi.fn(),
   };
