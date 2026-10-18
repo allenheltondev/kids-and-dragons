@@ -13,8 +13,9 @@
  *
  * "Out" is `connected: false` plus a place on `RunState.removed`, not a hole in
  * `party`. Every turn, vote, roll and ready-gate already reads a disconnected
- * member as away (`storyTurnHolder`, `turnHolderAway`, `rollerAway`, the ready
- * gate), so a player taken out mid-fight leaves nothing waiting on them.
+ * member as away (`storyTurnHolder`, `turnHolderAway`, `rollerAway`,
+ * `combatTurnAway`, the ready gate; #258), so a player taken out mid-fight
+ * leaves nothing waiting on them.
  * Deleting the member instead would leave an encounter's turn order pointing
  * at nobody. `removed` is what keeps them away: `joinRoom`, `applyAction`,
  * `relayPreview`, presence and the channel authorizer all refuse a player on it.

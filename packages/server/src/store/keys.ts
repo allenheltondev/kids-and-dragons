@@ -19,6 +19,7 @@
  * | Chapter progress | RUN#<runId>     | CHAPTER#<n>        |
  * | Game state       | RUN#<runId>     | STATE              |
  * | Event log        | RUN#<runId>     | EVT#<seq>          |
+ * | Presence beats   | RUN#<runId>     | PRESENCE           |
  * | Room             | ROOM#<code>     | META               |
  * | Code misses      | GUESS#<client>  | WINDOW#<n>         |
  * | Organizer invite | INVITE#<code>   | META               |
@@ -38,6 +39,12 @@ export const ACCT = (sub: string) => `ACCT#${sub}`;
 
 export const META = "META";
 export const STATE = "STATE";
+
+/**
+ * When each seated phone last said it was here (#258, `handlers/presence.ts`):
+ * one row per run, a map of player id to time. Carries a `ttl`, like a room.
+ */
+export const PRESENCE = "PRESENCE";
 
 /** The household's permanent discovery record — see `FieldGuideRecord`. */
 export const FIELDGUIDE = "FIELDGUIDE";
