@@ -260,6 +260,14 @@ export interface RoomRecord {
    * on rooms opened before it existed, which then have no host.
    */
   hostDeviceId?: string;
+  /**
+   * A Party Mode room whose host is a family tablet acting as the TV (#274):
+   * nobody is seated on it, and its household is the tablet's own, so it is
+   * never claimable. It is what lets the tablet's shared token alone run the
+   * room's host controls (`tabletHost`): there is no seated kid to present a
+   * session. A tablet that opened a room to play has a seated kid and no flag.
+   */
+  display?: true;
 }
 
 /**

@@ -21,6 +21,7 @@
 
 import type { PlayerProfile, SharedDevicePlayer, SharedDevicePlayersResponse, ShareDeviceResponse } from "@kad/shared";
 import type { DeviceIdentity, SessionIdentity, SharedDeviceIdentity } from "../identity.ts";
+import type { RoomRecord } from "../store/repository.ts";
 import { createProfile, vetTypedName, type AccountDeps } from "./account.ts";
 import { fail, ok, type HandlerResult } from "./deps.ts";
 
@@ -153,12 +154,23 @@ export async function seatOnSharedDevice(
  * sitting at it says who is asking, so the host still cannot take themselves
  * out. The session must be for this room and this household: a session from
  * another tablet's room proves nothing here.
+ *
+ * A room the tablet opened as the TV (#274) has nobody seated, so there the
+ * token alone proves the host, and `room` is how that is known.
  */
 export function tabletHost(
   shared: SharedDeviceIdentity,
   session: SessionIdentity | null,
   code: string,
+  room: Pick<RoomRecord, "display" | "hostDeviceId" | "householdId"> | null = null,
 ): HandlerResult<Seat> {
+  // The tablet as the TV (#274): nobody is seated, so the token alone is the
+  // proof, as a TV's device token is. Only the room this very tablet opened as
+  // a display, in its own household; a seated kid's session is never needed
+  // there and never accepted in its place.
+  if (room?.display === true && room.hostDeviceId === shared.deviceId && room.householdId === shared.householdId) {
+    return ok({ deviceId: shared.deviceId, householdId: shared.householdId, playerId: shared.deviceId });
+  }
   if (!session) return fail("FORBIDDEN", "taking someone out from a tablet needs the seated player's session");
   if (session.roomCode.toUpperCase() !== code.toUpperCase() || session.householdId !== shared.householdId) {
     return fail("FORBIDDEN", "that session is not for this room");
