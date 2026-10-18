@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import type { OrganizerHouseholdView } from "@kad/shared";
 import type { Api } from "../sync/client";
-import { createOrganizerStore, formatInviteCode, formatPairingCode } from "./organizer";
+import { createOrganizerStore, formatInviteCode } from "./organizer";
+import { formatPairingCode } from "./pairing";
 
 function view(id: string, overrides: Partial<OrganizerHouseholdView> = {}): OrganizerHouseholdView {
   return {

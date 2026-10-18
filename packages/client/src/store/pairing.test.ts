@@ -7,7 +7,8 @@ import {
   saveIdentity,
   type KeyValueStorage,
 } from "./persistence";
-import { normalizePairingInput, pairThisDevice, pairingFromSearch, pairingUrl } from "./pairing";
+import { normalizePairingInput, pairingFromSearch, pairingUrl } from "../router";
+import { pairThisDevice } from "./pairing";
 
 function memory(): KeyValueStorage {
   const map = new Map<string, string>();

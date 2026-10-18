@@ -177,11 +177,6 @@ export function createOrganizerStore(api: Api = defaultApi) {
 
 export const useOrganizerStore = createOrganizerStore();
 
-/** "ABCDEFGH" → "ABCD-EFGH": four and four, easier to read out across a ward. */
-export function formatPairingCode(code: string): string {
-  return code.length > 4 ? `${code.slice(0, 4)}-${code.slice(4)}` : code;
-}
-
 /** "ABCDEFGHJK" → "ABCDE-FGHJK": easier to read out across a room. */
 export function formatInviteCode(code: string): string {
   return code.length > 5 ? `${code.slice(0, 5)}-${code.slice(5)}` : code;
