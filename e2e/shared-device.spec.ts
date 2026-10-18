@@ -53,7 +53,7 @@ test.describe("a family tablet", () => {
     await phone.getByRole("button", { name: /back to the game/i }).click(TAP);
     await phone.getByRole("button", { name: /want to host/i }).click();
     await phone.getByText("Phone Mode").click();
-    await phone.getByLabel(/your name/i).fill("Grown-up");
+    await phone.getByLabel(/adventurer name/i).fill("Grown-up");
     await phone.getByRole("button", { name: /^start a game$/i }).click();
     await expect(phone).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
     const code = new URL(phone.url()).pathname.split("/").pop() ?? "";

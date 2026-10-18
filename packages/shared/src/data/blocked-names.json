@@ -1,0 +1,15 @@
+{
+  "_about": "Words a typed name may not contain (#253). 'words' match a whole word only, so 'Cassidy' and 'Dickens' pass; 'inside' match anywhere, so they are long or rude enough to have no innocent hiding place. Names are lowercased, accents stripped, look-alike digits and symbols read as letters, and spacing and repeats ignored before matching. Add to the lists, never to the code.",
+  "words": [
+    "ass", "arse", "butt", "crap", "damn", "dick", "dik", "cock", "piss", "poo", "poop", "pee",
+    "sex", "sexy", "porn", "nude", "naked", "tit", "tits", "boob", "boobs", "fag", "gay",
+    "kkk", "nazi", "rape", "slut", "twat", "wtf", "stfu", "kill",
+    "hate", "stupid", "idiot", "dumb", "ugly", "fat", "loser", "suck", "sucks", "drug", "drugs",
+    "weed", "meth", "nsfw", "cum", "anal", "anus", "hoe"
+  ],
+  "inside": [
+    "fuck", "shit", "poop", "bitch", "bastard", "asshole", "dickhead", "cunt", "whore", "nigg", "retard",
+    "faggot", "wank", "bollock", "pussy", "penis", "vagina", "blowjob", "handjob", "cocaine",
+    "hitler", "molest", "pedo", "bullshit", "motherf", "jackass", "dumbass", "douche", "tranny"
+  ]
+}

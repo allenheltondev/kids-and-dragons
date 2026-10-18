@@ -23,7 +23,8 @@
 import { useCallback, useMemo, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
 import { cue } from "../audio";
-import { STAT_IDS } from "@kad/shared";
+import { useGameStore } from "../store";
+import { NAME_REFUSED_MESSAGE, STAT_IDS, isBlockedName } from "@kad/shared";
 import type { ClassDef, ClassId, SpeciesDef, SpeciesId, StatId, Stats } from "@kad/shared";
 import { useRules, useSend } from "../store";
 import { Button } from "../ui/Button";
@@ -510,6 +511,11 @@ export function CreationFlow(): ReactElement {
 
   const submit = useCallback(async () => {
     if (draft.species === null || draft.klass === null) return;
+    // The server is what enforces this; checking here only answers a beat sooner.
+    if (isBlockedName(draft.name)) {
+      setError(NAME_REFUSED_MESSAGE);
+      return;
+    }
     setError(null);
     setSubmitting(true);
     patchCreationDraft({ submitting: true });
@@ -530,7 +536,9 @@ export function CreationFlow(): ReactElement {
       // wipe four screens of choices because the phone blinked.
       if (!accepted) {
         patchCreationDraft({ submitting: false });
-        setError("That didn't send. Try again?");
+        // A refusal (a name we would not put on the TV, say) is already worded
+        // for a kid by the server; only a send that never landed gets ours.
+        setError(useGameStore.getState().error ?? "That didn't send. Try again?");
         return;
       }
       cue("choice");

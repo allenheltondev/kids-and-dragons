@@ -23,6 +23,7 @@
  * (`lambda/http.ts`), which is also the only place that knows Cognito exists.
  */
 
+import { checkTypedName, isBlockedName } from "@kad/shared";
 import type { Character, Household, OrganizerHouseholdSummary, PlayerProfile } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { GuestRenewal } from "../store/repository.ts";
@@ -167,6 +168,23 @@ export async function addPlayer(input: AddPlayerInput, deps: AccountDeps): Promi
   };
 }
 
+/** An email prefix is nobody's chosen nickname: a blocked one becomes "Grown-up". */
+function safeEmailName(email: string | undefined): string {
+  const prefix = email?.split("@")[0];
+  return prefix && !isBlockedName(prefix) ? prefix : "Grown-up";
+}
+
+/**
+ * A name a person typed, vetted by the word filter (#253). The refusal is a
+ * sentence a kid can read; the entry points that take a name call this before
+ * they make anything, and `createProfile` asserts it again as the last door.
+ */
+export function vetTypedName(raw: unknown, fallback: string): HandlerResult<string> {
+  const text = typeof raw === "string" && raw.trim() !== "" ? raw : fallback;
+  const checked = checkTypedName(text);
+  return checked.ok ? ok(checked.name) : fail("ILLEGAL", checked.message);
+}
+
 /**
  * A player profile and nothing else: no device is bound to it. `addPlayer`
  * binds the phone that asked; a kid added on a shared tablet gets no binding
@@ -177,6 +195,7 @@ export async function createProfile(
   displayName: string,
   deps: Pick<AccountDeps, "repo">,
 ): Promise<PlayerProfile> {
+  if (isBlockedName(displayName)) throw new Error("createProfile was handed a name the filter refuses");
   const existing = await deps.repo.listPlayers(householdId);
   const player: PlayerProfile = {
     id: newId("p"),
@@ -355,7 +374,7 @@ export async function linkAccount(
   const householdId = newId("h");
   await deps.repo.putHousehold({
     id: householdId,
-    displayName: `${input.email?.split("@")[0] ?? "Your"} household`,
+    displayName: `${safeEmailName(input.email)} household`,
     ownerSub: input.cognitoSub,
     guest: false,
     createdAt: iso(nowMs),
@@ -363,7 +382,7 @@ export async function linkAccount(
   await deps.repo.putAccountPointer(input.cognitoSub, householdId);
 
   const bound = await addPlayer(
-    { householdId, displayName: input.email?.split("@")[0] ?? "Grown-up" },
+    { householdId, displayName: safeEmailName(input.email) },
     deps,
   );
   return ok({
