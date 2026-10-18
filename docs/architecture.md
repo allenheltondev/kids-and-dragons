@@ -104,30 +104,36 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Entity | PK | SK | Notes |
 |---|---|---|---|
 | Account → household | `ACCT#<cognitoSub>` | `HH#<hhId>` | Written only when somebody signs in. An adult may own more than one. **This pointer is the authority**: every "may this account manage it?" reads it. |
-| Household | `HH#<hhId>` | `META` | The family. `ownerSub` (null while anonymous), `guest`, `expiresAt`, display name. |
-| Player profile | `HH#<hhId>` | `PLAYER#<playerId>` | Display name, color, avatar, and `retired` once an owner takes the kid off the pickers (#248). No role (#265): rows written before still carry `role`, and nothing reads it. |
+| Household | `HH#<hhId>` | `META` | The family. `ownerSub` (null while anonymous), `guest`, `expiresAt`, display name, and `retentionDays` when an owner set one (#252). |
+| Player profile | `HH#<hhId>` | `PLAYER#<playerId>` | Display name, color, avatar, and `retired` once an owner takes the kid off the pickers (#248). No role (#265): rows written before still carry `role`, and nothing reads it. Beside `data`, never in it: `lastPlayedAt`, her `IDLE` index entry while her household keeps a retention window, and `sweeping` once she is being deleted (#252). |
 | Device binding | `HH#<hhId>` | `DEVICE#<deviceId>` | → playerId, token hash, last seen, user agent. Revocable. |
 | Owner | `HH#<hhId>` | `OWNER#<cognitoSub>` | One grown-up who may manage the household (#248), with the email they signed in with. Written in one transaction with that account's `ACCT#` pointer, and removed with it. |
 | Character | `HH#<hhId>` | `CHAR#<charId>` | Owned by a playerId, and stored under that kid's **home** household wherever she plays (§4.5, "Who owns what"), a visitor's included (#249, "Visitors"). Persistent across campaigns. See §3.1. |
 | Campaign run | `HH#<hhId>` | `RUN#<runId>` | One playthrough of one campaign. |
+| Campaign attempt | `HH#<hhId>` | `CAMPAIGN#<campaignId>` | The household's attempt at one campaign across evenings: status, setbacks, route flags, coins, a graph campaign's journey (`CampaignProgressRecord`). |
 | Field Guide | `HH#<hhId>` | `FIELDGUIDE` | The household's permanent record of discoveries: `entries` keyed by canon id → `{ firstFoundBy, foundAt, runId? }`. One item, written with per-key `if_not_exists` so the first finder always wins and concurrent writers merge. Versioned (`FIELD_GUIDE_VERSION`). |
 | Chapter progress | `RUN#<runId>` | `CHAPTER#<n>` | Status, branch taken, XP earned. |
 | Game state | `RUN#<runId>` | `STATE` | Current authoritative snapshot. Single item. |
 | Event log | `RUN#<runId>` | `EVT#<seq>` | Append-only. Enables replay and reconnect. |
+| Presence | `RUN#<runId>` | `PRESENCE` | When each seated phone last said it was here (#258). **TTL 6 hours**, renewed by every beat. |
 | Room | `ROOM#<code>` | `META` | 4-letter code → runId, mode (`party` \| `travel`). **TTL 6 hours.** A room open to visitors (#249) keeps this row; its longer code lives on the run (`RunState.visitorCode`). |
 | Code misses | `GUESS#<client>` | `WINDOW#<n>` | Wrong room codes from one client in one 15-minute window (§4.5, "Joining a session"). Wrong organizer codes are counted the same way, per account. **TTL one window past its own.** |
 | Organizer invite | `INVITE#<code>` | `META` | A single-use code that makes whoever signs in with it an owner of one household (§4.5, "Groups"). Spent by a conditional delete. **TTL 3 days.** |
 | Transfer code | `TRANSFER#<code>` | `META` | A single-use code that moves one kid to another home (§4.5, "Moving a kid"): → source household, playerId. Spent in the move's own transaction. **TTL 1 day.** |
 | Moved device | `HH#<hhId>` | `MOVED#<deviceId>` | Left in the household a kid moved out of, naming the one her phone's binding moved into, so a token minted before the move still finds it by primary key. Not under `DEVICE#`, so no device list sees it. **TTL 31 days**, past any token it could forward. |
 | Pairing code | `PAIR#<code>` | `META` | A single-use code that makes whoever redeems it a device bound to one kid (§4.5, "Pairing a new device"). Spent by a conditional delete. **TTL 10 minutes.** |
+| Visit | `VISIT#<playerId>` | `HH#<tableHhId>` | A table that is not her home that a kid sat down at (#249), written by the join. Keyed by the kid, so a move (#251) never carries it. Only so that deleting her can find the saves that name her (§4.5, "Deleting and keeping"). Deleted with her or her home. |
+| Forget job | `FORGET#<playerId>` | `META` | A kid being deleted (#252): her nicknames, her heroes' names, the tables still to clean, and how to finish the delete that wrote it. Written before any of her rows go, rewritten with the tables a scrub could not clean, removed when none are left. In GSI1's `FORGET` partition, so the sweeper finishes what is owed. |
 
-GSI1 does three jobs, all of them lookups that would otherwise be scans:
+GSI1 does five jobs, all of them lookups that would otherwise be scans:
 
 | `GSI1PK` | `GSI1SK` | On | Answers |
 |---|---|---|---|
 | `DEVICE#<deviceId>` | `HH#<hhId>` | device items | a returning phone → its household and player |
 | `RUN#<runId>` | `HH#<hhId>` | run items | a runId alone → the household that owns it |
 | `GUEST` | `<expiresAt>#<hhId>` | **guest** household items only | which anonymous households may be swept |
+| `IDLE` | `<keepUntil>#<hhId>#<playerId>` | player items, while their household keeps a retention window | which kids have not played for that window (#252) |
+| `FORGET` | `<createdAt>#<playerId>` | forget job items | which deletes still owe another table its scrub (#252) |
 
 Note that **characters hang off the household, not off a run.** That was already true and is what makes
 persistence across sessions fall out for free — the only thing that was ever session-scoped is the room.
@@ -149,7 +155,7 @@ her **player id**, and needs no index or scan to find:
 |---|---|---|
 | Her finished campaigns (`finished`: campaign, outcome, when, which table) | On each of her heroes: `HH#<home>` / `CHAR#<charId>`, `data.finished` | Her heroes are the `CHAR#` rows under `HH#<home>` whose `ownerPlayerId` is her. Deleting the hero deletes the record; there is no copy elsewhere |
 | Her finds in her own book, including the ones made visiting | `HH#<home>` / `FIELDGUIDE`, `entries[canonId].firstFoundBy = <playerId>` | The one book row of her home; her entries are those naming her player id |
-| Her finds in a table's book, where she was first finder there | `HH#<table>` / `FIELDGUIDE`, `firstFoundBy = <playerId>` | Not reachable from her ids alone. The tables she *finished a campaign at* are named in `finished[].table`; a table she only played at is not recorded anywhere on her side. This copy predates #283 (#106, #249) |
+| Her finds in a table's book, where she was first finder there | `HH#<table>` / `FIELDGUIDE`, `firstFoundBy = <playerId>` | Through her `VISIT#<playerId>` rows (#252), one per table she sat down at, and `finished[].table` for the tables she finished a campaign at. Deleting her re-credits these to `FORGOTTEN_FINDER` (§4.5, "Deleting and keeping"). This copy predates #283 (#106, #249) |
 
 `finished[].table` names another household's id, not a person, and is the
 kid's own data: it goes when her hero does.
@@ -278,8 +284,9 @@ Not every record needs a migration path, because most of them expire on their ow
 | Guest household and its contents | 7 days since last played, sliding | **No** — the sweeper handles it |
 | Device binding | 30 days, sliding | **No** — an unused phone re-pairs by QR |
 | `RunState`, events, chapter progress | one campaign | **Yes**, but only while it is in flight |
-| Character, household, player profile | forever | **Yes**, permanently |
-| Field Guide | forever (deleted only with a guest household) | **Yes**, permanently — `migrateFieldGuide()` |
+| Character, household, player profile | until an owner deletes it or its retention window passes (#252) | **Yes**, permanently |
+| Field Guide | as long as its household | **Yes**, permanently — `migrateFieldGuide()` |
+| Visit | as long as the kid | **No**: one fixed shape, read only by a delete |
 
 So the permanent burden is four record types, and only one of them — the character — is under
 active development. That is a small enough surface to do this by hand and keep it readable.
@@ -532,7 +539,7 @@ Four layers of identity, deliberately separated:
 |---|---|---|
 | **Household** | 7 days after last play while anonymous → permanent when claimed | None, then a Cognito sub. |
 | **Account** *(optional)* | Permanent | Cognito user pool — emailed code, then a passkey. For whoever keeps and manages the game; nobody needs one to play. |
-| **Player profile** | As long as its household | A device-bound long-lived token. **No password, ever.** |
+| **Player profile** | As long as its household, or its owner's retention window (#252) | A device-bound long-lived token. **No password, ever.** |
 | **Room session** | ≤ 6 hours | Short-lived token scoped to one run. |
 
 #### Anonymous play, which is the default
@@ -912,16 +919,24 @@ finished, and her Field Guide finds. Both are now hers.
   does not exist yet (#250's "forget this device" is by device id).
 
 **What is collected about a kid, and for how long.** Kept current as features
-land, and the source for #252's "what we store" page.
+land. The app's own "what we store" page (`screens/WhatWeStore.tsx`, words
+in `what-we-store.ts`) says the same in plain words, and its test fails when
+a row is added to §3 or written by a store without being described there. It
+opens inside the sign-in panel, from its first step (so before anybody signs
+in) and from the organizer screen; that panel is loaded on demand, so the
+page costs first paint nothing.
 
 | Data | Where | Kept |
 |---|---|---|
-| Nickname, color, avatar | `PLAYER#` row | With the household: 7 days after last play while a guest, until deleted once kept |
+| Nickname, color, avatar, when she last played | `PLAYER#` row | With the household: 7 days after last play while a guest, until deleted once kept, or the owner's retention window (#252) |
 | Hero: name, appearance, progression, items, souvenirs, finished campaigns (each naming the household whose table it was) | `CHAR#` row | Same |
 | Gameplay: choices, rolls, the event log | `RUN#` partition | Same |
 | Field Guide finds, credited to a profile | `FIELDGUIDE` row | Same |
 | Device binding: device id, user agent, last seen, token hash | `DEVICE#` row | Same, revocable |
 | A moved kid's device id → her new household | `MOVED#` row, in the household she left | 31 days (TTL) |
+| The other tables she played at | `VISIT#` rows | Until she or her home is deleted; only so deleting her can find them |
+| While she is being deleted: her names and the tables still to clean | `FORGET#` row | Until every table is clean; the daily sweep retries a failed one |
+| When her phone last said it was at the table | `PRESENCE` row of a run | 6 hours (TTL) |
 | Long-lived device token, room session token | The device's own storage | Until it expires (30-day sliding, room's 6 hours) or is cleared |
 | Address (IPv4, or the IPv6 /64) as a wrong-code counter key | `GUESS#` row | About two 15-minute windows (TTL) |
 | Request logs (address, path, errors) | CloudWatch | Account-wide retention, set outside this repo (`infra/template.yaml`, "Logs") |
@@ -1030,6 +1045,7 @@ this with real tables.
 today (§3.0). A kept one lives as long as a grown-up keeps her. Retiring her
 from a group (#248) takes her off that table only. Deleting her (#252) is her
 grown-up's call and removes her everywhere, her hero's record included.
+How, and what each delete keeps: "Deleting and keeping" below.
 
 **Staged, so nothing is rewritten up front.**
 1. **Now.** Heroes stay in their home household's partition. A visiting
@@ -1132,6 +1148,127 @@ the real one (`handlers/transfer.ts`).
   her household and is re-read at redeem; after the move she is not there, so
   it is refused rather than binding a device into either home. Her new home
   pairs her anew.
+
+#### Deleting and keeping (#252)
+
+An owner can delete one kid, or the whole household, and choose how long a
+kid who stops playing is kept (`handlers/retention.ts`, on the organizer
+panel). Data minimization stays the default it already was (above): the
+profile never held anything personal, so what there is to delete is the
+game's own record.
+
+**One delete path, the sweeper's.** `deleteHousehold` is `deleteGuestHousehold`
+with a different gate: the same `sweeping` mark first (which claiming,
+renewing, founding and, now, redeeming an organizer invite all refuse), runs
+and their partitions next, `META` last, so a delete that dies part-way is
+found and finished by the next one. The guest sweep checks expiry in the
+marking write; an owner's delete checks only that the household is there,
+because the caller already proved a signed-in owner. `deleteProfile` is the
+same shape for one kid: her `PLAYER#` row is marked, a marked profile reads
+as gone to `getPlayer` and `listPlayers` (so every room door already treats
+her as out, `isOut`), then her heroes, her own phones and her visits go, and
+the profile row last.
+
+| Deleting | Removed | Kept, and why |
+|---|---|---|
+| **A kid** | Her `PLAYER#` row, every `CHAR#` she owns, her personal `DEVICE#` bindings (revoked or not), her `VISIT#` rows. Her names everywhere they were copied (below) | The saves of the tables she played at, which are the tables'. Before play begins she is taken out of the party; after, her party member stays as "A friend", on `removed` and away, because an encounter's turn order and the table's votes point at it (as with Remove). Field Guide entries she found first, which are the table's book: they now credit `FORGOTTEN_FINDER`, shown as "a friend" |
+| **A household** | Every row under `HH#<id>`: kids whose home it is, their heroes and phones, shared tablets, the Field Guide, campaign attempts, `MOVED#` forwards; every run with its state, event log, chapter progress and presence, a game stopped for today (#259) included; rooms still pointing at those runs; every owner's `ACCT#` pointer; its kids' `VISIT#` rows. Its kids' names everywhere they were copied, as for one kid | A **visiting** kid's hero, which lives at her own home (§3) and is not touched. Her claim on this table's attempt is released by the attempt going with it (`claimIsLive` reads no attempt as over). Codes already handed out (`INVITE#`, `TRANSFER#`, `PAIR#`) expire on their own TTL, and each now finds nothing to act on: an invite's redemption checks the household is there and not being deleted |
+
+**Where a kid's names and ids are copied outside her home.** The list
+`forgetEverywhere` works through, at every table in her `VISIT#` rows, the
+tables her heroes' claims name, and her home (when only she is deleted):
+
+| Copy | Holds | On delete |
+|---|---|---|
+| `RunState.seats[playerId]` | Her nickname, color | Removed |
+| `RunState.party[]` | Her player id, a snapshot of her hero (its name) | Out of the party in the lobby or making heroes; after, kept as "A friend", away |
+| `RunState.removed` | Her player id | Added: she is out of that room |
+| Any other string in the run state (narration, recaps) | Her hero's name, where the story said it | Replaced with "A friend" |
+| `EVT#` rows (the event log) | Patches carrying all of the above; `playerId` naming the author of a turn | Each event that names her is put back, same seq, with her names replaced (`rewriteEvent`). The author id stays |
+| Trades, votes, turn order, `firstFoundBy` in a run | Her player id | Ids stay: an id that names nobody once her profile is gone |
+| `FIELDGUIDE` of each of those tables | Her player id as `firstFoundBy` | Replaced with `FORGOTTEN_FINDER` (`forgetFinder`) |
+| A visitor's room session or seat token on a phone | Her player id and home | Turned away at every door: no profile (`isOut`) |
+
+**Why a visit record, and why keyed by her.** A table's copies cannot be
+reached from her ids alone: nothing under her home says where she played
+besides the last table each hero's claim names. Two ways out were weighed:
+(a) write down the tables she plays at, and visit each on delete; (b) have
+other households store only her ids and resolve her name at render time.
+(b) would still need a sweep of every event log written before it, and a
+save has to carry a hero's name to replay without her home, so (a) it is.
+The record is a `VISIT#<playerId>` row per table rather than a list on her
+character, so a kid with no hero yet is covered, a move (#251) carries
+nothing, and two tables seating her at once never contend on her hero's row.
+A table one of her heroes is claimed by, or finished a campaign at
+(`finished[].table`, #283), is visited too, which covers visits from before
+the record existed.
+
+Her player id is a random id, never anything about her, so where a save
+needs it to stay well formed (a turn order, a vote, a trade, an event's
+author) it stays, and names nobody. Her nickname is replaced only in fields
+that hold a name, since a nickname can be an ordinary word the story uses;
+her heroes' names are replaced in every sentence. An id-shaped string (lower
+case, no spaces) is never rewritten, so a hero who shares a word with a
+scene id cannot break a save.
+
+- **Delete wins** (the owner's decision). A hero mid-adventure at another
+  table (`claimIsLive`) is deleted all the same, and her name is taken out
+  of that table's save. The table plays on: her profile is gone, so every
+  room door turns her phone away, and a chapter's settlement skips a party
+  member whose hero row is gone (`progression.ts`), so nothing waits on her.
+  Deleting a household is the same for its kids' heroes at other tables.
+- **Only the last owner deletes a household** (the owner's decision). A
+  household with another owner (an `OWNER#` row or the founding `ownerSub`)
+  is refused by the server. The others leave first, or the founder takes
+  them off (#248), which they see on their own screen. Any owner may delete
+  one kid.
+- **Forgetting at other tables runs after the delete, and always finishes.**
+  After, never before: before it, a guest family signing in at the last
+  moment would keep their household and find their kids gone from a friend's
+  game. But her visits go with the delete, so a scrub that failed then
+  could never find those tables again. So every delete first writes a
+  **forget job** (`FORGET#<playerId>`, `ForgetJob`): her names, the tables to
+  clean, and what deleted her. The scrub rewrites it with the tables it
+  could not clean, and removes it when none are left. The daily sweep
+  (`retryForgets`) reads GSI1's `FORGET` partition and first finishes the
+  delete that wrote the job, in case it died before or during its rows
+  going: an owner's delete is completed, since it was asked for and
+  authorized, and a sweep's is asked again under its own gate. Then, if she
+  is gone, it cleans the tables still owed. A kid who is still there (the
+  guest family kept their household in time, or she played inside her
+  window) is forgotten nowhere, and her job is dropped. A delete whose scrub
+  is still owed does not answer a plain success: the organizer route says
+  `cleanupPending`, and the panel says the cleanup finishes on its own. Each run's state
+  change is one committed turn of its own, published to the run's room if
+  that room still points at it.
+- **A change never brings her back.** `putPlayer` makes a profile and never
+  writes over one being deleted. A rename, a retire or a bring-back goes
+  through `updatePlayer`, which writes only a profile that is there and not
+  marked. So a change an owner read before the delete fails after it, rather
+  than making a new row with no mark on it that nothing would delete again. Visits from before visits were written down are found
+  through her heroes' claims, which name the last table each played at.
+- **Keeping.** `Household.retentionDays` is null by default, which is the
+  behavior from before: a kept household keeps every kid until an owner
+  deletes one. An owner may pick 30, 90, 180 or 365 days
+  (`RETENTION_CHOICES`). Every join notes `lastPlayedAt` on the kid's home
+  profile (`notePlayed`), a visitor's included, and while her household has a
+  window it files her in GSI1's `IDLE` partition at `lastPlayedAt + window`.
+  Choosing a window starts the clock now for a kid with no `lastPlayedAt`, so
+  it never deletes anybody on the spot. The daily sweeper reads the `IDLE`
+  partition after the `GUEST` one, re-reads each household's window (the index
+  is only a candidate list: a lengthened or cleared window re-files her), and
+  deletes through `deleteProfile` gated on `lastPlayedAt` being at or before
+  the cutoff, so a kid who joins a room while it runs is spared. A live claim
+  does not spare an idle kid, as it does not stop any delete.
+- **Why not DynamoDB TTL.** TTL deletes one row. A kid is a profile, heroes,
+  bindings and visits, and a household spans the `RUN#` partitions besides,
+  so a per-row TTL would leave the rest orphaned with nothing pointing at it,
+  the argument §3.0 makes for guests. TTL stays on what is one row that
+  nothing points at: rooms, codes, code-miss windows, presence, moved-device
+  forwards.
+
+The guest sweep also takes a swept household's kids out of the saves at the
+tables they visited, and their `VISIT#` rows with it.
 
 #### Recovery and revocation
 

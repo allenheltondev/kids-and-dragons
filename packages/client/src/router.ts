@@ -40,6 +40,7 @@ export type Route =
 const ROOM_CODE = /^(?:[A-Z0-9]{4}|[A-Z0-9]{6})$/;
 
 export const ROOM_CODE_LENGTH = 4;
+
 export const VISITOR_CODE_LENGTH = 6;
 
 /** A code with nothing left to type: a room's four letters, or a visitor code's six. */

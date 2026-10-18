@@ -26,6 +26,8 @@
  * | Transfer code    | TRANSFER#<code> | META               |
  * | Moved device     | HH#<hhId>       | MOVED#<deviceId>   |
  * | Pairing code     | PAIR#<code>     | META               |
+ * | Visit            | VISIT#<playerId>| HH#<tableHhId>     |
+ * | Forget job       | FORGET#<playerId>| META              |
  *
  * GSI1 indexes devices by device id so a returning phone resolves to its
  * household without a scan (§3), and runs by id so `runId` alone is enough to
@@ -94,6 +96,26 @@ export const GUESS_WINDOW_SK = (window: number) => `WINDOW#${window}`;
 /** Campaign setback counter, household-scoped — see `CampaignProgressRecord`. */
 export const CAMPAIGN_SK = (campaignId: string) => `CAMPAIGN#${campaignId}`;
 
+/**
+ * A table a kid has played at as a visitor (#249, #252): one row per kid and
+ * table, keyed by the kid rather than by her home, so a move (#251) never has
+ * to carry it. It is what lets "delete her" find the other tables' saves that
+ * name her, which nothing else in the table can list.
+ */
+export const VISIT = (playerId: string) => `VISIT#${playerId}`;
+
+/**
+ * A delete still owed to the tables a kid played at (#252): written before
+ * her rows go, and removed once every table has stopped naming her. What
+ * makes a scrub that failed part-way something the sweeper finishes, rather
+ * than something nobody can find again once her visits are gone.
+ */
+export const FORGET = (playerId: string) => `FORGET#${playerId}`;
+
+/** GSI1: every forget job still owed, oldest first. */
+export const GSI1_FORGET = "FORGET";
+export const GSI1_FORGET_SK = (createdAt: string, playerId: string) => `${createdAt}#${playerId}`;
+
 /** Sort-key prefixes, for range queries. */
 export const PREFIX = {
   player: "PLAYER#",
@@ -151,6 +173,19 @@ export const GSI1_RUN = (runId: string) => `RUN#${runId}`;
  * anonymous play exists.
  */
 export const GSI1_GUEST = "GUEST";
+
+/**
+ * GSI1: every kid in a household whose owner set a retention window (#252),
+ * sorted by when she may be forgotten if she does not play again. On the
+ * `PLAYER#` row, as top-level bookkeeping beside `lastPlayedAt`, never in
+ * `data`, so a `putPlayer` from an older read cannot move it. A candidate
+ * list only: the sweeper re-reads the household's window before it deletes.
+ */
+export const GSI1_IDLE = "IDLE";
+
+/** As the guest entry: the time first, so a range query is a chronological one. */
+export const GSI1_IDLE_SK = (keepUntil: string, householdId: string, playerId: string) =>
+  `${keepUntil}#${householdId}#${playerId}`;
 
 /** ISO first so a lexicographic range query is a chronological one. */
 export const GSI1_GUEST_SK = (expiresAt: string, householdId: string) =>

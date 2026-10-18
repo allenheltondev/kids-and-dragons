@@ -570,6 +570,41 @@ export interface OrganizerHouseholdView {
   displayName: string;
   owners: OrganizerOwner[];
   players: OrganizerPlayer[];
+  /**
+   * How long a kid who stops playing is kept, in days (#252), or `null`:
+   * until an owner deletes them, which is the default.
+   */
+  retentionDays: number | null;
+  /**
+   * Answering a delete (#252): the kid is gone from here, but another
+   * household's game or Field Guide still says her name. The cleanup is
+   * recorded and the daily tidy-up finishes it. Absent when it is done.
+   */
+  cleanupPending?: true;
+}
+
+/**
+ * The retention windows an owner may pick (#252), in days, beside "until I
+ * delete them" (`null`). The shortest is a month: anything less would forget a
+ * kid who missed two club meetings.
+ */
+export const RETENTION_CHOICES = [30, 90, 180, 365] as const;
+
+/**
+ * What a deleted kid is called in what other people keep (#252): her seat
+ * and hero in another table's save, and her finds in its Field Guide, which
+ * credit `FORGOTTEN_FINDER` in place of her id.
+ */
+export const FORGOTTEN_NAME = "A friend";
+export const FORGOTTEN_FINDER = "forgotten";
+
+/** `POST /api/organizer/household/delete`: what is left once it is gone. */
+export interface OrganizerHouseholdDeleted {
+  householdId: string;
+  /** Every household the account still owns. */
+  households: OrganizerHouseholdSummary[];
+  /** As on `OrganizerHouseholdView`: another household still names one of its kids, for now. */
+  cleanupPending?: true;
 }
 
 /** A tablet bound to the household, as its owners see it. */
