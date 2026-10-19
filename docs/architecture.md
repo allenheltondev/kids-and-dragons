@@ -1583,6 +1583,29 @@ pick it up on their next page load.
   - the Rive runtime arrives while idle;
   - a scene's art is saved before the party reaches it.
 
+#### The display beyond a laptop (#264)
+
+A smart TV, a stick or a tablet may lack things a laptop has, so the display (`/tv/:code`) asks for
+none of them. [docs/hardware.md](./hardware.md) has the table and the tested list.
+
+- **WebGL.** The stage asks Pixi for WebGL only (`preference: ["webgl"]`). Left to itself Pixi falls
+  back to WebGPU and then to a 2D-canvas renderer, and the scene was never tuned for the CPU. When
+  WebGL is missing, `init` rejects and `RendererBoundary` shows `world/StaticStage`, a lazy chunk
+  that draws the backdrop and a plain row of figures from the same state the board reads. Rive's
+  absence is already handled below that: `createRig` returns null and the scene keeps the PNG.
+- **Wake lock** (`display/wake-lock.ts`). Held for as long as the display is open, asked for again
+  on every `visibilitychange`, quiet where the API is missing or refuses.
+- **Waking up** (`display/wake.ts`). A `visibilitychange` back to visible, a `pageshow`, or a timer
+  that did not fire for twenty seconds all call the store's `reconnect()`. That closes the stream
+  and opens a new one from the sequencer's seq (`Channel.reconnect`), whose `onopen` fetches
+  `GET /state?sinceSeq=N`: the §4.3 path, unchanged. A stream the network killed silently while the
+  TV slept is the case it exists for.
+- **Sound.** `AudioEngine.state()` is `unsupported`, `locked`, `suspended` or `running`. On the
+  display, `locked` and `suspended` show one "Tap for sound" button; `unsupported` shows nothing.
+- **The report** (`display/DisplayExtras`, "About this screen", open at once on `?perf`) is the
+  only caller of the probes in `display/capabilities.ts`. It, the wake lock and the wake-up
+  handler live in one lazy chunk that only a display loads.
+
 Three rules keep this from forking into two apps:
 
 1. **`WorldView` and `PlayerView` never know the mode.** They read game state and render. A layout shell composes them.

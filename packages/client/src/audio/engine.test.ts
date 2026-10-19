@@ -526,3 +526,46 @@ describe("quiet mode (#260)", () => {
     expect(ctx.oscillators.length).toBeGreaterThan(before);
   });
 });
+
+describe("state: what a TV that blocks sound looks like (#264)", () => {
+  class StatefulContext extends FakeContext {
+    state: "suspended" | "running" = "suspended";
+    listeners = new Set<() => void>();
+    addEventListener(_: string, fn: () => void): void { this.listeners.add(fn); }
+    removeEventListener(_: string, fn: () => void): void { this.listeners.delete(fn); }
+    override resume(): Promise<void> {
+      this.resumes += 1;
+      return Promise.resolve();
+    }
+    allow(): void {
+      this.state = "running";
+      for (const fn of this.listeners) fn();
+    }
+  }
+
+  it("is unsupported with no AudioContext, locked before a gesture, and suspended while the browser holds it back", () => {
+    expect(createAudioEngine({ createContext: undefined, storage: undefined }).state()).toBe("unsupported");
+
+    let ctx!: StatefulContext;
+    const engine = createAudioEngine({ createContext: () => (ctx = new StatefulContext()) as unknown as BaseAudioContext, storage: undefined });
+    expect(engine.state()).toBe("locked");
+    const heard: string[] = [];
+    engine.onStateChange(() => { heard.push(engine.state()); });
+    engine.unlock();
+    expect(engine.state()).toBe("suspended");
+    ctx.allow();
+    expect(engine.state()).toBe("running");
+    expect(heard).toEqual(["suspended", "running"]);
+  });
+
+  it("stops telling listeners once disposed", () => {
+    let ctx!: StatefulContext;
+    const engine = createAudioEngine({ createContext: () => (ctx = new StatefulContext()) as unknown as BaseAudioContext, storage: undefined });
+    engine.unlock();
+    let calls = 0;
+    engine.onStateChange(() => { calls += 1; });
+    engine.dispose();
+    ctx.allow();
+    expect(calls).toBe(0);
+  });
+});
