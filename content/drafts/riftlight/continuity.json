@@ -1656,6 +1656,1748 @@
           "introduces": {}
         }
       }
+    },
+    "riftlight-stone-counters": {
+      "entryFacts": [
+        "orin",
+        "olivia",
+        "listening_chime",
+        "chime_rules",
+        "learned_note",
+        "hall",
+        "riftseekers"
+      ],
+      "scenes": {
+        "stone": {
+          "requires": [],
+          "introduces": {
+            "stone": "boundary stone"
+          }
+        },
+        "marks": {
+          "requires": [
+            "stone"
+          ],
+          "introduces": {}
+        },
+        "lesson": {
+          "requires": [
+            "stone",
+            "learned_note",
+            "hall",
+            "riftseekers"
+          ],
+          "introduces": {
+            "lesson": "Seren"
+          }
+        },
+        "motion": {
+          "requires": [
+            "lesson"
+          ],
+          "introduces": {
+            "motion": "edges creep inward"
+          }
+        },
+        "measure": {
+          "requires": [
+            "motion"
+          ],
+          "introduces": {}
+        },
+        "sound": {
+          "requires": [
+            "motion",
+            "listening_chime"
+          ],
+          "introduces": {}
+        },
+        "rest": {
+          "requires": [
+            "stone"
+          ],
+          "introduces": {}
+        },
+        "footprint": {
+          "requires": [
+            "orin",
+            "olivia",
+            "listening_chime",
+            "chime_rules",
+            "learned_note",
+            "hall",
+            "riftseekers",
+            "lesson",
+            "stone"
+          ],
+          "introduces": {
+            "footprint": "Pip lays his measuring cord beside the empty hollow."
+          }
+        },
+        "footprint_1": {
+          "requires": [
+            "footprint"
+          ],
+          "introduces": {}
+        },
+        "footprint_1_check": {
+          "requires": [
+            "footprint"
+          ],
+          "introduces": {}
+        },
+        "footprint_1_done": {
+          "requires": [
+            "footprint"
+          ],
+          "introduces": {}
+        },
+        "footprint_1_changed": {
+          "requires": [
+            "footprint"
+          ],
+          "introduces": {}
+        },
+        "footprint_2": {
+          "requires": [
+            "footprint"
+          ],
+          "introduces": {}
+        },
+        "footprint_2_check": {
+          "requires": [
+            "footprint"
+          ],
+          "introduces": {}
+        },
+        "footprint_2_done": {
+          "requires": [
+            "footprint"
+          ],
+          "introduces": {}
+        },
+        "footprint_2_changed": {
+          "requires": [
+            "footprint"
+          ],
+          "introduces": {}
+        },
+        "witness": {
+          "requires": [
+            "footprint"
+          ],
+          "introduces": {
+            "witness": "A keeper brings two counting slates from a cloth bag."
+          }
+        },
+        "witness_1": {
+          "requires": [
+            "witness"
+          ],
+          "introduces": {}
+        },
+        "witness_2": {
+          "requires": [
+            "witness"
+          ],
+          "introduces": {}
+        },
+        "count": {
+          "requires": [
+            "witness"
+          ],
+          "introduces": {
+            "count": "The two views can both be true."
+          }
+        },
+        "count_1": {
+          "requires": [
+            "count"
+          ],
+          "introduces": {}
+        },
+        "count_2": {
+          "requires": [
+            "count"
+          ],
+          "introduces": {}
+        },
+        "road_load": {
+          "requires": [
+            "count"
+          ],
+          "introduces": {
+            "road_load": "A small handcart waits on the road above the stone."
+          }
+        },
+        "road_load_1": {
+          "requires": [
+            "road_load"
+          ],
+          "introduces": {}
+        },
+        "road_load_1_check": {
+          "requires": [
+            "road_load"
+          ],
+          "introduces": {}
+        },
+        "road_load_1_done": {
+          "requires": [
+            "road_load"
+          ],
+          "introduces": {}
+        },
+        "road_load_1_changed": {
+          "requires": [
+            "road_load"
+          ],
+          "introduces": {}
+        },
+        "road_load_2": {
+          "requires": [
+            "road_load"
+          ],
+          "introduces": {}
+        },
+        "road_load_2_check": {
+          "requires": [
+            "road_load"
+          ],
+          "introduces": {}
+        },
+        "road_load_2_done": {
+          "requires": [
+            "road_load"
+          ],
+          "introduces": {}
+        },
+        "road_load_2_changed": {
+          "requires": [
+            "road_load"
+          ],
+          "introduces": {}
+        },
+        "warning": {
+          "requires": [
+            "road_load"
+          ],
+          "introduces": {
+            "warning": "The water reaches the counting circle."
+          }
+        },
+        "warning_1": {
+          "requires": [
+            "warning"
+          ],
+          "introduces": {}
+        },
+        "warning_2": {
+          "requires": [
+            "warning"
+          ],
+          "introduces": {}
+        },
+        "runoff": {
+          "requires": [
+            "warning"
+          ],
+          "introduces": {
+            "runoff": "A trickle from the ridge begins filling the low side of the hollow."
+          }
+        },
+        "runoff_1": {
+          "requires": [
+            "runoff"
+          ],
+          "introduces": {}
+        },
+        "runoff_1_check": {
+          "requires": [
+            "runoff"
+          ],
+          "introduces": {}
+        },
+        "runoff_1_done": {
+          "requires": [
+            "runoff"
+          ],
+          "introduces": {}
+        },
+        "runoff_1_changed": {
+          "requires": [
+            "runoff"
+          ],
+          "introduces": {}
+        },
+        "runoff_2": {
+          "requires": [
+            "runoff"
+          ],
+          "introduces": {}
+        },
+        "runoff_2_check": {
+          "requires": [
+            "runoff"
+          ],
+          "introduces": {}
+        },
+        "runoff_2_done": {
+          "requires": [
+            "runoff"
+          ],
+          "introduces": {}
+        },
+        "runoff_2_changed": {
+          "requires": [
+            "runoff"
+          ],
+          "introduces": {}
+        },
+        "visit": {
+          "requires": [
+            "runoff"
+          ],
+          "introduces": {
+            "visit": "Two more dragonling neighbors arrive and stop at your warning."
+          }
+        },
+        "visit_1": {
+          "requires": [
+            "visit"
+          ],
+          "introduces": {}
+        },
+        "visit_2": {
+          "requires": [
+            "visit"
+          ],
+          "introduces": {}
+        },
+        "supply": {
+          "requires": [
+            "visit"
+          ],
+          "introduces": {
+            "supply": "A gust lifts the corner of Pip's loose drawing."
+          }
+        },
+        "supply_1": {
+          "requires": [
+            "supply"
+          ],
+          "introduces": {}
+        },
+        "supply_1_check": {
+          "requires": [
+            "supply"
+          ],
+          "introduces": {}
+        },
+        "supply_1_done": {
+          "requires": [
+            "supply"
+          ],
+          "introduces": {}
+        },
+        "supply_1_changed": {
+          "requires": [
+            "supply"
+          ],
+          "introduces": {}
+        },
+        "supply_2": {
+          "requires": [
+            "supply"
+          ],
+          "introduces": {}
+        },
+        "supply_2_check": {
+          "requires": [
+            "supply"
+          ],
+          "introduces": {}
+        },
+        "supply_2_done": {
+          "requires": [
+            "supply"
+          ],
+          "introduces": {}
+        },
+        "supply_2_changed": {
+          "requires": [
+            "supply"
+          ],
+          "introduces": {}
+        },
+        "agreement": {
+          "requires": [
+            "supply"
+          ],
+          "introduces": {
+            "agreement": "The keepers have enough observations to plan another count."
+          }
+        },
+        "agreement_1": {
+          "requires": [
+            "agreement"
+          ],
+          "introduces": {}
+        },
+        "agreement_2": {
+          "requires": [
+            "agreement"
+          ],
+          "introduces": {}
+        },
+        "motion_test": {
+          "requires": [
+            "agreement"
+          ],
+          "introduces": {
+            "motion_test": "Beside the stone, a narrow fold bends the air."
+          }
+        },
+        "motion_test_1": {
+          "requires": [
+            "motion_test"
+          ],
+          "introduces": {}
+        },
+        "motion_test_1_check": {
+          "requires": [
+            "motion_test"
+          ],
+          "introduces": {}
+        },
+        "motion_test_1_done": {
+          "requires": [
+            "motion_test"
+          ],
+          "introduces": {}
+        },
+        "motion_test_1_changed": {
+          "requires": [
+            "motion_test"
+          ],
+          "introduces": {}
+        },
+        "motion_test_2": {
+          "requires": [
+            "motion_test"
+          ],
+          "introduces": {}
+        },
+        "motion_test_2_check": {
+          "requires": [
+            "motion_test"
+          ],
+          "introduces": {}
+        },
+        "motion_test_2_done": {
+          "requires": [
+            "motion_test"
+          ],
+          "introduces": {}
+        },
+        "motion_test_2_changed": {
+          "requires": [
+            "motion_test"
+          ],
+          "introduces": {}
+        },
+        "departure_plan": {
+          "requires": [
+            "motion_test"
+          ],
+          "introduces": {
+            "departure_plan": "The neighboring stone keepers ask what visitors should carry away from this place."
+          }
+        },
+        "departure_plan_1": {
+          "requires": [
+            "departure_plan"
+          ],
+          "introduces": {}
+        },
+        "departure_plan_2": {
+          "requires": [
+            "departure_plan"
+          ],
+          "introduces": {}
+        },
+        "handover": {
+          "requires": [
+            "departure_plan"
+          ],
+          "introduces": {
+            "handover": "Before you leave, the keepers ask you to walk through the plan once without help."
+          }
+        },
+        "handover_1": {
+          "requires": [
+            "handover"
+          ],
+          "introduces": {}
+        },
+        "handover_1_check": {
+          "requires": [
+            "handover"
+          ],
+          "introduces": {}
+        },
+        "handover_1_done": {
+          "requires": [
+            "handover"
+          ],
+          "introduces": {}
+        },
+        "handover_1_changed": {
+          "requires": [
+            "handover"
+          ],
+          "introduces": {}
+        },
+        "handover_2": {
+          "requires": [
+            "handover"
+          ],
+          "introduces": {}
+        },
+        "handover_2_check": {
+          "requires": [
+            "handover"
+          ],
+          "introduces": {}
+        },
+        "handover_2_done": {
+          "requires": [
+            "handover"
+          ],
+          "introduces": {}
+        },
+        "handover_2_changed": {
+          "requires": [
+            "handover"
+          ],
+          "introduces": {}
+        },
+        "stone_priority": {
+          "requires": [
+            "orin",
+            "olivia",
+            "listening_chime",
+            "chime_rules",
+            "learned_note",
+            "hall",
+            "riftseekers"
+          ],
+          "introduces": {
+            "stone_priority": "Pip has room for one large drawing on the page he will show the next Riftseekers he meets."
+          }
+        },
+        "stone_priority_1": {
+          "requires": [
+            "stone_priority"
+          ],
+          "introduces": {}
+        },
+        "stone_priority_2": {
+          "requires": [
+            "stone_priority"
+          ],
+          "introduces": {}
+        },
+        "road_load_assisted": {
+          "requires": [
+            "road_load"
+          ],
+          "introduces": {}
+        },
+        "road_load_assisted_check": {
+          "requires": [
+            "road_load"
+          ],
+          "introduces": {}
+        },
+        "motion_test_assisted": {
+          "requires": [
+            "motion_test"
+          ],
+          "introduces": {}
+        },
+        "motion_test_assisted_check": {
+          "requires": [
+            "motion_test"
+          ],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-whale-road": {
+      "entryFacts": [
+        "orin",
+        "olivia",
+        "listening_chime",
+        "chime_rules",
+        "learned_note",
+        "hall",
+        "riftseekers"
+      ],
+      "scenes": {
+        "whales": {
+          "requires": [],
+          "introduces": {
+            "whales": "Cloud whales"
+          }
+        },
+        "olivia": {
+          "requires": [
+            "whales",
+            "olivia"
+          ],
+          "introduces": {
+            "olivia": "Lady Olivia"
+          }
+        },
+        "guide": {
+          "requires": [
+            "whales",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "gentle": {
+          "requires": [
+            "whales",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "offer": {
+          "requires": [
+            "whales",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "opening_decision": {
+          "requires": [
+            "olivia",
+            "sky_record"
+          ],
+          "introduces": {}
+        },
+        "sky_map": {
+          "requires": [
+            "orin",
+            "olivia",
+            "listening_chime",
+            "chime_rules",
+            "learned_note",
+            "hall",
+            "riftseekers"
+          ],
+          "introduces": {
+            "sky_map": "The keeper spreads a cloth map between two flat stones."
+          }
+        },
+        "sky_map_1": {
+          "requires": [
+            "sky_map"
+          ],
+          "introduces": {}
+        },
+        "sky_map_1_check": {
+          "requires": [
+            "sky_map"
+          ],
+          "introduces": {}
+        },
+        "sky_map_1_done": {
+          "requires": [
+            "sky_map"
+          ],
+          "introduces": {}
+        },
+        "sky_map_1_changed": {
+          "requires": [
+            "sky_map"
+          ],
+          "introduces": {}
+        },
+        "sky_map_2": {
+          "requires": [
+            "sky_map"
+          ],
+          "introduces": {}
+        },
+        "sky_map_2_check": {
+          "requires": [
+            "sky_map"
+          ],
+          "introduces": {}
+        },
+        "sky_map_2_done": {
+          "requires": [
+            "sky_map"
+          ],
+          "introduces": {}
+        },
+        "sky_map_2_changed": {
+          "requires": [
+            "sky_map"
+          ],
+          "introduces": {}
+        },
+        "whale_listen": {
+          "requires": [
+            "sky_map"
+          ],
+          "introduces": {
+            "whale_listen": "The nearest whale gives a long low note, then falls quiet as the folds pulse."
+          }
+        },
+        "whale_listen_1": {
+          "requires": [
+            "whale_listen"
+          ],
+          "introduces": {}
+        },
+        "whale_listen_2": {
+          "requires": [
+            "whale_listen"
+          ],
+          "introduces": {}
+        },
+        "keeper_lesson": {
+          "requires": [
+            "whale_listen"
+          ],
+          "introduces": {
+            "keeper_lesson": "The keeper brings a small reed whistle from her pouch and blows one gentle note toward an empty patch of sky."
+          }
+        },
+        "keeper_lesson_1": {
+          "requires": [
+            "keeper_lesson"
+          ],
+          "introduces": {}
+        },
+        "keeper_lesson_1_check": {
+          "requires": [
+            "keeper_lesson"
+          ],
+          "introduces": {}
+        },
+        "keeper_lesson_1_done": {
+          "requires": [
+            "keeper_lesson"
+          ],
+          "introduces": {}
+        },
+        "keeper_lesson_1_changed": {
+          "requires": [
+            "keeper_lesson"
+          ],
+          "introduces": {}
+        },
+        "keeper_lesson_2": {
+          "requires": [
+            "keeper_lesson"
+          ],
+          "introduces": {}
+        },
+        "keeper_lesson_2_check": {
+          "requires": [
+            "keeper_lesson"
+          ],
+          "introduces": {}
+        },
+        "keeper_lesson_2_done": {
+          "requires": [
+            "keeper_lesson"
+          ],
+          "introduces": {}
+        },
+        "keeper_lesson_2_changed": {
+          "requires": [
+            "keeper_lesson"
+          ],
+          "introduces": {}
+        },
+        "olivia_question": {
+          "requires": [
+            "keeper_lesson"
+          ],
+          "introduces": {
+            "olivia_question": "Olivia asks to compare your map with her notebook."
+          }
+        },
+        "olivia_question_1": {
+          "requires": [
+            "olivia_question"
+          ],
+          "introduces": {}
+        },
+        "olivia_question_2": {
+          "requires": [
+            "olivia_question"
+          ],
+          "introduces": {}
+        },
+        "wind_flags": {
+          "requires": [
+            "olivia_question"
+          ],
+          "introduces": {
+            "wind_flags": "A change in wind presses the grass flat along one edge of the working area."
+          }
+        },
+        "wind_flags_1": {
+          "requires": [
+            "wind_flags"
+          ],
+          "introduces": {}
+        },
+        "wind_flags_1_check": {
+          "requires": [
+            "wind_flags"
+          ],
+          "introduces": {}
+        },
+        "wind_flags_1_done": {
+          "requires": [
+            "wind_flags"
+          ],
+          "introduces": {}
+        },
+        "wind_flags_1_changed": {
+          "requires": [
+            "wind_flags"
+          ],
+          "introduces": {}
+        },
+        "wind_flags_2": {
+          "requires": [
+            "wind_flags"
+          ],
+          "introduces": {}
+        },
+        "wind_flags_2_check": {
+          "requires": [
+            "wind_flags"
+          ],
+          "introduces": {}
+        },
+        "wind_flags_2_done": {
+          "requires": [
+            "wind_flags"
+          ],
+          "introduces": {}
+        },
+        "wind_flags_2_changed": {
+          "requires": [
+            "wind_flags"
+          ],
+          "introduces": {}
+        },
+        "signal_pair": {
+          "requires": [
+            "wind_flags"
+          ],
+          "introduces": {
+            "signal_pair": "From behind the waiting rope, the folds narrow and widen together."
+          }
+        },
+        "signal_pair_1": {
+          "requires": [
+            "signal_pair"
+          ],
+          "introduces": {}
+        },
+        "signal_pair_2": {
+          "requires": [
+            "signal_pair"
+          ],
+          "introduces": {}
+        },
+        "loose_kit": {
+          "requires": [
+            "signal_pair"
+          ],
+          "introduces": {
+            "loose_kit": "A rolled shelter cloth begins sliding along the grass."
+          }
+        },
+        "loose_kit_1": {
+          "requires": [
+            "loose_kit"
+          ],
+          "introduces": {}
+        },
+        "loose_kit_1_check": {
+          "requires": [
+            "loose_kit"
+          ],
+          "introduces": {}
+        },
+        "loose_kit_1_done": {
+          "requires": [
+            "loose_kit"
+          ],
+          "introduces": {}
+        },
+        "loose_kit_1_changed": {
+          "requires": [
+            "loose_kit"
+          ],
+          "introduces": {}
+        },
+        "loose_kit_2": {
+          "requires": [
+            "loose_kit"
+          ],
+          "introduces": {}
+        },
+        "loose_kit_2_check": {
+          "requires": [
+            "loose_kit"
+          ],
+          "introduces": {}
+        },
+        "loose_kit_2_done": {
+          "requires": [
+            "loose_kit"
+          ],
+          "introduces": {}
+        },
+        "loose_kit_2_changed": {
+          "requires": [
+            "loose_kit"
+          ],
+          "introduces": {}
+        },
+        "waiting_place": {
+          "requires": [
+            "loose_kit"
+          ],
+          "introduces": {
+            "waiting_place": "With the cloth safe, the keeper asks where visitors should wait while a whale is turning."
+          }
+        },
+        "waiting_place_1": {
+          "requires": [
+            "waiting_place"
+          ],
+          "introduces": {}
+        },
+        "waiting_place_2": {
+          "requires": [
+            "waiting_place"
+          ],
+          "introduces": {}
+        },
+        "whale_choice": {
+          "requires": [
+            "waiting_place"
+          ],
+          "introduces": {
+            "whale_choice": "The smallest whale turns toward the island, then hesitates as the pair pulses again."
+          }
+        },
+        "whale_choice_1": {
+          "requires": [
+            "whale_choice"
+          ],
+          "introduces": {}
+        },
+        "whale_choice_1_check": {
+          "requires": [
+            "whale_choice"
+          ],
+          "introduces": {}
+        },
+        "whale_choice_1_done": {
+          "requires": [
+            "whale_choice"
+          ],
+          "introduces": {}
+        },
+        "whale_choice_1_changed": {
+          "requires": [
+            "whale_choice"
+          ],
+          "introduces": {}
+        },
+        "whale_choice_2": {
+          "requires": [
+            "whale_choice"
+          ],
+          "introduces": {}
+        },
+        "whale_choice_2_check": {
+          "requires": [
+            "whale_choice"
+          ],
+          "introduces": {}
+        },
+        "whale_choice_2_done": {
+          "requires": [
+            "whale_choice"
+          ],
+          "introduces": {}
+        },
+        "whale_choice_2_changed": {
+          "requires": [
+            "whale_choice"
+          ],
+          "introduces": {}
+        },
+        "route_compare": {
+          "requires": [
+            "whale_choice"
+          ],
+          "introduces": {
+            "route_compare": "The keeper lays your observations beside Olivia's shortcut drawing."
+          }
+        },
+        "route_compare_1": {
+          "requires": [
+            "route_compare"
+          ],
+          "introduces": {}
+        },
+        "route_compare_2": {
+          "requires": [
+            "route_compare"
+          ],
+          "introduces": {}
+        },
+        "handoff_sky": {
+          "requires": [
+            "route_compare"
+          ],
+          "introduces": {
+            "handoff_sky": "A second kitsune keeper arrives from the shelter."
+          }
+        },
+        "handoff_sky_1": {
+          "requires": [
+            "handoff_sky"
+          ],
+          "introduces": {}
+        },
+        "handoff_sky_1_check": {
+          "requires": [
+            "handoff_sky"
+          ],
+          "introduces": {}
+        },
+        "handoff_sky_1_done": {
+          "requires": [
+            "handoff_sky"
+          ],
+          "introduces": {}
+        },
+        "handoff_sky_1_changed": {
+          "requires": [
+            "handoff_sky"
+          ],
+          "introduces": {}
+        },
+        "handoff_sky_2": {
+          "requires": [
+            "handoff_sky"
+          ],
+          "introduces": {}
+        },
+        "handoff_sky_2_check": {
+          "requires": [
+            "handoff_sky"
+          ],
+          "introduces": {}
+        },
+        "handoff_sky_2_done": {
+          "requires": [
+            "handoff_sky"
+          ],
+          "introduces": {}
+        },
+        "handoff_sky_2_changed": {
+          "requires": [
+            "handoff_sky"
+          ],
+          "introduces": {}
+        },
+        "sky_record": {
+          "requires": [
+            "handoff_sky"
+          ],
+          "introduces": {
+            "sky_record": "Your party has done the work needed to make the approaches safe."
+          }
+        },
+        "sky_record_1": {
+          "requires": [
+            "sky_record"
+          ],
+          "introduces": {}
+        },
+        "sky_record_2": {
+          "requires": [
+            "sky_record"
+          ],
+          "introduces": {}
+        },
+        "sky_repair": {
+          "requires": [
+            "orin",
+            "olivia",
+            "listening_chime",
+            "chime_rules",
+            "learned_note",
+            "hall",
+            "riftseekers"
+          ],
+          "introduces": {
+            "sky_repair": "Olivia and the keepers have both named a consequence that could outlast your visit."
+          }
+        },
+        "sky_repair_1": {
+          "requires": [
+            "sky_repair"
+          ],
+          "introduces": {}
+        },
+        "sky_repair_2": {
+          "requires": [
+            "sky_repair"
+          ],
+          "introduces": {}
+        },
+        "keeper_lesson_assisted": {
+          "requires": [
+            "keeper_lesson"
+          ],
+          "introduces": {}
+        },
+        "keeper_lesson_assisted_check": {
+          "requires": [
+            "keeper_lesson"
+          ],
+          "introduces": {}
+        },
+        "wind_flags_assisted": {
+          "requires": [
+            "wind_flags"
+          ],
+          "introduces": {}
+        },
+        "wind_flags_assisted_check": {
+          "requires": [
+            "wind_flags"
+          ],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-buried-bridge": {
+      "entryFacts": [
+        "orin",
+        "olivia",
+        "listening_chime",
+        "chime_rules",
+        "learned_note",
+        "hall",
+        "riftseekers"
+      ],
+      "scenes": {
+        "bank": {
+          "requires": [
+            "orin"
+          ],
+          "introduces": {
+            "bank": "Buried bridge"
+          }
+        },
+        "orin": {
+          "requires": [
+            "bank"
+          ],
+          "introduces": {
+            "orin": "sealed door"
+          }
+        },
+        "share": {
+          "requires": [
+            "bank",
+            "orin",
+            "listening_chime"
+          ],
+          "introduces": {}
+        },
+        "keep": {
+          "requires": [
+            "bank",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "work": {
+          "requires": [
+            "bank",
+            "orin"
+          ],
+          "introduces": {
+            "work": "Loose silt"
+          }
+        },
+        "clear": {
+          "requires": [
+            "work"
+          ],
+          "introduces": {
+            "river_evidence": "river pebbles"
+          }
+        },
+        "brace": {
+          "requires": [
+            "work"
+          ],
+          "introduces": {
+            "river_evidence": "river pebbles"
+          }
+        },
+        "rest": {
+          "requires": [
+            "bank",
+            "orin",
+            "river_evidence"
+          ],
+          "introduces": {}
+        },
+        "guide_limits": {
+          "requires": [
+            "orin",
+            "olivia",
+            "listening_chime",
+            "chime_rules",
+            "learned_note",
+            "hall",
+            "riftseekers"
+          ],
+          "introduces": {
+            "guide_limits": "Your guide plants both front fins in the wet mud at the edge of the bank."
+          }
+        },
+        "guide_limits_1": {
+          "requires": [
+            "guide_limits"
+          ],
+          "introduces": {}
+        },
+        "guide_limits_2": {
+          "requires": [
+            "guide_limits"
+          ],
+          "introduces": {}
+        },
+        "ground_test": {
+          "requires": [
+            "guide_limits"
+          ],
+          "introduces": {
+            "ground_test": "Orin has a short measuring stick and a coil of plain cord beside his bag."
+          }
+        },
+        "ground_test_1": {
+          "requires": [
+            "ground_test"
+          ],
+          "introduces": {}
+        },
+        "ground_test_1_check": {
+          "requires": [
+            "ground_test"
+          ],
+          "introduces": {}
+        },
+        "ground_test_1_done": {
+          "requires": [
+            "ground_test"
+          ],
+          "introduces": {}
+        },
+        "ground_test_1_changed": {
+          "requires": [
+            "ground_test"
+          ],
+          "introduces": {}
+        },
+        "ground_test_2": {
+          "requires": [
+            "ground_test"
+          ],
+          "introduces": {}
+        },
+        "ground_test_2_check": {
+          "requires": [
+            "ground_test"
+          ],
+          "introduces": {}
+        },
+        "ground_test_2_done": {
+          "requires": [
+            "ground_test"
+          ],
+          "introduces": {}
+        },
+        "ground_test_2_changed": {
+          "requires": [
+            "ground_test"
+          ],
+          "introduces": {}
+        },
+        "base_record": {
+          "requires": [
+            "ground_test"
+          ],
+          "introduces": {
+            "base_record": "Before any silt is moved, Orin asks for a picture of the bank as you found it."
+          }
+        },
+        "base_record_1": {
+          "requires": [
+            "base_record"
+          ],
+          "introduces": {}
+        },
+        "base_record_2": {
+          "requires": [
+            "base_record"
+          ],
+          "introduces": {}
+        },
+        "tools_bridge": {
+          "requires": [
+            "base_record"
+          ],
+          "introduces": {
+            "tools_bridge": "A loose bundle of Orin's measuring cord rolls toward the pale crust."
+          }
+        },
+        "tools_bridge_1": {
+          "requires": [
+            "tools_bridge"
+          ],
+          "introduces": {}
+        },
+        "tools_bridge_1_check": {
+          "requires": [
+            "tools_bridge"
+          ],
+          "introduces": {}
+        },
+        "tools_bridge_1_done": {
+          "requires": [
+            "tools_bridge"
+          ],
+          "introduces": {}
+        },
+        "tools_bridge_1_changed": {
+          "requires": [
+            "tools_bridge"
+          ],
+          "introduces": {}
+        },
+        "tools_bridge_2": {
+          "requires": [
+            "tools_bridge"
+          ],
+          "introduces": {}
+        },
+        "tools_bridge_2_check": {
+          "requires": [
+            "tools_bridge"
+          ],
+          "introduces": {}
+        },
+        "tools_bridge_2_done": {
+          "requires": [
+            "tools_bridge"
+          ],
+          "introduces": {}
+        },
+        "tools_bridge_2_changed": {
+          "requires": [
+            "tools_bridge"
+          ],
+          "introduces": {}
+        },
+        "silt_compare": {
+          "requires": [
+            "tools_bridge"
+          ],
+          "introduces": {
+            "silt_compare": "Orin places a pinch of loose silt on a flat stone beside grit from the upper bank."
+          }
+        },
+        "silt_compare_1": {
+          "requires": [
+            "silt_compare"
+          ],
+          "introduces": {}
+        },
+        "silt_compare_2": {
+          "requires": [
+            "silt_compare"
+          ],
+          "introduces": {}
+        },
+        "bank_work": {
+          "requires": [
+            "silt_compare"
+          ],
+          "introduces": {
+            "bank_work": "A small run of loose silt slips from the work shelf."
+          }
+        },
+        "bank_work_1": {
+          "requires": [
+            "bank_work"
+          ],
+          "introduces": {}
+        },
+        "bank_work_1_check": {
+          "requires": [
+            "bank_work"
+          ],
+          "introduces": {}
+        },
+        "bank_work_1_done": {
+          "requires": [
+            "bank_work"
+          ],
+          "introduces": {}
+        },
+        "bank_work_1_changed": {
+          "requires": [
+            "bank_work"
+          ],
+          "introduces": {}
+        },
+        "bank_work_2": {
+          "requires": [
+            "bank_work"
+          ],
+          "introduces": {}
+        },
+        "bank_work_2_check": {
+          "requires": [
+            "bank_work"
+          ],
+          "introduces": {}
+        },
+        "bank_work_2_done": {
+          "requires": [
+            "bank_work"
+          ],
+          "introduces": {}
+        },
+        "bank_work_2_changed": {
+          "requires": [
+            "bank_work"
+          ],
+          "introduces": {}
+        },
+        "arch_question": {
+          "requires": [
+            "bank_work"
+          ],
+          "introduces": {
+            "arch_question": "From the firm shelf you can see two possible places to inspect."
+          }
+        },
+        "arch_question_1": {
+          "requires": [
+            "arch_question"
+          ],
+          "introduces": {}
+        },
+        "arch_question_2": {
+          "requires": [
+            "arch_question"
+          ],
+          "introduces": {}
+        },
+        "choose_limit": {
+          "requires": [
+            "arch_question"
+          ],
+          "introduces": {
+            "choose_limit": "The tools are ready."
+          }
+        },
+        "choose_limit_1": {
+          "requires": [
+            "choose_limit"
+          ],
+          "introduces": {}
+        },
+        "choose_limit_2": {
+          "requires": [
+            "choose_limit"
+          ],
+          "introduces": {}
+        },
+        "river_explain": {
+          "requires": [
+            "orin",
+            "olivia",
+            "listening_chime",
+            "chime_rules",
+            "learned_note",
+            "hall",
+            "riftseekers",
+            "river_evidence"
+          ],
+          "introduces": {
+            "river_explain": "The waterline and smooth river pebbles appear in your notes beside the dry channel."
+          }
+        },
+        "river_explain_1": {
+          "requires": [
+            "river_explain"
+          ],
+          "introduces": {}
+        },
+        "river_explain_1_check": {
+          "requires": [
+            "river_explain"
+          ],
+          "introduces": {}
+        },
+        "river_explain_1_done": {
+          "requires": [
+            "river_explain"
+          ],
+          "introduces": {}
+        },
+        "river_explain_1_changed": {
+          "requires": [
+            "river_explain"
+          ],
+          "introduces": {}
+        },
+        "river_explain_2": {
+          "requires": [
+            "river_explain"
+          ],
+          "introduces": {}
+        },
+        "river_explain_2_check": {
+          "requires": [
+            "river_explain"
+          ],
+          "introduces": {}
+        },
+        "river_explain_2_done": {
+          "requires": [
+            "river_explain"
+          ],
+          "introduces": {}
+        },
+        "river_explain_2_changed": {
+          "requires": [
+            "river_explain"
+          ],
+          "introduces": {}
+        },
+        "share_record": {
+          "requires": [
+            "river_explain"
+          ],
+          "introduces": {
+            "share_record": "Orin offers to carry a copy of the bridge drawing to other Riftseekers."
+          }
+        },
+        "share_record_1": {
+          "requires": [
+            "share_record"
+          ],
+          "introduces": {}
+        },
+        "share_record_2": {
+          "requires": [
+            "share_record"
+          ],
+          "introduces": {}
+        },
+        "restore_bank": {
+          "requires": [
+            "share_record"
+          ],
+          "introduces": {
+            "restore_bank": "The inspection is finished, but loose silt and a viewing board must not become the next traveler's surprise."
+          }
+        },
+        "restore_bank_1": {
+          "requires": [
+            "restore_bank"
+          ],
+          "introduces": {}
+        },
+        "restore_bank_1_check": {
+          "requires": [
+            "restore_bank"
+          ],
+          "introduces": {}
+        },
+        "restore_bank_1_done": {
+          "requires": [
+            "restore_bank"
+          ],
+          "introduces": {}
+        },
+        "restore_bank_1_changed": {
+          "requires": [
+            "restore_bank"
+          ],
+          "introduces": {}
+        },
+        "restore_bank_2": {
+          "requires": [
+            "restore_bank"
+          ],
+          "introduces": {}
+        },
+        "restore_bank_2_check": {
+          "requires": [
+            "restore_bank"
+          ],
+          "introduces": {}
+        },
+        "restore_bank_2_done": {
+          "requires": [
+            "restore_bank"
+          ],
+          "introduces": {}
+        },
+        "restore_bank_2_changed": {
+          "requires": [
+            "restore_bank"
+          ],
+          "introduces": {}
+        },
+        "guide_handover": {
+          "requires": [
+            "restore_bank"
+          ],
+          "introduces": {
+            "guide_handover": "Your guide asks you to explain the finished place from the mud-bank boundary, where future visitors will ask their questions."
+          }
+        },
+        "guide_handover_1": {
+          "requires": [
+            "guide_handover"
+          ],
+          "introduces": {}
+        },
+        "guide_handover_1_check": {
+          "requires": [
+            "guide_handover"
+          ],
+          "introduces": {}
+        },
+        "guide_handover_1_done": {
+          "requires": [
+            "guide_handover"
+          ],
+          "introduces": {}
+        },
+        "guide_handover_1_changed": {
+          "requires": [
+            "guide_handover"
+          ],
+          "introduces": {}
+        },
+        "guide_handover_2": {
+          "requires": [
+            "guide_handover"
+          ],
+          "introduces": {}
+        },
+        "guide_handover_2_check": {
+          "requires": [
+            "guide_handover"
+          ],
+          "introduces": {}
+        },
+        "guide_handover_2_done": {
+          "requires": [
+            "guide_handover"
+          ],
+          "introduces": {}
+        },
+        "guide_handover_2_changed": {
+          "requires": [
+            "guide_handover"
+          ],
+          "introduces": {}
+        },
+        "bank_work_assisted": {
+          "requires": [
+            "bank_work"
+          ],
+          "introduces": {}
+        },
+        "bank_work_assisted_check": {
+          "requires": [
+            "bank_work"
+          ],
+          "introduces": {}
+        },
+        "tools_bridge_assisted": {
+          "requires": [
+            "tools_bridge"
+          ],
+          "introduces": {}
+        },
+        "tools_bridge_assisted_check": {
+          "requires": [
+            "tools_bridge"
+          ],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-preview-pause-stone-counters": {
+      "entryFacts": [],
+      "scenes": {
+        "pause": {
+          "requires": [],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-preview-pause-whale-road": {
+      "entryFacts": [],
+      "scenes": {
+        "pause": {
+          "requires": [],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-preview-pause-buried-bridge": {
+      "entryFacts": [],
+      "scenes": {
+        "pause": {
+          "requires": [],
+          "introduces": {}
+        }
+      }
     }
   }
 }
