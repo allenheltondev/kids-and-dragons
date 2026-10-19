@@ -9,6 +9,20 @@
   max-inline-size: min(34em, 94vw);
   font-size: 0.9rem;
 }
+/* In the corner row: first in it, in its flow, and the report drops below the row. */
+.kad-about--in-corner {
+  position: static;
+  order: -1;
+  max-inline-size: none;
+}
+.kad-about--in-corner .kad-about__panel {
+  position: fixed;
+  inset-block-start: calc(var(--kad-safe-top, 0px) + var(--kad-corner-bottom));
+  inset-inline-end: 0.5em;
+  inline-size: min(34em, 94vw);
+  max-block-size: calc(100vh - var(--kad-corner-bottom) - 1em);
+  overflow-y: auto;
+}
 .kad-about__open {
   padding: 0.35em 0.8em;
   border: 0;

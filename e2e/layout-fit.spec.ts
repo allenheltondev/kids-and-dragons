@@ -1,5 +1,5 @@
 /**
- * Nothing on a phone sits under the corner row or is cut off (#257).
+ * Nothing sits under the controls pinned over the screen, or is cut off (#257).
  * The screens: the start screen, the guide, a host's lobby and Rest scene,
  * the room controls, a returning kid's catch-up line, and the adventure book.
  *
@@ -7,7 +7,10 @@
  * every screen. A phone in a room leaves it a strip of its own (at the top, or
  * at the bottom one-handed), so the identity strip, a host's arrival notices,
  * the Rest stop offer, the room controls and the catch-up line all keep their
- * whole width; the start screen and the guide leave it the same strip. This walks a real room to each of those screens and then looks
+ * whole width; the start screen and the guide leave it the same strip. On the
+ * shared screen, About this screen sits in the corner row and the host's Room
+ * button has a strip along the bottom, so neither covers a heading or a choice;
+ * that is checked at 1280x720 and at a tablet's 1024x600. This walks a real room to each of those screens and then looks
  * at them at 360px and 390px, at normal and the largest text (#262), with
  * one-handed play off, right and left, and asserts three things on each:
  *
@@ -117,15 +120,16 @@ async function misfits(page: Page): Promise<string[]> {
     // What a person reads or taps: text, controls, pictures with words.
     const things = [...document.body.querySelectorAll("*")].filter(
       (el) =>
-        !el.closest(".kad-corner, .playtest, [aria-hidden='true']") &&
+        !el.closest(".kad-corner, .kad-about, .kad-host--float, .playtest, [aria-hidden='true']") &&
         (ownText(el) !== "" ||
           el.matches("button, input, select, textarea, a[href]") ||
           (el.matches("img") && (el.getAttribute("alt") ?? "") !== "")) &&
         shown(el),
     );
 
-    // 1. Nothing under a corner control.
-    const corner = [...document.querySelectorAll(".kad-corner > *")]
+    // 1. Nothing under a control pinned over the screen: the corner row, and the shared
+    //    screen's Room button (#263) and About this screen (#264).
+    const corner = [...document.querySelectorAll(".kad-corner > *, .kad-about__open, .kad-host--float > .kad-button")]
       .filter(shown)
       .map((el) => ({ el, box: el.getBoundingClientRect() }));
     for (const el of things) {
@@ -133,7 +137,7 @@ async function misfits(page: Page): Promise<string[]> {
       for (const control of corner) {
         const x = Math.min(box.right, control.box.right) - Math.max(box.left, control.box.left);
         const y = Math.min(box.bottom, control.box.bottom) - Math.max(box.top, control.box.top);
-        if (x > 1 && y > 1) out.push(`${label(el)} is under the corner's ${label(control.el)}`);
+        if (x > 1 && y > 1) out.push(`${label(el)} is under the pinned ${label(control.el)}`);
       }
     }
 
@@ -163,10 +167,10 @@ async function misfits(page: Page): Promise<string[]> {
 }
 
 /** Every width, text size and hand, on one page as it stands. */
-async function expectFits(page: Page, screen: string): Promise<void> {
+async function expectFits(page: Page, screen: string, sizes: readonly (readonly [number, number])[] = WIDTHS.map((w) => [w, 800] as const)): Promise<void> {
   const found: string[] = [];
-  for (const width of WIDTHS) {
-    await page.setViewportSize({ width, height: 800 });
+  for (const [width, height] of sizes) {
+    await page.setViewportSize({ width, height });
     for (const text of TEXT) {
       for (const hand of HANDS) {
         await settings(page, text, hand);
@@ -185,7 +189,7 @@ async function expectFits(page: Page, screen: string): Promise<void> {
   expect.soft(found, found.join("\n")).toEqual([]);
 }
 
-test.describe("everything on a phone fits around the corner row", () => {
+test.describe("nothing sits under the controls pinned over the screen, or is cut off", () => {
   const open: BrowserContext[] = [];
   test.afterEach(async () => {
     await Promise.all(open.splice(0).map((c) => c.close().catch(() => undefined)));
@@ -270,5 +274,36 @@ test.describe("everything on a phone fits around the corner row", () => {
     await guest.getByRole("button", { name: /open your book/i }).click(TAP);
     await expect(guest.getByRole("region", { name: "Rosie's character sheet" })).toBeVisible(TAP);
     await expectFits(guest, "the adventure book");
+  });
+
+  test("the shared screen: its corner row, About this screen and Room keep off the lobby and the story", async ({ browser }) => {
+    test.setTimeout(240_000);
+    const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+    open.push(context);
+    const tv = await context.newPage();
+    await tv.goto("/");
+    await tv.getByRole("button", { name: /want to host/i }).click();
+    await tv.getByText("Party Mode").click();
+    await tv.getByRole("button", { name: /open the lobby here/i }).click();
+    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
+    const code = new URL(tv.url()).pathname.split("/").pop() ?? "";
+    await expect(tv.getByRole("button", { name: "About this screen" })).toBeVisible(TAP);
+
+    const kid = await phone(browser);
+    await kid.goto("/");
+    await kid.getByLabel(/room code/i).fill(code);
+    await kid.getByRole("button", { name: /join a game/i }).click();
+    await expect(kid).toHaveURL(new RegExp(`/p/${code}$`), TAP);
+    await createCharacter(kid, "unicorn", "Sparklehoof");
+    await expect(tv.getByText("Sparklehoof").first()).toBeVisible(TAP);
+
+    // A television, and a tablet showing the game (#274).
+    const screens = [[1280, 720], [1024, 600]] as const;
+    await expectFits(tv, "the shared screen's lobby", screens);
+
+    await kid.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    await expect.poll(async () => (await roomState<{ phase: string }>(kid, code)).phase, TAP).toBe("scene");
+    await expect(tv.locator(".narration__body").first()).toBeVisible(TAP);
+    await expectFits(tv, "the shared screen's story", screens);
   });
 });
