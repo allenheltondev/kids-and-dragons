@@ -1,7 +1,14 @@
+import fs from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { CHARACTER_VERSION, StoredCharacterError, migrateCharacter } from "./migrate.js";
-import { newCharacter } from "./character.js";
+import { CHARACTER_VERSION, StoredCharacterError, V4_CLASS_LADDER, migrateCharacter } from "./migrate.js";
+import { newCharacter, resolveCharacter } from "./character.js";
+import { assertRulesContent, levelForXp } from "./rules.js";
 import { makeRules } from "./test-fixtures.js";
+import type { CharacterProgress, ClassId, SpeciesId } from "./types/domain.js";
+
+const ROOT = path.resolve(import.meta.dirname, "..", "..", "..");
+const SHIPPED = assertRulesContent(JSON.parse(fs.readFileSync(path.join(ROOT, "content", "rules.json"), "utf8")));
 
 function current() {
   return newCharacter({
@@ -18,10 +25,25 @@ function current() {
   });
 }
 
+/**
+ * A progress half as v1–v4 wrote it: no class or mastery, and the class moves
+ * levelling had written so far in `unlockedActions`.
+ */
+function v4Half(half: CharacterProgress, unlockedActions: string[] = ["rally"]): Record<string, unknown> {
+  const { class: _class, mastery: _mastery, ...rest } = half;
+  return { ...rest, unlockedActions };
+}
+
+/** A row as v1–v4 wrote it: the class on the character, not on each half. */
+function v4Row(): Record<string, unknown> {
+  const { committed, ...rest } = current();
+  return { ...rest, class: committed.class, committed: v4Half(committed) };
+}
+
 /** A row as it was written before `unspentPoints` and before versioning. */
 function v0Row(): Record<string, unknown> {
-  const { committed, ...rest } = current();
-  const { unspentPoints: _dropped, ...oldProgress } = committed;
+  const { committed, ...rest } = v4Row();
+  const { unspentPoints: _dropped, ...oldProgress } = committed as Record<string, unknown>;
   return { ...rest, committed: oldProgress };
 }
 
@@ -52,7 +74,7 @@ describe("migrateCharacter — the v0 ladder", () => {
     // A campaign in flight is exactly when an upgrade lands mid-session, and a
     // provisional half left un-migrated reverts a character on commit.
     const row = v0Row();
-    const { unspentPoints: _d, ...progress } = current().committed;
+    const { unspentPoints: _d, ...progress } = v4Half(current().committed);
     row["provisional"] = { ...progress, runId: "r_1" };
 
     const migrated = migrateCharacter(row, 0);
@@ -65,7 +87,7 @@ describe("migrateCharacter — her finished campaigns (v3, #283)", () => {
   const line = { campaignId: "gemfall", outcome: "success", at: "2026-07-14T18:00:00.000Z", table: "h_club" };
 
   it("reads a v2 row, from before the record, as having finished nothing, and adds no key", () => {
-    const migrated = migrateCharacter({ ...current(), version: 3 }, 2);
+    const migrated = migrateCharacter({ ...v4Row(), version: 3 }, 2);
     expect(migrated).not.toHaveProperty("finished");
   });
 
@@ -85,7 +107,7 @@ describe("migrateCharacter — her finished campaigns (v3, #283)", () => {
 
 describe("migrateCharacter — the practice (v4, #255)", () => {
   it("reads a v3 row, from before the practice, as not having played it, and adds no key", () => {
-    const migrated = migrateCharacter({ ...current() }, 3);
+    const migrated = migrateCharacter(v4Row(), 3);
     expect(migrated).not.toHaveProperty("practiced");
   });
 
@@ -98,6 +120,203 @@ describe("migrateCharacter — the practice (v4, #255)", () => {
     for (const practiced of [false, "yes", 1, null]) {
       expect(migrateCharacter({ ...current(), practiced }, CHARACTER_VERSION)).not.toHaveProperty("practiced");
     }
+  });
+});
+
+/*
+ * v5 (#308): class moves come from the worn class's distinction, not level.
+ * The guardrail is that no stored hero loses a move, so this holds the new
+ * resolve against the old one on rows shaped the way v4 actually wrote them,
+ * with the shipped rules. `v4Actions` is what `resolveCharacter` did at v4:
+ * the signature, every unlock the XP's level reached, the species action, and
+ * whatever stored `unlockedActions` the content still knew.
+ */
+function v4Actions(row: Record<string, unknown>, half: Record<string, unknown>): string[] {
+  const classDef = SHIPPED.classes[row["class"] as ClassId];
+  const species = SHIPPED.species[row["species"] as SpeciesId];
+  const level = levelForXp(SHIPPED, half["xp"] as number);
+  const known = new Set<string>();
+  for (const c of Object.values(SHIPPED.classes)) {
+    known.add(c.signature.id);
+    for (const u of Object.values(c.unlocks)) known.add(u.id);
+  }
+  for (const sp of Object.values(SHIPPED.species)) known.add(sp.combatAction.id);
+  const unlocks = Object.entries(classDef.unlocks)
+    .filter(([at]) => level >= Number(at))
+    .map(([, u]) => u.id);
+  return [
+    ...new Set([
+      classDef.signature.id,
+      ...unlocks,
+      species.combatAction.id,
+      ...(half["unlockedActions"] as string[]).filter((id) => known.has(id)),
+    ]),
+  ].sort();
+}
+
+/** A v4 row for `classId` at `xp`, its unlocks written the way v4's awardXp wrote them. */
+function v4Hero(classId: ClassId, species: SpeciesId, xp: number, overrides: Record<string, unknown> = {}) {
+  const classDef = SHIPPED.classes[classId];
+  const level = levelForXp(SHIPPED, xp);
+  const unlockedActions = [
+    classDef.signature.id,
+    ...Object.entries(classDef.unlocks).filter(([at]) => level >= Number(at)).map(([, u]) => u.id),
+  ];
+  return {
+    id: `c_${classId}_${xp}`,
+    householdId: "h_1",
+    ownerPlayerId: "p_1",
+    name: "Pip",
+    species,
+    class: classId,
+    appearance: { palette: "dawn", accent: "gold" },
+    committed: {
+      level,
+      xp,
+      stats: { might: 1, quick: 2, clever: 1, heart: 3 },
+      tier: "fledgling",
+      unlockedActions,
+      inventory: [],
+      unspentPoints: 0,
+      ...overrides,
+    },
+    provisional: null,
+    questItems: [],
+    souvenirs: [],
+    createdAt: "2026-07-04T18:00:00.000Z",
+    version: 7,
+  };
+}
+
+function resolvedActions(row: Record<string, unknown>): string[] {
+  return resolveCharacter(migrateCharacter(row, 4), SHIPPED, {}).actions.slice().sort();
+}
+
+describe("migrateCharacter — class mastery (v5, #308)", () => {
+  const CLASSES = Object.keys(SHIPPED.classes) as ClassId[];
+  const SPECIES = Object.keys(SHIPPED.species) as SpeciesId[];
+  const THRESHOLDS = [0, ...SHIPPED.levelXp];
+
+  it("freezes the v4 ladder exactly as the shipped rules have it", () => {
+    // The step reads a frozen copy, not today's rules. While the rules still
+    // say what v4 said, the copy must match them.
+    for (const classId of CLASSES) {
+      const ladder = Object.entries(SHIPPED.classes[classId].unlocks).sort(([a], [b]) => Number(a) - Number(b));
+      expect(ladder.map(([at]) => Number(at)), classId).toEqual([3, 6, 9]);
+      expect(ladder.map(([, u]) => u.id), classId).toEqual(V4_CLASS_LADDER.moves[classId]);
+    }
+    expect([3, 6, 9].map((level) => SHIPPED.levelXp[level - 2])).toEqual([...V4_CLASS_LADDER.xp]);
+  });
+
+  it("gives every stored hero, at every level of every class, exactly the moves it had", () => {
+    for (const [i, classId] of CLASSES.entries()) {
+      for (const xp of THRESHOLDS) {
+        const row = v4Hero(classId, SPECIES[i % SPECIES.length]!, xp);
+        expect(resolvedActions(row), `${classId} at ${xp} XP`).toEqual(v4Actions(row, row.committed));
+      }
+    }
+  });
+
+  it("gives a level 3, 6 and 9 hero Apprentice, Expert and Master in their own class only", () => {
+    const rankAt = (xp: number) => migrateCharacter(v4Hero("thornguard", "bigfoot", xp), 4).committed;
+    expect(rankAt(0).mastery).toEqual({ thornguard: { rank: "none", deeds: {} } });
+    expect(rankAt(100).mastery).toEqual({ thornguard: { rank: "none", deeds: {} } });
+    expect(rankAt(300).mastery).toEqual({ thornguard: { rank: "apprentice", deeds: {} } });
+    expect(rankAt(1100).mastery).toEqual({ thornguard: { rank: "apprentice", deeds: {} } });
+    expect(rankAt(1700).mastery).toEqual({ thornguard: { rank: "expert", deeds: {} } });
+    expect(rankAt(4700).mastery).toEqual({ thornguard: { rank: "master", deeds: {} } });
+    expect(rankAt(9999).mastery).toEqual({ thornguard: { rank: "master", deeds: {} } });
+    expect(rankAt(300).class).toBe("thornguard");
+  });
+
+  it("gives exactly v4's moves when a row disagrees with itself", () => {
+    // v4 resolved from XP and unlockedActions, never the stored level, so
+    // neither may lose a move and the level may not add one.
+    const cases: [string, Record<string, unknown>, string][] = [
+      ["stored level behind XP", { level: 2, xp: 300 }, "apprentice"],
+      ["stored level ahead of XP", { level: 6, xp: 700, unlockedActions: ["rally"] }, "apprentice"],
+      // A move levelling wrote that the level alone would not show.
+      ["unlockedActions ahead of level", { level: 4, xp: 700, unlockedActions: ["rally", "soothe", "chorus"] }, "expert"],
+      // Created before unlocks were written at all.
+      ["no unlockedActions", { level: 1, xp: 0, unlockedActions: [] }, "none"],
+    ];
+    for (const [name, overrides, rank] of cases) {
+      const row = v4Hero("songkeeper", "unicorn", 0, overrides);
+      expect(migrateCharacter(row, 4).committed.mastery, name).toEqual({ songkeeper: { rank, deeds: {} } });
+      expect(resolvedActions(row), name).toEqual(v4Actions(row, row.committed));
+    }
+  });
+
+  it("migrates each half on its own, so a campaign in flight keeps its gains and a failure keeps the rest", () => {
+    const row = v4Hero("starweaver", "kitsune", 700);
+    const provisional = { ...v4Hero("starweaver", "kitsune", 1700).committed, runId: "r_1" };
+    const migrated = migrateCharacter({ ...row, provisional }, 4);
+
+    expect(migrated.committed).toMatchObject({ class: "starweaver", mastery: { starweaver: { rank: "apprentice" } } });
+    expect(migrated.provisional).toMatchObject({
+      runId: "r_1",
+      class: "starweaver",
+      mastery: { starweaver: { rank: "expert" } },
+    });
+    expect(resolveCharacter(migrated, SHIPPED, {}).actions.slice().sort()).toEqual(v4Actions(row, provisional));
+    expect(resolveCharacter({ ...migrated, provisional: null }, SHIPPED, {}).actions.slice().sort()).toEqual(
+      v4Actions(row, row.committed),
+    );
+  });
+
+  it("moves the class off the character and drops unlockedActions", () => {
+    const migrated = migrateCharacter(v4Hero("duskrunner", "griffin", 4700), 4);
+    expect(migrated).not.toHaveProperty("class");
+    expect(migrated.committed).not.toHaveProperty("unlockedActions");
+    expect(migrated.version).toBe(7);
+  });
+
+  it("leaves an unstamped row that is already in the v5 shape as it is", () => {
+    const character = current();
+    const row = {
+      ...character,
+      committed: { ...character.committed, mastery: { songkeeper: { rank: "expert" as const, deeds: { hearts: 4 } } } },
+    };
+    // The v1 step stamps the claim version, as it does on any v0 row.
+    expect(migrateCharacter(row, undefined)).toEqual({ ...row, version: 0 });
+  });
+
+  it("migrates a v0 row all the way up", () => {
+    const { unspentPoints: _u, ...committed } = v4Hero("songkeeper", "unicorn", 1700).committed;
+    const migrated = migrateCharacter({ ...v4Hero("songkeeper", "unicorn", 1700), committed }, undefined);
+    expect(migrated.committed).toMatchObject({ unspentPoints: 0, mastery: { songkeeper: { rank: "expert" } } });
+  });
+
+  it("refuses a rank it does not know rather than guessing the moves", () => {
+    const character = current();
+    for (const mastery of [{ songkeeper: { rank: "grandmaster", deeds: {} } }, { songkeeper: { deeds: {} } }]) {
+      const row = { ...character, committed: { ...character.committed, mastery } };
+      expect(() => migrateCharacter(row, CHARACTER_VERSION), JSON.stringify(mastery)).toThrow(/mastery\.songkeeper\.rank/);
+    }
+  });
+
+  it("refuses a current row with no worn class", () => {
+    const character = current();
+    const { class: _class, ...committed } = character.committed;
+    expect(() => migrateCharacter({ ...character, committed }, CHARACTER_VERSION)).toThrow(/committed\.class/);
+  });
+
+  it("keeps ranks and deed progress in every class through a read", () => {
+    const character = current();
+    const mastery = {
+      songkeeper: { rank: "expert" as const, deeds: { hearts: 12 } },
+      thornguard: { rank: "apprentice" as const, deeds: { shove: 2 } },
+    };
+    const row = { ...character, committed: { ...character.committed, class: "thornguard" as const, mastery } };
+    expect(migrateCharacter(row, CHARACTER_VERSION).committed).toMatchObject({ class: "thornguard", mastery });
+  });
+
+  it("defaults absent deed progress, and absent mastery, to nothing earned", () => {
+    const character = current();
+    const { mastery: _m, ...noMastery } = character.committed;
+    expect(migrateCharacter({ ...character, committed: noMastery }, CHARACTER_VERSION).committed.mastery).toEqual({});
+    const row = { ...character, committed: { ...character.committed, mastery: { songkeeper: { rank: "none" } } } };
+    expect(migrateCharacter(row, CHARACTER_VERSION).committed.mastery).toEqual({ songkeeper: { rank: "none", deeds: {} } });
   });
 });
 
