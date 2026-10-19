@@ -13,6 +13,7 @@
 import { resolveCharacter, type Character, type JournalResponse } from "@kad/shared";
 import { ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { listHeroes } from "./heroes.ts";
+import { viewOf } from "./profile.ts";
 
 export interface JournalInput {
   householdId: string;
@@ -41,7 +42,16 @@ export async function getJournal(
   if (!heroes.ok) return heroes;
   const finders = findersOf(players, characters, deps);
   const finished = finishedOf(characters.filter((c) => c.ownerPlayerId === input.playerId), deps);
-  return ok({ heroes: heroes.value.heroes, fieldGuide: book.entries, finders, whereabouts, finished });
+  const me = players.find((p) => p.id === input.playerId);
+  const profile = me ? viewOf(input, me, characters, book.entries, deps) : undefined;
+  return ok({
+    heroes: heroes.value.heroes,
+    fieldGuide: book.entries,
+    finders,
+    whereabouts,
+    finished,
+    ...(profile ? { profile } : {}),
+  });
 }
 
 /**
