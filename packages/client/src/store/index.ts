@@ -1266,6 +1266,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         return done;
       },
 
+      handKeeper(playerId: string) {
+        return hostControl("keeper", { playerId }, "Could not hand over the game.");
+      },
+
       lockRoom(locked: boolean) {
         return hostControl("lock", { locked }, locked ? "Could not lock the room." : "Could not unlock the room.");
       },

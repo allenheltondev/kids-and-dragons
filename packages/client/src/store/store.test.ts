@@ -678,6 +678,14 @@ describe("arrivals and removal (#267)", () => {
     expect(h.store.getState().arrivals).toEqual([]);
   });
 
+  it("hands the keeper role to a phone in the room (#272)", async () => {
+    const h = harness();
+    await h.store.getState().createRoom("travel", "Allen");
+    h.store.setState({ session: { ...h.store.getState().session!, host: true } });
+    expect(await h.store.getState().handKeeper("p_2")).toBe(true);
+    expect(h.api.hostControl).toHaveBeenCalledWith("ABCD", "keeper", { playerId: "p_2" }, expect.anything());
+  });
+
   it("locks, unlocks and closes the room it opened (#263)", async () => {
     const h = harness();
     await h.store.getState().createRoom("travel", "Allen");
@@ -1051,6 +1059,20 @@ describe("attach as a player", () => {
     expect(h.api.joinRoom).not.toHaveBeenCalled();
     expect(h.store.getState().session?.playerId).toBe("p_1");
     expect(h.store.getState().state?.runId).toBe("r_1");
+  });
+
+  it("keeps the keeper and host flags a session was stored with, with no fresh join (#272, item 4)", async () => {
+    // The flags ride in the stored session, so a restored phone draws the
+    // keepsake offer as it did before the refresh. A host's handing the role
+    // over is read from the run (`keeperPlayerId`), not from a rejoin.
+    const h = harness();
+    h.storage.setItem(
+      "kad.session.ABCD",
+      JSON.stringify({ runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "travel", sessionToken: "tok_1", keeper: true, host: true }),
+    );
+    await h.store.getState().attach("ABCD", "player");
+    expect(h.api.joinRoom).not.toHaveBeenCalled();
+    expect(h.store.getState().session).toMatchObject({ keeper: true, host: true });
   });
 
   it("falls back to the home screen with the code remembered when there is no session", async () => {
