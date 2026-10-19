@@ -116,6 +116,7 @@ import {
   tileWords,
 } from "./environment-copy";
 import type { Facing } from "../world/board-math";
+import { helpAttrs } from "../help/longpress";
 import "./shared.css";
 import "./CombatPanel.css";
 
@@ -738,6 +739,7 @@ export function CombatControls(): ReactElement | null {
                       type="button"
                       className="choice kad-tap kad-focusable"
                       onClick={() => tapAction(action)}
+                      {...helpAttrs({ kind: "card", name: action.name, icon: action.icon, ...textOf(summaryOf(action.abilityId, abilities)) })}
                     >
                       <span className="choice__icon">
                         <Icon name={action.icon} size="1.8em" />
@@ -1020,6 +1022,7 @@ function ItemCard({
         className="choice kad-tap kad-focusable"
         aria-label={name}
         onClick={() => onTap(item.itemId, item.def)}
+        {...helpAttrs({ kind: "item", name: item.def.name, icon: item.def.icon, ...textOf(item.def.text) })}
       >
         <span className="choice__icon">
           <Icon name={item.def.icon} size="1.8em" />
@@ -1372,6 +1375,11 @@ function RollLine({ who, roll }: { who: string; roll: DiceRoll }): ReactElement 
 }
 
 /** The card's one-line explanation: the catalog's, then the built-in three's. */
+/** `{ text }` when there are words to show, so a held thing without its own falls back to its kind's. */
+function textOf(text: string | null | undefined): { text?: string } {
+  return text ? { text } : {};
+}
+
 function summaryOf(abilityId: string, abilities: AbilityCatalog | null): string | null {
   return abilities?.[abilityId]?.summary ?? UNIVERSAL_ABILITIES[abilityId]?.summary ?? null;
 }

@@ -28,6 +28,7 @@ import { RiftlightIndicator } from "../screens/RiftSight";
 import { GuideTab } from "./GuideTab";
 import { BookTab } from "./BookTab";
 import { useMyTurnKey } from "../store";
+import { setHelpPane } from "../help/focus";
 
 export interface PartyLayoutProps {
   surface: "world" | "player";
@@ -63,6 +64,11 @@ function PhoneLayout(): React.JSX.Element {
   }, [turnKey]);
 
   const section = usePlayerNavigation((navigation) => navigation.section);
+  // The "?" in the corner row (#256) explains whatever pane is up.
+  useEffect(() => {
+    setHelpPane(showing);
+    return () => setHelpPane("player");
+  }, [showing]);
   const onMap = showing === "map";
   const inGuide = showing === "player" && section === "guide";
 

@@ -1223,6 +1223,14 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         void deps.api.postPresence(leaving, session.sessionToken).catch(() => undefined);
       },
 
+      reconnect() {
+        if (!get().session) return;
+        if (runtime.channel?.reconnect) runtime.channel.reconnect();
+        // No stream yet (still resolving the transport): the fetch alone still
+        // brings the mirror forward.
+        else if (runtime.sequencer) void resync(runtime.sequencer.seq).catch(() => undefined);
+      },
+
       leave() {
         const session = get().session;
         runtime.attaching = null;

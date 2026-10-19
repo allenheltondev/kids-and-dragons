@@ -1,0 +1,49 @@
+/* The shared screen's own corner: a quiet button, and the report it opens (#264). */
+.kad-about {
+  position: fixed;
+  /* Top left: the bottom corners are the host's controls and the frame meter,
+     the top right is the device's own corner row. */
+  inset-block-start: 0.5em;
+  inset-inline-start: 0.5em;
+  z-index: 20;
+  max-inline-size: min(34em, 94vw);
+  font-size: 0.9rem;
+}
+.kad-about__open {
+  padding: 0.35em 0.8em;
+  border: 0;
+  border-radius: 999px;
+  background: var(--kad-bg-raised);
+  color: var(--kad-ink-dim);
+  font: inherit;
+  opacity: 0.45;
+  cursor: pointer;
+}
+.kad-about__open:hover,
+.kad-about__open:focus-visible { opacity: 1; }
+.kad-about__panel {
+  padding: 1em 1.2em;
+  border-radius: var(--kad-radius-md, 0.5rem);
+  background: var(--kad-bg-raised);
+  color: var(--kad-ink);
+  box-shadow: 0 0.5em 2em rgb(0 0 0 / 0.4);
+}
+.kad-about__panel h2 { margin: 0 0 0.5em; font-size: 1.1em; }
+.kad-about__panel ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.4em; }
+.kad-about__panel li { display: grid; grid-template-columns: 9em 3em 1fr; gap: 0 0.6em; align-items: baseline; }
+.kad-about__panel li[data-ok="false"] span { color: var(--kad-ink-dim); }
+.kad-about__panel small { color: var(--kad-ink-dim); }
+.kad-about__device { margin: 0.8em 0; color: var(--kad-ink-dim); font-size: 0.75em; word-break: break-word; }
+.kad-about__panel button { font: inherit; padding: 0.3em 0.9em; }
+
+/* The shared screen's one clear ask for sound: top centre, where a room looks first. */
+.kad-tap-for-sound {
+  position: fixed;
+  inset-block-start: calc(var(--kad-safe-top, 0px) + 0.75rem);
+  inset-inline: 0;
+  z-index: 30;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.kad-tap-for-sound > * { pointer-events: auto; }

@@ -95,12 +95,17 @@
   color: var(--color-text-muted, #b9b0d8);
 }
 
-.lobby__qr-hint {
+/* The join step: a whole row of its own under the code and the QR, so its length never squeezes either. */
+.lobby__join-step {
+  flex: 1 1 100%;
   display: flex;
   align-items: center;
-  gap: var(--space-2, 0.5em);
+  justify-content: center;
+  gap: var(--space-3, 0.75em);
   margin: 0;
-  font-size: var(--font-size-sm, 0.875em);
+  font-size: var(--font-size-lg, 1.15em);
+  font-weight: 700;
+  text-align: start;
 }
 
 /* Compact: everything on one line, sized so three party rows still fit the
@@ -127,8 +132,11 @@
   block-size: 3.6em;
 }
 
-.lobby__join--compact .lobby__qr-hint {
-  display: none;
+/* Still said once the room starts to fill, because the next kid at the table needs it as much as the first,
+   but small, and on a row under the strip, so three party rows still fit. */
+.lobby__join--compact { flex-wrap: wrap; }
+.lobby__join--compact .lobby__join-step {
+  font-size: var(--font-size-sm, 0.875em);
 }
 
 .lobby__party {

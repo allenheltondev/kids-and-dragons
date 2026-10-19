@@ -67,18 +67,22 @@ async function expectApart(controls: { name: string; locator: Locator }[]): Prom
   }
 }
 
-/** The corner row's controls. A phone that has joined a Party Mode room has no sound control: the TV is the speaker. */
-function corner(page: Page, sound = true): { name: string; locator: Locator }[] {
+/**
+ * The corner row's controls. A phone that has joined a Party Mode room has no sound control: the TV is the
+ * speaker. Help (#256) is on the phones in a room, and nowhere else: not the TV, not the join screen.
+ */
+function corner(page: Page, sound = true, help = false): { name: string; locator: Locator }[] {
   return [
+    ...(help ? [{ name: "Help", locator: page.getByRole("button", { name: "Help", exact: true }) }] : []),
     { name: "Display settings", locator: page.getByRole("button", { name: "Display settings" }).first() },
     { name: "Read-aloud", locator: page.getByRole("button", { name: /turn read-aloud/i }) },
     ...(sound ? [{ name: "Sound", locator: page.getByRole("button", { name: /turn sound/i }) }] : []),
   ];
 }
 
-async function expectCornerClear(page: Page, sound = true): Promise<void> {
-  for (const { name, locator } of corner(page, sound)) await expectTappable(page, locator, name);
-  await expectApart(corner(page, sound));
+async function expectCornerClear(page: Page, sound = true, help = false): Promise<void> {
+  for (const { name, locator } of corner(page, sound, help)) await expectTappable(page, locator, name);
+  await expectApart(corner(page, sound, help));
 }
 
 async function expectNoSideScroll(page: Page): Promise<void> {
@@ -112,6 +116,24 @@ async function expectDiceInside(page: Page): Promise<void> {
   expect(box.y, "dice card inside the top edge").toBeGreaterThanOrEqual(-0.5);
   expect(box.x + box.width, "dice card inside the right edge").toBeLessThanOrEqual(viewport.width + 0.5);
   expect(box.y + box.height, "dice card inside the bottom edge").toBeLessThanOrEqual(viewport.height + 0.5);
+}
+
+/** The help sheet: the words for the screen that is up, both buttons reachable, and it closes. */
+async function useHelpSheet(page: Page, words: RegExp): Promise<void> {
+  await page.getByRole("button", { name: "Help", exact: true }).click(TAP);
+  const sheet = page.getByRole("dialog", { name: "Help" });
+  await expect(sheet).toBeVisible(TAP);
+  await expect(sheet).toContainText(words);
+  const viewport = page.viewportSize()!;
+  const box = (await sheet.boundingBox())!;
+  expect(box.x, "the help sheet sits inside the left edge").toBeGreaterThanOrEqual(-0.5);
+  expect(box.y, "the help sheet sits inside the top edge").toBeGreaterThanOrEqual(-0.5);
+  expect(box.x + box.width, "the help sheet sits inside the right edge").toBeLessThanOrEqual(viewport.width + 0.5);
+  expect(box.y + box.height, "the help sheet sits inside the screen").toBeLessThanOrEqual(viewport.height + 0.5);
+  await expectTappable(page, sheet.getByRole("button", { name: "Hear it again" }), "help: Hear it again");
+  await expectTappable(page, sheet.getByRole("button", { name: "Got it" }), "help: Got it");
+  await sheet.getByRole("button", { name: "Got it" }).click(TAP);
+  await expect(sheet).toHaveCount(0);
 }
 
 /** The settings sheet: every option reachable, and the choices land on <html>. */
@@ -185,7 +207,7 @@ for (const hand of ["right", "left"] as const) {
     const tabs = page.getByRole("navigation", { name: "What to look at" });
     const tray = (await tabs.boundingBox())!;
     expect(settingsBox.y, "the corner row is under the tray, not on it").toBeGreaterThanOrEqual(tray.y + tray.height - 1);
-    await expectCornerClear(page);
+    await expectCornerClear(page, true, true);
 
     // The phone player panel.
     await openPlayerTask(page);
@@ -204,7 +226,7 @@ for (const hand of ["right", "left"] as const) {
       await expectTappable(page, tabs.getByRole("button", { name: new RegExp(`^${name}$`) }), `${name} tab`);
     }
     await expectApart([
-      ...corner(page),
+      ...corner(page, true, true),
       { name: "tray", locator: tabs },
       { name: "Do it", locator: commit },
     ]);
@@ -218,9 +240,9 @@ for (const hand of ["right", "left"] as const) {
     await page.getByRole("button", { name: "Closer", exact: true }).click(TAP);
     await expectTappable(page, page.getByRole("button", { name: "Further away", exact: true }), "Further away");
     await expectTappable(page, page.getByRole("button", { name: "Story trail", exact: true }), "Story trail");
-    await expectCornerClear(page);
+    await expectCornerClear(page, true, true);
     await expectApart([
-      ...corner(page),
+      ...corner(page, true, true),
       { name: "Closer", locator: page.getByRole("button", { name: "Closer", exact: true }) },
       { name: "Further away", locator: page.getByRole("button", { name: "Further away", exact: true }) },
     ]);
@@ -228,6 +250,10 @@ for (const hand of ["right", "left"] as const) {
 
     // The settings sheet, from the corner.
     await useSettingsSheet(page);
+
+    // Help (#256): the "?" opens a sheet that names this screen, its buttons are reachable at the largest
+    // text, and it reads the Map's words because the Map is what is up.
+    await useHelpSheet(page, /This is the map/);
 
     await tabs.getByRole("button", { name: /^You$/ }).click(TAP);
     // The settings are also reachable from the bottom of the You tab (Room settings), without
@@ -295,8 +321,8 @@ test("Party Mode: the TV and a left-handed phone at the largest text", async ({ 
     await phone.locator(".prompt .choice").filter({ hasText: /look for a gap/i }).click(TAP);
     const commit = phone.locator(".confirm__actions .kad-button--primary");
     await expectTappable(phone, commit, "Do it");
-    await expectCornerClear(phone, false);
-    await expectApart([...corner(phone, false), { name: "Do it", locator: commit }]);
+    await expectCornerClear(phone, false, true);
+    await expectApart([...corner(phone, false, true), { name: "Do it", locator: commit }]);
     await commit.click(TAP);
 
     // The roll prompt, and then the roll itself on the phone and on the TV: inside the screen,
