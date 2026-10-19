@@ -18,7 +18,9 @@ import type {
   ItemCatalog,
   JoinRoomRequest,
   JoinRoomResponse,
+  FlairChoice,
   JournalResponse,
+  KidProfileView,
   OrganizerDevicesResponse,
   OrganizerHouseholdsResponse,
   OrganizerHouseholdSummary,
@@ -233,6 +235,14 @@ export interface Api {
    * session: there is no room.
    */
   loadJournal(deviceToken: string): Promise<JournalResponse>;
+  /** The same book, for a kid seated in a room without a device token of her own: a family tablet's pick (#299). */
+  loadJournalAsSeat(sessionToken: string): Promise<JournalResponse>;
+  /**
+   * Save what a kid picked for her own page (#299), replacing what she had.
+   * The device token names her; the server answers with her page as saved.
+   */
+  saveFlair(choice: FlairChoice, deviceToken: string): Promise<KidProfileView>;
+  saveFlairAsSeat(choice: FlairChoice, sessionToken: string): Promise<KidProfileView>;
   loadRules(): Promise<RulesContent>;
   loadItems(): Promise<ItemCatalog>;
   loadCampaign(id: string): Promise<Campaign>;
@@ -532,6 +542,27 @@ export const api: Api = {
 
   loadJournal(deviceToken) {
     return request<JournalResponse>("/api/journal", { headers: { "x-kad-device-token": deviceToken } });
+  },
+
+  loadJournalAsSeat(sessionToken) {
+    return request<JournalResponse>("/api/journal", { token: sessionToken });
+  },
+
+  saveFlairAsSeat(choice, sessionToken) {
+    return request<KidProfileView>("/api/profile/flair", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: sessionToken,
+      body: JSON.stringify(choice),
+    });
+  },
+
+  saveFlair(choice, deviceToken) {
+    return request<KidProfileView>("/api/profile/flair", {
+      method: "POST",
+      headers: { ...JSON_HEADERS, "x-kad-device-token": deviceToken },
+      body: JSON.stringify(choice),
+    });
   },
 
   fetchState(query, token, timeoutMs) {

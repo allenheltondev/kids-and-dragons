@@ -23,6 +23,12 @@ export interface StoredThing {
   rows: readonly string[];
   /** The same rows, as the stores tag them (`entity`). */
   entities: readonly string[];
+  /**
+   * For a row whose fields the page describes one by one (the kid's profile,
+   * #299): every field of its type. `what-we-store.test.ts` reads the type, so
+   * a field added to it and not described here fails the build.
+   */
+  fields?: Readonly<Record<string, string>>;
 }
 
 export const OWNER_LABEL: Record<Owner, string> = {
@@ -41,11 +47,20 @@ export const STORED: readonly StoredThing[] = [
   {
     title: "Each kid",
     what:
-      "A nickname, a color and an avatar, and when they last played. No real name, email, birthday, photo or contact detail is asked for, and no kid ever has a login or a password.",
+      "A nickname, a color and an avatar, and when they last played. If a kid chooses to dress up her own page, which she opens from her own phone, that is kept too: a color, a frame for each hero and a title, all picked from a short list, never typed or uploaded. No real name, email, birthday, photo or contact detail is asked for, and no kid ever has a login or a password.",
     kept: UNTIL_DELETED,
     owner: "kid",
     rows: ["Player profile"],
     entities: ["player"],
+    fields: {
+      id: "A random id.",
+      householdId: "Which household she calls home.",
+      displayName: "Her nickname.",
+      color: "The color her seat shows at a table.",
+      avatar: "Her picture from a short list.",
+      retired: "That a grown-up took her off the picker.",
+      flair: "What she picked for her own page: a color, a frame for each hero, a title. Shown only to her own household and her own devices, never at a table.",
+    },
   },
   {
     title: "Each hero",
@@ -158,7 +173,7 @@ export const ELSEWHERE: readonly { title: string; what: string }[] = [
 
 /** What deleting does, in the order a grown-up would ask. */
 export const DELETING: readonly string[] = [
-  "Deleting a kid removes her profile, her heroes and her phones. Other households' saved games and Field Guides keep their story, and call her \"a friend\" instead.",
+  "Deleting a kid removes her profile, with the colors, frames and title she picked for her page, her heroes and her phones. Other households' saved games and Field Guides keep their story, and call her \"a friend\" instead.",
   "Deleting a household removes everything in it: its kids, their heroes, its devices, its Field Guide and its saved games. A kid visiting from another household keeps her hero; it lives at her home.",
   "A hero in the middle of an adventure is deleted too. The table she was playing at carries on without her.",
   "Any grown-up who runs a group can delete one of its kids. The whole group can be deleted only by the last grown-up left in it.",
