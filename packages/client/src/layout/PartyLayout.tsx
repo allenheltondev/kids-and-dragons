@@ -26,6 +26,7 @@ import { ModeSwitch } from "./ModeSwitch";
 import { TrayObject } from "../screens/TrayObjects";
 import { RiftlightIndicator } from "../screens/RiftSight";
 import { GuideTab } from "./GuideTab";
+import { BookTab } from "./BookTab";
 import { useMyTurnKey } from "../store";
 
 export interface PartyLayoutProps {
@@ -110,6 +111,7 @@ function PhoneLayout(): React.JSX.Element {
           <span className="kad-tray__label">Map</span>
         </button>
         <GuideTab on={inGuide} onShowPlayer={() => setShowing("player")} />
+        <BookTab />
       </nav>
 
       {/* `hidden` rather than unmounted, like the Travel panes: a selection

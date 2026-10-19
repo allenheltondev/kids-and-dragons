@@ -26,6 +26,7 @@ import { navigate } from "../router";
 import { useGameStore, useItems, useWorld } from "../store";
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { setJournalFinders } from "../store/journal-finders";
+import { loadPlayerDeviceToken } from "../store/persistence";
 import { selectGuideEntry } from "../store/player-navigation";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
@@ -131,7 +132,11 @@ export function JournalScreen(): ReactElement {
     };
   }, [fresh, journal]);
 
-  const play = useCallback(() => navigate({ name: "home" }), []);
+  // Back to the game she is seated in, if a family tablet seated her; home for a phone (#299).
+  const play = useCallback(() => {
+    const seat = useGameStore.getState().session;
+    navigate(seat?.playerId && loadPlayerDeviceToken() === null ? { name: "player", code: seat.roomCode } : { name: "home" });
+  }, []);
 
   if (load.status !== "ready") {
     return (
