@@ -81,10 +81,28 @@ combat or damage. Pause chapters award zero. A three-person party starting at on
 its health. Contextual assistance lowers an existing check from TN 12 to TN 8; no class is
 required and the best roller need not supply the enabling ability.
 
-The five-node pacing report includes the new shortest paths: about 34 and 33 minutes in the
+The five-node pacing report includes the new shortest paths: about 34 and 34 minutes in the
 uncalibrated default model, about 25 in a brisk-table sensitivity. Both have 14 decisions;
 the valley has seven checks and the room six. These are planning estimates, never family
 observations. The production pacing gate remains open.
+
+The reading-room investigation now retains consequences beyond its immediate response.
+Splitting observers unlocks an easier comparison; successful ridge and rock methods retain
+different evidence for a later citation. A failed comparison leaves a genuine blank. Players
+may ask the elder to co-read and sign her contribution, which unlocks an easier catalog test,
+or retain an account that explicitly states its limits.
+
+A successful catalog test permits a public visitor guide; a failed test permits only a
+staff-guided copy. Both require the party's permission. The newcomer lesson and final keeper
+reaction refer to the resulting record, while private notes remain private. Paths knowledge
+is still available on every route; it does not erase differences in evidence or record utility.
+
+`riftlight-reading-consequences.test.ts` plays four complete routes through the engine:
+prepared ridge evidence published, rock evidence kept private, failed evidence co-signed and
+filed with staff help, and failed evidence kept private without a false citation. These are
+automated route validations, not observed family sessions. The refreshed static model gives
+the room a typical 35.6 minutes, but neither that estimate nor a decision count establishes
+engagement or actual duration. A timed family playthrough remains required.
 
 Existing `ice-shelf-headwaters` and `reading-room` illustrations are establishing backdrops;
 the changing course and moving memory view are read aloud, not claimed as literal diagrams

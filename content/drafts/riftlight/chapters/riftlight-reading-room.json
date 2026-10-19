@@ -35,6 +35,43 @@
           },
           "text": "Your account records the supported low-shelf crossing and its withdrawal before the water returned. The elder keeps the crossing sequence beside the memory notes."
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "memory_split_observers",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "memory_independent_reading",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "memory_rock_sequence",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "memory_keeper_endorsed",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "memory_account_cited",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "memory_catalog_clear",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "memory_guide_published",
+          "value": false
+        }
       ]
     },
     "quiet_rule": {
@@ -450,13 +487,20 @@
     },
     "first_memory_1": {
       "type": "story",
-      "narration": "One friend follows the water while another keeps the two ridges in view. Pip records only after both have finished speaking. The elder waits through the silence between their accounts. The river's direction and the surrounding shapes can now be compared without one observer choosing everything.",
+      "narration": "You ask Pip to keep the ridges in view while your party follows the water. The elder lets each observer finish before anyone compares accounts. Pip notes your words beside his own, including where each of you stood. Nobody gets to change an account just to make the sketches match.",
       "choices": [
         {
           "id": "continue",
           "label": "See what follows",
           "icon": "hand",
-          "goto": "second_view"
+          "goto": "second_view",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "memory_split_observers",
+              "value": true
+            }
+          ]
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -469,7 +513,14 @@
           "id": "continue",
           "label": "See what follows",
           "icon": "hand",
-          "goto": "second_view"
+          "goto": "second_view",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "memory_split_observers",
+              "value": false
+            }
+          ]
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -489,6 +540,15 @@
           "label": "Trace the passage past three visible rocks",
           "icon": "hand",
           "goto": "second_view_2"
+        },
+        {
+          "id": "compare_notes",
+          "label": "Compare the two observers' separate notes",
+          "icon": "hand",
+          "goto": "second_view_prepared",
+          "when": {
+            "flag": "memory_split_observers"
+          }
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -522,7 +582,7 @@
     },
     "second_view_1_done": {
       "type": "story",
-      "narration": "Both viewpoints give the same direction between the familiar ridges. A reflection changes the brightness, but not the order of the rocks or the way the river leaves the valley. Your party has checked a local match without turning it into a complete ancient history.",
+      "narration": "The two ridge profiles agree from both safe viewpoints. Holding the sketch upright makes the reflection slide away from their fixed edges. Your own observers can point to the match without the elder choosing the bend for them. Pip marks the two places you stood, leaving the memory's age and cause blank.",
       "choices": [
         {
           "id": "continue",
@@ -531,11 +591,28 @@
           "goto": "what_matches"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "memory_split_observers",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "memory_independent_reading",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "memory_rock_sequence",
+          "value": false
+        }
+      ]
     },
     "second_view_1_changed": {
       "type": "story",
-      "narration": "The reflection hides the middle bend on your first check. You leave that part blank instead of drawing through it. The elder shows a side view that reveals the same rocks without the glare. Your corrected record keeps the confirmed direction and marks the bend you could not see.",
+      "narration": "The reflection hides the middle bend. Your party leaves it blank. With the elder's side view you can see the river leave by the other valley, but you did not independently check the obscured part. She offers to co-read the account if you want to cite that direction. Pip keeps the difference between your observations and her help visible.",
       "choices": [
         {
           "id": "continue",
@@ -544,7 +621,24 @@
           "goto": "what_matches"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "memory_split_observers",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "memory_independent_reading",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "memory_rock_sequence",
+          "value": false
+        }
+      ]
     },
     "second_view_2": {
       "type": "story",
@@ -575,7 +669,7 @@
     },
     "second_view_2_done": {
       "type": "story",
-      "narration": "Both viewpoints give the same direction between the familiar ridges. A reflection changes the brightness, but not the order of the rocks or the way the river leaves the valley. Your party has checked a local match without turning it into a complete ancient history.",
+      "narration": "Your observers record the three rocks in order as the remembered water passes them. The same sequence appears from the second viewpoint, while a reflection moves the other way. Pip numbers the observation positions on your sketch, not the years. Your party can cite a checked sequence rather than just a matching silhouette.",
       "choices": [
         {
           "id": "continue",
@@ -584,11 +678,28 @@
           "goto": "what_matches"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "memory_split_observers",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "memory_independent_reading",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "memory_rock_sequence",
+          "value": true
+        }
+      ]
     },
     "second_view_2_changed": {
       "type": "story",
-      "narration": "The reflection hides the middle bend on your first check. You leave that part blank instead of drawing through it. The elder shows a side view that reveals the same rocks without the glare. Your corrected record keeps the confirmed direction and marks the bend you could not see.",
+      "narration": "The reflection hides the middle bend. Your party leaves it blank. With the elder's side view you can see the river leave by the other valley, but you did not independently check the obscured part. She offers to co-read the account if you want to cite that direction. Pip keeps the difference between your observations and her help visible.",
       "choices": [
         {
           "id": "continue",
@@ -597,7 +708,24 @@
           "goto": "what_matches"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "memory_split_observers",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "memory_independent_reading",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "memory_rock_sequence",
+          "value": false
+        }
+      ]
     },
     "what_matches": {
       "type": "choice_point",
@@ -605,31 +733,87 @@
       "choices": [
         {
           "id": "option_1",
-          "label": "Lead with the matching ridges and different river course",
+          "label": "Cite the direction your own observers checked",
           "icon": "hand",
-          "goto": "what_matches_1"
+          "goto": "what_matches_1",
+          "when": {
+            "flag": "memory_independent_reading"
+          }
         },
         {
           "id": "option_2",
           "label": "Lead with the limits of the match",
           "icon": "hand",
           "goto": "what_matches_2"
+        },
+        {
+          "id": "keeper",
+          "label": "Ask the elder to co-read and sign the direction",
+          "icon": "hand",
+          "goto": "what_matches_keeper"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "memory_keeper_endorsed",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "memory_account_cited",
+          "value": false
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "memory_independent_reading"
+          },
+          "text": "The elder waits for your observers to choose whether to put their own checked direction in the account."
+        },
+        {
+          "when": {
+            "notFlag": "memory_independent_reading"
+          },
+          "text": "Your middle bend is still blank. The elder can sign a co-reading, or you can keep the account limited to the visible landmarks."
+        }
+      ]
     },
     "what_matches_1": {
       "type": "story",
-      "narration": "You state that the ridges can be matched and the water leaves by the other valley in both observations. Below it you leave the age and cause open. The elder repeats the sentence slowly, giving every hero room to object before it enters the reading-room record.",
+      "narration": "You place the independently checked direction in the account, with the age and cause left open. The elder asks the observers to point out their evidence before she lets Pip copy the sentence. They can show how they checked it, rather than asking the next reader to trust a confident voice.",
       "choices": [
         {
           "id": "continue",
           "label": "See what follows",
           "icon": "hand",
-          "goto": "catalog_test"
+          "goto": "catalog_test",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "memory_account_cited",
+              "value": true
+            }
+          ]
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "variants": [
+        {
+          "when": {
+            "flag": "memory_rock_sequence"
+          },
+          "text": "Your three-rock sequence is the evidence you cite. Pip keeps the order of the rocks beside the direction."
+        },
+        {
+          "when": {
+            "notFlag": "memory_rock_sequence"
+          },
+          "text": "Your two ridge profiles and standing positions are the evidence you cite. Pip keeps both viewpoints beside the direction."
+        }
+      ]
     },
     "what_matches_2": {
       "type": "story",
@@ -659,9 +843,39 @@
           "label": "Begin with a visitor asking about the old river view",
           "icon": "hand",
           "goto": "catalog_test_2"
+        },
+        {
+          "id": "endorsed",
+          "label": "Use the elder's signed cross-reference",
+          "icon": "hand",
+          "goto": "catalog_endorsed",
+          "when": {
+            "flag": "memory_keeper_endorsed"
+          }
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "variants": [
+        {
+          "when": {
+            "flag": "memory_account_cited",
+            "notFlag": "memory_rock_sequence"
+          },
+          "text": "The younger keeper must be able to find both of your standing positions from the ridge-profile account."
+        },
+        {
+          "when": {
+            "flag": "memory_account_cited"
+          },
+          "text": "She is testing whether another reader can reach your cited evidence without your party pointing to it."
+        },
+        {
+          "when": {
+            "flag": "memory_keeper_endorsed"
+          },
+          "text": "The elder supplies her signed cross-reference for the co-reading. You may use it to make the keeper's first filing test easier."
+        }
+      ]
     },
     "catalog_test_1": {
       "type": "story",
@@ -692,7 +906,7 @@
     },
     "catalog_test_1_done": {
       "type": "story",
-      "narration": "The keeper follows the reference to both accounts and can explain which is outside and which is remembered. The elder keeps that filing path, with the memory still undated. Your party has made the clue available to someone who does not already know the answer.",
+      "narration": "The younger keeper follows the cards to both accounts without a keeper guiding her. She can distinguish the outside crossing from the undated memory and point to the evidence the account names. She offers to post a visitor guide if your party wants to share one. A later reader could follow this route without waiting for a keeper.",
       "choices": [
         {
           "id": "continue",
@@ -701,11 +915,18 @@
           "goto": "sliding_tray"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "memory_catalog_clear",
+          "value": true
+        }
+      ]
     },
     "catalog_test_1_changed": {
       "type": "story",
-      "narration": "The keeper arrives at the inspection order and mistakes it for a river date. You stop the test and change the label together. On the next reading she reaches both accounts without that extra claim. The elder keeps the crossed-out label as a reminder of the error.",
+      "narration": "The younger keeper mistakes the inspection order for the river's age. You correct the label together, but she still needs the elder to show where the account meets the ice. \"I will sit with the next reader,\" she says. A shared copy can be kept under a keeper's guidance; a guide for visitors to use alone needs another independent test.",
       "choices": [
         {
           "id": "continue",
@@ -714,7 +935,14 @@
           "goto": "sliding_tray"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "memory_catalog_clear",
+          "value": false
+        }
+      ]
     },
     "catalog_test_2": {
       "type": "story",
@@ -745,7 +973,7 @@
     },
     "catalog_test_2_done": {
       "type": "story",
-      "narration": "The keeper follows the reference to both accounts and can explain which is outside and which is remembered. The elder keeps that filing path, with the memory still undated. Your party has made the clue available to someone who does not already know the answer.",
+      "narration": "The younger keeper follows the cards to both accounts without a keeper guiding her. She can distinguish the outside crossing from the undated memory and point to the evidence the account names. She offers to post a visitor guide if your party wants to share one. A later reader could follow this route without waiting for a keeper.",
       "choices": [
         {
           "id": "continue",
@@ -754,11 +982,18 @@
           "goto": "sliding_tray"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "memory_catalog_clear",
+          "value": true
+        }
+      ]
     },
     "catalog_test_2_changed": {
       "type": "story",
-      "narration": "The keeper arrives at the inspection order and mistakes it for a river date. You stop the test and change the label together. On the next reading she reaches both accounts without that extra claim. The elder keeps the crossed-out label as a reminder of the error.",
+      "narration": "The younger keeper mistakes the inspection order for the river's age. You correct the label together, but she still needs the elder to show where the account meets the ice. \"I will sit with the next reader,\" she says. A shared copy can be kept under a keeper's guidance; a guide for visitors to use alone needs another independent test.",
       "choices": [
         {
           "id": "continue",
@@ -767,7 +1002,14 @@
           "goto": "sliding_tray"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "memory_catalog_clear",
+          "value": false
+        }
+      ]
     },
     "sliding_tray": {
       "type": "choice_point",
@@ -1017,9 +1259,48 @@
           "label": "Keep the party's page without adding it to the catalog",
           "icon": "hand",
           "goto": "record_choice_2"
+        },
+        {
+          "id": "publish",
+          "label": "Publish the independently tested visitor guide",
+          "icon": "hand",
+          "goto": "record_publish",
+          "when": {
+            "flag": "memory_catalog_clear"
+          }
+        },
+        {
+          "id": "staff_copy",
+          "label": "Leave a keeper-guided copy with its limits marked",
+          "icon": "hand",
+          "goto": "record_staff_copy",
+          "when": {
+            "notFlag": "memory_catalog_clear"
+          }
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "memory_guide_published",
+          "value": false
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "memory_catalog_clear"
+          },
+          "text": "Your filing path passed an independent test. You may also publish a guide that lets visitors find the view without waiting for a keeper."
+        },
+        {
+          "when": {
+            "notFlag": "memory_catalog_clear"
+          },
+          "text": "The corrected filing path still needs a keeper. If you share a copy, the younger keeper will guide its next reader; it will not be posted as a guide for use alone."
+        }
+      ]
     },
     "record_choice_1": {
       "type": "story",
@@ -1078,7 +1359,34 @@
           "goto": "teach_back_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "variants": [
+        {
+          "when": {
+            "flag": "memory_guide_published"
+          },
+          "text": "The newcomer finds your posted guide and reaches the safe standing mark before the keeper needs to lead them. The younger keeper lets your party see that it works for someone new."
+        },
+        {
+          "when": {
+            "flag": "memory_notes_shared",
+            "notFlag": "memory_catalog_clear"
+          },
+          "text": "The younger keeper brings the newcomer from her seat with the assisted copy. Your earlier filing difficulty is now part of her instructions, not silently erased."
+        },
+        {
+          "when": {
+            "notFlag": "memory_notes_shared"
+          },
+          "text": "Your private account stays with your party. The elder uses the room's own observations for the newcomer and asks you only to demonstrate a safe way to look."
+        },
+        {
+          "when": {
+            "flag": "memory_account_cited"
+          },
+          "text": "Pip asks the newcomer to find the evidence your observers cited before accepting the direction. Your party's own check remains visible in the lesson."
+        }
+      ]
     },
     "teach_back_1": {
       "type": "story",
@@ -1199,7 +1507,28 @@
           "value": true
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "variants": [
+        {
+          "when": {
+            "flag": "memory_guide_published"
+          },
+          "text": "Behind you, the posted guide lets another visitor find the memory without waiting for a keeper. The younger keeper credits your party for the usable route."
+        },
+        {
+          "when": {
+            "flag": "memory_notes_shared",
+            "notFlag": "memory_guide_published"
+          },
+          "text": "The keeper keeps the copy you chose to share. It remains an account for discussion, not a posted guide claiming that a reader can work alone."
+        },
+        {
+          "when": {
+            "notFlag": "memory_notes_shared"
+          },
+          "text": "No copy of your private account is filed. The elder accepts your decision and keeps her own observations separate."
+        }
+      ]
     },
     "quiet_rule_assisted": {
       "type": "story",
@@ -1254,6 +1583,144 @@
         "goto": "sliding_tray_1_changed"
       },
       "art": "scenes/riftlight/reading-room"
+    },
+    "second_view_prepared": {
+      "type": "story",
+      "narration": "Your two observers open their separate accounts. One followed the water; the other kept the ridges fixed. You compare the accounts before Pip lays the outside sketch beside them. The elder asks the observers to point out their own positions. A prepared comparison can challenge the reflection without asking one witness to remember everything.",
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue with this result",
+          "icon": "hand",
+          "goto": "second_view_prepared_check"
+        }
+      ]
+    },
+    "second_view_prepared_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "roller": "party",
+      "prompt": "Use the two independent accounts to check the reflected river view.",
+      "onSuccess": {
+        "goto": "second_view_1_done"
+      },
+      "onFailure": {
+        "goto": "second_view_1_changed"
+      },
+      "art": "scenes/riftlight/reading-room"
+    },
+    "what_matches_keeper": {
+      "type": "story",
+      "narration": "You ask the elder to co-read the direction and put her name beside it. She follows the visible course from a clear side view, then signs only that part of the account. Your own observations stay separately marked. A later reader can ask the keeper about her contribution rather than treating either a respected name or your party's confidence as the whole proof.",
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue with this result",
+          "icon": "hand",
+          "goto": "catalog_test",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "memory_keeper_endorsed",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "notFlag": "memory_independent_reading"
+          },
+          "text": "Your middle bend remains blank; the signed direction comes from the elder's side view, not an observation you secretly completed."
+        },
+        {
+          "when": {
+            "flag": "memory_independent_reading"
+          },
+          "text": "Although your independent check succeeded, you choose to make this a co-reading. Your own evidence is retained, and the keeper takes responsibility for her separate contribution."
+        }
+      ]
+    },
+    "catalog_endorsed": {
+      "type": "story",
+      "narration": "You give the younger keeper the elder's signed reference and ask her to follow it before anyone adds instructions. The signature identifies the co-reader; it does not supply a date. Your party can test whether the reference leads to the view and its limits, rather than treating a respected name as an answer.",
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue with this result",
+          "icon": "hand",
+          "goto": "catalog_endorsed_check"
+        }
+      ]
+    },
+    "catalog_endorsed_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "roller": "party",
+      "prompt": "Test the signed cross-reference without guiding the new reader.",
+      "onSuccess": {
+        "goto": "catalog_test_1_done"
+      },
+      "onFailure": {
+        "goto": "catalog_test_1_changed"
+      },
+      "art": "scenes/riftlight/reading-room"
+    },
+    "record_publish": {
+      "type": "story",
+      "narration": "You give permission to post the checked account and its route through the catalog. Pip copies the limits beside the view, not on a separate sheet someone might miss. The younger keeper puts the guide where arriving visitors can find it. Your party has changed how the next reader can use the room, without handing out a complete history.",
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue with this result",
+          "icon": "hand",
+          "goto": "teach_back",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "memory_notes_shared",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "memory_guide_published",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "record_staff_copy": {
+      "type": "story",
+      "narration": "You leave a copy that clearly marks where a keeper must help. The younger keeper puts it beside her seat instead of posting it as a self-service guide. She agrees to explain the corrected date label to the next visitor. Your party has chosen a useful assisted record rather than hiding the failed test.",
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue with this result",
+          "icon": "hand",
+          "goto": "teach_back",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "memory_notes_shared",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "memory_guide_published",
+              "value": false
+            }
+          ]
+        }
+      ]
     }
   },
   "llmHints": {
