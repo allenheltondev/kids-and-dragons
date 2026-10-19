@@ -1,0 +1,77 @@
+{
+  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "id": "riftlight-frostfang-shore",
+  "campaignId": "riftlight-opening-preview",
+  "index": 4,
+  "title": "A Way Back Uphill",
+  "biome": "frostfang_peaks",
+  "music": "riftlight-paths",
+  "estimatedMinutes": 8,
+  "xpAward": 140,
+  "entry": "bank",
+  "scenes": {
+    "bank": {
+      "type": "story",
+      "narration": "You are on the east bank under Frostfang, close enough to see the broken shelf above. A griffin on a low ridge has watched your party climb out. \"The river is not the usual path,\" she calls. \"Are all of you here?\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Show her everyone is safe",
+          "icon": "hand",
+          "goto": "help"
+        }
+      ]
+    },
+    "help": {
+      "type": "choice_point",
+      "narration": "The griffin lowers a rope ladder onto the bank. You can climb straight toward the cairned pass, or first help her move its bottom rung clear of the rising water.",
+      "choices": [
+        {
+          "id": "climb",
+          "label": "Climb toward the pass",
+          "icon": "hand",
+          "goto": "climb"
+        },
+        {
+          "id": "help",
+          "label": "Move the ladder to firmer ground",
+          "icon": "hand",
+          "goto": "ladder"
+        }
+      ]
+    },
+    "ladder": {
+      "type": "story",
+      "narration": "You shift the bottom rung onto a dry rock. The griffin braces the top until the last friend is off the bank. \"Better for the next travelers too,\" she says.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "climb"
+        }
+      ]
+    },
+    "climb": {
+      "type": "rest",
+      "narration": "At the top of the ladder, the path turns toward the Cairnstep. You can reach the griffins without attempting the shelf again. Your rope and packs are still with you.",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success"
+    }
+  },
+  "llmHints": {
+    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
+    "forbidden": [
+      "death",
+      "gore",
+      "Corvane",
+      "emperor",
+      "Pangea",
+      "Hollow Gate",
+      "Legend Dragon"
+    ],
+    "npcVoices": {}
+  }
+}

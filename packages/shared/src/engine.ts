@@ -454,7 +454,7 @@ function applyEffectsDraft(
 
       case "damage":
         for (const m of targetsFor(draft, effect.to, rollerCharacterId)) {
-          damage(m, effect.amount);
+          damage(m, effect.nonlethal ? Math.min(effect.amount, Math.max(0, m.hp - 1)) : effect.amount);
         }
         break;
 
