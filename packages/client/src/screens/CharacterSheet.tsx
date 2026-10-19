@@ -160,7 +160,14 @@ export function CharacterSheet({ member, isMe, items, explore = false }: Charact
             <Icon name={character.species} />
             <span className="sheetview__word">{character.species}</span>
             <Icon name={character.class} />
-            <span className="sheetview__word">{character.class}</span>
+            {/*
+             * "Starweaver Apprentice" (spec §4.3): the worn class and its
+             * distinction. No rank yet reads as the class alone, and so does a
+             * snapshot resolved before ranks existed.
+             */}
+            <span className="sheetview__word">
+              {character.rank && character.rank !== "none" ? `${character.class} ${character.rank}` : character.class}
+            </span>
           </p>
           <p className="sheetview__level">
             <Icon name="levelup" />

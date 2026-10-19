@@ -26,10 +26,13 @@
  * to a phone.
  */
 
-import { STAT_IDS, TIER_IDS } from "./types/domain.js";
+import { CLASS_RANKS, STAT_IDS, TIER_IDS } from "./types/domain.js";
 import type {
   Character,
   CharacterProgress,
+  ClassId,
+  ClassMastery,
+  ClassRank,
   FinishedCampaign,
   InventoryEntry,
   ProvisionalProgress,
@@ -43,7 +46,7 @@ import type {
  * commit — a bump without a step is a silent no-op migration, which is the one
  * failure this whole mechanism cannot detect.
  */
-export const CHARACTER_VERSION = 4;
+export const CHARACTER_VERSION = 5;
 
 /** Thrown for a stored row that cannot be repaired into a playable character. */
 export class StoredCharacterError extends Error {
@@ -101,7 +104,75 @@ const STEPS: Record<number, Step> = {
    * away and offer her the practice again.
    */
   3: (raw) => raw,
+  /*
+   * v4 → v5. Class mastery (#308, docs/class-mastery.md §5). The class moves
+   * on the phone come from the worn class's rank, not level, and the worn
+   * class moves into each half of progress so a failed campaign puts it back.
+   *
+   * No hero loses a move, and none gains one. Each half's class gets the rank
+   * matching the moves that half resolved with at v4, which read two records:
+   * the level its XP reached, and the class moves in its `unlockedActions`
+   * (what levelling wrote). Whichever shows more wins. The stored `level`
+   * beside them is not read, because v4's resolve never read it either.
+   *
+   * `unlockedActions` goes: class moves are derived now, and a stored list
+   * would be a second, stale answer. Only the worn class gets an entry; at v4
+   * no hero had worn any other.
+   *
+   * One deliberate exception to "no hero loses a move": a move of *another*
+   * class in `unlockedActions` is dropped, because only the worn class's
+   * moves can resolve now. v4's resolve would have kept it, but no writer ever
+   * stored one. `newCharacter` wrote the signature and the own class's level
+   * unlocks, `awardXp` the own class's unlocks, and class never changed. The
+   * only other writer, progression.ts between 7b6d66c5 and 678b7bc9 (one hour
+   * on 2026-07-29), stored the resolved list, which was own-class moves and
+   * the species combat action, and species still grants that. The
+   * Rally-on-every-class shape exists only in old test fixtures
+   * (ordered-campaigns.test.ts). migrate.test.ts pins both. A half that already carries its own class was
+   * written in this shape by a path that did not stamp `v`, and is left as is.
+   */
+  4: (raw) => {
+    const worn = raw["class"];
+    const toV5 = (half: unknown): unknown => {
+      if (half === null || typeof half !== "object") return half;
+      if (typeof (half as Record<string, unknown>)["class"] === "string") return half;
+      const { unlockedActions, ...p } = half as Record<string, unknown>;
+      const rank = typeof worn === "string" ? v4Rank(worn, p, unlockedActions) : "none";
+      return { ...p, class: worn, mastery: typeof worn === "string" ? { [worn]: { rank, deeds: {} } } : {} };
+    };
+    const { class: _class, ...rest } = raw;
+    return { ...rest, committed: toV5(raw["committed"]), provisional: toV5(raw["provisional"]) };
+  },
 };
+
+/**
+ * The class ladder as v4 shipped it (content/rules.json then): each class's
+ * moves in unlock order (at levels 3, 6 and 9), and the XP that reached
+ * those levels. Frozen here on purpose rather than read from today's rules —
+ * a step describes the rows as they were *then* — and migrate.test.ts holds
+ * it against rules.json so the two cannot drift apart unnoticed.
+ */
+export const V4_CLASS_LADDER = {
+  xp: [300, 1700, 4700],
+  moves: {
+    thornguard: ["shove", "bramble_wall", "unbreakable"],
+    duskrunner: ["vanish", "twin_step", "storm_of_blades"],
+    starweaver: ["glimmer", "tanglelight", "starfall"],
+    songkeeper: ["soothe", "chorus", "encore"],
+  } as Record<string, readonly string[]>,
+} as const;
+
+/** The rank one v4 progress half had earned in `classId`; see step 4. */
+function v4Rank(classId: string, half: Record<string, unknown>, unlockedActions: unknown): ClassRank {
+  const reached = (value: unknown, steps: readonly number[]) =>
+    typeof value === "number" ? steps.filter((at) => value >= at).length : 0;
+  const moves = V4_CLASS_LADDER.moves[classId] ?? [];
+  const held = Array.isArray(unlockedActions)
+    ? Math.max(0, ...unlockedActions.map((id) => moves.indexOf(id as string) + 1))
+    : 0;
+  const count = Math.max(reached(half["xp"], V4_CLASS_LADDER.xp), held);
+  return CLASS_RANKS[Math.min(count, CLASS_RANKS.length - 1)] ?? "none";
+}
 
 /**
  * Storage → domain, in one call: run the ladder from whatever the row claims to
@@ -146,13 +217,12 @@ export function assertCharacter(value: unknown): Character {
     householdId: str(raw["householdId"], "householdId"),
     ownerPlayerId: str(raw["ownerPlayerId"], "ownerPlayerId"),
     name: str(raw["name"], "name"),
-    // Species and class are checked as non-empty strings, not against the known
-    // sets. A character whose species was retired from content is a content
+    // Species and class (on each half, in `progress` below) are checked as
+    // non-empty strings, not against the known sets. A character whose species was retired from content is a content
     // problem, and `getSpecies()` already throws with a better message than
     // anything this layer could produce — failing here would make a rules edit
     // look like data corruption.
     species: str(raw["species"], "species") as Character["species"],
-    class: str(raw["class"], "class") as Character["class"],
     appearance: appearance(raw["appearance"]),
     committed: progress(raw["committed"], "committed"),
     provisional: provisional(raw["provisional"]),
@@ -177,7 +247,8 @@ function progress(value: unknown, path: string): CharacterProgress {
     xp: num(raw["xp"], `${path}.xp`),
     stats: stats(raw["stats"], `${path}.stats`),
     tier: tier(raw["tier"], `${path}.tier`),
-    unlockedActions: strings(raw["unlockedActions"] ?? [], `${path}.unlockedActions`),
+    class: str(raw["class"], `${path}.class`) as ClassId,
+    mastery: mastery(raw["mastery"] ?? {}, `${path}.mastery`),
     inventory: inventory(raw["inventory"] ?? [], `${path}.inventory`),
     // Defaulted rather than demanded: the ladder fills this for old rows, and
     // belt-and-braces here costs one `??` against a stat block corrupted by a
@@ -190,6 +261,28 @@ function provisional(value: unknown): ProvisionalProgress | null {
   if (value === null || value === undefined) return null;
   const runId = str(obj(value, "provisional")["runId"], "provisional.runId");
   return { ...progress(value, "provisional"), runId };
+}
+
+function mastery(value: unknown, path: string): CharacterProgress["mastery"] {
+  const raw = obj(value, path);
+  const out: Record<string, ClassMastery> = {};
+  for (const [classId, entry] of Object.entries(raw)) {
+    const e = obj(entry, `${path}.${classId}`);
+    const rank = e["rank"];
+    // Impossible rather than missing: guessing a rank would hand back a hero
+    // with more or fewer moves than they earned.
+    if (!CLASS_RANKS.includes(rank as ClassRank)) {
+      fail(`${path}.${classId}.rank`, `one of ${CLASS_RANKS.join(", ")}`);
+    }
+    const deeds = obj(e["deeds"] ?? {}, `${path}.${classId}.deeds`);
+    out[classId] = {
+      rank: rank as ClassRank,
+      deeds: Object.fromEntries(
+        Object.entries(deeds).map(([deed, n]) => [deed, num(n, `${path}.${classId}.deeds.${deed}`)]),
+      ),
+    };
+  }
+  return out;
 }
 
 function stats(value: unknown, path: string): Stats {

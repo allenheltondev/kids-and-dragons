@@ -520,7 +520,9 @@ function heroesOf(
         id: c.id,
         name: c.name,
         species: c.species,
-        class: c.class,
+        // The class she wears between games: the committed one, beside the
+        // committed level.
+        class: c.committed.class,
         level: c.committed.level,
         ...(adventure ? { adventure } : {}),
         ...(saves.has(c.id) ? { saved: saves.get(c.id)! } : {}),

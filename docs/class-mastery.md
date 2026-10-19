@@ -1,8 +1,8 @@
 # Class mastery: switching classes, class places and distinctions
 
-> **Status.** Design only. Nothing here is built. It changes rules that [spec §4.3](./spec.md) and
-> [§8.1](./spec.md) state today (class is fixed at creation; class actions unlock by level), and those
-> sections are updated when the work lands. Tracked by epic
+> **Status.** Partly built. Per-class distinctions on the character and moves by distinction (§5,
+> §7) landed with #308, and [spec §4.3](./spec.md) and [§8.1](./spec.md) now state them; deeds,
+> switching, the class places and the tokens are still design. Tracked by epic
 > [#307](https://github.com/allenheltondev/kids-and-dragons/issues/307) (#308–#315); the reason to
 > come back to the Exchange is [#306](https://github.com/allenheltondev/kids-and-dragons/issues/306).
 
@@ -101,7 +101,12 @@ class is shown with the class name alone.
 
 - **Class moves come from distinctions, not level.** Level keeps everything else it grants: the stat
   point and the appearance tiers.
-- **Earned only by deeds** (§6). No XP, and no level cap.
+- **Earned only by deeds** (§6). No XP, and no level cap. Two grants stand outside that, both so no
+  hero has fewer moves than before distinctions: heroes from before them (§7), and a hero who joins
+  at a tier floor ([spec §8.4](./spec.md)). A third is temporary: until deeds are counted (#310),
+  reaching level 3, 6 or 9 earns the worn class Apprentice, Expert or Master (`levelBridge` in
+  `character.ts`), so a hero made in between is never stuck on the signature. #310 removes it, and
+  ranks it gave are kept.
 - **Never lost by switching.** Each class remembers its own rank and its partial progress. Going back
   to Thornguard later picks up exactly where the hero left it.
 - **Only the worn class counts.** Its moves are the only class moves on the phone, and only its deeds
@@ -178,12 +183,17 @@ This needs one fight change (§7): Songkeeper moves may target the Songkeeper.
   self-heal can be smaller than its heal on others.
 - **Deed attribution.** Fight events say what happened but not always who caused it (a `heal`
   event names only who was healed). Deeds need the acting hero and the ability on each counted event.
-- **Per-class progress on the character.** Current class, rank and deed progress per class, in
-  `CharacterProgress`, so failure rolls them back.
-- **Moves by distinction.** `unlockedActions` derived from the worn class's rank, not level.
-- **Existing heroes keep every move they have.** On migration, a hero's current class is given the
-  rank matching the moves their level already unlocked (level 3 → Apprentice, 6 → Expert,
-  9 → Master). No kid opens the game to a missing move.
+- **Per-class progress on the character.** *(Built, #308.)* `CharacterProgress.class` is the worn
+  class and `CharacterProgress.mastery` holds each class's rank and deed counts, so failure rolls
+  them back. `Character.class` is gone: one answer to "what class is she", in the half that rolls
+  back.
+- **Moves by distinction.** *(Built, #308.)* `resolveCharacter` derives the class moves from the
+  worn class's rank, not level: its signature plus one move per rank, and no others. The stored
+  `unlockedActions` list is gone, since a stored copy of a derived answer goes stale.
+- **Existing heroes keep every move they have.** *(Built, #308: character schema v5.)* On
+  migration, a hero's current class is given the rank matching the moves their level already
+  unlocked (level 3 → Apprentice, 6 → Expert, 9 → Master), read from each half's XP and its old
+  `unlockedActions`. No kid opens the game to a missing move.
 - **Switching** is offered by a scene in a class's room and checked by the server: the party is in
   that room, and the hero is not already that class.
 - **Validation**: all four rooms reachable in every graph campaign (§2).
@@ -194,9 +204,10 @@ This needs one fight change (§7): Songkeeper moves may target the Songkeeper.
 ## 8. Open questions
 
 - **What counts as "new"** for the fitting stall: has finished no chapter? no campaign?
-- **Heroes who join at a level floor** ([spec §8](./spec.md)): with what rank? Today they are
-  "arithmetically identical" to a hero who earned the level, moves included. Under distinctions they
-  would arrive with none.
+- ~~**Heroes who join at a level floor**~~ *Decided in #308:* the joiner's class arrives with the
+  rank its level used to unlock (4 → Apprentice, 7 → Expert, 10 → Master), the same moves a joiner
+  always had and the rank the migration gave heroes of that level; every other class starts at none
+  ([spec §8.4](./spec.md)).
 - **The §8.1 rhythm.** Level 3 / 6 / 9 moves interleave with the 1 / 4 / 7 / 10 tiers ("breathe,
   new move, new look"). Deeds decouple moves from levels, so that rhythm is no longer guaranteed.
   Deed counts are the lever for keeping it roughly true.

@@ -149,12 +149,23 @@ Species grants a **passive trait** and one **world ability** usable outside comb
 
 Four classes, one per stat. Class determines the action set on your phone during a fight.
 
+A hero picks a class at creation (§5) and wears one class at a time. Each class has three **distinctions**, the same for every class: **Apprentice**, **Expert** and **Master**. The class's signature is yours from the start; each distinction unlocks one more of its moves (Apprentice the first, Expert the second, Master the third), and nothing else does: level grants no moves (§8.1). (Until deeds are counted, [#310](https://github.com/allenheltondev/kids-and-dragons/issues/310), levelling still earns the worn class its distinctions, as §8.1 says.) The screen reads "Starweaver Apprentice"; a hero with no distinction yet shows the class name alone.
+
+A hero keeps their distinctions and partial progress in every class they have worn, forever, but only the class they are wearing counts: its moves are the only class moves on the phone. Distinctions, and where and how a hero changes class, are designed in [class-mastery.md](./class-mastery.md): earned by the class's deeds, and changed only at the Exchange while new or at that class's own place. A failed campaign puts class and distinctions back where they stood when it began (§8.3).
+
 | Class | Stat | Role | Signature action |
 |---|---|---|---|
 | **Thornguard** | Might | Front line | **Brace** — take a hit meant for an adjacent ally |
 | **Duskrunner** | Quick | Skirmisher | **First Strike** — act before anyone else on round one |
 | **Starweaver** | Clever | Caster | **Burst** — hit every enemy in a 2×2 area |
 | **Songkeeper** | Heart | Support | **Rally** — heal an ally, or lift a knocked-down one from range |
+
+| Distinction | Thornguard | Duskrunner | Starweaver | Songkeeper |
+|---|---|---|---|---|
+| *(none)* | Brace | First Strike | Burst | Rally |
+| **Apprentice** | + Shove | + Vanish | + Glimmer | + Soothe |
+| **Expert** | + Bramble Wall | + Twin Step | + Tanglelight | + Chorus |
+| **Master** | + Unbreakable | + Storm of Blades | + Starfall | + Encore |
 
 Songkeeper's Rally is deliberately the ranged version of the universal Help Up action (§7.2). Making the no-death rule into a *class strength* means it reads as a hero move, not a mercy rule.
 
@@ -249,7 +260,7 @@ If the **whole party** is knocked down, the encounter is **lost, not fatal** —
 
 XP is awarded per chapter, not per enemy defeated — so exploring and talking are worth as much as fighting. Levels 1–10.
 
-Each level grants a stat point and, at some levels, a new class action. **Four levels are appearance tiers:**
+Each level grants a stat point. Class moves are not on this ladder: they come from distinctions (§4.3), earned by deeds rather than XP. **Until deeds are counted** ([#310](https://github.com/allenheltondev/kids-and-dragons/issues/310)), a bridge stands in: reaching level 3, 6 or 9 earns the worn class Apprentice, Expert or Master, so a new hero still gets the moves levelling always gave, and keeps them when deeds arrive. **Four levels are appearance tiers:**
 
 | Level | Tier | Visual change |
 |---|---|---|
@@ -267,7 +278,9 @@ Hitting a tier plays a **transformation cutscene** — the whole party stops to 
 | Levels | 1 → 4 | 4 → 7 | 7 → 10 |
 | Ends at | **Sworn** | **Radiant** | **Mythic** |
 
-Interleaving the tiers (1/4/7/10) with the class unlocks (3/6/9) gives three bands of three, each one *breathe → new move → new look*. The new action always lands the level before the transformation, so a new toy gets one chapter of play before the party stops to watch you change. The tier itself lands one chapter before the campaign's finale, so the climax is fought as the new thing rather than the new thing being a trophy for winning.
+The tier itself lands one chapter before the campaign's finale, so the climax is fought as the new thing rather than the new thing being a trophy for winning.
+
+Class moves used to unlock at levels 3, 6 and 9, interleaved with the tiers (1/4/7/10) as three bands of three, each one *breathe → new move → new look*. Since distinctions (§4.3), moves come from deeds and that rhythm is no longer guaranteed; the deed counts are the lever for keeping it roughly true ([class-mastery.md §8](./class-mastery.md)). A hero who had a move by level when distinctions arrived kept it: their class was given the distinction their level had unlocked (3 → Apprentice, 6 → Expert, 9 → Master).
 
 #### The curve
 
@@ -286,7 +299,7 @@ Two things fall out of the escalation, both wanted: replaying an early campaign 
 
 Resolution is `d20 + stat` against a target number (§4.1). Push a modifier past about 12 and the die stops deciding anything — hard checks succeed on a 2, and the game quietly stops being about rolling. **The d20 is the real cap, not the number 10.** More levels could only be spent on stats that break it, or on nothing at all.
 
-Games that go to 50 or 100 do it because level is their *only* progression currency, and they pay for it with levels you cannot feel. This game has five — the stat point, the class action, the tier, the six inventory slots, and souvenirs — so every one of its ten levels can do something visible. At one 30-minute sitting a week, that is a level roughly every fortnight, each of which changes something.
+Games that go to 50 or 100 do it because level is their *only* progression currency, and they pay for it with levels you cannot feel. This game has five — the stat point, the class distinctions, the tier, the six inventory slots, and souvenirs — so every one of its ten levels can do something visible. At one 30-minute sitting a week, that is a level roughly every fortnight, each of which changes something.
 
 The tier count is also an art budget, not a rules number: four tiers across six species with per-class overlays is already the largest art line in the project.
 
@@ -296,7 +309,7 @@ Progression continues sideways, never upward.
 
 - **XP keeps counting.** Past 6300 it accrues forever and shows on the sheet as a plain number with nothing mechanical attached. An ever-climbing number is real, and it costs nothing.
 - **A new hero.** The data model already holds several characters per player. A Mythic character can retire into the world as a standing legend in the lobby while its owner rolls something new and runs the whole arc again with a different toy.
-- **Breadth.** More items, more biomes, more class actions past 9 — as sidegrades, never upgrades.
+- **Breadth.** More items, more biomes, more class actions past Master — as sidegrades, never upgrades.
 
 ### 8.2 Chapter outcomes
 
@@ -323,7 +336,7 @@ Uniform party XP is what keeps everybody transforming on the same evening. It is
 
 ### 8.3 Carryover — the commitment rule
 
-A character's level, stats, and inventory are stored as a **committed snapshot** plus a set of **provisional gains** earned during the current campaign.
+A character's level, stats, inventory, class and distinctions are stored as a **committed snapshot** plus a set of **provisional gains** earned during the current campaign.
 
 - **Campaign completed successfully** → provisional gains are committed. The character carries forward into the next campaign at their new level, with everything they found.
 - **Campaign failed or abandoned** → the character **reverts to the committed snapshot**, and permanently gains a **souvenir**: a cosmetic memento of the attempt (a cracked pendant, a singed feather, a scrap of map) that displays on their sheet and in the world.
@@ -344,7 +357,7 @@ A character created after the party has been playing — a friend for one evenin
 
 The two options exist because the two situations pull opposite ways. A guest starting at level 1 beside a Radiant party has ten hit points and one action, and spends the evening as a passenger. A sibling starting at party level never plays a Fledgling and never earns Sworn, which may be exactly the arc they wanted.
 
-The tier floor is the right number because it makes a joined character **arithmetically identical** to one that earned the level: three creation points plus one per level, with class unlocks derived from level as they already are. No shortcut and no handicap. It also preserves what matters — you skip only the transformations you were never going to earn, and every one still ahead of you is yours. Join at Radiant and Mythic is still two campaigns away.
+The tier floor is the right number because it makes a joined character **arithmetically identical** to one that earned the level: three creation points plus one per level. No shortcut and no handicap. Distinctions are earned by deeds (§4.3), which a level cannot stand for, so a joiner's class arrives with the distinction its level used to unlock: none at 1, Apprentice at 4, Expert at 7, Master at 10. They sit down with the moves a joiner always had, and every other class starts with none. It also preserves what matters — you skip only the transformations you were never going to earn, and every one still ahead of you is yours. Join at Radiant and Mythic is still two campaigns away.
 
 Starting XP is the **threshold for that level**, not zero, or the next chapter's award drops the character straight back to level 1.
 

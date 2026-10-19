@@ -22,6 +22,16 @@ export type SpeciesId =
 
 export type ClassId = "thornguard" | "duskrunner" | "starweaver" | "songkeeper";
 
+/**
+ * A hero's distinction in one class (docs/class-mastery.md §5), lowest first.
+ * Each rank above `none` unlocks one more of the class's moves: Apprentice the
+ * first, Expert the second, Master the third. The same three for every class.
+ */
+export type ClassRank = "none" | "apprentice" | "expert" | "master";
+
+/** The ranks in order; a rank's index is how many class unlocks it grants. */
+export const CLASS_RANKS: readonly ClassRank[] = ["none", "apprentice", "expert", "master"] as const;
+
 /** Appearance tiers, in level order. See spec §8.1. */
 export type TierId = "fledgling" | "sworn" | "radiant" | "mythic";
 
@@ -95,6 +105,22 @@ export interface Appearance {
 }
 
 /**
+ * What a hero has earned in one class (docs/class-mastery.md §5): kept for
+ * every class they have ever worn, never lost by switching, and counted only
+ * while that class is the one they wear.
+ */
+export interface ClassMastery {
+  rank: ClassRank;
+  /**
+   * Partial progress toward the next rank, by deed id. The deeds themselves
+   * (which events count, and how many make a rank) are #310's; this only
+   * remembers the counts, so a hero who switches away and back picks up
+   * exactly where they left the class. Empty until a deed is counted.
+   */
+  deeds: Record<string, number>;
+}
+
+/**
  * The mutable half of a character. Stored twice: once committed, once
  * provisional. `provisional ?? committed` is the effective state, and
  * resolveCharacter() is the only place that resolution happens.
@@ -105,7 +131,25 @@ export interface CharacterProgress {
   /** Points spent by the player. Species bonuses are applied at resolve time. */
   stats: Stats;
   tier: TierId;
-  unlockedActions: string[];
+  /**
+   * The class the hero is wearing: the one whose moves are on the phone and
+   * whose deeds count. Picked at creation and changed only where
+   * docs/class-mastery.md §1 allows. It lives here rather than on `Character`
+   * so a failed campaign puts it back with everything else (spec §8.3), for
+   * the same reason `unspentPoints` does.
+   */
+  class: ClassId;
+  /**
+   * Rank and deed progress per class (docs/class-mastery.md §5). A class
+   * with no entry has rank `none` and no progress, which is every class the
+   * hero has not worn. Here, beside `class`, so a failed campaign rolls back
+   * ranks and deeds too.
+   *
+   * The class moves on the phone are derived from this and `class` in
+   * `resolveCharacter()`, never stored: a hero's moves are their worn
+   * class's signature plus one per rank.
+   */
+  mastery: Partial<Record<ClassId, ClassMastery>>;
   inventory: InventoryEntry[];
   /**
    * Stat points earned by levelling and not yet spent (spec §8.1 — a level
@@ -156,7 +200,9 @@ export interface Character {
   ownerPlayerId: string;
   name: string;
   species: SpeciesId;
-  class: ClassId;
+  // No `class` (character schema v5, #308): the worn class is
+  // `CharacterProgress.class`, so it rolls back with a failed campaign. Read
+  // it as `classOf(character)` (character.ts).
   appearance: Appearance;
   committed: CharacterProgress;
   provisional?: ProvisionalProgress | null;
@@ -205,7 +251,15 @@ export interface ResolvedCharacter {
   ownerPlayerId: string;
   name: string;
   species: SpeciesId;
+  /** The class the hero is wearing (`CharacterProgress.class`). */
   class: ClassId;
+  /**
+   * Their distinction in that class, for "Starweaver Apprentice" on screen.
+   * Present only above `none`, so a hero with no rank resolves exactly as
+   * before distinctions; and a run in flight across a deploy holds snapshots
+   * resolved before it existed. Absent reads as `none`.
+   */
+  rank?: ClassRank;
   appearance: Appearance;
   level: number;
   xp: number;
@@ -424,7 +478,13 @@ export interface ClassDef {
   blurb: string;
   baseSteps: number;
   signature: { id: string; name: string; text: string; icon: string };
-  /** Actions unlocked at levels beyond the signature, keyed by level. */
+  /**
+   * The class's moves beyond the signature, keyed by the level that unlocked
+   * each before distinctions (3, 6, 9). Since #308 the keys only order them:
+   * the first is the Apprentice move, the second Expert, the third Master
+   * (docs/class-mastery.md §5). The levels are still read where a level has
+   * to become a rank: a hero joining at a tier floor (spec §8.4).
+   */
   unlocks: Record<string, { id: string; name: string; text: string; icon: string }>;
 }
 
