@@ -1,0 +1,89 @@
+{
+  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "id": "riftlight-boundary-stone-bank",
+  "campaignId": "riftlight-opening-preview",
+  "index": 4,
+  "title": "The Stones Above the Water",
+  "biome": "red_sky_foothills",
+  "music": "riftlight-paths",
+  "estimatedMinutes": 8,
+  "xpAward": 140,
+  "entry": "stones",
+  "scenes": {
+    "stones": {
+      "type": "story",
+      "narration": "A dragonling tends old boundary stones beside the east bank. \"This region is called the Red Sky Foothills,\" she says, bringing you a dry cloth. \"Check your friends first. The stones have waited longer than any of us.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "markings"
+        }
+      ]
+    },
+    "markings": {
+      "type": "choice_point",
+      "narration": "One stone is carved with a mountain and a plume spreading across the sky. The dragonling points to the dates on her record board. \"The numbers do not agree. Not even the oldest ones.\" Do you look closer or help restore a river marker?",
+      "choices": [
+        {
+          "id": "look",
+          "label": "Compare the carving with the mountain you know",
+          "icon": "hand",
+          "goto": "carving"
+        },
+        {
+          "id": "help",
+          "label": "Help reset the wet river marker",
+          "icon": "hand",
+          "goto": "marker"
+        }
+      ]
+    },
+    "carving": {
+      "type": "story",
+      "narration": "The carving is weathered, but the mountain's outline is clear. Its shoulder is in the wrong place. The dragonling makes a rubbing without guessing what it means. \"One question at a time.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "bank_rest"
+        }
+      ]
+    },
+    "marker": {
+      "type": "story",
+      "narration": "You set the marker beyond the wet gravel, where the next traveler can see the water has risen. The dragonling marks the new position on her board. \"Today's river first. Yesterday's mountain can wait.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "bank_rest"
+        }
+      ]
+    },
+    "bank_rest": {
+      "type": "rest",
+      "narration": "The dragonling invites you to meet the stone-counters when you have rested. A road follows the east bank to a crossing called Ashspan Bridge. The old carving gives you a reason to stay; the road gives you another way onward.",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success"
+    }
+  },
+  "llmHints": {
+    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
+    "forbidden": [
+      "death",
+      "gore",
+      "Corvane",
+      "emperor",
+      "Pangea",
+      "Hollow Gate",
+      "Legend Dragon"
+    ],
+    "npcVoices": {}
+  }
+}
