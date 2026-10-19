@@ -359,6 +359,18 @@ export interface CommitInput {
    * run's seq condition, because two different runs have independent seqs.
    */
   campaignProgressExpectedVersion?: number | null;
+  /**
+   * Make `deviceId` the household's founder, in the same transaction as the
+   * state and the event (#272): the host handing the keeper role to a phone in
+   * the room, which the run records as `keeperPlayerId`. One write, so the
+   * household and the screens can never disagree about who may keep it, with
+   * nothing to roll back when two hand-overs overlap or the run loses its
+   * seq race. Whoever it was or was not until now (dropped, awaiting, from
+   * before founders). Conditional on a guest household nobody has kept and the
+   * sweeper has not begun on, as the claim is: when it does not hold the whole
+   * commit is refused, exactly as a lost seq race is.
+   */
+  founder?: { householdId: string; deviceId: string };
 }
 
 /** `HH#<hhId>` / `OWNER#<sub>`: one grown-up who may manage the household (#248). */
@@ -458,12 +470,6 @@ export interface MoveProfileInput {
  * rows than one transaction holds (`MOVE_ITEM_LIMIT`), and nothing moved.
  */
 export type MoveOutcome = "moved" | "spent" | "changed" | "too-big";
-
-/** What `setFounder` replaced: both absent is a household from before founders. */
-export interface FounderBefore {
-  founderDeviceId?: string;
-  awaitingFounder?: true;
-}
 
 export interface GameRepository {
   // --- household, players, devices -----------------------------------------
@@ -578,25 +584,6 @@ export interface GameRepository {
    * `deviceId` is not the founder.
    */
   dropFounder(householdId: string, deviceId: string): Promise<void>;
-  /**
-   * Make `deviceId` the household's founder, whoever it was, or was not, until
-   * now (#272): the host of a room handing the keeper role to a phone in it.
-   * One conditional write on a guest household nobody has claimed and the
-   * sweeper has not begun on, so it can never move a household that is already
-   * an account's. False when any of that does not hold. Authority is the
-   * caller's: the store only keeps the household from changing hands twice.
-   *
-   * Answers with what it replaced, or `null` when it wrote nothing, so a
-   * caller whose next write fails can put it back (`restoreFounder`).
-   */
-  setFounder(householdId: string, deviceId: string): Promise<FounderBefore | null>;
-  /**
-   * Undo a `setFounder` that `deviceId` made: put back what it replaced. One
-   * conditional write that holds only while `deviceId` is still the founder,
-   * so a later hand-over is never undone by an earlier one's cleanup. A no-op
-   * when it is not.
-   */
-  restoreFounder(householdId: string, deviceId: string, before: FounderBefore): Promise<void>;
   /**
    * Push a guest household's expiry out to `expiresAt` because somebody is
    * playing in it (§4.5): the 7-day window runs from the last time the family

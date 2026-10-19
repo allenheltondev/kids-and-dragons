@@ -127,8 +127,8 @@ describe("a host handing the keeper role to a phone in the room (#272)", () => {
   });
 
   it("changes nothing when the room cannot take the change (#272 review)", async () => {
-    // The founder write lands, then the run's commit loses every race: the
-    // household must not be left changing hands with no word to the screens.
+    // The founder and the run move in one transaction, so a commit that loses
+    // every race leaves the household exactly as it was.
     const { harness, tv, code, runId, householdId, join } = await tvRoom();
     const first = await join("Mia");
     const second = await join("Sam");
@@ -142,16 +142,16 @@ describe("a host handing the keeper role to a phone in the room (#272)", () => {
     expect(kept.ok && kept.value.claimed).toBe(true);
   });
 
-  it("changes nothing when the room closes between the two writes (#272 review)", async () => {
+  it("changes nothing when the room closes just before the commit (#272 review)", async () => {
     const { harness, tv, code, householdId, join } = await tvRoom();
     const first = await join("Mia");
     const second = await join("Sam");
-    const setFounder = harness.repo.setFounder.bind(harness.repo);
-    harness.repo.setFounder = async (...args) => {
-      const before = await setFounder(...args);
-      // The host's other screen closes the room just after the founder moved.
+    const commit = harness.repo.commit.bind(harness.repo);
+    harness.repo.commit = async (input) => {
+      // The host's other screen closes the room just as the hand-over commits.
+      harness.repo.commit = commit;
       await closeRoom({ code, principal: tv.principal }, harness.deps);
-      return before;
+      return commit(input);
     };
 
     const result = await handKeeper({ code, principal: tv.principal, playerId: second.principal.playerId }, harness.deps);
@@ -159,34 +159,60 @@ describe("a host handing the keeper role to a phone in the room (#272)", () => {
     expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe(first.principal.deviceId);
   });
 
-  it("keeps the household and the room agreed when two hand-overs overlap and both could succeed (#272 review)", async () => {
-    // Mia's founder write lands, then Sam's whole hand-over runs and commits,
-    // then Mia's commit retries against the fresh run. Hers must not land over
-    // his: the founder is Sam, so the room must say Sam.
+  it("agrees on the later of two overlapping hand-overs, founder and room together (#272 review)", async () => {
+    // Sam's whole hand-over lands while Mia's is mid-flight, so Mia's first
+    // commit loses the seq race and goes again on the fresh run. Hers is last,
+    // and it is hers in both places.
     const { harness, tv, code, runId, householdId, join } = await tvRoom();
     await join("First");
     const mia = await join("Mia");
     const sam = await join("Sam");
-    const setFounder = harness.repo.setFounder.bind(harness.repo);
+    const commit = harness.repo.commit.bind(harness.repo);
     let rival = false;
-    harness.repo.setFounder = async (...args) => {
-      const before = await setFounder(...args);
+    harness.repo.commit = async (input) => {
       if (!rival) {
         rival = true;
         const theirs = await handKeeper({ code, principal: tv.principal, playerId: sam.principal.playerId }, harness.deps);
         expect(theirs.ok).toBe(true);
       }
-      return before;
+      return commit(input);
     };
 
     const hers = await handKeeper({ code, principal: tv.principal, playerId: mia.principal.playerId }, harness.deps);
-    expect(hers).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
-    expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe(sam.principal.deviceId);
-    expect((await harness.repo.getState(runId))?.keeperPlayerId).toBe(sam.principal.playerId);
-    // Only Sam can keep it, and the room says so.
-    expect(await linkAccount({ cognitoSub: "sub_mia", principal: mia.principal }, harness.deps)).toMatchObject({ ok: false });
-    const kept = await linkAccount({ cognitoSub: "sub_sam", principal: sam.principal }, harness.deps);
+    expect(hers.ok).toBe(true);
+    expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe(mia.principal.deviceId);
+    expect((await harness.repo.getState(runId))?.keeperPlayerId).toBe(mia.principal.playerId);
+    expect(await linkAccount({ cognitoSub: "sub_sam", principal: sam.principal }, harness.deps)).toMatchObject({ ok: false });
+    const kept = await linkAccount({ cognitoSub: "sub_mia", principal: mia.principal }, harness.deps);
     expect(kept.ok && kept.value.claimed).toBe(true);
+  });
+
+  it("keeps the first hand-over whole when an overlapping one then fails (#272 review)", async () => {
+    // The owner's interleaving: A is in flight, B overlaps it and its commit
+    // fails. With the founder in the run's own transaction there is no rollback
+    // for B to apply over A: A lands in both places and B reports the failure.
+    const { harness, tv, code, runId, householdId, join } = await tvRoom();
+    await join("First");
+    const mia = await join("Mia");
+    const sam = await join("Sam");
+    const commit = harness.repo.commit.bind(harness.repo);
+    let rival = false;
+    harness.repo.commit = async (input) => {
+      if (!rival) {
+        rival = true;
+        const real = harness.repo.commit;
+        harness.repo.commit = async () => false; // B's every commit fails
+        const theirs = await handKeeper({ code, principal: tv.principal, playerId: sam.principal.playerId }, harness.deps);
+        harness.repo.commit = real;
+        expect(theirs).toMatchObject({ ok: false, error: { code: "STALE_SEQ" } });
+      }
+      return commit(input);
+    };
+
+    const hers = await handKeeper({ code, principal: tv.principal, playerId: mia.principal.playerId }, harness.deps);
+    expect(hers.ok).toBe(true);
+    expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe(mia.principal.deviceId);
+    expect((await harness.repo.getState(runId))?.keeperPlayerId).toBe(mia.principal.playerId);
   });
 
   it("can be tried again after a failure, and then lands", async () => {
@@ -201,6 +227,17 @@ describe("a host handing the keeper role to a phone in the room (#272)", () => {
     expect((await handKeeper({ code, principal: tv.principal, playerId: second.principal.playerId }, harness.deps)).ok).toBe(true);
     expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe(second.principal.deviceId);
     expect((await harness.repo.getState(runId))?.keeperPlayerId).toBe(second.principal.playerId);
+  });
+
+  it("writes the founder again though the run already names the player (#272)", async () => {
+    // A removal drops the founder but leaves the run's word; a repeat must mend it.
+    const { harness, tv, code, householdId, join } = await tvRoom();
+    await join("First");
+    const mia = await join("Mia");
+    await handKeeper({ code, principal: tv.principal, playerId: mia.principal.playerId }, harness.deps);
+    await harness.repo.dropFounder(householdId, mia.principal.deviceId);
+    expect((await handKeeper({ code, principal: tv.principal, playerId: mia.principal.playerId }, harness.deps)).ok).toBe(true);
+    expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe(mia.principal.deviceId);
   });
 
   it("will not move a game that has already been kept", async () => {

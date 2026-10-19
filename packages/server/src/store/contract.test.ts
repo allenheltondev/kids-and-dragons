@@ -777,58 +777,70 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         expect(await repo.takeFounding("h_nope", "d_c")).toBe(false);
       });
 
-      it("lets a host hand the founding to another device, once the first is gone (#272)", async () => {
+      /** A commit of run r_1's next state that also hands the founding to `deviceId` (#272). */
+      const handOver = async (seq: number, deviceId: string, householdId = "h_1") =>
+        repo.commit({
+          runId: "r_1",
+          expectedSeq: seq - 1,
+          state: { ...state("r_1", seq), keeperPlayerId: `p_${deviceId}` },
+          event: event("r_1", seq),
+          founder: { householdId, deviceId },
+        });
+
+      it("moves the founder in the same transaction as the run, once the first is gone (#272)", async () => {
         await repo.putHousehold(guest("h_1", new Date(Date.now() + DAY).toISOString()));
+        await repo.putState(state("r_1", 0));
         await repo.dropFounder("h_1", "d_1");
-        expect(await repo.setFounder("h_1", "d_family")).toEqual({ founderDeviceId: "" });
+        expect(await handOver(1, "d_family")).toBe(true);
+        expect((await repo.getState("r_1"))?.keeperPlayerId).toBe("p_d_family");
         expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(false);
         expect(await repo.claimHousehold("h_1", "sub_a", "d_family")).toBe(true);
       });
 
-      it("hands the founding over a founder who is still there, and ends the wait for one (#272)", async () => {
+      it("moves it over a founder who is still there, and ends the wait for one (#272)", async () => {
         const { founderDeviceId: _none, ...open } = guest("h_1", new Date(Date.now() + DAY).toISOString());
         await repo.putHousehold({ ...open, awaitingFounder: true });
-        expect(await repo.setFounder("h_1", "d_a")).toEqual({ awaitingFounder: true });
+        await repo.putState(state("r_1", 0));
+        expect(await handOver(1, "d_a")).toBe(true);
         expect(await repo.getHousehold("h_1")).toMatchObject({ founderDeviceId: "d_a" });
         expect(await repo.getHousehold("h_1")).not.toHaveProperty("awaitingFounder");
-        expect(await repo.setFounder("h_1", "d_b")).toEqual({ founderDeviceId: "d_a" });
+        expect(await handOver(2, "d_b")).toBe(true);
         expect((await repo.getHousehold("h_1"))?.founderDeviceId).toBe("d_b");
       });
 
-      it("will not hand the founding of a kept household, or one that does not exist (#272)", async () => {
+      it("lands neither the founder nor the run when the run has moved on (#272)", async () => {
+        await repo.putHousehold(guest("h_1", new Date(Date.now() + DAY).toISOString()));
+        await repo.putState(state("r_1", 0));
+        // A hand-over that read seq 0 loses to one that committed seq 1 first.
+        expect(await handOver(1, "d_a")).toBe(true);
+        expect(
+          await repo.commit({
+            runId: "r_1",
+            expectedSeq: 0,
+            state: { ...state("r_1", 1), keeperPlayerId: "p_d_b" },
+            event: event("r_1", 1),
+            founder: { householdId: "h_1", deviceId: "d_b" },
+          }),
+        ).toBe(false);
+        expect((await repo.getHousehold("h_1"))?.founderDeviceId).toBe("d_a");
+        expect((await repo.getState("r_1"))?.keeperPlayerId).toBe("p_d_a");
+      });
+
+      it("lands neither when the household was kept, is being swept, or is gone (#272)", async () => {
+        await repo.putState(state("r_1", 0));
         await repo.putHousehold(guest("h_1", new Date(Date.now() + DAY).toISOString()));
         expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(true);
-        expect(await repo.setFounder("h_1", "d_other")).toBeNull();
+        expect(await handOver(1, "d_other")).toBe(false);
         expect((await repo.getHousehold("h_1"))?.founderDeviceId).toBe("d_1");
-        expect(await repo.setFounder("h_nope", "d_other")).toBeNull();
-      });
+        expect((await repo.getState("r_1"))?.seq).toBe(0);
 
-      it("puts the founder back as it was, only while the hand-over stands (#272)", async () => {
-        const open = (): Household => {
-          const { founderDeviceId: _none, ...rest } = guest("h_1", new Date(Date.now() + DAY).toISOString());
-          return rest;
-        };
-        // A founder who was there, one dropped to nobody, a household awaiting one, and one from before founders.
-        for (const [start, before] of [
-          [guest("h_1", new Date(Date.now() + DAY).toISOString()), { founderDeviceId: "d_1" }],
-          [{ ...open(), founderDeviceId: "" }, { founderDeviceId: "" }],
-          [{ ...open(), awaitingFounder: true as const }, { awaitingFounder: true }],
-          [open(), {}],
-        ] as const) {
-          await repo.putHousehold(start);
-          expect(await repo.setFounder("h_1", "d_new")).toEqual(before);
-          await repo.restoreFounder("h_1", "d_new", before);
-          const back = await repo.getHousehold("h_1");
-          expect(back?.founderDeviceId).toBe(start.founderDeviceId);
-          expect(back?.awaitingFounder).toBe(start.awaitingFounder);
-        }
+        expect(await handOver(1, "d_other", "h_nope")).toBe(false);
+        expect((await repo.getState("r_1"))?.seq).toBe(0);
 
-        // A later hand-over is not undone by an earlier one's cleanup.
-        await repo.putHousehold(guest("h_1", new Date(Date.now() + DAY).toISOString()));
-        await repo.setFounder("h_1", "d_a");
-        await repo.setFounder("h_1", "d_b");
-        await repo.restoreFounder("h_1", "d_a", { founderDeviceId: "d_1" });
-        expect((await repo.getHousehold("h_1"))?.founderDeviceId).toBe("d_b");
+        await repo.putHousehold(guest("h_2", new Date(Date.now() - DAY).toISOString()));
+        expect(await repo.deleteGuestHousehold("h_2", new Date().toISOString())).toBe(true);
+        expect(await handOver(1, "d_other", "h_2")).toBe(false);
+        expect((await repo.getState("r_1"))?.seq).toBe(0);
       });
 
       it("will not claim a household that does not exist", async () => {

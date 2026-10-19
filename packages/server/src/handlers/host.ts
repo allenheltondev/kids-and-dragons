@@ -67,7 +67,11 @@ export async function commitRoomChange(
   /** May read (a removal relocks the lobby, #283); it is re-run on every retry. */
   change: (state: RunState) => RunState | null | Promise<RunState | null>,
   deps: Pick<HandlerDeps, "repo" | "now" | "channel">,
-  options: { closing?: boolean } = {},
+  options: {
+    closing?: boolean;
+    /** Moves the household's founder in the same transaction (#272, `CommitInput.founder`). */
+    founder?: { householdId: string; deviceId: string };
+  } = {},
 ): Promise<HandlerResult<{ seq: number; state: RunState; changed: boolean }>> {
   for (let attempt = 1; ; attempt++) {
     const state = await deps.repo.getState(room.runId);
@@ -87,7 +91,15 @@ export async function commitRoomChange(
       at: iso(nowMs),
       playerId: actor,
     };
-    if (await deps.repo.commit({ runId: next.runId, expectedSeq: state.seq, state: next, event })) {
+    if (
+      await deps.repo.commit({
+        runId: next.runId,
+        expectedSeq: state.seq,
+        state: next,
+        event,
+        ...(options.founder ? { founder: options.founder } : {}),
+      })
+    ) {
       await deps.channel.publish(next.roomCode, {
         kind: "patch",
         seq: event.seq,
