@@ -1,0 +1,274 @@
+/**
+ * Nothing on a phone sits under the corner row or is cut off (#257).
+ * The screens: the start screen, the guide, a host's lobby and Rest scene,
+ * the room controls, a returning kid's catch-up line, and the adventure book.
+ *
+ * The corner row (help, display settings, read-aloud, sound) is fixed over
+ * every screen. A phone in a room leaves it a strip of its own (at the top, or
+ * at the bottom one-handed), so the identity strip, a host's arrival notices,
+ * the Rest stop offer, the room controls and the catch-up line all keep their
+ * whole width; the start screen and the guide leave it the same strip. This walks a real room to each of those screens and then looks
+ * at them at 360px and 390px, at normal and the largest text (#262), with
+ * one-handed play off, right and left, and asserts three things on each:
+ *
+ * - no word, button or picture overlaps a corner control;
+ * - no text is clipped: nothing is wider than its box where the box hides the
+ *   rest, nothing runs off the screen, and the page never scrolls sideways;
+ * - no single word is wider than the box it sits in (that is how a hero's
+ *   name ended up as "Sp / ark / leh / oof").
+ */
+
+import { test, expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
+import { createCharacter } from "./characters";
+import { roomState } from "./room-state";
+
+const TAP = { timeout: 20_000 } as const;
+const API = "http://localhost:8787";
+
+const WIDTHS = [360, 390] as const;
+const TEXT = ["normal", "largest"] as const;
+const HANDS = ["off", "right", "left"] as const;
+
+interface Member {
+  connected: boolean;
+  character: { name: string };
+}
+
+async function sessionOf(page: Page, code: string): Promise<{ playerId: string; sessionToken: string }> {
+  return page.evaluate((room) => {
+    const saved = localStorage.getItem(`kad.session.${room}`);
+    return saved ? (JSON.parse(saved) as { playerId: string; sessionToken: string }) : { playerId: "", sessionToken: "" };
+  }, code);
+}
+
+/** The dev playtest jump (playtest.ts), as stop-resume.spec uses it. */
+async function jumpTo(page: Page, code: string, sceneId: string): Promise<void> {
+  const session = await sessionOf(page, code);
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const state = await roomState<{ runId: string; seq: number }>(page, code);
+    const response = await fetch(`${API}/api/action`, {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: `Bearer ${session.sessionToken}` },
+      body: JSON.stringify({
+        runId: state.runId,
+        playerId: session.playerId,
+        seq: state.seq,
+        intent: { type: "PLAYTEST_GOTO", sceneId },
+      }),
+    });
+    if (((await response.json()) as { ok?: boolean }).ok) return;
+  }
+  throw new Error("the playtest jump kept losing the seq race");
+}
+
+/** Apply display settings the way a11y/prefs.ts does: attributes on <html>. */
+async function settings(page: Page, text: (typeof TEXT)[number], hand: (typeof HANDS)[number]): Promise<void> {
+  await page.evaluate(
+    ([t, h]) => {
+      const root = document.documentElement;
+      if (t === "normal") root.removeAttribute("data-text");
+      else root.setAttribute("data-text", t);
+      if (h === "off") root.removeAttribute("data-hand");
+      else root.setAttribute("data-hand", h);
+    },
+    [text, hand] as const,
+  );
+}
+
+/** Everything wrong with the screen as it is drawn now, in words. */
+async function misfits(page: Page): Promise<string[]> {
+  return page.evaluate(() => {
+    const out: string[] = [];
+    const doc = document.documentElement;
+    const vw = doc.clientWidth;
+    if (doc.scrollWidth > vw + 1) out.push(`the page scrolls sideways (${doc.scrollWidth} > ${vw})`);
+
+    /** The part of an element a person can see: inside the screen and every box that scrolls or clips it. */
+    const seen = (el: Element): DOMRect | null => {
+      const box = el.getBoundingClientRect();
+      let left = Math.max(box.left, 0);
+      let top = Math.max(box.top, 0);
+      let right = box.right;
+      let bottom = Math.min(box.bottom, innerHeight);
+      // The browser's own answer covers display, visibility, opacity and a closed <details>.
+      if (!el.checkVisibility({ opacityProperty: true, visibilityProperty: true })) return null;
+      for (let at: Element | null = el; at; at = at.parentElement) {
+        const style = getComputedStyle(at);
+        if (at !== el && at !== document.documentElement && at !== document.body && style.overflow !== "visible") {
+          const clip = at.getBoundingClientRect();
+          left = Math.max(left, clip.left);
+          top = Math.max(top, clip.top);
+          right = Math.min(right, clip.right);
+          bottom = Math.min(bottom, clip.bottom);
+        }
+      }
+      return right - left > 0 && bottom - top > 0 ? new DOMRect(left, top, right - left, bottom - top) : null;
+    };
+    const shown = (el: Element): boolean => seen(el) !== null;
+    const ownText = (el: Element): string =>
+      [...el.childNodes]
+        .filter((node) => node.nodeType === Node.TEXT_NODE)
+        .map((node) => node.textContent ?? "")
+        .join("")
+        .trim();
+    const label = (el: Element): string =>
+      `<${el.tagName.toLowerCase()}${el.className && typeof el.className === "string" ? ` class="${el.className}"` : ""}> "${(el.textContent ?? el.getAttribute("aria-label") ?? "").trim().slice(0, 40)}"`;
+
+    // What a person reads or taps: text, controls, pictures with words.
+    const things = [...document.body.querySelectorAll("*")].filter(
+      (el) =>
+        !el.closest(".kad-corner, .playtest, [aria-hidden='true']") &&
+        (ownText(el) !== "" ||
+          el.matches("button, input, select, textarea, a[href]") ||
+          (el.matches("img") && (el.getAttribute("alt") ?? "") !== "")) &&
+        shown(el),
+    );
+
+    // 1. Nothing under a corner control.
+    const corner = [...document.querySelectorAll(".kad-corner > *")]
+      .filter(shown)
+      .map((el) => ({ el, box: el.getBoundingClientRect() }));
+    for (const el of things) {
+      const box = seen(el)!;
+      for (const control of corner) {
+        const x = Math.min(box.right, control.box.right) - Math.max(box.left, control.box.left);
+        const y = Math.min(box.bottom, control.box.bottom) - Math.max(box.top, control.box.top);
+        if (x > 1 && y > 1) out.push(`${label(el)} is under the corner's ${label(control.el)}`);
+      }
+    }
+
+    // 2. Nothing clipped, and 3. no word wider than its box.
+    const canvas = document.createElement("canvas").getContext("2d");
+    for (const el of things) {
+      const box = el.getBoundingClientRect();
+      if (box.right > vw + 1 || box.left < -1) out.push(`${label(el)} runs off the screen (x ${Math.round(box.left)} to ${Math.round(box.right)}, y ${Math.round(box.top)}, of ${vw})`);
+      const style = getComputedStyle(el);
+      const hides = style.overflowX !== "visible" || style.textOverflow === "ellipsis";
+      if (hides && el.scrollWidth > el.clientWidth + 1 && !el.matches("input, textarea, select")) {
+        out.push(`${label(el)} is clipped (${el.scrollWidth} > ${el.clientWidth})`);
+      }
+      const text = ownText(el);
+      if (canvas && text !== "" && style.display !== "inline") {
+        canvas.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+        // A tight wordmark sets its letters closer than the font does.
+        canvas.letterSpacing = style.letterSpacing === "normal" ? "0px" : style.letterSpacing;
+        const room = el.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+        for (const word of text.split(/\s+/)) {
+          if (canvas.measureText(word).width > room + 1) out.push(`${label(el)}: "${word}" is wider than its box`);
+        }
+      }
+    }
+    return [...new Set(out)];
+  });
+}
+
+/** Every width, text size and hand, on one page as it stands. */
+async function expectFits(page: Page, screen: string): Promise<void> {
+  const found: string[] = [];
+  for (const width of WIDTHS) {
+    await page.setViewportSize({ width, height: 800 });
+    for (const text of TEXT) {
+      for (const hand of HANDS) {
+        await settings(page, text, hand);
+        // Two frames: the attributes restyle, then layout settles.
+        await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+        const problems = await misfits(page);
+        for (const problem of problems) found.push(`${screen} @${width}px, ${text} text, hand ${hand}: ${problem}`);
+        if (problems.length > 0 && process.env.KAD_FIT_DEBUG) {
+          await page.screenshot({ path: `${process.env.KAD_FIT_DEBUG}/${screen.replace(/\W+/g, "-")}-${width}-${text}-${hand}.png` });
+        }
+      }
+    }
+  }
+  await settings(page, "normal", "off");
+  // Soft, so one run reports every screen rather than stopping at the first.
+  expect.soft(found, found.join("\n")).toEqual([]);
+}
+
+test.describe("everything on a phone fits around the corner row", () => {
+  const open: BrowserContext[] = [];
+  test.afterEach(async () => {
+    await Promise.all(open.splice(0).map((c) => c.close().catch(() => undefined)));
+  });
+
+  async function phone(browser: Browser): Promise<Page> {
+    const context = await browser.newContext({ viewport: { width: 390, height: 800 } });
+    open.push(context);
+    const page = await context.newPage();
+    // The dev drawer is a developer's tool that production does not have.
+    await page.addInitScript(() => {
+      addEventListener("DOMContentLoaded", () => {
+        const style = document.createElement("style");
+        style.textContent = ".playtest { display: none !important; }";
+        document.head.append(style);
+      });
+    });
+    return page;
+  }
+
+  test("the header, a host's notices and stop offer, the room controls and the catch-up line", async ({ browser }) => {
+    test.setTimeout(300_000);
+
+    // --- The start screen ---
+    const host = await phone(browser);
+    await host.goto("/");
+    await expect(host.getByRole("button", { name: /want to host/i })).toBeVisible(TAP);
+    await expectFits(host, "start screen");
+
+    // --- The grown-up's guide, whose words scroll under nothing ---
+    await host.goto("/guide");
+    await expect(host.getByRole("heading", { level: 1 })).toBeVisible(TAP);
+    await expectFits(host, "the guide");
+    await host.locator(".guide").evaluate((el) => el.scrollTo(0, 1200));
+    await expectFits(host, "the guide, scrolled");
+    await host.goto("/");
+
+    // --- A Phone Mode room, a host and a guest, each with a hero ---
+    await host.getByRole("button", { name: /want to host/i }).click();
+    await host.getByText("Phone Mode").click();
+    await host.getByLabel("Your adventurer name").fill("Grown-up");
+    await host.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
+    const code = new URL(host.url()).pathname.split("/").pop() ?? "";
+    await createCharacter(host, "unicorn", "Sparklehoof");
+
+    const guest = await phone(browser);
+    await guest.goto("/");
+    await guest.getByLabel(/room code/i).fill(code);
+    await guest.getByRole("button", { name: /join a game/i }).click();
+    await expect(guest).toHaveURL(new RegExp(`/p/${code}$`), TAP);
+    await createCharacter(guest, "griffin", "Rosie");
+
+    // The host's phone says who joined, and keeps saying it until dismissed.
+    await expect(host.locator(".kad-arrivals--inline .kad-arrival").first()).toBeVisible(TAP);
+    await expectFits(host, "host's lobby with an arrival notice");
+
+    // --- A Rest scene: the stop offer beside the arrival notice ---
+    await host.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    await expect.poll(async () => (await roomState<{ phase: string }>(host, code)).phase, TAP).toBe("scene");
+    await jumpTo(host, code, "rest_mossbank");
+    await expect(host.getByText(/cozy place to stop for today/i)).toBeVisible(TAP);
+    await expect(host.locator(".kad-arrivals--inline .kad-arrival").first()).toBeVisible();
+    await expectFits(host, "host at a Rest, with the stop offer and an arrival notice");
+
+    // --- The room controls, open ---
+    await host.getByText("Running this room").click();
+    await expect(host.getByRole("button", { name: "Lock the room" })).toBeVisible(TAP);
+    await expectFits(host, "host's room controls");
+
+    // --- The guest steps away and comes back to the catch-up line ---
+    const member = async (): Promise<Member | undefined> =>
+      (await roomState<{ party: Member[] }>(host, code)).party.find((m) => m.character.name === "Rosie");
+    await guest.goto("about:blank");
+    await expect.poll(async () => (await member())?.connected, TAP).toBe(false);
+    await guest.goto(`/p/${code}`);
+    await expect(guest.getByTestId("catch-up")).toContainText("Welcome back, Rosie!", TAP);
+    await expectFits(guest, "guest's catch-up line");
+
+    // --- Between games: the adventure book, which shares the phone's shell ---
+    await guest.goto("/");
+    await guest.getByRole("button", { name: /open your book/i }).click(TAP);
+    await expect(guest.getByRole("region", { name: "Rosie's character sheet" })).toBeVisible(TAP);
+    await expectFits(guest, "the adventure book");
+  });
+});

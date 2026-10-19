@@ -25,8 +25,9 @@
  */
 .kad-arrivals--inline {
   flex: 0 0 auto;
-  /* Clear of the corner row (settings, read-aloud, sound) in the top corner of every phone. */
-  padding: 0.5rem var(--kad-corner-reserve) 0 0.75rem;
+  /* The corner row has a strip of its own above the phone's shell (styles/theme.css), so the
+     notices take the whole width: a name and its Remove never share a line with the row. */
+  padding: 0.5rem 0.75rem 0;
 }
 
 /* All of them, on request: scrolls inside its own box, never pushes the
@@ -47,6 +48,7 @@
 
 .kad-arrival {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.6rem;
   padding: 0.5rem 0.5rem 0.5rem 0.75rem;
@@ -70,11 +72,12 @@
   color: var(--kad-accent-ink);
 }
 
+/* At least a name's worth of room; past that, Remove and the close wrap under it (#257). */
 .kad-arrival__text {
-  flex: 1 1 auto;
+  flex: 1 1 8em;
   min-inline-size: 0;
   margin: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 @media (prefers-reduced-motion: reduce) {
