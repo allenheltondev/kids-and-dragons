@@ -520,7 +520,9 @@ Resources:
           Properties:
             ApiId: !Ref HttpApi
             # One catch-all: the function routes internally (lambda/http.ts), so
-            # adding a route is a code change rather than a stack change.
+            # adding a route is a code change rather than a stack change. That
+            # includes POST /api/client-error (#317): the client's crash reports
+            # take this path, and CloudFront's /api/* behavior forwards POST.
             Path: /{proxy+}
             Method: ANY
 

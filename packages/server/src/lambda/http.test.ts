@@ -1995,6 +1995,8 @@ const SHARED = [
   { path: "/api/progression/spend", method: "POST", probe: "/api/progression/spend" },
   { path: "/api/state", method: "GET", probe: "/api/state" },
   { path: "/api/health", method: "GET", probe: "/api/health" },
+  // A crash report from a phone or the TV, logged scrubbed and not stored (#317).
+  { path: "/api/client-error", method: "POST", probe: "/api/client-error" },
   // Prod verifies a Cognito id token; dev verifies the unsigned stand-in from
   // `dev-auth.ts`. Same handlers, same shapes.
   // A player's saved heroes, to bring one back (handlers/heroes.ts).

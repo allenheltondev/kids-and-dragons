@@ -114,6 +114,20 @@ export async function admitCodeLookup(
   return { hit: () => deps.repo.refundCodeLookup(clientKey, window) };
 }
 
+/**
+ * Takes one crash report from this client's budget, or says it is spent (#317).
+ *
+ * The same limit, window, client key and row as the wrong-code budget, under
+ * a key of its own: a page stuck in an error loop must not be what stops a
+ * school's Wi-Fi from joining a room. Nothing is handed back, because every
+ * report costs, whatever it says.
+ */
+export function admitClientError(clientKey: string, deps: GuardDeps): Promise<boolean> {
+  const window = windowAt(deps.now());
+  const ttl = Math.floor(((window + 2) * CODE_MISS_WINDOW_MS) / 1000);
+  return deps.repo.reserveCodeLookup(`report#${clientKey}`, window, CODE_MISS_LIMIT, ttl);
+}
+
 /** Eight hextets, or null for anything that is not an IPv6 address. */
 function expandIpv6(raw: string): string[] | null {
   const address = raw.split("%")[0] ?? ""; // drop a zone id (`fe80::1%eth0`)

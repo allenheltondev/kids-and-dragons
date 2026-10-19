@@ -29,6 +29,7 @@ import {
   retryAfterSeconds,
   SLOW_DOWN,
 } from "../handlers/code-guard.ts";
+import { reportClientError } from "../handlers/client-error.ts";
 import { relayPreview } from "../handlers/preview.ts";
 import { beatPresence } from "../handlers/presence.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "../handlers/deps.ts";
@@ -139,6 +140,7 @@ type Route = (deps: HandlerDeps) => Promise<APIGatewayProxyStructuredResultV2>;
 
 function matchRoute(req: Req, rt: HttpRuntime): Route | null {
   if (req.method === "POST") {
+    if (req.path === "/api/client-error") return (deps) => postClientError(req, deps);
     if (req.path === "/api/room") return (deps) => postRoom(req, deps);
     if (req.path === "/api/action") return (deps) => postAction(req, deps);
     if (req.path === "/api/preview") return (deps) => postPreview(req, deps);
@@ -217,6 +219,17 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
 // ---------------------------------------------------------------------------
 // Rooms
 // ---------------------------------------------------------------------------
+
+/** A crash on a phone or the TV: one scrubbed log line, nothing stored (#317). */
+async function postClientError(req: Req, deps: HandlerDeps) {
+  const outcome = await reportClientError(req.body, req.client, deps);
+  if (outcome === "malformed") return error(400, "ILLEGAL", "not a crash report");
+  if (outcome === "refused") {
+    const refused = error(SLOW_DOWN.status, SLOW_DOWN.code, "Too many reports. Try again later.");
+    return { ...refused, headers: { ...refused.headers, "retry-after": String(retryAfterSeconds(deps.now())) } };
+  }
+  return { statusCode: 204 };
+}
 
 async function postRoom(req: Req, deps: HandlerDeps) {
   const mode = readMode(req.body.mode);

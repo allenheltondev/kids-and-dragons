@@ -7,7 +7,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { DELETING, STORED } from "./what-we-store";
+import { DELETING, ELSEWHERE, STORED } from "./what-we-store";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..", "..");
 const STORE = path.join(ROOT, "packages", "server", "src", "store");
@@ -75,5 +75,11 @@ describe("what we store (#252)", () => {
 
   it("says a kid's page goes when she does (#299)", () => {
     expect(DELETING[0]).toMatch(/profile, with the colors, frames and title she picked/);
+  });
+
+  it("says crash reports are logged and not stored, with nothing a kid typed (#317)", () => {
+    const reports = ELSEWHERE.find((e) => e.title === "Crash reports");
+    expect(reports?.what).toMatch(/Logged, not stored/);
+    expect(reports?.what).toMatch(/names, hero names, emails, room codes/i);
   });
 });
