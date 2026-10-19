@@ -44,8 +44,10 @@ async function expectTappable(page: Page, control: Locator, what: string): Promi
   expect(box!.y + box!.height, `${what} inside the bottom edge`).toBeLessThanOrEqual(viewport.height + 0.5);
   expect(box!.width, `${what} is a real target`).toBeGreaterThanOrEqual(43);
   expect(box!.height, `${what} is a real target`).toBeGreaterThanOrEqual(43);
-  // Throws if another element would intercept the pointer event.
-  await control.click({ trial: true, timeout: 5_000 });
+  // Throws if another element would intercept the pointer event. The same budget as every other wait here:
+  // it only bounds a main thread too busy to answer (a TV drawing a story on a slow device), because a control
+  // that is covered fails the hit-target check on the first look.
+  await control.click({ trial: true, ...TAP });
 }
 
 /** No two of the boxes overlap. */
