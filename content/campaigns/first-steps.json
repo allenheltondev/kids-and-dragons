@@ -1,0 +1,7 @@
+{
+  "$comment": "The practice (#255): one short chapter that teaches by doing, offered in the lobby while any seated hero is new. Not a campaign a party continues: the server plays it without an attempt, a hero claim, XP or items, and marks every seated hero `practiced` when it ends (handlers/practice.ts, docs/architecture.md §4.5 \"The practice\"). Its id is PRACTICE_CAMPAIGN_ID in packages/shared/src/practice.ts.",
+  "id": "first-steps",
+  "title": "First Steps",
+  "blurb": "A sunny practice meadow, a faun with a clipboard, and a wisp who loves tag. Learn how to play before the real adventure starts.",
+  "chapters": ["first-steps-01"]
+}

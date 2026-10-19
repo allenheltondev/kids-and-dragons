@@ -247,6 +247,12 @@ export interface RunState {
    * one. Optional: absent on runs persisted before it existed, read as null.
    */
   scenePriority?: ScenePriority | null;
+  /**
+   * The current scene's `hint` (chapter.ts `SceneHint`, #255): what to tap, for
+   * a player still learning. Present only while a scene that has one is open,
+   * which today means only in the practice; every other run never carries it.
+   */
+  hint?: string;
   party: PartyMember[];
   prompt: Prompt | null;
   lastRoll: DiceRoll | null;
@@ -412,6 +418,14 @@ export interface RunState {
    * Absent until somebody is removed.
    */
   removed?: string[];
+  /**
+   * The player the host handed the keeper role to (#272): the one phone that
+   * may keep this guest game by signing in. It overrides what each phone was
+   * told when it joined, so a phone restored from storage, or one that had the
+   * offer before the host moved it, draws it right without a fresh join.
+   * Absent until a host hands it over, and then only the join's word stands.
+   */
+  keeperPlayerId?: string;
   /**
    * Everybody who has joined this room, by player id, for the host's view
    * (#263): who is in, on what, including a kid still making their hero, who
