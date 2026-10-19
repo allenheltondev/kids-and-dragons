@@ -406,11 +406,11 @@ describe("class unlocks", () => {
   });
 
   describe("the Songkeeper's songs can heal the Songkeeper (#309)", () => {
-    const keeperAt = (level: number) =>
-      hero({ id: "c_keeper", species: "unicorn", class: "songkeeper", level });
+    const keeperAt = (rank: ClassRank) =>
+      hero({ id: "c_keeper", species: "unicorn", class: "songkeeper", rank });
 
     it("a Songkeeper alone can Rally and Soothe themselves", () => {
-      const keeper = keeperAt(3);
+      const keeper = keeperAt("apprentice");
       const scene = sceneWith([{ character: keeper, at: { x: 1, y: 2 }, hp: 2 }], [wisp()], keeper.id);
 
       const actions = legalActions(scene.state, ctx());
@@ -422,7 +422,7 @@ describe("class unlocks", () => {
     });
 
     it("healing at full health is still refused", () => {
-      const keeper = keeperAt(3);
+      const keeper = keeperAt("apprentice");
       const scene = sceneWith([{ character: keeper, at: { x: 1, y: 2 } }], [wisp()], keeper.id);
 
       // Nobody to heal, so neither song is on offer, and asking anyway is refused.
@@ -433,7 +433,7 @@ describe("class unlocks", () => {
     });
 
     it("at a table of four the Songkeeper is one choice among four", () => {
-      const keeper = keeperAt(3);
+      const keeper = keeperAt("apprentice");
       const friends = ["a", "b", "c"].map((n) =>
         hero({ id: `c_${n}`, species: "bigfoot", class: "thornguard" }),
       );
@@ -459,7 +459,7 @@ describe("class unlocks", () => {
     });
 
     it("Soothe still stops at four steps for friends, but reaches the Songkeeper at any spot", () => {
-      const keeper = keeperAt(3);
+      const keeper = keeperAt("apprentice");
       const far = hero({ id: "c_far", species: "griffin", class: "duskrunner" });
       const scene = sceneWith(
         [
@@ -474,7 +474,7 @@ describe("class unlocks", () => {
     });
 
     it("Rally's revive stays friend-only: a Songkeeper who is down cannot act", () => {
-      const keeper = keeperAt(1);
+      const keeper = keeperAt("none");
       const fallen = hero({ id: "c_fallen", species: "bigfoot", class: "thornguard" });
       const scene = sceneWith(
         [
