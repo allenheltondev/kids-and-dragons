@@ -5,6 +5,7 @@
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import "./report/listen";
 import { startA11y } from "./a11y/prefs";
 import { App } from "./App";
 import { registerServiceWorker } from "./sw/register";
