@@ -8,9 +8,10 @@
   display: flex;
   justify-content: center;
   inline-size: 100%;
-  block-size: 100%;
-  padding: calc(var(--kad-safe-top) + var(--kad-corner-bottom)) calc(var(--kad-safe-right) + 1rem)
-    calc(var(--kad-safe-bottom) + 2rem) calc(var(--kad-safe-left) + 1rem);
+  /* The scrolling starts under the corner row's strip, so the words never slide beneath it. */
+  margin-block-start: calc(var(--kad-safe-top) + var(--kad-corner-bottom));
+  block-size: calc(100% - var(--kad-safe-top) - var(--kad-corner-bottom));
+  padding: 0.5rem calc(var(--kad-safe-right) + 1rem) calc(var(--kad-safe-bottom) + 2rem) calc(var(--kad-safe-left) + 1rem);
   overflow-y: auto;
   background: var(--kad-bg);
   color: var(--kad-ink);
@@ -134,6 +135,7 @@ ul.guide__list {
 
   .guide {
     display: block;
+    margin: 0;
     block-size: auto;
     padding: 0;
     overflow: visible;
