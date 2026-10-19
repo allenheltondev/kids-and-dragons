@@ -1,6 +1,6 @@
 # Riftlight — authored opening
 
-Three playable first drafts, using the [design bible](../../../docs/campaigns/continental-rift/README.md).
+Twelve playable story nodes and five development pause boundaries, using the [design bible](../../../docs/campaigns/continental-rift/README.md).
 Gemfall anchors the read-aloud rhythm, tangible choices and visible consequences. The narrator
 describes what happens instead of telling the table what sort of thing it is or how to feel.
 
@@ -21,7 +21,7 @@ are stand-ins at the usual creation level; tests also walk the content as Sworn 
 
 Nothing in this directory is loaded by the normal lobby, deployed, or projected into the normal
 item catalog. The staging helper merges the chapter's `props` only into the temporary catalog.
-The three files are ordinary chapter JSON, validated with the same gate as shipped content.
+These files are ordinary chapter JSON, validated with the same gate as shipped content.
 
 ## Written
 
@@ -31,10 +31,12 @@ The three files are ordinary chapter JSON, validated with the same gate as shipp
 | `glacier-survival` | `riftlight-glacier-survival` | Navigate an unmarked drift, protect the kid, cross a melt channel, and test the singing seam after learning its note. |
 | `riftseekers-departure` | `riftlight-riftseekers-departure` | Choose a priority in Orin and Olivia's practical disagreement, hear two purposeful leads, and receive the Listening Chime. |
 
-The preview stops beside the singing hall **before the regional fork**. Its terminal graph
-node exists only to make this development preview complete. It is not a Riftlight ending and
-must never be copied into the production graph. The departure chapter itself ends normally;
-the full graph will supply its onward exits.
+The preview now plays the first fork. The shelf leads to the Cairnstep or the river challenge;
+the hidden opening leads to the Saltrot and offers a linked return. River escapes reach
+Frostfang shore, the boundary stones, Ashspan Bridge, or a one-way Sky Islands crossing.
+Short arrival episodes give each route a concrete landing. Five biome-matched `preview-pause-*`
+chapters are explicit development boundaries, pay no XP, and must never enter production.
+Their five-minute metadata is the schema minimum, not a measured duration.
 
 Failed rolls cost a little harm and change the immediate result; every path continues. No
 setback ending, early antagonist reveal, or assumption about the party's Gemfall ending.
@@ -44,6 +46,14 @@ roller, without pretending they have their teammate's wings or class ability.
 Story narration never announces diagnostic rift colors. The first rift's colors appear through
 the existing private Starweaver view at the exit; the in-chapter reading records the choice
 for Seren's callback without duplicating that private view in shared text.
+
+## The route slice
+
+See [route implementation and review](../../../docs/campaigns/continental-rift/routes-continuity-review.md)
+for all new nodes, the river rift placement, nonlethal harm, linked-rift return and first-crossing
+Riftspark behavior. Ordinary story damage is unchanged. The short regional arrivals teach Attune
+once, as journey state, whichever region is visited first. The Saltrot uses its canonical biome
+with explicit existing scene art; it has no invented combat tileset.
 
 ## Continuity to carry into the next nodes
 
@@ -78,15 +88,16 @@ measurements have been invented. The 30–40-minute ordinary-node goal remains u
 playtests support it or a shorter prologue goal is explicitly recorded.
 Each pays the agreed 140 XP, with no extra objectives that could push the campaign over its cap.
 
-Next authoring slice: `ice-shelf-traverse`, `hidden-glacier-rift`, then `headwaters-washout` and
-its arrival nodes. Connect the two-way glacier/Saltrot rift with a linked pair, and give every
-river branch an onward route. Full graph coverage and XP-route acceptance remain unfinished.
+The next authoring slice is the regional substance beyond these arrivals: stone-counters,
+whale-road and the buried bridge, including their first fragments, changed geography and
+inter-strand exits. Full-campaign XP-route acceptance remains unfinished. The current preview
+graph is linted and replayed with no softlocks; its pauses are not campaign endings.
 
 For production integration:
 
 1. Create `content/campaigns/riftlight.json` using the agreed full graph and `requires: ["gemfall"]`.
 2. Move approved chapters to `content/chapters/`, changing their `campaignId` to `riftlight`.
-3. Keep these node and chapter ids; replace the preview ending with the agreed onward edges.
+3. Keep these node and chapter ids; replace the preview pause nodes with the agreed regional edges.
    Revisit policies in the preview are temporary too: implement the bible's changed glacier
    visits and `pass` departure hub in the full graph.
 4. Generate the real item catalog from the departure prop with `npm run canon:items`.
@@ -95,7 +106,7 @@ For production integration:
 ## Verification
 
 ```sh
-npx vitest run tools/content/riftlight-opening.test.ts tools/content/riftlight-continuity.test.mjs
+npx vitest run tools/content/riftlight-opening.test.ts tools/content/riftlight-routes.test.ts tools/content/riftlight-continuity.test.mjs
 ```
 
 Tests stage the content alongside Gemfall, run the actual content gate, walk the journey through
@@ -103,7 +114,7 @@ the graph runtime, and exhaust chapter choices with low/high dice across all six
 all four classes. They check the guaranteed song/chime and Seren's carried-flag callback.
 
 The [scene-by-scene continuity review](../../../docs/campaigns/continental-rift/opening-continuity-review.md)
-covers all 80 scenes, including ordinary objects and actions the proper-name sweep cannot detect.
+covers the initial 80 scenes; the [route review](../../../docs/campaigns/continental-rift/routes-continuity-review.md) covers the 83 added scenes, including ordinary objects and actions the proper-name sweep cannot detect.
 `continuity.json` records their narrative dependencies and introduction wording. The real-engine
 walker checks that each path establishes what later scenes refer to, including across chapter
 boundaries and conditional callbacks. New scenes require an explicit review entry.

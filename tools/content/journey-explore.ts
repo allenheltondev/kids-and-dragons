@@ -614,6 +614,7 @@ function runFlags(
   chapter: string,
   writes: ((chapter: string) => ChapterFlagWrites | undefined) | undefined,
   pick: (flag: string, now: boolean, can: { up: boolean; down: boolean }) => boolean,
+  routeSets?: Readonly<Record<string, readonly string[]>>,
 ): Record<string, boolean> {
   const known = writes?.(chapter);
   const out: Record<string, boolean> = {};
@@ -621,6 +622,18 @@ function runFlags(
     const now = j.flags?.[flag] === true;
     const can = known === undefined ? { up: true, down: true } : { up: known.setsTrue.includes(flag), down: known.setsFalse.includes(flag) };
     out[flag] = pick(flag, now, can);
+  }
+  if (known?.requiredOneOf?.length && !known.requiredOneOf.some((flag) => out[flag])) {
+    out[known.requiredOneOf[0]!] = true;
+  }
+  // Synthetic chapter reports must respect campaign forks just as real
+  // authored endings do. Setting every possible branch simultaneously makes
+  // the runtime reject the fork and invents a softlock that no table can hit.
+  for (const members of Object.values(routeSets ?? {})) {
+    const active = members.filter((flag) => out[flag]);
+    if (active.length <= 1) continue;
+    const selected = active.find((flag) => !j.flags?.[flag]) ?? active[0]!;
+    for (const flag of members) out[flag] = flag === selected;
   }
   return out;
 }
@@ -663,7 +676,7 @@ export function randomWalk(
       outcome: next() < 0.5 ? "success" : "setback",
       flags: runFlags(graph, j, j.chapter, options.chapterFlags, (_f, now, can) =>
         now ? !(can.down && next() < 0.3) : can.up && next() < 0.5,
-      ),
+        campaign.routeSets),
     }),
     exit: (_j, open) => {
       const fresh = open.filter((exit) => !taken.has(exit.edge));
@@ -697,7 +710,7 @@ export function scriptedWalk(
     name: `path:${script.join(",")}`,
     chapter: (j) => ({
       outcome: parsed[at]?.outcome ?? "success",
-      flags: runFlags(graph, j, j.chapter, options.chapterFlags, (_f, now, can) => now || can.up),
+      flags: runFlags(graph, j, j.chapter, options.chapterFlags, (_f, now, can) => now || can.up, campaign.routeSets),
     }),
     exit: () => {
       const entry = parsed[at];
@@ -751,7 +764,7 @@ export function replayState(
   target: number,
   name: string,
   then?: { take?: EdgeId; refuse?: { edge: EdgeId; reason: ConsumedLink["reason"] } },
-  options: WalkOptions = {},
+  options: PlaytestOptions = {},
 ): WalkResult {
   const chain = stateChain(search, target);
   let k = 0;
@@ -762,7 +775,7 @@ export function replayState(
     chapter: (j) => {
       // Past the end of the explorer's path (the destination of `then.take`)
       // there is nothing to follow: play the chapter the generous way.
-      if (took) return { outcome: "success", flags: Object.fromEntries(graph.flags.map((flag) => [flag, j.flags?.[flag] === true])) };
+      if (took) return { outcome: "success", flags: runFlags(graph, j, j.chapter, options.chapterFlags, (_f, now, can) => now || can.up, campaign.routeSets) };
       return chapterResult(graph, j, at().step.label);
     },
     // The explorer's rift actions (#197), asked of the runtime exactly.

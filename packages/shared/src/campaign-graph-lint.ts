@@ -259,6 +259,8 @@ export interface ChapterFlagWrites {
   setsTrue: readonly string[];
   /** Flags some effect in the chapter can set false. */
   setsFalse: readonly string[];
+  /** Every ending unconditionally sets at least one member of this group. */
+  requiredOneOf?: readonly string[];
 }
 
 export interface GraphLintOptions {
@@ -311,7 +313,18 @@ export function chapterFlagWrites(chapter: Pick<Chapter, "scenes">): ChapterFlag
     }
   };
   walk(chapter.scenes);
-  return { setsTrue: [...setsTrue].sort(), setsFalse: [...setsFalse].sort() };
+  // Ending onEnter effects always run, independently of dice, class gates or
+  // entry flags. Keep their disjunction so a dice-routed node is not falsely
+  // explored as ending with no route at all. Other flag writes remain the
+  // existing conservative overapproximation.
+  const endings = Object.values(chapter.scenes).filter((scene) => "choices" in scene && scene.choices.length === 0);
+  const groups = endings.map((scene) => {
+    const final = new Map<string, boolean>();
+    for (const effect of scene.onEnter ?? []) if (effect.type === "setFlag") final.set(effect.flag, effect.value !== false);
+    return [...final].filter(([, value]) => value).map(([flag]) => flag);
+  });
+  const requiredOneOf = groups.length && groups.every((group) => group.length > 0) ? [...new Set(groups.flat())].sort() : undefined;
+  return { setsTrue: [...setsTrue].sort(), setsFalse: [...setsFalse].sort(), ...(requiredOneOf ? { requiredOneOf } : {}) };
 }
 
 // ---------------------------------------------------------------------------
@@ -1217,6 +1230,8 @@ function explore(
         for (const value of choices[at]!) assign(at + 1, [...picked, value]);
         return;
       }
+      if (writes?.requiredOneOf?.every((flag) => tracked.flags.includes(flag)) &&
+          !writes.requiredOneOf.some((flag) => picked[tracked.flags.indexOf(flag)])) return;
       for (const outcome of outcomeChoices) {
         const next = clone(aged);
         const notes: string[] = [];
