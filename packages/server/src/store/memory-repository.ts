@@ -885,6 +885,18 @@ export class MemoryRepository implements GameRepository {
           : stored !== null && (stored.version ?? 0) === campaignProgressExpectedVersion;
       if (!matches) return false;
     }
+    if (input.founder && input.unfound) throw new Error("a commit cannot both set and drop the founder");
+    const dropping = input.unfound ? this.get(HH(input.unfound.householdId), META) : undefined;
+    if (input.unfound) {
+      const household = dropping?.data as Household | undefined;
+      if (!dropping || household?.founderDeviceId !== input.unfound.deviceId) return false;
+    }
+    // The founder's household is still a guest game nobody has kept (#272).
+    const founding = input.founder ? this.get(HH(input.founder.householdId), META) : undefined;
+    if (input.founder) {
+      const household = founding?.data as Household | undefined;
+      if (!founding || founding.sweeping || !household?.guest || household.ownerSub) return false;
+    }
     // Each hero still stands as this turn read her: her claim and her version.
     for (const write of characters) {
       const { householdId, id } = write.character;
@@ -895,6 +907,29 @@ export class MemoryRepository implements GameRepository {
     // one TransactWriteItems, including across two different run partitions.
     this.put({ PK: RUN(runId), SK: EVT_SK(event.seq), entity: "event", data: event });
     this.put({ PK: RUN(runId), SK: STATE, entity: "state", data: state });
+    if (input.founder && founding) {
+      const { awaitingFounder: _taken, ...rest } = founding.data as Household;
+      const household: Household = { ...rest, founderDeviceId: input.founder.deviceId };
+      this.put({
+        PK: HH(household.id),
+        SK: META,
+        ...(household.expiresAt ? { GSI1PK: GSI1_GUEST, GSI1SK: GSI1_GUEST_SK(household.expiresAt, household.id) } : {}),
+        entity: "household",
+        data: household,
+      });
+    }
+    if (input.unfound && dropping) {
+      const household: Household = { ...(dropping.data as Household), founderDeviceId: "" };
+      this.put({
+        PK: HH(household.id),
+        SK: META,
+        ...(household.guest && household.expiresAt
+          ? { GSI1PK: GSI1_GUEST, GSI1SK: GSI1_GUEST_SK(household.expiresAt, household.id) }
+          : {}),
+        entity: "household",
+        data: household,
+      });
+    }
     for (const write of characters) {
       this.put(characterItem(claimedRow(write)));
     }

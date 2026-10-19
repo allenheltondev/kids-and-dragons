@@ -1718,6 +1718,59 @@ describe("POST /api/auth/link", () => {
   });
 });
 
+describe("POST /api/room/:code/keeper (#272)", () => {
+  it("lets the host hand the keeper role to a phone in the room, and nobody else", async () => {
+    const harness = makeHarness();
+    const created = await respond(event("POST", "/api/room", { body: { mode: "travel" } }), runtimeFor(harness));
+    const host = bodyOf(created) as unknown as { code: string; deviceToken: string; playerId: string };
+    const joined = await respond(
+      event("POST", `/api/room/${host.code}/join`, { body: { displayName: "Mia" } }),
+      runtimeFor(harness),
+    );
+    const mia = bodyOf(joined) as unknown as { deviceToken: string; playerId: string };
+
+    const refused = await respond(
+      event("POST", `/api/room/${host.code}/keeper`, {
+        body: { playerId: mia.playerId },
+        headers: { "x-kad-device-token": mia.deviceToken },
+      }),
+      runtimeFor(harness),
+    );
+    expect(refused.statusCode).toBe(403);
+
+    const handed = await respond(
+      event("POST", `/api/room/${host.code}/keeper`, {
+        body: { playerId: mia.playerId },
+        headers: { "x-kad-device-token": host.deviceToken },
+      }),
+      runtimeFor(harness),
+    );
+    expect(handed.statusCode).toBe(200);
+
+    const rejoined = await respond(
+      event("POST", `/api/room/${host.code}/join`, { headers: { "x-kad-device-token": mia.deviceToken } }),
+      runtimeFor(harness),
+    );
+    expect(bodyOf(rejoined)).toMatchObject({ keeper: true });
+    const hostAgain = await respond(
+      event("POST", `/api/room/${host.code}/join`, { headers: { "x-kad-device-token": host.deviceToken } }),
+      runtimeFor(harness),
+    );
+    expect((bodyOf(hostAgain) as { keeper?: boolean }).keeper).toBeUndefined();
+  });
+
+  it("wants a player id", async () => {
+    const harness = makeHarness();
+    const created = await respond(event("POST", "/api/room", { body: { mode: "travel" } }), runtimeFor(harness));
+    const host = bodyOf(created) as unknown as { code: string; deviceToken: string };
+    const result = await respond(
+      event("POST", `/api/room/${host.code}/keeper`, { body: {}, headers: { "x-kad-device-token": host.deviceToken } }),
+      runtimeFor(harness),
+    );
+    expect(result.statusCode).toBe(400);
+  });
+});
+
 describe("POST /api/auth/device", () => {
   it("refuses a request with no bearer token", async () => {
     const result = await respond(event("POST", "/api/auth/device"), runtimeFor(makeHarness()));
@@ -1978,6 +2031,8 @@ const SHARED = [
   { path: "/api/room/:code/watch", method: "POST", probe: "/api/room/ABCD/watch" },
   // The host taking a player out (#267, handlers/remove.ts).
   { path: "/api/room/:code/remove", method: "POST", probe: "/api/room/ABCD/remove" },
+  // The host handing the keeper role to a phone in the room (#272, handlers/keeper.ts).
+  { path: "/api/room/:code/keeper", method: "POST", probe: "/api/room/ABCD/keeper" },
   // Host controls (#263, handlers/host.ts).
   { path: "/api/room/:code/lock", method: "POST", probe: "/api/room/ABCD/lock" },
   { path: "/api/room/:code/quiet", method: "POST", probe: "/api/room/ABCD/quiet" },
