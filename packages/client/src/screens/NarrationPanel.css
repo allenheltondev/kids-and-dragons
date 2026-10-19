@@ -46,6 +46,9 @@
      it does, so the bar arriving cannot narrow the story and rewrap it. */
   scrollbar-gutter: stable;
   padding: var(--space-6, 1.5em) var(--space-4, 1em) var(--space-4, 1em);
+  /* Clear of the host's Room button in the shared screen's bottom corner, when there is one
+     (HostControls.css sets the reserve on the shell). */
+  padding-inline-end: calc(var(--space-4, 1em) + var(--kad-host-reserve, 0px));
   background: linear-gradient(
     to bottom,
     transparent 0,

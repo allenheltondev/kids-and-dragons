@@ -122,7 +122,7 @@ async function misfits(page: Page): Promise<string[]> {
     // What a person reads or taps: text, controls, pictures with words.
     const things = [...document.body.querySelectorAll("*")].filter(
       (el) =>
-        !el.closest(".kad-corner, .kad-about, .kad-host--float, .playtest, [aria-hidden='true']") &&
+        !el.closest(".kad-corner, .kad-about, .kad-host--float, .kad-tap-for-sound, .playtest, [aria-hidden='true']") &&
         (ownText(el) !== "" ||
           el.matches("button, input, select, textarea, a[href]") ||
           (el.matches("img") && (el.getAttribute("alt") ?? "") !== "")) &&
@@ -130,8 +130,8 @@ async function misfits(page: Page): Promise<string[]> {
     );
 
     // 1. Nothing under a control pinned over the screen: the corner row, and the shared
-    //    screen's Room button (#263) and About this screen (#264).
-    const corner = [...document.querySelectorAll(".kad-corner > *, .kad-about__open, .kad-host--float > .kad-button")]
+    //    screen's Room button (#263), About this screen and Tap for sound (#264).
+    const corner = [...document.querySelectorAll(".kad-corner > *, .kad-about__open, .kad-host--float > .kad-button, .kad-tap-for-sound .kad-button")]
       .filter(shown)
       .map((el) => ({ el, box: el.getBoundingClientRect() }));
     for (const el of things) {
@@ -147,6 +147,22 @@ async function misfits(page: Page): Promise<string[]> {
     const canvas = document.createElement("canvas").getContext("2d");
     for (const el of things) {
       const box = el.getBoundingClientRect();
+      // Cut off by a box that hides the rest and cannot scroll to it.
+      for (let at = el.parentElement; at && at !== document.body; at = at.parentElement) {
+        const style = getComputedStyle(at);
+        // A box that scrolls lets a person reach the rest; past it, nothing outside matters.
+        if (/auto|scroll/.test(style.overflowY) || /auto|scroll/.test(style.overflowX)) break;
+        if (style.overflowY !== "hidden" && style.overflowY !== "clip" && style.overflowX !== "hidden" && style.overflowX !== "clip") continue;
+        const clip = at.getBoundingClientRect();
+        if (box.bottom > clip.bottom + 1 && box.top < clip.bottom - 1 && clip.bottom < innerHeight - 1) {
+          out.push(`${label(el)} is cut off at the bottom by ${label(at).slice(0, 60)}`);
+          break;
+        }
+        if (box.top < clip.top - 1 && box.bottom > clip.top + 1 && clip.top > 1) {
+          out.push(`${label(el)} is cut off at the top by ${label(at).slice(0, 60)}`);
+          break;
+        }
+      }
       if (box.right > vw + 1 || box.left < -1) out.push(`${label(el)} runs off the screen (x ${Math.round(box.left)} to ${Math.round(box.right)}, y ${Math.round(box.top)}, of ${vw})`);
       const style = getComputedStyle(el);
       const hides = style.overflowX !== "visible" || style.textOverflow === "ellipsis";
@@ -319,10 +335,30 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expectFits(guest, "the adventure book");
   });
 
-  test("the shared screen: its corner row, About this screen and Room keep off the lobby and the story", async ({ browser }) => {
+  test("the shared screen: its corner row, About this screen, Tap for sound and Room keep off the lobby and the story", async ({ browser }) => {
     test.setTimeout(240_000);
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
     open.push(context);
+    // A TV that holds sound back until a tap, as most do (display-hardware.spec), so the
+    // "Tap for sound" ask is up the whole time and has to keep clear too.
+    await context.addInitScript(() => {
+      class BlockedContext {
+        currentTime = 0;
+        sampleRate = 48_000;
+        destination = {};
+        state = "suspended";
+        addEventListener(): void {}
+        removeEventListener(): void {}
+        createGain() { return { gain: { value: 0, setValueAtTime() {}, linearRampToValueAtTime() {}, cancelScheduledValues() {} }, connect() {} }; }
+        createBufferSource() { return { connect() {}, start() {}, stop() {}, loop: false, buffer: null }; }
+        createOscillator() { return { type: "sine", frequency: { setValueAtTime() {}, linearRampToValueAtTime() {} }, connect() {}, start() {}, stop() {} }; }
+        createBuffer() { return { getChannelData: () => new Float32Array(1) }; }
+        decodeAudioData() { return Promise.reject(new Error("no decoder")); }
+        resume(): Promise<void> { return Promise.resolve(); }
+        close(): Promise<void> { return Promise.resolve(); }
+      }
+      Object.defineProperty(window, "AudioContext", { value: BlockedContext, configurable: true });
+    });
     const tv = await context.newPage();
     await tv.goto("/");
     await tv.getByRole("button", { name: /want to host/i }).click();
@@ -331,6 +367,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
     const code = new URL(tv.url()).pathname.split("/").pop() ?? "";
     await expect(tv.getByRole("button", { name: "About this screen" })).toBeVisible(TAP);
+    await expect(tv.getByRole("button", { name: "Tap for sound" })).toBeVisible(TAP);
 
     const kid = await phone(browser);
     await kid.goto("/");
