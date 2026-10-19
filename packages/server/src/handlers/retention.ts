@@ -439,6 +439,9 @@ export function forgetPlayer(state: RunState, kid: Pick<Forgetting, "playerId" |
   const { playerId } = kid;
   const names = namesIn(kid, state);
   const { [playerId]: _gone, ...seats } = state.seats ?? {};
+  // A host's handing her the keeper role (#272) is hers too: it goes with her.
+  const { keeperPlayerId: handed, ...unhanded } = state;
+  const kept: RunState = handed === playerId ? unhanded : state;
   const party =
     state.phase === "lobby" || state.phase === "creation"
       ? state.party.filter((m) => m.playerId !== playerId)
@@ -448,7 +451,7 @@ export function forgetPlayer(state: RunState, kid: Pick<Forgetting, "playerId" |
             : m,
         );
   const named = state.seats?.[playerId] !== undefined || party !== state.party && party.length !== state.party.length;
-  const scrubbed = scrubNames({ ...state, party, ...(state.seats ? { seats } : {}) }, names);
+  const scrubbed = scrubNames({ ...kept, party, ...(state.seats ? { seats } : {}) }, names);
   const renamed = JSON.stringify(scrubbed) !== JSON.stringify(state);
   if (!named && !renamed) return null;
   const removed = state.removed?.includes(playerId) ? state.removed : [...(state.removed ?? []), playerId];

@@ -224,6 +224,12 @@ export interface GameStore {
    */
   removePlayer(playerId: string): Promise<boolean>;
   /**
+   * The host hands the keeper role to a phone in the room (#272), so that
+   * phone, and no other, is offered the chance to keep a guest game. Resolves
+   * like `removePlayer`.
+   */
+  handKeeper(playerId: string): Promise<boolean>;
+  /**
    * The host locks the room to new joins, or opens it again (#263). Everybody
    * on the roster (`RunState.seats`) can still come back. Resolves like
    * `removePlayer`.

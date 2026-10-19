@@ -37,6 +37,7 @@ import { iso, ok } from "../handlers/deps.ts";
 import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, watchRoom } from "../handlers/room.ts";
 import { setVisitors } from "../handlers/visitors.ts";
 import { removePlayer } from "../handlers/remove.ts";
+import { handKeeper } from "../handlers/keeper.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "../handlers/host.ts";
 import { releaseSavedHero, resumeGame, stopForToday } from "../handlers/save.ts";
 import { listHeroes } from "../handlers/heroes.ts";
@@ -170,6 +171,11 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (remove?.[1]) {
       const code = remove[1].toUpperCase();
       return (deps) => postRemove(req, deps, code);
+    }
+    const keeper = /^\/api\/room\/([A-Za-z]{4})\/keeper$/.exec(req.path);
+    if (keeper?.[1]) {
+      const code = keeper[1].toUpperCase();
+      return (deps) => postKeeper(req, deps, code);
     }
     const lock = /^\/api\/room\/([A-Za-z]{4})\/lock$/.exec(req.path);
     if (lock?.[1]) {
@@ -495,6 +501,15 @@ async function postRemove(req: Req, deps: HandlerDeps, code: string) {
   const valid = typeof playerId === "string" && playerId !== "";
   return postHostControl(req, deps, code, valid ? null : "expected { playerId }", (principal) =>
     removePlayer({ code, principal, playerId: playerId as string }, deps),
+  );
+}
+
+/** The host handing the keeper role to a phone in the room (#272). */
+async function postKeeper(req: Req, deps: HandlerDeps, code: string) {
+  const playerId = req.body.playerId;
+  const valid = typeof playerId === "string" && playerId !== "";
+  return postHostControl(req, deps, code, valid ? null : "expected { playerId }", (principal) =>
+    handKeeper({ code, principal, playerId: playerId as string }, deps),
   );
 }
 

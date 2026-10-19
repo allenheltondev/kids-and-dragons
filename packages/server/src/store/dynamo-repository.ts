@@ -1416,6 +1416,7 @@ export class DynamoRepository implements GameRepository {
       campaignProgress,
       campaignProgressExpectedVersion,
     } = input;
+    if (input.founder && input.unfound) throw new Error("a commit cannot both set and drop the founder");
     if (campaignProgress && campaignProgressExpectedVersion === undefined) {
       throw new Error("campaign progress commit is missing its expected version");
     }
@@ -1457,6 +1458,48 @@ export class DynamoRepository implements GameRepository {
                 ExpressionAttributeValues: { ":expected": expectedSeq },
               },
             },
+            // The host handing the keeper role over (#272): the founder moves
+            // in the same transaction as the run records it, under the
+            // claim's own conditions on the household.
+            ...(input.founder
+              ? [
+                  {
+                    Update: {
+                      TableName: this.table,
+                      Key: { PK: HH(input.founder.householdId), SK: META },
+                      UpdateExpression: "SET #d.#founder = :device REMOVE #d.#awaiting",
+                      ConditionExpression:
+                        "attribute_exists(PK) AND attribute_not_exists(sweeping) AND #d.#guest = :true " +
+                        "AND (attribute_not_exists(#d.#owner) OR #d.#owner = :null)",
+                      ExpressionAttributeNames: {
+                        "#d": "data",
+                        "#founder": "founderDeviceId",
+                        "#awaiting": "awaitingFounder",
+                        "#guest": "guest",
+                        "#owner": "ownerSub",
+                      },
+                      ExpressionAttributeValues: { ":device": input.founder.deviceId, ":true": true, ":null": null },
+                    },
+                  },
+                ]
+              : []),
+            // A host's Remove of the phone that kept the game (#272): it stops
+            // being the founder in the same transaction as the run says so.
+            ...(input.unfound
+              ? [
+                  {
+                    Update: {
+                      TableName: this.table,
+                      Key: { PK: HH(input.unfound.householdId), SK: META },
+                      // Empty, not removed: absent reads as a household from before founders.
+                      UpdateExpression: "SET #d.#founder = :nobody",
+                      ConditionExpression: "attribute_exists(PK) AND #d.#founder = :device",
+                      ExpressionAttributeNames: { "#d": "data", "#founder": "founderDeviceId" },
+                      ExpressionAttributeValues: { ":device": input.unfound.deviceId, ":nobody": "" },
+                    },
+                  },
+                ]
+              : []),
             // If the run has moved on, the whole transaction is rejected and
             // these never land: that is the point of putting them here. Each
             // also carries its hero's claim and the version read (#282), since

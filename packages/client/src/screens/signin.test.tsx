@@ -23,6 +23,7 @@ import {
   SignInFlow,
   guideAtStake,
   namesOf,
+  isKeeper,
   shouldOfferKeepsake,
 } from "./SignInFlow";
 
@@ -154,6 +155,20 @@ describe("shouldOfferKeepsake", () => {
     // #265: the server refuses a claim from any other phone, so offering it
     // there would only end in "only the phone that started this game".
     expect(shouldOfferKeepsake(true, false, 3, false)).toBe(false);
+  });
+});
+
+describe("isKeeper", () => {
+  it("goes by what the join said until a host hands the role over (#265)", () => {
+    expect(isKeeper(undefined, { playerId: "p_1", keeper: true })).toBe(true);
+    expect(isKeeper(undefined, { playerId: "p_2" })).toBe(false);
+    expect(isKeeper(undefined, null)).toBe(false);
+  });
+
+  it("goes by the host's word once it is given, whatever the join said (#272)", () => {
+    // The old keeper loses the offer, the new one gets it, with no fresh join.
+    expect(isKeeper("p_2", { playerId: "p_1", keeper: true })).toBe(false);
+    expect(isKeeper("p_2", { playerId: "p_2" })).toBe(true);
   });
 });
 
