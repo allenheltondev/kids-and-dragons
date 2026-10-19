@@ -18,7 +18,9 @@
  * - no text is clipped: nothing is wider than its box where the box hides the
  *   rest, nothing runs off the screen, and the page never scrolls sideways;
  * - no single word is wider than the box it sits in (that is how a hero's
- *   name ended up as "Sp / ark / leh / oof").
+ *   name ended up as "Sp / ark / leh / oof");
+ * - and all of that holds before the row's controls have loaded (they are lazy,
+ *   #324), with nothing moving when they arrive.
  */
 
 import { test, expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
@@ -166,9 +168,50 @@ async function misfits(page: Page): Promise<string[]> {
   });
 }
 
+/**
+ * The corner row's controls load after first paint (#324: sound, help, settings and
+ * read-aloud are all lazy), so the screen is drawn once without them. Hide them as they are
+ * before they load, and nothing else on the screen may move, or fit any worse, when they arrive.
+ */
+async function shiftsWhenTheRowLoads(page: Page): Promise<string[]> {
+  const where = (): Promise<Record<string, string>> =>
+    page.evaluate(() => {
+      const out: Record<string, string> = {};
+      const things = [...document.querySelectorAll("h1, h2, h3, p, button, input, img[alt]:not([alt=''])")].filter(
+        (el) => !el.closest(".kad-corner") && el.checkVisibility(),
+      );
+      things.slice(0, 40).forEach((el, i) => {
+        const box = el.getBoundingClientRect();
+        out[`${i} ${el.tagName.toLowerCase()} "${(el.textContent ?? "").trim().slice(0, 24)}"`] =
+          `${Math.round(box.left)},${Math.round(box.top)} ${Math.round(box.width)}x${Math.round(box.height)}`;
+      });
+      return out;
+    });
+  const loaded = await where();
+  const style = await page.addStyleTag({ content: ".kad-corner > * { display: none !important; }" });
+  const frames = (): Promise<unknown> =>
+    page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+  await frames();
+  const before = await where();
+  const problems = (await misfits(page)).map((problem) => `before the row loads: ${problem}`);
+  await style.evaluate((el) => el.remove());
+  await frames();
+  const after = await where();
+  for (const [thing, box] of Object.entries(after)) {
+    // Only a move the row causes: the screen stood still across the check, row and all.
+    if (loaded[thing] === box && before[thing] !== undefined && before[thing] !== box) {
+      problems.push(`${thing} moves when the corner row loads (${before[thing]} -> ${box})`);
+    }
+  }
+  return problems;
+}
+
 /** Every width, text size and hand, on one page as it stands. */
 async function expectFits(page: Page, screen: string, sizes: readonly (readonly [number, number])[] = WIDTHS.map((w) => [w, 800] as const)): Promise<void> {
   const found: string[] = [];
+  // Pictures and fonts in first, so nothing still arriving reads as a misfit.
+  await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => undefined);
+  await page.evaluate(() => document.fonts.ready);
   for (const [width, height] of sizes) {
     await page.setViewportSize({ width, height });
     for (const text of TEXT) {
@@ -176,7 +219,7 @@ async function expectFits(page: Page, screen: string, sizes: readonly (readonly 
         await settings(page, text, hand);
         // Two frames: the attributes restyle, then layout settles.
         await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
-        const problems = await misfits(page);
+        const problems = [...(await misfits(page)), ...(await shiftsWhenTheRowLoads(page))];
         for (const problem of problems) found.push(`${screen} @${width}px, ${text} text, hand ${hand}: ${problem}`);
         if (problems.length > 0 && process.env.KAD_FIT_DEBUG) {
           await page.screenshot({ path: `${process.env.KAD_FIT_DEBUG}/${screen.replace(/\W+/g, "-")}-${width}-${text}-${hand}.png` });
