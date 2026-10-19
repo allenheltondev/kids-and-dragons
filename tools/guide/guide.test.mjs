@@ -75,7 +75,9 @@ describe("the grown-up's guide", () => {
   });
 
   it("is a few minutes' read", () => {
-    expect(words(guide)).toBeLessThanOrEqual(2300);
+    // About ten minutes at a grown-up's 240 words a minute, which the guide's
+    // first lines promise. Room to fold a session's questions back in, not a target.
+    expect(words(guide)).toBeLessThanOrEqual(2400);
   });
 
   it("covers every flow a grown-up runs", () => {
