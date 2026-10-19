@@ -9,7 +9,9 @@
 
 import type {
   ResolvedCharacter,
+  FlairChoice,
   JournalResponse,
+  KidProfileView,
   AbilityCatalog,
   Campaign,
   Chapter,
@@ -179,6 +181,12 @@ export interface GameStore {
    * neither, or the server refused the binding outright.
    */
   loadJournal(): Promise<JournalLoad | null>;
+  /**
+   * Save what she picked for her own page (#299). Throws when it could not be
+   * saved (no signal, or the server said no); on success the saved copy of the
+   * book is brought up to date so it opens the same offline.
+   */
+  saveFlair(choice: FlairChoice): Promise<KidProfileView>;
   /**
    * Fire an intent at the server. Resolves `true` when the server accepted it
    * and `false` when it did not — a rejection is a normal part of the protocol

@@ -1,0 +1,200 @@
+/*
+ * ProfilePane — a kid's own page (#299). Sized in em like every pane, so the
+ * display settings' text size (--kad-text-scale) and one-handed layout carry
+ * straight through; every control is a real 44px target.
+ */
+
+.profile {
+  block-size: 100%;
+  overflow-y: auto;
+  padding: 0.75em;
+}
+
+.profile__empty {
+  display: grid;
+  gap: 0.75em;
+  justify-items: center;
+  padding: 2em 1em;
+  text-align: center;
+}
+
+/* The chosen color: a band behind her name. Ink is always the dark one, which every preset clears at 7:1. */
+.profile {
+  --profile-accent: #8fd9a8;
+  --profile-ink: #1b1631;
+}
+.profile[data-profile-color="meadow"] { --profile-accent: #8fd9a8; }
+.profile[data-profile-color="sky"] { --profile-accent: #8ec9f5; }
+.profile[data-profile-color="berry"] { --profile-accent: #f08fb4; }
+.profile[data-profile-color="sunrise"] { --profile-accent: #f7b267; }
+.profile[data-profile-color="moss"] { --profile-accent: #b5cf74; }
+.profile[data-profile-color="lagoon"] { --profile-accent: #6fd6cf; }
+.profile[data-profile-color="plum"] { --profile-accent: #c4a3ee; }
+.profile[data-profile-color="honey"] { --profile-accent: #f3d36b; }
+
+.profile__banner {
+  padding: 0.9em 1em;
+  border-radius: 1em;
+  background: var(--profile-accent);
+  color: var(--profile-ink);
+}
+
+.profile__name {
+  margin: 0;
+  font-family: var(--kad-font-display);
+  font-size: 1.5em;
+  overflow-wrap: anywhere;
+}
+
+.profile__title {
+  margin: 0.15em 0 0;
+  font-weight: 700;
+}
+
+/* Polite, and always in the page so the live region exists before it speaks. */
+.profile__notice {
+  min-block-size: 1.5em;
+  margin: 0.4em 0 0;
+  font-size: 0.9em;
+}
+
+.profile__section {
+  margin: 0.75em 0 0;
+  padding: 0.6em 0.75em;
+  border-radius: 0.6em;
+  background: color-mix(in srgb, currentColor 6%, transparent);
+}
+
+.profile__heading {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0 0 0.5em;
+  font-size: 1.05em;
+}
+
+.profile__hint { margin: 0; }
+.profile__count { margin: 0 0 0.4em; }
+.profile__list { margin: 0; padding-inline-start: 1.2em; }
+
+/* --- Heroes -------------------------------------------------------------- */
+
+.profile__heroes {
+  display: grid;
+  gap: 0.9em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.profile__hero {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75em;
+}
+
+.profile__hero-text { flex: 1 1 12em; min-inline-size: 0; }
+.profile__hero-name { margin: 0; font-size: 1.1em; overflow-wrap: anywhere; }
+.profile__level { display: flex; align-items: center; gap: 0.3em; margin: 0.1em 0 0.4em; }
+
+.profile__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em 0.9em;
+  margin: 0 0 0.5em;
+  padding: 0;
+  list-style: none;
+}
+
+.profile__stat { display: flex; align-items: center; gap: 0.25em; }
+
+/*
+ * The frames differ in line style as well as color, so no frame is told apart
+ * by color alone (spec §11).
+ */
+.profile__frame {
+  inline-size: 6em;
+  block-size: 7em;
+  padding: 0.2em;
+  border-radius: 0.9em;
+  background: #20192f;
+  border: 0.15em solid #6f6a8f;
+}
+.profile__frame--ivy { border: 0.3em double #7bc97b; }
+.profile__frame--stars { border: 0.3em dotted #ffd86b; }
+.profile__frame--embers { border: 0.3em dashed #ff8a5c; }
+.profile__frame--waves { border: 0.3em ridge #6fb8ff; }
+
+/* --- Badges, lists ------------------------------------------------------- */
+
+.profile__badges {
+  display: grid;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.profile__badge {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+}
+
+.profile__badge-name { display: block; }
+.profile__badge-blurb { display: block; font-size: 0.9em; }
+
+/* --- The presets --------------------------------------------------------- */
+
+.profile__choices { margin: 0.4em 0 0; }
+.profile__choices-label { display: block; margin: 0 0 0.3em; font-weight: 700; }
+
+.profile__choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+}
+
+.profile__choice {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-block-size: 2.75rem;
+  padding: 0.3em 0.8em;
+  border-radius: 999px;
+  background: #20192f;
+  box-shadow: inset 0 0 0 0.1em #4a4470;
+  cursor: pointer;
+}
+
+/* Chosen is a gold rim and a check glyph, never color alone. */
+.profile__choice--on { box-shadow: 0 0 0 0.15em #f5c86c; }
+
+.profile__choice:focus-within {
+  outline: 0.12em solid var(--color-focus, #ffc95c);
+  outline-offset: 0.15em;
+}
+
+.profile__choice-radio {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.profile__swatch {
+  inline-size: 1.2em;
+  block-size: 1.2em;
+  border-radius: 50%;
+  background: #8fd9a8;
+  box-shadow: 0 0 0 0.08em #fff8;
+}
+.profile__swatch--sky { background: #8ec9f5; }
+.profile__swatch--berry { background: #f08fb4; }
+.profile__swatch--sunrise { background: #f7b267; }
+.profile__swatch--moss { background: #b5cf74; }
+.profile__swatch--lagoon { background: #6fd6cf; }
+.profile__swatch--plum { background: #c4a3ee; }
+.profile__swatch--honey { background: #f3d36b; }
