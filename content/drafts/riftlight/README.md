@@ -1,6 +1,6 @@
 # Riftlight — authored opening
 
-Fifteen playable story nodes and eight development pause boundaries, using the [design bible](../../../docs/campaigns/continental-rift/README.md).
+Seventeen playable story nodes and ten development pause boundaries, using the [design bible](../../../docs/campaigns/continental-rift/README.md).
 Gemfall anchors the read-aloud rhythm, tangible choices and visible consequences. The narrator
 describes what happens instead of telling the table what sort of thing it is or how to feel.
 
@@ -34,7 +34,7 @@ These files are ordinary chapter JSON, validated with the same gate as shipped c
 The preview now plays the first fork. The shelf leads to the Cairnstep or the river challenge;
 the hidden opening leads to the Saltrot and offers a linked return. River escapes reach
 Frostfang shore, the boundary stones, Ashspan Bridge, or a one-way Sky Islands crossing.
-Short arrival episodes give each route a concrete landing. Eight biome-matched `preview-pause-*`
+Short arrival episodes give each route a concrete landing. Ten biome-matched `preview-pause-*`
 chapters are explicit development boundaries, pay no XP, and must never enter production.
 Their five-minute metadata is the schema minimum, not a measured duration.
 
@@ -77,7 +77,7 @@ there is no goat outcome flag. Attune is earned at the first regional lesson. Ol
 
 ## Pacing and remaining work
 
-These are compact first drafts, not finished 30–40-minute chapters. The uncalibrated pacing
+The three prologue chapters remain compact first drafts, not measured 30–40-minute chapters. The uncalibrated pacing
 revised model predicts roughly 11 minutes for the Exchange, 15 for survival and 9 for departure, before
 extra table conversation. Metadata budgets 15 / 15 / 10 minutes pending a real table playtest.
 Keep the departure encounter brief as the character bible requests. Expand the first two
@@ -88,8 +88,8 @@ measurements have been invented. The 30–40-minute ordinary-node goal remains u
 playtests support it or a shorter prologue goal is explicitly recorded.
 Each pays the agreed 140 XP, with no extra objectives that could push the campaign over its cap.
 
-The next authoring slice continues through the wrong valley, the island due back and the
-stuttering flats. The first Coast fragment and the initial regional discoveries are now playable. Full-campaign XP-route acceptance remains unfinished. The current preview
+The next authoring slice continues with the island due back and the stuttering flats,
+then the remaining strand ends and convergence. The first Coast fragment and the initial regional discoveries are now playable. Full-campaign XP-route acceptance remains unfinished. The current preview
 graph is linted and replayed with no softlocks; its pauses are not campaign endings.
 
 For production integration:
@@ -129,7 +129,7 @@ with optional sharing of chime readings with Orin. All three have explicit devel
 Carry `whales_scattered` into the island-due-back navigator problem, `olivia_trusted` into
 her eventual epilogue, and `orin_chime_shared` into the convergence's noncombat option.
 `fragment_coast_learned` records knowledge; completing `buried-bridge` is the Coast key-node
-completion. Neither creates an item. Convergence and the other two key nodes remain unwritten.
+completion. Neither creates an item. The reading room now provides the Paths key node; convergence and the Sky key node remain unwritten.
 The `saltrot_arrival_*` flags identify the latest crossing and are reset together on entry.
 These regional chapters now have substantive investigations on every main path, with 14
 decisions and six checks each. Their family pacing remains unmeasured. The
@@ -155,3 +155,24 @@ reveals them. No definitive count, date or secret explanation is added. The whal
 appears only at the gentle ending; the undecided offer retains the circling-whale scene.
 [Evidence/aftermath prompts](../../../art/source/riftlight/scenes/evidence-generation.md) and
 source PNGs accompany the runtime WebP assets.
+
+
+## Forgotten Paths: changed river and memory ice
+
+`stone-counters` now continues through `the-wrong-valley` to `reading-room`. Both are ordinary
+35-minute planning budgets with 14 decisions on the shortest modeled path, rather than brief
+transitions. The river crossing has seven checks; the reading room has six. Existing glacier
+and reading-room illustrations supply the backdrops. Both nodes offer a return route and an
+explicit preview pause, and use pass revisits so the temporary river change is not replayed.
+
+`valley_crossed_high` records the route actually used, including a backup after a failed plan;
+`wrong_valley_witnessed` records the witnessed change. `fragment_paths_learned` is knowledge,
+not an item. `memory_notes_shared` records permission to leave the party's account with the
+keepers. A party that already completed the buried bridge gets a checked Coast comparison;
+other routes never pretend to have found that clue. The memory remains local, undated and
+unexplained. No convergence, wyrm encounter or finale is implied by the development pauses.
+
+See the [northern continuity review](../../../docs/campaigns/continental-rift/memory-paths-continuity-review.md).
+Run the new route/producer tests with `npx vitest run tools/content/riftlight-memory-paths.test.ts`.
+The shared pacing report now covers five ordinary regional nodes; real family timings remain
+pending for all of them.

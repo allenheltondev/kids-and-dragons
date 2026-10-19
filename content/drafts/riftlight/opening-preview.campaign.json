@@ -1,5 +1,5 @@
 {
-  "$comment": "DEVELOPMENT PREVIEW ONLY. Fifteen authored story nodes and eight explicit pause boundaries. Not the production riftlight campaign.",
+  "$comment": "DEVELOPMENT PREVIEW ONLY. Seventeen authored story nodes and ten explicit pause boundaries. Not the production riftlight campaign. Convergence and finale remain unwritten.",
   "id": "riftlight-opening-preview",
   "title": "Riftlight — opening preview",
   "blurb": "Snow falls on the Exchange quay. A small goat needs help. Beyond a fold in the air, a bell is ringing in the ice.",
@@ -29,7 +29,11 @@
     "riftlight-buried-bridge",
     "riftlight-preview-pause-stone-counters",
     "riftlight-preview-pause-whale-road",
-    "riftlight-preview-pause-buried-bridge"
+    "riftlight-preview-pause-buried-bridge",
+    "riftlight-the-wrong-valley",
+    "riftlight-reading-room",
+    "riftlight-preview-pause-the-wrong-valley",
+    "riftlight-preview-pause-reading-room"
   ],
   "graph": {
     "version": 1,
@@ -62,7 +66,11 @@
       "saltrot_arrival_whales",
       "saltrot_arrival_glacier",
       "stone_route_priority",
-      "sky_followup_promised"
+      "sky_followup_promised",
+      "wrong_valley_witnessed",
+      "valley_crossed_high",
+      "fragment_paths_learned",
+      "memory_notes_shared"
     ],
     "buffs": {
       "riftspark": {
@@ -266,6 +274,30 @@
         "title": "Pause the regional preview",
         "ending": {
           "title": "End of regional preview"
+        }
+      },
+      "the-wrong-valley": {
+        "chapter": "riftlight-the-wrong-valley",
+        "title": "The River Takes Another Valley",
+        "revisit": "pass"
+      },
+      "reading-room": {
+        "chapter": "riftlight-reading-room",
+        "title": "The River in the Memory Ice",
+        "revisit": "pass"
+      },
+      "preview-pause-the-wrong-valley": {
+        "chapter": "riftlight-preview-pause-the-wrong-valley",
+        "title": "Pause the northern preview",
+        "ending": {
+          "title": "End of authored northern preview"
+        }
+      },
+      "preview-pause-reading-room": {
+        "chapter": "riftlight-preview-pause-reading-room",
+        "title": "Pause the northern preview",
+        "ending": {
+          "title": "End of authored northern preview"
         }
       }
     },
@@ -681,6 +713,42 @@
             "firstCrossing": true
           }
         ]
+      },
+      "counters-to-wrong-valley": {
+        "from": "stone-counters",
+        "to": "the-wrong-valley",
+        "kind": "forward",
+        "label": "Follow the changed river toward the glacier"
+      },
+      "wrong-valley-to-counters": {
+        "from": "the-wrong-valley",
+        "to": "stone-counters",
+        "kind": "return",
+        "label": "Return along the upper road to the keepers"
+      },
+      "wrong-valley-to-reading": {
+        "from": "the-wrong-valley",
+        "to": "reading-room",
+        "kind": "forward",
+        "label": "Compare the crossing with the yetis' memory ice"
+      },
+      "reading-to-wrong-valley": {
+        "from": "reading-room",
+        "to": "the-wrong-valley",
+        "kind": "return",
+        "label": "Return to the workers by the upper path"
+      },
+      "the-wrong-valley-pause": {
+        "from": "the-wrong-valley",
+        "to": "preview-pause-the-wrong-valley",
+        "kind": "forward",
+        "label": "Pause here at the end of the authored preview"
+      },
+      "reading-room-pause": {
+        "from": "reading-room",
+        "to": "preview-pause-reading-room",
+        "kind": "forward",
+        "label": "Pause here at the end of the authored preview"
       }
     },
     "facts": {

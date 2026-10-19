@@ -435,6 +435,284 @@
           "fastTableShortestLowerMinutes": 23.1
         }
       ]
+    },
+    {
+      "id": "riftlight-the-wrong-valley",
+      "authoredScenes": 90,
+      "metadataBudgetMinutes": 35,
+      "scenarios": [
+        {
+          "id": "empty-solo",
+          "shortest": {
+            "scenes": 44,
+            "decisions": 14,
+            "checks": 7,
+            "encounters": 0,
+            "words": 2371,
+            "wordsMin": 2370
+          },
+          "typical": {
+            "scenes": 44,
+            "decisions": 14,
+            "checks": 7,
+            "encounters": 0,
+            "words": 2371,
+            "wordsMin": 2370
+          },
+          "shortestLowerMinutes": 34,
+          "typicalMinutes": 34,
+          "fastTableShortestLowerMinutes": 25.2
+        },
+        {
+          "id": "empty-3p",
+          "shortest": {
+            "scenes": 44,
+            "decisions": 14,
+            "checks": 7,
+            "encounters": 0,
+            "words": 2371,
+            "wordsMin": 2370
+          },
+          "typical": {
+            "scenes": 44,
+            "decisions": 14,
+            "checks": 7,
+            "encounters": 0,
+            "words": 2371,
+            "wordsMin": 2370
+          },
+          "shortestLowerMinutes": 34,
+          "typicalMinutes": 34,
+          "fastTableShortestLowerMinutes": 25.2
+        },
+        {
+          "id": "few-solo",
+          "shortest": {
+            "scenes": 44,
+            "decisions": 14,
+            "checks": 7,
+            "encounters": 0,
+            "words": 2371,
+            "wordsMin": 2370
+          },
+          "typical": {
+            "scenes": 44,
+            "decisions": 14,
+            "checks": 7,
+            "encounters": 0,
+            "words": 2371,
+            "wordsMin": 2370
+          },
+          "shortestLowerMinutes": 34,
+          "typicalMinutes": 34,
+          "fastTableShortestLowerMinutes": 25.2
+        },
+        {
+          "id": "few-3p",
+          "shortest": {
+            "scenes": 44,
+            "decisions": 14,
+            "checks": 7,
+            "encounters": 0,
+            "words": 2371,
+            "wordsMin": 2370
+          },
+          "typical": {
+            "scenes": 44,
+            "decisions": 14,
+            "checks": 7,
+            "encounters": 0,
+            "words": 2371,
+            "wordsMin": 2370
+          },
+          "shortestLowerMinutes": 34,
+          "typicalMinutes": 34,
+          "fastTableShortestLowerMinutes": 25.2
+        },
+        {
+          "id": "collection-solo",
+          "shortest": {
+            "scenes": 44,
+            "decisions": 14,
+            "checks": 7,
+            "encounters": 0,
+            "words": 2371,
+            "wordsMin": 2370
+          },
+          "typical": {
+            "scenes": 44,
+            "decisions": 14,
+            "checks": 7,
+            "encounters": 0,
+            "words": 2371,
+            "wordsMin": 2370
+          },
+          "shortestLowerMinutes": 34,
+          "typicalMinutes": 34,
+          "fastTableShortestLowerMinutes": 25.2
+        },
+        {
+          "id": "collection-3p",
+          "shortest": {
+            "scenes": 44,
+            "decisions": 14,
+            "checks": 7,
+            "encounters": 0,
+            "words": 2371,
+            "wordsMin": 2370
+          },
+          "typical": {
+            "scenes": 44,
+            "decisions": 14,
+            "checks": 7,
+            "encounters": 0,
+            "words": 2371,
+            "wordsMin": 2370
+          },
+          "shortestLowerMinutes": 34,
+          "typicalMinutes": 34,
+          "fastTableShortestLowerMinutes": 25.2
+        }
+      ]
+    },
+    {
+      "id": "riftlight-reading-room",
+      "authoredScenes": 84,
+      "metadataBudgetMinutes": 35,
+      "scenarios": [
+        {
+          "id": "empty-solo",
+          "shortest": {
+            "scenes": 42,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2379,
+            "wordsMin": 2341
+          },
+          "typical": {
+            "scenes": 42,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2384,
+            "wordsMin": 2346
+          },
+          "shortestLowerMinutes": 33.1,
+          "typicalMinutes": 33.5,
+          "fastTableShortestLowerMinutes": 24.6
+        },
+        {
+          "id": "empty-3p",
+          "shortest": {
+            "scenes": 42,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2379,
+            "wordsMin": 2341
+          },
+          "typical": {
+            "scenes": 42,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2384,
+            "wordsMin": 2346
+          },
+          "shortestLowerMinutes": 33.1,
+          "typicalMinutes": 33.5,
+          "fastTableShortestLowerMinutes": 24.6
+        },
+        {
+          "id": "few-solo",
+          "shortest": {
+            "scenes": 42,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2379,
+            "wordsMin": 2341
+          },
+          "typical": {
+            "scenes": 42,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2384,
+            "wordsMin": 2346
+          },
+          "shortestLowerMinutes": 33.1,
+          "typicalMinutes": 33.5,
+          "fastTableShortestLowerMinutes": 24.6
+        },
+        {
+          "id": "few-3p",
+          "shortest": {
+            "scenes": 42,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2379,
+            "wordsMin": 2341
+          },
+          "typical": {
+            "scenes": 42,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2384,
+            "wordsMin": 2346
+          },
+          "shortestLowerMinutes": 33.1,
+          "typicalMinutes": 33.5,
+          "fastTableShortestLowerMinutes": 24.6
+        },
+        {
+          "id": "collection-solo",
+          "shortest": {
+            "scenes": 42,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2379,
+            "wordsMin": 2341
+          },
+          "typical": {
+            "scenes": 42,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2384,
+            "wordsMin": 2346
+          },
+          "shortestLowerMinutes": 33.1,
+          "typicalMinutes": 33.5,
+          "fastTableShortestLowerMinutes": 24.6
+        },
+        {
+          "id": "collection-3p",
+          "shortest": {
+            "scenes": 42,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2379,
+            "wordsMin": 2341
+          },
+          "typical": {
+            "scenes": 42,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2384,
+            "wordsMin": 2346
+          },
+          "shortestLowerMinutes": 33.1,
+          "typicalMinutes": 33.5,
+          "fastTableShortestLowerMinutes": 24.6
+        }
+      ]
     }
   ]
 }
