@@ -1,6 +1,6 @@
 # Regional discoveries — continuity review
 
-Development preview only. This slice adds 20 story scenes and three biome-matched pause scenes.
+Development preview only. The initial slice added 20 story scenes and three biome-matched pause scenes. The expanded regional chapters now contain 255 authored scenes across their alternate methods and outcomes.
 The route graph still offers the earlier pauses; these are authoring boundaries, not story endings.
 
 | Chapter / scene | Introduction and dependency checked |
@@ -37,8 +37,8 @@ on each incoming edge so old arrival history cannot describe the current trip.
 Verification exhausts chapter paths across all species/classes, checks literal introduction
 wording on each path, runs the proper-name graph sweep, tests actual rift actions and lifecycle,
 and runs the real staged content validator. No pacing observations have been collected.
-The [regional pacing gate](regional-pacing-gate.md) classifies these as short preview episodes
-and records expansion and measurement requirements before production; it remains unpassed.
+The [regional pacing gate](regional-pacing-gate.md) supersedes the earlier short-preview exception
+with ordinary-node investigations and records planning estimates plus measurement requirements; it remains unpassed.
 The cross-chapter prerequisite test derives mandatory introductions from every actual ending,
 then propagates their intersection through all graph entrances, including return and guarded
 edges. Contract entry facts do not count as new introductions. It verifies the Orin, Olivia,
@@ -46,5 +46,23 @@ chime, hall-note and fellowship prerequisites and includes negative bypass cases
 must actually grant the chime, and downstream chapter paths must retain it. First/later Attune
 and shared/unshared initial reading variants participate in the chapter-path audit.
 Next work: wrong valley, island-due-back, stuttering flats, then the remaining key nodes and
-convergence. Class-specific regional utility and longer table pacing can be expanded in that
-work; these chapters currently provide party-wide methods without class requirements.
+convergence. Class/species assistance and longer investigations are now implemented without class requirements.
+Real family pacing remains to be observed.
+
+
+## Expanded-path review
+
+`continuity.json` now has a separate entry for every additional task, method, check and outcome.
+Each task introduces its local people, equipment and limits before the branches use them;
+branch outcomes require that task's introduction. The engine walker still checks the exact
+introduction wording on each path, and the graph prerequisite audit verifies inherited facts.
+
+| Chapter | Task sequence and continuity checks |
+| --- | --- |
+| Stone counters | Seren's lesson occurs before the extended investigation and the optional attune method. Measuring cord precedes footprint work; counting slates precede viewpoint comparison; the cart, jars and boards precede delivery. Both failed delivery methods recover by the longer bank route. Signs precede runoff/upkeep; the slate is introduced when it slips. The narrowing fold is explicitly introduced before motion comparisons. Handover references a fragile edge, avoiding an assumption that only the failed runoff path's board cover exists. Both record priorities preserve the safe route and uncertain count. |
+| Whale-road | Olivia's introduction precedes the working map. Whistle, wind strips, shelter cloth and waiting pockets are introduced in their own tasks. Every observation precedes an inference; whales may refuse and are never forced during preparation. All task outcomes leave the whales circling until the final gentle/early-opening decision. A second keeper is introduced at handover. Promise/refusal is voluntary and recorded, never inferred from merely receiving the map. |
+| Buried bridge | Orin, the guide's refusal and shut door precede the work. Stick/cord, local shelf, baseline drawing and silt patches precede their use. Inspection limits are chosen before the original clear/brace evidence scenes. Both branches establish river evidence before the new inference test. Stonework copies do not silently share the optional chime readings. Restoration leaves the water outlet clear or explicitly repaired, and the guide does not promise a tour. |
+
+The existing illustrations remain establishing views, not literal diagrams of each tool or
+outcome. The whale-cleared ending still switches to the quiet island backdrop. No new canon,
+quest item, bonus XP, combat, protected explanation or diagnostic public rift color is added.

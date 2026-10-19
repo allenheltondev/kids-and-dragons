@@ -6,7 +6,7 @@
   "title": "The Stone That Moved",
   "biome": "red_sky_foothills",
   "music": "riftlight-paths",
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "stone",
   "scenes": {
@@ -44,7 +44,7 @@
           "id": "continue",
           "label": "Listen together",
           "icon": "hand",
-          "goto": "motion",
+          "goto": "footprint",
           "effects": [
             {
               "type": "setFlag",
@@ -117,6 +117,1153 @@
       "choices": [],
       "outcome": "success",
       "art": "scenes/riftlight/stone-counters"
+    },
+    "footprint": {
+      "type": "choice_point",
+      "narration": "Pip lays his measuring cord beside the empty hollow. The nearest keeper thinks a cart dragged the stone; another says the ground moved with it. Neither wants a guess written into the count. The hollow has a crisp edge on one side and a crumbled edge on the other. Beyond it, grass stands upright between patches that were pressed flat. You have enough daylight to examine the ground before more feet blur it. What should you compare first?",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "option_1",
+          "label": "Follow the ground between hollow and stone",
+          "icon": "hand",
+          "goto": "footprint_1"
+        },
+        {
+          "id": "option_2",
+          "label": "Compare the base with the empty hollow",
+          "icon": "hand",
+          "goto": "footprint_2"
+        }
+      ]
+    },
+    "footprint_1": {
+      "type": "story",
+      "narration": "You walk outside the pressed grass and ask Pip to hold the cord at each end. If a cart crossed here, its wheels should have crossed the standing grass too. You mark where a wheel mark ought to be, rather than drawing one you cannot see.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Put your plan into action",
+          "icon": "hand",
+          "goto": "footprint_1_check"
+        }
+      ]
+    },
+    "footprint_1_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Follow the ground between hollow and stone. Choose who leads; everyone can help.",
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "footprint_1_done"
+      },
+      "onFailure": {
+        "goto": "footprint_1_changed"
+      }
+    },
+    "footprint_1_done": {
+      "type": "story",
+      "narration": "Your comparison holds. The base fits the hollow, and the grass between has no wheel marks. Pip draws both observations, leaving the cause blank. The keeper who suggested a cart crosses out the little wheels on her own sketch.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "witness"
+        }
+      ]
+    },
+    "footprint_1_changed": {
+      "type": "story",
+      "narration": "A boot slips into the crumbled edge before you finish. Pip marks that part as disturbed by your party. The opposite edge still matches the base, and a keeper shows you untouched standing grass beyond your bootprint. You record only the parts you can still check.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "witness"
+        }
+      ]
+    },
+    "footprint_2": {
+      "type": "story",
+      "narration": "You ask the keepers to point out the side of the stone they remember facing the road. Pip stretches the cord around the hollow while you compare corners. A match would tell you where the stone stood, even if it cannot explain how it moved.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Put your plan into action",
+          "icon": "hand",
+          "goto": "footprint_2_check"
+        }
+      ]
+    },
+    "footprint_2_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Compare the base with the empty hollow. Choose who leads; everyone can help.",
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "footprint_2_done"
+      },
+      "onFailure": {
+        "goto": "footprint_2_changed"
+      }
+    },
+    "footprint_2_done": {
+      "type": "story",
+      "narration": "Your comparison holds. The base fits the hollow, and the grass between has no wheel marks. Pip draws both observations, leaving the cause blank. The keeper who suggested a cart crosses out the little wheels on her own sketch.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "witness"
+        }
+      ]
+    },
+    "footprint_2_changed": {
+      "type": "story",
+      "narration": "A boot slips into the crumbled edge before you finish. Pip marks that part as disturbed by your party. The opposite edge still matches the base, and a keeper shows you untouched standing grass beyond your bootprint. You record only the parts you can still check.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "witness"
+        }
+      ]
+    },
+    "witness": {
+      "type": "choice_point",
+      "narration": "A keeper brings two counting slates from a cloth bag. One shows the stone by a forked rock; the other shows it below a low ridge. Both drawings might describe the hollow from different places. The keepers begin arguing over whose count should be erased. Pip holds the cord still and waits for you. Erasing a drawing would settle the argument quickly, but could also remove the clue that explains it. How will you compare their views?",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "option_1",
+          "label": "Ask each keeper to stand where they drew",
+          "icon": "hand",
+          "goto": "witness_1"
+        },
+        {
+          "id": "option_2",
+          "label": "Lay both slates along the same sight line",
+          "icon": "hand",
+          "goto": "witness_2"
+        }
+      ]
+    },
+    "witness_1": {
+      "type": "story",
+      "narration": "You leave both slates intact. Each keeper chooses a place and points toward the hollow. Your party moves between their viewpoints, checking the forked rock against the ridge. Pip draws two small standing marks so another visitor can repeat the comparison.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what follows",
+          "icon": "hand",
+          "goto": "count"
+        }
+      ]
+    },
+    "witness_2": {
+      "type": "story",
+      "narration": "You rest the slates on a flat rock and turn them until their ridge lines agree. The keepers point out which marks were added later. You keep their additions visible instead of rubbing them away. Pip notes that the drawings do not use the same viewpoint.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what follows",
+          "icon": "hand",
+          "goto": "count"
+        }
+      ]
+    },
+    "count": {
+      "type": "choice_point",
+      "narration": "The two views can both be true. From the ridge the forked rock hides behind the stone; from the road it stands beside it. The keepers agree to label viewpoints on future drawings. Their eruption counts still disagree. A chipped mark may be one long stroke or two shorter ones, and nobody here saw the eruption itself. One keeper asks you to choose the official count before her neighbors arrive. What can you honestly give her?",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "option_1",
+          "label": "Record both readings and the chipped mark",
+          "icon": "hand",
+          "goto": "count_1"
+        },
+        {
+          "id": "option_2",
+          "label": "Separate the marks you can count from the uncertain ones",
+          "icon": "hand",
+          "goto": "count_2"
+        }
+      ]
+    },
+    "count_1": {
+      "type": "story",
+      "narration": "You draw the break in the mark large enough to see. Under it you keep both possible counts. The keeper sighs at the untidy page, then admits it will stop the next visitor mistaking a damaged stroke for a certain date.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what follows",
+          "icon": "hand",
+          "goto": "road_load"
+        }
+      ]
+    },
+    "count_2": {
+      "type": "story",
+      "narration": "You count the whole strokes together and circle the damaged section without a number. Pip copies the circle. The keeper can now tell her neighbors exactly which part is agreed, and which part needs another source. Nobody has to pretend the eruption date is settled.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what follows",
+          "icon": "hand",
+          "goto": "road_load"
+        }
+      ]
+    },
+    "road_load": {
+      "type": "choice_point",
+      "narration": "A small handcart waits on the road above the stone. Its dragonling owner has brought water jars for the counting circle, but the familiar turn now points toward the empty hollow. One wheel is resting against a loose pebble. The owner asks for a route wide enough to use again tomorrow, not just a push through today. The keepers have cord and a pair of short boards beside their bag. Which approach will you prepare?",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "option_1",
+          "label": "Build a board ramp around the loose turn",
+          "icon": "hand",
+          "goto": "road_load_1"
+        },
+        {
+          "id": "option_2",
+          "label": "Unload the jars and guide the empty cart first",
+          "icon": "hand",
+          "goto": "road_load_2"
+        },
+        {
+          "id": "assist",
+          "label": "Use brace to steady the cart ramp",
+          "icon": "hand",
+          "goto": "road_load_assisted",
+          "requiresClass": "thornguard"
+        }
+      ]
+    },
+    "road_load_1": {
+      "type": "story",
+      "narration": "You ask the owner to keep the cart still while your party sets the boards on firm ground. Pip checks both wheel tracks with the cord. You will move the jars only after someone has tested the boards without the cart on them.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Put your plan into action",
+          "icon": "hand",
+          "goto": "road_load_1_check"
+        }
+      ]
+    },
+    "road_load_1_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Build a board ramp around the loose turn. Choose who leads; everyone can help.",
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "road_load_1_done"
+      },
+      "onFailure": {
+        "goto": "road_load_1_changed"
+      }
+    },
+    "road_load_1_done": {
+      "type": "story",
+      "narration": "The cart rolls through without tipping. You stop it on level ground and help replace the jars. The owner takes a second look at the route, then points out the turn she will use tomorrow. Your work has made a repeatable path.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "warning"
+        }
+      ]
+    },
+    "road_load_1_changed": {
+      "type": "story",
+      "narration": "One board shifts or a wheel catches before the cart reaches the turn. You stop while everyone is still on firm ground. The owner carries the jars with you along the upper bank instead. Pip marks the blocked turn so tomorrow's delivery will not repeat the attempt. You take the empty cart around by the longer bank route and leave the shifted turn closed.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "warning"
+        }
+      ]
+    },
+    "road_load_2": {
+      "type": "story",
+      "narration": "You make a safe place for the jars on the upper bank. The owner hands them down one at a time. With the weight removed, your party can turn the cart through the new route and learn which part needs a warning marker.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Put your plan into action",
+          "icon": "hand",
+          "goto": "road_load_2_check"
+        }
+      ]
+    },
+    "road_load_2_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Unload the jars and guide the empty cart first. Choose who leads; everyone can help.",
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "road_load_2_done"
+      },
+      "onFailure": {
+        "goto": "road_load_2_changed"
+      }
+    },
+    "road_load_2_done": {
+      "type": "story",
+      "narration": "The cart rolls through without tipping. You stop it on level ground and help replace the jars. The owner takes a second look at the route, then points out the turn she will use tomorrow. Your work has made a repeatable path.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "warning"
+        }
+      ]
+    },
+    "road_load_2_changed": {
+      "type": "story",
+      "narration": "One board shifts or a wheel catches before the cart reaches the turn. You stop while everyone is still on firm ground. The owner carries the jars with you along the upper bank instead. Pip marks the blocked turn so tomorrow's delivery will not repeat the attempt. You take the empty cart around by the longer bank route and leave the shifted turn closed.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "warning"
+        }
+      ]
+    },
+    "warning": {
+      "type": "choice_point",
+      "narration": "The water reaches the counting circle. The owner offers one of the short boards as a warning sign, but the road has two approaches. From below, travelers see the hollow late. From above, they see the stone and may assume the old turn still works. The keepers can maintain only one large sign until they bring more wood. You have loose stones for a smaller marker as well. Where will the clearest warning go?",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "option_1",
+          "label": "Put the large sign below, where the hollow is hidden",
+          "icon": "hand",
+          "goto": "warning_1"
+        },
+        {
+          "id": "option_2",
+          "label": "Put the large sign above, where carts need room to turn",
+          "icon": "hand",
+          "goto": "warning_2"
+        }
+      ]
+    },
+    "warning_1": {
+      "type": "story",
+      "narration": "You set the board before the blind rise and arrange loose stones along the upper turn. The owner walks up from below to test whether the board appears early enough. She stops before the hollow without needing anyone to call out.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what follows",
+          "icon": "hand",
+          "goto": "runoff"
+        }
+      ]
+    },
+    "warning_2": {
+      "type": "story",
+      "narration": "You leave enough road between the board and the new turn for a cart to stop. Below the rise, the keepers build a small stone arrow pointing onto firm ground. Pip tests both approaches on foot before anybody moves the sign again.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what follows",
+          "icon": "hand",
+          "goto": "runoff"
+        }
+      ]
+    },
+    "runoff": {
+      "type": "choice_point",
+      "narration": "A trickle from the ridge begins filling the low side of the hollow. A keeper worries that muddy water will erase the crisp edge before tomorrow's count. Another worries that diverting it will wash over the new cart route. They show you a shallow natural groove beside the road and an unused patch of gravel below the ridge. Neither route runs toward a home or burrow. You can protect the evidence without sending the problem onto a neighbor. Which outlet will you test?",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "option_1",
+          "label": "Guide a little water into the natural groove",
+          "icon": "hand",
+          "goto": "runoff_1"
+        },
+        {
+          "id": "option_2",
+          "label": "Spread the trickle across the empty gravel",
+          "icon": "hand",
+          "goto": "runoff_2"
+        }
+      ]
+    },
+    "runoff_1": {
+      "type": "story",
+      "narration": "You open only a finger-wide gap in the loose soil. Pip watches the cart route while you watch the groove. You agree to close the gap at once if the trickle crosses the wheel tracks. The keepers keep the rest of the hollow untouched.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Put your plan into action",
+          "icon": "hand",
+          "goto": "runoff_1_check"
+        }
+      ]
+    },
+    "runoff_1_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Guide a little water into the natural groove. Choose who leads; everyone can help.",
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "runoff_1_done"
+      },
+      "onFailure": {
+        "goto": "runoff_1_changed"
+      }
+    },
+    "runoff_1_done": {
+      "type": "story",
+      "narration": "The small test sends the trickle onto unused ground. You stop widening the outlet as soon as the hollow is clear. Pip draws the outlet beside the warning marks, and the keepers agree who will check it after the next rain.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "visit"
+        }
+      ]
+    },
+    "runoff_1_changed": {
+      "type": "story",
+      "narration": "The test carries a ribbon of muddy water toward the route. You close it before it reaches the wheel tracks. The keepers cover the fragile edge with one board instead. The hollow stays partly wet, and tomorrow's drawing will say which section was covered.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "visit"
+        }
+      ]
+    },
+    "runoff_2": {
+      "type": "story",
+      "narration": "You lay a loose fan of small stones above the gravel patch. The water will have room to spread rather than cut a fresh channel. Pip stands where he can see the hollow and the road, ready to call if either begins washing out.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Put your plan into action",
+          "icon": "hand",
+          "goto": "runoff_2_check"
+        }
+      ]
+    },
+    "runoff_2_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Spread the trickle across the empty gravel. Choose who leads; everyone can help.",
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "runoff_2_done"
+      },
+      "onFailure": {
+        "goto": "runoff_2_changed"
+      }
+    },
+    "runoff_2_done": {
+      "type": "story",
+      "narration": "The small test sends the trickle onto unused ground. You stop widening the outlet as soon as the hollow is clear. Pip draws the outlet beside the warning marks, and the keepers agree who will check it after the next rain.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "visit"
+        }
+      ]
+    },
+    "runoff_2_changed": {
+      "type": "story",
+      "narration": "The test carries a ribbon of muddy water toward the route. You close it before it reaches the wheel tracks. The keepers cover the fragile edge with one board instead. The hollow stays partly wet, and tomorrow's drawing will say which section was covered.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "visit"
+        }
+      ]
+    },
+    "visit": {
+      "type": "choice_point",
+      "narration": "Two more dragonling neighbors arrive and stop at your warning. One wants to move the boundary stone back immediately. The other wants to leave it untouched until someone understands the change. The keepers will not hand that decision to visitors, but they do ask you to explain what you found without starting another argument. Pip offers the cord or the slates. Which demonstration would let the neighbors check your work for themselves?",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "option_1",
+          "label": "Use the cord to show the matching hollow",
+          "icon": "hand",
+          "goto": "visit_1"
+        },
+        {
+          "id": "option_2",
+          "label": "Let the neighbors repeat the two viewpoints",
+          "icon": "hand",
+          "goto": "visit_2"
+        }
+      ]
+    },
+    "visit_1": {
+      "type": "story",
+      "narration": "You invite a neighbor to hold each end while Pip shows the matching corners. You point to the standing grass without telling anyone what moved the stone. The neighbors can disagree about what to do next while agreeing that the empty place fits.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what follows",
+          "icon": "hand",
+          "goto": "supply"
+        }
+      ]
+    },
+    "visit_2": {
+      "type": "story",
+      "narration": "You give each neighbor a slate and stand back. They find the ridge and road marks Pip drew, then compare the forked rock from both. When they exchange places, both drawings still work. The argument shifts from whose picture is wrong to what should happen tomorrow.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what follows",
+          "icon": "hand",
+          "goto": "supply"
+        }
+      ]
+    },
+    "supply": {
+      "type": "choice_point",
+      "narration": "A gust lifts the corner of Pip's loose drawing. He catches it against the stone, but his little slate slides down a shallow gravel slope. It stops against a root above the runoff. Nobody is hanging over a drop. Pip asks you to retrieve it without trampling the untouched grass or sending gravel into the outlet. The owner still has the measuring cord, and the keepers know a longer route along the ridge. What will you try?",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "option_1",
+          "label": "Lower the cord around the slate from firm ground",
+          "icon": "hand",
+          "goto": "supply_1"
+        },
+        {
+          "id": "option_2",
+          "label": "Take the longer ridge route and approach from below",
+          "icon": "hand",
+          "goto": "supply_2"
+        }
+      ]
+    },
+    "supply_1": {
+      "type": "story",
+      "narration": "You make a wide loop and ask a friend to keep the free end steady. Pip points out the part of the slope that must stay untouched. Your first pull will be a small test, so a snag cannot send the slate tumbling.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Put your plan into action",
+          "icon": "hand",
+          "goto": "supply_1_check"
+        }
+      ]
+    },
+    "supply_1_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Lower the cord around the slate from firm ground. Choose who leads; everyone can help.",
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "supply_1_done"
+      },
+      "onFailure": {
+        "goto": "supply_1_changed"
+      }
+    },
+    "supply_1_done": {
+      "type": "story",
+      "narration": "The slate comes back with its drawing readable. Pip wipes the edge on his cloak and makes a copy before putting it away. The keepers laugh when he ties the empty corner of the cloth bag too, just in case.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "agreement"
+        }
+      ]
+    },
+    "supply_1_changed": {
+      "type": "story",
+      "narration": "A little gravel slides before you can lift the slate. You stop and let it settle. A keeper uses the board to block the runoff while Pip comes around by the ridge. The slate comes back muddy at one corner; you redraw that part from the cord measurements together.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "agreement"
+        }
+      ]
+    },
+    "supply_2": {
+      "type": "story",
+      "narration": "You leave one friend beside Pip to point out the slate. The rest of the party follows the keeper's firm footholds around the slope. From below you can lift the slate rather than drag it through the grass and runoff.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Put your plan into action",
+          "icon": "hand",
+          "goto": "supply_2_check"
+        }
+      ]
+    },
+    "supply_2_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Take the longer ridge route and approach from below. Choose who leads; everyone can help.",
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "supply_2_done"
+      },
+      "onFailure": {
+        "goto": "supply_2_changed"
+      }
+    },
+    "supply_2_done": {
+      "type": "story",
+      "narration": "The slate comes back with its drawing readable. Pip wipes the edge on his cloak and makes a copy before putting it away. The keepers laugh when he ties the empty corner of the cloth bag too, just in case.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "agreement"
+        }
+      ]
+    },
+    "supply_2_changed": {
+      "type": "story",
+      "narration": "A little gravel slides before you can lift the slate. You stop and let it settle. A keeper uses the board to block the runoff while Pip comes around by the ridge. The slate comes back muddy at one corner; you redraw that part from the cord measurements together.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "agreement"
+        }
+      ]
+    },
+    "agreement": {
+      "type": "choice_point",
+      "narration": "The keepers have enough observations to plan another count. They need someone to watch the road and someone to compare the hollow after rain, but each task takes time away from counting the old marks. The cart owner offers one morning, not every morning. Pip cannot promise the Riftseekers will stay. You can help them divide the work without making promises for absent people. Which plan will you suggest for the first day?",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "option_1",
+          "label": "Pair a route watcher with a stone counter",
+          "icon": "hand",
+          "goto": "agreement_1"
+        },
+        {
+          "id": "option_2",
+          "label": "Make the morning delivery the shared check",
+          "icon": "hand",
+          "goto": "agreement_2"
+        }
+      ]
+    },
+    "agreement_1": {
+      "type": "story",
+      "narration": "You suggest one keeper takes the first road watch while another checks the hollow. They exchange jobs at the next count, so both learn the work. The cart owner chooses the morning delivery as the moment to test the warning signs again.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what follows",
+          "icon": "hand",
+          "goto": "motion_test"
+        }
+      ]
+    },
+    "agreement_2": {
+      "type": "story",
+      "narration": "You suggest the cart owner calls the keepers before turning off the road. They compare the route, hollow and signs together once, then return to counting. If the road changes before that visit, the signs tell travelers to wait on firm ground.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what follows",
+          "icon": "hand",
+          "goto": "motion_test"
+        }
+      ]
+    },
+    "motion_test": {
+      "type": "choice_point",
+      "narration": "Beside the stone, a narrow fold bends the air. Seren asks you to compare your road work with the narrowing fold. The road can be marked and repaired. The fold follows a limit you did not choose. Its edges creep closer while everyone stands outside it. She puts two pebbles far apart on a board and asks how the keepers should warn someone arriving late. Pip will record your demonstration. You can teach the motion without making anyone cross or naming what lies beyond. How will you show it?",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "option_1",
+          "label": "Move the pebbles inward to copy the edges",
+          "icon": "hand",
+          "goto": "motion_test_1"
+        },
+        {
+          "id": "option_2",
+          "label": "Compare the fold against one fixed cord loop",
+          "icon": "hand",
+          "goto": "motion_test_2"
+        },
+        {
+          "id": "assist",
+          "label": "Use attune to compare the narrowing hum",
+          "icon": "hand",
+          "goto": "motion_test_assisted",
+          "requiresClass": "starweaver"
+        }
+      ]
+    },
+    "motion_test_1": {
+      "type": "story",
+      "narration": "You ask one keeper to watch the real fold and another to copy its width on the board. The gap between the pebbles becomes smaller after each look. Pip writes the order of observations, rather than inventing a countdown that nobody measured.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Put your plan into action",
+          "icon": "hand",
+          "goto": "motion_test_1_check"
+        }
+      ]
+    },
+    "motion_test_1_check": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Move the pebbles inward to copy the edges. Choose who leads; everyone can help.",
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "motion_test_1_done"
+      },
+      "onFailure": {
+        "goto": "motion_test_1_changed"
+      }
+    },
+    "motion_test_1_done": {
+      "type": "story",
+      "narration": "The keepers repeat your demonstration in their own words. A late neighbor stops outside the cord and asks about the road instead. Seren nods. Your warning has offered a safe choice without pretending to control the opening.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "departure_plan"
+        }
+      ]
+    },
+    "motion_test_1_changed": {
+      "type": "story",
+      "narration": "Your first demonstration sounds like a promise that there is time to spare. Seren asks you to remove that promise. You try again with the visible narrowing only. The keeper repeats it back and chooses the road. Pip records the corrected explanation, including the uncertainty.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "departure_plan"
+        }
+      ]
+    },
+    "motion_test_2": {
+      "type": "story",
+      "narration": "You hold the loop steady while Seren points to where the fold's edges used to be. Each new look leaves more empty space inside the loop. Pip notes that the warning is the change itself; the keepers cannot promise how long a visitor has.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Put your plan into action",
+          "icon": "hand",
+          "goto": "motion_test_2_check"
+        }
+      ]
+    },
+    "motion_test_2_check": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Compare the fold against one fixed cord loop. Choose who leads; everyone can help.",
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "motion_test_2_done"
+      },
+      "onFailure": {
+        "goto": "motion_test_2_changed"
+      }
+    },
+    "motion_test_2_done": {
+      "type": "story",
+      "narration": "The keepers repeat your demonstration in their own words. A late neighbor stops outside the cord and asks about the road instead. Seren nods. Your warning has offered a safe choice without pretending to control the opening.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "departure_plan"
+        }
+      ]
+    },
+    "motion_test_2_changed": {
+      "type": "story",
+      "narration": "Your first demonstration sounds like a promise that there is time to spare. Seren asks you to remove that promise. You try again with the visible narrowing only. The keeper repeats it back and chooses the road. Pip records the corrected explanation, including the uncertainty.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "departure_plan"
+        }
+      ]
+    },
+    "departure_plan": {
+      "type": "choice_point",
+      "narration": "The neighboring stone keepers ask what visitors should carry away from this place. One worries that the moved boundary will become a tale about careless dragonlings. Another worries that uncertainty will stop anyone using the road. Pip offers space on his final page for one short message beside the drawings. You can be clear about the changed route without naming a culprit or claiming the old eruption count is solved. What should a traveler hear first?",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "option_1",
+          "label": "Lead with the safe route and where to stop",
+          "icon": "hand",
+          "goto": "departure_plan_1"
+        },
+        {
+          "id": "option_2",
+          "label": "Lead with what changed and what is still uncertain",
+          "icon": "hand",
+          "goto": "departure_plan_2"
+        }
+      ]
+    },
+    "departure_plan_1": {
+      "type": "story",
+      "narration": "You dictate the new turn, the warning board and the firm waiting place. Below it, Pip records that the stone moved and the reason remains unknown. The keepers can now show a traveler what to do before starting a longer discussion about the carvings.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what follows",
+          "icon": "hand",
+          "goto": "handover"
+        }
+      ]
+    },
+    "departure_plan_2": {
+      "type": "story",
+      "narration": "You dictate the matching hollow, missing drag marks and disputed stroke. Beside those observations, Pip draws the safe road. The keepers agree to show the whole page rather than turn the uncertainty into a warning against every unfamiliar traveler.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what follows",
+          "icon": "hand",
+          "goto": "handover"
+        }
+      ]
+    },
+    "handover": {
+      "type": "choice_point",
+      "narration": "Before you leave, the keepers ask you to walk through the plan once without help. The cart waits above the turn, the fragile edge of the hollow is marked, and Pip has copies of the drawings. A neighbor plays a traveler who has never visited before. She deliberately approaches from the harder direction and asks what to do next. You can discover a weak instruction now while everyone is here to fix it. Which part will you test with her?",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "option_1",
+          "label": "Guide the pretend traveler from the hidden approach",
+          "icon": "hand",
+          "goto": "handover_1"
+        },
+        {
+          "id": "option_2",
+          "label": "Ask the pretend traveler to guide the empty cart",
+          "icon": "hand",
+          "goto": "handover_2"
+        }
+      ]
+    },
+    "handover_1": {
+      "type": "story",
+      "narration": "You stay beside the neighbor and let her find the warning herself before explaining it. When she hesitates, you ask which mark she missed. Pip adjusts the arrow on the slate to match what she actually saw. The keepers keep the old version to explain the correction.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Put your plan into action",
+          "icon": "hand",
+          "goto": "handover_1_check"
+        }
+      ]
+    },
+    "handover_1_check": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Guide the pretend traveler from the hidden approach. Choose who leads; everyone can help.",
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "handover_1_done"
+      },
+      "onFailure": {
+        "goto": "handover_1_changed"
+      }
+    },
+    "handover_1_done": {
+      "type": "story",
+      "narration": "The neighbor reaches the waiting place and explains both choices: use the marked road, or examine the shrinking fold without expecting its rules to bend. The keepers take charge of the cord and signs. Your party can leave without leaving the work unfinished.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "stone_priority"
+        }
+      ]
+    },
+    "handover_1_changed": {
+      "type": "story",
+      "narration": "The neighbor follows one mark too far before asking for help. You stop the rehearsal, move that marker into view and walk it again together. The second attempt reaches the waiting place. The keepers thank you for testing an instruction instead of defending it.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "stone_priority"
+        }
+      ]
+    },
+    "handover_2": {
+      "type": "story",
+      "narration": "You let the neighbor choose where to stop the empty cart. The owner shows where a loaded wheel needs more space, and your party shifts the small marker back. The road remains usable, and the keepers now know the instruction that needed changing.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Put your plan into action",
+          "icon": "hand",
+          "goto": "handover_2_check"
+        }
+      ]
+    },
+    "handover_2_check": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Ask the pretend traveler to guide the empty cart. Choose who leads; everyone can help.",
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "handover_2_done"
+      },
+      "onFailure": {
+        "goto": "handover_2_changed"
+      }
+    },
+    "handover_2_done": {
+      "type": "story",
+      "narration": "The neighbor reaches the waiting place and explains both choices: use the marked road, or examine the shrinking fold without expecting its rules to bend. The keepers take charge of the cord and signs. Your party can leave without leaving the work unfinished.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "stone_priority"
+        }
+      ]
+    },
+    "handover_2_changed": {
+      "type": "story",
+      "narration": "The neighbor follows one mark too far before asking for help. You stop the rehearsal, move that marker into view and walk it again together. The second attempt reaches the waiting place. The keepers thank you for testing an instruction instead of defending it.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work with this result",
+          "icon": "hand",
+          "goto": "stone_priority"
+        }
+      ]
+    },
+    "stone_priority": {
+      "type": "choice_point",
+      "narration": "Pip has room for one large drawing on the page he will show the next Riftseekers he meets. The keepers keep both full records here, so neither piece of work will be lost. A large road drawing could help travelers reach the counting circle safely. A large carving drawing could help someone compare a second old stone. You are choosing which question to carry forward first, not which facts to erase. What should lead the traveling page?",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "option_1",
+          "label": "Lead with the repaired route and warning plan",
+          "icon": "hand",
+          "goto": "stone_priority_1"
+        },
+        {
+          "id": "option_2",
+          "label": "Lead with the old marks and unresolved count",
+          "icon": "hand",
+          "goto": "stone_priority_2"
+        }
+      ]
+    },
+    "stone_priority_1": {
+      "type": "story",
+      "narration": "You give the safe turn the largest space and put the uncertain carving beside it. Pip says he will ask travelers to check the route before comparing distant stones. The keepers keep the full carving page here, ready for someone who comes to study it.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what follows",
+          "icon": "hand",
+          "goto": "motion",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "stone_route_priority",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "stone_priority_2": {
+      "type": "story",
+      "narration": "You give the damaged stroke and both viewpoints the largest space. Pip says he will look for another record before choosing a count. The safe turn remains plainly marked at the bottom, and the keepers keep the full route plan beside their water jars.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what follows",
+          "icon": "hand",
+          "goto": "motion",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "stone_route_priority",
+              "value": false
+            }
+          ]
+        }
+      ]
+    },
+    "road_load_assisted": {
+      "type": "story",
+      "narration": "A thornguard steadies the ramp with brace while the party checks the wheel tracks and keeps the jars on firm ground. The strongest helper can lead the careful push; nobody needs to pretend they supplied another hero's ability.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work together using that help",
+          "icon": "hand",
+          "goto": "road_load_assisted_check"
+        }
+      ]
+    },
+    "road_load_assisted_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "roller": "party",
+      "prompt": "Use brace to steady the cart ramp. The qualified hero assists; choose who leads the team check.",
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "road_load_1_done"
+      },
+      "onFailure": {
+        "goto": "road_load_1_changed"
+      }
+    },
+    "motion_test_assisted": {
+      "type": "story",
+      "narration": "A starweaver answers the hum using the attune lesson. The rest of the party watches the physical narrowing. You compare sound and motion without changing the fold's rules or announcing anyone's private reading. Another hero can help explain the warning to the keepers.",
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work together using that help",
+          "icon": "hand",
+          "goto": "motion_test_assisted_check"
+        }
+      ]
+    },
+    "motion_test_assisted_check": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "roller": "party",
+      "prompt": "Use attune to compare the narrowing hum. The qualified hero assists; choose who leads the team check.",
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "motion_test_1_done"
+      },
+      "onFailure": {
+        "goto": "motion_test_1_changed"
+      }
     }
   },
   "llmHints": {
