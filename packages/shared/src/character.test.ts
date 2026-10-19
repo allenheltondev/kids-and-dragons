@@ -639,7 +639,15 @@ describe("awardXp (spec §8.1)", () => {
 
     it("gives a hero made after #308 every move by level 10, as levelling did before", () => {
       const result = awardXp(newCharacter(creation()), rules, 6300);
+      expect(result.leveledTo).toBe(10);
       expect(rankIn(result.character.committed, "songkeeper")).toBe("master");
+      expect(resolveCharacter(result.character, rules, items).actions).toEqual([
+        "rally",
+        "soothe",
+        "chorus",
+        "encore",
+        "mend_pulse",
+      ]);
     });
 
     it("never lowers a rank, and keeps deed progress", () => {
