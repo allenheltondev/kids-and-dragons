@@ -20,6 +20,9 @@ it("every new scene is actually reachable across class and species options", () 
     for (const [species, cls] of [["kitsune", "starweaver"], ["bigfoot", "thornguard"], ["unicorn", "songkeeper"], ["griffin", "duskrunner"], ["manticore", "duskrunner"]] as const) {
       for (const scene of allPaths(chapter, species, cls).visited) visited.add(scene);
     }
+    if (chapter.id === "riftlight-the-island-due-back") {
+      for (const scene of allPaths(chapter, "manticore", "duskrunner", { whales_guided: true }).visited) visited.add(scene);
+    }
     expect([...visited].sort(), chapter.id).toEqual(Object.keys(chapter.scenes).sort());
   }
 });
