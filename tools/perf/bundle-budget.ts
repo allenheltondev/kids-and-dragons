@@ -74,6 +74,16 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
  * Only the keepsake store's small state stays eager, because the home screen
  * reads it. This gate weighs the static graph only; e2e/lazy-sign-in.spec.ts
  * proves the home screen does not fetch them at runtime either.
+ *
+ * Down to about 296 measured, cap still 315 (#318): the sound engine, synth and
+ * sample table (the 17KB `audio` chunk) load after first paint. `App` lazy-loads
+ * `AudioControl`, and `CreationFlow` and `WorldMapPanel` import the cue seam
+ * (`audio/cue`) rather than the `audio` barrel, which re-exports the engine and so
+ * pulled it back in. Nothing on the home screen may import that barrel.
+ * e2e/lazy-audio.spec.ts holds the engine's request open and checks the home
+ * screen still works, since this gate weighs only the static graph. Left alone on
+ * purpose: `encounter` (shared/encounter.ts, 10KB) and the game store, which the
+ * entry's own code uses.
  */
 const FIRST_PAINT_BUDGET_KB = 315;
 
