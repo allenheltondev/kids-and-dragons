@@ -1248,6 +1248,10 @@
           "description": "Losing branches the story; it is never a game over (spec \u00a77.3), which is why it is required.",
           "$ref": "#/$defs/branch"
         },
+        "friendDown": {
+          "description": "The practice's Help Up lesson (#255): with two or more heroes seated, the one after the story-turn holder starts this fight knocked down. chapter.ts EncounterScene.",
+          "const": true
+        },
         "environment": {
           "$ref": "#/$defs/encounterEnvironment"
         },

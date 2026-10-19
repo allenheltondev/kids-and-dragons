@@ -1558,6 +1558,34 @@ describe("scene hints (#255)", () => {
     expect(enterScene(hinted, "scene_camp", context).state).not.toHaveProperty("hint");
   });
 
+  it("puts the friend after the story-turn holder on the ground in a friendDown fight, and nobody when alone", () => {
+    const chapter = makeChapter();
+    const scene = chapter.scenes["encounter_wisps"];
+    if (scene?.type !== "encounter") throw new Error("fixture moved");
+    scene.friendDown = true;
+    const context = ctx({ rng: fixedRng(20), chapter });
+    const fightWith = (seated: RunState, readies: string[]) => {
+      const started = walk(seated, [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }], context).state;
+      let state = enterScene(started, "encounter_wisps", context).state;
+      for (const playerId of readies) state = applyIntent(state, { playerId, intent: { type: "READY", ready: true } }, context).state;
+      return state;
+    };
+
+    const pair = fightWith(seatedParty(context), ["p_1", "p_2"]);
+    const holder = storyTurnHolder(pair)!.character.id;
+    const heroes = pair.encounter!.combatants.filter((c) => c.side === "party");
+    expect(heroes.filter((c) => c.down).map((c) => c.id)).toEqual(heroes.filter((c) => c.id !== holder).map((c) => c.id));
+    // The run's own HP is untouched: only the fight starts them down.
+    expect(pair.party.every((m) => !m.down)).toBe(true);
+
+    const alone = walk(newRun(), [
+      { playerId: "p_1", intent: CREATE_UNICORN },
+      { playerId: "p_1", intent: { type: "READY", ready: true } },
+    ], context).state;
+    const solo = fightWith(alone, ["p_1"]);
+    expect(solo.encounter!.combatants.filter((c) => c.side === "party" && c.down)).toEqual([]);
+  });
+
   it("leaves the practice to the server", () => {
     const context = ctx({ rng: fixedRng(20) });
     expect(() => walk(seatedParty(context), [{ playerId: "p_1", intent: { type: "START_PRACTICE" } }], context)).toThrow(

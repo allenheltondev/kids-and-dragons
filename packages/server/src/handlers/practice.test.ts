@@ -8,6 +8,7 @@
 
 import path from "node:path";
 import {
+  HELP_UP_ID,
   PRACTICE_CAMPAIGN_ID,
   applyIntent,
   captiveStatuses,
@@ -124,10 +125,14 @@ function goals(encounter: EncounterState): Position[] | null {
  */
 async function followHints(t: Table, pick: (ids: string[]) => string) {
   const said: string[] = [];
+  // Every Help Up that landed: [who was down at the start of the fight, who was lifted].
+  const helpedUp: { downAtStart: string[]; lifted: string }[] = [];
+  let downAtStart: string[] = [];
+  let fight: number | undefined;
   for (let step = 0; step < 2000; step++) {
     const s = await t.state();
     if (s.narration !== said.at(-1)) said.push(s.narration);
-    if (s.phase === "chapter_complete") return { ...s, said: said.join("\n") };
+    if (s.phase === "chapter_complete") return { ...s, said: said.join("\n"), helpedUp };
     const ownerOf = (characterId: string) => s.party.find((m) => m.character.id === characterId)!.playerId;
     const prompt = s.prompt;
     if (prompt?.kind === "ready") {
@@ -162,7 +167,26 @@ async function followHints(t: Table, pick: (ids: string[]) => string) {
         continue;
       }
       const playerId = ownerOf(actor.id);
-      const targets = goals(encounter);
+      if (encounter.startedAt !== fight) {
+        // A new fight: who walked onto the board already down.
+        fight = encounter.startedAt;
+        downAtStart = encounter.combatants.filter((c) => c.side === "party" && c.down).map((c) => c.id);
+      }
+      // "When a friend is knocked down, stand next to them and tap Help Up."
+      const fallen = encounter.combatants.filter((c) => c.side === "party" && c.down && c.id !== actor.id);
+      if (fallen.length > 0 && !encounter.actionTaken) {
+        const ctx = { rules: content.rules(), abilities: content.abilities(), rng: makeRng("legal") };
+        const helpUp = legalActions(encounter, ctx).find((a) => a.abilityId === HELP_UP_ID);
+        if (helpUp) {
+          const lifted = helpUp.targets[0]!;
+          await t.must(playerId, { type: "COMBAT_ACTION", abilityId: HELP_UP_ID, targetId: lifted });
+          const after = (await t.state()).encounter!;
+          expect(after.combatants.find((c) => c.id === lifted)!.down).toBe(false);
+          helpedUp.push({ downAtStart, lifted });
+          continue;
+        }
+      }
+      const targets = fallen.length > 0 ? fallen.map((c) => positionOf(encounter, c.id)!) : goals(encounter);
       if (targets === null && !encounter.actionTaken) {
         // "Tap Attack, then tap a wisp."
         const ctx = { rules: content.rules(), abilities: content.abilities(), rng: makeRng("legal") };
@@ -198,7 +222,7 @@ async function followHints(t: Table, pick: (ids: string[]) => string) {
 
 describe("the practice (#255)", () => {
   it("is ready to play, and plays a newcomer's party from the gate to the picnic by its hints alone", async () => {
-    for (const [players, seed] of [[1, "solo"], [3, "three"]] as const) {
+    for (const [players, seed] of [[1, "solo"], [2, "pair"], [3, "three"]] as const) {
       const h = await household(players, seed);
       const t = await table(h);
       for (let seat = 0; seat < players; seat++) await create(t, seat, `Hero ${seat + 1}`);
@@ -223,6 +247,17 @@ describe("the practice (#255)", () => {
       expect(walked.said, `${players}`).toMatch(/Tag, and tag! Flick spins/);
       // Bun was helped up by somebody ending a turn beside her.
       expect(walked.flags["helped_bun"], `${players}`).toBe(true);
+      // And with friends at the table, one of them started the Bun fight on
+      // the ground and was lifted with the real Help Up card. Alone, nobody
+      // was knocked down: there was nobody to help.
+      if (players === 1) {
+        expect(walked.helpedUp).toEqual([]);
+      } else {
+        expect(walked.helpedUp.length, `${players}`).toBeGreaterThan(0);
+        const [first] = walked.helpedUp;
+        expect(first!.downAtStart).toHaveLength(1);
+        expect(first!.lifted).toBe(first!.downAtStart[0]);
+      }
       expect(walked.xpEarned).toBe(0);
     }
   });

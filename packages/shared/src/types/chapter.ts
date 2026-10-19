@@ -726,6 +726,14 @@ export interface EncounterScene {
   onVictory: Branch;
   /** Never a game over — the story branches. spec §7.3. */
   onDefeat: Branch;
+  /**
+   * The practice's Help Up lesson (#255): with two or more heroes seated, the
+   * next one after the story-turn holder (a connected one where there is one)
+   * starts this fight knocked down, so somebody has to stand beside them and
+   * play Help Up. A party of one starts as it always does: there is nobody to
+   * help. Only the practice uses it, and every branch out of that fight heals.
+   */
+  friendDown?: true;
   /** The place fighting back (#201). See `EncounterEnvironment`. */
   environment?: EncounterEnvironment;
   /** Every hero still standing went out through an open `environment.exits` tile. */

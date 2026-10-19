@@ -1290,6 +1290,13 @@ the board, use a card, help a knocked-down friend, rest. Each step has one
 the phone with a "hear it" button. The content contract is in
 [content/README.md](../content/README.md#the-practice).
 
+The Help Up step is the real card on a real friend: the Bun fight is marked
+`friendDown`, so with two or more heroes seated, the one after the story-turn
+holder walks onto the board knocked down (the fight's placement only; the run's
+HP is untouched) and somebody has to stand beside them and play Help Up. A
+table of one has nobody to help and nobody goes down; Bun, a captive with no
+deadline, is the lesson there.
+
 **Who gets it.** A hero is a *newcomer* (`isNewcomer`, shared `practice.ts`)
 while she has played nothing: not `practiced`, no campaign under way, no XP, no
 souvenir. While any seated hero is one, the lobby offers **Play the practice**

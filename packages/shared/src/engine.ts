@@ -1890,6 +1890,20 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext, spendBuff
  * spawn points is an authoring error the content validator already refuses, so
  * running out here means the deployed bundle and the deployed content disagree.
  */
+/**
+ * Who starts a `friendDown` fight knocked down (#255): the first hero after
+ * the story-turn holder, preferring one whose phone is here, so the kid who
+ * is helped up sees it happen. Null with fewer than two heroes seated.
+ */
+function friendToHelpUp(draft: RunState): string | null {
+  const n = draft.party.length;
+  if (n < 2) return null;
+  const holder = storyTurnHolder(draft);
+  const start = holder ? draft.party.indexOf(holder) : 0;
+  const others = Array.from({ length: n - 1 }, (_, i) => draft.party[(start + 1 + i) % n]!);
+  return (others.find((member) => member.connected) ?? others[0]!).character.id;
+}
+
 function startEncounter(draft: RunState, ctx: EngineContext): readonly EncounterEvent[] {
   const { scene } = currentScene(draft, ctx);
   if (scene.type !== "encounter") throw new Illegal("ILLEGAL", "not on an encounter scene");
@@ -1897,6 +1911,8 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
   const map = ctx.map?.(scene.map) ?? null;
   if (!map) throw new Illegal("NOT_FOUND", `map "${scene.map}" is not loaded`);
 
+  // The practice's Help Up lesson (#255): one friend walks in knocked down.
+  const downId = scene.friendDown ? friendToHelpUp(draft) : null;
   const party: PartyPlacement[] = draft.party.map((member, i) => {
     /*
      * No modulo. Wrapping member 4 onto spawn 0 read as graceful and was the
@@ -1918,11 +1934,12 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
       const passive = ctx.items[entry.itemId]?.passive;
       return passive?.type === "rerollOnes" ? n + passive.perEncounter : n;
     }, 0);
+    const helpMeUp = member.character.id === downId;
     return {
       character: member.character,
       at,
-      hp: member.hp,
-      down: member.down,
+      hp: helpMeUp ? 0 : member.hp,
+      down: helpMeUp || member.down,
       ...(rerollOnes > 0 ? { rerollOnes } : {}),
     };
   });
