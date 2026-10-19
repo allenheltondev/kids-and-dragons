@@ -13,7 +13,7 @@ Words in bold are exactly what the buttons and screens say.
 3. The big screen shows four letters and a square code to scan.
 4. Each kid scans the square code with a phone or tablet. They can also open the game, type the four letters, and tap **Join a game**.
 5. Each kid makes a hero: what they are, how they fight, what they are best at, and a name. Then they tap **Ready to play** and **I'm ready!**
-6. When everyone is ready, any kid taps **Begin the adventure**.
+6. When everyone is ready, a kid taps **Begin the adventure**. If a hero is new, the phones first offer a short practice: tap **Play the practice**, or the button that skips it.
 7. Read the story out loud from the big screen. The kids tap their choices on their phones. When it is a kid's turn, their phone says so.
 8. A chapter takes 30 to 45 minutes. To stop early, find a rest and tap **Stop here for today**. Next time, open a room the same way and tap **Keep going**.
 
@@ -29,32 +29,40 @@ There are two ways to play. You pick one when you start a game.
 
 ![Picking Party Mode or Phone Mode](../../public/guide-pictures/start-a-game.jpg)
 
-- **Party Mode**: "This screen becomes the TV. Everyone joins from their phones." The big screen shows the story, the map and the fights. It belongs to nobody, so it needs no name. Each phone shows only that kid's own choices.
+- **Party Mode**: "This screen becomes the TV. Everyone joins from their phones." The big screen shows the story, the map and the fights. Each phone shows only that kid's own choices.
 - **Phone Mode**: "Phones only. Everyone sees the world and their own controls." The phone that starts the game is a player too, so it asks for **Your adventurer name**. Use a nickname, never a real name. At the bottom of each phone, **World** shows the story and **You** shows that kid's turn. A phone jumps to **You** by itself when it is that kid's turn.
 
 You can switch partway. On a phone, open **Room settings** and tap **Play on phones instead** or **Use a TV for the world**.
 
 ## Starting a room and seating the kids
 
-In Party Mode, the big screen shows **Room code** with four letters, and a square code. Scan the square code with a phone camera, and it opens the game with the code already typed in. You can also type the four letters under **Join a game**. In Phone Mode, the code and the square are on the **World** screen of the phone that started the game.
+In Party Mode, the big screen shows **Room code** with four letters, and a square code. Scanning the square with a phone camera opens the game with the code typed in. You can also type the four letters under **Join a game**. In Phone Mode, the code and the square are on the **World** screen of the phone that started the game.
 
 ![The big screen waiting for the party](../../public/guide-pictures/tv-lobby.jpg)
 
 A kid who has played on this phone before sees "Welcome back! Who are you bringing?" They tap a hero, then **Play as** and its name. Or they tap **Make someone new**.
 
-A new kid makes a hero in four steps: "Who are you?", "How do you fight?", "What are you best at?" and "What's your name?" The name step has **Surprise me** for a kid who cannot choose.
+A new kid makes a hero in four short steps, starting with "Who are you?" and ending with a name. **Surprise me** picks a name for a kid who cannot choose.
 
 ![Making a hero on a phone](../../public/guide-pictures/creation.jpg)
 
 Then they tap **Ready to play**, and **I'm ready!** The big screen shows who is ready. Once everyone here is ready, every phone shows **Begin the adventure**, and any kid can tap it. Later chapters say **Play chapter** and its number instead.
 
-![A kid's phone, ready to begin](../../public/guide-pictures/ready.jpg)
+### The practice, for new heroes
+
+![A new hero's phone, offering the practice](../../public/guide-pictures/ready.jpg)
+
+When a hero is brand new, the phones say so: "Play a short practice together first, or skip it." **Play the practice** plays a short chapter, about 15 minutes, where everyone learns by doing, one step at a time. Each step has a hint on the phone, and **Hear the hint** reads it out. Nothing in the practice costs anything, and nothing is lost.
+
+![A hint on a kid's phone during the practice](../../public/guide-pictures/practice-hint.jpg)
+
+The other button skips the practice and begins the adventure. Kids who have played before never see the offer unless someone new is sitting with them. When the practice ends, the next **Begin the adventure** starts the real one.
 
 ### Reading the story
 
 Read the words on the big screen out loud, in your best voice. The kids answer on their phones. Sometimes everyone votes. Sometimes it is one hero's turn to choose, and the others wait. A roll asks a kid to tap **Roll!** A small number never ends the game; the story goes somewhere else.
 
-In a fight, a kid taps a gold square to walk, or a card to act, then **End my turn**. Nobody dies. A hero who is knocked down gets helped up by a friend standing next to them.
+In a fight, a kid taps a gold square to walk, or a card to act, then **End my turn**. Nobody dies. A hero who is knocked down gets back up when a friend stands next to them and plays **Help Up**.
 
 ## Running the room
 
@@ -66,7 +74,7 @@ Whoever opened the room runs it. In Party Mode that is the big screen: tap **Roo
 - **Remove** takes a phone out of the game. That phone sees "The person running this game took this phone out of it." Each time a phone joins, the big screen says who joined, with **Remove** beside it, so a stranger is one tap from gone.
 - **Lock the room**: "Lock it once everyone is in, and nobody else can join with the code." Kids already here can still come back. **Let new players join again** undoes it.
 - **Quiet mode**: "For a sleeping sibling or a car ride: softer, calmer and dimmer on every device." It turns on for every phone in the room at once. **Turn quiet mode off** ends it.
-- **Stop for today** saves the game. There is more on stopping below.
+- **Stop for today** saves the game for next time.
 - **Close the room** ends it for everyone, after one more tap on **Close it**. "Heroes and what they earned are kept."
 
 ## When a kid leaves or arrives partway
@@ -81,7 +89,7 @@ When a phone goes quiet, the big screen says "Rosie stepped away." (with the kid
 
 ![The big screen when a kid steps away](../../public/guide-pictures/stepped-away.jpg)
 
-To come back, the kid opens the game on the same phone. It takes them straight back in, with a note that says what is happening, like "Welcome back, Sam!" and "The party is voting on what to do next." They tap **Got it**.
+To come back, the kid opens the game on the same phone. They are straight back in, with a note like "Welcome back, Sam!" and "The party is voting on what to do next." They tap **Got it**.
 
 A kid who arrives late joins the same way as everyone else and makes a hero. Their phone says "Welcome, Pip!" (with their own name) and what the party is up to, and they play from there.
 
@@ -119,7 +127,7 @@ Each screen has a row of small buttons in its corner. They change only that scre
 
 You can play forever without an account. Without one, heroes "fade after a week away". Playing again starts the week over.
 
-To keep them for good, a grown-up taps **Sign in or create an account** on the start screen. Type an email and tap **Send the code**. Type the eight digits from the email. There is no password. New here? That makes your account. Played before? It signs you back in.
+To keep them for good, a grown-up taps **Sign in or create an account** on the start screen. Type an email and tap **Send the code**. Type the eight digits from the email. There is no password. The same steps make a new account or sign you back in.
 
 ![Signing in with an emailed code](../../public/guide-pictures/sign-in.jpg)
 
@@ -152,7 +160,7 @@ To let them in, open the room controls and tap **Let visitors join**. It asks yo
 A club, a class, the cousins: a group is for kids from more than one family. Tap **Running games for kids from other families? Run a group** and sign in.
 
 - **Start a new group**, give it a name, and tap **Start it**.
-- **Add a kid** with a nickname, and tap **Add**. Kids can also tap **Someone new** on the group's tablet.
+- **Add a kid** with a nickname, and tap **Add**.
 - **Invite another grown-up** makes a code for a second grown-up. They sign in, tap **Run a group**, and type it under **Have an organizer code?** It works once, for three days.
 - **Take off** hides a kid who stopped coming. **Bring back** returns them, heroes and all.
 
@@ -178,7 +186,7 @@ When a kid leaves a group, like at the end of a club's term, their heroes can go
 1. In **Run a group**, tap **Move home** beside the kid. It shows a code for the grown-up taking them home. It works once, for a day.
 2. That grown-up signs in, taps **Run a group**, types the code under **Taking a kid home? Their move code**, and taps **Bring them home**.
 
-The kid's heroes, their finds and their own phone go with them. Saved games stay with the group, because a saved game is the group's story.
+The kid's heroes, their finds and their own phone go with them. Saved games stay with the group.
 
 ![The code that moves a kid to another home](../../public/guide-pictures/move-code.jpg)
 
@@ -189,8 +197,6 @@ Everything is in **Run a group**, for a signed-in grown-up.
 - **Delete** beside a kid removes the kid and all their heroes, everywhere they played. It asks once more first. "This can't be undone."
 - **Keep a kid who stops playing for** lets you pick how long a kid who stops playing is kept: from a month to a year without playing, or **Until a grown-up deletes them**.
 - At the bottom is a button to delete the whole group and everything in it. Only the last grown-up left in a group can do that.
-- **What we store, and for how long** lists everything the game keeps, and for how long.
+- **What we store, and for how long** lists everything the game keeps.
 
 ![Deleting a kid](../../public/guide-pictures/delete-kid.jpg)
-
-A household nobody signed in to keep is deleted by itself, a week after it last played.
