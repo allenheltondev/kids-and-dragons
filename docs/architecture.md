@@ -117,7 +117,7 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Event log | `RUN#<runId>` | `EVT#<seq>` | Append-only. Enables replay and reconnect. |
 | Presence | `RUN#<runId>` | `PRESENCE` | When each seated phone last said it was here (#258). **TTL 6 hours**, renewed by every beat. |
 | Room | `ROOM#<code>` | `META` | 4-letter code → runId, mode (`party` \| `travel`). **TTL 6 hours.** A room open to visitors (#249) keeps this row; its longer code lives on the run (`RunState.visitorCode`). |
-| Code misses | `GUESS#<client>` | `WINDOW#<n>` | Wrong room codes from one client in one 15-minute window (§4.5, "Joining a session"). Wrong organizer codes are counted the same way, per account. **TTL one window past its own.** |
+| Code misses | `GUESS#<client>` | `WINDOW#<n>` | Wrong room codes from one client in one 15-minute window (§4.5, "Joining a session"). Wrong organizer codes are counted the same way, per account. **TTL one window past its own.** Crash reports (#317, §4.6) are counted in the same row shape, under a `report#` key of their own. |
 | Organizer invite | `INVITE#<code>` | `META` | A single-use code that makes whoever signs in with it an owner of one household (§4.5, "Groups"). Spent by a conditional delete. **TTL 3 days.** |
 | Transfer code | `TRANSFER#<code>` | `META` | A single-use code that moves one kid to another home (§4.5, "Moving a kid"): → source household, playerId. Spent in the move's own transaction. **TTL 1 day.** |
 | Moved device | `HH#<hhId>` | `MOVED#<deviceId>` | Left in the household a kid moved out of, naming the one her phone's binding moved into, so a token minted before the move still finds it by primary key. Not under `DEVICE#`, so no device list sees it. **TTL 31 days**, past any token it could forward. |
@@ -1669,6 +1669,28 @@ The words are `content/help.json` (fetched on first use, saved by the service wo
 the content), and the whole control is a lazy chunk. Nothing is stored. The shared screen's join line
 under the code and QR is `help.join`; it never counts letters, because a visitor room's code is six and
 a family room's is four.
+
+#### Crash reports, with no kid in them (#317)
+
+A crash on a phone or the TV reaches us as one log line, and nothing else. The first paint carries only
+`report/listen.ts`: a `window` `error` and `unhandledrejection` listener (React 19 re-raises an error no
+boundary caught as a window `error`, so a render crash arrives the same way) that loads `report/report.ts`
+on the first throw. That chunk builds the report, scrubs it and `POST`s it to `/api/client-error`.
+
+A report is exactly `ClientErrorReport` (`shared/src/error-report.ts`): the message, a stack cut to frames
+in our own bundle (`file:line:col`), the build, the route's shape (`/p/:code`), the layout (phone, tablet
+or TV), the browser family, and a random id per page load. Nothing else the sender includes is read.
+
+The exception's own words are never sent. An engine's message can hold anything a page handed it, and a
+kid's typing is among that, in a shape no pattern can promise to catch, so the message is replaced rather
+than scrubbed: the client reduces it to a kind of failure (`diagnose`, `TypeError: not a function`), and
+the server accepts only those exact phrases (`safeMessage`), turning anything else into `Error: other`.
+Every other field has a fixed shape too (a short sha, an enumerated route, layout and browser, a hex id),
+and the stack is locations in our own bundle. The top frame, read through the sourcemap, says where.
+
+The endpoint is rate-limited by the code guard's budget (limit, window, client key and row), under its
+own key so a page stuck in an error loop never spends a school's join budget. It stores nothing: the
+counter is the only write, and the "what we store" page lists the reports as logged, not stored.
 
 #### The service worker: offline, and never twice
 
