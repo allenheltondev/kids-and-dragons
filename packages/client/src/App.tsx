@@ -211,7 +211,9 @@ export function App(): React.JSX.Element {
           <A11yControl />
           <ReadAloudControl />
         </Suspense>
-        <Suspense fallback={null}>
+        {/* The row is anchored to the right, so a control that arrives on its right pushes the others
+            along under a finger already on its way to them. Hold sound's place until the engine lands. */}
+        <Suspense fallback={enabled ? <span className="kad-corner__slot" aria-hidden="true" /> : null}>
           <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
         </Suspense>
         {/* The shared screen's own controls (#257), in the row with the device's rather than

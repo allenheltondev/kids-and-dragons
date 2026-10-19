@@ -405,4 +405,82 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expect(tv.locator(".narration__body").first()).toBeVisible(TAP);
     await expectFits(tv, "the shared screen's story", SHARED);
   });
+
+  test("the shared screen's corner row holds still while sound loads, asks, and unlocks", async ({ browser }) => {
+    // The sound engine held back, as lazy-audio.spec does (#330): the TV's own controls (Room,
+    // About this screen) and the device's (read-aloud, display settings) keep their place when the
+    // engine lands, when Tap for sound appears with it, and when the first tap unlocks sound.
+    const ENGINE = /\/(?:src\/audio\/(?:engine|AudioControl)\.tsx?|bundle\/audio-[^/]*\.js)(?:\?|$)/;
+    const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+    open.push(context);
+    // Sound held back until a tap, as on most TVs (display-hardware.spec), so Tap for sound is asked.
+    await context.addInitScript(() => {
+      const listeners = new Set<() => void>();
+      let allowed = false;
+      class BlockedContext {
+        currentTime = 0;
+        sampleRate = 48_000;
+        destination = {};
+        state: "suspended" | "running" = "suspended";
+        addEventListener(_: string, fn: () => void): void { listeners.add(fn); }
+        removeEventListener(_: string, fn: () => void): void { listeners.delete(fn); }
+        createGain() { return { gain: { value: 0, setValueAtTime() {}, linearRampToValueAtTime() {}, cancelScheduledValues() {} }, connect() {} }; }
+        createBufferSource() { return { connect() {}, start() {}, stop() {}, loop: false, buffer: null }; }
+        createOscillator() { return { type: "sine", frequency: { setValueAtTime() {}, linearRampToValueAtTime() {} }, connect() {}, start() {}, stop() {} }; }
+        createBuffer() { return { getChannelData: () => new Float32Array(1) }; }
+        decodeAudioData() { return Promise.reject(new Error("no decoder")); }
+        resume(): Promise<void> {
+          if (allowed) { this.state = "running"; for (const fn of listeners) fn(); }
+          return Promise.resolve();
+        }
+        close(): Promise<void> { return Promise.resolve(); }
+      }
+      Object.defineProperty(window, "AudioContext", { value: BlockedContext, configurable: true });
+      (window as unknown as { allowSound(): void }).allowSound = () => { allowed = true; };
+    });
+    const tv = await context.newPage();
+    let release: () => void = () => undefined;
+    const held = new Promise<void>((resolve) => { release = resolve; });
+    await tv.route(ENGINE, async (route) => {
+      await held;
+      await route.continue();
+    });
+
+    await tv.goto("/");
+    await tv.getByRole("button", { name: /want to host/i }).click();
+    await tv.getByText("Party Mode").click();
+    await tv.getByRole("button", { name: /open the lobby here/i }).click();
+    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
+
+    const controls = {
+      room: tv.getByRole("button", { name: "Room" }),
+      about: tv.getByRole("button", { name: "About this screen" }),
+      readAloud: tv.getByRole("button", { name: /turn read-aloud on/i }),
+      settings: tv.getByRole("button", { name: "Display settings" }).first(),
+    };
+    for (const control of Object.values(controls)) await expect(control).toBeVisible(TAP);
+    const where = async (): Promise<Record<string, number | undefined>> => {
+      const out: Record<string, number | undefined> = {};
+      for (const [name, control] of Object.entries(controls)) out[name] = (await control.boundingBox())?.x;
+      return out;
+    };
+    const before = await where();
+
+    release();
+    await expect(tv.getByRole("button", { name: /^Turn sound/ })).toBeVisible(TAP);
+    await expect(tv.getByRole("button", { name: "Tap for sound" })).toBeVisible(TAP);
+    expect(await where(), "nothing moves when the engine lands and Tap for sound appears").toEqual(before);
+
+    // The first tap anywhere unlocks sound and takes the ask away: still nothing moves.
+    await tv.evaluate(() => (window as unknown as { allowSound(): void }).allowSound());
+    await tv.mouse.move(640, 400);
+    await tv.mouse.down();
+    await tv.mouse.up();
+    await expect(tv.getByRole("button", { name: "Tap for sound" })).toHaveCount(0, TAP);
+    expect(await where(), "nothing moves when sound unlocks").toEqual(before);
+
+    // And a tap on About after all that opens it.
+    await controls.about.click();
+    await expect(tv.getByRole("region", { name: "About this screen" })).toBeVisible(TAP);
+  });
 });
