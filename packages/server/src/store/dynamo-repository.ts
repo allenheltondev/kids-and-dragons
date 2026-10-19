@@ -57,6 +57,7 @@ import type {
   EventRecord,
   GameRepository,
   ForgetJob,
+  FounderBefore,
   GuestRenewal,
   HouseholdOwnerRecord,
   IdlePlayer,
@@ -381,9 +382,9 @@ export class DynamoRepository implements GameRepository {
     }
   }
 
-  async setFounder(householdId: string, deviceId: string): Promise<boolean> {
+  async setFounder(householdId: string, deviceId: string): Promise<FounderBefore | null> {
     try {
-      await this.doc.send(
+      const done = await this.doc.send(
         new UpdateCommand({
           TableName: this.table,
           Key: { PK: HH(householdId), SK: META },
@@ -400,12 +401,54 @@ export class DynamoRepository implements GameRepository {
             "#owner": "ownerSub",
           },
           ExpressionAttributeValues: { ":device": deviceId, ":true": true, ":null": null },
+          ReturnValues: "ALL_OLD",
         }),
       );
-      return true;
+      const was = (done.Attributes?.["data"] ?? {}) as Partial<Household>;
+      return {
+        ...(was.founderDeviceId !== undefined ? { founderDeviceId: was.founderDeviceId } : {}),
+        ...(was.awaitingFounder ? { awaitingFounder: true as const } : {}),
+      };
     } catch (err) {
-      if (isConditionalFailure(err)) return false;
+      if (isConditionalFailure(err)) return null;
       throw err;
+    }
+  }
+
+  async restoreFounder(householdId: string, deviceId: string, before: FounderBefore): Promise<void> {
+    const sets: string[] = [];
+    const removes: string[] = [];
+    const values: Record<string, unknown> = { ":device": deviceId };
+    if (before.founderDeviceId !== undefined) {
+      sets.push("#d.#founder = :before");
+      values[":before"] = before.founderDeviceId;
+    } else {
+      removes.push("#d.#founder");
+    }
+    if (before.awaitingFounder) {
+      sets.push("#d.#awaiting = :true");
+      values[":true"] = true;
+    }
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: HH(householdId), SK: META },
+          UpdateExpression: [sets.length ? `SET ${sets.join(", ")}` : "", removes.length ? `REMOVE ${removes.join(", ")}` : ""]
+            .filter(Boolean)
+            .join(" "),
+          // Only while the hand-over being undone is still the founder.
+          ConditionExpression: "attribute_exists(PK) AND #d.#founder = :device",
+          ExpressionAttributeNames: {
+            "#d": "data",
+            "#founder": "founderDeviceId",
+            ...(before.awaitingFounder ? { "#awaiting": "awaitingFounder" } : {}),
+          },
+          ExpressionAttributeValues: values,
+        }),
+      );
+    } catch (err) {
+      if (!isConditionalFailure(err)) throw err;
     }
   }
 

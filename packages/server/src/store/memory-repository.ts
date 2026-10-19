@@ -42,6 +42,7 @@ import type {
   EventRecord,
   GameRepository,
   ForgetJob,
+  FounderBefore,
   GuestRenewal,
   HouseholdOwnerRecord,
   IdlePlayer,
@@ -314,14 +315,30 @@ export class MemoryRepository implements GameRepository {
     await this.putHousehold({ ...household, founderDeviceId: "" });
   }
 
-  async setFounder(householdId: string, deviceId: string): Promise<boolean> {
+  async setFounder(householdId: string, deviceId: string): Promise<FounderBefore | null> {
     const item = this.get(HH(householdId), META);
-    if (!item || item.sweeping) return false;
+    if (!item || item.sweeping) return null;
     const household = item.data as Household;
-    if (!household.guest || household.ownerSub) return false;
-    const { awaitingFounder: _taken, ...rest } = household;
+    if (!household.guest || household.ownerSub) return null;
+    const { awaitingFounder, ...rest } = household;
     await this.putHousehold({ ...rest, founderDeviceId: deviceId });
-    return true;
+    return {
+      ...(household.founderDeviceId !== undefined ? { founderDeviceId: household.founderDeviceId } : {}),
+      ...(awaitingFounder ? { awaitingFounder } : {}),
+    };
+  }
+
+  async restoreFounder(householdId: string, deviceId: string, before: FounderBefore): Promise<void> {
+    const item = this.get(HH(householdId), META);
+    if (!item) return;
+    const household = item.data as Household;
+    if (household.founderDeviceId !== deviceId) return;
+    const { founderDeviceId: _handed, ...rest } = household;
+    await this.putHousehold({
+      ...rest,
+      ...(before.founderDeviceId !== undefined ? { founderDeviceId: before.founderDeviceId } : {}),
+      ...(before.awaitingFounder ? { awaitingFounder: true as const } : {}),
+    });
   }
 
   async extendGuestHousehold(householdId: string, expiresAt: string): Promise<GuestRenewal> {

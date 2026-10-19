@@ -57,12 +57,22 @@ export async function handKeeper(
   const device = devices[0];
   if (!device) return fail("ILLEGAL", "That player has no phone of their own to keep the game on.");
 
-  if (!(await deps.repo.setFounder(room.householdId, device.deviceId))) {
-    return fail("ILLEGAL", "This game is already kept.");
-  }
+  const before = await deps.repo.setFounder(room.householdId, device.deviceId);
+  if (!before) return fail("ILLEGAL", "This game is already kept.");
 
-  // Told to every screen, so the old keeper's offer goes and the new one's
-  // comes, and a phone restored from storage draws the right one.
+  /*
+   * Told to every screen, so the old keeper's offer goes and the new one's
+   * comes, and a phone restored from storage draws the right one.
+   *
+   * The two writes are one hand-over or none. If the run cannot take the
+   * change (the room closed between them, or the game kept moving past the
+   * retries), the founder goes back to what it was, so the household and the
+   * screens never disagree about who may keep it, and the host is told it
+   * did not happen. Putting it back is conditional on this device still being
+   * the founder, so a later hand-over is not undone by this one's cleanup.
+   * If even that fails, the host's retry finishes the job: the whole thing is
+   * idempotent.
+   */
   const result = await commitRoomChange(
     room,
     input.principal.playerId,
@@ -70,5 +80,13 @@ export async function handKeeper(
       current.keeperPlayerId === input.playerId ? null : { ...current, keeperPlayerId: input.playerId },
     deps,
   );
-  return result.ok ? ok({ seq: result.value.seq }) : result;
+  if (!result.ok) {
+    try {
+      await deps.repo.restoreFounder(room.householdId, device.deviceId, before);
+    } catch (err) {
+      console.error(`handKeeper: could not put the founder of ${room.householdId} back:`, err);
+    }
+    return result;
+  }
+  return ok({ seq: result.value.seq });
 }
