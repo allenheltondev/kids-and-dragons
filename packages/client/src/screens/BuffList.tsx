@@ -12,6 +12,7 @@
 import type { ReactElement } from "react";
 import type { BuffKind, CombatBuff, JourneyBuffView } from "@kad/shared";
 import { buffAmountText, buffIcon, buffRemainingText, buffTargetText, buffTurnsText, isBurden, isNumbed, numbedTurnsText } from "./buff-copy";
+import { helpAttrs } from "../help/longpress";
 import { Icon } from "./icons";
 import "./shared.css";
 import "./BuffList.css";
@@ -34,7 +35,16 @@ export function BuffList({ rows, title }: { rows: readonly BuffRow[]; title: str
   return (
     <ul className="buffs" aria-label={title}>
       {rows.map((row) => (
-        <li className="buffs__row" key={row.key}>
+        <li
+          className="buffs__row"
+          key={row.key}
+          {...helpAttrs({
+            kind: "buff",
+            name: row.label,
+            icon: row.numbed ? "numbed" : buffIcon(row.kind),
+            text: `${buffAmountText(row.kind, row.amount, row.appliesTo)}. ${row.detail}.`,
+          })}
+        >
           <Icon name={row.numbed ? "numbed" : buffIcon(row.kind)} />
           <span className="buffs__text">
             <b>{row.label}</b>: {buffAmountText(row.kind, row.amount, row.appliesTo)}

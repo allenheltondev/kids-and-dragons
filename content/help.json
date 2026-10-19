@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "surfaces": {
+    "story": {
+      "icon": "scroll",
+      "text": "This is the story. Listen to it, then tap what you want to do."
+    },
+    "combat": {
+      "icon": "swords",
+      "text": "It is a fight! On your turn, tap a gold square to walk or a card to act, then tap End turn."
+    },
+    "sheet": {
+      "icon": "party",
+      "text": "This is a hero's sheet. It shows how strong, quick and clever they are, and what they can do."
+    },
+    "inventory": {
+      "icon": "bag",
+      "text": "These are your things. Tap one to use it or give it to a friend."
+    },
+    "map": {
+      "icon": "map",
+      "text": "This is the map. The Atlas shows the whole realm, and the Story trail shows how far you have come."
+    },
+    "guide": {
+      "icon": "scroll",
+      "text": "The Field Guide is a book of everything you have met. Tap a picture to read about it."
+    },
+    "world": {
+      "icon": "eye",
+      "text": "This is what the big screen shows. Tap You at the bottom to get back to your turn."
+    },
+    "creation": {
+      "icon": "party",
+      "text": "Time to make your hero! Pick who they are, then tap the big button to go on."
+    }
+  },
+  "things": {
+    "card": {
+      "icon": "swords",
+      "text": "A card is something you can do on your turn. Tap it to do it."
+    },
+    "buff": {
+      "icon": "star",
+      "text": "A buff is a little boost that wears off. A cost is a little weight that wears off too."
+    },
+    "item": {
+      "icon": "bag",
+      "text": "This is one of your things. Tap it to use it or give it to a friend."
+    }
+  },
+  "join": {
+    "icon": "travel",
+    "text": "Scan this with your phone or tablet, or type the code in Join a game."
+  }
+}

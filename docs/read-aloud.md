@@ -55,3 +55,10 @@ calls `hear()` (`PlayerPanel`), so a kid who missed it does not need a grown-up 
 The engine is `packages/client/src/speech/synth-speaker.ts`, loaded on demand so the entry chunk
 doesn't pay for it. A better voice is another `Speaker` (a function with an optional `cancel`)
 returned from `loadEngine()` in `read-aloud.ts`.
+
+## Help (#256)
+
+The "?" in the corner row and a press-and-hold on a card, buff or item both open the help sheet, and
+the sheet says its words with `hear()` as it opens (and again from "Hear it again"). That is a tap
+asking to hear it, so it speaks with the device switch off. The words are `content/help.json`; see
+`content/README.md`.

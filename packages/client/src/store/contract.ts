@@ -202,6 +202,12 @@ export interface GameStore {
    * preview: the next beat says it again.
    */
   beat(leaving?: boolean): void;
+  /**
+   * The screen woke from sleep (#264): open a fresh stream and catch up from
+   * the last applied seq, the way a hard refresh does (architecture §4.3). A
+   * no-op when there is no room to catch up on.
+   */
+  reconnect(): void;
   /** Stops showing an arrival. */
   dismissArrival(playerId: string): void;
   /**

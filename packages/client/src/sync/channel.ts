@@ -411,6 +411,13 @@ export interface ChannelOptions {
 
 export interface Channel {
   close(): void;
+  /**
+   * Drop the stream and open a fresh one now, whatever state the old one is in
+   * (#264). A screen that slept can hold a stream the network killed without
+   * telling it; this is how a woken page stops trusting it. The new stream's
+   * `onopen` resyncs from the sequencer's seq, so nothing missed is lost.
+   */
+  reconnect?(): void;
 }
 
 export function openChannel(options: ChannelOptions): Channel {
@@ -461,6 +468,16 @@ export function openChannel(options: ChannelOptions): Channel {
   connect();
 
   return {
+    reconnect() {
+      if (closed) return;
+      if (retryTimer !== null) cancel(retryTimer);
+      retryTimer = null;
+      const old = source;
+      source = null;
+      old?.close();
+      attempt = 0;
+      connect();
+    },
     close() {
       closed = true;
       if (retryTimer !== null) cancel(retryTimer);

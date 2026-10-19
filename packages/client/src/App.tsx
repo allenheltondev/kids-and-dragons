@@ -55,6 +55,10 @@ const ReadAloudControl = lazy(() => loadSpeech().then((module) => ({ default: mo
 const loadA11y = () => import("./a11y");
 const A11yControl = lazy(() => loadA11y().then((module) => ({ default: module.A11yControl })));
 
+// Help (#256): the "?" and the press-and-hold sheet load after first paint too, for the same reason.
+const loadHelp = () => import("./help");
+const HelpControl = lazy(() => loadHelp().then((module) => ({ default: module.HelpControl })));
+
 const loadPartyLayout = () => import("./layout/PartyLayout");
 const loadTravelLayout = () => import("./layout/TravelLayout");
 const PartyLayout = lazy(() => loadPartyLayout().then((module) => ({ default: module.PartyLayout })));
@@ -119,6 +123,12 @@ const LetHeroGo = lazy(() =>
   import("./screens/HostControls").then((module) => ({ default: module.LetHeroGo })),
 );
 
+// What only a shared screen does (#264): wake lock, waking up, "About this
+// screen". A phone never loads it.
+const DisplayExtras = lazy(() =>
+  import("./display/DisplayExtras").then((module) => ({ default: module.DisplayExtras })),
+);
+
 // The adventure book (`/journal`) is a route of its own, between games, and
 // loads on demand like the room: nobody on the join screen needs it yet.
 const JournalScreen = lazy(() =>
@@ -176,9 +186,10 @@ export function App(): React.JSX.Element {
   return (
     <PhoneMagic enabled={route.name !== "tv"}>
       {/* One corner row for the device's own controls, so they share a place instead of
-          fighting over it: display settings (#262) and read-aloud (#261) to the left of sound, sound anchored right. */}
+          fighting over it: help (#256), display settings (#262) and read-aloud (#261) to the left of sound, sound anchored right. */}
       <div className="kad-corner">
         <Suspense fallback={null}>
+          <HelpControl />
           <A11yControl />
           <ReadAloudControl />
         </Suspense>
@@ -192,6 +203,11 @@ export function App(): React.JSX.Element {
       {/* Who just joined (#267), on the shared display. A host's phone shows
           them in its own view instead (layout/PlayerView). */}
       <ArrivalNotices placement="float" />
+      {route.name === "tv" && session ? (
+        <Suspense fallback={null}>
+          <DisplayExtras />
+        </Suspense>
+      ) : null}
       {route.name === "tv" && session?.host ? (
         <Suspense fallback={null}>
           <HostControls placement="float" />
