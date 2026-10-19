@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { HOLD_MS, HOLD_SLOP_PX, helpAttrs, installLongPress } from "./longpress";
+import { HOLD_MS, HOLD_SLOP_PX, SWALLOW_MS, helpAttrs, installLongPress } from "./longpress";
 
 function press(target: Element, type: string, at: { x: number; y: number } = { x: 10, y: 10 }): void {
   const event = new MouseEvent(type, { bubbles: true, cancelable: true, clientX: at.x, clientY: at.y });
@@ -39,6 +39,49 @@ describe("press and hold", () => {
     card.click();
     expect(tapped).not.toHaveBeenCalled();
     // The swallow is once: the next tap is a tap.
+    card.click();
+    expect(tapped).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not let a hold that got no release click eat the next tap", () => {
+    // The sheet that opens under the finger: a real button somewhere else on the page.
+    const sheet = document.createElement("div");
+    sheet.setAttribute("role", "dialog");
+    const gotIt = document.createElement("button");
+    const gotItClicked = vi.fn();
+    gotIt.addEventListener("click", gotItClicked);
+    sheet.append(gotIt);
+    document.body.append(sheet);
+
+    press(card, "pointerdown");
+    vi.advanceTimersByTime(HOLD_MS);
+    expect(held).toHaveBeenCalledTimes(1);
+    press(card, "pointerup"); // and the browser sends no click for the held element
+    gotIt.click();
+    expect(gotItClicked, "a tap elsewhere is a tap, even right after the hold").toHaveBeenCalledTimes(1);
+
+    // The held element's own tap, later, is a tap too.
+    card.click();
+    expect(tapped).toHaveBeenCalledTimes(1);
+  });
+
+  it("swallows a release click retargeted to the scrim, which would close the sheet", () => {
+    const scrim = document.createElement("div");
+    const closed = vi.fn();
+    scrim.addEventListener("click", closed);
+    document.body.append(scrim);
+    press(card, "pointerdown");
+    vi.advanceTimersByTime(HOLD_MS);
+    press(card, "pointerup");
+    scrim.click();
+    expect(closed).not.toHaveBeenCalled();
+  });
+
+  it("lets the swallow lapse if the release click never comes", () => {
+    press(card, "pointerdown");
+    vi.advanceTimersByTime(HOLD_MS);
+    press(card, "pointerup");
+    vi.advanceTimersByTime(SWALLOW_MS + 1);
     card.click();
     expect(tapped).toHaveBeenCalledTimes(1);
   });
