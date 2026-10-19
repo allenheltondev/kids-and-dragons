@@ -73,6 +73,9 @@ function character(overrides: Partial<ResolvedCharacter> = {}): ResolvedCharacte
     questItems: [],
     souvenirs: [],
     isProvisional: false,
+    // Somebody who has played before, so the lobby is the ordinary one; the
+    // practice's offer (#255) is tested with `practiced` cleared.
+    practiced: true,
     ...overrides,
   };
 }
@@ -632,6 +635,37 @@ describe("keeping going from a saved game (#259)", () => {
     expect(screen.queryByRole("button", { name: /Keep going/ })).toBeNull();
     serverSends({ saved: SAVED, phase: "scene" });
     expect(screen.queryByRole("button", { name: /Keep going/ })).toBeNull();
+  });
+});
+
+describe("the practice (#255)", () => {
+  const newcomer = (id: string, playerId: string, name: string) =>
+    member({ character: character({ id, ownerPlayerId: playerId, name, practiced: undefined }), ready: true });
+
+  it("offers the practice while somebody seated is new, and keeps Begin as the skip", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({ phase: "lobby", party: [member({ ready: true }), newcomer("c_2", "p_2", "Rue")] });
+    expect(screen.getByText("Rue is new here. Play a short practice together first, or skip it.")).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: "Play the practice" }));
+    expect(sent).toEqual([{ type: "START_PRACTICE" }]);
+    await user.click(screen.getByRole("button", { name: "Skip the practice and begin the adventure" }));
+    expect(sent.at(-1)).toEqual({ type: "CONTINUE_CAMPAIGN", campaignId: "c" });
+  });
+
+  it("names every newcomer, and offers nothing to a table that has all played", () => {
+    mount({ phase: "lobby", party: [newcomer("c_1", "p_1", "Bo"), newcomer("c_2", "p_2", "Rue")] });
+    expect(screen.getByText("Bo and Rue are new here. Play a short practice together first, or skip it.")).toBeTruthy();
+    cleanup();
+    mount({ phase: "lobby", party: [member({ ready: true })] });
+    expect(screen.queryByRole("button", { name: "Play the practice" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Begin the adventure" })).toBeTruthy();
+  });
+
+  it("puts the hint above the answers, with a button that reads it out", () => {
+    mount({ prompt: choicePrompt() });
+    serverSends({ hint: "Tap what you want to do, then tap Do it!" });
+    expect(screen.getByTestId("player-hint").textContent).toContain("Tap what you want to do, then tap Do it!");
+    expect(screen.getByRole("button", { name: "Hear the hint" })).toBeTruthy();
   });
 });
 

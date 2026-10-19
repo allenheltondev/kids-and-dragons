@@ -77,6 +77,9 @@ export function NarrationPanel(): ReactElement | null {
   // encounter cannot carry a priority anyway.
   const priority = state?.encounter != null ? null : state?.scenePriority ?? null;
   const ribbon = priority === null ? null : PRIORITY_RIBBON[priority];
+  // The practice's line of what to tap (#255): shown under the words, in a
+  // fight too, because that is where the board's lesson is.
+  const hint = state?.hint ?? null;
   const prompt = state?.prompt ?? null;
   const choices = prompt !== null && prompt.kind === "choice" ? prompt.options : null;
   /*
@@ -124,6 +127,19 @@ export function NarrationPanel(): ReactElement | null {
     // The ribbon follows the scene, so a new one always arrives with new words.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sceneId, narration]);
+
+  /*
+   * The hint, after the story and never instead of it: declared after the
+   * narration's effect so it queues behind it, and before whose turn it is,
+   * so "tap Roll" is heard before the name it is for. Once per scene.
+   */
+  const spokenHint = useRef<string | null>(null);
+  useEffect(() => {
+    const key = `${sceneId ?? "-"}:${hint ?? ""}`;
+    if (hint === null || spokenHint.current === key) return;
+    spokenHint.current = key;
+    speak(hint, { source: "ui" });
+  }, [sceneId, hint]);
 
   /*
    * Whose turn it is, and no more. The options themselves are read by the phone
@@ -306,6 +322,12 @@ export function NarrationPanel(): ReactElement | null {
           <p className="narration__body" key={narration}>
             {narration}
           </p>
+          {hint === null ? null : (
+            <p className="narration__hint" key={`hint:${hint}`} data-testid="scene-hint">
+              <Icon name="star" />
+              <span>{hint}</span>
+            </p>
+          )}
         </div>
 
         {/*
