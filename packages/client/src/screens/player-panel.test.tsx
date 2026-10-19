@@ -22,6 +22,8 @@ import { resetFieldGuideCache } from "./content";
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { setSpeaker } from "@kad/shared";
+import { setReadAloud } from "../speech";
 import { act, cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type {
@@ -356,6 +358,52 @@ describe("a choice", () => {
 // Roll
 // ---------------------------------------------------------------------------
 
+describe("read-aloud on this phone (#261)", () => {
+  function readAloud(on: boolean) {
+    const said: Array<[string, unknown]> = [];
+    Object.defineProperty(window, "speechSynthesis", { value: { speak() {}, cancel() {}, getVoices: () => [] }, configurable: true });
+    vi.stubGlobal("SpeechSynthesisUtterance", class { constructor(public text: string) {} });
+    setReadAloud(on);
+    setSpeaker((text, opts) => void said.push([text, opts]));
+    return said;
+  }
+  afterEach(() => {
+    setReadAloud(false);
+    setSpeaker(null);
+    vi.unstubAllGlobals();
+    Reflect.deleteProperty(window, "speechSynthesis");
+  });
+
+  it("says its own choices once, without interrupting the story", () => {
+    const said = readAloud(true);
+    const { rerender } = mount({ prompt: choicePrompt() });
+    expect(said).toHaveLength(1);
+    expect(said[0]![0]).toContain("Take the east path");
+    expect(said[0]![1]).toMatchObject({ source: "choice" });
+    expect(said[0]![1]).not.toHaveProperty("interrupt", true);
+    rerender(<></>);
+    expect(said).toHaveLength(1);
+  });
+
+  it("puts a speaker beside each choice that reads just that choice, and picks nothing", async () => {
+    const user = userEvent.setup();
+    const said = readAloud(true);
+    const { sent } = mount({ prompt: choicePrompt() });
+    said.length = 0;
+    await user.click(screen.getByRole("button", { name: "Hear: Take the east path" }));
+    expect(said).toEqual([]); // the engine, not the seam, speaks a tap (hear)
+    expect(sent).toEqual([]);
+    expect(screen.queryByRole("button", { name: /Do it/ })?.hasAttribute("disabled") ?? true).toBe(true);
+  });
+
+  it("changes nothing when read-aloud is off: no speaker icons, nothing said", () => {
+    const said = readAloud(false);
+    mount({ prompt: choicePrompt() });
+    expect(said).toEqual([]);
+    expect(screen.queryByRole("button", { name: /^Hear:/ })).toBeNull();
+  });
+});
+
 describe("a roll", () => {
   const roll: Prompt = {
     kind: "roll",
@@ -556,6 +604,36 @@ describe("an item swap", () => {
 // ---------------------------------------------------------------------------
 // Ready and starting
 // ---------------------------------------------------------------------------
+
+describe("keeping going from a saved game (#259)", () => {
+  const SAVED = {
+    campaignId: "c",
+    campaignTitle: "Gemfall",
+    chapter: { index: 2, title: "The Honey Bridge" },
+    recap: "Bees hummed over the water.",
+    heroes: ["Pip"],
+    savedAt: "2026-10-18T18:00:00.000Z",
+  };
+
+  it("offers it in the lobby, with the recap, to anyone, ready or not", async () => {
+    const user = userEvent.setup();
+    const resumeGame = vi.fn(async () => true);
+    mount({ phase: "lobby" });
+    act(() => useGameStore.setState({ resumeGame }));
+    serverSends({ saved: SAVED });
+
+    expect(screen.getByText(/You stopped partway through The Honey Bridge\. Bees hummed over the water\./)).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: /Keep going/ }));
+    expect(resumeGame).toHaveBeenCalledTimes(1);
+  });
+
+  it("is not there once a chapter is under way, or when nothing was stopped", () => {
+    mount({ phase: "lobby" });
+    expect(screen.queryByRole("button", { name: /Keep going/ })).toBeNull();
+    serverSends({ saved: SAVED, phase: "scene" });
+    expect(screen.queryByRole("button", { name: /Keep going/ })).toBeNull();
+  });
+});
 
 describe("readying up", () => {
   it("readies with the one Ready to play tap, and can take it back", async () => {
@@ -1121,6 +1199,21 @@ describe("passing an item to a friend", () => {
     expect(screen.queryByRole("button", { name: /Give to Thistle/ })).toBeNull();
     // ...and the offer is visible as outstanding instead.
     expect(screen.getByText("Waiting for an answer")).toBeTruthy();
+  });
+
+  it("leaves out a visitor from another household, whose things go home with them (#249)", async () => {
+    const user = userEvent.setup();
+    mount({
+      party: [
+        member({ character: character({ inventory: [POTION] }) }),
+        member({ character: THISTLE, homeHouseholdId: "h_next_door" }),
+      ],
+      sceneType: "rest",
+    });
+
+    await openThePotion(user);
+    expect(screen.queryByRole("button", { name: /Give to Thistle/ })).toBeNull();
+    expect(screen.getByText(/Visitors keep their own things/)).toBeTruthy();
   });
 
   it("says so when there is nobody to give anything to", async () => {
@@ -1800,5 +1893,51 @@ describe("the end of a chapter", () => {
     expect(chipOf("Ember")).not.toContain("kad-chip--ok");
     await user.click(screen.getByRole("button", { name: /Wait, I'm still looking/ }));
     expect(sent).toEqual([{ type: "READY", ready: false }]);
+  });
+});
+
+describe("a friend who stepped away (#258)", () => {
+  const friend = (overrides: Partial<PartyMember> = {}) =>
+    member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }), ...overrides });
+
+  it("lets a ready phone start the fight without them", async () => {
+    const user = userEvent.setup();
+    const ready: Prompt = { kind: "ready", forPlayerIds: [] };
+    const { sent } = mount({ phase: "encounter", prompt: ready, party: [member({ ready: true }), friend()] });
+    expect(screen.queryByRole("button", { name: /^Start without/ })).toBeNull();
+
+    serverSends({ party: [member({ ready: true }), friend({ connected: false })] });
+    expect(screen.getByText("Thistle stepped away")).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: "Start without Thistle" }));
+    expect(sent).toEqual([{ type: "READY", ready: true }]);
+  });
+
+  it("lets a voter close a vote that only waits on them", async () => {
+    const user = userEvent.setup();
+    const vote = choicePrompt({ vote: true, votes: { p_1: "east" }, forPlayerIds: ["p_1", "p_2"] });
+    const { sent } = mount({ prompt: vote, party: [member(), friend()] });
+    expect(screen.queryByRole("button", { name: /^Decide without/ })).toBeNull();
+
+    serverSends({ party: [member(), friend({ connected: false })] });
+    await user.click(screen.getByRole("button", { name: "Decide without Thistle" }));
+    expect(sent).toEqual([{ type: "CHOOSE", choiceId: "east" }]);
+  });
+
+  it("lets anyone leave a find that waits on them, and only leave it", async () => {
+    const user = userEvent.setup();
+    const swap: Prompt = { kind: "item_swap", characterId: "c_2", incomingItemId: "sunbloom_draught" };
+    const { sent } = mount({ prompt: swap, party: [member(), friend()] });
+    expect(screen.queryByRole("button", { name: "Leave it and go on" })).toBeNull();
+
+    serverSends({ party: [member(), friend({ connected: false })] });
+    // Not this phone's question, so the way in is on the bag page.
+    await user.click(screen.getByRole("button", { name: "Help Thistle's bag" }));
+    await user.click(screen.getByRole("button", { name: "Leave it and go on" }));
+    expect(sent).toEqual([{ type: "RESOLVE_ITEM_SWAP", dropItemId: null }]);
+  });
+
+  it("offers Begin without a friend who stepped away before readying", () => {
+    mount({ phase: "lobby", party: [member({ ready: true }), friend({ connected: false })] });
+    expect(screen.getByRole("button", { name: /Begin the adventure/ })).toBeTruthy();
   });
 });

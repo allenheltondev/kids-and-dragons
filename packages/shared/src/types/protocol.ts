@@ -214,8 +214,12 @@ export interface ActionRequest {
 export interface ActionResponse {
   ok: boolean;
   seq: number;
-  /** Set when ok is false. Clients resync rather than retrying blindly. */
-  error?: { code: "STALE_SEQ" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN"; message: string };
+  /**
+   * Set when ok is false. Clients resync rather than retrying blindly.
+   * `HERO_BUSY`: the hero is in another table's adventure (#282), and the
+   * message names her.
+   */
+  error?: { code: "STALE_SEQ" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN" | "HERO_BUSY"; message: string };
 }
 
 // ---------------------------------------------------------------------------
@@ -462,6 +466,21 @@ export interface JoinRoomResponse extends RoomHostFlag, KeeperFlag {
 }
 
 /**
+ * `POST /api/room/:code/visitors` (#249), with a signed-in owner's id token:
+ * open the room to phones from other households, or stop letting new ones in.
+ */
+export interface SetVisitorsRequest {
+  open: boolean;
+}
+
+export interface SetVisitorsResponse {
+  ok: true;
+  seq: number;
+  /** The code a visitor types, while the room is open (`RunState.visitorCode`). */
+  visitorCode?: string;
+}
+
+/**
  * One face on a shared tablet's "who's playing?" picker (#250): a household
  * profile, drawn as a big avatar with no typing.
  */
@@ -485,6 +504,174 @@ export interface SharedDevicePlayersResponse {
  */
 export interface ShareDeviceResponse extends SharedDevicePlayersResponse {
   sharedToken: string;
+}
+
+// ---------------------------------------------------------------------------
+// Organizers (#248): one or more signed-in grown-ups running a household
+// ---------------------------------------------------------------------------
+
+/** One household an account owns: a family, or a group of kids from many. */
+export interface OrganizerHouseholdSummary {
+  id: string;
+  displayName: string;
+  /** Profiles still on the pickers. */
+  players: number;
+}
+
+/** `GET /api/organizer/households`. */
+export interface OrganizerHouseholdsResponse {
+  households: OrganizerHouseholdSummary[];
+}
+
+/** A hero, as an organizer sees it on a profile. */
+export interface OrganizerHero {
+  id: string;
+  name: string;
+  species: string;
+  class: string;
+  level: number;
+  /**
+   * The campaign she is in the middle of, by title (#282): her claim, while
+   * it is in flight. Absent when she is free to join any table.
+   */
+  adventure?: string;
+  /**
+   * Her adventure is a stopped game (#259): saved at another table (`at`, its
+   * name) or at home (empty). "End" still frees her, and drops those gains.
+   */
+  saved?: { at?: string };
+}
+
+export interface OrganizerPlayer {
+  id: string;
+  displayName: string;
+  color: string;
+  /** Off the pickers (`PlayerProfile.retired`). */
+  retired: boolean;
+  /** Furthest-taken first. */
+  heroes: OrganizerHero[];
+}
+
+/** A grown-up who may manage the household. */
+export interface OrganizerOwner {
+  /** Opaque. What `POST /api/organizer/owners/remove` names. */
+  id: string;
+  /** As they signed in, when known. */
+  email?: string;
+  /** The account asking. */
+  you: boolean;
+  /** Claimed or created the household. Nobody can remove them. */
+  founding: boolean;
+}
+
+/** `GET /api/organizer/household?householdId=`: everything an owner manages. */
+export interface OrganizerHouseholdView {
+  id: string;
+  displayName: string;
+  owners: OrganizerOwner[];
+  players: OrganizerPlayer[];
+  /**
+   * How long a kid who stops playing is kept, in days (#252), or `null`:
+   * until an owner deletes them, which is the default.
+   */
+  retentionDays: number | null;
+  /**
+   * Answering a delete (#252): the kid is gone from here, but another
+   * household's game or Field Guide still says her name. The cleanup is
+   * recorded and the daily tidy-up finishes it. Absent when it is done.
+   */
+  cleanupPending?: true;
+}
+
+/**
+ * The retention windows an owner may pick (#252), in days, beside "until I
+ * delete them" (`null`). The shortest is a month: anything less would forget a
+ * kid who missed two club meetings.
+ */
+export const RETENTION_CHOICES = [30, 90, 180, 365] as const;
+
+/**
+ * What a deleted kid is called in what other people keep (#252): her seat
+ * and hero in another table's save, and her finds in its Field Guide, which
+ * credit `FORGOTTEN_FINDER` in place of her id.
+ */
+export const FORGOTTEN_NAME = "A friend";
+export const FORGOTTEN_FINDER = "forgotten";
+
+/** `POST /api/organizer/household/delete`: what is left once it is gone. */
+export interface OrganizerHouseholdDeleted {
+  householdId: string;
+  /** Every household the account still owns. */
+  households: OrganizerHouseholdSummary[];
+  /** As on `OrganizerHouseholdView`: another household still names one of its kids, for now. */
+  cleanupPending?: true;
+}
+
+/** A tablet bound to the household, as its owners see it. */
+export interface OrganizerDevice {
+  /** What `POST /api/auth/forget-device` names. */
+  deviceId: string;
+  /** As the tablet's browser announced itself; absent when it did not. */
+  userAgent?: string;
+  /** ISO time of the tablet's last request. */
+  lastSeen: string;
+  revoked: boolean;
+}
+
+/** `GET /api/organizer/devices?householdId=`: the household's shared tablets, most recently used first. */
+export interface OrganizerDevicesResponse {
+  devices: OrganizerDevice[];
+}
+
+/** `POST /api/organizer/invite`: a code a second grown-up signs in with to co-organize. */
+export interface OrganizerInvite {
+  code: string;
+  expiresAt: string;
+}
+
+/**
+ * `POST /api/organizer/transfer`: a single-use code that moves one kid, her
+ * heroes and her Field Guide finds to another home (#251). Shown as a QR and
+ * as the same ten letters an organizer invite uses.
+ */
+export interface TransferCode {
+  code: string;
+  expiresAt: string;
+  playerId: string;
+  /** The kid it moves, so the screen can say whose code it is. */
+  displayName: string;
+}
+
+/** `POST /api/organizer/transfer/accept`: she lives here now. */
+export interface TransferAccepted {
+  /** Her new home: the household named, or the one just made for her. */
+  household: OrganizerHouseholdSummary;
+  /** Unchanged by the move, like every id under it. */
+  playerId: string;
+  displayName: string;
+  heroes: number;
+}
+
+/**
+ * `POST /api/pair/code` and `POST /api/organizer/players/pair` (#281): a
+ * one-time code that makes the device redeeming it a kid. Single use, about
+ * ten minutes.
+ */
+export interface PairingCode {
+  code: string;
+  expiresAt: string;
+  /** Whose code it is, for the screen showing it. */
+  playerName: string;
+}
+
+/**
+ * `POST /api/pair/redeem` (#281): the new device's binding, as `adoptDevice`
+ * gives one, and who it now is.
+ */
+export interface PairingResult {
+  householdId: string;
+  playerId: string;
+  displayName: string;
 }
 
 /**
@@ -521,6 +708,21 @@ export interface JournalResponse {
    * stands the party on. `null` before anybody has set out.
    */
   whereabouts: { chapterId: string; biome: string } | null;
+  /**
+   * Hero id → the campaigns that hero has finished, from her own record
+   * (#283), wherever she finished them, oldest first. Only heroes with one are
+   * listed. Optional because a server from before the record sends none.
+   */
+  finished?: Record<string, JournalFinishedCampaign[]>;
+}
+
+/** One line of a hero's finished campaigns, as her adventure book shows it. */
+export interface JournalFinishedCampaign {
+  campaignId: string;
+  /** The campaign's title, or its id when the content no longer ships it. */
+  title: string;
+  outcome: "success" | "setback";
+  at: string;
 }
 
 export interface StateResponse {

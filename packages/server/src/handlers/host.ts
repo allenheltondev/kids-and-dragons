@@ -8,18 +8,19 @@
  *
  *   - take a player out (`removePlayer`, #267)
  *   - lock the room to new joins, and unlock it again
+ *   - turn quiet mode on for every device in the room, and off again (#260)
  *   - close the room for everyone
  *
  * Anything that lowers the barrier to joining (opening a room to visitors,
- * #249) or reaches beyond the room (forgetting a device, #250) needs a
- * signed-in owner instead, and is not here.
+ * #249, `handlers/visitors.ts`) or reaches beyond the room (forgetting a
+ * device, #250) needs a signed-in owner instead, and is not here.
  *
  * Every control is one committed change to the run: one seq, one logged
  * patch with the host's player as its author, one broadcast. That is what
  * puts it on the run's event log, and what makes every screen see it at once.
  */
 
-import type { RunState } from "@kad/shared";
+import { idleOpenRoom, type RunState } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { EventRecord, RoomRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
@@ -63,8 +64,9 @@ export async function hostedRoom(
 export async function commitRoomChange(
   room: RoomRecord,
   actor: string,
-  change: (state: RunState) => RunState | null,
-  deps: HandlerDeps,
+  /** May read (a removal relocks the lobby, #283); it is re-run on every retry. */
+  change: (state: RunState) => RunState | null | Promise<RunState | null>,
+  deps: Pick<HandlerDeps, "repo" | "now" | "channel">,
   options: { closing?: boolean } = {},
 ): Promise<HandlerResult<{ seq: number; state: RunState; changed: boolean }>> {
   for (let attempt = 1; ; attempt++) {
@@ -73,7 +75,7 @@ export async function commitRoomChange(
     if (isClosed(state) && options.closing !== true) {
       return fail("NOT_FOUND", `no open room ${room.code.toUpperCase()}`);
     }
-    const changed = change(state);
+    const changed = await change(state);
     if (!changed) return ok({ seq: state.seq, state, changed: false });
 
     const nowMs = deps.now();
@@ -133,6 +135,40 @@ export async function lockRoom(
   return result.ok ? ok({ seq: result.value.seq }) : result;
 }
 
+export interface SetQuietInput {
+  code: string;
+  principal: HostPrincipal;
+  /** True for quiet mode, false to go back to the usual sound and motion. */
+  quiet: boolean;
+}
+
+/**
+ * Quiet mode for the whole room (#260): a sleeping sibling, a car, a late
+ * evening. It is a flag on the run, so every screen gets it in the same patch
+ * and a device that joins or reconnects later reads it from its first state.
+ * What it changes is each device's own business (client/src/quiet.ts); the
+ * server only says whether the room is quiet.
+ */
+export async function setQuiet(
+  input: SetQuietInput,
+  deps: HandlerDeps,
+): Promise<HandlerResult<{ seq: number }>> {
+  const hosted = await hostedRoom(input.code, input.principal, deps);
+  if (!hosted.ok) return hosted;
+  const result = await commitRoomChange(
+    hosted.value,
+    input.principal.playerId,
+    (state) => {
+      if ((state.quiet === true) === input.quiet) return null;
+      if (input.quiet) return { ...state, quiet: true };
+      const { quiet: _quiet, ...loud } = state;
+      return loud;
+    },
+    deps,
+  );
+  return result.ok ? ok({ seq: result.value.seq }) : result;
+}
+
 export interface CloseRoomInput {
   code: string;
   principal: HostPrincipal;
@@ -173,4 +209,49 @@ export async function closeRoom(
 /** Closed by its host (`closeRoom`): nothing more is accepted from anybody. */
 export function isClosed(state: Pick<RunState, "closed">): boolean {
   return state.closed === true;
+}
+
+/**
+ * Closes an open room that has sat idle past `OPEN_ROOM_IDLE_MS` (#249), the
+ * way the host's Close does, with nobody as its author. True when the room is
+ * (now) closed for that reason, and the caller refuses whatever it was asked.
+ *
+ * Lazy, on purpose: every way into a room (a join, a watch, a state read, an
+ * action) passes through here first, so an idle room is closed the moment
+ * anybody tries to use it, and a code nobody uses is harmless. A lost race
+ * means somebody else just did something in the room, which is activity; the
+ * caller then reads the room as open, as it is.
+ */
+export async function closeIfIdle(
+  room: RoomRecord,
+  state: RunState,
+  deps: Pick<HandlerDeps, "repo" | "now" | "channel">,
+): Promise<boolean> {
+  if (!idleOpenRoom(state, deps.now())) return false;
+  const result = await commitRoomChange(
+    room,
+    "",
+    (current) => (current.closed || !idleOpenRoom(current, deps.now()) ? null : { ...current, closed: true }),
+    deps,
+    { closing: true },
+  );
+  if (!result.ok || !isClosed(result.value.state)) return false;
+  await deps.repo.deleteRoom(room.code);
+  return true;
+}
+
+/**
+ * `closeIfIdle` for a caller that holds the run rather than the room: a state
+ * read or an action. Returns the run as it now stands, closed when it was idle.
+ */
+export async function closedIfIdle(
+  state: RunState,
+  deps: Pick<HandlerDeps, "repo" | "now" | "channel">,
+): Promise<RunState> {
+  if (!idleOpenRoom(state, deps.now())) return state;
+  const room = await deps.repo.getRoom(state.roomCode);
+  // Codes recycle: only the room that still points at this run is this run's.
+  if (!room || room.runId !== state.runId) return state;
+  if (!(await closeIfIdle(room, state, deps))) return state;
+  return (await deps.repo.getState(state.runId)) ?? state;
 }

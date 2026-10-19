@@ -12,6 +12,7 @@
 
 import { previewContext, readIntentPreview } from "@kad/shared";
 import type { HandlerDeps } from "./deps.ts";
+import { isOut } from "./remove.ts";
 
 export type PreviewDeps = Pick<HandlerDeps, "repo" | "channel">;
 
@@ -19,6 +20,8 @@ export interface PreviewInput {
   /** From the room session token, never the body. */
   runId: string;
   playerId: string;
+  /** The player's household, from the same token. Absent, the run's is used. */
+  householdId?: string;
   preview: unknown;
   /** The decision the phone made it for (`previewContext`). */
   context: unknown;
@@ -44,8 +47,8 @@ export async function relayPreview(input: PreviewInput, deps: PreviewDeps): Prom
   // Only a seat at this table has a phone to tap on.
   if (
     !state.party.some((member) => member.playerId === input.playerId) ||
-    state.removed?.includes(input.playerId) ||
-    state.closed
+    state.closed ||
+    (await isOut(state, input.playerId, input.householdId ?? null, deps.repo))
   ) {
     return { ok: false, status: 403, code: "FORBIDDEN", message: "not seated at this table" };
   }

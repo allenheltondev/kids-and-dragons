@@ -30,6 +30,7 @@ import type {
   JourneyState,
   NodeId,
   ParsedCampaignGraph,
+  PartyMember,
   RunBuff,
   RunState,
   FactValue,
@@ -37,6 +38,7 @@ import type {
 import {
   currentPlayable,
   lobbyCampaign,
+  resolveCharacter,
   resumeJourney,
   riftPartyOf,
   seedRunBuffs,
@@ -46,12 +48,13 @@ import {
 } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { ApplyIntentResult } from "../engine/port.ts";
-import type { CampaignProgressRecord, EventRecord, RunRecord } from "../store/repository.ts";
+import type { CampaignProgressRecord, CharacterWrite, EventRecord, RunRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { arrivalKey, authoredLine, mayDecorate, nextMoments } from "../llm/moments.ts";
 import { partyBrief } from "../llm/port.ts";
 import { keepGuestHousehold } from "./account.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
+import { closedIfIdle } from "./host.ts";
 import { prepareStepFinds, recordStepFinds } from "./field-guide.ts";
 import {
   attemptJourney,
@@ -61,7 +64,10 @@ import {
   lockedRefusal,
   purseFor,
   newCharacterWrite,
+  relockLobby,
+  seatedParty,
   prepareStatPointSpend,
+  seatHero,
   settleChapterCompletion,
   startPartyCampaign,
   type ChapterSettlement,
@@ -89,10 +95,12 @@ export async function applyAction(
   deps: HandlerDeps,
 ): Promise<ActionResponse> {
   let input = received;
-  const state = await deps.repo.getState(input.runId);
-  if (!state) {
+  const stored = await deps.repo.getState(input.runId);
+  if (!stored) {
     return { ok: false, seq: input.seq, error: { code: "NOT_FOUND", message: `no run ${input.runId}` } };
   }
+  // An open room idle too long closes now (#249), and `authorize` refuses.
+  const state = await closedIfIdle(stored, deps);
 
   const auth = await authorize(input, state, deps);
   if ("error" in auth) return auth.error;
@@ -129,7 +137,7 @@ export async function applyAction(
     if (!campaignId) {
       return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: "no campaign to continue" } };
     }
-    const next = await nextChapter(campaignId, auth.run.householdId, deps);
+    const next = await nextChapter(campaignId, auth.run.householdId, seatedParty(state), deps);
     if ("refusal" in next) {
       return { ok: false, seq: state.seq, error: { code: next.code, message: next.refusal } };
     }
@@ -177,7 +185,7 @@ export async function applyAction(
   // run below so its completion settles against exactly that visit.
   let journeyVisit: { node: NodeId; visit: number } | null = null;
   if (input.intent.type === "START_CHAPTER" && chapter) {
-    const road = await roadTo(chapter, auth.run.householdId, deps);
+    const road = await roadTo(chapter, auth.run.householdId, seatedParty(state), deps);
     if ("refusal" in road) {
       return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: road.refusal } };
     }
@@ -205,7 +213,9 @@ export async function applyAction(
 
   const nowMs = deps.now();
   const nextSeq = state.seq + 1;
-  let spentCharacter: Character | null = null;
+  let spentCharacter: CharacterWrite | null = null;
+  // A saved hero seated into a chapter under way, acquiring her claim (#282).
+  let seated: CharacterWrite | null = null;
   let exitTaken: ExitWrite | null = null;
   let result: ApplyIntentResult;
   if (input.intent.type === "CHOOSE_EXIT" || input.intent.type === "RIFT_ACTION") {
@@ -250,8 +260,15 @@ export async function applyAction(
     // engine's call (doSeatCharacter).
     const savedCharacter =
       input.intent.type === "SEAT_CHARACTER"
-        ? await deps.repo.getCharacter(auth.run.householdId, input.intent.characterId)
+        ? await deps.repo.getCharacter(auth.home, input.intent.characterId)
         : undefined;
+    // One game at a time per hero (#282): a hero another adventure holds is
+    // refused here, before the engine seats anybody.
+    if (savedCharacter && savedCharacter.ownerPlayerId === input.playerId) {
+      const seat = await seatHero(state, deps, auth.run.householdId, savedCharacter);
+      if (!seat.ok) return { ok: false, seq: state.seq, error: seat.error };
+      seated = seat.value;
+    }
     result = deps.engine.applyIntent(
       state,
       // The engine re-checks seq itself; passing it keeps that guard armed even
@@ -270,8 +287,9 @@ export async function applyAction(
         // every turn and needs the whole catalog anyway.
         abilities: deps.content.abilities(),
         // Characters belong to the household, not the run (architecture §3), so
-        // CREATE_CHARACTER needs to know which household it is building into.
-        householdId: auth.run.householdId,
+        // CREATE_CHARACTER needs to know which household it is building into:
+        // the player's own, which is the run's unless they are visiting (#249).
+        householdId: auth.home,
         ...(savedCharacter === undefined ? {} : { savedCharacter }),
         // The roads this campaign attempt has already taken, which a chapter
         // start seeds its flags from rather than starting empty. Empty for
@@ -300,6 +318,20 @@ export async function applyAction(
     // a rejected tap must not force everyone else to resync.
     return { ok: false, seq: state.seq, error: result.error };
   }
+  // A visitor's hero sat down (#249): it says where it lives, so everything
+  // it earns here is written back there.
+  if (auth.home !== auth.run.householdId) {
+    result = { ...result, state: withHome(result.state, input.playerId, auth.home) };
+  }
+  // A hero sat down or got up in the lobby: her own finished campaigns can
+  // unlock one the household has not finished (#283), so the lobby's locks
+  // follow who is seated. A no-op unless an option declares `requires`.
+  if (
+    (result.state.phase === "lobby" || result.state.phase === "creation") &&
+    !sameParty(state.party, result.state.party)
+  ) {
+    result = { ...result, state: await relockLobby(result.state, auth.run.householdId, deps) };
+  }
 
   /*
    * Progression, computed here and committed below.
@@ -316,10 +348,24 @@ export async function applyAction(
    * same conditional transaction as the state and the event, so a turn that
    * loses the seq race cannot leave its XP behind on a character.
    */
-  const characters: Character[] = [];
+  const characters: CharacterWrite[] = [];
   if (spentCharacter) characters.push(spentCharacter);
+  if (seated) {
+    const hero = seated.character;
+    characters.push(seated);
+    // She plays this chapter's gains from her first tap, and every phone sees
+    // her as she now stands: provisional, at this table.
+    const resolved = resolveCharacter(hero, deps.content.rules(), deps.content.items());
+    result = {
+      ...result,
+      state: {
+        ...result.state,
+        party: result.state.party.map((m) => (m.character.id === hero.id ? { ...m, character: resolved } : m)),
+      },
+    };
+  }
   if (result.created) {
-    characters.push(...(await newCharacterWrite(result.created, deps, auth.run.householdId)));
+    characters.push(...(await newCharacterWrite(result.created, deps, auth.home)));
   }
   /*
    * Keyed off the phase transition, not the presentation.
@@ -357,7 +403,11 @@ export async function applyAction(
     // action patch exposes isProvisional and committedLevel to clients. An
     // entry scene that immediately completes is handled by settlement below,
     // avoiding two writes to the same character in one transaction.
-    characters.push(...(await startPartyCampaign(result.state, deps, auth.run.householdId)));
+    const started = await startPartyCampaign(result.state, deps, auth.run.householdId);
+    // A hero another adventure holds cannot start this one (#282): nothing is
+    // written, no seq is burned, and the table is told who.
+    if (!started.ok) return { ok: false, seq: state.seq, error: started.error };
+    characters.push(...started.value);
   }
   let settlement: ChapterSettlement | null = null;
   if (finishedChapter) {
@@ -520,7 +570,7 @@ export async function applyAction(
   // after the commit, so only a chapter that really landed counts — and
   // awaited only after the broadcast below, so a slow store call can never
   // hold the completion back from the table.
-  const renewal = finishedChapter ? keepGuestHousehold(auth.run.householdId, deps) : null;
+  const renewal = finishedChapter ? keepHomes(auth.run.householdId, next, deps) : null;
 
   /*
    * The finds land in the household's book now that the step has, and what the
@@ -837,6 +887,8 @@ function resolveChapter(
 async function roadTo(
   chapter: Chapter,
   householdId: string,
+  /** Who is starting it: any one hero's own record can meet a prerequisite (#283). */
+  party: readonly PartyMember[],
   deps: HandlerDeps,
 ): Promise<
   | {
@@ -860,9 +912,10 @@ async function roadTo(
     return { flags: {}, campaign: false, attempt: null };
   }
 
-  // A campaign the household has not unlocked (#221) starts nothing - whatever
+  // A campaign this table has not unlocked (#221) starts nothing - whatever
   // the lobby showed, and whichever intent asked. Absent `requires`, a no-op.
-  const locked = await lockedRefusal(campaign, householdId, deps);
+  // The household's record or any seated hero's own meets it (#283).
+  const locked = await lockedRefusal(campaign, householdId, deps, party);
   if (locked) return { refusal: locked };
 
   const attempt = await deps.repo.getCampaignProgress(householdId, chapter.campaignId);
@@ -953,13 +1006,14 @@ async function roadTo(
 async function nextChapter(
   campaignId: string,
   householdId: string,
+  party: readonly PartyMember[],
   deps: HandlerDeps,
 ): Promise<{ chapterId: string } | { refusal: string; code: "NOT_FOUND" | "ILLEGAL" }> {
   const campaign = deps.content.campaign(campaignId);
   if (!campaign) return { refusal: `unknown campaign "${campaignId}"`, code: "NOT_FOUND" };
 
   // Refused here too, so a locked Begin answers before it resolves a chapter (#221).
-  const locked = await lockedRefusal(campaign, householdId, deps);
+  const locked = await lockedRefusal(campaign, householdId, deps, party);
   if (locked) return { refusal: locked, code: "ILLEGAL" };
 
   const attempt = await deps.repo.getCampaignProgress(householdId, campaignId);
@@ -1149,14 +1203,18 @@ export function diceSeed(run: Pick<RunRecord, "diceSecret">, runId: string, seq:
 
 /**
  * A player may only act as themselves, and only inside their own household's
- * run (§4.5). In prod the principal comes from the authorizer; in local dev it
- * may be absent, in which case the household membership check still holds.
+ * run (§4.5), or as a visitor the run has seated (#249). In prod the principal
+ * comes from the authorizer; in local dev it may be absent, in which case the
+ * household membership check still holds.
+ *
+ * `home` is the household the player's hero lives in: the run's, or a
+ * visitor's own. Every character read and write for this player goes there.
  */
 async function authorize(
   input: ActionInput,
   state: RunState,
   deps: HandlerDeps,
-): Promise<{ run: RunRecord } | { error: ActionResponse }> {
+): Promise<{ run: RunRecord; home: string } | { error: ActionResponse }> {
   if (input.principal && input.principal.playerId !== input.playerId) {
     return errorResult({
       ok: false,
@@ -1192,7 +1250,10 @@ async function authorize(
       error: { code: "NOT_FOUND", message: `no run ${input.runId}` },
     });
   }
-  if (input.principal && input.principal.householdId !== run.householdId) {
+  const home = input.principal?.householdId ?? run.householdId;
+  // A visitor is somebody the join seated from that household (`RoomSeat`).
+  // Their session reaches this room and their own heroes, nothing more.
+  if (home !== run.householdId && state.seats?.[input.playerId]?.homeHouseholdId !== home) {
     return errorResult({
       ok: false,
       seq: state.seq,
@@ -1200,7 +1261,7 @@ async function authorize(
     });
   }
 
-  const player = await deps.repo.getPlayer(run.householdId, input.playerId);
+  const player = await deps.repo.getPlayer(home, input.playerId);
   if (!player) {
     return errorResult({
       ok: false,
@@ -1208,7 +1269,43 @@ async function authorize(
       error: { code: "FORBIDDEN", message: `player ${input.playerId} is not in this household` },
     });
   }
-  return { run };
+  // Retired by an organizer (#248). Read from the profile, so it holds even
+  // before (or without) the run's `removed` list catching up.
+  if (player.retired) {
+    return errorResult({
+      ok: false,
+      seq: state.seq,
+      error: { code: "FORBIDDEN", message: "This player was taken off the list." },
+    });
+  }
+  return { run, home };
+}
+
+/** Do two parties seat the same heroes? */
+function sameParty(a: readonly PartyMember[], b: readonly PartyMember[]): boolean {
+  const ids = (party: readonly PartyMember[]) => party.map((m) => m.character.id).sort().join(" ");
+  return ids(a) === ids(b);
+}
+
+/** The player's party member, marked as living in `home` (`PartyMember.homeHouseholdId`). */
+function withHome(state: RunState, playerId: string, home: string): RunState {
+  const at = state.party.findIndex((m) => m.playerId === playerId);
+  const member = state.party[at];
+  if (!member || member.homeHouseholdId === home) return state;
+  const party = [...state.party];
+  party[at] = { ...member, homeHouseholdId: home };
+  return { ...state, party };
+}
+
+/**
+ * A finished chapter renews every guest household that played in it: the
+ * room's, and each visitor's (#249), whose heroes were played here too. All
+ * at once, and awaited together, so none is left running after the response.
+ * None of them throws (`keepGuestHousehold`).
+ */
+async function keepHomes(runHousehold: string, state: RunState, deps: HandlerDeps): Promise<void> {
+  const homes = new Set([runHousehold, ...state.party.flatMap((m) => (m.homeHouseholdId ? [m.homeHouseholdId] : []))]);
+  await Promise.all([...homes].map((home) => keepGuestHousehold(home, deps)));
 }
 
 function errorResult(error: ActionResponse): { error: ActionResponse } {

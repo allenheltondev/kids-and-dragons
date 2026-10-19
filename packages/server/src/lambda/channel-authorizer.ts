@@ -17,6 +17,7 @@
 import { DynamoRepository } from "../store/dynamo-repository.ts";
 import { ssmParameterSource, TokenIdentity } from "../token-identity.ts";
 import { requiredEnv } from "./runtime.ts";
+import { isOut } from "../handlers/remove.ts";
 
 /** What AppSync sends. Only the fields this function reads. */
 export interface ChannelAuthorizerEvent {
@@ -68,11 +69,15 @@ function service(): TokenIdentity {
   return identity;
 }
 
-/** On the run's `removed` list (#267), or the run closed (#263). A run that cannot be read is not proof of either. */
-async function removedFromRun(runId: string, playerId: string): Promise<boolean> {
+/**
+ * On the run's `removed` list (#267), the run closed (#263), or the player
+ * retired by an organizer (#248). A run that cannot be read is not proof of any.
+ */
+async function removedFromRun(runId: string, playerId: string, householdId: string): Promise<boolean> {
   const state = await table().getState(runId);
+  if (!state) return false;
   // A run its host closed (#263) has nobody left to subscribe for.
-  return state?.closed === true || (state?.removed?.includes(playerId) ?? false);
+  return state.closed === true || (await isOut(state, playerId, householdId, table()));
 }
 
 export async function handler(
@@ -98,7 +103,7 @@ export async function authorize(
    * token stays well-formed until the room ends, so only the run can say.
    * Asked of session tokens alone: a viewer token has no player to take out.
    */
-  removed: (runId: string, playerId: string) => Promise<boolean> = async () => false,
+  removed: (runId: string, playerId: string, householdId: string) => Promise<boolean> = async () => false,
 ): Promise<ChannelAuthorizerResult> {
   const token = event.authorizationToken ?? "";
   if (!token) return DENY;
@@ -119,7 +124,7 @@ export async function authorize(
   const viewer = session ? null : await identity.resolveViewer(token);
   const grant = session ?? viewer;
   if (!grant) return DENY;
-  if (session && (await removed(session.runId, session.playerId))) return DENY;
+  if (session && (await removed(session.runId, session.playerId, session.householdId))) return DENY;
 
   if (operation === "SUBSCRIBE") {
     const code = roomCodeOf(event);

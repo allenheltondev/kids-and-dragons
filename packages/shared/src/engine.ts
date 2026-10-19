@@ -92,12 +92,15 @@ import { assignPlayerColors } from "./player-colors.js";
 import { tierForLevel } from "./rules.js";
 import { addItem, addQuestItem, freeSlots, hasItem, removeItem, swapItem, useConsumable } from "./inventory.js";
 import { sceneChoices, visibleChoices } from "./chapter-graph.js";
+import { combatTurnAway, readyWithoutAway, swapOwnerAway } from "./away.js";
 import { composeNarration, fillTokens } from "./narration.js";
 import { loadDie, readDie } from "./playtest.js";
 import type { CheckBuffOffer, RunBuff } from "./types/buffs.js";
 import type { FactId, FactValue } from "./types/campaign-graph.js";
 import { factTestHolds } from "./world-state.js";
 import { checkBuffOffer, combatBuffsFor, expireRunBuffs, oneHeroSeat, spendCheckBuff, spendRunBuffs } from "./buffs.js";
+import { sameHome } from "./visitors.js";
+import { checkTypedName } from "./names.js";
 
 // ---------------------------------------------------------------------------
 // Surface
@@ -1198,6 +1201,11 @@ function doCreateCharacter(
     );
   }
 
+  // A typed name is vetted here, not only on the phone (#253): this is the one
+  // place every hero's name passes, so a hand-written client gets no way round.
+  const vetted = checkTypedName(intent.name);
+  if (!vetted.ok) throw new Illegal("ILLEGAL", vetted.message);
+
   const character: Character = newCharacter({
     /*
      * Scoped to the run, not just the player. `c_<playerId>` alone repeats for
@@ -1350,7 +1358,10 @@ function doStartChapter(
   if (draft.phase !== "lobby" && draft.phase !== "creation") {
     throw new Illegal("ILLEGAL", "a chapter starts from the lobby");
   }
-  if (!draft.party.every((member) => member.ready)) {
+  // Everybody at the table, that is: a player who stepped away (#258) is not
+  // waited on, and their hero comes along. With everybody present this is
+  // exactly "every member is ready".
+  if (!readyWithoutAway(draft.party)) {
     throw new Illegal("ILLEGAL", "everybody has to be ready first");
   }
 
@@ -1987,7 +1998,7 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
  * a phone may only ever act as the character it owns, on that character's turn.
  * Without it, any player could drive anybody's figure — including a monster's.
  */
-function requireTurn(draft: RunState, playerId: string): EncounterState {
+function requireTurn(draft: RunState, playerId: string, standIn = false): EncounterState {
   const encounter = draft.encounter;
   if (!encounter) throw new Illegal("ILLEGAL", "there is no fight going on");
   const actor = currentActor(encounter);
@@ -1996,7 +2007,9 @@ function requireTurn(draft: RunState, playerId: string): EncounterState {
 
   const member = draft.party.find((m) => m.character.id === actor.id);
   if (!member) throw new Illegal("ILLEGAL", `no party member for actor "${actor.id}"`);
-  if (member.playerId !== playerId) {
+  // Passing the turn of a hero whose player has stepped away (#258) is the
+  // one thing a stand-in may do: never their move, never their action.
+  if (member.playerId !== playerId && !(standIn && combatTurnAway(draft) && memberByPlayer(draft, playerId))) {
     throw new Illegal("FORBIDDEN", `it is ${member.character.name}'s turn, not yours`);
   }
   return encounter;
@@ -2040,7 +2053,7 @@ function doCombatAction(
 }
 
 function doEndTurn(draft: RunState, playerId: string, ctx: EngineContext): Presentation | undefined {
-  const encounter = requireTurn(draft, playerId);
+  const encounter = requireTurn(draft, playerId, true);
   // What the place did as the turn ended (#201) — nothing, without an
   // environment — goes first in the queue, before the monsters' answer.
   const ended = endTurnWithEvents(encounter);
@@ -2457,7 +2470,12 @@ function doResolveItemSwap(
   const member = memberByCharacter(draft, prompt.characterId);
   if (!member) throw new Illegal("NOT_FOUND", "the character holding the prompt has left");
   if (member.playerId !== playerId) {
-    throw new Illegal("FORBIDDEN", `this is ${member.character.name}'s bag`);
+    // Its owner stepped away mid-find (#258): anyone seated may let it go, so
+    // the scene behind the prompt can open. Only "leave it": nobody empties a
+    // friend's bag for them, and they come back to the hero they left.
+    if (!(swapOwnerAway(draft.party, prompt) && memberByPlayer(draft, playerId) && dropItemId === null)) {
+      throw new Illegal("FORBIDDEN", `this is ${member.character.name}'s bag`);
+    }
   }
 
   if (dropItemId !== null) {
@@ -2552,6 +2570,11 @@ function doOfferItem(
   if (!to) throw new Illegal("NOT_FOUND", `player "${toPlayerId}" is not in this run`);
   if (to.playerId === from.playerId) {
     throw new Illegal("ILLEGAL", "you already have it");
+  }
+  // A visitor's hero lives in another household (#249), and nothing moves
+  // between households in v1: the bag it went home in would not be theirs.
+  if (!sameHome(from, to)) {
+    throw new Illegal("FORBIDDEN", `${to.character.name} is from another home, and items can only be passed within one`);
   }
 
   const def = ctx.items[itemId];

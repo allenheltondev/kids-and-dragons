@@ -388,3 +388,14 @@
   .atlas__cloud--lifting { animation: atlas-cloud-fade 0.4s linear both; }
 }
 @keyframes atlas-cloud-fade { to { opacity: 0; } }
+
+/* Larger text (#262): the head's words and zoom buttons share a line and stay small enough to
+   leave the painting most of a small phone's pane. */
+html[data-text] .atlas__head { padding-block: var(--kad-space-2); gap: var(--kad-space-2); }
+html[data-text] .atlas__where { font-size: var(--kad-text-sm); }
+html[data-text] .atlas__realm { font-size: var(--kad-text-xs); }
+html[data-text] .kad-map__flip { padding-block: var(--kad-space-1); }
+html[data-text] .kad-map__flip-tab,
+html[data-text] .atlas__route-controls label,
+html[data-text] .atlas__route-controls summary,
+html[data-text] .atlas__route-choice { min-block-size: 44px; }

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
-import { speak } from "@kad/shared";
 import type { FieldGuide as FieldGuideData, FieldGuideEntry } from "@kad/shared";
+import { FORGOTTEN_FINDER, FORGOTTEN_NAME } from "@kad/shared";
+import { hear } from "../speech/read-aloud";
 import { selectGuideEntry } from "../store/player-navigation";
 import { useFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import type { FieldGuideDiscoveries } from "../store/field-guide-discoveries";
@@ -67,7 +68,11 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, 
   const find = discoveries[entryId];
   if (!entry || !find) return null;
 
-  const finder = party.find((m) => m.playerId === find.firstFoundBy)?.character.name ?? finders[find.firstFoundBy];
+  // A kid who has since been deleted is credited to nobody by name (#252).
+  const finder =
+    find.firstFoundBy === FORGOTTEN_FINDER
+      ? FORGOTTEN_NAME.toLowerCase()
+      : (party.find((m) => m.playerId === find.firstFoundBy)?.character.name ?? finders[find.firstFoundBy]);
   const lore = entry.lore;
   const place = entry.place;
   const danger = entry.danger_level ? (DANGER_LABELS[entry.danger_level] ?? prettify(entry.danger_level)) : undefined;
@@ -101,7 +106,7 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, 
             </ul>
           )}
           <Button variant="secondary" size="md" icon={<Icon name="sound" />}
-            onClick={() => speak(spoken, { source: "ui", interrupt: true })}>
+            onClick={() => hear(spoken, { source: "ui" })}>
             Read aloud
           </Button>
         </header>

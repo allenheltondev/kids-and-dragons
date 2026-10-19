@@ -249,6 +249,30 @@ describe("arrivals", () => {
   });
 });
 
+describe("a tablet as the TV (#274)", () => {
+  it("is watched only by the tablet's device, in the tablet's household", async () => {
+    const harness = makeHarness();
+    const { householdId } = await seedHousehold(harness, 1);
+    const created = await createRoom(
+      { householdId, mode: "party", hostDeviceId: "dev_tablet", display: true },
+      harness.deps,
+    );
+    if (!created.ok) throw new Error("setup failed");
+    const { code } = created.value;
+
+    const own = await watchRoom({ code, deviceId: "dev_tablet", householdId }, harness.deps);
+    expect(own.ok && own.value.host).toBe(true);
+    expect(await watchRoom({ code, deviceId: "dev_tablet", householdId: "hh_other" }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "FORBIDDEN" },
+    });
+    expect(await watchRoom({ code, deviceId: "dev_other", householdId }, harness.deps)).toMatchObject({
+      ok: false,
+      error: { code: "FORBIDDEN" },
+    });
+  });
+});
+
 describe("a removed phone and the household it joined (#265)", () => {
   /** A TV's room, where the first phone to join founds the household. */
   async function tvRoom() {

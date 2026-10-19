@@ -499,3 +499,61 @@ describe("TokenIdentity — session tokens", () => {
     expect(await identity.resolveSession(token)).toBeNull();
   });
 });
+
+describe("TokenIdentity — a phone whose kid moved home (#251)", () => {
+  /** Ada's phone, bound at the club, and her moved to `h_home` with it. */
+  async function moved() {
+    const { clock, repo, identity } = setup();
+    await repo.putHousehold({ id: "h_1", displayName: "Club", ownerSub: "sub_a", guest: false, createdAt: "x" });
+    await repo.putHousehold({ id: "h_home", displayName: "Home", ownerSub: "sub_b", guest: false, createdAt: "x" });
+    await repo.putPlayer({ id: "p_1", householdId: "h_1", displayName: "Ada", color: "#7FD4C1" });
+    const { token, deviceId } = await identity.issueDeviceToken(device);
+    const expiresAt = new Date(clock.now() + 3600_000).toISOString();
+    await repo.putTransferCodeIfAbsent({
+      code: "MOVEHERNOW",
+      householdId: "h_1",
+      playerId: "p_1",
+      createdBy: "sub_a",
+      createdAt: "x",
+      expiresAt,
+      ttl: Math.floor(Date.parse(expiresAt) / 1000),
+    });
+    const read = await repo.readProfileMove("h_1", "p_1");
+    if (!read) throw new Error("no Ada");
+    const outcome = await repo.moveProfile({
+      move: read,
+      code: "MOVEHERNOW",
+      nowIso: new Date(clock.now()).toISOString(),
+      to: { householdId: "h_home" },
+      forwardTtl: Math.floor((clock.now() + DEVICE_TOKEN_TTL_MS + 86_400_000) / 1000),
+    });
+    expect(outcome).toBe("moved");
+    return { clock, repo, identity, token, deviceId };
+  }
+
+  it("still resolves the token minted in her old home, to her new one", async () => {
+    const { identity, token, deviceId } = await moved();
+    expect(await identity.resolveDevice(token)).toEqual({ deviceId, householdId: "h_home", playerId: "p_1" });
+  });
+
+  it("rotates into a token naming her new home, which needs no forward", async () => {
+    const { clock, identity, token, deviceId } = await moved();
+    clock.advance(DEVICE_TOKEN_TTL_MS / 2 + 1000);
+    const rotated = (await identity.resolveDevice(token))?.rotatedToken ?? "";
+    const claims = JSON.parse(Buffer.from(rotated.split(".")[1] ?? "", "base64url").toString()) as { hh: string };
+    expect(claims.hh).toBe("h_home");
+    expect(await identity.resolveDevice(rotated)).toMatchObject({ deviceId, householdId: "h_home" });
+  });
+
+  it("stops resolving the moment her new home revokes it", async () => {
+    const { repo, identity, token, deviceId } = await moved();
+    await repo.revokeDevice("h_home", deviceId);
+    expect(await identity.resolveDevice(token)).toBeNull();
+  });
+
+  it("is not fooled by a forward to a home that does not have her phone", async () => {
+    const { repo, identity, token, deviceId } = await moved();
+    await repo.putDevice({ deviceId, householdId: "h_home", playerId: "p_other", tokenHash: "x", lastSeen: "x" });
+    expect(await identity.resolveDevice(token)).toBeNull();
+  });
+});

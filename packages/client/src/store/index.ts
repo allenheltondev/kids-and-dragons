@@ -620,10 +620,14 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
      * the same shape — and keep the device binding that came with it.
      */
     async function adopt(
-      roomCode: string,
+      typed: string,
       seated: JoinRoomResponse & { deviceToken?: string },
       displayName: string,
     ): Promise<ClientSession> {
+      // The room's own four letters, whichever code was typed: a visitor code
+      // (#249) is the way in, and the room's code is what everything after
+      // names (the session, the channel, the path).
+      const roomCode = seated.state.roomCode || typed;
       // A shared tablet is nobody, whoever is sitting at it (#250): it keeps
       // no identity, and the server sends it no device token to keep.
       if (!loadSharedDevice(deps.storage)) {
@@ -657,7 +661,13 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
      */
     function hostAuth(session: ClientSession): HostAuth | null {
       const shared = loadSharedDevice(deps.storage);
-      if (shared) return { sharedToken: shared.token, sessionToken: session.sessionToken };
+      // A tablet showing the game (#274) seats nobody: its viewer token is no
+      // session, so the shared token goes alone.
+      if (shared) {
+        return session.playerId === ""
+          ? { sharedToken: shared.token }
+          : { sharedToken: shared.token, sessionToken: session.sessionToken };
+      }
       const deviceToken = loadIdentity(deps.storage).deviceToken;
       return deviceToken ? { deviceToken } : null;
     }
@@ -705,6 +715,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       previews: {},
       arrivals: [],
       arrivalsDropped: 0,
+      savedHeroes: {},
       error: null,
       rules: null,
       items: null,
@@ -851,6 +862,19 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
        */
       async openOnThisScreen() {
         set({ connection: "connecting", error: null });
+        // A family tablet (#250, #274) shows the game under its own household:
+        // no kid is seated, and it keeps no device token and no session.
+        const shared = loadSharedDevice(deps.storage);
+        if (shared) {
+          try {
+            const room = await deps.api.openDisplayRoom({ campaignId: LAUNCH_CAMPAIGN }, shared.token);
+            deps.navigate({ name: "tv", code: room.code }, { replace: true });
+          } catch (error) {
+            forgottenIf(error);
+            failWith(error);
+          }
+          return;
+        }
         const identity = loadIdentity(deps.storage);
         try {
           const room = await deps.api.openDisplayRoom({
@@ -878,7 +902,8 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       async listHeroes() {
         const session = get().session;
         if (!session?.playerId) return [];
-        const { heroes } = await deps.api.listHeroes(session.sessionToken);
+        const { heroes, saved } = await deps.api.listHeroes(session.sessionToken);
+        set({ savedHeroes: saved ?? {} });
         return heroes;
       },
 
@@ -1034,10 +1059,14 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           await withRetry(current, async (timeoutMs) => {
             // A TV that opened this room still holds the binding it was given,
             // and presenting it is how it learns it is still the host (#267).
-            const screenToken = loadIdentity(deps.storage).deviceToken;
-            const response = screenToken
-              ? await deps.api.watchRoom(roomCode, timeoutMs, screenToken)
-              : await deps.api.watchRoom(roomCode, timeoutMs);
+            // A family tablet holds a shared token instead (#274), and no binding.
+            const tablet = loadSharedDevice(deps.storage);
+            const screenToken = tablet ? undefined : loadIdentity(deps.storage).deviceToken;
+            const response = tablet
+              ? await deps.api.watchRoom(roomCode, timeoutMs, undefined, tablet.token)
+              : screenToken
+                ? await deps.api.watchRoom(roomCode, timeoutMs, screenToken)
+                : await deps.api.watchRoom(roomCode, timeoutMs);
             if (!current()) return;
             const display: ClientSession = {
               runId: response.runId,
@@ -1167,6 +1196,12 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         void pump();
       },
 
+      beat(leaving = false) {
+        const session = get().session;
+        if (!session?.playerId || !session.sessionToken) return;
+        void deps.api.postPresence(leaving, session.sessionToken).catch(() => undefined);
+      },
+
       leave() {
         const session = get().session;
         runtime.attaching = null;
@@ -1206,8 +1241,43 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         return hostControl("lock", { locked }, locked ? "Could not lock the room." : "Could not unlock the room.");
       },
 
+      quietRoom(quiet: boolean) {
+        return hostControl("quiet", { quiet }, "Could not change quiet mode.");
+      },
+
       closeRoom() {
         return hostControl("close", {}, "Could not close the room.");
+      },
+
+      async releaseSavedHero(characterId: string, homeHouseholdId?: string) {
+        const deviceToken = loadIdentity(deps.storage).deviceToken;
+        if (!deviceToken) {
+          set({ error: "Only the phone that stopped this game can let a hero go." });
+          return false;
+        }
+        try {
+          await deps.api.releaseSavedHero(characterId, homeHouseholdId, deviceToken);
+          return true;
+        } catch (error) {
+          set({ error: error instanceof Error ? error.message : "Could not let them go." });
+          return false;
+        }
+      },
+
+      stopForToday() {
+        return hostControl("stop", {}, "Could not save the game.");
+      },
+
+      async resumeGame() {
+        const token = get().session?.sessionToken;
+        if (!token) return false;
+        try {
+          await deps.api.postResume(token);
+          return true;
+        } catch (error) {
+          set({ error: error instanceof Error ? error.message : "Could not pick the game back up." });
+          return false;
+        }
       },
 
       registerPresentationPlayer(gate: PresentationGate | null) {

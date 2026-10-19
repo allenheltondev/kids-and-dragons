@@ -167,6 +167,14 @@ const WALK_CYCLE_S = 4 / 12;
 /** Close enough to the target tile to stop walking, in board pixels. */
 const ARRIVED_PX = BOARD_TILE_PX * 0.06;
 
+/** A hero whose player stepped away (#258): the story lineup's fade (scene.ts). */
+const AWAY_ALPHA = 0.5;
+
+/** Whether this figure is a hero whose player has stepped away (#258). */
+function isAway(party: readonly PartyMember[], combatantId: string): boolean {
+  return party.some((m) => m.character.id === combatantId && !m.connected);
+}
+
 /**
  * A walk follows its route a square at a time, at this speed, rather than
  * gliding straight to the destination. Diagonals cost one step (spec §7.1),
@@ -222,6 +230,11 @@ interface BoardActor {
   shadowX: number;
   id: string;
   side: "party" | "enemy";
+  /**
+   * A hero whose player stepped away (#258): drawn faded, standing, never in
+   * the knocked-down pose. The same fade the story lineup gives (scene.ts).
+   */
+  away: boolean;
   down: boolean;
   /** Board-pixel position of the feet; the container approaches it. */
   targetX: number;
@@ -561,6 +574,7 @@ export function createBoardLayer(): BoardLayer {
       id: combatant.id,
       side: combatant.side,
       down: combatant.down,
+      away: isAway(current.party, combatant.id),
       targetX: feet.x,
       targetY: feet.y,
       rive: null,
@@ -690,6 +704,7 @@ export function createBoardLayer(): BoardLayer {
       const feet = feetOf(gridActor);
       if (existing) {
         existing.down = combatant.down;
+        existing.away = isAway(current.party, combatant.id);
         setPuffed(existing, combatant.puffed !== undefined && !combatant.down);
         existing.targetX = feet.x;
         existing.targetY = feet.y;
@@ -1169,6 +1184,8 @@ export function createBoardLayer(): BoardLayer {
           actor.rive.tick(dtSeconds);
           // Breathing with the idle: tighter as the body rises off its feet.
           actor.shadow.scale.set(breathingShadowScale(actor.down ? 0 : actor.rive.breath()));
+          // Presence is the board's fact, not the rig's (#258).
+          actor.art.alpha = approach(actor.art.alpha, actor.away ? AWAY_ALPHA : 1, DOWN_RATE, dtSeconds);
           continue;
         }
         if (actor.down) {
@@ -1178,7 +1195,7 @@ export function createBoardLayer(): BoardLayer {
           actor.art.alpha = approach(actor.art.alpha, FALLEN_ALPHA, DOWN_RATE, dtSeconds);
         } else {
           actor.art.rotation = approach(actor.art.rotation, 0, DOWN_RATE, dtSeconds);
-          actor.art.alpha = approach(actor.art.alpha, 1, DOWN_RATE, dtSeconds);
+          actor.art.alpha = approach(actor.art.alpha, actor.away ? AWAY_ALPHA : 1, DOWN_RATE, dtSeconds);
         }
       }
 

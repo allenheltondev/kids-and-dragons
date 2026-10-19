@@ -28,7 +28,7 @@ import type { ChannelMessage, RoomMode } from "@kad/shared";
 import { LocalSseChannel } from "./channel/room-channel.ts";
 import { ContentError, loadContent, type ContentStore } from "./content/loader.ts";
 import { loadSharedRuntime } from "./engine/shared-engine.ts";
-import { addPlayer, adoptDevice, createGuestHousehold, linkAccount } from "./handlers/account.ts";
+import { addPlayer, adoptDevice, createGuestHousehold, linkAccount, vetTypedName } from "./handlers/account.ts";
 import { applyAction } from "./handlers/action.ts";
 import {
   admitCodeLookup,
@@ -37,16 +37,21 @@ import {
   SLOW_DOWN,
 } from "./handlers/code-guard.ts";
 import { relayPreview } from "./handlers/preview.ts";
-import { setPresence } from "./handlers/presence.ts";
+import { beatPresence, setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "./handlers/deps.ts";
 import { iso } from "./handlers/deps.ts";
-import { createRoom, joinRoom, settleRoom, watchRoom } from "./handlers/room.ts";
+import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, watchRoom } from "./handlers/room.ts";
+import { setVisitors } from "./handlers/visitors.ts";
 import { removePlayer } from "./handlers/remove.ts";
-import { closeRoom, lockRoom, type HostPrincipal } from "./handlers/host.ts";
+import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "./handlers/host.ts";
+import { releaseSavedHero, resumeGame, stopForToday } from "./handlers/save.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
 import { getState } from "./handlers/state.ts";
+import { organizerRoute } from "./handlers/organizer.ts";
+import { isSlowDown, pairFromDevice, redeemPairingCode } from "./handlers/pairing.ts";
+import { isOut } from "./handlers/remove.ts";
 import {
   forgetDevice,
   listSharedPlayers,
@@ -67,6 +72,10 @@ import { MemoryRepository } from "./store/memory-repository.ts";
 
 const PORT = Number(process.env.PORT ?? 8787);
 const HOST = process.env.HOST ?? "0.0.0.0";
+/** Stream-based presence beside the heartbeats; off to run as production does. */
+const STREAM_PRESENCE = process.env.KAD_STREAM_PRESENCE !== "off";
+/** How long a quiet phone stays here; the handler's two minutes when unset. */
+const PRESENCE_AWAY_MS = Number(process.env.KAD_PRESENCE_AWAY_MS) || undefined;
 
 /** Everything that does not come out of `@kad/shared`; see `withRuntime()`. */
 type BaseDeps = Omit<HandlerDeps, "engine" | "rng">;
@@ -142,7 +151,16 @@ async function main(): Promise<void> {
     const shared = await resolveShared(req, base);
     if (shared !== undefined) {
       if (!shared) return forgottenDevice(res);
-      if (display) return sendError(res, 400, "ILLEGAL", "a shared tablet plays; open the TV on the TV");
+      if (display) {
+        // The tablet as the TV (#274): its own household, nobody seated, no
+        // device token or session handed back.
+        const tv = await createRoom(
+          { householdId: shared.householdId, mode, campaignId: req.body?.campaignId ?? null, hostDeviceId: shared.deviceId, display: true },
+          deps,
+        );
+        if (!tv.ok) return sendError(res, statusFor(tv.error), tv.error.code, tv.error.message);
+        return res.json({ ...tv.value, roomCode: tv.value.code, host: true });
+      }
       const seat = await seatOnSharedDevice(
         { shared, playerId: req.body?.playerId, newPlayer: req.body?.newPlayer },
         base,
@@ -167,11 +185,13 @@ async function main(): Promise<void> {
     // the spot. It is a real household — the only thing it lacks is an owner,
     // and the only consequence is that it expires unless somebody signs in.
     const existing = await resolvePrincipal(req, base);
+    const hostName = vetTypedName(req.body?.displayName, "Host");
+    if (!existing && !hostName.ok) return sendError(res, statusFor(hostName.error), hostName.error.code, hostName.error.message);
     const host =
       existing ??
       (await createGuestHousehold(
         {
-          displayName: String(req.body?.displayName ?? "Host"),
+          displayName: hostName.ok ? hostName.value : "Host",
           userAgent: req.get("user-agent"),
           display,
         },
@@ -218,12 +238,16 @@ async function main(): Promise<void> {
     const deps = await withRuntime(base, res);
     if (!deps) return;
 
-    const code = String(req.params.code ?? "").toUpperCase();
+    const typed = String(req.params.code ?? "").toUpperCase();
     const lookup = await admitCodeLookup(clientOf(req), deps);
     if (!lookup) return slowDown(res, deps);
-    const found = await base.repo.getRoom(code);
-    if (!found) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+    // Four letters, or an open room's six-letter visitor code (#249).
+    const named = await findRoom(typed, base);
+    if (!named) return sendError(res, 404, "NOT_FOUND", `no open room ${typed}`);
     await lookup.hit();
+    const found = named.room;
+    const code = found.code;
+    const visitor = named.visitorCode ? { visitorCode: named.visitorCode } : {};
 
     // A shared tablet seats the kid picked on it, and never falls through to
     // `addPlayer` (#250, see lambda/http.ts).
@@ -235,7 +259,7 @@ async function main(): Promise<void> {
         base,
       );
       if (!seat.ok) return sendError(res, statusFor(seat.error), seat.error.code, seat.error.message);
-      const seated = await joinRoom({ code, principal: seat.value, device: "tablet" }, deps);
+      const seated = await joinRoom({ code, principal: seat.value, device: "tablet", ...visitor }, deps);
       if (!seated.ok) return sendError(res, statusFor(seated.error), seated.error.code, seated.error.message);
       return res.json({ ...seated.value, code, roomCode: code, expiresAt: found.expiresAt });
     }
@@ -249,19 +273,29 @@ async function main(): Promise<void> {
     const room = settled ? settled.value : found;
     if (!room) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
     // An unbound device joining a room gets a player created for it on the spot,
-    // so a phone that has never seen this game can still join in one tap.
+    // so a phone that has never seen this game joins in one tap. On a visitor
+    // code it is a visitor, in a guest household of its own (#249).
+    // Admitted before anything is bound — see lambda/http.ts.
+    const joinerName = vetTypedName(req.body?.displayName, "Player");
+    if (!existing && !joinerName.ok) return sendError(res, statusFor(joinerName.error), joinerName.error.code, joinerName.error.message);
+    let admitted: "family" | "visitor" | null = null;
+    if (!existing) {
+      const admission = await admitNewPhone(room, named.visitorCode, deps);
+      if (!admission.ok) {
+        return sendError(res, statusFor(admission.error), admission.error.code, admission.error.message);
+      }
+      admitted = admission.value;
+    }
     const joiner =
       existing ??
-      (await addPlayer(
-        {
-          householdId: room.householdId,
-          displayName: String(req.body?.displayName ?? "Player"),
-          userAgent: req.get("user-agent"),
-        },
+      (await bindNewPhone(
+        room,
+        admitted ?? "family",
+        { displayName: joinerName.ok ? joinerName.value : "Player", userAgent: req.get("user-agent") },
         base,
       ));
 
-    const joined = await joinRoom({ code, principal: joiner.principal }, deps);
+    const joined = await joinRoom({ code, principal: joiner.principal, ...visitor }, deps);
     if (!joined.ok) return sendError(res, statusFor(joined.error), joined.error.code, joined.error.message);
 
     res.json({
@@ -288,8 +322,14 @@ async function main(): Promise<void> {
     const lookup = await admitCodeLookup(clientOf(req), deps);
     if (!lookup) return slowDown(res, deps);
     // Optional: a TV that opened the room presents its binding to learn it is the host.
-    const screen = await resolvePrincipal(req, base);
-    const result = await watchRoom({ code, deviceId: screen?.principal.deviceId }, deps);
+    // ...or a family tablet's shared token (#274).
+    const tablet = await resolveShared(req, base);
+    if (tablet === null) return forgottenDevice(res);
+    const screen = tablet ? null : await resolvePrincipal(req, base);
+    const result = await watchRoom(
+      { code, deviceId: tablet?.deviceId ?? screen?.principal.deviceId, ...(tablet ? { householdId: tablet.householdId } : {}) },
+      deps,
+    );
     if (result.ok || result.error.code !== "NOT_FOUND") await lookup.hit();
     if (!result.ok) {
       return sendError(res, statusFor(result.error), result.error.code, result.error.message);
@@ -319,7 +359,7 @@ async function main(): Promise<void> {
       if (shared === null) return forgottenDevice(res);
       let principal: HostPrincipal;
       if (shared) {
-        const seat = tabletHost(shared, await resolveSession(req, base), code);
+        const seat = tabletHost(shared, await resolveSession(req, base), code, await deps.repo.getRoom(code));
         if (!seat.ok) return sendError(res, 401, seat.error.code, seat.error.message);
         principal = seat.value;
       } else {
@@ -347,10 +387,37 @@ async function main(): Promise<void> {
     (body) => (typeof body.locked === "boolean" ? null : "expected { locked: true | false }"),
     (code, principal, body, deps) => lockRoom({ code, principal, locked: body.locked as boolean }, deps),
   ));
+  app.post("/api/room/:code/quiet", hostControl(
+    (body) => (typeof body.quiet === "boolean" ? null : "expected { quiet: true | false }"),
+    (code, principal, body, deps) => setQuiet({ code, principal, quiet: body.quiet as boolean }, deps),
+  ));
   app.post("/api/room/:code/close", hostControl(
     () => null,
     (code, principal, _body, deps) => closeRoom({ code, principal }, deps),
   ));
+
+  // Save the chapter and close the room, to pick it up another day (#259).
+  app.post("/api/room/:code/stop", hostControl(
+    () => null,
+    (code, principal, _body, deps) => stopForToday({ code, principal }, deps),
+  ));
+
+  // A signed-in owner opening the room to visitors (#249), as in lambda/http.ts.
+  app.post("/api/room/:code/visitors", async (req: Request, res: Response) => {
+    const account = verifyDevToken(bearerToken(req));
+    if (!account) return sendError(res, 401, "FORBIDDEN", "a dev id token is required");
+    if (typeof req.body?.open !== "boolean") return sendError(res, 400, "ILLEGAL", "expected { open: true | false }");
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const code = String(req.params.code ?? "").toUpperCase();
+    const lookup = await admitCodeLookup(clientOf(req), deps);
+    if (!lookup) return slowDown(res, deps);
+    const result = await setVisitors({ cognitoSub: account.cognitoSub, code, open: req.body?.open }, deps);
+    const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
+    if (!missed) await lookup.hit();
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
 
   // -------------------------------------------------------------------------
   // Actions and reconnect
@@ -409,11 +476,78 @@ async function main(): Promise<void> {
     const session = await resolveSession(req, base);
     if (!session) return sendError(res, 401, "FORBIDDEN", "a preview needs a room session token");
     const result = await relayPreview(
-      { runId: session.runId, playerId: session.playerId, preview: (req.body ?? {}).preview, context: (req.body ?? {}).context },
+      {
+        runId: session.runId,
+        playerId: session.playerId,
+        householdId: session.householdId,
+        preview: (req.body ?? {}).preview,
+        context: (req.body ?? {}).context,
+      },
       deps,
     );
     if (!result.ok) return sendError(res, result.status, result.code, result.message);
     res.json({ ok: true });
+  });
+
+  // "Still here", or "leaving" (handlers/presence.ts): production's only
+  // presence, and alongside the stream's here, so both paths are exercised.
+  app.post("/api/presence", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const session = await resolveSession(req, base);
+    if (!session) return sendError(res, 401, "FORBIDDEN", "presence needs a room session token");
+    const result = await beatPresence(
+      {
+        runId: session.runId,
+        playerId: session.playerId,
+        householdId: session.householdId,
+        leaving: (req.body ?? {}).leaving === true,
+        ...(PRESENCE_AWAY_MS === undefined ? {} : { awayAfterMs: PRESENCE_AWAY_MS }),
+      },
+      deps,
+    );
+    if (!result.ok) return sendError(res, result.status, result.code, result.message);
+    res.json({ ok: true, connected: result.connected });
+  });
+
+  // A seated phone taking the household's saved chapter into this room (#259).
+  app.post("/api/resume", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const session = await resolveSession(req, base);
+    if (!session) return sendError(res, 401, "FORBIDDEN", "keeping going needs a room session token");
+    const result = await resumeGame(
+      { runId: session.runId, playerId: session.playerId, householdId: session.householdId },
+      deps,
+    );
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json({ ok: true, seq: result.value.seq });
+  });
+
+  // The host of a stopped game letting a hero go from it (#259), as in lambda/http.ts.
+  app.post("/api/save/release", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const { characterId, homeHouseholdId } = (req.body ?? {}) as Record<string, unknown>;
+    if (typeof characterId !== "string" || characterId === "") {
+      return sendError(res, 400, "ILLEGAL", "expected { characterId }");
+    }
+    if (homeHouseholdId !== undefined && typeof homeHouseholdId !== "string") {
+      return sendError(res, 400, "ILLEGAL", "homeHouseholdId must be a string");
+    }
+    const host = await resolvePrincipal(req, base);
+    if (!host) return sendError(res, 401, "FORBIDDEN", "letting a hero go needs the device that stopped the game");
+    const result = await releaseSavedHero(
+      {
+        deviceId: host.principal.deviceId,
+        householdId: host.principal.householdId,
+        characterId,
+        ...(homeHouseholdId ? { homeHouseholdId } : {}),
+      },
+      deps,
+    );
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json({ ok: true, left: result.value.left });
   });
 
   app.post("/api/progression/spend", async (req: Request, res: Response) => {
@@ -519,7 +653,10 @@ async function main(): Promise<void> {
     const raw = req.query.sinceSeq;
     const sinceSeq = typeof raw === "string" && raw !== "" ? Number(raw) : undefined;
 
-    const result = await getState({ runId, sinceSeq, playerId: reader.playerId }, deps);
+    const result = await getState(
+      { runId, sinceSeq, playerId: reader.playerId, householdId: reader.householdId },
+      deps,
+    );
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
   });
@@ -543,7 +680,11 @@ async function main(): Promise<void> {
 
     const state = await base.repo.getState(room.runId);
     if (!state) return sendError(res, 404, "NOT_FOUND", `run ${room.runId} has no state`);
-    if (reader.playerId !== undefined && state.removed?.includes(reader.playerId)) {
+    // Taken out by the host (#267), or retired by an organizer (#248).
+    if (
+      reader.playerId !== undefined &&
+      (await isOut(state, reader.playerId, reader.householdId ?? null, base.repo))
+    ) {
       return sendError(res, 403, "FORBIDDEN", "This phone was taken out of the game.");
     }
 
@@ -568,9 +709,13 @@ async function main(): Promise<void> {
      * ready-gate waits on a device that is gone (see handlers/presence.ts).
      *
      * A display client carries no session and is nobody's presence.
+     *
+     * `KAD_STREAM_PRESENCE=off` leaves presence to the phones' heartbeats
+     * alone (`POST /api/presence`), which is how production runs: AppSync
+     * Events reports no stream opening or closing (#258).
      */
     const viewer = await resolveSession(req, base);
-    if (viewer && viewer.runId === room.runId) {
+    if (STREAM_PRESENCE && viewer && viewer.runId === room.runId) {
       const runId = room.runId;
       const playerId = viewer.playerId;
       // Counted, not toggled: a refresh overlaps two streams and the old one
@@ -617,6 +762,7 @@ async function main(): Promise<void> {
         email: account.email,
         principal: existing?.principal ?? null,
         preferExisting: req.body?.preferExisting === true,
+        householdId: typeof req.body?.householdId === "string" ? req.body.householdId : undefined,
       },
       base,
     );
@@ -653,6 +799,7 @@ async function main(): Promise<void> {
         principal: existing?.principal ?? null,
         shared: shared ?? null,
         userAgent: req.get("user-agent"),
+        householdId: typeof req.body?.householdId === "string" ? req.body.householdId : undefined,
       },
       base,
     );
@@ -671,6 +818,49 @@ async function main(): Promise<void> {
       return sendError(res, 400, "ILLEGAL", "expected this tablet's x-kad-shared-token, or { deviceId }");
     }
     const result = await forgetDevice({ cognitoSub: account.cognitoSub, deviceId }, base);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
+  // "Play as me on another device" (#281). Her own phone asks for a one-time code.
+  app.post("/api/pair/code", async (req: Request, res: Response) => {
+    const found = await resolvePrincipal(req, base);
+    if (!found) {
+      if (req.get("x-kad-shared-token")) {
+        return sendError(res, 403, "FORBIDDEN", "A shared tablet isn't one kid. Ask a grown-up to make the code.");
+      }
+      return sendError(res, 401, "FORBIDDEN", "Only a device that is already her can make a code.");
+    }
+    const result = await pairFromDevice(found.principal, base);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
+  // The new device redeems it. No sign-in: the code is the credential.
+  app.post("/api/pair/redeem", async (req: Request, res: Response) => {
+    const previous = await resolvePrincipal(req, base);
+    const result = await redeemPairingCode(
+      { code: req.body?.code, client: clientOf(req), userAgent: req.get("user-agent"), previous: previous?.principal },
+      base,
+    );
+    if (isSlowDown(result)) return slowDown(res, base);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
+  // A grown-up running a household or a group (#248): the same table the
+  // Lambda routes through, behind the dev token.
+  app.use("/api/organizer", async (req: Request, res: Response, next: NextFunction) => {
+    const route = organizerRoute({
+      method: req.method,
+      path: `/api/organizer${req.path === "/" ? "" : req.path}`,
+      query: req.query as Record<string, unknown>,
+      body: (req.body ?? {}) as Record<string, unknown>,
+    });
+    if (!route) return next();
+    const account = verifyDevToken(bearerToken(req));
+    if (!account) return sendError(res, 401, "FORBIDDEN", "a dev id token is required");
+    const result = await route(account, base);
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
   });
@@ -789,7 +979,7 @@ async function resolveSession(req: Request, deps: BaseDeps): Promise<SessionIden
 async function roomReader(
   req: Request,
   deps: BaseDeps,
-): Promise<{ runId: string; roomCode: string; playerId?: string } | null> {
+): Promise<{ runId: string; roomCode: string; playerId?: string; householdId?: string } | null> {
   const header = req.get("authorization") ?? "";
   const query = typeof req.query?.token === "string" ? req.query.token : "";
   const token = /^Bearer\s+(.+)$/i.exec(header.trim())?.[1] ?? query;
@@ -806,7 +996,7 @@ function clientOf(req: Request): string {
   return clientKeyFor(req.socket.remoteAddress);
 }
 
-function slowDown(res: Response, deps: HandlerDeps): void {
+function slowDown(res: Response, deps: Pick<HandlerDeps, "now">): void {
   res.set("retry-after", String(retryAfterSeconds(deps.now())));
   sendError(res, SLOW_DOWN.status, SLOW_DOWN.code, SLOW_DOWN.message);
 }
@@ -843,6 +1033,7 @@ function statusFor(error: ActionError): number {
       return 403;
     case "STALE_SEQ":
     case "ILLEGAL":
+    case "HERO_BUSY":
       return 409;
   }
 }

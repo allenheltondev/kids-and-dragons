@@ -27,6 +27,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { difficultyFor, speak } from "@kad/shared";
 import type { DiceRoll, Difficulty } from "@kad/shared";
+import { reducedMotion } from "../a11y/prefs";
 import { useParty, usePresentation } from "../store";
 import { ROLL_TUMBLE_MS, rollCardMs, rollRevealMs } from "../world/presentation";
 import { ScreenReaderOnly } from "../ui/ScreenReaderOnly";
@@ -60,11 +61,7 @@ export function nextFace(previous: number, random: number, sides: number = SIDES
  * asked in JS as well. theme.css flattens the tumble itself.
  */
 function prefersReducedMotion(): boolean {
-  return (
-    typeof window !== "undefined" &&
-    typeof window.matchMedia === "function" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
+  return reducedMotion();
 }
 
 interface ShownRoll {

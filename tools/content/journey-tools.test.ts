@@ -33,7 +33,9 @@
 
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
   completeVisit,
@@ -627,7 +629,7 @@ describe("checkJourneySave — classifying a stored journey", () => {
   });
 
   it("the CLI checks a save file and exits non-zero when it is broken", () => {
-    const dir = fs.mkdtempSync(path.join(process.env.TMPDIR ?? "/tmp", "journey-save-"));
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "journey-save-"));
     try {
       const good = path.join(dir, "good.json");
       const bad = path.join(dir, "bad.json");
@@ -658,7 +660,7 @@ describe("the CLI", () => {
 });
 
 function cli(args: string[]): { status: number | null; stdout: string; stderr: string } {
-  const tsx = path.join(REPO_ROOT, "node_modules", "tsx", "dist", "cli.mjs");
+  const tsx = fileURLToPath(import.meta.resolve("tsx/cli"));
   const run = spawnSync(process.execPath, [tsx, path.join(REPO_ROOT, "tools", "content", "journey.ts"), ...args], {
     cwd: REPO_ROOT,
     encoding: "utf8",

@@ -231,7 +231,7 @@ describe("linkAccount", () => {
     expect(result.value.claimed).toBe(false);
     expect(result.value.deviceToken).toBeTypeOf("string");
 
-    const household = await harness.repo.getHousehold(result.value.householdId);
+    const household = await harness.repo.getHousehold(result.value.householdId ?? "");
     expect(household).toMatchObject({ guest: false, ownerSub: "sub_a" });
     expect(household).not.toHaveProperty("expiresAt");
   });
@@ -310,6 +310,77 @@ describe("linkAccount from the home screen (preferExisting)", () => {
   });
 });
 
+describe("linkAccount for an account with more than one household (#248)", () => {
+  /** Ana keeps her family's guest game, and also runs a club. */
+  async function familyAndClub(harness: TestHarness) {
+    const family = await guestParty(harness);
+    const kept = await linkAccount({ cognitoSub: "sub_a", principal: family.principal }, harness.deps);
+    if (!kept.ok) throw new Error("could not keep the family");
+    await harness.repo.putHousehold({
+      id: "h_club",
+      displayName: "Club",
+      ownerSub: "sub_a",
+      guest: false,
+      createdAt: new Date(harness.clock.now()).toISOString(),
+    });
+    await harness.repo.putAccountPointer("sub_a", "h_club");
+    return family;
+  }
+
+  it("never guesses on a fresh phone: it lists the households and asks", async () => {
+    const harness = makeHarness();
+    await familyAndClub(harness);
+
+    for (const preferExisting of [false, true]) {
+      const result = await linkAccount({ cognitoSub: "sub_a", preferExisting }, harness.deps);
+      expect(result.ok).toBe(true);
+      if (!result.ok) return;
+      expect(result.value.householdId).toBeNull();
+      expect(result.value.players).toEqual([]);
+      expect(result.value.characters).toEqual([]);
+      expect(result.value.deviceToken).toBeUndefined();
+      expect(result.value.households.map((h) => h.displayName).sort()).toEqual(["Allen's household", "Club"]);
+    }
+  });
+
+  it("never guesses for a phone playing in somebody else's game either", async () => {
+    const harness = makeHarness();
+    await familyAndClub(harness);
+    const elsewhere = await createGuestHousehold({ displayName: "Rue" }, harness.deps);
+
+    const result = await linkAccount(
+      { cognitoSub: "sub_a", principal: elsewhere.principal, preferExisting: true },
+      harness.deps,
+    );
+    expect(result.ok && result.value.householdId).toBeNull();
+    // And that guest game is not claimed on the way.
+    expect(await harness.repo.getHousehold(elsewhere.household.id)).toMatchObject({ guest: true, ownerSub: null });
+  });
+
+  it("answers for the one picked, or the one this phone already plays in", async () => {
+    const harness = makeHarness();
+    const family = await familyAndClub(harness);
+
+    const picked = await linkAccount({ cognitoSub: "sub_a", householdId: "h_club" }, harness.deps);
+    expect(picked.ok && picked.value.householdId).toBe("h_club");
+
+    // No choice to make: this phone is already somebody in the family.
+    const bound = await linkAccount(
+      { cognitoSub: "sub_a", principal: family.principal, preferExisting: true },
+      harness.deps,
+    );
+    expect(bound.ok && [bound.value.householdId, bound.value.deviceBound]).toEqual([family.household.id, true]);
+  });
+
+  it("still keeps tonight's guest game from the end-of-chapter offer", async () => {
+    const harness = makeHarness();
+    await familyAndClub(harness);
+    const tonight = await guestParty(harness);
+    const kept = await linkAccount({ cognitoSub: "sub_a", principal: tonight.principal }, harness.deps);
+    expect(kept.ok && [kept.value.householdId, kept.value.claimed]).toEqual([tonight.household.id, true]);
+  });
+});
+
 describe("adoptDevice", () => {
   it("binds a signed-in device to a player of their own household", async () => {
     const harness = makeHarness();
@@ -319,7 +390,7 @@ describe("adoptDevice", () => {
     const playerId = linked.value.players[0]?.id ?? "";
 
     const adopted = await adoptDevice(
-      { cognitoSub: "sub_a", householdId: linked.value.householdId, playerId },
+      { cognitoSub: "sub_a", householdId: linked.value.householdId ?? "", playerId },
       harness.deps,
     );
     expect(adopted.ok).toBe(true);
@@ -339,7 +410,7 @@ describe("adoptDevice", () => {
     const result = await adoptDevice(
       {
         cognitoSub: "sub_b",
-        householdId: mine.value.householdId,
+        householdId: mine.value.householdId ?? "",
         playerId: mine.value.players[0]?.id ?? "",
       },
       harness.deps,
@@ -421,12 +492,12 @@ describe("the Field Guide is part of what a claim keeps", () => {
     expect(restored.value.householdId).toBe(host.household.id);
 
     const adopted = await adoptDevice(
-      { cognitoSub: "sub_a", householdId: restored.value.householdId, playerId: host.player.id },
+      { cognitoSub: "sub_a", householdId: restored.value.householdId ?? "", playerId: host.player.id },
       harness.deps,
     );
     expect(adopted.ok).toBe(true);
 
-    const book = await harness.repo.getFieldGuide(restored.value.householdId);
+    const book = await harness.repo.getFieldGuide(restored.value.householdId ?? "");
     expect(Object.keys(book.entries)).toEqual(["moth"]);
   });
 });

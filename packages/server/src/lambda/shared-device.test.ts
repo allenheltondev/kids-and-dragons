@@ -429,6 +429,162 @@ describe("locking and closing a room (#263)", () => {
   });
 });
 
+describe("a family tablet as the Party Mode TV (#274)", () => {
+  async function tabletTv() {
+    const { harness, householdId } = await family();
+    const tablet = recorder(harness);
+    const shared = await makeShared(tablet.send);
+    const opened = await tablet.send(
+      event("POST", "/api/room", { body: { mode: "party", display: true }, headers: { "x-kad-shared-token": shared } }),
+    );
+    const body = bodyOf(opened);
+    return { harness, householdId, tablet, rt: runtime(harness), shared, opened, body, code: String(body.code) };
+  }
+
+  const watch = (code: string, headers: Record<string, string>) => event("POST", `/api/room/${code}/watch`, { body: {}, headers });
+
+  it("opens the room under its own household with itself as host, and seats nobody", async () => {
+    const { harness, householdId, shared, opened, body, code } = await tabletTv();
+    expect(opened.statusCode).toBe(200);
+    expect(body).toMatchObject({ host: true, roomCode: code });
+
+    const identity = await harness.identity.resolveSharedDevice(shared);
+    const room = await harness.repo.getRoom(code);
+    expect(room).toMatchObject({ householdId, hostDeviceId: identity?.deviceId, display: true });
+    // Nothing to claim: the household is already known.
+    expect(room?.claimable).toBeUndefined();
+    const state = await harness.repo.getState(room?.runId ?? "");
+    expect(state?.party).toEqual([]);
+    expect(state?.seats ?? {}).toEqual({});
+  });
+
+  it("hands the tablet no device token and no kid's session, and binds nothing", async () => {
+    const { harness, householdId, tablet, shared } = await tabletTv();
+    const devices = (await harness.repo.listDevices(householdId)).length;
+    const players = (await harness.repo.listPlayers(householdId)).length;
+    const code = String(bodyOf(tablet.seen[tablet.seen.length - 1] as APIGatewayProxyStructuredResultV2).code);
+    await tablet.send(watch(code, { "x-kad-shared-token": shared }));
+
+    for (const result of tablet.seen) {
+      const text = `${JSON.stringify(result.headers)}${result.body ?? ""}`;
+      expect(text).not.toMatch(/deviceToken|sessionToken|x-kad-device-token/);
+    }
+    expect((await harness.repo.listDevices(householdId)).length).toBe(devices);
+    expect((await harness.repo.listPlayers(householdId)).length).toBe(players);
+  });
+
+  it("is watched on the tablet's shared token, again after a hard refresh, and the answer is only a viewer token", async () => {
+    const { harness, tablet, shared, code } = await tabletTv();
+    for (let i = 0; i < 2; i++) {
+      const watched = await tablet.send(watch(code, { "x-kad-shared-token": shared }));
+      expect(watched.statusCode).toBe(200);
+      const answer = bodyOf(watched);
+      expect(answer).toMatchObject({ host: true });
+      const viewer = String(answer.viewerToken);
+      expect(await harness.identity.resolveViewer(viewer)).toMatchObject({ roomCode: code });
+      expect(await harness.identity.resolveSession(viewer)).toBeNull();
+      expect(await harness.identity.resolveSharedDevice(viewer)).toBeNull();
+      expect(await harness.identity.resolveDevice(viewer)).toBeNull();
+    }
+  });
+
+  it("is not watched by anyone else with the code: a stranger, another tablet, another family's tablet, a forgotten one", async () => {
+    const { harness, rt, shared, code } = await tabletTv();
+    expect((await respond(watch(code, {}), rt)).statusCode).toBe(403);
+
+    // A second tablet of the same family did not open this room.
+    const sibling = await makeShared((e) => respond(e, rt));
+    expect((await respond(watch(code, { "x-kad-shared-token": sibling }), rt)).statusCode).toBe(403);
+
+    // Nor does another family's tablet.
+    const { householdId: otherHousehold } = await seedHousehold(harness, 1);
+    await harness.repo.putAccountPointer("sub-other", otherHousehold);
+    const otherRt = runtime(harness, { cognitoSub: "sub-other", email: "other@example.com" });
+    const foreign = await makeShared((e) => respond(e, otherRt));
+    expect((await respond(watch(code, { "x-kad-shared-token": foreign }), rt)).statusCode).toBe(403);
+
+    await respond(
+      event("POST", "/api/auth/forget-device", { headers: { authorization: "Bearer id-token", "x-kad-shared-token": shared } }),
+      rt,
+    );
+    expect((await respond(watch(code, { "x-kad-shared-token": shared }), rt)).statusCode).toBe(401);
+  });
+
+  it("runs the room's host controls on the shared token alone", async () => {
+    const { harness, rt, shared, code } = await tabletTv();
+    const host = { "x-kad-shared-token": shared };
+    const guest = bodyOf(await respond(event("POST", `/api/room/${code}/join`, { body: { displayName: "Cousin" } }), rt));
+
+    const locked = await respond(event("POST", `/api/room/${code}/lock`, { body: { locked: true }, headers: host }), rt);
+    expect(locked.statusCode).toBe(200);
+    const removed = await respond(event("POST", `/api/room/${code}/remove`, { body: { playerId: guest.playerId }, headers: host }), rt);
+    expect(removed.statusCode).toBe(200);
+    const room = await harness.repo.getRoom(code);
+    expect((await harness.repo.getState(room?.runId ?? ""))?.removed).toContain(guest.playerId);
+
+    const closed = await respond(event("POST", `/api/room/${code}/close`, { headers: host }), rt);
+    expect(closed.statusCode).toBe(200);
+  });
+
+  it("gives the screen no player power and no host power it should not have", async () => {
+    const { rt, shared, code } = await tabletTv();
+    const guest = bodyOf(await respond(event("POST", `/api/room/${code}/join`, { body: { displayName: "Cousin" } }), rt));
+    const viewer = String(bodyOf(await respond(watch(code, { "x-kad-shared-token": shared }), rt)).viewerToken);
+
+    // The viewer token is not a seat: it cannot act...
+    const acted = await respond(
+      event("POST", "/api/action", {
+        body: { runId: guest.runId, playerId: guest.playerId, seq: 0, intent: { type: "READY", ready: true } },
+        headers: { authorization: `Bearer ${viewer}` },
+      }),
+      rt,
+    );
+    expect(acted.statusCode).toBeGreaterThanOrEqual(400);
+    // ...nor can the shared token join as nobody.
+    const joined = await respond(event("POST", `/api/room/${code}/join`, { body: {}, headers: { "x-kad-shared-token": shared } }), rt);
+    expect(joined.statusCode).toBeGreaterThanOrEqual(400);
+
+    // A phone in the room is not the host; a sibling tablet is not either, and a viewer token proves nothing.
+    const asGuest = { "x-kad-device-token": String(guest.deviceToken) };
+    expect((await respond(event("POST", `/api/room/${code}/lock`, { body: { locked: true }, headers: asGuest }), rt)).statusCode).toBe(403);
+    const sibling = await makeShared((e) => respond(e, rt));
+    const siblingHost = await respond(
+      event("POST", `/api/room/${code}/lock`, { body: { locked: true }, headers: { "x-kad-shared-token": sibling, authorization: `Bearer ${viewer}` } }),
+      rt,
+    );
+    expect(siblingHost.statusCode).toBe(401);
+  });
+
+  it("does not make a room a tablet opened to play into a TV: that still needs the seated kid", async () => {
+    const { harness } = await family();
+    const rt = runtime(harness);
+    const shared = await makeShared((e) => respond(e, rt));
+    const played = bodyOf(
+      await respond(event("POST", "/api/room", { body: { mode: "party", playerId: "p_1" }, headers: { "x-kad-shared-token": shared } }), rt),
+    );
+    expect((await harness.repo.getRoom(String(played.code)))?.display).toBeUndefined();
+    const bare = await respond(
+      event("POST", `/api/room/${String(played.code)}/lock`, { body: { locked: true }, headers: { "x-kad-shared-token": shared } }),
+      rt,
+    );
+    expect(bare.statusCode).toBe(401);
+  });
+
+  it("still refuses a TV in Travel Mode, and a forgotten tablet is told so", async () => {
+    const { harness } = await family();
+    const rt = runtime(harness);
+    const shared = await makeShared((e) => respond(e, rt));
+    const travel = await respond(event("POST", "/api/room", { body: { mode: "travel", display: true }, headers: { "x-kad-shared-token": shared } }), rt);
+    expect(travel.statusCode).toBe(400);
+    await respond(
+      event("POST", "/api/auth/forget-device", { headers: { authorization: "Bearer id-token", "x-kad-shared-token": shared } }),
+      rt,
+    );
+    const forgotten = await respond(event("POST", "/api/room", { body: { mode: "party", display: true }, headers: { "x-kad-shared-token": shared } }), rt);
+    expect(forgotten.statusCode).toBe(401);
+  });
+});
+
 describe("forget this device", () => {
   it("revokes the tablet, and a forgotten tablet is told so rather than made somebody", async () => {
     const { harness, householdId } = await family();
@@ -483,6 +639,62 @@ describe("forget this device", () => {
     );
     expect(personal.statusCode).toBe(409);
     expect(await harness.identity.resolveDevice(ada.deviceToken)).not.toBeNull();
+  });
+});
+
+describe("forgetting a tablet from another device (#273)", () => {
+  const list = (householdId: string) =>
+    event("GET", `/api/organizer/devices?householdId=${householdId}`, { headers: { authorization: "Bearer id-token" } });
+  const forget = (deviceId: string) =>
+    event("POST", "/api/auth/forget-device", { body: { deviceId }, headers: { authorization: "Bearer id-token" } });
+
+  /** The query string is parsed by the entry point, so give it the way API Gateway does. */
+  function withQuery(e: APIGatewayProxyEventV2, householdId: string): APIGatewayProxyEventV2 {
+    return { ...e, rawPath: "/api/organizer/devices", queryStringParameters: { householdId } };
+  }
+
+  it("lets an owner on their phone list the shared tablets and forget one, and the tablet gets the 401", async () => {
+    const { harness, householdId, ada } = await family();
+    const rt = runtime(harness);
+    const shared = await makeShared((e) => respond(e, rt), { "user-agent": "Mozilla/5.0 (iPad; CPU OS 17_0)" });
+    const sharedDevice = await harness.identity.resolveSharedDevice(shared);
+    if (!sharedDevice) throw new Error("tablet did not resolve");
+
+    // From the owner's phone: the tablet is listed, and Ada's own phone is not.
+    const listed = await respond(withQuery(list(householdId), householdId), rt);
+    expect(listed.statusCode).toBe(200);
+    expect(bodyOf(listed).devices).toEqual([
+      expect.objectContaining({ deviceId: sharedDevice.deviceId, revoked: false, lastSeen: expect.any(String) }),
+    ]);
+    expect(JSON.stringify(bodyOf(listed))).not.toContain(ada.principal.deviceId);
+
+    const forgot = await respond(forget(sharedDevice.deviceId), rt);
+    expect(forgot.statusCode).toBe(200);
+
+    // The tablet's next request is refused, and the list says it is gone.
+    const picker = await respond(event("GET", "/api/household/players", { headers: { "x-kad-shared-token": shared } }), rt);
+    expect(picker.statusCode).toBe(401);
+    const after = await respond(withQuery(list(householdId), householdId), rt);
+    expect(bodyOf(after).devices).toEqual([expect.objectContaining({ deviceId: sharedDevice.deviceId, revoked: true })]);
+  });
+
+  it("is refused to an account that does not own the household", async () => {
+    const { harness, householdId } = await family();
+    const shared = await makeShared((e) => respond(e, runtime(harness)));
+    const sharedDevice = await harness.identity.resolveSharedDevice(shared);
+    if (!sharedDevice) throw new Error("tablet did not resolve");
+    const stranger = runtime(harness, { cognitoSub: "sub-nobody" });
+
+    const listed = await respond(withQuery(list(householdId), householdId), stranger);
+    expect(listed.statusCode).toBe(403);
+    expect(listed.body).not.toContain(sharedDevice.deviceId);
+
+    const forgot = await respond(forget(sharedDevice.deviceId), stranger);
+    expect(forgot.statusCode).toBe(404);
+    expect(await harness.identity.resolveSharedDevice(shared)).not.toBeNull();
+
+    const anonymous = await respond(withQuery(list(householdId), householdId), runtime(harness, null));
+    expect(anonymous.statusCode).toBe(401);
   });
 });
 
