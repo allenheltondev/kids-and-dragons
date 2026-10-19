@@ -42,7 +42,6 @@ import type {
   EventRecord,
   GameRepository,
   ForgetJob,
-  FounderBefore,
   GuestRenewal,
   HouseholdOwnerRecord,
   IdlePlayer,
@@ -313,32 +312,6 @@ export class MemoryRepository implements GameRepository {
     if (household.founderDeviceId !== deviceId) return;
     // Empty, not absent: absent reads as a household from before founders.
     await this.putHousehold({ ...household, founderDeviceId: "" });
-  }
-
-  async setFounder(householdId: string, deviceId: string): Promise<FounderBefore | null> {
-    const item = this.get(HH(householdId), META);
-    if (!item || item.sweeping) return null;
-    const household = item.data as Household;
-    if (!household.guest || household.ownerSub) return null;
-    const { awaitingFounder, ...rest } = household;
-    await this.putHousehold({ ...rest, founderDeviceId: deviceId });
-    return {
-      ...(household.founderDeviceId !== undefined ? { founderDeviceId: household.founderDeviceId } : {}),
-      ...(awaitingFounder ? { awaitingFounder } : {}),
-    };
-  }
-
-  async restoreFounder(householdId: string, deviceId: string, before: FounderBefore): Promise<void> {
-    const item = this.get(HH(householdId), META);
-    if (!item) return;
-    const household = item.data as Household;
-    if (household.founderDeviceId !== deviceId) return;
-    const { founderDeviceId: _handed, ...rest } = household;
-    await this.putHousehold({
-      ...rest,
-      ...(before.founderDeviceId !== undefined ? { founderDeviceId: before.founderDeviceId } : {}),
-      ...(before.awaitingFounder ? { awaitingFounder: true as const } : {}),
-    });
   }
 
   async extendGuestHousehold(householdId: string, expiresAt: string): Promise<GuestRenewal> {
@@ -912,6 +885,12 @@ export class MemoryRepository implements GameRepository {
           : stored !== null && (stored.version ?? 0) === campaignProgressExpectedVersion;
       if (!matches) return false;
     }
+    // The founder's household is still a guest game nobody has kept (#272).
+    const founding = input.founder ? this.get(HH(input.founder.householdId), META) : undefined;
+    if (input.founder) {
+      const household = founding?.data as Household | undefined;
+      if (!founding || founding.sweeping || !household?.guest || household.ownerSub) return false;
+    }
     // Each hero still stands as this turn read her: her claim and her version.
     for (const write of characters) {
       const { householdId, id } = write.character;
@@ -922,6 +901,17 @@ export class MemoryRepository implements GameRepository {
     // one TransactWriteItems, including across two different run partitions.
     this.put({ PK: RUN(runId), SK: EVT_SK(event.seq), entity: "event", data: event });
     this.put({ PK: RUN(runId), SK: STATE, entity: "state", data: state });
+    if (input.founder && founding) {
+      const { awaitingFounder: _taken, ...rest } = founding.data as Household;
+      const household: Household = { ...rest, founderDeviceId: input.founder.deviceId };
+      this.put({
+        PK: HH(household.id),
+        SK: META,
+        ...(household.expiresAt ? { GSI1PK: GSI1_GUEST, GSI1SK: GSI1_GUEST_SK(household.expiresAt, household.id) } : {}),
+        entity: "household",
+        data: household,
+      });
+    }
     for (const write of characters) {
       this.put(characterItem(claimedRow(write)));
     }

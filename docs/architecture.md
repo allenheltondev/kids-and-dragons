@@ -599,18 +599,24 @@ the keeper, and only that phone is shown the offer to keep the party.
 device that opened the room already holds its low-stakes controls, and
 "whose game is this" is answered by who is sitting in it, so the roster has a
 "Make keeper" beside Remove (`POST /api/room/:code/keeper`, `handKeeper`). It
-moves `founderDeviceId` to the chosen player's own phone in one conditional
-write (`setFounder`: a guest household nobody has kept, not being swept), so
-it mends a stranger who beat the family to a TV's code, a founder taken out,
+moves `founderDeviceId` to the chosen player's own phone, so it mends a stranger who beat the family to a TV's code, a founder taken out,
 and a founding phone that was lost. Conservatively: only the room's host; only
 a phone that is in the room, in its own household, not taken out (never a
 visitor, never a family tablet, which is nobody); nothing is claimed by it,
 the new keeper still signs in on that phone to keep the game; and a household
-an account already keeps is refused. The change is also written to the run
+an account already keeps is refused. The run records it
 (`RunState.keeperPlayerId`), so every screen hears it at once: the old
 keeper's offer goes, the new one's comes, and a phone restored from storage
 (which has only what its join said) draws the right one without joining
-again. Deleting a player (#252) takes her id out of it. Left as it is on
+again. **The founder and the run's record are one transaction**
+(`CommitInput.founder`, in the same `TransactWriteItems` as the state and the
+event, under the claim's own conditions on the household: a guest nobody has
+kept, not being swept), gated by the run's seq. So two hand-overs that overlap
+land whole or not at all and the later commit wins both places together; a
+room that closes or a race that is lost leaves the household as it was; and
+there is no rollback to get wrong. The alternative of committing the run
+first and then setting the founder would need a reconciler for the gap
+between them. Deleting a player (#252) takes her id out of it. Left as it is on
 purpose: the founder is still a device and not a person. A guest game is a
 table's save (see "Who owns what", below), a kid's hero is hers and is not lost
 with it, and a family tablet exists only in a household an account already

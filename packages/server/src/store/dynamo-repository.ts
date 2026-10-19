@@ -57,7 +57,6 @@ import type {
   EventRecord,
   GameRepository,
   ForgetJob,
-  FounderBefore,
   GuestRenewal,
   HouseholdOwnerRecord,
   IdlePlayer,
@@ -375,76 +374,6 @@ export class DynamoRepository implements GameRepository {
           ConditionExpression: "attribute_exists(PK) AND #d.#founder = :device",
           ExpressionAttributeNames: { "#d": "data", "#founder": "founderDeviceId" },
           ExpressionAttributeValues: { ":device": deviceId, ":nobody": "" },
-        }),
-      );
-    } catch (err) {
-      if (!isConditionalFailure(err)) throw err;
-    }
-  }
-
-  async setFounder(householdId: string, deviceId: string): Promise<FounderBefore | null> {
-    try {
-      const done = await this.doc.send(
-        new UpdateCommand({
-          TableName: this.table,
-          Key: { PK: HH(householdId), SK: META },
-          UpdateExpression: "SET #d.#founder = :device REMOVE #d.#awaiting",
-          // Still a guest nobody has kept, and not being deleted (the claim's own conditions).
-          ConditionExpression:
-            "attribute_exists(PK) AND attribute_not_exists(sweeping) AND #d.#guest = :true " +
-            "AND (attribute_not_exists(#d.#owner) OR #d.#owner = :null)",
-          ExpressionAttributeNames: {
-            "#d": "data",
-            "#founder": "founderDeviceId",
-            "#awaiting": "awaitingFounder",
-            "#guest": "guest",
-            "#owner": "ownerSub",
-          },
-          ExpressionAttributeValues: { ":device": deviceId, ":true": true, ":null": null },
-          ReturnValues: "ALL_OLD",
-        }),
-      );
-      const was = (done.Attributes?.["data"] ?? {}) as Partial<Household>;
-      return {
-        ...(was.founderDeviceId !== undefined ? { founderDeviceId: was.founderDeviceId } : {}),
-        ...(was.awaitingFounder ? { awaitingFounder: true as const } : {}),
-      };
-    } catch (err) {
-      if (isConditionalFailure(err)) return null;
-      throw err;
-    }
-  }
-
-  async restoreFounder(householdId: string, deviceId: string, before: FounderBefore): Promise<void> {
-    const sets: string[] = [];
-    const removes: string[] = [];
-    const values: Record<string, unknown> = { ":device": deviceId };
-    if (before.founderDeviceId !== undefined) {
-      sets.push("#d.#founder = :before");
-      values[":before"] = before.founderDeviceId;
-    } else {
-      removes.push("#d.#founder");
-    }
-    if (before.awaitingFounder) {
-      sets.push("#d.#awaiting = :true");
-      values[":true"] = true;
-    }
-    try {
-      await this.doc.send(
-        new UpdateCommand({
-          TableName: this.table,
-          Key: { PK: HH(householdId), SK: META },
-          UpdateExpression: [sets.length ? `SET ${sets.join(", ")}` : "", removes.length ? `REMOVE ${removes.join(", ")}` : ""]
-            .filter(Boolean)
-            .join(" "),
-          // Only while the hand-over being undone is still the founder.
-          ConditionExpression: "attribute_exists(PK) AND #d.#founder = :device",
-          ExpressionAttributeNames: {
-            "#d": "data",
-            "#founder": "founderDeviceId",
-            ...(before.awaitingFounder ? { "#awaiting": "awaitingFounder" } : {}),
-          },
-          ExpressionAttributeValues: values,
         }),
       );
     } catch (err) {
@@ -1528,6 +1457,31 @@ export class DynamoRepository implements GameRepository {
                 ExpressionAttributeValues: { ":expected": expectedSeq },
               },
             },
+            // The host handing the keeper role over (#272): the founder moves
+            // in the same transaction as the run records it, under the
+            // claim's own conditions on the household.
+            ...(input.founder
+              ? [
+                  {
+                    Update: {
+                      TableName: this.table,
+                      Key: { PK: HH(input.founder.householdId), SK: META },
+                      UpdateExpression: "SET #d.#founder = :device REMOVE #d.#awaiting",
+                      ConditionExpression:
+                        "attribute_exists(PK) AND attribute_not_exists(sweeping) AND #d.#guest = :true " +
+                        "AND (attribute_not_exists(#d.#owner) OR #d.#owner = :null)",
+                      ExpressionAttributeNames: {
+                        "#d": "data",
+                        "#founder": "founderDeviceId",
+                        "#awaiting": "awaitingFounder",
+                        "#guest": "guest",
+                        "#owner": "ownerSub",
+                      },
+                      ExpressionAttributeValues: { ":device": input.founder.deviceId, ":true": true, ":null": null },
+                    },
+                  },
+                ]
+              : []),
             // If the run has moved on, the whole transaction is rejected and
             // these never land: that is the point of putting them here. Each
             // also carries its hero's claim and the version read (#282), since

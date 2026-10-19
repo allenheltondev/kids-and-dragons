@@ -57,77 +57,29 @@ export async function handKeeper(
   const device = devices[0];
   if (!device) return fail("ILLEGAL", "That player has no phone of their own to keep the game on.");
 
-  const before = await deps.repo.setFounder(room.householdId, device.deviceId);
-  if (!before) return fail("ILLEGAL", "This game is already kept.");
-
   /*
-   * Told to every screen, so the old keeper's offer goes and the new one's
-   * comes, and a phone restored from storage draws the right one.
+   * The founder and the run's record of it move in one transaction
+   * (`CommitInput.founder`), gated by the run's seq. So there is nothing to
+   * roll back and nothing to reconcile: a hand-over that loses the race, finds
+   * the room closed, or finds the household kept lands neither write, and when
+   * two overlap the later commit wins both together. Told to every screen, so
+   * the old keeper's offer goes and the new one's comes, and a phone restored
+   * from storage draws the right one.
    *
-   * The two writes are one hand-over or none. If the run cannot take the
-   * change (the room closed between them, or the game kept moving past the
-   * retries), the founder goes back to what it was, so the household and the
-   * screens never disagree about who may keep it, and the host is told it
-   * did not happen. Putting it back is conditional on this device still being
-   * the founder, so a later hand-over is not undone by this one's cleanup.
-   * If even that fails, the host's retry finishes the job: the whole thing is
-   * idempotent.
+   * Always written, even when the run already names this player: the founder
+   * may have moved since (a removal drops it), and the write is idempotent.
    */
-  const result = await committedWhileFounder(
+  const result = await commitRoomChange(
     room,
-    input,
-    device.deviceId,
-    (current: RunState): RunState | null =>
-      current.keeperPlayerId === input.playerId ? null : { ...current, keeperPlayerId: input.playerId },
+    input.principal.playerId,
+    (current: RunState): RunState => ({ ...current, keeperPlayerId: input.playerId }),
     deps,
+    { founder: { householdId: room.householdId, deviceId: device.deviceId } },
   );
-  if (!result.ok) {
-    try {
-      await deps.repo.restoreFounder(room.householdId, device.deviceId, before);
-    } catch (err) {
-      console.error(`handKeeper: could not put the founder of ${room.householdId} back:`, err);
-    }
-    return result;
-  }
-  return ok({ seq: result.value.seq });
-}
-
-/** A hand-over found, on the run's commit, that somebody else's has taken its place. */
-class SupersededError extends Error {}
-
-/**
- * The run's commit for this hand-over, allowed to land only while its device is
- * still the household's founder. `commitRoomChange` re-runs `change` against
- * the fresh run on every lost seq race, and a lost race is exactly how a
- * second hand-over gets in between: it sets the founder, commits first, and
- * this one would then commit over it, leaving the screens showing one keeper
- * and the household letting another claim. Checked on each attempt, so a
- * commit that follows a rival's is refused, and one that precedes it is
- * overwritten by the rival's own (which is last, and so what both agree on).
- */
-async function committedWhileFounder(
-  room: Parameters<typeof commitRoomChange>[0],
-  input: HandKeeperInput,
-  deviceId: string,
-  change: (state: RunState) => RunState | null,
-  deps: HandlerDeps,
-): Promise<HandlerResult<{ seq: number }>> {
-  try {
-    const result = await commitRoomChange(
-      room,
-      input.principal.playerId,
-      async (state) => {
-        const household = await deps.repo.getHousehold(room.householdId);
-        if (household?.founderDeviceId !== deviceId) throw new SupersededError();
-        return change(state);
-      },
-      deps,
-    );
-    return result.ok ? ok({ seq: result.value.seq }) : result;
-  } catch (err) {
-    if (err instanceof SupersededError) {
-      return fail("ILLEGAL", "The keeper role just moved to somebody else. Look at the roster and try again.");
-    }
-    throw err;
-  }
+  if (result.ok) return ok({ seq: result.value.seq });
+  // The transaction also refuses a household an account kept in the meantime,
+  // which looks like a lost race from here: say which it was.
+  const now = await deps.repo.getHousehold(room.householdId);
+  if (!now?.guest || now.ownerSub) return fail("ILLEGAL", "This game is already kept.");
+  return result;
 }
