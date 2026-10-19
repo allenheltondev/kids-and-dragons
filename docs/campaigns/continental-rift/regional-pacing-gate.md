@@ -1,11 +1,12 @@
 # Regional pacing and production gate
 
-Updated 2026-10-18 after the request to avoid short play sessions.
+Updated 2026-10-19 with the northern continuation; the earlier regional expansion followed the request to avoid short play sessions.
 
-The earlier **short exploratory preview exception is superseded for these three nodes**.
-`riftlight-stone-counters`, `riftlight-whale-road`, and `riftlight-buried-bridge` now aim to
-be ordinary 30–40-minute story nodes. Each has 14 decisions and six checks on its shortest
-modeled route, with 42–44 scenes actually visited. Their 84–86 authored scenes include
+The earlier **short exploratory preview exception is superseded for the initial three regional nodes**.
+`riftlight-stone-counters`, `riftlight-whale-road`, `riftlight-buried-bridge`,
+`riftlight-the-wrong-valley`, and `riftlight-reading-room` now aim to
+be ordinary 30–40-minute story nodes. Each has 14 decisions and six or seven checks on its shortest
+modeled route, with 42–44 scenes actually visited. Their 80–86 authored scenes include
 alternative methods and success/failure consequences; a party does not read all of them.
 The 35-minute metadata is a planning budget, not a measured claim.
 
@@ -41,6 +42,8 @@ npx tsx tools/content/riftlight-pacing.ts
 | Stone counters | 31.7 min | 32.1 min | 23.4 min |
 | Whale-road | 31.3 min | 31.7 min | 23.1 min |
 | Buried bridge | 31.3 min | 31.5 min | 23.1 min |
+| The Wrong Valley | 34.0 min | 34.0 min | 25.2 min |
+| The Reading Room | 33.1 min | 33.5 min | 24.6 min |
 
 The uncalibrated model budgets 130 spoken words/minute, 40 seconds/decision, 30/check and
 4/scene. Shortest estimates use the lower narration bound, including the shorter later-Attune
@@ -51,12 +54,13 @@ These content checks have passed; no family timing observation has been collecte
 
 ## Production gate — not passed
 
-The substantial expansion and static pacing checks are implemented. Before promoting these
+The substantial expansion and static pacing checks are implemented, including the two northern nodes. Before promoting these
 chapters out of `content/drafts/riftlight`, the campaign author still must:
 
-1. Record at least two real family playthroughs covering all three nodes across sessions,
+1. Record at least two real family playthroughs covering all five nodes across sessions,
    including a party without a Starweaver. Cover both whale choices, both bridge inspections,
-   sharing/withholding Orin's readings and first/later Attune. Record elapsed and discussion
+   sharing/withholding Orin's readings and first/later Attune. Include both valley crossing plans,
+   a changed plan after failure, private/shared memory notes and the optional prior-Coast comparison. Record elapsed and discussion
    minutes, engagement, confusion and desired changes in the [observation log](../../../content/drafts/riftlight/playtest-observations.json).
    Keep observations empty until actual play and exclude technical/meal breaks.
 2. Compare shortest and engaged measured runs with the 30–40-minute target. If ordinary nodes

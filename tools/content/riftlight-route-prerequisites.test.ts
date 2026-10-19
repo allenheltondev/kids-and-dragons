@@ -61,13 +61,13 @@ it("proves regional prerequisites across every incoming graph route rather than 
       expect(incoming.get(node)!.has(fact), `${node}: an incoming route bypasses introduction of ${fact}`).toBe(true);
     }
   }
-  for (const node of ["stone-counters", "whale-road", "buried-bridge"]) {
+  for (const node of ["stone-counters", "whale-road", "buried-bridge", "the-wrong-valley", "reading-room"]) {
     for (const fact of ["orin", "olivia", "listening_chime", "chime_rules", "learned_note", "hall", "riftseekers"]) {
       expect(incoming.get(node)!.has(fact), `${node}/${fact}`).toBe(true);
     }
   }
   // A new inter-strand shortcut from before the fellowship must invalidate the proof.
-  for (const node of ["stone-counters", "whale-road", "buried-bridge"]) {
+  for (const node of ["stone-counters", "whale-road", "buried-bridge", "the-wrong-valley", "reading-room"]) {
     const bypass = propagate({ ...graph.edges, bypass: { from: graph.entry, to: node, kind: "sideways" } });
     expect(bypass.incoming.get(node)!.has("listening_chime")).toBe(false);
     expect(bypass.incoming.get(node)!.has("orin")).toBe(false);
