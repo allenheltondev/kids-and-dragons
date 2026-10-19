@@ -12,12 +12,13 @@
  * is "Forget this tablet", at the bottom and quiet, behind a sign-in.
  */
 
+import { randomName } from "./creationContent";
 import { useCallback, useEffect, useId, useState } from "react";
 import type { ChangeEvent, ReactElement } from "react";
 import type { SharedDevicePlayer, SharedSeatRequest } from "@kad/shared";
 import { useGameStore } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
-import { ROOM_CODE_LENGTH as CODE_LENGTH, normalizeCodeInput as normalizeCode } from "../router";
+import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, normalizeCodeInput as normalizeCode } from "../router";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
@@ -27,7 +28,6 @@ import "./shared.css";
 import "./HomeScreen.css";
 import "./SharedHome.css";
 
-const CODE_SLOTS = [0, 1, 2, 3];
 
 /** Mirrors the server's `NEW_PLAYER_NAME_MAX`. */
 const NAME_MAX = 24;
@@ -39,6 +39,7 @@ export function SharedHome(): ReactElement {
   const loadSharedPlayers = useGameStore((s) => s.loadSharedPlayers);
   const joinRoom = useGameStore((s) => s.joinRoom);
   const createRoom = useGameStore((s) => s.createRoom);
+  const openOnThisScreen = useGameStore((s) => s.openOnThisScreen);
   const pendingCode = useGameStore((s) => s.pendingCode);
   const refreshShared = useKeepsakeStore((s) => s.refreshShared);
   const openKeepsake = useKeepsakeStore((s) => s.open);
@@ -51,7 +52,7 @@ export function SharedHome(): ReactElement {
   const [addingNew, setAddingNew] = useState(false);
   const [newName, setNewName] = useState("");
   const [code, setCode] = useState(() => normalizeCode(pendingCode ?? ""));
-  const [busy, setBusy] = useState<null | "join" | "create">(null);
+  const [busy, setBusy] = useState<null | "join" | "create" | "screen">(null);
   const [error, setError] = useState<string | null>(null);
   const nameFieldId = useId();
 
@@ -103,7 +104,7 @@ export function SharedHome(): ReactElement {
   const seat: SharedSeatRequest | null =
     pick === null ? null : "player" in pick ? { playerId: pick.player.id } : { newPlayer: pick.newName };
   const name = pick === null ? "" : "player" in pick ? pick.player.displayName : pick.newName;
-  const codeReady = code.length === CODE_LENGTH;
+  const codeReady = codeComplete(code);
 
   const go = useCallback(
     async (how: "join" | "create") => {
@@ -123,6 +124,21 @@ export function SharedHome(): ReactElement {
     },
     [seat, code, name, joinRoom, createRoom, refreshShared],
   );
+
+  /** The tablet becomes the TV (#274): nobody is picked, nobody is seated. */
+  const showOnThisScreen = useCallback(async () => {
+    setError(null);
+    setBusy("screen");
+    try {
+      await openOnThisScreen();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "That didn’t work. Try again?");
+      // A forgotten tablet is told so by the server, and stops being one.
+      refreshShared();
+    } finally {
+      setBusy(null);
+    }
+  }, [openOnThisScreen, refreshShared]);
 
   return (
     <main className="home entry-scene-host">
@@ -176,7 +192,10 @@ export function SharedHome(): ReactElement {
                       type="button"
                       className="shared-home__face shared-home__face--new kad-tap kad-focusable"
                       aria-expanded={addingNew}
-                      onClick={() => setAddingNew(true)}
+                      onClick={() => {
+                        setNewName((current) => (current === "" ? randomName() : current));
+                        setAddingNew(true);
+                      }}
                     >
                       <span className="shared-home__avatar" aria-hidden="true">
                         <Icon name="plus" size="1.2em" />
@@ -198,7 +217,7 @@ export function SharedHome(): ReactElement {
                 >
                   <label className="home__label" htmlFor={nameFieldId}>
                     <Icon name="name" />
-                    <span>Your name</span>
+                    <span>Your adventurer name</span>
                   </label>
                   <input
                     id={nameFieldId}
@@ -211,11 +230,33 @@ export function SharedHome(): ReactElement {
                     enterKeyHint="go"
                     maxLength={NAME_MAX}
                   />
+                  <Button
+                    variant="secondary"
+                    size="md"
+                    icon={<Icon name="shuffle" />}
+                    onClick={() => setNewName(randomName())}
+                  >
+                    Surprise me
+                  </Button>
+                  <p className="home__hint kad-muted">
+                    Pick a nickname or an adventurer name, never your real name.
+                  </p>
                   <Button type="submit" variant="primary" size="lg" icon={<Icon name="forward" />} disabled={!newName.trim()}>
                     That&rsquo;s me
                   </Button>
                 </form>
               ) : null}
+
+              <div className="home__host-toggle">
+                <button
+                  type="button"
+                  className="home__link kad-focusable"
+                  disabled={busy !== null}
+                  onClick={() => void showOnThisScreen()}
+                >
+                  Show the game on this screen
+                </button>
+              </div>
             </section>
           ) : (
             <section className="home__card home__card--join" aria-labelledby="shared-home-join">
@@ -238,10 +279,10 @@ export function SharedHome(): ReactElement {
                   spellCheck={false}
                   maxLength={CODE_LENGTH}
                   enterKeyHint="go"
-                  aria-label="Room code, four letters"
+                  aria-label="Room code, four letters, or six for a visitor"
                 />
-                <div className="home__code-boxes" aria-hidden="true">
-                  {CODE_SLOTS.map((i) => (
+                <div className="home__code-boxes" aria-hidden="true" data-slots={codeSlots(code)}>
+                  {Array.from({ length: codeSlots(code) }, (_, i) => i).map((i) => (
                     <span
                       key={i}
                       className={`home__code-box${code.length === i ? " home__code-box--next" : ""}${code[i] ? " home__code-box--filled" : ""}`}
@@ -291,7 +332,7 @@ export function SharedHome(): ReactElement {
             {busy !== null ? (
               <div className="home__busy kad-row" role="status">
                 <Spinner size="sm" />
-                <span>{busy === "create" ? "Making a room…" : "Looking for that room…"}</span>
+                <span>{busy === "join" ? "Looking for that room…" : "Making a room…"}</span>
               </div>
             ) : null}
             {error !== null ? (

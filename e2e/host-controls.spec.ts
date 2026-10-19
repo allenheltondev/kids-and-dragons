@@ -34,7 +34,7 @@ test.describe("running the room", () => {
     await host.goto("/");
     await host.getByRole("button", { name: /want to host/i }).click();
     await host.getByText("Phone Mode").click();
-    await host.getByLabel(/your name/i).fill("Grown-up");
+    await host.getByLabel(/adventurer name/i).fill("Grown-up");
     await host.getByRole("button", { name: /^start a game$/i }).click();
     await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
     const code = new URL(host.url()).pathname.split("/").pop() ?? "";
@@ -58,6 +58,13 @@ test.describe("running the room", () => {
     const newcomer = await phone(browser);
     await join(newcomer, code);
     await expect(newcomer.getByText(/this game is locked/i).first()).toBeVisible(TAP);
+
+    // --- Quiet: the host's switch reaches the guest's phone, and goes again ---
+    const quietOn = () => guest.locator("html[data-quiet]");
+    await host.getByRole("button", { name: "Quiet mode" }).click();
+    await expect(quietOn()).toHaveCount(1, TAP);
+    await host.getByRole("button", { name: "Turn quiet mode off" }).click();
+    await expect(quietOn()).toHaveCount(0, TAP);
 
     // --- Removed: the guest is out ---
     await guestRow.getByRole("button", { name: /^Remove .* from this game$/ }).click();

@@ -21,7 +21,7 @@ import type {
   APIGatewayProxyStructuredResultV2,
   Context,
 } from "aws-lambda";
-import { adoptDevice, addPlayer, createGuestHousehold, linkAccount } from "../handlers/account.ts";
+import { adoptDevice, addPlayer, createGuestHousehold, linkAccount, vetTypedName } from "../handlers/account.ts";
 import { applyAction } from "../handlers/action.ts";
 import {
   admitCodeLookup,
@@ -30,14 +30,19 @@ import {
   SLOW_DOWN,
 } from "../handlers/code-guard.ts";
 import { relayPreview } from "../handlers/preview.ts";
+import { beatPresence } from "../handlers/presence.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "../handlers/deps.ts";
 import { iso, ok } from "../handlers/deps.ts";
-import { createRoom, joinRoom, settleRoom, watchRoom } from "../handlers/room.ts";
+import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, watchRoom } from "../handlers/room.ts";
+import { setVisitors } from "../handlers/visitors.ts";
 import { removePlayer } from "../handlers/remove.ts";
-import { closeRoom, lockRoom, type HostPrincipal } from "../handlers/host.ts";
+import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "../handlers/host.ts";
+import { releaseSavedHero, resumeGame, stopForToday } from "../handlers/save.ts";
 import { listHeroes } from "../handlers/heroes.ts";
 import { getJournal } from "../handlers/journal.ts";
 import { getState } from "../handlers/state.ts";
+import { organizerRoute } from "../handlers/organizer.ts";
+import { isSlowDown, pairFromDevice, redeemPairingCode } from "../handlers/pairing.ts";
 import {
   forgetDevice,
   listSharedPlayers,
@@ -136,13 +141,19 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (req.path === "/api/room") return (deps) => postRoom(req, deps);
     if (req.path === "/api/action") return (deps) => postAction(req, deps);
     if (req.path === "/api/preview") return (deps) => postPreview(req, deps);
+    if (req.path === "/api/presence") return (deps) => postPresence(req, deps);
     if (req.path === "/api/progression/spend") return (deps) => postProgressionSpend(req, deps);
+    if (req.path === "/api/resume") return (deps) => postResume(req, deps);
+    if (req.path === "/api/save/release") return (deps) => postReleaseHero(req, deps);
     if (req.path === "/api/auth/link") return (deps) => postLink(req, deps, rt);
     if (req.path === "/api/auth/device") return (deps) => postAdopt(req, deps, rt);
     if (req.path === "/api/auth/shared-device") return (deps) => postShareDevice(req, deps, rt);
+    if (req.path === "/api/pair/code") return (deps) => postPairCode(req, deps);
+    if (req.path === "/api/pair/redeem") return (deps) => postPairRedeem(req, deps);
     if (req.path === "/api/auth/forget-device") return (deps) => postForgetDevice(req, deps, rt);
 
-    const join = /^\/api\/room\/([A-Za-z]{4})\/join$/.exec(req.path);
+    // Four letters, or an open room's six-letter visitor code (#249).
+    const join = /^\/api\/room\/([A-Za-z]{4}|[A-Za-z]{6})\/join$/.exec(req.path);
     if (join?.[1]) {
       const code = join[1].toUpperCase();
       return (deps) => postJoin(req, deps, code);
@@ -162,16 +173,42 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
       const code = lock[1].toUpperCase();
       return (deps) => postLock(req, deps, code);
     }
+    const quiet = /^\/api\/room\/([A-Za-z]{4})\/quiet$/.exec(req.path);
+    if (quiet?.[1]) {
+      const code = quiet[1].toUpperCase();
+      return (deps) => postQuiet(req, deps, code);
+    }
     const close = /^\/api\/room\/([A-Za-z]{4})\/close$/.exec(req.path);
     if (close?.[1]) {
       const code = close[1].toUpperCase();
       return (deps) => postClose(req, deps, code);
+    }
+    const stop = /^\/api\/room\/([A-Za-z]{4})\/stop$/.exec(req.path);
+    if (stop?.[1]) {
+      const code = stop[1].toUpperCase();
+      return (deps) => postStop(req, deps, code);
+    }
+    const visitors = /^\/api\/room\/([A-Za-z]{4})\/visitors$/.exec(req.path);
+    if (visitors?.[1]) {
+      const code = visitors[1].toUpperCase();
+      return (deps) => postVisitors(req, deps, rt, code);
     }
   }
   if (req.method === "GET" && req.path === "/api/state") return (deps) => getStateRoute(req, deps);
   if (req.method === "GET" && req.path === "/api/heroes") return (deps) => getHeroes(req, deps);
   if (req.method === "GET" && req.path === "/api/journal") return (deps) => getJournalRoute(req, deps);
   if (req.method === "GET" && req.path === "/api/household/players") return (deps) => getSharedPlayers(req, deps);
+
+  // A grown-up running a household or a group (#248). Signed in, always.
+  const organizer = organizerRoute(req);
+  if (organizer) {
+    return async (deps) => {
+      const account = await rt.verifyAccount(bearer(req));
+      if (!account) return error(401, "FORBIDDEN", "a verified Cognito id token is required");
+      const result = await organizer(account, deps);
+      return result.ok ? json(200, result.value) : fromError(result.error);
+    };
+  }
   return null;
 }
 
@@ -192,10 +229,12 @@ async function postRoom(req: Req, deps: HandlerDeps) {
   // Anonymous play (§4.5): a device nobody has seen before gets a household on
   // the spot. Nobody signs up to start a game.
   const existing = await resolvePrincipal(req, deps);
+  const hostName = vetTypedName(req.body.displayName, "Host");
+  if (!existing && !hostName.ok) return fromError(hostName.error);
   const host =
     existing ??
     (await createGuestHousehold(
-      { displayName: String(req.body.displayName ?? "Host"), userAgent: req.headers["user-agent"], display },
+      { displayName: hostName.ok ? hostName.value : "Host", userAgent: req.headers["user-agent"], display },
       deps,
     ));
 
@@ -246,9 +285,10 @@ async function postRoom(req: Req, deps: HandlerDeps) {
 
 /**
  * `POST /api/room` from a shared tablet (#250): seated as the kid it names, on
- * a session token alone. Never a TV: a screen that is nobody has no need of a
- * household's tablet binding, and a TV opened here would be one more thing on
- * the tablet a kid could not tell apart from their own seat.
+ * a session token alone. With `display` (#274) it is the TV instead: the room
+ * opens under the tablet's own household with the tablet as its host, nobody
+ * seated and nothing claimable, and the tablet is handed no device token and
+ * no session. Its shared token is the proof of host from then on.
  */
 async function postRoomShared(
   req: Req,
@@ -258,7 +298,20 @@ async function postRoomShared(
   shared: SharedDeviceIdentity | null,
 ) {
   if (!shared) return forgottenDevice();
-  if (display) return error(400, "ILLEGAL", "a shared tablet plays; open the TV on the TV");
+  if (display) {
+    const created = await createRoom(
+      {
+        householdId: shared.householdId,
+        mode,
+        campaignId: (req.body.campaignId as string | null | undefined) ?? null,
+        hostDeviceId: shared.deviceId,
+        display: true,
+      },
+      deps,
+    );
+    if (!created.ok) return fromError(created.error);
+    return json(200, { ...created.value, roomCode: created.value.code, host: true }, shared);
+  }
   const seat = await seatOnSharedDevice({ shared, playerId: req.body.playerId, newPlayer: req.body.newPlayer }, deps);
   if (!seat.ok) return fromError(seat.error);
 
@@ -287,12 +340,16 @@ async function postRoomShared(
   );
 }
 
-async function postJoin(req: Req, deps: HandlerDeps, code: string) {
+async function postJoin(req: Req, deps: HandlerDeps, typed: string) {
   const lookup = await admitCodeLookup(req.client, deps);
   if (!lookup) return slowDown(deps);
-  const found = await deps.repo.getRoom(code);
-  if (!found) return error(404, "NOT_FOUND", `no open room ${code}`);
+  const named = await findRoom(typed, deps);
+  if (!named) return error(404, "NOT_FOUND", `no open room ${typed}`);
   await lookup.hit();
+  // The room's own four letters from here on, whichever code was typed.
+  const found = named.room;
+  const code = found.code;
+  const visitor = named.visitorCode ? { visitorCode: named.visitorCode } : {};
 
   // A shared tablet seats the kid picked on it, with a session and nothing
   // longer-lived (#250). It never falls through to `addPlayer` below, which
@@ -302,7 +359,7 @@ async function postJoin(req: Req, deps: HandlerDeps, code: string) {
     if (!shared) return forgottenDevice();
     const seat = await seatOnSharedDevice({ shared, playerId: req.body.playerId, newPlayer: req.body.newPlayer }, deps);
     if (!seat.ok) return fromError(seat.error);
-    const joined = await joinRoom({ code, principal: seat.value, device: "tablet" }, deps);
+    const joined = await joinRoom({ code, principal: seat.value, device: "tablet", ...visitor }, deps);
     if (!joined.ok) return fromError(joined.error);
     return json(200, { ...joined.value, code, roomCode: code, expiresAt: found.expiresAt }, shared);
   }
@@ -316,19 +373,28 @@ async function postJoin(req: Req, deps: HandlerDeps, code: string) {
   const room = settled.value;
   if (!room) return error(404, "NOT_FOUND", `no open room ${code}`);
   // An unbound device joining a room gets a player created for it on the spot,
-  // so a phone that has never seen this game joins in one tap.
+  // so a phone that has never seen this game joins in one tap. On a visitor
+  // code it is a visitor, in a guest household of its own (#249).
+  // Never-seen phones are admitted *before* anything is bound to them
+  // (`admitNewPhone`): a refused one must leave no membership behind.
+  const joinerName = vetTypedName(req.body.displayName, "Player");
+  if (!existing && !joinerName.ok) return fromError(joinerName.error);
+  let admitted: "family" | "visitor" | null = null;
+  if (!existing) {
+    const admission = await admitNewPhone(room, named.visitorCode, deps);
+    if (!admission.ok) return fromError(admission.error);
+    admitted = admission.value;
+  }
   const joiner =
     existing ??
-    (await addPlayer(
-      {
-        householdId: room.householdId,
-        displayName: String(req.body.displayName ?? "Player"),
-        userAgent: req.headers["user-agent"],
-      },
+    (await bindNewPhone(
+      room,
+      admitted ?? "family",
+      { displayName: joinerName.ok ? joinerName.value : "Player", userAgent: req.headers["user-agent"] },
       deps,
     ));
 
-  const joined = await joinRoom({ code, principal: joiner.principal }, deps);
+  const joined = await joinRoom({ code, principal: joiner.principal, ...visitor }, deps);
   if (!joined.ok) return fromError(joined.error);
 
   return json(
@@ -348,11 +414,19 @@ async function postJoin(req: Req, deps: HandlerDeps, code: string) {
 async function postWatch(req: Req, deps: HandlerDeps, code: string) {
   const lookup = await admitCodeLookup(req.client, deps);
   if (!lookup) return slowDown(deps);
-  // Optional: a TV that opened the room presents its binding to learn it is the host.
-  const screen = await resolvePrincipal(req, deps);
-  const result = await watchRoom({ code, deviceId: screen?.principal.deviceId }, deps);
+  // Optional: a TV that opened the room presents its binding to learn it is the
+  // host: its device token, or a family tablet's shared token (#274). A tablet
+  // whose binding is gone is told so rather than watched as a stranger.
+  const tablet = await resolveShared(req, deps);
+  if (tablet === null) return forgottenDevice();
+  const screen = tablet ? null : await resolvePrincipal(req, deps);
+  const result = await watchRoom(
+    { code, deviceId: tablet?.deviceId ?? screen?.principal.deviceId, ...(tablet ? { householdId: tablet.householdId } : {}) },
+    deps,
+  );
   if (result.ok || result.error.code !== "NOT_FOUND") await lookup.hit();
-  return result.ok ? json(200, result.value) : fromError(result.error);
+  // The answer is a viewer token whoever asked; a tablet's own token is only renewed.
+  return result.ok ? json(200, result.value, tablet ?? undefined) : fromError(result.error);
 }
 
 /**
@@ -381,7 +455,7 @@ async function postHostControl(
   let asker: DeviceIdentity | SharedDeviceIdentity;
   if (shared) {
     asker = shared;
-    const seat = tabletHost(shared, await resolveSession(req, deps), code);
+    const seat = tabletHost(shared, await resolveSession(req, deps), code, await deps.repo.getRoom(code));
     if (!seat.ok) return error(401, seat.error.code, seat.error.message);
     principal = seat.value;
   } else {
@@ -418,9 +492,82 @@ async function postLock(req: Req, deps: HandlerDeps, code: string) {
   );
 }
 
+/**
+ * A signed-in owner opening the room to visitors, or closing it to new ones
+ * (#249, handlers/visitors.ts). An owner, not the host: it lowers the barrier
+ * to joining. Looks a room up by code, so it spends the wrong-code budget.
+ */
+async function postVisitors(req: Req, deps: HandlerDeps, rt: HttpRuntime, code: string) {
+  const account = await rt.verifyAccount(bearer(req));
+  if (!account) return error(401, "FORBIDDEN", "a verified Cognito id token is required");
+  if (typeof req.body.open !== "boolean") return error(400, "ILLEGAL", "expected { open: true | false }");
+  const lookup = await admitCodeLookup(req.client, deps);
+  if (!lookup) return slowDown(deps);
+  const result = await setVisitors({ cognitoSub: account.cognitoSub, email: account.email, code, open: req.body.open }, deps);
+  const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
+  if (!missed) await lookup.hit();
+  return result.ok ? json(200, result.value) : fromError(result.error);
+}
+
+/** The host turning quiet mode on for the room, or off again (#260). */
+async function postQuiet(req: Req, deps: HandlerDeps, code: string) {
+  const quiet = req.body.quiet;
+  const valid = typeof quiet === "boolean";
+  return postHostControl(req, deps, code, valid ? null : "expected { quiet: true | false }", (principal) =>
+    setQuiet({ code, principal, quiet: quiet as boolean }, deps),
+  );
+}
+
 /** The host closing the room for everyone (#263). */
 async function postClose(req: Req, deps: HandlerDeps, code: string) {
   return postHostControl(req, deps, code, null, (principal) => closeRoom({ code, principal }, deps));
+}
+
+/**
+ * The host saving the chapter and closing the room, to pick it up another day
+ * (#259, handlers/save.ts).
+ */
+async function postStop(req: Req, deps: HandlerDeps, code: string) {
+  return postHostControl(req, deps, code, null, (principal) => stopForToday({ code, principal }, deps));
+}
+
+/**
+ * The host of a stopped game letting a hero go from it (#259). The device
+ * token, not a session: the room is closed. A personal device only; the
+ * hero's own grown-up uses the organizer screen.
+ */
+async function postReleaseHero(req: Req, deps: HandlerDeps) {
+  const { characterId, homeHouseholdId } = req.body;
+  if (typeof characterId !== "string" || characterId === "") return error(400, "ILLEGAL", "expected { characterId }");
+  if (homeHouseholdId !== undefined && typeof homeHouseholdId !== "string") {
+    return error(400, "ILLEGAL", "homeHouseholdId must be a string");
+  }
+  const host = await resolvePrincipal(req, deps);
+  if (!host) return error(401, "FORBIDDEN", "letting a hero go needs the device that stopped the game");
+  const result = await releaseSavedHero(
+    {
+      deviceId: host.principal.deviceId,
+      householdId: host.principal.householdId,
+      characterId,
+      ...(homeHouseholdId ? { homeHouseholdId } : {}),
+    },
+    deps,
+  );
+  return result.ok ? json(200, { ok: true, left: result.value.left }, host.principal) : fromError(result.error);
+}
+
+/**
+ * A seated phone taking the household's saved chapter into this room (#259).
+ * Session token only, so a phone can keep going for nobody but its own seat.
+ */
+async function postResume(req: Req, deps: HandlerDeps) {
+  const session = await resolveSession(req, deps);
+  if (!session) return error(401, "FORBIDDEN", "keeping going needs a room session token");
+  const result = await resumeGame(
+    { runId: session.runId, playerId: session.playerId, householdId: session.householdId },
+    deps,
+  );
+  return result.ok ? json(200, { ok: true, seq: result.value.seq }) : fromError(result.error);
 }
 
 // ---------------------------------------------------------------------------
@@ -474,11 +621,39 @@ async function postPreview(req: Req, deps: HandlerDeps) {
   const session = await resolveSession(req, deps);
   if (!session) return error(401, "FORBIDDEN", "a preview needs a room session token");
   const result = await relayPreview(
-    { runId: session.runId, playerId: session.playerId, preview: req.body.preview, context: req.body.context },
+    {
+      runId: session.runId,
+      playerId: session.playerId,
+      householdId: session.householdId,
+      preview: req.body.preview,
+      context: req.body.context,
+    },
     deps,
   );
   if (!result.ok) return error(result.status, result.code, result.message);
   return json(200, { ok: true });
+}
+
+/**
+ * A seated phone saying it is still here, or that it is leaving
+ * (handlers/presence.ts). The only presence production has: AppSync Events
+ * tells this Lambda nothing when a socket closes (#258). Session token only,
+ * so a phone can speak for nobody but itself.
+ */
+async function postPresence(req: Req, deps: HandlerDeps) {
+  const session = await resolveSession(req, deps);
+  if (!session) return error(401, "FORBIDDEN", "presence needs a room session token");
+  const result = await beatPresence(
+    {
+      runId: session.runId,
+      playerId: session.playerId,
+      householdId: session.householdId,
+      leaving: req.body.leaving === true,
+    },
+    deps,
+  );
+  if (!result.ok) return error(result.status, result.code, result.message);
+  return json(200, { ok: true, connected: result.connected });
 }
 
 async function postProgressionSpend(req: Req, deps: HandlerDeps) {
@@ -569,7 +744,7 @@ async function getStateRoute(req: Req, deps: HandlerDeps) {
     {
       runId,
       ...(raw ? { sinceSeq: Number(raw) } : {}),
-      ...("playerId" in reader ? { playerId: reader.playerId } : {}),
+      ...("playerId" in reader ? { playerId: reader.playerId, householdId: reader.householdId } : {}),
     },
     deps,
   );
@@ -591,6 +766,7 @@ async function postLink(req: Req, deps: HandlerDeps, rt: HttpRuntime) {
       email: account.email,
       principal: existing?.principal ?? null,
       preferExisting: req.body.preferExisting === true,
+      householdId: typeof req.body.householdId === "string" ? req.body.householdId : undefined,
     },
     deps,
   );
@@ -613,6 +789,7 @@ async function postShareDevice(req: Req, deps: HandlerDeps, rt: HttpRuntime) {
       principal: existing?.principal ?? null,
       shared: shared ?? null,
       userAgent: req.headers["user-agent"],
+      householdId: typeof req.body.householdId === "string" ? req.body.householdId : undefined,
     },
     deps,
   );
@@ -642,6 +819,38 @@ async function getSharedPlayers(req: Req, deps: HandlerDeps) {
   if (!shared) return forgottenDevice();
   const result = await listSharedPlayers(shared, deps);
   return result.ok ? json(200, result.value, shared) : fromError(result.error);
+}
+
+/**
+ * "Play as me on another device" (#281): her own phone asks for a one-time
+ * code. A personal device token only: a shared tablet is nobody, so it is
+ * told so rather than treated as unbound.
+ */
+async function postPairCode(req: Req, deps: HandlerDeps) {
+  const found = await resolvePrincipal(req, deps);
+  if (!found) {
+    if (req.headers["x-kad-shared-token"]) {
+      return error(403, "FORBIDDEN", "A shared tablet isn't one kid. Ask a grown-up to make the code.");
+    }
+    return error(401, "FORBIDDEN", "Only a device that is already her can make a code.");
+  }
+  const result = await pairFromDevice(found.principal, deps);
+  return result.ok ? json(200, result.value, found.principal) : fromError(result.error);
+}
+
+/**
+ * The new device redeems a code. No sign-in: the code is the credential.
+ * A token the device already holds, if it still resolves, is the binding that
+ * gets replaced.
+ */
+async function postPairRedeem(req: Req, deps: HandlerDeps) {
+  const previous = await resolvePrincipal(req, deps);
+  const result = await redeemPairingCode(
+    { code: req.body.code, client: req.client, userAgent: req.headers["user-agent"], previous: previous?.principal },
+    deps,
+  );
+  if (isSlowDown(result)) return slowDown(deps);
+  return result.ok ? json(200, result.value) : fromError(result.error);
 }
 
 async function postAdopt(req: Req, deps: HandlerDeps, rt: HttpRuntime) {
@@ -799,7 +1008,7 @@ function sameSecret(sent: string | undefined, expected: string): boolean {
 async function roomReader(
   req: Req,
   deps: HandlerDeps,
-): Promise<{ runId: string; roomCode: string; playerId?: string } | null> {
+): Promise<{ runId: string; roomCode: string; playerId?: string; householdId?: string } | null> {
   const token = bearer(req) || (typeof req.query.token === "string" ? req.query.token : "");
   if (!token) return null;
   return (await deps.identity.resolveSession(token)) ?? (await deps.identity.resolveViewer(token));
@@ -878,6 +1087,7 @@ function statusFor(err: ActionError): number {
       return 403;
     case "STALE_SEQ":
     case "ILLEGAL":
+    case "HERO_BUSY":
       return 409;
   }
 }

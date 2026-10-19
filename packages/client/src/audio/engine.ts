@@ -33,6 +33,8 @@
 
 import type { AmbienceId, AudioSink, CueId } from "./cue";
 import { createSampleLibrary, type SampleLibrary, type SampleLoaderOptions } from "./samples";
+import { CUE_QUIET } from "./cues";
+import { QUIET_VOLUME_SCALE, isQuiet } from "../quiet";
 import { CUE_TONES, padFor, renderTones } from "./synth";
 
 export interface AudioPrefs {
@@ -91,6 +93,11 @@ export interface AudioEngine {
   /** 0..1. */
   volume(): number;
   setVolume(next: number): void;
+  /**
+   * Quiet mode (#260): the master level is scaled down and the sudden cues are
+   * dropped. Never stored: it is the room's, not the device's preference.
+   */
+  setQuiet(next: boolean): void;
   /** Stops the music and releases the context. For surface unmount. */
   dispose(): void;
 }
@@ -144,6 +151,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
   const storage = "storage" in options ? options.storage : defaultStorage();
 
   const prefs = readPrefs(storage);
+  let quiet = isQuiet();
 
   let ctx: BaseAudioContext | null = null;
   let master: GainNode | null = null;
@@ -165,7 +173,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
   }
 
   function masterLevel(): number {
-    return prefs.muted ? 0 : prefs.volume;
+    return prefs.muted ? 0 : prefs.volume * (quiet ? QUIET_VOLUME_SCALE : 1);
   }
 
   /**
@@ -385,6 +393,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     stopSceneCues,
     cue(id: CueId): void {
       if (!ctx || !sfx || prefs.muted) return;
+      if (quiet && CUE_QUIET[id] === "drop") return;
       const sample = library?.cue(id) ?? null;
       if (sample) {
         const source = ctx.createBufferSource();
@@ -446,6 +455,10 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
       prefs.volume = Math.min(1, Math.max(0, next));
       applyMaster();
       writePrefs(storage, prefs);
+    },
+    setQuiet(next: boolean): void {
+      quiet = next;
+      applyMaster();
     },
     dispose(): void {
       stopAmbience?.(); stopAmbience = null; ambienceId = null;

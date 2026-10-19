@@ -28,16 +28,31 @@ export interface SpeakOptions {
   rate?: number;
 }
 
-export type Speaker = (text: string, opts?: SpeakOptions) => void;
+export type Speaker = ((text: string, opts?: SpeakOptions) => void) & {
+  /** Silence whatever is being said or queued. Optional: a speaker that cannot is simply left to finish. */
+  cancel?: () => void;
+};
 
 let current: Speaker | null = null;
 
 /**
  * Installs a speaker. Pass `null` to go back to silence — the accessibility
  * toggle turns TTS off by uninstalling, so no call site needs a conditional.
+ * The speaker being replaced is cut off mid-sentence, so switching it off
+ * is immediate.
  */
 export function setSpeaker(speaker: Speaker | null): void {
+  if (current !== speaker) stopSpeaking();
   current = speaker;
+}
+
+/** Stops the current line and anything queued behind it. Never throws. */
+export function stopSpeaking(): void {
+  try {
+    current?.cancel?.();
+  } catch {
+    // Same principle as speak(): silence must not be able to break a scene.
+  }
 }
 
 export function getSpeaker(): Speaker | null {

@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it, vi } from "vitest";
 import { enterScene, lintCampaignGraph, parseCampaignGraph, newCharacter, resolveCharacter, validateChapter, startJourney, completeVisit, takeExit, seedRunBuffs } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { runValidator } from "./generate-gate.ts";
@@ -15,6 +15,24 @@ const staged = stageRiftlightOpening();
 afterAll(() => fs.rmSync(staged, { recursive: true, force: true }));
 
 describe("Riftlight's authored opening", () => {
+  it("stages usable world assets when directory junctions are denied", () => {
+    const link = vi.spyOn(fs, "symlinkSync").mockImplementation(() => {
+      throw Object.assign(new Error("Junction denied"), { code: "EPERM" });
+    });
+    let copied: string | undefined;
+    try {
+      copied = stageRiftlightOpening();
+      const world = path.join(copied, "assets/world");
+      expect(fs.lstatSync(world).isDirectory()).toBe(true);
+      expect(fs.lstatSync(world).isSymbolicLink()).toBe(false);
+      expect(fs.readdirSync(world).sort()).toEqual(fs.readdirSync(path.join(ROOT, "assets/world")).sort());
+      expect(runValidator(copied).ok).toBe(true);
+    } finally {
+      link.mockRestore();
+      if (copied) fs.rmSync(copied, { recursive: true, force: true });
+    }
+  });
+
   it("passes the real content gate alongside Gemfall, including props, art and prerequisite", () => {
     const result = runValidator(staged);
     expect(result.ok, result.output).toBe(true);

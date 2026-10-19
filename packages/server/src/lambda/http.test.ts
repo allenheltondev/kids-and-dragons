@@ -409,6 +409,27 @@ describe("POST /api/room", () => {
   });
 });
 
+describe("blocked names at the HTTP door (#253)", () => {
+  it("refuses a host or a joiner who types one, with the kid-friendly sentence", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+
+    const host = await respond(event("POST", "/api/room", { body: { mode: "travel", displayName: "Poopface" } }), rt);
+    expect(host.statusCode).toBe(409);
+    expect(bodyOf(host).error).toMatchObject({ code: "ILLEGAL", message: "Hmm, let's pick another one!" });
+
+    const opened = bodyOf(
+      await respond(event("POST", "/api/room", { body: { mode: "party", display: true } }), rt),
+    ) as unknown as { code: string };
+    const joined = await respond(
+      event("POST", `/api/room/${opened.code}/join`, { body: { displayName: "sh1t" } }),
+      rt,
+    );
+    expect(joined.statusCode).toBe(409);
+    expect(bodyOf(joined).error).toMatchObject({ code: "ILLEGAL", message: "Hmm, let's pick another one!" });
+  });
+});
+
 describe("POST /api/room/:code/join", () => {
   it("accepts a lower-case code and upper-cases it", async () => {
     // The QR carries upper case; a child typing it in does not.
@@ -425,14 +446,14 @@ describe("POST /api/room/:code/join", () => {
     expect(bodyOf(result)).toMatchObject({ code: room.code, runId: room.runId });
   });
 
-  it("is a four-letter route and nothing else", async () => {
+  it("is a four-letter route, or six for a visitor code (#249), and nothing else", async () => {
     /*
      * The path regex is the only validation a room code gets before it reaches
      * the table. Anything it lets through that `generateRoomCode` cannot
      * produce is a lookup that can only miss — so the shape is the guard.
      */
     const rt = runtimeFor(makeHarness());
-    for (const code of ["ABC", "ABCDE", "AB1D", "ABCD5", "", "../.."]) {
+    for (const code of ["ABC", "ABCDE", "AB1D", "ABCD5", "ABCDEFG", "ABCDE1", "", "../.."]) {
       const result = await respond(event("POST", `/api/room/${code}/join`), rt);
       expect(result.statusCode, code).toBe(404);
       expect(bodyOf(result).error, code).toMatchObject({ message: `no route POST /api/room/${code}/join` });
@@ -482,6 +503,152 @@ describe("POST /api/room/:code/join", () => {
     );
     expect(result.statusCode).toBe(403);
     expect(bodyOf(result).error).toMatchObject({ code: "FORBIDDEN" });
+  });
+});
+
+describe("a room open to visitors (#249)", () => {
+  const OWNER: VerifiedAccount = { cognitoSub: "sub-test", email: "owner@example.com" };
+
+  /** A room of household h_test, whose owner is signed in, and a phone from h_other. */
+  async function openable() {
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    await harness.repo.putAccountPointer(OWNER.cognitoSub, room.householdId);
+    await harness.repo.putHousehold({
+      id: "h_other",
+      displayName: "Next door",
+      ownerSub: "sub-other",
+      guest: false,
+      createdAt: new Date(harness.clock.now()).toISOString(),
+    });
+    await harness.repo.putPlayer({ id: "p_x", householdId: "h_other", displayName: "Wren", color: "#E8A33D" });
+    const { token } = await harness.identity.issueDeviceToken({ householdId: "h_other", playerId: "p_x" });
+    const rt = runtimeFor(harness);
+    // The room's own phone joins first, which settles it.
+    await respond(
+      event("POST", `/api/room/${room.code}/join`, { headers: { "x-kad-device-token": room.player.deviceToken } }),
+      rt,
+    );
+    return { harness, room, rt, visitorToken: token };
+  }
+
+  const opening = (code: string, open: unknown, token = "good") =>
+    event("POST", `/api/room/${code}/visitors`, { body: { open }, headers: { authorization: `Bearer ${token}` } });
+
+  it("needs a verified sign-in, and an owner of the room's household", async () => {
+    const { room, rt } = await openable();
+    expect((await respond(opening(room.code, true, ""), rt)).statusCode).toBe(401);
+    rt.account = { cognitoSub: "sub-stranger" };
+    const stranger = await respond(opening(room.code, true), rt);
+    expect(stranger.statusCode).toBe(403);
+    rt.account = OWNER;
+    expect((await respond(opening(room.code, "yes"), rt)).statusCode).toBe(400);
+    expect((await respond(opening("WXYZ", true), rt)).statusCode).toBe(404);
+  });
+
+  it("lets a phone from another household join with the six-letter code only", async () => {
+    const { room, rt, visitorToken } = await openable();
+    const join = (code: string) =>
+      respond(event("POST", `/api/room/${code}/join`, { headers: { "x-kad-device-token": visitorToken } }), rt);
+    expect((await join(room.code)).statusCode).toBe(403);
+
+    rt.account = OWNER;
+    const opened = await respond(opening(room.code, true), rt);
+    expect(opened.statusCode).toBe(200);
+    const visitorCode = String(bodyOf(opened).visitorCode);
+    expect(visitorCode).toMatch(new RegExp(`^${room.code}[A-Z]{2}$`));
+
+    // Still refused on the short code; in on the long one, answered with the
+    // room's own code, which every later call names.
+    expect((await join(room.code)).statusCode).toBe(403);
+    const joined = await join(visitorCode.toLowerCase());
+    expect(joined.statusCode).toBe(200);
+    expect(bodyOf(joined)).toMatchObject({ code: room.code, roomCode: room.code, playerId: "p_x" });
+    // A wrong last two letters is an unknown code.
+    const wrong = room.code + (visitorCode.endsWith("ZZ") ? "YY" : "ZZ");
+    const missed = await join(wrong);
+    expect(missed.statusCode).toBe(404);
+    expect(bodyOf(missed).error).toMatchObject({ message: `no open room ${wrong}` });
+  });
+
+  it("gives a brand-new phone on the long code a household of its own, never the host's", async () => {
+    const { harness, room, rt } = await openable();
+    rt.account = OWNER;
+    const visitorCode = String(bodyOf(await respond(opening(room.code, true), rt)).visitorCode);
+
+    const joined = await respond(event("POST", `/api/room/${visitorCode}/join`, { body: { displayName: "Wren" } }), rt);
+    expect(joined.statusCode).toBe(200);
+    const device = await harness.identity.resolveDevice(String(bodyOf(joined).deviceToken));
+    expect(device?.householdId).toBeTruthy();
+    expect(device?.householdId).not.toBe(room.householdId);
+    expect(await harness.repo.getPlayer(room.householdId, device!.playerId)).toBeNull();
+    const state = await harness.repo.getState(room.runId);
+    expect(state?.seats?.[device!.playerId]).toMatchObject({ homeHouseholdId: device!.householdId });
+    // It founded that household, so it, and only it, may keep it later.
+    expect((await harness.repo.getHousehold(device!.householdId))?.founderDeviceId).toBe(device!.deviceId);
+
+  });
+
+  /** Everybody the room's household has, so a test can prove nobody was added. */
+  async function members(harness: ReturnType<typeof makeHarness>, householdId: string) {
+    const [players, devices] = await Promise.all([
+      harness.repo.listPlayers(householdId),
+      harness.repo.listDevices(householdId),
+    ]);
+    return { players: players.length, devices: devices.length };
+  }
+
+  it("never makes a brand-new phone family because it knows the room's four letters, while open or after", async () => {
+    const { harness, room, rt } = await openable();
+    rt.account = OWNER;
+    const visitorCode = String(bodyOf(await respond(opening(room.code, true), rt)).visitorCode);
+    // Every visitor has been shown the four letters: they are the long code's first four.
+    const prefix = visitorCode.slice(0, 4);
+    expect(prefix).toBe(room.code);
+    const before = await members(harness, room.householdId);
+
+    const whileOpen = await respond(event("POST", `/api/room/${prefix}/join`, { body: { displayName: "Stranger" } }), rt);
+    expect(whileOpen.statusCode).toBe(403);
+    expect(bodyOf(whileOpen).deviceToken).toBeUndefined();
+    expect(await members(harness, room.householdId)).toEqual(before);
+
+    // The switch goes off. The four letters are still out there, and still prove nothing.
+    expect((await respond(opening(room.code, false), rt)).statusCode).toBe(200);
+    const afterOff = await respond(event("POST", `/api/room/${prefix}/join`, { body: { displayName: "Stranger" } }), rt);
+    expect(afterOff.statusCode).toBe(403);
+    expect(bodyOf(afterOff).deviceToken).toBeUndefined();
+    // Nor does the old long code, which is a wrong code now.
+    const oldLong = await respond(event("POST", `/api/room/${visitorCode}/join`, { body: { displayName: "Stranger" } }), rt);
+    expect(oldLong.statusCode).toBe(404);
+    expect(await members(harness, room.householdId)).toEqual(before);
+
+    // The family's own phone, already bound, still comes back on the four letters.
+    const family = await respond(
+      event("POST", `/api/room/${room.code}/join`, { headers: { "x-kad-device-token": room.player.deviceToken } }),
+      rt,
+    );
+    expect(family.statusCode).toBe(200);
+  });
+
+  it("binds nothing to a brand-new phone a locked room turns away", async () => {
+    const { harness, room, rt } = await openable();
+    const state = await harness.repo.getState(room.runId);
+    if (!state) throw new Error("no state");
+    await harness.repo.putState({ ...state, locked: true });
+    const before = await members(harness, room.householdId);
+
+    const refused = await respond(event("POST", `/api/room/${room.code}/join`, { body: { displayName: "Late" } }), rt);
+    expect(refused.statusCode).toBe(403);
+    expect(bodyOf(refused).deviceToken).toBeUndefined();
+    expect(await members(harness, room.householdId)).toEqual(before);
+  });
+
+  it("still makes a brand-new phone family in a room that was never opened", async () => {
+    const { harness, room, rt } = await openable();
+    const joined = await respond(event("POST", `/api/room/${room.code}/join`, { body: { displayName: "Kid" } }), rt);
+    expect(joined.statusCode).toBe(200);
+    const kin = await harness.identity.resolveDevice(String(bodyOf(joined).deviceToken));
+    expect(kin?.householdId).toBe(room.householdId);
   });
 });
 
@@ -831,6 +998,38 @@ describe("whose address a miss is counted against", () => {
     expect(
       (await respond(miss("WXYZ", { "x-kad-viewer": "203.0.113.200" }, "198.51.100.66"), rt)).statusCode,
     ).toBe(429);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Presence beats (#258): production's only presence
+// ---------------------------------------------------------------------------
+
+describe("POST /api/presence", () => {
+  it("takes a beat from a seated phone's session token, and nothing without one", async () => {
+    const harness = makeHarness();
+    const room = await seedRoom(harness);
+    const join = await respond(
+      event("POST", `/api/room/${room.code}/join`, { headers: { "x-kad-device-token": room.player.deviceToken } }),
+      runtimeFor(harness),
+    );
+    const { sessionToken } = bodyOf(join) as unknown as { sessionToken: string };
+
+    const anonymous = await respond(event("POST", "/api/presence", { body: {} }), runtimeFor(harness));
+    expect(anonymous.statusCode).toBe(401);
+
+    const beat = await respond(
+      event("POST", "/api/presence", { body: {}, headers: { authorization: `Bearer ${sessionToken}` } }),
+      runtimeFor(harness),
+    );
+    expect(beat.statusCode).toBe(200);
+    expect(bodyOf(beat)).toMatchObject({ ok: true, connected: true });
+
+    const leaving = await respond(
+      event("POST", "/api/presence", { body: { leaving: true }, headers: { authorization: `Bearer ${sessionToken}` } }),
+      runtimeFor(harness),
+    );
+    expect(bodyOf(leaving)).toMatchObject({ ok: true, connected: false });
   });
 });
 
@@ -1228,6 +1427,218 @@ describe("GET /api/state", () => {
 // Sign-in — the routes with no dev-server twin
 // ---------------------------------------------------------------------------
 
+describe("/api/pair/* (#281)", () => {
+  const post = (path: string, headers: Record<string, string>, body: Record<string, unknown> = {}) =>
+    event("POST", path, { headers, body });
+
+  it("pairs a new browser from a bound phone, with no sign-in anywhere", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    const { players } = await seedHousehold(harness, 1);
+    const phone = players[0]!;
+
+    const made = await respond(post("/api/pair/code", { "x-kad-device-token": phone.deviceToken }), rt);
+    expect(made.statusCode).toBe(200);
+    const { code } = bodyOf(made) as unknown as { code: string };
+
+    const redeemed = await respond(post("/api/pair/redeem", {}, { code }), rt);
+    expect(redeemed.statusCode).toBe(200);
+    const bound = bodyOf(redeemed) as unknown as { deviceToken: string; playerId: string; householdId: string };
+    expect(bound).toMatchObject({ playerId: "p_1", householdId: "h_test" });
+    expect(await harness.identity.resolveDevice(bound.deviceToken)).toMatchObject({ playerId: "p_1" });
+
+    // Single use.
+    const again = await respond(post("/api/pair/redeem", {}, { code }), rt);
+    expect(again.statusCode).toBe(404);
+  });
+
+  it("makes no code for a device that is not her: unbound is 401, a shared tablet 403", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    const { householdId } = await seedHousehold(harness, 1);
+
+    expect((await respond(post("/api/pair/code", {}), rt)).statusCode).toBe(401);
+    const tablet = await harness.identity.issueSharedDeviceToken({ householdId });
+    const refused = await respond(post("/api/pair/code", { "x-kad-shared-token": tablet.token }), rt);
+    expect(refused.statusCode).toBe(403);
+  });
+
+  it("answers 429 once a client has missed too many codes", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    for (let i = 0; i < CODE_MISS_LIMIT; i++) {
+      expect((await respond(post("/api/pair/redeem", {}, { code: "ZZZZZZZZ" }), rt)).statusCode).toBe(404);
+    }
+    const slow = await respond(post("/api/pair/redeem", {}, { code: "ZZZZZZZZ" }), rt);
+    expect(slow.statusCode).toBe(429);
+    expect(slow.headers?.["retry-after"]).toBeTruthy();
+  });
+});
+
+describe("/api/organizer/* (#248)", () => {
+  const signedIn = (token: string) => ({ authorization: `Bearer ${token}` });
+  const answer = (result: APIGatewayProxyStructuredResultV2) =>
+    JSON.parse(result.body ?? "{}") as Record<string, unknown>;
+
+  it("needs a verified sign-in on every route, and says which route it is not", async () => {
+    const rt = runtimeFor(makeHarness());
+    for (const [method, path] of [
+      ["GET", "/api/organizer/households"],
+      ["POST", "/api/organizer/households"],
+      ["GET", "/api/organizer/household"],
+      ["POST", "/api/organizer/household/rename"],
+      ["POST", "/api/organizer/players"],
+      ["POST", "/api/organizer/players/rename"],
+      ["POST", "/api/organizer/players/retire"],
+      ["POST", "/api/organizer/players/pair"],
+      ["POST", "/api/organizer/invite"],
+      ["POST", "/api/organizer/invite/accept"],
+      ["POST", "/api/organizer/transfer"],
+      ["POST", "/api/organizer/transfer/accept"],
+      ["POST", "/api/organizer/owners/remove"],
+      ["POST", "/api/organizer/heroes/leave"],
+      ["POST", "/api/organizer/players/delete"],
+      ["POST", "/api/organizer/household/delete"],
+      ["POST", "/api/organizer/household/retention"],
+    ] as const) {
+      const result = await respond(event(method, path), rt);
+      expect(result.statusCode, `${method} ${path}`).toBe(401);
+    }
+    const unknown = await respond(event("GET", "/api/organizer/nope", { headers: signedIn("t") }), rt);
+    expect(unknown.statusCode).toBe(404);
+  });
+
+  it("lets two signed-in grown-ups run one group", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    const as = (account: VerifiedAccount) => {
+      rt.account = account;
+      return signedIn(account.cognitoSub);
+    };
+    const ana = { cognitoSub: "sub_ana", email: "ana@example.com" };
+    const ben = { cognitoSub: "sub_ben", email: "ben@example.com" };
+
+    const created = await respond(
+      event("POST", "/api/organizer/households", { headers: as(ana), body: { displayName: "Club" } }),
+      rt,
+    );
+    expect(created.statusCode).toBe(200);
+    const groupId = answer(created).id as string;
+
+    const invite = await respond(
+      event("POST", "/api/organizer/invite", { headers: as(ana), body: { householdId: groupId } }),
+      rt,
+    );
+    const accepted = await respond(
+      event("POST", "/api/organizer/invite/accept", { headers: as(ben), body: { code: answer(invite).code } }),
+      rt,
+    );
+    expect(accepted.statusCode).toBe(200);
+
+    await respond(
+      event("POST", "/api/organizer/players", { headers: as(ben), body: { householdId: groupId, displayName: "Posy" } }),
+      rt,
+    );
+    const view = await respond(
+      event("GET", "/api/organizer/household", { headers: as(ana), query: { householdId: groupId } }),
+      rt,
+    );
+    expect(view.statusCode).toBe(200);
+    expect((answer(view).players as { displayName: string }[]).map((p) => p.displayName)).toEqual(["Posy"]);
+
+    // A third account is refused, with the status the client shows.
+    const eve = await respond(
+      event("GET", "/api/organizer/household", { headers: as({ cognitoSub: "sub_eve" }), query: { householdId: groupId } }),
+      rt,
+    );
+    expect(eve.statusCode).toBe(403);
+  });
+
+  it("deletes a kid, sets how long kids are kept, and deletes the household (#252)", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    const as = (account: VerifiedAccount) => {
+      rt.account = account;
+      return signedIn(account.cognitoSub);
+    };
+    const ana = { cognitoSub: "sub_ana" };
+    const ben = { cognitoSub: "sub_ben" };
+    const groupId = answer(
+      await respond(event("POST", "/api/organizer/households", { headers: as(ana), body: { displayName: "Club" } }), rt),
+    ).id as string;
+    const added = await respond(
+      event("POST", "/api/organizer/players", { headers: as(ana), body: { householdId: groupId, displayName: "Posy" } }),
+      rt,
+    );
+    const posy = (answer(added).players as { id: string }[])[0]!.id;
+
+    const kept = await respond(
+      event("POST", "/api/organizer/household/retention", { headers: as(ana), body: { householdId: groupId, retentionDays: 90 } }),
+      rt,
+    );
+    expect(answer(kept).retentionDays).toBe(90);
+    const odd = await respond(
+      event("POST", "/api/organizer/household/retention", { headers: as(ana), body: { householdId: groupId, retentionDays: 3 } }),
+      rt,
+    );
+    expect(odd.statusCode).toBe(409);
+
+    // Only an owner of her home.
+    const stranger = await respond(
+      event("POST", "/api/organizer/players/delete", { headers: as(ben), body: { householdId: groupId, playerId: posy } }),
+      rt,
+    );
+    expect(stranger.statusCode).toBe(403);
+    const gone = await respond(
+      event("POST", "/api/organizer/players/delete", { headers: as(ana), body: { householdId: groupId, playerId: posy } }),
+      rt,
+    );
+    expect(gone.statusCode).toBe(200);
+    expect(answer(gone).players).toEqual([]);
+    expect(await harness.repo.getPlayer(groupId, posy)).toBeNull();
+
+    const deleted = await respond(
+      event("POST", "/api/organizer/household/delete", { headers: as(ana), body: { householdId: groupId } }),
+      rt,
+    );
+    expect(deleted.statusCode).toBe(200);
+    expect(answer(deleted)).toEqual({ householdId: groupId, households: [] });
+    expect(await harness.repo.getHousehold(groupId)).toBeNull();
+    const again = await respond(
+      event("POST", "/api/organizer/household/delete", { headers: as(ana), body: { householdId: groupId } }),
+      rt,
+    );
+    expect(again.statusCode).toBe(403);
+  });
+
+  it("passes the picked household through sign-in and tablet set-up", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    rt.account = { cognitoSub: "sub_ana" };
+    const make = async (displayName: string) =>
+      answer(
+        await respond(event("POST", "/api/organizer/households", { headers: signedIn("t"), body: { displayName } }), rt),
+      ).id as string;
+    await make("Family");
+    const club = await make("Club");
+
+    const link = await respond(
+      event("POST", "/api/auth/link", { headers: signedIn("t"), body: { householdId: club, preferExisting: true } }),
+      rt,
+    );
+    expect(answer(link).householdId).toBe(club);
+    expect((answer(link).households as unknown[]).length).toBe(2);
+
+    const unsure = await respond(event("POST", "/api/auth/shared-device", { headers: signedIn("t") }), rt);
+    expect(unsure.statusCode).toBe(409);
+    const tablet = await respond(
+      event("POST", "/api/auth/shared-device", { headers: signedIn("t"), body: { householdId: club } }),
+      rt,
+    );
+    expect(answer(tablet).householdId).toBe(club);
+  });
+});
+
 describe("POST /api/auth/link", () => {
   it("refuses a request with no bearer token", async () => {
     const result = await respond(event("POST", "/api/auth/link"), runtimeFor(makeHarness()));
@@ -1546,14 +1957,21 @@ function httpRoutePaths(): Set<string> {
   for (const [, path] of source.matchAll(/\breq\.path === "([^"]+)"/g)) {
     if (path) found.add(path);
   }
-  // The two parameterised ones, spelled as regexes: `([A-Za-z]{4})\/join$`.
-  for (const [, segment] of source.matchAll(/\(\[A-Za-z\]\{4\}\)\\\/(\w+)\$/g)) {
+  // The parameterised ones, spelled as regexes: `([A-Za-z]{4})\/watch$`, or
+  // `([A-Za-z]{4}|[A-Za-z]{6})\/join$` where a visitor code is taken too.
+  for (const [, segment] of source.matchAll(/\(\[A-Za-z\]\{4\}(?:\|\[A-Za-z\]\{6\})?\)\\\/(\w+)\$/g)) {
     if (segment) found.add(`/api/room/:code/${segment}`);
   }
   return found;
 }
 
-/** Same paths, written the way each side spells them. */
+/**
+ * Same paths, written the way each side spells them.
+ *
+ * The organizer routes (#248) are not here, and need not be: both sides
+ * dispatch them through one table, `organizerRoute` in handlers/organizer.ts,
+ * so they cannot drift apart.
+ */
 const SHARED = [
   { path: "/api/room", method: "POST", probe: "/api/room" },
   { path: "/api/room/:code/join", method: "POST", probe: "/api/room/ABCD/join" },
@@ -1562,9 +1980,18 @@ const SHARED = [
   { path: "/api/room/:code/remove", method: "POST", probe: "/api/room/ABCD/remove" },
   // Host controls (#263, handlers/host.ts).
   { path: "/api/room/:code/lock", method: "POST", probe: "/api/room/ABCD/lock" },
+  { path: "/api/room/:code/quiet", method: "POST", probe: "/api/room/ABCD/quiet" },
   { path: "/api/room/:code/close", method: "POST", probe: "/api/room/ABCD/close" },
+  // Stop for today, and keep going another day (#259, handlers/save.ts).
+  { path: "/api/room/:code/stop", method: "POST", probe: "/api/room/ABCD/stop" },
+  { path: "/api/resume", method: "POST", probe: "/api/resume" },
+  { path: "/api/save/release", method: "POST", probe: "/api/save/release" },
+  // A signed-in owner opening the room to visitors (#249, handlers/visitors.ts).
+  { path: "/api/room/:code/visitors", method: "POST", probe: "/api/room/ABCD/visitors" },
   { path: "/api/action", method: "POST", probe: "/api/action" },
   { path: "/api/preview", method: "POST", probe: "/api/preview" },
+  // A phone saying it is still here, or leaving (#258, handlers/presence.ts).
+  { path: "/api/presence", method: "POST", probe: "/api/presence" },
   { path: "/api/progression/spend", method: "POST", probe: "/api/progression/spend" },
   { path: "/api/state", method: "GET", probe: "/api/state" },
   { path: "/api/health", method: "GET", probe: "/api/health" },
@@ -1581,6 +2008,10 @@ const SHARED = [
   { path: "/api/auth/shared-device", method: "POST", probe: "/api/auth/shared-device" },
   { path: "/api/auth/forget-device", method: "POST", probe: "/api/auth/forget-device" },
   { path: "/api/household/players", method: "GET", probe: "/api/household/players" },
+  // Pairing a new device to a kid (#281, handlers/pairing.ts): her own phone
+  // makes a code, the new device redeems it.
+  { path: "/api/pair/code", method: "POST", probe: "/api/pair/code" },
+  { path: "/api/pair/redeem", method: "POST", probe: "/api/pair/redeem" },
 ] as const;
 
 /**

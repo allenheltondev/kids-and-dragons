@@ -32,10 +32,29 @@ export type Route =
  * The router is deliberately *more* permissive than the generator: it accepts
  * any 4 alphanumerics and lets the server reject unknown codes. A kid mistyping
  * a code should get "no such room", not a blank 404 page.
+ *
+ * Or 6: a room open to visitors (#249) is joined from another household with
+ * its visitor code, the room's four letters and two more, which is what its
+ * QR carries. Once joined, a phone is on the room's own four-letter path.
  */
-const ROOM_CODE = /^[A-Z0-9]{4}$/;
+const ROOM_CODE = /^(?:[A-Z0-9]{4}|[A-Z0-9]{6})$/;
 
 export const ROOM_CODE_LENGTH = 4;
+
+export const VISITOR_CODE_LENGTH = 6;
+
+/** A code with nothing left to type: a room's four letters, or a visitor code's six. */
+export function codeComplete(code: string): boolean {
+  return code.length === ROOM_CODE_LENGTH || code.length === VISITOR_CODE_LENGTH;
+}
+
+/**
+ * How many boxes the code entry draws: four, until a fifth letter says this is
+ * a visitor code, and then six.
+ */
+export function codeSlots(code: string): number {
+  return code.length > ROOM_CODE_LENGTH ? VISITOR_CODE_LENGTH : ROOM_CODE_LENGTH;
+}
 
 export function normalizeCode(raw: string): string {
   return raw.trim().toUpperCase();
@@ -43,7 +62,8 @@ export function normalizeCode(raw: string): string {
 
 /**
  * Normalize free-typed (or URL-prefilled) room-code *input*: uppercase, drop
- * anything that could never be part of a code, cap at the code length.
+ * anything that could never be part of a code, cap at the longest code (a
+ * visitor code's six).
  *
  * Deliberately the same alphabet the router accepts — any 4 alphanumerics —
  * and not the generator's digit-free one. HomeScreen used to filter against
@@ -54,7 +74,7 @@ export function normalizeCode(raw: string): string {
 export function normalizeCodeInput(raw: string): string {
   let out = "";
   for (const ch of raw.toUpperCase()) {
-    if (/[A-Z0-9]/.test(ch) && out.length < ROOM_CODE_LENGTH) out += ch;
+    if (/[A-Z0-9]/.test(ch) && out.length < VISITOR_CODE_LENGTH) out += ch;
   }
   return out;
 }
@@ -163,4 +183,36 @@ if (typeof window !== "undefined") {
 /** Subscribe a component to the current route. */
 export function useRoute(): Route {
   return useSyncExternalStore(subscribeRoute, currentRoute, currentRoute);
+}
+
+// ---------------------------------------------------------------------------
+// Pairing links (#281)
+//
+// Here, with the other URL shapes the home screen reads on first paint, rather
+// than in the pairing module: the home screen must read `?pair=` without
+// pulling the rest of pairing into the first-paint payload.
+// ---------------------------------------------------------------------------
+
+/** Query parameter a pairing link carries. The home screen reads it and clears it. */
+export const PAIR_PARAM = "pair";
+
+/** Eight letters, as the server mints them. */
+export const PAIRING_CODE_LENGTH = 8;
+
+/** What a QR holds: the app's home with the code ready to spend, one tap away. */
+export function pairingUrl(origin: string, code: string): string {
+  return `${origin}/?${PAIR_PARAM}=${encodeURIComponent(code)}`;
+}
+
+/** As typed, pasted or scanned: any case, dash or spaces dropped, capped at the code's length. */
+export function normalizePairingInput(raw: string): string {
+  return raw.toUpperCase().replace(/[^A-Z]/g, "").slice(0, PAIRING_CODE_LENGTH);
+}
+
+/** The code a `?pair=` link carries, or `null` if the URL has none. */
+export function pairingFromSearch(search: string): string | null {
+  const raw = new URLSearchParams(search).get(PAIR_PARAM);
+  if (raw === null) return null;
+  const code = normalizePairingInput(raw);
+  return code === "" ? null : code;
 }

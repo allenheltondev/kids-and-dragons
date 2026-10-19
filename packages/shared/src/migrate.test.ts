@@ -61,6 +61,28 @@ describe("migrateCharacter — the v0 ladder", () => {
   });
 });
 
+describe("migrateCharacter — her finished campaigns (v3, #283)", () => {
+  const line = { campaignId: "gemfall", outcome: "success", at: "2026-07-14T18:00:00.000Z", table: "h_club" };
+
+  it("reads a v2 row, from before the record, as having finished nothing, and adds no key", () => {
+    const migrated = migrateCharacter({ ...current(), version: 3 }, 2);
+    expect(migrated).not.toHaveProperty("finished");
+  });
+
+  it("keeps a current row's record exactly", () => {
+    const character = { ...current(), finished: [line] };
+    expect(migrateCharacter(character, CHARACTER_VERSION)).toEqual(character);
+  });
+
+  it("refuses a record it could only misread", () => {
+    for (const finished of [{}, [{ ...line, outcome: "won" }], [{ ...line, table: "" }], ["gemfall"]]) {
+      expect(() => migrateCharacter({ ...current(), finished }, CHARACTER_VERSION), JSON.stringify(finished)).toThrow(
+        StoredCharacterError,
+      );
+    }
+  });
+});
+
 describe("migrateCharacter — refusals", () => {
   it("refuses a row from a version it does not understand", () => {
     /*

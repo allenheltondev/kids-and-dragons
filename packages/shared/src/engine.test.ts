@@ -9,6 +9,7 @@ import {
   isPartyDown,
   storyTurnHolder,
 } from "./engine.js";
+import { combatTurnAway, readyWithoutAway, swapOwnerAway, voteWaitsOnlyOnAway } from "./away.js";
 import type { EngineContext, EngineResult } from "./engine.js";
 import {
   currentActor,
@@ -443,6 +444,16 @@ describe("createRunState", () => {
 });
 
 describe("CREATE_CHARACTER", () => {
+  it("refuses a blocked hero name with a kid-friendly sentence, and seats nobody", () => {
+    const result = applyIntent(
+      newRun(),
+      { playerId: "p_1", intent: { ...CREATE_UNICORN, name: "Poopface" } },
+      ctx(),
+    );
+    expect(result.error).toMatchObject({ code: "ILLEGAL", message: "Hmm, let's pick another one!" });
+    expect(result.state.party).toHaveLength(0);
+  });
+
   it("seats a resolved character at full HP", () => {
     const state = seatedParty();
     expect(state.phase).toBe("creation");
@@ -3195,5 +3206,170 @@ describe("narration variants and tokens (#159)", () => {
     expect(reconnected.sceneId).toBe("scene_shrine");
     expect(reconnected.narration).toBe(state.narration);
     expect(reconnected.narration).not.toContain("{");
+  });
+});
+
+/*
+ * Drop in, drop out (#258). Every place the table waits on one player, with
+ * that player's phone gone: the table can always go on, and the absent hero
+ * is the same hero when their phone comes back. Each case sets `connected`
+ * by hand, the way presence (server handlers/presence.ts) or Remove does.
+ */
+describe("a player who steps away (#258)", () => {
+  function away(state: RunState, playerId: string, gone = true): RunState {
+    return {
+      ...state,
+      party: state.party.map((m) => (m.playerId === playerId ? { ...m, connected: !gone } : m)),
+    };
+  }
+
+  /** At the pre-fight ready-up, before anybody has said ready. */
+  function atFight(context: EngineContext): RunState {
+    return walk(
+      seatedParty(context),
+      [
+        { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+        { playerId: "p_2", intent: { type: "ROLL" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+      ],
+      context,
+    ).state;
+  }
+
+  /** In the fight, on a hero's turn, with its owner and the other player named. */
+  function onAHerosTurn(context: EngineContext) {
+    const ready = applyIntent(atFight(context), { playerId: "p_1", intent: { type: "READY", ready: true } }, context);
+    const state = applyIntent(ready.state, { playerId: "p_2", intent: { type: "READY", ready: true } }, context).state;
+    const actor = currentActor(state.encounter!)!;
+    expect(actor.side).toBe("party");
+    const owner = state.party.find((m) => m.character.id === actor.id)!;
+    const other = state.party.find((m) => m.playerId !== owner.playerId)!;
+    return { state, actor, owner, other };
+  }
+
+  it("lets anyone at the table pass an absent hero's combat turn, and nothing more", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const { state, actor, owner, other } = onAHerosTurn(context);
+    const gone = away(state, owner.playerId);
+    expect(combatTurnAway(state)).toBe(false);
+    expect(combatTurnAway(gone)).toBe(true);
+
+    // Not their move or their action: a stand-in only hands the clock on.
+    const moved = applyIntent(
+      gone,
+      { playerId: other.playerId, intent: { type: "COMBAT_ACTION", abilityId: "ready" } },
+      context,
+    );
+    expect(moved.error?.code).toBe("FORBIDDEN");
+
+    const passed = applyIntent(gone, { playerId: other.playerId, intent: { type: "END_TURN" } }, context);
+    expect(passed.error).toBeUndefined();
+    expect(currentActorId(passed.state.encounter!)).not.toBe(actor.id);
+    // Still on the board, in the order, with every hit point they had.
+    const hero = passed.state.encounter!.combatants.find((c) => c.id === actor.id)!;
+    expect(passed.state.encounter!.board.actors.some((a) => a.id === actor.id)).toBe(true);
+    expect(hero.down).toBe(false);
+  });
+
+  it("keeps a present player's turn their own", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const { state, other } = onAHerosTurn(context);
+    // The *other* player stepping away changes nothing about this turn.
+    const result = applyIntent(away(state, other.playerId), { playerId: other.playerId, intent: { type: "END_TURN" } }, context);
+    expect(result.error?.code).toBe("FORBIDDEN");
+  });
+
+  it("gives the turn back to a player whose phone returns", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const { state, owner, other } = onAHerosTurn(context);
+    const back = away(away(state, owner.playerId), owner.playerId, false);
+    expect(combatTurnAway(back)).toBe(false);
+    expect(applyIntent(back, { playerId: other.playerId, intent: { type: "END_TURN" } }, context).error?.code).toBe(
+      "FORBIDDEN",
+    );
+    const acted = applyIntent(
+      back,
+      { playerId: owner.playerId, intent: { type: "COMBAT_ACTION", abilityId: "ready" } },
+      context,
+    );
+    expect(acted.error).toBeUndefined();
+  });
+
+  it("starts the fight without an absent player once the rest are ready", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const ready = applyIntent(atFight(context), { playerId: "p_1", intent: { type: "READY", ready: true } }, context).state;
+    // p_2 drops before saying ready. Nothing counts until a tap lands, so
+    // the ready player says it again (the phone offers "Start without ...").
+    const gone = away(ready, "p_2");
+    expect(gone.encounter).toBeFalsy();
+    const again = applyIntent(gone, { playerId: "p_1", intent: { type: "READY", ready: true } }, context);
+    expect(again.error).toBeUndefined();
+    expect(again.state.encounter).toBeTruthy();
+    // The absent hero is in the fight, on the board, to come back to.
+    const griffin = gone.party.find((m) => m.playerId === "p_2")!;
+    expect(again.state.encounter!.combatants.some((c) => c.id === griffin.character.id)).toBe(true);
+  });
+
+  it("closes a vote whose last voter stepped away when a voter says it again", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const atRest = walk(
+      atFight(context),
+      [
+        { playerId: "p_1", intent: { type: "READY", ready: true } },
+        { playerId: "p_2", intent: { type: "READY", ready: true } },
+      ],
+      context,
+    ).state;
+    const atRidge = walk(atRest, [{ playerId: "p_1", intent: { type: "CHOOSE", choiceId: "sleep" } }], context).state;
+    const voted = applyIntent(atRidge, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "high" } }, context).state;
+    const prompt = voted.prompt as Extract<RunState["prompt"], { kind: "choice" }>;
+    expect(voteWaitsOnlyOnAway(voted.party, prompt)).toBe(false);
+
+    const gone = away(voted, "p_2");
+    expect(voteWaitsOnlyOnAway(gone.party, prompt)).toBe(true);
+    const closed = applyIntent(gone, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "high" } }, context);
+    expect(closed.error).toBeUndefined();
+    expect(closed.state.sceneId).toBe("scene_ending");
+  });
+
+  it("lets anyone leave an absent player's find, and never empty their bag", () => {
+    const context = ctx();
+    let state = seatedParty(context);
+    for (const itemId of ["river_charm", "emberglass_shard", "oak_token", "pebble", "acorn", "feather", "ribbon"]) {
+      state = applyEffects(state, [{ type: "grantItem", itemId, to: "p_1" }], context);
+    }
+    const gone = away(state, "p_1");
+    const prompt = gone.prompt as Extract<RunState["prompt"], { kind: "item_swap" }>;
+    expect(swapOwnerAway(state.party, prompt)).toBe(false);
+    expect(swapOwnerAway(gone.party, prompt)).toBe(true);
+
+    const dropped = applyIntent(gone, { playerId: "p_2", intent: { type: "RESOLVE_ITEM_SWAP", dropItemId: "pebble" } }, context);
+    expect(dropped.error?.code).toBe("FORBIDDEN");
+    const left = applyIntent(gone, { playerId: "p_2", intent: { type: "RESOLVE_ITEM_SWAP", dropItemId: null } }, context);
+    expect(left.error).toBeUndefined();
+    expect(left.state.prompt).toBeNull();
+    expect(left.state.party[0]!.character.inventory).toEqual(state.party[0]!.character.inventory);
+  });
+
+  it("starts a chapter from the lobby without a player who stepped away", () => {
+    const context = ctx();
+    const seated = seatedPartyNotReady(context);
+    const ready = applyIntent(seated, { playerId: "p_1", intent: { type: "READY", ready: true } }, context).state;
+    const start = { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } as ClientIntent };
+
+    expect(applyIntent(ready, start, context).error?.code).toBe("ILLEGAL");
+    const started = applyIntent(away(ready, "p_2"), start, context);
+    expect(started.error).toBeUndefined();
+    // Their hero comes along, to play the moment their phone is back.
+    expect(started.state.party.map((m) => m.playerId)).toEqual(["p_1", "p_2"]);
+  });
+
+  it("never starts a chapter with nobody at the table", () => {
+    expect(readyWithoutAway([])).toBe(false);
+    const context = ctx();
+    const ready = seatedParty(context);
+    expect(readyWithoutAway(ready.party)).toBe(true);
+    expect(readyWithoutAway(away(away(ready, "p_1"), "p_2").party)).toBe(false);
   });
 });

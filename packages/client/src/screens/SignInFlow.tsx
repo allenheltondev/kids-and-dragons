@@ -32,6 +32,8 @@ import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
 import { KeepsakeLantern } from "./KeepsakeLantern";
+import { OrganizerPanel } from "./OrganizerPanel";
+import { WhatWeStoreLink } from "./WhatWeStore";
 import "./shared.css";
 import "./SignInFlow.css";
 
@@ -79,14 +81,18 @@ export function SignInFlow(): ReactElement | null {
           onClick={close}
         />
 
-        <KeepsakeLantern motes={motes} tone={step === "kept" ? "kept" : "offer"} />
+        {step === "organize" ? null : (
+          <KeepsakeLantern motes={motes} tone={step === "kept" ? "kept" : "offer"} />
+        )}
 
         {step === "offer" ? <OfferStep motes={motes} fieldGuide={fieldGuide} /> : null}
         {step === "email" ? <EmailStep busy={busy} error={error} /> : null}
         {step === "code" ? <CodeStep busy={busy} error={error} /> : null}
+        {step === "household" ? <HouseholdStep busy={busy} error={error} /> : null}
         {step === "choose" ? <ChooseStep busy={busy} error={error} /> : null}
         {step === "passkey" ? <PasskeyStep busy={busy} /> : null}
         {step === "kept" ? <KeptStep motes={motes} fieldGuide={fieldGuide} /> : null}
+        {step === "organize" ? <OrganizerPanel onDone={close} /> : null}
       </div>
     </div>
   );
@@ -204,6 +210,7 @@ function EmailStep({ busy, error }: StepProps): ReactElement {
   const close = useKeepsakeStore((s) => s.close);
   const fromHome = useKeepsakeStore((s) => s.entry) === "home";
   const purpose = useKeepsakeStore((s) => s.purpose);
+  const visitorRoom = useKeepsakeStore((s) => s.visitorRoom);
   const [email, setEmail] = useState("");
   const fieldId = useId();
 
@@ -222,7 +229,13 @@ function EmailStep({ busy, error }: StepProps): ReactElement {
           ? "Make this a family tablet"
           : purpose === "forget"
             ? "Forget this tablet?"
-            : fromHome
+            : purpose === "organize"
+              ? "Run a group"
+              : purpose === "visitors"
+              ? visitorRoom?.open === false
+                ? "No new visitors"
+                : "Let visitors join"
+              : fromHome
               ? "Sign in or create an account"
               : "What\u2019s your email?"}
       </h2>
@@ -231,6 +244,19 @@ function EmailStep({ busy, error }: StepProps): ReactElement {
         <p className="keepsake__body">
           Sign in as the grown-up who keeps your family&rsquo;s heroes. After that, anyone in the
           family can tap their face here and play. Nobody stays signed in on it, you included.
+        </p>
+      ) : purpose === "organize" ? (
+        /* #248: a club, a class, the cousins. Kids never sign in for it. */
+        <p className="keepsake__body">
+          For grown-ups running games for kids from more than one family. Sign in to start a group,
+          add the kids, and invite another grown-up to help. The kids never need an account.
+        </p>
+      ) : purpose === "visitors" ? (
+        /* #249: it lowers the barrier to joining, so a grown-up decides. */
+        <p className="keepsake__body">
+          {visitorRoom?.open === false
+            ? "Sign in as a grown-up who runs this game. Visitors already playing stay; nobody new can join with the long code."
+            : "Sign in as a grown-up who runs this game. Kids from other families can then join with their own phones and heroes, using a longer code."}
         </p>
       ) : purpose === "forget" ? (
         <p className="keepsake__body">
@@ -291,6 +317,8 @@ function EmailStep({ busy, error }: StepProps): ReactElement {
           Not now
         </Button>
       </div>
+      {/* #252: what the game keeps, readable before anybody signs in. */}
+      <WhatWeStoreLink label="What we store about your family" />
     </form>
   );
 }
@@ -389,7 +417,9 @@ function CodeStep({ busy, error }: StepProps): ReactElement {
             ? busy ? "Setting it up…" : "Set it up"
             : purpose === "forget"
               ? busy ? "Forgetting…" : "Forget it"
-              : fromHome
+              : purpose === "organize"
+                ? busy ? "Signing in…" : "Sign in"
+                : fromHome
                 ? busy ? "Signing in…" : "Sign in"
                 : busy ? "Keeping…" : "Keep them"}
         </Button>
@@ -440,6 +470,48 @@ function ChooseStep({ busy, error }: StepProps): ReactElement {
               {player.characters.length > 0 ? (
                 <span className="keepsake__choice-sub">: {player.characters.join(", ")}</span>
               ) : null}
+            </Button>
+          </li>
+        ))}
+      </ul>
+
+      <KeepsakeError error={error} />
+    </>
+  );
+}
+
+/**
+ * "Which one is this for?" (#248): an account that runs a group as well as
+ * its own family owns more than one household, and only the grown-up knows
+ * which one this phone or tablet belongs to.
+ */
+function HouseholdStep({ busy, error }: StepProps): ReactElement {
+  const households = useKeepsakeStore((s) => s.households);
+  const chooseHousehold = useKeepsakeStore((s) => s.chooseHousehold);
+  const purpose = useKeepsakeStore((s) => s.purpose);
+
+  return (
+    <>
+      <h2 className="keepsake__title" id="keepsake-title">
+        {purpose === "share" ? "Whose tablet is this?" : "Which one is this phone for?"}
+      </h2>
+      <p className="keepsake__body">You run more than one. Pick the family or group it belongs to.</p>
+
+      <ul className="keepsake__choices">
+        {households.map((household) => (
+          <li key={household.id}>
+            <Button
+              variant="secondary"
+              size="lg"
+              block
+              disabled={busy}
+              icon={<Icon name="party" />}
+              onClick={() => void chooseHousehold(household.id)}
+            >
+              {household.displayName}
+              <span className="keepsake__choice-sub">
+                : {household.players === 1 ? "1 kid" : `${household.players} kids`}
+              </span>
             </Button>
           </li>
         ))}

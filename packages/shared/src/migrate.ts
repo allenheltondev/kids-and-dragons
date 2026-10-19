@@ -30,6 +30,7 @@ import { STAT_IDS, TIER_IDS } from "./types/domain.js";
 import type {
   Character,
   CharacterProgress,
+  FinishedCampaign,
   InventoryEntry,
   ProvisionalProgress,
   Souvenir,
@@ -42,7 +43,7 @@ import type {
  * commit — a bump without a step is a silent no-op migration, which is the one
  * failure this whole mechanism cannot detect.
  */
-export const CHARACTER_VERSION = 1;
+export const CHARACTER_VERSION = 3;
 
 /** Thrown for a stored row that cannot be repaired into a playable character. */
 export class StoredCharacterError extends Error {
@@ -78,6 +79,21 @@ const STEPS: Record<number, Step> = {
       provisional: withPoints(raw["provisional"]),
     };
   },
+  /*
+   * v1 → v2. The hero's claim (#282, architecture §4.5) conditions every write
+   * on a monotonic `version`. Rows from before it never had one, and they are
+   * version 0: nothing has written them under the claim yet.
+   */
+  1: (raw) => ({ ...raw, version: typeof raw["version"] === "number" ? raw["version"] : 0 }),
+  /*
+   * v2 → v3. Her own record of finished campaigns (#283, architecture §4.5).
+   * A row from before it has finished nothing on record, and absent says so,
+   * so there is nothing to fill. The bump is still load-bearing: a build at
+   * v2 drops fields it does not know when it narrows a row, so a v2 Lambda
+   * mid-rollout must refuse a v3 row rather than read it and write it back
+   * without her record.
+   */
+  2: (raw) => raw,
 };
 
 /**
@@ -135,7 +151,13 @@ export function assertCharacter(value: unknown): Character {
     provisional: provisional(raw["provisional"]),
     questItems: strings(raw["questItems"] ?? [], "questItems"),
     souvenirs: souvenirs(raw["souvenirs"] ?? []),
+    // Kept only when present, like `version`: a row that has finished nothing
+    // reads back exactly as it was stored.
+    ...(raw["finished"] === undefined ? {} : { finished: finished(raw["finished"]) }),
     createdAt: str(raw["createdAt"], "createdAt"),
+    // Kept only when present, so a row the ladder did not touch reads back as
+    // it was stored. Absent reads as 0 wherever it is compared.
+    ...(typeof raw["version"] === "number" ? { version: raw["version"] } : {}),
   };
 }
 
@@ -198,6 +220,21 @@ function souvenirs(value: unknown): Souvenir[] {
       id: str(s["id"], `souvenirs[${i}].id`),
       fromRun: typeof s["fromRun"] === "string" ? s["fromRun"] : "",
       earnedAt: typeof s["earnedAt"] === "string" ? s["earnedAt"] : "",
+    };
+  });
+}
+
+function finished(value: unknown): FinishedCampaign[] {
+  if (!Array.isArray(value)) fail("finished", "an array");
+  return value.map((entry, i) => {
+    const f = obj(entry, `finished[${i}]`);
+    const outcome = f["outcome"];
+    if (outcome !== "success" && outcome !== "setback") fail(`finished[${i}].outcome`, `"success" or "setback"`);
+    return {
+      campaignId: str(f["campaignId"], `finished[${i}].campaignId`),
+      outcome,
+      at: str(f["at"], `finished[${i}].at`),
+      table: str(f["table"], `finished[${i}].table`),
     };
   });
 }

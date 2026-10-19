@@ -26,6 +26,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { speak, TIER_IDS } from "@kad/shared";
 import type { TierId } from "@kad/shared";
+import { reducedMotion } from "../a11y/prefs";
 import { useParty, useProgression } from "../store";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
@@ -94,11 +95,7 @@ interface Beat {
  * something a media query can shorten.
  */
 function prefersReducedMotion(): boolean {
-  return (
-    typeof window !== "undefined" &&
-    typeof window.matchMedia === "function" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
+  return reducedMotion();
 }
 
 export function TransformCutscene(): ReactElement | null {

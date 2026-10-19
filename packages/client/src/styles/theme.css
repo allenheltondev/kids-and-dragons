@@ -142,7 +142,7 @@
   /* spec §11: "assumes a small hand and imprecise taps — and stays that way in
      Travel Mode's compressed layout". 3em against the surface's own scale, with
      a hard 44px floor so a squeezed container can never shrink it away. */
-  --kad-touch-min: max(2.75em, 44px);
+  --kad-touch-min: clamp(44px, 2.75em, 56px);
   --kad-icon-sm: 1.25em;
   --kad-icon-md: 1.75em;
   --kad-icon-lg: 2.5em;
@@ -169,7 +169,46 @@
   --kad-safe-left: env(safe-area-inset-left, 0px);
   --kad-safe-right: env(safe-area-inset-right, 0px);
 
+  /* --- accessibility, set by a11y/prefs.ts (#262) ------------------------ */
+  --kad-text-scale: 1;
+  /* The corner row (App.tsx) is three 44px controls and the gaps between them. Pixels, not
+     em: the row does not grow with the text, so what clears it never has to guess. */
+  --kad-corner-reserve: 148px;
+  --kad-corner-bottom: 52px;
+
   color-scheme: dark;
+}
+
+/*
+ * Settings (#262). Each is an attribute on <html> and a block of tokens here, so no
+ * component forks on one: they all read the tokens. The device's own preference turns the
+ * same attribute on (prefs.ts), so there is one rule per setting, not one per source.
+ */
+html[data-text="large"] { --kad-text-scale: 1.25; }
+html[data-text="largest"] { --kad-text-scale: 1.5; }
+html { font-size: calc(100% * var(--kad-text-scale)); }
+
+html[data-contrast="high"] {
+  --kad-bg: #000000;
+  --kad-bg-sunken: #000000;
+  --kad-bg-raised: #14102b;
+  --kad-border: rgba(255, 255, 255, 0.7);
+  --kad-border-strong: #ffffff;
+  --kad-ink: #ffffff;
+  --kad-ink-dim: #ece8ff;
+  --kad-ink-faint: #cfc8ee;
+  --kad-accent: #b9a5ff;
+  --kad-accent-lo: #8c72f0;
+  --kad-gold: #ffd87a;
+  --kad-danger: #ff9aa9;
+  --kad-success: #86efbd;
+  --kad-warn: #ffc08f;
+  --kad-raised-rim: rgba(255, 255, 255, 0.6);
+}
+html[data-contrast="high"] :focus-visible {
+  outline: 0.2em solid #ffffff;
+  outline-offset: 0.2em;
+  box-shadow: 0 0 0 0.4em #000000;
 }
 
 /*
@@ -303,6 +342,7 @@ ol {
   }
 }
 
+/* The device's preference, and the same flattening when the setting asks for it. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -311,6 +351,13 @@ ol {
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
   }
+}
+html[data-motion="reduced"] *,
+html[data-motion="reduced"] *::before,
+html[data-motion="reduced"] *::after {
+  animation-duration: 1ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 1ms !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -343,7 +390,7 @@ ol {
    * side by side. Both bounds bite in practice: 15px on a phone pane, the cap
    * on anything TV-sized.
    */
-  font-size: clamp(15px, min(1.9cqw, 4.4cqh), 23px);
+  font-size: calc(clamp(15px, min(1.9cqw, 4.4cqh), 23px) * var(--kad-text-scale));
 }
 
 .kad-surface--world {
@@ -361,7 +408,7 @@ ol {
   background: var(--kad-bg);
   /* The player pane is text and buttons, so it scales off the smaller axis to
      avoid enormous type on a landscape tablet. */
-  font-size: clamp(15px, min(2.2cqw, 4.6cqh), 21px);
+  font-size: calc(clamp(15px, min(2.2cqw, 4.6cqh), 21px) * var(--kad-text-scale));
 }
 
 .kad-surface--map {
@@ -369,7 +416,7 @@ ol {
   background: var(--kad-bg);
   /* Text and a drawing, like the player pane: scale off the smaller axis so a
      landscape tablet does not inflate the stop names. */
-  font-size: clamp(15px, min(2.2cqw, 4.6cqh), 21px);
+  font-size: calc(clamp(15px, min(2.2cqw, 4.6cqh), 21px) * var(--kad-text-scale));
 }
 
 /* Full-bleed layer inside a surface (dice, cutscenes, lobby). Percentages, not
@@ -388,4 +435,74 @@ ol {
 .kad-scrim {
   background: var(--kad-bg-overlay);
   backdrop-filter: blur(0.15em);
+}
+
+/* --------------------------------------------------------------------------
+ * Quiet mode (#260): the host's room-wide switch, set on <html> by quiet.ts.
+ * Sound and shake are handled in script; this is the display. A veil rather
+ * than a filter so it dims everything, canvas included, without making the
+ * root a containing block for fixed children.
+ * ----------------------------------------------------------------------- */
+
+html[data-quiet]::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  background: #000;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* The CSS flashes and blinks hold still; the glow they carried is not needed. */
+html[data-quiet] .dice__stage--good::before,
+html[data-quiet] .transform--after .transform__burst,
+html[data-quiet] .rift-status__clock--urgent {
+  animation: none;
+}
+
+/* --------------------------------------------------------------------------
+ * The corner row (App.tsx, #261/#262): the device's own controls (settings, read-aloud,
+ * sound) share one fixed row, so none of them sits on another or on a screen's own
+ * buttons. 16px whatever the text size: the controls are already full-size touch targets,
+ * and a row that grew with the text would be the thing covering the Map's "Closer".
+ * ----------------------------------------------------------------------- */
+
+.kad-corner {
+  position: fixed;
+  top: calc(0.25rem + env(safe-area-inset-top, 0px));
+  right: calc(0.25rem + env(safe-area-inset-right, 0px));
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  font-size: 16px;
+  /* Exactly the minimum, whatever each control's own icon size: the row's height is what the
+     one-handed layout reserves. */
+  --kad-touch-min: 44px;
+  /* The row is not a surface; only the controls in it take taps. */
+  pointer-events: none;
+}
+.kad-corner > * { pointer-events: auto; }
+
+/* Keep the identity strip and the map's flip tabs clear of the row. */
+body:has(.kad-corner) .sheet,
+body:has(.kad-corner) .kad-map__flip { padding-inline-end: var(--kad-corner-reserve); }
+
+/* One-handed play (#262): on a phone the row drops under the tray, on the thumb's side,
+   and the shell leaves it a strip of its own, so nothing is covered and nothing sits at
+   the top of a tall phone out of reach. The TV and the join screen keep the top corner. */
+html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-corner {
+  top: auto;
+  bottom: calc(2px + env(safe-area-inset-bottom, 0px));
+}
+html[data-hand="left"] body:has(.kad-party--player, .kad-travel) .kad-corner {
+  right: auto;
+  left: calc(0.25rem + env(safe-area-inset-left, 0px));
+  justify-content: flex-start;
+}
+html[data-hand] .kad-party--player,
+html[data-hand] .kad-travel {
+  padding-block-end: calc(var(--kad-safe-bottom) + var(--kad-corner-bottom));
 }

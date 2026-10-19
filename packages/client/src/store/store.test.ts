@@ -119,6 +119,9 @@ function harness(state: RunState = makeState()): Harness {
     hostControl: vi.fn(async (): Promise<void> => undefined),
     postAction: vi.fn(async (): Promise<ActionResponse> => ({ ok: true, seq: state.seq })),
     postPreview: vi.fn(async (): Promise<void> => undefined),
+    postPresence: vi.fn(async (): Promise<void> => undefined),
+    postResume: vi.fn(async (): Promise<void> => undefined),
+    releaseSavedHero: vi.fn(async (): Promise<void> => undefined),
     fetchState: vi.fn(async () => ({ seq: state.seq, state })),
     loadRules: vi.fn(async () => ({ version: 1 })),
     loadItems: vi.fn(async () => ({})),
@@ -144,6 +147,7 @@ function harness(state: RunState = makeState()): Harness {
     // A shared tablet (#250): sessions only, never a device token.
     shareDevice: vi.fn(),
     forgetDevice: vi.fn(),
+    setVisitors: vi.fn(),
     listSharedPlayers: vi.fn(async () => ({
       householdId: "h_1",
       players: [
@@ -168,6 +172,23 @@ function harness(state: RunState = makeState()): Harness {
       state,
       host: true,
     })),
+    // Organizers (#248): the game store never calls these.
+    listHouseholds: vi.fn(),
+    createGroup: vi.fn(),
+    viewHousehold: vi.fn(),
+    editHousehold: vi.fn(),
+    createOrganizerInvite: vi.fn(),
+    acceptOrganizerInvite: vi.fn(),
+    createTransferCode: vi.fn(),
+    acceptTransfer: vi.fn(),
+    removeOrganizer: vi.fn(),
+    deleteHousehold: vi.fn(),
+    // Pairing (#281): the game store never calls these.
+    createPairingCode: vi.fn(),
+    pairProfile: vi.fn(),
+    redeemPairingCode: vi.fn(),
+    listSharedDevices: vi.fn(),
+    forgetDeviceById: vi.fn(),
   };
 
   const storage = memoryStorage();
@@ -500,6 +521,23 @@ describe("the mirror", () => {
   });
 });
 
+describe("beat (#258)", () => {
+  it("says still here, or leaving, with this phone's session, and shrugs off a failure", async () => {
+    const h = harness(makeState({ seq: 7 }));
+    h.store.getState().beat();
+    // Not in a room yet: nobody to speak for.
+    expect(h.api.postPresence).not.toHaveBeenCalled();
+
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.api.postPresence.mockRejectedValueOnce(new Error("offline"));
+    h.store.getState().beat();
+    h.store.getState().beat(true);
+    expect(h.api.postPresence).toHaveBeenNthCalledWith(1, false, "tok_1");
+    expect(h.api.postPresence).toHaveBeenNthCalledWith(2, true, "tok_1");
+    expect(h.store.getState().error).toBeNull();
+  });
+});
+
 describe("preview", () => {
   it("posts the newest pick only, one at a time, and skips a repeat", async () => {
     const h = harness(makeState({ seq: 7 }));
@@ -608,6 +646,53 @@ describe("arrivals and removal (#267)", () => {
       ["lock", { locked: true }],
       ["lock", { locked: false }],
       ["close", {}],
+    ]);
+  });
+
+  it("stops for today from the room it opened (#259)", async () => {
+    const h = harness();
+    await h.store.getState().createRoom("travel", "Allen");
+    expect(await h.store.getState().stopForToday()).toBe(false);
+    h.store.setState({ session: { ...h.store.getState().session!, host: true } });
+    expect(await h.store.getState().stopForToday()).toBe(true);
+    expect(h.api.hostControl.mock.calls.map((call) => [call[1], call[2]])).toEqual([["stop", {}]]);
+  });
+
+  it("lets a hero go from the game it stopped, with the device token, and says why when it cannot (#259)", async () => {
+    const h = harness();
+    expect(await h.store.getState().releaseSavedHero("c_1")).toBe(false);
+    expect(h.store.getState().error).toMatch(/phone that stopped/);
+    await h.store.getState().createRoom("travel", "Allen");
+    expect(await h.store.getState().releaseSavedHero("c_1", "h_ada")).toBe(true);
+    expect(h.api.releaseSavedHero).toHaveBeenCalledWith("c_1", "h_ada", expect.any(String));
+
+    h.api.releaseSavedHero.mockRejectedValueOnce(new ApiError(403, "Only the screen or phone that stopped this game can let a hero go from it."));
+    expect(await h.store.getState().releaseSavedHero("c_1")).toBe(false);
+    expect(h.store.getState().error).toMatch(/stopped this game/);
+  });
+
+  it("keeps going from a saved game with the room session, and says why when it cannot (#259)", async () => {
+    const h = harness();
+    expect(await h.store.getState().resumeGame()).toBe(false);
+    await h.store.getState().createRoom("travel", "Allen");
+    expect(await h.store.getState().resumeGame()).toBe(true);
+    expect(h.api.postResume).toHaveBeenCalledWith(h.store.getState().session!.sessionToken);
+
+    h.api.postResume.mockRejectedValueOnce(new ApiError(409, "This game is already under way."));
+    expect(await h.store.getState().resumeGame()).toBe(false);
+    expect(h.store.getState().error).toBe("This game is already under way.");
+  });
+
+  it("turns quiet mode on and off for the room it opened (#260)", async () => {
+    const h = harness();
+    await h.store.getState().createRoom("travel", "Allen");
+    h.store.setState({ session: { ...h.store.getState().session!, host: true } });
+
+    expect(await h.store.getState().quietRoom(true)).toBe(true);
+    expect(await h.store.getState().quietRoom(false)).toBe(true);
+    expect(h.api.hostControl.mock.calls.map((call) => [call[1], call[2]])).toEqual([
+      ["quiet", { quiet: true }],
+      ["quiet", { quiet: false }],
     ]);
   });
 
@@ -1746,6 +1831,54 @@ describe("a shared tablet", () => {
     );
     // Still nobody: asking did not mint an identity on the tablet.
     expect(Object.keys(dump(h.storage))).toEqual(["kad.shared"]);
+  });
+
+  describe("opening the TV on the tablet (#274)", () => {
+    const watched = () => ({
+      runId: "r_1",
+      mode: "party" as const,
+      expiresAt: "2026-07-05T00:00:00.000Z",
+      viewerToken: "tok_view",
+      state: makeState(),
+      host: true,
+    });
+
+    it("opens a display room on its shared token, seating nobody and keeping nothing", async () => {
+      const h = tablet();
+      await h.store.getState().openOnThisScreen();
+
+      expect(h.api.openDisplayRoom).toHaveBeenCalledWith({ campaignId: expect.any(String) }, "shared_1");
+      expect(h.api.createRoomShared).not.toHaveBeenCalled();
+      expect(h.api.joinRoomShared).not.toHaveBeenCalled();
+      expect(h.store.getState().session).toBeNull();
+      expect(h.navigate).toHaveBeenCalledWith({ name: "tv", code: "ABCD" }, { replace: true });
+      // No device token, no kid's session: the tablet is still only a shared token.
+      expect(Object.keys(dump(h.storage))).toEqual(["kad.shared"]);
+    });
+
+    it("attaches presenting the shared token, again after a refresh, and holds only a viewer token", async () => {
+      const h = tablet();
+      h.api.watchRoom.mockImplementationOnce(async () => watched());
+      await h.store.getState().attach("ABCD", "display");
+      expect(h.api.watchRoom).toHaveBeenCalledWith("ABCD", expect.any(Number), undefined, "shared_1");
+      expect(h.store.getState().session).toMatchObject({ playerId: "", host: true, sessionToken: "tok_view" });
+      expect(Object.keys(dump(h.storage))).toEqual(["kad.shared"]);
+    });
+
+    it("runs host controls on the shared token alone", async () => {
+      const h = tablet();
+      h.api.watchRoom.mockImplementationOnce(async () => watched());
+      await h.store.getState().attach("ABCD", "display");
+      expect(await h.store.getState().removePlayer("p_stranger")).toBe(true);
+      expect(h.api.hostControl).toHaveBeenCalledWith("ABCD", "remove", { playerId: "p_stranger" }, { sharedToken: "shared_1" });
+    });
+
+    it("goes back to an ordinary start when the tablet was forgotten", async () => {
+      const h = tablet();
+      h.api.openDisplayRoom.mockRejectedValueOnce(new ApiError(401, "forgotten", "FORBIDDEN"));
+      await expect(h.store.getState().openOnThisScreen()).rejects.toBeInstanceOf(ApiError);
+      expect(loadSharedDevice(h.storage)).toBeNull();
+    });
   });
 
   it("is not a shared tablet unless it was made one", async () => {

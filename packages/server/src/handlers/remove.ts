@@ -13,8 +13,9 @@
  *
  * "Out" is `connected: false` plus a place on `RunState.removed`, not a hole in
  * `party`. Every turn, vote, roll and ready-gate already reads a disconnected
- * member as away (`storyTurnHolder`, `turnHolderAway`, `rollerAway`, the ready
- * gate), so a player taken out mid-fight leaves nothing waiting on them.
+ * member as away (`storyTurnHolder`, `turnHolderAway`, `rollerAway`,
+ * `combatTurnAway`, the ready gate; #258), so a player taken out mid-fight
+ * leaves nothing waiting on them.
  * Deleting the member instead would leave an encounter's turn order pointing
  * at nobody. `removed` is what keeps them away: `joinRoom`, `applyAction`,
  * `relayPreview`, presence and the channel authorizer all refuse a player on it.
@@ -33,6 +34,7 @@
 import { settleChapterEndVote, type RunState } from "@kad/shared";
 import { fail, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { commitRoomChange, hostedRoom, type HostPrincipal } from "./host.ts";
+import { relockLobby } from "./progression.ts";
 
 export interface RemovePlayerInput {
   code: string;
@@ -51,25 +53,31 @@ export async function removePlayer(
     return fail("ILLEGAL", "the host cannot take themselves out");
   }
   // Somebody who joined this room has a profile in its household, whether or
-  // not they made a character. An id that names nobody is refused rather than
-  // written down, so `removed` only ever lists real players.
-  const player = await deps.repo.getPlayer(room.householdId, input.playerId);
+  // not they made a character, and a visitor one in their own (#249), which
+  // the roster names. An id that names nobody is refused rather than written
+  // down, so `removed` only ever lists real players.
+  const visitorHome = (await deps.repo.getState(room.runId))?.seats?.[input.playerId]?.homeHouseholdId;
+  const player = await deps.repo.getPlayer(visitorHome ?? room.householdId, input.playerId);
   if (!player) return fail("NOT_FOUND", `no player ${input.playerId} in this room`);
 
   const result = await commitRoomChange(
     room,
     input.principal.playerId,
-    (state): RunState | null => {
+    async (state): Promise<RunState | null> => {
       if (state.removed?.includes(input.playerId)) return null;
       // Out of any vote at the chapter's end too: if they were the last one
       // still reading, the table goes on now, as it does when a phone drops.
-      return settleChapterEndVote({
-        ...state,
-        removed: [...(state.removed ?? []), input.playerId],
-        party: state.party.map((m) =>
-          m.playerId === input.playerId ? { ...m, connected: false, ready: false } : m,
-        ),
-      });
+      return relockOut(
+        settleChapterEndVote({
+          ...state,
+          removed: [...(state.removed ?? []), input.playerId],
+          party: state.party.map((m) =>
+            m.playerId === input.playerId ? { ...m, connected: false, ready: false } : m,
+          ),
+        }),
+        room.householdId,
+        deps,
+      );
     },
     deps,
   );
@@ -80,8 +88,8 @@ export async function removePlayer(
       : result;
   }
   // Also on a repeat that finds them already out, so a failure here is mended
-  // by tapping Remove again.
-  await unfound(room.householdId, input.playerId, deps);
+  // by tapping Remove again. A visitor never founded this household.
+  if (visitorHome === undefined) await unfound(room.householdId, input.playerId, deps);
   return ok({ seq: result.value.seq });
 }
 
@@ -98,7 +106,111 @@ async function unfound(householdId: string, playerId: string, deps: HandlerDeps)
   if (device && device.kind !== "shared" && device.playerId === playerId) await deps.repo.dropFounder(householdId, household.founderDeviceId);
 }
 
+/**
+ * Take a player out of every room their household has open, as `removePlayer`
+ * does for one: on `removed`, away, out of any vote (#248, a retired profile).
+ * Nobody's host control, so there is no host to check; the caller has already
+ * proved a signed-in owner. A room they never sat in, a closed run, and a
+ * room already showing them out are left alone. Stops at the first room it
+ * could not write, so the caller can say so and be asked again.
+ */
+export async function takeOutEverywhere(
+  householdId: string,
+  playerId: string,
+  deps: Pick<HandlerDeps, "repo" | "now" | "channel" | "content">,
+): Promise<HandlerResult<{ rooms: number }>> {
+  let rooms = 0;
+  for (const run of await deps.repo.listRuns(householdId)) {
+    if (run.status !== "active") continue;
+    // Codes recycle: only the room that still points at this run is this run's.
+    const room = await deps.repo.getRoom(run.roomCode);
+    if (!room || room.runId !== run.id) continue;
+    const result = await commitRoomChange(
+      room,
+      playerId,
+      async (state): Promise<RunState | null> => {
+        const seated = state.party.some((m) => m.playerId === playerId) || state.seats?.[playerId] !== undefined;
+        if (!seated || isRemoved(state, playerId)) return null;
+        return relockOut(
+          settleChapterEndVote({
+            ...state,
+            removed: [...(state.removed ?? []), playerId],
+            party: state.party.map((m) => (m.playerId === playerId ? { ...m, connected: false, ready: false } : m)),
+          }),
+          room.householdId,
+          deps,
+        );
+      },
+      deps,
+    );
+    if (!result.ok) {
+      if (result.error.code === "NOT_FOUND") continue; // closed, or gone
+      return fail(result.error.code, "Couldn't take them out of a game in progress. Try again.");
+    }
+    if (result.value.changed) rooms++;
+  }
+  return ok({ rooms });
+}
+
+/**
+ * A lobby whose hero was just taken out, with its locks read again (#283): if
+ * she was the only one who had finished a prerequisite, the campaign it opened
+ * locks for the table she left. Only in the lobby, where locks are shown; a
+ * Begin re-reads the party anyway (`lockedRefusal`, without the removed).
+ */
+async function relockOut(
+  state: RunState,
+  householdId: string,
+  deps: Pick<HandlerDeps, "repo" | "content">,
+): Promise<RunState> {
+  if (state.phase !== "lobby" && state.phase !== "creation") return state;
+  return relockLobby(state, householdId, deps);
+}
+
 /** On `RunState.removed`: taken out of this room, and kept out. */
 export function isRemoved(state: Pick<RunState, "removed">, playerId: string): boolean {
   return state.removed?.includes(playerId) ?? false;
+}
+
+/**
+ * Retired by an organizer (#248), read from the profile itself. Checked beside
+ * `isRemoved` everywhere a room accepts a player, because `takeOutEverywhere`
+ * runs after the profile is retired and can fail: the profile is the record,
+ * and the run's `removed` list only the tidy-up. A profile that cannot be
+ * found is not retired (the caller's own checks decide what a missing player
+ * means).
+ */
+export async function isRetired(
+  repo: Pick<HandlerDeps["repo"], "getPlayer">,
+  householdId: string,
+  playerId: string,
+): Promise<boolean> {
+  return (await repo.getPlayer(householdId, playerId))?.retired === true;
+}
+
+/**
+ * Out of this run, any of three ways: taken out by its host, retired, or
+ * moved to another home (#251). The household is the player's own, from their
+ * session; without one it is a visitor's own from the roster (#249), else the
+ * run's, which is the same household for everybody else seated in it.
+ *
+ * A profile that is no longer in that household is a kid who moved: her
+ * profile went with her, and a session or seat minted before the move still
+ * names the home she left. The profile is the record, as it is for
+ * retiring, so this holds at every door whether or not the move's tidy-up
+ * (`takeOutEverywhere`) reached the room, and at a table in a household she
+ * never belonged to, which that tidy-up cannot find.
+ */
+export async function isOut(
+  state: Pick<RunState, "removed" | "runId" | "seats">,
+  playerId: string,
+  householdId: string | null,
+  repo: Pick<HandlerDeps["repo"], "getPlayer" | "getRun">,
+): Promise<boolean> {
+  if (isRemoved(state, playerId)) return true;
+  const household =
+    householdId ?? state.seats?.[playerId]?.homeHouseholdId ?? (await repo.getRun(state.runId))?.householdId;
+  if (household === undefined) return false;
+  const profile = await repo.getPlayer(household, playerId);
+  return profile === null || profile.retired === true;
 }

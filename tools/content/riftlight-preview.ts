@@ -15,7 +15,16 @@ export function stageRiftlightOpening(options: { unlockPreview?: boolean } = {})
   fs.cpSync(path.join(ROOT, "schemas"), path.join(root, "schemas"), { recursive: true });
   fs.mkdirSync(path.join(root, "assets"));
   fs.copyFileSync(path.join(ROOT, "assets/manifest.json"), path.join(root, "assets/manifest.json"));
-  fs.symlinkSync(path.join(ROOT, "assets/world"), path.join(root, "assets/world"), "junction");
+  const world = path.join(ROOT, "assets/world");
+  const stagedWorld = path.join(root, "assets/world");
+  try {
+    fs.symlinkSync(world, stagedWorld, "junction");
+  } catch (error) {
+    // Restricted Windows sessions can deny junctions. A private copy keeps
+    // the preview usable and remains owned by the temporary directory.
+    if (!["EPERM", "EACCES"].includes((error as NodeJS.ErrnoException).code ?? "")) throw error;
+    fs.cpSync(world, stagedWorld, { recursive: true });
+  }
   const content = path.join(root, "content");
   fs.cpSync(path.join(ROOT, "content"), content, {
     recursive: true,

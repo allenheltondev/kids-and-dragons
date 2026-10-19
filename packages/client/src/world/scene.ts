@@ -79,6 +79,7 @@ import {
   type Footprint,
 } from "./actor-art";
 import { sceneBackdropUrl } from "./art-paths";
+import { isQuiet, QUIET_FLASH_SCALE } from "../quiet";
 import { createRiveActor, type RiveActorHandle } from "./rive-actor";
 import { focusHolds, type FocusHold } from "./attention";
 import {
@@ -86,6 +87,7 @@ import {
   impactBeats,
   SHAKE_MAX_FRACTION,
   shakeOffset,
+  joltStrength,
   startShake,
   type Shake,
 } from "./shake";
@@ -99,6 +101,7 @@ import {
 import type { EncounterEvent } from "@kad/shared";
 import { stageSlots, stageFigureScale, type StageCastMember } from "./cast";
 import { storyStageHeight } from "./stage-inset";
+import { reducedMotion } from "../a11y/prefs";
 
 export { characterArtUrl };
 
@@ -464,10 +467,9 @@ export function createScene(app: Application): PartyScene {
   let pendingFocus: { at: number; until: number; actorIds: string[] }[] = [];
 
   /** The one gate every jolt passes: a viewer who asked the OS for reduced
-      motion gets none, scheduled or immediate alike. */
+      motion, or a quiet room (#260), gets none, scheduled or immediate alike. */
   function jolt(strength: number): void {
-    if (prefersReducedMotion()) return;
-    shakeState = startShake(shakeState, strength);
+    shakeState = startShake(shakeState, joltStrength(strength, { reducedMotion: prefersReducedMotion(), quiet: isQuiet() }));
   }
 
   /** Hand a round to the board and put its impacts on the clock. */
@@ -517,6 +519,8 @@ export function createScene(app: Application): PartyScene {
   victoryGlow.alpha = 0;
   stage.addChild(victoryGlow);
   let victoryAge = -1;
+  /** The bloom's brightness for the bloom now playing: dimmer in a quiet room. */
+  let victoryPeak = VICTORY_PEAK;
 
   /** See `setNameplatesVisible`. Applied to each label as it is laid out, so
       an actor built while the lobby is up is born hidden like the rest. */
@@ -736,7 +740,7 @@ export function createScene(app: Application): PartyScene {
         victoryGlow.alpha = 0;
       } else {
         const t = victoryAge / VICTORY_MS;
-        victoryGlow.alpha = VICTORY_PEAK * (t < 0.2 ? t / 0.2 : 1 - (t - 0.2) / 0.8);
+        victoryGlow.alpha = victoryPeak * (t < 0.2 ? t / 0.2 : 1 - (t - 0.2) / 0.8);
       }
     }
 
@@ -1410,6 +1414,7 @@ export function createScene(app: Application): PartyScene {
     playVictory() {
       if (destroyed || prefersReducedMotion()) return;
       victoryAge = 0;
+      victoryPeak = isQuiet() ? VICTORY_PEAK * QUIET_FLASH_SCALE : VICTORY_PEAK;
     },
 
     playSceneStep(ms) {
@@ -1560,9 +1565,5 @@ export function sceneStep(ms: number): void {
  * the very next beat.
  */
 function prefersReducedMotion(): boolean {
-  try {
-    return typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  } catch {
-    return false;
-  }
+  return reducedMotion();
 }
