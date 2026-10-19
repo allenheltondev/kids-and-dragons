@@ -60,7 +60,7 @@ it("ending route guarantees remove phantom softlocks without hiding a missing ro
   expect(chapterFlagWrites(shelf).requiredOneOf).toBeUndefined();
   const broken = new Map(chapters); broken.set(shelf.id, shelf);
   expect(lintCampaignGraph(graph, { ...options, chapterFlags: chapterFlagsFrom(broken) }).findings.some((f) => f.code === "STRANDED")).toBe(true);
-});
+}, 20_000); // Two exhaustive graph searches run under V8 coverage in CI.
 
 it("the linked glacier rift grants only one Riftspark and preserves a way back", () => {
   const graph = parseCampaignGraph(campaign).graph!;
