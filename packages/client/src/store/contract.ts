@@ -195,6 +195,13 @@ export interface GameStore {
    * a highlight on the TV, never a turn, so it neither retries nor reports.
    */
   preview(preview: IntentPreview | null, context: string | null): void;
+  /**
+   * Tell the room this phone is still here, or (`leaving`) that its page is
+   * closing (#258, server handlers/presence.ts). Production's only presence:
+   * nothing else tells the server a phone has gone. Fire-and-forget, like a
+   * preview: the next beat says it again.
+   */
+  beat(leaving?: boolean): void;
   /** Stops showing an arrival. */
   dismissArrival(playerId: string): void;
   /**
@@ -208,8 +215,34 @@ export interface GameStore {
    * `removePlayer`.
    */
   lockRoom(locked: boolean): Promise<boolean>;
+  /**
+   * The host turns quiet mode on for every device in the room, or off again
+   * (#260). Resolves like `removePlayer`.
+   */
+  quietRoom(quiet: boolean): Promise<boolean>;
   /** The host closes the room for everybody (#263). Resolves like `removePlayer`. */
   closeRoom(): Promise<boolean>;
+  /**
+   * The host saves the chapter and closes the room, to pick it up another day
+   * (#259). Resolves like `removePlayer`.
+   */
+  stopForToday(): Promise<boolean>;
+  /**
+   * Any seated player takes the household's saved chapter into this room
+   * (#259). Resolves `true` once the server has put the party back; a
+   * refusal lands in `error` and resolves `false`.
+   */
+  resumeGame(): Promise<boolean>;
+  /**
+   * Where each of this player's heroes is saved in a stopped game (#259),
+   * by hero id, as the last `listHeroes` found it. `at` names another table.
+   */
+  savedHeroes: Record<string, { at?: string }>;
+  /**
+   * The host of a stopped game lets a hero go from it (#259). Resolves like
+   * `removePlayer`.
+   */
+  releaseSavedHero(characterId: string, homeHouseholdId?: string): Promise<boolean>;
   /** Drops the session and disconnects. Does not delete anything server-side. */
   leave(): void;
   dismissError(): void;

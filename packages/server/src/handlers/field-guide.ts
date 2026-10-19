@@ -42,6 +42,9 @@
  *
  * First finder wins for good: the store never overwrites an entry.
  *
+ * A visiting finder's step is also recorded in her own home's book (#283,
+ * `StepFinds.visitors`): her finds are hers. Nobody else's home book gets it.
+ *
  * ---------------------------------------------------------------------------
  * WHOSE BOOK (`discoveryHousehold`)
  *
@@ -148,6 +151,15 @@ export interface StepFinds {
   book: FieldGuideBook;
   /** Only ids the book did not already have; empty when nothing is new. */
   report: FieldGuideDiscovery[];
+  /**
+   * The step's finds for its finder's own home, when she is visiting (#249,
+   * #283): everything her step revealed, credited to her, in her home's book.
+   * Her finds are hers and go wherever she plays; a find another hero made is
+   * not, so nobody else's home book gets it. Recorded first-finder-wins like
+   * the room's, so what her home book already has is left alone. Empty unless
+   * the finder is a visitor; the room's own book is written as before.
+   */
+  visitors: { householdId: string; report: FieldGuideDiscovery[] }[];
 }
 
 /**
@@ -199,7 +211,27 @@ export async function prepareStepFinds(
     book[canonId] = { firstFoundBy: finder!, foundAt: now, runId: run.id };
     report.push({ canonId, playerId: finder!, runId: run.id, foundAt: now });
   }
-  return { householdId, book, report };
+  return { householdId, book, report, visitors: visitorFinds(after, householdId, found, finder, run.id, now) };
+}
+
+/**
+ * `StepFinds.visitors`: the finder's own home book, when the finder is a
+ * visitor. Everything her step revealed, not only what was new to the table:
+ * the table's book may already credit someone else, and her own book is
+ * still missing it. A visitor who did not make the find gets nothing from it.
+ */
+function visitorFinds(
+  state: RunState,
+  householdId: string,
+  found: readonly string[],
+  finder: string | null,
+  runId: string,
+  now: string,
+): StepFinds["visitors"] {
+  if (found.length === 0 || finder === null) return [];
+  const home = state.party.find((member) => member.playerId === finder)?.homeHouseholdId;
+  if (home === undefined || home === householdId) return [];
+  return [{ householdId: home, report: found.map((canonId) => ({ canonId, playerId: finder, runId, foundAt: now })) }];
 }
 
 /**
@@ -218,11 +250,26 @@ export async function recordStepFinds(
   finds: StepFinds | null,
   deps: Pick<HandlerDeps, "repo">,
 ): Promise<string[]> {
-  if (!finds || finds.report.length === 0) return [];
+  if (!finds) return [];
+  // A visitor's book is theirs to keep (#249), written beside the room's and
+  // never celebrated: the room's book is the one every screen shows.
+  const [news] = await Promise.all([
+    finds.report.length === 0 ? Promise.resolve([]) : record(finds.householdId, finds.report, deps),
+    ...finds.visitors.map((visit) => record(visit.householdId, visit.report, deps)),
+  ]);
+  return news ?? [];
+}
+
+/** One household's finds, first finder wins; a failure is logged, never thrown. */
+async function record(
+  householdId: string,
+  report: FieldGuideDiscovery[],
+  deps: Pick<HandlerDeps, "repo">,
+): Promise<string[]> {
   try {
-    return await deps.repo.recordDiscoveries(finds.householdId, finds.report);
+    return await deps.repo.recordDiscoveries(householdId, report);
   } catch (err) {
-    console.error(`field guide: recording ${finds.report.length} find(s) for ${finds.householdId} failed:`, err);
+    console.error(`field guide: recording ${report.length} find(s) for ${householdId} failed:`, err);
     return [];
   }
 }

@@ -63,11 +63,13 @@ function setup(
     probeDevAuth: vi.fn(async () => false),
     linkAccount: vi.fn(async () => LINKED),
     adoptDevice: vi.fn(async () => ({ deviceToken: "dev_new", playerId: "p_2" })),
+    listHouseholds: vi.fn(async () => ({ households: [{ id: "h_1", displayName: "Home", players: 2 }] })),
     ...overrides.api,
   } as unknown as Api;
 
-  const deps: KeepsakeDeps = { api, storage, makeCognito: () => cognito };
-  return { store: createKeepsakeStore(deps), api, cognito, storage };
+  const organizer = { begin: vi.fn(async () => undefined), end: vi.fn() };
+  const deps: KeepsakeDeps = { api, storage, makeCognito: () => cognito, organizer };
+  return { store: createKeepsakeStore(deps), api, cognito, storage, organizer };
 }
 
 describe("availability", () => {
@@ -378,6 +380,53 @@ describe("restoring on a new phone", () => {
   });
 });
 
+describe("fetching the sign-in code", () => {
+  function lazy(overrides: Partial<Api> = {}) {
+    const base = setup({ api: overrides });
+    const cognito = base.cognito;
+    const loadAuth = vi.fn(async () => {
+      const real = await import("../sync/auth");
+      return { ...real, createCognitoClient: () => cognito, createDevAuthClient: () => cognito };
+    });
+    const store = createKeepsakeStore({ api: base.api, storage: base.storage, organizer: base.organizer, loadAuth });
+    return { store, loadAuth, cognito };
+  }
+
+  it("is not fetched by the home screen's check, with a pool or without", async () => {
+    const withPool = lazy();
+    await withPool.store.getState().check();
+    expect(withPool.store.getState().available).toBe(true);
+    expect(withPool.loadAuth).not.toHaveBeenCalled();
+
+    const none = lazy({ fetchConfig: vi.fn(async () => null), probeDevAuth: vi.fn(async () => false) });
+    await none.store.getState().check();
+    expect(none.loadAuth).not.toHaveBeenCalled();
+  });
+
+  it("is fetched once a grown-up opens sign-in, and the code is sent with it", async () => {
+    const { store, loadAuth, cognito } = lazy();
+    await store.getState().check();
+    store.getState().open("organize", "home");
+    await store.getState().sendCode("allen@example.com");
+    expect(loadAuth).toHaveBeenCalledTimes(1);
+    expect(cognito.requestCode).toHaveBeenCalledWith("allen@example.com");
+    expect(store.getState().step).toBe("code");
+  });
+
+  it("says so plainly when it will not load, and fetches it again on the next try", async () => {
+    const { store, loadAuth } = lazy();
+    // Opening the panel starts the fetch, and sending the code waits on that same one.
+    loadAuth.mockRejectedValueOnce(new Error("Failed to fetch dynamically imported module"));
+    await store.getState().check();
+    store.getState().open("organize", "home");
+    await store.getState().sendCode("allen@example.com");
+    expect(store.getState().error).toMatch(/couldn't load/);
+    expect(store.getState().step).toBe("email");
+    await store.getState().sendCode("allen@example.com");
+    expect(store.getState().step).toBe("code");
+  });
+});
+
 describe("local dev sign-in", () => {
   it("is offered when the dev server answers the probe, without a user pool", async () => {
     const { store } = setup({
@@ -539,5 +588,143 @@ describe("a family tablet (#250)", () => {
 
     expect(loadSharedDevice(storage)).not.toBeNull();
     expect(store.getState().error).toBe("offline");
+  });
+});
+
+describe("an account with more than one household (#248)", () => {
+  const TWO = [
+    { id: "h_1", displayName: "Home", players: 2 },
+    { id: "h_club", displayName: "Thursday Club", players: 5 },
+  ];
+
+  async function signIn(store: ReturnType<typeof setup>["store"]) {
+    await store.getState().sendCode("grown-up@example.com");
+    await store.getState().submitCode("12345678");
+  }
+
+  it("asks which household a new phone is for, then who is holding it", async () => {
+    const linkAccount = vi
+      .fn()
+      .mockResolvedValueOnce({ householdId: null, claimed: false, deviceBound: false, households: TWO, players: [], characters: [] })
+      .mockResolvedValueOnce({
+        householdId: "h_club",
+        claimed: false,
+        deviceBound: false,
+        households: TWO,
+        players: [{ id: "p_9", displayName: "Posy", color: "#7FD4C1" }],
+        characters: [],
+      });
+    const { store, api, storage } = setup({ api: { linkAccount } });
+    await store.getState().check();
+    store.getState().open("restore", "home");
+    await signIn(store);
+
+    expect(store.getState().step).toBe("household");
+    expect(store.getState().households.map((h) => h.displayName)).toEqual(["Home", "Thursday Club"]);
+    // Nothing is this phone's yet.
+    expect(loadAccount(storage)).toBeNull();
+
+    await store.getState().chooseHousehold("h_club");
+    const [idToken, , preferExisting, householdId] = linkAccount.mock.lastCall ?? [];
+    expect([idToken, preferExisting, householdId]).toEqual(["id_tok", true, "h_club"]);
+    expect(store.getState().step).toBe("choose");
+    expect(store.getState().players.map((p) => p.displayName)).toEqual(["Posy"]);
+
+    await store.getState().choosePlayer("p_9");
+    expect(api.adoptDevice).toHaveBeenCalledWith("id_tok", "h_club", "p_9");
+    expect(loadAccount(storage)?.householdId).toBe("h_club");
+  });
+
+  it("asks on the end-of-chapter offer too, when the server cannot keep tonight's game", async () => {
+    const linkAccount = vi
+      .fn()
+      .mockResolvedValueOnce({ householdId: null, claimed: false, deviceBound: false, households: TWO, players: [], characters: [] })
+      .mockResolvedValueOnce({ ...LINKED, householdId: "h_1", claimed: false, deviceBound: true, households: TWO });
+    const { store, storage } = setup({ api: { linkAccount } });
+    await store.getState().check();
+    store.getState().open("keep", "home");
+    await signIn(store);
+    expect(store.getState().step).toBe("household");
+    await store.getState().chooseHousehold("h_1");
+    expect(store.getState().step).toBe("kept");
+    expect(loadAccount(storage)?.householdId).toBe("h_1");
+  });
+
+  it("does not ask when the phone is already somebody in the household signed in to", async () => {
+    const linkAccount = vi.fn(async () => ({ ...LINKED, claimed: false, deviceBound: true, households: TWO }));
+    const { store } = setup({ api: { linkAccount } });
+    await store.getState().check();
+    store.getState().open("restore", "home");
+    await signIn(store);
+    expect(store.getState().step).toBe("kept");
+  });
+
+  it("asks which household a tablet is for", async () => {
+    const shareDevice = vi.fn(async () => ({ householdId: "h_club", players: [], sharedToken: "shared_club" }));
+    const listHouseholds = vi.fn(async () => ({ households: TWO }));
+    const { store, storage } = setup({ api: { shareDevice, listHouseholds } });
+    await store.getState().check();
+    store.getState().open("share", "home");
+    await signIn(store);
+
+    expect(store.getState().step).toBe("household");
+    expect(shareDevice).not.toHaveBeenCalled();
+    await store.getState().chooseHousehold("h_club");
+    expect(shareDevice).toHaveBeenCalledWith("id_tok", undefined, undefined, "h_club");
+    expect(loadSharedDevice(storage)).toEqual({ token: "shared_club", householdId: "h_club" });
+    expect(store.getState().step).toBe("kept");
+  });
+});
+
+describe("the organizer's panel (#248)", () => {
+  it("hands the sign-in to the panel, and takes it back on close", async () => {
+    const { store, organizer, storage, cognito } = setup({ passkey: true });
+    await store.getState().check();
+    store.getState().open("organize", "home");
+    await store.getState().sendCode("leader@example.com");
+    await store.getState().submitCode("12345678");
+
+    expect(organizer.begin).toHaveBeenCalledWith("id_tok", "leader@example.com");
+    expect(store.getState().step).toBe("organize");
+    // Nobody signed in on this device, and no passkey to remember them by.
+    expect(loadAccount(storage)).toBeNull();
+    expect(cognito.registerPasskey).not.toHaveBeenCalled();
+
+    store.getState().close();
+    expect(organizer.end).toHaveBeenCalled();
+  });
+});
+
+describe("the visitor switch's sign-in (#249)", () => {
+  async function signIn(store: ReturnType<typeof setup>["store"]) {
+    await store.getState().sendCode("grown-up@example.com");
+    await store.getState().submitCode("12345678");
+  }
+
+  it("opens the room as the grown-up, then leaves nobody signed in", async () => {
+    const setVisitors = vi.fn(async () => ({ ok: true as const, seq: 4, visitorCode: "ABCDXY" }));
+    const { store } = setup({ api: { setVisitors }, storage: memoryStorage() });
+    await store.getState().check();
+
+    store.getState().openVisitors("ABCD", true);
+    expect(store.getState().step).toBe("email");
+    await signIn(store);
+
+    expect(setVisitors).toHaveBeenCalledWith("id_tok", "ABCD", true);
+    expect(store.getState().step).toBe("closed");
+    expect(store.getState().account).toBeNull();
+  });
+
+  it("says why when the server refuses somebody who does not run the game", async () => {
+    const setVisitors = vi.fn(async () => {
+      throw new Error("Only a grown-up who runs this game can open it to visitors.");
+    });
+    const { store } = setup({ api: { setVisitors }, storage: memoryStorage() });
+    await store.getState().check();
+    store.getState().openVisitors("ABCD", true);
+    await signIn(store);
+
+    expect(store.getState().error).toMatch(/Only a grown-up/);
+    expect(store.getState().step).not.toBe("closed");
   });
 });

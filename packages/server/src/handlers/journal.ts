@@ -10,7 +10,7 @@
  * is no room — the entry points resolve the principal and hand it in.
  */
 
-import { resolveCharacter, type JournalResponse } from "@kad/shared";
+import { resolveCharacter, type Character, type JournalResponse } from "@kad/shared";
 import { ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { listHeroes } from "./heroes.ts";
 
@@ -31,14 +31,37 @@ export async function getJournal(
   input: JournalInput,
   deps: HandlerDeps,
 ): Promise<HandlerResult<JournalResponse>> {
-  const [heroes, book, finders, whereabouts] = await Promise.all([
+  const [heroes, book, characters, players, whereabouts] = await Promise.all([
     listHeroes(input, deps),
     deps.repo.getFieldGuide(input.householdId),
-    findersOf(input.householdId, deps),
+    deps.repo.listCharacters(input.householdId),
+    deps.repo.listPlayers(input.householdId),
     whereaboutsOf(input.householdId, deps),
   ]);
   if (!heroes.ok) return heroes;
-  return ok({ heroes: heroes.value.heroes, fieldGuide: book.entries, finders, whereabouts });
+  const finders = findersOf(players, characters, deps);
+  const finished = finishedOf(characters.filter((c) => c.ownerPlayerId === input.playerId), deps);
+  return ok({ heroes: heroes.value.heroes, fieldGuide: book.entries, finders, whereabouts, finished });
+}
+
+/**
+ * Each of her heroes' finished campaigns (#283), from the record on the hero
+ * herself, so a campaign finished at a friend's table is here too.
+ */
+function finishedOf(characters: readonly Character[], deps: HandlerDeps): NonNullable<JournalResponse["finished"]> {
+  const out: NonNullable<JournalResponse["finished"]> = {};
+  for (const character of characters) {
+    const lines = [...(character.finished ?? [])]
+      .sort((a, b) => a.at.localeCompare(b.at))
+      .map((f) => ({
+        campaignId: f.campaignId,
+        title: deps.content.campaign(f.campaignId)?.title ?? f.campaignId,
+        outcome: f.outcome,
+        at: f.at,
+      }));
+    if (lines.length > 0) out[character.id] = lines;
+  }
+  return out;
 }
 
 /**
@@ -47,11 +70,11 @@ export async function getJournal(
  * there is no party, so it is the name of the hero that player has taken
  * furthest, and their own name when they have none.
  */
-async function findersOf(householdId: string, deps: HandlerDeps): Promise<Record<string, string>> {
-  const [players, characters] = await Promise.all([
-    deps.repo.listPlayers(householdId),
-    deps.repo.listCharacters(householdId),
-  ]);
+function findersOf(
+  players: readonly { id: string; displayName: string }[],
+  characters: readonly Character[],
+  deps: HandlerDeps,
+): Record<string, string> {
   const rules = deps.content.rules();
   const items = deps.content.items();
   const best = new Map<string, { name: string; level: number }>();

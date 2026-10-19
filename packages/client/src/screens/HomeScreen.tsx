@@ -13,14 +13,16 @@
  * link, for Phone Mode, where the host is seated as a player straight away.
  */
 
+import { randomName } from "./creationContent";
 import { Suspense, lazy, useCallback, useEffect, useId, useMemo, useState } from "react";
 import type { ChangeEvent, ReactElement } from "react";
 import type { RoomMode } from "@kad/shared";
 import { useGameStore } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
+import { takeMoveLink } from "./move-link";
 // The one normalize helper for typed and prefilled codes — the router owns the
 // code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
-import { ROOM_CODE_LENGTH as CODE_LENGTH, navigate, normalizeCodeInput as normalizeCode } from "../router";
+import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, normalizeCodeInput as normalizeCode, pairingFromSearch } from "../router";
 import { loadPlayerDeviceToken } from "../store/persistence";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
@@ -29,7 +31,6 @@ import { EntryScene } from "./EntryScene";
 import "./shared.css";
 import "./HomeScreen.css";
 
-const CODE_SLOTS = [0, 1, 2, 3];
 
 const MODE_BLURB: Record<RoomMode, string> = {
   party: "This screen becomes the TV. Everyone joins from their phones.",
@@ -44,6 +45,13 @@ const MODE_ICON: Record<RoomMode, string> = { party: "party", travel: "travel" }
  * (tools/perf/bundle-budget.ts).
  */
 const SharedHome = lazy(() => import("./SharedHome").then((module) => ({ default: module.SharedHome })));
+
+/*
+ * Pairing (#281) loads on demand too: it is an errand of a minute, and the
+ * join screen is what every phone is waiting to see.
+ */
+const PairHere = lazy(() => import("./PairDevice").then((module) => ({ default: module.PairHere })));
+const PlayAsMe = lazy(() => import("./PairDevice").then((module) => ({ default: module.PlayAsMe })));
 
 /*
  * The sign-in panel loads the first time somebody opens it, for the same
@@ -87,7 +95,22 @@ function PersonalHome(): ReactElement {
    */
   const pendingCode = useGameStore((s) => s.pendingCode);
 
-  const [displayName, setDisplayName] = useState("");
+  /*
+   * Pairing (#281): a scanned QR opens `/?pair=CODE`. The code is read once
+   * and then taken out of the address bar, so a reload or a shared screenshot
+   * of the URL does not carry it around. It is not spent here: spending is a
+   * tap, so a link preview that fetches the page cannot use up the code.
+   */
+  const [pairCode] = useState(() => (typeof window === "undefined" ? null : pairingFromSearch(window.location.search)));
+  const [pairing, setPairing] = useState<"none" | "here" | "share">(pairCode === null ? "none" : "here");
+  useEffect(() => {
+    if (pairCode === null) return;
+    const url = new URL(window.location.href);
+    url.searchParams.delete("pair");
+    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+  }, [pairCode]);
+
+  const [displayName, setDisplayName] = useState(() => randomName());
   const [hosting, setHosting] = useState(false);
   const [mode, setMode] = useState<RoomMode>("party");
   const [code, setCode] = useState(() => normalizeCode(pendingCode ?? ""));
@@ -109,6 +132,29 @@ function PersonalHome(): ReactElement {
   }, [checkKeepsake]);
 
   /*
+   * A scanned move code (#251) lands here as `/?move=…`: straight into "Run a
+   * group", where it waits, typed in, for the grown-up to sign in and choose
+   * where the kid is going. The organizer store is fetched for it, never for
+   * the first paint. The link comes off the URL only once the code is held
+   * (move-link.ts), and a home screen left before then opens nothing.
+   */
+  useEffect(() => {
+    if (!signInAvailable || typeof window === "undefined") return;
+    let left = false;
+    void takeMoveLink({
+      location: window.location,
+      replaceUrl: (next) => window.history.replaceState(window.history.state, "", next),
+      load: () => import("../store/organizer").then((module) => module.useOrganizerStore.getState()),
+      wait: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+    }).then((code) => {
+      if (code && !left) openKeepsake("organize", "home");
+    });
+    return () => {
+      left = true;
+    };
+  }, [signInAvailable, openKeepsake]);
+
+  /*
    * Whether this phone has a book to open: it has been a player (not only a
    * TV) and so has a binding. Read without minting an identity. Signing in
    * from the card below is what binds a brand-new phone to its household, so
@@ -119,7 +165,7 @@ function PersonalHome(): ReactElement {
   const hasPlayed = useMemo(() => loadPlayerDeviceToken() !== null, [keepsakeStep, account]);
 
   const trimmedName = displayName.trim();
-  const codeReady = code.length === CODE_LENGTH;
+  const codeReady = codeComplete(code);
   // Party Mode is started from the TV, and the TV is nobody (spec §2.1): it
   // needs no name. Phone Mode seats the host as a player, so it does.
   const startReady = mode === "party" || trimmedName.length > 0;
@@ -186,7 +232,7 @@ function PersonalHome(): ReactElement {
             name field, and in a centred column that lifted the very tile
             just tapped. Joining, where nothing grows, stays centred. */}
         <div className={`home__body${hosting ? " home__body--top" : ""}`}>
-          <section className="home__card home__card--join" aria-labelledby="home-join" hidden={hosting}>
+          <section className="home__card home__card--join" aria-labelledby="home-join" hidden={hosting || pairing !== "none"}>
             <h2 className="home__card-title" id="home-join">
               <Icon name="qr" />
               <span>Join a game</span>
@@ -210,10 +256,10 @@ function PersonalHome(): ReactElement {
                 spellCheck={false}
                 maxLength={CODE_LENGTH}
                 enterKeyHint="go"
-                aria-label="Room code, four letters"
+                aria-label="Room code, four letters, or six for a visitor"
               />
-              <div className="home__code-boxes" aria-hidden="true">
-                {CODE_SLOTS.map((i) => (
+              <div className="home__code-boxes" aria-hidden="true" data-slots={codeSlots(code)}>
+                {Array.from({ length: codeSlots(code) }, (_, i) => i).map((i) => (
                   <span
                     key={i}
                     className={`home__code-box${code.length === i ? " home__code-box--next" : ""}${code[i] ? " home__code-box--filled" : ""}`}
@@ -245,7 +291,19 @@ function PersonalHome(): ReactElement {
                 Want to host? Set up a game
               </button>
             </div>
+            {/* A fresh device that is already somebody's (#281): a hospital
+                tablet, a borrowed phone. Her code makes it hers. */}
+            <div className="home__host-toggle">
+              <button type="button" className="home__link kad-focusable" onClick={() => setPairing("here")}>
+                I play here already
+              </button>
+            </div>
           </section>
+
+          <Suspense fallback={null}>
+            {pairing === "here" ? <PairHere initialCode={pairCode ?? ""} onClose={() => setPairing("none")} /> : null}
+            {pairing === "share" ? <PlayAsMe onClose={() => setPairing("none")} /> : null}
+          </Suspense>
 
           {/*
            * Between games (`/journal`): your hero, their bag, the map and the
@@ -256,7 +314,7 @@ function PersonalHome(): ReactElement {
            * to do.
            */}
           {hasPlayed ? (
-            <section className="home__card home__journal" aria-labelledby="home-journal" hidden={hosting}>
+            <section className="home__card home__journal" aria-labelledby="home-journal" hidden={hosting || pairing !== "none"}>
               <h2 className="home__card-title" id="home-journal">
                 <Icon name="scroll" />
                 <span>Your adventure book</span>
@@ -266,6 +324,12 @@ function PersonalHome(): ReactElement {
                 onClick={() => navigate({ name: "journal" })}>
                 Open your book
               </Button>
+              {/* Her own phone hands her to another device (#281). */}
+              <div className="home__host-toggle">
+                <button type="button" className="home__link kad-focusable" onClick={() => setPairing("share")}>
+                  Play as me on another device
+                </button>
+              </div>
             </section>
           ) : null}
 
@@ -317,7 +381,7 @@ function PersonalHome(): ReactElement {
               <div className="home__field">
                 <label className="home__label" htmlFor={nameFieldId}>
                   <Icon name="name" />
-                  <span>Your name</span>
+                  <span>Your adventurer name</span>
                 </label>
                 <input
                   id={nameFieldId}
@@ -331,8 +395,16 @@ function PersonalHome(): ReactElement {
                   maxLength={20}
                   aria-describedby={nameHintId}
                 />
+                <Button
+                  variant="secondary"
+                  size="md"
+                  icon={<Icon name="shuffle" />}
+                  onClick={() => setDisplayName(randomName())}
+                >
+                  Surprise me
+                </Button>
                 <p id={nameHintId} className="home__hint kad-muted">
-                  This is the name the others see.
+                  Everyone sees this one. Pick a nickname or an adventurer name, never your real name.
                 </p>
               </div>
             ) : null}
@@ -433,6 +505,18 @@ function PersonalHome(): ReactElement {
                   }}
                 >
                   Do the kids share this device? Make it a family tablet
+                </button>
+              </div>
+              {/* #248: a club, a class, the cousins. One grown-up or several. */}
+              <div className="home__host-toggle">
+                <button
+                  type="button"
+                  className="home__link kad-focusable"
+                  onClick={() => {
+                    openKeepsake("organize", "home");
+                  }}
+                >
+                  Running games for kids from other families? Run a group
                 </button>
               </div>
             </section>

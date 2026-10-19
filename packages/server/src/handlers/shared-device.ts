@@ -21,7 +21,8 @@
 
 import type { PlayerProfile, SharedDevicePlayer, SharedDevicePlayersResponse, ShareDeviceResponse } from "@kad/shared";
 import type { DeviceIdentity, SessionIdentity, SharedDeviceIdentity } from "../identity.ts";
-import { createProfile, type AccountDeps } from "./account.ts";
+import type { RoomRecord } from "../store/repository.ts";
+import { createProfile, vetTypedName, type AccountDeps } from "./account.ts";
 import { fail, ok, type HandlerResult } from "./deps.ts";
 
 /** Long enough for any kid's name, short enough to fit under an avatar. */
@@ -34,6 +35,12 @@ export interface ShareDeviceInput {
   principal?: DeviceIdentity | null;
   /** A shared binding it already holds (re-sharing), likewise revoked. */
   shared?: SharedDeviceIdentity | null;
+  /**
+   * Which household the tablet is for, when the account owns more than one
+   * (#248): a family and a group. Required then; a tablet put in the wrong
+   * one shows a club's kids a family's faces.
+   */
+  householdId?: string | undefined;
   userAgent?: string | undefined;
 }
 
@@ -50,10 +57,17 @@ export async function shareDevice(
   input: ShareDeviceInput,
   deps: AccountDeps,
 ): Promise<HandlerResult<ShareDeviceResponse>> {
-  const householdId = (await deps.repo.listHouseholdsForAccount(input.cognitoSub))[0];
-  if (!householdId) {
+  const owned = await deps.repo.listHouseholdsForAccount(input.cognitoSub);
+  if (owned.length === 0) {
     return fail("NOT_FOUND", "This account has no family yet. Play a game and keep it first.");
   }
+  if (input.householdId !== undefined && !owned.includes(input.householdId)) {
+    return fail("FORBIDDEN", "that household belongs to a different account");
+  }
+  if (input.householdId === undefined && owned.length > 1) {
+    return fail("ILLEGAL", "This account runs more than one group. Pick which one this tablet is for.");
+  }
+  const householdId = input.householdId ?? owned[0] ?? "";
 
   /*
    * New binding first, old ones revoked last. Anything that fails before the
@@ -112,16 +126,19 @@ export async function seatOnSharedDevice(
   let player: PlayerProfile | null;
   if (typeof input.playerId === "string" && input.playerId !== "") {
     player = await deps.repo.getPlayer(shared.householdId, input.playerId);
-    if (!player) return fail("NOT_FOUND", `no player ${input.playerId}`);
+    // A retired face is not on the picker (#248), so a tap on one is a stale screen.
+    if (!player || player.retired) return fail("NOT_FOUND", `no player ${input.playerId}`);
   } else if (typeof input.newPlayer === "string") {
     const name = input.newPlayer.trim();
     if (name === "" || name.length > NEW_PLAYER_NAME_MAX) {
       return fail("ILLEGAL", `a new player needs a name of 1 to ${NEW_PLAYER_NAME_MAX} letters`);
     }
+    const vetted = vetTypedName(name, name);
+    if (!vetted.ok) return vetted;
     // Two faces with one name on the picker is two kids who cannot tell
     // which is theirs. Somebody new with a name already here taps that face.
     const players = await deps.repo.listPlayers(shared.householdId);
-    if (players.some((p) => p.displayName.trim().toLocaleLowerCase() === name.toLocaleLowerCase())) {
+    if (players.some((p) => !p.retired && p.displayName.trim().toLocaleLowerCase() === name.toLocaleLowerCase())) {
       return fail("ILLEGAL", `Someone called ${name} is already here. Tap that face instead.`);
     }
     player = await createProfile(shared.householdId, name, deps);
@@ -137,12 +154,23 @@ export async function seatOnSharedDevice(
  * sitting at it says who is asking, so the host still cannot take themselves
  * out. The session must be for this room and this household: a session from
  * another tablet's room proves nothing here.
+ *
+ * A room the tablet opened as the TV (#274) has nobody seated, so there the
+ * token alone proves the host, and `room` is how that is known.
  */
 export function tabletHost(
   shared: SharedDeviceIdentity,
   session: SessionIdentity | null,
   code: string,
+  room: Pick<RoomRecord, "display" | "hostDeviceId" | "householdId"> | null = null,
 ): HandlerResult<Seat> {
+  // The tablet as the TV (#274): nobody is seated, so the token alone is the
+  // proof, as a TV's device token is. Only the room this very tablet opened as
+  // a display, in its own household; a seated kid's session is never needed
+  // there and never accepted in its place.
+  if (room?.display === true && room.hostDeviceId === shared.deviceId && room.householdId === shared.householdId) {
+    return ok({ deviceId: shared.deviceId, householdId: shared.householdId, playerId: shared.deviceId });
+  }
   if (!session) return fail("FORBIDDEN", "taking someone out from a tablet needs the seated player's session");
   if (session.roomCode.toUpperCase() !== code.toUpperCase() || session.householdId !== shared.householdId) {
     return fail("FORBIDDEN", "that session is not for this room");
@@ -186,7 +214,7 @@ async function describePlayers(householdId: string, deps: AccountDeps): Promise<
   const ranked = [...characters].sort(
     (a, b) => b.committed.xp - a.committed.xp || a.name.localeCompare(b.name),
   );
-  const faces: SharedDevicePlayer[] = players.map((player) => ({
+  const faces: SharedDevicePlayer[] = players.filter((p) => !p.retired).map((player) => ({
     id: player.id,
     displayName: player.displayName,
     color: player.color,

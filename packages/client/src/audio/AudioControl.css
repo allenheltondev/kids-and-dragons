@@ -1,9 +1,5 @@
 /* Small outline control, with a full touch target, above the game chrome. */
 .kad-audio-control {
-  position: fixed;
-  top: calc(0.25rem + env(safe-area-inset-top, 0px));
-  right: calc(0.25rem + env(safe-area-inset-right, 0px));
-  z-index: 5;
   display: flex;
   align-items: center;
   gap: 0.5em;
@@ -21,10 +17,7 @@
   background: transparent;
   color: var(--kad-ink-dim);
 }
-.kad-audio-control__button .kad-button__icon { font-size: 1.15rem; }
-/* Leave the identity strip's health display beside, rather than under, sound. */
-body:has(.kad-audio-control) .sheet,
-body:has(.kad-audio-control) .kad-map__flip { padding-inline-end: 3.25rem; }
+.kad-audio-control__button .kad-button__icon { font-size: 1.15em; }
 .kad-audio-control__hint {
   margin: 0;
   padding: 0.35em 0.7em;
@@ -41,3 +34,4 @@ body:has(.kad-audio-control) .kad-map__flip { padding-inline-end: 3.25rem; }
 @media (prefers-reduced-motion: reduce) {
   .kad-audio-control { transition: none; }
 }
+.kad-audio-control__volume { inline-size: 6em; accent-color: var(--kad-ink-dim); }

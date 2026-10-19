@@ -15,14 +15,50 @@ import type {
   ClientIntent,
   DeviceBinding,
   FieldGuideDiscovery,
+  FieldGuideFind,
   FieldGuideRecord,
   Household,
   JourneyState,
+  PersonalDeviceBinding,
   PlayerProfile,
   RoomMode,
   RunState,
   ServerMessage,
 } from "@kad/shared";
+
+/**
+ * `FORGET#<playerId>` (#252): a kid being deleted, and every table that may
+ * still say her names. Written before any of her rows go; rewritten with the
+ * tables still owed when a scrub fails part-way; removed when none are. The
+ * sweeper finishes whatever is left (`retryForgets`).
+ */
+export interface ForgetJob {
+  playerId: string;
+  /** Her home: where her own rows were. */
+  home: string;
+  /**
+   * What deleted her, which says how to finish an interrupted delete: an
+   * owner deleting her (`kid`) or her household (`household`), the guest
+   * sweep (`guest`), or the retention sweep (`idle`, gated on `idleBefore`).
+   */
+  reason: "kid" | "household" | "guest" | "idle";
+  idleBefore?: string;
+  /** The names to take out. */
+  nicknames: string[];
+  heroes: string[];
+  /** Tables still to clean. */
+  tables: string[];
+  createdAt: string;
+  /** Scrubs that have failed so far. */
+  attempts: number;
+}
+
+/** One kid the retention sweep may forget (#252): where she lives, and when she last played. */
+export interface IdlePlayer {
+  householdId: string;
+  playerId: string;
+  lastPlayedAt: string;
+}
 
 /** What `extendGuestHousehold` did, and why. */
 export type GuestRenewal = "extended" | "kept" | "swept";
@@ -55,6 +91,23 @@ export interface RunRecord {
    * rolling from the public seed so their event logs still replay.
    */
   diceSecret?: string;
+  /**
+   * The host stopped this run partway through a chapter to pick it up another
+   * day (#259, handlers/save.ts). With the run's state closed, this is what
+   * makes it a saved game the household's next room offers. On the run row
+   * for the reason `lobbyFor` is: a household id and a clock have no business
+   * on the state every screen receives. Cleared when the game is taken up, or
+   * when a later stop of the same campaign replaces it. Absent on every run
+   * that was not stopped, which is nearly all of them.
+   */
+  stoppedAt?: string;
+  /**
+   * The device that opened the room it was stopped in (`RoomRecord.hostDeviceId`,
+   * which is gone with the code). It is how the stopped table's host is still
+   * known to be the host, to let a hero go from the game (handlers/save.ts,
+   * `releaseSavedHero`). Written and cleared with `stoppedAt`.
+   */
+  stoppedBy?: string;
 }
 
 /**
@@ -224,6 +277,14 @@ export interface RoomRecord {
    * on rooms opened before it existed, which then have no host.
    */
   hostDeviceId?: string;
+  /**
+   * A Party Mode room whose host is a family tablet acting as the TV (#274):
+   * nobody is seated on it, and its household is the tablet's own, so it is
+   * never claimable. It is what lets the tablet's shared token alone run the
+   * room's host controls (`tabletHost`): there is no seated kid to present a
+   * session. A tablet that opened a room to play has a seated kid and no flag.
+   */
+  display?: true;
 }
 
 /**
@@ -237,6 +298,30 @@ export interface EventRecord extends Omit<ServerMessage, "discovered"> {
   at: string;
   playerId?: string;
   intent?: ClientIntent;
+}
+
+/**
+ * One write to a hero's row under her claim (#282, architecture §4.5, "One
+ * game at a time per hero: the claim"). The row lands only if it still stands
+ * as it was read: its `version` is `expectedVersion` and its claim
+ * (`provisional.runId`) is `expectedClaim`. A different table, a run that lost
+ * the claim, or a worker holding an old read fails, and re-reads.
+ *
+ * Acquiring the claim, holding it and releasing it are all this one shape: the
+ * row written names the new claim (or none), and the conditions name the one
+ * read. Because every write bumps the version, two runs that read the same free
+ * or finished hero cannot both win her.
+ */
+export interface CharacterWrite {
+  /**
+   * The row as it should stand. Its `version` is ignored: the store writes
+   * `expectedVersion + 1`, or 1 for a new hero.
+   */
+  character: Character;
+  /** The version read; absent on the row is 0. Null: a new hero, whose row must not exist. */
+  expectedVersion: number | null;
+  /** The claim read (`provisional.runId`), null for none. Not checked for a new hero. */
+  expectedClaim: string | null;
 }
 
 export interface CommitInput {
@@ -253,8 +338,12 @@ export interface CommitInput {
    * ends a chapter, and writing it separately means a turn that loses the seq
    * race — or hits a transient failure and is retried — can still leave the
    * award on the character. Either the whole turn lands or none of it does.
+   *
+   * Each one is conditioned on the hero's claim and the version read
+   * (`CharacterWrite`), so a hero another table has since claimed, or written,
+   * fails the whole transaction exactly as a lost seq race does.
    */
-  characters?: Character[];
+  characters?: CharacterWrite[];
   /**
    * The progress rows a chapter completion owes, in the same transaction and
    * for the same reason as `characters`: the seq gate is what makes reading
@@ -272,6 +361,104 @@ export interface CommitInput {
   campaignProgressExpectedVersion?: number | null;
 }
 
+/** `HH#<hhId>` / `OWNER#<sub>`: one grown-up who may manage the household (#248). */
+export interface HouseholdOwnerRecord {
+  householdId: string;
+  cognitoSub: string;
+  /** As they signed in, so the other owners can tell who is who. */
+  email?: string;
+  addedAt: string;
+}
+
+/**
+ * `INVITE#<code>` / `META`: a single-use code that makes whoever signs in
+ * with it an owner of `householdId` (#248). TTL'd like a room.
+ */
+export interface OrganizerInviteRecord {
+  code: string;
+  householdId: string;
+  /** The owner who asked for it. */
+  createdBy: string;
+  createdAt: string;
+  expiresAt: string;
+  /** Epoch seconds. DynamoDB deletes it some time after; reads check `expiresAt`. */
+  ttl: number;
+}
+
+/**
+ * `TRANSFER#<code>` / `META`: a single-use code that moves one kid, her heroes
+ * and her finds out of `householdId` and into whichever home redeems it (#251).
+ * TTL'd like an invite.
+ */
+export interface TransferCodeRecord {
+  code: string;
+  /** The home she is moving out of. */
+  householdId: string;
+  playerId: string;
+  /** The owner of that home who asked for it. */
+  createdBy: string;
+  createdAt: string;
+  expiresAt: string;
+  /** Epoch seconds. DynamoDB deletes it some time after; reads check `expiresAt`. */
+  ttl: number;
+}
+
+/**
+ * `PAIR#<code>` / `META`: a single-use code that makes whoever redeems it a
+ * device bound to one kid (#281). TTL'd like an invite, but minutes, not days.
+ */
+export interface PairingCodeRecord {
+  code: string;
+  householdId: string;
+  playerId: string;
+  /** `device:<deviceId>` for her own phone, `owner:<cognitoSub>` for a grown-up. */
+  createdBy: string;
+  createdAt: string;
+  expiresAt: string;
+  /** Epoch seconds. DynamoDB deletes it some time after; reads check `expiresAt`. */
+  ttl: number;
+}
+
+/**
+ * Everything that moves with one kid, as `readProfileMove` found it: what a
+ * handler needs to judge the move, and (`rows`) what the store needs to carry
+ * it out exactly as read.
+ */
+export interface ProfileMove {
+  householdId: string;
+  player: PlayerProfile;
+  /** Her heroes that read cleanly. A row that does not still moves, as it is. */
+  characters: Character[];
+  /** Her own phones, revoked ones included: those are dropped, not moved. */
+  devices: PersonalDeviceBinding[];
+  /** The entries in the household's Field Guide she found first. */
+  finds: Record<string, FieldGuideFind>;
+  /** The rows as stored. The store's own; nothing above it reads this. */
+  readonly rows: unknown;
+}
+
+export interface MoveProfileInput {
+  move: ProfileMove;
+  /** Spent by the same transaction. It must name this kid in this household. */
+  code: string;
+  nowIso: string;
+  /** A home the redeemer owns, or a new one made for her with them as its owner. */
+  to: { householdId: string } | { household: Household; owner: HouseholdOwnerRecord };
+  /**
+   * Epoch seconds the forwarding rows for her phones live until
+   * (`getMovedDevice`): past the life of any token naming her old home.
+   */
+  forwardTtl: number;
+}
+
+/**
+ * What `moveProfile` did. `spent`: the code is gone, expired, or names
+ * somebody else. `changed`: a row was written since `readProfileMove`, or the
+ * new home went, and nothing moved (read again and retry). `too-big`: more
+ * rows than one transaction holds (`MOVE_ITEM_LIMIT`), and nothing moved.
+ */
+export type MoveOutcome = "moved" | "spent" | "changed" | "too-big";
+
 export interface GameRepository {
   // --- household, players, devices -----------------------------------------
   putHousehold(household: Household): Promise<void>;
@@ -279,6 +466,77 @@ export interface GameRepository {
   /** `ACCT#<sub>` → households. Sign-in lookup; an account may own more than one. */
   putAccountPointer(cognitoSub: string, householdId: string): Promise<void>;
   listHouseholdsForAccount(cognitoSub: string): Promise<string[]>;
+
+  /**
+   * Make `owner.cognitoSub` an owner of the household (#248): its `ACCT#`
+   * pointer, which is the authority every guard reads, and an `OWNER#` row in
+   * the household, which is how the household lists its owners. One
+   * transaction, so neither exists without the other. Idempotent; a second
+   * call refreshes the row (an email learned later).
+   */
+  putOwner(owner: HouseholdOwnerRecord): Promise<void>;
+  /** The household's `OWNER#` rows. A founding owner from before #248 has none. */
+  listOwners(householdId: string): Promise<HouseholdOwnerRecord[]>;
+  /** Both halves of `putOwner`, together. A no-op for somebody who is not an owner. */
+  removeOwner(householdId: string, cognitoSub: string): Promise<void>;
+
+  /** A new organizer invite. `false`, and nothing written, if the code is taken. */
+  putOrganizerInviteIfAbsent(invite: OrganizerInviteRecord): Promise<boolean>;
+  /**
+   * Redeem an invite: spend it and make `owner` an owner of its household
+   * (both halves of `putOwner`), in **one transaction**, which also checks the
+   * household is there and not being deleted (#252), so a code made before a
+   * delete never hands out a pointer to nothing. A code is never spent
+   * without the membership it pays for, so a failure leaves it redeemable, and
+   * of two grown-ups typing one code exactly one gets it. `null`, and nothing
+   * written, for a code that was never issued, is spent, or has expired
+   * (`nowIso` past `expiresAt`).
+   */
+  redeemOrganizerInvite(
+    code: string,
+    nowIso: string,
+    owner: Omit<HouseholdOwnerRecord, "householdId">,
+  ): Promise<OrganizerInviteRecord | null>;
+
+  /** A new transfer code (#251). `false`, and nothing written, if the code is taken. */
+  putTransferCodeIfAbsent(record: TransferCodeRecord): Promise<boolean>;
+  /** A transfer code that is still good at `nowIso`, or `null`. Spends nothing. */
+  getTransferCode(code: string, nowIso: string): Promise<TransferCodeRecord | null>;
+  /**
+   * Everything that would move with one kid (`ProfileMove`): her profile,
+   * the characters she owns, her personal device bindings, and her first
+   * finds in the household's Field Guide. `null` when she is not there.
+   */
+  readProfileMove(householdId: string, playerId: string): Promise<ProfileMove | null>;
+  /**
+   * Move a kid to another home (#251), in **one transaction**: the code is
+   * spent; her profile, heroes and live personal bindings are deleted from the
+   * old home and written under the new one with every id unchanged; each moved
+   * binding leaves a forward behind (`getMovedDevice`); her finds are added to
+   * the new home's book, first finder wins; and a new home, when that is where
+   * she is going, is created with its owner's two rows.
+   *
+   * Every row deleted is conditioned on being exactly the row read, so a hero
+   * written in between (a level, a claim) cancels the move instead of being
+   * flattened back. Nothing is copied: she is in one home or the other, never
+   * both, and never neither. Table saves (runs, campaign progress) are not
+   * hers and do not move. See `MoveOutcome` for the refusals.
+   */
+  moveProfile(input: MoveProfileInput): Promise<MoveOutcome>;
+  /**
+   * Where a phone that was moved out of `householdId` went: the household its
+   * binding now lives in, or `null`. Strongly consistent, like `getDevice`,
+   * because a moved phone's token is resolved through it.
+   */
+  getMovedDevice(householdId: string, deviceId: string): Promise<string | null>;
+  /** A new pairing code. `false`, and nothing written, if the code is taken. */
+  putPairingCodeIfAbsent(pairing: PairingCodeRecord): Promise<boolean>;
+  /**
+   * Spend a pairing code: a conditional delete, so of two devices redeeming
+   * one code exactly one gets it. `null`, and nothing written, for a code that
+   * was never issued, is spent, or has expired (`nowIso` past `expiresAt`).
+   */
+  redeemPairingCode(code: string, nowIso: string): Promise<PairingCodeRecord | null>;
 
   /**
    * Claim a guest household for a signed-in account (§4.5). Writes the
@@ -342,7 +600,8 @@ export interface GameRepository {
   /**
    * Deletes a household and everything under it — players, devices, characters,
    * runs, and each run's state and event log. Only the sweeper calls this, and
-   * only for expired guests; a claimed household has no delete path at all.
+   * only for expired guests; a claimed household is deleted only by its owner
+   * (`deleteHousehold`), which shares every step below but the gate.
    *
    * **The expiry check is part of this call, not the caller's job.** Reading a
    * household, deciding it is an expired guest, and then deleting it is a race
@@ -363,7 +622,84 @@ export interface GameRepository {
    */
   deleteGuestHousehold(householdId: string, nowIso: string): Promise<boolean>;
 
+  /**
+   * An owner's "delete our data" (#252): the household and everything under
+   * it, exactly as the sweep deletes an expired guest, by the same path and
+   * behind the same `sweeping` mark, so a claim, a renewal, a founding or an
+   * organizer invite landing during it is refused. Also every owner's `ACCT#`
+   * pointer to it. The only difference from the sweep is the gate: the caller
+   * has proved a signed-in owner, so nothing about expiry is checked. A
+   * visiting kid's hero is not here (it lives at her own home) and is not
+   * touched. `false` when there is no household.
+   */
+  deleteHousehold(householdId: string): Promise<boolean>;
+
+  /**
+   * Delete one kid (#252): her profile, every hero she owns, her own phones'
+   * bindings and her visits, all from her home `householdId`. The profile is
+   * marked first (`sweeping`, as a household is), and a marked profile reads
+   * as gone from then on (`getPlayer`, `listPlayers`), so every room door
+   * treats her as out while the rest goes; the profile row goes last, so an
+   * interrupted delete is found and finished by the next. Her credit in a
+   * Field Guide is an id that names nobody afterwards; the entry is the
+   * table's book and stays, as it does when she moves (#251).
+   *
+   * `idleBefore`: the retention sweep's gate, checked in the marking write.
+   * Only a kid whose `lastPlayedAt` is at or before it is deleted, so a kid
+   * who played a moment ago is spared. `false` when the gate fails or she is
+   * not there.
+   */
+  deleteProfile(householdId: string, playerId: string, idleBefore?: string): Promise<boolean>;
+
+  /**
+   * A kid just played (#252): `lastPlayedAt`, and her place in the retention
+   * sweep (`GSI1_IDLE`) at `keepUntil`, or out of it when `null` (her
+   * household keeps everybody). Bookkeeping beside the profile, never in it,
+   * so it survives a `putPlayer`. A no-op for a profile that is gone or being
+   * deleted.
+   */
+  touchPlayer(householdId: string, playerId: string, lastPlayedAt: string, keepUntil: string | null): Promise<void>;
+  /** When she last played, or `null` when no join has said so since #252. */
+  getLastPlayed(householdId: string, playerId: string): Promise<string | null>;
+  /** Kids whose `keepUntil` has passed: one GSI1 query, like the guest sweep. */
+  listIdlePlayers(nowIso: string, limit?: number): Promise<IdlePlayer[]>;
+
+  /**
+   * Put an event back with its contents changed and its seq unchanged: a
+   * deleted kid's names taken out of a table's log (#252). Only an event
+   * that is there; the log never grows by this.
+   */
+  rewriteEvent(event: EventRecord): Promise<void>;
+  /**
+   * Every entry in the household's Field Guide that `playerId` found first
+   * now credits `FORGOTTEN_FINDER` instead (#252): the entry is the table's
+   * book and stays, and stops naming her. Returns how many changed.
+   */
+  forgetFinder(householdId: string, playerId: string): Promise<number>;
+
+  /** Write (or rewrite) a forget job (#252). */
+  putForget(job: ForgetJob): Promise<void>;
+  /** Forget jobs still owed, oldest first: one GSI1 query. */
+  listForgets(limit?: number): Promise<ForgetJob[]>;
+  deleteForget(playerId: string): Promise<void>;
+
+  /** She sat down at `tableHouseholdId`, a household that is not her home (#249). Idempotent. */
+  putVisit(playerId: string, tableHouseholdId: string, at: string): Promise<void>;
+  /** Every table she has visited, as households. */
+  listVisits(playerId: string): Promise<string[]>;
+
+  /**
+   * Write a profile, a new one or over the one there. Never over one being
+   * deleted (#252): a profile marked `sweeping` is left as it is. For making
+   * a profile; a change to one that exists goes through `updatePlayer`.
+   */
   putPlayer(player: PlayerProfile): Promise<void>;
+  /**
+   * Change a profile that is there and not being deleted (#252): a rename,
+   * retiring, bringing back. `false`, and nothing written, otherwise, so a
+   * change read before a delete can never bring the kid back after it.
+   */
+  updatePlayer(player: PlayerProfile): Promise<boolean>;
   getPlayer(householdId: string, playerId: string): Promise<PlayerProfile | null>;
   listPlayers(householdId: string): Promise<PlayerProfile[]>;
 
@@ -395,6 +731,9 @@ export interface GameRepository {
    * Unconditionally persists the complete character snapshot, including both
    * committed and provisional progression. Implementations stamp the row with
    * the current character schema version; this is a replacement, not a patch.
+   *
+   * Outside the claim (#282): it writes `version` as given and checks nothing.
+   * For fixtures and tools; a run writes heroes only through `commit()`.
    */
   putCharacter(character: Character): Promise<void>;
   /**
@@ -403,6 +742,13 @@ export interface GameRepository {
    */
   getCharacter(householdId: string, characterId: string): Promise<Character | null>;
   listCharacters(householdId: string): Promise<Character[]>;
+  /**
+   * One conditional write to a hero outside a run's commit, under the same
+   * conditions `commit()` puts on its `characters` (`CharacterWrite`). For
+   * leaving an adventure (#282), which releases a claim with no run turn to
+   * ride. `false`, and nothing written, when the row no longer stands as read.
+   */
+  writeCharacter(write: CharacterWrite): Promise<boolean>;
 
   // --- runs, state, event log ----------------------------------------------
   putRun(run: RunRecord): Promise<void>;
@@ -492,4 +838,14 @@ export interface GameRepository {
    * Never takes a window below zero.
    */
   refundCodeLookup(clientKey: string, window: number): Promise<void>;
+
+  // --- presence beats (#258) -------------------------------------------------
+  /**
+   * Records that `playerId`'s phone is here at `at` (ISO), in the run's one
+   * presence row, and returns every seated phone's last word, this one's
+   * included: player id to ISO time. `ttl` is epoch **seconds**, renewed by
+   * every beat. One write, so beats from several phones at once never lose
+   * one another's times.
+   */
+  touchPresence(runId: string, playerId: string, at: string, ttl: number): Promise<Record<string, string>>;
 }

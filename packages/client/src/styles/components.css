@@ -726,3 +726,14 @@
 .kad-party__pane[data-showing="false"] {
   display: none;
 }
+
+/* Larger text (#262): the tray is rem-sized art and labels, and html's font-size is the text
+   scale, so it would grow into a third of a small phone. Cancel the scale on the shelf, and
+   hand the labels most of it back, so what grows is the word under the object. */
+html[data-text] .kad-tray {
+  zoom: calc(1 / var(--kad-text-scale));
+  --kad-touch-min: clamp(44px, 2.75em, 56px);
+}
+html[data-text] .kad-tray__label {
+  font-size: calc(0.72rem * (1 + (var(--kad-text-scale) - 1) * 0.8));
+}

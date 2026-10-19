@@ -56,8 +56,26 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
  * budget with slack for one honest feature is a budget people keep, and one
  * that has to be raised every sprint is a budget people delete. (Measured at
  * 287KB when the room went lazy, most of it react-dom.)
+ *
+ * 302 -> 305 for pairing (#281): the three `Api` methods ride in the shared
+ * client every phone loads, and the home screen reads `?pair=` and draws two
+ * links. The pairing screens themselves, and their QR, are lazy chunks.
+ *
+ * 305 -> 315 on 2026-10-18, deliberately. The 287 slack went to the features
+ * that have to be on the home screen: sign-in and groups (#248), shared
+ * tablets (#250), host controls and quiet mode (#263, #260), with visitors
+ * and safe names (#249, #253) each adding about a KB more. 315 is that plus
+ * slack for those, not a new round number; a large accidental import (Pixi,
+ * the rigs, the scene) still fails it by a wide margin.
+ *
+ * Back to about 310 measured, the same day, with the cap left at 315 (#300):
+ * the Cognito client (sync/auth) and the organizer store now load when a
+ * grown-up starts signing in (store/keepsake.ts), not with the home screen.
+ * Only the keepsake store's small state stays eager, because the home screen
+ * reads it. This gate weighs the static graph only; e2e/lazy-sign-in.spec.ts
+ * proves the home screen does not fetch them at runtime either.
  */
-const FIRST_PAINT_BUDGET_KB = 302;
+const FIRST_PAINT_BUDGET_KB = 315;
 
 /**
  * Everything, including what is lazily fetched.

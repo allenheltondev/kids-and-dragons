@@ -18,6 +18,7 @@ import { campaignOptionLine, campaignPremise, journeyLine, lockedLine, nextChapt
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
+import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
 import "./shared.css";
 import "./LobbyContent.css";
@@ -125,7 +126,11 @@ export function LobbyContent(): ReactElement {
   const state = useRunState();
   const party = useParty();
   const sessionCode = useGameStore((s) => s.session?.roomCode ?? null);
-  const code = state?.roomCode ?? sessionCode;
+  // A room open to visitors (#249) shows its longer code, which anybody can
+  // join with: a phone from another household needs it, and one from the
+  // room's own takes it as well as the short one.
+  const visiting = state?.visitorCode !== undefined;
+  const code = state?.visitorCode ?? state?.roomCode ?? sessionCode;
   const qr = useJoinQr(code);
 
   const readyCount = party.filter((m) => m.ready).length;
@@ -143,6 +148,19 @@ export function LobbyContent(): ReactElement {
         <Icon name="party" />
         <span>Everyone in?</span>
       </h2>
+      {/* A chapter this household stopped partway (#259): said to the room, and
+          taken up from any phone. */}
+      {state?.saved ? (
+        <div className="lobby__premise">
+          <p className="lobby__premise-title">
+            <Icon name="scroll" />
+            <span>{savedHeading(state.saved)}</span>
+          </p>
+          <p className="lobby__premise-text">
+            {state.saved.recap} {savedHeroes(state.saved)} can tap Keep going on a phone.
+          </p>
+        </div>
+      ) : null}
       {/* Before chapter 1 the table needs to know what it is setting out on —
           otherwise the first scene is the first anyone hears of the story.
           Told while the room is filling, and gone once the lineup starts:
@@ -205,7 +223,7 @@ export function LobbyContent(): ReactElement {
           full three-person party is on screen without scrolling. */}
       <div className={`lobby__join${party.length > 0 ? " lobby__join--compact" : ""}`}>
         <div className="lobby__code-block">
-          <p className="lobby__code-label kad-label">Room code</p>
+          <p className="lobby__code-label kad-label">{visiting ? "Room code (visitors welcome)" : "Room code"}</p>
           <p className="lobby__code" aria-label={code === null ? "No room code yet" : `Room code ${code.split("").join(" ")}`}>
             {code === null
               ? "----"

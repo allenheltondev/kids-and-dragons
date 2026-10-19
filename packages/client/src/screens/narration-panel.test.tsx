@@ -261,6 +261,11 @@ describe("the story turn (spec §6.1)", () => {
     expect(spoken.some((line) => line.startsWith("Thistle's turn."))).toBe(true);
   });
 
+  it("leaves the options to the phone that owns them", () => {
+    mount(storyChoice(["p_2"]));
+    expect(spoken.some((line) => line.includes("Push the gate"))).toBe(false);
+  });
+
   it("names nobody when the choice is open to anyone", () => {
     mount(storyChoice([]));
     expect(screen.queryByText(/turn to choose/)).toBeNull();
@@ -400,5 +405,15 @@ describe("priority scenes (chapter.ts ScenePriority)", () => {
     const legacy = mount({ sceneType: "story" });
     expect(legacy.container.querySelector(".narration__ribbon")).toBeNull();
     expect(spoken[0]).toBe("The moss on the bank is warm.");
+  });
+});
+
+describe("a friend who stepped away (#258)", () => {
+  it("says so on the shared screen, and nothing while everyone is here", () => {
+    mount({ sceneType: "story" });
+    expect(screen.queryByTestId("stepped-away")).toBeNull();
+    cleanup();
+    mount({ sceneType: "story", party: [PARTY[0]!, { ...PARTY[1]!, connected: false }] });
+    expect(screen.getByTestId("stepped-away").textContent).toBe("Thistle stepped away.");
   });
 });

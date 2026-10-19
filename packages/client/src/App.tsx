@@ -25,6 +25,8 @@ import { useGameStore, useLayoutMode, useRunState, useChapter, useMe } from "./s
 import { Button, ConnectionBanner, ErrorToast, Spinner } from "./ui";
 
 import { AudioControl } from "./audio";
+import { setQuiet } from "./quiet";
+import { STOPPED_MESSAGE } from "./screens/save-copy";
 import { musicForScene } from "./audio/scene-audio";
 import { PhoneMagic } from "./ui/PhoneMagic";
 
@@ -43,6 +45,16 @@ import { PhoneMagic } from "./ui/PhoneMagic";
  * anyway. The import promises are the module cache — calling them again from
  * `lazy()` costs nothing.
  */
+// Read-aloud (#261) loads after first paint: nobody on the join screen can hear it yet,
+// and the entry chunk is at its budget (tools/perf/bundle-budget.ts).
+const loadSpeech = () => import("./speech");
+const ReadAloudControl = lazy(() => loadSpeech().then((module) => ({ default: module.ReadAloudControl })));
+
+// Display settings (#262): the panel loads after first paint like read-aloud. The saved
+// settings themselves are applied in main.tsx, before the first paint, from a few hundred bytes.
+const loadA11y = () => import("./a11y");
+const A11yControl = lazy(() => loadA11y().then((module) => ({ default: module.A11yControl })));
+
 const loadPartyLayout = () => import("./layout/PartyLayout");
 const loadTravelLayout = () => import("./layout/TravelLayout");
 const PartyLayout = lazy(() => loadPartyLayout().then((module) => ({ default: module.PartyLayout })));
@@ -102,6 +114,10 @@ class RoomBoundary extends Component<{ children: ReactNode; message?: string }, 
 const HostControls = lazy(() =>
   import("./screens/HostControls").then((module) => ({ default: module.HostControls })),
 );
+// The same chunk: the host of a stopped game may let a hero go (#259).
+const LetHeroGo = lazy(() =>
+  import("./screens/HostControls").then((module) => ({ default: module.LetHeroGo })),
+);
 
 // The adventure book (`/journal`) is a route of its own, between games, and
 // loads on demand like the room: nobody on the join screen needs it yet.
@@ -132,6 +148,18 @@ export function App(): React.JSX.Element {
     void loadContent();
   }, [loadContent]);
 
+  // This device's read-aloud switch, if it was left on (#261).
+  useEffect(() => {
+    void loadSpeech().then((module) => module.startReadAloud()).catch(() => undefined);
+  }, []);
+
+  // The host's quiet mode (#260) reaches every device in the room as run state.
+  const roomQuiet = state?.quiet === true;
+  useEffect(() => {
+    setQuiet(roomQuiet);
+    return () => setQuiet(false);
+  }, [roomQuiet]);
+
   /**
    * Recover from the URL alone. This is what makes "hard-refresh anything
    * without losing state" true on every surface (architecture §4.3, roadmap
@@ -147,7 +175,15 @@ export function App(): React.JSX.Element {
 
   return (
     <PhoneMagic enabled={route.name !== "tv"}>
-      <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
+      {/* One corner row for the device's own controls, so they share a place instead of
+          fighting over it: display settings (#262) and read-aloud (#261) to the left of sound, sound anchored right. */}
+      <div className="kad-corner">
+        <Suspense fallback={null}>
+          <A11yControl />
+          <ReadAloudControl />
+        </Suspense>
+        <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
+      </div>
       {pickLayout()}
       <ErrorToast />
       {/* Shell-level like the toast, and for the same reason: a dropped
@@ -216,10 +252,22 @@ export function App(): React.JSX.Element {
 /** What every screen shows once the host closes the room (#263). */
 function ClosedScreen(): React.JSX.Element {
   const leave = useGameStore((store) => store.leave);
+  // Stopped for today (#259) is a save, not an ending.
+  const stopped = useGameStore((store) => store.state?.stopped === true);
+  const host = useGameStore((store) => store.session?.host === true);
   return (
     <div className="kad-boot" role="alert">
       <div className="kad-removed">
-        <p>The person running this game closed the room. Your heroes are kept, ready for next time.</p>
+        <p>
+          {stopped
+            ? STOPPED_MESSAGE
+            : "The person running this game closed the room. Your heroes are kept, ready for next time."}
+        </p>
+        {stopped && host ? (
+          <Suspense fallback={null}>
+            <LetHeroGo />
+          </Suspense>
+        ) : null}
         <Button onClick={leave}>Back to the start</Button>
       </div>
     </div>
