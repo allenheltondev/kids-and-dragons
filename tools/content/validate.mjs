@@ -569,7 +569,7 @@ function checkMap(rep, file, map) {
   }
 }
 
-function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary, carried = new Set(), fieldGuide = null, world = null, mapsById = null) {
+function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary, carried = new Set(), fieldGuide = null, world = null, mapsById = null, backgroundOnlyBiomes = []) {
   const f = rel(file);
   let ok = true;
   const fail = (path, problem, hint) => {
@@ -970,7 +970,7 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
     );
   }
 
-  if (biomes && !biomes.includes(chapter.biome)) {
+  if (biomes && !biomes.includes(chapter.biome) && !(backgroundOnlyBiomes.includes(chapter.biome) && Object.values(scenes).every((scene) => scene.type !== "encounter" && typeof scene.art === "string"))) {
     fail("/biome", `biome "${chapter.biome}" is not in assets/manifest.json`, `known biomes: ${biomes.join(", ")}`);
   }
 
@@ -1459,9 +1459,11 @@ function main() {
 
   // Biome list lives in the art contract; content and art must not drift apart.
   let biomes = null;
+  let backgroundOnlyBiomes = [];
   if (existsSync(MANIFEST)) {
     const manifest = readJson(rep, MANIFEST);
     biomes = manifest?.biomes ?? null;
+    backgroundOnlyBiomes = manifest?.backgroundOnlyBiomes ?? [];
   }
 
   // --- maps, before chapters: an encounter is checked against them
@@ -1525,7 +1527,7 @@ function main() {
       brokenChapterIds.add(basename(file, ".json"));
       continue;
     }
-    checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary, carriedByCampaign.get(chapter.campaignId), fieldGuide, world, mapsById);
+    checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary, carriedByCampaign.get(chapter.campaignId), fieldGuide, world, mapsById, backgroundOnlyBiomes);
     chaptersById.set(chapter.id, chapter);
   }
 
