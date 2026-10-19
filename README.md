@@ -9,6 +9,7 @@ She taps, she doesn't type. Nobody dies. The party is persistent.
 The design lives in [`docs/spec.md`](docs/spec.md); the stack and protocol in
 [`docs/architecture.md`](docs/architecture.md); the build order in [`docs/roadmap.md`](docs/roadmap.md);
 how it gets to AWS in [`docs/deploy.md`](docs/deploy.md).
+What the display runs on, and what has been tried, is in [`docs/hardware.md`](docs/hardware.md).
 
 ---
 
