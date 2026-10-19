@@ -18,7 +18,7 @@ import type { ChangeEvent, ReactElement } from "react";
 import type { SharedDevicePlayer, SharedSeatRequest } from "@kad/shared";
 import { useGameStore } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
-import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, normalizeCodeInput as normalizeCode } from "../router";
+import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, normalizeCodeInput as normalizeCode } from "../router";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
@@ -357,6 +357,12 @@ export function SharedHome(): ReactElement {
               </button>
             </div>
           ) : null}
+          {/* The grown-up's guide (#257). */}
+          <div className="home__host-toggle home__guide">
+            <button type="button" className="home__link kad-focusable" onClick={() => navigate({ name: "guide" })}>
+              New to running a game? Read the grown-up&rsquo;s guide
+            </button>
+          </div>
         </div>
       </div>
 

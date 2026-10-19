@@ -8,6 +8,7 @@
  */
 
 import { test, expect, type Browser, type Page } from "@playwright/test";
+import { guidePicture } from "./guide-pictures";
 
 const TAP = { timeout: 20_000 } as const;
 const WHO = /who.s playing\?/i;
@@ -69,6 +70,7 @@ test.describe("a group with two organizers", () => {
     await benPage.getByLabel("Add a kid").fill("Gullet");
     await benPage.getByRole("button", { name: /^add$/i }).click();
     await expect(benPage.getByText("Gullet", { exact: true })).toBeVisible(TAP);
+    await guidePicture(benPage, "organizer");
     await benPage.getByRole("button", { name: /^done$/i }).click();
 
     // --- Ben sets up the group's tablet; both kids are faces on it ---
@@ -80,6 +82,7 @@ test.describe("a group with two organizers", () => {
     await expect(tablet.getByRole("heading", { name: WHO })).toBeVisible(TAP);
     await expect(tablet.getByRole("button", { name: /^Posy/ })).toBeVisible();
     await expect(tablet.getByRole("button", { name: /^Gullet/ })).toBeVisible();
+    await guidePicture(tablet, "tablet-picker");
 
     // --- A TV opens a room, and the two kids sit down at it ---
     const tv = await page(browser);

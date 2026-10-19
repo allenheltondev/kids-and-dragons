@@ -16,6 +16,7 @@
 
 import { test, expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
 import { createCharacter } from "./characters";
+import { guidePicture } from "./guide-pictures";
 import { openPlayerTask } from "./player-navigation";
 
 const TAP = { timeout: 20_000 } as const;
@@ -171,12 +172,14 @@ test.describe("drop in, drop out", () => {
     // --- A story turn: Sam's, and Sam steps away; anyone may answer ---
     await stepAway(sam, "Sam");
     await tvSaysAway("Sam");
+    await guidePicture(tv, "stepped-away");
     const firstScene = (await state()).sceneId;
     await openPlayerTask(rosie);
     await rosie.locator(".prompt .choice").first().click(TAP);
     await rosie.getByRole("button", { name: /do it!/i }).click(TAP);
     await expect.poll(async () => (await state()).sceneId, TAP).not.toBe(firstScene);
     await comeBack(sam, "Sam");
+    await guidePicture(sam, "catch-up");
 
     // --- A phone that dies: no goodbye, it just goes quiet ---
     // Offline, its heartbeats stop; Sam's next beat after the timeout notices.
