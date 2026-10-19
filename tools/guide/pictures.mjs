@@ -25,7 +25,7 @@ export function pictureSpecs(dir = E2E) {
   for (const file of readdirSync(dir).sort()) {
     if (!file.endsWith(".spec.ts")) continue;
     const text = readFileSync(path.join(dir, file), "utf8");
-    const names = [...text.matchAll(/guidePicture\([^,]+,\s*"([a-z0-9-]+)"\)/g)].map((m) => m[1]);
+    const names = [...text.matchAll(/guidePicture\(.*?,\s*"([a-z0-9-]+)"\)/g)].map((m) => m[1]);
     if (names.length > 0) out.push({ file, names });
   }
   return out;
