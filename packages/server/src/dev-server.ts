@@ -30,6 +30,7 @@ import { ContentError, loadContent, type ContentStore } from "./content/loader.t
 import { loadSharedRuntime } from "./engine/shared-engine.ts";
 import { addPlayer, adoptDevice, createGuestHousehold, linkAccount, vetTypedName } from "./handlers/account.ts";
 import { applyAction } from "./handlers/action.ts";
+import { reportClientError } from "./handlers/client-error.ts";
 import {
   admitCodeLookup,
   clientKeyFor,
@@ -597,6 +598,14 @@ async function main(): Promise<void> {
     res.json(result.value);
   });
 
+  // A crash on a phone or the TV: one scrubbed log line, nothing stored (#317).
+  app.post("/api/client-error", async (req: Request, res: Response) => {
+    const outcome = await reportClientError(req.body, clientOf(req), base);
+    if (outcome === "malformed") return sendError(res, 400, "ILLEGAL", "not a crash report");
+    if (outcome === "refused") return reportsSlowDown(res, base);
+    res.status(204).end();
+  });
+
   // What this phone can study between games (see handlers/journal.ts).
   app.get("/api/journal", async (req: Request, res: Response) => {
     const deps = await withRuntime(base, res);
@@ -1020,6 +1029,11 @@ async function roomReader(
  */
 function clientOf(req: Request): string {
   return clientKeyFor(req.socket.remoteAddress);
+}
+
+function reportsSlowDown(res: Response, deps: Pick<HandlerDeps, "now">): void {
+  res.set("retry-after", String(retryAfterSeconds(deps.now())));
+  sendError(res, SLOW_DOWN.status, SLOW_DOWN.code, "Too many reports. Try again later.");
 }
 
 function slowDown(res: Response, deps: Pick<HandlerDeps, "now">): void {
