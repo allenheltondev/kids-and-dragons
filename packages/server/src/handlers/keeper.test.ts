@@ -240,6 +240,41 @@ describe("a host handing the keeper role to a phone in the room (#272)", () => {
     expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe(mia.principal.deviceId);
   });
 
+  it("refuses the hand-over when a Remove lands between the check and the commit (#272 review)", async () => {
+    // The target was fine when the host tapped, then the host's other screen
+    // took them out; the retried commit must see that, not hand them the game.
+    const { harness, tv, code, runId, householdId, join } = await tvRoom();
+    const first = await join("Mia");
+    const target = await join("Sam");
+    const commit = harness.repo.commit.bind(harness.repo);
+    harness.repo.commit = async (input) => {
+      harness.repo.commit = commit;
+      const out = await removePlayer({ code, principal: tv.principal, playerId: target.principal.playerId }, harness.deps);
+      expect(out.ok).toBe(true);
+      return commit(input);
+    };
+
+    const result = await handKeeper({ code, principal: tv.principal, playerId: target.principal.playerId }, harness.deps);
+    expect(result).toMatchObject({ ok: false, error: { code: "NOT_FOUND" } });
+    expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe(first.principal.deviceId);
+    expect((await harness.repo.getState(runId))?.keeperPlayerId).toBeUndefined();
+    expect(await linkAccount({ cognitoSub: "sub_sam", principal: target.principal }, harness.deps)).toMatchObject({ ok: false });
+  });
+
+  it("stops advertising the keeper when the host then takes them out (#272 review)", async () => {
+    const { harness, tv, code, runId, householdId, join } = await tvRoom();
+    await join("First");
+    const mia = await join("Mia");
+    await handKeeper({ code, principal: tv.principal, playerId: mia.principal.playerId }, harness.deps);
+    expect((await harness.repo.getState(runId))?.keeperPlayerId).toBe(mia.principal.playerId);
+
+    await removePlayer({ code, principal: tv.principal, playerId: mia.principal.playerId }, harness.deps);
+    expect((await harness.repo.getState(runId))?.keeperPlayerId).toBeUndefined();
+    // And their phone no longer keeps it.
+    expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe("");
+    expect(await linkAccount({ cognitoSub: "sub_mia", principal: mia.principal }, harness.deps)).toMatchObject({ ok: false });
+  });
+
   it("will not move a game that has already been kept", async () => {
     const { harness, tv, code, householdId, join } = await tvRoom();
     const first = await join("Mia");

@@ -69,7 +69,7 @@ export async function removePlayer(
       // still reading, the table goes on now, as it does when a phone drops.
       return relockOut(
         settleChapterEndVote({
-          ...state,
+          ...unkept(state, input.playerId),
           removed: [...(state.removed ?? []), input.playerId],
           party: state.party.map((m) =>
             m.playerId === input.playerId ? { ...m, connected: false, ready: false } : m,
@@ -133,7 +133,7 @@ export async function takeOutEverywhere(
         if (!seated || isRemoved(state, playerId)) return null;
         return relockOut(
           settleChapterEndVote({
-            ...state,
+            ...unkept(state, playerId),
             removed: [...(state.removed ?? []), playerId],
             party: state.party.map((m) => (m.playerId === playerId ? { ...m, connected: false, ready: false } : m)),
           }),
@@ -213,4 +213,15 @@ export async function isOut(
   if (household === undefined) return false;
   const profile = await repo.getPlayer(household, playerId);
   return profile === null || profile.retired === true;
+}
+
+/**
+ * The run without the keeper role a host handed `playerId` (#272): somebody
+ * taken out is not advertised as the one who keeps the game. Their phone stops
+ * being the founder in `unfound`, right after this commits.
+ */
+function unkept(state: RunState, playerId: string): RunState {
+  if (state.keeperPlayerId !== playerId) return state;
+  const { keeperPlayerId: _handed, ...rest } = state;
+  return rest;
 }

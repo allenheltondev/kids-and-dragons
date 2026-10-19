@@ -19,7 +19,7 @@
  */
 
 import type { RunState } from "@kad/shared";
-import { fail, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
+import { fail, ok, type ActionError, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { commitRoomChange, hostedRoom, type HostPrincipal } from "./host.ts";
 
 export interface HandKeeperInput {
@@ -42,13 +42,8 @@ export async function handKeeper(
 
   const state = await deps.repo.getState(room.runId);
   if (!state) return fail("NOT_FOUND", `run ${room.runId} has no state`);
-  const seat = state.seats?.[input.playerId];
-  // On the roster and in the room's own household: a visitor's profile is in
-  // theirs, and the game is not.
-  if (!seat || seat.homeHouseholdId !== undefined || state.removed?.includes(input.playerId)) {
-    return fail("NOT_FOUND", `no player ${input.playerId} in this room`);
-  }
-  if (seat.device === "tablet") return fail("ILLEGAL", "A family tablet can't keep the game. Pick a phone.");
+  const refused = ineligible(state, input.playerId);
+  if (refused) return { ok: false, error: refused };
 
   // The phone to hand it to: the player's own, most recently seen.
   const devices = (await deps.repo.listDevices(room.householdId))
@@ -72,14 +67,47 @@ export async function handKeeper(
   const result = await commitRoomChange(
     room,
     input.principal.playerId,
-    (current: RunState): RunState => ({ ...current, keeperPlayerId: input.playerId }),
+    (current: RunState): RunState => {
+      // On the run as it now stands, every attempt: a host's Remove can land
+      // between the check above and a retried commit, and the target must not
+      // be handed the game after it.
+      const refusal = ineligible(current, input.playerId);
+      if (refusal) throw new Refused(refusal);
+      return { ...current, keeperPlayerId: input.playerId };
+    },
     deps,
     { founder: { householdId: room.householdId, deviceId: device.deviceId } },
-  );
+  ).catch((err: unknown): HandlerResult<never> => {
+    if (err instanceof Refused) return { ok: false, error: err.refusal };
+    throw err;
+  });
   if (result.ok) return ok({ seq: result.value.seq });
   // The transaction also refuses a household an account kept in the meantime,
   // which looks like a lost race from here: say which it was.
   const now = await deps.repo.getHousehold(room.householdId);
   if (!now?.guest || now.ownerSub) return fail("ILLEGAL", "This game is already kept.");
   return result;
+}
+
+/** A hand-over found, on a retried commit, that its target no longer qualifies. */
+class Refused extends Error {
+  constructor(readonly refusal: ActionError) {
+    super(refusal.message);
+  }
+}
+
+/**
+ * Why `playerId` cannot be handed the role on this run, or null when they can:
+ * on the roster and in the room's own household (a visitor's profile is in
+ * theirs, and the game is not), not taken out, and on a phone rather than a
+ * family tablet. Read on the run itself, so it can be asked again of any later
+ * state.
+ */
+function ineligible(state: RunState, playerId: string): ActionError | null {
+  const seat = state.seats?.[playerId];
+  if (!seat || seat.homeHouseholdId !== undefined || state.removed?.includes(playerId)) {
+    return { code: "NOT_FOUND", message: `no player ${playerId} in this room` };
+  }
+  if (seat.device === "tablet") return { code: "ILLEGAL", message: "A family tablet can't keep the game. Pick a phone." };
+  return null;
 }
