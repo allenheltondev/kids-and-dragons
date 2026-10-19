@@ -27,14 +27,14 @@ function character(): Character {
     ownerPlayerId: "p_1",
     name: "Sparklehoof",
     species: "unicorn",
-    class: "songkeeper",
     appearance: { palette: "meadow", accent: "#7FD4C1" },
     committed: {
       level: 2,
       xp: 300,
       stats: { might: 1, quick: 2, clever: 3, heart: 4 },
       tier: "fledgling",
-      unlockedActions: ["soothing-song"],
+      class: "songkeeper",
+      mastery: {},
       inventory: [{ itemId: "healing-herb", kind: "consumable" }],
       unspentPoints: 1,
     },
@@ -44,7 +44,8 @@ function character(): Character {
       xp: 600,
       stats: { might: 2, quick: 2, clever: 3, heart: 4 },
       tier: "fledgling",
-      unlockedActions: ["soothing-song", "battle-hymn"],
+      class: "songkeeper",
+      mastery: {},
       inventory: [{ itemId: "healing-herb", kind: "consumable" }],
       unspentPoints: 2,
     },
@@ -115,7 +116,8 @@ describe("MemoryRepository", () => {
         xp: 900,
         level: 4,
         unspentPoints: 3,
-        unlockedActions: [...initial.committed.unlockedActions, "battle-hymn"],
+        class: "songkeeper",
+        mastery: {},
       },
       provisional: null,
     };
@@ -134,9 +136,17 @@ describe("MemoryRepository", () => {
 
   it("migrates an unstamped v0 character on read without dropping progression", async () => {
     const filePath = await tempFile();
-    const oldCharacter = character();
-    delete oldCharacter.committed.unspentPoints;
-    if (oldCharacter.provisional) delete oldCharacter.provisional.unspentPoints;
+    // In the shape v0 wrote it: class on the character, the moves levelling
+    // had written in each half, and no banked points.
+    const { committed, provisional, ...hero } = character();
+    const legacyHalf = ({ class: _c, mastery: _m, unspentPoints: _u, ...half }: typeof committed, unlockedActions: string[]) =>
+      ({ ...half, unlockedActions });
+    const oldCharacter = {
+      ...hero,
+      class: "songkeeper",
+      committed: legacyHalf(committed, ["rally"]),
+      provisional: { ...legacyHalf(provisional!, ["rally", "soothe"]), runId: provisional!.runId },
+    };
 
     await fs.mkdir(path.dirname(filePath), { recursive: true });
     await fs.writeFile(
@@ -160,7 +170,10 @@ describe("MemoryRepository", () => {
 
     expect(migrated?.committed.unspentPoints).toBe(0);
     expect(migrated?.provisional?.unspentPoints).toBe(0);
-    expect(migrated?.provisional?.unlockedActions).toEqual(["soothing-song", "battle-hymn"]);
+    // Every move it had. The committed half says level 2, but v4 resolved from
+    // XP, and 300 XP is level 3: it played with Soothe, so it keeps Soothe.
+    expect(migrated?.committed).toMatchObject({ class: "songkeeper", mastery: { songkeeper: { rank: "apprentice" } } });
+    expect(migrated?.provisional).toMatchObject({ class: "songkeeper", mastery: { songkeeper: { rank: "apprentice" } } });
     expect(await repo.getCharacter("h_other", "c_1")).toBeNull();
   });
 

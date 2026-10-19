@@ -41,7 +41,7 @@ import path from "node:path";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { campaignMode, reachableScenes, validateChapter } from "@kad/shared";
+import { campaignMode, migrateCharacter, reachableScenes, resolveCharacter, validateChapter } from "@kad/shared";
 import type { ClientIntent, RunState } from "@kad/shared";
 import { loadContent } from "../content/loader.ts";
 import type { CampaignProgressRecord } from "../store/repository.ts";
@@ -283,7 +283,14 @@ describe("Gemfall saves from before the epic", () => {
     const h = await gemfallHousehold(content);
     h.harness.clock.set(save.clock);
     const repo = h.harness.repo;
-    for (const character of save.characters) await repo.putCharacter(character);
+    // The hero as the pre-epic build stored it (character v1, unlockedActions
+    // and class on the row), read the way any deploy reads an old row:
+    // migrated, then written back at today's version. It keeps its moves.
+    for (const character of save.characters) {
+      const migrated = migrateCharacter(character, 1);
+      expect(resolveCharacter(migrated, content.rules(), content.items()).actions).toEqual(["brace", "mending_light"]);
+      await repo.putCharacter(migrated);
+    }
     await repo.putCampaignProgress(save.attempt);
     await repo.putRun(save.run);
     expect(await repo.putRoomIfAbsent(save.room)).toBe(true);

@@ -370,8 +370,21 @@ describe("Gemfall's numbers, with temporary buffs in the build (#200)", () => {
     return { log, final: state, outcome: encounterOutcome(state) };
   }
 
+  /*
+   * The heroes as the pre-#200 build resolved them. `makeCharacter` then
+   * stored `unlockedActions: ["rally"]` on every hero whatever its class, and
+   * resolve kept any stored action the content knew, so all four carried
+   * Rally. Class moves come from distinctions since #308 and a Thornguard can
+   * no longer hold Rally, but the fight below was played by those four, so
+   * they are rebuilt exactly. What this pins is the arithmetic of the fight.
+   */
+  const preBuffParty = () =>
+    HEROES.map((hero) => resolveCharacter(hero, rules, items)).map((hero) =>
+      hero.actions.includes("rally") ? hero : { ...hero, actions: [...hero.actions, "rally"] },
+    );
+
   it("resolves trinket-holding heroes and plays a seeded Gemfall fight exactly as before", () => {
-    const party = HEROES.map((hero) => resolveCharacter(hero, rules, items));
+    const party = preBuffParty();
     const fights = [
       playFight(party, "gemfall-02", firstEncounter("gemfall-02"), "gemfall-golden-1"),
       playFight(party.slice(0, 2), "gemfall-03a", firstEncounter("gemfall-03a"), "gemfall-golden-2"),

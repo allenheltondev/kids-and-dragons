@@ -140,7 +140,7 @@ async function evening(h: Household, classes: ClassId[]) {
   };
   const stored = await harness.repo.listCharacters(h.householdId);
   for (const [seat, cls] of classes.entries()) {
-    const mine = stored.find((c) => c.ownerPlayerId === seats[seat] && c.class === cls);
+    const mine = stored.find((c) => c.ownerPlayerId === seats[seat] && c.committed.class === cls);
     await must(
       mine
         ? { type: "SEAT_CHARACTER", characterId: mine.id }

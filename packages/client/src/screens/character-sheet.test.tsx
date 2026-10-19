@@ -215,3 +215,19 @@ describe("the sheet", () => {
     expect(screen.getByText(/rusted_key|Rusted Key/)).toBeTruthy();
   });
 });
+
+describe("the class line (spec §4.3)", () => {
+  it("names the worn class with its distinction", () => {
+    show({ class: "starweaver", rank: "apprentice" });
+    expect(screen.getByText("starweaver apprentice")).toBeTruthy();
+  });
+
+  it("shows the class alone with no distinction yet, or none on the snapshot", () => {
+    show({ class: "thornguard", rank: "none" });
+    expect(screen.getByText("thornguard")).toBeTruthy();
+    cleanup();
+    show({ class: "thornguard" });
+    expect(screen.getByText("thornguard")).toBeTruthy();
+    expect(screen.queryByText(/thornguard (apprentice|expert|master)/)).toBeNull();
+  });
+});

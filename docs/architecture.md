@@ -195,7 +195,6 @@ The carryover rule from [spec §8.2](./spec.md#82-carryover--the-commitment-rule
   "ownerPlayerId": "p_1",
   "name": "Sparklehoof",
   "species": "unicorn",
-  "class": "songkeeper",
 
   // Committed: the last successfully completed campaign's end state.
   "committed": {
@@ -203,7 +202,11 @@ The carryover rule from [spec §8.2](./spec.md#82-carryover--the-commitment-rule
     "xp": 1200,
     "stats": { "might": 2, "quick": 3, "clever": 3, "heart": 7 },
     "tier": "sworn",
-    "unlockedActions": ["rally", "soothe"],
+    // The class she wears, and her distinction and deed progress in every
+    // class she has worn (#308, class-mastery.md §5). Her class moves are
+    // derived from these in resolveCharacter(), never stored.
+    "class": "songkeeper",
+    "mastery": { "songkeeper": { "rank": "apprentice", "deeds": { "hearts": 4 } } },
     "inventory": [                                 // max 6; quest items excluded
       { "itemId": "sunbloom_draught", "kind": "consumable" },
       { "itemId": "river_charm",      "kind": "trinket" }
@@ -217,7 +220,13 @@ The carryover rule from [spec §8.2](./spec.md#82-carryover--the-commitment-rule
     "xp": 2100,
     "stats": { "might": 2, "quick": 4, "clever": 3, "heart": 8 },
     "tier": "sworn",
-    "unlockedActions": ["rally", "soothe", "chorus"],
+    // Changed class this campaign; Songkeeper's rank is kept, and only
+    // Starweaver's counts while she wears it. Both go back on failure.
+    "class": "starweaver",
+    "mastery": {
+      "songkeeper": { "rank": "expert", "deeds": {} },
+      "starweaver": { "rank": "none", "deeds": { "burst_two": 1 } }
+    },
     "inventory": [
       { "itemId": "sunbloom_draught", "kind": "consumable" },
       { "itemId": "river_charm",      "kind": "trinket" },
@@ -257,8 +266,8 @@ The carryover rule from [spec §8.2](./spec.md#82-carryover--the-commitment-rule
 - **Effective character** = `provisional ?? committed`. Resolved in one place, `resolveCharacter()`.
 
 This makes the rule impossible to get subtly wrong: there is no code path that partially applies
-a failed campaign's gains, and inventory rides along with levels for free because it lives inside
-the same two objects.
+a failed campaign's gains, and inventory, class and distinctions ride along with levels for free
+because they live inside the same two objects.
 
 ### 3.2 Stored shapes change — how they migrate
 
@@ -271,7 +280,12 @@ Both repositories call it — `getCharacter()` directly, `listCharacters()` thro
 `CharacterProgress.unspentPoints` is optional because of the rows that predate it: a required field
 would have TypeScript promising a number where an older row returns `undefined`, and
 `undefined + 1` corrupts a stat block at the first Rest scene — so the v0 step defaults it and the
-type stays honest about history.
+type stays honest about history. The v5 step (#308) is the same idea for class mastery: the worn
+class moves from the character into each half of progress, and that class is given the distinction
+matching every class move the half resolved with before (from its XP and its old
+`unlockedActions`), so no hero opens the game to a missing move. (A move of another class in that
+list would be dropped, since only the worn class's moves resolve, but no writer ever stored one; see
+the step's comment.)
 
 The failure mode is worth naming precisely, because it changes the solution. **Nothing but our own
 Lambda ever writes these items.** There is no hostile input to defend against and no third-party
