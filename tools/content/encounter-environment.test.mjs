@@ -52,12 +52,22 @@ describe("the schema", () => {
     expect(map.ok, map.errors.join("\n")).toBe(true);
   });
 
-  it("still accepts every shipped chapter — and none of them declares an environment", () => {
+  it("still accepts every shipped chapter — and none but the practice declares an environment", () => {
     const dir = join(REPO, "content", "chapters");
     for (const file of readdirSync(dir).filter((f) => f.endsWith(".json"))) {
       const chapter = read("content", "chapters", file);
       const { ok, errors } = judge(chapterSchema, chapter);
       expect(ok, `${file}\n${errors.join("\n")}`).toBe(true);
+      // The practice (#255) teaches walking to a gate and helping a friend up
+      // with an exit and a captive. It is never a campaign a party continues,
+      // and every campaign chapter still fights exactly as before.
+      if (chapter.campaignId === "first-steps") {
+        for (const scene of Object.values(chapter.scenes)) {
+          expect(Object.keys(scene.environment ?? {}).every((k) => k === "exits" || k === "rescue")).toBe(true);
+          expect(scene).not.toHaveProperty("onTimeout");
+        }
+        continue;
+      }
       for (const scene of Object.values(chapter.scenes)) {
         expect(scene).not.toHaveProperty("environment");
         expect(scene).not.toHaveProperty("onEscape");

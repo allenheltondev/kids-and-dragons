@@ -1539,6 +1539,61 @@ describe("priority scenes", () => {
   });
 });
 
+describe("scene hints (#255)", () => {
+  it("carries a scene's hint onto the run while the party stands in it, and no key otherwise", () => {
+    const chapter = makeChapter();
+    (chapter.scenes["scene_shrine"] as StoryScene).hint = "Tap what you want to do.";
+    const context = ctx({ rng: fixedRng(20), chapter });
+    const started = walk(
+      seatedParty(context),
+      [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }],
+      context,
+    ).state;
+    expect(started).not.toHaveProperty("hint");
+
+    const hinted = enterScene(started, "scene_shrine", context).state;
+    expect(hinted.hint).toBe("Tap what you want to do.");
+
+    // The next scene has none, and the key goes with it.
+    expect(enterScene(hinted, "scene_camp", context).state).not.toHaveProperty("hint");
+  });
+
+  it("puts the friend after the story-turn holder on the ground in a friendDown fight, and nobody when alone", () => {
+    const chapter = makeChapter();
+    const scene = chapter.scenes["encounter_wisps"];
+    if (scene?.type !== "encounter") throw new Error("fixture moved");
+    scene.friendDown = true;
+    const context = ctx({ rng: fixedRng(20), chapter });
+    const fightWith = (seated: RunState, readies: string[]) => {
+      const started = walk(seated, [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }], context).state;
+      let state = enterScene(started, "encounter_wisps", context).state;
+      for (const playerId of readies) state = applyIntent(state, { playerId, intent: { type: "READY", ready: true } }, context).state;
+      return state;
+    };
+
+    const pair = fightWith(seatedParty(context), ["p_1", "p_2"]);
+    const holder = storyTurnHolder(pair)!.character.id;
+    const heroes = pair.encounter!.combatants.filter((c) => c.side === "party");
+    expect(heroes.filter((c) => c.down).map((c) => c.id)).toEqual(heroes.filter((c) => c.id !== holder).map((c) => c.id));
+    // The run's own HP is untouched: only the fight starts them down.
+    expect(pair.party.every((m) => !m.down)).toBe(true);
+
+    const alone = walk(newRun(), [
+      { playerId: "p_1", intent: CREATE_UNICORN },
+      { playerId: "p_1", intent: { type: "READY", ready: true } },
+    ], context).state;
+    const solo = fightWith(alone, ["p_1"]);
+    expect(solo.encounter!.combatants.filter((c) => c.side === "party" && c.down)).toEqual([]);
+  });
+
+  it("leaves the practice to the server", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    expect(() => walk(seatedParty(context), [{ playerId: "p_1", intent: { type: "START_PRACTICE" } }], context)).toThrow(
+      /resolved by the server/,
+    );
+  });
+});
+
 /*
  * Trading — spec §9.4. "At Rest scenes, the party can freely pass items between
  * characters. Drag on your phone, tap to accept on theirs."

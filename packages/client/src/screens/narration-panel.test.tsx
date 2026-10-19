@@ -417,3 +417,25 @@ describe("a friend who stepped away (#258)", () => {
     expect(screen.getByTestId("stepped-away").textContent).toBe("Thistle stepped away.");
   });
 });
+
+describe("the practice's hint (#255)", () => {
+  const HINT = "Time to roll! When your phone says Roll, tap it.";
+
+  it("shows it under the story and says it after the story, once", () => {
+    const view = mount({ sceneType: "story", sceneId: "check_latch", narration: "The latch is tied in a bow.", hint: HINT });
+    expect(screen.getByTestId("scene-hint").textContent).toBe(HINT);
+    expect(spoken.indexOf(HINT)).toBeGreaterThan(spoken.indexOf("The latch is tied in a bow."));
+    // A patch that changes nothing about the scene does not say it again.
+    act(() => {
+      useGameStore.setState({ state: { ...useGameStore.getState().state!, seq: 4 } });
+    });
+    view.rerender(<NarrationPanel />);
+    expect(spoken.filter((line) => line === HINT)).toHaveLength(1);
+  });
+
+  it("shows and says nothing on a scene without one, which is every scene outside the practice", () => {
+    mount({ sceneType: "story" });
+    expect(screen.queryByTestId("scene-hint")).toBeNull();
+    expect(spoken).toEqual(["The moss on the bank is warm."]);
+  });
+});
