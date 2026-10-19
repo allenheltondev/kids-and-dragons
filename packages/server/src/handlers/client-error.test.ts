@@ -9,7 +9,7 @@ const DEV_TOKEN = "kaddev.eyJzdWIiOiJtYXlhIn0";
 const JWT = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhYmMxMjMifQ.c2lnbmF0dXJlYmxvYg";
 const DEVICE_TOKEN = "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2";
 
-/** A report with each kind of thing that must never be logged. */
+/** A report with each kind of thing that must never be logged, in every field a sender controls. */
 function leakyReport() {
   return {
     message: [
@@ -19,7 +19,7 @@ function leakyReport() {
       "room WXYZ and visitor room WXYZQR at /p/WXYZ?code=WXYZ",
       `tokens ${DEV_TOKEN} ${JWT} ${DEVICE_TOKEN}`,
     ].join("; "),
-    stack: ["/bundle/index-abc.js:10:20"],
+    stack: ["/bundle/index-abc.js:10:20", `Zephyrine at /p/WXYZ ${DEV_TOKEN}`],
     version: "abc1234",
     route: "/p/:code",
     layout: "phone",
@@ -35,18 +35,22 @@ const LEAKS = [
   /maya/i, /zephyrine/i, /example\.com/, /WXYZ/, /kaddev/, /eyJ/, /a1b2c3d4e5f6/, /brave/i,
 ];
 
+async function logged(body: unknown): Promise<string[]> {
+  const lines: string[] = [];
+  await reportClientError(body, "192.0.2.1", makeHarness().deps, (l) => lines.push(l));
+  return lines;
+}
+
 describe("reportClientError: nothing a kid typed or owns reaches the log", () => {
   it("logs one structured line with none of the seven kinds in it", async () => {
-    const harness = makeHarness();
-    const lines: string[] = [];
-    const outcome = await reportClientError(leakyReport(), "192.0.2.1", harness.deps, (l) => lines.push(l));
+    const lines = await logged({ ...leakyReport(), id: "0123456789ab" });
 
-    expect(outcome).toBe("logged");
     expect(lines).toHaveLength(1);
     const line = lines[0]!;
     for (const leak of LEAKS) expect(line, String(leak)).not.toMatch(leak);
     expect(JSON.parse(line)).toMatchObject({
       event: "client_error",
+      message: "Error: other",
       stack: ["/bundle/index-abc.js:10:20"],
       version: "abc1234",
       route: "/p/:code",
@@ -60,25 +64,29 @@ describe("reportClientError: nothing a kid typed or owns reaches the log", () =>
     );
   });
 
+  // The server has no list of names. These must hold without one.
   it.each([
-    ["a display name", { message: "failed for 'Maya'" }, /maya/i],
-    ["a hero name", { message: 'hero "Zephyrine" fell' }, /zephyrine/i],
-    ["an email", { message: "x@y.org rejected" }, /y\.org/],
-    ["a room code", { message: "no open room ABCD" }, /ABCD/],
-    ["a visitor code", { message: "no open room ABCDEF" }, /ABCDEF/],
-    ["a dev token", { message: `bad ${DEV_TOKEN}` }, /kaddev/],
-    ["a JWT", { message: `bad ${JWT}` }, /eyJ/],
-    ["typed text", { message: "input was `hello there my name is Maya`" }, /hello|maya/i],
-  ])("scrubs %s", async (_kind, extra, leak) => {
-    const lines: string[] = [];
-    await reportClientError(
-      { ...leakyReport(), ...extra },
-      "192.0.2.1",
-      makeHarness().deps,
-      (l) => lines.push(l),
-    );
+    ["an unquoted name", "Validation failed for my best friend Nora", /nora/i],
+    ["an unquoted hero name", "Zephyrine the Brave could not be loaded", /zephyrine|brave/i],
+    ["a quoted answer over 200 characters", `The answer was "${"Nora ".repeat(60)}" and was wrong`, /nora/i],
+    ["an unterminated quote", `She typed "Nora and then it broke`, /nora/i],
+    ["an email", "x@y.org rejected", /y\.org/],
+    ["a room code", "no open room ABCD", /ABCD/],
+    ["a visitor code", "no open room ABCDEF", /ABCDEF/],
+    ["a lowercase code", "no open room abcd", /abcd/],
+    ["a dev token", `bad ${DEV_TOKEN}`, /kaddev/],
+    ["a JWT", `bad ${JWT}`, /eyJ/],
+    ["typed text", "input was `hello there my name is Maya`", /hello|maya/i],
+  ])("logs %s as Error: other", async (_kind, message, leak) => {
+    const lines = await logged({ ...leakyReport(), message });
     expect(lines).toHaveLength(1);
     expect(lines[0]).not.toMatch(leak);
+    expect(JSON.parse(lines[0]!).message).toBe("Error: other");
+  });
+
+  it("keeps the kind of failure when the client sent only that", async () => {
+    const lines = await logged({ ...leakyReport(), message: "TypeError: not a function" });
+    expect(JSON.parse(lines[0]!).message).toBe("TypeError: not a function");
   });
 
   it("logs nothing for a body that is not a report", async () => {

@@ -1,16 +1,17 @@
 /**
- * What a crash report may say, and the scrubbing that keeps a kid out of it (#317).
+ * What a crash report may say, and how it keeps a kid out of it (#317).
  *
- * The client scrubs before it sends; the server runs the same functions again
- * before it logs, because a report is whatever arrives on the wire, not what
- * our reporter meant to send. Both ends import this file, so there is one
- * definition of "looks like a name, a code or a token".
+ * A report never carries what the exception said. An engine's message can hold
+ * anything a page handed it, and a kid's typing is among that, in any shape we
+ * would have to recognize. So the message is not scrubbed, it is replaced: the
+ * client reduces it to a *kind* of failure (`diagnose`), and the server accepts
+ * only one of those exact phrases (`safeMessage`), anything else becoming
+ * `Error: other`. Free text cannot reach a log because there is no field for it.
+ * Every other field is checked against its own fixed shape, and the stack is
+ * only locations in our own bundle.
  *
- * Nothing here knows who anyone is. A name is only recognizable if the caller
- * hands it in (`known`, which the client does from the room it is in), so the
- * shape rules are deliberately blunt: quoted text is dropped wholesale, since
- * that is where an engine puts a value it is complaining about (`reading
- * 'Maya'`) and where a kid's typing would land.
+ * What is lost is the exception's detail; the build, the page, and the top
+ * frame (`file:line:col`, through the sourcemap) say where it happened.
  */
 
 export const CLIENT_ERROR_LAYOUTS = ["phone", "tv", "tablet", "other"] as const;
@@ -37,48 +38,49 @@ export interface ClientErrorReport {
   id: string;
 }
 
-export const MAX_MESSAGE = 300;
 export const MAX_FRAMES = 10;
-const MAX_VERSION = 40;
 
-/* Regex literals only: a top-level `new RegExp` is a side effect, and keeps this file in every bundle. */
-/** Order matters: tokens and emails go first, so a quote never hides half of one. */
-const RULES: ReadonlyArray<readonly [RegExp, string]> = [
-  // `kaddev.<anything>` (a dev-auth token), and `Bearer <token>`.
-  [/\bkaddev\.[^\s"'`,;)]+/gi, "[token]"],
-  [/\bBearer\s+[^\s"'`,;)]+/gi, "Bearer [token]"],
-  // JWT-shaped: three dot-separated base64url runs.
-  [/\b[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]*/g, "[token]"],
-  // Any other long opaque run: a device, session or viewer token.
-  [/(?<![A-Za-z0-9_-])[A-Za-z0-9_-]{32,}(?![A-Za-z0-9_-])/g, "[token]"],
-  [/[^\s@"'<>()[\]]+@[^\s@"'<>()[\]]+\.[A-Za-z]{2,}/g, "[email]"],
-  // A query string or fragment on a URL or path: `?token=`, `?code=`, `#...`.
-  [/\?[\w%.~-]+=[^\s)"'`]*/g, ""],
-  [/(?<=[\w/])#[^\s)"'`]+/g, ""],
-  // A path that carries a room code: `/p/ABCD`, `/tv/abcdef`, `/api/room/ABCD/join`.
-  [/(?<=\/(?:p|tv|room)\/)[A-Za-z0-9]{4,6}(?![A-Za-z0-9])/gi, ":code"],
-  // Typed text, or anything an engine quotes back at us. An apostrophe inside a
-  // word (`can't`) never opens a quote.
-  [/(?<![\p{L}\p{N}])(["'`])(?:(?!\1).){0,200}?\1(?![\p{L}\p{N}])/gu, "[text]"],
-  // A bare room code: four letters, or a visitor's six, in capitals.
-  [/(?<![A-Za-z0-9])(?:[A-Z0-9]{4}|[A-Z0-9]{6})(?![A-Za-z0-9])/g, "[code]"],
+/** The exception types a report may name; any other is `Error`. */
+const ERROR_NAMES = [
+  "Error", "TypeError", "RangeError", "ReferenceError", "SyntaxError", "EvalError", "URIError",
+  "AbortError", "NetworkError", "NotAllowedError", "QuotaExceededError", "SecurityError", "InvalidStateError",
+] as const;
+
+/** Failure kinds, each a fixed phrase. The patterns read the message; none of it is kept. */
+const KINDS: ReadonlyArray<readonly [RegExp, string]> = [
+  [/cannot read propert(?:y|ies) of (?:undefined|null)|undefined is not an object|null is not an object/i, "read a property of nothing"],
+  [/is not a function/i, "not a function"],
+  [/is not defined/i, "not defined"],
+  [/is not iterable/i, "not iterable"],
+  [/dynamically imported module|importing a module script failed|loading chunk|chunkloaderror/i, "a chunk failed to load"],
+  [/failed to fetch|networkerror|load failed|network request failed/i, "a network request failed"],
+  [/resizeobserver loop/i, "resize observer loop"],
+  [/maximum call stack|too much recursion/i, "stack overflow"],
+  [/unexpected token|unexpected end of json|json/i, "unreadable data"],
+  [/^script error\.?$/i, "cross-origin script error"],
+  [/webgl|context lost|gpu/i, "graphics unavailable"],
+  [/audiocontext|play\(\)|not allowed to start|autoplay/i, "audio blocked"],
+  [/quota|storage/i, "storage unavailable"],
+  [/minified react error|react/i, "react error"],
 ];
 
-/**
- * `text` with everything that could name a kid or open a door removed.
- * `known` is every name the page knows (display names, hero names): they are
- * replaced wherever they appear as a word, whatever their case.
- */
-export function scrubText(text: string, known: readonly string[] = [], max = MAX_MESSAGE): string {
-  let out = text.slice(0, max * 4);
-  for (const [pattern, replacement] of RULES) out = out.replace(pattern, replacement);
-  for (const name of known) {
-    const trimmed = name.trim();
-    if (trimmed.length < 2) continue;
-    const escaped = trimmed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    out = out.replace(new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, "giu"), "[name]");
-  }
-  return out.replace(/\s+/g, " ").trim().slice(0, max);
+/** `Name: kind` for an exception, built only from the lists above. */
+export function diagnose(name: string, message: string): string {
+  const type = (ERROR_NAMES as readonly string[]).includes(name) ? name : "Error";
+  const kind = KINDS.find(([pattern]) => pattern.test(message.slice(0, 1000)))?.[1] ?? "other";
+  return `${type}: ${kind}`;
+}
+
+/** The message as given when it is exactly one `diagnose` can produce, else `Error: other`. */
+export function safeMessage(message: unknown): string {
+  if (typeof message !== "string") return "Error: other";
+  const split = message.indexOf(": ");
+  const type = message.slice(0, split);
+  const kind = message.slice(split + 2);
+  // Not a module-level constant: a top-level call is a side effect that keeps this file in every bundle.
+  const known =
+    (ERROR_NAMES as readonly string[]).includes(type) && (kind === "other" || KINDS.some(([, phrase]) => phrase === kind));
+  return known ? message : "Error: other";
 }
 
 const FRAME = /(\/(?:bundle|src)\/[\w./-]+?\.(?:m?js|tsx?)):(\d+):(\d+)/;
@@ -123,10 +125,10 @@ function oneOf<T extends string>(allowed: readonly T[], value: unknown, otherwis
 
 /**
  * A report from the wire, or null when it is not one. Every field is checked
- * against its shape, free text is scrubbed, and anything else the sender
- * included is dropped, so what comes out is all there is to log.
+ * against its own shape and anything else the sender included is dropped, so
+ * what comes out is all there is to log.
  */
-export function scrubReport(raw: unknown, known: readonly string[] = []): ClientErrorReport | null {
+export function scrubReport(raw: unknown): ClientErrorReport | null {
   if (!raw || typeof raw !== "object") return null;
   const body = raw as Record<string, unknown>;
   if (typeof body.message !== "string") return null;
@@ -135,10 +137,11 @@ export function scrubReport(raw: unknown, known: readonly string[] = []): Client
   const version = typeof body.version === "string" ? body.version : "";
   const id = typeof body.id === "string" ? body.id : "";
   return {
-    message: scrubText(body.message, known),
+    message: safeMessage(body.message),
     // Re-derived from the sender's frames, so only a location can get through.
     stack: frames.flatMap((f) => (typeof f === "string" ? ourFrames(f.slice(0, 200)).slice(0, 1) : [])),
-    version: /^[\w.-]{1,40}$/.test(version) ? version.slice(0, MAX_VERSION) : "unknown",
+    // A commit's short sha, or `dev`; nothing a person could type.
+    version: /^(?:dev|[0-9a-f]{7,12})$/.test(version) ? version : "unknown",
     route: oneOf(CLIENT_ERROR_ROUTES, body.route, "other"),
     layout: oneOf(CLIENT_ERROR_LAYOUTS, body.layout, "other"),
     browser: oneOf(BROWSER_FAMILIES, body.browser, "other"),

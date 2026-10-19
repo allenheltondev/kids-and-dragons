@@ -1,65 +1,62 @@
 import { describe, expect, it } from "vitest";
-import { browserFamily, ourFrames, routeShape, scrubReport, scrubText } from "./error-report.js";
+import { browserFamily, diagnose, ourFrames, routeShape, safeMessage, scrubReport } from "./error-report.js";
 
-const JWT = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhYmMxMjMifQ.c2lnbmF0dXJlYmxvYg";
-const DEV_TOKEN = "kaddev.eyJzdWIiOiJtYXlhIn0";
-const DEVICE_TOKEN = "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2";
+const LONG = "x".repeat(300);
 
-describe("scrubText: each kind of thing that must never reach a log", () => {
-  it("removes an email", () => {
-    const out = scrubText("sign-in failed for maya.k@example.com today");
-    expect(out).not.toMatch(/maya|example/i);
-    expect(out).toContain("[email]");
+describe("diagnose: the message is replaced by a kind, never kept", () => {
+  it("names the failure kind and nothing the exception said", () => {
+    expect(diagnose("TypeError", "Cannot read properties of undefined (reading 'Maya')")).toBe(
+      "TypeError: read a property of nothing",
+    );
+    expect(diagnose("TypeError", "foo.bar is not a function")).toBe("TypeError: not a function");
+    expect(diagnose("TypeError", "Failed to fetch dynamically imported module: https://x/bundle/a.js")).toBe(
+      "TypeError: a chunk failed to load",
+    );
   });
 
-  it("removes a four-letter room code, and a visitor's six", () => {
-    expect(scrubText("no open room WXYZ")).toBe("no open room [code]");
-    expect(scrubText("no open room WXYZQR")).toBe("no open room [code]");
-  });
-
-  it("removes a room code from a path and from a query, in any case", () => {
-    const out = scrubText("GET /api/room/wxyz/join and /p/WXYZ?code=WXYZ&token=abc failed");
-    expect(out).not.toMatch(/wxyz/i);
-    expect(out).not.toContain("token=");
-    expect(scrubText("at /tv/abcdef")).toBe("at /tv/:code");
-  });
-
-  it("removes a dev token, a JWT and a long opaque token", () => {
-    for (const secret of [DEV_TOKEN, JWT, DEVICE_TOKEN]) {
-      const out = scrubText(`bad credential ${secret} refused`);
-      expect(out, secret).not.toContain(secret.slice(4, 20));
-      expect(out, secret).toContain("[token]");
+  it("keeps nothing of a message that matches no kind", () => {
+    for (const message of [
+      "Validation failed for my best friend Nora",
+      `The answer was "${LONG}" and that is wrong`,
+      "maya.k@example.com typed ABCD",
+    ]) {
+      expect(diagnose("Error", message)).toBe("Error: other");
     }
-    expect(scrubText(`Authorization: Bearer ${DEVICE_TOKEN}`)).not.toContain(DEVICE_TOKEN);
   });
 
-  it("removes typed text an engine quotes back", () => {
-    const out = scrubText(`Cannot read properties of undefined (reading 'Maya the Brave') in "my secret nickname"`);
-    expect(out).not.toMatch(/maya|secret|nickname/i);
+  it("does not let typed text ride along beside a matched kind", () => {
+    const out = diagnose("TypeError", "Nora typed 'my secret' then x is not a function for ABCD");
+    expect(out).toBe("TypeError: not a function");
   });
 
-  it("keeps an apostrophe inside a word from swallowing the sentence", () => {
-    expect(scrubText("can't read 'x' of undefined")).toBe("can't read [text] of undefined");
+  it("names only known exception types", () => {
+    expect(diagnose("NoraError", "x is not a function")).toBe("Error: not a function");
+    expect(diagnose("", "x is not defined")).toBe("Error: not defined");
+  });
+});
+
+describe("safeMessage: the server accepts only what diagnose can produce", () => {
+  it("passes an exact diagnosis", () => {
+    expect(safeMessage("TypeError: not a function")).toBe("TypeError: not a function");
+    expect(safeMessage("Error: other")).toBe("Error: other");
   });
 
-  it("removes every name the page knows, whatever the case, and only as a word", () => {
-    const out = scrubText("hero Zephyrine and kid Maya fell; MAYA again; Mayakovsky is fine", ["Maya", "Zephyrine"]);
-    expect(out).not.toMatch(/zephyrine/i);
-    expect(out).not.toMatch(/\bmaya\b/i);
-    expect(out).toContain("Mayakovsky");
+  it.each([
+    "Validation failed for my best friend Nora",
+    `Error: ${LONG}`,
+    "Error: not a function and Nora",
+    "Nora: not a function",
+    "TypeError: other kid",
+    "TypeError: not a function\nNora",
+    "kaddev.eyJzdWIiOiJtYXlhIn0",
+    "",
+  ])("turns %j into Error: other", (message) => {
+    expect(safeMessage(message)).toBe("Error: other");
   });
 
-  it("escapes a name that is not safe in a pattern", () => {
-    expect(scrubText("hello (Sir) Lancelot [III]", ["(Sir) Lancelot [III]"])).toBe("hello [name]");
-  });
-
-  it("is idempotent, so the server can scrub what the client already did", () => {
-    const once = scrubText(`${DEV_TOKEN} maya@example.com /p/ABCD 'x'`, ["Maya"]);
-    expect(scrubText(once, ["Maya"])).toBe(once);
-  });
-
-  it("caps the message", () => {
-    expect(scrubText("a ".repeat(1000)).length).toBeLessThanOrEqual(300);
+  it("turns a non-string into Error: other", () => {
+    expect(safeMessage(42)).toBe("Error: other");
+    expect(safeMessage(null)).toBe("Error: other");
   });
 });
 
@@ -100,7 +97,7 @@ describe("scrubReport", () => {
 
   it("checks every field and drops everything it does not list", () => {
     const report = scrubReport({
-      message: "x",
+      message: "Nora's login failed",
       stack: ["/bundle/a.js:1:2", "nonsense maya@example.com"],
       version: "maya@example.com",
       route: "/p/ABCD",
@@ -108,10 +105,10 @@ describe("scrubReport", () => {
       browser: "Maya's Browser",
       id: "ABCD",
       displayName: "Maya",
-      extra: { token: DEV_TOKEN },
+      extra: { token: "kaddev.eyJzdWIiOiJtYXlhIn0" },
     });
     expect(report).toEqual({
-      message: "x",
+      message: "Error: other",
       stack: ["/bundle/a.js:1:2"],
       version: "unknown",
       route: "other",
@@ -119,5 +116,12 @@ describe("scrubReport", () => {
       browser: "other",
       id: "unknown",
     });
+  });
+
+  it("takes a short sha or dev as the version, and nothing else", () => {
+    for (const version of ["dev", "4bf77c2d1315"]) {
+      expect(scrubReport({ message: "x", version })?.version).toBe(version);
+    }
+    expect(scrubReport({ message: "x", version: "Nora-the-Brave" })?.version).toBe("unknown");
   });
 });

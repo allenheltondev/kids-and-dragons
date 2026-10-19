@@ -86,6 +86,6 @@ describe("what we store (#252)", () => {
   it("says crash reports are logged and not stored, with nothing a kid typed (#317)", () => {
     const reports = ELSEWHERE.find((e) => e.title === "Crash reports");
     expect(reports?.what).toMatch(/Logged, not stored/);
-    expect(reports?.what).toMatch(/names, hero names, emails, room codes/i);
+    expect(reports?.what).toMatch(/never sent/);
   });
 });

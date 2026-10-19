@@ -1,22 +1,22 @@
 /**
- * Builds a crash report, scrubs it and sends it to our own endpoint (#317).
- * A lazy chunk: `listen.ts` loads it when something is first thrown.
+ * Builds a crash report and sends it to our own endpoint (#317). A lazy chunk:
+ * `listen.ts` loads it when something is first thrown.
  *
- * What is in a report is `ClientErrorReport` and nothing else. The scrubbing
- * lives in `@kad/shared` and runs again on the server; this side adds what
- * only the page knows, the names of the kids and heroes in front of it.
+ * What is in a report is `ClientErrorReport` and nothing else, and the
+ * exception's own message is not in it: only the kind of failure it was
+ * (`diagnose`). That holds before anything has loaded, because it never reads
+ * the page's state. The server checks every field again.
  */
 
 import {
   browserFamily,
+  diagnose,
   ourFrames,
   routeShape,
   scrubReport,
   type ClientErrorLayout,
   type ClientErrorReport,
 } from "@kad/shared";
-import { loadIdentity } from "../store/persistence";
-import { useGameStore } from "../store";
 
 /** One page's reports tell one story; past this a loop is not adding to it. */
 const MAX_PER_PAGE = 5;
@@ -29,27 +29,11 @@ function layoutFor(path: string): ClientErrorLayout {
   return Math.min(screen.width, screen.height) >= 600 ? "tablet" : "phone";
 }
 
-/** Everything the page knows that is a name, or opens a door. */
-function knownNames(): string[] {
-  const names: string[] = [];
-  try {
-    const { state, session } = useGameStore.getState();
-    for (const member of state?.party ?? []) names.push(member.character.name);
-    for (const seat of Object.values(state?.seats ?? {})) names.push(seat.name);
-    if (session) names.push(session.roomCode, session.sessionToken);
-    const me = loadIdentity();
-    names.push(me.displayName, me.deviceToken ?? "");
-  } catch {
-    // Whatever cannot be read is scrubbed by its shape instead.
-  }
-  return names;
-}
-
 export function report(thrown: unknown): void {
   try {
     const error = thrown instanceof Error ? thrown : undefined;
     const raw = {
-      message: error ? `${error.name}: ${error.message}` : String(thrown),
+      message: diagnose(error?.name ?? "", error ? error.message : String(thrown)),
       stack: error?.stack ? ourFrames(error.stack) : [],
       version: import.meta.env.VITE_KAD_BUILD,
       route: routeShape(location.pathname),
@@ -57,7 +41,7 @@ export function report(thrown: unknown): void {
       browser: browserFamily(navigator.userAgent),
       id: pageId,
     };
-    const body: ClientErrorReport | null = scrubReport(raw, knownNames());
+    const body: ClientErrorReport | null = scrubReport(raw);
     if (!body) return;
     const key = `${body.message}|${body.stack[0] ?? ""}`;
     if (sent.has(key) || sent.size >= MAX_PER_PAGE) return;

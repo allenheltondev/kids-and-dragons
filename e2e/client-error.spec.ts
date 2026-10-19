@@ -37,7 +37,7 @@ for (const { layout, path, size } of LAYOUTS) {
     await page.waitForTimeout(500);
     expect(requests).toHaveLength(1);
     const body = JSON.parse(requests[0]!) as Record<string, unknown>;
-    expect(body).toMatchObject({ layout, route: path === "/" ? "/" : "/tv/:code" });
+    expect(body).toMatchObject({ message: "Error: other", layout, route: path === "/" ? "/" : "/tv/:code" });
     expect(requests[0]).not.toMatch(/maya|WXYZ|example\.com|ABCD/i);
   });
 }
