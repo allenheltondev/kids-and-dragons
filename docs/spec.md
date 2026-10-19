@@ -348,6 +348,27 @@ The tier floor is the right number because it makes a joined character **arithme
 
 Starting XP is the **threshold for that level**, not zero, or the next chapter's award drops the character straight back to level 1.
 
+A kid who sits down mid-chapter plays from the scene the party is in (mid-fight, they join in after it), and their phone opens on a one-line catch-up: what the party is doing right now. See §8.5.
+
+### 8.5 Stepping away and coming back
+
+Dinner, a bath, a phone call: a kid leaving partway through is a normal part of an evening, and so is coming back. **Nothing in a chapter waits on a chair nobody is sitting in.** A player whose phone has gone is **stepped away**, and the table goes on without them. Gone means the game page was closed, the phone has been quiet for a couple of minutes (it died, lost signal, or was put down and went to sleep), or the host took them out:
+
+| Where the game was waiting | What happens |
+|---|---|
+| Their story turn | Skipped when it comes round; a choice they were already holding is open to anyone (§6.1). |
+| Their check | Anyone at the table rolls instead, as themselves. A whole-party check stops waiting once everybody still to roll has stepped away. |
+| A vote | Their vote does not hold it up. If they were the last one to vote, anyone who voted taps **Decide without them** to close it. |
+| The ready-up before a fight | Not waited on. If everyone else had already said ready, a ready phone taps **Start without them**. |
+| Their combat turn | Anyone at the table may tap **Pass their turn**: a pass, not their move or their action. Not skipped automatically, because a phone asleep on the sofa reads as away too, and the table can see who is really gone. |
+| A full bag's "keep it or leave it" | Anyone may **leave it**. Nobody empties a friend's bag for them. |
+| A rest, a trade on offer | Never waited on in the first place: a rest's way on is anyone's, and an offer just waits. |
+| Beginning the chapter, the chapter's end | Not waited on. The lobby's Begin needs everyone *here* ready, and the chapter's end goes back to the lobby once everyone here is done. |
+
+Their hero **follows the party**: it stays in the party, in the fight's turn order and on the board, with everything it had. The shared screen says "Rosie stepped away" in words and fades her figure, standing up, so nobody mistakes it for knocked down (§7.3). When the fight is waiting on her turn, it says that any phone can pass it.
+
+**Coming back is opening the room again.** Same seat, same hero, back in the turn order, and the phone opens with one line saying what is going on ("Welcome back, Rosie! The party is in a fight, and your hero is right where you left them."). A late joiner (§8.4) hears "Welcome" instead. Nothing on either line counts the party.
+
 ---
 
 ## 9. Inventory
@@ -421,7 +442,7 @@ This is a hard architectural rule, tested in CI with the live layer stubbed out.
 - **TTS-ready from day one.** All narration and choice text flows through a `speak()` seam that is a no-op in v1 and can be wired to a TTS engine later without touching game code.
 - **No timers on decisions.** Nothing is lost by thinking about it.
 - **Colorblind-safe status indicators** — status effects and item rarity use shape + icon, never color alone.
-- **A tap does the thing, and the surface makes it safe.** No confirm step in a fight: a gold square walks you there (a step is cheap), a card that needs aiming asks who or where, and only legal answers are ever on screen. The one tap worth protecting, giving a turn away, has no button: once the action is spent the turn ends on its own, and Get Ready is how you pass.
+- **A tap does the thing, and the surface makes it safe.** No confirm step in a fight: a gold square walks you there (a step is cheap), a card that needs aiming asks who or where, and only legal answers are ever on screen. The one tap worth protecting, giving a turn away, has no button: once the action is spent the turn ends on its own, and Get Ready is how you pass. The only exception is a friend who has stepped away, whose turn anyone may pass (§8.5).
 - **Big touch targets.** Phone UI assumes a small hand and imprecise taps — and stays that way in Travel Mode's compressed layout.
 
 ---

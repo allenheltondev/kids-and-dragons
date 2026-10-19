@@ -23,10 +23,11 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
   CHARACTER_VERSION,
   FIELD_GUIDE_VERSION,
+  FORGOTTEN_FINDER,
   migrateCharacter,
   migrateFieldGuide,
 } from "@kad/shared";
-import { readAll } from "./character-io.ts";
+import { claimedRow, readAll } from "./character-io.ts";
 import {
   BatchWriteCommand,
   DeleteCommand,
@@ -37,6 +38,7 @@ import {
   TransactWriteCommand,
   UpdateCommand,
   type QueryCommandInput,
+  type TransactWriteCommandInput,
 } from "@aws-sdk/lib-dynamodb";
 import type {
   Character,
@@ -50,13 +52,24 @@ import type {
 import type {
   CampaignProgressRecord,
   ChapterProgressRecord,
+  CharacterWrite,
   CommitInput,
   EventRecord,
   GameRepository,
+  ForgetJob,
   GuestRenewal,
+  HouseholdOwnerRecord,
+  IdlePlayer,
+  MoveOutcome,
+  MoveProfileInput,
+  OrganizerInviteRecord,
+  PairingCodeRecord,
+  ProfileMove,
   RoomRecord,
   RunRecord,
+  TransferCodeRecord,
 } from "./repository.ts";
+import { collectMove, fieldGuideItem, planMove, transferKey, type MoveStep, type StoredRow } from "./profile-move.ts";
 import {
   ACCT,
   CAMPAIGN_SK,
@@ -66,21 +79,36 @@ import {
   EVT_SK,
   EVT_SK_MAX,
   FIELDGUIDE,
+  FORGET,
   GSI1_DEVICE,
+  GSI1_FORGET,
+  GSI1_FORGET_SK,
   GSI1_GUEST,
   GSI1_GUEST_SK,
+  GSI1_IDLE,
+  GSI1_IDLE_SK,
   GSI1_RUN,
   GUESS,
   GUESS_WINDOW_SK,
   HH,
+  INVITE,
   META,
+  MOVED_SK,
+  OWNER_SK,
+  PAIR,
   PLAYER_SK,
   PREFIX,
+  PRESENCE,
   ROOM,
   RUN,
   RUN_SK,
   STATE,
+  TRANSFER,
+  VISIT,
 } from "./keys.ts";
+
+/** One item of a TransactWriteItems, as the document client takes it. */
+type TransactItem = NonNullable<TransactWriteCommandInput["TransactItems"]>[number];
 
 /** One row. Identical to the local store's `TableItem` — that is the point. */
 interface TableItem {
@@ -88,8 +116,12 @@ interface TableItem {
   SK: string;
   GSI1PK?: string;
   GSI1SK?: string;
-  /** Epoch seconds, DynamoDB's TTL attribute. Only rooms and code-miss windows carry it. */
+  /** Epoch seconds, DynamoDB's TTL attribute. Only rooms, code-miss windows, invites, transfer codes and moved-device forwards carry it. */
   ttl?: number;
+  /** ISO. On a `PLAYER#` row: when she last joined a room (#252). Bookkeeping beside `data`, like `sweeping`. */
+  lastPlayedAt?: string;
+  /** On a household `META` row, or a `PLAYER#` row (#252), once deleting it has begun. */
+  sweeping?: boolean;
   /**
    * Schema version of `data`, per entity (architecture §3.2). A top-level
    * attribute rather than a field on `data`, so the domain type never learns
@@ -102,6 +134,9 @@ interface TableItem {
 }
 
 export const GSI1_NAME = "GSI1";
+
+/** Field Guide entries re-credited per update by `forgetFinder` (#252). */
+const FORGET_FINDS_PER_UPDATE = 50;
 
 /** BatchWriteItem's hard limit. */
 const BATCH_SIZE = 25;
@@ -435,6 +470,34 @@ export class DynamoRepository implements GameRepository {
       throw err;
     }
 
+    await this.purge(householdId);
+    return true;
+  }
+
+  async deleteHousehold(householdId: string): Promise<boolean> {
+    // The same mark, gated only on the household being there: the caller
+    // proved an owner. Re-entrant like the sweep, so a delete that died
+    // part-way is finished by the next.
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: HH(householdId), SK: META },
+          UpdateExpression: "SET sweeping = :yes",
+          ConditionExpression: "attribute_exists(PK)",
+          ExpressionAttributeValues: { ":yes": true },
+        }),
+      );
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+    await this.purge(householdId);
+    return true;
+  }
+
+  /** Everything under a marked household, in the order that keeps an interrupted delete findable. */
+  private async purge(householdId: string): Promise<void> {
     // Phase 2 — the contents. Runs live in their own partitions and are only
     // reachable *through* the household, so they go before anything in the
     // household partition is touched.
@@ -464,15 +527,18 @@ export class DynamoRepository implements GameRepository {
         if (!isConditionalFailure(err)) throw err;
       }
     }
+    // Every owner's pointer: the founding one, and each co-organizer's (#248).
     const household = await this.getHousehold(householdId);
-    if (household?.ownerSub) {
-      await this.doc.send(
-        new DeleteCommand({
-          TableName: this.table,
-          Key: { PK: ACCT(household.ownerSub), SK: HH(householdId) },
-        }),
-      );
+    const owners = await this.listOwners(householdId);
+    const subs = new Set(owners.map((o) => o.cognitoSub));
+    if (household?.ownerSub) subs.add(household.ownerSub);
+    // Each kid's visits, which are keyed by her and not by this household.
+    const visits: { PK: string; SK: string }[] = [];
+    for (const player of await this.partition(HH(householdId), PREFIX.player)) {
+      const items = await this.partition(VISIT((player.data as PlayerProfile).id));
+      visits.push(...items.map(({ PK, SK }) => ({ PK, SK })));
     }
+    await this.deleteAll([...[...subs].map((sub) => ({ PK: ACCT(sub), SK: HH(householdId) })), ...visits]);
 
     // Phase 3 — everything else in the household partition, `META` last. It
     // carries the GUEST index entry, so until it goes an interrupted sweep is
@@ -484,7 +550,187 @@ export class DynamoRepository implements GameRepository {
     await this.doc.send(
       new DeleteCommand({ TableName: this.table, Key: { PK: HH(householdId), SK: META } }),
     );
+  }
+
+  async deleteProfile(householdId: string, playerId: string, idleBefore?: string): Promise<boolean> {
+    /*
+     * Phase 1 — the mark, conditional, as the household's is. From here on
+     * `getPlayer` reads her as gone, so every room door turns her away and
+     * `touchPlayer` cannot renew her. Not conditional on `sweeping` being
+     * absent: an interrupted delete must be re-enterable.
+     */
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: HH(householdId), SK: PLAYER_SK(playerId) },
+          UpdateExpression: "SET sweeping = :yes",
+          ConditionExpression:
+            idleBefore === undefined ? "attribute_exists(PK)" : "attribute_exists(PK) AND lastPlayedAt <= :idle",
+          ExpressionAttributeValues: { ":yes": true, ...(idleBefore === undefined ? {} : { ":idle": idleBefore }) },
+        }),
+      );
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+
+    // Phase 2 — hers, by what each row says. Consistent, so a hero made a
+    // moment before the mark is not missed.
+    const [characters, devices, visits] = await Promise.all([
+      this.query({
+        KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+        ExpressionAttributeValues: { ":pk": HH(householdId), ":sk": PREFIX.character },
+        ConsistentRead: true,
+      }),
+      this.query({
+        KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+        ExpressionAttributeValues: { ":pk": HH(householdId), ":sk": PREFIX.device },
+        ConsistentRead: true,
+      }),
+      this.partition(VISIT(playerId)),
+    ]);
+    const hers = [
+      ...characters.filter((i) => (i.data as { ownerPlayerId?: string }).ownerPlayerId === playerId),
+      ...devices.filter((i) => {
+        const device = i.data as DeviceBinding;
+        return device.kind !== "shared" && device.playerId === playerId;
+      }),
+      ...visits,
+    ];
+    await this.deleteAll(hers.map(({ PK, SK }) => ({ PK, SK })));
+
+    // Phase 3 — the profile, which is what marks her and what indexes her.
+    await this.doc.send(
+      new DeleteCommand({ TableName: this.table, Key: { PK: HH(householdId), SK: PLAYER_SK(playerId) } }),
+    );
     return true;
+  }
+
+  async touchPlayer(householdId: string, playerId: string, lastPlayedAt: string, keepUntil: string | null): Promise<void> {
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: HH(householdId), SK: PLAYER_SK(playerId) },
+          UpdateExpression: keepUntil
+            ? "SET lastPlayedAt = :at, GSI1PK = :idle, GSI1SK = :sk"
+            : "SET lastPlayedAt = :at REMOVE GSI1PK, GSI1SK",
+          // Never on a profile being deleted: that would put a kid back in a
+          // sweep that has already started on her, or make a row for nobody.
+          ConditionExpression: "attribute_exists(PK) AND attribute_not_exists(sweeping)",
+          ExpressionAttributeValues: {
+            ":at": lastPlayedAt,
+            ...(keepUntil ? { ":idle": GSI1_IDLE, ":sk": GSI1_IDLE_SK(keepUntil, householdId, playerId) } : {}),
+          },
+        }),
+      );
+    } catch (err) {
+      if (!isConditionalFailure(err)) throw err;
+    }
+  }
+
+  async getLastPlayed(householdId: string, playerId: string): Promise<string | null> {
+    const row = await this.get(HH(householdId), PLAYER_SK(playerId));
+    return row && !row.sweeping ? (row.lastPlayedAt ?? null) : null;
+  }
+
+  async listIdlePlayers(nowIso: string, limit = 25): Promise<IdlePlayer[]> {
+    const items = await this.query(
+      {
+        IndexName: this.index,
+        KeyConditionExpression: "GSI1PK = :idle AND GSI1SK < :now",
+        ExpressionAttributeValues: { ":idle": GSI1_IDLE, ":now": GSI1_IDLE_SK(nowIso, "", "") },
+      },
+      limit,
+    );
+    // From the row itself, not the index key: a kid who moved (#251) took her
+    // entry with her, and her row names where she lives now.
+    return items.map((i) => ({
+      householdId: i.PK.slice("HH#".length),
+      playerId: (i.data as PlayerProfile).id,
+      lastPlayedAt: i.lastPlayedAt ?? "",
+    }));
+  }
+
+  async rewriteEvent(event: EventRecord): Promise<void> {
+    try {
+      await this.doc.send(
+        new PutCommand({
+          TableName: this.table,
+          Item: { PK: RUN(event.runId), SK: EVT_SK(event.seq), entity: "event", data: event } satisfies TableItem,
+          ConditionExpression: "attribute_exists(SK)",
+        }),
+      );
+    } catch (err) {
+      if (!isConditionalFailure(err)) throw err;
+    }
+  }
+
+  async forgetFinder(householdId: string, playerId: string): Promise<number> {
+    const book = await this.getFieldGuide(householdId);
+    const hers = Object.entries(book.entries)
+      .filter(([, find]) => find.firstFoundBy === playerId)
+      .map(([canonId]) => canonId);
+    // A handful of finds per update, so a kid who found everything still fits one expression.
+    for (let i = 0; i < hers.length; i += FORGET_FINDS_PER_UPDATE) {
+      const chunk = hers.slice(i, i + FORGET_FINDS_PER_UPDATE);
+      const names: Record<string, string> = { "#d": "data", "#e": "entries", "#f": "firstFoundBy" };
+      chunk.forEach((canonId, k) => {
+        names[`#k${k}`] = canonId;
+      });
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: HH(householdId), SK: FIELDGUIDE },
+          UpdateExpression: `SET ${chunk.map((_, k) => `#d.#e.#k${k}.#f = :forgotten`).join(", ")}`,
+          ExpressionAttributeNames: names,
+          ExpressionAttributeValues: { ":forgotten": FORGOTTEN_FINDER },
+        }),
+      );
+    }
+    return hers.length;
+  }
+
+  async putForget(job: ForgetJob): Promise<void> {
+    await this.put({
+      PK: FORGET(job.playerId),
+      SK: META,
+      GSI1PK: GSI1_FORGET,
+      GSI1SK: GSI1_FORGET_SK(job.createdAt, job.playerId),
+      entity: "forget",
+      data: job,
+    });
+  }
+
+  async listForgets(limit = 25): Promise<ForgetJob[]> {
+    const items = await this.query(
+      {
+        IndexName: this.index,
+        KeyConditionExpression: "GSI1PK = :forget",
+        ExpressionAttributeValues: { ":forget": GSI1_FORGET },
+      },
+      limit,
+    );
+    return items.map((i) => i.data as ForgetJob);
+  }
+
+  async deleteForget(playerId: string): Promise<void> {
+    await this.doc.send(new DeleteCommand({ TableName: this.table, Key: { PK: FORGET(playerId), SK: META } }));
+  }
+
+  async putVisit(playerId: string, tableHouseholdId: string, at: string): Promise<void> {
+    await this.put({
+      PK: VISIT(playerId),
+      SK: HH(tableHouseholdId),
+      entity: "visit",
+      data: { playerId, householdId: tableHouseholdId, at },
+    });
+  }
+
+  async listVisits(playerId: string): Promise<string[]> {
+    const items = await this.partition(VISIT(playerId), "HH#");
+    return items.map((i) => i.SK.slice("HH#".length));
   }
 
   async putAccountPointer(cognitoSub: string, householdId: string): Promise<void> {
@@ -501,25 +747,387 @@ export class DynamoRepository implements GameRepository {
     return items.map((i) => i.SK.slice("HH#".length));
   }
 
+  async putOwner(owner: HouseholdOwnerRecord): Promise<void> {
+    await this.doc.send(
+      new TransactWriteCommand({
+        TransactItems: [
+          {
+            Put: {
+              TableName: this.table,
+              Item: {
+                PK: HH(owner.householdId),
+                SK: OWNER_SK(owner.cognitoSub),
+                entity: "owner",
+                data: owner,
+              } satisfies TableItem,
+            },
+          },
+          {
+            Put: {
+              TableName: this.table,
+              Item: {
+                PK: ACCT(owner.cognitoSub),
+                SK: HH(owner.householdId),
+                entity: "account",
+                data: { cognitoSub: owner.cognitoSub, householdId: owner.householdId },
+              } satisfies TableItem,
+            },
+          },
+        ],
+      }),
+    );
+  }
+
+  async listOwners(householdId: string): Promise<HouseholdOwnerRecord[]> {
+    const items = await this.partition(HH(householdId), PREFIX.owner);
+    return items.map((i) => i.data as HouseholdOwnerRecord);
+  }
+
+  async removeOwner(householdId: string, cognitoSub: string): Promise<void> {
+    await this.doc.send(
+      new TransactWriteCommand({
+        TransactItems: [
+          { Delete: { TableName: this.table, Key: { PK: HH(householdId), SK: OWNER_SK(cognitoSub) } } },
+          { Delete: { TableName: this.table, Key: { PK: ACCT(cognitoSub), SK: HH(householdId) } } },
+        ],
+      }),
+    );
+  }
+
+  async putOrganizerInviteIfAbsent(invite: OrganizerInviteRecord): Promise<boolean> {
+    try {
+      await this.doc.send(
+        new PutCommand({
+          TableName: this.table,
+          Item: {
+            PK: INVITE(invite.code),
+            SK: META,
+            ttl: invite.ttl,
+            entity: "invite",
+            data: invite,
+          } satisfies TableItem,
+          ConditionExpression: "attribute_not_exists(PK)",
+        }),
+      );
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+  }
+
+  async redeemOrganizerInvite(
+    code: string,
+    nowIso: string,
+    owner: Omit<HouseholdOwnerRecord, "householdId">,
+  ): Promise<OrganizerInviteRecord | null> {
+    // Read first, for the household the membership rows name. The transaction
+    // re-checks everything the read decided, so a code spent in between loses.
+    const invite = (await this.get(INVITE(code), META))?.data as OrganizerInviteRecord | undefined;
+    if (!invite || invite.expiresAt <= nowIso) return null;
+    const row: HouseholdOwnerRecord = { ...owner, householdId: invite.householdId };
+    try {
+      await this.doc.send(
+        new TransactWriteCommand({
+          TransactItems: [
+            {
+              Delete: {
+                TableName: this.table,
+                Key: { PK: INVITE(code), SK: META },
+                // Spent and expired in one condition: TTL deletion is eventual,
+                // so an expired invite can still be sitting there for a day or two.
+                ConditionExpression: "attribute_exists(PK) AND #d.#exp > :now AND #d.#hh = :hh",
+                ExpressionAttributeNames: { "#d": "data", "#exp": "expiresAt", "#hh": "householdId" },
+                ExpressionAttributeValues: { ":now": nowIso, ":hh": invite.householdId },
+              },
+            },
+            {
+              // A code made before its household was deleted hands out
+              // nothing (#252): there, and not being deleted.
+              ConditionCheck: {
+                TableName: this.table,
+                Key: { PK: HH(row.householdId), SK: META },
+                ConditionExpression: "attribute_exists(PK) AND attribute_not_exists(sweeping)",
+              },
+            },
+            {
+              Put: {
+                TableName: this.table,
+                Item: {
+                  PK: HH(row.householdId),
+                  SK: OWNER_SK(row.cognitoSub),
+                  entity: "owner",
+                  data: row,
+                } satisfies TableItem,
+              },
+            },
+            {
+              Put: {
+                TableName: this.table,
+                Item: {
+                  PK: ACCT(row.cognitoSub),
+                  SK: HH(row.householdId),
+                  entity: "account",
+                  data: { cognitoSub: row.cognitoSub, householdId: row.householdId },
+                } satisfies TableItem,
+              },
+            },
+          ],
+        }),
+      );
+      return invite;
+    } catch (err) {
+      if (isTransactionCancelled(err)) return null;
+      throw err;
+    }
+  }
+
+  async putPairingCodeIfAbsent(pairing: PairingCodeRecord): Promise<boolean> {
+    try {
+      await this.doc.send(
+        new PutCommand({
+          TableName: this.table,
+          Item: {
+            PK: PAIR(pairing.code),
+            SK: META,
+            ttl: pairing.ttl,
+            entity: "pairing",
+            data: pairing,
+          } satisfies TableItem,
+          ConditionExpression: "attribute_not_exists(PK)",
+        }),
+      );
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+  }
+
+  async redeemPairingCode(code: string, nowIso: string): Promise<PairingCodeRecord | null> {
+    try {
+      // One conditional delete that returns what it deleted: spent, and read,
+      // in the same write. Expiry is in the condition because TTL deletion is
+      // eventual, so an expired code can sit there for a day or two.
+      const { Attributes } = await this.doc.send(
+        new DeleteCommand({
+          TableName: this.table,
+          Key: { PK: PAIR(code), SK: META },
+          ConditionExpression: "attribute_exists(PK) AND #d.#exp > :now",
+          ExpressionAttributeNames: { "#d": "data", "#exp": "expiresAt" },
+          ExpressionAttributeValues: { ":now": nowIso },
+          ReturnValues: "ALL_OLD",
+        }),
+      );
+      return (Attributes?.data as PairingCodeRecord | undefined) ?? null;
+    } catch (err) {
+      if (isConditionalFailure(err)) return null;
+      throw err;
+    }
+  }
+
+  async putTransferCodeIfAbsent(record: TransferCodeRecord): Promise<boolean> {
+    try {
+      await this.doc.send(
+        new PutCommand({
+          TableName: this.table,
+          Item: { ...transferKey(record.code), ttl: record.ttl, entity: "transfer", data: record } satisfies TableItem,
+          ConditionExpression: "attribute_not_exists(PK)",
+        }),
+      );
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+  }
+
+  async getTransferCode(code: string, nowIso: string): Promise<TransferCodeRecord | null> {
+    // TTL deletion is eventual, so an expired code can still be sitting there.
+    const record = (await this.get(TRANSFER(code), META))?.data as TransferCodeRecord | undefined;
+    return record && record.expiresAt > nowIso ? record : null;
+  }
+
+  async readProfileMove(householdId: string, playerId: string): Promise<ProfileMove | null> {
+    // Consistent, because every delete in the move is conditioned on these
+    // rows being exactly what was read: a stale copy would only cancel it.
+    const player = await this.consistentGet(HH(householdId), PLAYER_SK(playerId));
+    if (!player || player.sweeping) return null;
+    const [characters, devices, book] = await Promise.all([
+      this.query({
+        KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+        ExpressionAttributeValues: { ":pk": HH(householdId), ":sk": PREFIX.character },
+        ConsistentRead: true,
+      }),
+      this.query({
+        KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+        ExpressionAttributeValues: { ":pk": HH(householdId), ":sk": PREFIX.device },
+        ConsistentRead: true,
+      }),
+      this.getFieldGuide(householdId),
+    ]);
+    return collectMove(householdId, playerId, { player, characters, devices, book });
+  }
+
+  /*
+   * One TransactWriteItems, built from the plan both stores share. Its first
+   * item is always the code, which is how a cancellation says which refusal
+   * it was: the code's condition failing is `spent`, any other is `changed`.
+   */
+  async moveProfile(input: MoveProfileInput): Promise<MoveOutcome> {
+    const steps = planMove(input);
+    if (!steps) return "too-big";
+    // Her finds go into the new home's book with a nested `if_not_exists`,
+    // which needs the book's map to exist (see `recordDiscoveries`). Making
+    // an empty one first is idempotent and reads exactly like no book.
+    const merge = steps.find((step) => step.op === "finds" && !step.fresh);
+    if (merge?.op === "finds") await this.ensureFieldGuide(merge.householdId);
+
+    try {
+      await this.doc.send(new TransactWriteCommand({ TransactItems: steps.map((step) => this.moveItem(step)) }));
+      return "moved";
+    } catch (err) {
+      if (nameOf(err) !== "TransactionCanceledException") throw err;
+      const reasons = (err as { CancellationReasons?: { Code?: string }[] }).CancellationReasons ?? [];
+      const lost = (r: { Code?: string } | undefined) => r?.Code === "ConditionalCheckFailed" || r?.Code === "TransactionConflict";
+      if (!reasons.some(lost)) throw err;
+      return reasons[0]?.Code === "ConditionalCheckFailed" ? "spent" : "changed";
+    }
+  }
+
+  private moveItem(step: MoveStep): TransactItem {
+    const TableName = this.table;
+    switch (step.op) {
+      case "spend":
+        return {
+          Delete: {
+            TableName,
+            Key: transferKey(step.code),
+            ConditionExpression: "attribute_exists(PK) AND #d.#exp > :now AND #d.#hh = :hh AND #d.#pid = :pid",
+            ExpressionAttributeNames: { "#d": "data", "#exp": "expiresAt", "#hh": "householdId", "#pid": "playerId" },
+            ExpressionAttributeValues: { ":now": step.nowIso, ":hh": step.householdId, ":pid": step.playerId },
+          },
+        };
+      case "check":
+        return { ConditionCheck: { TableName, Key: { PK: step.PK, SK: step.SK }, ConditionExpression: "attribute_exists(PK)" } };
+      case "delete":
+        // A map compared whole: any write since the read, to any field, fails it.
+        return {
+          Delete: {
+            TableName,
+            Key: { PK: step.PK, SK: step.SK },
+            ConditionExpression: "#d = :d",
+            ExpressionAttributeNames: { "#d": "data" },
+            ExpressionAttributeValues: { ":d": step.data },
+          },
+        };
+      case "put":
+        return {
+          Put: {
+            TableName,
+            Item: step.item satisfies StoredRow,
+            ...(step.ifAbsent ? { ConditionExpression: "attribute_not_exists(PK)" } : {}),
+          },
+        };
+      case "finds": {
+        if (step.fresh) {
+          return {
+            Put: { TableName, Item: fieldGuideItem(step.householdId, step.entries), ConditionExpression: "attribute_not_exists(PK)" },
+          };
+        }
+        const names: Record<string, string> = { "#d": "data", "#e": "entries" };
+        const values: Record<string, unknown> = {};
+        const sets = Object.entries(step.entries).map(([canonId, find], i) => {
+          names[`#k${i}`] = canonId;
+          values[`:e${i}`] = find;
+          return `#d.#e.#k${i} = if_not_exists(#d.#e.#k${i}, :e${i})`;
+        });
+        return {
+          Update: {
+            TableName,
+            Key: { PK: HH(step.householdId), SK: FIELDGUIDE },
+            UpdateExpression: `SET ${sets.join(", ")}`,
+            ExpressionAttributeNames: names,
+            ExpressionAttributeValues: values,
+          },
+        };
+      }
+    }
+  }
+
+  async getMovedDevice(householdId: string, deviceId: string): Promise<string | null> {
+    const item = await this.consistentGet(HH(householdId), MOVED_SK(deviceId));
+    // Reads check the expiry, as for every TTL'd row: deletion is eventual.
+    if (!item || (item.ttl !== undefined && item.ttl * 1000 <= this.now())) return null;
+    return (item.data as { householdId?: string }).householdId ?? null;
+  }
+
+  private async consistentGet(pk: string, sk: string): Promise<TableItem | undefined> {
+    const out = await this.doc.send(
+      new GetCommand({ TableName: this.table, Key: { PK: pk, SK: sk }, ConsistentRead: true }),
+    );
+    return out.Item as TableItem | undefined;
+  }
+
+  /** An empty book, if the household has none: the map nested writes need. */
+  private async ensureFieldGuide(householdId: string): Promise<void> {
+    await this.doc.send(
+      new UpdateCommand({
+        TableName: this.table,
+        Key: { PK: HH(householdId), SK: FIELDGUIDE },
+        UpdateExpression:
+          "SET #d = if_not_exists(#d, :empty), v = if_not_exists(v, :v), entity = if_not_exists(entity, :entity)",
+        ExpressionAttributeNames: { "#d": "data" },
+        ExpressionAttributeValues: { ":empty": { entries: {} }, ":v": FIELD_GUIDE_VERSION, ":entity": "field-guide" },
+      }),
+    );
+  }
+
   async putPlayer(player: PlayerProfile): Promise<void> {
-    await this.put({
-      PK: HH(player.householdId),
-      SK: PLAYER_SK(player.id),
-      entity: "player",
-      data: player,
+    /*
+     * An update of `data` rather than a Put of the row: when she last played,
+     * her retention entry (#252) and a delete's mark sit beside the profile,
+     * and a write from an older read must not take them away. Never over a
+     * profile being deleted.
+     */
+    try {
+      await this.doc.send(this.playerWrite(player, "attribute_not_exists(sweeping)"));
+    } catch (err) {
+      if (!isConditionalFailure(err)) throw err;
+    }
+  }
+
+  async updatePlayer(player: PlayerProfile): Promise<boolean> {
+    // There, and not being deleted: an update never makes a row (#252).
+    try {
+      await this.doc.send(this.playerWrite(player, "attribute_exists(PK) AND attribute_not_exists(sweeping)"));
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+  }
+
+  private playerWrite(player: PlayerProfile, condition: string): UpdateCommand {
+    return new UpdateCommand({
+      TableName: this.table,
+      Key: { PK: HH(player.householdId), SK: PLAYER_SK(player.id) },
+      UpdateExpression: "SET #d = :data, entity = :entity",
+      ConditionExpression: condition,
+      ExpressionAttributeNames: { "#d": "data" },
+      ExpressionAttributeValues: { ":data": player, ":entity": "player" },
     });
   }
 
   async getPlayer(householdId: string, playerId: string): Promise<PlayerProfile | null> {
-    return (
-      ((await this.get(HH(householdId), PLAYER_SK(playerId)))?.data as PlayerProfile | undefined) ??
-      null
-    );
+    // A profile being deleted (#252) is gone to every reader already.
+    const row = await this.get(HH(householdId), PLAYER_SK(playerId));
+    return row && !row.sweeping ? (row.data as PlayerProfile) : null;
   }
 
   async listPlayers(householdId: string): Promise<PlayerProfile[]> {
     const items = await this.partition(HH(householdId), PREFIX.player);
-    return items.map((i) => i.data as PlayerProfile);
+    return items.filter((i) => !i.sweeping).map((i) => i.data as PlayerProfile);
   }
 
   async putDevice(device: DeviceBinding): Promise<void> {
@@ -627,6 +1235,16 @@ export class DynamoRepository implements GameRepository {
   async listCharacters(householdId: string): Promise<Character[]> {
     const items = await this.partition(HH(householdId), PREFIX.character);
     return readAll(items, householdId);
+  }
+
+  async writeCharacter(write: CharacterWrite): Promise<boolean> {
+    try {
+      await this.doc.send(new PutCommand(characterTransaction(this.table, write).Put));
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
   }
 
   // --- runs, state, events ---------------------------------------------------
@@ -839,21 +1457,11 @@ export class DynamoRepository implements GameRepository {
                 ExpressionAttributeValues: { ":expected": expectedSeq },
               },
             },
-            // Unconditional, and safe because the two above are not: if the run
-            // has moved on, the whole transaction is rejected and these never
-            // land. That is the entire point of putting them here.
-            ...characters.map((character) => ({
-              Put: {
-                TableName: this.table,
-                Item: {
-                  PK: HH(character.householdId),
-                  SK: CHAR_SK(character.id),
-                  entity: "character",
-                  v: CHARACTER_VERSION,
-                  data: character,
-                } satisfies TableItem,
-              },
-            })),
+            // If the run has moved on, the whole transaction is rejected and
+            // these never land: that is the point of putting them here. Each
+            // also carries its hero's claim and the version read (#282), since
+            // another table writing her has a different seq gate.
+            ...characters.map((write) => characterTransaction(this.table, write)),
             // Progress rows ride the run gate. The campaign row also has its
             // own version condition because a second run has a different seq gate.
             ...(chapterProgress
@@ -1100,6 +1708,44 @@ export class DynamoRepository implements GameRepository {
       if (!isConditionalFailure(err)) throw err;
     }
   }
+
+  /**
+   * One nested `SET` per beat, so phones beating at once each land their own
+   * key. The first beat in a run finds no map to set into (a
+   * ValidationException), creates it with `if_not_exists`, so a racing first
+   * beat can never wipe another's, and goes again: the field guide's
+   * bootstrap (`recordDiscoveries`). `ALL_NEW` is the whole map after this
+   * beat, which is what the sweep reads.
+   */
+  async touchPresence(runId: string, playerId: string, at: string, ttl: number): Promise<Record<string, string>> {
+    const key = { PK: RUN(runId), SK: PRESENCE };
+    for (let attempt = 0; ; attempt++) {
+      try {
+        const out = await this.doc.send(
+          new UpdateCommand({
+            TableName: this.table,
+            Key: key,
+            UpdateExpression: "SET #d.#p = :at, #ttl = :ttl",
+            ExpressionAttributeNames: { "#d": "data", "#p": playerId, "#ttl": "ttl" },
+            ExpressionAttributeValues: { ":at": at, ":ttl": ttl },
+            ReturnValues: "ALL_NEW",
+          }),
+        );
+        return { ...((out.Attributes?.["data"] as Record<string, string> | undefined) ?? {}) };
+      } catch (err) {
+        if (nameOf(err) !== "ValidationException" || attempt >= 2) throw err;
+        await this.doc.send(
+          new UpdateCommand({
+            TableName: this.table,
+            Key: key,
+            UpdateExpression: "SET #d = if_not_exists(#d, :empty), entity = if_not_exists(entity, :entity)",
+            ExpressionAttributeNames: { "#d": "data" },
+            ExpressionAttributeValues: { ":empty": {}, ":entity": "presence" },
+          }),
+        );
+      }
+    }
+  }
 }
 
 /** A conditional Put that is safe across independent run partitions. */
@@ -1124,6 +1770,52 @@ function campaignProgressTransaction(
       TableName: table,
       Item: campaignProgressItem(progress),
       ...condition,
+    },
+  };
+}
+
+/**
+ * A hero's write under her claim (`CharacterWrite`), for `commit` and
+ * `writeCharacter` both: a new hero's row must not exist; any other must carry
+ * the version (absent is 0) and the claim (`provisional.runId`, absent or null
+ * is none) that were read. `claimHolds` in character-io.ts is the same rule for
+ * the memory store.
+ */
+function characterTransaction(table: string, write: CharacterWrite) {
+  const character = claimedRow(write);
+  const item: TableItem = {
+    PK: HH(character.householdId),
+    SK: CHAR_SK(character.id),
+    entity: "character",
+    v: CHARACTER_VERSION,
+    data: character,
+  };
+  if (write.expectedVersion === null) {
+    return { Put: { TableName: table, Item: item, ConditionExpression: "attribute_not_exists(PK)" } };
+  }
+  const version =
+    write.expectedVersion === 0
+      ? "attribute_exists(PK) AND (attribute_not_exists(#d.#version) OR #d.#version = :version)"
+      : "#d.#version = :version";
+  const claim =
+    write.expectedClaim === null
+      ? "attribute_not_exists(#d.#provisional.#runId)"
+      : "#d.#provisional.#runId = :claim";
+  return {
+    Put: {
+      TableName: table,
+      Item: item,
+      ConditionExpression: `${version} AND ${claim}`,
+      ExpressionAttributeNames: {
+        "#d": "data",
+        "#version": "version",
+        "#provisional": "provisional",
+        "#runId": "runId",
+      },
+      ExpressionAttributeValues: {
+        ":version": write.expectedVersion,
+        ...(write.expectedClaim === null ? {} : { ":claim": write.expectedClaim }),
+      },
     },
   };
 }

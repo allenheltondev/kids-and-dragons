@@ -129,6 +129,25 @@ export interface Souvenir {
   earnedAt: string;
 }
 
+/**
+ * One campaign a hero has finished (#283, architecture §4.5, "Who owns what"):
+ * her own record, kept on her row at her home whichever table she finished it
+ * at. Written beside the commit of her provisional state, so only a campaign
+ * that *completed* is here; a failed one leaves a souvenir instead.
+ */
+export interface FinishedCampaign {
+  campaignId: string;
+  /**
+   * How its last chapter ended. A loss ending completes a campaign exactly as a
+   * win does (spec §8.3), so both are finished.
+   */
+  outcome: "success" | "setback";
+  /** ISO timestamp of the completion. */
+  at: string;
+  /** The household whose table she finished it at: her home, or one she visited. */
+  table: string;
+}
+
 export interface Character {
   id: string;
   householdId: string;
@@ -143,7 +162,20 @@ export interface Character {
   questItems: string[];
   /** Permanent, cosmetic-only, grows on campaign failure. */
   souvenirs: Souvenir[];
+  /**
+   * The campaigns she has finished, one entry per campaign, the latest
+   * completion kept (#283). Absent until she finishes one, and on every row
+   * written before the record existed (character schema v3).
+   */
+  finished?: FinishedCampaign[];
   createdAt: string;
+  /**
+   * The row's monotonic version, which the claim conditions every write on
+   * (#282, architecture §4.5, "One game at a time per hero: the claim"). The
+   * claim itself is `provisional.runId`. The store sets this on every write;
+   * nothing else does. Absent on rows written before it, which are version 0.
+   */
+  version?: number;
 }
 
 /** Result of applying an XP award to a character's effective progress. */
@@ -251,6 +283,12 @@ export interface PlayerProfile {
   // signing in, or from being the device that opened a room, never from a
   // label on the profile. Rows written before this still carry `role`, and
   // nothing reads it.
+  /**
+   * An owner took this kid off the household's pickers (#248): a group's kid
+   * who stopped coming. The profile and its heroes stay, and an owner can
+   * bring it back; nobody can pick it or bind a phone to it until then.
+   */
+  retired?: true;
 }
 
 /**
@@ -275,7 +313,12 @@ export interface PlayerProfile {
 export interface Household {
   id: string;
   displayName: string;
-  /** The Cognito sub of the account that claimed it. `null` while anonymous. */
+  /**
+   * The Cognito sub of the account that claimed or created it. `null` while
+   * anonymous. A group (#248) may have more owners than this one: each is an
+   * `ACCT#` pointer plus an `OWNER#` row, and the pointer is the authority.
+   * This one is the founding owner, whom no other owner can remove.
+   */
   ownerSub: string | null;
   /** True until an account claims it. Guests are swept; claimed ones never are. */
   guest: boolean;
@@ -298,6 +341,14 @@ export interface Household {
    * the same phone that decides whose evening it is (`RoomRecord.claimable`).
    */
   awaitingFounder?: true;
+  /**
+   * How long a kid who stops playing is kept, in days (#252), set by a
+   * signed-in owner. Absent is the behavior from before it existed: a kept
+   * household keeps every kid until an owner deletes one. Only a kept
+   * household has it; a guest household is swept whole a week after it last
+   * played (`expiresAt`), whoever is in it.
+   */
+  retentionDays?: number;
 }
 
 /**

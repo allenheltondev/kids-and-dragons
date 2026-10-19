@@ -19,9 +19,20 @@ import type {
   JoinRoomRequest,
   JoinRoomResponse,
   JournalResponse,
+  OrganizerDevicesResponse,
+  OrganizerHouseholdsResponse,
+  OrganizerHouseholdSummary,
+  OrganizerHouseholdDeleted,
+  OrganizerHouseholdView,
+  OrganizerInvite,
+  TransferAccepted,
+  TransferCode,
+  PairingCode,
+  PairingResult,
   RoomMode,
   RulesContent,
   RunState,
+  SetVisitorsResponse,
   SharedDevicePlayersResponse,
   SharedSeatRequest,
   ShareDeviceResponse,
@@ -98,7 +109,11 @@ export interface ClientConfig {
 
 /** What `POST /api/auth/link` gives back — architecture §4.5. */
 export interface LinkAccountResponse {
-  householdId: string;
+  /**
+   * `null` when the account owns more than one household and nothing said
+   * which (#248): `households` lists them, and the client asks.
+   */
+  householdId: string | null;
   /** True when a guest household just became permanent. The thing worth saying. */
   claimed: boolean;
   players: { id: string; displayName: string; color: string }[];
@@ -107,7 +122,32 @@ export interface LinkAccountResponse {
   playerId?: string;
   /** This phone already plays in `householdId`; no player to pick. Absent from older servers. */
   deviceBound?: boolean;
+  /**
+   * Every household the account owns (#248): more than one is a grown-up who
+   * runs a group as well as a family, and is asked which. Absent from older servers.
+   */
+  households?: OrganizerHouseholdSummary[];
 }
+
+/** One change an organizer makes to a household (#248). Each answers with the whole household. */
+export type OrganizerEdit =
+  | { action: "rename-household"; householdId: string; displayName: string }
+  | { action: "add-player"; householdId: string; displayName: string }
+  | { action: "rename-player"; householdId: string; playerId: string; displayName: string }
+  | { action: "retire-player"; householdId: string; playerId: string; retired: boolean }
+  | { action: "leave-adventure"; householdId: string; characterId: string }
+  | { action: "delete-player"; householdId: string; playerId: string }
+  | { action: "set-retention"; householdId: string; retentionDays: number | null };
+
+const ORGANIZER_EDIT_PATH: Record<OrganizerEdit["action"], string> = {
+  "rename-household": "/api/organizer/household/rename",
+  "add-player": "/api/organizer/players",
+  "rename-player": "/api/organizer/players/rename",
+  "retire-player": "/api/organizer/players/retire",
+  "leave-adventure": "/api/organizer/heroes/leave",
+  "delete-player": "/api/organizer/players/delete",
+  "set-retention": "/api/organizer/household/retention",
+};
 
 /**
  * How a display client attaches — architecture §4.5, "The TV, which is nobody".
@@ -132,24 +172,27 @@ export interface SharedPlayersLoad extends SharedDevicePlayersResponse {
 }
 
 /** What the host may do to its room (#263, #267). */
-export type HostControl = "remove" | "lock" | "close";
+export type HostControl = "remove" | "lock" | "quiet" | "close" | "stop";
 
 /**
  * How the host proves it is the host: a phone's (or TV's) own device token,
- * or a shared tablet's token with the seated kid's room session (#250).
+ * or a shared tablet's token with the seated kid's room session (#250). A
+ * tablet acting as the TV (#274) seats nobody, so its token stands alone.
  */
-export type HostAuth = { deviceToken: string } | { sharedToken: string; sessionToken: string };
+export type HostAuth = { deviceToken: string } | { sharedToken: string; sessionToken?: string };
 
 export interface Api {
   createRoom(body: CreateRoomInput): Promise<LocalCreateRoomResponse>;
   /** Party Mode, opened from the TV itself: nobody is seated. */
-  openDisplayRoom(body: Omit<CreateRoomInput, "mode" | "display">): Promise<LocalOpenDisplayResponse>;
+  openDisplayRoom(body: Omit<CreateRoomInput, "mode" | "display" | "householdId"> & { householdId?: string }, sharedToken?: string): Promise<LocalOpenDisplayResponse>;
   joinRoom(code: string, body: LocalJoinRequest): Promise<JoinRoomResponse>;
   /**
    * `deviceToken`, when this screen has one, is how a TV that opened the room
    * learns after a refresh that it is still the host (#267). It grants nothing else.
+   * A family tablet acting as the TV presents its `sharedToken` instead (#274),
+   * and the answer is still only a viewer token.
    */
-  watchRoom(code: string, timeoutMs?: number, deviceToken?: string): Promise<WatchRoomResponse>;
+  watchRoom(code: string, timeoutMs?: number, deviceToken?: string, sharedToken?: string): Promise<WatchRoomResponse>;
   /**
    * The host running the room (#263, #267): take a player out
    * (`{ playerId }`), lock it to new joins (`{ locked }`), or close it.
@@ -159,6 +202,17 @@ export interface Api {
   /** An unconfirmed tap, relayed to the room's screens (`IntentPreview`). */
   postPreview(preview: IntentPreview | null, context: string | null, token: string): Promise<void>;
   /**
+   * "Still here", or "leaving" (#258). A goodbye is sent `keepalive`, so it
+   * survives the page that sends it closing.
+   */
+  postPresence(leaving: boolean, token: string): Promise<void>;
+  /**
+   * Take the household's stopped chapter into this room (#259, server
+   * handlers/save.ts). The answer is the run's patch like any other change;
+   * a refusal rejects with the server's own words.
+   */
+  postResume(token: string): Promise<void>;
+  /**
    * `timeoutMs` narrows the request funnel's default bound for this one call.
    * Refresh recovery passes the *remaining* recovery budget here, so five
    * retries against a dead connection share one deadline instead of each
@@ -166,7 +220,13 @@ export interface Api {
    */
   fetchState(query: StateQuery, token?: string, timeoutMs?: number): Promise<StateResponse>;
   /** This player's saved characters, to bring one back (spec §5). */
-  listHeroes(token: string): Promise<{ heroes: ResolvedCharacter[] }>;
+  listHeroes(token: string): Promise<{ heroes: ResolvedCharacter[]; saved?: Record<string, { at?: string }> }>;
+  /**
+   * The host of a stopped game lets one of its heroes go (#259): her gains
+   * from that adventure are dropped and she is free at once. The device
+   * token, since the room is closed.
+   */
+  releaseSavedHero(characterId: string, homeHouseholdId: string | undefined, deviceToken: string): Promise<void>;
   /**
    * What this phone can study between games — its heroes, the household's
    * Field Guide, where the party last was. The device token, not a room
@@ -206,7 +266,13 @@ export interface Api {
    * `preferExisting` is the home-screen sign-in: an account that already has a
    * household returns to it rather than claiming this phone's guest game.
    */
-  linkAccount(idToken: string, deviceToken?: string, preferExisting?: boolean): Promise<LinkAccountResponse>;
+  linkAccount(
+    idToken: string,
+    deviceToken?: string,
+    preferExisting?: boolean,
+    /** One of `households` from an earlier answer (#248). */
+    householdId?: string,
+  ): Promise<LinkAccountResponse>;
   /** Binds this device to an existing player — the new-phone path (§4.5). */
   adoptDevice(
     idToken: string,
@@ -219,9 +285,20 @@ export interface Api {
    * A signed-in owner makes this device the household's shared tablet. The
    * device token it held, if any, goes along to be revoked.
    */
-  shareDevice(idToken: string, deviceToken?: string, sharedToken?: string): Promise<ShareDeviceResponse>;
+  shareDevice(
+    idToken: string,
+    deviceToken?: string,
+    sharedToken?: string,
+    /** Which household, when the account owns more than one (#248). */
+    householdId?: string,
+  ): Promise<ShareDeviceResponse>;
   /** "Forget this device": the tablet's own token names it. */
   forgetDevice(idToken: string, sharedToken: string): Promise<void>;
+  /**
+   * A signed-in owner opening a room to visitors, or closing it to new ones
+   * (#249). The id token is the grown-up's; the room is named by its code.
+   */
+  setVisitors(idToken: string, code: string, open: boolean): Promise<SetVisitorsResponse>;
   /** The "who's playing?" picker. */
   listSharedPlayers(sharedToken: string): Promise<SharedPlayersLoad>;
   /** Seat the kid picked on the tablet. Answers with a session, never a device token. */
@@ -231,6 +308,39 @@ export interface Api {
     sharedToken: string,
     seat: SharedSeatRequest,
   ): Promise<LocalCreateRoomResponse>;
+
+  // --- organizers (#248) -----------------------------------------------------
+  /** Every household the signed-in account owns. */
+  listHouseholds(idToken: string): Promise<OrganizerHouseholdsResponse>;
+  /** A new group, owned by this account, with nobody in it yet. */
+  createGroup(idToken: string, displayName: string): Promise<OrganizerHouseholdSummary>;
+  viewHousehold(idToken: string, householdId: string): Promise<OrganizerHouseholdView>;
+  /** The household's shared tablets (#273). */
+  listSharedDevices(idToken: string, householdId: string): Promise<OrganizerDevicesResponse>;
+  /** Forget a shared tablet by id, from any signed-in device (#273). */
+  forgetDeviceById(idToken: string, deviceId: string): Promise<void>;
+  editHousehold(idToken: string, edit: OrganizerEdit): Promise<OrganizerHouseholdView>;
+  createOrganizerInvite(idToken: string, householdId: string): Promise<OrganizerInvite>;
+  acceptOrganizerInvite(idToken: string, code: string): Promise<OrganizerHouseholdSummary>;
+  /** A single-use code that moves one kid to another home (#251). */
+  createTransferCode(idToken: string, householdId: string, playerId: string): Promise<TransferCode>;
+  /** Redeem one: into `householdId`, which you own, or a new home when it is absent. */
+  acceptTransfer(idToken: string, code: string, householdId?: string): Promise<TransferAccepted>;
+  /** Take a co-organizer off, or leave (`ownerId` is your own). */
+  removeOrganizer(idToken: string, householdId: string, ownerId: string): Promise<{ householdId: string; left: boolean }>;
+  /** Delete the household and everything under it (#252). Only its one owner may. */
+  deleteHousehold(idToken: string, householdId: string): Promise<OrganizerHouseholdDeleted>;
+
+  // --- pairing a new device to a kid (#281) ----------------------------------
+  /** Her own phone makes a one-time code. Only a personal device token can. */
+  createPairingCode(deviceToken: string): Promise<PairingCode>;
+  /** A signed-in owner makes one for a kid of hers. */
+  pairProfile(idToken: string, householdId: string, playerId: string): Promise<PairingCode>;
+  /**
+   * The new device spends a code. No sign-in: the code is the credential. A
+   * binding the device already holds goes along, to be revoked.
+   */
+  redeemPairingCode(code: string, deviceToken?: string): Promise<PairingResult & { deviceToken: string }>;
 }
 
 const JSON_HEADERS = { "content-type": "application/json" };
@@ -322,10 +432,10 @@ export const api: Api = {
     });
   },
 
-  openDisplayRoom(body) {
+  openDisplayRoom(body, sharedToken) {
     return request<LocalOpenDisplayResponse>("/api/room", {
       method: "POST",
-      headers: JSON_HEADERS,
+      headers: { ...JSON_HEADERS, ...(sharedToken ? { "x-kad-shared-token": sharedToken } : {}) },
       body: JSON.stringify({ ...body, mode: "party", display: true }),
     });
   },
@@ -338,10 +448,17 @@ export const api: Api = {
     });
   },
 
-  watchRoom(code, timeoutMs, deviceToken) {
+  watchRoom(code, timeoutMs, deviceToken, sharedToken) {
     return request<WatchRoomResponse>(`/api/room/${encodeURIComponent(code)}/watch`, {
       method: "POST",
-      headers: { ...JSON_HEADERS, ...(deviceToken ? { "x-kad-device-token": deviceToken } : {}) },
+      headers: {
+        ...JSON_HEADERS,
+        ...(sharedToken
+          ? { "x-kad-shared-token": sharedToken }
+          : deviceToken
+            ? { "x-kad-device-token": deviceToken }
+            : {}),
+      },
       body: JSON.stringify({}),
       ...(timeoutMs !== undefined ? { timeoutMs } : {}),
     });
@@ -354,7 +471,7 @@ export const api: Api = {
         ...JSON_HEADERS,
         ...("deviceToken" in auth ? { "x-kad-device-token": auth.deviceToken } : { "x-kad-shared-token": auth.sharedToken }),
       },
-      ...("sessionToken" in auth ? { token: auth.sessionToken } : {}),
+      ...("sessionToken" in auth && auth.sessionToken ? { token: auth.sessionToken } : {}),
       body: JSON.stringify(body),
     });
   },
@@ -382,8 +499,35 @@ export const api: Api = {
     });
   },
 
+  async postPresence(leaving, token) {
+    await request<{ ok: boolean }>("/api/presence", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token,
+      body: JSON.stringify({ leaving }),
+      ...(leaving ? { keepalive: true } : {}),
+    });
+  },
+
+  async postResume(token) {
+    await request<{ ok: true }>("/api/resume", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token,
+      body: JSON.stringify({}),
+    });
+  },
+
   listHeroes(token) {
-    return request<{ heroes: ResolvedCharacter[] }>("/api/heroes", { token });
+    return request<{ heroes: ResolvedCharacter[]; saved?: Record<string, { at?: string }> }>("/api/heroes", { token });
+  },
+
+  async releaseSavedHero(characterId, homeHouseholdId, deviceToken) {
+    await request<{ ok: true }>("/api/save/release", {
+      method: "POST",
+      headers: { ...JSON_HEADERS, "x-kad-device-token": deviceToken },
+      body: JSON.stringify({ characterId, ...(homeHouseholdId ? { homeHouseholdId } : {}) }),
+    });
   },
 
   loadJournal(deviceToken) {
@@ -454,7 +598,7 @@ export const api: Api = {
     }
   },
 
-  linkAccount(idToken, deviceToken, preferExisting = false) {
+  linkAccount(idToken, deviceToken, preferExisting = false, householdId) {
     return request<LinkAccountResponse>("/api/auth/link", {
       method: "POST",
       headers: {
@@ -464,7 +608,10 @@ export const api: Api = {
       // The *Cognito* id token, not a room session token — this is the one
       // request in the client that carries an account credential.
       token: idToken,
-      body: JSON.stringify(preferExisting ? { preferExisting: true } : {}),
+      body: JSON.stringify({
+        ...(preferExisting ? { preferExisting: true } : {}),
+        ...(householdId ? { householdId } : {}),
+      }),
     });
   },
 
@@ -477,7 +624,7 @@ export const api: Api = {
     });
   },
 
-  shareDevice(idToken, deviceToken, sharedToken) {
+  shareDevice(idToken, deviceToken, sharedToken, householdId) {
     return request<ShareDeviceResponse>("/api/auth/shared-device", {
       method: "POST",
       headers: {
@@ -486,7 +633,7 @@ export const api: Api = {
         ...(sharedToken ? { "x-kad-shared-token": sharedToken } : {}),
       },
       token: idToken,
-      body: JSON.stringify({}),
+      body: JSON.stringify(householdId ? { householdId } : {}),
     });
   },
 
@@ -499,6 +646,15 @@ export const api: Api = {
     });
   },
 
+  setVisitors(idToken, code, open) {
+    return request<SetVisitorsResponse>(`/api/room/${encodeURIComponent(code)}/visitors`, {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ open }),
+    });
+  },
+
   async listSharedPlayers(sharedToken) {
     let rotatedToken: string | null = null;
     const body = await request<SharedDevicePlayersResponse>("/api/household/players", {
@@ -508,6 +664,133 @@ export const api: Api = {
       },
     });
     return { ...body, ...(rotatedToken ? { rotatedToken } : {}) };
+  },
+
+  // --- organizers (#248): every one carries the *Cognito* id token ----------
+
+  listHouseholds(idToken) {
+    return request<OrganizerHouseholdsResponse>("/api/organizer/households", { token: idToken });
+  },
+
+  createGroup(idToken, displayName) {
+    return request<OrganizerHouseholdSummary>("/api/organizer/households", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ displayName }),
+    });
+  },
+
+  viewHousehold(idToken, householdId) {
+    return request<OrganizerHouseholdView>(
+      `/api/organizer/household?${new URLSearchParams({ householdId }).toString()}`,
+      { token: idToken },
+    );
+  },
+
+  listSharedDevices(idToken, householdId) {
+    return request<OrganizerDevicesResponse>(
+      `/api/organizer/devices?${new URLSearchParams({ householdId }).toString()}`,
+      { token: idToken },
+    );
+  },
+
+  async forgetDeviceById(idToken, deviceId) {
+    await request<unknown>("/api/auth/forget-device", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ deviceId }),
+    });
+  },
+
+  editHousehold(idToken, edit) {
+    const { action, ...body } = edit;
+    return request<OrganizerHouseholdView>(ORGANIZER_EDIT_PATH[action], {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify(body),
+    });
+  },
+
+  createOrganizerInvite(idToken, householdId) {
+    return request<OrganizerInvite>("/api/organizer/invite", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ householdId }),
+    });
+  },
+
+  acceptOrganizerInvite(idToken, code) {
+    return request<OrganizerHouseholdSummary>("/api/organizer/invite/accept", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ code }),
+    });
+  },
+
+  createTransferCode(idToken, householdId, playerId) {
+    return request<TransferCode>("/api/organizer/transfer", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ householdId, playerId }),
+    });
+  },
+
+  acceptTransfer(idToken, code, householdId) {
+    return request<TransferAccepted>("/api/organizer/transfer/accept", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify(householdId ? { code, householdId } : { code }),
+    });
+  },
+
+  removeOrganizer(idToken, householdId, ownerId) {
+    return request<{ householdId: string; left: boolean }>("/api/organizer/owners/remove", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ householdId, ownerId }),
+    });
+  },
+
+  deleteHousehold(idToken, householdId) {
+    return request<OrganizerHouseholdDeleted>("/api/organizer/household/delete", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ householdId }),
+    });
+  },
+
+  createPairingCode(deviceToken) {
+    return request<PairingCode>("/api/pair/code", {
+      method: "POST",
+      headers: { ...JSON_HEADERS, "x-kad-device-token": deviceToken },
+      body: JSON.stringify({}),
+    });
+  },
+
+  pairProfile(idToken, householdId, playerId) {
+    return request<PairingCode>("/api/organizer/players/pair", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token: idToken,
+      body: JSON.stringify({ householdId, playerId }),
+    });
+  },
+
+  redeemPairingCode(code, deviceToken) {
+    return request<PairingResult & { deviceToken: string }>("/api/pair/redeem", {
+      method: "POST",
+      headers: { ...JSON_HEADERS, ...(deviceToken ? { "x-kad-device-token": deviceToken } : {}) },
+      body: JSON.stringify({ code }),
+    });
   },
 
   joinRoomShared(code, sharedToken, seat) {

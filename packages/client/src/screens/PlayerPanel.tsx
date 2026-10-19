@@ -23,7 +23,17 @@ import { setPlayerSection, usePlayerNavigation } from "../store/player-navigatio
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
-import { DEFAULT_HELP_DIE, INVENTORY_SLOTS, STAT_IDS, lobbyCampaign, riftPartyOf } from "@kad/shared";
+import {
+  DEFAULT_HELP_DIE,
+  INVENTORY_SLOTS,
+  STAT_IDS,
+  lobbyCampaign,
+  readyWithoutAway,
+  riftPartyOf,
+  sameHome,
+  swapOwnerAway,
+  voteWaitsOnlyOnAway,
+} from "@kad/shared";
 import { checkTarget } from "./DiceOverlay";
 import { checkBuffLine } from "./buff-copy";
 import type {
@@ -40,6 +50,7 @@ import type {
 import {
   useCampaign,
   useChapter,
+  useGameStore,
   useIsMyCombatTurn,
   useIsMyPrompt,
   useMyTurnKey,
@@ -56,9 +67,12 @@ import {
 import { biomeBackdropUrl, sceneArtFor, sceneBackdropUrl } from "../world/art-paths";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
+import { hear, useReadAloudOn } from "../speech/read-aloud";
+import { speak } from "@kad/shared";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { CharacterSheet } from "./CharacterSheet";
 import { Icon } from "./icons";
+import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
 import {
   beginLabel,
@@ -143,10 +157,19 @@ function waitingLine(prompt: Prompt, party: PartyMember[]): string {
     case "item_swap":
       return `${nameOfCharacter(party, prompt.characterId)} found something.`;
     case "ready": {
-      const waiting = party.filter((m) => !m.ready).map((m) => m.character.name);
+      const waiting = party.filter((m) => !m.ready && m.connected).map((m) => m.character.name);
       return waiting.length === 0 ? "Everyone is ready." : `Waiting for ${waiting.join(" and ")}.`;
     }
   }
+}
+
+/**
+ * The friends who stepped away (#258) that a "Start without …" or "Decide
+ * without …" tap goes on without, by name. The caller shows the tap only
+ * once everybody it would wait on is away.
+ */
+function awayNames(waitingOn: readonly PartyMember[]): string {
+  return waitingOn.map((m) => m.character.name).join(" and ");
 }
 
 /** The die this player would add as a helper (content/rules.json `helpDie`). */
@@ -428,8 +451,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   const send = useSend();
 
   // Nobody starts until everybody is in and ready — an empty party would
-  // otherwise let one person start the chapter alone.
-  const everyoneReady = party.length > 0 && party.every((member) => member.ready);
+  // otherwise let one person start the chapter alone. A friend who stepped
+  // away is not waited on (#258), the same rule the server holds Begin to.
+  const everyoneReady = readyWithoutAway(party);
   const inLobby = state?.phase === "lobby" || state?.phase === "creation";
   // The chapter in play, for its art — fetched by id, idempotent, quiet on
   // failure (the pane just has no picture, which is what it had before).
@@ -502,9 +526,14 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
     !me.down &&
     !state.prompt.helper &&
     !(state.helpSpent ?? []).includes(me.character.id);
+  // A friend's find waiting on a phone that is gone (#258): anybody may leave it.
+  const awaySwap =
+    myPrompt === null && state?.prompt?.kind === "item_swap" && swapOwnerAway(party, state.prompt)
+      ? nameOfCharacter(party, state.prompt.characterId)
+      : null;
   // Who that help would go to, so the way in can say so.
   const helping = canHelp && state.prompt?.kind === "roll" ? nameOfCharacter(party, state.prompt.characterId) : null;
-  const hasTask = myPrompt !== null || canHelp || state?.encounter != null || inLobby || state?.phase === "chapter_complete" ||
+  const hasTask = myPrompt !== null || canHelp || awaySwap !== null || state?.encounter != null || inLobby || state?.phase === "chapter_complete" ||
     (state?.phase === "scene" && state.sceneType === "rest" && (me?.character.unspentPoints ?? 0) > 0) ||
     (state?.trades ?? []).some((offer) => offer.toPlayerId === me?.playerId);
   useEffect(() => {
@@ -543,13 +572,30 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   }, [key]);
 
   /*
-   * Nothing is spoken from here on purpose. Narration, choice labels and roll
-   * prompts all go through `speak()` in NarrationPanel — the shared surface,
-   * which every player has exactly one of in either mode. Speaking them here as
-   * well would make a Travel Mode phone (both surfaces, one device) say every
-   * line twice. spec §11's requirement is that the text *flows through the
-   * seam*, not that every component calls it.
+   * Narration and roll prompts are spoken in NarrationPanel, the shared surface
+   * (one voice per player in either mode). What is spoken here is only what
+   * belongs to this phone: its own choices. A TV does not read them out, so in
+   * Party Mode each phone with read-aloud on says its own player's options
+   * without talking over the room's narration; a Travel Mode phone renders the
+   * narration pane first, so its choices queue up behind the story.
+   *
+   * Said once per question (not per vote landing), and never interrupting.
    */
+  const readAloud = useReadAloudOn();
+  const choiceLine =
+    myPrompt !== null && myPrompt.kind === "choice"
+      ? myPrompt.options.map((option) => option.label).join(". ")
+      : "";
+  const spokenChoices = useRef<string | null>(null);
+  useEffect(() => {
+    if (!readAloud || choiceLine === "") {
+      if (choiceLine === "") spokenChoices.current = null;
+      return;
+    }
+    if (spokenChoices.current === choiceLine) return;
+    spokenChoices.current = choiceLine;
+    speak(choiceLine, { source: "choice" });
+  }, [readAloud, choiceLine]);
 
   const dispatch = useCallback(
     async (intent: ClientIntent) => {
@@ -562,6 +608,18 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
     },
     [send],
   );
+
+  // Pick the household's stopped chapter back up (#259). The room's own patch
+  // carries the party and the scene in; a refusal shows in the toast.
+  const resumeGame = useGameStore((store) => store.resumeGame);
+  const keepGoing = useCallback(async () => {
+    setBusy(true);
+    try {
+      await resumeGame();
+    } finally {
+      setBusy(false);
+    }
+  }, [resumeGame]);
 
   /*
    * A graph campaign's party takes a way on (#195): CHOOSE_EXIT, then - for a
@@ -722,13 +780,17 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
    * (§9.2), so they are never `InventoryEntry`s and never selectable in the
    * bag. The engine refuses them anyway, for the client that does not go
    * through this grid.
+   *
+   * Nor is a hero from another household (#249): a visitor's things go home
+   * with them, so items only pass between heroes of one household, and the
+   * server refuses the rest.
    */
+  const homeFriends = party.filter((member) => member.playerId !== me.playerId && sameHome(member, me));
   const canReceive =
     selectedEntry === null
       ? []
-      : party.filter(
+      : homeFriends.filter(
           (member) =>
-            member.playerId !== me.playerId &&
             !trades.some(
               (offer) =>
                 offer.fromPlayerId === me.playerId &&
@@ -933,7 +995,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   .map(([playerId]) => playerId);
                 const selected = pendingChoice === option.id || myVote === option.id;
                 return (
-                  <li key={option.id}>
+                  <li key={option.id} className={readAloud ? "prompt__option--hear" : undefined}>
                     <button
                       type="button"
                       className={`choice kad-tap kad-focusable${selected ? " choice--on" : ""}`}
@@ -956,10 +1018,44 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                         ) : null}
                       </span>
                     </button>
+                    {/* Hear it before picking it: a separate target, so tapping the
+                        card still only chooses (spec §11: icon, big target). */}
+                    {readAloud ? (
+                      <button
+                        type="button"
+                        className="choice__hear kad-tap kad-focusable"
+                        aria-label={`Hear: ${option.label}`}
+                        onClick={() => hear(option.label, { source: "choice" })}
+                      >
+                        <Icon name="sound" size="1.5em" />
+                      </button>
+                    ) : null}
                   </li>
                 );
               })}
             </ul>
+
+            {/* Everyone who has not voted stepped away (#258). A vote only
+                counts when one lands, so this phone's own vote, sent again,
+                closes it. Only for a phone that has voted: its pick stands. */}
+            {myPrompt.vote && myVote !== null && voteWaitsOnlyOnAway(party, myPrompt) ? (
+              <Button
+                variant="secondary"
+                size="md"
+                block
+                icon={<Icon name="forward" />}
+                disabled={busy}
+                onClick={() => void dispatch({ type: "CHOOSE", choiceId: myVote })}
+              >
+                {`Decide without ${awayNames(
+                  party.filter(
+                    (m) =>
+                      myPrompt.votes?.[m.playerId] === undefined &&
+                      (myPrompt.forPlayerIds.length === 0 || myPrompt.forPlayerIds.includes(m.playerId)),
+                  ),
+                )}`}
+              </Button>
+            ) : null}
 
             {/* Nothing is final until this bar is tapped (spec §11). */}
             <ConfirmBar
@@ -1340,13 +1436,36 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               </Button>
             )}
             <ul className="prompt__party">
-              {party.map((member) => (
-                <li className={`kad-chip${member.ready ? " kad-chip--ok" : ""}`} key={member.playerId}>
-                  <Icon name={member.ready ? "check" : "waiting"} />
-                  <span>{member.character.name}</span>
-                </li>
-              ))}
+              {party.map((member) => {
+                // Stepped away (#258): not waited on, so not "waiting" either.
+                const gone = !member.ready && !member.connected;
+                return (
+                  <li
+                    className={`kad-chip${member.ready ? " kad-chip--ok" : gone ? " kad-chip--warn" : ""}`}
+                    key={member.playerId}
+                  >
+                    <Icon name={member.ready ? "check" : gone ? "close" : "waiting"} />
+                    <span>{gone ? `${member.character.name} stepped away` : member.character.name}</span>
+                  </li>
+                );
+              })}
             </ul>
+
+            {/* The fight waits on everyone here, and only somebody's READY
+                counts it (engine.ts doReady). A friend who drops after the
+                rest said yes leaves nobody to tap, so a ready phone says it
+                again for the table (#258). */}
+            {!inLobby && me.ready && readyWithoutAway(party) && party.some((m) => !m.ready) ? (
+              <Button
+                variant="primary"
+                size="lg"
+                icon={<Icon name="swords" />}
+                disabled={busy}
+                onClick={() => void dispatch({ type: "READY", ready: true })}
+              >
+                {`Start without ${awayNames(party.filter((m) => !m.ready))}`}
+              </Button>
+            ) : null}
 
             {/* Somebody has to say go. It appears only once the whole party is
                 ready, so it can't be tapped out from under anyone, and the
@@ -1410,6 +1529,29 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   {nextChapterLine(state.campaign)}
                 </span>
               </p>
+            ) : null}
+            {/* A chapter this household stopped partway (#259): anyone may take
+                it back up, and it needs nobody to be ready first. Begin below
+                still starts the next chapter fresh. */}
+            {inLobby && state.saved ? (
+              <div className="player__saved">
+                <p className="player__next-chapter">
+                  <Icon name="scroll" />
+                  <span>
+                    {savedHeading(state.saved)} {state.saved.recap}
+                  </span>
+                </p>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  icon={<Icon name="forward" />}
+                  disabled={busy}
+                  aria-label={`Keep going with ${savedHeroes(state.saved)}`}
+                  onClick={() => void keepGoing()}
+                >
+                  Keep going
+                </Button>
+              </div>
             ) : null}
             {/* One seat, held from the start, for whatever "go" looks like
                 right now: nothing, who the vote is waiting on, or Begin. They
@@ -1566,6 +1708,27 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </p>
         ) : null}
 
+        {/* A friend's full bag found something, and their phone is gone
+            (#258). The story waits behind the question, so anybody here may
+            leave it; nobody empties a friend's bag for them. */}
+        {myPrompt === null && globalPrompt !== null && globalPrompt.kind === "item_swap" && swapOwnerAway(party, globalPrompt) ? (
+          <div className="prompt prompt--help">
+            <p className="prompt__sub kad-muted">
+              <Icon name="bag" />
+              <span>{`${nameOfCharacter(party, globalPrompt.characterId)} stepped away, and their bag is full.`}</span>
+            </p>
+            <Button
+              variant="secondary"
+              size="lg"
+              icon={<Icon name="forward" />}
+              disabled={busy}
+              onClick={() => void dispatch({ type: "RESOLVE_ITEM_SWAP", dropItemId: null })}
+            >
+              Leave it and go on
+            </Button>
+          </div>
+        ) : null}
+
         {/* ---------------- help a friend's check ----------------
             Held at the big button's height whichever line is showing, so
             helping — yours or somebody quicker's — does not shrink the card. */}
@@ -1613,7 +1776,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             {hasTask ? (
               <Button variant="primary" size="lg" block className="player__task-entry"
                 icon={<Icon name="hand" />} onClick={() => setPlayerSection("turn")}>
-                {offersToMe.length > 0 ? "A gift for you" : state.phase === "chapter_complete" ? "Chapter rewards" : atRest && banked > 0 ? banked === 1 ? "Spend your stat point" : "Spend your stat points" : myPrompt !== null || isMyCombatTurn ? "Your turn" : helping !== null ? `Help ${helping}` : "View the fight"}
+                {offersToMe.length > 0 ? "A gift for you" : state.phase === "chapter_complete" ? "Chapter rewards" : atRest && banked > 0 ? banked === 1 ? "Spend your stat point" : "Spend your stat points" : myPrompt !== null || isMyCombatTurn ? "Your turn" : helping !== null ? `Help ${helping}` : awaySwap !== null ? `Help ${awaySwap}'s bag` : "View the fight"}
               </Button>
             ) : (
               <p className="player__waiting" role="status"><Icon name="waiting" />
@@ -1764,7 +1927,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                     <span>
                       {party.length < 2
                         ? "Nobody else is here to give it to."
-                        : "Everyone is already being offered this one."}
+                        : homeFriends.length === 0
+                          ? "Visitors keep their own things, so nobody here can take it."
+                          : "Everyone is already being offered this one."}
                     </span>
                   </p>
                 ) : (
@@ -1841,6 +2006,11 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           <details className="player__room-settings">
             <summary className="kad-focusable">Room settings</summary>
             {roomControls}
+            {/* Text size, contrast and one-handed play (#262), reachable from the bottom of the phone. */}
+            <Button variant="secondary" size="md" block
+              onClick={() => { void import("../a11y").then((module) => { module.openA11ySettings(); }); }}>
+              Display settings
+            </Button>
           </details>
         ) : null}
 

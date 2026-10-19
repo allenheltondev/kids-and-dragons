@@ -37,7 +37,15 @@ export default defineConfig({
     command: "npm run dev",
     // The suite walks the reference chapter scene by scene, so it pins the
     // reference campaign rather than following whatever the lobby launches.
-    env: { VITE_LAUNCH_CAMPAIGN: "the-hollow-crown" },
+    env: {
+      VITE_LAUNCH_CAMPAIGN: "the-hollow-crown",
+      // Presence as production has it (#258): the phones' heartbeats alone,
+      // since AppSync reports no stream closing. The timeout is shortened so
+      // drop-in.spec can wait out a phone that goes quiet; it stays more than
+      // twice the 20s heartbeat, so a phone that is here is never swept.
+      KAD_STREAM_PRESENCE: "off",
+      KAD_PRESENCE_AWAY_MS: "45000",
+    },
     // Wait for the API through Vite, so a fast client boot cannot race the server.
     url: new URL("/api/health", BASE_URL).href,
     // Locally, reuse the dev server you already have running. On CI there

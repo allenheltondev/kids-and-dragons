@@ -76,6 +76,16 @@ describe("unmetPrerequisites", () => {
     }
   });
 
+  it("is met by any hero at the table who finished it herself, wherever (#283)", () => {
+    const rift = { requires: ["gemfall"] };
+    expect(unmetPrerequisites(rift, [], ["gemfall"])).toEqual([]);
+    // Her record and the table's both count; either alone is enough.
+    expect(unmetPrerequisites(rift, attempts(["gemfall", "complete"]), [])).toEqual([]);
+    expect(unmetPrerequisites(rift, attempts(["gemfall", "failed"]), ["gemfall"])).toEqual([]);
+    expect(unmetPrerequisites(rift, [], ["other"])).toEqual(["gemfall"]);
+    expect(unmetPrerequisites({ requires: ["a", "b"] }, attempts(["a", "complete"]), ["b"])).toEqual([]);
+  });
+
   it("lists only what is still unmet, in declaration order", () => {
     expect(
       unmetPrerequisites({ requires: ["a", "b", "c"] }, attempts(["b", "complete"])),

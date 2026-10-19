@@ -14,7 +14,8 @@
   z-index: 2;
   /* Lets the headline size itself to the pane it is in (cqi below), which is
      the whole screen on a phone and a slice of the room on a TV. */
-  container-type: inline-size;
+  /* `size`, not `inline-size` (#262): the card also sizes itself to the pane's height below. */
+  container-type: size;
   display: grid;
   place-items: center;
   padding: var(--space-4, 1em);
@@ -38,6 +39,13 @@
 }
 
 .dice__card {
+  /* Never wider than the screen it is on: at the largest text the sum below is wider than a
+     small phone, so it wraps (#262) rather than running off the edge. */
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  /* The card is about 27em tall; at the largest text on a TV that is taller than the screen,
+     so its em never goes past what fits the pane. Unchanged wherever 1em already fits. */
+  font-size: min(1em, 3.4cqh);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -217,6 +225,8 @@
 
 .dice__maths {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: baseline;
   gap: var(--space-2, 0.5em);
   margin: 0;

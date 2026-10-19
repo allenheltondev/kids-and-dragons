@@ -1,0 +1,198 @@
+/*
+ * The organizer's panel (#248), inside the keepsake panel. Lists and small
+ * forms for a grown-up; sized in `em` against the surface like the rest of it.
+ */
+
+.keepsake__panel:has(.organizer) {
+  max-inline-size: 30em;
+}
+
+.organizer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--kad-space-3);
+  inline-size: 100%;
+  text-align: start;
+}
+
+.organizer .keepsake__title,
+.organizer .keepsake__body,
+.organizer .keepsake__fine {
+  text-align: center;
+}
+
+/* Clear of the panel's close button, which sits in the top corner. */
+.organizer > .keepsake__title,
+.organizer__title {
+  padding-inline: 2.2em;
+}
+
+.organizer__title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.organizer__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-2);
+  padding-block-start: var(--kad-space-3);
+  border-block-start: 0.06em solid var(--kad-border);
+}
+
+.organizer__heading,
+.organizer__subheading {
+  display: flex;
+  align-items: center;
+  gap: var(--kad-space-2);
+  margin: 0;
+  color: var(--kad-ink);
+  font-size: var(--kad-text-md);
+  font-weight: var(--kad-weight-black);
+}
+
+.organizer__subheading {
+  color: var(--kad-ink-dim);
+  font-size: var(--kad-text-sm);
+}
+
+.organizer__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.organizer__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kad-space-2);
+  padding: var(--kad-space-2);
+  border-radius: var(--kad-radius-md);
+  background: var(--kad-bg-raised);
+}
+
+.organizer__row--retired {
+  opacity: 0.7;
+}
+
+.organizer__who {
+  display: flex;
+  flex: 1 1 6em;
+  flex-direction: column;
+  min-inline-size: 0;
+  color: var(--kad-ink);
+  overflow-wrap: anywhere;
+}
+
+.organizer__heroes {
+  font-size: var(--kad-text-sm);
+}
+
+/* "End Gemfall for Pip" and its question (#282), under the heroes they name. */
+.organizer__who > .organizer__link {
+  align-self: flex-start;
+}
+
+.organizer__confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kad-space-2);
+  font-size: var(--kad-text-sm);
+}
+
+.organizer__row-actions,
+.organizer__form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kad-space-2);
+}
+
+.organizer__row .organizer__form {
+  flex: 1 1 100%;
+}
+
+.organizer__link {
+  min-block-size: var(--kad-touch-min);
+  padding: 0 var(--kad-space-1);
+  border: 0;
+  background: none;
+  color: var(--kad-ink-dim);
+  font: inherit;
+  font-size: var(--kad-text-sm);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.organizer__link:hover {
+  color: var(--kad-ink);
+}
+
+.organizer__link:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.organizer__invite {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kad-space-1);
+}
+
+/* Read out across a room, so big and spaced. */
+.organizer__code {
+  margin: 0;
+  color: var(--kad-ink);
+  font-size: var(--kad-text-xl);
+  font-weight: var(--kad-weight-black);
+  letter-spacing: 0.12em;
+  user-select: all;
+}
+
+/* A move code (#251): scanned off this screen by the grown-up taking her home. */
+.organizer__qr {
+  width: min(12rem, 60vw);
+  height: auto;
+  border-radius: var(--kad-radius-sm);
+  background: #ffffff;
+  image-rendering: pixelated;
+}
+
+.organizer__transfer .keepsake__body,
+.organizer__transfer .keepsake__fine {
+  text-align: center;
+}
+
+.organizer__arrived {
+  color: var(--kad-ink);
+  font-weight: var(--kad-weight-bold);
+}
+
+/* A pairing code under the kid it is for (#281). */
+.organizer__pairing {
+  justify-content: center;
+}
+
+/* "Delete Ada?" (#252), on its own line under the row it asks about. */
+.organizer__row-confirm {
+  flex: 1 1 100%;
+}
+
+.organizer__select {
+  inline-size: 100%;
+}
+
+/* The household delete's question (#252): the one thing here that cannot be undone. */
+.organizer__danger {
+  gap: var(--kad-space-2);
+  padding: var(--kad-space-3);
+  border: 0.12em solid var(--kad-danger);
+  border-radius: var(--kad-radius-md);
+}
