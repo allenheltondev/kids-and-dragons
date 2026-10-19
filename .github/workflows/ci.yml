@@ -546,3 +546,58 @@ jobs:
           name: playwright-traces
           path: test-results/
           retention-days: 7
+
+  # A few tables against the dev server, under two minutes (#319). This catches
+  # a regression in the load script itself (tools/load/), or in a route it
+  # drives, not a capacity problem: the dev server on a CI runner says nothing
+  # about API Gateway's limits. The capacity run is by hand against staging
+  # (docs/review/load-README.md).
+  #
+  # Its own job, so it runs beside the others and costs the main job nothing.
+  # It needs no browser and no DynamoDB, only node and the dev server.
+  load:
+    name: load smoke
+    needs: changes
+    if: needs.changes.outputs.e2e == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Start the dev server
+        run: |
+          nohup npx tsx packages/server/src/dev-server.ts > dev-server.log 2>&1 &
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:8787/api/health > /dev/null && exit 0
+            sleep 1
+          done
+          echo "::error::the dev server never answered on :8787"
+          cat dev-server.log
+          exit 1
+
+      # --strict fails the step on any error, a room left open, or a run in
+      # which no table reached its fight or no phone sent a heartbeat.
+      - name: Smoke run
+        run: >-
+          npm run load --
+          --base-url http://localhost:8787
+          --tables 4 --duration 60 --spread 5 --think 400
+          --strict --out load-smoke.md
+
+      - name: Report
+        if: always()
+        run: |
+          if [ -f load-smoke.md ]; then cat load-smoke.md >> "$GITHUB_STEP_SUMMARY"; fi
+
+      - name: Dev server log
+        if: failure()
+        run: tail -n 200 dev-server.log
