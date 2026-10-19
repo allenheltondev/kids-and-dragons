@@ -515,12 +515,12 @@ export function awardXp(
   const tier = tierForLevel(rules, level);
   const levelsGained = Math.max(0, level - beforeLevel);
 
-  // No class move here: moves come from distinctions, not level (#308).
   const next: CharacterProgress = {
     ...cloneProgress(before),
     xp,
     level,
     tier,
+    mastery: levelBridge(before, rules, level),
     // One point per level *gained*, not one per award: a big chapter that jumps
     // three levels owes three points, and a level that a setback's half award
     // failed to reach owes none (spec §8.1).
@@ -532,6 +532,35 @@ export function awardXp(
     ...(levelsGained > 0 ? { leveledTo: level } : {}),
     ...(levelsGained > 0 && tier !== beforeTier ? { newTier: tier } : {}),
   };
+}
+
+/**
+ * TEMPORARY, until deeds earn ranks (#310 removes this). Moves come from
+ * distinctions, not level (#308), but until there are deeds a hero created
+ * after #308 would never earn a move at all. So levelling still lifts the worn
+ * class to the rank its level used to unlock (3 → Apprentice, 6 → Expert,
+ * 9 → Master), exactly the moves the level gave before.
+ *
+ * Written into progress rather than derived at resolve time, so the rank is
+ * really earned: it reverts with a failed campaign like the level that bought
+ * it, and is kept when #310 takes this away, as the v5 migration keeps the
+ * ranks of heroes from before #308. Never lowers a rank, never touches deed
+ * progress or another class.
+ */
+function levelBridge(
+  before: CharacterProgress,
+  rules: RulesContent,
+  level: number,
+): CharacterProgress["mastery"] {
+  const mastery = cloneMastery(before.mastery);
+  const classDef = (rules.classes as Partial<typeof rules.classes>)[before.class];
+  if (!classDef) return mastery;
+  const bridged = rankForLevel(classDef, level);
+  const current = rankIn(before, before.class);
+  if (CLASS_RANKS.indexOf(bridged) > CLASS_RANKS.indexOf(current)) {
+    mastery[before.class] = { rank: bridged, deeds: { ...(before.mastery[before.class]?.deeds ?? {}) } };
+  }
+  return mastery;
 }
 
 /**

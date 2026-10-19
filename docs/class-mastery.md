@@ -103,7 +103,10 @@ class is shown with the class name alone.
   point and the appearance tiers.
 - **Earned only by deeds** (§6). No XP, and no level cap. Two grants stand outside that, both so no
   hero has fewer moves than before distinctions: heroes from before them (§7), and a hero who joins
-  at a tier floor ([spec §8.4](./spec.md)).
+  at a tier floor ([spec §8.4](./spec.md)). A third is temporary: until deeds are counted (#310),
+  reaching level 3, 6 or 9 earns the worn class Apprentice, Expert or Master (`levelBridge` in
+  `character.ts`), so a hero made in between is never stuck on the signature. #310 removes it, and
+  ranks it gave are kept.
 - **Never lost by switching.** Each class remembers its own rank and its partial progress. Going back
   to Thornguard later picks up exactly where the hero left it.
 - **Only the worn class counts.** Its moves are the only class moves on the phone, and only its deeds

@@ -130,17 +130,12 @@ describe("joining a party already underway (spec §8.4)", () => {
     // The claim spec §8.4 makes, asserted whole: no shortcut and no handicap.
     // Any extra XP, point, or action given to a joiner shows up right here.
     //
-    // Except for one thing, since #308: ranks are earned by deeds, which XP
-    // cannot stand in for, so a joiner gets the rank its level used to unlock
-    // (the moves a joiner had before distinctions, and the rank a hero of that
-    // level was given by the v5 migration). Everything else is still equal.
+    // Ranks included: a joiner gets the rank its level used to unlock, and
+    // while the level bridge stands (until #310) so does a hero who levelled.
     const joined = newCharacter({ ...creation(), startingLevel: 4 });
     const earned = awardXp(newCharacter(creation()), rules, 1200).character;
-    const { mastery: joinedMastery, ...joinedRest } = joined.committed;
-    const { mastery: earnedMastery, ...earnedRest } = earned.committed;
-    expect(joinedRest).toEqual(earnedRest);
-    expect(joinedMastery).toEqual({ songkeeper: { rank: "apprentice", deeds: {} } });
-    expect(earnedMastery).toEqual({ songkeeper: { rank: "none", deeds: {} } });
+    expect(joined.committed).toEqual(earned.committed);
+    expect(joined.committed.mastery).toEqual({ songkeeper: { rank: "apprentice", deeds: {} } });
   });
 
   it("rejects a level between the tier floors", () => {
@@ -633,15 +628,42 @@ describe("awardXp (spec §8.1)", () => {
     expect(result.character.provisional?.xp).toBe(100);
   });
 
-  it("unlocks no class move and leaves class and ranks alone, however many levels it crosses", () => {
-    const result = awardXp(startCampaign(makeCharacter({ rank: "apprentice" }), "r_1"), rules, 2500);
+  describe("the level bridge, until deeds earn ranks (#310)", () => {
+    it("lifts the worn class to the rank its new level used to unlock", () => {
+      const result = awardXp(startCampaign(makeCharacter(), "r_1"), rules, 2500);
 
-    expect(result.leveledTo).toBe(6);
-    expect(result.character.provisional).toMatchObject({
-      class: "songkeeper",
-      mastery: { songkeeper: { rank: "apprentice", deeds: {} } },
+      expect(result.leveledTo).toBe(6);
+      expect(result.character.provisional?.mastery).toEqual({ songkeeper: { rank: "expert", deeds: {} } });
+      expect(resolveCharacter(result.character, rules, items).actions).toEqual(["rally", "soothe", "chorus", "mend_pulse"]);
     });
-    expect(resolveCharacter(result.character, rules, items).actions).not.toContain("chorus");
+
+    it("gives a hero made after #308 every move by level 10, as levelling did before", () => {
+      const result = awardXp(newCharacter(creation()), rules, 6300);
+      expect(rankIn(result.character.committed, "songkeeper")).toBe("master");
+    });
+
+    it("never lowers a rank, and keeps deed progress", () => {
+      const character = makeCharacter({ rank: "master" });
+      character.committed.mastery.songkeeper!.deeds = { hearts: 12 };
+      const result = awardXp(character, rules, 300);
+      expect(result.character.committed.mastery).toEqual({ songkeeper: { rank: "master", deeds: { hearts: 12 } } });
+    });
+
+    it("touches only the worn class", () => {
+      const character = makeCharacter({ class: "starweaver" });
+      character.committed.mastery.songkeeper = { rank: "none", deeds: { hearts: 3 } };
+      const result = awardXp(character, rules, 2500);
+      expect(result.character.committed.mastery).toEqual({
+        starweaver: { rank: "apprentice", deeds: {} },
+        songkeeper: { rank: "none", deeds: { hearts: 3 } },
+      });
+    });
+
+    it("is reverted by a failed campaign with the level that bought it", () => {
+      const gained = awardXp(startCampaign(makeCharacter(), "r_1"), rules, 2500).character;
+      const failed = failCampaign(gained, "singed_feather", "2026-08-01");
+      expect(failed.committed.mastery).toEqual({ songkeeper: { rank: "none", deeds: {} } });
+    });
   });
 
   it("still awards XP when the stored class was removed from current content", () => {
