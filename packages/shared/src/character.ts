@@ -456,6 +456,7 @@ export function resolveCharacter(
     isProvisional: Boolean(character.provisional),
     // Always derived from committed XP, never effective or stored level.
     committedLevel: levelForXp(rules, character.committed.xp),
+    ...(character.practiced ? { practiced: true as const } : {}),
   };
 }
 

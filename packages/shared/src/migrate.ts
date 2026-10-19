@@ -43,7 +43,7 @@ import type {
  * commit — a bump without a step is a silent no-op migration, which is the one
  * failure this whole mechanism cannot detect.
  */
-export const CHARACTER_VERSION = 3;
+export const CHARACTER_VERSION = 4;
 
 /** Thrown for a stored row that cannot be repaired into a playable character. */
 export class StoredCharacterError extends Error {
@@ -94,6 +94,13 @@ const STEPS: Record<number, Step> = {
    * without her record.
    */
   2: (raw) => raw,
+  /*
+   * v3 → v4. The practice (#255): `practiced` once she has played it. A row
+   * from before it has not, and absent says so, so again nothing to fill. The
+   * bump is for the same reason as v3's: a v3 build would narrow the flag
+   * away and offer her the practice again.
+   */
+  3: (raw) => raw,
 };
 
 /**
@@ -154,6 +161,8 @@ export function assertCharacter(value: unknown): Character {
     // Kept only when present, like `version`: a row that has finished nothing
     // reads back exactly as it was stored.
     ...(raw["finished"] === undefined ? {} : { finished: finished(raw["finished"]) }),
+    // The same: only `true` is ever written, and absent means not yet.
+    ...(raw["practiced"] === true ? { practiced: true as const } : {}),
     createdAt: str(raw["createdAt"], "createdAt"),
     // Kept only when present, so a row the ladder did not touch reads back as
     // it was stored. Absent reads as 0 wherever it is compared.

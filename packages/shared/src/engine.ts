@@ -822,6 +822,10 @@ function enterSceneDraft(
   draft.sceneType = scene.type;
   draft.art = scene.art ?? null;
   draft.scenePriority = scene.type === "encounter" ? null : scene.priority ?? null;
+  // The practice's one line of what to tap (#255). Absent, not null, on every
+  // other scene, so a run that never meets a hint never grows the key.
+  if (scene.hint !== undefined) draft.hint = scene.hint;
+  else delete draft.hint;
   draft.prompt = carriedSwap ?? null;
   /*
    * Offers do not travel (spec §9.4 — trading is a Rest-scene thing). An
@@ -1013,6 +1017,11 @@ function dispatch(
       // which chapter comes next is a fact about the household's campaign
       // attempt, which the engine never sees.
       throw new Illegal("ILLEGAL", "continuing a campaign is resolved by the server");
+
+    case "START_PRACTICE":
+      // The server's too (handlers/action.ts): who is new is a fact about the
+      // stored heroes, and which chapter is the practice is content.
+      throw new Illegal("ILLEGAL", "starting the practice is resolved by the server");
 
     case "CHOOSE_EXIT":
       // Moves the household's journey (handlers/action.ts, shared journey.ts),
@@ -1881,6 +1890,20 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext, spendBuff
  * spawn points is an authoring error the content validator already refuses, so
  * running out here means the deployed bundle and the deployed content disagree.
  */
+/**
+ * Who starts a `friendDown` fight knocked down (#255): the first hero after
+ * the story-turn holder, preferring one whose phone is here, so the kid who
+ * is helped up sees it happen. Null with fewer than two heroes seated.
+ */
+function friendToHelpUp(draft: RunState): string | null {
+  const n = draft.party.length;
+  if (n < 2) return null;
+  const holder = storyTurnHolder(draft);
+  const start = holder ? draft.party.indexOf(holder) : 0;
+  const others = Array.from({ length: n - 1 }, (_, i) => draft.party[(start + 1 + i) % n]!);
+  return (others.find((member) => member.connected) ?? others[0]!).character.id;
+}
+
 function startEncounter(draft: RunState, ctx: EngineContext): readonly EncounterEvent[] {
   const { scene } = currentScene(draft, ctx);
   if (scene.type !== "encounter") throw new Illegal("ILLEGAL", "not on an encounter scene");
@@ -1888,6 +1911,8 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
   const map = ctx.map?.(scene.map) ?? null;
   if (!map) throw new Illegal("NOT_FOUND", `map "${scene.map}" is not loaded`);
 
+  // The practice's Help Up lesson (#255): one friend walks in knocked down.
+  const downId = scene.friendDown ? friendToHelpUp(draft) : null;
   const party: PartyPlacement[] = draft.party.map((member, i) => {
     /*
      * No modulo. Wrapping member 4 onto spawn 0 read as graceful and was the
@@ -1909,11 +1934,12 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
       const passive = ctx.items[entry.itemId]?.passive;
       return passive?.type === "rerollOnes" ? n + passive.perEncounter : n;
     }, 0);
+    const helpMeUp = member.character.id === downId;
     return {
       character: member.character,
       at,
-      hp: member.hp,
-      down: member.down,
+      hp: helpMeUp ? 0 : member.hp,
+      down: helpMeUp || member.down,
       ...(rerollOnes > 0 ? { rerollOnes } : {}),
     };
   });
@@ -2344,6 +2370,7 @@ function returnToLobby(draft: RunState): void {
   draft.narration = "";
   draft.art = null;
   draft.scenePriority = null;
+  delete draft.hint;
   draft.prompt = null;
   draft.lastRoll = null;
   for (const member of draft.party) member.ready = false;

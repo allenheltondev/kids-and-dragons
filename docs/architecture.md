@@ -154,6 +154,7 @@ her **player id**, and needs no index or scan to find:
 | What | Where | Found by |
 |---|---|---|
 | Her finished campaigns (`finished`: campaign, outcome, when, which table) | On each of her heroes: `HH#<home>` / `CHAR#<charId>`, `data.finished` | Her heroes are the `CHAR#` rows under `HH#<home>` whose `ownerPlayerId` is her. Deleting the hero deletes the record; there is no copy elsewhere |
+| Whether she has played the practice (`practiced: true`, #255) | On each of her heroes: `HH#<home>` / `CHAR#<charId>`, `data.practiced` | As `finished` above: deleting the hero deletes it |
 | Her finds in her own book, including the ones made visiting | `HH#<home>` / `FIELDGUIDE`, `entries[canonId].firstFoundBy = <playerId>` | The one book row of her home; her entries are those naming her player id |
 | What she picked for her own page (`flair`: a color, a frame per hero, a title) | On her profile: `HH#<home>` / `PLAYER#<playerId>`, `data.flair` | Her profile row. Nothing else holds a copy, so deleting her, or her household, deletes it; a move (#251) carries the row as it is |
 | Her finds in a table's book, where she was first finder there | `HH#<table>` / `FIELDGUIDE`, `firstFoundBy = <playerId>` | Through her `VISIT#<playerId>` rows (#252), one per table she sat down at, and `finished[].table` for the tables she finished a campaign at. Deleting her re-credits these to `FORGOTTEN_FINDER` (§4.5, "Deleting and keeping"). This copy predates #283 (#106, #249) |
@@ -237,6 +238,10 @@ The carryover rule from [spec §8.2](./spec.md#82-carryover--the-commitment-rule
   "finished": [
     { "campaignId": "gemfall", "outcome": "setback", "at": "2026-07-30T19:12:00.000Z", "table": "h_rue" }
   ],
+
+  // She has played the practice (#255, §4.5 "The practice"), so the lobby
+  // stops offering it for her. Absent until then. Only ever true.
+  "practiced": true,
 
   "appearance": {
     "palette": "meadow",
@@ -593,9 +598,50 @@ is. A phone that opens a room founds its household then; a TV's placeholder
 household is founded by the first phone to join, the one that decides whose
 evening it is. A host taking out the founding phone leaves the household with no
 founder, and it can no longer be claimed. The join tells the founding phone it is
-the keeper, and only that phone is shown the offer to keep the party. Guest
-households from before founders were recorded keep the old rule (any device
-playing in one may claim it) until they expire, within a week of shipping. The device that opened a room may take a
+the keeper, and only that phone is shown the offer to keep the party.
+
+**The host can hand the keeper role to a phone in the room (#272).** The
+device that opened the room already holds its low-stakes controls, and
+"whose game is this" is answered by who is sitting in it, so the roster has a
+"Make keeper" beside Remove (`POST /api/room/:code/keeper`, `handKeeper`). It
+moves `founderDeviceId` to the chosen player's own phone, so it mends a stranger who beat the family to a TV's code, a founder taken out,
+and a founding phone that was lost. Conservatively: only the room's host; only
+a phone that is in the room, in its own household, not taken out (never a
+visitor, never a family tablet, which is nobody); nothing is claimed by it,
+the new keeper still signs in on that phone to keep the game; and a household
+an account already keeps is refused. The run records it
+(`RunState.keeperPlayerId`), so every screen hears it at once: the old
+keeper's offer goes, the new one's comes, and a phone restored from storage
+(which has only what its join said) draws the right one without joining
+again. **The founder and the run's record are one transaction**
+(`CommitInput.founder`, in the same `TransactWriteItems` as the state and the
+event, under the claim's own conditions on the household: a guest nobody has
+kept, not being swept), gated by the run's seq. So two hand-overs that overlap
+land whole or not at all and the later commit wins both places together; a
+room that closes or a race that is lost leaves the household as it was; and
+there is no rollback to get wrong. The alternative of committing the run
+first and then setting the founder would need a reconciler for the gap
+between them. The target is
+checked again on the run as it stands at every attempt, so a Remove that lands
+mid-flight refuses the hand-over rather than giving the game to someone taken
+out; and a Remove clears `keeperPlayerId` when it names the removed player.
+The same Remove also drops that phone as the founder in its own commit
+(`CommitInput.unfound`, conditional on it still being the founder, read again
+on every attempt), so a removed keeper's phone stops being able to claim in the
+same step the room stops naming them, whichever of the two lands first. Deleting a player (#252) takes her id out of it. Left as it is on
+purpose: the founder is still a device and not a person. A guest game is a
+table's save (see "Who owns what", below), a kid's hero is hers and is not lost
+with it, and a family tablet exists only in a household an account already
+keeps, so none can found a guest game for every kid who uses it.
+
+Guest households from before founders were recorded keep the old rule (any
+device playing in one may claim it). #265 shipped it on 2026-10-17 and a guest
+household expires a week after it was last played, but a game still being
+played keeps renewing, so the rule goes only once none is left to find: delete
+the `legacy` branches in `mayClaim`, the memory store's `claimHousehold` and
+the DynamoDB claim condition then (#272).
+
+The device that opened a room may take a
 player out of that room, a low-stakes control that a TV or a kid's phone may
 hold. Playing needs nothing. Tokens issued before #265 carry a `role` claim, and
 nothing reads it, so no phone had to re-pair.
@@ -1334,6 +1380,56 @@ tables they visited, and their `VISIT#` rows with it.
 - **Lost phone** → the household owner revokes `DEVICE#<deviceId>` from their own device. That token is dead immediately.
 - **New phone** → join the room, which makes it a new player, or the owner signs in on it and binds it to an existing player (`POST /api/auth/device`) to bring that player's heroes back.
 - **Nobody who only plays can manage anything.** Without a sign-in a phone cannot claim the household, bind another phone to a player, or revoke one.
+
+#### The practice (#255)
+
+A short chapter that teaches by doing (`content/chapters/first-steps-01.json`,
+campaign `first-steps`): pick a choice, roll a check, take a story turn, move on
+the board, use a card, help a knocked-down friend, rest. Each step has one
+`hint` on its scene, shown under the narration and read aloud after it, and on
+the phone with a "hear it" button. The content contract is in
+[content/README.md](../content/README.md#the-practice).
+
+The Help Up step is the real card on a real friend: the Bun fight is marked
+`friendDown`, so with two or more heroes seated, the one after the story-turn
+holder walks onto the board knocked down (the fight's placement only; the run's
+HP is untouched) and somebody has to stand beside them and play Help Up. A
+table of one has nobody to help and nobody goes down; Bun, a captive with no
+deadline, is the lesson there.
+
+**Who gets it.** A hero is a *newcomer* (`isNewcomer`, shared `practice.ts`)
+while she has played nothing: not `practiced`, no campaign under way, no XP, no
+souvenir. While any seated hero is one, the lobby offers **Play the practice**
+above Begin, and Begin reads **Skip the practice and begin the adventure**. One
+tap either way, for the whole table: skipping is simply starting the adventure,
+and a hero who has started one is no newcomer after it. A late joiner seated at
+a party's tier floor (spec §8.4) has XP she did not play for and reads as a
+veteran; she is sitting down with people who know the game.
+
+**A mixed party plays it together.** The practice is one short sitting
+(about 15 minutes, three tiny fights against wisps that go down to one tag),
+and the veterans play it beside the newcomer rather than waiting for her. That
+is the decision because the table shares one screen and one story: a practice
+for one kid while the rest watch is slower than one everybody plays, and the
+veterans are who she would otherwise ask. Anybody who would rather not taps
+Skip.
+
+**It is never a campaign.** `START_PRACTICE` is answered by the server
+(`handlers/practice.ts`): it starts the practice's chapter only while a seated
+hero is a newcomer, and a direct `START_CHAPTER` for it asks the same question
+(`roadTo`). The start creates no campaign attempt and acquires no hero's claim,
+so a hero halfway through Gemfall can play it beside her friend; seating a hero
+into it claims nobody either. Finishing it folds no XP and no bag (the
+chapter's award is 0, it grants nothing, and items used in it come back), keeps
+no chapter record, and writes one thing: `practiced: true` on every seated
+hero, under the version read, re-resolved onto the same patch so the lobby's
+offer goes away. A rest in it spends no stat point, and Stop for today saves
+nothing: it starts over next time. The lobby's campaign is untouched, so the
+next Begin plays the adventure the room was opened for.
+
+**Stored, versioned and deleted.** `practiced` lives on the hero row (character
+schema v4, §3.2), is named on the "what we store" page under *Each hero*, and is
+deleted with her hero, like `finished`.
 
 #### Joining a session
 
