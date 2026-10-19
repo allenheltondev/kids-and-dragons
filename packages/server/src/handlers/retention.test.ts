@@ -398,6 +398,19 @@ describe("forgetPlayer", () => {
     expect(forgetPlayer(out, kid)).toBeNull();
   });
 
+  it("takes the keeper role a host handed her out of the save (#272)", () => {
+    const state = {
+      phase: "scene",
+      party: [{ playerId: "p_1", connected: true, ready: true, character: { name: "Sparklehoof" } }],
+      seats: { p_1: { name: "Ada", color: "#fff", device: "phone" } },
+      keeperPlayerId: "p_1",
+    } as unknown as RunState;
+    const out = forgetPlayer(state, kid)!;
+    expect(out).not.toHaveProperty("keeperPlayerId");
+    // Somebody else's stays.
+    expect(forgetPlayer({ ...state, keeperPlayerId: "p_2" } as RunState, kid)).toHaveProperty("keeperPlayerId", "p_2");
+  });
+
   it("leaves a save that never had her alone", () => {
     const state = { phase: "lobby", party: [], narration: "Hello" } as unknown as RunState;
     expect(forgetPlayer(state, kid)).toBeNull();
