@@ -15,6 +15,13 @@ describe("parseRoute", () => {
     expect(routeCode({ name: "journal" })).toBeNull();
   });
 
+  it("maps /guide, which needs nothing at all (#257)", () => {
+    expect(parseRoute("/guide")).toEqual({ name: "guide" });
+    expect(parseRoute("/guide/")).toEqual({ name: "guide" });
+    expect(formatRoute({ name: "guide" })).toBe("/guide");
+    expect(routeCode({ name: "guide" })).toBeNull();
+  });
+
   it("treats an empty path as home", () => {
     expect(parseRoute("")).toEqual({ name: "home" });
     expect(parseRoute("//")).toEqual({ name: "home" });
