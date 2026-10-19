@@ -50,6 +50,7 @@ export * from "./enemy-ai.js";
 export * from "./balance.js";
 export * from "./playtest.js";
 export * from "./speak.js";
+export * from "./help.js";
 export * from "./preview.js";
 export * from "./visitors.js";
 export * from "./names.js";

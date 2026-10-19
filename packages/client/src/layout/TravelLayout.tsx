@@ -55,6 +55,7 @@ import { RiftlightIndicator } from "../screens/RiftSight";
 import { useIsMyCombatTurn, useIsMyPrompt, useMe, useMyTurnKey, usePresentation, useProgression } from "../store";
 import { TRANSFORM_BEAT_MS } from "../screens/TransformCutscene";
 import { rollCardMs } from "../world/presentation";
+import { setHelpPane } from "../help/focus";
 
 type Focus = "world" | "map" | "player";
 
@@ -143,6 +144,11 @@ export function TravelLayout(): React.JSX.Element {
    */
   const showing: Focus = transforming || rolling ? "world" : focus;
   const inGuide = showing === "player" && section === "guide";
+  // The "?" in the corner row (#256) explains whatever pane is up.
+  useEffect(() => {
+    setHelpPane(showing);
+    return () => setHelpPane("player");
+  }, [showing]);
 
   return (
     <div className="kad-travel">

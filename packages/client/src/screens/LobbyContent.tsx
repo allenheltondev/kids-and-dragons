@@ -20,6 +20,7 @@ import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
+import { useHelp } from "../help/content";
 import "./shared.css";
 import "./LobbyContent.css";
 import { EntryScene, lobbySceneFor } from "./EntryScene";
@@ -132,6 +133,7 @@ export function LobbyContent(): ReactElement {
   const visiting = state?.visitorCode !== undefined;
   const code = state?.visitorCode ?? state?.roomCode ?? sessionCode;
   const qr = useJoinQr(code);
+  const help = useHelp();
 
   const readyCount = party.filter((m) => m.ready).length;
   // A graph campaign (#195) has a stop, not a numbered chapter: the journey's
@@ -244,11 +246,15 @@ export function LobbyContent(): ReactElement {
           ) : (
             <img className="lobby__qr" src={qr} alt={`QR code to join room ${code ?? ""}`} />
           )}
-          <p className="lobby__qr-hint kad-muted">
-            <Icon name="travel" />
-            <span>Scan to join</span>
-          </p>
         </div>
+        {/* How to get in, in one line with a picture (#256). Its words are content (help.json) and
+            never count the letters, because a visitor room's code is longer than a family room's. */}
+        {help !== null ? (
+          <p className="lobby__join-step">
+            <Icon name={help.join.icon} size="2em" />
+            <span>{help.join.text}</span>
+          </p>
+        ) : null}
       </div>
 
       <div className="lobby__party">
