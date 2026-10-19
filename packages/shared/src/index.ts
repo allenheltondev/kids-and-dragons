@@ -55,3 +55,4 @@ export * from "./help.js";
 export * from "./preview.js";
 export * from "./visitors.js";
 export * from "./names.js";
+export * from "./error-report.js";
