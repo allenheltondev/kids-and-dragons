@@ -1095,19 +1095,23 @@ a little her own.
   (`ILLEGAL`) a request naming something that is not a preset, not her hero or
   not a badge she has earned. It is written with `updatePlayer`, so it can never
   bring back a profile being deleted (#252).
-- **Only her own household and her own devices can see or change it, and the
-  server enforces that.** The journal's `profile` and the flair route are
-  authorised by a **personal device token** and nothing else, and no request
-  names a kid: the token's player is the only page there is to read or write.
-  A visiting table has a room session and no device in her household, a shared
-  tablet's token resolves to nobody (#250), another household's device is its
-  own kid's, and a sibling's phone is the sibling's. The flair is never in a
+- **Only she can see or change it, and the server enforces that.** The
+  journal's `profile` and the flair route are authorised by one of two things,
+  and nothing else: her **personal device token**, or the **room session she
+  holds once seated** (`resolveKid`). The second is how a family tablet knows
+  which kid was picked (#250): a session is minted for one kid, at her home,
+  and never for a shared tablet's own token. No request names a kid: the
+  credential's player is the only page there is to read or write, so a
+  sibling's seat is the sibling's. A TV's viewer token, a grown-up's sign-in
+  and a shared tablet's own token resolve to nobody. A visiting table's other
+  players hold sessions of their own, for their own pages. The flair is never in a
   run's state, a seat, a room payload, the picker or the organizer's lists
   (`LinkAccountResult` strips it), so a table sees her hero name and her
-  profile color as before. There is no public page, no link and no way to
-  browse kids. A family tablet has no page of its own: its picked kid holds a
-  room session, which is not a device (#250's rule that no long-lived kid token
-  reaches a shared device stands).
+  profile color as before. There is no public page, link or way to browse kids.
+  A tablet's kid may edit as well as read: the picker already trusts whoever
+  taps a face with that kid's seat (§4.5, "Shared devices"), and the choices
+  are presets. The tablet keeps nothing of her page after the room.
+
 - **It follows her.** It lives on her profile row under her home, so it is on
   every device bound to her (#281), moves with her (#251, which carries the
   row's `data` as it is), and is deleted with her (#252): `deleteProfile`

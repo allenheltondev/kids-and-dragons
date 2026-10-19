@@ -693,15 +693,32 @@ async function getHeroes(req: Req, deps: HandlerDeps) {
 }
 
 /**
+ * Who is asking for her own page (#299): her personal device, or the room
+ * session she holds once she is seated, which is how a family tablet knows
+ * which kid was picked (#250). A session is minted for one kid, at her home
+ * (`joinRoom`), so it names the same page her own phone would; it is never
+ * minted for a shared tablet's token, a TV's viewer token or a grown-up's
+ * sign-in, and none of those resolve here.
+ */
+async function resolveKid(
+  req: Req,
+  deps: HandlerDeps,
+): Promise<{ householdId: string; playerId: string; principal?: DeviceIdentity } | null> {
+  const found = await resolvePrincipal(req, deps);
+  if (found) return { householdId: found.principal.householdId, playerId: found.principal.playerId, principal: found.principal };
+  const session = await resolveSession(req, deps);
+  return session ? { householdId: session.householdId, playerId: session.playerId } : null;
+}
+
+/**
  * What this phone can study between games (handlers/journal.ts). The device
  * token, not a session: there is no room to have a session in.
  */
 async function getJournalRoute(req: Req, deps: HandlerDeps) {
-  const found = await resolvePrincipal(req, deps);
-  if (!found) return error(401, "FORBIDDEN", "the journal needs this device's token");
-  const { principal } = found;
-  const result = await getJournal({ householdId: principal.householdId, playerId: principal.playerId }, deps);
-  return result.ok ? json(200, result.value, principal) : fromError(result.error);
+  const kid = await resolveKid(req, deps);
+  if (!kid) return error(401, "FORBIDDEN", "the journal needs this device's token");
+  const result = await getJournal({ householdId: kid.householdId, playerId: kid.playerId }, deps);
+  return result.ok ? json(200, result.value, kid.principal) : fromError(result.error);
 }
 
 /**
@@ -709,11 +726,10 @@ async function getJournalRoute(req: Req, deps: HandlerDeps) {
  * names the kid; the body never does.
  */
 async function postFlairRoute(req: Req, deps: HandlerDeps) {
-  const found = await resolvePrincipal(req, deps);
-  if (!found) return error(401, "FORBIDDEN", "your page needs this device's token");
-  const { principal } = found;
-  const result = await saveFlair({ householdId: principal.householdId, playerId: principal.playerId, body: req.body }, deps);
-  return result.ok ? json(200, result.value, principal) : fromError(result.error);
+  const kid = await resolveKid(req, deps);
+  if (!kid) return error(401, "FORBIDDEN", "your page needs this device's token");
+  const result = await saveFlair({ householdId: kid.householdId, playerId: kid.playerId, body: req.body }, deps);
+  return result.ok ? json(200, result.value, kid.principal) : fromError(result.error);
 }
 
 async function getStateRoute(req: Req, deps: HandlerDeps) {

@@ -909,7 +909,15 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
       async loadJournal() {
         const deviceToken = loadPlayerDeviceToken(deps.storage);
-        if (!deviceToken) return null;
+        if (!deviceToken) {
+          /*
+           * A family tablet (#250) has no device token for any kid, but the kid
+           * picked holds a room session, which names her. Her book is read
+           * with that, and not kept for offline: the tablet is not hers.
+           */
+          const seat = get().session?.sessionToken;
+          return seat ? { journal: await deps.api.loadJournalAsSeat(seat), savedAt: null } : null;
+        }
         try {
           const journal = await deps.api.loadJournal(deviceToken);
           saveJournal({ deviceToken, savedAt: new Date().toISOString(), journal }, deps.storage);
@@ -933,7 +941,11 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
       async saveFlair(choice) {
         const deviceToken = loadPlayerDeviceToken(deps.storage);
-        if (!deviceToken) throw new ApiError(401, "This phone is not signed in as anyone yet.");
+        if (!deviceToken) {
+          const seat = get().session?.sessionToken;
+          if (!seat) throw new ApiError(401, "This phone is not signed in as anyone yet.");
+          return deps.api.saveFlairAsSeat(choice, seat);
+        }
         const profile = await deps.api.saveFlair(choice, deviceToken);
         const saved = loadSavedJournal(deviceToken, deps.storage);
         if (saved) saveJournal({ ...saved, journal: { ...saved.journal, profile } }, deps.storage);

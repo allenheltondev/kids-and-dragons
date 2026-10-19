@@ -33,6 +33,13 @@ import { Icon } from "./icons";
 import { loadFieldGuide } from "./content";
 import "./ProfilePane.css";
 
+/** The same choice, however its keys happen to be ordered (the server's order is not the page's). */
+function sameChoice(a: ProfileFlair, b: ProfileFlair): boolean {
+  const canon = (flair: ProfileFlair): string =>
+    JSON.stringify([flair.color ?? null, flair.title ?? null, Object.entries(flair.frames ?? {}).sort(([x], [y]) => x.localeCompare(y))]);
+  return canon(a) === canon(b);
+}
+
 /** What the saved flair means for a save: the whole choice, so a pick replaces and never merges. */
 function choiceOf(flair: ProfileFlair): FlairChoice {
   return { color: flair.color ?? null, frames: flair.frames ?? null, title: flair.title ?? null };
@@ -60,29 +67,57 @@ function Page({ journal, profile }: { journal: JournalResponse; profile: KidProf
   const [flair, setFlair] = useState<ProfileFlair>(profile.flair);
   const [notice, setNotice] = useState<"" | "saved" | "failed">("");
   const guide = useFieldGuide();
-  // Saves go one at a time and the last pick wins, so a quick second tap is never undone by a slow first one.
-  const latest = useRef(0);
+
+  /*
+   * A save replaces her whole choice, so two in flight at once could land in
+   * either order and the older one would win. One goes at a time: a pick made
+   * meanwhile only changes what is `wanted`, and when the save in flight comes
+   * back the latest wanted choice is sent next, so the server's last write is
+   * always her last pick. If a save fails, she is back to what the server last
+   * confirmed, and the picks made after it are dropped with it.
+   */
+  const wanted = useRef(profile.flair);
+  const confirmed = useRef(profile.flair);
+  const sending = useRef(false);
+  const mounted = useRef(true);
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
+
+  const flush = useCallback(async () => {
+    if (sending.current) return;
+    sending.current = true;
+    try {
+      while (!sameChoice(wanted.current, confirmed.current)) {
+        const asked = wanted.current;
+        let saved: KidProfileView;
+        try {
+          saved = await saveFlair(choiceOf(asked));
+        } catch {
+          wanted.current = confirmed.current;
+          if (mounted.current) { setFlair(confirmed.current); setNotice("failed"); }
+          return;
+        }
+        confirmed.current = saved.flair;
+        // Nothing newer was picked while it was out: show what the server holds.
+        if (wanted.current === asked) wanted.current = saved.flair;
+      }
+      if (mounted.current) { setFlair(wanted.current); setNotice("saved"); }
+    } finally {
+      sending.current = false;
+    }
+  }, [saveFlair]);
 
   const pick = useCallback(
-    (next: ProfileFlair) => {
-      const ticket = ++latest.current;
-      const before = flair;
+    (change: (was: ProfileFlair) => ProfileFlair) => {
+      const next = change(wanted.current);
+      wanted.current = next;
       setFlair(next);
       setNotice("");
-      saveFlair(choiceOf(next)).then(
-        (saved) => {
-          if (ticket !== latest.current) return;
-          setFlair(saved.flair);
-          setNotice("saved");
-        },
-        () => {
-          if (ticket !== latest.current) return;
-          setFlair(before);
-          setNotice("failed");
-        },
-      );
+      void flush();
     },
-    [flair, saveFlair],
+    [flush],
   );
 
   const color = flair.color ?? "meadow";
@@ -131,12 +166,12 @@ function Page({ journal, profile }: { journal: JournalResponse; profile: KidProf
                       </ul>
                       <Choices label={`Frame for ${hero.name}`}
                         options={HERO_FRAMES} value={frame}
-                        onPick={(id) => {
-                          const frames = { ...flair.frames, [hero.id]: id };
+                        onPick={(id) => pick((was) => {
+                          const frames = { ...was.frames, [hero.id]: id };
                           if (id === "plain") delete frames[hero.id];
-                          const { frames: _was, ...rest } = flair;
-                          pick(Object.keys(frames).length > 0 ? { ...rest, frames } : rest);
-                        }} />
+                          const { frames: _was, ...rest } = was;
+                          return Object.keys(frames).length > 0 ? { ...rest, frames } : rest;
+                        })} />
                     </div>
                   </li>
                 );
@@ -194,17 +229,17 @@ function Page({ journal, profile }: { journal: JournalResponse; profile: KidProf
         <section className="profile__section" aria-labelledby="profile-yours">
           <h3 id="profile-yours" className="profile__heading"><Icon name="spark" /> <span>Make it yours</span></h3>
           <Choices label="Pick a color" options={PROFILE_COLORS} value={flair.color ?? ""} swatch
-            onPick={(id) => pick({ ...flair, color: id })} />
+            onPick={(id) => pick((was) => ({ ...was, color: id }))} />
           {profile.badges.length === 0 ? (
             <p className="profile__hint">Earn a badge and you can wear its name as a title.</p>
           ) : (
             <Choices label="Pick a title"
               options={[{ id: "", label: "No title" }, ...profile.badges.map((b) => ({ id: b.id, label: b.name }))]}
               value={flair.title ?? ""}
-              onPick={(id) => {
-                const { title: _was, ...rest } = flair;
-                pick(id === "" ? rest : { ...rest, title: id });
-              }} />
+              onPick={(id) => pick((was) => {
+                const { title: _was, ...rest } = was;
+                return id === "" ? rest : { ...rest, title: id };
+              })} />
           )}
         </section>
       </div>
