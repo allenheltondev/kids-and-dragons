@@ -159,6 +159,36 @@ describe("a host handing the keeper role to a phone in the room (#272)", () => {
     expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe(first.principal.deviceId);
   });
 
+  it("keeps the household and the room agreed when two hand-overs overlap and both could succeed (#272 review)", async () => {
+    // Mia's founder write lands, then Sam's whole hand-over runs and commits,
+    // then Mia's commit retries against the fresh run. Hers must not land over
+    // his: the founder is Sam, so the room must say Sam.
+    const { harness, tv, code, runId, householdId, join } = await tvRoom();
+    await join("First");
+    const mia = await join("Mia");
+    const sam = await join("Sam");
+    const setFounder = harness.repo.setFounder.bind(harness.repo);
+    let rival = false;
+    harness.repo.setFounder = async (...args) => {
+      const before = await setFounder(...args);
+      if (!rival) {
+        rival = true;
+        const theirs = await handKeeper({ code, principal: tv.principal, playerId: sam.principal.playerId }, harness.deps);
+        expect(theirs.ok).toBe(true);
+      }
+      return before;
+    };
+
+    const hers = await handKeeper({ code, principal: tv.principal, playerId: mia.principal.playerId }, harness.deps);
+    expect(hers).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+    expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe(sam.principal.deviceId);
+    expect((await harness.repo.getState(runId))?.keeperPlayerId).toBe(sam.principal.playerId);
+    // Only Sam can keep it, and the room says so.
+    expect(await linkAccount({ cognitoSub: "sub_mia", principal: mia.principal }, harness.deps)).toMatchObject({ ok: false });
+    const kept = await linkAccount({ cognitoSub: "sub_sam", principal: sam.principal }, harness.deps);
+    expect(kept.ok && kept.value.claimed).toBe(true);
+  });
+
   it("can be tried again after a failure, and then lands", async () => {
     const { harness, tv, code, runId, householdId, join } = await tvRoom();
     await join("Mia");

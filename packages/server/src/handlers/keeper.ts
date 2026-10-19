@@ -73,9 +73,10 @@ export async function handKeeper(
    * If even that fails, the host's retry finishes the job: the whole thing is
    * idempotent.
    */
-  const result = await commitRoomChange(
+  const result = await committedWhileFounder(
     room,
-    input.principal.playerId,
+    input,
+    device.deviceId,
     (current: RunState): RunState | null =>
       current.keeperPlayerId === input.playerId ? null : { ...current, keeperPlayerId: input.playerId },
     deps,
@@ -89,4 +90,44 @@ export async function handKeeper(
     return result;
   }
   return ok({ seq: result.value.seq });
+}
+
+/** A hand-over found, on the run's commit, that somebody else's has taken its place. */
+class SupersededError extends Error {}
+
+/**
+ * The run's commit for this hand-over, allowed to land only while its device is
+ * still the household's founder. `commitRoomChange` re-runs `change` against
+ * the fresh run on every lost seq race, and a lost race is exactly how a
+ * second hand-over gets in between: it sets the founder, commits first, and
+ * this one would then commit over it, leaving the screens showing one keeper
+ * and the household letting another claim. Checked on each attempt, so a
+ * commit that follows a rival's is refused, and one that precedes it is
+ * overwritten by the rival's own (which is last, and so what both agree on).
+ */
+async function committedWhileFounder(
+  room: Parameters<typeof commitRoomChange>[0],
+  input: HandKeeperInput,
+  deviceId: string,
+  change: (state: RunState) => RunState | null,
+  deps: HandlerDeps,
+): Promise<HandlerResult<{ seq: number }>> {
+  try {
+    const result = await commitRoomChange(
+      room,
+      input.principal.playerId,
+      async (state) => {
+        const household = await deps.repo.getHousehold(room.householdId);
+        if (household?.founderDeviceId !== deviceId) throw new SupersededError();
+        return change(state);
+      },
+      deps,
+    );
+    return result.ok ? ok({ seq: result.value.seq }) : result;
+  } catch (err) {
+    if (err instanceof SupersededError) {
+      return fail("ILLEGAL", "The keeper role just moved to somebody else. Look at the roster and try again.");
+    }
+    throw err;
+  }
 }
