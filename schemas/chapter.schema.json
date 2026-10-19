@@ -299,6 +299,10 @@
               "amount"
             ],
             "properties": {
+              "nonlethal": {
+                "type": "boolean",
+                "description": "Leave a standing hero at 1 HP. Does not revive a downed hero. Omitted damage may knock a hero down."
+              },
               "amount": {
                 "type": "integer",
                 "minimum": 1,

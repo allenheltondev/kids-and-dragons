@@ -1,0 +1,241 @@
+{
+  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "id": "riftlight-ice-shelf-traverse",
+  "campaignId": "riftlight-opening-preview",
+  "index": 4,
+  "title": "The Path Beside the River",
+  "biome": "glacier_of_origins",
+  "music": "riftlight-paths",
+  "estimatedMinutes": 15,
+  "xpAward": 140,
+  "entry": "shelf",
+  "scenes": {
+    "shelf": {
+      "type": "story",
+      "narration": "The singing hall falls behind you. Ahead, a narrow shelf of ice follows the Great River toward Frostfang. Water slides under its outer edge. A line of old boot marks stops where part of the shelf has fallen away.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Examine the missing path",
+          "icon": "hand",
+          "goto": "inspect"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "inspect": {
+      "type": "choice_point",
+      "narration": "The gap is too wide for a step. Above it, dark rocks make a steep detour. Below it, a lip of ice still touches both sides. Your rope reaches a rock on the far side. How will you make a route for everyone?",
+      "choices": [
+        {
+          "id": "high",
+          "label": "Take the high rocks and lower a line",
+          "icon": "hand",
+          "goto": "high"
+        },
+        {
+          "id": "low",
+          "label": "Probe the low ice before moving",
+          "icon": "hand",
+          "goto": "low"
+        },
+        {
+          "id": "brace",
+          "label": "Use Brace to steady a rope handrail",
+          "icon": "hand",
+          "goto": "brace",
+          "requiresClass": "thornguard"
+        },
+        {
+          "id": "wing",
+          "label": "Carry a rope across on wings",
+          "icon": "hand",
+          "goto": "wing",
+          "requiresSpecies": [
+            "griffin",
+            "dragonling"
+          ]
+        }
+      ]
+    },
+    "high": {
+      "type": "story",
+      "narration": "You climb onto the dark rocks. One loose stone rattles into the water. You choose another foothold, loop the rope around a sound rock, and lower its free end toward the shelf.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Bring the party across",
+          "icon": "hand",
+          "goto": "cross"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "shelf_high_route",
+          "value": true
+        }
+      ]
+    },
+    "low": {
+      "type": "story",
+      "narration": "You test the lip with the rope loop and a loose stone. The thin outer edge breaks away at once. The ice close to the rock holds. You mark that narrow strip with chips of dark stone.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Follow the marked strip",
+          "icon": "hand",
+          "goto": "cross"
+        }
+      ]
+    },
+    "brace": {
+      "type": "story",
+      "narration": "Brace steadies the handrail against the rock. The rest of the party keeps the loose rope out of the water. Everyone will still have to cross carefully.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Cross using the handrail",
+          "icon": "hand",
+          "goto": "assisted"
+        }
+      ]
+    },
+    "wing": {
+      "type": "story",
+      "narration": "Wings carry one end of the rope across the gap. With it tied around a sound rock, you can guide the whole party along the shelf. The rope helps; it cannot stop the ice shifting underneath you.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Guide everyone along the line",
+          "icon": "hand",
+          "goto": "assisted"
+        }
+      ]
+    },
+    "cross": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Keep the party moving along the narrow shelf.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "across",
+        "narration": "You reach the far rock and hold the line for the last friend.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "traverse_made",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "fall",
+        "narration": "A crack runs beneath the shelf. You keep hold of the rope as the ice tips.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "traverse_failed",
+            "value": true
+          }
+        ]
+      }
+    },
+    "assisted": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Keep the loose rope clear while the party crosses.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "across",
+        "narration": "You guide the rope past the broken edge. Every friend reaches the far rock.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "traverse_made",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "fall",
+        "narration": "The handrail holds, but the shelf beneath you breaks away.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "traverse_failed",
+            "value": true
+          }
+        ]
+      }
+    },
+    "across": {
+      "type": "story",
+      "narration": "You haul the rope onto dry stone. Ahead, cairns climb toward a notch in the peaks. A griffin on the ridge lifts a wing in greeting. You can go and ask where the path leads.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Check everyone before climbing",
+          "icon": "hand",
+          "goto": "rest_safe"
+        }
+      ]
+    },
+    "rest_safe": {
+      "type": "rest",
+      "narration": "You sit above the water and retie your packs. The river stays on your right as the path rises toward the cairns. The Cairnstep is ahead.",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "traverse_made",
+          "value": true
+        }
+      ]
+    },
+    "fall": {
+      "type": "story",
+      "narration": "The shelf slides into the river with your party still holding the line. Nobody lets go. Cold water lifts you off the ice, carrying you along the east bank. A low ledge passes within reach.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look for a way onto the bank",
+          "icon": "hand",
+          "goto": "rest_river"
+        }
+      ]
+    },
+    "rest_river": {
+      "type": "rest",
+      "narration": "You keep your heads above the current and hold the line between you. The ledge is coming closer. There is time for one strong pull. No supplies have been lost.",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "traverse_failed",
+          "value": true
+        }
+      ]
+    }
+  },
+  "llmHints": {
+    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
+    "forbidden": [
+      "death",
+      "gore",
+      "Corvane",
+      "emperor",
+      "Pangea",
+      "Hollow Gate",
+      "Legend Dragon"
+    ],
+    "npcVoices": {}
+  }
+}

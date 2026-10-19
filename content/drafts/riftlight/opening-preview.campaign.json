@@ -1,5 +1,5 @@
 {
-  "$comment": "DEVELOPMENT PREVIEW ONLY. Not the production riftlight campaign. The departure ending is a preview boundary, not a Riftlight resolution. Never copy this ending node into production. Chapters become campaignId riftlight on integration.",
+  "$comment": "DEVELOPMENT PREVIEW ONLY. Fifteen authored story nodes and eight explicit pause boundaries. Not the production riftlight campaign.",
   "id": "riftlight-opening-preview",
   "title": "Riftlight — opening preview",
   "blurb": "Snow falls on the Exchange quay. A small goat needs help. Beyond a fold in the air, a bell is ringing in the ice.",
@@ -9,7 +9,27 @@
   "chapters": [
     "riftlight-exchange-rift",
     "riftlight-glacier-survival",
-    "riftlight-riftseekers-departure"
+    "riftlight-riftseekers-departure",
+    "riftlight-ice-shelf-traverse",
+    "riftlight-hidden-glacier-rift",
+    "riftlight-headwaters-washout",
+    "riftlight-frostfang-shore",
+    "riftlight-cairnstep-pass",
+    "riftlight-boundary-stone-bank",
+    "riftlight-ashspan-bridge",
+    "riftlight-sky-islands-arrival",
+    "riftlight-saltrot-arrival",
+    "riftlight-preview-pause-cairnstep-pass",
+    "riftlight-preview-pause-boundary-stone-bank",
+    "riftlight-preview-pause-ashspan-bridge",
+    "riftlight-preview-pause-sky-islands-arrival",
+    "riftlight-preview-pause-saltrot-arrival",
+    "riftlight-stone-counters",
+    "riftlight-whale-road",
+    "riftlight-buried-bridge",
+    "riftlight-preview-pause-stone-counters",
+    "riftlight-preview-pause-whale-road",
+    "riftlight-preview-pause-buried-bridge"
   ],
   "graph": {
     "version": 1,
@@ -27,7 +47,22 @@
       "marked_glacier_drift",
       "sheltered_kid_on_detour",
       "found_drift_hollow",
-      "tested_singing_seam"
+      "tested_singing_seam",
+      "shelf_high_route",
+      "glacier_rift_woken",
+      "ossley_rescued",
+      "sky_arrival_flight",
+      "saltrot_arrival_ferry",
+      "attune_taught",
+      "whales_guided",
+      "whales_scattered",
+      "olivia_trusted",
+      "orin_chime_shared",
+      "fragment_coast_learned",
+      "saltrot_arrival_whales",
+      "saltrot_arrival_glacier",
+      "stone_route_priority",
+      "sky_followup_promised"
     ],
     "buffs": {
       "riftspark": {
@@ -61,8 +96,176 @@
       "riftseekers-departure": {
         "chapter": "riftlight-riftseekers-departure",
         "title": "The Riftseekers",
+        "revisit": "pass"
+      },
+      "ice-shelf-traverse": {
+        "chapter": "riftlight-ice-shelf-traverse",
+        "title": "The Ice Shelf",
+        "revisit": "closed"
+      },
+      "hidden-glacier-rift": {
+        "chapter": "riftlight-hidden-glacier-rift",
+        "title": "The Hidden Opening",
+        "revisit": "replay"
+      },
+      "headwaters-washout": {
+        "chapter": "riftlight-headwaters-washout",
+        "title": "The Headwaters",
+        "revisit": "closed"
+      },
+      "frostfang-shore": {
+        "chapter": "riftlight-frostfang-shore",
+        "title": "Frostfang Shore",
+        "revisit": "pass"
+      },
+      "cairnstep-pass": {
+        "chapter": "riftlight-cairnstep-pass",
+        "title": "The Cairnstep",
+        "revisit": "pass"
+      },
+      "boundary-stone-bank": {
+        "chapter": "riftlight-boundary-stone-bank",
+        "title": "Boundary Stone Bank",
+        "revisit": "pass"
+      },
+      "ashspan-bridge": {
+        "chapter": "riftlight-ashspan-bridge",
+        "title": "Ashspan Bridge",
+        "revisit": "pass"
+      },
+      "sky-islands-arrival": {
+        "chapter": "riftlight-sky-islands-arrival",
+        "title": "Sky Islands",
+        "revisit": "pass",
+        "onComplete": [
+          {
+            "when": {
+              "facts": {
+                "attunement": {
+                  "max": 0
+                }
+              }
+            },
+            "effects": [
+              {
+                "type": "adjustFact",
+                "fact": "attunement",
+                "by": 1
+              }
+            ]
+          }
+        ]
+      },
+      "saltrot-arrival": {
+        "chapter": "riftlight-saltrot-arrival",
+        "title": "The Saltrot",
+        "revisit": "pass",
+        "onComplete": [
+          {
+            "when": {
+              "facts": {
+                "attunement": {
+                  "max": 0
+                }
+              }
+            },
+            "effects": [
+              {
+                "type": "adjustFact",
+                "fact": "attunement",
+                "by": 1
+              }
+            ]
+          }
+        ]
+      },
+      "preview-pause-cairnstep-pass": {
+        "chapter": "riftlight-preview-pause-cairnstep-pass",
+        "title": "Pause the route preview",
         "ending": {
-          "title": "End of opening preview"
+          "title": "End of route preview"
+        }
+      },
+      "preview-pause-boundary-stone-bank": {
+        "chapter": "riftlight-preview-pause-boundary-stone-bank",
+        "title": "Pause the route preview",
+        "ending": {
+          "title": "End of route preview"
+        }
+      },
+      "preview-pause-ashspan-bridge": {
+        "chapter": "riftlight-preview-pause-ashspan-bridge",
+        "title": "Pause the route preview",
+        "ending": {
+          "title": "End of route preview"
+        }
+      },
+      "preview-pause-sky-islands-arrival": {
+        "chapter": "riftlight-preview-pause-sky-islands-arrival",
+        "title": "Pause the route preview",
+        "ending": {
+          "title": "End of route preview"
+        }
+      },
+      "preview-pause-saltrot-arrival": {
+        "chapter": "riftlight-preview-pause-saltrot-arrival",
+        "title": "Pause the route preview",
+        "ending": {
+          "title": "End of route preview"
+        }
+      },
+      "stone-counters": {
+        "chapter": "riftlight-stone-counters",
+        "title": "The Stone That Moved",
+        "revisit": "pass",
+        "onComplete": [
+          {
+            "when": {
+              "facts": {
+                "attunement": {
+                  "max": 0
+                }
+              }
+            },
+            "effects": [
+              {
+                "type": "adjustFact",
+                "fact": "attunement",
+                "by": 1
+              }
+            ]
+          }
+        ]
+      },
+      "whale-road": {
+        "chapter": "riftlight-whale-road",
+        "title": "The Whales' Turning Place",
+        "revisit": "pass"
+      },
+      "buried-bridge": {
+        "chapter": "riftlight-buried-bridge",
+        "title": "A Bridge Without a River",
+        "revisit": "pass"
+      },
+      "preview-pause-stone-counters": {
+        "chapter": "riftlight-preview-pause-stone-counters",
+        "title": "Pause the regional preview",
+        "ending": {
+          "title": "End of regional preview"
+        }
+      },
+      "preview-pause-whale-road": {
+        "chapter": "riftlight-preview-pause-whale-road",
+        "title": "Pause the regional preview",
+        "ending": {
+          "title": "End of regional preview"
+        }
+      },
+      "preview-pause-buried-bridge": {
+        "chapter": "riftlight-preview-pause-buried-bridge",
+        "title": "Pause the regional preview",
+        "ending": {
+          "title": "End of regional preview"
         }
       }
     },
@@ -79,7 +282,8 @@
         "effects": [
           {
             "type": "grantBuff",
-            "buff": "riftspark"
+            "buff": "riftspark",
+            "firstCrossing": true
           }
         ]
       },
@@ -88,7 +292,419 @@
         "to": "riftseekers-departure",
         "kind": "forward",
         "label": "Meet the travelers beside the hall"
+      },
+      "departure-to-shelf": {
+        "from": "riftseekers-departure",
+        "to": "ice-shelf-traverse",
+        "kind": "forward",
+        "label": "Follow the shelf toward the supply pass"
+      },
+      "departure-to-hidden": {
+        "from": "riftseekers-departure",
+        "to": "hidden-glacier-rift",
+        "kind": "sideways",
+        "label": "Explore the glacier for openings"
+      },
+      "hidden-to-departure": {
+        "from": "hidden-glacier-rift",
+        "to": "riftseekers-departure",
+        "kind": "return",
+        "label": "Return to the singing hall"
+      },
+      "shelf-to-pass": {
+        "from": "ice-shelf-traverse",
+        "to": "cairnstep-pass",
+        "kind": "forward",
+        "label": "Climb toward the cairns",
+        "when": {
+          "flag": "traverse_made"
+        }
+      },
+      "shelf-to-washout": {
+        "from": "ice-shelf-traverse",
+        "to": "headwaters-washout",
+        "kind": "forward",
+        "label": "Look for a way out of the river",
+        "when": {
+          "flag": "traverse_failed"
+        }
+      },
+      "washout-early": {
+        "from": "headwaters-washout",
+        "to": "frostfang-shore",
+        "kind": "forward",
+        "label": "Climb onto the east bank",
+        "when": {
+          "flag": "river_escaped_early"
+        }
+      },
+      "washout-middle": {
+        "from": "headwaters-washout",
+        "to": "boundary-stone-bank",
+        "kind": "forward",
+        "label": "Climb onto the east bank",
+        "when": {
+          "flag": "river_escaped_middle"
+        }
+      },
+      "washout-late": {
+        "from": "headwaters-washout",
+        "to": "ashspan-bridge",
+        "kind": "forward",
+        "label": "Climb onto the east bank",
+        "when": {
+          "flag": "river_escaped_late"
+        }
+      },
+      "washout-to-sky": {
+        "from": "headwaters-washout",
+        "to": "sky-islands-arrival",
+        "kind": "forward",
+        "when": {
+          "flag": "river_took_rift"
+        },
+        "rift": {
+          "uses": 1,
+          "oneWay": true,
+          "reveal": "when-crossed"
+        },
+        "effects": [
+          {
+            "type": "grantBuff",
+            "buff": "riftspark",
+            "firstCrossing": true
+          }
+        ]
+      },
+      "glacier-to-saltrot": {
+        "from": "hidden-glacier-rift",
+        "to": "saltrot-arrival",
+        "kind": "sideways",
+        "blocked": "shown",
+        "rift": {
+          "persistent": true,
+          "linkedTo": "saltrot-to-glacier",
+          "opensWhen": {
+            "flag": "glacier_rift_woken"
+          },
+          "reveal": "when-crossed"
+        },
+        "effects": [
+          {
+            "type": "grantBuff",
+            "buff": "riftspark",
+            "firstCrossing": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "saltrot_arrival_whales",
+            "value": false
+          },
+          {
+            "type": "setFlag",
+            "flag": "saltrot_arrival_ferry",
+            "value": false
+          },
+          {
+            "type": "setFlag",
+            "flag": "saltrot_arrival_glacier",
+            "value": true
+          }
+        ]
+      },
+      "saltrot-to-glacier": {
+        "from": "saltrot-arrival",
+        "to": "hidden-glacier-rift",
+        "kind": "return",
+        "blocked": "shown",
+        "rift": {
+          "persistent": true,
+          "linkedTo": "glacier-to-saltrot",
+          "opensWhen": {
+            "flag": "glacier_rift_woken"
+          },
+          "reveal": "when-crossed"
+        },
+        "effects": [
+          {
+            "type": "grantBuff",
+            "buff": "riftspark",
+            "firstCrossing": true
+          }
+        ]
+      },
+      "shore-to-pass": {
+        "from": "frostfang-shore",
+        "to": "cairnstep-pass",
+        "kind": "forward",
+        "label": "Take the dry path to the Cairnstep"
+      },
+      "pass-to-sky": {
+        "from": "cairnstep-pass",
+        "to": "sky-islands-arrival",
+        "kind": "sideways",
+        "label": "Accept the griffins' flight to their island neighbors",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "sky_arrival_flight"
+          }
+        ]
+      },
+      "stones-to-bridge": {
+        "from": "boundary-stone-bank",
+        "to": "ashspan-bridge",
+        "kind": "sideways",
+        "label": "Follow the east-bank road to Ashspan Bridge"
+      },
+      "bridge-to-stones": {
+        "from": "ashspan-bridge",
+        "to": "boundary-stone-bank",
+        "kind": "return",
+        "label": "Visit the boundary stone keepers"
+      },
+      "bridge-to-saltrot": {
+        "from": "ashspan-bridge",
+        "to": "saltrot-arrival",
+        "kind": "sideways",
+        "label": "Take Ossley's ferry downriver to the Saltrot",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "saltrot_arrival_ferry"
+          },
+          {
+            "type": "setFlag",
+            "flag": "saltrot_arrival_whales",
+            "value": false
+          },
+          {
+            "type": "setFlag",
+            "flag": "saltrot_arrival_ferry",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "saltrot_arrival_glacier",
+            "value": false
+          }
+        ]
+      },
+      "cairnstep-pass-pause": {
+        "from": "cairnstep-pass",
+        "to": "preview-pause-cairnstep-pass",
+        "kind": "forward",
+        "label": "Pause here at the end of the authored preview"
+      },
+      "boundary-stone-bank-pause": {
+        "from": "boundary-stone-bank",
+        "to": "preview-pause-boundary-stone-bank",
+        "kind": "forward",
+        "label": "Pause here at the end of the authored preview"
+      },
+      "ashspan-bridge-pause": {
+        "from": "ashspan-bridge",
+        "to": "preview-pause-ashspan-bridge",
+        "kind": "forward",
+        "label": "Pause here at the end of the authored preview"
+      },
+      "sky-islands-arrival-pause": {
+        "from": "sky-islands-arrival",
+        "to": "preview-pause-sky-islands-arrival",
+        "kind": "forward",
+        "label": "Pause here at the end of the authored preview"
+      },
+      "saltrot-arrival-pause": {
+        "from": "saltrot-arrival",
+        "to": "preview-pause-saltrot-arrival",
+        "kind": "forward",
+        "label": "Pause here at the end of the authored preview"
+      },
+      "boundary-stone-bank-onward": {
+        "from": "boundary-stone-bank",
+        "to": "stone-counters",
+        "kind": "forward",
+        "label": "Visit the keepers counting the moved stone"
+      },
+      "sky-islands-arrival-onward": {
+        "from": "sky-islands-arrival",
+        "to": "whale-road",
+        "kind": "forward",
+        "label": "Follow the song to the cloud whales"
+      },
+      "saltrot-arrival-onward": {
+        "from": "saltrot-arrival",
+        "to": "buried-bridge",
+        "kind": "forward",
+        "label": "Ask the guide to show the buried bridge"
+      },
+      "counters-to-bridge": {
+        "from": "stone-counters",
+        "to": "ashspan-bridge",
+        "kind": "sideways",
+        "label": "Follow the road to Ashspan Bridge"
+      },
+      "bridge-to-counters": {
+        "from": "ashspan-bridge",
+        "to": "stone-counters",
+        "kind": "return",
+        "label": "Follow the road to the stone counters"
+      },
+      "buried-to-saltrot": {
+        "from": "buried-bridge",
+        "to": "saltrot-arrival",
+        "kind": "return",
+        "label": "Return along the firm bank"
+      },
+      "stone-counters-pause": {
+        "from": "stone-counters",
+        "to": "preview-pause-stone-counters",
+        "kind": "forward",
+        "label": "Pause here at the end of the authored preview"
+      },
+      "whale-road-pause": {
+        "from": "whale-road",
+        "to": "preview-pause-whale-road",
+        "kind": "forward",
+        "label": "Pause here at the end of the authored preview"
+      },
+      "buried-bridge-pause": {
+        "from": "buried-bridge",
+        "to": "preview-pause-buried-bridge",
+        "kind": "forward",
+        "label": "Pause here at the end of the authored preview"
+      },
+      "counters-shrinking-fold": {
+        "from": "stone-counters",
+        "to": "ashspan-bridge",
+        "kind": "sideways",
+        "rift": {
+          "uses": 1,
+          "lasts": {
+            "unit": "visits",
+            "count": 1
+          },
+          "oneWay": true,
+          "reveal": "when-crossed",
+          "opensWhen": {
+            "visited": "stone-counters"
+          }
+        }
+      },
+      "whales-to-coast": {
+        "from": "whale-road",
+        "to": "saltrot-arrival",
+        "kind": "sideways",
+        "blocked": "shown",
+        "rift": {
+          "persistent": true,
+          "opensWhen": {
+            "flag": "whales_guided"
+          },
+          "linkedTo": "coast-to-whales",
+          "reveal": "when-crossed",
+          "actions": {
+            "open": [
+              {
+                "id": "olivia",
+                "label": "Lady Olivia's way — open early and scatter the whales",
+                "when": {
+                  "notFlag": "whales_guided"
+                },
+                "effects": [
+                  {
+                    "type": "setFlag",
+                    "flag": "olivia_trusted"
+                  },
+                  {
+                    "type": "setFlag",
+                    "flag": "whales_scattered"
+                  }
+                ]
+              },
+              {
+                "id": "guide",
+                "label": "Guide the whales clear and let the pair open",
+                "when": {
+                  "notFlag": "whales_scattered"
+                },
+                "effects": [
+                  {
+                    "type": "setFlag",
+                    "flag": "whales_guided"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "effects": [
+          {
+            "type": "grantBuff",
+            "buff": "riftspark",
+            "firstCrossing": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "saltrot_arrival_whales",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "saltrot_arrival_ferry",
+            "value": false
+          },
+          {
+            "type": "setFlag",
+            "flag": "saltrot_arrival_glacier",
+            "value": false
+          }
+        ]
+      },
+      "coast-to-whales": {
+        "from": "saltrot-arrival",
+        "to": "whale-road",
+        "kind": "return",
+        "blocked": "shown",
+        "rift": {
+          "persistent": true,
+          "opensWhen": {
+            "flag": "whales_guided"
+          },
+          "linkedTo": "whales-to-coast",
+          "reveal": "when-crossed"
+        },
+        "effects": [
+          {
+            "type": "grantBuff",
+            "buff": "riftspark",
+            "firstCrossing": true
+          }
+        ]
+      }
+    },
+    "facts": {
+      "attunement": {
+        "domain": "consequence",
+        "type": "counter",
+        "min": 0,
+        "max": 2,
+        "initial": 0,
+        "label": "Rift attunement",
+        "visible": true
       }
     }
+  },
+  "routeSets": {
+    "ice_shelf": [
+      "traverse_made",
+      "traverse_failed"
+    ],
+    "river_exit": [
+      "river_escaped_early",
+      "river_escaped_middle",
+      "river_escaped_late",
+      "river_took_rift"
+    ]
   }
 }

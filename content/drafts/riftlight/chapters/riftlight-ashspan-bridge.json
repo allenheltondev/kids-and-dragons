@@ -1,0 +1,103 @@
+{
+  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "id": "riftlight-ashspan-bridge",
+  "campaignId": "riftlight-opening-preview",
+  "index": 4,
+  "title": "When the Ferry Goes Your Way",
+  "biome": "eastern_plains",
+  "music": "riftlight-paths",
+  "estimatedMinutes": 8,
+  "xpAward": 140,
+  "entry": "bridge",
+  "scenes": {
+    "bridge": {
+      "type": "story",
+      "narration": "The bridge over the Great River is called Ashspan Bridge. Old Ossley, a frogfolk boatman, rests a pole across his flat boat. \"Changed melt,\" he says, watching a branch turn in the current. \"Busy year.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "landing"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "ossley_rescued"
+          },
+          "text": "He checks the blanket around your shoulders before returning to his pole."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        }
+      ]
+    },
+    "landing": {
+      "type": "choice_point",
+      "narration": "A mooring rope has dragged a landing plank loose. Ossley is holding the boat steady while two travelers wait with their bags. What will you do?",
+      "choices": [
+        {
+          "id": "plank",
+          "label": "Hold the plank while the travelers board",
+          "icon": "hand",
+          "goto": "plank"
+        },
+        {
+          "id": "rope",
+          "label": "Help move the rope off the plank",
+          "icon": "hand",
+          "goto": "rope"
+        }
+      ]
+    },
+    "plank": {
+      "type": "story",
+      "narration": "You hold the plank flat until both travelers are aboard. Ossley tests it once with his pole and nods. \"That will do.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "routes"
+        }
+      ]
+    },
+    "rope": {
+      "type": "story",
+      "narration": "You lift the rope clear and seat the plank on its supports. The travelers board without wetting their bags. Ossley gives you a brief nod.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "routes"
+        }
+      ]
+    },
+    "routes": {
+      "type": "rest",
+      "narration": "Ossley points downriver. \"The coast is called the Saltrot. When I go.\" Then he points to the road beside the boundary stones. You can ask about the coast or follow the stone-keepers' questions inland. For now, you have a safe landing and a route to discuss.",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success"
+    }
+  },
+  "llmHints": {
+    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
+    "forbidden": [
+      "death",
+      "gore",
+      "Corvane",
+      "emperor",
+      "Pangea",
+      "Hollow Gate",
+      "Legend Dragon"
+    ],
+    "npcVoices": {}
+  }
+}
