@@ -34,6 +34,9 @@ export class Api {
   ) {}
 
   async call<T = Record<string, any>>(method: "GET" | "POST", path: string, options: CallOptions): Promise<Reply<T>> {
+    // Stamped before the request goes out: the busiest second is about what we
+    // asked of the server, not when its answers got back (see metrics.ts).
+    const sentAt = Date.now();
     const started = performance.now();
     let status = 0;
     let body: any = {};
@@ -59,7 +62,7 @@ export class Api {
     }
     // A refused action comes back 200 with `ok: false` (architecture §4.2).
     const code = status === 200 && body?.ok === false ? body?.error?.code : undefined;
-    this.recorder.record({ route: options.route, status, ms: performance.now() - started, code, at: Date.now() });
+    this.recorder.record({ route: options.route, status, ms: performance.now() - started, code, at: sentAt });
     return { status, body: body as T, retryAfterMs };
   }
 }

@@ -4,7 +4,8 @@
  * Every request the simulated phones make goes through one `Recorder`. It keeps
  * the raw latencies per route (a soak is a few hundred thousand numbers, which
  * is nothing) so the percentiles are exact, and a count per wall-clock second
- * so the report can say what the busiest second asked of API Gateway's 50 rps.
+ * (by when it was sent) so the report can say what the busiest second asked of
+ * API Gateway's 50 rps.
  *
  * Two answers are counted that are not HTTP failures:
  *  - 429, which is API Gateway (or the code guard) saying slow down;
@@ -20,7 +21,11 @@ export interface Sample {
   ms: number;
   /** `error.code` of an `/api/action` answer that was refused, for example `STALE_SEQ`. */
   code?: string | undefined;
-  /** When it finished, ms since epoch. */
+  /**
+   * When the request was sent, ms since epoch. Not when it finished: under
+   * saturation answers queue and arrive in clumps, and the busiest second is
+   * compared with API Gateway's limit on requests *arriving*.
+   */
   at: number;
 }
 
@@ -119,6 +124,29 @@ export class Recorder {
       routes,
     };
   }
+}
+
+/** What ends a ramp: the first stage past any of these is the limit. */
+export interface Limits {
+  /** Share of requests that were errors (not 429, not STALE_SEQ), 0 to 1. */
+  errorRate: number;
+  /** Share of requests that were answered 429, 0 to 1. */
+  tooManyRate: number;
+  /** p95 of `POST /api/action`, ms. */
+  actionP95Ms: number;
+}
+
+export const DEFAULT_LIMITS: Limits = { errorRate: 0.01, tooManyRate: 0.01, actionP95Ms: 2000 };
+
+/** Why a stage is past the limit; empty when it is not. */
+export function limitsHit(report: Report, limits: Limits): string[] {
+  const hit: string[] = [];
+  const share = (n: number) => (report.total === 0 ? 0 : n / report.total);
+  if (share(report.errors) > limits.errorRate) hit.push(`errors ${pct(report.errors, report.total)} of requests (limit ${limits.errorRate * 100}%)`);
+  if (share(report.tooMany) > limits.tooManyRate) hit.push(`429 on ${pct(report.tooMany, report.total)} of requests (limit ${limits.tooManyRate * 100}%)`);
+  const action = report.routes.find((r) => r.route === "POST /api/action");
+  if (action && action.p95 > limits.actionP95Ms) hit.push(`POST /api/action p95 ${ms(action.p95)}ms (limit ${limits.actionP95Ms}ms)`);
+  return hit;
 }
 
 const pct = (part: number, whole: number): string =>

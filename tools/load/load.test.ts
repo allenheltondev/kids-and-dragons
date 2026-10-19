@@ -1,5 +1,8 @@
+import { createServer } from "node:http";
+import type { AddressInfo } from "node:net";
 import { describe, expect, it } from "vitest";
-import { Recorder, percentile, renderMarkdown } from "./metrics.ts";
+import { Api } from "./client.ts";
+import { DEFAULT_LIMITS, Recorder, limitsHit, percentile, renderMarkdown } from "./metrics.ts";
 import { parseConfig } from "./run.ts";
 import { distanceToFight } from "./table.ts";
 
@@ -41,6 +44,14 @@ describe("Recorder", () => {
     expect(recorder.report(10).peakRps).toBe(5);
   });
 
+  it("buckets by when requests were sent, not when the answers came back", () => {
+    // Ten requests sent one a second, every answer held until the tenth second:
+    // the server was asked for 1/s, whatever order the answers arrived in.
+    const recorder = new Recorder();
+    for (let i = 0; i < 10; i++) recorder.record(sample("POST /api/action", 10_000 - i * 1000, 200, undefined, 100_000 + i * 1000));
+    expect(recorder.report(10).peakRps).toBe(1);
+  });
+
   it("reports an empty run without dividing by zero", () => {
     const report = new Recorder().report(0);
     expect(report).toMatchObject({ total: 0, peakRps: 0, errors: 0, routes: [] });
@@ -76,6 +87,14 @@ describe("parseConfig", () => {
     expect(() => parseConfig(["--tables", "0"])).toThrow(/--tables/);
   });
 
+  it("takes limits, and refuses a share that is not one", () => {
+    expect(parseConfig(["--max-429-rate", "0.05", "--max-p95", "500", "--keep-going"])).toMatchObject({
+      keepGoing: true,
+      limits: { tooManyRate: 0.05, actionP95Ms: 500, errorRate: 0.01 },
+    });
+    expect(() => parseConfig(["--max-error-rate", "5"])).toThrow(/--max-error-rate/);
+  });
+
   it("returns null for --help", () => {
     expect(parseConfig(["--help"])).toBeNull();
   });
@@ -96,5 +115,61 @@ describe("distanceToFight", () => {
     expect(distance.get("road")).toBe(1);
     expect(distance.get("start")).toBe(2);
     expect(distance.has("gate")).toBe(false);
+  });
+});
+
+describe("Api", () => {
+  it("records the moment a request was sent, even when every answer comes back at once", async () => {
+    const held: Array<() => void> = [];
+    const server = createServer((_req, res) => {
+      held.push(() => res.end(JSON.stringify({ ok: true })));
+    });
+    await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+    try {
+      const recorder = new Recorder();
+      const api = new Api(`http://127.0.0.1:${(server.address() as AddressInfo).port}`, recorder);
+      const start = Date.now();
+      const calls: Promise<unknown>[] = [];
+      for (let i = 0; i < 4; i++) {
+        calls.push(api.call("POST", "/api/action", { route: "POST /api/action", body: {} }));
+        await new Promise((resolve) => setTimeout(resolve, 400));
+        // Each answer is held until all four have been sent.
+      }
+      for (const release of held) release();
+      await Promise.all(calls);
+      const finished = Date.now();
+
+      const report = recorder.report((finished - start) / 1000);
+      // Sent over 1.2 seconds; answered in the same instant. Counted by send,
+      // no one second can hold all four (counted by answer, one always did).
+      expect(report.total).toBe(4);
+      expect(report.peakRps).toBeLessThan(4);
+      expect(report.routes[0]!.max).toBeGreaterThan(1000);
+    } finally {
+      server.closeAllConnections();
+      server.close();
+    }
+  });
+});
+
+describe("limitsHit", () => {
+  const stage = (overrides: Partial<ReturnType<Recorder["report"]>> = {}, actionP95 = 50) => {
+    const recorder = new Recorder();
+    for (let i = 0; i < 100; i++) recorder.record(sample("POST /api/action", i < 90 ? 10 : actionP95 + 1));
+    return { ...recorder.report(10), ...overrides };
+  };
+
+  it("is empty for a stage inside every limit", () => {
+    expect(limitsHit(stage(), DEFAULT_LIMITS)).toEqual([]);
+  });
+
+  it("names each limit that is passed", () => {
+    expect(limitsHit(stage({ errors: 2 }), DEFAULT_LIMITS)).toEqual([expect.stringContaining("errors 2.00%")]);
+    expect(limitsHit(stage({ tooMany: 5 }), DEFAULT_LIMITS)).toEqual([expect.stringContaining("429 on 5.00%")]);
+    expect(limitsHit(stage({}, 2500), DEFAULT_LIMITS)).toEqual([expect.stringContaining("POST /api/action p95")]);
+  });
+
+  it("honors limits that are set", () => {
+    expect(limitsHit(stage({ errors: 2 }), { ...DEFAULT_LIMITS, errorRate: 0.05 })).toEqual([]);
   });
 });

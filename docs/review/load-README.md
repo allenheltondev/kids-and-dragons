@@ -24,7 +24,8 @@ the real HTTP API and nothing else:
 5. The host closes the room (`POST /api/room/:code/close`). A table that finishes
    opens a new room, until the stage's time is up.
 
-It reports requests per second (average and busiest second), p50/p95/p99/max
+It reports requests per second (average and busiest second, counted by when each
+request was *sent*, so it can be set against API Gateway's limit on arrivals), p50/p95/p99/max
 latency per route, the rate of 429 and `STALE_SEQ`, and errors.
 
 ### What it leaves behind
@@ -98,9 +99,14 @@ Each stage runs five minutes with the tables starting spread over thirty seconds
 and a minute's rest between stages, so a stage's numbers are its own. The think time
 (1.5 s a tap) and the heartbeat (20 s) are a real table's.
 
-Stop the ramp at the first stage that shows sustained 429s, errors above 1%, or a
-p95 over two seconds on `POST /api/action`; run the stage below it again to make
-sure, and call that the limit. The expected order of things going wrong:
+The ramp stops by itself at the first stage that is past a limit: errors above 1% of
+requests, 429 on more than 1%, or a p95 over two seconds on `POST /api/action`
+(`--max-error-rate`, `--max-429-rate`, `--max-p95` change them). The output names the
+stage and which limit it passed, and says the limit lies between that stage and the one
+before. Run the stage below it again to make sure, and call that the limit.
+`--keep-going` runs every stage regardless. Ctrl-C also stops, and closes every room.
+
+The expected order of things going wrong:
 
 | Load | What to expect, before measuring |
 |---|---|
