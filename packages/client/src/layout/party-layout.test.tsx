@@ -18,7 +18,9 @@ import { resetFieldGuideCache } from "../screens/content";
 import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigation";
 import { PartyLayout } from "./PartyLayout";
 
-function mount(prompt: Prompt | null = null) {
+function mount(prompt: Prompt | null = null, phone = true) {
+  // A phone that plays remembers her (a device token); a family tablet's pick holds only a seat (#299).
+  if (phone) localStorage.setItem("kad.device", JSON.stringify({ deviceToken: "dev_1" }));
   useGameStore.setState({
     session: { runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "party", sessionToken: "t" },
     state: makeState({
@@ -46,12 +48,19 @@ function showing(container: HTMLElement): string[] {
 
 afterEach(() => {
   cleanup();
+  localStorage.clear();
   vi.unstubAllGlobals();
   resetFieldGuideCache();
   dismissPlayerSheet();
 });
 
 describe("Party Mode and the map", () => {
+  it("adds the adventure book to the tray for a kid seated on a family tablet (#299), and only there", () => {
+    mount(null, false);
+    const nav = screen.getByRole("navigation", { name: "What to look at" });
+    expect([...nav.querySelectorAll("button")].map((b) => b.textContent)).toEqual(["World", "You", "Map", "Guide", "Book"]);
+  });
+
   it("preserves the world subtree across World, You and Map visits", () => {
     const { container } = mount();
     const narration = container.querySelector('[data-pane="world"] .narration');

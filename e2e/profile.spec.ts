@@ -155,4 +155,86 @@ test.describe("a kid's own page", () => {
     await choose(phone.getByRole("radiogroup", { name: "Pick a color" }), /plum/i);
     await expect(phone.getByRole("status").filter({ hasText: /saved/i })).toBeVisible(TAP);
   });
+
+  test("a kid seated on a family tablet opens her book from the tray, sees her page, and a preset she changes is saved", async ({ browser }) => {
+    test.setTimeout(240_000);
+    const email = `grown-up-${Date.now()}@example.com`;
+    const signIn = async (page: Page): Promise<void> => {
+      await page.getByLabel("Email").fill(email);
+      await page.getByRole("button", { name: /send the code/i }).click();
+      await page.getByLabel("The code").fill("12345678");
+    };
+
+    // --- A grown-up's phone: an account, a family, and a Phone Mode room ---
+    const grownUp = await client(browser);
+    await grownUp.goto("/");
+    await grownUp.getByRole("button", { name: /sign in or create an account/i }).click(TAP);
+    await signIn(grownUp);
+    await grownUp.getByRole("button", { name: /back to the game/i }).click(TAP);
+    await grownUp.getByRole("button", { name: /want to host/i }).click();
+    await grownUp.getByText("Phone Mode").click();
+    await grownUp.getByLabel("Your adventurer name").fill("Grown-up");
+    await grownUp.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(grownUp).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
+    const code = new URL(grownUp.url()).pathname.split("/").pop() ?? "";
+
+    // --- The family tablet, at the largest text and one-handed, with Ada picked ---
+    const tablet = await client(browser, 820, 1100, { text: "largest", contrast: true, motion: true, hand: "right" });
+    await tablet.goto("/");
+    await tablet.getByRole("button", { name: /make it a family tablet/i }).click(TAP);
+    await signIn(tablet);
+    await tablet.getByRole("button", { name: /^done$/i }).click(TAP);
+    await tablet.getByRole("button", { name: /someone new/i }).click(TAP);
+    await tablet.getByPlaceholder("Type your name").fill("Ada");
+    await tablet.getByRole("button", { name: /that.s me/i }).click(TAP);
+    await tablet.getByLabel("Room code, four letters").fill(code);
+    await tablet.getByRole("button", { name: /join a game/i }).click();
+    await expect(tablet).toHaveURL(new RegExp(`/p/${code}$`), TAP);
+
+    // --- Sat down: the tray has her book, clear of the corner controls and the other tabs ---
+    const tray = tablet.getByRole("navigation", { name: "What to look at" });
+    const book = tray.getByRole("button", { name: "Book" });
+    await expect(book).toBeVisible(TAP);
+    const boxes = [
+      { name: "Book", locator: book },
+      ...(await tray.getByRole("button").all()).map((locator, i) => ({ name: `tray tab ${i}`, locator })),
+      { name: "Display settings", locator: tablet.getByRole("button", { name: "Display settings" }).first() },
+      { name: "Read-aloud", locator: tablet.getByRole("button", { name: /turn read-aloud/i }) },
+    ];
+    const rects = [];
+    for (const { name, locator } of boxes) {
+      const box = await locator.boundingBox();
+      expect(box, `${name} has a box`).not.toBeNull();
+      rects.push({ name, ...box! });
+    }
+    const view = tablet.viewportSize()!;
+    const bookBox = rects[0]!;
+    expect(bookBox.x + bookBox.width, "Book inside the right edge").toBeLessThanOrEqual(view.width + 0.5);
+    expect(bookBox.width, "Book is a real target").toBeGreaterThanOrEqual(43);
+    for (const other of rects.slice(1)) {
+      if (other.name === "tray tab 4") continue; // the Book tab itself, counted once above
+      const apart = bookBox.x >= other.x + other.width - 0.5 || other.x >= bookBox.x + bookBox.width - 0.5
+        || bookBox.y >= other.y + other.height - 0.5 || other.y >= bookBox.y + bookBox.height - 0.5;
+      expect(apart, `Book overlaps ${other.name}`).toBe(true);
+    }
+    await book.click({ trial: true });
+
+    // --- Her page opens with her seat; she changes a color; it is saved ---
+    await book.click(TAP);
+    await expect(tablet).toHaveURL(/\/journal$/);
+    await tablet.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Me" }).click(TAP);
+    await expect(tablet.getByRole("heading", { name: "Ada", level: 2 })).toBeVisible(TAP);
+    await choose(tablet.getByRole("radiogroup", { name: "Pick a color" }), /lagoon/i);
+    await expect(tablet.getByRole("status").filter({ hasText: /saved/i })).toBeVisible(TAP);
+    await expect(tablet.locator(".profile")).toHaveAttribute("data-profile-color", "lagoon");
+
+    // Back to the game from the book's own Play tab, and in again: the tablet keeps nothing,
+    // so what she sees now was read from the server with her seat.
+    await tablet.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Play" }).click(TAP);
+    await expect(tablet).toHaveURL(new RegExp(`/p/${code}$`), TAP);
+    await tray.getByRole("button", { name: "Book" }).click(TAP);
+    await tablet.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Me" }).click(TAP);
+    await expect(tablet.getByRole("radio", { name: /lagoon/i })).toBeChecked(TAP);
+    expect(await tablet.evaluate(() => Object.keys(localStorage))).not.toContain("kad.journal");
+  });
 });

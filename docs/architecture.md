@@ -1110,7 +1110,11 @@ a little her own.
   profile color as before. There is no public page, link or way to browse kids.
   A tablet's kid may edit as well as read: the picker already trusts whoever
   taps a face with that kid's seat (§4.5, "Shared devices"), and the choices
-  are presets. The tablet keeps nothing of her page after the room.
+  are presets. The tablet keeps nothing of her page after the room. A phone
+  kid finds her book on the home screen; a tablet kid, who has no home screen
+  of her own, finds it on the room's tray (`layout/BookTab.tsx`, a "Book"
+  object shown only to a seat with no device token), which opens the same lazy
+  `/journal` with her seat, and its Play tab returns her to her room.
 
 - **It follows her.** It lives on her profile row under her home, so it is on
   every device bound to her (#281), moves with her (#251, which carries the
