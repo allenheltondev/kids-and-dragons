@@ -80,6 +80,12 @@ export async function removePlayer(
       );
     },
     deps,
+    // A visitor never founded this household. The phone that did stops being
+    // its founder in this same commit (#272), so the room and the household
+    // cannot disagree about who keeps the game, whatever interleaves.
+    visitorHome === undefined
+      ? { unfound: () => foundingDevice(room.householdId, input.playerId, deps) }
+      : {},
   );
   if (!result.ok) {
     // Kept from before the shared loop, so a phone that showed this keeps reading it.
@@ -93,17 +99,29 @@ export async function removePlayer(
   return ok({ seq: result.value.seq });
 }
 
+/** The household's founding device, when it is one of `playerId`'s own phones. */
+async function foundingDevice(
+  householdId: string,
+  playerId: string,
+  deps: Pick<HandlerDeps, "repo">,
+): Promise<{ householdId: string; deviceId: string } | undefined> {
+  const household = await deps.repo.getHousehold(householdId);
+  if (!household?.founderDeviceId) return undefined; // none, or already dropped
+  const device = await deps.repo.getDevice(householdId, household.founderDeviceId);
+  // A shared tablet is nobody, so taking a kid out never unfounds it (#250).
+  return device && device.kind !== "shared" && device.playerId === playerId
+    ? { householdId, deviceId: household.founderDeviceId }
+    : undefined;
+}
+
 /**
  * If the household's founder is a device of the player just taken out, it is
  * not the founder any more. Run on every removal, including a repeat that
  * finds them already out, so a failure here is mended by tapping Remove again.
  */
 async function unfound(householdId: string, playerId: string, deps: HandlerDeps): Promise<void> {
-  const household = await deps.repo.getHousehold(householdId);
-  if (!household?.founderDeviceId) return; // none, or already dropped
-  const device = await deps.repo.getDevice(householdId, household.founderDeviceId);
-  // A shared tablet is nobody, so taking a kid out never unfounds it (#250).
-  if (device && device.kind !== "shared" && device.playerId === playerId) await deps.repo.dropFounder(householdId, household.founderDeviceId);
+  const founder = await foundingDevice(householdId, playerId, deps);
+  if (founder) await deps.repo.dropFounder(founder.householdId, founder.deviceId);
 }
 
 /**

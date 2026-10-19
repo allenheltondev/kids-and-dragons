@@ -275,6 +275,52 @@ describe("a host handing the keeper role to a phone in the room (#272)", () => {
     expect(await linkAccount({ cognitoSub: "sub_mia", principal: mia.principal }, harness.deps)).toMatchObject({ ok: false });
   });
 
+  it("drops the removed keeper's founding in the Remove's own commit (#272 review)", async () => {
+    // Nothing after the commit is left to fail: break the separate drop and the
+    // phone still stops being the founder with the room's word.
+    const { harness, tv, code, runId, householdId, join } = await tvRoom();
+    await join("First");
+    const mia = await join("Mia");
+    await handKeeper({ code, principal: tv.principal, playerId: mia.principal.playerId }, harness.deps);
+    harness.repo.dropFounder = async () => {
+      throw new Error("store down");
+    };
+
+    const out = await removePlayer({ code, principal: tv.principal, playerId: mia.principal.playerId }, harness.deps);
+    expect(out.ok).toBe(true);
+    expect((await harness.repo.getState(runId))?.keeperPlayerId).toBeUndefined();
+    expect((await harness.repo.getState(runId))?.removed).toContain(mia.principal.playerId);
+    expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe("");
+  });
+
+  it("drops the founding on a Remove retried after a hand-over lands mid-flight (#272 review)", async () => {
+    // The Remove read the household while the founder was someone else, then
+    // the hand-over to the same player committed first. The Remove's commit
+    // loses the seq race and goes again, and on the retry it sees who founds.
+    const { harness, tv, code, runId, householdId, join } = await tvRoom();
+    await join("First");
+    const mia = await join("Mia");
+    // So only the Remove's own commit can have dropped it.
+    harness.repo.dropFounder = async () => {
+      throw new Error("store down");
+    };
+    const commit = harness.repo.commit.bind(harness.repo);
+    harness.repo.commit = async (input) => {
+      harness.repo.commit = commit;
+      const handed = await handKeeper({ code, principal: tv.principal, playerId: mia.principal.playerId }, harness.deps);
+      expect(handed.ok).toBe(true);
+      return commit(input);
+    };
+
+    const out = await removePlayer({ code, principal: tv.principal, playerId: mia.principal.playerId }, harness.deps);
+    expect(out.ok).toBe(true);
+    const state = await harness.repo.getState(runId);
+    expect(state?.removed).toContain(mia.principal.playerId);
+    expect(state?.keeperPlayerId).toBeUndefined();
+    expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe("");
+    expect(await linkAccount({ cognitoSub: "sub_mia", principal: mia.principal }, harness.deps)).toMatchObject({ ok: false });
+  });
+
   it("will not move a game that has already been kept", async () => {
     const { harness, tv, code, householdId, join } = await tvRoom();
     const first = await join("Mia");

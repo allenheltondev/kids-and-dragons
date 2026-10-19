@@ -885,6 +885,12 @@ export class MemoryRepository implements GameRepository {
           : stored !== null && (stored.version ?? 0) === campaignProgressExpectedVersion;
       if (!matches) return false;
     }
+    if (input.founder && input.unfound) throw new Error("a commit cannot both set and drop the founder");
+    const dropping = input.unfound ? this.get(HH(input.unfound.householdId), META) : undefined;
+    if (input.unfound) {
+      const household = dropping?.data as Household | undefined;
+      if (!dropping || household?.founderDeviceId !== input.unfound.deviceId) return false;
+    }
     // The founder's household is still a guest game nobody has kept (#272).
     const founding = input.founder ? this.get(HH(input.founder.householdId), META) : undefined;
     if (input.founder) {
@@ -908,6 +914,18 @@ export class MemoryRepository implements GameRepository {
         PK: HH(household.id),
         SK: META,
         ...(household.expiresAt ? { GSI1PK: GSI1_GUEST, GSI1SK: GSI1_GUEST_SK(household.expiresAt, household.id) } : {}),
+        entity: "household",
+        data: household,
+      });
+    }
+    if (input.unfound && dropping) {
+      const household: Household = { ...(dropping.data as Household), founderDeviceId: "" };
+      this.put({
+        PK: HH(household.id),
+        SK: META,
+        ...(household.guest && household.expiresAt
+          ? { GSI1PK: GSI1_GUEST, GSI1SK: GSI1_GUEST_SK(household.expiresAt, household.id) }
+          : {}),
         entity: "household",
         data: household,
       });
