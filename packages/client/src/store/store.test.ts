@@ -68,11 +68,13 @@ interface Harness {
   publish(message: ChannelMessage): void;
   channelOptions(): ChannelOptions;
   closed(): number;
+  reconnected(): number;
 }
 
 function harness(state: RunState = makeState()): Harness {
   let options: ChannelOptions | null = null;
   let closes = 0;
+  let reconnects = 0;
 
   const api = {
     // Creating a room seats the host, so the real response is a room *and* a
@@ -208,6 +210,9 @@ function harness(state: RunState = makeState()): Harness {
         close: () => {
           closes += 1;
         },
+        reconnect: () => {
+          reconnects += 1;
+        },
       };
     },
   } as GameStoreDeps;
@@ -224,6 +229,7 @@ function harness(state: RunState = makeState()): Harness {
       return options;
     },
     closed: () => closes,
+    reconnected: () => reconnects,
   };
 }
 
@@ -1907,5 +1913,18 @@ describe("a shared tablet", () => {
     const h = harness();
     expect(await h.store.getState().loadSharedPlayers()).toBeNull();
     expect(h.api.listSharedPlayers).not.toHaveBeenCalled();
+  });
+});
+
+describe("reconnect (a display that woke up, #264)", () => {
+  it("does nothing outside a room, and asks the channel for a fresh stream inside one", async () => {
+    const h = harness(makeState({ seq: 7 }));
+    h.store.getState().reconnect();
+    expect(h.reconnected()).toBe(0);
+
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.store.getState().reconnect();
+    expect(h.reconnected()).toBe(1);
+    expect(h.closed()).toBe(0);
   });
 });

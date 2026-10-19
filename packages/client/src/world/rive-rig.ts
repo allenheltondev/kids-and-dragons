@@ -115,6 +115,11 @@ function runtime(): Promise<RiveRuntime | null> {
   return runtimePromise;
 }
 
+/** Whether the Rive runtime started here (capability report, #264). */
+export async function riveAvailable(): Promise<boolean> {
+  return (await runtime()) !== null;
+}
+
 /**
  * Loaded rig files by URL. A promise, so three party members hitting the same
  * tier fetch it once — and a failure is cached too, because retrying a 404 on

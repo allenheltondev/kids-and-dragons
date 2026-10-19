@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui";
 import { Icon } from "../screens/icons";
 import { isQuiet, onQuietChange } from "../quiet";
-import { setAudioSink } from "./cue";
+import { setAudioProbe, setAudioSink } from "./cue";
 import { createAudioEngine, type AudioEngine } from "./engine";
 
 import "./AudioControl.css";
@@ -31,6 +31,7 @@ export function AudioControl({ enabled = true, soundtrack = null, ready = false,
     setQuiet(isQuiet());
     setLocked(!engine.unlocked());
     setAudioSink(engine.sink);
+    setAudioProbe(engine);
 
     const unlock = (): void => {
       engine.unlock();
@@ -52,6 +53,7 @@ export function AudioControl({ enabled = true, soundtrack = null, ready = false,
       window.removeEventListener("pointerdown", unlock);
       window.removeEventListener("keydown", unlock);
       setAudioSink(null);
+      setAudioProbe(null);
       engine.dispose();
       engineRef.current = null;
     };

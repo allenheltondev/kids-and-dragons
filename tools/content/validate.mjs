@@ -35,6 +35,7 @@ import { RIFT_ACTION_KINDS, campaignMode, journeyFlags, parseCampaignGraph, rift
 import { chapterFlagWrites, duplicateJsonKeys, lintCampaignGraph } from "../../packages/shared/src/campaign-graph-lint.ts";
 import { prerequisiteProblems } from "../../packages/shared/src/campaign-prerequisites.ts";
 import { factTestProblems } from "../../packages/shared/src/world-state.ts";
+import { helpProblems } from "../../packages/shared/src/help.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 
 /**
@@ -1391,7 +1392,7 @@ function main() {
   const ajv = new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true });
   addFormats(ajv);
 
-  for (const name of ["rules", "items", "chapter", "campaign", "map", "abilities", "world"]) {
+  for (const name of ["rules", "items", "chapter", "campaign", "map", "abilities", "world", "help"]) {
     const path = join(SCHEMAS, `${name}.schema.json`);
     if (!existsSync(path)) {
       rep.fail(rel(path), "", "schema is missing");
@@ -1436,6 +1437,17 @@ function main() {
     rep.fail(rel(worldPath), "", "content/world.json is missing", "Run `npm run canon:world`.");
   } else if (validateAgainstSchema(rep, ajv, "world", worldPath, world)) {
     checkWorld(rep, worldPath, world);
+  }
+
+  // --- help: the words behind every "?", long-press and the join line (#256)
+  const helpPath = join(CONTENT, "help.json");
+  const help = existsSync(helpPath) ? readJson(rep, helpPath) : null;
+  if (!help) {
+    rep.fail(rel(helpPath), "", "content/help.json is missing", "Without it no screen can say what it is for, and the shared screen cannot say how to join.");
+  } else if (validateAgainstSchema(rep, ajv, "help", helpPath, help)) {
+    const problems = helpProblems(help);
+    for (const problem of problems) rep.fail(rel(helpPath), problem.at, problem.message);
+    if (!problems.length) rep.ok(`${rel(helpPath)}  help  (every player surface, the three long-press kinds and the join line, in the child's voice)`);
   }
 
   // --- the field guide: which canon ids a scene may say it discovers

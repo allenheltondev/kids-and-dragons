@@ -31,7 +31,7 @@
  * keeping it running means unmute is instant instead of a rebuild.
  */
 
-import type { AmbienceId, AudioSink, CueId } from "./cue";
+import type { AmbienceId, AudioSink, AudioState, CueId } from "./cue";
 import { createSampleLibrary, type SampleLibrary, type SampleLoaderOptions } from "./samples";
 import { CUE_QUIET } from "./cues";
 import { QUIET_VOLUME_SCALE, isQuiet } from "../quiet";
@@ -88,6 +88,17 @@ export interface AudioEngine {
    * able to ask, so it can offer the gesture.
    */
   unlocked(): boolean;
+  /**
+   * What the browser is doing with sound right now, for the one prompt a TV
+   * needs (#264). `unsupported` is a browser with no AudioContext at all, which
+   * no tap can mend, so nothing should ask for one. `locked` has never had a
+   * gesture; `suspended` had one and the browser still holds the context back
+   * (a TV browser that does not count a remote's click, or a context a hidden
+   * tab re-suspended). Only `running` makes a sound.
+   */
+  state(): AudioState;
+  /** Called when `state()` may have changed. Returns the way to stop listening. */
+  onStateChange(listener: () => void): () => void;
   muted(): boolean;
   setMuted(next: boolean): void;
   /** 0..1. */
@@ -187,6 +198,11 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     resumable.resume?.().catch(() => undefined);
   }
 
+  const stateListeners = new Set<() => void>();
+  function stateChanged(): void {
+    for (const listener of stateListeners) listener();
+  }
+
   function unlock(): void {
     if (ctx) {
       // Creation is once; resuming is every gesture — see resume().
@@ -212,6 +228,8 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
 
     // The context may still arrive suspended even inside a gesture handler.
     resume(ctx);
+    ctx.addEventListener?.("statechange", stateChanged);
+    stateChanged();
 
     /*
      * Real audio starts downloading here rather than at import: a display
@@ -441,6 +459,14 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     sink,
     unlock,
     unlocked: () => ctx !== null,
+    state(): AudioState {
+      if (ctx) return ctx.state === "running" ? "running" : "suspended";
+      return createContext ? "locked" : "unsupported";
+    },
+    onStateChange(listener: () => void): () => void {
+      stateListeners.add(listener);
+      return () => { stateListeners.delete(listener); };
+    },
     muted: () => prefs.muted,
     setMuted(next: boolean): void {
       prefs.muted = next;
@@ -466,6 +492,8 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
       stopPad?.();
       stopPad = null;
       musicBiome = null;
+      ctx?.removeEventListener?.("statechange", stateChanged);
+      stateListeners.clear();
       const closable = ctx as { close?: () => Promise<void> } | null;
       closable?.close?.().catch(() => undefined);
       ctx = null;
