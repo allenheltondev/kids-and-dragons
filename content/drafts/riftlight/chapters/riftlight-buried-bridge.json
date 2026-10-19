@@ -105,7 +105,7 @@
           "goto": "river_explain"
         }
       ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel"
+      "art": "scenes/riftlight/buried-bridge-evidence"
     },
     "brace": {
       "type": "story",
@@ -118,7 +118,7 @@
           "goto": "river_explain"
         }
       ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel"
+      "art": "scenes/riftlight/buried-bridge-evidence"
     },
     "rest": {
       "type": "rest",
@@ -752,7 +752,7 @@
     "river_explain": {
       "type": "choice_point",
       "narration": "The waterline and smooth river pebbles appear in your notes beside the dry channel. Orin asks each hero to point to the observation behind the conclusion. A bridge alone could be built for many reasons; a water mark alone could come from a flood. Together with the worn riverbed beneath the arches, they support an older river here. You can now test whether your explanation says more than the evidence. Which claim will you check aloud first?",
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "art": "scenes/riftlight/buried-bridge-evidence",
       "choices": [
         {
           "id": "option_1",
@@ -771,7 +771,7 @@
     "river_explain_1": {
       "type": "story",
       "narration": "You ask a friend to name each piece of support without guessing who moved the land. The waterline shows a former level, the rounded pebbles show a worn bed, and the arches span it. Orin keeps the conclusion to a river that is no longer here.",
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "art": "scenes/riftlight/buried-bridge-evidence",
       "choices": [
         {
           "id": "continue",
@@ -787,7 +787,7 @@
       "tn": 12,
       "roller": "party",
       "prompt": "Check the claim that this channel once held a river. Choose who leads; everyone can help.",
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "art": "scenes/riftlight/buried-bridge-evidence",
       "onSuccess": {
         "goto": "river_explain_1_done"
       },
@@ -798,7 +798,7 @@
     "river_explain_1_done": {
       "type": "story",
       "narration": "Your explanation survives the questions without gaining a culprit or a date. Orin underlines the words \"used to flow here.\" The guide listens from the mud and agrees that those words match what you can see. The sealed door contributes no imagined answer.",
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "art": "scenes/riftlight/buried-bridge-evidence",
       "choices": [
         {
           "id": "continue",
@@ -811,7 +811,7 @@
     "river_explain_1_changed": {
       "type": "story",
       "narration": "Your first explanation claims the river disappeared in a single night. Orin asks which mark dates it. None does. Your party removes the claim and keeps the older channel and present dry bed. The corrected page is more useful than an impressive answer nobody can check.",
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "art": "scenes/riftlight/buried-bridge-evidence",
       "choices": [
         {
           "id": "continue",
@@ -824,7 +824,7 @@
     "river_explain_2": {
       "type": "story",
       "narration": "You compare the old line on the stone with the empty bed visible now. The distant brackish pools lie elsewhere on the flats. Orin asks you to say \"from here\" rather than \"gone forever.\" The drawing can travel without turning a local observation into a story about the whole realm.",
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "art": "scenes/riftlight/buried-bridge-evidence",
       "choices": [
         {
           "id": "continue",
@@ -840,7 +840,7 @@
       "tn": 12,
       "roller": "party",
       "prompt": "Check the claim that the river is gone from this place. Choose who leads; everyone can help.",
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "art": "scenes/riftlight/buried-bridge-evidence",
       "onSuccess": {
         "goto": "river_explain_2_done"
       },
@@ -851,7 +851,7 @@
     "river_explain_2_done": {
       "type": "story",
       "narration": "Your explanation survives the questions without gaining a culprit or a date. Orin underlines the words \"used to flow here.\" The guide listens from the mud and agrees that those words match what you can see. The sealed door contributes no imagined answer.",
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "art": "scenes/riftlight/buried-bridge-evidence",
       "choices": [
         {
           "id": "continue",
@@ -864,7 +864,7 @@
     "river_explain_2_changed": {
       "type": "story",
       "narration": "Your first explanation claims the river disappeared in a single night. Orin asks which mark dates it. None does. Your party removes the claim and keeps the older channel and present dry bed. The corrected page is more useful than an impressive answer nobody can check.",
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "art": "scenes/riftlight/buried-bridge-evidence",
       "choices": [
         {
           "id": "continue",
