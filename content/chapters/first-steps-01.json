@@ -1,0 +1,698 @@
+{
+  "$comment": "The practice (#255). Teaches by doing, in this order, one `hint` per step: pick a choice (scene_meadow_gate), roll a check (check_latch / check_climb), take a story turn (scene_tansy), move on the board (encounter_stones), use a card (encounter_tag), help a knocked-down friend (encounter_bun: with two or more heroes, `friendDown` puts one of them on the ground for the others to Help Up; Bun, a captive with no deadline, is there for everybody, and is the whole lesson at a table of one), rest (rest_picnic). Nothing in it can cost anything: no damage effects, no items taken or given, no coins, no XP, every failed roll and lost fight goes on to the same next step, and every fight ends with the whole party healed, because HP outlives a scene and a hero knocked down in one fight would otherwise start the next one down. Short on purpose, so a mixed party is not slowed down much: the 30-scene bar is for a real evening's chapter, not this. See content/README.md, \"The practice\".",
+  "id": "first-steps-01",
+  "campaignId": "first-steps",
+  "index": 1,
+  "title": "The Practice Meadow",
+  "biome": "sunward_fields",
+  "estimatedMinutes": 15,
+  "xpAward": 0,
+  "entry": "scene_meadow_gate",
+  "scenes": {
+    "scene_meadow_gate": {
+      "type": "choice_point",
+      "narration": "A wooden gate stands in a sunny meadow. The sign on it says PRACTICE MEADOW, NEW HEROES WELCOME. Somebody drew a smiley face on the sign, and the smiley face has a mustache.",
+      "hint": "Everybody gets a vote here. Tap what you want to do on your phone, then tap Do it! The most votes wins.",
+      "choices": [
+        {
+          "id": "open_gate",
+          "label": "Open the gate",
+          "icon": "hand",
+          "goto": "check_latch"
+        },
+        {
+          "id": "climb_gate",
+          "label": "Climb over the gate",
+          "icon": "boot",
+          "goto": "check_climb"
+        }
+      ]
+    },
+    "check_latch": {
+      "type": "check",
+      "narration": "You reach for the latch. It is tied shut with a ribbon, in a very fancy bow, the kind you put on a birthday present.",
+      "hint": "Time to roll! When your phone says Roll, tap it. A big number is great. A small number still keeps the story going.",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Untie the fancy bow",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_tansy",
+        "narration": "You find the end of the ribbon and pull. The bow falls open, the gate swings wide, and somebody on the other side claps."
+      },
+      "onFailure": {
+        "goto": "scene_tansy",
+        "narration": "The bow gets tighter. Then tighter still. A pair of curly horns pops up over the gate, and two quick hands untie it for you. \"Everybody does that,\" says a cheerful voice."
+      }
+    },
+    "check_climb": {
+      "type": "check",
+      "narration": "You grab the top rail. The gate wobbles, and it squeaks like a duck every time it moves.",
+      "hint": "Time to roll! When your phone says Roll, tap it. A big number is great. A small number still keeps the story going.",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Climb over without a squeak",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_tansy",
+        "narration": "Up, over, and down on the other side without one single squeak. Somebody nearby claps."
+      },
+      "onFailure": {
+        "goto": "scene_tansy",
+        "narration": "Squeak! Squeak! Squeeeak! You land in a soft patch of clover, and somebody nearby laughs a friendly laugh. \"Everybody does that,\" says a cheerful voice."
+      }
+    },
+    "scene_tansy": {
+      "type": "story",
+      "narration": "On the other side stands a faun named Tansy, with curly horns and a clipboard made of bark. \"Welcome to the practice meadow,\" she says. \"New heroes learn the ropes here. Who wants to go first?\"",
+      "hint": "See the name that is glowing? That hero has the story turn and picks for everyone. After a pick, the turn moves on to the next hero.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        }
+      ],
+      "choices": [
+        {
+          "id": "ask_meadow",
+          "label": "Ask what happens here",
+          "icon": "scroll",
+          "goto": "scene_tansy_meadow"
+        },
+        {
+          "id": "ask_clipboard",
+          "label": "Ask about the clipboard",
+          "icon": "eye",
+          "goto": "scene_tansy_clipboard"
+        }
+      ]
+    },
+    "scene_tansy_meadow": {
+      "type": "story",
+      "narration": "\"You practice!\" says Tansy. \"Walking, rolling, playing tag, helping friends up. Nobody can lose anything here. Not even a sock.\"",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        }
+      ],
+      "choices": [
+        {
+          "id": "follow_tansy",
+          "label": "Follow Tansy",
+          "icon": "forward",
+          "goto": "scene_practice_field"
+        }
+      ]
+    },
+    "scene_tansy_clipboard": {
+      "type": "story",
+      "narration": "Tansy shows you the clipboard. It is a list of every hero who ever practiced here, and next to each name she drew a little star. \"You get a star at the end,\" she says.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        }
+      ],
+      "choices": [
+        {
+          "id": "follow_tansy",
+          "label": "Follow Tansy",
+          "icon": "forward",
+          "goto": "scene_practice_field"
+        }
+      ]
+    },
+    "scene_practice_field": {
+      "type": "story",
+      "narration": "Tansy leads you to a field of flat stepping stones with a little garden gate at the far end. Two tiny glowing wisps are napping on a mushroom: one named Flick, and his little sister Dot. They snore in sparkles.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        }
+      ],
+      "choices": [
+        {
+          "id": "step_on",
+          "label": "Step onto the field",
+          "icon": "boot",
+          "goto": "encounter_stones"
+        },
+        {
+          "id": "wave_flick",
+          "label": "Wave at Flick",
+          "icon": "hand",
+          "goto": "scene_flick_wakes"
+        }
+      ]
+    },
+    "scene_flick_wakes": {
+      "type": "story",
+      "narration": "Flick wakes up with a snort, waves back with his whole glow, and zooms onto the stepping stones with Dot right behind him. \"Race you to the garden gate!\" they squeak.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        }
+      ],
+      "choices": [
+        {
+          "id": "race",
+          "label": "Race Flick",
+          "icon": "boot",
+          "goto": "encounter_stones"
+        }
+      ]
+    },
+    "encounter_stones": {
+      "type": "encounter",
+      "map": "glade",
+      "narration": "Flick and Dot bob around the stepping stones, giggling. The garden gate waits on the far side of the field.",
+      "hint": "This is the board. On your turn, tap a gold square to walk there. Walk all the way to the garden gate!",
+      "enemies": [
+        {
+          "id": "flick",
+          "name": "Flick",
+          "creature": "will_o_wisp",
+          "count": 1,
+          "hp": 3,
+          "guard": 6,
+          "attack": 1,
+          "steps": 2
+        },
+        {
+          "id": "dot",
+          "name": "Dot",
+          "creature": "will_o_wisp",
+          "count": 1,
+          "hp": 3,
+          "guard": 6,
+          "attack": 1,
+          "steps": 2
+        }
+      ],
+      "environment": {
+        "exits": [
+          {
+            "id": "garden-gate",
+            "label": "The garden gate",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 0
+              },
+              {
+                "x": 6,
+                "y": 0
+              }
+            ]
+          }
+        ]
+      },
+      "onEscape": {
+        "goto": "scene_tag_field",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 20,
+            "to": "party"
+          }
+        ],
+        "narration": "You step through the garden gate. Tansy makes a tick on her clipboard. Flick and Dot arrive last, puffing little sparkles."
+      },
+      "onVictory": {
+        "goto": "scene_tag_field",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 20,
+            "to": "party"
+          }
+        ],
+        "narration": "Before anybody reaches the gate, you tag both wisps by accident. They spin like tops and laugh so hard they hiccup."
+      },
+      "onDefeat": {
+        "goto": "scene_tag_field",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 20,
+            "to": "party"
+          }
+        ],
+        "narration": "Flick and Dot bump everybody over into the soft grass, then look very sorry about it and help you all back up. Tansy makes a tick on her clipboard anyway."
+      }
+    },
+    "scene_tag_field": {
+      "type": "story",
+      "narration": "Flick and Dot zoom in a circle over your heads. \"Now tag!\" squeaks Flick. \"Bet you can't tag me!\" Tansy says a real fight works just like tag, only with cards.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        }
+      ],
+      "choices": [
+        {
+          "id": "play_tag",
+          "label": "Play tag with Flick",
+          "icon": "swords",
+          "goto": "encounter_tag"
+        },
+        {
+          "id": "ask_cards",
+          "label": "Ask Tansy about the cards",
+          "icon": "scroll",
+          "goto": "scene_tag_rules"
+        }
+      ]
+    },
+    "scene_tag_rules": {
+      "type": "story",
+      "narration": "\"Each card is one thing your hero can do,\" says Tansy. \"Some tag, some help, some do something special. In the practice meadow, every card is gentle.\" Flick and Dot are already bouncing.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        }
+      ],
+      "choices": [
+        {
+          "id": "play_tag",
+          "label": "Play tag with Flick",
+          "icon": "swords",
+          "goto": "encounter_tag"
+        }
+      ]
+    },
+    "encounter_tag": {
+      "type": "encounter",
+      "map": "glade",
+      "narration": "Flick and Dot dart from stone to stone, leaving a trail of giggles.",
+      "hint": "Now try a card. On your turn, tap Attack, then tap a wisp. In the practice meadow, Attack is only a tag.",
+      "enemies": [
+        {
+          "id": "flick",
+          "name": "Flick",
+          "creature": "will_o_wisp",
+          "count": 1,
+          "hp": 3,
+          "guard": 6,
+          "attack": 1,
+          "steps": 3
+        },
+        {
+          "id": "dot",
+          "name": "Dot",
+          "creature": "will_o_wisp",
+          "count": 1,
+          "hp": 3,
+          "guard": 6,
+          "attack": 1,
+          "steps": 3
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_bun_mud",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 20,
+            "to": "party"
+          }
+        ],
+        "narration": "Tag, and tag! Flick spins in the air and lands upside down on a dandelion, and Dot lands on top of him. \"No fair,\" says Flick. \"Again tomorrow.\""
+      },
+      "onDefeat": {
+        "goto": "scene_bun_mud",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 20,
+            "to": "party"
+          }
+        ],
+        "narration": "The wisps tag everybody first and do a little victory loop. Then they help you all up and say it was close. It was not close."
+      }
+    },
+    "scene_bun_mud": {
+      "type": "story",
+      "narration": "Splash! Over by the pond, a goat kid named Bun has tipped over in the mud. All four legs are in the air, and she is waiting for somebody to help her up. Flick and Dot are buzzing around her, trying to help and not helping.",
+      "variants": [
+        {
+          "when": {
+            "partySize": {
+              "min": 2
+            }
+          },
+          "text": "Somebody who ran over to look slipped in too, and is lying flat on their back in the mud, giggling. They will need a hand up."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "choices": [
+        {
+          "id": "go_help",
+          "label": "Hurry over to Bun",
+          "icon": "heart",
+          "goto": "encounter_bun"
+        },
+        {
+          "id": "call_out",
+          "label": "Tell Bun you are coming",
+          "icon": "ear",
+          "goto": "scene_bun_waits"
+        }
+      ]
+    },
+    "scene_bun_waits": {
+      "type": "story",
+      "narration": "\"Hold on, Bun!\" you call. Bun bleats back and wiggles all four legs at once, which means thank you in goat.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "choices": [
+        {
+          "id": "go_help",
+          "label": "Hurry over to Bun",
+          "icon": "heart",
+          "goto": "encounter_bun"
+        }
+      ]
+    },
+    "encounter_bun": {
+      "type": "encounter",
+      "map": "glade",
+      "narration": "Bun lies in the mud by the pond. Flick and Dot zip back and forth, getting in everybody's way.",
+      "hint": "When a friend is knocked down, stand next to them on your turn and tap Help Up. Bun is stuck in the mud: end your turn next to her to help her up too.",
+      "enemies": [
+        {
+          "id": "flick",
+          "name": "Flick",
+          "creature": "will_o_wisp",
+          "count": 1,
+          "hp": 3,
+          "guard": 6,
+          "attack": 1,
+          "steps": 2
+        },
+        {
+          "id": "dot",
+          "name": "Dot",
+          "creature": "will_o_wisp",
+          "count": 1,
+          "hp": 3,
+          "guard": 6,
+          "attack": 1,
+          "steps": 2
+        }
+      ],
+      "friendDown": true,
+      "environment": {
+        "rescue": {
+          "name": "Bun",
+          "at": {
+            "x": 3,
+            "y": 6
+          },
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "helped_bun",
+              "value": true
+            }
+          ]
+        },
+        "exits": [
+          {
+            "id": "pond-path",
+            "label": "The path home",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 7
+              },
+              {
+                "x": 6,
+                "y": 7
+              }
+            ]
+          }
+        ]
+      },
+      "onEscape": {
+        "goto": "scene_bun_safe",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 20,
+            "to": "party"
+          }
+        ],
+        "narration": "You head down the path home with mud on your boots.",
+        "variants": [
+          {
+            "when": {
+              "flag": "helped_bun"
+            },
+            "text": "Bun trots along behind you, very proud of herself."
+          },
+          {
+            "when": {
+              "notFlag": "helped_bun"
+            },
+            "text": "Behind you, Bun rolls over all by herself, shakes, and runs to catch up."
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "scene_bun_safe",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 20,
+            "to": "party"
+          }
+        ],
+        "narration": "Tag, and tag! The wisps finally stop zipping around and sit on a reed to catch their breath.",
+        "variants": [
+          {
+            "when": {
+              "flag": "helped_bun"
+            },
+            "text": "Bun is already on her feet, very proud of herself."
+          },
+          {
+            "when": {
+              "notFlag": "helped_bun"
+            },
+            "text": "Now that it is quiet, Bun rolls over all by herself and shakes."
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "scene_bun_safe",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 20,
+            "to": "party"
+          }
+        ],
+        "narration": "Everybody slips in the mud, one after another, plop, plop, plop. Bun laughs so hard she rolls right over onto her feet."
+      }
+    },
+    "scene_bun_safe": {
+      "type": "story",
+      "narration": "Bun shakes the mud off her coat, all over everybody. Tansy laughs and wipes her clipboard. \"Picnic time,\" she says. \"Every hero needs a rest.\"",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "choices": [
+        {
+          "id": "to_picnic",
+          "label": "Go to the picnic blanket",
+          "icon": "rest",
+          "goto": "rest_picnic"
+        }
+      ]
+    },
+    "rest_picnic": {
+      "type": "rest",
+      "narration": "Tansy spreads a picnic blanket under an apple tree. Bun eats a dandelion. Flick and Dot nap in a teacup. The sun is warm, and every bump and scrape from today feels better.",
+      "hint": "This is a rest. Everybody gets their hearts back. When your hero has a point to spend, a rest is where you spend it.",
+      "heal": 20,
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "choices": [
+        {
+          "id": "liked_best",
+          "label": "Tell Tansy your favorite part",
+          "icon": "star",
+          "goto": "scene_favorite_part"
+        },
+        {
+          "id": "one_more_tip",
+          "label": "Ask Tansy for one more tip",
+          "icon": "scroll",
+          "goto": "scene_last_tip"
+        }
+      ]
+    },
+    "scene_favorite_part": {
+      "type": "story",
+      "narration": "Tansy writes your favorite part on her clipboard, very carefully, with her tongue sticking out. \"That was my favorite part too,\" says Flick, who was asleep for most of it.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        }
+      ],
+      "choices": [
+        {
+          "id": "get_star",
+          "label": "Get your star",
+          "icon": "star",
+          "goto": "rest_ready"
+        }
+      ]
+    },
+    "scene_last_tip": {
+      "type": "story",
+      "narration": "\"When you are stuck, look at your phone,\" says Tansy. \"It only ever shows things you can really do. And if you tap the speaker, it reads them to you.\" Bun nods, as if she knew that already.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "choices": [
+        {
+          "id": "get_star",
+          "label": "Get your star",
+          "icon": "star",
+          "goto": "rest_ready"
+        }
+      ]
+    },
+    "rest_ready": {
+      "type": "rest",
+      "narration": "Tansy draws a star next to your names on the clipboard. Then she opens a second gate, the one at the back of the meadow, and points at the road beyond it. \"You are ready,\" she says. \"Go have a real adventure.\" Flick waves with his whole glow.",
+      "heal": 20,
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        }
+      ],
+      "choices": []
+    }
+  },
+  "llmHints": {
+    "tone": "warm, playful, encouraging; a first lesson that feels like a game, never a test",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "anyone failing or being scolded"
+    ],
+    "npcVoices": {
+      "tansy": "a faun who keeps the practice meadow; patient, cheerful, says everybody does that, loves her bark clipboard",
+      "flick": "a tiny wisp who loves tag; squeaky, boastful, a terrible loser for about two seconds",
+      "bun": "a goat kid; only bleats, and wiggles her legs to say thank you"
+    }
+  }
+}

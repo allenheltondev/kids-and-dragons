@@ -80,6 +80,25 @@ export function beginLabel(view: CampaignView | null | undefined): string {
   return `Play chapter ${String(view.next.index)}`;
 }
 
+/**
+ * The lobby's practice offer (#255), for the heroes new to the game. Names,
+ * never a count: "Rue is new here." / "Rue and Bo are new here."
+ */
+export function practiceOfferLine(names: readonly string[]): string {
+  const who =
+    names.length <= 1 ? (names[0] ?? "Somebody") : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]!}`;
+  return `${who} ${names.length > 1 ? "are" : "is"} new here. Play a short practice together first, or skip it.`;
+}
+
+/**
+ * Begin, while the practice is on offer: the same tap, said as the skip it
+ * is. "Skip the practice and begin the adventure".
+ */
+export function skipPracticeLabel(view: CampaignView | null | undefined): string {
+  const begin = beginLabel(view);
+  return `Skip the practice and ${begin.charAt(0).toLowerCase()}${begin.slice(1)}`;
+}
+
 /** The completion heading when this chapter ended the whole campaign, else null. */
 export function campaignEndHeading(view: CampaignView | null | undefined): string | null {
   if (view?.ended === "complete") return `${view.title} is complete!`;
