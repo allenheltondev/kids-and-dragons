@@ -149,7 +149,7 @@ Species grants a **passive trait** and one **world ability** usable outside comb
 
 Four classes, one per stat. Class determines the action set on your phone during a fight.
 
-A hero picks a class at creation (§5) and wears one class at a time. Each class has three **distinctions**, the same for every class: **Apprentice**, **Expert** and **Master**. The class's signature is yours from the start; each distinction unlocks one more of its moves (Apprentice the first, Expert the second, Master the third), and nothing else does: level grants no moves (§8.1). The screen reads "Starweaver Apprentice"; a hero with no distinction yet shows the class name alone.
+A hero picks a class at creation (§5) and wears one class at a time. Each class has three **distinctions**, the same for every class: **Apprentice**, **Expert** and **Master**. The class's signature is yours from the start; each distinction unlocks one more of its moves (Apprentice the first, Expert the second, Master the third), and nothing else does: level grants no moves (§8.1). (Until deeds are counted, [#310](https://github.com/allenheltondev/kids-and-dragons/issues/310), levelling still earns the worn class its distinctions, as §8.1 says.) The screen reads "Starweaver Apprentice"; a hero with no distinction yet shows the class name alone.
 
 A hero keeps their distinctions and partial progress in every class they have worn, forever, but only the class they are wearing counts: its moves are the only class moves on the phone. Distinctions, and where and how a hero changes class, are designed in [class-mastery.md](./class-mastery.md): earned by the class's deeds, and changed only at the Exchange while new or at that class's own place. A failed campaign puts class and distinctions back where they stood when it began (§8.3).
 
@@ -260,7 +260,7 @@ If the **whole party** is knocked down, the encounter is **lost, not fatal** —
 
 XP is awarded per chapter, not per enemy defeated — so exploring and talking are worth as much as fighting. Levels 1–10.
 
-Each level grants a stat point. Class moves are not on this ladder: they come from distinctions (§4.3), earned by deeds rather than XP. **Four levels are appearance tiers:**
+Each level grants a stat point. Class moves are not on this ladder: they come from distinctions (§4.3), earned by deeds rather than XP. **Until deeds are counted** ([#310](https://github.com/allenheltondev/kids-and-dragons/issues/310)), a bridge stands in: reaching level 3, 6 or 9 earns the worn class Apprentice, Expert or Master, so a new hero still gets the moves levelling always gave, and keeps them when deeds arrive. **Four levels are appearance tiers:**
 
 | Level | Tier | Visual change |
 |---|---|---|
@@ -357,7 +357,7 @@ A character created after the party has been playing — a friend for one evenin
 
 The two options exist because the two situations pull opposite ways. A guest starting at level 1 beside a Radiant party has ten hit points and one action, and spends the evening as a passenger. A sibling starting at party level never plays a Fledgling and never earns Sworn, which may be exactly the arc they wanted.
 
-The tier floor is the right number because it makes a joined character **arithmetically identical** to one that earned the level: three creation points plus one per level. No shortcut and no handicap. Distinctions are the one thing a level cannot stand for, since they are earned by deeds (§4.3), so a joiner's class arrives with the distinction its level used to unlock: none at 1, Apprentice at 4, Expert at 7, Master at 10. They sit down with the moves a joiner always had, and every other class starts with none. It also preserves what matters — you skip only the transformations you were never going to earn, and every one still ahead of you is yours. Join at Radiant and Mythic is still two campaigns away.
+The tier floor is the right number because it makes a joined character **arithmetically identical** to one that earned the level: three creation points plus one per level. No shortcut and no handicap. Distinctions are earned by deeds (§4.3), which a level cannot stand for, so a joiner's class arrives with the distinction its level used to unlock: none at 1, Apprentice at 4, Expert at 7, Master at 10. They sit down with the moves a joiner always had, and every other class starts with none. It also preserves what matters — you skip only the transformations you were never going to earn, and every one still ahead of you is yours. Join at Radiant and Mythic is still two campaigns away.
 
 Starting XP is the **threshold for that level**, not zero, or the next chapter's award drops the character straight back to level 1.
 
