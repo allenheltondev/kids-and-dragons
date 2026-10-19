@@ -8,9 +8,10 @@
  * at the bottom one-handed), so the identity strip, a host's arrival notices,
  * the Rest stop offer, the room controls and the catch-up line all keep their
  * whole width; the start screen and the guide leave it the same strip. On the
- * shared screen, About this screen sits in the corner row and the host's Room
- * button has a strip along the bottom, so neither covers a heading or a choice;
- * that is checked at 1280x720 and at a tablet's 1024x600. This walks a real room to each of those screens and then looks
+ * shared screen, Room, About this screen and Tap for sound sit in the corner
+ * row, and what Room opens drops below it with who just joined, so none of them
+ * covers a heading or a choice, and every choice stays on the screen; that is
+ * checked at 1280x720 and at a tablet's 1024x600. This walks a real room to each of those screens and then looks
  * at them at 360px and 390px, at normal and the largest text (#262), with
  * one-handed play off, right and left, and asserts three things on each:
  *
@@ -122,7 +123,7 @@ async function misfits(page: Page): Promise<string[]> {
     // What a person reads or taps: text, controls, pictures with words.
     const things = [...document.body.querySelectorAll("*")].filter(
       (el) =>
-        !el.closest(".kad-corner, .kad-about, .kad-host--float, .kad-tap-for-sound, .playtest, [aria-hidden='true']") &&
+        !el.closest(".kad-corner, .kad-display-stack, .kad-tap-for-sound, .playtest, [aria-hidden='true']") &&
         (ownText(el) !== "" ||
           el.matches("button, input, select, textarea, a[href]") ||
           (el.matches("img") && (el.getAttribute("alt") ?? "") !== "")) &&
@@ -131,7 +132,7 @@ async function misfits(page: Page): Promise<string[]> {
 
     // 1. Nothing under a control pinned over the screen: the corner row, and the shared
     //    screen's Room button (#263), About this screen and Tap for sound (#264).
-    const corner = [...document.querySelectorAll(".kad-corner > *, .kad-about__open, .kad-host--float > .kad-button, .kad-tap-for-sound .kad-button")]
+    const corner = [...document.querySelectorAll(".kad-corner > *, .kad-about__open, .kad-host__room, .kad-tap-for-sound .kad-button")]
       .filter(shown)
       .map((el) => ({ el, box: el.getBoundingClientRect() }));
     for (const el of things) {
@@ -335,7 +336,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expectFits(guest, "the adventure book");
   });
 
-  test("the shared screen: its corner row, About this screen, Tap for sound and Room keep off the lobby and the story", async ({ browser }) => {
+  test("the shared screen: its corner row (Room, About this screen, Tap for sound) keeps off the lobby and the story, and the story's choices stay on screen", async ({ browser }) => {
     test.setTimeout(240_000);
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
     open.push(context);
@@ -385,5 +386,19 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expect.poll(async () => (await roomState<{ phase: string }>(kid, code)).phase, TAP).toBe("scene");
     await expect(tv.locator(".narration__body").first()).toBeVisible(TAP);
     await expectFits(tv, "the shared screen's story", screens);
+
+    // Nobody scrolls a television: every choice the story offers is on the screen whole.
+    for (const [width, height] of screens) {
+      await tv.setViewportSize({ width, height });
+      await tv.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+      const hidden = await tv.evaluate(() => {
+        const plate = document.querySelector(".narration__plate")?.getBoundingClientRect();
+        return [...document.querySelectorAll(".narration__choices > li")]
+          .map((li) => ({ text: (li.textContent ?? "").trim(), box: li.getBoundingClientRect() }))
+          .filter(({ box }) => !plate || box.top < plate.top - 1 || box.bottom > Math.min(plate.bottom, innerHeight) + 1)
+          .map(({ text }) => text);
+      });
+      expect.soft(hidden, `@${width}x${height}: choices off the shared screen`).toEqual([]);
+    }
   });
 });

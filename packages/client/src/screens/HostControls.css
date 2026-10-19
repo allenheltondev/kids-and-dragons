@@ -19,24 +19,22 @@
   color: var(--kad-ink);
 }
 
-/* Bottom corner, clear of the arrival notices (top) and the toast (bottom centre). */
+/* In the shared screen's top-right column (App.tsx, .kad-display-stack), above who just
+   joined. Its Room button sits in the corner row over it. */
 .kad-host--float {
-  position: fixed;
-  inset-block-end: calc(var(--kad-safe-bottom, 0px) + 1rem);
-  inset-inline-end: calc(var(--kad-safe-right, 0px) + 1rem);
-  z-index: 100;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   align-items: flex-end;
   gap: 0.5rem;
-  inline-size: min(24rem, calc(100vw - 2rem));
+  inline-size: 100%;
 }
 
-/* The shared screen's Room button sits in the bottom corner; the story's plate keeps clear of
-   it (NarrationPanel.css reads this), so its last choice is never under the button (#257).
-   rem, like the button: it grows with the text. Set on the shell, outside the surface. */
-body:has(.kad-host--float) .kad-party--world {
-  --kad-host-reserve: 8.5rem;
+.kad-host--float:empty {
+  display: none;
+}
+
+.kad-host__room-slot {
+  order: -3;
 }
 
 .kad-host--float .kad-host__panel {

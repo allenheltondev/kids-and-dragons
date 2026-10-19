@@ -27,6 +27,7 @@
  */
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import type { RunState } from "@kad/shared";
 import { useGameStore, useRunState, useSession } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
@@ -191,6 +192,8 @@ export function HostControls({ placement }: { placement: "inline" | "float" }): 
   const session = useSession();
   const state = useRunState();
   const [open, setOpen] = useState(false);
+  // The shared screen's corner row (App.tsx), which the Room button joins.
+  const [corner] = useState(() => (typeof document === "undefined" ? null : document.querySelector(".kad-corner")));
   if (!session?.host || !state || state.closed) return null;
 
   const panel = <HostPanel state={state} me={session.playerId} code={session.roomCode} />;
@@ -211,18 +214,24 @@ export function HostControls({ placement }: { placement: "inline" | "float" }): 
       </>
     );
   }
+  const toggle = (
+    <Button
+      variant="secondary"
+      size="md"
+      className="kad-host__room"
+      icon={<Icon name="players" />}
+      aria-expanded={open}
+      onClick={() => setOpen(!open)}
+    >
+      {state.locked ? "Room (locked)" : "Room"}
+    </Button>
+  );
   return (
     <div className="kad-host kad-host--float">
+      {/* The button sits in the screen's corner row (App.tsx), first in it; in the bottom
+          corner it lay over the story's last choice (#257). What it opens drops below. */}
+      {corner ? createPortal(<div className="kad-host__room-slot">{toggle}</div>, corner) : toggle}
       <StopOffer state={state} />
-      <Button
-        variant="secondary"
-        size="md"
-        icon={<Icon name="players" />}
-        aria-expanded={open}
-        onClick={() => setOpen(!open)}
-      >
-        {state.locked ? "Room (locked)" : "Room"}
-      </Button>
       {open ? panel : null}
       {/* The grown-up's sign-in for the visitor switch. A phone's view
           already has one (layout/PlayerView); the shared display does not. */}
