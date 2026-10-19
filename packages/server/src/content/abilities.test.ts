@@ -405,6 +405,98 @@ describe("class unlocks", () => {
     expect(hpOf(after, near.id)).toBe(4);
   });
 
+  describe("the Songkeeper's songs can heal the Songkeeper (#309)", () => {
+    const keeperAt = (level: number) =>
+      hero({ id: "c_keeper", species: "unicorn", class: "songkeeper", level });
+
+    it("a Songkeeper alone can Rally and Soothe themselves", () => {
+      const keeper = keeperAt(3);
+      const scene = sceneWith([{ character: keeper, at: { x: 1, y: 2 }, hp: 2 }], [wisp()], keeper.id);
+
+      const actions = legalActions(scene.state, ctx());
+      expect(actions.find((a) => a.abilityId === "rally")?.targets).toEqual([keeper.id]);
+      expect(actions.find((a) => a.abilityId === "soothe")?.targets).toEqual([keeper.id]);
+
+      expect(hpOf(act(scene, { abilityId: "rally", targetId: keeper.id }), keeper.id)).toBe(4);
+      expect(hpOf(act(scene, { abilityId: "soothe", targetId: keeper.id }), keeper.id)).toBe(5);
+    });
+
+    it("healing at full health is still refused", () => {
+      const keeper = keeperAt(3);
+      const scene = sceneWith([{ character: keeper, at: { x: 1, y: 2 } }], [wisp()], keeper.id);
+
+      // Nobody to heal, so neither song is on offer, and asking anyway is refused.
+      expect(offered(scene)).not.toContain("rally");
+      expect(offered(scene)).not.toContain("soothe");
+      const result = performAction(scene.state, ctx(), { abilityId: "rally", targetId: keeper.id });
+      expect(result.ok).toBe(false);
+    });
+
+    it("at a table of four the Songkeeper is one choice among four", () => {
+      const keeper = keeperAt(3);
+      const friends = ["a", "b", "c"].map((n) =>
+        hero({ id: `c_${n}`, species: "bigfoot", class: "thornguard" }),
+      );
+      const scene = sceneWith(
+        [
+          { character: keeper, at: { x: 1, y: 2 }, hp: 3 },
+          { character: friends[0]!, at: { x: 2, y: 2 }, hp: 3 },
+          { character: friends[1]!, at: { x: 3, y: 2 }, hp: 3 },
+          { character: friends[2]!, at: { x: 4, y: 3 }, hp: 3 },
+        ],
+        [wisp()],
+        keeper.id,
+      );
+
+      const actions = legalActions(scene.state, ctx());
+      for (const id of ["rally", "soothe"]) {
+        const targets = actions.find((a) => a.abilityId === id)?.targets ?? [];
+        expect([...targets].sort()).toEqual([keeper.id, ...friends.map((f) => f.id)].sort());
+      }
+      const after = act(scene, { abilityId: "soothe", targetId: keeper.id });
+      expect(hpOf(after, keeper.id)).toBe(6);
+      expect(hpOf(after, "c_a")).toBe(3);
+    });
+
+    it("Soothe still stops at four steps for friends, but reaches the Songkeeper at any spot", () => {
+      const keeper = keeperAt(3);
+      const far = hero({ id: "c_far", species: "griffin", class: "duskrunner" });
+      const scene = sceneWith(
+        [
+          { character: keeper, at: { x: 0, y: 2 }, hp: 1 },
+          { character: far, at: { x: 9, y: 2 }, hp: 1 },
+        ],
+        [wisp()],
+        keeper.id,
+      );
+      const soothe = legalActions(scene.state, ctx()).find((a) => a.abilityId === "soothe");
+      expect(soothe?.targets).toEqual([keeper.id]);
+    });
+
+    it("Rally's revive stays friend-only: a Songkeeper who is down cannot act", () => {
+      const keeper = keeperAt(1);
+      const fallen = hero({ id: "c_fallen", species: "bigfoot", class: "thornguard" });
+      const scene = sceneWith(
+        [
+          { character: keeper, at: { x: 0, y: 0 } },
+          { character: fallen, at: { x: 9, y: 4 }, hp: 0, down: true },
+        ],
+        [wisp()],
+        keeper.id,
+      );
+      const rally = legalActions(scene.state, ctx()).find((a) => a.abilityId === "rally");
+      expect(rally?.targets).toEqual([fallen.id]);
+    });
+
+    it("no ability but Rally and Soothe offers its own user", () => {
+      const withSelf = Object.entries(catalog)
+        .filter(([, a]) => a.target.includeSelf)
+        .map(([id]) => id)
+        .sort();
+      expect(withSelf).toEqual(["rally", "soothe"]);
+    });
+  });
+
   it("chorus needs no target and reaches the whole party, singer included", () => {
     const keeper = hero({ id: "c_keeper", species: "unicorn", class: "songkeeper", rank: "expert" });
     const friend = hero({ id: "c_friend", species: "bigfoot", class: "thornguard" });

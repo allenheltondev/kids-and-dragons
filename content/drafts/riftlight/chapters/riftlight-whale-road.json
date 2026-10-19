@@ -62,7 +62,7 @@
           "value": true
         }
       ],
-      "art": "biomes/sky_islands/bg"
+      "art": "scenes/riftlight/whale-road-cleared"
     },
     "offer": {
       "type": "rest",

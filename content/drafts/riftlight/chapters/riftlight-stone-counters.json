@@ -291,7 +291,7 @@
     "count": {
       "type": "choice_point",
       "narration": "The two views can both be true. From the ridge the forked rock hides behind the stone; from the road it stands beside it. The keepers agree to label viewpoints on future drawings. Their eruption counts still disagree. A chipped mark may be one long stroke or two shorter ones, and nobody here saw the eruption itself. One keeper asks you to choose the official count before her neighbors arrive. What can you honestly give her?",
-      "art": "scenes/riftlight/stone-counters",
+      "art": "scenes/riftlight/stone-counters-evidence",
       "choices": [
         {
           "id": "option_1",
@@ -310,7 +310,7 @@
     "count_1": {
       "type": "story",
       "narration": "You draw the break in the mark large enough to see. Under it you keep both possible counts. The keeper sighs at the untidy page, then admits it will stop the next visitor mistaking a damaged stroke for a certain date.",
-      "art": "scenes/riftlight/stone-counters",
+      "art": "scenes/riftlight/stone-counters-evidence",
       "choices": [
         {
           "id": "continue",
@@ -323,7 +323,7 @@
     "count_2": {
       "type": "story",
       "narration": "You count the whole strokes together and circle the damaged section without a number. Pip copies the circle. The keeper can now tell her neighbors exactly which part is agreed, and which part needs another source. Nobody has to pretend the eruption date is settled.",
-      "art": "scenes/riftlight/stone-counters",
+      "art": "scenes/riftlight/stone-counters-evidence",
       "choices": [
         {
           "id": "continue",

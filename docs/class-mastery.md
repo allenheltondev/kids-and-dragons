@@ -174,9 +174,10 @@ This needs one fight change (§7): Songkeeper moves may target the Songkeeper.
 
 ## 7. Engine changes this implies
 
-- **Songkeeper self-targeting.** Rally and Soothe may target the Songkeeper; today a single-target
+- **Songkeeper self-targeting.** Rally and Soothe may target the Songkeeper; a single-target
   ally ability skips its own user (`legalTargetsFor` in
-  [`encounter.ts`](../packages/shared/src/encounter.ts)). Rally's revive stays friend-only, since a
+  [`encounter.ts`](../packages/shared/src/encounter.ts)) unless its target rule says
+  `"includeSelf": true`, which only those two abilities do (done in #309). Rally's revive stays friend-only, since a
   knocked-down hero cannot act. Chorus already includes the Songkeeper. This changes every
   Songkeeper fight, not just deeds; if self-healing proves too strong in playtests, Rally's
   self-heal can be smaller than its heal on others.
