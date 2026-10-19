@@ -170,6 +170,12 @@ export interface Character {
    * written before the record existed (character schema v3).
    */
   finished?: FinishedCampaign[];
+  /**
+   * She has played the practice (#255, architecture §4.5 "The practice"), so
+   * the lobby stops offering it for her. Absent until then, and on every row
+   * written before it existed (character schema v4). Only ever `true`.
+   */
+  practiced?: true;
   createdAt: string;
   /**
    * The row's monotonic version, which the claim conditions every write on
@@ -257,6 +263,12 @@ export interface ResolvedCharacter {
   souvenirs: Souvenir[];
   /** True when the effective state came from an in-flight campaign. */
   isProvisional: boolean;
+  /**
+   * `Character.practiced`, carried so the lobby can tell a newcomer
+   * (`isNewcomer`, practice.ts). Present only when true, so a hero who never
+   * played the practice resolves exactly as before it existed.
+   */
+  practiced?: true;
   /**
    * The level this character keeps if the campaign fails — `committed.level`,
    * not the effective one above.

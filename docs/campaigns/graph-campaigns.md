@@ -1348,7 +1348,7 @@ rift spits a monster next to the exit. An encounter scene declares this as an op
 Crown's — fights exactly as it always did (the #200 digest of seeded Gemfall fights in
 `ordered-campaigns.test.ts` is unchanged, and the same file asserts no shipped ordered encounter
 declares one). Chapters are campaign-agnostic files, so an environment is legal in any chapter; it
-is authored for graph campaigns, and no shipped chapter has one. Adding the fields bumped nothing.
+is authored for graph campaigns, and the only shipped chapter with one is the practice (#255, content/README.md "The practice"), which is never a campaign a party continues. Adding the fields bumped nothing.
 
 ```jsonc
 "fight_rift": {

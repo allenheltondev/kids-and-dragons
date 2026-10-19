@@ -492,3 +492,24 @@
     animation: none;
   }
 }
+
+/*
+ * The practice's hint (#255): what to tap, set apart from the story so it
+ * never reads as something that happened. Kept in a fight, where the board's
+ * lesson is, and never clamped there: it is the line a new player needs.
+ */
+.narration__hint {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2, 0.5em);
+  inline-size: fit-content;
+  max-inline-size: min(var(--kad-measure, 34em), 100%);
+  margin: var(--space-2, 0.5em) 0 0;
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  border: 0.08em dashed var(--color-accent, #f5c86c);
+  border-radius: var(--radius-md, 0.75em);
+  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 78%, transparent);
+  color: var(--color-accent, #f5c86c);
+  font-size: var(--font-size-md, 1em);
+  font-weight: 600;
+}
