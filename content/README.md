@@ -104,7 +104,7 @@ Tooling for a campaign graph (all read-only; the ordered campaigns are skipped, 
 
 An encounter scene may carry an `environment`: a visible rift clock, hazard tiles, timed exits, a
 captive to free and monsters the rift moves — plus `onEscape` / `onTimeout` branches for the
-endings those make possible. Only the practice uses it (an exit and a friend to help up; see "The practice" below), and a scene without it fights
+endings those make possible. Only the practice uses it (an exit to walk to and a captive to help out of the mud; see "The practice" below), and a scene without it fights
 exactly as before. Everything happens where a figure **stops** (turn ends) or as a round starts,
 never mid-move. `npm run content:validate` checks the tiles against the scene's map (open ground,
 off the party's spawns, reachable) and that exactly the right extra branches are present. The
@@ -141,10 +141,15 @@ held by `tools/content/first-steps.test.mjs`:
   every fight branch heals the party, because HP outlives a scene and a hero knocked down in one
   fight would otherwise start the next one down. The captive has no deadline and nothing can drag
   her away.
+- **Help Up is played, not described.** The Bun fight carries `friendDown: true`: with two or more
+  heroes seated, the one after the story-turn holder starts that fight knocked down, and the others
+  stand beside them and play the real Help Up card. At a table of one there is nobody to help, so
+  nobody goes down; Bun (a captive with no deadline) is the lesson there, and is in the fight for
+  everybody. Only the practice may use `friendDown`.
 - **It is short.** About 15 minutes, so a mixed party is not slowed down much: the 30-scene bar in
   [gemfall-authoring.md §4](../docs/campaigns/gemfall-authoring.md#4-shape-of-a-chapter) is for a
   real evening's chapter, not this. Its fights are the only ones in a shipped chapter with an
-  `environment` (an exit to walk to, a friend to help up), because those are the lessons.
+  `environment` (an exit to walk to, Bun to help out of the mud), because those are the lessons.
 
 ## Priority scenes
 

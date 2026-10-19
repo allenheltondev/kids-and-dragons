@@ -39,7 +39,8 @@ const STEPS = [
   ["take a story turn", (s) => s.type === "story"],
   ["move on the board", (s) => s.type === "encounter" && s.environment?.exits],
   ["use a card", (s) => s.type === "encounter" && !s.environment],
-  ["help a knocked-down friend", (s) => s.type === "encounter" && s.environment?.rescue],
+  // A real friend on the ground for the Help Up card, and Bun for a table of one.
+  ["help a knocked-down friend", (s) => s.type === "encounter" && s.friendDown === true && s.environment?.rescue],
   ["rest", (s) => s.type === "rest" && s.choices.length > 0],
 ];
 
@@ -121,11 +122,12 @@ describe("the practice (#255)", () => {
     }
   });
 
-  it("is the only chapter with hints: a real chapter trusts the table to know the game", () => {
+  it("is the only chapter with hints or a friend knocked down on purpose: a real chapter trusts the table", () => {
     const dir = join(REPO, "content", "chapters");
     for (const file of readdirSync(dir).filter((f) => f.endsWith(".json") && f !== "first-steps-01.json")) {
       const other = read("content", "chapters", file);
-      expect(Object.entries(other.scenes).filter(([, s]) => s.hint !== undefined).map(([id]) => id), file).toEqual([]);
+      const marked = Object.entries(other.scenes).filter(([, s]) => s.hint !== undefined || s.friendDown !== undefined);
+      expect(marked.map(([id]) => id), file).toEqual([]);
     }
   });
 });
