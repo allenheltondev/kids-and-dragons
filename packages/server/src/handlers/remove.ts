@@ -69,7 +69,7 @@ export async function removePlayer(
       // still reading, the table goes on now, as it does when a phone drops.
       return relockOut(
         settleChapterEndVote({
-          ...state,
+          ...unkept(state, input.playerId),
           removed: [...(state.removed ?? []), input.playerId],
           party: state.party.map((m) =>
             m.playerId === input.playerId ? { ...m, connected: false, ready: false } : m,
@@ -80,6 +80,12 @@ export async function removePlayer(
       );
     },
     deps,
+    // A visitor never founded this household. The phone that did stops being
+    // its founder in this same commit (#272), so the room and the household
+    // cannot disagree about who keeps the game, whatever interleaves.
+    visitorHome === undefined
+      ? { unfound: () => foundingDevice(room.householdId, input.playerId, deps) }
+      : {},
   );
   if (!result.ok) {
     // Kept from before the shared loop, so a phone that showed this keeps reading it.
@@ -93,17 +99,29 @@ export async function removePlayer(
   return ok({ seq: result.value.seq });
 }
 
+/** The household's founding device, when it is one of `playerId`'s own phones. */
+async function foundingDevice(
+  householdId: string,
+  playerId: string,
+  deps: Pick<HandlerDeps, "repo">,
+): Promise<{ householdId: string; deviceId: string } | undefined> {
+  const household = await deps.repo.getHousehold(householdId);
+  if (!household?.founderDeviceId) return undefined; // none, or already dropped
+  const device = await deps.repo.getDevice(householdId, household.founderDeviceId);
+  // A shared tablet is nobody, so taking a kid out never unfounds it (#250).
+  return device && device.kind !== "shared" && device.playerId === playerId
+    ? { householdId, deviceId: household.founderDeviceId }
+    : undefined;
+}
+
 /**
  * If the household's founder is a device of the player just taken out, it is
  * not the founder any more. Run on every removal, including a repeat that
  * finds them already out, so a failure here is mended by tapping Remove again.
  */
 async function unfound(householdId: string, playerId: string, deps: HandlerDeps): Promise<void> {
-  const household = await deps.repo.getHousehold(householdId);
-  if (!household?.founderDeviceId) return; // none, or already dropped
-  const device = await deps.repo.getDevice(householdId, household.founderDeviceId);
-  // A shared tablet is nobody, so taking a kid out never unfounds it (#250).
-  if (device && device.kind !== "shared" && device.playerId === playerId) await deps.repo.dropFounder(householdId, household.founderDeviceId);
+  const founder = await foundingDevice(householdId, playerId, deps);
+  if (founder) await deps.repo.dropFounder(founder.householdId, founder.deviceId);
 }
 
 /**
@@ -133,7 +151,7 @@ export async function takeOutEverywhere(
         if (!seated || isRemoved(state, playerId)) return null;
         return relockOut(
           settleChapterEndVote({
-            ...state,
+            ...unkept(state, playerId),
             removed: [...(state.removed ?? []), playerId],
             party: state.party.map((m) => (m.playerId === playerId ? { ...m, connected: false, ready: false } : m)),
           }),
@@ -213,4 +231,15 @@ export async function isOut(
   if (household === undefined) return false;
   const profile = await repo.getPlayer(household, playerId);
   return profile === null || profile.retired === true;
+}
+
+/**
+ * The run without the keeper role a host handed `playerId` (#272): somebody
+ * taken out is not advertised as the one who keeps the game. Their phone stops
+ * being the founder in `unfound`, right after this commits.
+ */
+function unkept(state: RunState, playerId: string): RunState {
+  if (state.keeperPlayerId !== playerId) return state;
+  const { keeperPlayerId: _handed, ...rest } = state;
+  return rest;
 }
