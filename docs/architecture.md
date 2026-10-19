@@ -1669,11 +1669,12 @@ A report is exactly `ClientErrorReport` (`shared/src/error-report.ts`): the mess
 in our own bundle (`file:line:col`), the build, the route's shape (`/p/:code`), the layout (phone, tablet
 or TV), the browser family, and a random id per page load. Nothing else the sender includes is read.
 
-`scrubText` removes emails, room codes (four letters, or a visitor's six), `kaddev.` and JWT-shaped
-tokens and any long opaque run, query strings, anything quoted (an engine quotes back the value it
-choked on, and a kid's typing would land there) and every name the page knows (the party's hero names,
-the roster, the device's own name). The server runs the same functions again, so it holds without the
-client's help. What it cannot know is a name in bare prose; that is why quoted text goes wholesale.
+The exception's own words are never sent. An engine's message can hold anything a page handed it, and a
+kid's typing is among that, in a shape no pattern can promise to catch, so the message is replaced rather
+than scrubbed: the client reduces it to a kind of failure (`diagnose`, `TypeError: not a function`), and
+the server accepts only those exact phrases (`safeMessage`), turning anything else into `Error: other`.
+Every other field has a fixed shape too (a short sha, an enumerated route, layout and browser, a hex id),
+and the stack is locations in our own bundle. The top frame, read through the sourcemap, says where.
 
 The endpoint is rate-limited by the code guard's budget (limit, window, client key and row), under its
 own key so a page stuck in an error loop never spends a school's join budget. It stores nothing: the

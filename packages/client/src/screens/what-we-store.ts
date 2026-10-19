@@ -167,7 +167,7 @@ export const ELSEWHERE: readonly { title: string; what: string }[] = [
   },
   {
     title: "Crash reports",
-    what: "When the game breaks on a phone or the TV, it tells us in one log line: what went wrong, which version, which page, and whether it was a phone, a tablet or a TV. Names, hero names, emails, room codes, sign-in tokens and anything typed are removed before it is sent, and again before it is logged. Logged, not stored: no report is kept in the game's table.",
+    what: "When the game breaks on a phone or the TV, it tells us in one log line: what kind of failure it was, which version, which page, and whether it was a phone, a tablet or a TV. What the error itself said is never sent, so nothing a kid typed can be in it, and no names, emails, room codes or sign-in tokens either. The server checks every field again before it logs. Logged, not stored: no report is kept in the game's table.",
   },
   {
     title: "Live narration",
