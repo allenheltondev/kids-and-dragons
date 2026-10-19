@@ -41,3 +41,18 @@ for (const { layout, path, size } of LAYOUTS) {
     expect(requests[0]).not.toMatch(/maya|WXYZ|example\.com|ABCD/i);
   });
 }
+
+// The listener is the first import in main.tsx, so a lazy chunk that fails to
+// load (the sound engine, #318) is reported as a kind of failure, not lost.
+test("a lazy chunk that fails to load is reported", async ({ page }) => {
+  await page.route(/\/(?:src\/audio\/(?:engine|AudioControl)\.tsx?|bundle\/audio-[^/]*\.js)(?:\?|$)/, (route) =>
+    route.abort(),
+  );
+  const response = page.waitForResponse((r) => r.url().endsWith("/api/client-error"));
+  const sent = page.waitForRequest((r) => r.url().endsWith("/api/client-error"));
+  await page.goto("/");
+
+  expect((await response).status()).toBe(204);
+  const body = JSON.parse((await sent).postData() ?? "{}") as Record<string, unknown>;
+  expect(body).toMatchObject({ message: expect.stringMatching(/^\w*Error: a chunk failed to load$/), route: "/" });
+});
