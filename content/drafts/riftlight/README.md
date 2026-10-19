@@ -1,6 +1,6 @@
 # Riftlight — authored opening
 
-Twelve playable story nodes and five development pause boundaries, using the [design bible](../../../docs/campaigns/continental-rift/README.md).
+Fifteen playable story nodes and eight development pause boundaries, using the [design bible](../../../docs/campaigns/continental-rift/README.md).
 Gemfall anchors the read-aloud rhythm, tangible choices and visible consequences. The narrator
 describes what happens instead of telling the table what sort of thing it is or how to feel.
 
@@ -34,7 +34,7 @@ These files are ordinary chapter JSON, validated with the same gate as shipped c
 The preview now plays the first fork. The shelf leads to the Cairnstep or the river challenge;
 the hidden opening leads to the Saltrot and offers a linked return. River escapes reach
 Frostfang shore, the boundary stones, Ashspan Bridge, or a one-way Sky Islands crossing.
-Short arrival episodes give each route a concrete landing. Five biome-matched `preview-pause-*`
+Short arrival episodes give each route a concrete landing. Eight biome-matched `preview-pause-*`
 chapters are explicit development boundaries, pay no XP, and must never enter production.
 Their five-minute metadata is the schema minimum, not a measured duration.
 
@@ -73,7 +73,7 @@ with explicit existing scene art; it has no invented combat tileset.
 | `riftspark` | Granted on crossing the one-use rift: +2 on one chosen check; expires after the next chapter. |
 
 The goat reaches the glacier on every path and is returned to its herd on every survival path;
-there is no goat outcome flag. Attune is **not** earned yet. Olivia has **not** summoned anything.
+there is no goat outcome flag. Attune is earned at the first regional lesson. Olivia has **not** summoned anything.
 
 ## Pacing and remaining work
 
@@ -88,9 +88,8 @@ measurements have been invented. The 30–40-minute ordinary-node goal remains u
 playtests support it or a shorter prologue goal is explicitly recorded.
 Each pays the agreed 140 XP, with no extra objectives that could push the campaign over its cap.
 
-The next authoring slice is the regional substance beyond these arrivals: stone-counters,
-whale-road and the buried bridge, including their first fragments, changed geography and
-inter-strand exits. Full-campaign XP-route acceptance remains unfinished. The current preview
+The next authoring slice continues through the wrong valley, the island due back and the
+stuttering flats. The first Coast fragment and the initial regional discoveries are now playable. Full-campaign XP-route acceptance remains unfinished. The current preview
 graph is linted and replayed with no softlocks; its pauses are not campaign endings.
 
 For production integration:
@@ -118,3 +117,33 @@ covers the initial 80 scenes; the [route review](../../../docs/campaigns/contine
 `continuity.json` records their narrative dependencies and introduction wording. The real-engine
 walker checks that each path establishes what later scenes refer to, including across chapter
 boundaries and conditional callbacks. New scenes require an explicit review entry.
+
+## Regional discoveries
+
+This slice adds `stone-counters`, `whale-road`, and `buried-bridge`.
+See the [regional continuity review](../../../docs/campaigns/continental-rift/regional-continuity-review.md).
+The stone counters teach shrinking motion and Attune if needed. The whales offer gentle
+navigation or Lady Olivia's early opening. The buried bridge gives the first Coast clue,
+with optional sharing of chime readings with Orin. All three have explicit development pauses.
+
+Carry `whales_scattered` into the island-due-back navigator problem, `olivia_trusted` into
+her eventual epilogue, and `orin_chime_shared` into the convergence's noncombat option.
+`fragment_coast_learned` records knowledge; completing `buried-bridge` is the Coast key-node
+completion. Neither creates an item. Convergence and the other two key nodes remain unwritten.
+The `saltrot_arrival_*` flags identify the latest crossing and are reset together on entry.
+These regional chapters now have substantive investigations on every main path, with 14
+decisions and six checks each. Their family pacing remains unmeasured. The
+[regional pacing report and production gate](../../../docs/campaigns/continental-rift/regional-pacing-gate.md)
+records the expansion, shortest-path estimates and real-play requirements before production.
+
+`riftlight-route-prerequisites.test.ts` separately proves the regional entry facts using
+actual introductions on every chapter ending and intersection across every incoming graph
+edge, including guarded and return edges. The departure chapter grants the chime without the
+test fixture seeding it; downstream chapter paths must preserve it. Negative shortcut checks
+prove that bypassing the prologue invalidates the regional prerequisite guarantees.
+
+The regional chapters now use dedicated `stone-counters`, `whale-road`, and
+`buried-bridge-dry-channel` scene illustrations. The whales' cleared ending returns to the
+Sky Islands backdrop so departed whales do not remain pictured. The original wet-flat bridge
+illustration is preserved. [Generation prompts and references](../../../art/source/riftlight/scenes/regional-generation.md)
+accompany the source PNGs; runtime exports are 1920×1080 WebP.

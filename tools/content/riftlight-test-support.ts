@@ -71,14 +71,15 @@ export function allPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, fla
   const conditionalEntry = Object.entries(contract.entryByFlag ?? {}).flatMap(([flag, facts]) => flags[flag] ? facts : []);
   const initial = start(chapter, species, cls, flags, partySize);
   if (initialHp !== undefined) for (const member of initial.party) member.hp = initialHp;
-  const pending = [{ state: initial, known: new Set([...contract.entryFacts, ...conditionalEntry]) }];
+  const pending = [{ state: initial, known: new Set([...contract.entryFacts, ...conditionalEntry]), introduced: new Set<string>() }];
   const seen = new Set<string>();
   const visited = new Set<string>();
   const ends: RunState[] = [];
   const endingKnowledge: Set<string>[] = [];
+  const endingIntroductions: Set<string>[] = [];
   while (pending.length) {
-    const { state, known: before } = pending.pop()!;
-    const key = JSON.stringify([state.sceneId, state.flags, state.prompt, state.party.map((p) => [p.hp, p.character.questItems]), state.phase, [...before].sort()]);
+    const { state, known: before, introduced: priorIntroductions } = pending.pop()!;
+    const key = JSON.stringify([state.sceneId, state.flags, state.prompt, state.party.map((p) => [p.hp, p.character.questItems]), state.phase, [...before].sort(), [...priorIntroductions].sort()]);
     if (seen.has(key)) continue;
     seen.add(key);
     expect(seen.size, "Unexpected loop or path explosion").toBeLessThan(5000);
@@ -86,9 +87,11 @@ export function allPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, fla
     const review = contract.scenes[state.sceneId!]!;
     expect(review, `${chapter.id}/${state.sceneId}: new scene needs a continuity review`).toBeDefined();
     const known = new Set(before);
+    const introduced = new Set(priorIntroductions);
     for (const [fact, evidence] of Object.entries(review.introduces)) {
       expect(state.narration, `${chapter.id}/${state.sceneId}: introduction of ${fact} must be read aloud`).toContain(evidence);
       known.add(fact);
+      introduced.add(fact);
     }
     const conditional = (review.conditional ?? []).filter((rule) =>
       (!rule.flag || state.flags[rule.flag]) && (!rule.notFlag || !state.flags[rule.notFlag]),
@@ -96,17 +99,17 @@ export function allPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, fla
     for (const fact of [...review.requires, ...conditional]) {
       expect(known.has(fact), `${chapter.id}/${state.sceneId}: references ${fact} before this path introduced it`).toBe(true);
     }
-    if (state.phase === "chapter_complete") { ends.push(state); endingKnowledge.push(known); continue; }
+    if (state.phase === "chapter_complete") { ends.push(state); endingKnowledge.push(known); endingIntroductions.push(introduced); continue; }
     if (state.prompt?.kind === "choice") {
       expect(state.prompt.options.length).toBeGreaterThan(0);
-      for (const option of state.prompt.options) pending.push({ state: send(state, { type: "CHOOSE", choiceId: option.id }, chapter), known });
+      for (const option of state.prompt.options) pending.push({ state: send(state, { type: "CHOOSE", choiceId: option.id }, chapter), known, introduced });
     } else if (state.prompt?.kind === "roll") {
-      for (const face of [1, 20]) pending.push({ state: send(state, { type: "ROLL" }, chapter, face), known });
+      for (const face of [1, 20]) pending.push({ state: send(state, { type: "ROLL" }, chapter, face), known, introduced });
     } else {
-      pending.push({ state: send(state, { type: "ADVANCE" }, chapter), known });
+      pending.push({ state: send(state, { type: "ADVANCE" }, chapter), known, introduced });
     }
   }
   expect(ends.length).toBeGreaterThan(0);
   for (const state of ends) expect(state.chapterOutcome).toBe("success");
-  return { visited, ends, endingKnowledge };
+  return { visited, ends, endingKnowledge, endingIntroductions };
 }
