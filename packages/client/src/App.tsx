@@ -55,6 +55,10 @@ const ReadAloudControl = lazy(() => loadSpeech().then((module) => ({ default: mo
 const loadA11y = () => import("./a11y");
 const A11yControl = lazy(() => loadA11y().then((module) => ({ default: module.A11yControl })));
 
+// Help (#256): the "?" and the press-and-hold sheet load after first paint too, for the same reason.
+const loadHelp = () => import("./help");
+const HelpControl = lazy(() => loadHelp().then((module) => ({ default: module.HelpControl })));
+
 const loadPartyLayout = () => import("./layout/PartyLayout");
 const loadTravelLayout = () => import("./layout/TravelLayout");
 const PartyLayout = lazy(() => loadPartyLayout().then((module) => ({ default: module.PartyLayout })));
@@ -176,9 +180,10 @@ export function App(): React.JSX.Element {
   return (
     <PhoneMagic enabled={route.name !== "tv"}>
       {/* One corner row for the device's own controls, so they share a place instead of
-          fighting over it: display settings (#262) and read-aloud (#261) to the left of sound, sound anchored right. */}
+          fighting over it: help (#256), display settings (#262) and read-aloud (#261) to the left of sound, sound anchored right. */}
       <div className="kad-corner">
         <Suspense fallback={null}>
+          <HelpControl />
           <A11yControl />
           <ReadAloudControl />
         </Suspense>
