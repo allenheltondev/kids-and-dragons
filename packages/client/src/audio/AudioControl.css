@@ -1,5 +1,6 @@
 /* Small outline control, with a full touch target, above the game chrome. */
 .kad-audio-control {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.5em;
@@ -18,24 +19,20 @@
   color: var(--kad-ink-dim);
 }
 .kad-audio-control__button .kad-button__icon { font-size: 1.15em; }
+/* Out of the flow, under the row: it comes with the engine and goes on the first tap, and in the
+   flow either would slide the controls beside it a button's width, or more, mid-tap. */
 .kad-audio-control__hint {
-  margin: 0;
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-end: 0;
+  white-space: nowrap;
+  margin: 4px 0 0;
   padding: 0.35em 0.7em;
   border-radius: 999px;
   background: var(--kad-bg-raised);
   color: var(--kad-ink);
   font-size: 0.8em;
   pointer-events: none;
-}
-/* In the corner row the hint hangs below the button, out of the row's flow: the first
-   tap anywhere unlocks sound and takes it away, and in the flow that narrowed the row
-   between a press and its release, so the tap on the control beside it was lost (#257). */
-.kad-corner .kad-audio-control { position: relative; }
-.kad-corner .kad-audio-control__hint {
-  position: absolute;
-  inset-block-start: 100%;
-  inset-inline-end: 0;
-  white-space: nowrap;
 }
 /* Phones unlock sound on the first tap. The TV needs a gesture reminder. */
 @media (max-width: 699px) {
