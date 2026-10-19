@@ -147,6 +147,12 @@ export interface TargetRule {
   /** A tile target must be somewhere you could actually stand. */
   readonly openTileOnly?: boolean;
   /**
+   * An `"ally"` rule normally skips its own user ("a friend" is somebody
+   * else). `true` offers the user too, while standing and in range — Rally's
+   * heal and Soothe for the Songkeeper (#309). Ignored by every other kind.
+   */
+  readonly includeSelf?: boolean;
+  /**
    * A second figure selected after landing on a tile. Pounce uses this to
    * pair one legal landing tile with one adjacent enemy rather than hitting
    * everyone nearby or allowing a jump that has nobody to attack.
@@ -1207,7 +1213,7 @@ function legalTargetsFor(
   const want: AbilitySide = rule.kind === "ally" ? "ally" : "enemy";
   return state.combatants
     .filter((c) => {
-      if (c.id === actor.id) return false;
+      if (c.id === actor.id && !(rule.kind === "ally" && rule.includeSelf)) return false;
       // Out through a rift exit (#201): gone, even for a reach of "board".
       if (c.escaped) return false;
       if (!isFriendly(actor, c, want)) return false;

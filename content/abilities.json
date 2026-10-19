@@ -68,14 +68,15 @@
     "rally": {
       "id": "rally",
       "name": "Rally",
-      "summary": "Heal a friend anywhere, or help a knocked-down friend back up.",
+      "summary": "Heal a friend or yourself, or help a knocked-down friend back up.",
       "icon": "hand",
       "timing": "action",
       "$comment": "\"Heal a friend, or lift a knocked-down friend back up from across the board.\" One ability with two readings, and `when` is how the data says so rather than the resolver growing a rule about heals not stacking onto a revive. Heals 2 where soothe heals 3: rally reaches the whole board from level 1, so the level-3 upgrade has to be worth taking.",
       "target": {
         "kind": "ally",
         "range": "board",
-        "state": "any"
+        "state": "any",
+        "includeSelf": true
       },
       "effects": [
         {
@@ -141,13 +142,14 @@
     "soothe": {
       "id": "soothe",
       "name": "Soothe",
-      "summary": "A friend up to 4 squares away gets 3 hearts back.",
+      "summary": "A friend or you, up to 4 squares away, gets 3 hearts back.",
       "icon": "flame",
       "timing": "action",
       "$comment": "\"A friend within 4 steps gets 3 HP back.\" Straight across the board and through walls, as every \"within N steps\" range is (grid.ts) — she is counting tiles between two figures, not tracing a route.",
       "target": {
         "kind": "ally",
-        "range": 4
+        "range": 4,
+        "includeSelf": true
       },
       "effects": [
         {

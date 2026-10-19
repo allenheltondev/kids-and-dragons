@@ -144,6 +144,10 @@
         "openTileOnly": {
           "type": "boolean"
         },
+        "includeSelf": {
+          "$comment": "An ally rule skips its own user unless this is true. Rally and Soothe offer the Songkeeper herself (#309).",
+          "type": "boolean"
+        },
         "affects": {
           "enum": [
             "ally",
