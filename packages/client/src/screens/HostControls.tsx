@@ -26,7 +26,7 @@
  * folded away until opened; `float`, a corner button on the shared display.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import type { RunState } from "@kad/shared";
 import { useGameStore, useRunState, useSession } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
@@ -187,10 +187,58 @@ export function LetHeroGo(): React.JSX.Element | null {
   );
 }
 
-export function HostControls({ placement }: { placement: "inline" | "float" }): React.JSX.Element | null {
+/*
+ * Whether the shared screen's room panel is open. The Room button that opens it
+ * sits in the corner row (`RoomButton`, drawn there by App.tsx) and the panel
+ * in the column under it, so the two share it here.
+ */
+let roomOpen = false;
+const roomListeners = new Set<() => void>();
+function setRoomOpen(next: boolean): void {
+  roomOpen = next;
+  for (const listener of roomListeners) listener();
+}
+function useRoomOpen(): boolean {
+  return useSyncExternalStore(
+    (listener) => { roomListeners.add(listener); return () => { roomListeners.delete(listener); }; },
+    () => roomOpen,
+    () => roomOpen,
+  );
+}
+
+/** The shared screen's Room button, in its corner row (#257); the panel drops below it. */
+export function RoomButton({ inCorner = true }: { inCorner?: boolean } = {}): React.JSX.Element | null {
   const session = useSession();
   const state = useRunState();
-  const [open, setOpen] = useState(false);
+  const open = useRoomOpen();
+  if (!session?.host || !state || state.closed) return null;
+  const button = (
+    <Button
+      variant="secondary"
+      size="md"
+      className="kad-host__room"
+      icon={<Icon name="players" />}
+      aria-expanded={open}
+      onClick={() => setRoomOpen(!open)}
+    >
+      {state.locked ? "Room (locked)" : "Room"}
+    </Button>
+  );
+  return inCorner ? <div className="kad-host__room-slot">{button}</div> : button;
+}
+
+/**
+ * `button={false}` on the shared screen, where App draws the Room button in the
+ * corner row instead; rendered on its own, the float draws its own.
+ */
+export function HostControls({ placement, button = true }: { placement: "inline" | "float"; button?: boolean }): React.JSX.Element | null {
+  const session = useSession();
+  const state = useRunState();
+  const open = useRoomOpen();
+  // Each shared screen starts with its panel closed.
+  useEffect(() => {
+    if (placement === "float") setRoomOpen(false);
+  }, [placement]);
   if (!session?.host || !state || state.closed) return null;
 
   const panel = <HostPanel state={state} me={session.playerId} code={session.roomCode} />;
@@ -213,16 +261,10 @@ export function HostControls({ placement }: { placement: "inline" | "float" }): 
   }
   return (
     <div className="kad-host kad-host--float">
+      {/* On the shared screen the Room button sits in the corner row (App.tsx); in the
+          bottom corner it lay over the story's last choice (#257). What it opens drops below. */}
+      {button ? <RoomButton inCorner={false} /> : null}
       <StopOffer state={state} />
-      <Button
-        variant="secondary"
-        size="md"
-        icon={<Icon name="players" />}
-        aria-expanded={open}
-        onClick={() => setOpen(!open)}
-      >
-        {state.locked ? "Room (locked)" : "Room"}
-      </Button>
       {open ? panel : null}
       {/* The grown-up's sign-in for the visitor switch. A phone's view
           already has one (layout/PlayerView); the shared display does not. */}

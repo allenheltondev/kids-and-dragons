@@ -5,7 +5,8 @@
  */
 .guide-news {
   position: absolute;
-  inset-block-start: 0.6em;
+  /* Below the shared screen's "Tap for sound" while that is up (DisplayExtras.css). */
+  inset-block-start: calc(0.6em + var(--kad-top-reserve, 0px));
   inset-inline: 0.75em;
   margin-inline: auto;
   inline-size: fit-content;

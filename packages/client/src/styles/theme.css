@@ -171,9 +171,9 @@
 
   /* --- accessibility, set by a11y/prefs.ts (#262) ------------------------ */
   --kad-text-scale: 1;
-  /* The corner row (App.tsx) is four 44px controls (help, settings, read-aloud, sound) and the gaps between them. Pixels, not
-     em: the row does not grow with the text, so what clears it never has to guess. */
-  --kad-corner-reserve: 196px;
+  /* The corner row (App.tsx) is up to four 44px controls (help, settings, read-aloud, sound). The strip a phone leaves it, at
+     the top or (one-handed) the bottom, is the row's height and a little air. Pixels, not em: the row does not grow with the
+     text, so what clears it never has to guess. */
   --kad-corner-bottom: 52px;
 
   color-scheme: dark;
@@ -488,9 +488,15 @@ html[data-quiet] .rift-status__clock--urgent {
 /* Sound's place in the row while its engine loads (App.tsx): the size of its button, and nothing to tap. */
 .kad-corner__slot { inline-size: var(--kad-touch-min); block-size: var(--kad-touch-min); flex: none; pointer-events: none; }
 
-/* Keep the identity strip and the map's flip tabs clear of the row. */
-body:has(.kad-corner) .sheet,
-body:has(.kad-corner) .kad-map__flip { padding-inline-end: var(--kad-corner-reserve); }
+/* On a phone the row has a strip of its own at the top, the way one-handed play gives it one at
+   the bottom (below), so nothing on the phone ever sits under it: not the identity strip, not a
+   host's arrival notices, not the catch-up line, at any width or text size. Reserving the row's
+   width beside each of those instead squeezed them into a column on a 390px phone (#257). The TV
+   and the join screen keep the top corner, where nothing of theirs is under it. */
+html:not([data-hand]) .kad-party--player,
+html:not([data-hand]) .kad-travel {
+  padding-block-start: calc(var(--kad-safe-top) + var(--kad-corner-bottom));
+}
 
 /* One-handed play (#262): on a phone the row drops under the tray, on the thumb's side,
    and the shell leaves it a strip of its own, so nothing is covered and nothing sits at

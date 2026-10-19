@@ -6,7 +6,10 @@
   align-items: stretch;
   width: 100%;
   min-height: 100%;
-  padding: var(--space-5, 1.5em) var(--space-4, 1em) var(--space-7, 3em);
+  /* The top leaves the corner row (styles/theme.css) a strip of its own, so the
+     wordmark never sits under it. */
+  padding: max(var(--space-5, 1.5em), calc(var(--kad-safe-top) + var(--kad-corner-bottom))) var(--space-4, 1em)
+    var(--space-7, 3em);
   background: var(--color-bg, #0d0b1a);
   color: var(--color-text, #f4f1ff);
   overflow-y: auto;

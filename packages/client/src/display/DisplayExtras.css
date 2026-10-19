@@ -9,6 +9,20 @@
   max-inline-size: min(34em, 94vw);
   font-size: 0.9rem;
 }
+/* In the corner row: first in it, in its flow, and the report drops below the row. */
+.kad-about--in-corner {
+  position: static;
+  order: -2;
+  max-inline-size: none;
+}
+.kad-about--in-corner .kad-about__panel {
+  position: fixed;
+  inset-block-start: calc(var(--kad-safe-top, 0px) + var(--kad-corner-bottom));
+  inset-inline-end: 0.5em;
+  inline-size: min(34em, 94vw);
+  max-block-size: calc(100vh - var(--kad-corner-bottom) - 1em);
+  overflow-y: auto;
+}
 .kad-about__open {
   padding: 0.35em 0.8em;
   border: 0;
@@ -18,6 +32,18 @@
   font: inherit;
   opacity: 0.45;
   cursor: pointer;
+}
+.kad-about__open--icon {
+  display: grid;
+  place-items: center;
+  inline-size: var(--kad-touch-min);
+  block-size: var(--kad-touch-min);
+  padding: 0;
+  background: transparent;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.15em;
+  font-style: italic;
+  font-weight: 700;
 }
 .kad-about__open:hover,
 .kad-about__open:focus-visible { opacity: 1; }
@@ -47,3 +73,20 @@
   pointer-events: none;
 }
 .kad-tap-for-sound > * { pointer-events: auto; }
+
+/* In the corner row, and first in it: it goes the moment sound is allowed, and nothing
+   to its left can move when it does, so a tap on Room or About is never lost to it (#257). */
+.kad-tap-for-sound--in-corner {
+  position: static;
+  order: -4;
+  display: block;
+}
+
+/* While it is up, it is the one ask (#257): the corner row's smaller hint for the same thing
+   stands down, and the Field Guide's news drops below the row (FieldGuideNews.css reads
+   this), since the row is wider with it. */
+body:has(.kad-tap-for-sound) .kad-audio-control__hint { display: none; }
+/* The shared screen has its own ask for sound (Tap for sound, above), so the row's small hint
+   never hangs under its corner, over the room's own column (#257). */
+.kad-corner:has(.kad-about--in-corner) .kad-audio-control__hint { display: none; }
+body:has(.kad-tap-for-sound--in-corner) .kad-party--world { --kad-top-reserve: 3.25rem; }

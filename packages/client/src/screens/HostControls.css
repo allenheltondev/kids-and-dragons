@@ -6,7 +6,12 @@
  */
 
 .kad-host--inline {
-  flex: 0 0 auto;
+  /* Gives way, and scrolls, when the notices and the stop offer above it leave
+     too little room: at the largest text the room's own buttons were pushed off
+     the bottom of the phone, out of reach (#257). The summary always shows. */
+  flex: 0 1 auto;
+  min-block-size: calc(var(--kad-touch-min) + 2px);
+  overflow-y: auto;
   margin: 0.5rem 0.75rem 0;
   border: 1px solid var(--kad-border);
   border-radius: var(--kad-radius-md);
@@ -14,17 +19,22 @@
   color: var(--kad-ink);
 }
 
-/* Bottom corner, clear of the arrival notices (top) and the toast (bottom centre). */
+/* In the shared screen's top-right column (App.tsx, .kad-display-stack), above who just
+   joined. Its Room button sits in the corner row over it. */
 .kad-host--float {
-  position: fixed;
-  inset-block-end: calc(var(--kad-safe-bottom, 0px) + 1rem);
-  inset-inline-end: calc(var(--kad-safe-right, 0px) + 1rem);
-  z-index: 100;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   align-items: flex-end;
   gap: 0.5rem;
-  inline-size: min(24rem, calc(100vw - 2rem));
+  inline-size: 100%;
+}
+
+.kad-host--float:empty {
+  display: none;
+}
+
+.kad-host__room-slot {
+  order: -3;
 }
 
 .kad-host--float .kad-host__panel {
@@ -59,6 +69,8 @@
 
 .kad-host__panel {
   display: grid;
+  /* Never wider than the panel: a long row wraps rather than widening every row with it. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.75rem;
   padding: 0.75rem;
 }
@@ -72,6 +84,7 @@
 
 .kad-host__roster {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.5rem;
   margin: 0;
   padding: 0;
@@ -80,6 +93,7 @@
 
 .kad-host__row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.6rem;
 }
@@ -96,11 +110,17 @@
   border-radius: 50%;
 }
 
+/* At least a short name's worth of room; past that, Make keeper and Remove wrap under it, to
+   the end of the line (#257). */
 .kad-host__who {
   display: grid;
-  flex: 1 1 auto;
+  flex: 1 1 6em;
   min-inline-size: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+}
+
+.kad-host__row > :last-child:not(.kad-host__who) {
+  margin-inline-start: auto;
 }
 
 .kad-host__meta {

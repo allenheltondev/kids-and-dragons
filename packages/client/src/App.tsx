@@ -124,6 +124,10 @@ class RoomBoundary extends Component<{ children: ReactNode; message?: string }, 
 const HostControls = lazy(() =>
   import("./screens/HostControls").then((module) => ({ default: module.HostControls })),
 );
+// Its Room button, in the corner row (#257).
+const RoomButton = lazy(() =>
+  import("./screens/HostControls").then((module) => ({ default: module.RoomButton })),
+);
 // The same chunk: the host of a stopped game may let a hero go (#259).
 const LetHeroGo = lazy(() =>
   import("./screens/HostControls").then((module) => ({ default: module.LetHeroGo })),
@@ -133,6 +137,10 @@ const LetHeroGo = lazy(() =>
 // screen". A phone never loads it.
 const DisplayExtras = lazy(() =>
   import("./display/DisplayExtras").then((module) => ({ default: module.DisplayExtras })),
+);
+// The shared screen's own controls in the corner row: Tap for sound and About this screen (#257).
+const DisplayCornerControls = lazy(() =>
+  import("./display/DisplayExtras").then((module) => ({ default: module.DisplayCornerControls })),
 );
 
 // The adventure book (`/journal`) is a route of its own, between games, and
@@ -208,23 +216,35 @@ export function App(): React.JSX.Element {
         <Suspense fallback={enabled ? <span className="kad-corner__slot" aria-hidden="true" /> : null}>
           <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
         </Suspense>
+        {/* The shared screen's own controls (#257), in the row with the device's rather than
+            over its headings and its story: Room, About this screen, Tap for sound. */}
+        {route.name === "tv" && session ? (
+          <Suspense fallback={null}>
+            {session.host ? <RoomButton /> : null}
+            <DisplayCornerControls />
+          </Suspense>
+        ) : null}
       </div>
       {pickLayout()}
       <ErrorToast />
       {/* Shell-level like the toast, and for the same reason: a dropped
           connection is true on every surface in every mode at once. */}
       <ConnectionBanner />
-      {/* Who just joined (#267), on the shared display. A host's phone shows
-          them in its own view instead (layout/PlayerView). */}
-      <ArrivalNotices placement="float" />
+      {/* The shared display's top-right column, under the corner row (#257): the host's
+          stop offer and room panel (#263), then who just joined (#267), one under the
+          other so neither covers the other. The Room button itself sits in the corner
+          row. A host's phone shows all of these in its own view (layout/PlayerView). */}
+      <div className="kad-display-stack">
+        {route.name === "tv" && session?.host ? (
+          <Suspense fallback={null}>
+            <HostControls placement="float" button={false} />
+          </Suspense>
+        ) : null}
+        <ArrivalNotices placement="float" />
+      </div>
       {route.name === "tv" && session ? (
         <Suspense fallback={null}>
-          <DisplayExtras />
-        </Suspense>
-      ) : null}
-      {route.name === "tv" && session?.host ? (
-        <Suspense fallback={null}>
-          <HostControls placement="float" />
+          <DisplayExtras controls={false} />
         </Suspense>
       ) : null}
     </PhoneMagic>
