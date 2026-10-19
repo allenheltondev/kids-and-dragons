@@ -22,7 +22,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
-import { cue } from "../audio";
+import { cue } from "../audio/cue";
 import { useGameStore } from "../store";
 import { NAME_REFUSED_MESSAGE, STAT_IDS, isBlockedName } from "@kad/shared";
 import type { ClassDef, ClassId, SpeciesDef, SpeciesId, StatId, Stats } from "@kad/shared";
