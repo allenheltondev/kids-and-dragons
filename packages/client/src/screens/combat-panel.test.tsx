@@ -560,6 +560,39 @@ describe("aiming", () => {
     ]);
   });
 
+  it("offers the Songkeeper herself as a target, marked as you (#309)", async () => {
+    const user = userEvent.setup();
+    const abilities: AbilityCatalog = {
+      ...CATALOG,
+      lullaby: {
+        id: "lullaby",
+        name: "Lullaby",
+        icon: "note",
+        timing: "action",
+        target: { kind: "ally", range: "board", includeSelf: true },
+        effects: [{ effect: { type: "heal", amount: 2 } }],
+      },
+    };
+    const keeper = character({ class: "songkeeper", actions: ["lullaby"] });
+    const hurt = (enc: EncounterState): EncounterState => ({
+      ...enc,
+      combatants: enc.combatants.map((c) => (c.side === "party" ? { ...c, hp: 3 } : c)),
+    });
+
+    // A table of one: the only thing to aim at is yourself.
+    const solo = mount({
+      abilities,
+      characters: [keeper],
+      encounter: hurt(
+        encounterWith({ party: [{ character: keeper, at: { x: 1, y: 2 } }] }),
+      ),
+    });
+    await user.click(card("Lullaby"));
+    expect(screen.getAllByRole("button", { name: /Sparklehoof \(you\)/ })).toHaveLength(1);
+    await user.click(screen.getByRole("button", { name: /Sparklehoof \(you\)/ }));
+    expect(solo.sent).toEqual([{ type: "COMBAT_ACTION", abilityId: "lullaby", targetId: "c_hero" }]);
+  });
+
   it("picks two different figures for a two-target ability, and counts them", async () => {
     const user = userEvent.setup();
     const archer = character({ actions: ["volley"] });
