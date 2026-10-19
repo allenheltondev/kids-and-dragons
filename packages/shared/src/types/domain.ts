@@ -32,6 +32,74 @@ export type ClassRank = "none" | "apprentice" | "expert" | "master";
 /** The ranks in order; a rank's index is how many class unlocks it grants. */
 export const CLASS_RANKS: readonly ClassRank[] = ["none", "apprentice", "expert", "master"] as const;
 
+/**
+ * Every deed the game knows how to count (docs/class-mastery.md §6), each
+ * read off events the game already produces (deeds.ts). Content picks which
+ * of them a rank asks for, and how many; a deed id content names that is not
+ * here is refused by `content:validate`, because nothing would ever count it.
+ */
+export const DEED_IDS = [
+  // Thornguard
+  "brace_friend",
+  "hold_ground",
+  "shove_off_friend",
+  "shove",
+  "bramble_wall_fight",
+  // Duskrunner
+  "new_target",
+  "vanish_miss",
+  "twin_step_finish",
+  // Starweaver
+  "burst_two",
+  "burst_three",
+  "glimmer_made",
+  "tangle_guard",
+  "tanglelight",
+  // Songkeeper
+  "song_hearts",
+  // Every class: a class-only choice or a class way at a rift
+  "class_story",
+] as const;
+
+export type DeedId = (typeof DEED_IDS)[number];
+
+/**
+ * The class whose move a deed is done with, or null for one any hero can do.
+ * A rank that asks for another class's deed could never be earned, so
+ * `content:validate` refuses it.
+ */
+export const DEED_OWNERS: Record<DeedId, ClassId | null> = {
+  brace_friend: "thornguard",
+  hold_ground: "thornguard",
+  shove_off_friend: "thornguard",
+  shove: "thornguard",
+  bramble_wall_fight: "thornguard",
+  new_target: "duskrunner",
+  vanish_miss: "duskrunner",
+  twin_step_finish: "duskrunner",
+  burst_two: "starweaver",
+  burst_three: "starweaver",
+  glimmer_made: "starweaver",
+  tangle_guard: "starweaver",
+  tanglelight: "starweaver",
+  song_hearts: "songkeeper",
+  class_story: null,
+};
+
+/** One way to earn a rank: every deed in it, at least this many times. */
+export type DeedTrack = Partial<Record<DeedId, number>>;
+
+/**
+ * What earns one rank (docs/class-mastery.md §6). Either track completes it:
+ * `withFriends` at any table, and `alone`, when present, at any table too, so
+ * a hero playing solo always has a way. Absent `alone` means the same deeds
+ * serve both.
+ */
+export interface RankDeeds {
+  withFriends: DeedTrack;
+  alone?: DeedTrack;
+}
+
 /** Appearance tiers, in level order. See spec §8.1. */
 export type TierId = "fledgling" | "sworn" | "radiant" | "mythic";
 
@@ -112,10 +180,11 @@ export interface Appearance {
 export interface ClassMastery {
   rank: ClassRank;
   /**
-   * Partial progress toward the next rank, by deed id. The deeds themselves
-   * (which events count, and how many make a rank) are #310's; this only
-   * remembers the counts, so a hero who switches away and back picks up
-   * exactly where they left the class. Empty until a deed is counted.
+   * Partial progress toward the next rank, by deed id (`DeedId`): only the
+   * deeds that rank asks for, each capped at the most any track asks. Kept
+   * for every class, so a hero who switches away and back picks up exactly
+   * where they left it. Emptied when a rank lands, since each rank is earned
+   * afresh, and empty for good at Master.
    */
   deeds: Record<string, number>;
 }
@@ -260,6 +329,12 @@ export interface ResolvedCharacter {
    * resolved before it existed. Absent reads as `none`.
    */
   rank?: ClassRank;
+  /**
+   * The worn class's progress toward its next rank (`ClassMastery.deeds`),
+   * where the fight engine starts counting from. Present only when something
+   * has been counted, so a hero with none resolves exactly as before deeds.
+   */
+  deeds?: Record<string, number>;
   appearance: Appearance;
   level: number;
   xp: number;
@@ -486,6 +561,12 @@ export interface ClassDef {
    * to become a rank: a hero joining at a tier floor (spec §8.4).
    */
   unlocks: Record<string, { id: string; name: string; text: string; icon: string }>;
+  /**
+   * What earns each rank (docs/class-mastery.md §6), counted by deeds.ts.
+   * Optional so a class without any never ranks up, rather than refusing to
+   * load; `content:validate` requires all three for every shipped class.
+   */
+  deeds?: Partial<Record<Exclude<ClassRank, "none">, RankDeeds>>;
 }
 
 export interface RulesContent {

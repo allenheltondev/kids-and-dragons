@@ -7,7 +7,9 @@ import {
   classOf,
   commitCampaign,
   effectiveProgress,
+  earnStoredDeed,
   failCampaign,
+  foldRunDeeds,
   MAX_STAT_GAIN,
   newCharacter,
   rankForLevel,
@@ -15,6 +17,7 @@ import {
   recordFinished,
   hasFinished,
   withInventory,
+  withMastery,
   resolveCharacter,
   spendStatPoint,
   startCampaign,
@@ -130,12 +133,14 @@ describe("joining a party already underway (spec §8.4)", () => {
     // The claim spec §8.4 makes, asserted whole: no shortcut and no handicap.
     // Any extra XP, point, or action given to a joiner shows up right here.
     //
-    // Ranks included: a joiner gets the rank its level used to unlock, and
-    // while the level bridge stands (until #310) so does a hero who levelled.
+    // Ranks are the one difference, and on purpose: a level cannot stand for
+    // deeds, so a joiner's class arrives with the rank its level used to
+    // unlock (spec §8.4), where a hero who levelled has what her deeds earned.
     const joined = newCharacter({ ...creation(), startingLevel: 4 });
     const earned = awardXp(newCharacter(creation()), rules, 1200).character;
-    expect(joined.committed).toEqual(earned.committed);
+    expect({ ...joined.committed, mastery: {} }).toEqual({ ...earned.committed, mastery: {} });
     expect(joined.committed.mastery).toEqual({ songkeeper: { rank: "apprentice", deeds: {} } });
+    expect(earned.committed.mastery).toEqual({ songkeeper: { rank: "none", deeds: {} } });
   });
 
   it("rejects a level between the tier floors", () => {
@@ -628,49 +633,114 @@ describe("awardXp (spec §8.1)", () => {
     expect(result.character.provisional?.xp).toBe(100);
   });
 
-  describe("the level bridge, until deeds earn ranks (#310)", () => {
-    it("lifts the worn class to the rank its new level used to unlock", () => {
-      const result = awardXp(startCampaign(makeCharacter(), "r_1"), rules, 2500);
+  describe("levelling earns no rank (#310 removed the level bridge)", () => {
+    it("leaves every class's rank and deeds where they were, at any level", () => {
+      const result = awardXp(startCampaign(makeCharacter(), "r_1"), rules, 6300);
+      expect(result.leveledTo).toBe(10);
+      expect(result.character.provisional?.mastery).toEqual({ songkeeper: { rank: "none", deeds: {} } });
+      expect(resolveCharacter(result.character, rules, items).actions).toEqual(["rally", "mend_pulse"]);
+    });
 
-      expect(result.leveledTo).toBe(6);
-      expect(result.character.provisional?.mastery).toEqual({ songkeeper: { rank: "expert", deeds: {} } });
+    it("keeps a rank the bridge already granted, and every move it gave", () => {
+      // A hero who levelled to 6 while the bridge stood carries Expert in her
+      // stored row; nothing about levelling on takes it away.
+      const bridged = makeCharacter({ level: 6, xp: 1700, rank: "expert" });
+      bridged.committed.mastery.songkeeper!.deeds = { song_hearts: 4 };
+      const result = awardXp(bridged, rules, 4600);
+      expect(result.leveledTo).toBe(10);
+      expect(result.character.committed.mastery).toEqual({ songkeeper: { rank: "expert", deeds: { song_hearts: 4 } } });
       expect(resolveCharacter(result.character, rules, items).actions).toEqual(["rally", "soothe", "chorus", "mend_pulse"]);
     });
+  });
 
-    it("gives a hero made after #308 every move by level 10, as levelling did before", () => {
-      const result = awardXp(newCharacter(creation()), rules, 6300);
-      expect(result.leveledTo).toBe(10);
-      expect(rankIn(result.character.committed, "songkeeper")).toBe("master");
-      expect(resolveCharacter(result.character, rules, items).actions).toEqual([
-        "rally",
-        "soothe",
-        "chorus",
-        "encore",
-        "mend_pulse",
-      ]);
+  describe("foldRunDeeds: a chapter's deeds onto the stored hero (#310)", () => {
+    it("writes the worn class's rank and progress, provisionally while a campaign is in flight", () => {
+      const started = startCampaign(makeCharacter(), "r_1");
+      const folded = foldRunDeeds(started, { class: "songkeeper", rank: "apprentice", deeds: { song_hearts: 6 } });
+      expect(folded.provisional?.mastery).toEqual({ songkeeper: { rank: "apprentice", deeds: { song_hearts: 6 } } });
+      expect(folded.committed.mastery).toEqual({ songkeeper: { rank: "none", deeds: {} } });
+      expect(resolveCharacter(folded, rules, items)).toMatchObject({ rank: "apprentice", deeds: { song_hearts: 6 } });
     });
 
-    it("never lowers a rank, and keeps deed progress", () => {
-      const character = makeCharacter({ rank: "master" });
-      character.committed.mastery.songkeeper!.deeds = { hearts: 12 };
-      const result = awardXp(character, rules, 300);
-      expect(result.character.committed.mastery).toEqual({ songkeeper: { rank: "master", deeds: { hearts: 12 } } });
+    it("is taken back by a failed campaign, to how the class stood when it began", () => {
+      const start = makeCharacter({ rank: "apprentice" });
+      start.committed.mastery.songkeeper!.deeds = { song_hearts: 3 };
+      const gained = foldRunDeeds(startCampaign(start, "r_1"), { class: "songkeeper", rank: "expert", deeds: { song_hearts: 2 } });
+      const failed = failCampaign(gained, "singed_feather", "2026-08-01");
+      expect(failed.committed.mastery).toEqual({ songkeeper: { rank: "apprentice", deeds: { song_hearts: 3 } } });
+      expect(resolveCharacter(failed, rules, items).actions).toEqual(["rally", "soothe", "mend_pulse"]);
     });
 
-    it("touches only the worn class", () => {
+    it("is kept by a completed campaign", () => {
+      const gained = foldRunDeeds(startCampaign(makeCharacter(), "r_1"), { class: "songkeeper", rank: "apprentice", deeds: {} });
+      expect(commitCampaign(gained).committed.mastery).toEqual({ songkeeper: { rank: "apprentice", deeds: {} } });
+    });
+
+    it("never lowers a rank, and keeps the further count at the same rank", () => {
+      const stored = makeCharacter({ rank: "expert" });
+      stored.committed.mastery.songkeeper!.deeds = { song_hearts: 9, class_story: 1 };
+      expect(foldRunDeeds(stored, { class: "songkeeper", rank: "apprentice", deeds: { song_hearts: 20 } })).toBe(stored);
+      const merged = foldRunDeeds(stored, { class: "songkeeper", rank: "expert", deeds: { song_hearts: 7 } });
+      expect(merged.committed.mastery.songkeeper).toEqual({ rank: "expert", deeds: { song_hearts: 9, class_story: 1 } });
+    });
+
+    it("writes nothing for a class she is not wearing, and leaves other classes alone", () => {
       const character = makeCharacter({ class: "starweaver" });
-      character.committed.mastery.songkeeper = { rank: "none", deeds: { hearts: 3 } };
-      const result = awardXp(character, rules, 2500);
-      expect(result.character.committed.mastery).toEqual({
+      character.committed.mastery.songkeeper = { rank: "expert", deeds: { song_hearts: 3 } };
+      expect(foldRunDeeds(character, { class: "songkeeper", rank: "master", deeds: {} })).toBe(character);
+      const folded = foldRunDeeds(character, { class: "starweaver", rank: "apprentice", deeds: {} });
+      expect(folded.committed.mastery).toEqual({
         starweaver: { rank: "apprentice", deeds: {} },
-        songkeeper: { rank: "none", deeds: { hearts: 3 } },
+        songkeeper: { rank: "expert", deeds: { song_hearts: 3 } },
       });
     });
+  });
 
-    it("is reverted by a failed campaign with the level that bought it", () => {
-      const gained = awardXp(startCampaign(makeCharacter(), "r_1"), rules, 2500).character;
-      const failed = failCampaign(gained, "singed_feather", "2026-08-01");
-      expect(failed.committed.mastery).toEqual({ songkeeper: { rank: "none", deeds: {} } });
+  describe("earnStoredDeed: a deed done between chapters (#310)", () => {
+    const deedRules = {
+      ...rules,
+      classes: {
+        ...rules.classes,
+        songkeeper: {
+          ...rules.classes.songkeeper,
+          deeds: {
+            apprentice: { withFriends: { song_hearts: 5 } },
+            expert: { withFriends: { song_hearts: 5 } },
+            master: { withFriends: { song_hearts: 5, class_story: 1 } },
+          },
+        },
+      },
+    };
+
+    it("counts only what the worn class's next rank asks for", () => {
+      const apprentice = startCampaign(makeCharacter({ rank: "apprentice" }), "r_1");
+      expect(earnStoredDeed(apprentice, deedRules, "class_story").character).toBe(apprentice);
+      const expert = startCampaign(makeCharacter({ rank: "expert" }), "r_1");
+      const earned = earnStoredDeed(expert, deedRules, "class_story");
+      expect(earned.rankedUp).toBeUndefined();
+      expect(earned.character.provisional?.mastery.songkeeper).toEqual({ rank: "expert", deeds: { class_story: 1 } });
+    });
+
+    it("lands the rank it completes, and a failed campaign takes it back", () => {
+      const expert = makeCharacter({ rank: "expert" });
+      expert.committed.mastery.songkeeper!.deeds = { song_hearts: 5 };
+      const earned = earnStoredDeed(startCampaign(expert, "r_1"), deedRules, "class_story");
+      expect(earned.rankedUp).toBe("master");
+      expect(earned.character.provisional?.mastery.songkeeper).toEqual({ rank: "master", deeds: {} });
+      expect(failCampaign(earned.character, "feather", "2026-08-01").committed.mastery.songkeeper).toEqual({
+        rank: "expert",
+        deeds: { song_hearts: 5 },
+      });
+    });
+  });
+
+  describe("withMastery: a rank landing mid-chapter reaches the resolved hero", () => {
+    it("swaps in the rank's class moves and keeps every other move", () => {
+      const resolved = resolveCharacter(makeCharacter(), rules, items);
+      const ranked = withMastery(resolved, { class: "songkeeper", rank: "expert", deeds: { song_hearts: 2 } }, rules);
+      expect(ranked.actions).toEqual(["rally", "soothe", "chorus", "mend_pulse"]);
+      expect(ranked).toMatchObject({ rank: "expert", deeds: { song_hearts: 2 } });
+      expect(withMastery(resolved, { class: "starweaver", rank: "master", deeds: {} }, rules)).toBe(resolved);
     });
   });
 

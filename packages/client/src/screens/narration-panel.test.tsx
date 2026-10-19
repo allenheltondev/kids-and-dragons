@@ -439,3 +439,18 @@ describe("the practice's hint (#255)", () => {
     expect(spoken).toEqual(["The moss on the bank is warm."]);
   });
 });
+
+describe("a rank that just landed (#310)", () => {
+  const UP = { characterId: "c_1", class: "duskrunner" as const, rank: "apprentice" as const, line: "Pip is a Duskrunner Apprentice now! New move: Vanish.", crow: "A crow lands on a fence nearby. \"Saw that. Nice. Don't mess with us.\" It flies off." };
+
+  it("is said in one line on the scene it landed on, after the story, crow and all", () => {
+    mount({ sceneType: "rest", sceneId: "camp", narration: "A fire, and the road beyond it.", rankUps: { sceneId: "camp", ups: [UP] } });
+    expect(screen.getByTestId("rank-up").textContent).toBe(`${UP.line} ${UP.crow}`);
+    expect(spoken.indexOf(`${UP.line} ${UP.crow}`)).toBeGreaterThan(spoken.indexOf("A fire, and the road beyond it."));
+  });
+
+  it("is gone once the table has moved on to another scene", () => {
+    mount({ sceneType: "story", sceneId: "road", rankUps: { sceneId: "camp", ups: [UP] } });
+    expect(screen.queryByTestId("rank-up")).toBeNull();
+  });
+});

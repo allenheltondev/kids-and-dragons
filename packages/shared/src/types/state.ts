@@ -6,7 +6,7 @@
  */
 
 import type { EncounterState } from "../encounter.js";
-import type { ResolvedCharacter, StatId } from "./domain.js";
+import type { ClassId, ClassRank, ResolvedCharacter, StatId } from "./domain.js";
 import type { ChapterOutcome, SceneId, ScenePriority, SceneType } from "./chapter.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { FactId, FactValue, JourneyView, NodeId } from "./campaign-graph.js";
@@ -300,6 +300,23 @@ export interface RunState {
    */
   fightEndings?: FightEnding[];
   /**
+   * Deeds counted this chapter (#310, docs/class-mastery.md §6), and what the
+   * fight under way has seen so far. The engine counts here, because the run
+   * holds resolved characters and cannot write a stored one; the server folds
+   * `heroes` into each hero's stored mastery when the chapter completes
+   * (`foldRunDeeds`), beside her XP and under the same commitment rule. Gone
+   * when the party is back in the lobby or a chapter starts. Absent until a
+   * deed is first counted, so a run nobody has earned anything in is exactly
+   * the shape it always was.
+   */
+  deeds?: RunDeeds;
+  /**
+   * The ranks that have just landed (#310), and the scene they landed on: the
+   * shared screen and the hero's phone say so in one line while that scene is
+   * open. Absent otherwise. The rank-up moment itself is #314's.
+   */
+  rankUps?: { sceneId: SceneId | null; ups: RankUp[] };
+  /**
    * Every scene this run has entered, in order — the spine of the story, for
    * the end-of-chapter recap (roadmap chapter 7, architecture §6).
    *
@@ -551,6 +568,43 @@ export interface TradeOffer {
  * the engine clamps against the 25% ceiling (spec §8.2), and a screen that
  * itemised the authored number would not add up to `xpEarned`.
  */
+/** A hero's worn class as this chapter has left it: rank and progress to the next. */
+export interface HeroDeeds {
+  class: ClassId;
+  rank: ClassRank;
+  deeds: Record<string, number>;
+}
+
+/**
+ * What a fight has seen that a deed needs to remember between one action and
+ * the next (deeds.ts). Lives and dies with the fight.
+ */
+export interface FightDeeds {
+  /** Heroes who have grown a Bramble Wall in this fight. */
+  walled: string[];
+  /** Hero → the monsters they have landed a hit on in this fight. Optional: fights begun before it existed. */
+  struck?: Record<string, string[]>;
+  /** Glimmered hero → the hero who Glimmered them, until their next roll. */
+  glimmers: Record<string, string>;
+}
+
+export interface RunDeeds {
+  /** By character id. Only heroes something has been counted for. */
+  heroes: Record<string, HeroDeeds>;
+  fight?: FightDeeds;
+}
+
+/** A rank that just landed, and the line that says so. */
+export interface RankUp {
+  characterId: string;
+  class: ClassId;
+  rank: ClassRank;
+  /** "Mira is a Thornguard Apprentice now! New move: Shove." */
+  line: string;
+  /** A Duskrunner's crow, who always has something to say. */
+  crow?: string;
+}
+
 /** One environmental fight's ending, as the completion screen tells it (#220). */
 export interface FightEnding {
   outcome: "victory" | "defeat" | "escaped" | "timedOut";
