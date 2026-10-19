@@ -438,7 +438,7 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
       async function club(): Promise<void> {
         await repo.putHousehold(household({ id: "h_club", displayName: "Dragon Club", ownerSub: "sub_leader" }));
         await repo.putHousehold(household({ id: "h_home", displayName: "Ada's house", ownerSub: "sub_mum" }));
-        await repo.putPlayer({ ...player("p_ada", "h_club"), displayName: "Ada", retired: true });
+        await repo.putPlayer({ ...player("p_ada", "h_club"), displayName: "Ada", retired: true, flair: { v: 1, color: "berry", frames: { c_spark: "ivy" } } });
         await repo.putPlayer({ ...player("p_bo", "h_club"), displayName: "Bo" });
         await repo.putCharacter(hero("c_spark", "p_ada", 3));
         await repo.putCharacter(hero("c_moth", "p_ada"));
@@ -481,6 +481,8 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         const ada = await repo.getPlayer("h_home", "p_ada");
         expect(ada).toMatchObject({ id: "p_ada", householdId: "h_home", displayName: "Ada" });
         expect(ada?.retired).toBeUndefined();
+        // What she chose for her page (#299) is hers, so it moved with her.
+        expect(ada?.flair).toEqual({ v: 1, color: "berry", frames: { c_spark: "ivy" } });
         expect((await repo.getCharacter("h_home", "c_spark"))?.committed.level).toBe(3);
         expect((await repo.getCharacter("h_home", "c_spark"))?.householdId).toBe("h_home");
         expect((await repo.listCharacters("h_home")).map((c) => c.id).sort()).toEqual(["c_moth", "c_spark"]);
@@ -1011,6 +1013,25 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         expect(await repo.getState("r_1")).not.toBeNull();
         expect((await rows(repo)).filter((r) => r.includes("p_1") && !r.startsWith("RUN#"))).toEqual([]);
         expect(await repo.deleteProfile("h_1", "p_1")).toBe(false);
+      });
+
+      it("keeps what a kid chose for her page, and deletes it with her (#299)", async () => {
+        await repo.putHousehold(household({ ownerSub: "sub_a" }));
+        await repo.putPlayer(player("p_1"));
+        await repo.putPlayer(player("p_2"));
+        const flair = { v: 1, color: "sky", title: "finds-1" } as const;
+        expect(await repo.updatePlayer({ ...player("p_1"), flair })).toBe(true);
+        expect((await repo.getPlayer("h_1", "p_1"))?.flair).toEqual(flair);
+        // Her sister's profile is her own.
+        expect((await repo.getPlayer("h_1", "p_2"))?.flair).toBeUndefined();
+        // A later write of the profile (a rename, say) carries it as read.
+        const read = await repo.getPlayer("h_1", "p_1");
+        expect(await repo.updatePlayer({ ...read!, displayName: "Ada" })).toBe(true);
+        expect((await repo.getPlayer("h_1", "p_1"))?.flair).toEqual(flair);
+
+        expect(await repo.deleteProfile("h_1", "p_1")).toBe(true);
+        expect(await repo.getPlayer("h_1", "p_1")).toBeNull();
+        expect((await rows(repo)).filter((r) => r.includes("p_1"))).toEqual([]);
       });
 
       it("never brings a deleted kid back by renewing her", async () => {

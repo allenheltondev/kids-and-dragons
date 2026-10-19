@@ -49,6 +49,7 @@ import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "./handlers/ho
 import { releaseSavedHero, resumeGame, stopForToday } from "./handlers/save.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
+import { saveFlair } from "./handlers/profile.ts";
 import { getState } from "./handlers/state.ts";
 import { organizerRoute } from "./handlers/organizer.ts";
 import { isSlowDown, pairFromDevice, redeemPairingCode } from "./handlers/pairing.ts";
@@ -601,10 +602,22 @@ async function main(): Promise<void> {
     const deps = await withRuntime(base, res);
     if (!deps) return;
 
-    const found = await resolvePrincipal(req, base);
-    if (!found) return sendError(res, 401, "FORBIDDEN", "the journal needs this device's token");
-    const { principal } = found;
-    const result = await getJournal({ householdId: principal.householdId, playerId: principal.playerId }, deps);
+    // Her own device, or the room session she holds once seated (a family tablet's picked kid).
+    const kid = await resolveKid(req, base);
+    if (!kid) return sendError(res, 401, "FORBIDDEN", "the journal needs this device's token");
+    const result = await getJournal({ householdId: kid.householdId, playerId: kid.playerId }, deps);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
+  // What a kid picked for her own page (see handlers/profile.ts).
+  app.post("/api/profile/flair", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+
+    const kid = await resolveKid(req, base);
+    if (!kid) return sendError(res, 401, "FORBIDDEN", "your page needs this device's token");
+    const result = await saveFlair({ householdId: kid.householdId, playerId: kid.playerId, body: req.body ?? {} }, deps);
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
   });
@@ -968,6 +981,14 @@ function forgottenDevice(res: Response): void {
  * family game, but "she taps and it moves someone else's character" is a bad
  * evening, and the fix is a token we were already issuing and never reading.
  */
+/** Her own device, else the room session she holds (#299); the twin of `resolveKid` in lambda/http.ts. */
+async function resolveKid(req: Request, deps: BaseDeps): Promise<{ householdId: string; playerId: string } | null> {
+  const found = await resolvePrincipal(req, deps);
+  if (found) return found.principal;
+  const session = await resolveSession(req, deps);
+  return session ? { householdId: session.householdId, playerId: session.playerId } : null;
+}
+
 async function resolveSession(req: Request, deps: BaseDeps): Promise<SessionIdentity | null> {
   const header = req.get("authorization") ?? "";
   const match = /^Bearer\s+(.+)$/i.exec(header.trim());

@@ -466,7 +466,8 @@ async function describe(
     claimed,
     deviceBound,
     // A retired kid is not somebody this phone can become (#248).
-    players: players.filter((p) => !p.retired),
+    // Without `flair` (#299): her page is for her own devices, not this list.
+    players: players.filter((p) => !p.retired).map(({ flair: _flair, ...player }) => player),
     characters,
     households: await summaries(owned, deps),
   };

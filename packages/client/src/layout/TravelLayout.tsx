@@ -1,5 +1,6 @@
 import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigation";
 import { GuideTab } from "./GuideTab";
+import { BookTab } from "./BookTab";
 /**
  * Travel Mode — one surface at a time (spec §2.2).
  *
@@ -201,6 +202,7 @@ export function TravelLayout(): React.JSX.Element {
         </button>
         <GuideTab on={inGuide} onShowPlayer={() => setFocus("player")}
           className="kad-travel__tab" onClassName="kad-travel__tab--on" />
+        <BookTab className="kad-travel__tab" />
       </nav>
 
       {/* `hidden` rather than unmounted — see the header. */}
