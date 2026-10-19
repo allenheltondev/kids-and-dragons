@@ -131,4 +131,57 @@ describe("her page", () => {
     expect(document.querySelector(".profile")?.getAttribute("data-profile-color")).toBe("meadow");
     expect((screen.getByRole("radio", { name: /plum/i }) as HTMLInputElement).checked).toBe(false);
   });
+
+  it("sends one save at a time and the last pick is the last write, whatever order the network answers in", async () => {
+    const calls: { choice: Record<string, unknown>; done: (v: KidProfileView) => void; fail: () => void }[] = [];
+    const save = vi.fn((choice: Record<string, unknown>) =>
+      new Promise<KidProfileView>((resolve, reject) => {
+        calls.push({ choice, done: (flair) => resolve(flair), fail: () => reject(new Error("offline")) });
+      }));
+    mount(journal(), save as never);
+    const user = await openPage();
+    const saved = (choice: Record<string, unknown>): KidProfileView => ({
+      ...PROFILE, flair: { v: 1, ...Object.fromEntries(Object.entries(choice).filter(([, v]) => v !== null)) } as never,
+    });
+
+    // A slow color, then a frame and a title picked while it is still out.
+    await user.click(screen.getByRole("radio", { name: /berry/i }));
+    await user.click(within(screen.getByRole("radiogroup", { name: /frame for sparklehoof/i })).getByRole("radio", { name: /ivy/i }));
+    await user.click(within(screen.getByRole("radiogroup", { name: /pick a title/i })).getByRole("radio", { name: /sharp eyes/i }));
+    expect(save).toHaveBeenCalledTimes(1);
+    expect(calls[0]!.choice).toEqual({ color: "berry", frames: null, title: null });
+
+    // The first answer comes back; only now is the latest wish sent, as one write.
+    calls[0]!.done(saved(calls[0]!.choice) as never);
+    await waitFor(() => expect(save).toHaveBeenCalledTimes(2));
+    expect(calls[1]!.choice).toEqual({ color: "berry", frames: { c_1: "ivy" }, title: "finds-1" });
+    // Meanwhile the page already shows what she picked, not the older answer.
+    expect((screen.getByRole("radio", { name: /berry/i }) as HTMLInputElement).checked).toBe(true);
+    expect(document.querySelector(".profile__title")?.textContent).toBe("Sharp Eyes");
+
+    calls[1]!.done(saved(calls[1]!.choice) as never);
+    await screen.findByText(/^saved/i);
+    expect(save).toHaveBeenCalledTimes(2);
+  });
+
+  it("goes back to what the server last confirmed when a later save fails, picks made after it included", async () => {
+    const calls: { choice: Record<string, unknown>; done: (v: KidProfileView) => void; fail: () => void }[] = [];
+    const save = vi.fn((choice: Record<string, unknown>) =>
+      new Promise<KidProfileView>((resolve, reject) => {
+        calls.push({ choice, done: (v) => resolve(v), fail: () => reject(new Error("offline")) });
+      }));
+    mount(journal(), save as never);
+    const user = await openPage();
+    await user.click(screen.getByRole("radio", { name: /berry/i }));
+    calls[0]!.done({ ...PROFILE, flair: { v: 1, color: "berry" } });
+    await screen.findByText(/^saved/i);
+
+    await user.click(screen.getByRole("radio", { name: /plum/i }));
+    await user.click(screen.getByRole("radio", { name: /sky/i }));
+    calls[1]!.fail();
+    expect(await screen.findByText(/could not save that/i)).toBeTruthy();
+    expect(document.querySelector(".profile")?.getAttribute("data-profile-color")).toBe("berry");
+    // Nothing further was sent for the pick that followed the failure's.
+    expect(save).toHaveBeenCalledTimes(2);
+  });
 });

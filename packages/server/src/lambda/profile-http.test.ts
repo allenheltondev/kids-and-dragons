@@ -44,6 +44,7 @@ async function family() {
 }
 
 const asDevice = (token: string) => ({ headers: { "x-kad-device-token": token } });
+const asSession = (token: string) => ({ headers: { authorization: `Bearer ${token}` } });
 
 describe("her page over HTTP", () => {
   it("is her own device's: she picks, and her journal and a second device bound to her read it back", async () => {
@@ -79,31 +80,21 @@ describe("her page over HTTP", () => {
     expect((await harness.repo.getPlayer(householdId, ada.principal.playerId))?.flair).toBeUndefined();
   });
 
-  it("refuses everything that is not one of her own devices", async () => {
+  it("refuses everything that is not her own device or her own seat", async () => {
     const { harness, rt, householdId, ada } = await family();
     const body = { color: "sky" };
 
     // No token at all.
     expect((await respond(event("POST", "/api/profile/flair", { body }), rt)).statusCode).toBe(401);
-    // A token that was never anyone's.
+    // A token that was never anyone's, as a device and as a session.
     expect((await respond(event("POST", "/api/profile/flair", { ...asDevice("nope"), body }), rt)).statusCode).toBe(401);
-    // A grown-up's sign-in is not a kid's device.
+    expect((await respond(event("GET", "/api/journal", asSession("nope")), rt)).statusCode).toBe(401);
+    // A grown-up's sign-in is not a kid.
     expect(
       (await respond(event("POST", "/api/profile/flair", { headers: { authorization: "Bearer id-token" }, body }), rt)).statusCode,
     ).toBe(401);
 
-    // A room session (what a visiting table's phone holds) is not a device.
-    const room = await createRoom({ householdId, mode: "party" }, harness.deps);
-    if (!room.ok) throw new Error(room.error.message);
-    const joined = await respond(event("POST", `/api/room/${room.value.code}/join`, asDevice(ada.deviceToken)), rt);
-    const session = String(bodyOf(joined).sessionToken);
-    expect(session).not.toBe("undefined");
-    expect(
-      (await respond(event("POST", "/api/profile/flair", { headers: { authorization: `Bearer ${session}` }, body }), rt)).statusCode,
-    ).toBe(401);
-    expect((await respond(event("GET", "/api/journal", { headers: { authorization: `Bearer ${session}` } }), rt)).statusCode).toBe(401);
-
-    // A family tablet's token is nobody's.
+    // A family tablet's own token is nobody's, in either header.
     const tablet = await respond(
       event("POST", "/api/auth/shared-device", { headers: { authorization: "Bearer id-token", "x-kad-device-token": ada.deviceToken } }),
       rt,
@@ -111,7 +102,31 @@ describe("her page over HTTP", () => {
     const shared = String(bodyOf(tablet).sharedToken);
     expect((await respond(event("POST", "/api/profile/flair", { headers: { "x-kad-shared-token": shared }, body }), rt)).statusCode).toBe(401);
     expect((await respond(event("POST", "/api/profile/flair", { ...asDevice(shared), body }), rt)).statusCode).toBe(401);
+    expect((await respond(event("GET", "/api/journal", asSession(shared)), rt)).statusCode).toBe(401);
     expect((await harness.repo.getPlayer(householdId, ada.principal.playerId))?.flair).toBeUndefined();
+  });
+
+  it("is also the seat a kid holds once picked on a family tablet (#250): her own page, and nobody else's", async () => {
+    const { harness, rt, householdId, ada, ben } = await family();
+    const room = await createRoom({ householdId, mode: "party" }, harness.deps);
+    if (!room.ok) throw new Error(room.error.message);
+    const seat = async (who: typeof ada) =>
+      String(bodyOf(await respond(event("POST", `/api/room/${room.value.code}/join`, asDevice(who.deviceToken)), rt)).sessionToken);
+    const adaSeat = await seat(ada);
+    const benSeat = await seat(ben);
+
+    const saved = await respond(event("POST", "/api/profile/flair", { ...asSession(adaSeat), body: { color: "plum" } }), rt);
+    expect(saved.statusCode).toBe(200);
+    expect(bodyOf(saved).flair).toEqual({ v: 1, color: "plum" });
+    expect(bodyOf(await respond(event("GET", "/api/journal", asSession(adaSeat)), rt)).profile.flair).toEqual({ v: 1, color: "plum" });
+
+    // Ben's seat is Ben's page, and a body naming Ada does not change that.
+    const his = await respond(event("GET", "/api/journal", asSession(benSeat)), rt);
+    expect(bodyOf(his).profile.displayName).toBe("Player 2");
+    expect(bodyOf(his).profile.flair).toEqual({ v: 1 });
+    await respond(event("POST", "/api/profile/flair", { ...asSession(benSeat), body: { playerId: ada.principal.playerId, color: "sky" } }), rt);
+    expect((await harness.repo.getPlayer(householdId, ada.principal.playerId))?.flair).toEqual({ v: 1, color: "plum" });
+    expect((await harness.repo.getPlayer(householdId, ben.principal.playerId))?.flair).toEqual({ v: 1, color: "sky" });
   });
 
   it("refuses a pick that is not a preset, the way every illegal request is refused", async () => {
