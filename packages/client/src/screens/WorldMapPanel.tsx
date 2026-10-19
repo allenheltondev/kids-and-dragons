@@ -29,7 +29,7 @@ import { getAtlasCenter, updateAtlasView, useAtlasNavigation } from "../store/at
 import { useFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { atlasLevel, dangerBadge, explorerTrail, visibleMapPlaces, visibleMapRoutes, wobblyPath } from "./atlas-math";
 import { markCloudsRevealed, revealedClouds } from "../store/atlas-clouds";
-import { cue } from "../audio";
+import { cue } from "../audio/cue";
 import { FieldGuideDetail } from "./FieldGuideDetail";
 import { markFieldGuideSeen } from "../store/field-guide-seen";
 import { Button } from "../ui/Button";
