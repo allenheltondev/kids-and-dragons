@@ -616,7 +616,11 @@ land whole or not at all and the later commit wins both places together; a
 room that closes or a race that is lost leaves the household as it was; and
 there is no rollback to get wrong. The alternative of committing the run
 first and then setting the founder would need a reconciler for the gap
-between them. Deleting a player (#252) takes her id out of it. Left as it is on
+between them. The target is
+checked again on the run as it stands at every attempt, so a Remove that lands
+mid-flight refuses the hand-over rather than giving the game to someone taken
+out; and a Remove clears `keeperPlayerId` when it names the removed player
+(their phone stops being the founder in `unfound`, as before). Deleting a player (#252) takes her id out of it. Left as it is on
 purpose: the founder is still a device and not a person. A guest game is a
 table's save (see "Who owns what", below), a kid's hero is hers and is not lost
 with it, and a family tablet exists only in a household an account already
