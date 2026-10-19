@@ -3398,6 +3398,1186 @@
           "introduces": {}
         }
       }
+    },
+    "riftlight-the-wrong-valley": {
+      "entryFacts": [
+        "orin",
+        "olivia",
+        "listening_chime",
+        "chime_rules",
+        "learned_note",
+        "hall",
+        "riftseekers"
+      ],
+      "scenes": {
+        "arrival": {
+          "requires": [
+            "orin",
+            "olivia",
+            "listening_chime",
+            "chime_rules",
+            "learned_note",
+            "hall",
+            "riftseekers"
+          ],
+          "introduces": {
+            "valley_arrival": "Pip Thistledown, a young manticore scout, follows the road north with your party."
+          }
+        },
+        "look_again": {
+          "requires": [
+            "valley_arrival"
+          ],
+          "introduces": {
+            "look_again": "Pip stops beside an old route marker, a dark stone with a fork-shaped chip."
+          }
+        },
+        "look_again_1": {
+          "requires": [
+            "look_again"
+          ],
+          "introduces": {}
+        },
+        "look_again_1_check": {
+          "requires": [
+            "look_again"
+          ],
+          "introduces": {}
+        },
+        "look_again_1_done": {
+          "requires": [
+            "look_again"
+          ],
+          "introduces": {}
+        },
+        "look_again_1_changed": {
+          "requires": [
+            "look_again"
+          ],
+          "introduces": {}
+        },
+        "look_again_2": {
+          "requires": [
+            "look_again"
+          ],
+          "introduces": {}
+        },
+        "look_again_2_check": {
+          "requires": [
+            "look_again"
+          ],
+          "introduces": {}
+        },
+        "look_again_2_done": {
+          "requires": [
+            "look_again"
+          ],
+          "introduces": {}
+        },
+        "look_again_2_changed": {
+          "requires": [
+            "look_again"
+          ],
+          "introduces": {}
+        },
+        "worker_signal": {
+          "requires": [
+            "look_again"
+          ],
+          "introduces": {
+            "worker_signal": "The yeti worker raises a walking staff and points at the broad shelf beside them."
+          }
+        },
+        "worker_signal_1": {
+          "requires": [
+            "worker_signal"
+          ],
+          "introduces": {}
+        },
+        "worker_signal_2": {
+          "requires": [
+            "worker_signal"
+          ],
+          "introduces": {}
+        },
+        "two_jobs": {
+          "requires": [
+            "worker_signal"
+          ],
+          "introduces": {
+            "two_jobs": "The worker introduces herself as one of the yetis who checks paths between the glacier reading rooms."
+          }
+        },
+        "two_jobs_1": {
+          "requires": [
+            "two_jobs"
+          ],
+          "introduces": {}
+        },
+        "two_jobs_2": {
+          "requires": [
+            "two_jobs"
+          ],
+          "introduces": {}
+        },
+        "test_flow": {
+          "requires": [
+            "two_jobs"
+          ],
+          "introduces": {
+            "test_flow": "The worker places three loose stones on a board to stand for the two banks and a central rock."
+          }
+        },
+        "test_flow_1": {
+          "requires": [
+            "test_flow"
+          ],
+          "introduces": {}
+        },
+        "test_flow_1_check": {
+          "requires": [
+            "test_flow"
+          ],
+          "introduces": {}
+        },
+        "test_flow_1_done": {
+          "requires": [
+            "test_flow"
+          ],
+          "introduces": {}
+        },
+        "test_flow_1_changed": {
+          "requires": [
+            "test_flow"
+          ],
+          "introduces": {}
+        },
+        "test_flow_2": {
+          "requires": [
+            "test_flow"
+          ],
+          "introduces": {}
+        },
+        "test_flow_2_check": {
+          "requires": [
+            "test_flow"
+          ],
+          "introduces": {}
+        },
+        "test_flow_2_done": {
+          "requires": [
+            "test_flow"
+          ],
+          "introduces": {}
+        },
+        "test_flow_2_changed": {
+          "requires": [
+            "test_flow"
+          ],
+          "introduces": {}
+        },
+        "bundle_plan": {
+          "requires": [
+            "test_flow"
+          ],
+          "introduces": {
+            "bundle_plan": "The second worker arrives on the far path and stops beside the lantern."
+          }
+        },
+        "bundle_plan_1": {
+          "requires": [
+            "bundle_plan"
+          ],
+          "introduces": {}
+        },
+        "bundle_plan_2": {
+          "requires": [
+            "bundle_plan"
+          ],
+          "introduces": {}
+        },
+        "anchor": {
+          "requires": [
+            "bundle_plan"
+          ],
+          "introduces": {
+            "anchor": "A firm rock projects from the upper bank beside the worker."
+          }
+        },
+        "anchor_1": {
+          "requires": [
+            "anchor"
+          ],
+          "introduces": {}
+        },
+        "anchor_1_check": {
+          "requires": [
+            "anchor"
+          ],
+          "introduces": {}
+        },
+        "anchor_1_done": {
+          "requires": [
+            "anchor"
+          ],
+          "introduces": {}
+        },
+        "anchor_1_changed": {
+          "requires": [
+            "anchor"
+          ],
+          "introduces": {}
+        },
+        "anchor_2": {
+          "requires": [
+            "anchor"
+          ],
+          "introduces": {}
+        },
+        "anchor_2_check": {
+          "requires": [
+            "anchor"
+          ],
+          "introduces": {}
+        },
+        "anchor_2_done": {
+          "requires": [
+            "anchor"
+          ],
+          "introduces": {}
+        },
+        "anchor_2_changed": {
+          "requires": [
+            "anchor"
+          ],
+          "introduces": {}
+        },
+        "signals": {
+          "requires": [
+            "anchor"
+          ],
+          "introduces": {
+            "signals": "The far worker lifts the lantern to ask whether she should move."
+          }
+        },
+        "signals_1": {
+          "requires": [
+            "signals"
+          ],
+          "introduces": {}
+        },
+        "signals_2": {
+          "requires": [
+            "signals"
+          ],
+          "introduces": {}
+        },
+        "tools_return": {
+          "requires": [
+            "signals"
+          ],
+          "introduces": {
+            "tools_return": "With the signals understood, the far worker ties the tool bundle to the end of the carrying line."
+          }
+        },
+        "tools_return_1": {
+          "requires": [
+            "tools_return"
+          ],
+          "introduces": {}
+        },
+        "tools_return_1_check": {
+          "requires": [
+            "tools_return"
+          ],
+          "introduces": {}
+        },
+        "tools_return_1_done": {
+          "requires": [
+            "tools_return"
+          ],
+          "introduces": {}
+        },
+        "tools_return_1_changed": {
+          "requires": [
+            "tools_return"
+          ],
+          "introduces": {}
+        },
+        "tools_return_2": {
+          "requires": [
+            "tools_return"
+          ],
+          "introduces": {}
+        },
+        "tools_return_2_check": {
+          "requires": [
+            "tools_return"
+          ],
+          "introduces": {}
+        },
+        "tools_return_2_done": {
+          "requires": [
+            "tools_return"
+          ],
+          "introduces": {}
+        },
+        "tools_return_2_changed": {
+          "requires": [
+            "tools_return"
+          ],
+          "introduces": {}
+        },
+        "crossing_choice": {
+          "requires": [
+            "tools_return"
+          ],
+          "introduces": {
+            "crossing_choice": "The worker shows you two ways to reach the far path and the reading rooms beyond it."
+          }
+        },
+        "crossing_choice_1": {
+          "requires": [
+            "crossing_choice"
+          ],
+          "introduces": {}
+        },
+        "crossing_choice_1_check": {
+          "requires": [
+            "crossing_choice"
+          ],
+          "introduces": {}
+        },
+        "crossing_choice_1_done": {
+          "requires": [
+            "crossing_choice"
+          ],
+          "introduces": {}
+        },
+        "crossing_choice_1_changed": {
+          "requires": [
+            "crossing_choice"
+          ],
+          "introduces": {}
+        },
+        "crossing_choice_2": {
+          "requires": [
+            "crossing_choice"
+          ],
+          "introduces": {}
+        },
+        "crossing_choice_2_check": {
+          "requires": [
+            "crossing_choice"
+          ],
+          "introduces": {}
+        },
+        "crossing_choice_2_done": {
+          "requires": [
+            "crossing_choice"
+          ],
+          "introduces": {}
+        },
+        "crossing_choice_2_changed": {
+          "requires": [
+            "crossing_choice"
+          ],
+          "introduces": {}
+        },
+        "river_turn": {
+          "requires": [
+            "crossing_choice"
+          ],
+          "introduces": {
+            "river_turn": "From the far path, the ridges look familiar but the stream points down the valley your earlier map left dry."
+          }
+        },
+        "river_turn_1": {
+          "requires": [
+            "river_turn"
+          ],
+          "introduces": {}
+        },
+        "river_turn_2": {
+          "requires": [
+            "river_turn"
+          ],
+          "introduces": {}
+        },
+        "return_water": {
+          "requires": [
+            "river_turn"
+          ],
+          "introduces": {
+            "return_water": "A narrow tongue of water begins creeping along the old bed behind you."
+          }
+        },
+        "return_water_1": {
+          "requires": [
+            "return_water"
+          ],
+          "introduces": {}
+        },
+        "return_water_1_check": {
+          "requires": [
+            "return_water"
+          ],
+          "introduces": {}
+        },
+        "return_water_1_done": {
+          "requires": [
+            "return_water"
+          ],
+          "introduces": {}
+        },
+        "return_water_1_changed": {
+          "requires": [
+            "return_water"
+          ],
+          "introduces": {}
+        },
+        "return_water_2": {
+          "requires": [
+            "return_water"
+          ],
+          "introduces": {}
+        },
+        "return_water_2_check": {
+          "requires": [
+            "return_water"
+          ],
+          "introduces": {}
+        },
+        "return_water_2_done": {
+          "requires": [
+            "return_water"
+          ],
+          "introduces": {}
+        },
+        "return_water_2_changed": {
+          "requires": [
+            "return_water"
+          ],
+          "introduces": {}
+        },
+        "tell_together": {
+          "requires": [
+            "return_water"
+          ],
+          "introduces": {
+            "tell_together": "The water now runs again along the older bed."
+          }
+        },
+        "tell_together_1": {
+          "requires": [
+            "tell_together"
+          ],
+          "introduces": {}
+        },
+        "tell_together_2": {
+          "requires": [
+            "tell_together"
+          ],
+          "introduces": {}
+        },
+        "next_witness": {
+          "requires": [
+            "tell_together"
+          ],
+          "introduces": {
+            "next_witness": "The worker offers to take your account to an elder yeti at a nearby reading room."
+          }
+        },
+        "next_witness_1": {
+          "requires": [
+            "next_witness"
+          ],
+          "introduces": {}
+        },
+        "next_witness_2": {
+          "requires": [
+            "next_witness"
+          ],
+          "introduces": {}
+        },
+        "last_check": {
+          "requires": [
+            "next_witness"
+          ],
+          "introduces": {
+            "last_check": "Before leaving the crossing, the workers ask your party to test the upper warning as if you had just arrived."
+          }
+        },
+        "last_check_1": {
+          "requires": [
+            "last_check"
+          ],
+          "introduces": {}
+        },
+        "last_check_1_check": {
+          "requires": [
+            "last_check"
+          ],
+          "introduces": {}
+        },
+        "last_check_1_done": {
+          "requires": [
+            "last_check"
+          ],
+          "introduces": {}
+        },
+        "last_check_1_changed": {
+          "requires": [
+            "last_check"
+          ],
+          "introduces": {}
+        },
+        "last_check_2": {
+          "requires": [
+            "last_check"
+          ],
+          "introduces": {}
+        },
+        "last_check_2_check": {
+          "requires": [
+            "last_check"
+          ],
+          "introduces": {}
+        },
+        "last_check_2_done": {
+          "requires": [
+            "last_check"
+          ],
+          "introduces": {}
+        },
+        "last_check_2_changed": {
+          "requires": [
+            "last_check"
+          ],
+          "introduces": {}
+        },
+        "rest": {
+          "requires": [
+            "last_check"
+          ],
+          "introduces": {
+            "valley_change": "the river has returned to its older bed",
+            "valley_record": "Pip carries the sequence"
+          }
+        },
+        "anchor_assisted": {
+          "requires": [
+            "anchor"
+          ],
+          "introduces": {}
+        },
+        "anchor_assisted_check": {
+          "requires": [
+            "anchor"
+          ],
+          "introduces": {}
+        },
+        "tools_return_assisted": {
+          "requires": [
+            "tools_return"
+          ],
+          "introduces": {}
+        },
+        "tools_return_assisted_check": {
+          "requires": [
+            "tools_return"
+          ],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-reading-room": {
+      "entryFacts": [
+        "orin",
+        "olivia",
+        "listening_chime",
+        "chime_rules",
+        "learned_note",
+        "hall",
+        "riftseekers",
+        "valley_change",
+        "valley_record"
+      ],
+      "scenes": {
+        "arrival": {
+          "requires": [
+            "orin",
+            "olivia",
+            "listening_chime",
+            "chime_rules",
+            "learned_note",
+            "hall",
+            "riftseekers",
+            "valley_change",
+            "valley_record"
+          ],
+          "introduces": {
+            "room_arrival": "An elder yeti welcomes your party at a room cut into the glacier."
+          }
+        },
+        "quiet_rule": {
+          "requires": [
+            "room_arrival"
+          ],
+          "introduces": {
+            "quiet_rule": "The elder sets a cup of warm tea on a flat stone and waits until every hero is inside the marked waiting space."
+          }
+        },
+        "quiet_rule_1": {
+          "requires": [
+            "quiet_rule"
+          ],
+          "introduces": {}
+        },
+        "quiet_rule_1_check": {
+          "requires": [
+            "quiet_rule"
+          ],
+          "introduces": {}
+        },
+        "quiet_rule_1_done": {
+          "requires": [
+            "quiet_rule"
+          ],
+          "introduces": {}
+        },
+        "quiet_rule_1_changed": {
+          "requires": [
+            "quiet_rule"
+          ],
+          "introduces": {}
+        },
+        "quiet_rule_2": {
+          "requires": [
+            "quiet_rule"
+          ],
+          "introduces": {}
+        },
+        "quiet_rule_2_check": {
+          "requires": [
+            "quiet_rule"
+          ],
+          "introduces": {}
+        },
+        "quiet_rule_2_done": {
+          "requires": [
+            "quiet_rule"
+          ],
+          "introduces": {}
+        },
+        "quiet_rule_2_changed": {
+          "requires": [
+            "quiet_rule"
+          ],
+          "introduces": {}
+        },
+        "witness_first": {
+          "requires": [
+            "quiet_rule"
+          ],
+          "introduces": {
+            "witness_first": "The route worker gives the elder a drawing of the two valleys."
+          }
+        },
+        "witness_first_1": {
+          "requires": [
+            "witness_first"
+          ],
+          "introduces": {}
+        },
+        "witness_first_2": {
+          "requires": [
+            "witness_first"
+          ],
+          "introduces": {}
+        },
+        "catalog_cards": {
+          "requires": [
+            "witness_first"
+          ],
+          "introduces": {
+            "catalog_cards": "Three small catalog cards rest beside the ice."
+          }
+        },
+        "catalog_cards_1": {
+          "requires": [
+            "catalog_cards"
+          ],
+          "introduces": {}
+        },
+        "catalog_cards_2": {
+          "requires": [
+            "catalog_cards"
+          ],
+          "introduces": {}
+        },
+        "listening_floor": {
+          "requires": [
+            "catalog_cards"
+          ],
+          "introduces": {
+            "listening_floor": "A faint low song travels through the floor from a hall elsewhere in the ice."
+          }
+        },
+        "listening_floor_1": {
+          "requires": [
+            "listening_floor"
+          ],
+          "introduces": {}
+        },
+        "listening_floor_2": {
+          "requires": [
+            "listening_floor"
+          ],
+          "introduces": {}
+        },
+        "support_ice": {
+          "requires": [
+            "listening_floor"
+          ],
+          "introduces": {
+            "support_ice": "The memory face remains part of the glacier."
+          }
+        },
+        "support_ice_1": {
+          "requires": [
+            "support_ice"
+          ],
+          "introduces": {}
+        },
+        "support_ice_1_check": {
+          "requires": [
+            "support_ice"
+          ],
+          "introduces": {}
+        },
+        "support_ice_1_done": {
+          "requires": [
+            "support_ice"
+          ],
+          "introduces": {}
+        },
+        "support_ice_1_changed": {
+          "requires": [
+            "support_ice"
+          ],
+          "introduces": {}
+        },
+        "support_ice_2": {
+          "requires": [
+            "support_ice"
+          ],
+          "introduces": {}
+        },
+        "support_ice_2_check": {
+          "requires": [
+            "support_ice"
+          ],
+          "introduces": {}
+        },
+        "support_ice_2_done": {
+          "requires": [
+            "support_ice"
+          ],
+          "introduces": {}
+        },
+        "support_ice_2_changed": {
+          "requires": [
+            "support_ice"
+          ],
+          "introduces": {}
+        },
+        "first_memory": {
+          "requires": [
+            "support_ice"
+          ],
+          "introduces": {
+            "first_memory": "Within the pale ice, a small moving view becomes clear."
+          }
+        },
+        "first_memory_1": {
+          "requires": [
+            "first_memory"
+          ],
+          "introduces": {}
+        },
+        "first_memory_2": {
+          "requires": [
+            "first_memory"
+          ],
+          "introduces": {}
+        },
+        "second_view": {
+          "requires": [
+            "first_memory"
+          ],
+          "introduces": {
+            "second_view": "The elder leads you to a second marked viewpoint, still on the safe floor."
+          }
+        },
+        "second_view_1": {
+          "requires": [
+            "second_view"
+          ],
+          "introduces": {}
+        },
+        "second_view_1_check": {
+          "requires": [
+            "second_view"
+          ],
+          "introduces": {}
+        },
+        "second_view_1_done": {
+          "requires": [
+            "second_view"
+          ],
+          "introduces": {}
+        },
+        "second_view_1_changed": {
+          "requires": [
+            "second_view"
+          ],
+          "introduces": {}
+        },
+        "second_view_2": {
+          "requires": [
+            "second_view"
+          ],
+          "introduces": {}
+        },
+        "second_view_2_check": {
+          "requires": [
+            "second_view"
+          ],
+          "introduces": {}
+        },
+        "second_view_2_done": {
+          "requires": [
+            "second_view"
+          ],
+          "introduces": {}
+        },
+        "second_view_2_changed": {
+          "requires": [
+            "second_view"
+          ],
+          "introduces": {}
+        },
+        "what_matches": {
+          "requires": [
+            "second_view"
+          ],
+          "introduces": {
+            "what_matches": "The outside drawing and the memory account lie together on the elder's stone table."
+          }
+        },
+        "what_matches_1": {
+          "requires": [
+            "what_matches"
+          ],
+          "introduces": {}
+        },
+        "what_matches_2": {
+          "requires": [
+            "what_matches"
+          ],
+          "introduces": {}
+        },
+        "catalog_test": {
+          "requires": [
+            "what_matches"
+          ],
+          "introduces": {
+            "catalog_test": "A younger yeti keeper brings a fresh catalog slip and asks where the new account belongs."
+          }
+        },
+        "catalog_test_1": {
+          "requires": [
+            "catalog_test"
+          ],
+          "introduces": {}
+        },
+        "catalog_test_1_check": {
+          "requires": [
+            "catalog_test"
+          ],
+          "introduces": {}
+        },
+        "catalog_test_1_done": {
+          "requires": [
+            "catalog_test"
+          ],
+          "introduces": {}
+        },
+        "catalog_test_1_changed": {
+          "requires": [
+            "catalog_test"
+          ],
+          "introduces": {}
+        },
+        "catalog_test_2": {
+          "requires": [
+            "catalog_test"
+          ],
+          "introduces": {}
+        },
+        "catalog_test_2_check": {
+          "requires": [
+            "catalog_test"
+          ],
+          "introduces": {}
+        },
+        "catalog_test_2_done": {
+          "requires": [
+            "catalog_test"
+          ],
+          "introduces": {}
+        },
+        "catalog_test_2_changed": {
+          "requires": [
+            "catalog_test"
+          ],
+          "introduces": {}
+        },
+        "sliding_tray": {
+          "requires": [
+            "catalog_test"
+          ],
+          "introduces": {
+            "sliding_tray": "While the younger keeper puts the catalog slip away, a shallow tray begins sliding on a patch of meltwater beside the work table."
+          }
+        },
+        "sliding_tray_1": {
+          "requires": [
+            "sliding_tray"
+          ],
+          "introduces": {}
+        },
+        "sliding_tray_1_check": {
+          "requires": [
+            "sliding_tray"
+          ],
+          "introduces": {}
+        },
+        "sliding_tray_1_done": {
+          "requires": [
+            "sliding_tray"
+          ],
+          "introduces": {}
+        },
+        "sliding_tray_1_changed": {
+          "requires": [
+            "sliding_tray"
+          ],
+          "introduces": {}
+        },
+        "sliding_tray_2": {
+          "requires": [
+            "sliding_tray"
+          ],
+          "introduces": {}
+        },
+        "sliding_tray_2_check": {
+          "requires": [
+            "sliding_tray"
+          ],
+          "introduces": {}
+        },
+        "sliding_tray_2_done": {
+          "requires": [
+            "sliding_tray"
+          ],
+          "introduces": {}
+        },
+        "sliding_tray_2_changed": {
+          "requires": [
+            "sliding_tray"
+          ],
+          "introduces": {}
+        },
+        "compare_accounts": {
+          "requires": [
+            "sliding_tray"
+          ],
+          "introduces": {
+            "compare_accounts": "The elder asks whether your party has another checked observation of a river where today's geography does not fit it."
+          },
+          "conditional": [
+            {
+              "flag": "fragment_coast_learned",
+              "requires": [
+                "river_evidence"
+              ]
+            }
+          ]
+        },
+        "compare_accounts_1": {
+          "requires": [
+            "compare_accounts"
+          ],
+          "introduces": {}
+        },
+        "compare_accounts_2": {
+          "requires": [
+            "compare_accounts"
+          ],
+          "introduces": {}
+        },
+        "claim_limit": {
+          "requires": [
+            "compare_accounts"
+          ],
+          "introduces": {
+            "claim_limit": "Before the younger keeper copies the final sentence, the elder asks what it must not claim."
+          }
+        },
+        "claim_limit_1": {
+          "requires": [
+            "claim_limit"
+          ],
+          "introduces": {}
+        },
+        "claim_limit_2": {
+          "requires": [
+            "claim_limit"
+          ],
+          "introduces": {}
+        },
+        "record_choice": {
+          "requires": [
+            "claim_limit"
+          ],
+          "introduces": {
+            "record_choice": "The elder offers to keep a copy of your party's finished comparison beside the memory catalog."
+          }
+        },
+        "record_choice_1": {
+          "requires": [
+            "record_choice"
+          ],
+          "introduces": {}
+        },
+        "record_choice_2": {
+          "requires": [
+            "record_choice"
+          ],
+          "introduces": {}
+        },
+        "teach_back": {
+          "requires": [
+            "record_choice"
+          ],
+          "introduces": {
+            "teach_back": "An arriving yeti visitor waits at the warm cup, just as your party did."
+          }
+        },
+        "teach_back_1": {
+          "requires": [
+            "teach_back"
+          ],
+          "introduces": {}
+        },
+        "teach_back_1_check": {
+          "requires": [
+            "teach_back"
+          ],
+          "introduces": {}
+        },
+        "teach_back_1_done": {
+          "requires": [
+            "teach_back"
+          ],
+          "introduces": {}
+        },
+        "teach_back_1_changed": {
+          "requires": [
+            "teach_back"
+          ],
+          "introduces": {}
+        },
+        "teach_back_2": {
+          "requires": [
+            "teach_back"
+          ],
+          "introduces": {}
+        },
+        "teach_back_2_check": {
+          "requires": [
+            "teach_back"
+          ],
+          "introduces": {}
+        },
+        "teach_back_2_done": {
+          "requires": [
+            "teach_back"
+          ],
+          "introduces": {}
+        },
+        "teach_back_2_changed": {
+          "requires": [
+            "teach_back"
+          ],
+          "introduces": {}
+        },
+        "rest": {
+          "requires": [
+            "teach_back"
+          ],
+          "introduces": {}
+        },
+        "quiet_rule_assisted": {
+          "requires": [
+            "quiet_rule"
+          ],
+          "introduces": {}
+        },
+        "quiet_rule_assisted_check": {
+          "requires": [
+            "quiet_rule"
+          ],
+          "introduces": {}
+        },
+        "sliding_tray_assisted": {
+          "requires": [
+            "sliding_tray"
+          ],
+          "introduces": {}
+        },
+        "sliding_tray_assisted_check": {
+          "requires": [
+            "sliding_tray"
+          ],
+          "introduces": {}
+        }
+      },
+      "entryByFlag": {
+        "fragment_coast_learned": [
+          "river_evidence"
+        ]
+      }
+    },
+    "riftlight-preview-pause-the-wrong-valley": {
+      "entryFacts": [],
+      "scenes": {
+        "pause": {
+          "requires": [],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-preview-pause-reading-room": {
+      "entryFacts": [],
+      "scenes": {
+        "pause": {
+          "requires": [],
+          "introduces": {}
+        }
+      }
     }
   }
 }
