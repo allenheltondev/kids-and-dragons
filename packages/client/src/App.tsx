@@ -212,17 +212,21 @@ export function App(): React.JSX.Element {
       {/* Shell-level like the toast, and for the same reason: a dropped
           connection is true on every surface in every mode at once. */}
       <ConnectionBanner />
-      {/* Who just joined (#267), on the shared display. A host's phone shows
-          them in its own view instead (layout/PlayerView). */}
-      <ArrivalNotices placement="float" />
+      {/* The shared display's top-right column, under the corner row (#257): the host's
+          stop offer and room panel (#263), then who just joined (#267), one under the
+          other so neither covers the other. The Room button itself sits in the corner
+          row. A host's phone shows all of these in its own view (layout/PlayerView). */}
+      <div className="kad-display-stack">
+        {route.name === "tv" && session?.host ? (
+          <Suspense fallback={null}>
+            <HostControls placement="float" />
+          </Suspense>
+        ) : null}
+        <ArrivalNotices placement="float" />
+      </div>
       {route.name === "tv" && session ? (
         <Suspense fallback={null}>
           <DisplayExtras />
-        </Suspense>
-      ) : null}
-      {route.name === "tv" && session?.host ? (
-        <Suspense fallback={null}>
-          <HostControls placement="float" />
         </Suspense>
       ) : null}
     </PhoneMagic>

@@ -33,6 +33,18 @@
   opacity: 0.45;
   cursor: pointer;
 }
+.kad-about__open--icon {
+  display: grid;
+  place-items: center;
+  inline-size: var(--kad-touch-min);
+  block-size: var(--kad-touch-min);
+  padding: 0;
+  background: transparent;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.15em;
+  font-style: italic;
+  font-weight: 700;
+}
 .kad-about__open:hover,
 .kad-about__open:focus-visible { opacity: 1; }
 .kad-about__panel {

@@ -44,9 +44,23 @@ export function DisplayExtras(): React.JSX.Element {
   const about = (
     <div className={`kad-about${corner ? " kad-about--in-corner" : ""}`}>
       {open ? <CapabilityReport wake={wake} onClose={() => { setOpen(false); }} /> : (
-        <button type="button" className="kad-about__open" onClick={() => { setOpen(true); }}>
-          About this screen
-        </button>
+        corner ? (
+          // In the row, a 44px "i" like its neighbours: the words made the row wide enough to
+          // reach the screen's own headings on a tablet at the largest text (#257).
+          <button
+            type="button"
+            className="kad-about__open kad-about__open--icon kad-focusable"
+            aria-label="About this screen"
+            title="About this screen"
+            onClick={() => { setOpen(true); }}
+          >
+            <span aria-hidden="true">i</span>
+          </button>
+        ) : (
+          <button type="button" className="kad-about__open" onClick={() => { setOpen(true); }}>
+            About this screen
+          </button>
+        )
       )}
     </div>
   );
