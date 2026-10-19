@@ -24,7 +24,6 @@ import { routeCode, useRoute } from "./router";
 import { useGameStore, useLayoutMode, useRunState, useChapter, useMe } from "./store";
 import { Button, ConnectionBanner, ErrorToast, Spinner } from "./ui";
 
-import { AudioControl } from "./audio";
 import { setQuiet } from "./quiet";
 import { STOPPED_MESSAGE } from "./screens/save-copy";
 import { musicForScene } from "./audio/scene-audio";
@@ -58,6 +57,12 @@ const A11yControl = lazy(() => loadA11y().then((module) => ({ default: module.A1
 // Help (#256): the "?" and the press-and-hold sheet load after first paint too, for the same reason.
 const loadHelp = () => import("./help");
 const HelpControl = lazy(() => loadHelp().then((module) => ({ default: module.HelpControl })));
+
+// Sound (#318): the engine, its synth and the sample table load after first paint. The
+// control sits in a corner, nobody can hear anything before a first tap, and the
+// engine cannot start before then anyway. `audio` (the barrel) re-exports the engine, so
+// nothing on the home screen may import it; the cue seam is `audio/cue`.
+const AudioControl = lazy(() => import("./audio/AudioControl").then((module) => ({ default: module.AudioControl })));
 
 const loadPartyLayout = () => import("./layout/PartyLayout");
 const loadTravelLayout = () => import("./layout/TravelLayout");
@@ -193,7 +198,9 @@ export function App(): React.JSX.Element {
           <A11yControl />
           <ReadAloudControl />
         </Suspense>
-        <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
+        <Suspense fallback={null}>
+          <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
+        </Suspense>
       </div>
       {pickLayout()}
       <ErrorToast />
