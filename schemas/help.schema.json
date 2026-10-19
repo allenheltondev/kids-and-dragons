@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kids-and-dragons.local/schemas/help.schema.json",
+  "title": "Help",
+  "description": "content/help.json: the words behind every \"?\" button, every long-press and the join line on the shared screen (#256). Mirrors packages/shared/src/help.ts HelpContent; where the two disagree, the TypeScript type wins. Written for a child of eight listening to it read aloud: one or two short sentences, US spelling, no em dashes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "surfaces", "things", "join"],
+  "properties": {
+    "$comment": { "type": "string" },
+    "version": { "const": 1 },
+    "surfaces": {
+      "description": "One entry for every player surface (HELP_SURFACE_IDS).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["story", "combat", "sheet", "inventory", "map", "guide", "world", "creation"],
+      "properties": {
+        "story": { "$ref": "#/$defs/entry" },
+        "combat": { "$ref": "#/$defs/entry" },
+        "sheet": { "$ref": "#/$defs/entry" },
+        "inventory": { "$ref": "#/$defs/entry" },
+        "map": { "$ref": "#/$defs/entry" },
+        "guide": { "$ref": "#/$defs/entry" },
+        "world": { "$ref": "#/$defs/entry" },
+        "creation": { "$ref": "#/$defs/entry" }
+      }
+    },
+    "things": {
+      "description": "What kind of thing a long-press landed on (HELP_THING_KINDS). A thing's own words, where it has them, are shown first.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["card", "buff", "item"],
+      "properties": {
+        "card": { "$ref": "#/$defs/entry" },
+        "buff": { "$ref": "#/$defs/entry" },
+        "item": { "$ref": "#/$defs/entry" }
+      }
+    },
+    "join": {
+      "description": "The one line under the room code and QR. It must be true of a four-letter room and a six-letter visitor room, so it never counts letters.",
+      "$ref": "#/$defs/entry"
+    }
+  },
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["icon", "text"],
+      "properties": {
+        "icon": { "type": "string", "minLength": 1, "description": "An icon id from the shared icon set." },
+        "text": { "type": "string", "minLength": 1, "maxLength": 160 }
+      }
+    }
+  }
+}

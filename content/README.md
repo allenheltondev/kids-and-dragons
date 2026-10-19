@@ -12,11 +12,12 @@ content/
   items.json                     the item catalog, keyed by itemId        → ItemCatalog   (generated)
   bestiary.json                  canon's creatures, ready for a board     → Bestiary       (generated)
   world.json                     where every place is on the realm map    → WorldMap       (generated)
+  help.json                      the words behind every "?" and long-press → HelpContent   (#256)
   campaigns/<id>.json            a story arc, listing its chapters        → Campaign
   chapters/<id>.json             one ~30-minute sitting                   → Chapter
   maps/<id>.json                 encounter boards — rows + spawn points   → EncounterMap
 schemas/
-  rules|abilities|items|chapter|campaign|map.schema.json     JSON Schema, draft 2020-12
+  rules|abilities|items|chapter|campaign|map|help.schema.json  JSON Schema, draft 2020-12
 ```
 
 ## Authoring XP
@@ -150,6 +151,25 @@ held by `tools/content/first-steps.test.mjs`:
   [gemfall-authoring.md §4](../docs/campaigns/gemfall-authoring.md#4-shape-of-a-chapter) is for a
   real evening's chapter, not this. Its fights are the only ones in a shipped chapter with an
   `environment` (an exit to walk to, Bun to help out of the mud), because those are the lessons.
+
+## Help (#256)
+
+`help.json` is what a kid reads, and hears, when they tap "?" on a screen or press and hold a card, a
+buff or an item, and the one line on the shared screen that says how to join. It is content so a fix
+is an edit here and not a code change. Write it for a child of eight listening to an adult read it
+off the TV:
+
+- **One or two short sentences** per entry (at most 28 words), US spelling, no em dashes.
+  `npm run content:validate` checks the sentence count, the dashes and the length.
+- **`surfaces`** has one entry for every place a player can be looking: story, combat, sheet,
+  inventory, map, guide, world, creation. A new surface is a new id in `HELP_SURFACE_IDS`
+  (`packages/shared/src/help.ts`) and a new entry here; `help-coverage.test.tsx` fails until both
+  exist, and fails again if a screen declares a `data-surface` it does not know.
+- **`things`** says what a card, a buff and an item are. A held thing shows its own words first (an
+  item's `text`, a card's summary) and these only when it has none.
+- **`join`** is the line under the room code and QR. It must be true of a four-letter family room and
+  a six-letter visitor room, so it never says how many letters.
+- `icon` is an icon id from the shared icon set; a test checks that it exists.
 
 ## Priority scenes
 

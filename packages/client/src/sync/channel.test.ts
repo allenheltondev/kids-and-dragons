@@ -706,3 +706,68 @@ describe("backoffDelay", () => {
     expect(backoffDelay(-5, { random: vi.fn(() => 0) })).toBe(250);
   });
 });
+
+describe("openChannel.reconnect (a screen that woke up, #264)", () => {
+  it("drops the stream it no longer trusts and opens a fresh one from the last seq", () => {
+    const scheduler = manualScheduler();
+    const sources: EventSourceLike[] = [];
+    const urls: string[] = [];
+    const resync = vi.fn(async () => undefined);
+    const sequencer = new MessageSequencer({
+      handlers: { onState: () => undefined, onPresentation: () => undefined, onProgression: () => undefined, onGap: () => undefined },
+      schedule: scheduler.schedule,
+      cancel: scheduler.cancel,
+    });
+    sequencer.reset(makeState({ seq: 7 }), 7);
+    const channel = openChannel({
+      url: (since) => { urls.push(`since=${since}`); return "/events/ABCD"; },
+      sequencer, onStatus: () => undefined, resync,
+      createEventSource: () => {
+        const source: EventSourceLike = { onopen: null, onerror: null, onmessage: null, close: vi.fn() };
+        sources.push(source);
+        return source;
+      },
+      schedule: scheduler.schedule, cancel: scheduler.cancel,
+    });
+    // The first stream looks open, but the network killed it while the TV slept.
+    sources[0]!.onopen?.({});
+    channel.reconnect?.();
+    expect(sources[0]!.close).toHaveBeenCalled();
+    expect(sources).toHaveLength(2);
+    expect(urls).toEqual(["since=7", "since=7"]);
+    // The dead stream cannot speak for the live one.
+    sources[0]!.onerror?.({});
+    expect(scheduler.size).toBe(0);
+    // Opening it catches up on everything missed.
+    sources[1]!.onopen?.({});
+    expect(resync).toHaveBeenLastCalledWith(7);
+  });
+
+  it("cancels a pending backoff rather than racing it, and does nothing once closed", () => {
+    const scheduler = manualScheduler();
+    const sources: EventSourceLike[] = [];
+    const sequencer = new MessageSequencer({
+      handlers: { onState: () => undefined, onPresentation: () => undefined, onProgression: () => undefined, onGap: () => undefined },
+      schedule: scheduler.schedule,
+      cancel: scheduler.cancel,
+    });
+    sequencer.reset(makeState({ seq: 1 }), 1);
+    const channel = openChannel({
+      url: () => "/events/ABCD", sequencer, onStatus: () => undefined, resync: async () => undefined,
+      createEventSource: () => {
+        const source: EventSourceLike = { onopen: null, onerror: null, onmessage: null, close: vi.fn() };
+        sources.push(source);
+        return source;
+      },
+      schedule: scheduler.schedule, cancel: scheduler.cancel,
+    });
+    sources[0]!.onerror?.({});
+    expect(scheduler.size).toBe(1);
+    channel.reconnect?.();
+    expect(scheduler.size).toBe(0);
+    expect(sources).toHaveLength(2);
+    channel.close();
+    channel.reconnect?.();
+    expect(sources).toHaveLength(2);
+  });
+});

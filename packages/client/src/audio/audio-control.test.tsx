@@ -83,6 +83,12 @@ describe("asking for the gesture", () => {
   });
 });
 
+describe("the shared screen's sound ask lives elsewhere (#264)", () => {
+  it("puts no Tap for sound button in the control a phone also loads", () => {
+    render(<AudioControl />);
+    expect(screen.queryByRole("button", { name: "Tap for sound" })).toBeNull();
+  });
+});
 
 describe("entry screen continuity", () => {
   it("keeps the same sink while moving from home through creation and lobby to a quest", () => {

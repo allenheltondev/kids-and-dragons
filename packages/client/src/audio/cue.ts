@@ -129,3 +129,35 @@ export function stopSceneCues(): void {
 export function ambience(id: AmbienceId | null): void {
   try { current?.ambience?.(id); } catch { /* Decoration must never interrupt play. */ }
 }
+
+/*
+ * A window onto the running engine for the shared screen's "Tap for sound" and
+ * capability report (#264), which live in a lazy chunk and cannot reach the
+ * component's engine any other way. Here, in a module already in the first
+ * paint, because a module of its own is a chunk of its own.
+ */
+export type AudioState = "unsupported" | "locked" | "suspended" | "running";
+
+export interface AudioProbe {
+  state(): AudioState;
+  onStateChange(listener: () => void): () => void;
+  muted(): boolean;
+  unlock(): void;
+}
+
+let probe: AudioProbe | null = null;
+const probeListeners = new Set<() => void>();
+
+export function setAudioProbe(next: AudioProbe | null): void {
+  probe = next;
+  for (const listener of probeListeners) listener();
+}
+
+export function getAudioProbe(): AudioProbe | null {
+  return probe;
+}
+
+export function onAudioProbe(listener: () => void): () => void {
+  probeListeners.add(listener);
+  return () => { probeListeners.delete(listener); };
+}

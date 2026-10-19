@@ -94,6 +94,8 @@ import "./PlayerPanel.css";
 import { EntryScene, lobbySceneFor } from "./EntryScene";
 import { FieldGuide } from "./FieldGuide";
 import { JourneyPanel } from "./JourneyPanel";
+import { HelpClaim } from "../help/focus";
+import { helpAttrs } from "../help/longpress";
 
 /** Stable-ish identity for a prompt, so a new one clears any pending choice. */
 function promptKey(prompt: Prompt | null): string {
@@ -376,6 +378,7 @@ function InventoryGrid({
                 className={`inv__button kad-tap kad-focusable${selected ? " inv__button--on" : ""}`}
                 aria-pressed={selected}
                 onClick={() => onSelect(selected ? null : index)}
+                {...helpAttrs({ kind: "item", name: def?.name ?? entry.itemId, ...(def?.icon ? { icon: def.icon } : {}), ...(def?.text ? { text: def.text } : {}) })}
               >
                 <Icon name={def?.icon ?? entry.kind} size="2.2em" />
                 <span className="inv__slot-name">{def?.name ?? entry.itemId}</span>
@@ -824,6 +827,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   if (openSheetFor !== null) {
     return (
       <section className="player player--sheet kad-scroll">
+        <HelpClaim surface="sheet" />
         <CharacterSheet
           member={openSheetFor}
           isMe={openSheetFor.playerId === me.playerId}
