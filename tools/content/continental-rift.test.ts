@@ -194,8 +194,8 @@ describe("content:validate, with the slice dropped into content/", { timeout: 12
 // ---------------------------------------------------------------------------
 
 function cli(args: string[]) {
-  const tsx = path.join(REPO_ROOT, "node_modules", ".bin", "tsx");
-  const run = spawnSync(tsx, [path.join(REPO_ROOT, "tools", "content", "journey.ts"), ...args], {
+  const tsx = path.join(REPO_ROOT, "node_modules", "tsx", "dist", "cli.mjs");
+  const run = spawnSync(process.execPath, [tsx, path.join(REPO_ROOT, "tools", "content", "journey.ts"), ...args], {
     cwd: REPO_ROOT,
     encoding: "utf8",
     timeout: 90_000,
@@ -218,7 +218,7 @@ describe("npm run content:journey on the slice", { timeout: 120_000 }, () => {
     const run = cli(["--campaign", campaign.id, "--format", "mermaid"]);
     expect(run.status).toBe(0);
     expect(run.stdout.trim()).toBe(toMermaid(campaign, graph).trim());
-    const guide = fs.readFileSync(GUIDE, "utf8");
+    const guide = fs.readFileSync(GUIDE, "utf8").replace(/\r\n/g, "\n");
     const block = /```mermaid\n([\s\S]*?)```/.exec(guide.slice(guide.indexOf("<!-- continental-rift-diagram -->")));
     expect(block, "the guide carries the slice's diagram after its marker").not.toBeNull();
     expect(block![1]!.trim()).toBe(toMermaid(campaign, graph).trim());
