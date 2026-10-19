@@ -25,6 +25,7 @@ import type {
   ClassId,
   ClassMastery,
   ClassRank,
+  DeedId,
   FinishedCampaign,
   InventoryEntry,
   ItemCatalog,
@@ -35,6 +36,8 @@ import type {
   StatId,
   Stats,
 } from "./types/domain.js";
+import type { HeroDeeds, RunState } from "./types/state.js";
+import { addDeed, rankUp } from "./deeds.js";
 import { getClass, getSpecies, levelForXp, maxLevel, tierForLevel } from "./rules.js";
 
 /** Thrown for creation payloads that break the rules. Callers map it to ILLEGAL. */
@@ -397,6 +400,7 @@ export function resolveCharacter(
   const species = (rules.species as Partial<typeof rules.species>)[character.species];
   const classDef = (rules.classes as Partial<typeof rules.classes>)[progress.class];
   const rank = rankIn(progress, progress.class);
+  const deeds = progress.mastery[progress.class]?.deeds;
   const level = levelForXp(rules, progress.xp);
 
   const stats = { ...progress.stats } as Stats;
@@ -454,6 +458,9 @@ export function resolveCharacter(
     // Present only above `none`, like `practiced`: a hero with no rank yet
     // resolves exactly as before distinctions existed.
     ...(rank !== "none" ? { rank } : {}),
+    // The worn class's progress to its next rank, where a fight's counting
+    // starts (#310). Present only once something has been counted.
+    ...(deeds && Object.keys(deeds).length > 0 ? { deeds: { ...deeds } } : {}),
     appearance: character.appearance,
     level,
     xp: progress.xp,
@@ -520,7 +527,6 @@ export function awardXp(
     xp,
     level,
     tier,
-    mastery: levelBridge(before, rules, level),
     // One point per level *gained*, not one per award: a big chapter that jumps
     // three levels owes three points, and a level that a setback's half award
     // failed to reach owes none (spec §8.1).
@@ -535,32 +541,110 @@ export function awardXp(
 }
 
 /**
- * TEMPORARY, until deeds earn ranks (#310 removes this). Moves come from
- * distinctions, not level (#308), but until there are deeds a hero created
- * after #308 would never earn a move at all. So levelling still lifts the worn
- * class to the rank its level used to unlock (3 → Apprentice, 6 → Expert,
- * 9 → Master), exactly the moves the level gave before.
+ * Folds the deeds a chapter counted into the stored hero (#310): the worn
+ * class's rank and its progress to the next, as the run left them
+ * (`RunState.deeds`, counted by the engine). Called at chapter completion,
+ * beside `awardXp` and under the same rule — through `writeProgress`, so a
+ * rank earned mid-campaign is provisional and goes back with everything else
+ * if the campaign fails (docs/class-mastery.md §5).
  *
- * Written into progress rather than derived at resolve time, so the rank is
- * really earned: it reverts with a failed campaign like the level that bought
- * it, and is kept when #310 takes this away, as the v5 migration keeps the
- * ranks of heroes from before #308. Never lowers a rank, never touches deed
- * progress or another class.
+ * Only for the class the hero is wearing now, and never lower than what is
+ * stored: a rank is never lost (#307). A run's record for a class she no
+ * longer wears is left out rather than written onto the wrong class.
  */
-function levelBridge(
-  before: CharacterProgress,
+export function foldRunDeeds(character: Character, counted: HeroDeeds | undefined): Character {
+  if (!counted) return character;
+  const before = effectiveProgress(character);
+  if (counted.class !== before.class) return character;
+  const stored = rankIn(before, before.class);
+  const ahead = CLASS_RANKS.indexOf(counted.rank) - CLASS_RANKS.indexOf(stored);
+  if (ahead < 0) return character;
+  const deeds =
+    ahead > 0
+      ? { ...counted.deeds }
+      : // The same rank: keep whichever count is further on, deed by deed.
+        mergeDeeds(before.mastery[before.class]?.deeds ?? {}, counted.deeds);
+  const next: CharacterProgress = {
+    ...cloneProgress(before),
+    mastery: { ...cloneMastery(before.mastery), [before.class]: { rank: counted.rank, deeds } },
+  };
+  return writeProgress(character, next);
+}
+
+/**
+ * Counts a deed done outside any chapter straight onto the stored hero: a
+ * class way taken at a rift between chapters (#199, #310), when there is no
+ * run to count it on. Same rules as in a chapter — only the worn class, only
+ * what its next rank asks for — and a rank it completes lands at once.
+ * Through `writeProgress`, so it reverts with a failed campaign.
+ */
+export function earnStoredDeed(
+  character: Character,
   rules: RulesContent,
-  level: number,
-): CharacterProgress["mastery"] {
-  const mastery = cloneMastery(before.mastery);
+  deed: DeedId,
+  count = 1,
+): { character: Character; rankedUp?: Exclude<ClassRank, "none"> } {
+  const before = effectiveProgress(character);
   const classDef = (rules.classes as Partial<typeof rules.classes>)[before.class];
-  if (!classDef) return mastery;
-  const bridged = rankForLevel(classDef, level);
-  const current = rankIn(before, before.class);
-  if (CLASS_RANKS.indexOf(bridged) > CLASS_RANKS.indexOf(current)) {
-    mastery[before.class] = { rank: bridged, deeds: { ...(before.mastery[before.class]?.deeds ?? {}) } };
-  }
-  return mastery;
+  const hero: HeroDeeds = {
+    class: before.class,
+    rank: rankIn(before, before.class),
+    deeds: { ...(before.mastery[before.class]?.deeds ?? {}) },
+  };
+  const counted = addDeed(hero, classDef, deed, count);
+  if (counted === hero) return { character };
+  const landed = rankUp(counted, classDef);
+  const now = landed ?? counted;
+  const next: CharacterProgress = {
+    ...cloneProgress(before),
+    mastery: { ...cloneMastery(before.mastery), [before.class]: { rank: now.rank, deeds: { ...now.deeds } } },
+  };
+  return {
+    character: writeProgress(character, next),
+    ...(landed && landed.rank !== "none" ? { rankedUp: landed.rank } : {}),
+  };
+}
+
+function mergeDeeds(a: Record<string, number>, b: Record<string, number>): Record<string, number> {
+  const out = { ...a };
+  for (const [deed, n] of Object.entries(b)) out[deed] = Math.max(out[deed] ?? 0, n);
+  return out;
+}
+
+/**
+ * A resolved hero with her worn class at `counted`'s rank and progress: the
+ * rank, the deeds, and the class moves that rank grants, every other move
+ * left where it was. How a rank that lands mid-chapter reaches the board at
+ * the next fight, since the engine holds resolved heroes and cannot resolve
+ * one again. Anything for another class changes nothing.
+ */
+export function withMastery(resolved: ResolvedCharacter, counted: HeroDeeds, rules: RulesContent): ResolvedCharacter {
+  if (counted.class !== resolved.class) return resolved;
+  const classDef = (rules.classes as Partial<typeof rules.classes>)[counted.class];
+  if (!classDef) return resolved;
+  const own = new Set(classActions(classDef, "master"));
+  const others = resolved.actions.filter((id) => !own.has(id));
+  const { rank: _rank, deeds: _deeds, ...rest } = resolved;
+  return {
+    ...rest,
+    ...(counted.rank !== "none" ? { rank: counted.rank } : {}),
+    ...(Object.keys(counted.deeds).length > 0 ? { deeds: { ...counted.deeds } } : {}),
+    actions: [...new Set([...classActions(classDef, counted.rank), ...others])],
+  };
+}
+
+/**
+ * A hero just re-resolved from her stored row, mid-chapter, in step again with
+ * what this chapter has counted for her (`RunState.deeds`): the row learns of
+ * it only when the chapter is folded.
+ */
+export function withRunDeeds(
+  resolved: ResolvedCharacter,
+  state: Pick<RunState, "deeds">,
+  rules: RulesContent,
+): ResolvedCharacter {
+  const counted = state.deeds?.heroes[resolved.id];
+  return counted ? withMastery(resolved, counted, rules) : resolved;
 }
 
 /**

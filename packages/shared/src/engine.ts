@@ -34,6 +34,8 @@
 import { INVENTORY_SLOTS, MAX_PARTY } from "./types/domain.js";
 import type {
   Character,
+  ClassDef,
+  ClassId,
   InventoryEntry,
   ItemCatalog,
   ResolvedCharacter,
@@ -78,8 +80,10 @@ import type {
   CampaignView,
   DiceRoll,
   EarnedBonus,
+  HeroDeeds,
   PartyMember,
   Prompt,
+  RankUp,
   RoomMode,
   RunState,
   TradeOffer,
@@ -87,7 +91,19 @@ import type {
 import type { ClientIntent, Presentation } from "./types/protocol.js";
 import type { Rng } from "./dice.js";
 import { DEFAULT_HELP_DIE, resolveCheck } from "./dice.js";
-import { newCharacter, resolveCharacter, withInventory } from "./character.js";
+import { newCharacter, resolveCharacter, withInventory, withMastery } from "./character.js";
+import {
+  actionCredits,
+  addDeed,
+  eventCredits,
+  freshFightDeeds,
+  heroDeedsOf,
+  rankUp,
+  rankUpLine,
+  storyCredits,
+  turnEndCredits,
+  type DeedCredit,
+} from "./deeds.js";
 import { assignPlayerColors } from "./player-colors.js";
 import { tierForLevel } from "./rules.js";
 import { addItem, addQuestItem, freeSlots, hasItem, removeItem, swapItem, useConsumable } from "./inventory.js";
@@ -338,8 +354,102 @@ function party(state: RunState): {
 }
 
 function touch(draft: RunState, ctx: EngineContext): void {
+  reconcileRunDeeds(draft, ctx);
   draft.seq += 1;
   draft.updatedAt = ctx.now;
+}
+
+// ---------------------------------------------------------------------------
+// Deeds (#310) — counted here, kept on the run, folded into heroes by the server
+// ---------------------------------------------------------------------------
+
+/** A hero's worn class as this chapter has it: what the run counted, else their snapshot. */
+function heroDeedsFor(draft: RunState, member: PartyMember): HeroDeeds {
+  const counted = draft.deeds?.heroes[member.character.id];
+  return counted && counted.class === member.character.class ? counted : heroDeedsOf(member.character);
+}
+
+/**
+ * Counts credits toward each hero's next rank. Only a deed the worn class asks
+ * for moves anything (`addDeed`); the run's record is only grown when it does.
+ */
+function creditDeeds(draft: RunState, credits: readonly DeedCredit[], ctx: EngineContext): void {
+  for (const c of credits) {
+    const member = memberByCharacter(draft, c.heroId);
+    if (!member) continue;
+    const hero = heroDeedsFor(draft, member);
+    const next = addDeed(hero, classDefOf(ctx, hero.class), c.deed, c.count);
+    if (next === hero) continue;
+    (draft.deeds ??= { heroes: {} }).heroes[c.heroId] = next;
+  }
+}
+
+function classDefOf(ctx: EngineContext, id: ClassId): ClassDef | undefined {
+  return (ctx.rules.classes as Partial<Record<ClassId, ClassDef>>)[id];
+}
+
+/**
+ * Lands every rank whose deeds are done (docs/class-mastery.md §5): at a
+ * fight's end, or after a class-only choice. The new move is on the hero from
+ * here, and so in the next fight; the line waits for the scene the table is
+ * about to see (`announceRankUps`).
+ */
+function landRanks(draft: RunState, ctx: EngineContext): RankUp[] {
+  const ups: RankUp[] = [];
+  for (const member of draft.party) {
+    const hero = heroDeedsFor(draft, member);
+    const classDef = classDefOf(ctx, hero.class);
+    const up = classDef ? rankUp(hero, classDef) : null;
+    if (!up || !classDef || up.rank === "none") continue;
+    (draft.deeds ??= { heroes: {} }).heroes[member.character.id] = up;
+    member.character = withMastery(member.character, up, ctx.rules);
+    ups.push(rankUpLine(member.character.name, classDef, up.rank, member.character.id));
+  }
+  return ups;
+}
+
+/** Shows the ranks that just landed on the scene the table is now looking at. */
+function announceRankUps(draft: RunState, ups: readonly RankUp[]): void {
+  if (ups.length > 0) draft.rankUps = { sceneId: draft.sceneId, ups: [...ups] };
+}
+
+/**
+ * Keeps every hero's snapshot in step with what the run has counted. A hero
+ * re-resolved from her stored row mid-chapter (seated again, say) would
+ * otherwise lose a rank she earned an hour ago until the chapter is folded.
+ */
+function reconcileRunDeeds(draft: RunState, ctx: EngineContext): void {
+  if (!draft.deeds) return;
+  for (const member of draft.party) {
+    const counted = draft.deeds.heroes[member.character.id];
+    if (!counted || counted.class !== member.character.class) continue;
+    const now = heroDeedsOf(member.character);
+    if (now.rank === counted.rank && JSON.stringify(now.deeds) === JSON.stringify(counted.deeds)) continue;
+    member.character = withMastery(member.character, counted, ctx.rules);
+  }
+}
+
+/** Counts what a stretch of the fight did with nobody's action behind it. */
+function countFightEvents(draft: RunState, events: readonly EncounterEvent[], ctx: EngineContext): void {
+  const memo = draft.deeds?.fight;
+  if (!memo || !draft.encounter || events.length === 0) return;
+  const counted = eventCredits(memo, draft.encounter, events);
+  draft.deeds!.fight = counted.memo;
+  creditDeeds(draft, counted.credits, ctx);
+}
+
+/** A hero's turn is ending: where they stand is a deed (#310). */
+function creditTurnEnd(draft: RunState, encounter: EncounterState, ctx: EngineContext): void {
+  const actor = currentActor(encounter);
+  if (!draft.deeds?.fight || !actor || actor.side !== "party") return;
+  creditDeeds(draft, turnEndCredits(encounter, actor.id), ctx);
+}
+
+/** Drops the fight's memory, and the run's record with it if nothing else is in it. */
+function forgetFight(draft: RunState): void {
+  if (!draft.deeds) return;
+  delete draft.deeds.fight;
+  if (Object.keys(draft.deeds.heroes).length === 0) delete draft.deeds;
 }
 
 // ---------------------------------------------------------------------------
@@ -812,6 +922,8 @@ function enterSceneDraft(
 ): Presentation | undefined {
   const chapter = requireChapter(ctx);
   const scene = requireScene(chapter, sceneId);
+  // A rank-up line belongs to the scene it landed on, and goes with it.
+  if (draft.rankUps && draft.rankUps.sceneId !== sceneId) delete draft.rankUps;
 
   // A swap prompt raised by the *departing* choice's effects survives the
   // transition. It is a decision the player still owes, and dropping it would
@@ -1109,6 +1221,7 @@ function doPlaytestGoto(
     spendBuffs(draft, "ongoing");
   }
   draft.encounter = null;
+  forgetFight(draft);
   for (const member of draft.party) member.ready = false;
   return enterSceneDraft(draft, sceneId, ctx);
 }
@@ -1385,6 +1498,9 @@ function doStartChapter(
   draft.chapterOutcome = null;
   draft.bonuses = [];
   delete draft.fightEndings;
+  // Deeds counted last chapter were folded into the heroes when it ended.
+  delete draft.deeds;
+  delete draft.rankUps;
   // Not `{}` — see `EngineContext.campaignFlags`. Everything a chapter said
   // about itself dies here; the road the party is on does not.
   draft.flags = { ...(ctx.campaignFlags ?? {}) };
@@ -1500,7 +1616,12 @@ function doChoose(
   }
 
   applyEffectsDraft(draft, choice.effects, ctx);
+  // A class-only choice is that class's story deed (#310), for everyone seated
+  // wearing it; a rank it completes lands now, ready for the next fight.
+  creditDeeds(draft, storyCredits(draft.party.map((m) => m.character), choice.requiresClass), ctx);
+  const ups = landRanks(draft, ctx);
   const entered = enterSceneDraft(draft, choice.goto, ctx);
+  announceRankUps(draft, ups);
   // Only one presentation rides on a transition. Finishing the chapter is a
   // bigger beat than the tap that got you there, so it wins.
   if (entered?.kind === "CHAPTER_COMPLETE") return entered;
@@ -2011,10 +2132,15 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
    * with a ready prompt still open and all three players already ready.
    */
   draft.prompt = null;
+  // A new fight: nobody has been down in it, hit anything or grown a wall.
+  (draft.deeds ??= { heroes: {} }).fight = freshFightDeeds();
+  delete draft.rankUps;
 
   // Whoever the initiative roll put first might be a monster, so the fight has
   // to be walked forward before anybody's phone is asked for anything.
-  return runEnemyTurns(draft, ctx);
+  const opening = runEnemyTurns(draft, ctx);
+  countFightEvents(draft, opening, ctx);
+  return opening;
 }
 
 /**
@@ -2053,6 +2179,7 @@ function doCombatMove(
   // from a board that has since moved on. Say so and let it resync.
   if (!result.ok) throw new Illegal("ILLEGAL", result.reason);
   draft.encounter = result.state;
+  countFightEvents(draft, result.events, ctx);
   // Twin Step's second walk is the only move that can be a turn's last act;
   // when it is, the turn ends here rather than waiting to be told.
   return finishTurnIfSpent(draft, ctx, result.events);
@@ -2075,11 +2202,32 @@ function doCombatAction(
   const result = performAction(encounter, combatCtx(ctx), request);
   if (!result.ok) throw new Illegal("ILLEGAL", result.reason);
   draft.encounter = result.state;
+  // Deeds (#310): who did it, with what, to a fight as it stood before.
+  const memo = draft.deeds?.fight;
+  const actorId = currentActorId(encounter);
+  if (memo && actorId) {
+    const counted = actionCredits(
+      memo,
+      {
+        actorId,
+        abilityId: intent.abilityId,
+        ability: (ctx.abilities ?? {})[intent.abilityId] ?? null,
+        targetIds: request.targetIds ?? (request.targetId ? [request.targetId] : []),
+        targetTiles: request.targetTiles ?? (request.targetTile ? [request.targetTile] : []),
+        before: encounter,
+      },
+      result.state,
+      result.events,
+    );
+    draft.deeds!.fight = counted.memo;
+    creditDeeds(draft, counted.credits, ctx);
+  }
   return finishTurnIfSpent(draft, ctx, result.events);
 }
 
 function doEndTurn(draft: RunState, playerId: string, ctx: EngineContext): Presentation | undefined {
   const encounter = requireTurn(draft, playerId, true);
+  creditTurnEnd(draft, encounter, ctx);
   // What the place did as the turn ended (#201) — nothing, without an
   // environment — goes first in the queue, before the monsters' answer.
   const ended = endTurnWithEvents(encounter);
@@ -2087,6 +2235,7 @@ function doEndTurn(draft: RunState, playerId: string, ctx: EngineContext): Prese
   // Handing over may hand over to a monster, and monsters do not wait to be
   // asked. Their entire run is one ordered animation queue.
   const events = [...ended.events, ...runEnemyTurns(draft, ctx)];
+  countFightEvents(draft, events, ctx);
   return combatPresentation(events, settleEncounter(draft, ctx));
 }
 
@@ -2127,9 +2276,13 @@ function finishTurnIfSpent(
     encounter.actionTaken &&
     legalMoves(encounter).length === 0
   ) {
+    creditTurnEnd(draft, encounter, ctx);
     const ended = endTurnWithEvents(encounter);
     draft.encounter = ended.state;
-    all = [...events, ...ended.events, ...runEnemyTurns(draft, ctx)];
+    const after = [...ended.events, ...runEnemyTurns(draft, ctx)];
+    // `events` were the action's own, counted by its caller.
+    countFightEvents(draft, after, ctx);
+    all = [...events, ...after];
   }
   return combatPresentation(all, settleEncounter(draft, ctx));
 }
@@ -2307,6 +2460,9 @@ function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | un
 
   carryDamageOut(draft, encounter);
   spendBuffs(draft, outcome);
+  // The fight is over: the ranks it earned land (#310).
+  forgetFight(draft);
+  const ups = landRanks(draft, ctx);
 
   const { scene } = currentScene(draft, ctx);
   if (scene.type !== "encounter") throw new Illegal("ILLEGAL", "no encounter is running");
@@ -2329,7 +2485,9 @@ function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | un
       if (objective.effects && done[i]) applyEffectsDraft(draft, objective.effects, ctx);
     });
   }
-  return takeBranch(draft, outcomeBranch(scene, outcome), ctx);
+  const branched = takeBranch(draft, outcomeBranch(scene, outcome), ctx);
+  announceRankUps(draft, ups);
+  return branched;
 }
 
 /**
@@ -2373,6 +2531,8 @@ function returnToLobby(draft: RunState): void {
   delete draft.hint;
   draft.prompt = null;
   draft.lastRoll = null;
+  delete draft.deeds;
+  delete draft.rankUps;
   for (const member of draft.party) member.ready = false;
 }
 
@@ -2441,6 +2601,7 @@ function doUseItem(
 
     setBag(member, held.inventory, ctx);
     draft.encounter = applied.state;
+    countFightEvents(draft, applied.events, ctx);
     // A consumable spends the same one action an attack does, and so ends
     // the turn the same way.
     return finishTurnIfSpent(draft, ctx, applied.events);

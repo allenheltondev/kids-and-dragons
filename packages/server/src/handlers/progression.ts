@@ -23,7 +23,10 @@
 
 import {
   CharacterRuleError,
+  classOf,
   commitCampaign,
+  earnStoredDeed,
+  rankUpLine,
   completeVisit,
   currentPlayable,
   failCampaign,
@@ -31,6 +34,7 @@ import {
   journeyView,
   readJourney,
   resolveCharacter,
+  withRunDeeds,
   resumeJourney,
   spendStatPoint as applyStatPointSpend,
   startCampaign,
@@ -44,6 +48,8 @@ import {
   type CampaignView,
   type Character,
   type Chapter,
+  type ClassId,
+  type RankUp,
   type ChapterOutcome,
   type JourneyRefusal,
   type JourneyState,
@@ -941,6 +947,8 @@ async function settleVisit(input: {
   // A shallow copy shares the party, so the fold still re-resolves the room's
   // characters in place; only the amount it reads is withheld on a replay.
   const award = await foldChapterXpDetails(replay ? { ...state, xpEarned: 0 } : state, deps, householdId, chapter);
+  // The copy's deeds were folded, but the room's run still holds them (#310).
+  delete state.deeds;
   const characters = award.writes;
   const chapterProgress: ChapterProgressRecord = {
     runId: state.runId,
@@ -1203,7 +1211,9 @@ export async function prepareStatPointSpend(
   try {
     // Shared character rules validate the runtime value against STAT_IDS.
     const updated = applyStatPointSpend(character, rules, stat as StatId);
-    const resolved = resolveCharacter(updated, rules, deps.content.items());
+    // Still wearing whatever rank this chapter has earned her so far (#310):
+    // the stored row only learns of it when the chapter is folded.
+    const resolved = withRunDeeds(resolveCharacter(updated, rules, deps.content.items()), state, rules);
     return ok({
       character: rewrite(character, updated),
       state: {
@@ -1217,4 +1227,62 @@ export async function prepareStatPointSpend(
     if (err instanceof CharacterRuleError) return fail("ILLEGAL", err.message);
     throw err;
   }
+}
+
+// ---------------------------------------------------------------------------
+// A class way at a rift (#199): that class's story deed (#310)
+// ---------------------------------------------------------------------------
+
+/**
+ * The story deed a class way at a rift earns (docs/class-mastery.md §6): every
+ * seated hero wearing a class the way asks for. Taken between chapters, with
+ * no run to count it on, so it goes straight onto her stored row, in the
+ * rift action's own commit, under her claim and through `startCampaign` like
+ * any campaign gain: a failed campaign takes it back. A rank it completes
+ * lands now and is said on the room's screens.
+ *
+ * Nothing when the way asks for no class, nobody seated wears one, or the
+ * hero's next rank does not want a story deed.
+ */
+export async function prepareRiftWayDeeds(
+  state: RunState,
+  campaignId: string,
+  classes: readonly ClassId[] | undefined,
+  householdId: string,
+  deps: HandlerDeps,
+): Promise<{ writes: CharacterWrite[]; state: RunState }> {
+  if (!classes || classes.length === 0) return { writes: [], state };
+  const rules = deps.content.rules();
+  const items = deps.content.items();
+  const writes: CharacterWrite[] = [];
+  const ups: RankUp[] = [];
+  const party: PartyMember[] = [];
+  for (const member of state.party) {
+    if (!classes.includes(member.character.class)) {
+      party.push(member);
+      continue;
+    }
+    const home = memberHome(member, householdId);
+    const row = await deps.repo.getCharacter(home, member.character.id).catch(() => null);
+    const claim = row ? claimFor(campaignId, householdId, row) : null;
+    if (!row || claim === null || (await standing(row, claim, deps)) === "busy") {
+      party.push(member);
+      continue;
+    }
+    const earned = earnStoredDeed(startCampaign(row, claim), rules, "class_story");
+    if (earned.character === row || classOf(earned.character) !== member.character.class) {
+      party.push(member);
+      continue;
+    }
+    writes.push(rewrite(row, earned.character));
+    const resolved = resolveCharacter(earned.character, rules, items);
+    party.push({ ...member, character: resolved });
+    const classDef = rules.classes[resolved.class];
+    if (earned.rankedUp && classDef) ups.push(rankUpLine(resolved.name, classDef, earned.rankedUp, resolved.id));
+  }
+  if (writes.length === 0) return { writes, state };
+  return {
+    writes,
+    state: { ...state, party, ...(ups.length > 0 ? { rankUps: { sceneId: state.sceneId, ups } } : {}) },
+  };
 }

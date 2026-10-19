@@ -280,6 +280,30 @@
           "text": "Until your next turn, you and every friend beside you take 1 less damage from every hit.",
           "icon": "shield"
         }
+      },
+      "deeds": {
+        "apprentice": {
+          "withFriends": {
+            "brace_friend": 2
+          },
+          "alone": {
+            "hold_ground": 2
+          }
+        },
+        "expert": {
+          "withFriends": {
+            "shove_off_friend": 3
+          },
+          "alone": {
+            "shove": 5
+          }
+        },
+        "master": {
+          "withFriends": {
+            "bramble_wall_fight": 3,
+            "class_story": 1
+          }
+        }
       }
     },
     "duskrunner": {
@@ -313,6 +337,24 @@
           "name": "Storm of Blades",
           "text": "Attack two different enemies standing next to you.",
           "icon": "arrow"
+        }
+      },
+      "deeds": {
+        "apprentice": {
+          "withFriends": {
+            "new_target": 3
+          }
+        },
+        "expert": {
+          "withFriends": {
+            "vanish_miss": 3
+          }
+        },
+        "master": {
+          "withFriends": {
+            "twin_step_finish": 3,
+            "class_story": 1
+          }
         }
       }
     },
@@ -348,6 +390,31 @@
           "text": "Every enemy on the board takes 2 damage. Once per fight.",
           "icon": "star"
         }
+      },
+      "deeds": {
+        "apprentice": {
+          "withFriends": {
+            "burst_two": 3
+          }
+        },
+        "expert": {
+          "withFriends": {
+            "glimmer_made": 6
+          },
+          "alone": {
+            "burst_two": 6
+          }
+        },
+        "master": {
+          "withFriends": {
+            "tangle_guard": 8,
+            "class_story": 1
+          },
+          "alone": {
+            "tanglelight": 10,
+            "class_story": 1
+          }
+        }
       }
     },
     "songkeeper": {
@@ -381,6 +448,24 @@
           "name": "Encore",
           "text": "A friend takes another action right now. Once per fight.",
           "icon": "note"
+        }
+      },
+      "deeds": {
+        "apprentice": {
+          "withFriends": {
+            "song_hearts": 4
+          }
+        },
+        "expert": {
+          "withFriends": {
+            "song_hearts": 15
+          }
+        },
+        "master": {
+          "withFriends": {
+            "song_hearts": 25,
+            "class_story": 1
+          }
         }
       }
     }

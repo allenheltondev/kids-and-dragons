@@ -203,10 +203,11 @@ The carryover rule from [spec §8.2](./spec.md#82-carryover--the-commitment-rule
     "stats": { "might": 2, "quick": 3, "clever": 3, "heart": 7 },
     "tier": "sworn",
     // The class she wears, and her distinction and deed progress in every
-    // class she has worn (#308, class-mastery.md §5). Her class moves are
-    // derived from these in resolveCharacter(), never stored.
+    // class she has worn (#308, class-mastery.md §5); deed ids are #310's
+    // (deeds.ts). Her class moves are derived from these in
+    // resolveCharacter(), never stored.
     "class": "songkeeper",
-    "mastery": { "songkeeper": { "rank": "apprentice", "deeds": { "hearts": 4 } } },
+    "mastery": { "songkeeper": { "rank": "apprentice", "deeds": { "song_hearts": 4 } } },
     "inventory": [                                 // max 6; quest items excluded
       { "itemId": "sunbloom_draught", "kind": "consumable" },
       { "itemId": "river_charm",      "kind": "trinket" }
