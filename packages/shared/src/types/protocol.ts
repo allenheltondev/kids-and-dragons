@@ -20,6 +20,7 @@ import type { RiftActionKind } from "./campaign-graph.js";
 import type { ChapterOutcome } from "./chapter.js";
 import type { RoomMode, RunState, DiceRoll } from "./state.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
+import type { Badge, ProfileFlair } from "../kid-profile.js";
 import type { EncounterEvent } from "../encounter.js";
 
 // ---------------------------------------------------------------------------
@@ -721,6 +722,20 @@ export interface JournalResponse {
    * listed. Optional because a server from before the record sends none.
    */
   finished?: Record<string, JournalFinishedCampaign[]>;
+  /** Her own page (#299). Optional because a server from before it sends none. */
+  profile?: KidProfileView;
+}
+
+/** What her page shows beyond her heroes: derived from what the game already keeps, plus what she chose. */
+export interface KidProfileView {
+  /** Her nickname, as her table sees it. */
+  displayName: string;
+  /** Every badge she has earned. */
+  badges: Badge[];
+  /** Field Guide finds credited to her, and the newest few. */
+  finds: { count: number; recent: string[] };
+  /** What she chose; empty until she does. */
+  flair: ProfileFlair;
 }
 
 /** One line of a hero's finished campaigns, as her adventure book shows it. */

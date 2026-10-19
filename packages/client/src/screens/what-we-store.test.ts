@@ -7,7 +7,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { STORED } from "./what-we-store";
+import { DELETING, STORED } from "./what-we-store";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..", "..");
 const STORE = path.join(ROOT, "packages", "server", "src", "store");
@@ -36,6 +36,16 @@ function storeEntities(): string[] {
   return [...found].sort();
 }
 
+/** The field names of an interface in the shared domain types. */
+function fieldsOf(typeName: string): string[] {
+  const source = readFileSync(path.join(ROOT, "packages", "shared", "src", "types", "domain.ts"), "utf8");
+  const start = source.indexOf(`export interface ${typeName} {`);
+  if (start < 0) throw new Error(`no interface ${typeName}`);
+  const body = source.slice(start, source.indexOf("\n}\n", start));
+  // A property line sits one level in: two spaces, then its name.
+  return [...body.matchAll(/^ {2}([A-Za-z]\w*)\??:/gm)].map((m) => m[1]!);
+}
+
 describe("what we store (#252)", () => {
   it("reads the data model and the stores", () => {
     expect(modelRows()).toContain("Player profile");
@@ -59,5 +69,17 @@ describe("what we store (#252)", () => {
     const described = new Set(STORED.flatMap((s) => s.entities));
     expect(storeEntities().filter((entity) => !described.has(entity))).toEqual([]);
     expect([...described].filter((entity) => !storeEntities().includes(entity))).toEqual([]);
+  });
+
+  it("describes every field of a kid's profile, so a new one is not stored unmentioned (#299)", () => {
+    const profile = STORED.find((s) => s.entities.includes("player"));
+    expect(fieldsOf("PlayerProfile")).toContain("flair");
+    const described = Object.keys(profile?.fields ?? {});
+    expect(fieldsOf("PlayerProfile").filter((field) => !described.includes(field))).toEqual([]);
+    expect(described.filter((field) => !fieldsOf("PlayerProfile").includes(field))).toEqual([]);
+  });
+
+  it("says a kid's page goes when she does (#299)", () => {
+    expect(DELETING[0]).toMatch(/profile, with the colors, frames and title she picked/);
   });
 });

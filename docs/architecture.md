@@ -105,7 +105,7 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 |---|---|---|---|
 | Account → household | `ACCT#<cognitoSub>` | `HH#<hhId>` | Written only when somebody signs in. An adult may own more than one. **This pointer is the authority**: every "may this account manage it?" reads it. |
 | Household | `HH#<hhId>` | `META` | The family. `ownerSub` (null while anonymous), `guest`, `expiresAt`, display name, and `retentionDays` when an owner set one (#252). |
-| Player profile | `HH#<hhId>` | `PLAYER#<playerId>` | Display name, color, avatar, and `retired` once an owner takes the kid off the pickers (#248). No role (#265): rows written before still carry `role`, and nothing reads it. Beside `data`, never in it: `lastPlayedAt`, her `IDLE` index entry while her household keeps a retention window, and `sweeping` once she is being deleted (#252). |
+| Player profile | `HH#<hhId>` | `PLAYER#<playerId>` | Display name, color, avatar, and `retired` once an owner takes the kid off the pickers (#248). No role (#265): rows written before still carry `role`, and nothing reads it. `data.flair`: what she picked for her own page (#299, "Her page" in §4.5), versioned like any stored shape (§3.2). Beside `data`, never in it: `lastPlayedAt`, her `IDLE` index entry while her household keeps a retention window, and `sweeping` once she is being deleted (#252). |
 | Device binding | `HH#<hhId>` | `DEVICE#<deviceId>` | → playerId, token hash, last seen, user agent. Revocable. |
 | Owner | `HH#<hhId>` | `OWNER#<cognitoSub>` | One grown-up who may manage the household (#248), with the email they signed in with. Written in one transaction with that account's `ACCT#` pointer, and removed with it. |
 | Character | `HH#<hhId>` | `CHAR#<charId>` | Owned by a playerId, and stored under that kid's **home** household wherever she plays (§4.5, "Who owns what"), a visitor's included (#249, "Visitors"). Persistent across campaigns. See §3.1. |
@@ -156,6 +156,7 @@ her **player id**, and needs no index or scan to find:
 | Her finished campaigns (`finished`: campaign, outcome, when, which table) | On each of her heroes: `HH#<home>` / `CHAR#<charId>`, `data.finished` | Her heroes are the `CHAR#` rows under `HH#<home>` whose `ownerPlayerId` is her. Deleting the hero deletes the record; there is no copy elsewhere |
 | Whether she has played the practice (`practiced: true`, #255) | On each of her heroes: `HH#<home>` / `CHAR#<charId>`, `data.practiced` | As `finished` above: deleting the hero deletes it |
 | Her finds in her own book, including the ones made visiting | `HH#<home>` / `FIELDGUIDE`, `entries[canonId].firstFoundBy = <playerId>` | The one book row of her home; her entries are those naming her player id |
+| What she picked for her own page (`flair`: a color, a frame per hero, a title) | On her profile: `HH#<home>` / `PLAYER#<playerId>`, `data.flair` | Her profile row. Nothing else holds a copy, so deleting her, or her household, deletes it; a move (#251) carries the row as it is |
 | Her finds in a table's book, where she was first finder there | `HH#<table>` / `FIELDGUIDE`, `firstFoundBy = <playerId>` | Through her `VISIT#<playerId>` rows (#252), one per table she sat down at, and `finished[].table` for the tables she finished a campaign at. Deleting her re-credits these to `FORGOTTEN_FINDER` (§4.5, "Deleting and keeping"). This copy predates #283 (#106, #249) |
 
 `finished[].table` names another household's id, not a person, and is the
@@ -1069,6 +1070,64 @@ How, and what each delete keeps: "Deleting and keeping" below.
 New work keeps to this split: a hero's own record is named by the kid's home,
 never by the room's household, and nothing new is added that only makes sense
 if the household owns the kid.
+
+##### Her page (#299)
+
+The payoff for all that record: a page in the adventure book (the journal's
+"Me" tab, lazy-loaded) that shows it back to her as hers, and lets her make it
+a little her own.
+
+- **Everything on it is derived.** Her heroes with their level and stats, her
+  finished campaigns (`finished`, #283), the Field Guide finds her home book
+  credits to her (`firstFoundBy`), and her badges. A badge is a pure function
+  of those rows (`deriveBadges`, `packages/shared/src/kid-profile.ts`): a
+  finisher badge per campaign (a loss ending counts, spec §8.3), Guest Star for
+  one finished at another household's table, Story Collector, Kept Going for a
+  keepsake, level and find milestones. A level counts at its **committed** value
+  only, since a failed campaign discards the rest. There is no counter, event or
+  row for a badge, so nothing to drift or migrate, and one earned at another
+  table is there because that table wrote it to her heroes. "Chapters played"
+  has no per-kid record (chapter progress hangs off a table's run), so there is
+  no badge for it.
+- **What she picks is presets only**, in one small versioned field on her
+  profile, `PlayerProfile.flair` (`{ v, color?, frames?, title? }`): a color from
+  eight, a frame from five for each hero, and a title that is the id of a badge
+  she has earned. No photo and no free text, so no safe-name filter is needed. It
+  is read through `readFlair`, which drops what is no longer there (an id from a
+  build with more presets, a hero since gone, a title no longer earned) and reads
+  a newer `v` as unchosen, so an old page is plain, never broken. It is saved by
+  `POST /api/profile/flair`, which replaces the whole choice and **refuses**
+  (`ILLEGAL`) a request naming something that is not a preset, not her hero or
+  not a badge she has earned. It is written with `updatePlayer`, so it can never
+  bring back a profile being deleted (#252).
+- **Only she can see or change it, and the server enforces that.** The
+  journal's `profile` and the flair route are authorised by one of two things,
+  and nothing else: her **personal device token**, or the **room session she
+  holds once seated** (`resolveKid`). The second is how a family tablet knows
+  which kid was picked (#250): a session is minted for one kid, at her home,
+  and never for a shared tablet's own token. No request names a kid: the
+  credential's player is the only page there is to read or write, so a
+  sibling's seat is the sibling's. A TV's viewer token, a grown-up's sign-in
+  and a shared tablet's own token resolve to nobody. A visiting table's other
+  players hold sessions of their own, for their own pages. The flair is never in a
+  run's state, a seat, a room payload, the picker or the organizer's lists
+  (`LinkAccountResult` strips it), so a table sees her hero name and her
+  profile color as before. There is no public page, link or way to browse kids.
+  A tablet's kid may edit as well as read: the picker already trusts whoever
+  taps a face with that kid's seat (§4.5, "Shared devices"), and the choices
+  are presets. The tablet keeps nothing of her page after the room. A phone
+  kid finds her book on the home screen; a tablet kid, who has no home screen
+  of her own, finds it on the room's tray (`layout/BookTab.tsx`, a "Book"
+  object shown only to a seat with no device token), which opens the same lazy
+  `/journal` with her seat, and its Play tab returns her to her room.
+
+- **It follows her.** It lives on her profile row under her home, so it is on
+  every device bound to her (#281), moves with her (#251, which carries the
+  row's `data` as it is), and is deleted with her (#252): `deleteProfile`
+  removes the row, and the household delete removes every profile. The "what we
+  store" page names it (`flair` on the profile's described fields, which its test
+  reads from the type, so a new profile field that is not described fails the
+  build).
 
 #### Moving a kid: take your hero home (#251)
 
