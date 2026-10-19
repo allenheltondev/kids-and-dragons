@@ -7,7 +7,7 @@
 This folder is the source of truth for Continental Rift **design** decisions. It is not the source of world canon: `canon/*.yaml` is ([canon-contract.md](../../canon-contract.md)). Once a faction, individual, place or the campaign itself is approved here, register it in `canon/` (`factions.yaml`, `individuals.yaml`, `campaigns.yaml`; secrets as creator-only) before any content references it. The campaign is a **nonlinear story graph**, unlike Gemfall's mostly ordered chapter progression.
 
 ## Documents
-- [regional-pacing-gate.md](regional-pacing-gate.md) — explicit short-preview exception, substantive expansion follow-up and family measurements required before regional production integration.
+- [regional-pacing-gate.md](regional-pacing-gate.md) — expanded regional investigations, shortest-path pacing estimates and family measurements required before production integration.
 - [story.md](story.md) — player-facing dramatic structure and secret author-only truth.
 - [graph.md](graph.md) — planned nodes, directional edges, outcomes, revisits and open topology decisions.
 - [mechanics.md](mechanics.md) — rift magic, Riftlight, failure-forward and player progression.

@@ -60,7 +60,9 @@
       "orin_chime_shared",
       "fragment_coast_learned",
       "saltrot_arrival_whales",
-      "saltrot_arrival_glacier"
+      "saltrot_arrival_glacier",
+      "stone_route_priority",
+      "sky_followup_promised"
     ],
     "buffs": {
       "riftspark": {

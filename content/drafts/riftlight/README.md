@@ -131,10 +131,10 @@ her eventual epilogue, and `orin_chime_shared` into the convergence's noncombat 
 `fragment_coast_learned` records knowledge; completing `buried-bridge` is the Coast key-node
 completion. Neither creates an item. Convergence and the other two key nodes remain unwritten.
 The `saltrot_arrival_*` flags identify the latest crossing and are reset together on entry.
-These compact chapters have unmeasured pacing; the family playtest gate remains open.
-They are explicitly short exploratory episodes for this development preview. The
-[regional pacing exception and production gate](../../../docs/campaigns/continental-rift/regional-pacing-gate.md)
-records the scope, expansion follow-up and real-play requirements before production.
+These regional chapters now have substantive investigations on every main path, with 14
+decisions and six checks each. Their family pacing remains unmeasured. The
+[regional pacing report and production gate](../../../docs/campaigns/continental-rift/regional-pacing-gate.md)
+records the expansion, shortest-path estimates and real-play requirements before production.
 
 `riftlight-route-prerequisites.test.ts` separately proves the regional entry facts using
 actual introductions on every chapter ending and intersection across every incoming graph

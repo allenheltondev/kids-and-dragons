@@ -1,38 +1,72 @@
-# Regional preview pacing exception and production gate
+# Regional pacing and production gate
 
-Recorded 2026-10-18 in response to PR #287's pacing review.
+Updated 2026-10-18 after the request to avoid short play sessions.
 
-`riftlight-stone-counters`, `riftlight-whale-road`, and `riftlight-buried-bridge` are
-explicitly classified as **short exploratory episodes for the development preview only**.
-Their provisional 12-minute metadata is a budget, not an observation. This exception allows
-review of geography, choices and inter-strand continuity before expanding the ordinary nodes.
-It does not change the campaign's 30–40-minute ordinary-node target, classify these as finished
-production transitions, or certify their current length. The Coast key-node clue remains at
-the buried bridge regardless of this temporary pacing classification.
+The earlier **short exploratory preview exception is superseded for these three nodes**.
+`riftlight-stone-counters`, `riftlight-whale-road`, and `riftlight-buried-bridge` now aim to
+be ordinary 30–40-minute story nodes. Each has 14 decisions and six checks on its shortest
+modeled route, with 42–44 scenes actually visited. Their 84–86 authored scenes include
+alternative methods and success/failure consequences; a party does not read all of them.
+The 35-minute metadata is a planning budget, not a measured claim.
 
-**Production gate: not passed. No real regional table timings have been collected.**
-Before copying any of these chapters into the production campaign, the campaign author must:
+## What changed
 
-1. Run at least two real family playthroughs covering all three episodes across the sessions,
-   including one party without a Starweaver. Cover both whale decisions, both bridge inspection
-   methods, sharing and withholding Orin's readings, and a first versus later Attune lesson.
-   Record per-chapter elapsed and discussion minutes, choices, engagement, confusion, and requests
-   for further action in the existing [observation log](../../../content/drafts/riftlight/playtest-observations.json).
-   Keep observations empty until actual play; exclude technical and meal breaks.
-2. Expand ordinary nodes through substantive decisions and interactions: let the stone counters
-   investigate competing explanations and help protect the keepers' route; give the whale passage
-   distinct navigation attempts and visible consequences; let bridge investigators test evidence
-   and decide how to share it. Preserve protected mysteries and the guide's refusal. These are
-   follow-up directions, not claims that those interactions are implemented. Add contextual class
-   utility without requiring a class, then play and measure the expanded content.
-3. Compare the shortest and engaged measured runs with 30–40 minutes. Either expand and remeasure
-   until the ordinary-node target is supported, or record an explicit author decision identifying
-   which named nodes remain short in production, their measured ranges, and why that structure
-   serves the campaign. The preview exception alone cannot satisfy this step.
-4. Link the observations and pacing decision here, resolve observed continuity gaps, and rerun
-   the content and route tests before changing this gate to passed.
+- Stone counters: compare ground and witness viewpoints, preserve uncertain eruption counts,
+  get a water delivery around the moved boundary, test runoff and warnings, retrieve a slate,
+  negotiate local upkeep, demonstrate the shrinking signal and choose a traveling record.
+- Whale-road: map the broken approach, observe song and pulse timing, practice invitations,
+  question Olivia's costs, establish wind warnings and waiting places, recover loose shelter
+  gear, respect a whale's refusal and rehearse keeper handover before the opening decision.
+- Buried bridge: honor the guide's boundary, test footing, record the untouched site, recover
+  tools, compare silt, prepare a work site, choose an inspection limit, test the river inference,
+  decide how to distribute evidence, restore the bank and hand over a usable local warning.
 
-Follow-up tracking lives in this gate: all four steps remain open. The owner is the campaign
-author; the integration checkpoint is promotion out of `content/drafts/riftlight`. The broader
-[opening pacing gate](opening-playtest.md) also remains open. No model estimate substitutes
-for either gate's family observations.
+Failures change the immediate method or leave a corrected warning/record; none calls for
+repeating the same roll. Contextual class/species methods assist existing tasks without
+removing the task or requiring a particular hero. The shortest route includes the investigations
+rather than skipping them for optional exploration. The chosen road-record priority and the
+party's voluntary promise to share sky-route news persist as journey flags. The old Orin,
+Olivia and whale consequences remain intact; the sealed door remains shut.
+
+## Planning evidence, not observations
+
+Reproduce the [machine-readable report](regional-pacing-estimates.json) with:
+
+```sh
+npx tsx tools/content/riftlight-pacing.ts
+```
+
+| Node | Default shortest lower estimate | Default typical estimate | Fast-table sensitivity |
+| --- | ---: | ---: | ---: |
+| Stone counters | 31.7 min | 32.1 min | 23.4 min |
+| Whale-road | 31.3 min | 31.7 min | 23.1 min |
+| Buried bridge | 31.3 min | 31.5 min | 23.1 min |
+
+The uncalibrated model budgets 130 spoken words/minute, 40 seconds/decision, 30/check and
+4/scene. Shortest estimates use the lower narration bound, including the shorter later-Attune
+variant. Sensitivity uses 160 words/minute, 25 seconds/decision, 20/check and 3/scene. A brisk
+adult-led table can still finish sooner; neither estimate guarantees a family's elapsed time.
+Regression tests guard the shortest modeled path, not just the metadata or branch count.
+These content checks have passed; no family timing observation has been collected.
+
+## Production gate — not passed
+
+The substantial expansion and static pacing checks are implemented. Before promoting these
+chapters out of `content/drafts/riftlight`, the campaign author still must:
+
+1. Record at least two real family playthroughs covering all three nodes across sessions,
+   including a party without a Starweaver. Cover both whale choices, both bridge inspections,
+   sharing/withholding Orin's readings and first/later Attune. Record elapsed and discussion
+   minutes, engagement, confusion and desired changes in the [observation log](../../../content/drafts/riftlight/playtest-observations.json).
+   Keep observations empty until actual play and exclude technical/meal breaks.
+2. Compare shortest and engaged measured runs with the 30–40-minute target. If ordinary nodes
+   remain too short, add a consequential task or changed outcome, then play and remeasure.
+   If they drag, simplify work that repeats a decision. Never add narration or rerolls solely
+   to fill time. The implemented interactions above are the current candidate, not acceptance.
+3. Link the observations and explicit author decision here, resolve introduction or motivation
+   gaps found at the table, and rerun content, continuity and pacing checks. Only then mark
+   the regional gate passed. Any changed production length goal needs a named measured exception.
+
+The [opening pacing gate](opening-playtest.md) remains separate and open. Development pause
+endings are optional testing boundaries; they are not complete campaign endings or evidence
+of full-campaign play length. The remaining strands and convergence are still being authored.
