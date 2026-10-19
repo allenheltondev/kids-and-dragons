@@ -1,5 +1,32 @@
 # Riftlight evidence and aftermath illustrations
 
+
+## Focused evidence revisions — PR #326 review, 2026-10-19
+
+Generated with the built-in `image_gen` edit tool. The prior runtime illustrations are the edit targets. Original source PNGs remain available; revised final sources use the `-v2.png` suffix. Runtime paths stay unchanged. Story flow and the approved whale aftermath are unchanged.
+
+### stone-counters-evidence
+
+Edit target: `assets/scenes/riftlight/stone-counters-evidence.webp`
+
+Revised source: `art/source/riftlight/scenes/stone-counters-evidence-v2.png`
+
+Final revision prompt:
+
+Edit this exact illustration to fix ONLY the counting marks below the carved volcano. Preserve the volcano, slates, landscapes, composition, warm light and hand-painted storybook style. ERASE the entire existing group of three separated side-by-side counting slots beneath the volcano. Replace that group with ONLY ONE single broad vertical incised counting stroke in the center of that lower stone panel. This ONE groove must have two collinear segments: its upper and lower segments lie on EXACTLY THE SAME vertical axis, SAME width, and their sides visibly align. A jagged rough diagonal chipped fracture cuts across its MIDDLE, removing a short section of the groove and leaving a shallow raw-stone crater. The top and bottom lengths must therefore look plausibly like one originally continuous stroke broken across the middle, while the missing middle also allows a viewer to count two short segments. Emphasize rough flaked edges and a fresh lighter-colored stone chip surface IN THE GAP, with subtle contiguous hairline fractures extending sideways from it. Make this large and readable from across a TV room. It must NOT be two intact parallel strokes or two unrelated slots beside each other. No other counting slots anywhere below the volcano. The chalk sketches may remain exactly as they are. No digits, labels, runes, words or solution indicators. Change no other element.
+
+### buried-bridge-evidence
+
+Edit target: `assets/scenes/riftlight/buried-bridge-evidence.webp`
+
+Revised source: `art/source/riftlight/scenes/buried-bridge-evidence-v2.png`
+
+Final revision prompt:
+
+Edit this exact bridge close-up to fix ONLY the waterline evidence. Preserve the stone arches, pier proportions, dry rounded river pebbles, pale silt, landscape, lighting, framing and painterly style. REMOVE the neat raised doubled architectural band/cornice wrapping around the central pier: make that part plain irregular stone masonry with no protruding trim. Instead create a visibly OLD WATER-EROSION MARK across the LOWER HALF of the central pier, clearly BELOW where the cornice was, roughly one third of the pier height above the dry pebbles. This mark must be RECESSED into the masonry: a shallow irregular horizontal erosion notch with pitted/scalloped edges that cuts across individual stones and their joints, gently varying in thickness, never a raised ledge or tidy decorative course. Add an uneven muted brown-gray mineral stain at the former water level and visibly smoother rounded water-worn stone BELOW it, contrasting with rough dry masonry ABOVE. Continue this same irregular worn-water mark at the matching elevation on the next pier to the left, making its natural shared water level understandable. NO water, puddles, glows, arrows, labels, words, diagrams or UI. Keep all the existing dry rounded river pebbles. No doorway or new lore. The worn notch and staining should be unmistakably different from decorative architecture and legible at TV size.
+
+## Initial generation record
+
 Generated with the built-in `image_gen` tool on 2026-10-19. Original generated PNGs are retained here; runtime assets are 1920×1080 WebP, quality 88. Existing establishing illustrations are preserved.
 
 ## stone-counters-evidence
