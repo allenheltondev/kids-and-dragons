@@ -1,0 +1,115 @@
+import fs from "node:fs";
+import path from "node:path";
+import { expect } from "vitest";
+import { applyIntent, createRunState, enterScene, itemCatalog, newCharacter, resolveCharacter } from "@kad/shared";
+import type { Campaign, Chapter, ClassId, ClientIntent, EngineContext, ItemCatalog, RulesContent, RunState, SpeciesId } from "@kad/shared";
+import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
+import { RIFTLIGHT_DRAFT } from "./riftlight-preview.ts";
+const ROOT = path.resolve(import.meta.dirname, "../..");
+const read = <T>(file: string): T => JSON.parse(fs.readFileSync(file, "utf8")) as T;
+export const campaign = read<Campaign>(path.join(RIFTLIGHT_DRAFT, "opening-preview.campaign.json"));
+export const chapters = new Map(campaign.chapters.map((id) => [id, read<Chapter>(path.join(RIFTLIGHT_DRAFT, "chapters", `${id}.json`))]));
+export const rules = read<RulesContent>(path.join(ROOT, "content/rules.json"));
+export const items: ItemCatalog = itemCatalog(read(path.join(ROOT, "content/items.json")));
+for (const chapter of chapters.values()) Object.assign(items, chapter.props);
+
+interface SceneContinuity {
+  requires: string[];
+  introduces: Record<string, string>;
+  conditional?: { flag?: string; notFlag?: string; requires: string[] }[];
+}
+const continuity = read<{ chapters: Record<string, { entryFacts: string[]; entryByFlag?: Record<string, string[]>; scenes: Record<string, SceneContinuity> }> }>(
+  path.join(RIFTLIGHT_DRAFT, "continuity.json"),
+).chapters;
+
+
+export function context(chapter: Chapter, face = 20): EngineContext {
+  return { chapter, rules, items, abilities: {}, rng: { next: () => (face - 0.5) / 20 }, now: "2026-10-16T12:00:00.000Z" };
+}
+
+export function start(chapter: Chapter, species: SpeciesId, cls: ClassId, flags: Record<string, boolean> = {}, partySize = 1) {
+  const character = newCharacter({ id: "hero", householdId: "test", ownerPlayerId: "p1", name: "Glimmer",
+    species, class: cls, stats: { might: 1, quick: 1, clever: 1, heart: 0 }, appearance: APPEARANCE,
+    rules, startingLevel: 4, now: "2026-10-16T12:00:00.000Z" });
+  const resolved = resolveCharacter(character, rules, items);
+  const state = createRunState({ runId: "preview-test", roomCode: "RIFT", mode: "travel", campaignId: campaign.id, now: "2026-10-16T12:00:00.000Z" });
+  state.party = [{ playerId: "p1", character: resolved, hp: resolved.maxHp, down: false, ready: true, connected: true }];
+  for (let seat = 2; seat <= partySize; seat++) {
+    const friend = structuredClone(state.party[0]!);
+    friend.playerId = `p${seat}`;
+    friend.character.id = `hero${seat}`;
+    friend.character.ownerPlayerId = friend.playerId;
+    state.party.push(friend);
+  }
+  state.chapterId = chapter.id;
+  state.flags = { ...flags };
+  if (chapter.index >= 4) state.party[0]!.character.questItems.push("listening_chime");
+  const result = enterScene(state, chapter.entry, context(chapter));
+  expect(result.error).toBeUndefined();
+  return result.state;
+}
+
+export function send(state: RunState, intent: ClientIntent, chapter: Chapter, face = 20) {
+  const prompt = state.prompt;
+  const players = prompt?.kind === "choice"
+    ? prompt.vote ? state.party.map((member) => member.playerId) : [prompt.forPlayerIds[0] ?? "p1"]
+    : prompt?.kind === "roll"
+      ? [state.party.find((member) => member.character.id === prompt.characterId)!.playerId]
+      : ["p1"];
+  let current = state;
+  for (const playerId of players) {
+    const result = applyIntent(current, { playerId, intent }, context(chapter, face));
+    expect(result.error, `${chapter.id}/${current.sceneId}: ${JSON.stringify(intent)}`).toBeUndefined();
+    current = result.state;
+  }
+  return current;
+}
+
+/** Walk every actual choice and both dice extremes through the real engine. */
+export function allPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags: Record<string, boolean> = {}, partySize = 1, initialHp?: number) {
+  const contract = continuity[chapter.id]!;
+  const conditionalEntry = Object.entries(contract.entryByFlag ?? {}).flatMap(([flag, facts]) => flags[flag] ? facts : []);
+  const initial = start(chapter, species, cls, flags, partySize);
+  if (initialHp !== undefined) for (const member of initial.party) member.hp = initialHp;
+  const pending = [{ state: initial, known: new Set([...contract.entryFacts, ...conditionalEntry]), introduced: new Set<string>() }];
+  const seen = new Set<string>();
+  const visited = new Set<string>();
+  const ends: RunState[] = [];
+  const endingKnowledge: Set<string>[] = [];
+  const endingIntroductions: Set<string>[] = [];
+  while (pending.length) {
+    const { state, known: before, introduced: priorIntroductions } = pending.pop()!;
+    const key = JSON.stringify([state.sceneId, state.flags, state.prompt, state.party.map((p) => [p.hp, p.character.questItems]), state.phase, [...before].sort(), [...priorIntroductions].sort()]);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    expect(seen.size, "Unexpected loop or path explosion").toBeLessThan(5000);
+    visited.add(state.sceneId!);
+    const review = contract.scenes[state.sceneId!]!;
+    expect(review, `${chapter.id}/${state.sceneId}: new scene needs a continuity review`).toBeDefined();
+    const known = new Set(before);
+    const introduced = new Set(priorIntroductions);
+    for (const [fact, evidence] of Object.entries(review.introduces)) {
+      expect(state.narration, `${chapter.id}/${state.sceneId}: introduction of ${fact} must be read aloud`).toContain(evidence);
+      known.add(fact);
+      introduced.add(fact);
+    }
+    const conditional = (review.conditional ?? []).filter((rule) =>
+      (!rule.flag || state.flags[rule.flag]) && (!rule.notFlag || !state.flags[rule.notFlag]),
+    ).flatMap((rule) => rule.requires);
+    for (const fact of [...review.requires, ...conditional]) {
+      expect(known.has(fact), `${chapter.id}/${state.sceneId}: references ${fact} before this path introduced it`).toBe(true);
+    }
+    if (state.phase === "chapter_complete") { ends.push(state); endingKnowledge.push(known); endingIntroductions.push(introduced); continue; }
+    if (state.prompt?.kind === "choice") {
+      expect(state.prompt.options.length).toBeGreaterThan(0);
+      for (const option of state.prompt.options) pending.push({ state: send(state, { type: "CHOOSE", choiceId: option.id }, chapter), known, introduced });
+    } else if (state.prompt?.kind === "roll") {
+      for (const face of [1, 20]) pending.push({ state: send(state, { type: "ROLL" }, chapter, face), known, introduced });
+    } else {
+      pending.push({ state: send(state, { type: "ADVANCE" }, chapter), known, introduced });
+    }
+  }
+  expect(ends.length).toBeGreaterThan(0);
+  for (const state of ends) expect(state.chapterOutcome).toBe("success");
+  return { visited, ends, endingKnowledge, endingIntroductions };
+}
