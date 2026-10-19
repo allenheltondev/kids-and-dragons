@@ -4236,13 +4236,17 @@
           "requires": [
             "second_view"
           ],
-          "introduces": {}
+          "introduces": {
+            "memory_ridge_evidence": "two ridge profiles agree"
+          }
         },
         "second_view_1_changed": {
           "requires": [
             "second_view"
           ],
-          "introduces": {}
+          "introduces": {
+            "memory_helped_view": "the elder's side view"
+          }
         },
         "second_view_2": {
           "requires": [
@@ -4260,13 +4264,17 @@
           "requires": [
             "second_view"
           ],
-          "introduces": {}
+          "introduces": {
+            "memory_rock_evidence": "three rocks in order"
+          }
         },
         "second_view_2_changed": {
           "requires": [
             "second_view"
           ],
-          "introduces": {}
+          "introduces": {
+            "memory_helped_view": "the elder's side view"
+          }
         },
         "what_matches": {
           "requires": [
@@ -4274,13 +4282,48 @@
           ],
           "introduces": {
             "what_matches": "The outside drawing and the memory account lie together on the elder's stone table."
-          }
+          },
+          "conditional": [
+            {
+              "flag": "memory_independent_reading",
+              "notFlag": "memory_rock_sequence",
+              "requires": [
+                "memory_ridge_evidence"
+              ]
+            },
+            {
+              "flag": "memory_rock_sequence",
+              "requires": [
+                "memory_rock_evidence"
+              ]
+            },
+            {
+              "notFlag": "memory_independent_reading",
+              "requires": [
+                "memory_helped_view"
+              ]
+            }
+          ]
         },
         "what_matches_1": {
           "requires": [
             "what_matches"
           ],
-          "introduces": {}
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "memory_rock_sequence",
+              "requires": [
+                "memory_rock_evidence"
+              ]
+            },
+            {
+              "notFlag": "memory_rock_sequence",
+              "requires": [
+                "memory_ridge_evidence"
+              ]
+            }
+          ]
         },
         "what_matches_2": {
           "requires": [
@@ -4312,13 +4355,17 @@
           "requires": [
             "catalog_test"
           ],
-          "introduces": {}
+          "introduces": {
+            "catalog_independent_path": "without a keeper guiding her"
+          }
         },
         "catalog_test_1_changed": {
           "requires": [
             "catalog_test"
           ],
-          "introduces": {}
+          "introduces": {
+            "catalog_staff_help": "sit with the next reader"
+          }
         },
         "catalog_test_2": {
           "requires": [
@@ -4336,13 +4383,17 @@
           "requires": [
             "catalog_test"
           ],
-          "introduces": {}
+          "introduces": {
+            "catalog_independent_path": "without a keeper guiding her"
+          }
         },
         "catalog_test_2_changed": {
           "requires": [
             "catalog_test"
           ],
-          "introduces": {}
+          "introduces": {
+            "catalog_staff_help": "sit with the next reader"
+          }
         },
         "sliding_tray": {
           "requires": [
@@ -4454,7 +4505,15 @@
           ],
           "introduces": {
             "record_choice": "The elder offers to keep a copy of your party's finished comparison beside the memory catalog."
-          }
+          },
+          "conditional": [
+            {
+              "flag": "memory_catalog_clear",
+              "requires": [
+                "catalog_independent_path"
+              ]
+            }
+          ]
         },
         "record_choice_1": {
           "requires": [
@@ -4474,7 +4533,22 @@
           ],
           "introduces": {
             "teach_back": "An arriving yeti visitor waits at the warm cup, just as your party did."
-          }
+          },
+          "conditional": [
+            {
+              "flag": "memory_guide_published",
+              "requires": [
+                "catalog_independent_path"
+              ]
+            },
+            {
+              "flag": "memory_notes_shared",
+              "notFlag": "memory_catalog_clear",
+              "requires": [
+                "catalog_staff_help"
+              ]
+            }
+          ]
         },
         "teach_back_1": {
           "requires": [
@@ -4551,6 +4625,92 @@
         "sliding_tray_assisted_check": {
           "requires": [
             "sliding_tray"
+          ],
+          "introduces": {}
+        },
+        "second_view_prepared": {
+          "requires": [
+            "first_memory",
+            "second_view"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "memory_split_observers",
+              "requires": [
+                "first_memory"
+              ]
+            }
+          ]
+        },
+        "second_view_prepared_check": {
+          "requires": [
+            "first_memory",
+            "second_view"
+          ],
+          "introduces": {}
+        },
+        "what_matches_keeper": {
+          "requires": [
+            "what_matches"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "notFlag": "memory_independent_reading",
+              "requires": [
+                "memory_helped_view"
+              ]
+            }
+          ]
+        },
+        "catalog_endorsed": {
+          "requires": [
+            "catalog_test"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "notFlag": "memory_independent_reading",
+              "requires": [
+                "memory_helped_view"
+              ]
+            }
+          ]
+        },
+        "catalog_endorsed_check": {
+          "requires": [
+            "catalog_test"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "notFlag": "memory_independent_reading",
+              "requires": [
+                "memory_helped_view"
+              ]
+            }
+          ]
+        },
+        "record_publish": {
+          "requires": [
+            "record_choice",
+            "catalog_independent_path"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "memory_catalog_clear",
+              "requires": [
+                "catalog_independent_path"
+              ]
+            }
+          ]
+        },
+        "record_staff_copy": {
+          "requires": [
+            "record_choice",
+            "catalog_staff_help"
           ],
           "introduces": {}
         }

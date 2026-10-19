@@ -176,3 +176,10 @@ See the [northern continuity review](../../../docs/campaigns/continental-rift/me
 Run the new route/producer tests with `npx vitest run tools/content/riftlight-memory-paths.test.ts`.
 The shared pacing report now covers five ordinary regional nodes; real family timings remain
 pending for all of them.
+
+The reading room retains independent evidence, ridge/rock method, keeper endorsement,
+catalog usability and permission to publish as separate flags. Later citations, the newcomer
+lesson and keeper reactions use those results. Only a successful catalog trial can produce
+a public visitor guide; an assisted copy stays staff-guided. Chapter arrival resets these
+local investigation flags. Run `npx vitest run tools/content/riftlight-reading-consequences.test.ts`
+for four complete consequence routes; automated play does not replace timed family play.

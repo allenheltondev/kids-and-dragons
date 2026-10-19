@@ -577,7 +577,7 @@
     },
     {
       "id": "riftlight-reading-room",
-      "authoredScenes": 84,
+      "authoredScenes": 91,
       "metadataBudgetMinutes": 35,
       "scenarios": [
         {
@@ -587,20 +587,20 @@
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2379,
-            "wordsMin": 2341
+            "words": 2645,
+            "wordsMin": 2429
           },
           "typical": {
             "scenes": 42,
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2384,
-            "wordsMin": 2346
+            "words": 2658,
+            "wordsMin": 2442
           },
-          "shortestLowerMinutes": 33.1,
-          "typicalMinutes": 33.5,
-          "fastTableShortestLowerMinutes": 24.6
+          "shortestLowerMinutes": 33.8,
+          "typicalMinutes": 35.6,
+          "fastTableShortestLowerMinutes": 25.1
         },
         {
           "id": "empty-3p",
@@ -609,20 +609,20 @@
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2379,
-            "wordsMin": 2341
+            "words": 2645,
+            "wordsMin": 2429
           },
           "typical": {
             "scenes": 42,
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2384,
-            "wordsMin": 2346
+            "words": 2658,
+            "wordsMin": 2442
           },
-          "shortestLowerMinutes": 33.1,
-          "typicalMinutes": 33.5,
-          "fastTableShortestLowerMinutes": 24.6
+          "shortestLowerMinutes": 33.8,
+          "typicalMinutes": 35.6,
+          "fastTableShortestLowerMinutes": 25.1
         },
         {
           "id": "few-solo",
@@ -631,20 +631,20 @@
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2379,
-            "wordsMin": 2341
+            "words": 2645,
+            "wordsMin": 2429
           },
           "typical": {
             "scenes": 42,
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2384,
-            "wordsMin": 2346
+            "words": 2658,
+            "wordsMin": 2442
           },
-          "shortestLowerMinutes": 33.1,
-          "typicalMinutes": 33.5,
-          "fastTableShortestLowerMinutes": 24.6
+          "shortestLowerMinutes": 33.8,
+          "typicalMinutes": 35.6,
+          "fastTableShortestLowerMinutes": 25.1
         },
         {
           "id": "few-3p",
@@ -653,20 +653,20 @@
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2379,
-            "wordsMin": 2341
+            "words": 2645,
+            "wordsMin": 2429
           },
           "typical": {
             "scenes": 42,
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2384,
-            "wordsMin": 2346
+            "words": 2658,
+            "wordsMin": 2442
           },
-          "shortestLowerMinutes": 33.1,
-          "typicalMinutes": 33.5,
-          "fastTableShortestLowerMinutes": 24.6
+          "shortestLowerMinutes": 33.8,
+          "typicalMinutes": 35.6,
+          "fastTableShortestLowerMinutes": 25.1
         },
         {
           "id": "collection-solo",
@@ -675,20 +675,20 @@
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2379,
-            "wordsMin": 2341
+            "words": 2645,
+            "wordsMin": 2429
           },
           "typical": {
             "scenes": 42,
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2384,
-            "wordsMin": 2346
+            "words": 2658,
+            "wordsMin": 2442
           },
-          "shortestLowerMinutes": 33.1,
-          "typicalMinutes": 33.5,
-          "fastTableShortestLowerMinutes": 24.6
+          "shortestLowerMinutes": 33.8,
+          "typicalMinutes": 35.6,
+          "fastTableShortestLowerMinutes": 25.1
         },
         {
           "id": "collection-3p",
@@ -697,20 +697,20 @@
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2379,
-            "wordsMin": 2341
+            "words": 2645,
+            "wordsMin": 2429
           },
           "typical": {
             "scenes": 42,
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2384,
-            "wordsMin": 2346
+            "words": 2658,
+            "wordsMin": 2442
           },
-          "shortestLowerMinutes": 33.1,
-          "typicalMinutes": 33.5,
-          "fastTableShortestLowerMinutes": 24.6
+          "shortestLowerMinutes": 33.8,
+          "typicalMinutes": 35.6,
+          "fastTableShortestLowerMinutes": 25.1
         }
       ]
     }

@@ -52,7 +52,7 @@ describe("Riftlight's authored opening", () => {
     expect(coverage.nodes.every((node) => node.entered)).toBe(true);
     expect(coverage.edges.every((edge) => edge.traversable)).toBe(true);
     expect(playtest(graph, campaign, { ...options, random: { seed: 16, runs: 10 }, replay: { search, coverage } }).violations).toEqual([]);
-  });
+  }, 20_000); // Whole-graph integration replay is instrumented by V8 in CI.
 
   it.each([
     ["kitsune", "starweaver"], ["bigfoot", "thornguard"],

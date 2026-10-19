@@ -70,7 +70,14 @@
       "wrong_valley_witnessed",
       "valley_crossed_high",
       "fragment_paths_learned",
-      "memory_notes_shared"
+      "memory_notes_shared",
+      "memory_split_observers",
+      "memory_independent_reading",
+      "memory_rock_sequence",
+      "memory_keeper_endorsed",
+      "memory_account_cited",
+      "memory_catalog_clear",
+      "memory_guide_published"
     ],
     "buffs": {
       "riftspark": {
