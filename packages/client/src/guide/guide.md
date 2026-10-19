@@ -36,7 +36,7 @@ You can switch partway. On a phone, open **Room settings** and tap **Play on pho
 
 ## Starting a room and seating the kids
 
-In Party Mode, the big screen shows **Room code** with four letters, and a square code. Scan the square code with a phone camera, and it opens the game with the code already typed in. You can also type the four letters under **Join a game**.
+In Party Mode, the big screen shows **Room code** with four letters, and a square code. Scan the square code with a phone camera, and it opens the game with the code already typed in. You can also type the four letters under **Join a game**. In Phone Mode, the code and the square are on the **World** screen of the phone that started the game.
 
 ![The big screen waiting for the party](../../public/guide-pictures/tv-lobby.jpg)
 
@@ -52,7 +52,7 @@ Then they tap **Ready to play**, and **I'm ready!** The big screen shows who is 
 
 ### Reading the story
 
-Read the words on the big screen out loud, in your best voice. The kids answer on their phones. Sometimes everyone votes. Sometimes one hero has the story turn, and their name glows. A roll asks a kid to tap **Roll!** A small number never ends the game; the story goes somewhere else.
+Read the words on the big screen out loud, in your best voice. The kids answer on their phones. Sometimes everyone votes. Sometimes it is one hero's turn to choose, and the others wait. A roll asks a kid to tap **Roll!** A small number never ends the game; the story goes somewhere else.
 
 In a fight, a kid taps a gold square to walk, or a card to act, then **End my turn**. Nobody dies. A hero who is knocked down gets helped up by a friend standing next to them.
 
@@ -62,8 +62,8 @@ Whoever opened the room runs it. In Party Mode that is the big screen: tap **Roo
 
 ![What the grown-up running the room sees](../../public/guide-pictures/host-panel.jpg)
 
-- **Who is in this room** lists everyone, with **Here**, **Away**, **Making a hero** or **Taken out**.
-- **Remove** takes a phone out of the game. That phone sees "The person running this game took this phone out of it." When a phone you do not know joins, the big screen says so, with **Remove** beside it.
+- At the top is everyone in the room, each marked **Here**, **Away**, **Making a hero** or **Taken out**.
+- **Remove** takes a phone out of the game. That phone sees "The person running this game took this phone out of it." Each time a phone joins, the big screen says who joined, with **Remove** beside it, so a stranger is one tap from gone.
 - **Lock the room**: "Lock it once everyone is in, and nobody else can join with the code." Kids already here can still come back. **Let new players join again** undoes it.
 - **Quiet mode**: "For a sleeping sibling or a car ride: softer, calmer and dimmer on every device." It turns on for every phone in the room at once. **Turn quiet mode off** ends it.
 - **Stop for today** saves the game. There is more on stopping below.
@@ -117,13 +117,13 @@ Each screen has a row of small buttons in its corner. They change only that scre
 
 ## Keeping heroes: signing in
 
-You can play forever without an account. Without one, heroes "fade after a week away". Each game you play resets the week.
+You can play forever without an account. Without one, heroes "fade after a week away". Playing again starts the week over.
 
 To keep them for good, a grown-up taps **Sign in or create an account** on the start screen. Type an email and tap **Send the code**. Type the eight digits from the email. There is no password. New here? That makes your account. Played before? It signs you back in.
 
 ![Signing in with an emailed code](../../public/guide-pictures/sign-in.jpg)
 
-At the end of a chapter, the phone that started the game also offers to keep the party, with a button that says **Keep** and the heroes' names.
+At the end of a chapter, the phone that started the game also offers to keep the party (in Party Mode, that is the first phone that joined), with a button that says **Keep** and the heroes' names.
 
 Kids never sign in. They are nicknames that a grown-up keeps.
 
@@ -188,7 +188,7 @@ Everything is in **Run a group**, for a signed-in grown-up.
 
 - **Delete** beside a kid removes the kid and all their heroes, everywhere they played. It asks once more first. "This can't be undone."
 - **Keep a kid who stops playing for** lets you pick how long a kid who stops playing is kept: from a month to a year without playing, or **Until a grown-up deletes them**.
-- At the bottom is a button to delete the whole group and everything in it.
+- At the bottom is a button to delete the whole group and everything in it. Only the last grown-up left in a group can do that.
 - **What we store, and for how long** lists everything the game keeps, and for how long.
 
 ![Deleting a kid](../../public/guide-pictures/delete-kid.jpg)

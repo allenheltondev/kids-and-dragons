@@ -120,7 +120,7 @@ test.describe("stop anytime, pick up where you left off", () => {
     // --- A Rest scene: the host is offered a place to stop, and may say no ---
     await jumpTo(allen, first, REST_SCENE);
     await expect(allen.getByText(/cozy place to stop for today/i)).toBeVisible(TAP);
-    await guidePicture(allen, "stop-offer");
+    await guidePicture(allen.locator(".kad-host__offer"), "stop-offer");
     // Nobody else is offered it.
     await expect(sam.getByText(/cozy place to stop for today/i)).toHaveCount(0);
     await allen.getByRole("button", { name: "Keep playing" }).click(TAP);
