@@ -10,6 +10,7 @@
  */
 
 import { test, expect, type Browser, type Page } from "@playwright/test";
+import { guidePicture } from "./guide-pictures";
 
 const TAP = { timeout: 20_000 } as const;
 const WHO = /who.s playing\?/i;
@@ -49,6 +50,8 @@ test.describe("a family tablet", () => {
     const phone = await (await context(browser)).newPage();
     await phone.goto("/");
     await phone.getByRole("button", { name: /sign in or create an account/i }).click(TAP);
+    await expect(phone.getByLabel("Email")).toBeVisible(TAP);
+    await guidePicture(phone, "sign-in");
     await signIn(phone, email);
     await phone.getByRole("button", { name: /back to the game/i }).click(TAP);
     await phone.getByRole("button", { name: /want to host/i }).click();
