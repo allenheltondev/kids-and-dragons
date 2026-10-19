@@ -64,5 +64,16 @@ introduction wording on each path, and the graph prerequisite audit verifies inh
 | Buried bridge | Orin, the guide's refusal and shut door precede the work. Stick/cord, local shelf, baseline drawing and silt patches precede their use. Inspection limits are chosen before the original clear/brace evidence scenes. Both branches establish river evidence before the new inference test. Stonework copies do not silently share the optional chime readings. Restoration leaves the water outlet clear or explicitly repaired, and the guide does not promise a tour. |
 
 The existing illustrations remain establishing views, not literal diagrams of each tool or
-outcome. The whale-cleared ending still switches to the quiet island backdrop. No new canon,
+outcome. The whale-cleared ending switches to a matching aftermath with no whales and the neutral pair open. No new canon,
 quest item, bonus XP, combat, protected explanation or diagnostic public rift color is added.
+
+
+## Evidence and aftermath artwork
+
+The counting close-up is first used at `count`, after `witness` introduces both slates and the
+count scene introduces the chipped stroke. The eruption carving remains pictorial; the image
+preserves the one-stroke/two-stroke ambiguity without dates or a solved count. The bridge
+close-up begins at `clear`/`brace`, when both branches reveal the waterline and rounded pebbles,
+and continues through the inference check. The channel remains dry and the far door is outside
+the close framing. The whale aftermath appears only at `gentle`: no whales remain, the neutral
+folds are open, and the rope is lowered. `offer` still shows dormant folds and circling whales.

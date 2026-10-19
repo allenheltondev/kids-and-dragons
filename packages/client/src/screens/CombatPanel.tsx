@@ -815,7 +815,11 @@ export function CombatControls(): ReactElement | null {
                             <Icon name={combatantIcon(target, party)} size="1.8em" />
                           )}
                         </span>
-                        <span className="choice__label">{combatantLabel(target)}</span>
+                        <span className="choice__label">
+                          {target.id === me.character.id
+                            ? `${combatantLabel(target)} (you)`
+                            : combatantLabel(target)}
+                        </span>
                         <HpBadge combatant={target} />
                         {target.puffed !== undefined ? (
                           <span className="kad-chip kad-chip--warn combat__puffed">

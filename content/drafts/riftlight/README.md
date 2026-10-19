@@ -143,7 +143,15 @@ test fixture seeding it; downstream chapter paths must preserve it. Negative sho
 prove that bypassing the prologue invalidates the regional prerequisite guarantees.
 
 The regional chapters now use dedicated `stone-counters`, `whale-road`, and
-`buried-bridge-dry-channel` scene illustrations. The whales' cleared ending returns to the
-Sky Islands backdrop so departed whales do not remain pictured. The original wet-flat bridge
+`buried-bridge-dry-channel` scene illustrations. The whales' cleared ending uses a matching
+`whale-road-cleared` view with the whales gone and the neutral pair open. The original wet-flat bridge
 illustration is preserved. [Generation prompts and references](../../../art/source/riftlight/scenes/regional-generation.md)
 accompany the source PNGs; runtime exports are 1920×1080 WebP.
+
+
+Evidence close-ups show the ambiguous chipped count and pictorial slates only after those
+objects have been introduced, and the bridge waterline/rounded pebbles only when inspection
+reveals them. No definitive count, date or secret explanation is added. The whale aftermath
+appears only at the gentle ending; the undecided offer retains the circling-whale scene.
+[Evidence/aftermath prompts](../../../art/source/riftlight/scenes/evidence-generation.md) and
+source PNGs accompany the runtime WebP assets.
