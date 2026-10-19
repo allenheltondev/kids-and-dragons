@@ -360,14 +360,14 @@
       "signature": {
         "id": "rally",
         "name": "Rally",
-        "text": "Heal a friend, or lift a knocked-down friend back up from across the board.",
+        "text": "Heal a friend or yourself, or lift a knocked-down friend back up from across the board.",
         "icon": "hand"
       },
       "unlocks": {
         "3": {
           "id": "soothe",
           "name": "Soothe",
-          "text": "A friend within 4 steps gets 3 HP back.",
+          "text": "A friend, or you, within 4 steps gets 3 HP back.",
           "icon": "flame"
         },
         "6": {
