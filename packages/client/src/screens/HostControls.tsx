@@ -49,6 +49,8 @@ export interface RosterRow {
   me: boolean;
   /** From another household, in a room open to visitors (#249). */
   visitor: boolean;
+  /** The host handed this phone the keeper role (`RunState.keeperPlayerId`, #272). */
+  keeper: boolean;
 }
 
 /**
@@ -56,7 +58,7 @@ export interface RosterRow {
  * party member with no roster entry (a run from before the roster) is still
  * listed, so nobody seated is ever missing from the host's view.
  */
-export function rosterOf(state: Pick<RunState, "seats" | "party" | "removed">, me: string): RosterRow[] {
+export function rosterOf(state: Pick<RunState, "seats" | "party" | "removed" | "keeperPlayerId">, me: string): RosterRow[] {
   const seats = state.seats ?? {};
   const ids = [...Object.keys(seats)];
   for (const member of state.party) if (!ids.includes(member.playerId)) ids.push(member.playerId);
@@ -78,6 +80,7 @@ export function rosterOf(state: Pick<RunState, "seats" | "party" | "removed">, m
       status,
       me: playerId === me,
       visitor: (seat?.homeHouseholdId ?? member?.homeHouseholdId) !== undefined,
+      keeper: state.keeperPlayerId === playerId,
     };
   });
 }
@@ -230,6 +233,7 @@ export function HostControls({ placement }: { placement: "inline" | "float" }): 
 
 function HostPanel({ state, me, code }: { state: RunState; me: string; code: string }): React.JSX.Element {
   const removePlayer = useGameStore((store) => store.removePlayer);
+  const handKeeper = useGameStore((store) => store.handKeeper);
   const lockRoom = useGameStore((store) => store.lockRoom);
   const closeRoom = useGameStore((store) => store.closeRoom);
   const stopForToday = useGameStore((store) => store.stopForToday);
@@ -266,8 +270,20 @@ function HostPanel({ state, me, code }: { state: RunState; me: string; code: str
                   {STATUS[row.status]}
                   {row.device === "tablet" ? " · family tablet" : row.device === "phone" ? " · own phone" : ""}
                   {row.visitor ? " · visiting" : ""}
+                  {row.keeper ? " · keeps the game" : ""}
                 </span>
               </span>
+              {row.me || row.keeper || row.visitor || row.device !== "phone" || row.status === "out" ? null : (
+                <Button
+                  variant="ghost"
+                  size="md"
+                  aria-label={`Let ${row.name} keep this game`}
+                  disabled={busy}
+                  onClick={() => void run(() => handKeeper(row.playerId))}
+                >
+                  Make keeper
+                </Button>
+              )}
               {row.me || row.status === "out" ? null : (
                 <Button
                   variant="ghost"

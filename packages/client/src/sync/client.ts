@@ -174,7 +174,7 @@ export interface SharedPlayersLoad extends SharedDevicePlayersResponse {
 }
 
 /** What the host may do to its room (#263, #267). */
-export type HostControl = "remove" | "lock" | "quiet" | "close" | "stop";
+export type HostControl = "remove" | "keeper" | "lock" | "quiet" | "close" | "stop";
 
 /**
  * How the host proves it is the host: a phone's (or TV's) own device token,
