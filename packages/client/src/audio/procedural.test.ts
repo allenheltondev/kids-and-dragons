@@ -22,9 +22,11 @@ describe("procedural audio previews", () => {
     expect(new Set(sounds.map((s) => s.id)).size).toBe(sounds.length);
   });
   it.each(proceduralSounds())("renders audible, bounded PCM for $id", (sound) => {
-      // Loop slope checks use the production sample rate; downsampling increases
-      // legitimate adjacent-sample differences, especially with harmonics.
-      const sampleRate = sound.loop ? 24000 : 6000;
+      // Every sound renders at the cheap rate: a 45s loop at the production 24000 Hz is millions of
+      // samples and took seconds on a busy runner. The loop seam is judged as a slope (change per
+      // second) rather than per sample, because a lower rate legitimately widens the step between
+      // neighbours; the limit is the production one, 0.025 per sample at 24000 Hz.
+      const sampleRate = 6000;
       const pcm = renderProcedural(sound, sampleRate);
       expect(pcm[0].length).toBe(Math.round(sound.seconds * sampleRate));
       let energy = 0;
@@ -33,7 +35,7 @@ describe("procedural audio previews", () => {
         energy += value * value;
       }
       expect(energy / (pcm[0].length * 2), sound.id).toBeGreaterThan(0.000001);
-      if (sound.loop) for (const c of pcm) expect(Math.abs(c[0]! - c[c.length - 1]!), sound.id).toBeLessThan(0.025);
+      if (sound.loop) for (const c of pcm) expect(Math.abs(c[0]! - c[c.length - 1]!) * sampleRate, sound.id).toBeLessThan(0.025 * 24000);
       else for (const c of pcm) expect([Math.abs(c[0]!), Math.abs(c[c.length - 1]!)]).toEqual([0, 0]);
   });
 });

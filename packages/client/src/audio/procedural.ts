@@ -220,14 +220,22 @@ export function renderProcedural(sound: ProceduralSound, sampleRate = 24000): [F
     const highpass = 1 - Math.exp(-2 * Math.PI * (voice.highpass ?? 0) / sampleRate);
     const pan = voice.pan ?? 0;
     const gains = [Math.cos((pan + 1) * Math.PI / 4), Math.sin((pan + 1) * Math.PI / 4)];
+    // Everything below is fixed for the voice, so it is read once, not once per sample: a
+    // minutes-long loop renders millions of them.
+    const attack = Math.min(voice.attack ?? 0.008, voice.duration * 0.4);
+    const attackTime = Math.max(attack / 3, 0.0003);
+    const decay = voice.decay ?? (voice.noise ? 3 : 4.5);
+    const releaseSpan = Math.min(0.05, voice.duration * 0.2);
+    const [rate, cents] = voice.vibrato ?? [0, 0];
+    const partials = voice.partials ?? [[1, 1]];
+    const start = Math.round(voice.at * sampleRate);
     for (let i = 0; i < length; i++) {
-      let frame = Math.round(voice.at * sampleRate) + i;
+      let frame = start + i;
       if (sound.loop) frame %= frames;
       else if (frame >= frames) break;
       const t = i / sampleRate, progress = i / length;
-      const attack = Math.min(voice.attack ?? 0.008, voice.duration * 0.4);
       const envelope = voice.swell ? Math.sin(Math.PI * progress) ** 2
-        : (1 - Math.exp(-t / Math.max(attack / 3, 0.0003))) * Math.exp(-progress * (voice.decay ?? (voice.noise ? 3 : 4.5))) * Math.min(1, (voice.duration - t) / Math.min(0.05, voice.duration * 0.2));
+        : (1 - Math.exp(-t / attackTime)) * Math.exp(-progress * decay) * Math.min(1, (voice.duration - t) / releaseSpan);
       let value: number;
       if (voice.noise) {
         seed ^= seed << 13; seed ^= seed >>> 17; seed ^= seed << 5;
@@ -236,12 +244,13 @@ export function renderProcedural(sound: ProceduralSound, sampleRate = 24000): [F
         low += highpass * (filtered - low);
         value = filtered - low;
       } else {
-        const [rate, cents] = voice.vibrato ?? [0, 0];
         const detune = 2 ** (Math.sin(2 * Math.PI * rate * t) * cents / 1200);
         phase += 2 * Math.PI * (voice.freq + ((voice.endFreq ?? voice.freq) - voice.freq) * progress) * detune / sampleRate;
-        value = (voice.partials ?? [[1, 1]]).reduce((sum, [ratio, weight]) => sum + Math.sin(phase * ratio) * weight, 0);
+        value = 0;
+        for (const [ratio, weight] of partials) value += Math.sin(phase * ratio) * weight;
       }
-      for (let ch = 0; ch < 2; ch++) channels[ch]![frame] = channels[ch]![frame]! + value * envelope * voice.gain * gains[ch]!;
+      const amount = value * envelope * voice.gain;
+      for (let ch = 0; ch < 2; ch++) channels[ch]![frame] = channels[ch]![frame]! + amount * gains[ch]!;
     }
   }
   // A short stereo room, implemented without feedback so tails remain bounded.
