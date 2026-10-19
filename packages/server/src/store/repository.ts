@@ -459,6 +459,12 @@ export interface MoveProfileInput {
  */
 export type MoveOutcome = "moved" | "spent" | "changed" | "too-big";
 
+/** What `setFounder` replaced: both absent is a household from before founders. */
+export interface FounderBefore {
+  founderDeviceId?: string;
+  awaitingFounder?: true;
+}
+
 export interface GameRepository {
   // --- household, players, devices -----------------------------------------
   putHousehold(household: Household): Promise<void>;
@@ -579,8 +585,18 @@ export interface GameRepository {
    * sweeper has not begun on, so it can never move a household that is already
    * an account's. False when any of that does not hold. Authority is the
    * caller's: the store only keeps the household from changing hands twice.
+   *
+   * Answers with what it replaced, or `null` when it wrote nothing, so a
+   * caller whose next write fails can put it back (`restoreFounder`).
    */
-  setFounder(householdId: string, deviceId: string): Promise<boolean>;
+  setFounder(householdId: string, deviceId: string): Promise<FounderBefore | null>;
+  /**
+   * Undo a `setFounder` that `deviceId` made: put back what it replaced. One
+   * conditional write that holds only while `deviceId` is still the founder,
+   * so a later hand-over is never undone by an earlier one's cleanup. A no-op
+   * when it is not.
+   */
+  restoreFounder(householdId: string, deviceId: string, before: FounderBefore): Promise<void>;
   /**
    * Push a guest household's expiry out to `expiresAt` because somebody is
    * playing in it (§4.5): the 7-day window runs from the last time the family

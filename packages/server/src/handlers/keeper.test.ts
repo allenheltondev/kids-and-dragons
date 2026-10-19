@@ -4,6 +4,7 @@ import { makeHarness } from "../test-support.ts";
 import { addPlayer, createGuestHousehold, linkAccount } from "./account.ts";
 import { handKeeper } from "./keeper.ts";
 import { removePlayer } from "./remove.ts";
+import { closeRoom } from "./host.ts";
 import { createRoom, joinRoom } from "./room.ts";
 
 /** A TV's room, where the first phone to join founds the household (#265). */
@@ -123,6 +124,53 @@ describe("a host handing the keeper role to a phone in the room (#272)", () => {
     const refused = await handKeeper({ code, principal: tv.principal, playerId: kid.principal.playerId }, harness.deps);
     expect(refused).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
     expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe(first.principal.deviceId);
+  });
+
+  it("changes nothing when the room cannot take the change (#272 review)", async () => {
+    // The founder write lands, then the run's commit loses every race: the
+    // household must not be left changing hands with no word to the screens.
+    const { harness, tv, code, runId, householdId, join } = await tvRoom();
+    const first = await join("Mia");
+    const second = await join("Sam");
+    harness.repo.commit = async () => false;
+
+    const result = await handKeeper({ code, principal: tv.principal, playerId: second.principal.playerId }, harness.deps);
+    expect(result).toMatchObject({ ok: false, error: { code: "STALE_SEQ" } });
+    expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe(first.principal.deviceId);
+    expect((await harness.repo.getState(runId))?.keeperPlayerId).toBeUndefined();
+    const kept = await linkAccount({ cognitoSub: "sub_family", principal: first.principal }, harness.deps);
+    expect(kept.ok && kept.value.claimed).toBe(true);
+  });
+
+  it("changes nothing when the room closes between the two writes (#272 review)", async () => {
+    const { harness, tv, code, householdId, join } = await tvRoom();
+    const first = await join("Mia");
+    const second = await join("Sam");
+    const setFounder = harness.repo.setFounder.bind(harness.repo);
+    harness.repo.setFounder = async (...args) => {
+      const before = await setFounder(...args);
+      // The host's other screen closes the room just after the founder moved.
+      await closeRoom({ code, principal: tv.principal }, harness.deps);
+      return before;
+    };
+
+    const result = await handKeeper({ code, principal: tv.principal, playerId: second.principal.playerId }, harness.deps);
+    expect(result.ok).toBe(false);
+    expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe(first.principal.deviceId);
+  });
+
+  it("can be tried again after a failure, and then lands", async () => {
+    const { harness, tv, code, runId, householdId, join } = await tvRoom();
+    await join("Mia");
+    const second = await join("Sam");
+    const commit = harness.repo.commit.bind(harness.repo);
+    harness.repo.commit = async () => false;
+    expect((await handKeeper({ code, principal: tv.principal, playerId: second.principal.playerId }, harness.deps)).ok).toBe(false);
+    harness.repo.commit = commit;
+
+    expect((await handKeeper({ code, principal: tv.principal, playerId: second.principal.playerId }, harness.deps)).ok).toBe(true);
+    expect((await harness.repo.getHousehold(householdId))?.founderDeviceId).toBe(second.principal.deviceId);
+    expect((await harness.repo.getState(runId))?.keeperPlayerId).toBe(second.principal.playerId);
   });
 
   it("will not move a game that has already been kept", async () => {
