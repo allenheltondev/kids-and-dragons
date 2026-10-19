@@ -3,11 +3,15 @@ import { describe, expect, it } from "vitest";
 import {
   awardXp,
   CharacterRuleError,
+  classActions,
+  classOf,
   commitCampaign,
   effectiveProgress,
   failCampaign,
   MAX_STAT_GAIN,
   newCharacter,
+  rankForLevel,
+  rankIn,
   recordFinished,
   hasFinished,
   withInventory,
@@ -45,7 +49,9 @@ describe("newCharacter (spec §5)", () => {
     // baseStats are 1 each; three points went to Heart. The species bonus is
     // applied at resolve time, not stored.
     expect(character.committed.stats).toEqual({ might: 1, quick: 1, clever: 1, heart: 4 });
-    expect(character.committed.unlockedActions).toEqual(["rally"]);
+    expect(character.committed.class).toBe("songkeeper");
+    expect(character.committed.mastery).toEqual({ songkeeper: { rank: "none", deeds: {} } });
+    expect(character).not.toHaveProperty("class");
     expect(character.provisional).toBeNull();
     expect(character.questItems).toEqual([]);
     expect(character.souvenirs).toEqual([]);
@@ -94,11 +100,24 @@ describe("joining a party already underway (spec §8.4)", () => {
     expect(after.leveledTo).toBeUndefined();
   });
 
-  it("owns every class action its level already unlocked", () => {
-    const joined = newCharacter({ ...creation(), startingLevel: 7 }).committed;
-    // songkeeper unlocks at 3 and 6; a level-7 join skipped both level-ups and
-    // must still arrive holding them.
-    expect(joined.unlockedActions).toEqual(["rally", "soothe", "chorus"]);
+  it("arrives with the rank whose moves its level used to unlock", () => {
+    const joined = newCharacter({ ...creation(), startingLevel: 7 });
+    // songkeeper's moves were at 3 and 6; a level-7 join arrives as an Expert,
+    // holding both, as a joiner did before distinctions.
+    expect(joined.committed.mastery).toEqual({ songkeeper: { rank: "expert", deeds: {} } });
+    expect(resolveCharacter(joined, rules, items).actions).toEqual(
+      expect.arrayContaining(["rally", "soothe", "chorus"]),
+    );
+    expect(resolveCharacter(joined, rules, items).actions).not.toContain("encore");
+  });
+
+  it.each([
+    [1, "none"],
+    [4, "apprentice"],
+    [7, "expert"],
+    [10, "master"],
+  ] as const)("joins at level %i as %s", (startingLevel, rank) => {
+    expect(rankIn(newCharacter({ ...creation(), startingLevel }).committed, "songkeeper")).toBe(rank);
   });
 
   it("banks one point per skipped level, so a level-7 join has six to spend", () => {
@@ -110,9 +129,18 @@ describe("joining a party already underway (spec §8.4)", () => {
   it("is arithmetically identical to a character that earned the level", () => {
     // The claim spec §8.4 makes, asserted whole: no shortcut and no handicap.
     // Any extra XP, point, or action given to a joiner shows up right here.
+    //
+    // Except for one thing, since #308: ranks are earned by deeds, which XP
+    // cannot stand in for, so a joiner gets the rank its level used to unlock
+    // (the moves a joiner had before distinctions, and the rank a hero of that
+    // level was given by the v5 migration). Everything else is still equal.
     const joined = newCharacter({ ...creation(), startingLevel: 4 });
     const earned = awardXp(newCharacter(creation()), rules, 1200).character;
-    expect(joined.committed).toEqual(earned.committed);
+    const { mastery: joinedMastery, ...joinedRest } = joined.committed;
+    const { mastery: earnedMastery, ...earnedRest } = earned.committed;
+    expect(joinedRest).toEqual(earnedRest);
+    expect(joinedMastery).toEqual({ songkeeper: { rank: "apprentice", deeds: {} } });
+    expect(earnedMastery).toEqual({ songkeeper: { rank: "none", deeds: {} } });
   });
 
   it("rejects a level between the tier floors", () => {
@@ -186,24 +214,39 @@ describe("resolveCharacter — the one place the rules are applied", () => {
     expect(resolved.tier).toBe("radiant");
   });
 
-  it("unlocks the class signature, level unlocks, and the species combat action", () => {
-    const atFive = resolveCharacter(makeCharacter({ level: 1, xp: 1800 }), rules, items);
-    expect(atFive.actions).toContain("rally"); // signature, from level 1
-    expect(atFive.actions).toContain("soothe"); // unlocked at 3
-    expect(atFive.actions).not.toContain("chorus"); // not until 6
-    expect(atFive.actions).toContain("mend_pulse"); // species combat action
-
-    const atSix = resolveCharacter(makeCharacter({ level: 1, xp: 2500 }), rules, items);
-    expect(atSix.actions).toContain("chorus");
+  it.each([
+    ["none", ["rally"]],
+    ["apprentice", ["rally", "soothe"]],
+    ["expert", ["rally", "soothe", "chorus"]],
+    ["master", ["rally", "soothe", "chorus", "encore"]],
+  ] as const)("a %s resolves with the signature, one move per rank, and the species action", (rank, moves) => {
+    const resolved = resolveCharacter(makeCharacter({ rank }), rules, items);
+    expect(resolved.actions).toEqual([...moves, "mend_pulse"]);
+    expect(resolved.rank ?? "none").toBe(rank);
   });
 
-  it("has no duplicate actions and skips stored action IDs absent from current content", () => {
-    const character = makeCharacter({ level: 1, xp: 2500 });
-    character.committed.unlockedActions = ["rally", "chorus", "retired_action"];
+  it("grants no class move for level: moves come from distinctions", () => {
+    const resolved = resolveCharacter(makeCharacter({ level: 1, xp: 6300 }), rules, items);
+    expect(resolved.level).toBe(10);
+    expect(resolved.actions).toEqual(["rally", "mend_pulse"]);
+  });
+
+  it("counts only the worn class: ranks in other classes are kept and give nothing", () => {
+    const character = makeCharacter({ class: "starweaver", rank: "apprentice" });
+    character.committed.mastery.songkeeper = { rank: "master", deeds: { hearts: 49 } };
     const resolved = resolveCharacter(character, rules, items);
 
-    expect(new Set(resolved.actions).size).toBe(resolved.actions.length);
-    expect(resolved.actions).not.toContain("retired_action");
+    expect(resolved.class).toBe("starweaver");
+    expect(resolved.actions).toEqual(["burst", "ward", "mend_pulse"]);
+    // Kept, for the day they wear it again.
+    expect(character.committed.mastery.songkeeper).toEqual({ rank: "master", deeds: { hearts: 49 } });
+  });
+
+  it("reads a class with no entry as no rank", () => {
+    const character = makeCharacter({ class: "thornguard" });
+    character.committed.mastery = {};
+    expect(resolveCharacter(character, rules, items).actions).toEqual(["brace", "mend_pulse"]);
+    expect(resolveCharacter(character, rules, items)).not.toHaveProperty("rank");
   });
 
   it("attacks with its class stat and guards with Quick", () => {
@@ -312,8 +355,7 @@ describe("resolveCharacter — the one place the rules are applied", () => {
     const incompleteRules = makeRules();
     delete (incompleteRules.species as Partial<typeof incompleteRules.species>).unicorn;
     delete (incompleteRules.classes as Partial<typeof incompleteRules.classes>).songkeeper;
-    const character = makeCharacter({ inventory: [{ itemId: "ghost_item", kind: "trinket" }] });
-    character.committed.unlockedActions = ["retired_action"];
+    const character = makeCharacter({ rank: "master", inventory: [{ itemId: "ghost_item", kind: "trinket" }] });
 
     const resolved = resolveCharacter(character, incompleteRules, items);
 
@@ -334,13 +376,19 @@ describe("resolveCharacter — the one place the rules are applied", () => {
 function midCampaign(): Character {
   const base = makeCharacter({ level: 4, xp: 1200, inventory: [{ itemId: "river_charm", kind: "trinket" }] });
   base.committed.tier = "sworn";
-  base.committed.unlockedActions = ["rally", "soothe"];
+  base.committed.mastery = { songkeeper: { rank: "apprentice", deeds: {} } };
   const started = startCampaign(base, "r_88c");
   const provisional = started.provisional!;
   provisional.level = 6;
   provisional.xp = 2100;
   provisional.stats = { ...provisional.stats, heart: 8 };
-  provisional.unlockedActions = ["rally", "soothe", "chorus"];
+  // Mid-campaign the hero changed class and grew in both (#310, #311 write
+  // these; the rule they live under is tested here).
+  provisional.class = "starweaver";
+  provisional.mastery = {
+    songkeeper: { rank: "expert", deeds: { hearts: 3 } },
+    starweaver: { rank: "none", deeds: { burst_two: 2 } },
+  };
   provisional.inventory = [
     { itemId: "river_charm", kind: "trinket" },
     { itemId: "emberglass_shard", kind: "trinket" },
@@ -348,6 +396,27 @@ function midCampaign(): Character {
   started.questItems = ["rusted_key", "torn_map_east"];
   return started;
 }
+
+describe("class moves by distinction (#308)", () => {
+  const songkeeper = rules.classes.songkeeper;
+
+  it("orders a class's unlocks by the level they used to unlock at", () => {
+    expect(classActions(songkeeper, "none")).toEqual(["rally"]);
+    expect(classActions(songkeeper, "master")).toEqual(["rally", "soothe", "chorus", "encore"]);
+  });
+
+  it.each([
+    [1, "none"],
+    [2, "none"],
+    [3, "apprentice"],
+    [5, "apprentice"],
+    [6, "expert"],
+    [9, "master"],
+    [10, "master"],
+  ] as const)("maps level %i to %s", (level, rank) => {
+    expect(rankForLevel(songkeeper, level)).toBe(rank);
+  });
+});
 
 describe("the commitment rule", () => {
   it("effective progress is provisional ?? committed", () => {
@@ -363,6 +432,22 @@ describe("the commitment rule", () => {
     // A deep copy, not an alias: writing to one must not write to the other.
     character.provisional!.stats.heart = 99;
     expect(character.committed.stats.heart).not.toBe(99);
+  });
+
+  it("startCampaign copies class and ranks deeply, so deeds mid-campaign cannot reach committed", () => {
+    const character = startCampaign(makeCharacter({ rank: "apprentice" }), "r_1");
+    character.provisional!.mastery.songkeeper!.deeds["hearts"] = 7;
+    character.provisional!.mastery.songkeeper!.rank = "expert";
+    character.provisional!.class = "thornguard";
+    expect(character.committed.class).toBe("songkeeper");
+    expect(character.committed.mastery).toEqual({ songkeeper: { rank: "apprentice", deeds: {} } });
+  });
+
+  it("the worn class is the effective half's", () => {
+    const started = midCampaign();
+    expect(classOf(started)).toBe("starweaver");
+    expect(resolveCharacter(started, rules, items).class).toBe("starweaver");
+    expect(resolveCharacter(started, rules, items).actions).toEqual(["burst", "mend_pulse"]);
   });
 
   it("startCampaign is idempotent for the same run, so a reconnect loses nothing", () => {
@@ -383,7 +468,11 @@ describe("the commitment rule", () => {
     expect(done.committed.level).toBe(6);
     expect(done.committed.xp).toBe(2100);
     expect(done.committed.stats.heart).toBe(8);
-    expect(done.committed.unlockedActions).toEqual(["rally", "soothe", "chorus"]);
+    expect(done.committed.class).toBe("starweaver");
+    expect(done.committed.mastery).toEqual({
+      songkeeper: { rank: "expert", deeds: { hearts: 3 } },
+      starweaver: { rank: "none", deeds: { burst_two: 2 } },
+    });
     // Inventory rides along with levels for free — same object (§9.5).
     expect(done.committed.inventory.map((e) => e.itemId)).toEqual([
       "river_charm",
@@ -401,6 +490,10 @@ describe("the commitment rule", () => {
     expect(failed.committed.level).toBe(4);
     expect(failed.committed.xp).toBe(1200);
     expect(failed.committed.inventory.map((e) => e.itemId)).toEqual(["river_charm"]);
+    // Class, ranks and deed progress go back to the campaign's start (#308).
+    expect(classOf(failed)).toBe("songkeeper");
+    expect(failed.committed.mastery).toEqual({ songkeeper: { rank: "apprentice", deeds: {} } });
+    expect(resolveCharacter(failed, rules, items).actions).toEqual(["rally", "soothe", "mend_pulse"]);
     expect(failed.provisional).toBeNull();
     expect(failed.questItems).toEqual([]);
     expect(failed.souvenirs).toEqual([
@@ -540,18 +633,15 @@ describe("awardXp (spec §8.1)", () => {
     expect(result.character.provisional?.xp).toBe(100);
   });
 
-  it("appends the class actions the new level unlocks", () => {
-    const result = awardXp(startCampaign(makeCharacter(), "r_1"), rules, 700);
-    expect(result.character.provisional?.unlockedActions).toContain("soothe");
-  });
-
-  it("unlocks every class action crossed by a multi-level award", () => {
-    const result = awardXp(startCampaign(makeCharacter(), "r_1"), rules, 2500);
+  it("unlocks no class move and leaves class and ranks alone, however many levels it crosses", () => {
+    const result = awardXp(startCampaign(makeCharacter({ rank: "apprentice" }), "r_1"), rules, 2500);
 
     expect(result.leveledTo).toBe(6);
-    expect(result.character.provisional?.unlockedActions).toEqual(
-      expect.arrayContaining(["soothe", "chorus"]),
-    );
+    expect(result.character.provisional).toMatchObject({
+      class: "songkeeper",
+      mastery: { songkeeper: { rank: "apprentice", deeds: {} } },
+    });
+    expect(resolveCharacter(result.character, rules, items).actions).not.toContain("chorus");
   });
 
   it("still awards XP when the stored class was removed from current content", () => {
@@ -563,7 +653,7 @@ describe("awardXp (spec §8.1)", () => {
     const result = awardXp(startCampaign(makeCharacter(), "r_1"), staleRules, 300);
 
     expect(result.character.provisional).toMatchObject({ xp: 300, level: 2 });
-    expect(result.character.provisional?.unlockedActions).toEqual(["rally"]);
+    expect(result.character.provisional?.class).toBe("songkeeper");
   });
 
   it("is reverted wholesale by a failed campaign", () => {

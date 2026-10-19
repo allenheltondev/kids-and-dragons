@@ -332,7 +332,7 @@ export interface CombatAbility {
  * Every combat ability, by id. Authored content, loaded and handed in, exactly
  * like `RulesContent` and the item catalog. An id in a character's action list
  * with no entry here is skipped rather than thrown on, for the same reason
- * `resolveCharacter` tolerates a stale `unlockedActions` entry: a save written
+ * `resolveCharacter` tolerates a stale class or species id: a save written
  * against older content must not take the table down on a Tuesday.
  */
 export type AbilityCatalog = Record<string, CombatAbility>;

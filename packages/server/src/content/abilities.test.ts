@@ -43,6 +43,7 @@ import {
   type ResolvedCharacter,
   type SpeciesId,
 } from "@kad/shared";
+import type { ClassRank } from "@kad/shared";
 import { clearContentCache, loadContent, type ContentStore } from "./loader.ts";
 import { contentDir } from "../paths.ts";
 
@@ -84,18 +85,18 @@ function ctx(): EncounterContext {
 }
 
 /**
- * A resolved character of the given species and class at the given level, built
+ * A resolved character of the given species and class at the given rank, built
  * through `newCharacter` and `resolveCharacter` rather than by hand.
  *
  * The long way round is the point: `resolveCharacter` is what decides which
- * abilities a level has unlocked, and hand-writing an `actions` array here would
- * let a level-9 ability be tested that no level-9 character is ever granted.
+ * abilities a rank has unlocked, and hand-writing an `actions` array here would
+ * let a Master ability be tested that no Master is ever granted.
  */
 function hero(input: {
   id: string;
   species: SpeciesId;
   class: ClassId;
-  level?: number;
+  rank?: ClassRank;
   hp?: number;
 }): ResolvedCharacter {
   const base = newCharacter({
@@ -112,19 +113,14 @@ function hero(input: {
     rules,
     now: "2026-01-01T00:00:00.000Z",
   });
-  const level = input.level ?? 1;
-  const levelled: Character = {
+  const ranked: Character = {
     ...base,
     committed: {
       ...base.committed,
-      level,
-      // Progression derives level from cumulative XP. Keep this encounter
-      // fixture honest by placing the character exactly on the requested
-      // level's content-defined threshold instead of changing level alone.
-      xp: level === 1 ? 0 : rules.levelXp[level - 2]!,
+      mastery: { [input.class]: { rank: input.rank ?? "none", deeds: {} } },
     },
   };
-  return resolveCharacter(levelled, rules, items);
+  return resolveCharacter(ranked, rules, items);
 }
 
 function statsFor(classId: ClassId) {
@@ -348,15 +344,15 @@ describe("class signatures", () => {
 });
 
 describe("class unlocks", () => {
-  it("are not offered before their level", () => {
-    const low = hero({ id: "c_low", species: "unicorn", class: "songkeeper", level: 2 });
-    const high = hero({ id: "c_high", species: "unicorn", class: "songkeeper", level: 3 });
+  it("are not offered before their rank", () => {
+    const low = hero({ id: "c_low", species: "unicorn", class: "songkeeper", rank: "none" });
+    const high = hero({ id: "c_high", species: "unicorn", class: "songkeeper", rank: "apprentice" });
     expect(low.actions).not.toContain("soothe");
     expect(high.actions).toContain("soothe");
   });
 
   it("shove pushes an enemy back and takes its tile", () => {
-    const guard = hero({ id: "c_guard", species: "bigfoot", class: "thornguard", level: 3 });
+    const guard = hero({ id: "c_guard", species: "bigfoot", class: "thornguard", rank: "apprentice" });
     const scene = sceneWith(
       [{ character: guard, at: { x: 3, y: 2 } }],
       [wisp({ x: 4, y: 2 })],
@@ -371,7 +367,7 @@ describe("class unlocks", () => {
   });
 
   it("glimmer reaches a friend anywhere on the board", () => {
-    const weaver = hero({ id: "c_weaver", species: "kitsune", class: "starweaver", level: 3 });
+    const weaver = hero({ id: "c_weaver", species: "kitsune", class: "starweaver", rank: "apprentice" });
     const friend = hero({ id: "c_friend", species: "unicorn", class: "songkeeper" });
     const scene = sceneWith(
       [
@@ -388,7 +384,7 @@ describe("class unlocks", () => {
   });
 
   it("soothe reaches four steps and no further", () => {
-    const keeper = hero({ id: "c_keeper", species: "unicorn", class: "songkeeper", level: 3 });
+    const keeper = hero({ id: "c_keeper", species: "unicorn", class: "songkeeper", rank: "apprentice" });
     const near = hero({ id: "c_near", species: "bigfoot", class: "thornguard" });
     const far = hero({ id: "c_far", species: "griffin", class: "duskrunner" });
     const scene = sceneWith(
@@ -410,7 +406,7 @@ describe("class unlocks", () => {
   });
 
   it("chorus needs no target and reaches the whole party, singer included", () => {
-    const keeper = hero({ id: "c_keeper", species: "unicorn", class: "songkeeper", level: 6 });
+    const keeper = hero({ id: "c_keeper", species: "unicorn", class: "songkeeper", rank: "expert" });
     const friend = hero({ id: "c_friend", species: "bigfoot", class: "thornguard" });
     const scene = sceneWith(
       [
@@ -574,7 +570,7 @@ describe("the chapter-5 unlocks", () => {
   });
 
   it("vanish: the next swing at the Duskrunner misses", () => {
-    const runner = hero({ id: "c_runner", species: "griffin", class: "duskrunner", level: 3 });
+    const runner = hero({ id: "c_runner", species: "griffin", class: "duskrunner", rank: "apprentice" });
     const scene = sceneWith([{ character: runner, at: { x: 1, y: 2 } }], [wisp()], runner.id);
 
     expect(offered(scene)).toContain("vanish");
@@ -583,7 +579,7 @@ describe("the chapter-5 unlocks", () => {
   });
 
   it("twin_step: move, attack, and the tiles light up again", () => {
-    const runner = hero({ id: "c_runner", species: "griffin", class: "duskrunner", level: 6 });
+    const runner = hero({ id: "c_runner", species: "griffin", class: "duskrunner", rank: "expert" });
     const scene = sceneWith([{ character: runner, at: { x: 3, y: 2 } }], [wisp()], runner.id);
 
     expect(offered(scene)).toContain("twin_step");
@@ -594,7 +590,7 @@ describe("the chapter-5 unlocks", () => {
   });
 
   it("storm_of_blades: two different enemies, both hit", () => {
-    const runner = hero({ id: "c_runner", species: "griffin", class: "duskrunner", level: 9 });
+    const runner = hero({ id: "c_runner", species: "griffin", class: "duskrunner", rank: "master" });
     const scene = sceneWith(
       [{ character: runner, at: { x: 3, y: 2 } }],
       [wisp({ x: 4, y: 2 }), wisp({ x: 3, y: 3 })],
@@ -609,7 +605,7 @@ describe("the chapter-5 unlocks", () => {
   });
 
   it("bramble_wall: two tiles of real terrain", () => {
-    const guard = hero({ id: "c_guard", species: "bigfoot", class: "thornguard", level: 6 });
+    const guard = hero({ id: "c_guard", species: "bigfoot", class: "thornguard", rank: "expert" });
     const scene = sceneWith([{ character: guard, at: { x: 3, y: 2 } }], [wisp({ x: 8, y: 2 })], guard.id);
 
     const wall = legalActions(scene.state, ctx()).find((a) => a.abilityId === "bramble_wall");
@@ -627,7 +623,7 @@ describe("the chapter-5 unlocks", () => {
   });
 
   it("unbreakable: the Thornguard and the friend beside them are warded", () => {
-    const guard = hero({ id: "c_guard", species: "bigfoot", class: "thornguard", level: 9 });
+    const guard = hero({ id: "c_guard", species: "bigfoot", class: "thornguard", rank: "master" });
     const friend = hero({ id: "c_friend", species: "unicorn", class: "songkeeper" });
     const scene = sceneWith(
       [
@@ -645,7 +641,7 @@ describe("the chapter-5 unlocks", () => {
   });
 
   it("tanglelight: the wrapped enemy cannot move on its next turn", () => {
-    const weaver = hero({ id: "c_weaver", species: "kitsune", class: "starweaver", level: 6 });
+    const weaver = hero({ id: "c_weaver", species: "kitsune", class: "starweaver", rank: "expert" });
     const scene = sceneWith([{ character: weaver, at: { x: 1, y: 2 } }], [wisp({ x: 5, y: 2 })], weaver.id);
 
     expect(offered(scene)).toContain("tanglelight");
@@ -654,7 +650,7 @@ describe("the chapter-5 unlocks", () => {
   });
 
   it("starfall: every enemy on the board, once per fight", () => {
-    const weaver = hero({ id: "c_weaver", species: "kitsune", class: "starweaver", level: 9 });
+    const weaver = hero({ id: "c_weaver", species: "kitsune", class: "starweaver", rank: "master" });
     const scene = sceneWith(
       [{ character: weaver, at: { x: 0, y: 0 } }],
       [wisp({ x: 9, y: 4 }), wisp({ x: 0, y: 4 })],
@@ -669,7 +665,7 @@ describe("the chapter-5 unlocks", () => {
   });
 
   it("encore: the friend is owed an action the moment the song ends", () => {
-    const singer = hero({ id: "c_singer", species: "unicorn", class: "songkeeper", level: 9 });
+    const singer = hero({ id: "c_singer", species: "unicorn", class: "songkeeper", rank: "master" });
     const friend = hero({ id: "c_friend", species: "bigfoot", class: "thornguard" });
     const scene = sceneWith(
       [
@@ -696,7 +692,7 @@ describe("what is not in the catalog", () => {
      * resolve. `legalActions` must simply not offer it. Anything else is a
      * crash at the table for a gap somebody wrote down on purpose.
      */
-    const guard = hero({ id: "c_guard", species: "bigfoot", class: "thornguard", level: 6 });
+    const guard = hero({ id: "c_guard", species: "bigfoot", class: "thornguard", rank: "expert" });
     const promised = { ...guard, actions: [...guard.actions, "comet_call"] };
     expect(catalog["comet_call"]).toBeUndefined();
 

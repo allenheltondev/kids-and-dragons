@@ -17,14 +17,14 @@ function character(): Character {
     ownerPlayerId: "p_1",
     name: "Sparklehoof",
     species: "unicorn",
-    class: "songkeeper",
     appearance: { palette: "meadow", accent: "#7FD4C1" },
     committed: {
       level: 4,
       xp: 700,
       stats: { might: 2, quick: 3, clever: 2, heart: 4 },
       tier: "sworn",
-      unlockedActions: ["songkeeper-signature", "rallying-chorus"],
+      class: "songkeeper",
+      mastery: {},
       inventory: [{ itemId: "lucky-charm", kind: "trinket" }],
       unspentPoints: 2,
     },
@@ -34,7 +34,8 @@ function character(): Character {
       xp: 1200,
       stats: { might: 3, quick: 3, clever: 2, heart: 4 },
       tier: "sworn",
-      unlockedActions: ["songkeeper-signature", "rallying-chorus", "heroic-verse"],
+      class: "songkeeper",
+      mastery: {},
       inventory: [{ itemId: "lucky-charm", kind: "trinket" }],
       unspentPoints: 1,
     },
@@ -99,9 +100,17 @@ describe("DynamoRepository character persistence", () => {
     });
   });
   it("migrates an unstamped character row on read without losing progression", async () => {
-    const legacy = structuredClone(character());
-    delete legacy.committed.unspentPoints;
-    delete legacy.provisional!.unspentPoints;
+    // In the shape v0 wrote it: class on the character, the moves levelling
+    // had written in each half, and no banked points.
+    const { committed, provisional, ...hero } = character();
+    const legacyHalf = ({ class: _c, mastery: _m, unspentPoints: _u, ...half }: typeof committed, unlockedActions: string[]) =>
+      ({ ...half, unlockedActions });
+    const legacy = {
+      ...hero,
+      class: "songkeeper",
+      committed: legacyHalf(committed, ["rally", "soothe"]),
+      provisional: { ...legacyHalf(provisional!, ["rally", "soothe", "chorus"]), runId: provisional!.runId },
+    };
     send.mockResolvedValueOnce({ Item: { data: legacy } });
     const repo = new DynamoRepository({ tableName: "kad-test", client });
 
@@ -110,7 +119,11 @@ describe("DynamoRepository character persistence", () => {
     expect(send.mock.calls[0]?.[0]).toBeInstanceOf(GetCommand);
     expect(loaded?.committed.unspentPoints).toBe(0);
     expect(loaded?.provisional?.unspentPoints).toBe(0);
-    expect(loaded?.provisional?.unlockedActions).toEqual(legacy.provisional?.unlockedActions);
+    // Every move it had: Soothe in committed (level 4), and Chorus in provisional,
+    // which only its moves show (level 5, but levelling had written Chorus).
+    expect(loaded?.committed).toMatchObject({ class: "songkeeper", mastery: { songkeeper: { rank: "apprentice", deeds: {} } } });
+    expect(loaded?.provisional).toMatchObject({ class: "songkeeper", mastery: { songkeeper: { rank: "expert", deeds: {} } } });
+    expect(loaded).not.toHaveProperty("class");
   });
 
   it("includes versioned full character writes in the run transaction", async () => {

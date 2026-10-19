@@ -15,7 +15,7 @@
  * downstream sees a `ResolvedCharacter` and cannot tell where a bonus came from.
  */
 
-import { STAT_IDS } from "./types/domain.js";
+import { CLASS_RANKS, STAT_IDS } from "./types/domain.js";
 import type {
   Appearance,
   AwardXpResult,
@@ -23,6 +23,8 @@ import type {
   CharacterProgress,
   ClassDef,
   ClassId,
+  ClassMastery,
+  ClassRank,
   FinishedCampaign,
   InventoryEntry,
   ItemCatalog,
@@ -82,6 +84,19 @@ export function spendableStatsOf(progress: CharacterProgress, rules: RulesConten
 /** architecture §3.1 — `provisional ?? committed`, resolved in exactly one place. */
 export function effectiveProgress(character: Character): CharacterProgress {
   return character.provisional ?? character.committed;
+}
+
+/**
+ * The class the hero is wearing, from the effective half: a class changed
+ * mid-campaign is the one they fight as, and goes back if the campaign fails.
+ */
+export function classOf(character: Character): ClassId {
+  return effectiveProgress(character).class;
+}
+
+/** A class's distinction in `progress`. A class the hero has never worn is `none`. */
+export function rankIn(progress: CharacterProgress, classId: ClassId): ClassRank {
+  return progress.mastery[classId]?.rank ?? "none";
 }
 
 /**
@@ -159,13 +174,22 @@ function cloneProgress(progress: CharacterProgress): CharacterProgress {
     xp: progress.xp,
     stats: { ...progress.stats },
     tier: progress.tier,
-    unlockedActions: [...progress.unlockedActions],
+    class: progress.class,
+    mastery: cloneMastery(progress.mastery),
     inventory: progress.inventory.map((e) => ({ ...e })),
     // Normalized on the way through: a character stored before unspent points
     // existed comes back without the field, and the arithmetic downstream must
     // never see `undefined + 1`.
     unspentPoints: progress.unspentPoints ?? 0,
   };
+}
+
+function cloneMastery(mastery: CharacterProgress["mastery"]): CharacterProgress["mastery"] {
+  const out: CharacterProgress["mastery"] = {};
+  for (const [classId, entry] of Object.entries(mastery) as [ClassId, ClassMastery | undefined][]) {
+    if (entry) out[classId] = { rank: entry.rank, deeds: { ...entry.deeds } };
+  }
+  return out;
 }
 
 /**
@@ -266,13 +290,12 @@ export function newCharacter(input: NewCharacterInput): Character {
     xp: xpForLevel(rules, level),
     stats,
     tier: tierForLevel(rules, level),
-    // The signature action is yours from level 1 (spec §4.3); a character that
-    // joins above 1 also owns everything its level already unlocked, exactly as
-    // if it had earned them. Later unlocks are appended by awardXp and
-    // recomputed defensively in resolveCharacter.
-    unlockedActions: [
-      ...new Set([classDef.signature.id, ...levelUnlocks(rules, input.class, level)]),
-    ],
+    class: input.class,
+    // The signature is yours from level 1 (spec §4.3). A hero joining at a tier
+    // floor arrives with the rank whose moves that level used to unlock, so
+    // they sit down with the same moves a joiner had before distinctions
+    // (spec §8.4); every other class starts at none, as for anyone.
+    mastery: { [input.class]: { rank: rankForLevel(classDef, level), deeds: {} } },
     inventory: [],
     // One point per level gained, the same as if those levels had been earned
     // (spec §8.4 "arithmetically identical") — so a level-7 join sits down with
@@ -286,7 +309,6 @@ export function newCharacter(input: NewCharacterInput): Character {
     ownerPlayerId: input.ownerPlayerId,
     name: input.name.trim(),
     species: input.species,
-    class: input.class,
     appearance: input.appearance,
     committed,
     provisional: null,
@@ -335,34 +357,35 @@ function xpForLevel(rules: RulesContent, level: number): number {
 // Resolution — the one place the rules are applied
 // ---------------------------------------------------------------------------
 
-/** Class actions unlocked at or below `level`, in level order. */
-function unlocksForClass(classDef: ClassDef, level: number): string[] {
+/**
+ * A class's unlocks in rank order: Apprentice's move first, then Expert's,
+ * then Master's. `ClassDef.unlocks` is keyed by the level each used to unlock
+ * at, and that order is the rank order (docs/class-mastery.md §5).
+ */
+function unlockLadder(classDef: ClassDef): { at: number; id: string }[] {
   return Object.entries(classDef.unlocks)
     .map(([at, action]) => ({ at: Number(at), id: action.id }))
-    .filter((u) => Number.isFinite(u.at) && level >= u.at)
-    .sort((a, b) => a.at - b.at)
-    .map((u) => u.id);
+    .filter((u) => Number.isFinite(u.at))
+    .sort((a, b) => a.at - b.at);
 }
 
-function levelUnlocks(rules: RulesContent, classId: ClassId, level: number): string[] {
-  const classDef = (rules.classes as Partial<typeof rules.classes>)[classId];
-  return classDef ? unlocksForClass(classDef, level) : [];
+/**
+ * The class moves a rank grants: the signature, then one move per rank. The
+ * whole of a hero's class kit; nothing else puts a class move on the phone.
+ */
+export function classActions(classDef: ClassDef, rank: ClassRank): string[] {
+  const unlocked = Math.max(0, CLASS_RANKS.indexOf(rank));
+  return [classDef.signature.id, ...unlockLadder(classDef).slice(0, unlocked).map((u) => u.id)];
 }
 
-/** Every combat action still present in the current rules catalog. */
-function currentActionIds(rules: RulesContent): Set<string> {
-  const ids = new Set<string>();
-  for (const classDef of Object.values(rules.classes)) {
-    if (!classDef) continue;
-    ids.add(classDef.signature.id);
-    for (const action of Object.values(classDef.unlocks)) {
-      if (action) ids.add(action.id);
-    }
-  }
-  for (const species of Object.values(rules.species)) {
-    if (species) ids.add(species.combatAction.id);
-  }
-  return ids;
+/**
+ * The rank whose moves `level` unlocked before distinctions: one rank per
+ * unlock at or below it (3 → Apprentice, 6 → Expert, 9 → Master with today's
+ * rules). What a hero joining at a tier floor arrives with (spec §8.4).
+ */
+export function rankForLevel(classDef: ClassDef, level: number): ClassRank {
+  const reached = unlockLadder(classDef).filter((u) => level >= u.at).length;
+  return CLASS_RANKS[Math.min(reached, CLASS_RANKS.length - 1)] ?? "none";
 }
 
 export function resolveCharacter(
@@ -372,7 +395,8 @@ export function resolveCharacter(
 ): ResolvedCharacter {
   const progress = effectiveProgress(character);
   const species = (rules.species as Partial<typeof rules.species>)[character.species];
-  const classDef = (rules.classes as Partial<typeof rules.classes>)[character.class];
+  const classDef = (rules.classes as Partial<typeof rules.classes>)[progress.class];
+  const rank = rankIn(progress, progress.class);
   const level = levelForXp(rules, progress.xp);
 
   const stats = { ...progress.stats } as Stats;
@@ -412,14 +436,13 @@ export function resolveCharacter(
     }
   }
 
-  const knownActions = currentActionIds(rules);
   const actions = [
-    ...(classDef ? [classDef.signature.id, ...unlocksForClass(classDef, level)] : []),
+    // The worn class's signature and one move per rank in it, and no other
+    // class moves: ranks in classes the hero is not wearing are kept but do
+    // not count (docs/class-mastery.md §5). Level grants no moves.
+    ...(classDef ? classActions(classDef, rank) : []),
     // Once per encounter, the combat-flavored world ability (spec §7.2).
     ...(species ? [species.combatAction.id] : []),
-    // Preserve earned actions that still exist in content, while tolerating
-    // actions removed by a later content revision.
-    ...progress.unlockedActions.filter((id) => knownActions.has(id)),
   ];
 
   return {
@@ -427,7 +450,10 @@ export function resolveCharacter(
     ownerPlayerId: character.ownerPlayerId,
     name: character.name,
     species: character.species,
-    class: character.class,
+    class: progress.class,
+    // Present only above `none`, like `practiced`: a hero with no rank yet
+    // resolves exactly as before distinctions existed.
+    ...(rank !== "none" ? { rank } : {}),
     appearance: character.appearance,
     level,
     xp: progress.xp,
@@ -489,15 +515,12 @@ export function awardXp(
   const tier = tierForLevel(rules, level);
   const levelsGained = Math.max(0, level - beforeLevel);
 
-  const unlocked = new Set(before.unlockedActions);
-  for (const id of levelUnlocks(rules, character.class, level)) unlocked.add(id);
-
+  // No class move here: moves come from distinctions, not level (#308).
   const next: CharacterProgress = {
     ...cloneProgress(before),
     xp,
     level,
     tier,
-    unlockedActions: [...unlocked],
     // One point per level *gained*, not one per award: a big chapter that jumps
     // three levels owes three points, and a level that a setback's half award
     // failed to reach owes none (spec §8.1).

@@ -15,6 +15,7 @@ import type {
   Character,
   ClassDef,
   ClassId,
+  ClassRank,
   ItemCatalog,
   RulesContent,
   SpeciesDef,
@@ -108,7 +109,7 @@ export function makeRules(overrides: Partial<RulesContent> = {}): RulesContent {
       thornguard: klass("thornguard", "might", 4, "brace", { "3": "bulwark" }),
       duskrunner: klass("duskrunner", "quick", 6, "first_strike", { "3": "vanish" }),
       starweaver: klass("starweaver", "clever", 4, "burst", { "3": "ward" }),
-      songkeeper: klass("songkeeper", "heart", 4, "rally", { "3": "soothe", "6": "chorus" }),
+      songkeeper: klass("songkeeper", "heart", 4, "rally", { "3": "soothe", "6": "chorus", "9": "encore" }),
     },
     ...overrides,
   };
@@ -193,6 +194,8 @@ export interface MakeCharacterInput {
   stats?: Stats;
   level?: number;
   xp?: number;
+  /** The worn class's distinction; `none` unless given (moves come from it, not level). */
+  rank?: ClassRank;
   inventory?: { itemId: string; kind: "consumable" | "trinket" }[];
 }
 
@@ -205,14 +208,14 @@ export function makeCharacter(input: MakeCharacterInput = {}): Character {
     ownerPlayerId: input.ownerPlayerId ?? "p_1",
     name: input.name ?? "Sparklehoof",
     species: input.species ?? "unicorn",
-    class: input.class ?? "songkeeper",
     appearance: APPEARANCE,
     committed: {
       level: input.level ?? 1,
       xp: input.xp ?? 0,
       stats,
       tier: "fledgling",
-      unlockedActions: ["rally"],
+      class: input.class ?? "songkeeper",
+      mastery: { [input.class ?? "songkeeper"]: { rank: input.rank ?? "none", deeds: {} } },
       inventory: input.inventory ?? [],
     },
     provisional: null,
