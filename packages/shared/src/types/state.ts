@@ -247,6 +247,12 @@ export interface RunState {
    * one. Optional: absent on runs persisted before it existed, read as null.
    */
   scenePriority?: ScenePriority | null;
+  /**
+   * The current scene's `hint` (chapter.ts `SceneHint`, #255): what to tap, for
+   * a player still learning. Present only while a scene that has one is open,
+   * which today means only in the practice; every other run never carries it.
+   */
+  hint?: string;
   party: PartyMember[];
   prompt: Prompt | null;
   lastRoll: DiceRoll | null;
