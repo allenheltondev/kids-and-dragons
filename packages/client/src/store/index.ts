@@ -30,7 +30,7 @@ import type {
   RunState,
   WorldMap,
 } from "@kad/shared";
-import { previewContext, rollerAway, turnHolderAway } from "@kad/shared";
+import { owesClassAnswer, previewContext, rollerAway, turnHolderAway } from "@kad/shared";
 import { isMyCombatTurn, parseAbilityCatalog } from "./combat";
 import type {
   ClientSession,
@@ -1471,6 +1471,12 @@ export function useMyTurnKey(): string | null {
       // Revisiting the same authored scene is a *new* question, even when
       // it uses the same choice ids and narration.
       return `prompt:${state.chapterId ?? ""}:${state.visited?.length ?? 0}:${JSON.stringify(stablePrompt)}`;
+    }
+
+    // A class place (#311) asks this kid even when the story turn is a friend's.
+    const me = selectMe(state, playerId);
+    if (state.phase === "scene" && state.classPlace && me && owesClassAnswer(state.classPlace, me)) {
+      return `class:${state.chapterId ?? ""}:${state.visited?.length ?? 0}`;
     }
 
     if (isMyCombatTurn(state, playerId) && state.encounter) {

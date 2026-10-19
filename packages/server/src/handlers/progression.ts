@@ -33,6 +33,9 @@ import {
   resolveCharacter,
   resumeJourney,
   spendStatPoint as applyStatPointSpend,
+  switchClass as applyClassSwitch,
+  classAnswerRefusal,
+  classPlaceOf,
   startCampaign,
   memberHome,
   startJourney,
@@ -52,6 +55,7 @@ import {
   type ProgressionAward,
   type RunState,
   type StatId,
+  type ClassId,
 } from "@kad/shared";
 import {
   awardChapterXp,
@@ -1211,6 +1215,88 @@ export async function prepareStatPointSpend(
         party: state.party.map((candidate) =>
           candidate.playerId === playerId ? { ...candidate, character: resolved } : candidate,
         ),
+      },
+    });
+  } catch (err) {
+    if (err instanceof CharacterRuleError) return fail("ILLEGAL", err.message);
+    throw err;
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// Class places: switching the worn class (#311)
+// ---------------------------------------------------------------------------
+
+/**
+ * Computes a class switch for `applyAction` without writing anything, the way
+ * `prepareStatPointSpend` does and for the same reason: the row, the run and
+ * the event commit together under the seq guard.
+ *
+ * The server's checks (docs/class-mastery.md §7): the party is in that class's
+ * room, read from the chapter itself rather than only the run's mirror of it,
+ * and the hero is not already that class. The switch lands in `provisional`
+ * while a campaign is in flight (`switchClass`), so a failed campaign puts the
+ * class back with everything else.
+ */
+/** The same pair a stat-point spend prepares: the row, and the run that shows it. */
+export type PreparedClassSwitch = PreparedStatPointSpend;
+
+export async function prepareClassSwitch(
+  state: RunState,
+  deps: HandlerDeps,
+  householdId: string,
+  playerId: string,
+  classId: unknown,
+  chapter: Chapter | null,
+): Promise<HandlerResult<PreparedClassSwitch>> {
+  const refusal = classAnswerRefusal(state, playerId, classId, true);
+  if (refusal) return fail("ILLEGAL", refusal);
+  const scene = state.sceneId ? chapter?.scenes[state.sceneId] : undefined;
+  if (!scene || classPlaceOf(scene) !== classId) {
+    return fail("ILLEGAL", `this is not the ${String(classId)} place`);
+  }
+  // The practice writes nothing but `practiced` (#255), and has no class places.
+  if (isPracticeCampaign(state.campaignId)) {
+    return fail("ILLEGAL", "a class is switched in a real chapter, not in the practice");
+  }
+
+  const member = state.party.find((candidate) => candidate.playerId === playerId);
+  if (!member) return fail("NOT_FOUND", `player ${playerId} has no character in this run`);
+
+  const home = memberHome(member, householdId);
+  const character = await deps.repo.getCharacter(home, member.character.id);
+  if (!character) return fail("NOT_FOUND", `no character ${member.character.id}`);
+  if (character.householdId !== home || character.ownerPlayerId !== playerId) {
+    return fail("FORBIDDEN", "this session cannot switch that character's class");
+  }
+  if (
+    state.campaignId &&
+    (await standing(character, claimFor(campaignKey(state), householdId, character), deps)) === "busy"
+  ) {
+    return fail("HERO_BUSY", busyMessage(character));
+  }
+
+  const rules = deps.content.rules();
+  try {
+    const updated = applyClassSwitch(character, rules, classId as ClassId);
+    const resolved = resolveCharacter(updated, rules, deps.content.items());
+    const place = state.classPlace;
+    return ok({
+      character: rewrite(character, updated),
+      state: {
+        ...state,
+        party: state.party.map((candidate) =>
+          candidate.playerId === playerId ? { ...candidate, character: resolved } : candidate,
+        ),
+        ...(place
+          ? {
+              classPlace: {
+                ...place,
+                answers: { ...place.answers, [playerId]: { switched: true, from: member.character.class } },
+              },
+            }
+          : {}),
       },
     });
   } catch (err) {

@@ -146,6 +146,16 @@ export type ClientIntent =
   | { type: "RESOLVE_ITEM_SWAP"; dropItemId: string | null }
   | { type: "SPEND_STAT_POINT"; stat: StatId }
   /**
+   * At a class place (docs/class-mastery.md §3), this kid's own answer:
+   * `SWITCH_CLASS` puts on that class, `KEEP_CLASS` keeps the one they wear.
+   * Each kid decides alone; there is no vote. `classId` names the place's
+   * class, so a tap aimed at a room the party has already left is refused
+   * rather than read against the next one. A switch writes the hero's row,
+   * so it goes through the authoritative run handler like `SPEND_STAT_POINT`.
+   */
+  | { type: "SWITCH_CLASS"; classId: ClassId }
+  | { type: "KEEP_CLASS"; classId: ClassId }
+  /**
    * Trading at a Rest scene, spec §9.4 — offer, then the other phone answers.
    *
    * Two intents rather than one because it is two taps on two devices, and the
