@@ -27,6 +27,16 @@
   font-size: 0.8em;
   pointer-events: none;
 }
+/* In the corner row the hint hangs below the button, out of the row's flow: the first
+   tap anywhere unlocks sound and takes it away, and in the flow that narrowed the row
+   between a press and its release, so the tap on the control beside it was lost (#257). */
+.kad-corner .kad-audio-control { position: relative; }
+.kad-corner .kad-audio-control__hint {
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-end: 0;
+  white-space: nowrap;
+}
 /* Phones unlock sound on the first tap. The TV needs a gesture reminder. */
 @media (max-width: 699px) {
   .kad-audio-control__hint { display: none; }

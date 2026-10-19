@@ -5,8 +5,7 @@
  * report at once; otherwise a small button does.
  */
 
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { useGameStore } from "../store";
 import { perfRequested } from "../world/frame-stats";
 import { getAudioProbe, onAudioProbe } from "../audio/cue";
@@ -17,59 +16,86 @@ import { onWake } from "./wake";
 
 import "./DisplayExtras.css";
 
-export function DisplayExtras(): React.JSX.Element {
-  const [wake, setWake] = useState<WakeLockState>("released");
-  const [open, setOpen] = useState(() => typeof location !== "undefined" && perfRequested(location.search));
+/* The wake lock's state, held by DisplayExtras and read by the report wherever it is drawn. */
+let wakeNow: WakeLockState = "released";
+const wakeListeners = new Set<() => void>();
+function setWakeNow(next: WakeLockState): void {
+  wakeNow = next;
+  for (const listener of wakeListeners) listener();
+}
+function useWakeState(): WakeLockState {
+  return useSyncExternalStore(
+    (listener) => { wakeListeners.add(listener); return () => { wakeListeners.delete(listener); }; },
+    () => wakeNow,
+    () => wakeNow,
+  );
+}
 
+/**
+ * `controls={false}` when App draws the screen's own controls in its corner row
+ * (`DisplayCornerControls`, #257); rendered on its own, it draws them where it is.
+ */
+export function DisplayExtras({ controls = true }: { controls?: boolean } = {}): React.JSX.Element | null {
   useEffect(() => {
     const lock: KeepAwake = keepAwake();
-    setWake(lock.state());
-    const stopWatching = lock.onChange(() => { setWake(lock.state()); });
+    setWakeNow(lock.state());
+    const stopWatching = lock.onChange(() => { setWakeNow(lock.state()); });
     // Asleep and back: a fresh stream, then everything missed from the last seq.
     const stopWake = onWake(() => { useGameStore.getState().reconnect(); });
     return () => {
-      stopWake();
       stopWatching();
+      stopWake();
       lock.stop();
     };
   }, []);
 
-  /*
-   * The button sits in the screen's corner row (App.tsx), first in it, so it
-   * takes its place beside the other controls instead of lying over the
-   * screen's own top-left heading (#257). Without a row (a test rendering this
-   * alone) it stands where it is.
-   */
-  const [corner] = useState(() => (typeof document === "undefined" ? null : document.querySelector(".kad-corner")));
-  const about = (
-    <div className={`kad-about${corner ? " kad-about--in-corner" : ""}`}>
-      {open ? <CapabilityReport wake={wake} onClose={() => { setOpen(false); }} /> : (
-        corner ? (
-          // In the row, a 44px "i" like its neighbours: the words made the row wide enough to
-          // reach the screen's own headings on a tablet at the largest text (#257).
-          <button
-            type="button"
-            className="kad-about__open kad-about__open--icon kad-focusable"
-            aria-label="About this screen"
-            title="About this screen"
-            onClick={() => { setOpen(true); }}
-          >
-            <span aria-hidden="true">i</span>
-          </button>
-        ) : (
-          <button type="button" className="kad-about__open" onClick={() => { setOpen(true); }}>
-            About this screen
-          </button>
-        )
-      )}
-    </div>
-  );
-
+  if (!controls) return null;
   return (
     <>
-      {corner ? createPortal(<SoundPrompt inCorner />, corner) : <SoundPrompt inCorner={false} />}
-      {corner ? createPortal(about, corner) : about}
+      <SoundPrompt inCorner={false} />
+      <About inCorner={false} />
     </>
+  );
+}
+
+/**
+ * The shared screen's own controls, as App draws them in its corner row (#257):
+ * Tap for sound beside the sound button it is about, and About this screen as a
+ * 44px "i" like its neighbours. Top centre and top left, they lay over the
+ * lobby's heading and the chapter title at the largest text.
+ */
+export function DisplayCornerControls(): React.JSX.Element {
+  return (
+    <>
+      <SoundPrompt inCorner />
+      <About inCorner />
+    </>
+  );
+}
+
+function About({ inCorner }: { inCorner: boolean }): React.JSX.Element {
+  const wake = useWakeState();
+  const [open, setOpen] = useState(() => typeof location !== "undefined" && perfRequested(location.search));
+  return (
+    <div className={`kad-about${inCorner ? " kad-about--in-corner" : ""}`}>
+      {open ? (
+        <CapabilityReport wake={wake} onClose={() => { setOpen(false); }} />
+      ) : inCorner ? (
+        <button
+          type="button"
+          className="kad-about__open kad-about__open--icon kad-focusable"
+          aria-label="About this screen"
+          title="About this screen"
+          onClick={() => { setOpen(true); }}
+        >
+          <span aria-hidden="true">i</span>
+        </button>
+      ) : (
+        <button type="button" className="kad-about__open" onClick={() => { setOpen(true); }}>
+          About this screen
+        </button>
+      )}
+    </div>
   );
 }
 
