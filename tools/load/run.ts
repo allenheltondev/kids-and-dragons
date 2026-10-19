@@ -17,7 +17,7 @@ import { writeFileSync } from "node:fs";
 import { makeRng } from "@kad/shared";
 import { loadContent } from "../../packages/server/src/content/loader.ts";
 import { Api } from "./client.ts";
-import { Recorder, renderMarkdown, type Report } from "./metrics.ts";
+import { DEFAULT_LIMITS, Recorder, limitsHit, renderMarkdown, type Limits, type Report } from "./metrics.ts";
 import { Table, newTally, type OpenRoom, type Tally, type TableOptions } from "./table.ts";
 
 export const HELP = `Load test: many rooms at once.
@@ -38,6 +38,11 @@ export const HELP = `Load test: many rooms at once.
   --campaign <id>         Campaign the host starts. Default the-hollow-crown, whose first chapter has a fight.
   --checks <n>            Checks to roll before a session counts as played. Default 1.
   --max-steps <n>         A session gives up on its chapter after this many steps. Default 400.
+  --keep-going            Run every ramp stage even after one is past a limit. Without it the
+                          ramp stops at the first stage that is: the limit is that stage.
+  --max-error-rate <n>    Limit: errors as a share of requests. Default 0.01.
+  --max-429-rate <n>      Limit: 429s as a share of requests. Default 0.01.
+  --max-p95 <ms>          Limit: p95 of POST /api/action. Default 2000.
   --verbose               Say why each session ended.
   --seed <text>           Seed for the script's own choices. Default load.
   --out <file>            Also write the report (Markdown) to this file.
@@ -56,6 +61,8 @@ interface Config {
   seed: string;
   out: string | undefined;
   strict: boolean;
+  keepGoing: boolean;
+  limits: Limits;
   table: TableOptions;
 }
 
@@ -76,6 +83,10 @@ export function parseConfig(argv: string[]): Config | null {
       checks: { type: "string", default: "1" },
       "max-steps": { type: "string", default: "400" },
       verbose: { type: "boolean", default: false },
+      "keep-going": { type: "boolean", default: false },
+      "max-error-rate": { type: "string" },
+      "max-429-rate": { type: "string" },
+      "max-p95": { type: "string" },
       seed: { type: "string", default: "load" },
       out: { type: "string" },
       strict: { type: "boolean", default: false },
@@ -86,6 +97,12 @@ export function parseConfig(argv: string[]): Config | null {
   const whole = (name: string, raw: string, min: number, max = Number.MAX_SAFE_INTEGER): number => {
     const n = Number(raw);
     if (!Number.isInteger(n) || n < min || n > max) throw new Error(`--${name} must be a whole number from ${min} to ${max}, not "${raw}"`);
+    return n;
+  };
+  const share = (name: string, raw: string | undefined, fallback: number): number => {
+    if (raw === undefined) return fallback;
+    const n = Number(raw);
+    if (!Number.isFinite(n) || n < 0 || n > 1) throw new Error(`--${name} must be a share from 0 to 1, not "${raw}"`);
     return n;
   };
   const stages = values.ramp
@@ -102,6 +119,12 @@ export function parseConfig(argv: string[]): Config | null {
     seed: values.seed!,
     out: values.out,
     strict: values.strict!,
+    keepGoing: values["keep-going"]!,
+    limits: {
+      errorRate: share("max-error-rate", values["max-error-rate"], DEFAULT_LIMITS.errorRate),
+      tooManyRate: share("max-429-rate", values["max-429-rate"], DEFAULT_LIMITS.tooManyRate),
+      actionP95Ms: values["max-p95"] === undefined ? DEFAULT_LIMITS.actionP95Ms : whole("max-p95", values["max-p95"], 1),
+    },
     table: {
       phones: whole("phones", values.phones!, 2, 4),
       campaign: values.campaign!,
@@ -187,6 +210,7 @@ async function main(): Promise<number> {
 
   const sections: string[] = [`# Load run against ${config.baseUrl}`, "", `${new Date().toISOString()}. ${config.phones} phones per table, ${config.duration}s per stage, think ${config.table.thinkMs}ms, heartbeat ${config.table.heartbeatMs}ms, campaign ${config.campaign}.`, ""];
   let failed = false;
+  let stoppedAtLimit = false;
   for (const [i, tables] of config.stages.entries()) {
     if (i > 0 && !interrupted) await sleep(config.cooldown * 1000);
     if (interrupted) break;
@@ -197,9 +221,18 @@ async function main(): Promise<number> {
     const result = await runStage(config, tables, api, recorder, open, content);
     await closeLeftovers(api, open, result.tally);
     sections.push(renderStage(result), "");
+    const past = limitsHit(result.report, config.limits);
+    if (past.length > 0) {
+      sections.push(`**${tables} tables is past a limit:** ${past.join("; ")}.`, "");
+      if (!config.keepGoing && i < config.stages.length - 1) {
+        sections.push(`Ramp stopped here; the stages after ${tables} were not run (--keep-going runs them anyway). The limit is between ${i > 0 ? config.stages[i - 1] : 0} and ${tables} tables.`, "");
+        stoppedAtLimit = true;
+      }
+    }
     const t = result.tally;
     const beats = result.report.routes.find((route) => route.route === "POST /api/presence")?.count ?? 0;
     if (result.report.errors > 0 || t.closeFailures > 0 || open.size > 0 || t.sessionsThatFought === 0 || beats === 0) failed = true;
+    if (stoppedAtLimit) break;
   }
   const text = sections.join("\n");
   console.log(text);
