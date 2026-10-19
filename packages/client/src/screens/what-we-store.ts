@@ -151,7 +151,7 @@ export const STORED: readonly StoredThing[] = [
   },
   {
     title: "Wrong codes",
-    what: "How many wrong room codes a network address has tried, so nobody can guess their way into a game.",
+    what: "How many wrong room codes a network address has tried, and how many crash reports it has sent, so nobody can guess their way into a game or flood us. A number and an address, nothing a kid typed.",
     kept: "About half an hour.",
     owner: "nobody",
     rows: ["Code misses"],
@@ -164,6 +164,10 @@ export const ELSEWHERE: readonly { title: string; what: string }[] = [
   {
     title: "Request logs",
     what: "Our servers log each request (its address, what it asked for, and any error) for a limited time, to keep the game running.",
+  },
+  {
+    title: "Crash reports",
+    what: "When the game breaks on a phone or the TV, it tells us in one log line: what went wrong, which version, which page, and whether it was a phone, a tablet or a TV. Names, hero names, emails, room codes, sign-in tokens and anything typed are removed before it is sent, and again before it is logged. Logged, not stored: no report is kept in the game's table.",
   },
   {
     title: "Live narration",

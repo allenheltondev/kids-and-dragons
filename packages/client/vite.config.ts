@@ -12,6 +12,12 @@ const apiTarget = process.env.KAD_DEV_API_TARGET ?? "http://localhost:8787";
  * identical URLs in both. Nothing here is client-only.
  */
 export default defineConfig({
+  // Which build a crash report came from (#317): the commit CI built, else "dev".
+  define: {
+    "import.meta.env.VITE_KAD_BUILD": JSON.stringify(
+      (process.env.KAD_BUILD ?? process.env.GITHUB_SHA ?? "dev").slice(0, 12),
+    ),
+  },
   // The service worker (src/sw/) is emitted as `/sw.js` by its own plugin:
   // a fixed URL and a single classic script, which a Vite entry is not.
   plugins: [react(), serviceWorker(repoRoot)],
