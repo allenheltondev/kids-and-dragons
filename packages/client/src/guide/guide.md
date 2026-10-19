@@ -74,6 +74,7 @@ Whoever opened the room runs it. In Party Mode that is the big screen: tap **Roo
 - **Remove** takes a phone out of the game. That phone sees "The person running this game took this phone out of it." Each time a phone joins, the big screen says who joined, with **Remove** beside it, so a stranger is one tap from gone.
 - **Lock the room**: "Lock it once everyone is in, and nobody else can join with the code." Kids already here can still come back. **Let new players join again** undoes it.
 - **Quiet mode**: "For a sleeping sibling or a car ride: softer, calmer and dimmer on every device." It turns on for every phone in the room at once. **Turn quiet mode off** ends it.
+- **Make keeper** picks which phone is offered to keep the heroes. See signing in, below.
 - **Stop for today** saves the game for next time.
 - **Close the room** ends it for everyone, after one more tap on **Close it**. "Heroes and what they earned are kept."
 
@@ -131,7 +132,7 @@ To keep them for good, a grown-up taps **Sign in or create an account** on the s
 
 ![Signing in with an emailed code](../../public/guide-pictures/sign-in.jpg)
 
-At the end of a chapter, the phone that started the game also offers to keep the party (in Party Mode, that is the first phone that joined), with a button that says **Keep** and the heroes' names.
+At the end of a chapter, one phone also offers to keep the party, with a button that says **Keep** and the heroes' names. That is the phone that started the game, or in Party Mode the first phone that joined, unless the room controls picked another with **Make keeper**.
 
 Kids never sign in. They are nicknames that a grown-up keeps.
 
