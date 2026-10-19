@@ -11,6 +11,7 @@
 
 import { test, expect, type Browser, type Page } from "@playwright/test";
 import { createCharacter } from "./characters";
+import { guidePicture } from "./guide-pictures";
 
 const TAP = { timeout: 20_000 } as const;
 
@@ -47,6 +48,7 @@ test.describe("pairing a new device", () => {
     const shown = (await phone.locator(".pair__code").textContent(TAP)) ?? "";
     expect(shown).toMatch(/^[A-Z]{4}-[A-Z]{4}$/);
     await expect(phone.getByRole("img", { name: /qr code to play as ada/i })).toBeVisible(TAP);
+    await guidePicture(phone, "pairing-code");
 
     // --- A brand-new browser enters it, and lands on her hero ---
     const fresh = await client(browser);

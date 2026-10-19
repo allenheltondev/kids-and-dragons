@@ -13,6 +13,7 @@
 
 import { test, expect, type Browser, type Page } from "@playwright/test";
 import { createCharacter } from "./characters";
+import { guidePicture } from "./guide-pictures";
 
 const TAP = { timeout: 20_000 } as const;
 const BOOK = /open your book/i;
@@ -97,6 +98,7 @@ test.describe("a room open to visitors", () => {
     await expect(longCode).toHaveText(new RegExp(`^${code}[A-Z]{2}$`), TAP);
     const visitorCode = (await longCode.textContent()) ?? "";
     await expect(host.getByRole("button", { name: "Stop new visitors" })).toBeVisible();
+    await guidePicture(host.locator(".kad-host"), "visitors");
 
     // The short code still does not let another household in; the long one does,
     // and lands the visitor on the room's own path.

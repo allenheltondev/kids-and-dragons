@@ -1,0 +1,180 @@
+/*
+ * The grown-up's guide (#257): a document, not a game screen, so a readable
+ * column that scrolls, text that can be selected, and print styles that make
+ * the same page the printable one.
+ */
+
+.guide {
+  display: flex;
+  justify-content: center;
+  inline-size: 100%;
+  block-size: 100%;
+  padding: calc(var(--kad-safe-top) + var(--kad-corner-bottom)) calc(var(--kad-safe-right) + 1rem)
+    calc(var(--kad-safe-bottom) + 2rem) calc(var(--kad-safe-left) + 1rem);
+  overflow-y: auto;
+  background: var(--kad-bg);
+  color: var(--kad-ink);
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.guide__page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-3);
+  inline-size: 100%;
+  max-inline-size: 40em;
+  line-height: 1.55;
+}
+
+.guide__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kad-space-2);
+}
+
+.guide__title {
+  margin: var(--kad-space-2) 0 0;
+  font-size: var(--kad-text-xl);
+  font-weight: var(--kad-weight-black);
+  line-height: 1.2;
+}
+
+.guide__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-3);
+  padding-block-start: var(--kad-space-4);
+  border-block-start: 0.08em solid var(--kad-border);
+  scroll-margin-block-start: var(--kad-corner-bottom);
+}
+
+.guide__section--first {
+  padding: var(--kad-space-4);
+  border: 0.08em solid var(--kad-border-strong);
+  border-radius: var(--kad-radius-lg);
+  background: var(--kad-bg-raised);
+}
+
+.guide__h2 {
+  margin: 0;
+  font-size: var(--kad-text-lg);
+  font-weight: var(--kad-weight-black);
+}
+
+.guide__h3 {
+  margin: var(--kad-space-2) 0 0;
+  font-size: var(--kad-text-md);
+  font-weight: var(--kad-weight-black);
+}
+
+.guide__p {
+  margin: 0;
+}
+
+.guide__list {
+  margin: 0;
+  padding-inline-start: 1.6em;
+}
+
+/* Spacing, not flex: a flex item is no longer a list item, and loses its number. */
+.guide__list > li + li {
+  margin-block-start: var(--kad-space-1);
+}
+
+/* The app resets lists to none; the guide's steps are numbered and its points bulleted. */
+ol.guide__list {
+  list-style: decimal;
+}
+
+ul.guide__list {
+  list-style: disc;
+}
+
+.guide__contents {
+  padding: var(--kad-space-3) var(--kad-space-4);
+  border-radius: var(--kad-radius-md);
+  background: var(--kad-bg-raised);
+}
+
+.guide__link {
+  color: var(--kad-accent-hi);
+}
+
+.guide__figure {
+  margin: 0;
+}
+
+.guide__picture {
+  display: block;
+  max-inline-size: 100%;
+  max-block-size: 32em;
+  block-size: auto;
+  border: 0.08em solid var(--kad-border-strong);
+  border-radius: var(--kad-radius-md);
+}
+
+@media print {
+  html,
+  body,
+  #root {
+    block-size: auto;
+    background: #fff;
+  }
+
+  /* The device's own controls and the app's notices are not part of the page. */
+  .kad-corner,
+  .kad-toast,
+  .kad-connection,
+  .kad-arrivals,
+  .guide__actions,
+  .guide__contents {
+    display: none !important;
+  }
+
+  .guide {
+    display: block;
+    block-size: auto;
+    padding: 0;
+    overflow: visible;
+    background: #fff;
+    color: #000;
+    font-size: 11pt;
+  }
+
+  .guide__page {
+    max-inline-size: none;
+    gap: 0.5em;
+  }
+
+  .guide__section,
+  .guide__section--first {
+    padding: 0.5em 0 0;
+    border: 0;
+    background: none;
+  }
+
+  /* The quick start is the first page on its own; the rest follows it. */
+  .guide__section--first + .guide__section {
+    break-before: page;
+  }
+
+  .guide__h2,
+  .guide__h3 {
+    break-after: avoid;
+  }
+
+  .guide__figure {
+    break-inside: avoid;
+  }
+
+  .guide__picture {
+    max-block-size: 9cm;
+    border-color: #999;
+  }
+
+  /* On paper the quick start is words alone, so it stays on its one page. */
+  .guide__section--first .guide__figure {
+    display: none;
+  }
+}
