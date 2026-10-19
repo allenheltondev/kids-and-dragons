@@ -6,7 +6,12 @@
  */
 
 .kad-host--inline {
-  flex: 0 0 auto;
+  /* Gives way, and scrolls, when the notices and the stop offer above it leave
+     too little room: at the largest text the room's own buttons were pushed off
+     the bottom of the phone, out of reach (#257). The summary always shows. */
+  flex: 0 1 auto;
+  min-block-size: calc(var(--kad-touch-min) + 2px);
+  overflow-y: auto;
   margin: 0.5rem 0.75rem 0;
   border: 1px solid var(--kad-border);
   border-radius: var(--kad-radius-md);
@@ -27,11 +32,11 @@
   inline-size: min(24rem, calc(100vw - 2rem));
 }
 
-/* The shared screen leaves the Room button a strip of its own along the bottom, as a phone
-   leaves the corner row one along the top, so the story's last choice is never under it (#257).
-   rem, like the button: it grows with the text. */
+/* The shared screen's Room button sits in the bottom corner; the story's plate keeps clear of
+   it (NarrationPanel.css reads this), so its last choice is never under the button (#257).
+   rem, like the button: it grows with the text. Set on the shell, outside the surface. */
 body:has(.kad-host--float) .kad-party--world {
-  padding-block-end: calc(var(--kad-safe-bottom, 0px) + 4.75rem);
+  --kad-host-reserve: 8.5rem;
 }
 
 .kad-host--float .kad-host__panel {

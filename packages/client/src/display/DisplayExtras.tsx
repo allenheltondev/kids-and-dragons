@@ -53,7 +53,7 @@ export function DisplayExtras(): React.JSX.Element {
 
   return (
     <>
-      <SoundPrompt />
+      {corner ? createPortal(<SoundPrompt inCorner />, corner) : <SoundPrompt inCorner={false} />}
       {corner ? createPortal(about, corner) : about}
     </>
   );
@@ -62,11 +62,13 @@ export function DisplayExtras(): React.JSX.Element {
 /**
  * The one clear ask when the browser is holding sound back (#264). A TV often
  * waits for a tap before it lets a page make a sound, and nobody looks at a
- * small hint. Shown only while sound is `locked` or `suspended` and not turned
+ * small hint. It stands in the screen's corner row, beside the sound button it
+ * is about: top centre, it lay over the lobby's heading and the chapter title
+ * at the largest text (#257). Shown only while sound is `locked` or `suspended` and not turned
  * off; a browser with no audio at all (`unsupported`) is never asked, since a
  * tap cannot mend it, and the game never waits on the answer.
  */
-function SoundPrompt(): React.JSX.Element | null {
+function SoundPrompt({ inCorner }: { inCorner: boolean }): React.JSX.Element | null {
   const [, refresh] = useState(0);
   useEffect(() => {
     let stopState = (): void => undefined;
@@ -96,8 +98,8 @@ function SoundPrompt(): React.JSX.Element | null {
   const state = probe.state();
   if (state !== "locked" && state !== "suspended") return null;
   return (
-    <div className="kad-tap-for-sound">
-      <Button size="lg" onClick={() => { probe.unlock(); }}>Tap for sound</Button>
+    <div className={`kad-tap-for-sound${inCorner ? " kad-tap-for-sound--in-corner" : ""}`}>
+      <Button size={inCorner ? "md" : "lg"} onClick={() => { probe.unlock(); }}>Tap for sound</Button>
     </div>
   );
 }
