@@ -283,7 +283,9 @@ would have TypeScript promising a number where an older row returns `undefined`,
 type stays honest about history. The v5 step (#308) is the same idea for class mastery: the worn
 class moves from the character into each half of progress, and that class is given the distinction
 matching every class move the half resolved with before (from its XP and its old
-`unlockedActions`), so no hero opens the game to a missing move.
+`unlockedActions`), so no hero opens the game to a missing move. (A move of another class in that
+list would be dropped, since only the worn class's moves resolve, but no writer ever stored one; see
+the step's comment.)
 
 The failure mode is worth naming precisely, because it changes the solution. **Nothing but our own
 Lambda ever writes these items.** There is no hostile input to defend against and no third-party

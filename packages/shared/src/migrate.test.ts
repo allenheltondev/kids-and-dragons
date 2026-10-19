@@ -247,6 +247,27 @@ describe("migrateCharacter — class mastery (v5, #308)", () => {
     }
   });
 
+  it("loses nothing from the rows progression.ts wrote on 2026-07-29, with the species action stored", () => {
+    // For an hour (7b6d66c5 to 678b7bc9) the resolved action list was stored,
+    // species combat action and all. Species still grants it.
+    for (const [classId, species] of [["songkeeper", "unicorn"], ["thornguard", "bigfoot"]] as const) {
+      const fromV4 = v4Hero(classId, species, 1700);
+      const row = v4Hero(classId, species, 1700, {
+        unlockedActions: [...fromV4.committed.unlockedActions, SHIPPED.species[species].combatAction.id],
+      });
+      expect(resolvedActions(row), classId).toEqual(v4Actions(row, row.committed));
+    }
+  });
+
+  it("drops another class's move, the one shape no writer ever stored (the documented exception)", () => {
+    // Only old test fixtures ever held this (`makeCharacter` gave every class
+    // Rally). Only the worn class's moves resolve now, so Rally goes; nothing
+    // else does.
+    const row = v4Hero("thornguard", "bigfoot", 300, { unlockedActions: ["brace", "shove", "rally"] });
+    expect(resolvedActions(row)).toEqual(v4Actions(row, row.committed).filter((id) => id !== "rally"));
+    expect(migrateCharacter(row, 4).committed.mastery).toEqual({ thornguard: { rank: "apprentice", deeds: {} } });
+  });
+
   it("migrates each half on its own, so a campaign in flight keeps its gains and a failure keeps the rest", () => {
     const row = v4Hero("starweaver", "kitsune", 700);
     const provisional = { ...v4Hero("starweaver", "kitsune", 1700).committed, runId: "r_1" };
