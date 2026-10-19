@@ -6,6 +6,7 @@
  */
 
 import { test, expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
+import { guidePicture } from "./guide-pictures";
 
 const TAP = { timeout: 15_000 } as const;
 
@@ -49,6 +50,7 @@ test.describe("running the room", () => {
     // The host is listed too, as "(you)", and is still making a hero as well.
     const guestRow = roster.getByRole("listitem").filter({ hasNotText: "(you)" });
     await expect(guestRow.getByText(/Making a hero/)).toBeVisible(TAP);
+    await guidePicture(host.locator(".kad-host"), "host-panel");
     // The guest's phone has no such panel.
     await expect(guest.getByText("Running this room")).toHaveCount(0);
 

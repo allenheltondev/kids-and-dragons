@@ -8,6 +8,7 @@
  *   no session          → <HomeScreen/>
  *   /journal            → <JournalScreen/> (between games: nothing to play,
  *                         everything to look at — no room, no session)
+ *   /guide              → <GuideScreen/> (the grown-up's guide, #257)
  *   /tv/:code           → PartyLayout world  (a pure display client, spec §2.1)
  *   /p/:code   party    → PartyLayout player
  *   /p/:code   travel   → TravelLayout       (both surfaces, one at a time)
@@ -135,6 +136,10 @@ const JournalScreen = lazy(() =>
   import("./screens/JournalScreen").then((module) => ({ default: module.JournalScreen })),
 );
 
+// The grown-up's guide (`/guide`, #257): words and pictures nobody on the join
+// screen is waiting for, so a chunk of its own.
+const GuideScreen = lazy(() => import("./guide/GuideScreen"));
+
 export function App(): React.JSX.Element {
   const route = useRoute();
   const session = useGameStore((store) => store.session);
@@ -222,6 +227,15 @@ export function App(): React.JSX.Element {
         <RoomBoundary message="Your adventure book couldn’t open.">
           <Suspense fallback={<div className="kad-boot"><Spinner size="lg" label="Opening your adventure book" showLabel /></div>}>
             <JournalScreen />
+          </Suspense>
+        </RoomBoundary>
+      );
+    }
+    if (route.name === "guide") {
+      return (
+        <RoomBoundary message="The guide couldn’t open.">
+          <Suspense fallback={<div className="kad-boot"><Spinner size="lg" label="Opening the guide" showLabel /></div>}>
+            <GuideScreen />
           </Suspense>
         </RoomBoundary>
       );
