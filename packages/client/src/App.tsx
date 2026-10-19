@@ -123,6 +123,12 @@ const LetHeroGo = lazy(() =>
   import("./screens/HostControls").then((module) => ({ default: module.LetHeroGo })),
 );
 
+// What only a shared screen does (#264): wake lock, waking up, "About this
+// screen". A phone never loads it.
+const DisplayExtras = lazy(() =>
+  import("./display/DisplayExtras").then((module) => ({ default: module.DisplayExtras })),
+);
+
 // The adventure book (`/journal`) is a route of its own, between games, and
 // loads on demand like the room: nobody on the join screen needs it yet.
 const JournalScreen = lazy(() =>
@@ -197,6 +203,11 @@ export function App(): React.JSX.Element {
       {/* Who just joined (#267), on the shared display. A host's phone shows
           them in its own view instead (layout/PlayerView). */}
       <ArrivalNotices placement="float" />
+      {route.name === "tv" && session ? (
+        <Suspense fallback={null}>
+          <DisplayExtras />
+        </Suspense>
+      ) : null}
       {route.name === "tv" && session?.host ? (
         <Suspense fallback={null}>
           <HostControls placement="float" />
