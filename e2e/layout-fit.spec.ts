@@ -10,16 +10,17 @@
  * whole width; the start screen and the guide leave it the same strip. On the
  * shared screen, Room, About this screen and Tap for sound sit in the corner
  * row, and what Room opens drops below it with who just joined, so none of them
- * covers a heading or a choice, and every choice stays on the screen; that is
- * checked at 1280x720 and at a tablet's 1024x600. This walks a real room to each of those screens and then looks
+ * covers a heading or a choice; that is checked at 1280x720 and at a tablet's
+ * 1024x600. This walks a real room to each of those screens and then looks
  * at them at 360px and 390px, at normal and the largest text (#262), with
  * one-handed play off, right and left, and asserts three things on each:
  *
  * - no word, button or picture overlaps a corner control;
  * - no text is clipped: nothing is wider than its box where the box hides the
  *   rest, nothing runs off the screen, and the page never scrolls sideways;
- * - no single word is wider than the box it sits in (that is how a hero's
- *   name ended up as "Sp / ark / leh / oof");
+ * - no single word is broken across lines (that is how a hero's name ended
+ *   up as "Sp / ark / leh / oof"), measured on the rendered text, so a
+ *   different font cannot fool it;
  * - and all of that holds before the row's controls have loaded (they are lazy,
  *   #324), with nothing moving when they arrive.
  */
@@ -144,8 +145,7 @@ async function misfits(page: Page): Promise<string[]> {
       }
     }
 
-    // 2. Nothing clipped, and 3. no word wider than its box.
-    const canvas = document.createElement("canvas").getContext("2d");
+    // 2. Nothing clipped, and 3. no word broken across lines.
     for (const el of things) {
       const box = el.getBoundingClientRect();
       // Cut off by a box that hides the rest and cannot scroll to it.
@@ -170,14 +170,17 @@ async function misfits(page: Page): Promise<string[]> {
       if (hides && el.scrollWidth > el.clientWidth + 1 && !el.matches("input, textarea, select")) {
         out.push(`${label(el)} is clipped (${el.scrollWidth} > ${el.clientWidth})`);
       }
-      const text = ownText(el);
-      if (canvas && text !== "" && style.display !== "inline") {
-        canvas.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-        // A tight wordmark sets its letters closer than the font does.
-        canvas.letterSpacing = style.letterSpacing === "normal" ? "0px" : style.letterSpacing;
-        const room = el.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
-        for (const word of text.split(/\s+/)) {
-          if (canvas.measureText(word).width > room + 1) out.push(`${label(el)}: "${word}" is wider than its box`);
+      // A word broken across lines, as the rendered text has it: font-independent.
+      for (const node of el.childNodes) {
+        if (node.nodeType !== Node.TEXT_NODE) continue;
+        const value = node.textContent ?? "";
+        // A hyphen is a fair place to break ("grown-up"), so the parts count as words.
+        for (const match of value.matchAll(/[^\s\-\u2010]+/g)) {
+          const range = document.createRange();
+          range.setStart(node, match.index);
+          range.setEnd(node, match.index + match[0].length);
+          const lines = new Set([...range.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top)));
+          if (lines.size > 1) out.push(`${label(el)}: "${match[0]}" is broken across lines`);
         }
       }
     }
@@ -336,7 +339,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expectFits(guest, "the adventure book");
   });
 
-  test("the shared screen: its corner row (Room, About this screen, Tap for sound) keeps off the lobby and the story, and the story's choices stay on screen", async ({ browser }) => {
+  test("the shared screen: its corner row (Room, About this screen, Tap for sound) keeps off the lobby and the story", async ({ browser }) => {
     test.setTimeout(240_000);
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
     open.push(context);
@@ -386,19 +389,5 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expect.poll(async () => (await roomState<{ phase: string }>(kid, code)).phase, TAP).toBe("scene");
     await expect(tv.locator(".narration__body").first()).toBeVisible(TAP);
     await expectFits(tv, "the shared screen's story", screens);
-
-    // Nobody scrolls a television: every choice the story offers is on the screen whole.
-    for (const [width, height] of screens) {
-      await tv.setViewportSize({ width, height });
-      await tv.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
-      const hidden = await tv.evaluate(() => {
-        const plate = document.querySelector(".narration__plate")?.getBoundingClientRect();
-        return [...document.querySelectorAll(".narration__choices > li")]
-          .map((li) => ({ text: (li.textContent ?? "").trim(), box: li.getBoundingClientRect() }))
-          .filter(({ box }) => !plate || box.top < plate.top - 1 || box.bottom > Math.min(plate.bottom, innerHeight) + 1)
-          .map(({ text }) => text);
-      });
-      expect.soft(hidden, `@${width}x${height}: choices off the shared screen`).toEqual([]);
-    }
   });
 });

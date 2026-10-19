@@ -124,6 +124,10 @@ class RoomBoundary extends Component<{ children: ReactNode; message?: string }, 
 const HostControls = lazy(() =>
   import("./screens/HostControls").then((module) => ({ default: module.HostControls })),
 );
+// Its Room button, in the corner row (#257).
+const RoomButton = lazy(() =>
+  import("./screens/HostControls").then((module) => ({ default: module.RoomButton })),
+);
 // The same chunk: the host of a stopped game may let a hero go (#259).
 const LetHeroGo = lazy(() =>
   import("./screens/HostControls").then((module) => ({ default: module.LetHeroGo })),
@@ -133,6 +137,10 @@ const LetHeroGo = lazy(() =>
 // screen". A phone never loads it.
 const DisplayExtras = lazy(() =>
   import("./display/DisplayExtras").then((module) => ({ default: module.DisplayExtras })),
+);
+// The shared screen's own controls in the corner row: Tap for sound and About this screen (#257).
+const DisplayCornerControls = lazy(() =>
+  import("./display/DisplayExtras").then((module) => ({ default: module.DisplayCornerControls })),
 );
 
 // The adventure book (`/journal`) is a route of its own, between games, and
@@ -206,6 +214,14 @@ export function App(): React.JSX.Element {
         <Suspense fallback={null}>
           <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
         </Suspense>
+        {/* The shared screen's own controls (#257), in the row with the device's rather than
+            over its headings and its story: Room, About this screen, Tap for sound. */}
+        {route.name === "tv" && session ? (
+          <Suspense fallback={null}>
+            {session.host ? <RoomButton /> : null}
+            <DisplayCornerControls />
+          </Suspense>
+        ) : null}
       </div>
       {pickLayout()}
       <ErrorToast />
@@ -219,14 +235,14 @@ export function App(): React.JSX.Element {
       <div className="kad-display-stack">
         {route.name === "tv" && session?.host ? (
           <Suspense fallback={null}>
-            <HostControls placement="float" />
+            <HostControls placement="float" button={false} />
           </Suspense>
         ) : null}
         <ArrivalNotices placement="float" />
       </div>
       {route.name === "tv" && session ? (
         <Suspense fallback={null}>
-          <DisplayExtras />
+          <DisplayExtras controls={false} />
         </Suspense>
       ) : null}
     </PhoneMagic>

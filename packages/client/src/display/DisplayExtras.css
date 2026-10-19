@@ -74,10 +74,11 @@
 }
 .kad-tap-for-sound > * { pointer-events: auto; }
 
-/* In the corner row, beside the sound button, and in its flow. */
+/* In the corner row, and first in it: it goes the moment sound is allowed, and nothing
+   to its left can move when it does, so a tap on Room or About is never lost to it (#257). */
 .kad-tap-for-sound--in-corner {
   position: static;
-  order: -1;
+  order: -4;
   display: block;
 }
 
