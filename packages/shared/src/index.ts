@@ -38,6 +38,7 @@ export * from "./rifts.js";
 export * from "./rift-actions.js";
 export * from "./campaign-graph-lint.js";
 export * from "./campaign-prerequisites.js";
+export * from "./practice.js";
 export * from "./world-state.js";
 export * from "./buffs.js";
 export * from "./chapter-map.js";

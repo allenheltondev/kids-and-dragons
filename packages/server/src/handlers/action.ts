@@ -37,6 +37,7 @@ import type {
 } from "@kad/shared";
 import {
   currentPlayable,
+  isPracticeCampaign,
   lobbyCampaign,
   resolveCharacter,
   resumeJourney,
@@ -56,6 +57,7 @@ import { keepGuestHousehold } from "./account.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 import { closedIfIdle } from "./host.ts";
 import { prepareStepFinds, recordStepFinds } from "./field-guide.ts";
+import { practiceChapterId, practiceRefusal, settlePractice } from "./practice.ts";
 import {
   attemptJourney,
   campaignView,
@@ -144,6 +146,15 @@ export async function applyAction(
     // From here on it is an ordinary chapter start — including `roadTo`'s
     // check below, which re-derives the same answer from the same record.
     input = { ...input, intent: { type: "START_CHAPTER", chapterId: next.chapterId } };
+  }
+  if (input.intent.type === "START_PRACTICE") {
+    // The practice (#255): its chapter is content, and whether this party may
+    // play it is `roadTo`'s, below, the same as for any start.
+    const chapterId = practiceChapterId(deps);
+    if (!chapterId) {
+      return { ok: false, seq: state.seq, error: { code: "NOT_FOUND", message: "there is no practice to play" } };
+    }
+    input = { ...input, intent: { type: "START_CHAPTER", chapterId } };
   }
 
   const chapter = resolveChapter(input, state, deps);
@@ -383,7 +394,10 @@ export async function applyAction(
    */
   const finishedChapter =
     state.phase !== "chapter_complete" && result.state.phase === "chapter_complete";
-  const startedCampaign = input.intent.type === "START_CHAPTER" && Boolean(result.state.campaignId);
+  // The practice is never a campaign a hero is claimed for (#255, practice.ts).
+  const practice = isPracticeCampaign(result.state.campaignId);
+  const startedCampaign =
+    input.intent.type === "START_CHAPTER" && Boolean(result.state.campaignId) && !practice;
   // Which attempt this chapter belongs to, so its completion can be checked
   // against the attempt it was started under (settleChapterCompletion).
   if (input.intent.type === "START_CHAPTER") {
@@ -414,12 +428,9 @@ export async function applyAction(
     // XP, the chapter's record, the setback counter, and — when this
     // completion decides it — the campaign's fate (progression.ts). All of it
     // rides the same conditional commit below.
-    settlement = await settleChapterCompletion(
-      result.state,
-      deps,
-      auth.run.householdId,
-      startedAttempt ?? undefined,
-    );
+    settlement = practice
+      ? await settlePractice(result.state, deps, auth.run.householdId)
+      : await settleChapterCompletion(result.state, deps, auth.run.householdId, startedAttempt ?? undefined);
     characters.push(...settlement.characters);
     if (settlement.campaignView) {
       // What the lobby offers next, and whether this chapter just ended the
@@ -910,6 +921,12 @@ async function roadTo(
   const campaign = deps.content.campaign(chapter.campaignId);
   if (!campaign || !campaign.chapters.includes(chapter.id)) {
     return { flags: {}, campaign: false, attempt: null };
+  }
+  // The practice (#255): no attempt and no road, and only while somebody
+  // seated is new to the game, so it runs once per hero.
+  if (isPracticeCampaign(campaign.id)) {
+    const refusal = practiceRefusal(party);
+    return refusal ? { refusal } : { flags: {}, campaign: false, attempt: null };
   }
 
   // A campaign this table has not unlocked (#221) starts nothing - whatever

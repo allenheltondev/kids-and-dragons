@@ -27,6 +27,7 @@ import {
   completeVisit,
   currentPlayable,
   failCampaign,
+  isPracticeCampaign,
   journeyView,
   readJourney,
   resolveCharacter,
@@ -230,7 +231,9 @@ export async function seatHero(
   householdId: string,
   hero: Character,
 ): Promise<HandlerResult<CharacterWrite | null>> {
-  const underWay = Boolean(state.campaignId) && UNDER_WAY.has(state.phase);
+  // The practice claims nobody (#255): a hero seated into it is held by nothing.
+  const underWay =
+    Boolean(state.campaignId) && !isPracticeCampaign(state.campaignId) && UNDER_WAY.has(state.phase);
   const claim = underWay ? claimFor(campaignKey(state), householdId, hero) : null;
   const where = await standing(hero, claim, deps);
   if (where === "busy") {
@@ -1174,6 +1177,10 @@ export async function prepareStatPointSpend(
 ): Promise<HandlerResult<PreparedStatPointSpend>> {
   if (state.phase !== "scene" || state.sceneType !== "rest") {
     return fail("ILLEGAL", "stat points may only be spent during an active Rest scene");
+  }
+  // The practice writes nothing but `practiced` (#255): a point waits for a real rest.
+  if (isPracticeCampaign(state.campaignId)) {
+    return fail("ILLEGAL", "stat points are spent at a rest in a real chapter, not in the practice");
   }
 
   const member = state.party.find((candidate) => candidate.playerId === playerId);

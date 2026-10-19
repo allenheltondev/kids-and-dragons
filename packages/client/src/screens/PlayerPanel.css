@@ -586,6 +586,13 @@
   block-size: var(--player-seat);
 }
 
+/* The practice offer (#255) above Begin, which then reads as its skip. */
+.player__practice {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+}
+
 .player__start {
   display: flex;
   flex-direction: column;
@@ -1342,4 +1349,21 @@ html[data-hand] .confirm {
   margin-block-end: calc(-1 * var(--space-3, 0.75em));
   padding-block-end: var(--space-3, 0.75em);
   background: var(--color-bg, #0d0b1a);
+}
+
+/* The practice's hint (#255): what to tap, above the answers it is about. */
+.player__hint {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0 0 var(--space-2, 0.5em);
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  border: 0.08em dashed var(--color-accent, #f5c86c);
+  border-radius: var(--radius-md, 0.75em);
+  color: var(--color-accent, #f5c86c);
+  font-weight: 600;
+}
+
+.player__hint > span {
+  flex: 1 1 auto;
 }
