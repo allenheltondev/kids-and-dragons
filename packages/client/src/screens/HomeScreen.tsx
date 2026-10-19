@@ -521,6 +521,14 @@ function PersonalHome(): ReactElement {
               </div>
             </section>
           ) : null}
+
+          {/* The grown-up's guide (#257): how to run a session, for someone
+              who has never seen the game. Its own route and chunk. */}
+          <div className="home__host-toggle home__guide" hidden={hosting || pairing !== "none"}>
+            <button type="button" className="home__link kad-focusable" onClick={() => navigate({ name: "guide" })}>
+              New to running a game? Read the grown-up&rsquo;s guide
+            </button>
+          </div>
         </div>
       </div>
 
