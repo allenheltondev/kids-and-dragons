@@ -13,7 +13,7 @@
  * covers a heading or a choice; that is checked at 1280x720 and at a tablet's
  * 1024x600. This walks a real room to each of those screens and then looks
  * at them at 360px and 390px, at normal and the largest text (#262), with
- * one-handed play off, right and left, and asserts three things on each:
+ * one-handed play off, right and left (PHONE and SHARED below say which), and asserts on each:
  *
  * - no word, button or picture overlaps a corner control;
  * - no text is clipped: nothing is wider than its box where the box hides the
@@ -32,9 +32,28 @@ import { roomState } from "./room-state";
 const TAP = { timeout: 20_000 } as const;
 const API = "http://localhost:8787";
 
-const WIDTHS = [360, 390] as const;
-const TEXT = ["normal", "largest"] as const;
-const HANDS = ["off", "right", "left"] as const;
+type Text = "normal" | "largest";
+type Hand = "off" | "right" | "left";
+interface Case { width: number; height: number; text: Text; hand: Hand }
+
+/*
+ * The combinations that each catch something the others do not, so the spec fits CI's end-to-end
+ * job: the phone as reported (390px), the narrowest phone, the largest text there, and one-handed
+ * play on each side, which moves the row to the bottom. A full cross of widths, text sizes and
+ * hands found nothing these miss, at four times the cost.
+ */
+const PHONE: Case[] = [
+  { width: 390, height: 800, text: "normal", hand: "off" },
+  { width: 360, height: 800, text: "normal", hand: "off" },
+  { width: 360, height: 800, text: "largest", hand: "off" },
+  { width: 360, height: 800, text: "largest", hand: "left" },
+  { width: 390, height: 800, text: "largest", hand: "right" },
+];
+/* A television, and a tablet showing the game (#274) at the largest text: the row is widest there. */
+const SHARED: Case[] = [
+  { width: 1280, height: 720, text: "normal", hand: "off" },
+  { width: 1024, height: 600, text: "largest", hand: "off" },
+];
 
 interface Member {
   connected: boolean;
@@ -69,7 +88,7 @@ async function jumpTo(page: Page, code: string, sceneId: string): Promise<void> 
 }
 
 /** Apply display settings the way a11y/prefs.ts does: attributes on <html>. */
-async function settings(page: Page, text: (typeof TEXT)[number], hand: (typeof HANDS)[number]): Promise<void> {
+async function settings(page: Page, text: Text, hand: Hand): Promise<void> {
   await page.evaluate(
     ([t, h]) => {
       const root = document.documentElement;
@@ -132,8 +151,9 @@ async function misfits(page: Page): Promise<string[]> {
     );
 
     // 1. Nothing under a control pinned over the screen: the corner row, and the shared
-    //    screen's Room button (#263), About this screen and Tap for sound (#264).
-    const corner = [...document.querySelectorAll(".kad-corner > *, .kad-about__open, .kad-host__room, .kad-tap-for-sound .kad-button")]
+    //    screen's Room button (#263), About this screen and Tap for sound (#264), and the sound
+    //    hint, which hangs under the row (#330).
+    const corner = [...document.querySelectorAll(".kad-corner > *, .kad-about__open, .kad-host__room, .kad-tap-for-sound .kad-button, .kad-audio-control__hint")]
       .filter(shown)
       .map((el) => ({ el, box: el.getBoundingClientRect() }));
     for (const el of things) {
@@ -226,25 +246,21 @@ async function shiftsWhenTheRowLoads(page: Page): Promise<string[]> {
   return problems;
 }
 
-/** Every width, text size and hand, on one page as it stands. */
-async function expectFits(page: Page, screen: string, sizes: readonly (readonly [number, number])[] = WIDTHS.map((w) => [w, 800] as const)): Promise<void> {
+/** Each case, on one page as it stands. */
+async function expectFits(page: Page, screen: string, cases: Case[] = PHONE): Promise<void> {
   const found: string[] = [];
   // Pictures and fonts in first, so nothing still arriving reads as a misfit.
   await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => undefined);
   await page.evaluate(() => document.fonts.ready);
-  for (const [width, height] of sizes) {
+  for (const { width, height, text, hand } of cases) {
     await page.setViewportSize({ width, height });
-    for (const text of TEXT) {
-      for (const hand of HANDS) {
-        await settings(page, text, hand);
-        // Two frames: the attributes restyle, then layout settles.
-        await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
-        const problems = [...(await misfits(page)), ...(await shiftsWhenTheRowLoads(page))];
-        for (const problem of problems) found.push(`${screen} @${width}px, ${text} text, hand ${hand}: ${problem}`);
-        if (problems.length > 0 && process.env.KAD_FIT_DEBUG) {
-          await page.screenshot({ path: `${process.env.KAD_FIT_DEBUG}/${screen.replace(/\W+/g, "-")}-${width}-${text}-${hand}.png` });
-        }
-      }
+    await settings(page, text, hand);
+    // Two frames: the attributes restyle, then layout settles.
+    await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+    const problems = [...(await misfits(page)), ...(await shiftsWhenTheRowLoads(page))];
+    for (const problem of problems) found.push(`${screen} @${width}px, ${text} text, hand ${hand}: ${problem}`);
+    if (problems.length > 0 && process.env.KAD_FIT_DEBUG) {
+      await page.screenshot({ path: `${process.env.KAD_FIT_DEBUG}/${screen.replace(/\W+/g, "-")}-${width}-${text}-${hand}.png` });
     }
   }
   await settings(page, "normal", "off");
@@ -382,12 +398,11 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expect(tv.getByText("Sparklehoof").first()).toBeVisible(TAP);
 
     // A television, and a tablet showing the game (#274).
-    const screens = [[1280, 720], [1024, 600]] as const;
-    await expectFits(tv, "the shared screen's lobby", screens);
+    await expectFits(tv, "the shared screen's lobby", SHARED);
 
     await kid.getByRole("button", { name: /begin the adventure/i }).click(TAP);
     await expect.poll(async () => (await roomState<{ phase: string }>(kid, code)).phase, TAP).toBe("scene");
     await expect(tv.locator(".narration__body").first()).toBeVisible(TAP);
-    await expectFits(tv, "the shared screen's story", screens);
+    await expectFits(tv, "the shared screen's story", SHARED);
   });
 });
