@@ -1537,6 +1537,7 @@ type RoomMode = "party" | "travel";
 //
 // Between games: no room, so no code and no mode
 //   /journal     → <JournalScreen />   (spec §2.3)
+//   /guide       → <GuideScreen />     (the grown-up's guide, #257)
 ```
 
 `/journal` is the one surface with no room behind it. It reads `GET /api/journal`, authorised by
@@ -1547,6 +1548,17 @@ client keeps the last answer in `localStorage`, keyed by the device token, and s
 last time's) when the request fails for want of a network; a 4xx means the binding is gone and
 discards it. A browser whose binding came from opening a Party Mode room on itself is marked
 `screenOnly` and is never offered the book, until it is seated or adopted as a player.
+
+#### The grown-up's guide (#257)
+
+`/guide` is how to run a session, for a grown-up who has never seen the game, linked from the start
+screen and from a family tablet's picker. Its words are `client/src/guide/guide.md`, drawn by a
+small Markdown reader that knows only what the guide uses and refuses the rest. The same page
+prints: its print styles drop the controls and keep the quick start to the first page. Its
+pictures are real screens taken by the e2e specs that walk each flow (`guidePicture()`, a no-op
+unless `npm run guide:pictures` runs them), served from `/guide-pictures/`. `tools/guide/guide.test.mjs`
+holds every bold label and quoted line to a string a screen really shows. The screen is a lazy
+chunk, so the first paint pays for one link. Nothing is stored. See docs/guide/README.md.
 
 #### Help on every screen (#256)
 

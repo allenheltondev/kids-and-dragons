@@ -12,6 +12,7 @@
 import { test, expect, type Locator, type Page } from "@playwright/test";
 import { createCharacter } from "./characters";
 import { openPlayerTask } from "./player-navigation";
+import { guidePicture } from "./guide-pictures";
 
 const TAP = { timeout: 20_000 } as const;
 
@@ -162,6 +163,8 @@ test("settings are remembered on the device and applied before anything else", a
 
   await page.getByRole("button", { name: "Display settings" }).first().click(TAP);
   const sheet = page.getByRole("dialog", { name: "Display settings" });
+  await expect(sheet).toBeVisible(TAP);
+  await guidePicture(page, "display-settings");
   await sheet.getByRole("button", { name: "Largest", exact: true }).click(TAP);
   await sheet.getByRole("button", { name: "High contrast", exact: true }).click(TAP);
   await sheet.getByRole("button", { name: "Less movement", exact: true }).click(TAP);

@@ -13,6 +13,7 @@
 
 import { test, expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
 import { createCharacter } from "./characters";
+import { guidePicture } from "./guide-pictures";
 import { openPlayerTask } from "./player-navigation";
 import { roomState } from "./room-state";
 
@@ -119,6 +120,7 @@ test.describe("stop anytime, pick up where you left off", () => {
     // --- A Rest scene: the host is offered a place to stop, and may say no ---
     await jumpTo(allen, first, REST_SCENE);
     await expect(allen.getByText(/cozy place to stop for today/i)).toBeVisible(TAP);
+    await guidePicture(allen, "stop-offer");
     // Nobody else is offered it.
     await expect(sam.getByText(/cozy place to stop for today/i)).toHaveCount(0);
     await allen.getByRole("button", { name: "Keep playing" }).click(TAP);
@@ -152,6 +154,7 @@ test.describe("stop anytime, pick up where you left off", () => {
     // The room says where they stopped, in a line a kid can follow.
     await expect(sam.getByText(/you stopped partway through/i).locator("visible=true").first()).toBeVisible(TAP);
     await expect(sam.getByRole("button", { name: /keep going/i })).toBeVisible(TAP);
+    await guidePicture(sam, "keep-going");
     const lobby = await roomState<State>(sam, second);
     expect(["lobby", "creation"]).toContain(lobby.phase);
     expect(lobby.saved?.heroes).toEqual(["Pip", "Bo"]);
