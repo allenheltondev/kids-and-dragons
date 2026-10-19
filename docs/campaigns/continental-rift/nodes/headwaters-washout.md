@@ -1,6 +1,6 @@
 # Node design — Headwaters Washout
 
-**Status:** Approved scenario concept, places, rescuer, checks and harm; implementation specifics TBD.
+**Status:** Implemented as an authored development-preview chapter. See [route review](../routes-continuity-review.md) for validation and boundaries.
 **Provisional node ID:** `headwaters-washout`
 **Narrative role:** First vivid fail-forward multi-stage skill challenge.
 **Spoiler level:** Early-campaign player-facing; **no emperor reveal**.
@@ -67,4 +67,7 @@ No exit lands on the west bank below the glacier (the Expanse, a protected myste
 - River progression can be unit/playtest simulated; Gemfall remains unchanged.
 
 ## Unresolved
-Which stage the rift appears at; exact prose, visuals, audio, rewards.
+Implementation decision: the optional rift appears after a failed fallen-tree escape, before
+the rapids. The chime gives every party a fair warning about the missing return. The new
+`damage.nonlethal` option leaves standing heroes at 1 HP; Ossley's rescue heals the party
+and supplies the bundle. The regional content beyond the arrival episodes remains unwritten.
