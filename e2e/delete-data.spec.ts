@@ -5,6 +5,7 @@
  */
 
 import { test, expect, type Page } from "@playwright/test";
+import { guidePicture } from "./guide-pictures";
 
 const TAP = { timeout: 20_000 } as const;
 
@@ -51,6 +52,7 @@ test("a grown-up keeps, then deletes, a group's data", async ({ browser }) => {
   await page.getByRole("button", { name: "Keep Posy" }).click();
   await expect(page.getByText("Posy", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Delete Posy" }).click();
+  await guidePicture(page.locator(".organizer__row", { hasText: "Posy" }), "delete-kid");
   await page.getByRole("group", { name: "Delete Posy?" }).getByRole("button", { name: "Delete Posy" }).click();
   await expect(page.getByText("Posy", { exact: true })).toHaveCount(0, TAP);
   await expect(page.getByText("Gullet", { exact: true })).toBeVisible();

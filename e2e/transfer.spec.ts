@@ -8,6 +8,7 @@
  */
 
 import { test, expect, type Browser, type Page } from "@playwright/test";
+import { guidePicture } from "./guide-pictures";
 
 const TAP = { timeout: 20_000 } as const;
 
@@ -58,6 +59,7 @@ test.describe("moving a kid to another home", () => {
     const card = leaderPage.getByRole("status", { name: `${kid}'s move code` });
     await expect(card).toBeVisible(TAP);
     await expect(card.getByRole("img", { name: `QR code to move ${kid}` })).toBeVisible(TAP);
+    await guidePicture(card, "move-code");
     const shown = (await card.locator(".organizer__code").textContent()) ?? "";
     expect(shown).toMatch(/^[A-Z]{5}-[A-Z]{5}$/);
 
