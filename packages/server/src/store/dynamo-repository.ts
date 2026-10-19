@@ -1416,6 +1416,7 @@ export class DynamoRepository implements GameRepository {
       campaignProgress,
       campaignProgressExpectedVersion,
     } = input;
+    if (input.founder && input.unfound) throw new Error("a commit cannot both set and drop the founder");
     if (campaignProgress && campaignProgressExpectedVersion === undefined) {
       throw new Error("campaign progress commit is missing its expected version");
     }
@@ -1478,6 +1479,23 @@ export class DynamoRepository implements GameRepository {
                         "#owner": "ownerSub",
                       },
                       ExpressionAttributeValues: { ":device": input.founder.deviceId, ":true": true, ":null": null },
+                    },
+                  },
+                ]
+              : []),
+            // A host's Remove of the phone that kept the game (#272): it stops
+            // being the founder in the same transaction as the run says so.
+            ...(input.unfound
+              ? [
+                  {
+                    Update: {
+                      TableName: this.table,
+                      Key: { PK: HH(input.unfound.householdId), SK: META },
+                      // Empty, not removed: absent reads as a household from before founders.
+                      UpdateExpression: "SET #d.#founder = :nobody",
+                      ConditionExpression: "attribute_exists(PK) AND #d.#founder = :device",
+                      ExpressionAttributeNames: { "#d": "data", "#founder": "founderDeviceId" },
+                      ExpressionAttributeValues: { ":device": input.unfound.deviceId, ":nobody": "" },
                     },
                   },
                 ]

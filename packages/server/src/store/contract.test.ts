@@ -843,6 +843,32 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         expect((await repo.getState("r_1"))?.seq).toBe(0);
       });
 
+      it("drops the founder in the same transaction as the run, only while it is that device (#272)", async () => {
+        await repo.putHousehold(guest("h_1", new Date(Date.now() + DAY).toISOString()));
+        await repo.putState(state("r_1", 0));
+        const dropIn = (seq: number, deviceId: string) =>
+          repo.commit({
+            runId: "r_1",
+            expectedSeq: seq - 1,
+            state: state("r_1", seq),
+            event: event("r_1", seq),
+            unfound: { householdId: "h_1", deviceId },
+          });
+
+        // Not the founder: the whole commit is refused, the run included.
+        expect(await dropIn(1, "d_other")).toBe(false);
+        expect((await repo.getState("r_1"))?.seq).toBe(0);
+        expect((await repo.getHousehold("h_1"))?.founderDeviceId).toBe("d_1");
+
+        expect(await dropIn(1, "d_1")).toBe(true);
+        expect((await repo.getState("r_1"))?.seq).toBe(1);
+        // Nobody, not absent: absent reads as a household from before founders.
+        expect((await repo.getHousehold("h_1"))?.founderDeviceId).toBe("");
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(false);
+        // And a second drop of the same device no longer holds.
+        expect(await dropIn(2, "d_1")).toBe(false);
+      });
+
       it("will not claim a household that does not exist", async () => {
         expect(await repo.claimHousehold("h_nope", "sub_a", "d_1")).toBe(false);
       });

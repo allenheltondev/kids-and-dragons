@@ -619,8 +619,11 @@ first and then setting the founder would need a reconciler for the gap
 between them. The target is
 checked again on the run as it stands at every attempt, so a Remove that lands
 mid-flight refuses the hand-over rather than giving the game to someone taken
-out; and a Remove clears `keeperPlayerId` when it names the removed player
-(their phone stops being the founder in `unfound`, as before). Deleting a player (#252) takes her id out of it. Left as it is on
+out; and a Remove clears `keeperPlayerId` when it names the removed player.
+The same Remove also drops that phone as the founder in its own commit
+(`CommitInput.unfound`, conditional on it still being the founder, read again
+on every attempt), so a removed keeper's phone stops being able to claim in the
+same step the room stops naming them, whichever of the two lands first. Deleting a player (#252) takes her id out of it. Left as it is on
 purpose: the founder is still a device and not a person. A guest game is a
 table's save (see "Who owns what", below), a kid's hero is hers and is not lost
 with it, and a family tablet exists only in a household an account already

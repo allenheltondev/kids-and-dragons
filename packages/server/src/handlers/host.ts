@@ -71,6 +71,12 @@ export async function commitRoomChange(
     closing?: boolean;
     /** Moves the household's founder in the same transaction (#272, `CommitInput.founder`). */
     founder?: { householdId: string; deviceId: string };
+    /**
+     * Asked on every attempt, once `change` has chosen the next state, for the
+     * founder this commit must also drop (`CommitInput.unfound`). Asked again
+     * after a lost race, so it names whoever is the founder on the retry.
+     */
+    unfound?: () => Promise<{ householdId: string; deviceId: string } | undefined>;
   } = {},
 ): Promise<HandlerResult<{ seq: number; state: RunState; changed: boolean }>> {
   for (let attempt = 1; ; attempt++) {
@@ -82,6 +88,7 @@ export async function commitRoomChange(
     const changed = await change(state);
     if (!changed) return ok({ seq: state.seq, state, changed: false });
 
+    const unfound = options.unfound ? await options.unfound() : undefined;
     const nowMs = deps.now();
     const next: RunState = { ...changed, seq: state.seq + 1, updatedAt: iso(nowMs) };
     const event: EventRecord = {
@@ -98,6 +105,7 @@ export async function commitRoomChange(
         state: next,
         event,
         ...(options.founder ? { founder: options.founder } : {}),
+        ...(unfound ? { unfound } : {}),
       })
     ) {
       await deps.channel.publish(next.roomCode, {

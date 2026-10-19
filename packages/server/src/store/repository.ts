@@ -371,6 +371,16 @@ export interface CommitInput {
    * commit is refused, exactly as a lost seq race is.
    */
   founder?: { householdId: string; deviceId: string };
+  /**
+   * Take `deviceId` off the household as its founder, in the same transaction
+   * as the state and the event (#272): a host's Remove of the phone that kept
+   * the game. Leaves nobody (`founderDeviceId: ""`, never absent, which would
+   * read as a household from before founders), as `dropFounder` does.
+   * Conditional on `deviceId` still being the founder: when it is not, the
+   * whole commit is refused as a lost seq race is, and the caller reads the
+   * household again. Never together with `founder`, which writes the same row.
+   */
+  unfound?: { householdId: string; deviceId: string };
 }
 
 /** `HH#<hhId>` / `OWNER#<sub>`: one grown-up who may manage the household (#248). */
