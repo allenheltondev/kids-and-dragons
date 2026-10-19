@@ -72,12 +72,17 @@
   color: var(--kad-accent-ink);
 }
 
-/* At least a name's worth of room; past that, Remove and the close wrap under it (#257). */
+/* At least a short name's worth of room; past that, Remove and the close wrap under it, to
+   the end of the line, rather than squeezing it to a letter a line (#257). */
 .kad-arrival__text {
-  flex: 1 1 8em;
+  flex: 1 1 5em;
   min-inline-size: 0;
   margin: 0;
   overflow-wrap: break-word;
+}
+
+.kad-arrival > :last-child {
+  margin-inline-start: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {

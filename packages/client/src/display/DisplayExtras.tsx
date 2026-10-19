@@ -6,6 +6,7 @@
  */
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useGameStore } from "../store";
 import { perfRequested } from "../world/frame-stats";
 import { getAudioProbe, onAudioProbe } from "../audio/cue";
@@ -33,16 +34,27 @@ export function DisplayExtras(): React.JSX.Element {
     };
   }, []);
 
-  return (
-    <>
-      <SoundPrompt />
-      <div className="kad-about">
+  /*
+   * The button sits in the screen's corner row (App.tsx), first in it, so it
+   * takes its place beside the other controls instead of lying over the
+   * screen's own top-left heading (#257). Without a row (a test rendering this
+   * alone) it stands where it is.
+   */
+  const [corner] = useState(() => (typeof document === "undefined" ? null : document.querySelector(".kad-corner")));
+  const about = (
+    <div className={`kad-about${corner ? " kad-about--in-corner" : ""}`}>
       {open ? <CapabilityReport wake={wake} onClose={() => { setOpen(false); }} /> : (
         <button type="button" className="kad-about__open" onClick={() => { setOpen(true); }}>
           About this screen
         </button>
       )}
-      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <SoundPrompt />
+      {corner ? createPortal(about, corner) : about}
     </>
   );
 }
