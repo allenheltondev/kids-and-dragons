@@ -4,12 +4,29 @@
  * centre), so all three can be on screen together. That one is shell-level,
  * so fixed positioning and viewport units are fair, as they are for the toast.
  */
-.kad-arrivals--float {
+/* The shared screen's top-right column, under the corner row: the host's stop offer and
+   room panel, then who just joined, one under the other (App.tsx, #257). */
+.kad-display-stack {
   position: fixed;
-  inset-block-start: calc(var(--kad-safe-top, 0px) + 3.5rem);
+  inset-block-start: calc(var(--kad-safe-top, 0px) + var(--kad-corner-bottom));
   inset-inline-end: calc(var(--kad-safe-right, 0px) + 1rem);
   z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   inline-size: min(24rem, calc(100vw - 2rem));
+  max-block-size: calc(100vh - var(--kad-corner-bottom) - 1rem);
+  overflow-y: auto;
+  /* The column is not a surface; only what is in it takes taps. */
+  pointer-events: none;
+}
+
+.kad-display-stack > * {
+  pointer-events: auto;
+}
+
+.kad-arrivals--float {
+  inline-size: 100%;
 }
 
 .kad-arrivals {
@@ -25,8 +42,9 @@
  */
 .kad-arrivals--inline {
   flex: 0 0 auto;
-  /* Clear of the corner row (settings, read-aloud, sound) in the top corner of every phone. */
-  padding: 0.5rem var(--kad-corner-reserve) 0 0.75rem;
+  /* The corner row has a strip of its own above the phone's shell (styles/theme.css), so the
+     notices take the whole width: a name and its Remove never share a line with the row. */
+  padding: 0.5rem 0.75rem 0;
 }
 
 /* All of them, on request: scrolls inside its own box, never pushes the
@@ -47,6 +65,7 @@
 
 .kad-arrival {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.6rem;
   padding: 0.5rem 0.5rem 0.5rem 0.75rem;
@@ -70,11 +89,17 @@
   color: var(--kad-accent-ink);
 }
 
+/* At least a short name's worth of room; past that, Remove and the close wrap under it, to
+   the end of the line, rather than squeezing it to a letter a line (#257). */
 .kad-arrival__text {
-  flex: 1 1 auto;
+  flex: 1 1 5em;
   min-inline-size: 0;
   margin: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+}
+
+.kad-arrival > :last-child {
+  margin-inline-start: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {

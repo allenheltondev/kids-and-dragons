@@ -27,10 +27,16 @@ like read-aloud. The sheet opens from the corner row (settings, read-aloud, soun
 
 ## Rules for new UI
 
-- **Corner row.** The three device controls share `.kad-corner` (`theme.css`). It is 16px whatever
-  the text size and its buttons are exactly 44px, so what clears it never has to guess:
-  anything that reserves its corner uses `--kad-corner-reserve` (top) or `--kad-corner-bottom`
-  (one-handed), never a number of its own.
+- **Corner row.** The device controls (help, settings, read-aloud, sound) share `.kad-corner`
+  (`theme.css`). It is 16px whatever the text size and its buttons are exactly 44px. It never
+  shares a line with anything: a phone's shell, the start screen and the guide leave it a strip of
+  its own, `--kad-corner-bottom` tall, at the top, or at the bottom one-handed. Reserving its width
+  beside a header or a notice instead squeezed them into a column on a 390px phone (#257), so do
+  not. On the shared screen, the host's Room button, About this screen and Tap for sound sit in
+  the row, and what Room opens drops below it with who just joined, in one column, so the
+  story's choices along the bottom are never covered. `e2e/layout-fit.spec.ts` checks that nothing sits under any of them
+  or is clipped: phones at 360px and 390px, the shared screen at 1280x720 and 1024x600, normal and
+  largest text, and every hand.
 - **Do not size chrome in `rem` unless it should grow.** `rem` is the text scale. The tray cancels it
   with `zoom` and hands its labels most of it back; copy that if a bar of art must not grow.
 - **Touch targets** are `--kad-touch-min`, clamped between 44px and 56px so the largest text does

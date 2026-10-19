@@ -5,7 +5,7 @@
  * report at once; otherwise a small button does.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { useGameStore } from "../store";
 import { perfRequested } from "../world/frame-stats";
 import { getAudioProbe, onAudioProbe } from "../audio/cue";
@@ -16,45 +16,99 @@ import { onWake } from "./wake";
 
 import "./DisplayExtras.css";
 
-export function DisplayExtras(): React.JSX.Element {
-  const [wake, setWake] = useState<WakeLockState>("released");
-  const [open, setOpen] = useState(() => typeof location !== "undefined" && perfRequested(location.search));
+/* The wake lock's state, held by DisplayExtras and read by the report wherever it is drawn. */
+let wakeNow: WakeLockState = "released";
+const wakeListeners = new Set<() => void>();
+function setWakeNow(next: WakeLockState): void {
+  wakeNow = next;
+  for (const listener of wakeListeners) listener();
+}
+function useWakeState(): WakeLockState {
+  return useSyncExternalStore(
+    (listener) => { wakeListeners.add(listener); return () => { wakeListeners.delete(listener); }; },
+    () => wakeNow,
+    () => wakeNow,
+  );
+}
 
+/**
+ * `controls={false}` when App draws the screen's own controls in its corner row
+ * (`DisplayCornerControls`, #257); rendered on its own, it draws them where it is.
+ */
+export function DisplayExtras({ controls = true }: { controls?: boolean } = {}): React.JSX.Element | null {
   useEffect(() => {
     const lock: KeepAwake = keepAwake();
-    setWake(lock.state());
-    const stopWatching = lock.onChange(() => { setWake(lock.state()); });
+    setWakeNow(lock.state());
+    const stopWatching = lock.onChange(() => { setWakeNow(lock.state()); });
     // Asleep and back: a fresh stream, then everything missed from the last seq.
     const stopWake = onWake(() => { useGameStore.getState().reconnect(); });
     return () => {
-      stopWake();
       stopWatching();
+      stopWake();
       lock.stop();
     };
   }, []);
 
+  if (!controls) return null;
   return (
     <>
-      <SoundPrompt />
-      <div className="kad-about">
-      {open ? <CapabilityReport wake={wake} onClose={() => { setOpen(false); }} /> : (
+      <SoundPrompt inCorner={false} />
+      <About inCorner={false} />
+    </>
+  );
+}
+
+/**
+ * The shared screen's own controls, as App draws them in its corner row (#257):
+ * Tap for sound beside the sound button it is about, and About this screen as a
+ * 44px "i" like its neighbours. Top centre and top left, they lay over the
+ * lobby's heading and the chapter title at the largest text.
+ */
+export function DisplayCornerControls(): React.JSX.Element {
+  return (
+    <>
+      <SoundPrompt inCorner />
+      <About inCorner />
+    </>
+  );
+}
+
+function About({ inCorner }: { inCorner: boolean }): React.JSX.Element {
+  const wake = useWakeState();
+  const [open, setOpen] = useState(() => typeof location !== "undefined" && perfRequested(location.search));
+  return (
+    <div className={`kad-about${inCorner ? " kad-about--in-corner" : ""}`}>
+      {open ? (
+        <CapabilityReport wake={wake} onClose={() => { setOpen(false); }} />
+      ) : inCorner ? (
+        <button
+          type="button"
+          className="kad-about__open kad-about__open--icon kad-focusable"
+          aria-label="About this screen"
+          title="About this screen"
+          onClick={() => { setOpen(true); }}
+        >
+          <span aria-hidden="true">i</span>
+        </button>
+      ) : (
         <button type="button" className="kad-about__open" onClick={() => { setOpen(true); }}>
           About this screen
         </button>
       )}
-      </div>
-    </>
+    </div>
   );
 }
 
 /**
  * The one clear ask when the browser is holding sound back (#264). A TV often
  * waits for a tap before it lets a page make a sound, and nobody looks at a
- * small hint. Shown only while sound is `locked` or `suspended` and not turned
+ * small hint. It stands in the screen's corner row, beside the sound button it
+ * is about: top centre, it lay over the lobby's heading and the chapter title
+ * at the largest text (#257). Shown only while sound is `locked` or `suspended` and not turned
  * off; a browser with no audio at all (`unsupported`) is never asked, since a
  * tap cannot mend it, and the game never waits on the answer.
  */
-function SoundPrompt(): React.JSX.Element | null {
+function SoundPrompt({ inCorner }: { inCorner: boolean }): React.JSX.Element | null {
   const [, refresh] = useState(0);
   useEffect(() => {
     let stopState = (): void => undefined;
@@ -84,8 +138,8 @@ function SoundPrompt(): React.JSX.Element | null {
   const state = probe.state();
   if (state !== "locked" && state !== "suspended") return null;
   return (
-    <div className="kad-tap-for-sound">
-      <Button size="lg" onClick={() => { probe.unlock(); }}>Tap for sound</Button>
+    <div className={`kad-tap-for-sound${inCorner ? " kad-tap-for-sound--in-corner" : ""}`}>
+      <Button size={inCorner ? "md" : "lg"} onClick={() => { probe.unlock(); }}>Tap for sound</Button>
     </div>
   );
 }
