@@ -1,136 +1,51 @@
 import fs from "node:fs";
 import path from "node:path";
-import { afterAll, describe, expect, it } from "vitest";
-import {
-  applyIntent, createRunState, enterScene, itemCatalog, lintCampaignGraph,
-  newCharacter, parseCampaignGraph, resolveCharacter, validateChapter,
-  startJourney, completeVisit, takeExit, seedRunBuffs,
-} from "@kad/shared";
-import type { Campaign, Chapter, ClassId, ClientIntent, EngineContext, ItemCatalog, RulesContent, RunState, SpeciesId } from "@kad/shared";
+import { afterAll, describe, expect, it, vi } from "vitest";
+import { enterScene, lintCampaignGraph, parseCampaignGraph, newCharacter, resolveCharacter, validateChapter, startJourney, completeVisit, takeExit, seedRunBuffs } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { runValidator } from "./generate-gate.ts";
 import { chapterFlagsFrom } from "./journey-graph.ts";
 import { exploreRoutes, playtest } from "./journey-explore.ts";
-import { RIFTLIGHT_DRAFT, stageRiftlightOpening } from "./riftlight-preview.ts";
-
+import { stageRiftlightOpening } from "./riftlight-preview.ts";
+import { campaign, chapters as allChapters, rules, items, context, start, send, allPaths } from "./riftlight-test-support.ts";
 const ROOT = path.resolve(import.meta.dirname, "../..");
-const read = <T>(file: string): T => JSON.parse(fs.readFileSync(file, "utf8")) as T;
-const campaign = read<Campaign>(path.join(RIFTLIGHT_DRAFT, "opening-preview.campaign.json"));
-const chapters = new Map(campaign.chapters.map((id) => [id, read<Chapter>(path.join(RIFTLIGHT_DRAFT, "chapters", `${id}.json`))]));
-const rules = read<RulesContent>(path.join(ROOT, "content/rules.json"));
-const items: ItemCatalog = itemCatalog(read(path.join(ROOT, "content/items.json")));
-for (const chapter of chapters.values()) Object.assign(items, chapter.props);
+const chapters = new Map([...allChapters].filter(([, chapter]) => chapter.index <= 3));
+const continuity = JSON.parse(fs.readFileSync(path.join(ROOT, "content/drafts/riftlight/continuity.json"), "utf8")).chapters;
 const staged = stageRiftlightOpening();
 afterAll(() => fs.rmSync(staged, { recursive: true, force: true }));
 
-interface SceneContinuity {
-  requires: string[];
-  introduces: Record<string, string>;
-  conditional?: { flag?: string; notFlag?: string; requires: string[] }[];
-}
-const continuity = read<{ chapters: Record<string, { entryFacts: string[]; entryByFlag?: Record<string, string[]>; scenes: Record<string, SceneContinuity> }> }>(
-  path.join(RIFTLIGHT_DRAFT, "continuity.json"),
-).chapters;
-
-function context(chapter: Chapter, face = 20): EngineContext {
-  return { chapter, rules, items, abilities: {}, rng: { next: () => (face - 0.5) / 20 }, now: "2026-10-16T12:00:00.000Z" };
-}
-
-function start(chapter: Chapter, species: SpeciesId, cls: ClassId, flags: Record<string, boolean> = {}, partySize = 1) {
-  const character = newCharacter({ id: "hero", householdId: "test", ownerPlayerId: "p1", name: "Glimmer",
-    species, class: cls, stats: { might: 1, quick: 1, clever: 1, heart: 0 }, appearance: APPEARANCE,
-    rules, startingLevel: 4, now: "2026-10-16T12:00:00.000Z" });
-  const resolved = resolveCharacter(character, rules, items);
-  const state = createRunState({ runId: "preview-test", roomCode: "RIFT", mode: "travel", campaignId: campaign.id, now: "2026-10-16T12:00:00.000Z" });
-  state.party = [{ playerId: "p1", character: resolved, hp: resolved.maxHp, down: false, ready: true, connected: true }];
-  for (let seat = 2; seat <= partySize; seat++) {
-    const friend = structuredClone(state.party[0]!);
-    friend.playerId = `p${seat}`;
-    friend.character.id = `hero${seat}`;
-    friend.character.ownerPlayerId = friend.playerId;
-    state.party.push(friend);
-  }
-  state.chapterId = chapter.id;
-  state.flags = { ...flags };
-  const result = enterScene(state, chapter.entry, context(chapter));
-  expect(result.error).toBeUndefined();
-  return result.state;
-}
-
-function send(state: RunState, intent: ClientIntent, chapter: Chapter, face = 20) {
-  const prompt = state.prompt;
-  const players = prompt?.kind === "choice"
-    ? prompt.vote ? state.party.map((member) => member.playerId) : [prompt.forPlayerIds[0] ?? "p1"]
-    : prompt?.kind === "roll"
-      ? [state.party.find((member) => member.character.id === prompt.characterId)!.playerId]
-      : ["p1"];
-  let current = state;
-  for (const playerId of players) {
-    const result = applyIntent(current, { playerId, intent }, context(chapter, face));
-    expect(result.error, `${chapter.id}/${current.sceneId}: ${JSON.stringify(intent)}`).toBeUndefined();
-    current = result.state;
-  }
-  return current;
-}
-
-/** Walk every actual choice and both dice extremes through the real engine. */
-function allPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags: Record<string, boolean> = {}, partySize = 1) {
-  const contract = continuity[chapter.id]!;
-  const conditionalEntry = Object.entries(contract.entryByFlag ?? {}).flatMap(([flag, facts]) => flags[flag] ? facts : []);
-  const pending = [{ state: start(chapter, species, cls, flags, partySize), known: new Set([...contract.entryFacts, ...conditionalEntry]) }];
-  const seen = new Set<string>();
-  const visited = new Set<string>();
-  const ends: RunState[] = [];
-  const endingKnowledge: Set<string>[] = [];
-  while (pending.length) {
-    const { state, known: before } = pending.pop()!;
-    const key = JSON.stringify([state.sceneId, state.flags, state.prompt, state.party.map((p) => [p.hp, p.character.questItems]), state.phase, [...before].sort()]);
-    if (seen.has(key)) continue;
-    seen.add(key);
-    expect(seen.size, "Unexpected loop or path explosion").toBeLessThan(5000);
-    visited.add(state.sceneId!);
-    const review = contract.scenes[state.sceneId!]!;
-    expect(review, `${chapter.id}/${state.sceneId}: new scene needs a continuity review`).toBeDefined();
-    const known = new Set(before);
-    for (const [fact, evidence] of Object.entries(review.introduces)) {
-      expect(state.narration, `${chapter.id}/${state.sceneId}: introduction of ${fact} must be read aloud`).toContain(evidence);
-      known.add(fact);
-    }
-    const conditional = (review.conditional ?? []).filter((rule) =>
-      (!rule.flag || state.flags[rule.flag]) && (!rule.notFlag || !state.flags[rule.notFlag]),
-    ).flatMap((rule) => rule.requires);
-    for (const fact of [...review.requires, ...conditional]) {
-      expect(known.has(fact), `${chapter.id}/${state.sceneId}: references ${fact} before this path introduced it`).toBe(true);
-    }
-    if (state.phase === "chapter_complete") { ends.push(state); endingKnowledge.push(known); continue; }
-    if (state.prompt?.kind === "choice") {
-      expect(state.prompt.options.length).toBeGreaterThan(0);
-      for (const option of state.prompt.options) pending.push({ state: send(state, { type: "CHOOSE", choiceId: option.id }, chapter), known });
-    } else if (state.prompt?.kind === "roll") {
-      for (const face of [1, 20]) pending.push({ state: send(state, { type: "ROLL" }, chapter, face), known });
-    } else {
-      pending.push({ state: send(state, { type: "ADVANCE" }, chapter), known });
-    }
-  }
-  expect(ends.length).toBeGreaterThan(0);
-  for (const state of ends) expect(state.chapterOutcome).toBe("success");
-  return { visited, ends, endingKnowledge };
-}
-
 describe("Riftlight's authored opening", () => {
+  it("stages usable world assets when directory junctions are denied", () => {
+    const link = vi.spyOn(fs, "symlinkSync").mockImplementation(() => {
+      throw Object.assign(new Error("Junction denied"), { code: "EPERM" });
+    });
+    let copied: string | undefined;
+    try {
+      copied = stageRiftlightOpening();
+      const world = path.join(copied, "assets/world");
+      expect(fs.lstatSync(world).isDirectory()).toBe(true);
+      expect(fs.lstatSync(world).isSymbolicLink()).toBe(false);
+      expect(fs.readdirSync(world).sort()).toEqual(fs.readdirSync(path.join(ROOT, "assets/world")).sort());
+      expect(runValidator(copied).ok).toBe(true);
+    } finally {
+      link.mockRestore();
+      if (copied) fs.rmSync(copied, { recursive: true, force: true });
+    }
+  });
+
   it("passes the real content gate alongside Gemfall, including props, art and prerequisite", () => {
     const result = runValidator(staged);
     expect(result.ok, result.output).toBe(true);
     expect(campaign.requires).toEqual(["gemfall"]);
     expect(fs.existsSync(path.join(ROOT, "content/campaigns/riftlight.json"))).toBe(false);
-    for (const chapter of chapters.values()) expect(validateChapter(chapter), chapter.id).toEqual([]);
+    for (const chapter of allChapters.values()) expect(validateChapter(chapter), chapter.id).toEqual([]);
   });
 
   it("has no softlock and crosses the one-use rift with Riftspark through the journey runtime", () => {
     const parsed = parseCampaignGraph(campaign);
     expect(parsed.problems).toEqual([]);
     const graph = parsed.graph!;
-    const options = { chapterFlags: chapterFlagsFrom(chapters) };
+    const options = { chapterFlags: chapterFlagsFrom(allChapters), routeSets: campaign.routeSets };
     expect(lintCampaignGraph(graph, options).findings).toEqual([]);
     const { search, coverage } = exploreRoutes(graph, options);
     expect(coverage.softlocks).toEqual([]);
