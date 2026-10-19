@@ -46,6 +46,7 @@
     "audio:briefs": "tsx tools/audio/briefs.ts",
     "audio:preview": "tsx tools/audio/procedural-preview.ts",
     "audio:install": "tsx tools/audio/procedural-install.ts",
+    "load": "tsx tools/load/run.ts",
     "perf:bundle": "tsx tools/perf/bundle-budget.ts",
     "art:sheet:rig": "node tools/art/rig-sheet.mjs",
     "art:inventory": "node tools/art/inventory.ts",
