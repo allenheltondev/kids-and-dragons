@@ -101,6 +101,7 @@ import { factTestHolds } from "./world-state.js";
 import { checkBuffOffer, combatBuffsFor, expireRunBuffs, oneHeroSeat, spendCheckBuff, spendRunBuffs } from "./buffs.js";
 import { sameHome } from "./visitors.js";
 import { checkTypedName } from "./names.js";
+import { classAnswerRefusal, classPlaceWaitingOn, openClassPlace } from "./class-place.js";
 
 // ---------------------------------------------------------------------------
 // Surface
@@ -826,6 +827,11 @@ function enterSceneDraft(
   // other scene, so a run that never meets a hint never grows the key.
   if (scene.hint !== undefined) draft.hint = scene.hint;
   else delete draft.hint;
+  // A class place (#311), its answers fresh on every arrival. Absent, not
+  // null, on every other scene, like the hint.
+  const place = openClassPlace(scene);
+  if (place) draft.classPlace = place;
+  else delete draft.classPlace;
   draft.prompt = carriedSwap ?? null;
   /*
    * Offers do not travel (spec §9.4 — trading is a Rest-scene thing). An
@@ -1062,6 +1068,12 @@ function dispatch(
 
     case "SPEND_STAT_POINT":
       throw new Illegal("ILLEGAL", "stat points are spent through the authoritative run handler");
+
+    case "SWITCH_CLASS":
+      throw new Illegal("ILLEGAL", "a class is switched through the authoritative run handler");
+
+    case "KEEP_CLASS":
+      return doKeepClass(draft, playerId, intent.classId);
 
     case "PLAYTEST_GOTO":
       return doPlaytestGoto(draft, intent.sceneId, ctx);
@@ -1446,6 +1458,14 @@ function doChoose(
   ) {
     throw new Illegal("FORBIDDEN", `this choice is not player "${playerId}" to make`);
   }
+  // A class place holds its way on until every kid there has answered (#311),
+  // votes included: a vote cast now could close the room on a friend still
+  // reading their "are you sure?".
+  const deciding = classPlaceWaitingOn(draft);
+  if (deciding.length > 0) {
+    const names = deciding.map((m) => m.character.name).join(", ");
+    throw new Illegal("ILLEGAL", `still waiting for ${names} to decide about their class`);
+  }
   if (!prompt.options.some((o) => o.id === choiceId)) {
     // Includes choices hidden by an unmet requirement — the client never showed
     // it, so a request for it is either stale or forged.
@@ -1505,6 +1525,22 @@ function doChoose(
   // bigger beat than the tap that got you there, so it wins.
   if (entered?.kind === "CHAPTER_COMPLETE") return entered;
   return { kind: "CHOICE_MADE", choiceId: winning, byPlayerId: playerId };
+}
+
+/**
+ * A kid at a class place keeping the class they wear (#311). Only a record of
+ * the answer, so the way on stops waiting for them; nothing about the hero
+ * changes, which is why the engine can take it while a switch, which writes
+ * the hero's row, goes through the server (`prepareClassSwitch`).
+ */
+function doKeepClass(draft: RunState, playerId: string, classId: unknown): Presentation | undefined {
+  const refusal = classAnswerRefusal(draft, playerId, classId, false);
+  if (refusal) throw new Illegal("ILLEGAL", refusal);
+  const place = draft.classPlace;
+  // classAnswerRefusal has already said no to a run without one.
+  if (!place) return undefined;
+  place.answers = { ...place.answers, [playerId]: { switched: false } };
+  return undefined;
 }
 
 /**

@@ -6,7 +6,7 @@
  */
 
 import type { EncounterState } from "../encounter.js";
-import type { ResolvedCharacter, StatId } from "./domain.js";
+import type { ClassId, ResolvedCharacter, StatId } from "./domain.js";
 import type { ChapterOutcome, SceneId, ScenePriority, SceneType } from "./chapter.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { FactId, FactValue, JourneyView, NodeId } from "./campaign-graph.js";
@@ -36,6 +36,20 @@ export interface DiceRoll {
    */
   group?: { made: number; of: number; result: "success" | "failure" };
 }
+
+/**
+ * A class place, open (docs/class-mastery.md §3). The way on waits until every
+ * connected hero not wearing `class` has an answer in `answers`: a switch, or
+ * keeping what they wear. A hero already wearing it has nothing to decide.
+ */
+export interface ClassPlaceState {
+  class: ClassId;
+  /** By player id. A kid who kept may still switch while the room is open. */
+  answers: Record<string, ClassPlaceAnswer>;
+}
+
+/** `from` is the class a switching hero took off, for the TV's "who switched". */
+export type ClassPlaceAnswer = { switched: true; from: ClassId } | { switched: false };
 
 /** A member of the party, as the clients see them. */
 export interface PartyMember {
@@ -253,6 +267,12 @@ export interface RunState {
    * which today means only in the practice; every other run never carries it.
    */
   hint?: string;
+  /**
+   * The class place this scene is (chapter.ts `ClassPlace`), and what each kid
+   * answered there. Present only while such a scene is open, so a run that
+   * never walks into one never grows the key.
+   */
+  classPlace?: ClassPlaceState;
   party: PartyMember[];
   prompt: Prompt | null;
   lastRoll: DiceRoll | null;

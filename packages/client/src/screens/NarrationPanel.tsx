@@ -21,6 +21,7 @@ import { describeCombatPreview, tablePreviews } from "../world/previews";
 import { setStageInsetBottom } from "../world/stage-inset";
 import { Icon } from "./icons";
 import { VoteTicks } from "./VoteTicks";
+import { ClassPlaceRoll } from "./ClassPlace";
 import { chapterHeading } from "./campaign-copy";
 import { steppedAwayLine } from "./presence-copy";
 import "./shared.css";
@@ -328,6 +329,8 @@ export function NarrationPanel(): ReactElement | null {
               <span>{hint}</span>
             </p>
           )}
+          {/* Who switched at a class place (#311), while the way on waits. */}
+          <ClassPlaceRoll />
         </div>
 
         {/*

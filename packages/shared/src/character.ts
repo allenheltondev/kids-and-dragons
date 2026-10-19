@@ -520,7 +520,7 @@ export function awardXp(
     xp,
     level,
     tier,
-    mastery: levelBridge(before, rules, level),
+    mastery: levelBridge(before, rules, beforeLevel, level),
     // One point per level *gained*, not one per award: a big chapter that jumps
     // three levels owes three points, and a level that a setback's half award
     // failed to reach owes none (spec §8.1).
@@ -537,9 +537,15 @@ export function awardXp(
 /**
  * TEMPORARY, until deeds earn ranks (#310 removes this). Moves come from
  * distinctions, not level (#308), but until there are deeds a hero created
- * after #308 would never earn a move at all. So levelling still lifts the worn
- * class to the rank its level used to unlock (3 → Apprentice, 6 → Expert,
- * 9 → Master), exactly the moves the level gave before.
+ * after #308 would never earn a move at all. So crossing level 3, 6 or 9
+ * still lifts the worn class one rank, exactly the move the level gave before.
+ *
+ * One rank per threshold crossed by *this* award, never "up to the rank the
+ * level used to unlock": a hero who switched class (#311) starts the new one
+ * with only what it has earned (docs/class-mastery.md §3), and reading the
+ * level alone would hand a level 7 hero who just put on the star circlet
+ * Expert at the next chapter's XP. For a hero who never switched the two
+ * readings agree, since their rank is the one their level unlocked.
  *
  * Written into progress rather than derived at resolve time, so the rank is
  * really earned: it reverts with a failed campaign like the level that bought
@@ -550,15 +556,19 @@ export function awardXp(
 function levelBridge(
   before: CharacterProgress,
   rules: RulesContent,
+  beforeLevel: number,
   level: number,
 ): CharacterProgress["mastery"] {
   const mastery = cloneMastery(before.mastery);
   const classDef = (rules.classes as Partial<typeof rules.classes>)[before.class];
   if (!classDef) return mastery;
-  const bridged = rankForLevel(classDef, level);
-  const current = rankIn(before, before.class);
-  if (CLASS_RANKS.indexOf(bridged) > CLASS_RANKS.indexOf(current)) {
-    mastery[before.class] = { rank: bridged, deeds: { ...(before.mastery[before.class]?.deeds ?? {}) } };
+  const crossed =
+    CLASS_RANKS.indexOf(rankForLevel(classDef, level)) - CLASS_RANKS.indexOf(rankForLevel(classDef, beforeLevel));
+  if (crossed <= 0) return mastery;
+  const current = CLASS_RANKS.indexOf(rankIn(before, before.class));
+  const raised = CLASS_RANKS[Math.min(current + crossed, CLASS_RANKS.length - 1)] ?? "none";
+  if (raised !== CLASS_RANKS[current]) {
+    mastery[before.class] = { rank: raised, deeds: { ...(before.mastery[before.class]?.deeds ?? {}) } };
   }
   return mastery;
 }
@@ -717,4 +727,30 @@ export function spendStatPoint(
   };
 
   return writeProgress(character, next);
+}
+
+/**
+ * Puts on another class (docs/class-mastery.md §3): the worn class changes and
+ * nothing else does. Stats stay where they are, and every class's rank and
+ * deed progress stays in `mastery`, so the class taken off is exactly as it
+ * was when the hero comes back to it, and the one put on brings only what it
+ * has already earned. Its moves follow from `resolveCharacter()`.
+ *
+ * Follows `awardXp` into `provisional` while a campaign is in flight, so a
+ * failed campaign puts back the class worn when it began (spec §8.3).
+ *
+ * Where a switch may happen (that class's place) is the caller's to check;
+ * this refuses only what is never a switch. Both refusals are hard errors,
+ * like `spendStatPoint`'s: a switch that silently does nothing looks, on a
+ * phone, exactly like one that worked.
+ */
+export function switchClass(character: Character, rules: RulesContent, to: ClassId): Character {
+  if (!(rules.classes as Partial<typeof rules.classes>)[to]) {
+    throw new CharacterRuleError(`character: unknown class "${String(to)}"`);
+  }
+  const before = effectiveProgress(character);
+  if (before.class === to) {
+    throw new CharacterRuleError(`character: already wearing ${to}`);
+  }
+  return writeProgress(character, { ...cloneProgress(before), class: to });
 }

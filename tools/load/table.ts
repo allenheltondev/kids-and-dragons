@@ -21,6 +21,7 @@
  */
 
 import {
+  classPlaceWaitingOn,
   currentActor,
   currentActorId,
   legalActions,
@@ -435,6 +436,14 @@ export class Table {
     if (prompt?.kind === "roll") {
       const ok = await this.send(ownerOf(prompt.characterId), { type: "ROLL" });
       return ok ? "roll" : "done";
+    }
+    // A class place (#311) waits for every hero's own answer before the way on.
+    const deciding = classPlaceWaitingOn(state);
+    if (deciding.length > 0 && state.classPlace) {
+      for (const member of deciding) {
+        await this.send(this.phoneOf(member.playerId), { type: "KEEP_CLASS", classId: state.classPlace.class });
+      }
+      return "done";
     }
     if (prompt?.kind === "choice") {
       const options = prompt.options;

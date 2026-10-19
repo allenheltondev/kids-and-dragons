@@ -18,6 +18,7 @@ import {
   resolveCharacter,
   spendStatPoint,
   startCampaign,
+  switchClass,
 } from "./character.js";
 import type { Character, Stats } from "./types/domain.js";
 import { APPEARANCE, makeCharacter, makeItems, makeRules } from "./test-fixtures.js";
@@ -667,6 +668,23 @@ describe("awardXp (spec §8.1)", () => {
       });
     });
 
+    it("lifts a class put on after a switch one rank per threshold crossed, not to the level's rank (#311)", () => {
+      // A level 7 Starweaver puts on the song bell: Songkeeper starts at none,
+      // and earns nothing from the level she already had.
+      const character = switchClass(
+        makeCharacter({ class: "starweaver", level: 7, xp: 3300, rank: "apprentice" }),
+        rules,
+        "songkeeper",
+      );
+      const quiet = awardXp(character, rules, 100).character;
+      expect(rankIn(quiet.committed, "songkeeper")).toBe("none");
+      // Crossing level 9 is one threshold: Apprentice, not Master.
+      const crossed = awardXp(quiet, rules, 5200 - 3400).character;
+      expect(crossed.committed.level).toBe(9);
+      expect(rankIn(crossed.committed, "songkeeper")).toBe("apprentice");
+      expect(rankIn(crossed.committed, "starweaver")).toBe("apprentice");
+    });
+
     it("is reverted by a failed campaign with the level that bought it", () => {
       const gained = awardXp(startCampaign(makeCharacter(), "r_1"), rules, 2500).character;
       const failed = failCampaign(gained, "singed_feather", "2026-08-01");
@@ -981,5 +999,56 @@ describe("withInventory (spec §9.2 — trinkets are always on)", () => {
     expect(byDelta.steps).toBe(byResolve.steps);
     expect(byDelta.maxHp).toBe(byResolve.maxHp);
     expect(byDelta.guard).toBe(byResolve.guard);
+  });
+});
+
+describe("switchClass (#311, docs/class-mastery.md §3)", () => {
+  it("changes the worn class and nothing else", () => {
+    const before = makeCharacter({ level: 6, xp: 2100, rank: "expert" });
+    const after = switchClass(before, rules, "thornguard");
+    expect(classOf(after)).toBe("thornguard");
+    expect(after.committed.stats).toEqual(before.committed.stats);
+    expect(after.committed.level).toBe(6);
+    expect(after.committed.inventory).toEqual(before.committed.inventory);
+    expect(after.committed.mastery).toEqual(before.committed.mastery);
+    // The new class brings only what it has earned: its signature.
+    const resolved = resolveCharacter(after, rules, items);
+    expect(resolved.class).toBe("thornguard");
+    expect(resolved.rank).toBeUndefined();
+    expect(resolved.actions).toEqual([rules.classes.thornguard.signature.id, "mend_pulse"]);
+  });
+
+  it("keeps both ranks intact through a switch and a switch back", () => {
+    const start = makeCharacter({ level: 6, xp: 2100, rank: "expert" });
+    start.committed.mastery.songkeeper!.deeds = { hearts: 17 };
+    start.committed.mastery.thornguard = { rank: "apprentice", deeds: { brace: 2 } };
+
+    const away = switchClass(start, rules, "thornguard");
+    expect(rankIn(away.committed, "thornguard")).toBe("apprentice");
+    expect(resolveCharacter(away, rules, items).rank).toBe("apprentice");
+
+    const back = switchClass(away, rules, "songkeeper");
+    // Exactly where she left it, give or take `unspentPoints` written as a number.
+    expect(back.committed).toEqual({ ...start.committed, unspentPoints: 0 });
+    expect(resolveCharacter(back, rules, items).actions).toEqual(resolveCharacter(start, rules, items).actions);
+  });
+
+  it("writes provisional mid-campaign, so a failed campaign puts the class back", () => {
+    const started = startCampaign(makeCharacter({ rank: "apprentice" }), "r_1");
+    const switched = switchClass(started, rules, "duskrunner");
+    expect(switched.committed.class).toBe("songkeeper");
+    expect(switched.provisional?.class).toBe("duskrunner");
+    expect(switched.provisional?.runId).toBe("r_1");
+
+    const failed = failCampaign(switched, "singed_feather", "2026-08-01");
+    expect(classOf(failed)).toBe("songkeeper");
+    expect(rankIn(failed.committed, "songkeeper")).toBe("apprentice");
+
+    expect(classOf(commitCampaign(switched))).toBe("duskrunner");
+  });
+
+  it("refuses the class already worn, and a class the game does not have", () => {
+    expect(() => switchClass(makeCharacter(), rules, "songkeeper")).toThrow(CharacterRuleError);
+    expect(() => switchClass(makeCharacter(), rules, "wizard" as never)).toThrow(/unknown class/);
   });
 });
