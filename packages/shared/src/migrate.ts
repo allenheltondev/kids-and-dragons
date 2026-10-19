@@ -117,7 +117,18 @@ const STEPS: Record<number, Step> = {
    *
    * `unlockedActions` goes: class moves are derived now, and a stored list
    * would be a second, stale answer. Only the worn class gets an entry; at v4
-   * no hero had worn any other. A half that already carries its own class was
+   * no hero had worn any other.
+   *
+   * One deliberate exception to "no hero loses a move": a move of *another*
+   * class in `unlockedActions` is dropped, because only the worn class's
+   * moves can resolve now. v4's resolve would have kept it, but no writer ever
+   * stored one. `newCharacter` wrote the signature and the own class's level
+   * unlocks, `awardXp` the own class's unlocks, and class never changed. The
+   * only other writer, progression.ts between 7b6d66c5 and 678b7bc9 (one hour
+   * on 2026-07-29), stored the resolved list, which was own-class moves and
+   * the species combat action, and species still grants that. The
+   * Rally-on-every-class shape exists only in old test fixtures
+   * (ordered-campaigns.test.ts). migrate.test.ts pins both. A half that already carries its own class was
    * written in this shape by a path that did not stamp `v`, and is left as is.
    */
   4: (raw) => {
