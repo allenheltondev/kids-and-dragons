@@ -17,7 +17,7 @@
  *   - `completed: X` and `visited: X` are open when X is itself reached by open
  *     ways. Any party can go to X first, so the gate hides nothing from them.
  *   - Everything else (`flag`, `item`, `facts`, `outcome`, `count`, `locked`,
- *     `requiresSpecies`, `requiresClass`, ...) is a gate: it depends on who the
+ *     a rift with a lifecycle rule, `requiresSpecies`, `requiresClass`, ...) is a gate: it depends on who the
  *     party is or on what they chose, so the way does not count.
  *
  * Only a node's own chapter counts. A node variant is chosen by a `when`, so a
@@ -54,6 +54,18 @@ function graphWhenOpen(when, open) {
   return true;
 }
 
+/**
+ * Whether a rift is crossable by every party, always. A rift with any lifecycle
+ * rule is not: `opensWhen` waits on the journey, `uses` and `unstable` run out
+ * or flicker, `lasts` expires, `linkedTo` shares a state another crossing can
+ * spend, and `actions` can close or turn it. `oneWay`, `persistent`, `reveal`
+ * and a bare `redirects` list change what the players see, not who can cross.
+ */
+function riftOpen(rift) {
+  if (!rift) return true;
+  return ["opensWhen", "uses", "lasts", "unstable", "linkedTo", "actions"].every((key) => rift[key] === undefined);
+}
+
 /** Nodes a party can reach by open ways alone, to a fixed point (a `completed` gate opens as its node does). */
 export function openNodes(graph) {
   const open = new Set([graph.entry]);
@@ -61,7 +73,7 @@ export function openNodes(graph) {
     changed = false;
     for (const edge of Object.values(graph.edges ?? {})) {
       if (!open.has(edge.from) || open.has(edge.to) || !graph.nodes?.[edge.to]) continue;
-      if (edge.locked || !graphWhenOpen(edge.when, open)) continue;
+      if (edge.locked || !riftOpen(edge.rift) || !graphWhenOpen(edge.when, open)) continue;
       open.add(edge.to);
       changed = true;
     }

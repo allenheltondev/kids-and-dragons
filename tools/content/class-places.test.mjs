@@ -85,6 +85,30 @@ describe("class place reach", () => {
     }
   });
 
+  it("fails a place whose only way in is a rift with a lifecycle rule", () => {
+    const chapters = [chapter("ch-a"), chapter("ch-b", CLASSES)];
+    const rifts = [
+      { opensWhen: { flag: "special_choice" } },
+      { opensWhen: { facts: { river: "high" } } },
+      { uses: 1 },
+      { lasts: { unit: "visits", count: 3 } },
+      { unstable: { flicker: { open: 1, shut: 1 } } },
+      { linkedTo: "b-a" },
+      { actions: { close: { requires: { anyItem: ["key"] } } } },
+    ];
+    for (const rift of rifts) {
+      const v = verdict(campaign({ rift }), chapters);
+      expect(v.errors.map((e) => e.split(":")[0]).sort(), JSON.stringify(rift)).toEqual([...CLASSES].sort());
+    }
+  });
+
+  it("counts a rift that only reveals or is one-way as open", () => {
+    const chapters = [chapter("ch-a"), chapter("ch-b", CLASSES)];
+    for (const rift of [{}, { oneWay: true }, { persistent: true }, { reveal: "when-open" }]) {
+      expect(verdict(campaign({ rift }), chapters).errors, JSON.stringify(rift)).toEqual([]);
+    }
+  });
+
   it("counts a `completed` gate on a place any party can reach", () => {
     const c = campaign({ when: { completed: "a" } });
     expect(verdict(c, [chapter("ch-a"), chapter("ch-b", CLASSES)]).errors).toEqual([]);
