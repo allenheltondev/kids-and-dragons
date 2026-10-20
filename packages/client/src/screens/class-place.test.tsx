@@ -8,7 +8,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { ClientIntent, PartyMember, Prompt, ResolvedCharacter, RunState } from "@kad/shared";
+import { setSpeaker } from "@kad/shared";
+import type { ClientIntent, PartyMember, Prompt, ResolvedCharacter, RulesContent, RunState } from "@kad/shared";
 import { makeItems, makeRules } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
 import { setPlayerSection } from "../store/player-navigation";
@@ -77,14 +78,14 @@ function state(party: PartyMember[], answers: NonNullable<RunState["classPlace"]
   };
 }
 
-function mount(run: RunState, playerId = "p_1", surface: "phone" | "tv" = "phone") {
+function mount(run: RunState, playerId = "p_1", surface: "phone" | "tv" = "phone", rules = makeRules()) {
   setPlayerSection("turn");
   const sent: ClientIntent[] = [];
   useGameStore.setState({
     session: { runId: "r_1", roomCode: "ABCD", playerId, mode: "travel", sessionToken: "t" },
     state: run,
     items: makeItems(),
-    rules: makeRules(),
+    rules,
     campaign: null,
     send: vi.fn(async (intent: ClientIntent) => {
       sent.push(intent);
@@ -232,5 +233,136 @@ describe("the TV at a class place", () => {
     expect(roll).toContain("Pip put on the thorn bracer!");
     expect(roll).not.toContain("Pip kept");
     expect(roll).toContain("Moss kept the song bell.");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The Exchange's fitting stall (#312): the same two pieces, a different gate
+// ---------------------------------------------------------------------------
+
+const STALL_RULES: RulesContent = {
+  ...makeRules(),
+  fittingStall: {
+    stands: [{ chapterId: "ch_1", sceneId: "dojo" }],
+    keeper: "Madame Tuck",
+    narration: "The tailor is a frogfolk named Madame Tuck. She wears every hat she owns at once.",
+  },
+};
+
+function atStall(party: PartyMember[], answers: NonNullable<RunState["classPlace"]>["answers"] = {}): RunState {
+  return { ...state(party), classPlace: { stall: true, answers } };
+}
+
+/** A hero who has finished a chapter: not new, so the stall asks nothing of her. */
+function veteran(playerId: string, name: string, cls: ResolvedCharacter["class"]): PartyMember {
+  const member = hero(playerId, name, cls);
+  return { ...member, character: { ...member.character, xp: 300 } };
+}
+
+describe("the phone at the fitting stall", () => {
+  it("offers a new hero every other class, and the swap needs an \"are you sure?\"", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount(atStall([hero("p_1", "Pip", "songkeeper")]), "p_1", "phone", STALL_RULES);
+
+    expect(screen.getByText("Try on a new class?")).toBeTruthy();
+    expect(screen.getByText("Only you decide this one. It is free, one time only.")).toBeTruthy();
+    expect(screen.queryByText("Go on")).toBeNull();
+    for (const name of ["Be a thornguard", "Be a duskrunner", "Be a starweaver", "Stay a songkeeper"]) {
+      expect(screen.getByRole("button", { name })).toBeTruthy();
+    }
+    expect(screen.queryByRole("button", { name: "Be a songkeeper" })).toBeNull();
+
+    await user.click(screen.getByRole("button", { name: "Be a duskrunner" }));
+    expect(sent).toEqual([]);
+    const sure = screen.getByRole("alertdialog").textContent ?? "";
+    expect(sure).toContain("You take off your song bell and put on the dusk hood.");
+    expect(sure).toContain("Madame Tuck fits each hero only once.");
+    expect(sure).toContain("You can switch back at the Conservatory.");
+
+    await user.click(screen.getByRole("button", { name: "Yes, switch!" }));
+    expect(sent).toEqual([{ type: "SWITCH_CLASS", classId: "duskrunner", stall: true }]);
+  });
+
+  it("keeps the class worn, said as the stall's answer", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount(atStall([hero("p_1", "Pip", "songkeeper")]), "p_1", "phone", STALL_RULES);
+    await user.click(screen.getByRole("button", { name: "Stay a songkeeper" }));
+    await user.click(screen.getByRole("button", { name: "Yes, keep it" }));
+    expect(sent).toEqual([{ type: "KEEP_CLASS", classId: "songkeeper", stall: true }]);
+  });
+
+  it("lets a kid who kept change their mind, but offers no second swap", async () => {
+    const user = userEvent.setup();
+    const party = [hero("p_1", "Pip", "songkeeper"), hero("p_2", "Moss", "songkeeper")];
+    mount(atStall(party, { p_1: { switched: false } }), "p_1", "phone", STALL_RULES);
+    expect(screen.getByText("Waiting for Moss to decide.")).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: "Be a starweaver" }));
+    expect(screen.getByRole("alertdialog")).toBeTruthy();
+    cleanup();
+
+    const fitted = { ...hero("p_1", "Pip", "starweaver"), character: { ...hero("p_1", "Pip", "starweaver").character, fitted: true as const } };
+    mount(atStall([fitted], { p_1: { switched: true, from: "songkeeper" } }), "p_1", "phone", STALL_RULES);
+    expect(screen.getByText("You are a starweaver now!")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Be a/ })).toBeNull();
+    expect(screen.getByText("Go on")).toBeTruthy();
+  });
+
+  it("asks nothing of a hero who is not new", () => {
+    mount(atStall([veteran("p_1", "Bram", "thornguard"), hero("p_2", "Pip", "songkeeper")]), "p_1", "phone", STALL_RULES);
+    expect(screen.queryByText("Try on a new class?")).toBeNull();
+    expect(screen.queryByRole("button", { name: /Be a/ })).toBeNull();
+    expect(screen.getByText("You are a thornguard.")).toBeTruthy();
+    expect(screen.getByText("Waiting for Pip to decide.")).toBeTruthy();
+  });
+
+  it("says each line of the stall's \"are you sure?\" in one short sentence", () => {
+    for (const line of switchLines("songkeeper", "thornguard", "Madame Tuck")) {
+      expect(line.split(/[.!?]\s/).length).toBe(1);
+      expect(line.split(" ").length).toBeLessThanOrEqual(12);
+    }
+  });
+});
+
+describe("the TV at the fitting stall", () => {
+  it("introduces the tailor, then says who switched, who kept, and who is deciding", () => {
+    const party = [
+      { ...hero("p_1", "Pip", "duskrunner"), character: { ...hero("p_1", "Pip", "duskrunner").character, fitted: true as const } },
+      hero("p_2", "Moss", "songkeeper"),
+      hero("p_3", "Wren", "starweaver"),
+      veteran("p_4", "Bram", "thornguard"),
+    ];
+    mount(atStall(party, { p_1: { switched: true, from: "songkeeper" }, p_2: { switched: false } }), "p_1", "tv", STALL_RULES);
+    const stall = screen.getByTestId("fitting-stall").textContent ?? "";
+    expect(stall).toContain("The tailor is a frogfolk named Madame Tuck.");
+    const roll = screen.getByTestId("class-roll").textContent ?? "";
+    expect(roll).toContain("Pip put on the dusk hood!");
+    expect(roll).toContain("Moss kept the song bell.");
+    expect(roll).toContain("Wren is deciding…");
+    expect(roll).toContain("Bram is a thornguard.");
+    // The tailor is introduced before the roll call, never after.
+    expect(stall.indexOf("Madame Tuck")).toBeLessThan(stall.indexOf("Pip"));
+  });
+
+  it("reads the stall's words aloud once, after the story", () => {
+    const spoken: string[] = [];
+    setSpeaker((text) => spoken.push(text));
+    try {
+      const party = [hero("p_1", "Pip", "songkeeper")];
+      mount(atStall(party), "p_1", "tv", STALL_RULES);
+      act(() => {
+        useGameStore.setState({ state: atStall(party, { p_1: { switched: false } }) });
+      });
+      const words = STALL_RULES.fittingStall!.narration;
+      expect(spoken.filter((line) => line === words)).toHaveLength(1);
+      expect(spoken.indexOf(words)).toBeGreaterThan(spoken.indexOf("The Dojo."));
+    } finally {
+      setSpeaker(null);
+    }
+  });
+
+  it("has no stall words at a class's room", () => {
+    mount(state([hero("p_1", "Pip", "songkeeper")]), "p_1", "tv", STALL_RULES);
+    expect(screen.queryByTestId("fitting-stall")).toBeNull();
+    expect(screen.getByTestId("class-roll")).toBeTruthy();
   });
 });

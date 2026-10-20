@@ -184,6 +184,9 @@ function cloneProgress(progress: CharacterProgress): CharacterProgress {
     // existed comes back without the field, and the arithmetic downstream must
     // never see `undefined + 1`.
     unspentPoints: progress.unspentPoints ?? 0,
+    // Present only once spent, so a hero who never used the stall clones
+    // exactly as before it existed.
+    ...(progress.fitted ? { fitted: true as const } : {}),
   };
 }
 
@@ -490,6 +493,8 @@ export function resolveCharacter(
     // Always derived from committed XP, never effective or stored level.
     committedLevel: levelForXp(rules, character.committed.xp),
     ...(character.practiced ? { practiced: true as const } : {}),
+    // The fitting stall's swap, spent (#312). Present only when true.
+    ...(progress.fitted ? { fitted: true as const } : {}),
   };
 }
 
@@ -833,4 +838,24 @@ export function switchClass(character: Character, rules: RulesContent, to: Class
     throw new CharacterRuleError(`character: already wearing ${to}`);
   }
   return writeProgress(character, { ...cloneProgress(before), class: to });
+}
+
+/**
+ * The fitting stall's one free swap (docs/class-mastery.md §1, #312): the
+ * same switch as `switchClass`, to any class but the one worn, and the swap
+ * marked spent in the same write. Both land in `provisional` mid-campaign, so
+ * a failed campaign puts back the old class *and* the unspent swap together:
+ * a kid who lost the evening is back in the card they started with, and
+ * still new, so the stall can fix it next time.
+ *
+ * Whether this hero is still new, and whether the party is at the stall, is
+ * the caller's to check (`isNewHero`, `prepareClassSwitch`); this refuses
+ * only a swap already spent, as a hard error like `switchClass`'s.
+ */
+export function fitClass(character: Character, rules: RulesContent, to: ClassId): Character {
+  if (effectiveProgress(character).fitted) {
+    throw new CharacterRuleError("character: the fitting stall's swap is already spent");
+  }
+  const switched = switchClass(character, rules, to);
+  return writeProgress(switched, { ...cloneProgress(effectiveProgress(switched)), fitted: true });
 }

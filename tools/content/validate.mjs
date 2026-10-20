@@ -1574,6 +1574,8 @@ function main() {
     chaptersById.set(chapter.id, chapter);
   }
 
+  checkFittingStall(rep, rules, chaptersById, brokenChapterIds);
+
   // --- campaigns
   console.log(`\n${BOLD}campaigns${RESET}`);
   const campaignFiles = listJson(join(CONTENT, "campaigns"));
@@ -1615,6 +1617,47 @@ function main() {
   }
 
   return finish(rep);
+}
+
+/**
+ * The Exchange's fitting stall (#312, docs/class-mastery.md §1): rules.json
+ * names the scenes it stands in, and the schema cannot see whether they are
+ * there. A stall that names a scene nobody can stand in, one a party could
+ * never answer in, or a class's room would fail at the table instead of here.
+ */
+function checkFittingStall(rep, rules, chaptersById, brokenChapterIds) {
+  const stall = rules?.fittingStall;
+  if (!stall) return;
+  const f = "content/rules.json";
+  let ok = true;
+  const bad = (path, problem, hint) => {
+    ok = false;
+    rep.fail(f, path, problem, hint);
+  };
+  stall.stands.forEach(({ chapterId, sceneId }, i) => {
+    const at = `/fittingStall/stands/${i}`;
+    if (brokenChapterIds.has(chapterId)) return;
+    const chapter = chaptersById.get(chapterId);
+    if (!chapter) return bad(`${at}/chapterId`, `no chapter "${chapterId}"`);
+    if (chapter.index !== 1) {
+      bad(`${at}/chapterId`, `"${chapterId}" is chapter ${chapter.index} of its campaign`, "The stall stands where a campaign opens, while its heroes are new: its first chapter.");
+    }
+    const scene = chapter.scenes?.[sceneId];
+    if (!scene) return bad(`${at}/sceneId`, `"${chapterId}" has no scene "${sceneId}"`);
+    if (scene.type !== "story" && scene.type !== "choice_point") {
+      bad(`${at}/sceneId`, `"${sceneId}" is a ${scene.type} scene`, "The stall stands in a story or choice_point scene, as a class place does.");
+    }
+    if (Array.isArray(scene.choices) && scene.choices.length === 0) {
+      bad(`${at}/sceneId`, `"${sceneId}" ends the chapter - nobody would get to answer before it closed`);
+    }
+    if (scene.classPlace !== undefined) {
+      bad(`${at}/sceneId`, `"${sceneId}" is already the ${scene.classPlace} class place`, "One kind of class change per scene.");
+    }
+  });
+  // Shown on the shared screen in whichever campaign it stands in, Gemfall
+  // included, so it keeps Gemfall's house rules (gemfall-authoring.md).
+  if (/\u2014/.test(stall.narration)) bad("/fittingStall/narration", "has an em dash", "Gemfall text uses none.");
+  if (ok) rep.ok(`${f}  fitting stall (${stall.stands.length} stand${stall.stands.length === 1 ? "" : "s"})`);
 }
 
 function finish(rep) {

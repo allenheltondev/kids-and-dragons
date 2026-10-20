@@ -16,7 +16,7 @@ import type { ReactElement } from "react";
 import { combatTurnAway, currentActorId, speak, turnHolderAway } from "@kad/shared";
 import type { PartyMember } from "@kad/shared";
 import type { ScenePriority } from "@kad/shared";
-import { useAbilities, useItems, useParty, usePreviews, useRunState } from "../store";
+import { useAbilities, useItems, useParty, usePreviews, useRules, useRunState } from "../store";
 import { describeCombatPreview, tablePreviews } from "../world/previews";
 import { setStageInsetBottom } from "../world/stage-inset";
 import { Icon } from "./icons";
@@ -81,6 +81,9 @@ export function NarrationPanel(): ReactElement | null {
   // The practice's line of what to tap (#255): shown under the words, in a
   // fight too, because that is where the board's lesson is.
   const hint = state?.hint ?? null;
+  // The fitting stall's words (#312), on the TV under the story while it is open.
+  const rules = useRules();
+  const stallWords = state?.phase === "scene" && state.classPlace?.stall ? (rules?.fittingStall?.narration ?? null) : null;
   // Ranks that just landed (#310), while the scene they landed on is open and
   // never over a fight. One line each; the moment itself is #314's.
   const rankUps =
@@ -146,6 +149,15 @@ export function NarrationPanel(): ReactElement | null {
     spokenHint.current = key;
     speak(hint, { source: "ui" });
   }, [sceneId, hint]);
+
+  /* The fitting stall's words (#312), after the story: they are narration too (spec §11). */
+  const spokenStall = useRef<string | null>(null);
+  useEffect(() => {
+    const key = `${sceneId ?? "-"}:${stallWords ?? ""}`;
+    if (stallWords === null || spokenStall.current === key) return;
+    spokenStall.current = key;
+    speak(stallWords, { source: "narration" });
+  }, [sceneId, stallWords]);
 
   /* The rank-up lines, after the story: once per scene. */
   const spokenRankUps = useRef<string | null>(null);

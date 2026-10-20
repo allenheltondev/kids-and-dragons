@@ -36,3 +36,8 @@
 .class-roll__hero--switched {
   font-weight: 700;
 }
+
+/* The fitting stall (#312): its words above the roll call. */
+.class-stall__words {
+  margin: 0.5rem 0 0;
+}

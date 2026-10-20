@@ -105,6 +105,29 @@ describe("migrateCharacter — her finished campaigns (v3, #283)", () => {
   });
 });
 
+describe("migrateCharacter — the fitting stall (v6, #312)", () => {
+  it("reads a v5 row, from before the stall, as not having used it, and adds no key", () => {
+    const row = JSON.parse(JSON.stringify(current())) as Record<string, unknown>;
+    const migrated = migrateCharacter(row, 5);
+    expect(migrated.committed).not.toHaveProperty("fitted");
+    expect(migrated).toEqual(current());
+  });
+
+  it("keeps a spent swap on either half exactly", () => {
+    const character = current();
+    character.committed = { ...character.committed, fitted: true };
+    character.provisional = { ...character.committed, class: "starweaver", fitted: true, runId: "r_1" };
+    expect(migrateCharacter(JSON.parse(JSON.stringify(character)), CHARACTER_VERSION)).toEqual(character);
+  });
+
+  it("reads anything but true as unspent, rather than spending her swap for her", () => {
+    for (const fitted of [false, "yes", 1, null]) {
+      const row = { ...current(), committed: { ...current().committed, fitted } };
+      expect(migrateCharacter(row, CHARACTER_VERSION).committed).not.toHaveProperty("fitted");
+    }
+  });
+});
+
 describe("migrateCharacter — the practice (v4, #255)", () => {
   it("reads a v3 row, from before the practice, as not having played it, and adds no key", () => {
     const migrated = migrateCharacter(v4Row(), 3);

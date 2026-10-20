@@ -232,6 +232,14 @@ export interface CharacterProgress {
    * Read it as `?? 0`; everything in character.ts writes it as a number.
    */
   unspentPoints?: number;
+  /**
+   * She has had her one free fitting at the Exchange's fitting stall
+   * (docs/class-mastery.md §1, #312): the class swap a new hero gets once.
+   * Here, beside `class`, so a failed campaign that puts the old class back
+   * gives the fitting back with it. Absent until then, and on every row
+   * written before it existed. Only ever `true`.
+   */
+  fitted?: true;
 }
 
 export interface ProvisionalProgress extends CharacterProgress {
@@ -398,6 +406,12 @@ export interface ResolvedCharacter {
    * played the practice resolves exactly as before it existed.
    */
   practiced?: true;
+  /**
+   * `CharacterProgress.fitted`, from the effective half, so the engine can
+   * tell a hero who still has the fitting stall's swap (`isNewHero`,
+   * class-place.ts). Present only when true, like `practiced`.
+   */
+  fitted?: true;
   /**
    * The level this character keeps if the campaign fails — `committed.level`,
    * not the effective one above.
@@ -596,4 +610,30 @@ export interface RulesContent {
   helpDie?: Record<TierId, number>;
   species: Record<SpeciesId, SpeciesDef>;
   classes: Record<ClassId, ClassDef>;
+  /**
+   * The Exchange's fitting stall (docs/class-mastery.md §1, #312): where it
+   * stands and what the shared screen says when it opens. Optional: rules
+   * without it have no stall, and nobody is offered a fitting.
+   */
+  fittingStall?: FittingStall;
+}
+
+/**
+ * The fitting stall, where a new hero may swap class once, for free, to any
+ * class (docs/class-mastery.md §1). It lives in the rules rather than in a
+ * chapter because it is a rule about classes that stands in a place, and
+ * the campaign that opens there (Gemfall) is pinned: naming its scene here
+ * gives Gemfall the stall without editing a Gemfall file.
+ */
+export interface FittingStall {
+  /**
+   * The scenes it stands in: a scene at the Exchange that every party walks
+   * through as its campaign opens. A Story or Choice Point scene, never an
+   * ending, never a class place; `content:validate` refuses the rest.
+   */
+  stands: { chapterId: string; sceneId: string }[];
+  /** The tailor's name, for the phone. The narration introduces her first. */
+  keeper: string;
+  /** What the shared screen says while the stall is open. */
+  narration: string;
 }

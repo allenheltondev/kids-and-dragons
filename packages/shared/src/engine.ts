@@ -941,8 +941,9 @@ function enterSceneDraft(
   if (scene.hint !== undefined) draft.hint = scene.hint;
   else delete draft.hint;
   // A class place (#311), its answers fresh on every arrival. Absent, not
-  // null, on every other scene, like the hint.
-  const place = openClassPlace(scene);
+  // null, on every other scene, like the hint. The fitting stall (#312) opens
+  // the same way where the rules say it stands, while somebody here is new.
+  const place = openClassPlace(scene, { rules: ctx.rules, chapterId: chapter.id, sceneId, party: draft.party });
   if (place) draft.classPlace = place;
   else delete draft.classPlace;
   draft.prompt = carriedSwap ?? null;
@@ -1186,7 +1187,7 @@ function dispatch(
       throw new Illegal("ILLEGAL", "a class is switched through the authoritative run handler");
 
     case "KEEP_CLASS":
-      return doKeepClass(draft, playerId, intent.classId);
+      return doKeepClass(draft, playerId, intent.classId, intent.stall === true);
 
     case "PLAYTEST_GOTO":
       return doPlaytestGoto(draft, intent.sceneId, ctx);
@@ -1650,13 +1651,14 @@ function doChoose(
 }
 
 /**
- * A kid at a class place keeping the class they wear (#311). Only a record of
- * the answer, so the way on stops waiting for them; nothing about the hero
- * changes, which is why the engine can take it while a switch, which writes
- * the hero's row, goes through the server (`prepareClassSwitch`).
+ * A kid at a class place or the fitting stall keeping the class they wear
+ * (#311, #312). Only a record of the answer, so the way on stops waiting for
+ * them; nothing about the hero changes, which is why the engine can take it
+ * while a switch, which writes the hero's row, goes through the server
+ * (`prepareClassSwitch`).
  */
-function doKeepClass(draft: RunState, playerId: string, classId: unknown): Presentation | undefined {
-  const refusal = classAnswerRefusal(draft, playerId, classId, false);
+function doKeepClass(draft: RunState, playerId: string, classId: unknown, stall: boolean): Presentation | undefined {
+  const refusal = classAnswerRefusal(draft, playerId, classId, false, stall);
   if (refusal) throw new Illegal("ILLEGAL", refusal);
   const place = draft.classPlace;
   // classAnswerRefusal has already said no to a run without one.

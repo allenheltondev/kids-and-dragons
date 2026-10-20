@@ -225,6 +225,33 @@ the class worn when it began.
 - **Enter it from a `rest` scene and come back to it.** The room is a side room, not a stop on the
   way: put it off the rest, never on the spine.
 
+## The fitting stall (#312)
+
+The Exchange's fitting stall ([docs/class-mastery.md §1](../docs/class-mastery.md)) lets a **new**
+hero, one who has finished no chapter and not used it yet, swap class once, for free, to any class.
+It is not a scene field: `rules.json` says where it stands and what the shared screen says there.
+
+```json
+"fittingStall": {
+  "stands": [{ "chapterId": "gemfall-01", "sceneId": "scene_prologue_city" }],
+  "keeper": "Madame Tuck",
+  "narration": "Just inside the market gate is a fitting stall... The tailor is a frogfolk named Madame Tuck."
+}
+```
+
+When a party with at least one new hero enters a scene it stands in, it runs exactly like a class
+place: each new hero answers alone on their phone, and the scene's choices wait for every connected
+one. A party with nobody new never sees it.
+
+- **Where a campaign opens, at the Exchange.** A `story` or `choice_point` scene in a chapter with
+  `index` 1, never an ending and never a class place; `content:validate` refuses the rest.
+- **Introduce the keeper in `narration`.** The phone names her (`keeper`) only after the shared
+  screen has.
+- **It is shown in Gemfall**, so its words keep Gemfall's rules: US spelling, no em dash
+  (`content:validate` checks the dash), never count the party.
+- **Gemfall's files stay pinned.** Naming a Gemfall scene here changes no Gemfall file and re-takes
+  no hash.
+
 ## The Bramblewood chapter is reference content
 
 `campaigns/the-hollow-crown.json` and `chapters/bramblewood-01.json` are **the engine's reference
