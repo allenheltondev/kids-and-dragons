@@ -224,6 +224,16 @@ export type CastSize =
 export type ScenePriority = 1 | 2;
 
 /**
+ * What a check asks of the table, for the pacing report's interactivity count
+ * (content/README.md, "Interactivity"): `"doing"` is something the party does
+ * with their bodies (heave, climb, dodge, sneak), `"talking"` is something
+ * they say or work out (persuade, comfort, puzzle). Read from the stat
+ * (might and quick do; clever and heart talk) unless the check overrides it
+ * with `checkKind`. Nothing at play time reads it.
+ */
+export type CheckKind = "doing" | "talking";
+
+/**
  * What to tap here, for a player who is still learning (#255): "Tap a gold
  * square to walk there." The screens show it under the narration and read
  * it aloud after it (`speak()`, with a button for `hear()`), and it is never
@@ -302,6 +312,12 @@ export interface CheckScene {
    * checks. "all": everyone rolls, and half or more succeeding carries it.
    */
   roller?: "party" | "active" | "best" | "all";
+  /**
+   * Overrides the `CheckKind` the stat implies, for a check whose stat
+   * misleads: a clever check to jam the gears is doing; a might check to stare
+   * down a bully is talking. Pacing only.
+   */
+  checkKind?: CheckKind;
   onSuccess: Branch;
   onFailure: Branch;
 }

@@ -1072,6 +1072,13 @@
             "all"
           ]
         },
+        "checkKind": {
+          "description": "Overrides what the stat implies for the pacing report: \"doing\" (something the party does, the default for might and quick) or \"talking\" (something they say or work out, the default for clever and heart). Set it only where the stat misleads. Pacing only; play never reads it.",
+          "enum": [
+            "doing",
+            "talking"
+          ]
+        },
         "onSuccess": {
           "$ref": "#/$defs/branch"
         },
