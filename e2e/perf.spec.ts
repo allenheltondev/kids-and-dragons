@@ -108,7 +108,7 @@ test("later visits download none of the art, rigs, audio or content a phone alre
     // --- First visit ---
     await phone.goto("/");
     await controlled(phone);
-    await phone.getByRole("button", { name: /want to host/i }).click();
+    await phone.getByRole("button", { name: /host a game/i }).click();
     await phone.getByText("Phone Mode").click();
     await phone.getByLabel(/adventurer name/i).fill("Ada");
     await phone.getByRole("button", { name: /^start a game$/i }).click();
@@ -226,7 +226,7 @@ test("the scenes ahead are on a phone showing the world before the party reaches
   try {
     await phone.goto("/");
     await controlled(phone);
-    await phone.getByRole("button", { name: /want to host/i }).click();
+    await phone.getByRole("button", { name: /host a game/i }).click();
     await phone.getByText("Phone Mode").click();
     await phone.getByLabel(/adventurer name/i).fill("Ada");
     await phone.getByRole("button", { name: /^start a game$/i }).click();
@@ -272,7 +272,7 @@ test("a Party Mode phone with its controls up fetches nothing ahead; the TV does
   try {
     await tv.goto("/");
     await controlled(tv);
-    await tv.getByRole("button", { name: /want to host/i }).click();
+    await tv.getByRole("button", { name: /host a game/i }).click();
     await tv.getByText("Party Mode").click();
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z0-9]{4}$/);

@@ -171,7 +171,7 @@ test.describe("nameplates", () => {
     });
     const host = phones[0]!;
     await host.goto("/");
-    await host.getByRole("button", { name: /want to host/i }).click();
+    await host.getByRole("button", { name: /host a game/i }).click();
     await host.getByText("Phone Mode").click();
     await host.fill('input[placeholder="Type your name"]', "Allen");
     await host.getByRole("button", { name: /start a game/i }).click();
@@ -234,7 +234,7 @@ test.describe("nameplates", () => {
     // nameplates are for. It is the lobby, not a seat (spec §2.1).
     const tv = await client(browser, 1280, 720);
     await tv.goto("/");
-    await tv.getByRole("button", { name: /want to host/i }).click();
+    await tv.getByRole("button", { name: /host a game/i }).click();
     await tv.getByText("Party Mode").click();
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);

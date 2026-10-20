@@ -15,10 +15,12 @@ test("a grown-up opens the guide from the start screen, sees the real screens, a
   page.on("request", (request) => fetched.push(new URL(request.url()).pathname));
 
   await page.goto("/");
-  await expect(page.getByRole("button", { name: /want to host/i })).toBeVisible(TAP);
+  await expect(page.getByRole("button", { name: /host a game/i })).toBeVisible(TAP);
   // Nothing of the guide comes with the start screen.
   expect(fetched.filter((path) => /guide-pictures|\/guide\//.test(path))).toEqual([]);
 
+  // It sits with hosting, where a grown-up about to run a game is looking.
+  await page.getByRole("button", { name: /host a game/i }).click(TAP);
   await page.getByRole("button", { name: /read the grown-up.s guide/i }).click(TAP);
   await expect(page).toHaveURL(/\/guide$/);
   await expect(page.getByRole("heading", { level: 1, name: /guide to running a game/i })).toBeVisible(TAP);
@@ -36,6 +38,6 @@ test("a grown-up opens the guide from the start screen, sees the real screens, a
 
   await page.getByRole("button", { name: "Back to the start" }).first().click();
   await expect(page).toHaveURL(/\/$/);
-  await expect(page.getByRole("button", { name: /want to host/i })).toBeVisible(TAP);
+  await expect(page.getByRole("button", { name: /host a game/i })).toBeVisible(TAP);
   await context.close();
 });
