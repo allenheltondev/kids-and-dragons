@@ -15,7 +15,8 @@
  */
 
 import { randomName } from "./creationContent";
-import { Suspense, lazy, useCallback, useEffect, useId, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useId, useMemo, useState } from "react";
+import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ChangeEvent, ReactElement } from "react";
 import type { RoomMode } from "@kad/shared";
 import { useGameStore } from "../store";
@@ -45,23 +46,31 @@ const MODE_ICON: Record<RoomMode, string> = { party: "party", travel: "travel" }
  * draws it, and every phone's first paint would otherwise carry it
  * (tools/perf/bundle-budget.ts).
  */
-const SharedHome = lazy(() => import("./SharedHome").then((module) => ({ default: module.SharedHome })));
+const SharedHome = lazyChunk(() => import("./SharedHome"), (module) => module.SharedHome);
 
 /*
  * The sign-in panel loads the first time somebody opens it, for the same
  * reason: it is a grown-up's errand, and the join screen is what every phone
  * is waiting to see. Closed, it draws nothing, so nothing waits on it.
  */
-const SignInFlow = lazy(() => import("./SignInFlow").then((module) => ({ default: module.SignInFlow })));
+const SignInFlow = lazyChunk(() => import("./SignInFlow"), (module) => module.SignInFlow);
 
 /** The sign-in panel, fetched only once it is open. Shared by both homes. */
 export function LazySignInFlow(): ReactElement | null {
   const open = useKeepsakeStore((s) => s.step) !== "closed";
+  const close = useKeepsakeStore((s) => s.close);
   if (!open) return null;
   return (
-    <Suspense fallback={null}>
-      <SignInFlow />
-    </Suspense>
+    <ChunkBoundary
+      inline
+      className="kad-chunk-float"
+      message="Sign-in couldn’t open."
+      extra={<Button variant="ghost" onClick={close}>Not now</Button>}
+    >
+      <Suspense fallback={null}>
+        <SignInFlow />
+      </Suspense>
+    </ChunkBoundary>
   );
 }
 
@@ -70,9 +79,11 @@ export function HomeScreen(): ReactElement {
   const shared = useKeepsakeStore((s) => s.shared);
   if (!shared) return <PersonalHome />;
   return (
-    <Suspense fallback={<div className="kad-boot"><Spinner size="lg" label="Finding your family" showLabel /></div>}>
-      <SharedHome />
-    </Suspense>
+    <ChunkBoundary message="This tablet’s start page couldn’t load.">
+      <Suspense fallback={<div className="kad-boot"><Spinner size="lg" label="Finding your family" showLabel /></div>}>
+        <SharedHome />
+      </Suspense>
+    </ChunkBoundary>
   );
 }
 
