@@ -11,20 +11,24 @@
  * that owns them (PlayerPanel).
  */
 
-import { useEffect, useRef } from "react";
+import { Suspense, lazy, useEffect, useRef } from "react";
 import type { ReactElement } from "react";
 import { combatTurnAway, currentActorId, speak, turnHolderAway } from "@kad/shared";
 import type { PartyMember } from "@kad/shared";
 import type { ScenePriority } from "@kad/shared";
-import { useAbilities, useItems, useParty, usePreviews, useRunState } from "../store";
+import { useAbilities, useItems, useParty, usePreviews, useRules, useRunState } from "../store";
 import { describeCombatPreview, tablePreviews } from "../world/previews";
 import { setStageInsetBottom } from "../world/stage-inset";
 import { Icon } from "./icons";
+import { ClassToken } from "./ClassToken";
 import { VoteTicks } from "./VoteTicks";
 import { chapterHeading } from "./campaign-copy";
 import { steppedAwayLine } from "./presence-copy";
 import "./shared.css";
 import "./NarrationPanel.css";
+
+/** The rank-up moment (#314), fetched the first time a rank lands, never at first paint. */
+const RankUpMoment = lazy(() => import("./RankUpMoment").then((module) => ({ default: module.RankUpMoment })));
 
 /** "bramblewood-01" → "Bramblewood 01". The fallback for a run persisted
  *  before `chapterInfo` carried the real title. */
@@ -69,6 +73,7 @@ export function NarrationPanel(): ReactElement | null {
   const party = useParty();
   const items = useItems();
   const abilities = useAbilities();
+  const rules = useRules();
   // Who is leaning toward what, on their phone, before "Do it!" (world/previews.ts).
   const leaning = tablePreviews(state, usePreviews());
   const narration = state?.narration ?? "";
@@ -81,7 +86,8 @@ export function NarrationPanel(): ReactElement | null {
   // fight too, because that is where the board's lesson is.
   const hint = state?.hint ?? null;
   // Ranks that just landed (#310), while the scene they landed on is open and
-  // never over a fight. One line each; the moment itself is #314's.
+  // never over a fight. One line each, the words of record; the moment (#314)
+  // lifts the token over the stage for a few seconds beside them.
   const rankUps =
     state?.encounter == null && state?.rankUps && state.rankUps.sceneId === sceneId ? state.rankUps.ups : [];
   const rankUpText = rankUps.map((up) => (up.crow ? `${up.line} ${up.crow}` : up.line)).join(" ");
@@ -344,10 +350,20 @@ export function NarrationPanel(): ReactElement | null {
           )}
           {rankUps.map((up) => (
             <p className="narration__hint" key={`rank:${up.characterId}:${up.rank}`} data-testid="rank-up">
-              <Icon name="star" />
+              <ClassToken classId={up.class} rank={up.rank} size="sm" holdable={false} />
               <span>{up.crow ? `${up.line} ${up.crow}` : up.line}</span>
             </p>
           ))}
+          {rankUps.length === 0 ? null : (
+            <Suspense fallback={null}>
+              <RankUpMoment
+                ups={rankUps}
+                party={party}
+                rules={rules}
+                momentKey={`${sceneId ?? "-"}:${rankUps.map((up) => `${up.characterId}.${up.rank}`).join(",")}`}
+              />
+            </Suspense>
+          )}
         </div>
 
         {/*

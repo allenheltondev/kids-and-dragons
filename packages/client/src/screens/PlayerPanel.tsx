@@ -21,7 +21,7 @@ import { setPlayerSection, usePlayerNavigation } from "../store/player-navigatio
  * and the inventory scroll under the strip.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
 import {
   DEFAULT_HELP_DIE,
@@ -46,6 +46,7 @@ import type {
   ItemDef,
   PartyMember,
   Prompt,
+  ResolvedCharacter,
   RulesContent,
   StatId,
 } from "@kad/shared";
@@ -73,6 +74,7 @@ import { hear, useReadAloudOn } from "../speech/read-aloud";
 import { speak } from "@kad/shared";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { CharacterSheet } from "./CharacterSheet";
+import { ClassToken, SpareTokens, TokenCard } from "./ClassToken";
 import { Icon } from "./icons";
 import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
@@ -96,6 +98,9 @@ import { FieldGuide } from "./FieldGuide";
 import { JourneyPanel } from "./JourneyPanel";
 import { HelpClaim } from "../help/focus";
 import { helpAttrs } from "../help/longpress";
+
+/** The rank-up card (#314), fetched the first time a rank lands; the plain line stands in until then. */
+const RankUpCard = lazy(() => import("./RankUpMoment").then((module) => ({ default: module.RankUpCard })));
 
 /** Stable-ish identity for a prompt, so a new one clears any pending choice. */
 function promptKey(prompt: Prompt | null): string {
@@ -335,6 +340,7 @@ function StatRow({ me }: { me: PartyMember }): ReactElement {
 function InventoryGrid({
   entries,
   questItems,
+  spares,
   coins,
   items,
   selectedIndex,
@@ -342,6 +348,8 @@ function InventoryGrid({
 }: {
   entries: InventoryEntry[];
   questItems: string[];
+  /** The tokens of classes taken off (#314): in the pack, outside the six slots. */
+  spares: ResolvedCharacter["spares"];
   /** The party's shared purse — the same number on every phone. */
   coins: number;
   items: ItemCatalog | null;
@@ -409,6 +417,7 @@ function InventoryGrid({
           </ul>
         </div>
       )}
+      <SpareTokens spares={spares} isMe />
     </div>
   );
 }
@@ -832,6 +841,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           member={openSheetFor}
           isMe={openSheetFor.playerId === me.playerId}
           items={items}
+          partySize={party.length}
         />
       </section>
     );
@@ -883,15 +893,23 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </p>
         ) : null}
         {/* A rank that just landed for this hero (#310), on the scene it
-            landed on. The moment itself is #314's; this is the line. */}
+            landed on: the line, as a card with the token glowing on it (#314),
+            in the line's own place so nothing moves under a thumb. */}
         {state.rankUps?.sceneId === state.sceneId
           ? state.rankUps.ups
               .filter((up) => up.characterId === me.character.id)
               .map((up) => (
-                <p className="player__hint" data-testid="player-rank-up" key={up.rank}>
-                  <Icon name="star" />
-                  <span>{up.crow ? `${up.line} ${up.crow}` : up.line}</span>
-                </p>
+                <Suspense
+                  key={up.rank}
+                  fallback={
+                    <p className="player__hint" data-testid="player-rank-up">
+                      <ClassToken classId={up.class} rank={up.rank} size="sm" holdable={false} />
+                      <span>{up.crow ? `${up.line} ${up.crow}` : up.line}</span>
+                    </p>
+                  }
+                >
+                  <RankUpCard up={up} />
+                </Suspense>
               ))
           : null}
         {/* The practice's hint (#255), where the tapping happens, with its own
@@ -1845,6 +1863,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </div>
         )}
         <StatRow me={me} />
+        {/* The worn token, its notches and the deed toward the next (#314). */}
+        <TokenCard character={me.character} isMe rules={rules} partySize={party.length} />
 
         {/*
           spec §6.1 lists "look at each other's characters" as one of the four
@@ -1898,6 +1918,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         <InventoryGrid
           entries={inventory}
           questItems={me.character.questItems}
+          spares={me.character.spares}
           coins={state.coins ?? 0}
           items={items}
           selectedIndex={selectedIndex}

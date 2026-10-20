@@ -1,0 +1,103 @@
+/*
+ * The rank-up moment (#314). On the shared screen it floats over the stage and
+ * lets every pointer through; on the phone it is a card in the line's place.
+ * Under reduced motion theme.css flattens every animation to its last frame:
+ * the TV card simply shows, lit, and goes when its time is up.
+ */
+
+.rankup {
+  position: fixed;
+  inset-inline: 0;
+  /* Over the stage, under the corner row and above the story's words. */
+  inset-block-start: 16%;
+  z-index: 40;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--kad-space-4);
+  padding-inline: var(--kad-space-4);
+  pointer-events: none;
+}
+.rankup__card {
+  display: flex;
+  align-items: center;
+  gap: var(--kad-space-4);
+  padding: var(--kad-space-3) var(--kad-space-5);
+  border-radius: var(--kad-radius-xl);
+  background: var(--kad-bg-overlay);
+  border: 0.12em solid var(--kad-gold);
+  box-shadow: var(--kad-shadow-lg);
+  animation: rankup-in 0.45s var(--kad-ease-out, ease-out) both, rankup-out 0.5s 3.5s ease-in both;
+}
+.rankup__words {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+}
+.rankup__name {
+  font-size: var(--kad-text-xl);
+  font-weight: var(--kad-weight-black);
+}
+.rankup__title {
+  font-size: var(--kad-text-lg);
+  color: var(--kad-gold);
+  font-weight: var(--kad-weight-black);
+}
+.rankup__crow,
+.rankup-card__crow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kad-space-2);
+  color: var(--kad-ink-dim);
+  font-style: italic;
+}
+.rankup__crow-bird {
+  inline-size: 1.6em;
+  block-size: 1.6em;
+  flex: none;
+  color: var(--kad-ink);
+}
+.rankup__crow .rankup__crow-bird {
+  animation: rankup-crow 3.5s 0.4s ease-in-out both;
+}
+@keyframes rankup-in {
+  from { transform: translateY(1em) scale(0.85); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes rankup-out {
+  to { transform: translateY(-0.5em); opacity: 0; }
+}
+/* Lands, hops once, and flies off. */
+@keyframes rankup-crow {
+  0% { transform: translate(-3em, -2em) rotate(-20deg); opacity: 0; }
+  15% { transform: none; opacity: 1; }
+  30% { transform: translateY(-0.3em); }
+  40%, 80% { transform: none; opacity: 1; }
+  100% { transform: translate(3em, -2em) rotate(15deg); opacity: 0; }
+}
+
+/* --- On the earning kid's phone --------------------------------------- */
+
+.rankup-card {
+  display: flex;
+  align-items: center;
+  gap: var(--kad-space-3);
+  padding: var(--kad-space-2) var(--kad-space-3);
+  border-radius: var(--kad-radius-md);
+  border: 0.1em solid var(--kad-gold);
+  background: color-mix(in srgb, var(--kad-gold) 10%, var(--kad-bg-raised));
+  min-inline-size: 0;
+}
+.rankup-card__words {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  min-inline-size: 0;
+}
+.rankup-card__line {
+  font-weight: var(--kad-weight-bold);
+}
+.rankup-card__crow {
+  font-size: var(--kad-text-sm);
+  align-items: flex-start;
+}

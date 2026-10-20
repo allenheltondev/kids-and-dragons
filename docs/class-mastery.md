@@ -1,8 +1,9 @@
 # Class mastery: switching classes, class places and distinctions
 
 > **Status.** Partly built. Per-class distinctions on the character and moves by distinction (§5,
-> §7) landed with #308, and deeds and rank-ups (§5, §6) with #310; [spec §4.3](./spec.md) and
-> [§8.1](./spec.md) state them. Switching, the class places and the tokens are still design. Tracked by epic
+> §7) landed with #308, deeds and rank-ups (§5, §6) with #310, and the tokens on screen with the
+> rank-up moment (§4, §5) with #314; [spec §4.3](./spec.md) and [§8.1](./spec.md) state them.
+> Switching and the class places are still design. Tracked by epic
 > [#307](https://github.com/allenheltondev/kids-and-dragons/issues/307) (#308–#315); the reason to
 > come back to the Exchange is [#306](https://github.com/allenheltondev/kids-and-dragons/issues/306).
 
@@ -87,6 +88,27 @@ In the lore, a class's power comes from a piece of gear the hero wears.
   and rigs exist for every class, tier and species. The token can be that layer; below Sworn it
   shows as an icon on the phone.
 
+### On screen *(built, #314)*
+
+- **Names** are `CLASS_TOKENS` in [`tokens.ts`](../packages/shared/src/tokens.ts), beside
+  `deedTrack`, which picks the one track a hero sees (rule 6, §6): the further along of a rank's
+  two, or with neither started, the alone track for a hero alone and the friends track at a table.
+- **The token** (`ClassToken.tsx`) is simple SVG for now, every tier: the rigs' Sworn gear layer is
+  a later art pass. Its notches are three seats, always drawn: a cut notch is a filled chevron and
+  one to come a dash; a pip done is a filled dot and one to go a ring. Shape, never colour alone.
+- **Where it shows:** the phone's own view and every sheet (the token, "Thornguard Apprentice",
+  the next notch's deeds as pips, or a bar with its count past ten, as a Songkeeper's hearts are),
+  and the TV lineup in the lobby (the token and its notches in the class icon's seat). Pressing
+  and holding a token says what it is (`help.json`, `things.token`).
+- **Spare tokens** are `ResolvedCharacter.spares`: every class with a `mastery` entry that is not
+  the worn one, since only wearing a class writes one. They sit under the six slots ("Your old
+  gear"), with their notches, and take none. Switching (#311) needs nothing more for them to show.
+- **The rank-up moment** (`RankUpMoment.tsx`, loaded on the first rank-up): the TV lifts the token
+  over the stage with its new notch dropping in, for four seconds, taking no taps and hidden from
+  screen readers; #310's line stays under the story as the words of record and is read aloud once.
+  The earning kid's phone shows the line as a card with the token glowing, in the line's own place.
+  A Duskrunner's crow lands on both. Under reduced motion it shows lit and still.
+
 ## 5. Distinctions
 
 | Rank | Unlocks (today's level 3 / 6 / 9 move) |
@@ -116,8 +138,8 @@ class is shown with the class name alone.
 - **When a rank lands** *(built, #310)*: deeds count live as they happen; the rank lands at the end
   of the fight (or at once, for a story deed outside one), and the new move is usable from the next
   fight. The TV and the hero's phone say so in one line ("Mira is a Thornguard Apprentice now! New
-  move: Shove."), and a Duskrunner's crow has its say. The moment itself (pips filling, the token
-  glowing and gaining its notch) is #314's.
+  move: Shove."), and a Duskrunner's crow has its say. The moment around it (the token
+  glowing and gaining its notch) is built too (#314, §4 "On screen").
 - **Kept with the chapter.** Deeds counted in a chapter are folded into the hero when the chapter
   ends, beside its XP and under the same rule; a chapter abandoned partway keeps neither. The run
   keeps each class's count apart, so a hero who changes class mid-chapter keeps what the class she
