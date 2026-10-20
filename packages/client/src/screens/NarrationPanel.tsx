@@ -360,7 +360,7 @@ export function NarrationPanel(): ReactElement | null {
                 ups={rankUps}
                 party={party}
                 rules={rules}
-                momentKey={`${sceneId ?? "-"}:${rankUps.map((up) => `${up.characterId}.${up.rank}`).join(",")}`}
+                momentKey={`${state.runId}:${sceneId ?? "-"}:${rankUps.map((up) => `${up.characterId}.${up.rank}`).join(",")}`}
               />
             </Suspense>
           )}
