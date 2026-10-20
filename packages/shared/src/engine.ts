@@ -100,6 +100,8 @@ import {
   heroDeedsOf,
   rankUp,
   rankUpLine,
+  runCounted,
+  setRunCounted,
   storyCredits,
   turnEndCredits,
   type DeedCredit,
@@ -365,8 +367,7 @@ function touch(draft: RunState, ctx: EngineContext): void {
 
 /** A hero's worn class as this chapter has it: what the run counted, else their snapshot. */
 function heroDeedsFor(draft: RunState, member: PartyMember): HeroDeeds {
-  const counted = draft.deeds?.heroes[member.character.id];
-  return counted && counted.class === member.character.class ? counted : heroDeedsOf(member.character);
+  return runCounted(draft.deeds, member.character.id, member.character.class) ?? heroDeedsOf(member.character);
 }
 
 /**
@@ -380,7 +381,7 @@ function creditDeeds(draft: RunState, credits: readonly DeedCredit[], ctx: Engin
     const hero = heroDeedsFor(draft, member);
     const next = addDeed(hero, classDefOf(ctx, hero.class), c.deed, c.count);
     if (next === hero) continue;
-    (draft.deeds ??= { heroes: {} }).heroes[c.heroId] = next;
+    setRunCounted((draft.deeds ??= { heroes: {} }), c.heroId, next);
   }
 }
 
@@ -401,7 +402,7 @@ function landRanks(draft: RunState, ctx: EngineContext): RankUp[] {
     const classDef = classDefOf(ctx, hero.class);
     const up = classDef ? rankUp(hero, classDef) : null;
     if (!up || !classDef || up.rank === "none") continue;
-    (draft.deeds ??= { heroes: {} }).heroes[member.character.id] = up;
+    setRunCounted((draft.deeds ??= { heroes: {} }), member.character.id, up);
     member.character = withMastery(member.character, up, ctx.rules);
     ups.push(rankUpLine(member.character.name, classDef, up.rank, member.character.id));
   }
@@ -421,8 +422,8 @@ function announceRankUps(draft: RunState, ups: readonly RankUp[]): void {
 function reconcileRunDeeds(draft: RunState, ctx: EngineContext): void {
   if (!draft.deeds) return;
   for (const member of draft.party) {
-    const counted = draft.deeds.heroes[member.character.id];
-    if (!counted || counted.class !== member.character.class) continue;
+    const counted = runCounted(draft.deeds, member.character.id, member.character.class);
+    if (!counted) continue;
     const now = heroDeedsOf(member.character);
     if (now.rank === counted.rank && JSON.stringify(now.deeds) === JSON.stringify(counted.deeds)) continue;
     member.character = withMastery(member.character, counted, ctx.rules);

@@ -90,7 +90,7 @@ async function completing(harness: TestHarness, rank: "none" | "apprentice", cou
     bonuses: [],
     xpEarned: 100,
     party: [{ character: resolveCharacter(character, rules, items), playerId, hp: 10, down: false, connected: true, ready: false }],
-    ...(counted ? { deeds: { heroes: { [character.id]: counted } } } : {}),
+    ...(counted ? { deeds: { heroes: { [character.id]: { [counted.class]: { rank: counted.rank, deeds: counted.deeds } } } } } : {}),
   } as unknown as RunState;
   return { householdId, state, character };
 }

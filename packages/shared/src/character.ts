@@ -37,7 +37,7 @@ import type {
   Stats,
 } from "./types/domain.js";
 import type { HeroDeeds, RunState } from "./types/state.js";
-import { addDeed, rankUp } from "./deeds.js";
+import { addDeed, rankUp, runCounted } from "./deeds.js";
 import { getClass, getSpecies, levelForXp, maxLevel, tierForLevel } from "./rules.js";
 
 /** Thrown for creation payloads that break the rules. Callers map it to ILLEGAL. */
@@ -541,34 +541,40 @@ export function awardXp(
 }
 
 /**
- * Folds the deeds a chapter counted into the stored hero (#310): the worn
- * class's rank and its progress to the next, as the run left them
- * (`RunState.deeds`, counted by the engine). Called at chapter completion,
- * beside `awardXp` and under the same rule — through `writeProgress`, so a
- * rank earned mid-campaign is provisional and goes back with everything else
- * if the campaign fails (docs/class-mastery.md §5).
+ * Folds the deeds a chapter counted into the stored hero (#310): each class's
+ * rank and progress to its next, as the run left them (`RunState.deeds`,
+ * counted by the engine). Every class the run counted for, not only the one
+ * she wears now: a hero who changed class mid-chapter keeps what she earned
+ * in the one she took off. Called at chapter completion, beside `awardXp`
+ * and under the same rule — through `writeProgress`, so a rank earned
+ * mid-campaign is provisional and goes back with everything else if the
+ * campaign fails (docs/class-mastery.md §5).
  *
- * Only for the class the hero is wearing now, and never lower than what is
- * stored: a rank is never lost (#307). A run's record for a class she no
- * longer wears is left out rather than written onto the wrong class.
+ * Never lower than what is stored: a rank is never lost (#307).
  */
-export function foldRunDeeds(character: Character, counted: HeroDeeds | undefined): Character {
+export function foldRunDeeds(
+  character: Character,
+  counted: Partial<Record<ClassId, ClassMastery>> | undefined,
+): Character {
   if (!counted) return character;
   const before = effectiveProgress(character);
-  if (counted.class !== before.class) return character;
-  const stored = rankIn(before, before.class);
-  const ahead = CLASS_RANKS.indexOf(counted.rank) - CLASS_RANKS.indexOf(stored);
-  if (ahead < 0) return character;
-  const deeds =
-    ahead > 0
-      ? { ...counted.deeds }
-      : // The same rank: keep whichever count is further on, deed by deed.
-        mergeDeeds(before.mastery[before.class]?.deeds ?? {}, counted.deeds);
-  const next: CharacterProgress = {
-    ...cloneProgress(before),
-    mastery: { ...cloneMastery(before.mastery), [before.class]: { rank: counted.rank, deeds } },
-  };
-  return writeProgress(character, next);
+  const mastery = cloneMastery(before.mastery);
+  let changed = false;
+  for (const [classId, run] of Object.entries(counted) as [ClassId, ClassMastery | undefined][]) {
+    if (!run) continue;
+    const stored = rankIn(before, classId);
+    const ahead = CLASS_RANKS.indexOf(run.rank) - CLASS_RANKS.indexOf(stored);
+    if (ahead < 0) continue;
+    const deeds =
+      ahead > 0
+        ? { ...run.deeds }
+        : // The same rank: keep whichever count is further on, deed by deed.
+          mergeDeeds(before.mastery[classId]?.deeds ?? {}, run.deeds);
+    mastery[classId] = { rank: run.rank, deeds };
+    changed = true;
+  }
+  if (!changed) return character;
+  return writeProgress(character, { ...cloneProgress(before), mastery });
 }
 
 /**
@@ -643,7 +649,7 @@ export function withRunDeeds(
   state: Pick<RunState, "deeds">,
   rules: RulesContent,
 ): ResolvedCharacter {
-  const counted = state.deeds?.heroes[resolved.id];
+  const counted = runCounted(state.deeds, resolved.id, resolved.class);
   return counted ? withMastery(resolved, counted, rules) : resolved;
 }
 

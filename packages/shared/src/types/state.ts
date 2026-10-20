@@ -6,7 +6,7 @@
  */
 
 import type { EncounterState } from "../encounter.js";
-import type { ClassId, ClassRank, ResolvedCharacter, StatId } from "./domain.js";
+import type { ClassId, ClassMastery, ClassRank, ResolvedCharacter, StatId } from "./domain.js";
 import type { ChapterOutcome, SceneId, ScenePriority, SceneType } from "./chapter.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { FactId, FactValue, JourneyView, NodeId } from "./campaign-graph.js";
@@ -589,8 +589,14 @@ export interface FightDeeds {
 }
 
 export interface RunDeeds {
-  /** By character id. Only heroes something has been counted for. */
-  heroes: Record<string, HeroDeeds>;
+  /**
+   * By character id, then by class: each class's rank and progress as this
+   * chapter has left them. Per class, so a hero who changes class mid-chapter
+   * (#311) keeps what she earned in the one she took off, and both are folded
+   * when the chapter ends. Only heroes and classes something has been counted
+   * for.
+   */
+  heroes: Record<string, Partial<Record<ClassId, ClassMastery>>>;
   fight?: FightDeeds;
 }
 
