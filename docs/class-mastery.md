@@ -62,6 +62,13 @@ earns a distinction anywhere in the world, a crow lands on a nearby fence, says 
   room introduces its teacher (and the crows) whenever a party walks in. A second visit can read
   shorter ("The crows eye you. 'Back again.'").
 - **Gemfall gets none.** It is pinned, and its only class change is the Exchange stall.
+- **Riftlight (draft, #315).** The Rookery is on the Exchange's rooftops, the Conservatory off the
+  singing hall, and the Dojo up the slope from the Riftseekers' camp. The Academy belongs in the
+  marsh village, which Riftlight's story does not have yet; until that place is written, it stands in
+  a roofless tower above the Riftseekers' camp, and moves when the village exists.
+- **A free heal is deliberate.** The game always keeps somewhere to heal for free. In Riftlight it is
+  the singing hall: its rest heals on every arrival, so walking into the Conservatory and back heals
+  again, as often as a table likes. That is intended, not a loophole.
 
 ## 3. Switching
 
