@@ -83,12 +83,26 @@ export function onStageInsetTop(listener: (topPx: number) => void): () => void {
   };
 }
 
-/** The share of the frame above the figures' heads: sky the head may cover. */
+/** The share of the story rect above the figures' heads: sky the head may cover. */
 export const SKY_FRACTION = 0.3;
 /** However tall the head, the frame keeps this much of the height it had without one. */
 export const STAGE_KEEP = 0.75;
 
-/** Where the story camera frames, from the top of the pane: below a tall head, above the plate. */
+/**
+ * Where the figures' heads stand in a frame `height` tall starting `top` down the pane. The
+ * camera fits the 16:9 story rect into the frame and centres it, so on a narrow pane the rect
+ * is shorter than the frame and sits in its middle, with sky above it as well as inside it.
+ */
+function headsAt(paneWidth: number, top: number, height: number): number {
+  const rect = Math.min(height, paneWidth * STAGE_ASPECT);
+  return top + (height - rect) / 2 + SKY_FRACTION * rect;
+}
+
+/**
+ * Where the story camera frames, from the top of the pane: below a tall head, above the plate.
+ * The frame moves down (and is that much shorter) only as far as it takes for the figures'
+ * heads to stand below the head's reach, and never past STAGE_KEEP of its height.
+ */
 export function storyStageFrame(
   paneWidth: number,
   paneHeight: number,
@@ -96,9 +110,17 @@ export function storyStageFrame(
   insetTop: number,
 ): { top: number; height: number } {
   const full = storyStageHeight(paneWidth, paneHeight, insetBottom);
-  const reach = Math.max(0, insetTop) - SKY_FRACTION * full;
-  if (reach <= 0) return { top: 0, height: full };
-  // The frame moves down by t and shrinks by t, so its sky band covers the head: t + 0.3 (full - t) = insetTop.
-  const shift = Math.min(reach / (1 - SKY_FRACTION), full * (1 - STAGE_KEEP));
-  return { top: shift, height: full - shift };
+  const reach = Math.max(0, insetTop);
+  if (headsAt(paneWidth, 0, full) >= reach) return { top: 0, height: full };
+  const most = full * (1 - STAGE_KEEP);
+  if (headsAt(paneWidth, most, full - most) <= reach) return { top: most, height: full - most };
+  // The heads come down steadily as the frame does, so halve the way to the least that clears.
+  let low = 0;
+  let high = most;
+  for (let i = 0; i < 24; i++) {
+    const mid = (low + high) / 2;
+    if (headsAt(paneWidth, mid, full - mid) >= reach) high = mid;
+    else low = mid;
+  }
+  return { top: high, height: full - high };
 }

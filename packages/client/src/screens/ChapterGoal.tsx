@@ -16,7 +16,8 @@
  * In a fight the board is the picture, so the card folds to the goal and a
  * row of pips, out of the way of the figures. On a short pane (a tablet at the
  * largest text) it keeps the pips and names only the next step, so the head
- * stays on the sky.
+ * stays on the sky. In a phone's world pane it is a pill, "Goal" and the pips:
+ * the phone's own pane, a tap away and where it opens, has the words.
  *
  * The usual rules (layout/WorldView.tsx): nothing here reads the room mode,
  * and nothing uses a viewport unit.
@@ -104,7 +105,10 @@ export function ChapterGoalCard({ place, folded = false }: ChapterGoalCardProps)
     >
       <p className="goal__text">
         <Icon name={all ? "trophy" : "star"} />
-        <span>{goal.text}</span>
+        <span className="goal__sentence">{goal.text}</span>
+        {/* All a phone's world pane shows beside the pips (ChapterGoal.css): that phone's own
+            pane carries the words, and the story there has no room to give. */}
+        <span className="goal__tag" aria-hidden="true">Goal</span>
         {/* The pips: the whole goal in a fight, and on a short pane (ChapterGoal.css). */}
         <span className="goal__pips" role="img" aria-label={summary}>
           {done.map((d, i) => (
