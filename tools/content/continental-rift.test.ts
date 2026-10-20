@@ -173,7 +173,7 @@ describe("content:validate, with the slice dropped into content/", { timeout: 12
     let code = 0;
     try {
       out = execFileSync(process.execPath, [path.join(REPO_ROOT, "tools", "content", "validate.mjs")], {
-        env: { ...process.env, KAD_CONTENT_ROOT: dir, NO_COLOR: "1" },
+        env: { ...process.env, KAD_CONTENT_ROOT: dir, KAD_CLASS_PLACES: "off", NO_COLOR: "1" },
         encoding: "utf8",
       });
     } catch (err) {
