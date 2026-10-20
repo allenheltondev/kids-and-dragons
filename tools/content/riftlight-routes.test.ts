@@ -23,7 +23,7 @@ it.each([...chapters.values()].filter((chapter) => chapter.index >= 4))("$id: ev
     for (const scene of allPaths(chapter, "manticore", "duskrunner", { whales_guided: true }).visited) visited.add(scene);
   }
   expect([...visited].sort(), chapter.id).toEqual(Object.keys(chapter.scenes).sort());
-});
+}, 20_000); // Exhaustive walks across six party/history configurations run under V8 coverage in CI.
 
 it.each([1, 2, 3])("the river never downs a three-person party starting at %i HP", (hp) => {
   const chapter = chapters.get("riftlight-headwaters-washout")!;
