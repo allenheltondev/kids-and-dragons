@@ -33,7 +33,7 @@ test.describe("running the room", () => {
     // --- The host opens a Phone Mode room ---
     const host = await phone(browser);
     await host.goto("/");
-    await host.getByRole("button", { name: /want to host/i }).click();
+    await host.getByRole("button", { name: /host a game/i }).click();
     await host.getByText("Phone Mode").click();
     await host.getByLabel(/adventurer name/i).fill("Grown-up");
     await host.getByRole("button", { name: /^start a game$/i }).click();

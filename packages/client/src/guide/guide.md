@@ -9,7 +9,7 @@ Words in bold are exactly what the buttons and screens say.
 ## Quick start
 
 1. Open the game on the big screen: a TV with a browser, a laptop, or a tablet.
-2. Tap **Want to host? Set up a game**. Keep **Party Mode** picked, and tap **Open the lobby here**.
+2. Tap **Host a game**. Keep **Party Mode** picked, and tap **Open the lobby here**.
 3. The big screen shows four letters and a square code to scan.
 4. Each kid scans the square code with a phone or tablet. They can also open the game, type the four letters, and tap **Join a game**.
 5. Each kid makes a hero: what they are, how they fight, what they are best at, and a name. Then they tap **Ready to play** and **I'm ready!**
@@ -19,7 +19,9 @@ Words in bold are exactly what the buttons and screens say.
 
 No TV? Pick **Phone Mode** instead. Everyone plays on phones, and each phone shows the story too.
 
-Without an account, heroes are kept for a week after you last play. To keep them for good, a grown-up taps **Sign in or create an account** on the start screen. There is no password, only a code by email.
+Without an account, heroes are kept for a week after you last play. To keep them for good, a grown-up taps **Grown-ups: sign in, or move a hero to another device** at the bottom of the start screen, then **Sign in or create an account**. There is no password, only a code by email.
+
+That same link is where every grown-up errand lives: signing in, a tablet the kids share, a group, and moving a hero to a new device. Nobody needs it to play.
 
 ![The start screen, where kids join and grown-ups host](../../public/guide-pictures/home.jpg)
 
@@ -128,7 +130,7 @@ Each screen has a row of small buttons in its corner. They change only that scre
 
 You can play forever without an account. Without one, heroes "fade after a week away". Playing again starts the week over.
 
-To keep them for good, a grown-up taps **Sign in or create an account** on the start screen. Type an email and tap **Send the code**. Type the eight digits from the email. There is no password. The same steps make a new account or sign you back in.
+To keep them for good, a grown-up taps **Grown-ups: sign in, or move a hero to another device** on the start screen, then **Sign in or create an account**. Type an email and tap **Send the code**. Type the eight digits from the email. There is no password. The same steps make a new account or sign you back in.
 
 ![Signing in with an emailed code](../../public/guide-pictures/sign-in.jpg)
 
@@ -138,7 +140,7 @@ Kids never sign in. They are nicknames that a grown-up keeps.
 
 ## A tablet the kids share
 
-A family tablet asks who is playing each time, instead of being one kid's. On it, a grown-up taps **Do the kids share this device? Make it a family tablet** and signs in. Nobody stays signed in on it, you included.
+A family tablet asks who is playing each time, instead of being one kid's. On it, a grown-up taps **Grown-ups: sign in, or move a hero to another device**, then **Do the kids share this device? Make it a family tablet**, and signs in. Nobody stays signed in on it, you included.
 
 After that, it opens on **Who's playing?** with a face for each kid. A kid taps their face, or **Someone new**, then types the four letters and taps **Join a game**. When a game ends, it asks again.
 
@@ -158,7 +160,7 @@ To let them in, open the room controls and tap **Let visitors join**. It asks yo
 
 ## Running a group
 
-A club, a class, the cousins: a group is for kids from more than one family. Tap **Running games for kids from other families? Run a group** and sign in.
+A club, a class, the cousins: a group is for kids from more than one family. Tap **Grown-ups: sign in, or move a hero to another device**, then **Running games for kids from other families? Run a group**, and sign in.
 
 - **Start a new group**, give it a name, and tap **Start it**.
 - **Add a kid** with a nickname, and tap **Add**.
@@ -173,8 +175,8 @@ The same screen lists **Family tablets**, with **Forget** for each one.
 
 A kid who plays on their own phone can carry on from another device, like a hospital tablet or a borrowed phone.
 
-1. On the phone they already play on, tap **Play as me on another device**. It shows a code and a square to scan. "It works one time, for 10 minutes."
-2. On the new device, tap **I play here already**, type the code, and tap **That's me**.
+1. On the phone they already play on, tap **Grown-ups: sign in, or move a hero to another device**, then **Play as me on another device**. It shows a code and a square to scan. "It works one time, for 10 minutes."
+2. On the new device, tap the same link, then **Bring my hero to this device**. Type the code, or scan the square, and tap **That's me**.
 
 A grown-up can make the same code from **Run a group**: tap **Pair a device** beside the kid.
 
