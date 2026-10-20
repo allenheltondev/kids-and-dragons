@@ -1,5 +1,15 @@
 # Kavari artwork
 
+## Double-wing revision
+
+At the user's direction, the final design now has two distinct wing pairs:
+a larger upper pair and a smaller lower pair. Generated with built-in imagegen,
+then resized and used to regenerate the portrait as described below.
+
+### Double-wing edit prompt
+
+Edit this Kavari bird to have DOUBLE WINGS: exactly FOUR wings, two distinct bilateral pairs. Keep its rounded friendly adult ice-blue head, curious softly luminous eyes, small deep-blue beak, sturdy body, short tail, two feet, crystalline feather tips and hand-painted storybook style. Change the wings and their pose: upper primary pair attaches high on the shoulders and opens gently upward/outward; second smaller pair attaches distinctly lower on the torso and opens gently downward/outward. All FOUR individual wings must be visible and countable, with clear spaces separating upper and lower silhouettes on each side. Each wing has its own root, continuous leading edge and complete feather fan; these are two anatomically separate pairs, not nested feather layers or a tiny inner-wing on one big wing. Balanced relaxed butterfly-like four-wing arrangement, but all wings are feathered bird wings, NOT insect membranes. Three-quarter body view facing left, sufficiently front-facing that both far-side wings are visible. Quietly magical and approachable, not a majestic eagle or heraldic pose. Ice-blue feathers with restrained translucent crystalline edges and delicate frost-vein highlights. No additional limbs, no jewelry, crest, armor, floating effects or scenery. Full body entirely visible, square composition, at least 60px clear margin on all sides. True transparent RGBA background. No text, no ground shadow.
+
 Generated with the built-in imagegen tool for PR #338, following the adult
 description in `canon/creatures.yaml`. The transparent output was resized with
 Pillow to fit within 940 × 940 pixels on the 1024 × 1024 RGBA entity canvas,
