@@ -140,8 +140,9 @@ export interface CheckScene {
 
 ```ts
 // packages/shared/src/types/protocol.ts
-  | { kind: "grip" }                                    // new IntentPreview member: this player's finger is on the pad
-  | { type: "ROLL"; spendBuff?: string; for?: string }  // `for`: heave for this hero (§4.2)
+  | { kind: "grip"; n: number }                        // new IntentPreview member: this player's finger is on the pad; n counts renewals (§4.2)
+  | { type: "ROLL"; spendBuff?: string; for?: string; at?: string }
+  // `for`: heave for this hero; `at`: the roll prompt this was made for (§4.2)
 ```
 
 ```ts
@@ -432,8 +433,20 @@ has already rolled this check).
   `pointerdown`, the `null` never arrives, the roll prompt never changes, and her grip would
   stay lit, hiding the button for good.
 - **The lease.** A grip is a lease, not a flag.
-  - The gripping phone re-sends `grip` every 3 s while the finger is down. The store's
-    preview pump is asked to re-send even though the preview is unchanged.
+  - The gripping phone re-sends `grip` every 3 s while the finger is down. Each renewal is
+    a *different* preview: `{ kind: "grip", n }`, where `n` counts up from 0 for this press.
+    - **Why `n`.** The store's preview pump skips a send whose
+      `JSON.stringify([preview, context])` key equals the last one sent
+      (`store/index.ts:1187-1214`), and `useSharePreview()` is keyed by the same payload.
+      An identical `{ kind: "grip" }` every 3 s would be dropped, and the lease would lapse
+      mid-hold.
+    - **No store change.** A rising `n` changes the key, so each renewal passes the dedup on
+      its own. The pump's latest-wins coalescing and the `null` that cancels a grip work as
+      they do today. `store/` gains no grip-specific path, so the first-paint estimate in §6
+      is unchanged.
+    - **The server.** `handlers/preview.ts` checks the shape: `n` must be an integer from 0
+      to 7. A 20 s hold at 3 s intervals is at most seven renewals after the first.
+    - **Receivers.** Any `grip`, whatever its `n`, restarts the lease.
   - Receiving clients treat a grip as fresh for 8 s from the last one they received
     (`GRIP_LEASE_MS`). After that it renders as `empty`, and it stops hiding the button.
   - The lease is the receiver's own clock against its own receipt time, so there is no
@@ -442,6 +455,10 @@ has already rolled this check).
   - A grip with no clear (simulated offline after `pointerdown`) fades within 8 s on the
     TV and on Mia's phone, and Heave for Posy appears at 30 s.
   - A grip that is renewed while held stays lit past 8 s.
+  - On the real preview sender (the store's `preview()` against a stub `postPreview`):
+    - holding the pad posts `grip` at 0, 3, 6 s and so on, with `n` = 0, 1, 2 and so on;
+    - releasing posts `null` and stops the renewals;
+    - a 20 s hold stops renewing after `n` = 6 and posts nothing further until release.
 
 **What it does.** It sends `{ type: "ROLL", for: "<hero id>" }`. The engine accepts it only if:
 
@@ -510,8 +527,32 @@ sends it. §5 has the proof.
 retry sets the store's `error` to the server's message, so the losing phone would show
 "already rolled".
 
-- **The engine names this one case.** When a group `ROLL` (plain or `for`) targets a slot
-  that is no longer pending, it throws `Illegal("ILLEGAL", ..., "SLOT_FILLED")`. `Illegal` (`engine.ts:318-324`) gains an optional third `reason` argument for this. `doGroupRoll`
+- **A together `ROLL` names the prompt it was made for.** The `SLOT_FILLED` check below
+  only works while the group prompt is still open. That is not true for the most important
+  race: the one for the *last* pending slot.
+  - **Why the final slot is different.** Filling it sets `draft.prompt = null` and branches
+    straight to the next scene (`engine.ts:1926-1934`).
+  - **What goes wrong.** The losing phone's resynced retry then meets whatever comes next:
+    - a story scene, which gives an ordinary `ILLEGAL` ("nothing is waiting on a roll") and a
+      toast;
+    - another check, where a plain retried `ROLL` would roll *the new check*.
+  - **The fix.** Every `ROLL` sent from a together pad or a Heave-for-X button carries
+    `at`: the roll prompt's context string, as `previewContext()` builds it
+    (`roll:<chapter>:<scenes entered>:<sceneId>`). It is stamped when the button renders,
+    and the store re-sends the intent unchanged, `at` included.
+  - **The engine checks `at` first.** It does this in `dispatch`'s `ROLL` case, before
+    `doRoll` or `doGroupRoll` and before any draw. If there is no roll prompt, or the
+    current roll prompt's context differs from `at`, it throws
+    `Illegal("ILLEGAL", "that roll has passed", "SLOT_FILLED")`.
+  - **Why the context is enough.** `visited.length` moves on every scene entered, so a
+    branch into a second check, or back into the same check scene, always has a different
+    context. A stale retry can never land on a later roll.
+  - **`at` adds no draw.** It is checked before anything is drawn, so a refused retry
+    commits nothing. Plain `ROLL`s without `at` (every non-together check, and the
+    playthrough driver) behave exactly as today.
+- **The engine names this one case.** While the prompt is still open, when a group `ROLL`
+  (plain or `for`) targets a slot that is no longer pending, it throws
+  `Illegal("ILLEGAL", ..., "SLOT_FILLED")`. `Illegal` (`engine.ts:318-324`) gains an optional third `reason` argument for this. `doGroupRoll`
   raises it when a hero who already rolled taps again, and when `for` names a filled slot.
 - **The server passes the reason through.** `ActionResponse.error` gains an optional
   `reason`, so the response is `{ code: "ILLEGAL", reason: "SLOT_FILLED" }`.
@@ -528,8 +569,14 @@ retry sets the store's `error` to the server's message, so the losing phone woul
   - Mia's `for` first, then Posy's `ROLL`.
   - Posy's `ROLL` first, then Mia's `for`.
 
-  In both, the test asserts:
+  Each order runs twice: with another hero still pending, and with Posy as the **one final
+  pending hero**. In the final-hero runs, the check branches straight into a second
+  together check, and in a variant into a story scene.
+
+  In every run, the test asserts:
   - exactly one die is committed for Posy's slot, and the seq advances by one;
+  - the second check's `group.pending` and `group.rolls` are untouched, so the retried
+    `ROLL` did not roll it;
   - neither phone's store has an `error`.
 
   A control asserts that an unrelated `ILLEGAL` (for example, `for` sent before 30 s)
@@ -679,6 +726,9 @@ file-hash test (:103-132) fails, by design.
   - for a hero who is away (who goes by `rollerAway` instead);
   - with `spendBuff`;
   - on a plain group check.
+- **Prompt binding.** A `ROLL` whose `at` names a passed prompt is refused as `SLOT_FILLED`,
+  with nothing drawn and no seq moved. This includes a branch into a second check, and a
+  return to the same check scene.
 
   The "same moment" race is tested in both orders.
 - **Previews.** A `grip` relayed during a group check leaves `state.seq` and the event log
@@ -914,7 +964,8 @@ Bramblewood's `check_gate` is `roller: "party"`, so it stays as it is (Decision 
      art gate and the cue voice rules).
    - The engine's prompt copy and `waitingSince`, `ROLL.for` with its legality checks
      (§4.2), `DiceRoll.by`, and the `SLOT_FILLED` reason on `Illegal` and `ActionResponse`.
-   - The `grip` preview kind and the roll `previewContext` branch.
+   - The `grip` preview kind (with `n`) and the roll `previewContext` branch.
+   - `ROLL.at`, checked in `dispatch` before any draw.
    - The tests in §5.
    - No shipped content.
 3. **Client.**
