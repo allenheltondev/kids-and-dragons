@@ -42,7 +42,7 @@ test.describe("a group with two organizers", () => {
 
     // --- Ana starts the group and adds a kid ---
     const anaPage = await page(browser);
-    await anaPage.goto("/");
+    await anaPage.goto("/account");
     await anaPage.getByRole("button", { name: /run a group/i }).click(TAP);
     await signIn(anaPage, ana);
     await expect(anaPage.getByRole("heading", { name: /your groups/i })).toBeVisible(TAP);
@@ -59,7 +59,7 @@ test.describe("a group with two organizers", () => {
 
     // --- Ben, from another family, joins with the code and adds his kid ---
     const benPage = await page(browser);
-    await benPage.goto("/");
+    await benPage.goto("/account");
     await benPage.getByRole("button", { name: /run a group/i }).click(TAP);
     await signIn(benPage, ben);
     await benPage.getByLabel("Have an organizer code?").fill(code);
@@ -75,7 +75,7 @@ test.describe("a group with two organizers", () => {
 
     // --- Ben sets up the group's tablet; both kids are faces on it ---
     const tablet = await page(browser);
-    await tablet.goto("/");
+    await tablet.goto("/account");
     await tablet.getByRole("button", { name: /make it a family tablet/i }).click(TAP);
     await signIn(tablet, ben);
     await tablet.getByRole("button", { name: /^done$/i }).click(TAP);
@@ -87,7 +87,7 @@ test.describe("a group with two organizers", () => {
     // --- A TV opens a room, and the two kids sit down at it ---
     const tv = await page(browser);
     await tv.goto("/");
-    await tv.getByRole("button", { name: /want to host/i }).click();
+    await tv.getByRole("button", { name: /host a game/i }).click();
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
     const room = new URL(tv.url()).pathname.split("/").pop() ?? "";
