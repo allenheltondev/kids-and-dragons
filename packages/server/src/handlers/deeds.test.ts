@@ -205,19 +205,29 @@ async function riftTable(classes: ClassId[]) {
     const id = (await state()).party[seat]!.character.id;
     return (await harness.repo.getCharacter(seeded.householdId, id))!;
   };
-  return { harness, state, send, visit, hero, householdId: seeded.householdId };
+  /**
+   * Makes a seated hero an Expert in her class with `deeds` toward Master: on
+   * her stored row and on the table's snapshot of her, as the chapter that
+   * made her one would have left both.
+   */
+  const expert = async (seat: number, cls: ClassId, deeds: Record<string, number>) => {
+    const row = await hero(seat);
+    row.provisional!.mastery[cls] = { rank: "expert", deeds };
+    await harness.repo.putCharacter(row);
+    const now = await state();
+    const party = now.party.map((m, i) => (i === seat ? { ...m, character: resolveCharacter(row, harness.deps.content.rules(), harness.deps.content.items()) } : m));
+    await harness.repo.putState({ ...now, party });
+  };
+  return { harness, state, send, visit, hero, expert, householdId: seeded.householdId };
 }
 
 describe("a class way at a rift is that class's story deed", () => {
   it("lands a Master it completes on the hero who wears the class, in the rift action's commit, and nobody else", async () => {
     const t = await riftTable(["thornguard", "songkeeper"]);
-    // The Thornguard is an Expert one story deed short of Master.
-    const tg = await t.hero(0);
-    tg.provisional!.mastery.thornguard = { rank: "expert", deeds: { hold_ground: 2 } };
-    await t.harness.repo.putCharacter(tg);
-    const sk = await t.hero(1);
-    sk.provisional!.mastery.songkeeper = { rank: "expert", deeds: { song_hearts: 4 } };
-    await t.harness.repo.putCharacter(sk);
+    // The Thornguard is an Expert one story deed short of Master; the
+    // Songkeeper is an Expert too, as her row and the table both say.
+    await t.expert(0, "thornguard", { hold_ground: 2 });
+    await t.expert(1, "songkeeper", { song_hearts: 4 });
 
     const opened = await t.send({ type: "RIFT_ACTION", action: "open", edgeId: "veil-rift", way: "force", visit: await t.visit() });
     expect(opened.ok).toBe(true);
@@ -230,6 +240,29 @@ describe("a class way at a rift is that class's story deed", () => {
     const state = await t.state();
     expect(state.party[0]!.character).toMatchObject({ rank: "master" });
     expect(state.rankUps?.ups.map((u) => [u.class, u.rank])).toEqual([["thornguard", "master"]]);
+  });
+
+  it("commits nothing when an eligible hero cannot be read, so a retry still earns the deed", async () => {
+    const t = await riftTable(["thornguard"]);
+    await t.expert(0, "thornguard", { hold_ground: 2 });
+    const before = await t.state();
+    const attemptBefore = await t.harness.repo.getCampaignProgress(t.householdId, "rift-classes");
+
+    const repo = t.harness.repo;
+    const read = repo.getCharacter.bind(repo);
+    let failures = 1;
+    repo.getCharacter = async (...args: Parameters<typeof read>) => {
+      if (failures-- > 0) throw new Error("the store blinked");
+      return read(...args);
+    };
+    const intent = { type: "RIFT_ACTION" as const, action: "open" as const, edgeId: "veil-rift", way: "force", visit: await t.visit() };
+    await expect(t.send(intent)).rejects.toThrow("the store blinked");
+    expect((await t.state()).seq).toBe(before.seq);
+    expect(await t.harness.repo.getCampaignProgress(t.householdId, "rift-classes")).toEqual(attemptBefore);
+    expect((await t.hero(0)).provisional?.mastery.thornguard).toEqual({ rank: "expert", deeds: { hold_ground: 2 } });
+
+    expect((await t.send(intent)).ok).toBe(true);
+    expect((await t.hero(0)).provisional?.mastery.thornguard).toEqual({ rank: "master", deeds: {} });
   });
 
   it("writes nothing for a hero whose next rank does not want a story deed", async () => {
