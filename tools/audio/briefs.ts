@@ -26,7 +26,7 @@ if (jobs.length === 0) {
 } else {
   console.log(
     `${String(jobs.length)} to make. Generate each one, download it, and keep the cue name\n` +
-      "somewhere in the filename — `dice.mp3`, `ElevenLabs_dice_v2.mp3`, anything\n" +
+      "somewhere in the filename — `dice.mp3`, `SoundTool_dice_v2.mp3`, anything\n" +
       "containing it. Then: npm run audio:import -- ~/Downloads\n",
   );
   for (const job of jobs) {
