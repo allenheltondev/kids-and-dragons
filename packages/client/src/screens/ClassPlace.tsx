@@ -65,7 +65,9 @@ export function switchLines(from: ClassId, to: ClassId, keeper?: string): string
     `You take off your ${CLASS_GEAR[from]} and put on the ${CLASS_GEAR[to]}.`,
     `Your ${CLASS_GEAR[from]} goes in your pack.`,
     "It keeps everything you earned.",
-    ...(keeper ? [`${keeper} fits each hero only once.`] : []),
+    // At the stall, said plainly: this is the only free swap, and it does
+    // not come back.
+    ...(keeper ? ["This is your one free swap.", `${keeper} will not offer it again.`] : []),
     `You can switch back at ${CLASS_PLACE_NAME[from]}.`,
   ];
 }
@@ -191,7 +193,7 @@ export function ClassPlaceChoice(): ReactElement | null {
       </h3>
       <p className="prompt__sub kad-muted">
         <Icon name="hand" />
-        <span>{stall ? "Only you decide this one. It is free, one time only." : "Only you decide this one."}</span>
+        <span>{stall ? "Only you decide this one. It is free, but only this one time." : "Only you decide this one."}</span>
       </p>
 
       {picked === null ? (

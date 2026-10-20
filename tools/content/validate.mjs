@@ -1653,6 +1653,19 @@ function checkFittingStall(rep, rules, chaptersById, brokenChapterIds) {
     if (scene.classPlace !== undefined) {
       bad(`${at}/sceneId`, `"${sceneId}" is already the ${scene.classPlace} class place`, "One kind of class change per scene.");
     }
+    // The way on waits for every new hero's answer, so it must be a plain
+    // "go on": one choice, open to everybody. A vote or a gated choice held
+    // behind the wait would be a decision the stall is sitting on.
+    const choices = Array.isArray(scene.choices) ? scene.choices : [];
+    if (choices.length > 1) {
+      bad(`${at}/sceneId`, `"${sceneId}" has ${choices.length} choices - the stall's wait would hold a decision`, "Stand it in a scene whose only choice is the way on.");
+    }
+    for (const choice of choices) {
+      const gates = ["requiresSpecies", "requiresClass", "requiresFlag", "requiresItem", "when"].filter((key) => choice[key] !== undefined);
+      if (gates.length > 0) {
+        bad(`${at}/sceneId`, `"${sceneId}"'s choice "${choice.id}" is gated (${gates.join(", ")})`, "The stall stands where everybody walks on the same way.");
+      }
+    }
   });
   // Shown on the shared screen in whichever campaign it stands in, Gemfall
   // included, so it keeps Gemfall's house rules (gemfall-authoring.md).
