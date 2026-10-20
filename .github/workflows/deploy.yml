@@ -37,7 +37,7 @@ env:
 jobs:
   changes:
     # Staging is ~10-45 minutes of sam deploy for a reviewer to click through.
-    # A pull request that changes only docs, tests, source art, rig parts or
+    # A pull request that changes only docs, tests, source art or
     # tooling ships nothing new, so there is nothing new to look at.
     # The rules are in tools/ci/changes.mjs. A skip here is a job-level `if:`
     # (reports as passed), never `on.paths` (reports nothing). Manual runs

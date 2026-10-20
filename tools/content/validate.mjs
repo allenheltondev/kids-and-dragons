@@ -67,8 +67,8 @@ const SCHEMAS = join(ROOT, "schemas");
 const MANIFEST = join(ROOT, "assets", "manifest.json");
 /**
  * The art itself is always this checkout's, whichever tree is being judged: a
- * staged generator tree (generate-gate.ts) carries the manifest and not the
- * megabytes of PNG a cast figure points at.
+ * staged test tree may carry the manifest and not the megabytes of PNG a cast
+ * figure points at.
  */
 const REPO_ASSETS = fileURLToPath(new URL("../../assets", import.meta.url));
 

@@ -1,9 +1,8 @@
 /**
  * Which downloaded file is which cue.
  *
- * The import path exists because generating audio is not always an API call.
- * A free tier gives you a web UI and a Downloads folder, and what comes out of
- * one is named `ElevenLabs_2026-08-26T14-02-11_dice_pvc.mp3` — the sound is
+ * Sounds come into the game through a Downloads folder, and what comes out of
+ * a sound tool's web UI is named `SoundTool_2026-08-26T14-02-11_dice_pvc.mp3` — the sound is
  * right, the filename is somebody else's.
  *
  * So matching is by *containment* rather than equality, and it is deliberately

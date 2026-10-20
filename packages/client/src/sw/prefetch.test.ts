@@ -29,9 +29,8 @@ const PARTY = [makeMember({ character: makeCharacter({ species: "unicorn", tier:
 describe("the scenes ahead", () => {
   it("starts with the party's own figures — every scene needs them", () => {
     const urls = upcomingAssets(null, null, PARTY);
-    expect(urls).toHaveLength(2);
-    expect(urls.some((url) => url.endsWith("/rig.riv"))).toBe(true);
-    expect(urls.some((url) => url.endsWith("/assembled.png"))).toBe(true);
+    expect(urls).toHaveLength(1);
+    expect(urls[0]).toBe("/assets/characters/unicorn/fledgling/assembled.png");
   });
 
   it("before the chapter begins, fetches its entry and what follows it", () => {

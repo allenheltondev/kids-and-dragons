@@ -7,7 +7,7 @@
 import { getAudioProbe, type AudioState } from "../audio/cue";
 import type { WakeLockState } from "./wake-lock";
 
-export type CapabilityId = "webgl" | "rive" | "wakeLock" | "audio" | "serviceWorker";
+export type CapabilityId = "webgl" | "wakeLock" | "audio" | "serviceWorker";
 
 export interface Capability {
   id: CapabilityId;
@@ -35,18 +35,6 @@ export function probeWebGL(doc: Pick<Document, "createElement"> | undefined = ty
     return { ok: true, detail: renderer ? `${version} (${renderer})` : version };
   } catch {
     return { ok: false, detail: "Not available. The board is drawn as still art." };
-  }
-}
-
-export async function probeRive(): Promise<Pick<Capability, "ok" | "detail">> {
-  if (typeof WebAssembly !== "object") return { ok: false, detail: "No WebAssembly. Heroes are drawn as still art." };
-  try {
-    const { riveAvailable } = await import("../world/rive-rig");
-    return (await riveAvailable())
-      ? { ok: true, detail: "Animated heroes load" }
-      : { ok: false, detail: "The runtime would not start. Heroes are drawn as still art." };
-  } catch {
-    return { ok: false, detail: "The runtime would not load. Heroes are drawn as still art." };
   }
 }
 
@@ -79,7 +67,6 @@ export function probeServiceWorker(nav: Pick<Navigator, "serviceWorker"> | undef
 export async function probeCapabilities(wakeLock: WakeLockState): Promise<Capability[]> {
   return [
     { id: "webgl", label: "WebGL", ...probeWebGL() },
-    { id: "rive", label: "Rive animation", ...(await probeRive()) },
     { id: "wakeLock", label: "Wake lock", ...describeWakeLock(wakeLock) },
     { id: "audio", label: "Audio", ...describeAudio(getAudioProbe()?.state() ?? "unknown") },
     { id: "serviceWorker", label: "Service worker", ...probeServiceWorker() },

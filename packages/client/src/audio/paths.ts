@@ -46,7 +46,7 @@ export const MUSIC_BY_BIOME: Record<string, string> = {
 /**
  * What each cue is *for*, in the words somebody sourcing audio needs.
  *
- * This is the brief — the table a generator prompts from and a person shopping
+ * This is the brief — the table `audio:briefs` prints and a person shopping
  * a pack reads. Durations are targets rather than gates: the game plays what
  * it is given, and the number says what will sound right against the beat it
  * lands on (the roll animation is ~1.5s, a combat beat is ≤400ms apart).
