@@ -393,13 +393,67 @@ has already rolled this check).
 - **Hidden while the hold-out is gripping.** The button is hidden while the hold-out's
   `grip` preview is live, so a kid mid-press is never overtaken. This is a client courtesy;
   the server cannot see grips and does not need to (see "the same moment" below).
+- **Only for a present hold-out.** The button is offered only for a hero who is
+  `connected`. A hero who is away is handled by today's rule, unchanged (see the guards
+  below).
+
+**How a phone that has already rolled reaches the button.** Today it cannot.
+
+- **Why it can't.** `isPromptForPlayer` (`store/index.ts:159-193`) answers a group roll
+  only for heroes still in `group.pending`. Once Mia has rolled, `usePrompt()` returns
+  `null`, and `PlayerPanel` renders roll controls only when `myPrompt` is non-null.
+- **The fix is a separate selector, not a change to `isPromptForPlayer`.**
+  `useTogetherAssist()` lives in `PlayerPanel.tsx`, in the room chunk, and is built on
+  `useRunState()` and `useMe()`. It does not live in `store/`, so it costs no first paint.
+  It returns the heroes this phone may heave for. A hero is on the list when all of the
+  following hold:
+  - `prompt.kind === "roll"` with `prompt.together`;
+  - this phone's hero is seated and not in `group.pending`;
+  - the hero is in `group.pending`, is `connected`, and is not this phone's hero;
+  - 30 s have passed on this phone's own clock since it applied the patch that last set
+    `waitingSince`;
+  - the hero has no fresh `grip` (see the grip lease below).
+- **Where it renders.** `PlayerPanel` draws an assist block in place of the roll block:
+  the token row plus one "Heave for X" button per hero. There is never a second pad or
+  Roll! button, because `usePrompt()` is untouched and still `null` for Mia.
+- **The client timer.** No server event arrives at 30 s, so the assist block sets one
+  `setTimeout` for the remaining time. It is keyed to the `waitingSince` it saw and cleared
+  when that changes or the prompt closes, so the button appears on time with no patch.
+- **Focus.**
+  - In Party Mode, the button appearing does not pull the phone to its controls
+    (`useMyTurnKey` is unchanged), because it is a friend's turn, not yours.
+  - In Travel Mode, it raises the existing marker on "You" so it is not missed behind the
+    world pane. It never switches the pane automatically.
+
+**The grip lease: a dropped phone cannot hide the button.**
+
+- **The risk.** A `grip` preview is stored on receiving clients until a clearing `null`
+  (`HeldPreview` holds only `{ preview, context }`). If Posy's phone loses its network after
+  `pointerdown`, the `null` never arrives, the roll prompt never changes, and her grip would
+  stay lit, hiding the button for good.
+- **The lease.** A grip is a lease, not a flag.
+  - The gripping phone re-sends `grip` every 3 s while the finger is down. The store's
+    preview pump is asked to re-send even though the preview is unchanged.
+  - Receiving clients treat a grip as fresh for 8 s from the last one they received
+    (`GRIP_LEASE_MS`). After that it renders as `empty`, and it stops hiding the button.
+  - The lease is the receiver's own clock against its own receipt time, so there is no
+    clock skew.
+- **Tests.**
+  - A grip with no clear (simulated offline after `pointerdown`) fades within 8 s on the
+    TV and on Mia's phone, and Heave for Posy appears at 30 s.
+  - A grip that is renewed while held stays lit past 8 s.
 
 **What it does.** It sends `{ type: "ROLL", for: "<hero id>" }`. The engine accepts it only if:
 
 - the prompt has `together`;
 - `for` is in `group.pending`;
+- **the `for` hero is `connected`.** An away hero goes by today's `rollerAway` rule, so
+  the new rule can never bypass it;
 - the sender's own hero is not pending;
-- at least 30 s have passed since `waitingSince`.
+- at least 30 s have passed since `waitingSince`;
+- the intent carries no `spendBuff`.
+
+A `ROLL { for }` that fails any of these is `ILLEGAL`.
 
 Then it rolls **for that hero, exactly as that hero's own `ROLL` would:**
 
@@ -408,7 +462,27 @@ Then it rolls **for that hero, exactly as that hero's own `ROLL` would:**
   `resolveCheck(ctx.rng, ...)`.
 - **The turn tally.** It counts in `checkRolls` for the hero, not the thrower.
 - **Buffs.** An `auto` buff applies as it would have. A `choose` buff is left unspent,
-  because a friend does not spend the party's buff on someone else's roll.
+  because a friend does not spend the party's buff on someone else's roll. A `for` roll
+  carrying `spendBuff` is refused. The next hero is offered the buff, untouched.
+
+**A hero's own `choose` buff is still the hero's choice.**
+
+- **Today.** With `prompt.buff.spend === "choose"`, the roll card shows two buttons, "Use it
+  and roll!" and "Save it and roll" (`PlayerPanel.tsx:1209-1230`), and the kid must pick
+  one.
+- **On a together check, there are two pads.** They are stacked one above the other, each
+  full width:
+  - "⭐ Use it and heave!" sends `ROLL { spendBuff: buff.id }` on release;
+  - "Save it and heave" sends a plain `ROLL` on release.
+
+  Each is a complete press-and-release pad, with its own grip.
+- **No default, no extra step.** The choice is still made by which button the kid lets go
+  of, exactly as today.
+- **Without a `choose` buff,** there is one pad. Gemfall carries no buffs (`engine.ts:214-216`).
+- **Tests.**
+  - On a together check with a `choose` buff, each pad sends its own intent and the buff
+    is spent or kept accordingly.
+  - A `for` roll on the same prompt leaves the buff unspent and still offered.
 - **The record.** The `DiceRoll` gains `by: "<thrower's character id>"`, so the TV can say
   who helped.
 
@@ -429,17 +503,43 @@ sends it. §5 has the proof.
 - Both `ROLL`s carry seq N, and the server applies whichever arrives first.
 - The second gets `STALE_SEQ`. The store resyncs and re-sends it
   (`store/index.ts:1141-1165`). The engine then refuses it, because Posy is no longer
-  pending, so it is `ILLEGAL` ("already rolled").
-- The losing phone simply shows the state that arrived: the die is already there. It shows
-  no error toast.
+  pending.
 - Either way the slot gets exactly one die, on one seq.
-- The build PR tests both orders.
+
+**Keeping the loser quiet takes a small, narrow client change.** Today an `ILLEGAL` after a
+retry sets the store's `error` to the server's message, so the losing phone would show
+"already rolled".
+
+- **The engine names this one case.** When a group `ROLL` (plain or `for`) targets a slot
+  that is no longer pending, it throws `Illegal("ILLEGAL", ..., "SLOT_FILLED")`. `Illegal` (`engine.ts:318-324`) gains an optional third `reason` argument for this. `doGroupRoll`
+  raises it when a hero who already rolled taps again, and when `for` names a filled slot.
+- **The server passes the reason through.** `ActionResponse.error` gains an optional
+  `reason`, so the response is `{ code: "ILLEGAL", reason: "SLOT_FILLED" }`.
+- **The store keeps quiet for that reason only.** In `send()`, an error with
+  `reason === "SLOT_FILLED"` on a `ROLL` intent clears `busy` and sets no `error`. Every
+  other `ILLEGAL`, and `SLOT_FILLED` on any other intent, still sets `error` as today.
+- **The losing phone shows the state that arrived:**
+  - Mia's button is gone, and the token shows Posy's die.
+  - Posy's phone says "Mia heaved for you!" when Mia won. When Posy won, it shows her own
+    roll.
+- **The cost.** This is the one piece of this feature in the entry graph's `store/`: one
+  comparison, about 60 bytes (§6).
+- **The regression is a two-phone race, in both arrival orders.**
+  - Mia's `for` first, then Posy's `ROLL`.
+  - Posy's `ROLL` first, then Mia's `for`.
+
+  In both, the test asserts:
+  - exactly one die is committed for Posy's slot, and the seq advances by one;
+  - neither phone's store has an `error`.
+
+  A control asserts that an unrelated `ILLEGAL` (for example, `for` sent before 30 s)
+  still surfaces.
 
 **What changes from today's stand-in rule.**
 
 | | Today (any group check, hero away) | New (together check only, hero present) |
 |---|---|---|
-| When | Only once *every* pending hero is away (about 120 s of silence each) | 30 s after the last progress |
+| When | Only once *every* pending hero is away (about 120 s of silence each) | 30 s after the last progress, and only while the hero is `connected` |
 | Who | Any seated player | A seated player whose own hero has already rolled |
 | Whose stat | The thrower's ("rolls as themselves") | The hero's |
 | Whose turn tally | The thrower's | The hero's |
@@ -460,9 +560,12 @@ sends it. §5 has the proof.
   - the finger lifts;
   - the browser cancels the pointer;
   - the page hides (the build adds `preview(null)` beside the "leaving" beat that the
-    `pagehide` handler already sends, `sync/presence-beat.ts`).
-- A phone face-down on a cushion with a stuck pointer shows the button again when the grip
-  clears.
+    `pagehide` handler already sends, `sync/presence-beat.ts`);
+  - the phone's network drops, because the grip lease runs out within 8 s on every other
+    screen (see the grip lease above);
+  - the hold runs past 20 s. The phone stops renewing, and the pad says "Let go to heave!",
+    so a cushion pressing a live screen cannot hide the button for good either.
+- When the grip clears, the friends' button shows again.
 
 ### 4.3 No phones: the TV alone
 
@@ -573,6 +676,8 @@ file-hash test (:103-132) fails, by design.
   - before 30 s;
   - from a pending hero;
   - for a hero not pending;
+  - for a hero who is away (who goes by `rollerAway` instead);
+  - with `spendBuff`;
   - on a plain group check.
 
   The "same moment" race is tested in both orders.
@@ -588,7 +693,7 @@ file-hash test (:103-132) fails, by design.
 The budget is 315 KB of first-paint JS. `tools/perf/bundle-budget.ts` weighs it over the
 static import graph from the entry. It was last measured at about 296 KB (#318).
 
-**Expected cost: about 0.1 KB.**
+**Expected cost: about 0.2 KB.**
 
 | Piece | Where it lands | First-paint cost |
 |---|---|---|
@@ -597,12 +702,14 @@ static import graph from the entry. It was last measured at about 296 KB (#318).
 | `TogetherSpec`, `ROLL.for`, `grip` | type-only | 0 (erased) |
 | The overlay paths (`togetherBand()`, `togetherToken()`) | `world/art-paths.ts`, imported only by room code | 0 |
 | `previewContext()`'s `roll` branch | `@kad/shared`, which the store imports (`store/index.ts:33`), so it **is** in the entry graph | about 100 bytes minified |
+| `send()` staying quiet on `SLOT_FILLED` (§4.2) | `store/index.ts`, in the entry graph | about 60 bytes minified |
+| `useTogetherAssist()`, the 30 s timer, the grip lease | `PlayerPanel.tsx` and the room-side preview reader, not `store/` | 0 |
 | The engine and server changes | server | 0 |
 
 - **The painted overlays are images, not JS.** They are fetched only when a together
   prompt opens. They are budgeted in §7.
 - **Keeping it out of first paint.** Nothing new is imported from `App`, `main.tsx`,
-  `HomeScreen`, `store/` or `sync/`.
+  `HomeScreen`, `store/` or `sync/`. The only exceptions are the two lines above.
 - **Proof.** The build PR puts `npm run build && npm run perf:bundle` before/after numbers in
   its body.
 
@@ -665,8 +772,9 @@ spooky, never scary.
 - **States share the frame.** All four states are registered to one frame. The `helped`
   extra loop or ring stays inside the canvas margin.
 
-**Weight.** About 250 KB per band and 30 KB per token at most. That is 8 files per move and
-24 in total, roughly 1.7 MB for all three moves if every file hit its cap. Nothing loads
+**Weight.** About 250 KB per band and 30 KB per token at most. That is 6 files per move (2
+bands, 4 tokens) and 18 in total: at most 620 KB per move, about 1.9 MB for all three if
+every file hit its cap. Nothing loads
 before a together prompt opens. When it opens, the client fetches the band states and token
 states for that move only.
 
@@ -798,19 +906,21 @@ Bramblewood's `check_gate` is `roller: "party"`, so it stays as it is (Decision 
 ## 9. Build order
 
 1. **Art.**
-   - The 24 overlays (§7), through `art:verify` and the contact-sheet review.
+   - The 18 overlays (§7), through `art:verify` and the contact-sheet review.
    - The manifest entry.
    - Nothing else depends on it, so it can start now.
 2. **Shared and server.**
    - The types, the schema object and `maxLength`, and the validator rules (including the
      art gate and the cue voice rules).
-   - The engine's prompt copy and `waitingSince`, `ROLL.for` with its four legality checks,
-     and `DiceRoll.by`.
+   - The engine's prompt copy and `waitingSince`, `ROLL.for` with its legality checks
+     (§4.2), `DiceRoll.by`, and the `SLOT_FILLED` reason on `Illegal` and `ActionResponse`.
    - The `grip` preview kind and the roll `previewContext` branch.
    - The tests in §5.
    - No shipped content.
 3. **Client.**
-   - The pad, the token row and Heave for X on the phone, and the TV and Travel overlays.
+   - The pad (two pads with a `choose` buff), the token row, and `useTogetherAssist()` with
+     its timer and Heave for X on the phone. The TV and Travel overlays.
+   - The grip lease, and the quiet `SLOT_FILLED` handling in `send()`.
    - Read-aloud lines and haptics.
    - The a11y cases in `e2e/accessibility.spec.ts`.
    - `perf:bundle` before/after.
@@ -838,7 +948,8 @@ All six were decided by the owner on #361. They are recorded here so the build f
 3. **A present kid who doesn't press: a "heave for them" button after a timeout.**
    *Decided: (b).*
    - **The timeout:** 30 s since the last progress.
-   - **Who sees it:** the phones whose heroes have already rolled.
+   - **Who sees it:** the phones whose heroes have already rolled, through its own selector,
+     and only for a hold-out who is `connected`.
    - **What it does:** it rolls for that hero exactly as their `ROLL` would, with their stat,
      one intent and one draw.
    - **How the TV shows it:** "Mia gives Posy a hand!"
