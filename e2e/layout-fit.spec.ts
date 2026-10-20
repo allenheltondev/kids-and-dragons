@@ -365,17 +365,23 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
   test("the Exchange's fitting stall (#312): every class to try, and the \"are you sure?\"", async ({ browser }) => {
     test.setTimeout(180_000);
     // A new hero in Gemfall, which opens at the Exchange. The launch campaign
-    // is the Hollow Crown, so the room is opened for Gemfall instead (the one
-    // request rewritten), and the dev jump goes straight to the scene the
-    // stall stands in.
+    // is the Hollow Crown, so the room is opened for Gemfall instead, and the
+    // dev jump goes straight to the scene the stall stands in.
     const kid = await phone(browser);
-    await kid.route("**/api/room", async (route) => {
-      const body = route.request().postDataJSON() as Record<string, unknown> | null;
-      if (route.request().method() !== "POST" || !body?.campaignId) return route.continue();
-      await route.continue({ postData: JSON.stringify({ ...body, campaignId: "gemfall" }) });
+    // In the page rather than on the wire (no request interception): the
+    // client's own create-room call names Gemfall.
+    await kid.addInitScript(() => {
+      const send = window.fetch.bind(window);
+      window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+        if (input === "/api/room" && init?.method === "POST" && typeof init.body === "string") {
+          const body = JSON.parse(init.body) as Record<string, unknown>;
+          if (body.campaignId) return send(input, { ...init, body: JSON.stringify({ ...body, campaignId: "gemfall" }) });
+        }
+        return send(input, init);
+      };
     });
     await kid.goto("/");
-    await kid.getByRole("button", { name: /want to host/i }).click();
+    await kid.getByRole("button", { name: /want to host/i }).click(TAP);
     await kid.getByText("Phone Mode").click();
     await kid.getByLabel("Your adventurer name").fill("Grown-up");
     await kid.getByRole("button", { name: /^start a game$/i }).click();
