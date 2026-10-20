@@ -620,7 +620,7 @@
       "discovers": [
         "faction.deep_hollow_cult"
       ],
-      "narration": "At the top of the road is a soup tent with a sign: FREE, NO QUESTIONS. A woman called Hessa Wren ladles a bowl for {party}, asks for names, and remembers them. \"The world's laws are broken,\" she says kindly, as if she were telling you it might rain. \"That seal on the mountain isn't protecting anyone. It's a cage on the cure.\"",
+      "narration": "At the top of the road is a soup tent with a sign: FREE, NO QUESTIONS. A woman called Hessa Wren ladles a bowl for {party}, asks for names, and remembers them. Behind her, helpers in painted bark masks stir the pots and hum one low note, all together. \"My friends from the Deep Hollow,\" says Hessa. \"The masks are for singing to the mountain.\" Then she leans in. \"The world's laws are broken,\" she says kindly, as if she were telling you it might rain. \"That seal on the mountain isn't protecting anyone. It's a cage on the cure.\"",
       "choices": [
         {
           "id": "ask_cure",

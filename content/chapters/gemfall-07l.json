@@ -55,18 +55,7 @@
   "scenes": {
     "scene_the_table": {
       "type": "story",
-      "narration": "The wardens will not sit with the cult, the people in painted bark masks who follow Hessa from the soup tent. The masks will not sit with the wardens. So you build a table, out of an old door and two barrels, right in the middle of the Pinch, the one gap between two red hills that every road squeezes through, and sit at it yourselves. The ground shakes and the table wobbles, and somebody folds a sock under the short leg.",
-      "variants": [
-        {
-          "when": {
-            "partySize": {
-              "max": 1
-            }
-          },
-          "replace": true,
-          "text": "The wardens will not sit with the cult, the people in painted bark masks who follow Hessa from the soup tent. The masks will not sit with the wardens. So you build a table, out of an old door and two barrels, right in the middle of the Pinch, the one gap between two red hills that every road squeezes through, and sit at it yourself. The ground shakes and the table wobbles, and you fold a sock under the short leg."
-        }
-      ],
+      "narration": "Pellam the clerk walks you down to the Pinch, the one gap between two red hills that every road squeezes through. \"You said hold it,\" he says. \"Not break it, not bury it. So: gather the ledger, the chord and a true answer, then hold the stone's hum at the bend.\" The stone rides in tomorrow's caravan, so loud the mules wear earmuffs. Holding it still is like a hand on a ringing bell. The chord belongs to Hessa's friends, the Deep Hollow. They wear bark masks to sing to the mountain, and want to wake it so it can fix things.",
       "choices": [
         {
           "id": "wardens_first",
@@ -92,7 +81,7 @@
     },
     "scene_the_table_grandmothers_chair": {
       "type": "story",
-      "narration": "You ask a grandmother to chair the table. She brings her knitting, sits down at the head of your old door, and says nothing at all. Within a minute, a warden and a mask have both stopped shouting, because it is very hard to shout near a grandmother who is knitting. \"Well?\" she says. \"Sit.\"",
+      "narration": "You ask a grandmother to chair your table. She brings her knitting and a stool, sits down, and says nothing at all. Within a minute, a warden and a mask have both stopped shouting, because it is very hard to shout near a grandmother who is knitting. \"Well?\" she says. \"Build it, then.\"",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -110,7 +99,7 @@
     },
     "choice_the_rule": {
       "type": "choice_point",
-      "narration": "A table between two sides needs one rule, chalked on the top where everyone can read it. Only one, or nobody will remember it. Wardens and masks are already drifting over to see what you write. What is the rule?",
+      "narration": "The wardens will not sit with the masks, and the masks will not sit with the wardens. So you build a table out of an old door and two barrels, right in the middle of the Pinch. It wobbles, and a folded sock goes under the short leg. A table between two sides needs one rule, chalked on top. Only one, or nobody will remember it. Wardens and masks drift over to see what you write. What is the rule?",
       "choices": [
         {
           "id": "no_shouting",
@@ -194,7 +183,7 @@
       "discovers": [
         "faction.skywardens"
       ],
-      "narration": "The wardens' cage doctrine lives in a ledger as thick as a doorstep, chained to a desk, and the desk is guarded by Pellam, who has never once smiled on duty and has logged that fact twice. \"Not for lending,\" says Pellam, before you have said anything at all.",
+      "narration": "At the wardens' camp, Pellam sits down behind a desk and turns back into a clerk. The cage ledger is as thick as a doorstep, and it is chained to the desk. \"It never leaves this desk,\" he says. \"Not for anybody. Not even for you.\" Then he looks at the desk, and at you, as if he has said something more useful than he meant to.",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -222,13 +211,13 @@
         },
         {
           "id": "honest",
-          "label": "Make the honest case",
+          "label": "Carry it honestly: chain, desk and all",
           "icon": "clever",
           "goto": "check_ledger"
         },
         {
           "id": "false_promise",
-          "label": "Promise them the cult's secret chord in trade (you won't)",
+          "label": "Promise them the choir's secret chord in trade (you won't)",
           "icon": "moon",
           "goto": "scene_ledger_false_promise",
           "effects": [
@@ -280,7 +269,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Show Pellam why a cage needs a key-holder",
+      "prompt": "Work out how to carry a chained ledger and its desk up the valley together",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -290,7 +279,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_two_scouts",
-        "narration": "Pellam reads your argument twice, frowns at it twice, and unlocks the chain. Nobody has ever seen Pellam do that. Nobody has ever seen Pellam almost smile, either, and he very nearly does.",
+        "narration": "Two poles, a rope and a lot of squinting. You turn the desk into a little throne on poles, with the ledger riding on top, still chained, and off it goes up the valley, desk and all. Pellam reads his own rule twice, frowns at it twice, and cannot find a single word wrong. Nobody has ever seen Pellam almost smile. He very nearly does.",
         "effects": [
           {
             "type": "grantQuestItem",
@@ -305,7 +294,7 @@
       },
       "onFailure": {
         "goto": "scene_two_scouts",
-        "narration": "Pellam listens politely and says no politely. The ledger stays chained to its desk. You leave with nothing but a very clear picture of the cover."
+        "narration": "You try poles. You try rope. You try lifting the whole desk at once, and the chain goes clank, and the desk does not go anywhere. Pellam writes NOT LENT in his column, very neatly. You leave with nothing but a very clear picture of the cover."
       }
     },
     "scene_two_scouts": {
@@ -320,11 +309,11 @@
           "name": "Rook"
         }
       ],
-      "narration": "Halfway up the side valley, two people step out onto the path at once, from opposite sides: a young warden cadet called Linnet, and a young mask called Rook. They glare at each other. Then they both turn to you. \"What did the other lot give you?\" they say together, and then glare at each other for saying it together.",
+      "narration": "Halfway up the side valley, two young people are having a tug-of-war across the path: a warden cadet called Linnet on one end, and a young mask called Rook on the other. The rope is somebody's choir sash, and they are both pulling very hard. \"Tell her it's ours!\" puffs Rook. \"Tell him it's evidence!\" puffs Linnet. Then they both look at you, still pulling.",
       "choices": [
         {
           "id": "truth",
-          "label": "Tell them both the truth",
+          "label": "Grab the middle of the rope and hold it steady",
           "icon": "heart",
           "goto": "check_two_scouts"
         },
@@ -363,12 +352,13 @@
         }
       ],
       "stat": "heart",
+      "checkKind": "doing",
       "tn": 12,
-      "prompt": "Tell two suspicious scouts the same true story at the same time",
+      "prompt": "Hold the middle of a tug-of-war so neither side wins",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_choir",
-        "narration": "You tell them both everything, the same way, at the same time. They listen with their arms folded. By the end their arms are not folded. Linnet holds out her hand. Rook looks at it as if it might bite, then shakes it.",
+        "narration": "You take the middle of the rope and dig in your heels. Linnet pulls. Rook pulls. You hold, right in the middle, and nobody moves an inch. At last they both let go at once and sit down hard in the heather, laughing. Linnet holds out her hand. Rook looks at it as if it might bite, then shakes it.",
         "effects": [
           {
             "type": "setFlag",
@@ -379,12 +369,12 @@
       },
       "onFailure": {
         "goto": "scene_choir",
-        "narration": "You tell them the truth. They do not believe a word of it, and both stomp off to tell their bosses. But they stomp off the same way, and the last you see of them, they are arguing in a way that sounds a lot like talking."
+        "narration": "You grab the middle, but the sash slides through your hands, and both of them land in the heather. They stomp off to tell their bosses. But they stomp off the same way, and the last you see of them, they are arguing in a way that sounds a lot like talking."
       }
     },
     "scene_two_scouts_fib": {
       "type": "story",
-      "narration": "You tell Linnet what a warden wants to hear, and Rook what a mask wants to hear. Both of them go away happy. Later, from higher up the valley, you see them sitting on the same rock, comparing notes. They both look up at you at exactly the same moment.",
+      "narration": "You tell Linnet what a warden wants to hear, and Rook what a mask wants to hear. Both of them drop the rope and go away happy. Later, from higher up the valley, you see them sitting on the same rock, comparing notes. They both look up at you at exactly the same moment.",
       "choices": [
         {
           "id": "on",
@@ -416,7 +406,7 @@
           "name": "Rook"
         }
       ],
-      "narration": "You set the Table Stone down on the path, the stone from the truth-table at Redspire, logged twice. It hums. Linnet knows it from the citadel. Rook knows the note from the choir. They crouch on either side of it, listening, and forget to glare. \"It's the same stone,\" says Rook. \"It's the same stone,\" says Linnet.",
+      "narration": "You set the Table Stone down on the path, the stone from the truth-table at Redspire, logged twice. It hums. Linnet knows it from the citadel. Rook knows the note from the choir. They drop the rope and crouch on either side of the stone, listening, and forget to glare. \"It's the same stone,\" says Rook. \"It's the same stone,\" says Linnet.",
       "choices": [
         {
           "id": "on",
@@ -431,7 +421,7 @@
       "discovers": [
         "faction.deep_hollow_cult"
       ],
-      "narration": "Up a side valley, Hessa's soup-tent people, the ones who call themselves the Deep Hollow, are humming in a ring with painted bark masks pushed up on their heads. They are singing the stones' own note, and the stones in your packs hum along, as if they know the words.",
+      "narration": "Up a side valley, Hessa's soup-tent people, the Deep Hollow, are humming in a ring with their painted bark masks pushed up on their heads. This is how they sing to the mountain, to wake it gently so it can fix things. Their chord is three notes long, and they do not teach it to strangers. The stones in your packs hum along anyway, as if they know the words.",
       "variants": [
         {
           "when": {
@@ -446,7 +436,7 @@
       "choices": [
         {
           "id": "ask",
-          "label": "Ask to learn it, and tell them why",
+          "label": "Hum their three notes back to them",
           "icon": "heart",
           "goto": "check_chord"
         },
@@ -626,12 +616,13 @@
     "check_chord": {
       "type": "check",
       "stat": "heart",
+      "checkKind": "doing",
       "tn": 16,
-      "prompt": "Convince a choir of masks to teach their chord to people who want to hold the seal, not break it",
+      "prompt": "Hum three notes back to a whole masked choir, true and steady",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_first_sitting",
-        "narration": "The choir argues in whispers. Then Hessa, the soup-line lady, steps forward and hums three notes, slowly, until you have them. \"Don't make me sorry,\" she says.",
+        "narration": "Hessa hums the first note. You hum it back. She hums the second. You hum it back, wobbly. The third is so low it buzzes in your teeth, and you hold it anyway. The whole choir goes quiet. \"Don't make me sorry,\" says Hessa.",
         "effects": [
           {
             "type": "grantQuestItem",
@@ -646,7 +637,7 @@
       },
       "onFailure": {
         "goto": "scene_first_sitting",
-        "narration": "They sing it for you once, very fast, and then pull their masks down. You remember the first note. Only the first."
+        "narration": "They sing it for you once, very fast, and then pull their masks down. You match the first note. Only the first."
       },
       "cast": [
         {
@@ -768,7 +759,7 @@
     },
     "scene_road_gifts": {
       "type": "story",
-      "narration": "Back at your wobbly table, something strange starts happening. The road begins bringing things back to you: things you did on the way here, walking up the hill on their own legs, as if the whole realm had been keeping your receipts.",
+      "narration": "Back at your wobbly table, Pellam takes out his own small notebook, opens it at your page, and reads it out. \"Hold it,\" he reads. \"That is what you told me at the citadel. Still your word?\" It is. Then something strange starts happening. The road begins bringing things back to you: things you did on the way here, walking up the hill on their own legs, as if the whole realm had been keeping your receipts.",
       "choices": [
         {
           "id": "ossley",
@@ -1853,7 +1844,7 @@
     },
     "choice_the_test": {
       "type": "choice_point",
-      "narration": "At the worst bend, the fattest caravan in the funnel is coming, and the stone in its middle wagon hums so loudly the mules wear earmuffs. If you can hold that one stone's hum still for one breath, you can hold anything. Wardens on one side, masks on the other, both watching you.",
+      "narration": "At the worst bend, the fattest caravan in the funnel is coming, and the stone in its middle wagon hums so loudly the mules wear earmuffs. This is the test Pellam told you about. Hold that one stone's hum still for one breath, like a hand on a ringing bell, and you can hold a leash on anything. Wardens on one side, masks on the other, both watching you.",
       "variants": [
         {
           "when": {
@@ -1922,14 +1913,14 @@
         },
         {
           "id": "ledger",
-          "label": "Follow the cage doctrine, page by page",
+          "label": "Open the wardens' ledger you carried, page by page",
           "icon": "scroll",
           "requiresItem": "tether_ledger",
           "goto": "check_hold"
         },
         {
           "id": "chord",
-          "label": "Hum the choir's chord",
+          "label": "Hum the choir's three notes",
           "icon": "note",
           "requiresItem": "tether_chord",
           "goto": "check_hold"
@@ -2005,12 +1996,13 @@
     "check_hold": {
       "type": "check",
       "stat": "heart",
+      "checkKind": "doing",
       "tn": 12,
-      "prompt": "Hold the wagon stone's hum still for one whole breath",
+      "prompt": "Lay your hands on the wagon stone and hold its hum still for one whole breath",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_tether_holds",
-        "narration": "For one long breath the humming stops. The mules take their earmuffs off. The wardens stop writing. The masks stop humming. Then it starts again, softer, as if it is listening to you."
+        "narration": "For one long breath the humming stops, like a bell under a hand. The mules take their earmuffs off. The wardens stop writing. The masks stop humming. Then it starts again, softer, as if it is listening to you. It feels like holding a leash, loose and steady."
       },
       "onFailure": {
         "goto": "scene_tether_slips",
@@ -2020,8 +2012,9 @@
     "check_hold_hard": {
       "type": "check",
       "stat": "heart",
+      "checkKind": "doing",
       "tn": 16,
-      "prompt": "Hold the wagon stone's hum still with no instruments at all",
+      "prompt": "Put your bare hands on the wagon stone and hold its hum still, with nothing else to help",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_tether_holds",
@@ -2187,7 +2180,7 @@
       ],
       "stat": "heart",
       "tn": 12,
-      "prompt": "Ask two old rivals to look after one table",
+      "prompt": "Get Pellam and Hessa to pick up the old door together",
       "roller": "party",
       "onSuccess": {
         "goto": "rest_up_the_mountain",
@@ -2237,7 +2230,7 @@
     },
     "rest_up_the_mountain": {
       "type": "rest",
-      "narration": "At the tree line you look back. Wardens, masks, wagons and mules are all running downhill, together for once. There is not a single embermoth left in the foothills. You turn around and walk up the mountain everyone else is running away from, carrying whatever you managed to borrow, a ledger or a chord or a question, and a great deal of nerve.",
+      "narration": "At the tree line you look back. Wardens, masks, wagons and mules are all running downhill, together for once. There is not a single embermoth left in the foothills. You turn around and walk up the mountain everyone else is running away from, carrying whatever you managed to borrow, a ledger or a chord or a question, and a great deal of nerve. You said hold it. Now you find out.",
       "variants": [
         {
           "when": {
