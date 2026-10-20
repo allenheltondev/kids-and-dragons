@@ -79,6 +79,7 @@ import { CharacterPortrait } from "./CharacterPortrait";
 import { CharacterSheet } from "./CharacterSheet";
 import { ClassToken, SpareTokens, TokenCard } from "./ClassToken";
 import { Icon } from "./icons";
+import { ChapterGoalCard } from "./ChapterGoal";
 import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
 import { ClassPlaceChoice } from "./ClassPlace";
@@ -719,6 +720,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
    * one place that did not, so it is derived once here.
    */
   const inEncounter = state.encounter != null;
+  // Playing a chapter: the goal is up (#356). Not in the lobby, and not once it has ended.
+  const inChapter = state.phase === "scene" || state.phase === "check" || state.phase === "encounter";
 
   /*
    * Where a banked point may be spent — the same two facts the server checks
@@ -881,6 +884,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       {inLobby ? <EntryScene scene={lobbySceneFor(party)} /> : null}
       {backdrop ? <SceneBackdrop src={backdrop} /> : null}
       <IdentityStrip me={me} />
+      {/* The chapter's goal (#356), on every phone with nothing to tap. Folded in a fight, where
+          the controls need the room. */}
+      {inChapter ? <ChapterGoalCard place="phone" folded={inEncounter} /> : null}
 
       {/*
         What the world is asking, echoed here.

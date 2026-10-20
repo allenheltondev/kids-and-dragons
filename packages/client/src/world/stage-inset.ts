@@ -52,3 +52,53 @@ export function storyStageHeight(paneWidth: number, paneHeight: number, insetBot
   const floor = Math.min(paneHeight * MIN_STAGE_FRACTION, paneWidth * STAGE_ASPECT);
   return Math.max(floor, paneHeight - Math.max(0, insetBottom));
 }
+
+/*
+ * The top of the pane, too (#356). The chapter's goal sits in the narration's head under the
+ * chapter's name, on the sky, and reports how far down the pane the head reaches. The
+ * figures stand in the lower part of the story rect (scene.ts: feet at 88%, a figure 56% tall),
+ * so the top of the frame is sky and the head may sit over it for free. Only a head reaching
+ * past that band moves the stage: the frame starts lower and is that much shorter, just enough
+ * that the heads stand clear, and never less than STAGE_KEEP of what it would have been.
+ */
+let top = 0;
+const topListeners = new Set<(topPx: number) => void>();
+
+/** Report how far down the pane the head reaches, in CSS px. 0 when there is no head. */
+export function setStageInsetTop(px: number): void {
+  const next = Number.isFinite(px) && px > 0 ? Math.round(px) : 0;
+  if (next === top) return;
+  top = next;
+  for (const listener of topListeners) listener(top);
+}
+
+export function stageInsetTop(): number {
+  return top;
+}
+
+export function onStageInsetTop(listener: (topPx: number) => void): () => void {
+  topListeners.add(listener);
+  return () => {
+    topListeners.delete(listener);
+  };
+}
+
+/** The share of the frame above the figures' heads: sky the head may cover. */
+export const SKY_FRACTION = 0.3;
+/** However tall the head, the frame keeps this much of the height it had without one. */
+export const STAGE_KEEP = 0.75;
+
+/** Where the story camera frames, from the top of the pane: below a tall head, above the plate. */
+export function storyStageFrame(
+  paneWidth: number,
+  paneHeight: number,
+  insetBottom: number,
+  insetTop: number,
+): { top: number; height: number } {
+  const full = storyStageHeight(paneWidth, paneHeight, insetBottom);
+  const reach = Math.max(0, insetTop) - SKY_FRACTION * full;
+  if (reach <= 0) return { top: 0, height: full };
+  // The frame moves down by t and shrinks by t, so its sky band covers the head: t + 0.3 (full - t) = insetTop.
+  const shift = Math.min(reach / (1 - SKY_FRACTION), full * (1 - STAGE_KEEP));
+  return { top: shift, height: full - shift };
+}
