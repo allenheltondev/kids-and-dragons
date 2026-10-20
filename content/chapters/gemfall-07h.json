@@ -46,7 +46,7 @@
       "discovers": [
         "creature.mosshorn"
       ],
-      "narration": "The realm reads you now. Hedges grow slower as you pass. A mosshorn on the ridge sniffs your packs and quietly leaves. The warrens go silent for a mile around you, and the silence follows you like a dog that nobody is feeding. Up ahead, every road funnels into the Pinch, one gap between two red hills. Finish the collection, you told Pellam at the citadel. Here, that means one stone above all: the loudest stone on the road, riding in the fattest caravan in the funnel. Tomorrow it comes round the worst bend in the north road, and three other crowds want it too. Get there first.",
+      "narration": "The realm reads you now. Hedges grow slower as you pass. A mosshorn on the ridge sniffs your packs and quietly leaves. The warrens go silent around you, and the silence follows you like a dog nobody is feeding. Up ahead, every road funnels into the Pinch, one gap between two red hills. Finish the collection, you told Pellam. So here is the plan. Beat three other crowds to the caravan's loudest stone at the worst bend. The caravan gets there tomorrow.",
       "choices": [
         {
           "id": "walk_on",

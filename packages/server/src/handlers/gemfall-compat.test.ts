@@ -120,9 +120,9 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-05b.json": "e7f76b38c3783e0ea33de2ddaccc482dbd22fa0d1459457c073f5d4af863ef5b",
   "chapters/gemfall-05c.json": "3b75ecac8b195074911fd09d41c347ae6e2917177e44720d8b01bb82085b837b",
   "chapters/gemfall-06.json": "307c8e45c3a10184631ed3963ebf70136d4b11b1f0006cdd78adda45ea4f6393",
-  "chapters/gemfall-07h.json": "4b88134ecd4be9c03797ba4475647847464415797f06291d59293abb138e6f63",
-  "chapters/gemfall-07l.json": "49877f8e55482ad64d0d274e2fae10f8810a381efd8d42549225e7ae730b321b",
-  "chapters/gemfall-07r.json": "4ce3892cbadc35f6f33b33f60d0a1a3282370ac96e530f2b3fe1e9c2572b6b15",
+  "chapters/gemfall-07h.json": "1d642cedd727e9f06d15a92841880c3759faadf2af7fc6e73ad61f5f010deee9",
+  "chapters/gemfall-07l.json": "6a2a09e1a639ba96cd26f19d1c5b4c65885b52cab66dcdfd8ffbf886889e727e",
+  "chapters/gemfall-07r.json": "009d14e4ef3a29773132e5990d3f4391f6eeba468baf5859d73fea65c4cf69b6",
   "chapters/gemfall-08.json": "d5c97e4df6a530dd428f3f48a8f08ef4156144566bfdce70cdef12547c95fa67",
 };
 

@@ -55,18 +55,7 @@
   "scenes": {
     "scene_the_table": {
       "type": "story",
-      "narration": "Morning at the Pinch, the one gap between two red hills that every road squeezes through. Pellam the clerk has walked down from the citadel with you, a ledger under each arm. \"You said hold it,\" he says. \"Not break it, not bury it. Then you will need three things: the wardens' cage ledger, the choir's chord, and a true answer to a hard question.\" Tomorrow a caravan comes round the worst bend in the north road with a stone so loud the mules wear earmuffs. Hold its hum still for one breath, the way a hand on a ringing bell stops the ring, and you can hold anything. That is the test. The chord belongs to Hessa's friends from the soup tent, the Deep Hollow. They wear painted bark masks to sing to the mountain, because they want to wake it up so it can fix things. The wardens will not sit with the masks, and the masks will not sit with the wardens. So you build a table out of an old door and two barrels, right in the middle of the Pinch, and sit at it yourselves. The table wobbles, and somebody folds a sock under the short leg.",
-      "variants": [
-        {
-          "when": {
-            "partySize": {
-              "max": 1
-            }
-          },
-          "replace": true,
-          "text": "Morning at the Pinch, the one gap between two red hills that every road squeezes through. Pellam the clerk has walked down from the citadel with you, a ledger under each arm. \"You said hold it,\" he says. \"Not break it, not bury it. Then you will need three things: the wardens' cage ledger, the choir's chord, and a true answer to a hard question.\" Tomorrow a caravan comes round the worst bend in the north road with a stone so loud the mules wear earmuffs. Hold its hum still for one breath, the way a hand on a ringing bell stops the ring, and you can hold anything. That is the test. The chord belongs to Hessa's friends from the soup tent, the Deep Hollow. They wear painted bark masks to sing to the mountain, because they want to wake it up so it can fix things. The wardens will not sit with the masks, and the masks will not sit with the wardens. So you build a table out of an old door and two barrels, right in the middle of the Pinch, and sit at it yourself. The table wobbles, and you fold a sock under the short leg."
-        }
-      ],
+      "narration": "Pellam the clerk walks you down to the Pinch, the one gap between two red hills that every road squeezes through. \"You said hold it,\" he says. \"Not break it, not bury it. So: gather the ledger, the chord and a true answer, then hold the stone's hum at the bend.\" The stone rides in tomorrow's caravan, so loud the mules wear earmuffs. Holding it still is like a hand on a ringing bell. The chord belongs to Hessa's friends, the Deep Hollow. They wear bark masks to sing to the mountain, and want to wake it so it can fix things.",
       "choices": [
         {
           "id": "wardens_first",
@@ -92,7 +81,7 @@
     },
     "scene_the_table_grandmothers_chair": {
       "type": "story",
-      "narration": "You ask a grandmother to chair the table. She brings her knitting, sits down at the head of your old door, and says nothing at all. Within a minute, a warden and a mask have both stopped shouting, because it is very hard to shout near a grandmother who is knitting. \"Well?\" she says. \"Sit.\"",
+      "narration": "You ask a grandmother to chair your table. She brings her knitting and a stool, sits down, and says nothing at all. Within a minute, a warden and a mask have both stopped shouting, because it is very hard to shout near a grandmother who is knitting. \"Well?\" she says. \"Build it, then.\"",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -110,7 +99,7 @@
     },
     "choice_the_rule": {
       "type": "choice_point",
-      "narration": "A table between two sides needs one rule, chalked on the top where everyone can read it. Only one, or nobody will remember it. Wardens and masks are already drifting over to see what you write. What is the rule?",
+      "narration": "The wardens will not sit with the masks, and the masks will not sit with the wardens. So you build a table out of an old door and two barrels, right in the middle of the Pinch. It wobbles, and a folded sock goes under the short leg. A table between two sides needs one rule, chalked on top. Only one, or nobody will remember it. Wardens and masks drift over to see what you write. What is the rule?",
       "choices": [
         {
           "id": "no_shouting",
