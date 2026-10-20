@@ -46,8 +46,8 @@ out on Gemfall), and for a nonlinear campaign
   party is here to do.
 - **Never more than about three scenes in a row without something to decide**: a vote, a check
   or a fight. One-button beats are reading.
-- **Most spine checks are things the party does, not says.** Might and quick are doing; clever
-  and heart are talking. Where the stat misleads, the check sets `checkKind`.
+- **Most spine checks are things the party does, not says.** Might, quick and clever are
+  doing; heart is talking. Where the stat misleads, the check sets `checkKind`.
 - **New people arrive with a stake for the party.** The scene that introduces someone says what
   they want from the party, or what they can do for it.
 

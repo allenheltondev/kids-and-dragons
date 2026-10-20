@@ -205,11 +205,11 @@ The table should be playing, not only listening. Four rules, and the two numbers
   fight. One-button beats and the ending count as reading. The section under the table names the
   scene each spine's longest run starts at.
 - **Most spine checks are things the party does, not says.** The `doing` column counts them. A
-  check's kind comes from its stat (`might` and `quick` are doing; `clever` and `heart` are
+  check's kind comes from its stat (`might`, `quick` and `clever` are doing; `heart` is
   talking) unless the check overrides it, for the times the stat misleads:
 
   ```json
-  { "type": "check", "stat": "clever", "checkKind": "doing", "prompt": "Jam the gears with a stick!" }
+  { "type": "check", "stat": "clever", "checkKind": "talking", "prompt": "Talk the troll out of his riddle!" }
   ```
 
 - **New people arrive with a stake for the party.** The scene that introduces someone says what

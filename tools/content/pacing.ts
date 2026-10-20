@@ -22,7 +22,7 @@
  * choice that tests a flag is left off the path.
  *
  * **Interactivity.** Each path also carries `doing` (checks the party does
- * rather than says: might and quick, unless a check's `checkKind` says
+ * rather than says: might, quick and clever, unless a check's `checkKind` says
  * otherwise) and `read` (the longest run of scenes with no vote, check or
  * fight). After the table, every chapter's spine (the shortest path, in the
  * calibration scenario) is listed worst first against the authoring rules:
@@ -227,7 +227,7 @@ console.log("A scenario is a synthetic party: facets = distinct facet_* items he
 console.log("Variants are composed with the engine's composeNarration, so append / at:start / replace read as at the table.");
 console.log("words = lowest..highest over run-flag combinations a scene's variants test (flags are unknowable statically); predMin uses the upper bound.");
 console.log("votes = scenes with 2+ visible choices (one-button beats and species/flag/item-gated choices do not count; a `when` choice counts in scenarios where it holds).");
-console.log("doing = checks the party does (might, quick, or a check's checkKind) rather than says; read = most scenes in a row with no vote, check or fight.");
+console.log("doing = checks the party does (might, quick, clever, or a check's checkKind) rather than says; read = most scenes in a row with no vote, check or fight.");
 console.log("typical = median of seeded random walks. The authoring bar counts votes + checks: shortest path needs scenes >= 30 and votes + checks >= 14.");
 const d = UNCALIBRATED_MODEL;
 if (fit) {
