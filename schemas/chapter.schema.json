@@ -990,6 +990,10 @@
         "cast": {
           "$ref": "#/$defs/cast"
         },
+        "classPlace": {
+          "description": "Makes this scene a class's room (docs/class-mastery.md \u00a72, \u00a73): while it is open, each seated hero not already this class may switch to it, each kid alone on their phone, and the way on waits for every connected hero's answer. Story and Choice Point scenes only, never an ending, never in Gemfall.",
+          "$ref": "#/$defs/classId"
+        },
         "choices": {
           "$ref": "#/$defs/choices"
         },
@@ -1117,6 +1121,10 @@
         },
         "cast": {
           "$ref": "#/$defs/cast"
+        },
+        "classPlace": {
+          "description": "Makes this scene a class's room (docs/class-mastery.md \u00a72, \u00a73): while it is open, each seated hero not already this class may switch to it, each kid alone on their phone, and the way on waits for every connected hero's answer. Story and Choice Point scenes only, never an ending, never in Gemfall.",
+          "$ref": "#/$defs/classId"
         },
         "choices": {
           "allOf": [

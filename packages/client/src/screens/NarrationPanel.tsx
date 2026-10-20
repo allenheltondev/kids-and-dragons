@@ -22,6 +22,7 @@ import { setStageInsetBottom } from "../world/stage-inset";
 import { Icon } from "./icons";
 import { ClassToken } from "./ClassToken";
 import { VoteTicks } from "./VoteTicks";
+import { ClassPlaceRoll } from "./ClassPlace";
 import { chapterHeading } from "./campaign-copy";
 import { steppedAwayLine } from "./presence-copy";
 import "./shared.css";
@@ -348,6 +349,8 @@ export function NarrationPanel(): ReactElement | null {
               <span>{hint}</span>
             </p>
           )}
+          {/* Who switched at a class place (#311), while the way on waits. */}
+          <ClassPlaceRoll />
           {rankUps.map((up) => (
             <p className="narration__hint" key={`rank:${up.characterId}:${up.rank}`} data-testid="rank-up">
               <ClassToken classId={up.class} rank={up.rank} size="sm" holdable={false} />
