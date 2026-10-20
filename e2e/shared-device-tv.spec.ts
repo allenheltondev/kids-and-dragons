@@ -32,17 +32,18 @@ test.describe("a family tablet as the TV", () => {
   /** A signed-in owner's phone, so the family exists, then a tablet made theirs. */
   async function familyTablet(browser: Browser, email: string): Promise<Page> {
     const grownUp = await device(browser, 390, 844);
-    await grownUp.goto("/");
+    await grownUp.goto("/account");
     await grownUp.getByRole("button", { name: /sign in or create an account/i }).click(TAP);
     await signIn(grownUp, email);
     await grownUp.getByRole("button", { name: /back to the game/i }).click(TAP);
+    await grownUp.getByRole("button", { name: "Back to the start" }).click();
 
     return sharedTablet(browser, email);
   }
 
   async function sharedTablet(browser: Browser, email: string): Promise<Page> {
     const tablet = await device(browser, 1280, 800);
-    await tablet.goto("/");
+    await tablet.goto("/account");
     await tablet.getByRole("button", { name: /make it a family tablet/i }).click(TAP);
     await signIn(tablet, email);
     await tablet.getByRole("button", { name: /^done$/i }).click(TAP);
