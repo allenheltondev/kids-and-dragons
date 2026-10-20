@@ -1,8 +1,11 @@
 # Class mastery: switching classes, class places and distinctions
 
 > **Status.** Partly built. Per-class distinctions on the character and moves by distinction (§5,
-> §7) landed with #308, and deeds and rank-ups (§5, §6) with #310; [spec §4.3](./spec.md) and
-> [§8.1](./spec.md) state them. Switching, the class places and the tokens are still design. Tracked by epic
+> §7) landed with #308, deeds and rank-ups (§5, §6) with #310, and the switch itself (§3) with
+> #311: a scene marked `classPlace` is a class's room
+> ([content/README.md, "Class places"](../content/README.md#class-places-311)). [spec §4.3](./spec.md)
+> and [§8.1](./spec.md) state them. The fitting stall, the four rooms and the tokens are still
+> design. Tracked by epic
 > [#307](https://github.com/allenheltondev/kids-and-dragons/issues/307) (#308–#315); the reason to
 > come back to the Exchange is [#306](https://github.com/allenheltondev/kids-and-dragons/issues/306).
 
@@ -63,6 +66,16 @@ earns a distinction anywhere in the world, a crow lands on a nearby fence, says 
 - **Two heroes may share a class.** That is the party's call.
 - **What it costs:** getting there, stats that suit the old class, and starting the new class with
   only what it has already earned.
+- **How it plays** *(built, #311).* The room's scene carries `classPlace: "<class>"`. Each kid
+  there who is not already that class answers on their phone, "Be a Thornguard" or "Stay a
+  Songkeeper"; switching asks "are you sure?" first (what comes off, what goes on, that it keeps
+  everything earned, and where to switch back). The way on waits until every connected hero who
+  could switch has answered, and the TV shows who switched. A kid who said no can still switch
+  while the room is open. A dropped phone is not waited on.
+- **Deeds follow the worn class** *(built, #310 and #311).* From the switch on, the class just
+  put on is the one whose deeds count. What the class taken off earned earlier in the chapter is
+  kept and folded into the hero at the chapter's end, and switching back mid-chapter picks it up
+  again at once (`withRunDeeds`).
 
 ## 4. The gear
 
@@ -239,8 +252,11 @@ Master in their second: roughly the old 3 / 6 / 9 rhythm (§8).
   migration, a hero's current class is given the rank matching the moves their level already
   unlocked (level 3 → Apprentice, 6 → Expert, 9 → Master), read from each half's XP and its old
   `unlockedActions`. No kid opens the game to a missing move.
-- **Switching** is offered by a scene in a class's room and checked by the server: the party is in
-  that room, and the hero is not already that class.
+- **Switching.** *(Built, #311.)* Offered by a scene marked `classPlace` and checked by the
+  server (`prepareClassSwitch`): the party is in that room, read from the chapter, and the hero is
+  not already that class. `switchClass` (character.ts) writes the worn class into the effective
+  half, so it rolls back with a failed campaign. `RunState.classPlace` carries the room's class
+  and each kid's answer.
 - **Validation**: all four rooms reachable in every graph campaign (§2).
 - **Gemfall is pinned** (`gemfall-compat.test.ts`). The fitting stall must not move its gameplay
   digests; whether it is engine UI at the start of a campaign that opens at the Exchange, or a scene

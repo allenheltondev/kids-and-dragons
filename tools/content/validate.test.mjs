@@ -848,6 +848,61 @@ describe("class-gated choices (#228)", { timeout: 30_000 }, () => {
 
 // ---------------------------------------------------------------------------
 
+describe("class places (#311)", { timeout: 30_000 }, () => {
+  const sceneOfType = (chapter, type) => Object.keys(chapter.scenes).find((id) => chapter.scenes[id].type === type);
+
+  it("accepts a story scene that teaches a class", () => {
+    const result = withChapter((chapter) => {
+      chapter.scenes[chapter.entry].classPlace = "starweaver";
+    });
+    expect(result.code).toBe(0);
+    expect(result.out).toContain("PASS");
+  });
+
+  it("rejects a class the game does not have", () => {
+    const result = withChapter((chapter) => {
+      chapter.scenes[chapter.entry].classPlace = "wizard";
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("classPlace");
+  });
+
+  it.each(["check", "rest", "encounter"])("rejects a class place on a %s scene", (type) => {
+    let id;
+    const result = withChapter((chapter) => {
+      id = sceneOfType(chapter, type);
+      chapter.scenes[id].classPlace = "thornguard";
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain(`/scenes/${id}`);
+    expect(result.out).toContain("classPlace");
+  });
+
+  it("rejects a class place that ends the chapter", () => {
+    const result = withChapter((chapter) => {
+      chapter.scenes.room_that_ends = { type: "story", narration: "The crows nod.", classPlace: "duskrunner", choices: [] };
+      const entry = chapter.scenes[chapter.entry];
+      entry.choices.push({ id: "to_room", label: "Go up", icon: "door", goto: "room_that_ends" });
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("a class place cannot end the chapter");
+  });
+
+  it("rejects a class place in Gemfall, which is pinned", () => {
+    const dir = copyTree();
+    const GEMFALL_01 = ["content", "chapters", "gemfall-01.json"];
+    const chapter = readJson(dir, ...GEMFALL_01);
+    const id = Object.keys(chapter.scenes).find((s) => chapter.scenes[s].type === "story" && chapter.scenes[s].choices.length > 0);
+    chapter.scenes[id].classPlace = "songkeeper";
+    writeJson(dir, GEMFALL_01, chapter);
+    const result = validate(dir);
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("Gemfall has no class places");
+  });
+});
+
+// ---------------------------------------------------------------------------
+
 describe("graph campaigns (#192)", { timeout: 30_000 }, () => {
   const CAMPAIGN = ["content", "campaigns", "the-hollow-crown.json"];
 

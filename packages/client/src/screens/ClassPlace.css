@@ -1,0 +1,38 @@
+/* A class place (#311): the phone's "are you sure?" and the TV's roll call. */
+
+.class-place__sure {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.class-place__ask {
+  margin: 0;
+  font-size: 1.25em;
+  font-weight: 700;
+}
+
+.class-place__lines {
+  margin: 0;
+  padding-inline-start: 1.25em;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.class-roll {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+}
+
+.class-roll__hero {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.class-roll__hero--switched {
+  font-weight: 700;
+}
