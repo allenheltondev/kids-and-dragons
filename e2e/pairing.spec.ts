@@ -4,7 +4,7 @@
  *
  * Ada's phone plays a little and makes a hero. It then shows a code ("Play as
  * me on another device"), and a brand-new browser, which has never been
- * anyone, enters it from its home screen ("I play here already"). That
+ * anyone, enters it from the accounts page ("Bring my hero to this device"). That
  * browser lands on her hero and joins a TV's room as her. The same code does
  * nothing the second time.
  */
@@ -34,7 +34,7 @@ test.describe("pairing a new device", () => {
     // --- Ada's own phone: a hero, then a code ---
     const phone = await client(browser);
     await phone.goto("/");
-    await phone.getByRole("button", { name: /want to host/i }).click();
+    await phone.getByRole("button", { name: /host a game/i }).click();
     await phone.getByText("Phone Mode").click();
     await phone.getByLabel(/adventurer name/i).fill("Ada");
     await phone.getByRole("button", { name: /^start a game$/i }).click();
@@ -43,7 +43,7 @@ test.describe("pairing a new device", () => {
     await phone.getByRole("button", { name: /begin the adventure/i }).click(TAP);
     await expect(phone.getByRole("button", { name: /begin the adventure/i })).toHaveCount(0, TAP);
 
-    await phone.goto("/");
+    await phone.goto("/account");
     await phone.getByRole("button", { name: /play as me on another device/i }).click(TAP);
     const shown = (await phone.locator(".pair__code").textContent(TAP)) ?? "";
     expect(shown).toMatch(/^[A-Z]{4}-[A-Z]{4}$/);
@@ -54,7 +54,9 @@ test.describe("pairing a new device", () => {
     const fresh = await client(browser);
     await fresh.goto("/");
     await expect(fresh.getByRole("button", { name: /open your book/i })).toHaveCount(0);
-    await fresh.getByRole("button", { name: /i play here already/i }).click(TAP);
+    await fresh.getByRole("button", { name: /move a hero to another device/i }).click(TAP);
+    await expect(fresh).toHaveURL(/\/account$/);
+    await fresh.getByRole("button", { name: /bring my hero to this device/i }).click(TAP);
     await fresh.getByLabel("Your code").fill(shown);
     await fresh.getByRole("button", { name: /that.s me/i }).click(TAP);
     await expect(fresh).toHaveURL(/\/journal$/, TAP);
@@ -62,8 +64,8 @@ test.describe("pairing a new device", () => {
 
     // --- The code was single use ---
     const other = await client(browser);
-    await other.goto("/");
-    await other.getByRole("button", { name: /i play here already/i }).click(TAP);
+    await other.goto("/account");
+    await other.getByRole("button", { name: /bring my hero to this device/i }).click(TAP);
     await other.getByLabel("Your code").fill(shown);
     await other.getByRole("button", { name: /that.s me/i }).click(TAP);
     await expect(other.getByRole("alert")).toContainText(/didn.t work/i, TAP);
@@ -72,7 +74,7 @@ test.describe("pairing a new device", () => {
     // --- And the paired browser plays as her: it joins a TV's room ---
     const tv = await client(browser, 1280, 800);
     await tv.goto("/");
-    await tv.getByRole("button", { name: /want to host/i }).click();
+    await tv.getByRole("button", { name: /host a game/i }).click();
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
     const room = new URL(tv.url()).pathname.split("/").pop() ?? "";
@@ -89,24 +91,24 @@ test.describe("pairing a new device", () => {
     await expect(tv.getByText(HERO)).toBeVisible(TAP);
   });
 
-  test("a scanned link opens the home screen with the code ready, and spends nothing until tapped", async ({ browser }) => {
+  test("a scanned link opens the accounts page with the code ready, and spends nothing until tapped", async ({ browser }) => {
     test.setTimeout(120_000);
     const phone = await client(browser);
     await phone.goto("/");
-    await phone.getByRole("button", { name: /want to host/i }).click();
+    await phone.getByRole("button", { name: /host a game/i }).click();
     await phone.getByText("Phone Mode").click();
     await phone.getByLabel(/adventurer name/i).fill("Rue");
     await phone.getByRole("button", { name: /^start a game$/i }).click();
     await expect(phone).toHaveURL(/\/p\/[A-Z0-9]{4}$/);
-    await phone.goto("/");
+    await phone.goto("/account");
     await phone.getByRole("button", { name: /play as me on another device/i }).click(TAP);
     const shown = (await phone.locator(".pair__code").textContent(TAP)) ?? "";
 
     const fresh = await client(browser);
-    await fresh.goto(`/?pair=${shown.replace("-", "").toLowerCase()}`);
+    await fresh.goto(`/account?pair=${shown.replace("-", "").toLowerCase()}`);
     await expect(fresh.getByLabel("Your code")).toHaveValue(shown, TAP);
     // The code is out of the address bar, and still unspent.
-    await expect(fresh).toHaveURL(/\/$/);
+    await expect(fresh).toHaveURL(/\/account$/);
     await fresh.getByRole("button", { name: /that.s me/i }).click(TAP);
     await expect(fresh).toHaveURL(/\/journal$/, TAP);
   });

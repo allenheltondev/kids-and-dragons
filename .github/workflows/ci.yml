@@ -17,10 +17,14 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ci-${{ github.ref }}
-  # Cancel superseded runs on pull requests only. On main, a CI run gates the
-  # production deploy (prod-deploy.yml triggers on its completion), so
-  # cancelling an in-flight main run would silently drop a deploy.
+  # Pull requests share one group per branch, and a new push cancels the run
+  # it supersedes. Everything else gets a group per commit, so two merges to
+  # main run side by side instead of the second queuing behind the first (it
+  # used to wait out the whole of its predecessor). Order is safe without the
+  # queue: prod-deploy.yml's guard deploys only a run whose commit is still
+  # the tip of main, whichever finishes first. Nothing on main is cancelled,
+  # because a CI run there gates the production deploy.
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # This workflow only reads the repo. Stated explicitly so a future step that
@@ -492,11 +496,37 @@ jobs:
     # codes, real SSE, real server-rolled dice. It is a separate job because it
     # is minutes rather than seconds, and because a red e2e means something
     # quite different from a red unit test.
-    name: end to end
+    #
+    # Sharded across runners, because on one it had grown to 23 minutes of
+    # `e2e` plus 3 of `e2e:prod`, back to back, while every other job was done
+    # inside 8. Each shard is its own runner with its own dev server, so the
+    # suite's one-worker rule (shared server state) still holds inside a shard.
+    # `--fully-parallel` lets a shard boundary fall inside a file: Playwright
+    # splits by test count, not time, and by file it always put drop-in and
+    # first-playable (~8 minutes together) in one shard. Every test builds its
+    # own rooms and browser contexts, so none leans on a sibling having run.
+    # The production suite is not sharded: offline.spec is `serial`.
+    name: end to end (${{ matrix.name }})
     needs: changes
     if: needs.changes.outputs.e2e == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    strategy:
+      # One red shard should not hide what the others would have said.
+      fail-fast: false
+      matrix:
+        include:
+          - { name: "1/6", id: "1", run: "npm run e2e -- --fully-parallel --shard=1/6" }
+          - { name: "2/6", id: "2", run: "npm run e2e -- --fully-parallel --shard=2/6" }
+          - { name: "3/6", id: "3", run: "npm run e2e -- --fully-parallel --shard=3/6" }
+          - { name: "4/6", id: "4", run: "npm run e2e -- --fully-parallel --shard=4/6" }
+          - { name: "5/6", id: "5", run: "npm run e2e -- --fully-parallel --shard=5/6" }
+          - { name: "6/6", id: "6", run: "npm run e2e -- --fully-parallel --shard=6/6" }
+          # The adventure book with no signal, and what a phone downloads on a
+          # repeat visit. Against a production build and `vite preview`,
+          # because the service worker exists nowhere else
+          # (playwright.prod.config.ts builds and serves it).
+          - { name: "production build", id: "prod", run: "npm run e2e:prod" }
 
     steps:
       - uses: actions/checkout@v7
@@ -528,24 +558,41 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
 
-      # playwright.config.ts starts `npm run dev` itself and waits for Vite.
-      - name: Play a chapter
-        run: npm run e2e
-
-      # The adventure book with no signal, and what a phone downloads on a
-      # repeat visit. Against a production build and `vite preview`, because
-      # the service worker exists nowhere else (playwright.prod.config.ts
-      # builds and serves it).
-      - name: Production build — offline book and caching
-        run: npm run e2e:prod
+      # Each Playwright config starts its own servers and waits for them.
+      - name: Play
+        run: ${{ matrix.run }}
 
       - name: Upload traces
         uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: playwright-traces
+          name: playwright-traces-${{ matrix.id }}
           path: test-results/
           retention-days: 7
+
+  e2e-result:
+    # The one check named "end to end", as before the suite was sharded, so a
+    # required check on that name keeps meaning the whole suite. Passes when
+    # every shard passed, or when `changes` skipped them all (and not when
+    # `changes` itself failed, which skips them too).
+    name: end to end
+    needs: [changes, e2e]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Every shard passed
+        env:
+          CHANGES: ${{ needs.changes.result }}
+          RESULT: ${{ needs.e2e.result }}
+        run: |
+          if [ "$CHANGES" != "success" ]; then
+            echo "::error::end to end: the changes job finished with '$CHANGES', so no shard ran"
+            exit 1
+          fi
+          if [ "$RESULT" = "success" ] || [ "$RESULT" = "skipped" ]; then exit 0; fi
+          echo "::error::end to end: a shard finished with '$RESULT'"
+          exit 1
 
   # A few tables against the dev server, under two minutes (#319). This catches
   # a regression in the load script itself (tools/load/), or in a route it

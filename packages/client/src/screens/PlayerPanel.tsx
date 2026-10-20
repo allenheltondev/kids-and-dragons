@@ -27,6 +27,7 @@ import {
   DEFAULT_HELP_DIE,
   INVENTORY_SLOTS,
   STAT_IDS,
+  classPlaceWaitingOn,
   isNewcomer,
   isPracticeCampaign,
   lobbyCampaign,
@@ -76,6 +77,7 @@ import { CharacterSheet } from "./CharacterSheet";
 import { Icon } from "./icons";
 import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
+import { ClassPlaceChoice } from "./ClassPlace";
 import {
   beginLabel,
   campaignEndHeading,
@@ -545,7 +547,12 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       : null;
   // Who that help would go to, so the way in can say so.
   const helping = canHelp && state.prompt?.kind === "roll" ? nameOfCharacter(party, state.prompt.characterId) : null;
+  // A class place (#311) asks every kid there, whoever holds the story turn.
+  const atClassPlace = state?.phase === "scene" && state.classPlace !== undefined;
+  // Until everyone there has answered, the way on waits, so its choices do too.
+  const classPlaceWaiting = state ? classPlaceWaitingOn(state).length > 0 : false;
   const hasTask = myPrompt !== null || canHelp || awaySwap !== null || state?.encounter != null || inLobby || state?.phase === "chapter_complete" ||
+    atClassPlace ||
     (state?.phase === "scene" && state.sceneType === "rest" && !practicing && (me?.character.unspentPoints ?? 0) > 0) ||
     (state?.trades ?? []).some((offer) => offer.toPlayerId === me?.playerId);
   useEffect(() => {
@@ -705,6 +712,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   const deciding =
     !atRest &&
     (myPrompt !== null ||
+      atClassPlace ||
       inEncounter ||
       inLobby ||
       state.phase === "chapter_complete");
@@ -1013,8 +1021,12 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </div>
         ) : null}
 
+        {/* ---------------- a class place (#311) ----------------
+            Each kid's own answer, above the way on, which waits for it. */}
+        <ClassPlaceChoice />
+
         {/* ---------------- choice / vote (spec §6.1) ---------------- */}
-        {myPrompt !== null && myPrompt.kind === "choice" ? (
+        {myPrompt !== null && myPrompt.kind === "choice" && !classPlaceWaiting ? (
           <div className="prompt">
             <h3 className="prompt__title">
               <Icon name={myPrompt.vote ? "vote" : "hand"} />
