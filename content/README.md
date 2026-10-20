@@ -194,6 +194,29 @@ What it does beyond the look:
 Put the fact in the narration itself, in plain words. The ribbon tells the room to pay attention;
 it cannot tell them what to pay attention to.
 
+## Interactivity
+
+The table should be playing, not only listening. Four rules, and the two numbers
+`npm run content:pacing` reports for each chapter's spine (the shortest path to a success ending):
+
+- **The goal is clear in scene 1.** The entry scene says what the party is here to do.
+- **Never more than about three scenes in a row without something to decide.** The `read` column
+  is the longest such run: scenes that are not a vote (two or more visible choices), a check or a
+  fight. One-button beats and the ending count as reading. The section under the table names the
+  scene each spine's longest run starts at.
+- **Most spine checks are things the party does, not says.** The `doing` column counts them. A
+  check's kind comes from its stat (`might` and `quick` are doing; `clever` and `heart` are
+  talking) unless the check overrides it, for the times the stat misleads:
+
+  ```json
+  { "type": "check", "stat": "clever", "checkKind": "doing", "prompt": "Jam the gears with a stick!" }
+  ```
+
+- **New people arrive with a stake for the party.** The scene that introduces someone says what
+  they want from the party, or what they can do for it.
+
+Both numbers are a reading list, never a gate: the `!` marks under the table say where to look.
+
 ## Class places (#311)
 
 A class's room (the Dojo, the Academy, the Rookery, the Conservatory:
