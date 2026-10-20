@@ -808,3 +808,29 @@ export function spendStatPoint(
 
   return writeProgress(character, next);
 }
+
+/**
+ * Puts on another class (docs/class-mastery.md §3): the worn class changes and
+ * nothing else does. Stats stay where they are, and every class's rank and
+ * deed progress stays in `mastery`, so the class taken off is exactly as it
+ * was when the hero comes back to it, and the one put on brings only what it
+ * has already earned. Its moves follow from `resolveCharacter()`.
+ *
+ * Follows `awardXp` into `provisional` while a campaign is in flight, so a
+ * failed campaign puts back the class worn when it began (spec §8.3).
+ *
+ * Where a switch may happen (that class's place) is the caller's to check;
+ * this refuses only what is never a switch. Both refusals are hard errors,
+ * like `spendStatPoint`'s: a switch that silently does nothing looks, on a
+ * phone, exactly like one that worked.
+ */
+export function switchClass(character: Character, rules: RulesContent, to: ClassId): Character {
+  if (!(rules.classes as Partial<typeof rules.classes>)[to]) {
+    throw new CharacterRuleError(`character: unknown class "${String(to)}"`);
+  }
+  const before = effectiveProgress(character);
+  if (before.class === to) {
+    throw new CharacterRuleError(`character: already wearing ${to}`);
+  }
+  return writeProgress(character, { ...cloneProgress(before), class: to });
+}

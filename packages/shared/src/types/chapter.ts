@@ -253,12 +253,25 @@ export interface StoryScene {
   discovers?: string[];
   /** Who is standing here with the party. See `CastMember`. */
   cast?: CastMember[];
+  /** Makes this scene a class's room. See `ClassPlace`. */
+  classPlace?: ClassPlace;
   choices: Choice[];
   /** Only read when this scene ends the chapter — see `EndingScene`. */
   outcome?: ChapterOutcome;
   /** Only read when this scene ends the chapter — see `EndingScene`. */
   endsCampaign?: true;
 }
+
+/**
+ * The class a class place teaches (docs/class-mastery.md §2, §3): the Dojo
+ * says `"thornguard"`. While a scene carrying it is open, every seated hero
+ * not already that class may switch to it, each kid alone on their phone
+ * (`SWITCH_CLASS`, or `KEEP_CLASS` to say no), and the way on waits until
+ * every connected hero who could switch has answered (`RunState.classPlace`).
+ * One class per place. Story and Choice Point scenes only, never an ending,
+ * and never in Gemfall: `content:validate` refuses the rest.
+ */
+export type ClassPlace = ClassId;
 
 export interface CheckScene {
   type: "check";
@@ -313,6 +326,8 @@ export interface ChoicePointScene {
   discovers?: string[];
   /** Who is standing here with the party. See `CastMember`. */
   cast?: CastMember[];
+  /** Makes this scene a class's room. See `ClassPlace`. */
+  classPlace?: ClassPlace;
   /** Party votes; ties broken by the active turn marker. spec §6.1. */
   choices: Choice[];
   /** Only read when this scene ends the chapter — see `EndingScene`. */
