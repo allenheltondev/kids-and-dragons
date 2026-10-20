@@ -409,8 +409,11 @@ describe("the chapter's goal (#356)", () => {
     expect(result.code).not.toBe(0);
   });
 
-  it("catches a goal of more than one sentence, or with an em dash", () => {
+  it("catches a goal of more than one sentence", () => {
     expect(withChapter((chapter) => { chapter.goal.text = "Find the door. Then open it."; }).out).toContain("the goal is more than one sentence");
+  });
+
+  it("catches a goal with an em dash", () => {
     expect(withChapter((chapter) => { chapter.goal.steps[1].label = "Find it \u2014 fast"; }).out).toContain("the goal has an em dash");
   });
 
