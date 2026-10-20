@@ -15,6 +15,9 @@
   position: relative;
   display: flex;
   flex-direction: row;
+  /* A long name at the largest text takes a line of its own under the
+     portrait rather than being broken mid-word ("Sparkleh / oof"). */
+  flex-wrap: wrap;
   align-items: center;
   gap: 1em;
   padding: 0.25em 2em 0.85em 0.3em;
@@ -44,7 +47,7 @@
   background: #191534;
   box-shadow: 0 0 0 0.25em #30263b, 0 0 0 0.3em #b4926359, 0 0.7em 1.3em #0006;
 }
-.sheetview__id { display: flex; flex-direction: column; align-items: flex-start; gap: 0.4em; min-inline-size: 0; }
+.sheetview__id { display: flex; flex: 1 1 9em; flex-direction: column; align-items: flex-start; gap: 0.4em; min-inline-size: 0; }
 .sheetview__name { margin: 0; font-family: var(--kad-font-display); font-size: 1.4em; overflow-wrap: anywhere; text-shadow: 0 0.1em #0006; }
 .sheetview__kind,
 .sheetview__level { display: flex; justify-content: flex-start; align-items: center; flex-wrap: wrap; gap: 0.5em; margin: 0; font-size: 0.85em; }

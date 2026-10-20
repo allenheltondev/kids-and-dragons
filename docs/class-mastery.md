@@ -1,12 +1,13 @@
 # Class mastery: switching classes, class places and distinctions
 
 > **Status.** Partly built. Per-class distinctions on the character and moves by distinction (§5,
-> §7) landed with #308, deeds and rank-ups (§5, §6) with #310, and the switch itself (§3) with
+> §7) landed with #308, deeds and rank-ups (§5, §6) with #310, the switch itself (§3) with
 > #311: a scene marked `classPlace` is a class's room
-> ([content/README.md, "Class places"](../content/README.md#class-places-311)). [spec §4.3](./spec.md)
-> and [§8.1](./spec.md) state them. The four rooms are written for the Riftlight draft (#315,
-> [its README](../content/drafts/riftlight/README.md#class-rooms-315)). The fitting stall and the
-> tokens are still design. Tracked by epic
+> ([content/README.md, "Class places"](../content/README.md#class-places-311)), and the tokens on
+> screen with the rank-up moment (§4, §5) with #314. [spec §4.3](./spec.md) and [§8.1](./spec.md)
+> state them. The four rooms are written for the Riftlight draft (#315,
+> [its README](../content/drafts/riftlight/README.md#class-rooms-315)). The fitting stall is still
+> design. Tracked by epic
 > [#307](https://github.com/allenheltondev/kids-and-dragons/issues/307) (#308–#315); the reason to
 > come back to the Exchange is [#306](https://github.com/allenheltondev/kids-and-dragons/issues/306).
 
@@ -52,7 +53,11 @@ earns a distinction anywhere in the world, a crow lands on a nearby fence, says 
   Academy is in the marsh village, the Rookery is on the Exchange's rooftops. The party enters it
   from that place's `rest` scene, so a campaign pays for four rooms, not four chapters.
 - **Every graph campaign has all four reachable.** `content:validate` fails a graph campaign that is
-  missing one, or whose only way to one is gated.
+  missing one, or whose only way to one is gated *(built, #313)*. A way counts when no flag, item,
+  species, class, world fact, lock or rift rule (`opensWhen`, `uses`, ...) stands in it; a `completed:` or `visited:` gate on a place any
+  party can reach is open. A room must be entered from a `rest` scene. A graph campaign that does not
+  have its rooms yet is listed with a reason in `tools/content/class-place-allow.json`, which warns
+  and which #315 empties; an entry for a campaign that has them all fails, so it cannot go stale.
 - **Introduced on every visit.** Places in a graph campaign can be reached in any order, so each
   room introduces its teacher (and the crows) whenever a party walks in. A second visit can read
   shorter ("The crows eye you. 'Back again.'").
@@ -101,6 +106,32 @@ In the lore, a class's power comes from a piece of gear the hero wears.
   and rigs exist for every class, tier and species. The token can be that layer; below Sworn it
   shows as an icon on the phone.
 
+### On screen *(built, #314)*
+
+- **Names** are `CLASS_TOKENS` in [`tokens.ts`](../packages/shared/src/tokens.ts), beside
+  `deedTrack`, which picks the one track a hero sees (rule 6, §6): the further along of a rank's
+  two, or with neither started, the alone track for a hero alone and the friends track at a table.
+- **The token** (`ClassToken.tsx`) is simple SVG for now, every tier: the rigs' Sworn gear layer is
+  a later art pass. Its notches are three seats, always drawn: a cut notch is a filled chevron and
+  one to come a dash; a pip done is a filled dot and one to go a ring. Shape, never colour alone.
+- **Where it shows:** the phone's own view and every sheet (the token, "Thornguard Apprentice",
+  the next notch's deeds as pips, or a bar with its count past ten, as a Songkeeper's hearts are),
+  and the TV lineup in the lobby (the token and its notches in the class icon's seat). Pressing
+  and holding a token says what it is (`help.json`, `things.token`).
+- **Spare tokens** are `ResolvedCharacter.spares`: every class with a `mastery` entry that is not
+  the worn one, since only wearing a class writes one. They sit under the six slots ("Your old
+  gear"), with their notches, and take none. A switch (`switchClass`) gives the class put on an
+  empty entry, so a token worn without earning anything still goes in the pack when it comes off.
+  The switch's "are you sure?" shows both tokens, notches and all, and the TV's roll call draws
+  each hero's worn token.
+- **The rank-up moment** (`RankUpMoment.tsx`, loaded on the first rank-up): the TV lifts the token
+  over the stage with its new notch dropping in, for four seconds, taking no taps and hidden from
+  screen readers; #310's line stays under the story as the words of record and is read aloud once.
+  The TV remembers a moment it has shown only while that landing is on the state, so a redraw does
+  not cheer twice but the same rank landing again (a failed campaign played over) does.
+  The earning kid's phone shows the line as a card with the token glowing, in the line's own place.
+  A Duskrunner's crow lands on both. Under reduced motion it shows lit and still.
+
 ## 5. Distinctions
 
 | Rank | Unlocks (today's level 3 / 6 / 9 move) |
@@ -130,8 +161,8 @@ class is shown with the class name alone.
 - **When a rank lands** *(built, #310)*: deeds count live as they happen; the rank lands at the end
   of the fight (or at once, for a story deed outside one), and the new move is usable from the next
   fight. The TV and the hero's phone say so in one line ("Mira is a Thornguard Apprentice now! New
-  move: Shove."), and a Duskrunner's crow has its say. The moment itself (pips filling, the token
-  glowing and gaining its notch) is #314's.
+  move: Shove."), and a Duskrunner's crow has its say. The moment around it (the token
+  glowing and gaining its notch) is built too (#314, §4 "On screen").
 - **Kept with the chapter.** Deeds counted in a chapter are folded into the hero when the chapter
   ends, beside its XP and under the same rule; a chapter abandoned partway keeps neither. The run
   keeps each class's count apart, so a hero who changes class mid-chapter keeps what the class she

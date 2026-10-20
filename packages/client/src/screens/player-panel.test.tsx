@@ -1975,3 +1975,37 @@ describe("a friend who stepped away (#258)", () => {
     expect(screen.getByRole("button", { name: /Begin the adventure/ })).toBeTruthy();
   });
 });
+
+describe("the token and the rank-up moment on your own phone (#314)", () => {
+  const up = {
+    characterId: "c_1",
+    class: "songkeeper" as const,
+    rank: "apprentice" as const,
+    line: "Sparklehoof is a Songkeeper Apprentice now! New move: Soothe.",
+  };
+
+  it("shows your worn token in the bag, and your old gear outside the six slots", () => {
+    mount({ party: [member({ character: character({ spares: [{ class: "thornguard", rank: "apprentice" }] }) })] });
+    act(() => setPlayerSection("bag"));
+    expect(screen.getByText("Your song bell")).toBeTruthy();
+    expect(screen.getByText("Your old gear (it never takes a slot)")).toBeTruthy();
+    expect(screen.getByRole("img", { name: "thorn bracer, 1 notch" })).toBeTruthy();
+    expect(document.querySelectorAll(".inv__slot")).toHaveLength(INVENTORY_SLOTS);
+  });
+
+  it("puts the card in the line's place, and the choice under it still answers the first tap", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({ prompt: choicePrompt() });
+    serverSends({ rankUps: { sceneId: "s_1", ups: [up] } });
+    expect((await screen.findByTestId("player-rank-up")).textContent).toContain(up.line);
+    await user.click(screen.getByRole("button", { name: /east path/i }));
+    await user.click(doIt());
+    expect(sent.some((intent) => intent.type === "CHOOSE")).toBe(true);
+  });
+
+  it("is only on the phone of the kid who earned it", () => {
+    mount({ playerId: "p_2", party: [member(), member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }) })] });
+    serverSends({ rankUps: { sceneId: "s_1", ups: [up] } });
+    expect(screen.queryByTestId("player-rank-up")).toBeNull();
+  });
+});

@@ -1068,7 +1068,10 @@ describe("switchClass (#311, docs/class-mastery.md §3)", () => {
     expect(after.committed.stats).toEqual(before.committed.stats);
     expect(after.committed.level).toBe(6);
     expect(after.committed.inventory).toEqual(before.committed.inventory);
-    expect(after.committed.mastery).toEqual(before.committed.mastery);
+    // Every rank kept, and the class put on gets an empty entry, so its token
+    // is known to ride in the pack once it comes off (#314).
+    expect(after.committed.mastery).toEqual({ ...before.committed.mastery, thornguard: { rank: "none", deeds: {} } });
+    expect(resolveCharacter(after, rules, items).spares).toEqual([{ class: "songkeeper", rank: "expert" }]);
     // The new class brings only what it has earned: its signature.
     const resolved = resolveCharacter(after, rules, items);
     expect(resolved.class).toBe("thornguard");
