@@ -64,7 +64,7 @@ function writeJson(dir, parts, value) {
 function validate(dir) {
   try {
     const stdout = execFileSync(process.execPath, [VALIDATOR], {
-      env: { ...process.env, KAD_CONTENT_ROOT: dir, NO_COLOR: "1" },
+      env: { ...process.env, KAD_CONTENT_ROOT: dir, KAD_CLASS_PLACES: "off", NO_COLOR: "1" },
       encoding: "utf8",
     });
     return { code: 0, out: stdout };
