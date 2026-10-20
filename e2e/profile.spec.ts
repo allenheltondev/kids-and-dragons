@@ -39,7 +39,7 @@ test.describe("a kid's own page", () => {
 
   async function play(phone: Page): Promise<void> {
     await phone.goto("/");
-    await phone.getByRole("button", { name: /want to host/i }).click();
+    await phone.getByRole("button", { name: /host a game/i }).click();
     await phone.getByText("Phone Mode").click();
     await phone.getByLabel("Your adventurer name").fill("Ada");
     await phone.getByRole("button", { name: /^start a game$/i }).click();
@@ -87,14 +87,14 @@ test.describe("a kid's own page", () => {
     await expectPicked(phone);
 
     // --- A second device, paired to her, shows the same page ---
-    await phone.goto("/");
+    await phone.goto("/account");
     await phone.getByRole("button", { name: /play as me on another device/i }).click(TAP);
     const code = (await phone.locator(".pair__code").textContent(TAP)) ?? "";
     expect(code).toMatch(/^[A-Z]{4}-[A-Z]{4}$/);
 
     const second = await client(browser);
-    await second.goto("/");
-    await second.getByRole("button", { name: /i play here already/i }).click(TAP);
+    await second.goto("/account");
+    await second.getByRole("button", { name: /bring my hero to this device/i }).click(TAP);
     await second.getByLabel("Your code").fill(code);
     await second.getByRole("button", { name: /that.s me/i }).click(TAP);
     await expect(second).toHaveURL(/\/journal$/, TAP);
@@ -167,11 +167,12 @@ test.describe("a kid's own page", () => {
 
     // --- A grown-up's phone: an account, a family, and a Phone Mode room ---
     const grownUp = await client(browser);
-    await grownUp.goto("/");
+    await grownUp.goto("/account");
     await grownUp.getByRole("button", { name: /sign in or create an account/i }).click(TAP);
     await signIn(grownUp);
     await grownUp.getByRole("button", { name: /back to the game/i }).click(TAP);
-    await grownUp.getByRole("button", { name: /want to host/i }).click();
+    await grownUp.getByRole("button", { name: "Back to the start" }).click();
+    await grownUp.getByRole("button", { name: /host a game/i }).click();
     await grownUp.getByText("Phone Mode").click();
     await grownUp.getByLabel("Your adventurer name").fill("Grown-up");
     await grownUp.getByRole("button", { name: /^start a game$/i }).click();
@@ -180,7 +181,7 @@ test.describe("a kid's own page", () => {
 
     // --- The family tablet, at the largest text and one-handed, with Ada picked ---
     const tablet = await client(browser, 820, 1100, { text: "largest", contrast: true, motion: true, hand: "right" });
-    await tablet.goto("/");
+    await tablet.goto("/account");
     await tablet.getByRole("button", { name: /make it a family tablet/i }).click(TAP);
     await signIn(tablet);
     await tablet.getByRole("button", { name: /^done$/i }).click(TAP);

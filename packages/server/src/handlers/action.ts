@@ -73,6 +73,7 @@ import {
   relockLobby,
   seatedParty,
   prepareStatPointSpend,
+  prepareClassSwitch,
   prepareRiftWayDeeds,
   seatHero,
   settleChapterCompletion,
@@ -284,6 +285,27 @@ export async function applyAction(
     if (!spend.ok) return { ok: false, seq: state.seq, error: spend.error };
     spentCharacter = spend.value.character;
     result = { state: spend.value.state };
+  } else if (input.intent.type === "SWITCH_CLASS") {
+    // At a class place (#311). Like a stat point, it writes the hero's row,
+    // so it is prepared here and committed with the run below.
+    if (auth.run.status !== "active") {
+      return {
+        ok: false,
+        seq: state.seq,
+        error: { code: "ILLEGAL", message: "a class is switched in an active run" },
+      };
+    }
+    const change = await prepareClassSwitch(
+      state,
+      deps,
+      auth.run.householdId,
+      input.playerId,
+      input.intent.classId,
+      chapter,
+    );
+    if (!change.ok) return { ok: false, seq: state.seq, error: change.error };
+    spentCharacter = change.value.character;
+    result = { state: change.value.state };
   } else {
     // A returning hero is a household row the engine cannot reach, so it is
     // loaded here and handed in; whether this player may bring it is the

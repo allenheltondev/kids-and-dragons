@@ -73,7 +73,7 @@ test.describe("read-aloud", () => {
   test("the TV speaks the story, the phone speaks its own choices, and each switch is its own", async ({ browser }) => {
     const tv = await device(browser, 1280, 720);
     await tv.goto("/");
-    await tv.getByRole("button", { name: /want to host/i }).click();
+    await tv.getByRole("button", { name: /host a game/i }).click();
     await tv.getByText("Party Mode").click();
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);

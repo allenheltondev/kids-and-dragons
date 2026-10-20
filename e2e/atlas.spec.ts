@@ -23,7 +23,7 @@ for (const mode of ["travel", "party"] as const) {
     if (mode === "party") {
       tv = await browser.newPage();
       await tv.goto("/");
-      await tv.getByRole("button", { name: /want to host/i }).click();
+      await tv.getByRole("button", { name: /host a game/i }).click();
       await tv.getByText("Party Mode", { exact: true }).click();
       await tv.getByRole("button", { name: /open the lobby here/i }).click();
       await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
@@ -33,7 +33,7 @@ for (const mode of ["travel", "party"] as const) {
       await page.getByRole("button", { name: /join a game/i }).click();
     } else {
       await page.goto("/");
-      await page.getByRole("button", { name: /want to host/i }).click();
+      await page.getByRole("button", { name: /host a game/i }).click();
       await page.getByText("Phone Mode", { exact: true }).click();
       await page.getByPlaceholder("Type your name").fill("Atlas Explorer");
       await page.getByRole("button", { name: /start a game/i }).click();

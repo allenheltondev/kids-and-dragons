@@ -26,7 +26,7 @@ test.describe("the practice", () => {
     const solo: Page = await context.newPage();
 
     await solo.goto("/");
-    await solo.getByRole("button", { name: /want to host/i }).click(TAP);
+    await solo.getByRole("button", { name: /host a game/i }).click(TAP);
     await solo.getByText("Phone Mode").click(TAP);
     await solo.getByLabel("Your adventurer name").fill("Allen", TAP);
     await solo.getByRole("button", { name: /start a game/i }).click(TAP);
