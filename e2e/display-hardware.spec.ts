@@ -97,7 +97,7 @@ test.describe("a display that is not a laptop", () => {
     await expect(board).toBeVisible(TAP);
     await expect(board.getByText("Sparklehoof")).toBeAttached(TAP);
     await expect(tv.locator(".kad-stage canvas")).toHaveCount(0);
-    await expect(tv.getByRole("status").filter({ hasText: /world view couldn’t load/i })).toBeVisible();
+    await expect(tv.getByRole("status").filter({ hasText: /something went wrong/i })).toBeVisible();
 
     await expect(phone.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
     await phone.getByRole("button", { name: /begin the adventure/i }).click(TAP);

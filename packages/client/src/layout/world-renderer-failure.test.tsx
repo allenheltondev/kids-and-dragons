@@ -37,10 +37,16 @@ afterEach(() => {
   scene.state = { phase: "scene" };
 });
 
-it("contains a rejected renderer chunk and keeps the story controls interactive", async () => {
+it("contains a rejected renderer chunk, reports it quietly, and keeps the story controls interactive", async () => {
   vi.spyOn(console, "error").mockImplementation(() => undefined);
+  const reportError = vi.fn();
+  vi.stubGlobal("reportError", reportError);
   render(<WorldView />);
-  expect((await screen.findByRole("status")).textContent).toContain("world view couldn’t load");
+  const warning = await screen.findByRole("status");
+  expect(warning.textContent).toContain("Something went wrong");
+  expect(warning.getAttribute("title")).toBe("Something went wrong");
+  expect(reportError).toHaveBeenCalled();
+  vi.unstubAllGlobals();
   fireEvent.click(screen.getByRole("button", { name: "Continue the story" }));
   expect(action).toHaveBeenCalledOnce();
 });
@@ -69,7 +75,7 @@ it("draws the chapter as still art and a plain board when the renderer is gone",
     },
   };
   const { container } = render(<WorldView />);
-  expect((await screen.findByRole("status")).textContent).toContain("world view couldn’t load");
+  expect((await screen.findByRole("status")).textContent).toContain("Something went wrong");
 
   const board = await screen.findByTestId("static-stage");
   expect(board.querySelector("img.kad-static-stage__backdrop")?.getAttribute("src")).toBe("/assets/biomes/enchanted_woods/bg.webp");
