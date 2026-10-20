@@ -11,7 +11,7 @@
  * that owns them (PlayerPanel).
  */
 
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense, useEffect, useLayoutEffect, useRef } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ReactElement } from "react";
 import { combatTurnAway, currentActorId, speak, turnHolderAway } from "@kad/shared";
@@ -20,6 +20,7 @@ import type { ScenePriority } from "@kad/shared";
 import { useAbilities, useItems, useParty, usePreviews, useRules, useRunState } from "../store";
 import { describeCombatPreview, tablePreviews } from "../world/previews";
 import { setStageInsetBottom } from "../world/stage-inset";
+import { fitPlate, unfitPlate } from "./fit-plate";
 import { Icon } from "./icons";
 import { ClassToken } from "./ClassToken";
 import { VoteTicks } from "./VoteTicks";
@@ -258,6 +259,55 @@ export function NarrationPanel(): ReactElement | null {
    * fight: the board takes the whole pane and the caption floats over it.
    */
   const plate = useRef<HTMLDivElement | null>(null);
+  /*
+   * The plate's type steps down until the choices are on screen (fit-plate.ts). Before paint
+   * for a new scene, so a long one never shows at the size that pushes its choices away; and
+   * again when the pane, the text size or the font changes under the same words.
+   */
+  const fitKey = [
+    narration,
+    hint ?? "",
+    rankUps.length,
+    choices === null ? "" : choices.map((choice) => `${choice.id}:${choice.label}`).join("|"),
+    prompt !== null && prompt.kind === "roll" ? prompt.prompt : "",
+  ].join("\n");
+  useLayoutEffect(() => {
+    const element = plate.current;
+    if (element === null) return;
+    if (fighting) {
+      unfitPlate(element);
+      return;
+    }
+    fitPlate(element);
+    if (typeof ResizeObserver === "undefined") return;
+    // A resize, a text-size change, a font arriving, a choice wrapping differently and words added
+    // under the story all reshape what the plate holds, not the plate's own box; one frame later is
+    // soon enough, and keeps the observers out of their own way.
+    let frame = 0;
+    const refit = (): void => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => fitPlate(element));
+    };
+    const sizes = new ResizeObserver(refit);
+    const watch = (): void => {
+      sizes.disconnect();
+      sizes.observe(element.parentElement ?? element);
+      // What drives the fit: each part of the story (the paragraph, the hint, rank-up lines) and the choices.
+      element.querySelectorAll(".narration__story > *, .narration__choices").forEach((part) => sizes.observe(part));
+    };
+    watch();
+    // Parts arriving or leaving after the first fit (a class place's roll, the stall's words).
+    const parts = new MutationObserver(() => {
+      watch();
+      refit();
+    });
+    parts.observe(element, { childList: true, subtree: true, characterData: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      sizes.disconnect();
+      parts.disconnect();
+    };
+  }, [fighting, fitKey, state === null]);
   useEffect(() => {
     const element = plate.current;
     if (fighting || element === null) {
@@ -389,7 +439,7 @@ export function NarrationPanel(): ReactElement | null {
           phones (spec §2). Read-only here — nothing on WorldView is tappable.
         */}
         {choices !== null && choices.length > 0 ? (
-          <ul className="narration__choices">
+          <ul className="narration__choices" data-count={choices.length > 6 ? "many" : choices.length}>
             {choices.map((choice) => {
               // A hover is a light, not a name: it only lights the option, so a
               // name appearing and disappearing cannot rewrap the label.
