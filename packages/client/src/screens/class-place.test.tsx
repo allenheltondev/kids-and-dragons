@@ -6,7 +6,7 @@
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setSpeaker } from "@kad/shared";
 import type { ClientIntent, PartyMember, Prompt, ResolvedCharacter, RulesContent, RunState } from "@kad/shared";
@@ -119,6 +119,9 @@ describe("the phone at a class place", () => {
     expect(sure.textContent).toContain("You take off your song bell and put on the thorn bracer.");
     expect(sure.textContent).toContain("It keeps everything you earned.");
     expect(sure.textContent).toContain("You can switch back at the Conservatory.");
+    // The two tokens, by their own names and notches (#314).
+    expect(within(sure).getByRole("img", { name: "your song bell, no notches yet" })).toBeTruthy();
+    expect(within(sure).getByRole("img", { name: "thorn bracer, no notches yet" })).toBeTruthy();
 
     // "No, wait" goes back without sending anything.
     await user.click(screen.getByRole("button", { name: "No, wait" }));

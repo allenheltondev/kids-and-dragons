@@ -404,6 +404,11 @@ export function resolveCharacter(
   const classDef = (rules.classes as Partial<typeof rules.classes>)[progress.class];
   const rank = rankIn(progress, progress.class);
   const deeds = progress.mastery[progress.class]?.deeds;
+  // Every class with an entry has been worn (nothing else writes one), so each
+  // one that is not worn now is a token in the pack.
+  const spares = (Object.keys(rules.classes) as ClassId[])
+    .filter((id) => id !== progress.class && progress.mastery[id] !== undefined)
+    .map((id) => ({ class: id, rank: rankIn(progress, id) }));
   const level = levelForXp(rules, progress.xp);
 
   const stats = { ...progress.stats } as Stats;
@@ -464,6 +469,7 @@ export function resolveCharacter(
     // The worn class's progress to its next rank, where a fight's counting
     // starts (#310). Present only once something has been counted.
     ...(deeds && Object.keys(deeds).length > 0 ? { deeds: { ...deeds } } : {}),
+    ...(spares.length > 0 ? { spares } : {}),
     appearance: character.appearance,
     level,
     xp: progress.xp,
@@ -837,7 +843,11 @@ export function switchClass(character: Character, rules: RulesContent, to: Class
   if (before.class === to) {
     throw new CharacterRuleError(`character: already wearing ${to}`);
   }
-  return writeProgress(character, { ...cloneProgress(before), class: to });
+  // The class put on gets its entry now, earned or not: an entry is how a
+  // token taken off later is known to ride in the pack (`spares`, #314).
+  const mastery = cloneMastery(before.mastery);
+  mastery[to] ??= { rank: "none", deeds: {} };
+  return writeProgress(character, { ...cloneProgress(before), class: to, mastery });
 }
 
 /**

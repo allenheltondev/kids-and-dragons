@@ -29,11 +29,12 @@
       "description": "What kind of thing a long-press landed on (HELP_THING_KINDS). A thing's own words, where it has them, are shown first.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["card", "buff", "item"],
+      "required": ["card", "buff", "item", "token"],
       "properties": {
         "card": { "$ref": "#/$defs/entry" },
         "buff": { "$ref": "#/$defs/entry" },
-        "item": { "$ref": "#/$defs/entry" }
+        "item": { "$ref": "#/$defs/entry" },
+        "token": { "$ref": "#/$defs/entry" }
       }
     },
     "join": {

@@ -1,0 +1,195 @@
+/*
+ * Class tokens (#314). Every size is em, so a token tracks the text around it
+ * at every text setting, phone and TV alike. The class colour is a second cue
+ * on top of the glyph, never the only one (spec §11).
+ */
+
+.class-token {
+  --token-ink: var(--kad-gold);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1em;
+  flex: none;
+  color: var(--token-ink);
+  line-height: 1;
+  vertical-align: middle;
+}
+.class-token--thornguard { --token-ink: #8fdc8a; }
+.class-token--duskrunner { --token-ink: #a9b4ff; }
+.class-token--starweaver { --token-ink: var(--kad-gold); }
+.class-token--songkeeper { --token-ink: #ff9cc8; }
+
+.class-token__face {
+  display: grid;
+  place-items: center;
+  inline-size: 1.6em;
+  block-size: 1.6em;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--token-ink) 16%, var(--kad-bg-raised));
+  border: 0.08em solid color-mix(in srgb, var(--token-ink) 55%, transparent);
+}
+.class-token__face .token-glyph {
+  inline-size: 1.15em;
+  block-size: 1.15em;
+}
+/* In a line of text the notches sit beside the token, big enough to count. */
+.class-token--sm { flex-direction: row; gap: 0.2em; }
+.class-token--sm .class-token__face { inline-size: 1.4em; block-size: 1.4em; border-width: 0.07em; }
+.class-token--sm .class-token__face .token-glyph { inline-size: 1em; block-size: 1em; }
+.class-token--md { font-size: 1.5em; }
+.class-token--lg { font-size: 2.6em; }
+
+.token-notches {
+  display: inline-flex;
+  gap: 0.08em;
+}
+.token-notch {
+  inline-size: 0.5em;
+  block-size: 0.5em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.55;
+}
+.token-notch--cut {
+  fill: currentColor;
+  opacity: 1;
+}
+.class-token--sm .token-notch { inline-size: 0.6em; block-size: 0.6em; }
+
+/* The moment a rank lands: the token glows and the new notch drops in. Under
+   reduced motion theme.css flattens both to their last frame, which is the
+   lit token with its notch cut. */
+.class-token--glow .class-token__face {
+  animation: token-glow 1.6s var(--kad-ease-out, ease-out) both;
+  box-shadow: 0 0 0.5em color-mix(in srgb, var(--token-ink) 70%, transparent);
+}
+.token-notch--fresh {
+  animation: token-notch-in 0.7s 0.5s var(--kad-ease-out, ease-out) both;
+}
+@keyframes token-glow {
+  0% { transform: scale(0.6); box-shadow: 0 0 0 transparent; }
+  45% { transform: scale(1.15); box-shadow: 0 0 1.2em var(--token-ink); }
+  100% { transform: scale(1); box-shadow: 0 0 0.5em color-mix(in srgb, var(--token-ink) 70%, transparent); }
+}
+@keyframes token-notch-in {
+  0% { transform: translateY(-1.2em) scale(2); opacity: 0; }
+  70% { transform: translateY(0.05em) scale(1.1); opacity: 1; }
+  100% { transform: none; opacity: 1; }
+}
+
+/* --- The worn token, its rank and the next deed ------------------------ */
+
+.token-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--kad-space-3);
+  padding: var(--kad-space-3);
+  border-radius: var(--kad-radius-md);
+  background: var(--kad-bg-raised);
+  border: 1px solid var(--kad-border);
+  min-inline-size: 0;
+}
+.token-card__words {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+  min-inline-size: 0;
+  flex: 1;
+}
+.token-card__name {
+  font-weight: var(--kad-weight-bold);
+  overflow-wrap: break-word;
+}
+.token-card__name::first-letter { text-transform: uppercase; }
+.token-card__title {
+  color: var(--kad-gold);
+  font-weight: var(--kad-weight-black);
+}
+.token-card__next {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  margin-block-start: 0.25em;
+  font-size: var(--kad-text-sm);
+}
+.token-card__deeds {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+}
+.token-card__deed {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+}
+
+.deed-pips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4em;
+}
+.deed-pips__row {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25em;
+}
+.deed-pip {
+  inline-size: 0.8em;
+  block-size: 0.8em;
+  border-radius: 50%;
+  border: 0.14em solid var(--kad-gold);
+  box-sizing: border-box;
+}
+.deed-pip--done { background: var(--kad-gold); }
+.deed-pips__bar {
+  inline-size: 7em;
+  max-inline-size: 100%;
+  block-size: 0.7em;
+  border-radius: var(--kad-radius-pill);
+  border: 0.12em solid var(--kad-gold);
+  overflow: hidden;
+}
+.deed-pips__fill {
+  display: block;
+  block-size: 100%;
+  background: var(--kad-gold);
+}
+.deed-pips__count {
+  font-weight: var(--kad-weight-bold);
+  white-space: nowrap;
+}
+
+/* --- Spare tokens in the pack ------------------------------------------ */
+
+.spare-tokens {
+  margin-block-start: var(--kad-space-3);
+}
+.spare-tokens__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--kad-space-2);
+  margin: 0 0 var(--kad-space-2);
+  font-size: var(--kad-text-sm);
+  color: var(--kad-ink-dim);
+}
+.spare-tokens__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kad-space-2);
+}
+.spare-tokens__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kad-space-2);
+}

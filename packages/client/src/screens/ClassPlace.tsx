@@ -26,16 +26,9 @@ import { classPlaceWaitingOn, maySwitchAt, owesClassAnswer } from "@kad/shared";
 import type { ClassId, ClassPlaceState, PartyMember, RulesContent } from "@kad/shared";
 import { useMe, useParty, useRules, useRunState, useSend } from "../store";
 import { Button } from "../ui/Button";
+import { ClassToken, tokenName } from "./ClassToken";
 import { Icon } from "./icons";
 import "./ClassPlace.css";
-
-/** The worn token, by class (docs/class-mastery.md §4). */
-export const CLASS_GEAR: Record<ClassId, string> = {
-  thornguard: "thorn bracer",
-  duskrunner: "dusk hood",
-  starweaver: "star circlet",
-  songkeeper: "song bell",
-};
 
 /** Where each class is taught (docs/class-mastery.md §2). */
 export const CLASS_PLACE_NAME: Record<ClassId, string> = {
@@ -62,8 +55,8 @@ function names(members: readonly PartyMember[]): string {
  */
 export function switchLines(from: ClassId, to: ClassId, keeper?: string): string[] {
   return [
-    `You take off your ${CLASS_GEAR[from]} and put on the ${CLASS_GEAR[to]}.`,
-    `Your ${CLASS_GEAR[from]} goes in your pack.`,
+    `You take off your ${tokenName(from)} and put on the ${tokenName(to)}.`,
+    `Your ${tokenName(from)} goes in your pack.`,
     "It keeps everything you earned.",
     // At the stall, said plainly: this is the only free swap, and it does
     // not come back.
@@ -74,7 +67,7 @@ export function switchLines(from: ClassId, to: ClassId, keeper?: string): string
 
 /** The classes this hero may put on here: the room's, or at the stall any other. */
 function classesOn(place: ClassPlaceState, wearing: ClassId): ClassId[] {
-  return place.stall ? (Object.keys(CLASS_GEAR) as ClassId[]).filter((id) => id !== wearing) : [place.class];
+  return place.stall ? (Object.keys(CLASS_PLACE_NAME) as ClassId[]).filter((id) => id !== wearing) : [place.class];
 }
 
 /**
@@ -136,7 +129,16 @@ export function ClassPlaceChoice(): ReactElement | null {
         role="alertdialog"
         aria-label={picked === "keep" ? `Stay a ${fromName}?` : `Become a ${className(rules, picked)}?`}
       >
-        <p className="class-place__ask">{picked === "keep" ? `Keep your ${CLASS_GEAR[from]}?` : "Are you sure?"}</p>
+        <p className="class-place__ask">{picked === "keep" ? `Keep your ${tokenName(from)}?` : "Are you sure?"}</p>
+        {picked !== "keep" ? (
+          /* The two tokens, notches and all (#314): the one coming off keeps
+             every notch it has, in the pack. */
+          <p className="class-place__tokens">
+            <ClassToken classId={from} rank={me.character.rank} owner="your" holdable={false} />
+            <Icon name="forward" />
+            <ClassToken classId={picked} rank={me.character.spares?.find((s) => s.class === picked)?.rank} holdable={false} />
+          </p>
+        ) : null}
         {picked !== "keep" ? (
           <ul className="class-place__lines">
             {switchLines(from, picked, keeper).map((line) => (
@@ -238,9 +240,9 @@ export function ClassPlaceRoll(): ReactElement | null {
         const answer = place.answers[member.playerId];
         const wearing = className(rules, member.character.class);
         const line = answer?.switched
-          ? `${member.character.name} put on the ${CLASS_GEAR[member.character.class]}!`
+          ? `${member.character.name} put on the ${tokenName(member.character.class)}!`
           : answer
-            ? `${member.character.name} kept the ${CLASS_GEAR[member.character.class]}.`
+            ? `${member.character.name} kept the ${tokenName(member.character.class)}.`
             : !maySwitchAt(place, member)
               ? `${member.character.name} is a ${wearing}.`
               : member.connected
@@ -248,7 +250,7 @@ export function ClassPlaceRoll(): ReactElement | null {
                 : `${member.character.name} stepped away.`;
         return (
           <li key={member.playerId} className={`class-roll__hero${answer?.switched ? " class-roll__hero--switched" : ""}`}>
-            <Icon name={member.character.class} />
+            <ClassToken classId={member.character.class} rank={member.character.rank} size="sm" owner={`${member.character.name}'s`} holdable={false} />
             <span>{line}</span>
           </li>
         );

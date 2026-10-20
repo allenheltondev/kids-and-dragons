@@ -17,6 +17,7 @@ import { useGameStore, useParty, useRunState } from "../store";
 import { campaignOptionLine, campaignPremise, journeyLine, lockedLine, nextChapterLine } from "./campaign-copy";
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
+import { ClassToken } from "./ClassToken";
 import { Icon } from "./icons";
 import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
@@ -100,8 +101,10 @@ function MemberCard({ member }: { member: PartyMember }): ReactElement {
       </span>
       <span className="lobby-member__text">
         <span className="lobby-member__name">{character.name}</span>
+        {/* The worn token and its notches (#314), in place of the bare class
+            icon: same seat, so a rank landing never grows the card. */}
         <span className="lobby-member__meta kad-muted">
-          <Icon name={character.class} />
+          <ClassToken classId={character.class} rank={character.rank} size="sm" owner={`${character.name}'s`} holdable={false} />
           <span>Level {character.level}</span>
         </span>
       </span>
