@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 import type { ReactElement } from "react";
 import { notchesFor, rankTitle } from "@kad/shared";
 import type { ClassDef, ClassId, PartyMember, RankUp, RulesContent } from "@kad/shared";
+import { useGameStore } from "../store";
 import { ClassToken } from "./ClassToken";
 import "./RankUpMoment.css";
 
@@ -53,13 +54,24 @@ function Crow(): ReactElement {
   );
 }
 
-/** Moments whose time is up, kept so a screen redrawn mid-scene does not cheer twice. */
+/**
+ * Moments whose time is up, kept so a screen redrawn mid-scene does not cheer
+ * twice. Kept only while the ranks are still on the state: the engine clears
+ * `rankUps` when the scene changes, a chapter starts or the party is back in
+ * the lobby, and that ends the occurrence. The same hero earning the same rank
+ * on the same scene again (a failed campaign played over, in the same room's
+ * run or a new one) is a new moment, and cheers.
+ */
 const finished = new Set<string>();
 
 /** Test seam: forget which moments have been shown. */
 export function resetRankUpMoments(): void {
   finished.clear();
 }
+
+useGameStore.subscribe((store) => {
+  if (finished.size > 0 && !store.state?.rankUps) finished.clear();
+});
 
 /**
  * The shared screen's moment: up for `RANK_UP_MS`, then gone for good for
