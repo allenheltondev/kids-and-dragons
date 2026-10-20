@@ -215,7 +215,7 @@ Every chapter says what the party is trying to do, and the table can see it the 
   figures; every phone draws it under the hero's strip. Nobody taps to open it. In a fight it folds
   to the goal and a row of pips in the top corner. On a short pane (a tablet at the largest text)
   it keeps the pips and names only the next step. Read-aloud says the goal after the first scene's
-  story, and "Done: …" after the scene a step ticks on.
+  story; a tick is seen and chimed, never read out.
 - **A step ticks when its flag is set**, or any one of a list. It is the same machinery as a bonus
   objective: author a `setFlag` where the thing visibly happens and point the step at it. A step
   may watch an `item` instead, while anybody holds it, when the chapter already hands one over for
