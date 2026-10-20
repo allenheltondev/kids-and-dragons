@@ -584,7 +584,11 @@
       "canonicalLocations": [
         "skullwater_cave"
       ],
-      "scale": "medium"
+      "scale": "medium",
+      "states": {
+        "wings_up": "entities/kavari/assembled.png",
+        "wings_down": "entities/kavari/wings-down.png"
+      }
     },
     {
       "id": "will_o_wisp",
