@@ -13,12 +13,9 @@ const BASE_URL = process.env.KAD_E2E_BASE_URL ?? "http://localhost:5173";
 
 export default defineConfig({
   testDir: "./e2e",
-  // wiki-* are their own suite. rig-shot is a review tool, not a test: it
-  // photographs the party on a TV-sized screen so a human can judge rig size
-  // and ground placement (art-pipeline §6.3). Run it by name when the stage,
-  // the anchor or the rigs change. offline.spec and perf.spec need a production
-  // build (the service worker exists nowhere else): `npm run e2e:prod`.
-  testIgnore: ["wiki-*.spec.ts", "rig-shot.spec.ts", "cast-shot.spec.ts", "offline.spec.ts", "perf.spec.ts", "production-locks.spec.ts"],
+  // Visual review tools run explicitly with playwright.cast-review.config.ts.
+  // Offline and performance checks use their own production-style server.
+  testIgnore: ["wiki-*.spec.ts", "static-figures-shot.spec.ts", "cast-shot.spec.ts", "offline.spec.ts", "perf.spec.ts", "production-locks.spec.ts"],
   // Three players each walking a five-step creation flow, and then a whole
   // chapter with real roll animations, is a lot of genuine interaction — the
   // playthrough spends about two minutes of this on its own.
