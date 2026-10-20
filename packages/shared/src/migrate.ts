@@ -46,7 +46,7 @@ import type {
  * commit — a bump without a step is a silent no-op migration, which is the one
  * failure this whole mechanism cannot detect.
  */
-export const CHARACTER_VERSION = 5;
+export const CHARACTER_VERSION = 6;
 
 /** Thrown for a stored row that cannot be repaired into a playable character. */
 export class StoredCharacterError extends Error {
@@ -143,6 +143,14 @@ const STEPS: Record<number, Step> = {
     const { class: _class, ...rest } = raw;
     return { ...rest, committed: toV5(raw["committed"]), provisional: toV5(raw["provisional"]) };
   },
+  /*
+   * v5 → v6. The fitting stall (#312, docs/class-mastery.md §1): `fitted` on
+   * a progress half once she has spent its one swap. A row from before it has
+   * not, and absent says so, so nothing to fill. The bump is v3's and v4's
+   * reason again: a v5 build narrows the flag away (`progress` below) and
+   * would offer her the swap a second time.
+   */
+  5: (raw) => raw,
 };
 
 /**
@@ -254,6 +262,8 @@ function progress(value: unknown, path: string): CharacterProgress {
     // belt-and-braces here costs one `??` against a stat block corrupted by a
     // step that did not run.
     unspentPoints: typeof raw["unspentPoints"] === "number" ? raw["unspentPoints"] : 0,
+    // Only `true` is ever written, and absent means the swap is unspent.
+    ...(raw["fitted"] === true ? { fitted: true as const } : {}),
   };
 }
 

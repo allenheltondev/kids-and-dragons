@@ -23,11 +23,13 @@ import {
   applyIntent,
   chapterDiscoveries,
   chapterStartDiscoveries,
+  classPlaceWaitingOn,
   createRunState,
   currentActor,
   currentActorId,
   legalActions,
   legalMoves,
+  keepClassIntent,
   makeRng,
   positionOf,
   sceneChoices,
@@ -464,6 +466,13 @@ export async function playCampaign(
       }
       if (prompt?.kind === "roll") {
         await must(ownerOf(s, prompt.characterId), { type: "ROLL" });
+        continue;
+      }
+      // Gemfall opens at the Exchange's fitting stall (#312): every new hero
+      // keeps the class they made, so the run plays as it did before it.
+      const deciding = classPlaceWaitingOn(s);
+      if (deciding.length > 0 && s.classPlace) {
+        for (const member of deciding) await must(member.playerId, keepClassIntent(s.classPlace, member));
         continue;
       }
       if (prompt?.kind === "choice") {

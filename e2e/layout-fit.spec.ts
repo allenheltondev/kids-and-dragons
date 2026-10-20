@@ -76,6 +76,11 @@ async function sessionOf(page: Page, code: string): Promise<{ playerId: string; 
 
 /** The dev playtest jump (playtest.ts), as stop-resume.spec uses it. */
 async function jumpTo(page: Page, code: string, sceneId: string): Promise<void> {
+  await sendAs(page, code, { type: "PLAYTEST_GOTO", sceneId });
+}
+
+/** One intent from this page's seat, retried past a lost seq race. */
+async function sendAs(page: Page, code: string, intent: Record<string, unknown>): Promise<void> {
   const session = await sessionOf(page, code);
   for (let attempt = 0; attempt < 5; attempt++) {
     const state = await roomState<{ runId: string; seq: number }>(page, code);
@@ -86,12 +91,14 @@ async function jumpTo(page: Page, code: string, sceneId: string): Promise<void> 
         runId: state.runId,
         playerId: session.playerId,
         seq: state.seq,
-        intent: { type: "PLAYTEST_GOTO", sceneId },
+        intent,
       }),
     });
-    if (((await response.json()) as { ok?: boolean }).ok) return;
+    const answer = (await response.json()) as { ok?: boolean; error?: { code: string; message: string } };
+    if (answer.ok) return;
+    if (answer.error?.code !== "STALE_SEQ") throw new Error(`${String(intent.type)}: ${JSON.stringify(answer.error)}`);
   }
-  throw new Error("the playtest jump kept losing the seq race");
+  throw new Error(`${String(intent.type)} kept losing the seq race`);
 }
 
 /**
@@ -406,6 +413,60 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await guest.getByRole("button", { name: /open your book/i }).click(TAP);
     await expect(guest.getByRole("region", { name: "Rosie's character sheet" })).toBeVisible(TAP);
     await expectFits(guest, "the adventure book");
+  });
+
+  test("the Exchange's fitting stall (#312): every class to try, and the \"are you sure?\"", async ({ browser }) => {
+    test.setTimeout(180_000);
+    // A new hero in Gemfall, which opens at the Exchange. The launch campaign
+    // is the Hollow Crown, so the room is opened for Gemfall instead, and the
+    // dev jump goes straight to the scene the stall stands in.
+    const kid = await phone(browser);
+    // In the page rather than on the wire (no request interception): the
+    // client's own create-room call names Gemfall.
+    await kid.addInitScript(() => {
+      const send = window.fetch.bind(window);
+      window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+        if (input === "/api/room" && init?.method === "POST" && typeof init.body === "string") {
+          const body = JSON.parse(init.body) as Record<string, unknown>;
+          if (body.campaignId) return send(input, { ...init, body: JSON.stringify({ ...body, campaignId: "gemfall" }) });
+        }
+        return send(input, init);
+      };
+    });
+    await kid.goto("/");
+    await kid.getByRole("button", { name: /host a game/i }).click(TAP);
+    await kid.getByText("Phone Mode").click();
+    await kid.getByLabel("Your adventurer name").fill("Grown-up");
+    await kid.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(kid).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
+    const code = new URL(kid.url()).pathname.split("/").pop() ?? "";
+    await createCharacter(kid, "unicorn", "Sparklehoof");
+    await kid.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    await expect.poll(async () => (await roomState<{ phase: string }>(kid, code)).phase, TAP).toBe("scene");
+    await jumpTo(kid, code, "scene_prologue_city");
+
+    // The stall opens for a new hero: every other class, and "Stay".
+    await expect(kid.getByText("Try on a new class?")).toBeVisible(TAP);
+    await expect(kid.getByRole("button", { name: /^Be a / })).toHaveCount(3);
+    await expectFits(kid, "the fitting stall, four answers");
+
+    // Keep first: the way on is free, and the stall stays open to a change of mind.
+    await kid.getByRole("button", { name: /^Stay a / }).click(TAP);
+    await kid.getByRole("button", { name: "Yes, keep it" }).click(TAP);
+    await expect(kid.getByText(/^You are a \w+\.$/)).toBeVisible(TAP);
+
+    // Then swap: the "are you sure?" with both tokens, and the one free swap said plainly.
+    await kid.getByRole("button", { name: "Be a Starweaver" }).click(TAP);
+    const sure = kid.getByRole("alertdialog");
+    await expect(sure).toContainText("This is your one free swap.", TAP);
+    await expect(sure.getByRole("img", { name: /^star circlet/ })).toBeVisible();
+    await expect(sure.getByRole("img", { name: /^your / })).toBeVisible();
+    await expectFits(kid, "the fitting stall's are-you-sure");
+
+    await kid.getByRole("button", { name: "Yes, switch!" }).click(TAP);
+    await expect(kid.getByText("You are a Starweaver now!")).toBeVisible(TAP);
+    // One swap: nothing more to try on.
+    await expect(kid.getByRole("button", { name: /^Be a / })).toHaveCount(0);
   });
 
   test("the shared screen: its corner row (Room, About this screen, Tap for sound) keeps off the lobby and the story", async ({ browser }) => {

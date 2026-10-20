@@ -12,14 +12,18 @@
  * The TV (`ClassPlaceRoll`) shows who switched, who kept, and who is still
  * deciding.
  *
+ * The Exchange's fitting stall (#312, §1) is the same two pieces with a
+ * different gate: only a new hero answers, and may put on any class but the
+ * one worn, once. The TV says the stall's own words above the roll call.
+ *
  * On screen a class token is always its own name ("your thorn bracer",
  * §4); "token" is only the word in code and docs.
  */
 
 import { useState } from "react";
 import type { ReactElement } from "react";
-import { classPlaceWaitingOn, owesClassAnswer } from "@kad/shared";
-import type { ClassId, PartyMember, RulesContent } from "@kad/shared";
+import { classPlaceWaitingOn, maySwitchAt, owesClassAnswer } from "@kad/shared";
+import type { ClassId, ClassPlaceState, PartyMember, RulesContent } from "@kad/shared";
 import { useMe, useParty, useRules, useRunState, useSend } from "../store";
 import { Button } from "../ui/Button";
 import { ClassToken, tokenName } from "./ClassToken";
@@ -46,15 +50,24 @@ function names(members: readonly PartyMember[]): string {
 
 /**
  * The "are you sure?" for a switch, one short sentence a line. Exported for
- * the tests, which read it as a kid would.
+ * the tests, which read it as a kid would. At the fitting stall, `keeper` is
+ * the tailor, and the kid hears that this is their one fitting.
  */
-export function switchLines(from: ClassId, to: ClassId): string[] {
+export function switchLines(from: ClassId, to: ClassId, keeper?: string): string[] {
   return [
     `You take off your ${tokenName(from)} and put on the ${tokenName(to)}.`,
     `Your ${tokenName(from)} goes in your pack.`,
     "It keeps everything you earned.",
+    // At the stall, said plainly: this is the only free swap, and it does
+    // not come back.
+    ...(keeper ? ["This is your one free swap.", `${keeper} will not offer it again.`] : []),
     `You can switch back at ${CLASS_PLACE_NAME[from]}.`,
   ];
+}
+
+/** The classes this hero may put on here: the room's, or at the stall any other. */
+function classesOn(place: ClassPlaceState, wearing: ClassId): ClassId[] {
+  return place.stall ? (Object.keys(CLASS_PLACE_NAME) as ClassId[]).filter((id) => id !== wearing) : [place.class];
 }
 
 /**
@@ -67,39 +80,46 @@ export function ClassPlaceChoice(): ReactElement | null {
   const party = useParty();
   const rules = useRules();
   const send = useSend();
-  const [picked, setPicked] = useState<"switch" | "keep" | null>(null);
+  // The class a "Be a …" tap picked, or "keep", until the "are you sure?" is answered.
+  const [picked, setPicked] = useState<ClassId | "keep" | null>(null);
   const [busy, setBusy] = useState(false);
 
   const place = state?.phase === "scene" ? state.classPlace : undefined;
   if (!place || me === null) return null;
 
-  const to = place.class;
+  const stall = place.stall === true;
+  const keeper = stall ? (rules?.fittingStall?.keeper ?? "The tailor") : undefined;
   const from = me.character.class;
-  const toName = className(rules, to);
   const fromName = className(rules, from);
+  const options = classesOn(place, from);
   const owes = owesClassAnswer(place, me);
   const waitingOn = classPlaceWaitingOn({ classPlace: place, party }).filter((m) => m.playerId !== me.playerId);
 
-  const answer = async (wantsSwitch: boolean): Promise<void> => {
+  const answer = async (to: ClassId | "keep"): Promise<void> => {
     setBusy(true);
     try {
-      await send(wantsSwitch ? { type: "SWITCH_CLASS", classId: to } : { type: "KEEP_CLASS", classId: to });
+      const at = stall ? { stall: true as const } : {};
+      await send(
+        to === "keep"
+          ? { type: "KEEP_CLASS", classId: stall ? from : (options[0] ?? from), ...at }
+          : { type: "SWITCH_CLASS", classId: to, ...at },
+      );
     } finally {
       setBusy(false);
       setPicked(null);
     }
   };
 
-  const beButton = (
-    <li>
-      <button type="button" className="choice kad-tap kad-focusable" onClick={() => setPicked("switch")}>
+  const beButtons = options.map((to) => (
+    <li key={to}>
+      <button type="button" className="choice kad-tap kad-focusable" onClick={() => setPicked(to)}>
         <span className="choice__icon">
           <Icon name={to} size="1.8em" />
         </span>
-        <span className="choice__label">{`Be a ${toName}`}</span>
+        <span className="choice__label">{`Be a ${className(rules, to)}`}</span>
       </button>
     </li>
-  );
+  ));
 
   // The "are you sure?", for whichever answer was tapped.
   const sure =
@@ -107,21 +127,21 @@ export function ClassPlaceChoice(): ReactElement | null {
       <div
         className="class-place__sure"
         role="alertdialog"
-        aria-label={picked === "switch" ? `Become a ${toName}?` : `Stay a ${fromName}?`}
+        aria-label={picked === "keep" ? `Stay a ${fromName}?` : `Become a ${className(rules, picked)}?`}
       >
-        <p className="class-place__ask">{picked === "switch" ? "Are you sure?" : `Keep your ${tokenName(from)}?`}</p>
-        {picked === "switch" ? (
+        <p className="class-place__ask">{picked === "keep" ? `Keep your ${tokenName(from)}?` : "Are you sure?"}</p>
+        {picked !== "keep" ? (
           /* The two tokens, notches and all (#314): the one coming off keeps
              every notch it has, in the pack. */
           <p className="class-place__tokens">
             <ClassToken classId={from} rank={me.character.rank} owner="your" holdable={false} />
             <Icon name="forward" />
-            <ClassToken classId={to} rank={me.character.spares?.find((s) => s.class === to)?.rank} holdable={false} />
+            <ClassToken classId={picked} rank={me.character.spares?.find((s) => s.class === picked)?.rank} holdable={false} />
           </p>
         ) : null}
-        {picked === "switch" ? (
+        {picked !== "keep" ? (
           <ul className="class-place__lines">
-            {switchLines(from, to).map((line) => (
+            {switchLines(from, picked, keeper).map((line) => (
               <li key={line}>{line}</li>
             ))}
           </ul>
@@ -133,23 +153,23 @@ export function ClassPlaceChoice(): ReactElement | null {
           <Button
             variant="primary"
             size="md"
-            icon={<Icon name={picked === "switch" ? to : "check"} />}
+            icon={<Icon name={picked === "keep" ? "check" : picked} />}
             disabled={busy}
-            onClick={() => void answer(picked === "switch")}
+            onClick={() => void answer(picked)}
           >
-            {picked === "switch" ? "Yes, switch!" : "Yes, keep it"}
+            {picked === "keep" ? "Yes, keep it" : "Yes, switch!"}
           </Button>
         </div>
       </div>
     );
 
   if (!owes) {
-    // Answered, or already this class: say where things stand, and who the
-    // way on is waiting for, if anybody.
+    // Answered, or nothing to decide here: say where things stand, and who
+    // the way on is waiting for, if anybody.
     const mine = place.answers[me.playerId];
     // A kid who said "stay" may still change their mind while the room is
     // open, as the server allows.
-    const mayStillSwitch = mine?.switched === false && from !== to;
+    const mayStillSwitch = mine?.switched === false && maySwitchAt(place, me);
     return (
       <div className="prompt class-place" data-testid="class-place">
         <h3 className="prompt__title">
@@ -162,7 +182,7 @@ export function ClassPlaceChoice(): ReactElement | null {
             <span>{`Waiting for ${names(waitingOn)} to decide.`}</span>
           </p>
         ) : null}
-        {mayStillSwitch ? (picked === null ? <ul className="prompt__options">{beButton}</ul> : sure) : null}
+        {mayStillSwitch ? (picked === null ? <ul className="prompt__options">{beButtons}</ul> : sure) : null}
       </div>
     );
   }
@@ -170,17 +190,17 @@ export function ClassPlaceChoice(): ReactElement | null {
   return (
     <div className="prompt class-place" data-testid="class-place">
       <h3 className="prompt__title">
-        <Icon name={to} />
-        <span>{`Become a ${toName}?`}</span>
+        <Icon name={stall ? "hand" : (options[0] ?? from)} />
+        <span>{stall ? "Try on a new class?" : `Become a ${className(rules, options[0] ?? from)}?`}</span>
       </h3>
       <p className="prompt__sub kad-muted">
         <Icon name="hand" />
-        <span>Only you decide this one.</span>
+        <span>{stall ? "Only you decide this one. It is free, but only this one time." : "Only you decide this one."}</span>
       </p>
 
       {picked === null ? (
         <ul className="prompt__options">
-          {beButton}
+          {beButtons}
           <li>
             <button
               type="button"
@@ -201,24 +221,29 @@ export function ClassPlaceChoice(): ReactElement | null {
   );
 }
 
-/** The TV's line for each hero at a class place, or nothing outside one. */
+/**
+ * The TV's line for each hero at a class place, or nothing outside one. At
+ * the fitting stall the stall's own words come first, which is where the
+ * tailor is introduced before any phone names her.
+ */
 export function ClassPlaceRoll(): ReactElement | null {
   const state = useRunState();
   const party = useParty();
   const rules = useRules();
   const place = state?.phase === "scene" ? state.classPlace : undefined;
   if (!place) return null;
+  const words = place.stall ? rules?.fittingStall?.narration : undefined;
 
-  return (
+  const roll = (
     <ul className="class-roll" data-testid="class-roll" aria-label="Who is switching">
       {party.map((member) => {
         const answer = place.answers[member.playerId];
         const wearing = className(rules, member.character.class);
         const line = answer?.switched
-          ? `${member.character.name} put on the ${tokenName(place.class)}!`
+          ? `${member.character.name} put on the ${tokenName(member.character.class)}!`
           : answer
             ? `${member.character.name} kept the ${tokenName(member.character.class)}.`
-            : member.character.class === place.class
+            : !maySwitchAt(place, member)
               ? `${member.character.name} is a ${wearing}.`
               : member.connected
                 ? `${member.character.name} is deciding…`
@@ -231,5 +256,12 @@ export function ClassPlaceRoll(): ReactElement | null {
         );
       })}
     </ul>
+  );
+  if (!words) return roll;
+  return (
+    <div className="class-stall" data-testid="fitting-stall">
+      <p className="class-stall__words">{words}</p>
+      {roll}
+    </div>
   );
 }

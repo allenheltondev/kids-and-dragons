@@ -152,9 +152,14 @@ export type ClientIntent =
    * class, so a tap aimed at a room the party has already left is refused
    * rather than read against the next one. A switch writes the hero's row,
    * so it goes through the authoritative run handler like `SPEND_STAT_POINT`.
+   *
+   * At the Exchange's fitting stall (§1, #312) the same two answers carry
+   * `stall: true`, so a tap aimed at the stall is never read against a room or
+   * the other way round. There `SWITCH_CLASS`'s `classId` is the class put
+   * on, any but the one worn, and `KEEP_CLASS`'s is the class kept.
    */
-  | { type: "SWITCH_CLASS"; classId: ClassId }
-  | { type: "KEEP_CLASS"; classId: ClassId }
+  | { type: "SWITCH_CLASS"; classId: ClassId; stall?: true }
+  | { type: "KEEP_CLASS"; classId: ClassId; stall?: true }
   /**
    * Trading at a Rest scene, spec §9.4 — offer, then the other phone answers.
    *
