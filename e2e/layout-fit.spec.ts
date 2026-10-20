@@ -32,6 +32,7 @@
  * exactly the shape the engine leaves it.
  */
 
+import { readdirSync, readFileSync } from "node:fs";
 import { test, expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
 import { createCharacter } from "./characters";
 import { openPlayerTask } from "./player-navigation";
@@ -60,6 +61,14 @@ const PHONE: Case[] = [
 /* A television, and a tablet showing the game (#274) at the largest text: the row is widest there. */
 const SHARED: Case[] = [
   { width: 1280, height: 720, text: "normal", hand: "off" },
+  { width: 1024, height: 600, text: "largest", hand: "off" },
+];
+
+/* The sizes #331 holds: a television and a tablet, each at normal and at the largest text. */
+const TV_SIZES: Case[] = [
+  { width: 1280, height: 720, text: "normal", hand: "off" },
+  { width: 1280, height: 720, text: "largest", hand: "off" },
+  { width: 1024, height: 600, text: "normal", hand: "off" },
   { width: 1024, height: 600, text: "largest", hand: "off" },
 ];
 
@@ -132,6 +141,96 @@ async function withRankUp(page: Page, name: string): Promise<void> {
       },
     });
   }, name);
+}
+
+
+interface Passage { name: string; narration: string; options: { id: string; label: string; icon: string }[] }
+
+/**
+ * The scenes of shipped content that ask the most of the TV's story plate (#331), read from
+ * content/chapters so they follow the writing: the longest story passage, the scene with the
+ * most choices a party always sees (none gated on a species, flag or item), and the longest
+ * story among the scenes that offer three or more. Choices a party has to earn are left out,
+ * as the engine leaves them out of the prompt.
+ */
+function hardestPassages(): Passage[] {
+  const dir = "content/chapters";
+  const all: (Passage & { gated: number })[] = [];
+  for (const file of readdirSync(dir).filter((f) => f.endsWith(".json"))) {
+    const chapter = JSON.parse(readFileSync(`${dir}/${file}`, "utf8")) as {
+      scenes: Record<string, { type: string; narration?: string; choices?: { id: string; label: string; icon: string }[] }>;
+    };
+    for (const [id, scene] of Object.entries(chapter.scenes)) {
+      if (scene.type === "combat" || !scene.narration || !scene.choices?.length) continue;
+      const open = scene.choices.filter((c) => !Object.keys(c).some((k) => /^(requires|when|hidden)/.test(k)));
+      if (open.length === 0) continue;
+      all.push({
+        name: `${file.replace(".json", "")}/${id}`,
+        narration: scene.narration,
+        options: open.map(({ id, label, icon }) => ({ id, label, icon })),
+        gated: scene.choices.length - open.length,
+      });
+    }
+  }
+  const labels = (p: Passage): number => p.options.reduce((n, o) => n + o.label.length, 0);
+  const by = (score: (p: Passage) => number, of: Passage[] = all): Passage => of.reduce((a, b) => (score(b) > score(a) ? b : a));
+  const picks = [
+    by((p) => p.narration.length),
+    by((p) => p.options.length * 1000 + labels(p)),
+    by((p) => p.narration.length, all.filter((p) => p.options.length >= 3)),
+    by((p) => p.narration.length, all.filter((p) => p.options.length >= 4)),
+  ];
+  return [...new Map(picks.map((p) => [p.name, p])).values()];
+}
+
+/** What the page's store says the scene is, to put back after trying others on it. */
+interface Shown { narration: string; prompt: unknown }
+
+/** A scene put on the page's own store, in the shape the engine leaves it (see withRankUp). */
+async function show(page: Page, scene: Shown | Passage | null): Promise<Shown> {
+  return page.evaluate(async (next) => {
+    const path = "/src/store/index.ts";
+    const { useGameStore } = (await import(/* @vite-ignore */ path)) as {
+      useGameStore: { getState(): { state: { sceneId: string; narration: string; prompt: unknown } | null }; setState(next: object): void };
+    };
+    const state = useGameStore.getState().state!;
+    const before = { narration: state.narration, prompt: state.prompt };
+    if (next !== null) {
+      const prompt = "options" in next
+        ? { kind: "choice", sceneId: state.sceneId, options: next.options, forPlayerIds: [], vote: false }
+        : next.prompt;
+      useGameStore.setState({ state: { ...state, narration: next.narration, prompt } });
+    }
+    return before;
+  }, scene);
+}
+
+/**
+ * What the TV's plate shows now: every choice whole inside the plate and the screen, with nobody
+ * to scroll for it, and how much of the story is in view.
+ */
+async function plateFit(page: Page): Promise<{ problems: string[]; size: number; lines: number; shown: number }> {
+  return page.evaluate(() => {
+    const problems: string[] = [];
+    const plate = document.querySelector(".narration__plate")!.getBoundingClientRect();
+    document.querySelectorAll<HTMLElement>(".narration__choice").forEach((el, n) => {
+      const box = el.getBoundingClientRect();
+      if (box.top < plate.top - 1 || box.bottom > plate.bottom + 1 || box.bottom > innerHeight + 1) {
+        problems.push(`choice ${n + 1} is off the plate or the screen (y ${Math.round(box.top)} to ${Math.round(box.bottom)}, plate ${Math.round(plate.top)} to ${Math.round(plate.bottom)}, screen ${innerHeight})`);
+      }
+    });
+    const body = document.querySelector(".narration__body")!;
+    const story = document.querySelector(".narration__story")!;
+    const style = getComputedStyle(body);
+    const line = parseFloat(style.lineHeight);
+    return {
+      problems,
+      size: parseFloat(style.fontSize),
+      lines: Math.round(body.getBoundingClientRect().height / line),
+      // Lines of the story in view: all of them unless it is the story that scrolls.
+      shown: story.scrollHeight > story.clientHeight + 1 ? Math.floor(story.clientHeight / line) : Math.round(body.getBoundingClientRect().height / line),
+    };
+  });
 }
 
 /** Apply display settings the way a11y/prefs.ts does: attributes on <html>. */
@@ -535,6 +634,51 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expect.poll(async () => (await roomState<{ phase: string }>(kid, code)).phase, TAP).toBe("scene");
     await expect(tv.locator(".narration__body").first()).toBeVisible(TAP);
     await expectFits(tv, "the shared screen's story", SHARED);
+
+    // The choices are on the TV whole, at both sizes and both text sizes (#331): for the scene the
+    // room is on, and for the hardest stories shipped, each with its own choices. The story steps
+    // its type down to fit them (fit-plate.ts), and never under the app's body size.
+    const unfit: string[] = [];
+    const real = await show(tv, null);
+    for (const passage of [null, ...hardestPassages()]) {
+      if (passage !== null) await show(tv, passage);
+      for (const { width, height, text } of TV_SIZES) {
+        await tv.setViewportSize({ width, height });
+        await settings(tv, text, "off");
+        await tv.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+        const { problems, size, lines, shown } = await plateFit(tv);
+        const where = `${passage?.name ?? "this scene"} @${width}x${height}, ${text} text`;
+        for (const problem of problems) unfit.push(`${where}: ${problem}`);
+        if (size < 19) unfit.push(`${where}: the story is ${Math.round(size)}px, too small to read from a couch`);
+        if (shown < Math.min(lines, text === "normal" ? lines : 2)) unfit.push(`${where}: only ${shown} of the story's ${lines} lines are in view`);
+        if (problems.length > 0 && process.env.KAD_FIT_DEBUG) {
+          await tv.screenshot({ path: `${process.env.KAD_FIT_DEBUG}/plate-${(passage?.name ?? "scene").replace(/\W+/g, "-")}-${width}-${text}.png` });
+        }
+      }
+    }
+    // And after the first fit, with the same words and choices: a label that wraps further (a late
+    // font) and a line added under the story (a class place's roll) must refit, not hide a choice.
+    {
+      const four = hardestPassages().find((p) => p.options.length >= 4)!;
+      await tv.setViewportSize({ width: 1280, height: 720 });
+      await settings(tv, "normal", "off");
+      await show(tv, four);
+      await tv.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+      await tv.evaluate(() => {
+        const label = document.querySelector(".narration__choice > span")!;
+        label.textContent += " and then a good deal more, so that this one label runs across two lines of the plate";
+        const extra = document.createElement("p");
+        extra.textContent = "Somebody rolled for the stone, and the stone rolled back, which is a long way to go for a joke.";
+        document.querySelector(".narration__story")!.append(extra);
+      });
+      await tv.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(done)))));
+      const after = await plateFit(tv);
+      expect.soft(after.problems, `choices after the plate's content grew under it: ${after.problems.join("; ")}`).toEqual([]);
+    }
+    await show(tv, real);
+    await settings(tv, "normal", "off");
+    await tv.setViewportSize({ width: 1280, height: 720 });
+    expect.soft(unfit, unfit.join("\n")).toEqual([]);
 
     // A rank lands (#314): the line with its token under the story, and the moment over
     // the stage, which lets every tap through and is gone by itself in a few seconds.
