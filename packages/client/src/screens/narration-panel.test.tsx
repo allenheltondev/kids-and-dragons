@@ -452,5 +452,14 @@ describe("a rank that just landed (#310)", () => {
   it("is gone once the table has moved on to another scene", () => {
     mount({ sceneType: "story", sceneId: "road", rankUps: { sceneId: "camp", ups: [UP] } });
     expect(screen.queryByTestId("rank-up")).toBeNull();
+    expect(screen.queryByTestId("rank-up-moment")).toBeNull();
+  });
+
+  it("lifts the token over the stage beside the line (#314), said only once, by the line", async () => {
+    mount({ sceneType: "rest", sceneId: "camp", narration: "A fire, and the road beyond it.", rankUps: { sceneId: "camp", ups: [UP] } });
+    const moment = await screen.findByTestId("rank-up-moment");
+    expect(moment.getAttribute("aria-hidden")).toBe("true");
+    expect(moment.textContent).toContain("Don't mess with us.");
+    expect(spoken.filter((line) => line.includes("Duskrunner Apprentice"))).toHaveLength(1);
   });
 });
