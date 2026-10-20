@@ -41,7 +41,7 @@ test.describe("moving a kid to another home", () => {
 
     // --- The leader starts the club, adds Ada, and makes her a move code ---
     const leaderPage = await page(browser);
-    await leaderPage.goto("/");
+    await leaderPage.goto("/account");
     await leaderPage.getByRole("button", { name: /run a group/i }).click(TAP);
     await signIn(leaderPage, leader);
     await leaderPage.getByLabel("Start a new group").fill(club);

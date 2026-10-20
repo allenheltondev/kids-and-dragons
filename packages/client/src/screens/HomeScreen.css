@@ -416,3 +416,15 @@
 .home__link:hover {
   color: var(--color-text, #f4f1ff);
 }
+
+/* --- AccountScreen (`/account`): the same cards, under a plain title ----- */
+
+.account__title {
+  justify-content: center;
+  font-size: var(--font-size-xl, 1.5em);
+}
+
+.account__back {
+  display: flex;
+  justify-content: center;
+}

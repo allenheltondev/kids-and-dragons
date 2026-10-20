@@ -24,7 +24,7 @@ test("a grown-up keeps, then deletes, a group's data", async ({ browser }) => {
   const page = await ctx.newPage();
 
   // What the game stores can be read before anybody signs in.
-  await page.goto("/");
+  await page.goto("/account");
   await page.getByRole("button", { name: /run a group/i }).click(TAP);
   await page.getByRole("button", { name: /what we store about your family/i }).click(TAP);
   await expect(page.getByRole("heading", { name: "What we store" })).toBeVisible(TAP);

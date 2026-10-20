@@ -38,7 +38,7 @@ test.describe("a room open to visitors", () => {
   }
 
   async function hostPhoneMode(page: Page, name: string): Promise<string> {
-    await page.getByRole("button", { name: /want to host/i }).click();
+    await page.getByRole("button", { name: /host a game/i }).click();
     await page.getByText("Phone Mode").click();
     await page.getByLabel(/adventurer name/i).fill(name);
     await page.getByRole("button", { name: /^start a game$/i }).click();
@@ -75,10 +75,11 @@ test.describe("a room open to visitors", () => {
 
     // --- A grown-up with an account hosts on their phone ---
     const host = await phone(browser);
-    await host.goto("/");
+    await host.goto("/account");
     await host.getByRole("button", { name: /sign in or create an account/i }).click(TAP);
     await signIn(host, email);
     await host.getByRole("button", { name: /back to the game/i }).click(TAP);
+    await host.getByRole("button", { name: "Back to the start" }).click();
     const code = await hostPhoneMode(host, "Grown-up");
 
     // --- A phone from another household: it has played a game of its own ---
