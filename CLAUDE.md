@@ -37,6 +37,20 @@ out on Gemfall), and for a nonlinear campaign
 - Each chapter needs a rest waypoint (a `rest` scene with choices) and at least one ending (a
   scene with `"choices": []`).
 
+### Interactivity
+
+`content:pacing` measures the second and third on every spine (it reports, never gates). See
+[content/README.md, "Interactivity"](content/README.md#interactivity).
+
+- **The chapter's goal is clear in scene 1.** The entry scene says, in plain words, what the
+  party is here to do.
+- **Never more than about three scenes in a row without something to decide**: a vote, a check
+  or a fight. One-button beats are reading.
+- **Most spine checks are things the party does, not says.** Might, quick and clever are
+  doing; heart is talking. Where the stat misleads, the check sets `checkKind`.
+- **New people arrive with a stake for the party.** The scene that introduces someone says what
+  they want from the party, or what they can do for it.
+
 ### Continuity: introduce it before you use it
 
 - **Nobody and nothing appears unannounced.** The first scene that uses a name (a person, a place,
