@@ -84,8 +84,8 @@ describe("the chapter's goal", () => {
     seed({ climbed_right: true });
     render(<ChapterGoalCard place="phone" />);
     expect(ticked()).toEqual([false, true, false]);
-    expect(screen.getAllByText(", not yet")).toHaveLength(2);
-    expect(screen.getByText(", done")).toBeTruthy();
+    expect(screen.getAllByRole("img", { name: "Not yet" })).toHaveLength(2);
+    expect(screen.getByRole("img", { name: "Done" })).toBeTruthy();
     expect(document.querySelector(".goal__step[data-next]")?.textContent).toContain("Find a ladder");
   });
 
