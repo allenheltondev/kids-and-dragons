@@ -1,5 +1,13 @@
 # Brief: canon as a content source, and generated situations
 
+> **§4 (generated situations at play time) is superseded (2026-10-20) by #347.**
+> The game makes no model call while a table plays (architecture §6, "No model
+> at play time"). The live narration layer this section leaned on, its kill
+> switch and its validator are gone, so the §-references in §4 point at removed
+> text. Do not build §4 as written: generated scenes would have to be authored
+> offline and committed like any other chapter. §0 to §3 are about canon as
+> authoring data and are unaffected.
+
 > **Superseded in part (2026-07-31) by `docs/canon-contract.md`.** Allen ruled
 > that `canon/` is the truth, which moves §2's bestiary *into* canon as a field
 > group on the creature entry — `content/bestiary.json` becomes a generated
@@ -186,6 +194,9 @@ It has three consumers, and the third is the point:
 
 ## 4. Generated situations
 
+> **Superseded by #347; kept for the record.** Play-time generation is out: see
+> the note at the top of this brief.
+
 With §2 and §3 in place, the contract is small:
 
 - **The model emits a `Scene`, never an outcome.** Structured output against
@@ -228,4 +239,4 @@ per-household session history becomes a corpus.
    stat blocks from `bramblewood-01.json`.
 4. Encounter + `resolutions` fields in `creatures.yaml` — during the
    elaboration pass, not after it.
-5. Only then, generated scenes.
+5. ~~Only then, generated scenes.~~ Superseded by #347: no model at play time.
