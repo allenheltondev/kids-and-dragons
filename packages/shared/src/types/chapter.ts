@@ -186,8 +186,18 @@ export interface CastMember {
   figure: string;
   /** The nameplate. Omitted for an unnamed creature. */
   name?: string;
-  /** How big they stand beside the party. Defaults per figure (world/cast.ts). */
+  /**
+   * How big they stand beside the party. Defaults to the figure's own height
+   * (canon `height_cm`, or the manifest's `heightCm` for a `cast/` figure);
+   * a band here moves that height to the nearest point inside the band
+   * (`heightInBand`), so a "small" faun is a faun child, not a new species.
+   */
   size?: CastSize;
+  /**
+   * How they occupy this scene: a griffin landed or in flight, a selkie on
+   * the quay or in the harbor. Defaults to the figure's own canon `stance`.
+   */
+  stance?: CastStance;
   /**
    * How many of them are there (default 1, at most 6). The stage draws that
    * many figures huddled together, so "three cinder wolves" in the narration
@@ -195,6 +205,9 @@ export interface CastMember {
    */
   count?: number;
 }
+
+/** canon `Stance` (packages/canon envelope.ts), as a chapter may override it (#362). */
+export type CastStance = "standing" | "hovering" | "flying" | "swimming";
 
 export type CastSize =
   | "tiny"

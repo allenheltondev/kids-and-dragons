@@ -35,9 +35,9 @@
  * ---------------------------------------------------------------------------
  */
 
-import { idleBreath } from "./idle-motion";
+import { stanceIdle } from "./idle-motion";
 import { Application, Assets, Container, Graphics, Sprite, Text, Texture } from "pixi.js";
-import type { PartyMember, Position } from "@kad/shared";
+import type { CastStance, PartyMember, Position } from "@kad/shared";
 import { currentActorId } from "@kad/shared";
 import {
   createCameraState,
@@ -55,7 +55,6 @@ import {
   ANCHOR_Y,
   BOB_RATE,
   CAMERA_RATE,
-  CANVAS,
   DOWN_RATE,
   FADE_RATE,
   FALLEN_ALPHA,
@@ -67,10 +66,13 @@ import {
   drawContactShadow,
   drawPlaceholder,
   breathingShadowScale,
+  groundedFootprint,
   measureFootprint,
+  measurePaint,
   shadowOffset,
   type Footprint,
 } from "./actor-art";
+import { figureSize, fitCanvas, NOMINAL_PAINT, STANCE_LIFT, type PaintBox } from "./figure-scale";
 import { sceneBackdropUrl } from "./art-paths";
 import { isQuiet, QUIET_FLASH_SCALE } from "../quiet";
 import { focusHolds, type FocusHold } from "./attention";
@@ -87,11 +89,12 @@ import {
   createNameplate,
   fitNameplate,
   nameplateBoxOf,
+  nameplateGap,
   nameplateLabel,
   type NameplateReading,
 } from "./nameplate";
 import type { EncounterEvent } from "@kad/shared";
-import { stageSlots, stageFigureScale, type StageCastMember } from "./cast";
+import { stageLayout, type StageCastMember } from "./cast";
 import { storyStageHeight } from "./stage-inset";
 import { reducedMotion } from "../a11y/prefs";
 
@@ -277,19 +280,47 @@ export interface PartyScene {
   destroy(): void;
 }
 
-interface Actor {
+/**
+ * What every figure on the story stage carries for true size and stance
+ * (#362, figure-scale.ts). `height` is set by layout; the rest arrives with
+ * the art, which is measured once it loads.
+ */
+interface StageFigureArt {
   container: Container;
   art: Container;
+  label: Text | null;
+  shadow: Graphics;
+  heightCm: number;
+  stance: CastStance;
+  /** A hero is drawn against the nominal box, so tier growth shows. */
+  hero: boolean;
+  paint: PaintBox | null;
+  /** The measured feet, with the paint moved onto the ground line. */
+  footprint: Footprint | null;
+  sprite: Sprite | null;
+  /** Drawn painted height, in design units. Set by layout. */
+  height: number;
+  /** The canvas side that height comes to, and the one the shadow was drawn for. */
+  canvas: number;
+  shadowCanvas: number;
+  /** How far right of the anchor the feet are, as drawn (facing left). The
+      shadow follows `art.scale.x` across, so it stays under them on a turn. */
+  shadowX: number;
+  /** A swimmer's water line, and the mask that hides what is under it. */
+  ripple: Graphics | null;
+  mask: Graphics | null;
+}
+
+interface Actor extends StageFigureArt {
   characterId: string;
   /** Which asset this actor was built from. See `visualKeyOf`. */
   visualKey: string;
-  /**
-   * The name under their feet — who this is, when two players picked the same
-   * species (nameplate.ts). Null for a name with nothing in it. A sibling of
-   * `art` rather than a child: the art rotates and fades and the label must
-   * not go with it.
+  /*
+   * `label` is the name under their feet — who this is, when two players
+   * picked the same species (nameplate.ts). Null for a name with nothing in
+   * it. A sibling of `art` rather than a child: the art rotates and fades and
+   * the label must not go with it.
    */
-  label: Text | null;
   /** What `label` is currently saying, so a renamed character is spotted
       without measuring a Text every patch. */
   labelText: string | null;
@@ -303,21 +334,13 @@ interface Actor {
   /** Whether the container has stood in a slot yet. A figure's first slot is
       taken at once; only a move between slots is walked. */
   placed: boolean;
-  /** The contact shadow, a sibling of `art` so it neither turns nor falls. */
-  shadow: Graphics;
-  /** How far right of the anchor the feet are, as drawn (facing left). The
-      shadow follows `art.scale.x` across, so it stays under them on a turn. */
-  shadowX: number;
+  /* `shadow` is the contact shadow, a sibling of `art` so it neither turns
+     nor falls. */
 }
 
 /** Somebody standing opposite the party (world/cast.ts). */
-interface CastActor {
+interface CastActor extends StageFigureArt {
   key: string;
-  container: Container;
-  art: Container;
-  label: Text | null;
-  shadow: Graphics;
-  scale: number;
   /** One of a group: laid out close together (see `stageSlots`). */
   crowded: boolean;
   /** For one of a group: 0 or 1, the odd ones standing a step back. */
@@ -615,39 +638,37 @@ export function createScene(app: Application): PartyScene {
     // standing in each other.
     const width = stageWidth();
     const left = (DESIGN.width - width) / 2;
-    const slots = stageSlots(
-      list.length,
-      cast.map((member) => member.scale),
-      width,
-      cast.map((member) => member.crowded),
-      viewport.width < 600,
-    );
+    // True proportion (#362): everybody at their real height relative to one
+    // another, shrunk together only when the tallest would leave the frame or
+    // somebody would not fit their slot. A slot is only known here, because
+    // it shrinks as the party grows.
+    const fit = stageLayout(list, cast, width, viewport.width < 600);
+    const slots = fit.slots;
     slots.party = slots.party.map((x) => x + left);
     slots.cast = slots.cast.map((x) => x + left);
-    const figureScale = stageFigureScale(slots, cast.map((member) => member.scale), ACTOR_HEIGHT);
     // Heroes are drawn facing left; with company on the right they turn round.
     facing = cast.length > 0 ? -1 : 1;
     // A name may be no wider than the slot its character stands in, less a
     // gutter — two nameplates that touch are one unreadable name, which is the
-    // failure the nameplate was added to fix. The slot is only known here,
-    // because it shrinks as the party grows.
+    // failure the nameplate was added to fix. Names are no longer scaled with
+    // the figures, so a mouse-sized guest's name reads as well as a troll's.
     // Wrapped names need a little extra gutter between their taller blocks.
     const nameplateSlot = viewport.width < 600 ? 0.82 : NAMEPLATE_SLOT;
     const slot = slots.partySlot * nameplateSlot;
     cast.forEach((member, index) => {
-      member.container.scale.set(figureScale);
+      fitFigure(member, fit.cast[index] ?? member.height);
       member.x = slots.cast[index] ?? member.x;
       if (member.label) {
         member.label.visible = nameplatesVisible;
-        fitNameplate(member.label, (slots.castSlots[index] ?? slot) * nameplateSlot / figureScale, viewport.width < 600);
+        fitNameplate(member.label, (slots.castSlots[index] ?? slot) * nameplateSlot, viewport.width < 600);
       }
     });
     const still = prefersReducedMotion();
     list.forEach((actor, index) => {
-      actor.container.scale.set(figureScale);
+      fitFigure(actor, fit.party[index] ?? actor.height);
       if (actor.label) {
         actor.label.visible = nameplatesVisible;
-        fitNameplate(actor.label, slot / figureScale, viewport.width < 600);
+        fitNameplate(actor.label, slot, viewport.width < 600);
       }
       actor.x = slots.party[index] ?? actor.x;
       // A shallow depth stagger so three characters read as a group rather than
@@ -768,21 +789,26 @@ export function createScene(app: Application): PartyScene {
         // spec §7.3 — knocked down, never dead. They lie on the grid and wait
         // for someone to come get them.
         actor.art.rotation = approach(actor.art.rotation, FALLEN_ROTATION, DOWN_RATE, dt);
-        actor.art.y = approach(actor.art.y, ACTOR_HEIGHT * 0.18, DOWN_RATE, dt);
+        actor.art.y = approach(actor.art.y, actor.canvas * 0.18, DOWN_RATE, dt);
+        actor.art.x = approach(actor.art.x, 0, DOWN_RATE, dt);
         actor.art.scale.y = approach(actor.art.scale.y, 1, DOWN_RATE, dt);
-        actor.shadow.scale.set(1);
+        actor.shadow.scale.set(shadowScale(actor, 1));
         actor.art.alpha = approach(actor.art.alpha, FALLEN_ALPHA, DOWN_RATE, dt);
         continue;
       }
-      // Breathing, not bobbing: the art is anchored at the feet, so a
-      // stretch on y swells the body and leaves the feet on their shadow.
+      // A standing hero breathes, not bobs: the art is anchored at the feet, so
+      // a stretch on y swells the body and leaves the feet on their shadow.
       // Lifting the whole figure is what made the lineup look like it hovered.
-      const breath = idleBreath(elapsed, actor.phase, still);
-      actor.art.rotation = approach(actor.art.rotation, 0, BOB_RATE, dt);
-      actor.art.y = approach(actor.art.y, 0, DOWN_RATE, dt);
-      actor.art.scale.y = 1 + breath;
+      // Anything raised bobs or drifts instead (stanceIdle, #362).
+      const idle = stanceIdle(actor.stance, elapsed, actor.phase, still);
+      const reach = motionReach(actor.height);
+      actor.art.rotation = approach(actor.art.rotation, idle.rotation, BOB_RATE, dt);
+      actor.art.y = approach(actor.art.y, restY(actor) + idle.dy * reach, DOWN_RATE, dt);
+      actor.art.x = idle.dx * reach;
+      actor.art.scale.y = 1 + idle.breath;
       // The shadow tightens as the body rises and spreads as it settles.
-      actor.shadow.scale.set(breathingShadowScale(actor.art.scale.y - 1));
+      actor.shadow.scale.set(shadowScale(actor, idle.shadow * breathingShadowScale(idle.breath)));
+      if (actor.ripple) actor.ripple.scale.set(rippleWidth(actor) * idle.ripple / RIPPLE_UNIT);
       actor.art.alpha = approach(actor.art.alpha, actor.connected ? 1 : 0.5, FADE_RATE, dt);
     }
   }
@@ -803,13 +829,20 @@ export function createScene(app: Application): PartyScene {
       member.container.y = rowY;
       member.container.zIndex = rowY - 1;
       member.art.alpha = member.presence;
-      member.shadow.alpha = member.presence;
+      member.shadow.alpha = member.presence * STANCE_SHADOW[member.stance].alpha;
+      if (member.ripple) member.ripple.alpha = member.presence;
       if (member.label) member.label.alpha = member.presence;
       {
-        // Breathing about the feet — see the party's bob in tick().
-        const breath = idleBreath(elapsed, member.phase, still);
-        member.art.scale.y = 1 + breath;
-        member.shadow.scale.set(breathingShadowScale(member.art.scale.y - 1));
+        // Breathing about the feet, or bobbing, drifting or swimming by
+        // stance — see the party's idle in tick().
+        const idle = stanceIdle(member.stance, elapsed, member.phase, still);
+        const reach = motionReach(member.height);
+        member.art.y = restY(member) + idle.dy * reach;
+        member.art.x = idle.dx * reach;
+        member.art.rotation = idle.rotation;
+        member.art.scale.y = 1 + idle.breath;
+        member.shadow.scale.set(shadowScale(member, idle.shadow * breathingShadowScale(idle.breath)));
+        if (member.ripple) member.ripple.scale.set(rippleWidth(member) * idle.ripple / RIPPLE_UNIT);
       }
     }
   }
@@ -819,15 +852,16 @@ export function createScene(app: Application): PartyScene {
     const art = new Container();
     container.addChild(art);
     actorsLayer.addChild(container);
-    const height = ACTOR_HEIGHT * member.scale;
+    // Until layout says otherwise: a person, standing, at natural size.
+    const height = ACTOR_HEIGHT * NOMINAL_FILL;
     // Fitted to the feet once the art is here and can be measured; until
     // then, a modest one at the anchor (it fades in with the figure anyway).
-    const shadow = drawContactShadow(height, null, SCENE_SHADOW_SQUASH);
+    const shadow = drawContactShadow(ACTOR_HEIGHT, null, SCENE_SHADOW_SQUASH);
     container.addChildAt(shadow, 0);
     const label =
       member.name === null
         ? null
-        : createNameplate(member.name, { typeHeight: ACTOR_HEIGHT, figureHeight: height, maxWidth: ACTOR_HEIGHT });
+        : createNameplate(member.name, { typeHeight: ACTOR_HEIGHT, figureHeight: ACTOR_HEIGHT, maxWidth: ACTOR_HEIGHT });
     if (label) {
       label.visible = nameplatesVisible;
       container.addChild(label);
@@ -838,7 +872,18 @@ export function createScene(app: Application): PartyScene {
       art,
       label,
       shadow,
-      scale: member.scale,
+      heightCm: member.heightCm,
+      stance: member.stance,
+      hero: false,
+      paint: null,
+      footprint: null,
+      sprite: null,
+      height,
+      canvas: ACTOR_HEIGHT,
+      shadowCanvas: ACTOR_HEIGHT,
+      shadowX: 0,
+      ripple: null,
+      mask: null,
       crowded: member.crowd !== undefined,
       row: (member.crowd?.index ?? 0) % 2,
       x: DESIGN.width,
@@ -846,6 +891,7 @@ export function createScene(app: Application): PartyScene {
       leaving: false,
       phase: Math.random() * Math.PI * 2,
     };
+    applyStance(actor);
     container.x = DESIGN.width + CAST_ENTRY_OFFSET;
     container.y = GROUND_Y;
     art.alpha = 0;
@@ -858,11 +904,15 @@ export function createScene(app: Application): PartyScene {
         if (destroyed || castActors.get(member.key) !== actor) return;
         const sprite = new Sprite(texture);
         sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
-        // Canvas-relative, like the party's PNGs: every figure is drawn to the
-        // same 1024 canvas, so scale alone says sprite or centaur.
-        sprite.scale.set(height / texture.height);
         art.addChild(sprite);
-        actor.shadow = refitShadow(container, actor.shadow, height, measureFootprint(texture));
+        actor.sprite = sprite;
+        // Every figure is drawn to the same 1024 canvas, so the painting is
+        // measured and the canvas scaled to make *it* the right height.
+        actor.paint = measurePaint(texture);
+        actor.footprint = groundedFootprint(measureFootprint(texture), actor.paint);
+        layoutActors();
+        actor.shadow = refitShadow(container, actor.shadow, actor.canvas, actor.footprint);
+        actor.shadowCanvas = actor.canvas;
       })
       .catch(() => {
         /* nobody there is better than a broken image; the validator guards the path */
@@ -1008,6 +1058,9 @@ export function createScene(app: Application): PartyScene {
     });
     if (label) container.addChild(label);
 
+    // A hero's true height is their species' (#362): the party line shows a
+    // kitsune and a bigfoot as differently sized as they are.
+    const size = figureSize(`characters/${species}`);
     const actor: Actor = {
       container,
       art,
@@ -1024,7 +1077,19 @@ export function createScene(app: Application): PartyScene {
 
       shadow,
       shadowX: 0,
+      heightCm: size.heightCm,
+      stance: size.stance,
+      hero: true,
+      paint: null,
+      footprint: null,
+      sprite: null,
+      height: ACTOR_HEIGHT * NOMINAL_FILL,
+      canvas: ACTOR_HEIGHT,
+      shadowCanvas: ACTOR_HEIGHT,
+      ripple: null,
+      mask: null,
     };
+    applyStance(actor);
 
     /*
      * Always try to load; the placeholder is the fallback. There used to be a
@@ -1042,13 +1107,16 @@ export function createScene(app: Application): PartyScene {
           if (destroyed || actors.get(id) !== actor) return;
           const sprite = new Sprite(texture);
           sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
-          sprite.scale.set(ACTOR_HEIGHT / CANVAS.height);
           art.removeChildren();
           placeholder.destroy();
           art.addChild(sprite);
-          const footprint = measureFootprint(texture);
-          actor.shadow = refitShadow(container, actor.shadow, ACTOR_HEIGHT, footprint);
-          actor.shadowX = shadowOffset(ACTOR_HEIGHT, footprint);
+          actor.sprite = sprite;
+          actor.paint = measurePaint(texture);
+          actor.footprint = groundedFootprint(measureFootprint(texture), actor.paint);
+          // The measured width changes how much room this hero needs.
+          layoutActors();
+          actor.shadow = refitShadow(container, actor.shadow, actor.canvas, actor.footprint);
+          actor.shadowCanvas = actor.canvas;
         })
         .catch(() => {
           /* keep the placeholder: a missing tier must never blank the stage */
@@ -1160,6 +1228,13 @@ export function createScene(app: Application): PartyScene {
           // next: the crowd is the scene's to say, not the actor's to keep.
           existing.crowded = member.crowd !== undefined;
           existing.row = (member.crowd?.index ?? 0) % 2;
+          // So is how big they are and how they stand: a chapter may land a
+          // griffin in one scene that flew in the last (#362).
+          existing.heightCm = member.heightCm;
+          if (existing.stance !== member.stance) {
+            existing.stance = member.stance;
+            applyStance(existing);
+          }
           // Called back before they had finished leaving: turn round, no reload.
           existing.leaving = false;
           continue;
@@ -1406,6 +1481,105 @@ export function createScene(app: Application): PartyScene {
 /** How deep the lineup's ground shadows are for their width: the story
     camera looks along the ground, so they are flatter than the board's. */
 const SCENE_SHADOW_SQUASH = 0.2;
+
+/** How much of its canvas a figure's paint fills before it is measured (figure-scale.ts NOMINAL_PAINT). */
+const NOMINAL_FILL = NOMINAL_PAINT.bottom - NOMINAL_PAINT.top;
+
+/** The drop from a figure's lowest point to the top of its name: one number for every figure, since names no longer scale with them. */
+const NAME_GAP = nameplateGap(ACTOR_HEIGHT);
+
+/**
+ * The shadow a stance casts (#362): a contact shadow for anything on the
+ * ground, a smaller and fainter one for anything in the air (the higher, the
+ * smaller), and none for a swimmer, whose water line is its contact.
+ */
+const STANCE_SHADOW: Readonly<Record<CastStance, { size: number; alpha: number }>> = {
+  standing: { size: 1, alpha: 1 },
+  hovering: { size: 0.6, alpha: 0.55 },
+  flying: { size: 0.45, alpha: 0.4 },
+  swimming: { size: 0, alpha: 0 },
+};
+
+/** Idle travel is a fraction of the figure, but never less than of a small one's: a wisp's bob must still show. */
+function motionReach(height: number): number {
+  return Math.max(height, 160);
+}
+
+/** Where the art rests above (or, for a swimmer, below) the ground line. */
+function restY(figure: StageFigureArt): number {
+  return -STANCE_LIFT[figure.stance] * figure.height;
+}
+
+function shadowScale(figure: StageFigureArt, idle: number): number {
+  return (figure.canvas / figure.shadowCanvas) * STANCE_SHADOW[figure.stance].size * idle;
+}
+
+/** The ripple is drawn this wide and scaled to the swimmer. */
+const RIPPLE_UNIT = 100;
+
+function rippleWidth(figure: StageFigureArt): number {
+  const paint = figure.paint ?? NOMINAL_PAINT;
+  return (figure.height * (paint.right - paint.left)) / (paint.bottom - paint.top) * 0.5;
+}
+
+function drawRipple(): Graphics {
+  const g = new Graphics();
+  g.ellipse(0, 0, RIPPLE_UNIT * 1.1, RIPPLE_UNIT * 0.16).fill({ color: 0x9fd4f2, alpha: 0.18 });
+  g.ellipse(0, 0, RIPPLE_UNIT, RIPPLE_UNIT * 0.12).stroke({ width: 4, color: 0xe2f5ff, alpha: 0.75 });
+  g.ellipse(0, RIPPLE_UNIT * 0.05, RIPPLE_UNIT * 0.7, RIPPLE_UNIT * 0.08).stroke({ width: 3, color: 0xe2f5ff, alpha: 0.4 });
+  return g;
+}
+
+/**
+ * Size a figure's art to `height` (its painted height, design units): the
+ * canvas scaled so the paint is that tall and its lowest row on the ground
+ * line, the shadow slid under the feet, and the name under the figure. A
+ * raised figure's name goes with it, under its body rather than on the empty
+ * ground below; a swimmer's sits under the water line.
+ */
+function fitFigure(figure: StageFigureArt, height: number): void {
+  figure.height = height;
+  const fit = fitCanvas(height, figure.paint, figure.hero ? NOMINAL_PAINT : figure.paint);
+  figure.canvas = fit.canvas;
+  for (const child of figure.art.children) {
+    if (child === figure.sprite) continue;
+    // The "art pending" stand-in, drawn a canvas of ACTOR_HEIGHT tall.
+    child.scale.set(fit.canvas / ACTOR_HEIGHT);
+  }
+  if (figure.sprite) {
+    figure.sprite.scale.set(fit.canvas / figure.sprite.texture.height);
+    figure.sprite.y = fit.offsetY;
+  }
+  figure.shadowX = shadowOffset(fit.canvas, figure.footprint);
+  figure.shadow.x = figure.shadowX * (figure.art.scale.x < 0 ? -1 : 1);
+  if (figure.label) figure.label.y = Math.min(0, restY(figure)) + NAME_GAP;
+}
+
+/**
+ * Put a stance's furniture up or take it down (#362). A swimmer gets a water
+ * line: a mask that hides everything below the ground line, and a ripple
+ * drawn over the cut. Anything else gets its shadow back.
+ */
+function applyStance(figure: StageFigureArt): void {
+  const swimming = figure.stance === "swimming";
+  if (swimming && !figure.mask) {
+    const mask = new Graphics().rect(-4000, -8000, 8000, 8000).fill({ color: 0xffffff });
+    figure.container.addChild(mask);
+    figure.art.mask = mask;
+    figure.mask = mask;
+    const ripple = drawRipple();
+    figure.container.addChildAt(ripple, figure.container.getChildIndex(figure.art) + 1);
+    figure.ripple = ripple;
+  } else if (!swimming && figure.mask) {
+    figure.art.mask = null;
+    figure.mask.destroy();
+    figure.mask = null;
+    figure.ripple?.destroy();
+    figure.ripple = null;
+  }
+  figure.shadow.visible = !swimming;
+  if (figure.label) figure.label.y = Math.min(0, restY(figure)) + NAME_GAP;
+}
 
 /**
  * Swap `old` for a shadow fitted to `footprint`, in the same slot under the
