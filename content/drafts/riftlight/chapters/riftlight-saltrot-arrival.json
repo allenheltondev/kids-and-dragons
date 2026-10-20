@@ -9,6 +9,21 @@
   "estimatedMinutes": 12,
   "xpAward": 140,
   "entry": "flats",
+  "goal": {
+    "text": "Find your footing on the muddy flats.",
+    "steps": [
+      {
+        "id": "listen",
+        "label": "Learn a new way to listen",
+        "flag": "listened_for_the_answer"
+      },
+      {
+        "id": "help_traveler",
+        "label": "Help a traveler on the flats",
+        "flag": "helped_the_flats_traveler"
+      }
+    ]
+  },
   "scenes": {
     "flats": {
       "type": "story",
@@ -57,6 +72,10 @@
               "type": "setFlag",
               "flag": "attune_taught",
               "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "listened_for_the_answer"
             }
           ]
         }
@@ -102,7 +121,13 @@
           "goto": "flats_rest"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats"
+      "art": "scenes/riftlight/stuttering-flats",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_the_flats_traveler"
+        }
+      ]
     },
     "path": {
       "type": "story",
@@ -115,7 +140,13 @@
           "goto": "flats_rest"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats"
+      "art": "scenes/riftlight/stuttering-flats",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_the_flats_traveler"
+        }
+      ]
     },
     "flats_rest": {
       "type": "rest",

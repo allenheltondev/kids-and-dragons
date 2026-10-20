@@ -9,6 +9,21 @@
   "estimatedMinutes": 8,
   "xpAward": 140,
   "entry": "stones",
+  "goal": {
+    "text": "Help the keeper of the old stones beside the river.",
+    "steps": [
+      {
+        "id": "see_carving",
+        "label": "Look at the old carved stone",
+        "flag": "saw_the_carved_stone"
+      },
+      {
+        "id": "help_keeper",
+        "label": "Help the stone keeper",
+        "flag": "helped_the_stone_keeper"
+      }
+    ]
+  },
   "scenes": {
     "stones": {
       "type": "story",
@@ -38,6 +53,12 @@
           "icon": "hand",
           "goto": "marker"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "saw_the_carved_stone"
+        }
       ]
     },
     "carving": {
@@ -50,6 +71,12 @@
           "icon": "hand",
           "goto": "bank_rest"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_the_stone_keeper"
+        }
       ]
     },
     "marker": {
@@ -61,6 +88,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "bank_rest"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_the_stone_keeper"
         }
       ]
     },

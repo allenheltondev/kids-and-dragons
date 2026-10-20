@@ -31,6 +31,31 @@
       "xp": 7
     }
   ],
+  "goal": {
+    "text": "Wait your turn at the river ford, then try to get across.",
+    "steps": [
+      {
+        "id": "runaway_goat",
+        "label": "Deal with the runaway goat",
+        "flag": "dealt_with_the_goat"
+      },
+      {
+        "id": "help_queue",
+        "label": "Help someone stuck in the queue",
+        "flag": "helped_in_the_queue"
+      },
+      {
+        "id": "night_queue",
+        "label": "Spend the night in the queue",
+        "flag": "slept_in_the_queue"
+      },
+      {
+        "id": "take_turn",
+        "label": "Take your turn at the ford",
+        "flag": "stepped_into_the_ford"
+      }
+    ]
+  },
   "props": {
     "facet_ford": {
       "kind": "quest",
@@ -339,13 +364,23 @@
             "type": "setFlag",
             "flag": "goat_follows",
             "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "dealt_with_the_goat"
           }
         ],
         "narration": "You zig when Pudding zigs and zag when she zags, and grab the bucket by its handle just as she leaps a cooking pot. Pudding thinks this was a wonderful game. For the rest of the day, wherever you go, a goat goes too."
       },
       "onFailure": {
         "goto": "scene_three_cards",
-        "narration": "Pudding leaps a cooking pot, a sleeping drover and a small tent. You leap the cooking pot, mostly. In the end she trots back to Burdock all by herself, very pleased, with the bucket still on her head."
+        "narration": "Pudding leaps a cooking pot, a sleeping drover and a small tent. You leap the cooking pot, mostly. In the end she trots back to Burdock all by herself, very pleased, with the bucket still on her head.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "dealt_with_the_goat"
+          }
+        ]
       },
       "art": "scenes/gemfall/ford-queue-market"
     },
@@ -366,7 +401,13 @@
           "goto": "scene_three_cards"
         }
       ],
-      "art": "scenes/gemfall/ford-queue-market"
+      "art": "scenes/gemfall/ford-queue-market",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "dealt_with_the_goat"
+        }
+      ]
     },
     "choice_runaway_goat_crumb": {
       "type": "story",
@@ -385,7 +426,13 @@
           "goto": "scene_three_cards"
         }
       ],
-      "art": "scenes/gemfall/ford-queue-market"
+      "art": "scenes/gemfall/ford-queue-market",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "dealt_with_the_goat"
+        }
+      ]
     },
     "scene_three_cards": {
       "type": "story",
@@ -849,13 +896,25 @@
           "label": "Fly the marker line and spot every post",
           "icon": "wing",
           "requiresSpecies": "griffin",
-          "goto": "scene_markers_restored"
+          "goto": "scene_markers_restored",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "helped_in_the_queue"
+            }
+          ]
         },
         {
           "id": "family",
           "label": "Sit down with the Brackens",
           "icon": "heart",
-          "goto": "scene_family"
+          "goto": "scene_family",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "helped_in_the_queue"
+            }
+          ]
         }
       ],
       "art": "scenes/gemfall/caravan-road-ruts"
@@ -878,6 +937,10 @@
             "type": "grantItem",
             "itemId": "brave_whistle",
             "to": "roller"
+          },
+          {
+            "type": "setFlag",
+            "flag": "helped_in_the_queue"
           }
         ],
         "narration": "One, two, THREE, and the wagon comes out with a noise like a giant boot leaving a puddle. The drover gives you a brave whistle and calls you \"mudlarks\", which is a compliment."
@@ -888,6 +951,10 @@
           {
             "type": "damage",
             "amount": 1
+          },
+          {
+            "type": "setFlag",
+            "flag": "helped_in_the_queue"
           }
         ],
         "narration": "The wagon comes out in the end, but only after everyone has sat down in the mud at least once. You will be finding mud in your ears until next week."
@@ -902,11 +969,23 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_markers_restored",
-        "narration": "Post by post, you walk the line back into order, reading the worn numbers with your thumbs where the paint has gone. The last marker goes in with a thump, and the whole line points, straight and plain, at the one safe way down to the ford."
+        "narration": "Post by post, you walk the line back into order, reading the worn numbers with your thumbs where the paint has gone. The last marker goes in with a thump, and the whole line points, straight and plain, at the one safe way down to the ford.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "helped_in_the_queue"
+          }
+        ]
       },
       "onFailure": {
         "goto": "scene_dusk_wolves",
-        "narration": "You put them all back up, beautifully, in the wrong order. A centaur runner gallops past, stops, laughs, and fixes them in about four seconds."
+        "narration": "You put them all back up, beautifully, in the wrong order. A centaur runner gallops past, stops, laughs, and fixes them in about four seconds.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "helped_in_the_queue"
+          }
+        ]
       },
       "art": "scenes/gemfall/caravan-road-ruts"
     },
@@ -1549,7 +1628,13 @@
           "goto": "scene_crossing_verse"
         }
       ],
-      "art": "scenes/gemfall/queue-dusk-camp"
+      "art": "scenes/gemfall/queue-dusk-camp",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "slept_in_the_queue"
+        }
+      ]
     },
     "scene_crossing_verse": {
       "type": "story",
@@ -1641,42 +1726,78 @@
           "id": "drovers_pace",
           "label": "Cross with the caravans, at the drovers' pace",
           "icon": "drop",
-          "goto": "check_ford"
+          "goto": "check_ford",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "stepped_into_the_ford"
+            }
+          ]
         },
         {
           "id": "sing_verse",
           "label": "Sing the crossing verse with every step",
           "icon": "note",
           "goto": "check_ford_easy",
-          "requiresFlag": "knows_the_verse"
+          "requiresFlag": "knows_the_verse",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "stepped_into_the_ford"
+            }
+          ]
         },
         {
           "id": "drovers_wave",
           "label": "The drovers you helped wave you in beside the lead wagon",
           "icon": "party",
           "requiresFlag": "exposed_the_con",
-          "goto": "check_ford_easy"
+          "goto": "check_ford_easy",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "stepped_into_the_ford"
+            }
+          ]
         },
         {
           "id": "follow_markers",
           "label": "Follow the marker line you put back up",
           "icon": "map",
           "requiresFlag": "restored_markers",
-          "goto": "check_ford_easy"
+          "goto": "check_ford_easy",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "stepped_into_the_ford"
+            }
+          ]
         },
         {
           "id": "fennick_cart",
           "label": "Ride across on the Brackens' cart",
           "icon": "heart",
           "requiresFlag": "helped_family",
-          "goto": "check_ford_easy"
+          "goto": "check_ford_easy",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "stepped_into_the_ford"
+            }
+          ]
         },
         {
           "id": "tamsin_pebble",
           "label": "Use Tamsin's front-of-the-queue pebble",
           "icon": "bead",
           "requiresFlag": "joined_the_con",
-          "goto": "scene_surge"
+          "goto": "scene_surge",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "stepped_into_the_ford"
+            }
+          ]
         }
       ],
       "art": "scenes/gemfall/west-branch-ford",

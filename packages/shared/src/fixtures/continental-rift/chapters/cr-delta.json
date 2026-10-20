@@ -8,11 +8,19 @@
   "estimatedMinutes": 5,
   "xpAward": 100,
   "entry": "scene_raft",
+  "goal": {
+    "text": "Ride the meltwater all the way to the sea.",
+    "steps": [
+      { "id": "build_raft", "label": "Build a raft", "flag": "built_a_raft" },
+      { "id": "drift_out", "label": "Drift out to the sea", "flag": "drifted_out_to_sea" }
+    ]
+  },
   "scenes": {
     "scene_raft": {
       "type": "story",
+      "onEnter": [{ "type": "setFlag", "flag": "built_a_raft" }],
       "narration": "You lash a raft together from the floating shelf and let the meltwater carry you out to where the river meets the sea.",
-      "choices": [{ "id": "drift", "label": "Drift out to sea", "icon": "arrow", "goto": "scene_home" }]
+      "choices": [{ "id": "drift", "label": "Drift out to sea", "icon": "arrow", "goto": "scene_home", "effects": [{ "type": "setFlag", "flag": "drifted_out_to_sea" }] }]
     },
     "scene_home": {
       "type": "story",

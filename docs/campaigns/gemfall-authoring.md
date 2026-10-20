@@ -282,6 +282,38 @@ Tidewell's "the eighth is the crown of the seal" in 7H is the `onSuccess` narrat
 `check_tidewell`, and a branch has no priority of its own. `scene_tamsins_offer`, where it
 lands, is p2 for the cult's offer.
 
+### Each chapter's goal
+
+Every chapter states what the party is trying to do, on the TV and every phone from scene 1, with
+steps that tick themselves ([content/README.md, "The chapter's goal"](../../content/README.md#the-chapters-goal)).
+A Gemfall goal follows the beat, never names someone a road in might not have met (a 4B party may
+never have met Gullet), never names or counts a great stone, and ticks on flags the chapter alone
+sets: the road, the pursuit and the rest of the route sets arrive already set, so they cannot be
+steps. The step flags were added for the goals, each a chapter-local `setFlag` on the scene where
+the thing happens; none crosses a chapter, so the endings, roads, setbacks and resumed save in
+`gemfall-compat.test.ts` do not move. In 02 nothing new is set between the wolves and the plank
+bridge, where the pinned mid-fight save resumes.
+
+<!-- goal-table: generated from the chapter files; keep it in step with them. -->
+| Chapter | Goal | Steps (flag) |
+| --- | --- | --- |
+| `gemfall-01` | Get ready for the long trip north. | Hear which roads go north (`heard_of_the_roads`); Pack something for the road (`packed_for_the_road`); Find a bed for the night (`found_a_bed`); Join a caravan going north (`joined_a_caravan`) |
+| `gemfall-02` | Travel the Sunward Fields and choose your road north. | Help out at the egg stall (`helped_the_egg_stall`); Help at the broken bridge (`helped_at_the_bridge`); Get through the tall hedges (`got_through_the_hedges`); Choose your road north (`chose_a_road`) |
+| `gemfall-03a` | Pay the toll at Stone Crossing and get across the river. | Reach the crossing (`reached_the_crossing`); Pay the troll's toll (`paid_the_toll`); Camp in the queue for the night (`camped_in_the_queue`); Get across the river (`got_across_the_river`) |
+| `gemfall-03b` | Ride through the Whispering Marsh and find a way out. | Get past the toll reeds (`passed_the_toll_reeds`); Find a way through the fog (`steered_through_the_fog`); Cross the old sunken steps (`crossed_the_old_steps`); Choose a way out of the marsh (`chose_a_way_out`) |
+| `gemfall-03c` | Wait your turn at the river ford, then try to get across. | Deal with the runaway goat (`dealt_with_the_goat`); Help someone stuck in the queue (`helped_in_the_queue`); Spend the night in the queue (`slept_in_the_queue`); Take your turn at the ford (`stepped_into_the_ford`) |
+| `gemfall-04a` | Cross pride country and find out why its roads bend the long way round. | Meet the manticore pride (`met_the_pride`); Read the centaurs' road maps (`lined_up_the_sashes`); Find what the roads bend around (`reached_the_bend`) |
+| `gemfall-04b` | Find out what the forest is counting, and why. | Answer the forest's roll call (`answered_roll_call`); Help mend a sick glade (`quieted_the_glade`); Find what hurts the forest most (`reached_the_worst_glade`) |
+| `gemfall-04c` | Follow the rush up the north road and find out what the road remembers. | Get a stuck mule moving (`moved_the_mule`); Visit the big gem depot (`reached_the_depot`); Learn the centaurs' route-songs (`heard_the_route_songs`); Find a safe place to camp (`passed_the_bend`) |
+| `gemfall-05a` | Cross the cracked bridge, and find out what its cracks are saying. | Get down to the bridge foot (`reached_the_bridge_foot`); Help map the bridge's cracks (`laid_out_the_survey`); Decide who to tell (`chose_who_to_tell`); Get across the bridge (`crossed_the_span`) |
+| `gemfall-05b` | Find out what the forest town remembers, then climb out to the foothills. | Read the oldest records (`read_the_old_knots`); Decide who to tell (`chose_who_to_tell`); Cross the deep gorge (`crossed_the_gorge`); Climb up out of the forest (`reached_the_foothills`) |
+| `gemfall-05c` | Get past the old boundary stones, and find out why they hold the rush back. | Read the old tally books (`read_the_tallies`); Calm the crowd at the stones (`settled_the_crowd`); Decide who to tell (`chose_who_to_tell`) |
+| `gemfall-06` | (to come) | |
+| `gemfall-07h` | (to come) | |
+| `gemfall-07l` | (to come) | |
+| `gemfall-07r` | (to come) | |
+| `gemfall-08` | Climb the mountain everyone else is running from, and give your answer. | Climb up to the mountain's shoulder (`reached_the_shoulder`); Reach the very top (`reached_the_summit`); Go deep inside the mountain (`found_the_deep_cave`); Answer every question you are asked (`answered_every_question`) |
+
 ## 5. Writing for the party you have
 
 A scene's words and a choice's visibility can depend on who is at the table and what they

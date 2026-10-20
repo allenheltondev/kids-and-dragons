@@ -9,6 +9,21 @@
   "estimatedMinutes": 10,
   "xpAward": 140,
   "entry": "cairns",
+  "goal": {
+    "text": "Climb the Cairnstep and see if it belongs on the map.",
+    "steps": [
+      {
+        "id": "compare",
+        "label": "Compare the old and new drawings",
+        "flag": "compared_the_pass_drawings"
+      },
+      {
+        "id": "mark",
+        "label": "Mark down what you find",
+        "flag": "marked_the_new_pass"
+      }
+    ]
+  },
   "scenes": {
     "cairns": {
       "type": "story",
@@ -39,6 +54,12 @@
           "icon": "hand",
           "goto": "supplies"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "compared_the_pass_drawings"
+        }
       ]
     },
     "ridge": {
@@ -51,6 +72,12 @@
           "icon": "hand",
           "goto": "message"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "marked_the_new_pass"
+        }
       ]
     },
     "supplies": {
@@ -62,6 +89,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "message"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "marked_the_new_pass"
         }
       ]
     },

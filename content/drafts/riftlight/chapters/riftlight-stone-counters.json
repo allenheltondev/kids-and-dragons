@@ -9,6 +9,26 @@
   "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "stone",
+  "goal": {
+    "text": "Help the stone keepers after their big stone moves overnight.",
+    "steps": [
+      {
+        "id": "check_hollow",
+        "label": "Check where the stone stood",
+        "flag": "measured_the_empty_hollow"
+      },
+      {
+        "id": "bring_water",
+        "label": "Get the water jars to the keepers",
+        "flag": "brought_water_to_the_circle"
+      },
+      {
+        "id": "teach_road",
+        "label": "Teach a neighbor the safe road",
+        "flag": "walked_the_neighbor_through"
+      }
+    ]
+  },
   "scenes": {
     "stone": {
       "type": "story",
@@ -158,10 +178,22 @@
       "prompt": "Follow the ground between hollow and stone. Choose who leads; everyone can help.",
       "art": "scenes/riftlight/stone-counters",
       "onSuccess": {
-        "goto": "footprint_1_done"
+        "goto": "footprint_1_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "measured_the_empty_hollow"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "footprint_1_changed"
+        "goto": "footprint_1_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "measured_the_empty_hollow"
+          }
+        ]
       }
     },
     "footprint_1_done": {
@@ -211,10 +243,22 @@
       "prompt": "Compare the base with the empty hollow. Choose who leads; everyone can help.",
       "art": "scenes/riftlight/stone-counters",
       "onSuccess": {
-        "goto": "footprint_2_done"
+        "goto": "footprint_2_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "measured_the_empty_hollow"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "footprint_2_changed"
+        "goto": "footprint_2_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "measured_the_empty_hollow"
+          }
+        ]
       }
     },
     "footprint_2_done": {
@@ -481,6 +525,12 @@
           "label": "Put the large sign above, where carts need room to turn",
           "icon": "hand",
           "goto": "warning_2"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "brought_water_to_the_circle"
         }
       ]
     },
@@ -1067,10 +1117,22 @@
       "prompt": "Guide the pretend traveler from the hidden approach. Choose who leads; everyone can help.",
       "art": "scenes/riftlight/stone-counters",
       "onSuccess": {
-        "goto": "handover_1_done"
+        "goto": "handover_1_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "walked_the_neighbor_through"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "handover_1_changed"
+        "goto": "handover_1_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "walked_the_neighbor_through"
+          }
+        ]
       }
     },
     "handover_1_done": {
@@ -1120,10 +1182,22 @@
       "prompt": "Ask the pretend traveler to guide the empty cart. Choose who leads; everyone can help.",
       "art": "scenes/riftlight/stone-counters",
       "onSuccess": {
-        "goto": "handover_2_done"
+        "goto": "handover_2_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "walked_the_neighbor_through"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "handover_2_changed"
+        "goto": "handover_2_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "walked_the_neighbor_through"
+          }
+        ]
       }
     },
     "handover_2_done": {
