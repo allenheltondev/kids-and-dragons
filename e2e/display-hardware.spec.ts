@@ -1,7 +1,7 @@
 /**
  * A display that is not a laptop (#264), against the real stack.
  *
- * Smart TVs and streaming sticks are where WebGL, WebAssembly (Rive), the Wake
+ * Smart TVs and streaming sticks are where WebGL, the Wake
  * Lock API and unlocked audio go missing. CI's Chromium has all of them, so the
  * specs take them away before the page loads and check what the table still
  * gets: a chapter that plays from the lobby to its first check on still art
@@ -78,7 +78,7 @@ test.describe("a display that is not a laptop", () => {
     return new URL(tv.url()).pathname.split("/").pop()!;
   }
 
-  test("with no WebGL, Rive, wake lock or sound, a chapter still plays to its first check", async ({ browser }) => {
+  test("with no WebGL, wake lock or sound, a chapter still plays to its first check", async ({ browser }) => {
     test.setTimeout(240_000);
     const tv = await device(browser, 1280, 720, withoutModernApis);
     const tvErrors: string[] = [];
@@ -127,8 +127,8 @@ test.describe("a display that is not a laptop", () => {
     // Nothing needed a thing the screen does not have, and nothing said otherwise.
     await tv.getByRole("button", { name: "About this screen" }).click();
     const rows = tv.locator("[data-capability]");
-    await expect(rows).toHaveCount(5, TAP);
-    for (const id of ["webgl", "rive", "wakeLock", "audio"]) {
+    await expect(rows).toHaveCount(4, TAP);
+    for (const id of ["webgl", "wakeLock", "audio"]) {
       await expect(tv.locator(`[data-capability="${id}"]`)).toHaveAttribute("data-ok", "false");
     }
     // No sound is no prompt: a tap cannot mend a browser with no audio.
@@ -154,7 +154,6 @@ test.describe("a display that is not a laptop", () => {
     await openLobby(tv);
     await tv.getByRole("button", { name: "About this screen" }).click();
     await expect(tv.locator('[data-capability="webgl"]')).toHaveAttribute("data-ok", /true|false/, TAP);
-    await expect(tv.locator('[data-capability="rive"]')).toHaveAttribute("data-ok", "true", TAP);
     await expect(tv.locator('[data-capability="serviceWorker"]')).toHaveCount(1);
   });
 });

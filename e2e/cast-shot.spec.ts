@@ -127,7 +127,7 @@ test("photograph a cast on the story stage", async ({ browser }) => {
     await host.getByRole("button", { name: /^playtest/i }).click(TAP);
     await host.getByRole("button", { name: new RegExp(`^${scene}(story|check|choice_point|rest|encounter)$`) }).click(TAP);
     await host.getByRole("button", { name: /^close$/i }).click(TAP);
-    // The veil, the entrance, the rigs settling into idle.
+    // The veil, the entrance, the figures settling into idle.
     await tv.waitForTimeout(4_000);
     await tv.screenshot({ path: `${SHOT_PREFIX}-${scene}-tv.png` });
     // Another seat's phone, parked on its World tab: the host's stays on the
@@ -146,7 +146,7 @@ test("photograph a cast on the story stage", async ({ browser }) => {
     await host.getByRole("button", { name: /^world$/i }).click(TAP);
     await host.waitForTimeout(200);
     await host.screenshot({ path: `${SHOT_PREFIX}-${scene}-host.png` });
-    // The phone captures also give streamed rig textures time to settle on TV.
+    // The phone captures also give illustration textures time to settle on TV.
     await tv.screenshot({ path: `${SHOT_PREFIX}-${scene}-tv.png` });
     if (scene !== SCENES.at(-1)) await host.getByRole("button", { name: /^you$/i }).click(TAP);
   }

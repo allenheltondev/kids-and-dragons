@@ -17,7 +17,7 @@
  * species are chosen by their picture, and from the moment one is picked the
  * hero stands at the top of every remaining screen: this is a phone held by an
  * 8-year-old, and "who am I making?" has to be answerable by looking, not by
- * remembering. The animated half is still the rigs' job (world/scene.ts header).
+ * remembering. The animated half is still the figures' job (world/scene.ts header).
  */
 
 import { useCallback, useMemo, useState } from "react";

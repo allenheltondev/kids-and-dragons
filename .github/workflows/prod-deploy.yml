@@ -205,9 +205,7 @@ jobs:
 
       # Prod-only tightening: the strict pixel gate fails on *undelivered* art,
       # not just malformed art. On a PR that is noise — sets land over time —
-      # but production shipping with a missing set is a real regression. The
-      # rig gate stays non-strict until the first .riv is authored (roadmap
-      # Chapter 1, Allen's hands-on step).
+      # but production shipping with a missing set is a real regression.
       - name: Strict art gate
         run: npm run art:verify:strict
 
@@ -227,7 +225,7 @@ jobs:
         # deploy that fails partway leaves the previous version serving.
         #
         # On the workflow_run path, CI has already run the full suite — plus
-        # e2e, cfn-lint, and the rig contract, which deploy.sh never ran — on
+        # e2e and cfn-lint — on
         # this exact SHA, so the checks are skipped; and CI already *built*
         # this exact SHA, so the build steps are skipped too (KAD_PREBUILT=1
         # ships the artifact downloaded above, refusing to deploy if it is

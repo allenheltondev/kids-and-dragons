@@ -10,14 +10,9 @@
     "edgeMarginPx": 8,
     "originYTolerancePx": 12,
     "alphaThreshold": 8,
-    "recompositeIouMin": 0.999,
-    "recompositeMeanRgbDeltaMax": 2,
-    "minSeamOverlapPx": 2000,
     "silhouetteHeightPx": 120,
-    "minSignaturePxAtSilhouette": 40,
     "maxCornerAlpha": 4,
     "paletteHueToleranceDeg": 30,
-    "jointDriftToleranceNormalizedPx": 70,
     "effectCentreEnergyMin": 0.66,
     "effectEndFrameCoverageMax": 0.04,
     "effectTopBandCoverageMax": 0.15,
@@ -27,84 +22,6 @@
   },
   "$effectToleranceComment": "asset-brief.md §9.4/§9.6. effectCentreEnergyMin: a tile-scoped effect keeps most of its opaque mass inside the centre 128x128, so a fight with occupied neighbouring tiles never leaves you guessing which figure was hit. effectEndFrameCoverage: the first and last frame are a fade, not a pose — a sheet that starts at full brightness pops. effectTopBand: damage numbers own the top 64px and are the only text in a fight she has to read; an effect drawn behind a number is a number that does not exist. tintableMaxSaturation: a sheet the renderer recolours has to be near-greyscale or the tint fights the art. combatEffectMaxFrames: 12 frames at 12fps is one second, and §9.2's turn budget has no room for more — an effect longer than that is out of combat by definition.",
   "$effectToleranceProvenanceComment": "Two of these were set from the art rather than from a principle, and that is worth knowing before anybody tightens them. The brief (§9.7 item 7) asked for effectCentreEnergyMin 0.70 and effectEndFrameCoverageMax 0.03. When the checks were first written, heal_bloom measured 67.1% centre mass and impact_strike's first frame 3.8% — both shipped art, both missing by a hair — so the numbers were moved to 0.66 and 0.04 to admit them rather than block the build on a re-export. They are therefore *descriptive* of the current set at its loosest, not a floor anybody argued for: a new sheet that lands at exactly 0.66 is not thereby good, and if those two are ever re-exported the honest move is to put both numbers back.",
-  "$jointDriftComment": "~7% of canvas height. Below this a rigger nudges a joint once per tier and moves on; above ~15% a limb visibly detaches from the torso and the tier needs its own skeleton. Set from that boundary, not from what current assets happen to score - real tiers land at 20-64px, growth-part artifacts at 110-170px.",
-  "structuralAdjacency": [
-    [
-      "head",
-      "body"
-    ],
-    [
-      "body",
-      "arm_l"
-    ],
-    [
-      "body",
-      "arm_r"
-    ],
-    [
-      "body",
-      "leg_l"
-    ],
-    [
-      "body",
-      "leg_r"
-    ]
-  ],
-  "$structuralAdjacencyComment": "Cross-tier joint registration is measured on these pairs only. mane/horn/wings/tail are growth parts - they get dramatically larger between tiers, which moves the centroid of their seam band without moving the actual attachment point. Including them measures growth, not drift.",
-  "zOrder": [
-    "wings",
-    "tail",
-    "leg_l",
-    "leg_r",
-    "body",
-    "arm_l",
-    "arm_r",
-    "head",
-    "mane",
-    "horn"
-  ],
-  "adjacency": [
-    [
-      "head",
-      "mane"
-    ],
-    [
-      "head",
-      "horn"
-    ],
-    [
-      "head",
-      "body"
-    ],
-    [
-      "body",
-      "mane"
-    ],
-    [
-      "body",
-      "arm_l"
-    ],
-    [
-      "body",
-      "arm_r"
-    ],
-    [
-      "body",
-      "leg_l"
-    ],
-    [
-      "body",
-      "leg_r"
-    ],
-    [
-      "body",
-      "tail"
-    ],
-    [
-      "body",
-      "wings"
-    ]
-  ],
   "tiers": [
     "fledgling",
     "sworn",
@@ -149,20 +66,8 @@
   "species": [
     {
       "id": "unicorn",
-      "signature": "horn",
       "bipedal": false,
       "maneHue": 300,
-      "parts": [
-        "body",
-        "head",
-        "mane",
-        "horn",
-        "arm_l",
-        "arm_r",
-        "leg_l",
-        "leg_r",
-        "tail"
-      ],
       "palette": {
         "coat": "#F2E1F2",
         "mane": "#853A85",
@@ -173,20 +78,8 @@
     },
     {
       "id": "dragonling",
-      "signature": "wings",
       "bipedal": false,
       "maneHue": 145,
-      "parts": [
-        "body",
-        "head",
-        "mane",
-        "wings",
-        "arm_l",
-        "arm_r",
-        "leg_l",
-        "leg_r",
-        "tail"
-      ],
       "palette": {
         "coat": "#E1F2E8",
         "mane": "#2B6B46",
@@ -197,20 +90,8 @@
     },
     {
       "id": "griffin",
-      "signature": "wings",
       "bipedal": false,
       "maneHue": 205,
-      "parts": [
-        "body",
-        "head",
-        "mane",
-        "wings",
-        "arm_l",
-        "arm_r",
-        "leg_l",
-        "leg_r",
-        "tail"
-      ],
       "palette": {
         "coat": "#E1EBF2",
         "mane": "#4D728C",
@@ -221,18 +102,8 @@
     },
     {
       "id": "bigfoot",
-      "signature": "mane",
       "bipedal": true,
       "maneHue": 30,
-      "parts": [
-        "body",
-        "head",
-        "mane",
-        "arm_l",
-        "arm_r",
-        "leg_l",
-        "leg_r"
-      ],
       "palette": {
         "coat": "#F2EAE1",
         "mane": "#4C3F32",
@@ -243,19 +114,8 @@
     },
     {
       "id": "kitsune",
-      "signature": "tail",
       "bipedal": false,
       "maneHue": 18,
-      "parts": [
-        "body",
-        "head",
-        "mane",
-        "arm_l",
-        "arm_r",
-        "leg_l",
-        "leg_r",
-        "tail"
-      ],
       "palette": {
         "coat": "#F2E6E1",
         "mane": "#9E512F",
@@ -266,19 +126,8 @@
     },
     {
       "id": "manticore",
-      "signature": "tail",
       "bipedal": false,
       "maneHue": 350,
-      "parts": [
-        "body",
-        "head",
-        "mane",
-        "arm_l",
-        "arm_r",
-        "leg_l",
-        "leg_r",
-        "tail"
-      ],
       "palette": {
         "coat": "#F2E1E4",
         "mane": "#662E37",
@@ -626,61 +475,7 @@
       }
     }
   ],
-  "gear": [
-    {
-      "class": "thornguard",
-      "tiers": [
-        "sworn",
-        "radiant",
-        "mythic"
-      ],
-      "parts": [
-        "overlay_torso",
-        "prop_held"
-      ],
-      "deferred": true
-    },
-    {
-      "class": "duskrunner",
-      "tiers": [
-        "sworn",
-        "radiant",
-        "mythic"
-      ],
-      "parts": [
-        "overlay_torso",
-        "prop_held"
-      ],
-      "deferred": true
-    },
-    {
-      "class": "starweaver",
-      "tiers": [
-        "sworn",
-        "radiant",
-        "mythic"
-      ],
-      "parts": [
-        "overlay_torso",
-        "prop_held"
-      ],
-      "deferred": true
-    },
-    {
-      "class": "songkeeper",
-      "tiers": [
-        "sworn",
-        "radiant",
-        "mythic"
-      ],
-      "parts": [
-        "overlay_torso",
-        "prop_held"
-      ]
-    }
-  ],
-  "$gearDeferredComment": "Legacy species-agnostic overlay declarations retained while class rigs migrate to exact-pose variants. They remain verifier inputs for the transparent overlay assets already shipped, but they are no longer the art backlog or the runtime source of truth; gearPortraits and rigVariants own those roles.",
-  "$gearPortraitsComment": "Approved opaque purpose-drawn creature-and-gear variants for portrait surfaces and the visual source of truth for exact-pose class-rig splits. Each file depicts one exact species, class, and tier. Animated world/board figures select the matching rigVariants build when delivered and otherwise fall back to the un-geared species rig. Fledglings have no class gear. The verifier checks every declared cross-product at assets/gear-portraits/<class>/<tier>/<species>.png.",
+  "$gearPortraitsComment": "Complete opaque class illustrations for portrait surfaces. Transparent figure variants are declared separately in figureVariants.",
   "gearPortraits": [
     {
       "class": "thornguard",

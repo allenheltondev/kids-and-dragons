@@ -38,7 +38,7 @@ const RESET = tty ? "\x1b[0m" : "";
 
 interface Manifest {
   tiers: string[];
-  species: { id: string; signature: string; parts: string[] }[];
+  species: { id: string }[];
   gearPortraits: {
     class: string;
     tiers: string[];
@@ -49,7 +49,6 @@ interface Manifest {
     class: string;
     tier: string;
     species: string;
-    parts: string[];
   }[];
   effects: { id: string; frames: number }[];
   biomes: string[];
