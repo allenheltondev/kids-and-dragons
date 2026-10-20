@@ -11,16 +11,19 @@ import manifest from "../../../../assets/manifest.json";
 import { makeState } from "../testing/fixtures";
 import {
   ENSEMBLES,
-  ENTITY_SIZES,
   MAX_CAST,
   MAX_GROUP,
-  SIZE_SCALE,
+  SLOT_FILL,
+  STORY_MEASURE,
   castFigureUrl,
   castFor,
   stageCast,
+  stageLayout,
   stageSlots,
-  stageFigureScale,
+  type StageFigure,
 } from "./cast";
+import { FIGURE_SIZES } from "./figure-sizes";
+import { NOMINAL_PAINT, paintAspect } from "./figure-scale";
 
 const ASSETS = fileURLToPath(new URL("../../../../assets", import.meta.url));
 
@@ -69,16 +72,19 @@ describe("cast ensembles", () => {
     ]);
     expect(out.map((m) => m.name)).toEqual(["Skywardens", null, null]);
     expect(out.map((m) => m.crowd)).toEqual([0, 1, 2].map((index) => ({ index, size: 3 })));
-    expect(out[1]!.scale).toBe(SIZE_SCALE.medium);
-    expect(out[2]!.scale).toBe(SIZE_SCALE.large);
+    // Each member at its own height: the centaur stands over the faun.
+    expect(out.map((m) => m.heightCm)).toEqual(
+      ["skywarden_griffin", "skywarden_faun", "skywarden_centaur"].map((id) => FIGURE_SIZES[`cast/${id}`]![0]),
+    );
     // The first member keeps the entry's plain key, like any group's first.
     expect(out[0]!.key).toBe("entities/skywardens|Skywardens");
   });
 
-  it("lets an authored size win for the whole group, and ignores count", () => {
-    const out = stageCast([{ figure: "entities/skywardens", size: "small", count: 5 }]);
+  it("lets an authored size and stance apply to the whole group, and ignores count", () => {
+    const out = stageCast([{ figure: "entities/skywardens", size: "small", stance: "flying", count: 5 }]);
     expect(out).toHaveLength(3);
-    expect(out.every((m) => m.scale === SIZE_SCALE.small)).toBe(true);
+    // "small" tops out at 75 cm, and every member is taller than that.
+    expect(out.every((m) => m.heightCm === 75 && m.stance === "flying")).toBe(true);
   });
 
   it("stands the one Warden Clerk as one warden, not the group", () => {
@@ -99,13 +105,14 @@ describe("cast ensembles", () => {
     expect(clerks).toBeGreaterThanOrEqual(5);
   });
 
-  it("cuts every ensemble into declared, drawn cast figures of their declared size", () => {
-    const declared = new Map(manifest.castFigures.map((f) => [`cast/${f.id}`, f.scale]));
+  it("cuts every ensemble into declared, drawn, sized cast figures", () => {
+    const declared = new Set(manifest.castFigures.map((f) => `cast/${f.id}`));
     for (const [id, parts] of Object.entries(ENSEMBLES)) {
       expect(existsSync(`${ASSETS}/entities/${id}/assembled.png`), id).toBe(true);
       for (const part of parts) {
-        expect(declared.get(part.figure), part.figure).toBe(part.size);
-        expect(existsSync(`${ASSETS}${castFigureUrl(part.figure)!.slice("/assets".length)}`), part.figure).toBe(true);
+        expect(declared.has(part), part).toBe(true);
+        expect(FIGURE_SIZES[part], part).toBeDefined();
+        expect(existsSync(`${ASSETS}${castFigureUrl(part)!.slice("/assets".length)}`), part).toBe(true);
       }
     }
   });
@@ -129,26 +136,35 @@ describe("cast figures", () => {
     expect(stageCast([{ figure: "nonsense" }])).toEqual([]);
   });
 
-  it("keeps the size table in lockstep with manifest.entities", () => {
-    for (const entity of manifest.entities) {
-      expect(ENTITY_SIZES[entity.id], entity.id).toBe(entity.scale);
-    }
-    // The rest are drawn but undeclared; each must at least be real art.
-    const declared = new Set(manifest.entities.map((e) => e.id));
-    for (const id of Object.keys(ENTITY_SIZES).filter((id) => !declared.has(id))) {
-      expect(existsSync(`${ASSETS}/entities/${id}/assembled.png`), id).toBe(true);
+  it("sizes every declared entity and every drawn figure the table names", () => {
+    for (const entity of manifest.entities) expect(FIGURE_SIZES[`entities/${entity.id}`], entity.id).toBeDefined();
+    for (const figure of Object.keys(FIGURE_SIZES)) {
+      expect(existsSync(`${ASSETS}${castFigureUrl(figure)!.slice("/assets".length)}`), figure).toBe(true);
     }
   });
 
-  it("sizes a sprite below a hero and a centaur above one", () => {
+  it("stands a sprite, a hero and a centaur at their own heights", () => {
     const [sprite] = stageCast([{ figure: "entities/harvest_sprite" }]);
     const [centaur] = stageCast([{ figure: "entities/centaur" }]);
-    const [elder] = stageCast([{ figure: "characters/unicorn" }]);
-    expect(sprite!.scale).toBeLessThan(1);
-    expect(centaur!.scale).toBeGreaterThan(1);
-    expect(elder!.scale).toBe(SIZE_SCALE.medium);
-    // An authored size wins over the manifest's.
-    expect(stageCast([{ figure: "entities/centaur", size: "small" }])[0]!.scale).toBe(SIZE_SCALE.small);
+    const [unicorn] = stageCast([{ figure: "characters/unicorn" }]);
+    expect(sprite!.heightCm).toBe(FIGURE_SIZES["entities/harvest_sprite"]![0]);
+    expect(sprite!.heightCm).toBeLessThan(unicorn!.heightCm);
+    expect(centaur!.heightCm).toBeGreaterThan(unicorn!.heightCm);
+    // A cast figure is its own height now, not "medium" for want of a size.
+    expect(stageCast([{ figure: "cast/pib" }])[0]!.heightCm).toBe(25);
+    // An authored size moves the height into its band; a redundant one is a no-op.
+    expect(stageCast([{ figure: "entities/centaur", size: "small" }])[0]!.heightCm).toBe(75);
+    expect(stageCast([{ figure: "entities/centaur", size: "large" }])[0]!.heightCm).toBe(centaur!.heightCm);
+  });
+
+  it("takes each figure's own stance, and the chapter's over it", () => {
+    expect(stageCast([{ figure: "entities/will_o_wisp" }])[0]!.stance).toBe("hovering");
+    expect(stageCast([{ figure: "entities/cloud_whale" }])[0]!.stance).toBe("flying");
+    expect(stageCast([{ figure: "entities/merfolk" }])[0]!.stance).toBe("swimming");
+    expect(stageCast([{ figure: "entities/centaur" }])[0]!.stance).toBe("standing");
+    expect(stageCast([{ figure: "cast/captain_voss", stance: "flying" }])[0]!.stance).toBe("flying");
+    // Nobody the table knows: a person, standing.
+    expect(stageCast([{ figure: "entities/nobody_drawn" }])[0]).toMatchObject({ heightCm: 160, stance: "standing" });
   });
 
   it("names only who the chapter names", () => {
@@ -195,21 +211,26 @@ describe("stageSlots", () => {
     expect(slots.cast[0]).toBe(WIDTH * 0.8);
   });
 
-  it("fits three heroes and three guests' entire canvases inside their slots", () => {
-    for (const width of [1600, 2560]) for (const scales of [[1, 1, 1], [0.4, 1.25, 1.45]]) {
-      const slots = stageSlots(3, scales, width);
-      const factor = stageFigureScale(slots, scales, 504);
-      const figures = [...slots.party.map((x) => ({ x, half: 252 * factor })),
-        ...slots.cast.map((x, i) => ({ x, half: 252 * scales[i]! * factor }))];
+  it("fits three heroes and three guests' painted figures on the stage, each within its slot", () => {
+    const hero = (heightCm: number): StageFigure => ({ heightCm, stance: "standing", paint: null });
+    for (const width of [1600, 2560]) for (const heights of [[160, 160, 160], [25, 230, 1100]]) {
+      const party = [hero(165), hero(85), hero(215)];
+      const cast = heights.map(hero);
+      const fit = stageLayout(party, cast, width);
+      const aspect = paintAspect(NOMINAL_PAINT);
+      const figures = [
+        ...fit.slots.party.map((x, i) => ({ x, width: fit.party[i]! * aspect, room: fit.slots.partySlot })),
+        ...fit.slots.cast.map((x, i) => ({ x, width: fit.cast[i]! * aspect, room: fit.slots.castSlots[i]! })),
+      ];
       for (const figure of figures) {
-        expect(figure.x - figure.half).toBeGreaterThanOrEqual(0);
-        expect(figure.x + figure.half).toBeLessThanOrEqual(width);
+        expect(figure.x - figure.width / 2).toBeGreaterThanOrEqual(0);
+        expect(figure.x + figure.width / 2).toBeLessThanOrEqual(width);
+        // Floored figures aside, nobody's painted box spans more than SLOT_FILL of its slot.
+        if (figure.width > STORY_MEASURE.floor * aspect) expect(figure.width).toBeLessThanOrEqual(figure.room * SLOT_FILL + 1e-6);
       }
-      for (let i = 1; i < figures.length; i++) {
-        expect(figures[i]!.x - figures[i]!.half).toBeGreaterThan(figures[i - 1]!.x + figures[i - 1]!.half);
-      }
+      // Left to right, centres in order and apart.
+      for (let i = 1; i < figures.length; i++) expect(figures[i]!.x).toBeGreaterThan(figures[i - 1]!.x);
     }
-    expect(stageFigureScale(stageSlots(3, [1], WIDTH), [1], 504)).toBe(1);
   });
 
   it("centres the party when nobody else is there, as it always did", () => {
@@ -236,7 +257,7 @@ describe("stageSlots", () => {
     }
   });
 
-  it("gives a big figure more room than a small one", () => {
+  it("gives a wide figure more room than a narrow one", () => {
     const { castSlots } = stageSlots(3, [0.4, 1.25], WIDTH);
     expect(castSlots[1]!).toBeGreaterThan(castSlots[0]!);
   });

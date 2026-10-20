@@ -534,7 +534,7 @@
           "maxLength": 32
         },
         "size": {
-          "description": "How big the figure stands beside the party. Defaults to the entity's manifest scale, or medium (party-sized).",
+          "description": "How big the figure stands beside the party. Defaults to the figure's own height (canon height_cm, or assets/manifest.json castFigures[].heightCm). A band here moves that height to the nearest point inside the band, so \"small\" on a faun is a faun child.",
           "enum": [
             "tiny",
             "tiny_to_small",
@@ -545,6 +545,15 @@
             "large",
             "very_large",
             "colossal"
+          ]
+        },
+        "stance": {
+          "description": "How the figure occupies this scene, overriding its canon stance: standing (feet on the ground), hovering (lifted a little, bobbing), flying (lifted further, drifting) or swimming (the ground line is a water line hiding the lower body). A griffin landed or in flight.",
+          "enum": [
+            "standing",
+            "hovering",
+            "flying",
+            "swimming"
           ]
         },
         "count": {

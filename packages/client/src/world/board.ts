@@ -51,10 +51,21 @@
  */
 
 import { reducedMotion } from "../a11y/prefs";
-import { idleBreath } from "./idle-motion";
+import { stanceIdle } from "./idle-motion";
+import {
+  drawnHeight,
+  figureSize,
+  fitCanvas,
+  heightFit,
+  NOMINAL_PAINT,
+  STANCE_LIFT,
+  type PaintBox,
+  type StageMeasure,
+} from "./figure-scale";
 import { Assets, Container, Graphics, Rectangle, Sprite, Text, Texture } from "pixi.js";
 import type {
   Board,
+  CastStance,
   Combatant,
   EncounterEvent,
   EncounterState,
@@ -65,7 +76,6 @@ import { captivesOf, currentActor, currentActorId, legalMoves } from "@kad/share
 import {
   ANCHOR_X,
   ANCHOR_Y,
-  CANVAS,
   DOWN_RATE,
   FALLEN_ALPHA,
   FALLEN_ROTATION,
@@ -77,6 +87,8 @@ import {
   drawPlaceholder,
   enemyArtUrl,
   breathingShadowScale,
+  groundedFootprint,
+  measurePaint,
   measureFootprint,
   shadowOffset,
   type Footprint,
@@ -96,9 +108,38 @@ import type { BoardAim } from "./previews";
 
 export { BOARD_TILE_PX } from "./board-math";
 
-/** A figure's drawn height. Taller than a tile on purpose: creatures overlap
-    the tile behind them, which is what the row z-sort exists to make read. */
+/** A figure's canvas height before its size is known. Taller than a tile on
+    purpose: creatures overlap the tile behind them, which is what the row
+    z-sort exists to make read. */
 const ACTOR_HEIGHT = BOARD_TILE_PX * 1.7;
+
+/**
+ * The board's measure for true relative size (#362, figure-scale.ts): 1.1
+ * board pixels a centimeter, so a 160 cm hero paints about 1.4 tiles tall,
+ * where every figure stood before sizes. The tallest combatant may reach 2.7
+ * tiles; past that the whole board's figures shrink together, so proportion
+ * holds. Nothing paints shorter than 0.55 of a tile, which at natural scale is
+ * a 64 cm figure: a will-o'-wisp or a bone crawler fights at the floor, not
+ * as a speck on its square.
+ */
+export const BOARD_MEASURE: StageMeasure = { pxPerCm: 1.1, headroom: BOARD_TILE_PX * 2.7, floor: BOARD_TILE_PX * 0.55 };
+
+/**
+ * A board stance: the board's ground is the board, so a swimmer fights
+ * standing on its square (there is no water line to draw), and anything in the
+ * air is lifted and casts a smaller shadow, as on the story stage.
+ */
+function boardStance(stance: CastStance): CastStance {
+  return stance === "swimming" ? "standing" : stance;
+}
+
+/** The shadow a board stance casts, as on the story stage (scene.ts STANCE_SHADOW). */
+const BOARD_STANCE_SHADOW: Readonly<Record<CastStance, number>> = {
+  standing: 1,
+  hovering: 0.6,
+  flying: 0.45,
+  swimming: 1,
+};
 /**
  * How fast a figure turns round (1/s). The same squash-through-edge-on the
  * story lineup uses (scene.ts), so a figure turns the same way on both
@@ -200,6 +241,18 @@ export interface BoardLayer {
 interface BoardActor {
   container: Container;
   art: Container;
+  /** How tall this figure really is, and how it stands (#362). */
+  heightCm: number;
+  stance: CastStance;
+  /** A hero is measured against the nominal box (figure-scale.ts). */
+  hero: boolean;
+  paint: PaintBox | null;
+  footprint: Footprint | null;
+  sprite: Sprite | null;
+  /** Drawn painted height in board pixels, its canvas, and the canvas the shadow was drawn for. */
+  height: number;
+  canvas: number;
+  shadowCanvas: number;
   /** The contact shadow, a sibling of `art` (see makeActor). */
   shadow: Graphics;
   /** How far right of the anchor the feet are, as drawn (facing left). The
@@ -274,53 +327,6 @@ interface PendingBeat {
   event: EncounterEvent;
   /** A walk's squares, worked out when the sequence arrived (`playEvents`). */
   route?: readonly Position[];
-}
-
-/** The smallest share of the figure's height its art may fill on the board. */
-const MIN_ART_FILL = 0.5;
-/** And never more than this much growth, whatever the art measures. */
-const MAX_ART_BOOST = 2.2;
-
-/**
- * How much to grow a cutout whose painted part is small inside its canvas.
- * Measured once per texture from a 64 × 64 copy of its alpha; 1 when it cannot
- * be measured (no DOM canvas, a tainted image), so nothing ever shrinks.
- */
-const artBoosts = new WeakMap<object, number>();
-function smallArtBoost(texture: Texture): number {
-  const source = texture.source?.resource as CanvasImageSource | undefined;
-  if (!source || typeof document === "undefined") return 1;
-  const known = artBoosts.get(source as object);
-  if (known !== undefined) return known;
-  let boost = 1;
-  try {
-    const size = 64;
-    const canvas = document.createElement("canvas");
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
-    if (ctx) {
-      ctx.drawImage(source, 0, 0, size, size);
-      const alpha = ctx.getImageData(0, 0, size, size).data;
-      let top = size;
-      let bottom = -1;
-      for (let y = 0; y < size; y++) {
-        for (let x = 0; x < size; x++) {
-          if ((alpha[(y * size + x) * 4 + 3] ?? 0) > 24) {
-            top = Math.min(top, y);
-            bottom = y;
-            break;
-          }
-        }
-      }
-      const fill = bottom < top ? 1 : (bottom - top + 1) / size;
-      if (fill < MIN_ART_FILL) boost = Math.min(MAX_ART_BOOST, MIN_ART_FILL / fill);
-    }
-  } catch {
-    boost = 1;
-  }
-  artBoosts.set(source as object, boost);
-  return boost;
 }
 
 /** The board looks down on its squares, so its shadows are rounder than the
@@ -473,6 +479,34 @@ export function createBoardLayer(): BoardLayer {
     return { x: (at.x + 0.5) * BOARD_TILE_PX, y: (at.y + FEET_Y) * BOARD_TILE_PX };
   }
 
+  /** The art id behind an enemy (`will_o_wisp`), with the authored `enemies/` convention stripped. */
+  function enemyArtId(combatant: Combatant, current: BoardViewState): string {
+    const specId = combatant.id.split("#")[0] ?? combatant.id;
+    const art = current.enemyArt[specId] ?? "";
+    return art.startsWith("enemies/") ? art.slice("enemies/".length) : art;
+  }
+
+  /**
+   * Every figure on the board at its true height relative to the others
+   * (#362): natural scale, unless the tallest would pass `BOARD_MEASURE`'s
+   * headroom, in which case everybody shrinks together; the tiny stand at the
+   * floor. Run when the cast of the fight changes and as each cutout lands.
+   */
+  function sizeActors(): void {
+    const standing = [...actors.values()].filter((actor) => !actor.leaving);
+    const k = heightFit(standing, BOARD_MEASURE);
+    for (const actor of actors.values()) {
+      actor.height = drawnHeight(actor, k, BOARD_MEASURE);
+      const fit = fitCanvas(actor.height, actor.paint, actor.hero ? NOMINAL_PAINT : actor.paint);
+      actor.canvas = fit.canvas;
+      if (actor.sprite) {
+        actor.sprite.scale.set(fit.canvas / actor.sprite.texture.height);
+        actor.sprite.y = fit.offsetY;
+      }
+      actor.shadowX = shadowOffset(fit.canvas, actor.footprint);
+    }
+  }
+
   function artUrlFor(combatant: Combatant, current: BoardViewState): string | null {
     if (combatant.side === "party") {
       const member = current.party.find((m) => m.character.id === combatant.id);
@@ -529,9 +563,23 @@ export function createBoardLayer(): BoardLayer {
       nameLayer.addChild(label);
     }
 
+    // How tall this figure really is (#362): a hero's species, or the canon
+    // creature behind the enemy's art.
+    const size = combatant.side === "party"
+      ? figureSize(`characters/${current.party.find((m) => m.character.id === combatant.id)?.character.species ?? ""}`)
+      : figureSize(`entities/${enemyArtId(combatant, current)}`);
     const actor: BoardActor = {
       container: actorContainer,
       art,
+      heightCm: size.heightCm,
+      stance: boardStance(size.stance),
+      hero: combatant.side === "party",
+      paint: null,
+      footprint: null,
+      sprite: null,
+      height: ACTOR_HEIGHT * (NOMINAL_PAINT.bottom - NOMINAL_PAINT.top),
+      canvas: ACTOR_HEIGHT,
+      shadowCanvas: ACTOR_HEIGHT,
       shadow,
       shadowX: 0,
       id: combatant.id,
@@ -567,25 +615,25 @@ export function createBoardLayer(): BoardLayer {
           if (destroyed || actors.get(combatant.id) !== actor) return;
           const sprite = new Sprite(texture);
           sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
-          // Some art fills a quarter of its canvas (a will-o'-wisp is a small
-          // flame by design) and drew as a speck from the sofa. Grow it about
-          // the feet until it reads as a figure; art that already does is
-          // untouched.
-          const height = ACTOR_HEIGHT * smallArtBoost(texture);
-          sprite.scale.set(height / CANVAS.height);
           clearTimeout(reveal);
           art.removeChildren();
           placeholder.destroy();
           art.addChild(sprite);
+          // Some art fills a fifth of its canvas (a will-o'-wisp is a small
+          // flame by design): the painting is measured, and the canvas scaled
+          // so the painting is the figure's true height (sizeActors).
+          actor.sprite = sprite;
+          actor.paint = measurePaint(texture);
+          actor.footprint = groundedFootprint(measureFootprint(texture), actor.paint);
+          sizeActors();
           // Refit the shadow to where this figure's feet really are: most art
           // does not stand on the canvas centre line, and a shadow beside the
           // feet is what made figures look like they were hovering.
-          const footprint = measureFootprint(texture);
-          const fitted = drawShadow(combatant.side, height, footprint);
+          const fitted = drawShadow(combatant.side, actor.canvas, actor.footprint);
           actorContainer.addChildAt(fitted, actorContainer.getChildIndex(actor.shadow));
           actor.shadow.destroy();
           actor.shadow = fitted;
-          actor.shadowX = shadowOffset(height, footprint);
+          actor.shadowCanvas = actor.canvas;
           fitted.x = actor.shadowX * art.scale.x;
           // Fades up through the same easing that stands a fallen figure back
           // up (tick), so a figure arrives rather than appearing.
@@ -679,6 +727,8 @@ export function createBoardLayer(): BoardLayer {
       actor.label?.destroy();
       actors.delete(id);
     }
+    // Who is on the board decides how big everybody is drawn.
+    sizeActors();
   }
 
   // -------------------------------------------------------------------------
@@ -1030,9 +1080,11 @@ export function createBoardLayer(): BoardLayer {
         // The name lives in its own layer, so it has to be carried rather than
         // dragged: it follows the eased position, not the target, or it would
         // arrive a tile ahead of the figure it belongs to.
+        // A raised figure's name goes up with it, under its body (#362).
+        const lift = actor.down ? 0 : STANCE_LIFT[actor.stance] * actor.height;
         if (actor.label) {
           actor.label.x = actor.container.x;
-          actor.label.y = actor.container.y + NAMEPLATE_OFFSET_Y;
+          actor.label.y = actor.container.y + NAMEPLATE_OFFSET_Y - lift;
         }
         // Turning to face the nearest opponent: a quick squash through
         // edge-on, which reads as the figure turning round rather than
@@ -1047,16 +1099,24 @@ export function createBoardLayer(): BoardLayer {
           if (actor.label) actor.label.alpha = actor.art.alpha;
           continue;
         }
-        const breath = idleBreath(pulse, actor.phase, still || actor.down);
-        actor.art.scale.y = 1 + breath;
-        actor.shadow.scale.set(breathingShadowScale(breath));
+        // The breath, the bob or the drift, by stance (#362); a fallen flyer
+        // is on the ground like anybody else.
+        const idle = stanceIdle(actor.stance, pulse, actor.phase, still || actor.down);
+        const reach = Math.max(actor.height, BOARD_TILE_PX);
+        actor.art.scale.y = 1 + idle.breath;
+        actor.art.x = idle.dx * reach;
+        actor.art.y = approach(actor.art.y, idle.dy * reach - lift, DOWN_RATE, dtSeconds);
+        actor.shadow.scale.set(
+          (actor.canvas / actor.shadowCanvas) * (actor.down ? 1 : BOARD_STANCE_SHADOW[actor.stance]) *
+            idle.shadow * breathingShadowScale(idle.breath),
+        );
         if (actor.down) {
           // spec §7.3 — knocked down, never dead. They lie on the grid and
           // wait for someone to come get them. Same pose as the lineup.
           actor.art.rotation = approach(actor.art.rotation, FALLEN_ROTATION, DOWN_RATE, dtSeconds);
           actor.art.alpha = approach(actor.art.alpha, FALLEN_ALPHA, DOWN_RATE, dtSeconds);
         } else {
-          actor.art.rotation = approach(actor.art.rotation, 0, DOWN_RATE, dtSeconds);
+          actor.art.rotation = approach(actor.art.rotation, idle.rotation, DOWN_RATE, dtSeconds);
           actor.art.alpha = approach(actor.art.alpha, actor.away ? AWAY_ALPHA : 1, DOWN_RATE, dtSeconds);
         }
       }

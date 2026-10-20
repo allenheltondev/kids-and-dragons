@@ -12,7 +12,16 @@
  * figure that does not resolve, so nothing here probes for a file.
  */
 
-import type { CastMember, CastSize, Chapter, RunState } from "@kad/shared";
+import type { CastMember, CastStance, Chapter, RunState } from "@kad/shared";
+import {
+  castSize,
+  drawnHeight,
+  heightFit,
+  paintedWidths,
+  widthFit,
+  type SizedFigure,
+  type StageMeasure,
+} from "./figure-scale";
 
 /** A cast member as the stage draws them. */
 export interface StageCastMember {
@@ -20,80 +29,16 @@ export interface StageCastMember {
   key: string;
   url: string;
   name: string | null;
-  /** Drawn height as a multiple of a party figure's. */
-  scale: number;
+  /** How tall they really are, after the chapter's `size` (figure-scale.ts). */
+  heightCm: number;
+  /** How they occupy this scene, after the chapter's `stance`. */
+  stance: CastStance;
   /**
    * Set when this figure is one of a group (`count` > 1): the group shares a
    * slot, so layout packs them close, and the odd ones stand a step back.
    */
   crowd?: { index: number; size: number };
 }
-
-/**
- * assets/manifest.json → entities[].scale. Copied, not fetched, for the same
- * reason art-paths.ts copies the class rig list: the runtime stays a lookup and
- * a test (cast.test.ts) holds every declared entity to the manifest.
- */
-export const ENTITY_SIZES: Readonly<Record<string, CastSize | "variable">> = {
-  sheeple: "medium",
-  centaur: "large",
-  faun: "medium",
-  burrowfolk: "small_to_medium",
-  harvest_sprite: "tiny",
-  frogfolk: "small_to_medium",
-  skupper: "small_to_medium",
-  boughkin: "very_large",
-  boggart: "small",
-  yeti: "large",
-  merfolk: "medium",
-  selkie: "medium",
-  stone_troll: "very_large",
-  witch_order: "variable",
-  // Drawn, but not (yet) declared in manifest.entities; sized by eye.
-  skywardens: "medium",
-  pib: "tiny",
-  loftmire: "variable",
-  cloud_whale: "colossal",
-  reefglider: "medium",
-  glassback_crab: "medium_to_large",
-  embermoth: "tiny_to_small",
-  jackalope: "small",
-  silver_otter: "small",
-  mosshorn: "medium",
-  mire_mimic: "medium_to_large",
-  snowhorn_goat: "medium",
-  donkey: "medium",
-  mule: "medium_to_large",
-  pony: "small_to_medium",
-  cinder_wolf: "medium",
-  legend_dragon: "colossal",
-  frost_wyrm: "large",
-  river_drake: "large",
-  bone_crawler: "small_to_medium",
-  echo_hunter: "large",
-  kavari: "medium",
-  will_o_wisp: "tiny",
-  restless_remains: "variable",
-};
-
-/**
- * Size → height beside a party figure. The entity art is all drawn to fill
- * the same 1024 canvas (a harvest sprite is as tall on disk as a centaur), so
- * scale is the only thing that says one is a teapot and the other a horse.
- * Capped well under the frame: a colossal dragon stands as the biggest thing
- * on screen, not as a wall.
- */
-export const SIZE_SCALE: Readonly<Record<CastSize, number>> = {
-  tiny: 0.4,
-  tiny_to_small: 0.5,
-  small: 0.65,
-  small_to_medium: 0.82,
-  medium: 1,
-  medium_to_large: 1.12,
-  large: 1.25,
-  very_large: 1.35,
-  colossal: 1.45,
-};
 
 /** The most a scene casts (schemas/chapter.schema.json `cast.maxItems`). */
 export const MAX_CAST = 3;
@@ -112,15 +57,11 @@ export const GROUP_SPREAD = 0.62;
  * into (tools/art/split-group.py, assets/manifest.json castFigures). Drawn
  * as one figure, the Skywardens' griffin, faun and centaur stood at a third
  * of their width and short of a hero: three tiny guards. A chapter still
- * casts `entities/skywardens`; the stage stands the members as a group of
- * their own sizes, with the chapter's one nameplate under the first.
+ * casts `entities/skywardens`; the stage stands the members as a group, each
+ * at its own height, with the chapter's one nameplate under the first.
  */
-export const ENSEMBLES: Readonly<Record<string, readonly { figure: string; size: CastSize }[]>> = {
-  skywardens: [
-    { figure: "cast/skywarden_griffin", size: "medium_to_large" },
-    { figure: "cast/skywarden_faun", size: "medium" },
-    { figure: "cast/skywarden_centaur", size: "large" },
-  ],
+export const ENSEMBLES: Readonly<Record<string, readonly string[]>> = {
+  skywardens: ["cast/skywarden_griffin", "cast/skywarden_faun", "cast/skywarden_centaur"],
 };
 
 /** `entities/selkie` → its art. Null for anything the schema would refuse. */
@@ -132,14 +73,6 @@ export function castFigureUrl(figure: string): string | null {
   return `/assets/${kind}/${id}/assembled.png`;
 }
 
-function sizeOf(member: CastMember): CastSize {
-  if (member.size) return member.size;
-  const [kind, id] = member.figure.split("/");
-  if (kind !== "entities" || id === undefined) return "medium";
-  const size = ENTITY_SIZES[id];
-  return size === undefined || size === "variable" ? "medium" : size;
-}
-
 export function stageCast(members: readonly CastMember[]): StageCastMember[] {
   const out: StageCastMember[] = [];
   for (const member of members.slice(0, MAX_CAST)) {
@@ -149,19 +82,20 @@ export function stageCast(members: readonly CastMember[]): StageCastMember[] {
     const ensemble = member.figure.startsWith("entities/") ? ENSEMBLES[member.figure.slice("entities/".length)] : undefined;
     if (ensemble) {
       // The group is the entry: `count` has nothing to multiply, and an
-      // authored size still wins, for all of them.
+      // authored size or stance still applies, to each of them.
       ensemble.forEach((part, index) => {
         out.push({
           key: index === 0 ? key : `${key}#${index}`,
-          url: castFigureUrl(part.figure) ?? url,
+          url: castFigureUrl(part) ?? url,
           name: index === 0 ? (member.name ?? null) : null,
-          scale: SIZE_SCALE[member.size ?? part.size],
+          ...castSize(part, member.size, member.stance),
           crowd: { index, size: ensemble.length },
         });
       });
       continue;
     }
     const size = Math.max(1, Math.min(Math.floor(member.count ?? 1), MAX_GROUP));
+    const sized = castSize(member.figure, member.size, member.stance);
     for (let index = 0; index < size; index++) {
       out.push({
         // The first keeps the plain key, so a one-of-a-kind cast is unchanged
@@ -170,7 +104,7 @@ export function stageCast(members: readonly CastMember[]): StageCastMember[] {
         url,
         // One nameplate per group, under its first figure.
         name: index === 0 ? (member.name ?? null) : null,
-        scale: SIZE_SCALE[sizeOf(member)],
+        ...sized,
         ...(size > 1 ? { crowd: { index, size } } : {}),
       });
     }
@@ -197,7 +131,7 @@ export function castFor(chapter: Chapter | null, state: RunState | null): StageC
  * the left of the stage and the cast the right, facing each other across a gap
  * in the middle: the picture of a meeting. Each side spaces its own figures,
  * so a third hero joining does not shove the selkie about, and a centaur's
- * width is budgeted from its scale rather than squeezed into a pony's slot.
+ * width is budgeted from its drawn width rather than squeezed into a pony's slot.
  */
 export interface StageSlots {
   party: number[];
@@ -209,13 +143,17 @@ export interface StageSlots {
 
 export function stageSlots(
   partyCount: number,
-  castScales: readonly number[],
+  /**
+   * How much room each cast figure needs, in `FIGURE_SLOT`s: its drawn width
+   * over the width a hero's slot always had.
+   */
+  castWeights: readonly number[],
   width: number,
-  /** Parallel to castScales: true for a figure that is one of a group. */
+  /** Parallel to castWeights: true for a figure that is one of a group. */
   crowded: readonly boolean[] = [],
   compact = false,
 ): StageSlots {
-  if (castScales.length === 0) {
+  if (castWeights.length === 0) {
     // 416 is the 26% of the 1600 design width the lineup always used; held
     // in units so a wide pane centres the same group rather than scattering it.
     const spacing = Math.min(width / (partyCount + 1), 416);
@@ -242,12 +180,12 @@ export function stageSlots(
   const partyStart = partyBand.to - partySpacing * (partyCount - 0.5);
   const party = Array.from({ length: partyCount }, (_, i) => partyStart + partySpacing * i);
 
-  // Each cast figure's share of its band is proportional to how big it is.
-  const weights = castScales.map((s, i) => Math.max(s, 0.5) * (crowded[i] ? GROUP_SPREAD : 1));
+  // Each cast figure's share of its band is proportional to how wide it is drawn.
+  const weights = castWeights.map((s, i) => Math.max(s, 0.5) * (crowded[i] ? GROUP_SPREAD : 1));
   const total = weights.reduce((a, b) => a + b, 0);
   const bandWidth = castBand.to - castBand.from;
   // A lone figure does not drift to the far edge: it stands near the gap.
-  const used = Math.min(bandWidth, total * 300);
+  const used = Math.min(bandWidth, total * FIGURE_SLOT);
   let cursor = castBand.from;
   const cast: number[] = [];
   const castSlots: number[] = [];
@@ -264,9 +202,75 @@ export function stageSlots(
   return { party, cast, partySlot: partySpacing, castSlots };
 }
 
-/** Fit full figure canvases into their slots, preserving relative species sizes. */
-export function stageFigureScale(slots: StageSlots, scales: readonly number[], height: number): number {
-  if (scales.length < 2) return 1;
-  return Math.min(1, slots.partySlot * 0.9 / height,
-    ...scales.map((scale, i) => slots.castSlots[i]! * 0.9 / (height * scale)));
+/** The width, in design units, a cast figure of weight 1 is given (`stageSlots`). */
+export const FIGURE_SLOT = 300;
+
+/**
+ * The story stage's measure (#362): 2.5 design units a centimeter, so a 160 cm
+ * faun paints 400 units tall, about where a hero always stood in the 900-unit
+ * design rect. The tallest figure may reach `headroom` above the ground line
+ * (scene.ts stands it at 88% of the rect, and leaves a margin at the top), so
+ * anything up to 3 m stands at natural scale and anything taller shrinks the
+ * stage. Nothing is drawn shorter than `floor`, 64 units, which at natural
+ * scale is a 26 cm figure: a teapot-sized sprite sits right on it, and
+ * anything smaller stands at the floor rather than as a speck.
+ */
+export const STORY_MEASURE: StageMeasure = { pxPerCm: 2.5, headroom: 900 * 0.88 - 40, floor: 64 };
+
+/**
+ * How much of its slot a figure's painted box may span. A little over the
+ * slot: the box is the paint's bounding rectangle, and a horse's nose and a
+ * neighbour's tail rarely meet in its corners. Names keep to their slots
+ * strictly (scene.ts), which is the gutter that has to hold.
+ */
+export const SLOT_FILL = 1.1;
+
+export interface StageFigure extends SizedFigure {
+  /** One of a group: it may overlap its neighbours (`GROUP_SPREAD`). */
+  crowded?: boolean;
+}
+
+export interface StageLayout {
+  slots: StageSlots;
+  /** The drawn (painted) height of each party figure, then each cast figure. */
+  party: number[];
+  cast: number[];
+  /** The one scale every figure is drawn at, relative to natural size: 1 unless something had to fit. */
+  k: number;
+}
+
+/**
+ * Where everybody stands and how tall each is drawn (#362): true proportion,
+ * shrunk together until the tallest fits under the frame and every figure fits
+ * its slot, never grown, and floored for the tiny.
+ */
+export function stageLayout(
+  party: readonly StageFigure[],
+  cast: readonly StageFigure[],
+  width: number,
+  compact = false,
+  measure: StageMeasure = STORY_MEASURE,
+): StageLayout {
+  const all = [...party, ...cast];
+  const tall = heightFit(all, measure);
+  const widths = paintedWidths(all, tall, measure);
+  const castWidths = widths.slice(party.length);
+  const slots = stageSlots(
+    party.length,
+    castWidths.map((w) => w / FIGURE_SLOT),
+    width,
+    cast.map((member) => member.crowded ?? false),
+    compact,
+  );
+  const rooms = [
+    ...party.map(() => slots.partySlot * SLOT_FILL),
+    ...cast.map((member, i) => (slots.castSlots[i] ?? 0) * SLOT_FILL / (member.crowded ? GROUP_SPREAD : 1)),
+  ];
+  const k = tall * widthFit(widths, rooms);
+  return {
+    slots,
+    party: party.map((figure) => drawnHeight(figure, k, measure)),
+    cast: cast.map((figure) => drawnHeight(figure, k, measure)),
+    k,
+  };
 }
