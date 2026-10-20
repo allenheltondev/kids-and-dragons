@@ -3,8 +3,9 @@
  *
  * Imported from the client's own table rather than re-stated here: the briefs
  * are what the *game* asks for, `audio:briefs` prints them, `audio:import`
- * files against them and the gate checks against them, and a second copy would be a second answer to "what
- * cues exist" — the failure `bestiary.ts` argues about at length.
+ * files against them and the gate checks against them, and a second copy
+ * would be a second answer to "what cues exist" — the failure `bestiary.ts`
+ * argues about at length.
  */
 
 import { CUE_SPECS, MUSIC_SPECS, type CueSpec } from "../../packages/client/src/audio/paths";
