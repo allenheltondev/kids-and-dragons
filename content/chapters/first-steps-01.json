@@ -678,7 +678,7 @@
       "choices": []
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "warm, playful, encouraging; a first lesson that feels like a game, never a test",
     "vocabulary": "age-8",
     "forbidden": [

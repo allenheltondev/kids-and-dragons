@@ -385,7 +385,7 @@ canon (the 12 mechanical ones plus the Hollow Crown shard, which belongs to
 **D8 — RULED and BUILT. Named individuals, and the one rule that decides
 them.** `npcs.yaml` holds *peoples* (centaur, faun, frogfolk) and said named
 individuals were not canon. Meanwhile `bramblewood-01.json` had Pib, a wisp and
-an embarrassed door, characterised entirely in `llmHints.npcVoices` and thrown
+an embarrassed door, characterised entirely in `voiceGuide.npcVoices` and thrown
 away when the chapter ended.
 
 **The defining rule: a location owns them.** A named individual is canon
@@ -411,7 +411,7 @@ unkindness worth a field.
 the same civilisation without anyone re-authoring it. The two layer: the
 people's register, then the individual's over it.
 
-Chapter-scoped characters keep the home they already had, `llmHints.npcVoices`,
+Chapter-scoped characters keep the home they already had, `voiceGuide.npcVoices`,
 now formally blessed rather than merely tolerated. Of bramblewood-01's three,
 Pib was promoted (Bramblewood is a canon town and Pib keeps its hedges); the
 wisp and the door stayed, because no place would miss them. Three individuals

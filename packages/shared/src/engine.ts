@@ -958,7 +958,7 @@ function enterSceneDraft(
   draft.phase = scene.type === "encounter" ? "encounter" : scene.type === "check" ? "check" : "scene";
 
   /*
-   * The trail, for the end-of-chapter recap (roadmap chapter 7).
+   * The trail, for the end-of-chapter recap of priority-1 scenes.
    *
    * Appended here because this is the one function every arrival goes through —
    * a choice, a branch off a roll, a fight ending, a playtest jump. Coalesced
@@ -1531,21 +1531,13 @@ function doStartChapter(
   // A new chapter is a new day on the road: everyone's help is back.
   draft.helpSpent = [];
   /*
-   * The live layer's two fields, cleared for exactly the reason above them.
-   *
-   * `visited` is the spine of the recap, so a trail carried across the boundary
-   * makes the second chapter's recap retell the first one's scenes — naming
-   * rooms that are not in this chapter at all. And `recap` is the previous
-   * chapter's finished story: left standing, the completion screen shows it
-   * again at the end of *this* chapter every time the live layer is off, times
-   * out, or has its answer rejected — which, the layer being optional, is the
-   * normal case rather than the edge one.
-   *
-   * Both are the same omission: this function is the chapter boundary, and
-   * anything scoped to a chapter dies here.
+   * The trail, cleared for exactly the reason above it. `visited` is the spine
+   * of the end-of-chapter recap, so a trail carried across the boundary makes
+   * the second chapter's recap retell the first one's scenes, naming rooms
+   * that are not in this chapter at all. This function is the chapter
+   * boundary, and anything scoped to a chapter dies here.
    */
   draft.visited = [];
-  draft.recap = null;
   // The lobby's decision is spent: back in the lobby, the party decides again.
   draft.campaignVotes = {};
   for (const member of draft.party) member.ready = false;

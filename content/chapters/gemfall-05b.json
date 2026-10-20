@@ -1589,7 +1589,7 @@
       "outcome": "setback"
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "cozy, wise and quietly amazed; a town of librarians who are also a forest, with the mountain grumbling at the edge",
     "vocabulary": "age-8",
     "forbidden": [

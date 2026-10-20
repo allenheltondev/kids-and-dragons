@@ -1512,7 +1512,7 @@
       "outcome": "setback"
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "green, hushed and watchful; the forest is a polite host keeping a ledger, a little spooky but never scary",
     "vocabulary": "age-8",
     "forbidden": [
