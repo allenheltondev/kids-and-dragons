@@ -1,5 +1,15 @@
 # Kavari artwork
 
+## Tail, expression, and anatomy cleanup
+
+The latest built-in imagegen edit darkens the tail to sapphire blue, gives the
+face a fierce focused gaze, and removes the unintended folded fifth wing from
+the torso. The four outstretched wings remain. The portrait is regenerated.
+
+### Cleanup edit prompt
+
+Edit the supplied four-winged ice-blue Kavari bird illustration with EXACTLY these three corrections. 1) TAIL COLOR: the tail is the downward-pointing feather fan behind the legs, at bottom right. Recolor that entire tail to a deep rich sapphire/cobalt blue, significantly darker than the pale ice-blue wings, with restrained lighter blue crystalline edge highlights. Tail must read as a separate dark-blue appendage, clearly contrasting with the lower right wing above it. Keep the four actual wings pale ice blue. 2) FIERCER FACE: change the baby-like wide-eyed expression into a focused fierce adult gaze: narrower luminous icy-blue eyes, lowered feather brow angled with determination, confident closed dark-blue beak, slightly sharper cheek feathers. Brave, alert and formidable but child-friendly. Preserve this creature's rounded ice-blue head and magical identity; do not turn it into a bald eagle or photorealistic raptor. 3) REMOVE EXTRA BODY WING: there is an unintended FIFTH wing, a folded teardrop-shaped feather fan on the near side of the torso, immediately right of the breast below the base of the large upper-right wing, with its tip pointing down toward the hip. ERASE that entire folded teardrop wing and its outline. Replace that area with smooth continuous short body plumage matching the breast and flank, no elongated layered flight feathers or inset fan on the torso. Preserve EXACTLY FOUR real outstretched wings: upper left, upper right, lower left, lower right. Do not remove either lower outstretched wing. Each of these four wings attaches once and has a coherent continuous surface. Keep their current open poses, size, crystalline feather highlights, the two feet, body position, silhouette and illustration style otherwise unchanged. Hand-painted fantasy storybook art, true transparent RGBA background, no scenery, text, effects or ground shadow. Full bird unclipped on square canvas with at least 60px transparent edge margins.
+
 ## Double-wing revision
 
 At the user's direction, the final design now has two distinct wing pairs:
