@@ -83,9 +83,10 @@
   opacity: 1;
 }
 
-/* Opaque, so the glow below fades from gold to it rather than through a stray hue. */
+/* A plain colour, like the gold: the glow below fades between the two, and Chromium fading from
+   an rgb() to a color-mix() result went through red. */
 .goal__step--done .goal__label {
-  color: color-mix(in srgb, var(--color-text, #f4f0ff) 72%, var(--kad-bg, #0d0b1a));
+  color: #b3b0bf;
 }
 
 .goal__maybe {
@@ -117,12 +118,13 @@
   border-radius: 0.35em;
 }
 
-/* Gold words on a gold wash, fading back to a done step. No text-shadow: a blurred one drew red. */
+/* Gold words on a gold wash, fading back to a done step. Plain colours throughout, and no
+   text-shadow: Chromium fading out of a color-mix() result, or a blurred shadow, drew red. */
 @keyframes goal-glow {
   0%, 45% {
-    color: var(--goal-gold);
-    background-color: color-mix(in srgb, var(--goal-gold) 28%, transparent);
-    box-shadow: 0 0 0 0.2em color-mix(in srgb, var(--goal-gold) 28%, transparent);
+    color: #f5c86c;
+    background-color: #f5c86c47;
+    box-shadow: 0 0 0 0.2em #f5c86c47;
   }
 }
 
