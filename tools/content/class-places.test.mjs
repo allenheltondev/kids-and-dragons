@@ -101,12 +101,21 @@ describe("class place reach", () => {
     }
   });
 
-  it("counts a rift that only reveals, is one-way or has limited uses as open", () => {
+  it("counts a rift that only reveals, is one-way or is limited to n crossings as open", () => {
     const chapters = [chapter("ch-a"), chapter("ch-b", CLASSES)];
-    // `uses` alone too: only this way's crossings spend it, so the first is always there (#315).
-    for (const rift of [{}, { oneWay: true }, { persistent: true }, { reveal: "when-open" }, { uses: 1 }, { uses: 1, oneWay: true }]) {
+    for (const rift of [{}, { oneWay: true }, { persistent: true }, { reveal: "when-open" }, { uses: 1 }, { uses: 2, oneWay: true }]) {
       expect(verdict(campaign({ rift }), chapters).errors, JSON.stringify(rift)).toEqual([]);
     }
+  });
+
+  it("counts the Riftlight draft's one-use, one-way rift as open, and the rooms beyond it", () => {
+    // Read from the shipped draft so the test follows it: its only way out of the Exchange.
+    const draft = JSON.parse(readFileSync(join(REPO, "content", "drafts", "riftlight", "opening-preview.campaign.json"), "utf8"));
+    const { when, locked, rift } = draft.graph.edges["exchange-to-glacier"];
+    expect(rift.uses).toBe(1);
+    expect([when, locked, rift.opensWhen, rift.lasts, rift.unstable, rift.linkedTo, rift.actions]).toEqual(Array(7).fill(undefined));
+    const chapters = [chapter("ch-a"), chapter("ch-b", CLASSES)];
+    expect(verdict(campaign({ rift }), chapters).errors).toEqual([]);
   });
 
   it("counts a `completed` gate on a place any party can reach", () => {
