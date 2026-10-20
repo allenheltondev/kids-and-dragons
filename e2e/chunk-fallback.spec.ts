@@ -21,6 +21,20 @@ const JOURNAL = /\/(?:src\/screens\/JournalScreen\.tsx|bundle\/JournalScreen-[^/
 const PARTY = /\/(?:src\/layout\/PartyLayout\.tsx|bundle\/PartyLayout-[^/]*\.js)(?:\?|$)/;
 const TRY = { name: "Try again" } as const;
 
+/**
+ * Let the dev server see a chunk's module graph once, from a page of its own,
+ * before the test blocks it. A cold Vite finds the room's dependencies (Pixi)
+ * the first time anything imports them and holds that response while it
+ * bundles them, so the retry under test would wait on the dev server rather
+ * than on the app. A build has no such step; there this finds nothing.
+ */
+async function warm(page: Page, module: string): Promise<void> {
+  const other = await page.context().newPage();
+  await other.goto("/");
+  await other.evaluate((path) => import(/* @vite-ignore */ path).catch(() => undefined), module);
+  await other.close();
+}
+
 /** Every load of the page itself, counted from here on. */
 function loads(page: Page): () => number {
   let count = 0;
@@ -63,6 +77,7 @@ test("a required screen that cannot load says so, and Try again opens it", async
 
 test("a room whose layout cannot load says so, and Try again brings the room", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
+  await warm(page, "/src/layout/PartyLayout.tsx");
   await page.route(PARTY, (route) => route.abort());
   await page.goto("/");
   await page.getByRole("button", { name: /host a game/i }).click(TAP);
