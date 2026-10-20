@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { expect } from "vitest";
-import { applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
+import { applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
 import type { Campaign, Chapter, ClassId, ClientIntent, EngineContext, ItemCatalog, RulesContent, RunState, SpeciesId } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { RIFTLIGHT_DRAFT } from "./riftlight-preview.ts";
@@ -83,16 +83,17 @@ export type ClassAnswer = "keep" | "switch";
 export function answerClassPlace(state: RunState, chapter: Chapter, answer: ClassAnswer = "keep"): RunState {
   let current = state;
   for (const member of classPlaceWaitingOn(state)) {
-    const classId = current.classPlace!.class;
-    if (answer === "keep") {
-      const result = applyIntent(current, { playerId: member.playerId, intent: { type: "KEEP_CLASS", classId } }, context(chapter));
+    const place = current.classPlace!;
+    // The fitting stall (#312) stands only in Gemfall; met anywhere, the walker keeps.
+    if (answer === "keep" || place.stall) {
+      const result = applyIntent(current, { playerId: member.playerId, intent: keepClassIntent(place, member) }, context(chapter));
       expect(result.error, `${chapter.id}/${current.sceneId}: KEEP_CLASS`).toBeUndefined();
       current = result.state;
       continue;
     }
     const next = structuredClone(current);
     const seat = next.party.find((m) => m.playerId === member.playerId)!;
-    const worn = resolveCharacter(switchClass(hero(seat.character.species, seat.character.class), rules, classId), rules, items);
+    const worn = resolveCharacter(switchClass(hero(seat.character.species, seat.character.class), rules, place.class), rules, items);
     const { id, ownerPlayerId, name, inventory, questItems, souvenirs } = seat.character;
     seat.character = { ...worn, id, ownerPlayerId, name, inventory, questItems, souvenirs };
     next.classPlace!.answers = { ...next.classPlace!.answers, [member.playerId]: { switched: true, from: member.character.class } };
