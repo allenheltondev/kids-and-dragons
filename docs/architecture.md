@@ -1,7 +1,7 @@
 # Kids & Dragons — Technical Architecture
 
 Companion to [spec.md](./spec.md). Covers stack, AWS topology, data model, sync protocol,
-chapter schema, and LLM integration.
+chapter schema, and where models are (and are not) used.
 
 ---
 
@@ -19,7 +19,7 @@ chapter schema, and LLM integration.
 | Realtime | **AWS AppSync Events** | Managed pub/sub. Room = channel. No connection table to maintain. |
 | Data | **DynamoDB, single table** | |
 | Assets & hosting | **S3 + CloudFront** | |
-| LLM | **Claude in Amazon Bedrock** | Same AWS account the rest of the stack deploys into. SigV4 off the Lambda's execution role, so the server holds no key. |
+| Models | **None at play time** | The game makes no model call while a table plays (§6, #347). The offline authoring tools that use one are not part of the stack. |
 | Art assets | **Commissioned from a coding agent** | We own the contract ([asset-brief.md](./asset-brief.md)) and the CI gate, not a generation pipeline. |
 | IaC | **AWS SAM** — [`infra/template.yaml`](../infra/template.yaml) | One template, one region, two long-lived stacks (staging, prod) plus an optional dev stack. See [deploy.md](./deploy.md). |
 
@@ -31,15 +31,6 @@ subscribe/publish semantics and roughly a third of the code for this shape of pr
 
 If you'd rather use Momento Topics, it's a single-file swap — the transport is isolated behind
 a `RoomChannel` interface (§4.4) precisely so this choice is reversible.
-
-### 1.2 Why Claude Platform on AWS, not Bedrock
-
-Bedrock is partner-operated: feature availability lags and model IDs carry an `anthropic.` prefix.
-Claude Platform on AWS is Anthropic-operated with same-day API parity, while still giving you
-SigV4 auth, AWS IAM access control, and AWS Marketplace billing. Model IDs are bare
-(`claude-haiku-4-5`, `claude-opus-5`).
-
-Requires `AWS_REGION` and `ANTHROPIC_AWS_WORKSPACE_ID`; neither has a default.
 
 ---
 
@@ -91,9 +82,7 @@ game where a two-second pause is fatal to momentum. The other two are genuinely
 different — the authorizer can only read and verify, the sweeper can only delete
 — and each carries the smallest policy that lets it work.
 
-The LLM proxy (§6) is roadmap Chapter 7 and is not in the stack yet. When it
-lands, **the Anthropic credential never leaves Lambda** — the browser has no path
-to it.
+No function calls a model, and none has permission to (§6).
 
 ---
 
@@ -1002,7 +991,6 @@ page costs first paint nothing.
 | Long-lived device token, room session token | The device's own storage | Until it expires (30-day sliding, room's 6 hours) or is cleared |
 | Address (IPv4, or the IPv6 /64) as a wrong-code counter key | `GUESS#` row | About two 15-minute windows (TTL) |
 | Request logs (address, path, errors) | CloudWatch | Account-wide retention, set outside this repo (`infra/template.yaml`, "Logs") |
-| Hero and player names, inside narration prompts | Sent to the model provider | Only while live narration is on (§6, #254) |
 
 The grown-up's email lives in Cognito, never in the table.
 
@@ -1892,7 +1880,7 @@ and served as a static asset from CloudFront.
     }
   },
 
-  "llmHints": {
+  "voiceGuide": {
     "tone": "warm, playful, a little spooky but never scary",
     "vocabulary": "age-8",
     "forbidden": ["death", "blood", "permanent loss"],
@@ -2013,121 +2001,36 @@ the play session.
 
 ---
 
-## 6. LLM integration
+## 6. No model at play time
 
-### 6.1 Model assignment
+The game makes **no model call while a table plays** (#347). The chapters are authored and
+committed (§5), the engine plays them as written, and nothing a kid types, picks or does in a game
+is sent to a model. No function in the stack calls one, and none has an IAM permission to.
 
-| Job | Model | Where |
-|---|---|---|
-| Chapter generation, encounter design | `anthropic.claude-opus-5` | Local CLI, authoring time |
-| Live flavor text, NPC lines, recaps | `anthropic.claude-haiku-4-5` | Lambda, table time |
+There used to be a live narration layer here (roadmap Chapter 7): flavour lines and an
+end-of-chapter recap from a small model at table time, prefetched and validated, with the authored
+text as the fallback. It was removed in #347. The authored stories stand on their own, and a
+runtime model call added complexity and worked against the COPPA review (#320): whatever a table
+said or did would have reached a third-party model while a child was playing. With it went the stack
+parameter and environment variable that switched it, and the API function's model permission.
 
-Both go through **Claude in Amazon Bedrock** — the Messages API at
-`bedrock-mantle.{region}.api.aws/anthropic`, hence the `anthropic.` prefix on the model ids.
-Neither surface holds an API key: the CLI signs with whatever credentials `aws sts
-get-caller-identity` would use, and the Lambda signs with its execution role.
+What stays is authored:
 
-### 6.2 Cost
+- **Priority scenes** (content/README.md, "Priority scenes"): a p1 revelation or a p2 clue is
+  drawn differently on the shared screen and its ribbon is read aloud.
+- **The end-of-chapter recap** retells every priority-1 scene on the run's trail
+  (`RunState.visited`), once each, in its own authored words (`revelationsOf` in
+  `packages/shared/src/narration.ts`). The completion screen shows it and reads it aloud.
+- **A chapter's `voiceGuide`** (tone, vocabulary, `forbidden`, `npcVoices`) is its authors' voice
+  guide and the home of its chapter-scoped characters (`canon/individuals.yaml`). Nothing at play
+  time reads it. (Renamed in #347.)
 
-Roughly 40 live calls per 30-minute session with a cached prefix:
-
-| Model | Per session | Per year @ 3 sessions/week |
-|---|---|---|
-| `claude-haiku-4-5` | **~$0.07** | **~$11** |
-| `claude-sonnet-5` | ~$0.14 | ~$22 |
-
-Cost is not a design constraint here. **Optimize for latency instead.**
-
-### 6.3 Prompt caching — the one real gotcha
-
-Claude's prompt cache is a **prefix match**, and the minimum cacheable prefix is
-**4096 tokens on Haiku 4.5** (Sonnet 5 is 1024, Opus 5 is 512).
-
-If the cached prefix lands under 4K there is **no error** — caching silently does nothing and you
-pay full input price on every call. Two mitigations:
-
-1. **Design the prefix to clear 4K comfortably**: tone rules + party sheet + chapter context + the current scene's authored text + few-shot examples.
-2. **Assert on it in dev.** Log `usage.cache_read_input_tokens` and fail loudly in development if it's zero across repeated calls.
-
-Prefix layout, in render order (`tools` → `system` → `messages`) — most stable first:
-
-```
-system  [cached] : writing rules + few-shots, the cast, chapter tone, chapter scenes
-system           : party composition, including who is hurt            ← changes every fight
-messages         : chapter context + scene text                        ← changes per scene
-messages         : the specific moment being narrated                  ← changes every call
-```
-
-**This is a correction to the three-breakpoint layout this section used to describe**, made after
-building it and measuring (`packages/server/src/llm/prompt.ts`). Two of those three breakpoints do
-not survive contact with the floor:
-
-1. **The tone block does not reach 4096 tokens on its own** — tone rules plus a generous set of
-   few-shots comes to roughly 1300. A breakpoint there is not a smaller saving, it is *no* saving.
-   The prefix reaches the floor only once the cast (`content/rules.json`'s species and class
-   blurbs) and the chapter's own scenes are in front of it — all of which is real context that
-   improves the writing, not padding bought to clear a threshold.
-2. **The party block cannot sit inside the cached prefix**, because it says who is hurt. "Changes
-   ~once/session" is true of names and levels and false of hit points, and hit points are the half
-   a narrator actually needs. A block that changes every fight, placed in front of the scene text,
-   invalidates the scene text on every fight.
-
-So: **one breakpoint**, at the end of everything stable for a whole session. A unit test measures
-the real prefix against the floor with a 15% margin, because the estimate is a heuristic and the
-floor is a cliff with no warning on the far side.
-
-Never interpolate a timestamp, UUID, or request ID into the system prompt. It sits at the front of
-the prefix and invalidates everything after it.
-
-### 6.4 Latency — speculative prefetch
-
-Two-second pauses at a table with an 8-year-old are fatal to momentum. The fix exploits the fact
-that turn-based games always know the small set of things that can happen next:
-
-> When the party enters a scene, immediately fire off generation for the 3–4 likely reactions
-> **during the transition animation.** By the time she taps, the text is already in hand.
-
-Prefetched results go into a per-run cache keyed by `(runId, sceneId, choiceId)` — the run id is
-explicit because one process serves many households, and without it one family's prefetched line
-reaches another's television.
-
-A hit renders instantly; **a miss is the authored text**. Nothing streams and nothing waits: the
-take is a synchronous map read, so there is no code path from a player's tap to a network call and
-therefore none from a slow model to a stalled television. "Should never observe a wait" is kept by
-removing the ability to wait rather than by keeping one short.
-
-One exit per *destination*, not one per button. Three species-gated choices that all arrive in the
-same clearing are one line, because the arrival cannot tell them apart — and warming all three
-filled the window and pushed the scene's only ungated choice out of it.
-
-### 6.5 Safety validator
-
-Every live generation passes through `validateNarration()` before it reaches a screen:
-
-- Length cap (≤ 240 characters for flavor, ≤ 400 for recaps)
-- Banned-topic keyword screen from the chapter's `llmHints.forbidden`
-- Must reference an entity present in the current scene
-- No second-person imperatives that imply an action the game can't perform
-
-**Anything that fails is discarded and the authored text is used.** Silently. No error surface,
-no retry loop, no waiting.
-
-### 6.6 The kill switch
-
-`LIVE_LLM_ENABLED=false` disables the entire live layer. The game remains fully playable.
-
-Read as an **exact match on the string `"true"`**, so anything else — including `"false"`, which is
-a non-empty string every `if (process.env.X)` would treat as on — leaves the layer off. The default
-falls that way because the two mistakes do not cost the same: a layer wrongly off is one evening of
-plainer narration and announces itself immediately; a layer wrongly on is unreviewed text on a
-television in a child's living room, plus a bill, and announces itself to nobody.
-
-CI runs the integration suite with the live layer stubbed out — this invariant is tested, not hoped
-for. It is also **structural**: `HandlerDeps.narrator` is optional, absence and `silentNarrator`
-behave identically, so every test that does not name a narrator is running the off path for free.
-`handlers/live-layer.test.ts` plays the same opening twice, with and without, and asserts the two
-runs differ in the narration and in nothing else — not "the game still works", but the same seq,
-flags, party, prompt and dice.
+Models are used **only at authoring time**, by offline tools that never run during play and never
+see a child's data: `content:generate` drafts a chapter (`tools/content/generate.ts`, signed
+with the author's own AWS credentials; README.md, "Writing a chapter"), and the audio and art
+pipelines generate assets ([audio-pipeline.md](./audio-pipeline.md),
+[art-pipeline.md](./art-pipeline.md)). Their output is reviewed and committed like any other
+content.
 
 ---
 
@@ -2135,7 +2038,7 @@ flags, party, prompt and dice.
 
 | Env | Purpose | Deployed by |
 |---|---|---|
-| local | Vite + the dev server + DynamoDB Local. Live LLM off by default. | `npm run dev` |
+| local | Vite + the dev server + DynamoDB Local. | `npm run dev` |
 | `staging` | A real stack, on real AWS, from every pull request. | the `Staging` GitHub environment |
 | `prod` | The real thing. One stack, one region. | the `Production` environment, once CI passes on `main` |
 | `dev` | An optional fourth stack for driving by hand. | `./scripts/deploy.sh dev` |

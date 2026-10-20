@@ -66,8 +66,8 @@ out on Gemfall), and for a nonlinear campaign
 A non-combat scene may set `priority`: `1` for a revelation the campaign turns on, `2` for a clue
 worth noticing. Leave it off everywhere else, which is nearly everywhere. At most one p1 on any
 path through a chapter, and the fact goes plainly in the narration itself. Priority scenes are
-drawn differently on the shared screen, never rewritten by the live narration layer, and every
-p1 visited is handed to the end-of-chapter recap. A reveal written as a check's branch narration
+drawn differently on the shared screen, and every p1 visited is retold, in its own words, on the
+end-of-chapter recap. A reveal written as a check's branch narration
 cannot be marked, so give a big reveal its own scene. See
 [content/README.md, "Priority scenes"](content/README.md#priority-scenes); Gemfall's p1 per beat is
 in [gemfall-authoring.md](docs/campaigns/gemfall-authoring.md#priority-scenes).

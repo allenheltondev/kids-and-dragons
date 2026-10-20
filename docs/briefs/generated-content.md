@@ -100,7 +100,7 @@ Pick one — I'd make `asset_id` the join key, since it already matches
 - **npcs.yaml** (10) — these are *peoples* (centaur, faun, frogfolk), not
   individuals. Meanwhile the shipped chapter has Pib, a wisp, and an
   embarrassed door, whose entire characterisation lives in that chapter's
-  `llmHints.npcVoices`. So voice is authored per chapter and thrown away.
+  `voiceGuide.npcVoices`. So voice is authored per chapter and thrown away.
   Missing: a speech-register field on each people, and a decision on whether
   named individuals ever get canon ids (`agent_instructions` currently says
   no, which is a legitimate answer — but then chapter-scoped NPCs need a

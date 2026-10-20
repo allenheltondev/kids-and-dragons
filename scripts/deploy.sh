@@ -140,13 +140,6 @@ PARAMS=("StageName=$STAGE")
 if [ -n "${WEBAUTHN_RP_ID:-}" ]; then
   PARAMS+=("WebAuthnRelyingPartyId=$WEBAUTHN_RP_ID")
 fi
-# The live narration layer (roadmap chapter 7). Passed on every deploy with
-# unset meaning `false`, because "left out" is not a state a kill switch may
-# have: on an update to an existing stack an omitted parameter keeps its
-# previous stack value, so a stack once deployed with `true` would stay on
-# after the workflow line was deleted — the documented off switch would not
-# switch anything off. `${VAR:-false}` makes absence genuinely mean off.
-PARAMS+=("LiveLlmEnabled=${LIVE_LLM_ENABLED:-false}")
 # The custom domain. Same rule: passed every deploy, empty meaning none, so a
 # stack that once had a domain loses it only when a deploy says so on purpose
 # rather than because a variable went missing. Unset is the cloudfront.net

@@ -11,7 +11,7 @@ purpose: >-
 
 agent_instructions:
   - "The defining rule: a location owns them. An individual is canon because a place would miss them if they were gone, not because a chapter needed somebody to stand there."
-  - "`home` is required and always a location. If you cannot name the place that owns them, they are not canon - they belong in a chapter's `llmHints.npcVoices`, where they can be forgotten when the chapter ends."
+  - "`home` is required and always a location. If you cannot name the place that owns them, they are not canon - they belong in a chapter's `voiceGuide.npcVoices`, where they can be forgotten when the chapter ends."
   - Individuals persist between chapters. A party that comes back next campaign finds them still there, older, remembering what happened.
   - Do not kill, remove, or permanently change a named individual in generated content. Canon changes are authored here, deliberately.
   - "`speech_register` is how this one person talks, layered over their people's register in npcs.yaml. Use both."
@@ -38,7 +38,7 @@ individual_ids:
 individuals:
   # -------------------------------------------------------------------------
   # D8. Three, on purpose - this file is a shape to author against rather than
-  # a population. Pib came from bramblewood-01's `llmHints.npcVoices`, where a
+  # a population. Pib came from bramblewood-01's `voiceGuide.npcVoices`, where a
   # bramble sprite the size of a teapot was invented, played for one chapter
   # and thrown away. Bramblewood is a canon town; Pib lives there; that is the
   # whole argument for promoting one character and not the other two in that

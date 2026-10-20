@@ -84,11 +84,12 @@
 }
 
 /*
- * The live layer's session recap (roadmap chapter 7).
+ * The recap: each priority-1 scene the party walked through, in its authored
+ * words (chapter.ts `ScenePriority`).
  *
- * Set as a block of running prose rather than as a chip: it is two or three
- * sentences about the evening, and it is the one thing on this screen that is
- * about the story instead of about the numbers. Italic and indented behind a
+ * Set as a block of running prose rather than as a chip: it is a sentence or
+ * three of the story, and it is the one thing on this screen that is about the
+ * story instead of about the numbers. Italic and indented behind a
  * rule so it reads as a voice rather than as another statistic — and in the
  * ordinary text colour, because there is nothing to warn anybody about.
  *

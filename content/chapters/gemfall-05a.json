@@ -1671,7 +1671,7 @@
       "art": "scenes/gemfall/redspire-rim-lookout"
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "busy, gray-coated, a bit solemn, with warm people in it; the moment the party sees the whole shape of the clue",
     "vocabulary": "age-8",
     "forbidden": [
