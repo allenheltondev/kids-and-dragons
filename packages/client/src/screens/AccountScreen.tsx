@@ -11,7 +11,8 @@
  * A lazy chunk, like the guide: nobody waiting to type a room code needs it.
  */
 
-import { Suspense, lazy, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
+import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ReactElement } from "react";
 import { useKeepsakeStore } from "../store/keepsake";
 import { navigate, pairingFromSearch } from "../router";
@@ -22,8 +23,8 @@ import { LazySignInFlow } from "./HomeScreen";
 import "./shared.css";
 import "./HomeScreen.css";
 
-const PairHere = lazy(() => import("./PairDevice").then((module) => ({ default: module.PairHere })));
-const PlayAsMe = lazy(() => import("./PairDevice").then((module) => ({ default: module.PlayAsMe })));
+const PairHere = lazyChunk(() => import("./PairDevice"), (module) => module.PairHere);
+const PlayAsMe = lazyChunk(() => import("./PairDevice"), (module) => module.PlayAsMe);
 
 export function AccountScreen(): ReactElement {
   const checkKeepsake = useKeepsakeStore((s) => s.check);
@@ -72,10 +73,17 @@ export function AccountScreen(): ReactElement {
         </header>
 
         <div className="home__body home__body--top">
-          <Suspense fallback={null}>
-            {pairing === "here" ? <PairHere initialCode={pairCode ?? ""} onClose={() => setPairing("none")} /> : null}
-            {pairing === "share" ? <PlayAsMe onClose={() => setPairing("none")} /> : null}
-          </Suspense>
+          <ChunkBoundary
+            inline
+            className="kad-chunk-float"
+            message="Pairing couldn’t open."
+            extra={<Button variant="ghost" onClick={() => setPairing("none")}>Not now</Button>}
+          >
+            <Suspense fallback={null}>
+              {pairing === "here" ? <PairHere initialCode={pairCode ?? ""} onClose={() => setPairing("none")} /> : null}
+              {pairing === "share" ? <PlayAsMe onClose={() => setPairing("none")} /> : null}
+            </Suspense>
+          </ChunkBoundary>
 
           {/*
            * Sign in or create an account (§4.5). Signing in, not "keep these":
