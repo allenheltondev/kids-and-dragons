@@ -2523,7 +2523,7 @@
       "choices": []
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "gold-rush overture: bustling, funny, warm, a little mysterious about the red sky but never scary",
     "vocabulary": "age-8",
     "forbidden": [

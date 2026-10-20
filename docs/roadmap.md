@@ -396,8 +396,8 @@ What it left behind is authored:
   "Priority scenes").
 - **The end-of-chapter recap** retells, in their own words, the priority-1 scenes the party
   walked through.
-- **`llmHints`** stay on every chapter as its authors' voice guide and the home of its
-  chapter-scoped characters. Nothing at play time reads them.
+- **`voiceGuide`** (renamed in #347) stays on every chapter as its authors' voice guide and the home of its
+  chapter-scoped characters. Nothing at play time reads it.
 
 The game makes no model call at play time (architecture §6). Models are used only by the offline
 authoring tools (Chapter 6, the audio and art pipelines).

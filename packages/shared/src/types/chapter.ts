@@ -804,9 +804,9 @@ export type EndingScene = StoryScene | ChoicePointScene | RestScene;
  * The chapter's voice guide for its authors: the tone, the reading level,
  * what never appears, and how its chapter-scoped characters sound. Authored
  * data, read by people and by the canon checks; nothing at play time reads it.
- * The name is historical (#347).
+ * Renamed from its live-narration-era name in #347.
  */
-export interface LlmHints {
+export interface VoiceGuide {
   tone: string;
   vocabulary: string;
   forbidden: string[];
@@ -887,7 +887,7 @@ export interface Chapter {
    * ever authored before this existed.
    */
   route?: ChapterRoute;
-  llmHints?: LlmHints;
+  voiceGuide?: VoiceGuide;
 }
 
 /** A chapter's membership of a routed index. */

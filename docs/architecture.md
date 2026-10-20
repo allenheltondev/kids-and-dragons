@@ -1880,7 +1880,7 @@ and served as a static asset from CloudFront.
     }
   },
 
-  "llmHints": {
+  "voiceGuide": {
     "tone": "warm, playful, a little spooky but never scary",
     "vocabulary": "age-8",
     "forbidden": ["death", "blood", "permanent loss"],
@@ -2021,9 +2021,9 @@ What stays is authored:
 - **The end-of-chapter recap** retells every priority-1 scene on the run's trail
   (`RunState.visited`), once each, in its own authored words (`revelationsOf` in
   `packages/shared/src/narration.ts`). The completion screen shows it and reads it aloud.
-- **A chapter's `llmHints`** (tone, vocabulary, `forbidden`, `npcVoices`) are its authors' voice
+- **A chapter's `voiceGuide`** (tone, vocabulary, `forbidden`, `npcVoices`) is its authors' voice
   guide and the home of its chapter-scoped characters (`canon/individuals.yaml`). Nothing at play
-  time reads them. The name is historical.
+  time reads it. (Renamed in #347.)
 
 Models are used **only at authoring time**, by offline tools that never run during play and never
 see a child's data: `content:generate` drafts a chapter (`tools/content/generate.ts`, signed

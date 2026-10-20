@@ -2537,7 +2537,7 @@
       ]
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "warm, a little spooky, the big reveal told plainly and kindly; grown-ups being rigid or certain, never cruel",
     "vocabulary": "age-8",
     "forbidden": [

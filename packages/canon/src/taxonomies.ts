@@ -220,7 +220,7 @@ export const People = Envelope.extend({
    * How this people generally sounds — D8. Prose, and about the *kind*, not a
    * person: "unhurried, states things as facts, never asks a question twice."
    *
-   * Before this the only voicing anywhere was a chapter's `llmHints.npcVoices`
+   * Before this the only voicing anywhere was a chapter's `voiceGuide.npcVoices`
    * (its authors' voice guide), which is thrown away when the chapter ends. A people-level register means a
    * frogfolk met in chapter one and a frogfolk met in chapter six sound like
    * the same civilisation without anyone re-authoring it.
@@ -246,7 +246,7 @@ export const People = Envelope.extend({
  * is running, and the next chapter set there finds them still standing behind
  * the same counter. Someone who is merely "there at this point in chapter two"
  * is not this; they are the chapter's, and they live in its
- * `llmHints.npcVoices` where they can be forgotten afterward, which is the
+ * `voiceGuide.npcVoices` where they can be forgotten afterward, which is the
  * same split D7 draws between `canon/items.yaml` and a chapter's `props`.
  *
  * Making `home` required rather than optional is what stops that line eroding.
