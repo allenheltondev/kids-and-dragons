@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { expect } from "vitest";
-import { applyIntent, createRunState, enterScene, itemCatalog, newCharacter, resolveCharacter } from "@kad/shared";
+import { applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
 import type { Campaign, Chapter, ClassId, ClientIntent, EngineContext, ItemCatalog, RulesContent, RunState, SpeciesId } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { RIFTLIGHT_DRAFT } from "./riftlight-preview.ts";
@@ -27,11 +27,14 @@ export function context(chapter: Chapter, face = 20): EngineContext {
   return { chapter, rules, items, abilities: {}, rng: { next: () => (face - 0.5) / 20 }, now: "2026-10-16T12:00:00.000Z" };
 }
 
-export function start(chapter: Chapter, species: SpeciesId, cls: ClassId, flags: Record<string, boolean> = {}, partySize = 1) {
-  const character = newCharacter({ id: "hero", householdId: "test", ownerPlayerId: "p1", name: "Glimmer",
+function hero(species: SpeciesId, cls: ClassId) {
+  return newCharacter({ id: "hero", householdId: "test", ownerPlayerId: "p1", name: "Glimmer",
     species, class: cls, stats: { might: 1, quick: 1, clever: 1, heart: 0 }, appearance: APPEARANCE,
     rules, startingLevel: 4, now: "2026-10-16T12:00:00.000Z" });
-  const resolved = resolveCharacter(character, rules, items);
+}
+
+export function start(chapter: Chapter, species: SpeciesId, cls: ClassId, flags: Record<string, boolean> = {}, partySize = 1) {
+  const resolved = resolveCharacter(hero(species, cls), rules, items);
   const state = createRunState({ runId: "preview-test", roomCode: "RIFT", mode: "travel", campaignId: campaign.id, now: "2026-10-16T12:00:00.000Z" });
   state.party = [{ playerId: "p1", character: resolved, hp: resolved.maxHp, down: false, ready: true, connected: true }];
   for (let seat = 2; seat <= partySize; seat++) {
@@ -65,8 +68,42 @@ export function send(state: RunState, intent: ClientIntent, chapter: Chapter, fa
   return current;
 }
 
+/**
+ * How the walker's heroes answer a class place (#311, #315): every hero who
+ * could switch says no (`KEEP_CLASS`), or every one puts the room's class on.
+ * The engine holds a room's way on until each has answered.
+ */
+export type ClassAnswer = "keep" | "switch";
+
+/**
+ * Answers a class place for every hero it is waiting on. A switch goes through
+ * the server in play (`prepareClassSwitch`), which the walker has no row for,
+ * so it is written here the same way: the worn class, re-resolved, and the answer.
+ */
+export function answerClassPlace(state: RunState, chapter: Chapter, answer: ClassAnswer = "keep"): RunState {
+  let current = state;
+  for (const member of classPlaceWaitingOn(state)) {
+    const place = current.classPlace!;
+    // The fitting stall (#312) stands only in Gemfall; met anywhere, the walker keeps.
+    if (answer === "keep" || place.stall) {
+      const result = applyIntent(current, { playerId: member.playerId, intent: keepClassIntent(place, member) }, context(chapter));
+      expect(result.error, `${chapter.id}/${current.sceneId}: KEEP_CLASS`).toBeUndefined();
+      current = result.state;
+      continue;
+    }
+    const next = structuredClone(current);
+    const seat = next.party.find((m) => m.playerId === member.playerId)!;
+    const worn = resolveCharacter(switchClass(hero(seat.character.species, seat.character.class), rules, place.class), rules, items);
+    const { id, ownerPlayerId, name, inventory, questItems, souvenirs } = seat.character;
+    seat.character = { ...worn, id, ownerPlayerId, name, inventory, questItems, souvenirs };
+    next.classPlace!.answers = { ...next.classPlace!.answers, [member.playerId]: { switched: true, from: member.character.class } };
+    current = next;
+  }
+  return current;
+}
+
 /** Walk every actual choice and both dice extremes through the real engine. */
-export function allPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags: Record<string, boolean> = {}, partySize = 1, initialHp?: number) {
+export function allPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags: Record<string, boolean> = {}, partySize = 1, initialHp?: number, classAnswer: ClassAnswer = "keep") {
   const contract = continuity[chapter.id]!;
   const conditionalEntry = Object.entries(contract.entryByFlag ?? {}).flatMap(([flag, facts]) => flags[flag] ? facts : []);
   const initial = start(chapter, species, cls, flags, partySize);
@@ -78,8 +115,9 @@ export function allPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, fla
   const endingKnowledge: Set<string>[] = [];
   const endingIntroductions: Set<string>[] = [];
   while (pending.length) {
-    const { state, known: before, introduced: priorIntroductions } = pending.pop()!;
-    const key = JSON.stringify([state.sceneId, state.flags, state.prompt, state.party.map((p) => [p.hp, p.character.questItems]), state.phase, [...before].sort(), [...priorIntroductions].sort()]);
+    const { state: arrived, known: before, introduced: priorIntroductions } = pending.pop()!;
+    const state = answerClassPlace(arrived, chapter, classAnswer);
+    const key = JSON.stringify([state.sceneId, state.flags, state.prompt, state.party.map((p) => [p.hp, p.character.class, p.character.questItems]), state.phase, [...before].sort(), [...priorIntroductions].sort()]);
     if (seen.has(key)) continue;
     seen.add(key);
     expect(seen.size, "Unexpected loop or path explosion").toBeLessThan(5000);
