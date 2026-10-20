@@ -8,7 +8,7 @@
  * result to plain JavaScript, and prepends what the worker is given:
  *
  *   __KAD_BUNDLE__              every `/bundle/*` file this build emitted (no maps)
- *   __KAD_PRECACHE__            the ones saved at install (no wasm either)
+ *   __KAD_PRECACHE__            the files saved at install
  *   __KAD_PRECACHE_CAMPAIGNS__  every `/content/campaigns/*.json` in the repo
  *   __KAD_FILE_INDEX__          the URL of this build's file index (below)
  *
@@ -33,13 +33,9 @@ const here = fileURLToPath(new URL(".", import.meta.url));
 const IMPORT = /^import[\s\S]*?from\s+"[^"]+";\s*$/gm;
 const EXPORT = /^export\s+/gm;
 
-/**
- * What install saves: everything but the Rive runtime (`.wasm`, ~2MB). The
- * book draws no rigs; the page asks the worker for it once it is idle
- * (`register.ts`), and the game caches it on first use regardless.
- */
+/** Save every emitted bundle file at install. */
 export function precacheOf(bundleFiles: readonly string[]): string[] {
-  return bundleFiles.filter((path) => !path.endsWith(".wasm"));
+  return [...bundleFiles];
 }
 
 /**

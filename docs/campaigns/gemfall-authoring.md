@@ -177,6 +177,11 @@ Follow `content/chapters/bramblewood-01.json`. Each Gemfall chapter:
   bad run of luck — never by a single ordinary failed roll. The campaign tolerates four
   (`setbackLimit: 4`) before it fails, so they must stay rarer than one per chapter on average.
 - **A failed roll keeps the story going.** Failure reroutes. Nothing is a retry.
+- **The table plays, not only listens** ([content/README.md, "Interactivity"](../../content/README.md#interactivity)).
+  The goal is clear in scene 1. Never more than about three scenes in a row without a vote, a
+  check or a fight. Most spine checks are things the party does (`might`, `quick`, `clever`, or a check's
+  `checkKind: "doing"`), not says. New people arrive with a stake for the party.
+  `content:pacing` reports the run and the doing share for every spine.
 - **Species gates** where gemfall.md says a species shines, always beside an ungated way.
 - **0–2 encounters.** 2–4 enemies total. Name canon creatures: `cinder_wolf`, `mire_mimic`,
   `will_o_wisp`, `river_drake`, `glassback_crab`, `bone_crawler`, `restless_remains`,

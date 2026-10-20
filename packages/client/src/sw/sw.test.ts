@@ -42,11 +42,11 @@ describe("what the worker does with a request", () => {
     expect(at("/p/ABCD", { mode: "navigate" })).toBe("shell");
   });
 
-  it("routes hashed code, content, every asset (art, rigs, audio) and unindexed pictures", () => {
+  it("routes hashed code, content, every asset (art, audio) and unindexed pictures", () => {
     expect(at("/bundle/index-abc123.js")).toBe("bundle");
     expect(at("/content/field-guide.json")).toBe("content");
     expect(at("/assets/world/realm-atlas-detail-v1.webp")).toBe("asset");
-    expect(at("/assets/character-rigs/starweaver/sworn/unicorn/rig.riv")).toBe("asset");
+    expect(at("/assets/character-rigs/starweaver/sworn/unicorn/assembled.png")).toBe("asset");
     expect(at("/assets/audio/cues/dice.webm")).toBe("asset");
     expect(at("/brand/dragon-mark.png")).toBe("image");
   });
@@ -89,9 +89,9 @@ describe("the offline app's page", () => {
 
 describe("fingerprinted files", () => {
   it("are saved under their fingerprint, and read back from it", () => {
-    const key = swVersionedKey("/assets/x/rig.riv", "0123456789abcdef");
-    expect(key).toBe("/assets/x/rig.riv?v=0123456789abcdef");
-    expect(swReadVersionedKey(key)).toEqual({ path: "/assets/x/rig.riv", fingerprint: "0123456789abcdef" });
+    const key = swVersionedKey("/assets/x/assembled.png", "0123456789abcdef");
+    expect(key).toBe("/assets/x/assembled.png?v=0123456789abcdef");
+    expect(swReadVersionedKey(key)).toEqual({ path: "/assets/x/assembled.png", fingerprint: "0123456789abcdef" });
     expect(swReadVersionedKey("/__kad/files-meta")).toBeNull();
   });
 
@@ -105,14 +105,14 @@ describe("fingerprinted files", () => {
 
   it("go least recently used first when over budget, down to 90%, and content never goes", () => {
     const meta = {
-      "/assets/old.riv?v=1": { bytes: 60, used: 1 },
+      "/assets/old.png?v=1": { bytes: 60, used: 1 },
       "/content/rules.json?v=2": { bytes: 10, used: 0 },
       "/assets/mid.webp?v=3": { bytes: 30, used: 2 },
       "/assets/new.webp?v=4": { bytes: 30, used: 3 },
     };
     expect(swEvictions(meta, 200)).toEqual([]);
-    expect(swEvictions(meta, 100)).toEqual(["/assets/old.riv?v=1"]);
-    expect(swEvictions(meta, 40)).toEqual(["/assets/old.riv?v=1", "/assets/mid.webp?v=3", "/assets/new.webp?v=4"]);
+    expect(swEvictions(meta, 100)).toEqual(["/assets/old.png?v=1"]);
+    expect(swEvictions(meta, 40)).toEqual(["/assets/old.png?v=1", "/assets/mid.webp?v=3", "/assets/new.webp?v=4"]);
   });
 
   it("fingerprint the way the worker checks them: the first 16 hex digits of SHA-256", () => {
@@ -138,7 +138,7 @@ describe("fingerprinted files", () => {
 });
 
 describe("the built sw.js", () => {
-  const files = ["/bundle/index-a1.js", "/bundle/index-a1.css", "/bundle/rive-z9.wasm", "/bundle/lantern-b2.webp"];
+  const files = ["/bundle/index-a1.js", "/bundle/index-a1.css", "/bundle/extra-z9.js", "/bundle/lantern-b2.webp"];
   const source = buildServiceWorker({
     bundleFiles: files,
     campaignFiles: ["/content/campaigns/gemfall.json"],
@@ -150,9 +150,9 @@ describe("the built sw.js", () => {
     expect(source).not.toMatch(/^\s*(?:import|export)\b/m);
   });
 
-  it("carries this build's files, and saves all but the Rive runtime at install", () => {
+  it("carries this build's files, and saves the complete bundle at install", () => {
     expect(source).toContain(`const __KAD_BUNDLE__ = ${JSON.stringify([...files].sort())};`);
-    expect(precacheOf(files)).not.toContain("/bundle/rive-z9.wasm");
+    expect(precacheOf(files)).toContain("/bundle/extra-z9.js");
     expect(source).toContain('"/content/campaigns/gemfall.json"');
     expect(source).toContain('const __KAD_FILE_INDEX__ = "/bundle/files-x1.json";');
   });

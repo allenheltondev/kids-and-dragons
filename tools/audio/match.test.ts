@@ -20,7 +20,7 @@ const selectorOf = (fileName: string): string | null => {
 
 describe("finding the cue in a filename", () => {
   it("reads the name a generator buried in its own metadata", () => {
-    expect(selectorOf("ElevenLabs_2026-08-26T14-02-11_dice_pvc_sp100.mp3")).toBe("dice");
+    expect(selectorOf("SoundTool_2026-08-26T14-02-11_dice_pvc_sp100.mp3")).toBe("dice");
   });
 
   it("puts a two-word cue back together", () => {

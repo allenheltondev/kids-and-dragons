@@ -18,6 +18,14 @@
  *  - **Decision** (= vote) is a story/choice_point/rest scene with two or
  *    more visible choices. A one-button beat is not a decision.
  *  - **Check** is a `check` scene; **encounter** an `encounter` scene.
+ *  - **Doing checks** are checks whose `CheckKind` is `"doing"`: the
+ *    `checkKind` the check sets, else might, quick and clever do and heart
+ *    talks (`STAT_CHECK_KIND`).
+ *  - **Longest reading run** is the most scenes in a row on the path that ask
+ *    the table nothing: not a decision, not a check, not an encounter. One-button
+ *    beats and the ending count as reading. A fight breaks a run, because the
+ *    table is playing, even though the bar's "asks something" counts only
+ *    votes and checks.
  *  - **Words** are what a grown-up reads aloud: scene narration, a check's
  *    prompt, and the narration of the branch actually taken, each *as the
  *    engine composes it* (`composeNarration` + `fillTokens`, so append,
@@ -49,8 +57,8 @@
 import { evaluateCondition } from "./chapter-graph.js";
 import type { ChoiceParty } from "./chapter-graph.js";
 import { composeNarration, fillTokens } from "./narration.js";
-import type { Branch, Chapter, Choice, Condition, NarrationVariant, Scene } from "./types/chapter.js";
-import type { ResolvedCharacter } from "./types/domain.js";
+import type { Branch, Chapter, CheckKind, CheckScene, Choice, Condition, NarrationVariant, Scene } from "./types/chapter.js";
+import type { ResolvedCharacter, StatId } from "./types/domain.js";
 
 // ---------------------------------------------------------------------------
 // Scenarios
@@ -182,13 +190,30 @@ export function isGatedFor(choice: Choice, scenario: PacingScenario): boolean {
   return !evaluateCondition(choice.when, scenarioParty(scenario));
 }
 
+/** What a check's stat implies it asks of the table (see `CheckKind`). */
+export const STAT_CHECK_KIND: Readonly<Record<StatId, CheckKind>> = {
+  might: "doing",
+  quick: "doing",
+  clever: "doing",
+  heart: "talking",
+};
+
+/** A check's kind: its own `checkKind`, else what its stat implies. */
+export function checkKind(scene: CheckScene): CheckKind {
+  return scene.checkKind ?? STAT_CHECK_KIND[scene.stat];
+}
+
 export interface PathMetrics {
   /** Scenes visited, entry and ending included. */
   scenes: number;
   /** Scenes with 2+ ungated choices. Each is one vote at the table. */
   decisions: number;
   checks: number;
+  /** Checks whose kind is "doing" (see `checkKind`); the rest of `checks` are talking. */
+  doingChecks: number;
   encounters: number;
+  /** Most scenes in a row that ask nothing: no decision, check or encounter. */
+  longestReadingRun: number;
   /**
    * Words read aloud: narration, check prompts, taken-branch narration, with
    * variants composed for the scenario. Upper bound over flag combinations.
@@ -252,6 +277,42 @@ function isDecision(scene: Scene, scenario: PacingScenario): boolean {
   );
 }
 
+/** Does this scene give the table something to do: a vote, a roll or a fight? */
+function asksSomething(scene: Scene, scenario: PacingScenario): boolean {
+  return scene.type === "check" || scene.type === "encounter" || isDecision(scene, scenario);
+}
+
+/** One stretch of scenes in a row that ask the table nothing. */
+export interface ReadingRun {
+  /** The first scene of the stretch. */
+  from: string;
+  /** Scenes in it. */
+  length: number;
+}
+
+/** The longest reading run on a path (the first, on a tie); null when every scene asks something. */
+export function longestReadingRun(
+  chapter: Chapter,
+  path: readonly string[],
+  scenario: PacingScenario = CALIBRATION_SCENARIO,
+): ReadingRun | null {
+  let best: ReadingRun | null = null;
+  let from = "";
+  let length = 0;
+  for (const id of path) {
+    const scene = chapter.scenes[id];
+    if (!scene) continue;
+    if (asksSomething(scene, scenario)) {
+      length = 0;
+      continue;
+    }
+    if (length === 0) from = id;
+    length += 1;
+    if (!best || length > best.length) best = { from, length };
+  }
+  return best;
+}
+
 function sceneWords(scene: Scene, scenario: PacingScenario): { min: number; max: number } {
   const own = composedWordRange(scene.narration, "variants" in scene ? scene.variants : undefined, scenario);
   if (scene.type !== "check") return own;
@@ -271,13 +332,25 @@ export function pathMetrics(
   path: readonly string[],
   scenario: PacingScenario = CALIBRATION_SCENARIO,
 ): PathMetrics {
-  const m: PathMetrics = { scenes: 0, decisions: 0, checks: 0, encounters: 0, words: 0, wordsMin: 0 };
+  const m: PathMetrics = {
+    scenes: 0,
+    decisions: 0,
+    checks: 0,
+    doingChecks: 0,
+    encounters: 0,
+    longestReadingRun: longestReadingRun(chapter, path, scenario)?.length ?? 0,
+    words: 0,
+    wordsMin: 0,
+  };
   path.forEach((id, i) => {
     const scene = chapter.scenes[id];
     if (!scene) return;
     m.scenes += 1;
     if (isDecision(scene, scenario)) m.decisions += 1;
-    if (scene.type === "check") m.checks += 1;
+    if (scene.type === "check") {
+      m.checks += 1;
+      if (checkKind(scene) === "doing") m.doingChecks += 1;
+    }
     if (scene.type === "encounter") m.encounters += 1;
     const w = sceneWords(scene, scenario);
     m.words += w.max;
@@ -374,7 +447,9 @@ export function typicalMetrics(
       scenes: pick("scenes"),
       decisions: pick("decisions"),
       checks: pick("checks"),
+      doingChecks: pick("doingChecks"),
       encounters: pick("encounters"),
+      longestReadingRun: pick("longestReadingRun"),
       words: pick("words"),
       wordsMin: pick("wordsMin"),
     },
@@ -414,7 +489,16 @@ export function metricRange(
     return m ? [m] : [];
   });
   if (all.length === 0) return null;
-  const keys = ["scenes", "decisions", "checks", "encounters", "words", "wordsMin"] as const;
+  const keys = [
+    "scenes",
+    "decisions",
+    "checks",
+    "doingChecks",
+    "encounters",
+    "longestReadingRun",
+    "words",
+    "wordsMin",
+  ] as const;
   return Object.fromEntries(
     keys.map((k) => [k, { min: Math.min(...all.map((m) => m[k])), max: Math.max(...all.map((m) => m[k])) }]),
   ) as Record<keyof PathMetrics, { min: number; max: number }>;
@@ -451,7 +535,10 @@ export const UNCALIBRATED_MODEL: PacingModel = {
   secondsPerScene: 4,
 };
 
-export function predictMinutes(m: PathMetrics, model: PacingModel = UNCALIBRATED_MODEL): number {
+/** What the minutes model reads off a path. */
+export type TimedMetrics = Pick<PathMetrics, "scenes" | "decisions" | "checks" | "encounters" | "words">;
+
+export function predictMinutes(m: TimedMetrics, model: PacingModel = UNCALIBRATED_MODEL): number {
   const seconds =
     (m.words / model.wordsPerMinute) * 60 +
     m.decisions * model.secondsPerDecision +
@@ -484,7 +571,7 @@ const FEATURES = ["words", "decisions", "checks", "encounters", "scenes"] as con
  * scaled by one factor; with more, a non-negative least-squares fit of the
  * five per-unit costs (in minutes) is solved by coordinate descent.
  */
-export function fitModel(rows: { metrics: PathMetrics; minutes: number }[]): Fit | null {
+export function fitModel(rows: { metrics: TimedMetrics; minutes: number }[]): Fit | null {
   if (rows.length === 0) return null;
   if (rows.length < FEATURES.length + 2) {
     const pred = rows.map((r) => predictMinutes(r.metrics));
