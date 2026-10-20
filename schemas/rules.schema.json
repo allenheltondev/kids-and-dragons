@@ -519,7 +519,8 @@
         "blurb",
         "baseSteps",
         "signature",
-        "unlocks"
+        "unlocks",
+        "deeds"
       ],
       "properties": {
         "id": {
@@ -563,7 +564,73 @@
           "additionalProperties": {
             "$ref": "#/$defs/ability"
           }
+        },
+        "deeds": {
+          "description": "What earns each distinction (docs/class-mastery.md \u00a76). Either track of a rank completes it. Deed ids are the ones the game counts (packages/shared/src/deeds.ts, DEED_IDS in domain.ts).",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "apprentice",
+            "expert",
+            "master"
+          ],
+          "properties": {
+            "apprentice": {
+              "$ref": "#/$defs/rankDeeds"
+            },
+            "expert": {
+              "$ref": "#/$defs/rankDeeds"
+            },
+            "master": {
+              "$ref": "#/$defs/rankDeeds"
+            }
+          }
         }
+      }
+    },
+    "rankDeeds": {
+      "description": "One rank: withFriends counts at any table; alone, when present, too, so a solo hero always has a way. Absent alone means the same deeds serve both.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "withFriends"
+      ],
+      "properties": {
+        "withFriends": {
+          "$ref": "#/$defs/deedTrack"
+        },
+        "alone": {
+          "$ref": "#/$defs/deedTrack"
+        }
+      }
+    },
+    "deedTrack": {
+      "description": "Every deed in the track, at least this many times. For song_hearts the count is hearts.",
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "enum": [
+            "brace_friend",
+            "hold_ground",
+            "shove_off_friend",
+            "shove",
+            "bramble_wall_fight",
+            "new_target",
+            "vanish_miss",
+            "twin_step_finish",
+            "burst_two",
+            "burst_three",
+            "glimmer_made",
+            "tangle_guard",
+            "tanglelight",
+            "song_hearts",
+            "class_story"
+        ]
+      },
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100
       }
     }
   }

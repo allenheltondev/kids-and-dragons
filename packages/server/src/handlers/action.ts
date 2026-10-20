@@ -26,6 +26,7 @@ import type {
   ActionResponse,
   Campaign,
   Chapter,
+  ClassId,
   ClientIntent,
   JourneyState,
   NodeId,
@@ -40,8 +41,11 @@ import {
   isPracticeCampaign,
   lobbyCampaign,
   resolveCharacter,
+  withRunDeeds,
   resumeJourney,
+  riftActionWays,
   riftPartyOf,
+  RIFT_ACTION_KINDS,
   seedRunBuffs,
   takeExit,
   takeRiftAction,
@@ -69,6 +73,7 @@ import {
   relockLobby,
   seatedParty,
   prepareStatPointSpend,
+  prepareRiftWayDeeds,
   seatHero,
   settleChapterCompletion,
   startPartyCampaign,
@@ -228,6 +233,7 @@ export async function applyAction(
   // A saved hero seated into a chapter under way, acquiring her claim (#282).
   let seated: CharacterWrite | null = null;
   let exitTaken: ExitWrite | null = null;
+  let riftDeeds: CharacterWrite[] = [];
   let result: ApplyIntentResult;
   if (input.intent.type === "CHOOSE_EXIT" || input.intent.type === "RIFT_ACTION") {
     // A journey transition, not a run one: the engine never sees it, exactly
@@ -247,6 +253,19 @@ export async function applyAction(
     if (exit.duplicate) return { ok: true, seq: state.seq };
     exitTaken = exit.write;
     result = { state: exit.state };
+    if (input.intent.type === "RIFT_ACTION") {
+      // A class way is that class's story deed (#310), written with the move.
+      const campaignId = input.intent.campaignId ?? state.campaignId;
+      if (campaignId) {
+        const deeds = await prepareRiftWayDeeds(exit.state, campaignId, riftWayClasses(campaignId, input.intent, deps), auth.run.householdId, deps);
+        // A deed that cannot be written refuses the move with it: the way is used once.
+        if (!deeds.ok) return { ok: false, seq: state.seq, error: deeds.error };
+        if (deeds.value.writes.length > 0) {
+          riftDeeds = deeds.value.writes;
+          result = { state: deeds.value.state };
+        }
+      }
+    }
   } else if (input.intent.type === "SPEND_STAT_POINT") {
     if (auth.run.status !== "active") {
       return {
@@ -359,14 +378,18 @@ export async function applyAction(
    * same conditional transaction as the state and the event, so a turn that
    * loses the seq race cannot leave its XP behind on a character.
    */
-  const characters: CharacterWrite[] = [];
+  const characters: CharacterWrite[] = [...riftDeeds];
   if (spentCharacter) characters.push(spentCharacter);
   if (seated) {
     const hero = seated.character;
     characters.push(seated);
     // She plays this chapter's gains from her first tap, and every phone sees
     // her as she now stands: provisional, at this table.
-    const resolved = resolveCharacter(hero, deps.content.rules(), deps.content.items());
+    const resolved = withRunDeeds(
+      resolveCharacter(hero, deps.content.rules(), deps.content.items()),
+      result.state,
+      deps.content.rules(),
+    );
     result = {
       ...result,
       state: {
@@ -1139,6 +1162,19 @@ async function riftAction(
       { party },
     ),
   );
+}
+
+/** The classes the rift way an action takes asks for (#199), if any. */
+function riftWayClasses(
+  campaignId: string,
+  intent: Extract<ClientIntent, { type: "RIFT_ACTION" }>,
+  deps: HandlerDeps,
+): readonly ClassId[] | undefined {
+  const rift = deps.content.graph(campaignId)?.edges[intent.edgeId]?.rift;
+  if (!rift || !(RIFT_ACTION_KINDS as readonly string[]).includes(intent.action)) return undefined;
+  const ways = riftActionWays(rift, intent.action);
+  const chosen = typeof intent.way === "string" ? ways.find((each) => each.way === intent.way) : ways.length === 1 ? ways[0] : undefined;
+  return chosen?.rule.requires?.anyClass;
 }
 
 type JourneyMove =
