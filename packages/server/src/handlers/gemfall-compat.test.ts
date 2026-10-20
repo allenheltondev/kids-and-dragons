@@ -105,6 +105,10 @@ const PRE_EPIC = JSON.parse(
  * the test, the masks are named where they first appear and seeded on 06's
  * spine). No scene, edge, flag, effect, stat or TN moved; the endings, roads,
  * setbacks and saves below still match their pre-epic digests.
+ *
+ * Re-pinned for gemfall-07l's `checkKind` marks (#354): four heart checks
+ * whose prompts #355 made physical say `"doing"` for the pacing report.
+ * Nothing at play time reads the field; the digests below are unchanged.
  */
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
@@ -121,7 +125,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-05c.json": "3b75ecac8b195074911fd09d41c347ae6e2917177e44720d8b01bb82085b837b",
   "chapters/gemfall-06.json": "307c8e45c3a10184631ed3963ebf70136d4b11b1f0006cdd78adda45ea4f6393",
   "chapters/gemfall-07h.json": "1d642cedd727e9f06d15a92841880c3759faadf2af7fc6e73ad61f5f010deee9",
-  "chapters/gemfall-07l.json": "6a2a09e1a639ba96cd26f19d1c5b4c65885b52cab66dcdfd8ffbf886889e727e",
+  "chapters/gemfall-07l.json": "b1c47cbe5a69d8559df1bffef912bfe7ac6cbfa630f12085b4539ed74af41ed5",
   "chapters/gemfall-07r.json": "009d14e4ef3a29773132e5990d3f4391f6eeba468baf5859d73fea65c4cf69b6",
   "chapters/gemfall-08.json": "d5c97e4df6a530dd428f3f48a8f08ef4156144566bfdce70cdef12547c95fa67",
 };
