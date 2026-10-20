@@ -414,6 +414,24 @@ describe("the chapter's goal (#356)", () => {
     expect(withChapter((chapter) => { chapter.goal.steps[1].label = "Find it \u2014 fast"; }).out).toContain("the goal has an em dash");
   });
 
+  it("lets a step watch one of the chapter's own quest items, and refuses any other item", () => {
+    const dir = copyTree();
+    const parts = ["content", "chapters", "gemfall-07l.json"];
+    const chapter = readJson(dir, ...parts);
+    const step = chapter.goal.steps.find((s) => s.item);
+    step.item = "honeycake";
+    writeJson(dir, parts, chapter);
+    const result = validate(dir);
+    expect(result.out).toContain('item "honeycake" is not one of this chapter\'s props');
+    expect(result.code).not.toBe(0);
+  });
+
+  it("catches a step that watches a flag and an item at once", () => {
+    const result = withChapter((chapter) => { chapter.goal.steps[0].item = "rusted_key"; });
+    expect(result.out).toContain("must watch a flag or an item, and not both");
+    expect(result.code).not.toBe(0);
+  });
+
   it("catches two steps with one id", () => {
     const result = withChapter((chapter) => { chapter.goal.steps[1].id = chapter.goal.steps[0].id; });
     expect(result.out).toContain("duplicate goal step id");

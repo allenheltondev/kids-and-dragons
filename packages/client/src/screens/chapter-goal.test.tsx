@@ -119,6 +119,23 @@ describe("the chapter's goal", () => {
     expect(played).toEqual([]);
   });
 
+  it("ticks a step that watches an item when anybody in the party holds it", () => {
+    const withItem = {
+      ...CHAPTER,
+      goal: { text: "Get the cat down.", steps: [{ id: "cat", label: "Hold the cat", item: "cat_prop" }, CHAPTER.goal!.steps[0]!] },
+    } as Chapter;
+    const member = (questItems: string[]) => ({ playerId: "p_1", hp: 5, down: false, connected: true, ready: false, character: { questItems, inventory: [] } });
+    seed({}, { party: [member([])] as unknown as RunState["party"] });
+    useGameStore.setState({ chapter: withItem });
+    render(<ChapterGoalCard place="world" />);
+    expect(ticked()).toEqual([false, false]);
+    act(() => {
+      seed({}, { party: [member(["cat_prop"])] as unknown as RunState["party"] });
+      useGameStore.setState({ chapter: withItem });
+    });
+    expect(ticked()).toEqual([true, false]);
+  });
+
   it("folds to the goal and its pips in a fight", () => {
     seed({ found_ladder: true });
     render(<ChapterGoalCard place="world" folded />);

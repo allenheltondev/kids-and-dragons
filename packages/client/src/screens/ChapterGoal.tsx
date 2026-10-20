@@ -4,8 +4,8 @@
  * On the shared screen under the chapter's name, and on every phone under the
  * hero's strip, for the whole chapter. Nobody opens it: there is nothing to
  * tap, and it ticks by itself. A step ticks the moment the engine sets its
- * flag (chapter-goal.ts), which is the same run state every surface already
- * has, so the TV and the phones always agree.
+ * flag or hands over its item (chapter-goal.ts), which is the same run state
+ * every surface already has, so the TV and the phones always agree.
  *
  * A step that ticks while somebody is watching gets a moment: the box fills
  * gold, a few sparks pop and the shared screen plays a chime. Only a tick seen
@@ -24,7 +24,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
-import { goalProgress } from "@kad/shared";
+import { goalProgress, partyItemIds } from "@kad/shared";
 import type { ChapterGoal as Goal } from "@kad/shared";
 import { cue } from "../audio/cue";
 import { useChapter, useRunState } from "../store";
@@ -42,7 +42,9 @@ export function useChapterGoal(): { chapterId: string; entry: string; goal: Goal
   const state = useRunState();
   const chapterId = state?.chapterId ?? null;
   if (chapterId === null || chapter?.id !== chapterId || !chapter.goal) return null;
-  return { chapterId, entry: chapter.entry, goal: chapter.goal, done: goalProgress(chapter.goal, state?.flags ?? {}) };
+  // What the party holds between them, for a step that watches an item (the ledger, the chord).
+  const held = partyItemIds({ members: (state?.party ?? []).map((member) => member.character) });
+  return { chapterId, entry: chapter.entry, goal: chapter.goal, done: goalProgress(chapter.goal, { flags: state?.flags ?? {}, held }) };
 }
 
 /**

@@ -58,10 +58,16 @@ function chapter(patch: (scenes: Record<string, unknown>) => void = () => {}): C
 
 describe("goalProgress", () => {
   it("ticks a step when its flag, or any of its flags, is set", () => {
-    expect(goalProgress(goal, {})).toEqual([false, false]);
-    expect(goalProgress(goal, { found_ladder: true })).toEqual([true, false]);
-    expect(goalProgress(goal, { found_ladder: true, climbed_right: true })).toEqual([true, true]);
-    expect(goalProgress(goal, { found_ladder: false })).toEqual([false, false]);
+    expect(goalProgress(goal, { flags: {} })).toEqual([false, false]);
+    expect(goalProgress(goal, { flags: { found_ladder: true } })).toEqual([true, false]);
+    expect(goalProgress(goal, { flags: { found_ladder: true, climbed_right: true } })).toEqual([true, true]);
+    expect(goalProgress(goal, { flags: { found_ladder: false } })).toEqual([false, false]);
+  });
+
+  it("ticks an item step while anybody holds the item", () => {
+    const withItem: ChapterGoal = { ...goal, steps: [{ id: "cat", label: "Hold the cat", item: "cat_prop" }] };
+    expect(goalProgress(withItem, { flags: {} })).toEqual([false]);
+    expect(goalProgress(withItem, { flags: {}, held: new Set(["cat_prop"]) })).toEqual([true]);
   });
 });
 
@@ -87,6 +93,25 @@ describe("stepsOffTheSpine", () => {
     expect(stepsOffTheSpine(unset)).toEqual([{ stepId: "ladder", ending: "end" }]);
     const optional = { ...unset, goal: { ...goal, steps: [{ ...goal.steps[0]!, optional: true }, goal.steps[1]!] } };
     expect(stepsOffTheSpine(optional)).toEqual([]);
+  });
+
+  it("counts a quest item handed over on every road, never a bag item, and loses it to a takeItem", () => {
+    const withItem = (patch: (scenes: Record<string, unknown>) => void) => {
+      const c = chapter(patch);
+      return { ...c, goal: { ...goal, steps: [goal.steps[0]!, { id: "cat", label: "Hold the cat", item: "cat_prop" }] } } as Chapter;
+    };
+    const grant = (type: string) => (s: Record<string, unknown>) => {
+      (s.end as { onEnter?: unknown }).onEnter = undefined;
+      (s.fork as { onEnter?: unknown }).onEnter = [{ type, itemId: "cat_prop" }];
+    };
+    expect(stepsOffTheSpine(withItem(grant("grantQuestItem")))).toEqual([]);
+    expect(stepsOffTheSpine(withItem(grant("grantItem")))).toEqual([{ stepId: "cat", ending: "end" }]);
+    expect(
+      stepsOffTheSpine(withItem((s) => {
+        grant("grantQuestItem")(s);
+        (s.right as { onEnter: unknown[] }).onEnter.push({ type: "takeItem", itemId: ["cake", "cat_prop"] });
+      })),
+    ).toEqual([{ stepId: "cat", ending: "end" }]);
   });
 
   it("follows a loop back to the fork without losing what was ticked on the way", () => {

@@ -187,11 +187,21 @@ export interface ChapterGoal {
   steps: GoalStep[];
 }
 
-/** One tick on a chapter's goal. */
-export interface GoalStep {
+/** One tick on a chapter's goal: it watches a run flag, or an item the party holds. */
+export type GoalStep = GoalStepBase & (GoalStepFlag | GoalStepItem);
+
+export interface GoalStepBase {
   id: string;
   /** A short thing to do: "Get the wardens' ledger". */
   label: string;
+  /**
+   * A step some roads skip. Drawn as "if you can" and never held to the
+   * spine. Absent is the normal case.
+   */
+  optional?: boolean;
+}
+
+export interface GoalStepFlag {
   /**
    * Ticks when this run flag is set, or any of these when it is a list (a step
    * a party can do more than one way). Chapter-local flags only: a route-set
@@ -199,11 +209,17 @@ export interface GoalStep {
    * anybody did anything, so `content:validate` refuses every one.
    */
   flag: string | string[];
+  item?: never;
+}
+
+export interface GoalStepItem {
   /**
-   * A step some roads skip. Drawn as "if you can" and never held to the
-   * spine. Absent is the normal case.
+   * Ticks while anybody in the party holds this item: the ledger borrowed, the
+   * chord learned, when the chapter already hands one over for the thing. One
+   * of this chapter's own `props`, so it cannot arrive already held.
    */
-  optional?: boolean;
+  item: string;
+  flag?: never;
 }
 
 /**

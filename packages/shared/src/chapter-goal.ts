@@ -2,27 +2,36 @@
  * A chapter's goal (#356): which steps a run has ticked, and which steps some
  * road to a success ending never ticks.
  *
- * The screens read `goalProgress` against the run's flags, so a step ticks the
- * moment the engine sets its flag and there is nothing to tap. The validator
+ * The screens read `goalProgress` against the run's flags and what the party
+ * holds, so a step ticks the moment the engine sets its flag or hands over its
+ * item, and there is nothing to tap. The validator
  * reads `stepsOffTheSpine` so a step a party can finish the chapter without doing
  * fails the build rather than sitting unticked on the TV at the end.
  */
 
 import type { Chapter, ChapterGoal, Effect, GoalStep, Scene, SceneId } from "./types/chapter.js";
 
-/** The flags a step watches: one, or any of a list. */
+/** The flags a step watches: one, or any of a list. None for a step that watches an item. */
 export function goalStepFlags(step: GoalStep): string[] {
+  if (step.flag === undefined) return [];
   return Array.isArray(step.flag) ? step.flag : [step.flag];
 }
 
-/** Whether a step is ticked by these run flags. */
-export function goalStepDone(step: GoalStep, flags: Readonly<Record<string, boolean>>): boolean {
-  return goalStepFlags(step).some((flag) => flags[flag] === true);
+/** What a step reads: the run's flags, and the item ids the party holds between them. */
+export interface GoalFacts {
+  flags: Readonly<Record<string, boolean>>;
+  held?: ReadonlySet<string>;
+}
+
+/** Whether a step is ticked. */
+export function goalStepDone(step: GoalStep, facts: GoalFacts): boolean {
+  if (step.item !== undefined) return facts.held?.has(step.item) ?? false;
+  return goalStepFlags(step).some((flag) => facts.flags[flag] === true);
 }
 
 /** Ticked or not, for each step in order. */
-export function goalProgress(goal: ChapterGoal, flags: Readonly<Record<string, boolean>>): boolean[] {
-  return goal.steps.map((step) => goalStepDone(step, flags));
+export function goalProgress(goal: ChapterGoal, facts: GoalFacts): boolean[] {
+  return goal.steps.map((step) => goalStepDone(step, facts));
 }
 
 const BRANCH_KEYS = ["onSuccess", "onFailure", "onVictory", "onDefeat", "onEscape", "onTimeout"] as const;
@@ -54,7 +63,9 @@ function isEnding(scene: Scene): boolean {
  * what every way in has ticked. Every authored way counts, gated or not, since
  * a gate can only hide a choice beside an ungated one; a setFlag that only some
  * party sees (a freed captive, a met objective) is not counted, and a step
- * whose flag some way sets false is ticked no further. Optional steps are left
+ * whose flag some way sets false is ticked no further. An item step counts a
+ * `grantQuestItem` (a bag item can be refused at a full bag) and loses its
+ * tick to a `takeItem` that could take it. Optional steps are left
  * out, which is what `optional` is for.
  */
 export function stepsOffTheSpine(chapter: Chapter): { stepId: string; ending: SceneId }[] {
@@ -66,11 +77,16 @@ export function stepsOffTheSpine(chapter: Chapter): { stepId: string; ending: Sc
   const apply = (ticked: Set<string>, effects: readonly Effect[] | undefined): Set<string> => {
     const next = new Set(ticked);
     for (const effect of effects ?? []) {
-      if (effect.type !== "setFlag") continue;
       for (const step of steps) {
-        if (!goalStepFlags(step).includes(effect.flag)) continue;
-        if (effect.value ?? true) next.add(step.id);
-        else next.delete(step.id);
+        if (effect.type === "setFlag" && goalStepFlags(step).includes(effect.flag)) {
+          if (effect.value ?? true) next.add(step.id);
+          else next.delete(step.id);
+        } else if (step.item !== undefined && (effect.type === "grantItem" || effect.type === "grantQuestItem") && effect.itemId === step.item) {
+          // A quest item always lands; a bag item can be refused at a full bag, so only a quest item counts.
+          if (effect.type === "grantQuestItem") next.add(step.id);
+        } else if (step.item !== undefined && effect.type === "takeItem" && [effect.itemId].flat().includes(step.item)) {
+          next.delete(step.id);
+        }
       }
     }
     return next;
