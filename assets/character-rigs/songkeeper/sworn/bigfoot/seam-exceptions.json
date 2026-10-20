@@ -1,6 +1,0 @@
-{
-  "body/arm_r": {
-    "band": 0.85,
-    "reason": "Removing the portrait-fur strip below the shawl reveals the unchanged lower armpit contour. The 24px band reaches outside the torso silhouette there; the shoulder pivot remains covered. See docs/reviews/songkeeper-sworn-seam-contour.webp and the attack contact sheet."
-  }
-}

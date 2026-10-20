@@ -6,8 +6,8 @@
  * notch cut into the token, and the next rank's deed fills a row of pips.
  *
  * Simple SVG, no raster art: below Sworn the token is an icon on the phone
- * (docs/class-mastery.md §4), and the rigs' Sworn gear layer is a later art
- * pass. Notches and pips are shapes, never colour alone (spec §11): a notch cut
+ * (docs/class-mastery.md §4), and a finished Sworn class figure is a separate art
+ * asset. Notches and pips are shapes, never colour alone (spec §11): a notch cut
  * is a filled chevron and one still to come is a short dash; a pip done is a
  * filled dot and one to go is an empty ring. On screen the token is always its
  * own name ("your thorn bracer"), never "class token".

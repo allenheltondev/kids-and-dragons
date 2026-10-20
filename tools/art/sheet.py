@@ -8,16 +8,8 @@ it is this art and not merely pretty art. No script decides that, so this tool's
 only job is to put everything a reviewer needs on one image.
 See docs/art-pipeline.md section 3.2 and docs/asset-brief.md section 6.2.
 
-Each sheet carries four things, in the order a reviewer wants them:
-
-    1. every part alone, in its registered canvas position  - construction
-    2. the assembled figure                                 - the character
-    3. the figure at 120px tall, on light and on dark       - the phone check
-    4. all delivered tiers side by side                     - same individual?
-
-Part thumbnails deliberately show the *whole canvas* rather than a trimmed crop:
-registration is the load-bearing constraint (asset-brief.md section 3.1), and a part
-drifting out of position is obvious the moment you see it floating in the frame.
+Each sheet shows the finished figure on light and dark backgrounds, a 120px
+legibility and silhouette check, and a comparison of delivered tiers.
 
 Usage:
     python tools/art/sheet.py                 # every delivered set
@@ -127,7 +119,7 @@ def fit(im: Image.Image, size: int) -> Image.Image:
 
 def at_height(im: Image.Image, height: int, threshold: int) -> Image.Image:
     """Crop to the character and scale it so the character itself is `height` px -
-    the same measurement verify.py's signature legibility check uses."""
+    the same measurement verify.py's figure legibility review uses."""
     box = content_box(im, threshold)
     if box is None:
         return Image.new("RGBA", (height, height), (0, 0, 0, 0))
@@ -217,40 +209,21 @@ def save(im: Image.Image, path: str) -> str:
 
 
 def load_set(species: dict, tier: str):
-    """Returns (assembled, {part: image}) for a delivered set, or None."""
+    """Return the finished illustration for a delivered set, or None."""
     base = os.path.join(ROOT, "assets", "characters", species["id"], tier)
     asm_path = os.path.join(base, "assembled.png")
     if not os.path.exists(asm_path):
         return None
 
     assembled = Image.open(asm_path).convert("RGBA")
-    parts: dict[str, Image.Image] = {}
-    for name in species["parts"]:
-        p = os.path.join(base, "parts", f"{name}.png")
-        if os.path.exists(p):
-            parts[name] = Image.open(p).convert("RGBA")
-    return assembled, parts
+    return assembled
 
 
-def tier_sheet(species: dict, tier: str, assembled, parts, canvas: dict, tol: dict) -> Image.Image:
+def tier_sheet(species: dict, tier: str, assembled, canvas: dict, tol: dict) -> Image.Image:
     thr = tol["alphaThreshold"]
-    sig = species["signature"]
     sig_h = tol["silhouetteHeightPx"]
 
-    # 1. parts, each in its registered canvas position
-    tiles = []
-    for name in species["parts"]:
-        im = parts.get(name)
-        cell = checker((PART_CELL, PART_CELL))
-        if im is not None:
-            cell.paste(fit(im, PART_CELL), (0, 0), fit(im, PART_CELL))
-            note = "signature" if name == sig else ""
-        else:
-            ImageDraw.Draw(cell).text((10, PART_CELL // 2), "missing", font=FONT_LABEL, fill=(180, 60, 60))
-            note = "MISSING"
-        tiles.append(card(cell, f"{name}.png", (236, 228, 216), note))
-    parts_block = grid(tiles, cols=5)
-    width = max(parts_block.width, 4 * TIER_CELL)
+    width = 4 * TIER_CELL
 
     # 2. the assembled figure, plus the same figure on dark - the grid is not white
     asm_light = Image.new("RGB", (ASSEMBLED_H, ASSEMBLED_H), PAPER)
@@ -279,13 +252,10 @@ def tier_sheet(species: dict, tier: str, assembled, parts, canvas: dict, tol: di
     return page([
         heading(
             f"{species['id']} / {tier}",
-            f"{len(parts)} of {len(species['parts'])} parts   "
             f"canvas {canvas['width']}x{canvas['height']}   origin y={canvas['originY']}   "
-            f"character {char_h}px tall   signature: {sig}",
+            f"character {char_h}px tall",
             width,
         ),
-        band("Parts - each in its registered canvas position", width),
-        parts_block,
         band("Assembled", width),
         row([card(asm_light, "assembled", PAPER), card(asm_dark, "on a dark grid", (48, 42, 38))]),
         band(f"Legibility - the character at {sig_h}px, the size she is on a phone", width),
@@ -302,7 +272,7 @@ def species_sheet(species: dict, sets: dict, canvas: dict, tol: dict) -> Image.I
 
     full, tiny_row = [], []
     for tier in tiers:
-        assembled, _ = sets[tier]
+        assembled = sets[tier]
         plate = Image.new("RGB", (TIER_CELL, TIER_CELL), PAPER)
         scaled = fit(assembled, TIER_CELL)
         plate.paste(scaled, (0, 0), scaled)
@@ -363,12 +333,12 @@ def main() -> int:
             if loaded is None:
                 skipped.append(f'{sp["id"]}/{tier}')
                 continue
-            assembled, parts = loaded
+            assembled = loaded
             sets[tier] = loaded
 
             out = os.path.join(REVIEW, sp["id"], f"{tier}_sheet.png")
-            written.append(save(tier_sheet(sp, tier, assembled, parts, canvas, tol), out))
-            print(f"  {GREEN}wrote{RESET} {written[-1]}  ({len(parts)} parts)")
+            written.append(save(tier_sheet(sp, tier, assembled, canvas, tol), out))
+            print(f"  {GREEN}wrote{RESET} {written[-1]}")
 
         # The cross-tier sheet only says anything once there are two tiers to compare.
         if len(sets) >= 2:
