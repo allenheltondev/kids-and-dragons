@@ -106,6 +106,10 @@ const PRE_EPIC = JSON.parse(
  * spine). No scene, edge, flag, effect, stat or TN moved; the endings, roads,
  * setbacks and saves below still match their pre-epic digests.
  *
+ * Re-pinned for gemfall-07l's `checkKind` marks (#354): four heart checks
+ * whose prompts #355 made physical say `"doing"` for the pacing report.
+ * Nothing at play time reads the field; the digests below are unchanged.
+ *
  * Re-pinned for the chapter goals (#356): each chapter gained a `goal` and the
  * chapter-local `setFlag`s its steps watch. Those flags are no route set's, so
  * they die with the chapter, and none is set where the pinned mid-fight save
@@ -127,7 +131,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-05c.json": "a6ab77dd22ea8fa5d00569017d18d5c305dbcbbbb2d9f39b4c24dc71f30e4f43",
   "chapters/gemfall-06.json": "4c7306ba197e3ce56b98421797da0aa1488cb3c28cc5eec350b5fdeb7b2c44e1",
   "chapters/gemfall-07h.json": "102d1fc2869f2001c57a3f17a934da964301e12e2db1d2342768a1e211a7c532",
-  "chapters/gemfall-07l.json": "1a3bc53cbedf875230d2e82a58b69b8e77b7efbcb3118df24c0b51b5220a8bc5",
+  "chapters/gemfall-07l.json": "d2bf74142b55a622b2bdf709296541d07acb80eb74753c79f2f220b4f5f41604",
   "chapters/gemfall-07r.json": "82503bbeb255631abbab0138a1ab6dfa4cf1b9f149cf63e19906cc42dbe795d7",
   "chapters/gemfall-08.json": "29efcf2a87c41fd553fdd28cb3caeab41c9d0b67916c7d7a83f573128a71aec0",
 };
