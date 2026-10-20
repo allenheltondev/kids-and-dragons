@@ -1,5 +1,19 @@
 # Kavari artwork
 
+## Approved pose set
+
+- `assets/entities/kavari/assembled.png`: approved wings-up pose; default figure.
+- `assets/entities/kavari/portrait.webp`: derived portrait of the default figure.
+- `assets/entities/kavari/wings-down.png`: matching resting pose with both pairs lowered.
+
+Both PNGs are 1024 × 1024 RGBA cutouts with transparent margins, registered as
+`wings_up` and `wings_down` in the asset manifest. These are alternate stills,
+not frames of a rigged animation. The default approved image is preserved.
+
+### Wings-down edit prompt (built-in imagegen)
+
+Edit this APPROVED Kavari illustration into a matching WINGS-DOWN pose. Preserve exactly the same individual design, fierce focused icy-blue eyes and lowered feather brow, head shape, closed deep-blue beak, pale ice-blue body, rich deep sapphire tail, two feet, crystalline pale wing feathers, painterly storybook style and left-facing three-quarter viewpoint. Exactly FOUR wings in TWO bilateral pairs, larger upper pair and smaller lower pair. Lower and relax BOTH pairs, folding them down and back alongside the body. Each pair must remain identifiable: show two separate gently drooping feather fans on each side, one longer primary wing and a shorter secondary wing, with distinct roots. Primary tips point down/back, not up; no wings raised above shoulders. Clear anatomical four-wing arrangement, no fifth folded wing or extra inset fan on the chest. Keep the front breast smooth short plumage, not wing-like. Keep the darker sapphire tail clearly separated from the pale wing tips. Preserve adult sturdy proportions and fierce face, not chibi or baby. Same hand-painted details and upper-left lighting. Complete unclipped figure centered square with at least 60px clear transparent margin, true transparent RGBA background. No scenery, shadow, text or magic particles. This is a second pose of the approved bird, not a redesign.
+
 ## Tail, expression, and anatomy cleanup
 
 The latest built-in imagegen edit darkens the tail to sapphire blue, gives the
