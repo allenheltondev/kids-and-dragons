@@ -2760,7 +2760,7 @@
       "endsCampaign": true
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "warm, glittering, a little lonely; the land treating the party like weather, never scolding; after the Walk: quiet, bittersweet, honest; the realm is never cruel to the walkers, it just tells the truth; always a spark at the end",
     "vocabulary": "age-8",
     "forbidden": [

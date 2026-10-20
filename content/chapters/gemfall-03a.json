@@ -1705,7 +1705,7 @@
       "art": "scenes/gemfall/river-mouth-shore"
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "warm, playful, a little spooky but never scary; a river crossing that is a real hazard and a busy, funny queue",
     "vocabulary": "age-8",
     "forbidden": [
