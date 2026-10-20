@@ -136,6 +136,13 @@ export interface CheckScene {
    * Only on a together prompt.
    */
   waitingSince?: string;
+  /**
+   * Which opening of a roll prompt this is: the run seq committed by the
+   * intent that opened it. Unique per opening, even when a check branches
+   * straight back to itself, and unchanged while group members roll.
+   * Only on a together prompt. See `ROLL.at` (§4.2).
+   */
+  openedSeq?: number;
 ```
 
 ```ts
@@ -147,13 +154,17 @@ export interface CheckScene {
 
 ```ts
 // packages/shared/src/preview.ts, previewContext() gains one branch
-if (prompt?.kind === "roll" && prompt.together) {
-  return ["roll", state.chapterId ?? "-", state.visited?.length ?? 0, prompt.sceneId].join(":");
+if (prompt?.kind === "roll" && prompt.together && prompt.openedSeq !== undefined) {
+  return ["roll", prompt.openedSeq].join(":");
 }
 ```
 
-The preview context leaves out `group.rolls.length` on purpose. One kid's roll landing
-must not blank the grips of the kids still holding on.
+The preview context is the prompt's opening, not the scene trail. `visited` coalesces
+consecutive repeats (`engine.ts:973`, `if (trail.at(-1) !== sceneId)`), so a check that
+branches straight back to itself keeps the same `sceneId` and `visited.length`. A second
+opening must still get a different context. The context also leaves out
+`group.rolls.length` on purpose: one kid's roll landing must not blank the grips of the
+kids still holding on.
 
 ### 2.2 Moves, and why they are a closed set
 
@@ -222,7 +233,7 @@ rolls back!".
   `onFailure` are untouched, so `content:validate`, `content:graph` and `content:pacing`
   see the same graph.
 - **The engine reads it in two places:**
-  - `openScenePrompt` copies it onto the prompt with `waitingSince`;
+  - `openScenePrompt` copies it onto the prompt with `waitingSince` and `openedSeq`;
   - `doGroupRoll` accepts `ROLL.for` only on a prompt that has it (§4.2).
 
   `resolveCheck`, `roll()` and `takeBranch` never see it.
@@ -538,15 +549,24 @@ retry sets the store's `error` to the server's message, so the losing phone woul
     - another check, where a plain retried `ROLL` would roll *the new check*.
   - **The fix.** Every `ROLL` sent from a together pad or a Heave-for-X button carries
     `at`: the roll prompt's context string, as `previewContext()` builds it
-    (`roll:<chapter>:<scenes entered>:<sceneId>`). It is stamped when the button renders,
-    and the store re-sends the intent unchanged, `at` included.
+    (`roll:<openedSeq>`). It is stamped when the button renders, and the store re-sends the
+    intent unchanged, `at` included.
   - **The engine checks `at` first.** It does this in `dispatch`'s `ROLL` case, before
     `doRoll` or `doGroupRoll` and before any draw. If there is no roll prompt, or the
     current roll prompt's context differs from `at`, it throws
     `Illegal("ILLEGAL", "that roll has passed", "SLOT_FILLED")`.
-  - **Why the context is enough.** `visited.length` moves on every scene entered, so a
-    branch into a second check, or back into the same check scene, always has a different
-    context. A stale retry can never land on a later roll.
+  - **Why the context is enough.** `openedSeq` is the seq committed by the intent that
+    opened the prompt, so it is unique to that opening.
+    - **A later opening gets a later seq.** That covers a branch into a second check, a
+      return to the same check through another scene, and a check whose branch goes straight
+      back to itself.
+    - **Two openings can never share an intent.** Only one prompt is open at a time, and it
+      closes on a later intent than the one that opened it.
+    - **The value holds while members roll.** It does not change as group members roll, so
+      the kids still to roll keep a valid `at`.
+
+    A stale retry can never land on a later prompt. (The trail, `visited.length`, is not
+    enough: it coalesces a direct self-loop.)
   - **`at` adds no draw.** It is checked before anything is drawn, so a refused retry
     commits nothing. Plain `ROLL`s without `at` (every non-together check, and the
     playthrough driver) behave exactly as today.
@@ -554,8 +574,16 @@ retry sets the store's `error` to the server's message, so the losing phone woul
   (plain or `for`) targets a slot that is no longer pending, it throws
   `Illegal("ILLEGAL", ..., "SLOT_FILLED")`. `Illegal` (`engine.ts:318-324`) gains an optional third `reason` argument for this. `doGroupRoll`
   raises it when a hero who already rolled taps again, and when `for` names a filled slot.
-- **The server passes the reason through.** `ActionResponse.error` gains an optional
-  `reason`, so the response is `{ code: "ILLEGAL", reason: "SLOT_FILLED" }`.
+- **The server passes the reason through, at every hop.** The `reason` has to survive the
+  whole path, not just appear at the ends:
+  - `applyIntent` catches the `Illegal` and returns `err(state, e.code, e.message)`
+    (`engine.ts:326-328`), so `err` takes the reason too;
+  - `EngineError` (`engine.ts:228`) gains `reason?`;
+  - `handlers/action.ts` forwards `result.error` into `ActionResponse.error`, which also
+    gains `reason?`.
+
+  The response is `{ code: "ILLEGAL", reason: "SLOT_FILLED" }`. The race regression asserts
+  the reason on the real server response, so a hop that drops it fails the test.
 - **The store keeps quiet for that reason only.** In `send()`, an error with
   `reason === "SLOT_FILLED"` on a `ROLL` intent clears `busy` and sets no `error`. Every
   other `ILLEGAL`, and `SLOT_FILLED` on any other intent, still sets `error` as today.
@@ -570,8 +598,15 @@ retry sets the store's `error` to the server's message, so the losing phone woul
   - Posy's `ROLL` first, then Mia's `for`.
 
   Each order runs twice: with another hero still pending, and with Posy as the **one final
-  pending hero**. In the final-hero runs, the check branches straight into a second
-  together check, and in a variant into a story scene.
+  pending hero**. The final-hero runs come in three variants, by where the check branches
+  straight to:
+  - a second together check;
+  - a story scene;
+  - **the same check scene again (a direct self-edge)**, which opens a new prompt with the
+    same `sceneId` and the same `visited.length`.
+
+  All three run against the real `/api/action` handler, so the asserted `reason` is the one
+  the server actually sends.
 
   In every run, the test asserts:
   - exactly one die is committed for Posy's slot, and the seq advances by one;
@@ -689,7 +724,7 @@ Against each:
 
 | Digest | What it hashes | Why group actions cannot reach it |
 |---|---|---|
-| `endings` (:168-196) | The attempt row and settlement for all 48 endings, reached by `PLAYTEST_GOTO` warps | No check is entered or rolled on the way (`gemfall-compat-probe.ts:156-189`). No key is added to the attempt row: `together`, `waitingSince` and `by` live on the prompt and on `DiceRoll`, not on the attempt. |
+| `endings` (:168-196) | The attempt row and settlement for all 48 endings, reached by `PLAYTEST_GOTO` warps | No check is entered or rolled on the way (`gemfall-compat-probe.ts:156-189`). No key is added to the attempt row: `together`, `waitingSince`, `openedSeq` and `by` live on the prompt and on `DiceRoll`, not on the attempt. |
 | `roads` (:198-225) | Three road choices in chapters 2 and 6 | Choices and warps only, never a check scene. |
 | `setbacks` (:227-235) | A warp to a setback ending | No check. |
 | `resumed` (:279-325) | A mid-fight save played on: seq-keyed combat dice, every presentation since the save, HP, flags, XP | Only `COMBAT_SEQUENCE` beats. Combat intents, draws and presentations are not edited. |
@@ -716,7 +751,7 @@ file-hash test (:103-132) fails, by design.
   and once without. It asserts:
   - identical `DiceRoll` dice and totals;
   - the same branch and event count;
-  - states that differ only by `prompt.together` and `prompt.waitingSince`.
+  - states that differ only by `prompt.together`, `prompt.waitingSince` and `prompt.openedSeq`.
 - **Heave-for-them equivalence.** At the same seq, `ROLL { for: posy }` from Mia and a plain
   `ROLL` from Posy produce the same `die`, `mod`, `total` and branch. Only `by` differs.
 - **Heave-for-them legality.** It is refused:
@@ -727,8 +762,11 @@ file-hash test (:103-132) fails, by design.
   - with `spendBuff`;
   - on a plain group check.
 - **Prompt binding.** A `ROLL` whose `at` names a passed prompt is refused as `SLOT_FILLED`,
-  with nothing drawn and no seq moved. This includes a branch into a second check, and a
-  return to the same check scene.
+  with nothing drawn and no seq moved. This covers:
+  - a branch into a second check;
+  - a return to the same check scene through another scene;
+  - a direct check-to-same-check loop, where the trail does not change but `openedSeq`
+    does.
 
   The "same moment" race is tested in both orders.
 - **Previews.** A `grip` relayed during a group check leaves `state.seq` and the event log
@@ -965,7 +1003,8 @@ Bramblewood's `check_gate` is `roller: "party"`, so it stays as it is (Decision 
    - The engine's prompt copy and `waitingSince`, `ROLL.for` with its legality checks
      (§4.2), `DiceRoll.by`, and the `SLOT_FILLED` reason on `Illegal` and `ActionResponse`.
    - The `grip` preview kind (with `n`) and the roll `previewContext` branch.
-   - `ROLL.at`, checked in `dispatch` before any draw.
+   - `ROLL.at` and `prompt.openedSeq`, checked in `dispatch` before any draw.
+   - `reason` carried through `Illegal`, `err()`, `EngineError` and `ActionResponse`.
    - The tests in §5.
    - No shipped content.
 3. **Client.**
