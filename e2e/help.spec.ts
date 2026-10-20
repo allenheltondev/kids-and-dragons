@@ -25,7 +25,7 @@ async function touch(cdp: CDPSession, type: "touchStart" | "touchMove" | "touchE
 /** A hero made and left in the lobby, where the bag is the screen. */
 async function heroInTheLobby(page: Page, name: string): Promise<void> {
   await page.goto("/");
-  await page.getByRole("button", { name: /want to host/i }).click(TAP);
+  await page.getByRole("button", { name: /host a game/i }).click(TAP);
   await page.getByText("Phone Mode", { exact: true }).click(TAP);
   await page.getByPlaceholder("Type your name").fill(name, TAP);
   await page.getByRole("button", { name: /start a game/i }).click(TAP);
@@ -143,7 +143,7 @@ test("the ? and press-and-hold, on the smallest phone at the largest text", asyn
 test("the shared screen says how to join, in one line with a picture", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto("/");
-  await page.getByRole("button", { name: /want to host/i }).click(TAP);
+  await page.getByRole("button", { name: /host a game/i }).click(TAP);
   await page.getByText("Party Mode", { exact: true }).click(TAP);
   await page.getByRole("button", { name: /open the lobby here/i }).click(TAP);
   await expect(page).toHaveURL(/\/tv\/[A-Z]{4}$/);

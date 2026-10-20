@@ -23,10 +23,17 @@
  *   different font cannot fool it;
  * - and all of that holds before the row's controls have loaded (they are lazy,
  *   #324), with nothing moving when they arrive.
+ *
+ * Class tokens (#314) are checked on the screens that draw them: the phone's own
+ * view and a friend's sheet in the room, the earning kid's rank-up card, the
+ * TV lineup, and the TV's story with its rank-up moment. A rank landing needs
+ * a fight, so the rank-up is put on the page's state (`withRankUp`), in
+ * exactly the shape the engine leaves it.
  */
 
 import { test, expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
 import { createCharacter } from "./characters";
+import { openPlayerTask } from "./player-navigation";
 import { roomState } from "./room-state";
 
 const TAP = { timeout: 20_000 } as const;
@@ -85,6 +92,38 @@ async function jumpTo(page: Page, code: string, sceneId: string): Promise<void> 
     if (((await response.json()) as { ok?: boolean }).ok) return;
   }
   throw new Error("the playtest jump kept losing the seq race");
+}
+
+/**
+ * A rank that has just landed, on the scene the page is showing, put on the
+ * page's own store: a Duskrunner's, so the crow's line, the longest a rank-up
+ * says, is the one that has to fit. The dev server serves the store by its
+ * module URL, which is the instance the app is using.
+ */
+async function withRankUp(page: Page, name: string): Promise<void> {
+  await page.evaluate(async (hero) => {
+    const path = "/src/store/index.ts";
+    const { useGameStore } = (await import(/* @vite-ignore */ path)) as {
+      useGameStore: { getState(): { state: { sceneId: string; party: { character: { id: string; name: string } }[] } | null }; setState(next: object): void };
+    };
+    const state = useGameStore.getState().state!;
+    const id = state.party.find((m) => m.character.name === hero)!.character.id;
+    useGameStore.setState({
+      state: {
+        ...state,
+        rankUps: {
+          sceneId: state.sceneId,
+          ups: [{
+            characterId: id,
+            class: "duskrunner",
+            rank: "apprentice",
+            line: `${hero} is a Duskrunner Apprentice now! New move: Vanish.`,
+            crow: "A crow hops past, very busy. \"Good work. Remember who taught you. Don't mess with us.\"",
+          }],
+        },
+      },
+    });
+  }, name);
 }
 
 /** Apply display settings the way a11y/prefs.ts does: attributes on <html>. */
@@ -295,7 +334,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     // --- The start screen ---
     const host = await phone(browser);
     await host.goto("/");
-    await expect(host.getByRole("button", { name: /want to host/i })).toBeVisible(TAP);
+    await expect(host.getByRole("button", { name: /host a game/i })).toBeVisible(TAP);
     await expectFits(host, "start screen");
 
     // --- The grown-up's guide, whose words scroll under nothing ---
@@ -307,7 +346,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await host.goto("/");
 
     // --- A Phone Mode room, a host and a guest, each with a hero ---
-    await host.getByRole("button", { name: /want to host/i }).click();
+    await host.getByRole("button", { name: /host a game/i }).click();
     await host.getByText("Phone Mode").click();
     await host.getByLabel("Your adventurer name").fill("Grown-up");
     await host.getByRole("button", { name: /^start a game$/i }).click();
@@ -348,6 +387,20 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expect(guest.getByTestId("catch-up")).toContainText("Welcome back, Rosie!", TAP);
     await expectFits(guest, "guest's catch-up line");
 
+    // --- Class tokens (#314): her own view, a friend's sheet, and a rank landing ---
+    await guest.getByRole("button", { name: "You", exact: true }).click(TAP);
+    await expect(guest.getByText(/^Your (thorn bracer|dusk hood|star circlet|song bell)$/)).toBeVisible(TAP);
+    await expectFits(guest, "guest's own view, with her worn token");
+    await guest.getByRole("button", { name: "Sparklehoof's character sheet" }).click(TAP);
+    await expect(guest.getByText(/^Sparklehoof's (thorn bracer|dusk hood|star circlet|song bell)$/)).toBeVisible(TAP);
+    await expectFits(guest, "a friend's sheet, with their token");
+    await guest.goto(`/p/${code}`);
+    await expect(guest.getByRole("button", { name: "You", exact: true })).toBeVisible(TAP);
+    await openPlayerTask(guest);
+    await withRankUp(guest, "Rosie");
+    await expect(guest.getByTestId("player-rank-up")).toContainText("Don't mess with us.", TAP);
+    await expectFits(guest, "the earning kid's rank-up card");
+
     // --- Between games: the adventure book, which shares the phone's shell ---
     await guest.goto("/");
     await guest.getByRole("button", { name: /open your book/i }).click(TAP);
@@ -381,7 +434,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     });
     const tv = await context.newPage();
     await tv.goto("/");
-    await tv.getByRole("button", { name: /want to host/i }).click();
+    await tv.getByRole("button", { name: /host a game/i }).click();
     await tv.getByText("Party Mode").click();
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
@@ -404,6 +457,20 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expect.poll(async () => (await roomState<{ phase: string }>(kid, code)).phase, TAP).toBe("scene");
     await expect(tv.locator(".narration__body").first()).toBeVisible(TAP);
     await expectFits(tv, "the shared screen's story", SHARED);
+
+    // A rank lands (#314): the line with its token under the story, and the moment over
+    // the stage, which lets every tap through and is gone by itself in a few seconds.
+    await withRankUp(tv, "Sparklehoof");
+    const moment = tv.getByTestId("rank-up-moment");
+    await expect(moment).toBeVisible(TAP);
+    const shown = Date.now();
+    expect(await moment.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe("none");
+    await expect(moment).toHaveCount(0, { timeout: 8_000 });
+    expect(Date.now() - shown, "the moment does not hold the table up").toBeLessThan(6_000);
+    // The words of record stay under the story, token and all, and fit where they are
+    // tightest: the tablet at the largest text.
+    await expect(tv.getByTestId("rank-up")).toContainText("Duskrunner Apprentice", TAP);
+    await expectFits(tv, "the shared screen's story, with a rank-up", SHARED.filter((c) => c.text === "largest"));
   });
 
   test("the shared screen's corner row holds still while sound loads, asks, and unlocks", async ({ browser }) => {
@@ -447,7 +514,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     });
 
     await tv.goto("/");
-    await tv.getByRole("button", { name: /want to host/i }).click();
+    await tv.getByRole("button", { name: /host a game/i }).click();
     await tv.getByText("Party Mode").click();
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);

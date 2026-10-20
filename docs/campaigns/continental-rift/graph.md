@@ -102,6 +102,13 @@ Sky Islands, kitsune and cloud whales; teaches **linked**. Entered by the washou
 - **Each class has a moment:** Starweaver reads the linked pulse; Songkeeper calms the whales; Duskrunner leaps between drifting islands; Thornguard braces the temple in the squall. Kitsune players get Beguile with the temple keepers; griffin players get Skyward.
 - **Protected:** the creator-only secret that the islands were once sea floor stays untouched (the carving shows land, not sea); kitsune are never portrayed as all deceptive.
 
+**Authored preview:** `whale-road` now continues to `the-island-due-back` and has a
+return edge from it. The new key node uses pass revisits and an explicit development
+pause before the unwritten temple continuation. Whale outcomes, rescue priorities,
+evidence quality and the first outgoing message have distinct consequences. See the
+[island review](island-continuity-review.md). This is preview topology only; the
+production convergence and endgame guards are not yet authored.
+
 ## Strand: Restless Coast — agreed
 The Sallow Wastelands (the Saltrot), Saltrot guides, the Bone Yard and displaced creatures; teaches **unstable**. Begins at `saltrot-arrival`, reached by the hidden glacier rift (persistent, two-way), the linked rift from `whale-road`, or downriver from Ashspan Bridge.
 

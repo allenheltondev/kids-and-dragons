@@ -36,3 +36,12 @@
 .class-roll__hero--switched {
   font-weight: 700;
 }
+
+/* The token coming off and the one going on (#314). */
+.class-place__tokens {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kad-space-3);
+  margin: 0;
+}

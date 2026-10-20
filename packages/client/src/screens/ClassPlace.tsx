@@ -22,16 +22,9 @@ import { classPlaceWaitingOn, owesClassAnswer } from "@kad/shared";
 import type { ClassId, PartyMember, RulesContent } from "@kad/shared";
 import { useMe, useParty, useRules, useRunState, useSend } from "../store";
 import { Button } from "../ui/Button";
+import { ClassToken, tokenName } from "./ClassToken";
 import { Icon } from "./icons";
 import "./ClassPlace.css";
-
-/** The worn token, by class (docs/class-mastery.md §4). */
-export const CLASS_GEAR: Record<ClassId, string> = {
-  thornguard: "thorn bracer",
-  duskrunner: "dusk hood",
-  starweaver: "star circlet",
-  songkeeper: "song bell",
-};
 
 /** Where each class is taught (docs/class-mastery.md §2). */
 export const CLASS_PLACE_NAME: Record<ClassId, string> = {
@@ -57,8 +50,8 @@ function names(members: readonly PartyMember[]): string {
  */
 export function switchLines(from: ClassId, to: ClassId): string[] {
   return [
-    `You take off your ${CLASS_GEAR[from]} and put on the ${CLASS_GEAR[to]}.`,
-    `Your ${CLASS_GEAR[from]} goes in your pack.`,
+    `You take off your ${tokenName(from)} and put on the ${tokenName(to)}.`,
+    `Your ${tokenName(from)} goes in your pack.`,
     "It keeps everything you earned.",
     `You can switch back at ${CLASS_PLACE_NAME[from]}.`,
   ];
@@ -116,7 +109,16 @@ export function ClassPlaceChoice(): ReactElement | null {
         role="alertdialog"
         aria-label={picked === "switch" ? `Become a ${toName}?` : `Stay a ${fromName}?`}
       >
-        <p className="class-place__ask">{picked === "switch" ? "Are you sure?" : `Keep your ${CLASS_GEAR[from]}?`}</p>
+        <p className="class-place__ask">{picked === "switch" ? "Are you sure?" : `Keep your ${tokenName(from)}?`}</p>
+        {picked === "switch" ? (
+          /* The two tokens, notches and all (#314): the one coming off keeps
+             every notch it has, in the pack. */
+          <p className="class-place__tokens">
+            <ClassToken classId={from} rank={me.character.rank} owner="your" holdable={false} />
+            <Icon name="forward" />
+            <ClassToken classId={to} rank={me.character.spares?.find((s) => s.class === to)?.rank} holdable={false} />
+          </p>
+        ) : null}
         {picked === "switch" ? (
           <ul className="class-place__lines">
             {switchLines(from, to).map((line) => (
@@ -213,9 +215,9 @@ export function ClassPlaceRoll(): ReactElement | null {
         const answer = place.answers[member.playerId];
         const wearing = className(rules, member.character.class);
         const line = answer?.switched
-          ? `${member.character.name} put on the ${CLASS_GEAR[place.class]}!`
+          ? `${member.character.name} put on the ${tokenName(place.class)}!`
           : answer
-            ? `${member.character.name} kept the ${CLASS_GEAR[member.character.class]}.`
+            ? `${member.character.name} kept the ${tokenName(member.character.class)}.`
             : member.character.class === place.class
               ? `${member.character.name} is a ${wearing}.`
               : member.connected
@@ -223,7 +225,7 @@ export function ClassPlaceRoll(): ReactElement | null {
                 : `${member.character.name} stepped away.`;
         return (
           <li key={member.playerId} className={`class-roll__hero${answer?.switched ? " class-roll__hero--switched" : ""}`}>
-            <Icon name={member.character.class} />
+            <ClassToken classId={member.character.class} rank={member.character.rank} size="sm" owner={`${member.character.name}'s`} holdable={false} />
             <span>{line}</span>
           </li>
         );
