@@ -313,10 +313,20 @@ const withoutStall: ContentStore = Object.assign(Object.create(Object.getPrototy
  * decline is a tap and every tap moves the seq; with them keyed to the seq a
  * stall-free run and a declining one would roll different dice.
  */
-async function playOpening(content: ContentStore, seats: Seat[]) {
+async function playOpening(
+  content: ContentStore,
+  seats: Seat[],
+  /**
+   * `order`: one stream, drawn in order. `seq`: keyed to the seq as the
+   * server keys them (the run id left out, as the compat probe does).
+   */
+  dice: "order" | "seq" = "order",
+  /** A deploy mid-chapter: from the first arrival at this scene on, the run is played with `then`. */
+  upgrade?: { at: string; then: ContentStore },
+) {
   const harness = makeHarness({ engine: realEngine, content });
-  const dice = makeRng("fitting-stall:opening");
-  harness.deps.rng = () => dice;
+  const stream = makeRng("fitting-stall:opening");
+  harness.deps.rng = dice === "order" ? () => stream : (key) => makeRng(`fitting-stall:${String(key).split(":").pop()}`);
   const { householdId, players } = await seedHousehold(harness, seats.length);
   // Saved heroes with fixed ids and colors: a hero made at the table takes
   // both from the run id, which is random.
@@ -338,9 +348,14 @@ async function playOpening(content: ContentStore, seats: Seat[]) {
   }
   const t = await openEvening(harness, householdId, players, seats, "gemfall");
   let declined = 0;
+  let upgraded = false;
   for (let step = 0; step < 400; step++) {
     const s = await t.state();
     if (s.phase === "chapter_complete") break;
+    if (upgrade && s.sceneId === upgrade.at && harness.deps.content !== upgrade.then) {
+      harness.deps.content = upgrade.then;
+      upgraded = true;
+    }
     const deciding = classPlaceWaitingOn(s);
     if (deciding.length > 0 && s.classPlace) {
       for (const member of deciding) await t.must(member.playerId, keepClassIntent(s.classPlace, member));
@@ -366,7 +381,7 @@ async function playOpening(content: ContentStore, seats: Seat[]) {
   const shown = (await harness.repo.listEvents(end.runId, 0)).map((e) => e.presentation).filter((p) => p !== undefined);
   const rows = (await harness.repo.listCharacters(householdId)).map(({ version: _v, ...row }) => row);
   const { version: _av, updatedAt: _au, ...attempt } = (await harness.repo.getCampaignProgress(householdId, "gemfall"))!;
-  return { game: same(game), shown: same(shown), rows: same(rows), attempt: same(attempt), declined, seq: end.seq };
+  return { game: same(game), shown: same(shown), rows: same(rows), attempt: same(attempt), declined, upgraded, seq: end.seq };
 }
 
 describe("the stall in Gemfall (#312)", () => {
@@ -406,6 +421,27 @@ describe("the stall in Gemfall (#312)", () => {
       expect(after.rows).toEqual(before.rows);
       expect(after.attempt).toEqual(before.attempt);
       expect(after.game.phase).toBe("chapter_complete");
+    }
+  });
+
+  it("a run saved before this build, at the stall's scene or past it, never opens it, and its dice do not move", { timeout: 30_000 }, async () => {
+    // Saved by a build without the stall, then resumed by this one. The
+    // dice are keyed to the seq, as the server keys them: no stall, no tap,
+    // so not one roll is reseeded.
+    const seats: Seat[] = [
+      { name: "Pip", class: "songkeeper" },
+      { name: "Moss", class: "thornguard" },
+    ];
+    const before = await playOpening(withoutStall, seats, "seq");
+    for (const at of ["scene_prologue_city", "scene_prologue_party", "scene_red_sky"]) {
+      const resumed = await playOpening(withoutStall, seats, "seq", { at, then: shipped });
+      expect(resumed.upgraded, at).toBe(true);
+      expect(resumed.declined, at).toBe(0);
+      expect(resumed.seq, at).toBe(before.seq);
+      expect(resumed.game, at).toEqual(before.game);
+      expect(resumed.shown, at).toEqual(before.shown);
+      expect(resumed.rows, at).toEqual(before.rows);
+      expect(resumed.attempt, at).toEqual(before.attempt);
     }
   });
 });

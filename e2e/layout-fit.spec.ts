@@ -391,7 +391,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expectFits(kid, "the fitting stall, four answers");
 
     await kid.getByRole("button", { name: "Be a Starweaver" }).click(TAP);
-    await expect(kid.getByRole("alertdialog")).toContainText("fits each hero only once", TAP);
+    await expect(kid.getByRole("alertdialog")).toContainText("This is your one free swap.", TAP);
     await expectFits(kid, "the fitting stall's are-you-sure");
 
     await kid.getByRole("button", { name: "Yes, switch!" }).click(TAP);

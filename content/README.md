@@ -245,6 +245,8 @@ one. A party with nobody new never sees it.
 
 - **Where a campaign opens, at the Exchange.** A `story` or `choice_point` scene in a chapter with
   `index` 1, never an ending and never a class place; `content:validate` refuses the rest.
+- **A scene whose only way on is one plain choice.** The way on waits for every new hero, so a vote
+  or a gated choice there would be a decision the stall sits on; `content:validate` refuses both.
 - **Introduce the keeper in `narration`.** The phone names her (`keeper`) only after the shared
   screen has.
 - **It is shown in Gemfall**, so its words keep Gemfall's rules: US spelling, no em dash

@@ -265,7 +265,7 @@ describe("the phone at the fitting stall", () => {
     const { sent } = mount(atStall([hero("p_1", "Pip", "songkeeper")]), "p_1", "phone", STALL_RULES);
 
     expect(screen.getByText("Try on a new class?")).toBeTruthy();
-    expect(screen.getByText("Only you decide this one. It is free, one time only.")).toBeTruthy();
+    expect(screen.getByText("Only you decide this one. It is free, but only this one time.")).toBeTruthy();
     expect(screen.queryByText("Go on")).toBeNull();
     for (const name of ["Be a thornguard", "Be a duskrunner", "Be a starweaver", "Stay a songkeeper"]) {
       expect(screen.getByRole("button", { name })).toBeTruthy();
@@ -276,7 +276,8 @@ describe("the phone at the fitting stall", () => {
     expect(sent).toEqual([]);
     const sure = screen.getByRole("alertdialog").textContent ?? "";
     expect(sure).toContain("You take off your song bell and put on the dusk hood.");
-    expect(sure).toContain("Madame Tuck fits each hero only once.");
+    expect(sure).toContain("This is your one free swap.");
+    expect(sure).toContain("Madame Tuck will not offer it again.");
     expect(sure).toContain("You can switch back at the Conservatory.");
 
     await user.click(screen.getByRole("button", { name: "Yes, switch!" }));

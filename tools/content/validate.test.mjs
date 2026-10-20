@@ -1243,6 +1243,30 @@ describe("the fitting stall (#312)", { timeout: 30_000 }, () => {
     expect(result.out).toContain(`"${ending}" ends the chapter`);
   });
 
+  it("rejects a scene whose way on is a decision the wait would hold: more than one choice", () => {
+    // scene_prologue_party is the vote right after the stall's scene.
+    const result = withStall((stall) => {
+      stall.stands = [{ chapterId: "gemfall-01", sceneId: "scene_prologue_party" }];
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("the stall's wait would hold a decision");
+  });
+
+  it.each([
+    ["requiresFlag", "night_fishing"],
+    ["requiresClass", "starweaver"],
+    ["requiresSpecies", "unicorn"],
+  ])("rejects a scene whose one choice is gated (%s)", (key, value) => {
+    const dir = copyTree();
+    const GEMFALL_01 = ["content", "chapters", "gemfall-01.json"];
+    const chapter = readJson(dir, ...GEMFALL_01);
+    chapter.scenes.scene_prologue_city.choices[0][key] = value;
+    writeJson(dir, GEMFALL_01, chapter);
+    const result = validate(dir);
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain(`choice "prologue_to_party" is gated (${key})`);
+  });
+
   it("rejects an em dash in its words, which Gemfall's screen shows", () => {
     const result = withStall((stall) => {
       stall.narration = "Madame Tuck — the tailor.";
