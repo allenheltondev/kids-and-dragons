@@ -214,4 +214,23 @@ describe("the TV at a class place", () => {
     expect(roll.textContent).toContain("Wren kept the star circlet.");
     expect(roll.textContent).toContain("Bram is deciding…");
   });
+
+  it("moves a kid who changes their mind from kept to switched", () => {
+    const party = [hero("p_1", "Pip", "songkeeper"), hero("p_2", "Moss", "songkeeper")];
+    mount(state(party, { p_1: { switched: false }, p_2: { switched: false } }), "p_1", "tv");
+    expect(screen.getByTestId("class-roll").textContent).toContain("Pip kept the song bell.");
+
+    act(() => {
+      useGameStore.setState({
+        state: state([hero("p_1", "Pip", "thornguard"), party[1]!], {
+          p_1: { switched: true, from: "songkeeper" },
+          p_2: { switched: false },
+        }),
+      });
+    });
+    const roll = screen.getByTestId("class-roll").textContent ?? "";
+    expect(roll).toContain("Pip put on the thorn bracer!");
+    expect(roll).not.toContain("Pip kept");
+    expect(roll).toContain("Moss kept the song bell.");
+  });
 });
