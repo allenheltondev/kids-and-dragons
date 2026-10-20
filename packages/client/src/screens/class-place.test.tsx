@@ -137,6 +137,25 @@ describe("the phone at a class place", () => {
     expect(sent).toEqual([{ type: "KEEP_CLASS", classId: "thornguard" }]);
   });
 
+  it("lets a kid who said stay change their mind while the room is open", async () => {
+    const user = userEvent.setup();
+    const party = [hero("p_1", "Pip", "songkeeper"), hero("p_2", "Moss", "songkeeper")];
+    const { sent } = mount(state(party, { p_1: { switched: false } }));
+    expect(screen.getByText("You are a songkeeper.")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Stay a songkeeper" })).toBeNull();
+
+    await user.click(screen.getByRole("button", { name: "Be a thornguard" }));
+    expect(sent).toEqual([]);
+    expect(screen.getByRole("alertdialog").textContent).toContain("Are you sure?");
+    await user.click(screen.getByRole("button", { name: "Yes, switch!" }));
+    expect(sent).toEqual([{ type: "SWITCH_CLASS", classId: "thornguard" }]);
+  });
+
+  it("offers no second switch to a kid who already switched", () => {
+    mount(state([hero("p_1", "Pip", "thornguard")], { p_1: { switched: true, from: "songkeeper" } }));
+    expect(screen.queryByRole("button", { name: /Be a/ })).toBeNull();
+  });
+
   it("shows who the way on is waiting for, then the way on once everyone has answered", () => {
     const party = [hero("p_1", "Pip", "thornguard"), hero("p_2", "Moss", "songkeeper"), hero("p_3", "Wren", "starweaver")];
     mount(state(party, { p_1: { switched: true, from: "songkeeper" } }));

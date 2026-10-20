@@ -97,10 +97,57 @@ export function ClassPlaceChoice(): ReactElement | null {
     }
   };
 
+  const beButton = (
+    <li>
+      <button type="button" className="choice kad-tap kad-focusable" onClick={() => setPicked("switch")}>
+        <span className="choice__icon">
+          <Icon name={to} size="1.8em" />
+        </span>
+        <span className="choice__label">{`Be a ${toName}`}</span>
+      </button>
+    </li>
+  );
+
+  // The "are you sure?", for whichever answer was tapped.
+  const sure =
+    picked === null ? null : (
+      <div
+        className="class-place__sure"
+        role="alertdialog"
+        aria-label={picked === "switch" ? `Become a ${toName}?` : `Stay a ${fromName}?`}
+      >
+        <p className="class-place__ask">{picked === "switch" ? "Are you sure?" : `Keep your ${CLASS_GEAR[from]}?`}</p>
+        {picked === "switch" ? (
+          <ul className="class-place__lines">
+            {switchLines(from, to).map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+        ) : null}
+        <div className="confirm__actions">
+          <Button variant="ghost" size="md" icon={<Icon name="back" />} onClick={() => setPicked(null)}>
+            No, wait
+          </Button>
+          <Button
+            variant="primary"
+            size="md"
+            icon={<Icon name={picked === "switch" ? to : "check"} />}
+            disabled={busy}
+            onClick={() => void answer(picked === "switch")}
+          >
+            {picked === "switch" ? "Yes, switch!" : "Yes, keep it"}
+          </Button>
+        </div>
+      </div>
+    );
+
   if (!owes) {
     // Answered, or already this class: say where things stand, and who the
     // way on is waiting for, if anybody.
     const mine = place.answers[me.playerId];
+    // A kid who said "stay" may still change their mind while the room is
+    // open, as the server allows.
+    const mayStillSwitch = mine?.switched === false && from !== to;
     return (
       <div className="prompt class-place" data-testid="class-place">
         <h3 className="prompt__title">
@@ -113,6 +160,7 @@ export function ClassPlaceChoice(): ReactElement | null {
             <span>{`Waiting for ${names(waitingOn)} to decide.`}</span>
           </p>
         ) : null}
+        {mayStillSwitch ? (picked === null ? <ul className="prompt__options">{beButton}</ul> : sure) : null}
       </div>
     );
   }
@@ -130,18 +178,7 @@ export function ClassPlaceChoice(): ReactElement | null {
 
       {picked === null ? (
         <ul className="prompt__options">
-          <li>
-            <button
-              type="button"
-              className="choice kad-tap kad-focusable"
-              onClick={() => setPicked("switch")}
-            >
-              <span className="choice__icon">
-                <Icon name={to} size="1.8em" />
-              </span>
-              <span className="choice__label">{`Be a ${toName}`}</span>
-            </button>
-          </li>
+          {beButton}
           <li>
             <button
               type="button"
@@ -156,34 +193,7 @@ export function ClassPlaceChoice(): ReactElement | null {
           </li>
         </ul>
       ) : (
-        <div
-          className="class-place__sure"
-          role="alertdialog"
-          aria-label={picked === "switch" ? `Become a ${toName}?` : `Stay a ${fromName}?`}
-        >
-          <p className="class-place__ask">{picked === "switch" ? "Are you sure?" : `Keep your ${CLASS_GEAR[from]}?`}</p>
-          {picked === "switch" ? (
-            <ul className="class-place__lines">
-              {switchLines(from, to).map((line) => (
-                <li key={line}>{line}</li>
-              ))}
-            </ul>
-          ) : null}
-          <div className="confirm__actions">
-            <Button variant="ghost" size="md" icon={<Icon name="back" />} onClick={() => setPicked(null)}>
-              No, wait
-            </Button>
-            <Button
-              variant="primary"
-              size="md"
-              icon={<Icon name={picked === "switch" ? to : "check"} />}
-              disabled={busy}
-              onClick={() => void answer(picked === "switch")}
-            >
-              {picked === "switch" ? "Yes, switch!" : "Yes, keep it"}
-            </Button>
-          </div>
-        </div>
+        sure
       )}
     </div>
   );
