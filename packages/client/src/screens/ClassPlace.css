@@ -37,6 +37,15 @@
   font-weight: 700;
 }
 
+/* The token coming off and the one going on (#314). */
+.class-place__tokens {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kad-space-3);
+  margin: 0;
+}
+
 /* The fitting stall (#312): its words above the roll call. */
 .class-stall__words {
   margin: 0.5rem 0 0;

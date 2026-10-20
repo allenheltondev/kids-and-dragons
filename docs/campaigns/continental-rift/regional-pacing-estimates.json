@@ -713,6 +713,145 @@
           "fastTableShortestLowerMinutes": 25.1
         }
       ]
+    },
+    {
+      "id": "riftlight-the-island-due-back",
+      "authoredScenes": 106,
+      "metadataBudgetMinutes": 35,
+      "scenarios": [
+        {
+          "id": "empty-solo",
+          "shortest": {
+            "scenes": 43,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2919,
+            "wordsMin": 2705
+          },
+          "typical": {
+            "scenes": 45,
+            "decisions": 15,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2996,
+            "wordsMin": 2782
+          },
+          "shortestLowerMinutes": 36,
+          "typicalMinutes": 39,
+          "fastTableShortestLowerMinutes": 26.9
+        },
+        {
+          "id": "empty-3p",
+          "shortest": {
+            "scenes": 43,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2919,
+            "wordsMin": 2705
+          },
+          "typical": {
+            "scenes": 45,
+            "decisions": 15,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2996,
+            "wordsMin": 2782
+          },
+          "shortestLowerMinutes": 36,
+          "typicalMinutes": 39,
+          "fastTableShortestLowerMinutes": 26.9
+        },
+        {
+          "id": "few-solo",
+          "shortest": {
+            "scenes": 43,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2919,
+            "wordsMin": 2705
+          },
+          "typical": {
+            "scenes": 45,
+            "decisions": 15,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2996,
+            "wordsMin": 2782
+          },
+          "shortestLowerMinutes": 36,
+          "typicalMinutes": 39,
+          "fastTableShortestLowerMinutes": 26.9
+        },
+        {
+          "id": "few-3p",
+          "shortest": {
+            "scenes": 43,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2919,
+            "wordsMin": 2705
+          },
+          "typical": {
+            "scenes": 45,
+            "decisions": 15,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2996,
+            "wordsMin": 2782
+          },
+          "shortestLowerMinutes": 36,
+          "typicalMinutes": 39,
+          "fastTableShortestLowerMinutes": 26.9
+        },
+        {
+          "id": "collection-solo",
+          "shortest": {
+            "scenes": 43,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2919,
+            "wordsMin": 2705
+          },
+          "typical": {
+            "scenes": 45,
+            "decisions": 15,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2996,
+            "wordsMin": 2782
+          },
+          "shortestLowerMinutes": 36,
+          "typicalMinutes": 39,
+          "fastTableShortestLowerMinutes": 26.9
+        },
+        {
+          "id": "collection-3p",
+          "shortest": {
+            "scenes": 43,
+            "decisions": 14,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2919,
+            "wordsMin": 2705
+          },
+          "typical": {
+            "scenes": 45,
+            "decisions": 15,
+            "checks": 6,
+            "encounters": 0,
+            "words": 2996,
+            "wordsMin": 2782
+          },
+          "shortestLowerMinutes": 36,
+          "typicalMinutes": 39,
+          "fastTableShortestLowerMinutes": 26.9
+        }
+      ]
     }
   ]
 }

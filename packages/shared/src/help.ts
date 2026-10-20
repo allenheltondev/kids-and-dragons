@@ -15,7 +15,7 @@ export type HelpSurfaceId = (typeof HELP_SURFACE_IDS)[number];
  * What a long-press can land on. The thing's own words (an item's text, a card's summary) come first
  * where it has them; these are the plain explanation of what kind of thing it is.
  */
-export const HELP_THING_KINDS = ["card", "buff", "item"] as const;
+export const HELP_THING_KINDS = ["card", "buff", "item", "token"] as const;
 export type HelpThingKind = (typeof HELP_THING_KINDS)[number];
 
 /** One or two plain sentences and the picture that goes with them. */

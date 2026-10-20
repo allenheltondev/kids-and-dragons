@@ -29,7 +29,9 @@ import { useState } from "react";
 import type { CSSProperties, ReactElement } from "react";
 import { INVENTORY_SLOTS, STAT_IDS, TIER_IDS } from "@kad/shared";
 import type { ItemCatalog, PartyMember, TierId } from "@kad/shared";
+import { useRules } from "../store";
 import { CharacterPortrait } from "./CharacterPortrait";
+import { SpareTokens, TokenCard } from "./ClassToken";
 import { Icon } from "./icons";
 import "./shared.css";
 import "./CharacterSheet.css";
@@ -127,10 +129,16 @@ export interface CharacterSheetProps {
    * on, so finding out about one is the whole point of opening the bag.
    */
   explore?: boolean;
+  /**
+   * How many heroes are at the table, which picks the deed track a token's
+   * pips follow when its two are level (#314). Between games, one.
+   */
+  partySize?: number;
 }
 
-export function CharacterSheet({ member, isMe, items, explore = false }: CharacterSheetProps): ReactElement {
+export function CharacterSheet({ member, isMe, items, explore = false, partySize = 1 }: CharacterSheetProps): ReactElement {
   const { character } = member;
+  const rules = useRules();
   /** The item being read about, by id: a slot and a quest item read the same. */
   const [reading, setReading] = useState<string | null>(null);
   const read = (itemId: string): void => setReading((open) => (open === itemId ? null : itemId));
@@ -223,6 +231,11 @@ export function CharacterSheet({ member, isMe, items, explore = false }: Charact
         </li>
       </ul>
 
+      </div>
+
+      {/* The worn token, its notches, and the deed toward the next (#314). */}
+      <div className="sheetview__block">
+        <TokenCard character={character} isMe={isMe} rules={rules} partySize={partySize} />
       </div>
 
       {/* The tier ladder — where they have got to, and where they are going. */}
@@ -332,6 +345,7 @@ export function CharacterSheet({ member, isMe, items, explore = false }: Charact
             ))}
           </ul>
         )}
+        <SpareTokens spares={character.spares} isMe={isMe} />
         {explore && reading !== null ? (
           <div className="sheetview__reading" id="sheetview-reading" role="region" aria-label="About this item">
             <span className="sheetview__reading-icon" aria-hidden="true">
