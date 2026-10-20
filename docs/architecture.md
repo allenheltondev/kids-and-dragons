@@ -2025,12 +2025,10 @@ What stays is authored:
   guide and the home of its chapter-scoped characters (`canon/individuals.yaml`). Nothing at play
   time reads it. (Renamed in #347.)
 
-Models are used **only at authoring time**, by offline tools that never run during play and never
-see a child's data: `content:generate` drafts a chapter (`tools/content/generate.ts`, signed
-with the author's own AWS credentials; README.md, "Writing a chapter"), and the audio and art
-pipelines generate assets ([audio-pipeline.md](./audio-pipeline.md),
-[art-pipeline.md](./art-pipeline.md)). Their output is reviewed and committed like any other
-content.
+Nothing in the repo calls a model or a generation API. Chapters are written by people working with
+coding agents (README.md, "Writing a chapter"); sounds come in by hand through `audio:import`
+([audio-pipeline.md](./audio-pipeline.md)) and art through its own pipeline
+([art-pipeline.md](./art-pipeline.md)). All of it is reviewed and committed like any other content.
 
 ---
 
