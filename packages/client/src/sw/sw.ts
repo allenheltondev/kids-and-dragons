@@ -179,20 +179,6 @@ worker.addEventListener("activate", (event) => {
   );
 });
 
-/**
- * The page says it is idle (`register.ts`): fetch what install left for
- * later — the Rive runtime — without anyone waiting on it.
- */
-worker.addEventListener("message", (event) => {
-  const data = event.data as { type?: unknown } | null;
-  if (data?.type !== "kad:idle") return;
-  event.waitUntil(
-    (async () => {
-      const bundle = await caches.open(SW_CACHES.bundle);
-      await addMissing(bundle, __KAD_BUNDLE__);
-    })().catch(() => undefined),
-  );
-});
 
 worker.addEventListener("fetch", (event) => {
   const { request } = event;

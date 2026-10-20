@@ -1,7 +1,7 @@
 /**
  * The scenes ahead, fetched before the party gets there.
  *
- * A scene's backdrop, its enemies and the party's rigs are otherwise
+ * A scene's backdrop, its enemies and the party's figures are otherwise
  * requested the moment they are needed — which on a phone or a television is
  * the moment the picture visibly arrives late. The chapter already says where
  * the story can go next (shared `edgesOf`), so while the party reads one
@@ -21,7 +21,6 @@ import { useChapter, useRunState } from "../store";
 import {
   biomeBackdropUrl,
   biomeTilesUrl,
-  characterRigUrl,
   characterWorldArtUrl,
   enemyArtUrl,
   sceneBackdropUrl,
@@ -46,7 +45,6 @@ export function upcomingAssets(
 ): string[] {
   const urls = new Set<string>();
   for (const { character } of party) {
-    urls.add(characterRigUrl(character.species, character.tier, character.class));
     urls.add(characterWorldArtUrl(character.species, character.tier, character.class));
   }
   if (!chapter) return [...urls];

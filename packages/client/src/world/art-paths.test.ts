@@ -15,9 +15,6 @@ import {
   ANCHOR_Y,
   CANVAS,
   CREATION_BIOME,
-  RIG_ANCHOR_X,
-  RIG_ANCHOR_Y,
-  RIG_STAGE,
   STARTING_TIER,
   biomeBackdropUrl,
   sceneBackdropUrl,
@@ -25,7 +22,6 @@ import {
   biomeTilesUrl,
   characterArtUrl,
   characterPortraitArtUrl,
-  characterRigUrl,
   characterWorldArtUrl,
   enemyArtUrl,
   gearPortraitUrl,
@@ -136,180 +132,25 @@ describe("art paths", () => {
   });
 });
 
-it("rig files live beside the assembled PNG they fall back to", () => {
-  expect(characterRigUrl("unicorn", "mythic")).toBe("/assets/characters/unicorn/mythic/rig.riv");
-  expect(characterRigUrl("griffin")).toBe("/assets/characters/griffin/fledgling/rig.riv");
-});
-
-describe("class rig variants", () => {
-  it("selects the exact delivered species, class, and tier", () => {
-    expect(characterRigUrl("bigfoot", "sworn", "thornguard")).toBe(
-      "/assets/character-rigs/thornguard/sworn/bigfoot/rig.riv",
-    );
-    expect(characterWorldArtUrl("bigfoot", "sworn", "thornguard")).toBe(
-      "/assets/character-rigs/thornguard/sworn/bigfoot/assembled.png",
-    );
-    expect(characterRigUrl("dragonling", "sworn", "thornguard")).toBe(
-      "/assets/character-rigs/thornguard/sworn/dragonling/rig.riv",
-    );
-    expect(characterRigUrl("griffin", "sworn", "thornguard")).toBe(
-      "/assets/character-rigs/thornguard/sworn/griffin/rig.riv",
-    );
-    expect(characterRigUrl("kitsune", "sworn", "thornguard")).toBe(
-      "/assets/character-rigs/thornguard/sworn/kitsune/rig.riv",
-    );
-    expect(characterRigUrl("manticore", "sworn", "thornguard")).toBe(
-      "/assets/character-rigs/thornguard/sworn/manticore/rig.riv",
-    );
-    expect(characterRigUrl("unicorn", "sworn", "thornguard")).toBe(
-      "/assets/character-rigs/thornguard/sworn/unicorn/rig.riv",
-    );
-    expect(characterRigUrl("unicorn", "sworn", "duskrunner")).toBe(
-      "/assets/character-rigs/duskrunner/sworn/unicorn/rig.riv",
-    );
-    expect(characterWorldArtUrl("unicorn", "sworn", "duskrunner")).toBe(
-      "/assets/character-rigs/duskrunner/sworn/unicorn/assembled.png",
-    );
-    expect(characterRigUrl("dragonling", "sworn", "duskrunner")).toBe(
-      "/assets/character-rigs/duskrunner/sworn/dragonling/rig.riv",
-    );
-    expect(characterWorldArtUrl("dragonling", "sworn", "duskrunner")).toBe(
-      "/assets/character-rigs/duskrunner/sworn/dragonling/assembled.png",
-    );
-    expect(characterRigUrl("griffin", "sworn", "duskrunner")).toBe(
-      "/assets/character-rigs/duskrunner/sworn/griffin/rig.riv",
-    );
-    expect(characterWorldArtUrl("griffin", "sworn", "duskrunner")).toBe(
-      "/assets/character-rigs/duskrunner/sworn/griffin/assembled.png",
-    );
-    expect(characterRigUrl("bigfoot", "sworn", "duskrunner")).toBe(
-      "/assets/character-rigs/duskrunner/sworn/bigfoot/rig.riv",
-    );
-    expect(characterWorldArtUrl("bigfoot", "sworn", "duskrunner")).toBe(
-      "/assets/character-rigs/duskrunner/sworn/bigfoot/assembled.png",
-    );
-    expect(characterRigUrl("kitsune", "sworn", "duskrunner")).toBe(
-      "/assets/character-rigs/duskrunner/sworn/kitsune/rig.riv",
-    );
-    expect(characterWorldArtUrl("kitsune", "sworn", "duskrunner")).toBe(
-      "/assets/character-rigs/duskrunner/sworn/kitsune/assembled.png",
-    );
-    expect(characterRigUrl("manticore", "sworn", "duskrunner")).toBe(
-      "/assets/character-rigs/duskrunner/sworn/manticore/rig.riv",
-    );
-    expect(characterWorldArtUrl("manticore", "sworn", "duskrunner")).toBe(
-      "/assets/character-rigs/duskrunner/sworn/manticore/assembled.png",
-    );
-    expect(characterRigUrl("manticore", "mythic", "duskrunner")).toBe(
-      "/assets/character-rigs/duskrunner/mythic/manticore/rig.riv",
-    );
-    expect(characterWorldArtUrl("griffin", "mythic", "duskrunner")).toBe(
-      "/assets/character-rigs/duskrunner/mythic/griffin/assembled.png",
-    );
-  });
-
-  it("keeps every undeclared combination on its species rig", () => {
-    expect(characterWorldArtUrl("unicorn", "radiant", "starweaver")).toBe(
-      characterArtUrl("unicorn", "radiant"),
-    );
-  });
-
-  it("keeps the runtime selector in lockstep with manifest.rigVariants", () => {
-    const classes: ClassId[] = ["thornguard", "duskrunner", "starweaver", "songkeeper"];
-    const species: SpeciesId[] = [
-      "unicorn",
-      "dragonling",
-      "griffin",
-      "bigfoot",
-      "kitsune",
-      "manticore",
-    ];
-    const tiers: TierId[] = ["fledgling", "sworn", "radiant", "mythic"];
-    const declared = manifest.rigVariants.map(
-      (variant) => `${variant.class}/${variant.tier}/${variant.species}`,
-    );
-    const addressed = classes.flatMap((characterClass) =>
-      tiers.flatMap((tier) =>
-        species.flatMap((creature) =>
-          characterRigUrl(creature, tier, characterClass) === characterRigUrl(creature, tier)
-            ? []
-            : [`${characterClass}/${tier}/${creature}`],
-        ),
-      ),
-    );
-
-    expect(addressed.sort()).toEqual(declared.sort());
-  });
-});
-
-/*
- * The two anchors, which used to be one.
- *
- * A rig is drawn on `rigStage`; a static `assembled.png` sprite is drawn on the
- * art canvas. While the stage *was* the canvas those were the same fraction, and
- * `rive-rig.ts` re-exported the static anchor for rigs on that basis. The stage
- * is bigger now (art-pipeline §6.3), so they have diverged — and the horizontal
- * half has NOT, which is what makes the divergence easy to miss.
- *
- * Both are checked against the manifest rather than against each other, so this
- * fails if the client's copy of the geometry drifts from the contract.
- */
-describe("sprite anchors", () => {
-  it("takes the static-art anchor from the canvas", () => {
+describe("static sprite anchors", () => {
+  it("places the feet at the manifest ground origin", () => {
+    expect(ANCHOR_X).toBe(manifest.canvas.originX / manifest.canvas.width);
+    expect(ANCHOR_Y).toBe(manifest.canvas.originY / manifest.canvas.height);
     expect(CANVAS.width).toBe(manifest.canvas.width);
-    expect(CANVAS.originY).toBe(manifest.canvas.originY);
-    expect(ANCHOR_X).toBeCloseTo(manifest.canvas.originX / manifest.canvas.width, 9);
-    expect(ANCHOR_Y).toBeCloseTo(manifest.canvas.originY / manifest.canvas.height, 9);
-  });
-
-  it("takes the rig anchor from the stage, offset and all", () => {
-    expect(RIG_STAGE.width).toBe(manifest.rigStage.width);
-    expect(RIG_STAGE.offsetX).toBe(manifest.rigStage.offsetX);
-    expect(RIG_ANCHOR_X).toBeCloseTo(
-      (manifest.canvas.originX + manifest.rigStage.offsetX) / manifest.rigStage.width,
-      9,
-    );
-    expect(RIG_ANCHOR_Y).toBeCloseTo(
-      (manifest.canvas.originY + manifest.rigStage.offsetY) / manifest.rigStage.height,
-      9,
-    );
-  });
-
-  it("keeps the horizontal anchor and moves the vertical one", () => {
-    // The trap in one assertion: X is unchanged, so a reader checking only the
-    // centring would conclude nothing moved.
-    expect(RIG_ANCHOR_X).toBeCloseTo(ANCHOR_X, 9);
-    expect(RIG_ANCHOR_Y).not.toBeCloseTo(ANCHOR_Y, 3);
   });
 });
 
-/*
- * The invariant the two sprite paths have to share.
- *
- * A rigged character and a static PNG of the same character, both asked for the
- * same drawn height, must come out the same size with their feet in the same
- * place — otherwise a rig that falls back to its PNG (or a board mixing the two)
- * changes size on screen. That is not automatic any more: the PNG sprite is
- * textured with the 1024 canvas and the rig sprite with the 1400 stage, so the
- * rig has to be scaled up by the ratio or it draws the figure at 73% and stands
- * it too high. It shipped that way for one commit; this is the arithmetic that
- * caught it, kept.
- */
-describe("a rig and a PNG of the same character agree", () => {
-  const H = 414; // world/scene.ts: a character at 46% of the 900-unit design height
-
-  it("draws the art canvas at exactly the requested height", () => {
-    const spriteH = H * (RIG_STAGE.height / CANVAS.height);
-    const canvasRegion = spriteH * (CANVAS.height / RIG_STAGE.height);
-    expect(canvasRegion).toBeCloseTo(H, 9);
-  });
-
-  it("puts the feet where the PNG path puts them", () => {
-    const spriteH = H * (RIG_STAGE.height / CANVAS.height);
-    const canvasTopWithinSprite = (RIG_STAGE.offsetY / RIG_STAGE.height) * spriteH;
-    const originWithinSprite = RIG_ANCHOR_Y * spriteH;
-    // Distance from the top of the *art* to the standing point, which is what
-    // ANCHOR_Y means for a PNG sprite of height H.
-    expect(originWithinSprite - canvasTopWithinSprite).toBeCloseTo(ANCHOR_Y * H, 9);
-  });
+it("addresses every delivered static class figure and keeps undeclared figures on base art", () => {
+  const declared = new Set(manifest.figureVariants.map(v => `${v.class}/${v.tier}/${v.species}`));
+  for (const characterClass of ["songkeeper", "starweaver", "duskrunner", "thornguard"] as ClassId[]) {
+    for (const tier of manifest.tiers as TierId[]) {
+      for (const { id } of manifest.species) {
+        const species = id as SpeciesId;
+        const key = `${characterClass}/${tier}/${species}`;
+        expect(characterWorldArtUrl(species, tier, characterClass)).toBe(
+          declared.has(key) ? `/assets/character-rigs/${key}/assembled.png` : characterArtUrl(species, tier),
+        );
+      }
+    }
+  }
 });
