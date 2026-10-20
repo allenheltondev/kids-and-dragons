@@ -943,7 +943,8 @@
             "learned_note"
           ],
           "introduces": {
-            "stone_hut": "a stone hut"
+            "stone_hut": "a stone hut",
+            "tower": "a round tower with no roof"
           }
         },
         "set_out": {
@@ -967,6 +968,24 @@
           "requires": [
             "master_dunnick",
             "pillows"
+          ],
+          "introduces": {}
+        },
+        "academy": {
+          "requires": [
+            "tower"
+          ],
+          "introduces": {
+            "academy": "Academy",
+            "professor_nettle": "Professor Nettle",
+            "telescope": "telescope",
+            "star_circlet": "star circlet"
+          }
+        },
+        "academy_stars": {
+          "requires": [
+            "professor_nettle",
+            "telescope"
           ],
           "introduces": {}
         },
@@ -1689,33 +1708,6 @@
           "requires": [
             "skupper",
             "silt"
-          ],
-          "introduces": {
-            "stilt_house": "a tall wooden house stands on stilts"
-          }
-        },
-        "flats_onward": {
-          "requires": [
-            "skupper",
-            "shell_bank"
-          ],
-          "introduces": {}
-        },
-        "academy": {
-          "requires": [
-            "stilt_house"
-          ],
-          "introduces": {
-            "academy": "Academy",
-            "professor_nettle": "Professor Nettle",
-            "telescope": "telescope",
-            "star_circlet": "star circlet"
-          }
-        },
-        "academy_stars": {
-          "requires": [
-            "professor_nettle",
-            "telescope"
           ],
           "introduces": {}
         }

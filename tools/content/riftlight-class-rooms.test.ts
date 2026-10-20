@@ -14,7 +14,7 @@ const ROOMS = [
   { chapter: "riftlight-exchange-rift", rest: "quay_rest", door: "roof", room: "rookery", back: "down", lesson: "rookery_lesson", class: "duskrunner", met: "met_the_crows", teacher: "crows" },
   { chapter: "riftlight-glacier-survival", rest: "hall", door: "glass_door", room: "conservatory", back: "back", lesson: "conservatory_sing", class: "songkeeper", met: "met_aunt_bellow", teacher: "Aunt Bellow" },
   { chapter: "riftlight-riftseekers-departure", rest: "camp", door: "hut", room: "dojo", back: "back", lesson: "dojo_pillows", class: "thornguard", met: "met_master_dunnick", teacher: "Master Dunnick" },
-  { chapter: "riftlight-saltrot-arrival", rest: "flats_rest", door: "stilts", room: "academy", back: "back", lesson: "academy_stars", class: "starweaver", met: "met_professor_nettle", teacher: "Professor Nettle" },
+  { chapter: "riftlight-riftseekers-departure", rest: "camp", door: "tower", room: "academy", back: "back", lesson: "academy_stars", class: "starweaver", met: "met_professor_nettle", teacher: "Professor Nettle" },
 ] as const;
 
 /** A class that is not the room's, so the walker's hero has something to decide. */
@@ -60,7 +60,9 @@ describe("Riftlight's class rooms", () => {
     expect(visited.has(r.room)).toBe(true);
     const worn = new Set(ends.map((end) => end.party.map((m) => m.character.class).join()));
     // Through the room, both heroes wear its class; past the rest without it, neither changed.
-    expect(worn).toEqual(new Set([`${r.class},${r.class}`, `${cls},${cls}`]));
+    // A chapter with two rooms (the camp's Dojo and Academy) can end in either.
+    const here = ROOMS.filter((other) => other.chapter === r.chapter).map((other) => `${other.class},${other.class}`);
+    expect(worn).toEqual(new Set([...here, `${cls},${cls}`]));
   });
 
   it.each(ROOMS)("a hero who already wears $class owes the $room nothing", (r) => {
