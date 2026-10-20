@@ -6,7 +6,7 @@ The earlier **short exploratory preview exception is superseded for the initial 
 `riftlight-stone-counters`, `riftlight-whale-road`, `riftlight-buried-bridge`,
 `riftlight-the-wrong-valley`, `riftlight-reading-room`, and `riftlight-the-island-due-back` now aim to
 be ordinary 30–40-minute story nodes. Each has 14 decisions and six or seven checks on its shortest
-modeled route, with 42–44 scenes actually visited. Their 80–100 authored scenes include
+modeled route, with 42–44 scenes on the shortest route. Their 80–106 authored scenes include
 alternative methods and success/failure consequences; a party does not read all of them.
 The 35-minute metadata is a planning budget, not a measured claim.
 
@@ -44,7 +44,10 @@ npx tsx tools/content/riftlight-pacing.ts
 | Buried bridge | 31.3 min | 31.5 min | 23.1 min |
 | The Wrong Valley | 34.0 min | 34.0 min | 25.2 min |
 | The Reading Room | 33.8 min | 35.6 min | 25.1 min |
-| The Island Due Back | 36.5 min | 38.0 min | 27.3 min |
+| The Island Due Back | 36.0 min | 39.0 min | 26.9 min |
+
+The island's inference follows the player comparison. Two failure recovery choices
+can bring a route to 47 scenes and 16 decisions with the same six checks.
 
 The uncalibrated model budgets 130 spoken words/minute, 40 seconds/decision, 30/check and
 4/scene. Shortest estimates use the lower narration bound, including the shorter later-Attune

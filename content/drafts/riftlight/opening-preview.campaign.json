@@ -88,7 +88,8 @@
       "island_record_shared",
       "island_warning_sent",
       "island_signal_repeated",
-      "fragment_sky_learned"
+      "fragment_sky_learned",
+      "island_relay_delayed"
     ],
     "buffs": {
       "riftspark": {

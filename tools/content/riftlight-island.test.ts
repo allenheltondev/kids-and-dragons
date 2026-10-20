@@ -8,7 +8,7 @@ const graph = parseCampaignGraph(campaign).graph!;
 
 // Complete routes through the real engine. These are reproducible simulations,
 // not human elapsed-time observations.
-function walk(preferences: Record<string, string>, face: number, flags: Record<string, boolean> = {}) {
+function walk(preferences: Record<string, string>, face: number, flags: Record<string, boolean> = {}, faces: Record<string, number> = {}) {
   let state = start(chapter, "manticore", "duskrunner", flags, 3);
   for (const p of state.party) p.hp = 1;
   const trace = new Map<string, { narration: string; choices: string[] }>();
@@ -26,7 +26,7 @@ function walk(preferences: Record<string, string>, face: number, flags: Record<s
       state = send(state, { type: "CHOOSE", choiceId: id }, chapter, face);
     } else if (state.prompt?.kind === "roll") {
       checks++;
-      state = send(state, { type: "ROLL" }, chapter, face);
+      state = send(state, { type: "ROLL" }, chapter, faces[state.sceneId!] ?? face);
     } else state = send(state, { type: "ADVANCE" }, chapter, face);
   }
   trace.set(state.sceneId!, { narration: state.narration, choices: [] });
@@ -68,12 +68,52 @@ it.each([
   expect(trace.get("landing")!.narration).toContain(route.face === 20 ? "checked alignment" : "second lookout");
   expect(trace.get("return")!.narration).toContain(route.share ? "shared copy" : "private sketch");
   expect(trace.get("return")!.narration).toContain(route.warn ? "first message is the course warning" : "first message asks for another reader");
-  expect(metrics.decisions).toBe(14);
+  expect(metrics.decisions).toBe(route.face === 20 ? 14 : 16);
   expect(metrics.checks).toBe(6);
   expect(predictMinutes(metrics)).toBeGreaterThanOrEqual(30);
   expect(predictMinutes(metrics)).toBeLessThanOrEqual(40);
   expect(state.party.every((p) => p.hp === 1 && !p.down)).toBe(true);
   expect(state.party.flatMap((p) => p.character.questItems)).toEqual(["listening_chime"]);
+});
+
+it.each(["batches", "borrow"])("a failed landing lets the party choose %s with a different relay cost", (recovery) => {
+  const { state, trace, metrics } = walk({ landing_recovery: recovery }, 20, {}, { landing_1_check: 1 });
+  expect(trace.has("landing_recovery")).toBe(true);
+  expect(trace.has("landing_batches")).toBe(recovery === "batches");
+  expect(trace.has("landing_borrow")).toBe(recovery === "borrow");
+  expect(state.flags.island_messages_saved).toBe(true); // Dry letters stay dry even if their messenger waits.
+  expect(state.flags.island_relay_delayed).toBe(recovery === "batches");
+  expect(trace.get("departure")!.narration.includes("will leave after your party finishes")).toBe(recovery === "batches");
+  expect(trace.get("departure")!.narration.includes("offers to carry this authorized message")).toBe(recovery === "borrow");
+  expect(trace.get("return")!.narration.includes("later than a light-kit crossing")).toBe(recovery === "batches");
+  expect(state.flags.fragment_sky_learned).toBe(true);
+  expect(metrics.decisions).toBe(15);
+  expect(metrics.checks).toBe(6); // Recovery adds a plan, not a reroll.
+});
+
+it.each(["keeper", "pip"])("failed comparison leaves discovery to the party's %s-assisted follow-up", (helper) => {
+  const { state, trace } = walk({ comparison_recovery: helper }, 20, {}, { comparison_1_check: 1 });
+  const discovery = helper === "keeper" ? "comparison_recover_scale" : "comparison_recover_view";
+  expect(trace.has("comparison_recovery")).toBe(true);
+  expect(trace.get(discovery)!.narration).toContain("the land was joined here");
+  expect(state.flags.island_land_match).toBe(false); // Do not turn a failed roll into independent success.
+  expect(state.flags.fragment_sky_learned).toBe(true);
+  expect(trace.get("return")!.narration).toContain("follow-up your party made with help");
+  for (const [id, scene] of trace) {
+    if (id === discovery) break;
+    expect(scene.narration, id).not.toMatch(/land was joined|joined land|joined stretch|ground all the way across/i);
+  }
+});
+
+it.each(["option_1", "option_2", "comparison_clear"])("successful %s comparison reveals the discovery after the test", (method) => {
+  const { state, trace } = walk({ comparison: method }, 20);
+  const discovery = method === "option_2" ? "comparison_2_done" : "comparison_1_done";
+  expect(trace.get(discovery)!.narration).toContain("the land was joined here");
+  expect(state.flags.island_land_match).toBe(true);
+  for (const [id, scene] of trace) {
+    if (id === discovery) break;
+    expect(scene.narration, id).not.toMatch(/land was joined|joined land|joined stretch|ground all the way across/i);
+  }
 });
 
 it("every branch reaches the clue without turning an incomplete test into a verified one", () => {
