@@ -99,6 +99,15 @@ describe("Riftlight's class rooms", () => {
     }
   });
 
+  it("the crows hint that the Rookery is behind you once you leave the Exchange", () => {
+    // The Exchange is `closed` and its way out is a one-way tear: the only Duskrunner
+    // room is a once-per-attempt place, so a kid who takes the hood off later is not surprised.
+    const scene = chapters.get("riftlight-exchange-rift")!.scenes.rookery as { narration: string; variants: { text: string }[] };
+    for (const text of [scene.narration, ...scene.variants.map((v) => v.text)]) {
+      expect(text).toMatch(/leaves? the Exchange/);
+    }
+  });
+
   it("the rooms never count the party and keep the house style", () => {
     for (const r of ROOMS) {
       const scenes = chapters.get(r.chapter)!.scenes;

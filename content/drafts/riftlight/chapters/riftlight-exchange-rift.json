@@ -593,13 +593,13 @@
     },
     "rookery": {
       "type": "story",
-      "narration": "You climb through a trapdoor onto the rooftops. Crows sit on every chimney pot and every gutter, and all of them are looking at you. A sign hangs on the tallest chimney: NO MESSING. (WITH US.) This rooftop school is called the Rookery. Here the crows train each Duskrunner, a hero who runs quick and quiet. They all teach at once. On a peg hangs a dusk hood, soft as a shadow. A Duskrunner's quickness lives in that hood, and a star circlet worn beside it only makes it itch. Someone has put a tiny doormat at the top of the ladder. \"Wipe your feet,\" say the crows. \"We don't get messed with up here. Anyone who wants the hood may try it on.\"",
+      "narration": "You climb through a trapdoor onto the rooftops. Crows sit on every chimney pot and every gutter, and all of them are looking at you. A sign hangs on the tallest chimney: NO MESSING. (WITH US.) This rooftop school is called the Rookery. Here the crows train each Duskrunner, a hero who runs quick and quiet. They all teach at once. On a peg hangs a dusk hood, soft as a shadow. A Duskrunner's quickness lives in that hood, and a star circlet worn beside it only makes it itch. Someone has put a tiny doormat at the top of the ladder. \"Wipe your feet,\" say the crows. \"We don't get messed with up here. Anyone who wants the hood may try it on.\" Then, quieter: \"Nobody who leaves the Exchange climbs our ladder again. Take the hood off somewhere far away, and you won't find us to put it back. So choose well.\"",
       "variants": [
         {
           "when": {
             "flag": "met_the_crows"
           },
-          "text": "The crows of the Rookery eye you from every chimney pot. \"Back again,\" they say, all at once. The sign still says NO MESSING. (WITH US.) The dusk hood waits on its peg for anyone who wants to try it on. You wipe your feet on the tiny doormat without being asked.",
+          "text": "The crows of the Rookery eye you from every chimney pot. \"Back again,\" they say, all at once. The sign still says NO MESSING. (WITH US.) The dusk hood waits on its peg for anyone who wants to try it on. You wipe your feet on the tiny doormat without being asked. \"Remember,\" the crows say. \"Once you leave the Exchange, our ladder is gone for you.\"",
           "replace": true
         }
       ],
