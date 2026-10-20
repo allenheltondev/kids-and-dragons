@@ -133,7 +133,7 @@ async function main(): Promise<void> {
   }
 
   console.log(`\n${String(imported)} imported. \`npm run audio:verify\` says what is left.`);
-  // Same contract as the generator: what the person read, the shell hears.
+  // What the person read, the shell hears: a failed or skipped file exits non-zero.
   if (failed.length > 0 || plan.ambiguous.length > 0 || plan.contested.length > 0) {
     process.exitCode = 1;
   }
