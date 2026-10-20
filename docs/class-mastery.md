@@ -114,10 +114,15 @@ In the lore, a class's power comes from a piece of gear the hero wears.
   and holding a token says what it is (`help.json`, `things.token`).
 - **Spare tokens** are `ResolvedCharacter.spares`: every class with a `mastery` entry that is not
   the worn one, since only wearing a class writes one. They sit under the six slots ("Your old
-  gear"), with their notches, and take none. Switching (#311) needs nothing more for them to show.
+  gear"), with their notches, and take none. A switch (`switchClass`) gives the class put on an
+  empty entry, so a token worn without earning anything still goes in the pack when it comes off.
+  The switch's "are you sure?" shows both tokens, notches and all, and the TV's roll call draws
+  each hero's worn token.
 - **The rank-up moment** (`RankUpMoment.tsx`, loaded on the first rank-up): the TV lifts the token
   over the stage with its new notch dropping in, for four seconds, taking no taps and hidden from
   screen readers; #310's line stays under the story as the words of record and is read aloud once.
+  The TV remembers a moment it has shown only while that landing is on the state, so a redraw does
+  not cheer twice but the same rank landing again (a failed campaign played over) does.
   The earning kid's phone shows the line as a card with the token glowing, in the line's own place.
   A Duskrunner's crow lands on both. Under reduced motion it shows lit and still.
 

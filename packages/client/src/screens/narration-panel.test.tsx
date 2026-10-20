@@ -488,6 +488,17 @@ describe("a rank that just landed (#310)", () => {
       cleanup();
       mount(camp);
       expect(await screen.findByTestId("rank-up-moment")).toBeTruthy();
+      act(() => { vi.advanceTimersByTime(RANK_UP_MS); });
+
+      // And in a new run (a new evening, the same hero, rank and scene), even with no
+      // state between the two landings for the memory to see go by.
+      cleanup();
+      mount(camp);
+      expect(screen.queryByTestId("rank-up-moment")).toBeNull();
+      act(() => {
+        useGameStore.setState({ state: { ...useGameStore.getState().state!, runId: "r_2" } });
+      });
+      expect(await screen.findByTestId("rank-up-moment")).toBeTruthy();
     } finally {
       vi.useRealTimers();
     }

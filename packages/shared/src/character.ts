@@ -838,5 +838,9 @@ export function switchClass(character: Character, rules: RulesContent, to: Class
   if (before.class === to) {
     throw new CharacterRuleError(`character: already wearing ${to}`);
   }
-  return writeProgress(character, { ...cloneProgress(before), class: to });
+  // The class put on gets its entry now, earned or not: an entry is how a
+  // token taken off later is known to ride in the pack (`spares`, #314).
+  const mastery = cloneMastery(before.mastery);
+  mastery[to] ??= { rank: "none", deeds: {} };
+  return writeProgress(character, { ...cloneProgress(before), class: to, mastery });
 }
