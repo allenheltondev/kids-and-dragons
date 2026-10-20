@@ -21,25 +21,6 @@ export const ANCHOR_X = CANVAS.originX / CANVAS.width;
 export const ANCHOR_Y = CANVAS.originY / CANVAS.height;
 
 /**
- * assets/manifest.json → rigStage. The artboard a **rig** is drawn on, which is
- * deliberately larger than the canvas above so a knocked-down figure has room to
- * sweep its own diagonal (art-pipeline §6.3).
- *
- * These used to be the same number, and `rive-rig.ts` re-exported `ANCHOR_Y` for
- * rigs on the strength of it. They are not the same number: a rig's standing
- * point is `(originX + offsetX) / stage.width` on a texture 1400 wide, while a
- * static `assembled.png` sprite is still 1024 art anchored at 900/1024. Feeding
- * a rig the static anchor plants it ~100px of design space below the floor.
- *
- * The horizontal anchor survives the difference at 0.5 — the canvas is centred
- * in the stage — which is exactly why this needs writing down: half the pair
- * looks unchanged and the other half is a bug.
- */
-export const RIG_STAGE = { width: 1400, height: 1400, offsetX: 188, offsetY: 188 } as const;
-export const RIG_ANCHOR_X = (CANVAS.originX + RIG_STAGE.offsetX) / RIG_STAGE.width;
-export const RIG_ANCHOR_Y = (CANVAS.originY + RIG_STAGE.offsetY) / RIG_STAGE.height;
-
-/**
  * The tier every character starts at (content/rules.json → tierLevels, level 1).
  * It is what creation has to draw: the draft has no level yet, and the hero the
  * player is building is a fledgling by definition.
@@ -51,11 +32,11 @@ export function characterArtUrl(species: SpeciesId, tier: TierId = STARTING_TIER
 }
 
 /**
- * Class rigs are commissioned one exact species/class/tier combination at a
- * time. This set is intentionally tested against manifest.rigVariants: the
+ * Class figures are commissioned one exact species/class/tier combination at a
+ * time. This set is intentionally tested against manifest.figureVariants: the
  * runtime stays tiny while the manifest remains the source of truth.
  */
-const CLASS_RIG_VARIANTS = new Set<string>([
+const CLASS_FIGURE_VARIANTS = new Set<string>([
   "songkeeper/sworn/bigfoot",
   "songkeeper/radiant/bigfoot",
   "songkeeper/mythic/bigfoot",
@@ -105,24 +86,24 @@ const CLASS_RIG_VARIANTS = new Set<string>([
   "thornguard/sworn/unicorn",
 ]);
 
-function classRigKey(species: SpeciesId, tier: TierId, characterClass: ClassId): string {
+function classFigureKey(species: SpeciesId, tier: TierId, characterClass: ClassId): string {
   return `${characterClass}/${tier}/${species}`;
 }
 
-function hasClassRig(species: SpeciesId, tier: TierId, characterClass?: ClassId): boolean {
+function hasClassFigure(species: SpeciesId, tier: TierId, characterClass?: ClassId): boolean {
   return (
     characterClass !== undefined &&
-    CLASS_RIG_VARIANTS.has(classRigKey(species, tier, characterClass))
+    CLASS_FIGURE_VARIANTS.has(classFigureKey(species, tier, characterClass))
   );
 }
 
-/** The still-image fallback matching the rig selected for a world figure. */
+/** The still-image fallback matching the illustration selected for a world figure. */
 export function characterWorldArtUrl(
   species: SpeciesId,
   tier: TierId = STARTING_TIER,
   characterClass?: ClassId,
 ): string {
-  if (hasClassRig(species, tier, characterClass)) {
+  if (hasClassFigure(species, tier, characterClass)) {
     return `/assets/character-rigs/${characterClass}/${tier}/${species}/assembled.png`;
   }
   return characterArtUrl(species, tier);
@@ -158,23 +139,6 @@ export function characterPortraitArtUrl(
     (characterClass === undefined ? null : gearPortraitUrl(species, characterClass, tier)) ??
     characterArtUrl(species, tier)
   );
-}
-
-/**
- * The rigged character — the Rive file rive-mcp builds from the same tier's
- * registered parts against `assets/manifest.json`'s rigContract. Sits beside
- * `assembled.png` on purpose: the PNG is the rig's own fallback, so the two
- * living in one directory is the statement that they are the same character.
- */
-export function characterRigUrl(
-  species: SpeciesId,
-  tier: TierId = STARTING_TIER,
-  characterClass?: ClassId,
-): string {
-  if (hasClassRig(species, tier, characterClass)) {
-    return `/assets/character-rigs/${characterClass}/${tier}/${species}/rig.riv`;
-  }
-  return `/assets/characters/${species}/${tier}/rig.riv`;
 }
 
 /**

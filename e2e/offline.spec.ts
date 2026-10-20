@@ -398,7 +398,7 @@ test("an upgrade with many saved pictures takes over promptly, keeping them all"
     await phone.goto("/");
     const pictures = await phone.evaluate(async (index) => {
       const files = (await (await fetch(index)).json()) as Record<string, string>;
-      const chosen = Object.keys(files).filter((path) => /^\/assets\/characters\/.*\.(?:png|webp)$/.test(path)).slice(0, 60);
+      const chosen = Object.keys(files).filter((path) => /^\/assets\/(?:characters|character-rigs)\/.*\.(?:png|webp)$/.test(path)).slice(0, 60);
       const legacy = await caches.open("kad-image-v1");
       for (const path of chosen) await legacy.put(path, await fetch(path));
       return chosen;

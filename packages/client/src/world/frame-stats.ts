@@ -129,7 +129,7 @@ export function verdictOf(reading: FrameReading): FrameVerdict {
  * switches on, because `WorldView` asks on every first paint and the answer is
  * almost always no. While it was exported from `FrameMeter.tsx`, that one
  * static import put the meter in the entry's graph — and the meter reads the
- * scene's ticker, and the scene is Pixi and the rigs. The lazy `import()`s of
+ * scene's ticker, and the scene is Pixi and the figures. The lazy `import()`s of
  * the stage and the meter were still in the code and deferred nothing: the
  * join screen waited on ~500KB of renderer it does not draw, and
  * `perf:bundle`, which then weighed only the entry file, stayed green.

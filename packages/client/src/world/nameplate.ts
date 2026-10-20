@@ -1,27 +1,5 @@
-/**
- * The name under a figure's feet — how the table tells two players apart.
- *
- * The job used to belong to colour: each player picked a palette at creation
- * and the rigs exposed `mane`/`accent` tint slots the client wrote at runtime,
- * so two unicorns in one party were one green and one orange. It never looked
- * like the art it was painted over — a hue pushed onto authored shading flattens
- * exactly the detail the tier art exists for — and no amount of tuning was going
- * to make a runtime tint read as commissioned. So the figures now render as
- * drawn, and the name says who is who: explicit, sharp, and the same answer for
- * a player who cannot tell the two hues apart in the first place (spec §11 —
- * shape and text, never colour alone).
- *
- * Lives here, beside `actor-art.ts`, for that module's reason: both stages draw
- * it — the story lineup (`scene.ts`) and the combat board (`board.ts`) — and a
- * name that sat differently in a fight than in a scene would read as a different
- * label rather than the same one. One module, one look.
- *
- * Geometry is expressed as fractions of the figure's drawn height, because that
- * is the one measure the two stages share: the lineup works in 1600×900 design
- * units and the board in 128px tiles, and "a name about an eighth as tall as the
- * character" is the same picture in both. Width is the exception and is passed
- * in — how much room a figure has beside it is precisely what the two stages do
- * *not* agree on (a lineup slot is wide, a board tile is one tile).
+/** Names identify party figures, including players with the same species.
+ * Authored illustration colors are preserved; labels stay separate from poses.
  */
 
 import { Text } from "pixi.js";

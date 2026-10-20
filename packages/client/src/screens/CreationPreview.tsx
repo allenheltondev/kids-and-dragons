@@ -6,24 +6,8 @@
  * frame around it: who you are, what you can do out in the world, what your
  * class does in a fight, and the stat line.
  *
- * WHY THE FIGURE IS ITS OWN CANVAS AND NOT THE PIXI STAGE
- *
- * The middle of this panel used to be a transparent hole reserved for the rig
- * to draw through, and that never worked: the Pixi scene draws the *committed*
- * party (world/scene.ts), and a draft is deliberately not on the wire
- * (creationDraft.ts header), so nothing was ever drawn into it. It then drew a
- * tier PNG itself, which was honest about being a stand-in and could not move.
- *
- * It now draws the *rig* (RigFigure), which is the seam that note was waiting
- * for: the same `.riv` the scene draws, in a canvas of its own. The PNG
- * portrait stays underneath as the fallback for the moments — and the
- * species/tiers — where a rig will not load.
- *
- * Its own canvas rather than the shared stage, still, for the reason the
- * transparent hole failed: the figure lands *exactly* in the frame reserved
- * for it. The scene's actors are centred in the whole pane, and this panel's
- * stage is a 45% column of it on a wide surface; drawing through the hole
- * would have put the hero behind the fact cards.
+ * The draft figure is a DOM portrait so it stays inside this panel's frame.
+ * It uses the same finished illustration as the world, with a gentle breath.
  */
 
 import type { CSSProperties, ReactElement } from "react";
@@ -31,9 +15,8 @@ import { STAT_IDS } from "@kad/shared";
 import type { Stats } from "@kad/shared";
 import { useChapter, useParty, useRules } from "../store";
 import { Spinner } from "../ui/Spinner";
-import { CREATION_BIOME, STARTING_TIER, biomeBackdropUrl } from "../world/art-paths";
+import { CREATION_BIOME, biomeBackdropUrl } from "../world/art-paths";
 import { CharacterPortrait } from "./CharacterPortrait";
-import { RigFigure } from "./RigFigure";
 import { Icon } from "./icons";
 import { useEnsureContent } from "./content";
 import { useCreationDraft } from "./creationDraft";
@@ -109,19 +92,13 @@ export function CreationPreview(): ReactElement {
                arrival rather than swapping one texture for another mid-float —
                changing your mind should look like a different creature walking
                on, which is most of the charm of this screen. */
-            <RigFigure
+            <CharacterPortrait
               key={draft.species}
-              species={draft.species}
-              tier={STARTING_TIER}
               className="preview__hero"
-              fallback={
-                <CharacterPortrait
-                  stand="floor"
-                  species={draft.species}
-                  lit
-                  float
-                />
-              }
+              stand="floor"
+              species={draft.species}
+              lit
+              float
             />
           )}
         </div>

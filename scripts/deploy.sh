@@ -69,7 +69,6 @@ else
   npm test
   npm run content:validate
   npm run art:verify
-  npm run art:verify:rig
   # cfn-lint is a pip install, so a laptop may not have it. CI always does
   # (ci.yml), which keeps the stack linted on every path that gates a merge.
   if command -v cfn-lint >/dev/null 2>&1; then
