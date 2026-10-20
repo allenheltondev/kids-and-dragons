@@ -15,7 +15,7 @@
  *   /p/:code   travel   → TravelLayout       (both surfaces, one at a time)
  */
 
-import { Component, Suspense, lazy, useEffect, type ReactNode } from "react";
+import { Suspense, useEffect } from "react";
 // Directly, not through the `screens` barrel: the barrel re-exports every
 // panel in the room, and each one imports its stylesheet, so a static import of
 // the barrel is a static import of all of them — the lazy room below would
@@ -30,6 +30,7 @@ import { setQuiet } from "./quiet";
 import { STOPPED_MESSAGE } from "./screens/save-copy";
 import { musicForScene } from "./audio/scene-audio";
 import { PhoneMagic } from "./ui/PhoneMagic";
+import { ChunkBoundary, lazyChunk } from "./ui/ChunkBoundary";
 
 /*
  * The room — both shells and everything they compose: the player panel, the
@@ -49,31 +50,31 @@ import { PhoneMagic } from "./ui/PhoneMagic";
 // Read-aloud (#261) loads after first paint: nobody on the join screen can hear it yet,
 // and the entry chunk is at its budget (tools/perf/bundle-budget.ts).
 const loadSpeech = () => import("./speech");
-const ReadAloudControl = lazy(() => loadSpeech().then((module) => ({ default: module.ReadAloudControl })));
+const ReadAloudControl = lazyChunk(loadSpeech, (module) => module.ReadAloudControl);
 
 // Display settings (#262): the panel loads after first paint like read-aloud. The saved
 // settings themselves are applied in main.tsx, before the first paint, from a few hundred bytes.
 const loadA11y = () => import("./a11y");
-const A11yControl = lazy(() => loadA11y().then((module) => ({ default: module.A11yControl })));
+const A11yControl = lazyChunk(loadA11y, (module) => module.A11yControl);
 
 // Help (#256): the "?" and the press-and-hold sheet load after first paint too, for the same reason.
 const loadHelp = () => import("./help");
-const HelpControl = lazy(() => loadHelp().then((module) => ({ default: module.HelpControl })));
+const HelpControl = lazyChunk(loadHelp, (module) => module.HelpControl);
 
 // Sound (#318): the engine, its synth and the sample table load after first paint. The
 // control sits in a corner, nobody can hear anything before a first tap, and the
 // engine cannot start before then anyway. `audio` (the barrel) re-exports the engine, so
 // nothing on the home screen may import it; the cue seam is `audio/cue`.
-const AudioControl = lazy(() => import("./audio/AudioControl").then((module) => ({ default: module.AudioControl })));
+const AudioControl = lazyChunk(() => import("./audio/AudioControl"), (module) => module.AudioControl);
 
 const loadPartyLayout = () => import("./layout/PartyLayout");
 const loadTravelLayout = () => import("./layout/TravelLayout");
-const PartyLayout = lazy(() => loadPartyLayout().then((module) => ({ default: module.PartyLayout })));
-const TravelLayout = lazy(() => loadTravelLayout().then((module) => ({ default: module.TravelLayout })));
+const PartyLayout = lazyChunk(loadPartyLayout, (module) => module.PartyLayout);
+const TravelLayout = lazyChunk(loadTravelLayout, (module) => module.TravelLayout);
 
 function prefetchRoom(display: boolean): void {
   // A failed prefetch is not an error worth a toast: rendering the layout
-  // imports it again, and that attempt is the one `RoomBoundary` reports.
+  // imports it again, and that attempt is the one its `ChunkBoundary` reports.
   void loadPartyLayout().catch(() => undefined);
   // The television is always a Party Mode display (spec §2.1); only a phone
   // can find itself in Travel Mode.
@@ -90,73 +91,31 @@ function RoomLoading(): React.JSX.Element {
   );
 }
 
-/**
- * What a room that could not load looks like, instead of a blank page.
- *
- * The likeliest way here is a deploy: a phone left on the join screen keeps
- * the old index, the deploy deletes the old hashed chunks (scripts/deploy.sh
- * syncs `bundle/` with --delete), and the room it asks for no longer exists.
- * Reloading is the whole fix, and it loses nothing — the room code is in the
- * URL and the session is in localStorage (architecture §4.3) — so that is
- * the one thing the button does.
- */
-class RoomBoundary extends Component<{ children: ReactNode; message?: string }, { failed: boolean }> {
-  override state = { failed: false };
-
-  static getDerivedStateFromError(): { failed: boolean } {
-    return { failed: true };
-  }
-
-  override render(): ReactNode {
-    if (!this.state.failed) return this.props.children;
-    return (
-      <div className="kad-boot" role="alert">
-        <div>
-          <p>{this.props.message ?? "The room couldn’t load."}</p>
-          <Button onClick={() => { location.reload(); }}>Try again</Button>
-        </div>
-      </div>
-    );
-  }
-}
-
 // Running the room from the TV that opened it (#263). Only a host display draws
 // it, so no phone's first paint pays for it.
-const HostControls = lazy(() =>
-  import("./screens/HostControls").then((module) => ({ default: module.HostControls })),
-);
+const HostControls = lazyChunk(() => import("./screens/HostControls"), (module) => module.HostControls);
 // Its Room button, in the corner row (#257).
-const RoomButton = lazy(() =>
-  import("./screens/HostControls").then((module) => ({ default: module.RoomButton })),
-);
+const RoomButton = lazyChunk(() => import("./screens/HostControls"), (module) => module.RoomButton);
 // The same chunk: the host of a stopped game may let a hero go (#259).
-const LetHeroGo = lazy(() =>
-  import("./screens/HostControls").then((module) => ({ default: module.LetHeroGo })),
-);
+const LetHeroGo = lazyChunk(() => import("./screens/HostControls"), (module) => module.LetHeroGo);
 
 // What only a shared screen does (#264): wake lock, waking up, "About this
 // screen". A phone never loads it.
-const DisplayExtras = lazy(() =>
-  import("./display/DisplayExtras").then((module) => ({ default: module.DisplayExtras })),
-);
+const DisplayExtras = lazyChunk(() => import("./display/DisplayExtras"), (module) => module.DisplayExtras);
 // The shared screen's own controls in the corner row: Tap for sound and About this screen (#257).
-const DisplayCornerControls = lazy(() =>
-  import("./display/DisplayExtras").then((module) => ({ default: module.DisplayCornerControls })),
-);
+const DisplayCornerControls = lazyChunk(() => import("./display/DisplayExtras"), (module) => module.DisplayCornerControls);
 
 // The adventure book (`/journal`) is a route of its own, between games, and
 // loads on demand like the room: nobody on the join screen needs it yet.
-const JournalScreen = lazy(() =>
-  import("./screens/JournalScreen").then((module) => ({ default: module.JournalScreen })),
-);
+const JournalScreen = lazyChunk(() => import("./screens/JournalScreen"), (module) => module.JournalScreen);
 
 // The grown-up's guide (`/guide`, #257): words and pictures nobody on the join
 // screen is waiting for, so a chunk of its own.
-const GuideScreen = lazy(() => import("./guide/GuideScreen"));
+const GuideScreen = lazyChunk(() => import("./guide/GuideScreen"), (module) => module.default);
 
 // Accounts and devices (`/account`): the grown-up's errands, kept off the join
 // screen and out of its chunk.
-const AccountScreen = lazy(() => import("./screens/AccountScreen"));
+const AccountScreen = lazyChunk(() => import("./screens/AccountScreen"), (module) => module.default);
 
 export function App(): React.JSX.Element {
   const route = useRoute();
@@ -211,23 +170,29 @@ export function App(): React.JSX.Element {
       {/* One corner row for the device's own controls, so they share a place instead of
           fighting over it: help (#256), display settings (#262) and read-aloud (#261) to the left of sound, sound anchored right. */}
       <div className="kad-corner">
+        {/* One wait, so they land together; a boundary each, so one that fails to load is
+            simply not in the row and the others still are (#329). */}
         <Suspense fallback={null}>
-          <HelpControl />
-          <A11yControl />
-          <ReadAloudControl />
+          <ChunkBoundary quiet><HelpControl /></ChunkBoundary>
+          <ChunkBoundary quiet><A11yControl /></ChunkBoundary>
+          <ChunkBoundary quiet><ReadAloudControl /></ChunkBoundary>
         </Suspense>
         {/* The row is anchored to the right, so a control that arrives on its right pushes the others
             along under a finger already on its way to them. Hold sound's place until the engine lands. */}
-        <Suspense fallback={enabled ? <span className="kad-corner__slot" aria-hidden="true" /> : null}>
-          <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
-        </Suspense>
+        <ChunkBoundary quiet>
+          <Suspense fallback={enabled ? <span className="kad-corner__slot" aria-hidden="true" /> : null}>
+            <AudioControl enabled={enabled} soundtrack={soundtrack} readinessKey={home ? "" : state?.runId ?? ""} ready={!home && inEntry && ready} />
+          </Suspense>
+        </ChunkBoundary>
         {/* The shared screen's own controls (#257), in the row with the device's rather than
             over its headings and its story: Room, About this screen, Tap for sound. */}
         {route.name === "tv" && session ? (
-          <Suspense fallback={null}>
-            {session.host ? <RoomButton /> : null}
-            <DisplayCornerControls />
-          </Suspense>
+          <ChunkBoundary quiet>
+            <Suspense fallback={null}>
+              {session.host ? <RoomButton /> : null}
+              <DisplayCornerControls />
+            </Suspense>
+          </ChunkBoundary>
         ) : null}
       </div>
       {pickLayout()}
@@ -241,16 +206,20 @@ export function App(): React.JSX.Element {
           row. A host's phone shows all of these in its own view (layout/PlayerView). */}
       <div className="kad-display-stack">
         {route.name === "tv" && session?.host ? (
-          <Suspense fallback={null}>
-            <HostControls placement="float" button={false} />
-          </Suspense>
+          <ChunkBoundary inline message="The host controls couldn’t load.">
+            <Suspense fallback={null}>
+              <HostControls placement="float" button={false} />
+            </Suspense>
+          </ChunkBoundary>
         ) : null}
         <ArrivalNotices placement="float" />
       </div>
       {route.name === "tv" && session ? (
-        <Suspense fallback={null}>
-          <DisplayExtras controls={false} />
-        </Suspense>
+        <ChunkBoundary quiet>
+          <Suspense fallback={null}>
+            <DisplayExtras controls={false} />
+          </Suspense>
+        </ChunkBoundary>
       ) : null}
     </PhoneMagic>
   );
@@ -258,29 +227,29 @@ export function App(): React.JSX.Element {
   function pickLayout(): React.JSX.Element {
     if (route.name === "journal") {
       return (
-        <RoomBoundary message="Your adventure book couldn’t open.">
+        <ChunkBoundary message="Your adventure book couldn’t open.">
           <Suspense fallback={<div className="kad-boot"><Spinner size="lg" label="Opening your adventure book" showLabel /></div>}>
             <JournalScreen />
           </Suspense>
-        </RoomBoundary>
+        </ChunkBoundary>
       );
     }
     if (route.name === "guide") {
       return (
-        <RoomBoundary message="The guide couldn’t open.">
+        <ChunkBoundary message="The guide couldn’t open.">
           <Suspense fallback={<div className="kad-boot"><Spinner size="lg" label="Opening the guide" showLabel /></div>}>
             <GuideScreen />
           </Suspense>
-        </RoomBoundary>
+        </ChunkBoundary>
       );
     }
     if (route.name === "account") {
       return (
-        <RoomBoundary message="That page couldn’t open.">
+        <ChunkBoundary message="That page couldn’t open.">
           <Suspense fallback={<div className="kad-boot"><Spinner size="lg" label="Opening" showLabel /></div>}>
             <AccountScreen />
           </Suspense>
-        </RoomBoundary>
+        </ChunkBoundary>
       );
     }
     const code = routeCode(route);
@@ -307,7 +276,7 @@ export function App(): React.JSX.Element {
     if (state?.closed) return <ClosedScreen />;
 
     return (
-      <RoomBoundary>
+      <ChunkBoundary message="The game couldn’t load.">
         <Suspense fallback={<RoomLoading />}>
           {route.name === "tv" ? (
             <PartyLayout surface="world" />
@@ -317,7 +286,7 @@ export function App(): React.JSX.Element {
             <PartyLayout surface="player" />
           )}
         </Suspense>
-      </RoomBoundary>
+      </ChunkBoundary>
     );
   }
 }
@@ -337,9 +306,11 @@ function ClosedScreen(): React.JSX.Element {
             : "The person running this game closed the room. Your heroes are kept, ready for next time."}
         </p>
         {stopped && host ? (
-          <Suspense fallback={null}>
-            <LetHeroGo />
-          </Suspense>
+          <ChunkBoundary quiet>
+            <Suspense fallback={null}>
+              <LetHeroGo />
+            </Suspense>
+          </ChunkBoundary>
         ) : null}
         <Button onClick={leave}>Back to the start</Button>
       </div>

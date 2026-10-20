@@ -1,7 +1,8 @@
 /**
  * Nothing sits under the controls pinned over the screen, or is cut off (#257).
  * The screens: the start screen, the guide, a host's lobby and Rest scene,
- * the room controls, a returning kid's catch-up line, and the adventure book.
+ * the room controls, a returning kid's catch-up line, the adventure book, and
+ * what a screen that could not load says instead (#329).
  *
  * The corner row (help, display settings, read-aloud, sound) is fixed over
  * every screen. A phone in a room leaves it a strip of its own (at the top, or
@@ -334,6 +335,22 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     });
     return page;
   }
+
+  // A chunk that could not load (#329): the whole-page message, and the card over the grown-ups' page.
+  test("what a screen that could not load says, and the sign-in that could not open", async ({ browser }) => {
+    const page = await phone(browser);
+    await page.route(/\/src\/screens\/(?:JournalScreen|SignInFlow)\.tsx(?:\?|$)/, (route) => route.abort());
+    await page.goto("/journal");
+    await expect(page.getByRole("alert")).toContainText("Your adventure book couldn’t open.", TAP);
+    await expectFits(page, "a book that could not open");
+
+    await page.goto("/account");
+    await page.getByRole("button", { name: "Sign in or create an account" }).click(TAP);
+    await expect(page.getByRole("alert")).toContainText("Sign-in couldn’t open.", TAP);
+    await expectFits(page, "a sign-in that could not open");
+    await page.getByRole("alert").getByRole("button", { name: "Not now" }).click();
+    await expect(page.getByRole("alert")).toHaveCount(0);
+  });
 
   test("the header, a host's notices and stop offer, the room controls and the catch-up line", async ({ browser }) => {
     test.setTimeout(300_000);

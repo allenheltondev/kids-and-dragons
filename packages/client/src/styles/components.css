@@ -289,6 +289,52 @@
   color: var(--kad-ink);
 }
 
+/* A chunk that could not load (ui/ChunkBoundary.tsx, #329). A whole page scrolls
+   rather than crops at the largest text size; inline, it is a card in its place. */
+.kad-boot:has(> .kad-chunk-error) {
+  place-items: safe center;
+  overflow-y: auto;
+}
+
+.kad-chunk-error {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  max-inline-size: 22rem;
+  margin-inline: auto;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background: var(--kad-bg);
+  text-align: center;
+  color: var(--kad-ink);
+  overflow-wrap: anywhere;
+}
+
+/* Over the page, for what opened over it (sign-in). */
+.kad-chunk-float {
+  position: fixed;
+  inset-inline: var(--kad-space-4);
+  inset-block-end: calc(var(--kad-safe-bottom) + 1rem);
+  z-index: 20;
+  max-block-size: calc(100dvh - 2rem);
+  overflow-y: auto;
+  /* Only the card takes taps, not the strip either side of it. */
+  pointer-events: none;
+}
+
+.kad-chunk-float > .kad-chunk-error {
+  pointer-events: auto;
+  box-shadow: 0 0.5rem 2rem rgb(0 0 0 / 40%);
+}
+
+.kad-chunk-error > p {
+  margin: 0;
+}
+
+.kad-chunk-error > p:first-child {
+  font-size: var(--kad-text-lg);
+}
+
 /* The canvas fills its surface and nothing more. */
 .kad-stage {
   position: absolute;
