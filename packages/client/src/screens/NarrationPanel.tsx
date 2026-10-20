@@ -160,10 +160,9 @@ export function NarrationPanel(): ReactElement | null {
 
   /*
    * The chapter's goal (#356), after the story and only on the chapter's first scene, so the
-   * table hears what it is trying to do as the chapter starts. Once per chapter on this screen.
-   * A step that ticks is one short line after the scene's own words, never over them: the
-   * story moves on as it ticks, and "Done: get past the bridge troll" is the room's business
-   * too. A screen that loads mid-chapter reads neither, since nothing just happened.
+   * table hears what it is trying to do as the chapter starts. Once per chapter on this screen,
+   * and never on a screen that loads mid-chapter. A step ticking is seen and heard (the chime)
+   * but not read out: the owner found "Done: ..." after every tick too much.
    */
   const goal = useChapterGoal();
   const goalChapter = goal?.chapterId ?? null;
@@ -175,17 +174,6 @@ export function NarrationPanel(): ReactElement | null {
     if (atStart) speak(`Your goal: ${goal.goal.text}`, { source: "narration" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [goalChapter, atStart, sceneId]);
-  const ticked = goal === null ? "" : goal.done.map(Number).join("");
-  const heardTicks = useRef<{ chapterId: string; done: boolean[] } | null>(null);
-  useEffect(() => {
-    if (goal === null) return;
-    const before = heardTicks.current;
-    heardTicks.current = { chapterId: goal.chapterId, done: goal.done };
-    if (before === null || before.chapterId !== goal.chapterId) return;
-    const fresh = goal.goal.steps.filter((_, i) => goal.done[i] && !before.done[i]);
-    if (fresh.length > 0) speak(`Done: ${fresh.map((step) => step.label).join(", ")}.`, { source: "ui" });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [goalChapter, ticked]);
 
   /* The fitting stall's words (#312), after the story: they are narration too (spec §11). */
   const spokenStall = useRef<string | null>(null);

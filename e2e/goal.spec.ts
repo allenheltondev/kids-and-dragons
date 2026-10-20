@@ -8,7 +8,7 @@
  * patch reached every screen, exactly as at the table.
  *
  * Read-aloud is recorded rather than heard (read-aloud.spec): the goal is said after the
- * first scene's story, and "Done: …" when a step ticks.
+ * first scene's story, and a step ticking is never read out (the owner's call: too much).
  *
  * `KAD_GOAL_SHOTS=<dir>` saves the screens for review (the PR's pictures).
  */
@@ -155,7 +155,10 @@ test.describe("the chapter's goal (#356)", () => {
     await expect.poll(() => moments(tv, "goal--world"), TAP).toEqual(expect.arrayContaining(["goal-pop", "goal-spark", "goal-glow"]));
     // Reduced motion on the phone: the gold wash, without the pop or the sparks.
     await expect.poll(() => moments(kid, "goal--phone"), TAP).toEqual(["goal-glow"]);
-    await expect.poll(async () => (await said(tv)).includes(`Done: ${STEPS[0]}.`), TAP).toBe(true);
+    // Seen and chimed, never read out: once the new scene's story has been said, nothing follows it.
+    await expect.poll(async () => (await said(tv)).some((line) => line.includes("lantern moths")), TAP).toBe(true);
+    await tv.waitForTimeout(500);
+    expect((await said(tv)).filter((line) => /^Done\b/.test(line))).toEqual([]);
     // And the moment passes, leaving the tick.
     await expect(tvGoal.locator(".goal__step--fresh")).toHaveCount(0, { timeout: 5_000 });
     expect(await ticks(tvGoal)).toEqual([true, false, false]);
