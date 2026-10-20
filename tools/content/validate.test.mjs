@@ -1164,3 +1164,34 @@ describe("graph campaigns are walked, not just resolved (#193)", { timeout: 30_0
     expect(result.out).not.toMatch(/graph v\d|walked \d+ state|UNREACHABLE_NODE|STRANDED/);
   });
 });
+
+describe("class deeds (#310, docs/class-mastery.md §6)", () => {
+  function withRules(mutate) {
+    const dir = copyTree();
+    const rules = readJson(dir, "content", "rules.json");
+    mutate(rules);
+    writeJson(dir, ["content", "rules.json"], rules);
+    return validate(dir);
+  }
+
+  it("rejects a rank that asks for another class's deed, which nobody wearing it could do", () => {
+    const result = withRules((r) => {
+      r.classes.songkeeper.deeds.apprentice.withFriends = { shove: 3 };
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain('"shove" can only be done by a thornguard');
+  });
+
+  it("rejects a Master track without a story deed", () => {
+    const result = withRules((r) => {
+      delete r.classes.duskrunner.deeds.master.withFriends.class_story;
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("Master includes a story deed");
+  });
+
+  it("rejects a deed the game does not count, and a class with no ladder", () => {
+    expect(withRules((r) => { r.classes.starweaver.deeds.apprentice.withFriends = { stare_hard: 2 }; }).code).not.toBe(0);
+    expect(withRules((r) => { delete r.classes.thornguard.deeds; }).code).not.toBe(0);
+  });
+});

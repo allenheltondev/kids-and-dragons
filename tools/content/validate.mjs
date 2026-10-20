@@ -36,6 +36,7 @@ import { chapterFlagWrites, duplicateJsonKeys, lintCampaignGraph } from "../../p
 import { prerequisiteProblems } from "../../packages/shared/src/campaign-prerequisites.ts";
 import { factTestProblems } from "../../packages/shared/src/world-state.ts";
 import { helpProblems } from "../../packages/shared/src/help.ts";
+import { DEED_OWNERS } from "../../packages/shared/src/types/domain.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 
 /**
@@ -232,7 +233,28 @@ function checkRules(rep, file, rules) {
     }
   }
 
-  if (ok) rep.ok(`${f}  rules invariants  (XP curve, tier order, one class per stat, icons)`);
+  // docs/class-mastery.md §6 - deeds. A deed that only another class's move can
+  // do would leave the rank unreachable, and Master always includes a story
+  // deed (rule 5), on every track, so fights are not the only way to grow.
+  for (const [id, cls] of Object.entries(rules.classes)) {
+    for (const [rank, req] of Object.entries(cls.deeds ?? {})) {
+      for (const [trackName, track] of Object.entries(req)) {
+        for (const deed of Object.keys(track)) {
+          const owner = DEED_OWNERS[deed];
+          if (owner && owner !== id) {
+            rep.fail(f, `/classes/${id}/deeds/${rank}/${trackName}/${deed}`, `"${deed}" can only be done by a ${owner}`);
+            ok = false;
+          }
+        }
+        if (rank === "master" && !Object.hasOwn(track, "class_story")) {
+          rep.fail(f, `/classes/${id}/deeds/master/${trackName}`, "Master includes a story deed (class_story) on every track");
+          ok = false;
+        }
+      }
+    }
+  }
+
+  if (ok) rep.ok(`${f}  rules invariants  (XP curve, tier order, one class per stat, icons, deeds)`);
   return ok;
 }
 
