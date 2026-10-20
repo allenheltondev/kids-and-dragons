@@ -1,12 +1,13 @@
 /**
  * HomeScreen — the only screen with no session behind it.
  *
- * Two jobs, very unequal: join a game with a room code (architecture §4.5) —
- * what nearly every visitor, and every child, is here to do — or start one
- * (choosing Party or Phone mode, spec §2). Joining leads and stands alone;
- * starting is a grown-up's job and sits behind a quiet "Want to host?" link, so
- * a child sees one thing to do. Everything else in the app assumes a session
- * exists.
+ * Two jobs: join a game with a room code (architecture §4.5), what nearly
+ * every visitor and every child is here to do, or host one (choosing Party or
+ * Phone mode, spec §2). Joining leads; hosting is the one other button. A phone
+ * that has played also gets its adventure book. Everything else, signing in,
+ * moving a hero between devices, family tablets and groups, is a grown-up's
+ * errand on `/account`, behind one quiet link: a home screen with nine ways
+ * out had a grown-up who came to host tapping "I play here already".
  *
  * Joining asks for no name: the character-creation flow asks "What's your
  * name?" where it means something. The only name field left is under the host
@@ -45,13 +46,6 @@ const MODE_ICON: Record<RoomMode, string> = { party: "party", travel: "travel" }
  * (tools/perf/bundle-budget.ts).
  */
 const SharedHome = lazy(() => import("./SharedHome").then((module) => ({ default: module.SharedHome })));
-
-/*
- * Pairing (#281) loads on demand too: it is an errand of a minute, and the
- * join screen is what every phone is waiting to see.
- */
-const PairHere = lazy(() => import("./PairDevice").then((module) => ({ default: module.PairHere })));
-const PlayAsMe = lazy(() => import("./PairDevice").then((module) => ({ default: module.PlayAsMe })));
 
 /*
  * The sign-in panel loads the first time somebody opens it, for the same
@@ -96,19 +90,13 @@ function PersonalHome(): ReactElement {
   const pendingCode = useGameStore((s) => s.pendingCode);
 
   /*
-   * Pairing (#281): a scanned QR opens `/?pair=CODE`. The code is read once
-   * and then taken out of the address bar, so a reload or a shared screenshot
-   * of the URL does not carry it around. It is not spent here: spending is a
-   * tap, so a link preview that fetches the page cannot use up the code.
+   * Pairing (#281) lives on `/account`, and its QR opens it there. A pairing
+   * link to the home screen, `/?pair=CODE`, from before that is passed along.
    */
-  const [pairCode] = useState(() => (typeof window === "undefined" ? null : pairingFromSearch(window.location.search)));
-  const [pairing, setPairing] = useState<"none" | "here" | "share">(pairCode === null ? "none" : "here");
   useEffect(() => {
-    if (pairCode === null) return;
-    const url = new URL(window.location.href);
-    url.searchParams.delete("pair");
-    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
-  }, [pairCode]);
+    if (typeof window === "undefined" || pairingFromSearch(window.location.search) === null) return;
+    navigate(`/account${window.location.search}`, { replace: true });
+  }, []);
 
   const [displayName, setDisplayName] = useState(() => randomName());
   const [hosting, setHosting] = useState(false);
@@ -126,7 +114,6 @@ function PersonalHome(): ReactElement {
   const checkKeepsake = useKeepsakeStore((s) => s.check);
   const openKeepsake = useKeepsakeStore((s) => s.open);
   const signInAvailable = useKeepsakeStore((s) => s.available) === true;
-  const account = useKeepsakeStore((s) => s.account);
   useEffect(() => {
     void checkKeepsake();
   }, [checkKeepsake]);
@@ -156,13 +143,12 @@ function PersonalHome(): ReactElement {
 
   /*
    * Whether this phone has a book to open: it has been a player (not only a
-   * TV) and so has a binding. Read without minting an identity. Signing in
-   * from the card below is what binds a brand-new phone to its household, so
-   * this is read again each time that flow moves on — the identity is written
-   * before the step changes — and the book appears the moment it exists.
+   * TV) and so has a binding. Read without minting an identity, and again each
+   * time a sign-in moves on (a move link's organizer flow opens over this
+   * screen), so the book appears the moment it exists.
    */
   const keepsakeStep = useKeepsakeStore((s) => s.step);
-  const hasPlayed = useMemo(() => loadPlayerDeviceToken() !== null, [keepsakeStep, account]);
+  const hasPlayed = useMemo(() => loadPlayerDeviceToken() !== null, [keepsakeStep]);
 
   const trimmedName = displayName.trim();
   const codeReady = codeComplete(code);
@@ -232,7 +218,7 @@ function PersonalHome(): ReactElement {
             name field, and in a centred column that lifted the very tile
             just tapped. Joining, where nothing grows, stays centred. */}
         <div className={`home__body${hosting ? " home__body--top" : ""}`}>
-          <section className="home__card home__card--join" aria-labelledby="home-join" hidden={hosting || pairing !== "none"}>
+          <section className="home__card home__card--join" aria-labelledby="home-join" hidden={hosting}>
             <h2 className="home__card-title" id="home-join">
               <Icon name="qr" />
               <span>Join a game</span>
@@ -280,30 +266,22 @@ function PersonalHome(): ReactElement {
             >
               {busy === "join" ? "Joining…" : "Join a game"}
             </Button>
-
-            <div className="home__host-toggle">
-              <button
-                type="button"
-                className="home__link kad-focusable"
-                aria-controls={hostPanelId}
-                onClick={() => setHosting(true)}
-              >
-                Want to host? Set up a game
-              </button>
-            </div>
-            {/* A fresh device that is already somebody's (#281): a hospital
-                tablet, a borrowed phone. Her code makes it hers. */}
-            <div className="home__host-toggle">
-              <button type="button" className="home__link kad-focusable" onClick={() => setPairing("here")}>
-                I play here already
-              </button>
-            </div>
           </section>
 
-          <Suspense fallback={null}>
-            {pairing === "here" ? <PairHere initialCode={pairCode ?? ""} onClose={() => setPairing("none")} /> : null}
-            {pairing === "share" ? <PlayAsMe onClose={() => setPairing("none")} /> : null}
-          </Suspense>
+          {/* A real button, not a quiet link: a grown-up who came to host
+              has to find it without reading every line on the screen. */}
+          {hosting ? null : (
+            <Button
+              variant="secondary"
+              size="lg"
+              block
+              icon={<Icon name="play" />}
+              aria-controls={hostPanelId}
+              onClick={() => setHosting(true)}
+            >
+              Host a game
+            </Button>
+          )}
 
           {/*
            * Between games (`/journal`): your hero, their bag, the map and the
@@ -314,7 +292,7 @@ function PersonalHome(): ReactElement {
            * to do.
            */}
           {hasPlayed ? (
-            <section className="home__card home__journal" aria-labelledby="home-journal" hidden={hosting || pairing !== "none"}>
+            <section className="home__card home__journal" aria-labelledby="home-journal" hidden={hosting}>
               <h2 className="home__card-title" id="home-journal">
                 <Icon name="scroll" />
                 <span>Your adventure book</span>
@@ -324,12 +302,6 @@ function PersonalHome(): ReactElement {
                 onClick={() => navigate({ name: "journal" })}>
                 Open your book
               </Button>
-              {/* Her own phone hands her to another device (#281). */}
-              <div className="home__host-toggle">
-                <button type="button" className="home__link kad-focusable" onClick={() => setPairing("share")}>
-                  Play as me on another device
-                </button>
-              </div>
             </section>
           ) : null}
 
@@ -419,6 +391,14 @@ function PersonalHome(): ReactElement {
               {busy === "create" ? "Starting…" : mode === "party" ? "Open the lobby here" : "Start a game"}
             </Button>
 
+            {/* The grown-up's guide (#257): how to run a session, for someone
+                who has never seen the game. Its own route and chunk. */}
+            <div className="home__host-toggle">
+              <button type="button" className="home__link kad-focusable" onClick={() => navigate({ name: "guide" })}>
+                New to running a game? Read the grown-up&rsquo;s guide
+              </button>
+            </div>
+
             <div className="home__host-toggle">
               <button
                 type="button"
@@ -455,78 +435,14 @@ function PersonalHome(): ReactElement {
           </div>
 
           {/*
-           * Sign in or create an account (§4.5). Always reachable where sign-in
-           * works, because an adult who wants their characters to outlive a
-           * week should not have to finish a chapter to find the door. Last and
-           * quiet, since nobody needs it to play.
-           *
-           * Signing in, not "keep these": an account that already has a
-           * household goes back to it and picks who this phone is, even if the
-           * phone has started a guest game since. Only a brand-new account keeps
-           * the guest household this phone is playing in (or gets a fresh one).
-           * The server makes that call (`linkAccount` `preferExisting`), because
-           * only it knows whether the account owns anything yet.
+           * Sign in, move a hero to another device, a family tablet, a group:
+           * a grown-up's errands, on a page of their own, so the start screen
+           * keeps to joining and hosting. Last and quiet, since nobody needs
+           * any of it to play.
            */}
-          {signInAvailable ? (
-            <section className="home__card home__account" aria-labelledby="home-account">
-              <h2 className="home__card-title" id="home-account">
-                <Icon name="lantern" />
-                {account !== null ? "Your adventurers are saved" : "Save your adventurers"}
-              </h2>
-              {account !== null ? (
-                <p className="home__hint kad-muted" role="status">
-                  Signed in as <b className="home__account-email">{account.email}</b>
-                </p>
-              ) : (
-                <>
-                  <p className="home__hint kad-muted">
-                    For grown-ups. Without an account, characters fade after a week away.
-                  </p>
-                  <Button
-                    variant="secondary"
-                    block
-                    icon={<Icon name="envelope" />}
-                    onClick={() => {
-                      openKeepsake("restore", "home");
-                    }}
-                  >
-                    Sign in or create an account
-                  </Button>
-                </>
-              )}
-              {/* A tablet the kids take turns on (#250): bound to the family,
-                  not to whoever played on it last. */}
-              <div className="home__host-toggle">
-                <button
-                  type="button"
-                  className="home__link kad-focusable"
-                  onClick={() => {
-                    openKeepsake("share", "home");
-                  }}
-                >
-                  Do the kids share this device? Make it a family tablet
-                </button>
-              </div>
-              {/* #248: a club, a class, the cousins. One grown-up or several. */}
-              <div className="home__host-toggle">
-                <button
-                  type="button"
-                  className="home__link kad-focusable"
-                  onClick={() => {
-                    openKeepsake("organize", "home");
-                  }}
-                >
-                  Running games for kids from other families? Run a group
-                </button>
-              </div>
-            </section>
-          ) : null}
-
-          {/* The grown-up's guide (#257): how to run a session, for someone
-              who has never seen the game. Its own route and chunk. */}
-          <div className="home__host-toggle home__guide" hidden={hosting || pairing !== "none"}>
-            <button type="button" className="home__link kad-focusable" onClick={() => navigate({ name: "guide" })}>
-              New to running a game? Read the grown-up&rsquo;s guide
+          <div className="home__host-toggle home__guide" hidden={hosting}>
+            <button type="button" className="home__link kad-focusable" onClick={() => navigate({ name: "account" })}>
+              {signInAvailable ? "Grown-ups: sign in, or move a hero to another device" : "Move a hero to another device"}
             </button>
           </div>
         </div>

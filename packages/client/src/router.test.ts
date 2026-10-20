@@ -22,6 +22,13 @@ describe("parseRoute", () => {
     expect(routeCode({ name: "guide" })).toBeNull();
   });
 
+  it("maps /account, the grown-up's errands kept off the join screen", () => {
+    expect(parseRoute("/account")).toEqual({ name: "account" });
+    expect(parseRoute("/account?pair=ABCDEFGH")).toEqual({ name: "account" });
+    expect(formatRoute({ name: "account" })).toBe("/account");
+    expect(routeCode({ name: "account" })).toBeNull();
+  });
+
   it("treats an empty path as home", () => {
     expect(parseRoute("")).toEqual({ name: "home" });
     expect(parseRoute("//")).toEqual({ name: "home" });
