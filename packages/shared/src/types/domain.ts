@@ -335,6 +335,13 @@ export interface ResolvedCharacter {
    * has been counted, so a hero with none resolves exactly as before deeds.
    */
   deeds?: Record<string, number>;
+  /**
+   * The tokens of the classes the hero has worn and taken off, with the rank
+   * each earned (docs/class-mastery.md §4): they ride in the pack with their
+   * notches and take no slot. In rules order. Present only when there is one,
+   * so a hero who has only ever worn one class resolves exactly as before.
+   */
+  spares?: { class: ClassId; rank: ClassRank }[];
   appearance: Appearance;
   level: number;
   xp: number;

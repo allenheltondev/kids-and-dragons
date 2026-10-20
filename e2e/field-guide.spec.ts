@@ -99,7 +99,7 @@ test.describe("the Field Guide", () => {
     // --- A TV opens the room; one phone joins and makes a hero ---
     const tv = await client(browser, 1280, 720);
     await tv.goto("/");
-    await tv.getByRole("button", { name: /want to host/i }).click();
+    await tv.getByRole("button", { name: /host a game/i }).click();
     await tv.getByText("Party Mode").click();
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);

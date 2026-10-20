@@ -197,7 +197,7 @@ for (const hand of ["right", "left"] as const) {
     await expectCornerClear(page);
     await expectNoSideScroll(page);
 
-    await page.getByRole("button", { name: /want to host/i }).click(TAP);
+    await page.getByRole("button", { name: /host a game/i }).click(TAP);
     await page.getByText("Phone Mode", { exact: true }).click(TAP);
     await page.getByPlaceholder("Type your name").fill("Reach Tester", TAP);
     await page.getByRole("button", { name: /start a game/i }).click(TAP);
@@ -291,7 +291,7 @@ test("Party Mode: the TV and a left-handed phone at the largest text", async ({ 
   await withPrefs(phone, prefs);
   try {
     await tv.goto("/");
-    await tv.getByRole("button", { name: /want to host/i }).click(TAP);
+    await tv.getByRole("button", { name: /host a game/i }).click(TAP);
     await tv.getByText("Party Mode", { exact: true }).click(TAP);
     await tv.getByRole("button", { name: /open the lobby here/i }).click(TAP);
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);

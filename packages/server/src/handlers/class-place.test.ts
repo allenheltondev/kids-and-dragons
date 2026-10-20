@@ -190,6 +190,25 @@ describe("switching class at a class place (#311)", () => {
     expect((await t.state()).classPlace).toBeUndefined();
   });
 
+  it("the token taken off goes in the pack with its notches, and comes out again when it is put back on (#314)", async () => {
+    const t = await table([{ name: "Pip", class: "songkeeper" }], { p_1: { songkeeper: "apprentice" } });
+    expect((await t.state()).party[0]!.character).not.toHaveProperty("spares");
+
+    await t.choose("to_dojo");
+    await t.must("p_1", { type: "SWITCH_CLASS", classId: "thornguard" });
+    let pip = (await t.state()).party[0]!.character;
+    expect(pip.class).toBe("thornguard");
+    expect(pip.spares).toEqual([{ class: "songkeeper", rank: "apprentice" }]);
+
+    // A thorn bracer worn and earned nothing in still goes in the pack when it comes off.
+    await t.must("p_1", { type: "CHOOSE", choiceId: "on" });
+    await t.must("p_1", { type: "SWITCH_CLASS", classId: "songkeeper" });
+    pip = (await t.state()).party[0]!.character;
+    expect(pip.class).toBe("songkeeper");
+    expect(pip.rank).toBe("apprentice");
+    expect(pip.spares).toEqual([{ class: "thornguard", rank: "none" }]);
+  });
+
   it("a finished campaign keeps the switch", async () => {
     const t = await table([{ name: "Pip", class: "songkeeper" }]);
     await t.choose("to_dojo");

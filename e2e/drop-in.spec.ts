@@ -119,7 +119,7 @@ test.describe("drop in, drop out", () => {
     const tvErrors: string[] = [];
     tv.on("pageerror", (e) => tvErrors.push(e.message));
     await tv.goto("/");
-    await tv.getByRole("button", { name: /want to host/i }).click();
+    await tv.getByRole("button", { name: /host a game/i }).click();
     await tv.getByText("Party Mode").click();
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);

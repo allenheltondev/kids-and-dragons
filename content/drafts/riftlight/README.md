@@ -1,6 +1,6 @@
 # Riftlight — authored opening
 
-Seventeen playable story nodes and ten development pause boundaries, using the [design bible](../../../docs/campaigns/continental-rift/README.md).
+Eighteen playable story nodes and eleven development pause boundaries, using the [design bible](../../../docs/campaigns/continental-rift/README.md).
 Gemfall anchors the read-aloud rhythm, tangible choices and visible consequences. The narrator
 describes what happens instead of telling the table what sort of thing it is or how to feel.
 
@@ -34,7 +34,7 @@ These files are ordinary chapter JSON, validated with the same gate as shipped c
 The preview now plays the first fork. The shelf leads to the Cairnstep or the river challenge;
 the hidden opening leads to the Saltrot and offers a linked return. River escapes reach
 Frostfang shore, the boundary stones, Ashspan Bridge, or a one-way Sky Islands crossing.
-Short arrival episodes give each route a concrete landing. Ten biome-matched `preview-pause-*`
+Short arrival episodes give each route a concrete landing. Eleven biome-matched `preview-pause-*`
 chapters are explicit development boundaries, pay no XP, and must never enter production.
 Their five-minute metadata is the schema minimum, not a measured duration.
 
@@ -183,3 +183,23 @@ lesson and keeper reactions use those results. Only a successful catalog trial c
 a public visitor guide; an assisted copy stays staff-guided. Chapter arrival resets these
 local investigation flags. Run `npx vitest run tools/content/riftlight-reading-consequences.test.ts`
 for four complete consequence routes; automated play does not replace timed family play.
+
+## The returning island
+
+`whale-road` now continues to `the-island-due-back`, the Sky key node. Welcome the
+returning island, choose between recovering sealed letters and readying the lookout,
+cross under keeper signals, and compare the old mooring stone with the land below.
+Whale history changes a sighting method; preparation and evidence checks affect later
+options, keeper help, warning resources and credit. Copying remains voluntary.
+Every route learns `fragment_sky_learned` without taking an object or revealing the
+islands' origin. Return to the whale-road hub or use the explicit development pause.
+
+See the [island review](../../../docs/campaigns/continental-rift/island-continuity-review.md).
+Run `npx vitest run tools/content/riftlight-island.test.ts` for complete engine-played
+consequence routes. The pacing report now covers six ordinary regions; family timing
+and the production gate remain pending. The temple continuation remains unwritten.
+
+The island's joined-land inference now appears only after a successful comparison
+or a player-chosen assisted follow-up. Failed landings offer batch carrying with a
+delayed message relay versus borrowing a lighter kit. These recoveries add decisions
+without rerolls; incomplete tests stay credited as incomplete.

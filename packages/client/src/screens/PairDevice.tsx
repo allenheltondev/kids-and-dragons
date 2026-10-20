@@ -94,7 +94,7 @@ export function PairingCodeCard({
       ) : (
         <>
           <p className="pair__note">
-            On the other device, tap <b>I play here already</b> and type this. Or scan the picture.
+            On the other device, tap <b>Bring my hero to this device</b> and type this. Or scan the picture.
           </p>
           <p className="pair__code" aria-label={`Code for ${pairing.playerName}`}>
             {formatPairingCode(pairing.code)}
@@ -165,7 +165,7 @@ export function PlayAsMe({ onClose }: { onClose: () => void }): ReactElement {
   );
 }
 
-/** On a fresh device: "I play here already". */
+/** On a fresh device: "Bring my hero to this device". */
 export function PairHere({ initialCode, onClose }: { initialCode: string; onClose: () => void }): ReactElement {
   const [code, setCode] = useState(() => normalizePairingInput(initialCode));
   const [busy, setBusy] = useState(false);
@@ -192,7 +192,7 @@ export function PairHere({ initialCode, onClose }: { initialCode: string; onClos
     <section className="home__card pair" aria-labelledby="pair-here">
       <h2 className="home__card-title" id="pair-here">
         <Icon name="qr" />
-        <span>I play here already</span>
+        <span>Bring my hero to this device</span>
       </h2>
       <p className="home__hint kad-muted">
         On your other phone, tap <b>Play as me on another device</b>. Then type the letters here, or scan the picture
