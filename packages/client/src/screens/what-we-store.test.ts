@@ -88,4 +88,11 @@ describe("what we store (#252)", () => {
     expect(reports?.what).toMatch(/Logged, not stored/);
     expect(reports?.what).toMatch(/never sent/);
   });
+
+  it("says no data goes to a model (#347)", () => {
+    const ai = ELSEWHERE.find((e) => e.title === "No AI at the table");
+    expect(ai?.what).toMatch(/no AI calls/);
+    expect(ai?.what).toMatch(/is sent to an AI model/);
+    expect(JSON.stringify([STORED, ELSEWHERE, DELETING])).not.toMatch(/narration/i);
+  });
 });

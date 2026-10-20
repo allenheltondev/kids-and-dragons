@@ -185,11 +185,9 @@ the next d20. Both go through `applyIntent`, so a jump runs `onEnter` and opens 
 rather than showing you a scene the game never produces. And `content:generate` writes a chapter
 from a one-line brief — then runs the *real* content validator over it and hands the gate's own
 complaints back for repair until it passes, which means nothing it writes can fail the build.
-**The live layer is in** (Chapter 7): flavour narration from `anthropic.claude-haiku-4-5` through
-Claude in Amazon Bedrock, prefetched while the party is still reading the scene they are on, and
-thrown away silently unless it passes a safety gate. It is **off unless `LIVE_LLM_ENABLED=true`**,
-and the game is built so that turning it off changes nothing — a test plays the same opening with
-and without it and asserts the two runs differ in the narration and in nothing else.
+**No model runs at play time.** The live narration layer (Chapter 7) was removed in #347: the
+authored stories stand on their own, and nothing a table says or does is sent to a model. The
+end-of-chapter recap retells the priority-1 scenes the party walked through, in their own words.
 One content gap goes with them: no authored ending declares `"outcome": "setback"` yet, so the
 halved award and — through the setback counter — campaign failure are unreachable in play, though
 both are built and tested.

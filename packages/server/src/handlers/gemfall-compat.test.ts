@@ -94,25 +94,30 @@ const PRE_EPIC = JSON.parse(
  * one clerk as the single Skywarden faun figure, not the three-warden group
  * the stage now stands for `entities/skywardens`. Presentation only, like the
  * priority marks.
+ *
+ * Re-pinned for the `voiceGuide` rename (#347): each chapter's authors' voice
+ * guide changed its key name and nothing else, and nothing at play time reads
+ * it. The endings, roads, setbacks and saves below still match their pre-epic
+ * digests.
  */
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
-  "chapters/gemfall-01.json": "98d74a1ee1c482e467c39b125b8343f5c42b8b88b4ab89c4abcdd73b96bb8927",
-  "chapters/gemfall-02.json": "3ee767c21520412d014aa7020f9d5e65b77c017127c5fc66ac3a491332988dbe",
-  "chapters/gemfall-03a.json": "e5f5c5457b2a30ebff755eaaad865838777b54f1ab8ad75a06175f937b86bdce",
-  "chapters/gemfall-03b.json": "15b6e6f67d49d243c8087d8b89d9b790f0c4eb43acd6551bd6851ab76cd0355a",
-  "chapters/gemfall-03c.json": "663f600a04b388393a320ad72ef93409ec78b54e4d2ced22e66eea89960b1724",
-  "chapters/gemfall-04a.json": "b249c5dba1d053f346513ada2391f893a731497c8c6acbf13a768e9b9e763e5c",
-  "chapters/gemfall-04b.json": "0f97c7c581bf062378f8e5705ac4a943d14c56307128b353b1e5144e12f778e2",
-  "chapters/gemfall-04c.json": "734023a0b4c4ef34f8872d95701fcc54ee1e3e89a7d739fdf86f9e85ec1fee57",
-  "chapters/gemfall-05a.json": "ddc3a53b4844ce4c6d11725ec73793acb1279b0336d92b1980af01b1cd746989",
-  "chapters/gemfall-05b.json": "b43f4c349a88c3f5b40d32c6b4e9ae2a3cb8c9db6f89bfad2d8e1b84a5ff7f85",
-  "chapters/gemfall-05c.json": "e2715f5d43d9f0c51c714ab274f0497821e4677a3028ea1ecfe497a188c0d475",
-  "chapters/gemfall-06.json": "e59c654289034be27ba303a81c8515223e063201c6e02ce2c68ca4421cfec0fd",
-  "chapters/gemfall-07h.json": "881955f20f510af10f3515089ef0a04934a72f9d7f8a1deb6e15e4371da077c3",
-  "chapters/gemfall-07l.json": "49afe8e98c99b4a833002f93148e65790b80c5faf435b74780c89e6e2c722635",
-  "chapters/gemfall-07r.json": "56389c6b60fb44cca02bf60f95438efd3dbf4660beec50272093cafb72f19134",
-  "chapters/gemfall-08.json": "984336426f0039e3c331f9a5334ef0a50ae71400ee53e852784c7def44c79e2c",
+  "chapters/gemfall-01.json": "fdc1fa3f61d01306d46a98d39bb09e4babfef48dd5fa839376ed3c05d4b45c3b",
+  "chapters/gemfall-02.json": "57cb777401d5829341af1e929091473131f9473c6e3cc751693676058b7d0408",
+  "chapters/gemfall-03a.json": "c88b959e1e5534f07b234443d3437100b1822e811fe88c716630369ed893202f",
+  "chapters/gemfall-03b.json": "78ab71d1a6332b6b73348b9d41cbb2d8b4a585ccb07574e78ddc99bb4be78a89",
+  "chapters/gemfall-03c.json": "79b4368af96478db29e160a098bb51903f50a7355cd58a28cfb56d3027e461c4",
+  "chapters/gemfall-04a.json": "bb948a6066f3499826d5f3b8012793fdd4ddb7a9aa5e455a4b7792ff4529ba4c",
+  "chapters/gemfall-04b.json": "f66ed4f01b7030f4dce72eddeafc65a83b56c2a0b4fcd88d3fff71bc4f76d175",
+  "chapters/gemfall-04c.json": "2828e981d582c6ab302de4a965566657b2075742dbdc6aa3c868585ce394f306",
+  "chapters/gemfall-05a.json": "06a8389bdc18c84ed4473e4cc9c699ee314f8d2319ec6ca64a56bddae3984376",
+  "chapters/gemfall-05b.json": "e7f76b38c3783e0ea33de2ddaccc482dbd22fa0d1459457c073f5d4af863ef5b",
+  "chapters/gemfall-05c.json": "3b75ecac8b195074911fd09d41c347ae6e2917177e44720d8b01bb82085b837b",
+  "chapters/gemfall-06.json": "7b8bc49d936345f64a67097ed8da5a3370a72e914937cf432b9970f86b43da00",
+  "chapters/gemfall-07h.json": "679220716563bef57aa327136c1a613835ac80bdfbf99dd97201ebf196c02d2f",
+  "chapters/gemfall-07l.json": "54f041b0c509ad7981c7e645455145260cce6d3a0fffe7565fc6f0de1a53743b",
+  "chapters/gemfall-07r.json": "41f05279db0cce50dc52af6f09fe82e8fff3d449bc511f0a312a92d21b9d5a89",
+  "chapters/gemfall-08.json": "d5c97e4df6a530dd428f3f48a8f08ef4156144566bfdce70cdef12547c95fa67",
 };
 
 describe("Gemfall's files are the files that shipped before the epic", () => {

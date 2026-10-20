@@ -30,9 +30,9 @@
  * they wasted a sitting. There is no red anywhere in this file.
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement } from "react";
-import { speak } from "@kad/shared";
+import { revelationsOf, speak } from "@kad/shared";
 import type { TierId } from "@kad/shared";
 import { useGameStore, useItems, useParty, useProgression, useRunState } from "../store";
 import type { ProgressionEvent } from "../store/contract";
@@ -40,7 +40,7 @@ import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { campaignEndHeading, campaignEndLine } from "./campaign-copy";
 import { fightEndingIcon, fightEndingLine } from "./fight-ending-copy";
-import { useEnsureContent } from "./content";
+import { useEnsureChapter, useEnsureContent } from "./content";
 import "./shared.css";
 import "./ChapterCompletePanel.css";
 
@@ -68,7 +68,9 @@ function withAwards(grown: Grown, event: ProgressionEvent | null): Grown {
 
 export function ChapterCompletePanel(): ReactElement {
   useEnsureContent();
+  useEnsureChapter();
   const state = useRunState();
+  const chapter = useGameStore((s) => s.chapter);
   const party = useParty();
   const items = useItems();
   /*
@@ -102,15 +104,47 @@ export function ChapterCompletePanel(): ReactElement {
   const heading =
     campaignEndHeading(state?.campaign) ?? (setback ? "The story took a turn" : "Chapter finished!");
   const endLine = campaignEndLine(state?.campaign);
-  const recap = state?.recap ?? null;
+  /*
+   * The recap: every priority-1 scene the party walked through, in its own
+   * authored words (chapter.ts `ScenePriority`), so the table hears the
+   * revelation again before bed. Read off the trail and the chapter in play;
+   * until the chapter has loaded, or on a road with no revelation, there is
+   * none and nothing below changes shape.
+   */
+  const visited = state?.visited;
+  const chapterId = state?.chapterId ?? null;
+  const flags = state?.flags;
+  const coins = state?.coins;
+  const recap = useMemo(
+    () =>
+      chapter && chapter.id === chapterId && visited
+        ? revelationsOf(chapter, visited, {
+            members: party.map((member) => member.character),
+            flags: flags ?? {},
+            coins: coins ?? 0,
+          })
+        : [],
+    [chapter, chapterId, visited, party, flags, coins],
+  );
   // How each fight in a place that fought back ended (#220). Absent on every
   // run without one, and then nothing below changes shape.
   const fightEndings = state?.fightEndings ?? [];
 
-  // Spoken once — the summary is narration like any other (spec §11).
+  /*
+   * Spoken once — the summary is narration like any other (spec §11). Held
+   * until the chapter has loaded, so the recap is in the same utterance rather
+   * than missing from it; a chapter that never loads never holds it up.
+   */
   const spoken = useRef(false);
+  const chapterReady = chapter !== null && chapter.id === chapterId;
+  const [waited, setWaited] = useState(false);
   useEffect(() => {
-    if (spoken.current) return;
+    if (chapterReady) return;
+    const timer = setTimeout(() => { setWaited(true); }, 1500);
+    return () => { clearTimeout(timer); };
+  }, [chapterReady]);
+  useEffect(() => {
+    if (spoken.current || (!chapterReady && !waited)) return;
     spoken.current = true;
     speak(
       [
@@ -124,10 +158,10 @@ export function ChapterCompletePanel(): ReactElement {
         // goes and this is narration. Appended to the same utterance rather
         // than spoken separately so it cannot interrupt or be interrupted.
         ...fightEndings.map(fightEndingLine),
-        ...(recap === null ? [] : [recap]),
+        ...recap,
       ].join(" "),
     );
-  }, [xp, setback, recap, heading, endLine, fightEndings]);
+  }, [xp, setback, recap, heading, endLine, fightEndings, chapterReady, waited]);
 
   const questItems = party.flatMap((m) =>
     m.character.questItems.map((itemId) => ({ itemId, owner: m.character.name })),
@@ -162,29 +196,18 @@ export function ChapterCompletePanel(): ReactElement {
             <span>Not how you hoped, and the adventure carries on from here.</span>
           </p>
         ) : null}
-        {/*
-         * The live layer's recap of the session, when there is one — roadmap
-         * chapter 7, architecture §6.
-         *
-         * Rendered under a conditional and nothing else changes shape around
-         * it, which is the AI-optional invariant on the screen rather than on
-         * the server: with the layer off this element does not exist, and the
-         * panel is exactly the panel that shipped. `recap` is optional on
-         * `RunState` and null is the ordinary case, so this is a coalesce and
-         * never an error state.
-         */}
         {fightEndings.map((ending, i) => (
           <p className="complete__fight" key={i}>
             <Icon name={fightEndingIcon(ending)} />
             <span>{fightEndingLine(ending)}</span>
           </p>
         ))}
-        {recap === null ? null : (
-          <p className="complete__recap">
+        {recap.map((line, i) => (
+          <p className="complete__recap" key={i}>
             <Icon name="scroll" />
-            <span>{recap}</span>
+            <span>{line}</span>
           </p>
-        )}
+        ))}
       </header>
 
       {/*
