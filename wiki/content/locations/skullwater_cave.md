@@ -3,7 +3,7 @@ title: Skullwater Cave
 id: location.skullwater_cave
 type: location
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-20"
 canon_status: confirmed
 played_in: []
 tags: ["offshore_cave", "underground_gateway", "skull_rock", "caverns", "unknown_depths"]
@@ -40,10 +40,16 @@ related:
   - id: creature.echo_hunter
     type: creature
     relationship: dangerous_creatures
+  - id: creature.kavari
+    type: creature
+    relationship: legendary_beings
   - id: campaign.echoes_beneath
     type: campaign
     relationship: locations
   - id: creature.echo_hunter
+    type: creature
+    relationship: primary_locations
+  - id: creature.kavari
     type: creature
     relationship: primary_locations
   - id: faction.deep_hollow_cult
@@ -67,7 +73,7 @@ ai_context:
   visual_style: "A single colossal skull-shaped rock, dark cave mouth, slick ledges, breaking waves, deep interior shadows, mineral reflections, and passages disappearing underground."
   common_encounters: "Descent into the underground, missing expeditions, echoes, hidden passages, creatures moving between layers, rescue, and campaign transitions into a separate subterranean geography."
   lore_highlights: "No accepted account survives contact with the rock itself: sailors say the sea carved a lucky likeness, cave-divers say no current carves eye sockets level, and the stone trolls, who keep the outer galleries, say only that it was already old when their oldest stories were young."
-  related_entities: "biome.open_sea, biome.open_sea, biome.frostfang_peaks, biome.eastern_plains, npc.stone_troll, creature.echo_hunter, campaign.echoes_beneath, creature.echo_hunter, faction.deep_hollow_cult, item.crystal_heart, npc.stone_troll"
+  related_entities: "biome.open_sea, biome.open_sea, biome.frostfang_peaks, biome.eastern_plains, npc.stone_troll, creature.echo_hunter, creature.kavari, campaign.echoes_beneath, creature.echo_hunter, creature.kavari, faction.deep_hollow_cult, item.crystal_heart, npc.stone_troll"
   writing_guidance: "The skull is one continuous rock formation, not a pile of skulls. Do not define the entire underground world through this entry; it requires its own geography layer and future canon."
   generation_hints: "Tides affect the entrance, sound travels unpredictably, and deeper passages should feel larger than the visible island mouth implies."
 layout: locations
@@ -134,6 +140,7 @@ The realm's agreed front door to the underground, and the reason coastal charts 
 
 ### Creatures
 - [Echo Hunter](/creatures/echo_hunter/) `Dangerous Creatures` `Primary Locations`
+- [Kavari](/creatures/kavari/) `Legendary Beings` `Primary Locations`
 
 ### Factions
 - [The Deep Hollow Cult](/factions/deep_hollow_cult/) `Territory`

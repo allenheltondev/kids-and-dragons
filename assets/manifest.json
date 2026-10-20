@@ -578,6 +578,15 @@
       "scale": "large"
     },
     {
+      "id": "kavari",
+      "classification": "legendary_beast",
+      "primaryBiome": "skullwater_cave",
+      "canonicalLocations": [
+        "skullwater_cave"
+      ],
+      "scale": "medium"
+    },
+    {
       "id": "will_o_wisp",
       "classification": "supernatural_manifestation",
       "primaryBiome": "whispering_marsh",

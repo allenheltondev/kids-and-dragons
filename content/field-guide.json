@@ -504,6 +504,39 @@
         }
       ]
     },
+    "creature.kavari": {
+      "id": "creature.kavari",
+      "category": "creatures",
+      "kind": "creature",
+      "title": "Kavari",
+      "short_description": "Rare ice-blue bird found only in Skullwater Cave. A Kavari ages backward into an egg, which releases a two-day snowstorm before an adult emerges.",
+      "danger_level": "high",
+      "scale": "medium",
+      "classification": "legendary_beast",
+      "asset_id": "kavari",
+      "art": "/assets/entities/kavari/portrait.webp",
+      "lore": {
+        "story": "In Skullwater Cave, finding an egg where a great bird ought to be is not proof that the bird has gone. It may be a Kavari, growing younger instead of older. An adult is a broad-winged, ice-blue bird with a deep-blue beak and flight feathers that gleam like crystal. As time passes it becomes smaller and softer until only an icy egg remains. Listen for a low hum and watch for frost creeping across the stone. When the egg bursts, an indoor snowstorm fills Skullwater Cave for exactly two days, but not one flake passes beyond its entrance. At the storm's end a full-grown Kavari emerges, carrying memories from before it was an egg. Whether it remembers a visitor is another matter, but forgetting a life is not part of its cycle.",
+        "pastimes": [],
+        "likes": [],
+        "dislikes": [],
+        "hook": "The youngest bird in the cave may remember its oldest secrets."
+      },
+      "tips": [
+        {
+          "kind": "observation",
+          "text": "Notice the low hum and frost spreading over the stone before the egg bursts, and recognize the signs of a coming snowstorm."
+        },
+        {
+          "kind": "environmental_problem_solving",
+          "text": "Find a sheltered route or safe chamber before the two-day storm fills the cave. The blizzard cannot be stopped by fighting the bird."
+        },
+        {
+          "kind": "escape",
+          "text": "Reach the cave entrance before the storm begins. The snow never crosses beyond Skullwater Cave."
+        }
+      ]
+    },
     "creature.legend_dragon": {
       "id": "creature.legend_dragon",
       "category": "creatures",
