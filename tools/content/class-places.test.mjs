@@ -90,7 +90,6 @@ describe("class place reach", () => {
     const rifts = [
       { opensWhen: { flag: "special_choice" } },
       { opensWhen: { facts: { river: "high" } } },
-      { uses: 1 },
       { lasts: { unit: "visits", count: 3 } },
       { unstable: { flicker: { open: 1, shut: 1 } } },
       { linkedTo: "b-a" },
@@ -102,9 +101,10 @@ describe("class place reach", () => {
     }
   });
 
-  it("counts a rift that only reveals or is one-way as open", () => {
+  it("counts a rift that only reveals, is one-way or has limited uses as open", () => {
     const chapters = [chapter("ch-a"), chapter("ch-b", CLASSES)];
-    for (const rift of [{}, { oneWay: true }, { persistent: true }, { reveal: "when-open" }]) {
+    // `uses` alone too: only this way's crossings spend it, so the first is always there (#315).
+    for (const rift of [{}, { oneWay: true }, { persistent: true }, { reveal: "when-open" }, { uses: 1 }, { uses: 1, oneWay: true }]) {
       expect(verdict(campaign({ rift }), chapters).errors, JSON.stringify(rift)).toEqual([]);
     }
   });
