@@ -639,6 +639,25 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
         }
       }
     }
+    // And after the first fit, with the same words and choices: a label that wraps further (a late
+    // font) and a line added under the story (a class place's roll) must refit, not hide a choice.
+    {
+      const four = hardestPassages().find((p) => p.options.length >= 4)!;
+      await tv.setViewportSize({ width: 1280, height: 720 });
+      await settings(tv, "normal", "off");
+      await show(tv, four);
+      await tv.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+      await tv.evaluate(() => {
+        const label = document.querySelector(".narration__choice > span")!;
+        label.textContent += " and then a good deal more, so that this one label runs across two lines of the plate";
+        const extra = document.createElement("p");
+        extra.textContent = "Somebody rolled for the stone, and the stone rolled back, which is a long way to go for a joke.";
+        document.querySelector(".narration__story")!.append(extra);
+      });
+      await tv.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(done)))));
+      const after = await plateFit(tv);
+      expect.soft(after.problems, `choices after the plate's content grew under it: ${after.problems.join("; ")}`).toEqual([]);
+    }
     await show(tv, real);
     await settings(tv, "normal", "off");
     await tv.setViewportSize({ width: 1280, height: 720 });
