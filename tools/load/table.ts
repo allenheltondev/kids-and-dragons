@@ -22,6 +22,7 @@
 
 import {
   classPlaceWaitingOn,
+  keepClassIntent,
   currentActor,
   currentActorId,
   legalActions,
@@ -437,11 +438,12 @@ export class Table {
       const ok = await this.send(ownerOf(prompt.characterId), { type: "ROLL" });
       return ok ? "roll" : "done";
     }
-    // A class place (#311) waits for every hero's own answer before the way on.
+    // A class place (#311) or the fitting stall (#312) waits for every hero's
+    // own answer before the way on.
     const deciding = classPlaceWaitingOn(state);
     if (deciding.length > 0 && state.classPlace) {
       for (const member of deciding) {
-        await this.send(this.phoneOf(member.playerId), { type: "KEEP_CLASS", classId: state.classPlace.class });
+        await this.send(this.phoneOf(member.playerId), keepClassIntent(state.classPlace, member));
       }
       return "done";
     }
