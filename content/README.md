@@ -216,6 +216,9 @@ The table should be playing, not only listening. Four rules, and the two numbers
   they want from the party, or what they can do for it.
 
 Both numbers are a reading list, never a gate: the `!` marks under the table say where to look.
+They read the spine only; a typical path's `read` in the table can run longer, so glance at it
+too. Bare `npm run content:pacing` lists the Gemfall chapters; `npm run content:pacing -- --chapter ""`
+lists every shipped chapter, and `--chapter bramblewood-` any one prefix.
 
 ## Class places (#311)
 

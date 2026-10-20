@@ -24,7 +24,7 @@
  * **Interactivity.** Each path also carries `doing` (checks the party does
  * rather than says: might, quick and clever, unless a check's `checkKind` says
  * otherwise) and `read` (the longest run of scenes with no vote, check or
- * fight). After the table, every chapter's spine (the shortest path, in the
+ * fight). After the table, each listed chapter's spine (the shortest path, in the
  * calibration scenario) is listed worst first against the authoring rules:
  * about three scenes at most without something to do, and most spine checks
  * doing. The `!` marks are a reading list, not failures.
