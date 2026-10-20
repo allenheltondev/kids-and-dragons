@@ -221,7 +221,7 @@
     },
     "camp": {
       "type": "rest",
-      "narration": "You sit on a dry stone beside the singing hall. East, the ice shelf leads toward the Cairnstep: perhaps a supply route for the herd, if the shifting ice lets you reach it. Behind you, the sealed seam answered your song. Exploring the glacier might teach you how to find another opening. The Listening Chime rests between you. Safe roads for the people already here, or a better understanding of the openings that brought you? Up the slope, the door of a stone hut rattles in the wind, and something inside goes thump. Your party has something to talk about before setting out.",
+      "narration": "You sit on a dry stone beside the singing hall. East, the ice shelf leads toward the Cairnstep: perhaps a supply route for the herd, if the shifting ice lets you reach it. Behind you, the sealed seam answered your song. Exploring the glacier might teach you how to find another opening. The Listening Chime rests between you. Safe roads for the people already here, or a better understanding of the openings that brought you? Up the slope, the door of a stone hut rattles in the wind, and something inside goes thump. Higher still, a round tower with no roof points a big brass telescope at the sky. Your party has something to talk about before setting out.",
       "heal": 0,
       "choices": [
         {
@@ -229,6 +229,12 @@
           "label": "Knock on the stone hut's door",
           "icon": "hand",
           "goto": "dojo"
+        },
+        {
+          "id": "tower",
+          "label": "Climb the tower with no roof",
+          "icon": "star",
+          "goto": "academy"
         },
         {
           "id": "set_out",
@@ -312,6 +318,79 @@
             {
               "type": "setFlag",
               "flag": "met_master_dunnick",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "academy": {
+      "type": "story",
+      "narration": "At the top of the tower is a classroom with no roof at all, only sky. This school is called the Academy. Here students learn to be a Starweaver, a hero who reads the stars. A dragonling named Professor Nettle stands beside a huge brass telescope. Homework floats up off the desks and drifts away over the snow. Nobody chases it. \"It comes down somewhere,\" says the professor. On a cushion sits a star circlet. A Starweaver's light lives in that circlet, and a dusk hood worn beside it starts to itch. \"Anyone who wants the circlet,\" says Professor Nettle, \"may try it on.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "met_professor_nettle"
+          },
+          "text": "Professor Nettle waves from beside the big brass telescope. \"Back at the Academy! Mind the homework.\" A page floats past your nose and off over the snow. The star circlet waits on its cushion for anyone who wants to try it on.",
+          "replace": true
+        }
+      ],
+      "classPlace": "starweaver",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Professor Nettle"
+        }
+      ],
+      "choices": [
+        {
+          "id": "telescope",
+          "label": "Look through the telescope",
+          "icon": "eye",
+          "goto": "academy_stars",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_professor_nettle",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "back",
+          "label": "Back down to the camp",
+          "icon": "back",
+          "goto": "camp",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_professor_nettle",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "academy_stars": {
+      "type": "story",
+      "narration": "Professor Nettle lets you look through the telescope. Even by day, the stars are so close you could count their points. Then the telescope sneezes. Brass rattles. Dust puffs out of the far end. \"Bless you,\" says the professor, to the telescope. \"It does that when it sees something new.\"",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Professor Nettle"
+        }
+      ],
+      "choices": [
+        {
+          "id": "back",
+          "label": "Back down to the camp",
+          "icon": "back",
+          "goto": "camp",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_professor_nettle",
               "value": true
             }
           ]

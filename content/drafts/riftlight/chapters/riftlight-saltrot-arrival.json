@@ -119,22 +119,10 @@
     },
     "flats_rest": {
       "type": "rest",
-      "narration": "You rest above the tide line. Farther along the flats, new silt is hiding old routes. Your guide is ready to show you where to look next. Out past the shell-banks, a tall wooden house stands on stilts. Loose pages keep fluttering out of its top.",
+      "narration": "You rest above the tide line. Farther along the flats, new silt is hiding old routes. Your guide is ready to show you where to look next.",
       "heal": 0,
-      "choices": [
-        {
-          "id": "stilts",
-          "label": "Climb the ladder to the stilt house",
-          "icon": "star",
-          "goto": "academy"
-        },
-        {
-          "id": "follow",
-          "label": "Follow your guide",
-          "icon": "travel",
-          "goto": "flats_onward"
-        }
-      ],
+      "choices": [],
+      "outcome": "success",
       "variants": [
         {
           "when": {
@@ -144,89 +132,6 @@
         }
       ],
       "art": "scenes/riftlight/stuttering-flats"
-    },
-    "flats_onward": {
-      "type": "rest",
-      "narration": "You step back onto the shells. The Skupper skips ahead and waits at every safe step, front fins tapping, until you catch up.",
-      "heal": 0,
-      "choices": [],
-      "outcome": "success",
-      "art": "scenes/riftlight/stuttering-flats"
-    },
-    "academy": {
-      "type": "story",
-      "narration": "At the top of the ladder is a classroom with no roof at all, only sky. This school is called the Academy. Here students learn to be a Starweaver, a hero who reads the stars. A dragonling named Professor Nettle stands beside a huge brass telescope. Homework floats up off the desks and drifts away over the flats. Nobody chases it. \"It comes down somewhere,\" says the professor. On a cushion sits a star circlet. A Starweaver's light lives in that circlet, and a dusk hood worn beside it starts to itch. \"Anyone who wants the circlet,\" says Professor Nettle, \"may try it on.\"",
-      "art": "scenes/riftlight/stuttering-flats",
-      "variants": [
-        {
-          "when": {
-            "flag": "met_professor_nettle"
-          },
-          "text": "Professor Nettle waves from beside the big brass telescope. \"Back at the Academy! Mind the homework.\" A page floats past your nose and off over the flats. The star circlet waits on its cushion for anyone who wants to try it on.",
-          "replace": true
-        }
-      ],
-      "classPlace": "starweaver",
-      "cast": [
-        {
-          "figure": "characters/dragonling",
-          "name": "Professor Nettle"
-        }
-      ],
-      "choices": [
-        {
-          "id": "telescope",
-          "label": "Look through the telescope",
-          "icon": "eye",
-          "goto": "academy_stars",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "met_professor_nettle",
-              "value": true
-            }
-          ]
-        },
-        {
-          "id": "back",
-          "label": "Back down to the flats",
-          "icon": "back",
-          "goto": "flats_rest",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "met_professor_nettle",
-              "value": true
-            }
-          ]
-        }
-      ]
-    },
-    "academy_stars": {
-      "type": "story",
-      "narration": "Professor Nettle lets you look through the telescope. Even by day, the stars are so close you could count their points. Then the telescope sneezes. Brass rattles. Dust puffs out of the far end. \"Bless you,\" says the professor, to the telescope. \"It does that when it sees something new.\"",
-      "art": "scenes/riftlight/stuttering-flats",
-      "cast": [
-        {
-          "figure": "characters/dragonling",
-          "name": "Professor Nettle"
-        }
-      ],
-      "choices": [
-        {
-          "id": "back",
-          "label": "Back down to the flats",
-          "icon": "back",
-          "goto": "flats_rest",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "met_professor_nettle",
-              "value": true
-            }
-          ]
-        }
-      ]
     }
   },
   "llmHints": {

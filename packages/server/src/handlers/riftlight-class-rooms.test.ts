@@ -7,7 +7,7 @@
  * The rooms are side rooms of Riftlight places, each entered from that
  * place's rest scene (docs/class-mastery.md §2): the Rookery on the Exchange's
  * rooftops, the Conservatory off the singing hall, the Dojo up the slope from
- * the Riftseekers' camp, the Academy on stilts above the Saltrot. One hero
+ * the Riftseekers' camp, and the Academy in a roofless tower above it. One hero
  * walks the graph to all four: a Thornguard Expert who once earned Starweaver
  * Apprentice puts on the dusk hood, the song bell, the thorn bracer again
  * (still Expert) and the star circlet (still Apprentice).
@@ -142,22 +142,15 @@ describe("the four class rooms in Riftlight (#315)", () => {
     expect((await worn()).actions).toEqual(expect.arrayContaining(["brace", "shove", "bramble_wall"]));
     expect((await worn()).actions).not.toContain("unbreakable");
     await must({ type: "CHOOSE", choiceId: "back" });
-    await must({ type: "CHOOSE", choiceId: "set_out" });
+    expect((await state()).sceneId).toBe("camp");
 
-    // The hidden opening, woken with the hall's note, and across to the Saltrot.
-    await travel("departure-to-hidden", "riftlight-hidden-glacier-rift");
-    await must({ type: "PLAYTEST_GOTO", sceneId: "sing" });
-    await must({ type: "CHOOSE", choiceId: "continue" });
-    await must({ type: "CHOOSE", choiceId: "continue" });
-    await travel("glacier-to-saltrot", "riftlight-saltrot-arrival");
-
-    // The Saltrot: the stilt house's ladder to the Academy. Starweaver, still Apprentice.
-    await walkIn("flats_rest", "stilts", "academy", "starweaver");
+    // The same camp: the tower with no roof. Starweaver, still Apprentice.
+    await walkIn("camp", "tower", "academy", "starweaver");
     await must({ type: "SWITCH_CLASS", classId: "starweaver" });
     expect(await worn()).toMatchObject({ class: "starweaver", rank: "apprentice" });
     await must({ type: "CHOOSE", choiceId: "back" });
-    expect((await state()).sceneId).toBe("flats_rest");
-    await must({ type: "CHOOSE", choiceId: "follow" });
+    expect((await state()).sceneId).toBe("camp");
+    await must({ type: "CHOOSE", choiceId: "set_out" });
 
     // Four switches, and nothing earned was lost on the way.
     const stored = await row();
