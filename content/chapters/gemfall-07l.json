@@ -32,6 +32,34 @@
       "xp": 6
     }
   ],
+  "goal": {
+    "text": "Gather the ledger, the chord and a true answer, then hold the stone's hum at the bend.",
+    "steps": [
+      {
+        "id": "ledger",
+        "label": "Borrow the wardens' ledger",
+        "item": "tether_ledger",
+        "optional": true
+      },
+      {
+        "id": "chord",
+        "label": "Learn the choir's three notes",
+        "item": "tether_chord",
+        "optional": true
+      },
+      {
+        "id": "answer",
+        "label": "Find a true answer",
+        "item": "tether_question",
+        "optional": true
+      },
+      {
+        "id": "bend",
+        "label": "Face the stone's hum at the bend",
+        "flag": "faced_the_bend"
+      }
+    ]
+  },
   "props": {
     "tether_ledger": {
       "kind": "quest",
@@ -2080,6 +2108,10 @@
           "type": "setFlag",
           "flag": "clock_steady",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "faced_the_bend"
         }
       ],
       "choices": [
@@ -2105,6 +2137,10 @@
           "type": "setFlag",
           "flag": "clock_late",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "faced_the_bend"
         }
       ],
       "choices": [

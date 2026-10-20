@@ -620,13 +620,12 @@
       }
     },
     "goalStep": {
-      "description": "GoalStep in chapter.ts. Like an objective, `flag` is watched, not set: a step ticks when that run flag (or any of a list) is set.",
+      "description": "GoalStep in chapter.ts. Like an objective, it watches and never sets: a step ticks when its run flag (or any of a list) is set, or while the party holds its item, one of the chapter's own props.",
       "type": "object",
       "additionalProperties": false,
       "required": [
         "id",
-        "label",
-        "flag"
+        "label"
       ],
       "properties": {
         "id": {
@@ -657,8 +656,12 @@
         },
         "optional": {
           "type": "boolean"
+        },
+        "item": {
+          "$ref": "#/$defs/itemId"
         }
-      }
+      },
+      "$comment": "Exactly one of `flag` and `item`: enforced by tools/content/validate.mjs (Ajv's strict mode will not take a oneOf of requireds)."
     },
     "choice": {
       "description": "Choice in chapter.ts. `goto` is required \u2014 a choice that leads nowhere is the single most common authoring mistake and it must fail the build, not the table.",

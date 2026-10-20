@@ -1033,10 +1033,22 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
     }
   } else {
     const stepIds = new Set();
+    const effectsOfChapter = Object.entries(scenes).flatMap(([id, scene]) => effectsOf(scene, id));
     goal.steps.forEach((step, i) => {
       const at = `/goal/steps/${i}`;
       if (stepIds.has(step.id)) fail(`${at}/id`, `duplicate goal step id "${step.id}" in this chapter`);
       stepIds.add(step.id);
+      if ((step.flag === undefined) === (step.item === undefined)) {
+        fail(at, `step "${step.id}" must watch a flag or an item, and not both`);
+      }
+      if (step.item !== undefined) {
+        // One of this chapter's own props, so it cannot arrive already held from an earlier chapter.
+        if (!Object.hasOwn(chapter.props ?? {}, step.item)) {
+          fail(`${at}/item`, `item "${step.item}" is not one of this chapter's props`, "A step watches an item only this chapter hands over; anything else could arrive already held.");
+        } else if (!effectsOfChapter.some(([e]) => e.type === "grantQuestItem" && e.itemId === step.item)) {
+          fail(`${at}/item`, `item "${step.item}" is never handed over with grantQuestItem in this chapter, so this step can never tick`);
+        }
+      }
       for (const flag of goalStepFlags(step)) {
         // Watched, never set, exactly like an objective: a step nothing ticks sits empty all evening.
         if (!flagsSet.has(flag)) {
@@ -1064,7 +1076,7 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
       fail(
         `/goal/steps/${i}`,
         `step "${stepId}" is not on the spine: some path reaches the success ending "${ending}" without setting its flag`,
-        "Set the flag on a scene every path walks (or on each road's own scene), or mark the step `optional`.",
+        "Set the flag (or hand over the item) on a scene every path walks, or on each road's own scene, or mark the step `optional`.",
       );
     }
   }

@@ -288,14 +288,17 @@ Every chapter states what the party is trying to do, on the TV and every phone f
 steps that tick themselves ([content/README.md, "The chapter's goal"](../../content/README.md#the-chapters-goal)).
 A Gemfall goal follows the beat, never names someone a road in might not have met (a 4B party may
 never have met Gullet), never names or counts a great stone, and ticks on flags the chapter alone
-sets: the road, the pursuit and the rest of the route sets arrive already set, so they cannot be
-steps. The step flags were added for the goals, each a chapter-local `setFlag` on the scene where
+sets, or on one of its own quest items: the road, the pursuit and the rest of the route sets
+arrive already set, so they cannot be steps. 07l's ledger, chord and true answer are its own quest
+items and are optional steps, because the chapter is built to be finished without them (the bend
+has a bare-hands way). A step whose roll can fail is worded for what every party does ("Race for
+the caravan's stone"), never for the success only some get. The step flags were added for the goals, each a chapter-local `setFlag` on the scene where
 the thing happens; none crosses a chapter, so the endings, roads, setbacks and resumed save in
 `gemfall-compat.test.ts` do not move. In 02 nothing new is set between the wolves and the plank
 bridge, where the pinned mid-fight save resumes.
 
 <!-- goal-table: generated from the chapter files; keep it in step with them. -->
-| Chapter | Goal | Steps (flag) |
+| Chapter | Goal | Steps (what ticks each) |
 | --- | --- | --- |
 | `gemfall-01` | Get ready for the long trip north. | Hear which roads go north (`heard_of_the_roads`); Pack something for the road (`packed_for_the_road`); Find a bed for the night (`found_a_bed`); Join a caravan going north (`joined_a_caravan`) |
 | `gemfall-02` | Travel the Sunward Fields and choose your road north. | Help out at the egg stall (`helped_the_egg_stall`); Help at the broken bridge (`helped_at_the_bridge`); Get through the tall hedges (`got_through_the_hedges`); Choose your road north (`chose_a_road`) |
@@ -308,10 +311,10 @@ bridge, where the pinned mid-fight save resumes.
 | `gemfall-05a` | Cross the cracked bridge, and find out what its cracks are saying. | Get down to the bridge foot (`reached_the_bridge_foot`); Help map the bridge's cracks (`laid_out_the_survey`); Decide who to tell (`chose_who_to_tell`); Get across the bridge (`crossed_the_span`) |
 | `gemfall-05b` | Find out what the forest town remembers, then climb out to the foothills. | Read the oldest records (`read_the_old_knots`); Decide who to tell (`chose_who_to_tell`); Cross the deep gorge (`crossed_the_gorge`); Climb up out of the forest (`reached_the_foothills`) |
 | `gemfall-05c` | Get past the old boundary stones, and find out why they hold the rush back. | Read the old tally books (`read_the_tallies`); Calm the crowd at the stones (`settled_the_crowd`); Decide who to tell (`chose_who_to_tell`) |
-| `gemfall-06` | (to come) | |
-| `gemfall-07h` | (to come) | |
-| `gemfall-07l` | (to come) | |
-| `gemfall-07r` | (to come) | |
+| `gemfall-06` | Climb to the tower on the ridge, learn what the stones are, and say what it is all for. | Find somewhere warm to sleep (`slept_on_warm_stones`); Get up to the tower (`reached_the_tower`); Learn what the stones really are (`learned_the_whole_truth`); Say what it is all for (`said_what_for`) |
+| `gemfall-07h` | Beat three other crowds to the caravan's loudest stone at the worst bend. | Race the other crowds for stones (`got_ahead_at_the_pinch`); Race for the caravan's stone (`raced_for_the_stone`); Answer Hessa's offer (`answered_hessa`); Climb up, or walk away (`climbed_the_mountain` / `walked_away`) |
+| `gemfall-07l` | Gather the ledger, the chord and a true answer, then hold the stone's hum at the bend. | Borrow the wardens' ledger (holds `tether_ledger`, optional); Learn the choir's three notes (holds `tether_chord`, optional); Find a true answer (holds `tether_question`, optional); Face the stone's hum at the bend (`faced_the_bend`) |
+| `gemfall-07r` | Turn the road's stones toward home, and send the caravan's big stone home from the bend. | Start turning stones around (`found_help_at_the_pinch`); Meet Hessa's masks on the road (`met_the_masks`); Meet the big caravan at the bend (`met_the_caravan`); Climb the mountain (`climbed_the_mountain`) |
 | `gemfall-08` | Climb the mountain everyone else is running from, and give your answer. | Climb up to the mountain's shoulder (`reached_the_shoulder`); Reach the very top (`reached_the_summit`); Go deep inside the mountain (`found_the_deep_cave`); Answer every question you are asked (`answered_every_question`) |
 
 ## 5. Writing for the party you have
