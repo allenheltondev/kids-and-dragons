@@ -19,13 +19,14 @@ import type { PartyMember } from "@kad/shared";
 import type { ScenePriority } from "@kad/shared";
 import { useAbilities, useItems, useParty, usePreviews, useRules, useRunState } from "../store";
 import { describeCombatPreview, tablePreviews } from "../world/previews";
-import { setStageInsetBottom } from "../world/stage-inset";
+import { setStageInsetBottom, setStageInsetTop } from "../world/stage-inset";
 import { fitPlate, unfitPlate } from "./fit-plate";
 import { Icon } from "./icons";
 import { ClassToken } from "./ClassToken";
 import { VoteTicks } from "./VoteTicks";
 import { ClassPlaceRoll } from "./ClassPlace";
 import { chapterHeading } from "./campaign-copy";
+import { ChapterGoalCard, useChapterGoal } from "./ChapterGoal";
 import { steppedAwayLine } from "./presence-copy";
 import "./shared.css";
 import "./NarrationPanel.css";
@@ -156,6 +157,35 @@ export function NarrationPanel(): ReactElement | null {
     spokenHint.current = key;
     speak(hint, { source: "ui" });
   }, [sceneId, hint]);
+
+  /*
+   * The chapter's goal (#356), after the story and only on the chapter's first scene, so the
+   * table hears what it is trying to do as the chapter starts. Once per chapter on this screen.
+   * A step that ticks is one short line after the scene's own words, never over them: the
+   * story moves on as it ticks, and "Done: get past the bridge troll" is the room's business
+   * too. A screen that loads mid-chapter reads neither, since nothing just happened.
+   */
+  const goal = useChapterGoal();
+  const goalChapter = goal?.chapterId ?? null;
+  const atStart = goal !== null && sceneId !== null && goal.entry === sceneId;
+  const spokenGoal = useRef<string | null>(null);
+  useEffect(() => {
+    if (goal === null || goalChapter === null || sceneId === null || spokenGoal.current === goalChapter) return;
+    spokenGoal.current = goalChapter;
+    if (atStart) speak(`Your goal: ${goal.goal.text}`, { source: "narration" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [goalChapter, atStart, sceneId]);
+  const ticked = goal === null ? "" : goal.done.map(Number).join("");
+  const heardTicks = useRef<{ chapterId: string; done: boolean[] } | null>(null);
+  useEffect(() => {
+    if (goal === null) return;
+    const before = heardTicks.current;
+    heardTicks.current = { chapterId: goal.chapterId, done: goal.done };
+    if (before === null || before.chapterId !== goal.chapterId) return;
+    const fresh = goal.goal.steps.filter((_, i) => goal.done[i] && !before.done[i]);
+    if (fresh.length > 0) speak(`Done: ${fresh.map((step) => step.label).join(", ")}.`, { source: "ui" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [goalChapter, ticked]);
 
   /* The fitting stall's words (#312), after the story: they are narration too (spec §11). */
   const spokenStall = useRef<string | null>(null);
@@ -325,6 +355,32 @@ export function NarrationPanel(): ReactElement | null {
     };
   }, [fighting, state === null]);
 
+  /*
+   * How far down the pane the head reaches (the chapter's name and its goal, #356), told to the
+   * stage the same way: the figures already stand below the sky the head sits on, and a head
+   * that reaches further moves the frame down just enough (stage-inset.ts `storyStageFrame`).
+   */
+  const head = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    const element = head.current;
+    if (fighting || element === null) {
+      setStageInsetTop(0);
+      return;
+    }
+    const report = (): void => {
+      const pane = element.parentElement?.getBoundingClientRect().top ?? 0;
+      setStageInsetTop(element.getBoundingClientRect().bottom - pane);
+    };
+    report();
+    if (typeof ResizeObserver === "undefined") return () => setStageInsetTop(0);
+    const observer = new ResizeObserver(report);
+    observer.observe(element);
+    return () => {
+      observer.disconnect();
+      setStageInsetTop(0);
+    };
+  }, [fighting, state === null]);
+
   if (state === null) return null;
 
   return (
@@ -334,12 +390,15 @@ export function NarrationPanel(): ReactElement | null {
       }`}
       aria-live="polite"
     >
-      <header className="narration__head">
+      <header className="narration__head" ref={head}>
         {state.chapterId === null ? null : (
           <h2 className="narration__chapter">
             <span>{chapterHeading(state) ?? prettyChapter(state.chapterId)}</span>
           </h2>
         )}
+        {/* What the party is trying to do (#356), under the name, on the sky and never on the
+            plate. In a fight the board is the picture, and WorldView folds it out of the way. */}
+        {fighting ? null : <ChapterGoalCard place="world" />}
 
         {/*
           Hand-offs in the air (spec §9.4). On the shared screen for the same
