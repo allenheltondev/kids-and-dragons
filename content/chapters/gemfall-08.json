@@ -3249,7 +3249,7 @@
       }
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "the campaign's finale: awe, warmth, and consequence; the dragon is ancient, dry and fair; losses are grief and consequence, never gore, and always end on a spark",
     "vocabulary": "age-8",
     "forbidden": [

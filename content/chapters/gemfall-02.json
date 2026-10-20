@@ -2158,7 +2158,7 @@
       "choices": []
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "warm green farm country with something wrong at the edges; funny, kind, a little uneasy, never scary",
     "vocabulary": "age-8",
     "forbidden": [

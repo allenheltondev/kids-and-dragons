@@ -4,8 +4,7 @@
  * The rule every test here defends: a file that is missing, 404s, or will not
  * decode leaves the synthesized recipe playing. The failure mode of an asset
  * pipeline must never be a table sitting in silence wondering whether the game
- * is broken — the same promise the live-narration layer makes about authored
- * text, for the same reason.
+ * is broken.
  */
 
 import { describe, expect, it, vi } from "vitest";

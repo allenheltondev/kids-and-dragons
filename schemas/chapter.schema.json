@@ -119,8 +119,8 @@
         "$ref": "#/$defs/scene"
       }
     },
-    "llmHints": {
-      "description": "Feeds the live layer's cached prefix and its safety validator (architecture \u00a76.3, \u00a76.5).",
+    "voiceGuide": {
+      "description": "The chapter's voice guide for its authors: tone, reading level, what never appears, and how its chapter-scoped characters sound. VoiceGuide in chapter.ts; nothing at play time reads it.",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -2159,7 +2159,7 @@
       }
     },
     "priority": {
-      "description": "ScenePriority in chapter.ts. 1 is a revelation the campaign turns on, 2 a clue worth remembering; absent is an ordinary scene. Drawn differently on the shared screen, and never rewritten by the live layer. content/README.md, \"Priority scenes\".",
+      "description": "ScenePriority in chapter.ts. 1 is a revelation the campaign turns on, 2 a clue worth remembering; absent is an ordinary scene. Drawn differently on the shared screen, and every p1 visited is retold on the end-of-chapter recap. content/README.md, \"Priority scenes\".",
       "enum": [
         1,
         2

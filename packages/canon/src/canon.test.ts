@@ -544,8 +544,8 @@ describe("named individuals — D8", () => {
         path.join(process.cwd(), "content", "chapters", "bramblewood-01.json"),
         "utf8",
       ),
-    ) as { llmHints?: { npcVoices?: Record<string, string> } };
-    const voiced = Object.keys(chapter.llmHints?.npcVoices ?? {});
+    ) as { voiceGuide?: { npcVoices?: Record<string, string> } };
+    const voiced = Object.keys(chapter.voiceGuide?.npcVoices ?? {});
     expect(voiced).toContain("door_voice");
     expect(registry.byId.has("individual.door_voice")).toBe(false);
   });

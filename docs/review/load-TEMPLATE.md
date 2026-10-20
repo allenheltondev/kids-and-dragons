@@ -12,7 +12,6 @@ Copy this to `docs/review/load-<date>.md`. Procedure: `docs/review/load-README.m
 | Base URL | |
 | Script commit (`tools/load/`) | |
 | Run from (machine, network) | |
-| Live narration layer on staging | off / on |
 | API Gateway throttle at the time | rate 50, burst 100 (`infra/template.yaml`) |
 | Options | `--phones 3 --think 1500 --heartbeat 20000` unless noted |
 

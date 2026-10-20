@@ -135,7 +135,7 @@ held by `tools/content/first-steps.test.mjs`:
 - **A `hint`** is one or two sentences of what to tap, in the game's voice: "This is the board. On
   your turn, tap a gold square to walk there." The shared screen shows it under the narration and
   reads it after it; the phone shows it with a button that reads it again. It is never narration,
-  so the live layer and the recap never see it. Only the practice has hints: a real chapter trusts
+  so the recap never sees it. Only the practice has hints: a real chapter trusts
   the table to know the game.
 - **Nothing costs anything.** `xpAward` is 0, no objectives or props, and no `damage`, item,
   coin or XP effects. Every failed roll and every lost fight goes on to the same next step, and
@@ -186,12 +186,10 @@ stops meaning anything. As a rule of thumb, a chapter has at most one p1 on any 
 
 What it does beyond the look:
 
-- **The words are kept exactly.** The live layer never rewrites a priority scene (and never pays
-  to prefetch one), because a paraphrase is free to soften or drop the very fact the scene exists
-  to deliver. Variants and `{tokens}` still apply.
 - **The ribbon is said aloud** ahead of the narration, so a listener gets it too.
-- **The end-of-chapter recap is told every p1 the party walked through** and asked to say it
-  plainly, so the table hears the revelation again before they go to bed.
+- **The end-of-chapter recap retells every p1 the party walked through**, once each and in its
+  own words (variants and `{tokens}` resolved), so the table hears the revelation again before
+  they go to bed.
 
 Put the fact in the narration itself, in plain words. The ribbon tells the room to pay attention;
 it cannot tell them what to pay attention to.

@@ -130,7 +130,7 @@ export function NarrationPanel(): ReactElement | null {
    * twice.
    *
    * One utterance per scene, not per render. The key covers a narration swap
-   * inside the same scene, which the live LLM layer can do (spec §10.2).
+   * inside the same scene.
    */
   const spokenNarration = useRef<string | null>(null);
   useEffect(() => {

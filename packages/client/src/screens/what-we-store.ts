@@ -170,8 +170,8 @@ export const ELSEWHERE: readonly { title: string; what: string }[] = [
     what: "When the game breaks on a phone or the TV, it tells us in one log line: what kind of failure it was, which version, which page, and whether it was a phone, a tablet or a TV. What the error itself said is never sent, so nothing a kid typed can be in it, and no names, emails, room codes or sign-in tokens either. The server checks every field again before it logs. Logged, not stored: no report is kept in the game's table.",
   },
   {
-    title: "Live narration",
-    what: "Only when it is switched on: the hero and kid names in a scene are sent to the AI that writes the narration.",
+    title: "No AI at the table",
+    what: "The stories are written ahead of time, and the game makes no AI calls while it runs. Nothing a kid types, picks or does in a game is sent to an AI model.",
   },
 ];
 

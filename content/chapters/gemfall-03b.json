@@ -1852,7 +1852,7 @@
       "outcome": "setback"
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "warm, foggy, a little spooky but never scary; the marsh knows something and won't say it",
     "vocabulary": "age-8",
     "forbidden": [

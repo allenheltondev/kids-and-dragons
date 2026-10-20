@@ -18,7 +18,7 @@
       "outcome": "success"
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
     "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
     "forbidden": [
