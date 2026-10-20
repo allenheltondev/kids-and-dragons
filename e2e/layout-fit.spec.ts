@@ -380,7 +380,20 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
         return send(input, init);
       };
     });
+    // What the page said, if the home screen does not come up (it did not on
+    // CI once, and only for this test): its text, its address and its errors.
+    const troubles: string[] = [];
+    kid.on("pageerror", (error) => troubles.push(`pageerror: ${error.message}`));
+    kid.on("console", (message) => {
+      if (message.type() === "error") troubles.push(`console: ${message.text()}`);
+    });
     await kid.goto("/");
+    await expect(kid.getByRole("button", { name: /want to host/i }))
+      .toBeVisible(TAP)
+      .catch(async (error: Error) => {
+        const text = await kid.locator("body").innerText().catch(() => "(no body)");
+        throw new Error(`${error.message}\nurl: ${kid.url()}\n${troubles.join("\n")}\npage: ${text.slice(0, 1500)}`);
+      });
     await kid.getByRole("button", { name: /want to host/i }).click(TAP);
     await kid.getByText("Phone Mode").click();
     await kid.getByLabel("Your adventurer name").fill("Grown-up");
