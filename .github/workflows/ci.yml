@@ -37,7 +37,7 @@ jobs:
     # Which of the jobs below can say anything about this change
     # (tools/ci/changes.mjs, where the rules and their reasons live). A few
     # seconds here saves minutes on every pull request: a docs PR used to run
-    # the whole pipeline, and any manifest edit ran the rig gates.
+    # the whole pipeline, and every manifest edit ran the full pipeline.
     #
     # The jobs below skip with `if:` rather than the workflow using `on.paths`,
     # because a job skipped by `if:` reports as passed and so satisfies a

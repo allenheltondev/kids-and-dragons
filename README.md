@@ -196,3 +196,5 @@ both are built and tested.
 Characters, NPCs, and enemies use finished static illustrations with subtle breathing.
 Story and combat retain travel, knockdowns, targeting, and effects without a rig runtime.
 See [the art pipeline](docs/art-pipeline.md) for the single-image delivery contract.
+
+Lockfile maintenance: use `npx npm@10.9.4 install --package-lock-only` to match CI.

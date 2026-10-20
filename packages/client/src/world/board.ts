@@ -29,6 +29,25 @@
  * FIGURES: heroes and enemies use finished transparent illustrations. Shared
  * procedural motion keeps feet planted while the board handles travel, falls,
  * targeting, damage numbers and spell effects.
+ *
+ * TILE ART: sliced from `assets/biomes/<biome>/tiles.png` — row 0 is the four
+ * floor variants, row 1 the four blocked variants (asset-brief §4.5). A sheet
+ * that fails to load falls back to flat-coloured tiles in the theme palette,
+ * with blocked tiles hatched — the same "a placeholder looks like a
+ * placeholder" rule the character sprites follow. The variant per tile is a
+ * deterministic hash of its coordinates so every client lays the same floor.
+ *
+ * THE PLACE FIGHTING BACK (#201): a fight with an `environment` gets one more
+ * layer over the floor — hazard ground, rift exits, the captive's square —
+ * decided square by square in world/environment-overlay.ts and only stroked
+ * here, in procedural shapes (no art: the overlay must read on every biome's
+ * sheet and on the flat fallback alike). A fight without one never builds the
+ * layer, so its scene graph is node for node what it was. A hero who steps
+ * through an exit fades out on the `escaped` beat and leaves the board with the
+ * patch, the way a beaten monster does (§7.3); the clock and the words for
+ * each beat are the shared screen's DOM (screens/RiftStatus.tsx), not Pixi
+ * text, so they stay sharp and size with the pane.
+ * ---------------------------------------------------------------------------
  */
 
 import { reducedMotion } from "../a11y/prefs";
@@ -53,7 +72,6 @@ import {
   WALK_RATE,
   approach,
   biomeTilesUrl,
-  characterArtUrl,
   characterWorldArtUrl,
   drawContactShadow,
   drawPlaceholder,
@@ -221,6 +239,8 @@ interface BoardActor {
    * whoever is nearest rather than staring at the left edge all fight.
    */
   facing: 1 | -1;
+  /** Stable phase for this actor's idle breath. */
+  phase: number;
   /**
    * The squares still to cross on a walk, as board-pixel feet positions,
    * nearest first. While non-empty the figure walks them at a steady pace
@@ -523,6 +543,7 @@ export function createBoardLayer(): BoardLayer {
       label,
       puffBadge: null,
       labelText: nameplateLabel(named),
+      phase: Math.random() * Math.PI * 2,
       facing: facingFor(current.encounter, combatant.id) === "right" ? -1 : 1,
       route: [],
       leaving: false,
@@ -968,6 +989,7 @@ export function createBoardLayer(): BoardLayer {
 
     tick(dtSeconds: number) {
       if (destroyed) return;
+      const still = reducedMotion();
       clock += dtSeconds;
       pulse += dtSeconds;
 
@@ -1025,7 +1047,7 @@ export function createBoardLayer(): BoardLayer {
           if (actor.label) actor.label.alpha = actor.art.alpha;
           continue;
         }
-        const breath = idleBreath(pulse, actor.container.uid, reducedMotion() || actor.down);
+        const breath = idleBreath(pulse, actor.phase, still || actor.down);
         actor.art.scale.y = 1 + breath;
         actor.shadow.scale.set(breathingShadowScale(breath));
         if (actor.down) {

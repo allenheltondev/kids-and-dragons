@@ -47,9 +47,6 @@ const NOT_GAME = [
   /^wiki\//,
   /^requirements-dev\.txt$/,
   /^\.github\/workflows\/(deploy|prod-deploy|wiki-deploy)\.yml$/,
-  /^assets\/(characters|character-rigs)\/.*\/parts\//,
-  /^assets\/(characters|character-rigs)\/.*\/joints\.json$/,
-  /^assets\/(characters|character-rigs)\/.*\/seam-exceptions\.json$/,
 ];
 
 /** On top of NOT_GAME, what staging also does not need: tests change nothing that ships. */

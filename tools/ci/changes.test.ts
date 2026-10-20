@@ -23,3 +23,13 @@ describe("CI change classification", () => {
     expect(classify([".github/workflows/ci.yml"])).toEqual({ build: true, e2e: true, deploy: false });
   });
 });
+
+it("treats docs data as documentation", () => {
+  expect(classify(["docs/entry-scenes-prompts.json"])).toEqual({ build: false, e2e: false, deploy: false });
+});
+it.each(["playwright.prod.config.ts", "packages/server/src/dice.test.ts", "e2e/first-playable.spec.ts"])("does not deploy test-only change %s", path => {
+  expect(classify([path]).deploy).toBe(false);
+});
+it("checks and ships entity art", () => {
+  expect(classify(["assets/entities/sheeple/assembled.png"])).toEqual(all);
+});
