@@ -46,7 +46,7 @@
       "discovers": [
         "creature.mosshorn"
       ],
-      "narration": "The realm reads you now. Hedges grow slower as you pass. A mosshorn on the ridge sniffs your packs and quietly leaves. The warrens go silent for a mile around you, and the silence follows you like a dog that nobody is feeding. Up ahead, every road funnels into the Pinch, one gap between two red hills, and somewhere in it is the next stone on your list.",
+      "narration": "The realm reads you now. Hedges grow slower as you pass. A mosshorn on the ridge sniffs your packs and quietly leaves. The warrens go silent for a mile around you, and the silence follows you like a dog that nobody is feeding. Up ahead, every road funnels into the Pinch, one gap between two red hills. Finish the collection, you told Pellam at the citadel. Here, that means one stone above all: the loudest stone on the road, riding in the fattest caravan in the funnel. Tomorrow it comes round the worst bend in the north road, and three other crowds want it too. Get there first.",
       "choices": [
         {
           "id": "walk_on",
@@ -182,7 +182,7 @@
           "size": "small"
         }
       ],
-      "narration": "Bryony slides down the ladder. \"Everything that hums,\" she says. \"The people in masks pay double for it. The wardens take it for nothing. And Grandmother says not to sell it at all.\" She looks at your humming packs. \"You're the weather people,\" she says. \"Everybody's talking about you.\"",
+      "narration": "Bryony slides down the ladder. \"Everything that hums,\" she says. \"Hessa's singers in the bark masks pay double for it. The wardens take it for nothing. And Grandmother says not to sell it at all.\" She looks at your humming packs. \"You're the weather people,\" she says. \"Everybody's talking about you.\"",
       "choices": [
         {
           "id": "on",
@@ -213,7 +213,7 @@
     },
     "choice_the_race": {
       "type": "choice_point",
-      "narration": "Three other crowds want the same stones you do: wardens with numbered boxes, grandmothers with knitting, and people in bark masks with sacks. You need to get ahead of all of them. How?",
+      "narration": "Three other crowds want the same stones you do: wardens with numbered boxes, grandmothers with knitting, and people in painted bark masks with sacks. The masks are Hessa's friends from the soup tent, the Deep Hollow. They wear them to sing to the mountain, and they want to wake it up so it can fix things, so they are buying every stone they can. You need to get ahead of all of them. How?",
       "choices": [
         {
           "id": "warden_pass",
@@ -511,7 +511,7 @@
     },
     "scene_road_gifts": {
       "type": "story",
-      "narration": "The trading is fast and loud and everybody is shouting prices. And in the middle of it, the road starts bringing things back to you: things you did on the way here, walking up the hill on their own legs, as if the whole realm had been keeping your receipts.",
+      "narration": "The trading is fast and loud and everybody is shouting prices. A warden runner squeezes through with a note from Pellam, copied out of the citadel ledger: your names, and beside them COLLECT, with a small question mark. Under it he has written: STILL? And in the middle of it all, the road starts bringing things back to you: things you did on the way here, walking up the hill on their own legs, as if the whole realm had been keeping your receipts.",
       "choices": [
         {
           "id": "ossley",
@@ -2456,7 +2456,7 @@
     },
     "walk_scene_news": {
       "type": "story",
-      "narration": "\"Nobody knows much,\" says Brisk. \"The wardens are guessing. The cult is singing. The dragon is being a dragon. Everybody's waiting for somebody to do something.\" She looks at your packs, then at you, and does not say anything else, which for a centaur is very loud.",
+      "narration": "\"Nobody knows much,\" says Brisk. \"The wardens are guessing. The masks are singing. The dragon is being a dragon. Everybody's waiting for somebody to do something.\" She looks at your packs, then at you, and does not say anything else, which for a centaur is very loud.",
       "cast": [
         {
           "figure": "cast/brisk",
