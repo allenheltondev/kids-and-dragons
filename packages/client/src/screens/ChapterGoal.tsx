@@ -121,15 +121,14 @@ export function ChapterGoalCard({ place, folded = false }: ChapterGoalCardProps)
               data-done={done[i] ? "true" : "false"}
               data-next={i === next ? "true" : undefined}
             >
-              <span className="goal__box" aria-hidden="true">
+              {/* The box says its state in words, never colour alone (spec §11). */}
+              <span className="goal__box" role="img" aria-label={done[i] ? "Done" : "Not yet"}>
                 {done[i] ? <Icon name="check" /> : null}
               </span>
               <span className="goal__label">
                 {step.label}
                 {step.optional ? <span className="goal__maybe"> (if you can)</span> : null}
               </span>
-              {/* Words for the step's state, never colour alone (spec §11). */}
-              <span className="kad-sr-only">{done[i] ? ", done" : ", not yet"}</span>
               {fresh.has(i) ? (
                 <span className="goal__sparks" aria-hidden="true">
                   <i /><i /><i /><i /><i /><i />
