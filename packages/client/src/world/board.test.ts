@@ -580,3 +580,45 @@ describe("destroy", () => {
     expect(() => layer.destroy()).not.toThrow();
   });
 });
+
+// ---------------------------------------------------------------------------
+// True relative size (#362)
+// ---------------------------------------------------------------------------
+
+describe("true size on the board", () => {
+  function sized(species: string[], art: string) {
+    const chars = species.map((s, i) => ({ ...character(`c${i}`, `Hero${i}`), species: s }) as ResolvedCharacter);
+    const encounter = encounterOf(chars, chars.map((_, i) => ({ x: i, y: 0 })));
+    const layer = createBoardLayer();
+    layer.update({ ...viewOf(encounter, chars), enemyArt: { wisp: art } });
+    layer.tick(0.016);
+    return layer;
+  }
+
+  it("stands the heroes in proportion to each other and the enemy at its canon height", () => {
+    const layer = sized(["bigfoot", "kitsune"], "enemies/river_drake");
+    const sizes = layer.figureSizes();
+    expect(sizes.c0!.height / sizes.c1!.height).toBeCloseTo(215 / 85);
+    expect(sizes["wisp#1"]!.height / sizes.c0!.height).toBeCloseTo(180 / 215);
+    expect(sizes["wisp#1"]!.stance).toBe("standing");
+    layer.destroy();
+  });
+
+  it("puts a tiny enemy on the floor, lifted off its square if it hovers", () => {
+    const layer = sized(["unicorn"], "enemies/will_o_wisp");
+    const wisp = layer.figureSizes()["wisp#1"]!;
+    expect(wisp.height).toBe(BOARD_TILE_PX * 0.55);
+    expect(wisp.stance).toBe("hovering");
+    layer.destroy();
+  });
+
+  it("shrinks every figure together when the tallest would pass its headroom", () => {
+    // A frost wyrm fits at natural scale (260 cm is 2.2 tiles); a troll-sized
+    // figure past 2.7 tiles would not, and the heroes shrink with it.
+    const natural = sized(["bigfoot"], "enemies/frost_wyrm").figureSizes();
+    expect(natural.c0!.height).toBeCloseTo(215 * 1.1);
+    const huge = sized(["bigfoot"], "enemies/boughkin").figureSizes();
+    expect(huge["wisp#1"]!.height).toBeCloseTo(BOARD_TILE_PX * 2.7);
+    expect(huge["wisp#1"]!.height / huge.c0!.height).toBeCloseTo(900 / 215);
+  });
+});
