@@ -72,7 +72,7 @@ async function readOnUntilArtAhead(phone: Page, code: string): Promise<string[]>
       const saved = JSON.parse(localStorage.getItem(`kad.session.${room}`) ?? "{}") as { sessionToken?: string };
       const headers: Record<string, string> = saved.sessionToken ? { authorization: `Bearer ${saved.sessionToken}` } : {};
       const { state } = (await (await fetch(`/api/state?code=${room}`, { headers })).json()) as {
-        state: { chapterId: string | null; sceneId: string | null };
+        state: { chapterId: string | null; sceneId: string | null; classPlace?: unknown };
       };
       return state;
     }, code);
@@ -83,7 +83,7 @@ async function readOnUntilArtAhead(phone: Page, code: string): Promise<string[]>
 
   for (let step = 0; step < 8; step += 1) {
     await expect.poll(async () => (await where()).sceneId, { timeout: 20_000 }).not.toBeNull();
-    const { chapterId, sceneId } = await where();
+    const { chapterId, sceneId, classPlace } = await where();
     const expected = artAhead((await chapterOf(chapterId!)).scenes, sceneId!);
     if (expected.length > 0) return expected;
     // Select, then confirm (spec §11). The confirm can take a moment to
@@ -91,8 +91,14 @@ async function readOnUntilArtAhead(phone: Page, code: string): Promise<string[]>
     // stops gently animating, so Playwright's "stable" check is skipped
     // once it is visible and enabled.
     await openPlayerTask(phone);
+    // Gemfall opens at the fitting stall (#312), which asks this new hero
+    // first: keep the class they were made with.
+    if (classPlace) {
+      await phone.getByRole("button", { name: /^stay a /i }).click(TAP);
+      await phone.getByRole("button", { name: /yes, keep it/i }).click(TAP);
+    }
     const confirm = phone.getByRole("button", { name: /do it!|yes, do that/i }).first();
-    await phone.locator(".prompt button").filter({ hasNotText: /do it!|yes, do that|wait, not yet|change/i }).first().click(TAP);
+    await phone.locator(".prompt:not(.class-place) button").filter({ hasNotText: /do it!|yes, do that|wait, not yet|change/i }).first().click(TAP);
     await expect(confirm).toBeEnabled(TAP);
     await confirm.click({ ...TAP, force: true });
     await expect.poll(async () => (await where()).sceneId, { timeout: 20_000 }).not.toBe(sceneId);
