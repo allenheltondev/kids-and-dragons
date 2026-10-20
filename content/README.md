@@ -216,11 +216,16 @@ Every chapter says what the party is trying to do, and the table can see it the 
   it keeps the pips and names only the next step. Read-aloud says the goal after the first scene's
   story, and "Done: …" after the scene a step ticks on.
 - **A step ticks when its flag is set**, or any one of a list. It is the same machinery as a bonus
-  objective: author a `setFlag` where the thing visibly happens and point the step at it. The tick
+  objective: author a `setFlag` where the thing visibly happens and point the step at it. A step
+  may watch an `item` instead, while anybody holds it, when the chapter already hands one over for
+  the thing (07l's ledger): one of the chapter's own `props`, given with `grantQuestItem`, so it
+  cannot arrive already held or be refused at a full bag. The tick
   gets a moment on screen (a gold box, a few sparks and a chime; under reduced motion, the gold
   only).
 - **Every step is on the spine.** `content:validate` refuses a step that some path to a success
-  ending can finish without ticking, naming the step and an ending that proves it. Set the flag on
+  ending can finish without ticking, naming the step and an ending that proves it. A failed roll is
+  a path: word the step for what every party does ("Race for the caravan's stone") and tick it on
+  both results, never for the success only some get. Set the flag on
   a scene every road walks, on each road's own result scene, or on every branch of a check or
   fight (a failed roll still did the thing). `optional: true` lifts the rule and draws "(if you
   can)"; use it rarely.
