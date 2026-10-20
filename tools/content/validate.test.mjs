@@ -367,6 +367,60 @@ describe("cross-file rules", () => {
   });
 });
 
+describe("the chapter's goal (#356)", () => {
+  it("catches a chapter with no goal", () => {
+    const result = withChapter((chapter) => { delete chapter.goal; });
+    expect(result.out).toContain("chapter has no goal");
+    expect(result.code).not.toBe(0);
+  });
+
+  it("catches a step watching a flag nothing sets", () => {
+    const result = withChapter((chapter) => { chapter.goal.steps[0].flag = "a_flag_nobody_sets"; });
+    expect(result.out).toContain('flag "a_flag_nobody_sets" is never set to true by any effect in this chapter, so this step can never tick');
+    expect(result.code).not.toBe(0);
+  });
+
+  it("catches a step some road to a success ending never ticks", () => {
+    const result = withChapter((chapter) => {
+      // An objective's flag: set on an optional choice, so a party can finish without it.
+      chapter.goal.steps[0].flag = chapter.objectives[0].flag;
+    });
+    expect(result.out).toMatch(/step "[a-z_]+" is not on the spine: some path reaches the success ending "[a-z_]+" without setting its flag/);
+    expect(result.code).not.toBe(0);
+  });
+
+  it("lets an optional step sit off the spine", () => {
+    const result = withChapter((chapter) => {
+      chapter.goal.steps[0].flag = chapter.objectives[0].flag;
+      chapter.goal.steps[0].optional = true;
+    });
+    expect(result.out).not.toContain("is not on the spine");
+    expect(result.code).toBe(0);
+  });
+
+  it("catches a step watching a route-set flag, which can arrive already set", () => {
+    const dir = copyTree();
+    const parts = ["content", "chapters", "gemfall-03a.json"];
+    const chapter = readJson(dir, ...parts);
+    chapter.goal.steps[0].flag = "route_river";
+    writeJson(dir, parts, chapter);
+    const result = validate(dir);
+    expect(result.out).toContain('flag "route_river" is a route-set member');
+    expect(result.code).not.toBe(0);
+  });
+
+  it("catches a goal of more than one sentence, or with an em dash", () => {
+    expect(withChapter((chapter) => { chapter.goal.text = "Find the door. Then open it."; }).out).toContain("the goal is more than one sentence");
+    expect(withChapter((chapter) => { chapter.goal.steps[1].label = "Find it \u2014 fast"; }).out).toContain("the goal has an em dash");
+  });
+
+  it("catches two steps with one id", () => {
+    const result = withChapter((chapter) => { chapter.goal.steps[1].id = chapter.goal.steps[0].id; });
+    expect(result.out).toContain("duplicate goal step id");
+    expect(result.code).not.toBe(0);
+  });
+});
+
 describe("the files themselves", () => {
   it("catches content that is not valid JSON at all", () => {
     // A half-saved file is the most ordinary way content breaks, and the one

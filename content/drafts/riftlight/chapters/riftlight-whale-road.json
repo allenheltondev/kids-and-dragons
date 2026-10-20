@@ -9,6 +9,26 @@
   "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "whales",
+  "goal": {
+    "text": "Help the keeper get the whales' island ready before the folds open.",
+    "steps": [
+      {
+        "id": "learn_signal",
+        "label": "Learn the keeper's quiet signal",
+        "flag": "practiced_the_whale_signal"
+      },
+      {
+        "id": "make_room",
+        "label": "Give the little whale room",
+        "flag": "made_room_for_the_whale"
+      },
+      {
+        "id": "teach_keeper",
+        "label": "Teach the new keeper the signals",
+        "flag": "taught_the_new_keeper"
+      }
+    ]
+  },
   "scenes": {
     "whales": {
       "type": "story",
@@ -325,6 +345,12 @@
           "icon": "hand",
           "goto": "olivia_question"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "practiced_the_whale_signal"
+        }
       ]
     },
     "keeper_lesson_1_changed": {
@@ -337,6 +363,12 @@
           "label": "Work with this result",
           "icon": "hand",
           "goto": "olivia_question"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "practiced_the_whale_signal"
         }
       ]
     },
@@ -378,6 +410,12 @@
           "icon": "hand",
           "goto": "olivia_question"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "practiced_the_whale_signal"
+        }
       ]
     },
     "keeper_lesson_2_changed": {
@@ -390,6 +428,12 @@
           "label": "Work with this result",
           "icon": "hand",
           "goto": "olivia_question"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "practiced_the_whale_signal"
         }
       ]
     },
@@ -828,10 +872,22 @@
       "prompt": "Widen the clear grass beside the lane. Choose who leads; everyone can help.",
       "art": "scenes/riftlight/whale-road",
       "onSuccess": {
-        "goto": "whale_choice_1_done"
+        "goto": "whale_choice_1_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "made_room_for_the_whale"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "whale_choice_1_changed"
+        "goto": "whale_choice_1_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "made_room_for_the_whale"
+          }
+        ]
       }
     },
     "whale_choice_1_done": {
@@ -881,10 +937,22 @@
       "prompt": "Make the working area quiet for a full circle. Choose who leads; everyone can help.",
       "art": "scenes/riftlight/whale-road",
       "onSuccess": {
-        "goto": "whale_choice_2_done"
+        "goto": "whale_choice_2_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "made_room_for_the_whale"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "whale_choice_2_changed"
+        "goto": "whale_choice_2_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "made_room_for_the_whale"
+          }
+        ]
       }
     },
     "whale_choice_2_done": {
@@ -998,10 +1066,22 @@
       "prompt": "Have her stop an imaginary group at the warning. Choose who leads; everyone can help.",
       "art": "scenes/riftlight/whale-road",
       "onSuccess": {
-        "goto": "handoff_sky_1_done"
+        "goto": "handoff_sky_1_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "taught_the_new_keeper"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "handoff_sky_1_changed"
+        "goto": "handoff_sky_1_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "taught_the_new_keeper"
+          }
+        ]
       }
     },
     "handoff_sky_1_done": {
@@ -1051,10 +1131,22 @@
       "prompt": "Have her call the watcher back when the wind changes. Choose who leads; everyone can help.",
       "art": "scenes/riftlight/whale-road",
       "onSuccess": {
-        "goto": "handoff_sky_2_done"
+        "goto": "handoff_sky_2_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "taught_the_new_keeper"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "handoff_sky_2_changed"
+        "goto": "handoff_sky_2_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "taught_the_new_keeper"
+          }
+        ]
       }
     },
     "handoff_sky_2_done": {

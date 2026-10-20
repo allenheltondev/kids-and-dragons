@@ -9,6 +9,26 @@
   "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "arrival",
+  "goal": {
+    "text": "Follow the changed river and find a safe way across.",
+    "steps": [
+      {
+        "id": "test_water",
+        "label": "Test the rushing water",
+        "flag": "tested_the_rushing_water"
+      },
+      {
+        "id": "cross",
+        "label": "Get across to the far path",
+        "flag": "reached_the_far_path"
+      },
+      {
+        "id": "check_warning",
+        "label": "Check the warning for travelers",
+        "flag": "tested_the_upper_warning"
+      }
+    ]
+  },
   "scenes": {
     "arrival": {
       "type": "story",
@@ -291,10 +311,22 @@
       "roller": "party",
       "prompt": "Time floating twigs past the central rock. Choose who leads while the others help.",
       "onSuccess": {
-        "goto": "test_flow_1_done"
+        "goto": "test_flow_1_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "tested_the_rushing_water"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "test_flow_1_changed"
+        "goto": "test_flow_1_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "tested_the_rushing_water"
+          }
+        ]
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
@@ -344,10 +376,22 @@
       "roller": "party",
       "prompt": "Survey the wider reach from two dry viewpoints. Choose who leads while the others help.",
       "onSuccess": {
-        "goto": "test_flow_2_done"
+        "goto": "test_flow_2_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "tested_the_rushing_water"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "test_flow_2_changed"
+        "goto": "test_flow_2_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "tested_the_rushing_water"
+          }
+        ]
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
@@ -901,7 +945,13 @@
           "goto": "river_turn_2"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "reached_the_far_path"
+        }
+      ]
     },
     "river_turn_1": {
       "type": "story",
@@ -1183,10 +1233,22 @@
       "roller": "party",
       "prompt": "Repeat where to stop and which ground was checked. Choose who leads while the others help.",
       "onSuccess": {
-        "goto": "last_check_1_done"
+        "goto": "last_check_1_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "tested_the_upper_warning"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "last_check_1_changed"
+        "goto": "last_check_1_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "tested_the_upper_warning"
+          }
+        ]
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
@@ -1236,10 +1298,22 @@
       "roller": "party",
       "prompt": "Repeat what must be looked at again on the next visit. Choose who leads while the others help.",
       "onSuccess": {
-        "goto": "last_check_2_done"
+        "goto": "last_check_2_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "tested_the_upper_warning"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "last_check_2_changed"
+        "goto": "last_check_2_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "tested_the_upper_warning"
+          }
+        ]
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },

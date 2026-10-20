@@ -25,6 +25,31 @@
       "xp": 12
     }
   ],
+  "goal": {
+    "text": "Find out what the forest town remembers, then climb out to the foothills.",
+    "steps": [
+      {
+        "id": "records",
+        "label": "Read the oldest records",
+        "flag": "read_the_old_knots"
+      },
+      {
+        "id": "tell",
+        "label": "Decide who to tell",
+        "flag": "chose_who_to_tell"
+      },
+      {
+        "id": "gorge",
+        "label": "Cross the deep gorge",
+        "flag": "crossed_the_gorge"
+      },
+      {
+        "id": "climb",
+        "label": "Climb up out of the forest",
+        "flag": "reached_the_foothills"
+      }
+    ]
+  },
   "props": {
     "facet_confiscated": {
       "kind": "quest",
@@ -410,6 +435,12 @@
           "label": "Thank him, and go and rest",
           "icon": "rest",
           "goto": "scene_knot_cords_rest"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "read_the_old_knots"
         }
       ]
     },
@@ -905,6 +936,12 @@
           "icon": "lantern",
           "goto": "scene_runner"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "chose_who_to_tell"
+        }
       ]
     },
     "choice_elders_gatherers": {
@@ -924,6 +961,12 @@
           "icon": "flame",
           "goto": "scene_runner"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "chose_who_to_tell"
+        }
       ]
     },
     "choice_elders_wardens": {
@@ -942,6 +985,12 @@
           "label": "Go and pack",
           "icon": "shield",
           "goto": "scene_runner"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "chose_who_to_tell"
         }
       ]
     },
@@ -1264,6 +1313,12 @@
           "icon": "clever",
           "goto": "check_hut_pages"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "crossed_the_gorge"
+        }
       ]
     },
     "scene_halfway_hut_sign": {
@@ -1557,6 +1612,12 @@
           "label": "Climb the lookout rock first",
           "icon": "eye",
           "goto": "scene_foothills_view_lookout"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "reached_the_foothills"
         }
       ]
     },

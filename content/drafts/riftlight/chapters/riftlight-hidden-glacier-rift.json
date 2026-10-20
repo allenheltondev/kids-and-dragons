@@ -9,6 +9,21 @@
   "estimatedMinutes": 15,
   "xpAward": 140,
   "entry": "search",
+  "goal": {
+    "text": "Search the glacier for another opening.",
+    "steps": [
+      {
+        "id": "trace_ticking",
+        "label": "Find what is making the ticking",
+        "flag": "traced_the_ticking"
+      },
+      {
+        "id": "decide",
+        "label": "Decide what to do about it",
+        "flag": "decided_at_the_fold"
+      }
+    ]
+  },
   "scenes": {
     "search": {
       "type": "story",
@@ -67,6 +82,12 @@
           "replace": true,
           "text": "The chime answers with a clear note and an echo. The opening is still ready, and the return remains available. Your first song was enough."
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "traced_the_ticking"
+        }
       ]
     },
     "read": {
@@ -78,6 +99,12 @@
           "label": "Choose what to do",
           "icon": "hand",
           "goto": "decide"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "traced_the_ticking"
         }
       ]
     },
@@ -91,6 +118,12 @@
           "icon": "hand",
           "goto": "decide"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "traced_the_ticking"
+        }
       ]
     },
     "decide": {
@@ -101,13 +134,25 @@
           "id": "sing",
           "label": "Sing the hall note together",
           "icon": "hand",
-          "goto": "sing"
+          "goto": "sing",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "decided_at_the_fold"
+            }
+          ]
         },
         {
           "id": "leave",
           "label": "Return to the hall and the shelf path",
           "icon": "hand",
-          "goto": "leave"
+          "goto": "leave",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "decided_at_the_fold"
+            }
+          ]
         }
       ]
     },

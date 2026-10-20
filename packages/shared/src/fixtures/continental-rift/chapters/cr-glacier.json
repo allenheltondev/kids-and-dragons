@@ -11,11 +11,18 @@
   "objectives": [
     { "id": "free_reader", "label": "Free the trapped yeti reader", "flag": "reader_freed", "xp": 25 }
   ],
+  "goal": {
+    "text": "Keep your feet on the cracking ice shelf.",
+    "steps": [
+      { "id": "face_wisps", "label": "Face the frost wisps", "flag": "faced_the_frost_wisps" },
+      { "id": "win_or_slip", "label": "Win the fight or slip away", "flag": "got_past_the_wisps" }
+    ]
+  },
   "scenes": {
     "scene_shelf": {
       "type": "story",
       "narration": "You step out onto an ice shelf at the top of the world. A yeti reader is stuck in a crack beside the glacier wall, and two frost wisps drift up out of the snow.",
-      "choices": [{ "id": "stand", "label": "Stand your ground", "icon": "swords", "goto": "fight_shelf" }]
+      "choices": [{ "id": "stand", "label": "Stand your ground", "icon": "swords", "goto": "fight_shelf", "effects": [{ "type": "setFlag", "flag": "faced_the_frost_wisps" }] }]
     },
     "fight_shelf": {
       "type": "encounter",
@@ -49,10 +56,11 @@
           "effects": [{ "type": "setFlag", "flag": "reader_freed" }]
         }
       },
-      "onVictory": { "goto": "scene_held", "narration": "The last frost wisp crumbles into snow." },
+      "onVictory": { "goto": "scene_held", "effects": [{ "type": "setFlag", "flag": "got_past_the_wisps" }], "narration": "The last frost wisp crumbles into snow." },
       "onDefeat": { "goto": "scene_slid", "narration": "The shelf tips, and you slide." },
       "onEscape": {
         "goto": "scene_through",
+        "effects": [{ "type": "setFlag", "flag": "got_past_the_wisps" }],
         "narration": "You squeeze through the crack as it grinds shut.",
         "variants": [
           { "when": { "flag": "reader_freed" }, "text": "The yeti reader squeezes through after you, blinking." },

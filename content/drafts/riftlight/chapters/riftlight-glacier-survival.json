@@ -9,6 +9,31 @@
   "estimatedMinutes": 15,
   "xpAward": 140,
   "entry": "arrival",
+  "goal": {
+    "text": "Get the little goat home safe and find somewhere warm.",
+    "steps": [
+      {
+        "id": "through_drift",
+        "label": "Get through the deep snow",
+        "flag": "got_past_the_drift"
+      },
+      {
+        "id": "goat_home",
+        "label": "Get the goat back to its herd",
+        "flag": "goat_back_with_herd"
+      },
+      {
+        "id": "get_warm",
+        "label": "Get everyone in from the cold",
+        "flag": "came_in_from_the_cold"
+      },
+      {
+        "id": "low_song",
+        "label": "Learn the low song",
+        "flag": "sang_the_low_note"
+      }
+    ]
+  },
   "scenes": {
     "arrival": {
       "type": "story",
@@ -304,6 +329,10 @@
           "type": "setFlag",
           "flag": "crossed_melt_dry",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "goat_back_with_herd"
         }
       ]
     },
@@ -316,6 +345,12 @@
           "label": "Follow the herd toward shelter",
           "icon": "hand",
           "goto": "herd"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "goat_back_with_herd"
         }
       ]
     },
@@ -401,6 +436,12 @@
         {
           "figure": "cast/yeti_elder",
           "name": "Yeti herder"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "came_in_from_the_cold"
         }
       ]
     },
@@ -524,6 +565,10 @@
           "type": "setFlag",
           "flag": "learned_glacier_note",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "sang_the_low_note"
         }
       ]
     },
@@ -633,6 +678,10 @@
           "type": "setFlag",
           "flag": "marked_glacier_drift",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "got_past_the_drift"
         }
       ]
     },
@@ -652,6 +701,10 @@
           "type": "setFlag",
           "flag": "sheltered_kid_on_detour",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "got_past_the_drift"
         }
       ]
     },
@@ -671,6 +724,10 @@
           "type": "setFlag",
           "flag": "found_drift_hollow",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "got_past_the_drift"
         }
       ]
     },

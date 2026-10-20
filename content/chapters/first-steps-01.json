@@ -8,6 +8,31 @@
   "estimatedMinutes": 15,
   "xpAward": 0,
   "entry": "scene_meadow_gate",
+  "goal": {
+    "text": "Learn how to play, one try at a time.",
+    "steps": [
+      {
+        "id": "board",
+        "label": "Walk across the board",
+        "flag": "walked_the_board"
+      },
+      {
+        "id": "card",
+        "label": "Play a card",
+        "flag": "played_a_card"
+      },
+      {
+        "id": "pond_wisps",
+        "label": "Stop the wisps by the pond",
+        "flag": "stopped_the_pond_wisps"
+      },
+      {
+        "id": "rest",
+        "label": "Stop for a rest",
+        "flag": "rested_on_the_picnic"
+      }
+    ]
+  },
   "scenes": {
     "scene_meadow_gate": {
       "type": "choice_point",
@@ -227,6 +252,10 @@
             "type": "heal",
             "amount": 20,
             "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "walked_the_board"
           }
         ],
         "narration": "You step through the garden gate. Tansy makes a tick on her clipboard. Flick and Dot arrive last, puffing little sparkles."
@@ -238,6 +267,10 @@
             "type": "heal",
             "amount": 20,
             "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "walked_the_board"
           }
         ],
         "narration": "Before anybody reaches the gate, you tag both wisps by accident. They spin like tops and laugh so hard they hiccup."
@@ -249,6 +282,10 @@
             "type": "heal",
             "amount": 20,
             "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "walked_the_board"
           }
         ],
         "narration": "Flick and Dot bump everybody over into the soft grass, then look very sorry about it and help you all back up. Tansy makes a tick on her clipboard anyway."
@@ -340,6 +377,10 @@
             "type": "heal",
             "amount": 20,
             "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "played_a_card"
           }
         ],
         "narration": "Tag, and tag! Flick spins in the air and lands upside down on a dandelion, and Dot lands on top of him. \"No fair,\" says Flick. \"Again tomorrow.\""
@@ -351,6 +392,10 @@
             "type": "heal",
             "amount": 20,
             "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "played_a_card"
           }
         ],
         "narration": "The wisps tag everybody first and do a little victory loop. Then they help you all up and say it was close. It was not close."
@@ -495,6 +540,10 @@
             "type": "heal",
             "amount": 20,
             "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "stopped_the_pond_wisps"
           }
         ],
         "narration": "You head down the path home with mud on your boots.",
@@ -520,6 +569,10 @@
             "type": "heal",
             "amount": 20,
             "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "stopped_the_pond_wisps"
           }
         ],
         "narration": "Tag, and tag! The wisps finally stop zipping around and sit on a reed to catch their breath.",
@@ -545,6 +598,10 @@
             "type": "heal",
             "amount": 20,
             "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "stopped_the_pond_wisps"
           }
         ],
         "narration": "Everybody slips in the mud, one after another, plop, plop, plop. Bun laughs so hard she rolls right over onto her feet."
@@ -611,6 +668,12 @@
           "label": "Ask Tansy for one more tip",
           "icon": "scroll",
           "goto": "scene_last_tip"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rested_on_the_picnic"
         }
       ]
     },

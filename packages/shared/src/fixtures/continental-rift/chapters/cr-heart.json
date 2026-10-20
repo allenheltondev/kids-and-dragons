@@ -8,11 +8,18 @@
   "estimatedMinutes": 10,
   "xpAward": 150,
   "entry": "scene_door",
+  "goal": {
+    "text": "Reach the very heart of the glacier.",
+    "steps": [
+      { "id": "face_guards", "label": "Face what guards the heart", "flag": "faced_the_heart_wisps" },
+      { "id": "win_fight", "label": "Win the fight in the clear ice", "flag": "beat_the_heart_wisps" }
+    ]
+  },
   "scenes": {
     "scene_door": {
       "type": "story",
       "narration": "Behind the blue door the ice is clear as glass, and in the middle of it the Great River begins as a single bright drop. Two wisps of cold light are guarding it.",
-      "choices": [{ "id": "face", "label": "Face the wisps", "icon": "swords", "goto": "fight_wisps" }]
+      "choices": [{ "id": "face", "label": "Face the wisps", "icon": "swords", "goto": "fight_wisps", "effects": [{ "type": "setFlag", "flag": "faced_the_heart_wisps" }] }]
     },
     "fight_wisps": {
       "type": "encounter",
@@ -21,7 +28,7 @@
       "enemies": [
         { "id": "heart_wisp", "name": "Heartlight Wisp", "creature": "will_o_wisp", "count": 2 }
       ],
-      "onVictory": { "goto": "scene_song", "narration": "The wisps fade into the ice, and the ice begins to sing." },
+      "onVictory": { "goto": "scene_song", "effects": [{ "type": "setFlag", "flag": "beat_the_heart_wisps" }], "narration": "The wisps fade into the ice, and the ice begins to sing." },
       "onDefeat": { "goto": "scene_pushed", "narration": "The wisps drive you back toward the door." }
     },
     "scene_song": {

@@ -31,6 +31,26 @@
       "xp": 8
     }
   ],
+  "goal": {
+    "text": "Get past the old boundary stones, and find out why they hold the rush back.",
+    "steps": [
+      {
+        "id": "tallies",
+        "label": "Read the old tally books",
+        "flag": "read_the_tallies"
+      },
+      {
+        "id": "crowd",
+        "label": "Calm the crowd at the stones",
+        "flag": "settled_the_crowd"
+      },
+      {
+        "id": "tell",
+        "label": "Decide who to tell",
+        "flag": "chose_who_to_tell"
+      }
+    ]
+  },
   "props": {
     "facet_unassigned": {
       "kind": "quest",
@@ -641,6 +661,12 @@
           "label": "Ask what's on the shelf behind her",
           "icon": "eye",
           "goto": "scene_here_first_onward"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "read_the_tallies"
         }
       ]
     },
@@ -1281,6 +1307,12 @@
           "goto": "scene_centaur_whisper_show_bark",
           "requiresItem": "verses_relay_spiral"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "settled_the_crowd"
+        }
       ]
     },
     "scene_shortcut": {
@@ -1531,6 +1563,12 @@
           "icon": "arrow",
           "goto": "end_through_the_stones"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "chose_who_to_tell"
+        }
       ]
     },
     "scene_tell_gatherers": {
@@ -1549,6 +1587,12 @@
           "icon": "arrow",
           "goto": "end_through_the_stones"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "chose_who_to_tell"
+        }
       ]
     },
     "scene_keep_close": {
@@ -1566,6 +1610,12 @@
           "label": "Walk north through the stones",
           "icon": "arrow",
           "goto": "end_through_the_stones"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "chose_who_to_tell"
         }
       ]
     },
