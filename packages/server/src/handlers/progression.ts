@@ -41,8 +41,12 @@ import {
   resumeJourney,
   spendStatPoint as applyStatPointSpend,
   switchClass as applyClassSwitch,
+  fitClass,
   classAnswerRefusal,
   classPlaceOf,
+  effectiveProgress,
+  fittingStallAt,
+  isNewHero,
   startCampaign,
   memberHome,
   startJourney,
@@ -1254,6 +1258,12 @@ export async function prepareStatPointSpend(
  * class put on, because it reads the party snapshot this returns; what the
  * class taken off earned this chapter stays on the run (`RunState.deeds`) and
  * is folded at the chapter's end.
+ *
+ * At the fitting stall (`stall`, #312) only the gate differs: the stall
+ * stands in this scene (`rules.fittingStall`), the hero is new on the stored
+ * row (no XP, the swap unspent), and the class may be any but the one worn.
+ * `fitClass` marks the swap spent in the same provisional write, so a failed
+ * campaign hands back the class and the swap together.
  */
 /** The same pair a stat-point spend prepares: the row, and the run that shows it. */
 export type PreparedClassSwitch = PreparedStatPointSpend;
@@ -1265,11 +1275,18 @@ export async function prepareClassSwitch(
   playerId: string,
   classId: unknown,
   chapter: Chapter | null,
+  stall = false,
 ): Promise<HandlerResult<PreparedClassSwitch>> {
-  const refusal = classAnswerRefusal(state, playerId, classId, true);
+  const refusal = classAnswerRefusal(state, playerId, classId, true, stall);
   if (refusal) return fail("ILLEGAL", refusal);
   const scene = state.sceneId ? chapter?.scenes[state.sceneId] : undefined;
-  if (!scene || classPlaceOf(scene) !== classId) {
+  if (stall) {
+    // The fitting stall (#312): where the rules say it stands, read from the
+    // chapter in play rather than only the run's mirror of it.
+    if (!scene || !chapter || !state.sceneId || !fittingStallAt(deps.content.rules(), chapter.id, state.sceneId)) {
+      return fail("ILLEGAL", "there is no fitting stall here");
+    }
+  } else if (!scene || classPlaceOf(scene) !== classId) {
     return fail("ILLEGAL", `this is not the ${String(classId)} place`);
   }
   // The practice writes nothing but `practiced` (#255), and has no class places.
@@ -1293,9 +1310,15 @@ export async function prepareClassSwitch(
     return fail("HERO_BUSY", busyMessage(character));
   }
 
+  // New on the row itself, not only on the run's snapshot of it (#312): the
+  // swap is the row's to spend, and the row is what a second tap would find.
+  if (stall && !isNewHero(effectiveProgress(character))) {
+    return fail("ILLEGAL", `${character.name} has had a fitting already, or is not new`);
+  }
+
   const rules = deps.content.rules();
   try {
-    const updated = applyClassSwitch(character, rules, classId as ClassId);
+    const updated = stall ? fitClass(character, rules, classId as ClassId) : applyClassSwitch(character, rules, classId as ClassId);
     // In step with what this chapter has already counted for the class put
     // on (#310): a hero who earned a rank in it earlier tonight, took it off
     // and is putting it back on wears that rank now, not the stored one.

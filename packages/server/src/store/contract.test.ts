@@ -1744,6 +1744,44 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
       });
     });
 
+    describe("the fitting stall's spent swap (#312)", () => {
+      /*
+       * `fitted` rides a progress half like the class beside it, so a failed
+       * campaign gives it back. Both stores must hand it back on whichever
+       * half it was written, and a row that never spent it must not grow one.
+       */
+      it("reads back a hero who never used the stall without the mark", async () => {
+        await repo.putCharacter(character("c_1"));
+        expect((await repo.getCharacter("h_1", "c_1"))?.committed).not.toHaveProperty("fitted");
+      });
+
+      it("round-trips the mark on either half through put, get, list and a run's commit", async () => {
+        const hero = character("c_1");
+        const fitted = {
+          ...hero,
+          committed: { ...hero.committed, fitted: true as const },
+          provisional: { ...hero.committed, class: "duskrunner" as const, fitted: true as const, runId: "r_a" },
+        };
+        await repo.putCharacter(fitted);
+        expect((await repo.getCharacter("h_1", "c_1"))?.committed.fitted).toBe(true);
+        expect((await repo.listCharacters("h_1"))[0]?.provisional).toMatchObject({ class: "duskrunner", fitted: true });
+
+        // The swap, as `prepareClassSwitch` commits it: with the run, on the half the run's claim holds.
+        await repo.putState(state("r_b", 0));
+        await repo.putCharacter({ ...character("c_2"), provisional: { ...character("c_2").committed, runId: "r_b" } });
+        const read = (await repo.getCharacter("h_1", "c_2"))!;
+        const write: CharacterWrite = {
+          character: { ...read, provisional: { ...read.provisional!, class: "starweaver", fitted: true } },
+          expectedVersion: read.version ?? 0,
+          expectedClaim: "r_b",
+        };
+        expect(
+          await repo.commit({ runId: "r_b", expectedSeq: 0, state: state("r_b", 1), event: event("r_b", 1), characters: [write] }),
+        ).toBe(true);
+        expect((await repo.getCharacter("h_1", "c_2"))?.provisional).toMatchObject({ class: "starweaver", fitted: true });
+      });
+    });
+
     describe("a hero's own record (#283)", () => {
       /*
        * Her finished campaigns live on her row, at her home, and are written

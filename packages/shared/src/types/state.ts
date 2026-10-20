@@ -38,13 +38,31 @@ export interface DiceRoll {
 }
 
 /**
- * A class place, open (docs/class-mastery.md §3). The way on waits until every
- * connected hero not wearing `class` has an answer in `answers`: a switch, or
- * keeping what they wear. A hero already wearing it has nothing to decide.
+ * A class place, open (docs/class-mastery.md §3): a class's room, or the
+ * Exchange's fitting stall (§1, #312). Both run the same way: each kid who may
+ * switch answers on their own phone, and the way on waits until every
+ * connected one has an answer in `answers`, a switch or keeping what they
+ * wear. Only who may switch, and to what, differs.
  */
-export interface ClassPlaceState {
+export type ClassPlaceState = ClassRoomState | FittingStallState;
+
+/** A class's room: every hero not already wearing `class` may put it on. */
+export interface ClassRoomState {
   class: ClassId;
+  /** Absent: this is a room, not the stall. Here so `place.stall` narrows. */
+  stall?: undefined;
   /** By player id. A kid who kept may still switch while the room is open. */
+  answers: Record<string, ClassPlaceAnswer>;
+}
+
+/**
+ * The fitting stall: every new hero (`isNewHero`, class-place.ts) may put on
+ * any class but the one they wear, once. A hero who is not new has nothing to
+ * decide here, as a hero already wearing a room's class has nothing there.
+ */
+export interface FittingStallState {
+  stall: true;
+  /** By player id. A kid who kept may still switch while the stall is open. */
   answers: Record<string, ClassPlaceAnswer>;
 }
 

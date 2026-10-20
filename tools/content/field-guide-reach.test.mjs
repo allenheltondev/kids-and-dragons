@@ -114,6 +114,7 @@ const EXPECTED_UNREACHABLE = [
   "biome.sky_islands",
   "creature.cloud_whale",
   "creature.frost_wyrm",
+  "creature.kavari", // Canon-only species; no chapter reveals it yet.
   "creature.loftmire",
   "creature.reefglider",
   "creature.silver_otter",

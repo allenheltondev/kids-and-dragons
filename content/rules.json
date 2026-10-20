@@ -469,5 +469,11 @@
         }
       }
     }
+  },
+  "fittingStall": {
+    "$comment": "The Exchange's fitting stall (docs/class-mastery.md §1, #312): a new hero, one who has finished no chapter and not used it yet, may swap class here once, for free, to any class. It stands in Gemfall's opening scene at the Exchange, named here so Gemfall gets it without a Gemfall file changing. The narration introduces the keeper before the phone names her.",
+    "stands": [{ "chapterId": "gemfall-01", "sceneId": "scene_prologue_city" }],
+    "keeper": "Madame Tuck",
+    "narration": "Just inside the market gate is a fitting stall, hung all over with capes, hoods, bracers and little bells. The tailor is a frogfolk named Madame Tuck. She wears every hat she owns at once, in one tall wobbly stack, so she never loses one. \"New in town?\" she asks everybody who walks past. \"Your first fitting is free. Try on a new class, or keep the one you have.\""
   }
 }

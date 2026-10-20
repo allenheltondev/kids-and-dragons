@@ -9,6 +9,7 @@ import {
   effectiveProgress,
   earnStoredDeed,
   failCampaign,
+  fitClass,
   foldRunDeeds,
   MAX_STAT_GAIN,
   newCharacter,
@@ -1111,5 +1112,44 @@ describe("switchClass (#311, docs/class-mastery.md §3)", () => {
   it("refuses the class already worn, and a class the game does not have", () => {
     expect(() => switchClass(makeCharacter(), rules, "songkeeper")).toThrow(CharacterRuleError);
     expect(() => switchClass(makeCharacter(), rules, "wizard" as never)).toThrow(/unknown class/);
+  });
+});
+
+describe("fitClass: the fitting stall's one swap (#312, docs/class-mastery.md §1)", () => {
+  it("switches to any class and spends the swap in the same write", () => {
+    const fitted = fitClass(makeCharacter(), rules, "duskrunner");
+    expect(classOf(fitted)).toBe("duskrunner");
+    expect(fitted.committed.fitted).toBe(true);
+    expect(resolveCharacter(fitted, rules, items).fitted).toBe(true);
+    // Nothing else moves, exactly as at a class place.
+    const plain = switchClass(makeCharacter(), rules, "duskrunner");
+    expect({ ...fitted.committed, fitted: undefined }).toEqual({ ...plain.committed, unspentPoints: 0 });
+  });
+
+  it("refuses a second fitting, and the class already worn", () => {
+    const fitted = fitClass(makeCharacter(), rules, "thornguard");
+    expect(() => fitClass(fitted, rules, "starweaver")).toThrow(/already spent/);
+    expect(() => fitClass(makeCharacter(), rules, "songkeeper")).toThrow(CharacterRuleError);
+  });
+
+  it("resolves a hero who never used it exactly as before the stall", () => {
+    expect(resolveCharacter(makeCharacter(), rules, items)).not.toHaveProperty("fitted");
+    expect(startCampaign(makeCharacter(), "r_1").provisional).not.toHaveProperty("fitted");
+  });
+
+  it("rides the campaign: finishing keeps class and spent swap, failing gives both back", () => {
+    const fitted = fitClass(startCampaign(makeCharacter(), "r_1"), rules, "starweaver");
+    expect(fitted.committed).not.toHaveProperty("fitted");
+    expect(fitted.provisional).toMatchObject({ class: "starweaver", fitted: true, runId: "r_1" });
+
+    const kept = commitCampaign(fitted);
+    expect(classOf(kept)).toBe("starweaver");
+    expect(kept.committed.fitted).toBe(true);
+
+    const failed = failCampaign(fitted, "singed_feather", "2026-08-01");
+    expect(classOf(failed)).toBe("songkeeper");
+    expect(effectiveProgress(failed)).not.toHaveProperty("fitted");
+    // Still new, so the stall can fix it next time.
+    expect(classOf(fitClass(startCampaign(failed, "r_2"), rules, "thornguard"))).toBe("thornguard");
   });
 });
