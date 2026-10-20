@@ -4738,6 +4738,804 @@
           "introduces": {}
         }
       }
+    },
+    "riftlight-the-island-due-back": {
+      "entryFacts": [
+        "orin",
+        "olivia",
+        "listening_chime",
+        "chime_rules",
+        "learned_note",
+        "hall",
+        "riftseekers",
+        "whales"
+      ],
+      "scenes": {
+        "arrival": {
+          "requires": [],
+          "introduces": {
+            "island_keeper": "a kitsune keeper",
+            "island_pip": "Pip Thistledown",
+            "island_arrival": "a folded landing board, signal cloths and a wooden box of song slips"
+          },
+          "conditional": [
+            {
+              "flag": "whales_guided",
+              "requires": [
+                "whales"
+              ]
+            },
+            {
+              "flag": "whales_scattered",
+              "requires": [
+                "whales"
+              ]
+            }
+          ]
+        },
+        "return_song": {
+          "requires": [
+            "island_keeper",
+            "island_pip",
+            "island_arrival"
+          ],
+          "introduces": {
+            "island_song": "The keeper opens the box of song slips."
+          }
+        },
+        "return_song_1": {
+          "requires": [
+            "island_song"
+          ],
+          "introduces": {}
+        },
+        "return_song_2": {
+          "requires": [
+            "island_song"
+          ],
+          "introduces": {}
+        },
+        "sightings": {
+          "requires": [
+            "island_song"
+          ],
+          "introduces": {
+            "island_sightings": "A notch on the approaching island slides past a distant cloud break."
+          }
+        },
+        "sightings_1": {
+          "requires": [
+            "island_sightings"
+          ],
+          "introduces": {}
+        },
+        "sightings_1_check": {
+          "requires": [
+            "island_sightings"
+          ],
+          "introduces": {}
+        },
+        "sightings_1_done": {
+          "requires": [
+            "island_sightings"
+          ],
+          "introduces": {}
+        },
+        "sightings_1_changed": {
+          "requires": [
+            "island_sightings"
+          ],
+          "introduces": {}
+        },
+        "sightings_2": {
+          "requires": [
+            "island_sightings"
+          ],
+          "introduces": {}
+        },
+        "sightings_2_check": {
+          "requires": [
+            "island_sightings"
+          ],
+          "introduces": {}
+        },
+        "sightings_2_done": {
+          "requires": [
+            "island_sightings"
+          ],
+          "introduces": {}
+        },
+        "sightings_2_changed": {
+          "requires": [
+            "island_sightings"
+          ],
+          "introduces": {}
+        },
+        "priority": {
+          "requires": [
+            "island_sightings"
+          ],
+          "introduces": {
+            "island_priority": "A gust lifts the corner of the song box and sets it rattling."
+          }
+        },
+        "priority_1": {
+          "requires": [
+            "island_priority"
+          ],
+          "introduces": {}
+        },
+        "priority_2": {
+          "requires": [
+            "island_priority"
+          ],
+          "introduces": {}
+        },
+        "letters": {
+          "requires": [
+            "island_priority"
+          ],
+          "introduces": {
+            "island_letters": "The messenger bag hangs against the inside of the low fence."
+          }
+        },
+        "letters_1": {
+          "requires": [
+            "island_letters"
+          ],
+          "introduces": {}
+        },
+        "letters_1_check": {
+          "requires": [
+            "island_letters"
+          ],
+          "introduces": {}
+        },
+        "letters_1_done": {
+          "requires": [
+            "island_letters"
+          ],
+          "introduces": {}
+        },
+        "letters_1_changed": {
+          "requires": [
+            "island_letters"
+          ],
+          "introduces": {}
+        },
+        "letters_2": {
+          "requires": [
+            "island_letters"
+          ],
+          "introduces": {}
+        },
+        "letters_2_check": {
+          "requires": [
+            "island_letters"
+          ],
+          "introduces": {}
+        },
+        "letters_2_done": {
+          "requires": [
+            "island_letters"
+          ],
+          "introduces": {}
+        },
+        "letters_2_changed": {
+          "requires": [
+            "island_letters"
+          ],
+          "introduces": {}
+        },
+        "station": {
+          "requires": [
+            "island_priority"
+          ],
+          "introduces": {
+            "island_station": "The song slips flutter inside their open box."
+          }
+        },
+        "station_1": {
+          "requires": [
+            "island_station"
+          ],
+          "introduces": {}
+        },
+        "station_1_check": {
+          "requires": [
+            "island_station"
+          ],
+          "introduces": {}
+        },
+        "station_1_done": {
+          "requires": [
+            "island_station"
+          ],
+          "introduces": {}
+        },
+        "station_1_changed": {
+          "requires": [
+            "island_station"
+          ],
+          "introduces": {}
+        },
+        "station_2": {
+          "requires": [
+            "island_station"
+          ],
+          "introduces": {}
+        },
+        "station_2_check": {
+          "requires": [
+            "island_station"
+          ],
+          "introduces": {}
+        },
+        "station_2_done": {
+          "requires": [
+            "island_station"
+          ],
+          "introduces": {}
+        },
+        "station_2_changed": {
+          "requires": [
+            "island_station"
+          ],
+          "introduces": {}
+        },
+        "signal_plan": {
+          "requires": [
+            "island_priority"
+          ],
+          "introduces": {
+            "island_signals": "The keeper lays a white cloth and a striped cloth on the grass."
+          }
+        },
+        "signal_plan_1": {
+          "requires": [
+            "island_signals"
+          ],
+          "introduces": {}
+        },
+        "signal_plan_2": {
+          "requires": [
+            "island_signals"
+          ],
+          "introduces": {}
+        },
+        "bearings": {
+          "requires": [
+            "island_signals",
+            "island_keeper",
+            "island_pip",
+            "island_arrival",
+            "island_priority"
+          ],
+          "introduces": {
+            "island_window": "The returning island clears the cloud with a flat shelf facing the lookout."
+          }
+        },
+        "bearings_1": {
+          "requires": [
+            "island_window"
+          ],
+          "introduces": {}
+        },
+        "bearings_1_check": {
+          "requires": [
+            "island_window"
+          ],
+          "introduces": {}
+        },
+        "bearings_1_done": {
+          "requires": [
+            "island_window"
+          ],
+          "introduces": {}
+        },
+        "bearings_1_changed": {
+          "requires": [
+            "island_window"
+          ],
+          "introduces": {}
+        },
+        "bearings_2": {
+          "requires": [
+            "island_window"
+          ],
+          "introduces": {}
+        },
+        "bearings_2_check": {
+          "requires": [
+            "island_window"
+          ],
+          "introduces": {}
+        },
+        "bearings_2_done": {
+          "requires": [
+            "island_window"
+          ],
+          "introduces": {}
+        },
+        "bearings_2_changed": {
+          "requires": [
+            "island_window"
+          ],
+          "introduces": {}
+        },
+        "bearings_relay": {
+          "requires": [
+            "island_window"
+          ],
+          "introduces": {}
+        },
+        "bearings_relay_check": {
+          "requires": [
+            "island_window"
+          ],
+          "introduces": {}
+        },
+        "landing": {
+          "requires": [
+            "island_window",
+            "island_keeper",
+            "island_pip",
+            "island_arrival",
+            "island_signals"
+          ],
+          "introduces": {
+            "island_landing": "The keeper lays the landing board across the close shelves."
+          }
+        },
+        "landing_1": {
+          "requires": [
+            "island_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_1_check": {
+          "requires": [
+            "island_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_1_done": {
+          "requires": [
+            "island_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_1_changed": {
+          "requires": [
+            "island_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_2": {
+          "requires": [
+            "island_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_2_check": {
+          "requires": [
+            "island_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_2_done": {
+          "requires": [
+            "island_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_2_changed": {
+          "requires": [
+            "island_landing"
+          ],
+          "introduces": {}
+        },
+        "stone_care": {
+          "requires": [
+            "island_landing",
+            "island_keeper",
+            "island_pip",
+            "island_arrival",
+            "island_signals"
+          ],
+          "introduces": {
+            "island_stone": "On the returning island, the standing stone has a round hole and a broad carved face."
+          }
+        },
+        "stone_care_1": {
+          "requires": [
+            "island_stone"
+          ],
+          "introduces": {}
+        },
+        "stone_care_2": {
+          "requires": [
+            "island_stone"
+          ],
+          "introduces": {}
+        },
+        "carving": {
+          "requires": [
+            "island_stone",
+            "island_keeper",
+            "island_pip",
+            "island_arrival",
+            "island_signals"
+          ],
+          "introduces": {
+            "island_copy": "The shallow grooves are hard to separate from the grass shadows."
+          }
+        },
+        "carving_1": {
+          "requires": [
+            "island_copy"
+          ],
+          "introduces": {}
+        },
+        "carving_1_check": {
+          "requires": [
+            "island_copy"
+          ],
+          "introduces": {}
+        },
+        "carving_1_done": {
+          "requires": [
+            "island_copy"
+          ],
+          "introduces": {}
+        },
+        "carving_1_changed": {
+          "requires": [
+            "island_copy"
+          ],
+          "introduces": {}
+        },
+        "carving_2": {
+          "requires": [
+            "island_copy"
+          ],
+          "introduces": {}
+        },
+        "carving_2_check": {
+          "requires": [
+            "island_copy"
+          ],
+          "introduces": {}
+        },
+        "carving_2_done": {
+          "requires": [
+            "island_copy"
+          ],
+          "introduces": {}
+        },
+        "carving_2_changed": {
+          "requires": [
+            "island_copy"
+          ],
+          "introduces": {}
+        },
+        "orientation": {
+          "requires": [
+            "island_copy",
+            "island_keeper",
+            "island_pip",
+            "island_arrival",
+            "island_signals"
+          ],
+          "introduces": {
+            "island_orientation": "The keeper sets a present-day lookout sketch beside your copy."
+          }
+        },
+        "orientation_1": {
+          "requires": [
+            "island_orientation"
+          ],
+          "introduces": {}
+        },
+        "orientation_2": {
+          "requires": [
+            "island_orientation"
+          ],
+          "introduces": {}
+        },
+        "comparison": {
+          "requires": [
+            "island_orientation",
+            "island_keeper",
+            "island_pip",
+            "island_arrival",
+            "island_signals",
+            "island_copy",
+            "island_stone"
+          ],
+          "introduces": {
+            "island_comparison": "Three raised marks appear on your copy beside the present lookout sketch."
+          }
+        },
+        "comparison_1": {
+          "requires": [
+            "island_comparison"
+          ],
+          "introduces": {}
+        },
+        "comparison_1_check": {
+          "requires": [
+            "island_comparison"
+          ],
+          "introduces": {}
+        },
+        "comparison_1_done": {
+          "requires": [
+            "island_comparison"
+          ],
+          "introduces": {
+            "island_land": "the land was joined here"
+          }
+        },
+        "comparison_1_changed": {
+          "requires": [
+            "island_comparison"
+          ],
+          "introduces": {}
+        },
+        "comparison_2": {
+          "requires": [
+            "island_comparison"
+          ],
+          "introduces": {}
+        },
+        "comparison_2_check": {
+          "requires": [
+            "island_comparison"
+          ],
+          "introduces": {}
+        },
+        "comparison_2_done": {
+          "requires": [
+            "island_comparison"
+          ],
+          "introduces": {
+            "island_land": "the land was joined here"
+          }
+        },
+        "comparison_2_changed": {
+          "requires": [
+            "island_comparison"
+          ],
+          "introduces": {}
+        },
+        "alternative": {
+          "requires": [
+            "island_land",
+            "island_keeper",
+            "island_pip",
+            "island_arrival",
+            "island_signals"
+          ],
+          "introduces": {
+            "island_limits": "Pip looks from the stone to the lookout sketch."
+          }
+        },
+        "alternative_1": {
+          "requires": [
+            "island_limits"
+          ],
+          "introduces": {}
+        },
+        "alternative_2": {
+          "requires": [
+            "island_limits"
+          ],
+          "introduces": {}
+        },
+        "record": {
+          "requires": [
+            "island_limits",
+            "island_keeper",
+            "island_pip",
+            "island_arrival",
+            "island_signals"
+          ],
+          "introduces": {
+            "island_permission": "The keeper asks permission to keep a copy of your observations."
+          }
+        },
+        "record_1": {
+          "requires": [
+            "island_permission"
+          ],
+          "introduces": {}
+        },
+        "record_2": {
+          "requires": [
+            "island_permission"
+          ],
+          "introduces": {}
+        },
+        "departure": {
+          "requires": [
+            "island_permission",
+            "island_keeper",
+            "island_pip",
+            "island_arrival",
+            "island_signals"
+          ],
+          "introduces": {
+            "island_handoff": "The returning island continues past the lookout instead of stopping."
+          },
+          "conditional": [
+            {
+              "flag": "island_messages_saved",
+              "requires": [
+                "island_letters"
+              ]
+            },
+            {
+              "flag": "island_station_ready",
+              "requires": [
+                "island_station"
+              ]
+            }
+          ]
+        },
+        "departure_1": {
+          "requires": [
+            "island_handoff"
+          ],
+          "introduces": {}
+        },
+        "departure_2": {
+          "requires": [
+            "island_handoff"
+          ],
+          "introduces": {}
+        },
+        "return": {
+          "requires": [
+            "island_handoff",
+            "island_keeper",
+            "island_pip",
+            "island_arrival",
+            "island_signals",
+            "island_permission",
+            "island_land",
+            "island_stone"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "island_messages_saved",
+              "requires": [
+                "island_letters"
+              ]
+            },
+            {
+              "flag": "island_station_ready",
+              "requires": [
+                "island_station"
+              ]
+            }
+          ]
+        },
+        "rest": {
+          "requires": [
+            "island_handoff",
+            "island_keeper",
+            "island_pip",
+            "island_arrival",
+            "island_signals"
+          ],
+          "introduces": {}
+        },
+        "landing_brace": {
+          "requires": [
+            "island_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_brace_check": {
+          "requires": [
+            "island_landing"
+          ],
+          "introduces": {}
+        },
+        "letters_runner": {
+          "requires": [
+            "island_letters"
+          ],
+          "introduces": {}
+        },
+        "letters_runner_check": {
+          "requires": [
+            "island_letters"
+          ],
+          "introduces": {}
+        },
+        "sightings_whales": {
+          "requires": [
+            "island_sightings",
+            "whales"
+          ],
+          "introduces": {}
+        },
+        "sightings_whales_check": {
+          "requires": [
+            "island_sightings",
+            "whales"
+          ],
+          "introduces": {}
+        },
+        "comparison_clear": {
+          "requires": [
+            "island_comparison"
+          ],
+          "introduces": {}
+        },
+        "comparison_clear_check": {
+          "requires": [
+            "island_comparison"
+          ],
+          "introduces": {}
+        },
+        "comparison_recovery": {
+          "requires": [
+            "island_comparison",
+            "island_orientation"
+          ],
+          "introduces": {}
+        },
+        "comparison_recover_scale": {
+          "requires": [
+            "island_comparison"
+          ],
+          "introduces": {
+            "island_land": "the land was joined here"
+          }
+        },
+        "comparison_recover_view": {
+          "requires": [
+            "island_comparison"
+          ],
+          "introduces": {
+            "island_land": "the land was joined here"
+          }
+        },
+        "landing_recovery": {
+          "requires": [
+            "island_landing",
+            "island_arrival"
+          ],
+          "introduces": {
+            "island_recovery_kit": "The keeper can lend a pocket brush and spare a sheet"
+          }
+        },
+        "landing_batches": {
+          "requires": [
+            "island_recovery_kit"
+          ],
+          "introduces": {}
+        },
+        "landing_borrow": {
+          "requires": [
+            "island_recovery_kit"
+          ],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-preview-pause-the-island-due-back": {
+      "entryFacts": [],
+      "scenes": {
+        "pause": {
+          "requires": [],
+          "introduces": {}
+        }
+      }
     }
   }
 }
