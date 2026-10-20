@@ -57,6 +57,12 @@ const ROOT = process.env.KAD_CONTENT_ROOT
 const CONTENT = join(ROOT, "content");
 /** Graph campaigns allowed to lack class places until #315 (tools/content/class-places.mjs). */
 const CLASS_PLACE_ALLOW = loadClassPlaceAllow();
+/**
+ * `KAD_CLASS_PLACES=off` skips the class-place check. For test harnesses whose
+ * subject is something else and which drop a graph campaign into a content
+ * copy; nothing in CI or the repo scripts sets it.
+ */
+const CLASS_PLACES_OFF = process.env.KAD_CLASS_PLACES === "off";
 const SCHEMAS = join(ROOT, "schemas");
 const MANIFEST = join(ROOT, "assets", "manifest.json");
 /**
@@ -1345,7 +1351,7 @@ function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar, it
     }
     walked = search.complete ? `, walked ${search.states} state(s)` : "";
   }
-  if (graph && classIds && campaign.id !== "gemfall" && campaign.chapters.every((id) => chaptersById.has(id))) {
+  if (graph && classIds && !CLASS_PLACES_OFF && campaign.id !== "gemfall" && campaign.chapters.every((id) => chaptersById.has(id))) {
     // Class places (#313, docs/class-mastery.md §2): all four, by a way every party has.
     const reach = classPlaceReach(campaign, campaign.chapters.map((id) => chaptersById.get(id)), classIds);
     const verdict = classPlaceVerdict(campaign.id, reach, CLASS_PLACE_ALLOW);
