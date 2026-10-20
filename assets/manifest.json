@@ -6,13 +6,6 @@
     "originX": 512,
     "originY": 900
   },
-  "$rigStageComment": "The artboard a rig is staged on, which is deliberately LARGER than the art canvas above. It is PAIRED WITH A CANVAS and is not a single global size: anything that declares its own `canvas` (see entities[].canvas, which verify.py already honours) must declare its own `rigStage` beside it, on the same 1.3671875 ratio and centred, or its rigs inherit a stage sized for a different drawing. legend_dragon is the first of those — 2048 art, 2800 stage. The ratio itself is empirical rather than derived: 1400 was the size that cleared every off-artboard failure on the 1024 canvas, and it generalises by proportion rather than by a rule about diagonals (a figure rotates about its feet, not its centre, so the real arbiter is art:verify:rig:motion). The canvas is commissioned with 8px of margin (tolerance.edgeMarginPx), which is enough that a part is not born against the edge and nowhere near enough for a figure to rotate, leap or topple inside — a knocked-down character sweeps its own diagonal, and a mythic tier fills the canvas standing still. Rigs built on the canvas itself clipped; that is measured, not predicted (art-pipeline §6.3). So the 1024 canvas sits centred in a 1400 stage with 188px of blank on every side, at scale 1, and the standing point still lands on the manifest origin: offsetX/Y below is that 188, and canvas origin + offset is where a rig's feet go. Rest stays 1:1 with assembled.png inside the sub-rect, which is what keeps art-paths.ts's anchors true when the renderer swaps.",
-  "rigStage": {
-    "width": 1400,
-    "height": 1400,
-    "offsetX": 188,
-    "offsetY": 188
-  },
   "tolerance": {
     "edgeMarginPx": 8,
     "originYTolerancePx": 12,
@@ -770,801 +763,6 @@
       }
     }
   ],
-  "$rigVariantsComment": "Purpose-drawn class armor that has been split onto a species rig. Each entry lives at assets/character-rigs/<class>/<tier>/<species>/ with assembled.png, rig.riv, and the exact registered PNG part inventory below. The order of parts is draw order. These variants reuse the hero rig contract and species skeleton; undeclared combinations continue to use assets/characters/<species>/<tier>/rig.riv. Thornguard and Duskrunner are complete across all three geared tiers and all six species; Starweaver Sworn is also complete.",
-  "rigVariants": [
-    {
-      "class": "songkeeper",
-      "tier": "mythic",
-      "species": "bigfoot",
-      "parts": [
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane",
-        "gear_visible"
-      ]
-    },
-    {
-      "class": "songkeeper",
-      "tier": "radiant",
-      "species": "bigfoot",
-      "parts": [
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane",
-        "gear_visible"
-      ]
-    },
-    {
-      "class": "songkeeper",
-      "tier": "sworn",
-      "species": "bigfoot",
-      "parts": [
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane",
-        "gear_visible",
-        "ear_chime"
-      ]
-    },
-    {
-      "class": "starweaver",
-      "tier": "mythic",
-      "species": "bigfoot",
-      "parts": [
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane",
-        "gear_visible",
-        "focus_stone"
-      ]
-    },
-    {
-      "class": "starweaver",
-      "tier": "radiant",
-      "species": "bigfoot",
-      "parts": [
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane",
-        "gear_visible",
-        "focus_stone"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "sworn",
-      "species": "unicorn",
-      "parts": [
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane",
-        "horn"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "sworn",
-      "species": "dragonling",
-      "parts": [
-        "wings",
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "sworn",
-      "species": "griffin",
-      "parts": [
-        "wings",
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "sworn",
-      "species": "bigfoot",
-      "parts": [
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "sworn",
-      "species": "kitsune",
-      "parts": [
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "sworn",
-      "species": "manticore",
-      "parts": [
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane"
-      ]
-    },
-    {
-      "class": "starweaver",
-      "tier": "sworn",
-      "species": "unicorn",
-      "parts": [
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane",
-        "horn",
-        "focus_stone"
-      ]
-    },
-    {
-      "class": "starweaver",
-      "tier": "sworn",
-      "species": "dragonling",
-      "parts": [
-        "wings",
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane",
-        "focus_stone"
-      ]
-    },
-    {
-      "class": "starweaver",
-      "tier": "sworn",
-      "species": "griffin",
-      "parts": [
-        "wings",
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane",
-        "focus_stone"
-      ]
-    },
-    {
-      "class": "starweaver",
-      "tier": "sworn",
-      "species": "bigfoot",
-      "parts": [
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane",
-        "focus_stone"
-      ]
-    },
-    {
-      "class": "starweaver",
-      "tier": "sworn",
-      "species": "kitsune",
-      "parts": [
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane",
-        "gear_visible",
-        "mane_foreground",
-        "gear_front",
-        "mane_top_foreground",
-        "gear_back_collar",
-        "neck_foreground",
-        "gear_clasp",
-        "focus_stone"
-      ]
-    },
-    {
-      "class": "starweaver",
-      "tier": "sworn",
-      "species": "manticore",
-      "parts": [
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "radiant",
-      "species": "unicorn",
-      "parts": [
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane",
-        "horn"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "radiant",
-      "species": "dragonling",
-      "parts": [
-        "wings",
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "radiant",
-      "species": "griffin",
-      "parts": [
-        "wings",
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "radiant",
-      "species": "bigfoot",
-      "parts": [
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "radiant",
-      "species": "kitsune",
-      "parts": [
-        "tail",
-        "gear_behind",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane",
-        "gear_head"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "radiant",
-      "species": "manticore",
-      "parts": [
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "mythic",
-      "species": "unicorn",
-      "parts": [
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane",
-        "horn"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "mythic",
-      "species": "dragonling",
-      "parts": [
-        "wings",
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane",
-        "gear_visible"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "mythic",
-      "species": "griffin",
-      "parts": [
-        "wings",
-        "gear_behind_head",
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane",
-        "head_foreground",
-        "gear_visible"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "mythic",
-      "species": "bigfoot",
-      "parts": [
-        "leg_l",
-        "leg_r",
-        "body",
-        "gear_visible",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "mythic",
-      "species": "kitsune",
-      "parts": [
-        "tail",
-        "gear_behind",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane",
-        "gear_head"
-      ]
-    },
-    {
-      "class": "duskrunner",
-      "tier": "mythic",
-      "species": "manticore",
-      "parts": [
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "gear_visible",
-        "mane"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "sworn",
-      "species": "bigfoot",
-      "parts": [
-        "leg_l",
-        "leg_r",
-        "body",
-        "armor_torso",
-        "arm_l",
-        "arm_r",
-        "armor_chest",
-        "armor_arm_l",
-        "armor_arm_r",
-        "head"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "sworn",
-      "species": "dragonling",
-      "parts": [
-        "wings",
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane",
-        "armor_torso",
-        "armor_arm_l",
-        "armor_arm_r"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "sworn",
-      "species": "griffin",
-      "parts": [
-        "wings",
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane",
-        "armor_torso",
-        "armor_wings"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "sworn",
-      "species": "kitsune",
-      "parts": [
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "mane_armor",
-        "head",
-        "mane",
-        "armor_torso"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "sworn",
-      "species": "manticore",
-      "parts": [
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "seam_fill",
-        "armor_back",
-        "armor_chest",
-        "mane_armor"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "sworn",
-      "species": "unicorn",
-      "parts": [
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "armor_torso",
-        "mane",
-        "horn"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "radiant",
-      "species": "unicorn",
-      "parts": [
-        "armor_underlay",
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "armor_visible",
-        "mane",
-        "horn"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "radiant",
-      "species": "dragonling",
-      "parts": [
-        "wings",
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane",
-        "armor_visible"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "radiant",
-      "species": "griffin",
-      "parts": [
-        "wings",
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane",
-        "armor_visible"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "radiant",
-      "species": "bigfoot",
-      "parts": [
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "armor_visible",
-        "mane"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "radiant",
-      "species": "kitsune",
-      "parts": [
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "armor_visible",
-        "mane"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "radiant",
-      "species": "manticore",
-      "parts": [
-        "tail",
-        "armor_underlay",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane",
-        "hawk"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "mythic",
-      "species": "unicorn",
-      "parts": [
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane",
-        "horn",
-        "armor_visible"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "mythic",
-      "species": "dragonling",
-      "parts": [
-        "wings",
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane",
-        "armor_visible"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "mythic",
-      "species": "griffin",
-      "parts": [
-        "wings",
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane",
-        "armor_visible"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "mythic",
-      "species": "bigfoot",
-      "parts": [
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "armor_visible",
-        "mane"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "mythic",
-      "species": "kitsune",
-      "parts": [
-        "tail",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "armor_visible",
-        "mane"
-      ]
-    },
-    {
-      "class": "thornguard",
-      "tier": "mythic",
-      "species": "manticore",
-      "parts": [
-        "tail",
-        "armor_underlay",
-        "leg_l",
-        "leg_r",
-        "body",
-        "arm_l",
-        "arm_r",
-        "head",
-        "mane",
-        "hawk"
-      ]
-    }
-  ],
   "$effectsComment": "Every sheet in assets/effects/ must appear here, and every entry must have a sheet — verify.py checks both directions. `frames` x `size` is the sheet width in pixels; `fps` is the rate the sidecar JSON carries, declared here too so a 24fps sheet cannot arrive undetected. `tileScoped: false` marks an effect that plays on a figure rather than on a tile. `loop: true` marks one that plays continuously — the tier auras — and is what exempts it from the fade-in/fade-out rule, since a continuous effect that faded at both ends would pulse to nothing once a second. `outOfCombat: true` marks one that plays between turns, exempting it from the 12-frame turn budget and from the damage-number band, because a cutscene has nothing else on the screen. `startsOn: { clip, event }` names the rigContract clip event that fires the sheet — it is the contract verify-rig.ts derives every sync and effect-tail check from, so a pairing nobody wrote here is a pairing nothing checks. `startsOn: null` is the ambient case (the auras): the sheet starts with the figure, not with an event, and is deliberately declared as null rather than omitted so a new sheet cannot skip the question.",
   "effects": [
     {
@@ -1833,146 +1031,6 @@
       "outOfCombat": true
     }
   ],
-  "$rigContractComment": "docs/asset-brief.md §9.2 as data, read by tools/art/verify-rig.ts. Ticks, not seconds: one tick is one frame at `tickFps`, the same clock the effect sheets run on, so an effect that starts on a tick boundary can never drift against the clip that triggered it. Rive interpolates at 60fps — author to the 12ths-of-a-second grid anyway. Every clip listed in a set is required on every rig of that kind, including rigs for species with no ability that fires it: art-pipeline.md §6.1's rule is that game code never special-cases a species, and a state machine present on two rigs and absent on four is that special case permanently. `shove` deliberately has no clip (§9.2) — a shoved figure is translated by the engine and keeps playing `idle`, because to an 8-year-old a flinch *is* damage and `shove` deals none.",
-  "rigContract": {
-    "tickFps": 12,
-    "inputs": {
-      "triggers": [
-        "move",
-        "attack",
-        "cast",
-        "hurt",
-        "guard",
-        "leap",
-        "helpUp",
-        "celebrate",
-        "transform"
-      ],
-      "booleans": [
-        "knockedDown"
-      ],
-      "numbers": [
-        "facing"
-      ]
-    },
-    "clips": {
-      "idle": {
-        "ticks": 24,
-        "loop": true
-      },
-      "walk": {
-        "ticks": 4,
-        "loop": true,
-        "$comment": "One cycle, two steps. Four steps is 0.67s; a Duskrunner's six is 1.0s, and a move must never outlast the roll."
-      },
-      "attack": {
-        "ticks": 8,
-        "rolls": true,
-        "events": {
-          "impact": 3
-        }
-      },
-      "cast": {
-        "ticks": 10,
-        "rolls": true,
-        "events": {
-          "release": 4
-        },
-        "$comment": "Two ticks longer than attack on purpose — a cast the same length as a swing reads as a swing."
-      },
-      "hurt": {
-        "ticks": 5,
-        "concurrent": true,
-        "startsOn": {
-          "clip": "attack",
-          "event": "impact"
-        },
-        "$comment": "Starts on the attack's impact event (tick 3) and ends at tick 7, inside the attack's 8 — so it genuinely adds nothing to the turn. That is arithmetic checkTurnBudget now does from startsOn, not an assertion."
-      },
-      "guard": {
-        "ticks": 6,
-        "hold": true,
-        "events": {
-          "ward": 3
-        },
-        "$comment": "Brace lasts until your next turn (encounter.ts), so this is a plant and a hold, not a loop. The ward event fires at tick 3, when the stance plants: guard_ward blooms across the last half of the plant and carries a short tail into the hold."
-      },
-      "leap": {
-        "ticks": 11,
-        "events": {
-          "dust": [
-            3,
-            8
-          ]
-        },
-        "$comment": "3 crouch, 5 airborne, 3 land. The engine translates the figure during the airborne five."
-      },
-      "down": {
-        "ticks": 6,
-        "loopTicks": 24,
-        "loopClip": "down_loop",
-        "events": {
-          "settle": 6
-        },
-        "$comment": "§9.3 overrides art-pipeline §6.1's \"held, not looped\": a frozen pose reads as a corpse. Six ticks of fall, then a hand-off to `down_loop` — a 24-tick breathing loop at half idle's amplitude, exported as its own Rive animation. The tick-6 `settle` event fires exactly at that hand-off and starts `down_settle`. A rig that delivers `down` must deliver `down_loop` with it; the verifier requires the pair wherever a set requires `down`."
-      },
-      "lift": {
-        "ticks": 10,
-        "events": {
-          "contact": 6
-        }
-      },
-      "revive": {
-        "ticks": 10,
-        "concurrent": true,
-        "startsOn": {
-          "clip": "lift",
-          "event": "contact"
-        },
-        "$comment": "Started by the lift's contact event (tick 6), so the two read as one gesture. It runs to tick 15 where the lift ends at 10 — checkTurnBudget charges those 5 ticks of overhang to the Help Up turn."
-      },
-      "celebrate": {
-        "ticks": 24,
-        "outOfCombat": true
-      },
-      "transform": {
-        "ticks": 24,
-        "outOfCombat": true,
-        "deferred": true,
-        "events": {
-          "flash": 4
-        },
-        "$comment": "Chapter 5's, and not this commission. Declared so a rig that ships it early is still checked, and deferred so its absence is not a failure. `flash` starts transform_flash's 18-frame white-out; §9.4 names the sheet but no tick, so the tick is decided here: at 4, the sheet's brightest middle frames land mid-clip — over the skin swap, which is the thing the white-out exists to cover — and its fade-out ends at tick 21, leaving three ticks for the new tier to settle in clear view. Out of combat, so none of this touches the turn budget."
-      }
-    },
-    "sets": {
-      "hero": [
-        "idle",
-        "walk",
-        "attack",
-        "cast",
-        "hurt",
-        "guard",
-        "leap",
-        "down",
-        "lift",
-        "revive",
-        "celebrate",
-        "transform"
-      ],
-      "enemy": [
-        "idle",
-        "walk",
-        "attack",
-        "hurt",
-        "down"
-      ]
-    },
-    "$setsComment": "§9.5.2 writes the enemy set as \"idle, move, attack, hurt, down\". `move` is the *trigger* name (art-pipeline §6.1) and `walk` is the clip; this file resolves that in favour of the clip table so the two kinds cannot end up with differently-named versions of one animation. The six clips excluded from the enemy set each have a reason in §9.5.2, and all six are engine facts rather than budget: beginEncounter gives every enemy `actions: [ATTACK_ID]` so nothing casts, a downed enemy is removeActor'd so nothing lifts or revives, `protect` is reachable only through a class signature, `moveSelf` only through two heroes' species actions, and a party wipe branches the story so nothing plays a monster victory dance.",
-    "turnBudgetTicks": 45,
-    "$turnBudgetComment": "§9.2: a 6-minute encounter over 4 rounds with 6 figures is ~15s per turn, of which motion gets a quarter (3.75s = 45 ticks) and the human gets the rest. The dice roll's 1.5s comes out of that. Worst realistic turn is roll 18 + a 6-step move 12 + attack 8 with impact_strike's tail = 40, and `cast` is the real ceiling at 45 exactly. If a clip needs to grow, something else in the same turn has to shrink — say which.",
-    "$clipFlagsComment": "`rolls` marks a clip whose action is preceded by a d20, and it is an engine fact rather than a preference: `attack` resolves against Guard (dice.ts resolveAttack) and Burst's effects are attacks, while heal, revive, shove, protect, skipTurn and moveSelf resolve without a roll. Only a rolling clip is charged the roll's 18 ticks — charging it to Help Up put the budget 2 ticks over on nothing. `concurrent` marks a clip that overlaps another rather than following it, and `startsOn` names the host event that starts it, so the overlap is arithmetic rather than assertion. Overlapping is not the same as free: `hurt` starts on the attack's impact (tick 3) and ends at 7, inside the attack's 8, so it truly adds nothing — but `revive` starts on the lift's contact (tick 6) and runs to 15 where the lift ends at 10, and checkTurnBudget charges that 5-tick overhang to the Help Up turn (move 12 + lift 10 + the greater of revive's 5-tick overhang and revive_lift's 7-tick tail = 29). An earlier version of this comment claimed revive \"adds nothing to the turn\"; the arithmetic said otherwise, and now the verifier does the arithmetic — retime `lift` or `revive` and the budget check moves with you instead of staying silent."
-  },
   "biomes": [
     "sky_islands",
     "enchanted_woods",
@@ -2626,5 +1684,243 @@
     "outline": "#3A2A1E",
     "darkest": "#2B2118",
     "lightest": "#FFF6E8"
-  }
+  },
+  "figureVariants": [
+    {
+      "class": "songkeeper",
+      "tier": "mythic",
+      "species": "bigfoot"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "radiant",
+      "species": "bigfoot"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "sworn",
+      "species": "bigfoot"
+    },
+    {
+      "class": "starweaver",
+      "tier": "mythic",
+      "species": "bigfoot"
+    },
+    {
+      "class": "starweaver",
+      "tier": "radiant",
+      "species": "bigfoot"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "sworn",
+      "species": "unicorn"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "sworn",
+      "species": "dragonling"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "sworn",
+      "species": "griffin"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "sworn",
+      "species": "bigfoot"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "sworn",
+      "species": "kitsune"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "sworn",
+      "species": "manticore"
+    },
+    {
+      "class": "starweaver",
+      "tier": "sworn",
+      "species": "unicorn"
+    },
+    {
+      "class": "starweaver",
+      "tier": "sworn",
+      "species": "dragonling"
+    },
+    {
+      "class": "starweaver",
+      "tier": "sworn",
+      "species": "griffin"
+    },
+    {
+      "class": "starweaver",
+      "tier": "sworn",
+      "species": "bigfoot"
+    },
+    {
+      "class": "starweaver",
+      "tier": "sworn",
+      "species": "kitsune"
+    },
+    {
+      "class": "starweaver",
+      "tier": "sworn",
+      "species": "manticore"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "radiant",
+      "species": "unicorn"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "radiant",
+      "species": "dragonling"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "radiant",
+      "species": "griffin"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "radiant",
+      "species": "bigfoot"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "radiant",
+      "species": "kitsune"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "radiant",
+      "species": "manticore"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "mythic",
+      "species": "unicorn"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "mythic",
+      "species": "dragonling"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "mythic",
+      "species": "griffin"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "mythic",
+      "species": "bigfoot"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "mythic",
+      "species": "kitsune"
+    },
+    {
+      "class": "duskrunner",
+      "tier": "mythic",
+      "species": "manticore"
+    },
+    {
+      "class": "thornguard",
+      "tier": "sworn",
+      "species": "bigfoot"
+    },
+    {
+      "class": "thornguard",
+      "tier": "sworn",
+      "species": "dragonling"
+    },
+    {
+      "class": "thornguard",
+      "tier": "sworn",
+      "species": "griffin"
+    },
+    {
+      "class": "thornguard",
+      "tier": "sworn",
+      "species": "kitsune"
+    },
+    {
+      "class": "thornguard",
+      "tier": "sworn",
+      "species": "manticore"
+    },
+    {
+      "class": "thornguard",
+      "tier": "sworn",
+      "species": "unicorn"
+    },
+    {
+      "class": "thornguard",
+      "tier": "radiant",
+      "species": "unicorn"
+    },
+    {
+      "class": "thornguard",
+      "tier": "radiant",
+      "species": "dragonling"
+    },
+    {
+      "class": "thornguard",
+      "tier": "radiant",
+      "species": "griffin"
+    },
+    {
+      "class": "thornguard",
+      "tier": "radiant",
+      "species": "bigfoot"
+    },
+    {
+      "class": "thornguard",
+      "tier": "radiant",
+      "species": "kitsune"
+    },
+    {
+      "class": "thornguard",
+      "tier": "radiant",
+      "species": "manticore"
+    },
+    {
+      "class": "thornguard",
+      "tier": "mythic",
+      "species": "unicorn"
+    },
+    {
+      "class": "thornguard",
+      "tier": "mythic",
+      "species": "dragonling"
+    },
+    {
+      "class": "thornguard",
+      "tier": "mythic",
+      "species": "griffin"
+    },
+    {
+      "class": "thornguard",
+      "tier": "mythic",
+      "species": "bigfoot"
+    },
+    {
+      "class": "thornguard",
+      "tier": "mythic",
+      "species": "kitsune"
+    },
+    {
+      "class": "thornguard",
+      "tier": "mythic",
+      "species": "manticore"
+    }
+  ],
+  "$figureVariantsComment": "Finished transparent class illustrations. Legacy character-rigs paths are retained for existing assets; no rig runtime or split parts are required."
 }

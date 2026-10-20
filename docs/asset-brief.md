@@ -1,3 +1,7 @@
+> Character delivery was simplified on 2026-10-20. The current
+> [art pipeline](art-pipeline.md) supersedes rigging, split-part, underpainting,
+> and animation requirements in this historical brief. Deliver finished figures.
+
 # Kids & Dragons — Asset Brief
 
 **This document is the complete specification for producing the game's art assets. It is written to

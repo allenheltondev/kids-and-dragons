@@ -6,10 +6,6 @@ import { createServer } from "vite";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const scripts = [
-  "tools/art/gap-calibration.mjs",
-  "tools/art/rig-sheet.mjs",
-  "tools/art/verify-rig-motion.mjs",
-  "tools/art/verify-rig-rest.mjs",
   "tools/content/validate.mjs",
 ];
 let server;

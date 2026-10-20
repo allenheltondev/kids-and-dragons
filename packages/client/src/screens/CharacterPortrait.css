@@ -134,15 +134,16 @@
  */
 .portrait--float .portrait__img,
 .portrait--float .portrait__fallback {
+  transform-origin: 50% 87.890625%;
   animation: portrait-float 6s var(--kad-ease, ease-in-out) infinite;
 }
 
 @keyframes portrait-float {
   0%,
   100% {
-    transform: translateY(0) rotate(-0.4deg);
+    transform: scaleY(1);
   }
   50% {
-    transform: translateY(-3%) rotate(0.4deg);
+    transform: scaleY(1.008);
   }
 }

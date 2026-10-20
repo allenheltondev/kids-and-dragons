@@ -50,6 +50,6 @@ describe("prefetching the scenes ahead", () => {
     rerender(<World enabled />);
     act(() => void vi.advanceTimersByTime(10_000));
     expect(warm).toHaveBeenCalledTimes(1);
-    expect((warm.mock.calls[0] as unknown[])[0]).toEqual(expect.arrayContaining([expect.stringMatching(/rig\.riv$/)]));
+    expect((warm.mock.calls[0] as unknown[])[0]).toEqual(expect.arrayContaining([expect.stringMatching(/assembled\.png$/)]));
   });
 });

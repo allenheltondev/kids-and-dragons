@@ -11,7 +11,7 @@ chapter schema, and LLM integration.
 |---|---|---|
 | Frontend | **React + Vite + TypeScript** | One bundle serves both TV and phone clients; the client role is a route. |
 | Scene rendering | **PixiJS (WebGL)** | Grid, characters, effects, camera. Predictable perf on modest TV-connected hardware. |
-| Character animation | **Rive** | Raster cutout rigs with state machines. Rendered to texture, composited into the Pixi scene. |
+| Character animation | **Static illustrations + procedural motion** | Gentle breathing anchored at the feet; Pixi handles travel, falls, and effects. |
 | UI chrome | **React + CSS** | Menus, character sheets, choice buttons. Never inside the canvas. |
 | State | **Zustand** | Small, no boilerplate, easy to mirror server state into. |
 | Backend | **AWS Lambda (Node 22, TypeScript)** | |

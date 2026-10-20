@@ -1,6 +1,0 @@
-{
-  "body/arm_r": {
-    "band": 0.55,
-    "reason": "The torso ends at the lower armpit and waist taper, so paint beyond its own contour would project in attack."
-  }
-}
