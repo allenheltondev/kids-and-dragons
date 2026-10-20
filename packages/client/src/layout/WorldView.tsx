@@ -45,7 +45,7 @@ import { presentationDuration } from "../world/presentation";
 import { ambience, cue, cueForPresentation, stopSceneCues } from "../audio";
 import { ambienceForScene, sceneCuesFor } from "../audio/scene-audio";
 // From the import-free stats module, never from FrameMeter: a static import of
-// the meter is a static import of the scene, Pixi and the rigs (frame-stats.ts).
+// the meter is a static import of the scene, Pixi and the figures (frame-stats.ts).
 import { perfRequested } from "../world/frame-stats";
 import { RendererBoundary } from "../world/RendererFallback";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";

@@ -26,9 +26,10 @@ out on Gemfall), and for a nonlinear campaign
 
 - **Every chapter ends on its beat.** A campaign is a ladder of beats, each a sentence that must be
   true when the chapter closes, whichever road the party took to get there. Write toward it.
-- **Every chapter states its goal, visible from scene 1.** A `goal` sentence and two to four
-  steps, each ticking on a flag set on every path to a success ending; the TV and the phones show
-  it the whole chapter with nothing to tap ([content/README.md](content/README.md#the-chapters-goal)).
+- **Every chapter has a `goal` on screen the whole chapter.** One sentence and two to four steps,
+  each ticking on a flag (or the chapter's own quest item) set on every path to a success ending;
+  the TV and phones show it with nothing to tap, and the entry scene says it in words (Interactivity,
+  below; [content/README.md](content/README.md#the-chapters-goal)).
 - **Put new material on the spine every path walks**, never on a detour a party can skip. A
   chapter is one 30–45 minute sitting, so the shortest path to a success ending is at least 30
   scenes, 14 of which ask something.
@@ -39,6 +40,20 @@ out on Gemfall), and for a nonlinear campaign
   one ordinary failed roll.
 - Each chapter needs a rest waypoint (a `rest` scene with choices) and at least one ending (a
   scene with `"choices": []`).
+
+### Interactivity
+
+`content:pacing` measures the second and third on every spine (it reports, never gates). See
+[content/README.md, "Interactivity"](content/README.md#interactivity).
+
+- **The chapter's goal is clear in scene 1.** The entry scene says, in plain words, what the
+  party is here to do.
+- **Never more than about three scenes in a row without something to decide**: a vote, a check
+  or a fight. One-button beats are reading.
+- **Most spine checks are things the party does, not says.** Might, quick and clever are
+  doing; heart is talking. Where the stat misleads, the check sets `checkKind`.
+- **New people arrive with a stake for the party.** The scene that introduces someone says what
+  they want from the party, or what they can do for it.
 
 ### Continuity: introduce it before you use it
 

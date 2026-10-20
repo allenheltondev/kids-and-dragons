@@ -100,6 +100,12 @@ const PRE_EPIC = JSON.parse(
  * it. The endings, roads, setbacks and saves below still match their pre-epic
  * digests.
  *
+ * Re-pinned for the chapter 7 cohesion rewrite (#355): wording, labels and
+ * check prompts only in 06, 07h, 07l and 07r (the opening states the goal and
+ * the test, the masks are named where they first appear and seeded on 06's
+ * spine). No scene, edge, flag, effect, stat or TN moved; the endings, roads,
+ * setbacks and saves below still match their pre-epic digests.
+ *
  * Re-pinned for the chapter goals (#356): each chapter gained a `goal` and the
  * chapter-local `setFlag`s its steps watch. Those flags are no route set's, so
  * they die with the chapter, and none is set where the pinned mid-fight save
@@ -119,10 +125,10 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-05a.json": "21c1eeeee0d52044eb6bad67c921483148bb23e3349a505567ab5906659aebe7",
   "chapters/gemfall-05b.json": "6a30ade7fe12e2a7e961a8e5f11dcba8a3466b5b5f602938b0f76aff42c305f5",
   "chapters/gemfall-05c.json": "a6ab77dd22ea8fa5d00569017d18d5c305dbcbbbb2d9f39b4c24dc71f30e4f43",
-  "chapters/gemfall-06.json": "dbc93e101b0258a31799d19796fe199adefc5648da4c72ace474593abdd48fd2",
-  "chapters/gemfall-07h.json": "ad7bb6f1c2cebedff43a23639006d85f2229b44c740d41fc89b775e29971e21d",
-  "chapters/gemfall-07l.json": "1a8201145f3b4125e95e8f74ae4e1f03563b17997b17e013f186c3708c6aff1e",
-  "chapters/gemfall-07r.json": "31d531f9745bded879c0e4a6f3d4a29910e5d111291a79bc07b379674bbd34fc",
+  "chapters/gemfall-06.json": "4c7306ba197e3ce56b98421797da0aa1488cb3c28cc5eec350b5fdeb7b2c44e1",
+  "chapters/gemfall-07h.json": "102d1fc2869f2001c57a3f17a934da964301e12e2db1d2342768a1e211a7c532",
+  "chapters/gemfall-07l.json": "1a3bc53cbedf875230d2e82a58b69b8e77b7efbcb3118df24c0b51b5220a8bc5",
+  "chapters/gemfall-07r.json": "82503bbeb255631abbab0138a1ab6dfa4cf1b9f149cf63e19906cc42dbe795d7",
   "chapters/gemfall-08.json": "29efcf2a87c41fd553fdd28cb3caeab41c9d0b67916c7d7a83f573128a71aec0",
 };
 

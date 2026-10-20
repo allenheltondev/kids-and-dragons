@@ -17,9 +17,6 @@ cdk.out/
 # generated chapter graphs (npm run content:graph) — regenerated on each run
 .graph/
 
-# rejected drafts from `npm run content:generate` — kept to read, never content
-.generated/
-
 # wiki generator manifest (local dev state, regenerated on each run)
 wiki/.gen-manifest.json
 wiki/public/
@@ -45,9 +42,7 @@ infra/.build/
 test-results/
 playwright-report/
 
-# the Rive CLI, built from the private rive-mcp repo at the commit pinned in
-# art/rig/rive-mcp.pin.json — `npm run art:rig:setup` puts it here, and CI's
-# rig jobs check it out to the same path. A build product, never source.
+# Retired local art-tool checkout (not used by the app).
 .rive-mcp/
 
 # scratch git worktrees for background agents — each is a full checkout of this

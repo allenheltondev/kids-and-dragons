@@ -21,6 +21,14 @@
  * scene's variants test (see the header of chapter-pacing.ts), and a `when`
  * choice that tests a flag is left off the path.
  *
+ * **Interactivity.** Each path also carries `doing` (checks the party does
+ * rather than says: might, quick and clever, unless a check's `checkKind` says
+ * otherwise) and `read` (the longest run of scenes with no vote, check or
+ * fight). After the table, each listed chapter's spine (the shortest path, in the
+ * calibration scenario) is listed worst first against the authoring rules:
+ * about three scenes at most without something to do, and most spine checks
+ * doing. The `!` marks are a reading list, not failures.
+ *
  * **Reports and never gates**, like `content:balance`: whether an evening is
  * the right length is a judgement for a person with a stopwatch.
  *
@@ -38,15 +46,19 @@ import path from "node:path";
 import process from "node:process";
 import {
   CALIBRATION_SCENARIO_ID,
+  checkKind,
   DEFAULT_SCENARIO_IDS,
   fitModel,
+  longestReadingRun,
   metricRange,
   pacingReport,
   PACING_SCENARIOS,
   predictMinutes,
+  scenarioById,
+  shortestSuccessPath,
   UNCALIBRATED_MODEL,
 } from "@kad/shared";
-import type { Chapter, Fit, PacingModel, PacingReport, PathMetrics, Timing } from "@kad/shared";
+import type { Chapter, Fit, PacingModel, PacingReport, PacingScenario, PathMetrics, Timing } from "@kad/shared";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..");
 const TIMINGS = path.join(ROOT, "docs", "review", "playtest-timings.json");
@@ -69,6 +81,34 @@ const chapters = fs
 // calibration scenario must exist whatever the table shows.
 const reports: PacingReport[] = chapters.map((c) => pacingReport(c));
 const shown = new Set<string>(allScenarios ? PACING_SCENARIOS.map((s) => s.id) : DEFAULT_SCENARIO_IDS);
+const ID_WIDTH = Math.max(11, ...chapters.map((c) => c.id.length));
+const calibration = scenarioById(CALIBRATION_SCENARIO_ID) as PacingScenario;
+
+/** The authoring rules the interactivity section reads against (CLAUDE.md, "Interactivity"). */
+const READING_RUN_LIMIT = 3;
+const DOING_SHARE_FLOOR = 0.5;
+
+/** Each chapter's spine against the interactivity rules. */
+const spines = chapters.map((c) => {
+  const path = shortestSuccessPath(c, calibration);
+  const run = path ? longestReadingRun(c, path, calibration) : null;
+  const checks = (path ?? []).flatMap((id) => {
+    const s = c.scenes[id];
+    return s?.type === "check" ? [{ id, kind: checkKind(s) }] : [];
+  });
+  const doing = checks.filter((k) => k.kind === "doing").length;
+  return {
+    chapterId: c.id,
+    reached: path !== null,
+    longestReadingRun: run?.length ?? 0,
+    longestReadingRunFrom: run?.from ?? null,
+    checks: checks.length,
+    doingChecks: doing,
+    doingShare: checks.length ? doing / checks.length : null,
+    talkingChecks: checks.filter((k) => k.kind === "talking").map((k) => k.id),
+  };
+});
+
 const shownOf = (r: PacingReport): PacingReport => ({ ...r, scenarios: r.scenarios.filter((s) => shown.has(s.scenario.id)) });
 
 function readTimings(): Timing[] {
@@ -91,30 +131,37 @@ const mins = (m: PathMetrics | null | undefined, model: PacingModel): number | n
   m ? Math.round(predictMinutes(m, model) * 10) / 10 : null;
 
 if (asJson) {
-  console.log(
-    JSON.stringify(
-      {
-        model: { calibrated: fit !== null, calibrationScenario: CALIBRATION_SCENARIO_ID, defaults: UNCALIBRATED_MODEL, fitted: fit },
-        defaultScenarios: DEFAULT_SCENARIO_IDS,
-        chapters: reports.map((r) => ({
-          chapterId: r.chapterId,
-          estimatedMinutes: r.estimatedMinutes,
-          ranges: { shortest: metricRange(shownOf(r), "shortest"), typical: metricRange(shownOf(r), "typical") },
-          scenarios: r.scenarios.map((s) => ({
-            ...s,
-            predictedMinutes: {
-              shortest: mins(s.shortest, UNCALIBRATED_MODEL),
-              typical: mins(s.typical, UNCALIBRATED_MODEL),
-              typicalFitted: fit ? mins(s.typical, fit.model) : null,
-            },
-          })),
-          measuredMinutes: timings.filter((t) => t.chapter === r.chapterId).map((t) => t.minutes),
-        })),
+  const out = JSON.stringify(
+    {
+      model: { calibrated: fit !== null, calibrationScenario: CALIBRATION_SCENARIO_ID, defaults: UNCALIBRATED_MODEL, fitted: fit },
+      defaultScenarios: DEFAULT_SCENARIO_IDS,
+      interactivity: {
+        scenario: CALIBRATION_SCENARIO_ID,
+        readingRunLimit: READING_RUN_LIMIT,
+        doingShareFloor: DOING_SHARE_FLOOR,
+        spines,
       },
-      null,
-      2,
-    ),
+      chapters: reports.map((r) => ({
+        chapterId: r.chapterId,
+        estimatedMinutes: r.estimatedMinutes,
+        ranges: { shortest: metricRange(shownOf(r), "shortest"), typical: metricRange(shownOf(r), "typical") },
+        scenarios: r.scenarios.map((s) => ({
+          ...s,
+          predictedMinutes: {
+            shortest: mins(s.shortest, UNCALIBRATED_MODEL),
+            typical: mins(s.typical, UNCALIBRATED_MODEL),
+            typicalFitted: fit ? mins(s.typical, fit.model) : null,
+          },
+        })),
+        measuredMinutes: timings.filter((t) => t.chapter === r.chapterId).map((t) => t.minutes),
+      })),
+    },
+    null,
+    2,
   );
+  // Exit only once stdout has drained: a pipe takes 64KB at a time, and
+  // process.exit straight after console.log cut the JSON off there.
+  await new Promise<void>((done) => process.stdout.write(`${out}\n`, () => done()));
   process.exit(0);
 }
 
@@ -129,10 +176,10 @@ const minsRange = (ms: PathMetrics[], model: PacingModel): string => {
 };
 
 const header = [
-  "chapter".padEnd(11),
+  "chapter".padEnd(ID_WIDTH),
   "path".padEnd(8),
   "scenario".padEnd(17),
-  ...["scenes", "votes", "checks", "fights"].map((h) => h.padStart(6)),
+  ...["scenes", "votes", "checks", "doing", "fights", "read"].map((h) => h.padStart(6)),
   "words".padStart(11),
   "predMin".padStart(10),
   "estMin".padStart(6),
@@ -147,15 +194,17 @@ for (const full of reports) {
     const ms = r.scenarios.flatMap((s) => (s[label] ? [s[label]] : []));
     const measured = timings.filter((t) => t.chapter === r.chapterId && (t.path ?? "typical") === label).map((t) => t.minutes);
     const row = (name: string, group: PathMetrics[], rg: ReturnType<typeof metricRange>): string => {
-      const g = (k: "scenes" | "decisions" | "checks" | "encounters"): string => range(rg?.[k].min ?? null, rg?.[k].max ?? null);
+      const g = (k: "scenes" | "decisions" | "checks" | "doingChecks" | "encounters" | "longestReadingRun"): string => range(rg?.[k].min ?? null, rg?.[k].max ?? null);
       return [
-        r.chapterId.padEnd(11),
+        r.chapterId.padEnd(ID_WIDTH),
         label.padEnd(8),
         name.padEnd(17),
         cell(g("scenes"), 6),
         cell(g("decisions"), 6),
         cell(g("checks"), 6),
+        cell(g("doingChecks"), 6),
         cell(g("encounters"), 6),
+        cell(g("longestReadingRun"), 6),
         cell(range(rg?.wordsMin.min ?? null, rg?.words.max ?? null), 11),
         cell(minsRange(group, UNCALIBRATED_MODEL), 10),
         cell(label === "typical" ? r.estimatedMinutes : "", 6),
@@ -178,6 +227,7 @@ console.log("A scenario is a synthetic party: facets = distinct facet_* items he
 console.log("Variants are composed with the engine's composeNarration, so append / at:start / replace read as at the table.");
 console.log("words = lowest..highest over run-flag combinations a scene's variants test (flags are unknowable statically); predMin uses the upper bound.");
 console.log("votes = scenes with 2+ visible choices (one-button beats and species/flag/item-gated choices do not count; a `when` choice counts in scenarios where it holds).");
+console.log("doing = checks the party does (might, quick, clever, or a check's checkKind) rather than says; read = most scenes in a row with no vote, check or fight.");
 console.log("typical = median of seeded random walks. The authoring bar counts votes + checks: shortest path needs scenes >= 30 and votes + checks >= 14.");
 const d = UNCALIBRATED_MODEL;
 if (fit) {
@@ -191,4 +241,37 @@ if (fit) {
     `UNCALIBRATED DEFAULTS (guesses, not measurements): ${String(d.wordsPerMinute)} wpm, ${String(d.secondsPerDecision)}s/vote, ${String(d.secondsPerCheck)}s/check, ${String(d.secondsPerEncounter)}s/fight, ${String(d.secondsPerScene)}s/scene.`,
   );
   console.log(`Record real timings in docs/review/playtest-timings.json (template alongside); they are fitted against the ${CALIBRATION_SCENARIO_ID} scenario, so note the party size and facets held.`);
+}
+
+// Each spine against the interactivity rules, worst first: a run over the
+// limit, then the smallest doing share, then the longest run.
+const pct = (x: number | null): string => (x === null ? "-" : `${String(Math.round(x * 100))}%`);
+const over = (n: number): number => (n > READING_RUN_LIMIT ? 1 : 0);
+const ranked = [...spines].sort(
+  (a, b) =>
+    over(b.longestReadingRun) - over(a.longestReadingRun) ||
+    (a.doingShare ?? 1) - (b.doingShare ?? 1) ||
+    b.longestReadingRun - a.longestReadingRun,
+);
+console.log("");
+console.log(
+  `Interactivity on the spine (shortest path, ${CALIBRATION_SCENARIO_ID}), worst first. ! = over about ${String(READING_RUN_LIMIT)} scenes with nothing to decide, or under ${pct(DOING_SHARE_FLOOR)} of checks doing.`,
+);
+console.log(["chapter".padEnd(ID_WIDTH), "read".padStart(5), "from".padEnd(32), "doing".padStart(12), " talking checks"].join(" "));
+for (const sp of ranked) {
+  if (!sp.reached) {
+    console.log(`${sp.chapterId.padEnd(ID_WIDTH)}      - no success ending reachable`);
+    continue;
+  }
+  const runFlag = sp.longestReadingRun > READING_RUN_LIMIT ? "!" : " ";
+  const shareFlag = sp.doingShare !== null && sp.doingShare < DOING_SHARE_FLOOR ? "!" : " ";
+  console.log(
+    [
+      sp.chapterId.padEnd(ID_WIDTH),
+      `${String(sp.longestReadingRun)}${runFlag}`.padStart(5),
+      (sp.longestReadingRunFrom ?? "-").padEnd(32),
+      `${String(sp.doingChecks)}/${String(sp.checks)} ${pct(sp.doingShare)}${shareFlag}`.padStart(12),
+      ` ${sp.talkingChecks.join(", ")}`,
+    ].join(" "),
+  );
 }

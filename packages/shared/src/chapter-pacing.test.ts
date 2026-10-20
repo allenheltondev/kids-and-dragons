@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
   CALIBRATION_SCENARIO_ID,
+  checkKind,
   composedWordRange,
   DEFAULT_SCENARIO_IDS,
   fitModel,
   isGatedFor,
+  longestReadingRun,
   metricRange,
   PACING_FACET_IDS,
   PACING_SCENARIOS,
@@ -71,7 +73,9 @@ describe("chapter pacing metrics", () => {
       scenes: 6,
       decisions: 1, // vote only: start and short are one-button beats
       checks: 1,
+      doingChecks: 1, // a might check
       encounters: 1,
+      longestReadingRun: 1, // start, short and win each stand alone between things to do
       // start 3 + vote 2 + short 1 + roll prompt 2 + taken branch 3 + win 2
       words: 3 + 2 + 1 + 2 + 3 + 2,
       wordsMin: 3 + 2 + 1 + 2 + 3 + 2,
@@ -268,5 +272,75 @@ describe("pacing scenarios", () => {
     expect(range?.scenes).toEqual({ min: 3, max: 3 });
     expect(range?.wordsMin.min).toBe(4 + 3 + 2 + 2 + 2); // empty-solo: start variant, no branch seat variant
     expect(range?.words.max).toBeGreaterThan(range?.wordsMin.min ?? 0);
+  });
+});
+
+describe("interactivity", () => {
+  const beat = (next: string) => ({ type: "story", narration: "words", choices: [go("on", next)] });
+  const check = (stat: string, next: string, extra: object = {}) => ({
+    type: "check",
+    stat,
+    tn: 8,
+    prompt: "Roll",
+    onSuccess: { goto: next },
+    onFailure: { goto: next },
+    ...extra,
+  });
+  /*
+   * open -> b1 -> b2 -> b3 -> lift (might) -> b4 -> fight -> b5 -> b6 -> talk (heart)
+   * -> jam (heart, checkKind doing) -> stare (clever, checkKind talking) -> pick -> end.
+   * `pick` has a second way only behind a flag-`when`, so it is a beat in every scenario.
+   * Reading runs: open..b3 = 4, b4 = 1, b5..b6 = 2, pick..end = 2.
+   */
+  const lineScenes = {
+    open: beat("b1"),
+    b1: beat("b2"),
+    b2: beat("b3"),
+    b3: beat("lift"),
+    lift: check("might", "b4"),
+    b4: beat("fight"),
+    fight: { type: "encounter", map: "m", enemies: [], onVictory: { goto: "b5" }, onDefeat: { goto: "b5" } },
+    b5: beat("b6"),
+    b6: beat("talk"),
+    talk: check("heart", "jam"),
+    jam: check("heart", "stare", { checkKind: "doing" }),
+    stare: check("clever", "pick", { checkKind: "talking" }),
+    pick: { type: "story", narration: "words", choices: [go("a", "end"), { ...go("b", "end"), when: { flag: "met" } }] },
+    end: { type: "story", narration: "The end", choices: [] },
+  } as unknown as Record<string, Scene>;
+  const line: Chapter = { ...makeChapter(), entry: "open", estimatedMinutes: 30, scenes: lineScenes };
+  const path = ["open", "b1", "b2", "b3", "lift", "b4", "fight", "b5", "b6", "talk", "jam", "stare", "pick", "end"];
+
+  it("reads a check's kind from its stat unless the check overrides it", () => {
+    const stats = ["might", "quick", "clever", "heart"].map((stat) => checkKind(check(stat, "x") as never));
+    expect(stats).toEqual(["doing", "doing", "doing", "talking"]);
+    const overridden = ["jam", "stare"].map((id) => checkKind(lineScenes[id] as never));
+    expect(overridden).toEqual(["doing", "talking"]);
+  });
+
+  it("counts doing checks and the longest stretch with nothing to decide on a path", () => {
+    const m = pathMetrics(line, path);
+    expect(m.checks).toBe(4);
+    expect(m.doingChecks).toBe(2); // lift, and jam by override; stare talks by override
+    expect(m.longestReadingRun).toBe(4);
+    expect(longestReadingRun(line, path)).toEqual({ from: "open", length: 4 });
+  });
+
+  it("lets a vote, a check or a fight break a run, but not a one-button beat", () => {
+    expect(longestReadingRun(line, ["b4", "fight", "b5"])).toEqual({ from: "b4", length: 1 });
+    expect(longestReadingRun(line, ["b5", "b6", "talk", "jam"])).toEqual({ from: "b5", length: 2 });
+    expect(longestReadingRun(line, ["stare", "pick", "end"])).toEqual({ from: "pick", length: 2 });
+    expect(longestReadingRun(line, ["lift", "talk"])).toBeNull();
+    expect(longestReadingRun(chapter, ["start", "vote", "short"])).toEqual({ from: "start", length: 1 });
+  });
+
+  it("carries both numbers into the shortest and typical paths and their ranges", () => {
+    const r = pacingReport(line, PACING_SCENARIOS, 20);
+    for (const s of r.scenarios) {
+      expect(s.shortest).toMatchObject({ doingChecks: 2, longestReadingRun: 4 });
+      expect(s.typical).toMatchObject({ doingChecks: 2, longestReadingRun: 4 });
+    }
+    expect(metricRange(r, "shortest")?.longestReadingRun).toEqual({ min: 4, max: 4 });
+    expect(metricRange(r, "typical")?.doingChecks).toEqual({ min: 2, max: 2 });
   });
 });

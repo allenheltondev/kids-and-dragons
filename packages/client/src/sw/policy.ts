@@ -12,7 +12,7 @@
  *   - The adventure book opens with no signal (`/journal`, spec §2.3), on a
  *     reload as well as in an open tab: the page, its code, the content it
  *     reads and the map painting are kept on the phone.
- *   - Nothing the phone already has is downloaded twice. Art, rigs, audio and
+ *   - Nothing the phone already has is downloaded twice. Art, audio and
  *     content are not hashed in their URLs, so each build publishes a
  *     fingerprint of every one (`FileIndex`), and a saved copy whose
  *     fingerprint still matches is served without asking the network at all.
@@ -43,7 +43,7 @@ export const SW_CACHES = {
   bundle: "kad-bundle-v1",
   /** Content that is not in the index (none, in a normal build). */
   content: "kad-content-v1",
-  /** Fingerprinted art, rigs, audio and content, keyed `path?v=fingerprint`. */
+  /** Fingerprinted art, audio and content, keyed `path?v=fingerprint`. */
   files: "kad-files-v1",
   image: "kad-image-v2",
 } as const;
@@ -91,13 +91,7 @@ export const SW_PRECACHE_CONTENT: readonly string[] = [
   "/content/help.json",
 ];
 
-/**
- * How much fingerprinted art, rigs and audio a phone keeps. A rig is up to
- * ~8MB and the household plays with a handful, so this holds every rig they
- * use, the scenes they have seen and the music, with the least recently used
- * going first. Browsers allow far more; this is about being a good guest on a
- * family phone.
- */
+/** Limit cached art and audio on a family phone; evict least recently used files first. */
 export const SW_FILES_BUDGET_BYTES = 200 * 1024 * 1024;
 
 /** Unindexed pictures are few (brand art); a count is enough. */

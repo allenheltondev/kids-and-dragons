@@ -3,16 +3,8 @@
  * on, the combat board (world/board.ts) in its place.
  *
  * ---------------------------------------------------------------------------
- * RIGS FIRST, PNGs AND SINE WAVES AS THE FALLBACK
- *
- * Rive is the animation runtime (architecture §1), and the rigs exist now —
- * all 24 species/tier sets, built by rive-mcp against the manifest's
- * rigContract and delivered beside each tier's `assembled.png`. An actor asks
- * for the rig (world/rive-actor.ts) and drops it into exactly the seams this
- * header always promised — `setParty`, the knocked-down state, `focusCamera`
- * — with the static PNG + procedural motion kept as the fallback for a rig
- * that is missing or will not load. The combat board (world/board.ts) still
- * draws PNG cutouts; that is the next seam.
+ * Finished transparent illustrations share a subtle breath anchored at the
+ * feet. Story and combat use the same art and preserve their own transitions.
  *
  * ---------------------------------------------------------------------------
  * ONE CAMERA (docs/briefs/combat-rendering.md, trap 1)
@@ -43,6 +35,7 @@
  * ---------------------------------------------------------------------------
  */
 
+import { idleBreath } from "./idle-motion";
 import { Application, Assets, Container, Graphics, Sprite, Text, Texture } from "pixi.js";
 import type { PartyMember, Position } from "@kad/shared";
 import { currentActorId } from "@kad/shared";
@@ -80,7 +73,6 @@ import {
 } from "./actor-art";
 import { sceneBackdropUrl } from "./art-paths";
 import { isQuiet, QUIET_FLASH_SCALE } from "../quiet";
-import { createRiveActor, type RiveActorHandle } from "./rive-actor";
 import { focusHolds, type FocusHold } from "./attention";
 import {
   advanceShake,
@@ -313,12 +305,6 @@ interface Actor {
   /** Whether the container has stood in a slot yet. A figure's first slot is
       taken at once; only a move between slots is walked. */
   placed: boolean;
-  /**
-   * The rigged figure, once its `.riv` loads. While set, the rig owns the
-   * acting — idle breathing, the fall, the get-up — and the procedural bob
-   * and FALLEN_* pose below stay away from it.
-   */
-  rive: RiveActorHandle | null;
   /** The contact shadow, a sibling of `art` so it neither turns nor falls. */
   shadow: Graphics;
   /** How far right of the anchor the feet are, as drawn (facing left). The
@@ -353,16 +339,16 @@ interface CastActor {
  * The two are not the same thing, and the difference is this chapter's whole
  * payoff: a character who levels into a new tier keeps her id and changes her
  * body. An actor rebuilt only when a new id appeared would have gone on
- * drawing the Fledgling rig for the rest of the session — the transformation
+ * drawing the Fledgling figure for the rest of the session — the transformation
  * cutscene playing over a figure that visibly never transformed.
  *
- * Class matters only when it selects a delivered manifest.rigVariants build;
+ * Class matters only when it selects a delivered manifest.figureVariants illustration;
  * `characterWorldArtUrl` folds that exact distinction into the key without
  * rebuilding an undeclared class/species/tier combination onto the same base
- * rig. Appearance is deliberately *not* in here. Nothing about a figure is drawn
- * from it any more — the runtime recolour is gone and every rig wears the
+ * illustration. Appearance is deliberately *not* in here. Nothing about a figure is drawn
+ * from it any more — the runtime recolour is gone and every figure wears the
  * colours it was authored in (`nameplate.ts` explains why) — so folding it in
- * would throw a megabyte of rig away and reload an identical one because
+ * would throw a illustration away and reload an identical one because
  * somebody tapped a swatch that now only colours their UI chrome.
  *
  * Pure and exported so the rule is testable without a WebGL context, the same
@@ -801,18 +787,6 @@ export function createScene(app: Application): PartyScene {
       // reads as the figure turning round rather than flipping.
       actor.art.scale.x = approach(actor.art.scale.x, facing, TURN_RATE, dt);
       actor.shadow.x = actor.shadowX * actor.art.scale.x;
-      if (actor.rive) {
-        // The rig owns the acting: idle is a clip, the fall is down/down_loop
-        // driven by the contract's knockedDown boolean, and the procedural
-        // bob and FALLEN_* pose would fight it. Connection fade still
-        // applies — presence is the scene's fact, not the rig's.
-        actor.rive.setKnockedDown(actor.down);
-        actor.rive.tick(dt);
-        actor.art.scale.y = 1;
-        actor.shadow.scale.set(breathingShadowScale(actor.down ? 0 : actor.rive.breath()));
-        actor.art.alpha = approach(actor.art.alpha, actor.connected ? 1 : 0.5, FADE_RATE, dt);
-        continue;
-      }
       if (actor.down) {
         // spec §7.3 — knocked down, never dead. They lie on the grid and wait
         // for someone to come get them.
@@ -826,10 +800,10 @@ export function createScene(app: Application): PartyScene {
       // Breathing, not bobbing: the art is anchored at the feet, so a
       // stretch on y swells the body and leaves the feet on their shadow.
       // Lifting the whole figure is what made the lineup look like it hovered.
-      const bob = Math.sin(elapsed * 1.6 + actor.phase);
-      actor.art.rotation = approach(actor.art.rotation, bob * 0.02, BOB_RATE, dt);
+      const breath = idleBreath(elapsed, actor.phase, still);
+      actor.art.rotation = approach(actor.art.rotation, 0, BOB_RATE, dt);
       actor.art.y = approach(actor.art.y, 0, DOWN_RATE, dt);
-      actor.art.scale.y = 1 + bob * 0.015;
+      actor.art.scale.y = 1 + breath;
       // The shadow tightens as the body rises and spreads as it settles.
       actor.shadow.scale.set(breathingShadowScale(actor.art.scale.y - 1));
       actor.art.alpha = approach(actor.art.alpha, actor.connected ? 1 : 0.5, FADE_RATE, dt);
@@ -854,10 +828,10 @@ export function createScene(app: Application): PartyScene {
       member.art.alpha = member.presence;
       member.shadow.alpha = member.presence;
       if (member.label) member.label.alpha = member.presence;
-      if (!still) {
+      {
         // Breathing about the feet — see the party's bob in tick().
-        const bob = Math.sin(elapsed * 1.3 + member.phase);
-        member.art.scale.y = 1 + bob * 0.012;
+        const breath = idleBreath(elapsed, member.phase, still);
+        member.art.scale.y = 1 + breath;
         member.shadow.scale.set(breathingShadowScale(member.art.scale.y - 1));
       }
     }
@@ -1070,7 +1044,7 @@ export function createScene(app: Application): PartyScene {
       x: 0,
       y: GROUND_Y,
       placed: false,
-      rive: null,
+
       shadow,
       shadowX: 0,
     };
@@ -1104,30 +1078,7 @@ export function createScene(app: Application): PartyScene {
         });
     };
 
-    // The rig first, the PNG when there isn't one — same never-goes-stale
-    // reasoning as the PNG load: ask for the file, fall back when it is not
-    // there. The rig carries its own acting.
-    void createRiveActor(species, tier, ACTOR_HEIGHT, characterClass)
-      .then((rive) => {
-        if (destroyed || actors.get(id) !== actor) {
-          rive?.destroy();
-          return;
-        }
-        if (!rive) {
-          loadPng();
-          return;
-        }
-        art.removeChildren();
-        placeholder.destroy();
-        // The rig plays its own fall, so hand it the state it joined in and
-        // clear any procedural pose the placeholder was eased into.
-        art.rotation = 0;
-        art.y = 0;
-        rive.setKnockedDown(actor.down);
-        art.addChild(rive.sprite);
-        actor.rive = rive;
-      })
-      .catch(loadPng);
+    loadPng();
 
     return actor;
   }
@@ -1201,15 +1152,8 @@ export function createScene(app: Application): PartyScene {
           continue;
         }
         if (existing) {
-          /*
-           * Same character, different body — a tier crossed. Rebuild rather
-           * than mutate: the rig file and the sprite are both decided at load
-           * (rive-actor.ts), so there is nothing on a live actor to patch.
-           * Dropping the Rive handle first, then the container, is the same
-           * order `destroy()` uses and for the same reason — the C++ objects
-           * are not the Pixi tree's to collect.
-           */
-          existing.rive?.destroy();
+          // A tier or class illustration changed; rebuild its sprite.
+
           existing.container.destroy({ children: true });
           actors.delete(id);
         }
@@ -1218,9 +1162,6 @@ export function createScene(app: Application): PartyScene {
 
       for (const [id, actor] of [...actors.entries()]) {
         if (seen.has(id)) continue;
-        // Rive handles are C++ objects; the container destroy only reaches
-        // the sprite. Delete the runtime half first, then the tree.
-        actor.rive?.destroy();
         actor.container.destroy({ children: true });
         actors.delete(id);
       }
@@ -1475,7 +1416,6 @@ export function createScene(app: Application): PartyScene {
       stepVeil.destroy();
       victoryGlow.destroy();
       for (const actor of actors.values()) {
-        actor.rive?.destroy();
         actor.container.destroy({ children: true });
       }
       actors.clear();
