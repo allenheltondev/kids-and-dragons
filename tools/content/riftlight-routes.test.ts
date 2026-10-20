@@ -4,7 +4,7 @@ import { expect, it } from "vitest";
 import { applyEffects, chapterFlagWrites, completeVisit, enterScene, lintCampaignGraph, parseCampaignGraph, startJourney, takeExit } from "@kad/shared";
 import { campaign, chapters, context, start, allPaths } from "./riftlight-test-support.ts";
 import { stageRiftlightOpening } from "./riftlight-preview.ts";
-import { runValidator } from "./generate-gate.ts";
+import { runValidator } from "./run-validator.ts";
 import { chapterFlagsFrom } from "./journey-graph.ts";
 
 it.each([

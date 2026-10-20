@@ -16,8 +16,8 @@ are real while everything else is still a sine wave.
 ## The one list
 
 `packages/client/src/audio/paths.ts` holds `CUE_SPECS` and `MUSIC_SPECS`: for
-each sound, a **brief** (what it is, in the words a person or a model needs)
-and a **target length**. The generator prompts from it, the gate checks
+each sound, a **brief** (what it is, in the words a person making it needs)
+and a **target length**. `audio:briefs` prints from it, the gate checks
 against it, and the game loads by it. Adding a sound means adding a row there
 and a `CueId`.
 
@@ -35,7 +35,7 @@ at a scene change.
 ### Procedural listening drafts
 
 `npm run audio:preview` creates a standalone listening page and 22 stereo WAV drafts under
-`art/review/gemfall-audio/`. It needs no provider key or external encoder. The approved source
+`art/review/gemfall-audio/`. It needs no external encoder. The approved source
 bank in `packages/client/src/audio/procedural.ts` covers 18 cue briefs and four music beds.
 The live engine loads its exported files, keeping the renderer out of the game bundle.
 See [Gemfall audio](./campaigns/gemfall-audio.md).
@@ -43,40 +43,29 @@ See [Gemfall audio](./campaigns/gemfall-audio.md).
 `npm run audio:install` renders the approved revision to Opus/WebM in `assets/audio/`.
 Requires FFmpeg (`KAD_FFMPEG` can point to its executable); `--force` permits replacement.
 The install path preserves reviewed RMS levels and stereo placement rather than running
-provider audio's mono/LUFS normalization. When local revision-2 WAVs are available, it checks
+imported audio's mono/LUFS normalization. When local revision-2 WAVs are available, it checks
 that the rendered source bytes match approval before encoding.
 
-### Provider generation
+### Bringing in a new sound
 
-```
-npm run audio:generate                 # everything still synthesized
-npm run audio:generate -- dice         # one cue
-npm run audio:generate -- music:forest # one biome loop
-npm run audio:generate -- dice --force # replace an existing file
-```
-
-Needs two things:
-
-- **`ffmpeg`** on the path. Providers return whatever they return (usually
-  MP3); the tool encodes to Opus-in-WebM at one loudness target
-  (`-18 LUFS`), mono, so no cue is startling next to another.
-- **A provider key.** `ELEVENLABS_API_KEY` for the implemented provider.
-
-### When the API is not the road
-
-A free tier, a pack you bought, a friend with a microphone — all of them end
-with files in a folder rather than an API call. Same destination, one more
-step:
+A new sound comes in by hand. However it was made (a sound tool, a pack you
+bought, a friend with a microphone), it ends as files in a folder, and
+`audio:import` takes it from there:
 
 ```
 npm run audio:briefs                        # what is still missing, and the
-                                            # prompt for each one
+                                            # brief for each one
 npm run audio:import -- ~/Downloads         # match, encode, file them
 npm run audio:import -- take7.mp3 --as dice # when the name is hopeless
+npm run audio:import -- ~/Downloads --force # replace an existing file
 ```
 
+It needs **`ffmpeg`** on the path: files arrive as whatever the tool that made
+them wrote (usually MP3), and import encodes to Opus-in-WebM at one loudness
+target (`-18 LUFS`), mono, so no cue is startling next to another.
+
 Keep the cue name somewhere in the filename and the rest is automatic —
-`dice.mp3`, `ElevenLabs_2026-…_dice_pvc.mp3`, `level-up final.mp3` all land
+`dice.mp3`, `SoundTool_2026-…_dice_pvc.mp3`, `level-up final.mp3` all land
 correctly. Matching is on *words*, so a cue name inside a longer word does not
 count and neither does the folder the file sits in.
 
@@ -91,18 +80,8 @@ the tool that made them felt like, and a set of cues that are individually fine
 but three decibels apart is the kind of wrong nobody can point at — it just
 sounds cheap.
 
-### Changing provider
-
-`PROVIDERS` in `tools/audio/generate.ts` is the whole seam: a function from
-`(brief, seconds, kind)` to bytes. `kind` is `"sfx"` or `"music"` because every
-service that does both has two endpoints, and a sound-effects model asked for
-forty-five seconds of ambience returns forty-five seconds of noise.
-
-Adding one is a function beside the existing one. A model in your own Bedrock
-account is a provider too — nothing above that line knows the difference. (The
-chapter generator goes through Bedrock because the model it wants is an
-Anthropic one; audio has no such tie, which is why this is a seam rather than a
-decision baked into the tool.)
+Until a file lands, the cue keeps playing its synthesized recipe, exactly as
+the rule above says.
 
 ## Checking them
 
