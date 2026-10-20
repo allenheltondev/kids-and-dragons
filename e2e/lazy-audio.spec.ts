@@ -24,7 +24,7 @@ test("the home screen is usable before the sound engine arrives, and sound works
   });
 
   await page.goto("/");
-  await expect(page.getByRole("button", { name: /run a group/i })).toBeVisible(TAP);
+  await expect(page.getByRole("button", { name: /grown-ups: sign in/i })).toBeVisible(TAP);
   await expect.poll(() => asked.length, TAP).toBeGreaterThan(0);
   await expect(page.getByRole("button", { name: /turn sound/i })).toHaveCount(0);
 

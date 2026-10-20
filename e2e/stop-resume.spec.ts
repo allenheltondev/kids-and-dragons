@@ -92,7 +92,7 @@ test.describe("stop anytime, pick up where you left off", () => {
   async function nightOne(browser: Browser) {
     const allen = await phone(browser);
     await allen.goto("/");
-    await allen.getByRole("button", { name: /want to host/i }).click();
+    await allen.getByRole("button", { name: /host a game/i }).click();
     await allen.getByText("Phone Mode").click();
     await allen.getByLabel(/adventurer name/i).fill("Allen");
     await allen.getByRole("button", { name: /^start a game$/i }).click();
@@ -142,7 +142,7 @@ test.describe("stop anytime, pick up where you left off", () => {
 
     // --- Night two: Sam, on the other phone, opens a new room ---
     await sam.goto("/");
-    await sam.getByRole("button", { name: /want to host/i }).click();
+    await sam.getByRole("button", { name: /host a game/i }).click();
     await sam.getByText("Phone Mode").click();
     await sam.getByLabel(/adventurer name/i).fill("Sam");
     await sam.getByRole("button", { name: /^start a game$/i }).click();
@@ -214,7 +214,7 @@ test.describe("stop anytime, pick up where you left off", () => {
 
     // Night two: Allen's own screen says Pip is saved, and Bo's does not.
     await allen.goto("/");
-    await allen.getByRole("button", { name: /want to host/i }).click();
+    await allen.getByRole("button", { name: /host a game/i }).click();
     await allen.getByText("Phone Mode").click();
     await allen.getByLabel(/adventurer name/i).fill("Allen");
     await allen.getByRole("button", { name: /^start a game$/i }).click();

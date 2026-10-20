@@ -8,6 +8,9 @@
  *                  No room, so no code — the device binding is enough.
  *   /guide       → the grown-up's guide to running a session (#257). Needs
  *                  nothing at all, and prints.
+ *   /account     → accounts and devices: sign in, move a hero between
+ *                  devices, set up a family tablet or a group. A grown-up's
+ *                  errands, kept off the join screen.
  *   /tv/:code    → Party Mode WorldView. A pure display client with no
  *                  authority, refreshable at any time (spec §2.1).
  *   /p/:code     → PlayerView in Party Mode, or the toggled
@@ -26,6 +29,7 @@ export type Route =
   | { name: "home" }
   | { name: "journal" }
   | { name: "guide" }
+  | { name: "account" }
   | { name: "tv"; code: string }
   | { name: "player"; code: string }
   | { name: "notFound"; path: string };
@@ -96,6 +100,7 @@ export function parseRoute(input: string): Route {
   if (segments.length === 0) return { name: "home" };
   if (segments.length === 1 && head === "journal") return { name: "journal" };
   if (segments.length === 1 && head === "guide") return { name: "guide" };
+  if (segments.length === 1 && head === "account") return { name: "account" };
 
   if (segments.length === 2 && second !== undefined) {
     const code = normalizeCode(second);
@@ -117,6 +122,8 @@ export function formatRoute(route: Route): string {
       return "/journal";
     case "guide":
       return "/guide";
+    case "account":
+      return "/account";
     case "tv":
       return `/tv/${normalizeCode(route.code)}`;
     case "player":
@@ -199,15 +206,15 @@ export function useRoute(): Route {
 // pulling the rest of pairing into the first-paint payload.
 // ---------------------------------------------------------------------------
 
-/** Query parameter a pairing link carries. The home screen reads it and clears it. */
+/** Query parameter a pairing link carries. The account screen reads it and clears it. */
 export const PAIR_PARAM = "pair";
 
 /** Eight letters, as the server mints them. */
 export const PAIRING_CODE_LENGTH = 8;
 
-/** What a QR holds: the app's home with the code ready to spend, one tap away. */
+/** What a QR holds: the account screen with the code ready to spend, one tap away. */
 export function pairingUrl(origin: string, code: string): string {
-  return `${origin}/?${PAIR_PARAM}=${encodeURIComponent(code)}`;
+  return `${origin}/account?${PAIR_PARAM}=${encodeURIComponent(code)}`;
 }
 
 /** As typed, pasted or scanned: any case, dash or spaces dropped, capped at the code's length. */

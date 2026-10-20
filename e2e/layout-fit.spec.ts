@@ -334,7 +334,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     // --- The start screen ---
     const host = await phone(browser);
     await host.goto("/");
-    await expect(host.getByRole("button", { name: /want to host/i })).toBeVisible(TAP);
+    await expect(host.getByRole("button", { name: /host a game/i })).toBeVisible(TAP);
     await expectFits(host, "start screen");
 
     // --- The grown-up's guide, whose words scroll under nothing ---
@@ -346,7 +346,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await host.goto("/");
 
     // --- A Phone Mode room, a host and a guest, each with a hero ---
-    await host.getByRole("button", { name: /want to host/i }).click();
+    await host.getByRole("button", { name: /host a game/i }).click();
     await host.getByText("Phone Mode").click();
     await host.getByLabel("Your adventurer name").fill("Grown-up");
     await host.getByRole("button", { name: /^start a game$/i }).click();
@@ -434,7 +434,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     });
     const tv = await context.newPage();
     await tv.goto("/");
-    await tv.getByRole("button", { name: /want to host/i }).click();
+    await tv.getByRole("button", { name: /host a game/i }).click();
     await tv.getByText("Party Mode").click();
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
@@ -514,7 +514,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     });
 
     await tv.goto("/");
-    await tv.getByRole("button", { name: /want to host/i }).click();
+    await tv.getByRole("button", { name: /host a game/i }).click();
     await tv.getByText("Party Mode").click();
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);

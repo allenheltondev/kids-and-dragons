@@ -48,13 +48,14 @@ test.describe("a family tablet", () => {
 
     // --- A grown-up's phone: an account, a family, and a Phone Mode room ---
     const phone = await (await context(browser)).newPage();
-    await phone.goto("/");
+    await phone.goto("/account");
     await phone.getByRole("button", { name: /sign in or create an account/i }).click(TAP);
     await expect(phone.getByLabel("Email")).toBeVisible(TAP);
     await guidePicture(phone, "sign-in");
     await signIn(phone, email);
     await phone.getByRole("button", { name: /back to the game/i }).click(TAP);
-    await phone.getByRole("button", { name: /want to host/i }).click();
+    await phone.getByRole("button", { name: "Back to the start" }).click();
+    await phone.getByRole("button", { name: /host a game/i }).click();
     await phone.getByText("Phone Mode").click();
     await phone.getByLabel(/adventurer name/i).fill("Grown-up");
     await phone.getByRole("button", { name: /^start a game$/i }).click();
@@ -64,7 +65,7 @@ test.describe("a family tablet", () => {
     // --- The tablet: the same grown-up makes it the family's ---
     const tabletContext = await context(browser);
     const tablet = await tabletContext.newPage();
-    await tablet.goto("/");
+    await tablet.goto("/account");
     await tablet.getByRole("button", { name: /make it a family tablet/i }).click(TAP);
     await signIn(tablet, email);
     await tablet.getByRole("button", { name: /^done$/i }).click(TAP);
@@ -103,13 +104,14 @@ test.describe("a family tablet", () => {
     const email = `grown-up-${Date.now()}@example.com`;
 
     const phone = await (await context(browser)).newPage();
-    await phone.goto("/");
+    await phone.goto("/account");
     await phone.getByRole("button", { name: /sign in or create an account/i }).click(TAP);
     await signIn(phone, email);
     await phone.getByRole("button", { name: /back to the game/i }).click(TAP);
+    await phone.getByRole("button", { name: "Back to the start" }).click();
 
     const tablet = await (await context(browser)).newPage();
-    await tablet.goto("/");
+    await tablet.goto("/account");
     await tablet.getByRole("button", { name: /make it a family tablet/i }).click(TAP);
     await signIn(tablet, email);
     await tablet.getByRole("button", { name: /^done$/i }).click(TAP);
@@ -132,11 +134,12 @@ test.describe("a family tablet", () => {
 
     // --- A grown-up's phone: an account and a family ---
     const phone = await (await context(browser)).newPage();
-    await phone.goto("/");
+    await phone.goto("/account");
     await phone.getByRole("button", { name: /sign in or create an account/i }).click(TAP);
     await signIn(phone, email);
     await phone.getByRole("button", { name: /back to the game/i }).click(TAP);
-    await phone.getByRole("button", { name: /want to host/i }).click();
+    await phone.getByRole("button", { name: "Back to the start" }).click();
+    await phone.getByRole("button", { name: /host a game/i }).click();
     await phone.getByText("Phone Mode").click();
     await phone.getByLabel(/adventurer name/i).fill("Grown-up");
     await phone.getByRole("button", { name: /^start a game$/i }).click();
@@ -144,7 +147,7 @@ test.describe("a family tablet", () => {
 
     // --- The family tablet ---
     const tablet = await (await context(browser)).newPage();
-    await tablet.goto("/");
+    await tablet.goto("/account");
     await tablet.getByRole("button", { name: /make it a family tablet/i }).click(TAP);
     await signIn(tablet, email);
     await tablet.getByRole("button", { name: /^done$/i }).click(TAP);
@@ -152,7 +155,7 @@ test.describe("a family tablet", () => {
 
     // --- Another device of the grown-up's lists it and forgets it ---
     const other = await (await context(browser)).newPage();
-    await other.goto("/");
+    await other.goto("/account");
     await other.getByRole("button", { name: /run a group/i }).click(TAP);
     await signIn(other, email);
     await expect(other.getByRole("heading", { name: "Family tablets" })).toBeVisible(TAP);
@@ -162,6 +165,6 @@ test.describe("a family tablet", () => {
     // --- The tablet's next request is refused, and it is an ordinary home again ---
     await tablet.reload();
     await expect(tablet.getByRole("heading", { name: WHO })).toHaveCount(0, TAP);
-    await expect(tablet.getByRole("button", { name: /want to host/i })).toBeVisible(TAP);
+    await expect(tablet.getByRole("button", { name: /host a game/i })).toBeVisible(TAP);
   });
 });
