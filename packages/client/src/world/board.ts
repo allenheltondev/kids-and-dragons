@@ -235,6 +235,8 @@ export interface BoardLayer {
   facings(): Record<string, number>;
   /** The footprints still on the floor, in board pixels. For tests. */
   trailMarks(): { x: number; y: number }[];
+  /** Each figure's drawn (painted) height in board pixels, and its stance, by id (#362). For tests. */
+  figureSizes(): Record<string, { height: number; stance: CastStance }>;
   destroy(): void;
 }
 
@@ -1177,6 +1179,10 @@ export function createBoardLayer(): BoardLayer {
 
     facings() {
       return Object.fromEntries([...actors.values()].map((a) => [a.id, a.art.scale.x]));
+    },
+
+    figureSizes() {
+      return Object.fromEntries([...actors.values()].map((a) => [a.id, { height: a.height, stance: a.stance }]));
     },
 
     trailMarks() {

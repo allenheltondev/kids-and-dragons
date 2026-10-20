@@ -82,8 +82,9 @@ describe("the floor", () => {
     const sprite = standing(20);
     expect(floored(sprite, 1, STORY_MEASURE)).toBe(true);
     expect(drawnHeight(sprite, 1, STORY_MEASURE)).toBe(STORY_MEASURE.floor);
-    // At natural scale the floor is a 25 cm figure: Pib, "the size of a teapot".
-    expect(floorHeightCm(1, STORY_MEASURE)).toBeCloseTo(25.6, 1);
+    // At natural scale the floor is a 32 cm figure, so Pib, "the size of a teapot", stands on it.
+    expect(floorHeightCm(1, STORY_MEASURE)).toBeCloseTo(32);
+    expect(floored(standing(25), 1, STORY_MEASURE)).toBe(true);
   });
 
   it("climbs when a huge figure shrinks the stage, which is where proportion gives", () => {

@@ -271,6 +271,13 @@ export interface PartyScene {
   storyFigureBoxes?(): { x: number; y: number; width: number; height: number }[];
   storyNameplateBoxes?(): { text: string; x: number; y: number; width: number; height: number; fontPixels: number }[];
   /**
+   * Each figure on the story stage as drawn (#362), in canvas pixels: the box
+   * its *paint* fills (not its canvas), the ground line under it, the top of
+   * its name, and the height and stance it was drawn for. For
+   * e2e/true-size.spec.ts; nothing at play reads it.
+   */
+  storyFigureReport?(): StoryFigureReading[];
+  /**
    * The camera's attention key (world/camera.ts header): a manual pan/pinch
    * survives everything except this key changing — callers set it to
    * "who this device is being asked to act as", so the board comes back
@@ -285,6 +292,19 @@ export interface PartyScene {
  * (#362, figure-scale.ts). `height` is set by layout; the rest arrives with
  * the art, which is measured once it loads.
  */
+export interface StoryFigureReading {
+  name: string | null;
+  hero: boolean;
+  heightCm: number;
+  stance: CastStance;
+  /** The painted box, or null while the art is loading. */
+  paint: { x: number; y: number; width: number; height: number } | null;
+  /** Where the ground (or water) line is under this figure. */
+  groundY: number;
+  /** The top of its nameplate, or null for none. */
+  labelTop: number | null;
+}
+
 interface StageFigureArt {
   container: Container;
   art: Container;
@@ -1334,6 +1354,29 @@ export function createScene(app: Application): PartyScene {
       });
     },
 
+    storyFigureReport() {
+      if (encounterView !== null) return [];
+      const figures: StageFigureArt[] = [...actors.values(), ...[...castActors.values()].filter((m) => !m.leaving)];
+      return figures.map((figure) => {
+        let paint: StoryFigureReading["paint"] = null;
+        if (figure.sprite) {
+          const b = figure.sprite.getBounds();
+          const box = figure.paint ?? NOMINAL_PAINT;
+          paint = { x: b.x + box.left * b.width, y: b.y + box.top * b.height,
+            width: (box.right - box.left) * b.width, height: (box.bottom - box.top) * b.height };
+        }
+        return {
+          name: figure.label?.text ?? null,
+          hero: figure.hero,
+          heightCm: figure.heightCm,
+          stance: figure.stance,
+          paint,
+          groundY: figure.container.toGlobal({ x: 0, y: 0 }).y,
+          labelTop: figure.label?.visible ? figure.label.getBounds().y : null,
+        };
+      });
+    },
+
     setBiome(next, art) {
       const fallback = next === null ? null : biomeBackdropUrl(next);
       const wanted = (art ? sceneBackdropUrl(art) : null) ?? fallback;
@@ -1519,14 +1562,15 @@ const RIPPLE_UNIT = 100;
 
 function rippleWidth(figure: StageFigureArt): number {
   const paint = figure.paint ?? NOMINAL_PAINT;
-  return (figure.height * (paint.right - paint.left)) / (paint.bottom - paint.top) * 0.5;
+  return (figure.height * (paint.right - paint.left)) / (paint.bottom - paint.top) * 0.42;
 }
 
+/** A soft pool of water where the swimmer meets the line, and two thin rings on it. */
 function drawRipple(): Graphics {
   const g = new Graphics();
-  g.ellipse(0, 0, RIPPLE_UNIT * 1.1, RIPPLE_UNIT * 0.16).fill({ color: 0x9fd4f2, alpha: 0.18 });
-  g.ellipse(0, 0, RIPPLE_UNIT, RIPPLE_UNIT * 0.12).stroke({ width: 4, color: 0xe2f5ff, alpha: 0.75 });
-  g.ellipse(0, RIPPLE_UNIT * 0.05, RIPPLE_UNIT * 0.7, RIPPLE_UNIT * 0.08).stroke({ width: 3, color: 0xe2f5ff, alpha: 0.4 });
+  g.ellipse(0, 0, RIPPLE_UNIT * 1.05, RIPPLE_UNIT * 0.14).fill({ color: 0x7fc4e8, alpha: 0.22 });
+  g.ellipse(0, 0, RIPPLE_UNIT * 0.9, RIPPLE_UNIT * 0.1).stroke({ width: 2.5, color: 0xe2f5ff, alpha: 0.45 });
+  g.ellipse(0, RIPPLE_UNIT * 0.03, RIPPLE_UNIT * 0.6, RIPPLE_UNIT * 0.06).stroke({ width: 2, color: 0xe2f5ff, alpha: 0.3 });
   return g;
 }
 

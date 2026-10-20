@@ -211,11 +211,13 @@ export const FIGURE_SLOT = 300;
  * design rect. The tallest figure may reach `headroom` above the ground line
  * (scene.ts stands it at 88% of the rect, and leaves a margin at the top), so
  * anything up to 3 m stands at natural scale and anything taller shrinks the
- * stage. Nothing is drawn shorter than `floor`, 64 units, which at natural
- * scale is a 26 cm figure: a teapot-sized sprite sits right on it, and
- * anything smaller stands at the floor rather than as a speck.
+ * stage. Nothing is drawn shorter than `floor`, 80 units (about 9% of the
+ * rect, some 35 px on a 720p TV), which at natural scale is a 32 cm figure:
+ * a teapot-sized sprite (25 cm) and anything smaller stand at the floor
+ * rather than as a speck. With a dragon in view the floor rises with the
+ * shrink, and that is where proportion gives (`floorHeightCm`).
  */
-export const STORY_MEASURE: StageMeasure = { pxPerCm: 2.5, headroom: 900 * 0.88 - 40, floor: 64 };
+export const STORY_MEASURE: StageMeasure = { pxPerCm: 2.5, headroom: 900 * 0.88 - 40, floor: 80 };
 
 /**
  * How much of its slot a figure's painted box may span. A little over the
