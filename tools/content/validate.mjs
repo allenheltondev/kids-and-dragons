@@ -38,6 +38,7 @@ import { factTestProblems } from "../../packages/shared/src/world-state.ts";
 import { helpProblems } from "../../packages/shared/src/help.ts";
 import { DEED_OWNERS } from "../../packages/shared/src/types/domain.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
+import { classPlaceReach, classPlaceVerdict, loadAllowList as loadClassPlaceAllow } from "./class-places.mjs";
 
 /**
  * Which tree to validate. Defaults to this repo; `KAD_CONTENT_ROOT` points it
@@ -54,6 +55,8 @@ const ROOT = process.env.KAD_CONTENT_ROOT
   ? resolve(process.env.KAD_CONTENT_ROOT)
   : fileURLToPath(new URL("../..", import.meta.url));
 const CONTENT = join(ROOT, "content");
+/** Graph campaigns allowed to lack class places until #315 (tools/content/class-places.mjs). */
+const CLASS_PLACE_ALLOW = loadClassPlaceAllow();
 const SCHEMAS = join(ROOT, "schemas");
 const MANIFEST = join(ROOT, "assets", "manifest.json");
 /**
@@ -1092,7 +1095,7 @@ function castFigureFile(figure) {
   return join(REPO_ASSETS, kind, id, "assembled.png");
 }
 
-function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, items = null) {
+function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, items = null, classIds = null) {
   const f = rel(file);
   let ok = true;
   const fail = (path, problem, hint) => {
@@ -1153,7 +1156,7 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, item
     }
   }
 
-  if (campaignMode(campaign) === "graph") return checkGraphCampaign(rep, file, campaign, chaptersById, fail, ok, items);
+  if (campaignMode(campaign) === "graph") return checkGraphCampaign(rep, file, campaign, chaptersById, fail, ok, items, classIds);
 
   /*
    * Beats are the save unit and the player sees "Chapter 3 of 6" - a gap here is
@@ -1262,7 +1265,7 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, item
  * Ordered campaigns never get here (checkCampaign returns to its beat rules
  * first), so Gemfall's output is untouched.
  */
-function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar, items = null) {
+function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar, items = null, classIds = null) {
   const f = rel(file);
   let ok = okSoFar;
   campaign.chapters.forEach((id, i) => {
@@ -1341,6 +1344,16 @@ function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar, it
       }
     }
     walked = search.complete ? `, walked ${search.states} state(s)` : "";
+  }
+  if (graph && classIds && campaign.id !== "gemfall" && campaign.chapters.every((id) => chaptersById.has(id))) {
+    // Class places (#313, docs/class-mastery.md §2): all four, by a way every party has.
+    const reach = classPlaceReach(campaign, campaign.chapters.map((id) => chaptersById.get(id)), classIds);
+    const verdict = classPlaceVerdict(campaign.id, reach, CLASS_PLACE_ALLOW);
+    for (const message of verdict.errors) {
+      fail("/graph", `CLASS_PLACE: ${message}`, "Add the room to a chapter's rest scene (docs/class-mastery.md §2), or make its way in ungated.");
+      ok = false;
+    }
+    for (const message of verdict.warnings) rep.warn(`${f}  CLASS_PLACE: ${message}`, "Remove the campaign from tools/content/class-place-allow.json once its rooms exist.");
   }
   if (ok && graph) {
     rep.ok(
@@ -1585,7 +1598,7 @@ function main() {
     const campaign = readJson(rep, file);
     if (!campaign) continue;
     if (!validateAgainstSchema(rep, ajv, "campaign", file, campaign)) continue;
-    checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, items);
+    checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, items, rules ? Object.keys(rules.classes ?? {}) : null);
     for (const id of campaign.chapters) referenced.add(id);
     loadedCampaigns.push({ file, campaign });
   }
@@ -1601,6 +1614,15 @@ function main() {
       problem,
       "Campaign.requires lists campaigns the household must finish first; see schemas/campaign.schema.json.",
     );
+  }
+
+  // The class-place allow-list (#313) names graph campaigns in content/campaigns;
+  // an entry for anything else, or without a reason, is stale or hides a gap.
+  const graphIds = new Set(loadedCampaigns.filter(({ campaign }) => campaignMode(campaign) === "graph").map(({ campaign }) => campaign.id));
+  for (const [id, reason] of Object.entries(CLASS_PLACE_ALLOW)) {
+    const at = "tools/content/class-place-allow.json";
+    if (!graphIds.has(id)) rep.fail(at, `/${id}`, `"${id}" is not a graph campaign in content/campaigns, so there is nothing to allow`, "Remove the entry.");
+    else if (typeof reason !== "string" || !reason.trim()) rep.fail(at, `/${id}`, "an allow-list entry needs a one-line reason", "Say why the campaign has no class places yet.");
   }
 
   for (const [id, chapter] of chaptersById) {

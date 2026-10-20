@@ -51,7 +51,11 @@ earns a distinction anywhere in the world, a crow lands on a nearby fence, says 
   Academy is in the marsh village, the Rookery is on the Exchange's rooftops. The party enters it
   from that place's `rest` scene, so a campaign pays for four rooms, not four chapters.
 - **Every graph campaign has all four reachable.** `content:validate` fails a graph campaign that is
-  missing one, or whose only way to one is gated.
+  missing one, or whose only way to one is gated *(built, #313)*. A way counts when no flag, item,
+  species, class, world fact or lock stands in it; a `completed:` or `visited:` gate on a place any
+  party can reach is open. A room must be entered from a `rest` scene. A graph campaign that does not
+  have its rooms yet is listed with a reason in `tools/content/class-place-allow.json`, which warns
+  and which #315 empties; an entry for a campaign that has them all fails, so it cannot go stale.
 - **Introduced on every visit.** Places in a graph campaign can be reached in any order, so each
   room introduces its teacher (and the crows) whenever a party walks in. A second visit can read
   shorter ("The crows eye you. 'Back again.'").
