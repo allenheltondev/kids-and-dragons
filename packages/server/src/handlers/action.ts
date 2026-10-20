@@ -286,8 +286,9 @@ export async function applyAction(
     spentCharacter = spend.value.character;
     result = { state: spend.value.state };
   } else if (input.intent.type === "SWITCH_CLASS") {
-    // At a class place (#311). Like a stat point, it writes the hero's row,
-    // so it is prepared here and committed with the run below.
+    // At a class place (#311) or the fitting stall (#312). Like a stat
+    // point, it writes the hero's row, so it is prepared here and committed
+    // with the run below.
     if (auth.run.status !== "active") {
       return {
         ok: false,
@@ -302,6 +303,7 @@ export async function applyAction(
       input.playerId,
       input.intent.classId,
       chapter,
+      input.intent.stall === true,
     );
     if (!change.ok) return { ok: false, seq: state.seq, error: change.error };
     spentCharacter = change.value.character;

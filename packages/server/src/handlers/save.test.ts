@@ -5,7 +5,7 @@
  */
 
 import path from "node:path";
-import { applyIntent, createRunState, makeRng, type ChannelMessage, type ClientIntent, type RunState } from "@kad/shared";
+import { applyIntent, classPlaceWaitingOn, createRunState, keepClassIntent, makeRng, type ChannelMessage, type ClientIntent, type RunState } from "@kad/shared";
 import { describe, expect, it } from "vitest";
 import { loadContent } from "../content/loader.ts";
 import type { Engine } from "../engine/port.ts";
@@ -92,7 +92,12 @@ async function walkIn(seats: Seat[], steps = 3) {
     const byPlayer = (playerId: string | undefined) => seats.find((s) => s.playerId === playerId) ?? seats[0]!;
     let seat = byPlayer(state.party[(state.storyTurn ?? 0) % state.party.length]?.playerId);
     let intent: ClientIntent = { type: "ADVANCE" };
-    if (prompt?.kind === "choice") {
+    // Gemfall opens at the fitting stall (#312): a new hero keeps their class.
+    const deciding = classPlaceWaitingOn(state)[0];
+    if (deciding && state.classPlace) {
+      seat = byPlayer(deciding.playerId);
+      intent = keepClassIntent(state.classPlace, deciding);
+    } else if (prompt?.kind === "choice") {
       if (prompt.forPlayerIds[0]) seat = byPlayer(prompt.forPlayerIds[0]);
       intent = { type: "CHOOSE", choiceId: prompt.options[0]!.id };
     } else if (prompt?.kind === "roll") {

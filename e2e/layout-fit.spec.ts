@@ -69,6 +69,11 @@ async function sessionOf(page: Page, code: string): Promise<{ playerId: string; 
 
 /** The dev playtest jump (playtest.ts), as stop-resume.spec uses it. */
 async function jumpTo(page: Page, code: string, sceneId: string): Promise<void> {
+  await sendAs(page, code, { type: "PLAYTEST_GOTO", sceneId });
+}
+
+/** One intent from this page's seat, retried past a lost seq race. */
+async function sendAs(page: Page, code: string, intent: Record<string, unknown>): Promise<void> {
   const session = await sessionOf(page, code);
   for (let attempt = 0; attempt < 5; attempt++) {
     const state = await roomState<{ runId: string; seq: number }>(page, code);
@@ -79,12 +84,14 @@ async function jumpTo(page: Page, code: string, sceneId: string): Promise<void> 
         runId: state.runId,
         playerId: session.playerId,
         seq: state.seq,
-        intent: { type: "PLAYTEST_GOTO", sceneId },
+        intent,
       }),
     });
-    if (((await response.json()) as { ok?: boolean }).ok) return;
+    const answer = (await response.json()) as { ok?: boolean; error?: { code: string; message: string } };
+    if (answer.ok) return;
+    if (answer.error?.code !== "STALE_SEQ") throw new Error(`${String(intent.type)}: ${JSON.stringify(answer.error)}`);
   }
-  throw new Error("the playtest jump kept losing the seq race");
+  throw new Error(`${String(intent.type)} kept losing the seq race`);
 }
 
 /** Apply display settings the way a11y/prefs.ts does: attributes on <html>. */
@@ -353,6 +360,42 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await guest.getByRole("button", { name: /open your book/i }).click(TAP);
     await expect(guest.getByRole("region", { name: "Rosie's character sheet" })).toBeVisible(TAP);
     await expectFits(guest, "the adventure book");
+  });
+
+  test("the Exchange's fitting stall (#312): every class to try, and the \"are you sure?\"", async ({ browser }) => {
+    test.setTimeout(180_000);
+    // A new hero in Gemfall, which opens at the Exchange. The launch campaign
+    // is the Hollow Crown, so the room is opened for Gemfall instead (the one
+    // request rewritten), and the dev jump goes straight to the scene the
+    // stall stands in.
+    const kid = await phone(browser);
+    await kid.route("**/api/room", async (route) => {
+      const body = route.request().postDataJSON() as Record<string, unknown> | null;
+      if (route.request().method() !== "POST" || !body?.campaignId) return route.continue();
+      await route.continue({ postData: JSON.stringify({ ...body, campaignId: "gemfall" }) });
+    });
+    await kid.goto("/");
+    await kid.getByRole("button", { name: /want to host/i }).click();
+    await kid.getByText("Phone Mode").click();
+    await kid.getByLabel("Your adventurer name").fill("Grown-up");
+    await kid.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(kid).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
+    const code = new URL(kid.url()).pathname.split("/").pop() ?? "";
+    await createCharacter(kid, "unicorn", "Sparklehoof");
+    await kid.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    await expect.poll(async () => (await roomState<{ phase: string }>(kid, code)).phase, TAP).toBe("scene");
+    await jumpTo(kid, code, "scene_prologue_city");
+
+    await expect(kid.getByText("Try on a new class?")).toBeVisible(TAP);
+    await expect(kid.getByRole("button", { name: /^Be a / })).toHaveCount(3);
+    await expectFits(kid, "the fitting stall, four answers");
+
+    await kid.getByRole("button", { name: "Be a Starweaver" }).click(TAP);
+    await expect(kid.getByRole("alertdialog")).toContainText("fits each hero only once", TAP);
+    await expectFits(kid, "the fitting stall's are-you-sure");
+
+    await kid.getByRole("button", { name: "Yes, switch!" }).click(TAP);
+    await expect(kid.getByText("You are a Starweaver now!")).toBeVisible(TAP);
   });
 
   test("the shared screen: its corner row (Room, About this screen, Tap for sound) keeps off the lobby and the story", async ({ browser }) => {

@@ -15,6 +15,7 @@ import type {
   ClassDef,
   ClassId,
   Difficulty,
+  FittingStall,
   RulesContent,
   SpeciesDef,
   SpeciesId,
@@ -286,6 +287,25 @@ export function assertRulesContent(json: unknown): RulesContent {
     classes[id] = classDef(classesRaw[id], id, `classes.${id}`);
   }
 
+  // The Exchange's fitting stall (#312), optional: rules without it have none.
+  let fittingStall: FittingStall | undefined;
+  if (raw["fittingStall"] !== undefined) {
+    const stallRaw = obj(raw["fittingStall"], "fittingStall");
+    const standsRaw = stallRaw["stands"];
+    if (!Array.isArray(standsRaw)) fail("fittingStall.stands", "an array of { chapterId, sceneId }", standsRaw);
+    fittingStall = {
+      stands: standsRaw.map((stand, i) => {
+        const at = obj(stand, `fittingStall.stands[${i}]`);
+        return {
+          chapterId: str(at["chapterId"], `fittingStall.stands[${i}].chapterId`),
+          sceneId: str(at["sceneId"], `fittingStall.stands[${i}].sceneId`),
+        };
+      }),
+      keeper: str(stallRaw["keeper"], "fittingStall.keeper"),
+      narration: str(stallRaw["narration"], "fittingStall.narration"),
+    };
+  }
+
   return {
     version: num(raw["version"], "version"),
     baseStats: stats(raw["baseStats"], "baseStats"),
@@ -299,5 +319,6 @@ export function assertRulesContent(json: unknown): RulesContent {
     ...(helpDie === undefined ? {} : { helpDie }),
     species,
     classes,
+    ...(fittingStall === undefined ? {} : { fittingStall }),
   };
 }

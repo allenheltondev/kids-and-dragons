@@ -1,10 +1,11 @@
 # Class mastery: switching classes, class places and distinctions
 
 > **Status.** Partly built. Per-class distinctions on the character and moves by distinction (§5,
-> §7) landed with #308, deeds and rank-ups (§5, §6) with #310, and the switch itself (§3) with
+> §7) landed with #308, deeds and rank-ups (§5, §6) with #310, the switch itself (§3) with
 > #311: a scene marked `classPlace` is a class's room
-> ([content/README.md, "Class places"](../content/README.md#class-places-311)). [spec §4.3](./spec.md)
-> and [§8.1](./spec.md) state them. The fitting stall, the four rooms and the tokens are still
+> ([content/README.md, "Class places"](../content/README.md#class-places-311)), and the fitting
+> stall (§1) with #312 ([content/README.md, "The fitting stall"](../content/README.md#the-fitting-stall-312)).
+> [spec §4.3](./spec.md) and [§8.1](./spec.md) state them. The four rooms and the tokens are still
 > design. Tracked by epic
 > [#307](https://github.com/allenheltondev/kids-and-dragons/issues/307) (#308–#315); the reason to
 > come back to the Exchange is [#306](https://github.com/allenheltondev/kids-and-dragons/issues/306).
@@ -22,6 +23,22 @@ but only the class the hero is wearing counts.
 - **At the Exchange, once, while new.** The Exchange is a market, and a **fitting stall** there lets
   a new hero swap class for free. Gemfall opens at the Exchange, so a hero who starts in Gemfall
   gets the same offer. It is the only place a hero can change class that is not that class's own.
+  *(Built, #312.)*
+  - **New** means two things: the hero has **finished no chapter** (her effective XP is 0, since
+    every chapter's end awards XP and nothing else does) and **has not used the stall**
+    (`CharacterProgress.fitted`). A hero who joined at a tier floor has XP and is not new.
+  - **Where.** `rules.json` names the scenes the stall stands in (`fittingStall.stands`): today
+    Gemfall's `scene_prologue_city`, where the Exchange is first described as a market. It lives in
+    the rules, not in a chapter, so Gemfall gets the stall without a Gemfall file changing.
+  - **How it plays.** Exactly a class place (§3) with a different gate. When a party with at least
+    one new hero arrives, the shared screen introduces the tailor, and each new hero answers alone
+    on their phone: any class but the one worn, or "Stay". A swap asks "are you sure?" first, and
+    the way on waits for every connected new hero's answer. A table with nobody new walks through
+    that scene as if the stall were not there.
+  - **Once.** The swap is spent in the same write as the class (`fitClass`), on the same progress
+    half, so it rolls back with it: a **failed campaign gives the swap back** along with the class it
+    took off, and since the failure also takes back the XP, the hero is new again and is offered the
+    stall when the campaign starts over. A finished campaign keeps both.
 - **At a class's place**, any time after that (§2).
 
 Nowhere else. A class never changes mid-fight, in the lobby, or between chapters.
@@ -258,13 +275,20 @@ Master in their second: roughly the old 3 / 6 / 9 rhythm (§8).
   half, so it rolls back with a failed campaign. `RunState.classPlace` carries the room's class
   and each kid's answer.
 - **Validation**: all four rooms reachable in every graph campaign (§2).
-- **Gemfall is pinned** (`gemfall-compat.test.ts`). The fitting stall must not move its gameplay
-  digests; whether it is engine UI at the start of a campaign that opens at the Exchange, or a scene
-  in Gemfall's first chapter with re-taken hashes, is decided in its issue.
+- **The fitting stall.** *(Built, #312: character schema v6.)* The same `RunState.classPlace`,
+  as `{ stall: true, answers }`, opened by the engine where `rules.fittingStall` stands while a seated
+  hero is new (`isNewHero`, class-place.ts); the same `SWITCH_CLASS` / `KEEP_CLASS`, carrying
+  `stall: true`; the same `prepareClassSwitch`, which checks the stall stands in this scene and that
+  the stored row is new, then writes `fitClass`.
+- **Gemfall is pinned** (`gemfall-compat.test.ts`). The stall is engine-level: no Gemfall file
+  changed, no hash was re-taken, and the gameplay digests hold. A table that declines plays
+  `gemfall-01` exactly as before; the only difference is one tap per new hero, which advances the
+  run's seq (`fitting-stall.test.ts`).
 
 ## 8. Open questions
 
-- **What counts as "new"** for the fitting stall: has finished no chapter? no campaign?
+- ~~**What counts as "new"** for the fitting stall~~ *Decided in #312:* has finished no chapter
+  and has not used the stall (§1).
 - ~~**Heroes who join at a level floor**~~ *Decided in #308:* the joiner's class arrives with the
   rank its level used to unlock (4 → Apprentice, 7 → Expert, 10 → Master), the same moves a joiner
   always had and the rank the migration gave heroes of that level; every other class starts at none

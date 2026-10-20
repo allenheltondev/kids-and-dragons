@@ -1195,3 +1195,67 @@ describe("class deeds (#310, docs/class-mastery.md §6)", () => {
     expect(withRules((r) => { delete r.classes.thornguard.deeds; }).code).not.toBe(0);
   });
 });
+
+// ---------------------------------------------------------------------------
+
+describe("the fitting stall (#312)", { timeout: 30_000 }, () => {
+  const RULES = ["content", "rules.json"];
+  /** The shipped tree with rules.json's stall changed by `mutate`. */
+  const withStall = (mutate) => {
+    const dir = copyTree();
+    const rules = readJson(dir, ...RULES);
+    mutate(rules.fittingStall, dir);
+    writeJson(dir, RULES, rules);
+    return validate(dir);
+  };
+
+  it("passes where it ships: Gemfall's opening scene at the Exchange", () => {
+    const result = withStall(() => {});
+    expect(result.code).toBe(0);
+    expect(result.out).toContain("fitting stall (1 stand)");
+  });
+
+  it.each([
+    ["a chapter that is not there", { chapterId: "gemfall-99", sceneId: "scene_prologue_city" }, 'no chapter "gemfall-99"'],
+    ["a scene that is not there", { chapterId: "gemfall-01", sceneId: "nowhere" }, 'has no scene "nowhere"'],
+    ["a chapter that does not open its campaign", { chapterId: "gemfall-02", sceneId: null }, "is chapter 2 of its campaign"],
+  ])("rejects %s", (_label, stand, problem) => {
+    const result = withStall((stall, dir) => {
+      const sceneId = stand.sceneId ?? readJson(dir, "content", "chapters", `${stand.chapterId}.json`).entry;
+      stall.stands = [{ chapterId: stand.chapterId, sceneId }];
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain(problem);
+  });
+
+  it("rejects a scene a party could never answer in: a check, or an ending", () => {
+    const chapter = readJson(copyTree(), "content", "chapters", "gemfall-01.json");
+    const check = Object.keys(chapter.scenes).find((id) => chapter.scenes[id].type === "check");
+    const ending = Object.keys(chapter.scenes).find((id) => chapter.scenes[id].choices?.length === 0);
+    const result = withStall((stall) => {
+      stall.stands = [
+        { chapterId: "gemfall-01", sceneId: check },
+        { chapterId: "gemfall-01", sceneId: ending },
+      ];
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain(`"${check}" is a check scene`);
+    expect(result.out).toContain(`"${ending}" ends the chapter`);
+  });
+
+  it("rejects an em dash in its words, which Gemfall's screen shows", () => {
+    const result = withStall((stall) => {
+      stall.narration = "Madame Tuck — the tailor.";
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("has an em dash");
+  });
+
+  it("rejects a stall with no keeper, through the schema", () => {
+    const result = withStall((stall) => {
+      delete stall.keeper;
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain("keeper");
+  });
+});
