@@ -6,7 +6,8 @@
 > ([content/README.md, "Class places"](../content/README.md#class-places-311)), the tokens on
 > screen with the rank-up moment (§4, §5) with #314, and the fitting stall (§1) with #312
 > ([content/README.md, "The fitting stall"](../content/README.md#the-fitting-stall-312)).
-> [spec §4.3](./spec.md) and [§8.1](./spec.md) state them. The four rooms are still design.
+> [spec §4.3](./spec.md) and [§8.1](./spec.md) state them. The four rooms are written for the
+> Riftlight draft (#315, [its README](../content/drafts/riftlight/README.md#class-rooms-315)).
 > Tracked by epic
 > [#307](https://github.com/allenheltondev/kids-and-dragons/issues/307) (#308–#315); the reason to
 > come back to the Exchange is [#306](https://github.com/allenheltondev/kids-and-dragons/issues/306).
@@ -70,7 +71,7 @@ earns a distinction anywhere in the world, a crow lands on a nearby fence, says 
   from that place's `rest` scene, so a campaign pays for four rooms, not four chapters.
 - **Every graph campaign has all four reachable.** `content:validate` fails a graph campaign that is
   missing one, or whose only way to one is gated *(built, #313)*. A way counts when no flag, item,
-  species, class, world fact, lock or rift rule (`opensWhen`, `uses`, ...) stands in it; a `completed:` or `visited:` gate on a place any
+  species, class, world fact, lock or rift rule (`opensWhen`, `lasts`, `actions`, ...; `uses` alone does not, since every party crosses once) stands in it; a `completed:` or `visited:` gate on a place any
   party can reach is open. A room must be entered from a `rest` scene. A graph campaign that does not
   have its rooms yet is listed with a reason in `tools/content/class-place-allow.json`, which warns
   and which #315 empties; an entry for a campaign that has them all fails, so it cannot go stale.
@@ -78,6 +79,13 @@ earns a distinction anywhere in the world, a crow lands on a nearby fence, says 
   room introduces its teacher (and the crows) whenever a party walks in. A second visit can read
   shorter ("The crows eye you. 'Back again.'").
 - **Gemfall gets none.** It is pinned, and its only class change is the Exchange stall.
+- **Riftlight (draft, #315).** The Rookery is on the Exchange's rooftops, the Conservatory off the
+  singing hall, and the Dojo up the slope from the Riftseekers' camp. The Academy belongs in the
+  marsh village, which Riftlight's story does not have yet; until that place is written, it stands in
+  a roofless tower above the Riftseekers' camp, and moves when the village exists.
+- **A free heal is deliberate.** The game always keeps somewhere to heal for free. In Riftlight it is
+  the singing hall: its rest heals on every arrival, so walking into the Conservatory and back heals
+  again, as often as a table likes. That is intended, not a loophole.
 
 ## 3. Switching
 

@@ -381,7 +381,7 @@
     },
     "hall": {
       "type": "rest",
-      "narration": "The doorway opens into a singing hall carved from ice. Yetis sit on benches around warm cups, holding one low note together. The herder drapes your wet things near a row of warm stones and pours tea. Damp blankets hang over a rail. \"Glacier of Origins,\" she says. \"You may stop arriving now.\"",
+      "narration": "The doorway opens into a singing hall carved from ice. Yetis sit on benches around warm cups, holding one low note together. The herder drapes your wet things near a row of warm stones and pours tea. Damp blankets hang over a rail. \"Glacier of Origins,\" she says. \"You may stop arriving now.\" At the back of the hall, warm air drifts out of a glass door, and someone inside is singing scales.",
       "heal": 2,
       "choices": [
         {
@@ -389,12 +389,91 @@
           "label": "Listen to the hall",
           "icon": "hand",
           "goto": "listen"
+        },
+        {
+          "id": "glass_door",
+          "label": "Follow the warm air to the glass door",
+          "icon": "song",
+          "goto": "conservatory"
         }
       ],
       "cast": [
         {
           "figure": "cast/yeti_elder",
           "name": "Yeti herder"
+        }
+      ]
+    },
+    "conservatory": {
+      "type": "story",
+      "narration": "Behind the glass door is a greenhouse, warm and damp and full of song. This school is called the Conservatory. Here students learn to be a Songkeeper, a hero who heals with songs. A yeti named Aunt Bellow conducts with a carrot. Her students sing in a row, and every plant in the room leans toward whoever is singing best. Right now the ferns lean toward a very small frogfolk at the end. Above the door hangs a song bell on a cord. A Songkeeper's songs live in that bell, and it will not ring near a thorn bracer. \"Anyone who wants the bell,\" says Aunt Bellow, \"may try it on.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "met_aunt_bellow"
+          },
+          "text": "Aunt Bellow waves her carrot. \"Back to the Conservatory? Good.\" Every plant turns, slowly, to see who has come in. The song bell waits above the door for anyone who wants to try it on.",
+          "replace": true
+        }
+      ],
+      "classPlace": "songkeeper",
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Aunt Bellow"
+        }
+      ],
+      "choices": [
+        {
+          "id": "sing",
+          "label": "Sing for the plants",
+          "icon": "song",
+          "goto": "conservatory_sing",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_aunt_bellow",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "back",
+          "label": "Back to the singing hall",
+          "icon": "back",
+          "goto": "hall",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_aunt_bellow",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "conservatory_sing": {
+      "type": "story",
+      "narration": "Aunt Bellow points her carrot at you. You sing. A sunflower turns its whole head to look. Then a fern. Then, very slowly, a shy little cactus. Aunt Bellow writes something on a leaf. \"The cactus never turns,\" she whispers. \"Keep singing.\"",
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Aunt Bellow"
+        }
+      ],
+      "choices": [
+        {
+          "id": "back",
+          "label": "Back to the singing hall",
+          "icon": "back",
+          "goto": "hall",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_aunt_bellow",
+              "value": true
+            }
+          ]
         }
       ]
     },

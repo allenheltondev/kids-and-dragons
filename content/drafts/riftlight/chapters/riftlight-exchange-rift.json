@@ -542,7 +542,7 @@
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "quay"
+          "goto": "quay_rest"
         }
       ],
       "onEnter": [
@@ -561,7 +561,7 @@
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "quay"
+          "goto": "quay_rest"
         }
       ],
       "onEnter": [
@@ -569,6 +569,86 @@
           "type": "setFlag",
           "flag": "found_barge_mooring",
           "value": true
+        }
+      ]
+    },
+    "quay_rest": {
+      "type": "rest",
+      "narration": "The pilot calls a thank-you from his deck and tosses up a bag of warm potato skins. You sit on an upturned crate by the noodle stall to eat them. Behind the stalls, a ladder climbs the harbor master's house to the rooftops. From up there comes a lot of cawing, all of it on purpose.",
+      "heal": 0,
+      "choices": [
+        {
+          "id": "roof",
+          "label": "Climb the ladder to the rooftops",
+          "icon": "feather",
+          "goto": "rookery"
+        },
+        {
+          "id": "on",
+          "label": "Walk on along the quay",
+          "icon": "forward",
+          "goto": "quay"
+        }
+      ]
+    },
+    "rookery": {
+      "type": "story",
+      "narration": "You climb through a trapdoor onto the rooftops. Crows sit on every chimney pot and every gutter, and all of them are looking at you. A sign hangs on the tallest chimney: NO MESSING. (WITH US.) This rooftop school is called the Rookery. Here the crows train each Duskrunner, a hero who runs quick and quiet. They all teach at once. On a peg hangs a dusk hood, soft as a shadow. A Duskrunner's quickness lives in that hood, and a star circlet worn beside it only makes it itch. Someone has put a tiny doormat at the top of the ladder. \"Wipe your feet,\" say the crows. \"We don't get messed with up here. Anyone who wants the hood may try it on.\" Then, quieter: \"Nobody who leaves the Exchange climbs our ladder again. Take the hood off somewhere far away, and you won't find us to put it back. So choose well.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "met_the_crows"
+          },
+          "text": "The crows of the Rookery eye you from every chimney pot. \"Back again,\" they say, all at once. The sign still says NO MESSING. (WITH US.) The dusk hood waits on its peg for anyone who wants to try it on. You wipe your feet on the tiny doormat without being asked. \"Remember,\" the crows say. \"Once you leave the Exchange, our ladder is gone for you.\"",
+          "replace": true
+        }
+      ],
+      "classPlace": "duskrunner",
+      "choices": [
+        {
+          "id": "lesson",
+          "label": "Learn to cross the roof quietly",
+          "icon": "feather",
+          "goto": "rookery_lesson",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_the_crows",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "down",
+          "label": "Climb back down the ladder",
+          "icon": "back",
+          "goto": "quay_rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_the_crows",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "rookery_lesson": {
+      "type": "story",
+      "narration": "The crows show you how to cross the roof without a sound. Step where the moss grows. Never on the loose tile. You hold your breath and cross. Nothing clatters, and nobody at the noodle stall looks up. Back at the ladder, you find a folded note in your pocket. Nobody saw it arrive. It says: \"Saw that. Nice. Don't mess with us.\"",
+      "choices": [
+        {
+          "id": "down",
+          "label": "Climb back down the ladder",
+          "icon": "back",
+          "goto": "quay_rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_the_crows",
+              "value": true
+            }
+          ]
         }
       ]
     }
