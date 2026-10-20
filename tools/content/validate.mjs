@@ -719,6 +719,27 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
   // --- every itemId exists in the catalog, and is used as the right kind
   const speciesIds = new Set(Object.keys(rules?.species ?? {}));
   const classIds = new Set(Object.keys(rules?.classes ?? {}));
+
+  // --- class places (#311, docs/class-mastery.md §2-§3). The schema already
+  // keeps `classPlace` off every other scene type; these are the rules it
+  // cannot say. A switch the table can never reach, or one Gemfall's pin
+  // forbids, fails here and never at the table.
+  for (const [id, scene] of Object.entries(scenes)) {
+    if (scene.classPlace === undefined) continue;
+    const at = `/scenes/${id}/classPlace`;
+    if (scene.type !== "story" && scene.type !== "choice_point") {
+      fail(at, `a ${scene.type} scene cannot be a class place`, "Put classPlace on the story or choice_point scene that is the room.");
+    }
+    if (!classIds.has(scene.classPlace)) {
+      fail(at, `"${scene.classPlace}" is not a class in content/rules.json`, `known classes: ${[...classIds].join(", ")}`);
+    }
+    if (isEnding.has(id)) {
+      fail(at, "a class place cannot end the chapter - nobody would get to answer before it closed", "Give the room a way on.");
+    }
+    if (chapter.campaignId === "gemfall") {
+      fail(at, "Gemfall has no class places (docs/class-mastery.md §2) - it is pinned, and its only class change is the Exchange stall");
+    }
+  }
   const flagsSet = new Set();
   const flagsRequired = [];
 

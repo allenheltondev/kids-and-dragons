@@ -196,6 +196,35 @@ What it does beyond the look:
 Put the fact in the narration itself, in plain words. The ribbon tells the room to pay attention;
 it cannot tell them what to pay attention to.
 
+## Class places (#311)
+
+A class's room (the Dojo, the Academy, the Rookery, the Conservatory:
+[docs/class-mastery.md §2](../docs/class-mastery.md)) is a scene that says which class it teaches:
+
+```json
+"dojo": {
+  "type": "story",
+  "narration": "The teacher has held the same door shut against the wind for forty years.",
+  "classPlace": "thornguard",
+  "choices": [{ "id": "back", "label": "Back to the square", "icon": "back", "goto": "rest_square" }]
+}
+```
+
+While the scene is open, every seated hero who is not already that class may switch to it. Each
+kid answers alone on their phone ("Be a Thornguard" or "Stay a Songkeeper", and a switch asks
+"are you sure?"); there is no vote. The scene's own choices wait until every connected hero who
+could switch has answered, and the shared screen shows who switched. A switch changes the worn
+class and nothing else: stats stay, every class keeps its rank, and a failed campaign puts back
+the class worn when it began.
+
+- **`story` or `choice_point` only, never an ending, one class per scene.** `content:validate`
+  refuses an unknown class, any other scene type, and a class place with no way on.
+- **Gemfall has none.** It is pinned, and `content:validate` refuses one there.
+- **Introduce the teacher on every visit.** A graph campaign's places can be reached in any order,
+  so the room cannot lean on an earlier one (§2 of the design).
+- **Enter it from a `rest` scene and come back to it.** The room is a side room, not a stop on the
+  way: put it off the rest, never on the spine.
+
 ## The Bramblewood chapter is reference content
 
 `campaigns/the-hollow-crown.json` and `chapters/bramblewood-01.json` are **the engine's reference
