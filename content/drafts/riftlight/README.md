@@ -198,3 +198,8 @@ See the [island review](../../../docs/campaigns/continental-rift/island-continui
 Run `npx vitest run tools/content/riftlight-island.test.ts` for complete engine-played
 consequence routes. The pacing report now covers six ordinary regions; family timing
 and the production gate remain pending. The temple continuation remains unwritten.
+
+The island's joined-land inference now appears only after a successful comparison
+or a player-chosen assisted follow-up. Failed landings offer batch carrying with a
+delayed message relay versus borrowing a lighter kit. These recoveries add decisions
+without rerolls; incomplete tests stay credited as incomplete.

@@ -716,7 +716,7 @@
     },
     {
       "id": "riftlight-the-island-due-back",
-      "authoredScenes": 100,
+      "authoredScenes": 106,
       "metadataBudgetMinutes": 35,
       "scenarios": [
         {
@@ -726,20 +726,20 @@
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2976,
-            "wordsMin": 2771
+            "words": 2919,
+            "wordsMin": 2705
           },
           "typical": {
-            "scenes": 43,
-            "decisions": 14,
+            "scenes": 45,
+            "decisions": 15,
             "checks": 6,
             "encounters": 0,
-            "words": 2965,
-            "wordsMin": 2760
+            "words": 2996,
+            "wordsMin": 2782
           },
-          "shortestLowerMinutes": 36.5,
-          "typicalMinutes": 38,
-          "fastTableShortestLowerMinutes": 27.3
+          "shortestLowerMinutes": 36,
+          "typicalMinutes": 39,
+          "fastTableShortestLowerMinutes": 26.9
         },
         {
           "id": "empty-3p",
@@ -748,20 +748,20 @@
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2976,
-            "wordsMin": 2771
+            "words": 2919,
+            "wordsMin": 2705
           },
           "typical": {
-            "scenes": 43,
-            "decisions": 14,
+            "scenes": 45,
+            "decisions": 15,
             "checks": 6,
             "encounters": 0,
-            "words": 2965,
-            "wordsMin": 2760
+            "words": 2996,
+            "wordsMin": 2782
           },
-          "shortestLowerMinutes": 36.5,
-          "typicalMinutes": 38,
-          "fastTableShortestLowerMinutes": 27.3
+          "shortestLowerMinutes": 36,
+          "typicalMinutes": 39,
+          "fastTableShortestLowerMinutes": 26.9
         },
         {
           "id": "few-solo",
@@ -770,20 +770,20 @@
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2976,
-            "wordsMin": 2771
+            "words": 2919,
+            "wordsMin": 2705
           },
           "typical": {
-            "scenes": 43,
-            "decisions": 14,
+            "scenes": 45,
+            "decisions": 15,
             "checks": 6,
             "encounters": 0,
-            "words": 2965,
-            "wordsMin": 2760
+            "words": 2996,
+            "wordsMin": 2782
           },
-          "shortestLowerMinutes": 36.5,
-          "typicalMinutes": 38,
-          "fastTableShortestLowerMinutes": 27.3
+          "shortestLowerMinutes": 36,
+          "typicalMinutes": 39,
+          "fastTableShortestLowerMinutes": 26.9
         },
         {
           "id": "few-3p",
@@ -792,20 +792,20 @@
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2976,
-            "wordsMin": 2771
+            "words": 2919,
+            "wordsMin": 2705
           },
           "typical": {
-            "scenes": 43,
-            "decisions": 14,
+            "scenes": 45,
+            "decisions": 15,
             "checks": 6,
             "encounters": 0,
-            "words": 2965,
-            "wordsMin": 2760
+            "words": 2996,
+            "wordsMin": 2782
           },
-          "shortestLowerMinutes": 36.5,
-          "typicalMinutes": 38,
-          "fastTableShortestLowerMinutes": 27.3
+          "shortestLowerMinutes": 36,
+          "typicalMinutes": 39,
+          "fastTableShortestLowerMinutes": 26.9
         },
         {
           "id": "collection-solo",
@@ -814,20 +814,20 @@
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2976,
-            "wordsMin": 2771
+            "words": 2919,
+            "wordsMin": 2705
           },
           "typical": {
-            "scenes": 43,
-            "decisions": 14,
+            "scenes": 45,
+            "decisions": 15,
             "checks": 6,
             "encounters": 0,
-            "words": 2965,
-            "wordsMin": 2760
+            "words": 2996,
+            "wordsMin": 2782
           },
-          "shortestLowerMinutes": 36.5,
-          "typicalMinutes": 38,
-          "fastTableShortestLowerMinutes": 27.3
+          "shortestLowerMinutes": 36,
+          "typicalMinutes": 39,
+          "fastTableShortestLowerMinutes": 26.9
         },
         {
           "id": "collection-3p",
@@ -836,20 +836,20 @@
             "decisions": 14,
             "checks": 6,
             "encounters": 0,
-            "words": 2976,
-            "wordsMin": 2771
+            "words": 2919,
+            "wordsMin": 2705
           },
           "typical": {
-            "scenes": 43,
-            "decisions": 14,
+            "scenes": 45,
+            "decisions": 15,
             "checks": 6,
             "encounters": 0,
-            "words": 2965,
-            "wordsMin": 2760
+            "words": 2996,
+            "wordsMin": 2782
           },
-          "shortestLowerMinutes": 36.5,
-          "typicalMinutes": 38,
-          "fastTableShortestLowerMinutes": 27.3
+          "shortestLowerMinutes": 36,
+          "typicalMinutes": 39,
+          "fastTableShortestLowerMinutes": 26.9
         }
       ]
     }

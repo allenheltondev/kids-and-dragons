@@ -5228,7 +5228,7 @@
             "island_signals"
           ],
           "introduces": {
-            "island_orientation": "The keeper sets a present-day lookout sketch on the grass beside your copy."
+            "island_orientation": "The keeper sets a present-day lookout sketch beside your copy."
           }
         },
         "orientation_1": {
@@ -5254,54 +5254,58 @@
             "island_stone"
           ],
           "introduces": {
-            "island_land": "Three ridges stand in the same order on the old carving and the present lookout sketch."
+            "island_comparison": "Three raised marks appear on your copy beside the present lookout sketch."
           }
         },
         "comparison_1": {
           "requires": [
-            "island_land"
+            "island_comparison"
           ],
           "introduces": {}
         },
         "comparison_1_check": {
           "requires": [
-            "island_land"
+            "island_comparison"
           ],
           "introduces": {}
         },
         "comparison_1_done": {
           "requires": [
-            "island_land"
+            "island_comparison"
           ],
-          "introduces": {}
+          "introduces": {
+            "island_land": "the land was joined here"
+          }
         },
         "comparison_1_changed": {
           "requires": [
-            "island_land"
+            "island_comparison"
           ],
           "introduces": {}
         },
         "comparison_2": {
           "requires": [
-            "island_land"
+            "island_comparison"
           ],
           "introduces": {}
         },
         "comparison_2_check": {
           "requires": [
-            "island_land"
+            "island_comparison"
           ],
           "introduces": {}
         },
         "comparison_2_done": {
           "requires": [
-            "island_land"
+            "island_comparison"
           ],
-          "introduces": {}
+          "introduces": {
+            "island_land": "the land was joined here"
+          }
         },
         "comparison_2_changed": {
           "requires": [
-            "island_land"
+            "island_comparison"
           ],
           "introduces": {}
         },
@@ -5468,13 +5472,57 @@
         },
         "comparison_clear": {
           "requires": [
-            "island_land"
+            "island_comparison"
           ],
           "introduces": {}
         },
         "comparison_clear_check": {
           "requires": [
-            "island_land"
+            "island_comparison"
+          ],
+          "introduces": {}
+        },
+        "comparison_recovery": {
+          "requires": [
+            "island_comparison",
+            "island_orientation"
+          ],
+          "introduces": {}
+        },
+        "comparison_recover_scale": {
+          "requires": [
+            "island_comparison"
+          ],
+          "introduces": {
+            "island_land": "the land was joined here"
+          }
+        },
+        "comparison_recover_view": {
+          "requires": [
+            "island_comparison"
+          ],
+          "introduces": {
+            "island_land": "the land was joined here"
+          }
+        },
+        "landing_recovery": {
+          "requires": [
+            "island_landing",
+            "island_arrival"
+          ],
+          "introduces": {
+            "island_recovery_kit": "The keeper can lend a pocket brush and spare a sheet"
+          }
+        },
+        "landing_batches": {
+          "requires": [
+            "island_recovery_kit"
+          ],
+          "introduces": {}
+        },
+        "landing_borrow": {
+          "requires": [
+            "island_recovery_kit"
           ],
           "introduces": {}
         }
