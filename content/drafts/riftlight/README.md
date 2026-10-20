@@ -118,6 +118,27 @@ covers the initial 80 scenes; the [route review](../../../docs/campaigns/contine
 walker checks that each path establishes what later scenes refer to, including across chapter
 boundaries and conditional callbacks. New scenes require an explicit review entry.
 
+## Class rooms (#315)
+
+The four class places ([docs/class-mastery.md §2](../../../docs/class-mastery.md)) are side rooms
+of existing places, each entered from that place's `rest` scene and leading back to it. Each is a
+room scene marked `classPlace` and one short lesson scene.
+
+| Room | Class | Place, off which rest | Teacher, and the detail |
+| --- | --- | --- | --- |
+| The Rookery | Duskrunner | The Exchange's rooftops, up a ladder from `quay_rest` (new, on the quay after the barge) | The crows, as a flock. A sign on the chimney: NO MESSING. (WITH US.) A tiny doormat. |
+| The Conservatory | Songkeeper | Through a glass door off the singing hall's `hall` rest | Aunt Bellow, a yeti who conducts with a carrot; the plants lean toward the best singer. |
+| The Dojo | Thornguard | A stone hut up the slope from the Riftseekers' `camp` | Master Dunnick, a bigfoot holding the door shut against the wind for forty years; pillows. |
+| The Academy | Starweaver | A stilt house on the Saltrot's flats, off `flats_rest` | Professor Nettle, a dragonling; no roof, homework floats away, the telescope sneezes. |
+
+Every room introduces its teacher on every visit. Leaving it sets a chapter flag (`met_the_crows`,
+`met_aunt_bellow`, `met_master_dunnick`, `met_professor_nettle`) that a shorter repeat-visit variant
+reads, so only a second visit inside the same chapter reads shorter. `camp` and `flats_rest` were
+endings and are now waypoints; `set_out` and `flats_onward` end those chapters. The walker answers
+`KEEP_CLASS` at a room by default, or switches (`allPaths(..., "switch")`); see
+`tools/content/riftlight-class-rooms.test.ts` and, through the server,
+`packages/server/src/handlers/riftlight-class-rooms.test.ts`.
+
 ## Regional discoveries
 
 This slice adds `stone-counters`, `whale-road`, and `buried-bridge`.

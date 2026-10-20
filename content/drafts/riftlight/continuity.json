@@ -297,6 +297,42 @@
           "introduces": {
             "safe_mooring": "a low mooring ring"
           }
+        },
+        "quay_rest": {
+          "requires": [
+            "pilot",
+            "supper_sacks",
+            "noodle_stall"
+          ],
+          "introduces": {
+            "potato_skins": "warm potato skins",
+            "ladder": "a ladder climbs",
+            "rooftops": "to the rooftops"
+          }
+        },
+        "rookery": {
+          "requires": [
+            "ladder",
+            "rooftops"
+          ],
+          "introduces": {
+            "crows": "crows",
+            "rookery": "Rookery",
+            "crow_sign": "NO MESSING. (WITH US.)",
+            "dusk_hood": "dusk hood",
+            "doormat": "doormat"
+          }
+        },
+        "rookery_lesson": {
+          "requires": [
+            "crows",
+            "rooftops",
+            "ladder",
+            "noodle_stall"
+          ],
+          "introduces": {
+            "crow_note": "Don't mess with us."
+          }
         }
       }
     },
@@ -526,8 +562,28 @@
             "hall": "a singing hall",
             "warm_stones": "a row of warm stones",
             "blankets": "Damp blankets hang over a rail",
-            "glacier": "Glacier of Origins"
+            "glacier": "Glacier of Origins",
+            "glass_door": "a glass door"
           }
+        },
+        "conservatory": {
+          "requires": [
+            "hall",
+            "glass_door"
+          ],
+          "introduces": {
+            "conservatory": "Conservatory",
+            "aunt_bellow": "Aunt Bellow",
+            "carrot": "carrot",
+            "song_bell": "song bell"
+          }
+        },
+        "conservatory_sing": {
+          "requires": [
+            "aunt_bellow",
+            "carrot"
+          ],
+          "introduces": {}
         },
         "listen": {
           "requires": [
@@ -885,6 +941,32 @@
             "herd",
             "seam",
             "learned_note"
+          ],
+          "introduces": {
+            "stone_hut": "a stone hut"
+          }
+        },
+        "set_out": {
+          "requires": [
+            "hall"
+          ],
+          "introduces": {}
+        },
+        "dojo": {
+          "requires": [
+            "stone_hut"
+          ],
+          "introduces": {
+            "master_dunnick": "Master Dunnick",
+            "dojo": "Dojo",
+            "thorn_bracer": "thorn bracer",
+            "pillows": "pillow"
+          }
+        },
+        "dojo_pillows": {
+          "requires": [
+            "master_dunnick",
+            "pillows"
           ],
           "introduces": {}
         },
@@ -1607,6 +1689,33 @@
           "requires": [
             "skupper",
             "silt"
+          ],
+          "introduces": {
+            "stilt_house": "a tall wooden house stands on stilts"
+          }
+        },
+        "flats_onward": {
+          "requires": [
+            "skupper",
+            "shell_bank"
+          ],
+          "introduces": {}
+        },
+        "academy": {
+          "requires": [
+            "stilt_house"
+          ],
+          "introduces": {
+            "academy": "Academy",
+            "professor_nettle": "Professor Nettle",
+            "telescope": "telescope",
+            "star_circlet": "star circlet"
+          }
+        },
+        "academy_stars": {
+          "requires": [
+            "professor_nettle",
+            "telescope"
           ],
           "introduces": {}
         }

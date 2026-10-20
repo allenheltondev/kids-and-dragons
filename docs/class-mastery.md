@@ -4,8 +4,9 @@
 > §7) landed with #308, deeds and rank-ups (§5, §6) with #310, and the switch itself (§3) with
 > #311: a scene marked `classPlace` is a class's room
 > ([content/README.md, "Class places"](../content/README.md#class-places-311)). [spec §4.3](./spec.md)
-> and [§8.1](./spec.md) state them. The fitting stall, the four rooms and the tokens are still
-> design. Tracked by epic
+> and [§8.1](./spec.md) state them. The four rooms are written for the Riftlight draft (#315,
+> [its README](../content/drafts/riftlight/README.md#class-rooms-315)). The fitting stall and the
+> tokens are still design. Tracked by epic
 > [#307](https://github.com/allenheltondev/kids-and-dragons/issues/307) (#308–#315); the reason to
 > come back to the Exchange is [#306](https://github.com/allenheltondev/kids-and-dragons/issues/306).
 
