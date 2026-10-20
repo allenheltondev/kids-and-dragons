@@ -218,9 +218,8 @@ export type CastSize =
  *   story survives a party that skims it.
  *
  * Absent is an ordinary scene, which is nearly all of them. Both levels are
- * drawn differently on the shared screen, and both keep their authored words:
- * the live layer never rewrites a priority scene, because the one thing a
- * paraphrase may not do is lose the fact the scene exists to deliver.
+ * drawn differently on the shared screen, and every p1 the party walked
+ * through is retold, in its own words, on the end-of-chapter recap.
  */
 export type ScenePriority = 1 | 2;
 
@@ -228,7 +227,7 @@ export type ScenePriority = 1 | 2;
  * What to tap here, for a player who is still learning (#255): "Tap a gold
  * square to walk there." The screens show it under the narration and read
  * it aloud after it (`speak()`, with a button for `hear()`), and it is never
- * part of the narration itself, so the live layer and the recap never see it.
+ * part of the narration itself, so the recap never sees it.
  * Only the practice (`PRACTICE_CAMPAIGN_ID`) uses it: a real chapter trusts
  * the table to know the game. One sentence or two, in the game's voice.
  */
@@ -801,6 +800,12 @@ export type EndingScene = StoryScene | ChoicePointScene | RestScene;
  * exit had to be faked as a chapter of its own.
  */
 
+/**
+ * The chapter's voice guide for its authors: the tone, the reading level,
+ * what never appears, and how its chapter-scoped characters sound. Authored
+ * data, read by people and by the canon checks; nothing at play time reads it.
+ * The name is historical (#347).
+ */
 export interface LlmHints {
   tone: string;
   vocabulary: string;

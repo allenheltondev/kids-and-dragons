@@ -220,9 +220,8 @@ export const People = Envelope.extend({
    * How this people generally sounds — D8. Prose, and about the *kind*, not a
    * person: "unhurried, states things as facts, never asks a question twice."
    *
-   * The live layer voices NPCs from a cached prefix (architecture §6.3), and
-   * before this the only voicing anywhere was a chapter's `llmHints.npcVoices`,
-   * which is thrown away when the chapter ends. A people-level register means a
+   * Before this the only voicing anywhere was a chapter's `llmHints.npcVoices`
+   * (its authors' voice guide), which is thrown away when the chapter ends. A people-level register means a
    * frogfolk met in chapter one and a frogfolk met in chapter six sound like
    * the same civilisation without anyone re-authoring it.
    */

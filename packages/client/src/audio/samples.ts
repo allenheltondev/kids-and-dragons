@@ -9,9 +9,8 @@
  * no file yet, a 404, a corrupt download, a browser that will not decode
  * Opus, a phone on aeroplane mode — falls back to the recipe, silently.
  *
- * That is the same shape as the live-narration layer's authored fallback, and
- * it is here for the same reason: the failure mode of an asset pipeline must
- * never be a table sitting in silence wondering whether the game is broken.
+ * The failure mode of an asset pipeline must never be a table sitting in
+ * silence wondering whether the game is broken.
  * It also means audio can be replaced one file at a time — drop in `dice.webm`
  * and the dice are real while everything else is still a sine wave.
  *

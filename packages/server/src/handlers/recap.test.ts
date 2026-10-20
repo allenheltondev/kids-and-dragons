@@ -1,5 +1,9 @@
 /**
- * The session recap — roadmap chapter 7's last bullet, architecture §6.5.
+ * The end-of-chapter recap's server half — the trail it is told from.
+ *
+ * The recap is authored-only (#347): the completion screen retells the
+ * priority-1 scenes on `RunState.visited` in their own words, so all the
+ * server owes it is an honest trail and a completion that lands in one turn.
  *
  * Reached with roadmap chapter 6's playtest jump rather than by playing the
  * reference chapter's eight-step road to its ending. That is what the jump was
@@ -9,14 +13,10 @@
  */
 
 import { describe, expect, it, vi } from "vitest";
-import fs from "node:fs";
 import path from "node:path";
 import { applyIntent, createRunState } from "@kad/shared";
-import type { ClientIntent, RulesContent, RunState } from "@kad/shared";
+import type { ClientIntent, RunState } from "@kad/shared";
 import type { Engine } from "../engine/port.ts";
-import { createNarrator } from "../llm/narrator.ts";
-import type { LiveReply } from "../llm/narrator.ts";
-import type { Narrator } from "../llm/port.ts";
 import { loadContent } from "../content/loader.ts";
 import { makeHarness, seedHousehold } from "../test-support.ts";
 import { applyAction } from "./action.ts";
@@ -24,27 +24,12 @@ import { createRoom, joinRoom } from "./room.ts";
 
 const realEngine: Engine = { applyIntent, createRunState };
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..", "..");
-const RULES = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "rules.json"), "utf8")) as RulesContent;
-
-const RECAP =
-  "You went into the Bramblewood after a way through a hedge, and came out the other side with a " +
-  "sprite who will not stop following you. Nobody has explained the acorn, and nobody is going to.";
 
 /** The last scene in the reference chapter — a rest with nothing after it. */
 const ENDING = "rest_lanternfall";
 
-function narrator(text: string, send?: () => Promise<LiveReply>): Narrator {
-  return createNarrator({
-    rules: RULES,
-    awsRegion: "us-east-1",
-    send: send ?? (() => Promise.resolve({ text, cacheRead: 4200, cacheWrite: 0 })),
-    log: vi.fn(),
-  });
-}
-
 /** Plays to the chapter's end via a playtest jump, and returns the final state. */
 async function playToTheEnd(
-  live?: Narrator,
   /** Runs against the harness before any action, so a test can spy or sabotage. */
   prepare?: (harness: ReturnType<typeof makeHarness>) => void,
 ): Promise<{ final: RunState; harness: ReturnType<typeof makeHarness> }> {
@@ -52,7 +37,6 @@ async function playToTheEnd(
     engine: realEngine,
     content: await loadContent(path.join(ROOT, "content")),
     playtest: true,
-    ...(live ? { narrator: live } : {}),
   });
   prepare?.(harness);
   const { householdId, players } = await seedHousehold(harness, 1);
@@ -108,126 +92,32 @@ describe("the trail", () => {
   });
 });
 
-describe("the recap itself", () => {
-  it("is absent with the layer off", async () => {
-    // Which is every run by default, and the completion screen has its own
-    // content either way.
-    const { final } = await playToTheEnd();
-    expect(final.phase).toBe("chapter_complete");
-    expect(final.recap ?? null).toBeNull();
-  });
-
-  it("lands on the run when the chapter ends", async () => {
-    const { final } = await playToTheEnd(narrator(RECAP));
-    expect(final.phase).toBe("chapter_complete");
-    expect(final.recap).toBe(RECAP);
-  });
-
-  it("is refused when it fails its own gate", async () => {
-    // §6.5's second length cap and its forbidden screen apply here too, and a
-    // rejection is silent — the chapter still completes.
-    const { final } = await playToTheEnd(narrator("Good job!"));
-    expect(final.phase).toBe("chapter_complete");
-    expect(final.recap ?? null).toBeNull();
-  });
-
-  it("gives up rather than holding the chapter open", async () => {
+describe("the chapter's end", () => {
+  it("lands in one turn, with nothing written after it", async () => {
     /*
-     * The bound. `recap()` swallows its own failures, but "returns null on
-     * error" and "returns" are different promises — a request that hangs rather
-     * than fails would keep a finished chapter from committing, behind a socket
-     * nobody is watching.
-     *
-     * A call that never settles: the chapter must still complete.
+     * There used to be a generated recap that followed the completion as its
+     * own commit. There is no such thing now: the turn that completes the
+     * chapter is the last write, and every commit carries an intent.
      */
-    const hung = narrator("", () => new Promise<LiveReply>(() => undefined));
-    const { final } = await playToTheEnd(hung);
-    expect(final.phase).toBe("chapter_complete");
-    expect(final.recap ?? null).toBeNull();
-  }, 20_000);
-});
-
-describe("when the recap arrives", () => {
-  type Published = { seq: number; patch: { path: string; value?: unknown }[] };
-
-  it("never rides the completion patch — the chapter's end ships first, the recap follows", async () => {
-    /*
-     * The ordering this pins: the recap used to be awaited *before* the
-     * completion committed, which put up to four seconds of language model
-     * between a chapter ending and any screen being told — with the whole wait
-     * sitting inside the optimistic-concurrency window. Now the completion
-     * broadcasts immediately and the recap lands as its own follow-up commit,
-     * one seq later, so a slow model can only ever make the *bonus paragraph*
-     * late.
-     */
-    const sent: Published[] = [];
-    const { final } = await playToTheEnd(narrator(RECAP), (harness) => {
-      const real = harness.channel.publish.bind(harness.channel);
-      vi.spyOn(harness.channel, "publish").mockImplementation(async (room, message) => {
-        // Patches only: the channel also carries live news (an arrival, #267).
-        if (message.kind === "patch") sent.push(message as unknown as Published);
-        await real(room, message);
-      });
-    });
-
-    // A string value, specifically: START_CHAPTER's patch also touches
-    // `/recap` — clearing it to null for the new run — and that is not a recap.
-    const carriesRecap = (m: Published) =>
-      m.patch.some((op) => op.path === "/recap" && typeof op.value === "string");
-    const completion = sent.find((m) =>
-      m.patch.some((op) => op.path === "/phase" && op.value === "chapter_complete"),
-    );
-    const followUp = sent.find(carriesRecap);
-
-    expect(completion).toBeDefined();
-    expect(followUp).toBeDefined();
-    expect(carriesRecap(completion!)).toBe(false);
-    expect(followUp!.seq).toBe(completion!.seq + 1);
-    expect(final.seq).toBe(followUp!.seq);
-    expect(final.recap).toBe(RECAP);
-  });
-
-  it("is dropped silently when somebody acted before it landed", async () => {
-    /*
-     * The follow-up is a real commit with a real expected seq, and losing that
-     * race means the table has already moved on — almost certainly to "back to
-     * the lobby". A recap for a screen nobody is looking at is not worth
-     * fighting for, and above all it must not fail the action that finished
-     * the chapter.
-     */
-    const { final } = await playToTheEnd(narrator(RECAP), (harness) => {
-      const real = harness.repo.commit.bind(harness.repo);
-      vi.spyOn(harness.repo, "commit").mockImplementation(async (input) => {
-        // The recap's follow-up is the one commit no intent produced.
-        if (input.event.intent === undefined) return false;
-        return real(input);
-      });
-    });
-    expect(final.phase).toBe("chapter_complete");
-    expect(final.recap ?? null).toBeNull();
-  });
-
-  it("never turns the action that finished the chapter into a failure", async () => {
-    /*
-     * `commit()` returns `false` for the seq race — but the Dynamo
-     * implementation rethrows everything else, and by recap time the player's
-     * action has already committed and broadcast. A thrown follow-up commit
-     * must be swallowed, not surfaced as a 500 on a request that succeeded.
-     * `playToTheEnd` asserts every action's `response.ok`, so an escape here
-     * fails this test on the PLAYTEST_GOTO that completed the chapter.
-     */
-    const { final } = await playToTheEnd(narrator(RECAP), (harness) => {
+    const intentless: unknown[] = [];
+    const { final } = await playToTheEnd((harness) => {
       const real = harness.repo.commit.bind(harness.repo);
       // Armed by the first player action, so the join's own write (it puts the
-      // player on the host's roster, #263) is not the commit under test.
+      // player on the host's roster, #263) is not counted.
       let armed = false;
       vi.spyOn(harness.repo, "commit").mockImplementation(async (input) => {
         if (input.event.intent !== undefined) armed = true;
-        if (armed && input.event.intent === undefined) throw new Error("throughput exceeded");
+        if (armed && input.event.intent === undefined) intentless.push(input.event);
         return real(input);
       });
     });
     expect(final.phase).toBe("chapter_complete");
-    expect(final.recap ?? null).toBeNull();
+    expect(intentless).toEqual([]);
+  });
+
+  it("carries no generated text on the run", async () => {
+    const { final } = await playToTheEnd();
+    expect(final.phase).toBe("chapter_complete");
+    expect("recap" in final).toBe(false);
   });
 });
