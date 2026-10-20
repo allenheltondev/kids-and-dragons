@@ -9,11 +9,13 @@
  *   inline    a required part of a screen: a small message and Try again.
  *   otherwise a required screen: the same, in the middle of the page.
  *
- * Try again imports the chunk again (`lazyChunk`). If the chunk itself is
- * gone, a deploy deleted it (scripts/deploy.sh syncs with --delete), and only
- * a reload onto the new build can help; that loses nothing (the room code is
- * in the URL, the session in localStorage), and it happens once per chunk per
- * tab, so a chunk that is gone for good cannot loop the page.
+ * Try again imports the chunk again (`lazyChunk`). Two failures only a
+ * reload can clear: the chunk is gone, because a deploy deleted it
+ * (scripts/deploy.sh syncs with --delete), or it is there but a chunk it
+ * imports failed, which the browser keeps under that chunk's own address. A
+ * reload loses nothing (the room code is in the URL, the session in
+ * localStorage), and it happens once per chunk per tab, so a chunk that
+ * stays broken cannot loop the page.
  *
  * In the first paint, so it stays small.
  */
@@ -59,15 +61,19 @@ export function lazyChunk<M, C extends ComponentType<any>>(
   pick: (module: M) => C,
 ): (props: ComponentProps<C>) => ReactElement {
   let failed: { error: unknown; at: number } | undefined;
-  const make = (error?: unknown) => lazy(() => {
-    // A script that failed is asked for under a new address; anything else
-    // (a stylesheet Vite preloads) is not cached as failed, so the same import.
-    const url = error === undefined ? undefined : chunkUrl(error);
-    const module = url && !url.endsWith(".css") ? (importAgain(url) as Promise<M>) : load();
-    return module.then((loaded) => ({ default: pick(loaded) }), (thrown: unknown) => {
+  const make = (error?: unknown) => lazy(async () => {
+    try {
+      // A script that failed is asked for under a new address; anything else
+      // (a stylesheet Vite preloads) is not cached as failed, so the same import.
+      const url = error === undefined ? undefined : chunkUrl(error);
+      // The address may name a chunk this one imports rather than this one
+      // itself, whose exports are not the ones `pick` wants: then the entry.
+      const component = (url && !url.endsWith(".css") ? pick((await importAgain(url)) as M) : undefined) ?? pick(await load());
+      return { default: component };
+    } catch (thrown: unknown) {
       failed = { error: thrown, at: asked };
       throw thrown;
-    });
+    }
   });
   let Lazy = make();
   return (props: ComponentProps<C>) => {
@@ -135,12 +141,23 @@ export class ChunkBoundary extends Component<Props, { error: Error | null }> {
 
   private readonly retry = async () => {
     const url = chunkUrl(this.state.error);
-    // Gone, or only unreachable? A browser that does not say which chunk
-    // (Safari) gets one plain retry first.
-    const gone = url
-      ? await fetch(url, { method: "HEAD", cache: "no-store" }).then((r) => r.status >= 400 && r.status < 500, () => false)
-      : this.pressed++ > 0;
-    if (gone && reloadOnce(url ?? location.pathname)) return;
+    // A browser that does not say which chunk (Safari) gets one plain retry first.
+    if (!url) {
+      if (this.pressed++ > 0 && reloadOnce(location.pathname)) return;
+      this.again();
+      return;
+    }
+    const status = await fetch(url, { method: "HEAD", cache: "no-store" }).then((r) => r.status, () => 0);
+    if (status >= 400 && status < 500) {
+      // Gone: a deploy deleted it.
+      if (reloadOnce(url)) return;
+    } else if (status >= 200 && status < 300 && !url.endsWith(".css")) {
+      // There, so can this page still load it? Not if a chunk it imports
+      // failed: the browser keeps that failure too, under an address only a
+      // reload asks for again.
+      if (!(await importAgain(url).then(() => true, () => false)) && reloadOnce(url)) return;
+    }
+    // Otherwise unreachable (no signal), or now loadable: try in place.
     this.again();
   };
 

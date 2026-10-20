@@ -65,6 +65,25 @@ describe("a chunk that fails to load", () => {
     expect(load).toHaveBeenCalledTimes(2);
   });
 
+  it("asks for the screen's own module when the address an error names exports something else", async () => {
+    vi.stubGlobal("reportError", vi.fn());
+    // The chunk is there now (HEAD 200), and the address the error names is a
+    // real module, but one the screen imports: it has no `Sound` to pick.
+    vi.stubGlobal("fetch", vi.fn(() => Promise.resolve({ status: 200 })));
+    const dependency = `${import.meta.dirname}/Button.tsx`;
+    let calls = 0;
+    const load = vi.fn(() => (++calls === 1
+      ? Promise.reject(new TypeError(`Failed to fetch dynamically imported module: ${dependency}`))
+      : Promise.resolve({ Sound: () => <button type="button">Sound</button> })));
+    const Chunk = lazyChunk(load, (module: { Sound?: () => React.JSX.Element }) => module.Sound!);
+    render(<ChunkBoundary><Suspense fallback={null}><Chunk /></Suspense></ChunkBoundary>);
+    await screen.findByRole("alert");
+
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Try again" })); });
+    expect(await screen.findByRole("button", { name: "Sound" })).toBeTruthy();
+    expect(load).toHaveBeenCalledTimes(2);
+  });
+
   it("keeps the message, and one import per press, while the chunk stays unreachable", async () => {
     vi.stubGlobal("reportError", vi.fn());
     // Named, and reachable as far as the probe can tell: not a deploy, so no reload.

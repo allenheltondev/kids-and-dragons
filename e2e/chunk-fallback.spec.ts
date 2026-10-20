@@ -7,7 +7,9 @@
  *   a required screen (the adventure book) and the room itself (the layouts):
  *     a plain message with Try again, and Try again recovers;
  *   a chunk a deploy deleted (a 404): Try again reloads onto the new build
- *     once, and only once.
+ *     once, and only once;
+ *   a chunk a screen imports (not the screen's own): Try again recovers too,
+ *     though the browser keeps that failure until a reload asks again.
  *
  * Under the dev server each chunk is its own module (`/src/...`); in a build
  * it is a hashed `/bundle/...` chunk. Both are matched, as in lazy-audio.spec.ts.
@@ -18,6 +20,8 @@ import { test, expect, type Page } from "@playwright/test";
 const TAP = { timeout: 20_000 } as const;
 const READ_ALOUD = /\/(?:src\/speech\/index\.ts|bundle\/speech-[^/]*\.js)(?:\?|$)/;
 const JOURNAL = /\/(?:src\/screens\/JournalScreen\.tsx|bundle\/JournalScreen-[^/]*\.js)(?:\?|$)/;
+// A chunk the book imports, not the book's own: a dependency that fails takes its importer down with it.
+const BOOK_DEPENDENCY = /\/(?:src\/screens\/WorldMapPanel\.tsx|bundle\/TrayObjects-[^/]*\.js)(?:\?|$)/;
 const PARTY = /\/(?:src\/layout\/PartyLayout\.tsx|bundle\/PartyLayout-[^/]*\.js)(?:\?|$)/;
 const TRY = { name: "Try again" } as const;
 
@@ -73,6 +77,22 @@ test("a required screen that cannot load says so, and Try again opens it", async
   await alert.getByRole("button", TRY).click();
   await expect(page.getByRole("heading", { name: /your adventure book is empty/i })).toBeVisible(TAP);
   await expect(page.getByRole("alert")).toHaveCount(0);
+});
+
+test("a chunk the screen imports that failed is recovered by Try again too", async ({ page }) => {
+  await page.route(BOOK_DEPENDENCY, (route) => route.abort());
+  const pageLoads = loads(page);
+  await page.goto("/journal");
+  const alert = page.getByRole("alert");
+  await expect(alert).toContainText("Your adventure book couldn’t open.", TAP);
+
+  // Retrying the book alone cannot help: Chromium keeps the dependency's
+  // failure under its own address. One press still opens it, with at most
+  // the one reload that asks for that address again.
+  await page.unroute(BOOK_DEPENDENCY);
+  await alert.getByRole("button", TRY).click();
+  await expect(page.getByRole("heading", { name: /your adventure book is empty/i })).toBeVisible(TAP);
+  expect(pageLoads()).toBeLessThanOrEqual(2);
 });
 
 test("a room whose layout cannot load says so, and Try again brings the room", async ({ page }) => {
