@@ -241,3 +241,30 @@
     font-weight: 800;
   }
 }
+
+.goal__tag {
+  display: none;
+}
+
+/*
+ * A phone's world pane (narrow in pixels, whatever the text size, its story already
+ * width-limited under a tall plate): a pill of "Goal" and the pips, so the head stays one short
+ * line, clear of the guest pager on the right and of the figures' heads. The phone's own pane,
+ * where it opens, shows the goal in full.
+ */
+@container world (max-width: 640px) {
+  .goal--world {
+    flex-direction: row;
+    padding-block: var(--space-1, 0.25em);
+  }
+  .goal--world .goal__sentence,
+  .goal--world .goal__steps {
+    display: none;
+  }
+  .goal--world .goal__tag {
+    display: inline;
+  }
+  .goal--world .goal__pips {
+    display: inline-flex;
+  }
+}

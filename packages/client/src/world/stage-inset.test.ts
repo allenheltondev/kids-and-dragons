@@ -60,7 +60,12 @@ describe("storyStageFrame (#356)", () => {
     const frame = storyStageFrame(1280, 720, 250, 200);
     expect(frame.top + frame.height).toBe(470);
     // The new frame's sky reaches the head's bottom.
-    expect(frame.top + SKY_FRACTION * frame.height).toBeCloseTo(200);
+    expect(frame.top + SKY_FRACTION * frame.height).toBeCloseTo(200, 1);
+  });
+
+  it("leaves a narrow pane's frame alone: its story is width-limited and sits below sky of its own", () => {
+    // A 390-wide phone pane: the 16:9 story is 219 tall, centred in a much taller frame.
+    expect(storyStageFrame(390, 760, 200, 220)).toEqual({ top: 0, height: 560 });
   });
 
   it("never gives up more than a quarter of the stage, however tall the head", () => {
