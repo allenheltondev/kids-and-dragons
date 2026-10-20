@@ -352,6 +352,7 @@
         }
       ],
       "stat": "heart",
+      "checkKind": "doing",
       "tn": 12,
       "prompt": "Hold the middle of a tug-of-war so neither side wins",
       "roller": "party",
@@ -615,6 +616,7 @@
     "check_chord": {
       "type": "check",
       "stat": "heart",
+      "checkKind": "doing",
       "tn": 16,
       "prompt": "Hum three notes back to a whole masked choir, true and steady",
       "roller": "party",
@@ -1994,6 +1996,7 @@
     "check_hold": {
       "type": "check",
       "stat": "heart",
+      "checkKind": "doing",
       "tn": 12,
       "prompt": "Lay your hands on the wagon stone and hold its hum still for one whole breath",
       "roller": "party",
@@ -2009,6 +2012,7 @@
     "check_hold_hard": {
       "type": "check",
       "stat": "heart",
+      "checkKind": "doing",
       "tn": 16,
       "prompt": "Put your bare hands on the wagon stone and hold its hum still, with nothing else to help",
       "roller": "party",
@@ -2175,6 +2179,7 @@
         }
       ],
       "stat": "heart",
+      "checkKind": "doing",
       "tn": 12,
       "prompt": "Get Pellam and Hessa to pick up the old door together",
       "roller": "party",
