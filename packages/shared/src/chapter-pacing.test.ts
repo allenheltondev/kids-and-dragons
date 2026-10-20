@@ -288,7 +288,7 @@ describe("interactivity", () => {
   });
   /*
    * open -> b1 -> b2 -> b3 -> lift (might) -> b4 -> fight -> b5 -> b6 -> talk (heart)
-   * -> jam (clever, checkKind doing) -> stare (might, checkKind talking) -> pick -> end.
+   * -> jam (heart, checkKind doing) -> stare (clever, checkKind talking) -> pick -> end.
    * `pick` has a second way only behind a flag-`when`, so it is a beat in every scenario.
    * Reading runs: open..b3 = 4, b4 = 1, b5..b6 = 2, pick..end = 2.
    */
@@ -303,8 +303,8 @@ describe("interactivity", () => {
     b5: beat("b6"),
     b6: beat("talk"),
     talk: check("heart", "jam"),
-    jam: check("clever", "stare", { checkKind: "doing" }),
-    stare: check("might", "pick", { checkKind: "talking" }),
+    jam: check("heart", "stare", { checkKind: "doing" }),
+    stare: check("clever", "pick", { checkKind: "talking" }),
     pick: { type: "story", narration: "words", choices: [go("a", "end"), { ...go("b", "end"), when: { flag: "met" } }] },
     end: { type: "story", narration: "The end", choices: [] },
   } as unknown as Record<string, Scene>;
@@ -313,7 +313,7 @@ describe("interactivity", () => {
 
   it("reads a check's kind from its stat unless the check overrides it", () => {
     const stats = ["might", "quick", "clever", "heart"].map((stat) => checkKind(check(stat, "x") as never));
-    expect(stats).toEqual(["doing", "doing", "talking", "talking"]);
+    expect(stats).toEqual(["doing", "doing", "doing", "talking"]);
     const overridden = ["jam", "stare"].map((id) => checkKind(lineScenes[id] as never));
     expect(overridden).toEqual(["doing", "talking"]);
   });

@@ -19,8 +19,8 @@
  *    more visible choices. A one-button beat is not a decision.
  *  - **Check** is a `check` scene; **encounter** an `encounter` scene.
  *  - **Doing checks** are checks whose `CheckKind` is `"doing"`: the
- *    `checkKind` the check sets, else might and quick do, clever and heart
- *    talk (`STAT_CHECK_KIND`).
+ *    `checkKind` the check sets, else might, quick and clever do and heart
+ *    talks (`STAT_CHECK_KIND`).
  *  - **Longest reading run** is the most scenes in a row on the path that ask
  *    the table nothing: not a decision, not a check, not an encounter. One-button
  *    beats and the ending count as reading. A fight breaks a run, because the
@@ -194,7 +194,7 @@ export function isGatedFor(choice: Choice, scenario: PacingScenario): boolean {
 export const STAT_CHECK_KIND: Readonly<Record<StatId, CheckKind>> = {
   might: "doing",
   quick: "doing",
-  clever: "talking",
+  clever: "doing",
   heart: "talking",
 };
 

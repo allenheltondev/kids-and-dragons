@@ -226,10 +226,9 @@ export type ScenePriority = 1 | 2;
 /**
  * What a check asks of the table, for the pacing report's interactivity count
  * (content/README.md, "Interactivity"): `"doing"` is something the party does
- * with their bodies (heave, climb, dodge, sneak), `"talking"` is something
- * they say or work out (persuade, comfort, puzzle). Read from the stat
- * (might and quick do; clever and heart talk) unless the check overrides it
- * with `checkKind`. Nothing at play time reads it.
+ * (heave, climb, dodge, sneak, puzzle out a lock), `"talking"` is something
+ * they say (persuade, comfort, plead). Read from the stat (might, quick and
+ * clever do; heart talks) unless the check overrides it with `checkKind`. Nothing at play time reads it.
  */
 export type CheckKind = "doing" | "talking";
 
@@ -314,8 +313,8 @@ export interface CheckScene {
   roller?: "party" | "active" | "best" | "all";
   /**
    * Overrides the `CheckKind` the stat implies, for a check whose stat
-   * misleads: a clever check to jam the gears is doing; a might check to stare
-   * down a bully is talking. Pacing only.
+   * misleads: a heart check to coax a goat across a plank is doing; a clever
+   * check to talk a troll out of his riddle is talking. Pacing only.
    */
   checkKind?: CheckKind;
   onSuccess: Branch;
