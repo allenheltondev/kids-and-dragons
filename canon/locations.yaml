@@ -544,7 +544,7 @@ locations:
       cultural_orders: []
       ambient_creatures: []
       dangerous_creatures: [creature.echo_hunter]
-      legendary_beings: []
+      legendary_beings: [creature.kavari]
       supernatural_manifestations: []
     relationships:
       locations: [biome.open_sea]
