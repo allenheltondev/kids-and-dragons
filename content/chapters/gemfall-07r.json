@@ -43,7 +43,7 @@
   "scenes": {
     "scene_the_pinch": {
       "type": "story",
-      "narration": "Every road in the realm squeezes through one gap between two red hills. The dragonlings call it the Pinch. Wagons, carts, and one man pushing a wheelbarrow full of glitter all shove through it at once. Up at the citadel, Pellam wrote it beside your names: put the stones back. So that is the job. Every stone on this road is heading the wrong way, and you are going to turn as many as you can toward home. Tomorrow the fattest caravan in the funnel comes round the worst bend in the north road, carrying the biggest stone of all. Send that one home too. The ground gives a small shrug, like a sleeping dog, and you notice the embermoths that always live here are simply gone.",
+      "narration": "Every road in the realm squeezes through one gap between two red hills. The dragonlings call it the Pinch. Wagons, carts, and a man pushing a wheelbarrow full of glitter all shove through it at once. Up at the citadel, Pellam wrote it beside your names: put the stones back. So here is the plan. Turn the road's stones toward home, and send the caravan's big stone home from the bend. That caravan is the fattest in the funnel, and it reaches the worst bend tomorrow. The ground gives a small shrug, and the embermoths that always live here are simply gone.",
       "choices": [
         {
           "id": "set_up",
