@@ -8,7 +8,6 @@ import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
 vi.mock("../store", () => ({ useGameStore: { getState: () => ({ reconnect: () => undefined }) } }));
-vi.mock("../world/rive-rig", () => ({ riveAvailable: async () => false }));
 
 import { AudioControl } from "../audio";
 import { DisplayExtras } from "./DisplayExtras";

@@ -17,7 +17,7 @@
  * the only way to test the clamp at all eight edges and corners of the board on
  * both a portrait phone and a widescreen TV without standing up a WebGL
  * context, and it means the same numbers can drive a Pixi transform today and
- * whatever `scene.ts` becomes when the Rive rigs land.
+ * whatever `scene.ts` becomes when the illustrations change.
  *
  * ---------------------------------------------------------------------------
  * COORDINATES

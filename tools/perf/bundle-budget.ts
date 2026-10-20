@@ -37,7 +37,7 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
  *
  * The first paint is what stands between opening the URL and seeing the join
  * screen; everything else — the room's panels (`App` lazily imports both
- * layouts), the renderer, the rigs, the scene — is loaded behind `lazy()` and
+ * layouts), the renderer, the figures, the scene — is loaded behind `lazy()` and
  * arrives while somebody is already reading something. That split is the
  * architecture (`WorldView` lazily imports `PixiStage` the same way), and this
  * is the number that notices when it stops being true.
@@ -48,7 +48,7 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
  * runs, so they are on the critical path exactly as if they were inlined. The
  * gate used to weigh the entry file alone, and it was green at 380KB while the
  * page fetched 915KB before it could paint: one static `import` of a helper
- * from `FrameMeter.tsx` had pulled the scene, Pixi and the rigs into the
+ * from `FrameMeter.tsx` had pulled the scene, Pixi and the figures into the
  * entry's graph, and the bundler had filed all of it under other names. A
  * lazy `import()` is only lazy if nothing imports the same module eagerly.
  *
@@ -66,7 +66,7 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
  * tablets (#250), host controls and quiet mode (#263, #260), with visitors
  * and safe names (#249, #253) each adding about a KB more. 315 is that plus
  * slack for those, not a new round number; a large accidental import (Pixi,
- * the rigs, the scene) still fails it by a wide margin.
+ * the figures, the scene) still fails it by a wide margin.
  *
  * Back to about 310 measured, the same day, with the cap left at 315 (#300):
  * the Cognito client (sync/auth) and the organizer store now load when a

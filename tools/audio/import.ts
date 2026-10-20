@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * The manual road — `npm run audio:import -- ~/Downloads`.
+ * The way a sound comes in — `npm run audio:import -- ~/Downloads`.
  *
- * `audio:generate` calls a provider's API. Not every way of making audio has
- * one: a free tier, or a paid pack, or a friend with a microphone, all end the
- * same way — a folder of files somebody downloaded. This takes that folder and
- * finishes the job the generator would have: match each file to the cue it is
- * for, encode to Opus at the one loudness target, put it where the game looks.
+ * How a new sound comes into the game. However it was made (a tool, a paid
+ * pack, a friend with a microphone), it ends the same way: a folder of files
+ * somebody downloaded. This takes that folder and finishes the job: match each
+ * file to the cue it is for, encode to Opus at the one loudness target, put it
+ * where the game looks.
  *
  * The encode is the part worth not skipping by hand. Files arrive as MP3 at
  * whatever level the tool that made them felt like, and a set of cues that are
@@ -22,7 +22,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { encodeToWebm } from "./generate";
+import { encodeToWebm } from "./encode";
 import { planImport, type Plan } from "./match";
 import { audioJobs, type AudioJob } from "./specs";
 
@@ -133,7 +133,7 @@ async function main(): Promise<void> {
   }
 
   console.log(`\n${String(imported)} imported. \`npm run audio:verify\` says what is left.`);
-  // Same contract as the generator: what the person read, the shell hears.
+  // What the person read, the shell hears: a failed or skipped file exits non-zero.
   if (failed.length > 0 || plan.ambiguous.length > 0 || plan.contested.length > 0) {
     process.exitCode = 1;
   }

@@ -11,7 +11,7 @@ chapter schema, and where models are (and are not) used.
 |---|---|---|
 | Frontend | **React + Vite + TypeScript** | One bundle serves both TV and phone clients; the client role is a route. |
 | Scene rendering | **PixiJS (WebGL)** | Grid, characters, effects, camera. Predictable perf on modest TV-connected hardware. |
-| Character animation | **Rive** | Raster cutout rigs with state machines. Rendered to texture, composited into the Pixi scene. |
+| Character animation | **Static illustrations + procedural motion** | Gentle breathing anchored at the feet; Pixi handles travel, falls, and effects. |
 | UI chrome | **React + CSS** | Menus, character sheets, choice buttons. Never inside the canvas. |
 | State | **Zustand** | Small, no boilerplate, easy to mirror server state into. |
 | Backend | **AWS Lambda (Node 22, TypeScript)** | |
@@ -1711,7 +1711,7 @@ after `load`, and touches nothing the game needs live:
 | `/assets/*`, `/content/*.json`, `public/` files | the saved copy **if its fingerprint matches this build's**; else the network, kept if the bytes match |
 | anything else not fingerprinted | content: network first; pictures: saved copy, refreshed behind; otherwise untouched |
 
-**Fingerprints.** Art, rigs, audio and content keep the same URL across deploys, so a cache cannot
+**Fingerprints.** Art, audio and content keep the same URL across deploys, so a cache cannot
 tell from the URL whether a copy is current. Each build therefore fingerprints every file under
 `assets/`, `content/` and the client's `public/` (the first 16 hex digits of SHA-256) into a hashed
 `/bundle/files-*.json`, and writes its URL into `sw.js` (`sw-build.ts`). A saved copy whose
@@ -1720,23 +1720,21 @@ file changes its fingerprint, so that file alone is fetched again, past the HTTP
 worker drops replaced copies when it takes over. Every download is checked against its
 fingerprint before it is kept, so a CDN edge still serving the old bytes is served but never saved.
 
-**Budget.** Fingerprinted art, rigs and audio are capped at 200 MB, least recently used first.
+**Budget.** Fingerprinted art and audio are capped at 200 MB, least recently used first.
 Content is never evicted: it is small, and it is what the offline book reads. Lookups ignore
 `Vary`: servers send `Vary: Origin`, module scripts send an `Origin` header, and without
 `ignoreVary` every saved script quietly missed and went back to the network.
 
 **What is saved when.**
-- **Install:** the app, every hashed file but the Rive runtime, and the content the book reads
+- **Install:** the app, every hashed bundle file, and the content the book reads
   (including every campaign file), about 2.4 MB. Install fails unless every one of those content
   files is saved as this build's verified bytes, so a CDN edge still serving the previous deploy
   cannot let a worker take over without them. The old worker stays in charge with its copies,
   and the browser tries again later.
-- **When the page is idle:** it tells the worker (`kad:idle`, `sw/register.ts`), which then
-  fetches the Rive runtime (about 2 MB).
 - **When the book opens with a signal:** the map painting, every atlas level and the art of
   everything found (`sw/warm.ts`).
 - **During play:** whatever the screen draws. The scenes two steps ahead (backdrops, enemies, the
-  biome's tiles, the party's rigs) are fetched at idle priority before the party reaches them
+  biome's tiles, the party's figures) are fetched at idle priority before the party reaches them
   (`sw/prefetch.ts`, from `WorldView`) — only while the world is on screen: a phone keeps its world
   pane mounted behind its controls and map, and the layout tells `WorldView` when it is hidden, so a
   Party Mode phone (whose world is the TV's job) spends nothing on it. Prefetching is skipped when the phone asks to save data;
@@ -1772,7 +1770,6 @@ pick it up on their next page load.
   13 KB in 10 (the page, live game traffic and the favicon, which browsers fetch outside any
   worker). It also checks that:
   - mismatched bytes are never saved;
-  - the Rive runtime arrives while idle;
   - a scene's art is saved before the party reaches it.
 
 #### The display beyond a laptop (#264)
@@ -1783,8 +1780,7 @@ none of them. [docs/hardware.md](./hardware.md) has the table and the tested lis
 - **WebGL.** The stage asks Pixi for WebGL only (`preference: ["webgl"]`). Left to itself Pixi falls
   back to WebGPU and then to a 2D-canvas renderer, and the scene was never tuned for the CPU. When
   WebGL is missing, `init` rejects and `RendererBoundary` shows `world/StaticStage`, a lazy chunk
-  that draws the backdrop and a plain row of figures from the same state the board reads. Rive's
-  absence is already handled below that: `createRig` returns null and the scene keeps the PNG.
+  that draws the backdrop and a plain row of figures from the same state the board reads.
 - **Wake lock** (`display/wake-lock.ts`). Held for as long as the display is open, asked for again
   on every `visibilitychange`, quiet where the API is missing or refuses.
 - **Waking up** (`display/wake.ts`). A `visibilitychange` back to visible, a `pageshow`, or a timer
@@ -2025,12 +2021,10 @@ What stays is authored:
   guide and the home of its chapter-scoped characters (`canon/individuals.yaml`). Nothing at play
   time reads it. (Renamed in #347.)
 
-Models are used **only at authoring time**, by offline tools that never run during play and never
-see a child's data: `content:generate` drafts a chapter (`tools/content/generate.ts`, signed
-with the author's own AWS credentials; README.md, "Writing a chapter"), and the audio and art
-pipelines generate assets ([audio-pipeline.md](./audio-pipeline.md),
-[art-pipeline.md](./art-pipeline.md)). Their output is reviewed and committed like any other
-content.
+Nothing in the repo calls a model or a generation API. Chapters are written by people working with
+coding agents (README.md, "Writing a chapter"); sounds come in by hand through `audio:import`
+([audio-pipeline.md](./audio-pipeline.md)) and art through its own pipeline
+([art-pipeline.md](./art-pipeline.md)). All of it is reviewed and committed like any other content.
 
 ---
 

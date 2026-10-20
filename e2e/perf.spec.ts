@@ -12,7 +12,7 @@
  *             max-age has long run out and iOS has evicted the big files.
  *             Only the HTTP cache: the service worker's saved files stay.
  *
- * The later visits are the ones a cache exists for: every picture, rig, song
+ * The later visits are the ones a cache exists for: every picture, song
  * and content file they need was downloaded the first time, and nothing has
  * changed since. Round trips are counted as well as bytes, because a phone
  * pays for each one in latency even when the answer is "not modified". The report is written to `test-results/perf/` and
@@ -106,7 +106,7 @@ async function readOnUntilArtAhead(phone: Page, code: string): Promise<string[]>
   return [];
 }
 
-test("later visits download none of the art, rigs, audio or content a phone already has", async ({ browser, baseURL }) => {
+test("later visits download none of the art, audio or content a phone already has", async ({ browser, baseURL }) => {
   const proxy = await startCountingProxy(baseURL ?? "http://localhost:4173");
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, baseURL: proxy.url });
   const phone = await context.newPage();
@@ -150,14 +150,12 @@ test("later visits download none of the art, rigs, audio or content a phone alre
     console.log(`next-evening art timings (ms): ${timings.map((t) => `${t.url.split("/").slice(-3).join("/")} ${t.ms}`).join(", ")}`);
 
     // The first visit really did load the heavy things, or the rest proves nothing.
-    expect(first.rig.bodies, "the first visit loaded no rig").toBeGreaterThan(0);
     expect(first.art.bodies, "the first visit loaded no art").toBeGreaterThan(0);
 
     // Later visits: none of it again. Before the fingerprinted cache, the next
-    // evening re-downloaded ~3.8MB in 41 round trips (art 1.9MB, the rig
-    // 0.9MB, audio 0.8MB, content 0.1MB) — every byte of it already on the phone.
+    // evening re-downloaded assets the phone already had.
     for (const [name, visit] of [["repeat", repeat], ["next evening", evening]] as const) {
-      expect(bodiesOf(visit, ["bundle", "content", "rig", "audio"]), `${name}: re-downloaded code, content, a rig or audio`).toBe(0);
+      expect(bodiesOf(visit, ["bundle", "content", "audio"]), `${name}: re-downloaded code, content, or audio`).toBe(0);
       // Browsers fetch the favicon outside any service worker; nothing else may come down.
       const art = visit.art.downloaded.filter((path) => path !== "/favicon.ico");
       expect(art, `${name}: re-downloaded art`).toEqual([]);
@@ -209,22 +207,6 @@ test("bytes that do not match their fingerprint are served, but never saved", as
   }
 });
 
-test("the Rive runtime arrives while the phone is idle, before any rig needs it", async ({ page }) => {
-  // Left out of install (≈2MB the book never uses); asked for once the page
-  // is idle (sw/register.ts), so the first character on stage does not wait.
-  await page.goto("/");
-  await controlled(page);
-  await expect
-    .poll(
-      () =>
-        page.evaluate(async () => {
-          const bundle = await caches.open("kad-bundle-v1");
-          return (await bundle.keys()).some((request) => request.url.endsWith(".wasm"));
-        }),
-      { timeout: 30_000 },
-    )
-    .toBe(true);
-});
 
 test("the scenes ahead are on a phone showing the world before the party reaches them", async ({ browser, baseURL }) => {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, baseURL });

@@ -10,7 +10,6 @@ Usage:
     python tools/art/verify.py unicorn         # one species
     python tools/art/verify.py unicorn/sworn   # one species/tier
     python tools/art/verify.py --strict        # also fail on not-yet-delivered sets
-    python tools/art/verify.py --fail-fragments  # duplicated part fragments fail instead of warn
 
 What this CANNOT check: whether it looks right. That is the human gate.
 See docs/asset-brief.md section6.2.
@@ -119,407 +118,11 @@ def check_format(rep: Report, path: str, canvas: dict, tol: dict) -> np.ndarray 
     return a
 
 
-def check_recomposite(rep: Report, label: str, assembled: np.ndarray,
-                      parts: dict[str, np.ndarray], z_order: list[str], tol: dict) -> None:
-    """Stacking parts in z-order must reproduce assembled.png."""
-    h, w = assembled.shape[:2]
-    comp = np.zeros((h, w, 4), dtype=float)
-
-    for name in z_order:
-        if name not in parts:
-            continue
-        src = parts[name].astype(float)
-        sa = src[..., 3:4] / 255.0
-        comp[..., :3] = src[..., :3] * sa + comp[..., :3] * (1 - sa)
-        comp[..., 3:4] = sa * 255.0 + comp[..., 3:4] * (1 - sa)
-
-    thr = tol["alphaThreshold"]
-    am = assembled[..., 3] > thr
-    cm = comp[..., 3] > thr
-
-    inter, union = int((am & cm).sum()), int((am | cm).sum())
-    iou = inter / union if union else 0.0
-    dropped = int((am & ~cm).sum())
-    added = int((cm & ~am).sum())
-
-    if iou < tol["recompositeIouMin"]:
-        rep.fail(
-            f"{label} recomposite coverage",
-            f'IoU >= {tol["recompositeIouMin"]}',
-            f"IoU={iou:.5f}  ({dropped:,} px in assembled but not in parts, {added:,} px the reverse)",
-        )
-        return
-
-    both = am & cm
-    delta = np.abs(assembled[..., :3].astype(float) - comp[..., :3])[both]
-    mean_delta = float(delta.mean()) if delta.size else 0.0
-
-    if mean_delta > tol["recompositeMeanRgbDeltaMax"]:
-        rep.fail(
-            f"{label} recomposite colour",
-            f'mean |RGB delta| <= {tol["recompositeMeanRgbDeltaMax"]}',
-            f"{mean_delta:.2f} (max {float(delta.max()):.0f})",
-        )
-        return
-
-    rep.ok(f"{label} recomposite  IoU={iou:.5f}  mean delta={mean_delta:.2f}")
-
-
-def check_seams(rep: Report, label: str, parts: dict[str, np.ndarray],
-                adjacency: list[list[str]], tol: dict) -> None:
-    """Adjacent parts must overdraw, or joints open gaps when the rig rotates."""
-    thr, need = tol["alphaThreshold"], tol["minSeamOverlapPx"]
-    masks = {k: opaque_mask(v, thr) for k, v in parts.items()}
-    bad = []
-
-    for a, b in adjacency:
-        if a not in masks or b not in masks:
-            continue
-        overlap = int((masks[a] & masks[b]).sum())
-        if overlap < need:
-            bad.append((a, b, overlap))
-
-    if bad:
-        detail = ", ".join(f"{a}/{b}={n:,}px" for a, b, n in bad)
-        rep.fail(f"{label} seam overdraw", f"every adjacent pair >= {need:,}px shared", detail)
-        if all(n == 0 for _, _, n in bad):
-            print(f"        {DIM}all zero -> parts are exact cutouts. See asset-brief.md section 3.3.{RESET}")
-    else:
-        rep.ok(f"{label} seam overdraw  ({len(adjacency)} pairs checked)")
-
-
-def components(mask: np.ndarray, cap: int = 250) -> list[np.ndarray]:
-    """
-    8-connected components of a boolean mask, via repeated flood fill.
-
-    Pillow rather than scipy on purpose: `requirements-dev.txt` is Pillow, numpy
-    and cfn-lint, and one check is not worth a third numeric dependency on every
-    contributor's machine and in every workflow.
-    """
-    h, w = mask.shape
-    pad = np.zeros((h + 2, w + 2), np.uint8)
-    pad[1:-1, 1:-1] = np.where(mask, 255, 0)
-    img = Image.fromarray(pad).copy()
-    out: list[np.ndarray] = []
-    label = 1
-    while label <= cap:
-        cur = np.asarray(img)
-        ys, xs = np.nonzero(cur == 255)
-        if not len(ys):
-            break
-        ImageDraw.floodfill(img, (int(xs[0]), int(ys[0])), label)
-        out.append(np.asarray(img)[1:-1, 1:-1] == label)
-        label += 1
-    return out
-
-
-# A fragment smaller than this is antialiasing debris, not artwork. Same figure
-# rive-mcp uses when it decides which components of a part to keep.
-FRAGMENT_MIN_PX = 64
-
-# How much of a fragment another part has to already draw before we call it a
-# copy. Measured across all 24 part sets, this is not a judgement call: of 743
-# detached fragments, 507 sit at 0.00 coverage and 173 at >=0.95, with 63 in
-# between. The two populations are that far apart because they are different
-# things — one is artwork only this part has, the other is a duplicate.
-FRAGMENT_DUPLICATE_COVERAGE = 0.95
-
-# Whether a duplicated fragment fails the run or only warns. Off by default while
-# the corpus still carries them (docs/briefs/part-fragments.md §5); `--fail-
-# fragments` turns it on, so the flip the brief plans is one flag on one command
-# line rather than an edit to this file. CI runs `art:verify` without it, and the
-# deploy workflow runs `--strict` — which is about undelivered sets and does NOT
-# imply this, on purpose: tying the two together would red the deploy the day
-# the flag was armed rather than the day the re-cut landed.
-FAIL_FRAGMENTS = False
-
-
-def check_part_fragments(rep: Report, label: str, parts: dict[str, np.ndarray],
-                         tol: dict, fail: bool | None = None) -> None:
-    """
-    A part may not carry a detached copy of something another part already draws.
-
-    This is the one defect class that every other check in this pipeline is
-    structurally blind to, and it took a human looking at a contact sheet to
-    find it. `check_recomposite` asks that the parts stack back into
-    `assembled.png`, which *any* partition of the image satisfies — including
-    one that hands the same pixels to two different parts. The rig gates render
-    the rest pose, where a duplicate sits exactly on top of the original and is
-    invisible by construction. So a fragment can pass the whole pipeline and
-    only appear when the part it is attached to rotates away, carrying the copy
-    with it: a disc of torso flying beside the arm, a rectangle of hip hanging
-    in the air.
-
-    Note what is *not* flagged. Detached artwork is legitimate and common — the
-    manticore's barbed tail is six components, and the barbs do not touch the
-    shaft. Nothing else in the set draws those barbs, so they are the only
-    source of those pixels and removing them would lose art. Measured, every
-    manticore tail fragment scores 0.00 coverage and none are reported here.
-    The rule is redundancy, not detachment.
-
-    Warning rather than failure, for now: 173 fragments across 175 parts are in
-    the corpus as delivered, and a check that reds the build on art nobody has
-    re-cut yet is a check people learn to skip. `fail` (default: the
-    `--fail-fragments` flag) is the switch; flip it when the re-cut lands.
-    """
-    if fail is None:
-        fail = FAIL_FRAGMENTS
-    thr = tol["alphaThreshold"]
-    masks = {k: opaque_mask(v, thr) for k, v in parts.items()}
-    found: list[tuple[str, int, float]] = []
-
-    for name, mask in masks.items():
-        comps = components(mask)
-        if len(comps) < 2:
-            continue
-        comps.sort(key=lambda c: -int(c.sum()))
-        # Every other part in the set, unioned once per part rather than per
-        # fragment — this runs over 24 sets and the masks are 1024x1024.
-        others = np.zeros_like(mask)
-        for other, m in masks.items():
-            if other != name:
-                others |= m
-        for frag in comps[1:]:
-            n = int(frag.sum())
-            if n < FRAGMENT_MIN_PX:
-                continue
-            covered = float((frag & others).sum()) / n
-            if covered >= FRAGMENT_DUPLICATE_COVERAGE:
-                found.append((name, n, covered))
-
-    if found:
-        worst = sorted(found, key=lambda f: -f[1])[:4]
-        detail = ", ".join(f"{n}={px:,}px ({cov * 100:.0f}% duplicated)" for n, px, cov in worst)
-        if len(found) > len(worst):
-            detail += f", and {len(found) - len(worst)} more"
-        why = ("These are invisible at rest and fly off when the part rotates. "
-               "Re-cut so each part carries only its own artwork.")
-        if fail:
-            rep.fail(f"{label} duplicated part fragments  ({len(found)})",
-                     "no detached fragment another part already draws", detail, why)
-        else:
-            rep.warn(f"{label} duplicated part fragments  ({len(found)})", detail)
-            print(f"        {DIM}{why}{RESET}")
-    else:
-        rep.ok(f"{label} part fragments  ({len(masks)} parts, no duplicated artwork)")
-
-
-def check_silhouette(rep: Report, label: str, assembled: np.ndarray,
-                     signature: np.ndarray | None, sig_name: str, tol: dict) -> None:
-    """The species signature must survive downscaling to phone size."""
-    if signature is None:
-        return
-
-    thr = tol["alphaThreshold"]
-    ys, xs = np.where(assembled[..., 3] > thr)
-    height = int(ys.max() - ys.min() + 1)
-    scale = tol["silhouetteHeightPx"] / height
-
-    sig_img = Image.fromarray(signature)
-    small = sig_img.resize(
-        (max(1, int(sig_img.width * scale)), max(1, int(sig_img.height * scale))),
-        Image.LANCZOS,
-    )
-    px = int((np.array(small)[..., 3] > thr).sum())
-    need = tol["minSignaturePxAtSilhouette"]
-
-    if px < need:
-        rep.fail(
-            f"{label} signature legibility ({sig_name})",
-            f'>= {need}px at {tol["silhouetteHeightPx"]}px tall',
-            f"{px}px - too thin to read on a phone",
-        )
-    else:
-        rep.ok(f"{label} signature legibility  {sig_name}={px}px at {tol['silhouetteHeightPx']}px tall")
-
-
-def dominant_hue(img: np.ndarray, thr: int) -> float | None:
-    """Saturation-weighted circular mean hue. Ignores outline and blown highlights."""
-    px = img[img[..., 3] > 200][:, :3].astype(float) / 255.0
-    if len(px) == 0:
-        return None
-
-    mx, mn = px.max(1), px.min(1)
-    val, chroma = mx, mx - mn
-    sat = np.where(mx > 0, chroma / np.maximum(mx, 1e-6), 0.0)
-
-    keep = (val > 0.15) & (val < 0.97) & (sat > 0.02)
-    if keep.sum() < 50:
-        return None
-    px, val, chroma, sat = px[keep], val[keep], chroma[keep], sat[keep]
-
-    r, g, b = px[:, 0], px[:, 1], px[:, 2]
-    c = np.maximum(chroma, 1e-6)
-    hue = np.where(
-        val == r, ((g - b) / c) % 6,
-        np.where(val == g, (b - r) / c + 2, (r - g) / c + 4),
-    ) * 60.0
-
-    rad = np.deg2rad(hue)
-    x = float((np.cos(rad) * sat).sum())
-    y = float((np.sin(rad) * sat).sum())
-    return float(np.rad2deg(np.arctan2(y, x)) % 360)
-
-
-def hex_hue(h: str) -> float:
-    rgb = np.array([int(h[i:i + 2], 16) for i in (1, 3, 5)], float) / 255.0
-    mx, mn = rgb.max(), rgb.min()
-    if mx == mn:
-        return 0.0
-    r, g, b = rgb
-    c = mx - mn
-    if mx == r:
-        return ((g - b) / c % 6) * 60
-    if mx == g:
-        return ((b - r) / c + 2) * 60
-    return ((r - g) / c + 4) * 60
-
-
-def hue_delta(a: float, b: float) -> float:
-    d = abs(a - b) % 360
-    return min(d, 360 - d)
-
-
-def check_palette(rep: Report, label: str, species: dict,
-                  parts: dict[str, np.ndarray], tol: dict) -> None:
-    """Species colour identity. WARN only - hexes are targets, not requirements."""
-    pal = species.get("palette")
-    if not pal:
-        return
-
-    slots = [("coat", "body"), ("mane", "mane"), ("accent", species["signature"])]
-    drifted = []
-    thr = tol["alphaThreshold"]
-
-    for slot, part in slots:
-        if part not in parts or slot not in pal:
-            continue
-
-        # Measure only pixels unique to this part. Seam overdraw (section 3.3) means
-        # each layer carries a rim of its neighbours' pixels; including those would
-        # contaminate the reading - e.g. a blue horn reads violet because it
-        # overdraws into the mane.
-        own = opaque_mask(parts[part], thr)
-        for other, arr in parts.items():
-            if other != part:
-                own &= ~opaque_mask(arr, thr)
-
-        if own.sum() < 200:
-            continue
-        exclusive = parts[part].copy()
-        exclusive[..., 3] = np.where(own, exclusive[..., 3], 0)
-
-        got = dominant_hue(exclusive, thr)
-        if got is None:
-            continue
-        want = hex_hue(pal[slot])
-        d = hue_delta(got, want)
-        if d > tol["paletteHueToleranceDeg"]:
-            drifted.append(f"{slot}({part}.png) target={pal[slot]} hue {want:.0f}deg, got {got:.0f}deg, off by {d:.0f}deg")
-
-    if drifted:
-        rep.warn(f"{label} palette drift", "; ".join(drifted))
-    else:
-        rep.ok(f"{label} palette  (3 slots within {tol['paletteHueToleranceDeg']}deg)")
-
-
-def joint_centroids(parts: dict[str, np.ndarray], assembled: np.ndarray,
-                    adjacency: list[list[str]], thr: int,
-                    pinned: dict | None = None) -> dict[str, tuple[float, float]]:
-    """Joint locations, normalised to the character's bounding box: the pinned
-    pivot from the set's joints.json where there is one, else the centroid of
-    the seam-overlap band.
-
-    Pinned first because the centroid is only a stand-in for the joint, and a
-    poor one once parts overlap properly: a band painted the length of a seam
-    has its centroid mid-limb. The rig is built on joints.json
-    (docs/briefs/part-recut.md section 7), so that is what has to line up across
-    tiers. Measuring the band instead failed a recut whose pinned pivots had not
-    moved at all.
-
-    Normalised because tiers legitimately get bigger - a `mythic` is taller than a
-    `fledgling`, and a rig absorbs that with a per-tier scale. What must not change
-    is where a joint sits *relative to the body*.
-
-    Only structural pairs are passed in. Growth parts (mane, horn, wings, tail) get
-    much larger between tiers, which moves the centroid of their seam band without
-    moving the attachment point - measuring them measures growth, not drift.
-    """
-    masks = {k: opaque_mask(v, thr) for k, v in parts.items()}
-    ys, xs = np.where(opaque_mask(assembled, thr))
-    bx0, by0 = float(xs.min()), float(ys.min())
-    bw, bh = float(xs.max() - bx0), float(ys.max() - by0)
-    if bw <= 0 or bh <= 0:
-        return {}
-
-    joints: dict[str, tuple[float, float]] = {}
-    pinned = pinned or {}
-    for a, b in adjacency:
-        if a not in masks or b not in masks:
-            continue
-        pin = next((pinned[c] for c, p in ((b, a), (a, b))
-                    if isinstance(pinned.get(c), dict) and pinned[c].get("parent") == p), None)
-        if pin is not None:
-            joints[f"{a}/{b}"] = ((float(pin["x"]) - bx0) / bw, (float(pin["y"]) - by0) / bh)
-            continue
-        band = masks[a] & masks[b]
-        if band.sum() < 50:
-            continue
-        jy, jx = np.where(band)
-        joints[f"{a}/{b}"] = ((float(jx.mean()) - bx0) / bw, (float(jy.mean()) - by0) / bh)
-    return joints
-
-
-def check_cross_tier(rep: Report, species: dict,
-                     per_tier: dict[str, tuple[dict[str, np.ndarray], np.ndarray]],
-                     adjacency: list[list[str]], canvas: dict, tol: dict) -> None:
-    """All tiers of a species share one rig skeleton, so structural joints must stay
-    in the same place relative to the body.
-
-    Dormant until two tiers of the same species exist. If this fails, the level-up
-    transformation is impossible - each tier would need its own rig.
-    """
-    tiers = [t for t in ["fledgling", "sworn", "radiant", "mythic"] if t in per_tier]
-    if len(tiers) < 2:
-        return
-
-    thr = tol["alphaThreshold"]
-    limit = tol["jointDriftToleranceNormalizedPx"]
-    ref_tier = tiers[0]
-    def pins(tier: str) -> dict:
-        path = os.path.join(ROOT, "assets", "characters", species["id"], tier, "joints.json")
-        return json.load(open(path)) if os.path.exists(path) else {}
-
-    ref = joint_centroids(*per_tier[ref_tier], adjacency, thr, pins(ref_tier))
-    if not ref:
-        return
-
-    print(f"\n{BOLD}{species['id']} cross-tier{RESET}")
-    scale = float(canvas["height"])  # express normalised drift back in canvas px
-
-    for tier in tiers[1:]:
-        got = joint_centroids(*per_tier[tier], adjacency, thr, pins(tier))
-        drifted, checked, worst = [], 0, 0.0
-        for name, (rx, ry) in ref.items():
-            if name not in got:
-                continue
-            checked += 1
-            gx, gy = got[name]
-            d = (((gx - rx) * scale) ** 2 + ((gy - ry) * scale) ** 2) ** 0.5
-            worst = max(worst, d)
-            if d > limit:
-                drifted.append(f"{name} drifted {d:.0f}px")
-
-        label = f"{species['id']} {ref_tier}->{tier} joint registration"
-        if drifted:
-            rep.fail(label, f"structural joints within {limit}px (normalised)", "; ".join(drifted))
-            print(f"        {DIM}tiers share one skeleton. See asset-brief.md section 3.2.{RESET}")
-        elif checked:
-            rep.ok(f"{label}  ({checked} structural joints, worst {worst:.0f}px of {limit})")
-
-
 def check_origin(rep: Report, label: str, assembled: np.ndarray, canvas: dict, tol: dict) -> None:
     ys, _ = np.where(assembled[..., 3] > tol["alphaThreshold"])
+    if not ys.size:
+        rep.fail(f"{label} content", "visible figure", "empty")
+        return
     feet = int(ys.max())
     drift = abs(feet - canvas["originY"])
     if drift > tol["originYTolerancePx"]:
@@ -529,62 +132,6 @@ def check_origin(rep: Report, label: str, assembled: np.ndarray, canvas: dict, t
 
 
 # ----------------------------------------------------------------------------- driver
-
-
-def verify_set(rep: Report, mf: dict, species: dict, tier: str):
-    canvas, tol = mf["canvas"], mf["tolerance"]
-    sid = species["id"]
-    label = f"{sid}/{tier}"
-    base = os.path.join(ROOT, "assets", "characters", sid, tier)
-
-    print(f"\n{BOLD}{label}{RESET}")
-
-    asm_path = os.path.join(base, "assembled.png")
-    if not os.path.exists(asm_path):
-        rep.fail(f"{label} assembled.png", "present", "missing")
-        return None
-
-    assembled = check_format(rep, asm_path, canvas, tol)
-    if assembled is None:
-        return None
-
-    expected = species["parts"]
-    parts_dir = os.path.join(base, "parts")
-    found = sorted(
-        os.path.splitext(f)[0] for f in os.listdir(parts_dir) if f.endswith(".png")
-    ) if os.path.isdir(parts_dir) else []
-
-    missing = [p for p in expected if p not in found]
-    extra = [p for p in found if p not in expected]
-
-    if missing or extra:
-        rep.fail(
-            f"{label} part inventory",
-            f"exactly {expected}",
-            f"missing={missing or 'none'}  unexpected={extra or 'none'}",
-        )
-    else:
-        rep.ok(f"{label} part inventory  ({len(expected)} parts)")
-
-    parts: dict[str, np.ndarray] = {}
-    for name in expected:
-        p = os.path.join(parts_dir, f"{name}.png")
-        if not os.path.exists(p):
-            continue
-        arr = check_format(rep, p, canvas, tol)
-        if arr is not None:
-            parts[name] = arr
-
-    if not parts:
-        return None
-
-    check_origin(rep, label, assembled, canvas, tol)
-    check_recomposite(rep, label, assembled, parts, mf["zOrder"], tol)
-    check_seams(rep, label, parts, mf["adjacency"], tol)
-    check_part_fragments(rep, label, parts, tol)
-    check_silhouette(rep, label, assembled, parts.get(species["signature"]), species["signature"], tol)
-    check_palette(rep, label, species, parts, tol)
-    return parts, assembled
 
 
 def check_effects(rep: Report, mf: dict) -> None:
@@ -875,54 +422,6 @@ def verify_entity(rep: Report, mf: dict, entity: dict) -> None:
             check_format(rep, state_path, entity.get("canvas", mf["canvas"]), mf["tolerance"])
 
 
-def check_gear(rep: Report, mf: dict, skipped: list[str]) -> None:
-    """Class gear overlays — the blind spot the docs audit found.
-
-    The manifest has declared 12 gear sets since the songkeeper split landed,
-    and this file never looked: nine sets could be missing with the gate green,
-    while art-pipeline.md told a commissioning agent that existence was
-    checked. A gear set is small — the declared parts, present and decodable —
-    so this is an existence check, not the full character contract.
-
-    A class marked ``"deferred": true`` is commissioned later (roadmap
-    chapter 5) and is reported rather than failed, in either mode — the same
-    stance abilities.json takes with ``$deferred``: named and waited on, never
-    silently absent. Delivering early simply works: the moment the directory
-    exists it is checked like anything else, and un-marking the class is the
-    one-line edit that arms strict mode for it.
-    """
-    deferred: list[str] = []
-    for gear in mf.get("gear", []):
-        cls = gear["class"]
-        for tier in gear.get("tiers", []):
-            label = f"gear/{cls}/{tier}"
-            base = os.path.join(ROOT, "assets", "gear", cls, tier)
-            if not os.path.isdir(base):
-                if gear.get("deferred"):
-                    deferred.append(f"{cls}/{tier}")
-                else:
-                    skipped.append(f"gear {cls}/{tier}")
-                continue
-            print(f"\n{BOLD}{label}{RESET}")
-            for part in gear.get("parts", []):
-                path = os.path.join(base, f"{part}.png")
-                if not os.path.exists(path):
-                    rep.fail(f"{label} {part}.png", "present", "missing")
-                    continue
-                try:
-                    art = load_rgba(path)
-                except Exception as err:  # noqa: BLE001 - a bad PNG is the finding
-                    rep.fail(f"{label} {part}.png", "a decodable PNG", str(err))
-                    continue
-                if not (art[..., 3] > 0).any():
-                    rep.fail(f"{label} {part}.png", "visible pixels", "fully transparent")
-                else:
-                    rep.ok(f"{label} {part}.png")
-    if deferred:
-        print(f"\n{DIM}deferred: {len(deferred)} gear set(s) awaiting commission "
-              f"(roadmap chapter 5) - {', '.join(deferred)}{RESET}")
-
-
 def check_gear_portraits(rep: Report, mf: dict) -> None:
     """Opaque portrait composites, distinct from transparent rig gear.
 
@@ -986,93 +485,23 @@ def check_gear_portraits(rep: Report, mf: dict) -> None:
                 )
 
 
-def check_rig_variants(rep: Report, mf: dict) -> None:
-    """Species/class/tier rigs: registered layers, fallback still, and binary.
-
-    These deliberately live outside ``assets/characters`` so the 24 base rigs
-    stay one stable skeleton per species/tier. That new root must not become a
-    verifier blind spot: the manifest owns every directory and its exact draw
-    order, and the ordinary format/recomposition/origin checks apply unchanged.
-    The Rive contract itself is checked by ``verify-rig.ts``.
-    """
-    root = os.path.join(ROOT, "assets", "character-rigs")
-    declared: set[str] = set()
-    canvas, tol = mf["canvas"], mf["tolerance"]
-
-    for variant in mf.get("rigVariants", []):
-        cls = variant["class"]
-        tier = variant["tier"]
-        species = variant["species"]
+def check_figure_variants(rep: Report, mf: dict) -> None:
+    """Validate finished transparent class illustrations, without rig inputs."""
+    for variant in mf.get("figureVariants", []):
+        cls, tier, species = variant["class"], variant["tier"], variant["species"]
         label = f"character-rigs/{cls}/{tier}/{species}"
-        base = os.path.join(root, cls, tier, species)
-        declared.add(os.path.normcase(os.path.normpath(base)))
-        print(f"\n{BOLD}{label}{RESET}")
-
-        assembled_path = os.path.join(base, "assembled.png")
-        assembled = (
-            check_format(rep, assembled_path, canvas, tol)
-            if os.path.exists(assembled_path)
-            else None
-        )
-        if assembled is None:
-            if not os.path.exists(assembled_path):
-                rep.fail(f"{label} assembled.png", "present", "missing")
-
-        expected = variant["parts"]
-        parts_dir = os.path.join(base, "parts")
-        found = sorted(
-            os.path.splitext(f)[0]
-            for f in os.listdir(parts_dir)
-            if f.endswith(".png")
-        ) if os.path.isdir(parts_dir) else []
-        missing = [p for p in expected if p not in found]
-        extra = [p for p in found if p not in expected]
-        if missing or extra:
-            rep.fail(
-                f"{label} part inventory",
-                f"exactly {expected}",
-                f"missing={missing or 'none'}  unexpected={extra or 'none'}",
-            )
-        else:
-            rep.ok(f"{label} part inventory  ({len(expected)} parts)")
-
-        parts: dict[str, np.ndarray] = {}
-        for name in expected:
-            path = os.path.join(parts_dir, f"{name}.png")
-            if not os.path.exists(path):
-                continue
-            arr = check_format(rep, path, canvas, tol)
-            if arr is not None:
-                parts[name] = arr
-        if assembled is not None and parts:
-            check_origin(rep, label, assembled, canvas, tol)
-            check_recomposite(rep, label, assembled, parts, expected, tol)
-
-        rig = os.path.join(base, "rig.riv")
-        if not os.path.isfile(rig) or os.path.getsize(rig) == 0:
-            rep.fail(f"{label} rig.riv", "present and non-empty", "missing or empty")
-        else:
-            rep.ok(f"{label} rig.riv  ({os.path.getsize(rig):,} bytes)")
-
-    if not os.path.isdir(root):
-        return
-    for base, _, files in os.walk(root):
-        if "rig.riv" not in files and "assembled.png" not in files:
+        path = os.path.join(ROOT, "assets", label, "assembled.png")
+        if not os.path.isfile(path):
+            rep.fail(label, "finished illustration", "missing")
             continue
-        normalized = os.path.normcase(os.path.normpath(base))
-        if normalized not in declared:
-            rep.fail(
-                os.path.relpath(base, ROOT),
-                "declared in manifest.rigVariants",
-                "undeclared class-rig directory",
-            )
+        image = load_rgba(path)
+        check_format(rep, path, mf["canvas"], mf["tolerance"])
+        check_origin(rep, label, image, mf["canvas"], mf["tolerance"])
 
 
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     strict = "--strict" in sys.argv
-    global FAIL_FRAGMENTS
-    FAIL_FRAGMENTS = "--fail-fragments" in sys.argv
 
     if not os.path.exists(MANIFEST):
         sys.exit(f"error: no manifest at {MANIFEST}")
@@ -1096,23 +525,15 @@ def main() -> int:
     print(f"{BOLD}Kids & Dragons - asset verify{RESET}")
     print(f"{DIM}manifest: {os.path.relpath(MANIFEST, ROOT)}{RESET}")
 
-    collected: dict[str, dict[str, tuple]] = {}
-
     for sp, tier in targets:
-        base = os.path.join(ROOT, "assets", "characters", sp["id"], tier)
-        if not os.path.isdir(base):
-            skipped.append(f'{sp["id"]}/{tier}')
+        path = os.path.join(ROOT, "assets", "characters", sp["id"], tier, "assembled.png")
+        label = f'{sp["id"]}/{tier}'
+        if not os.path.isfile(path):
+            skipped.append(label)
             continue
-        result = verify_set(rep, mf, sp, tier)
-        if result:
-            collected.setdefault(sp["id"], {})[tier] = result
-
-    for sp in mf["species"]:
-        per_tier = collected.get(sp["id"])
-        if per_tier:
-            check_cross_tier(rep, sp, per_tier,
-                             mf.get("structuralAdjacency", mf["adjacency"]),
-                             mf["canvas"], mf["tolerance"])
+        image = load_rgba(path)
+        check_format(rep, path, mf["canvas"], mf["tolerance"])
+        check_origin(rep, label, image, mf["canvas"], mf["tolerance"])
 
     for entity in mf.get("entities", []):
         if args and entity["id"] not in args:
@@ -1130,9 +551,8 @@ def main() -> int:
 
     # Nor is gear: it is per-class, not per-species, and the whole point of
     # checking it is that nobody was going to remember to ask.
-    check_gear(rep, mf, skipped)
     check_gear_portraits(rep, mf)
-    check_rig_variants(rep, mf)
+    check_figure_variants(rep, mf)
 
     print(f"\n{BOLD}{'-' * 60}{RESET}")
     if skipped:

@@ -13,14 +13,13 @@ import { createServer, request, type IncomingMessage, type Server, type ServerRe
 import type { AddressInfo } from "node:net";
 
 /** What a request was for, by path — the categories the report is broken into. */
-export type Kind = "page" | "bundle" | "content" | "rig" | "art" | "audio" | "api" | "worker" | "other";
+export type Kind = "page" | "bundle" | "content" | "art" | "audio" | "api" | "worker" | "other";
 
 export function kindOf(path: string): Kind {
   if (path.startsWith("/api/") || path.startsWith("/events/")) return "api";
   if (path === "/sw.js") return "worker";
   if (path.startsWith("/bundle/")) return "bundle";
   if (path.startsWith("/content/")) return "content";
-  if (path.endsWith(".riv")) return "rig";
   if (/\.(?:webm|ogg|mp3|m4a|wav)$/.test(path)) return "audio";
   if (/\.(?:webp|png|jpe?g|gif|svg|avif|ico)$/.test(path)) return "art";
   if (!path.includes(".")) return "page";
@@ -40,7 +39,7 @@ export interface Tally {
 export type Report = Record<Kind, Tally>;
 
 function emptyReport(): Report {
-  const kinds: Kind[] = ["page", "bundle", "content", "rig", "art", "audio", "api", "worker", "other"];
+  const kinds: Kind[] = ["page", "bundle", "content", "art", "audio", "api", "worker", "other"];
   return Object.fromEntries(kinds.map((kind) => [kind, { requests: 0, bodies: 0, bytes: 0, downloaded: [] }])) as Report;
 }
 

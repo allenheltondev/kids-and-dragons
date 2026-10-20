@@ -4,7 +4,6 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
 const reconnect = vi.hoisted(() => vi.fn());
 vi.mock("../store", () => ({ useGameStore: { getState: () => ({ reconnect }) } }));
-vi.mock("../world/rive-rig", () => ({ riveAvailable: async () => false }));
 
 import { DisplayExtras } from "./DisplayExtras";
 
@@ -28,10 +27,10 @@ it("keeps quiet until asked, then lists each capability for the owner to record"
   const panel = await screen.findByRole("region", { name: "About this screen" });
   const rows = await vi.waitFor(() => {
     const found = panel.querySelectorAll("li");
-    if (found.length !== 5) throw new Error("still checking");
+    if (found.length !== 4) throw new Error("still checking");
     return [...found];
   });
-  expect(rows.map((row) => row.getAttribute("data-capability"))).toEqual(["webgl", "rive", "wakeLock", "audio", "serviceWorker"]);
+  expect(rows.map((row) => row.getAttribute("data-capability"))).toEqual(["webgl", "wakeLock", "audio", "serviceWorker"]);
   // jsdom has none of them, and the report says so rather than throwing.
   expect(rows.every((row) => row.getAttribute("data-ok") === "false")).toBe(true);
   fireEvent.click(screen.getByRole("button", { name: "Close" }));
