@@ -406,7 +406,7 @@
     },
     "conservatory": {
       "type": "story",
-      "narration": "Behind the glass door is a greenhouse, warm and damp and full of song. This school is called the Conservatory. Here students learn to be a Songkeeper, a hero who heals with songs. A yeti named Aunt Bellow conducts with a carrot. Her students sing in a row, and every plant in the room leans toward whoever is singing best. Right now the ferns lean toward a very small frogfolk at the end. Above the door hangs a song bell on a cord. Their songs live in that bell, and it will not ring near a thorn bracer. \"Anyone who wants the bell,\" says Aunt Bellow, \"may try it on.\"",
+      "narration": "Behind the glass door is a greenhouse, warm and damp and full of song. This school is called the Conservatory. Here students learn to be a Songkeeper, a hero who heals with songs. A yeti named Aunt Bellow conducts with a carrot. Her students sing in a row, and every plant in the room leans toward whoever is singing best. Right now the ferns lean toward a very small frogfolk at the end. Above the door hangs a song bell on a cord. A Songkeeper's songs live in that bell, and it will not ring near a thorn bracer. \"Anyone who wants the bell,\" says Aunt Bellow, \"may try it on.\"",
       "variants": [
         {
           "when": {

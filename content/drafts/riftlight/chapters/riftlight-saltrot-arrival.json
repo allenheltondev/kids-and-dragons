@@ -155,7 +155,7 @@
     },
     "academy": {
       "type": "story",
-      "narration": "At the top of the ladder is a classroom with no roof at all, only sky. This school is called the Academy. Here students learn to be a Starweaver, a hero who reads the stars. A dragonling named Professor Nettle stands beside a huge brass telescope. Homework floats up off the desks and drifts away over the flats. Nobody chases it. \"It comes down somewhere,\" says the professor. On a cushion sits a star circlet. Their light lives in that circlet, and a dusk hood worn beside it starts to itch. \"Anyone who wants the circlet,\" says Professor Nettle, \"may try it on.\"",
+      "narration": "At the top of the ladder is a classroom with no roof at all, only sky. This school is called the Academy. Here students learn to be a Starweaver, a hero who reads the stars. A dragonling named Professor Nettle stands beside a huge brass telescope. Homework floats up off the desks and drifts away over the flats. Nobody chases it. \"It comes down somewhere,\" says the professor. On a cushion sits a star circlet. A Starweaver's light lives in that circlet, and a dusk hood worn beside it starts to itch. \"Anyone who wants the circlet,\" says Professor Nettle, \"may try it on.\"",
       "art": "scenes/riftlight/stuttering-flats",
       "variants": [
         {
