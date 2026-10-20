@@ -38,24 +38,10 @@ Any surface can be hard-refreshed at any time without losing the session.
 
 ### Writing a chapter
 
-```bash
-npm run content:generate -- "the party finds a bridge that only lets one of them across"
-```
-
-Generates a chapter with `claude-opus-5`, then runs the **real** `content:validate` over it in a
-staging tree and hands the gate's own complaints back for repair, until it passes or the attempts
-run out. Nothing it writes can fail the build, because the loop only stops when the build gate is
-green. `--dry-run` generates without writing.
-
-It goes through **Claude in Amazon Bedrock**, so it holds no key of its own: it signs with whatever
-credentials `aws sts get-caller-identity` would use — env vars, a named profile, SSO, an assumed
-role — and needs `AWS_REGION` set (or `--region`). The model has to be enabled under **Bedrock >
-Model access** in the console; if `anthropic.claude-opus-5` isn't granted on your account, `--model
-anthropic.claude-opus-4-8` is open to everyone.
-
-A generated chapter validates; it is not finished. Look at its shape with `content:graph`, at its
-fights with `content:balance`, and play it — then add it to a campaign's `chapters` array, which is
-the one edit the generator deliberately leaves to you.
+Chapters are written by people, working with a coding agent, straight into `content/`. Start with
+[content/README.md](content/README.md) for the format and [CLAUDE.md](CLAUDE.md) for the house rules,
+then check the result with `content:validate`, `content:continuity`, `content:graph` and
+`content:pacing`, and play it. A new chapter goes live once a campaign's `chapters` array lists it.
 
 ### Playtesting a chapter
 
@@ -108,7 +94,6 @@ to the same behavior:
 | `npm run content:validate` | schemas, plus unresolved `goto`, unreachable scenes, unknown `itemId` |
 | `npm run content:balance` | estimated rounds and damage for every fight, and every band — reports, never gates |
 | `npm run content:graph` | draws each chapter into `.graph/*.html` — scene graph, branch inspection, the validator's findings on the picture |
-| `npm run content:generate` | writes a chapter from a one-line brief, repairing it against `content:validate` until it passes |
 | `npm run art:verify` | the mechanical art contract ([docs/art-pipeline.md](docs/art-pipeline.md)) |
 | `npm run art:verify:rig` | the rig contract — clips, events, inputs, the turn budget |
 | `npm run art:sheet` | regenerates the review contact sheets |
@@ -182,9 +167,7 @@ longest path from the entry, so an arrow pointing back up the page is a real loo
 clickable for its branches and the validator's findings drawn on the boxes they belong to.
 **Playtest mode** puts two cheats on the dev server and nowhere else: jump to any scene, and load
 the next d20. Both go through `applyIntent`, so a jump runs `onEnter` and opens the scene's prompt
-rather than showing you a scene the game never produces. And `content:generate` writes a chapter
-from a one-line brief — then runs the *real* content validator over it and hands the gate's own
-complaints back for repair until it passes, which means nothing it writes can fail the build.
+rather than showing you a scene the game never produces.
 **No model runs at play time.** The live narration layer (Chapter 7) was removed in #347: the
 authored stories stand on their own, and nothing a table says or does is sent to a model. The
 end-of-chapter recap retells the priority-1 scenes the party walked through, in their own words.
