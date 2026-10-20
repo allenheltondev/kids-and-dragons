@@ -256,12 +256,14 @@ export async function applyAction(
     if (input.intent.type === "RIFT_ACTION") {
       // A class way is that class's story deed (#310), written with the move.
       const campaignId = input.intent.campaignId ?? state.campaignId;
-      const deeds = campaignId
-        ? await prepareRiftWayDeeds(exit.state, campaignId, riftWayClasses(campaignId, input.intent, deps), auth.run.householdId, deps)
-        : null;
-      if (deeds && deeds.writes.length > 0) {
-        riftDeeds = deeds.writes;
-        result = { state: deeds.state };
+      if (campaignId) {
+        const deeds = await prepareRiftWayDeeds(exit.state, campaignId, riftWayClasses(campaignId, input.intent, deps), auth.run.householdId, deps);
+        // A deed that cannot be written refuses the move with it: the way is used once.
+        if (!deeds.ok) return { ok: false, seq: state.seq, error: deeds.error };
+        if (deeds.value.writes.length > 0) {
+          riftDeeds = deeds.value.writes;
+          result = { state: deeds.value.state };
+        }
       }
     }
   } else if (input.intent.type === "SPEND_STAT_POINT") {
