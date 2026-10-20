@@ -68,7 +68,6 @@ import {
   type SessionIdentity,
   type SharedDeviceIdentity,
 } from "./identity.ts";
-import { installNarrator } from "./llm/install.ts";
 import { assetsDir, contentDir, dataDir } from "./paths.ts";
 import { verifyDevToken } from "./dev-auth.ts";
 import { MemoryRepository } from "./store/memory-repository.ts";
@@ -120,14 +119,6 @@ async function main(): Promise<void> {
      * a literal `false`, so there is nothing to misconfigure in prod.
      */
     playtest: true,
-    /*
-     * The live narration layer — roadmap chapter 7. Off unless
-     * `LIVE_LLM_ENABLED=true` is in the environment, which is why the local
-     * loop is unchanged for anybody who has not asked for it (§6.6).
-     */
-    // `assertCache: true` — this is the development environment §6.3 wants the
-    // cache assertion loud in.
-    narrator: installNarrator(content, true),
   };
 
   const app = express();

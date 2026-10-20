@@ -381,39 +381,26 @@ she picked up two sessions ago is still in her bag.
 
 ---
 
-## Chapter 7 — The live AI layer
+## Chapter 7 — The live AI layer (removed)
 
-**Claude**
-- ~~Lambda LLM proxy on Claude Platform on AWS, `claude-haiku-4-5`~~ — **delivered on Bedrock**
-  (`anthropic.claude-haiku-4-5`), the same account the rest of the stack deploys into. SigV4 off
-  the Lambda's execution role, so the server holds no key.
-- ~~Prompt cache prefix design, with a dev-mode assertion that it's actually hitting (>4096 token
-  minimum)~~ — **delivered, and it corrected §6.3's layout.** Two of the three breakpoints that
-  section sketched do not clear the floor, and a breakpoint under the floor is not a smaller saving
-  but no saving. One breakpoint, measured by a unit test against the *shipped* content with a 15%
-  margin. The runtime assertion shouts after three calls with zero cache reads.
-- ~~Speculative prefetch during scene transitions~~ — **delivered**. Fired after the broadcast, so
-  the gap it spends is the transition animation rather than the request. `take()` is synchronous:
-  there is no code path from a tap to a network call.
-- ~~`validateNarration()` + silent fallback to authored text~~ — **delivered**. Length band, the
-  chapter's own `forbidden` list, a screen for instructions the game cannot carry out, an on-topic
-  check, and an echo check. Every failure is silent and every failure lands in the same place.
-- ~~`LIVE_LLM_ENABLED` kill switch, CI suite running with the layer stubbed~~ — **delivered**, and
-  the stub is structural rather than a mode: `HandlerDeps.narrator` is optional and absence is the
-  working configuration, so every test that does not name one runs the off path.
-- ~~Session recap generation~~ — **delivered**. The one live call allowed to be awaited, bounded at
-  four seconds, on the completion screen and through the `speak()` seam.
+**Removed in #347.** The layer was built (flavour lines and a session recap from a small model at
+table time, prefetched, validated, and falling back to the authored text), and then taken out on
+the owner's decision: the authored stories stand on their own, and a runtime model call added
+complexity and worked against the COPPA review (#320), because whatever a table said or did would
+have reached a third-party model while a child was playing. #254 (its launch default) closed with
+it, no longer needed.
 
-**Allen**
-- ~~Tone rules and few-shot examples for the cached prefix~~ — 26 examples written, each teaching a
-  rule the validator enforces. Yours to rewrite in your own voice; they are the highest-leverage
-  text in the project and a stranger wrote them.
-- `llmHints` exist for `bramblewood-01` only. Every future chapter needs its own.
-- **Judge the output at the table — is it adding anything?** Nothing here has faced a real model.
-  This is the open question of the chapter.
+What it left behind is authored:
 
-**Done when:** unexpected action combinations get a reaction, and turning the whole layer off
-changes nothing about whether the game works.
+- **Priority scenes** keep their TV styling and their read-aloud ribbon (content/README.md,
+  "Priority scenes").
+- **The end-of-chapter recap** retells, in their own words, the priority-1 scenes the party
+  walked through.
+- **`voiceGuide`** (renamed in #347) stays on every chapter as its authors' voice guide and the home of its
+  chapter-scoped characters. Nothing at play time reads it.
+
+The game makes no model call at play time (architecture §6). Models are used only by the offline
+authoring tools (Chapter 6, the audio and art pipelines).
 
 ---
 
@@ -444,7 +431,7 @@ changes nothing about whether the game works.
 | **`speak()` seam** | All narration flows through it. No-op in v1, TTS-ready without touching game code. |
 | **Icons before text** | No interactive element ships without an icon. |
 | **Server-authoritative** | Dice roll in Lambda. Always. |
-| **AI-optional invariant** | Tested in CI, not assumed. |
+| **No model at play time** | The game makes no model call while a table plays, and the stack has no permission to (#347). Models are authoring tools only. |
 | **Mode-agnostic surfaces** | `WorldView` and `PlayerView` never read the room mode. Container-relative sizing only — no viewport units inside either. |
 | **Travel layout first** | Any new screen is designed for a phone before it's designed for a TV. |
 | **No password for anyone who plays** | A profile is a player, bound to a device; nobody who only plays signs in. Only owners sign in, and managing anything needs one (#265). |

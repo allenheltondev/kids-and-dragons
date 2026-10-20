@@ -19,7 +19,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen } from "@testing-library/react";
 import { setSpeaker } from "@kad/shared";
-import type { EarnedBonus, ItemCatalog, PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
+import type { Chapter, EarnedBonus, ItemCatalog, PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
 import { makeItems } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
 import { ChapterCompletePanel } from "./ChapterCompletePanel";
@@ -88,6 +88,7 @@ function mount(overrides: Partial<RunState> = {}) {
       ...overrides,
     },
     items: ITEMS,
+    chapter: null,
     progression: null,
     loadContent: async () => undefined,
     loadChapter: async () => undefined,
@@ -238,33 +239,43 @@ describe("who grew (progression awards)", () => {
   });
 });
 
-describe("the session recap (roadmap chapter 7)", () => {
-  const RECAP =
-    "You went into the Bramblewood after a way through a hedge and came out with a sprite who " +
-    "will not stop following you. Nobody has explained the acorn.";
+describe("the recap (priority-1 scenes, in their own words)", () => {
+  const TRUTH = "The gemstones are a seal, and the seal holds a titan under the mountain.";
+  const CHAPTER = {
+    id: "ch_1",
+    scenes: {
+      s_start: { type: "story", narration: "A road.", choices: [] },
+      s_truth: { type: "story", priority: 1, narration: TRUTH, choices: [] },
+      s_clue: { type: "story", priority: 2, narration: "A clue.", choices: [] },
+      s_end: { type: "story", narration: "Home.", choices: [] },
+    },
+  } as unknown as Chapter;
 
-  it("shows nothing at all when the live layer is off", () => {
-    /*
-     * The AI-optional invariant, on the screen. With the layer off `recap` is
-     * absent from the state — which is every run by default — and the panel has
-     * to be exactly the panel that shipped, not a panel with an empty slot in
-     * it.
-     */
-    mount();
-    expect(screen.queryByText(/Bramblewood/)).toBeNull();
+  function withChapter(chapter: Chapter | null, overrides: Partial<RunState> = {}) {
+    const view = mount(overrides);
+    act(() => {
+      useGameStore.setState({ chapter });
+    });
+    return view;
+  }
+
+  it("retells each p1 scene the party walked through", () => {
+    withChapter(CHAPTER, { visited: ["s_start", "s_truth", "s_clue", "s_end"] });
+    expect(screen.getByText(TRUTH)).toBeTruthy();
+    expect(screen.queryByText("A clue.")).toBeNull();
+    expect(document.querySelectorAll(".complete__recap")).toHaveLength(1);
+  });
+
+  it("shows nothing at all on a road with no revelation", () => {
+    withChapter(CHAPTER, { visited: ["s_start", "s_clue", "s_end"] });
     expect(document.querySelector(".complete__recap")).toBeNull();
   });
 
-  it("shows the recap when there is one", () => {
-    mount({ recap: RECAP });
-    expect(screen.getByText(RECAP)).toBeTruthy();
-  });
-
-  it("treats an explicit null the same as absent", () => {
-    // `recap` is `string | null | undefined` on the wire: null is what a run
-    // that asked and was refused carries, and it must render identically to a
-    // run that never asked.
-    mount({ recap: null });
+  it("shows nothing for another chapter's scenes, or before the chapter loads", () => {
+    withChapter({ ...CHAPTER, id: "ch_other" }, { visited: ["s_truth"] });
+    expect(document.querySelector(".complete__recap")).toBeNull();
+    cleanup();
+    withChapter(null, { visited: ["s_truth"] });
     expect(document.querySelector(".complete__recap")).toBeNull();
   });
 
@@ -277,12 +288,30 @@ describe("the session recap (roadmap chapter 7)", () => {
     const spoken: string[] = [];
     setSpeaker((text) => spoken.push(text));
     try {
-      mount({ recap: RECAP });
+      withChapter(CHAPTER, { visited: ["s_start", "s_truth", "s_end"] });
       expect(spoken).toHaveLength(1);
       expect(spoken[0]).toContain("Chapter finished!");
-      expect(spoken[0]).toContain(RECAP);
+      expect(spoken[0]).toContain(TRUTH);
     } finally {
       setSpeaker(null);
+    }
+  });
+
+  it("does not hold the summary forever for a chapter that never loads", () => {
+    vi.useFakeTimers();
+    const spoken: string[] = [];
+    setSpeaker((text) => spoken.push(text));
+    try {
+      mount({ visited: ["s_truth"] });
+      expect(spoken).toHaveLength(0);
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
+      expect(spoken).toHaveLength(1);
+      expect(spoken[0]).toContain("Chapter finished!");
+    } finally {
+      setSpeaker(null);
+      vi.useRealTimers();
     }
   });
 });

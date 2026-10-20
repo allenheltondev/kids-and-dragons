@@ -584,7 +584,7 @@
       "choices": []
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "warm, playful, a little spooky but never scary",
     "vocabulary": "age-8",
     "forbidden": [

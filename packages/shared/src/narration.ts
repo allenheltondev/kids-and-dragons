@@ -11,7 +11,7 @@
  * Pure, like the rest of the engine: text in, text out.
  */
 
-import type { NarrationVariant } from "./types/chapter.js";
+import type { Chapter, NarrationVariant, SceneId } from "./types/chapter.js";
 import type { NarrationToken } from "./condition-lint.js";
 import { countPartyItems, evaluateCondition, type ChoiceParty } from "./chapter-graph.js";
 
@@ -108,4 +108,34 @@ export function fillTokens(text: string, party: ChoiceParty): string {
         return whole;
     }
   });
+}
+
+/**
+ * The end-of-chapter recap: every priority-1 scene on the trail
+ * (`RunState.visited`), once each and in the order the party reached them, in
+ * its own authored words with its variants and tokens resolved against
+ * `party`. Branch lines are left out; the recap retells what the party found
+ * out, not how they got there.
+ *
+ * A trail is chapter-scoped (the engine clears it at the chapter boundary), so
+ * every id on it names a scene in `chapter`. One that does not is skipped
+ * rather than trusted.
+ */
+export function revelationsOf(
+  chapter: Pick<Chapter, "scenes">,
+  visited: readonly SceneId[],
+  party: ChoiceParty,
+): string[] {
+  const seen = new Set<SceneId>();
+  const lines: string[] = [];
+  for (const sceneId of visited) {
+    if (seen.has(sceneId)) continue;
+    seen.add(sceneId);
+    const scene = chapter.scenes[sceneId];
+    if (!scene || scene.type === "encounter" || scene.priority !== 1) continue;
+    const base = scene.type === "check" ? (scene.narration ?? scene.prompt) : scene.narration;
+    const text = fillTokens(composeNarration(base, scene.variants, party), party).trim();
+    if (text.length > 0) lines.push(text);
+  }
+  return lines;
 }

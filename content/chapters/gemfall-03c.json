@@ -1873,7 +1873,7 @@
       "outcome": "setback"
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "busy, loud, funny road-camp country; warm underneath, a little spooky at dusk, never scary",
     "vocabulary": "age-8",
     "forbidden": [
