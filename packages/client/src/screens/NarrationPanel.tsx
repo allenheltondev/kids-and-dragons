@@ -279,20 +279,32 @@ export function NarrationPanel(): ReactElement | null {
     }
     fitPlate(element);
     if (typeof ResizeObserver === "undefined") return;
-    // A resize, a text-size change and a font arriving all reshape the words, not the plate's
-    // box; one frame later is soon enough, and keeps the observer out of its own way.
+    // A resize, a text-size change, a font arriving, a choice wrapping differently and words added
+    // under the story all reshape what the plate holds, not the plate's own box; one frame later is
+    // soon enough, and keeps the observers out of their own way.
     let frame = 0;
     const refit = (): void => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => fitPlate(element));
     };
-    const observer = new ResizeObserver(refit);
-    observer.observe(element.parentElement ?? element);
-    const body = element.querySelector(".narration__body");
-    if (body !== null) observer.observe(body);
+    const sizes = new ResizeObserver(refit);
+    const watch = (): void => {
+      sizes.disconnect();
+      sizes.observe(element.parentElement ?? element);
+      // What drives the fit: each part of the story (the paragraph, the hint, rank-up lines) and the choices.
+      element.querySelectorAll(".narration__story > *, .narration__choices").forEach((part) => sizes.observe(part));
+    };
+    watch();
+    // Parts arriving or leaving after the first fit (a class place's roll, the stall's words).
+    const parts = new MutationObserver(() => {
+      watch();
+      refit();
+    });
+    parts.observe(element, { childList: true, subtree: true, characterData: true });
     return () => {
       cancelAnimationFrame(frame);
-      observer.disconnect();
+      sizes.disconnect();
+      parts.disconnect();
     };
   }, [fighting, fitKey, state === null]);
   useEffect(() => {
