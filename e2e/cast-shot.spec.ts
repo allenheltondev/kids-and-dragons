@@ -2,7 +2,7 @@
  * Review tool, not a test: photograph story scenes with a cast on a TV and on
  * a Travel Mode phone, so a human can judge whether the party and whoever
  * they have met stand clear of the narration (world/cast.ts,
- * world/stage-inset.ts). Like rig-shot, everything it could assert is pinned
+ * world/stage-inset.ts). Like static-figures-shot, everything it could assert is pinned
  * by unit tests; "does it read from the sofa" is not.
  *
  * Run against a dev server launching Gemfall:
