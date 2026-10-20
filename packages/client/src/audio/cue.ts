@@ -11,8 +11,7 @@
  * - **Silence is structural, not configured.** Joined controllers in Party Mode never
  *   install a sink, so the living room has one speaker — the television —
  *   without a single call site asking "am I the TV?". CI and jsdom run the
- *   uninstalled path for free, the same way `silentNarrator` runs the
- *   LLM-off path.
+ *   uninstalled path for free.
  * - **Cues are vocabulary, not files.** A call site says `cue("down")`, never
  *   "play thud.mp3". Today the sink synthesizes placeholder tones (engine.ts);
  *   when Allen picks a sound source (roadmap open item 2) the recipes change

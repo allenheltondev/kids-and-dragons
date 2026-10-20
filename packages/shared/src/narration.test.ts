@@ -6,10 +6,11 @@ import {
   fillTokens,
   numberWord,
   partyPhrase,
+  revelationsOf,
 } from "./narration.js";
 import { resolveCharacter } from "./character.js";
 import type { ChoiceParty } from "./chapter-graph.js";
-import type { NarrationVariant } from "./types/chapter.js";
+import type { Chapter, NarrationVariant } from "./types/chapter.js";
 import type { ResolvedCharacter } from "./types/domain.js";
 import { makeCharacter, makeItems, makeRules } from "./test-fixtures.js";
 
@@ -160,5 +161,32 @@ describe("fillTokens", () => {
 
   it("knows exactly the tokens it fills", () => {
     expect([...NARRATION_TOKENS]).toEqual(["facets", "party"]);
+  });
+});
+
+describe("revelationsOf (the end-of-chapter recap)", () => {
+  const scenes = {
+    s_start: { type: "story", narration: "A road.", choices: [] },
+    s_truth: {
+      type: "story",
+      priority: 1,
+      narration: "The gems are a seal, and {party} know it now.",
+      variants: [{ when: { flag: "lit" }, text: "The lamp shows it plainly." }],
+      choices: [],
+    },
+    s_clue: { type: "story", priority: 2, narration: "A clue.", choices: [] },
+    s_test: { type: "check", priority: 1, prompt: "Read the stone.", choices: [] },
+  } as unknown as Chapter["scenes"];
+
+  it("retells each visited p1 once, in order, in its own words", () => {
+    const visited = ["s_start", "s_test", "s_truth", "s_clue", "s_truth", "s_missing"];
+    expect(revelationsOf({ scenes }, visited, partyOf(2, 0, { lit: true }))).toEqual([
+      "Read the stone.",
+      "The gems are a seal, and both of you know it now.\n\nThe lamp shows it plainly.",
+    ]);
+  });
+
+  it("is empty for a road with no revelation on it", () => {
+    expect(revelationsOf({ scenes }, ["s_start", "s_clue"], partyOf(1))).toEqual([]);
   });
 });
