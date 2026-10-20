@@ -75,6 +75,7 @@ creature_ids:
   - restless_remains
   - loftmire
   - legend_dragon
+  - kavari
 
 creatures:
   # ===== AMBIENT CREATURES =====
@@ -1258,3 +1259,85 @@ creatures:
           text: >-
             It is guarding a purpose. Working out which one is most of the
             conversation.
+  - id: creature.kavari
+    asset_id: kavari
+    title: "Kavari"
+    canon_status: newly_defined
+    classification: legendary_beast
+    sapience: animal
+    featured: false
+    tags: [legendary, underground, avian, rebirth]
+    danger_level: high
+    scale: medium
+    short_description: >-
+      Rare ice-blue bird found only in Skullwater Cave. A Kavari ages backward
+      into an egg, which releases a two-day snowstorm before an adult emerges.
+    visual_identity: >-
+      The adult Kavari stands approximately 3.5 feet tall with a nine-foot
+      wingspan. It is fully feathered and ice blue, with a darker blue beak.
+      Its silhouette is streamlined but slightly bulky and powerfully built,
+      not delicate. Mature wing feathers have a crystalline appearance; as
+      the bird grows younger, its plumage becomes softer and downier white.
+      Keep the bird natural-looking and unornamented: no elaborate crest,
+      jewelry, armor, or excessive decorative ice formations.
+    common_story_uses: >-
+      A mysterious egg found where a legendary bird was expected, early signs
+      of an approaching indoor blizzard, shelter and navigation during a
+      two-day cavebound storm, and an adult emerging when the snow clears.
+    canon_constraints: >-
+      Kavari is a species name, never the name of an individual. The species
+      is found exclusively in Skullwater Cave. A Kavari grows physically
+      younger with time until it becomes a chick and finally an egg; it does
+      not die in fire or hatch as a baby. The egg bursts into a snowstorm
+      lasting exactly two days inside the cave, and not a single snowflake
+      escapes the cave. A fully grown adult emerges as the storm ends.
+      Its memories persist through every stage and successive rebirths.
+      No offensive powers or combat stats have been established.
+    standard_behavior: >-
+      Over the course of its life a Kavari regresses from an adult to a
+      smaller, downy young bird and finally an icy egg. A low humming sound
+      and frost spreading along the cave stone precede the egg's sudden
+      release of snow. For two full days the cave interior is filled with a
+      blizzard, regardless of conditions outside; the storm never crosses
+      the entrance. When the snow settles, the Kavari is an adult again.
+    lore:
+      hook: "The youngest bird in the cave may remember its oldest secrets."
+      story: >-
+        In Skullwater Cave, finding an egg where a great bird ought to be
+        is not proof that the bird has gone. It may be a Kavari, growing
+        younger instead of older. An adult is a broad-winged, ice-blue bird
+        with a deep-blue beak and flight feathers that gleam like crystal.
+        As time passes it becomes smaller and softer until only an icy egg
+        remains. Listen for a low hum and watch for frost creeping across
+        the stone. When the egg bursts, an indoor snowstorm fills Skullwater
+        Cave for exactly two days, but not one flake passes beyond its
+        entrance. At the storm's end a full-grown Kavari emerges, carrying
+        memories from before it was an egg. Whether it remembers a visitor
+        is another matter, but forgetting a life is not part of its cycle.
+      pastimes: []
+      likes: []
+      dislikes: []
+    relationships:
+      primary_locations: [location.skullwater_cave]
+      creatures: []
+      items: []
+    encounter:
+      resolutions:
+        - kind: observation
+          stat: clever
+          difficulty: normal
+          text: >-
+            Notice the low hum and frost spreading over the stone before
+            the egg bursts, and recognize the signs of a coming snowstorm.
+        - kind: environmental_problem_solving
+          stat: clever
+          difficulty: hard
+          text: >-
+            Find a sheltered route or safe chamber before the two-day storm
+            fills the cave. The blizzard cannot be stopped by fighting the bird.
+        - kind: escape
+          stat: quick
+          difficulty: normal
+          text: >-
+            Reach the cave entrance before the storm begins. The snow never
+            crosses beyond Skullwater Cave.
