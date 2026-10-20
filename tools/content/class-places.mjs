@@ -55,15 +55,13 @@ function graphWhenOpen(when, open) {
 }
 
 /**
- * Whether a rift is crossable by every party, always. A rift with any lifecycle
- * rule is not: `opensWhen` waits on the journey, `unstable` flickers, `lasts`
- * expires, `linkedTo` shares a state another crossing can spend, and `actions`
- * can close or turn it. `uses` alone is not a gate (#315): only this way's own
- * crossings spend it, so the first is there for every party, and a party that
- * spent it has already arrived. That is how a campaign that opens through a
- * one-use tear (Riftlight's Exchange) reaches anything past its first place.
- * `oneWay`, `persistent`, `reveal` and a bare `redirects` list change what the
- * players see, not who can cross.
+ * Whether a rift is crossable by every party. A rift with a condition or a
+ * moving part is not: `opensWhen` waits on the journey, `lasts` expires,
+ * `unstable` flickers or collapses, `linkedTo` shares a state another crossing
+ * can spend, and `actions` can close or turn it. `uses` is not one of them: it
+ * only limits LATER crossings, so a one-use rift still lets every party through
+ * once, which is all reaching a room asks. `oneWay`, `persistent`, `reveal` and
+ * a bare `redirects` list change what the players see, not who can cross.
  */
 function riftOpen(rift) {
   if (!rift) return true;
