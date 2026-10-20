@@ -31,7 +31,7 @@ import type { CombatAbility, EncounterEvent, EncounterState } from "./encounter.
 import { combatantById, positionOf } from "./encounter.js";
 import { CLASS_RANKS } from "./types/domain.js";
 import type { ClassDef, ClassId, ClassRank, DeedId, RankDeeds, ResolvedCharacter } from "./types/domain.js";
-import type { FightDeeds, HeroDeeds, RankUp } from "./types/state.js";
+import type { FightDeeds, HeroDeeds, RankUp, RunDeeds } from "./types/state.js";
 
 /** The Songkeeper's songs: the only healing its deed counts. */
 export const SONGS: readonly string[] = ["rally", "soothe", "chorus"];
@@ -105,6 +105,17 @@ export function rankEarned(req: RankDeeds, deeds: Readonly<Record<string, number
 /** A hero's worn class as their resolved snapshot has it. */
 export function heroDeedsOf(character: ResolvedCharacter): HeroDeeds {
   return { class: character.class, rank: character.rank ?? "none", deeds: { ...(character.deeds ?? {}) } };
+}
+
+/** What the run has counted for a hero in one class, if anything. */
+export function runCounted(run: RunDeeds | undefined, heroId: string, classId: ClassId): HeroDeeds | undefined {
+  const entry = run?.heroes[heroId]?.[classId];
+  return entry ? { class: classId, rank: entry.rank, deeds: { ...entry.deeds } } : undefined;
+}
+
+/** Records a hero's class as counted on the run, every other class she has left as it was. */
+export function setRunCounted(run: RunDeeds, heroId: string, hero: HeroDeeds): void {
+  (run.heroes[heroId] ??= {})[hero.class] = { rank: hero.rank, deeds: { ...hero.deeds } };
 }
 
 /**

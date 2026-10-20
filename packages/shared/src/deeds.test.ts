@@ -36,6 +36,7 @@ import {
   rankEarned,
   rankUp,
   rankUpLine,
+  runCounted,
   storyCredits,
   turnEndCredits,
 } from "./deeds.js";
@@ -406,8 +407,7 @@ function must(state: RunState, playerId: string, intent: ClientIntent, ctx: Engi
 /** Each step of a hero's next rank still to do. */
 function wants(state: RunState, heroId: string, deed: DeedId): boolean {
   const member = state.party.find((m) => m.character.id === heroId)!;
-  const counted = state.deeds?.heroes[heroId];
-  const hero = counted && counted.class === member.character.class ? counted : heroDeedsOf(member.character);
+  const hero = runCounted(state.deeds, heroId, member.character.class) ?? heroDeedsOf(member.character);
   const req = nextRankDeeds(RULES.classes[hero.class], hero.rank);
   const target = req ? deedTargets(req).get(deed) : undefined;
   return target !== undefined && (hero.deeds[deed] ?? 0) < target;
@@ -719,7 +719,7 @@ describe("a rank lands at the end of the fight, and its move is there from the n
     s = must(s, "p_0", { type: "COMBAT_ACTION", abilityId: "rally", targetId: id }, ctx);
 
     // Counted at once; not landed until the fight is over.
-    expect(s.deeds?.heroes[id]).toEqual({ class: "songkeeper", rank: "none", deeds: { song_hearts: 4 } });
+    expect(s.deeds?.heroes[id]).toEqual({ songkeeper: { rank: "none", deeds: { song_hearts: 4 } } });
     expect(s.party[0]!.character.rank).toBeUndefined();
     expect(combatantById(s.encounter!, id)!.actions).not.toContain("soothe");
 
@@ -727,7 +727,7 @@ describe("a rank lands at the end of the fight, and its move is there from the n
     expect(s.encounter).toBeNull();
     expect(s.party[0]!.character).toMatchObject({ rank: "apprentice" });
     expect(s.party[0]!.character.actions).toContain("soothe");
-    expect(s.deeds).toEqual({ heroes: { [id]: { class: "songkeeper", rank: "apprentice", deeds: {} } } });
+    expect(s.deeds).toEqual({ heroes: { [id]: { songkeeper: { rank: "apprentice", deeds: {} } } } });
     expect(s.rankUps).toEqual({
       sceneId: "camp",
       ups: [{ characterId: id, class: "songkeeper", rank: "apprentice", line: "Wren is a Songkeeper Apprentice now! New move: Soothe." }],
@@ -752,15 +752,30 @@ describe("a rank lands at the end of the fight, and its move is there from the n
 
   it("keeps a hero re-resolved mid-chapter in the rank the chapter earned her", () => {
     let { s, ctx, id } = songkeeperAtCamp("none", {});
-    s = { ...s, deeds: { heroes: { [id]: { class: "songkeeper", rank: "apprentice", deeds: { song_hearts: 2 } } } } };
+    s = { ...s, deeds: { heroes: { [id]: { songkeeper: { rank: "apprentice", deeds: { song_hearts: 2 } } } } } };
     s = must(s, "p_0", { type: "CHOOSE", choiceId: "road" }, ctx);
     expect(s.party[0]!.character).toMatchObject({ rank: "apprentice", deeds: { song_hearts: 2 } });
     expect(s.party[0]!.character.actions).toContain("soothe");
   });
 
+  it("keeps what a class earned this chapter when the hero changes class mid-chapter (#311)", () => {
+    let { s, ctx, id } = songkeeperAtCamp("none", {});
+    s = { ...s, deeds: { heroes: { [id]: { songkeeper: { rank: "none", deeds: { song_hearts: 3 } } } } } };
+    // She puts on the thorn bracer: her snapshot is re-resolved as a Thornguard.
+    const thornguard = resolveCharacter(makeCharacter({ id, name: "Wren", class: "thornguard" }), RULES, ITEMS);
+    s = { ...s, party: [{ ...s.party[0]!, character: { ...thornguard, ownerPlayerId: s.party[0]!.character.ownerPlayerId } }] };
+    s = must(s, "p_0", { type: "CHOOSE", choiceId: "road" }, ctx);
+    s = must(s, "p_0", { type: "READY", ready: true }, ctx);
+    for (let guard = 0; guard < 400 && s.encounter; guard++) s = takeTurn(s, ctx);
+    // The Songkeeper's three hearts wait to be folded; the Thornguard counts on her own.
+    expect(s.deeds?.heroes[id]?.songkeeper).toEqual({ rank: "none", deeds: { song_hearts: 3 } });
+    expect(Object.keys(s.deeds?.heroes[id]?.thornguard?.deeds ?? {}).every((d) => ["brace_friend", "hold_ground"].includes(d))).toBe(true);
+    expect(s.deeds?.heroes[id]?.thornguard).toBeDefined();
+  });
+
   it("forgets the chapter's deeds when the party is back in the lobby (the server folded them)", () => {
     let { s, ctx, id } = songkeeperAtCamp("none", {});
-    s = { ...s, deeds: { heroes: { [id]: { class: "songkeeper", rank: "apprentice", deeds: {} } } }, phase: "chapter_complete" };
+    s = { ...s, deeds: { heroes: { [id]: { songkeeper: { rank: "apprentice", deeds: {} } } } }, phase: "chapter_complete" };
     s = must(s, "p_0", { type: "ADVANCE" }, ctx);
     expect(s.phase).toBe("lobby");
     expect(s).not.toHaveProperty("deeds");

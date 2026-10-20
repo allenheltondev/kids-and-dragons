@@ -119,7 +119,9 @@ class is shown with the class name alone.
   move: Shove."), and a Duskrunner's crow has its say. The moment itself (pips filling, the token
   glowing and gaining its notch) is #314's.
 - **Kept with the chapter.** Deeds counted in a chapter are folded into the hero when the chapter
-  ends, beside its XP and under the same rule; a chapter abandoned partway keeps neither. A class way
+  ends, beside its XP and under the same rule; a chapter abandoned partway keeps neither. The run
+  keeps each class's count apart, so a hero who changes class mid-chapter keeps what the class she
+  took off earned. A class way
   at a rift, taken between chapters, is written straight onto the hero.
 
 ## 6. Deeds

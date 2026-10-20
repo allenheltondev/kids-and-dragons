@@ -17,7 +17,8 @@ import type {
   AwardXpResult,
   Character,
   Chapter,
-  HeroDeeds,
+  ClassId,
+  ClassMastery,
   ItemCatalog,
   ProgressionAward,
   ResolvedCharacter,
@@ -39,7 +40,7 @@ export interface SharedRuntime {
       questItems: readonly string[],
     ): Character;
     awardXp(character: Character, rules: RulesContent, amount: number): AwardXpResult;
-    foldRunDeeds(character: Character, counted: HeroDeeds | undefined): Character;
+    foldRunDeeds(character: Character, counted: Partial<Record<ClassId, ClassMastery>> | undefined): Character;
     resolveCharacter(character: Character, rules: RulesContent, items: ItemCatalog): ResolvedCharacter;
   };
 }

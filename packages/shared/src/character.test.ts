@@ -654,9 +654,9 @@ describe("awardXp (spec §8.1)", () => {
   });
 
   describe("foldRunDeeds: a chapter's deeds onto the stored hero (#310)", () => {
-    it("writes the worn class's rank and progress, provisionally while a campaign is in flight", () => {
+    it("writes the class's rank and progress, provisionally while a campaign is in flight", () => {
       const started = startCampaign(makeCharacter(), "r_1");
-      const folded = foldRunDeeds(started, { class: "songkeeper", rank: "apprentice", deeds: { song_hearts: 6 } });
+      const folded = foldRunDeeds(started, { songkeeper: { rank: "apprentice", deeds: { song_hearts: 6 } } });
       expect(folded.provisional?.mastery).toEqual({ songkeeper: { rank: "apprentice", deeds: { song_hearts: 6 } } });
       expect(folded.committed.mastery).toEqual({ songkeeper: { rank: "none", deeds: {} } });
       expect(resolveCharacter(folded, rules, items)).toMatchObject({ rank: "apprentice", deeds: { song_hearts: 6 } });
@@ -665,33 +665,38 @@ describe("awardXp (spec §8.1)", () => {
     it("is taken back by a failed campaign, to how the class stood when it began", () => {
       const start = makeCharacter({ rank: "apprentice" });
       start.committed.mastery.songkeeper!.deeds = { song_hearts: 3 };
-      const gained = foldRunDeeds(startCampaign(start, "r_1"), { class: "songkeeper", rank: "expert", deeds: { song_hearts: 2 } });
+      const gained = foldRunDeeds(startCampaign(start, "r_1"), { songkeeper: { rank: "expert", deeds: { song_hearts: 2 } } });
       const failed = failCampaign(gained, "singed_feather", "2026-08-01");
       expect(failed.committed.mastery).toEqual({ songkeeper: { rank: "apprentice", deeds: { song_hearts: 3 } } });
       expect(resolveCharacter(failed, rules, items).actions).toEqual(["rally", "soothe", "mend_pulse"]);
     });
 
     it("is kept by a completed campaign", () => {
-      const gained = foldRunDeeds(startCampaign(makeCharacter(), "r_1"), { class: "songkeeper", rank: "apprentice", deeds: {} });
+      const gained = foldRunDeeds(startCampaign(makeCharacter(), "r_1"), { songkeeper: { rank: "apprentice", deeds: {} } });
       expect(commitCampaign(gained).committed.mastery).toEqual({ songkeeper: { rank: "apprentice", deeds: {} } });
     });
 
     it("never lowers a rank, and keeps the further count at the same rank", () => {
       const stored = makeCharacter({ rank: "expert" });
       stored.committed.mastery.songkeeper!.deeds = { song_hearts: 9, class_story: 1 };
-      expect(foldRunDeeds(stored, { class: "songkeeper", rank: "apprentice", deeds: { song_hearts: 20 } })).toBe(stored);
-      const merged = foldRunDeeds(stored, { class: "songkeeper", rank: "expert", deeds: { song_hearts: 7 } });
+      expect(foldRunDeeds(stored, { songkeeper: { rank: "apprentice", deeds: { song_hearts: 20 } } })).toBe(stored);
+      const merged = foldRunDeeds(stored, { songkeeper: { rank: "expert", deeds: { song_hearts: 7 } } });
       expect(merged.committed.mastery.songkeeper).toEqual({ rank: "expert", deeds: { song_hearts: 9, class_story: 1 } });
     });
 
-    it("writes nothing for a class she is not wearing, and leaves other classes alone", () => {
+    it("folds every class the chapter counted, so a class taken off mid-chapter keeps what it earned", () => {
+      // She was a Songkeeper for the first fight and a Starweaver after (#311).
       const character = makeCharacter({ class: "starweaver" });
-      character.committed.mastery.songkeeper = { rank: "expert", deeds: { song_hearts: 3 } };
-      expect(foldRunDeeds(character, { class: "songkeeper", rank: "master", deeds: {} })).toBe(character);
-      const folded = foldRunDeeds(character, { class: "starweaver", rank: "apprentice", deeds: {} });
+      character.committed.mastery.songkeeper = { rank: "none", deeds: { song_hearts: 1 } };
+      character.committed.mastery.thornguard = { rank: "expert", deeds: { shove: 2 } };
+      const folded = foldRunDeeds(character, {
+        songkeeper: { rank: "apprentice", deeds: {} },
+        starweaver: { rank: "none", deeds: { burst_two: 1 } },
+      });
       expect(folded.committed.mastery).toEqual({
-        starweaver: { rank: "apprentice", deeds: {} },
-        songkeeper: { rank: "expert", deeds: { song_hearts: 3 } },
+        starweaver: { rank: "none", deeds: { burst_two: 1 } },
+        songkeeper: { rank: "apprentice", deeds: {} },
+        thornguard: { rank: "expert", deeds: { shove: 2 } },
       });
     });
   });
