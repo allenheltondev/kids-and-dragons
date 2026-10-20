@@ -194,7 +194,7 @@ Follow `content/chapters/bramblewood-01.json`. Each Gemfall chapter:
   cake charm ribbon swords trophy party travel forward back check` plus aliases `fist wing
   spark gem key shield moon potion`, and species icons.
 - **Stats** for checks: `might`, `quick`, `clever`, `heart`. TNs: 8 easy, 12 normal, 16 hard.
-- **`llmHints`** with `tone`, `vocabulary: "age-8"`, `forbidden` (at least: death, blood,
+- **`voiceGuide`** with `tone`, `vocabulary: "age-8"`, `forbidden` (at least: death, blood,
   permanent loss, weapons that wound, anyone being left behind), and `npcVoices` for every
   chapter-scoped character who speaks.
 - **Scene illustrations are optional.** `art: "scenes/gemfall/<illustration>"` selects a WebP backdrop for that scene. Without it, the backdrop comes from `biome`. Combat always uses the biome environment; a missing illustration falls back to it. See [illustration prompts and coverage](./gemfall-illustrations.md).

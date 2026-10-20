@@ -2288,7 +2288,7 @@
       "choices": []
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "warm, clever, a little spooky but never scary; two rival groups and the party as the table between them",
     "vocabulary": "age-8",
     "forbidden": [

@@ -381,7 +381,7 @@ function trainingChapter(wolves: number): Chapter {
         onDefeat: { goto: "camp", narration: "They run off with the supper." },
       },
     },
-    llmHints: { tone: "warm", vocabulary: "age-8", forbidden: ["death"] },
+    voiceGuide: { tone: "warm", vocabulary: "age-8", forbidden: ["death"] },
   } as Chapter;
 }
 

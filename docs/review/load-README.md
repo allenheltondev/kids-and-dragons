@@ -73,9 +73,6 @@ Before you start:
 
 - **Staging only.** Not production. Staging is one shared environment that every
   pull request deploys over; run it when nobody is mid-review, and say so on the PR.
-- **Check the live narration layer is off on staging** (`LIVE_LLM_ENABLED`). If it
-  is on, every chapter start and scene calls a model: that spends money and the
-  latencies are not the game's own. Do not run the ramp until you know.
 - Know your base URL: the staging CloudFront URL, the same one a phone opens (it is
   in the sticky "Staging is serving …" comment on a PR, `docs/deploy.md`). Go through
   CloudFront, as phones do, not the API Gateway URL.

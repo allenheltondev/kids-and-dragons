@@ -1653,7 +1653,7 @@
       "art": "scenes/gemfall/pride-stone-crater"
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "wide-open, warm and a little uneasy; a homeland that is quietly rearranging itself around the stones",
     "vocabulary": "age-8",
     "forbidden": [

@@ -1626,7 +1626,7 @@
       "outcome": "setback"
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "road country in full flood; noisy, kind, a little melancholy on the downbound lane, a little spooky at night, never scary",
     "vocabulary": "age-8",
     "forbidden": [

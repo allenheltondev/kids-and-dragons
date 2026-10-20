@@ -1590,7 +1590,7 @@
       "outcome": "setback"
     }
   },
-  "llmHints": {
+  "voiceGuide": {
     "tone": "warm, loud dragonling home country under a worried sky; grandmothers in charge, bells everywhere, a little spooky about the unrung bell, never scary",
     "vocabulary": "age-8",
     "forbidden": [

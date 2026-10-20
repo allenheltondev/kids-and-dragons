@@ -357,7 +357,7 @@ export function makeChapter(): Chapter {
         choices: [],
       },
     },
-    llmHints: {
+    voiceGuide: {
       tone: "warm, playful",
       vocabulary: "age-8",
       forbidden: ["death"],
