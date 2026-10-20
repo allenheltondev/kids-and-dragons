@@ -43,7 +43,7 @@
   "scenes": {
     "scene_the_pinch": {
       "type": "story",
-      "narration": "Every road in the realm squeezes through one gap between two red hills. The dragonlings call it the Pinch. Wagons, carts, and one man pushing a wheelbarrow full of glitter all shove through it at once. The ground gives a small shrug, like a sleeping dog, and you notice the embermoths that always live here are simply gone.",
+      "narration": "Every road in the realm squeezes through one gap between two red hills. The dragonlings call it the Pinch. Wagons, carts, and a man pushing a wheelbarrow full of glitter all shove through it at once. Up at the citadel, Pellam wrote it beside your names: put the stones back. So here is the plan. Turn the road's stones toward home, and send the caravan's big stone home from the bend. That caravan is the fattest in the funnel, and it reaches the worst bend tomorrow. The ground gives a small shrug, and the embermoths that always live here are simply gone.",
       "choices": [
         {
           "id": "set_up",
@@ -515,7 +515,7 @@
     },
     "scene_road_gifts": {
       "type": "story",
-      "narration": "By afternoon something strange starts happening. The road begins bringing things back to you: things you did on the way here, walking up the hill on their own legs, as if the whole realm had been keeping your receipts.",
+      "narration": "By afternoon a warden runner brings you a note from Pellam, copied out of the citadel ledger: your names, and beside them one word, RETURN. Under it, in very small writing: HOW IS IT GOING? You look down the road at all the stones still going the wrong way. Then something strange starts happening. The road begins bringing things back to you: things you did on the way here, walking up the hill on their own legs, as if the whole realm had been keeping your receipts.",
       "choices": [
         {
           "id": "ossley",
@@ -916,7 +916,7 @@
       "discovers": [
         "faction.deep_hollow_cult"
       ],
-      "narration": "Further down the road, people in painted bark masks are running the same funnel backwards, collecting stones gently from anyone who will hand them over. \"We'll break it properly, all at once, so it can be fixed properly,\" one of them says. You know that voice. It is Hessa from the soup tent, with her ladle still on her belt.",
+      "narration": "Further down the road, people in painted bark masks are running the same funnel backwards. They are Hessa's friends from the soup tent, the Deep Hollow. They wear the masks to sing to the mountain, and they want to wake it up so it can fix things. So they are collecting stones gently from anyone who will hand them over. \"We'll break the seal properly, all at once, so it can be fixed properly,\" one of them says. You know that voice. It is Hessa herself, with her ladle still on her belt.",
       "choices": [
         {
           "id": "talk",
