@@ -190,6 +190,8 @@ describe("the fitting stall (#312)", () => {
     const pip = (await t.state()).party[0]!.character;
     expect(pip.class).toBe("duskrunner");
     expect(pip.fitted).toBe(true);
+    // The song bell she took off goes in her pack (#314), as at a class place.
+    expect(pip.spares).toEqual([{ class: "songkeeper", rank: "none" }]);
     expect((await t.state()).classPlace?.answers).toEqual({ p_1: { switched: true, from: "songkeeper" } });
     const row = await t.stored("p_1");
     expect(row.provisional).toMatchObject({ class: "duskrunner", fitted: true });

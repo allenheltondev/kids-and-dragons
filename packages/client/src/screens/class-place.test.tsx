@@ -282,6 +282,10 @@ describe("the phone at the fitting stall", () => {
     expect(sure).toContain("This is your one free swap.");
     expect(sure).toContain("Madame Tuck will not offer it again.");
     expect(sure).toContain("You can switch back at the Conservatory.");
+    // Both tokens, by their own names and notches, as a class place shows them (#314).
+    const dialog = screen.getByRole("alertdialog");
+    expect(within(dialog).getByRole("img", { name: "your song bell, no notches yet" })).toBeTruthy();
+    expect(within(dialog).getByRole("img", { name: "dusk hood, no notches yet" })).toBeTruthy();
 
     await user.click(screen.getByRole("button", { name: "Yes, switch!" }));
     expect(sent).toEqual([{ type: "SWITCH_CLASS", classId: "duskrunner", stall: true }]);

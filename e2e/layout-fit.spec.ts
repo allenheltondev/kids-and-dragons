@@ -445,16 +445,28 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expect.poll(async () => (await roomState<{ phase: string }>(kid, code)).phase, TAP).toBe("scene");
     await jumpTo(kid, code, "scene_prologue_city");
 
+    // The stall opens for a new hero: every other class, and "Stay".
     await expect(kid.getByText("Try on a new class?")).toBeVisible(TAP);
     await expect(kid.getByRole("button", { name: /^Be a / })).toHaveCount(3);
     await expectFits(kid, "the fitting stall, four answers");
 
+    // Keep first: the way on is free, and the stall stays open to a change of mind.
+    await kid.getByRole("button", { name: /^Stay a / }).click(TAP);
+    await kid.getByRole("button", { name: "Yes, keep it" }).click(TAP);
+    await expect(kid.getByText(/^You are a \w+\.$/)).toBeVisible(TAP);
+
+    // Then swap: the "are you sure?" with both tokens, and the one free swap said plainly.
     await kid.getByRole("button", { name: "Be a Starweaver" }).click(TAP);
-    await expect(kid.getByRole("alertdialog")).toContainText("This is your one free swap.", TAP);
+    const sure = kid.getByRole("alertdialog");
+    await expect(sure).toContainText("This is your one free swap.", TAP);
+    await expect(sure.getByRole("img", { name: /^star circlet/ })).toBeVisible();
+    await expect(sure.getByRole("img", { name: /^your / })).toBeVisible();
     await expectFits(kid, "the fitting stall's are-you-sure");
 
     await kid.getByRole("button", { name: "Yes, switch!" }).click(TAP);
     await expect(kid.getByText("You are a Starweaver now!")).toBeVisible(TAP);
+    // One swap: nothing more to try on.
+    await expect(kid.getByRole("button", { name: /^Be a / })).toHaveCount(0);
   });
 
   test("the shared screen: its corner row (Room, About this screen, Tap for sound) keeps off the lobby and the story", async ({ browser }) => {
