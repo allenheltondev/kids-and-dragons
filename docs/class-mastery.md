@@ -1,10 +1,11 @@
 # Class mastery: switching classes, class places and distinctions
 
 > **Status.** Partly built. Per-class distinctions on the character and moves by distinction (§5,
-> §7) landed with #308, and [spec §4.3](./spec.md) and [§8.1](./spec.md) now state them. The
-> switch itself (§3) landed with #311: a scene marked `classPlace` is a class's room
-> ([content/README.md, "Class places"](../content/README.md#class-places-311)). Deeds, the
-> fitting stall, the four rooms and the tokens are still design. Tracked by epic
+> §7) landed with #308, deeds and rank-ups (§5, §6) with #310, and the switch itself (§3) with
+> #311: a scene marked `classPlace` is a class's room
+> ([content/README.md, "Class places"](../content/README.md#class-places-311)). [spec §4.3](./spec.md)
+> and [§8.1](./spec.md) state them. The fitting stall, the four rooms and the tokens are still
+> design. Tracked by epic
 > [#307](https://github.com/allenheltondev/kids-and-dragons/issues/307) (#308–#315); the reason to
 > come back to the Exchange is [#306](https://github.com/allenheltondev/kids-and-dragons/issues/306).
 
@@ -71,10 +72,10 @@ earns a distinction anywhere in the world, a crow lands on a nearby fence, says 
   everything earned, and where to switch back). The way on waits until every connected hero who
   could switch has answered, and the TV shows who switched. A kid who said no can still switch
   while the room is open. A dropped phone is not waited on.
-- **Not a back door to a rank** *(built, #311).* Until deeds (#310), crossing level 3, 6 or 9
-  raises the worn class one rank per threshold crossed. It never lifts a class to "the rank the
-  level used to unlock", which would hand a level 7 hero who just switched an Expert rank at the
-  next chapter's XP.
+- **Deeds follow the worn class** *(built, #310 and #311).* From the switch on, the class just
+  put on is the one whose deeds count. What the class taken off earned earlier in the chapter is
+  kept and folded into the hero at the chapter's end, and switching back mid-chapter picks it up
+  again at once (`withRunDeeds`).
 
 ## 4. The gear
 
@@ -115,10 +116,8 @@ class is shown with the class name alone.
   point and the appearance tiers.
 - **Earned only by deeds** (§6). No XP, and no level cap. Two grants stand outside that, both so no
   hero has fewer moves than before distinctions: heroes from before them (§7), and a hero who joins
-  at a tier floor ([spec §8.4](./spec.md)). A third is temporary: until deeds are counted (#310),
-  reaching level 3, 6 or 9 earns the worn class Apprentice, Expert or Master (`levelBridge` in
-  `character.ts`), so a hero made in between is never stuck on the signature. #310 removes it, and
-  ranks it gave are kept.
+  at a tier floor ([spec §8.4](./spec.md)). A hero who levelled between #308 and #310 was given
+  ranks by level in the meantime; those ranks are stored, and kept.
 - **Never lost by switching.** Each class remembers its own rank and its partial progress. Going back
   to Thornguard later picks up exactly where the hero left it.
 - **Only the worn class counts.** Its moves are the only class moves on the phone, and only its deeds
@@ -127,9 +126,16 @@ class is shown with the class name alone.
   campaign began, together with everything else that rolls back. They live in `CharacterProgress`
   for exactly that reason (see its `unspentPoints` note in
   [`domain.ts`](../packages/shared/src/types/domain.ts)).
-- **When a rank lands** (proposed default): pips fill live on the phone as deeds happen; the rank
-  lands at the end of the fight with a moment on the TV (the token glows and gains its notch); the
-  new move is usable from the next fight.
+- **When a rank lands** *(built, #310)*: deeds count live as they happen; the rank lands at the end
+  of the fight (or at once, for a story deed outside one), and the new move is usable from the next
+  fight. The TV and the hero's phone say so in one line ("Mira is a Thornguard Apprentice now! New
+  move: Shove."), and a Duskrunner's crow has its say. The moment itself (pips filling, the token
+  glowing and gaining its notch) is #314's.
+- **Kept with the chapter.** Deeds counted in a chapter are folded into the hero when the chapter
+  ends, beside its XP and under the same rule; a chapter abandoned partway keeps neither. The run
+  keeps each class's count apart, so a hero who changes class mid-chapter keeps what the class she
+  took off earned. A class way
+  at a rift, taken between chapters, is written straight onto the hero.
 
 ## 6. Deeds
 
@@ -145,44 +151,80 @@ class is shown with the class name alone.
    rift (#199). Fights are not the only way to grow.
 6. **One visible track per hero.** No menu of deeds to pick from.
 
-### The ladder (draft; counts are placeholders for playtesting)
+### The ladder
+
+Counts are a first tuning, for playtesting; they live in `content/rules.json` (`deeds` on each class)
+and the deeds themselves in [`deeds.ts`](../packages/shared/src/deeds.ts). Each rank's count starts
+from zero when the rank before it lands. Either track completes a rank, at any table; "alone" is
+the one with nothing in it that needs a friend.
 
 **Thornguard**
 | Rank | With friends | Alone |
 |---|---|---|
-| Apprentice | Brace for a friend 3 times | Finish 3 fights without being knocked down |
-| Expert | Shove an enemy off a friend who is hurt or down, 3 times | Shove 5 times |
-| Master | Bramble Wall in 3 fights, **and** take a Thornguard choice or rift way once | same |
+| Apprentice | Brace takes a hit meant for a friend, 2 times | End your turn on your feet next to a monster, 2 times |
+| Expert | Shove a monster that is next to a hurt or knocked-down friend, 3 times | Shove 5 times |
+| Master | Grow a Bramble Wall in 3 fights, **and** take a Thornguard choice or rift way once | same |
+
+The draft's "finish 3 fights without being knocked down" is gone: a hero alone is outnumbered in
+almost every fight content has, so it asked a solo Thornguard to win, and rewarded fights more than
+the job. Holding the line beside a monster is the job.
 
 **Duskrunner**
 | Rank | With friends | Alone |
 |---|---|---|
-| Apprentice | Land the first hit of a fight 3 times | same |
-| Expert | An enemy misses you because you Vanished, 3 times | same |
-| Master | Twin Step to finish an enemy 3 times, **and** take a Duskrunner choice once | same |
+| Apprentice | Hit a monster you have not hit yet this fight, 3 times | same |
+| Expert | A monster misses you because you Vanished, 3 times | same |
+| Master | Twin Step finishes a monster, 3 times, **and** take a Duskrunner choice or rift way once | same |
 
-First Strike happens on its own, so its deed is landing the first hit, not pressing a button.
+The draft's "land the first hit of a fight" was a race a Duskrunner lost at a full table: a
+Starweaver's Burst from across the board lands first in nearly every fight. Each monster is now its
+own first hit, and nobody else's swing can take it away. Everywhere at once.
 
 **Starweaver**
 | Rank | With friends | Alone |
 |---|---|---|
-| Apprentice | Catch 2 or more enemies in one Burst, 3 times | same |
-| Expert | A Glimmered friend makes their roll, 3 times | Catch 3 enemies in one Burst |
-| Master | Tanglelight an enemy about to reach a friend, 3 times, **and** steady a rift or take a Starweaver choice | Tanglelight 5 times, plus the story deed |
+| Apprentice | Catch 2 or more monsters in one Burst, 3 times | same |
+| Expert | A friend you Glimmered hits with that roll, 6 times | Catch 2 or more monsters in one Burst, 6 times |
+| Master | Tanglelight a monster close enough to reach a friend next turn, 8 times, **and** take a Starweaver choice or rift way once | Tanglelight 10 times, plus the story deed |
+
+"Caught" is standing in the square when it goes off, hit or missed.
 
 **Songkeeper: hearts restored by your own songs**
 
 One track at every table size: hearts **actually restored** by Rally, Soothe and Chorus, on anyone,
-the Songkeeper included. Potions, Mend and other classes' healing do not count. Healing a hero at
-full health counts nothing, so it cannot be farmed. Lifting a knocked-down friend counts as 3.
+the Songkeeper included. Potions, Help Up, species heals and other classes' healing do not count.
+Healing a hero at full health restores nothing and counts nothing, so it cannot be farmed. Lifting a
+knocked-down friend with Rally counts as 3.
 
 | Rank | Hearts restored | And |
 |---|---|---|
-| Apprentice | 10 | |
-| Expert | 25 | |
-| Master | 50 | take a Songkeeper choice or rift way once |
+| Apprentice | 4 | |
+| Expert | 15 | |
+| Master | 25 | take a Songkeeper choice or rift way once |
 
-This needs one fight change (§7): Songkeeper moves may target the Songkeeper.
+(25 more hearts after Expert's 15 after Apprentice's 4: 44 in all, against the draft's 50.)
+
+### How fast
+
+`deeds.test.ts` plays the shipped rules and abilities through the real engine, fight after fight,
+with heroes who do what their next deed needs when the fight offers it and swing otherwise: a hero
+alone against two wolves (most of whose fights are lost), and a table of four, one of each class,
+against three. Fights until each rank lands, median (worst) of ten seeds:
+
+| | Apprentice | Expert | Master |
+|---|---|---|---|
+| Thornguard alone | 1 (1) | 5 (6) | 8 (9) |
+| Duskrunner alone | 2 (3) | 3 (5) | 9 (12) |
+| Starweaver alone | 2 (3) | 6 (8) | 11 (12) |
+| Songkeeper alone | 2 (3) | 6 (8) | 10 (13) |
+| Thornguard, table of four | 2 (3) | 6 (12) | 9 (15) |
+| Duskrunner, table of four | 2 (3) | 3 (4) | 5 (9) |
+| Starweaver, table of four | 2 (2) | 4 (6) | 6 (8) |
+| Songkeeper, table of four | 2 (2) | 4 (6) | 8 (13) |
+
+A chapter's shortest and typical paths hold about one fight (`npm run content:pacing`), so
+Apprentice lands in one or two chapters, Expert around the end of a hero's first campaign, and
+Master in their second: roughly the old 3 / 6 / 9 rhythm (§8).
 
 ## 7. Engine changes this implies
 
@@ -193,8 +235,12 @@ This needs one fight change (§7): Songkeeper moves may target the Songkeeper.
   knocked-down hero cannot act. Chorus already includes the Songkeeper. This changes every
   Songkeeper fight, not just deeds; if self-healing proves too strong in playtests, Rally's
   self-heal can be smaller than its heal on others.
-- **Deed attribution.** Fight events say what happened but not always who caused it (a `heal`
-  event names only who was healed). Deeds need the acting hero and the ability on each counted event.
+- **Deed attribution.** *(Built, #310.)* Fight events say what happened but not always who caused it
+  (a `heal` event names only who was healed), so the engine counts a hero's action where it has the
+  acting hero, the ability and the fight as it stood before (`actionCredits` in `deeds.ts`), and
+  everything else — the monsters' turns, the place fighting back — by its events. Counting is a
+  pure read: no event, roll or turn changes, and Gemfall's pinned digests hold. The chapter's count
+  lives on the run (`RunState.deeds`) and is folded into each hero at chapter completion.
 - **Per-class progress on the character.** *(Built, #308.)* `CharacterProgress.class` is the worn
   class and `CharacterProgress.mastery` holds each class's rank and deed counts, so failure rolls
   them back. `Character.class` is gone: one answer to "what class is she", in the half that rolls
@@ -228,5 +274,6 @@ This needs one fight change (§7): Songkeeper moves may target the Songkeeper.
   Deed counts are the lever for keeping it roughly true.
 - **Brace and Glimmer alone.** Both still have no target for a hero playing solo. The ladder covers
   their deeds, but the moves stay dead; a separate decision.
-- **Deed counts** are all placeholders.
+- **Deed counts** are a first tuning against a simulated table (§6, "How fast"); real tables will move
+  them.
 - **A reason to go back to the Exchange** after a hero is no longer new: [#306](https://github.com/allenheltondev/kids-and-dragons/issues/306).

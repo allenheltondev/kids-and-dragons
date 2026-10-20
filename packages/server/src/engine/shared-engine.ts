@@ -17,6 +17,8 @@ import type {
   AwardXpResult,
   Character,
   Chapter,
+  ClassId,
+  ClassMastery,
   ItemCatalog,
   ProgressionAward,
   ResolvedCharacter,
@@ -38,6 +40,7 @@ export interface SharedRuntime {
       questItems: readonly string[],
     ): Character;
     awardXp(character: Character, rules: RulesContent, amount: number): AwardXpResult;
+    foldRunDeeds(character: Character, counted: Partial<Record<ClassId, ClassMastery>> | undefined): Character;
     resolveCharacter(character: Character, rules: RulesContent, items: ItemCatalog): ResolvedCharacter;
   };
 }
@@ -56,6 +59,7 @@ export function loadSharedRuntime(): Promise<SharedRuntime> {
         startCampaign: shared.startCampaign,
         syncRunInventory: shared.syncRunInventory,
         awardXp: shared.awardXp,
+        foldRunDeeds: shared.foldRunDeeds,
         resolveCharacter: shared.resolveCharacter,
       },
     }));
@@ -140,10 +144,11 @@ export async function awardChapterXpDetails(
     const target = campaignId
       ? progression.startCampaign(row, input.claim ? input.claim(row) : campaignId)
       : row;
-    const carried = progression.syncRunInventory(
-      target,
-      member.character.inventory,
-      member.character.questItems,
+    // The deeds this chapter counted (#310), folded beside the bag and the
+    // XP and under the same rule: provisional while a campaign is in flight.
+    const carried = progression.foldRunDeeds(
+      progression.syncRunInventory(target, member.character.inventory, member.character.questItems),
+      input.state.deeds?.heroes[member.character.id],
     );
     const awarded: AwardXpResult =
       amount > 0 ? progression.awardXp(carried, input.rules, amount) : { character: carried };
@@ -162,6 +167,9 @@ export async function awardChapterXpDetails(
     }
     member.character = progression.resolveCharacter(awarded.character, input.rules, input.items);
   }
+  // Folded: the heroes carry them now. Left on the run, a campaign that fails
+  // at this completion would have the reverted heroes re-dressed in them.
+  delete input.state.deeds;
   return { characters, writes, awards };
 }
 

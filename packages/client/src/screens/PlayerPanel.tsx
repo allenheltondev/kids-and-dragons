@@ -890,6 +890,18 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             {state.narration}
           </p>
         ) : null}
+        {/* A rank that just landed for this hero (#310), on the scene it
+            landed on. The moment itself is #314's; this is the line. */}
+        {state.rankUps?.sceneId === state.sceneId
+          ? state.rankUps.ups
+              .filter((up) => up.characterId === me.character.id)
+              .map((up) => (
+                <p className="player__hint" data-testid="player-rank-up" key={up.rank}>
+                  <Icon name="star" />
+                  <span>{up.crow ? `${up.line} ${up.crow}` : up.line}</span>
+                </p>
+              ))
+          : null}
         {/* The practice's hint (#255), where the tapping happens, with its own
             "read it to me" button: the shared screen says it once, and a kid
             who missed it should not need a grown-up to say it again. */}
