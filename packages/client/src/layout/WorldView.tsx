@@ -47,6 +47,7 @@ import { ambienceForScene, sceneCuesFor } from "../audio/scene-audio";
 // the meter is a static import of the scene, Pixi and the rigs (frame-stats.ts).
 import { perfRequested } from "../world/frame-stats";
 import { RendererBoundary } from "../world/RendererFallback";
+import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import { usePrefetchUpcoming } from "../sw/prefetch";
 
 // Loaded on demand: PixiStage pulls in all of pixi.js, which is most of the
@@ -62,9 +63,7 @@ const PixiStage = lazy(() =>
  * performance pass. Lazy like the stage: measuring the renderer is not worth
  * a byte in the bundle of a game nobody is measuring.
  */
-const FrameMeter = lazy(() =>
-  import("../world/FrameMeter").then((module) => ({ default: module.FrameMeter })),
-);
+const FrameMeter = lazyChunk(() => import("../world/FrameMeter"), (module) => module.FrameMeter);
 
 export function WorldView({
   gatesPresentations = true,
@@ -174,9 +173,11 @@ export function WorldView({
       {isDisplay ? <FieldGuideBanner /> : null}
 
       {measuring ? (
-        <Suspense fallback={null}>
-          <FrameMeter />
-        </Suspense>
+        <ChunkBoundary quiet>
+          <Suspense fallback={null}>
+            <FrameMeter />
+          </Suspense>
+        </ChunkBoundary>
       ) : null}
     </div>
   );

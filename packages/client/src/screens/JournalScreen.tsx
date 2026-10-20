@@ -19,7 +19,8 @@
  * open there too.
  */
 
-import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
+import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ReactElement } from "react";
 import type { JournalFinishedCampaign, JournalResponse, PartyMember, ResolvedCharacter } from "@kad/shared";
 import { navigate } from "../router";
@@ -48,7 +49,7 @@ export type JournalPane = "hero" | "map" | "guide" | "me";
  * opened: the book's first look stays the hero, and nothing of the page is in
  * the journal chunk, let alone the first paint.
  */
-const ProfilePane = lazy(() => import("./ProfilePane"));
+const ProfilePane = lazyChunk(() => import("./ProfilePane"), (module) => module.default);
 
 /**
  * A saved hero as the sheet and the atlas want them: a party member at full
@@ -198,9 +199,11 @@ export function JournalScreen(): ReactElement {
         {pane === "hero" ? <HeroPane journal={load.journal} onPlay={play} /> : null}
         {pane === "map" ? <MapPane journal={load.journal} /> : null}
         {pane === "me" ? (
-          <Suspense fallback={<div className="journal__busy" role="status"><Spinner /><span>Opening your page…</span></div>}>
-            <ProfilePane journal={load.journal} />
-          </Suspense>
+          <ChunkBoundary inline message="Your page couldn’t open.">
+            <Suspense fallback={<div className="journal__busy" role="status"><Spinner /><span>Opening your page…</span></div>}>
+              <ProfilePane journal={load.journal} />
+            </Suspense>
+          </ChunkBoundary>
         ) : null}
         {pane === "guide" ? (
           <div className="kad-surface kad-surface--player" data-surface="player">
