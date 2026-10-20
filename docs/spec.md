@@ -149,7 +149,7 @@ Species grants a **passive trait** and one **world ability** usable outside comb
 
 Four classes, one per stat. Class determines the action set on your phone during a fight.
 
-A hero picks a class at creation (§5) and wears one class at a time. Each class has three **distinctions**, the same for every class: **Apprentice**, **Expert** and **Master**. The class's signature is yours from the start; each distinction unlocks one more of its moves (Apprentice the first, Expert the second, Master the third), and nothing else does: level grants no moves (§8.1). (Until deeds are counted, [#310](https://github.com/allenheltondev/kids-and-dragons/issues/310), levelling still earns the worn class its distinctions, as §8.1 says.) The screen reads "Starweaver Apprentice"; a hero with no distinction yet shows the class name alone.
+A hero picks a class at creation (§5) and wears one class at a time. Each class has three **distinctions**, the same for every class: **Apprentice**, **Expert** and **Master**. The class's signature is yours from the start; each distinction unlocks one more of its moves (Apprentice the first, Expert the second, Master the third), and nothing else does: level grants no moves (§8.1). A distinction is earned by doing the class's **deeds** while wearing it: Brace taking a hit for a friend, a Burst that catches two monsters, hearts a Songkeeper's songs give back ([class-mastery.md §6](./class-mastery.md)). Deeds count as they happen; the distinction lands when the fight ends, and its move is on the phone from the next fight. The screen reads "Starweaver Apprentice"; a hero with no distinction yet shows the class name alone.
 
 A hero keeps their distinctions and partial progress in every class they have worn, forever, but only the class they are wearing counts: its moves are the only class moves on the phone. Distinctions, and where and how a hero changes class, are designed in [class-mastery.md](./class-mastery.md): earned by the class's deeds, and changed only at the Exchange while new or at that class's own place. A failed campaign puts class and distinctions back where they stood when it began (§8.3).
 
@@ -260,7 +260,7 @@ If the **whole party** is knocked down, the encounter is **lost, not fatal** —
 
 XP is awarded per chapter, not per enemy defeated — so exploring and talking are worth as much as fighting. Levels 1–10.
 
-Each level grants a stat point. Class moves are not on this ladder: they come from distinctions (§4.3), earned by deeds rather than XP. **Until deeds are counted** ([#310](https://github.com/allenheltondev/kids-and-dragons/issues/310)), a bridge stands in: reaching level 3, 6 or 9 earns the worn class Apprentice, Expert or Master, so a new hero still gets the moves levelling always gave, and keeps them when deeds arrive. **Four levels are appearance tiers:**
+Each level grants a stat point. Class moves are not on this ladder: they come from distinctions (§4.3), earned by deeds rather than XP, with no level cap. **Four levels are appearance tiers:**
 
 | Level | Tier | Visual change |
 |---|---|---|
@@ -280,7 +280,7 @@ Hitting a tier plays a **transformation cutscene** — the whole party stops to 
 
 The tier itself lands one chapter before the campaign's finale, so the climax is fought as the new thing rather than the new thing being a trophy for winning.
 
-Class moves used to unlock at levels 3, 6 and 9, interleaved with the tiers (1/4/7/10) as three bands of three, each one *breathe → new move → new look*. Since distinctions (§4.3), moves come from deeds and that rhythm is no longer guaranteed; the deed counts are the lever for keeping it roughly true ([class-mastery.md §8](./class-mastery.md)). A hero who had a move by level when distinctions arrived kept it: their class was given the distinction their level had unlocked (3 → Apprentice, 6 → Expert, 9 → Master).
+Class moves used to unlock at levels 3, 6 and 9, interleaved with the tiers (1/4/7/10) as three bands of three, each one *breathe → new move → new look*. Since distinctions (§4.3), moves come from deeds and that rhythm is no longer guaranteed; the deed counts are the lever for keeping it roughly true ([class-mastery.md §8](./class-mastery.md)). A hero who had a move by level when distinctions arrived kept it: their class was given the distinction their level had unlocked (3 → Apprentice, 6 → Expert, 9 → Master), and so was a hero who levelled while deeds were still being built; neither loses it now that only deeds raise a distinction.
 
 #### The curve
 

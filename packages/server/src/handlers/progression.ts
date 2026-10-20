@@ -23,7 +23,13 @@
 
 import {
   CharacterRuleError,
+  classOf,
   commitCampaign,
+  deedTargets,
+  earnStoredDeed,
+  heroDeedsOf,
+  nextRankDeeds,
+  rankUpLine,
   completeVisit,
   currentPlayable,
   failCampaign,
@@ -31,6 +37,7 @@ import {
   journeyView,
   readJourney,
   resolveCharacter,
+  withRunDeeds,
   resumeJourney,
   spendStatPoint as applyStatPointSpend,
   startCampaign,
@@ -44,6 +51,9 @@ import {
   type CampaignView,
   type Character,
   type Chapter,
+  type ClassId,
+  type RankUp,
+  type RulesContent,
   type ChapterOutcome,
   type JourneyRefusal,
   type JourneyState,
@@ -941,6 +951,8 @@ async function settleVisit(input: {
   // A shallow copy shares the party, so the fold still re-resolves the room's
   // characters in place; only the amount it reads is withheld on a replay.
   const award = await foldChapterXpDetails(replay ? { ...state, xpEarned: 0 } : state, deps, householdId, chapter);
+  // The copy's deeds were folded, but the room's run still holds them (#310).
+  delete state.deeds;
   const characters = award.writes;
   const chapterProgress: ChapterProgressRecord = {
     runId: state.runId,
@@ -1203,7 +1215,9 @@ export async function prepareStatPointSpend(
   try {
     // Shared character rules validate the runtime value against STAT_IDS.
     const updated = applyStatPointSpend(character, rules, stat as StatId);
-    const resolved = resolveCharacter(updated, rules, deps.content.items());
+    // Still wearing whatever rank this chapter has earned her so far (#310):
+    // the stored row only learns of it when the chapter is folded.
+    const resolved = withRunDeeds(resolveCharacter(updated, rules, deps.content.items()), state, rules);
     return ok({
       character: rewrite(character, updated),
       state: {
@@ -1217,4 +1231,73 @@ export async function prepareStatPointSpend(
     if (err instanceof CharacterRuleError) return fail("ILLEGAL", err.message);
     throw err;
   }
+}
+
+// ---------------------------------------------------------------------------
+// A class way at a rift (#199): that class's story deed (#310)
+// ---------------------------------------------------------------------------
+
+/**
+ * The story deed a class way at a rift earns (docs/class-mastery.md §6): every
+ * seated hero wearing a class the way asks for, whose next rank wants it.
+ * Taken between chapters, with no run to count it on, so it goes straight
+ * onto her stored row, in the rift action's own commit, under her claim and
+ * through `startCampaign` like any campaign gain: a failed campaign takes it
+ * back. A rank it completes lands now and is said on the room's screens.
+ *
+ * All or nothing, because the way is used once: a repeat of the same rift
+ * action is answered as done without coming back here. So a hero who should
+ * earn it but cannot be written safely — her row missing, or another
+ * adventure holding her — refuses the whole action, and a store that fails to
+ * read throws; either way nothing is committed and a retry can earn it. A hero
+ * the deed would not move (another class, or a next rank that wants no story
+ * deed) is skipped without being read.
+ */
+export async function prepareRiftWayDeeds(
+  state: RunState,
+  campaignId: string,
+  classes: readonly ClassId[] | undefined,
+  householdId: string,
+  deps: HandlerDeps,
+): Promise<HandlerResult<{ writes: CharacterWrite[]; state: RunState }>> {
+  if (!classes || classes.length === 0) return ok({ writes: [], state });
+  const rules = deps.content.rules();
+  const items = deps.content.items();
+  const writes: CharacterWrite[] = [];
+  const ups: RankUp[] = [];
+  const party: PartyMember[] = [];
+  for (const member of state.party) {
+    if (!classes.includes(member.character.class) || !wantsStoryDeed(member, rules)) {
+      party.push(member);
+      continue;
+    }
+    // Not caught: a read that fails must fail the action, not skip her deed.
+    const row = await deps.repo.getCharacter(memberHome(member, householdId), member.character.id);
+    if (!row) return fail("NOT_FOUND", `no character ${member.character.id}`);
+    const claim = claimFor(campaignId, householdId, row);
+    if ((await standing(row, claim, deps)) === "busy") return fail("HERO_BUSY", busyMessage(row));
+    const earned = earnStoredDeed(startCampaign(row, claim), rules, "class_story");
+    if (earned.character === row || classOf(earned.character) !== member.character.class) {
+      party.push(member);
+      continue;
+    }
+    writes.push(rewrite(row, earned.character));
+    const resolved = resolveCharacter(earned.character, rules, items);
+    party.push({ ...member, character: resolved });
+    const classDef = rules.classes[resolved.class];
+    if (earned.rankedUp && classDef) ups.push(rankUpLine(resolved.name, classDef, earned.rankedUp, resolved.id));
+  }
+  if (writes.length === 0) return ok({ writes, state });
+  return ok({
+    writes,
+    state: { ...state, party, ...(ups.length > 0 ? { rankUps: { sceneId: state.sceneId, ups } } : {}) },
+  });
+}
+
+/** Does this hero's worn class, as her snapshot has it, want a story deed for its next rank? */
+function wantsStoryDeed(member: PartyMember, rules: RulesContent): boolean {
+  const hero = heroDeedsOf(member.character);
+  const req = nextRankDeeds(rules.classes[hero.class], hero.rank);
+  const target = req ? deedTargets(req).get("class_story") : undefined;
+  return target !== undefined && (hero.deeds.class_story ?? 0) < target;
 }

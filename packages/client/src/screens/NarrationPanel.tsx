@@ -80,6 +80,11 @@ export function NarrationPanel(): ReactElement | null {
   // The practice's line of what to tap (#255): shown under the words, in a
   // fight too, because that is where the board's lesson is.
   const hint = state?.hint ?? null;
+  // Ranks that just landed (#310), while the scene they landed on is open and
+  // never over a fight. One line each; the moment itself is #314's.
+  const rankUps =
+    state?.encounter == null && state?.rankUps && state.rankUps.sceneId === sceneId ? state.rankUps.ups : [];
+  const rankUpText = rankUps.map((up) => (up.crow ? `${up.line} ${up.crow}` : up.line)).join(" ");
   const prompt = state?.prompt ?? null;
   const choices = prompt !== null && prompt.kind === "choice" ? prompt.options : null;
   /*
@@ -140,6 +145,15 @@ export function NarrationPanel(): ReactElement | null {
     spokenHint.current = key;
     speak(hint, { source: "ui" });
   }, [sceneId, hint]);
+
+  /* The rank-up lines, after the story: once per scene. */
+  const spokenRankUps = useRef<string | null>(null);
+  useEffect(() => {
+    const key = `${sceneId ?? "-"}:${rankUpText}`;
+    if (rankUpText === "" || spokenRankUps.current === key) return;
+    spokenRankUps.current = key;
+    speak(rankUpText, { source: "ui" });
+  }, [sceneId, rankUpText]);
 
   /*
    * Whose turn it is, and no more. The options themselves are read by the phone
@@ -328,6 +342,12 @@ export function NarrationPanel(): ReactElement | null {
               <span>{hint}</span>
             </p>
           )}
+          {rankUps.map((up) => (
+            <p className="narration__hint" key={`rank:${up.characterId}:${up.rank}`} data-testid="rank-up">
+              <Icon name="star" />
+              <span>{up.crow ? `${up.line} ${up.crow}` : up.line}</span>
+            </p>
+          ))}
         </div>
 
         {/*
