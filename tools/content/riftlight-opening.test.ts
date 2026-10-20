@@ -3,7 +3,7 @@ import path from "node:path";
 import { afterAll, describe, expect, it, vi } from "vitest";
 import { enterScene, lintCampaignGraph, parseCampaignGraph, newCharacter, resolveCharacter, validateChapter, startJourney, completeVisit, takeExit, seedRunBuffs } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
-import { runValidator } from "./generate-gate.ts";
+import { runValidator } from "./run-validator.ts";
 import { chapterFlagsFrom } from "./journey-graph.ts";
 import { exploreRoutes, playtest } from "./journey-explore.ts";
 import { stageRiftlightOpening } from "./riftlight-preview.ts";
