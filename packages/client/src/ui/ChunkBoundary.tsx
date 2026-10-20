@@ -66,10 +66,19 @@ export function lazyChunk<M, C extends ComponentType<any>>(
       // A script that failed is asked for under a new address; anything else
       // (a stylesheet Vite preloads) is not cached as failed, so the same import.
       const url = error === undefined ? undefined : chunkUrl(error);
-      // The address may name a chunk this one imports rather than this one
-      // itself, whose exports are not the ones `pick` wants: then the entry.
-      const component = (url && !url.endsWith(".css") ? pick((await importAgain(url)) as M) : undefined) ?? pick(await load());
-      return { default: component };
+      const named = url && !url.endsWith(".css") ? ((await importAgain(url)) as M) : undefined;
+      const component = named === undefined ? undefined : pick(named);
+      if (component !== undefined) return { default: component };
+      try {
+        return { default: pick(await load()) };
+      } catch (thrown: unknown) {
+        // The address named a chunk this one imports, not this one: that
+        // chunk is back, but the browser keeps this one's failure for good
+        // under the address only `load` knows. A reload asks for it again
+        // (this runs only after a boundary asked, so never in a loop).
+        if (named !== undefined && url && reloadOnce(url)) return new Promise<never>(() => undefined);
+        throw thrown;
+      }
     } catch (thrown: unknown) {
       failed = { error: thrown, at: asked };
       throw thrown;

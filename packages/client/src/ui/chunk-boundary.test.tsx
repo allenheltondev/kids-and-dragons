@@ -65,23 +65,59 @@ describe("a chunk that fails to load", () => {
     expect(load).toHaveBeenCalledTimes(2);
   });
 
+  /** An error naming a real module that is not the screen: one it imports, now loadable, with no `Sound`. */
+  const dependency = `${import.meta.dirname}/Button.tsx`;
+  const dependencyFailed = () => new TypeError(`Failed to fetch dynamically imported module: ${dependency}`);
+  const pickSound = (module: { Sound?: () => React.JSX.Element }) => module.Sound!;
+
   it("asks for the screen's own module when the address an error names exports something else", async () => {
     vi.stubGlobal("reportError", vi.fn());
-    // The chunk is there now (HEAD 200), and the address the error names is a
-    // real module, but one the screen imports: it has no `Sound` to pick.
     vi.stubGlobal("fetch", vi.fn(() => Promise.resolve({ status: 200 })));
-    const dependency = `${import.meta.dirname}/Button.tsx`;
     let calls = 0;
     const load = vi.fn(() => (++calls === 1
-      ? Promise.reject(new TypeError(`Failed to fetch dynamically imported module: ${dependency}`))
+      ? Promise.reject(dependencyFailed())
       : Promise.resolve({ Sound: () => <button type="button">Sound</button> })));
-    const Chunk = lazyChunk(load, (module: { Sound?: () => React.JSX.Element }) => module.Sound!);
+    const Chunk = lazyChunk(load, pickSound);
     render(<ChunkBoundary><Suspense fallback={null}><Chunk /></Suspense></ChunkBoundary>);
     await screen.findByRole("alert");
 
     await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Try again" })); });
     expect(await screen.findByRole("button", { name: "Sound" })).toBeTruthy();
     expect(load).toHaveBeenCalledTimes(2);
+  });
+
+  it("reloads once when the screen's own import stays failed after the chunk it imports is back", async () => {
+    vi.stubGlobal("reportError", vi.fn());
+    vi.stubGlobal("fetch", vi.fn(() => Promise.resolve({ status: 200 })));
+    const reload = vi.fn();
+    vi.stubGlobal("location", { ...location, reload });
+    sessionStorage.clear();
+    // What a browser that caches the failure does: the screen's import never succeeds again in this page.
+    const load = vi.fn(() => Promise.reject(dependencyFailed()));
+    const Chunk = lazyChunk(load, pickSound);
+    render(<ChunkBoundary><Suspense fallback={null}><Chunk /></Suspense></ChunkBoundary>);
+    await screen.findByRole("alert");
+
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Try again" })); });
+    await vi.waitFor(() => { expect(reload).toHaveBeenCalledOnce(); });
+    expect(load).toHaveBeenCalledTimes(2);
+  });
+
+  it("says so again, without a second reload, if that reload did not help", async () => {
+    vi.stubGlobal("reportError", vi.fn());
+    vi.stubGlobal("fetch", vi.fn(() => Promise.resolve({ status: 200 })));
+    const reload = vi.fn();
+    vi.stubGlobal("location", { ...location, reload });
+    sessionStorage.clear();
+    sessionStorage.setItem(`kad-chunk-reload:${dependency}`, "1");
+    const load = vi.fn(() => Promise.reject(dependencyFailed()));
+    const Chunk = lazyChunk(load, pickSound);
+    render(<ChunkBoundary><Suspense fallback={null}><Chunk /></Suspense></ChunkBoundary>);
+    await screen.findByRole("alert");
+
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Try again" })); });
+    expect(await screen.findByRole("alert")).toBeTruthy();
+    expect(reload).not.toHaveBeenCalled();
   });
 
   it("keeps the message, and one import per press, while the chunk stays unreachable", async () => {
