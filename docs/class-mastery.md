@@ -52,7 +52,7 @@ earns a distinction anywhere in the world, a crow lands on a nearby fence, says 
   from that place's `rest` scene, so a campaign pays for four rooms, not four chapters.
 - **Every graph campaign has all four reachable.** `content:validate` fails a graph campaign that is
   missing one, or whose only way to one is gated *(built, #313)*. A way counts when no flag, item,
-  species, class, world fact, lock or rift rule (`opensWhen`, `uses`, ...) stands in it; a `completed:` or `visited:` gate on a place any
+  species, class, world fact, lock or rift rule (`opensWhen`, `lasts`, `actions`, ...; `uses` alone does not, since every party crosses once) stands in it; a `completed:` or `visited:` gate on a place any
   party can reach is open. A room must be entered from a `rest` scene. A graph campaign that does not
   have its rooms yet is listed with a reason in `tools/content/class-place-allow.json`, which warns
   and which #315 empties; an entry for a campaign that has them all fails, so it cannot go stale.
