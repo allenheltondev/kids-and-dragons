@@ -46,6 +46,10 @@
     "item": {
       "icon": "bag",
       "text": "This is one of your things. Tap it to use it or give it to a friend."
+    },
+    "token": {
+      "icon": "star",
+      "text": "This is the gear that gives you your moves. Each notch is a rank you earned, and the dots fill up as you do your class's deeds."
     }
   },
   "join": {

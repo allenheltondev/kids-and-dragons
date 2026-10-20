@@ -22,6 +22,7 @@ import type { ItemCatalog, PartyMember, ResolvedCharacter, RunState } from "@kad
 import { makeItems } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
 import { NarrationPanel } from "./NarrationPanel";
+import { RANK_UP_MS } from "./RankUpMoment";
 
 const ITEMS: ItemCatalog = makeItems();
 
@@ -452,5 +453,54 @@ describe("a rank that just landed (#310)", () => {
   it("is gone once the table has moved on to another scene", () => {
     mount({ sceneType: "story", sceneId: "road", rankUps: { sceneId: "camp", ups: [UP] } });
     expect(screen.queryByTestId("rank-up")).toBeNull();
+    expect(screen.queryByTestId("rank-up-moment")).toBeNull();
+  });
+
+  it("lifts the token over the stage beside the line (#314), said only once, by the line", async () => {
+    mount({ sceneType: "rest", sceneId: "camp", narration: "A fire, and the road beyond it.", rankUps: { sceneId: "camp", ups: [UP] } });
+    const moment = await screen.findByTestId("rank-up-moment");
+    expect(moment.getAttribute("aria-hidden")).toBe("true");
+    expect(moment.textContent).toContain("Don't mess with us.");
+    expect(spoken.filter((line) => line.includes("Duskrunner Apprentice"))).toHaveLength(1);
+  });
+
+  it("cheers once per landing: not again on a redraw, but again when the same rank lands again in a run played over", async () => {
+    // No test seam reset: the moment's own memory has to get this right.
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      const camp = { sceneType: "rest" as const, sceneId: "camp", rankUps: { sceneId: "camp", ups: [UP] } };
+      mount(camp);
+      await screen.findByTestId("rank-up-moment");
+      act(() => { vi.advanceTimersByTime(RANK_UP_MS); });
+      expect(screen.queryByTestId("rank-up-moment")).toBeNull();
+
+      // The same landing, redrawn (a pane toggled, the panel remounted): no second cheer.
+      cleanup();
+      mount(camp);
+      expect(screen.queryByTestId("rank-up-moment")).toBeNull();
+
+      // The table moves on; the campaign fails and rolls the rank back; the chapter is played
+      // over in the same run, and the same hero earns the same rank on the same scene.
+      act(() => {
+        const { rankUps: _gone, ...movedOn } = useGameStore.getState().state!;
+        useGameStore.setState({ state: { ...movedOn, sceneId: "road" } });
+      });
+      cleanup();
+      mount(camp);
+      expect(await screen.findByTestId("rank-up-moment")).toBeTruthy();
+      act(() => { vi.advanceTimersByTime(RANK_UP_MS); });
+
+      // And in a new run (a new evening, the same hero, rank and scene), even with no
+      // state between the two landings for the memory to see go by.
+      cleanup();
+      mount(camp);
+      expect(screen.queryByTestId("rank-up-moment")).toBeNull();
+      act(() => {
+        useGameStore.setState({ state: { ...useGameStore.getState().state!, runId: "r_2" } });
+      });
+      expect(await screen.findByTestId("rank-up-moment")).toBeTruthy();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

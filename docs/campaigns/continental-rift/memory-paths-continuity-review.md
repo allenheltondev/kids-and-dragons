@@ -108,6 +108,7 @@ Existing `ice-shelf-headwaters` and `reading-room` illustrations are establishin
 the changing course and moving memory view are read aloud, not claimed as literal diagrams
 in that existing art. New custom clue art can be commissioned in a later visual pass.
 
-Two key nodes are now authored (Coast bridge and Paths memory). This preview does not unlock
-an unwritten convergence or pretend two clues complete the campaign. Island-due-back, the
+The Coast bridge and Paths memory are authored here; the later
+[island continuation](island-continuity-review.md) adds the Sky key node. The preview does
+not unlock an unwritten convergence or treat those clues as a completed campaign. The
 remaining strand ends, convergence, finale and full XP-route acceptance remain future work.

@@ -20,6 +20,7 @@ export * from "./rules.js";
 export * from "./character.js";
 export * from "./class-place.js";
 export * from "./deeds.js";
+export * from "./tokens.js";
 export * from "./claim.js";
 export * from "./player-colors.js";
 export * from "./migrate.js";
