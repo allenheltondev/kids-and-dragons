@@ -160,8 +160,8 @@ export const SW_BUNDLE_LIST_KEY = "/__kad/bundle-list";
  * a room, it imports that build's chunks — which the deploy has already
  * deleted from the bucket (`--delete`). Keeping one build back is what lets
  * that import still succeed. Two deploys back is a tab left open across two
- * releases; it gets the "Try again" a missing chunk always gets (App.tsx
- * `RoomBoundary`), which reloads it onto the current build.
+ * releases; it gets the "Try again" a missing chunk always gets (ui/ChunkBoundary.tsx),
+ * which reloads it onto the current build.
  */
 export function swStaleBundles(
   cached: readonly string[],

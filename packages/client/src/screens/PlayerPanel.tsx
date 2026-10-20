@@ -21,7 +21,8 @@ import { setPlayerSection, usePlayerNavigation } from "../store/player-navigatio
  * and the inventory scroll under the strip.
  */
 
-import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ReactElement, ReactNode } from "react";
 import {
   DEFAULT_HELP_DIE,
@@ -36,6 +37,7 @@ import {
   sameHome,
   swapOwnerAway,
   voteWaitsOnlyOnAway,
+  type RankUp,
 } from "@kad/shared";
 import { checkTarget } from "./DiceOverlay";
 import { checkBuffLine } from "./buff-copy";
@@ -102,7 +104,16 @@ import { HelpClaim } from "../help/focus";
 import { helpAttrs } from "../help/longpress";
 
 /** The rank-up card (#314), fetched the first time a rank lands; the plain line stands in until then. */
-const RankUpCard = lazy(() => import("./RankUpMoment").then((module) => ({ default: module.RankUpCard })));
+const RankUpCard = lazyChunk(() => import("./RankUpMoment"), (module) => module.RankUpCard);
+
+function RankUpLine({ up }: { up: RankUp }): ReactElement {
+  return (
+    <p className="player__hint" data-testid="player-rank-up">
+      <ClassToken classId={up.class} rank={up.rank} size="sm" holdable={false} />
+      <span>{up.crow ? `${up.line} ${up.crow}` : up.line}</span>
+    </p>
+  );
+}
 
 /** Stable-ish identity for a prompt, so a new one clears any pending choice. */
 function promptKey(prompt: Prompt | null): string {
@@ -907,17 +918,12 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           ? state.rankUps.ups
               .filter((up) => up.characterId === me.character.id)
               .map((up) => (
-                <Suspense
-                  key={up.rank}
-                  fallback={
-                    <p className="player__hint" data-testid="player-rank-up">
-                      <ClassToken classId={up.class} rank={up.rank} size="sm" holdable={false} />
-                      <span>{up.crow ? `${up.line} ${up.crow}` : up.line}</span>
-                    </p>
-                  }
-                >
-                  <RankUpCard up={up} />
-                </Suspense>
+                // The plain line while the card loads, and instead of it if it cannot (#329).
+                <ChunkBoundary key={up.rank} quiet fallback={<RankUpLine up={up} />}>
+                  <Suspense fallback={<RankUpLine up={up} />}>
+                    <RankUpCard up={up} />
+                  </Suspense>
+                </ChunkBoundary>
               ))
           : null}
         {/* The practice's hint (#255), where the tapping happens, with its own

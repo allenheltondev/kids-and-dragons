@@ -11,7 +11,8 @@
  * that owns them (PlayerPanel).
  */
 
-import { Suspense, lazy, useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
+import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ReactElement } from "react";
 import { combatTurnAway, currentActorId, speak, turnHolderAway } from "@kad/shared";
 import type { PartyMember } from "@kad/shared";
@@ -29,7 +30,7 @@ import "./shared.css";
 import "./NarrationPanel.css";
 
 /** The rank-up moment (#314), fetched the first time a rank lands, never at first paint. */
-const RankUpMoment = lazy(() => import("./RankUpMoment").then((module) => ({ default: module.RankUpMoment })));
+const RankUpMoment = lazyChunk(() => import("./RankUpMoment"), (module) => module.RankUpMoment);
 
 /** "bramblewood-01" → "Bramblewood 01". The fallback for a run persisted
  *  before `chapterInfo` carried the real title. */
@@ -369,14 +370,17 @@ export function NarrationPanel(): ReactElement | null {
             </p>
           ))}
           {rankUps.length === 0 ? null : (
-            <Suspense fallback={null}>
-              <RankUpMoment
-                ups={rankUps}
-                party={party}
-                rules={rules}
-                momentKey={`${state.runId}:${sceneId ?? "-"}:${rankUps.map((up) => `${up.characterId}.${up.rank}`).join(",")}`}
-              />
-            </Suspense>
+            // Decoration over the lines above, which already say it: a moment that cannot load is skipped.
+            <ChunkBoundary quiet>
+              <Suspense fallback={null}>
+                <RankUpMoment
+                  ups={rankUps}
+                  party={party}
+                  rules={rules}
+                  momentKey={`${state.runId}:${sceneId ?? "-"}:${rankUps.map((up) => `${up.characterId}.${up.rank}`).join(",")}`}
+                />
+              </Suspense>
+            </ChunkBoundary>
           )}
         </div>
 
