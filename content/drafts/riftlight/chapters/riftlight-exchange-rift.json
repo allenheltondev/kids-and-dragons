@@ -593,7 +593,7 @@
     },
     "rookery": {
       "type": "story",
-      "narration": "You climb through a trapdoor onto the rooftops. Crows sit on every chimney pot and every gutter, and all of them are looking at you. A sign hangs on the tallest chimney: NO MESSING. (WITH US.) This rooftop school is called the Rookery. Here the crows train each Duskrunner, a hero who runs quick and quiet. They all teach at once. On a peg hangs a dusk hood, soft as a shadow. Their quickness lives in that hood, and a star circlet worn beside it only makes it itch. Someone has put a tiny doormat at the top of the ladder. \"Wipe your feet,\" say the crows. \"We don't get messed with up here. Anyone who wants the hood may try it on.\"",
+      "narration": "You climb through a trapdoor onto the rooftops. Crows sit on every chimney pot and every gutter, and all of them are looking at you. A sign hangs on the tallest chimney: NO MESSING. (WITH US.) This rooftop school is called the Rookery. Here the crows train each Duskrunner, a hero who runs quick and quiet. They all teach at once. On a peg hangs a dusk hood, soft as a shadow. A Duskrunner's quickness lives in that hood, and a star circlet worn beside it only makes it itch. Someone has put a tiny doormat at the top of the ladder. \"Wipe your feet,\" say the crows. \"We don't get messed with up here. Anyone who wants the hood may try it on.\"",
       "variants": [
         {
           "when": {
