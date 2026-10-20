@@ -71,6 +71,7 @@ export const ENTITY_SIZES: Readonly<Record<string, CastSize | "variable">> = {
   river_drake: "large",
   bone_crawler: "small_to_medium",
   echo_hunter: "large",
+  kavari: "medium",
   will_o_wisp: "tiny",
   restless_remains: "variable",
 };
