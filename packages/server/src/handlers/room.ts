@@ -10,7 +10,7 @@
  * and its character is already on the board.
  */
 
-import { VISITOR_CODE_EXTRA } from "@kad/shared";
+import { tableFull, VISITOR_CODE_EXTRA } from "@kad/shared";
 import type {
   CreateRoomResponse,
   JoinRoomResponse,
@@ -459,6 +459,7 @@ export async function joinRoom(
     state: joined,
     ...(host ? { host: true } : {}),
     ...(keeper ? { keeper: true } : {}),
+    ...(tableFull(joined, player.id) ? { full: true } : {}),
   });
 }
 
