@@ -133,8 +133,8 @@ test.describe("the shared screen is read, not driven", () => {
       const joined = await join(browser, code);
       kid ??= joined;
       await expect(notice).toBeVisible(TAP);
-      await expect(notice.getByRole("button")).toHaveCount(0);
       if (SHOTS) await tv.screenshot({ path: `${SHOTS}/lobby-${size.width}x${size.height}.png` });
+      await expect(notice.getByRole("button")).toHaveCount(0);
       await onlyTheKeepList(tv, `the lobby with a join notice @${size.width}x${size.height}`);
       await expect(notice).toHaveCount(0, { timeout: 10_000 });
     }
@@ -158,8 +158,8 @@ test.describe("the shared screen is read, not driven", () => {
       await watchNotice(tv);
       await join(browser, code);
       await expect(notice).toBeVisible(TAP);
-      await onlyTheKeepList(tv, `the story with a join notice @${size.width}x${size.height}`);
       if (SHOTS) await tv.screenshot({ path: `${SHOTS}/story-join-${size.width}x${size.height}.png` });
+      await onlyTheKeepList(tv, `the story with a join notice @${size.width}x${size.height}`);
       // Nobody touches the TV.
       await expect(notice).toHaveCount(0, { timeout: 10_000 });
       const seen = await noticeRecord(tv);
