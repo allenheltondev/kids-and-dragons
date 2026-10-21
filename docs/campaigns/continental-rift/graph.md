@@ -156,3 +156,13 @@ The Sallow Wastelands (the Saltrot), Saltrot guides, the Bone Yard and displaced
 
 ## Decisions still open
 None at the graph level; node-by-node specs come next.
+
+## Complete story preview
+
+All planned nodes and the six pairwise convergence edges now exist in the isolated preview.
+All development pause nodes are removed. The next-tide upriver ferry is offered after
+completing the Bone Yard; its guide introduces the checked route before it appears.
+The full preview graph is linted and replayed, with all story routes leading onward.
+See [the finale review](finale-review.md) for the completed search and the remaining
+family-timing and XP-budget production gates. The original size table above is a design
+estimate, not a measured count of paying nodes on every optional route.
