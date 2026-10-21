@@ -3,9 +3,9 @@ title: The Sunward Fields
 id: biome.sunward_fields
 type: biome
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
-played_in: ["bramblewood-01", "gemfall-01", "gemfall-02"]
+played_in: ["bramblewood-01", "first-steps-01", "gemfall-01", "gemfall-02"]
 tags: ["farmland", "meadows", "orchards", "villages", "food", "seasonal_work"]
 danger_level: low
 regional_relationships:

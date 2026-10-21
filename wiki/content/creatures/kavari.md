@@ -3,7 +3,7 @@ title: Kavari
 id: creature.kavari
 type: creature
 status: draft
-lastReviewed: "2026-10-20"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: []
 tags: ["legendary", "underground", "avian", "rebirth"]
@@ -11,6 +11,11 @@ classification: legendary_beast
 danger_level: high
 scale: medium
 sapience: animal
+height_cm: 120
+size:
+  height: "1.2 m (3 ft 11 in)"
+  compare: "about as tall as a kid"
+  line: "1.2 m (3 ft 11 in), about as tall as a kid."
 lore_hook: "The youngest bird in the cave may remember its oldest secrets."
 related:
   - id: location.skullwater_cave
@@ -22,6 +27,9 @@ related:
 assets:
   primary: assets/entities/kavari/portrait.webp
   primaryFull: assets/entities/kavari/assembled.png
+  gallery:
+    - src: assets/entities/kavari/wings-down.png
+      full: assets/entities/kavari/wings-down.png
 ai_context:
   mood: "Rare ice-blue bird found only in Skullwater Cave. A Kavari ages backward into an egg, which releases a two-day snowstorm before an adult emerges."
   themes: "Legendary, Underground, Avian, Rebirth"

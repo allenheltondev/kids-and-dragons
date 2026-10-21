@@ -55,11 +55,18 @@ Every figure is `assets/cast/<id>/assembled.png`, declared in `assets/manifest.j
 `castFigures`:
 
 ```json
-{ "id": "coralie_fenn", "name": "Madame Coralie Fenn", "basis": "merfolk", "scale": "medium" }
+{ "id": "coralie_fenn", "name": "Madame Coralie Fenn", "basis": "merfolk", "scale": "medium", "heightCm": 150, "stance": "standing" }
 ```
 
 - `basis`: the entity id or species id the character is one of (`verify.py` checks it exists).
-- `scale`: one of the entity scale words (`tiny` … `colossal`). `medium` stands as tall as a hero.
+- `scale`: one of the entity scale words (`tiny` … `colossal`).
+- `heightCm`: how tall they are in their own pose, in centimeters, inside their `scale` band
+  (packages/canon `SCALE_CM`). The stage draws them at this height beside the party (#362). Data only:
+  never shown to a player.
+- `stance`: `standing`, `hovering`, `flying` or `swimming`, how they occupy a scene unless a chapter
+  says otherwise.
+
+After editing either, run `npm run art:figures` to regenerate the stage's height table.
 
 The image:
 
@@ -67,7 +74,7 @@ The image:
 |---|---|
 | Canvas | 1024 × 1024 RGBA, real transparency, sRGB, ≥ 8px clear margin (same as entities) |
 | Feet | lowest opaque row within 12px of **y = 900** (the canvas origin). `verify.py` fails it otherwise. A figure that hovers (a bathtub? no; a will-o-wisp, yes) is the exception; say so in the PR. |
-| Fill | the figure fills the canvas height like every entity does; `scale` alone sets on-stage size |
+| Fill | the figure fills the canvas height like every entity does; the stage measures the painting and draws it at `heightCm` |
 | Facing | **three-quarter view facing left.** The cast stands on the right of the stage, facing the party on the left. |
 | Contents | one character, complete, no ground shadow, no props cut by the canvas edge. Their defining prop is part of the figure (Fenn's barrel, Ashby's walking stick, Pellam's ledger). |
 | Pose | standing, relaxed, readable silhouette; mid-gesture is fine. Not attacking, not frightened. |
@@ -76,8 +83,9 @@ The image:
 Then point the content at it: in every `content/chapters/*.json` scene whose `cast` contains that
 character's **name** (listed below; find them with
 `grep -n '"name": "Pellam"' content/chapters/*.json`), change `figure` to `cast/<id>` and leave
-`name` exactly as it is. If the figure's `scale` is not `medium`, also set `"size"` on those cast
-entries to the same word. Change nothing else in the chapter files.
+`name` exactly as it is. Do not set `"size"` to match the figure's `scale`: every figure already
+stands at its own height (`heightCm` on its `castFigures` entry, #362). Change nothing else in the
+chapter files.
 
 ### Acceptance for every figure
 
@@ -363,7 +371,7 @@ Audited all `cast` entries in `content/chapters/gemfall-*.json` against main on 
 | Road-Warden | `entities/centaur` | 04a (7) | Centaur road warden in road-stitched sash carrying spare marker ribbons. |
 | Rush drover | `entities/centaur` | 02 (4) | Centaur wagon drover with road-dust coat, feed bag and impatient stance. |
 | Rush prospector | `entities/burrowfolk` | 05c (5) | Burrowfolk in dusty workwear with an oversized pry bar; stubborn but approachable. |
-| Seal-Keeper | `entities/legend_dragon` | 08 (31) | Ancient seal dragon, patient eyes and weathered scales; existing legend-dragon silhouette is intentional. |
+| Seal-Keeper | `entities/legend_dragon` | 08 (31) | A dedicated `seal_keeper` figure is wanted ([#384](https://github.com/allenheltondev/kids-and-dragons/issues/384)); §4's look stands. Keep the legend-dragon stand-in until it lands. |
 | Selkie Grandmother | `entities/selkie` | 01 (5) | Silver-haired selkie elder with seal cloak, teal knit shawl and bundled travel blanket. |
 | Skywardens | `entities/skywardens` | 06, 07r (49) | Mixed silver-and-violet uniformed order; keep ensemble art for the group. |
 | Stall Witch | `entities/witch_order` | 07l (4) | Single market witch with pointed hat, charm bundles and a patient sales smile. |

@@ -37,6 +37,7 @@ import {
   claimFor,
   claimOf,
   isPracticeCampaign,
+  MAX_PARTY,
   parseClaim,
   memberHome,
   resolveCharacter,
@@ -290,8 +291,8 @@ export async function resumeGame(
     const found = await savedGame(run.householdId, deps);
     if (!found) return fail("NOT_FOUND", "There is no saved game to pick up.");
 
-    const { party, writes } = await restoreParty(room, found.state, run.householdId, deps);
-    if (party.length === 0) return fail("ILLEGAL", "Pick a hero first, then keep going.");
+    const { party, writes, removed } = await restoreParty(room, found.state, run.householdId, deps);
+    if (party.every((m) => removed.includes(m.playerId))) return fail("ILLEGAL", "Pick a hero first, then keep going.");
 
     const { closed: _closed, stopped: _stopped, saved: _saved, ...play } = found.state;
     const base: Record<string, unknown> = { ...play };
@@ -304,6 +305,7 @@ export async function resumeGame(
     const next: RunState = {
       ...(base as unknown as RunState),
       party,
+      ...(removed.length > 0 ? { removed } : {}),
       // Nothing is mid-air in a game being picked up.
       lastRoll: null,
       ...(turn === undefined ? {} : { storyTurn: turn % party.length }),
@@ -382,30 +384,66 @@ async function spend(record: RunRecord, deps: Pick<HandlerDeps, "repo">): Promis
  * hero already seated in this room who was not in the game joins it, claiming
  * the adventure the way a hero who sits down mid-chapter does; one held by
  * another adventure is left out, as that start would refuse her.
+ *
+ * Never past `MAX_PARTY` seats (#389). The saved heroes are the game, so they
+ * sit first; a newcomer sits only while a seat is open. One who finds none is
+ * left as she was: not in the game, her hero not claimed, her phone still in
+ * the room, where it says the table is full. Nobody saved loses their place
+ * to somebody who sat down in the lobby.
+ *
+ * A save stopped before the cap (a resume could seat five) can hold more
+ * saved heroes than seats. The heroes whose phones are in this room sit first,
+ * then the rest in their saved order, until the seats are full. One left over
+ * keeps her claim on the adventure, untouched: nothing she earned is dropped,
+ * and she sits back down (SEAT_CHARACTER, which a hero this adventure holds
+ * may do mid-chapter) when a seat opens, or in the next game.
+ *
+ * Somebody the saved game's host took out (`RunState.removed`, #267) comes
+ * back still out: in the party, away, holding no seat, and on the `removed`
+ * this returns for the resumed game to carry. Picking a game up is not a way
+ * back in.
  */
 async function restoreParty(
   room: RunState,
   saved: RunState,
   householdId: string,
   deps: HandlerDeps,
-): Promise<{ party: PartyMember[]; writes: CharacterWrite[] }> {
+): Promise<{ party: PartyMember[]; writes: CharacterWrite[]; removed: string[] }> {
   const campaignId = saved.campaignId!;
   const party: PartyMember[] = [];
   const writes: CharacterWrite[] = [];
   const kept = new Set<string>();
+  const out = new Set(room.removed ?? []);
   const here = (playerId: string): boolean =>
     room.party.find((m) => m.playerId === playerId)?.connected ?? room.seats?.[playerId] !== undefined;
 
+  const claimed: PartyMember[] = [];
   for (const member of saved.party) {
     const hero = await deps.repo.getCharacter(memberHome(member, householdId), member.character.id);
     if (!hero) continue;
     if ((await standing(hero, claimFor(campaignId, householdId, hero), deps)) !== "mine") continue;
+    if (saved.removed?.includes(member.playerId)) out.add(member.playerId);
+    const away = out.has(member.playerId);
+    claimed.push({ ...member, connected: !away && here(member.playerId), ready: false });
+  }
+  // Who of them holds a seat: the ones here first, then the saved order.
+  const seating = claimed.filter((m) => !out.has(m.playerId));
+  const sitting = new Set(
+    [...seating.filter((m) => m.connected), ...seating.filter((m) => !m.connected)]
+      .slice(0, MAX_PARTY)
+      .map((m) => m.playerId),
+  );
+  for (const member of claimed) {
+    if (!out.has(member.playerId) && !sitting.has(member.playerId)) continue;
     kept.add(member.playerId);
-    party.push({ ...member, connected: here(member.playerId), ready: false });
+    party.push(member);
   }
 
+  const seated = (): number => party.filter((m) => !out.has(m.playerId)).length;
   for (const member of room.party) {
     if (kept.has(member.playerId)) continue;
+    if (out.has(member.playerId)) continue;
+    if (seated() >= MAX_PARTY) continue;
     const hero = await deps.repo.getCharacter(memberHome(member, householdId), member.character.id);
     if (!hero) continue;
     const claim = claimFor(campaignId, householdId, hero);
@@ -423,7 +461,7 @@ async function restoreParty(
       ready: false,
     });
   }
-  return { party, writes };
+  return { party, writes, removed: [...out] };
 }
 
 /**

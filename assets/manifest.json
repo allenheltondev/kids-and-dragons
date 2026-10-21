@@ -980,501 +980,696 @@
     "scenes/riftlight/buried-bridge-evidence",
     "scenes/riftlight/whale-road-cleared"
   ],
-  "$castFiguresComment": "Named story characters' own figures, drawn on the story stage opposite the party (content `cast`, docs/briefs/story-cast-art.md). Same contract as entities: assets/cast/<id>/assembled.png, 1024x1024 RGBA, one complete cutout standing on the canvas origin (feet at y=900), facing left toward the party. `basis` is the entity or species the character is one of; `scale` is how big they stand, in the entities' scale words. verify.py checks each entry.",
+  "$castFiguresComment": "Named story characters' own figures, drawn on the story stage opposite the party (content `cast`, docs/briefs/story-cast-art.md). Same contract as entities: assets/cast/<id>/assembled.png, 1024x1024 RGBA, one complete cutout standing on the canvas origin (feet at y=900), facing left toward the party. `basis` is the entity or species the character is one of; `scale` is how big they stand, in the entities' scale words; `heightCm` is their height in centimeters, in their own pose and inside that band (canon/creatures.yaml `scale`, packages/canon SCALE_CM), and `stance` how they occupy a scene (standing, hovering, flying or swimming). Both are data, never shown to a player (#362). verify.py checks each entry.",
   "castFigures": [
     {
       "id": "coralie_fenn",
       "name": "Madame Coralie Fenn",
       "basis": "merfolk",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 150,
+      "stance": "standing"
     },
     {
       "id": "great_gran_ashby",
       "name": "Great-Gran Ashby",
       "basis": "dragonling",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 130,
+      "stance": "standing"
     },
     {
       "id": "pellam",
       "name": "Pellam",
       "basis": "faun",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 165,
+      "stance": "standing"
     },
     {
       "id": "grandmother_tull",
       "name": "Grandmother Tull",
       "basis": "dragonling",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 130,
+      "stance": "standing"
     },
     {
       "id": "dragonling_grandmother",
       "name": "Grandmother",
       "basis": "dragonling",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 130,
+      "stance": "standing"
     },
     {
       "id": "mosshome_archivist",
       "name": "Archivist",
       "basis": "bigfoot",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 240,
+      "stance": "standing"
     },
     {
       "id": "oldest_archivist",
       "name": "Oldest Archivist",
       "basis": "bigfoot",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 230,
+      "stance": "standing"
     },
     {
       "id": "mosshome_eldest",
       "name": "The Eldest",
       "basis": "bigfoot",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 235,
+      "stance": "standing"
     },
     {
       "id": "mosshome_runner",
       "name": "MossHome Runner",
       "basis": "bigfoot",
-      "scale": "medium_to_large"
+      "scale": "medium_to_large",
+      "heightCm": 200,
+      "stance": "standing"
     },
     {
       "id": "flood_warden",
       "name": "Flood-Warden",
       "basis": "bigfoot",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 250,
+      "stance": "standing"
     },
     {
       "id": "elder_sefa",
       "name": "Elder Sefa",
       "basis": "manticore",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 190,
+      "stance": "standing"
     },
     {
       "id": "elder_unicorn",
       "name": "Elder Unicorn",
       "basis": "unicorn",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 210,
+      "stance": "standing"
     },
     {
       "id": "tamsin",
       "name": "Tamsin Three-Cards",
       "basis": "kitsune",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 110,
+      "stance": "standing"
     },
     {
       "id": "tidewell",
       "name": "Professor Tidewell",
       "basis": "selkie",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 165,
+      "stance": "standing"
     },
     {
       "id": "mortar",
       "name": "Mortar",
       "basis": "stone_troll",
-      "scale": "very_large"
+      "scale": "very_large",
+      "heightCm": 330,
+      "stance": "standing"
     },
     {
       "id": "gullet",
       "name": "Gullet",
       "basis": "frogfolk",
-      "scale": "small_to_medium"
+      "scale": "small_to_medium",
+      "heightCm": 100,
+      "stance": "standing"
     },
     {
       "id": "old_ossley",
       "name": "Old Ossley",
       "basis": "frogfolk",
-      "scale": "small_to_medium"
+      "scale": "small_to_medium",
+      "heightCm": 100,
+      "stance": "standing"
     },
     {
       "id": "old_lintel",
       "name": "Old Lintel",
       "basis": "stone_troll",
-      "scale": "very_large"
+      "scale": "very_large",
+      "heightCm": 310,
+      "stance": "standing"
     },
     {
       "id": "hesper",
       "name": "Hesper Longstride",
       "basis": "centaur",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 230,
+      "stance": "standing"
     },
     {
       "id": "marda_thorn",
       "name": "Marda Thorn",
       "basis": "centaur",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 225,
+      "stance": "standing"
     },
     {
       "id": "tobble",
       "name": "Tobble Reedpipe",
       "basis": "faun",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 160,
+      "stance": "standing"
     },
     {
       "id": "hob",
       "name": "Hob Thistledown",
       "basis": "faun",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 155,
+      "stance": "standing"
     },
     {
       "id": "nan_rummage",
       "name": "Nan Rummage",
       "basis": "boggart",
-      "scale": "small"
+      "scale": "small",
+      "heightCm": 65,
+      "stance": "standing"
     },
     {
       "id": "captain_voss",
       "name": "Captain Voss",
       "basis": "griffin",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 175,
+      "stance": "standing"
     },
     {
       "id": "brask",
       "name": "Engineer Brask",
       "basis": "faun",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 165,
+      "stance": "standing"
     },
     {
       "id": "holloway",
       "name": "Sergeant Holloway",
       "basis": "griffin",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 170,
+      "stance": "standing"
     },
     {
       "id": "mother_thrum",
       "name": "Mother Thrum",
       "basis": "witch_order",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 165,
+      "stance": "standing"
     },
     {
       "id": "ma_ruddle",
       "name": "Ma Ruddle",
       "basis": "burrowfolk",
-      "scale": "small_to_medium"
+      "scale": "small_to_medium",
+      "heightCm": 90,
+      "stance": "standing"
     },
     {
       "id": "tib",
       "name": "Tib",
       "basis": "burrowfolk",
-      "scale": "small_to_medium"
+      "scale": "small_to_medium",
+      "heightCm": 85,
+      "stance": "standing"
     },
     {
       "id": "dunmore",
       "name": "Dunmore",
       "basis": "burrowfolk",
-      "scale": "small_to_medium"
+      "scale": "small_to_medium",
+      "heightCm": 100,
+      "stance": "standing"
     },
     {
       "id": "hessa_wren",
       "name": "Hessa Wren",
       "basis": "harvest_sprite",
-      "scale": "tiny"
+      "scale": "tiny",
+      "heightCm": 22,
+      "stance": "standing"
     },
     {
       "id": "wend",
       "name": "Wend",
       "basis": "frogfolk",
-      "scale": "small_to_medium"
+      "scale": "small_to_medium",
+      "heightCm": 100,
+      "stance": "standing"
     },
     {
       "id": "hollis",
       "name": "Hollis",
       "basis": "bigfoot",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 240,
+      "stance": "standing"
     },
     {
       "id": "soup_woman",
       "name": "Soup woman",
       "basis": "selkie",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 160,
+      "stance": "standing"
     },
     {
       "id": "clerk_pennywhistle",
       "name": "Clerk Pennywhistle",
       "basis": "harvest_sprite",
-      "scale": "tiny"
+      "scale": "tiny",
+      "heightCm": 20,
+      "stance": "standing"
     },
     {
       "id": "caravan_master",
       "name": "Caravan Master",
       "basis": "centaur",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 235,
+      "stance": "standing"
     },
     {
       "id": "crying_gem_buyer",
       "name": "Crying gem-buyer",
       "basis": "merfolk",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 165,
+      "stance": "standing"
     },
     {
       "id": "rope_shop_boy",
       "name": "Rope-shop boy",
       "basis": "faun",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 130,
+      "stance": "standing"
     },
     {
       "id": "cult_frogfolk",
       "name": "Masked frogfolk singer",
       "basis": "frogfolk",
-      "scale": "small_to_medium"
+      "scale": "small_to_medium",
+      "heightCm": 105,
+      "stance": "standing"
     },
     {
       "id": "cult_bigfoot",
       "name": "Masked bigfoot singer",
       "basis": "bigfoot",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 240,
+      "stance": "standing"
     },
     {
       "id": "mrs_tuft",
       "name": "Mrs. Tuft",
       "basis": "sheeple",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 135,
+      "stance": "standing"
     },
     {
       "id": "old_wick",
       "name": "Old Wick",
       "basis": "frogfolk",
-      "scale": "small_to_medium"
+      "scale": "small_to_medium",
+      "heightCm": 100,
+      "stance": "standing"
     },
     {
       "id": "postmaster_quill",
       "name": "Postmaster Quill",
       "basis": "griffin",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 170,
+      "stance": "standing"
     },
     {
       "id": "bracken_swiftmile",
       "name": "Bracken",
       "basis": "centaur",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 230,
+      "stance": "standing"
     },
     {
       "id": "burdock",
       "name": "Burdock",
       "basis": "faun",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 165,
+      "stance": "standing"
     },
     {
       "id": "fennick",
       "name": "Fennick",
       "basis": "centaur",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 230,
+      "stance": "standing"
     },
     {
       "id": "mother_bracken",
       "name": "Mother Bracken",
       "basis": "faun",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 160,
+      "stance": "standing"
     },
     {
       "id": "littlest_bracken",
       "name": "Littlest Bracken",
       "basis": "faun",
-      "scale": "small_to_medium"
+      "scale": "small_to_medium",
+      "heightCm": 85,
+      "stance": "standing"
     },
     {
       "id": "innkeeper_flint",
       "name": "Innkeeper Flint",
       "basis": "stone_troll",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 290,
+      "stance": "standing"
     },
     {
       "id": "pib",
       "name": "Pib",
       "basis": "harvest_sprite",
-      "scale": "tiny"
+      "scale": "tiny",
+      "heightCm": 25,
+      "stance": "standing"
     },
     {
       "id": "granny_ash",
       "name": "Granny Ash",
       "basis": "manticore",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 185,
+      "stance": "standing"
     },
     {
       "id": "old_corran",
       "name": "Old Corran",
       "basis": "centaur",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 225,
+      "stance": "standing"
     },
     {
       "id": "nim",
       "name": "Nim",
       "basis": "dragonling",
-      "scale": "small_to_medium"
+      "scale": "small_to_medium",
+      "heightCm": 80,
+      "stance": "standing"
     },
     {
       "id": "corporal_tibbet",
       "name": "Corporal Tibbet",
       "basis": "griffin",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 170,
+      "stance": "standing"
     },
     {
       "id": "brisk",
       "name": "Brisk",
       "basis": "centaur",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 230,
+      "stance": "standing"
     },
     {
       "id": "perrin_nine_verse",
       "name": "Perrin Nine-Verse",
       "basis": "centaur",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 230,
+      "stance": "standing"
     },
     {
       "id": "bryony",
       "name": "Bryony",
       "basis": "dragonling",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 110,
+      "stance": "standing"
     },
     {
       "id": "lady_fleecewick",
       "name": "Lady Fleecewick",
       "basis": "sheeple",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 145,
+      "stance": "standing"
     },
     {
       "id": "cadet_linnet",
       "name": "Cadet Linnet",
       "basis": "griffin",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 160,
+      "stance": "standing"
     },
     {
       "id": "tansy",
       "name": "Tansy",
       "basis": "faun",
-      "scale": "small_to_medium"
+      "scale": "small_to_medium",
+      "heightCm": 90,
+      "stance": "standing"
     },
     {
       "id": "odo",
       "name": "Odo",
       "basis": "burrowfolk",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 100,
+      "stance": "standing"
     },
     {
       "id": "corbin",
       "name": "Corbin",
       "basis": "burrowfolk",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 105,
+      "stance": "standing"
     },
     {
       "id": "posy",
       "name": "Posy",
       "basis": "burrowfolk",
-      "scale": "small"
+      "scale": "small",
+      "heightCm": 70,
+      "stance": "standing"
     },
     {
       "id": "rook",
       "name": "Rook",
       "basis": "burrowfolk",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 100,
+      "stance": "standing"
     },
     {
       "id": "selkie_grandmother",
       "name": "Selkie Grandmother",
       "basis": "selkie",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 155,
+      "stance": "standing"
     },
     {
       "id": "path_keeper",
       "name": "Path-Keeper",
       "basis": "bigfoot",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 240,
+      "stance": "standing"
     },
     {
       "id": "young_gatherer",
       "name": "Young Gatherer",
       "basis": "dragonling",
-      "scale": "small"
+      "scale": "small",
+      "heightCm": 70,
+      "stance": "standing"
     },
     {
       "id": "courier_griffin",
       "name": "Courier Griffin",
       "basis": "griffin",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 170,
+      "stance": "standing"
     },
     {
       "id": "corbin_carrying_posy",
       "name": "Corbin and Posy",
       "basis": "burrowfolk",
-      "scale": "very_large"
+      "scale": "medium",
+      "heightCm": 150,
+      "stance": "standing"
     },
     {
       "id": "orin_vale",
       "name": "Master Orin Vale",
       "basis": "griffin",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 175,
+      "stance": "standing"
     },
     {
       "id": "lady_olivia",
       "name": "Lady Olivia",
       "basis": "unicorn",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 170,
+      "stance": "standing"
     },
     {
       "id": "seren_wisp",
       "name": "Seren Wisp",
       "basis": "kitsune",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 110,
+      "stance": "standing"
     },
     {
       "id": "pip_thistledown",
       "name": "Pip Thistledown",
       "basis": "manticore",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 140,
+      "stance": "standing"
     },
     {
       "id": "bram_lock",
       "name": "Bram Lock",
       "basis": "bigfoot",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 240,
+      "stance": "standing"
     },
     {
       "id": "yeti_elder",
       "name": "Reading-room elder",
       "basis": "yeti",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 245,
+      "stance": "standing"
     },
     {
       "id": "kitsune_temple_keeper",
       "name": "Temple keeper",
       "basis": "kitsune",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 115,
+      "stance": "standing"
     },
     {
       "id": "dragonling_stone_keeper",
       "name": "Boundary-stone keeper",
       "basis": "dragonling",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 130,
+      "stance": "standing"
     },
     {
       "id": "saltrot_guide",
       "name": "Saltrot guide",
       "basis": "skupper",
-      "scale": "small_to_medium"
+      "scale": "small_to_medium",
+      "heightCm": 100,
+      "stance": "standing"
     },
     {
       "id": "deep-ice-figure",
       "name": "Deep-ice figure",
       "basis": "faun",
-      "scale": "very_large"
+      "scale": "very_large",
+      "heightCm": 280,
+      "stance": "standing"
     },
     {
       "id": "skywarden_griffin",
       "name": "Skywarden griffin",
       "basis": "griffin",
-      "scale": "medium_to_large"
+      "scale": "medium_to_large",
+      "heightCm": 185,
+      "stance": "standing"
     },
     {
       "id": "skywarden_faun",
       "name": "Skywarden faun",
       "basis": "faun",
-      "scale": "medium"
+      "scale": "medium",
+      "heightCm": 170,
+      "stance": "standing"
     },
     {
       "id": "skywarden_centaur",
       "name": "Skywarden centaur",
       "basis": "centaur",
-      "scale": "large"
+      "scale": "large",
+      "heightCm": 235,
+      "stance": "standing"
     }
   ],
+  "$stageFiguresComment": "Entity art a chapter casts (`entities/<id>`) that is not a canon creature or people: working animals the stage draws beside a cart. Height and stance as for castFigures (#362). Not verified as entities, because they are not ones.",
+  "stageFigures": [
+    {
+      "id": "donkey",
+      "name": "Donkey",
+      "scale": "medium",
+      "heightCm": 130,
+      "stance": "standing"
+    },
+    {
+      "id": "mule",
+      "name": "Mule",
+      "scale": "medium_to_large",
+      "heightCm": 150,
+      "stance": "standing"
+    },
+    {
+      "id": "pony",
+      "name": "Pony",
+      "scale": "small_to_medium",
+      "heightCm": 110,
+      "stance": "standing"
+    }
+  ],
+  "$figureOverflowComment": "How a figure too big for the story stage overflows it (#362, packages/client/src/world/figure-scale.ts). By default the stage decides from the painting's own shape: taller than wide runs off the top, feet on the ground; wider than tall runs off the right, anchored at its left. An entry here overrides that for one figure, by the path a chapter casts it by.",
+  "figureOverflow": {
+    "entities/legend_dragon": "top",
+    "entities/boughkin": "top",
+    "entities/loftmire": "top",
+    "entities/cloud_whale": "right"
+  },
   "globalPalette": {
     "outline": "#3A2A1E",
     "darkest": "#2B2118",

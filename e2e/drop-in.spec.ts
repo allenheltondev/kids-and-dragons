@@ -180,6 +180,9 @@ test.describe("drop in, drop out", () => {
     await expect.poll(async () => (await state()).sceneId, TAP).not.toBe(firstScene);
     await comeBack(sam, "Sam");
     await guidePicture(sam, "catch-up");
+    // And the TV says where the party has got to (#357), with nothing tapped.
+    await expect(tv.getByTestId("chapter-preface")).toHaveAttribute("data-kind", "back", TAP);
+    await expect(tv.getByTestId("chapter-preface")).toContainText("Where you left off");
 
     // --- A phone that dies: no goodbye, it just goes quiet ---
     // Offline, its heartbeats stop; Sam's next beat after the timeout notices.

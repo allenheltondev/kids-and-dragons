@@ -3,10 +3,15 @@ title: Marda Thorn
 id: individual.marda_thorn
 type: individual
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: ["gemfall-02"]
 tags: ["bramblewood", "inn", "centaur", "waystop"]
+height_cm: 225
+size:
+  height: "2.25 m (7 ft 5 in)"
+  compare: "as tall as a door"
+  line: "2.25 m (7 ft 5 in), as tall as a door."
 related:
   - id: individual.pib
     type: individual

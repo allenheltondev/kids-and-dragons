@@ -938,5 +938,17 @@
       "river_escaped_late",
       "river_took_rift"
     ]
+  },
+  "lastTime": {
+    "$comment": "Read before a chapter's first scene (#357): one line per routeSets member, in story order, and an opener for a party carrying none.",
+    "opener": "A brand new adventure starts tonight. The sky has a crack in it, and the whole world is listening.",
+    "lines": {
+      "traverse_made": "You crossed the ice shelf safely, with the river on your right the whole way.",
+      "traverse_failed": "The ice shelf broke under you, and you all went into the cold river, still holding the rope.",
+      "river_escaped_early": "You crawled out of the river early, onto the east bank under Frostfang.",
+      "river_escaped_middle": "The river let you go among old carved boundary stones on the foothills bank.",
+      "river_escaped_late": "The river carried you a long way, right down to a bridge and a boatman with a flat boat.",
+      "river_took_rift": "You steered your rope toward the shining fold in the air, and crossed it together."
+    }
   }
 }

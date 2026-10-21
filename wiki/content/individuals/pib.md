@@ -3,10 +3,15 @@ title: Pib
 id: individual.pib
 type: individual
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: ["bramblewood-01", "gemfall-02"]
 tags: ["bramblewood", "hedges", "sprite", "helpful"]
+height_cm: 25
+size:
+  height: "25 cm (10 in)"
+  compare: "fits in a backpack"
+  line: "25 cm (10 in), fits in a backpack."
 related:
   - id: biome.sunward_fields
     type: biome
