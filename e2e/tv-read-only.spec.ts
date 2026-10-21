@@ -91,6 +91,39 @@ async function noticeRecord(page: Page): Promise<{ shownAt: number; goneAt: numb
   return page.evaluate(() => (window as unknown as { kadNotice: { shownAt: number; goneAt: number; frames: number; overlaps: string[] } }).kadNotice);
 }
 
+interface Focused { name: string; ring: boolean; inCorner: boolean; className: string }
+
+/** What has focus on the page, by its name, and whether it shows the ring. */
+async function focusedOn(page: Page): Promise<Focused | null> {
+  return page.evaluate(() => {
+    const el = document.activeElement as HTMLElement | null;
+    if (!el || el === document.body) return null;
+    const style = getComputedStyle(el);
+    return {
+      name: (el.getAttribute("aria-label") ?? el.textContent ?? "").trim(),
+      ring: el.matches(":focus-visible") && style.outlineStyle !== "none" && parseFloat(style.outlineWidth) > 0,
+      inCorner: el.closest(".kad-corner") !== null,
+      className: typeof el.className === "string" ? el.className : "",
+    };
+  });
+}
+
+/** Host a Party Mode room on a TV, by mouse: the remote's part starts once the lobby is up. */
+async function hostTv(browser: Browser, open: BrowserContext[]): Promise<Page> {
+  const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+  open.push(context);
+  const tv = await context.newPage();
+  await tv.goto("/");
+  await tv.getByRole("button", { name: /host a game/i }).click();
+  await tv.getByText("Party Mode").click();
+  await tv.getByRole("button", { name: /open the lobby here/i }).click();
+  await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
+  await expect(tv.getByRole("button", { name: "Room", exact: true })).toBeVisible(TAP);
+  await expect(tv.getByRole("button", { name: "About this screen" })).toBeVisible(TAP);
+  await tv.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+  return tv;
+}
+
 test.describe("the shared screen is read, not driven", () => {
   const open: BrowserContext[] = [];
   test.afterEach(async () => {
@@ -189,17 +222,7 @@ test.describe("the shared screen is read, not driven", () => {
     // The lazy row is in, and the page has nothing focused.
     await tv.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
 
-    const focused = (): Promise<{ name: string; ring: boolean; inCorner: boolean } | null> =>
-      tv.evaluate(() => {
-        const el = document.activeElement as HTMLElement | null;
-        if (!el || el === document.body) return null;
-        const style = getComputedStyle(el);
-        return {
-          name: (el.getAttribute("aria-label") ?? el.textContent ?? "").trim(),
-          ring: el.matches(":focus-visible") && style.outlineStyle !== "none" && parseFloat(style.outlineWidth) > 0,
-          inCorner: el.closest(".kad-corner") !== null,
-        };
-      });
+    const focused = (): Promise<Focused | null> => focusedOn(tv);
 
     // From nothing, an arrow lands on a control the TV keeps, ringed.
     await tv.keyboard.press("ArrowRight");
@@ -227,5 +250,64 @@ test.describe("the shared screen is read, not driven", () => {
     await toRoom();
     await tv.keyboard.press("Enter");
     await expect(tv.getByRole("button", { name: "Lock the room" })).toHaveCount(0, TAP);
+  });
+
+  test("a remote reaches the visitor sign-in's fields: Room, Let visitors join, the email, the code", async ({ browser }) => {
+    // Review of #392: the arrows reached "Let visitors join" but not the fields it opens.
+    const tv = await hostTv(browser, open);
+    const visitors = tv.getByRole("button", { name: "Let visitors join" });
+    const press = async (key: string): Promise<Focused | null> => {
+      await tv.keyboard.press(key);
+      return focusedOn(tv);
+    };
+    /** Arrow `key` until `name` has focus, a step at a time, as a remote would. */
+    const arrowTo = async (key: string, matches: (f: Focused | null) => boolean, what: string): Promise<void> => {
+      let now = await focusedOn(tv);
+      for (let i = 0; i < 16 && !matches(now); i++) now = await press(key);
+      expect(matches(now), `${key} never reached ${what}; focus is on ${JSON.stringify(now)}`).toBe(true);
+    };
+
+    // Up onto the row, along it to Room, and OK.
+    await tv.keyboard.press("ArrowRight");
+    for (let i = 0; i < 8 && (await focusedOn(tv))?.name !== "Room"; i++) {
+      const ring = await tv.evaluate(() => document.activeElement!.getBoundingClientRect().x);
+      const room = (await tv.getByRole("button", { name: "Room", exact: true }).boundingBox())!;
+      await tv.keyboard.press(room.x < ring ? "ArrowLeft" : "ArrowRight");
+    }
+    expect((await focusedOn(tv))?.name).toBe("Room");
+    await tv.keyboard.press("Enter");
+    // The switch waits for the sign-in to be available on this deployment.
+    await expect(visitors).toBeEnabled(TAP);
+
+    // Down the panel to Let visitors join, and OK: the sign-in opens on its email field.
+    await arrowTo("ArrowDown", (f) => f?.name === "Let visitors join", "Let visitors join");
+    await tv.keyboard.press("Enter");
+    const email = tv.locator(".keepsake__input");
+    await expect(email).toBeFocused(TAP);
+
+    // Left and Right are the field's own; Down leaves it for Send the code, and Up comes back.
+    await tv.keyboard.type("grown-up@example.com");
+    expect((await press("ArrowLeft"))?.className).toContain("keepsake__input");
+    await arrowTo("ArrowDown", (f) => /send the code/i.test(f?.name ?? ""), "Send the code");
+    await arrowTo("ArrowUp", (f) => (f?.className ?? "").includes("keepsake__input"), "the email field");
+    // And Escape, then an arrow, leaves it too (here Down, where Send the code is).
+    await tv.keyboard.press("Escape");
+    expect((await press("ArrowDown"))?.name ?? "").toMatch(/send the code/i);
+    await arrowTo("ArrowUp", (f) => (f?.className ?? "").includes("keepsake__input"), "the email field, again");
+
+    // Down to Send the code, and OK: the code field takes focus, and the code goes in from the keys.
+    await arrowTo("ArrowDown", (f) => /send the code/i.test(f?.name ?? ""), "Send the code");
+    await tv.keyboard.press("Enter");
+    const codeField = tv.locator(".keepsake__code-input");
+    await expect(codeField).toBeFocused(TAP);
+    // Out of the code field and back, by the arrows alone.
+    await arrowTo("ArrowDown", (f) => !(f?.className ?? "").includes("keepsake__code-input"), "out of the code field");
+    await arrowTo("ArrowUp", (f) => (f?.className ?? "").includes("keepsake__code-input"), "the code field");
+    // The code goes in from the keys, and the sign-in sends it: the dev sign-in takes any eight
+    // digits (visitors.spec). Whether the room then opens is the server's call on who signed in
+    // (visitors.spec covers that); here the remote only has to get the code there.
+    await tv.keyboard.type("12345678");
+    await expect(codeField).toHaveValue("12345678");
+    await expect(tv.locator(".keepsake [role='alert']").or(tv.locator(".kad-host__code"))).not.toBeEmpty(TAP);
   });
 });

@@ -88,8 +88,12 @@ card's Remove stays on the TV, in the Room panel, where it already was.
 
 - `display/remote-focus.ts`: on the shared screen, the arrow keys move focus to the nearest control
   in that direction. From nothing, an arrow lands on the first control. Focus stays inside an open
-  sheet, and an arrow is left alone inside a text field. Enter is the browser's own press. The ring is
-  the global `:focus-visible` outline (`styles/theme.css`).
+  sheet, or a dialog it is in (the visitor sign-in over the Room panel). Enter is the browser's own
+  press. The ring is the global `:focus-visible` outline (`styles/theme.css`).
+- Fields are reachable: the visitor sign-in's email and code fields (9) take focus as each step opens,
+  and the arrows reach them too. Inside a field, Left and Right move the caret. Up and Down leave a
+  one-line text field, and Escape and then any arrow leaves any field, so a remote is never stuck in
+  one. A radio hidden under the card that draws it is skipped; the card is what takes focus.
 - The About report takes focus on Close when it opens, closes on Escape, and gives focus back to (i).
 
 ## Owner calls
