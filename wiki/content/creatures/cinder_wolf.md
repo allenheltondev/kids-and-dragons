@@ -3,7 +3,7 @@ title: Cinder Wolf
 id: creature.cinder_wolf
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-02", "gemfall-03c", "gemfall-04a", "gemfall-04c", "gemfall-05a", "gemfall-05b", "gemfall-06", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["dangerous", "foothills", "pack", "predator"]
@@ -11,6 +11,11 @@ classification: dangerous_creature
 danger_level: moderate
 scale: medium
 sapience: animal
+height_cm: 95
+size:
+  height: "95 cm (3 ft 1 in)"
+  compare: "waist-high to a grown-up"
+  line: "95 cm (3 ft 1 in), waist-high to a grown-up."
 lore_hook: "Not a monster. Cold, mostly, and a long way from home."
 likes:
   - id: creature.embermoth

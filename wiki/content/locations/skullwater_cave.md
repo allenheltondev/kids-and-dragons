@@ -3,7 +3,7 @@ title: Skullwater Cave
 id: location.skullwater_cave
 type: location
 status: draft
-lastReviewed: "2026-10-20"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: []
 tags: ["offshore_cave", "underground_gateway", "skull_rock", "caverns", "unknown_depths"]

@@ -3,13 +3,18 @@ title: Stone Troll
 id: npc.stone_troll
 type: npc
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-01", "gemfall-03a", "gemfall-05b"]
 tags: ["supporting_people", "river", "bridgekeeper", "masonry"]
 classification: supporting_people
 scale: very_large
 sapience: sapient
+height_cm: 320
+size:
+  height: "3.2 m (10 ft)"
+  compare: "as tall as an elephant"
+  line: "3.2 m (10 ft), as tall as an elephant."
 lore_hook: "The bridge stands because someone patient is under it. This is not a metaphor."
 likes:
   - id: character.manticore
