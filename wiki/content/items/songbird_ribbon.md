@@ -3,7 +3,7 @@ title: Songbird Ribbon
 id: item.songbird_ribbon
 type: item
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: ["gemfall-01", "gemfall-02", "gemfall-07h", "gemfall-07r"]
 tags: ["charm", "heart", "sunward_fields", "common"]

@@ -3,7 +3,7 @@ title: The Deep Hollow Cult
 id: faction.deep_hollow_cult
 type: faction
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: intentionally_undefined
 played_in: ["gemfall-04c", "gemfall-05a", "gemfall-05b", "gemfall-06", "gemfall-07h", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["cult", "underground", "mystical", "antagonist"]
