@@ -32,3 +32,13 @@ at recovery and exit. The closing flag stays local. The loader fixture now copie
 draft maps here, at the first chapter that needs them.
 The successful spine retains at least 30 scenes, 14 decisions and one encounter.
 Typecheck, staged content gate, class-room loader and exhaustive outcome tests pass.
+
+### Pacing before and after review fixes
+
+| Shortest success spine | Before | After |
+|---|---:|---:|
+| Scenes | 43 | 43 |
+| Decisions | 14 | 14 |
+| Physical checks | 6 | 6 |
+| Encounters | 1 | 1 |
+| Longest reading run | 2 | 2 |
