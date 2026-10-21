@@ -15,6 +15,8 @@ import {
   floorHeightCm,
   floored,
   heightFit,
+  overflowOf,
+  overflows,
   paintAspect,
   stanceReach,
   widthFit,
@@ -47,13 +49,49 @@ describe("true proportion", () => {
     expect(fit.party[0]).toBeCloseTo(85 * STORY_MEASURE.pxPerCm);
   });
 
-  it("shows a huge thing whole: the tallest fits, and everyone shrinks with it", () => {
-    const dragon = standing(1400);
-    const fit = stageLayout(party, [dragon], 2560);
+  it("shrinks the stage a little for a big figure, so a troll is still shown whole", () => {
+    const troll = standing(330);
+    const fit = stageLayout(party, [troll], 2560);
     expect(fit.k).toBeLessThan(1);
-    expect(fit.cast[0]).toBeLessThanOrEqual(STORY_MEASURE.headroom + 1e-6);
-    // Proportion holds between everybody above the floor.
-    expect(fit.cast[0]! / fit.party[2]!).toBeCloseTo(1400 / 215);
+    expect(fit.k).toBeGreaterThanOrEqual(STORY_MEASURE.minScale!);
+    expect(fit.castOverflow).toEqual([null]);
+    expect(fit.cast[0]).toBeCloseTo(STORY_MEASURE.headroom);
+    expect(fit.cast[0]! / fit.party[2]!).toBeCloseTo(330 / 215);
+  });
+
+  it("lets a huge tall figure run off the top instead of shrinking anyone", () => {
+    const dragon: StageFigure = { heightCm: 1400, stance: "standing", paint: { top: 0.01, bottom: 0.99, left: 0.02, right: 0.98 } };
+    const fit = stageLayout(party, [dragon], 2560);
+    expect(fit.castOverflow).toEqual(["top"]);
+    // The heroes keep their natural size, and the dragon is capped, still taller than the frame.
+    expect(fit.k).toBe(1);
+    expect(fit.party[2]).toBeCloseTo(215 * STORY_MEASURE.pxPerCm);
+    expect(fit.cast[0]).toBeCloseTo(STORY_MEASURE.maxHeight!);
+    expect(fit.cast[0]).toBeGreaterThan(STORY_MEASURE.headroom);
+    // Feet on the ground: nothing trims its lift.
+    expect(fit.castMaxLift[0]).toBe(Infinity);
+  });
+
+  it("lets a huge wide figure run off the right, fitting the frame's height", () => {
+    const whale: StageFigure = { heightCm: 1100, stance: "flying", paint: { top: 0.27, bottom: 0.72, left: 0.0, right: 1.0 } };
+    const fit = stageLayout(party, [whale], 2560);
+    expect(fit.castOverflow).toEqual(["right"]);
+    expect(fit.k).toBe(1);
+    // Its body and what is left of its lift fit under the frame.
+    expect(fit.cast[0]! + fit.castMaxLift[0]!).toBeCloseTo(STORY_MEASURE.headroom);
+    // Wider than its slot: it runs past the band's edge.
+    expect(fit.cast[0]! * paintAspect(whale.paint!)).toBeGreaterThan(fit.slots.castSlots[0]!);
+  });
+
+  it("takes the manifest's word on which way a figure overflows over its painting's shape", () => {
+    const wide = { top: 0.3, bottom: 0.7, left: 0, right: 1 };
+    expect(overflowOf({ heightCm: 900, stance: "standing", paint: wide })).toBe("right");
+    expect(overflowOf({ heightCm: 900, stance: "standing", paint: wide, overflow: "top" })).toBe("top");
+    expect(overflowOf({ heightCm: 900, stance: "standing", paint: null })).toBe("top");
+    expect(castSize("entities/cloud_whale").overflow).toBe("right");
+    expect(castSize("entities/legend_dragon").overflow).toBe("top");
+    expect(overflows({ heightCm: 330, stance: "standing", paint: null }, STORY_MEASURE)).toBe(false);
+    expect(overflows({ heightCm: 900, stance: "standing", paint: null }, STORY_MEASURE)).toBe(true);
   });
 
   it("counts a stance's lift against the headroom, so a flyer is not cut off at the top", () => {
@@ -87,12 +125,18 @@ describe("the floor", () => {
     expect(floored(standing(25), 1, STORY_MEASURE)).toBe(true);
   });
 
-  it("climbs when a huge figure shrinks the stage, which is where proportion gives", () => {
+  it("stays at natural scale with a dragon in view, since the dragon overflows instead", () => {
     const fit = stageLayout(party, [standing(1400), standing(25)], 2560);
     expect(fit.cast[1]).toBe(STORY_MEASURE.floor);
-    // With a dragon in view, everything under about a meter and a half floors.
-    expect(floorHeightCm(fit.k, STORY_MEASURE)).toBeGreaterThan(85);
-    expect(fit.party[1]).toBe(STORY_MEASURE.floor);
+    expect(floorHeightCm(fit.k, STORY_MEASURE)).toBeCloseTo(32);
+    // A kitsune hero is drawn true, not floored.
+    expect(fit.party[1]).toBeCloseTo(85 * STORY_MEASURE.pxPerCm);
+  });
+
+  it("never shrinks below minScale, however a big figure is", () => {
+    // 350 cm overflows at 0.85 by a hair less than it needs; 400 does overflow.
+    const fit = stageLayout(party, [standing(400)], 2560);
+    expect(fit.k).toBeGreaterThanOrEqual(STORY_MEASURE.minScale!);
   });
 });
 

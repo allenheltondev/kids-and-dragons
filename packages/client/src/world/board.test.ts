@@ -612,13 +612,14 @@ describe("true size on the board", () => {
     layer.destroy();
   });
 
-  it("shrinks every figure together when the tallest would pass its headroom", () => {
-    // A frost wyrm fits at natural scale (260 cm is 2.2 tiles); a troll-sized
-    // figure past 2.7 tiles would not, and the heroes shrink with it.
+  it("caps a huge figure without shrinking anybody else", () => {
+    // A frost wyrm stands at its own height (260 cm, 2.2 tiles).
     const natural = sized(["bigfoot"], "enemies/frost_wyrm").figureSizes();
     expect(natural.c0!.height).toBeCloseTo(215 * 1.1);
+    expect(natural["wisp#1"]!.height).toBeCloseTo(260 * 1.1);
+    // A boughkin would be seven tiles: it is capped, and the hero is untouched.
     const huge = sized(["bigfoot"], "enemies/boughkin").figureSizes();
-    expect(huge["wisp#1"]!.height).toBeCloseTo(BOARD_TILE_PX * 2.7);
-    expect(huge["wisp#1"]!.height / huge.c0!.height).toBeCloseTo(900 / 215);
+    expect(huge["wisp#1"]!.height).toBeCloseTo(BOARD_TILE_PX * 2.4);
+    expect(huge.c0!.height).toBeCloseTo(215 * 1.1);
   });
 });

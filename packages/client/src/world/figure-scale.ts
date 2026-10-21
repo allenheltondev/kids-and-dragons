@@ -12,10 +12,13 @@
  * - **True proportion.** At its natural scale a stage draws `PX_PER_CM` units
  *   per centimeter, so a 160 cm faun stands about where a hero always stood
  *   and a 25 cm sprite is a sixth of that.
- * - **Huge things are shown whole.** When the biggest figure in view would not
- *   fit the frame, everything scales down together until it does, so the
- *   dragon is all there and the heroes are small beside it. Nothing is cropped,
- *   and nothing is scaled *up* to fill an empty frame either.
+ * - **A big thing shrinks the stage a little, a huge one overflows it.** When
+ *   the biggest figure would not fit the frame, everything scales down
+ *   together, but only as far as the measure's `minScale`. A figure still too
+ *   big at that scale overflows the frame instead (the owner's call on #366,
+ *   "funny for kids"): a tall one keeps its feet on the ground and runs off the
+ *   top, a wide one runs off the right (`overflowOf`). Nothing is scaled *up*
+ *   to fill an empty frame.
  * - **A floor.** Below a minimum drawn height a figure stops shrinking, so a
  *   teapot-sized sprite is never a speck. That is the one place proportion
  *   gives, and `floored` says where it did.
@@ -33,7 +36,10 @@
 import type { CastStance } from "@kad/shared";
 import { heightInBand, type CastSize } from "@kad/shared";
 import { ANCHOR_Y } from "./art-paths";
-import { FIGURE_SIZES } from "./figure-sizes";
+import { FIGURE_OVERFLOW, FIGURE_SIZES } from "./figure-sizes";
+
+/** Which edge of the frame a figure too big for it runs off. */
+export type Overflow = "top" | "right";
 
 /**
  * Where a figure's paint sits inside its square canvas, as fractions of the
@@ -72,9 +78,14 @@ export function castSize(
   figure: string,
   size?: CastSize,
   stance?: CastStance,
-): { heightCm: number; stance: CastStance } {
+): { heightCm: number; stance: CastStance; overflow?: Overflow } {
   const own = figureSize(figure);
-  return { heightCm: heightInBand(own.heightCm, size), stance: stance ?? own.stance };
+  const overflow = FIGURE_OVERFLOW[figure];
+  return {
+    heightCm: heightInBand(own.heightCm, size),
+    stance: stance ?? own.stance,
+    ...(overflow ? { overflow } : {}),
+  };
 }
 
 /**
@@ -114,6 +125,10 @@ export interface StageMeasure {
   headroom: number;
   /** The smallest drawn height anything is given. */
   floor: number;
+  /** The least the stage shrinks to fit a big figure; anything bigger overflows. Absent: shrink as far as it takes. */
+  minScale?: number;
+  /** The tallest anything is drawn, however tall it is. Absent: no cap. */
+  maxHeight?: number;
 }
 
 /**
@@ -191,4 +206,26 @@ export function fitCanvas(
   const canvas = height / fill;
   const bottom = (paint ?? NOMINAL_PAINT).bottom;
   return { canvas, offsetY: (ANCHOR_Y - bottom) * canvas };
+}
+
+/**
+ * Whether a figure is too big for the frame even with the stage shrunk as far
+ * as it goes (`minScale`): it will overflow rather than shrink everybody.
+ */
+export function overflows(figure: SizedFigure, measure: StageMeasure): boolean {
+  if (measure.minScale === undefined) return false;
+  return figure.heightCm * measure.pxPerCm * measure.minScale * stanceReach(figure.stance) > measure.headroom;
+}
+
+/**
+ * Which edge a too-big figure runs off: the manifest's word where it gives
+ * one (`FIGURE_OVERFLOW`), else the painting's own shape. Taller than wide
+ * stands on the ground and runs off the top (a dragon); clearly wider than
+ * tall runs off the right (a whale). Unmeasured art counts as tall.
+ */
+export const WIDE_ASPECT = 1.15;
+
+export function overflowOf(figure: SizedFigure & { overflow?: Overflow }): Overflow {
+  if (figure.overflow) return figure.overflow;
+  return figure.paint && paintAspect(figure.paint) > WIDE_ASPECT ? "right" : "top";
 }

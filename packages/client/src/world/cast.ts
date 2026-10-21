@@ -17,8 +17,13 @@ import {
   castSize,
   drawnHeight,
   heightFit,
+  NOMINAL_PAINT,
+  overflowOf,
+  overflows,
+  paintAspect,
   paintedWidths,
   widthFit,
+  type Overflow,
   type SizedFigure,
   type StageMeasure,
 } from "./figure-scale";
@@ -33,6 +38,8 @@ export interface StageCastMember {
   heightCm: number;
   /** How they occupy this scene, after the chapter's `stance`. */
   stance: CastStance;
+  /** The manifest's word on how they overflow a frame too small for them, if any. */
+  overflow?: Overflow;
   /**
    * Set when this figure is one of a group (`count` > 1): the group shares a
    * slot, so layout packs them close, and the odd ones stand a step back.
@@ -139,6 +146,8 @@ export interface StageSlots {
   /** Horizontal room each party figure has, for the nameplate fit. */
   partySlot: number;
   castSlots: number[];
+  /** The left edge of each cast figure's share of the band: where an overflowing figure is anchored. */
+  castLeft: number[];
 }
 
 export function stageSlots(
@@ -163,6 +172,7 @@ export function stageSlots(
       cast: [],
       partySlot: spacing,
       castSlots: [],
+      castLeft: [],
     };
   }
 
@@ -189,9 +199,12 @@ export function stageSlots(
   let cursor = castBand.from;
   const cast: number[] = [];
   const castSlots: number[] = [];
+  const castLeft: number[] = [];
   for (const weight of weights) {
     const slot = (used * weight) / total;
-    cast.push(compact && weights.length === 1 ? width * 0.8 : cursor + slot / 2);
+    const x = compact && weights.length === 1 ? width * 0.8 : cursor + slot / 2;
+    cast.push(x);
+    castLeft.push(x - slot / 2);
     // A lone figure's name may use the band's room, not just the figure's:
     // "Madame Coralie Fenn" under a lone merfolk has the right of the stage to
     // itself, and shrinking it to the figure's width made it the smallest text
@@ -199,7 +212,7 @@ export function stageSlots(
     castSlots.push(weights.length === 1 ? Math.max(slot, Math.min(bandWidth, 560)) : slot);
     cursor += slot;
   }
-  return { party, cast, partySlot: partySpacing, castSlots };
+  return { party, cast, partySlot: partySpacing, castSlots, castLeft };
 }
 
 /** The width, in design units, a cast figure of weight 1 is given (`stageSlots`). */
@@ -208,16 +221,39 @@ export const FIGURE_SLOT = 300;
 /**
  * The story stage's measure (#362): 2.5 design units a centimeter, so a 160 cm
  * faun paints 400 units tall, about where a hero always stood in the 900-unit
- * design rect. The tallest figure may reach `headroom` above the ground line
- * (scene.ts stands it at 88% of the rect, and leaves a margin at the top), so
- * anything up to 3 m stands at natural scale and anything taller shrinks the
- * stage. Nothing is drawn shorter than `floor`, 80 units (about 9% of the
- * rect, some 35 px on a 720p TV), which at natural scale is a 32 cm figure:
- * a teapot-sized sprite (25 cm) and anything smaller stand at the floor
- * rather than as a speck. With a dragon in view the floor rises with the
- * shrink, and that is where proportion gives (`floorHeightCm`).
+ * design rect. The tallest ordinary figure may reach `headroom` above the
+ * ground line (scene.ts stands it at 88% of the rect, and leaves a margin at
+ * the top).
+ *
+ * The stage shrinks to fit a big figure only as far as `minScale`, 0.85 of
+ * natural: anything up to about 3.5 m (a stone troll, a yeti, a frost wyrm)
+ * is still shown whole, and the heroes are never less than 85% of their true
+ * size however big the guest. Anything bigger overflows the frame instead
+ * (`overflowOf`), at most `maxHeight` tall: 1.6 times the headroom, so a dragon
+ * shows its feet, its belly and its chest and runs off the top.
+ *
+ * Nothing is drawn shorter than `floor`, 80 units (about 9% of the rect, some
+ * 35 px on a 720p TV), which at natural scale is a 32 cm figure: a
+ * teapot-sized sprite (25 cm) and anything smaller stand at the floor rather
+ * than as a speck.
  */
-export const STORY_MEASURE: StageMeasure = { pxPerCm: 2.5, headroom: 900 * 0.88 - 40, floor: 80 };
+export const STORY_MEASURE: StageMeasure = {
+  pxPerCm: 2.5,
+  headroom: 900 * 0.88 - 40,
+  floor: 80,
+  minScale: 0.85,
+  maxHeight: (900 * 0.88 - 40) * 1.6,
+};
+
+/**
+ * How tall a figure that overflows off the right is drawn, as a share of the
+ * headroom: it fits the frame's height (its stance lift is trimmed to make
+ * room) and runs off the side instead, the way a whale swims past a window.
+ */
+export const WIDE_OVERFLOW_HEIGHT = 0.75;
+
+/** The most of the band an overflowing figure's slot claims, in `FIGURE_SLOT`s: the rest of it runs past its neighbours, behind them. */
+export const OVERFLOW_SLOTS = 2;
 
 /**
  * How much of its slot a figure's painted box may span. A little over the
@@ -230,6 +266,8 @@ export const SLOT_FILL = 1.1;
 export interface StageFigure extends SizedFigure {
   /** One of a group: it may overlap its neighbours (`GROUP_SPREAD`). */
   crowded?: boolean;
+  /** The manifest's override of how it overflows (`FIGURE_OVERFLOW`), if any. */
+  overflow?: Overflow;
 }
 
 export interface StageLayout {
@@ -237,14 +275,21 @@ export interface StageLayout {
   /** The drawn (painted) height of each party figure, then each cast figure. */
   party: number[];
   cast: number[];
-  /** The one scale every figure is drawn at, relative to natural size: 1 unless something had to fit. */
+  /** For each cast figure: null, or which edge of the frame it runs off. */
+  castOverflow: (Overflow | null)[];
+  /** For each cast figure, the most its stance may lift it (a wide overflow is trimmed to fit the frame's height). */
+  castMaxLift: number[];
+  /** The one scale every ordinary figure is drawn at, relative to natural size: 1 unless something had to fit. */
   k: number;
 }
 
 /**
  * Where everybody stands and how tall each is drawn (#362): true proportion,
- * shrunk together until the tallest fits under the frame and every figure fits
- * its slot, never grown, and floored for the tiny.
+ * shrunk together (never below `minScale`) until the tallest ordinary figure
+ * fits under the frame and every figure fits its slot, never grown, and
+ * floored for the tiny. A figure too big for the frame at `minScale` does not
+ * shrink anyone: it overflows the frame (`overflowOf`), anchored at the left of
+ * its slot.
  */
 export function stageLayout(
   party: readonly StageFigure[],
@@ -253,26 +298,40 @@ export function stageLayout(
   compact = false,
   measure: StageMeasure = STORY_MEASURE,
 ): StageLayout {
-  const all = [...party, ...cast];
-  const tall = heightFit(all, measure);
-  const widths = paintedWidths(all, tall, measure);
-  const castWidths = widths.slice(party.length);
+  const minScale = measure.minScale ?? 0;
+  const overflow = cast.map((figure) => (overflows(figure, measure) ? overflowOf(figure) : null));
+  const ordinary = [...party, ...cast.filter((_, i) => overflow[i] === null)];
+  const tall = Math.max(minScale, heightFit(ordinary, measure));
+  const sizeAt = (figure: StageFigure, i: number, k: number): number => {
+    const way = overflow[i] ?? null;
+    if (way === null) return drawnHeight(figure, k, measure);
+    const natural = drawnHeight(figure, k, measure);
+    if (way === "right") return Math.min(natural, measure.headroom * WIDE_OVERFLOW_HEIGHT);
+    return Math.min(natural, measure.maxHeight ?? Infinity);
+  };
+  const aspect = (figure: StageFigure) => paintAspect(figure.paint ?? NOMINAL_PAINT);
+  const partyWidths = paintedWidths(party, tall, measure);
+  const castWidths = cast.map((figure, i) => sizeAt(figure, i, tall) * aspect(figure));
   const slots = stageSlots(
     party.length,
-    castWidths.map((w) => w / FIGURE_SLOT),
+    castWidths.map((w, i) => (overflow[i] ? Math.min(w / FIGURE_SLOT, OVERFLOW_SLOTS) : w / FIGURE_SLOT)),
     width,
     cast.map((member) => member.crowded ?? false),
     compact,
   );
   const rooms = [
     ...party.map(() => slots.partySlot * SLOT_FILL),
-    ...cast.map((member, i) => (slots.castSlots[i] ?? 0) * SLOT_FILL / (member.crowded ? GROUP_SPREAD : 1)),
+    ...cast.map((member, i) =>
+      overflow[i] ? Infinity : (slots.castSlots[i] ?? 0) * SLOT_FILL / (member.crowded ? GROUP_SPREAD : 1)),
   ];
-  const k = tall * widthFit(widths, rooms);
+  const k = tall * widthFit([...partyWidths, ...castWidths], rooms);
+  const castHeights = cast.map((figure, i) => sizeAt(figure, i, k));
   return {
     slots,
     party: party.map((figure) => drawnHeight(figure, k, measure)),
-    cast: cast.map((figure) => drawnHeight(figure, k, measure)),
+    cast: castHeights,
+    castOverflow: overflow,
+    castMaxLift: castHeights.map((h, i) => (overflow[i] === "right" ? Math.max(0, measure.headroom - h) : Infinity)),
     k,
   };
 }

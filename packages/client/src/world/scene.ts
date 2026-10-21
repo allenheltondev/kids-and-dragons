@@ -72,7 +72,7 @@ import {
   shadowOffset,
   type Footprint,
 } from "./actor-art";
-import { figureSize, fitCanvas, NOMINAL_PAINT, STANCE_LIFT, type PaintBox } from "./figure-scale";
+import { figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, STANCE_LIFT, type Overflow, type PaintBox } from "./figure-scale";
 import { sceneBackdropUrl } from "./art-paths";
 import { isQuiet, QUIET_FLASH_SCALE } from "../quiet";
 import { focusHolds, type FocusHold } from "./attention";
@@ -303,6 +303,8 @@ export interface StoryFigureReading {
   groundY: number;
   /** The top of its nameplate, or null for none. */
   labelTop: number | null;
+  /** Which edge of the frame it runs off, if it is too big for it. */
+  overflow: Overflow | null;
 }
 
 interface StageFigureArt {
@@ -329,6 +331,10 @@ interface StageFigureArt {
   /** A swimmer's water line, and the mask that hides what is under it. */
   ripple: Graphics | null;
   mask: Graphics | null;
+  /** The most its stance may lift it: a figure overflowing off the right is trimmed to fit the frame's height. */
+  maxLift: number;
+  /** Drawn with its paint's left edge on the container, not its middle: a figure overflowing the frame, anchored at its slot. */
+  anchorLeft: boolean;
 }
 
 interface Actor extends StageFigureArt {
@@ -361,6 +367,10 @@ interface Actor extends StageFigureArt {
 /** Somebody standing opposite the party (world/cast.ts). */
 interface CastActor extends StageFigureArt {
   key: string;
+  /** The manifest's word on how it overflows, if any (`FIGURE_OVERFLOW`). */
+  overflow?: Overflow;
+  /** Whether layout has it overflowing the frame this scene, and off which edge. */
+  overflowing: Overflow | null;
   /** One of a group: laid out close together (see `stageSlots`). */
   crowded: boolean;
   /** For one of a group: 0 or 1, the odd ones standing a step back. */
@@ -675,12 +685,42 @@ export function createScene(app: Application): PartyScene {
     // Wrapped names need a little extra gutter between their taller blocks.
     const nameplateSlot = viewport.width < 600 ? 0.82 : NAMEPLATE_SLOT;
     const slot = slots.partySlot * nameplateSlot;
+    // The right edge of what the camera shows, in design units: an
+    // overflowing figure's name is pinned inside it.
+    const visibleRight = left + width;
+    // The right edge of the party's share of the stage: no overflowing guest stands over a hero.
+    const partyEdge = slots.party.length > 0 ? Math.max(...slots.party) + slots.partySlot / 2 : left;
     cast.forEach((member, index) => {
+      const way = fit.castOverflow[index] ?? null;
+      member.overflowing = way;
+      member.maxLift = fit.castMaxLift[index] ?? Infinity;
+      // Too big for the frame (#366): anchored at the left of its slot, so it
+      // runs off the top or the right and never back over the party.
+      member.anchorLeft = way !== null;
       fitFigure(member, fit.cast[index] ?? member.height);
-      member.x = slots.cast[index] ?? member.x;
+      const paintWidth = member.height * paintAspect(member.paint ?? NOMINAL_PAINT);
+      if (way === "top") {
+        // A tall one shows as much of its body as the frame allows: slid left
+        // until its right edge meets the frame's, but never past the party.
+        const slotLeft = slots.castLeft[index] ?? member.x;
+        member.x = Math.min(slotLeft, Math.max(partyEdge, visibleRight - paintWidth));
+      } else {
+        member.x = (way ? slots.castLeft[index] : slots.cast[index]) ?? member.x;
+      }
       if (member.label) {
         member.label.visible = nameplatesVisible;
-        fitNameplate(member.label, (slots.castSlots[index] ?? slot) * nameplateSlot, viewport.width < 600);
+        if (way) {
+          // Centred under the part of it that is on screen, and no wider.
+          const shown = Math.max(0, Math.min(paintWidth, visibleRight - member.x));
+          member.label.x = shown / 2;
+          fitNameplate(member.label, Math.max(shown, slots.castSlots[index] ?? 0) * nameplateSlot, viewport.width < 600);
+          // A long name under a narrow shown part still keeps inside the frame.
+          const half = member.label.width / 2;
+          member.label.x = Math.max(half, Math.min(member.label.x, visibleRight - member.x - half));
+        } else {
+          member.label.x = 0;
+          fitNameplate(member.label, (slots.castSlots[index] ?? slot) * nameplateSlot, viewport.width < 600);
+        }
       }
     });
     const still = prefersReducedMotion();
@@ -847,7 +887,8 @@ export function createScene(app: Application): PartyScene {
       // A step further back reads as a huddle, not a row of stickers.
       const rowY = GROUND_Y - member.row * DESIGN.height * 0.025;
       member.container.y = rowY;
-      member.container.zIndex = rowY - 1;
+      // An overflowing figure stands behind everybody it runs past.
+      member.container.zIndex = rowY - (member.overflowing ? DESIGN.height : 1);
       member.art.alpha = member.presence;
       member.shadow.alpha = member.presence * STANCE_SHADOW[member.stance].alpha;
       if (member.ripple) member.ripple.alpha = member.presence;
@@ -904,6 +945,10 @@ export function createScene(app: Application): PartyScene {
       shadowX: 0,
       ripple: null,
       mask: null,
+      maxLift: Infinity,
+      anchorLeft: false,
+      ...(member.overflow ? { overflow: member.overflow } : {}),
+      overflowing: null,
       crowded: member.crowd !== undefined,
       row: (member.crowd?.index ?? 0) % 2,
       x: DESIGN.width,
@@ -1108,6 +1153,8 @@ export function createScene(app: Application): PartyScene {
       shadowCanvas: ACTOR_HEIGHT,
       ripple: null,
       mask: null,
+      maxLift: Infinity,
+      anchorLeft: false,
     };
     applyStance(actor);
 
@@ -1251,6 +1298,7 @@ export function createScene(app: Application): PartyScene {
           // So is how big they are and how they stand: a chapter may land a
           // griffin in one scene that flew in the last (#362).
           existing.heightCm = member.heightCm;
+          existing.overflow = member.overflow;
           if (existing.stance !== member.stance) {
             existing.stance = member.stance;
             applyStance(existing);
@@ -1373,6 +1421,7 @@ export function createScene(app: Application): PartyScene {
           paint,
           groundY: figure.container.toGlobal({ x: 0, y: 0 }).y,
           labelTop: figure.label?.visible ? figure.label.getBounds().y : null,
+          overflow: "overflowing" in figure ? (figure as CastActor).overflowing : null,
         };
       });
     },
@@ -1550,7 +1599,8 @@ function motionReach(height: number): number {
 
 /** Where the art rests above (or, for a swimmer, below) the ground line. */
 function restY(figure: StageFigureArt): number {
-  return -STANCE_LIFT[figure.stance] * figure.height;
+  const lift = STANCE_LIFT[figure.stance] * figure.height;
+  return -(lift > 0 ? Math.min(lift, figure.maxLift) : lift);
 }
 
 function shadowScale(figure: StageFigureArt, idle: number): number {
@@ -1590,11 +1640,18 @@ function fitFigure(figure: StageFigureArt, height: number): void {
     // The "art pending" stand-in, drawn a canvas of ACTOR_HEIGHT tall.
     child.scale.set(fit.canvas / ACTOR_HEIGHT);
   }
+  // Left-anchored: the paint's left edge on the container (ANCHOR_X is the canvas middle).
+  const anchorX = figure.anchorLeft ? (ANCHOR_X - (figure.paint ?? NOMINAL_PAINT).left) * fit.canvas : 0;
   if (figure.sprite) {
     figure.sprite.scale.set(fit.canvas / figure.sprite.texture.height);
     figure.sprite.y = fit.offsetY;
+    figure.sprite.x = anchorX;
   }
-  figure.shadowX = shadowOffset(fit.canvas, figure.footprint);
+  figure.shadowX = shadowOffset(fit.canvas, figure.footprint) + anchorX;
+  if (figure.ripple) {
+    const paint = figure.paint ?? NOMINAL_PAINT;
+    figure.ripple.x = anchorX + ((paint.left + paint.right) / 2 - ANCHOR_X) * fit.canvas;
+  }
   figure.shadow.x = figure.shadowX * (figure.art.scale.x < 0 ? -1 : 1);
   if (figure.label) figure.label.y = Math.min(0, restY(figure)) + NAME_GAP;
 }
