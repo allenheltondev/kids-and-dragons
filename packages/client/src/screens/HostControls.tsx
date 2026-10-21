@@ -97,16 +97,34 @@ export function canStop(state: Pick<RunState, "phase" | "campaignId">): boolean 
   return state.campaignId !== null && (state.phase === "scene" || state.phase === "check" || state.phase === "encounter");
 }
 
+/** How long the shared screen offers to stop at a Rest before it keeps playing by itself. */
+export const STOP_OFFER_MS = 15_000;
+
 /**
  * "Stop here for today?" at a Rest scene (#259): the natural place to stop,
  * offered to the host without opening the panel. "Keep playing" puts it away
  * until the next rest.
+ *
+ * On the shared screen (`timeoutMs`) nobody has to answer it: a remote is a
+ * clumsy mouse, so after STOP_OFFER_MS it does exactly what Keep playing does,
+ * with a thin bar running down meanwhile. Either button still works before
+ * then, and Stop for today stays in the Room panel. Keep playing is this
+ * screen's own business (nothing is sent), so the time running out is too, and
+ * it happens once: the offer is put away, and the clock with it.
  */
-function StopOffer({ state }: { state: RunState }): React.JSX.Element | null {
+function StopOffer({ state, timeoutMs }: { state: RunState; timeoutMs?: number }): React.JSX.Element | null {
   const stopForToday = useGameStore((store) => store.stopForToday);
   const [busy, setBusy] = useState(false);
   const [putAway, setPutAway] = useState<string | null>(null);
-  if (state.sceneType !== "rest" || !canStop(state) || putAway === state.sceneId) return null;
+  const shown = state.sceneType === "rest" && canStop(state) && putAway !== state.sceneId;
+  const sceneId = state.sceneId;
+  useEffect(() => {
+    // Not while a stop is on its way: that is the host's answer.
+    if (!shown || timeoutMs === undefined || busy) return;
+    const timer = setTimeout(() => setPutAway(sceneId), timeoutMs);
+    return () => clearTimeout(timer);
+  }, [shown, sceneId, timeoutMs, busy]);
+  if (!shown) return null;
   return (
     <div className="kad-host__offer" role="status">
       <p>{STOP_OFFER}</p>
@@ -122,9 +140,17 @@ function StopOffer({ state }: { state: RunState }): React.JSX.Element | null {
       >
         Stop here for today
       </Button>
-      <Button variant="ghost" size="md" block disabled={busy} onClick={() => setPutAway(state.sceneId)}>
+      <Button variant="ghost" size="md" block disabled={busy} onClick={() => setPutAway(sceneId)}>
         Keep playing
       </Button>
+      {timeoutMs === undefined ? null : (
+        <div className="kad-host__offer-clock" data-testid="stop-offer-clock">
+          <span className="kad-host__offer-bar" aria-hidden="true">
+            <span style={{ animationDuration: `${String(timeoutMs)}ms` }} />
+          </span>
+          <span className="kad-host__offer-wait">Keeping going…</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -264,7 +290,7 @@ export function HostControls({ placement, button = true }: { placement: "inline"
       {/* On the shared screen the Room button sits in the corner row (App.tsx); in the
           bottom corner it lay over the story's last choice (#257). What it opens drops below. */}
       {button ? <RoomButton inCorner={false} /> : null}
-      <StopOffer state={state} />
+      <StopOffer state={state} timeoutMs={STOP_OFFER_MS} />
       {open ? panel : null}
       {/* The grown-up's sign-in for the visitor switch. A phone's view
           already has one (layout/PlayerView); the shared display does not. */}

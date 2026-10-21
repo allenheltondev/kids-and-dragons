@@ -50,6 +50,8 @@ export function ArrivalNotices({ placement }: { placement: "float" | "inline" })
   const arrivals = useGameStore((store) => store.arrivals);
   const dropped = useGameStore((store) => store.arrivalsDropped);
   const [expanded, setExpanded] = useState(false);
+  // The shared screen's flood warning goes like any notice; more phones dropped bring it back.
+  const [floodRead, setFloodRead] = useState(0);
   const display = session?.playerId === "";
   const host = session?.host === true;
   // The display floats its notices; a seated host gets them in its own view.
@@ -62,9 +64,11 @@ export function ArrivalNotices({ placement }: { placement: "float" | "inline" })
   if (!session || !mine || (arrivals.length === 0 && !flooded)) return null;
 
   if (placement === "float") {
+    const floodUp = flooded && dropped > floodRead;
+    if (!floodUp && arrivals.length === 0) return null;
     return (
       <div className="kad-arrivals kad-arrivals--float" aria-live="polite">
-        {flooded ? <Flood /> : null}
+        {floodUp ? <DisplayFlood dropped={dropped} onRead={setFloodRead} /> : null}
         {arrivals.length > 0 ? <DisplayArrival arrivals={arrivals} /> : null}
       </div>
     );
@@ -99,12 +103,27 @@ export function ArrivalNotices({ placement }: { placement: "float" | "inline" })
   );
 }
 
+const FLOOD = "A lot of phones are joining. If you don't know them, start a new room.";
+
 function Flood(): React.JSX.Element {
   return (
     <p className="kad-arrivals__flood" role="alert">
-      A lot of phones are joining. If you don't know them, start a new room.
+      {FLOOD}
     </p>
   );
+}
+
+/**
+ * The flood warning on the shared screen: up for `noticeMs`, like every notice there, and up
+ * again if more phones fall off the list after it went. The roster in the Room panel lists
+ * everybody in the room meanwhile, so the warning going hides nobody.
+ */
+function DisplayFlood({ dropped, onRead }: { dropped: number; onRead: (dropped: number) => void }): React.JSX.Element {
+  useEffect(() => {
+    const timer = setTimeout(() => onRead(dropped), noticeMs(FLOOD));
+    return () => clearTimeout(timer);
+  }, [dropped, onRead]);
+  return <Flood />;
 }
 
 /** Names that fit one line across a room: "Pip", "Pip and Bo", "Pip, Bo and Cy", "Pip, Bo and 3 more". */
