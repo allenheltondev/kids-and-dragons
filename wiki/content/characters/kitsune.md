@@ -3,11 +3,16 @@ title: Kitsune
 id: character.kitsune
 type: character
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["bramblewood-01", "gemfall-01", "gemfall-02", "gemfall-03b", "gemfall-03c", "gemfall-04c", "gemfall-05b", "gemfall-06", "gemfall-07h", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["playable", "sky", "illusion", "clever"]
 scale: small_to_medium
+height_cm: 85
+size:
+  height: "85 cm (2 ft 9 in)"
+  compare: "waist-high to a grown-up"
+  line: "85 cm (2 ft 9 in), waist-high to a grown-up."
 lore_hook: "Their home moves. Their maps are songs. Their jokes have layovers."
 likes:
   - id: creature.cloud_whale

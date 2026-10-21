@@ -3,13 +3,18 @@ title: Faun
 id: npc.faun
 type: npc
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
-played_in: ["gemfall-01", "gemfall-02", "gemfall-03c", "gemfall-04b", "gemfall-05a", "gemfall-06", "gemfall-07r", "gemfall-08"]
+played_in: ["first-steps-01", "gemfall-01", "gemfall-02", "gemfall-03c", "gemfall-04b", "gemfall-05a", "gemfall-06", "gemfall-07r", "gemfall-08"]
 tags: ["supporting_people", "fields", "farming", "music"]
 classification: supporting_people
 scale: medium
 sapience: sapient
+height_cm: 160
+size:
+  height: "1.6 m (5 ft 3 in)"
+  compare: "as tall as a grown-up"
+  line: "1.6 m (5 ft 3 in), as tall as a grown-up."
 lore_hook: "The harvest is a song, and everyone is in the chorus whether they know it or not."
 likes:
   - id: npc.harvest_sprite

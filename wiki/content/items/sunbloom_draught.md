@@ -3,7 +3,7 @@ title: Sunbloom Draught
 id: item.sunbloom_draught
 type: item
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: ["bramblewood-01", "gemfall-01", "gemfall-03c"]
 tags: ["provision", "healing", "sunward_fields", "uncommon"]

@@ -1,0 +1,10 @@
+{{/* How big it is (#370), as one infobox field: canon's height_cm in both
+     units, a comparison from the fixed table in tools/wiki/size-line.ts, and
+     how it gets about where that is not standing. Nothing for a page canon
+     gives no height. Called inside the infobox's <dl>. */}}
+{{ with .Params.size }}
+<div class="wiki-infobox__field wiki-infobox__field--size" data-height-cm="{{ $.Params.height_cm }}">
+  <dt>Size</dt>
+  <dd>{{ .line }}</dd>
+</div>
+{{ end }}

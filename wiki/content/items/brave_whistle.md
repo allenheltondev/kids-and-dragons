@@ -3,7 +3,7 @@ title: Brave Whistle
 id: item.brave_whistle
 type: item
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: ["gemfall-01", "gemfall-02", "gemfall-03c"]
 tags: ["tool", "courage", "stone_crossing", "common"]

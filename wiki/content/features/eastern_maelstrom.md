@@ -3,7 +3,7 @@ title: Eastern Maelstrom
 id: feature.eastern_maelstrom
 type: feature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: []
 tags: []
