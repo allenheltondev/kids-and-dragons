@@ -100,7 +100,8 @@ async function focusedOn(page: Page): Promise<Focused | null> {
     if (!el || el === document.body) return null;
     const style = getComputedStyle(el);
     return {
-      name: (el.getAttribute("aria-label") ?? el.textContent ?? "").trim(),
+      // A radio hidden in its card is named by the card (its label).
+      name: (el.getAttribute("aria-label") ?? ((el as HTMLInputElement).labels?.[0]?.textContent || el.textContent) ?? "").trim(),
       ring: el.matches(":focus-visible") && style.outlineStyle !== "none" && parseFloat(style.outlineWidth) > 0,
       inCorner: el.closest(".kad-corner") !== null,
       className: typeof el.className === "string" ? el.className : "",
@@ -392,5 +393,60 @@ test.describe("the shared screen is read, not driven", () => {
     await tv.keyboard.press("Enter");
     await expect(offer).toHaveCount(0, TAP);
     expect((await roomState<{ stopped?: boolean }>(kid, code)).stopped ?? false).toBe(false);
+  });
+
+  test("a remote starts the room from the start screen: Host a game, the Party Mode card, Open the lobby here", async ({ browser }) => {
+    // Review of #392: the arrows were only installed once a room existed, so a TV could not be set up
+    // without a pointer.
+    const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+    open.push(context);
+    const tv = await context.newPage();
+    await tv.goto("/");
+    await expect(tv.getByRole("button", { name: /host a game/i })).toBeVisible(TAP);
+    const press = async (key: string): Promise<Focused | null> => {
+      await tv.keyboard.press(key);
+      return focusedOn(tv);
+    };
+    const arrowTo = async (key: string, matches: (f: Focused | null) => boolean, what: string): Promise<void> => {
+      let now = await focusedOn(tv);
+      for (let i = 0; i < 16 && !matches(now); i++) now = await press(key);
+      expect(matches(now), `${key} never reached ${what}; focus is on ${JSON.stringify(now)}`).toBe(true);
+      expect(now?.ring || (now?.className ?? "").includes("home__mode-radio"), `${what} shows where focus is`).toBe(true);
+    };
+    const mode = (name: RegExp): ReturnType<Page["locator"]> => tv.locator(".home__mode").filter({ hasText: name });
+
+    // Down to Host a game, and OK.
+    await arrowTo("ArrowDown", (f) => /^host a game$/i.test(f?.name ?? ""), "Host a game");
+    await tv.keyboard.press("Enter");
+    await expect(mode(/party mode/i)).toBeVisible(TAP);
+
+    // OK put the button it was on away; the next arrow picks up near where it stood, under the
+    // mode cards. Up onto them, to Phone Mode and OK, back to Party Mode and OK.
+    await arrowTo("ArrowUp", (f) => /phone mode/i.test(f?.name ?? ""), "the Phone Mode card");
+    await tv.keyboard.press("Enter");
+    await expect(mode(/phone mode/i)).toHaveClass(/home__mode--on/, TAP);
+    await arrowTo("ArrowUp", (f) => /party mode/i.test(f?.name ?? ""), "the Party Mode card");
+    await tv.keyboard.press("Enter");
+    await expect(mode(/party mode/i)).toHaveClass(/home__mode--on/, TAP);
+    // The card whose radio has focus is ringed (HomeScreen.css .home__mode:focus-within).
+    expect(await mode(/party mode/i).evaluate((el) => getComputedStyle(el).outlineStyle)).not.toBe("none");
+
+    // Down to Open the lobby here, and OK: the TV is the room's shared screen.
+    await arrowTo("ArrowDown", (f) => /open the lobby here/i.test(f?.name ?? ""), "Open the lobby here");
+    await tv.keyboard.press("Enter");
+    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
+
+    // And the same remote carries on there: up to the corner row, along to Room, and OK.
+    const room = tv.getByRole("button", { name: "Room", exact: true });
+    await expect(room).toBeVisible(TAP);
+    await tv.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
+    await tv.keyboard.press("ArrowRight");
+    for (let i = 0; i < 8 && (await focusedOn(tv))?.name !== "Room"; i++) {
+      const ring = await tv.evaluate(() => document.activeElement!.getBoundingClientRect().x);
+      await tv.keyboard.press((await room.boundingBox())!.x < ring ? "ArrowLeft" : "ArrowRight");
+    }
+    expect((await focusedOn(tv))?.name).toBe("Room");
+    await tv.keyboard.press("Enter");
+    await expect(tv.getByRole("button", { name: "Lock the room" })).toBeVisible(TAP);
   });
 });

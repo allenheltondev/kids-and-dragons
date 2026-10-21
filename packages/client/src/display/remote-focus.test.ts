@@ -103,6 +103,18 @@ describe("installRemoteFocus", () => {
     return event;
   };
 
+  it("picks up near where focus was when OK took away the control it was on", () => {
+    lay('<button id="top">top</button><button id="was">Host a game</button><button id="near">Open the lobby here</button>', {
+      top: at(0, 0), was: at(0, 300), near: at(0, 320),
+    });
+    const stop = installRemoteFocus();
+    document.getElementById("was")!.focus();
+    document.getElementById("was")!.remove();
+    expect(press("ArrowDown").defaultPrevented).toBe(true);
+    expect(document.activeElement?.id).toBe("near");
+    stop();
+  });
+
   it("leaves Left and Right to a text field, for its caret", () => {
     lay('<input id="field" /><button id="b">b</button>', { field: at(0, 0), b: at(60, 0) });
     const stop = installRemoteFocus();
@@ -156,11 +168,45 @@ describe("installRemoteFocus", () => {
 });
 
 describe("what the arrows reach", () => {
-  it("skips a radio drawn by its card, and reaches the card", () => {
-    lay('<label id="card" tabindex="0"><input id="radio" type="radio" /></label>', { card: at(0, 0, 80), radio: at(0, 0, 1) });
+  it("reaches a radio hidden inside the card that draws it, where the card stands, and OK checks it", () => {
+    // Review of #392: the start screen's Party Mode and Phone Mode are radios hidden in their cards.
+    lay(
+      '<button id="host">Host a game</button>' +
+        '<div role="radiogroup"><label id="party"><input id="r_party" type="radio" name="m" /></label>' +
+        '<label id="phone"><input id="r_phone" type="radio" name="m" /></label></div>' +
+        '<button id="go">Open the lobby here</button>',
+      { host: at(0, 0), party: at(0, 60, 80), r_party: at(0, 60, 1), phone: at(100, 60, 80), r_phone: at(100, 60, 1), go: at(0, 160) },
+    );
+    // jsdom draws nothing: the labels say where they are like the rest.
+    for (const id of ["party", "phone"]) {
+      const el = document.getElementById(id)!;
+      const box = { party: at(0, 60, 80), phone: at(100, 60, 80) }[id]!;
+      el.getBoundingClientRect = () => ({ ...box, width: 80, height: 80, x: box.left, y: box.top, toJSON: () => box }) as DOMRect;
+    }
+    const stop = installRemoteFocus();
+    const press = (key: string): void => {
+      (document.activeElement ?? document.body).dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true }));
+    };
+    document.getElementById("host")!.focus();
+    press("ArrowDown");
+    expect(document.activeElement?.id).toBe("r_party");
+    // The arrows move past a radio rather than along its group.
+    press("ArrowRight");
+    expect(document.activeElement?.id).toBe("r_phone");
+    expect((document.getElementById("r_phone") as HTMLInputElement).checked).toBe(false);
+    press("Enter");
+    expect((document.getElementById("r_phone") as HTMLInputElement).checked).toBe(true);
+    press("ArrowLeft");
+    press("Enter");
+    expect((document.getElementById("r_party") as HTMLInputElement).checked).toBe(true);
+    press("ArrowDown");
+    expect(document.activeElement?.id).toBe("go");
+    stop();
+  });
+
+  it("skips a hidden radio that nothing draws", () => {
+    lay('<input id="radio" type="radio" /><button id="b">b</button>', { radio: at(0, 0, 1), b: at(60, 0) });
     step("right");
-    expect(document.activeElement?.id).toBe("card");
-    step("right");
-    expect(document.activeElement?.id).toBe("card");
+    expect(document.activeElement?.id).toBe("b");
   });
 });

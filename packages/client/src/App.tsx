@@ -148,6 +148,23 @@ export function App(): React.JSX.Element {
     void loadSpeech().then((module) => module.startReadAloud()).catch(() => undefined);
   }, []);
 
+  // A TV remote's arrows (display/remote-focus.ts): on the shared screen, and on the start screen
+  // where a TV hosts its room before it is one. A chunk of its own, after first paint.
+  const remote = tv || route.name === "home";
+  useEffect(() => {
+    if (!remote) return;
+    let stop: (() => void) | null = null;
+    let live = true;
+    void import("./display/remote-focus").then(
+      (module) => { if (live) stop = module.installRemoteFocus(); },
+      () => undefined,
+    );
+    return () => {
+      live = false;
+      stop?.();
+    };
+  }, [remote]);
+
   // The host's quiet mode (#260) reaches every device in the room as run state.
   const roomQuiet = state?.quiet === true;
   useEffect(() => {
