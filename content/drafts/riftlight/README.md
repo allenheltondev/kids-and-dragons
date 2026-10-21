@@ -250,3 +250,13 @@ a lost fight costs the short route. No Bone Yard object enters inventory. See th
 The staged preview now includes dedicated encounter maps. The modeled spine is 43 scenes,
 14 decisions, six checks and one encounter (28.5 uncalibrated minutes).
 
+
+## A Room Already Taken
+
+The memory readers now lead to the wyrm nest. Clear the room, guide the wyrm into a
+sheltered hollow to earn an ally, or help the builders move after a lost fight.
+The Cairnstep rescue route can return to this completed chapter. See the
+[chapter review](../../../docs/campaigns/continental-rift/wyrm-nest-review.md).
+The modeled spine has 45 scenes, 15 decisions, six checks and one encounter,
+about 30 uncalibrated minutes. Family timing remains unmeasured.
+
