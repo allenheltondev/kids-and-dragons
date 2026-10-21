@@ -277,7 +277,10 @@ export interface PartyScene {
   /**
    * The rift in plain view in this scene (world/scene-rift.ts), or null.
    * `key` names the scene, so an `"open"` or `"collapse"` plays once as the
-   * scene opens and not again on a re-render; a new key replays it.
+   * scene opens and not again on a re-render; a new key replays it. The same
+   * key with a different rift is not a re-render: the state can name a scene
+   * before its chapter has loaded, which reads as no rift, and the real one
+   * must still play when the chapter lands.
    */
   setRift(rift: SceneRift | null, key: string | null): void;
   /**
@@ -608,6 +611,8 @@ export function createScene(app: Application): PartyScene {
   // On the stage only while a scene has a rift: an ordinary scene's tree is
   // the one it always was.
   let riftKey: string | null = null;
+  /** The rift `riftKey` was last set with: a repeat is the same scene *and* the same rift. */
+  let riftShown: SceneRift | null = null;
   let riftSequence: RiftPass[] = [];
   let riftPassAt = 0;
   /** When the current one-shot pass began, on `elapsed`. */
@@ -1535,8 +1540,9 @@ export function createScene(app: Application): PartyScene {
     },
 
     setRift(rift, key) {
-      if (destroyed || key === riftKey) return;
+      if (destroyed || (key === riftKey && rift === riftShown)) return;
       riftKey = key;
+      riftShown = rift;
       riftSequence = riftPasses(rift, prefersReducedMotion());
       riftPassAt = 0;
       riftPassStart = elapsed;

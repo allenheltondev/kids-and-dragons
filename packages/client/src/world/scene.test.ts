@@ -110,6 +110,40 @@ describe("a rift in plain view (#401)", () => {
     } finally { s.destroy(); load.mockRestore(); }
   });
 
+  it("plays an opening once its chapter lands, when the scene was set before the chapter loaded (#402)", async () => {
+    // One texture per sheet, so the test can tell which sheet the tear is drawing.
+    const sheets = new Map<string, Texture>();
+    const load = vi.spyOn(Assets, "load").mockImplementation(((url: string) => {
+      if (!sheets.has(url)) sheets.set(url, sheet());
+      return Promise.resolve(sheets.get(url)!);
+    }) as unknown as typeof Assets.load);
+    const app = fakeApp();
+    const s = createScene(app as unknown as Application);
+    const drawing = (): string | undefined => {
+      const source = rifts(app)[0]?.texture.source;
+      return [...sheets].find(([, texture]) => texture.source === source)?.[0];
+    };
+    try {
+      // The state names the scene; its chapter has not loaded, so it reads as no rift.
+      s.setRift(null, "c1/shimmer");
+      app.ticker.frame(16);
+      expect(rifts(app)).toHaveLength(0);
+      // The chapter lands: the same scene, now with its rift. It unfolds.
+      s.setRift("open", "c1/shimmer");
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      app.ticker.frame(16);
+      expect(rifts(app)[0]?.visible).toBe(true);
+      expect(drawing()).toBe("/assets/effects/rift_open.sheet.png");
+      // Once: it plays through to the shimmer...
+      app.ticker.frame(1_100);
+      expect(drawing()).toBe("/assets/effects/rift_neutral.sheet.png");
+      // ...and the same scene and rift again is a re-render, which does not unfold it a second time.
+      s.setRift("open", "c1/shimmer");
+      app.ticker.frame(16);
+      expect(drawing()).toBe("/assets/effects/rift_neutral.sheet.png");
+    } finally { s.destroy(); load.mockRestore(); }
+  });
+
   it("plays a collapse once and leaves nothing behind, and does not replay it for the same scene", async () => {
     const load = vi.spyOn(Assets, "load").mockResolvedValue(sheet() as unknown as Record<string, unknown>);
     const app = fakeApp();
