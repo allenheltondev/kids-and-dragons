@@ -3,13 +3,18 @@ title: Yeti
 id: npc.yeti
 type: npc
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-01"]
 tags: ["supporting_people", "glacier", "memory_keeper", "patient"]
 classification: supporting_people
 scale: large
 sapience: sapient
+height_cm: 250
+size:
+  height: "2.5 m (8 ft 2 in)"
+  compare: "as tall as a door"
+  line: "2.5 m (8 ft 2 in), as tall as a door."
 lore_hook: "The glacier remembers everything. The yetis are its reading room."
 likes:
   - id: creature.snowhorn_goat

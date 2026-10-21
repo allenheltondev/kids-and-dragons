@@ -3,7 +3,7 @@ title: River Charm
 id: item.river_charm
 type: item
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: ["gemfall-01", "gemfall-03a"]
 tags: ["charm", "travel", "stone_crossing", "common"]
