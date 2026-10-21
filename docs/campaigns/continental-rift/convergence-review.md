@@ -42,3 +42,13 @@ introduced before either practice method can need them. Camp supper replaces the
 copied rest. Orin's optional intervention remains visible only to a party that
 shared its readings. Repeated hints about an unnamed maker are removed.
 The existing Olivia/Pip choices, archetypes, XP and attunement rules are unchanged.
+
+### Pacing before and after review fixes
+
+| Shortest success spine | Before | After |
+|---|---:|---:|
+| Scenes | 45 | 45 |
+| Decisions | 15 | 15 |
+| Physical checks | 6 | 6 |
+| Encounters | 0 | 0 |
+| Longest reading run | 3 | 3 |
