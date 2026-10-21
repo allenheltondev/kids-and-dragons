@@ -2,10 +2,9 @@
 
 Delivered 14 transparent cast figures and 18 overlay PNGs using built-in `image_gen`.
 Final game assets live under `assets/cast/<id>/assembled.png` and `assets/together/<move>/`.
-The [prompt and source record](../../../art/source/issue-384/paintings.json) includes the
-accepted generation filenames, prompts, corrections and portable source paintings.
-The [export script](../../../art/source/issue-384/export.mjs) registers those paintings on
-the required canvases; it does not generate the artwork.
+The [prompt record](prompts.json) includes the accepted generation filenames, prompts,
+corrections and final asset paths. Raw generation copies and temporary export/review
+tooling are omitted from the delivery.
 
 ![Fourteen cast figures on light and dark](cast.webp)
 
@@ -37,28 +36,31 @@ The existing cast-shot harness was adapted temporarily to preview before/after p
 true heights, framing and portrait paging; the chapter-1 narration and backgrounds are
 review fixtures, not a playthrough of the characters' authored scenes. Browser ownership
 now requires the TV to share the room opener's browser context. The temporary test was
-removed after the successful run; the preparation script can recreate it.
+removed after the successful run.
 
-The TV captures show both figures at once. Colossal figures overlap in that artificial
-two-colossus arrangement; the phone pages isolate each one. The contact sheet above also
-shows the complete accepted paintings independently.
+The retained [Brassbuckle TV comparison](brassbuckle_scout-tv.webp) and
+[phone capture](brassbuckle_scout-phone-after.webp) show framing at both sizes. The
+Seal-Keeper's [before](seal_keeper-phone-before.webp) and
+[after](seal_keeper-phone-after.webp) phone pages show its visible face at colossal size.
+The contact sheet above covers all 14 paintings. The full capture set remains local in
+ignored `art/review/issue-384/`; representative captures keep this record compact.
 
-| Figure | Entries | Height | TV comparison | Phone before | Phone after |
-|---|---:|---:|---|---|---|
-| Seal-Keeper | 50 | 1800 cm | [TV](seal_keeper-tv.webp) | [Before](seal_keeper-phone-before.webp) | [After](seal_keeper-phone-after.webp) |
-| Brassbuckle scout | 17 | 95 cm | [TV](brassbuckle_scout-tv.webp) | [Before](brassbuckle_scout-phone-before.webp) | [After](brassbuckle_scout-phone-after.webp) |
-| Brassbuckle recordkeeper | 17 | 95 cm | [TV](brassbuckle_recordkeeper-tv.webp) | [Before](brassbuckle_recordkeeper-phone-before.webp) | [After](brassbuckle_recordkeeper-phone-after.webp) |
-| Relay Runner | 11 | 230 cm | [TV](relay_runner-tv.webp) | [Before](relay_runner-phone-before.webp) | [After](relay_runner-phone-after.webp) |
-| Masked choir singer | 13 | 95 cm | [TV](masked_choir_singer-tv.webp) | [Before](masked_choir_singer-phone-before.webp) | [After](masked_choir_singer-phone-after.webp) |
-| Bell-Code Expert | 8 | 70 cm | [TV](bell_code_expert-tv.webp) | [Before](bell_code_expert-phone-before.webp) | [After](bell_code_expert-phone-after.webp) |
-| Gullet's Cousins (foreman) | 8 | 110 cm | [TV](gullets_cousin-tv.webp) | [Before](gullets_cousin-phone-before.webp) | [After](gullets_cousin-phone-after.webp) |
-| Road-Warden | 7 | 230 cm | [TV](road_warden-tv.webp) | [Before](road_warden-phone-before.webp) | [After](road_warden-phone-after.webp) |
-| Fishmonger | 5 | 280 cm | [TV](fishmonger-tv.webp) | [Before](fishmonger-phone-before.webp) | [After](fishmonger-phone-after.webp) |
-| Road Boss | 5 | 250 cm | [TV](road_boss-tv.webp) | [Before](road_boss-phone-before.webp) | [After](road_boss-phone-after.webp) |
-| Warden Clerk | 5 | 110 cm | [TV](warden_clerk-tv.webp) | [Before](warden_clerk-phone-before.webp) | [After](warden_clerk-phone-after.webp) |
-| Rush/Muddy/Burrowfolk prospector | 11 | 95 cm | [TV](rush_prospector-tv.webp) | [Before](rush_prospector-phone-before.webp) | [After](rush_prospector-phone-after.webp) |
-| Bell Courier and pony | 4 | 160 cm | [TV](bell_courier-tv.webp) | [Before](bell_courier-phone-before.webp) | [After](bell_courier-phone-after.webp) |
-| Stall Witch | 4 | 140 cm | [TV](stall_witch-tv.webp) | [Before](stall_witch-phone-before.webp) | [After](stall_witch-phone-after.webp) |
+| Figure | Entries | Height |
+|---|---:|---:|
+| Seal-Keeper | 50 | 1800 cm |
+| Brassbuckle scout | 17 | 95 cm |
+| Brassbuckle recordkeeper | 17 | 95 cm |
+| Relay Runner | 11 | 230 cm |
+| Masked choir singer | 13 | 95 cm |
+| Bell-Code Expert | 8 | 70 cm |
+| Gullet's Cousins (foreman) | 8 | 110 cm |
+| Road-Warden | 7 | 230 cm |
+| Fishmonger | 5 | 280 cm |
+| Road Boss | 5 | 250 cm |
+| Warden Clerk | 5 | 110 cm |
+| Rush/Muddy/Burrowfolk prospector | 11 | 95 cm |
+| Bell Courier and pony | 4 | 160 cm |
+| Stall Witch | 4 | 140 cm |
 
 Counts reflect this checkout after the later Gemfall rewrites, rather than the issue's older audit.
 
@@ -86,7 +88,7 @@ all 18 files until those integrated checks land; #360 itself is already complete
 ## Validation
 
 - `python tools/art/verify.py`: **628 checks passed**.
-- `node art/source/issue-384/verify-overlays.mjs`: **18 files passed** dimensions, RGBA,
+- `node tools/art/verify-together.mjs`: **18 files passed** dimensions, RGBA,
   byte caps, clear regions, fades, nonblank/distinct states and centroid registration.
 - `npm run content:validate`: **62 checks passed**.
 - `npm run art:figures`: regenerated the committed height/stance table.
@@ -100,5 +102,5 @@ all 18 files until those integrated checks land; #360 itself is already complete
 - `git diff --check`: clean.
 
 Sources and prompts were made with built-in `image_gen`; no API/CLI fallback was used.
-Review PNGs and HTML remain in ignored local `art/review/issue-384/`; the WebP review
-images here are portable. `archive-review.py` encodes screenshots only, never game assets.
+Review PNGs and HTML remain in ignored local `art/review/issue-384/`; the six retained WebP
+images here are portable.
