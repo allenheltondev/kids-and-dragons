@@ -1585,7 +1585,7 @@
     },
     "ending_marked_present": {
       "type": "rest",
-      "narration": "You camp at the northern edge of the Woods on moss as soft as a pillow. All night, a mosshorn stands at the edge of your firelight like a guard, its antler flowers open. The forest has taken attendance, and it has marked you present. Just before dark, the MossHome runner jogs by on a path that stays put for once. \"MossHome's just north!\" she puffs, and does not stop.",
+      "narration": "You camp at the northern edge of the Woods on moss as soft as a pillow. Just before dark, the MossHome runner jogs by on a path that stays put for once. \"MossHome's just north!\" she puffs, and does not stop. All night, a mosshorn stands at the edge of your firelight like a guard, its antler flowers open. The forest has taken attendance, and it has marked you present.",
       "cast": [
         {
           "figure": "entities/mosshorn"
@@ -1596,7 +1596,7 @@
     },
     "ending_marked_something": {
       "type": "rest",
-      "narration": "You camp at the northern edge of the Woods, where the paths finally let you out. The Glade Stone hums in your pack all night. No mosshorns come anywhere near. The forest has taken attendance, and next to your name it has written something you can't quite read. Just before dark, the MossHome runner jogs by on a path that stays put for once. \"MossHome's just north!\" she puffs, and does not stop.",
+      "narration": "You camp at the northern edge of the Woods, where the paths finally let you out. Just before dark, the MossHome runner jogs by on a path that stays put for once. \"MossHome's just north!\" she puffs, and does not stop. The Glade Stone hums in your pack all night. No mosshorns come anywhere near. The forest has taken attendance, and next to your name it has written something you can't quite read.",
       "heal": 4,
       "choices": []
     },
