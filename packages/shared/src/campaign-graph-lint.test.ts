@@ -14,6 +14,7 @@ import { describe, expect, it } from "vitest";
 import { campaignMode, parseCampaignGraph } from "./campaign-graph.js";
 import {
   chapterFlagWrites,
+  exploreCampaignGraph,
   duplicateJsonKeys,
   lintCampaignGraph,
   type GraphFinding,
@@ -509,5 +510,46 @@ describe("Gemfall and the other ordered campaigns", () => {
       expect(campaignMode(campaign), file).toBe("ordered");
       expect(parseCampaignGraph(campaign)).toEqual({ graph: null, problems: [] });
     }
+  });
+});
+
+describe("completion relevance in pass hubs", () => {
+  const graph = (flagged = false) => build(
+    { start: { revisit: "pass" }, a: { revisit: "pass" }, b: { revisit: "pass" }, end: END },
+    { a: fwd("start", "a"), ar: back("a", "start"), b: fwd("start", "b"), br: back("b", "start"),
+      end: fwd("start", "end", flagged ? { when: { flag: "ready" } } : {}) }, ["ready"]);
+  it("merges first visits and passes only for chapters with no observable writes", () => {
+    const reduced = exploreCampaignGraph(graph(), { chapterFlags: writesNothing });
+    const conservative = exploreCampaignGraph(graph());
+    expect(reduced.states.length).toBeLessThan(conservative.states.length);
+    expect(lintCampaignGraph(graph(), { chapterFlags: writesNothing }).findings).toEqual([]);
+  });
+  it("keeps completion when the first play sets a route flag", () => {
+    const g = graph(true);
+    const result = exploreCampaignGraph(g, { chapterFlags: (id) => ({ setsTrue: id === "ch-a" ? ["ready"] : [], setsFalse: [] }) });
+    expect(result.states.some(s => s.facts.completions?.a)).toBe(true);
+    expect(result.states.some(s => s.facts.completions?.b)).toBe(false);
+    expect(lintCampaignGraph(g, { chapterFlags: (id) => ({ setsTrue: id === "ch-a" ? ["ready"] : [], setsFalse: [] }) }).search.complete).toBe(true);
+  });
+  it("keeps explicitly guarded completions and chapter clocks", () => {
+    const guarded = build({ start: { revisit: "pass" }, end: END }, { end: fwd("start", "end", { when: { completed: "start" } }) });
+    expect(exploreCampaignGraph(guarded, { chapterFlags: writesNothing }).states.some(s => s.facts.completions?.start)).toBe(true);
+    const clock = build({ start: { revisit: "pass" }, end: END }, { end: fwd("start", "end", { rift: { lasts: { unit: "chapters", count: 2 } } }) });
+    expect(exploreCampaignGraph(clock, { chapterFlags: writesNothing }).states.some(s => s.facts.completions?.start)).toBe(true);
+  });
+});
+
+describe("reusing a graph proof without hiding changed fixtures", () => {
+  it("refreshes the proof when chapter metadata changes", () => {
+    const graph = build({ start: { revisit: "pass" }, end: END }, { guarded: fwd("start", "end", { when: { flag: "ready" } }) }, ["ready"]);
+    const metadata = { setsTrue: [] as string[], setsFalse: [] as string[] };
+    const options = { chapterFlags: () => metadata };
+    const first = exploreCampaignGraph(graph, options);
+    expect(first.entered.has("end")).toBe(false);
+    metadata.setsTrue.push("ready");
+    expect(exploreCampaignGraph(graph, options).entered.has("end")).toBe(true);
+    graph.edges.guarded!.when = { notFlag: "ready" };
+    metadata.setsTrue.length = 0;
+    expect(exploreCampaignGraph(graph, options).entered.has("end")).toBe(true);
   });
 });

@@ -5637,6 +5637,556 @@
           "introduces": {}
         }
       }
+    },
+    "riftlight-preview-pause-stuttering-flats": {
+      "entryFacts": [],
+      "scenes": {
+        "pause": {
+          "requires": [],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-stuttering-flats": {
+      "entryFacts": [],
+      "scenes": {
+        "arrival": {
+          "requires": [],
+          "introduces": {
+            "skupper_guide": "On the Saltrot mudflats, an opening in the air blinks away and comes back. Through it lies snow. A snowhorn goat stands belly-deep in mud beside it, chewing a reed with great disappointment. Your Skupper guide from the Saltrot bank waves her fins in greeting, then points to the rising tide. \"Bring that goat home before the opening closes. I can find firm mud. I cannot make a goat like it.\"",
+            "stranded_goat": "A snowhorn goat",
+            "blinking_gap": "an opening in the air blinks"
+          }
+        },
+        "observe": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "observe_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "observe_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "observe_check": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "observe_clear": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "observe_changed": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sound": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sound_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sound_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "ground": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "ground_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "ground_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "ground_check": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "ground_clear": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "ground_changed": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "approach": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "approach_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "approach_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "approach_3": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sling": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sling_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sling_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sling_check": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sling_clear": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sling_changed": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "lift": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "lift_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "lift_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "lift_3": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "lift_check": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "lift_clear": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "lift_changed": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "dry_patch": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "dry_patch_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "dry_patch_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "dry_patch_3": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "rest": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "rest_watch": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "glimpse": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "glimpse_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "glimpse_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "signal": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "signal_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "signal_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "signal_check": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "signal_clear": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "signal_changed": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "crossing": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "crossing_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "crossing_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "crossing_check": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "crossing_clear": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "crossing_changed": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "last_blink": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "last_blink_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "last_blink_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "record": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "record_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "record_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "credit": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "credit_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "credit_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "next": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "next_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "next_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "ending": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        }
+      }
     }
   }
 }

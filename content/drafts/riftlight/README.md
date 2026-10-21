@@ -232,3 +232,12 @@ The island's joined-land inference now appears only after a successful compariso
 or a player-chosen assisted follow-up. Failed landings offer batch carrying with a
 delayed message relay versus borrowing a lighter kit. These recoveries add decisions
 without rerolls; incomplete tests stay credited as incomplete.
+
+## Stuttering Flats
+
+The buried bridge now continues to the stranded-goat rescue at the stuttering flats.
+Every route returns the goat home. A failed crossing leaves the sling with the herder;
+the party remains on the Saltrot side. See the [chapter review](../../../docs/campaigns/continental-rift/stuttering-flats-review.md).
+The uncalibrated shortest-path estimate is 25.5 minutes (43 scenes, 15 decisions, six checks);
+the 35-minute budget still needs a timed family playtest. This chapter adds no bonus XP.
+
