@@ -289,7 +289,7 @@ export interface GraphLintResult {
   search: { states: number; complete: boolean };
 }
 
-export const DEFAULT_MAX_STATES = 250_000;
+export const DEFAULT_MAX_STATES = 50_000;
 
 /**
  * The `setFlag` effects anywhere in a chapter, as {@link ChapterFlagWrites}.

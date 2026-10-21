@@ -28,3 +28,15 @@ skip trap analysis. The story walker covers combat and objective outcomes;
 it does not claim to measure encounter balance. The modeled spine is 45 scenes,
 15 decisions, six checks and one encounter, about 30 uncalibrated minutes.
 Family playtest timing remains pending.
+
+## Review follow-up
+
+The chamber is introduced as the memory readers' future room. Pip stays with the
+elder, who later arrives from that room. Rest belongs to the builders' side alcove;
+tools, bones and furniture are established on every path. A knockout without the
+friendship objective says only that the wyrm has not chosen the hollow.
+Retreat leaves the chamber unfinished: only a table fits for now, readers share
+the old room, and builders lose their free morning. A chosen route diagram or
+quiet sign helps the next visitor. The spine is 45 scenes, 14 decisions and six
+physical checks after the change. The original 50,000 graph-state cap is restored;
+route exploration and replay pass without increasing timeouts.
