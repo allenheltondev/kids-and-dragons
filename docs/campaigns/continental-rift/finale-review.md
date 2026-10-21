@@ -29,8 +29,11 @@ therefore emits two expected missing-creature warnings, one per fight version.
 
 Victory closes the seam and spends Corvane's strength. The party can choose the
 quiet ice, The Glacier Keepers, or life with the yetis, The Ones Who Listened.
-A late whole-party loss leads to Rivers Wander, a completing setback with the
-agreed half award and a spark of work for tomorrow. All endpoints complete the
+A first whole-party loss leads to a shelter checkpoint, partial healing and a
+different brace attempt using the observed pull and practiced retreat signal.
+Extra support is spent, and some lands have already shifted. Success reaches either
+chosen future with that map scar. Only a second failure reaches Rivers Wander,
+a completing setback with the agreed half award and work for tomorrow. All endpoints complete the
 campaign. Olivia's three outcomes, Pip's decision, the wyrm and the temple work
 appear as specific epilogue callbacks. The loss epilogue never claims displaced
 lands returned home.
@@ -47,14 +50,16 @@ downriver ferry: the shelf was already closed and neither dormant rift supplied
 a new regional route. The Bone Yard guide now explicitly supplies the checked
 next-tide route for Old Ossley's upriver ferry. Its edge requires the completed
 Bone Yard, so the return is introduced before it is offered. It preserves the
-planned river route and does not change a rift condition. With this return the
-exhaustive search completes at 429,922 states with no findings; the search cap
-is 500,000. This is a complete check, not a truncated search treated as success.
+planned river route and does not change a rift condition. With this return and relevance-based state tracking, the
+exhaustive search completes at 114,507 states with no findings; the search cap
+is 250,000, half the previous limit. Immutable chapter metadata and unchanged graph
+proofs are reused by content signature. Changed negative fixtures invalidate the
+cache; smaller art fixtures avoid unrelated campaign searches. This is a complete check, not a truncated search treated as success.
 
 ## Pacing and progression limits
 
 The finale's shortest success spine is 48 scenes, 14 decisions, six physical
-checks and one encounter, about 33.1 uncalibrated minutes. The 40-minute metadata
+checks and one encounter, about 34.1 uncalibrated minutes. The 40-minute metadata
 is a budget. Family timing and combat balance still need actual play.
 
 The agreed 140 ordinary / 650 convergence / 140 finale XP awards are preserved.
@@ -64,13 +69,43 @@ this remains an isolated preview. No claim is made that every optional route
 stays below level 8. Production integration must resolve that budget separately
 and retain Gemfall's prerequisite. Existing Gemfall files and saves are untouched.
 
-## Final verification
+## Review follow-up
 
-Typecheck, production schema validation and production continuity pass. The
-staged draft gate reports 116 passes and the two expected character warnings;
-the exhaustive graph search is complete with no findings. All finale outcome,
-board, prerequisite and continuity checks pass. The full regression run reports
-4,915 passing tests, 10 skipped and three failures also reproduced on unchanged
-main in this Windows environment: the authoring-guide examples test, profile
-storage-copy coverage, and preview process Ctrl-C cleanup. Two additional
-finale assertions added afterward pass in the focused 17-test run.
+All three clue pairs can reach both success endings without assuming the reading
+room was visited. The yeti readers introduce their work where they appear. Olivia,
+the builder and the wyrm arrive before their support is offered. Orin supplies the
+rest before the watcher appears. Failed map protection is read back after success.
+The Bone Yard ferry account names known Old Ossley and identifies the checked tidal
+channel to his landing. All five preceding chapter fixes are carried into this PR.
+
+Five new checkpoint scenes extend the existing rescue branch. Its ordinary path has
+six loss-only scenes before recovery, or seven before the second failure. The
+brace check is physical (`checkKind: doing`) and never repeats the lost battle.
+`final_battle_lost` is set only by that second failure. Real board-loss tests now
+continue through both outcomes of the second attempt, and route tests exercise
+both success futures on each of the three clue pairs.
+
+
+### Pacing before and after review fixes
+
+| Shortest success spine | Before | After |
+|---|---:|---:|
+| Scenes | 48 | 48 |
+| Decisions | 14 | 14 |
+| Physical checks | 6 | 6 |
+| Encounters | 1 | 1 |
+| Longest reading run | 3 | 3 |
+
+## Final verification after review
+
+Typecheck, production content validation and continuity pass. The complete local
+coverage run passed 4,940 tests with 11 skipped, and every coverage threshold passed
+(77.77% statements, 75.30% branches, 79.31% functions, 79.61% lines overall). One of
+those skips excludes the Unix Ctrl-C process test on this Windows host; GitHub CI
+runs the complete suite on Linux. The original Windows LF-only fixture readers were
+run with local LF line endings; no fixture or Gemfall change is included in this PR.
+
+The staged draft gate, real board outcomes, checkpoint continuations, all clue pairs
+and exhaustive route replay pass. The setback audit requires two failures and reaches
+Rivers Wander in at least 49 scenes. Focused coverage runs also pass independently
+at every earlier chapter head; the final full run includes all their fixes.

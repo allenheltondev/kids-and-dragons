@@ -4,7 +4,7 @@ import { pacingReport } from "../../packages/shared/src/chapter-pacing.ts";
 import { allPaths, campaign, chapters, context, send, start } from "./riftlight-test-support.ts";
 const chapter = chapters.get("riftlight-finale")!;
 const learned = { fragment_paths_learned: true, fragment_coast_learned: true };
-function walk(anchor: string, win: boolean, fate = "listen", extra: Record<string, boolean> = {}) {
+function walk(anchor: string, win: boolean, fate = "listen", extra: Record<string, boolean> = {}, secondWin = false) {
   let state = start(chapter, "manticore", "duskrunner", { ...learned, ...extra });
   const trace = new Map<string, string>();
   let steps = 0;
@@ -19,7 +19,7 @@ function walk(anchor: string, win: boolean, fate = "listen", extra: Record<strin
     } else if (state.prompt?.kind === "choice") {
       const id = state.sceneId === "anchors" ? anchor : state.sceneId === "fate" ? fate : state.prompt.options[0]!.id;
       state = send(state, { type: "CHOOSE", choiceId: id }, chapter);
-    } else state = send(state, { type: state.prompt?.kind === "roll" ? "ROLL" : "ADVANCE" }, chapter, 1);
+    } else state = send(state, { type: state.prompt?.kind === "roll" ? "ROLL" : "ADVANCE" }, chapter, state.sceneId === "loss_anchor_check" && secondWin ? 20 : 1);
   }
   trace.set(state.sceneId!, state.narration);
   return { state, trace };
@@ -32,9 +32,11 @@ it.each(["ice", "listen"])("a victory reaches the chosen %s ending with no taken
   expect(state.party[0]!.character.questItems).toEqual(["listening_chime"]);
   for (const step of chapter.goal!.steps) expect(state.flags[step.flag as string]).toBe(true);
 });
-it("a late lost battle reaches Rivers Wander and completes the campaign", () => {
+it("a lost battle followed by a failed brace attempt reaches Rivers Wander", () => {
   const { state, trace } = walk("reserve", false);
   expect(trace.has("fate")).toBe(false);
+  expect(trace.has("loss_anchor_check")).toBe(true);
+  expect(state.flags.final_fell_back).toBe(true);
   expect(state.flags.ending_rivers_wander).toBe(true);
   expect(state.chapterOutcome).toBe("setback");
   expect(chapter.scenes[state.sceneId!]!).toMatchObject({ endsCampaign: true });
@@ -104,5 +106,37 @@ it("keeps the success spine interactive across party scenarios", () => {
     expect(shortest!.decisions).toBeGreaterThanOrEqual(14);
     expect(shortest!.checks).toBe(6);
     expect(shortest!.encounters).toBe(1);
+  }
+});
+
+it.each([
+  ["paths-coast", { fragment_paths_learned: true, fragment_coast_learned: true, fragment_sky_learned: false }],
+  ["paths-sky", { fragment_paths_learned: true, fragment_coast_learned: false, fragment_sky_learned: true }],
+  ["coast-sky", { fragment_paths_learned: false, fragment_coast_learned: true, fragment_sky_learned: true }],
+] as const)("%s can recover from the first loss into either success ending", (_, flags) => {
+  for (const fate of ["ice", "listen"]) {
+    const { state, trace } = walk("reserve", false, fate, flags, true);
+    expect(state.chapterOutcome).toBe("success");
+    expect(state.flags.final_fell_back).toBe(true);
+    expect(state.flags.final_battle_lost).not.toBe(true);
+    expect(trace.has("loss_anchor_check")).toBe(true);
+    expect(trace.has("loss_second_failed")).toBe(false);
+    expect(trace.get(fate === "ice" ? "keepers" : "listened")).toContain("scar on the map");
+    if (fate === "listen") expect(trace.get("listened")).toContain("yetis who read memories");
+  }
+});
+it.each(["third", "wyrm", "olivia"])("a first loss spends the %s support and does not end the campaign", support => {
+  const { state, trace } = walk(support, false, "listen", { three_fragments_ready: true, fragment_sky_learned: true, wyrm_ally: true, olivia_ally: true }, true);
+  expect(state.flags.third_anchor_used).toBe(false);
+  expect(state.flags.final_battle_lost).not.toBe(true);
+  expect(trace.get("spent")).toContain("blurred corner");
+  expect([...trace.keys()].filter(k => k.startsWith("fight_"))).toEqual(["fight_weakened"]);
+});
+it("the first loss heals only partially and reserves final_battle_lost for the second failure", () => {
+  for (const id of ["fight_standard", "fight_weakened"]) {
+    const scene = chapter.scenes[id];
+    if (scene?.type !== "encounter") throw new Error("Expected fight");
+    expect(scene.onDefeat.effects).toContainEqual({ type: "heal", amount: 3, to: "party" });
+    expect(scene.onDefeat.effects).not.toContainEqual(expect.objectContaining({ flag: "final_battle_lost" }));
   }
 });
