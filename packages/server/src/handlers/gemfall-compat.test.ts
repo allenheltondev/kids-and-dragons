@@ -214,24 +214,27 @@ const DIGESTS: PreEpicSave["digests"] = {
  * file changed. The endings, roads, setbacks and saves below still match their
  * pre-epic digests.
  */
+// Re-pinned for #384: fourteen commissioned cast figures replace role stand-ins;
+// chapter edits change cast figures and remove obsolete size overrides only.
+// The gameplay digests (endings, roads, setbacks and saves) remain unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "cfb136f60708bcd2e5b68a7536ccd963a83dadb52e61e9e679377f264b10bf88",
-  "chapters/gemfall-01.json": "32d2c5f4b3140d89d31e41830470419765647f97923a0fe62e01bc339759e9c3",
+  "chapters/gemfall-01.json": "6a21e0dc2ca2e51b053ef8733c68d179484e31f39e048081c0fd36bfaef739a0",
   "chapters/gemfall-02.json": "025601275c30803358b3fea1ea8b552eb3ca78f7eb48a98e745b8063347b1829",
-  "chapters/gemfall-03a.json": "750c68b4e6492cae1c69df5d0b467b5ce22b2ad15e83d130325155a3dfc934e1",
-  "chapters/gemfall-03b.json": "196102cc81e34e0a409846fc5e1747926d78194d3220f3ebd10f969439ea8dca",
-  "chapters/gemfall-03c.json": "f8a12c044c08f260176a0374258abf0118535d005cc40d1083a6e812f4fe87a9",
-  "chapters/gemfall-04a.json": "88d8ab6dea3765a61f829bd6ca1c4caccacf827fcddb5d7e6bfc34dfa26b3084",
-  "chapters/gemfall-04b.json": "09861f4fdc70bcb29da03bd37bbc071503479ef247f7d727d990b494baec4f66",
-  "chapters/gemfall-04c.json": "b05df44a8ca0d4b4b1aefd2c1c83e87d869c6210c2c102a0ab31d8767e12a471",
-  "chapters/gemfall-05a.json": "73a98e7eb255d074710542d70130fede374510a84a239c00daf57594e87587ed",
+  "chapters/gemfall-03a.json": "940cc652383e330178142033b55ea966544b68ed0c7487eb64c0ae7db0d93769",
+  "chapters/gemfall-03b.json": "63a8691786e362d29deee55be9259d115019c970832888123a1f6e66cf319336",
+  "chapters/gemfall-03c.json": "c5256936dacf59322ae1bb339224e1b41f45cad87f396fbf8d51f3100e85ade3",
+  "chapters/gemfall-04a.json": "daa6a7248eacde776c8a84abdb374be0ecc1ded295d95d4060c174166e808893",
+  "chapters/gemfall-04b.json": "b79946ecd13e130d692228eab9bc63a2c40df6452647e2b99ca50e58cb01ac9b",
+  "chapters/gemfall-04c.json": "127ae09d96ad7c6b3f2feec2076ee085b0e33779f6f726e093cc1baa6e7fa9e3",
+  "chapters/gemfall-05a.json": "560deb69b420e176db8e1e599af7ab29077a5d5a1094856a2766d7ccbac46931",
   "chapters/gemfall-05b.json": "82c2078a654173e09b0028dc875b8d1c5ac31ea72651fdac1fbc5c3ccfcaecd1",
-  "chapters/gemfall-05c.json": "5444899edbf6aaaa06a8e269a2080f97a47831f8ea24d68773a0b89df155fc7c",
-  "chapters/gemfall-06.json": "b7a15bfce522b03e0f553e5b4d3272e25bf1051ca67585f4cf3de79bb1fc7345",
-  "chapters/gemfall-07h.json": "102d1fc2869f2001c57a3f17a934da964301e12e2db1d2342768a1e211a7c532",
-  "chapters/gemfall-07l.json": "d2bf74142b55a622b2bdf709296541d07acb80eb74753c79f2f220b4f5f41604",
-  "chapters/gemfall-07r.json": "9b6ba7957b912c822a6de79e8e80a89e050a904850e4703627ac90559ca30530",
-  "chapters/gemfall-08.json": "e8611245d388ec868428698fb0e36ee3051674d39303480033812909add3a29a",
+  "chapters/gemfall-05c.json": "1d913a51314c912143d4551273c764904c2b678de0bf6e67f8fee832d92558e0",
+  "chapters/gemfall-06.json": "4950e147c4fa01cc900a53251127959402d7c4eba288e0672ed1b4e65e43886c",
+  "chapters/gemfall-07h.json": "9d5eb63ab79d4cb00e4fc33f4b5337e1c93db0ab706dcc4159d9574ec4737d24",
+  "chapters/gemfall-07l.json": "7d230e37d0326173af894286bc6abc41ad738d283198ea349538943baa581f78",
+  "chapters/gemfall-07r.json": "34ecb159500c1b3659af7a77eb4886d99f21d2f011811b413f0dab5a232be8d8",
+  "chapters/gemfall-08.json": "01963781cf6039299b0d11a8f6c4faca1057bc4862d3d1530d5fae92ee1e13c8",
 };
 
 describe("Gemfall's files are the files that shipped before the epic", () => {

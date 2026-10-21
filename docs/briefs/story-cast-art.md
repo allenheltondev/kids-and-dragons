@@ -73,12 +73,66 @@ The image:
 | Rule | Value |
 |---|---|
 | Canvas | 1024 × 1024 RGBA, real transparency, sRGB, ≥ 8px clear margin (same as entities) |
-| Feet | lowest opaque row within 12px of **y = 900** (the canvas origin). `verify.py` fails it otherwise. A figure that hovers (a bathtub? no; a will-o-wisp, yes) is the exception; say so in the PR. |
+| Registration | lowest opaque row within 12px of **y = 900** (the canvas origin), for every stance. Paint the complete figure at this origin; the stage supplies the lift or water mask described below. |
 | Fill | the figure fills the canvas height like every entity does; the stage measures the painting and draws it at `heightCm` |
 | Facing | **three-quarter view facing left.** The cast stands on the right of the stage, facing the party on the left. |
 | Contents | one character, complete, no ground shadow, no props cut by the canvas edge. Their defining prop is part of the figure (Fenn's barrel, Ashby's walking stick, Pellam's ledger). |
-| Pose | standing, relaxed, readable silhouette; mid-gesture is fine. Not attacking, not frightened. |
+| Pose | relaxed, readable silhouette appropriate to `stance`; mid-gesture is fine. Not attacking, not frightened. |
 | Text | none. No lettering on ledgers, signs or sashes. |
+
+### Painting each stance
+
+Keep the same canvas registration for all four stances. `heightCm` measures the complete
+painted figure in its own pose, from its lowest point to its highest point, including wings
+and defining props. Do not paint empty air or water into that measurement.
+
+- **Standing:** paint the complete body with the feet at the origin. The stage supplies the
+  contact shadow; do not paint one.
+- **Hovering:** paint the whole floating body with its lowest point at the origin, without a
+  pedestal or painted shadow. The stage lifts it by 22% of its height and adds a detached
+  shadow and gentle bob. Do not bake that lift into the canvas.
+- **Flying:** paint the complete body and wings in a readable airborne pose, lowest point at
+  the origin. The stage lifts it by 40% of its height and supplies the shadow and drift.
+  Do not crop wing tips or add extra transparent space below the figure to imply altitude.
+- **Swimming:** paint the **whole body**, including the lower body, fins and tail, lowest point
+  at the origin. Do not paint a water line, ripples or a cropped lower edge. The stage sinks
+  the figure by 38% of its height and masks the lower body below its water line, adding the
+  ripples itself. The complete figure is also needed when a scene overrides its stance.
+
+### Issue #384 painting targets
+
+These targets apply to the remaining A4 commissions. They supersede the older scale words
+in the A4 planning tables where necessary: a 95 cm Burrowfolk does not fit `small`'s 75 cm
+ceiling. Use `small_to_medium` for those adults. All targets are inside `SCALE_CM` bands.
+The Bell Courier's height measures the combined pony-and-rider pose.
+
+| id | basis | scale | heightCm | stance |
+|---|---|---|---:|---|
+| `seal_keeper` | legend_dragon | colossal | 1800 | standing |
+| `brassbuckle_scout` | burrowfolk | small_to_medium | 95 | standing |
+| `brassbuckle_recordkeeper` | burrowfolk | small_to_medium | 95 | standing |
+| `relay_runner` | centaur | large | 230 | standing |
+| `masked_choir_singer` | burrowfolk | small_to_medium | 95 | standing |
+| `bell_code_expert` | dragonling | small | 70 | standing |
+| `gullets_cousin` | frogfolk | small_to_medium | 110 | standing |
+| `road_warden` | centaur | large | 230 | standing |
+| `fishmonger` | yeti | large | 280 | standing |
+| `road_boss` | centaur | large | 250 | standing |
+| `warden_clerk` | frogfolk | small_to_medium | 110 | standing |
+| `rush_prospector` | burrowfolk | small_to_medium | 95 | standing |
+| `bell_courier` | dragonling | medium | 160 | standing |
+| `stall_witch` | witch_order | medium | 140 | standing |
+
+The masked singer is a Burrowfolk in a plum choir cloak, matching §9 and the issue's
+request for a third people beside `cult_bigfoot` and `cult_frogfolk`. The old A4
+`cult_bigfoot` basis is superseded by this target. The Seal-Keeper needs an explicit
+`figureOverflow["cast/seal_keeper"]: "top"`, like the legend dragon, and a readable face
+in the visible lower part of that composition.
+The Warden Clerk is a frogfolk in the Skywardens' silver and violet uniform, with
+a heavy pass stamp; this differs from Pellam's faun silhouette and ledger-and-quill pose.
+Use the actual people as `basis`, because `skywardens` is a faction rather than a
+manifest entity. The Stall Witch is a frogfolk in Witch Order clothing; the 140 cm
+painted pose includes the tall patched hat.
 
 Then point the content at it: in every `content/chapters/*.json` scene whose `cast` contains that
 character's **name** (listed below; find them with
@@ -177,28 +231,28 @@ is a role ("Relay Runner"), the figure stands for that one person wherever the r
 
 | id | name(s) in content | basis | scale | look |
 |---|---|---|---|---|
-| `seal_keeper` | Seal-Keeper, The Seal-Keeper (gemfall-08; 31 scenes, 1 chapter, the finale's only speaker) | legend_dragon | colossal | a dragon so old its scales have turned to gemstone at the edges; embermoths dusting its nose; patient, long-looking, heavy-lidded; currently the generic legend dragon, which makes the finale's one speaker look like a poster |
-| `brassbuckle_scout` | Brassbuckle scout (gemfall-03a, 04a, 05a; 17 scenes, 3 chapters) | burrowfolk | small | one of six Burrowfolk in matching brass hats; quick, twitchy, rope-moving; brass hat with a dent, a coil of queue rope over one shoulder |
-| `brassbuckle_recordkeeper` | Brassbuckle recordkeeper (gemfall-03a, 04a, 05a; 17 scenes, 3 chapters) | burrowfolk | small | same brass hat and coat as the scout, but earnest and ink-stained; a thick notebook and a pencil on a string; must read as the scout's colleague, not a copy |
-| `relay_runner` | Relay Runner (gemfall-03c, 04c, 07h, 07l; 11 scenes, 4 chapters) | centaur | large | a she-centaur relay-runner, breathless mid-stride, rolled notes in a chest bandolier, green relay sash. Must differ from `bracken_swiftmile` (chestnut, saddle satchel): lean, dark bay, braided mane tied up for speed |
-| `masked_choir_singer` | Masked choir singer (gemfall-07l, 07r, 08; 10 scenes, 3 chapters) | cult_bigfoot | large | a Deep Hollow choir member mid-note, mouth open behind a painted bark mask pushed half up; robe in the cult's dark palette; a small humming crystal on a string. Match `cult_bigfoot` and `cult_frogfolk` figures, but a third look so a crowd reads as mixed peoples |
+| `seal_keeper` | Seal-Keeper, The Seal-Keeper (gemfall-08; 31 scenes, 1 chapter, the finale's only speaker) | legend_dragon | colossal | a dragon so old its scales have turned to gemstone at the edges; embermoths dusting its nose; patient, long-looking, heavy-lidded; currently the generic legend dragon, which makes the finale's one speaker look like a poster Target: **1800 cm, standing**. |
+| `brassbuckle_scout` | Brassbuckle scout (gemfall-03a, 04a, 05a; 17 scenes, 3 chapters) | burrowfolk | small_to_medium | one of six Burrowfolk in matching brass hats; quick, twitchy, rope-moving; brass hat with a dent, a coil of queue rope over one shoulder Target: **95 cm, standing**. |
+| `brassbuckle_recordkeeper` | Brassbuckle recordkeeper (gemfall-03a, 04a, 05a; 17 scenes, 3 chapters) | burrowfolk | small_to_medium | same brass hat and coat as the scout, but earnest and ink-stained; a thick notebook and a pencil on a string; must read as the scout's colleague, not a copy Target: **95 cm, standing**. |
+| `relay_runner` | Relay Runner (gemfall-03c, 04c, 07h, 07l; 11 scenes, 4 chapters) | centaur | large | a she-centaur relay-runner, breathless mid-stride, rolled notes in a chest bandolier, green relay sash. Must differ from `bracken_swiftmile` (chestnut, saddle satchel): lean, dark bay, braided mane tied up for speed Target: **230 cm, standing**. |
+| `masked_choir_singer` | Masked choir singer (gemfall-07l, 07r, 08; 10 scenes, 3 chapters) | burrowfolk | small_to_medium | a Deep Hollow choir member mid-note, mouth open behind a painted bark mask pushed half up; robe in the cult's dark palette; a small humming crystal on a string. Match `cult_bigfoot` and `cult_frogfolk` figures, but a third look so a crowd reads as mixed peoples Target: **95 cm, standing**. |
 
 **Priority 2: several scenes in one chapter (4 to 8 scenes).**
 
 | id | name(s) in content | basis | scale | look |
 |---|---|---|---|---|
-| `bell_code_expert` | Bell-Code Expert (gemfall-05c; 8 scenes) | dragonling | small | a small, fast-talking dragonling child with a hand bell on each wrist; goes quiet and still when the unrung bell is mentioned. Distinct from `nim` (mint) |
-| `gullets_cousin` | Gullet's Cousins (gemfall-03b; 8 scenes) | frogfolk | small_to_medium | the ribbon-crew foreman: frogfolk wearing three hats stacked; holds a ribbon strung with tiny bells. Family resemblance to `gullet` (notched hat), but not her |
-| `road_warden` | Road-Warden (gemfall-04a; 7 scenes) | centaur | large | centaur waystation warden at a table of sashes, three spools of thread in her mouth, needle pinned to her sleeve, a half-unpicked map sash over one arm |
-| `fishmonger` | Fishmonger (gemfall-01; 5 scenes) | yeti | large | yeti fishmonger looking north at a herring; apron, a pail of fish, an expression of dignified calculation |
+| `bell_code_expert` | Bell-Code Expert (gemfall-05c; 8 scenes) | dragonling | small | a small, fast-talking dragonling child with a hand bell on each wrist; goes quiet and still when the unrung bell is mentioned. Distinct from `nim` (mint) Target: **70 cm, standing**. |
+| `gullets_cousin` | Gullet's Cousins (gemfall-03b; 8 scenes) | frogfolk | small_to_medium | the ribbon-crew foreman: frogfolk wearing three hats stacked; holds a ribbon strung with tiny bells. Family resemblance to `gullet` (notched hat), but not her Target: **110 cm, standing**. |
+| `road_warden` | Road-Warden (gemfall-04a; 7 scenes) | centaur | large | centaur waystation warden at a table of sashes, three spools of thread in her mouth, needle pinned to her sleeve, a half-unpicked map sash over one arm Target: **230 cm, standing**. |
+| `fishmonger` | Fishmonger (gemfall-01; 5 scenes) | yeti | large | yeti fishmonger looking north at a herring; apron, a pail of fish, an expression of dignified calculation Target: **280 cm, standing**. |
 | `selkie_grandmother` | Selkie Grandmother (gemfall-01; 5 scenes) | selkie | medium | grey-pelted selkie grandmother in an oilskin shawl, a bundle of everything the family owns on her back; quiet, dignified, unimpressed by rush prices. Not `tidewell` |
-| `road_boss` | Road Boss (gemfall-04c; 5 scenes) | centaur | large | broad centaur road boss with a marker post on each shoulder and a mud-spattered sash; puffing, good-humoured |
-| `warden_clerk` | Warden Clerk (gemfall-07h; 5 scenes) | skywardens | medium | Skywarden clerk with a heavy pass stamp and ink pad; neat, impassive; must not duplicate `pellam` (different people, different build) |
-| `rush_prospector` | Rush prospector (gemfall-05c; 5 scenes), Muddy prospector (05a; 2), Burrowfolk prospector (04b, 06; 4) | burrowfolk | small | the stubborn "right, right" prospector with an enormous pry bar, mud to the knees, hat full of gem-dust; one figure for the gold-rush crowd's burrowfolk (the 4 `Burrowfolk prospector` entries may share it) |
+| `road_boss` | Road Boss (gemfall-04c; 5 scenes) | centaur | large | broad centaur road boss with a marker post on each shoulder and a mud-spattered sash; puffing, good-humoured Target: **250 cm, standing**. |
+| `warden_clerk` | Warden Clerk (gemfall-07h; 5 scenes) | frogfolk | small_to_medium | Skywarden clerk with a heavy pass stamp and ink pad; neat, impassive; must not duplicate `pellam` (different people, different build) Target: **110 cm, standing**. |
+| `rush_prospector` | Rush prospector (gemfall-05c; 5 scenes), Muddy prospector (05a; 2), Burrowfolk prospector (04b, 06; 4) | burrowfolk | small_to_medium | the stubborn "right, right" prospector with an enormous pry bar, mud to the knees, hat full of gem-dust; one figure for the gold-rush crowd's burrowfolk (the 4 `Burrowfolk prospector` entries may share it) Target: **95 cm, standing**. |
 | `courier_griffin` | Courier Griffin (gemfall-01; 4 scenes) | griffin | large | young Griffin Post courier who eats a whole loaf in one gulp; wings half-out in a bow, satchel, loaf crumbs on the beak. Not `postmaster_quill` (tawny, spectacles): younger, smaller, ruffled |
-| `bell_courier` | Bell Courier (gemfall-04c; 4 scenes) | dragonling | small | small dragonling on a fat pony (the pony is part of the figure, or draw her standing beside it) ringing a hand bell; puffing. Third dragonling child, so a different colour from `nim` (mint) |
+| `bell_courier` | Bell Courier (gemfall-04c; 4 scenes) | dragonling | medium | small dragonling on a fat pony (the pony is part of the figure, or draw her standing beside it) ringing a hand bell; puffing. Third dragonling child, so a different colour from `nim` (mint) Target: **160 cm, standing**. |
 | `young_gatherer` | Young Gatherer (gemfall-05b; 4 scenes) | dragonling | small | young dragonling girl on a rock, tail wrapped round her knees, a gathering bag; insists she is not lost. Another distinct colour |
-| `stall_witch` | Stall Witch (gemfall-07l; 4 scenes) | witch_order | medium | remedy-stall witch in a patched hat, every charm on her stall ringing; her people your choice (not bigfoot, which is `mother_thrum`); keep the Witch Order trappings |
+| `stall_witch` | Stall Witch (gemfall-07l; 4 scenes) | witch_order | medium | remedy-stall witch in a patched hat, every charm on her stall ringing; her people your choice (not bigfoot, which is `mother_thrum`); keep the Witch Order trappings Target: **140 cm, standing**. |
 
 **Priority 3: one-scene cameos and unnamed-in-content speakers. Do last, or leave as stand-ins.**
 
@@ -426,4 +480,4 @@ The unnamed boulder claimants now appear as **Burrowfolk Claimant** and **Faun C
 
 The manifest records basis and scale; the chapters explicitly set the path-keeper to `large`, and Posy and the young gatherer to `small`, as required by the stage lookup. Chapter edits are limited to cast data. Generation prompts and references are recorded in [the illustration log](../campaigns/gemfall-illustrations.md#issue-170--remaining-expansion-speakers-2026-10-15). Review images and validation results are in [the review record](../reviews/issue-170/README.md).
 
-The `corbin_carrying_posy` variant keeps Posy on Corbin’s shoulders through the four introduction scenes. Its `very_large` stage size describes the combined occupied height; the Burrowfolk remain the same people. The downhill callback retains `cast/corbin` and `cast/posy` separately because Posy runs up the road there.
+The `corbin_carrying_posy` variant keeps Posy on Corbin’s shoulders through the four introduction scenes. Its `medium` scale and 150 cm height describe the combined occupied pose, with `standing` stance; the Burrowfolk remain the same people. The downhill callback retains `cast/corbin` and `cast/posy` separately because Posy runs up the road there.
