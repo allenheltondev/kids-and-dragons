@@ -45,3 +45,7 @@ at least 30 scenes and 14 decisions, with the chores before the climax.
 | Physical checks | 6 | 6 |
 | Encounters | 1 | 1 |
 | Longest reading run | 3 | 3 |
+
+### Second review follow-up
+
+The finish uses the same griffin messenger and Cairnstep destination as the exit. A rocking board now looks firm rather than sounding sound. Wording only; the spine remains 45 scenes, 14 decisions, 6 doing checks, 1 fight and a reading run of 3.

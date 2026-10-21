@@ -52,3 +52,7 @@ The existing Olivia/Pip choices, archetypes, XP and attunement rules are unchang
 | Physical checks | 6 | 6 |
 | Encounters | 0 | 0 |
 | Longest reading run | 3 | 3 |
+
+### Second review follow-up
+
+Both recovery references now use the established boundary, without assuming a second mark or a cloth choice. Wording only; the spine remains 45 scenes, 15 decisions, 6 doing checks and a reading run of 3.

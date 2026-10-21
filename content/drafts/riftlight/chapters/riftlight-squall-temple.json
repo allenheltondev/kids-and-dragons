@@ -1045,7 +1045,7 @@
       },
       "onFailure": {
         "goto": "boards_changed",
-        "narration": "A near board rocks after appearing sound."
+        "narration": "A near board rocks after looking firm."
       },
       "art": "scenes/riftlight/temple-island-squall"
     },
@@ -1265,7 +1265,7 @@
     },
     "finish": {
       "type": "story",
-      "narration": "The keeper closes the log before the pages can drink any more rain. Your party can rest, return to the lookout, or follow the rescue messenger toward the mountain pass.",
+      "narration": "The keeper closes the log before the pages can drink any more rain. Your party can rest, return to the lookout, or follow the griffin messenger down to the Cairnstep.",
       "choices": [],
       "outcome": "success",
       "art": "scenes/riftlight/temple-island-squall"
