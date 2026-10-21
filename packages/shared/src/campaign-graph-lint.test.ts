@@ -538,3 +538,18 @@ describe("completion relevance in pass hubs", () => {
     expect(exploreCampaignGraph(clock, { chapterFlags: writesNothing }).states.some(s => s.facts.completions?.start)).toBe(true);
   });
 });
+
+describe("reusing a graph proof without hiding changed fixtures", () => {
+  it("refreshes the proof when chapter metadata changes", () => {
+    const graph = build({ start: { revisit: "pass" }, end: END }, { guarded: fwd("start", "end", { when: { flag: "ready" } }) }, ["ready"]);
+    const metadata = { setsTrue: [] as string[], setsFalse: [] as string[] };
+    const options = { chapterFlags: () => metadata };
+    const first = exploreCampaignGraph(graph, options);
+    expect(first.entered.has("end")).toBe(false);
+    metadata.setsTrue.push("ready");
+    expect(exploreCampaignGraph(graph, options).entered.has("end")).toBe(true);
+    graph.edges.guarded!.when = { notFlag: "ready" };
+    metadata.setsTrue.length = 0;
+    expect(exploreCampaignGraph(graph, options).entered.has("end")).toBe(true);
+  });
+});
