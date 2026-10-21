@@ -68,6 +68,8 @@ npcs:
     featured: false
     tags: [supporting_people, fields, stone_records, prospecting]
     scale: small_to_medium
+    height_cm: 95
+    stance: standing
     short_description: >-
       Compact, badger-like hill people whose stone records connect the farms of
       the Sunward Fields with the oldest layers beneath them.
@@ -139,6 +141,8 @@ npcs:
     featured: false
     tags: [supporting_people, plains, caravan, guide]
     scale: large
+    height_cm: 230
+    stance: standing
     short_description: >-
       Traveling plains people who guide caravans and preserve the realm's oldest
       overland routes.
@@ -199,6 +203,8 @@ npcs:
     featured: false
     tags: [supporting_people, fields, farming, music]
     scale: medium
+    height_cm: 160
+    stance: standing
     short_description: >-
       Hooved farming people associated with orchards, music, communal work, and
       seasonal celebrations.
@@ -257,6 +263,8 @@ npcs:
     featured: false
     tags: [supporting_people, fields, tiny, semi_sapient]
     scale: tiny
+    height_cm: 22
+    stance: standing
     short_description: >-
       Tiny field spirits who tend overlooked plants and reward careful stewardship.
     visual_identity: >-
@@ -315,6 +323,8 @@ npcs:
     featured: false
     tags: [supporting_people, marsh, amphibious, navigator]
     scale: small_to_medium
+    height_cm: 105
+    stance: standing
     short_description: >-
       Amphibious marsh people who maintain safe channels, reed settlements, and
       mist markers.
@@ -377,6 +387,8 @@ npcs:
     featured: false
     tags: [supporting_people, saltrot, amphibious, brackish, guide]
     scale: small_to_medium
+    height_cm: 100
+    stance: standing
     short_description: >-
       Amphibious mudskipper-and-pufferfish people of the Saltrot's brackish
       flats, who guide travelers across mud nobody else can stand on.
@@ -447,6 +459,8 @@ npcs:
     featured: false
     tags: [supporting_people, marsh, collector, secretive]
     scale: small
+    height_cm: 70
+    stance: standing
     short_description: >-
       Small marsh-dwelling people who collect lost objects, secrets, and unusual
       sounds.
@@ -513,6 +527,8 @@ npcs:
     featured: false
     tags: [supporting_people, woods, trees, memory, rain]
     scale: very_large
+    height_cm: 900
+    stance: standing
     short_description: >-
       Rare speaking beech trees of the Enchanted Woods who keep local memories
       in the patient language of rain, roots and returning footsteps.
@@ -584,6 +600,8 @@ npcs:
     featured: false
     tags: [supporting_people, glacier, memory_keeper, patient]
     scale: large
+    height_cm: 250
+    stance: standing
     short_description: >-
       Patient ice-dwelling people who preserve and interpret memories trapped in
       the glacier.
@@ -643,6 +661,8 @@ npcs:
     featured: false
     tags: [supporting_people, ocean, reef, alliance]
     scale: medium
+    height_cm: 170
+    stance: swimming
     short_description: >-
       Aquatic reef people who maintain Mermaid Cove and uphold an ancient
       alliance with the land.
@@ -700,6 +720,8 @@ npcs:
     featured: false
     tags: [supporting_people, coastal, shapeshifter, courier]
     scale: medium
+    height_cm: 165
+    stance: standing
     short_description: >-
       Seal-shifting coastal people who move easily between sea communities and
       the land.
@@ -757,6 +779,8 @@ npcs:
     featured: true
     tags: [supporting_people, river, bridgekeeper, masonry]
     scale: very_large
+    height_cm: 320
+    stance: standing
     short_description: >-
       Massive stone-skinned people known for patient judgment, masonry,
       bridgekeeping, and gateway stewardship.
@@ -815,6 +839,8 @@ npcs:
     featured: false
     tags: [supporting_people, plains, flock, skittish]
     scale: medium
+    height_cm: 140
+    stance: standing
     short_description: >-
       Friendly, skittish sheep-folk of the Plains who live, think, and do
       everything as a flock, are never fewer than three, and never have names.
@@ -920,6 +946,8 @@ npcs:
     featured: false
     tags: [cultural_order, cross_species, magic, tradition]
     scale: variable
+    height_cm: 160
+    stance: standing
     short_description: >-
       A cross-species magical tradition rather than a separate people.
     visual_identity: >-

@@ -3,7 +3,7 @@ title: Sky Islands
 id: biome.sky_islands
 type: biome
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: []
 tags: ["aerial", "drifting_islands", "wind", "temples", "open_sky"]
@@ -31,6 +31,9 @@ related:
   - id: creature.cloud_whale
     type: creature
     relationship: ambient_creatures
+  - id: campaign.riftlight
+    type: campaign
+    relationship: biomes
   - id: character.kitsune
     type: character
     relationship: primary_locations
@@ -52,7 +55,7 @@ ai_context:
   visual_style: "Floating stone islands, gold-roofed temple settlements, hanging roots, cloud banks, open blue distance, wind banners, and narrow aerial approaches."
   common_encounters: "Navigation, separated communities, changing routes, messenger journeys, weather emergencies, and stories whose destination is defined by when it can be reached rather than only where it is."
   lore_highlights: "Every island keeps its own founding story, and at least four of them open with \"the first island, alone in the sky.\" The version told to children everywhere is simpler: the islands got tired of the sea and left, and the wind, flattered by the compliment, has carried them ever since."
-  related_entities: "biome.open_sea, character.kitsune, creature.cloud_whale, character.kitsune, creature.cloud_whale, item.luckstone"
+  related_entities: "biome.open_sea, character.kitsune, creature.cloud_whale, campaign.riftlight, character.kitsune, creature.cloud_whale, item.luckstone"
   writing_guidance: "The islands move. Do not give them permanent surface borders or ordinary road connections. Do not portray every kitsune as deceptive."
   generation_hints: "Wind routes shift, island communities prepare for storms, and navigation depends on stars, recurring air currents, signals, and shared stories."
 layout: biomes
@@ -110,6 +113,9 @@ To the surface realm, the islands are where the weather is decided and where let
 
 ### Biomes
 - [The Open Sea](/biomes/open_sea/) `Locations`
+
+### Campaigns
+- [Riftlight](/campaigns/riftlight/) `Biomes`
 
 ### Characters
 - [Kitsune](/characters/kitsune/) `Primary Peoples` `Primary Locations`

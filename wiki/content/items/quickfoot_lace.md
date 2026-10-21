@@ -3,7 +3,7 @@ title: Quickfoot Lace
 id: item.quickfoot_lace
 type: item
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: ["gemfall-01"]
 tags: ["charm", "quick", "exchange", "common"]
