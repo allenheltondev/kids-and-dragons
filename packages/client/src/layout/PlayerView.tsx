@@ -31,7 +31,8 @@ import { HostControls } from "../screens/HostControls";
 // barrel is what every surface pulls in, and the playtest drawer should reach
 // exactly one call site — the one below, behind `import.meta.env.DEV`.
 import { PlaytestPanel } from "../screens/PlaytestPanel";
-import { useMe, useSession } from "../store";
+import { TABLE_FULL_MESSAGE, tableFull } from "@kad/shared";
+import { useMe, useRunState, useSession } from "../store";
 import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigation";
 import { FieldGuide } from "../screens/FieldGuide";
 import { useKeepsakeStore } from "../store/keepsake";
@@ -39,7 +40,9 @@ import { usePresenceBeat } from "../sync/presence-beat";
 
 export function PlayerView({ roomControls }: { roomControls?: ReactNode }): React.JSX.Element {
   const me = useMe();
-  const runId = useSession()?.runId;
+  const session = useSession();
+  const runId = session?.runId;
+  const state = useRunState();
   useEffect(() => { dismissPlayerSheet(); }, [runId]);
   // "Still here" to the server, the only way production learns a phone has
   // gone (#258). A phone only: the TV renders no PlayerView.
@@ -70,6 +73,10 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
   // bring one before being asked to make anybody (spec §5), and one who has
   // none goes straight through to the creation flow.
   const creating = me === null;
+  // Every seat is taken and none is ours (#389): say so before anybody builds
+  // a hero the engine would refuse. Read from every patch, so a seat that
+  // opens (the host takes somebody out) puts the creation flow back.
+  const full = creating && state !== null && tableFull(state, session?.playerId);
   // The tray's Guide tab works before there is a character too. PlayerPanel
   // shows the guide itself once there is one; until then it stands over the
   // creation flow, which stays mounted (hidden) so a half-made hero survives.
@@ -89,7 +96,11 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
           to say. */}
       <CatchUp />
       {guideOverCreation ? <FieldGuide /> : null}
-      {creating ? (
+      {full ? (
+        <div className="kad-removed" role="status" data-testid="table-full" hidden={guideOverCreation}>
+          <p>{TABLE_FULL_MESSAGE}</p>
+        </div>
+      ) : creating ? (
         <div className="player-view__creation" hidden={guideOverCreation}><WelcomeBack /></div>
       ) : <PlayerPanel roomControls={roomControls} />}
       {/* A panel over the surface, not a route: the game keeps running behind
