@@ -2130,7 +2130,8 @@
       "narration": "\"What did you carry?\" you ask it back. There is a very long pause. \"That,\" says the Seal-Keeper, \"is my question.\" But it answers anyway, slowly. \"The seal. The quiet. And lately, the sound of a great many pockets coming up my mountain.\" It looks pointedly at yours. Then at you, as if adding something to a list.",
       "cast": [
         {
-          "figure": "entities/legend_dragon"
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
         }
       ],
       "choices": [
@@ -2148,7 +2149,8 @@
       "narration": "You hold out Tansy's little pink stone. \"A faun girl gave it to us on the way up,\" you say. \"She says sorry.\" The Seal-Keeper looks at the tiny stone for a very long time. \"Somebody else's stone,\" it says, \"carried up a mountain for somebody else's sorry.\" Its great eye blinks, slowly. \"That, I have not heard before.\"",
       "cast": [
         {
-          "figure": "entities/legend_dragon"
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
         }
       ],
       "choices": [
@@ -2166,7 +2168,8 @@
       "narration": "The embermoth you carried up the mountain wakes, stretches, and flies straight to the Seal-Keeper's nose and lands among the others. They all shuffle over to make room. The dragon goes cross-eyed looking at it, which is something you will remember for the rest of your life. \"That one was lost,\" it says at last. \"It is not, now.\"",
       "cast": [
         {
-          "figure": "entities/legend_dragon"
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
         }
       ],
       "choices": [
@@ -2497,7 +2500,8 @@
       "narration": "You tell it about the people: the ones who lent you rope, and pointed the way, and fed you soup that was only soup, and the ones who just waved. The Seal-Keeper listens with its head on one side. \"People,\" it says, trying the word out as if it has not used it in a while. \"They do keep turning up.\" It does not sound annoyed.",
       "cast": [
         {
-          "figure": "entities/legend_dragon"
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
         }
       ],
       "choices": [
