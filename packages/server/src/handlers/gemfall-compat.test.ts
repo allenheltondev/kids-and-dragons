@@ -115,6 +115,13 @@ const PRE_EPIC = JSON.parse(
  * they die with the chapter, and none is set where the pinned mid-fight save
  * resumes (02's wolves to its plank bridge). The endings, roads, setbacks and
  * saves below still match their pre-epic digests.
+ *
+ * Re-pinned for true relative size (#362): gemfall-07r's four "Corbin and
+ * Posy" scenes drop `"size": "very_large"`. That word meant "a bit over a
+ * hero" when sizes were a compressed scale; with real heights it would stand
+ * a burrowfolk carrying his little sister at two and a half meters. The figure
+ * now stands at its own height (150 cm, manifest castFigures). Presentation
+ * only: the endings, roads, setbacks and saves below are unchanged.
  */
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
@@ -132,7 +139,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-06.json": "4c7306ba197e3ce56b98421797da0aa1488cb3c28cc5eec350b5fdeb7b2c44e1",
   "chapters/gemfall-07h.json": "102d1fc2869f2001c57a3f17a934da964301e12e2db1d2342768a1e211a7c532",
   "chapters/gemfall-07l.json": "d2bf74142b55a622b2bdf709296541d07acb80eb74753c79f2f220b4f5f41604",
-  "chapters/gemfall-07r.json": "82503bbeb255631abbab0138a1ab6dfa4cf1b9f149cf63e19906cc42dbe795d7",
+  "chapters/gemfall-07r.json": "9b6ba7957b912c822a6de79e8e80a89e050a904850e4703627ac90559ca30530",
   "chapters/gemfall-08.json": "29efcf2a87c41fd553fdd28cb3caeab41c9d0b67916c7d7a83f573128a71aec0",
 };
 
