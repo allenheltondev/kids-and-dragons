@@ -412,7 +412,7 @@
       ],
       "cast": [
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/rush_prospector",
           "name": "Burrowfolk prospector"
         },
         {

@@ -149,7 +149,7 @@
           "name": "Hollis"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/rush_prospector",
           "name": "Muddy prospector"
         }
       ],
@@ -172,7 +172,7 @@
           "name": "Hollis"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/rush_prospector",
           "name": "Muddy prospector"
         }
       ],
@@ -902,11 +902,11 @@
       "art": "scenes/gemfall/northern-bridge-foot",
       "cast": [
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_scout",
           "name": "Brassbuckle scout"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_recordkeeper",
           "name": "Brassbuckle recordkeeper"
         }
       ]
@@ -925,11 +925,11 @@
       "art": "scenes/gemfall/northern-bridge-foot",
       "cast": [
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_scout",
           "name": "Brassbuckle scout"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_recordkeeper",
           "name": "Brassbuckle recordkeeper"
         }
       ]
@@ -948,11 +948,11 @@
       "art": "scenes/gemfall/northern-bridge-foot",
       "cast": [
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_scout",
           "name": "Brassbuckle scout"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_recordkeeper",
           "name": "Brassbuckle recordkeeper"
         }
       ]
@@ -971,11 +971,11 @@
       "art": "scenes/gemfall/northern-bridge-foot",
       "cast": [
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_scout",
           "name": "Brassbuckle scout"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_recordkeeper",
           "name": "Brassbuckle recordkeeper"
         }
       ]

@@ -134,6 +134,99 @@ def check_origin(rep: Report, label: str, assembled: np.ndarray, canvas: dict, t
 # ----------------------------------------------------------------------------- driver
 
 
+def check_together_overlays(rep: Report, mf: dict) -> None:
+    """Together overlays: every declared state exists, fits and registers (§7.4)."""
+    directory = os.path.join(ROOT, "assets", "together")
+    declared: set[str] = set()
+    moves: set[str] = set()
+    threshold = mf["tolerance"]["alphaThreshold"]
+    margin = mf["tolerance"]["edgeMarginPx"]
+    band_states = {"heave": ["slack", "taut"], "hum": ["wobble", "together"], "tiptoe": ["hush", "over"]}
+    for entry in mf.get("togetherOverlays", []):
+        move = entry.get("move")
+        if move not in band_states or move in moves:
+            rep.fail("together move", "a unique heave, hum or tiptoe", move)
+            continue
+        moves.add(move)
+        for kind in ("band", "token"):
+            label = f"together/{move}/{kind}"
+            expected = (
+                dict(width=1600, height=360, clearTopPx=90, fadeSidePx=48, states=band_states[move])
+                if kind == "band" else
+                dict(size=192, holeRadius=62, states=["empty", "holding", "done", "helped"])
+            )
+            if entry.get(kind) != expected:
+                rep.fail(f"{label} declaration", expected, entry.get(kind))
+                continue
+            width, height = (1600, 360) if kind == "band" else (192, 192)
+            painted: list[tuple[str, np.ndarray, tuple[float, float]]] = []
+            for state in expected["states"]:
+                relative = f"{move}/{kind}-{state}.png"
+                declared.add(relative)
+                path = os.path.join(directory, move, f"{kind}-{state}.png")
+                name = f"together/{relative}"
+                if not os.path.isfile(path):
+                    rep.fail(name, "present", "missing")
+                    continue
+                try:
+                    with Image.open(path) as image:
+                        if image.format != "PNG" or image.mode != "RGBA" or image.size != (width, height):
+                            rep.fail(f"{name} format", f"{width}x{height} RGBA PNG", f"{image.size} {image.mode} {image.format}")
+                            continue
+                        pixels = np.array(image)
+                except Exception as error:
+                    rep.fail(f"{name} format", "a decodable PNG", str(error))
+                    continue
+                cap = 256000 if kind == "band" else 30720
+                if os.path.getsize(path) > cap:
+                    rep.fail(f"{name} bytes", f"at most {cap}", os.path.getsize(path))
+                else:
+                    rep.ok(f"{name} format and bytes")
+                alpha = pixels[..., 3]
+                yy, xx = np.indices(alpha.shape)
+                if kind == "band":
+                    clear = bool((alpha[:expected["clearTopPx"]] <= threshold).all())
+                    sides = expected["fadeSidePx"]
+                    fades = bool((alpha[:, :sides] < 255).all() and (alpha[:, -sides:] < 255).all())
+                    if not clear or not fades:
+                        rep.fail(f"{name} transparency", "clear top 90 rows and fading outer 48 columns", f"clear={clear}, fades={fades}")
+                    else:
+                        rep.ok(f"{name} transparency")
+                else:
+                    clear_area = ((xx < margin) | (xx >= width - margin) | (yy < margin) | (yy >= height - margin)
+                                  | ((xx - (width - 1) / 2) ** 2 + (yy - (height - 1) / 2) ** 2 <= expected["holeRadius"] ** 2))
+                    if (alpha[clear_area] > threshold).any():
+                        rep.fail(f"{name} transparency", "clear 62px-radius centre and 8px edge", "paint in a clear region")
+                    else:
+                        rep.ok(f"{name} transparency")
+                ys, xs = np.where(alpha > threshold)
+                if not len(xs):
+                    rep.fail(f"{name} visible", "painted subject", "blank")
+                    continue
+                centre = (float(xs.mean()), float(ys.mean()))
+                if kind == "token" and np.hypot(centre[0] - (width - 1) / 2, centre[1] - (height - 1) / 2) > margin:
+                    rep.fail(f"{name} registration", f"centred within {margin}px", centre)
+                else:
+                    rep.ok(f"{name} visible and registered")
+                for prior_state, prior, _ in painted:
+                    if np.array_equal(prior, pixels):
+                        rep.fail(f"{label} distinct states", f"{state} differs from {prior_state}", "identical pixels")
+                painted.append((state, pixels, centre))
+            if kind == "band" and len(painted) == 2:
+                distance = np.hypot(*(np.subtract(painted[0][2], painted[1][2])))
+                if distance > margin:
+                    rep.fail(f"{label} registration", f"state centroids within {margin}px", float(distance))
+                else:
+                    rep.ok(f"{label} state registration")
+    if os.path.isdir(directory):
+        for base, _, files in os.walk(directory):
+            for filename in files:
+                if filename.lower().endswith(".png"):
+                    relative = os.path.relpath(os.path.join(base, filename), directory).replace(os.sep, "/")
+                    if relative not in declared:
+                        rep.fail(f"together/{relative} undeclared", "declared in manifest.togetherOverlays", "undeclared PNG")
+
+
 def check_effects(rep: Report, mf: dict) -> None:
     """Effect sheets — declared, present, and the size they say they are.
 
@@ -548,6 +641,7 @@ def main() -> int:
     # Not gated on `args`: the effect sheets are shared by every species, so
     # narrowing to one character should not stop checking them.
     check_effects(rep, mf)
+    check_together_overlays(rep, mf)
 
     # Nor is gear: it is per-class, not per-species, and the whole point of
     # checking it is that nobody was going to remember to ask.

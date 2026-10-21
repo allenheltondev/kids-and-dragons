@@ -268,7 +268,8 @@
           "requiresClass": "starweaver"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "cold_opening_1": {
       "type": "story",
@@ -281,7 +282,8 @@
           "goto": "cold_opening_check"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "cold_opening_2": {
       "type": "story",
@@ -294,7 +296,8 @@
           "goto": "cold_opening_check"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "cold_opening_3": {
       "type": "story",
@@ -307,7 +310,8 @@
           "goto": "cold_opening_check"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "cold_opening_check": {
       "type": "check",
@@ -323,7 +327,8 @@
         "goto": "cold_opening_changed",
         "narration": "Drifting snow hides the far edge."
       },
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "cold_opening_clear": {
       "type": "story",
@@ -342,7 +347,8 @@
           "goto": "bed"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "cold_opening_changed": {
       "type": "story",
@@ -361,7 +367,8 @@
           "goto": "bed"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "bed": {
       "type": "choice_point",
@@ -380,7 +387,8 @@
           "goto": "bed_2"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "bed_1": {
       "type": "story",
@@ -393,7 +401,8 @@
           "goto": "lanes"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "bed_2": {
       "type": "story",
@@ -406,7 +415,8 @@
           "goto": "lanes"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "lanes": {
       "type": "choice_point",
@@ -425,7 +435,8 @@
           "goto": "lanes_2"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "lanes_1": {
       "type": "story",
@@ -438,7 +449,8 @@
           "goto": "lanes_check"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "lanes_2": {
       "type": "story",
@@ -451,7 +463,8 @@
           "goto": "lanes_check"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "lanes_check": {
       "type": "check",
