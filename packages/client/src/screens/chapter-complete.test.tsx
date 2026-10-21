@@ -369,3 +369,32 @@ describe("graph campaigns (#195) leave the summary alone", () => {
     expect(container.querySelector(".journey")).toBeNull();
   });
 });
+
+describe("the chapter's goal on the summary (#356)", () => {
+  // 07l's shape: three optional extras (quest items) and one required step.
+  const TETHER = {
+    id: "ch_1",
+    entry: "s_end",
+    scenes: { s_end: { type: "story", narration: "Home.", choices: [] } },
+    goal: {
+      text: "Gather the ledger, the chord and a true answer, then hold the stone's hum at the bend.",
+      steps: [
+        { id: "ledger", label: "Borrow the wardens' ledger", item: "tether_ledger", optional: true },
+        { id: "chord", label: "Learn the choir's three notes", item: "tether_chord", optional: true },
+        { id: "answer", label: "Find a true answer", item: "tether_question", optional: true },
+        { id: "bend", label: "Face the stone's hum at the bend", flag: "faced_the_bend" },
+      ],
+    },
+  } as unknown as Chapter;
+
+  it("shows the goal done on a success that skipped every extra, and counts the extras apart", () => {
+    mount({ chapterOutcome: "success", flags: { faced_the_bend: true } });
+    act(() => {
+      useGameStore.setState({ chapter: TETHER });
+    });
+    const goal = document.querySelector(".complete .goal")!;
+    expect(goal.classList.contains("goal--all")).toBe(true);
+    expect(screen.getByRole("img", { name: "1 of 1 done, 0 of 3 extras" })).toBeTruthy();
+    expect([...goal.querySelectorAll(".goal__step")].map((s) => s.getAttribute("data-done"))).toEqual(["false", "false", "false", "true"]);
+  });
+});

@@ -114,6 +114,22 @@ describe("stepsOffTheSpine", () => {
     ).toEqual([{ stepId: "cat", ending: "end" }]);
   });
 
+  it("keeps a many-flag step ticked when one flag is cleared and another is surely set", () => {
+    // The left road sets climbed_left; clearing climbed_right after it leaves the step ticked.
+    const cleared = chapter((s) => {
+      (s.left as { onEnter?: unknown }).onEnter = [{ type: "setFlag", flag: "climbed_right", value: false }];
+    });
+    expect(stepsOffTheSpine(cleared)).toEqual([]);
+  });
+
+  it("drops a many-flag step whose roads each set a different flag when either is cleared", () => {
+    // The two roads tick it by different flags, so no one flag is sure at the end: clearing one may undo it.
+    const merged = chapter((s) => {
+      (s.end as { onEnter?: unknown }).onEnter = [{ type: "setFlag", flag: "climbed_left", value: false }];
+    });
+    expect(stepsOffTheSpine(merged)).toEqual([{ stepId: "climb", ending: "end" }]);
+  });
+
   it("follows a loop back to the fork without losing what was ticked on the way", () => {
     const looped = chapter((s) => {
       (s.left as { choices: unknown[] }).choices.push({ id: "back", label: "Back", icon: "back", goto: "fork" });

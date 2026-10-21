@@ -91,11 +91,21 @@ export function ChapterGoalCard({ place, folded = false }: ChapterGoalCardProps)
   const fresh = useFreshTicks(current, place === "world" ? () => cue("gem-pickup") : undefined);
   if (current === null) return null;
   const { goal, done } = current;
-  const count = done.filter(Boolean).length;
-  const all = count === goal.steps.length;
-  const summary = `${String(count)} of ${String(goal.steps.length)} done`;
-  // The first step not done yet: all a short pane has room to name.
-  const next = done.findIndex((d) => !d);
+  /*
+   * The goal is done when its required steps are. An optional step (07l's ledger, chord and true
+   * answer) is an extra a party may miss and still finish the chapter, as the validator's spine
+   * rule says, so it never holds back the trophy and is counted on its own.
+   */
+  const required = goal.steps.map((step, i) => ({ optional: step.optional === true, done: done[i] === true }));
+  const needed = required.filter((step) => !step.optional);
+  const extras = required.filter((step) => step.optional);
+  const all = needed.length > 0 ? needed.every((step) => step.done) : extras.every((step) => step.done);
+  const summary =
+    `${String(needed.filter((step) => step.done).length)} of ${String(needed.length)} done` +
+    (extras.length > 0 ? `, ${String(extras.filter((step) => step.done).length)} of ${String(extras.length)} extras` : "");
+  // What a short pane names: the next required step. A missed extra is never "next": the party may
+  // be long past the place it could be done.
+  const next = required.findIndex((step) => !step.optional && !step.done);
 
   return (
     <section
@@ -112,7 +122,7 @@ export function ChapterGoalCard({ place, folded = false }: ChapterGoalCardProps)
         {/* The pips: the whole goal in a fight, and on a short pane (ChapterGoal.css). */}
         <span className="goal__pips" role="img" aria-label={summary}>
           {done.map((d, i) => (
-            <span key={goal.steps[i]!.id} className={`goal__pip${d ? " goal__pip--done" : ""}${fresh.has(i) ? " goal__pip--fresh" : ""}`} />
+            <span key={goal.steps[i]!.id} className={`goal__pip${d ? " goal__pip--done" : ""}${goal.steps[i]!.optional ? " goal__pip--optional" : ""}${fresh.has(i) ? " goal__pip--fresh" : ""}`} />
           ))}
         </span>
       </p>
