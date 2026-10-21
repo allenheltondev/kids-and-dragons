@@ -16,12 +16,15 @@
  * **concept** is the lowercase-concept sweep `content:continuity` cannot do
  * ("the masks", "the cult", "the seal"). It lists every scene whose text
  * matches the regex (case-insensitive) and the *first mentions*: the matching
- * scenes a party can reach from the entry without passing another matching
- * scene. Each first mention must introduce the concept in its own words. With
- * `--introduced-by` (scene ids, or `chapter/scene`), it removes those scenes
- * from the graph and lists every matching scene still reachable from the
- * entry: a *leak*, a way in that never passed an introduction. This is the
- * #364 mask/cult sweep.
+ * scenes a party can reach from the entry without hearing the concept on the
+ * way. Each first mention must introduce the concept in its own words. With
+ * `--introduced-by` (scene ids, or `chapter/scene`), it removes those
+ * introductions from the graph and lists every matching scene still reachable
+ * from the entry: a *leak*, a way in that never passed an introduction. This
+ * is the #364 mask/cult sweep. It is path-sensitive: a scene's narration,
+ * prompt and cast introduce on every way out, a choice label or a check or
+ * fight result only on its own way out, and a variant never (see
+ * `conceptSweep`).
  *
  * **setbacks** lists, for each `"outcome": "setback"` ending, the route there
  * with the fewest failures (a check's `onFailure` or a fight's `onDefeat`),
@@ -29,7 +32,9 @@
  * can follow with nothing else going wrong. A failed check there that can be
  * the party's first failure is the CLAUDE.md "never from one ordinary failed
  * roll" case (08's tether and Keystone checks); a short route through a
- * single lost fight is the 05c case.
+ * single lost fight is the 05c case. These are structural lower bounds: a
+ * route through a gated choice is marked, with the count when every gated
+ * choice is left out, and needs a human read to confirm a party can take it.
  *
  * **idioms** lists the UK idioms `spelling.test.mjs` does not catch (the #368
  * audit's list: "round" for around, biscuit, jumper, sweets, crisps, "you
@@ -51,71 +56,82 @@ import { fileURLToPath } from "node:url";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const CHAPTERS = join(HERE, "..", "..", "content", "chapters");
 
-/** A check or fight result as `{ to, text, failure }`. */
-function branch(b, failure) {
-  return { to: b.goto, text: [b.narration, ...(b.variants ?? []).map((v) => v.text)].filter(Boolean), failure };
+/** The result keys a check or fight leaves by, in `exits` order. */
+function branchKeys(scene) {
+  if (scene.type === "check") return ["onSuccess", "onFailure"];
+  if (scene.type === "encounter") return ["onVictory", "onDefeat", ...["onEscape", "onTimeout"].filter((k) => scene[k])];
+  return [];
 }
 
-/** Every way out of a scene: `{ to, text: [words shown on the way out], failure }`. */
+/** A choice some parties never see: a species, class, flag or item gate, or a `when`. */
+function isGated(choice) {
+  return Boolean(choice.when || choice.requiresFlag || choice.requiresItem || choice.requiresSpecies || choice.requiresClass);
+}
+
+/**
+ * Every way out of a scene: `{ to, failure, gated }`. `failure` is a check's
+ * `onFailure` or a fight's `onDefeat`; `gated` a choice some parties never see.
+ */
 export function exits(scene) {
-  switch (scene.type) {
-    case "check":
-      return [branch(scene.onSuccess, false), branch(scene.onFailure, true)];
-    case "encounter":
-      return [
-        branch(scene.onVictory, false),
-        branch(scene.onDefeat, true),
-        ...[scene.onEscape, scene.onTimeout].filter(Boolean).map((b) => branch(b, false)),
-      ];
-    default:
-      return (scene.choices ?? []).map((c) => ({ to: c.goto, text: [c.label].filter(Boolean), failure: false }));
-  }
+  const keys = branchKeys(scene);
+  if (keys.length) return keys.map((k) => ({ to: scene[k].goto, failure: k === "onFailure" || k === "onDefeat", gated: false }));
+  return (scene.choices ?? []).map((c) => ({ to: c.goto, failure: false, gated: isGated(c) }));
 }
 
-/** Every string a party can read in or on the way out of a scene, with where it lives. */
+/**
+ * Every string a party can read in or on the way out of a scene: `{ field,
+ * text, at }`. `at` says who is sure to see it: `"scene"` (narration, prompt,
+ * cast: everyone who enters), an exit index (a choice label or a result's
+ * narration: only a party leaving that way), or `"variant"` (shown only to
+ * some parties, so it never proves an introduction).
+ */
 export function sceneTexts(scene) {
   const out = [];
-  const add = (field, text) => text && out.push({ field, text });
-  add("narration", scene.narration);
-  add("prompt", scene.prompt);
-  (scene.variants ?? []).forEach((v, i) => add(`variants[${String(i)}]`, v.text));
-  for (const c of scene.cast ?? []) add("cast", c.name);
-  (scene.choices ?? []).forEach((c) => add(`choice ${c.id}`, c.label));
-  const named = { check: ["onSuccess", "onFailure"], encounter: ["onVictory", "onDefeat", "onEscape", "onTimeout"] }[scene.type] ?? [];
-  for (const key of named) {
-    const b = scene[key];
-    if (!b) continue;
-    add(key, b.narration);
-    (b.variants ?? []).forEach((v, i) => add(`${key}.variants[${String(i)}]`, v.text));
-  }
+  const add = (field, text, at) => text && out.push({ field, text, at });
+  add("narration", scene.narration, "scene");
+  add("prompt", scene.prompt, "scene");
+  for (const c of scene.cast ?? []) add("cast", c.name, "scene");
+  (scene.variants ?? []).forEach((v, i) => add(`variants[${String(i)}]`, v.text, "variant"));
+  (scene.choices ?? []).forEach((c, i) => add(`choice ${c.id}`, c.label, i));
+  branchKeys(scene).forEach((key, i) => {
+    add(key, scene[key].narration, i);
+    (scene[key].variants ?? []).forEach((v, j) => add(`${key}.variants[${String(j)}]`, v.text, "variant"));
+  });
   return out;
 }
 
-/** Scenes whose text matches `re`, as `{ id, hits: [{ field, quote }] }`. */
+/**
+ * Scenes whose text matches `re`: `{ id, hits: [{ field, quote }], scene,
+ * exits, variant }`. `scene` when everyone entering sees it; `exits` the exit
+ * indexes whose own text carries it; `variant` when some of it is variant-only.
+ */
 export function mentions(chapter, re) {
   const flags = re.flags.includes("g") ? re.flags : `${re.flags}g`;
   const g = new RegExp(re.source, flags);
   const found = [];
   for (const [id, scene] of Object.entries(chapter.scenes ?? {})) {
-    const hits = [];
-    for (const { field, text } of sceneTexts(scene)) {
+    const hit = { id, hits: [], scene: false, exits: new Set(), variant: false };
+    for (const { field, text, at } of sceneTexts(scene)) {
       for (const m of text.matchAll(g)) {
         const from = Math.max(0, m.index - 40);
         const to = Math.min(text.length, m.index + m[0].length + 40);
-        hits.push({ field, quote: `${from > 0 ? "..." : ""}${text.slice(from, to)}${to < text.length ? "..." : ""}` });
+        hit.hits.push({ field, quote: `${from > 0 ? "..." : ""}${text.slice(from, to)}${to < text.length ? "..." : ""}` });
+        if (at === "scene") hit.scene = true;
+        else if (at === "variant") hit.variant = true;
+        else hit.exits.add(at);
       }
     }
-    if (hits.length) found.push({ id, hits });
+    if (hit.hits.length) found.push(hit);
   }
   return found;
 }
 
 /**
- * The scenes reachable from the entry when `blocked` scenes are removed. A
- * blocked scene is never entered, so nothing past it is reached through it.
- * `stopAt` scenes are entered (and returned) but not walked past.
+ * The scenes reachable from the entry. A `blocked` scene is never entered;
+ * `cut(id)` returns the exit indexes of a scene not to walk out by (all of
+ * them to stop there). Exits that `skip` returns true for are not walked.
  */
-export function reachable(chapter, blocked = new Set(), stopAt = new Set()) {
+export function reachable(chapter, blocked = new Set(), cut = () => [], skip = () => false) {
   const scenes = chapter.scenes ?? {};
   const seen = new Set();
   const queue = blocked.has(chapter.entry) ? [] : [chapter.entry];
@@ -123,61 +139,95 @@ export function reachable(chapter, blocked = new Set(), stopAt = new Set()) {
     const id = queue.shift();
     if (seen.has(id) || !scenes[id]) continue;
     seen.add(id);
-    if (stopAt.has(id)) continue;
-    for (const e of exits(scenes[id])) if (!blocked.has(e.to) && !seen.has(e.to)) queue.push(e.to);
+    const stop = new Set(cut(id));
+    exits(scenes[id]).forEach((e, i) => {
+      if (!stop.has(i) && !skip(e) && !blocked.has(e.to) && !seen.has(e.to)) queue.push(e.to);
+    });
   }
   return seen;
 }
 
 /**
- * The lowercase-concept sweep. `introducers` are the scenes meant to
- * introduce the concept (ids in this chapter; unknown ids are ignored).
- * Returns `{ mentions, firstMentions, introducers, leaks }`; `leaks` is null
- * when no introducer was given.
+ * The lowercase-concept sweep, path by path. Text everyone entering a scene
+ * sees introduces the concept on every way out; a choice label or a result's
+ * narration introduces it only on that way out (a failed roll's words are not
+ * heard by the party that passed); a variant never proves it.
+ *
+ * `introducers` are the scenes meant to introduce the concept (ids in this
+ * chapter; unknown ids are ignored). Each is removed as far as its own words
+ * reach: the whole scene, or only the exits that carry the concept. An
+ * introducer whose mention is variant-only, or absent, removes nothing and is
+ * listed in `unproven`. A `leak` is a mentioning scene, not itself an
+ * introducer, still reachable after that. `variantOnly` lists mentions a
+ * party may or may not see, to read by hand.
  */
 export function conceptSweep(chapter, re, introducers = []) {
+  const scenes = chapter.scenes ?? {};
   const all = mentions(chapter, re);
-  const ids = new Set(all.map((m) => m.id));
+  const byId = new Map(all.map((m) => [m.id, m]));
   const live = reachable(chapter);
-  const first = reachable(chapter, new Set(), ids);
+  const allExits = (id) => exits(scenes[id]).map((_, i) => i);
+  const intro = (m) => (m.scene ? allExits(m.id) : [...m.exits]);
+  const first = reachable(chapter, new Set(), (id) => (byId.has(id) ? intro(byId.get(id)) : []));
   const firstMentions = all.filter((m) => first.has(m.id)).map((m) => m.id);
-  const own = introducers.filter((id) => chapter.scenes?.[id]);
+  const own = introducers.filter((id) => scenes[id]);
+  const unproven = own.filter((id) => !byId.has(id) || (!byId.get(id).scene && !byId.get(id).exits.size));
   let leaks = null;
   if (own.length) {
-    const without = reachable(chapter, new Set(own));
-    leaks = all.filter((m) => without.has(m.id)).map((m) => m.id);
+    const whole = new Set(own.filter((id) => byId.get(id)?.scene));
+    const partial = new Map(own.filter((id) => !whole.has(id) && byId.has(id)).map((id) => [id, [...byId.get(id).exits]]));
+    const without = reachable(chapter, whole, (id) => partial.get(id) ?? []);
+    leaks = all.filter((m) => without.has(m.id) && !own.includes(m.id)).map((m) => m.id);
   }
-  return { mentions: all.filter((m) => live.has(m.id)), unreachable: all.filter((m) => !live.has(m.id)).map((m) => m.id), firstMentions, introducers: own, leaks };
+  return {
+    mentions: all.filter((m) => live.has(m.id)),
+    unreachable: all.filter((m) => !live.has(m.id)).map((m) => m.id),
+    firstMentions,
+    variantOnly: all.filter((m) => live.has(m.id) && !m.scene && !m.exits.size).map((m) => m.id),
+    introducers: own,
+    unproven,
+    leaks,
+  };
 }
 
 /**
  * For each setback ending, the route from the entry with the fewest failures,
- * then the fewest scenes: `{ ending, failures: [{ scene, type, tn }], scenes, path }`,
- * or `failures: null` when the ending is unreachable.
+ * then the fewest scenes: `{ ending, failures: [{ scene, type, tn }], scenes,
+ * path, gated, lastFailures }`, or `failures: null` when no route reaches it.
+ *
+ * A structural lower bound: the route may take a gated choice no party at the
+ * table can see, and `gated` says when it does. `ungatedFailures` is the same
+ * count with every gated choice left out (null when the ending then needs one).
  */
 export function setbackRoutes(chapter) {
   const scenes = chapter.scenes ?? {};
-  const best = new Map([[chapter.entry, { f: 0, n: 1, prev: null, via: null }]]);
-  const better = (a, b) => !b || a.f < b.f || (a.f === b.f && a.n < b.n);
-  const queue = [chapter.entry];
-  while (queue.length) {
-    queue.sort((a, b) => best.get(a).f - best.get(b).f || best.get(a).n - best.get(b).n);
-    const id = queue.shift();
-    const here = best.get(id);
-    if (!scenes[id]) continue;
-    for (const e of exits(scenes[id])) {
-      if (!scenes[e.to]) continue;
-      const next = { f: here.f + (e.failure ? 1 : 0), n: here.n + 1, prev: id, via: e.failure ? id : null };
-      if (better(next, best.get(e.to))) {
-        best.set(e.to, next);
-        if (!queue.includes(e.to)) queue.push(e.to);
+  const cheapest = (ungated) => {
+    const best = new Map([[chapter.entry, { f: 0, n: 1, prev: null, via: null, gated: false }]]);
+    const better = (a, b) => !b || a.f < b.f || (a.f === b.f && a.n < b.n);
+    const queue = [chapter.entry];
+    while (queue.length) {
+      queue.sort((a, b) => best.get(a).f - best.get(b).f || best.get(a).n - best.get(b).n);
+      const id = queue.shift();
+      const here = best.get(id);
+      if (!scenes[id]) continue;
+      for (const e of exits(scenes[id])) {
+        if (!scenes[e.to] || (ungated && e.gated)) continue;
+        const next = { f: here.f + (e.failure ? 1 : 0), n: here.n + 1, prev: id, via: e.failure ? id : null, gated: here.gated || e.gated };
+        if (better(next, best.get(e.to))) {
+          best.set(e.to, next);
+          if (!queue.includes(e.to)) queue.push(e.to);
+        }
       }
     }
-  }
+    return best;
+  };
+  const best = cheapest(false);
+  const open = cheapest(true);
+
   return Object.entries(scenes)
     .filter(([, s]) => s.outcome === "setback")
     .map(([ending]) => {
-      if (!best.has(ending)) return { ending, failures: null, scenes: 0, path: [] };
+      if (!best.has(ending)) return { ending, failures: null, scenes: 0, path: [], gated: false, ungatedFailures: null, lastFailures: [] };
       const path = [];
       const failures = [];
       for (let id = ending; id; id = best.get(id).prev) {
@@ -185,13 +235,22 @@ export function setbackRoutes(chapter) {
         const via = best.get(id).via;
         if (via) failures.unshift({ scene: via, type: scenes[via].type, tn: scenes[via].tn ?? null });
       }
-      return { ending, failures, scenes: path.length, path, lastFailures: lastFailures(ending) };
+      return {
+        ending,
+        failures,
+        scenes: path.length,
+        path,
+        gated: best.get(ending).gated,
+        ungatedFailures: open.has(ending) ? open.get(ending).f : null,
+        lastFailures: lastFailures(ending),
+      };
     });
 
   /**
    * Every failure after which the ending can follow with nothing else going
-   * wrong: `{ scene, type, tn, firstFailure }`. `firstFailure` when the scene
-   * is reachable with no failure before it, so this one failure alone is enough.
+   * wrong: `{ scene, type, tn, firstFailure }`. `firstFailure` is `"any"` when
+   * the scene is reachable with no failure before it through ungated choices,
+   * `"gated"` when only a gated choice gets there failure-free, else false.
    */
   function lastFailures(ending) {
     const clean = new Set([ending]);
@@ -205,9 +264,10 @@ export function setbackRoutes(chapter) {
         }
       }
     }
+    const first = (id) => (open.get(id)?.f === 0 ? "any" : best.get(id).f === 0 ? "gated" : false);
     return Object.entries(scenes)
       .filter(([id, s]) => best.has(id) && exits(s).some((e) => e.failure && clean.has(e.to)))
-      .map(([id, s]) => ({ scene: id, type: s.type, tn: s.tn ?? null, firstFailure: best.get(id).f === 0 }));
+      .map(([id, s]) => ({ scene: id, type: s.type, tn: s.tn ?? null, firstFailure: first(id) }));
   }
 }
 
@@ -284,12 +344,15 @@ export function main(argv, print = console.log) {
       for (const m of r.mentions) for (const h of m.hits) print(`  ${m.id} [${h.field}] ${h.quote}`);
       if (r.unreachable.length) print(`  unreachable from the entry: ${r.unreachable.join(", ")}`);
       print(`  first mentions (each must introduce it): ${r.firstMentions.join(", ") || "-"}`);
+      if (r.variantOnly.length) print(`  variant-only (some parties see it, none is introduced by it; read these): ${r.variantOnly.join(", ")}`);
+      if (r.unproven.length) print(`  introduces nothing on any path (variant-only or no mention): ${r.unproven.join(", ")}`);
       if (r.leaks) print(`  leaks without ${r.introducers.join(", ")}: ${r.leaks.join(", ") || "none"}`);
       else if (named.length) print("  no --introduced-by scene is in this chapter");
     }
     return 0;
   }
   if (mode === "setbacks") {
+    print("Structural lower bounds: gated choices are walked unless marked. Confirm a flagged route by hand.");
     for (const c of chapters) {
       for (const r of setbackRoutes(c)) {
         if (!r.failures) {
@@ -298,10 +361,12 @@ export function main(argv, print = console.log) {
         }
         const one = r.failures.length === 1 && r.failures[0].type === "check" ? "  ! one failed roll" : "";
         const what = r.failures.map((f) => `${f.scene} (${f.type === "check" ? `failed roll${f.tn ? `, TN ${String(f.tn)}` : ""}` : "lost fight"})`);
-        print(`${c.id} ${r.ending}: ${String(r.failures.length)} failure(s), ${String(r.scenes)} scenes: ${what.join(" then ") || "no failure needed"}${one}`);
+        const gate = !r.gated ? "" : r.ungatedFailures === null ? " [through a gated choice; no ungated route]" : ` [through a gated choice; ${String(r.ungatedFailures)} failure(s) with no gated choice]`;
+        print(`${c.id} ${r.ending}: ${String(r.failures.length)} failure(s), ${String(r.scenes)} scenes: ${what.join(" then ") || "no failure needed"}${gate}${one}`);
         for (const f of r.lastFailures) {
           const kind = f.type === "check" ? `failed roll${f.tn ? `, TN ${String(f.tn)}` : ""}` : "lost fight";
-          const alone = f.firstFailure ? (f.type === "check" ? "  ! can be the first failure" : "  (can be the first failure)") : "";
+          const first = f.firstFailure === "gated" ? "can be the first failure, through a gated choice" : "can be the first failure";
+          const alone = f.firstFailure ? (f.type === "check" ? `  ! ${first}` : `  (${first})`) : "";
           print(`  after ${f.scene} (${kind})${alone}`);
         }
       }
