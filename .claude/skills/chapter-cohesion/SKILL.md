@@ -51,11 +51,18 @@ A name, group, object or idea is used before **every** way into the scene introd
   drakes, the Keystone): continuity cannot see them. List candidates by reading the spine for
   "the X" a kid would ask about, then run the **removal sweep** from #364:
   1. `concept '<regex>'` with no introducer. Its *first mentions* are the scenes a party can reach
-     without passing another mention; each must introduce the concept in its own words.
+     without hearing the concept on the way; each must introduce the concept in its own words.
   2. Decide which scenes are the introductions, then rerun with `--introduced-by` naming them.
-     The sweep removes them from the graph; any mentioning scene still reachable is a **leak**, a
-     way in that never heard the introduction. Done when every chapter says `leaks ... none`.
-     Introducers may be `chapter/scene` to sweep several chapters at once.
+     The sweep removes each as far as its words reach; any mentioning scene still reachable is a
+     **leak**, a way in that never heard the introduction. Done when every chapter says
+     `leaks ... none`. Introducers may be `chapter/scene` to sweep several chapters at once.
+
+  The sweep follows paths, not scenes. Narration, prompt and cast introduce on every way out. A
+  choice label, or a check or fight result's narration, introduces only on its own way out: the
+  party that passed never heard the failed roll's words. A variant never introduces, because
+  only some parties see it. So an introduction written only in `onFailure`, a gated label or a
+  variant leaves the other paths uncovered. The sweep lists *variant-only* mentions and
+  introducers that *introduce nothing on any path*. Read each one by hand, at every way in.
 - **Human read:** at every scene `merges` lists on the spine, read the text as a party from each
   scene leading in. Look for "the jar", "your goat", "that ledger": references no regex finds.
   A concept from an earlier chapter needs saying again here, or a gate on something only that
@@ -124,10 +131,15 @@ Scene 1 says, in the story's own words, what the party is here to do tonight and
 
 `setbacks` prints, for each `"outcome": "setback"` ending, the route there with the fewest
 failures, then every failure after which the ending can follow with nothing else going wrong.
+These are **structural lower bounds**: the walk takes gated choices too. A route through a gated
+choice is marked, along with its count when every gated choice is left out. A first failure
+reachable only through a gate says so. Confirm any flagged route by hand: can a real party take
+it with no other failure first?
 
 - **`! can be the first failure` on a failed roll** is the CLAUDE.md case: one ordinary roll ends
-  the chapter. In 08, a first failed tether check reaches Broken Tether and a failed Keystone
-  check reaches Turned Back.
+  the chapter. In 08, a failed `check_keystone` reaches Turned Back. Every party can reach the
+  bare-handed tether checks with no failure first, and failing one reaches Broken Tether; the
+  other two tether checks sit behind a gate.
 - **A short route through one lost fight** skips the beat: 05c's failed `check_one_rule` then a
   lost crab fight reaches `end_rolled_down` in 8 scenes. Lost fights rob, rescue or reroute at a
   cost; a setback that early should reroute instead.

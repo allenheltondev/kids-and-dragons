@@ -65,8 +65,56 @@ describe("the concept sweep", () => {
     };
     const r = conceptSweep(c, /\bseal\b/i);
     expect(r.mentions.flatMap((m) => m.hits.map((h) => `${m.id}:${h.field}`))).toEqual(["roll:onFailure", "pick:variants[0]", "pick:choice x"]);
-    expect(r.firstMentions).toEqual(["roll"]);
+    // The party that lifted it never heard about the seal, so pick is a first mention too.
+    expect(r.firstMentions).toEqual(["roll", "pick"]);
     expect(r.leaks).toBeNull();
+  });
+
+  it("counts a result's narration as an introduction only on that result's way out", () => {
+    // start -> roll; only a failed roll hears about the masks; both results reach merge.
+    const c = {
+      id: "fixture-branch",
+      entry: "start",
+      scenes: {
+        start: story("Go.", go("on", "roll")),
+        roll: { ...check("Climb.", "merge", "merge"), onFailure: { goto: "merge", narration: "The masks arrive and pull you up." } },
+        merge: story("The masks hum.", go("on", "done")),
+        done: end(),
+      },
+    };
+    const r = conceptSweep(c, /\bmasks\b/i, ["roll"]);
+    expect(r.firstMentions).toEqual(["roll", "merge"]);
+    expect(r.unproven).toEqual([]);
+    expect(r.leaks).toEqual(["merge"]);
+  });
+
+  it("counts a choice label only on its own way out, gated or not", () => {
+    const c = {
+      id: "fixture-label",
+      entry: "start",
+      scenes: {
+        start: story("A fork.", { ...go("follow", "merge", "Follow the masks"), requiresFlag: "met_hessa" }, go("walk", "merge", "Walk on")),
+        merge: story("The masks hum.", go("on", "done")),
+        done: end(),
+      },
+    };
+    expect(conceptSweep(c, /\bmasks\b/i, ["start"]).leaks).toEqual(["merge"]);
+  });
+
+  it("never lets a variant prove an introduction", () => {
+    const c = {
+      id: "fixture-variant",
+      entry: "start",
+      scenes: {
+        start: { ...story("A quiet road.", go("on", "merge")), variants: [{ when: { flag: "met_hessa" }, text: "Hessa's masks wave." }] },
+        merge: story("The masks hum.", go("on", "done")),
+        done: end(),
+      },
+    };
+    const r = conceptSweep(c, /\bmasks\b/i, ["start"]);
+    expect(r.variantOnly).toEqual(["start"]);
+    expect(r.unproven).toEqual(["start"]);
+    expect(r.leaks).toEqual(["merge"]);
   });
 
   it("names the merge points, ignoring scenes no party reaches", () => {
@@ -93,7 +141,9 @@ describe("setback routes", () => {
     const [r] = setbackRoutes(c);
     expect(r).toMatchObject({ ending: "lost", scenes: 3, path: ["start", "roll", "lost"] });
     expect(r.failures).toEqual([{ scene: "roll", type: "check", tn: 12 }]);
-    expect(r.lastFailures).toEqual([{ scene: "roll", type: "check", tn: 12, firstFailure: true }]);
+    expect(r.gated).toBe(false);
+    expect(r.ungatedFailures).toBe(1);
+    expect(r.lastFailures).toEqual([{ scene: "roll", type: "check", tn: 12, firstFailure: "any" }]);
   });
 
   it("prefers fewer failures to fewer scenes, and sees a failure that needs another first", () => {
@@ -115,13 +165,31 @@ describe("setback routes", () => {
     expect(r.failures).toEqual([{ scene: "crabs", type: "encounter", tn: null }]);
     expect(r.lastFailures).toEqual([
       { scene: "roll2", type: "check", tn: 16, firstFailure: false },
-      { scene: "crabs", type: "encounter", tn: null, firstFailure: true },
+      { scene: "crabs", type: "encounter", tn: null, firstFailure: "any" },
     ]);
+  });
+
+  it("marks a route that needs a gated shortcut, and counts the route without it", () => {
+    // Only a dwarf skips the first climb; everyone else must fail twice.
+    const c = {
+      id: "fixture-gated",
+      entry: "start",
+      scenes: {
+        start: story("Go.", { ...go("tunnel", "roll2", "Take the dwarf tunnel"), requiresSpecies: "dwarf" }, go("climb", "roll1")),
+        roll1: check("Climb.", "won", "roll2"),
+        roll2: check("Climb again.", "won", "lost"),
+        won: end(),
+        lost: end("setback"),
+      },
+    };
+    const [r] = setbackRoutes(c);
+    expect(r).toMatchObject({ path: ["start", "roll2", "lost"], gated: true, ungatedFailures: 2 });
+    expect(r.lastFailures).toEqual([{ scene: "roll2", type: "check", tn: 12, firstFailure: "gated" }]);
   });
 
   it("reports an unreachable setback", () => {
     const c = { id: "fixture-none", entry: "start", scenes: { start: story("Go.", go("on", "won")), won: end(), lost: end("setback") } };
-    expect(setbackRoutes(c)).toEqual([{ ending: "lost", failures: null, scenes: 0, path: [] }]);
+    expect(setbackRoutes(c)).toEqual([{ ending: "lost", failures: null, scenes: 0, path: [], gated: false, ungatedFailures: null, lastFailures: [] }]);
   });
 });
 
