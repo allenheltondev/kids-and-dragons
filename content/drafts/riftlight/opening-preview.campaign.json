@@ -41,7 +41,9 @@
     "riftlight-bone-yard",
     "riftlight-preview-pause-bone-yard",
     "riftlight-wyrm-nest",
-    "riftlight-preview-pause-wyrm-nest"
+    "riftlight-preview-pause-wyrm-nest",
+    "riftlight-squall-temple",
+    "riftlight-preview-pause-squall-temple"
   ],
   "graph": {
     "version": 1,
@@ -96,7 +98,9 @@
       "island_signal_repeated",
       "fragment_sky_learned",
       "island_relay_delayed",
-      "wyrm_ally"
+      "wyrm_ally",
+      "temple_island_settled",
+      "temple_damaged"
     ],
     "buffs": {
       "riftspark": {
@@ -369,6 +373,18 @@
       },
       "preview-pause-wyrm-nest": {
         "chapter": "riftlight-preview-pause-wyrm-nest",
+        "title": "Pause the development preview",
+        "ending": {
+          "title": "Development preview pause"
+        }
+      },
+      "squall-temple": {
+        "chapter": "riftlight-squall-temple",
+        "title": "The Temple in the Squall",
+        "revisit": "pass"
+      },
+      "preview-pause-squall-temple": {
+        "chapter": "riftlight-preview-pause-squall-temple",
         "title": "Pause the development preview",
         "ending": {
           "title": "Development preview pause"
@@ -910,6 +926,30 @@
         "when": {
           "completed": "wyrm-nest"
         }
+      },
+      "the-island-due-back-to-squall-temple": {
+        "from": "the-island-due-back",
+        "to": "squall-temple",
+        "kind": "forward",
+        "label": "Help shelter the temple in the approaching squall"
+      },
+      "squall-temple-pause": {
+        "from": "squall-temple",
+        "to": "preview-pause-squall-temple",
+        "kind": "forward",
+        "label": "Pause this development preview"
+      },
+      "temple-to-island": {
+        "from": "squall-temple",
+        "to": "the-island-due-back",
+        "kind": "return",
+        "label": "Return to the island lookout"
+      },
+      "temple-to-cairnstep": {
+        "from": "squall-temple",
+        "to": "cairnstep-pass",
+        "kind": "return",
+        "label": "Accept the griffin messenger's flight to the Cairnstep"
       }
     },
     "facts": {
