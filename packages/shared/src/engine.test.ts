@@ -25,6 +25,7 @@ import { makeRng } from "./dice.js";
 import type { Rng } from "./dice.js";
 import type { ClientIntent } from "./types/protocol.js";
 import { INVENTORY_SLOTS, MAX_PARTY } from "./types/domain.js";
+import { TABLE_FULL_MESSAGE } from "./seats.js";
 import type { RunState } from "./types/state.js";
 import type { Character } from "./types/domain.js";
 import { newCharacter } from "./character.js";
@@ -302,6 +303,76 @@ describe("the edges of the rules", () => {
     );
     expect(overflow.error?.code).toBe("ILLEGAL");
     expect(overflow.state.party).toHaveLength(MAX_PARTY);
+  });
+
+  it("frees the seat of somebody the host took out, and fights with the table that is left (#389)", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    let state = newRun();
+    for (let i = 1; i <= MAX_PARTY; i++) {
+      state = applyIntent(state, { playerId: `p_${i}`, intent: { ...CREATE_UNICORN, name: `Hero ${i}` } }, context).state;
+    }
+    // Taken out the way remove.ts does it: still in `party`, away, on `removed`.
+    state = {
+      ...state,
+      removed: ["p_4"],
+      party: state.party.map((m) => (m.playerId === "p_4" ? { ...m, connected: false, ready: false } : m)),
+    };
+
+    const joined = applyIntent(state, { playerId: "p_5", intent: { ...CREATE_UNICORN, name: "Hero 5" } }, context);
+    expect(joined.error).toBeUndefined();
+    expect(joined.state.party).toHaveLength(MAX_PARTY + 1);
+
+    const sixth = applyIntent(joined.state, { playerId: "p_6", intent: { ...CREATE_UNICORN, name: "Hero 6" } }, context);
+    expect(sixth.error).toEqual({ code: "ILLEGAL", message: TABLE_FULL_MESSAGE });
+
+    // Five in `party` and four spawn tiles: the fight places the four still in the game.
+    let fight = walk(
+      joined.state,
+      [
+        ...["p_1", "p_2", "p_3", "p_5"].map((playerId) => ({ playerId, intent: { type: "READY", ready: true } as ClientIntent })),
+        { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+      ],
+      context,
+    ).state;
+    fight = enterScene(fight, "encounter_wisps", context).state;
+    for (const playerId of ["p_1", "p_2", "p_3", "p_5"]) {
+      fight = applyIntent(fight, { playerId, intent: { type: "READY", ready: true } }, context).state;
+    }
+    expect(fight.encounter).not.toBeNull();
+    const placed = fight.encounter!.combatants.filter((c) => c.side === "party").map((c) => c.name);
+    expect(placed).toEqual(["Hero 1", "Hero 2", "Hero 3", "Hero 5"]);
+  });
+
+  it("gives and takes the table's items among the seated, never somebody taken out (#389)", () => {
+    const context = ctx();
+    let state = newRun();
+    for (let i = 1; i <= MAX_PARTY; i++) {
+      state = applyIntent(state, { playerId: `p_${i}`, intent: { ...CREATE_UNICORN, name: `Hero ${i}` } }, context).state;
+    }
+    // p_1 is first in `party` and taken out; p_5 sat down in the seat it freed.
+    state = {
+      ...state,
+      removed: ["p_1"],
+      party: state.party.map((m) => (m.playerId === "p_1" ? { ...m, connected: false } : m)),
+    };
+    state = applyIntent(state, { playerId: "p_5", intent: { ...CREATE_UNICORN, name: "Hero 5" } }, context).state;
+    const bag = (s: RunState, playerId: string) =>
+      s.party.find((m) => m.playerId === playerId)!.character.inventory.map((e) => e.itemId);
+
+    const granted = applyEffects(state, [{ type: "grantItem", itemId: "river_charm", to: "party" }], context);
+    expect(bag(granted, "p_1")).not.toContain("river_charm");
+    expect(bag(granted, "p_2")).toContain("river_charm");
+
+    // A removed hero's bag neither opens a gate nor pays for one.
+    const theirs = applyEffects(state, [{ type: "grantItem", itemId: "river_charm", to: "p_1" }], context);
+    const chapter = makeChapter();
+    const shrine = chapter.scenes["scene_shrine"] as StoryScene;
+    shrine.choices = [...shrine.choices, { id: "charm", label: "Use the charm", icon: "star", goto: "scene_camp", requiresItem: "river_charm" }];
+    const at = (s: RunState) => currentChoices({ ...s, sceneId: "scene_shrine" }, chapter).map((c) => c.id);
+    expect(at(theirs)).not.toContain("charm");
+    expect(at(granted)).toContain("charm");
+    const taken = applyEffects(theirs, [{ type: "takeItem", itemId: "river_charm" }], context);
+    expect(bag(taken, "p_1")).toContain("river_charm");
   });
 
   /** A one-scene chapter, so the check prompt can be reached in one step. */
@@ -1584,6 +1655,34 @@ describe("scene hints (#255)", () => {
     ], context).state;
     const solo = fightWith(alone, ["p_1"]);
     expect(solo.encounter!.combatants.filter((c) => c.side === "party" && c.down)).toEqual([]);
+  });
+
+  it("stands a party that walks in already down up at 1 hp, so it gets a turn (#389)", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const into = (seated: RunState, down: string[]) => {
+      let state = walk(seated, [{ playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }], context).state;
+      // What a lost fight leaves behind (`carryDamageOut`) when its onDefeat
+      // road runs straight into the next one.
+      state = { ...state, party: state.party.map((m) => (down.includes(m.playerId) ? { ...m, hp: 0, down: true } : m)) };
+      state = enterScene(state, "encounter_wisps", context).state;
+      for (const m of state.party) state = applyIntent(state, { playerId: m.playerId, intent: { type: "READY", ready: true } }, context).state;
+      return state;
+    };
+
+    const alone = walk(newRun(), [
+      { playerId: "p_1", intent: CREATE_UNICORN },
+      { playerId: "p_1", intent: { type: "READY", ready: true } },
+    ], context).state;
+    const solo = into(alone, ["p_1"]);
+    // Not lost before anybody moved: the fight is on, and the hero is up, barely.
+    expect(solo.phase).toBe("encounter");
+    expect(solo.encounter).not.toBeNull();
+    expect(solo.encounter!.combatants.find((c) => c.side === "party")).toMatchObject({ hp: 1, down: false });
+
+    // One friend still standing is a table that can play: nobody is lifted.
+    const pair = into(seatedParty(context), ["p_2"]);
+    const heroes = pair.encounter!.combatants.filter((c) => c.side === "party");
+    expect(heroes.map((c) => [c.down, c.hp === 0])).toEqual([[false, false], [true, true]]);
   });
 
   it("leaves the practice to the server", () => {
