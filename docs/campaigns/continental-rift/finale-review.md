@@ -52,7 +52,7 @@ next-tide route for Old Ossley's upriver ferry. Its edge requires the completed
 Bone Yard, so the return is introduced before it is offered. It preserves the
 planned river route and does not change a rift condition. With this return and relevance-based state tracking, the
 exhaustive search completes at 114,507 states with no findings; the search cap
-is 250,000, half the previous limit. Immutable chapter metadata and unchanged graph
+is 250,000, raised from the base branch's 50,000 limit. Immutable chapter metadata and unchanged graph
 proofs are reused by content signature. Changed negative fixtures invalidate the
 cache; smaller art fixtures avoid unrelated campaign searches. This is a complete check, not a truncated search treated as success.
 
@@ -115,3 +115,7 @@ finale spine assertion. That assertion now requests zero typical-path samples:
 it still computes and checks the exact shortest success path in all six party
 scenarios, without also generating 3,000 unrelated sampled walks. The normal
 pacing report retains its complete sampling behavior and the test timeout is unchanged.
+
+### Second review follow-up
+
+Corvane follows the watcher on the second-failure exit, so no lamp choice is assumed. Regenerated the regional pacing estimates after the review fixes and corrected the search-cap comparison against this PR's base. Wording only; the success spine remains 48 scenes, 14 decisions, 6 doing checks, 1 fight and a reading run of 3.
