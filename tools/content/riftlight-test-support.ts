@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { expect } from "vitest";
-import { applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
+import { applyEffects, applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
 import type { Campaign, Chapter, ClassId, ClientIntent, EngineContext, ItemCatalog, RulesContent, RunState, SpeciesId } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { RIFTLIGHT_DRAFT } from "./riftlight-preview.ts";
@@ -103,7 +103,7 @@ export function answerClassPlace(state: RunState, chapter: Chapter, answer: Clas
 }
 
 /** Walk every actual choice and both dice extremes through the real engine. */
-export function allPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags: Record<string, boolean> = {}, partySize = 1, initialHp?: number, classAnswer: ClassAnswer = "keep") {
+function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags: Record<string, boolean> = {}, partySize = 1, initialHp?: number, classAnswer: ClassAnswer = "keep") {
   const contract = continuity[chapter.id]!;
   const conditionalEntry = Object.entries(contract.entryByFlag ?? {}).flatMap(([flag, facts]) => flags[flag] ? facts : []);
   const initial = start(chapter, species, cls, flags, partySize);
@@ -138,7 +138,24 @@ export function allPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, fla
       expect(known.has(fact), `${chapter.id}/${state.sceneId}: references ${fact} before this path introduced it`).toBe(true);
     }
     if (state.phase === "chapter_complete") { ends.push(state); endingKnowledge.push(known); endingIntroductions.push(introduced); continue; }
-    if (state.prompt?.kind === "choice") {
+    if (chapter.scenes[state.sceneId!]!.type === "encounter") {
+      // Story coverage enumerates the encounter's declared outcomes. This is
+      // deliberately not a combat simulation: board mechanics are exercised
+      // separately through READY/END_TURN in the strand encounter tests.
+      const scene = chapter.scenes[state.sceneId!]!;
+      if (scene.type !== "encounter") throw new Error("Expected encounter");
+      for (const branch of [scene.onVictory, scene.onDefeat, scene.onEscape, scene.onTimeout].filter(Boolean)) {
+        const outcomes = branch === scene.onVictory
+          ? [[], ...(scene.environment?.objectives ?? []).filter(o => o.endsFight).map(o => o.effects ?? [])]
+          : [[]];
+        for (const effects of outcomes) {
+          const settled = applyEffects(state, [...effects, ...(branch!.effects ?? [])], context(chapter));
+          const result = enterScene(settled, branch!.goto, context(chapter));
+          expect(result.error).toBeUndefined();
+          pending.push({ state: result.state, known, introduced });
+        }
+      }
+    } else if (state.prompt?.kind === "choice") {
       expect(state.prompt.options.length).toBeGreaterThan(0);
       for (const option of state.prompt.options) pending.push({ state: send(state, { type: "CHOOSE", choiceId: option.id }, chapter), known, introduced });
     } else if (state.prompt?.kind === "roll") {
@@ -148,6 +165,20 @@ export function allPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, fla
     }
   }
   expect(ends.length).toBeGreaterThan(0);
-  for (const state of ends) expect(state.chapterOutcome).toBe("success");
+  for (const state of ends) {
+    // The finale's late whole-party battle loss is a completing setback;
+    // ordinary missed checks and strand losses still finish successfully.
+    expect(state.chapterOutcome).toBe(chapter.id === "riftlight-finale" && state.sceneId === "loss_epilogue" ? "setback" : "success");
+  }
   return { visited, ends, endingKnowledge, endingIntroductions };
+}
+
+// Cache identical scenarios, including chapter content so negative fixtures
+// and callers that edit a cloned chapter always get an independent walk.
+const pathCache = new Map<string, ReturnType<typeof walkAllPaths>>();
+export function allPaths(...args: Parameters<typeof walkAllPaths>): ReturnType<typeof walkAllPaths> {
+  const key = JSON.stringify(args);
+  let result = pathCache.get(key);
+  if (!result) { result = walkAllPaths(...args); pathCache.set(key, result); }
+  return structuredClone(result);
 }

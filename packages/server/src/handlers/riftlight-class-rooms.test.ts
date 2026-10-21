@@ -46,6 +46,7 @@ const riftlight: Promise<ContentStore> = (async () => {
     await cp(path.join(ROOT, "content", file), path.join(dir, file));
   }
   for (const sub of ["chapters", "maps", "campaigns"]) await mkdir(path.join(dir, sub));
+  await cp(path.join(DRAFT, "maps"), path.join(dir, "maps"), { recursive: true });
   const campaign = JSON.parse(await readFile(path.join(DRAFT, "opening-preview.campaign.json"), "utf8")) as Campaign;
   campaignId = campaign.id;
   delete campaign.requires;

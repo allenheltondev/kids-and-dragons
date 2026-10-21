@@ -46,7 +46,17 @@ it("proves regional prerequisites across every incoming graph route rather than 
       for (const node of reachable) {
         if (node === graph.entry) continue;
         const predecessors = Object.values(edges).filter((e) => e.to === node && reachable.has(e.from));
-        const next = intersection(predecessors.map((e) => outgoing(e.from)));
+        const next = intersection(predecessors.map((e) => {
+          const facts = outgoing(e.from);
+          // A completed-place guard proves a prior full visit, even when a
+          // return loop's immediate predecessor has not introduced those facts.
+          // Include that chapter's checked entry contract and literal output.
+          const completed = e.when?.completed;
+          for (const done of completed === undefined ? [] : Array.isArray(completed) ? completed : [completed]) {
+            for (const fact of [...contracts[graph.nodes[done]!.chapter]!.entryFacts, ...introduced.get(done)!]) facts.add(fact);
+          }
+          return facts;
+        }));
         const before = incoming.get(node)!;
         if (next.size !== before.size || [...next].some((fact) => !before.has(fact))) {
           incoming.set(node, next); changed = true;

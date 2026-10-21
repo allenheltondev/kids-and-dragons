@@ -15,7 +15,7 @@ const staged = stageRiftlightOpening();
 afterAll(() => fs.rmSync(staged, { recursive: true, force: true }));
 
 describe("Riftlight's authored opening", () => {
-  it("stages usable world assets when directory junctions are denied", () => {
+  it("stages usable world assets when directory junctions are denied", { timeout: 20_000 }, () => {
     const link = vi.spyOn(fs, "symlinkSync").mockImplementation(() => {
       throw Object.assign(new Error("Junction denied"), { code: "EPERM" });
     });
@@ -26,14 +26,22 @@ describe("Riftlight's authored opening", () => {
       expect(fs.lstatSync(world).isDirectory()).toBe(true);
       expect(fs.lstatSync(world).isSymbolicLink()).toBe(false);
       expect(fs.readdirSync(world).sort()).toEqual(fs.readdirSync(path.join(ROOT, "assets/world")).sort());
-      expect(runValidator(copied).ok).toBe(true);
+      // Compare the fallback bytes; the next test validates the complete
+      // campaign once, without repeating its unrelated graph exploration.
+      for (const entry of fs.readdirSync(world, { recursive: true })) {
+        const relative = String(entry);
+        const file = path.join(world, relative);
+        if (fs.statSync(file).isFile()) {
+          expect(fs.readFileSync(file).equals(fs.readFileSync(path.join(ROOT, "assets/world", relative))), relative).toBe(true);
+        }
+      }
     } finally {
       link.mockRestore();
       if (copied) fs.rmSync(copied, { recursive: true, force: true });
     }
   });
 
-  it("passes the real content gate alongside Gemfall, including props, art and prerequisite", () => {
+  it("passes the real content gate alongside Gemfall, including props, art and prerequisite", { timeout: 20_000 }, () => {
     const result = runValidator(staged);
     expect(result.ok, result.output).toBe(true);
     expect(campaign.requires).toEqual(["gemfall"]);
@@ -52,7 +60,7 @@ describe("Riftlight's authored opening", () => {
     expect(coverage.nodes.every((node) => node.entered)).toBe(true);
     expect(coverage.edges.every((edge) => edge.traversable)).toBe(true);
     expect(playtest(graph, campaign, { ...options, random: { seed: 16, runs: 10 }, replay: { search, coverage } }).violations).toEqual([]);
-  }, 20_000); // Whole-graph integration replay is instrumented by V8 in CI.
+  }, 60_000); // Full route graph, including strand-end return loops, also runs under V8 coverage.
 
   it.each([
     ["kitsune", "starweaver"], ["bigfoot", "thornguard"],

@@ -22,6 +22,15 @@ it.each([...chapters.values()].filter((chapter) => chapter.index >= 4))("$id: ev
   if (chapter.id === "riftlight-the-island-due-back") {
     for (const scene of allPaths(chapter, "manticore", "duskrunner", { whales_guided: true }).visited) visited.add(scene);
   }
+  if (chapter.id === "riftlight-convergence") {
+    for (const scene of allPaths(chapter, "manticore", "duskrunner", { orin_chime_shared: true, olivia_trusted: true }).visited) visited.add(scene);
+  }
+  if (chapter.id === "riftlight-finale") {
+    for (const scene of allPaths(chapter, "manticore", "duskrunner", {
+      fragment_paths_learned: true, fragment_coast_learned: true, fragment_sky_learned: true,
+      three_fragments_ready: true, wyrm_ally: true, olivia_ally: true,
+    }).visited) visited.add(scene);
+  }
   expect([...visited].sort(), chapter.id).toEqual(Object.keys(chapter.scenes).sort());
 }, 20_000); // Exhaustive walks across six party/history configurations run under V8 coverage in CI.
 
@@ -61,7 +70,7 @@ it("ending route guarantees remove phantom softlocks without hiding a missing ro
   expect(chapterFlagWrites(shelf).requiredOneOf).toBeUndefined();
   const broken = new Map(chapters); broken.set(shelf.id, shelf);
   expect(lintCampaignGraph(graph, { ...options, chapterFlags: chapterFlagsFrom(broken) }).findings.some((f) => f.code === "STRANDED")).toBe(true);
-}, 20_000); // Two exhaustive graph searches run under V8 coverage in CI.
+}, 60_000); // Two full-campaign searches, including the deliberately broken graph, under V8 coverage.
 
 it("the linked glacier rift grants only one Riftspark and preserves a way back", () => {
   const graph = parseCampaignGraph(campaign).graph!;
@@ -84,11 +93,27 @@ it("the linked glacier rift grants only one Riftspark and preserves a way back",
   expect(enterScene(returning, "sing", context(chapter)).state.narration).toContain("does not need another note");
 });
 
-it("a background-only story biome needs explicit scene art rather than tactical tiles", () => {
+it("a background-only story biome needs explicit scene art rather than tactical tiles", { timeout: 20_000 }, () => {
   const root = stageRiftlightOpening();
   try {
     const file = path.join(root, "content/chapters/riftlight-saltrot-arrival.json");
     const chapter = JSON.parse(fs.readFileSync(file, "utf8"));
+    // This assertion concerns chapter art, not every route in the campaign.
+    // Keep the shipping validator and assets, but give it a small valid route.
+    const campaignFile = path.join(root, "content/campaigns", `${campaign.id}.json`);
+    const fixture = JSON.parse(fs.readFileSync(campaignFile, "utf8"));
+    // Retain the opening's class rooms as well as the chapter under test.
+    const kept = [...chapters.values()].filter(c => c.index <= 3 || c.id === chapter.id).map(c => c.id);
+    for (const id of fixture.chapters) {
+      if (!kept.includes(id)) fs.rmSync(path.join(root, "content/chapters", `${id}.json`));
+    }
+    fixture.chapters = kept;
+    fixture.graph = { version: 1, entry: kept[0], flags: fixture.graph.flags,
+      nodes: Object.fromEntries(kept.map((id, i) => [id, { chapter: id, ...(i === kept.length - 1 ? { ending: { title: "Art fixture" } } : {}) }])),
+      edges: Object.fromEntries(kept.slice(1).map((id, i) => [`next_${i}`, { from: kept[i], to: id, kind: "forward" }])) };
+    fs.writeFileSync(campaignFile, JSON.stringify(fixture));
+    const baseline = runValidator(root);
+    expect(baseline.ok, baseline.output).toBe(true);
     delete chapter.scenes.flats.art;
     fs.writeFileSync(file, JSON.stringify(chapter));
     const result = runValidator(root);
@@ -110,6 +135,7 @@ it("Attune is taught on the first regional visit and acknowledged on later visit
 
 it("the route scenes keep diagnostic colors and finale secrets out of shared narration", () => {
   for (const chapter of chapters.values()) {
-    expect(JSON.stringify(chapter.scenes), chapter.id).not.toMatch(/\b(Corvane|Pangea|emperor|amber|blue|green|violet)\b|summer crevasse|the (kind|sort|type) of thing that/i);
+    expect(JSON.stringify(chapter.scenes), chapter.id).not.toMatch(/\b(amber|blue|green|violet)\b|summer crevasse|the (kind|sort|type) of thing that/i);
+    if (chapter.id !== "riftlight-finale") expect(JSON.stringify(chapter.scenes), chapter.id).not.toMatch(/\b(Corvane|Pangea|emperor)\b/i);
   }
 });
