@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
-import { completeVisit, parseCampaignGraph, startJourney, takeExit } from "@kad/shared";
-import { campaign, chapters, send, start } from "./riftlight-test-support.ts";
+import { completeVisit, enterScene, parseCampaignGraph, startJourney, takeExit } from "@kad/shared";
+import { campaign, chapters, context, send, start } from "./riftlight-test-support.ts";
 const chapter = chapters.get("riftlight-convergence")!;
 const graph = parseCampaignGraph(campaign).graph!;
 function walk(option: string, trust: boolean, shared = false) {
@@ -52,3 +52,15 @@ it.each(["wyrm-nest", "bone-yard", "squall-temple"])("%s requires its own key an
   }
 });
 
+
+it.each([
+  ["fragment_paths_learned", "fragment_coast_learned", "memory readers", "buried bridge", "island mooring"],
+  ["fragment_paths_learned", "fragment_sky_learned", "memory readers", "island mooring", "buried bridge"],
+  ["fragment_coast_learned", "fragment_sky_learned", "buried bridge", "island mooring", "memory readers"],
+])("reads only the two accounts from %s and %s", (a, b, first, second, absent) => {
+  const state = start(chapter, "manticore", "duskrunner", { [a!]: true, [b!]: true });
+  const text = enterScene(state, "evidence", context(chapter)).state.narration.toLowerCase();
+  expect(text).toContain(first);
+  expect(text).toContain(second);
+  expect(text).not.toContain(absent);
+});
