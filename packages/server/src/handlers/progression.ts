@@ -54,6 +54,7 @@ import {
   recordFinished,
   unmetPrerequisites,
   lobbyCampaign,
+  chapterStoryOf,
   type Campaign,
   type CampaignView,
   type Character,
@@ -725,6 +726,33 @@ export interface ChapterSettlement {
 }
 
 /**
+ * What the attempt keeps of this chapter for the Story page (#358), appended
+ * to a copy of its story (the row may be shared with the one read). `before`
+ * is the route-set flags the attempt held before this chapter, so a flag it
+ * carried in is not counted as this chapter's choice. A completion with no
+ * ending scene (none is possible today) keeps nothing.
+ */
+function keepStory(
+  attempt: CampaignProgressRecord,
+  state: RunState,
+  campaign: Campaign,
+  chapter: Chapter,
+  before: Readonly<Record<string, boolean>> | undefined,
+): void {
+  if (!state.sceneId) return;
+  const story = chapterStoryOf({
+    campaign,
+    chapter,
+    ending: state.sceneId,
+    visited: state.visited ?? [],
+    flags: state.flags,
+    before,
+    party: { members: seatedParty(state).map((m) => m.character) },
+  });
+  attempt.story = [...(attempt.story ?? []), story];
+}
+
+/**
  * The campaign boundary — the half of the commitment rule that was never
  * wired. `startCampaign()` has always made gains provisional on the way in;
  * nothing ever called `commitCampaign()` or `failCampaign()`, so provisional
@@ -826,6 +854,7 @@ export async function settleChapterCompletion(
         // the attempt (isStale admits exactly that case).
         newAttempt(householdId, campaignId, state.runId, now, version, existing);
   if (outcome === "setback") attempt.setbacks += 1;
+  keepStory(attempt, state, campaign, chapter, attempt.routeFlags);
   const roads = routesTaken(campaign, state.flags, attempt.routeFlags);
   if (roads) attempt.routeFlags = roads;
   // A run started before the purse existed has none, even if it walked past
@@ -975,6 +1004,7 @@ async function settleVisit(input: {
   const version = pending ? (pending.attempt.version ?? 1) : (existing.version ?? 0) + 1;
   const attempt: CampaignProgressRecord = { ...existing, journey: step.journey, version, updatedAt: now };
   if (outcome === "setback") attempt.setbacks += 1;
+  keepStory(attempt, state, campaign, chapter, existing.journey?.flags);
   attempt.coins = state.coins ?? attempt.coins ?? 0;
   const settled = {
     awards: award.awards,
