@@ -132,7 +132,11 @@ test.describe("true size and stance on the story stage", () => {
     const a = await report(tv);
     await tv.waitForTimeout(900);
     const b = await report(tv);
-    expect(b.map((f) => f.paint)).toEqual(a.map((f) => f.paint));
+    // To a hundredth of a pixel: the camera's ease converges in floating point,
+    // and its last bits are not motion.
+    const settle = (figures: Reading[]) =>
+      figures.map((f) => f.paint && Object.fromEntries(Object.entries(f.paint).map(([k, v]) => [k, Math.round(v * 100) / 100])));
+    expect(settle(b)).toEqual(settle(a));
   }
 
   /**
