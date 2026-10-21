@@ -99,11 +99,13 @@ open for the outstanding runtime and content-gate acceptance work; #360 is compl
 - `npm run content:validate`: **62 checks passed**.
 - `npm run art:figures`: regenerated the committed height/stance table.
 - Adapted Playwright cast-shot review: **1 passed**, all 14 figure comparisons, TV and phone.
-- Full `npm test`: **4986 passed, 10 skipped, 3 failed** in unchanged tests:
+- Full `npm test` after review fixes: **5064 passed, 10 skipped, 3 failed** in unchanged tests:
   authoring-guide fenced-block parsing (CRLF sensitivity), `PlayerProfile` source parsing
   (CRLF-sensitive interface terminator), and Riftlight preview Ctrl-C process cleanup
-  (20 s timeout on Windows). These tests and their input sources were not edited.
-- Semantic comparison to HEAD: every non-cast chapter field is unchanged.
+  (20 s timeout on Windows). The content validation suite also hit its 10 s cleanup-hook
+  timeout. Direct content validation passed. These tests and their input sources were not edited.
+- Typecheck: passed.
+- Semantic comparison to `origin/main`: every non-cast field in all 15 changed chapters is unchanged.
 - `git diff --check`: clean.
 
 Sources and prompts were made with built-in `image_gen`; no API/CLI fallback was used.
