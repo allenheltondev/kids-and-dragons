@@ -1670,9 +1670,111 @@
         "narration": "You put your shoulders to the stone door and push, and push, and it grinds open just as the bells go quiet to catch their breath."
       },
       "onFailure": {
-        "goto": "ending_last_ring",
-        "narration": "The door holds. Far above you, very far away, the last bell rings."
+        "goto": "scene_door_holds",
+        "narration": "The door holds. Far above you, very far away, the bells keep counting down."
       }
+    },
+    "scene_door_holds": {
+      "type": "story",
+      "art": "scenes/gemfall/gem-gallery",
+      "narration": "The stone door will not move another inch. Up in the foothills the bells are still counting down toward the last ring, and you are on the wrong side of the door. Everybody knows it, including the door, which looks a little smug.",
+      "choices": [
+        {
+          "id": "crack",
+          "label": "Squeeze through the moths' crack, while there is still time",
+          "icon": "feather",
+          "when": {
+            "notFlag": "clock_late"
+          },
+          "effects": [
+            {
+              "type": "damage",
+              "amount": 1,
+              "to": "party",
+              "nonlethal": true
+            }
+          ],
+          "goto": "scene_door_holds_crack"
+        },
+        {
+          "id": "wedge",
+          "label": "Jam a stone from your pack in the door, and leave it there",
+          "icon": "gem",
+          "when": {
+            "count": {
+              "of": [
+                "facet_ember",
+                "facet_harvest",
+                "facet_drakes_rate",
+                "facet_barge",
+                "facet_ford",
+                "facet_pride",
+                "facet_glade",
+                "facet_depot",
+                "facet_clerks",
+                "facet_confiscated",
+                "facet_unassigned",
+                "facet_table",
+                "facet_caravan"
+              ],
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "facet_ember",
+                "facet_harvest",
+                "facet_drakes_rate",
+                "facet_barge",
+                "facet_ford",
+                "facet_pride",
+                "facet_glade",
+                "facet_depot",
+                "facet_clerks",
+                "facet_confiscated",
+                "facet_unassigned",
+                "facet_table",
+                "facet_caravan"
+              ]
+            }
+          ],
+          "goto": "scene_door_holds_wedge"
+        },
+        {
+          "id": "too_late",
+          "label": "Give up, and listen for the last bell",
+          "icon": "ear",
+          "goto": "ending_last_ring"
+        }
+      ]
+    },
+    "scene_door_holds_crack": {
+      "type": "story",
+      "art": "scenes/gemfall/gem-gallery",
+      "narration": "Down by the floor, a line of embermoths is crawling into a crack in the wall, the way moths go when they know a shortcut. It is a moth-sized crack. It is very nearly a you-sized crack. You squeeze through one at a time, scraping every elbow you own, and pop out on the far side covered in ash. It took far too long. But the last ring has not rung.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Run on, scraped and dusty",
+          "icon": "forward",
+          "goto": "scene_keeper"
+        }
+      ]
+    },
+    "scene_door_holds_wedge": {
+      "type": "story",
+      "art": "scenes/gemfall/gem-gallery",
+      "narration": "You jam a stone from your pack into the gap at the bottom of the door, and the whole door shudders, as if somebody finally handed it the thing it was waiting for. It grinds open just wide enough. When you try to pull the stone back out, it will not come. It belongs to the mountain now, and the mountain is not giving it back.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Squeeze through and run",
+          "icon": "forward",
+          "goto": "scene_keeper"
+        }
+      ]
     },
     "scene_keeper": {
       "type": "story",
@@ -2574,7 +2676,7 @@
         "narration": "The dragon lowers its head and laughs, a sound like an avalanche having a nice day. \"You fight like people who mean it,\" it says, and steps aside."
       },
       "onDefeat": {
-        "goto": "ending_turned_back",
+        "goto": "scene_dragon_claw",
         "narration": "The Seal-Keeper scoops you up in one enormous claw, very carefully, the way you would carry a bird's nest.",
         "variants": [
           {
@@ -2587,6 +2689,213 @@
           }
         ]
       }
+    },
+    "scene_dragon_claw": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "It lifts you up to one enormous eye, gently, the way you would lift a ladybug to get a proper look at it. \"You came up my mountain the wrong way,\" it says. \"What do you have left to give?\"",
+      "choices": [
+        {
+          "id": "give",
+          "label": "Give it a stone from your pack, for the seal",
+          "icon": "gem",
+          "when": {
+            "count": {
+              "of": [
+                "facet_ember",
+                "facet_harvest",
+                "facet_drakes_rate",
+                "facet_barge",
+                "facet_ford",
+                "facet_pride",
+                "facet_glade",
+                "facet_depot",
+                "facet_clerks",
+                "facet_confiscated",
+                "facet_unassigned",
+                "facet_table",
+                "facet_caravan"
+              ],
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "facet_ember",
+                "facet_harvest",
+                "facet_drakes_rate",
+                "facet_barge",
+                "facet_ford",
+                "facet_pride",
+                "facet_glade",
+                "facet_depot",
+                "facet_clerks",
+                "facet_confiscated",
+                "facet_unassigned",
+                "facet_table",
+                "facet_caravan"
+              ]
+            }
+          ],
+          "goto": "scene_dragon_claw_give"
+        },
+        {
+          "id": "time",
+          "label": "Ask it for the time to do this right",
+          "icon": "moon",
+          "when": {
+            "notFlag": "clock_late"
+          },
+          "goto": "scene_dragon_claw_time"
+        },
+        {
+          "id": "hold",
+          "label": "Hang on to its claw, and don't let go",
+          "icon": "hand",
+          "goto": "check_dragon_claw"
+        }
+      ]
+    },
+    "check_dragon_claw": {
+      "type": "check",
+      "art": "scenes/gemfall/seal-chamber",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Hang on to the Seal-Keeper's claw and don't let go",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "onSuccess": {
+        "goto": "scene_seal_chamber",
+        "narration": "You hang on. The Seal-Keeper gives its claw one gentle shake, and you hang on anyway, stuck fast like a burr on a sock. It makes a noise that might be a laugh. \"Stubborn,\" it says, and sets you down in front of the seal, bruised but still here."
+      },
+      "onFailure": {
+        "goto": "scene_dragon_claw_slip",
+        "narration": "Your fingers slip. The Seal-Keeper does not drop you. It only holds you up, very patiently, and waits."
+      }
+    },
+    "scene_dragon_claw_slip": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "\"Well?\" asks the Seal-Keeper. Behind it the seal creaks, and the thing underneath turns over again. \"What do you have left?\"",
+      "choices": [
+        {
+          "id": "give",
+          "label": "Give it a stone from your pack, for the seal",
+          "icon": "gem",
+          "when": {
+            "count": {
+              "of": [
+                "facet_ember",
+                "facet_harvest",
+                "facet_drakes_rate",
+                "facet_barge",
+                "facet_ford",
+                "facet_pride",
+                "facet_glade",
+                "facet_depot",
+                "facet_clerks",
+                "facet_confiscated",
+                "facet_unassigned",
+                "facet_table",
+                "facet_caravan"
+              ],
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "facet_ember",
+                "facet_harvest",
+                "facet_drakes_rate",
+                "facet_barge",
+                "facet_ford",
+                "facet_pride",
+                "facet_glade",
+                "facet_depot",
+                "facet_clerks",
+                "facet_confiscated",
+                "facet_unassigned",
+                "facet_table",
+                "facet_caravan"
+              ]
+            }
+          ],
+          "goto": "scene_dragon_claw_give"
+        },
+        {
+          "id": "time",
+          "label": "Ask it for the time to do this right",
+          "icon": "moon",
+          "when": {
+            "notFlag": "clock_late"
+          },
+          "goto": "scene_dragon_claw_time"
+        },
+        {
+          "id": "nothing",
+          "label": "Give up, and let it carry you down the mountain",
+          "icon": "back",
+          "goto": "ending_turned_back"
+        }
+      ]
+    },
+    "scene_dragon_claw_give": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "You hold out a stone from your pack. The Seal-Keeper takes it in two claws, as carefully as an egg, and sets it into one of the gaps in the seal. It fits. \"Better,\" it says, and puts you down in front of the seal. That stone is the mountain's again, and it is not coming back.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Stand up in front of the seal",
+          "icon": "forward",
+          "goto": "scene_seal_chamber"
+        }
+      ]
+    },
+    "scene_dragon_claw_time": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "\"Time,\" says the Seal-Keeper, as if you had asked for its very last cookie. But it sets you down on a ledge and makes you sit there while it breathes on the cracks in the seal, slow and warm, for what feels like an hour. Both your legs fall asleep. When it finally lets you up, the mountain is shaking harder than before. \"Now,\" it says. \"Choose.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Stand up, legs tingling",
+          "icon": "forward",
+          "goto": "scene_seal_chamber"
+        }
+      ]
     },
     "scene_seal_chamber": {
       "type": "story",
@@ -2653,13 +2962,19 @@
           "id": "leash",
           "label": "Take the leash on the power underneath",
           "icon": "key",
-          "goto": "scene_tether"
+          "goto": "scene_tether",
+          "when": {
+            "notFlag": "tether_lost"
+          }
         },
         {
           "id": "keystone",
           "label": "Reach for the crown stone at the top",
           "icon": "gem",
-          "goto": "scene_keystone"
+          "goto": "scene_keystone",
+          "when": {
+            "notFlag": "keystone_refused"
+          }
         }
       ],
       "onEnter": [
@@ -2768,8 +3083,8 @@
         "narration": "It pulls, and pulls, and then settles in your hands like a sleepy dog on a lead."
       },
       "onFailure": {
-        "goto": "ending_broken_tether",
-        "narration": "It pulls once, hard, and the leash slips through every one of your hands."
+        "goto": "scene_tether_slipping",
+        "narration": "It pulls once, hard, and the leash starts to slide through every one of your hands."
       }
     },
     "check_tether_cult": {
@@ -2799,9 +3114,178 @@
         "narration": "You read the bargain back to them line by line, twice, like a warden clerk. They keep every word."
       },
       "onFailure": {
-        "goto": "ending_broken_tether",
-        "narration": "The choir sings one note more than the bargain said. Just one. It is enough, and Hessa's face falls before anyone else's."
+        "goto": "scene_chord_slipping",
+        "narration": "The choir sings one note more than the bargain said. Just one. The seal shivers, and Hessa's face falls before anyone else's."
       }
+    },
+    "scene_tether_slipping": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "The leash bucks like a kite in a storm, and the seal groans under it. One more pull and something is going to crack. The Seal-Keeper's eye is on you, very steady. \"Let go,\" it says, \"or hold on. Both are allowed. Only one is safe.\"",
+      "choices": [
+        {
+          "id": "let_go",
+          "label": "Let go, before it cracks the seal",
+          "icon": "hand",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "tether_lost",
+              "value": true
+            }
+          ],
+          "goto": "scene_tether_let_go"
+        },
+        {
+          "id": "hold_on",
+          "label": "Dig in your heels and haul it back",
+          "icon": "might",
+          "goto": "check_tether_haul"
+        }
+      ]
+    },
+    "check_tether_haul": {
+      "type": "check",
+      "art": "scenes/gemfall/seal-chamber",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Dig in your heels and haul the leash back before it cracks the seal",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "onSuccess": {
+        "goto": "ending_new_weather",
+        "narration": "You dig in your heels and haul, and haul, and the leash stops sliding. Then it settles in your hands like a sleepy dog that has finally decided you are in charge."
+      },
+      "onFailure": {
+        "goto": "ending_broken_tether",
+        "narration": "You haul with everything you have, and the leash slips through every hand on it."
+      }
+    },
+    "scene_tether_let_go": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "You let go. The leash snaps back under the seal like a rubber band, and the whole mountain says OOF. The seal holds. Your hands sting, and the leash is gone for good: it went back where it came from, and it will not come up again. The Seal-Keeper lets out a long breath. \"Good,\" it says. \"Now choose something else.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Choose again",
+          "icon": "back",
+          "goto": "scene_seal_chamber"
+        }
+      ]
+    },
+    "scene_chord_slipping": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        },
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Masked choir singer"
+        }
+      ],
+      "narration": "The extra note hangs in the air, wobbling, and a crack runs across the seal, thin as a hair. Hessa's singers have their eyes shut behind their masks and do not see it. Hessa does. \"Help us,\" she says. \"Find the right note, or stop the song.\"",
+      "choices": [
+        {
+          "id": "stop",
+          "label": "Stop the song, before the crack grows",
+          "icon": "hand",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "tether_lost",
+              "value": true
+            }
+          ],
+          "goto": "scene_chord_stopped"
+        },
+        {
+          "id": "find",
+          "label": "Catch the right note and hum it back",
+          "icon": "note",
+          "goto": "check_chord_catch"
+        }
+      ]
+    },
+    "check_chord_catch": {
+      "type": "check",
+      "art": "scenes/gemfall/seal-chamber",
+      "stat": "heart",
+      "tn": 12,
+      "checkKind": "doing",
+      "prompt": "Hum the right note back to the choir before the crack runs",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        },
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Masked choir singer"
+        }
+      ],
+      "onSuccess": {
+        "goto": "ending_cure",
+        "narration": "You find the note and hum it, loud and wobbly, and the whole choir catches it from you. The crack closes like a zipper. Hessa reads the bargain back twice, and this time they keep every word."
+      },
+      "onFailure": {
+        "goto": "ending_broken_tether",
+        "narration": "You hum, but the extra note is louder. The crack runs all the way across, and Hessa's face falls before anyone else's."
+      }
+    },
+    "scene_chord_stopped": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        },
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Masked choir singer"
+        }
+      ],
+      "narration": "You wave your arms until every masked singer opens their eyes, and the song stops. The leash sinks back under the seal, and the hair-thin crack fades away. Hessa sits down on the floor and cries a little, quietly, and one of her singers pats her on the head. The cure is gone for good. \"Choose something else,\" says the Seal-Keeper, more gently than you expected.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Choose again",
+          "icon": "back",
+          "goto": "scene_seal_chamber"
+        }
+      ]
     },
     "ending_heroes": {
       "type": "rest",
@@ -3876,8 +4360,8 @@
         "narration": "No tether this time, only hands, so you become the tether. It pulls, and pulls, and then settles in your hands. The Seal-Keeper blinks, which it has not done in a very long time."
       },
       "onFailure": {
-        "goto": "ending_broken_tether",
-        "narration": "Bare hands are not enough. It pulls once, hard, and slips through every hand on it."
+        "goto": "scene_tether_slipping",
+        "narration": "Bare hands are not enough. It pulls once, hard, and starts to slide through every hand on it."
       }
     },
     "check_tether_cult_bare": {
@@ -3907,8 +4391,8 @@
         "narration": "You make the bargain up as you go, and you make it very carefully. Hessa reads it twice and nods. They keep every word."
       },
       "onFailure": {
-        "goto": "ending_broken_tether",
-        "narration": "Nobody wrote the bargain down, so Hessa's singers sing it the way they remember it. One note more than you meant. It is enough, and Hessa's face falls before anyone else's."
+        "goto": "scene_chord_slipping",
+        "narration": "Nobody wrote the bargain down, so Hessa's singers sing it the way they remember it, one note more than you meant. The seal shivers, and Hessa's face falls before anyone else's."
       }
     },
     "scene_keystone": {
@@ -3994,9 +4478,41 @@
         ]
       },
       "onFailure": {
-        "goto": "ending_turned_back",
-        "narration": "The crown stone does not budge. Then the Seal-Keeper puts one claw on it, very gently, and the decision is no longer yours."
+        "goto": "scene_keystone_refused",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "keystone_refused",
+            "value": true
+          },
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ],
+        "narration": "The crown stone does not budge. It is hot as an oven door, and your hands sting. Then the Seal-Keeper puts one claw on it, very gently, and the decision is no longer yours."
       }
+    },
+    "scene_keystone_refused": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "The Seal-Keeper lifts your hands off the crown stone one finger at a time, like somebody unsticking a starfish from a rock. \"Not that one,\" it says. \"Not today, and not by you.\" It sets you back in front of the seal. The crown stone stays exactly where it is, and so does the claw.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Choose again, with stinging hands",
+          "icon": "back",
+          "goto": "scene_seal_chamber"
+        }
+      ]
     }
   },
   "voiceGuide": {
