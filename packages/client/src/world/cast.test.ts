@@ -213,7 +213,7 @@ describe("stageSlots", () => {
 
   it("fits three heroes and three guests' painted figures on the stage, each within its slot", () => {
     const hero = (heightCm: number): StageFigure => ({ heightCm, stance: "standing", paint: null });
-    for (const width of [1600, 2560]) for (const heights of [[160, 160, 160], [25, 230, 1100]]) {
+    for (const width of [1600, 2560]) for (const heights of [[160, 160, 160], [25, 230, 330]]) {
       const party = [hero(165), hero(85), hero(215)];
       const cast = heights.map(hero);
       const fit = stageLayout(party, cast, width);

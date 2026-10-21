@@ -12,7 +12,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { SCALE_CM } from "@kad/canon";
 import { SIZE_BAND_CM, type Chapter } from "@kad/shared";
-import { OUTPUT, figureSizes, renderFigureSizes } from "./figure-sizes.ts";
+import { OUTPUT, figureOverflow, figureSizes, renderFigureSizes } from "./figure-sizes.ts";
 
 const REPO = fileURLToPath(new URL("../..", import.meta.url));
 const manifest = JSON.parse(readFileSync(`${REPO}/assets/manifest.json`, "utf8")) as {
@@ -64,5 +64,12 @@ describe("figure sizes (#362)", () => {
       if (canon && cast) expect(cast.heightCm, id).toBe(canon.heightCm);
     }
     expect(sizes.get("entities/pib")?.heightCm).toBe(sizes.get("cast/pib")?.heightCm);
+  });
+
+  it("overrides overflow only for figures the stage sizes, and only to an edge it knows", () => {
+    for (const [figure, way] of Object.entries(figureOverflow())) {
+      expect(sizes.has(figure), figure).toBe(true);
+      expect(["top", "right"], figure).toContain(way);
+    }
   });
 });

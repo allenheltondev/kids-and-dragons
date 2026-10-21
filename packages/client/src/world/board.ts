@@ -56,7 +56,6 @@ import {
   drawnHeight,
   figureSize,
   fitCanvas,
-  heightFit,
   NOMINAL_PAINT,
   STANCE_LIFT,
   type PaintBox,
@@ -116,13 +115,27 @@ const ACTOR_HEIGHT = BOARD_TILE_PX * 1.7;
 /**
  * The board's measure for true relative size (#362, figure-scale.ts): 1.1
  * board pixels a centimeter, so a 160 cm hero paints about 1.4 tiles tall,
- * where every figure stood before sizes. The tallest combatant may reach 2.7
- * tiles; past that the whole board's figures shrink together, so proportion
- * holds. Nothing paints shorter than 0.55 of a tile, which at natural scale is
- * a 64 cm figure: a will-o'-wisp or a bone crawler fights at the floor, not
- * as a speck on its square.
+ * where every figure stood before sizes.
+ *
+ * The board never shrinks to fit a big figure (the owner's call on #366: big
+ * things overflow, they do not shrink everybody). Each figure is instead
+ * capped at `maxHeight`, 2.4 tiles: a big one spills up over the row behind
+ * its square, never further than a 2.4-tile figure reaches, and the names,
+ * damage numbers and turn ring are drawn in layers above every figure, so
+ * nothing a fight needs to read is covered. The biggest canon combatants (a
+ * frost wyrm at 260 cm, restless remains at 240) are 2.1 to 2.3 tiles; the
+ * truly huge are never combat actors (canon `scale`).
+ *
+ * Nothing paints shorter than 0.55 of a tile, which at natural scale is a
+ * 64 cm figure: a will-o'-wisp or a bone crawler fights at the floor, not as a
+ * speck on its square.
  */
-export const BOARD_MEASURE: StageMeasure = { pxPerCm: 1.1, headroom: BOARD_TILE_PX * 2.7, floor: BOARD_TILE_PX * 0.55 };
+export const BOARD_MEASURE: StageMeasure = {
+  pxPerCm: 1.1,
+  headroom: BOARD_TILE_PX * 2.4,
+  floor: BOARD_TILE_PX * 0.55,
+  maxHeight: BOARD_TILE_PX * 2.4,
+};
 
 /**
  * A board stance: the board's ground is the board, so a swimmer fights
@@ -490,15 +503,13 @@ export function createBoardLayer(): BoardLayer {
 
   /**
    * Every figure on the board at its true height relative to the others
-   * (#362): natural scale, unless the tallest would pass `BOARD_MEASURE`'s
-   * headroom, in which case everybody shrinks together; the tiny stand at the
-   * floor. Run when the cast of the fight changes and as each cutout lands.
+   * (#362): natural scale, capped at `BOARD_MEASURE.maxHeight` for a big one
+   * and floored for the tiny. Run when the cast of the fight changes and as
+   * each cutout lands.
    */
   function sizeActors(): void {
-    const standing = [...actors.values()].filter((actor) => !actor.leaving);
-    const k = heightFit(standing, BOARD_MEASURE);
     for (const actor of actors.values()) {
-      actor.height = drawnHeight(actor, k, BOARD_MEASURE);
+      actor.height = Math.min(drawnHeight(actor, 1, BOARD_MEASURE), BOARD_MEASURE.maxHeight ?? Infinity);
       const fit = fitCanvas(actor.height, actor.paint, actor.hero ? NOMINAL_PAINT : actor.paint);
       actor.canvas = fit.canvas;
       if (actor.sprite) {

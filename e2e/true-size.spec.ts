@@ -6,9 +6,10 @@
  *
  *   - everybody stands in proportion to how tall canon says they are, the
  *     party line included (a bigfoot is two and a half kitsunes);
- *   - a huge thing is shown whole: the biggest figure fits the frame and
- *     everything else shrinks with it, with a floor so a teapot-sized sprite
- *     is never a speck;
+ *   - a big thing shrinks the stage a little; a huge one overflows it instead
+ *     (the owner's call on #366): a dragon stands on the ground and runs off
+ *     the top, a cloud whale runs off the right, with their names pinned on
+ *     screen; a floor keeps a teapot-sized sprite from being a speck;
  *   - stance places a figure: hovering and flying are lifted off the ground
  *     with their names under them, swimming sits behind a water line;
  *   - reduced motion stills every idle.
@@ -33,6 +34,7 @@ interface Reading {
   paint: { x: number; y: number; width: number; height: number } | null;
   groundY: number;
   labelTop: number | null;
+  overflow: "top" | "right" | null;
 }
 
 interface Label {
@@ -126,6 +128,26 @@ test.describe("true size and stance on the story stage", () => {
     expect(b.map((f) => f.paint)).toEqual(a.map((f) => f.paint));
   }
 
+  /**
+   * Every name on the stage is on screen, above the narration plate, and
+   * clear of the others: an overflowing figure's name is pinned inside the
+   * part of it that shows.
+   */
+  async function namesOnScreen(tv: Page, width: number, required: string[]): Promise<void> {
+    const names = await labels(tv);
+    for (const name of required) expect(names.map((n) => n.text), name).toContain(name);
+    const plate = await tv.locator(".narration__body").first().boundingBox();
+    for (const name of names) {
+      expect(name.x - name.width / 2, name.text).toBeGreaterThanOrEqual(0);
+      expect(name.x + name.width / 2, name.text).toBeLessThanOrEqual(width);
+      expect(name.y, name.text).toBeGreaterThanOrEqual(0);
+      if (plate) expect(name.y + name.height, `${name.text} is above the narration`).toBeLessThanOrEqual(plate.y);
+    }
+    for (let i = 0; i < names.length; i++) for (let j = i + 1; j < names.length; j++) {
+      expect(nameplatesCollide(names[i]!, names[j]!), `${names[i]!.text} / ${names[j]!.text}`).toBe(false);
+    }
+  }
+
   function byName(figures: Reading[], name: string): Reading {
     const found = figures.find((f) => f.name === name);
     expect(found, `${name} is on the stage`).toBeDefined();
@@ -133,37 +155,55 @@ test.describe("true size and stance on the story stage", () => {
   }
 
   for (const [width, height] of [[1280, 720], [1024, 600]] as const) {
-    test(`a teapot-sized sprite and a dragon together, shown whole, at ${width}x${height}`, async ({ browser }, info) => {
+    test(`a dragon runs off the top beside a teapot-sized sprite, at ${width}x${height}`, async ({ browser }, info) => {
       test.setTimeout(240_000);
       const tv = await stage(browser, width, height, [
         { figure: "cast/pib", name: "Pib" },
         { figure: "entities/legend_dragon", name: "The Old One" },
       ]);
       const figures = await report(tv);
-      // The ground line stands above the narration plate (stage-inset.ts).
-      const ground = byName(figures, "The Old One").groundY;
-      const dragon = byName(figures, "The Old One").paint!;
+      const dragonReading = byName(figures, "The Old One");
+      const dragon = dragonReading.paint!;
       const pib = byName(figures, "Pib").paint!;
+      const kitsune = byName(figures, "Tumblefern").paint!;
       const bigfoot = byName(figures, "Bramblebeard").paint!;
 
-      // Shown whole: inside the pane and above the narration, never cropped.
-      expect(dragon.x).toBeGreaterThanOrEqual(0);
-      expect(dragon.x + dragon.width).toBeLessThanOrEqual(width + 1);
-      expect(dragon.y).toBeGreaterThanOrEqual(-1);
-      expect(dragon.y + dragon.height).toBeLessThanOrEqual(ground + 2);
-      // The biggest thing in view nearly fills the stage above the ground...
-      expect(dragon.height).toBeGreaterThan(ground * 0.6);
-      // ...and the rest shrink with it, in proportion.
-      expect(dragon.height / bigfoot.height).toBeCloseTo(1400 / 215, 0);
-      // The floor: Pib is far smaller than the dragon, but a figure, not a speck.
-      expect(pib.height).toBeGreaterThan(height * 0.03);
-      expect(pib.height).toBeLessThan(bigfoot.height);
+      // Too big for the frame: feet on the ground line, head off the top.
+      expect(dragonReading.overflow).toBe("top");
+      expect(dragon.y).toBeLessThan(0);
+      expect(Math.abs(dragon.y + dragon.height - dragonReading.groundY)).toBeLessThan(dragon.height * 0.04);
+      // It does not shrink anybody: the heroes stay in true proportion to each
+      // other, and it never stands over the party.
+      expect(bigfoot.height / kitsune.height).toBeCloseTo(215 / 85, 1);
+      expect(dragon.x).toBeGreaterThan(bigfoot.x + bigfoot.width * 0.5);
+      // The floor: Pib is a figure, not a speck.
+      expect(pib.height).toBeGreaterThan(height * 0.04);
+      expect(pib.height).toBeLessThan(kitsune.height);
 
-      const names = await labels(tv);
-      for (let i = 0; i < names.length; i++) for (let j = i + 1; j < names.length; j++) {
-        expect(nameplatesCollide(names[i]!, names[j]!), `${names[i]!.text} / ${names[j]!.text}`).toBe(false);
-      }
-      await tv.screenshot({ path: info.outputPath(`tiny-and-huge-${width}x${height}.png`) });
+      await namesOnScreen(tv, width, ["Pib", "The Old One"]);
+      await tv.screenshot({ path: info.outputPath(`dragon-off-the-top-${width}x${height}.png`) });
+      await stillUnderReducedMotion(tv);
+    });
+
+    test(`a cloud whale runs off the right, at ${width}x${height}`, async ({ browser }, info) => {
+      test.setTimeout(240_000);
+      const tv = await stage(browser, width, height, [{ figure: "entities/cloud_whale", name: "Cloud Whale" }]);
+      const figures = await report(tv);
+      const whaleReading = byName(figures, "Cloud Whale");
+      const whale = whaleReading.paint!;
+      const bigfoot = byName(figures, "Bramblebeard").paint!;
+
+      // Wider than tall: anchored at its left, past the party, off the right edge.
+      expect(whaleReading.overflow).toBe("right");
+      expect(whale.x + whale.width).toBeGreaterThan(width);
+      expect(whale.x).toBeGreaterThan(bigfoot.x + bigfoot.width * 0.5);
+      expect(whale.x).toBeLessThan(width);
+      // Its height fits the frame: in the air, its top on screen.
+      expect(whale.y).toBeGreaterThanOrEqual(-2);
+      expect(whale.y + whale.height).toBeLessThan(whaleReading.groundY);
+
+      await namesOnScreen(tv, width, ["Cloud Whale"]);
+      await tv.screenshot({ path: info.outputPath(`whale-off-the-right-${width}x${height}.png`) });
       await stillUnderReducedMotion(tv);
     });
 

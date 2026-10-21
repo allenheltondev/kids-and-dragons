@@ -1663,6 +1663,13 @@
       "stance": "standing"
     }
   ],
+  "$figureOverflowComment": "How a figure too big for the story stage overflows it (#362, packages/client/src/world/figure-scale.ts). By default the stage decides from the painting's own shape: taller than wide runs off the top, feet on the ground; wider than tall runs off the right, anchored at its left. An entry here overrides that for one figure, by the path a chapter casts it by.",
+  "figureOverflow": {
+    "entities/legend_dragon": "top",
+    "entities/boughkin": "top",
+    "entities/loftmire": "top",
+    "entities/cloud_whale": "right"
+  },
   "globalPalette": {
     "outline": "#3A2A1E",
     "darkest": "#2B2118",
