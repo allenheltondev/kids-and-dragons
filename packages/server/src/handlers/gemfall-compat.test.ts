@@ -116,6 +116,21 @@ const PRE_EPIC = JSON.parse(
  * resumes (02's wolves to its plank bridge). The endings, roads, setbacks and
  * saves below still match their pre-epic digests.
  *
+ * Re-pinned for the 03x cohesion fixes (#368): wording, labels, prompts, one
+ * narration variant and `checkKind` marks only in 03a, 03b and 03c (each
+ * opening states its goal and calls back Marda's rumor board, drakes, the
+ * boggarts and the Hollow Gate are set up before they are used, old friends
+ * are re-met, UK idioms are gone). No scene, edge, flag, effect, stat or TN
+ * moved; the endings, roads, setbacks and saves below still match their
+ * pre-epic digests.
+ *
+ * Re-pinned for true relative size (#362): gemfall-07r's four "Corbin and
+ * Posy" scenes drop `"size": "very_large"`. That word meant "a bit over a
+ * hero" when sizes were a compressed scale; with real heights it would stand
+ * a burrowfolk carrying his little sister at two and a half meters. The figure
+ * now stands at its own height (150 cm, manifest castFigures). Presentation
+ * only: the endings, roads, setbacks and saves below are unchanged.
+ *
  * Re-pinned for the stage 4 cohesion fixes (#368): wording, labels, prompts,
  * narration variants and `checkKind` only in 04a, 04b and 04c (each opening
  * states its goal, Sefa sends the party to the waystation, callbacks to 3A, 3B
@@ -126,9 +141,9 @@ const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
   "chapters/gemfall-01.json": "b9d64bcf4c24dcb2cb315ecbf8be0760e66c794efeb507468dc0e32276c6fe94",
   "chapters/gemfall-02.json": "a948c3e004c40daa3e09a72d4e3eeac0b95f5472a2421984d604d07e5df45420",
-  "chapters/gemfall-03a.json": "2543acfd89b948804507bcec9667f9c2e19b2ad42b20d3f5ffdee17ba59bd73d",
-  "chapters/gemfall-03b.json": "37f9a6d76003d1eec4660fa4a86ffdf7b9da305fc79618d2df6821bd4254a734",
-  "chapters/gemfall-03c.json": "78e7df8bd534f191be7d113090b7cbf684847a8adcf120533809e6ca2abdf243",
+  "chapters/gemfall-03a.json": "750c68b4e6492cae1c69df5d0b467b5ce22b2ad15e83d130325155a3dfc934e1",
+  "chapters/gemfall-03b.json": "196102cc81e34e0a409846fc5e1747926d78194d3220f3ebd10f969439ea8dca",
+  "chapters/gemfall-03c.json": "f8a12c044c08f260176a0374258abf0118535d005cc40d1083a6e812f4fe87a9",
   "chapters/gemfall-04a.json": "88d8ab6dea3765a61f829bd6ca1c4caccacf827fcddb5d7e6bfc34dfa26b3084",
   "chapters/gemfall-04b.json": "09861f4fdc70bcb29da03bd37bbc071503479ef247f7d727d990b494baec4f66",
   "chapters/gemfall-04c.json": "b05df44a8ca0d4b4b1aefd2c1c83e87d869c6210c2c102a0ab31d8767e12a471",
@@ -138,7 +153,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-06.json": "4c7306ba197e3ce56b98421797da0aa1488cb3c28cc5eec350b5fdeb7b2c44e1",
   "chapters/gemfall-07h.json": "102d1fc2869f2001c57a3f17a934da964301e12e2db1d2342768a1e211a7c532",
   "chapters/gemfall-07l.json": "d2bf74142b55a622b2bdf709296541d07acb80eb74753c79f2f220b4f5f41604",
-  "chapters/gemfall-07r.json": "82503bbeb255631abbab0138a1ab6dfa4cf1b9f149cf63e19906cc42dbe795d7",
+  "chapters/gemfall-07r.json": "9b6ba7957b912c822a6de79e8e80a89e050a904850e4703627ac90559ca30530",
   "chapters/gemfall-08.json": "29efcf2a87c41fd553fdd28cb3caeab41c9d0b67916c7d7a83f573128a71aec0",
 };
 

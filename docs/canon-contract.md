@@ -91,12 +91,12 @@ into `biome` and `site` into `location`; D8 added `individual`.
 | Taxonomy | File | Id prefix | Count | Adds to the envelope |
 |---|---|---|---|---|
 | `biome` | biomes.yaml | `biome.` | 13 | `map_label`, `climate`, `environment_type`, `danger_level`, `inhabitants`, and the map fields absorbed from `region` |
-| `species` | characters.yaml | `character.` | 6 | `bipedal`, `signature_part`, `scale` |
-| `creature` | creatures.yaml | `creature.` | 17 | `classification`, `sapience`, `scale`, `danger_level`, **`encounter`** (D9) |
-| `people` | npcs.yaml | `npc.` | 10 | `classification`, `sapience`, `scale`, **`speech_register`** (D8) |
-| `individual` | individuals.yaml | `individual.` | 3 | **`home`** (required — the defining rule), `people`, `role`, `pronouns`, `speech_register` (D8) |
+| `species` | characters.yaml | `character.` | 6 | `bipedal`, `signature_part`, `scale`, `height_cm`, `stance` |
+| `creature` | creatures.yaml | `creature.` | 17 | `classification`, `sapience`, `scale`, `height_cm`, `stance`, `danger_level`, **`encounter`** (D9) |
+| `people` | npcs.yaml | `npc.` | 10 | `classification`, `sapience`, `scale`, `height_cm`, `stance`, **`speech_register`** (D8) |
+| `individual` | individuals.yaml | `individual.` | 3 | **`home`** (required — the defining rule), `people`, `role`, `pronouns`, `height_cm`, `stance`, `speech_register` (D8) |
 | `faction` | factions.yaml | `faction.` | 2 | `faction_type`, `alignment` |
-| `item` | items.yaml | `item.` | 16 | `category`, `rarity`, `acquisition`, **`mechanics`** (D7, optional) |
+| `item` | items.yaml | `item.` | 16 | `category`, `rarity`, `acquisition`, **`mechanics`** (D7, optional), `height_cm` and `stance` (on an item with art) |
 | `location` | locations.yaml | `location.` | 10 | `location_type`, `parent_biome`, optional `inhabitants`, and the map fields absorbed from `site` |
 | `quest` | quests.yaml | `quest.` | 2 | `quest_type`, `difficulty`, `objectives`, `rewards` |
 | `campaign` | campaigns.yaml | `campaign.` | 2 | `campaign_type`, `chapter_count` |
@@ -106,6 +106,14 @@ into `biome` and `site` into `location`; D8 added `individual`.
 `biome` and `location` share a `Place` base (map provenance, anchor, access).
 `geography.yaml` now owns only what is neither an ecological region nor a place
 inside one: rivers and roads.
+
+**True size (#362).** Everything with a figure carries `height_cm` (centimeters,
+in its own pose: a flyer's body, not its altitude) and `stance` (`standing`,
+`hovering`, `flying`, `swimming`). The height must fall inside its `scale` band
+(`SCALE_CM` in envelope.ts; an individual inside their people's band), and
+`canon.test.ts` requires both for every figure in `assets/manifest.json`. Both
+are data and never shown to a player. `npm run art:figures` projects them, with
+the manifest's `castFigures`, into the client's height table.
 
 Each is `Envelope.extend({...})`. The file → taxonomy mapping is data
 (`FILES` in `parse.ts`), so a new taxonomy is a schema plus a table row.
