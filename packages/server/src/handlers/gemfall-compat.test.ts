@@ -161,11 +161,25 @@ const DIGESTS: PreEpicSave["digests"] = {
  * before the vote and its soup woman is Marigold, not Hessa, UK idioms out).
  * No scene, edge, flag, effect, stat or TN moved; the endings, roads,
  * setbacks and saves below still match their pre-epic digests.
+ *
+ * Re-pinned for the 01 and 02 cohesion fixes (#368): wording, labels, check
+ * prompts and one `checkKind` only. Each opening says its chapter's goal, 01
+ * names the evening's plan and introduces the Empty Chair before using it, 02
+ * names Hesper's caravan and has her say goodbye, and UK idioms became US
+ * ("queue" stays, by the owner's ruling).
+ * No scene, edge, flag, effect, stat or TN moved; the endings, roads,
+ * setbacks and saves below still match their pre-epic digests.
+ *
+ * Re-pinned for 02's `check_reroute` (owner decision on #368): its stat went
+ * from heart to quick, with a physical prompt, label and branch narration, so
+ * turning the rush wagons is something the party does. That is a graph change,
+ * but the probe warps past the check and never rolls it, so the endings,
+ * roads, setbacks and saves below still match their pre-epic digests.
  */
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
-  "chapters/gemfall-01.json": "b9d64bcf4c24dcb2cb315ecbf8be0760e66c794efeb507468dc0e32276c6fe94",
-  "chapters/gemfall-02.json": "a948c3e004c40daa3e09a72d4e3eeac0b95f5472a2421984d604d07e5df45420",
+  "chapters/gemfall-01.json": "32d2c5f4b3140d89d31e41830470419765647f97923a0fe62e01bc339759e9c3",
+  "chapters/gemfall-02.json": "025601275c30803358b3fea1ea8b552eb3ca78f7eb48a98e745b8063347b1829",
   "chapters/gemfall-03a.json": "750c68b4e6492cae1c69df5d0b467b5ce22b2ad15e83d130325155a3dfc934e1",
   "chapters/gemfall-03b.json": "196102cc81e34e0a409846fc5e1747926d78194d3220f3ebd10f969439ea8dca",
   "chapters/gemfall-03c.json": "f8a12c044c08f260176a0374258abf0118535d005cc40d1083a6e812f4fe87a9",
