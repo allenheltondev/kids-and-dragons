@@ -10,6 +10,9 @@ pixel of the remaining artwork is defect-free.
   continuous connection clear of the cape. The user approved the chest candidate.
 - Duskrunner Mythic kitsune: restored the clipped face silhouette, repaired the
   discontinuous cape and cutout holes, and separated the three tails from cloth.
+  A follow-up revision shortens the rear cloak above the rump so no train wraps
+  around or crosses the lowest tail. The short-cloak source is the installed
+  version; the preceding cleaned source is retained as its edit reference.
 - Thornguard Radiant griffin: repaired ragged extraction edges and small cutout
   defects, preserving its wood armor, tree emblem, folded wings, and visible tail.
 
