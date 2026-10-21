@@ -67,7 +67,8 @@ test.describe("a family tablet as the TV", () => {
     await phone.getByLabel(/room code/i).fill(code);
     await phone.getByRole("button", { name: /join a game/i }).click();
     await expect(phone).toHaveURL(new RegExp(`/p/${code}$`), TAP);
-    await expect(tablet.getByRole("button", { name: /^Remove .* from this game$/ })).toBeVisible(TAP);
+    // On the shared screen who joined is one line with nothing to tap; it goes by itself.
+    await expect(tablet.locator(".kad-arrival")).toContainText("joined", TAP);
 
     // A hard refresh reattaches as host: the tablet's shared token proves it.
     // Arrivals are live only, so a second phone arriving afterwards is the proof.
@@ -78,11 +79,14 @@ test.describe("a family tablet as the TV", () => {
     await second.getByLabel(/room code/i).fill(code);
     await second.getByRole("button", { name: /join a game/i }).click();
     await expect(second).toHaveURL(new RegExp(`/p/${code}$`), TAP);
-    const remove = tablet.getByRole("button", { name: /^Remove .* from this game$/ });
-    await expect(remove).toBeVisible(TAP);
+    await expect(tablet.locator(".kad-arrival")).toContainText("joined", TAP);
 
-    // And as host it can act, with the shared token alone.
-    await remove.click();
+    // And as host it can act, with the shared token alone: Remove is in the Room panel, where
+    // the roster lists everyone in the order they came, so the newest is last.
+    await tablet.getByRole("button", { name: "Room", exact: true }).click(TAP);
+    const roster = tablet.getByRole("list", { name: "Who is in this room" });
+    await expect(roster.getByRole("listitem")).toHaveCount(2, TAP);
+    await roster.getByRole("listitem").last().getByRole("button", { name: /^Remove .* from this game$/ }).click(TAP);
     await expect(second.getByText(/took this phone out/i)).toBeVisible(TAP);
     await expect(phone.getByText(/took this phone out/i)).toHaveCount(0);
 

@@ -3,7 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { FieldGuide as FieldGuideData, Prompt, RunState } from "@kad/shared";
-import { FieldGuideBanner, FieldGuideToast, NEWS_SHOW_MS, describeNews } from "./FieldGuideNews";
+import { FieldGuideBanner, FieldGuideToast, NEWS_SHOW_MS, bannerWords, describeNews } from "./FieldGuideNews";
+import { noticeMs } from "../ui/notice-timing";
 import { resetFieldGuideCache } from "./content";
 import { useGameStore } from "../store";
 import { announceFieldGuideNews, clearFieldGuideNews, getFieldGuideNews } from "../store/field-guide-news";
@@ -161,6 +162,28 @@ describe("TV banner", () => {
     expect(getFieldGuideNews()).toHaveLength(1);
     // The whole dice card (rollCardMs) + the gap
     expect((await screen.findByRole("status", {}, { timeout: 5000 })).textContent).toContain("Embermoth");
+  });
+
+  it("stands in the shared screen's column when there is one, with nothing to tap", async () => {
+    // Under the chapter's goal with the arrivals, never on the goal (App.tsx, ui/display-dock.ts).
+    const { container } = render(<><div className="kad-display-stack" data-testid="dock" /><FieldGuideBanner /></>);
+    news("creature.moth");
+    const banner = await screen.findByRole("status");
+    expect(banner.parentElement).toBe(screen.getByTestId("dock"));
+    expect(banner.classList.contains("guide-news--dock")).toBe(true);
+    expect(container.querySelectorAll("button")).toHaveLength(0);
+  });
+
+  it("goes away on its own once its words are read", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    render(<FieldGuideBanner />);
+    news("creature.moth", "creature.wolf");
+    await screen.findByRole("status");
+    const ms = noticeMs(bannerWords(["Embermoth", "Cinder Wolf"], 2));
+    expect(ms).toBeGreaterThanOrEqual(4000);
+    expect(ms).toBeLessThanOrEqual(6000);
+    await act(async () => { await vi.advanceTimersByTimeAsync(ms + 50); });
+    expect(screen.queryByRole("status")).toBeNull();
   });
 
   it("shows nothing, and fetches nothing, with no news", async () => {
