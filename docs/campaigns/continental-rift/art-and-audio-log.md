@@ -293,3 +293,12 @@ This begins all four issues; it does not complete them. Art verification passed
 591 checks on the isolated PR branch; shipped content passed 62 checks; the staged
 Riftlight content gate and 47 focused renderer/height/class-room tests passed. Inventory lists 24 remaining
 class figures, including 14 required by #400 and 10 out-of-scope Mythic figures.
+
+
+## Riftlight chapter audit — completed artwork (#397–400, 2026-10-21)
+
+Delivered all 32 paintings: eleven backdrops, five named cast figures, the separate six-crow flock chosen by the owner, and fifteen hero variants. The owner approved all paintings on 2026-10-21. The complete delivery, prompts, output paths, hashes and review sheets are recorded in [the delivery record](../../reviews/issues-397-400/delivery.md). Built-in image generation was used throughout. The original checkout's unfinished unicorn and unrelated artwork remain untouched.
+
+All new locations and teachers are wired, along with the existing-art pass for the quay, river, Cairnstep, boundary stones and ferry bridge. Only art and cast changed across the 24 chapters. Thimble's conditional island cameo remains unwired because cast has no condition; her artwork and three quay scenes are complete. The flock uses ordinary-wildlife stageFigures, with an 80 cm overall two-row pose (about 48 cm per front bird) after phone review.
+
+Art verification: 631 checks passed, plus the flock's direct production format/origin checks. Shipped content: 62 checks passed. Staged Riftlight validation, repository typecheck and 47 focused tests pass. Inventory lists only the ten out-of-scope Mythic figures. All 45 captures from the 15-setup review were produced, but that run timed out during cleanup; the focused three-scene retry passed in 1.5 minutes. See the [stage record](../../reviews/issues-397-400/stage-review.md) for before-and-after images and fixture limitations.

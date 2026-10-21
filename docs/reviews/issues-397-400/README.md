@@ -1,5 +1,8 @@
 # Riftlight artwork: first batch for #397–400
 
+**The full artwork set is now delivered. See [the complete delivery and review](delivery.md).**
+The notes below retain the first batch's history and validation.
+
 Started 2026-10-21 using built-in `image_gen`. This is a first batch, not completion
 of the four issues. Exact prompts, reference roles, generation filenames, output
 paths and SHA-256 hashes are in [prompts.json](prompts.json). The export script
@@ -55,7 +58,7 @@ artwork work were excluded from this branch. The unicorn remains undeclared and
 is still counted by inventory. The earlier combined checkout passed 690 art
 checks and 48 focused tests; this PR's smaller baseline passes 591 and 47 respectively.
 
-## Remaining commissions
+## Remaining commissions after the first batch (historical)
 
 - **#397:** wrong-valley, convergence-ledge, wyrm-nest, bone-yard-ruins,
   singing-hall, singing-hall-camp; then the issue's existing-art wiring pass.
