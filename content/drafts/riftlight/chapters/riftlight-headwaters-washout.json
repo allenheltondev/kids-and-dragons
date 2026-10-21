@@ -65,7 +65,8 @@
             "dragonling"
           ]
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "grab": {
       "type": "check",
@@ -107,7 +108,8 @@
             "flag": "reached_for_the_ledge"
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "smash": {
       "type": "check",
@@ -149,7 +151,8 @@
             "flag": "reached_for_the_ledge"
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "lift": {
       "type": "check",
@@ -191,7 +194,8 @@
             "flag": "reached_for_the_ledge"
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "early": {
       "type": "rest",
@@ -205,7 +209,8 @@
           "flag": "river_escaped_early",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "tree": {
       "type": "story",
@@ -217,7 +222,8 @@
           "icon": "hand",
           "goto": "tree_choice"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "tree_choice": {
       "type": "choice_point",
@@ -243,7 +249,8 @@
           "goto": "call",
           "requiresSpecies": "manticore"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "climb": {
       "type": "check",
@@ -277,7 +284,8 @@
             "nonlethal": true
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "guide": {
       "type": "check",
@@ -311,7 +319,8 @@
             "nonlethal": true
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "call": {
       "type": "check",
@@ -345,7 +354,8 @@
             "nonlethal": true
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "middle": {
       "type": "rest",
@@ -359,11 +369,11 @@
           "flag": "river_escaped_middle",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/stone-counters"
     },
     "rift": {
       "type": "story",
-      "rift": "open",
       "narration": "A fold opens beside the current. Through it come thin cold air and a distant, low song. A patch of dry ground seems to hang beyond the shimmer. Farther downriver, water breaks over pale rocks. You can try the opening or stay with the river. The light around the fold is called Riftlight.",
       "choices": [
         {
@@ -372,11 +382,12 @@
           "icon": "hand",
           "goto": "rift_choice"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "open"
     },
     "rift_choice": {
       "type": "choice_point",
-      "rift": "steady",
       "narration": "The opening is close enough to reach without dropping the line. The Listening Chime hangs from its cord. Do you test it, or keep looking for a shore?",
       "choices": [
         {
@@ -399,11 +410,12 @@
           "icon": "hand",
           "goto": "rapids"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "steady"
     },
     "river_chime": {
       "type": "story",
-      "rift": "steady",
       "narration": "One clear note sounds. No echo returns: the way is ready, but you cannot count on coming back through it. Nobody can name the land beyond. Everyone must choose the same crossing.",
       "choices": [
         {
@@ -412,11 +424,12 @@
           "icon": "hand",
           "goto": "rift_decision"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "steady"
     },
     "river_read": {
       "type": "story",
-      "rift": "steady",
       "narration": "Your starweaver studies the light around the fold and can tell the table what they notice. The shared view remains a neutral shimmer. The thin air and distant song are all anyone can learn about its destination.",
       "choices": [
         {
@@ -425,11 +438,12 @@
           "icon": "hand",
           "goto": "rift_decision"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "steady"
     },
     "rift_decision": {
       "type": "choice_point",
-      "rift": "steady",
       "narration": "The fold is within reach. Beyond it, you can see dry ground and hear that low song. The river still has a bank downstream. Which uncertainty will you take?",
       "choices": [
         {
@@ -455,11 +469,12 @@
           "icon": "hand",
           "goto": "rapids"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "steady"
     },
     "rift_end": {
       "type": "rest",
-      "rift": "steady",
       "narration": "You angle the rope toward the fold and gather together at its edge. Thin air brushes your faces. No one has let go. The crossing ahead will take your whole party at once.",
       "heal": 0,
       "choices": [],
@@ -470,7 +485,9 @@
           "flag": "river_took_rift",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "steady"
     },
     "rapids": {
       "type": "choice_point",
@@ -495,7 +512,8 @@
           "goto": "mend_signal",
           "requiresSpecies": "unicorn"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "swim": {
       "type": "check",
@@ -539,7 +557,8 @@
             "value": true
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "signal": {
       "type": "check",
@@ -583,7 +602,8 @@
             "value": true
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "mend_signal": {
       "type": "check",
@@ -627,7 +647,8 @@
             "value": true
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "late": {
       "type": "rest",
@@ -647,7 +668,8 @@
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "rescue": {
       "type": "story",
@@ -681,7 +703,8 @@
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "rescued": {
       "type": "rest",
@@ -695,7 +718,8 @@
           "flag": "river_escaped_late",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     }
   },
   "voiceGuide": {

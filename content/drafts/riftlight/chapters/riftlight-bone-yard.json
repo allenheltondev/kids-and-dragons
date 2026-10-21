@@ -44,7 +44,6 @@
   "scenes": {
     "arrival": {
       "type": "story",
-      "rift": "steady",
       "narration": "At the edge of the Bone Yard, your Skupper guide from the flats stops in a brackish pool. Beyond her, broken stone walls have appeared among enormous old bones. Small bone crawlers crowd the fresh shimmer around the walls. \"Clear a safe way past those ruins,\" she says. \"Take nothing. Here, anything taken comes back. I will watch from water that suits my fins.\" One crawler is trying to fit its whole body under a pebble.",
       "choices": [
         {
@@ -53,11 +52,12 @@
           "icon": "hand",
           "goto": "limit"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "limit": {
       "type": "choice_point",
-      "rift": "steady",
       "narration": "The guide points out the boundary. Her pool is outside it; the displaced ruins are inside. She lends you a plank from her landing. You keep one mat and your rescue line, and tie bright loops to every piece of your own gear. What will you do with the spare mats?",
       "choices": [
         {
@@ -72,11 +72,12 @@
           "icon": "hand",
           "goto": "limit_2"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "limit_1": {
       "type": "story",
-      "rift": "steady",
       "narration": "You carry the spare mats too, all marked with loops. A loose shell stays on the ground. A shell is not yours just because it would make a good cup.",
       "choices": [
         {
@@ -85,11 +86,12 @@
           "icon": "hand",
           "goto": "survey"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "limit_2": {
       "type": "story",
-      "rift": "steady",
       "narration": "You leave the spare mats across two reeds by the guide. You carry the marked plank, one mat and the rescue line. Her pool has become a very damp cloakroom.",
       "choices": [
         {
@@ -98,11 +100,12 @@
           "icon": "hand",
           "goto": "survey"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "survey": {
       "type": "choice_point",
-      "rift": "steady",
       "narration": "A leaning wall blocks the narrow path. A longer path curves around a deep hollow. The crawlers cluster beside a tear in the air near the wall. Where will you look for a safe passage?",
       "choices": [
         {
@@ -117,11 +120,12 @@
           "icon": "hand",
           "goto": "survey_2"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "survey_1": {
       "type": "story",
-      "rift": "steady",
       "narration": "You follow the wall without leaning on it. At its foot, loose stones tremble whenever the tear brightens. One stone rattles like a tooth in a cup.",
       "choices": [
         {
@@ -130,11 +134,12 @@
           "icon": "hand",
           "goto": "survey_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "survey_2": {
       "type": "story",
-      "rift": "steady",
       "narration": "You stay back from the hollow and follow the firm rim. A broken arch gives a view of the blocked path without stepping under the wall.",
       "choices": [
         {
@@ -143,11 +148,12 @@
           "icon": "hand",
           "goto": "survey_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "survey_check": {
       "type": "check",
-      "rift": "steady",
       "stat": "clever",
       "tn": 12,
       "roller": "party",
@@ -159,11 +165,12 @@
       "onFailure": {
         "goto": "survey_changed",
         "narration": "A loose stone rolls into the hollow; you stop before following it."
-      }
+      },
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "survey_clear": {
       "type": "story",
-      "rift": "steady",
       "narration": "You mark a safe strip that reaches the passage and returns to the boundary.",
       "onEnter": [
         {
@@ -178,11 +185,12 @@
           "icon": "hand",
           "goto": "markers"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "survey_changed": {
       "type": "story",
-      "rift": "steady",
       "narration": "You use the longer rim, marking every turn from firm ground. The route reaches the same passage by a wider curve.",
       "onEnter": [
         {
@@ -197,11 +205,12 @@
           "icon": "hand",
           "goto": "markers"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "markers": {
       "type": "choice_point",
-      "rift": "steady",
       "narration": "The guide cannot leave her pool to mark the turns. From the path, your party can see her raised crest above the reeds. How will you make the way back clear?",
       "choices": [
         {
@@ -216,11 +225,12 @@
           "icon": "hand",
           "goto": "markers_2"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "markers_1": {
       "type": "story",
-      "rift": "steady",
       "narration": "The line stays on the surface, with loose bends around the ruins. You keep every end clear of the crawler swarm.",
       "choices": [
         {
@@ -229,11 +239,12 @@
           "icon": "hand",
           "goto": "test"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "markers_2": {
       "type": "story",
-      "rift": "steady",
       "narration": "You choose arches visible from each turn. At the last one, the guide raises her crest twice to show she can still see you.",
       "choices": [
         {
@@ -242,11 +253,12 @@
           "icon": "hand",
           "goto": "test"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "test": {
       "type": "choice_point",
-      "rift": "steady",
       "narration": "A pebble slides across the boundary and rolls back uphill. The guide leaves it alone. \"Anything taken comes back. Even if it makes you look silly.\" How will you check your route without collecting evidence?",
       "choices": [
         {
@@ -261,11 +273,12 @@
           "icon": "hand",
           "goto": "test_2"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "test_1": {
       "type": "story",
-      "rift": "steady",
       "narration": "You sketch where the arches stand. The sketch is on paper you brought; every stone stays where you found it.",
       "choices": [
         {
@@ -274,11 +287,12 @@
           "icon": "hand",
           "goto": "vibration"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "test_2": {
       "type": "story",
-      "rift": "steady",
       "narration": "You call each turn. The guide repeats it and scratches a map in the mud outside the boundary. Her tail accidentally adds a pond.",
       "choices": [
         {
@@ -287,11 +301,12 @@
           "icon": "hand",
           "goto": "vibration"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "vibration": {
       "type": "choice_point",
-      "rift": "steady",
       "narration": "The crawlers turn toward a fresh pulse from the tear. They are following its magic, not guarding treasure for you. You can tap a loose plank you brought or shake the empty line to learn whether movement draws them away.",
       "choices": [
         {
@@ -306,11 +321,12 @@
           "icon": "hand",
           "goto": "vibration_2"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "vibration_1": {
       "type": "story",
-      "rift": "steady",
       "narration": "You keep your feet on the marked strip and tap. The nearest crawler pauses, then returns to the shimmer. You have learned what it wants.",
       "choices": [
         {
@@ -319,11 +335,12 @@
           "icon": "hand",
           "goto": "vibration_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "vibration_2": {
       "type": "story",
-      "rift": "steady",
       "narration": "The line moves like a very thin snake. A crawler watches, then squeezes back under the wall toward the magic. Its priorities are clear.",
       "choices": [
         {
@@ -332,11 +349,12 @@
           "icon": "hand",
           "goto": "vibration_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "vibration_check": {
       "type": "check",
-      "rift": "steady",
       "stat": "quick",
       "tn": 12,
       "roller": "party",
@@ -348,11 +366,12 @@
       "onFailure": {
         "goto": "vibration_changed",
         "narration": "A crawler pins the line under one small foot."
-      }
+      },
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "vibration_clear": {
       "type": "story",
-      "rift": "steady",
       "narration": "Your test gear is back on the safe strip. Distracting the crawlers will take more than waving lunch-shaped rope.",
       "choices": [
         {
@@ -361,11 +380,12 @@
           "icon": "hand",
           "goto": "support"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "vibration_changed": {
       "type": "story",
-      "rift": "steady",
       "narration": "You slacken the line instead of tugging the crawler. When it lifts its foot toward the shimmer, the line slides free.",
       "choices": [
         {
@@ -374,11 +394,12 @@
           "icon": "hand",
           "goto": "support"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "support": {
       "type": "choice_point",
-      "rift": "steady",
       "narration": "The leaning wall rocks inward. Your party can brace its foot with a stone already lying here, or wedge your plank under the low edge and recover it afterward. Neither plan requires carrying anything out.",
       "choices": [
         {
@@ -393,11 +414,12 @@
           "icon": "hand",
           "goto": "support_2"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "support_1": {
       "type": "story",
-      "rift": "steady",
       "narration": "You roll the stone along the ground. It stays inside the boundary, at the foot of the wall. The crawlers briefly make room, then come back.",
       "choices": [
         {
@@ -406,11 +428,12 @@
           "icon": "hand",
           "goto": "support_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "support_2": {
       "type": "story",
-      "rift": "steady",
       "narration": "You slide the bright-looped plank in from the safe strip. It holds the wall just long enough to inspect the tear behind it.",
       "choices": [
         {
@@ -419,11 +442,12 @@
           "icon": "hand",
           "goto": "support_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "support_check": {
       "type": "check",
-      "rift": "steady",
       "stat": "might",
       "tn": 12,
       "roller": "party",
@@ -435,11 +459,12 @@
       "onFailure": {
         "goto": "support_changed",
         "narration": "The first brace tips and you pull back together."
-      }
+      },
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "support_clear": {
       "type": "story",
-      "rift": "steady",
       "narration": "There is a narrow passage behind the wall, with open ground beyond the tear.",
       "choices": [
         {
@@ -448,11 +473,12 @@
           "icon": "hand",
           "goto": "rest"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "support_changed": {
       "type": "story",
-      "rift": "steady",
       "narration": "You use two low supports instead of one tall wedge. The wall settles; your shoulders will remember the extra work.",
       "choices": [
         {
@@ -461,11 +487,12 @@
           "icon": "hand",
           "goto": "rest"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "rest": {
       "type": "rest",
-      "rift": "steady",
       "narration": "Back at the boundary pool, the guide opens a floating lunch box tied to a reed. There are soft seaweed rolls inside. You sit on your own mat outside the yard and rest. The box bumps her fin whenever she reaches for lunch.",
       "heal": 2,
       "choices": [
@@ -481,11 +508,12 @@
           "icon": "hand",
           "goto": "rest_watch"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "rest_watch": {
       "type": "story",
-      "rift": "steady",
       "narration": "You watch from beside the pool while eating a seaweed roll. The guide keeps her lunch box from drifting into the yard. Even lunch must obey the boundary.",
       "choices": [
         {
@@ -494,11 +522,12 @@
           "icon": "hand",
           "goto": "plan"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "plan": {
       "type": "choice_point",
-      "rift": "steady",
       "narration": "The tear feeds fresh magic beside the passage. Your Listening Chime, the glacier travelers' chime, gives an echo while the tear is steady. You can drive the crawlers away from the passage, or close the tear from the marked stones. Closing it takes several turns beside the seam; the crawlers will still be there.",
       "choices": [
         {
@@ -513,11 +542,12 @@
           "icon": "hand",
           "goto": "plan_2"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "plan_1": {
       "type": "story",
-      "rift": "steady",
       "narration": "You leave the return line behind you and choose open ground for the fight. Nothing you strike will be carried away as a prize.",
       "choices": [
         {
@@ -526,11 +556,12 @@
           "icon": "hand",
           "goto": "fight"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "plan_2": {
       "type": "story",
-      "rift": "steady",
       "narration": "You pick the nearest firm stones beside the seam. Your party will take turns working there while keeping the crawlers off. You mark the nearest closing points before the crawlers spread. This preparation shortens the work at the seam.",
       "choices": [
         {
@@ -539,7 +570,9 @@
           "icon": "hand",
           "goto": "fight_seam"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "fight": {
       "type": "encounter",
@@ -607,7 +640,8 @@
             "flag": "bone_retreat"
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "cleared": {
       "type": "story",
@@ -633,7 +667,8 @@
           },
           "text": "You closed the tear rather than driving every crawler away. With the fresh magic gone, they turn toward the stones deeper in the yard."
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "rescued": {
       "type": "story",
@@ -651,7 +686,8 @@
           "icon": "hand",
           "goto": "inventory"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "inventory": {
       "type": "choice_point",
@@ -669,7 +705,8 @@
           "icon": "hand",
           "goto": "inventory_2"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "inventory_1": {
       "type": "story",
@@ -681,7 +718,8 @@
           "icon": "hand",
           "goto": "unbrace"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "inventory_2": {
       "type": "story",
@@ -693,7 +731,8 @@
           "icon": "hand",
           "goto": "unbrace"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "unbrace": {
       "type": "choice_point",
@@ -719,7 +758,8 @@
           },
           "text": "The crawlers block the wall. Any gear caught there must stay; you can gather only the free mat and line from the outer strip."
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "unbrace_1": {
       "type": "story",
@@ -731,7 +771,8 @@
           "icon": "hand",
           "goto": "unbrace_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "unbrace_2": {
       "type": "story",
@@ -743,7 +784,8 @@
           "icon": "hand",
           "goto": "unbrace_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "unbrace_check": {
       "type": "check",
@@ -758,7 +800,8 @@
       "onFailure": {
         "goto": "unbrace_changed",
         "narration": "Dust spills from a crack when the line moves."
-      }
+      },
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "unbrace_clear": {
       "type": "story",
@@ -770,7 +813,8 @@
           "icon": "hand",
           "goto": "exit_strip"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "unbrace_changed": {
       "type": "story",
@@ -782,7 +826,8 @@
           "icon": "hand",
           "goto": "exit_strip"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "exit_strip": {
       "type": "choice_point",
@@ -808,7 +853,8 @@
           },
           "text": "The crawlers still block the short passage. Your marked return route bends out along the wide rim instead. The guide signals that longer route; your shoulders still ache from the retreat."
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "exit_strip_1": {
       "type": "story",
@@ -828,7 +874,8 @@
           },
           "text": "You follow the marks around the wide rim, well clear of the blocked passage. It is a long walk back to the pool."
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "exit_strip_2": {
       "type": "story",
@@ -840,7 +887,8 @@
           "icon": "hand",
           "goto": "exit_strip_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "exit_strip_check": {
       "type": "check",
@@ -855,7 +903,8 @@
       "onFailure": {
         "goto": "exit_strip_changed",
         "narration": "A gust catches your empty mat against a stone."
-      }
+      },
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "exit_strip_clear": {
       "type": "story",
@@ -867,7 +916,8 @@
           "icon": "hand",
           "goto": "boundary"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "exit_strip_changed": {
       "type": "story",
@@ -879,7 +929,8 @@
           "icon": "hand",
           "goto": "boundary"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "boundary": {
       "type": "choice_point",
@@ -897,7 +948,8 @@
           "icon": "hand",
           "goto": "boundary_2"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "boundary_1": {
       "type": "story",
@@ -909,7 +961,8 @@
           "icon": "hand",
           "goto": "boundary_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "boundary_2": {
       "type": "story",
@@ -921,7 +974,8 @@
           "icon": "hand",
           "goto": "boundary_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "boundary_check": {
       "type": "check",
@@ -936,7 +990,8 @@
       "onFailure": {
         "goto": "boundary_changed",
         "narration": "A tiny chip makes a determined rattle inside a fold."
-      }
+      },
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "boundary_clear": {
       "type": "story",
@@ -948,7 +1003,8 @@
           "icon": "hand",
           "goto": "report"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "boundary_changed": {
       "type": "story",
@@ -960,7 +1016,8 @@
           "icon": "hand",
           "goto": "report"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "report": {
       "type": "choice_point",
@@ -978,7 +1035,8 @@
           "icon": "hand",
           "goto": "report_2"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "report_1": {
       "type": "story",
@@ -990,7 +1048,8 @@
           "icon": "hand",
           "goto": "handoff"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "report_2": {
       "type": "story",
@@ -1002,7 +1061,8 @@
           "icon": "hand",
           "goto": "handoff"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "handoff": {
       "type": "choice_point",
@@ -1020,7 +1080,8 @@
           "icon": "hand",
           "goto": "handoff_2"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "handoff_1": {
       "type": "story",
@@ -1032,7 +1093,8 @@
           "icon": "hand",
           "goto": "ending"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "handoff_2": {
       "type": "story",
@@ -1044,7 +1106,8 @@
           "icon": "hand",
           "goto": "ending"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "ending": {
       "type": "story",
@@ -1064,7 +1127,8 @@
           },
           "text": "The short passage is still theirs. Your account marks the longer route you used instead."
         }
-      ]
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
     },
     "fight_seam": {
       "type": "encounter",
@@ -1132,7 +1196,8 @@
             "flag": "bone_retreat"
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/bone-yard-ruins"
     }
   }
 }

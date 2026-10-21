@@ -35,11 +35,11 @@
           "icon": "hand",
           "goto": "passage"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "passage": {
       "type": "choice_point",
-      "rift": "steady",
       "narration": "The passage ends at a fold in the air, quite separate from the hall wall. Beyond its shimmer you smell salt wind and hear gulls. Water beads on the rock beside it. What will you try? The light around the fold is called Riftlight.",
       "choices": [
         {
@@ -62,11 +62,12 @@
           "icon": "hand",
           "goto": "listen"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp",
+      "rift": "steady"
     },
     "chime": {
       "type": "story",
-      "rift": "steady",
       "narration": "You strike the chime. Its note goes sour and does not echo. The way is not ready. You wait for silence and hear a lower note trembling under your feet.",
       "choices": [
         {
@@ -90,11 +91,12 @@
           "type": "setFlag",
           "flag": "traced_the_ticking"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp",
+      "rift": "steady"
     },
     "read": {
       "type": "story",
-      "rift": "steady",
       "narration": "Your starweaver studies the light while the others see a neutral shimmer. The opening hums faintly back. Nothing steps through it, and no one can name the place beyond.",
       "choices": [
         {
@@ -109,11 +111,12 @@
           "type": "setFlag",
           "flag": "traced_the_ticking"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp",
+      "rift": "steady"
     },
     "listen": {
       "type": "story",
-      "rift": "steady",
       "narration": "You put an ear near the rock. Under the gull cries, a low note rises and falls. It matches the one you learned in the hall. The smell of salt comes and goes with it.",
       "choices": [
         {
@@ -128,11 +131,12 @@
           "type": "setFlag",
           "flag": "traced_the_ticking"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp",
+      "rift": "steady"
     },
     "decide": {
       "type": "choice_point",
-      "rift": "steady",
       "narration": "You remember how the hall seam answered your song. Here the sound comes from the fold itself. You can test the note together, or leave the opening alone and return to the safe camp.",
       "choices": [
         {
@@ -159,11 +163,12 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp",
+      "rift": "steady"
     },
     "sing": {
       "type": "story",
-      "rift": "open",
       "narration": "You sing the low note. The ticking steadies. The fold widens, letting salt wind brush your cheeks. When you stop singing, it stays open. You have met its condition; you have not changed its rules.",
       "choices": [
         {
@@ -188,11 +193,12 @@
           "replace": true,
           "text": "You hum again. The opening stays just as wide. It does not need another note; it has stayed open since your first song."
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp",
+      "rift": "open"
     },
     "test_open": {
       "type": "story",
-      "rift": "steady",
       "narration": "The chime answers with a clear note and an echo. The opening is ready, and it offers a way back. On the other side, shallow water ripples around patches of mud. You can cross together or return to camp first.",
       "choices": [
         {
@@ -210,22 +216,26 @@
           "replace": true,
           "text": "The opening stays wide after your song ends. Salt wind and gull cries continue. You can return to camp for the Listening Chime before trusting the crossing."
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp",
+      "rift": "steady"
     },
     "ready": {
       "type": "rest",
-      "rift": "steady",
       "narration": "You stand together beside the fold, with the passage back to the singing hall behind you. The open air smells of the coast. Nobody knows its name yet.",
       "heal": 0,
       "choices": [],
-      "outcome": "success"
+      "outcome": "success",
+      "art": "scenes/riftlight/singing-hall-camp",
+      "rift": "steady"
     },
     "leave": {
       "type": "rest",
       "narration": "You mark the passage mouth with a small stone and retrace your steps to the hall. The Cairnstep lead is still yours to follow. You can come back to test the note later.",
       "heal": 0,
       "choices": [],
-      "outcome": "success"
+      "outcome": "success",
+      "art": "scenes/riftlight/singing-hall-camp"
     }
   },
   "voiceGuide": {

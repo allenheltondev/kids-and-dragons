@@ -74,7 +74,8 @@
           "goto": "mend",
           "requiresSpecies": "unicorn"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "windbreak": {
       "type": "story",
@@ -93,7 +94,8 @@
           "flag": "made_glacier_shelter",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "rocks": {
       "type": "story",
@@ -105,7 +107,8 @@
           "icon": "hand",
           "goto": "drift"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "mend": {
       "type": "story",
@@ -117,7 +120,8 @@
           "icon": "hand",
           "goto": "drift"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "tracks": {
       "type": "story",
@@ -138,7 +142,7 @@
       ],
       "cast": [
         {
-          "figure": "cast/yeti_elder",
+          "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         }
       ],
@@ -164,7 +168,8 @@
           },
           "text": "You point out the hollow behind you. She nods. \"And you found your own way out. Keep that rope.\""
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "tell_rift": {
       "type": "story",
@@ -175,6 +180,13 @@
           "label": "Bring the kid to the melt channel",
           "icon": "hand",
           "goto": "channel"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
         }
       ]
     },
@@ -187,6 +199,13 @@
           "label": "Go with the herder",
           "icon": "hand",
           "goto": "channel"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
         }
       ]
     },
@@ -223,6 +242,13 @@
           "goto": "song_step",
           "requiresClass": "songkeeper"
         }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        }
       ]
     },
     "step": {
@@ -245,7 +271,14 @@
             "to": "roller"
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        }
+      ]
     },
     "sledge": {
       "type": "check",
@@ -267,7 +300,14 @@
             "to": "roller"
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        }
+      ]
     },
     "wing_line": {
       "type": "check",
@@ -289,7 +329,14 @@
             "to": "roller"
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        }
+      ]
     },
     "song_step": {
       "type": "check",
@@ -311,7 +358,14 @@
             "to": "roller"
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        }
+      ]
     },
     "dry_bank": {
       "type": "story",
@@ -334,6 +388,13 @@
           "type": "setFlag",
           "flag": "goat_back_with_herd"
         }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        }
       ]
     },
     "wet_bank": {
@@ -351,6 +412,13 @@
         {
           "type": "setFlag",
           "flag": "goat_back_with_herd"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
         }
       ]
     },
@@ -376,6 +444,13 @@
           "icon": "hand",
           "goto": "hum"
         }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        }
       ]
     },
     "patient": {
@@ -387,6 +462,13 @@
           "label": "Go inside together",
           "icon": "hand",
           "goto": "hall"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
         }
       ]
     },
@@ -400,6 +482,13 @@
           "icon": "hand",
           "goto": "hall"
         }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        }
       ]
     },
     "hum": {
@@ -411,6 +500,13 @@
           "label": "Meet whoever answered",
           "icon": "hand",
           "goto": "hall"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
         }
       ]
     },
@@ -434,7 +530,7 @@
       ],
       "cast": [
         {
-          "figure": "cast/yeti_elder",
+          "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         }
       ],
@@ -443,7 +539,8 @@
           "type": "setFlag",
           "flag": "came_in_from_the_cold"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall"
     },
     "conservatory": {
       "type": "story",
@@ -460,7 +557,7 @@
       "classPlace": "songkeeper",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/aunt_bellow",
           "name": "Aunt Bellow"
         }
       ],
@@ -491,14 +588,15 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/classes/conservatory"
     },
     "conservatory_sing": {
       "type": "story",
       "narration": "Aunt Bellow points her carrot at you. You sing. A sunflower turns its whole head to look. Then a fern. Then, very slowly, a shy little cactus. Aunt Bellow writes something on a leaf. \"The cactus never turns,\" she whispers. \"Keep singing.\"",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/aunt_bellow",
           "name": "Aunt Bellow"
         }
       ],
@@ -516,7 +614,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/classes/conservatory"
     },
     "listen": {
       "type": "choice_point",
@@ -534,6 +633,13 @@
           "icon": "hand",
           "goto": "song_answer"
         }
+      ],
+      "art": "scenes/riftlight/singing-hall",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        }
       ]
     },
     "song_answer": {
@@ -545,6 +651,13 @@
           "label": "Hum the note back",
           "icon": "hand",
           "goto": "learn_note"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
         }
       ]
     },
@@ -569,6 +682,13 @@
         {
           "type": "setFlag",
           "flag": "sang_the_low_note"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
         }
       ]
     },
@@ -602,6 +722,13 @@
           },
           "text": "\"And thank you for keeping everyone steady at the channel. I cannot watch every crossing now.\""
         }
+      ],
+      "art": "scenes/riftlight/singing-hall",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        }
       ]
     },
     "blankets": {
@@ -621,6 +748,13 @@
           "flag": "helped_glacier_herder",
           "value": true
         }
+      ],
+      "art": "scenes/riftlight/singing-hall",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        }
       ]
     },
     "departure": {
@@ -636,7 +770,8 @@
           },
           "text": "The herder lifts a hand from the newly cleared blanket rail. \"Dry blankets for the next arrivals. That matters.\""
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "drift": {
       "type": "choice_point",
@@ -660,7 +795,8 @@
           "icon": "hand",
           "goto": "drift_slip"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "drift_probe": {
       "type": "story",
@@ -683,7 +819,8 @@
           "type": "setFlag",
           "flag": "got_past_the_drift"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "drift_detour": {
       "type": "story",
@@ -706,7 +843,8 @@
           "type": "setFlag",
           "flag": "got_past_the_drift"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "drift_slip": {
       "type": "story",
@@ -729,7 +867,8 @@
           "type": "setFlag",
           "flag": "got_past_the_drift"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "seam_response": {
       "type": "choice_point",
@@ -753,6 +892,13 @@
           "icon": "hand",
           "goto": "seam_listen"
         }
+      ],
+      "art": "scenes/riftlight/singing-hall",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        }
       ]
     },
     "seam_hum": {
@@ -771,6 +917,13 @@
           "type": "setFlag",
           "flag": "tested_singing_seam",
           "value": true
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
         }
       ]
     },
@@ -791,6 +944,13 @@
           "flag": "tested_singing_seam",
           "value": true
         }
+      ],
+      "art": "scenes/riftlight/singing-hall",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        }
       ]
     },
     "seam_listen": {
@@ -809,6 +969,13 @@
           "type": "setFlag",
           "flag": "tested_singing_seam",
           "value": true
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
         }
       ]
     }
