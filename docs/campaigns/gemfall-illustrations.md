@@ -787,16 +787,16 @@ Edit these two reference cast cutouts into ONE complete father-and-child cutout:
 Fourteen remaining priority-1/2 role figures are delivered under `assets/cast/`, together
 with all eighteen `heave`, `hum` and `tiptoe` overlays under `assets/together/`.
 
-The complete [prompt set and accepted source filenames](../../art/source/issue-384/paintings.json)
-records built-in `image_gen` generation and corrective edits. Accepted source PNGs are
-preserved beside it under `originals/`; `export.mjs` performs canvas registration and
-bounded overlay encoding. All final figures use real transparent 1024×1024 RGBA canvases,
+The complete [prompt set and accepted generation filenames](../reviews/issue-384/prompts.json)
+records built-in `image_gen` generation and corrective edits, with paths to the finished
+assets. Raw generation copies and temporary tooling are omitted. All final figures use
+real transparent 1024×1024 RGBA canvases,
 left-facing poses and registered ground placement. References were the existing Burrowfolk,
 centaur, frogfolk, yeti, legend-dragon and fledgling-dragonling figures, inspected before use.
 No existing species or cast painting was replaced.
 
 The [review record](../reviews/issue-384/README.md) includes the figure list with bases,
-heights, stances and current cast counts; all before/after TV and phone captures; the light
+heights, stances and current cast counts; representative TV and phone captures; the light
 and dark contact sheet; the overlay sheet at TV and phone sizes; and validation results.
 It explains the Burrowfolk choir singer, frogfolk Warden Clerk and Stall Witch choices,
 the Bell Courier's combined pony-and-rider height, and the low-headed colossal Seal-Keeper.
