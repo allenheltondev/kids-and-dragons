@@ -1,0 +1,48 @@
+[
+  {
+    "target": "assets/character-rigs/duskrunner/mythic/kitsune/assembled.png",
+    "source": "duskrunner-mythic-kitsune-cleaned-source.png",
+    "source_sha256": "9a3e60dd3c3fc16a88c3f9509b09f1aff160377f59e4b2424e737970ad6bbf6f",
+    "source_size": [
+      1254,
+      1254
+    ],
+    "scaled_size": [
+      952,
+      952
+    ],
+    "translation": [
+      24,
+      6
+    ],
+    "output_size": [
+      1024,
+      1024
+    ],
+    "ground_y": 900,
+    "method": "uniform Lanczos resize to original figure height; original horizontal silhouette center; no retouching"
+  },
+  {
+    "target": "assets/character-rigs/thornguard/radiant/griffin/assembled.png",
+    "source": "thornguard-radiant-griffin-cleaned-source.png",
+    "source_sha256": "d4afab0edf6d9a94161322e4c4f7a037e45f445547c688a55c478e7edf4cd085",
+    "source_size": [
+      1254,
+      1254
+    ],
+    "scaled_size": [
+      903,
+      903
+    ],
+    "translation": [
+      40,
+      49
+    ],
+    "output_size": [
+      1024,
+      1024
+    ],
+    "ground_y": 900,
+    "method": "uniform Lanczos resize to original figure height; original horizontal silhouette center; no retouching"
+  }
+]

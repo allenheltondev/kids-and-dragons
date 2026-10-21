@@ -3,7 +3,7 @@ title: Jackalope
 id: creature.jackalope
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-02", "gemfall-04a", "gemfall-04c", "gemfall-07h"]
 tags: ["ambient", "plains", "common", "fast"]
@@ -11,6 +11,11 @@ classification: ambient_creature
 danger_level: none
 scale: small
 sapience: animal
+height_cm: 45
+size:
+  height: "45 cm (1 ft 6 in)"
+  compare: "knee-high to a grown-up"
+  line: "45 cm (1 ft 6 in), knee-high to a grown-up."
 lore_hook: "The fastest thing on the plains, and it needs you to know it."
 likes:
   - id: npc.centaur

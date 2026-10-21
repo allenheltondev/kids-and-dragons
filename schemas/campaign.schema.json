@@ -58,6 +58,61 @@
         "pattern": "^[a-z][a-z0-9_]*$"
       }
     },
+    "lastTime": {
+      "description": "Campaign.lastTime (#357): \"Last time...\", read on the shared screen before a chapter's first scene. One line per routeSets member, in story order, and an opener for a party that carried none. Required when routeSets is present, with a line for every member and no other key (tools/content/validate.mjs). A line that names a great stone reads the inventory: {holding, text, otherwise}.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "opener",
+        "lines"
+      ],
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "opener": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lines": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "holding",
+                  "text",
+                  "otherwise"
+                ],
+                "properties": {
+                  "holding": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]*$"
+                  },
+                  "text": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "otherwise": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
     "setbackLimit": {
       "description": "Setbacks before the campaign fails \u2014 spec \u00a78.3's 'fails at three setbacks, tunable per campaign'. Absent means 3.",
       "type": "integer",

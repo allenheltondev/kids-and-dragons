@@ -74,7 +74,7 @@
   "scenes": {
     "scene_east_road": {
       "type": "story",
-      "narration": "The east road runs at the river like it is late for something. Every mile marker along it is missing. Where MILE 3 used to stand, somebody is cooking porridge on the stump, and the porridge is not even very good.",
+      "narration": "Marda's rumor board said the crossing queue was moving again, so east you go. Tonight's job: pay the troll's toll at Stone Crossing and get across the Great River. The east road runs at the river like it is late for something, and its last stretch is called the Long Mile, because it feels like ten. Every mile marker along the road is missing. Where MILE 3 used to stand, somebody is cooking porridge on the stump, and the porridge is not even very good.",
       "choices": [
         {
           "id": "restore",
@@ -102,7 +102,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Put the centaurs' marker line back in the right order",
+      "prompt": "Put the mile markers back in the right order",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_fennick",
@@ -222,7 +222,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 16,
-      "prompt": "Prove the Brassbuckle Expedition moved the queue rope",
+      "prompt": "Find the fresh brass-hat knots in the queue rope",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_rivals_caught",
@@ -368,7 +368,7 @@
     },
     "scene_troll_ask_riddle": {
       "type": "story",
-      "narration": "You ask Old Lintel a riddle. He weighs it out loud, slowly, trying each answer like a stone in a wall, until he finds the one that fits. Then he asks you one back, and it is so old that the answer is a word nobody uses any more. You guess anyway. He accepts the guess, because you meant it.",
+      "narration": "You ask Old Lintel a riddle. He weighs it out loud, slowly, trying each answer like a stone in a wall, until he finds the one that fits. Then he asks you one back, and it is so old that the answer is a word nobody uses anymore. You guess anyway. He accepts the guess, because you meant it.",
       "cast": [
         {
           "figure": "cast/old_lintel",
@@ -829,7 +829,7 @@
         "individual.old_ossley",
         "npc.frogfolk"
       ],
-      "narration": "At last the river lets you go, in the shallows near its mouth, on the eastern shore. Pale haze hangs over the Bone Yard far away. And sitting in a perfectly dry boat in the reeds, as if he had been waiting for you, is a frog in a very old hat. He fishes you out one at a time and says nothing. Then: \"Ossley,\" which turns out to be his name. Then: \"Later. When I'm going your way.\" He presses a wet reed knot into your hand, and it stays wet.",
+      "narration": "At last the river lets you go, in the shallows near its mouth, on the eastern shore. Pale haze hangs over the Bone Yard far away. And sitting in a perfectly dry boat in the reeds, as if he had been waiting for you, is a frog in a very old hat. He fishes you out one at a time and says nothing. Then he says his name, \"Ossley,\" just once, as if you had better remember it. Then: \"Later. When I'm going your way.\" He presses a wet reed knot into your hand, and it stays wet.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -909,7 +909,7 @@
       },
       "onFailure": {
         "goto": "encounter_crawlers",
-        "narration": "The spoon glitters. Your packs hum. The crawlers are not stupid. They clatter round the spoon and keep coming."
+        "narration": "The spoon glitters. Your packs hum. The crawlers are not stupid. They clatter around the spoon and keep coming."
       },
       "art": "scenes/gemfall/river-mouth-shore"
     },
@@ -957,7 +957,7 @@
     },
     "rest_wet_end": {
       "type": "rest",
-      "narration": "You build a driftwood fire on the eastern shore and steam gently, like puddings. North of here the Eastern Plains are waiting, and you will walk into them from the south, the wet way, the way almost nobody does. Old Ossley's boat is gone. The knot in your pocket is still damp, and you suspect it always will be.",
+      "narration": "You build a driftwood fire on the eastern shore and steam gently, like dumplings. North of here the Eastern Plains are waiting, and you will walk into them from the south, the wet way, the way almost nobody does. Old Ossley's boat is gone. The knot in your pocket is still damp, and you suspect it always will be.",
       "heal": 4,
       "choices": [],
       "art": "scenes/gemfall/eastern-shore-camp"
@@ -972,7 +972,7 @@
     },
     "scene_kettle_camp": {
       "type": "story",
-      "narration": "Halfway down the Long Mile, a rush camp has a kettle on the boil. Beside the fire sits a tidy pile of firewood, and the firewood is painted. It says THIS WAY ROUND, and NOT THAT WAY, and GO UPSTREAM, PLEASE. They are the centaurs' detour signs, and the kettle is just about to whistle.",
+      "narration": "Halfway down the Long Mile, a rush camp has a kettle on the boil. Beside the fire sits a tidy pile of firewood, and the firewood is painted. It says THIS WAY AROUND, and NOT THAT WAY, and GO UPSTREAM, PLEASE. They are the centaurs' detour signs, and the kettle is just about to whistle.",
       "choices": [
         {
           "id": "swap_kindling",
@@ -1013,11 +1013,11 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Make a rush camp care about a centaur's detour sign",
+      "prompt": "Tell the campers which sinkhole each painted sign steers wagons around, before the kettle whistles",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_stuck_wagon",
-        "narration": "You explain that the signs steer wagons round the new sinkholes and away from the river's fast bits. The campers go pink, stand every sign back up by the road, and pour you tea to say sorry. It is excellent tea."
+        "narration": "You explain that the signs steer wagons around the new sinkholes and away from the river's fast bits. The campers go pink, stand every sign back up by the road, and pour you tea to say sorry. It is excellent tea."
       },
       "onFailure": {
         "goto": "scene_stuck_wagon",
@@ -1082,7 +1082,7 @@
     },
     "scene_river_view": {
       "type": "story",
-      "narration": "The road tops a rise, and there it is: Stone Crossing, giant flat stones marching across the Great River, the far end lost under hurrying brown water. On a drowned stone a gray heron stands fishing on one leg, perfectly dry, as if the river were a carpet. Down the slope, a centaur trots from post to empty post, looking for her signs.",
+      "narration": "The road tops a rise, and there it is: Stone Crossing, giant flat stones marching across the Great River, the far end lost under hurrying brown water. On a drowned stone a gray heron stands fishing on one leg, perfectly dry, as if the river were a carpet. Under the near end of the bridge, a long green tail flicks: a river drake, which is a sort of small river dragon with whiskers, no wings, and strong opinions about money. Down the slope, a centaur trots from post to empty post, looking for her signs.",
       "choices": [
         {
           "id": "watch_heron",
@@ -1145,7 +1145,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "The centaur is Fennick Longstride, road-warden, and when she sees her signs she hugs them like lost puppies. She hammers each one back on its post, and on the last one she scratches a new arrow pointing at the upstream edge of the crossing, where the stones are only half under. \"For you,\" she says, and gallops off.",
+      "narration": "It's Fennick Longstride, the road-warden centaur, and when she sees her signs she hugs them like lost puppies. She hammers each one back on its post, and on the last one she scratches a new arrow pointing at the upstream edge of the crossing, where the stones are only half under. \"For you,\" she says, and gallops off.",
       "cast": [
         {
           "figure": "cast/fennick",
@@ -1291,7 +1291,7 @@
     },
     "scene_troll_new_story": {
       "type": "story",
-      "narration": "You make up a story on the spot. It wobbles. It has a goat in it for no reason. Old Lintel listens to every wobble, and at the end he says, \"Never been told before. Rare, that.\" Out on the far stones, Dilly turns round and waves. Her story went down very well.",
+      "narration": "You make up a story on the spot. It wobbles. It has a goat in it for no reason. Old Lintel listens to every wobble, and at the end he says, \"Never been told before. Rare, that.\" Out on the far stones, Dilly turns around and waves. Her story was a big hit.",
       "cast": [
         {
           "figure": "cast/old_lintel",
@@ -1714,7 +1714,7 @@
     },
     "scene_swept_float": {
       "type": "story",
-      "narration": "Everybody lets go of being scared and floats on their back, arms and legs out, like a row of starfish. The river seems to like this better. It carries you more gently, round the bends and past the reeds, and the heron flies along overhead, disapproving of the starfish too.",
+      "narration": "Everybody lets go of being scared and floats on their back, arms and legs out, like a row of starfish. The river seems to like this better. It carries you more gently, around the bends and past the reeds, and the heron flies along overhead, disapproving of the starfish too.",
       "choices": [
         {
           "id": "on",
@@ -1748,7 +1748,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Work out why the bone chips lie in spirals",
+      "prompt": "Trace each bone-chip spiral with a finger and find what it curls around",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_crawlers",

@@ -28,7 +28,7 @@ Both run `scripts/deploy.sh`, which is also what you run from a laptop:
 ```
 
 It runs the checks — typecheck, unit tests, `content:validate`, `art:verify`,
-`art:verify:rig`, and `infra:lint` when `cfn-lint` is installed — then bundles
+and `infra:lint` when `cfn-lint` is installed — then bundles
 the Lambdas, deploys the stack, uploads the client and the art, and invalidates
 CloudFront — in that order, so a deploy that fails partway leaves the previous
 version serving rather than a new bundle talking to an API that does not exist

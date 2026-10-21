@@ -179,6 +179,13 @@ test.describe("stop anytime, pick up where you left off", () => {
     expect(after.party.map((m) => m.character.name)).toEqual(["Pip", "Bo"]);
     await expect.poll(async () => (await roomState<State>(sam, second)).party.every((m) => m.connected), TAP).toBe(true);
     await expect(sam.getByRole("button", { name: /keep going/i })).toHaveCount(0);
+    // The story says where they left off (#357): the goal and a line from before the rest. In
+    // Phone Mode the story is the World view, a tab beside the hero's own.
+    await sam.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "World" }).click(TAP);
+    const leftOff = sam.getByTestId("chapter-preface");
+    await expect(leftOff).toHaveAttribute("data-kind", "back", TAP);
+    await expect(leftOff).toContainText("Where you left off");
+    await expect(leftOff.locator(".preface__lines--trail li")).toContainText(["wall of thorns"]);
 
     // --- And the game goes on from there ---
     for (let attempt = 0; attempt < 8; attempt++) {
