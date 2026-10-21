@@ -34,14 +34,17 @@
     "forbidden": [
       "gore",
       "Hollow Gate",
-      "Legend Dragon"
+      "Legend Dragon",
+      "Corvane",
+      "emperor",
+      "Pangea"
     ],
     "npcVoices": {}
   },
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "Beyond the memory reading room, yeti builders have stopped carving a new chamber. A frost wyrm has curled across their doorway, using a bench as a pillow. Its breath covers the wall in tiny ice ferns. \"Make room for us and the wyrm without waking the old ice,\" says a builder. \"We can move the room. We cannot ask the mountain for a second mountain.\" The wyrm opens one eye.",
+      "narration": "Beyond the memory reading room, yeti builders have stopped carving a new chamber for the memory readers. A frost wyrm has curled across their doorway, using a bench as a pillow. Its breath covers the wall in tiny ice ferns. \"Make room for us and the wyrm without waking the old ice,\" says a builder. \"We can move the room. We cannot ask the mountain for a second mountain.\" The wyrm opens one eye. Pip stays in the old reading room to help the elder sort the notes while you work below.",
       "choices": [
         {
           "id": "continue",
@@ -243,7 +246,7 @@
     },
     "cold_opening": {
       "type": "choice_point",
-      "narration": "In the far wall, an opening shows an empty snow hollow sheltered from wind. The Listening Chime, the bell from the glacier travelers, returns a clear echo. A builder can see both sides from the tunnel. How will you check that the hollow is unoccupied?",
+      "narration": "In the far wall, an opening shows an empty snow hollow sheltered from wind. The Listening Chime, the chime from the glacier travelers, returns a clear echo. A builder can see both sides from the tunnel. How will you check that the hollow is unoccupied? On your side of the opening, loose bones rattle in a heap. The builders have stopped work around them; nobody knows where they came from.",
       "choices": [
         {
           "id": "plan_1",
@@ -494,7 +497,7 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "Behind the windbreak, warm broth steams in a covered pot. The ladle wears a little wool sleeve. Take a breath and let sore muscles loosen before the next job.",
+      "narration": "The builders lead you into a side alcove, away from the nest. They share oat cakes from a tool tin scrubbed clean for lunches. You rest on folded work blankets. One cake has the shape of a very blunt chisel.",
       "heal": 2,
       "choices": [
         {
@@ -514,7 +517,7 @@
     },
     "rest_watch": {
       "type": "story",
-      "narration": "You trade the watch so everyone gets a turn with the broth. A loose thread on the ladle sleeve waves at each passing cloud.",
+      "narration": "You sit beside the alcove lamp while a builder takes the next watch. A drip taps the lunch tin like a tiny clock. You eat before the tin can count your cake away.",
       "choices": [
         {
           "id": "continue",
@@ -546,7 +549,7 @@
     },
     "signal_1": {
       "type": "story",
-      "narration": "The builders take turns watching the cloth lane. One solemnly removes a lunch bag from the route. It was never a good barrier.",
+      "narration": "The builders take turns watching the marked lane. One solemnly removes a lunch bag from the route. It was never a good barrier.",
       "choices": [
         {
           "id": "continue",
@@ -618,7 +621,7 @@
     "fight": {
       "type": "encounter",
       "map": "riftlight_wyrm_nest",
-      "narration": "The frost wyrm rises from the bench. A heap of restless bones rattles beside the opening, pulled here with the latest disturbance. Drive them off, or hold the hollow approach for two clear rounds to guide it into a new home. The slick strip near its nest slows anyone who stops there.",
+      "narration": "The frost wyrm rises from the bench. The restless bones you heard beside the opening rise and rattle. Drive them off, or hold the hollow approach for two clear rounds to guide it into a new home. The slick strip near its nest slows anyone who stops there.",
       "enemies": [
         {
           "id": "wyrm",
@@ -717,7 +720,7 @@
           "when": {
             "notFlag": "wyrm_ally"
           },
-          "text": "The wyrm backs into the broad outer tunnel, leaving the readers' doorway. The builders leave the sheltered hollow available. Driving it away has not made it a friend."
+          "text": "The wyrm backs into the broad outer tunnel, leaving the readers' doorway. The builders leave the sheltered hollow available. It has not chosen the hollow."
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -737,7 +740,7 @@
     },
     "tools": {
       "type": "choice_point",
-      "narration": "Wrapped tools wait beside the quiet lane. Before carrying them farther, the builders want to know whether the nearest wall is safe to work. How will you check it?",
+      "narration": "The carving tools wait beside the quiet lane. Before carrying them farther, the builders want to know whether the nearest wall is safe to work. How will you check it?",
       "choices": [
         {
           "id": "plan_1",
@@ -824,13 +827,16 @@
     },
     "shelves": {
       "type": "choice_point",
-      "narration": "The readers will need somewhere to put their memory notes. A low shelf can rest on blocks, or the notes can stay on a broad table until the new wall is ready. Which will you help set up?",
+      "narration": "The readers need somewhere to put their memory notes. A low shelf can rest on blocks, or the notes can stay on a broad table until the new wall is ready. Which will you help set up?",
       "choices": [
         {
           "id": "plan_1",
           "label": "Set a low shelf on wide blocks",
           "icon": "hand",
-          "goto": "shelves_1"
+          "goto": "shelves_1",
+          "when": {
+            "notFlag": "wyrm_nest_kept"
+          }
         },
         {
           "id": "plan_2",
@@ -839,7 +845,15 @@
           "goto": "shelves_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "variants": [
+        {
+          "when": {
+            "flag": "wyrm_nest_kept"
+          },
+          "text": "The new site needs more carving, and its floor cannot hold shelf blocks yet. For now only the broad table fits in the old room. The builders must finish the new chamber after you leave."
+        }
+      ]
     },
     "shelves_1": {
       "type": "story",
@@ -856,7 +870,7 @@
     },
     "shelves_2": {
       "type": "story",
-      "narration": "You clear the table and mark it for notes. A builder moves the special dented chair away from the writing side.",
+      "narration": "You clear the table and mark it for notes. A builder moves a spare bench away from the writing side.",
       "choices": [
         {
           "id": "continue",
@@ -930,7 +944,7 @@
     },
     "readers_1": {
       "type": "story",
-      "narration": "You follow the cloth lane all the way. At the last turn you check back, making sure the route is visible from reader height.",
+      "narration": "You follow the marked lane all the way. At the last turn you check back, making sure the route is visible from reader height.",
       "choices": [
         {
           "id": "continue",
@@ -988,7 +1002,15 @@
           "goto": "quiet"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "variants": [
+        {
+          "when": {
+            "flag": "wyrm_nest_kept"
+          },
+          "text": "Their working place is a crowded corner of the old room. The new chamber is still a building job, with tools and blankets needed for another day."
+        }
+      ]
     },
     "readers_changed": {
       "type": "story",
@@ -1011,7 +1033,7 @@
     },
     "quiet": {
       "type": "choice_point",
-      "narration": "The elder repeats the warning from the memory ice: do not shout near the old layers. This room has solved a small problem; the mountain still holds things nobody understands. What will you leave for the next visitors?",
+      "narration": "The elder comes down from the old reading room and repeats the warning from the memory ice: do not shout near the old layers. This room has solved a small problem; the mountain still holds things nobody understands. What will you leave for the next visitors?",
       "choices": [
         {
           "id": "plan_1",
@@ -1039,7 +1061,13 @@
           "goto": "neighbors"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "wyrm_route_diagram"
+        }
+      ]
     },
     "quiet_2": {
       "type": "story",
@@ -1088,7 +1116,7 @@
     },
     "neighbors_2": {
       "type": "story",
-      "narration": "A builder takes the first watch. She moves her own lunch bag off the cloth before you can point at it.",
+      "narration": "A builder takes the first watch. She moves her own lunch bag off the marked lane before you can point at it.",
       "choices": [
         {
           "id": "continue",
@@ -1116,7 +1144,21 @@
           "goto": "departure_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "variants": [
+        {
+          "when": {
+            "flag": "wyrm_route_diagram"
+          },
+          "text": "A new visitor follows your bench diagram to the safe lane. The builder can use your picture while keeping her voice low."
+        },
+        {
+          "when": {
+            "notFlag": "wyrm_route_diagram"
+          },
+          "text": "A new visitor sees your mitten sign and lowers their voice before the turn. The builder answers with a silent wave."
+        }
+      ]
     },
     "departure_1": {
       "type": "story",
@@ -1161,6 +1203,12 @@
             "flag": "wyrm_ally"
           },
           "text": "From the sheltered hollow comes a soft answering rumble. The builders will keep that approach open if your party needs help here again."
+        },
+        {
+          "when": {
+            "flag": "wyrm_nest_kept"
+          },
+          "text": "The new chamber must wait. Today the readers share their old room with the extra table, and the builders give up their free morning to finish the move."
         }
       ],
       "art": "scenes/riftlight/reading-room"
