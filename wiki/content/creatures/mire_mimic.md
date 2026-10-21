@@ -3,7 +3,7 @@ title: Mire Mimic
 id: creature.mire_mimic
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-03b"]
 tags: ["dangerous", "marsh", "ambush", "camouflage"]
@@ -11,6 +11,11 @@ classification: dangerous_creature
 danger_level: moderate
 scale: medium_to_large
 sapience: animal
+height_cm: 110
+size:
+  height: "1.1 m (3 ft 7 in)"
+  compare: "about as tall as a kid"
+  line: "1.1 m (3 ft 7 in), about as tall as a kid."
 lore_hook: "The marsh's most committed method actor, currently appearing in the role of 'ground.'"
 likes:
   - id: creature.will_o_wisp

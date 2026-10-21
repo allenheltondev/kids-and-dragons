@@ -4,6 +4,8 @@
   <h2 class="wiki-infobox__title">{{ .Title }}</h2>
 
   <dl class="wiki-infobox__fields">
+    {{ partial "infobox/size.html" . }}
+
     {{ with .Params.category }}
     <div class="wiki-infobox__field">
       <dt>Category</dt>

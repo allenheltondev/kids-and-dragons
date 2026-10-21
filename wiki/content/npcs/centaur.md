@@ -3,13 +3,18 @@ title: Centaur
 id: npc.centaur
 type: npc
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-01", "gemfall-02", "gemfall-03a", "gemfall-03c", "gemfall-04a", "gemfall-04c", "gemfall-05a", "gemfall-05c", "gemfall-06", "gemfall-07h", "gemfall-07l", "gemfall-07r"]
 tags: ["supporting_people", "plains", "caravan", "guide"]
 classification: supporting_people
 scale: large
 sapience: sapient
+height_cm: 230
+size:
+  height: "2.3 m (7 ft 7 in)"
+  compare: "as tall as a door"
+  line: "2.3 m (7 ft 7 in), as tall as a door."
 lore_hook: "Ask one how far. You will get the distance, the weather, and one warning, once."
 likes:
   - id: creature.jackalope

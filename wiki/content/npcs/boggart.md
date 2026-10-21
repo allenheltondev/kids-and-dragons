@@ -3,13 +3,18 @@ title: Boggart
 id: npc.boggart
 type: npc
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-01", "gemfall-03b", "gemfall-03c", "gemfall-04b", "gemfall-04c", "gemfall-07h", "gemfall-07l", "gemfall-07r"]
 tags: ["supporting_people", "marsh", "collector", "secretive"]
 classification: supporting_people
 scale: small
 sapience: sapient
+height_cm: 70
+size:
+  height: "70 cm (2 ft 4 in)"
+  compare: "waist-high to a grown-up"
+  line: "70 cm (2 ft 4 in), waist-high to a grown-up."
 lore_hook: "Nothing in the marsh is lost. It has simply changed management."
 likes:
   - id: creature.will_o_wisp

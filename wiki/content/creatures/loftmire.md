@@ -3,7 +3,7 @@ title: Loftmire
 id: creature.loftmire
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: []
 tags: ["supernatural", "marsh", "mist", "hazard", "drift", "lost_things"]
@@ -11,6 +11,12 @@ classification: supernatural_manifestation
 danger_level: moderate
 scale: variable
 sapience: unknown
+height_cm: 400
+size:
+  height: "4 m (13 ft)"
+  compare: "as tall as an elephant"
+  stance: "hovers"
+  line: "4 m (13 ft), as tall as an elephant. Hovers."
 lore_hook: "It is not chasing you. It is collecting."
 likes:
   - id: npc.boggart

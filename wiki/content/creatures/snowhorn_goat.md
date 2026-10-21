@@ -3,14 +3,19 @@ title: Snowhorn Goat
 id: creature.snowhorn_goat
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
-played_in: ["gemfall-07l", "gemfall-07r"]
+played_in: ["first-steps-01", "gemfall-07l", "gemfall-07r"]
 tags: ["ambient", "mountain", "climbing", "indicator"]
 classification: ambient_creature
 danger_level: low
 scale: medium
 sapience: animal
+height_cm: 110
+size:
+  height: "1.1 m (3 ft 7 in)"
+  compare: "about as tall as a kid"
+  line: "1.1 m (3 ft 7 in), about as tall as a kid."
 lore_hook: "It has never once been wrong about an avalanche, and it is not going to start explaining itself now."
 likes:
   - id: npc.yeti

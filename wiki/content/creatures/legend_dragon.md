@@ -3,7 +3,7 @@ title: Legend Dragon
 id: creature.legend_dragon
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-08"]
 tags: ["legendary", "volcano", "sapient", "ancient"]
@@ -11,6 +11,11 @@ classification: legendary_beast
 danger_level: legendary
 scale: colossal
 sapience: sapient
+height_cm: 1400
+size:
+  height: "14 m (46 ft)"
+  compare: "as long as a whale"
+  line: "14 m (46 ft), as long as a whale."
 lore_hook: "The mountain has a tenant. Nobody has read the lease."
 likes:
   - id: creature.cloud_whale
