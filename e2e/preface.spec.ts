@@ -9,7 +9,7 @@
  *   left off", the goal, the steps ticked so far and a line from each of the last scenes. It goes
  *   when the story moves on, with nothing tapped. A TV that reloads mid-chapter shows it too.
  * - **Resume.** A Phone Mode game stopped partway is picked up in a new room with Keep going, and
- *   the screen shows where they left off.
+ *   its World view (the story, a tab in Phone Mode) shows where they left off.
  *
  * Every time, the card sits on screen, under the corner row and above the story plate, with
  * nothing clipped. Nothing here taps the card: it is never in the way.
@@ -19,7 +19,6 @@
 
 import { test, expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
 import { createCharacter } from "./characters";
-import { openPlayerTask } from "./player-navigation";
 import { roomState } from "./room-state";
 
 const TAP = { timeout: 20_000 } as const;
@@ -197,12 +196,8 @@ test.describe("the words around a chapter (#357)", () => {
       expect(await fitProblems(tv)).toEqual([]);
       await shot(tv, `drop-in-${at}`);
 
-      // The kid answers on the phone as usual; the TV's card is not in anybody's way.
-      await openPlayerTask(kid);
-      await kid.locator(".prompt .choice").first().click(TAP);
-      await kid.getByRole("button", { name: /do it!/i }).click(TAP);
-      await expect.poll(async () => (await roomState<{ sceneId: string }>(kid, code)).sceneId, TAP).not.toBe("choice_point_path");
-      // And play moving on puts it away.
+      // Play moving on puts it away, with nothing tapped.
+      await jumpTo(token, kid, code, "scene_mossy_stair");
       await expect(card).toHaveCount(0, TAP);
 
       // --- A TV that reloads partway is a screen coming back too ---
@@ -256,6 +251,9 @@ test.describe("the words around a chapter (#357)", () => {
       await host.getByRole("button", { name: /keep going/i }).click(TAP);
       await expect.poll(async () => (await roomState<{ sceneId: string }>(host, second)).sceneId, TAP).toBe("rest_mossbank");
 
+      // In Phone Mode the story is the World view, a tab beside the hero's own: looking at it is
+      // how a kid reads the story at all, not a tap on the card.
+      await host.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "World" }).click(TAP);
       const card = host.getByTestId("chapter-preface");
       await expect(card).toBeVisible(TAP);
       await expect(card).toHaveAttribute("data-kind", "back");
