@@ -130,6 +130,12 @@ const PRE_EPIC = JSON.parse(
  * a burrowfolk carrying his little sister at two and a half meters. The figure
  * now stands at its own height (150 cm, manifest castFigures). Presentation
  * only: the endings, roads, setbacks and saves below are unchanged.
+ *
+ * Re-pinned for the stage 4 cohesion fixes (#368): wording, labels, prompts,
+ * narration variants and `checkKind` only in 04a, 04b and 04c (each opening
+ * states its goal, Sefa sends the party to the waystation, callbacks to 3A, 3B
+ * and 3C, UK idioms out). No scene, edge, flag, effect, stat or TN moved; the
+ * endings, roads, setbacks and saves below still match their pre-epic digests.
  */
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
@@ -138,9 +144,9 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-03a.json": "750c68b4e6492cae1c69df5d0b467b5ce22b2ad15e83d130325155a3dfc934e1",
   "chapters/gemfall-03b.json": "196102cc81e34e0a409846fc5e1747926d78194d3220f3ebd10f969439ea8dca",
   "chapters/gemfall-03c.json": "f8a12c044c08f260176a0374258abf0118535d005cc40d1083a6e812f4fe87a9",
-  "chapters/gemfall-04a.json": "7902a8b516a6a58c6e7da9d76d0bc3601f4deee67d34bbe79eb763798dbe3eda",
-  "chapters/gemfall-04b.json": "9a7db3cf17d6a42354593bd3759a01c8a41fc0e248764c7aadd411a5573248f2",
-  "chapters/gemfall-04c.json": "134360d7535f4eb277b04d96d699baf0d002e046c916be805b6e181f227f3458",
+  "chapters/gemfall-04a.json": "88d8ab6dea3765a61f829bd6ca1c4caccacf827fcddb5d7e6bfc34dfa26b3084",
+  "chapters/gemfall-04b.json": "09861f4fdc70bcb29da03bd37bbc071503479ef247f7d727d990b494baec4f66",
+  "chapters/gemfall-04c.json": "b05df44a8ca0d4b4b1aefd2c1c83e87d869c6210c2c102a0ab31d8767e12a471",
   "chapters/gemfall-05a.json": "21c1eeeee0d52044eb6bad67c921483148bb23e3349a505567ab5906659aebe7",
   "chapters/gemfall-05b.json": "6a30ade7fe12e2a7e961a8e5f11dcba8a3466b5b5f602938b0f76aff42c305f5",
   "chapters/gemfall-05c.json": "a6ab77dd22ea8fa5d00569017d18d5c305dbcbbbb2d9f39b4c24dc71f30e4f43",
