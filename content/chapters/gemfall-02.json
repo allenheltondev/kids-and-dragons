@@ -382,7 +382,7 @@
         },
         {
           "id": "queue",
-          "label": "Get the rush buyers into a proper line",
+          "label": "Get the rush buyers into a proper queue",
           "icon": "kitsune",
           "requiresSpecies": "kitsune",
           "goto": "scene_egg_stall_queue",
@@ -513,7 +513,7 @@
     },
     "scene_egg_stall_queue": {
       "type": "story",
-      "narration": "The kitsune hops up on the cart and calls out, very grandly, \"The line starts here!\" Rush folk cannot resist a line. Twelve buyers line up behind the faun dad without knowing why. By the time they reach the front, he has his eggs at the old price, and the egg faun is charging the line a little extra for the fun of standing in it.",
+      "narration": "The kitsune hops up on the cart and calls out, very grandly, \"The queue starts here!\" Rush folk cannot resist a queue. Twelve buyers line up behind the faun dad without knowing why. By the time they reach the front, he has his eggs at the old price, and the egg faun is charging the queue a little extra for the fun of standing in it.",
       "cast": [
         {
           "figure": "entities/faun"
@@ -2110,7 +2110,7 @@
     },
     "choice_common_room_runner": {
       "type": "story",
-      "narration": "The relay runner talks fast, the way runners do. East, the line at Stone Crossing is moving again, slowly. The trolls there take a story instead of coins, and a river drake is charging double to anyone who won't wait. \"Past the river it's all open country,\" she says. \"You can see trouble coming a day away. Doesn't mean you can stop it.\"",
+      "narration": "The relay runner talks fast, the way runners do. East, the queue at Stone Crossing is moving again, slowly. The trolls there take a story instead of coins, and a river drake is charging double to anyone who won't wait. \"Past the river it's all open country,\" she says. \"You can see trouble coming a day away. Doesn't mean you can stop it.\"",
       "cast": [
         {
           "figure": "entities/centaur"
@@ -2158,7 +2158,7 @@
     },
     "choice_rumour_board": {
       "type": "choice_point",
-      "narration": "Marda's rumor board is notes pinned on top of notes, and three fresh ones are underlined twice. They are the same three roads the dock folk were trading rumors about back at the Exchange. EAST: The crossing line is moving again! NORTH: Rush road jammed but MOVING. Fall in and be carried! WEST: Frogfolk still ferrying them they like. \"The north road's shorter,\" says Marda. \"Shorter isn't quicker.\" Which way? Everybody vote.",
+      "narration": "Marda's rumor board is notes pinned on top of notes, and three fresh ones are underlined twice. They are the same three roads the dock folk were trading rumors about back at the Exchange. EAST: The crossing queue is moving again! NORTH: Rush road jammed but MOVING. Fall in and be carried! WEST: Frogfolk still ferrying them they like. \"The north road's shorter,\" says Marda. \"Shorter isn't quicker.\" Which way? Everybody vote.",
       "cast": [
         {
           "figure": "cast/marda_thorn",
