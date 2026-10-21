@@ -60,7 +60,7 @@
       "choices": [
         {
           "id": "plan_1",
-          "label": "Tie a bright loop on everything you brought",
+          "label": "Carry the spare mats too",
           "icon": "hand",
           "goto": "limit_1"
         },
@@ -74,7 +74,7 @@
     },
     "limit_1": {
       "type": "story",
-      "narration": "You carry the spare mats too, all marked with loops. A loose shell stays on the ground. It is not equipment merely because it would make a good cup.",
+      "narration": "You carry the spare mats too, all marked with loops. A loose shell stays on the ground. A shell is not yours just because it would make a good cup.",
       "choices": [
         {
           "id": "continue",
@@ -652,7 +652,7 @@
     },
     "inventory_2": {
       "type": "story",
-      "narration": "You look without moving it. The carving is too worn to explain the ruins. Your description keeps that uncertainty in it.",
+      "narration": "You look without moving it. The carving is too worn to explain the ruins. You write down only what you can see.",
       "choices": [
         {
           "id": "continue",
@@ -664,7 +664,7 @@
     },
     "unbrace": {
       "type": "choice_point",
-      "narration": "Your brace is still beside the wall. Loose stones have settled against it. You need to recover your marked gear while leaving the ruins standing. How will you do it?",
+      "narration": "Your brace is still beside the wall. Loose stones have settled against it, and a bright loop on your gear has caught between them. You need to recover your marked gear while leaving the ruins standing. How will you do it?",
       "choices": [
         {
           "id": "plan_1",
@@ -684,7 +684,7 @@
           "when": {
             "flag": "bone_retreat"
           },
-          "text": "The crawlers block the wall. Your plank must stay behind to support it; you can gather only the free mat and line from the outer strip."
+          "text": "The crawlers block the wall. Any gear caught there must stay; you can gather only the free mat and line from the outer strip."
         }
       ]
     },
@@ -702,7 +702,7 @@
     },
     "unbrace_2": {
       "type": "story",
-      "narration": "You leave any trapped gear where it supports the wall. Your party gathers the free line and loops from the marked strip. A useful plank is worth leaving.",
+      "narration": "You leave any trapped gear where it supports the wall. Your party gathers the free line and loops from the marked strip. Nobody goes under loose stones for a piece of gear.",
       "choices": [
         {
           "id": "continue",
@@ -741,7 +741,7 @@
     },
     "unbrace_changed": {
       "type": "story",
-      "narration": "You stop pulling. The trapped loop stays at the wall; the rest comes away. Nobody will return under loose stones to save a scrap.",
+      "narration": "You stop pulling. One bright loop stays caught under loose stones; the rest comes away. Nobody will return under the wall to save a scrap.",
       "choices": [
         {
           "id": "continue",
@@ -773,7 +773,7 @@
           "when": {
             "flag": "bone_retreat"
           },
-          "text": "The crawlers still block your marked strip. The guide signals the wide rim; you must leave by that longer route, carrying the sore shoulders from your retreat."
+          "text": "The crawlers still block the short passage. Your marked return route bends out along the wide rim instead. The guide signals that longer way; your shoulders still ache from the retreat."
         }
       ]
     },
@@ -786,6 +786,14 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "exit_strip_check"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "bone_retreat"
+          },
+          "text": "You follow the marks around the wide rim, well clear of the blocked passage. It is a long walk back to the pool."
         }
       ]
     },
@@ -923,7 +931,7 @@
     },
     "report": {
       "type": "choice_point",
-      "narration": "The guide wants a warning travelers can use. The moved walls are real, but nothing here identifies the enormous old bones or tells you who moved the ruins. What will you record?",
+      "narration": "The guide wants a warning travelers can use. You saw the moved walls, but you do not know whose enormous old bones lie here or who moved the ruins. What will you record?",
       "choices": [
         {
           "id": "plan_1",
@@ -953,7 +961,7 @@
     },
     "report_2": {
       "type": "story",
-      "narration": "You describe the pulsing seam and the swarm. You do not turn a watched behavior into a story about who made it.",
+      "narration": "You describe the pulsing seam and the swarm. You write down only what you saw. Who made the opening? You do not know.",
       "choices": [
         {
           "id": "continue",
@@ -995,7 +1003,7 @@
     },
     "handoff_2": {
       "type": "story",
-      "narration": "You fold your own page into your own bag. The guide checks that last distinction with a grin.",
+      "narration": "You fold your own page into your own bag. The guide grins. Paper from your bag is fine to take home.",
       "choices": [
         {
           "id": "continue",
@@ -1007,7 +1015,7 @@
     },
     "ending": {
       "type": "story",
-      "narration": "Your party leaves the Bone Yard with no stone, bone or hidden prize. The guide has a usable warning, and the route remains something travelers must test afresh. Behind you the crawlers settle among the displaced walls. In front of you lies the Saltrot, with more than one way onward.",
+      "narration": "Your party leaves the Bone Yard with no stone, bone or hidden prize. The guide has a usable warning, and travelers still need to check the route each time. Behind you the crawlers settle among the displaced walls. In front of you lies the Saltrot, with more than one way onward.",
       "onEnter": [
         {
           "type": "setFlag",
