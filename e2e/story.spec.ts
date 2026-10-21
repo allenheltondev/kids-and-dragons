@@ -3,7 +3,7 @@
  *
  * Ada plays the reference chapter on her phone, meets Pib (its revelation) and
  * camps at its ending. Her adventure book's Story page then lists the chapter
- * with its goal, Pib's words and how it ended, at phone width and on a small
+ * with its goal, Pib's words and how it ended, at two phone widths and on a small
  * tablet and a TV-sized screen, with nothing wider than the screen. Nothing
  * on the page is a control, and no chapter reads as "Done".
  *
@@ -22,6 +22,7 @@ const PIB = "\"I'm Pib,\" says the sprite";
 
 const SIZES = [
   { name: "phone", width: 390, height: 844 },
+  { name: "small-phone", width: 360, height: 640 },
   { name: "tablet", width: 1024, height: 600 },
   { name: "tv", width: 1280, height: 720 },
 ] as const;
