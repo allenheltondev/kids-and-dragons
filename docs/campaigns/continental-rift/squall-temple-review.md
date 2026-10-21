@@ -23,3 +23,15 @@ The roughly 30-minute prediction is uncalibrated; family timing is unmeasured.
 The story walker covers declared fight outcomes and the staged validator checks
 the actual board. The server class-room fixture now stages the draft boards too.
 Full-graph validation tests have time to finish the larger exhaustive search.
+
+## Review follow-up
+
+The keeper is explicitly different from the lookout keeper; crawlers are described
+for a first Sky-road meeting. The delayed island letter courier cannot also offer
+to relay signals. The temple's own rescue messenger shelters in the hall early.
+Gutter, board checks and rain-gap preparation now precede the encounter; afterward
+come the outcome, the party's record and its watch payoff. The opening visibly
+closes as the squall eases. A lost fight leaves the landing closed for morning
+repairs. The recorded log or map changes the relief watch's first instructions.
+Rest uses rescued cushions and temple rice buns. Spine tests retain all six checks,
+at least 30 scenes and 14 decisions, with the chores before the climax.
