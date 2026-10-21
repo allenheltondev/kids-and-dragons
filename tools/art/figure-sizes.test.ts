@@ -22,6 +22,15 @@ const manifest = JSON.parse(readFileSync(`${REPO}/assets/manifest.json`, "utf8")
 const sizes = figureSizes();
 
 describe("figure sizes (#362)", () => {
+  it("keeps the Seal-Keeper's commissioned figure through every finale scene", () => {
+    const chapter = JSON.parse(readFileSync(`${REPO}/content/chapters/gemfall-08.json`, "utf8")) as Chapter;
+    const cast = Object.values(chapter.scenes).flatMap((scene) => scene.type === "encounter" ? [] : scene.cast ?? []);
+    expect(cast.some((member) => member.figure === "entities/legend_dragon")).toBe(false);
+    const keeper = cast.filter((member) => member.figure === "cast/seal_keeper");
+    expect(keeper).toHaveLength(54);
+    expect(keeper.every((member) => member.name === "Seal-Keeper")).toBe(true);
+  });
+
   it("is regenerated: npm run art:figures after a height or stance changes", () => {
     expect(readFileSync(OUTPUT, "utf8")).toBe(renderFigureSizes(sizes));
   });

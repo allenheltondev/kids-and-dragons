@@ -1817,7 +1817,7 @@
       ],
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -1947,7 +1947,7 @@
       "narration": "\"We didn't bring any,\" you say. \"We came to help.\" The Seal-Keeper is quiet for a very long time. Then it lowers its huge head until its eye is level with yours. \"Everyone who climbs my mountain brings me stones,\" it says. \"Or excuses for stones. Nobody has ever brought me nothing on purpose.\" An embermoth crawls off its nose and onto your shoulder. \"Help,\" says the dragon, trying out the word. \"Yes. I could use some of that.\"",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -1966,7 +1966,7 @@
       "narration": "You show it the Caravan Stone, the big one, the one that hummed in the middle of the fattest caravan on the road. The Seal-Keeper's eye widens, which takes some time. \"That one has been loud for a month,\" it says. \"I could hear it from here.\" The stone hums, and something far beneath the floor hums back, and the dragon goes very still.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -1985,7 +1985,7 @@
       "narration": "You set down the Table Stone, logged twice by the wardens and once more on the way out. The Seal-Keeper looks at it for a long moment. \"They log everything,\" it says. \"They always have. They have never once brought one back.\" It nudges the stone with the very tip of one claw, toward the seal.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2004,7 +2004,7 @@
       "narration": "\"We sold the first one we found,\" you say. \"For a lot.\" The Seal-Keeper's breath comes out warm and slow, and the gem-veins in the walls flicker with it. \"Most do,\" it says. \"It is the one honest answer I hear every time.\" It does not sound angry. It sounds like somebody who has heard it every time.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2023,7 +2023,7 @@
       "narration": "You hold up the Ember Facet, your very first stone, all the way from the Exchange gutter by a very long road. The Seal-Keeper looks at it and then, slowly, at you. \"That one came the furthest,\" it says. \"And it is still with you.\" It sounds, very faintly, as if it had not expected that.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2042,7 +2042,7 @@
       "narration": "\"We took the sprites' stone,\" you say, before it asks. \"We're sorry.\" The Seal-Keeper is silent. Then it does something you did not expect: it blinks. \"I was going to ask,\" it says. \"Nobody has ever told me first.\" The embermoths on its nose shift about, as if they have never seen it blink either.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2061,7 +2061,7 @@
       "narration": "You hold up the sprites' woven medal. The Seal-Keeper's eye, the size of a door, moves to it and stays there for a long moment. \"Harvest sprites,\" it says, and something in its voice has changed. \"They do not give those to many.\" An embermoth lands on the medal, and the dragon does not brush it off.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2111,7 +2111,7 @@
       ],
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2130,7 +2130,8 @@
       "narration": "\"What did you carry?\" you ask it back. There is a very long pause. \"That,\" says the Seal-Keeper, \"is my question.\" But it answers anyway, slowly. \"The seal. The quiet. And lately, the sound of a great many pockets coming up my mountain.\" It looks pointedly at yours. Then at you, as if adding something to a list.",
       "cast": [
         {
-          "figure": "entities/legend_dragon"
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
         }
       ],
       "choices": [
@@ -2148,7 +2149,8 @@
       "narration": "You hold out Tansy's little pink stone. \"A faun girl gave it to us on the way up,\" you say. \"She says sorry.\" The Seal-Keeper looks at the tiny stone for a very long time. \"Somebody else's stone,\" it says, \"carried up a mountain for somebody else's sorry.\" Its great eye blinks, slowly. \"That, I have not heard before.\"",
       "cast": [
         {
-          "figure": "entities/legend_dragon"
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
         }
       ],
       "choices": [
@@ -2166,7 +2168,8 @@
       "narration": "The embermoth you carried up the mountain wakes, stretches, and flies straight to the Seal-Keeper's nose and lands among the others. They all shuffle over to make room. The dragon goes cross-eyed looking at it, which is something you will remember for the rest of your life. \"That one was lost,\" it says at last. \"It is not, now.\"",
       "cast": [
         {
-          "figure": "entities/legend_dragon"
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
         }
       ],
       "choices": [
@@ -2224,7 +2227,7 @@
       ],
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2326,7 +2329,7 @@
       "narration": "You tell it what you gave the soup tents. It already knew. \"I know,\" it says, before you have finished. \"I felt it. One more thread pulled.\" It does not sound angry. It sounds tired, the way a mountain might be tired. \"Go on,\" it says. \"The rest of it.\"",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2345,7 +2348,7 @@
       "narration": "\"We said no to the soup line's cure,\" you say. The Seal-Keeper is still for so long you think it has not heard. \"Kindly?\" it asks at last. You say yes, kindly. \"Then you have done something I cannot,\" it says, and the gem-veins flicker, and an embermoth lands on your hand as if it had been told to.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2364,7 +2367,7 @@
       "narration": "\"The marsh kept us a while,\" you say. \"The forest let us go.\" The Seal-Keeper nods, slowly. \"The marsh keeps what it likes,\" it says. \"The forest lets go what it trusts.\" It leaves a silence after that, so you can hear what it has just told you.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2383,7 +2386,7 @@
       "narration": "\"We forded the west branch,\" you say. \"Clean across.\" \"How?\" asks the Seal-Keeper, so you tell it, and somewhere in the telling you start to hum, and it hums along, badly, under its breath, as if it has not sung in a long time.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2402,7 +2405,7 @@
       "narration": "\"The river took us,\" you say. \"Old Ossley fished us out.\" The Seal-Keeper's head comes up. \"Ossley,\" it says, and for the first time it sounds surprised. \"He does not fish out everybody.\" It looks at you again, more carefully, as if Ossley's opinion is one it takes seriously.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2421,7 +2424,7 @@
       "narration": "\"Old Lintel heard our toll stories all the way through,\" you say. The Seal-Keeper makes a sound that might be a laugh and might be a rockfall. \"Lintel,\" it says. \"He used to ask riddles himself, you know. He only stops when he is worried.\" It seems to find this very interesting.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2440,7 +2443,7 @@
       "narration": "\"We took the Glade Stone,\" you say. \"The glade is healing slowly.\" The Seal-Keeper does not say anything for a long time. \"Slowly,\" it says at last. \"Yes. It would be.\" The embermoth on its eyebrow folds its wings.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2459,7 +2462,7 @@
       "narration": "\"The wounded glade is green again,\" you say. The Seal-Keeper closes its eyes. When it opens them, the gem-veins in the walls have gone a soft green for a moment, like moss remembering its color. \"I felt that,\" it says. \"From here.\" It looks at you as if it is memorizing something.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2478,7 +2481,7 @@
       "narration": "You tell it what happened: the good bits, the soggy bits, the bits you are not proud of. The Seal-Keeper listens to all of it without interrupting, which is more than most people managed on the way here. \"Yes,\" it says at the end. \"That is a road.\" It does not say whether it was a good one.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2497,7 +2500,8 @@
       "narration": "You tell it about the people: the ones who lent you rope, and pointed the way, and fed you soup that was only soup, and the ones who just waved. The Seal-Keeper listens with its head on one side. \"People,\" it says, trying the word out as if it has not used it in a while. \"They do keep turning up.\" It does not sound annoyed.",
       "cast": [
         {
-          "figure": "entities/legend_dragon"
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
         }
       ],
       "choices": [
@@ -2515,7 +2519,7 @@
       "narration": "\"Last question,\" says the Seal-Keeper. \"Who did you tell? And what do you want?\" Behind it, the seal glows like a round stained-glass window with pieces missing, and something under it is turning over in its sleep. Somewhere in the wall, a bone sneezes. Everybody pretends not to notice.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2589,7 +2593,7 @@
       "narration": "You tell it what you want, as honestly as you can, even the parts that sound silly out loud. The Seal-Keeper listens all the way to the end without blinking once. \"Honest,\" it says. \"Up here, that is rarer than gems.\" Then it waits, to see whether you meant it.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2608,7 +2612,7 @@
       "narration": "\"We told the wardens,\" you say. \"They wrote it down twice.\" The Seal-Keeper snorts, and a little puff of warm ash comes out of one nostril. \"They write everything down twice,\" it says. \"I have read their logs. They are very good at noticing, and not so good at climbing. You climbed.\" Then it waits, to see whether you meant it.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2627,7 +2631,7 @@
       "narration": "\"We told nobody,\" you say. \"We came ourselves.\" The Seal-Keeper tilts its enormous head, and three embermoths slide off its nose. \"Then nobody will thank you,\" it says, \"and nobody will come to help. Can you bear that?\" It waits for your answer, and it is in no hurry at all.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2646,7 +2650,7 @@
       "narration": "\"Honestly?\" you say. \"We came to get rich.\" There is a long pause. Then the Seal-Keeper makes a sound like a rockslide, which turns out to be a laugh. \"At last,\" it says. \"Everybody else says they came for me.\" Then it looks at you, very hard, to see what else is in there.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2665,7 +2669,7 @@
       "narration": "\"Somebody had to come,\" you say. \"So we came.\" The Seal-Keeper is quiet for a long time. \"Somebody,\" it says. \"I have been somebody for a very long time. It is heavy.\" An embermoth lands on your shoulder, as if to help carry it. Then the dragon waits, to see whether you meant it.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2684,7 +2688,7 @@
       "narration": "\"We came to find out if we could,\" you say. \"And can you?\" asks the Seal-Keeper. You do not know yet, and you say so. It nods, slowly, so slowly that a moth on its eyebrow has time to fall asleep. \"Then we will both find out,\" it says, and waits.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2703,7 +2707,7 @@
       "narration": "\"We told the grandmothers,\" you say, \"and they told everyone.\" The Seal-Keeper's breath goes out in a long warm rush, and every embermoth in the cave rises and settles again. \"The grandmothers,\" it says. \"They have been telling everyone for a thousand years.\" It moves aside. \"Finally,\" it says, \"somebody listened.\"",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2722,7 +2726,7 @@
       "narration": "Something in its eyes has changed, and you wait for it. The Seal-Keeper lowers its head until one eye is level with you. \"I am very rarely surprised,\" it says. \"Twice in a thousand years, before today.\" It moves aside, slowly, the way a hill would move aside if it chose to.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2743,7 +2747,7 @@
       "prompt": "Hold the Seal-Keeper's gaze, and mean every word",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2809,7 +2813,7 @@
       "art": "scenes/gemfall/seal-chamber",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2886,7 +2890,7 @@
       "prompt": "Hang on to the Seal-Keeper's claw and don't let go",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2904,7 +2908,7 @@
       "art": "scenes/gemfall/seal-chamber",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2978,7 +2982,7 @@
       "art": "scenes/gemfall/seal-chamber",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -2997,7 +3001,7 @@
       "art": "scenes/gemfall/seal-chamber",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -3048,7 +3052,7 @@
       ],
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -3104,7 +3108,7 @@
       "narration": "The power under the mountain rises toward your hands like warm bathwater. It wants a leash, and a leash wants a holder. The Seal-Keeper watches you with one eye the size of a door. \"Whose hand?\" it asks. \"And did you bring a leash, or only hands?\"",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -3162,7 +3166,7 @@
       "narration": "You shout for the wardens, as loud as you can, and for a long moment nothing happens. Then the wardens' captain, Captain Voss, comes down the last tube at a run, out of breath, with Pellam behind her carrying a ledger. She stops at the seal, salutes the dragon, which nobody has ever done, and holds out both hands for the leash.",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         },
         {
@@ -3187,7 +3191,7 @@
       "prompt": "Hold the leash steady, every hand on it",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -3210,7 +3214,7 @@
       "prompt": "Hold the Deep Hollow choir to every word of the bargain",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         },
         {
@@ -3218,7 +3222,7 @@
           "name": "Hessa Wren"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/masked_choir_singer",
           "name": "Masked choir singer"
         }
       ],
@@ -3237,7 +3241,7 @@
       "art": "scenes/gemfall/seal-chamber",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -3272,7 +3276,7 @@
       "prompt": "Dig in your heels and haul the leash back before it cracks the seal",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -3290,7 +3294,7 @@
       "art": "scenes/gemfall/seal-chamber",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -3309,7 +3313,7 @@
       "art": "scenes/gemfall/seal-chamber",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         },
         {
@@ -3317,7 +3321,7 @@
           "name": "Hessa Wren"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/masked_choir_singer",
           "name": "Masked choir singer"
         }
       ],
@@ -3353,7 +3357,7 @@
       "prompt": "Hum the right note back to the choir before the crack runs",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         },
         {
@@ -3361,7 +3365,7 @@
           "name": "Hessa Wren"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/masked_choir_singer",
           "name": "Masked choir singer"
         }
       ],
@@ -3379,7 +3383,7 @@
       "art": "scenes/gemfall/seal-chamber",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         },
         {
@@ -3387,7 +3391,7 @@
           "name": "Hessa Wren"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/masked_choir_singer",
           "name": "Masked choir singer"
         }
       ],
@@ -4464,7 +4468,7 @@
       "prompt": "Hold the leash with nothing but your own hands",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -4487,7 +4491,7 @@
       "prompt": "Hold Hessa's singers to a bargain you made up just now",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         },
         {
@@ -4495,7 +4499,7 @@
           "name": "Hessa Wren"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/masked_choir_singer",
           "name": "Masked choir singer"
         }
       ],
@@ -4536,7 +4540,7 @@
       ],
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -4576,7 +4580,7 @@
       "prompt": "Pry the crown stone out of a seal that does not want to let it go",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
@@ -4614,7 +4618,7 @@
       "art": "scenes/gemfall/seal-chamber",
       "cast": [
         {
-          "figure": "entities/legend_dragon",
+          "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],

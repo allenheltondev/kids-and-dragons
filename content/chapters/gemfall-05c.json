@@ -207,7 +207,7 @@
           "name": "Grandmother"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/rush_prospector",
           "name": "Rush prospector"
         }
       ],
@@ -243,9 +243,8 @@
           "name": "Grandmother"
         },
         {
-          "figure": "characters/dragonling",
-          "name": "Bell-Code Expert",
-          "size": "small"
+          "figure": "cast/bell_code_expert",
+          "name": "Bell-Code Expert"
         }
       ],
       "choices": [
@@ -286,7 +285,7 @@
           "name": "Grandmother"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/rush_prospector",
           "name": "Rush prospector"
         }
       ],
@@ -310,7 +309,7 @@
           "name": "Grandmother"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/rush_prospector",
           "name": "Rush prospector"
         }
       ],
@@ -341,7 +340,7 @@
           "figure": "entities/glassback_crab"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/rush_prospector",
           "name": "Rush prospector"
         }
       ],
@@ -396,7 +395,7 @@
           "count": 3
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/rush_prospector",
           "name": "Rush prospector"
         }
       ],
@@ -948,9 +947,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/dragonling",
-          "name": "Bell-Code Expert",
-          "size": "small"
+          "figure": "cast/bell_code_expert",
+          "name": "Bell-Code Expert"
         },
         {
           "figure": "entities/embermoth",
@@ -998,9 +996,8 @@
       "type": "story",
       "cast": [
         {
-          "figure": "characters/dragonling",
-          "name": "Bell-Code Expert",
-          "size": "small"
+          "figure": "cast/bell_code_expert",
+          "name": "Bell-Code Expert"
         },
         {
           "figure": "entities/embermoth"
@@ -1020,9 +1017,8 @@
       "type": "story",
       "cast": [
         {
-          "figure": "characters/dragonling",
-          "name": "Bell-Code Expert",
-          "size": "small"
+          "figure": "cast/bell_code_expert",
+          "name": "Bell-Code Expert"
         },
         {
           "figure": "entities/embermoth"
@@ -1150,9 +1146,8 @@
       "type": "story",
       "cast": [
         {
-          "figure": "characters/dragonling",
-          "name": "Bell-Code Expert",
-          "size": "small"
+          "figure": "cast/bell_code_expert",
+          "name": "Bell-Code Expert"
         }
       ],
       "narration": "In the middle of the night, a small hand shakes you awake. It is the bell-code expert, in a nightgown. \"Lanterns,\" she whispers, pointing. Up on the dark hillside, three little lights are bobbing toward a cave mouth. \"That's one of the caves on the list,\" she says. \"Nobody goes there. Nobody.\"",
@@ -1221,9 +1216,8 @@
       "type": "story",
       "cast": [
         {
-          "figure": "characters/dragonling",
-          "name": "Bell-Code Expert",
-          "size": "small"
+          "figure": "cast/bell_code_expert",
+          "name": "Bell-Code Expert"
         }
       ],
       "narration": "In the morning the bell house rings the dawn bells, and everybody helps. The bells are enormous, the ropes are fat as your arm, and the small bell-code expert is bossing everyone. In the corner hangs one bell nobody touches, with a rope tied up out of reach. She does not look at it, very hard.",
@@ -1267,9 +1261,8 @@
       "type": "story",
       "cast": [
         {
-          "figure": "characters/dragonling",
-          "name": "Bell-Code Expert",
-          "size": "small"
+          "figure": "cast/bell_code_expert",
+          "name": "Bell-Code Expert"
         }
       ],
       "narration": "You polish the little bells until you can see your faces in them, stretched out silly. Each one gives a tiny ring when you finish. The small dragonling inspects them all and declares them \"acceptable,\" which you find out later is the highest mark she has ever given anybody.",
@@ -1287,9 +1280,8 @@
       "priority": 2,
       "cast": [
         {
-          "figure": "characters/dragonling",
-          "name": "Bell-Code Expert",
-          "size": "small"
+          "figure": "cast/bell_code_expert",
+          "name": "Bell-Code Expert"
         }
       ],
       "narration": "You ask about the bell in the corner. The small dragonling, who has talked without stopping since yesterday, stops. \"Nobody rings that one,\" she says quietly. \"Not ever. Great-Gran says we'll know.\" She reaches up on tiptoe and touches its rim, just once. It is cold, in a house full of warm stones.",
