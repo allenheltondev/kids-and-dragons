@@ -3,7 +3,7 @@ title: The Whirlpool
 id: location.the_whirlpool
 type: location
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: []
 tags: ["ocean", "hazard", "current", "offshore"]
