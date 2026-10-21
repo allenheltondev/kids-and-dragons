@@ -106,9 +106,9 @@ export function riftStand(
  * all but disappears from a sofa. Colourless layers around it fix that, and
  * give it the presence of the rest of the art, without repainting it:
  *
- *   - the **hole**: the inside of the tear, filled near-black with a lighter
- *     rim, so it reads as a deep gap in the air on any backdrop, bright ice
- *     included;
+ *   - the **hole**: the inside of the tear, a painted texture
+ *     (`holeTexturePixels`), darkest at the middle and misty at the rim, so
+ *     it reads as a deep gap in the air on any backdrop, bright ice included;
  *   - the **glow**: a soft pale-grey mist around it, so the eye finds it on a
  *     dark backdrop;
  *   - two **rings** turning around it the opposite ways: broken dashes close
@@ -252,8 +252,86 @@ export interface RiftPresence {
  */
 export function riftPresence(pass: RiftPass | null, frame: number, frames = 12): RiftPresence {
   if (pass === null) return { size: 0, glow: 0, hole: 0 };
-  if (pass.loop) return { size: 1, glow: RIFT_GLOW_STRENGTH, hole: 0.68 };
+  if (pass.loop) return { size: 1, glow: RIFT_GLOW_STRENGTH, hole: 0.92 };
   const done = Math.min(1, Math.max(0, (frame + 1) / frames));
   const size = pass.effect === RIFT_OPEN_EFFECT ? done : 1 - done;
-  return { size, glow: RIFT_GLOW_STRENGTH * size, hole: 0.68 * size };
+  return { size, glow: RIFT_GLOW_STRENGTH * size, hole: 0.92 * size };
+}
+
+/*
+ * The hole's painted inside (#401). Not flat bands of dark but one surface,
+ * painted the way the backdrops are: deepest at the middle, lifting through
+ * a slate grey to a soft misty rim, with brushy mottling and faint upright
+ * streaks of air in it, and a feathered edge that melts into the tear's
+ * outline. Computed once, here, from a fixed seed, so it is the same picture
+ * on every screen and every load, and nothing in it moves (the shimmer may
+ * not move like a rule; see "WHAT THEY MAY NOT DO" above).
+ *
+ * Only the brightness varies, never the hue: every pixel is a mix of the
+ * hole's near-black and the mist's grey, so it stays inside the brief's
+ * colours.
+ */
+
+/** The texture's size in pixels: as tall as it is wide twice over, like the tear. */
+export const HOLE_TEXTURE_WIDTH = 96;
+export const HOLE_TEXTURE_HEIGHT = 192;
+
+/** A repeatable hash of a lattice point to 0..1 (no Math.random: the same picture everywhere). */
+function lattice(x: number, y: number, seed: number): number {
+  let h = (x * 374761393 + y * 668265263 + seed * 2246822519) | 0;
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967295;
+}
+
+/** Smooth value noise at (x, y), 0..1. */
+function valueNoise(x: number, y: number, seed: number): number {
+  const x0 = Math.floor(x);
+  const y0 = Math.floor(y);
+  const fx = x - x0;
+  const fy = y - y0;
+  const sx = fx * fx * (3 - 2 * fx);
+  const sy = fy * fy * (3 - 2 * fy);
+  const top = lattice(x0, y0, seed) * (1 - sx) + lattice(x0 + 1, y0, seed) * sx;
+  const bottom = lattice(x0, y0 + 1, seed) * (1 - sx) + lattice(x0 + 1, y0 + 1, seed) * sx;
+  return top * (1 - sy) + bottom * sy;
+}
+
+const smoothstep = (a: number, b: number, x: number): number => {
+  const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
+  return t * t * (3 - 2 * t);
+};
+
+/**
+ * The hole's pixels, RGBA, row by row, premultiplied by nothing (straight
+ * alpha). `u` and `v` run -1..1 across the ellipse the hole fills.
+ */
+export function holeTexturePixels(width = HOLE_TEXTURE_WIDTH, height = HOLE_TEXTURE_HEIGHT): Uint8Array {
+  const pixels = new Uint8Array(width * height * 4);
+  const dark = [(RIFT_HOLE_COLOR >> 16) & 0xff, (RIFT_HOLE_COLOR >> 8) & 0xff, RIFT_HOLE_COLOR & 0xff];
+  const mist = [(RIFT_GLOW_COLOR >> 16) & 0xff, (RIFT_GLOW_COLOR >> 8) & 0xff, RIFT_GLOW_COLOR & 0xff];
+  for (let py = 0; py < height; py++) {
+    for (let px = 0; px < width; px++) {
+      const u = ((px + 0.5) / width) * 2 - 1;
+      const v = ((py + 0.5) / height) * 2 - 1;
+      const r = Math.hypot(u, v);
+      const i = (py * width + px) * 4;
+      if (r >= 1) continue;
+      // Brushy mottling: three octaves, the broad ones stretched tall like strokes.
+      const mottle =
+        0.55 * valueNoise(px / 18, py / 34, 1) + 0.3 * valueNoise(px / 8, py / 15, 2) + 0.15 * valueNoise(px / 3.5, py / 6, 3);
+      // A few upright wisps of air: thin, wavering, broken along their length,
+      // strongest part-way out. Uneven on purpose, so they never line up into stripes.
+      const wisp =
+        Math.pow(Math.abs(Math.sin(px * 0.21 + 5 * valueNoise(px / 9, py / 36, 4))), 30) *
+        smoothstep(0.45, 0.8, valueNoise(px / 5, py / 20, 5)) *
+        smoothstep(0.15, 0.6, r);
+      // Deep at the middle, lifting to a misty rim.
+      const lift = 0.06 + 0.5 * Math.pow(smoothstep(0.25, 1, r), 1.4);
+      const light = Math.min(0.85, Math.max(0, lift + (mottle - 0.5) * 0.34 * (0.4 + r) + wisp * 0.28));
+      for (let c = 0; c < 3; c++) pixels[i + c] = Math.round(dark[c]! + (mist[c]! - dark[c]!) * light);
+      // A feathered edge, so the hole melts into the painted outline.
+      pixels[i + 3] = Math.round(255 * (1 - smoothstep(0.82, 1, r)));
+    }
+  }
+  return pixels;
 }
