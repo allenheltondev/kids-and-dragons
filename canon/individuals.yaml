@@ -59,6 +59,8 @@ individuals:
     people: npc.harvest_sprite
     role: hedge_keeper
     pronouns: "they/them"
+    height_cm: 25
+    stance: standing
     featured: false
     tags: [bramblewood, hedges, sprite, helpful]
     short_description: >-
@@ -95,6 +97,8 @@ individuals:
     people: npc.centaur
     role: innkeeper
     pronouns: "she/her"
+    height_cm: 225
+    stance: standing
     featured: false
     tags: [bramblewood, inn, centaur, waystop]
     short_description: >-
@@ -130,6 +134,8 @@ individuals:
     people: npc.frogfolk
     role: ferryman
     pronouns: "he/him"
+    height_cm: 100
+    stance: standing
     featured: false
     tags: [stone_crossing, river, frogfolk, crossing]
     short_description: >-

@@ -22,6 +22,7 @@
 
 import { Graphics, type Texture } from "pixi.js";
 import { ANCHOR_X, ANCHOR_Y } from "./art-paths";
+import type { PaintBox } from "./figure-scale";
 
 export {
   ANCHOR_X,
@@ -187,6 +188,53 @@ export function measureFootprint(texture: Texture): Footprint | null {
   return found;
 }
 
+const paints = new WeakMap<object, PaintBox | null>();
+
+/**
+ * The box a figure's paint fills inside its canvas (figure-scale.ts), measured
+ * once per texture from the same small alpha copy as the footprint. Null when
+ * it cannot be measured, and the caller assumes the nominal box.
+ */
+export function measurePaint(texture: Texture): PaintBox | null {
+  const source = texture.source?.resource as CanvasImageSource | undefined;
+  if (!source || typeof document === "undefined") return null;
+  const known = paints.get(source as object);
+  if (known !== undefined) return known;
+  let found: PaintBox | null = null;
+  try {
+    const size = FOOT_SAMPLE;
+    const canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    if (ctx) {
+      ctx.drawImage(source, 0, 0, size, size);
+      const alpha = ctx.getImageData(0, 0, size, size).data;
+      let top = size;
+      let bottom = -1;
+      let left = size;
+      let right = -1;
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          if ((alpha[(y * size + x) * 4 + 3] ?? 0) > 64) {
+            top = Math.min(top, y);
+            bottom = y;
+            left = Math.min(left, x);
+            right = Math.max(right, x);
+          }
+        }
+      }
+      if (bottom >= top) {
+        found = { top: top / size, bottom: (bottom + 1) / size, left: left / size, right: (right + 1) / size };
+      }
+    }
+  } catch {
+    found = null;
+  }
+  paints.set(source as object, found);
+  return found;
+}
+
 /**
  * The soft dark patch under a figure `height` pixels tall (its canvas height
  * on screen), drawn around its own origin so the caller can slide it under
@@ -239,6 +287,17 @@ const SHADOW_BREATH = 4;
     touch; anything past a deep breath either way is held there. */
 export function breathingShadowScale(breath: number): number {
   return 1 - Math.max(-0.05, Math.min(0.05, breath)) * SHADOW_BREATH;
+}
+
+/**
+ * A footprint as it stands once the figure's paint has been moved onto the
+ * ground line (figure-scale.ts `fitCanvas`): the same feet, no longer lifted.
+ * Art painted floating mid-canvas (a cloud whale) gets its height off the
+ * ground from its stance instead, not from where the painter left it.
+ */
+export function groundedFootprint(footprint: Footprint | null, paint: PaintBox | null): Footprint | null {
+  if (!footprint || !paint) return footprint;
+  return { ...footprint, y: footprint.y + (ANCHOR_Y - paint.bottom), lift: 0 };
 }
 
 /** Where under the anchor a shadow for `footprint` goes, in pixels for a

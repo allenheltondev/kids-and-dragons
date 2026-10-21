@@ -66,7 +66,7 @@
       "discovers": [
         "character.dragonling"
       ],
-      "narration": "The foothills smell like warm rocks and burnt toast. The rush has run out of road up here: tents on every ledge, claim flags on every boulder, and a dragonling grandmother ringing a hand bell at a man who is trying to dig up her doorstep. He is losing.",
+      "narration": "The foothills smell like warm rocks and burnt toast. The rush has run out of road up here: tents on every ledge, claim flags on every boulder, and a dragonling grandmother ringing a hand bell at a man who is trying to dig up her doorstep. He is losing. High on the ridge above it all stands a black tower called Redspire Citadel, home of the guards known as the Skywardens, who watch the mountain and write down everything it does. That is where you are going: up to the tower, to learn what the stones really are, and to say what it is all for.",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -174,7 +174,7 @@
       "choices": [
         {
           "id": "talk",
-          "label": "Talk Dunmore out of digging up somebody's house",
+          "label": "Stand on the doorstep with her, and don't budge",
           "icon": "heart",
           "goto": "check_doorstep"
         },
@@ -211,7 +211,8 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Talk Dunmore down off the grandmother's doorstep",
+      "checkKind": "doing",
+      "prompt": "Stand firm on the grandmother's doorstep so Dunmore cannot dig",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -228,11 +229,11 @@
             "value": true
           }
         ],
-        "narration": "You tell Dunmore that a house is a house, even when it hums. He looks at the step, then at the little round window with curtains in it, and goes pinker than ever. \"Sorry,\" he mumbles, and pulls up his flag. The grandmother gives him a biscuit. He is so surprised that he says thank you twice."
+        "narration": "You climb onto the step beside the grandmother and plant your feet. Nobody can dig up a doorstep with people standing on it. Dunmore looks at your boots, then at the little round window with curtains in it, and goes pinker than ever. \"Sorry,\" he mumbles, and pulls up his flag. The grandmother gives him a cookie. He is so surprised that he says thank you twice."
       },
       "onFailure": {
         "goto": "scene_moths",
-        "narration": "Dunmore does not hear a word, because the grandmother has started ringing her bell right beside his ear. In the end he gives up on the step just to get away from the noise, and stomps off up the slope, rubbing his ear and grumbling about bells."
+        "narration": "You climb onto the step, and Dunmore's pick nudges your boots right off it again. Then the grandmother starts ringing her bell right beside his ear. In the end he gives up on the step just to get away from the noise, and stomps off up the slope, rubbing his ear and grumbling about bells."
       }
     },
     "scene_doorstep_dig_elsewhere": {
@@ -508,7 +509,7 @@
     },
     "scene_claim_boulder": {
       "type": "story",
-      "narration": "Halfway up the road, below a soup tent you can already smell from here, two prospectors are standing back to back on one boulder, each holding a claim flag. The boulder hums. \"Mine,\" says one. \"Mine,\" says the other. They have been saying it since breakfast, and they have each tied a bootlace round the boulder so nobody can push them off. A crowd has brought snacks.",
+      "narration": "Halfway up the road, below a soup tent you can already smell from here, two prospectors are standing back to back on one boulder, each holding a claim flag. The boulder hums. \"Mine,\" says one. \"Mine,\" says the other. They have been saying it since breakfast, and they have each tied a bootlace around the boulder so nobody can push them off. A crowd has brought snacks.",
       "choices": [
         {
           "id": "whose_first",
@@ -645,7 +646,7 @@
       "discovers": [
         "faction.deep_hollow_cult"
       ],
-      "narration": "At the top of the road is a soup tent with a sign: FREE, NO QUESTIONS. A woman called Hessa Wren ladles a bowl for {party}, asks for names, and remembers them. Behind her, helpers in painted bark masks stir the pots and hum one low note, all together. \"My friends from the Deep Hollow,\" says Hessa. \"The masks are for singing to the mountain.\" Then she leans in. \"The world's laws are broken,\" she says kindly, as if she were telling you it might rain. \"That seal on the mountain isn't protecting anyone. It's a cage on the cure.\"",
+      "narration": "At the top of the road is a soup tent with a sign: FREE, NO QUESTIONS. A woman called Hessa Wren ladles a bowl for {party}, asks for names, and remembers them. Behind her, helpers in painted bark masks stir the pots and hum one low note, all together. \"My friends from the Deep Hollow,\" says Hessa. \"The masks are for singing to the mountain.\" Then she leans in. \"The world's laws are broken,\" she says kindly, as if she were telling you it might rain. \"There's a seal on the mountain, like a lid on a pot. It isn't protecting anyone. It's a cage on the cure.\"",
       "choices": [
         {
           "id": "ask_cure",
@@ -915,7 +916,7 @@
     },
     "scene_morning_bells_fly_ring": {
       "type": "story",
-      "narration": "You carry a little bell up the ridge and ring it, one, two-two, one, over the next town. Far below, a whole row of tiny bells rings back, very proudly and not quite together. From up here you can see the citadel's black tower, and halfway up the ridge, a crowd gathered round something that glitters.",
+      "narration": "You carry a little bell up the ridge and ring it, one, two-two, one, over the next town. Far below, a whole row of tiny bells rings back, very proudly and not quite together. From up here you can see the citadel's black tower, and halfway up the ridge, a crowd gathered around something that glitters.",
       "choices": [
         {
           "id": "on",
@@ -930,7 +931,7 @@
       "discovers": [
         "creature.glassback_crab"
       ],
-      "narration": "Halfway up the ridge, a crowd has gathered around a glittering heap of gems. It is Dunmore again, of course, raising his pick at it. The gem heap has eyes. The gem heap has very large claws. It is a glassback crab, and it is lifting both claws high and rocking from side to side.",
+      "narration": "Halfway up the ridge, a crowd has gathered around a glittering heap of gems. It is Dunmore again, of course, raising his pick at it. The gem heap has eyes. The gem heap has very large claws. It is a glassback crab, and it is lifting both claws high and rocking from side to side. Under a flat stone next to it, a second pair of claws pokes out of another burrow to watch.",
       "cast": [
         {
           "figure": "entities/glassback_crab"
@@ -1104,7 +1105,7 @@
     "scene_crab_thanks": {
       "type": "story",
       "art": "scenes/gemfall/redspire-citadel",
-      "narration": "Dunmore lowers his pick and goes rather pink. The crab moves three pebbles in a way that looks a lot like a thank-you note. And at the top of the ridge, the black tower of Redspire Citadel catches the morning sun.",
+      "narration": "Dunmore lowers his pick and goes a little pink. The crab moves three pebbles in a way that looks a lot like a thank-you note. And at the top of the ridge, the black tower of Redspire Citadel catches the morning sun.",
       "cast": [
         {
           "figure": "entities/glassback_crab"
@@ -1330,7 +1331,7 @@
           "name": "Skywardens"
         }
       ],
-      "narration": "Pellam turns the big log round so you can see. Page after page of stones, four hundred years of them: every gem that ever rolled down the mountain, written down, then written down again. \"Every one of them went somewhere,\" he says. \"Nobody ever wrote down where.\" He taps the newest page. It is full. So is the one before it.",
+      "narration": "Pellam turns the big log around so you can see. Page after page of stones, four hundred years of them: every gem that ever rolled down the mountain, written down, then written down again. \"Every one of them went somewhere,\" he says. \"Nobody ever wrote down where.\" He taps the newest page. It is full. So is the one before it.",
       "choices": [
         {
           "id": "on",
@@ -1381,7 +1382,7 @@
     "scene_truth_table": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "On a long stone table, the wardens have laid out four hundred years of watch-logs, and in the middle of them a gemstone sits humming to itself. Captain Orla Voss folds her arms. \"Show us what you found on the road,\" she says. \"Our logs will fill in the rest.\"",
+      "narration": "On a long stone table, the wardens have laid out four hundred years of watch-logs, and in the middle of them a gemstone sits humming to itself. Captain Orla Voss, who is in charge of every warden in the citadel, folds her arms. \"Show us what you found on the road,\" she says. \"Our logs will fill in the rest.\"",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -1457,13 +1458,13 @@
       },
       "onFailure": {
         "goto": "scene_whole_truth",
-        "narration": "You lay out the moths, the wolves and the crab, and they go round and round and will not join up. Pellam clears his throat, very kindly, and opens the oldest log. \"It took us four hundred years,\" he says. \"You have had two days.\""
+        "narration": "You lay out the moths, the wolves and the crab, and they go around and around and will not join up. Pellam clears his throat, very kindly, and opens the oldest log. \"It took us four hundred years,\" he says. \"You have had two days.\""
       }
     },
     "scene_truth_table_odd_ledger": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "Your bigfoot points at the one ledger bound in a different color, half under the others. Pellam looks as if he has been caught stealing biscuits. \"That one's not read,\" he says. \"It's only kept.\" Captain Voss holds out her hand, and Pellam gives it to her, and the room gets a lot quieter.",
+      "narration": "Your bigfoot points at the one ledger bound in a different color, half under the others. Pellam looks as if he has been caught stealing cookies. \"That one's not read,\" he says. \"It's only kept.\" Captain Voss holds out her hand, and Pellam gives it to her, and the room gets a lot quieter.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -1482,7 +1483,7 @@
     "scene_truth_table_rush_clues": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "You lay out the spiral verses and the boundary-stone tallies, and Pellam lays a watch-log four hundred years old beside them. The grandmothers' tally marks and the relay's new verses curl the same way the old log does, round every place a stone has ever fallen. Captain Voss looks at the three of them side by side for a long time and says nothing, which from her is a great deal.",
+      "narration": "You lay out the spiral verses and the boundary-stone tallies, and Pellam lays a watch-log four hundred years old beside them. The grandmothers' tally marks and the relay's new verses curl the same way the old log does, around every place a stone has ever fallen. Captain Voss looks at the three of them side by side for a long time and says nothing, which from her is a great deal.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -1520,7 +1521,7 @@
     "scene_truth_table_river_clues": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "You lay out the troll's question, the sash-maps and the bridge survey. Captain Voss does not blink. Then Pellam turns a watch-log round and taps a line four hundred years old, in faded ink: WHERE DID YOU GET THAT, AND WHERE IS IT GOING? The trolls have been asking it for a very long time. Nobody at this table ever wrote down an answer.",
+      "narration": "You lay out the troll's question, the sash-maps and the bridge survey. Captain Voss does not blink. Then Pellam turns a watch-log around and taps a line four hundred years old, in faded ink: WHERE DID YOU GET THAT, AND WHERE IS IT GOING? The trolls have been asking it for a very long time. Nobody at this table ever wrote down an answer.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -1977,6 +1978,60 @@
             }
           },
           "text": "Pellam has to turn to a second page for the great stones you carry: {facets}, and every one of them logged twice."
+        },
+        {
+          "when": {
+            "flag": "motive_wealth"
+          },
+          "text": "He starts at the top of his form, WHY YOU CAME, and you tell him what you said in the city on the very first night: for the treasure. Pellam writes it down without blinking. A lot of people up here came for that."
+        },
+        {
+          "when": {
+            "flag": "motive_curiosity"
+          },
+          "text": "He starts at the top of his form, WHY YOU CAME, and you tell him what you said in the city on the very first night: to find out what really happened. Pellam looks up. \"Well,\" he says. \"Today you did.\""
+        },
+        {
+          "when": {
+            "flag": "motive_prestige"
+          },
+          "text": "He starts at the top of his form, WHY YOU CAME, and you tell him what you said in the city on the very first night: so everyone will know your names. Pellam writes your names extra big, just in case."
+        },
+        {
+          "when": {
+            "flag": "motive_duty"
+          },
+          "text": "He starts at the top of his form, WHY YOU CAME, and you tell him what you said in the city on the very first night: because somebody has to keep folk safe. Pellam nods, as if that is the only answer he has ever really understood."
+        },
+        {
+          "when": {
+            "flag": "motive_fresh_start"
+          },
+          "text": "He starts at the top of his form, WHY YOU CAME, and you tell him what you said in the city on the very first night: for a fresh start somewhere new. Pellam turns to a brand-new page for it, which seems only fair."
+        },
+        {
+          "when": {
+            "flag": "motive_proving"
+          },
+          "text": "He starts at the top of his form, WHY YOU CAME, and you tell him what you said in the city on the very first night: to prove you could do it. \"And here you are,\" says Pellam, and writes HERE."
+        },
+        {
+          "when": {
+            "flag": "route_river"
+          },
+          "text": "Under WHICH ROAD he writes: the river roads, past the prides and over the broken bridge."
+        },
+        {
+          "when": {
+            "flag": "route_wild"
+          },
+          "text": "Under WHICH ROAD he writes: the forest roads, through MossHome and along the bigfoot high paths."
+        },
+        {
+          "when": {
+            "flag": "route_rush"
+          },
+          "text": "Under WHICH ROAD he writes: the rush roads, up the caravan road and past the boundary stones."
         }
       ]
     },
@@ -2272,7 +2327,7 @@
     "scene_declared_leash": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "\"The leash,\" you say. \"Hold it. Not break it, not bury it.\" Captain Voss and Pellam look at each other for a long time. \"That is our doctrine,\" she says slowly, \"in a child's words.\" She does not say whether that is a compliment. Below the window, faintly, somebody at Hessa's soup tent is humming.",
+      "narration": "\"The leash,\" you say. \"Hold it. Not break it, not bury it.\" Captain Voss and Pellam look at each other for a long time. \"That is the wardens' own plan,\" she says slowly, \"in fewer words than we have ever managed.\" She does not say whether that is a compliment. Below the window, faintly, somebody at Hessa's soup tent is humming.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -2291,7 +2346,72 @@
     "scene_record_leash": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "Pellam turns back to the first page. \"Maybe you spent the road helping people. Maybe you filled your bags. Maybe you asked who gets to decide,\" he says. \"None of those is the same as holding the leash.\" He looks up to make sure you hear him. \"If the record points another way, you can still choose this one. But you have to know you are choosing.\" Captain Voss closes the book.",
+      "narration": "\"Leash,\" Pellam says, and writes it down and underlines it twice. \"Holding is harder than asking. You have to know you are choosing it.\" Captain Voss closes the book.",
+      "variants": [
+        {
+          "when": {
+            "flag": "ember_sold"
+          },
+          "text": "Pellam turns back to the first page of the record. The oldest line of all: the very first stone that ever came your way, warm in a gutter in the city, sold the same day.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "ember_kept"
+          },
+          "text": "Pellam turns back to the first page of the record. The oldest line of all: the very first stone that ever came your way, warm in a gutter in the city, and kept.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "sprites_friends"
+          },
+          "text": "Then the harvest field, and the sprites who are still your friends. He draws a tiny star beside it.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "sprites_wronged"
+          },
+          "text": "Then the harvest field, and the stone you took from the sprites. He reads that one twice, without a word.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "glade_mended"
+          },
+          "text": "Then the wounded glade, green again because of you.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "glade_finished"
+          },
+          "text": "Then the wounded glade, and the stone you took out of its heart.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "read_restore"
+          },
+          "text": "\"Helping. Fixing. Putting things back,\" he reads. \"None of that is the same as holding the leash.\"",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "read_hoard"
+          },
+          "text": "\"Pockets. A great many pockets,\" he reads. \"None of that is the same as holding the leash.\"",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "read_leash"
+          },
+          "text": "\"Questions about the power, and who gets to hold it,\" he reads. \"You have been asking about the leash the whole way up.\"",
+          "at": "start"
+        }
+      ],
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -2310,7 +2430,7 @@
     "scene_declared_hoard": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "\"Finish the collection,\" you say. The room goes very quiet. Captain Voss does not look angry. She looks like somebody doing arithmetic. \"Seven on the table and one in the mountain,\" she says. \"I'll write you down as weather.\" Pellam writes WEATHER and then, after a moment, puts a question mark after it.",
+      "narration": "\"Finish the collection,\" you say. The room goes very quiet. Captain Voss does not look angry. She looks like somebody doing arithmetic and not liking the answer. \"Then I'll write you down as weather,\" she says. \"Something that happens to the realm, whether it likes it or not.\" Pellam writes WEATHER and then, after a moment, puts a question mark after it.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -2329,7 +2449,72 @@
     "scene_record_hoard": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "Pellam opens the ledger again. \"The record may tell a different story,\" he says. \"A kindness done on the road, a question asked, a thing returned. But you have just said collection.\" He writes COLLECT in his neatest hand, then draws a small question mark beside it. Captain Voss watches the ink dry. \"You will have to live up to that word,\" she says.",
+      "narration": "\"Collection,\" Pellam says, and writes COLLECT in his neatest hand, with a small question mark beside it. Captain Voss watches the ink dry. \"You will have to live up to that word,\" she says.",
+      "variants": [
+        {
+          "when": {
+            "flag": "ember_sold"
+          },
+          "text": "Pellam turns back to the first page of the record. The oldest line of all: the very first stone that ever came your way, warm in a gutter in the city, sold the same day.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "ember_kept"
+          },
+          "text": "Pellam turns back to the first page of the record. The oldest line of all: the very first stone that ever came your way, warm in a gutter in the city, and kept.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "sprites_friends"
+          },
+          "text": "Then the harvest field, and the sprites who are still your friends. He draws a tiny star beside it.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "sprites_wronged"
+          },
+          "text": "Then the harvest field, and the stone you took from the sprites. He reads that one twice, without a word.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "glade_mended"
+          },
+          "text": "Then the wounded glade, green again because of you.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "glade_finished"
+          },
+          "text": "Then the wounded glade, and the stone you took out of its heart.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "read_restore"
+          },
+          "text": "\"Helping. Fixing. Putting things back,\" he reads. \"That is a different word from the one you just said.\"",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "read_hoard"
+          },
+          "text": "\"Pockets. A great many pockets,\" he reads. \"Nobody can say you didn't warn us.\"",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "read_leash"
+          },
+          "text": "\"Questions about the power, and who gets to hold it,\" he reads. \"That is a different word from the one you just said.\"",
+          "at": "start"
+        }
+      ],
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -2367,7 +2552,72 @@
     "scene_record_restore": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "Pellam flips back through the record. He reads a line, turns a page, and looks up. \"The pages may have pointed somewhere else,\" he says. \"But you are asking to put the stones back. That is what I am writing down.\" He sets RETURN beside your names and leaves a little space after it, in case the road teaches you something else. Captain Voss watches him write, then nods.",
+      "narration": "\"Put it back,\" Pellam says, and writes RETURN beside your names in his neatest hand. He leaves a little space after it, in case the road teaches you something else. Captain Voss watches him write, then nods.",
+      "variants": [
+        {
+          "when": {
+            "flag": "ember_sold"
+          },
+          "text": "Pellam turns back to the first page of the record. The oldest line of all: the very first stone that ever came your way, warm in a gutter in the city, sold the same day.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "ember_kept"
+          },
+          "text": "Pellam turns back to the first page of the record. The oldest line of all: the very first stone that ever came your way, warm in a gutter in the city, and kept.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "sprites_friends"
+          },
+          "text": "Then the harvest field, and the sprites who are still your friends. He draws a tiny star beside it.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "sprites_wronged"
+          },
+          "text": "Then the harvest field, and the stone you took from the sprites. He reads that one twice, without a word.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "glade_mended"
+          },
+          "text": "Then the wounded glade, green again because of you.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "glade_finished"
+          },
+          "text": "Then the wounded glade, and the stone you took out of its heart.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "read_restore"
+          },
+          "text": "\"Helping. Fixing. Putting things back,\" he reads. \"The pages and the promise say the same thing.\"",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "read_hoard"
+          },
+          "text": "\"Pockets. A great many pockets,\" he reads. \"And now you say put it back. That is a long way to turn around. People do.\"",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "read_leash"
+          },
+          "text": "\"Questions about the power, and who gets to hold it,\" he reads. \"And now you say put it back. People do turn around.\"",
+          "at": "start"
+        }
+      ],
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -2414,7 +2664,7 @@
         "location.redspire_citadel",
         "faction.skywardens"
       ],
-      "narration": "You spend the night outside the gate with the rush's leftovers, while down below the dragonling towns go to bed with their bells on. At midnight a little hatch opens, and a warden clerk called Pellam passes the wardens' old watch-logs out by lantern, one page at a time. Seal. Titan. Rush. \"Quickly,\" he whispers. \"What is it all for?\"",
+      "narration": "You spend the night outside the gate with the rush's leftovers, while down below the dragonling towns go to bed with their bells on. At midnight a little hatch opens, and a warden clerk called Pellam passes the wardens' old watch-logs out by lantern, one page at a time, and reads you the oldest line. The gemstones are pieces of a seal. The seal holds a titan asleep under Mount Red Sky. And the rush is taking it apart, one pocket at a time. \"Quickly,\" he whispers. \"What is it all for?\"",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -2558,7 +2808,7 @@
     },
     "scene_crab_long_way": {
       "type": "story",
-      "narration": "You back everybody off the warm ground, Dunmore last and grumbling, and take the goat track round the ridge instead. The crab goes back to its pebbles. The goat track is a goat's idea of a road, and by the time it brings you out on the citadel side, the sun is high and the whole morning is gone.",
+      "narration": "You back everybody off the warm ground, Dunmore last and grumbling, and take the goat track around the ridge instead. The crab goes back to its pebbles. The goat track is a goat's idea of a road, and by the time it brings you out on the citadel side, the sun is high and the whole morning is gone.",
       "cast": [
         {
           "figure": "entities/glassback_crab"

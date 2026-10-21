@@ -3,7 +3,7 @@ title: Silver Otter
 id: creature.silver_otter
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: []
 tags: ["ambient", "river", "playful", "indicator"]
@@ -11,6 +11,11 @@ classification: ambient_creature
 danger_level: none
 scale: small
 sapience: animal
+height_cm: 50
+size:
+  height: "50 cm (1 ft 8 in)"
+  compare: "knee-high to a grown-up"
+  line: "50 cm (1 ft 8 in), knee-high to a grown-up."
 lore_hook: "Keeper of the river's lost-and-found. The administration fee is usually nothing."
 likes:
   - id: npc.frogfolk

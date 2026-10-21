@@ -12,7 +12,7 @@
  *   1. The files. Gemfall's sixteen chapters and its campaign file hash to the
  *      digests they had before the epic (its content has not changed since
  *      57c63ba8), load through the real loader, and are sound chapters.
- *   2. Every ending. Each of the 48 terminal scenes across the sixteen
+ *   2. Every ending. Each of the 47 terminal scenes across the sixteen
  *      chapters is reached from its chapter's entry, and settled through the
  *      server from an attempt standing at the beat before: what the attempt
  *      row says afterwards is digested and compared with the digest the same
@@ -77,6 +77,24 @@ const PRE_EPIC = JSON.parse(
   readFileSync(new URL("../fixtures/gemfall-pre-epic-save.json", import.meta.url), "utf8"),
 ) as PreEpicSave;
 
+/**
+ * The gameplay digests today's build is held to: the pre-epic build's, except
+ * where the owner changed Gemfall's graph on purpose. Each re-take comes from
+ * gemfall-compat-golden.test.ts run on the commit that made the change, and
+ * says why.
+ *
+ * - `endings`: owner decision on #368 (decision 3). 05c's early crab defeat
+ *   reroutes, at a cost, instead of ending the chapter, so `end_rolled_down`
+ *   is gone and Gemfall has 47 endings, not 48.
+ * - Owner decision on #368 (decision 5) moved 05b's young gatherer before
+ *   the elders' vote. The digests were re-taken on that commit and none moved:
+ *   no ending, road carry, setback or save passes through her scenes.
+ */
+const DIGESTS: PreEpicSave["digests"] = {
+  ...PRE_EPIC.digests,
+  endings: "cac9edbcfc299b099b655802a23ebac6909d84dd788c6d832c8d2cf5e4740da6",
+};
+
 // ---------------------------------------------------------------------------
 // 1. The files
 // ---------------------------------------------------------------------------
@@ -116,6 +134,80 @@ const PRE_EPIC = JSON.parse(
  * resumes (02's wolves to its plank bridge). The endings, roads, setbacks and
  * saves below still match their pre-epic digests.
  *
+ * Re-pinned for the 03x cohesion fixes (#368): wording, labels, prompts, one
+ * narration variant and `checkKind` marks only in 03a, 03b and 03c (each
+ * opening states its goal and calls back Marda's rumor board, drakes, the
+ * boggarts and the Hollow Gate are set up before they are used, old friends
+ * are re-met, UK idioms are gone). No scene, edge, flag, effect, stat or TN
+ * moved; the endings, roads, setbacks and saves below still match their
+ * pre-epic digests.
+ *
+ * Re-pinned for true relative size (#362): gemfall-07r's four "Corbin and
+ * Posy" scenes drop `"size": "very_large"`. That word meant "a bit over a
+ * hero" when sizes were a compressed scale; with real heights it would stand
+ * a burrowfolk carrying his little sister at two and a half meters. The figure
+ * now stands at its own height (150 cm, manifest castFigures). Presentation
+ * only: the endings, roads, setbacks and saves below are unchanged.
+ *
+ * Re-pinned for the stage 4 cohesion fixes (#368): wording, labels, prompts,
+ * narration variants and `checkKind` only in 04a, 04b and 04c (each opening
+ * states its goal, Sefa sends the party to the waystation, callbacks to 3A, 3B
+ * and 3C, UK idioms out). No scene, edge, flag, effect, stat or TN moved; the
+ * endings, roads, setbacks and saves below still match their pre-epic digests.
+ *
+ * Re-pinned for the chapter 5 cohesion fixes (#368): wording, labels, check
+ * prompts, cast names and `checkKind` only in 05a, 05b and 05c (each opening
+ * states its goal, 05b's eldest names the Skywardens and the grandmothers
+ * before the vote and its soup woman is Marigold, not Hessa, UK idioms out).
+ * No scene, edge, flag, effect, stat or TN moved; the endings, roads,
+ * setbacks and saves below still match their pre-epic digests.
+ *
+ * Re-pinned for the 01 and 02 cohesion fixes (#368): wording, labels, check
+ * prompts and one `checkKind` only. Each opening says its chapter's goal, 01
+ * names the evening's plan and introduces the Empty Chair before using it, 02
+ * names Hesper's caravan and has her say goodbye, and UK idioms became US
+ * ("queue" stays, by the owner's ruling).
+ * No scene, edge, flag, effect, stat or TN moved; the endings, roads,
+ * setbacks and saves below still match their pre-epic digests.
+ *
+ * Re-pinned for 02's `check_reroute` (owner decision on #368): its stat went
+ * from heart to quick, with a physical prompt, label and branch narration, so
+ * turning the rush wagons is something the party does. That is a graph change,
+ * but the probe warps past the check and never rolls it, so the endings,
+ * roads, setbacks and saves below still match their pre-epic digests.
+ *
+ * Re-pinned for gemfall-06's cohesion fixes (#368): wording, labels, a check
+ * prompt and narration variants only. The opening states the goal and names
+ * Redspire, Hessa introduces the seal, the shut-out p1 says its fact plainly,
+ * Pellam's record reads back the party's motive, road, ember, sprites, glade
+ * and reading, and `check_doorstep` is a stand-your-ground check marked
+ * `"doing"`. No scene, edge, flag, effect, stat or TN moved; the digests below
+ * are unchanged.
+ *
+ * Re-pinned for gemfall-08's cohesion fixes (#368): wording, labels, check
+ * prompts and narration variants only. The opening states the goal and each
+ * pursuit's promise, every ending reads back motive, the soup tents and allies,
+ * the wardens' post reads allies, Hessa and her masked singers arrive where
+ * they are cast, the Keystone is named where it is lifted, "cult" is gone, and
+ * `check_remains` walks the bones home, marked `"doing"`. No scene, edge, flag,
+ * effect, stat or TN moved; the digests below are unchanged.
+ *
+ * Re-pinned for gemfall-08's setback reroutes, an owner decision on #368: an
+ * ordinary failed roll no longer reaches a loss. A failed race, a lost fight
+ * with the Keeper, a failed pry at the Keystone and a failed tether hold each
+ * reroute at a cost (a stone taken, a scrape, time, a way closed); Last Ring
+ * needs `clock_late` and Turned Back empty hands and a spent clock, each after
+ * two failures, and Broken Tether a second, chosen try. A graph change, but no
+ * terminal scene was added, removed or re-outcomed, so the endings, roads,
+ * setbacks and saves below, re-taken by the probe, still match their pre-epic
+ * digests.
+ *
+ * Re-pinned for gemfall-08's verdict replies, an owner decision on #368: each
+ * answer to the Seal-Keeper's last question lands on a scene where it answers
+ * back, then on `check_verdict` as before. Six scenes and their edges; no
+ * terminal scene changed, and the digests below, re-taken by the probe, still
+ * match.
+ *
  * Re-pinned for "Last time..." (#357): the campaign file gained `lastTime`, one
  * line per route-set member and an opener, read by the shared screen before a
  * chapter's first scene. The engine and server never read it, and no chapter
@@ -124,22 +216,22 @@ const PRE_EPIC = JSON.parse(
  */
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "cfb136f60708bcd2e5b68a7536ccd963a83dadb52e61e9e679377f264b10bf88",
-  "chapters/gemfall-01.json": "b9d64bcf4c24dcb2cb315ecbf8be0760e66c794efeb507468dc0e32276c6fe94",
-  "chapters/gemfall-02.json": "a948c3e004c40daa3e09a72d4e3eeac0b95f5472a2421984d604d07e5df45420",
-  "chapters/gemfall-03a.json": "2543acfd89b948804507bcec9667f9c2e19b2ad42b20d3f5ffdee17ba59bd73d",
-  "chapters/gemfall-03b.json": "37f9a6d76003d1eec4660fa4a86ffdf7b9da305fc79618d2df6821bd4254a734",
-  "chapters/gemfall-03c.json": "78e7df8bd534f191be7d113090b7cbf684847a8adcf120533809e6ca2abdf243",
-  "chapters/gemfall-04a.json": "7902a8b516a6a58c6e7da9d76d0bc3601f4deee67d34bbe79eb763798dbe3eda",
-  "chapters/gemfall-04b.json": "9a7db3cf17d6a42354593bd3759a01c8a41fc0e248764c7aadd411a5573248f2",
-  "chapters/gemfall-04c.json": "134360d7535f4eb277b04d96d699baf0d002e046c916be805b6e181f227f3458",
-  "chapters/gemfall-05a.json": "21c1eeeee0d52044eb6bad67c921483148bb23e3349a505567ab5906659aebe7",
-  "chapters/gemfall-05b.json": "6a30ade7fe12e2a7e961a8e5f11dcba8a3466b5b5f602938b0f76aff42c305f5",
-  "chapters/gemfall-05c.json": "a6ab77dd22ea8fa5d00569017d18d5c305dbcbbbb2d9f39b4c24dc71f30e4f43",
-  "chapters/gemfall-06.json": "4c7306ba197e3ce56b98421797da0aa1488cb3c28cc5eec350b5fdeb7b2c44e1",
+  "chapters/gemfall-01.json": "32d2c5f4b3140d89d31e41830470419765647f97923a0fe62e01bc339759e9c3",
+  "chapters/gemfall-02.json": "025601275c30803358b3fea1ea8b552eb3ca78f7eb48a98e745b8063347b1829",
+  "chapters/gemfall-03a.json": "750c68b4e6492cae1c69df5d0b467b5ce22b2ad15e83d130325155a3dfc934e1",
+  "chapters/gemfall-03b.json": "196102cc81e34e0a409846fc5e1747926d78194d3220f3ebd10f969439ea8dca",
+  "chapters/gemfall-03c.json": "f8a12c044c08f260176a0374258abf0118535d005cc40d1083a6e812f4fe87a9",
+  "chapters/gemfall-04a.json": "88d8ab6dea3765a61f829bd6ca1c4caccacf827fcddb5d7e6bfc34dfa26b3084",
+  "chapters/gemfall-04b.json": "09861f4fdc70bcb29da03bd37bbc071503479ef247f7d727d990b494baec4f66",
+  "chapters/gemfall-04c.json": "b05df44a8ca0d4b4b1aefd2c1c83e87d869c6210c2c102a0ab31d8767e12a471",
+  "chapters/gemfall-05a.json": "73a98e7eb255d074710542d70130fede374510a84a239c00daf57594e87587ed",
+  "chapters/gemfall-05b.json": "82c2078a654173e09b0028dc875b8d1c5ac31ea72651fdac1fbc5c3ccfcaecd1",
+  "chapters/gemfall-05c.json": "5444899edbf6aaaa06a8e269a2080f97a47831f8ea24d68773a0b89df155fc7c",
+  "chapters/gemfall-06.json": "b7a15bfce522b03e0f553e5b4d3272e25bf1051ca67585f4cf3de79bb1fc7345",
   "chapters/gemfall-07h.json": "102d1fc2869f2001c57a3f17a934da964301e12e2db1d2342768a1e211a7c532",
   "chapters/gemfall-07l.json": "d2bf74142b55a622b2bdf709296541d07acb80eb74753c79f2f220b4f5f41604",
-  "chapters/gemfall-07r.json": "82503bbeb255631abbab0138a1ab6dfa4cf1b9f149cf63e19906cc42dbe795d7",
-  "chapters/gemfall-08.json": "29efcf2a87c41fd553fdd28cb3caeab41c9d0b67916c7d7a83f573128a71aec0",
+  "chapters/gemfall-07r.json": "9b6ba7957b912c822a6de79e8e80a89e050a904850e4703627ac90559ca30530",
+  "chapters/gemfall-08.json": "e8611245d388ec868428698fb0e36ee3051674d39303480033812909add3a29a",
 };
 
 describe("Gemfall's files are the files that shipped before the epic", () => {
@@ -174,7 +266,7 @@ describe("Gemfall's files are the files that shipped before the epic", () => {
 // ---------------------------------------------------------------------------
 
 describe("Gemfall settles every ending as it did before the epic", () => {
-  it("each of the 48 endings is reachable from its chapter's entry", () => {
+  it("each of the 47 endings is reachable from its chapter's entry", () => {
     let count = 0;
     for (const id of content.campaign(GEMFALL)!.chapters) {
       const chapter = content.chapter(id)!;
@@ -184,7 +276,7 @@ describe("Gemfall settles every ending as it did before the epic", () => {
         count++;
       }
     }
-    expect(count).toBe(48);
+    expect(count).toBe(47);
   });
 
   it("each ending, settled through the server, leaves the attempt exactly as the pre-epic build left it", { timeout: 60_000 }, async () => {
@@ -196,7 +288,7 @@ describe("Gemfall settles every ending as it did before the epic", () => {
       outcome: string;
       attempt: ReturnType<typeof summary>;
     }[];
-    expect(rows).toHaveLength(48);
+    expect(rows).toHaveLength(47);
     for (const row of rows) {
       const chapter = content.chapter(row.chapterId)!;
       const ending = terminalScenes(chapter).find((e) => e.sceneId === row.sceneId)!;
@@ -214,7 +306,7 @@ describe("Gemfall settles every ending as it did before the epic", () => {
       });
       expect(row.attempt!.keys, where).not.toContain("journey");
     }
-    expect(digest(rows)).toBe(PRE_EPIC.digests.endings);
+    expect(digest(rows)).toBe(DIGESTS.endings);
   });
 
   it("all three roads and all three pursuits carry across eight evenings, as before", { timeout: 60_000 }, async () => {
@@ -243,7 +335,7 @@ describe("Gemfall settles every ending as it did before the epic", () => {
       expect(road.at(-1)!.attempt).toMatchObject({ status: "complete", lastIndex: 8, setbacks: 0 });
       for (const evening of road) expect(evening.attempt!.keys).not.toContain("journey");
     });
-    expect(digest(roads)).toBe(PRE_EPIC.digests.roads);
+    expect(digest(roads)).toBe(DIGESTS.roads);
   });
 
   it("setbacks fail the attempt at the campaign's limit, and the next evening starts again, as before", { timeout: 60_000 }, async () => {
@@ -253,7 +345,7 @@ describe("Gemfall settles every ending as it did before the epic", () => {
     expect(failed.attempt).toMatchObject({ status: "failed", setbacks: limit });
     expect(log.filter((e) => e.chapterId).map((e) => e.attempt!.setbacks)).toEqual([0, 0, 1, 2, 3, 4]);
     expect(log.at(-1)).toMatchObject({ next: "gemfall-01", attempt: { status: "active", setbacks: 0, lastIndex: 0 } });
-    expect(digest(log)).toBe(PRE_EPIC.digests.setbacks);
+    expect(digest(log)).toBe(DIGESTS.setbacks);
   });
 });
 
@@ -338,7 +430,7 @@ describe("Gemfall saves from before the epic", () => {
     const now = await playOn(h, table, save.run.id, content);
     const afterFight = now.fight;
     expect(now).toEqual(resumed);
-    expect(digest(now)).toBe(PRE_EPIC.digests.resumed);
+    expect(digest(now)).toBe(DIGESTS.resumed);
     expect(afterFight.phase).not.toBe("encounter");
     // Nothing the epic added was grown on the way.
     expect(await state()).not.toHaveProperty("journeyVisit");
