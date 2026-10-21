@@ -30,6 +30,9 @@ export function stageRiftlightOpening(options: { unlockPreview?: boolean } = {})
     recursive: true,
     filter: (source) => path.relative(path.join(ROOT, "content"), source).split(path.sep)[0] !== "drafts",
   });
+  // The shipped lobby teaser stands for the campaign this preview plays; two
+  // Riftlight cards in one lobby would only confuse the playtest.
+  fs.rmSync(path.join(content, "campaigns", "riftlight.json"), { force: true });
   const campaign = JSON.parse(fs.readFileSync(path.join(RIFTLIGHT_DRAFT, "opening-preview.campaign.json"), "utf8")) as Campaign;
   // Only the throwaway local preview skips Gemfall. The authored declaration
   // and tests retain the real prerequisite; production content is never edited.

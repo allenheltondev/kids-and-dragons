@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { afterAll, describe, expect, it, vi } from "vitest";
 import { enterScene, lintCampaignGraph, parseCampaignGraph, newCharacter, resolveCharacter, validateChapter, startJourney, completeVisit, takeExit, seedRunBuffs } from "@kad/shared";
+import type { Campaign } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { runValidator } from "./run-validator.ts";
 import { chapterFlagsFrom } from "./journey-graph.ts";
@@ -45,7 +46,10 @@ describe("Riftlight's authored opening", () => {
     const result = runValidator(staged);
     expect(result.ok, result.output).toBe(true);
     expect(campaign.requires).toEqual(["gemfall"]);
-    expect(fs.existsSync(path.join(ROOT, "content/campaigns/riftlight.json"))).toBe(false);
+    // What ships is the lobby teaser alone: no chapters, nothing to start.
+    const teaser = JSON.parse(fs.readFileSync(path.join(ROOT, "content/campaigns/riftlight.json"), "utf8")) as Campaign;
+    expect(teaser).toMatchObject({ comingSoon: true, listed: true, chapters: [], requires: ["gemfall"] });
+    expect(fs.existsSync(path.join(staged, "content/campaigns/riftlight.json"))).toBe(false);
     for (const chapter of allChapters.values()) expect(validateChapter(chapter), chapter.id).toEqual([]);
   });
 

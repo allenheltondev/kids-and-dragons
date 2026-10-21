@@ -19,7 +19,7 @@ import type { CampaignProgressRecord } from "../store/repository.ts";
 import { makeChapter } from "../../../shared/src/test-fixtures.ts";
 import { makeContent, makeHarness, seedHousehold, type TestHarness } from "../test-support.ts";
 import { applyAction } from "./action.ts";
-import { campaignLock, campaignView, joinOrStartAttempt, settleChapterCompletion } from "./progression.ts";
+import { campaignLock, campaignView, joinOrStartAttempt, lockedRefusal, settleChapterCompletion } from "./progression.ts";
 import { createRoom, joinRoom } from "./room.ts";
 
 const realEngine: Engine = { applyIntent, createRunState };
@@ -441,6 +441,44 @@ describe("a listed sequel", () => {
     const h = harness();
     const { state } = await lobby(h, "gems");
     expect((await state()).campaignOptions?.map((o) => o.id)).toEqual(["gems"]);
+  });
+});
+
+describe("a coming-soon teaser", () => {
+  const TEASER: Campaign = { id: "rift", title: "Rift", blurb: "The ground opens.", chapters: [], requires: ["gems"], listed: true, comingSoon: true };
+  function teaserHarness(): TestHarness {
+    return makeHarness({
+      engine: realEngine,
+      playtest: true,
+      content: makeContent({ chapters: CHAPTERS.filter((c) => c.campaignId === "gems"), campaigns: [GEMS, TEASER] }),
+    });
+  }
+
+  it("is listed beside the room's campaign, locked until the prerequisite is finished", async () => {
+    const h = teaserHarness();
+    const { state, send } = await lobby(h, "gems");
+    const s = await state();
+    expect(s.campaignOptions?.map((o) => o.id)).toEqual(["gems", "rift"]);
+    expect(s.campaignOptions?.[1]?.locked?.reason).toBe("Finish Gems first");
+    expect(lobbyCampaign(s).contested).toBe(false);
+    expect((await send("p_1", { type: "CONTINUE_CAMPAIGN" })).ok).toBe(true);
+    expect((await state()).campaignId).toBe("gems");
+  });
+
+  it("then says it is coming soon, and still cannot be voted for or started", async () => {
+    const h = teaserHarness();
+    const { householdId } = await seedHousehold(h, 1);
+    await h.repo.putCampaignProgress(attempt(householdId, "gems", "complete"));
+    const { state, send } = await lobby(h, "gems");
+    expect((await state()).campaignOptions?.[1]?.locked).toEqual({ requires: [], reason: "Coming soon" });
+    expect(lobbyCampaign(await state()).contested).toBe(false);
+    expect(await send("p_1", { type: "VOTE_CAMPAIGN", campaignId: "rift" })).toMatchObject({ ok: false });
+    // Begin is the lobby's pick, not the tapper's: it plays Gems again.
+    expect((await send("p_1", { type: "CONTINUE_CAMPAIGN", campaignId: "rift" })).ok).toBe(true);
+    expect((await state()).campaignId).toBe("gems");
+    expect(await h.repo.getCampaignProgress(householdId, "rift")).toBeNull();
+    // And the server's own refusal, whatever intent reached it.
+    expect(await lockedRefusal(TEASER, householdId, h.deps)).toBe('"Rift" is locked: Coming soon');
   });
 });
 
