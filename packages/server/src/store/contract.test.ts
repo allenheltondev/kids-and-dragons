@@ -1467,6 +1467,40 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         expect(read).toMatchObject({ lastIndex: 3, routeFlags: { road_rush: true } });
       });
 
+      it("round-trips the Story page's record, through a put and the conditional commit (#358)", async () => {
+        const attempt = {
+          householdId: "h_1",
+          campaignId: "gemfall",
+          status: "active" as const,
+          setbacks: 0,
+          lastIndex: 1,
+          routeFlags: { ember_kept: true },
+          story: [
+            { chapterId: "gemfall-01", ending: "rest_northbound", revealed: ["scene_scholar_theory"], decided: ["ember_kept"], held: ["facet_ember"] },
+          ],
+          version: 1,
+          updatedAt: "2026-07-04T18:00:00.000Z",
+        };
+        await repo.putCampaignProgress(attempt);
+        expect(await repo.getCampaignProgress("h_1", "gemfall")).toEqual(attempt);
+
+        await repo.putState(state("r_1", 0));
+        // A chapter that kept nothing but its ending: no empty lists on the row.
+        const moved = { ...attempt, lastIndex: 2, story: [...attempt.story, { chapterId: "gemfall-02", ending: "end_river" }], version: 2 };
+        expect(
+          await repo.commit({
+            runId: "r_1",
+            expectedSeq: 0,
+            state: state("r_1", 1),
+            event: event("r_1", 1),
+            campaignProgress: moved,
+            campaignProgressExpectedVersion: 1,
+          }),
+        ).toBe(true);
+        expect(await repo.getCampaignProgress("h_1", "gemfall")).toEqual(moved);
+        expect((await repo.listCampaignProgress("h_1"))[0]?.story).toEqual(moved.story);
+      });
+
       it("serializes one campaign attempt across different runs", async () => {
         await repo.putState(state("r_1", 0));
         await repo.putState(state("r_2", 0));

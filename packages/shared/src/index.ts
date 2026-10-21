@@ -35,6 +35,7 @@ export * from "./chapter-graph.js";
 export * from "./chapter-pacing.js";
 export * from "./chapter-goal.js";
 export * from "./chapter-preface.js";
+export * from "./story-so-far.js";
 export * from "./narration.js";
 export * from "./routes.js";
 export * from "./campaign-graph.js";

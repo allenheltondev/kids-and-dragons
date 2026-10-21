@@ -370,6 +370,14 @@ export interface RunState {
    */
   visited?: SceneId[];
   /**
+   * For each priority-1 scene entered this chapter whose words read the bag
+   * (story-so-far.ts `heardWith`): the items they read that the party held as
+   * it first opened. The Story page (#358) quotes the revelation as it was
+   * heard then, not against the bag at the chapter's end. Chapter-scoped like
+   * `visited`, and absent on every run that never met such a scene.
+   */
+  revealHeld?: Record<SceneId, string[]>;
+  /**
    * The fight in progress, or null when there is not one (spec §7).
    *
    * Held on the run rather than beside it because everything else about a

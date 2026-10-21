@@ -998,6 +998,38 @@ export interface LastTime {
  */
 export type LastTimeLine = string | { holding: string; text: string; otherwise: string };
 
+/**
+ * What a campaign attempt keeps of one finished chapter, for the Story page
+ * (#358). `RunState.visited` and a chapter's own flags die at the chapter
+ * boundary, so the little the page needs is saved when the chapter completes
+ * (story-so-far.ts `chapterStoryOf`). Ids, not words: the page reads the words
+ * from the chapter and campaign files.
+ */
+export interface ChapterStory {
+  chapterId: string;
+  /** The ending scene the chapter closed on. */
+  ending: SceneId;
+  /** The priority-1 scenes the party walked through, in the order it reached them. Absent: none. */
+  revealed?: SceneId[];
+  /**
+   * For a revelation whose words read the bag (a facet-count variant, a
+   * `{facets}`): the items they read that the party held as it opened, so the
+   * page quotes what the table heard then, not what the bag held at the end.
+   * Absent for one whose words read nothing of the bag.
+   */
+  heard?: Record<SceneId, string[]>;
+  /** The route-set flags this chapter decided (not carried in), in `routeSets` order. Absent: none. */
+  decided?: string[];
+  /**
+   * The items the party held between them as the chapter closed, of those
+   * the ending's words and the decided lines read (a variant's item or count,
+   * a line's `holding`, a `{facets}`), so a line naming a great stone still
+   * reads the inventory it was true of. Absent: none of them. A revelation's
+   * bag is its own (`heard`).
+   */
+  held?: string[];
+}
+
 /** A chapter's membership of a routed index. */
 export interface ChapterRoute {
   /** Which set of alternatives this index is chosen from (`Campaign.routeSets`). */

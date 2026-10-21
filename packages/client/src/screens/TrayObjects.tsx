@@ -2,10 +2,20 @@
  * edges echo the shared glyphs; the button owns selection and labels. */
 import type { ReactElement } from "react";
 import { PAINTED_ART } from "../assets/artwork";
-export type TrayObjectName = "lantern" | "globe" | "map" | "satchel" | "scroll" | "fieldGuide" | "tv" | "phone";
+export type TrayObjectName = "lantern" | "globe" | "map" | "satchel" | "scroll" | "fieldGuide" | "tv" | "phone" | "storybook";
 export interface TrayObjectProps { name: TrayObjectName; className?: string; }
 const EDGE = { stroke: "#ffe4a1", strokeWidth: 2.2, strokeLinecap: "round", strokeLinejoin: "round" } as const;
 const OBJECTS: Partial<Record<TrayObjectName, ReactElement>> = {
+  // An open storybook with a ribbon marking the page you are on (#358).
+  storybook: (
+    <g {...EDGE}>
+      <path d="M24 12c-5-4-12-5-19-4v28c7-1 14 0 19 4Z" fill="#f3e2b8" />
+      <path d="M24 12c5-4 12-5 19-4v28c-7-1-14 0-19 4Z" fill="#e9d29c" />
+      <path d="M9 15c4-.4 8 .3 11 2M9 21c4-.4 8 .3 11 2M9 27c4-.4 8 .3 11 2M28 17c3-1.7 7-2.4 11-2M28 23c3-1.7 7-2.4 11-2" fill="none" stroke="#a98a5a" strokeWidth="1.6" />
+      <path d="M33 8v14l3-2.5 3 2.5V8" fill="#b84a7a" />
+      <path d="M24 12v28" fill="none" />
+    </g>
+  ),
   // A dragon-eared looking glass, still a television on a stand.
   tv: (
     <g {...EDGE}>
