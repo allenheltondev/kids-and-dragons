@@ -391,6 +391,13 @@ async function spend(record: RunRecord, deps: Pick<HandlerDeps, "repo">): Promis
  * the room, where it says the table is full. Nobody saved loses their place
  * to somebody who sat down in the lobby.
  *
+ * A save stopped before the cap (a resume could seat five) can hold more
+ * saved heroes than seats. The heroes whose phones are in this room sit first,
+ * then the rest in their saved order, until the seats are full. One left over
+ * keeps her claim on the adventure, untouched: nothing she earned is dropped,
+ * and she sits back down (SEAT_CHARACTER, which a hero this adventure holds
+ * may do mid-chapter) when a seat opens, or in the next game.
+ *
  * Somebody the saved game's host took out (`RunState.removed`, #267) comes
  * back still out: in the party, away, holding no seat, and on the `removed`
  * this returns for the resumed game to carry. Picking a game up is not a way
@@ -410,14 +417,26 @@ async function restoreParty(
   const here = (playerId: string): boolean =>
     room.party.find((m) => m.playerId === playerId)?.connected ?? room.seats?.[playerId] !== undefined;
 
+  const claimed: PartyMember[] = [];
   for (const member of saved.party) {
     const hero = await deps.repo.getCharacter(memberHome(member, householdId), member.character.id);
     if (!hero) continue;
     if ((await standing(hero, claimFor(campaignId, householdId, hero), deps)) !== "mine") continue;
-    kept.add(member.playerId);
     if (saved.removed?.includes(member.playerId)) out.add(member.playerId);
     const away = out.has(member.playerId);
-    party.push({ ...member, connected: !away && here(member.playerId), ready: false });
+    claimed.push({ ...member, connected: !away && here(member.playerId), ready: false });
+  }
+  // Who of them holds a seat: the ones here first, then the saved order.
+  const seating = claimed.filter((m) => !out.has(m.playerId));
+  const sitting = new Set(
+    [...seating.filter((m) => m.connected), ...seating.filter((m) => !m.connected)]
+      .slice(0, MAX_PARTY)
+      .map((m) => m.playerId),
+  );
+  for (const member of claimed) {
+    if (!out.has(member.playerId) && !sitting.has(member.playerId)) continue;
+    kept.add(member.playerId);
+    party.push(member);
   }
 
   const seated = (): number => party.filter((m) => !out.has(m.playerId)).length;
