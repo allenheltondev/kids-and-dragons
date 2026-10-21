@@ -21,3 +21,19 @@ engine walker cover all species and classes represented by the lesson options.
 The 35-minute metadata is a planning budget, not measured family play. A
 development pause remains available, plus a return to the buried bridge. The
 next chapter will continue toward the Bone Yard; no endgame secret is revealed.
+
+## Review follow-up
+
+The Saltrot guide and glacier herder greet returning friends. The rescued goat is
+an adult from the known herd. The final preparation vote works for either map exit.
+The chosen warning drawing now changes a fisher's behavior, and the guide supplies
+her own lunch on the shell bank. Spoiler exclusions match the earlier chapters.
+The spine remains 43 scenes, 15 votes and six checks before and after these fixes.
+
+The graph explorer now merges inert pass visits only when chapter effects, guards,
+completion rules, variants and chapter clocks cannot distinguish them. Unknown
+chapters remain conservative. Regression tests preserve relevant completion bits;
+route coverage and runtime replay remain exhaustive. Identical chapter walks are
+memoized by their full scenario and chapter content, with defensive result copies.
+Focused V8 coverage: 62 tests passed in 10.18 seconds (whole-repository thresholds
+are intentionally not evaluated as evidence from this focused run).
