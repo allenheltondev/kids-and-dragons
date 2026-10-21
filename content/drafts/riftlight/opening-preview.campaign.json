@@ -37,7 +37,9 @@
     "riftlight-the-island-due-back",
     "riftlight-preview-pause-the-island-due-back",
     "riftlight-stuttering-flats",
-    "riftlight-preview-pause-stuttering-flats"
+    "riftlight-preview-pause-stuttering-flats",
+    "riftlight-bone-yard",
+    "riftlight-preview-pause-bone-yard"
   ],
   "graph": {
     "version": 1,
@@ -95,7 +97,9 @@
       "flats_rhythm_read",
       "flats_guide_signals",
       "goat_returned_home",
-      "flats_sling_left"
+      "flats_sling_left",
+      "bone_retreat",
+      "bone_rift_closed"
     ],
     "buffs": {
       "riftspark": {
@@ -344,6 +348,18 @@
       },
       "preview-pause-stuttering-flats": {
         "chapter": "riftlight-preview-pause-stuttering-flats",
+        "title": "Pause the development preview",
+        "ending": {
+          "title": "Development preview pause"
+        }
+      },
+      "bone-yard": {
+        "chapter": "riftlight-bone-yard",
+        "title": "The Borrowed Ruins",
+        "revisit": "pass"
+      },
+      "preview-pause-bone-yard": {
+        "chapter": "riftlight-preview-pause-bone-yard",
         "title": "Pause the development preview",
         "ending": {
           "title": "Development preview pause"
@@ -834,6 +850,24 @@
         "to": "buried-bridge",
         "kind": "return",
         "label": "Return to the buried bridge"
+      },
+      "stuttering-flats-to-bone-yard": {
+        "from": "stuttering-flats",
+        "to": "bone-yard",
+        "kind": "forward",
+        "label": "Follow the displaced ruins toward the Bone Yard"
+      },
+      "bone-yard-pause": {
+        "from": "bone-yard",
+        "to": "preview-pause-bone-yard",
+        "kind": "forward",
+        "label": "Pause this development preview"
+      },
+      "bone-yard-to-saltrot": {
+        "from": "bone-yard",
+        "to": "saltrot-arrival",
+        "kind": "return",
+        "label": "Return to the Saltrot landing"
       }
     },
     "facts": {

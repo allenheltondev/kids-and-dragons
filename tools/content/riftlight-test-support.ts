@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { expect } from "vitest";
-import { applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
+import { applyEffects, applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
 import type { Campaign, Chapter, ClassId, ClientIntent, EngineContext, ItemCatalog, RulesContent, RunState, SpeciesId } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { RIFTLIGHT_DRAFT } from "./riftlight-preview.ts";
@@ -138,7 +138,19 @@ export function allPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, fla
       expect(known.has(fact), `${chapter.id}/${state.sceneId}: references ${fact} before this path introduced it`).toBe(true);
     }
     if (state.phase === "chapter_complete") { ends.push(state); endingKnowledge.push(known); endingIntroductions.push(introduced); continue; }
-    if (state.prompt?.kind === "choice") {
+    if (chapter.scenes[state.sceneId!]!.type === "encounter") {
+      // Story coverage enumerates the encounter's declared outcomes. This is
+      // deliberately not a combat simulation: board mechanics are exercised
+      // separately through READY/END_TURN in the strand encounter tests.
+      const scene = chapter.scenes[state.sceneId!]!;
+      if (scene.type !== "encounter") throw new Error("Expected encounter");
+      for (const branch of [scene.onVictory, scene.onDefeat, scene.onEscape, scene.onTimeout].filter(Boolean)) {
+        const settled = applyEffects(state, branch!.effects, context(chapter));
+        const result = enterScene(settled, branch!.goto, context(chapter));
+        expect(result.error).toBeUndefined();
+        pending.push({ state: result.state, known, introduced });
+      }
+    } else if (state.prompt?.kind === "choice") {
       expect(state.prompt.options.length).toBeGreaterThan(0);
       for (const option of state.prompt.options) pending.push({ state: send(state, { type: "CHOOSE", choiceId: option.id }, chapter), known, introduced });
     } else if (state.prompt?.kind === "roll") {
