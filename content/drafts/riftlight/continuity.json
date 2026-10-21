@@ -7345,6 +7345,641 @@
           "introduces": {}
         }
       }
+    },
+    "riftlight-preview-pause-squall-temple": {
+      "entryFacts": [],
+      "scenes": {
+        "pause": {
+          "requires": [],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-squall-temple": {
+      "entryFacts": [],
+      "scenes": {
+        "arrival": {
+          "requires": [],
+          "introduces": {
+            "temple_keeper": "A kitsune keeper",
+            "temple_island": "a temple island",
+            "temple_crawlers": "bone crawlers",
+            "temple_landing": "the wet landing"
+          }
+        },
+        "look": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "look_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "look_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "look_check": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "look_clear": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "look_changed": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "people": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "people_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "people_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "people_check": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "people_clear": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "people_changed": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "last_keeper": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "last_keeper_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "last_keeper_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "messages": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "gear": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "gear_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "gear_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "gear_check": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "gear_clear": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "gear_changed": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "signals": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "signals_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "signals_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "shelter": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "shelter_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "shelter_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "shelter_3": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "shelter_check": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "shelter_clear": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "shelter_changed": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "rest": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "rest_watch": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "crawl": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "crawl_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "crawl_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "plan": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "push_plan": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "shelter_plan": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "fight_push": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "fight_shelter": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "pushed": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "settled": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "damaged": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "roof": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "roof_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "roof_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "roof_check": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "roof_clear": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "roof_changed": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "boards": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "boards_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "boards_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "boards_check": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "boards_clear": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "boards_changed": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "repair": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "repair_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "repair_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "record": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "record_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "record_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "watch": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "watch_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "watch_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "ending": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "finish": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        }
+      }
     }
   }
 }

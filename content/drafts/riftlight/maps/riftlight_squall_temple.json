@@ -1,0 +1,50 @@
+{
+  "$comment": "Temple landing. Blocked tiles are temple walls and fixed stores; open strips are fenced working boards.",
+  "id": "riftlight_squall_temple",
+  "rows": [
+    "..........",
+    "..........",
+    ".###..##..",
+    "..........",
+    "..........",
+    ".##..##...",
+    "..........",
+    ".........."
+  ],
+  "partySpawns": [
+    {
+      "x": 0,
+      "y": 3
+    },
+    {
+      "x": 0,
+      "y": 4
+    },
+    {
+      "x": 1,
+      "y": 3
+    },
+    {
+      "x": 1,
+      "y": 4
+    }
+  ],
+  "enemySpawns": [
+    {
+      "x": 9,
+      "y": 3
+    },
+    {
+      "x": 9,
+      "y": 4
+    },
+    {
+      "x": 8,
+      "y": 2
+    },
+    {
+      "x": 8,
+      "y": 5
+    }
+  ]
+}
