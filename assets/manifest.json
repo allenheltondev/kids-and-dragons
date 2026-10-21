@@ -978,7 +978,9 @@
     "scenes/riftlight/buried-bridge-dry-channel",
     "scenes/riftlight/stone-counters-evidence",
     "scenes/riftlight/buried-bridge-evidence",
-    "scenes/riftlight/whale-road-cleared"
+    "scenes/riftlight/whale-road-cleared",
+    "scenes/riftlight/island-due-back",
+    "scenes/classes/conservatory"
   ],
   "$castFiguresComment": "Named story characters' own figures, drawn on the story stage opposite the party (content `cast`, docs/briefs/story-cast-art.md). Same contract as entities: assets/cast/<id>/assembled.png, 1024x1024 RGBA, one complete cutout standing on the canvas origin (feet at y=900), facing left toward the party. `basis` is the entity or species the character is one of; `scale` is how big they stand, in the entities' scale words; `heightCm` is their height in centimeters, in their own pose and inside that band (canon/creatures.yaml `scale`, packages/canon SCALE_CM), and `stance` how they occupy a scene (standing, hovering, flying or swimming). Both are data, never shown to a player (#362). verify.py checks each entry.",
   "castFigures": [
@@ -1637,6 +1639,14 @@
       "scale": "large",
       "heightCm": 235,
       "stance": "standing"
+    },
+    {
+      "id": "captain_thimble",
+      "name": "Captain Thimble",
+      "basis": "kitsune",
+      "scale": "medium",
+      "heightCm": 115,
+      "stance": "standing"
     }
   ],
   "$stageFiguresComment": "Entity art a chapter casts (`entities/<id>`) that is not a canon creature or people: working animals the stage draws beside a cart. Height and stance as for castFigures (#362). Not verified as entities, because they are not ones.",
@@ -1910,6 +1920,11 @@
       "class": "thornguard",
       "tier": "mythic",
       "species": "manticore"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "sworn",
+      "species": "kitsune"
     }
   ],
   "$figureVariantsComment": "Finished transparent class illustrations. Legacy character-rigs paths are retained for existing assets; no rig runtime or split parts are required."

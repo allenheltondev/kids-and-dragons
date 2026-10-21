@@ -123,7 +123,8 @@
           },
           "text": "The cloud whales you guided clear are singing beyond the open lane. The keeper hears a turning note and points beneath the cloud. \"They have seen something low. We should look there first.\" Their song offers a place to look, not a promise about where the island will stop."
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "return_song": {
       "type": "choice_point",
@@ -141,7 +142,8 @@
           "icon": "hand",
           "goto": "return_song_2"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "return_song_1": {
       "type": "story",
@@ -153,7 +155,8 @@
           "icon": "hand",
           "goto": "sightings"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "return_song_2": {
       "type": "story",
@@ -165,7 +168,8 @@
           "icon": "hand",
           "goto": "sightings"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "sightings": {
       "type": "choice_point",
@@ -193,7 +197,8 @@
             "notFlag": "whales_scattered"
           }
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "sightings_1": {
       "type": "story",
@@ -205,7 +210,8 @@
           "icon": "hand",
           "goto": "sightings_1_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "sightings_1_check": {
       "type": "check",
@@ -218,7 +224,8 @@
       },
       "onFailure": {
         "goto": "sightings_1_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "sightings_1_done": {
       "type": "story",
@@ -236,7 +243,8 @@
           "type": "setFlag",
           "flag": "sighted_the_returning_island"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "sightings_1_changed": {
       "type": "story",
@@ -254,7 +262,8 @@
           "type": "setFlag",
           "flag": "sighted_the_returning_island"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "sightings_2": {
       "type": "story",
@@ -266,7 +275,8 @@
           "icon": "hand",
           "goto": "sightings_2_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "sightings_2_check": {
       "type": "check",
@@ -279,7 +289,8 @@
       },
       "onFailure": {
         "goto": "sightings_2_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "sightings_2_done": {
       "type": "story",
@@ -297,7 +308,8 @@
           "type": "setFlag",
           "flag": "sighted_the_returning_island"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "sightings_2_changed": {
       "type": "story",
@@ -315,7 +327,8 @@
           "type": "setFlag",
           "flag": "sighted_the_returning_island"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "priority": {
       "type": "choice_point",
@@ -333,7 +346,8 @@
           "icon": "hand",
           "goto": "priority_2"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "priority_1": {
       "type": "story",
@@ -345,7 +359,8 @@
           "icon": "hand",
           "goto": "letters"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "priority_2": {
       "type": "story",
@@ -357,7 +372,8 @@
           "icon": "hand",
           "goto": "station"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "letters": {
       "type": "choice_point",
@@ -382,7 +398,8 @@
           "goto": "letters_runner",
           "requiresClass": "duskrunner"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "letters_1": {
       "type": "story",
@@ -394,7 +411,8 @@
           "icon": "hand",
           "goto": "letters_1_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "letters_1_check": {
       "type": "check",
@@ -407,7 +425,8 @@
       },
       "onFailure": {
         "goto": "letters_1_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "letters_1_done": {
       "type": "story",
@@ -426,7 +445,8 @@
           "flag": "island_messages_saved",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "letters_1_changed": {
       "type": "story",
@@ -445,7 +465,8 @@
           "flag": "island_messages_saved",
           "value": false
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "letters_2": {
       "type": "story",
@@ -457,7 +478,8 @@
           "icon": "hand",
           "goto": "letters_2_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "letters_2_check": {
       "type": "check",
@@ -470,7 +492,8 @@
       },
       "onFailure": {
         "goto": "letters_2_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "letters_2_done": {
       "type": "story",
@@ -489,7 +512,8 @@
           "flag": "island_messages_saved",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "letters_2_changed": {
       "type": "story",
@@ -508,7 +532,8 @@
           "flag": "island_messages_saved",
           "value": false
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "station": {
       "type": "choice_point",
@@ -526,7 +551,8 @@
           "icon": "hand",
           "goto": "station_2"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "station_1": {
       "type": "story",
@@ -538,7 +564,8 @@
           "icon": "hand",
           "goto": "station_1_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "station_1_check": {
       "type": "check",
@@ -551,7 +578,8 @@
       },
       "onFailure": {
         "goto": "station_1_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "station_1_done": {
       "type": "story",
@@ -570,7 +598,8 @@
           "flag": "island_station_ready",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "station_1_changed": {
       "type": "story",
@@ -589,7 +618,8 @@
           "flag": "island_station_ready",
           "value": false
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "station_2": {
       "type": "story",
@@ -601,7 +631,8 @@
           "icon": "hand",
           "goto": "station_2_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "station_2_check": {
       "type": "check",
@@ -614,7 +645,8 @@
       },
       "onFailure": {
         "goto": "station_2_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "station_2_done": {
       "type": "story",
@@ -633,7 +665,8 @@
           "flag": "island_station_ready",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "station_2_changed": {
       "type": "story",
@@ -652,7 +685,8 @@
           "flag": "island_station_ready",
           "value": false
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "signal_plan": {
       "type": "choice_point",
@@ -670,7 +704,8 @@
           "icon": "hand",
           "goto": "signal_plan_2"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "signal_plan_1": {
       "type": "story",
@@ -689,7 +724,8 @@
           "flag": "island_signal_repeated",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "signal_plan_2": {
       "type": "story",
@@ -708,7 +744,8 @@
           "flag": "island_signal_repeated",
           "value": false
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "bearings": {
       "type": "choice_point",
@@ -735,7 +772,8 @@
             "flag": "island_signal_repeated"
           }
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "bearings_1": {
       "type": "story",
@@ -747,7 +785,8 @@
           "icon": "hand",
           "goto": "bearings_1_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "bearings_1_check": {
       "type": "check",
@@ -760,7 +799,8 @@
       },
       "onFailure": {
         "goto": "bearings_1_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "bearings_1_done": {
       "type": "story",
@@ -784,7 +824,8 @@
           "flag": "island_signal_repeated",
           "value": false
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "bearings_1_changed": {
       "type": "story",
@@ -808,7 +849,8 @@
           "flag": "island_signal_repeated",
           "value": false
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "bearings_2": {
       "type": "story",
@@ -820,7 +862,8 @@
           "icon": "hand",
           "goto": "bearings_2_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "bearings_2_check": {
       "type": "check",
@@ -833,7 +876,8 @@
       },
       "onFailure": {
         "goto": "bearings_2_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "bearings_2_done": {
       "type": "story",
@@ -857,7 +901,8 @@
           "flag": "island_signal_repeated",
           "value": false
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "bearings_2_changed": {
       "type": "story",
@@ -881,7 +926,8 @@
           "flag": "island_signal_repeated",
           "value": false
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "bearings_relay": {
       "type": "story",
@@ -893,7 +939,8 @@
           "icon": "hand",
           "goto": "bearings_relay_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "bearings_relay_check": {
       "type": "check",
@@ -906,7 +953,8 @@
       },
       "onFailure": {
         "goto": "bearings_1_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "landing": {
       "type": "choice_point",
@@ -945,7 +993,8 @@
           },
           "text": "The keeper assigns a second lookout to the return gap because your own estimate was unfinished. Pip repeats her calls rather than presenting them as your measurement."
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "landing_1": {
       "type": "story",
@@ -957,7 +1006,8 @@
           "icon": "hand",
           "goto": "landing_1_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "landing_1_check": {
       "type": "check",
@@ -970,7 +1020,8 @@
       },
       "onFailure": {
         "goto": "landing_1_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "landing_1_done": {
       "type": "story",
@@ -982,7 +1033,8 @@
           "icon": "hand",
           "goto": "stone_care"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "landing_1_changed": {
       "type": "story",
@@ -994,7 +1046,8 @@
           "icon": "hand",
           "goto": "landing_recovery"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "landing_2": {
       "type": "story",
@@ -1006,7 +1059,8 @@
           "icon": "hand",
           "goto": "landing_2_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "landing_2_check": {
       "type": "check",
@@ -1019,7 +1073,8 @@
       },
       "onFailure": {
         "goto": "landing_2_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "landing_2_done": {
       "type": "story",
@@ -1031,7 +1086,8 @@
           "icon": "hand",
           "goto": "stone_care"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "landing_2_changed": {
       "type": "story",
@@ -1043,7 +1099,8 @@
           "icon": "hand",
           "goto": "landing_recovery"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "stone_care": {
       "type": "choice_point",
@@ -1067,7 +1124,8 @@
           "type": "setFlag",
           "flag": "crossed_to_the_returning_island"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "stone_care_1": {
       "type": "story",
@@ -1079,7 +1137,8 @@
           "icon": "hand",
           "goto": "carving"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "stone_care_2": {
       "type": "story",
@@ -1091,7 +1150,8 @@
           "icon": "hand",
           "goto": "carving"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "carving": {
       "type": "choice_point",
@@ -1109,7 +1169,8 @@
           "icon": "hand",
           "goto": "carving_2"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "carving_1": {
       "type": "story",
@@ -1121,7 +1182,8 @@
           "icon": "hand",
           "goto": "carving_1_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "carving_1_check": {
       "type": "check",
@@ -1134,7 +1196,8 @@
       },
       "onFailure": {
         "goto": "carving_1_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "carving_1_done": {
       "type": "story",
@@ -1153,7 +1216,8 @@
           "flag": "island_carving_clear",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "carving_1_changed": {
       "type": "story",
@@ -1172,7 +1236,8 @@
           "flag": "island_carving_clear",
           "value": false
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "carving_2": {
       "type": "story",
@@ -1184,7 +1249,8 @@
           "icon": "hand",
           "goto": "carving_2_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "carving_2_check": {
       "type": "check",
@@ -1197,7 +1263,8 @@
       },
       "onFailure": {
         "goto": "carving_2_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "carving_2_done": {
       "type": "story",
@@ -1216,7 +1283,8 @@
           "flag": "island_carving_clear",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "carving_2_changed": {
       "type": "story",
@@ -1235,7 +1303,8 @@
           "flag": "island_carving_clear",
           "value": false
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "orientation": {
       "type": "choice_point",
@@ -1259,7 +1328,8 @@
           "type": "setFlag",
           "flag": "copied_the_old_carving"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "orientation_1": {
       "type": "story",
@@ -1271,7 +1341,8 @@
           "icon": "hand",
           "goto": "comparison"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "orientation_2": {
       "type": "story",
@@ -1283,7 +1354,8 @@
           "icon": "hand",
           "goto": "comparison"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "comparison": {
       "type": "choice_point",
@@ -1324,7 +1396,8 @@
           },
           "text": "Your meeting point remains dotted. The keeper sets the present lookout sketch beside it, leaving that gap for your party to work around."
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "comparison_1": {
       "type": "story",
@@ -1336,7 +1409,8 @@
           "icon": "hand",
           "goto": "comparison_1_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "comparison_1_check": {
       "type": "check",
@@ -1349,7 +1423,8 @@
       },
       "onFailure": {
         "goto": "comparison_1_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "comparison_1_done": {
       "type": "story",
@@ -1368,7 +1443,8 @@
           "flag": "island_land_match",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "comparison_1_changed": {
       "type": "story",
@@ -1387,7 +1463,8 @@
           "flag": "island_land_match",
           "value": false
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "comparison_2": {
       "type": "story",
@@ -1399,7 +1476,8 @@
           "icon": "hand",
           "goto": "comparison_2_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "comparison_2_check": {
       "type": "check",
@@ -1412,7 +1490,8 @@
       },
       "onFailure": {
         "goto": "comparison_2_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "comparison_2_done": {
       "type": "story",
@@ -1431,7 +1510,8 @@
           "flag": "island_land_match",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "comparison_2_changed": {
       "type": "story",
@@ -1450,7 +1530,8 @@
           "flag": "island_land_match",
           "value": false
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "alternative": {
       "type": "choice_point",
@@ -1468,7 +1549,8 @@
           "icon": "hand",
           "goto": "alternative_2"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "alternative_1": {
       "type": "story",
@@ -1480,7 +1562,8 @@
           "icon": "hand",
           "goto": "record"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "alternative_2": {
       "type": "story",
@@ -1492,7 +1575,8 @@
           "icon": "hand",
           "goto": "record"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "record": {
       "type": "choice_point",
@@ -1524,7 +1608,8 @@
           },
           "text": "Your first comparison was unfinished. The shared account can credit the follow-up your party made with help, while keeping the failed measure or missing turn visible."
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "record_1": {
       "type": "story",
@@ -1543,7 +1628,8 @@
           "flag": "island_record_shared",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "record_2": {
       "type": "story",
@@ -1562,7 +1648,8 @@
           "flag": "island_record_shared",
           "value": false
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "departure": {
       "type": "choice_point",
@@ -1602,7 +1689,8 @@
           },
           "text": "Your batch-carrying plan keeps the messenger relay waiting for the return. Choose the first message now; it will leave after your party finishes bringing the kit back."
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "departure_1": {
       "type": "story",
@@ -1621,7 +1709,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "departure_2": {
       "type": "story",
@@ -1640,7 +1729,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "return": {
       "type": "story",
@@ -1715,7 +1805,8 @@
           "type": "setFlag",
           "flag": "came_back_across_the_board"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "rest": {
       "type": "rest",
@@ -1729,7 +1820,8 @@
           "flag": "fragment_sky_learned",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "landing_brace": {
       "type": "story",
@@ -1741,7 +1833,8 @@
           "icon": "hand",
           "goto": "landing_brace_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "landing_brace_check": {
       "type": "check",
@@ -1754,7 +1847,8 @@
       },
       "onFailure": {
         "goto": "landing_1_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "letters_runner": {
       "type": "story",
@@ -1766,7 +1860,8 @@
           "icon": "hand",
           "goto": "letters_runner_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "letters_runner_check": {
       "type": "check",
@@ -1779,7 +1874,8 @@
       },
       "onFailure": {
         "goto": "letters_1_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "sightings_whales": {
       "type": "story",
@@ -1791,7 +1887,8 @@
           "icon": "hand",
           "goto": "sightings_whales_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "sightings_whales_check": {
       "type": "check",
@@ -1804,7 +1901,8 @@
       },
       "onFailure": {
         "goto": "sightings_1_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "comparison_clear": {
       "type": "story",
@@ -1816,7 +1914,8 @@
           "icon": "hand",
           "goto": "comparison_clear_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "comparison_clear_check": {
       "type": "check",
@@ -1829,7 +1928,8 @@
       },
       "onFailure": {
         "goto": "comparison_1_changed"
-      }
+      },
+      "art": "scenes/riftlight/island-due-back"
     },
     "comparison_recovery": {
       "type": "choice_point",
@@ -1847,7 +1947,8 @@
           "icon": "hand",
           "goto": "comparison_recover_view"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "comparison_recover_scale": {
       "type": "story",
@@ -1859,7 +1960,8 @@
           "icon": "hand",
           "goto": "alternative"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "comparison_recover_view": {
       "type": "story",
@@ -1871,7 +1973,8 @@
           "icon": "hand",
           "goto": "alternative"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "landing_recovery": {
       "type": "choice_point",
@@ -1889,7 +1992,8 @@
           "icon": "hand",
           "goto": "landing_borrow"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "landing_batches": {
       "type": "story",
@@ -1908,7 +2012,8 @@
           "flag": "island_relay_delayed",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     },
     "landing_borrow": {
       "type": "story",
@@ -1927,7 +2032,8 @@
           "flag": "island_relay_delayed",
           "value": false
         }
-      ]
+      ],
+      "art": "scenes/riftlight/island-due-back"
     }
   }
 }

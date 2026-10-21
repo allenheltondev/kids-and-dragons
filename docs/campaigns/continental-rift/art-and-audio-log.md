@@ -273,3 +273,23 @@ Part C preview refresh after the second layout review: regenerated all six locat
 Part D preview refresh: all four music-assigned scenes were recaptured on TV, watcher phone and host phone after inheriting the readable narrow-stage layout. The four-scene capture run passed (2.0 minutes). Scores, mappings and production audio files are unchanged by this review follow-up.
 
 Final combined-stack review: refreshed the black-haired finale on TV, watcher phone and host phone; the capture passed (1.0 minute) and the large figure's visible silhouette stays inside the phone. Combined targeted checks passed 62/62, repository typecheck and 55 content checks pass. The committed audio declaration remains UTF-8/LF and its incremental diff remains one added line. This review also retains the corrected production-prefetch cache test.
+
+
+## Riftlight chapter audit — first artwork batch (#397–400, 2026-10-21)
+
+Built-in `image_gen` produced Island Due Back, the Conservatory, Captain Thimble
+and the Sworn Songkeeper kitsune. The [exact prompt and output record](../../reviews/issues-397-400/prompts.json)
+and [review sheet, checks and remaining commissions](../../reviews/issues-397-400/README.md)
+are retained. Backdrops ship as 1920×1080 WebP; both cutouts are 1024² RGBA with
+feet at y=900. Their manifest entries, stage height table and runtime class lookup
+are updated. The island chapter, both Conservatory scenes and Thimble's three quay
+scenes now consume the new art. No narration or gameplay fields changed.
+
+The owner chose a separate flock cutout for the Rookery, so its pending backdrop
+must be free of crows. No crow should be singled out. The Academy should use an
+open-sky view compatible with both its temporary and permanent homes.
+
+This begins all four issues; it does not complete them. Art verification passed
+591 checks on the isolated PR branch; shipped content passed 62 checks; the staged
+Riftlight content gate and 47 focused renderer/height/class-room tests passed. Inventory lists 24 remaining
+class figures, including 14 required by #400 and 10 out-of-scope Mythic figures.
