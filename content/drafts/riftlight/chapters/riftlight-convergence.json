@@ -73,7 +73,7 @@
           "name": "Bram Lock"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "accounts": {
       "type": "choice_point",
@@ -92,7 +92,7 @@
           "goto": "accounts_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room",
+      "art": "scenes/riftlight/convergence-ledge",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -119,7 +119,7 @@
           "goto": "measure"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "accounts_2": {
       "type": "story",
@@ -132,7 +132,7 @@
           "goto": "measure"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "measure": {
       "type": "choice_point",
@@ -151,7 +151,7 @@
           "goto": "measure_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "measure_1": {
       "type": "story",
@@ -164,7 +164,7 @@
           "goto": "measure_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "measure_2": {
       "type": "story",
@@ -177,7 +177,7 @@
           "goto": "measure_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "measure_check": {
       "type": "check",
@@ -193,7 +193,7 @@
         "goto": "measure_changed",
         "narration": "One copied bend looks longer when the pages overlap."
       },
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "measure_clear": {
       "type": "story",
@@ -212,7 +212,7 @@
           "goto": "evidence"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "measure_changed": {
       "type": "story",
@@ -231,7 +231,7 @@
           "goto": "evidence"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "evidence": {
       "type": "choice_point",
@@ -250,7 +250,7 @@
           "goto": "evidence_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room",
+      "art": "scenes/riftlight/convergence-ledge",
       "variants": [
         {
           "when": {
@@ -283,7 +283,7 @@
           "goto": "pull"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "evidence_2": {
       "type": "story",
@@ -296,7 +296,7 @@
           "goto": "pull"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "pull": {
       "type": "choice_point",
@@ -315,7 +315,7 @@
           "goto": "pull_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "pull_1": {
       "type": "story",
@@ -328,7 +328,7 @@
           "goto": "pull_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "pull_2": {
       "type": "story",
@@ -341,7 +341,7 @@
           "goto": "pull_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "pull_check": {
       "type": "check",
@@ -357,7 +357,7 @@
         "goto": "pull_changed",
         "narration": "A gust reaches one marker before the tremble ends."
       },
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "pull_clear": {
       "type": "story",
@@ -370,7 +370,7 @@
           "goto": "clear_path"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "pull_changed": {
       "type": "story",
@@ -383,7 +383,7 @@
           "goto": "clear_path"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "clear_path": {
       "type": "choice_point",
@@ -402,7 +402,7 @@
           "goto": "clear_path_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "clear_path_1": {
       "type": "story",
@@ -415,7 +415,7 @@
           "goto": "clear_path_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "clear_path_2": {
       "type": "story",
@@ -428,7 +428,7 @@
           "goto": "clear_path_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "clear_path_check": {
       "type": "check",
@@ -444,7 +444,7 @@
         "goto": "clear_path_changed",
         "narration": "A bench foot catches on the sled runner."
       },
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "clear_path_clear": {
       "type": "story",
@@ -457,7 +457,7 @@
           "goto": "signals"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "clear_path_changed": {
       "type": "story",
@@ -470,7 +470,7 @@
           "goto": "signals"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "signals": {
       "type": "choice_point",
@@ -489,7 +489,7 @@
           "goto": "signals_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "signals_1": {
       "type": "story",
@@ -502,7 +502,7 @@
           "goto": "rest"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "signals_2": {
       "type": "story",
@@ -515,7 +515,7 @@
           "goto": "rest"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "rest": {
       "type": "rest",
@@ -535,7 +535,7 @@
           "goto": "rest_watch"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "rest_watch": {
       "type": "story",
@@ -548,7 +548,7 @@
           "goto": "proposal"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "proposal": {
       "type": "choice_point",
@@ -567,7 +567,7 @@
           "goto": "proposal_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "proposal_1": {
       "type": "story",
@@ -580,7 +580,7 @@
           "goto": "summoning"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "proposal_2": {
       "type": "story",
@@ -593,7 +593,7 @@
           "goto": "summoning"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "summoning": {
       "type": "story",
@@ -607,7 +607,7 @@
         }
       ],
       "priority": 2,
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "decision": {
       "type": "choice_point",
@@ -633,7 +633,7 @@
           "requiresFlag": "orin_chime_shared"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "bram_plan": {
       "type": "story",
@@ -661,7 +661,7 @@
           "goto": "steady"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "olivia_plan": {
       "type": "story",
@@ -690,7 +690,7 @@
           "goto": "steady"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "orin_plan": {
       "type": "story",
@@ -718,7 +718,7 @@
           "goto": "steady"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "steady": {
       "type": "choice_point",
@@ -737,7 +737,7 @@
           "goto": "steady_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "steady_1": {
       "type": "story",
@@ -750,7 +750,7 @@
           "goto": "steady_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "steady_2": {
       "type": "story",
@@ -763,7 +763,7 @@
           "goto": "steady_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "steady_check": {
       "type": "check",
@@ -779,7 +779,7 @@
         "goto": "steady_changed",
         "narration": "A loose fold slips free of the first bench."
       },
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "steady_clear": {
       "type": "story",
@@ -798,7 +798,7 @@
           "goto": "count"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "steady_changed": {
       "type": "story",
@@ -817,7 +817,7 @@
           "goto": "count"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "count": {
       "type": "choice_point",
@@ -836,7 +836,7 @@
           "goto": "count_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "count_1": {
       "type": "story",
@@ -849,7 +849,7 @@
           "goto": "count_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "count_2": {
       "type": "story",
@@ -862,7 +862,7 @@
           "goto": "count_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "count_check": {
       "type": "check",
@@ -878,7 +878,7 @@
         "goto": "count_changed",
         "narration": "A gust moves the cord during the second count."
       },
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "count_clear": {
       "type": "story",
@@ -891,7 +891,7 @@
           "goto": "lesson"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "count_changed": {
       "type": "story",
@@ -904,7 +904,7 @@
           "goto": "lesson"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "lesson": {
       "type": "choice_point",
@@ -930,7 +930,7 @@
           "requiresClass": "starweaver"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "lesson_1": {
       "type": "story",
@@ -943,7 +943,7 @@
           "goto": "lesson_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "lesson_2": {
       "type": "story",
@@ -956,7 +956,7 @@
           "goto": "lesson_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "lesson_3": {
       "type": "story",
@@ -969,7 +969,7 @@
           "goto": "lesson_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "lesson_check": {
       "type": "check",
@@ -986,7 +986,7 @@
         "goto": "lesson_changed",
         "narration": "The rhythm falters before the last signal."
       },
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "lesson_clear": {
       "type": "story",
@@ -1009,7 +1009,7 @@
           "goto": "release"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "lesson_changed": {
       "type": "story",
@@ -1032,7 +1032,7 @@
           "goto": "release"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "release": {
       "type": "choice_point",
@@ -1051,7 +1051,7 @@
           "goto": "release_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "release_1": {
       "type": "story",
@@ -1064,7 +1064,7 @@
           "goto": "account"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "release_2": {
       "type": "story",
@@ -1077,7 +1077,7 @@
           "goto": "account"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "account": {
       "type": "choice_point",
@@ -1096,7 +1096,7 @@
           "goto": "account_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "account_1": {
       "type": "story",
@@ -1109,7 +1109,7 @@
           "goto": "path"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "account_2": {
       "type": "story",
@@ -1122,7 +1122,7 @@
           "goto": "path"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "path": {
       "type": "choice_point",
@@ -1141,7 +1141,7 @@
           "goto": "path_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "path_1": {
       "type": "story",
@@ -1154,7 +1154,7 @@
           "goto": "ending"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "path_2": {
       "type": "story",
@@ -1167,7 +1167,7 @@
           "goto": "ending"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "ending": {
       "type": "story",
@@ -1202,14 +1202,14 @@
           "text": "Olivia closes her notebook and chooses her own work. \"I still think we can do more,\" she says. She leaves by the open walking path, free to disagree."
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     },
     "finish": {
       "type": "story",
       "narration": "Seren checks the shelter once more. The experimental opening stays marked for watchers. You carry the map down the walking passage toward the heart of the glacier.",
       "choices": [],
       "outcome": "success",
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/convergence-ledge"
     }
   }
 }

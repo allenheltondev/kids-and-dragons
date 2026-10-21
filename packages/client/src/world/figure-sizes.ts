@@ -11,6 +11,7 @@
 import type { CastStance } from "@kad/shared";
 
 export const FIGURE_SIZES: Readonly<Record<string, readonly [heightCm: number, stance: CastStance]>> = {
+  "cast/aunt_bellow": [265, "standing"],
   "cast/bracken_swiftmile": [230, "standing"],
   "cast/bram_lock": [240, "standing"],
   "cast/brask": [165, "standing"],
@@ -54,6 +55,7 @@ export const FIGURE_SIZES: Readonly<Record<string, readonly [heightCm: number, s
   "cast/littlest_bracken": [85, "standing"],
   "cast/ma_ruddle": [90, "standing"],
   "cast/marda_thorn": [225, "standing"],
+  "cast/master_dunnick": [270, "standing"],
   "cast/mortar": [330, "standing"],
   "cast/mosshome_archivist": [240, "standing"],
   "cast/mosshome_eldest": [235, "standing"],
@@ -77,6 +79,7 @@ export const FIGURE_SIZES: Readonly<Record<string, readonly [heightCm: number, s
   "cast/pip_thistledown": [140, "standing"],
   "cast/postmaster_quill": [170, "standing"],
   "cast/posy": [70, "standing"],
+  "cast/professor_nettle": [165, "standing"],
   "cast/rook": [100, "standing"],
   "cast/rope_shop_boy": [130, "standing"],
   "cast/saltrot_guide": [100, "standing"],
@@ -93,6 +96,7 @@ export const FIGURE_SIZES: Readonly<Record<string, readonly [heightCm: number, s
   "cast/tobble": [160, "standing"],
   "cast/wend": [100, "standing"],
   "cast/yeti_elder": [245, "standing"],
+  "cast/yeti_herder": [250, "standing"],
   "cast/young_gatherer": [70, "standing"],
   "characters/bigfoot": [215, "standing"],
   "characters/dragonling": [95, "standing"],
@@ -128,6 +132,7 @@ export const FIGURE_SIZES: Readonly<Record<string, readonly [heightCm: number, s
   "entities/reefglider": [90, "swimming"],
   "entities/restless_remains": [240, "standing"],
   "entities/river_drake": [180, "standing"],
+  "entities/rookery_crows": [80, "standing"],
   "entities/selkie": [165, "standing"],
   "entities/sheeple": [140, "standing"],
   "entities/silver_otter": [50, "standing"],

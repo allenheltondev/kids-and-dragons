@@ -35,7 +35,8 @@
           "icon": "hand",
           "goto": "markings"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/stone-counters"
     },
     "markings": {
       "type": "choice_point",
@@ -59,7 +60,8 @@
           "type": "setFlag",
           "flag": "saw_the_carved_stone"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/stone-counters"
     },
     "carving": {
       "type": "story",
@@ -77,7 +79,8 @@
           "type": "setFlag",
           "flag": "helped_the_stone_keeper"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/stone-counters"
     },
     "marker": {
       "type": "story",
@@ -95,14 +98,16 @@
           "type": "setFlag",
           "flag": "helped_the_stone_keeper"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/stone-counters"
     },
     "bank_rest": {
       "type": "rest",
       "narration": "The dragonling invites you to meet the stone-counters when you have rested. A road follows the east bank to a crossing called Ashspan Bridge. The old carving gives you a reason to stay; the road gives you another way onward.",
       "heal": 0,
       "choices": [],
-      "outcome": "success"
+      "outcome": "success",
+      "art": "scenes/riftlight/stone-counters"
     }
   },
   "voiceGuide": {
