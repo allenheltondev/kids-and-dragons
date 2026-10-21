@@ -131,6 +131,16 @@ const PRE_EPIC = JSON.parse(
  * they are cast, the Keystone is named where it is lifted, "cult" is gone, and
  * `check_remains` walks the bones home, marked `"doing"`. No scene, edge, flag,
  * effect, stat or TN moved; the digests below are unchanged.
+ *
+ * Re-pinned for gemfall-08's setback reroutes, an owner decision on #368: an
+ * ordinary failed roll no longer reaches a loss. A failed race, a lost fight
+ * with the Keeper, a failed pry at the Keystone and a failed tether hold each
+ * reroute at a cost (a stone taken, a scrape, time, a way closed); Last Ring
+ * needs `clock_late` and Turned Back empty hands and a spent clock, each after
+ * two failures, and Broken Tether a second, chosen try. A graph change, but no
+ * terminal scene was added, removed or re-outcomed, so the endings, roads,
+ * setbacks and saves below, re-taken by the probe, still match their pre-epic
+ * digests.
  */
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
@@ -149,7 +159,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-07h.json": "102d1fc2869f2001c57a3f17a934da964301e12e2db1d2342768a1e211a7c532",
   "chapters/gemfall-07l.json": "d2bf74142b55a622b2bdf709296541d07acb80eb74753c79f2f220b4f5f41604",
   "chapters/gemfall-07r.json": "82503bbeb255631abbab0138a1ab6dfa4cf1b9f149cf63e19906cc42dbe795d7",
-  "chapters/gemfall-08.json": "f398421069007c00f2a32b6a82d61db07d762b54e6f5696df787cf070fa40870",
+  "chapters/gemfall-08.json": "2d615eca3aebf036c24dd61fc7f3fe353fc8f87ec5f09d8978c44cea9a97e4f2",
 };
 
 describe("Gemfall's files are the files that shipped before the epic", () => {
