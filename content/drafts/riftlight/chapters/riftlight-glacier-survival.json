@@ -491,7 +491,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/classes/conservatory"
     },
     "conservatory_sing": {
       "type": "story",
@@ -516,7 +517,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/classes/conservatory"
     },
     "listen": {
       "type": "choice_point",

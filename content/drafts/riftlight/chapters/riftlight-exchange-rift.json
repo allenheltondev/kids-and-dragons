@@ -158,6 +158,12 @@
           "icon": "hand",
           "goto": "ship_cold"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        }
       ]
     },
     "ship_help": {
@@ -170,6 +176,12 @@
           "icon": "hand",
           "goto": "delivery"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        }
       ]
     },
     "ship_cold": {
@@ -181,6 +193,12 @@
           "label": "Go to the crates",
           "icon": "hand",
           "goto": "delivery"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
         }
       ]
     },

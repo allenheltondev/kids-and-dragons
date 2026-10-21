@@ -38,6 +38,7 @@ export function characterArtUrl(species: SpeciesId, tier: TierId = STARTING_TIER
  */
 const CLASS_FIGURE_VARIANTS = new Set<string>([
   "songkeeper/sworn/bigfoot",
+  "songkeeper/sworn/kitsune",
   "songkeeper/radiant/bigfoot",
   "songkeeper/mythic/bigfoot",
   "starweaver/radiant/bigfoot",

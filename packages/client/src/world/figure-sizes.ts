@@ -18,6 +18,7 @@ export const FIGURE_SIZES: Readonly<Record<string, readonly [heightCm: number, s
   "cast/bryony": [110, "standing"],
   "cast/burdock": [165, "standing"],
   "cast/cadet_linnet": [160, "standing"],
+  "cast/captain_thimble": [115, "standing"],
   "cast/captain_voss": [175, "standing"],
   "cast/caravan_master": [235, "standing"],
   "cast/clerk_pennywhistle": [20, "standing"],
