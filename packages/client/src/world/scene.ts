@@ -74,7 +74,19 @@ import {
 } from "./actor-art";
 import { figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, STANCE_LIFT, type Overflow, type PaintBox } from "./figure-scale";
 import { sceneBackdropUrl } from "./art-paths";
-import { RIFT_FOOT, riftPasses, riftStand, STILL_FRAME, type RiftPass } from "./scene-rift";
+import {
+  RIFT_FOOT,
+  RIFT_GLOW_COLOR,
+  RIFT_HOLE_COLOR,
+  riftPasses,
+  riftPresence,
+  riftStand,
+  STILL_FRAME,
+  TEAR_HALF_HEIGHT_PX,
+  TEAR_HALF_WIDTH_PX,
+  TEAR_MIDDLE_PX,
+  type RiftPass,
+} from "./scene-rift";
 import { RIFT_SHEET, riftSheetUrl } from "../screens/riftlight";
 import { isQuiet, QUIET_FLASH_SCALE } from "../quiet";
 import { focusHolds, type FocusHold } from "./attention";
@@ -485,8 +497,32 @@ export function createScene(app: Application): PartyScene {
   const riftSprite = new Sprite();
   riftSprite.anchor.set(0.5, RIFT_FOOT);
   riftSprite.visible = false;
-  riftSprite.zIndex = -1;
   riftSprite.label = "rift";
+  /*
+   * Behind the painted tear, the two layers that make it easy to see
+   * (scene-rift.ts, "Making the tear easy to see"): a breathing mist and a
+   * near-black hole, drawn once in sheet-frame pixels around the tear's
+   * middle and sized each frame by `riftPresence`.
+   */
+  const riftGlow = new Graphics();
+  // Many faint rings rather than a few strong ones, so the mist has no visible edge.
+  for (let ring = 16; ring >= 1; ring--) {
+    const spread = 1 + ring * 0.12;
+    riftGlow
+      .ellipse(0, 0, TEAR_HALF_WIDTH_PX * spread * 1.2, TEAR_HALF_HEIGHT_PX * (1 + ring * 0.045))
+      .fill({ color: RIFT_GLOW_COLOR, alpha: 0.065 });
+  }
+  const riftHole = new Graphics()
+    .ellipse(0, 0, TEAR_HALF_WIDTH_PX * 0.78, TEAR_HALF_HEIGHT_PX * 0.88)
+    .fill({ color: RIFT_HOLE_COLOR });
+  const riftPresenceLayer = new Container();
+  riftPresenceLayer.position.set(0, -TEAR_MIDDLE_PX);
+  riftPresenceLayer.addChild(riftGlow, riftHole);
+  /** The tear and what is behind it, standing on the floor line; scaled to the stage in layoutActors. */
+  const riftGroup = new Container();
+  riftGroup.zIndex = -1;
+  riftGroup.visible = false;
+  riftGroup.addChild(riftPresenceLayer, riftSprite);
   // On the stage only while a scene has a rift: an ordinary scene's tree is
   // the one it always was.
   let riftKey: string | null = null;
@@ -522,11 +558,11 @@ export function createScene(app: Application): PartyScene {
     const frames = pass ? riftFrames.get(pass.effect) : undefined;
     if (!pass) {
       // Every pass played (a rift that folded away): off the stage.
-      riftSprite.removeFromParent();
+      riftGroup.removeFromParent();
       return;
     }
     if (!frames) {
-      riftSprite.visible = false;
+      riftGroup.visible = false;
       return;
     }
     let frame: number;
@@ -544,6 +580,11 @@ export function createScene(app: Application): PartyScene {
     }
     riftSprite.texture = frames[frame] ?? frames[0]!;
     riftSprite.visible = true;
+    const presence = riftPresence(pass, frame, elapsed, prefersReducedMotion(), RIFT_SHEET.frames);
+    riftPresenceLayer.scale.set(presence.size);
+    riftGlow.alpha = presence.glow;
+    riftHole.alpha = presence.hole;
+    riftGroup.visible = true;
   }
   /** -1 = facing right, toward a cast on the right; 1 = as drawn. */
   let facing = 1;
@@ -784,10 +825,10 @@ export function createScene(app: Application): PartyScene {
     slots.party = slots.party.map((x) => x + left);
     slots.cast = slots.cast.map((x) => x + left);
     const rift = riftStand({ ...slots, castLeft: slots.castLeft.map((x) => x + left) }, left, width, fit.k);
-    riftSprite.position.set(rift.x, GROUND_Y);
+    riftGroup.position.set(rift.x, GROUND_Y);
     // By scale, not width: the frames may not have loaded yet, and a width set
     // against the empty texture would be 256 times too big once they do.
-    riftSprite.scale.set(rift.frame / RIFT_SHEET.size);
+    riftGroup.scale.set(rift.frame / RIFT_SHEET.size);
     // Heroes are drawn facing left; with company on the right they turn round.
     facing = cast.length > 0 ? -1 : 1;
     // A name may be no wider than the slot its character stands in, less a
@@ -1416,9 +1457,9 @@ export function createScene(app: Application): PartyScene {
       riftSequence = riftPasses(rift, prefersReducedMotion());
       riftPassAt = 0;
       riftPassStart = elapsed;
-      riftSprite.visible = false;
-      if (riftSequence.length === 0) riftSprite.removeFromParent();
-      else if (!riftSprite.parent) actorsLayer.addChild(riftSprite);
+      riftGroup.visible = false;
+      if (riftSequence.length === 0) riftGroup.removeFromParent();
+      else if (!riftGroup.parent) actorsLayer.addChild(riftGroup);
       // The first pass waits for its sheet; tickRift starts it the frame it lands.
       for (const pass of riftSequence) {
         void riftSheet(pass.effect).then(() => {
@@ -1710,7 +1751,7 @@ export function createScene(app: Application): PartyScene {
         actor.container.destroy({ children: true });
       }
       actors.clear();
-      riftSprite.destroy();
+      riftGroup.destroy({ children: true });
       castActors.clear();
       board?.destroy();
       board = null;
