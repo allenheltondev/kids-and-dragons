@@ -229,7 +229,8 @@ Every chapter says what the party is trying to do, and the table can see it the 
   both results, never for the success only some get. Set the flag on
   a scene every road walks, on each road's own result scene, or on every branch of a check or
   fight (a failed roll still did the thing). `optional: true` lifts the rule and draws "(if you
-  can)"; use it rarely.
+  can)"; use it rarely. An optional step is an extra: the goal shows done when its required steps
+  are, the pips count the extras apart, and a short pane's "Next" never names one.
 - **Chapter-local flags only.** A route-set member can arrive already set from an earlier chapter,
   so the validator refuses one. Never put the flag on an ending scene: the chapter is over by then.
 - **Written for scene 1.** It is on screen before anything has happened, so it names nothing the

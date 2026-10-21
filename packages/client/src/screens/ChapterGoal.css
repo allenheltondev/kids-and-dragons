@@ -194,6 +194,13 @@
   background: var(--goal-gold);
 }
 
+/* An extra a party may skip: dashed and a little smaller, so the solid ones read as the goal. */
+.goal__pip--optional {
+  inline-size: 0.55em;
+  block-size: 0.55em;
+  border-style: dashed;
+}
+
 .goal__pip--fresh {
   animation: goal-pop 520ms cubic-bezier(0.3, 1.6, 0.5, 1) both;
 }

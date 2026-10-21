@@ -63,7 +63,8 @@ function isEnding(scene: Scene): boolean {
  * what every way in has ticked. Every authored way counts, gated or not, since
  * a gate can only hide a choice beside an ungated one; a setFlag that only some
  * party sees (a freed captive, a met objective) is not counted, and a step
- * whose flag some way sets false is ticked no further. An item step counts a
+ * whose flag some way sets false is ticked no further unless another of its
+ * flags is surely still set. An item step counts a
  * `grantQuestItem` (a bag item can be refused at a full bag) and loses its
  * tick to a `takeItem` that could take it. Optional steps are left
  * out, which is what `optional` is for.
@@ -74,18 +75,35 @@ export function stepsOffTheSpine(chapter: Chapter): { stepId: string; ending: Sc
   const steps = goal.steps.filter((step) => step.optional !== true);
   if (steps.length === 0) return [];
 
-  const apply = (ticked: Set<string>, effects: readonly Effect[] | undefined): Set<string> => {
-    const next = new Set(ticked);
+  /*
+   * What is known on arrival is two kinds of fact, both merged by intersection: "step s is
+   * ticked" (`s`), and "s's watched flag f is surely true" (`s\u0000f`). A step that watches
+   * several flags stays ticked through one of them being cleared while another is surely set,
+   * and a step ticked only because every way in set *some* flag (so no one flag is sure) loses
+   * its tick to any of them being cleared, since that may have been the one.
+   */
+  const sure = (step: GoalStep, watched: string): string => `${step.id}\u0000${watched}`;
+  const set = (next: Set<string>, step: GoalStep, watched: string): void => {
+    next.add(step.id);
+    next.add(sure(step, watched));
+  };
+  const clear = (next: Set<string>, step: GoalStep, watched: string): void => {
+    next.delete(sure(step, watched));
+    const still = [...goalStepFlags(step), ...(step.item === undefined ? [] : [step.item])].some((w) => next.has(sure(step, w)));
+    if (!still) next.delete(step.id);
+  };
+  const apply = (known: Set<string>, effects: readonly Effect[] | undefined): Set<string> => {
+    const next = new Set(known);
     for (const effect of effects ?? []) {
       for (const step of steps) {
         if (effect.type === "setFlag" && goalStepFlags(step).includes(effect.flag)) {
-          if (effect.value ?? true) next.add(step.id);
-          else next.delete(step.id);
-        } else if (step.item !== undefined && (effect.type === "grantItem" || effect.type === "grantQuestItem") && effect.itemId === step.item) {
+          if (effect.value ?? true) set(next, step, effect.flag);
+          else clear(next, step, effect.flag);
+        } else if (step.item !== undefined && effect.type === "grantQuestItem" && effect.itemId === step.item) {
           // A quest item always lands; a bag item can be refused at a full bag, so only a quest item counts.
-          if (effect.type === "grantQuestItem") next.add(step.id);
+          set(next, step, step.item);
         } else if (step.item !== undefined && effect.type === "takeItem" && [effect.itemId].flat().includes(step.item)) {
-          next.delete(step.id);
+          clear(next, step, step.item);
         }
       }
     }
@@ -109,7 +127,7 @@ export function stepsOffTheSpine(chapter: Chapter): { stepId: string; ending: Sc
       if (!chapter.scenes[exit.goto]) continue;
       const out = apply(entered, exit.effects);
       const before = arriving.get(exit.goto);
-      const merged = before == null ? out : new Set([...before].filter((step) => out.has(step)));
+      const merged = before == null ? out : new Set([...before].filter((fact) => out.has(fact)));
       if (before == null || merged.size !== before.size) {
         arriving.set(exit.goto, merged);
         queue.push(exit.goto);

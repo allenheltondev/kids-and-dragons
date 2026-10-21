@@ -136,11 +136,47 @@ describe("the chapter's goal", () => {
     expect(ticked()).toEqual([true, false]);
   });
 
+  describe("optional steps (07l's ledger, chord and true answer)", () => {
+    const TETHER = {
+      ...CHAPTER,
+      goal: {
+        text: "Gather the ledger, the chord and a true answer, then hold the stone's hum at the bend.",
+        steps: [
+          { id: "ledger", label: "Borrow the wardens' ledger", item: "tether_ledger", optional: true },
+          { id: "chord", label: "Learn the choir's three notes", item: "tether_chord", optional: true },
+          { id: "answer", label: "Find a true answer", item: "tether_question", optional: true },
+          { id: "bend", label: "Face the stone's hum at the bend", flag: "faced_the_bend" },
+        ],
+      },
+    } as Chapter;
+
+    it("names the next required step, never an extra the party may be long past", () => {
+      // The ledger was missed and the party has moved on: what a short pane names is the bend.
+      seed({});
+      useGameStore.setState({ chapter: TETHER });
+      render(<ChapterGoalCard place="world" />);
+      const next = document.querySelector(".goal__step[data-next]");
+      expect(next?.textContent).toContain("Face the stone's hum at the bend");
+      expect(document.querySelectorAll(".goal__step[data-next]")).toHaveLength(1);
+    });
+
+    it("is done when the required step is, with every extra missed, and counts the extras apart", () => {
+      seed({ faced_the_bend: true }, { phase: "chapter_complete" });
+      useGameStore.setState({ chapter: TETHER });
+      render(<ChapterGoalCard place="world" />);
+      expect(document.querySelector(".goal")?.classList.contains("goal--all")).toBe(true);
+      expect(screen.getByRole("img", { name: "1 of 1 done, 0 of 3 extras" })).toBeTruthy();
+      // Nothing is left to name as next.
+      expect(document.querySelector(".goal__step[data-next]")).toBeNull();
+      expect(document.querySelectorAll(".goal__pip--optional")).toHaveLength(3);
+    });
+  });
+
   it("folds to the goal and its pips in a fight", () => {
     seed({ found_ladder: true });
     render(<ChapterGoalCard place="world" folded />);
     expect(screen.getByText("Get the cat down from the tree.")).toBeTruthy();
-    expect(screen.getByRole("img", { name: "1 of 3 done" })).toBeTruthy();
+    expect(screen.getByRole("img", { name: "1 of 2 done, 0 of 1 extras" })).toBeTruthy();
     expect(document.querySelectorAll(".goal__step")).toHaveLength(0);
   });
 
