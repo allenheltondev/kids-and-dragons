@@ -70,7 +70,7 @@
       "discovers": [
         "character.bigfoot"
       ],
-      "narration": "MossHome is a town that was grown instead of built: houses that are hollow trees, staircases that are roots, windows of woven leaves. In the square, a chair has grown wrong. It leans. A little sign beside it says FILE OPENED. The bigfoot runner from the woods jogs past with a fresh bundle of cords, waves without stopping, and shouts, \"You found it! Welcome to MossHome!\"",
+      "narration": "MossHome is a town that was grown instead of built: houses that are hollow trees, staircases that are roots, windows of woven leaves. In the square, a chair has grown wrong. It leans. A little sign beside it says FILE OPENED. The bigfoot runner from the woods jogs past with a fresh bundle of cords, waves without stopping, and shouts, \"You found it! Welcome to MossHome! Our archive remembers every path in the Woods. Go and find out what it remembers, then take the high paths up to the foothills!\"",
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -81,7 +81,7 @@
       "choices": [
         {
           "id": "ask",
-          "label": "Ask to see the path archive",
+          "label": "Act out your road, and ask to see the archive",
           "icon": "scroll",
           "goto": "check_archive_door"
         },
@@ -168,7 +168,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 8,
-      "prompt": "Convince the archivist at the door you've seen something worth writing down",
+      "prompt": "Act out your whole road on the welcome moss, stomping every path that moved under your boots, until the archivist wants it written down",
       "cast": [
         {
           "figure": "cast/mosshome_archivist",
@@ -179,12 +179,13 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_archive_table",
-        "narration": "The archivist's eyebrows go up, and then up again. \"Oh,\" she says. \"Oh, come in. Wipe your feet. Wipe them twice.\""
+        "narration": "You stomp the last bend of your road into the moss. The archivist's eyebrows go up, and then up again. \"Oh,\" she says. \"Oh, come in. Wipe your feet. Wipe them twice.\""
       },
       "onFailure": {
         "goto": "scene_archive_table",
-        "narration": "\"Wait on the bench,\" says the archivist. The bench is still growing. Very slowly, over the next hour, it lifts you up to the window, and you see the table anyway."
-      }
+        "narration": "Halfway through, you stomp the wrong way and sit down hard in the moss. \"Wait on the bench,\" says the archivist. The bench is still growing. Very slowly, over the next hour, it lifts you up to the window, and you see the table anyway."
+      },
+      "checkKind": "doing"
     },
     "scene_archive_table": {
       "type": "story",
@@ -227,7 +228,7 @@
     },
     "scene_archive_table_read": {
       "type": "story",
-      "narration": "Your bigfoot leans over the table and reads it the way MossHome children learn to: one finger along the moss-ink, humming each path's name. The archivist stops fussing about feet altogether. The finger goes round, and round, and round again, and your bigfoot goes very quiet, because the shape is already there under the finger.",
+      "narration": "Your bigfoot leans over the table and reads it the way MossHome children learn to: one finger along the moss-ink, humming each path's name. The archivist stops fussing about feet altogether. The finger goes around, and around, and around again, and your bigfoot goes very quiet, because the shape is already there under the finger.",
       "cast": [
         {
           "figure": "cast/mosshome_archivist",
@@ -295,7 +296,7 @@
     "scene_spiral": {
       "type": "story",
       "priority": 2,
-      "narration": "Plotted on the table, the moved paths are not random at all. They spiral, round and round every place a stone fell, like water round a plughole, every path bending away. It is what the land has been saying all the way north. The Woods is not flinching from the mountain. It is flinching from the stones.",
+      "narration": "Plotted on the table, the moved paths are not random at all. They spiral, around and around every place a stone fell, like bathwater going down the drain, every path bending away. It is what the land has been saying all the way north. The Woods is not flinching from the mountain. It is flinching from the stones.",
       "cast": [
         {
           "figure": "cast/mosshome_archivist",
@@ -446,7 +447,7 @@
     },
     "scene_knot_cords_rest": {
       "type": "story",
-      "narration": "You thank him and turn to go. Behind you, the oldest archivist tells a very old cord, not quite quietly enough, \"Didn't ask where the forest keeps what it takes. Good manners, or no curiosity.\" The archivist walking you out stops in the doorway, sighs, and turns round. \"You'll want to know where the forest keeps what it takes,\" she says. \"Everybody does, in the end.\"",
+      "narration": "You thank him and turn to go. Behind you, the oldest archivist tells a very old cord, not quite quietly enough, \"Didn't ask where the forest keeps what it takes. Good manners, or no curiosity.\" The archivist walking you out stops in the doorway, sighs, and turns around. \"You'll want to know where the forest keeps what it takes,\" she says. \"Everybody does, in the end.\"",
       "cast": [
         {
           "figure": "cast/mosshome_archivist",
@@ -812,7 +813,7 @@
     },
     "scene_runners_post_rush": {
       "type": "story",
-      "narration": "\"The rush road?\" A runner puffs out the news. A ford queue two days long. A witch whose charms ring by themselves. Cinder wolves that won't sleep near the gem wagons. And a soup line, very kind, that keeps asking people about the mountain. \"Same shape as here,\" she says. \"Different country. Everybody's noticing.\"",
+      "narration": "\"The rush road?\" A runner puffs out the news. A line at the ford two days long. A witch whose charms ring by themselves. Cinder wolves that won't sleep near the gem wagons. And a soup line, very kind, that keeps asking people about the mountain. \"Same shape as here,\" she says. \"Different country. Everybody's noticing.\"",
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -869,7 +870,7 @@
     },
     "choice_elders": {
       "type": "choice_point",
-      "narration": "The MossHome elders sit in a ring of tree stumps, sipping tea. \"You have the outline of it now,\" says the eldest. \"The stones are older than the mountain, and the land has been keeping records. Somebody must be told. Tell whoever you like first.\" She sips. \"Only tell us second.\" Who will you tell? Everybody vote.",
+      "narration": "The MossHome elders sit in a ring of tree stumps, sipping tea. \"You have the outline of it now,\" says the eldest. \"The stones are older than the mountain, and the land has been keeping records. Somebody must be told.\" She counts on her fingers. \"The Skywardens, the guards in silver and violet up at Redspire Citadel, who write everything down. Or the dragonling grandmothers in the foothills, who gather what the mountain drops and ring the bells. Tell whoever you like first.\" She sips. \"Only tell us second.\" Who will you tell? Everybody vote.",
       "cast": [
         {
           "figure": "cast/mosshome_eldest",
@@ -893,7 +894,7 @@
         },
         {
           "id": "gatherers",
-          "label": "The dragonling gatherers in the foothills",
+          "label": "The dragonling grandmothers in the foothills",
           "icon": "flame",
           "goto": "choice_elders_gatherers",
           "effects": [
@@ -1118,7 +1119,7 @@
         "faction.deep_hollow_cult",
         "npc.selkie"
       ],
-      "narration": "Where the high paths begin, there's a little tent selling nothing and giving away soup. The woman ladling it is very kind, with a mask pushed up on her head. \"The world's rules are broken,\" she says gently. \"Whatever sleeps under that mountain could fix them. We're collecting, to help it wake.\" She rattles a little box.",
+      "narration": "Where the high paths begin, there's a little tent selling nothing and giving away soup. The woman ladling it is very kind, with a mask pushed up on her head and DEEP HOLLOW stitched small on her apron. Her name is Marigold. \"The world's rules are broken,\" she says gently. \"Whatever sleeps under that mountain could fix them. We're collecting, to help it wake.\" She rattles a little box.",
       "choices": [
         {
           "id": "soup",
@@ -1165,13 +1166,13 @@
       "cast": [
         {
           "figure": "cast/soup_woman",
-          "name": "Soup woman"
+          "name": "Marigold"
         }
       ]
     },
     "scene_soup_tent_coins": {
       "type": "story",
-      "narration": "You drop a few coins in the box. They do not clink. The box is lined with something soft, and the woman's whole face lights up as if you have handed her the sun. \"Thank you,\" she whispers. \"It'll wake so gently.\" You walk on with your hands feeling oddly empty.",
+      "narration": "You drop a few coins in the box. They do not clink. The box is lined with something soft, and Marigold's whole face lights up as if you have handed her the sun. \"Thank you,\" she whispers. \"It'll wake so gently.\" You walk on with your hands feeling oddly empty.",
       "choices": [
         {
           "id": "on",
@@ -1183,7 +1184,7 @@
       "cast": [
         {
           "figure": "cast/soup_woman",
-          "name": "Soup woman"
+          "name": "Marigold"
         }
       ]
     },
@@ -1201,13 +1202,13 @@
       "cast": [
         {
           "figure": "cast/soup_woman",
-          "name": "Soup woman"
+          "name": "Marigold"
         }
       ]
     },
     "scene_soup_tent_soup": {
       "type": "story",
-      "narration": "You have the soup. It is very good soup. The woman watches you eat with great kindness and says nothing more, and when you hand the bowls back she has somehow already washed them. The little box rattles once as you go, on its own.",
+      "narration": "You have the soup. It is very good soup. Marigold watches you eat with great kindness and says nothing more, and when you hand the bowls back she has somehow already washed them. The little box rattles once as you go, on its own.",
       "choices": [
         {
           "id": "on",
@@ -1219,7 +1220,7 @@
       "cast": [
         {
           "figure": "cast/soup_woman",
-          "name": "Soup woman"
+          "name": "Marigold"
         }
       ]
     },
@@ -1275,7 +1276,7 @@
       },
       "onFailure": {
         "goto": "scene_halfway_hut",
-        "narration": "Halfway along, your arms get tired and you dangle for a moment, like a sock on a washing line, until the others reach out and pull you in by the belt. Nobody looks down. Well, one person looks down, once, and decides never to do that again."
+        "narration": "Halfway along, your arms get tired and you dangle for a moment, like a sock on a clothesline, until the others reach out and pull you in by the belt. Nobody looks down. Well, one person looks down, once, and decides never to do that again."
       }
     },
     "choice_rope_bridge_knot": {
@@ -1292,7 +1293,7 @@
     },
     "scene_halfway_hut": {
       "type": "story",
-      "narration": "Halfway up the high paths stands a stone hut with a mossy roof, and an old bigfoot path-keeper sitting outside it with a book open on his knees. \"Visitors' book,\" he says proudly. \"Everybody who goes up, signs. Been kept since before MossHome had a name.\" The book is enormous. The oldest pages are not written at all. They are knotted.",
+      "narration": "Halfway up the high paths stands a stone hut with a mossy roof, and an old bigfoot path-keeper sitting outside it with a book open on his knees. \"Visitors' book,\" he says proudly. \"Everybody who goes up, signs, so I know who to go looking for if they don't come down. Been kept since before MossHome had a name.\" The book is enormous. The oldest pages are not written at all. They are knotted.",
       "cast": [
         {
           "figure": "cast/path_keeper",
@@ -1344,7 +1345,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Make sense of the oldest knotted pages of the visitors' book",
+      "prompt": "Untangle the oldest knotted pages of the visitors' book without pulling a single knot loose",
       "cast": [
         {
           "figure": "cast/path_keeper",
@@ -1355,11 +1356,11 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_high_paths",
-        "narration": "Back and back you turn, past ink, past scratches, to the knotted pages. And there, in one old cord, a knot shaped like a spiral. The path-keeper whistles. \"The paths moved like that once before,\" he says. \"Long, long ago. The archivists will want to know you found that.\" He ties a ribbon on the page."
+        "narration": "Back and back you turn, past ink, past scratches, to the knots. Each knot is a climber, and the little knots tied on after are what they met on the way up. The commonest one, by far, means CROSS ANIMALS: THROW THEM A SNACK. The path-keeper taps it. \"Still good advice,\" he says. \"There are wolves up there today.\""
       },
       "onFailure": {
         "goto": "scene_high_paths",
-        "narration": "The knotted pages are like trying to read a jumper. You turn it upside down and it makes even less sense. The path-keeper chuckles, closes the book, and pours you a cup of something hot. \"Takes forty years to read those,\" he says. \"I've done thirty-one.\""
+        "narration": "The knotted pages are like trying to read a knitted sweater. You turn it upside down and it makes even less sense. The path-keeper chuckles, closes the book, and pours you a cup of something hot. \"Takes forty years to read those,\" he says. \"I've done thirty-one.\""
       }
     },
     "scene_high_paths": {
@@ -1396,7 +1397,7 @@
         },
         {
           "id": "stand",
-          "label": "Stand tall and make them go round",
+          "label": "Stand tall and make them go around",
           "icon": "swords",
           "goto": "encounter_wolves"
         }
@@ -1428,11 +1429,11 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_cloud_gatherer",
-        "narration": "You lob a handful of biscuits from your packs down the slope. Three wolves look at each other, then at the biscuits, and decide biscuits win."
+        "narration": "You lob a handful of jerky from your packs down the slope. Three wolves look at each other, then at the jerky, and decide jerky wins."
       },
       "onFailure": {
         "goto": "encounter_wolves",
-        "narration": "The biscuit bounces off a wolf's nose. The wolf does not find this funny."
+        "narration": "A strip of jerky bounces off a wolf's nose. The wolf does not find this funny."
       }
     },
     "check_dash": {
@@ -1453,7 +1454,7 @@
       },
       "onFailure": {
         "goto": "encounter_wolves",
-        "narration": "The rope bridge squeaks. Six glowing ears turn round."
+        "narration": "The rope bridge squeaks. Six glowing ears turn around."
       }
     },
     "encounter_wolves": {
@@ -1496,7 +1497,7 @@
       "discovers": [
         "creature.embermoth"
       ],
-      "narration": "Past the wolves the path climbs into cloud, and in it, sitting on a rock with her tail wrapped round her knees, is a young dragonling with a gathering bag. \"I'm not lost,\" she says at once. \"I'm waiting for the cloud to go.\" A flock of embermoths drifts past, glowing, heading south, away from the mountain. She stares. \"They never go that way.\"",
+      "narration": "Past the wolves the path climbs into cloud, and in it, sitting on a rock with her tail wrapped around her knees, is a young dragonling with a gathering bag. \"I'm not lost,\" she says at once. \"I'm waiting for the cloud to go.\" A flock of embermoths drifts past, glowing, heading south, away from the mountain. She stares. \"They never go that way.\"",
       "cast": [
         {
           "figure": "cast/young_gatherer",
@@ -1644,7 +1645,7 @@
       "discovers": [
         "biome.red_sky_foothills"
       ],
-      "narration": "By the time you have found most of your things it is dark, and the wolves are grumbling somewhere above you. You make a cold camp in the gully and come down into the foothills the long way round, a day late and one sock short. The mountain did not wait for you.",
+      "narration": "By the time you have found most of your things it is dark, and the wolves are grumbling somewhere above you. You make a cold camp in the gully and come down into the foothills the long way around, a day late and one sock short. The mountain did not wait for you.",
       "heal": 3,
       "choices": [],
       "outcome": "setback"
