@@ -10,10 +10,11 @@
  * is no room — the entry points resolve the principal and hand it in.
  */
 
-import { resolveCharacter, type Character, type JournalResponse } from "@kad/shared";
+import { resolveCharacter, storyChapters, type Character, type JournalResponse, type JournalStoryCampaign } from "@kad/shared";
 import { ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { listHeroes } from "./heroes.ts";
 import { viewOf } from "./profile.ts";
+import type { CampaignProgressRecord } from "../store/repository.ts";
 
 export interface JournalInput {
   householdId: string;
@@ -32,12 +33,13 @@ export async function getJournal(
   input: JournalInput,
   deps: HandlerDeps,
 ): Promise<HandlerResult<JournalResponse>> {
-  const [heroes, book, characters, players, whereabouts] = await Promise.all([
+  const [heroes, book, characters, players, whereabouts, attempts] = await Promise.all([
     listHeroes(input, deps),
     deps.repo.getFieldGuide(input.householdId),
     deps.repo.listCharacters(input.householdId),
     deps.repo.listPlayers(input.householdId),
     whereaboutsOf(input.householdId, deps),
+    deps.repo.listCampaignProgress(input.householdId),
   ]);
   if (!heroes.ok) return heroes;
   const finders = findersOf(players, characters, deps);
@@ -51,7 +53,31 @@ export async function getJournal(
     whereabouts,
     finished,
     ...(profile ? { profile } : {}),
+    story: storyOf(attempts, deps),
   });
+}
+
+/**
+ * The Story page (#358): each campaign attempt the household has, with the
+ * chapters it played, newest attempt first. The household's, like the atlas:
+ * the story is the table's, whoever was seated for which chapter. A campaign
+ * the content no longer ships, or an attempt with no chapter to show, is left
+ * out.
+ */
+function storyOf(
+  attempts: readonly CampaignProgressRecord[],
+  deps: HandlerDeps,
+): JournalStoryCampaign[] {
+  const chapter = (id: string) => deps.content.chapter(id);
+  return [...attempts]
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+    .flatMap((attempt) => {
+      const campaign = deps.content.campaign(attempt.campaignId);
+      if (!campaign) return [];
+      const chapters = storyChapters(campaign, attempt, chapter);
+      if (chapters.length === 0) return [];
+      return [{ campaignId: campaign.id, title: campaign.title, status: attempt.status, chapters }];
+    });
 }
 
 /**
