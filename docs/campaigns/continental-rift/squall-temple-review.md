@@ -35,3 +35,13 @@ closes as the squall eases. A lost fight leaves the landing closed for morning
 repairs. The recorded log or map changes the relief watch's first instructions.
 Rest uses rescued cushions and temple rice buns. Spine tests retain all six checks,
 at least 30 scenes and 14 decisions, with the chores before the climax.
+
+### Pacing before and after review fixes
+
+| Shortest success spine | Before | After |
+|---|---:|---:|
+| Scenes | 45 | 45 |
+| Decisions | 14 | 14 |
+| Physical checks | 6 | 6 |
+| Encounters | 1 | 1 |
+| Longest reading run | 3 | 3 |
