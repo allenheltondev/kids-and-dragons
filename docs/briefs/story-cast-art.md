@@ -371,7 +371,7 @@ Audited all `cast` entries in `content/chapters/gemfall-*.json` against main on 
 | Road-Warden | `entities/centaur` | 04a (7) | Centaur road warden in road-stitched sash carrying spare marker ribbons. |
 | Rush drover | `entities/centaur` | 02 (4) | Centaur wagon drover with road-dust coat, feed bag and impatient stance. |
 | Rush prospector | `entities/burrowfolk` | 05c (5) | Burrowfolk in dusty workwear with an oversized pry bar; stubborn but approachable. |
-| Seal-Keeper | `entities/legend_dragon` | 08 (31) | Ancient seal dragon, patient eyes and weathered scales; existing legend-dragon silhouette is intentional. |
+| Seal-Keeper | `entities/legend_dragon` | 08 (31) | A dedicated `seal_keeper` figure is wanted ([#384](https://github.com/allenheltondev/kids-and-dragons/issues/384)); §4's look stands. Keep the legend-dragon stand-in until it lands. |
 | Selkie Grandmother | `entities/selkie` | 01 (5) | Silver-haired selkie elder with seal cloak, teal knit shawl and bundled travel blanket. |
 | Skywardens | `entities/skywardens` | 06, 07r (49) | Mixed silver-and-violet uniformed order; keep ensemble art for the group. |
 | Stall Witch | `entities/witch_order` | 07l (4) | Single market witch with pointed hat, charm bundles and a patient sales smile. |
