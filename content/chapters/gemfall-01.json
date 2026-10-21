@@ -936,7 +936,7 @@
     },
     "scene_three_rumours": {
       "type": "story",
-      "narration": "By sunset you have heard of three roads north. East, the line at Stone Crossing is three days long, the trolls take a story instead of coins, and a river drake is charging double. Straight north, the old caravan road through the Plains is the shortest way, so everybody is on it, wheel to wheel. West, the frogfolk still pole travelers through the Whispering Marsh, if they like you, and the marsh has been noisy since the red night. \"And watch the sky,\" adds the yeti fishmonger. \"The courier griffins are flying so overloaded with claim letters they can barely steer.\"",
+      "narration": "By sunset you have heard of three roads north. East, the queue at Stone Crossing is three days long, the trolls take a story instead of coins, and a river drake is charging double. Straight north, the old caravan road through the Plains is the shortest way, so everybody is on it, wheel to wheel. West, the frogfolk still pole travelers through the Whispering Marsh, if they like you, and the marsh has been noisy since the red night. \"And watch the sky,\" adds the yeti fishmonger. \"The courier griffins are flying so overloaded with claim letters they can barely steer.\"",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -964,7 +964,7 @@
       "discovers": [
         "character.griffin"
       ],
-      "narration": "On the way back you pass the Griffin Post, a tall tower full of round windows. Courier griffins line up on the roof while clerks stuff claim letters into their sacks, and then a few more, and then a few more after that. The postmaster, a griffin called Quill with spectacles on a chain, is losing count. \"Hands!\" she squawks. \"Anybody with hands!\"",
+      "narration": "On the way back you pass the Griffin Post, a tall tower full of round windows. Courier griffins queue on the roof while clerks stuff claim letters into their sacks, and then a few more, and then a few more after that. The postmaster, a griffin called Quill with spectacles on a chain, is losing count. \"Hands!\" she squawks. \"Anybody with hands!\"",
       "cast": [
         {
           "figure": "cast/postmaster_quill",

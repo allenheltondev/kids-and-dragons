@@ -119,7 +119,8 @@ const PRE_EPIC = JSON.parse(
  * Re-pinned for the 01 and 02 cohesion fixes (#368): wording, labels, check
  * prompts and one `checkKind` only. Each opening says its chapter's goal, 01
  * names the evening's plan and introduces the Empty Chair before using it, 02
- * names Hesper's caravan and has her say goodbye, and UK idioms became US.
+ * names Hesper's caravan and has her say goodbye, and UK idioms became US
+ * ("queue" stays, by the owner's ruling).
  * No scene, edge, flag, effect, stat or TN moved; the endings, roads,
  * setbacks and saves below still match their pre-epic digests.
  *
@@ -131,8 +132,8 @@ const PRE_EPIC = JSON.parse(
  */
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
-  "chapters/gemfall-01.json": "3e3ce3c3b2a39a5833ecfb464d4af0df65827cbd2f312ba42e8c62440a37931a",
-  "chapters/gemfall-02.json": "4a56aa1f5da2013cbbcf85b3d6a69e9ac1fa2b6f5ae5ac06b9c64383583df50d",
+  "chapters/gemfall-01.json": "185f2344ddc0a02b752d1e16cdfc2d699adee2ea5acc1aa4c3e7ae49e43f6951",
+  "chapters/gemfall-02.json": "025601275c30803358b3fea1ea8b552eb3ca78f7eb48a98e745b8063347b1829",
   "chapters/gemfall-03a.json": "2543acfd89b948804507bcec9667f9c2e19b2ad42b20d3f5ffdee17ba59bd73d",
   "chapters/gemfall-03b.json": "37f9a6d76003d1eec4660fa4a86ffdf7b9da305fc79618d2df6821bd4254a734",
   "chapters/gemfall-03c.json": "78e7df8bd534f191be7d113090b7cbf684847a8adcf120533809e6ca2abdf243",
