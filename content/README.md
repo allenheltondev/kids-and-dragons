@@ -438,7 +438,20 @@ reading about one.
   `cast/<id>` (a named character's own figure, `assets/cast/<id>/assembled.png`). `npm run
   content:validate` fails, naming the expected file, if the art is not there.
 - `name` is the nameplate (32 characters at most). Omit it for an unnamed creature.
-- `size` defaults to the entity's `scale` in `assets/manifest.json`, or `medium` (a hero's height).
+- Every figure stands at its **true height** beside the party (canon `height_cm`, or `heightCm` on a
+  `cast/` figure in `assets/manifest.json`), so a teapot-sized sprite is a sixth of a faun and a troll
+  towers over both. A big guest shrinks the stage a little (never below 85% of true size); a huge one
+  overflows the frame instead: a dragon stands on the ground and runs off the top, a cloud whale runs
+  off the right, with its name kept on screen. Overflow direction comes from the art's shape, or from
+  `figureOverflow` in `assets/manifest.json`.
+- `size` is only for when *this* character is not the usual size for their figure: a faun child
+  (`"small"` on `entities/faun`), a manticore cub. It moves the figure's height to the nearest point
+  inside that band, so a size that restates the figure's own band changes nothing. Leave it off
+  otherwise.
+- `stance` overrides how the figure occupies the scene: `standing` (feet on the ground), `hovering`
+  (lifted a little, bobbing), `flying` (lifted further, drifting) or `swimming` (the ground line is a
+  water line hiding the lower body). Defaults to the figure's canon stance. A griffin landed in one
+  scene and in flight in the next.
 - Three at most, and never a party member.
 
 Guidance:

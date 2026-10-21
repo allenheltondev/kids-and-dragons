@@ -41,6 +41,7 @@
     "perf:bundle": "tsx tools/perf/bundle-budget.ts",
     "art:inventory": "node tools/art/inventory.ts",
     "art:portraits": "python3 tools/art/portraits.py",
+    "art:figures": "tsx tools/art/figure-sizes.ts",
     "build": "npm run build --workspace @kad/client",
     "e2e": "playwright test",
     "e2e:prod": "playwright test -c playwright.prod.config.ts",
