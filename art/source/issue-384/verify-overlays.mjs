@@ -1,4 +1,4 @@
-// Direct art acceptance for #384 until #360 connects the runtime's overlay gate.
+// Direct art acceptance for #384 until the approved #361 design's runtime gate is implemented.
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import { PNG } from 'pngjs';
