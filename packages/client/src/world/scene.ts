@@ -677,6 +677,18 @@ export function createScene(app: Application): PartyScene {
     return Math.max(DESIGN.width, Math.min(frame.width / contain, DESIGN.width * MAX_STAGE_SPREAD));
   }
 
+  /**
+   * The right edge of what the camera shows, in design units. Wider than the
+   * layout's `stageWidth` on a very wide frame (a TV with the goal head and the
+   * plate both up), where the spread is capped but the picture is not.
+   */
+  function visibleRightEdge(): number {
+    const frame = cameraViewport();
+    if (!(frame.width > 0) || !(frame.height > 0)) return DESIGN.width;
+    const contain = Math.min(frame.width / DESIGN.width, frame.height / DESIGN.height);
+    return DESIGN.width / 2 + frame.width / contain / 2;
+  }
+
   function layoutActors(): void {
     const list = [...actors.values()];
     const cast = [...castActors.values()].filter((member) => !member.leaving);
@@ -705,7 +717,7 @@ export function createScene(app: Application): PartyScene {
     const slot = slots.partySlot * nameplateSlot;
     // The right edge of what the camera shows, in design units: an
     // overflowing figure's name is pinned inside it.
-    const visibleRight = left + width;
+    const visibleRight = visibleRightEdge();
     // The right edge of the party's share of the stage: no overflowing guest stands over a hero.
     const partyEdge = slots.party.length > 0 ? Math.max(...slots.party) + slots.partySlot / 2 : left;
     cast.forEach((member, index) => {
@@ -722,8 +734,13 @@ export function createScene(app: Application): PartyScene {
         // until its right edge meets the frame's, but never past the party.
         const slotLeft = slots.castLeft[index] ?? member.x;
         member.x = Math.min(slotLeft, Math.max(partyEdge, visibleRight - paintWidth));
+      } else if (way === "right") {
+        // A wide one runs off the right however wide the stage: anchored at
+        // its slot, or further right, so at least WIDE_SPILL of it is past the edge.
+        const slotLeft = slots.castLeft[index] ?? member.x;
+        member.x = Math.max(slotLeft, visibleRight - paintWidth * (1 - WIDE_SPILL));
       } else {
-        member.x = (way ? slots.castLeft[index] : slots.cast[index]) ?? member.x;
+        member.x = slots.cast[index] ?? member.x;
       }
       if (member.label) {
         member.label.visible = nameplatesVisible;
@@ -1648,6 +1665,9 @@ function restY(figure: StageFigureArt): number {
 function shadowScale(figure: StageFigureArt, idle: number): number {
   return (figure.canvas / figure.shadowCanvas) * STANCE_SHADOW[figure.stance].size * idle;
 }
+
+/** The least share of a figure overflowing off the right that is past the frame's edge: it reads as running off, not as fitting. */
+const WIDE_SPILL = 0.3;
 
 /** The ripple is drawn this wide and scaled to the swimmer. */
 const RIPPLE_UNIT = 100;

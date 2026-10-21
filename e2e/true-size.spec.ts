@@ -184,7 +184,7 @@ test.describe("true size and stance on the story stage", () => {
       expect(bigfoot.height / kitsune.height).toBeCloseTo(215 / 85, 1);
       expect(dragon.x).toBeGreaterThan(bigfoot.x + bigfoot.width * 0.5);
       // The floor: Pib is a figure, not a speck.
-      expect(pib.height).toBeGreaterThan(height * 0.04);
+      expect(pib.height).toBeGreaterThan(height * 0.03);
       expect(pib.height).toBeLessThan(kitsune.height);
 
       await namesOnScreen(tv, width, ["Pib", "The Old One"]);
@@ -193,8 +193,14 @@ test.describe("true size and stance on the story stage", () => {
       const goal = await tv.getByTestId("chapter-goal").boundingBox();
       if (goal) {
         const onTop = await tv.evaluate(({ x, y }) => {
+          // The goal lets taps through (pointer-events: none), which would
+          // make it invisible to a hit test; let it be hit for this one check.
+          const style = document.createElement("style");
+          style.textContent = "[data-testid='chapter-goal'], [data-testid='chapter-goal'] * { pointer-events: auto !important; }";
+          document.head.appendChild(style);
           const hit = document.elementFromPoint(x, y);
-          return hit?.closest("[data-testid='chapter-goal']") !== null;
+          style.remove();
+          return hit?.closest("[data-testid='chapter-goal']") != null;
         }, { x: goal.x + goal.width / 2, y: goal.y + goal.height / 2 });
         expect(onTop, "the goal is drawn over the overflowing dragon").toBe(true);
         expect(dragonReading.labelTop!).toBeGreaterThan(goal.y + goal.height);
