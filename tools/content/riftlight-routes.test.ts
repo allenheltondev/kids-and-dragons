@@ -98,6 +98,22 @@ it("a background-only story biome needs explicit scene art rather than tactical 
   try {
     const file = path.join(root, "content/chapters/riftlight-saltrot-arrival.json");
     const chapter = JSON.parse(fs.readFileSync(file, "utf8"));
+    // This assertion concerns chapter art, not every route in the campaign.
+    // Keep the shipping validator and assets, but give it a small valid route.
+    const campaignFile = path.join(root, "content/campaigns", `${campaign.id}.json`);
+    const fixture = JSON.parse(fs.readFileSync(campaignFile, "utf8"));
+    // Retain the opening's class rooms as well as the chapter under test.
+    const kept = [...chapters.values()].filter(c => c.index <= 3 || c.id === chapter.id).map(c => c.id);
+    for (const id of fixture.chapters) {
+      if (!kept.includes(id)) fs.rmSync(path.join(root, "content/chapters", `${id}.json`));
+    }
+    fixture.chapters = kept;
+    fixture.graph = { version: 1, entry: kept[0], flags: fixture.graph.flags,
+      nodes: Object.fromEntries(kept.map((id, i) => [id, { chapter: id, ...(i === kept.length - 1 ? { ending: { title: "Art fixture" } } : {}) }])),
+      edges: Object.fromEntries(kept.slice(1).map((id, i) => [`next_${i}`, { from: kept[i], to: id, kind: "forward" }])) };
+    fs.writeFileSync(campaignFile, JSON.stringify(fixture));
+    const baseline = runValidator(root);
+    expect(baseline.ok, baseline.output).toBe(true);
     delete chapter.scenes.flats.art;
     fs.writeFileSync(file, JSON.stringify(chapter));
     const result = runValidator(root);

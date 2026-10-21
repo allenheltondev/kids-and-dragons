@@ -40,3 +40,13 @@ the old room, and builders lose their free morning. A chosen route diagram or
 quiet sign helps the next visitor. The spine is 45 scenes, 14 decisions and six
 physical checks after the change. The original 50,000 graph-state cap is restored;
 route exploration and replay pass without increasing timeouts.
+
+### Pacing before and after review fixes
+
+| Shortest success spine | Before | After |
+|---|---:|---:|
+| Scenes | 45 | 45 |
+| Decisions | 15 | 14 |
+| Physical checks | 6 | 6 |
+| Encounters | 1 | 1 |
+| Longest reading run | 2 | 3 |
