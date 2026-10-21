@@ -53,7 +53,7 @@ optional. Fragments are knowledge, never inventory items.
 
 The wyrm can become a neighbor and later ally, be driven away, or keep its nest
 while the builders relocate. The temple's landing can be diverted, safely
-settled beside the island, or damaged and repaired after a lost fight. Ordinary
+settled beside the island, or damaged and closed for morning repairs after a lost fight. Ordinary
 failed checks change methods and costs, then continue; they do not end a chapter.
 
 At convergence, trust from the whale opening plus stopping Olivia yields her
@@ -64,7 +64,11 @@ Olivia makes one summoning; heroes never summon rifts. Manipulate holds a
 condition and cannot change a destination, use limit or return behavior.
 
 The finale offers **The Glacier Keepers**, **The Ones Who Listened**, and the
-completing setback **Rivers Wander** after a late whole-party battle loss.
+completing setback **Rivers Wander** after a lost battle and a failed recovery attempt.
+The first loss brings everyone to the watcher, spends the extra support and leaves
+some places shifted. A different attempt uses the retreat signals and ridge brace;
+success still offers both futures, with a scar on the map. Only its failure ends
+the campaign at Rivers Wander.
 Two discoveries anchor the present land. A third discovery or either allied
 Olivia or wyrm can supply one additional anchor, capped at three; choosing that
 support selects a weaker opponent with one fewer crawler. The party can instead

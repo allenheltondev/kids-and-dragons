@@ -8752,7 +8752,9 @@
             "final_tear",
             "final_companions"
           ],
-          "introduces": {}
+          "introduces": {
+            "final_watcher": "a yeti watcher"
+          }
         },
         "shelter_1": {
           "requires": [
@@ -8776,7 +8778,9 @@
             "final_tear",
             "final_companions"
           ],
-          "introduces": {}
+          "introduces": {
+            "final_retreat_signal": "one clear sign"
+          }
         },
         "watcher_lane_1": {
           "requires": [
@@ -8800,7 +8804,9 @@
             "final_tear",
             "final_companions"
           ],
-          "introduces": {}
+          "introduces": {
+            "final_brace": "Seren shows how its pressure eases when the ridge is held still."
+          }
         },
         "hold_condition_1": {
           "requires": [
@@ -9030,7 +9036,10 @@
           "requires": [
             "final_map",
             "final_tear",
-            "final_companions"
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
           ],
           "introduces": {}
         },
@@ -9038,7 +9047,10 @@
           "requires": [
             "final_map",
             "final_tear",
-            "final_companions"
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
           ],
           "introduces": {}
         },
@@ -9046,7 +9058,10 @@
           "requires": [
             "final_map",
             "final_tear",
-            "final_companions"
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
           ],
           "introduces": {}
         },
@@ -9054,7 +9069,10 @@
           "requires": [
             "final_map",
             "final_tear",
-            "final_companions"
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
           ],
           "introduces": {}
         },
@@ -9071,6 +9089,61 @@
             "final_map",
             "final_tear",
             "final_companions"
+          ],
+          "introduces": {}
+        },
+        "loss_anchor_plan": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
+          ],
+          "introduces": {}
+        },
+        "loss_anchor_brace": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
+          ],
+          "introduces": {}
+        },
+        "loss_anchor_rhythm": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
+          ],
+          "introduces": {}
+        },
+        "loss_anchor_check": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
+          ],
+          "introduces": {}
+        },
+        "loss_second_failed": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
           ],
           "introduces": {}
         }
