@@ -9,6 +9,7 @@
 
 import { test, expect, type Browser, type Page } from "@playwright/test";
 import { guidePicture } from "./guide-pictures";
+import { createCharacter } from "./characters";
 
 const TAP = { timeout: 20_000 } as const;
 const WHO = /who.s playing\?/i;
@@ -99,8 +100,12 @@ test.describe("a group with two organizers", () => {
       await seat.getByLabel("Room code, four letters").fill(room);
       await seat.getByRole("button", { name: /join a game/i }).click();
       await expect(seat).toHaveURL(new RegExp(`/p/${room}$`), TAP);
+      // Joining reserves a seat; the lobby party lists completed heroes.
+      // These new kids have no saved hero to bring, so finish creation first.
+      await createCharacter(seat, i === 0 ? "unicorn" : "griffin", kid);
     }
-    await expect(tv.getByText("Posy")).toBeVisible(TAP);
-    await expect(tv.getByText("Gullet")).toBeVisible(TAP);
+    const lobby = tv.getByRole("region", { name: "Everyone in?" });
+    await expect(lobby.getByText("Posy", { exact: true })).toBeVisible(TAP);
+    await expect(lobby.getByText("Gullet", { exact: true })).toBeVisible(TAP);
   });
 });
