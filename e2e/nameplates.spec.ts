@@ -197,7 +197,12 @@ test.describe("nameplates", () => {
       });
       await expect.poll(async () => {
         const { figures, labels } = await reading();
-        return figures?.length === 4 && figures.every((b) => b.height >= 110 && b.x >= 0 && b.x + b.width <= 390) &&
+        // True proportion (#362): a kitsune hero is half a unicorn, so it is the
+        // tallest figure that has to stay big enough to read, and the rest
+        // stay clear of the speck the stage's floor prevents.
+        const tallest = Math.max(...(figures ?? []).map((b) => b.height));
+        return figures?.length === 4 && tallest >= 110 &&
+          figures.every((b) => b.height >= 45 && b.x >= 0 && b.x + b.width <= 390) &&
           labels?.length === 4 && labels.every((b) => b.fontPixels >= 10 && b.x - b.width / 2 >= 0 && b.x + b.width / 2 <= 390);
       }, { timeout: 30_000 }).toBe(true);
       const labels = (await reading()).labels!;

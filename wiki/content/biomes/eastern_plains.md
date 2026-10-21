@@ -3,7 +3,7 @@ title: The Eastern Plains
 id: biome.eastern_plains
 type: biome
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-03a", "gemfall-04a", "gemfall-05a"]
 tags: ["eastern_grassland", "manticore_homeland", "roads", "prides", "caravans"]
@@ -14,7 +14,7 @@ regional_relationships:
     url: "/locations/stone_crossing/"
     relationship: "The southern door and the social calendar: escorts begin and end there, riddles are traded there, and a pride's reputation is half made in the bridge queue."
   - id: route.northern_river_bridge
-    title: "Northern River Bridge"
+    title: "Ashspan Bridge"
     url: "/routes/northern_river_bridge/"
     relationship: "The northern door, quieter and colder, held in reserve; when Stone Crossing closes, the prides reroute the realm's traffic overnight and consider it good exercise."
   - id: biome.frostfang_peaks
@@ -150,7 +150,7 @@ East of the river, safe passage is a manticore promise, and the realm has learne
 ### Neighbors
 
 - **[Stone Crossing](/locations/stone_crossing/)**: The southern door and the social calendar: escorts begin and end there, riddles are traded there, and a pride's reputation is half made in the bridge queue.
-- **[Northern River Bridge](/routes/northern_river_bridge/)**: The northern door, quieter and colder, held in reserve; when Stone Crossing closes, the prides reroute the realm's traffic overnight and consider it good exercise.
+- **[Ashspan Bridge](/routes/northern_river_bridge/)**: The northern door, quieter and colder, held in reserve; when Stone Crossing closes, the prides reroute the realm's traffic overnight and consider it good exercise.
 - **[Frostfang Peaks](/biomes/frostfang_peaks/)**: The peaks watch the north and the prides watch the ground, and between them very little crosses the east unobserved.
 - **[The Sallow Wastelands](/biomes/sallow_wastelands/)**: The southern flats are where pride escorts stop, hand travelers to the Saltrot guides, and wish everyone luck in a tone that means it.
 
@@ -200,7 +200,7 @@ East of the river, safe passage is a manticore promise, and the realm has learne
 - [Stone Troll](/npcs/stone_troll/) `Secondary Locations`
 
 ### Routes
-- [Northern River Bridge](/routes/northern_river_bridge/) `Connects`
+- [Ashspan Bridge](/routes/northern_river_bridge/) `Connects`
 - [Stone Crossing Route](/routes/stone_crossing/) `Connects`
 <!-- END GENERATED: relationships -->
 
