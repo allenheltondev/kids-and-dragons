@@ -2113,7 +2113,8 @@
       "narration": "The relay runner talks fast, the way runners do. East, the queue at Stone Crossing is moving again, slowly. The trolls there take a story instead of coins, and a river drake is charging double to anyone who won't wait. \"Past the river it's all open country,\" she says. \"You can see trouble coming a day away. Doesn't mean you can stop it.\"",
       "cast": [
         {
-          "figure": "entities/centaur"
+          "figure": "cast/relay_runner",
+          "name": "Relay Runner"
         }
       ],
       "choices": [

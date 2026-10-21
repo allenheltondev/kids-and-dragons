@@ -216,11 +216,12 @@ const DIGESTS: PreEpicSave["digests"] = {
  */
 // Re-pinned for #384: fourteen commissioned cast figures replace role stand-ins;
 // chapter edits change cast figures and remove obsolete size overrides only.
+// Review follow-up also replaces four unnamed Keeper entries and the chapter-2 relay runner.
 // The gameplay digests (endings, roads, setbacks and saves) remain unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "cfb136f60708bcd2e5b68a7536ccd963a83dadb52e61e9e679377f264b10bf88",
   "chapters/gemfall-01.json": "6a21e0dc2ca2e51b053ef8733c68d179484e31f39e048081c0fd36bfaef739a0",
-  "chapters/gemfall-02.json": "025601275c30803358b3fea1ea8b552eb3ca78f7eb48a98e745b8063347b1829",
+  "chapters/gemfall-02.json": "d1963f88590f6c61256d50ca9f4e344948bd4a99c12650b725877b71f59d5503",
   "chapters/gemfall-03a.json": "940cc652383e330178142033b55ea966544b68ed0c7487eb64c0ae7db0d93769",
   "chapters/gemfall-03b.json": "63a8691786e362d29deee55be9259d115019c970832888123a1f6e66cf319336",
   "chapters/gemfall-03c.json": "c5256936dacf59322ae1bb339224e1b41f45cad87f396fbf8d51f3100e85ade3",
@@ -234,7 +235,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-07h.json": "9d5eb63ab79d4cb00e4fc33f4b5337e1c93db0ab706dcc4159d9574ec4737d24",
   "chapters/gemfall-07l.json": "7d230e37d0326173af894286bc6abc41ad738d283198ea349538943baa581f78",
   "chapters/gemfall-07r.json": "34ecb159500c1b3659af7a77eb4886d99f21d2f011811b413f0dab5a232be8d8",
-  "chapters/gemfall-08.json": "01963781cf6039299b0d11a8f6c4faca1057bc4862d3d1530d5fae92ee1e13c8",
+  "chapters/gemfall-08.json": "cbd875b95ce97ebfd5dcb105f8ba52c034489ba4f6206d701795ae086b8f8e80",
 };
 
 describe("Gemfall's files are the files that shipped before the epic", () => {

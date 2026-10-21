@@ -24,7 +24,7 @@ Mother Thrum's bigfoot figure. The Brassbuckle colleagues share hats and expedit
 but differ in build, expression, spectacles and props. The runner is dark bay with a tied
 braid and chest bandolier, distinct from Bracken's chestnut coat and saddle satchel.
 
-165 cast entries across 14 Gemfall chapter files now use these figures. No narration,
+170 cast entries across 15 Gemfall chapter files now use these figures. No narration,
 choices, flags, checks or encounter data changed. Obsolete `size` overrides were removed
 from the replaced figures. File hashes were re-taken with an explanatory comment in
 `gemfall-compat.test.ts`; gameplay digests are unchanged.
@@ -47,10 +47,10 @@ ignored `art/review/issue-384/`; representative captures keep this record compac
 
 | Figure | Entries | Height |
 |---|---:|---:|
-| Seal-Keeper | 50 | 1800 cm |
+| Seal-Keeper | 54 | 1800 cm |
 | Brassbuckle scout | 17 | 95 cm |
 | Brassbuckle recordkeeper | 17 | 95 cm |
-| Relay Runner | 11 | 230 cm |
+| Relay Runner | 12 | 230 cm |
 | Masked choir singer | 13 | 95 cm |
 | Bell-Code Expert | 8 | 70 cm |
 | Gullet's Cousins (foreman) | 8 | 110 cm |
@@ -71,28 +71,33 @@ Counts reflect this checkout after the later Gemfall rewrites, rather than the i
 Each move has two 1600×360 bands and four 192×192 tokens, declared under
 `togetherOverlays` exactly with the dimensions and state names from brief §7.3.
 Bands have a clear top 90 rows and fading sides; tokens have a clear 62 px radius centre
-and 8 px edge. Tokens use shape changes, no hands or feet, and no painted text. The export
-registers the five painted tiptoe prints separately on a common circle so no print is cut
-by the portrait hole. A star and a small helper circle distinguish the final two states.
+and 8 px edge. Tokens use shape changes, no hands or feet, and no painted text. The revised tiptoe tokens use five thick curved bean shapes with cream and brown rims.
+A prominent star and a secondary helper loop distinguish the final two states. All four
+states were reviewed at actual 72 px size over bright market and dark Hollow Gate scenes.
+The empty token now has 9,396 visible pixels, compared with 256 before revision.
+
+![Tiptoe tokens before and after at actual phone size](tiptoe-phone.webp)
+
 The largest band is 221,112 bytes; the largest token is 23,490 bytes.
 
 **Implementation status:** the approved group-action design from #360 merged in
 [PR #361](https://github.com/allenheltondev/kids-and-dragons/pull/361), which changed the
-design brief only. This branch includes that merge and current main (`efbc019c`). The
-runtime, schema/types, `content:validate` gate and integrated art verifier/contact-sheet
-support described by the brief are still absent from main. Accepting an authored
-`together.move` requires implementing that approved design. This art delivery does not
-enable group actions or opt gameplay checks in. The direct acceptance script below covers
-all 18 files until those integrated checks land; #360 itself is already complete.
+design brief only. This branch includes that merge and main at `79c06b21`. The
+runtime, schema/types, `content:validate` gate and automatic contact-sheet support
+described by the brief still need implementation. The overlay art checks now run in
+`tools/art/verify.py`, through the normal art gate and CI, with Vitest regression coverage.
+This delivery does not enable group actions or opt gameplay checks in. Issue #384 remains
+open for the outstanding runtime and content-gate acceptance work; #360 is complete.
 
 ## Validation
 
-- `python tools/art/verify.py`: **628 checks passed**.
-- `node tools/art/verify-together.mjs`: **18 files passed** dimensions, RGBA,
-  byte caps, clear regions, fades, nonblank/distinct states and centroid registration.
+- `python tools/art/verify.py`: **685 checks passed**, including all 18 overlays: dimensions,
+  RGBA, byte caps, clear regions, fades, nonblank/distinct states and centroid registration.
+- Overlay gate regressions: **11 tests passed**, including malformed and missing PNGs,
+  undeclared files, opaque/blank/duplicate states, clear regions and misplaced tokens.
+- Focused Vitest: overlay gate, figure sizes and Gemfall compatibility: **29 tests passed**.
 - `npm run content:validate`: **62 checks passed**.
 - `npm run art:figures`: regenerated the committed height/stance table.
-- Focused Vitest: canon, figure sizes and Gemfall compatibility: **62 tests passed**.
 - Adapted Playwright cast-shot review: **1 passed**, all 14 figure comparisons, TV and phone.
 - Full `npm test`: **4986 passed, 10 skipped, 3 failed** in unchanged tests:
   authoring-guide fenced-block parsing (CRLF sensitivity), `PlayerProfile` source parsing
@@ -102,5 +107,5 @@ all 18 files until those integrated checks land; #360 itself is already complete
 - `git diff --check`: clean.
 
 Sources and prompts were made with built-in `image_gen`; no API/CLI fallback was used.
-Review PNGs and HTML remain in ignored local `art/review/issue-384/`; the six retained WebP
+Review PNGs and HTML remain in ignored local `art/review/issue-384/`; the seven retained WebP
 images here are portable.
