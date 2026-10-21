@@ -44,6 +44,7 @@
   "scenes": {
     "arrival": {
       "type": "story",
+      "rift": "steady",
       "narration": "The island you helped welcome home is drifting toward a temple island through heavy rain. A different kitsune keeper from the one at the lookout rings a lookout bell; its rope wears a tiny raincoat. Beside the temple, a fresh opening spills bone crawlers onto the wet landing: little scuttling creatures with jointed legs and rattling backs. \"Keep the temple safe as that island drifts toward us,\" the keeper calls. \"We can push its approach clear, or shelter this landing and let it settle.\" She points to people still carrying cushions across the yard.",
       "choices": [
         {
@@ -596,6 +597,7 @@
     },
     "crawl": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "Bone crawlers are clustering where fresh magic spills from the opening. They have no quarrel with the cushions; they are simply between you and the work. How will you keep their path away from the people?",
       "choices": [
         {
@@ -615,6 +617,7 @@
     },
     "crawl_1": {
       "type": "story",
+      "rift": "steady",
       "narration": "You move the buckets and folding stands inside the gate. A crawler can still cross the landing, but no keeper needs to follow it to retrieve a bucket.",
       "choices": [
         {
@@ -628,6 +631,7 @@
     },
     "crawl_2": {
       "type": "story",
+      "rift": "steady",
       "narration": "You use wet chalk on the safe boards. The keepers stay behind that mark. The chalk has a string tied to it so it cannot become another flying object.",
       "choices": [
         {
@@ -641,6 +645,7 @@
     },
     "plan": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "The island's low edge is approaching the posts. You can work the ropes to turn its edge away, or hold the sheltered corner while it settles beside the temple. Both need time on the board with the crawlers. Which result will you work toward?",
       "choices": [
         {
@@ -660,6 +665,7 @@
     },
     "push_plan": {
       "type": "story",
+      "rift": "steady",
       "narration": "You run the strong ropes through the mooring posts and leave room for them to slip free afterward. The keeper holds the release cloth ready. The plan is a small turn at the edge, not a tug across the sky.",
       "onEnter": [
         {
@@ -679,6 +685,7 @@
     },
     "shelter_plan": {
       "type": "story",
+      "rift": "steady",
       "narration": "You draw the sheltered corner tight and leave a clear place for the island's low edge to rest. The keeper marks a boundary the temple cushions must never cross, even after the storm.",
       "onEnter": [
         {
@@ -1232,6 +1239,7 @@
     },
     "ending": {
       "type": "story",
+      "rift": "collapse",
       "narration": "The temple is safe to shelter in, and every keeper has a dry place. The bell rope sheds its tiny raincoat into a bucket. A griffin messenger can carry you down to the Cairnstep when the wind clears; the path behind returns to the island's lookout. You have changed what the next watch will find. As the squall eases, the fresh opening shrinks shut. The keepers watch from behind a striped wait sign until its last shimmer is gone; no new crawlers can enter the hall.",
       "onEnter": [
         {

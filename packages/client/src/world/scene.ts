@@ -36,8 +36,8 @@
  */
 
 import { stanceIdle } from "./idle-motion";
-import { Application, Assets, Container, Graphics, Sprite, Text, Texture } from "pixi.js";
-import type { CastStance, PartyMember, Position } from "@kad/shared";
+import { Application, Assets, BufferImageSource, Container, Graphics, Rectangle, Sprite, Text, Texture } from "pixi.js";
+import type { CastStance, PartyMember, Position, SceneRift } from "@kad/shared";
 import { currentActorId } from "@kad/shared";
 import {
   createCameraState,
@@ -74,6 +74,29 @@ import {
 } from "./actor-art";
 import { figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, STANCE_LIFT, type Overflow, type PaintBox } from "./figure-scale";
 import { sceneBackdropUrl } from "./art-paths";
+import {
+  RIFT_FOOT,
+  RIFT_GLOW_COLOR,
+  RIFT_DASHES,
+  RIFT_HALO_LINE,
+  RIFT_INK_COLOR,
+  RIFT_MOTES,
+  groundFade,
+  HOLE_TEXTURE_HEIGHT,
+  HOLE_TEXTURE_WIDTH,
+  holeTexturePixels,
+  riftPasses,
+  riftPresence,
+  riftStand,
+  ringMarks,
+  ringPoint,
+  STILL_FRAME,
+  TEAR_HALF_HEIGHT_PX,
+  TEAR_HALF_WIDTH_PX,
+  TEAR_MIDDLE_PX,
+  type RiftPass,
+} from "./scene-rift";
+import { RIFT_SHEET, riftSheetUrl } from "../screens/riftlight";
 import { isQuiet, QUIET_FLASH_SCALE } from "../quiet";
 import { focusHolds, type FocusHold } from "./attention";
 import {
@@ -251,6 +274,15 @@ export interface PartyScene {
    * across scenes stays put. Empty clears the stage back to the party alone.
    */
   setCast(members: readonly StageCastMember[]): void;
+  /**
+   * The rift in plain view in this scene (world/scene-rift.ts), or null.
+   * `key` names the scene, so an `"open"` or `"collapse"` plays once as the
+   * scene opens and not again on a re-render; a new key replays it. The same
+   * key with a different rift is not a re-render: the state can name a scene
+   * before its chapter has loaded, which reads as no rift, and the real one
+   * must still play when the chapter lands.
+   */
+  setRift(rift: SceneRift | null, key: string | null): void;
   /**
    * How many CSS px along the bottom of the pane the story text covers
    * (world/stage-inset.ts). The story camera frames the stage into the rest,
@@ -468,6 +500,180 @@ export function createScene(app: Application): PartyScene {
 
   const actors = new Map<string, Actor>();
   const castActors = new Map<string, CastActor>();
+
+  /*
+   * A scene's rift (#401): one sprite standing between the party and the
+   * cast, stepping through the painted sheets that `riftPasses` lists. Behind
+   * every figure, since it stands in the gap rather than in front of anyone.
+   */
+  const riftSprite = new Sprite();
+  riftSprite.anchor.set(0.5, RIFT_FOOT);
+  riftSprite.visible = false;
+  riftSprite.label = "rift";
+  /*
+   * Around the painted tear, the layers that make it easy to see and give it
+   * presence (scene-rift.ts, "Making the tear easy to see"): a steady mist, a
+   * deep hole with a lighter rim, and two rings turning opposite ways. All in
+   * sheet-frame pixels around the tear's middle, sized each frame by
+   * `riftPresence`; only the rings are redrawn as they turn.
+   */
+  const riftGlow = new Graphics();
+  // Many faint rings rather than a few strong ones, so the mist has no visible edge.
+  for (let ring = 16; ring >= 1; ring--) {
+    const spread = 1 + ring * 0.12;
+    riftGlow
+      .ellipse(0, 0, TEAR_HALF_WIDTH_PX * spread * 1.2, TEAR_HALF_HEIGHT_PX * (1 + ring * 0.045))
+      .fill({ color: RIFT_GLOW_COLOR, alpha: 0.065 });
+  }
+  // The painted inside (scene-rift.ts `holeTexturePixels`): deep, mottled and misty at the rim.
+  const holeTexture = new Texture({
+    source: new BufferImageSource({
+      resource: holeTexturePixels(),
+      width: HOLE_TEXTURE_WIDTH,
+      height: HOLE_TEXTURE_HEIGHT,
+      alphaMode: "no-premultiply-alpha",
+    }),
+  });
+  const riftHole = new Sprite(holeTexture);
+  riftHole.anchor.set(0.5);
+  riftHole.width = TEAR_HALF_WIDTH_PX * 0.84 * 2;
+  riftHole.height = TEAR_HALF_HEIGHT_PX * 0.92 * 2;
+  const riftRings = new Graphics();
+  /**
+   * Redraw the rings where they stand now. Each dash is a tapered brushstroke,
+   * thick in the middle and pointed at both ends, a pale core inside the warm
+   * dark outline the figures wear, so it reads on bright and dark ground
+   * alike; each mote a dot in the same two tones. Anything under the floor
+   * line is not drawn (`groundFade`).
+   */
+  function drawRiftRings(seconds: number): void {
+    const still = prefersReducedMotion();
+    riftRings.clear();
+    // The still line first, under the turning marks: an arch over the tear, faded into the ground.
+    const lineSteps = 48;
+    for (const [width, color, alpha] of [[3, RIFT_INK_COLOR, 0.32], [1.2, RIFT_GLOW_COLOR, 0.5]] as const) {
+      let drawing = false;
+      for (let i = 0; i <= lineSteps; i++) {
+        const angle = (2 * Math.PI * i) / lineSteps;
+        const point = { x: RIFT_HALO_LINE.rx * Math.cos(angle), y: RIFT_HALO_LINE.ry * Math.sin(angle) };
+        if (groundFade(point.y) < 0.5) {
+          if (drawing) riftRings.stroke({ width, color, alpha });
+          drawing = false;
+          continue;
+        }
+        if (drawing) riftRings.lineTo(point.x, point.y);
+        else riftRings.moveTo(point.x, point.y);
+        drawing = true;
+      }
+      if (drawing) riftRings.stroke({ width, color, alpha });
+    }
+    const steps = 8;
+    for (const mark of ringMarks(RIFT_DASHES, seconds, still)) {
+      const at = (i: number) => ringPoint(RIFT_DASHES, mark.from + ((mark.to - mark.from) * i) / steps, mark.reach);
+      const middle = at(steps / 2);
+      const fade = groundFade(middle.y);
+      if (fade <= 0) continue;
+      for (const [half, color, alpha] of [[3.4, RIFT_INK_COLOR, 0.75], [1.6, RIFT_GLOW_COLOR, 0.95]] as const) {
+        // Out along one side and back along the other, widest at the middle.
+        const left: number[] = [];
+        const right: number[] = [];
+        for (let i = 0; i <= steps; i++) {
+          const point = at(i);
+          const next = at(Math.min(steps, i + 1));
+          const prev = at(Math.max(0, i - 1));
+          const dx = next.x - prev.x;
+          const dy = next.y - prev.y;
+          const length = Math.hypot(dx, dy) || 1;
+          const w = half * mark.width * (0.35 + 0.65 * Math.sin((Math.PI * i) / steps));
+          left.push(point.x - (dy / length) * w, point.y + (dx / length) * w);
+          right.unshift(point.x + (dy / length) * w, point.y - (dx / length) * w);
+        }
+        for (let i = 0; i < right.length; i += 2) left.push(right[i]!, right[i + 1]!);
+        riftRings.poly(left).fill({ color, alpha: alpha * fade });
+      }
+    }
+    for (const mark of ringMarks(RIFT_MOTES, seconds, still)) {
+      const point = ringPoint(RIFT_MOTES, mark.from, mark.reach);
+      const fade = groundFade(point.y);
+      if (fade <= 0) continue;
+      riftRings.circle(point.x, point.y, 3.3 * mark.width).fill({ color: RIFT_INK_COLOR, alpha: 0.75 * fade });
+      riftRings.circle(point.x, point.y, 1.9 * mark.width).fill({ color: RIFT_GLOW_COLOR, alpha: 0.95 * fade });
+    }
+  }
+  const riftPresenceLayer = new Container();
+  riftPresenceLayer.position.set(0, -TEAR_MIDDLE_PX);
+  riftPresenceLayer.addChild(riftGlow, riftRings, riftHole);
+  /** The tear and what is behind it, standing on the floor line; scaled to the stage in layoutActors. */
+  const riftGroup = new Container();
+  riftGroup.zIndex = -1;
+  riftGroup.visible = false;
+  riftGroup.addChild(riftPresenceLayer, riftSprite);
+  // On the stage only while a scene has a rift: an ordinary scene's tree is
+  // the one it always was.
+  let riftKey: string | null = null;
+  /** The rift `riftKey` was last set with: a repeat is the same scene *and* the same rift. */
+  let riftShown: SceneRift | null = null;
+  let riftSequence: RiftPass[] = [];
+  let riftPassAt = 0;
+  /** When the current one-shot pass began, on `elapsed`. */
+  let riftPassStart = 0;
+  const riftSheets = new Map<string, Promise<Texture[] | null>>();
+  const riftFrames = new Map<string, Texture[]>();
+
+  function riftSheet(effect: string): Promise<Texture[] | null> {
+    const cached = riftSheets.get(effect);
+    if (cached) return cached;
+    const task = Assets.load<Texture>(riftSheetUrl(effect))
+      .then((sheet) => {
+        const frames = Array.from(
+          { length: RIFT_SHEET.frames },
+          (_, i) =>
+            new Texture({ source: sheet.source, frame: new Rectangle(i * RIFT_SHEET.size, 0, RIFT_SHEET.size, RIFT_SHEET.size) }),
+        );
+        riftFrames.set(effect, frames);
+        return frames;
+      })
+      // A missing sheet leaves the scene without its rift, never without its scene.
+      .catch(() => null);
+    riftSheets.set(effect, task);
+    return task;
+  }
+
+  /** Step the rift's sprite to this moment's frame, moving through its passes. */
+  function tickRift(): void {
+    const pass = riftSequence[riftPassAt];
+    const frames = pass ? riftFrames.get(pass.effect) : undefined;
+    if (!pass) {
+      // Every pass played (a rift that folded away): off the stage.
+      riftGroup.removeFromParent();
+      return;
+    }
+    if (!frames) {
+      riftGroup.visible = false;
+      return;
+    }
+    let frame: number;
+    if (pass.loop) {
+      // Loops run on the stage's clock, so they never restart on a re-render.
+      frame = prefersReducedMotion() ? STILL_FRAME : Math.floor(elapsed * RIFT_SHEET.fps) % RIFT_SHEET.frames;
+    } else {
+      frame = Math.floor((elapsed - riftPassStart) * RIFT_SHEET.fps);
+      if (frame >= RIFT_SHEET.frames) {
+        riftPassAt += 1;
+        riftPassStart = elapsed;
+        tickRift();
+        return;
+      }
+    }
+    riftSprite.texture = frames[frame] ?? frames[0]!;
+    riftSprite.visible = true;
+    const presence = riftPresence(pass, frame, RIFT_SHEET.frames);
+    riftPresenceLayer.scale.set(presence.size);
+    drawRiftRings(elapsed);
+    riftGlow.alpha = presence.glow;
+    riftHole.alpha = presence.hole;
+    riftGroup.visible = true;
+  }
   /** -1 = facing right, toward a cast on the right; 1 = as drawn. */
   let facing = 1;
   /**
@@ -706,6 +912,11 @@ export function createScene(app: Application): PartyScene {
     const slots = fit.slots;
     slots.party = slots.party.map((x) => x + left);
     slots.cast = slots.cast.map((x) => x + left);
+    const rift = riftStand({ ...slots, castLeft: slots.castLeft.map((x) => x + left) }, left, width, fit.k);
+    riftGroup.position.set(rift.x, GROUND_Y);
+    // By scale, not width: the frames may not have loaded yet, and a width set
+    // against the empty texture would be 256 times too big once they do.
+    riftGroup.scale.set(rift.frame / RIFT_SHEET.size);
     // Heroes are drawn facing left; with company on the right they turn round.
     facing = cast.length > 0 ? -1 : 1;
     // A name may be no wider than the slot its character stands in, less a
@@ -816,6 +1027,7 @@ export function createScene(app: Application): PartyScene {
 
     applyCamera(dt);
     board?.tick(dt);
+    tickRift();
 
     // Holds whose tail has passed. Dropped rather than kept so the frame
     // closes back onto the active actor instead of widening all round.
@@ -1327,6 +1539,24 @@ export function createScene(app: Application): PartyScene {
       layoutActors();
     },
 
+    setRift(rift, key) {
+      if (destroyed || (key === riftKey && rift === riftShown)) return;
+      riftKey = key;
+      riftShown = rift;
+      riftSequence = riftPasses(rift, prefersReducedMotion());
+      riftPassAt = 0;
+      riftPassStart = elapsed;
+      riftGroup.visible = false;
+      if (riftSequence.length === 0) riftGroup.removeFromParent();
+      else if (!riftGroup.parent) actorsLayer.addChild(riftGroup);
+      // The first pass waits for its sheet; tickRift starts it the frame it lands.
+      for (const pass of riftSequence) {
+        void riftSheet(pass.effect).then(() => {
+          if (riftKey === key && riftSequence[riftPassAt]?.effect === pass.effect) riftPassStart = elapsed;
+        });
+      }
+    },
+
     setCast(members) {
       if (destroyed) return;
       const wanted = new Set(members.map((member) => member.key));
@@ -1610,6 +1840,9 @@ export function createScene(app: Application): PartyScene {
         actor.container.destroy({ children: true });
       }
       actors.clear();
+      riftGroup.destroy({ children: true });
+      // The scene's own picture, not a loaded asset: freed with the scene.
+      if (!holeTexture.destroyed) holeTexture.destroy(true);
       castActors.clear();
       board?.destroy();
       board = null;

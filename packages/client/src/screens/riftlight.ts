@@ -47,10 +47,45 @@ export interface Riftlight {
   motions: RiftMotion[];
 }
 
-/** The effect sheet each layer draws (brief Part A1); placeholders until the art lands. */
+/** The effect sheet each layer draws (brief Part A1). */
 export const RIFT_NEUTRAL_EFFECT = "rift_neutral";
 export const RIFT_BASE_EFFECT = "rift_base";
+export const RIFT_OPEN_EFFECT = "rift_open";
+export const RIFT_COLLAPSE_EFFECT = "rift_collapse";
 export const riftEffect = (layer: RiftColor | RiftMotion): string => `rift_${layer}`;
+
+/**
+ * Every rift sheet's shape (assets/manifest.json `effects[]`, pinned by
+ * riftlight.test.ts): one row of square frames, played at `fps`.
+ */
+export const RIFT_SHEET = { frames: 12, fps: 12, size: 256 } as const;
+/** One pass of a sheet: a loop's period, and how long a one-shot plays. */
+export const RIFT_SHEET_MS = (RIFT_SHEET.frames / RIFT_SHEET.fps) * 1000;
+
+export const riftSheetUrl = (effect: string): string => `/assets/effects/${effect}.sheet.png`;
+
+/**
+ * The sheets one lit rift stacks, bottom to top.
+ *
+ * The tear comes first, and is the one sheet that moves the whole rift:
+ * `rift_stutter` and `rift_shrink` are the tear itself skipping or
+ * contracting, so they replace `rift_base` rather than draw a second outline
+ * over it. A rift both unstable and timed stutters; its words still say both.
+ * The colours stack over the tear, and `rift_sync` (a linked pair's beat) is
+ * a small mark over everything.
+ */
+export function riftLayers(light: Riftlight): string[] {
+  const tear = light.motions.includes("stutter")
+    ? riftEffect("stutter")
+    : light.motions.includes("shrink")
+      ? riftEffect("shrink")
+      : RIFT_BASE_EFFECT;
+  return [
+    tear,
+    ...light.colors.map(riftEffect),
+    ...(light.motions.includes("sync") ? [riftEffect("sync")] : []),
+  ];
+}
 
 /** The class whose perception Riftlight is. */
 const RIFTLIGHT_CLASS: ClassId = "starweaver";
@@ -106,6 +141,53 @@ export function visibleRifts(journey: JourneyView | null | undefined): LitRiftEx
   return journey.exits.filter(
     (exit): exit is LitRiftExit => exit.rift !== undefined && isLit(exit.rift),
   );
+}
+
+// ---------------------------------------------------------------------------
+// Opening and collapsing
+// ---------------------------------------------------------------------------
+
+/** The lit rifts last seen at one place, for telling what changed there. */
+export interface RiftSighting {
+  /** `<campaign>/<node>`: a rift is only compared with itself at the same place. */
+  readonly place: string;
+  readonly rifts: readonly LitRiftExit[];
+}
+
+export interface RiftMoments {
+  /** Edges that were dormant at this place and are open now. */
+  readonly opened: readonly string[];
+  /** Rifts that were lit at this place and are not any more, as last seen. */
+  readonly collapsed: readonly LitRiftExit[];
+}
+
+const NO_MOMENTS: RiftMoments = { opened: [], collapsed: [] };
+
+/**
+ * What changed about the rifts at the party's place since it last chose a way
+ * on: `rift_open` plays for a rift that has woken, `rift_collapse` for one
+ * that has gone dark (used up, expired, collapsed or shut).
+ *
+ * Only a change at the **same place** is a moment. Arriving somewhere new
+ * shows its rifts as they are: one that was open all along did not just open,
+ * and the one the party came through is behind it, not in front. While the
+ * party is playing a chapter (no exits drawn) the last sighting is kept, so
+ * returning to the same choice after a replay compares across the chapter.
+ */
+export function riftMoments(
+  before: RiftSighting | null,
+  campaignId: string | null | undefined,
+  journey: JourneyView | null | undefined,
+): { sighting: RiftSighting | null; moments: RiftMoments } {
+  if (!campaignId || !journey || journey.status !== "choosing") return { sighting: before, moments: NO_MOMENTS };
+  const sighting: RiftSighting = { place: `${campaignId}/${journey.node}`, rifts: visibleRifts(journey) };
+  if (!before || before.place !== sighting.place) return { sighting, moments: NO_MOMENTS };
+  const now = new Map(sighting.rifts.map((exit) => [exit.edge, exit]));
+  const opened = before.rifts
+    .filter((was) => was.rift.status === "dormant" && now.get(was.edge)?.rift.status === "open")
+    .map((was) => was.edge);
+  const collapsed = before.rifts.filter((was) => !now.has(was.edge));
+  return { sighting, moments: { opened, collapsed } };
 }
 
 // ---------------------------------------------------------------------------
