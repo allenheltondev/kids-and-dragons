@@ -3,7 +3,7 @@ title: Cloud Whale
 id: creature.cloud_whale
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: []
 tags: ["ambient", "sky", "majestic", "semi_sapient"]
@@ -11,6 +11,12 @@ classification: ambient_creature
 danger_level: low
 scale: colossal
 sapience: semi_sapient
+height_cm: 1100
+size:
+  height: "11 m (36 ft)"
+  compare: "as long as a whale"
+  stance: "usually flies"
+  line: "11 m (36 ft), as long as a whale. Usually flies."
 lore_hook: "Too big to land. Too gentle to mind."
 likes:
   - id: character.kitsune
@@ -33,6 +39,9 @@ related:
   - id: biome.sky_islands
     type: biome
     relationship: ambient_creatures
+  - id: campaign.riftlight
+    type: campaign
+    relationship: creatures
 assets:
   primary: assets/entities/cloud_whale/portrait.webp
   primaryFull: assets/entities/cloud_whale/assembled.png
@@ -42,7 +51,7 @@ ai_context:
   visual_style: "Whale-like form adapted to the sky with broad fins and cloud-soft edges, subtle star, rain, or wind markings."
   common_encounters: "Majestic background creature, navigation clue, rescue or migration story."
   lore_highlights: "Too big to land. Too gentle to mind."
-  related_entities: "biome.sky_islands, biome.sky_islands"
+  related_entities: "biome.sky_islands, biome.sky_islands, campaign.riftlight"
   writing_guidance: "Cloud whales are not mounts, pets, or ordinary combat opponents."
   generation_hints: "Follows predictable seasonal currents, sings near storms, avoids settlements, occasionally shelters smaller fliers in its wake."
 layout: creatures
@@ -82,6 +91,9 @@ A cloud whale acknowledges a ship, an island, or a griffin with one slow pass an
 
 ### Biomes
 - [Sky Islands](/biomes/sky_islands/) `Primary Locations` `Ambient Creatures`
+
+### Campaigns
+- [Riftlight](/campaigns/riftlight/) `Creatures`
 <!-- END GENERATED: relationships -->
 
 

@@ -8,7 +8,7 @@ is, and it assumes the brief for every "how".
 > **Live numbers: `npm run art:inventory`.** Every count below comes from that command, which
 > derives what is *needed* from `assets/manifest.json` and checks what is *there* against the disk.
 > The snapshot in this file is a convenience and can go stale; the command cannot. It reports and
-> never gates — `art:verify` and `art:verify:rig` are the gates.
+> never gates — `art:verify` is the gate.
 
 ---
 
@@ -16,14 +16,11 @@ is, and it assumes the brief for every "how".
 
 | | Owner |
 |---|---|
-| **Image assets** — character parts, gear portraits, class-rig parts, effect sheets, backdrops, props, tiles, creature cutouts | **Allen** |
-| Rigs — skeleton, state machine, clip table, per-tier export | **Claude**, via `rive-mcp` |
+| **Image assets** — character illustrations, gear portraits, class figures, effect sheets, backdrops, props, tiles, creature cutouts | **Allen** |
 | The manifest, the verifiers, the briefs | **Claude** |
 
-That is the whole split, and the line is drawn where it is for one reason: **rigs are generated
-from a contract, drawings are not.** `rive-mcp`'s `rig --contract` reads `manifest.rigContract` and
-derives the clip table, event ticks and input list directly, so a rig cannot drift from the spec —
-the spec is its input. No comparable statement is true of a drawing, which is why `art:verify`
+That is the whole split. Characters are finished transparent illustrations with procedural
+breathing ([art-pipeline.md](./art-pipeline.md)); there are no rigs to build. `art:verify`
 checks pixels mechanically and then still sends a contact sheet to a human.
 
 Practically: **if it is a `.png` or a `.webp`, it is Allen's. Everything else on the art side is
@@ -37,10 +34,9 @@ Snapshot — regenerate with `npm run art:inventory`.
 
 | Category | Delivered | Outstanding |
 |---|---|---|
-| Character part-sets | **224 / 224** | — |
-| Character rigs *(mine)* | **24 / 24** | — |
+| Character illustrations | **24 / 24** | — |
 | Gear portraits | **72 / 72** | — |
-| **Class rig variants** | **47 / 72** | **25 exact-pose splits** |
+| **Class figure variants** | **47 / 72** | **25 to illustrate** |
 | Biome backdrops, tiles + props | **51 / 51** | — |
 | Story-only environments | **5 / 5** | — |
 | Canon place coverage | **23 / 23** | — |
@@ -50,8 +46,8 @@ Snapshot — regenerate with `npm run art:inventory`.
 | Effect sheets, specified but undeclared | **0 / 0** | — |
 | **Entity part-sets (combat roster)** | **9 / 9** | — |
 
-**25 rig variants outstanding.** The character-and-gear paintings are complete. What remains is
-splitting those approved exact poses into transparent registered parts and building their rigs.
+**25 class figures outstanding.** The character-and-gear paintings are complete. What remains is
+a finished transparent `assembled.png` for each of the 25 class figures.
 
 ---
 
@@ -67,23 +63,16 @@ declared in `manifest.sceneIllustrations`. They supplement the existing biome ba
 
 Recorded because "is that finished?" is the question this document exists to stop you asking.
 
-**Character part-sets — 224 files.** Six species × four tiers, each a full-canvas registered part
-set plus its `assembled.png`. Part counts differ by species because the signature part does:
-unicorn/dragonling/griffin carry nine, kitsune/manticore eight, bigfoot seven. All green through
-`art:verify`, including cross-tier joint registration — which is what made the rigs cheap.
-
-**Rigs — 24 `.riv`.** Six skeletons, exported per tier. Mine, generated on the 1400 stage. Green
-through `art:verify:rig:strict` and the motion gate; manticore's four are red on the rest check,
-where its mesh tail drops ~15% of itself in the generator (art-pipeline §6.3). Listed here only so
-the dependency below is visible.
+**Character illustrations — 24 files.** Six species × four tiers, one transparent
+`assembled.png` each. All green through `art:verify`.
 
 **Gear portraits — 72 files.** Four classes × three geared tiers × six species. Each is an approved,
 purpose-drawn creature-and-gear composite and is the visual source of truth for its exact fit.
 
-**Class rig variants — 47 `.riv`.** All Thornguard and Duskrunner tiers, plus Starweaver Sworn,
-are split and rigged for all six species. Bigfoot also has Starweaver Radiant/Mythic and all three
-Songkeeper tiers, reusing its corrected anatomy with builder underpaint disabled. Each build keeps its species skeleton and clip contract while replacing the skin with
-registered transparent parts from the approved exact pose.
+**Class figure variants — 47 files.** All Thornguard and Duskrunner tiers, plus Starweaver Sworn,
+for all six species, and Bigfoot's Starweaver Radiant/Mythic and all three Songkeeper tiers. Each
+is a finished transparent `assembled.png` declared in `manifest.figureVariants`, kept at its
+`assets/character-rigs/<class>/<tier>/<species>/` path.
 
 **Biomes — 17 destinations.** Each with `bg.webp`, `tiles.png` and six props: 102 prop files, and
 12 unique tile sheets shared across the 17 (several destinations share a terrain family).
@@ -118,25 +107,19 @@ one. Inventory icons are painted WebP assets registered in `packages/client/src/
 
 ## 4. What is left
 
-### 4.1 Class rig variants — 25 exact-pose splits
+### 4.1 Class figure variants — 25 to illustrate
 
-Every approved geared character needs one animated variant. Forty-seven of 72 are delivered. Outstanding:
+Every approved geared character needs one transparent class figure. Forty-seven of 72 are delivered. Outstanding:
 
 | Class | Tiers | Variants |
 |---|---|---:|
 | `starweaver` | radiant, mythic; five species excluding Bigfoot | 10 |
 | `songkeeper` | sworn, radiant, mythic; five species excluding Bigfoot | 15 |
 
-No gear at `fledgling`, by design. This is production work from art already approved, not a new
-painting commission: recover registered transparent body and gear layers from each exact pose,
-declare their draw order in `manifest.rigVariants`, build the species rig, and run the rest-pose
-and all-clip motion gates. Undelivered combinations fall back to the un-geared species rig on
-animated surfaces; still-image surfaces already use the approved gear portrait.
-
-The remaining Starweaver species need a base-mask review before further class splits: the
-Unicorn Radiant attempt exposed detached limb fragments in motion despite passing the existing
-rig gates. Bigfoot's five remaining class variants now reuse its reviewed base recuts.
-See [the Bigfoot wave brief](briefs/bigfoot-class-rig-wave.md).
+No gear at `fledgling`, by design. Each is one finished `assembled.png` from art already approved,
+to the contract in [art-pipeline.md](./art-pipeline.md), declared in `manifest.figureVariants`.
+Undelivered combinations fall back to the un-geared species figure on figure surfaces; still-image
+surfaces already use the approved gear portrait.
 
 ### 4.2 Effect sheets — complete
 

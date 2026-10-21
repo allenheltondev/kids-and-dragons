@@ -3,10 +3,15 @@ title: Crystal Heart
 id: item.crystal_heart
 type: item
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: []
 tags: ["artifact", "crystal", "magical", "legendary"]
+height_cm: 14
+size:
+  height: "14 cm (6 in)"
+  compare: "fits in a teapot"
+  line: "14 cm (6 in), fits in a teapot."
 related:
   - id: location.skullwater_cave
     type: location

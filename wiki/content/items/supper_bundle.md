@@ -3,7 +3,7 @@ title: Supper Bundle
 id: item.supper_bundle
 type: item
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: ["gemfall-01", "gemfall-02", "gemfall-03b", "gemfall-03c", "gemfall-04a", "gemfall-05a", "gemfall-05c", "gemfall-07r"]
 tags: ["provision", "healing", "roads", "common"]
