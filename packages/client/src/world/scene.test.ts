@@ -73,7 +73,7 @@ describe("illustrated backdrops", () => {
 });
 
 describe("the cast", () => {
-  const tidewell = { key: "entities/selkie|Professor Tidewell", url: "/assets/entities/selkie/assembled.png", name: "Professor Tidewell", scale: 1 };
+  const tidewell = { key: "entities/selkie|Professor Tidewell", url: "/assets/entities/selkie/assembled.png", name: "Professor Tidewell", heightCm: 165, stance: "standing" as const };
 
   function sprites(app: FakeApp): number {
     let found = 0;
@@ -108,7 +108,7 @@ describe("the cast", () => {
   it("re-packs a figure that stays while its group grows and shrinks (1 → 3 → 1)", async () => {
     const load = vi.spyOn(Assets, "load").mockResolvedValue(Texture.WHITE as unknown as Record<string, unknown>);
     const { scene: s, app } = scene();
-    const wolf = { key: "entities/cinder_wolf|", url: "/assets/entities/cinder_wolf/assembled.png", name: null, scale: 1 };
+    const wolf = { key: "entities/cinder_wolf|", url: "/assets/entities/cinder_wolf/assembled.png", name: null, heightCm: 95, stance: "standing" as const };
     const pack = (size: number) =>
       Array.from({ length: size }, (_, index) => ({
         ...wolf,

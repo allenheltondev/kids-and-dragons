@@ -240,8 +240,18 @@ export interface CastMember {
   figure: string;
   /** The nameplate. Omitted for an unnamed creature. */
   name?: string;
-  /** How big they stand beside the party. Defaults per figure (world/cast.ts). */
+  /**
+   * How big they stand beside the party. Defaults to the figure's own height
+   * (canon `height_cm`, or the manifest's `heightCm` for a `cast/` figure);
+   * a band here moves that height to the nearest point inside the band
+   * (`heightInBand`), so a "small" faun is a faun child, not a new species.
+   */
   size?: CastSize;
+  /**
+   * How they occupy this scene: a griffin landed or in flight, a selkie on
+   * the quay or in the harbor. Defaults to the figure's own canon `stance`.
+   */
+  stance?: CastStance;
   /**
    * How many of them are there (default 1, at most 6). The stage draws that
    * many figures huddled together, so "three cinder wolves" in the narration
@@ -249,6 +259,9 @@ export interface CastMember {
    */
   count?: number;
 }
+
+/** canon `Stance` (packages/canon envelope.ts), as a chapter may override it (#362). */
+export type CastStance = "standing" | "hovering" | "flying" | "swimming";
 
 export type CastSize =
   | "tiny"
@@ -965,6 +978,58 @@ export interface Chapter {
   voiceGuide?: VoiceGuide;
 }
 
+/**
+ * A campaign's "Last time…" (#357): one authored line per route-set member, and an opener for
+ * a party that carries none (a first chapter, or a campaign begun again).
+ *
+ * `lines` is in story order, the order the table lived it, and the preface reads the newest few
+ * a party carries (chapter-preface.ts `LAST_TIME_MAX_LINES`). Its key order is the authored
+ * order: JSON objects keep it, and no key is an integer.
+ */
+export interface LastTime {
+  opener: string;
+  lines: Record<string, LastTimeLine>;
+}
+
+/**
+ * One member's line. A line that names a great stone reads the inventory (the facet rule,
+ * docs/campaigns/gemfall-authoring.md): `text` for a party holding `holding` between them, and
+ * `otherwise` for one that is not, so it never tells an empty-handed party what is in its pack.
+ */
+export type LastTimeLine = string | { holding: string; text: string; otherwise: string };
+
+/**
+ * What a campaign attempt keeps of one finished chapter, for the Story page
+ * (#358). `RunState.visited` and a chapter's own flags die at the chapter
+ * boundary, so the little the page needs is saved when the chapter completes
+ * (story-so-far.ts `chapterStoryOf`). Ids, not words: the page reads the words
+ * from the chapter and campaign files.
+ */
+export interface ChapterStory {
+  chapterId: string;
+  /** The ending scene the chapter closed on. */
+  ending: SceneId;
+  /** The priority-1 scenes the party walked through, in the order it reached them. Absent: none. */
+  revealed?: SceneId[];
+  /**
+   * For a revelation whose words read the bag (a facet-count variant, a
+   * `{facets}`): the items they read that the party held as it opened, so the
+   * page quotes what the table heard then, not what the bag held at the end.
+   * Absent for one whose words read nothing of the bag.
+   */
+  heard?: Record<SceneId, string[]>;
+  /** The route-set flags this chapter decided (not carried in), in `routeSets` order. Absent: none. */
+  decided?: string[];
+  /**
+   * The items the party held between them as the chapter closed, of those
+   * the ending's words and the decided lines read (a variant's item or count,
+   * a line's `holding`, a `{facets}`), so a line naming a great stone still
+   * reads the inventory it was true of. Absent: none of them. A revelation's
+   * bag is its own (`heard`).
+   */
+  held?: string[];
+}
+
 /** A chapter's membership of a routed index. */
 export interface ChapterRoute {
   /** Which set of alternatives this index is chosen from (`Campaign.routeSets`). */
@@ -993,6 +1058,12 @@ export interface Campaign {
    * `content:validate` requires a routed index to cover its set exactly.
    */
   routeSets?: Record<string, string[]>;
+  /**
+   * "Last time…" (#357): what the shared screen reads before a chapter's first scene, built
+   * from the route-set flags the party carried in. Required with `routeSets`, and then it
+   * has one line for every member (content:validate). See `LastTime` and chapter-preface.ts.
+   */
+  lastTime?: LastTime;
   /**
    * Setbacks before the campaign fails — spec §8.3's "fails at three
    * setbacks, tunable per campaign". Absent means three; authored here so a

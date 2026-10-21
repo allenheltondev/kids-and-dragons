@@ -3,7 +3,7 @@ title: Frost Wyrm
 id: creature.frost_wyrm
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: []
 tags: ["dangerous", "mountain", "ice", "predator"]
@@ -11,6 +11,11 @@ classification: dangerous_creature
 danger_level: high
 scale: large
 sapience: animal
+height_cm: 260
+size:
+  height: "2.6 m (8 ft 6 in)"
+  compare: "as tall as an elephant"
+  line: "2.6 m (8 ft 6 in), as tall as an elephant."
 lore_hook: "The glacier's other tenant. It was here first, and the receipts are frozen."
 likes:
   - id: npc.yeti

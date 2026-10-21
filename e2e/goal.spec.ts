@@ -7,8 +7,9 @@
  * the scene's real `onEnter`, so a step ticks because the engine set its flag and the
  * patch reached every screen, exactly as at the table.
  *
- * Read-aloud is recorded rather than heard (read-aloud.spec): the goal is said after the
- * first scene's story, and a step ticking is never read out (the owner's call: too much).
+ * Read-aloud is recorded rather than heard (read-aloud.spec): the goal is said once, as the
+ * last line of the chapter's "Last time…" ahead of the first scene's story (#357), and a step
+ * ticking is never read out (the owner's call: too much).
  *
  * `KAD_GOAL_SHOTS=<dir>` saves the screens for review (the PR's pictures).
  */
@@ -136,11 +137,14 @@ test.describe("the chapter's goal (#356)", () => {
       for (const step of STEPS) await expect(goal).toContainText(step);
       expect(await ticks(goal)).toEqual([false, false, false]);
     }
-    // Said after the first scene's story, once.
+    // Said once, as the last line of the chapter's "Last time…" and ahead of the first scene's
+    // story (#357), never again after it.
     await expect.poll(async () => (await said(tv)).filter((line) => line === `Your goal: ${GOAL}`).length, TAP).toBe(1);
+    await expect.poll(async () => (await said(tv)).findIndex((line) => line.includes("wall of thorns")), TAP).toBeGreaterThanOrEqual(0);
     const story = (await said(tv)).findIndex((line) => line.includes("wall of thorns"));
-    expect(story).toBeGreaterThanOrEqual(0);
-    expect((await said(tv)).indexOf(`Your goal: ${GOAL}`)).toBeGreaterThan(story);
+    expect((await said(tv)).indexOf(`Your goal: ${GOAL}`)).toBeLessThan(story);
+    await tv.waitForTimeout(500);
+    expect((await said(tv)).filter((line) => line.startsWith("Your goal:"))).toHaveLength(1);
     await shot(tv, "tv-scene-1");
     await shot(kid, "phone-scene-1");
 

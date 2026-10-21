@@ -3,7 +3,7 @@ title: Hearthstone Bead
 id: item.hearthstone_bead
 type: item
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: ["gemfall-01", "gemfall-07h", "gemfall-07l"]
 tags: ["charm", "endurance", "bramblewood", "uncommon"]

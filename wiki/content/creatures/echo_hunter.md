@@ -3,7 +3,7 @@ title: Echo Hunter
 id: creature.echo_hunter
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-04b", "gemfall-07l"]
 tags: ["dangerous", "underground", "blind", "predator"]
@@ -11,6 +11,11 @@ classification: dangerous_creature
 danger_level: high
 scale: large
 sapience: animal
+height_cm: 190
+size:
+  height: "1.9 m (6 ft 3 in)"
+  compare: "as tall as a grown-up"
+  line: "1.9 m (6 ft 3 in), as tall as a grown-up."
 lore_hook: "It has never seen anything in its life, and it knows the tunnels better than you know your own name."
 likes:
   - id: npc.stone_troll
