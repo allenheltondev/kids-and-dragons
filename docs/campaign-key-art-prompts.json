@@ -1,0 +1,24 @@
+{
+  "issue": 404,
+  "mode": "Built-in image_gen",
+  "useCase": "illustration-story",
+  "output": {
+    "width": 1600,
+    "height": 900,
+    "format": "WebP",
+    "opaque": true,
+    "encoding": "RGB, Lanczos resize, WebP quality 90 method 6"
+  },
+  "paintings": [
+    {
+      "id": "gemfall",
+      "path": "assets/campaigns/gemfall.webp",
+      "prompt": "Use case: illustration-story. Create one full-bleed landscape 16:9 campaign key painting for Kids & Dragons, target 1600 x 900, fully opaque. Warm crafted children's storybook painting, hand-painted brush texture, atmospheric but simple shapes, for age eight. Mount Red Sky is the one large dark focal silhouette centered within the middle 70 percent: a smoking volcano under a vivid red-orange sunset sky. Glittering faceted gemstones rain diagonally across the sky like shooting stars, a handful large enough to read at 350px wide, faint luminous trails hinting at a hum. A winding road heads north toward the mountain through ochre hills; tiny whimsical animal treasure-hunters, wooden carts and griffins hurry along it. Griffin: pale blue and cream feathers, golden beak, quadrupedal lion body, wings. These are small scale cues; the mountain and gem rain dominate. Exciting friendly race, warm terracotta, ember orange and honey sunset light with dark warm-brown foreground, strong simple value contrast. Upper-left light, generous clear sky around smoke. Match the painted realm scenery, softly drawn edges and broad gouache-like color masses. No text, logos, titles, borders or watermark; no purple/cyan palette, airbrushed 3D, photorealism, frightening eruption, humans or violence. Deliver this single painting and save generated file."
+    },
+    {
+      "id": "riftlight",
+      "path": "assets/campaigns/riftlight.webp",
+      "prompt": "Use case: illustration-story. Create one full-bleed landscape 16:9 campaign key painting for Kids & Dragons, target 1600 x 900, fully opaque. A crafted children's storybook painting with visible brush texture, softly drawn edges and broad gouache-like color masses, friendly age-eight wonder. Glacier of Origins and jagged snowy peaks rise behind a huge solitary fold in the air suspended in front of the glacier. The rift is the single dominant focal silhouette within the middle 70 percent: a tall irregular curved opening like a folded page of space, deep dark blue interior and thick luminous BLUE edges with steady concentric ripples, visibly floating above snow, clearly separate from an ice cave. Its blue is strong against dark navy glacier shadows; no purple or cyan neon. Snow falls in sparse readable flakes. A small sturdy snowhorn goat with a shaggy cream coat and curved blue-gray horns peeks curiously up at it from a snowy ledge below and beside it, a funny scale cue. Cold slate blue, indigo and muted powder-blue snow, upper-left soft winter light, dramatic simple light-dark contrast so the floating rift silhouette remains legible at 350px width and at grayscale(0.85) brightness(0.55). Match warmhearted painted fantasy scenery despite the cold palette. Wondrous and a little mysterious, never scary. No figures, faces or silhouettes inside the ice or rift. No text, titles, logos, watermark or borders. Rift glow must be blue, never red, white, silver, gold or amber. No rainbow, purple/cyan palette, airbrushed 3D, photorealism or excessive fine detail. Deliver this single painting and save generated file."
+    }
+  ]
+}
