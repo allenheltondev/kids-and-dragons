@@ -3,7 +3,7 @@ title: Mosslight Jar
 id: item.mosslight_jar
 type: item
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: ["bramblewood-01", "gemfall-01", "gemfall-03b", "gemfall-04b", "gemfall-08"]
 tags: ["tool", "light", "enchanted_woods", "common"]

@@ -3,7 +3,7 @@ title: River Drake
 id: creature.river_drake
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-01", "gemfall-02", "gemfall-03a", "gemfall-03c", "gemfall-04c"]
 tags: ["dangerous", "river", "semi_sapient", "territorial"]
@@ -11,6 +11,11 @@ classification: dangerous_creature
 danger_level: moderate
 scale: large
 sapience: semi_sapient
+height_cm: 180
+size:
+  height: "1.8 m (5 ft 11 in)"
+  compare: "as tall as a grown-up"
+  line: "1.8 m (5 ft 11 in), as tall as a grown-up."
 lore_hook: "The river's self-appointed toll collector. The river has not confirmed the appointment."
 likes:
   - id: npc.stone_troll

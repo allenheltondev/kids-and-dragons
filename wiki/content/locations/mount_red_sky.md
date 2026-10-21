@@ -3,7 +3,7 @@ title: Mount Red Sky
 id: location.mount_red_sky
 type: location
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-01", "gemfall-05a", "gemfall-05b", "gemfall-06", "gemfall-07h", "gemfall-07r", "gemfall-08"]
 tags: ["active_volcano", "gemfalls", "legendary", "ash", "lava", "unstable_power"]

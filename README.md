@@ -220,8 +220,10 @@ Details: [docs/deploy.md](docs/deploy.md).
 
 ## In progress
 
-Open work includes true-size figures (#366), a "Last time…" recap at the start of a chapter
-(#378), cohesion fixes across Gemfall from the #368 audit, and the Riftlight campaign itself.
+Open pull requests: a "Last time…" preface before a chapter's first scene (#378); the rest of the
+Gemfall cohesion fixes from the #368 audit (#372, #373, #376, #381); and the remaining Riftlight
+regions, Convergence and the finale (#374, #375, #377, #379, #380, #382). Group actions on phones
+are designed ([docs/briefs/group-actions.md](docs/briefs/group-actions.md)) but not yet built.
 
 ## Further reading
 

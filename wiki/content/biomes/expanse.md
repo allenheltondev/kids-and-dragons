@@ -3,7 +3,7 @@ title: The Expanse
 id: biome.expanse
 type: biome
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: intentionally_undefined
 draft: true
 played_in: []
