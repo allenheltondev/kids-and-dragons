@@ -486,6 +486,14 @@ export interface JoinRoomResponse extends RoomHostFlag, KeeperFlag {
   mode: RoomMode;
   sessionToken: string;
   state: RunState;
+  /**
+   * Every seat is taken and none is this player's (#389, `tableFull`): the
+   * phone is in the room, but it shows `TABLE_FULL_MESSAGE` instead of hero
+   * creation, so nobody builds a hero only to be refused. It is read from the
+   * state, and the phone reads it again from every patch, so a seat that
+   * opens later opens on the phone too. Absent means there is a seat.
+   */
+  full?: boolean;
 }
 
 /**
@@ -739,6 +747,43 @@ export interface JournalResponse {
   finished?: Record<string, JournalFinishedCampaign[]>;
   /** Her own page (#299). Optional because a server from before it sends none. */
   profile?: KidProfileView;
+  /**
+   * The Story page (#358): each campaign the household has a story in, the
+   * newest first, and in each the chapters it played, in the order it played
+   * them. Every line is authored and already read against what the party
+   * held (story-so-far.ts), so the page only draws it, offline too. Optional
+   * because a server from before it sends none.
+   */
+  story?: JournalStoryCampaign[];
+}
+
+/** One campaign on the Story page (#358). */
+export interface JournalStoryCampaign {
+  campaignId: string;
+  title: string;
+  /** The attempt's standing: still going, seen to the end, or over and to be begun again. */
+  status: "active" | "complete" | "failed";
+  chapters: JournalStoryChapter[];
+}
+
+/**
+ * One chapter on the Story page, as the household played it. A chapter played
+ * before the page existed has only its title and goal: its attempt kept no
+ * story, so `ending`, `revealed` and `lastTime` are empty for it.
+ */
+export interface JournalStoryChapter {
+  chapterId: string;
+  title: string;
+  /** The goal the chapter set out with (#356), its sentence only. */
+  goal?: string;
+  /** How it ended. Absent for a chapter played before the page existed. */
+  outcome?: "success" | "setback";
+  /** The first sentence of the ending scene's words. */
+  ending?: string;
+  /** Each priority-1 scene the party walked through, in its own words (normally one). */
+  revealed: string[];
+  /** The "Last time…" lines for the route-set choices this chapter decided, in story order. */
+  lastTime: string[];
 }
 
 /** What her page shows beyond her heroes: derived from what the game already keeps, plus what she chose. */

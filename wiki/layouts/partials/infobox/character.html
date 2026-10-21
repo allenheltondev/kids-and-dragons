@@ -11,6 +11,7 @@
   {{ with $sp }}
   <p class="wiki-infobox__hook">{{ .blurb }}</p>
   <dl class="wiki-infobox__fields wiki-infobox__fields--stacked">
+    {{ partial "infobox/size.html" $ }}
     <div class="wiki-infobox__field">
       <dt>Born with</dt>
       <dd>

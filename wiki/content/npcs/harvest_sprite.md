@@ -3,13 +3,18 @@ title: Harvest Sprite
 id: npc.harvest_sprite
 type: npc
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["bramblewood-01", "gemfall-02", "gemfall-03b", "gemfall-08"]
 tags: ["supporting_people", "fields", "tiny", "semi_sapient"]
 classification: supporting_people
 scale: tiny
 sapience: semi_sapient
+height_cm: 22
+size:
+  height: "22 cm (9 in)"
+  compare: "fits in a backpack"
+  line: "22 cm (9 in), fits in a backpack."
 lore_hook: "The realm's smallest professionals, and by a wide margin its most serious."
 likes:
   - id: npc.faun

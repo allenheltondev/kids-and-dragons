@@ -71,7 +71,7 @@
       "discovers": [
         "faction.skywardens"
       ],
-      "narration": "The Northern River Bridge has a crack down the middle like a dropped plate glued back by somebody in a hurry. Skywardens in silver and violet stand on every span with chalk and clipboards, letting people over a few at a time. Coming the other way, south, is everybody whose rush is already over, and none of them are singing.",
+      "narration": "The Northern River Bridge has a crack down the middle like a dropped plate glued back by somebody in a hurry. Skywardens in silver and violet stand on every span with chalk and clipboards, letting people over a few at a time. Coming the other way, south, is everybody whose rush is already over, and none of them are singing. Tonight you have to get across that bridge. And those cracks look like they are trying to say something. Find out what.",
       "cast": [
         {
           "figure": "entities/skywardens"
@@ -276,7 +276,7 @@
     },
     "scene_cult_pitch_say_no_kindly": {
       "type": "story",
-      "narration": "\"No, thank you,\" you say, kindly. Hollis does not stop ladling. \"That's alright, love,\" she says. \"Soup's still free.\" She means it, which is the part that stays with you all the way to the bridge.",
+      "narration": "\"No, thank you,\" you say, kindly. Hollis does not stop ladling. \"That's all right, love,\" she says. \"Soup's still free.\" She means it, which is the part that stays with you all the way to the bridge.",
       "choices": [
         {
           "id": "on",
@@ -474,7 +474,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_outline",
-        "narration": "You draw it in chalk: the troll's humming bridge, the bent pride roads, the spiralling sashes. Then you draw the cracks over the top.",
+        "narration": "You draw it in chalk: the old note the troll's bridge hums, the bent pride roads, the spiraling sashes. Then you draw the cracks over the top.",
         "effects": [
           {
             "type": "setFlag",
@@ -492,7 +492,7 @@
     "scene_outline": {
       "type": "story",
       "priority": 1,
-      "narration": "Everything points the same way. The troll's old note, the pride roads, the sashes, the cracks: all bending around the stones, and all of it older than the mountain's name. The stones did not come from the eruption. They were there first. And the land has been keeping records the whole time. Brask goes very quiet and sits down on a bucket.",
+      "narration": "Everything points the same way. The old note the troll's bridge hums, the pride roads, the sashes, the cracks: all bending around the stones, and all of it older than the mountain's name. The stones did not come from the eruption. They were there first. And the land has been keeping records the whole time. Brask goes very quiet and sits down on a bucket.",
       "cast": [
         {
           "figure": "cast/brask",
@@ -1177,7 +1177,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_clerk",
-        "narration": "Paper, charcoal, rub, rub, rub. The lines come up black and clear: a spiral, curling round and round a little circle in the middle. Just like the sashes at the waystation. Just like the pride roads. You roll the paper up very carefully.",
+        "narration": "Paper, charcoal, rub, rub, rub. The lines come up black and clear: a spiral, curling around and around a little circle in the middle. Just like the sashes at the waystation. Just like the pride roads. You roll the paper up very carefully.",
         "effects": [
           {
             "type": "setFlag",
@@ -1264,11 +1264,11 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_crack_string",
-        "narration": "You tell him about the troll's note, and the bent roads, and the spiralling sashes. Tibbet listens with his mouth slightly open. Then he remembers he is a corporal, closes it, salutes, and lifts the tent flap for you."
+        "narration": "You tell him about the old note the troll's bridge hums, and the bent roads, and the spiraling sashes. Tibbet listens with his mouth slightly open. Then he remembers he is a corporal, closes it, salutes, and lifts the tent flap for you."
       },
       "onFailure": {
         "goto": "scene_crack_string",
-        "narration": "Tibbet listens to every word, writes \"REASON: LONG\" on his clipboard, and says no. Then an engineer pokes her head out, says \"Tibbet, let them hold the string,\" and pulls you round the side of the tent."
+        "narration": "Tibbet listens to every word, writes \"REASON: LONG\" on his clipboard, and says no. Then an engineer pokes her head out, says \"Tibbet, let them hold the string,\" and pulls you around the side of the tent."
       },
       "art": "scenes/gemfall/bridge-engineers-tent"
     },
@@ -1284,7 +1284,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Go on round the tent",
+          "label": "Go on around the tent",
           "icon": "scroll",
           "goto": "scene_crack_string"
         }
@@ -1303,7 +1303,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Go on round the tent",
+          "label": "Go on around the tent",
           "icon": "gem",
           "goto": "scene_crack_string"
         }
@@ -1360,7 +1360,7 @@
     },
     "scene_engineers_rubbing": {
       "type": "story",
-      "narration": "You unroll the copy of the old marks from under the bridge and lay it beside the survey. Brask looks from one to the other, and back again. The spiral on the old stone and the cracks in her new drawing curl round the very same point. She takes the pencil from behind her left ear, and then the right.",
+      "narration": "You unroll the copy of the old marks from under the bridge and lay it beside the survey. Brask looks from one to the other, and back again. The spiral on the old stone and the cracks in her new drawing curl around the very same point. She takes the pencil from behind her left ear, and then the right.",
       "cast": [
         {
           "figure": "cast/brask",
@@ -1449,7 +1449,7 @@
     },
     "choice_stones_on_table_pride_stone": {
       "type": "story",
-      "narration": "You set the Pride Stone on the table and tell her where it came from: the middle of the widest bend, where no pride would set a paw. Brask writes PRIDE COUNTRY: AVOIDED BY EVERYONE on her survey and draws a circle round it. Then she draws a second circle round that one.",
+      "narration": "You set the Pride Stone on the table and tell her where it came from: the middle of the widest bend, where no pride would set a paw. Brask writes PRIDE COUNTRY: AVOIDED BY EVERYONE on her survey and draws a circle around it. Then she draws a second circle around that one.",
       "cast": [
         {
           "figure": "cast/brask",
@@ -1603,7 +1603,7 @@
     },
     "scene_pack_crossing_reed_knot": {
       "type": "story",
-      "narration": "You wind Old Ossley's wet reed knot round your packs, and the hum goes soft, like a river a long way off. Pellam leans close and listens. He writes HUMMING GOODS, and crosses it out, and writes QUIETER THAN EXPECTED. \"Most irregular,\" he says, and sounds pleased.",
+      "narration": "You wind Old Ossley's wet reed knot around your packs, and the hum goes soft, like a river a long way off. Pellam leans close and listens. He writes HUMMING GOODS, and crosses it out, and writes QUIETER THAN EXPECTED. \"Most irregular,\" he says, and sounds pleased.",
       "cast": [
         {
           "figure": "cast/pellam",

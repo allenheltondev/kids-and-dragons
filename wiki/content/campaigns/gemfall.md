@@ -3,7 +3,7 @@ title: Gemfall
 id: campaign.gemfall
 type: campaign
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: ["gemfall-01", "gemfall-02", "gemfall-03a", "gemfall-03b", "gemfall-03c", "gemfall-04a", "gemfall-04b", "gemfall-04c", "gemfall-05a", "gemfall-05b", "gemfall-05c", "gemfall-06", "gemfall-07h", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["main_campaign", "treasure_rush", "mount_red_sky", "seal", "exchange", "gemfall"]
@@ -367,5 +367,5 @@ the story without ever pretending the party wasn't warned.
 - [The Hollow Gate](/locations/hollow_gate/) `Locations`
 
 ### Routes
-- [Northern River Bridge](/routes/northern_river_bridge/) `Locations`
+- [Ashspan Bridge](/routes/northern_river_bridge/) `Locations`
 <!-- END GENERATED: relationships -->

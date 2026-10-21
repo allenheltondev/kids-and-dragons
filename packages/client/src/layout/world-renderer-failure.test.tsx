@@ -9,6 +9,7 @@ const scene = vi.hoisted(() => ({
   state: { phase: "scene" } as unknown,
 }));
 vi.mock("../store", () => ({
+  useCampaign: () => null,
   useChapter: () => scene.chapter,
   useRunState: () => scene.state,
   useMe: () => null,
