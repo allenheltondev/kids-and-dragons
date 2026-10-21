@@ -309,7 +309,7 @@ test.describe("the words around a chapter (#357)", () => {
     });
   }
 
-  test("chapter files slower than the wait: the story is read alone, then the goal, once", async ({ browser }) => {
+  test("chapter files slower than the wait: the story is read alone, then the goal, once, and no recap is shown", async ({ browser }) => {
     test.setTimeout(240_000);
     const tv = await device(browser, { viewport: { width: 1280, height: 720 }, serviceWorkers: "block" });
     await tv.goto("/");
@@ -340,6 +340,9 @@ test.describe("the words around a chapter (#357)", () => {
     expect(story, lines.join("\n")).toBeGreaterThanOrEqual(0);
     expect(lines.indexOf(`Your goal: ${GOAL}`)).toBeGreaterThan(story);
     expect(lines.some((line) => line.startsWith("Here we go!"))).toBe(false);
+    // Nor is it shown once the file lands: a recap after the story would be out of order.
+    await expect(tv.getByTestId("chapter-goal")).toBeVisible(TAP);
+    await expect(tv.getByTestId("chapter-preface")).toHaveCount(0);
     await tv.waitForTimeout(500);
     expect((await said(tv)).filter((line) => line.startsWith("Your goal:"))).toHaveLength(1);
   });

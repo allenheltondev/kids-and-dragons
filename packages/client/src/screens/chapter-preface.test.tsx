@@ -140,6 +140,16 @@ describe("Last time…, before a chapter's first scene", () => {
     expect(screen.queryByTestId("chapter-preface")).toBeNull();
   });
 
+  it("never comes up after the wait has run out, however soon the files land (#378 review)", () => {
+    vi.useFakeTimers();
+    seed(run(), { chapter: null });
+    render(<ChapterPreface />);
+    expect(screen.queryByTestId("chapter-preface")).toBeNull();
+    act(() => vi.advanceTimersByTime(PREFACE_WAIT_MS));
+    act(() => useGameStore.setState({ chapter: CHAPTER }));
+    expect(screen.queryByTestId("chapter-preface")).toBeNull();
+  });
+
   it("is not shown for a campaign without one, nor past the first scene", () => {
     seed(run(), { campaign: { ...CAMPAIGN, lastTime: undefined } });
     render(<ChapterPreface />);
@@ -170,6 +180,9 @@ describe("the read-aloud order at a chapter's start", () => {
     act(() => vi.advanceTimersByTime(PREFACE_WAIT_MS));
     expect(spoken).toEqual(["A cat is up a tree."]);
     act(() => useGameStore.setState({ chapter: CHAPTER }));
+    expect(spoken).toEqual(["A cat is up a tree.", "Your goal: Get the cat down from the tree."]);
+    // And the files landing late never starts the preface after the story.
+    act(() => vi.advanceTimersByTime(1000));
     expect(spoken).toEqual(["A cat is up a tree.", "Your goal: Get the cat down from the tree."]);
   });
 
