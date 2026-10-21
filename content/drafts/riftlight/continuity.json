@@ -7989,6 +7989,564 @@
           "introduces": {}
         }
       }
+    },
+    "riftlight-preview-pause-convergence": {
+      "entryFacts": [],
+      "scenes": {
+        "pause": {
+          "requires": [],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-convergence": {
+      "entryFacts": [],
+      "scenes": {
+        "arrival": {
+          "requires": [],
+          "introduces": {
+            "converge_bram": "A bigfoot named Bram Lock",
+            "converge_travelers": "At a sheltered glacier ledge, Orin waves you over to a map on an upturned sled. Olivia greets you and steadies one corner. Your Riftseeker friends have made room for your account. A bigfoot named Bram Lock keeps the path clear. \"Help me keep everyone behind the line when an opening comes,\" he asks. Orin weights the map with his boot. \"Compare your discoveries. Then help us steady any opening before people go near it.\" His boot is still on his foot.",
+            "converge_map": "At a sheltered glacier ledge, Orin waves you over to a map on an upturned sled. Olivia greets you and steadies one corner. Your Riftseeker friends have made room for your account. A bigfoot named Bram Lock keeps the path clear. \"Help me keep everyone behind the line when an opening comes,\" he asks. Orin weights the map with his boot. \"Compare your discoveries. Then help us steady any opening before people go near it.\" His boot is still on his foot."
+          }
+        },
+        "accounts": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "accounts_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "accounts_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "measure": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "measure_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "measure_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "measure_check": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "measure_clear": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "measure_changed": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "evidence": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "evidence_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "evidence_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "pull": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "pull_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "pull_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "pull_check": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "pull_clear": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "pull_changed": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "clear_path": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "clear_path_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "clear_path_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "clear_path_check": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "clear_path_clear": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "clear_path_changed": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "signals": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "signals_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "signals_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "rest": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "rest_watch": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "proposal": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "proposal_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "proposal_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "summoning": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "decision": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "bram_plan": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "olivia_plan": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "orin_plan": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "steady": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "steady_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "steady_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "steady_check": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "steady_clear": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "steady_changed": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "count": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "count_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "count_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "count_check": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "count_clear": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "count_changed": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "lesson": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "lesson_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "lesson_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "lesson_3": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "lesson_check": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "lesson_clear": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "lesson_changed": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "release": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "release_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "release_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "account": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "account_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "account_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "path": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "path_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "path_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "ending": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "finish": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        }
+      }
     }
   }
 }

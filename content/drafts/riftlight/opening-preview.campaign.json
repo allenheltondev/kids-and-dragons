@@ -43,7 +43,9 @@
     "riftlight-wyrm-nest",
     "riftlight-preview-pause-wyrm-nest",
     "riftlight-squall-temple",
-    "riftlight-preview-pause-squall-temple"
+    "riftlight-preview-pause-squall-temple",
+    "riftlight-convergence",
+    "riftlight-preview-pause-convergence"
   ],
   "graph": {
     "version": 1,
@@ -100,7 +102,14 @@
       "island_relay_delayed",
       "wyrm_ally",
       "temple_island_settled",
-      "temple_damaged"
+      "temple_damaged",
+      "helped_bram",
+      "olivia_continued",
+      "pip_stayed_back",
+      "manipulate_learned",
+      "olivia_ally",
+      "olivia_redeemed",
+      "olivia_rival"
     ],
     "buffs": {
       "riftspark": {
@@ -385,6 +394,64 @@
       },
       "preview-pause-squall-temple": {
         "chapter": "riftlight-preview-pause-squall-temple",
+        "title": "Pause the development preview",
+        "ending": {
+          "title": "Development preview pause"
+        }
+      },
+      "convergence": {
+        "chapter": "riftlight-convergence",
+        "title": "The Maps Come Together",
+        "revisit": "pass",
+        "onComplete": [
+          {
+            "effects": [
+              {
+                "type": "setFact",
+                "fact": "attunement",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "when": {
+              "flag": "olivia_trusted",
+              "notFlag": "helped_bram"
+            },
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "olivia_ally"
+              }
+            ]
+          },
+          {
+            "when": {
+              "flag": "olivia_trusted",
+              "notFlag": "olivia_continued"
+            },
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "olivia_redeemed"
+              }
+            ]
+          },
+          {
+            "when": {
+              "notFlag": "olivia_trusted"
+            },
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "olivia_rival"
+              }
+            ]
+          }
+        ]
+      },
+      "preview-pause-convergence": {
+        "chapter": "riftlight-preview-pause-convergence",
         "title": "Pause the development preview",
         "ending": {
           "title": "Development preview pause"
@@ -950,6 +1017,84 @@
         "to": "cairnstep-pass",
         "kind": "return",
         "label": "Accept the griffin messenger's flight to the Cairnstep"
+      },
+      "convergence-pause": {
+        "from": "convergence",
+        "to": "preview-pause-convergence",
+        "kind": "forward",
+        "label": "Pause this development preview"
+      },
+      "wyrm-nest-converge-coast": {
+        "from": "wyrm-nest",
+        "to": "convergence",
+        "kind": "forward",
+        "label": "Compare the river memory and buried bridge",
+        "when": {
+          "completed": [
+            "reading-room",
+            "buried-bridge"
+          ]
+        }
+      },
+      "wyrm-nest-converge-sky": {
+        "from": "wyrm-nest",
+        "to": "convergence",
+        "kind": "forward",
+        "label": "Compare the river memory and island mooring",
+        "when": {
+          "completed": [
+            "reading-room",
+            "the-island-due-back"
+          ]
+        }
+      },
+      "bone-yard-converge-paths": {
+        "from": "bone-yard",
+        "to": "convergence",
+        "kind": "forward",
+        "label": "Compare the buried bridge and river memory",
+        "when": {
+          "completed": [
+            "buried-bridge",
+            "reading-room"
+          ]
+        }
+      },
+      "bone-yard-converge-sky": {
+        "from": "bone-yard",
+        "to": "convergence",
+        "kind": "forward",
+        "label": "Compare the buried bridge and island mooring",
+        "when": {
+          "completed": [
+            "buried-bridge",
+            "the-island-due-back"
+          ]
+        }
+      },
+      "squall-temple-converge-paths": {
+        "from": "squall-temple",
+        "to": "convergence",
+        "kind": "forward",
+        "label": "Compare the island mooring and river memory",
+        "when": {
+          "completed": [
+            "the-island-due-back",
+            "reading-room"
+          ]
+        }
+      },
+      "squall-temple-converge-coast": {
+        "from": "squall-temple",
+        "to": "convergence",
+        "kind": "forward",
+        "label": "Compare the island mooring and buried bridge",
+        "when": {
+          "completed": [
+            "the-island-due-back",
+            "buried-bridge"
+          ]
+        }
       }
     },
     "facts": {
