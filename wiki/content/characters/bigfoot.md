@@ -3,11 +3,16 @@ title: Bigfoot
 id: character.bigfoot
 type: character
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["bramblewood-01", "gemfall-01", "gemfall-02", "gemfall-03b", "gemfall-03c", "gemfall-04b", "gemfall-05a", "gemfall-05b", "gemfall-06", "gemfall-07h", "gemfall-07l", "gemfall-07r"]
 tags: ["playable", "forest", "strong", "observer"]
 scale: large
+height_cm: 215
+size:
+  height: "2.15 m (7 ft 1 in)"
+  compare: "as tall as a door"
+  line: "2.15 m (7 ft 1 in), as tall as a door."
 lore_hook: "The forest's librarians. The books are alive, and some of them bite."
 likes:
   - id: creature.mosshorn

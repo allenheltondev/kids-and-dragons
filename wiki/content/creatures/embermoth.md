@@ -3,7 +3,7 @@ title: Embermoth
 id: creature.embermoth
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-02", "gemfall-04a", "gemfall-05b", "gemfall-05c", "gemfall-06", "gemfall-07h", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["ambient", "foothills", "volcanic", "indicator"]
@@ -11,6 +11,12 @@ classification: ambient_creature
 danger_level: low
 scale: tiny_to_small
 sapience: animal
+height_cm: 18
+size:
+  height: "18 cm (7 in)"
+  compare: "fits in a backpack"
+  stance: "usually flies"
+  line: "18 cm (7 in), fits in a backpack. Usually flies."
 lore_hook: "The mountain's mood, printed on ten thousand small gray wings."
 likes:
   - id: creature.cinder_wolf

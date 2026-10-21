@@ -3,13 +3,18 @@ title: Burrowfolk
 id: npc.burrowfolk
 type: npc
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: ["gemfall-03a", "gemfall-04a", "gemfall-04b", "gemfall-05a", "gemfall-05c", "gemfall-06", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["supporting_people", "fields", "stone_records", "prospecting"]
 classification: supporting_people
 scale: small_to_medium
 sapience: sapient
+height_cm: 95
+size:
+  height: "95 cm (3 ft 1 in)"
+  compare: "waist-high to a grown-up"
+  line: "95 cm (3 ft 1 in), waist-high to a grown-up."
 lore_hook: "A stone without a place is only half a story."
 related:
   - id: biome.sunward_fields

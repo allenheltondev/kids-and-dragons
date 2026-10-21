@@ -3,13 +3,19 @@ title: Merfolk
 id: npc.merfolk
 type: npc
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-01", "gemfall-07h", "gemfall-07l", "gemfall-07r"]
 tags: ["supporting_people", "ocean", "reef", "alliance"]
 classification: supporting_people
 scale: medium
 sapience: sapient
+height_cm: 170
+size:
+  height: "1.7 m (5 ft 7 in)"
+  compare: "as tall as a grown-up"
+  stance: "swims"
+  line: "1.7 m (5 ft 7 in), as tall as a grown-up. Swims."
 lore_hook: "An alliance is not a mood. They will keep the agreement; that is what agreements are for."
 likes:
   - id: npc.selkie

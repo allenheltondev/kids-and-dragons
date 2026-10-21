@@ -34,6 +34,51 @@
     "seal_clock": ["clock_steady", "clock_stirring", "clock_late"],
     "cult": ["refused_the_cult", "funded_the_break"]
   },
+  "lastTime": {
+    "$comment": "Read on the shared screen before a chapter's first scene (#357): the lines for the route-set flags a party carried in, the newest few in this order, which is story order, then the chapter's goal. A party carrying none hears the opener. Every routeSets member has a line (content:validate); a line naming a great stone reads the inventory.",
+    "opener": "A brand new adventure starts tonight. Mount Red Sky has rumbled, gemstones are falling out of the sky, and everybody is racing north.",
+    "lines": {
+      "motive_wealth": "You went north for the treasure. Gems, gems, gems!",
+      "motive_curiosity": "You went north to find out what really happened to the mountain.",
+      "motive_prestige": "You went north so that everybody would know your names.",
+      "motive_duty": "You went north because somebody has to keep folk safe.",
+      "motive_fresh_start": "You went north for a fresh start somewhere new.",
+      "motive_proving": "You went north to prove you could do it.",
+      "ember_sold": "You sold the warm red stone on the quay, for a purse so heavy it clanked.",
+      "ember_kept": {
+        "holding": "facet_ember",
+        "text": "You kept the warm red stone from the quay. It is still in your pack, humming away.",
+        "otherwise": "You kept the warm red stone from the quay, though it is not in your pack now."
+      },
+      "sprites_friends": "The little sprites in the vegetable rows decided you are their friends.",
+      "sprites_wronged": "You snatched the shiny stone from the sprites' vegetable row, and the sprites will not forget it.",
+      "route_river": "You picked the River Road, east toward the crossing.",
+      "route_rush": "Your road runs north with the rush, packed with wagons and very slow.",
+      "route_wild": "Your road goes west, into the wild, wet country past the marsh.",
+      "crossed_dry": "You crossed the big river and kept your socks dry.",
+      "river_took_us": "The river picked you up and carried you south, like a parcel nobody signed for.",
+      "forded_clean": "You got over the river's west branch, right where you meant to.",
+      "marsh_kept_us": "The marsh grabbed you, and its channels carried you west until they finally let go.",
+      "walked_over": "You squelched out of the bog and fell in behind a sausage cart on the busy north road.",
+      "glade_mended": "The sick gray glade in the forest is green again, and its stone is back in the ground.",
+      "glade_finished": {
+        "holding": "facet_glade",
+        "text": "You took the humming stone from the gray glade. It is still in your pack, and the glade is still gray.",
+        "otherwise": "You took the humming stone from the gray glade, and the glade stayed gray."
+      },
+      "refused_the_cult": "When the kind soup folk asked for your help, you said no thank you.",
+      "funded_the_break": "You gave the kind soup folk something for their plan, and they were very, very glad.",
+      "told_wardens": "You told the wardens everything you found, and they wrote it all down.",
+      "told_gatherers": "You sent your news to the gatherers, and somewhere a bell rang.",
+      "kept_close": "You kept what you found to yourselves, folded up small.",
+      "pursuit_restore": "Your road is putting the stones back, every one of them, even the hard way.",
+      "pursuit_hoard": "You said you would finish the collection. Nobody at the citadel knows what to make of that.",
+      "pursuit_leash": "You chose the leash: hold what sleeps under the mountain, not break it and not bury it.",
+      "clock_steady": "The mountain is grumbling slow and low, and you are in good time.",
+      "clock_stirring": "The ground has started to shrug now and then. The mountain is stirring.",
+      "clock_late": "The ground is shaking slow and steady, like a drum. Time is getting short."
+    }
+  },
   "setbackLimit": 4,
   "purseBackfill": { "coins": 6, "byFlag": { "ember_sold": 15 } }
 }
