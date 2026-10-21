@@ -781,3 +781,34 @@ Courier Griffin: one young working quadruped griffin, cream feather face and che
 It appears in `scene_posy`, `check_posy`, `scene_posy_let_keep`, and `scene_posy_medal`. The later `scene_downhill_crowd_posy` keeps the separate on-foot figures. The combined figure uses `very_large` for its occupied height, so the two stacked characters remain readable; this does not redefine the Burrowfolk people's scale. Packaged with the existing registration script; lowest opaque row y=900.
 
 Edit these two reference cast cutouts into ONE complete father-and-child cutout: Corbin carrying his small daughter Posy astride his shoulders. Preserve their exact identities, clothing, colors, painterly storybook style and three-quarter LEFT-facing orientation. Corbin is the adult Burrowfolk badger in worn olive coat, russet scarf, brown trousers and boots, shoulder bag. Posy is the small badger girl in ochre pinafore and russet scarf, boots, holding her glowing pink stone in BOTH paws in front of her chest. Posy's legs drape down either side of Corbin's neck, her seat rests firmly on his shoulders; Corbin supports her calves with both hands. She is clearly a small child, about one third his body height. Both faces visible. Corbin stands solidly with both boots on same floor line. Entire combined pair fits on a square transparent canvas with generous margin around ears, tails and boots. Genuine transparent background, NO floor, shadow, text, border or extra characters. This is one stage figure, feet bottom at y=900 on a 1024x1024 canvas; keep generous headroom.
+
+## Cast figures — issue 384 (2026-10-21)
+
+Fourteen remaining priority-1/2 role figures are delivered under `assets/cast/`, together
+with all eighteen `heave`, `hum` and `tiptoe` overlays under `assets/together/`.
+
+The complete [prompt set and accepted generation filenames](../reviews/issue-384/prompts.json)
+records built-in `image_gen` generation and corrective edits, with paths to the finished
+assets. Raw generation copies and temporary tooling are omitted. All final figures use
+real transparent 1024×1024 RGBA canvases,
+left-facing poses and registered ground placement. References were the existing Burrowfolk,
+centaur, frogfolk, yeti, legend-dragon and fledgling-dragonling figures, inspected before use.
+No existing species or cast painting was replaced.
+
+The [review record](../reviews/issue-384/README.md) includes the figure list with bases,
+heights, stances and current cast counts; representative TV and phone captures; the light
+and dark contact sheet; the overlay sheet at TV and phone sizes; and validation results.
+It explains the Burrowfolk choir singer, frogfolk Warden Clerk and Stall Witch choices,
+the Bell Courier's combined pony-and-rider height, and the low-headed colossal Seal-Keeper.
+The generation corrected decorative tiptoe frames into five separate species-neutral
+prints, then registered the prints around the transparent portrait hole.
+
+The painting brief now specifies standing, hovering, flying and swimming registration and
+puts height/stance targets on every commissioned A4 row. Corbin carrying Posy is `medium`,
+150 cm, standing after #366; the historical `very_large` note above is superseded.
+
+Only cast data changed in chapters. File hashes were re-taken for those presentation edits;
+the Gemfall compatibility tests still pass their unchanged gameplay digests. Overlay
+design from #360 merged in PR #361 (docs only). Its runtime/schema/content-gate
+implementation remains absent from current main; these assets do not opt any checks into
+group actions. The design issue itself is complete.
