@@ -55,3 +55,7 @@ This removes unrelated full-campaign searches from a five-second art assertion.
 | Physical checks | 6 | 6 |
 | Encounters | 0 | 0 |
 | Longest reading run | 2 | 2 |
+
+### Second review follow-up
+
+Resolved the README conflict by keeping both the goal and interactivity sections. Restored the Bone Yard introduction before the either-road preparations, so leaving loose stones has a clear reason. Wording only; the spine remains 43 scenes, 15 decisions, 6 doing checks and a reading run of 2.
