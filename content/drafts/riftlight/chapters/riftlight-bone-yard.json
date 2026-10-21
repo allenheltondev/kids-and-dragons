@@ -1,0 +1,1105 @@
+{
+  "id": "riftlight-bone-yard",
+  "campaignId": "riftlight-opening-preview",
+  "index": 7,
+  "title": "The Borrowed Ruins",
+  "biome": "bone_yard",
+  "music": "riftlight-coast",
+  "estimatedMinutes": 35,
+  "xpAward": 140,
+  "entry": "arrival",
+  "goal": {
+    "text": "Clear a safe way past the displaced ruins without taking anything from the Bone Yard.",
+    "steps": [
+      {
+        "id": "bones_route",
+        "label": "Mark the safe route",
+        "flag": "bones_route_done"
+      },
+      {
+        "id": "bones_passage",
+        "label": "Clear the passage",
+        "flag": "bones_passage_done"
+      },
+      {
+        "id": "bones_leave",
+        "label": "Leave everything where it belongs",
+        "flag": "bones_leave_done"
+      }
+    ]
+  },
+  "voiceGuide": {
+    "tone": "Warm, curious and practical. Short sentences. Show the consequence of each plan. Nobody dies.",
+    "vocabulary": "Read aloud to an eight-year-old.",
+    "forbidden": [
+      "gore",
+      "Hollow Gate",
+      "Legend Dragon",
+      "Corvane",
+      "emperor",
+      "Pangea"
+    ],
+    "npcVoices": {}
+  },
+  "scenes": {
+    "arrival": {
+      "type": "story",
+      "narration": "At the edge of the Bone Yard, your Skupper guide from the flats stops in a brackish pool. Beyond her, broken stone walls have appeared among enormous old bones. Small bone crawlers crowd the fresh shimmer around the walls. \"Clear a safe way past those ruins,\" she says. \"Take nothing. Here, anything taken comes back. I will watch from water that suits my fins.\" One crawler is trying to fit its whole body under a pebble.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "limit"
+        }
+      ]
+    },
+    "limit": {
+      "type": "choice_point",
+      "narration": "The guide points out the boundary. Her pool is outside it; the displaced ruins are inside. She lends you a plank from her landing. You keep one mat and your rescue line, and tie bright loops to every piece of your own gear. What will you do with the spare mats?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Carry the spare mats too",
+          "icon": "hand",
+          "goto": "limit_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Leave spare gear with the guide",
+          "icon": "hand",
+          "goto": "limit_2"
+        }
+      ]
+    },
+    "limit_1": {
+      "type": "story",
+      "narration": "You carry the spare mats too, all marked with loops. A loose shell stays on the ground. A shell is not yours just because it would make a good cup.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "survey"
+        }
+      ]
+    },
+    "limit_2": {
+      "type": "story",
+      "narration": "You leave the spare mats across two reeds by the guide. You carry the marked plank, one mat and the rescue line. Her pool has become a very damp cloakroom.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "survey"
+        }
+      ]
+    },
+    "survey": {
+      "type": "choice_point",
+      "narration": "A leaning wall blocks the narrow path. A longer path curves around a deep hollow. The crawlers cluster beside a tear in the air near the wall. Where will you look for a safe passage?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Check the wall from the open side",
+          "icon": "hand",
+          "goto": "survey_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Check the rim of the hollow",
+          "icon": "hand",
+          "goto": "survey_2"
+        }
+      ]
+    },
+    "survey_1": {
+      "type": "story",
+      "narration": "You follow the wall without leaning on it. At its foot, loose stones tremble whenever the tear brightens. One stone rattles like a tooth in a cup.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "survey_check"
+        }
+      ]
+    },
+    "survey_2": {
+      "type": "story",
+      "narration": "You stay back from the hollow and follow the firm rim. A broken arch gives a view of the blocked path without stepping under the wall.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "survey_check"
+        }
+      ]
+    },
+    "survey_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Trace an open route around the shifting stones without entering the hollow.",
+      "onSuccess": {
+        "goto": "survey_clear",
+        "narration": "You find firm ground beside the leaning wall."
+      },
+      "onFailure": {
+        "goto": "survey_changed",
+        "narration": "A loose stone rolls into the hollow; you stop before following it."
+      }
+    },
+    "survey_clear": {
+      "type": "story",
+      "narration": "You mark a safe strip that reaches the passage and returns to the boundary.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bones_route_done"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "markers"
+        }
+      ]
+    },
+    "survey_changed": {
+      "type": "story",
+      "narration": "You use the longer rim, marking every turn from firm ground. The route reaches the same passage by a wider curve.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bones_route_done"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "markers"
+        }
+      ]
+    },
+    "markers": {
+      "type": "choice_point",
+      "narration": "The guide cannot leave her pool to mark the turns. From the path, your party can see her raised crest above the reeds. How will you make the way back clear?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Lay your own line along the firm strip",
+          "icon": "hand",
+          "goto": "markers_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Use sight lines between broken arches",
+          "icon": "hand",
+          "goto": "markers_2"
+        }
+      ]
+    },
+    "markers_1": {
+      "type": "story",
+      "narration": "The line stays on the surface, with loose bends around the ruins. You keep every end clear of the crawler swarm.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "test"
+        }
+      ]
+    },
+    "markers_2": {
+      "type": "story",
+      "narration": "You choose arches visible from each turn. At the last one, the guide raises her crest twice to show she can still see you.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "test"
+        }
+      ]
+    },
+    "test": {
+      "type": "choice_point",
+      "narration": "A pebble slides across the boundary and rolls back uphill. The guide leaves it alone. \"Anything taken comes back. Even if it makes you look silly.\" How will you check your route without collecting evidence?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Draw the wall positions from outside the boundary",
+          "icon": "hand",
+          "goto": "test_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Describe the route while the guide repeats it",
+          "icon": "hand",
+          "goto": "test_2"
+        }
+      ]
+    },
+    "test_1": {
+      "type": "story",
+      "narration": "You sketch where the arches stand. The sketch is on paper you brought; every stone stays where you found it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "vibration"
+        }
+      ]
+    },
+    "test_2": {
+      "type": "story",
+      "narration": "You call each turn. The guide repeats it and scratches a map in the mud outside the boundary. Her tail accidentally adds a pond.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "vibration"
+        }
+      ]
+    },
+    "vibration": {
+      "type": "choice_point",
+      "narration": "The crawlers turn toward a fresh pulse from the tear. They are following its magic, not guarding treasure for you. You can tap a loose plank you brought or shake the empty line to learn whether movement draws them away.",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Tap your plank beside the open path",
+          "icon": "hand",
+          "goto": "vibration_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Shake the line away from the leaning wall",
+          "icon": "hand",
+          "goto": "vibration_2"
+        }
+      ]
+    },
+    "vibration_1": {
+      "type": "story",
+      "narration": "You keep your feet on the marked strip and tap. The nearest crawler pauses, then returns to the shimmer. You have learned what it wants.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "vibration_check"
+        }
+      ]
+    },
+    "vibration_2": {
+      "type": "story",
+      "narration": "The line moves like a very thin snake. A crawler watches, then squeezes back under the wall toward the magic. Its priorities are clear.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "vibration_check"
+        }
+      ]
+    },
+    "vibration_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Retrieve your test gear before the next pulse draws crawlers across it.",
+      "onSuccess": {
+        "goto": "vibration_clear",
+        "narration": "You pull the gear clear of the swarm."
+      },
+      "onFailure": {
+        "goto": "vibration_changed",
+        "narration": "A crawler pins the line under one small foot."
+      }
+    },
+    "vibration_clear": {
+      "type": "story",
+      "narration": "Your test gear is back on the safe strip. Distracting the crawlers will take more than waving lunch-shaped rope.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "support"
+        }
+      ]
+    },
+    "vibration_changed": {
+      "type": "story",
+      "narration": "You slacken the line instead of tugging the crawler. When it lifts its foot toward the shimmer, the line slides free.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "support"
+        }
+      ]
+    },
+    "support": {
+      "type": "choice_point",
+      "narration": "The leaning wall rocks inward. Your party can brace its foot with a stone already lying here, or wedge your plank under the low edge and recover it afterward. Neither plan requires carrying anything out.",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Roll a fallen stone against the wall foot",
+          "icon": "hand",
+          "goto": "support_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Wedge your marked plank under the low edge",
+          "icon": "hand",
+          "goto": "support_2"
+        }
+      ]
+    },
+    "support_1": {
+      "type": "story",
+      "narration": "You roll the stone along the ground. It stays inside the boundary, at the foot of the wall. The crawlers briefly make room, then come back.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "support_check"
+        }
+      ]
+    },
+    "support_2": {
+      "type": "story",
+      "narration": "You slide the bright-looped plank in from the safe strip. It holds the wall just long enough to inspect the tear behind it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "support_check"
+        }
+      ]
+    },
+    "support_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Set the brace without putting anyone beneath the leaning stones.",
+      "onSuccess": {
+        "goto": "support_clear",
+        "narration": "The wall settles onto the brace."
+      },
+      "onFailure": {
+        "goto": "support_changed",
+        "narration": "The first brace tips and you pull back together."
+      }
+    },
+    "support_clear": {
+      "type": "story",
+      "narration": "There is a narrow passage behind the wall, with open ground beyond the tear.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "rest"
+        }
+      ]
+    },
+    "support_changed": {
+      "type": "story",
+      "narration": "You use two low supports instead of one tall wedge. The wall settles; your shoulders will remember the extra work.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "rest"
+        }
+      ]
+    },
+    "rest": {
+      "type": "rest",
+      "narration": "Back at the boundary pool, the guide opens a floating lunch box tied to a reed. There are soft seaweed rolls inside. You sit on your own mat outside the yard and rest. The box bumps her fin whenever she reaches for lunch.",
+      "heal": 2,
+      "choices": [
+        {
+          "id": "rest",
+          "label": "Rest here, then carry on",
+          "icon": "hand",
+          "goto": "plan"
+        },
+        {
+          "id": "watch",
+          "label": "Rest while watching the path",
+          "icon": "hand",
+          "goto": "rest_watch"
+        }
+      ]
+    },
+    "rest_watch": {
+      "type": "story",
+      "narration": "You watch from beside the pool while eating a seaweed roll. The guide keeps her lunch box from drifting into the yard. Even lunch must obey the boundary.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "plan"
+        }
+      ]
+    },
+    "plan": {
+      "type": "choice_point",
+      "narration": "The tear feeds fresh magic beside the passage. Your Listening Chime, the glacier travelers' chime, gives an echo while the tear is steady. You can drive the crawlers away from the passage, or close the tear from the marked stones. Closing it takes several turns beside the seam; the crawlers will still be there.",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Clear the crawlers from the passage",
+          "icon": "hand",
+          "goto": "plan_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Hold the marked stones and close the tear",
+          "icon": "hand",
+          "goto": "plan_2"
+        }
+      ]
+    },
+    "plan_1": {
+      "type": "story",
+      "narration": "You leave the return line behind you and choose open ground for the fight. Nothing you strike will be carried away as a prize.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "fight"
+        }
+      ]
+    },
+    "plan_2": {
+      "type": "story",
+      "narration": "You pick the nearest firm stones beside the seam. Your party will take turns working there while keeping the crawlers off. You mark the nearest closing points before the crawlers spread. This preparation shortens the work at the seam.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "fight_seam"
+        }
+      ]
+    },
+    "fight": {
+      "type": "encounter",
+      "map": "riftlight_bone_yard",
+      "narration": "Bone crawlers clatter across the open passage. Close the tear by ending three turns beside it, or drive the crawlers away. The loose stones near the shimmer bite at anyone who stops there.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "creature": "bone_crawler",
+          "count": 2
+        }
+      ],
+      "environment": {
+        "hazards": [
+          {
+            "id": "loose_stones",
+            "kind": "rift",
+            "label": "Shifting loose stones",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "damage": 1
+          }
+        ],
+        "objectives": [
+          {
+            "id": "close_seam",
+            "kind": "close",
+            "label": "Close the fresh tear",
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "turns": 3,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "bone_rift_closed"
+              }
+            ]
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "cleared"
+      },
+      "onDefeat": {
+        "goto": "rescued",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "bone_retreat"
+          }
+        ]
+      }
+    },
+    "cleared": {
+      "type": "story",
+      "narration": "The crawlers leave the passage and the leaning wall stops rocking. You have room to pass without climbing into the swarm. One crawler remains on a safe rock, determined to look enormous.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bones_passage_done"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "inventory"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "bone_rift_closed"
+          },
+          "text": "You closed the tear rather than driving every crawler away. With the fresh magic gone, they turn toward the stones deeper in the yard."
+        }
+      ]
+    },
+    "rescued": {
+      "type": "story",
+      "narration": "The crawlers press you back to the route line. Your party pulls clear while the guide signals from the pool. You rest outside their reach. The narrow passage stays blocked, so the guide points out the longer rim path you can use instead. You lose the short route, not anyone from the party.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bones_passage_done"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "inventory"
+        }
+      ]
+    },
+    "inventory": {
+      "type": "choice_point",
+      "narration": "Before leaving the ruins, you check what is in your hands. A small carved chip sits against the path. It would fit in a pocket. The guide's rule has not changed.",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Leave the chip and draw its shape",
+          "icon": "hand",
+          "goto": "inventory_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Leave it untouched and describe the carving",
+          "icon": "hand",
+          "goto": "inventory_2"
+        }
+      ]
+    },
+    "inventory_1": {
+      "type": "story",
+      "narration": "You leave the chip touching the ground and draw it from the safe strip. The page is yours. The chip is not.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "unbrace"
+        }
+      ]
+    },
+    "inventory_2": {
+      "type": "story",
+      "narration": "You look without moving it. The carving is too worn to explain the ruins. You write down only what you can see.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "unbrace"
+        }
+      ]
+    },
+    "unbrace": {
+      "type": "choice_point",
+      "narration": "Your brace is still beside the wall. Loose stones have settled against it, and a bright loop on your gear has caught between them. You need to recover your marked gear while leaving the ruins standing. How will you do it?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Recover loose gear without moving the supports",
+          "icon": "hand",
+          "goto": "unbrace_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Keep clear and retrieve only the loose gear",
+          "icon": "hand",
+          "goto": "unbrace_2"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "bone_retreat"
+          },
+          "text": "The crawlers block the wall. Any gear caught there must stay; you can gather only the free mat and line from the outer strip."
+        }
+      ]
+    },
+    "unbrace_1": {
+      "type": "story",
+      "narration": "You check the supports from the safe strip. Anything still holding the wall stays there; your loose marked gear comes away first.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "unbrace_check"
+        }
+      ]
+    },
+    "unbrace_2": {
+      "type": "story",
+      "narration": "You leave any trapped gear where it supports the wall. Your party gathers the free line and loops from the marked strip. Nobody goes under loose stones for a piece of gear.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "unbrace_check"
+        }
+      ]
+    },
+    "unbrace_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Check the wall is supported before drawing the party's line clear.",
+      "onSuccess": {
+        "goto": "unbrace_clear",
+        "narration": "The wall stays still while you retrieve the free gear."
+      },
+      "onFailure": {
+        "goto": "unbrace_changed",
+        "narration": "Dust spills from a crack when the line moves."
+      }
+    },
+    "unbrace_clear": {
+      "type": "story",
+      "narration": "Every piece you recover carries a bright loop. Nothing found here joins it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "exit_strip"
+        }
+      ]
+    },
+    "unbrace_changed": {
+      "type": "story",
+      "narration": "You stop pulling. One bright loop stays caught under loose stones; the rest comes away. Nobody will return under the wall to save a scrap.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "exit_strip"
+        }
+      ]
+    },
+    "exit_strip": {
+      "type": "choice_point",
+      "narration": "The boundary pool shines beyond the arches. The guide raises her crest. Which marks will you follow on the way back?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Follow your marked return route",
+          "icon": "hand",
+          "goto": "exit_strip_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Follow the guide's crest signals",
+          "icon": "hand",
+          "goto": "exit_strip_2"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "bone_retreat"
+          },
+          "text": "The crawlers still block the short passage. Your marked return route bends out along the wide rim instead. The guide signals that longer route; your shoulders still ache from the retreat."
+        }
+      ]
+    },
+    "exit_strip_1": {
+      "type": "story",
+      "narration": "You check each turn before stepping. The last arch frames the guide like a very damp portrait.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "exit_strip_check"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "bone_retreat"
+          },
+          "text": "You follow the marks around the wide rim, well clear of the blocked passage. It is a long walk back to the pool."
+        }
+      ]
+    },
+    "exit_strip_2": {
+      "type": "story",
+      "narration": "You take the wide curve in sight of the guide. She shifts along her pool to keep you in view without crossing dry ground.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "exit_strip_check"
+        }
+      ]
+    },
+    "exit_strip_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Carry only your own loose gear along the firm return path.",
+      "onSuccess": {
+        "goto": "exit_strip_clear",
+        "narration": "The last turn brings you out beside the pool."
+      },
+      "onFailure": {
+        "goto": "exit_strip_changed",
+        "narration": "A gust catches your empty mat against a stone."
+      }
+    },
+    "exit_strip_clear": {
+      "type": "story",
+      "narration": "Your party is outside the yard, with the ruins behind you.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "boundary"
+        }
+      ]
+    },
+    "exit_strip_changed": {
+      "type": "story",
+      "narration": "You let the mat settle, step back along the clear strip and fold it before carrying on. The guide waits with the patience of someone born beside tides.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "boundary"
+        }
+      ]
+    },
+    "boundary": {
+      "type": "choice_point",
+      "narration": "At the boundary, a crumb of stone falls from a muddy sole and rolls toward the ruins. Your guide says, \"Check the other foot too.\" How will you finish the check?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Brush every sole toward the yard",
+          "icon": "hand",
+          "goto": "boundary_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Unfold every mat above the boundary line",
+          "icon": "hand",
+          "goto": "boundary_2"
+        }
+      ]
+    },
+    "boundary_1": {
+      "type": "story",
+      "narration": "You brush the grit back across the boundary. It rolls toward the arches. Your boots leave with only their own very familiar holes.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "boundary_check"
+        }
+      ]
+    },
+    "boundary_2": {
+      "type": "story",
+      "narration": "You open the folds over the yard. A trapped chip drops and trundles home. The guide watches it go: \"Better walker than some tourists.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "boundary_check"
+        }
+      ]
+    },
+    "boundary_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Check the gear for caught chips without collecting anything new.",
+      "onSuccess": {
+        "goto": "boundary_clear",
+        "narration": "No borrowed stone remains in the gear."
+      },
+      "onFailure": {
+        "goto": "boundary_changed",
+        "narration": "A tiny chip makes a determined rattle inside a fold."
+      }
+    },
+    "boundary_clear": {
+      "type": "story",
+      "narration": "The guide checks your empty palms. Everything belonging to the yard stays there.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "report"
+        }
+      ]
+    },
+    "boundary_changed": {
+      "type": "story",
+      "narration": "You open the fold over the boundary. The chip rolls back of its own accord. You close the empty fold and leave it empty.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "report"
+        }
+      ]
+    },
+    "report": {
+      "type": "choice_point",
+      "narration": "The guide wants a warning travelers can use. You saw the moved walls, but you do not know whose enormous old bones lie here or who moved the ruins. What will you record?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Record the safe route and the crawler swarm",
+          "icon": "hand",
+          "goto": "report_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Record how the fresh tear drew the crawlers",
+          "icon": "hand",
+          "goto": "report_2"
+        }
+      ]
+    },
+    "report_1": {
+      "type": "story",
+      "narration": "You draw the firm strip, with a warning that it must be checked again next tide. The bones keep their unanswered names.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "handoff"
+        }
+      ]
+    },
+    "report_2": {
+      "type": "story",
+      "narration": "You describe the pulsing seam and the swarm. You write down only what you saw. Who made the opening? You do not know.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "handoff"
+        }
+      ]
+    },
+    "handoff": {
+      "type": "choice_point",
+      "narration": "Your guide points back toward the Saltrot landing and its ways upriver or through the openings. She opens a folded message Orin entrusted to her at the landing. It asks your Riftseeker friends to compare their sightings at the glacier when enough clues agree. How will you send your account?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Ask the guide to relay your route warning",
+          "icon": "hand",
+          "goto": "handoff_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Keep a copy to share when you meet the travelers",
+          "icon": "hand",
+          "goto": "handoff_2"
+        }
+      ]
+    },
+    "handoff_1": {
+      "type": "story",
+      "narration": "You read the message together before she passes it along the pools. Your account says what happened and leaves guesses out.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "ending"
+        }
+      ]
+    },
+    "handoff_2": {
+      "type": "story",
+      "narration": "You fold your own page into your own bag. The guide grins. Paper from your bag is fine to take home.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "ending"
+        }
+      ]
+    },
+    "ending": {
+      "type": "story",
+      "narration": "Your party leaves the Bone Yard with no stone, bone or hidden prize. The guide has a usable warning, and travelers still need to check the route each time. Behind you the crawlers settle among the displaced walls. In front of you lies the Saltrot, with more than one way onward.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bones_leave_done"
+        }
+      ],
+      "choices": [],
+      "outcome": "success",
+      "variants": [
+        {
+          "when": {
+            "flag": "bone_retreat"
+          },
+          "text": "The short passage is still theirs. Your account marks the longer route you used instead."
+        }
+      ]
+    },
+    "fight_seam": {
+      "type": "encounter",
+      "map": "riftlight_bone_yard",
+      "narration": "Your marks show where to fold the tear shut. End two turns beside it to close it, or drive the crawlers away. Shifting stones still bite at anyone who stops on them.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "creature": "bone_crawler",
+          "count": 2
+        }
+      ],
+      "environment": {
+        "hazards": [
+          {
+            "id": "loose_stones",
+            "kind": "rift",
+            "label": "Shifting loose stones",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "damage": 1
+          }
+        ],
+        "objectives": [
+          {
+            "id": "close_seam",
+            "kind": "close",
+            "label": "Close the fresh tear",
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "turns": 2,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "bone_rift_closed"
+              }
+            ]
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "cleared"
+      },
+      "onDefeat": {
+        "goto": "rescued",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "bone_retreat"
+          }
+        ]
+      }
+    }
+  }
+}
