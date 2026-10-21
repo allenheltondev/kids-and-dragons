@@ -94,7 +94,7 @@ import {
   type NameplateReading,
 } from "./nameplate";
 import type { EncounterEvent } from "@kad/shared";
-import { stageLayout, type StageCastMember } from "./cast";
+import { stageLayout, STORY_MEASURE, type StageCastMember } from "./cast";
 import { storyStageHeight } from "./stage-inset";
 import { reducedMotion } from "../a11y/prefs";
 
@@ -305,6 +305,8 @@ export interface StoryFigureReading {
   labelTop: number | null;
   /** Which edge of the frame it runs off, if it is too big for it. */
   overflow: Overflow | null;
+  /** Its drawn height over its natural one: the stage's scale `k` for anything neither floored nor capped. */
+  scale: number;
 }
 
 interface StageFigureArt {
@@ -718,8 +720,11 @@ export function createScene(app: Application): PartyScene {
           const half = member.label.width / 2;
           member.label.x = Math.max(half, Math.min(member.label.x, visibleRight - member.x - half));
         } else {
-          member.label.x = 0;
           fitNameplate(member.label, (slots.castSlots[index] ?? slot) * nameplateSlot, viewport.width < 600);
+          // A guest spilled off the right of a crowded stage keeps its name
+          // in the frame: under what shows of it, or at the edge.
+          const half = member.label.width / 2;
+          member.label.x = Math.min(0, visibleRight - member.x - half);
         }
       }
     });
@@ -888,7 +893,8 @@ export function createScene(app: Application): PartyScene {
       const rowY = GROUND_Y - member.row * DESIGN.height * 0.025;
       member.container.y = rowY;
       // An overflowing figure stands behind everybody it runs past.
-      member.container.zIndex = rowY - (member.overflowing ? DESIGN.height : 1);
+      // Among overlapping guests, the smaller stands in front.
+      member.container.zIndex = rowY - (member.overflowing ? DESIGN.height : 1) - member.height / 10_000;
       member.art.alpha = member.presence;
       member.shadow.alpha = member.presence * STANCE_SHADOW[member.stance].alpha;
       if (member.ripple) member.ripple.alpha = member.presence;
@@ -1422,6 +1428,7 @@ export function createScene(app: Application): PartyScene {
           groundY: figure.container.toGlobal({ x: 0, y: 0 }).y,
           labelTop: figure.label?.visible ? figure.label.getBounds().y : null,
           overflow: "overflowing" in figure ? (figure as CastActor).overflowing : null,
+          scale: figure.height / (figure.heightCm * STORY_MEASURE.pxPerCm),
         };
       });
     },

@@ -35,6 +35,7 @@ interface Reading {
   groundY: number;
   labelTop: number | null;
   overflow: "top" | "right" | null;
+  scale: number;
 }
 
 interface Label {
@@ -75,7 +76,13 @@ test.describe("true size and stance on the story stage", () => {
   });
 
   /** A TV showing the chapter's opening scene with `cast` standing in it. */
-  async function stage(browser: Browser, width: number, height: number, cast: CastMember[]): Promise<Page> {
+  async function stage(
+    browser: Browser,
+    width: number,
+    height: number,
+    cast: CastMember[],
+    party: readonly (readonly [string, string])[] = PARTY,
+  ): Promise<Page> {
     const tvContext = await browser.newContext({ viewport: { width, height } });
     open.push(tvContext);
     await tvContext.route("**/content/chapters/*.json", async (route) => {
@@ -94,7 +101,7 @@ test.describe("true size and stance on the story stage", () => {
     const code = new URL(tv.url()).pathname.split("/").pop()!;
 
     const phones: Page[] = [];
-    for (const [species, name] of PARTY) {
+    for (const [species, name] of party) {
       const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
       open.push(context);
       const phone = await context.newPage();
@@ -111,7 +118,7 @@ test.describe("true size and stance on the story stage", () => {
     await expect
       .poll(async () => {
         const figures = await report(tv);
-        return figures.length === PARTY.length + cast.length && figures.every((f) => f.paint !== null);
+        return figures.length === party.length + cast.length && figures.every((f) => f.paint !== null);
       }, { timeout: 30_000 })
       .toBe(true);
     await tv.waitForTimeout(2_500);
@@ -205,6 +212,40 @@ test.describe("true size and stance on the story stage", () => {
       await namesOnScreen(tv, width, ["Cloud Whale"]);
       await tv.screenshot({ path: info.outputPath(`whale-off-the-right-${width}x${height}.png`) });
       await stillUnderReducedMotion(tv);
+    });
+
+    test(`three heroes and three guests never shrink below the minimum, at ${width}x${height}`, async ({ browser }, info) => {
+      test.setTimeout(300_000);
+      const tv = await stage(
+        browser,
+        width,
+        height,
+        [
+          { figure: "cast/tobble", name: "Tobble" },
+          { figure: "cast/hesper", name: "Hesper" },
+          { figure: "cast/mortar", name: "Mortar" },
+        ],
+        [["unicorn", "Sparklehoof"], ...PARTY],
+      );
+      const figures = await report(tv);
+      const heroes = figures.filter((f) => f.hero);
+      const guests = figures.filter((f) => !f.hero);
+      expect(heroes).toHaveLength(3);
+      // The owner's floor: nobody is drawn below 85% of true size (scene.ts STORY_MEASURE.minScale).
+      for (const figure of figures) expect(figure.scale, `${figure.name} scale`).toBeGreaterThanOrEqual(0.85 - 1e-3);
+      expect(byName(figures, "Bramblebeard").paint!.height / byName(figures, "Tumblefern").paint!.height).toBeCloseTo(215 / 85, 1);
+      // Nobody stands over the party, and any spill is off the right.
+      const partyRight = Math.max(...heroes.map((f) => f.paint!.x + f.paint!.width));
+      const partyCentres = Math.max(...heroes.map((f) => f.paint!.x + f.paint!.width / 2));
+      for (const guest of guests) {
+        expect(guest.paint!.x + guest.paint!.width / 2, `${guest.name} is right of the party`).toBeGreaterThan(partyCentres);
+        expect(guest.paint!.x, `${guest.name} spills only right`).toBeGreaterThanOrEqual(0);
+      }
+      expect(Math.min(...guests.map((g) => g.paint!.x))).toBeGreaterThanOrEqual(partyRight - width * 0.03);
+      await namesOnScreen(tv, width, ["Sparklehoof", "Tumblefern", "Bramblebeard", "Tobble", "Hesper", "Mortar"]);
+      // The "Player joined" notices pass after a few seconds; the picture is of the stage.
+      await expect(tv.getByText("Player joined")).toHaveCount(0, { timeout: 30_000 }).catch(() => undefined);
+      await tv.screenshot({ path: info.outputPath(`three-and-three-${width}x${height}.png`) });
     });
 
     test(`every stance, and the party line in proportion, at ${width}x${height}`, async ({ browser }, info) => {
