@@ -1160,6 +1160,56 @@ function castFigureFile(figure) {
   return join(REPO_ASSETS, kind, id, "assembled.png");
 }
 
+/**
+ * "Last time..." (#357, Campaign.lastTime): a campaign that carries flags between chapters has
+ * a line for every one of them, so no road a party took reaches the next chapter unspoken, and
+ * nothing else, so a renamed flag cannot leave a line nobody ever hears. A line that names a
+ * great stone reads the inventory (the facet rule): a plain line may not name one, and a
+ * `holding` line names a stone the catalog has. Returns [path, problem, hint] triples.
+ */
+function lastTimeProblems(campaign, items) {
+  const out = [];
+  const members = Object.values(campaign.routeSets ?? {}).flat();
+  const lastTime = campaign.lastTime;
+  if (!lastTime) {
+    if (members.length > 0) {
+      out.push(["/lastTime", "a campaign with routeSets needs lastTime, one line for each member", "See Campaign.lastTime in packages/shared/src/types/chapter.ts."]);
+    }
+    return out;
+  }
+  const lines = lastTime.lines ?? {};
+  for (const flag of members) {
+    if (!(flag in lines)) out.push(["/lastTime/lines", `no "Last time" line for "${flag}"`, "Every route-set member gets one authored line."]);
+  }
+  for (const flag of Object.keys(lines)) {
+    if (!members.includes(flag)) out.push([`/lastTime/lines/${flag}`, `"${flag}" is not a member of any routeSets entry, so no party ever carries it`, "Remove the line or fix the flag's name."]);
+  }
+  const facets = Object.entries(items ?? {})
+    .filter(([id]) => id.startsWith("facet_"))
+    .map(([id, item]) => ({ id, name: String(item?.name ?? "").replace(/^the\s+/i, "").toLowerCase() }))
+    .filter((facet) => facet.name !== "");
+  const named = (text) => {
+    const lower = text.toLowerCase();
+    if (/\bgreat stones?\b/.test(lower)) return "a great stone";
+    return facets.find((facet) => lower.includes(facet.name))?.name ?? null;
+  };
+  const check = (path, text) => {
+    const stone = named(text);
+    if (stone) out.push([path, `names ${stone} without reading the inventory`, "Use { holding, text, otherwise } so a party without the stone hears its own words."]);
+  };
+  check("/lastTime/opener", lastTime.opener ?? "");
+  for (const [flag, line] of Object.entries(lines)) {
+    const at = `/lastTime/lines/${flag}`;
+    if (typeof line === "string") {
+      check(at, line);
+      continue;
+    }
+    if (items && !(line.holding in items)) out.push([`${at}/holding`, `"${line.holding}" is not in the item catalog`]);
+    check(`${at}/otherwise`, line.otherwise);
+  }
+  return out;
+}
+
 function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, items = null, classIds = null) {
   const f = rel(file);
   let ok = true;
@@ -1220,6 +1270,8 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, item
       fail("/purseBackfill/byFlag", `"${flag}" is not in any routeSets entry, so no saved attempt ever holds it`);
     }
   }
+
+  for (const [path, problem, hint] of lastTimeProblems(campaign, items)) fail(path, problem, hint);
 
   if (campaignMode(campaign) === "graph") return checkGraphCampaign(rep, file, campaign, chaptersById, fail, ok, items, classIds);
 

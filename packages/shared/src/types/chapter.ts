@@ -965,6 +965,26 @@ export interface Chapter {
   voiceGuide?: VoiceGuide;
 }
 
+/**
+ * A campaign's "Last time…" (#357): one authored line per route-set member, and an opener for
+ * a party that carries none (a first chapter, or a campaign begun again).
+ *
+ * `lines` is in story order, the order the table lived it, and the preface reads the newest few
+ * a party carries (chapter-preface.ts `LAST_TIME_MAX_LINES`). Its key order is the authored
+ * order: JSON objects keep it, and no key is an integer.
+ */
+export interface LastTime {
+  opener: string;
+  lines: Record<string, LastTimeLine>;
+}
+
+/**
+ * One member's line. A line that names a great stone reads the inventory (the facet rule,
+ * docs/campaigns/gemfall-authoring.md): `text` for a party holding `holding` between them, and
+ * `otherwise` for one that is not, so it never tells an empty-handed party what is in its pack.
+ */
+export type LastTimeLine = string | { holding: string; text: string; otherwise: string };
+
 /** A chapter's membership of a routed index. */
 export interface ChapterRoute {
   /** Which set of alternatives this index is chosen from (`Campaign.routeSets`). */
@@ -993,6 +1013,12 @@ export interface Campaign {
    * `content:validate` requires a routed index to cover its set exactly.
    */
   routeSets?: Record<string, string[]>;
+  /**
+   * "Last time…" (#357): what the shared screen reads before a chapter's first scene, built
+   * from the route-set flags the party carried in. Required with `routeSets`, and then it
+   * has one line for every member (content:validate). See `LastTime` and chapter-preface.ts.
+   */
+  lastTime?: LastTime;
   /**
    * Setbacks before the campaign fails — spec §8.3's "fails at three
    * setbacks, tunable per campaign". Absent means three; authored here so a

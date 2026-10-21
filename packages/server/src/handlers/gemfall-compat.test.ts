@@ -115,9 +115,15 @@ const PRE_EPIC = JSON.parse(
  * they die with the chapter, and none is set where the pinned mid-fight save
  * resumes (02's wolves to its plank bridge). The endings, roads, setbacks and
  * saves below still match their pre-epic digests.
+ *
+ * Re-pinned for "Last time..." (#357): the campaign file gained `lastTime`, one
+ * line per route-set member and an opener, read by the shared screen before a
+ * chapter's first scene. The engine and server never read it, and no chapter
+ * file changed. The endings, roads, setbacks and saves below still match their
+ * pre-epic digests.
  */
 const GEMFALL_FILES: Record<string, string> = {
-  "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
+  "campaigns/gemfall.json": "cfb136f60708bcd2e5b68a7536ccd963a83dadb52e61e9e679377f264b10bf88",
   "chapters/gemfall-01.json": "b9d64bcf4c24dcb2cb315ecbf8be0760e66c794efeb507468dc0e32276c6fe94",
   "chapters/gemfall-02.json": "a948c3e004c40daa3e09a72d4e3eeac0b95f5472a2421984d604d07e5df45420",
   "chapters/gemfall-03a.json": "2543acfd89b948804507bcec9667f9c2e19b2ad42b20d3f5ffdee17ba59bd73d",
