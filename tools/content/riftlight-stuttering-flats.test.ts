@@ -1,6 +1,7 @@
+import { enterScene } from "@kad/shared";
 import { expect, it } from "vitest";
 import { pacingReport } from "../../packages/shared/src/chapter-pacing.ts";
-import { allPaths, chapters } from "./riftlight-test-support.ts";
+import { allPaths, chapters, context, start } from "./riftlight-test-support.ts";
 
 const chapter = chapters.get("riftlight-stuttering-flats")!;
 it.each([
@@ -22,5 +23,14 @@ it("puts the rescue on an interactive spine with a rest and no repeated checks",
     expect(shortest!.scenes).toBeGreaterThanOrEqual(30);
     expect(shortest!.decisions).toBeGreaterThanOrEqual(14);
     expect(shortest!.checks).toBe(6);
+  }
+});
+
+it("reads back the warning the party actually chose", () => {
+  for (const flag of [true, false]) {
+    const state = start(chapter, "kitsune", "starweaver", { flats_warning_pictures: flag });
+    const next = enterScene(state, "next", context(chapter));
+    expect(next.error).toBeUndefined();
+    expect(next.state.narration).toContain(flag ? "picture warning" : "safe-bank drawing");
   }
 });
