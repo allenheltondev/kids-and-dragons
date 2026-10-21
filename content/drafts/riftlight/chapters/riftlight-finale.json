@@ -1854,7 +1854,7 @@
     },
     "loss_second_failed": {
       "type": "story",
-      "narration": "Orin and Seren bring everyone off the brace along the marked lane. The watcher closes the shelter against the flying snow. The last pull falters and the opening fades, but more lands have moved. No one returns for another attempt tonight. Corvane follows the lamp out, carrying a map that no longer fits.",
+      "narration": "Orin and Seren bring everyone off the brace along the marked lane. The watcher closes the shelter against the flying snow. The last pull falters and the opening fades, but more lands have moved. No one returns for another attempt tonight. Corvane follows the watcher out, carrying a map that no longer fits.",
       "choices": [
         {
           "id": "continue",
