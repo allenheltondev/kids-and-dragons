@@ -67,6 +67,53 @@ export const Scale = z.enum([
   "variable",
 ]);
 
+/**
+ * How tall each `Scale` band runs, in centimeters, inclusive (#362). A
+ * `height_cm` has to fall inside its own band: the band stays the words an
+ * author reads, and the number is what the stage draws to.
+ *
+ * Height is measured in the figure's own pose, top of the head (or horn, or
+ * raised wing) to the lowest point of the body, so a flyer's is its body and
+ * not its altitude. The bands overlap on purpose, and run low at the bottom
+ * end, because a band describes overall bulk and a long low creature (a
+ * frost wyrm, a mire mimic) is big without being tall.
+ *
+ * Restated as `SIZE_BAND_CM` in @kad/shared, which the client reads; a test in
+ * tools/art/figure-sizes.test.ts holds the two together.
+ */
+export const SCALE_CM: Readonly<Record<z.infer<typeof Scale>, readonly [number, number]>> = {
+  tiny: [1, 30],
+  tiny_to_small: [5, 55],
+  small: [20, 75],
+  small_to_medium: [40, 120],
+  medium: [80, 200],
+  medium_to_large: [100, 250],
+  large: [140, 400],
+  very_large: [250, 1500],
+  colossal: [800, 10000],
+  variable: [1, 10000],
+};
+
+/** Centimeters, never shown to a player (#362): canon and data only. */
+export const HeightCm = z.number().positive().max(10000);
+
+/**
+ * How a figure occupies a scene (#362). It decides where the stage puts it
+ * and how it idles:
+ *
+ * - `standing`: feet on the ground line, a contact shadow, a breath.
+ * - `hovering`: lifted a little, a small detached shadow, a gentle bob.
+ * - `flying`: lifted further, a fainter shadow, drift and sway.
+ * - `swimming`: the ground line is a water line hiding the lower body, with
+ *   a ripple and no shadow.
+ *
+ * A real enum rather than a per-file vocabulary: it has to mean the same
+ * thing to the renderer in every taxonomy. A chapter's `cast[]` entry may
+ * override it for a scene, the way it overrides size.
+ */
+export const Stance = z.enum(["standing", "hovering", "flying", "swimming"]);
+export type Stance = z.infer<typeof Stance>;
+
 export const DangerLevel = z.enum([
   "none",
   "low",

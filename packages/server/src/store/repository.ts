@@ -11,6 +11,7 @@
 
 import type {
   ChapterOutcome,
+  ChapterStory,
   Character,
   ClientIntent,
   DeviceBinding,
@@ -216,6 +217,16 @@ export interface CampaignProgressRecord {
    * maintained — the journey is the whole of where the party got to.
    */
   journey?: JourneyState;
+  /**
+   * What this attempt kept of each chapter it finished, oldest first, for the
+   * adventure book's Story page (#358): the ending, the priority-1 scenes, the
+   * route-set flags it decided and the items those words read. Ids only
+   * (story-so-far.ts). Appended at every chapter settlement, ordered or graph,
+   * setback or not; a fresh attempt starts without one. Nothing at play time
+   * reads it. Absent on every row written before it existed, which the page
+   * still lists by title where the row can say which chapters they were.
+   */
+  story?: ChapterStory[];
   /** Monotonic optimistic-lock version. Rows written before this field are version 0. */
   version?: number;
   updatedAt: string;

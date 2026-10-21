@@ -35,6 +35,7 @@ import {
 import { FieldGuideBanner } from "../screens/FieldGuideNews";
 import { RiftStatus } from "../screens/RiftStatus";
 import { ChapterGoalCard } from "../screens/ChapterGoal";
+import { ChapterPreface } from "../screens/ChapterPreface";
 import { useChapter, useGameStore, useMe, useRunState, useSession } from "../store";
 import type { PresentationEvent } from "../store/contract";
 // The hold table lives in world/presentation.ts because the board renderer
@@ -155,6 +156,10 @@ export function WorldView({
           <ChapterGoalCard place="world" folded />
         </div>
       ) : null}
+      {/* "Last time…" before a chapter's first scene, and "Where you left off" for a screen that
+          comes back partway (#357). Over the stage, between the corner row and the plate, and
+          gone by itself once read or once play moves on. */}
+      {isSceneLike(phase) && <ChapterPreface />}
       {phase === "chapter_complete" && <ChapterCompletePanel />}
 
       {/* The roll is the centrepiece of whatever pane it lands in. On a TV that

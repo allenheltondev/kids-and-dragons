@@ -62,7 +62,7 @@
   "scenes": {
     "scene_stones_line": {
       "type": "story",
-      "narration": "The caravan road climbs out of the grass and into red hills, and across it stands a line of tall gray stones, leaning like old people at a bus stop. They are older than anyone remembers. This season, for the first time ever, they are holding back a crowd, and the crowd is not happy about it.",
+      "narration": "The caravan road climbs out of the grass and into red hills, and across it stands a line of tall gray stones, leaning like old people waiting for a parade. They are older than anyone remembers. This season, for the first time ever, they are holding back a crowd, and the crowd is not happy about it. You have to get past these stones, and find out why they hold the rush back.",
       "choices": [
         {
           "id": "join_queue",
@@ -115,7 +115,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "At the front of the queue, a grandmother waves a little bell on a stick over every pack that comes past. When it passes a gem, the bell rings by itself. She writes each ring in her tally book. Rules are rules, even for family. When she reaches you, the bell goes off like a fire alarm. She looks at you over her spectacles. \"Well, now.\"",
+      "narration": "At the front of the queue, a grandmother waves a little bell on a stick over every pack that comes past. When it passes a gem, the bell rings by itself. She writes each ring in her tally book. Rules are rules, even for family. When she reaches you, the bell rings so hard it nearly jumps off its stick. She looks at you over her spectacles. \"Well, now.\"",
       "choices": [
         {
           "id": "open_packs",
@@ -125,7 +125,7 @@
         },
         {
           "id": "argue",
-          "label": "Explain that you are not here to dig",
+          "label": "Show her you carry no digging tools",
           "icon": "clever",
           "goto": "check_not_diggers"
         },
@@ -142,7 +142,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Convince a grandmother you are not prospectors",
+      "prompt": "Turn out every pocket and lay your gear in one neat row, fast, so the grandmother can see there is not a pick or a shovel in it",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -152,11 +152,11 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_gate_town",
-        "narration": "You explain about the hum, and the queues, and the roads that bend, and you never once say the word treasure. The grandmother taps her pencil on her teeth. \"Not diggers,\" she writes. \"Listeners.\" She waves you through with a look that is almost respect."
+        "narration": "Rope, socks, a squashed sandwich, a spoon. Not one pick, not one shovel, and you never once say the word treasure. The grandmother taps her pencil on her teeth. \"Not diggers,\" she writes. \"Very tidy.\" She waves you through with a look that is almost respect."
       },
       "onFailure": {
         "goto": "scene_gate_town",
-        "narration": "You explain very well, but your packs are still ringing like a shop door. The grandmother inspects everything anyway, including your socks, and writes PROBABLY HONEST in the tally book. Then she hugs you, because that is what grandmothers do after an inspection."
+        "narration": "You lay it all out, but your packs are still ringing like a shop door. The grandmother inspects everything anyway, including your socks, and writes PROBABLY HONEST in the tally book. Then she hugs you, because that is what grandmothers do after an inspection."
       }
     },
     "scene_inspection_open_packs": {
@@ -214,7 +214,7 @@
       "choices": [
         {
           "id": "explain",
-          "label": "Help the grandmothers explain the rule",
+          "label": "Help the grandmothers act out the rule",
           "icon": "heart",
           "goto": "check_one_rule"
         },
@@ -236,7 +236,7 @@
     "scene_bell_code": {
       "type": "story",
       "priority": 2,
-      "narration": "A small dragonling explains the bell code at top speed. One ring for moths leaving. Two for a warm cave. Three for come home now. And there is one ring that has never been rung, ever, and nobody will tell you what it means, and the small dragonling goes very quiet about it.",
+      "narration": "A small dragonling, the town's bell-code expert, explains the bell code at top speed. One ring for moths leaving. Two for a warm cave. Three for come home now. And there is one ring that has never been rung, ever, and nobody will tell you what it means, and the small dragonling goes very quiet about it.",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -279,7 +279,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Help a stubborn prospector actually hear the one rule",
+      "prompt": "Act out the one rule for a stubborn prospector: pick up a fallen pebble nice and easy, then pry at the hill and get flattened",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -293,12 +293,13 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_rule_heard",
-        "narration": "You do not shout the rule at him. You tell him about the bells, and the tallies, and what a mountain might do to anybody who pries at it, and you tell it like a story, because it is one. Somewhere in the middle he stops saying \"right, right\" and starts actually listening."
+        "narration": "You do not shout the rule at him. You act it out: pick up a pebble the mountain dropped, nice and easy, then pretend to pry at the hill, and pretend the hill sits on you. You fall over flat, very slowly, like a tree. Somewhere in the middle he stops saying \"right, right\" and starts actually watching."
       },
       "onFailure": {
         "goto": "scene_crab_warning",
-        "narration": "He nods along, says \"Right, right,\" and marches off up the hill with his pry bar anyway. You follow him, because somebody should."
-      }
+        "narration": "He watches the whole thing, nods along, says \"Right, right,\" and marches off up the hill with his pry bar anyway. You follow him, because somebody should."
+      },
+      "checkKind": "doing"
     },
     "scene_rule_heard": {
       "type": "story",
@@ -432,13 +433,126 @@
         "narration": "The crabs decide you are more trouble than you are worth and back into their warm burrow, still clacking. The prospector drops his pry bar and runs all the way back down past the stones."
       },
       "onDefeat": {
-        "goto": "end_rolled_down",
+        "goto": "scene_crabs_rescue",
         "narration": "The crabs chase you off their warm patch, down the hill, past the bells, and right back out through the boundary stones."
       }
     },
+    "scene_crabs_rescue": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "Out past the stones, the grandmothers fish you out of the heather, one collar at a time. They bandage your scrapes, hand everybody a warm rock, and give you a stern look over their spectacles. \"Bandages cost, this season,\" says one. \"Everything costs, this season.\" Up the hill, the crabs clack, very pleased with themselves.",
+      "choices": [
+        {
+          "id": "pay",
+          "label": "Pay two coins for the bandages",
+          "icon": "bead",
+          "goto": "scene_crabs_rescue_pay",
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 2
+            }
+          ],
+          "when": {
+            "coins": {
+              "min": 2
+            }
+          }
+        },
+        {
+          "id": "supper",
+          "label": "Give them your supper for the bandages",
+          "icon": "cake",
+          "goto": "scene_crabs_rescue_supper",
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            }
+          ],
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          }
+        },
+        {
+          "id": "work",
+          "label": "Work it off on the grandmothers' pry-bar wall",
+          "icon": "hand",
+          "goto": "scene_crabs_rescue_work"
+        }
+      ]
+    },
+    "scene_crabs_rescue_pay": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "You count two coins into a grandmother's palm. She bites each one, writes BANDAGES: PAID in her tally book, and gives everybody a hard candy for being brave. The candy is very good. The coins are gone, and so is the afternoon.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sit down by the stones with the turned-back crowd",
+          "icon": "bead",
+          "goto": "scene_turned_back"
+        }
+      ]
+    },
+    "scene_crabs_rescue_supper": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "You hand over your supper. Eleven grandmothers share it out, a crumb each, chew very thoughtfully, and declare it adequate. It was going to be a lovely supper. Your stomachs grumble about it all the way back down to the stones.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sit down by the stones with the turned-back crowd",
+          "icon": "cake",
+          "goto": "scene_turned_back"
+        }
+      ]
+    },
+    "scene_crabs_rescue_work": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "The grandmothers keep a wall of pry bars, every one given up by somebody who listened in the end, and a heap more waiting to be hung. You hang them until your arms ache: one hundred and six. By the last one the sun is low, and the afternoon is gone.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sit down by the stones with the turned-back crowd",
+          "icon": "hand",
+          "goto": "scene_turned_back"
+        }
+      ]
+    },
     "scene_turned_back": {
       "type": "story",
-      "narration": "Just outside the stones, where the turned-back prospectors sit about with nowhere to go, somebody has put up a tent with DEEP HOLLOW stitched small on the flap. A ladler with a humming crystal on a string is filling bowls. It is Wend, from the north road, who looks up and says all your names at once.",
+      "narration": "Just outside the stones, where the turned-back prospectors sit around with nowhere to go, somebody has put up a tent with DEEP HOLLOW stitched small on the flap. A ladler with a humming crystal on a string is filling bowls. It is Wend, from the north road, who looks up and says all your names at once. On the soup pot sits a little wooden box. Its lid says FOR THE ROOT OF THINGS.",
       "choices": [
         {
           "id": "share_soup",
@@ -711,7 +825,7 @@
     },
     "scene_unassigned": {
       "type": "story",
-      "narration": "On the shelf sits a fresh-fallen gem on top of a very old list: the caves that are never assigned to anyone. The list is older than every grandmother on record. \"We're not hiding it,\" says Great-Gran Ashby. \"We're keeping it. There's a difference.\"",
+      "narration": "On the shelf sits a fresh-fallen gem on top of a very old list: the caves no family is ever allowed to gather in. The list is older than every grandmother on record. \"We're not hiding it,\" says Great-Gran Ashby. \"We're keeping it. There's a difference.\"",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
@@ -798,7 +912,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Show Great-Gran Ashby you know the difference between keeping and taking",
+      "prompt": "Lift the gem off its list the keeping way: two hands, slow as a snail, and set the list straight again after",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
@@ -819,12 +933,13 @@
             "value": true
           }
         ],
-        "narration": "Great-Gran Ashby wraps the gem in a page torn from nothing important and puts it in your hands. \"The Unassigned Stone. Keep it. Don't you dare sell it.\""
+        "narration": "Two hands, slow as a snail, and you square the list after with one finger. Great-Gran Ashby wraps the gem in a page torn from nothing important and puts it in your hands. \"The Unassigned Stone. Keep it. Don't you dare sell it.\""
       },
       "onFailure": {
         "goto": "scene_moths_leaving",
-        "narration": "Great-Gran Ashby pats your hand. \"You'll know the difference soon. Not today.\" The stone stays on its list, and somehow that feels right too."
-      }
+        "narration": "Your fingers bump the list crooked, and you grab at the gem as if it might run off. Great-Gran Ashby pats your hand. \"You'll know the difference soon. Not today.\" The stone stays on its list, and somehow that feels right too."
+      },
+      "checkKind": "doing"
     },
     "scene_moths_leaving": {
       "type": "story",
@@ -842,7 +957,7 @@
           "count": 4
         }
       ],
-      "narration": "Outside, at dusk, the sky over the hills is full of tiny lights. Embermoths, thousands of them, glowing like sparks, are drifting south in one long river, away from the mountain. A bell on a pole rings once. A small dragonling tugs your sleeve. She is the town's bell-code expert, and she will tell you so. \"Moths leaving,\" she whispers. \"Every night this month.\"",
+      "narration": "Outside, at dusk, the sky over the hills is full of tiny lights. Embermoths, thousands of them, glowing like sparks, are drifting south in one long river, away from the mountain. A bell on a pole rings once. A small dragonling tugs your sleeve: the town's bell-code expert, who tells everybody so, even people she has already told. \"Moths leaving,\" she whispers. \"Every night this month.\"",
       "choices": [
         {
           "id": "follow",
@@ -891,7 +1006,7 @@
           "figure": "entities/embermoth"
         }
       ],
-      "narration": "You hold out your hands. One embermoth circles, comes down, and lands, warm as a cup of cocoa. Then it notices your pack. It lifts off at once and flies a wide loop round the humming thing inside before it joins the others going south. The small dragonling pats your arm. \"They all do that,\" she says.",
+      "narration": "You hold out your hands. One embermoth circles, comes down, and lands, warm as a cup of cocoa. Then it notices your pack. It lifts off at once and flies a wide loop around the humming thing inside before it joins the others going south. The small dragonling pats your arm. \"They all do that,\" she says.",
       "choices": [
         {
           "id": "on",
@@ -983,7 +1098,7 @@
           "name": "Great-Gran Ashby"
         }
       ],
-      "narration": "Asking forty grandmothers for one recipe gets you forty recipes, all different, and an argument that lasts until the pudding. The only thing they agree on is that you are far too thin. You go to bed carrying a pile of loaves, and a list of instructions you will never fully understand.",
+      "narration": "Asking forty grandmothers for one recipe gets you forty recipes, all different, and an argument that lasts until dessert. The only thing they agree on is that you are far too thin. You go to bed carrying a pile of loaves, and a list of instructions you will never fully understand.",
       "choices": [
         {
           "id": "on",
@@ -1111,7 +1226,7 @@
           "size": "small"
         }
       ],
-      "narration": "In the morning the bell house rings the dawn round, and everybody helps. The bells are enormous, the ropes are fat as your arm, and the small bell-code expert is bossing everyone. In the corner hangs one bell nobody touches, with a rope tied up out of reach. She does not look at it, very hard.",
+      "narration": "In the morning the bell house rings the dawn bells, and everybody helps. The bells are enormous, the ropes are fat as your arm, and the small bell-code expert is bossing everyone. In the corner hangs one bell nobody touches, with a rope tied up out of reach. She does not look at it, very hard.",
       "choices": [
         {
           "id": "pull_rope",
@@ -1366,7 +1481,7 @@
           "name": "Perrin Nine-Verse"
         }
       ],
-      "narration": "Perrin reads Old Corran's bark, and his lips move along with the verses. Then he goes pale. \"Corran's new verses bend round the falls,\" he whispers, \"and they bend round the Shortcut too. It's in the song. It's been in the song all along.\" He rolls the bark up and hands it back with shaking hooves. \"Don't tell Corran.\"",
+      "narration": "Perrin reads Old Corran's bark, and his lips move along with the verses. Then he goes pale. \"Corran's new verses bend around the falls,\" he whispers, \"and they bend around the Shortcut too. It's in the song. It's been in the song all along.\" He rolls the bark up and hands it back with shaking hooves. \"Don't tell Corran.\"",
       "choices": [
         {
           "id": "on",
@@ -1624,20 +1739,6 @@
       "narration": "You walk north through the boundary stones into the foothills, with the rush all around you and the bells ringing ordinary rings behind you. Ahead, on a red ridge, stands the dark outline of the Skywardens' citadel. Tonight you camp under the stones that were here first, and they feel, for the first time, like they are on your side.",
       "heal": 4,
       "choices": []
-    },
-    "end_rolled_down": {
-      "type": "rest",
-      "narration": "The grandmothers fish you out of the crowd, bandage your scrapes, and give you a warm rock and a stern look. You have lost a whole day, and by the time you reach the grandmothers' tally house, it is full of other people's arguments. You keep what you know close, because there is no time today to make anyone listen.",
-      "heal": 3,
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "kept_close",
-          "value": true
-        }
-      ],
-      "choices": [],
-      "outcome": "setback"
     }
   },
   "voiceGuide": {

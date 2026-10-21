@@ -3,7 +3,7 @@ title: Glacier of Origins
 id: biome.glacier_of_origins
 type: biome
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: []
 tags: ["ancient_ice", "river_source", "frozen_memory", "glacier", "northern"]
@@ -42,6 +42,9 @@ related:
   - id: creature.frost_wyrm
     type: creature
     relationship: dangerous_creatures
+  - id: campaign.riftlight
+    type: campaign
+    relationship: biomes
   - id: character.griffin
     type: character
     relationship: secondary_locations
@@ -72,7 +75,7 @@ ai_context:
   visual_style: "Blue-white ice fields, sharp glacial ridges, dark crevasses, meltwater channels, wind-carved snow, frozen shapes, and the young river cutting south."
   common_encounters: "River-source mysteries, rescues, preserved history, dangerous crossings, changing melt, ancient discoveries, and signs connecting the frozen north to events downstream."
   lore_highlights: "The name is the accepted account: the Great River begins here, and by yeti reckoning so does everything else worth remembering."
-  related_entities: "feature.great_river, biome.frostfang_peaks, biome.expanse, biome.frostfang_peaks, feature.great_river_source, npc.yeti, creature.snowhorn_goat, creature.frost_wyrm, character.griffin, creature.snowhorn_goat, creature.frost_wyrm, feature.great_river_source, feature.great_river, npc.yeti"
+  related_entities: "feature.great_river, biome.frostfang_peaks, biome.expanse, biome.frostfang_peaks, feature.great_river_source, npc.yeti, creature.snowhorn_goat, creature.frost_wyrm, campaign.riftlight, character.griffin, creature.snowhorn_goat, creature.frost_wyrm, feature.great_river_source, feature.great_river, npc.yeti"
   writing_guidance: "The glacier may preserve memories, but it should not casually provide complete historical answers. Survival conditions matter."
   generation_hints: "Ice shifts, melt channels move, storms erase paths, and changes at the source eventually affect every downstream region."
 layout: biomes
@@ -108,6 +111,8 @@ The realm's source and its attic. Scholars, witches, and the occasionally desper
 > *Creator canon, not generally known in-world. No NPC recites these.*
 
 - At the bottom of one crevasse, below the oldest cataloged layer, the ice preserves a summer: green light, warm air, the smell of a season the north has not had in living memory. The yetis have not cataloged it, because filing it would mean deciding what it is.
+- The melt changed because of Gemfall. The tremors of the eruption that opens it - which happens in every timeline - started the glacier's changed melt, and the melt is loosening a prison: for about a millennium the ice has held Corvane, the ancient emperor of Pangea ('all lands'), a realm in which today's regions sat in a different arrangement. This is Riftlight's secret, revealed only at its finale.
+- Somewhere in the glacier, away from the summer crevasse, is a hidden rift that shows green and blue. It needs a sung note before it will open, and once open it stays open, both ways. It leads to the Saltrot, and it is how the unfamiliar glacier silt reaches the Saltrot. It is not the summer crevasse and does not explain it: the crevasse, its green light, and its warm air stay unexplained.
 
 ### Neighbors
 
@@ -131,6 +136,9 @@ The realm's source and its attic. Scholars, witches, and the occasionally desper
 ### Biomes
 - [Frostfang Peaks](/biomes/frostfang_peaks/) `Locations` `Borders`
 - [The Expanse](/biomes/expanse/) `Borders`
+
+### Campaigns
+- [Riftlight](/campaigns/riftlight/) `Biomes`
 
 ### Characters
 - [Griffin](/characters/griffin/) `Secondary Locations`

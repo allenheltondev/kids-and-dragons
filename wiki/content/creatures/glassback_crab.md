@@ -3,7 +3,7 @@ title: Glassback Crab
 id: creature.glassback_crab
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-05c", "gemfall-06", "gemfall-07h", "gemfall-07r", "gemfall-08"]
 tags: ["dangerous", "foothills", "territorial", "burrower"]
@@ -11,6 +11,11 @@ classification: dangerous_creature
 danger_level: moderate
 scale: medium_to_large
 sapience: animal
+height_cm: 130
+size:
+  height: "1.3 m (4 ft 3 in)"
+  compare: "about as tall as a kid"
+  line: "1.3 m (4 ft 3 in), about as tall as a kid."
 lore_hook: "The most patient misunderstanding in the foothills."
 likes:
   - id: creature.embermoth
