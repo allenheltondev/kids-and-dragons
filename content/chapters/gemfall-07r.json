@@ -986,7 +986,7 @@
           "name": "Masked choir singer"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/masked_choir_singer",
           "name": "Masked choir singer"
         }
       ]
@@ -1012,7 +1012,7 @@
           "name": "Masked choir singer"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/masked_choir_singer",
           "name": "Masked choir singer"
         }
       ]
@@ -1065,7 +1065,7 @@
           "name": "Masked choir singer"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/masked_choir_singer",
           "name": "Masked choir singer"
         }
       ]

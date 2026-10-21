@@ -73,7 +73,7 @@
           "name": "Grandmother"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/rush_prospector",
           "name": "Burrowfolk prospector"
         }
       ],
@@ -278,7 +278,7 @@
           "count": 4
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/rush_prospector",
           "name": "Burrowfolk prospector"
         }
       ],
@@ -355,7 +355,7 @@
           "count": 4
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/rush_prospector",
           "name": "Burrowfolk prospector"
         }
       ],
