@@ -97,6 +97,12 @@
           "flag": "memory_guide_published",
           "value": false
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
       ]
     },
     "quiet_rule": {

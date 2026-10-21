@@ -1,0 +1,1130 @@
+{
+  "id": "riftlight-stuttering-flats",
+  "campaignId": "riftlight-opening-preview",
+  "index": 7,
+  "title": "The Stuttering Flats",
+  "biome": "sallow_wastelands",
+  "music": "riftlight-coast",
+  "estimatedMinutes": 35,
+  "xpAward": 140,
+  "entry": "arrival",
+  "goal": {
+    "text": "Bring the stranded snowhorn goat home before the opening closes.",
+    "steps": [
+      {
+        "id": "flats_path",
+        "label": "Find firm ground",
+        "flag": "flats_path_done"
+      },
+      {
+        "id": "flats_goat",
+        "label": "Free the goat",
+        "flag": "flats_goat_done"
+      },
+      {
+        "id": "flats_home",
+        "label": "Get the goat home",
+        "flag": "flats_home_done"
+      }
+    ]
+  },
+  "voiceGuide": {
+    "tone": "Warm, curious and practical. Short sentences. Show the consequence of each plan. Nobody dies.",
+    "vocabulary": "Read aloud to an eight-year-old.",
+    "forbidden": [
+      "gore",
+      "Hollow Gate",
+      "Legend Dragon",
+      "Corvane",
+      "emperor",
+      "Pangea"
+    ],
+    "npcVoices": {}
+  },
+  "scenes": {
+    "arrival": {
+      "type": "story",
+      "narration": "On the Saltrot mudflats, an opening in the air blinks away and comes back. Through it lies snow. A snowhorn goat stands belly-deep in mud beside it, chewing a reed with great disappointment. Your Skupper guide from the Saltrot bank waves her fins in greeting, then points to the rising tide. \"Bring that goat home before the opening closes. I can find firm mud. I cannot make a goat like it.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "observe"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "observe": {
+      "type": "choice_point",
+      "narration": "The opening appears, skips a beat, then appears a little narrower. The goat flinches each time. Before moving, how will you learn its rhythm?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Watch from the same marker through several pulses",
+          "icon": "hand",
+          "goto": "observe_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Lay shells where the edges appear",
+          "icon": "hand",
+          "goto": "observe_2"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "observe_1": {
+      "type": "story",
+      "narration": "You plant a reed upright and stay beside it. The gap vanishes even when nobody touches it. The reed keeps a much steadier beat.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "observe_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "observe_2": {
+      "type": "story",
+      "narration": "You place shells from the nearby bank at the edges of the shimmer. The edges return inside the shells. One shell has a crab already using it. You move that one back.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "observe_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "observe_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Compare the returning edges without stepping into the opening.",
+      "onSuccess": {
+        "goto": "observe_clear",
+        "narration": "The gap returns smaller after its pause."
+      },
+      "onFailure": {
+        "goto": "observe_changed",
+        "narration": "A blink catches you mid-count; the guide holds you back on firm ground."
+      },
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "observe_clear": {
+      "type": "story",
+      "narration": "This is a stutter, not a signal to hurry through unseen. You mark the shrinking space and plan for the next clear view.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "flats_rhythm_read"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "sound"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "observe_changed": {
+      "type": "story",
+      "narration": "You abandon the guessed count. Working from the shells, the guide shows that the opening is shrinking between blinks. You use her stop signal instead.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "flats_guide_signals"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "sound"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "sound": {
+      "type": "choice_point",
+      "narration": "You have carried the Listening Chime since the glacier travelers gave it to you. Its note goes sour at an opening that is not ready, and echoes only along an open way back. How will you test this gap without sending anyone through?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Strike the chime from the bank",
+          "icon": "hand",
+          "goto": "sound_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Ask the guide to watch while you move the chime closer",
+          "icon": "hand",
+          "goto": "sound_2"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "sound_1": {
+      "type": "story",
+      "narration": "The note comes back through the gap, then breaks off when it blinks away. The echo promises a return only while the opening is actually there.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "ground"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "sound_2": {
+      "type": "story",
+      "narration": "You stay on the marked ground and hold the chime toward the clear gap. An echo answers. When the gap skips, the answer skips too. The guide folds her fins: \"Even a good door can shut.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "ground"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "ground": {
+      "type": "choice_point",
+      "narration": "A strip of firmer mud bends toward the goat. Water is already filling its lowest dip. You can lay reed mats over the dip or take a longer curve along shell banks. The guide will mark the route you choose.",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Spread the mats over the short dip",
+          "icon": "hand",
+          "goto": "ground_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Mark the longer shell-bank curve",
+          "icon": "hand",
+          "goto": "ground_2"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "ground_1": {
+      "type": "story",
+      "narration": "You overlap the mats so the edge of one rests on the next. The guide tests them with her front fins. She leaves the crab a doorway under the last mat.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "ground_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "ground_2": {
+      "type": "story",
+      "narration": "You set reed markers along the curve. The guide closes each gap before leading you across it. Your path resembles a very untidy necklace.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "ground_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "ground_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Carry the rescue line along the marked route without pulling it into the tide.",
+      "onSuccess": {
+        "goto": "ground_clear",
+        "narration": "The line reaches the dry patch beside the goat."
+      },
+      "onFailure": {
+        "goto": "ground_changed",
+        "narration": "A mat edge sinks; you retreat to the last marker before the guide moves it."
+      },
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "ground_clear": {
+      "type": "story",
+      "narration": "A safe line runs from the bank to the goat. You leave enough slack for it to stand.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "flats_path_done"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "approach"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "ground_changed": {
+      "type": "story",
+      "narration": "The safer curve takes longer. The line still reaches the goat, but the guide now holds the return markers against the tide.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "flats_path_done"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "approach"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "approach": {
+      "type": "choice_point",
+      "narration": "The goat has seen your line and tries to eat it. Its rear hooves are stuck, but its front feet can move. How will you get close without making it jump?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Offer a dry reed and approach from the side",
+          "icon": "hand",
+          "goto": "approach_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Tap a slow rhythm and let it turn toward you",
+          "icon": "hand",
+          "goto": "approach_2"
+        },
+        {
+          "id": "plan_3",
+          "label": "Let a songkeeper hum while the party handles the line",
+          "icon": "hand",
+          "goto": "approach_3",
+          "requiresClass": "songkeeper"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "approach_1": {
+      "type": "story",
+      "narration": "The goat chooses the reed over your line. You move alongside its shoulder, where it can see you. Its breath smells impressively of pond.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "sling"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "approach_2": {
+      "type": "story",
+      "narration": "You tap the mat with one finger. The goat turns its head before its feet. It follows your tapping with its ears, which are cleaner than anything else here.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "sling"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "approach_3": {
+      "type": "story",
+      "narration": "A songkeeper supplies the quiet tune. The rest of the party works beside the shoulder, keeping the rope clear of horns. The goat hums back through its nose.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "sling"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "sling": {
+      "type": "choice_point",
+      "narration": "The guide brings a broad reed sling. A thin rope would dig into the goat; the sling spreads the pull. Will you slide it under from the firm side or float its end across the shallow water?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Slide the sling on a flat mat",
+          "icon": "hand",
+          "goto": "sling_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Float the end on a bundle of reeds",
+          "icon": "hand",
+          "goto": "sling_2"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "sling_1": {
+      "type": "story",
+      "narration": "You push the mat under the goat and draw the sling after it. The mat comes back with one hoof-shaped dent and a reed firmly missing.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "sling_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "sling_2": {
+      "type": "story",
+      "narration": "The bundle carries the sling end across the shallow dip. The guide catches it before the goat can. She is very pleased to win a race against breakfast.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "sling_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "sling_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Set the wide sling behind the front legs and clear it of the horns.",
+      "onSuccess": {
+        "goto": "sling_clear",
+        "narration": "The sling lies flat where it will support the goat."
+      },
+      "onFailure": {
+        "goto": "sling_changed",
+        "narration": "The sling twists; the goat sits down with a splash."
+      },
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "sling_clear": {
+      "type": "story",
+      "narration": "The goat can lean into the sling without being squeezed. You are ready to free the buried feet.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "lift"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "sling_changed": {
+      "type": "story",
+      "narration": "You stop pulling. The guide holds the goat steady while you flatten the sling by hand. Mud goes into your sleeves; the sling is safe.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "lift"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "lift": {
+      "type": "choice_point",
+      "narration": "Mud grips the goat boots-tight. Pulling straight up would only frighten it. You can loosen one hoof at a time or work the mat beneath both back feet. Which job will your party try?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Loosen the mud around one hoof at a time",
+          "icon": "hand",
+          "goto": "lift_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Work the mat beneath the back feet",
+          "icon": "hand",
+          "goto": "lift_2"
+        },
+        {
+          "id": "plan_3",
+          "label": "Have a bigfoot smash the packed mud beside the hoof holes",
+          "icon": "hand",
+          "goto": "lift_3",
+          "requiresSpecies": "bigfoot"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "lift_1": {
+      "type": "story",
+      "narration": "You scoop water into the hoof holes and ease the mud away. The goat leans on the sling. Its tail flicks a precise blob onto the guide.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "lift_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "lift_2": {
+      "type": "story",
+      "narration": "You rock the mat slowly until it reaches under the hooves. The guide keeps it level. The goat looks offended by this moving floor.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "lift_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "lift_3": {
+      "type": "story",
+      "narration": "A bigfoot breaks the packed rim beside the hoof holes. Nobody strikes near the goat. Your party clears the loose mud while the guide holds the sling.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "lift_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "lift_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Support the sling while the freed hooves step onto the mat.",
+      "onSuccess": {
+        "goto": "lift_clear",
+        "narration": "The goat steps free and shakes mud over the mat."
+      },
+      "onFailure": {
+        "goto": "lift_changed",
+        "narration": "One hoof slips back and the goat leans hard against the sling."
+      },
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "lift_clear": {
+      "type": "story",
+      "narration": "The goat stands on the mat, free of the sucking mud. It tries to thank you by eating the handle.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "flats_goat_done"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "dry_patch"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "lift_changed": {
+      "type": "story",
+      "narration": "You lower the sling instead of hauling harder. The guide braces the mat and the goat crawls onto it on its knees. It is free, with very muddy knees.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "flats_goat_done"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "dry_patch"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "dry_patch": {
+      "type": "choice_point",
+      "narration": "A shell bank gives the goat somewhere to stand. Its leg shakes from the cold. The gap is smaller again, with snow still visible beyond. What will you do before the crossing?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Rub the leg dry with a spare mat",
+          "icon": "hand",
+          "goto": "dry_patch_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Let it stand sheltered between the mats",
+          "icon": "hand",
+          "goto": "dry_patch_2"
+        },
+        {
+          "id": "plan_3",
+          "label": "Have a unicorn Mend the strained leg",
+          "icon": "hand",
+          "goto": "dry_patch_3",
+          "requiresSpecies": "unicorn"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "dry_patch_1": {
+      "type": "story",
+      "narration": "You use the dry side gently. The goat puts weight on the leg again and tests it with a small stamp. The guide gives that stamp a very stern look.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "rest"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "dry_patch_2": {
+      "type": "story",
+      "narration": "You make a low windbreak while the guide checks the hoof. The goat stops shaking and immediately looks for something to chew.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "rest"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "dry_patch_3": {
+      "type": "story",
+      "narration": "A unicorn supplies Mend while the party holds the mat shelter. The goat steadies its leg and noses the healer with a wet apology.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "rest"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "rest": {
+      "type": "rest",
+      "narration": "The guide leads you onto a raised shell bank while the goat waits safely in its sling. She opens her waterproof lunch basket: warm kelp cakes and a flask of broth. Steam curls over the shells. There is time to eat before the next crossing.",
+      "heal": 2,
+      "choices": [
+        {
+          "id": "rest",
+          "label": "Rest here, then carry on",
+          "icon": "hand",
+          "goto": "glimpse"
+        },
+        {
+          "id": "watch",
+          "label": "Rest while watching the path",
+          "icon": "hand",
+          "goto": "rest_watch"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "rest_watch": {
+      "type": "story",
+      "narration": "You keep watch beside the guide on the shell bank. She passes you a kelp cake while you follow the opening through another blink. The goat chews its own lunch noisily.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "glimpse"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "glimpse": {
+      "type": "choice_point",
+      "narration": "Through a steady blink, the herder you helped on the glacier recognizes you and waves. Her herd waits behind her on the snow. This muddy goat is an adult from that herd, not the kid you rescued before. You need to show her where it can land.",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Signal for a clear landing behind the snow bank",
+          "icon": "hand",
+          "goto": "glimpse_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Ask the herder to keep the herd away from the opening",
+          "icon": "hand",
+          "goto": "glimpse_2"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "glimpse_1": {
+      "type": "story",
+      "narration": "The herder stamps a wide path and spreads the blanket beyond it. The herd gathers at the far end, all pretending not to watch.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "signal"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "glimpse_2": {
+      "type": "story",
+      "narration": "The herder waves the herd back before laying down a blanket. One small goat objects. Its objection makes a very squeaky cloud.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "signal"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "signal": {
+      "type": "choice_point",
+      "narration": "The opening skips again. A blanket falling between two places would be harmless; a goat caught mid-step would not. You need one clear signal for moving and another for stopping.",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Use a raised mat for stop and a lowered mat for go",
+          "icon": "hand",
+          "goto": "signal_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Use a held note for wait and a short tap for move",
+          "icon": "hand",
+          "goto": "signal_2"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "signal_1": {
+      "type": "story",
+      "narration": "The herder repeats both signals before anyone moves. The guide practices with her fins. The goat votes for go by biting the mat.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "signal_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "signal_2": {
+      "type": "story",
+      "narration": "You repeat the sounds until the herder answers them correctly. Silence means wait too. Nobody has to guess what a missing sound means.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "signal_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "signal_check": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "roller": "party",
+      "checkKind": "doing",
+      "prompt": "Repeat the crossing signals clearly through wind and blinking light.",
+      "onSuccess": {
+        "goto": "signal_clear",
+        "narration": "The herder answers both signals in the right order."
+      },
+      "onFailure": {
+        "goto": "signal_changed",
+        "narration": "A gust swallows the short signal."
+      },
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "signal_clear": {
+      "type": "story",
+      "narration": "You wait through a full blink and receive the clear go signal. The guide holds the mat level.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "crossing"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "signal_changed": {
+      "type": "story",
+      "narration": "You switch to the broad raised mat after the sound is lost. The herder repeats it, then gives a clear go signal. No guessed signal sends the goat forward.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "crossing"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "crossing": {
+      "type": "choice_point",
+      "narration": "The goat must cross while the opening is steady. You can guide its head while the herder receives the sling, or turn the mat into a short ramp so it walks toward its herd. Your party stays on the flats; the herder handles the snow side.",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Guide the goat toward the waiting sling",
+          "icon": "hand",
+          "goto": "crossing_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Make a low ramp with the stiffest mat",
+          "icon": "hand",
+          "goto": "crossing_2"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "crossing_1": {
+      "type": "story",
+      "narration": "You face the goat toward its herd. The herder takes the far sling handles. Nobody wraps a line around a wrist or horn.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "crossing_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "crossing_2": {
+      "type": "story",
+      "narration": "You rest the mat ends on firm ground on each side. The herder holds the far end. The goat tests it with one hoof and a highly critical sniff.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "crossing_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "crossing_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Guide the goat through the clear opening while the herder supports the far side.",
+      "onSuccess": {
+        "goto": "crossing_clear",
+        "narration": "The goat crosses in two very untidy steps."
+      },
+      "onFailure": {
+        "goto": "crossing_changed",
+        "narration": "The goat stops halfway to sniff the blanket."
+      },
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "crossing_clear": {
+      "type": "story",
+      "narration": "The herder takes the goat onto the snow bank. You pull every loose line back to the flats.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "flats_home_done"
+        },
+        {
+          "type": "setFlag",
+          "flag": "goat_returned_home"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "last_blink"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "crossing_changed": {
+      "type": "story",
+      "narration": "You hold the stop signal. The herder draws the blanket toward the herd, and the goat follows it fully onto snow before the next blink. The wet sling stays with the herder.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "flats_home_done"
+        },
+        {
+          "type": "setFlag",
+          "flag": "goat_returned_home"
+        },
+        {
+          "type": "setFlag",
+          "flag": "flats_sling_left"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "last_blink"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "last_blink": {
+      "type": "choice_point",
+      "narration": "The gap returns no wider than the blanket. The goat is already with its herd. The guide reaches for your last marker. What should happen before the next blink?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Pull the markers well clear of the gap",
+          "icon": "hand",
+          "goto": "last_blink_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Count the party clear, then move the guide back",
+          "icon": "hand",
+          "goto": "last_blink_2"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "last_blink_1": {
+      "type": "story",
+      "narration": "You gather every marker from your side. The herder lifts the blanket on the snow side. Nothing joins the two banks when the gap vanishes.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "record"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "last_blink_2": {
+      "type": "story",
+      "narration": "You check the firm bank before signaling the guide to retreat. She arrives with a marker tucked under each fin. One still carries a determined crab.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "record"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "record": {
+      "type": "choice_point",
+      "narration": "The opening has closed. The tide smooths the hoof holes. Your guide scratches a warning on a driftwood board: do not step into a blinking gap. How will you help the next traveler notice?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Draw the gap with a missing middle beside the warning",
+          "icon": "hand",
+          "goto": "record_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Mark the safe bank and the waiting spot",
+          "icon": "hand",
+          "goto": "record_2"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "record_1": {
+      "type": "story",
+      "narration": "You draw the opening, an empty space, then a smaller opening. The guide sets the board where a traveler must stop to read it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "credit"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "flats_warning_pictures"
+        }
+      ]
+    },
+    "record_2": {
+      "type": "story",
+      "narration": "You draw the firm curve and a place to wait clear of the gap. The guide adds a small goat with unusually large eyebrows.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "credit"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "credit": {
+      "type": "choice_point",
+      "narration": "The guide says the herd will know who helped when the snowy path opens again. She asks what to tell them about the rescue.",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Tell how the guide held the route while you freed the goat",
+          "icon": "hand",
+          "goto": "credit_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Tell how both banks checked the signals before crossing",
+          "icon": "hand",
+          "goto": "credit_2"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "credit_1": {
+      "type": "story",
+      "narration": "You tell the whole job, including the waiting. The guide writes it beside the drawing. \"Good. No brave nonsense about jumping into blinks.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "next"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "credit_2": {
+      "type": "story",
+      "narration": "You describe the herder testing the landing and your party waiting for the clear view. The guide underlines waiting twice. Her underline has fins.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "next"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "next": {
+      "type": "choice_point",
+      "narration": "The guide points out a trail to the Bone Yard, a place of old bones where anything taken comes back, and the way back toward the buried bridge. You will choose your destination after leaving the flats. First, prepare for either journey: check the packs for loose stones, or leave a clear return marker.",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Check the packs and leave loose stones here",
+          "icon": "hand",
+          "goto": "next_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Leave a clear return marker on firm ground",
+          "icon": "hand",
+          "goto": "next_2"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "variants": [
+        {
+          "when": {
+            "flag": "flats_warning_pictures"
+          },
+          "text": "Your picture warning catches a passing fisher. She stops at the missing middle and chooses the marked waiting spot."
+        },
+        {
+          "when": {
+            "notFlag": "flats_warning_pictures"
+          },
+          "text": "A passing fisher follows your safe-bank drawing straight to the waiting spot. The guide nods: the new marker works."
+        }
+      ]
+    },
+    "next_1": {
+      "type": "story",
+      "narration": "You empty the mats of loose shells and leave them on their bank. The guide checks your soles for hitchhiking stones. One crab makes its own arrangements.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "ending"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "next_2": {
+      "type": "story",
+      "narration": "You set the last marker on firm ground facing the return path. Your guide checks the tide before agreeing that this route is usable now.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "ending"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "ending": {
+      "type": "story",
+      "narration": "The snowhorn goat is home. Your guide checks the warning board. \"Wait until you can see the whole crossing,\" she says. You leave the closed opening and follow the markers back to firm ground.",
+      "choices": [],
+      "outcome": "success",
+      "variants": [
+        {
+          "when": {
+            "flag": "flats_sling_left"
+          },
+          "text": "The sling stayed with the herder. The guide will make another; she will not send anyone back into a closed gap for it."
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    }
+  }
+}

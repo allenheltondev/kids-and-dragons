@@ -1713,51 +1713,6 @@
         }
       }
     },
-    "riftlight-preview-pause-ashspan-bridge": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
-    "riftlight-preview-pause-boundary-stone-bank": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
-    "riftlight-preview-pause-cairnstep-pass": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
-    "riftlight-preview-pause-saltrot-arrival": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
-    "riftlight-preview-pause-sky-islands-arrival": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
     "riftlight-stone-counters": {
       "entryFacts": [
         "orin",
@@ -3473,33 +3428,6 @@
         }
       }
     },
-    "riftlight-preview-pause-stone-counters": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
-    "riftlight-preview-pause-whale-road": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
-    "riftlight-preview-pause-buried-bridge": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
     "riftlight-the-wrong-valley": {
       "entryFacts": [
         "orin",
@@ -4822,24 +4750,6 @@
         ]
       }
     },
-    "riftlight-preview-pause-the-wrong-valley": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
-    "riftlight-preview-pause-reading-room": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
     "riftlight-the-island-due-back": {
       "entryFacts": [
         "orin",
@@ -5629,11 +5539,3612 @@
         }
       }
     },
-    "riftlight-preview-pause-the-island-due-back": {
+    "riftlight-stuttering-flats": {
       "entryFacts": [],
       "scenes": {
-        "pause": {
+        "arrival": {
           "requires": [],
+          "introduces": {
+            "skupper_guide": "On the Saltrot mudflats, an opening in the air blinks away and comes back. Through it lies snow. A snowhorn goat stands belly-deep in mud beside it, chewing a reed with great disappointment. Your Skupper guide from the Saltrot bank waves her fins in greeting, then points to the rising tide. \"Bring that goat home before the opening closes. I can find firm mud. I cannot make a goat like it.\"",
+            "stranded_goat": "A snowhorn goat",
+            "blinking_gap": "an opening in the air blinks"
+          }
+        },
+        "observe": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "observe_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "observe_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "observe_check": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "observe_clear": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "observe_changed": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sound": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sound_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sound_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "ground": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "ground_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "ground_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "ground_check": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "ground_clear": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "ground_changed": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "approach": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "approach_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "approach_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "approach_3": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sling": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sling_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sling_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sling_check": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sling_clear": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "sling_changed": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "lift": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "lift_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "lift_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "lift_3": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "lift_check": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "lift_clear": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "lift_changed": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "dry_patch": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "dry_patch_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "dry_patch_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "dry_patch_3": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "rest": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "rest_watch": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "glimpse": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "glimpse_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "glimpse_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "signal": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "signal_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "signal_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "signal_check": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "signal_clear": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "signal_changed": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "crossing": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "crossing_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "crossing_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "crossing_check": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "crossing_clear": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "crossing_changed": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "last_blink": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "last_blink_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "last_blink_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "record": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "record_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "record_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "credit": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "credit_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "credit_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "next": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "next_1": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "next_2": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        },
+        "ending": {
+          "requires": [
+            "skupper_guide",
+            "stranded_goat",
+            "blinking_gap"
+          ],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-bone-yard": {
+      "entryFacts": [],
+      "scenes": {
+        "arrival": {
+          "requires": [],
+          "introduces": {
+            "bone_crawlers": "Small bone crawlers",
+            "yard_guide": "At the edge of the Bone Yard, your Skupper guide from the flats stops in a brackish pool. Beyond her, broken stone walls have appeared among enormous old bones. Small bone crawlers crowd the fresh shimmer around the walls. \"Clear a safe way past those ruins,\" she says. \"Take nothing. Here, anything taken comes back. I will watch from water that suits my fins.\" One crawler is trying to fit its whole body under a pebble.",
+            "yard_rule": "anything taken comes back",
+            "yard_ruins": "broken stone walls"
+          }
+        },
+        "limit": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "limit_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "limit_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "survey": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "survey_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "survey_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "survey_check": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "survey_clear": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "survey_changed": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "markers": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "markers_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "markers_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "test": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "test_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "test_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "vibration": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "vibration_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "vibration_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "vibration_check": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "vibration_clear": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "vibration_changed": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "support": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "support_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "support_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "support_check": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "support_clear": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "support_changed": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "rest": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "rest_watch": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "plan": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "plan_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "plan_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "fight": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "cleared": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "rescued": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "inventory": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "inventory_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "inventory_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "unbrace": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "unbrace_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "unbrace_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "unbrace_check": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "unbrace_clear": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "unbrace_changed": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "exit_strip": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "exit_strip_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "exit_strip_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "exit_strip_check": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "exit_strip_clear": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "exit_strip_changed": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "boundary": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "boundary_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "boundary_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "boundary_check": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "boundary_clear": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "boundary_changed": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "report": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "report_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "report_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "handoff": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "handoff_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "handoff_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "ending": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "fight_seam": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-wyrm-nest": {
+      "entryFacts": [
+        "orin",
+        "olivia",
+        "listening_chime",
+        "chime_rules",
+        "learned_note",
+        "hall",
+        "riftseekers",
+        "valley_change",
+        "valley_record"
+      ],
+      "scenes": {
+        "arrival": {
+          "requires": [],
+          "introduces": {
+            "nest_wyrm": "A frost wyrm",
+            "nest_builders": "yeti builders",
+            "nest_bench": "using a bench as a pillow"
+          }
+        },
+        "listen": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "listen_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "listen_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "watch": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "watch_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "watch_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "watch_check": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "watch_clear": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "watch_changed": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "supplies": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "supplies_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "supplies_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "cold_opening": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "cold_opening_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "cold_opening_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "cold_opening_3": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "cold_opening_check": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "cold_opening_clear": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "cold_opening_changed": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "bed": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "bed_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "bed_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "lanes": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "lanes_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "lanes_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "lanes_check": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "lanes_clear": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "lanes_changed": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "rest": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "rest_watch": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "signal": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "signal_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "signal_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "offer": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "offer_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "offer_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "fight": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "room_clear": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "room_moved": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "tools": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "tools_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "tools_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "tools_check": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "tools_clear": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "tools_changed": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "shelves": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "shelves_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "shelves_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "shelves_check": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "shelves_clear": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "shelves_changed": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "readers": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "readers_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "readers_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "readers_check": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "readers_clear": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "readers_changed": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "quiet": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "quiet_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "quiet_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "neighbors": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "neighbors_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "neighbors_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "departure": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "departure_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "departure_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "ending": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-squall-temple": {
+      "entryFacts": [],
+      "scenes": {
+        "arrival": {
+          "requires": [],
+          "introduces": {
+            "temple_keeper": "The island you helped welcome home is drifting toward a temple island through heavy rain. A different kitsune keeper from the one at the lookout rings a lookout bell; its rope wears a tiny raincoat. Beside the temple, a fresh opening spills bone crawlers onto the wet landing: little scuttling creatures with jointed legs and rattling backs. \"Keep the temple safe as that island drifts toward us,\" the keeper calls. \"We can push its approach clear, or shelter this landing and let it settle.\" She points to people still carrying cushions across the yard.",
+            "temple_island": "a temple island",
+            "temple_crawlers": "bone crawlers",
+            "temple_landing": "the wet landing"
+          }
+        },
+        "look": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "look_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "look_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "look_check": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "look_clear": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "look_changed": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "people": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "people_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "people_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "people_check": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "people_clear": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "people_changed": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "last_keeper": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "last_keeper_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "last_keeper_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "messages": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "gear": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "gear_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "gear_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "gear_check": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "gear_clear": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "gear_changed": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "signals": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "signals_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "signals_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "shelter": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "shelter_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "shelter_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "shelter_3": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "shelter_check": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "shelter_clear": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "shelter_changed": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "rest": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "rest_watch": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "crawl": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "crawl_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "crawl_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "plan": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "push_plan": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "shelter_plan": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "fight_push": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "fight_shelter": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "pushed": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "settled": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "damaged": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "roof": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "roof_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "roof_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "roof_check": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "roof_clear": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "roof_changed": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "boards": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "boards_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "boards_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "boards_check": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "boards_clear": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "boards_changed": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "repair": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "repair_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "repair_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "record": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "record_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "record_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "watch": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "watch_1": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "watch_2": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "ending": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "finish": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-convergence": {
+      "entryFacts": [],
+      "scenes": {
+        "arrival": {
+          "requires": [],
+          "introduces": {
+            "converge_bram": "A bigfoot named Bram Lock",
+            "converge_travelers": "At a sheltered glacier ledge, Orin waves you over to a map on an upturned sled. Olivia greets you and steadies one corner. Your Riftseeker friends have made room for your account. A bigfoot named Bram Lock keeps the path clear. \"Help me keep everyone behind the line when an opening comes,\" he asks. Orin weights the map with his boot. \"Compare your discoveries. Then help us steady any opening before people go near it.\" His boot is still on his foot.",
+            "converge_map": "At a sheltered glacier ledge, Orin waves you over to a map on an upturned sled. Olivia greets you and steadies one corner. Your Riftseeker friends have made room for your account. A bigfoot named Bram Lock keeps the path clear. \"Help me keep everyone behind the line when an opening comes,\" he asks. Orin weights the map with his boot. \"Compare your discoveries. Then help us steady any opening before people go near it.\" His boot is still on his foot."
+          }
+        },
+        "accounts": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "accounts_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "accounts_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "measure": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "measure_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "measure_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "measure_check": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "measure_clear": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "measure_changed": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "evidence": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "evidence_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "evidence_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "pull": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "pull_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "pull_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "pull_check": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "pull_clear": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "pull_changed": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "clear_path": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "clear_path_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "clear_path_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "clear_path_check": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "clear_path_clear": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "clear_path_changed": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "signals": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "signals_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "signals_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "rest": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "rest_watch": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "proposal": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "proposal_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "proposal_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "summoning": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "decision": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "bram_plan": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "olivia_plan": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "orin_plan": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "steady": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "steady_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "steady_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "steady_check": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "steady_clear": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "steady_changed": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "count": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "count_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "count_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "count_check": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "count_clear": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "count_changed": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "lesson": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "lesson_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "lesson_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "lesson_3": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "lesson_check": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "lesson_clear": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "lesson_changed": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "release": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "release_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "release_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "account": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "account_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "account_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "path": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "path_1": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "path_2": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "ending": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "finish": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-finale": {
+      "entryFacts": [],
+      "scenes": {
+        "arrival": {
+          "requires": [],
+          "introduces": {
+            "final_map": "an old map",
+            "final_tear": "A great tear",
+            "final_companions": "Orin Vale, the griffin scholar, and Seren Wisp, the kitsune teacher"
+          }
+        },
+        "retreat": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "retreat_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "retreat_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "retreat_check": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "retreat_clear": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "retreat_changed": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "voices": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "voices_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "voices_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "reveal": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {
+            "corvane": "I am Corvane",
+            "pangea": "Emperor of Pangea"
+          }
+        },
+        "present": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "present_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "present_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "map_shelter": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "map_shelter_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "map_shelter_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "map_shelter_check": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "map_shelter_clear": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "map_shelter_changed": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "test_pull": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "test_pull_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "test_pull_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "test_pull_check": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "test_pull_clear": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "test_pull_changed": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "remember": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "remember_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "remember_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "remember_3": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "remember_4": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "remember_check": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "remember_clear": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "remember_changed": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "first_anchor": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "first_anchor_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "first_anchor_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "first_anchor_check": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "first_anchor_clear": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "first_anchor_changed": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "rest": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "rest_watch": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "shelter": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {
+            "final_watcher": "a yeti watcher"
+          }
+        },
+        "shelter_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "shelter_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "watcher_lane": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {
+            "final_retreat_signal": "one clear sign"
+          }
+        },
+        "watcher_lane_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "watcher_lane_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "hold_condition": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {
+            "final_brace": "Seren shows how its pressure eases when the ridge is held still."
+          }
+        },
+        "hold_condition_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "hold_condition_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "hold_condition_3": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "hold_condition_check": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "hold_condition_clear": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "hold_condition_changed": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "warning": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "warning_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "warning_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "anchors": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "standard_plan": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "third_plan": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "wyrm_plan": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "olivia_plan": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "fight_standard": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "fight_weakened": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "spent": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "help_him": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "help_him_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "help_him_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "home_now": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "home_now_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "home_now_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "fate": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "keepers": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "listened": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "keepers_epilogue": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "listened_epilogue": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "loss_recover": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
+          ],
+          "introduces": {}
+        },
+        "loss_watch": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
+          ],
+          "introduces": {}
+        },
+        "loss_watch_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
+          ],
+          "introduces": {}
+        },
+        "loss_watch_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
+          ],
+          "introduces": {}
+        },
+        "rivers_wander": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "loss_epilogue": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "loss_anchor_plan": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
+          ],
+          "introduces": {}
+        },
+        "loss_anchor_brace": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
+          ],
+          "introduces": {}
+        },
+        "loss_anchor_rhythm": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
+          ],
+          "introduces": {}
+        },
+        "loss_anchor_check": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
+          ],
+          "introduces": {}
+        },
+        "loss_second_failed": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "final_watcher",
+            "final_retreat_signal",
+            "final_brace"
+          ],
           "introduces": {}
         }
       }
