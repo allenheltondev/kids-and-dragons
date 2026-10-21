@@ -289,7 +289,7 @@ export interface GraphLintResult {
   search: { states: number; complete: boolean };
 }
 
-export const DEFAULT_MAX_STATES = 500_000;
+export const DEFAULT_MAX_STATES = 50_000;
 
 /**
  * The `setFlag` effects anywhere in a chapter, as {@link ChapterFlagWrites}.
@@ -1034,11 +1034,19 @@ function explore(
   for (const members of routeSets) {
     if (members.some((member) => flags.has(member))) for (const member of members) flags.add(member);
   }
+  const chapterClock = graph.edgeOrder.some((id) => graph.edges[id]!.rift?.lasts?.unit === "chapters");
   for (const id of graph.nodeOrder) {
     const node = graph.nodes[id]!;
+    const writes = chapterWrites(node.chapter);
+    // A pass and a first visit are indistinguishable to route exploration
+    // only when completing this chapter cannot change any observable state.
+    // Keep unknown chapters, variants, completion rules and chapter clocks.
+    const inertPass = node.revisit === "pass" && !chapterClock &&
+      !(node.variants?.length) && !(node.onComplete?.length) && writes !== undefined &&
+      ![...writes.setsTrue, ...writes.setsFalse].some((flag) => flags.has(flag));
     // A variant's own `revisit` (#198) makes completion matter as much as the
     // node's does: `arrivalAt` reads it either way.
-    if (node.revisit !== "replay" || (node.variants ?? []).some((variant) => variant.revisit !== undefined)) {
+    if (!inertPass && (node.revisit !== "replay" || (node.variants ?? []).some((variant) => variant.revisit !== undefined))) {
       completed.add(id);
     }
   }

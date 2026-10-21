@@ -625,7 +625,7 @@
     },
     "late": {
       "type": "rest",
-      "narration": "You climb onto the east bank beside a bridge called Ashspan Bridge. The boatman nods from his flat boat. \"Old Ossley,\" he says. \"Ashspan Bridge.\" He points to a dry patch where your party can rest.",
+      "narration": "You climb onto the east bank beside a bridge called Ashspan Bridge. The boatman nods from his flat boat. \"Old Ossley,\" he says. \"Dry ground at last.\" He points to a dry patch where your party can rest.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -679,7 +679,7 @@
     },
     "rescued": {
       "type": "rest",
-      "narration": "Ossley brings the boat to the east bank beside a bridge called Ashspan Bridge. \"Ashspan Bridge,\" he says. You sit with a supper bundle between you, warmer and together. The river has changed your route; it has not ended your adventure.",
+      "narration": "Ossley brings the boat to the east bank beside a bridge called Ashspan Bridge. \"Dry ground at last,\" he says. You sit with a supper bundle between you, warmer and together. The river has changed your route; it has not ended your adventure.",
       "heal": 0,
       "choices": [],
       "outcome": "success",

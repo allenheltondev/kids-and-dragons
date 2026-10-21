@@ -5545,7 +5545,7 @@
         "arrival": {
           "requires": [],
           "introduces": {
-            "skupper_guide": "A Skupper guide",
+            "skupper_guide": "On the Saltrot mudflats, an opening in the air blinks away and comes back. Through it lies snow. A snowhorn goat stands belly-deep in mud beside it, chewing a reed with great disappointment. Your Skupper guide from the Saltrot bank waves her fins in greeting, then points to the rising tide. \"Bring that goat home before the opening closes. I can find firm mud. I cannot make a goat like it.\"",
             "stranded_goat": "A snowhorn goat",
             "blinking_gap": "an opening in the air blinks"
           }
@@ -6087,7 +6087,7 @@
           "requires": [],
           "introduces": {
             "bone_crawlers": "Small bone crawlers",
-            "yard_guide": "a Skupper guide",
+            "yard_guide": "At the edge of the Bone Yard, your Skupper guide from the flats stops in a brackish pool. Beyond her, broken stone walls have appeared among enormous old bones. Small bone crawlers crowd the fresh shimmer around the walls. \"Clear a safe way past those ruins,\" she says. \"Take nothing. Here, anything taken comes back. I will watch from water that suits my fins.\" One crawler is trying to fit its whole body under a pebble.",
             "yard_rule": "anything taken comes back",
             "yard_ruins": "broken stone walls"
           }
@@ -6651,6 +6651,15 @@
           "introduces": {}
         },
         "ending": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "fight_seam": {
           "requires": [
             "bone_crawlers",
             "yard_guide",
@@ -7226,7 +7235,7 @@
         "arrival": {
           "requires": [],
           "introduces": {
-            "temple_keeper": "A kitsune keeper",
+            "temple_keeper": "The island you helped welcome home is drifting toward a temple island through heavy rain. A different kitsune keeper from the one at the lookout rings a lookout bell; its rope wears a tiny raincoat. Beside the temple, a fresh opening spills bone crawlers onto the wet landing: little scuttling creatures with jointed legs and rattling backs. \"Keep the temple safe as that island drifts toward us,\" the keeper calls. \"We can push its approach clear, or shelter this landing and let it settle.\" She points to people still carrying cushions across the yard.",
             "temple_island": "a temple island",
             "temple_crawlers": "bone crawlers",
             "temple_landing": "the wet landing"
@@ -7853,8 +7862,8 @@
           "requires": [],
           "introduces": {
             "converge_bram": "A bigfoot named Bram Lock",
-            "converge_travelers": "travelers called the Riftseekers",
-            "converge_map": "spread a map"
+            "converge_travelers": "At a sheltered glacier ledge, Orin waves you over to a map on an upturned sled. Olivia greets you and steadies one corner. Your Riftseeker friends have made room for your account. A bigfoot named Bram Lock keeps the path clear. \"Help me keep everyone behind the line when an opening comes,\" he asks. Orin weights the map with his boot. \"Compare your discoveries. Then help us steady any opening before people go near it.\" His boot is still on his foot.",
+            "converge_map": "At a sheltered glacier ledge, Orin waves you over to a map on an upturned sled. Olivia greets you and steadies one corner. Your Riftseeker friends have made room for your account. A bigfoot named Bram Lock keeps the path clear. \"Help me keep everyone behind the line when an opening comes,\" he asks. Orin weights the map with his boot. \"Compare your discoveries. Then help us steady any opening before people go near it.\" His boot is still on his foot."
           }
         },
         "accounts": {

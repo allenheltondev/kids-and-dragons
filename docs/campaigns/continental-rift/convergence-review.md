@@ -30,3 +30,15 @@ The interactive spine has 45 scenes, 15 decisions and six physical checks,
 about 27 uncalibrated minutes. Timed family play remains unmeasured. Tests play
 all six trust/intervention combinations, exercise the guarded Orin option and
 check every key-node subset against all three strand-end entrances.
+
+## Review follow-up
+
+The party greets known Riftseekers. Bram asks for help keeping people behind the
+line. Orin, Olivia and Bram appear in the arrival cast; Seren and Pip join in the
+next scene's cast, respecting the schema's three-character maximum. Evidence
+callbacks are gated independently on the three learned discoveries. Each map
+exit names its particular clue pair. A spare board and felt-wrapped prop are
+introduced before either practice method can need them. Camp supper replaces the
+copied rest. Orin's optional intervention remains visible only to a party that
+shared its readings. Repeated hints about an unnamed maker are removed.
+The existing Olivia/Pip choices, archetypes, XP and attunement rules are unchanged.
