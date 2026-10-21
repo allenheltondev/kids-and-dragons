@@ -148,8 +148,8 @@
       "choices": [
         {
           "id": "argue",
-          "label": "Talk the drovers out of it",
-          "icon": "heart",
+          "label": "Run ahead and turn the lead oxen",
+          "icon": "quick",
           "goto": "check_reroute"
         },
         {
@@ -220,9 +220,9 @@
     },
     "check_reroute": {
       "type": "check",
-      "stat": "heart",
+      "stat": "quick",
       "tn": 8,
-      "prompt": "Talk a grumpy drover out of a shortcut",
+      "prompt": "Dash in front of the lead oxen and steer them around the field",
       "cast": [
         {
           "figure": "cast/hob",
@@ -236,11 +236,11 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_caravan_turned",
-        "narration": "You ask the drover how she would feel about a wagon parked on her dinner. She thinks about it, then turns her oxen."
+        "narration": "You dash in front of the lead oxen, flapping your arms like a scarecrow in a gale. The oxen decide the edge of the field looks nicer, and the drover, sighing, lets them have it."
       },
       "onFailure": {
         "goto": "scene_caravan_turned",
-        "narration": "The drovers don't listen. Three wagons cut a muddy stripe right through the squash before the rest swing around. A faun starts singing a very sad verse about it.",
+        "narration": "The oxen don't see you in all the dust. Three wagons cut a muddy stripe right through the squash before the rest swing around. A faun starts singing a very sad verse about it.",
         "effects": [
           {
             "type": "damage",
