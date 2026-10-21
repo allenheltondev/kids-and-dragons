@@ -49,6 +49,8 @@ characters:
     featured: true
     tags: [playable, forest, magic, healer]
     scale: medium_to_large
+    height_cm: 165
+    stance: standing
     signature_part: horn
     bipedal: false
     short_description: >-
@@ -106,6 +108,8 @@ characters:
     featured: false
     tags: [playable, volcanic, explorer, heat_resistant]
     scale: small_to_medium
+    height_cm: 95
+    stance: standing
     signature_part: wings
     bipedal: false
     short_description: >-
@@ -165,6 +169,8 @@ characters:
     featured: false
     tags: [playable, mountain, flight, scout]
     scale: medium_to_large
+    height_cm: 160
+    stance: standing
     signature_part: wings
     bipedal: false
     short_description: >-
@@ -223,6 +229,8 @@ characters:
     featured: false
     tags: [playable, forest, strong, observer]
     scale: large
+    height_cm: 215
+    stance: standing
     signature_part: mane
     bipedal: true
     short_description: >-
@@ -280,6 +288,8 @@ characters:
     featured: false
     tags: [playable, sky, illusion, clever]
     scale: small_to_medium
+    height_cm: 85
+    stance: standing
     signature_part: tail
     bipedal: false
     short_description: >-
@@ -336,6 +346,8 @@ characters:
     featured: false
     tags: [playable, plains, guardian, proud]
     scale: medium_to_large
+    height_cm: 150
+    stance: standing
     signature_part: tail
     bipedal: false
     short_description: >-
