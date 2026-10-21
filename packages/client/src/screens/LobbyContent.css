@@ -312,8 +312,9 @@
   color: var(--color-text-muted, #b7b0d8);
 }
 
-/* The adventures on offer, a card each in a row — see LobbyContent. Small
-   enough that a full party still fits a 720p TV beside them. */
+/* The adventures on offer, a card each in a row — see LobbyContent. A small
+   painting beside the words, so the row is short enough that a full party
+   still fits a 720p TV under it. */
 .lobby__campaigns {
   display: flex;
   flex-wrap: wrap;
@@ -324,10 +325,13 @@
 }
 
 .lobby__campaign {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1, 0.25em);
-  inline-size: 13em;
+  display: grid;
+  grid-template-columns: 6.5em minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr;
+  column-gap: var(--space-3, 0.75em);
+  row-gap: var(--space-1, 0.25em);
+  align-items: start;
+  inline-size: 18em;
   padding: var(--space-2, 0.5em);
   border-radius: var(--radius-lg, 1.25em);
   background: rgb(13 11 26 / 70%);
@@ -337,6 +341,10 @@
 /* What a Begin would play: the tray's chosen signal, a gold rim. */
 .lobby__campaign--picked {
   box-shadow: var(--kad-chosen-glow, 0 0 0 0.15em #f5c86c);
+}
+
+.lobby__campaign > .campaign-art {
+  grid-row: 1 / -1;
 }
 
 .lobby__campaign-title {

@@ -1589,10 +1589,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                           <span className="choice__art">
                             <CampaignArt campaignId={option.id} />
                           </span>
-                          <span className="choice__icon">
-                            <Icon name={locked ? "close" : "map"} size="1.8em" />
-                          </span>
                           <span className="choice__label">
+                            {locked ? <><Icon name="close" label="Locked" />{" "}</> : null}
                             <b>{option.title}</b>
                             <br />
                             <small>{campaignOptionLine(option)}</small>
