@@ -925,7 +925,7 @@
     },
     "readers": {
       "type": "choice_point",
-      "narration": "The first readers wait in the old reading room. They need a route that avoids the nest, wherever the new furniture stands. How will you guide them?",
+      "narration": "The first readers wait beside their notes in the old reading room. They need a clear lane to their working tables, well away from the nest. How will you guide them?",
       "choices": [
         {
           "id": "plan_1",
@@ -940,7 +940,15 @@
           "goto": "readers_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "variants": [
+        {
+          "when": {
+            "flag": "wyrm_nest_kept"
+          },
+          "text": "Today the lane stays inside the old room. You must get the notes past the crowded benches to the extra table."
+        }
+      ]
     },
     "readers_1": {
       "type": "story",
@@ -981,7 +989,7 @@
       },
       "onFailure": {
         "goto": "readers_changed",
-        "narration": "The first rhythm is too fast for the furniture carriers."
+        "narration": "The first rhythm is too fast for the readers carrying notes."
       },
       "art": "scenes/riftlight/reading-room"
     },
@@ -1014,7 +1022,7 @@
     },
     "readers_changed": {
       "type": "story",
-      "narration": "You slow the rhythm and carry the broad table in turns. The readers reach their working place without crossing the nest.",
+      "narration": "You slow the rhythm and share the heavy bundles of notes. The readers reach their working place without crossing the nest.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1029,11 +1037,19 @@
           "goto": "quiet"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "variants": [
+        {
+          "when": {
+            "flag": "wyrm_nest_kept"
+          },
+          "text": "You bring the last notes to the extra table in the old room. The builders still have a whole new chamber to finish."
+        }
+      ]
     },
     "quiet": {
       "type": "choice_point",
-      "narration": "The elder comes down from the old reading room and repeats the warning from the memory ice: do not shout near the old layers. This room has solved a small problem; the mountain still holds things nobody understands. What will you leave for the next visitors?",
+      "narration": "The elder joins your party and repeats the warning from the memory ice: do not shout near the old layers. This room has solved a small problem; the mountain still holds things nobody understands. What will you leave for the next visitors?",
       "choices": [
         {
           "id": "plan_1",
@@ -1192,12 +1208,6 @@
       "choices": [],
       "outcome": "success",
       "variants": [
-        {
-          "when": {
-            "flag": "wyrm_nest_kept"
-          },
-          "text": "The original doorway still belongs to the wyrm. The readers work down the tunnel, and their new room is a task for another day."
-        },
         {
           "when": {
             "flag": "wyrm_ally"

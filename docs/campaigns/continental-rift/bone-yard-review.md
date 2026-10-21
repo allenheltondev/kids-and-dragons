@@ -42,3 +42,7 @@ Typecheck, staged content gate, class-room loader and exhaustive outcome tests p
 | Physical checks | 6 | 6 |
 | Encounters | 1 | 1 |
 | Longest reading run | 2 | 2 |
+
+### Second review follow-up
+
+Recovery now names trapped gear without assuming the plank was used. A lost fight forces both return choices around the long rim; the marked-route result says so. Simplified the report and packing language for young listeners, including the spare-mat choice. Wording only; the spine remains 43 scenes, 14 decisions, 6 doing checks, 1 fight and a reading run of 2.
