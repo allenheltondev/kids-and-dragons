@@ -99,3 +99,66 @@ export function riftStand(
   const half = frame * 0.18;
   return { x: Math.min(partyEdge + half, left + width - half), frame };
 }
+
+/*
+ * Making the tear easy to see (#401). The painted tear is a thin matte
+ * charcoal outline, made to sit lightly on a backdrop, and on mud or rock it
+ * all but disappears from a sofa. Two colourless layers behind it fix that
+ * without repainting the art or giving a rule away:
+ *
+ *   - the **hole**: the inside of the tear, filled near-black, so it reads as
+ *     a gap in the air on any backdrop, bright ice included;
+ *   - the **glow**: a soft pale-grey mist around it that breathes slowly, so
+ *     the eye finds it on a dark backdrop, and so it looks alive.
+ *
+ * Neither is a palette colour, nor white, silver, gold or red (the Riftlight
+ * brief's forbidden list): the mist is a cool mid-pale grey at low strength,
+ * read as air, not as light. They are the same on every screen.
+ */
+
+/** The tear's middle, in sheet-frame pixels above the foot (the delivered art: y 76 to 183 of 256). */
+export const TEAR_MIDDLE_PX = (183 - 76) / 2;
+/** Half the tear's painted width and height, in sheet-frame pixels (x 103 to 152, y 76 to 183). */
+export const TEAR_HALF_WIDTH_PX = (152 - 103) / 2;
+export const TEAR_HALF_HEIGHT_PX = (183 - 76) / 2;
+
+/** The hole's near-black and the glow's mist (see above). */
+export const RIFT_HOLE_COLOR = 0x15121f;
+export const RIFT_GLOW_COLOR = 0xc9cad6;
+
+/** How long one slow breath of the glow takes. Slower than the sheet's loop, like breathing beside it. */
+export const RIFT_GLOW_PERIOD_S = 2.4;
+
+export interface RiftPresence {
+  /** The hole and glow's size, 0 to 1 of a full tear. */
+  readonly size: number;
+  /** The glow's strength, 0 to 1. */
+  readonly glow: number;
+  /** The hole's strength, 0 to 1. */
+  readonly hole: number;
+}
+
+/**
+ * How strongly the hole and glow show at this moment. A shimmering rift is
+ * full size, its glow breathing between 0.55 and 0.85; an opening one grows
+ * with its sheet, a collapsing one shrinks with it. Reduced motion holds the
+ * breath in the middle.
+ *
+ * @param pass what is playing, or null for nothing
+ * @param frame the sheet frame a one-shot is on (0 to frames - 1); ignored for a loop
+ * @param seconds the stage clock, for the breath
+ */
+export function riftPresence(
+  pass: RiftPass | null,
+  frame: number,
+  seconds: number,
+  reducedMotion: boolean,
+  frames = 12,
+): RiftPresence {
+  if (pass === null) return { size: 0, glow: 0, hole: 0 };
+  const breath = reducedMotion ? 0.7 : 0.7 + 0.15 * Math.sin((2 * Math.PI * seconds) / RIFT_GLOW_PERIOD_S);
+  if (pass.loop) return { size: 1, glow: breath, hole: 0.68 };
+  const done = Math.min(1, Math.max(0, (frame + 1) / frames));
+  const size = pass.effect === RIFT_OPEN_EFFECT ? done : 1 - done;
+  return { size, glow: breath * size, hole: 0.68 * size };
+}

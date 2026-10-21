@@ -6,7 +6,17 @@
 import { describe, expect, it } from "vitest";
 import type { Chapter, RunState } from "@kad/shared";
 import { makeState } from "../testing/fixtures";
-import { RIFT_FOOT, RIFT_TEAR_CM, RIFT_TEAR_SHARE, riftPasses, riftStand, sceneRiftFor } from "./scene-rift";
+import {
+  RIFT_FOOT,
+  RIFT_GLOW_COLOR,
+  RIFT_HOLE_COLOR,
+  RIFT_TEAR_CM,
+  RIFT_TEAR_SHARE,
+  riftPasses,
+  riftPresence,
+  riftStand,
+  sceneRiftFor,
+} from "./scene-rift";
 
 const chapter = {
   id: "c1",
@@ -85,5 +95,44 @@ describe("where the tear stands", () => {
 
   it("with nobody on stage, in the middle", () => {
     expect(riftStand({ party: [], partySlot: 0, castLeft: [] }, -200, 2000, k).x).toBe(800);
+  });
+});
+
+describe("how plainly the tear shows", () => {
+  const loop = { effect: "rift_neutral", loop: true } as const;
+  const open = { effect: "rift_open", loop: false } as const;
+  const collapse = { effect: "rift_collapse", loop: false } as const;
+
+  it("a shimmering rift is full size, its hole dark and its mist breathing", () => {
+    const breaths = [0, 0.6, 1.2, 1.8].map((t) => riftPresence(loop, 0, t, false));
+    for (const p of breaths) {
+      expect(p.size).toBe(1);
+      expect(p.hole).toBeGreaterThan(0.5);
+      expect(p.glow).toBeGreaterThanOrEqual(0.55 - 1e-9);
+      expect(p.glow).toBeLessThanOrEqual(0.85 + 1e-9);
+    }
+    expect(new Set(breaths.map((p) => p.glow.toFixed(2))).size).toBeGreaterThan(1);
+  });
+
+  it("holds the breath under reduced motion", () => {
+    expect(riftPresence(loop, 0, 0.6, true)).toEqual(riftPresence(loop, 0, 1.8, true));
+  });
+
+  it("grows with an opening sheet and shrinks with a collapsing one", () => {
+    expect(riftPresence(open, 0, 0, false).size).toBeLessThan(riftPresence(open, 11, 0, false).size);
+    expect(riftPresence(open, 11, 0, false).size).toBe(1);
+    expect(riftPresence(collapse, 0, 0, false).size).toBeGreaterThan(riftPresence(collapse, 11, 0, false).size);
+    expect(riftPresence(collapse, 11, 0, false)).toEqual({ size: 0, glow: 0, hole: 0 });
+    expect(riftPresence(null, 0, 0, false)).toEqual({ size: 0, glow: 0, hole: 0 });
+  });
+
+  it("uses no palette colour, nor white, silver, gold or red: a dark hole and a grey mist", () => {
+    for (const color of [RIFT_HOLE_COLOR, RIFT_GLOW_COLOR]) {
+      const [r, g, b] = [(color >> 16) & 0xff, (color >> 8) & 0xff, color & 0xff];
+      // Near-neutral: no channel more than a little above the others.
+      expect(Math.max(r, g, b) - Math.min(r, g, b)).toBeLessThanOrEqual(16);
+      // Not white or silver: the mist stays below a pale grey.
+      expect(Math.max(r, g, b)).toBeLessThan(0xe0);
+    }
   });
 });
