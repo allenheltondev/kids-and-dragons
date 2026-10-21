@@ -75,6 +75,7 @@ import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { hear, useReadAloudOn } from "../speech/read-aloud";
 import { speak } from "@kad/shared";
+import { CampaignArt } from "./CampaignArt";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { CharacterSheet } from "./CharacterSheet";
 import { ClassToken, SpareTokens, TokenCard } from "./ClassToken";
@@ -1555,10 +1556,11 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 ready, so it can't be tapped out from under anyone, and the
                 chapter it starts is the campaign's next one, which the server
                 works out from where this household got to. */}
-            {/* Which adventure — only when there is more than one to pick
-                from. A household with one campaign on the go never sees
-                this: the only option is picked for it. */}
-            {inLobby && campaignChoice?.contested ? (
+            {/* Which adventure — a card each, with its painting, when there is
+                more than one on offer. A locked sequel is shown asleep with its
+                reason, never tappable; only two or more that could start make
+                a vote, and with one the card just marks what Begin plays. */}
+            {inLobby && (state.campaignOptions?.length ?? 0) > 1 ? (
               <div className="player__campaigns">
                 <h4 className="prompt__title">
                   <Icon name="vote" />
@@ -1570,33 +1572,43 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                     const votedIds = party
                       .filter((member) => state.campaignVotes?.[member.playerId] === option.id)
                       .map((member) => member.playerId);
-                    const selected = myCampaignVote === option.id;
+                    const locked = option.locked !== undefined;
+                    const selected = campaignChoice?.contested
+                      ? myCampaignVote === option.id
+                      : !locked && option.id === campaignChoice?.leader?.id;
                     return (
                       <li key={option.id}>
                         <button
                           type="button"
-                          className={`choice kad-tap kad-focusable${selected ? " choice--on" : ""}`}
+                          className={`choice choice--campaign kad-tap kad-focusable${selected ? " choice--on" : ""}`}
+                          data-locked={locked}
                           aria-pressed={selected}
-                          disabled={busy || option.locked !== undefined}
+                          disabled={busy || locked}
                           onClick={() => void dispatch({ type: "VOTE_CAMPAIGN", campaignId: option.id })}
                         >
+                          <span className="choice__art">
+                            <CampaignArt campaignId={option.id} />
+                          </span>
                           <span className="choice__icon">
-                            <Icon name="map" size="1.8em" />
+                            <Icon name={locked ? "close" : "map"} size="1.8em" />
                           </span>
                           <span className="choice__label">
                             <b>{option.title}</b>
                             <br />
                             <small>{campaignOptionLine(option)}</small>
+                            {option.blurb ? <small className="choice__blurb">{option.blurb}</small> : null}
                           </span>
                           <span className="choice__trail">
                             <span className="choice__mark">
-                              {selected ? <Icon name="check" label="Your vote" /> : null}
+                              {myCampaignVote === option.id ? <Icon name="check" label="Your vote" /> : null}
                             </span>
-                            <VoteTicks
-                              voterIds={party.map((member) => member.playerId)}
-                              votedIds={votedIds}
-                              party={party}
-                            />
+                            {campaignChoice?.contested && !locked ? (
+                              <VoteTicks
+                                voterIds={party.map((member) => member.playerId)}
+                                votedIds={votedIds}
+                                party={party}
+                              />
+                            ) : null}
                           </span>
                         </button>
                       </li>
