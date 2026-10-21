@@ -132,7 +132,7 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "The keepers lay a cord around the moved stone. Pip gives them the measurements so tomorrow's count has a starting point. The road back to Ashspan Bridge remains open. The shrinking fold is an optional crossing; you can also pause here.",
+      "narration": "The keepers lay a cord around the moved stone. Pip gives them the measurements so tomorrow's count has a starting point. The road to the river crossing called Ashspan Bridge remains open. The shrinking fold is an optional crossing; you can also pause here.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
