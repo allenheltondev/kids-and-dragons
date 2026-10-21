@@ -37,6 +37,18 @@ it("keeps quiet until asked, then lists each capability for the owner to record"
   expect(screen.getByRole("button", { name: "About this screen" })).toBeTruthy();
 });
 
+it("takes a remote into the report and back: focus on Close, Escape closes, focus on the button", async () => {
+  render(<DisplayExtras />);
+  const opener = screen.getByRole("button", { name: "About this screen" });
+  opener.focus();
+  fireEvent.click(opener);
+  await screen.findByRole("region", { name: "About this screen" });
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Close" }));
+  fireEvent.keyDown(document, { key: "Escape" });
+  expect(screen.queryByRole("region", { name: "About this screen" })).toBeNull();
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "About this screen" }));
+});
+
 it("opens the report straight away on ?perf", async () => {
   window.history.replaceState(null, "", "/?perf");
   render(<DisplayExtras />);

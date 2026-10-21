@@ -133,12 +133,9 @@ test.describe("true size and stance on the story stage", () => {
     return tv;
   }
 
-  /** Dismiss the host's "Player joined" notices, as a host would, so a picture is of the stage. */
+  /** Wait out the "Player joined" notice, which goes by itself, so a picture is of the stage. */
   async function clearNotices(tv: Page): Promise<void> {
-    const dismiss = tv.getByRole("button", { name: "Dismiss" });
-    for (let i = 0; i < 6 && (await dismiss.count()) > 0; i++) {
-      await dismiss.first().click({ timeout: 2_000 }).catch(() => undefined);
-    }
+    await expect(tv.locator(".kad-arrival")).toHaveCount(0, { timeout: 10_000 });
   }
 
   /** Two readings with motion off must match: every idle is still. */
