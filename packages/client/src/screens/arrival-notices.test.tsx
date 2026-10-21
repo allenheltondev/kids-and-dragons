@@ -1,14 +1,16 @@
 // @vitest-environment jsdom
 /**
  * Who just joined (#267): seen on the screens that answer for the room, with a
- * Remove button only where removing is allowed, and gone on their own.
+ * Remove button only on a host's phone. On the shared screen it is one line with
+ * nothing to tap, gone on its own once read (ui/notice-timing.ts), host or not.
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { useGameStore } from "../store";
 import type { ClientSession } from "../store/contract";
-import { ArrivalNotices } from "./ArrivalNotices";
+import { noticeMs } from "../ui/notice-timing";
+import { ArrivalNotices, joinedLine } from "./ArrivalNotices";
 
 const MIA = { playerId: "p_2", name: "Mia", color: "#7FD4C1" };
 
@@ -30,11 +32,11 @@ afterEach(() => {
 });
 
 describe("arrival notices", () => {
-  it("show on the shared display, with nothing to tap but dismiss", () => {
+  it("show on the shared display, with nothing to tap", () => {
     seat({ playerId: "" });
     render(<ArrivalNotices placement="float" />);
-    expect(screen.getByText("Mia")).toBeTruthy();
-    expect(screen.queryByRole("button", { name: /remove/i })).toBeNull();
+    expect(screen.getByText("Mia joined")).toBeTruthy();
+    expect(screen.queryAllByRole("button")).toHaveLength(0);
   });
 
   it("give the host a Remove button that takes that player out", () => {
@@ -62,12 +64,24 @@ describe("arrival notices", () => {
     expect(container.querySelectorAll(".kad-arrivals--inline")).toHaveLength(1);
   });
 
-  it("float on a TV that hosts, which has no controls to cover", () => {
+  it("float on a TV that hosts, with nothing to tap: its Remove is in the Room panel", () => {
     seat({ playerId: "", host: true });
     const { container } = render(<><ArrivalNotices placement="float" /><ArrivalNotices placement="inline" /></>);
     expect(container.querySelectorAll(".kad-arrivals--float")).toHaveLength(1);
     expect(container.querySelectorAll(".kad-arrivals--inline")).toHaveLength(0);
-    expect(screen.getByRole("button", { name: "Remove Mia from this game" })).toBeTruthy();
+    expect(screen.queryAllByRole("button")).toHaveLength(0);
+  });
+
+  it("say everyone who just came on one line on the shared screen, never a stack of cards", () => {
+    seat({ playerId: "", host: true });
+    act(() => {
+      useGameStore.setState({
+        arrivals: [MIA, { playerId: "p_3", name: "Bo", color: "#fff" }, { playerId: "p_4", name: "Cy", color: "#fff" }],
+      });
+    });
+    const { container } = render(<ArrivalNotices placement="float" />);
+    expect(container.querySelectorAll(".kad-arrival")).toHaveLength(1);
+    expect(screen.getByText("Mia, Bo and Cy joined")).toBeTruthy();
   });
 
   it("draw only the newest few for the host, with the rest behind one control", () => {
@@ -108,14 +122,87 @@ describe("arrival notices", () => {
     expect(screen.getByRole("alert").textContent).toMatch(/start a new room/i);
   });
 
-  it("go away on their own", () => {
+  it("let the shared screen's flood warning go once read, and bring it back when more are dropped", () => {
+    // Owner call C on #392.
+    vi.useFakeTimers();
+    seat({ playerId: "", host: true });
+    act(() => {
+      useGameStore.setState({ arrivals: [], arrivalsDropped: 12 });
+    });
+    render(<ArrivalNotices placement="float" />);
+    const flood = /a lot of phones are joining/i;
+    expect(screen.getByRole("alert").textContent).toMatch(flood);
+    const ms = noticeMs("A lot of phones are joining. If you don't know them, start a new room.");
+    act(() => {
+      vi.advanceTimersByTime(ms);
+    });
+    expect(screen.queryByText(flood)).toBeNull();
+    act(() => {
+      useGameStore.setState({ arrivalsDropped: 20 });
+    });
+    expect(screen.getByRole("alert").textContent).toMatch(flood);
+    act(() => {
+      vi.advanceTimersByTime(ms);
+    });
+    expect(screen.queryByText(flood)).toBeNull();
+  });
+
+  it("go away on their own once read", () => {
     vi.useFakeTimers();
     seat({ playerId: "" });
     render(<ArrivalNotices placement="float" />);
     act(() => {
-      vi.advanceTimersByTime(8_000);
+      vi.advanceTimersByTime(noticeMs("Mia joined") - 1);
     });
-    expect(screen.queryByText("Mia")).toBeNull();
+    expect(screen.getByText("Mia joined")).toBeTruthy();
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+    expect(screen.queryByText("Mia joined")).toBeNull();
+    expect(useGameStore.getState().arrivals).toEqual([]);
+  });
+
+  it("go away on their own on a TV that hosts, too", () => {
+    // #389: the host's cards stayed until dismissed and lay across the chapter's goal.
+    vi.useFakeTimers();
+    seat({ playerId: "", host: true });
+    render(<ArrivalNotices placement="float" />);
+    act(() => {
+      vi.advanceTimersByTime(4_000);
+    });
+    expect(screen.queryByText("Mia joined")).toBeNull();
+  });
+
+  it("start the reading time again when somebody else arrives, and stay a little longer for more names", () => {
+    vi.useFakeTimers();
+    seat({ playerId: "" });
+    render(<ArrivalNotices placement="float" />);
+    act(() => {
+      vi.advanceTimersByTime(3_000);
+    });
+    act(() => {
+      useGameStore.setState({
+        arrivals: [MIA, ...["Bo", "Cy", "Dee"].map((name) => ({ playerId: name, name, color: "#fff" }))],
+      });
+    });
+    expect(screen.getByText("Mia, Bo and 2 more joined")).toBeTruthy();
+    const ms = noticeMs("Mia, Bo and 2 more joined");
+    expect(ms).toBeGreaterThan(noticeMs("Mia joined"));
+    act(() => {
+      vi.advanceTimersByTime(ms - 1);
+    });
+    expect(screen.getByText("Mia, Bo and 2 more joined")).toBeTruthy();
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+    expect(screen.queryByText(/joined/)).toBeNull();
+  });
+
+  it("name up to three and count the rest", () => {
+    expect(joinedLine(["Mia"])).toBe("Mia joined");
+    expect(joinedLine(["Mia", "Bo"])).toBe("Mia and Bo joined");
+    expect(joinedLine(["Mia", "Bo", "Cy"])).toBe("Mia, Bo and Cy joined");
+    expect(joinedLine(["Mia", "Bo", "Cy", "Dee", "Eve"])).toBe("Mia, Bo and 3 more joined");
   });
 
   it("stay for the host until dismissed, so a stranger noticed late can still be removed", () => {

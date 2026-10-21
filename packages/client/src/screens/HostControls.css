@@ -159,3 +159,45 @@
 .kad-host__offer p {
   margin: 0;
 }
+
+/* The shared screen's offer keeps playing by itself (HostControls.tsx STOP_OFFER_MS): a thin bar
+   runs down, quietly, beside the words. Under reduced motion the bar stands still and full, and
+   the clock still runs. */
+.kad-host__offer-clock {
+  display: grid;
+  gap: 0.25rem;
+  color: var(--kad-ink-dim);
+  font-size: 0.85em;
+}
+
+.kad-host__offer-bar {
+  display: block;
+  block-size: 3px;
+  border-radius: 999px;
+  background: var(--kad-bg-sunken);
+  overflow: hidden;
+}
+
+.kad-host__offer-bar > span {
+  display: block;
+  block-size: 100%;
+  background: var(--kad-accent);
+  transform-origin: left center;
+  animation-name: kad-host-offer-run;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+[dir="rtl"] .kad-host__offer-bar > span {
+  transform-origin: right center;
+}
+
+@keyframes kad-host-offer-run {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kad-host__offer-bar > span { animation-name: none; }
+}
+html[data-motion="reduced"] .kad-host__offer-bar > span { animation-name: none; }
