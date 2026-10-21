@@ -9,6 +9,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import type { CanonEntity, AiContext, AssetResult, CanonRegistry, EntityImage, ReverseRef, PageGeneratorOptions, ValidationMessage } from './types.ts';
+import { sizeLine } from './size-line.ts';
 
 /** Marker format for generated sections. */
 const BEGIN_MARKER = (section: string) => `<!-- BEGIN GENERATED: ${section} -->`;
@@ -747,6 +748,19 @@ function generateFrontMatter(
   }
   if (typeof meta['sapience'] === 'string') {
     lines.push(`sapience: ${meta['sapience']}`);
+  }
+
+  // How big it is (#370), straight from canon's height_cm and stance. The
+  // infobox shows `size.line`; the parts are there for anything that wants
+  // to lay it out differently.
+  const size = sizeLine(entity);
+  if (size) {
+    lines.push(`height_cm: ${size.heightCm}`);
+    lines.push('size:');
+    lines.push(`  height: "${escapeYamlString(size.height)}"`);
+    lines.push(`  compare: "${escapeYamlString(size.compare)}"`);
+    if (size.stance) lines.push(`  stance: "${escapeYamlString(size.stance)}"`);
+    lines.push(`  line: "${escapeYamlString(size.line)}"`);
   }
 
   // Lore: the hook for cards and list pages, and resolved opinion chips for

@@ -73,7 +73,7 @@
   "scenes": {
     "scene_north_roads": {
       "type": "story",
-      "narration": "North of the west branch, the road splits into two lanes. The upbound lane is the rush going up: wagons, picks, and people singing. The downbound lane is the rush coming back: slower, quieter, carrying a lot less than it set out with. Everybody is talking at once.",
+      "narration": "North of the west branch, the road splits into two lanes. The upbound lane is the rush going up: wagons, picks, and people singing. The downbound lane is the rush coming back: slower, quieter, carrying a lot less than it set out with. Everybody is talking at once, and folk say the road keeps track of all of it. Follow the rush up the north road, and find out what the road remembers.",
       "choices": [
         {
           "id": "fall_in",
@@ -132,7 +132,7 @@
     },
     "scene_out_of_marsh": {
       "type": "story",
-      "narration": "You come up out of the marsh reeds onto the road with mud to your knees and the boggarts' hum still in your ears. Nobody on the road has a seat for you, so you work your passage: carrying water buckets for a wagon that smells strongly of turnips. The boggarts, somewhere behind you, are laughing.",
+      "narration": "You come up out of the marsh reeds onto the road with mud to your knees and the boggarts' hum still in your ears. Nobody on the road has a seat for you, so you earn your ride: carrying water buckets for a wagon that smells strongly of turnips. The boggarts, somewhere behind you, are laughing.",
       "choices": [
         {
           "id": "onward",
@@ -221,7 +221,7 @@
           "count": 3
         }
       ],
-      "narration": "You cheer the wagon horses on, and the horses try their very best. The jackalope wins by a mile, turns round, and runs the whole race again backwards, just to make a point. The drivers laugh. \"That's the Plains,\" one says. \"The jackalopes always win. Always. Everywhere.\"",
+      "narration": "You cheer the wagon horses on, and the horses try their very best. The jackalope wins by a mile, turns around, and runs the whole race again backwards, just to make a point. The drivers laugh. \"That's the Plains,\" one says. \"The jackalopes always win. Always. Everywhere.\"",
       "choices": [
         {
           "id": "on",
@@ -331,7 +331,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_silence_follows",
-        "narration": "You count forty-one, forty-two, forty-three, and then none. Not one. The last jackalope sits exactly at the edge of the silence like a full stop, and you can draw the line from where you stand."
+        "narration": "You count forty-one, forty-two, forty-three, and then none. Not one. The last jackalope sits exactly at the edge of the silence like the period at the end of a sentence, and you can draw the line from where you stand."
       },
       "onFailure": {
         "goto": "scene_downbound",
@@ -625,6 +625,15 @@
           "figure": "cast/wend",
           "name": "Wend"
         }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "forded_clean"
+          },
+          "replace": true,
+          "text": "Beside the downbound lane, people in dark robes with little humming crystals on strings have put up rest tents, with DEEP HOLLOW stitched small on the flaps: three of them, with cots and blankets and hot bowls for anyone the rush has dropped. Behind the soup pot, ladle up, is Wend from the ford. \"You made it across!\" says Wend, and says every one of your names without being told, as if it had never forgotten them."
+        }
       ]
     },
     "rest_soup_tents_rest_go": {
@@ -813,7 +822,7 @@
       },
       "onFailure": {
         "goto": "scene_warden_patrol",
-        "narration": "You carry a post the wrong way round and plant it upside down, so the arrow points at the sky. The crew decides this is very funny and leaves it there, as a joke for the next runner. The road boss thanks you anyway, still chuckling."
+        "narration": "You carry a post backward and plant it upside down, so the arrow points at the sky. The crew decides this is very funny and leaves it there, as a joke for the next runner. The road boss thanks you anyway, still chuckling."
       },
       "art": "scenes/gemfall/north-road-detour"
     },
@@ -825,7 +834,7 @@
           "name": "Road Boss"
         }
       ],
-      "narration": "The road boss leans on a post. \"A stone fell here, the red night. Since then nothing will walk past this hollow. Not horses, not hares. The grass won't even lean toward it. So the road goes round. A road always goes where the walking goes.\" She glances at your packs, and then away.",
+      "narration": "The road boss leans on a post. \"A stone fell here, the red night. Since then nothing will walk past this hollow. Not horses, not hares. The grass won't even lean toward it. So the road goes around. A road always goes where the walking goes.\" She glances at your packs, and then away.",
       "choices": [
         {
           "id": "on",
@@ -863,7 +872,7 @@
           "name": "Road Boss"
         }
       ],
-      "narration": "From up high you can see it: this is not the only detour. All along the north roads, little curves of new posts bend away from scorched hollows, one after another, like somebody walking carefully round puddles. The road is not wandering. It is stepping around something.",
+      "narration": "From up high you can see it: this is not the only detour. All along the north roads, little curves of new posts bend away from scorched hollows, one after another, like somebody walking carefully around puddles. The road is not wandering. It is stepping around something.",
       "choices": [
         {
           "id": "on",
@@ -1001,7 +1010,7 @@
     },
     "scene_signposts": {
       "type": "story",
-      "narration": "Where the road forks, somebody has nailed up forty signs that all say GEMS THIS WAY, and they all point different ways. Under them, a man in a velvet coat is selling maps to the Gemfall. \"Two coppers each! Guaranteed accurate, or your money back from my cousin,\" he says, \"who has left.\"",
+      "narration": "Where the road forks, somebody has nailed up forty signs that all say GEMS THIS WAY, and they all point different ways. Under them, a man in a velvet coat is selling maps to the Gemfall. \"Lost? Course you are, with signs like these. One copper buys you a map straight to the depot! Guaranteed accurate, or your money back from my cousin,\" he says, \"who has left.\"",
       "choices": [
         {
           "id": "buy_map",
@@ -1535,7 +1544,7 @@
       },
       "onFailure": {
         "goto": "scene_road_bend",
-        "narration": "The wind shoves you sideways into a hedge, one after another, like skittles. It is warm in the hedge, so you wait it out there, sneezing ash. When it passes you climb out, grayer and wiser, and the bend in the road is just ahead."
+        "narration": "The wind shoves you sideways into a hedge, one after another, like bowling pins. It is warm in the hedge, so you wait it out there, sneezing ash. When it passes you climb out, grayer and wiser, and the bend in the road is just ahead."
       },
       "art": "scenes/gemfall/road-bend-grass"
     },
@@ -1547,7 +1556,7 @@
           "name": "Sergeant Holloway"
         }
       ],
-      "narration": "You duck behind a Skywarden supply wagon and find Sergeant Holloway already there, writing by lantern. \"Ash wind,\" says the sergeant. \"Third this week. Wind from the mountain means the mountain is busy.\" Holloway writes BUSY, underlines it twice, and offers you a very dry biscuit.",
+      "narration": "You duck behind a Skywarden supply wagon and find Sergeant Holloway already there, writing by lantern. \"Ash wind,\" says the sergeant. \"Third this week. Wind from the mountain means the mountain is busy.\" Holloway writes BUSY, underlines it twice, and offers you a very dry cracker.",
       "choices": [
         {
           "id": "on",

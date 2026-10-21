@@ -3,7 +3,7 @@ title: Bone Crawler
 id: creature.bone_crawler
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-03a"]
 tags: ["dangerous", "bone_yard", "scavenger", "swarm"]
@@ -11,6 +11,11 @@ classification: dangerous_creature
 danger_level: moderate
 scale: small_to_medium
 sapience: animal
+height_cm: 55
+size:
+  height: "55 cm (1 ft 10 in)"
+  compare: "knee-high to a grown-up"
+  line: "55 cm (1 ft 10 in), knee-high to a grown-up."
 lore_hook: "A hermit crab that moved into history."
 likes:
   - id: creature.restless_remains
@@ -24,9 +29,15 @@ related:
   - id: biome.sallow_wastelands
     type: biome
     relationship: dangerous_creatures
+  - id: campaign.riftlight
+    type: campaign
+    relationship: creatures
   - id: location.bone_yard
     type: location
     relationship: dangerous_creatures
+  - id: npc.skupper
+    type: npc
+    relationship: creatures
 assets:
   primary: assets/entities/bone_crawler/portrait.webp
   primaryFull: assets/entities/bone_crawler/assembled.png
@@ -36,7 +47,7 @@ ai_context:
   visual_style: "Low many-legged body mostly hidden beneath an irregular shell of old bone."
   common_encounters: "Bone Yard atmosphere, swarm obstacle, indicator that new magical energy entered the island."
   lore_highlights: "A hermit crab that moved into history."
-  related_entities: "location.bone_yard, biome.sallow_wastelands, location.bone_yard"
+  related_entities: "location.bone_yard, biome.sallow_wastelands, campaign.riftlight, location.bone_yard, npc.skupper"
   writing_guidance: "Does not intentionally animate bones. Shell looks assembled, not like an animated skeleton."
   generation_hints: "Hides from large creatures, defends feeding sites, swarms objects carrying fresh magical energy."
 layout: creatures
@@ -91,8 +102,14 @@ Timid alone, bold in a clatter, and entirely without enemies it is aware of, sin
 ### Biomes
 - [The Sallow Wastelands](/biomes/sallow_wastelands/) `Dangerous Creatures`
 
+### Campaigns
+- [Riftlight](/campaigns/riftlight/) `Creatures`
+
 ### Locations
 - [The Bone Yard](/locations/bone_yard/) `Primary Locations` `Dangerous Creatures`
+
+### Npcs
+- [Skupper](/npcs/skupper/) `Creatures`
 <!-- END GENERATED: relationships -->
 
 

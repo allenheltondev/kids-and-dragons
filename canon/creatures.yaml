@@ -90,6 +90,8 @@ creatures:
     tags: [ambient, foothills, volcanic, indicator]
     danger_level: low
     scale: tiny_to_small
+    height_cm: 18
+    stance: flying
     short_description: >-
       Warm-bodied moth with smoky wings and ember-like markings.
     visual_identity: >-
@@ -143,6 +145,8 @@ creatures:
     tags: [ambient, forest, gentle, indicator]
     danger_level: none
     scale: medium
+    height_cm: 150
+    stance: standing
     short_description: >-
       Gentle deer-like forest animal whose antlers support living moss, ferns, and flowers.
     visual_identity: >-
@@ -195,6 +199,8 @@ creatures:
     tags: [ambient, plains, common, fast]
     danger_level: none
     scale: small
+    height_cm: 45
+    stance: standing
     short_description: >-
       Fast rabbit-like plains animal with small branching antlers.
     visual_identity: >-
@@ -247,6 +253,8 @@ creatures:
     tags: [ambient, sky, majestic, semi_sapient]
     danger_level: low
     scale: colossal
+    height_cm: 1100
+    stance: flying
     short_description: >-
       Enormous gentle sky-swimmer that follows the same high wind currents as the
       drifting islands.
@@ -301,6 +309,8 @@ creatures:
     tags: [ambient, mountain, climbing, indicator]
     danger_level: low
     scale: medium
+    height_cm: 110
+    stance: standing
     short_description: >-
       Sure-footed mountain goat with translucent ice-colored horns.
     visual_identity: >-
@@ -352,6 +362,8 @@ creatures:
     tags: [ambient, river, playful, indicator]
     danger_level: none
     scale: small
+    height_cm: 50
+    stance: standing
     short_description: >-
       Playful river otter with water-shedding silver-blue fur.
     visual_identity: >-
@@ -404,6 +416,8 @@ creatures:
     tags: [ambient, ocean, reef, indicator]
     danger_level: none
     scale: medium
+    height_cm: 90
+    stance: swimming
     short_description: >-
       Bright manta-like reef animal that glides through warm currents in
       coordinated groups.
@@ -456,6 +470,8 @@ creatures:
     tags: [dangerous, foothills, territorial, burrower]
     danger_level: moderate
     scale: medium_to_large
+    height_cm: 130
+    stance: standing
     short_description: >-
       Large territorial crab-like burrower with a translucent mineral shell.
     visual_identity: >-
@@ -522,6 +538,8 @@ creatures:
     tags: [dangerous, foothills, pack, predator]
     danger_level: moderate
     scale: medium
+    height_cm: 95
+    stance: standing
     short_description: >-
       Lean pack predator with ash-dark fur and heat glowing faintly beneath its coat.
     visual_identity: >-
@@ -587,6 +605,8 @@ creatures:
     tags: [dangerous, marsh, ambush, camouflage]
     danger_level: moderate
     scale: medium_to_large
+    height_cm: 110
+    stance: standing
     short_description: >-
       Patient marsh predator that resembles a safe patch of ground, log, or
       abandoned boat.
@@ -659,6 +679,8 @@ creatures:
     tags: [dangerous, mountain, ice, predator]
     danger_level: high
     scale: large
+    height_cm: 260
+    stance: standing
     short_description: >-
       Large serpentine ice predator that burrows through deep snow and fractured
       glacier ice.
@@ -726,6 +748,8 @@ creatures:
     tags: [dangerous, river, semi_sapient, territorial]
     danger_level: moderate
     scale: large
+    height_cm: 180
+    stance: standing
     short_description: >-
       Long-bodied freshwater drake that claims deep pools, bridge shadows, and
       narrow currents.
@@ -794,6 +818,8 @@ creatures:
     tags: [dangerous, bone_yard, scavenger, swarm]
     danger_level: moderate
     scale: small_to_medium
+    height_cm: 55
+    stance: standing
     short_description: >-
       Pale scavenger that constructs protective shells from loose fossil fragments.
     visual_identity: >-
@@ -860,6 +886,8 @@ creatures:
     tags: [dangerous, underground, blind, predator]
     danger_level: high
     scale: large
+    height_cm: 190
+    stance: standing
     short_description: >-
       Blind underground predator that maps tunnels and tracks movement through sound.
     visual_identity: >-
@@ -928,6 +956,8 @@ creatures:
     tags: [supernatural, marsh, memory, misdirection]
     danger_level: moderate
     scale: tiny
+    height_cm: 20
+    stance: hovering
     short_description: >-
       A floating light formed when a strong memory becomes tangled in marsh magic.
     visual_identity: >-
@@ -1000,6 +1030,8 @@ creatures:
     tags: [supernatural, bone_yard, rare, guardian]
     danger_level: high
     scale: variable
+    height_cm: 240
+    stance: standing
     short_description: >-
       Ancient bones temporarily animated when the Bone Yard's rest is seriously
       disturbed.
@@ -1069,6 +1101,8 @@ creatures:
     tags: [supernatural, marsh, mist, hazard, drift, lost_things]
     danger_level: moderate
     scale: variable
+    height_cm: 400
+    stance: hovering
     short_description: >-
       A low drifting cloud that sheds a fine sand which falls upward, lifting
       whatever it settles on toward the cloud the sand is trying to get back to.
@@ -1194,6 +1228,8 @@ creatures:
     tags: [legendary, volcano, sapient, ancient]
     danger_level: legendary
     scale: colossal
+    height_cm: 1400
+    stance: standing
     short_description: >-
       An ancient, solitary dragon powerful enough to claim territory on or
       beneath Mount RedSky.
@@ -1269,6 +1305,8 @@ creatures:
     tags: [legendary, underground, avian, rebirth]
     danger_level: high
     scale: medium
+    height_cm: 120
+    stance: standing
     short_description: >-
       Rare ice-blue bird found only in Skullwater Cave. A Kavari ages backward
       into an egg, which releases a two-day snowstorm before an adult emerges.

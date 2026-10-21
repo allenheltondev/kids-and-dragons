@@ -5,7 +5,11 @@ import { defineConfig } from '@playwright/test';
  *
  * Serves the pre-built Hugo site from wiki/public/ using a simple static
  * file server (npx serve) and runs E2E tests against it.
+ *
+ * `KAD_CHROMIUM` points at a preinstalled Chromium, as in playwright.config.ts.
  */
+const CHROMIUM = process.env.KAD_CHROMIUM ?? undefined;
+
 export default defineConfig({
   testDir: './e2e',
   testMatch: 'wiki-*.spec.ts',
@@ -18,6 +22,7 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:4173',
     trace: 'retain-on-failure',
+    ...(CHROMIUM ? { launchOptions: { executablePath: CHROMIUM } } : {}),
   },
   webServer: {
     command: 'npx serve wiki/public -l 4173 --no-clipboard',

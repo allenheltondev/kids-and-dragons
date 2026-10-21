@@ -3,7 +3,7 @@ title: The Exchange
 id: location.exchange
 type: location
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-01", "gemfall-02", "gemfall-03a", "gemfall-05a", "gemfall-07h", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["coastal_city", "trade", "crossroads", "docks", "mixed_population", "stories"]
@@ -44,6 +44,9 @@ related:
     type: biome
     relationship: nearby_sites
   - id: campaign.gemfall
+    type: campaign
+    relationship: locations
+  - id: campaign.riftlight
     type: campaign
     relationship: locations
   - id: character.unicorn
@@ -118,7 +121,7 @@ ai_context:
   visual_style: "Dense towers and halls built along cliffs, bridges, layered docks, ships, market awnings, signs from many cultures, crowded paths, and constant movement."
   common_encounters: "Campaign beginnings, reunions, contracts, rumors, investigation, trade, political tension between individuals, missing cargo, and stories that bring distant regions into contact."
   lore_highlights: "The accepted account is that the Exchange began as a seasonal market that failed to disperse."
-  related_entities: "biome.sunward_fields, biome.whispering_marsh, biome.open_sea, biome.sunward_fields, biome.whispering_marsh, biome.sunward_fields, biome.sunward_fields, campaign.gemfall, character.unicorn, character.dragonling, character.griffin, character.bigfoot, character.kitsune, character.manticore, route.exchange_to_sunward_fields, route.exchange_to_whispering_marsh, item.sunbloom_draught, item.supper_bundle, item.quickfoot_lace, npc.burrowfolk, npc.centaur, npc.faun, npc.frogfolk, npc.boggart, npc.merfolk, npc.selkie, npc.sheeple, npc.witch_order"
+  related_entities: "biome.sunward_fields, biome.whispering_marsh, biome.open_sea, biome.sunward_fields, biome.whispering_marsh, biome.sunward_fields, biome.sunward_fields, campaign.gemfall, campaign.riftlight, character.unicorn, character.dragonling, character.griffin, character.bigfoot, character.kitsune, character.manticore, route.exchange_to_sunward_fields, route.exchange_to_whispering_marsh, item.sunbloom_draught, item.supper_bundle, item.quickfoot_lace, npc.burrowfolk, npc.centaur, npc.faun, npc.frogfolk, npc.boggart, npc.merfolk, npc.selkie, npc.sheeple, npc.witch_order"
   writing_guidance: "The Exchange has no native or dominant people. Do not give one species ownership of the city or reduce it to a marketplace without homes, institutions, stories, and ordinary life."
   generation_hints: "Ships arrive, caravans turn over cargo, travelers exchange news, and the city continuously adapts to disruptions in roads, rivers, weather, and distant regions."
 layout: locations
@@ -182,6 +185,7 @@ Where the realm meets itself. News, cargo, reunions, and campaigns all begin at 
 
 ### Campaigns
 - [Gemfall](/campaigns/gemfall/) `Locations`
+- [Riftlight](/campaigns/riftlight/) `Locations`
 
 ### Characters
 - [Bigfoot](/characters/bigfoot/) `Secondary Locations`
