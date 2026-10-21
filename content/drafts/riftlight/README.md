@@ -241,3 +241,12 @@ the party remains on the Saltrot side. See the [chapter review](../../../docs/ca
 The uncalibrated shortest-path estimate is 25.5 minutes (43 scenes, 15 decisions, six checks);
 the 35-minute budget still needs a timed family playtest. This chapter adds no bonus XP.
 
+
+## The Borrowed Ruins
+
+Stuttering Flats continues to the Bone Yard. Close the fresh tear or clear the crawlers;
+a lost fight costs the short route. No Bone Yard object enters inventory. See the
+[chapter review](../../../docs/campaigns/continental-rift/bone-yard-review.md).
+The staged preview now includes dedicated encounter maps. The modeled spine is 43 scenes,
+14 decisions, six checks and one encounter (28.5 uncalibrated minutes).
+

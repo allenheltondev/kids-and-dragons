@@ -6187,6 +6187,596 @@
           "introduces": {}
         }
       }
+    },
+    "riftlight-preview-pause-bone-yard": {
+      "entryFacts": [],
+      "scenes": {
+        "pause": {
+          "requires": [],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-bone-yard": {
+      "entryFacts": [],
+      "scenes": {
+        "arrival": {
+          "requires": [],
+          "introduces": {
+            "bone_crawlers": "Small bone crawlers",
+            "yard_guide": "a Skupper guide",
+            "yard_rule": "anything taken comes back",
+            "yard_ruins": "broken stone walls"
+          }
+        },
+        "limit": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "limit_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "limit_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "survey": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "survey_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "survey_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "survey_check": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "survey_clear": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "survey_changed": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "markers": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "markers_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "markers_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "test": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "test_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "test_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "vibration": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "vibration_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "vibration_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "vibration_check": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "vibration_clear": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "vibration_changed": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "support": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "support_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "support_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "support_check": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "support_clear": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "support_changed": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "rest": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "rest_watch": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "plan": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "plan_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "plan_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "fight": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "cleared": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "rescued": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "inventory": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "inventory_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "inventory_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "unbrace": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "unbrace_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "unbrace_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "unbrace_check": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "unbrace_clear": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "unbrace_changed": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "exit_strip": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "exit_strip_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "exit_strip_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "exit_strip_check": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "exit_strip_clear": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "exit_strip_changed": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "boundary": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "boundary_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "boundary_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "boundary_check": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "boundary_clear": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "boundary_changed": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "report": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "report_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "report_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "handoff": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "handoff_1": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "handoff_2": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "ending": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        }
+      }
     }
   }
 }

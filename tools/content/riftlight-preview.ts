@@ -36,6 +36,14 @@ export function stageRiftlightOpening(options: { unlockPreview?: boolean } = {})
   if (options.unlockPreview) delete campaign.requires;
   fs.writeFileSync(path.join(content, "campaigns", `${campaign.id}.json`), JSON.stringify(campaign, null, 2) + "\n");
   const items = JSON.parse(fs.readFileSync(path.join(content, "items.json"), "utf8")) as ItemCatalog;
+  const draftMaps = path.join(RIFTLIGHT_DRAFT, "maps");
+  if (fs.existsSync(draftMaps)) {
+    for (const file of fs.readdirSync(draftMaps)) {
+      if (!file.endsWith(".json")) continue;
+      if (fs.existsSync(path.join(content, "maps", file))) throw new Error(`Draft map collides with shipped map: ${file}`);
+      fs.copyFileSync(path.join(draftMaps, file), path.join(content, "maps", file));
+    }
+  }
   for (const id of campaign.chapters) {
     const file = `${id}.json`;
     const chapter = JSON.parse(fs.readFileSync(path.join(RIFTLIGHT_DRAFT, "chapters", file), "utf8")) as Chapter;
