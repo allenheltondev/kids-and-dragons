@@ -820,7 +820,7 @@
       "choices": [
         {
           "id": "swap",
-          "label": "Swap rumors with the dock folk",
+          "label": "Listen in on the dock folk's rumors",
           "icon": "scroll",
           "goto": "check_rumours"
         },
@@ -897,7 +897,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_three_rumours",
-        "narration": "You trade the story about the seagull and the surprised fish, and the dock folk like it so much they pay you back three times over.",
+        "narration": "You stand very still in the middle of all that shouting and pick out the good bits: one from a sailor, one from a drover, one from a frogfolk with reeds in her hat. Three rumors, three roads, caught like fish in a net.",
         "effects": [
           {
             "type": "setFlag",
@@ -908,7 +908,7 @@
       },
       "onFailure": {
         "goto": "scene_three_rumours",
-        "narration": "Nobody wants your rumor. In the end you trade your lunch for theirs, which is a fair price, because their rumors are better than your lunch."
+        "narration": "The dock shouts too fast. You catch half a rumor about a pie and a whole one about somebody's aunt. In the end the yeti fishmonger takes pity on you and says the roads again, slowly, between herrings."
       },
       "art": "scenes/gemfall/exchange-docks"
     },
@@ -1672,7 +1672,7 @@
       "choices": [
         {
           "id": "haggle",
-          "label": "Haggle with Tobble",
+          "label": "Sing the price down with Tobble",
           "icon": "note",
           "goto": "check_haggle",
           "when": {
@@ -1849,7 +1849,7 @@
       },
       "onFailure": {
         "goto": "scene_lace_tangle",
-        "narration": "You haggle so hard that Tobble loses his place in the song and starts again from the top, twice. Somewhere in the muddle, money changes hands and something is wrapped in paper.",
+        "narration": "You sing back, but your note lands somewhere Tobble's song has never been. He loses his place and starts again from the top, twice. Somewhere in the muddle, money changes hands and something is wrapped in paper.",
         "effects": [
           {
             "type": "spendCoins",
@@ -1880,7 +1880,7 @@
     },
     "scene_lace_tangle": {
       "type": "story",
-      "narration": "You haggle so hard that Tobble gets muddled and sells you a honeycake instead of laces. You are not sure how that happened. Neither is Tobble. It is a very good honeycake, though.",
+      "narration": "Your song and Tobble's get so tangled up that he sells you a honeycake instead of laces. You are not sure how that happened. Neither is Tobble. It is a very good honeycake, though.",
       "cast": [
         {
           "figure": "cast/tobble",
