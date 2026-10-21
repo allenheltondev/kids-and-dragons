@@ -73,7 +73,7 @@
       "discovers": [
         "npc.faun"
       ],
-      "narration": "The caravan cook pushes a supper bundle into your pack \"for the road, crew,\" and the caravan rolls through the Sunward Fields, and in every field the fauns are singing their work-songs. Then, halfway through a verse, every song stops at once. A faun with an irrigation flute freezes so suddenly that the flute keeps watering her hoof. Every Sunward child knows what a stopped song means: somebody has seen something worth stopping for.",
+      "narration": "Hesper Longstride's caravan rolls north through the Sunward Fields toward Bramblewood. There the road to Mount Red Sky splits three ways, and you must choose your road north. The caravan cook pushes a supper bundle into your pack, \"for the road, travelers.\" In every field the fauns are singing their work-songs. Then, halfway through a verse, every song stops at once. A faun with an irrigation flute freezes so suddenly that the flute keeps watering her hoof. A stopped song means somebody has seen something worth stopping for.",
       "choices": [
         {
           "id": "look",
@@ -110,7 +110,7 @@
     },
     "scene_song_stops_ask": {
       "type": "story",
-      "narration": "You tap the faun on the shoulder. She jumps, notices her wet hoof, and turns the flute off. \"Wagons,\" she whispers. \"Rush wagons, heading for the pumpkins.\" Then, because you asked so nicely, she pulls a spare reed whistle out of her hat. \"For when you need everybody to hear you. One loud note, mind. It only has the one.\"",
+      "narration": "You tap the faun on the shoulder. She jumps, notices her wet hoof, and turns the flute off. \"Wagons,\" she whispers. \"Rush wagons, heading for the pumpkins.\" Then, because you asked so nicely, she pulls a spare reed whistle out of her hat. \"For when you need everybody to hear you. Just one loud note, though. It only has the one.\"",
       "cast": [
         {
           "figure": "entities/faun"
@@ -148,7 +148,7 @@
       "choices": [
         {
           "id": "argue",
-          "label": "Talk the drovers round",
+          "label": "Talk the drovers out of it",
           "icon": "heart",
           "goto": "check_reroute"
         },
@@ -190,7 +190,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Lead the wagons round the edge",
+          "label": "Lead the wagons around the edge",
           "icon": "shield",
           "goto": "scene_caravan_turned"
         }
@@ -212,7 +212,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Lead the wagons round the edge",
+          "label": "Lead the wagons around the edge",
           "icon": "manticore",
           "goto": "scene_caravan_turned"
         }
@@ -240,7 +240,7 @@
       },
       "onFailure": {
         "goto": "scene_caravan_turned",
-        "narration": "The drovers don't listen. Three wagons cut a muddy stripe right through the squash before the rest swing round. A faun starts singing a very sad verse about it.",
+        "narration": "The drovers don't listen. Three wagons cut a muddy stripe right through the squash before the rest swing around. A faun starts singing a very sad verse about it.",
         "effects": [
           {
             "type": "damage",
@@ -268,7 +268,7 @@
       "choices": [
         {
           "id": "lead_wagons",
-          "label": "Lead the wagons round the edge",
+          "label": "Lead the wagons around the edge",
           "icon": "arrow",
           "goto": "scene_caravan_turned"
         }
@@ -382,7 +382,7 @@
         },
         {
           "id": "queue",
-          "label": "Get the rush buyers into a proper queue",
+          "label": "Get the rush buyers into a proper line",
           "icon": "kitsune",
           "requiresSpecies": "kitsune",
           "goto": "scene_egg_stall_queue",
@@ -513,7 +513,7 @@
     },
     "scene_egg_stall_queue": {
       "type": "story",
-      "narration": "The kitsune hops up on the cart and calls out, very grandly, \"The queue starts here!\" Rush folk cannot resist a queue. Twelve buyers line up behind the faun dad without knowing why. By the time they reach the front, he has his eggs at the old price, and the egg faun is charging the queue a little extra for the fun of standing in it.",
+      "narration": "The kitsune hops up on the cart and calls out, very grandly, \"The line starts here!\" Rush folk cannot resist a line. Twelve buyers line up behind the faun dad without knowing why. By the time they reach the front, he has his eggs at the old price, and the egg faun is charging the line a little extra for the fun of standing in it.",
       "cast": [
         {
           "figure": "entities/faun"
@@ -682,7 +682,7 @@
     "scene_flock_scatters": {
       "art": "scenes/gemfall/sheeple-ridge",
       "type": "story",
-      "narration": "The flock scatters in threes, every three running a different way. Then each little three stops, throws back its head, and calls the Gather. You can't hear a thing. It looks like thirty sheeple yawning at the sky in perfect silence. A minute later they are all back in one woolly knot, pretending nothing happened. One of them points at the long grass, just to be helpful, and you see two gray shapes lying in it.",
+      "narration": "The flock scatters in threes, every three running a different way. Then each little three stops, throws back its head, and calls the others back with a sheeple call too high for anyone else to hear. You can't hear a thing. It looks like thirty sheeple yawning at the sky in perfect silence. A minute later they are all back in one woolly knot, pretending nothing happened. One of them points at the long grass, just to be helpful, and you see two gray shapes lying in it.",
       "choices": [
         {
           "id": "on",
@@ -752,6 +752,7 @@
     "check_wolf_kind": {
       "type": "check",
       "stat": "heart",
+      "checkKind": "doing",
       "tn": 12,
       "prompt": "Put down your supper bundle without looking like a snack",
       "cast": [
@@ -800,7 +801,7 @@
     },
     "scene_plank_bridge": {
       "type": "story",
-      "narration": "Late in the afternoon the road crosses an irrigation canal on a little plank bridge. Or it did. A rush wagon too heavy for it has cracked the middle plank right through, and the fauns on the far bank cannot bring their hay carts home. One of them is throwing hay bales across, one at a time. Most land in the water. A duck is riding one, looking very pleased with itself.",
+      "narration": "Late in the afternoon the road crosses an irrigation canal on a little plank bridge. Or it did. A rush wagon too heavy for it has cracked the middle plank right through, and the fauns on the far bank cannot bring their hay carts home. \"Help us, please!\" calls one. \"If the hay isn't home by dark, the goats will eat the barn door.\" One of them is throwing hay bales across, one at a time. Most land in the water. A duck is riding one, looking very pleased with itself.",
       "cast": [
         {
           "figure": "entities/faun"
@@ -1155,7 +1156,7 @@
     },
     "scene_tremor_snore": {
       "type": "story",
-      "narration": "The cook snores like a kettle. Then like two kettles. Then, right in the middle of a big snore, the ground gives one more tiny shiver, and the cook says \"Pass the gravy\" in her sleep and carries on. You give up and go to sleep. Whatever the ground wanted to say, it has said it.",
+      "narration": "The cook snores like a kettle. Then like two kettles. Then, right in the middle of a big snore, the ground gives one more tiny shiver, and the cook says \"Pass the gravy\" in her sleep and goes right on snoring. You give up and go to sleep. Whatever the ground wanted to say, it has said it.",
       "choices": [
         {
           "id": "sleep",
@@ -1212,7 +1213,7 @@
       "discovers": [
         "npc.harvest_sprite"
       ],
-      "narration": "In the morning, near the last farm before Bramblewood, there is one corner row nobody has picked. Every farmer knows to leave the corner rows, and nobody says why. Today the row is guarded. Four harvest sprites in acorn-cup helmets stand to attention, and every time a pea-pod trumpet toots, four new ones march in to take their places.",
+      "narration": "In the morning Hesper Longstride stops the caravan by the last farm before Bramblewood. \"My wagons turn off here,\" she says. \"You walk the rest, and choose your own road north. Good luck, travelers.\" She nods once, like a gate closing, and the lanterns roll away. By the farm there is one corner row nobody has picked. Every farmer knows to leave the corner rows, and nobody says why. Today the row is guarded. Four harvest sprites in acorn-cup helmets stand to attention, and every time a pea-pod trumpet toots, four new ones march in to take their places.",
       "cast": [
         {
           "figure": "entities/harvest_sprite",
@@ -1243,7 +1244,7 @@
     },
     "scene_corner_row_closer": {
       "type": "story",
-      "narration": "You creep between the cabbages on tiptoe. You get very close. Then a sprite in a bean-pole lookout tower spots you, toots the pea-pod trumpet twice, and the whole guard spins round. Nobody charges. They just look at you, hard, the way a librarian looks at someone eating crisps. Then they step aside, so you can see.",
+      "narration": "You creep between the cabbages on tiptoe. You get very close. Then a sprite in a bean-pole lookout tower spots you, toots the pea-pod trumpet twice, and the whole guard spins around. Nobody charges. They just look at you, hard, the way a librarian looks at someone eating chips. Then they step aside, so you can see.",
       "cast": [
         {
           "figure": "entities/harvest_sprite",
@@ -1549,7 +1550,7 @@
     },
     "scene_signpost": {
       "type": "story",
-      "narration": "On the last stretch to Bramblewood the road splits three ways, and the signpost at the fork has so many signs nailed to it that it looks like a hedgehog. GEMS THIS WAY. NO, THIS WAY. BRAMBLEWOOD (PROBABLY). SHORTCUT!!! The rush has written its hopes on every board. The real sign is somewhere underneath. A jackalope sits on the very top, enjoying the view.",
+      "narration": "On the last stretch to Bramblewood, a town that lives inside a ring of tall hedges, the road splits three ways, and the signpost at the fork has so many signs nailed to it that it looks like a hedgehog. GEMS THIS WAY. NO, THIS WAY. BRAMBLEWOOD (PROBABLY). SHORTCUT!!! The rush has written its hopes on every board. The real sign is somewhere underneath. A jackalope sits on the very top, enjoying the view.",
       "cast": [
         {
           "figure": "entities/jackalope"
@@ -1601,7 +1602,7 @@
     },
     "scene_signpost_found": {
       "type": "story",
-      "narration": "The real sign says BRAMBLEWOOD on one arm and FIELDS on the other. The third arm has no words at all, only a carved row of corn with one corner left empty. Nobody knows what that means. You lean the rush's signs neatly against the post, so nobody's hopes get trodden on, and take the Bramblewood road. It is quiet and green, with hardly a wagon on it.",
+      "narration": "The real sign says BRAMBLEWOOD on one arm and FIELDS on the other. The third arm has no words at all, only a carved row of corn with one corner left empty. Nobody knows what that means. You lean the rush's signs neatly against the post, so nobody's hopes get stepped on, and take the Bramblewood road. It is quiet and green, with hardly a wagon on it.",
       "choices": [
         {
           "id": "on",
@@ -1613,7 +1614,7 @@
     },
     "scene_signpost_lost": {
       "type": "story",
-      "narration": "The biggest sign says GEMS THIS WAY. It leads to a duck pond. The ducks have clearly seen a lot of rush folk today and are not impressed. A faun fishing at the edge points you back the right way without being asked, and only laughs a little. By teatime you can see the hedges.",
+      "narration": "The biggest sign says GEMS THIS WAY. It leads to a duck pond. The ducks have clearly seen a lot of rush folk today and are not impressed. A faun fishing at the edge points you back the right way without being asked, and only laughs a little. By suppertime you can see the hedges.",
       "cast": [
         {
           "figure": "entities/faun"
@@ -1860,7 +1861,7 @@
     },
     "choice_pib_gift": {
       "type": "choice_point",
-      "narration": "Inside the hedges, Pib trots up the lane beside you, narrating every leaf on the way. At the door of the inn they stop and dig in the big satchel. Out come three things you did not ask for. \"I can only spare one,\" says Pib. \"The hedge says you should choose it together.\" Which one? Everybody vote.",
+      "narration": "Inside the hedges, Pib trots up the lane beside you, narrating every leaf on the way. At the door of an inn with very tall doors they stop and dig in the big satchel. Out come three things you did not ask for. \"I can only spare one,\" says Pib. \"The hedge says you should choose it together.\" Which one? Everybody vote.",
       "cast": [
         {
           "figure": "cast/pib",
@@ -2109,7 +2110,7 @@
     },
     "choice_common_room_runner": {
       "type": "story",
-      "narration": "The relay runner talks fast, the way runners do. East, the queue at Stone Crossing is moving again, slowly. The trolls there take a story instead of coins, and a river drake is charging double to anyone who won't wait. \"Past the river it's all open country,\" she says. \"You can see trouble coming a day away. Doesn't mean you can stop it.\"",
+      "narration": "The relay runner talks fast, the way runners do. East, the line at Stone Crossing is moving again, slowly. The trolls there take a story instead of coins, and a river drake is charging double to anyone who won't wait. \"Past the river it's all open country,\" she says. \"You can see trouble coming a day away. Doesn't mean you can stop it.\"",
       "cast": [
         {
           "figure": "entities/centaur"
@@ -2157,7 +2158,7 @@
     },
     "choice_rumour_board": {
       "type": "choice_point",
-      "narration": "Marda's rumor board is notes pinned on top of notes, and three fresh ones are underlined twice. EAST: The crossing queue is moving again! NORTH: Rush road jammed but MOVING. Fall in and be carried! WEST: Frogfolk still ferrying them they like. \"The north road's shorter,\" says Marda. \"Shorter isn't quicker.\" Which way? Everybody vote.",
+      "narration": "Marda's rumor board is notes pinned on top of notes, and three fresh ones are underlined twice. They are the same three roads the dock folk were trading rumors about back at the Exchange. EAST: The crossing line is moving again! NORTH: Rush road jammed but MOVING. Fall in and be carried! WEST: Frogfolk still ferrying them they like. \"The north road's shorter,\" says Marda. \"Shorter isn't quicker.\" Which way? Everybody vote.",
       "cast": [
         {
           "figure": "cast/marda_thorn",
