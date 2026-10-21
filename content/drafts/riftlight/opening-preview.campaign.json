@@ -6,6 +6,7 @@
   "requires": [
     "gemfall"
   ],
+  "listed": true,
   "chapters": [
     "riftlight-exchange-rift",
     "riftlight-glacier-survival",

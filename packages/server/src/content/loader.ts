@@ -93,6 +93,8 @@ export interface ContentStore {
    * campaign was supposed to take back.
    */
   campaign(id: string): Campaign | null;
+  /** Every campaign's id, in file order: the lobby's listed campaigns keep it. */
+  campaignIds(): string[];
   /**
    * The chapter a party plays at a beat, given the story flags they carry.
    *
@@ -206,6 +208,10 @@ class LoadedContent implements ContentStore {
 
   campaign(id: string): Campaign | null {
     return this._campaigns.get(id) ?? null;
+  }
+
+  campaignIds(): string[] {
+    return [...this._campaigns.keys()];
   }
 
   abilities(): AbilityCatalog {

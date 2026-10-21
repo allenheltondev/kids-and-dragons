@@ -312,12 +312,42 @@
   color: var(--color-text-muted, #b7b0d8);
 }
 
-/* The adventure vote, one line per option — see LobbyContent. */
+/* The adventures on offer, a card each in a row — see LobbyContent. Small
+   enough that a full party still fits a 720p TV beside them. */
 .lobby__campaigns {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-1, 0.25em);
+  flex-wrap: wrap;
+  gap: var(--space-3, 0.75em);
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.lobby__campaign {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 0.25em);
+  inline-size: 13em;
+  padding: var(--space-2, 0.5em);
+  border-radius: var(--radius-lg, 1.25em);
+  background: rgb(13 11 26 / 70%);
+  box-shadow: inset 0 0 0 1px rgba(190, 178, 255, 0.22);
+}
+
+/* What a Begin would play: the tray's chosen signal, a gold rim. */
+.lobby__campaign--picked {
+  box-shadow: var(--kad-chosen-glow, 0 0 0 0.15em #f5c86c);
+}
+
+.lobby__campaign-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  font-size: var(--font-size-md, 1em);
+  font-weight: 800;
+}
+
+.lobby__campaign-line {
+  font-size: var(--font-size-sm, 0.875em);
+  color: var(--color-text-muted, #b7b0d8);
 }

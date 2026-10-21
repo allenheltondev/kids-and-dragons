@@ -149,6 +149,10 @@
         "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
       }
     },
+    "listed": {
+      "description": "Campaign.listed: offered in every household's lobby, beside the room's own campaign and any already under way. A sequel sets it so the table sees it coming, locked with its reason until `requires` is met. Absent means offered only as the room's own campaign or once under way.",
+      "type": "boolean"
+    },
     "graph": {
       "$ref": "#/$defs/graph"
     }

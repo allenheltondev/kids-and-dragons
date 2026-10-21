@@ -652,15 +652,16 @@ export async function relockLobby(
 
 /**
  * The campaigns a lobby can play (`RunState.campaignOptions`): the one the room
- * was opened for, then every other campaign this household has part-way
- * through, most recently played first — so a party that started something on
- * another evening can pick it back up rather than only ever being offered the
- * launch campaign.
+ * was opened for; then every `listed` campaign, in file order — a sequel the
+ * table should see coming, locked with its reason until its prerequisites are
+ * met; then every other campaign this household has part-way through, most
+ * recently played first — so a party that started something on another evening
+ * can pick it back up rather than only ever being offered the launch campaign.
  *
- * Only *active* attempts are offered beyond the featured one. A finished or
- * failed campaign is history; starting it again is the featured campaign's
- * "again", not a resume. And a campaign the content no longer ships is
- * skipped rather than offered as a button that cannot start anything.
+ * Only *active* attempts are offered beyond the featured and listed ones. A
+ * finished or failed campaign is history; starting it again is the featured
+ * campaign's "again", not a resume. And a campaign the content no longer ships
+ * is skipped rather than offered as a button that cannot start anything.
  */
 export async function lobbyCampaigns(
   householdId: string,
@@ -670,17 +671,22 @@ export async function lobbyCampaigns(
   party: readonly PartyMember[] = [],
 ): Promise<CampaignView[]> {
   const attempts = await deps.repo.listCampaignProgress(householdId);
-  const options: CampaignView[] = [];
   const featured = featuredId ? deps.content.campaign(featuredId) : null;
-  if (featured) {
-    const attempt = attempts.find((a) => a.campaignId === featured.id) ?? null;
+  const listed = deps.content
+    .campaignIds()
+    .map((id) => deps.content.campaign(id))
+    .filter((c): c is Campaign => c !== null && c.listed === true && c.id !== featured?.id);
+  const shown = featured ? [featured, ...listed] : listed;
+  const finished = shown.some((c) => c.requires?.length) ? await partyFinished(party, householdId, deps) : [];
+  const options: CampaignView[] = [];
+  for (const campaign of shown) {
+    const attempt = attempts.find((a) => a.campaignId === campaign.id) ?? null;
     // A locked campaign is still offered: shown with its reason, not startable.
-    const finished = featured.requires?.length ? await partyFinished(party, householdId, deps) : [];
-    const locked = campaignLock(featured, attempts, deps, finished);
-    options.push({ ...campaignView(featured, attempt, deps), ...(locked ? { locked } : {}) });
+    const locked = campaignLock(campaign, attempts, deps, finished);
+    options.push({ ...campaignView(campaign, attempt, deps), ...(locked ? { locked } : {}) });
   }
   const resumable = attempts
-    .filter((a) => a.status === "active" && a.campaignId !== featured?.id)
+    .filter((a) => a.status === "active" && !options.some((o) => o.id === a.campaignId))
     .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   for (const attempt of resumable) {
     const campaign = deps.content.campaign(attempt.campaignId);
