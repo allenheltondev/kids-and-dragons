@@ -52,6 +52,7 @@ import {
   objectiveLine,
   rescueLine,
 } from "./environment-copy";
+import { ChapterGoalCard } from "./ChapterGoal";
 import "./RiftStatus.css";
 
 /** At most this many caption lines from one round: the newest win. */
@@ -98,6 +99,8 @@ export function RiftStatus(): ReactElement | null {
 
   return (
     <aside className="rift-status" aria-label="The rift">
+      {/* The chapter's goal (#356) heads the corner it shares with the rift. */}
+      <ChapterGoalCard place="world" folded />
       {clock ? (
         <p className={`rift-status__clock rift-status__clock--${clock.mood}`} role="status">
           <span className="rift-status__figure" aria-hidden="true">

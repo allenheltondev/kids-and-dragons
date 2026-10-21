@@ -25,6 +25,31 @@
       "xp": 12
     }
   ],
+  "goal": {
+    "text": "Ride through the Whispering Marsh and find a way out.",
+    "steps": [
+      {
+        "id": "toll_reeds",
+        "label": "Get past the toll reeds",
+        "flag": "passed_the_toll_reeds"
+      },
+      {
+        "id": "fog",
+        "label": "Find a way through the fog",
+        "flag": "steered_through_the_fog"
+      },
+      {
+        "id": "old_steps",
+        "label": "Cross the old sunken steps",
+        "flag": "crossed_the_old_steps"
+      },
+      {
+        "id": "way_out",
+        "label": "Choose a way out of the marsh",
+        "flag": "chose_a_way_out"
+      }
+    ]
+  },
   "props": {
     "facet_barge": {
       "kind": "quest",
@@ -509,14 +534,26 @@
           "id": "sock",
           "label": "Pay with a sock",
           "icon": "boot",
-          "goto": "scene_toll_reeds_sock"
+          "goto": "scene_toll_reeds_sock",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "passed_the_toll_reeds"
+            }
+          ]
         },
         {
           "id": "salute",
           "label": "Give the reeds the harvest sprites' salute",
           "icon": "leaf",
           "requiresFlag": "sprites_friends",
-          "goto": "scene_toll_reeds_salute"
+          "goto": "scene_toll_reeds_salute",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "passed_the_toll_reeds"
+            }
+          ]
         }
       ]
     },
@@ -535,11 +572,23 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_barge",
-        "narration": "You tell them about the time a goose chased you all the way round a market. The reeds lean in. At the bit with the cabbage they actually gasp. One by one they untie themselves to hear better, and by the end there is a clear channel and a lot of rustling that might be clapping."
+        "narration": "You tell them about the time a goose chased you all the way round a market. The reeds lean in. At the bit with the cabbage they actually gasp. One by one they untie themselves to hear better, and by the end there is a clear channel and a lot of rustling that might be clapping.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "passed_the_toll_reeds"
+          }
+        ]
       },
       "onFailure": {
         "goto": "scene_barge",
-        "narration": "You start well, then forget whether it was a goose or a duck, and then whether it happened to you at all. The reeds get bored. One slips the lace out of your boot as payment, and the channel opens with a sniff. That boot flaps for the rest of the day."
+        "narration": "You start well, then forget whether it was a goose or a duck, and then whether it happened to you at all. The reeds get bored. One slips the lace out of your boot as payment, and the channel opens with a sniff. That boot flaps for the rest of the day.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "passed_the_toll_reeds"
+          }
+        ]
       }
     },
     "scene_toll_reeds_sock": {
@@ -946,14 +995,26 @@
           "id": "listen",
           "label": "Listen for the ribbon bells and steer by them",
           "icon": "ear",
-          "goto": "scene_fog_bank_listen"
+          "goto": "scene_fog_bank_listen",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "steered_through_the_fog"
+            }
+          ]
         },
         {
           "id": "light",
           "label": "Open the jar of mosslight, just a crack",
           "icon": "lantern",
           "requiresItem": "mosslight_jar",
-          "goto": "scene_fog_bank_light"
+          "goto": "scene_fog_bank_light",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "steered_through_the_fog"
+            }
+          ]
         }
       ]
     },
@@ -972,11 +1033,23 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_tussock",
-        "narration": "\"Stump left! Stump right! Heron!\" You call them all, and Gullet threads the raft through like a needle through cloth. From the top of the pole you spot something else, too: a little island ahead, with people standing on it."
+        "narration": "\"Stump left! Stump right! Heron!\" You call them all, and Gullet threads the raft through like a needle through cloth. From the top of the pole you spot something else, too: a little island ahead, with people standing on it.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "steered_through_the_fog"
+          }
+        ]
       },
       "onFailure": {
         "goto": "scene_tussock",
-        "narration": "The pole wobbles, then leans, then lays you gently down in the reeds. From down there you can see under the fog perfectly, so you call out the stumps lying on your back. It works. It is just not very dignified. Then you hear grumbling ahead."
+        "narration": "The pole wobbles, then leans, then lays you gently down in the reeds. From down there you can see under the fog perfectly, so you call out the stumps lying on your back. It works. It is just not very dignified. Then you hear grumbling ahead.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "steered_through_the_fog"
+          }
+        ]
       }
     },
     "scene_fog_bank_listen": {
@@ -1295,11 +1368,23 @@
       "roller": "all",
       "onSuccess": {
         "goto": "scene_hollow_gate",
-        "narration": "Slow and steady, step by step. The water doesn't even ripple. It is like walking across a mirror, and in the mirror the sky is full of falling red sparks. You look up. It isn't. You look down. It is. You decide to stop looking down."
+        "narration": "Slow and steady, step by step. The water doesn't even ripple. It is like walking across a mirror, and in the mirror the sky is full of falling red sparks. You look up. It isn't. You look down. It is. You decide to stop looking down.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "crossed_the_old_steps"
+          }
+        ]
       },
       "onFailure": {
         "goto": "scene_hollow_gate",
-        "narration": "Somebody slips on the fourth step and sits down in the water with a great flat SPLOSH. It isn't deep. It is just extremely wet. The ripples run all the way to the gray shape and come back again, slowly, as if something over there gave them a gentle push home."
+        "narration": "Somebody slips on the fourth step and sits down in the water with a great flat SPLOSH. It isn't deep. It is just extremely wet. The ripples run all the way to the gray shape and come back again, slowly, as if something over there gave them a gentle push home.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "crossed_the_old_steps"
+          }
+        ]
       }
     },
     "scene_old_steps_frog": {
@@ -1311,6 +1396,12 @@
           "label": "Walk on, wearing the frog",
           "icon": "boot",
           "goto": "scene_hollow_gate"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "crossed_the_old_steps"
         }
       ]
     },
@@ -1564,13 +1655,25 @@
           "id": "north",
           "label": "North, over the river to the trees",
           "icon": "leaf",
-          "goto": "scene_west_branch"
+          "goto": "scene_west_branch",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "chose_a_way_out"
+            }
+          ]
         },
         {
           "id": "northeast",
           "label": "Northeast, into the rush traffic",
           "icon": "travel",
-          "goto": "scene_reed_edge"
+          "goto": "scene_reed_edge",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "chose_a_way_out"
+            }
+          ]
         }
       ]
     },

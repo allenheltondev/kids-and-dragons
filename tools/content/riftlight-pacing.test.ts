@@ -2,7 +2,9 @@ import { expect, it } from "vitest";
 import { pacingReport, predictMinutes } from "../../packages/shared/src/chapter-pacing.ts";
 import { chapters, allPaths } from "./riftlight-test-support.ts";
 
-it.each(["stone-counters", "whale-road", "buried-bridge", "the-wrong-valley", "reading-room", "the-island-due-back"])("%s has substantial play on its shortest path, not just optional branches", (id) => {
+// The pacing report walks every scenario through the chapter's whole graph: the-island-due-back
+// takes about four seconds alone, so it gets room to run beside the full suite.
+it.each(["stone-counters", "whale-road", "buried-bridge", "the-wrong-valley", "reading-room", "the-island-due-back"])("%s has substantial play on its shortest path, not just optional branches", { timeout: 20_000 }, (id) => {
   const report = pacingReport(chapters.get(`riftlight-${id}`)!);
   for (const scenario of report.scenarios) {
     const shortest = scenario.shortest!;

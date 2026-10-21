@@ -28,6 +28,31 @@
       "xp": 7
     }
   ],
+  "goal": {
+    "text": "Travel the Sunward Fields and choose your road north.",
+    "steps": [
+      {
+        "id": "egg_stall",
+        "label": "Help out at the egg stall",
+        "flag": "helped_the_egg_stall"
+      },
+      {
+        "id": "broken_bridge",
+        "label": "Help at the broken bridge",
+        "flag": "helped_at_the_bridge"
+      },
+      {
+        "id": "tall_hedges",
+        "label": "Get through the tall hedges",
+        "flag": "got_through_the_hedges"
+      },
+      {
+        "id": "choose_road",
+        "label": "Choose your road north",
+        "flag": "chose_a_road"
+      }
+    ]
+  },
   "props": {
     "facet_harvest": {
       "kind": "quest",
@@ -427,6 +452,12 @@
           "icon": "travel",
           "goto": "scene_jackalope_road"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_the_egg_stall"
+        }
       ]
     },
     "scene_egg_price_muddle": {
@@ -444,6 +475,12 @@
           "icon": "travel",
           "goto": "scene_jackalope_road"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_the_egg_stall"
+        }
       ]
     },
     "scene_egg_stall_buy": {
@@ -459,6 +496,10 @@
           "type": "grantItem",
           "itemId": "songbird_ribbon",
           "to": "party"
+        },
+        {
+          "type": "setFlag",
+          "flag": "helped_the_egg_stall"
         }
       ],
       "choices": [
@@ -485,6 +526,12 @@
           "icon": "travel",
           "goto": "scene_jackalope_road"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_the_egg_stall"
+        }
       ]
     },
     "scene_egg_stall_haggle": {
@@ -501,6 +548,12 @@
           "label": "Back to the road north",
           "icon": "travel",
           "goto": "scene_jackalope_road"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_the_egg_stall"
         }
       ]
     },
@@ -838,6 +891,12 @@
           "icon": "travel",
           "goto": "scene_embermoths"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_at_the_bridge"
+        }
       ]
     },
     "scene_bridge_ferry": {
@@ -854,6 +913,12 @@
           "label": "On down the road",
           "icon": "travel",
           "goto": "scene_embermoths"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_at_the_bridge"
         }
       ]
     },
@@ -872,6 +937,12 @@
           "icon": "travel",
           "goto": "scene_embermoths"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_at_the_bridge"
+        }
       ]
     },
     "scene_plank_bridge_shoulders": {
@@ -889,6 +960,12 @@
           "icon": "travel",
           "goto": "scene_embermoths"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_at_the_bridge"
+        }
       ]
     },
     "scene_plank_bridge_sing": {
@@ -905,6 +982,12 @@
           "label": "On down the road",
           "icon": "travel",
           "goto": "scene_embermoths"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_at_the_bridge"
         }
       ]
     },
@@ -1804,6 +1887,12 @@
           "icon": "star",
           "goto": "choice_pib_gift_pebble"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "got_through_the_hedges"
+        }
       ]
     },
     "choice_pib_gift_pin": {
@@ -2087,6 +2176,10 @@
               "type": "setFlag",
               "flag": "route_river",
               "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "chose_a_road"
             }
           ]
         },
@@ -2100,6 +2193,10 @@
               "type": "setFlag",
               "flag": "route_rush",
               "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "chose_a_road"
             }
           ]
         },
@@ -2113,6 +2210,10 @@
               "type": "setFlag",
               "flag": "route_wild",
               "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "chose_a_road"
             }
           ]
         }

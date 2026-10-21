@@ -32,6 +32,26 @@
       "xp": 8
     }
   ],
+  "goal": {
+    "text": "Cross pride country and find out why its roads bend the long way round.",
+    "steps": [
+      {
+        "id": "pride",
+        "label": "Meet the manticore pride",
+        "flag": "met_the_pride"
+      },
+      {
+        "id": "maps",
+        "label": "Read the centaurs' road maps",
+        "flag": "lined_up_the_sashes"
+      },
+      {
+        "id": "bend",
+        "label": "Find what the roads bend around",
+        "flag": "reached_the_bend"
+      }
+    ]
+  },
   "props": {
     "facet_pride": {
       "kind": "quest",
@@ -240,7 +260,13 @@
           ]
         }
       ],
-      "art": "scenes/gemfall/sefa-ridge-camp"
+      "art": "scenes/gemfall/sefa-ridge-camp",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "met_the_pride"
+        }
+      ]
     },
     "check_greeting": {
       "type": "check",
@@ -486,7 +512,13 @@
           "goto": "scene_spiral_mark_falls"
         }
       ],
-      "art": "scenes/gemfall/centaur-sash-barn"
+      "art": "scenes/gemfall/centaur-sash-barn",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "lined_up_the_sashes"
+        }
+      ]
     },
     "rest_waystation": {
       "type": "rest",
@@ -570,7 +602,13 @@
           "goto": "scene_leave_stone"
         }
       ],
-      "art": "scenes/gemfall/pride-stone-crater"
+      "art": "scenes/gemfall/pride-stone-crater",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "reached_the_bend"
+        }
+      ]
     },
     "scene_take_stone": {
       "type": "story",

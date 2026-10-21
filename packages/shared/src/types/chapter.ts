@@ -169,6 +169,60 @@ export interface ChapterObjective {
 }
 
 /**
+ * What the party is trying to do this chapter, in kid words, with the steps
+ * that get it done (#356). The shared screen and every phone show it the whole
+ * chapter, with nothing to tap, and a step ticks itself when its flag is set.
+ *
+ * It rides on the same flag machinery as `ChapterObjective`: a step watches a
+ * run flag that some `setFlag` in the chapter sets where the thing happens.
+ * Nothing new decides "the party did it". `content:validate` holds every
+ * shipped chapter to having one, every step's flag to being set somewhere in
+ * the chapter, and every step that is not `optional` to being ticked on every
+ * path to a success ending.
+ */
+export interface ChapterGoal {
+  /** One sentence an eight-year-old follows: "Show you can hold the dragon's leash." */
+  text: string;
+  /** Two to four, in the order a party usually meets them. */
+  steps: GoalStep[];
+}
+
+/** One tick on a chapter's goal: it watches a run flag, or an item the party holds. */
+export type GoalStep = GoalStepBase & (GoalStepFlag | GoalStepItem);
+
+export interface GoalStepBase {
+  id: string;
+  /** A short thing to do: "Get the wardens' ledger". */
+  label: string;
+  /**
+   * A step some roads skip. Drawn as "if you can" and never held to the
+   * spine. Absent is the normal case.
+   */
+  optional?: boolean;
+}
+
+export interface GoalStepFlag {
+  /**
+   * Ticks when this run flag is set, or any of these when it is a list (a step
+   * a party can do more than one way). Chapter-local flags only: a route-set
+   * member can arrive already set from an earlier chapter and tick before
+   * anybody did anything, so `content:validate` refuses every one.
+   */
+  flag: string | string[];
+  item?: never;
+}
+
+export interface GoalStepItem {
+  /**
+   * Ticks while anybody in the party holds this item: the ledger borrowed, the
+   * chord learned, when the chapter already hands one over for the thing. One
+   * of this chapter's own `props`, so it cannot arrive already held.
+   */
+  item: string;
+  flag?: never;
+}
+
+/**
  * Somebody standing in a story scene with the party (schemas/chapter.schema.json
  * `castMember`). The shared screen draws them opposite the heroes, so meeting
  * the selkie professor is something the room *sees* rather than only reads.
@@ -879,6 +933,12 @@ export interface Chapter {
   scenes: Record<SceneId, Scene>;
   /** Optional bonus objectives, spec §8.2. Absent is the normal case. */
   objectives?: ChapterObjective[];
+  /**
+   * What the party is trying to do, always on screen (#356). Every shipped
+   * chapter has one (`content:validate`); absent only on test fixtures and on
+   * a chapter that is nothing but its ending, which has nothing to aim at.
+   */
+  goal?: ChapterGoal;
   /**
    * Items this chapter brings into the world and the world does not otherwise
    * have — D7's chapter-scoped props.

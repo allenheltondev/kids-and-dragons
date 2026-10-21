@@ -17,7 +17,7 @@ import { useEnsureChapter } from "../screens/content";
 import { RendererFallback } from "./RendererFallback";
 import { sceneArtFor } from "./art-paths";
 import { castFor } from "./cast";
-import { onStageInset, stageInsetBottom } from "./stage-inset";
+import { onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "./stage-inset";
 
 /**
  * Enemy spec id → art id, read off the chapter's encounter scene. The
@@ -202,6 +202,7 @@ export function PixiStage(): React.JSX.Element {
       scene.setBiome(live.chapter?.biome ?? null, sceneArtFor(live.chapter, live.state));
       scene.setCast(visibleGuestsRef.current);
       scene.setStageInset(stageInsetBottom());
+      scene.setStageInsetTop(stageInsetTop());
       scene.setEncounter(boardView(live.state, live.state?.party ?? [], live.chapter, live.previews));
 
       /** Run the ticker only when a frame could actually be seen. */
@@ -273,6 +274,7 @@ export function PixiStage(): React.JSX.Element {
 
   // The narration plate's height, so the story stands above it.
   useEffect(() => onStageInset((px) => sceneRef.current?.setStageInset(px)), []);
+  useEffect(() => onStageInsetTop((px) => sceneRef.current?.setStageInsetTop(px)), []);
 
   // The board is a reader of the mirrored state (brief, trap 2): every patch
   // that touches the encounter flows through here and nowhere else.

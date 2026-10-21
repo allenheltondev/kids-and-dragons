@@ -21,6 +21,31 @@
       "xp": 12
     }
   ],
+  "goal": {
+    "text": "Climb the mountain everyone else is running from, and give your answer.",
+    "steps": [
+      {
+        "id": "shoulder",
+        "label": "Climb up to the mountain's shoulder",
+        "flag": "reached_the_shoulder"
+      },
+      {
+        "id": "summit",
+        "label": "Reach the very top",
+        "flag": "reached_the_summit"
+      },
+      {
+        "id": "bottom",
+        "label": "Go deep inside the mountain",
+        "flag": "found_the_deep_cave"
+      },
+      {
+        "id": "answer",
+        "label": "Answer every question you are asked",
+        "flag": "answered_every_question"
+      }
+    ]
+  },
   "props": {
     "facet_keystone": {
       "kind": "quest",
@@ -498,6 +523,12 @@
           "icon": "leaf",
           "requiresFlag": "route_wild",
           "goto": "scene_overlook_wild"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "reached_the_shoulder"
         }
       ]
     },
@@ -1110,6 +1141,12 @@
           "icon": "key",
           "requiresFlag": "pursuit_leash",
           "goto": "choice_last_breath_tether"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "reached_the_summit"
         }
       ]
     },
@@ -1749,6 +1786,12 @@
           "icon": "gem",
           "requiresItem": "facet_caravan",
           "goto": "scene_keeper_caravan"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_the_deep_cave"
         }
       ]
     },
@@ -2566,6 +2609,12 @@
           "label": "Reach for the crown stone at the top",
           "icon": "gem",
           "goto": "scene_keystone"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "answered_every_question"
         }
       ]
     },

@@ -367,6 +367,96 @@ describe("cross-file rules", () => {
   });
 });
 
+describe("the chapter's goal (#356)", () => {
+  it("catches a chapter with no goal", () => {
+    const result = withChapter((chapter) => { delete chapter.goal; });
+    expect(result.out).toContain("chapter has no goal");
+    expect(result.code).not.toBe(0);
+  });
+
+  it("catches a step watching a flag nothing sets", () => {
+    const result = withChapter((chapter) => { chapter.goal.steps[0].flag = "a_flag_nobody_sets"; });
+    expect(result.out).toContain('flag "a_flag_nobody_sets" is never set to true by any effect in this chapter, so this step can never tick');
+    expect(result.code).not.toBe(0);
+  });
+
+  it("catches a step some road to a success ending never ticks", () => {
+    const result = withChapter((chapter) => {
+      // An objective's flag: set on an optional choice, so a party can finish without it.
+      chapter.goal.steps[0].flag = chapter.objectives[0].flag;
+    });
+    expect(result.out).toMatch(/step "[a-z_]+" is not on the spine: some path reaches the success ending "[a-z_]+" without setting its flag/);
+    expect(result.code).not.toBe(0);
+  });
+
+  it("keeps a many-flag step on the spine when one of its flags is cleared and another is surely set", () => {
+    // The hedge step watches either flag; clearing the wood's flag at the mossbank (nothing sets it
+    // again), after the hedge flag is surely set, leaves it ticked at the table, so the gate must not
+    // refuse it either.
+    const result = withChapter((chapter) => {
+      chapter.goal.steps[0].flag = ["got_past_the_hedge", "crossed_the_wood"];
+      // The wood's own step watches that flag alone, so it is set aside: this is about the hedge step.
+      chapter.goal.steps[1].optional = true;
+      const rest = chapter.scenes.rest_mossbank;
+      rest.onEnter = [...(rest.onEnter ?? []), { type: "setFlag", flag: "crossed_the_wood", value: false }];
+    });
+    expect(result.out).not.toContain("is not on the spine");
+    expect(result.code).toBe(0);
+  });
+
+  it("lets an optional step sit off the spine", () => {
+    const result = withChapter((chapter) => {
+      chapter.goal.steps[0].flag = chapter.objectives[0].flag;
+      chapter.goal.steps[0].optional = true;
+    });
+    expect(result.out).not.toContain("is not on the spine");
+    expect(result.code).toBe(0);
+  });
+
+  it("catches a step watching a route-set flag, which can arrive already set", () => {
+    const dir = copyTree();
+    const parts = ["content", "chapters", "gemfall-03a.json"];
+    const chapter = readJson(dir, ...parts);
+    chapter.goal.steps[0].flag = "route_river";
+    writeJson(dir, parts, chapter);
+    const result = validate(dir);
+    expect(result.out).toContain('flag "route_river" is a route-set member');
+    expect(result.code).not.toBe(0);
+  });
+
+  it("catches a goal of more than one sentence", () => {
+    expect(withChapter((chapter) => { chapter.goal.text = "Find the door. Then open it."; }).out).toContain("the goal is more than one sentence");
+  });
+
+  it("catches a goal with an em dash", () => {
+    expect(withChapter((chapter) => { chapter.goal.steps[1].label = "Find it \u2014 fast"; }).out).toContain("the goal has an em dash");
+  });
+
+  it("lets a step watch one of the chapter's own quest items, and refuses any other item", () => {
+    const dir = copyTree();
+    const parts = ["content", "chapters", "gemfall-07l.json"];
+    const chapter = readJson(dir, ...parts);
+    const step = chapter.goal.steps.find((s) => s.item);
+    step.item = "honeycake";
+    writeJson(dir, parts, chapter);
+    const result = validate(dir);
+    expect(result.out).toContain('item "honeycake" is not one of this chapter\'s props');
+    expect(result.code).not.toBe(0);
+  });
+
+  it("catches a step that watches a flag and an item at once", () => {
+    const result = withChapter((chapter) => { chapter.goal.steps[0].item = "rusted_key"; });
+    expect(result.out).toContain("must watch a flag or an item, and not both");
+    expect(result.code).not.toBe(0);
+  });
+
+  it("catches two steps with one id", () => {
+    const result = withChapter((chapter) => { chapter.goal.steps[1].id = chapter.goal.steps[0].id; });
+    expect(result.out).toContain("duplicate goal step id");
+    expect(result.code).not.toBe(0);
+  });
+});
+
 describe("the files themselves", () => {
   it("catches content that is not valid JSON at all", () => {
     // A half-saved file is the most ordinary way content breaks, and the one

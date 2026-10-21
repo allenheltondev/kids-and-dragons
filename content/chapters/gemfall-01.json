@@ -28,6 +28,31 @@
       "xp": 7
     }
   ],
+  "goal": {
+    "text": "Get ready for the long trip north.",
+    "steps": [
+      {
+        "id": "hear_roads",
+        "label": "Hear which roads go north",
+        "flag": "heard_of_the_roads"
+      },
+      {
+        "id": "pack_food",
+        "label": "Pack something for the road",
+        "flag": "packed_for_the_road"
+      },
+      {
+        "id": "find_bed",
+        "label": "Find a bed for the night",
+        "flag": "found_a_bed"
+      },
+      {
+        "id": "join_caravan",
+        "label": "Join a caravan going north",
+        "flag": "joined_a_caravan"
+      }
+    ]
+  },
   "props": {
     "facet_ember": {
       "kind": "quest",
@@ -926,7 +951,13 @@
           "goto": "scene_griffin_post"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "heard_of_the_roads"
+        }
+      ]
     },
     "scene_griffin_post": {
       "type": "story",
@@ -1488,6 +1519,10 @@
               "type": "grantItem",
               "itemId": "honeycake",
               "to": "party"
+            },
+            {
+              "type": "setFlag",
+              "flag": "packed_for_the_road"
             }
           ]
         },
@@ -1501,6 +1536,10 @@
               "type": "grantItem",
               "itemId": "sunbloom_draught",
               "to": "party"
+            },
+            {
+              "type": "setFlag",
+              "flag": "packed_for_the_road"
             }
           ]
         },
@@ -1514,6 +1553,10 @@
               "type": "grantItem",
               "itemId": "mosslight_jar",
               "to": "party"
+            },
+            {
+              "type": "setFlag",
+              "flag": "packed_for_the_road"
             }
           ]
         },
@@ -1528,6 +1571,10 @@
               "type": "grantItem",
               "itemId": "honeycake",
               "to": "party"
+            },
+            {
+              "type": "setFlag",
+              "flag": "packed_for_the_road"
             }
           ]
         }
@@ -1997,6 +2044,12 @@
           "icon": "travel",
           "goto": "scene_last_noodles"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_a_bed"
+        }
       ]
     },
     "scene_last_noodles": {
@@ -2392,6 +2445,12 @@
           "icon": "travel",
           "goto": "scene_north_gate"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "joined_a_caravan"
+        }
       ]
     },
     "scene_turnip_wagon": {
@@ -2410,6 +2469,12 @@
           "label": "Roll north anyway",
           "icon": "travel",
           "goto": "scene_north_gate"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "joined_a_caravan"
         }
       ]
     },
