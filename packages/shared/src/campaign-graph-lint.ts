@@ -164,7 +164,7 @@
  * clears the others, for edge effects and chapter results alike.
  *
  * The search is breadth-first, so every path it reports is a shortest one. It
- * stops at `maxStates` states (default 500,000, including the full Riftlight routes);
+ * stops at the configured `maxStates` limit;
  * past that it says so rather than guess.
  */
 
