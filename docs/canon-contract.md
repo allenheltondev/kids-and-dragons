@@ -112,8 +112,11 @@ in its own pose: a flyer's body, not its altitude) and `stance` (`standing`,
 `hovering`, `flying`, `swimming`). The height must fall inside its `scale` band
 (`SCALE_CM` in envelope.ts; an individual inside their people's band), and
 `canon.test.ts` requires both for every figure in `assets/manifest.json`. Both
-are data and never shown to a player. `npm run art:figures` projects them, with
-the manifest's `castFigures`, into the client's height table.
+are data and never shown to a player in the game. `npm run art:figures` projects
+them, with the manifest's `castFigures`, into the client's height table. The
+World Encyclopedia, read outside play, does show them (#370): every page with a
+`height_cm` gets a size line in both units, with a comparison and stance words
+from the fixed tables in `tools/wiki/size-line.ts`.
 
 Each is `Envelope.extend({...})`. The file → taxonomy mapping is data
 (`FILES` in `parse.ts`), so a new taxonomy is a schema plus a table row.

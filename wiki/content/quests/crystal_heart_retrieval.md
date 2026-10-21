@@ -3,7 +3,7 @@ title: Crystal Heart Retrieval
 id: quest.crystal_heart_retrieval
 type: quest
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: intentionally_undefined
 draft: true
 played_in: []

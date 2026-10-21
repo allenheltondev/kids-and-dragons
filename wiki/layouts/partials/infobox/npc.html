@@ -8,6 +8,8 @@
   {{ end }}
 
   <dl class="wiki-infobox__fields">
+    {{ partial "infobox/size.html" . }}
+
     {{ with .Params.occupation }}
     <div class="wiki-infobox__field">
       <dt>Occupation</dt>

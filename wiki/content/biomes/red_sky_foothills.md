@@ -3,7 +3,7 @@ title: Red Sky Foothills
 id: biome.red_sky_foothills
 type: biome
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-05a", "gemfall-05b", "gemfall-05c", "gemfall-06", "gemfall-07h", "gemfall-07l", "gemfall-07r"]
 tags: ["volcanic_hills", "crystal_veins", "lava_tubes", "caves", "dragonling_homeland"]
@@ -18,7 +18,7 @@ regional_relationships:
     url: "/biomes/plains/"
     relationship: "The caravan road west is the foothills' front door: gemstones go out twice a season, everything else comes in, and the centaurs rate the route among their favorites for the trade and the storytelling."
   - id: route.northern_river_bridge
-    title: "Northern River Bridge"
+    title: "Ashspan Bridge"
     url: "/routes/northern_river_bridge/"
     relationship: "The one way east without wings. When the bridge queue backs up, foothill trade holds its breath."
 related:
@@ -62,6 +62,9 @@ related:
     type: campaign
     relationship: biomes
   - id: campaign.gemfall
+    type: campaign
+    relationship: biomes
+  - id: campaign.riftlight
     type: campaign
     relationship: biomes
   - id: character.dragonling
@@ -112,7 +115,7 @@ ai_context:
   visual_style: "Ochre and black hills, glowing cracks, crystal outcrops, cave mouths, scorched grasses, volcanic dust, sheltered settlements, and the mountain dominating the northern horizon."
   common_encounters: "Cave exploration, eruption warnings, crystal disputes, rescue routes, dragonling communities, unstable terrain, and changes originating from Mount Red Sky."
   lore_highlights: "The foothills are what the mountain has been building with its tantrums since before anyone kept count - hills of cooled temper, laced with lava tubes and crystal."
-  related_entities: "location.mount_red_sky, biome.eastern_plains, feature.great_river, biome.expanse, biome.enchanted_woods, biome.plains, location.mount_red_sky, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, biome.frostfang_peaks, campaign.dawn_of_the_red_sky, campaign.gemfall, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, faction.skywardens, feature.great_river, route.northern_river_bridge, item.crimson_shard, location.mount_red_sky, location.mount_red_sky, location.redspire_citadel, npc.burrowfolk"
+  related_entities: "location.mount_red_sky, biome.eastern_plains, feature.great_river, biome.expanse, biome.enchanted_woods, biome.plains, location.mount_red_sky, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, biome.frostfang_peaks, campaign.dawn_of_the_red_sky, campaign.gemfall, campaign.riftlight, character.dragonling, creature.embermoth, creature.glassback_crab, creature.cinder_wolf, faction.skywardens, feature.great_river, route.northern_river_bridge, item.crimson_shard, location.mount_red_sky, location.mount_red_sky, location.redspire_citadel, npc.burrowfolk"
   writing_guidance: "This is the dragonling homeland. Mount Red Sky itself is not. Gemstones are gathered from naturally released material rather than mined from living veins."
   generation_hints: "Tremors, ash, heat, and crystal changes are closely watched. Communities maintain warning systems, safe caves, and evacuation routes."
 layout: biomes
@@ -153,7 +156,7 @@ Every gemstone in the realm started here, which makes the foothills the realm's 
 
 - **[Mount Red Sky](/locations/mount_red_sky/)**: Landlord, weather, calendar, and subject of every song. The foothills exist at the mountain's pleasure and have made a culture out of never forgetting it.
 - **[The Plains](/biomes/plains/)**: The caravan road west is the foothills' front door: gemstones go out twice a season, everything else comes in, and the centaurs rate the route among their favorites for the trade and the storytelling.
-- **[Northern River Bridge](/routes/northern_river_bridge/)**: The one way east without wings. When the bridge queue backs up, foothill trade holds its breath.
+- **[Ashspan Bridge](/routes/northern_river_bridge/)**: The one way east without wings. When the bridge queue backs up, foothill trade holds its breath.
 
 ### Current Tensions
 
@@ -179,6 +182,7 @@ Every gemstone in the realm started here, which makes the foothills the realm's 
 ### Campaigns
 - [Dawn of the Red Sky](/campaigns/dawn_of_the_red_sky/) `Biomes`
 - [Gemfall](/campaigns/gemfall/) `Biomes`
+- [Riftlight](/campaigns/riftlight/) `Biomes`
 
 ### Characters
 - [Dragonling](/characters/dragonling/) `Primary Peoples` `Primary Locations`
@@ -205,7 +209,7 @@ Every gemstone in the realm started here, which makes the foothills the realm's 
 - [Burrowfolk](/npcs/burrowfolk/) `Secondary Locations`
 
 ### Routes
-- [Northern River Bridge](/routes/northern_river_bridge/) `Connects`
+- [Ashspan Bridge](/routes/northern_river_bridge/) `Connects`
 <!-- END GENERATED: relationships -->
 
 
