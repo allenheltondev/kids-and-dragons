@@ -255,6 +255,12 @@ export const WIDE_OVERFLOW_HEIGHT = 0.75;
 /** The most any idle lifts a figure above its rest, as a share of its height (idle-motion.ts `FLY_DRIFT`, with room to spare). */
 export const IDLE_RISE = 0.06;
 
+/** The least distance between two huddled guests' centres: room for a short name each. */
+export const HUDDLE_GAP = 110;
+
+/** How close to the stage's right edge an ordinary figure's paint may reach. */
+export const EDGE_FILL = 0.995;
+
 /** The most of the band an overflowing figure's slot claims, in `FIGURE_SLOT`s: the rest of it runs past its neighbours, behind them. */
 export const OVERFLOW_SLOTS = 2;
 
@@ -327,8 +333,46 @@ export function stageLayout(
     ...cast.map((member, i) =>
       overflow[i] ? Infinity : (slots.castSlots[i] ?? 0) * SLOT_FILL / (member.crowded ? GROUP_SPREAD : 1)),
   ];
-  const k = tall * widthFit([...partyWidths, ...castWidths], rooms);
+  // The width fit may shrink a crowded stage too, but never below `minScale`
+  // either (the owner's floor, #366 review): past it, neighbours overlap like
+  // a huddle rather than the whole party shrinking to stamps. Names keep to
+  // their slots (scene.ts), so they still never touch.
+  const k = Math.max(minScale, tall * widthFit([...partyWidths, ...castWidths], rooms));
   const castHeights = cast.map((figure, i) => sizeAt(figure, i, k));
+  // At the floor the last guest can be wider than its share of the band:
+  // slide the cast left into the gap so nobody hangs off the right edge, but
+  // never past the party's share.
+  if (!compact && cast.length > 0) {
+    const reach = Math.max(...cast.map((figure, i) =>
+      overflow[i] ? -Infinity : (slots.cast[i] ?? 0) + (castHeights[i]! * aspect(figure)) / 2));
+    const partyEdge = slots.party.length > 0 ? Math.max(...slots.party) + slots.partySlot / 2 : 0;
+    const room = Math.min(...slots.castLeft) - partyEdge;
+    const shift = Math.max(0, Math.min(reach - width * EDGE_FILL, room));
+    if (shift > 0) {
+      slots.cast = slots.cast.map((x) => x - shift);
+      slots.castLeft = slots.castLeft.map((x) => x - shift);
+    }
+    // Still over the edge: the guests huddle, each pulled in until its own
+    // paint is on the stage, in order and a name's width apart. Their name
+    // slots narrow to the room between neighbours, so names still never meet.
+    if (reach - shift > width * EDGE_FILL) {
+      const xs = [...slots.cast];
+      for (let i = xs.length - 1; i >= 0; i--) {
+        if (overflow[i]) continue;
+        const half = (castHeights[i]! * aspect(cast[i]!)) / 2;
+        const next = xs[i + 1];
+        xs[i] = Math.min(xs[i]!, width * EDGE_FILL - half, next === undefined ? Infinity : next - HUDDLE_GAP);
+      }
+      const leftEdge = Math.min(...slots.castLeft);
+      slots.cast = xs;
+      slots.castSlots = xs.map((x, i) => {
+        const left = i === 0 ? Math.max(leftEdge, x - (slots.castSlots[i] ?? 0) / 2) : (xs[i - 1]! + x) / 2;
+        const right = i === xs.length - 1 ? width : (x + xs[i + 1]!) / 2;
+        return Math.min(slots.castSlots[i] ?? Infinity, 2 * Math.min(x - left, right - x));
+      });
+      slots.castLeft = xs.map((x, i) => x - (slots.castSlots[i] ?? 0) / 2);
+    }
+  }
   return {
     slots,
     party: party.map((figure) => drawnHeight(figure, k, measure)),
