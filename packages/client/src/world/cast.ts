@@ -252,6 +252,9 @@ export const STORY_MEASURE: StageMeasure = {
  */
 export const WIDE_OVERFLOW_HEIGHT = 0.75;
 
+/** The most any idle lifts a figure above its rest, as a share of its height (idle-motion.ts `FLY_DRIFT`, with room to spare). */
+export const IDLE_RISE = 0.06;
+
 /** The most of the band an overflowing figure's slot claims, in `FIGURE_SLOT`s: the rest of it runs past its neighbours, behind them. */
 export const OVERFLOW_SLOTS = 2;
 
@@ -331,7 +334,8 @@ export function stageLayout(
     party: party.map((figure) => drawnHeight(figure, k, measure)),
     cast: castHeights,
     castOverflow: overflow,
-    castMaxLift: castHeights.map((h, i) => (overflow[i] === "right" ? Math.max(0, measure.headroom - h) : Infinity)),
+    // A wide overflow's lift is trimmed so its body, and the drift of its idle on top, stays under the frame.
+    castMaxLift: castHeights.map((h, i) => (overflow[i] === "right" ? Math.max(0, measure.headroom - h * (1 + IDLE_RISE)) : Infinity)),
     k,
   };
 }

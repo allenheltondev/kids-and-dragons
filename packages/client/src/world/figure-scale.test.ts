@@ -22,7 +22,7 @@ import {
   widthFit,
   type SizedFigure,
 } from "./figure-scale";
-import { HOVER_BOB, stanceIdle } from "./idle-motion";
+import { FLY_DRIFT, HOVER_BOB, stanceIdle } from "./idle-motion";
 
 const standing = (heightCm: number, paint: StageFigure["paint"] = null): StageFigure => ({ heightCm, stance: "standing", paint });
 /** A unicorn, a kitsune and a bigfoot, with their Fledgling art as measured. */
@@ -78,7 +78,8 @@ describe("true proportion", () => {
     expect(fit.castOverflow).toEqual(["right"]);
     expect(fit.k).toBe(1);
     // Its body and what is left of its lift fit under the frame.
-    expect(fit.cast[0]! + fit.castMaxLift[0]!).toBeCloseTo(STORY_MEASURE.headroom);
+    // Its body, what is left of its lift and its idle's drift fit under the frame.
+    expect(fit.cast[0]! * (1 + FLY_DRIFT) + fit.castMaxLift[0]!).toBeLessThanOrEqual(STORY_MEASURE.headroom);
     // Wider than its slot: it runs past the band's edge.
     expect(fit.cast[0]! * paintAspect(whale.paint!)).toBeGreaterThan(fit.slots.castSlots[0]!);
   });
