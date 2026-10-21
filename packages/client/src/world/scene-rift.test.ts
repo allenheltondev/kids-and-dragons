@@ -8,6 +8,9 @@ import type { Chapter, RunState } from "@kad/shared";
 import { makeState } from "../testing/fixtures";
 import {
   groundFade,
+  HOLE_TEXTURE_HEIGHT,
+  HOLE_TEXTURE_WIDTH,
+  holeTexturePixels,
   RIFT_DASHES,
   RIFT_FOOT,
   RIFT_GLOW_COLOR,
@@ -188,5 +191,47 @@ describe("the rings around the tear", () => {
     expect(near).toBeLessThan(1);
     expect(groundFade(TEAR_MIDDLE_PX)).toBe(0);
     expect(groundFade(TEAR_MIDDLE_PX * 1.4)).toBe(0);
+  });
+});
+
+describe("the hole's painted inside", () => {
+  const pixels = holeTexturePixels();
+  const at = (u: number, v: number) => {
+    const x = Math.floor(((u + 1) / 2) * (HOLE_TEXTURE_WIDTH - 1));
+    const y = Math.floor(((v + 1) / 2) * (HOLE_TEXTURE_HEIGHT - 1));
+    const i = (y * HOLE_TEXTURE_WIDTH + x) * 4;
+    return { r: pixels[i]!, g: pixels[i + 1]!, b: pixels[i + 2]!, a: pixels[i + 3]! };
+  };
+  const light = (p: { r: number; g: number; b: number }) => (p.r + p.g + p.b) / 3;
+
+  it("is the same picture every time, on every screen", () => {
+    expect(holeTexturePixels()).toEqual(pixels);
+  });
+
+  it("is deep at the middle and lifts towards a misty rim", () => {
+    expect(light(at(0, 0))).toBeLessThan(light(at(0, 0.75)));
+    expect(light(at(0, 0))).toBeLessThan(light(at(0.75, 0)));
+  });
+
+  it("is opaque inside, feathered at the edge, and empty outside the ellipse", () => {
+    expect(at(0, 0).a).toBe(255);
+    const edge = at(0, 0.93).a;
+    expect(edge).toBeGreaterThan(0);
+    expect(edge).toBeLessThan(255);
+    expect(at(0.99, 0.99).a).toBe(0);
+  });
+
+  it("is textured, not a flat band: neighbouring stretches differ", () => {
+    const row = Array.from({ length: 30 }, (_, i) => light(at(-0.45 + i * 0.03, 0.2)));
+    expect(Math.max(...row) - Math.min(...row)).toBeGreaterThan(4);
+  });
+
+  it("only mixes the hole's near-black with the mist's grey, so it keeps to the brief's colours", () => {
+    for (let i = 0; i < pixels.length; i += 4) {
+      if (pixels[i + 3] === 0) continue;
+      const [r, g, b] = [pixels[i]!, pixels[i + 1]!, pixels[i + 2]!];
+      expect(Math.max(r, g, b) - Math.min(r, g, b)).toBeLessThanOrEqual(16);
+      expect(Math.max(r, g, b)).toBeLessThan(0xe0);
+    }
   });
 });

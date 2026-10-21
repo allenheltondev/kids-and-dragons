@@ -36,7 +36,7 @@
  */
 
 import { stanceIdle } from "./idle-motion";
-import { Application, Assets, Container, Graphics, Rectangle, Sprite, Text, Texture } from "pixi.js";
+import { Application, Assets, BufferImageSource, Container, Graphics, Rectangle, Sprite, Text, Texture } from "pixi.js";
 import type { CastStance, PartyMember, Position, SceneRift } from "@kad/shared";
 import { currentActorId } from "@kad/shared";
 import {
@@ -79,10 +79,12 @@ import {
   RIFT_GLOW_COLOR,
   RIFT_DASHES,
   RIFT_HALO_LINE,
-  RIFT_HOLE_COLOR,
   RIFT_INK_COLOR,
   RIFT_MOTES,
   groundFade,
+  HOLE_TEXTURE_HEIGHT,
+  HOLE_TEXTURE_WIDTH,
+  holeTexturePixels,
   riftPasses,
   riftPresence,
   riftStand,
@@ -520,14 +522,19 @@ export function createScene(app: Application): PartyScene {
       .ellipse(0, 0, TEAR_HALF_WIDTH_PX * spread * 1.2, TEAR_HALF_HEIGHT_PX * (1 + ring * 0.045))
       .fill({ color: RIFT_GLOW_COLOR, alpha: 0.065 });
   }
-  // Deep in the middle, a little lighter at the rim: a gap with depth, not a flat cut-out.
-  const riftHole = new Graphics()
-    .ellipse(0, 0, TEAR_HALF_WIDTH_PX * 0.8, TEAR_HALF_HEIGHT_PX * 0.9)
-    .fill({ color: RIFT_GLOW_COLOR, alpha: 0.35 })
-    .ellipse(0, 0, TEAR_HALF_WIDTH_PX * 0.72, TEAR_HALF_HEIGHT_PX * 0.84)
-    .fill({ color: RIFT_HOLE_COLOR, alpha: 0.85 })
-    .ellipse(0, 0, TEAR_HALF_WIDTH_PX * 0.5, TEAR_HALF_HEIGHT_PX * 0.66)
-    .fill({ color: RIFT_HOLE_COLOR });
+  // The painted inside (scene-rift.ts `holeTexturePixels`): deep, mottled and misty at the rim.
+  const holeTexture = new Texture({
+    source: new BufferImageSource({
+      resource: holeTexturePixels(),
+      width: HOLE_TEXTURE_WIDTH,
+      height: HOLE_TEXTURE_HEIGHT,
+      alphaMode: "no-premultiply-alpha",
+    }),
+  });
+  const riftHole = new Sprite(holeTexture);
+  riftHole.anchor.set(0.5);
+  riftHole.width = TEAR_HALF_WIDTH_PX * 0.84 * 2;
+  riftHole.height = TEAR_HALF_HEIGHT_PX * 0.92 * 2;
   const riftRings = new Graphics();
   /**
    * Redraw the rings where they stand now. Each dash is a tapered brushstroke,
@@ -1828,6 +1835,8 @@ export function createScene(app: Application): PartyScene {
       }
       actors.clear();
       riftGroup.destroy({ children: true });
+      // The scene's own picture, not a loaded asset: freed with the scene.
+      if (!holeTexture.destroyed) holeTexture.destroy(true);
       castActors.clear();
       board?.destroy();
       board = null;
