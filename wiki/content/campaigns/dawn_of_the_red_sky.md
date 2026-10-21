@@ -3,7 +3,7 @@ title: Dawn of the Red Sky
 id: campaign.dawn_of_the_red_sky
 type: campaign
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: intentionally_undefined
 draft: true
 played_in: []

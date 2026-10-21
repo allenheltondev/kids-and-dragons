@@ -3,11 +3,16 @@ title: Manticore
 id: character.manticore
 type: character
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["bramblewood-01", "gemfall-02", "gemfall-03a", "gemfall-04a", "gemfall-05a", "gemfall-05b", "gemfall-06", "gemfall-07h", "gemfall-08"]
 tags: ["playable", "plains", "guardian", "proud"]
 scale: medium_to_large
+height_cm: 150
+size:
+  height: "1.5 m (4 ft 11 in)"
+  compare: "as tall as a grown-up"
+  line: "1.5 m (4 ft 11 in), as tall as a grown-up."
 lore_hook: "The scariest silhouette on the road is the reason the road is safe."
 likes:
   - id: npc.centaur

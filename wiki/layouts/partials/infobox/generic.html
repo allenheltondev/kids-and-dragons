@@ -1,7 +1,7 @@
 {{/* The infobox for any type without its own: places, routes, rivers,
-     factions, quests, campaigns, named folk. Portrait, the danger level if
-     canon gives one, where it sits (its regions) and which stories it is in,
-     then the lore chips. */}}
+     factions, quests, campaigns, named folk. Portrait, its size and danger
+     level if canon gives them, where it sits (its regions) and which stories
+     it is in, then the lore chips. */}}
 {{ $type := .Params.type | default "page" }}
 <aside class="wiki-infobox wiki-infobox--{{ $type }}" role="complementary" aria-label="{{ humanize $type }} information">
   {{ partial "infobox/portrait.html" . }}
@@ -20,8 +20,9 @@
     {{ end }}
   {{ end }}
 
-  {{ if or .Params.danger_level $regions $stories }}
+  {{ if or .Params.size .Params.danger_level $regions $stories }}
   <dl class="wiki-infobox__fields">
+    {{ partial "infobox/size.html" . }}
     {{ with .Params.danger_level }}
     <div class="wiki-infobox__field">
       <dt>Danger</dt>
