@@ -188,6 +188,17 @@ test.describe("true size and stance on the story stage", () => {
       expect(pib.height).toBeLessThan(kitsune.height);
 
       await namesOnScreen(tv, width, ["Pib", "The Old One"]);
+      // The chapter goal (#367) sits over the sky the dragon runs into: the
+      // goal is drawn on top, and the dragon's name stays below it.
+      const goal = await tv.getByTestId("chapter-goal").boundingBox();
+      if (goal) {
+        const onTop = await tv.evaluate(({ x, y }) => {
+          const hit = document.elementFromPoint(x, y);
+          return hit?.closest("[data-testid='chapter-goal']") !== null;
+        }, { x: goal.x + goal.width / 2, y: goal.y + goal.height / 2 });
+        expect(onTop, "the goal is drawn over the overflowing dragon").toBe(true);
+        expect(dragonReading.labelTop!).toBeGreaterThan(goal.y + goal.height);
+      }
       await tv.screenshot({ path: info.outputPath(`dragon-off-the-top-${width}x${height}.png`) });
       await stillUnderReducedMotion(tv);
     });
