@@ -1,6 +1,6 @@
 /**
  * The room code is the real boundary (#267): whoever opened the room sees
- * everyone who arrives, and can take one of them out with a tap, for good.
+ * everyone who arrives, and can take one of them out from its Room panel, for good.
  */
 
 import { test, expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
@@ -34,8 +34,11 @@ test.describe("guarding the room", () => {
     await stranger.getByRole("button", { name: /join a game/i }).click();
     await expect(stranger).toHaveURL(new RegExp(`/p/${code}$`));
 
-    // The TV opened the room, so it is the host: it is told, and it can act.
-    const remove = tv.getByRole("button", { name: /^Remove .* from this game$/ });
+    // The TV opened the room, so it is the host: it is told, in a line that goes by itself, and
+    // it can act from its Room panel.
+    await expect(tv.locator(".kad-arrival")).toContainText("joined", { timeout: 15_000 });
+    await tv.getByRole("button", { name: "Room", exact: true }).click();
+    const remove = tv.getByRole("list", { name: "Who is in this room" }).getByRole("button", { name: /^Remove .* from this game$/ });
     await expect(remove).toBeVisible({ timeout: 15_000 });
     await remove.click();
 
