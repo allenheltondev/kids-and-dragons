@@ -6,13 +6,16 @@
  * and from nowhere to the first control on screen. The global `:focus-visible` ring shows
  * where it is (styles/theme.css).
  *
- * Only on the shared screen (DisplayExtras installs it). Fields count: the grown-up's
+ * On the shared screen, and on the start screen where a TV hosts its room (App installs it, a
+ * lazy chunk, so no first paint pays for it). Fields count: the grown-up's
  * sign-in behind "Let visitors join" has an email field and a code field, and a remote has
  * to reach them; while focus is in that sign-in, the arrows stay in it. Inside a field the
  * arrows are the field's own, with two ways out, so a remote is never stuck in it: Up and
  * Down leave a one-line text field (Left and Right still move the caret), and Escape and
- * then any arrow leaves any field. A select, a slider or a group of radios keeps its arrows
- * the same way.
+ * then any arrow leaves any field. A select, a slider or a listbox keeps its arrows the same
+ * way. A radio or checkbox is the arrows' to move past, not its own: the start screen's Party
+ * Mode and Phone Mode are radios hidden inside the cards that draw them, so the card's box is
+ * where the radio stands, and OK (Enter) checks it, as Space would.
  */
 
 export type Direction = "left" | "right" | "up" | "down";
@@ -79,14 +82,20 @@ export function nearest(from: Box, boxes: Box[], direction: Direction): number {
   return best;
 }
 
+function isToggle(el: Element | null): el is HTMLInputElement {
+  return el instanceof HTMLInputElement && (el.type === "radio" || el.type === "checkbox");
+}
+
 /**
- * A radio or checkbox drawn by something else (a card, a chip) and itself hidden away: its
- * drawing is what a person points at, so the arrows skip the box.
+ * Where a control stands for the arrows. A radio or checkbox hidden away inside what draws it (a
+ * card, a chip: its label) stands where that is, since that is what a person looks at. null for a
+ * hidden one with nothing drawing it, which the arrows skip.
  */
-function hiddenToggle(el: HTMLElement): boolean {
-  if (!(el instanceof HTMLInputElement) || (el.type !== "radio" && el.type !== "checkbox")) return false;
+function standsAt(el: HTMLElement): DOMRect | null {
   const box = el.getBoundingClientRect();
-  return box.width < 4 || box.height < 4 || el.closest(".kad-sr-only") !== null;
+  if (!isToggle(el) || (box.width >= 4 && box.height >= 4 && el.closest(".kad-sr-only") === null)) return box;
+  const label = el.labels?.[0] ?? null;
+  return label ? label.getBoundingClientRect() : null;
 }
 
 /** What may take focus now: shown, enabled, and not behind an open sheet (`inert`). */
@@ -96,12 +105,12 @@ function candidates(root: ParentNode): HTMLElement[] {
       el.closest("[inert]") === null &&
       el.getClientRects().length > 0 &&
       (el.checkVisibility?.() ?? true) &&
-      !hiddenToggle(el),
+      standsAt(el) !== null,
   );
 }
 
 function answersArrowsItself(el: Element | null): boolean {
-  if (!el) return false;
+  if (!el || isToggle(el)) return false;
   if (el.closest("input, textarea, select, [contenteditable='true'], [role='radiogroup'], [role='listbox'], [role='menu'], [role='slider']")) return true;
   return false;
 }
@@ -111,8 +120,29 @@ function leavesOnUpDown(el: Element | null, direction: Direction): boolean {
   return (direction === "up" || direction === "down") && el instanceof HTMLInputElement && ONE_LINE.has(el.type);
 }
 
-/** Move focus one step `direction` from what has it; true if it moved. */
-export function step(direction: Direction, doc: Document = document): boolean {
+/** The control whose box is closest to `place`, centre to centre. */
+function closestTo(place: Box, els: HTMLElement[]): HTMLElement {
+  const cx = (place.left + place.right) / 2;
+  const cy = (place.top + place.bottom) / 2;
+  let best = els[0]!;
+  let bestDistance = Infinity;
+  for (const el of els) {
+    const box = standsAt(el)!;
+    const distance = Math.hypot((box.left + box.right) / 2 - cx, (box.top + box.bottom) / 2 - cy);
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      best = el;
+    }
+  }
+  return best;
+}
+
+/**
+ * Move focus one step `direction` from what has it; true if it moved. With nothing focused, the
+ * first arrow lands on the control nearest `lastPlace` (where focus last stood, when OK replaced
+ * the control it was on: Host a game opening its card), or on the first control.
+ */
+export function step(direction: Direction, doc: Document = document, lastPlace: Box | null = null): boolean {
   const active = doc.activeElement instanceof HTMLElement && doc.activeElement !== doc.body ? doc.activeElement : null;
   // An open sheet keeps focus in itself (its own Tab trap); so do the arrows. So does a dialog
   // focus is in, such as the grown-up's sign-in over the Room panel: its own Not now and close
@@ -123,11 +153,11 @@ export function step(direction: Direction, doc: Document = document): boolean {
   const all = candidates(sheet ?? doc);
   if (all.length === 0) return false;
   if (!active || !all.includes(active)) {
-    all[0]!.focus();
+    (lastPlace ? closestTo(lastPlace, all) : all[0]!).focus();
     return true;
   }
   const others = all.filter((el) => el !== active);
-  const at = nearest(active.getBoundingClientRect(), others.map((el) => el.getBoundingClientRect()), direction);
+  const at = nearest(standsAt(active)!, others.map((el) => standsAt(el)!), direction);
   if (at < 0) return false;
   others[at]!.focus();
   return true;
@@ -137,10 +167,22 @@ export function step(direction: Direction, doc: Document = document): boolean {
 export function installRemoteFocus(doc: Document = document): () => void {
   // The field Escape was pressed in: the next arrow leaves it, whichever arrow it is.
   let escaped: Element | null = null;
+  // Where focus last stood, for when what had it goes away under it.
+  let lastPlace: Box | null = null;
+  const onFocus = (event: FocusEvent): void => {
+    if (event.target instanceof HTMLElement) lastPlace = standsAt(event.target);
+  };
   const onKey = (event: KeyboardEvent): void => {
     const active = doc.activeElement;
     if (event.key === "Escape") {
       escaped = answersArrowsItself(active) ? active : null;
+      return;
+    }
+    // OK on a radio or checkbox checks it, as Space does; a remote has no Space.
+    if (event.key === "Enter" && isToggle(active) && !event.defaultPrevented) {
+      escaped = null;
+      event.preventDefault();
+      active.click();
       return;
     }
     const direction = KEYS[event.key];
@@ -148,8 +190,12 @@ export function installRemoteFocus(doc: Document = document): () => void {
     escaped = null;
     if (!direction || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.defaultPrevented) return;
     if (answersArrowsItself(active) && !leaving && !leavesOnUpDown(active, direction)) return;
-    if (step(direction, doc)) event.preventDefault();
+    if (step(direction, doc, lastPlace)) event.preventDefault();
   };
   doc.addEventListener("keydown", onKey);
-  return () => doc.removeEventListener("keydown", onKey);
+  doc.addEventListener("focusin", onFocus);
+  return () => {
+    doc.removeEventListener("keydown", onKey);
+    doc.removeEventListener("focusin", onFocus);
+  };
 }

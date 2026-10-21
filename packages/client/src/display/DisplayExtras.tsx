@@ -13,7 +13,6 @@ import { Button } from "../ui/Button";
 import { probeCapabilities, type Capability } from "./capabilities";
 import { keepAwake, type KeepAwake, type WakeLockState } from "./wake-lock";
 import { onWake } from "./wake";
-import { installRemoteFocus } from "./remote-focus";
 
 import "./DisplayExtras.css";
 
@@ -43,12 +42,9 @@ export function DisplayExtras({ controls = true }: { controls?: boolean } = {}):
     const stopWatching = lock.onChange(() => { setWakeNow(lock.state()); });
     // Asleep and back: a fresh stream, then everything missed from the last seq.
     const stopWake = onWake(() => { useGameStore.getState().reconnect(); });
-    // A remote's arrows walk the few controls the screen keeps (remote-focus.ts).
-    const stopRemote = installRemoteFocus();
     return () => {
       stopWatching();
       stopWake();
-      stopRemote();
       lock.stop();
     };
   }, []);

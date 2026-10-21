@@ -72,7 +72,7 @@ Nothing in these takes a click or focus on the TV. The live inventory found none
 
 | # | Element | File:line | What it does | Verdict |
 |---|---|---|---|---|
-| 27 | Home: Host a game, Party Mode, Open the lobby here | `screens/HomeScreen.tsx` | Starting the room. | **keep** (the owner's example). |
+| 27 | Home: Host a game, Party Mode, Open the lobby here | `screens/HomeScreen.tsx` | Starting the room. | **keep** (the owner's example). A remote reaches all of it: the arrows are on the start screen too, and the Party Mode and Phone Mode cards take focus and OK. |
 | 28 | "This part of the game couldn't load": Try again | `ui/ChunkBoundary.tsx:180` | Retries a chunk the TV failed to load (the game, the host controls). | **keep**: only the TV can reload its own code. The quiet boundaries in the corner row already retry by themselves when the network comes back. |
 | 29 | Room closed: Back to the start | `App.tsx:315` | Leaves a closed room. | **keep**: the TV has to leave before it can host again. |
 | 30 | Stopped for today: Let a hero go | `screens/HostControls.tsx:146`, `:157`, `:173`, `:178` | On the screen that stopped the game, frees a saved hero (#259). | **keep**: host only, no phone equivalent. |
@@ -86,14 +86,20 @@ card's Remove stays on the TV, in the Room panel, where it already was.
 
 ## Remote focus for the keep list
 
-- `display/remote-focus.ts`: on the shared screen, the arrow keys move focus to the nearest control
+- `display/remote-focus.ts`, on the shared screen and on the start screen where a TV hosts its room
+  (installed by `App.tsx`, a lazy chunk off the first paint): the arrow keys move focus to the nearest control
   in that direction. From nothing, an arrow lands on the first control. Focus stays inside an open
   sheet, or a dialog it is in (the visitor sign-in over the Room panel). Enter is the browser's own
   press. The ring is the global `:focus-visible` outline (`styles/theme.css`).
 - Fields are reachable: the visitor sign-in's email and code fields (9) take focus as each step opens,
   and the arrows reach them too. Inside a field, Left and Right move the caret. Up and Down leave a
   one-line text field, and Escape and then any arrow leaves any field, so a remote is never stuck in
-  one. A radio hidden under the card that draws it is skipped; the card is what takes focus.
+  one.
+- A radio or checkbox hidden inside the card that draws it (the start screen's Party Mode and Phone
+  Mode) stands where its card is, and OK (Enter) checks it, as Space does. The arrows move past a
+  radio rather than along its group. A hidden one with no card is skipped.
+- When OK puts away the control it was on (Host a game opening its card), the next arrow picks up
+  at the control nearest where focus stood, not back at the top of the page.
 - The About report takes focus on Close when it opens, closes on Escape, and gives focus back to (i).
 
 ## Owner decisions
