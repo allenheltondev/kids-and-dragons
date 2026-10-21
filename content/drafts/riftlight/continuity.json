@@ -1713,51 +1713,6 @@
         }
       }
     },
-    "riftlight-preview-pause-ashspan-bridge": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
-    "riftlight-preview-pause-boundary-stone-bank": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
-    "riftlight-preview-pause-cairnstep-pass": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
-    "riftlight-preview-pause-saltrot-arrival": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
-    "riftlight-preview-pause-sky-islands-arrival": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
     "riftlight-stone-counters": {
       "entryFacts": [
         "orin",
@@ -3473,33 +3428,6 @@
         }
       }
     },
-    "riftlight-preview-pause-stone-counters": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
-    "riftlight-preview-pause-whale-road": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
-    "riftlight-preview-pause-buried-bridge": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
     "riftlight-the-wrong-valley": {
       "entryFacts": [
         "orin",
@@ -4822,24 +4750,6 @@
         ]
       }
     },
-    "riftlight-preview-pause-the-wrong-valley": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
-    "riftlight-preview-pause-reading-room": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
     "riftlight-the-island-due-back": {
       "entryFacts": [
         "orin",
@@ -5629,24 +5539,6 @@
         }
       }
     },
-    "riftlight-preview-pause-the-island-due-back": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
-    "riftlight-preview-pause-stuttering-flats": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
     "riftlight-stuttering-flats": {
       "entryFacts": [],
       "scenes": {
@@ -6184,15 +6076,6 @@
             "stranded_goat",
             "blinking_gap"
           ],
-          "introduces": {}
-        }
-      }
-    },
-    "riftlight-preview-pause-bone-yard": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
           "introduces": {}
         }
       }
@@ -6778,15 +6661,6 @@
         }
       }
     },
-    "riftlight-preview-pause-wyrm-nest": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
     "riftlight-wyrm-nest": {
       "entryFacts": [
         "orin",
@@ -7342,15 +7216,6 @@
             "nest_builders",
             "nest_bench"
           ],
-          "introduces": {}
-        }
-      }
-    },
-    "riftlight-preview-pause-squall-temple": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
           "introduces": {}
         }
       }
@@ -7981,15 +7846,6 @@
         }
       }
     },
-    "riftlight-preview-pause-convergence": {
-      "entryFacts": [],
-      "scenes": {
-        "pause": {
-          "requires": [],
-          "introduces": {}
-        }
-      }
-    },
     "riftlight-convergence": {
       "entryFacts": [],
       "scenes": {
@@ -8534,6 +8390,678 @@
             "converge_bram",
             "converge_travelers",
             "converge_map"
+          ],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-finale": {
+      "entryFacts": [],
+      "scenes": {
+        "arrival": {
+          "requires": [],
+          "introduces": {
+            "final_map": "an old map",
+            "final_tear": "A great tear",
+            "final_companions": "Orin Vale, the griffin scholar, and Seren Wisp, the kitsune teacher"
+          }
+        },
+        "retreat": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "retreat_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "retreat_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "retreat_check": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "retreat_clear": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "retreat_changed": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "voices": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "voices_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "voices_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "reveal": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {
+            "corvane": "I am Corvane",
+            "pangea": "Emperor of Pangea"
+          }
+        },
+        "present": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "present_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "present_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "map_shelter": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "map_shelter_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "map_shelter_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "map_shelter_check": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "map_shelter_clear": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "map_shelter_changed": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "test_pull": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "test_pull_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "test_pull_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "test_pull_check": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "test_pull_clear": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "test_pull_changed": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "remember": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "remember_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "remember_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "remember_3": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "remember_4": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "remember_check": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "remember_clear": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "remember_changed": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "first_anchor": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "first_anchor_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "first_anchor_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "first_anchor_check": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "first_anchor_clear": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "first_anchor_changed": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "rest": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "rest_watch": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "shelter": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "shelter_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "shelter_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "watcher_lane": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "watcher_lane_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "watcher_lane_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "hold_condition": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "hold_condition_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "hold_condition_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "hold_condition_3": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "hold_condition_check": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "hold_condition_clear": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "hold_condition_changed": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "warning": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "warning_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "warning_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "anchors": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "standard_plan": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "third_plan": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "wyrm_plan": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "olivia_plan": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "fight_standard": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "fight_weakened": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "spent": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "help_him": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "help_him_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "help_him_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "home_now": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "home_now_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "home_now_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "fate": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "keepers": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "listened": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "keepers_epilogue": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "listened_epilogue": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "loss_recover": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "loss_watch": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "loss_watch_1": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "loss_watch_2": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "rivers_wander": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "loss_epilogue": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
           ],
           "introduces": {}
         }

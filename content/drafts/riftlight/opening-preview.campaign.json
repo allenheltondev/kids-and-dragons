@@ -1,7 +1,7 @@
 {
-  "$comment": "DEVELOPMENT PREVIEW ONLY. Chapters are authored in sequence. Family timing and full-route progression remain production gates.",
+  "$comment": "Complete authored Riftlight story preview: 24 story nodes, no development endings. Isolated pending family pacing and campaign XP-route acceptance; not a production campaign.",
   "id": "riftlight-opening-preview",
-  "title": "Riftlight — opening preview",
+  "title": "Riftlight — story preview",
   "blurb": "Snow falls on the Exchange quay. A small goat needs help. Beyond a fold in the air, a bell is ringing in the ice.",
   "requires": [
     "gemfall"
@@ -19,33 +19,18 @@
     "riftlight-ashspan-bridge",
     "riftlight-sky-islands-arrival",
     "riftlight-saltrot-arrival",
-    "riftlight-preview-pause-cairnstep-pass",
-    "riftlight-preview-pause-boundary-stone-bank",
-    "riftlight-preview-pause-ashspan-bridge",
-    "riftlight-preview-pause-sky-islands-arrival",
-    "riftlight-preview-pause-saltrot-arrival",
     "riftlight-stone-counters",
     "riftlight-whale-road",
     "riftlight-buried-bridge",
-    "riftlight-preview-pause-stone-counters",
-    "riftlight-preview-pause-whale-road",
-    "riftlight-preview-pause-buried-bridge",
     "riftlight-the-wrong-valley",
     "riftlight-reading-room",
-    "riftlight-preview-pause-the-wrong-valley",
-    "riftlight-preview-pause-reading-room",
     "riftlight-the-island-due-back",
-    "riftlight-preview-pause-the-island-due-back",
     "riftlight-stuttering-flats",
-    "riftlight-preview-pause-stuttering-flats",
     "riftlight-bone-yard",
-    "riftlight-preview-pause-bone-yard",
     "riftlight-wyrm-nest",
-    "riftlight-preview-pause-wyrm-nest",
     "riftlight-squall-temple",
-    "riftlight-preview-pause-squall-temple",
     "riftlight-convergence",
-    "riftlight-preview-pause-convergence"
+    "riftlight-finale"
   ],
   "graph": {
     "version": 1,
@@ -109,7 +94,11 @@
       "manipulate_learned",
       "olivia_ally",
       "olivia_redeemed",
-      "olivia_rival"
+      "olivia_rival",
+      "three_fragments_ready",
+      "ending_keepers",
+      "ending_listened",
+      "ending_rivers_wander"
     ],
     "buffs": {
       "riftspark": {
@@ -226,41 +215,6 @@
           }
         ]
       },
-      "preview-pause-cairnstep-pass": {
-        "chapter": "riftlight-preview-pause-cairnstep-pass",
-        "title": "Pause the route preview",
-        "ending": {
-          "title": "End of route preview"
-        }
-      },
-      "preview-pause-boundary-stone-bank": {
-        "chapter": "riftlight-preview-pause-boundary-stone-bank",
-        "title": "Pause the route preview",
-        "ending": {
-          "title": "End of route preview"
-        }
-      },
-      "preview-pause-ashspan-bridge": {
-        "chapter": "riftlight-preview-pause-ashspan-bridge",
-        "title": "Pause the route preview",
-        "ending": {
-          "title": "End of route preview"
-        }
-      },
-      "preview-pause-sky-islands-arrival": {
-        "chapter": "riftlight-preview-pause-sky-islands-arrival",
-        "title": "Pause the route preview",
-        "ending": {
-          "title": "End of route preview"
-        }
-      },
-      "preview-pause-saltrot-arrival": {
-        "chapter": "riftlight-preview-pause-saltrot-arrival",
-        "title": "Pause the route preview",
-        "ending": {
-          "title": "End of route preview"
-        }
-      },
       "stone-counters": {
         "chapter": "riftlight-stone-counters",
         "title": "The Stone That Moved",
@@ -294,27 +248,6 @@
         "title": "A Bridge Without a River",
         "revisit": "pass"
       },
-      "preview-pause-stone-counters": {
-        "chapter": "riftlight-preview-pause-stone-counters",
-        "title": "Pause the regional preview",
-        "ending": {
-          "title": "End of regional preview"
-        }
-      },
-      "preview-pause-whale-road": {
-        "chapter": "riftlight-preview-pause-whale-road",
-        "title": "Pause the regional preview",
-        "ending": {
-          "title": "End of regional preview"
-        }
-      },
-      "preview-pause-buried-bridge": {
-        "chapter": "riftlight-preview-pause-buried-bridge",
-        "title": "Pause the regional preview",
-        "ending": {
-          "title": "End of regional preview"
-        }
-      },
       "the-wrong-valley": {
         "chapter": "riftlight-the-wrong-valley",
         "title": "The River Takes Another Valley",
@@ -325,79 +258,30 @@
         "title": "The River in the Memory Ice",
         "revisit": "pass"
       },
-      "preview-pause-the-wrong-valley": {
-        "chapter": "riftlight-preview-pause-the-wrong-valley",
-        "title": "Pause the northern preview",
-        "ending": {
-          "title": "End of authored northern preview"
-        }
-      },
-      "preview-pause-reading-room": {
-        "chapter": "riftlight-preview-pause-reading-room",
-        "title": "Pause the northern preview",
-        "ending": {
-          "title": "End of authored northern preview"
-        }
-      },
       "the-island-due-back": {
         "chapter": "riftlight-the-island-due-back",
         "title": "The Island Due Back",
         "revisit": "pass"
-      },
-      "preview-pause-the-island-due-back": {
-        "chapter": "riftlight-preview-pause-the-island-due-back",
-        "title": "Pause the Sky preview",
-        "ending": {
-          "title": "End of authored Sky preview"
-        }
       },
       "stuttering-flats": {
         "chapter": "riftlight-stuttering-flats",
         "title": "The Stuttering Flats",
         "revisit": "pass"
       },
-      "preview-pause-stuttering-flats": {
-        "chapter": "riftlight-preview-pause-stuttering-flats",
-        "title": "Pause the development preview",
-        "ending": {
-          "title": "Development preview pause"
-        }
-      },
       "bone-yard": {
         "chapter": "riftlight-bone-yard",
         "title": "The Borrowed Ruins",
         "revisit": "pass"
-      },
-      "preview-pause-bone-yard": {
-        "chapter": "riftlight-preview-pause-bone-yard",
-        "title": "Pause the development preview",
-        "ending": {
-          "title": "Development preview pause"
-        }
       },
       "wyrm-nest": {
         "chapter": "riftlight-wyrm-nest",
         "title": "A Room Already Taken",
         "revisit": "pass"
       },
-      "preview-pause-wyrm-nest": {
-        "chapter": "riftlight-preview-pause-wyrm-nest",
-        "title": "Pause the development preview",
-        "ending": {
-          "title": "Development preview pause"
-        }
-      },
       "squall-temple": {
         "chapter": "riftlight-squall-temple",
         "title": "The Temple in the Squall",
         "revisit": "pass"
-      },
-      "preview-pause-squall-temple": {
-        "chapter": "riftlight-preview-pause-squall-temple",
-        "title": "Pause the development preview",
-        "ending": {
-          "title": "Development preview pause"
-        }
       },
       "convergence": {
         "chapter": "riftlight-convergence",
@@ -447,14 +331,29 @@
                 "flag": "olivia_rival"
               }
             ]
+          },
+          {
+            "when": {
+              "completed": [
+                "reading-room",
+                "buried-bridge",
+                "the-island-due-back"
+              ]
+            },
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "three_fragments_ready"
+              }
+            ]
           }
         ]
       },
-      "preview-pause-convergence": {
-        "chapter": "riftlight-preview-pause-convergence",
-        "title": "Pause the development preview",
+      "finale": {
+        "chapter": "riftlight-finale",
+        "title": "The Glacier Remembers",
         "ending": {
-          "title": "Development preview pause"
+          "title": "The Glacier Remembers"
         }
       }
     },
@@ -679,36 +578,6 @@
           }
         ]
       },
-      "cairnstep-pass-pause": {
-        "from": "cairnstep-pass",
-        "to": "preview-pause-cairnstep-pass",
-        "kind": "forward",
-        "label": "Pause here at the end of the authored preview"
-      },
-      "boundary-stone-bank-pause": {
-        "from": "boundary-stone-bank",
-        "to": "preview-pause-boundary-stone-bank",
-        "kind": "forward",
-        "label": "Pause here at the end of the authored preview"
-      },
-      "ashspan-bridge-pause": {
-        "from": "ashspan-bridge",
-        "to": "preview-pause-ashspan-bridge",
-        "kind": "forward",
-        "label": "Pause here at the end of the authored preview"
-      },
-      "sky-islands-arrival-pause": {
-        "from": "sky-islands-arrival",
-        "to": "preview-pause-sky-islands-arrival",
-        "kind": "forward",
-        "label": "Pause here at the end of the authored preview"
-      },
-      "saltrot-arrival-pause": {
-        "from": "saltrot-arrival",
-        "to": "preview-pause-saltrot-arrival",
-        "kind": "forward",
-        "label": "Pause here at the end of the authored preview"
-      },
       "boundary-stone-bank-onward": {
         "from": "boundary-stone-bank",
         "to": "stone-counters",
@@ -744,24 +613,6 @@
         "to": "saltrot-arrival",
         "kind": "return",
         "label": "Return along the firm bank"
-      },
-      "stone-counters-pause": {
-        "from": "stone-counters",
-        "to": "preview-pause-stone-counters",
-        "kind": "forward",
-        "label": "Pause here at the end of the authored preview"
-      },
-      "whale-road-pause": {
-        "from": "whale-road",
-        "to": "preview-pause-whale-road",
-        "kind": "forward",
-        "label": "Pause here at the end of the authored preview"
-      },
-      "buried-bridge-pause": {
-        "from": "buried-bridge",
-        "to": "preview-pause-buried-bridge",
-        "kind": "forward",
-        "label": "Pause here at the end of the authored preview"
       },
       "counters-shrinking-fold": {
         "from": "stone-counters",
@@ -895,18 +746,6 @@
         "kind": "return",
         "label": "Return to the workers by the upper path"
       },
-      "the-wrong-valley-pause": {
-        "from": "the-wrong-valley",
-        "to": "preview-pause-the-wrong-valley",
-        "kind": "forward",
-        "label": "Pause here at the end of the authored preview"
-      },
-      "reading-room-pause": {
-        "from": "reading-room",
-        "to": "preview-pause-reading-room",
-        "kind": "forward",
-        "label": "Pause here at the end of the authored preview"
-      },
       "whales-to-island": {
         "from": "whale-road",
         "to": "the-island-due-back",
@@ -919,23 +758,11 @@
         "kind": "return",
         "label": "Return to the whales' turning place"
       },
-      "island-due-back-pause": {
-        "from": "the-island-due-back",
-        "to": "preview-pause-the-island-due-back",
-        "kind": "forward",
-        "label": "Pause here at the end of the authored Sky preview"
-      },
       "buried-bridge-to-stuttering-flats": {
         "from": "buried-bridge",
         "to": "stuttering-flats",
         "kind": "forward",
         "label": "Help a stranded goat at the blinking opening"
-      },
-      "stuttering-flats-pause": {
-        "from": "stuttering-flats",
-        "to": "preview-pause-stuttering-flats",
-        "kind": "forward",
-        "label": "Pause this development preview"
       },
       "flats-to-buried": {
         "from": "stuttering-flats",
@@ -949,12 +776,6 @@
         "kind": "forward",
         "label": "Follow the displaced ruins toward the Bone Yard"
       },
-      "bone-yard-pause": {
-        "from": "bone-yard",
-        "to": "preview-pause-bone-yard",
-        "kind": "forward",
-        "label": "Pause this development preview"
-      },
       "bone-yard-to-saltrot": {
         "from": "bone-yard",
         "to": "saltrot-arrival",
@@ -966,12 +787,6 @@
         "to": "wyrm-nest",
         "kind": "forward",
         "label": "Help the builders whose new room has a nest"
-      },
-      "wyrm-nest-pause": {
-        "from": "wyrm-nest",
-        "to": "preview-pause-wyrm-nest",
-        "kind": "forward",
-        "label": "Pause this development preview"
       },
       "wyrm-to-readers": {
         "from": "wyrm-nest",
@@ -1000,12 +815,6 @@
         "kind": "forward",
         "label": "Help shelter the temple in the approaching squall"
       },
-      "squall-temple-pause": {
-        "from": "squall-temple",
-        "to": "preview-pause-squall-temple",
-        "kind": "forward",
-        "label": "Pause this development preview"
-      },
       "temple-to-island": {
         "from": "squall-temple",
         "to": "the-island-due-back",
@@ -1017,12 +826,6 @@
         "to": "cairnstep-pass",
         "kind": "return",
         "label": "Accept the griffin messenger's flight to the Cairnstep"
-      },
-      "convergence-pause": {
-        "from": "convergence",
-        "to": "preview-pause-convergence",
-        "kind": "forward",
-        "label": "Pause this development preview"
       },
       "wyrm-nest-converge-coast": {
         "from": "wyrm-nest",
@@ -1094,6 +897,21 @@
             "the-island-due-back",
             "buried-bridge"
           ]
+        }
+      },
+      "convergence-to-finale": {
+        "from": "convergence",
+        "to": "finale",
+        "kind": "forward",
+        "label": "Follow the pull into the deep glacier passage"
+      },
+      "saltrot-to-ashspan": {
+        "from": "saltrot-arrival",
+        "to": "ashspan-bridge",
+        "kind": "return",
+        "label": "Take Old Ossley's next-tide ferry upriver",
+        "when": {
+          "completed": "bone-yard"
         }
       }
     },

@@ -12,7 +12,7 @@ console.log(JSON.stringify({
   ordinaryNodeTargetMinutes: [30, 40],
   defaultModel: UNCALIBRATED_MODEL,
   fastTableSensitivityModel: fastTable,
-  chapters: ["stone-counters", "whale-road", "buried-bridge", "the-wrong-valley", "reading-room", "the-island-due-back"].map((id) => {
+  chapters: ["stone-counters", "whale-road", "buried-bridge", "the-wrong-valley", "reading-room", "the-island-due-back", "stuttering-flats", "bone-yard", "wyrm-nest", "squall-temple", "convergence", "finale"].map((id) => {
     const chapter = JSON.parse(fs.readFileSync(path.join(root, `content/drafts/riftlight/chapters/riftlight-${id}.json`), "utf8")) as Chapter;
     const report = pacingReport(chapter);
     return {

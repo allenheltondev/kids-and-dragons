@@ -80,7 +80,7 @@ export async function runRiftlightPreview(root: string, run = concurrently): Pro
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const root = stageRiftlightOpening({ unlockPreview: true });
-  console.log("Riftlight route preview: eighteen story nodes; the Sky path reaches the island due back.");
+  console.log("Riftlight story preview: all 24 story nodes and three glacier endings.");
   console.log("Gemfall lock skipped for this preview. Saves are isolated from your normal games.");
   runRiftlightPreview(root).catch((error: unknown) => { console.error(error); process.exitCode = 1; });
 }

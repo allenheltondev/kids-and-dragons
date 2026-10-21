@@ -165,6 +165,10 @@ export function allPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, fla
     }
   }
   expect(ends.length).toBeGreaterThan(0);
-  for (const state of ends) expect(state.chapterOutcome).toBe("success");
+  for (const state of ends) {
+    // The finale's late whole-party battle loss is a completing setback;
+    // ordinary missed checks and strand losses still finish successfully.
+    expect(state.chapterOutcome).toBe(chapter.id === "riftlight-finale" && state.sceneId === "loss_epilogue" ? "setback" : "success");
+  }
   return { visited, ends, endingKnowledge, endingIntroductions };
 }
