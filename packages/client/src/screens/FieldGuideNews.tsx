@@ -16,6 +16,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
+import { createPortal } from "react-dom";
 import type { FieldGuide } from "@kad/shared";
 import { useGameStore, useMyTurnKey, useRunState, useSession } from "../store";
 import type { PresentationEvent, ProgressionEvent } from "../store/contract";
@@ -23,6 +24,7 @@ import { ackFieldGuideNews, useFieldGuideNews } from "../store/field-guide-news"
 import { markFieldGuideSeen } from "../store/field-guide-seen";
 import { openGuide } from "../store/player-navigation";
 import { presentationDuration, rollCardMs } from "../world/presentation";
+import { noticeMs } from "../ui/notice-timing";
 import { loadFieldGuide } from "./content";
 import { TRANSFORM_BEAT_MS } from "./TransformCutscene";
 import "./FieldGuideNews.css";
@@ -59,9 +61,10 @@ function useGuideFor(wanted: boolean): { guide: FieldGuide | null; settled: bool
 
 /**
  * Take the whole queue as one batch once `ready`, acknowledge it, and clear it
- * after NEWS_SHOW_MS. News that arrives while a batch is up waits for the next.
+ * after `showMs` (NEWS_SHOW_MS unless told how long this batch's words take to
+ * read). News that arrives while a batch is up waits for the next.
  */
-function useNewsBatch(ready: boolean): string[] | null {
+function useNewsBatch(ready: boolean, showMs: (ids: string[]) => number = () => NEWS_SHOW_MS): string[] | null {
   const news = useFieldGuideNews();
   const [shown, setShown] = useState<string[] | null>(null);
   useEffect(() => {
@@ -72,8 +75,9 @@ function useNewsBatch(ready: boolean): string[] | null {
   }, [news, ready, shown]);
   useEffect(() => {
     if (!shown) return;
-    const timer = setTimeout(() => setShown(null), NEWS_SHOW_MS);
+    const timer = setTimeout(() => setShown(null), showMs(shown));
     return () => clearTimeout(timer);
+    // The time is read once, when the batch goes up.
   }, [shown]);
   return shown;
 }
@@ -182,16 +186,27 @@ function useStageQuiet(): boolean {
   return quiet;
 }
 
+/** What the shared screen's banner says, start to finish, for how long it takes to read. */
+export function bannerWords(titles: string[], count: number): string {
+  return `New in the Field Guide ${describeNews(titles, count)}`;
+}
+
+/**
+ * Drawn in the shared screen's column (App.tsx `.kad-display-stack`) when there is one, under
+ * the chapter's goal and over the stage, with the arrivals and the toast, so none of them lands
+ * on another or on the goal. Up for as long as its words take to read (`noticeMs`).
+ */
 export function FieldGuideBanner(): ReactElement | null {
   const quiet = useStageQuiet();
   const news = useFieldGuideNews();
   const { guide, settled } = useGuideFor(news.length > 0);
-  const ids = useNewsBatch(quiet && settled);
+  const ids = useNewsBatch(quiet && settled, (batch) => noticeMs(bannerWords(titlesOf(guide, batch), batch.length)));
   if (!ids) return null;
   const titles = titlesOf(guide, ids);
   const arts = ids.slice(0, 3).map((id) => guide?.entries[id]?.art).filter((a): a is string => !!a);
-  return (
-    <div className="guide-news guide-news--tv" role="status" aria-live="polite">
+  const dock = typeof document === "undefined" ? null : document.querySelector(".kad-display-stack");
+  const banner = (
+    <div className={`guide-news guide-news--tv${dock ? " guide-news--dock" : ""}`} role="status" aria-live="polite">
       <div className="guide-news__body">
         {arts.length > 0
           ? <span className="guide-news__arts">{arts.map((src) => <img key={src} className="guide-news__art" src={src} alt="" />)}</span>
@@ -203,4 +218,5 @@ export function FieldGuideBanner(): ReactElement | null {
       </div>
     </div>
   );
+  return dock ? createPortal(banner, dock) : banner;
 }

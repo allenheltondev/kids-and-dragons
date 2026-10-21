@@ -5,7 +5,7 @@
  * report at once; otherwise a small button does.
  */
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useGameStore } from "../store";
 import { perfRequested } from "../world/frame-stats";
 import { getAudioProbe, onAudioProbe } from "../audio/cue";
@@ -13,6 +13,7 @@ import { Button } from "../ui/Button";
 import { probeCapabilities, type Capability } from "./capabilities";
 import { keepAwake, type KeepAwake, type WakeLockState } from "./wake-lock";
 import { onWake } from "./wake";
+import { installRemoteFocus } from "./remote-focus";
 
 import "./DisplayExtras.css";
 
@@ -42,9 +43,12 @@ export function DisplayExtras({ controls = true }: { controls?: boolean } = {}):
     const stopWatching = lock.onChange(() => { setWakeNow(lock.state()); });
     // Asleep and back: a fresh stream, then everything missed from the last seq.
     const stopWake = onWake(() => { useGameStore.getState().reconnect(); });
+    // A remote's arrows walk the few controls the screen keeps (remote-focus.ts).
+    const stopRemote = installRemoteFocus();
     return () => {
       stopWatching();
       stopWake();
+      stopRemote();
       lock.stop();
     };
   }, []);
@@ -76,22 +80,36 @@ export function DisplayCornerControls(): React.JSX.Element {
 function About({ inCorner }: { inCorner: boolean }): React.JSX.Element {
   const wake = useWakeState();
   const [open, setOpen] = useState(() => typeof location !== "undefined" && perfRequested(location.search));
+  // Opened from its button, focus goes into the report and comes back to the button on Close
+  // or Escape, so a remote is never left pointing at nothing. Open from `?perf`, it takes none.
+  const pressed = useRef(false);
+  const opener = useRef<HTMLButtonElement | null>(null);
+  useEffect(() => {
+    if (open || !pressed.current) return;
+    pressed.current = false;
+    opener.current?.focus();
+  }, [open]);
+  const press = (): void => {
+    pressed.current = true;
+    setOpen(true);
+  };
   return (
     <div className={`kad-about${inCorner ? " kad-about--in-corner" : ""}`}>
       {open ? (
-        <CapabilityReport wake={wake} onClose={() => { setOpen(false); }} />
+        <CapabilityReport wake={wake} takeFocus={pressed.current} onClose={() => { setOpen(false); }} />
       ) : inCorner ? (
         <button
+          ref={opener}
           type="button"
           className="kad-about__open kad-about__open--icon kad-focusable"
           aria-label="About this screen"
           title="About this screen"
-          onClick={() => { setOpen(true); }}
+          onClick={press}
         >
           <span aria-hidden="true">i</span>
         </button>
       ) : (
-        <button type="button" className="kad-about__open" onClick={() => { setOpen(true); }}>
+        <button ref={opener} type="button" className="kad-about__open kad-focusable" onClick={press}>
           About this screen
         </button>
       )}
@@ -144,9 +162,20 @@ function SoundPrompt({ inCorner }: { inCorner: boolean }): React.JSX.Element | n
   );
 }
 
-function CapabilityReport({ wake, onClose }: { wake: WakeLockState; onClose: () => void }): React.JSX.Element {
+function CapabilityReport({ wake, takeFocus, onClose }: { wake: WakeLockState; takeFocus: boolean; onClose: () => void }): React.JSX.Element {
   const [rows, setRows] = useState<Capability[] | null>(null);
   const [tick, setTick] = useState(0);
+  const close = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (takeFocus) close.current?.focus();
+    const onKey = (event: KeyboardEvent): void => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+    // Once per opening.
+  }, []);
 
   useEffect(() => {
     let stopState = (): void => undefined;
@@ -183,7 +212,7 @@ function CapabilityReport({ wake, onClose }: { wake: WakeLockState; onClose: () 
         </ul>
       ) : <p>Checking…</p>}
       <p className="kad-about__device">{screenSize}<br />{agent}</p>
-      <button type="button" onClick={onClose}>Close</button>
+      <button ref={close} type="button" className="kad-focusable" onClick={onClose}>Close</button>
     </section>
   );
 }

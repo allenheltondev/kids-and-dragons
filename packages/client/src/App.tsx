@@ -30,6 +30,7 @@ import { setQuiet } from "./quiet";
 import { STOPPED_MESSAGE } from "./screens/save-copy";
 import { musicForScene } from "./audio/scene-audio";
 import { PhoneMagic } from "./ui/PhoneMagic";
+import { useDisplayDock } from "./ui/display-dock";
 import { ChunkBoundary, lazyChunk } from "./ui/ChunkBoundary";
 
 /*
@@ -133,6 +134,8 @@ export function App(): React.JSX.Element {
   const creating = inEntry && me === null && route.name !== "tv";
   const ready = !!state?.party.length && state.party.every((member) => member.ready);
   const soundtrack = home || creating ? "entry-home" : inEntry ? "entry-lobby" : musicForScene(chapter, state);
+  const tv = route.name === "tv";
+  const dock = useDisplayDock(tv);
 
   // Rules and items are static content, not game state (roadmap, "Content as
   // data"). Idempotent, so strict mode's double-invoke costs nothing.
@@ -196,16 +199,20 @@ export function App(): React.JSX.Element {
         ) : null}
       </div>
       {pickLayout()}
-      <ErrorToast />
+      {/* On the shared screen the toast and the banner stand in its column, below. */}
+      {tv ? null : <ErrorToast />}
       {/* Shell-level like the toast, and for the same reason: a dropped
           connection is true on every surface in every mode at once. */}
-      <ConnectionBanner />
-      {/* The shared display's top-right column, under the corner row (#257): the host's
-          stop offer and room panel (#263), then who just joined (#267), one under the
-          other so neither covers the other. The Room button itself sits in the corner
-          row. A host's phone shows all of these in its own view (layout/PlayerView). */}
-      <div className="kad-display-stack">
-        {route.name === "tv" && session?.host ? (
+      {tv ? null : <ConnectionBanner />}
+      {/* The shared display's right-hand column (#257): the host's stop offer and room
+          panel (#263), who just joined (#267), a rejection, a dropped connection and the
+          Field Guide's news (portalled in from WorldView), one under the other so none
+          covers another. It stands below the chapter's goal and above the story plate
+          (ui/display-dock.ts), and nothing in it waits for a tap to go. The Room button
+          itself sits in the corner row. A host's phone shows all of these in its own view
+          (layout/PlayerView). */}
+      <div className="kad-display-stack" style={dock}>
+        {tv && session?.host ? (
           <ChunkBoundary inline message="The host controls couldn’t load.">
             <Suspense fallback={null}>
               <HostControls placement="float" button={false} />
@@ -213,6 +220,8 @@ export function App(): React.JSX.Element {
           </ChunkBoundary>
         ) : null}
         <ArrivalNotices placement="float" />
+        {tv ? <ConnectionBanner /> : null}
+        {tv ? <ErrorToast placement="dock" /> : null}
       </div>
       {route.name === "tv" && session ? (
         <ChunkBoundary quiet>
