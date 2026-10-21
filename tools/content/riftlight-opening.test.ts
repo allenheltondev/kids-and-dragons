@@ -26,7 +26,15 @@ describe("Riftlight's authored opening", () => {
       expect(fs.lstatSync(world).isDirectory()).toBe(true);
       expect(fs.lstatSync(world).isSymbolicLink()).toBe(false);
       expect(fs.readdirSync(world).sort()).toEqual(fs.readdirSync(path.join(ROOT, "assets/world")).sort());
-      expect(runValidator(copied).ok).toBe(true);
+      // Compare the fallback bytes; the next test validates the complete
+      // campaign once, without repeating its unrelated graph exploration.
+      for (const entry of fs.readdirSync(world, { recursive: true })) {
+        const relative = String(entry);
+        const file = path.join(world, relative);
+        if (fs.statSync(file).isFile()) {
+          expect(fs.readFileSync(file).equals(fs.readFileSync(path.join(ROOT, "assets/world", relative))), relative).toBe(true);
+        }
+      }
     } finally {
       link.mockRestore();
       if (copied) fs.rmSync(copied, { recursive: true, force: true });
