@@ -164,7 +164,7 @@
  * clears the others, for edge effects and chapter results alike.
  *
  * The search is breadth-first, so every path it reports is a shortest one. It
- * stops at `maxStates` states (default 50,000, ample for a few dozen nodes);
+ * stops at `maxStates` states (default 500,000, including the full Riftlight routes);
  * past that it says so rather than guess.
  */
 
@@ -998,11 +998,30 @@ interface Search {
   complete: boolean;
 }
 
+// Reuse an immutable search across lint, route coverage and replay callers.
+// The signature includes content, options and resolved metadata, not callback
+// identity, so edited negative fixtures never reuse an earlier proof.
+const searchCache = new WeakMap<ParsedCampaignGraph, { signature: string; search: Search }>();
+
 function explore(
   graph: ParsedCampaignGraph,
   options: GraphLintOptions,
-  chapterWrites: (chapter: string) => ChapterFlagWrites | undefined,
+  readChapterWrites: (chapter: string) => ChapterFlagWrites | undefined,
 ): Search {
+  // Chapter metadata is immutable during one search. Computing it per arrival
+  // rescans the same story thousands of times under coverage instrumentation.
+  const writesCache = new Map<string, ChapterFlagWrites | undefined>();
+  const chapterWrites = (id: string): ChapterFlagWrites | undefined => {
+    if (!writesCache.has(id)) writesCache.set(id, readChapterWrites(id));
+    return writesCache.get(id);
+  };
+  const metadata = graph.nodeOrder.flatMap(id => {
+    const node = graph.nodes[id]!;
+    return [node.chapter, ...(node.variants ?? []).map(v => v.chapter)];
+  }).map(id => [id, chapterWrites(id)]);
+  const signature = JSON.stringify([graph, metadata, options.routeSets, options.party, options.maxStates]);
+  const cached = searchCache.get(graph);
+  if (cached?.signature === signature) return cached.search;
   const max = options.maxStates ?? DEFAULT_MAX_STATES;
   const routeSets = Object.values(options.routeSets ?? {});
 
@@ -1376,6 +1395,7 @@ function explore(
     }
     if (!search.complete) break;
   }
+  searchCache.set(graph, { signature, search });
   return search;
 }
 
