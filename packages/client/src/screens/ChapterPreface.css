@@ -23,6 +23,8 @@
 
 .preface__card {
   --preface-gold: var(--kad-gold, #ffc95c);
+  /* The ticked steps borrow ChapterGoal.css's box, which reads its gold from here. */
+  --goal-gold: var(--preface-gold);
   --fit-scale: 1;
   display: flex;
   flex-direction: column;
