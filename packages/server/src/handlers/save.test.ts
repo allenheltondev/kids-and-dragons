@@ -5,7 +5,7 @@
  */
 
 import path from "node:path";
-import { applyIntent, classPlaceWaitingOn, createRunState, keepClassIntent, makeRng, type ChannelMessage, type ClientIntent, type RunState } from "@kad/shared";
+import { applyIntent, classPlaceWaitingOn, createRunState, keepClassIntent, makeRng, tableFull, type ChannelMessage, type ClientIntent, type RunState } from "@kad/shared";
 import { describe, expect, it } from "vitest";
 import { loadContent } from "../content/loader.ts";
 import type { Engine } from "../engine/port.ts";
@@ -13,6 +13,7 @@ import { makeHarness, seedHousehold } from "../test-support.ts";
 import { applyAction } from "./action.ts";
 import { closeRoom } from "./host.ts";
 import { leaveAdventure } from "./organizer.ts";
+import { removePlayer } from "./remove.ts";
 import { createRoom, joinRoom } from "./room.ts";
 import { firstSentence, heroSaved, recapOf, releaseSavedHero, resumeGame, savedGame, stopForToday } from "./save.ts";
 import { listHeroes } from "./heroes.ts";
@@ -425,6 +426,66 @@ describe("picking up where you left off (#259)", () => {
     expect(await two.resume()).toMatchObject({ ok: true });
     expect((await two.state()).party.map((m) => m.character.name)).toEqual(["Pip", "Bo"]);
     expect(await h.harness.repo.getCharacter(h.householdId, "c_cy")).toEqual(held);
+  });
+
+  it("never seats more than MAX_PARTY: the saved heroes first, then newcomers while a seat is open (#389)", async () => {
+    // The audit's repro: two saved heroes, three more sat down in the lobby.
+    const h = await household(5);
+    const e = await evening(h);
+    await walkIn([e.one, e.two]);
+    await stopForToday({ code: e.code, principal: h.players[0]!.principal }, h.harness.deps);
+    h.harness.clock.advance(3 * DAY);
+
+    const [pip] = await h.harness.repo.listCharacters(h.householdId);
+    const names = ["Cy", "Dee", "Eve"];
+    for (const [i, name] of names.entries()) {
+      const id = `c_${name.toLowerCase()}`;
+      await h.harness.repo.putCharacter({ ...pip!, id, name, ownerPlayerId: `p_${i + 3}`, provisional: null, version: 1 });
+    }
+    const created = await room(h, GEMFALL, 1);
+    const two = await sit(h, created.code, created.runId, 1);
+    for (const [i, name] of names.entries()) {
+      const seat = await sit(h, created.code, created.runId, i + 2);
+      await seat.must({ type: "SEAT_CHARACTER", characterId: `c_${name.toLowerCase()}` });
+    }
+
+    expect(await two.resume()).toMatchObject({ ok: true });
+    const state = await two.state();
+    expect(state.party.map((m) => m.character.name)).toEqual(["Pip", "Bo", "Cy", "Dee"]);
+    // Eve is left as she was: not in the game, her hero not claimed, her
+    // phone still in the room (where it says the table is full).
+    const eve = (await h.harness.repo.getCharacter(h.householdId, "c_eve"))!;
+    expect(eve.provisional).toBeNull();
+    expect(state.seats?.["p_5"]).toBeDefined();
+    expect(tableFull(state, "p_5")).toBe(true);
+  });
+
+  it("brings somebody the saved game's host took out back still out, holding no seat (#389)", async () => {
+    const h = await household(3);
+    const created = await room(h);
+    const one = await sit(h, created.code, created.runId, 0);
+    const two = await sit(h, created.code, created.runId, 1);
+    const three = await sit(h, created.code, created.runId, 2);
+    for (const [seat, spec] of [
+      [one, SPECS[0]],
+      [two, SPECS[1]],
+      [three, { ...SPECS[1], name: "Cy" }],
+    ] as const) {
+      await seat.must({ type: "CREATE_CHARACTER", ...spec });
+      await seat.must({ type: "READY", ready: true });
+    }
+    await one.must({ type: "CONTINUE_CAMPAIGN", campaignId: GEMFALL });
+    await walkIn([one, two, three]);
+    expect((await removePlayer({ code: created.code, principal: h.players[0]!.principal, playerId: "p_3" }, h.harness.deps)).ok).toBe(true);
+    await stopForToday({ code: created.code, principal: h.players[0]!.principal }, h.harness.deps);
+    h.harness.clock.advance(DAY);
+
+    const again = await room(h);
+    const back = await sit(h, again.code, again.runId, 0);
+    expect(await back.resume()).toMatchObject({ ok: true });
+    const state = await back.state();
+    expect(state.removed).toEqual(["p_3"]);
+    expect(state.party.find((m) => m.playerId === "p_3")).toMatchObject({ connected: false });
   });
 
   it("keeps only the newest stop of a campaign", async () => {

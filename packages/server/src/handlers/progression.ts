@@ -54,6 +54,7 @@ import {
   recordFinished,
   unmetPrerequisites,
   lobbyCampaign,
+  seatedMembers,
   type Campaign,
   type CampaignView,
   type Character,
@@ -556,8 +557,7 @@ export function campaignLock(
  * who is only disconnected still counts: she is still the table's.
  */
 export function seatedParty(state: Pick<RunState, "party" | "removed">): PartyMember[] {
-  const out = new Set(state.removed ?? []);
-  return state.party.filter((member) => !out.has(member.playerId));
+  return seatedMembers(state);
 }
 
 /**

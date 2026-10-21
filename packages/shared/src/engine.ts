@@ -119,6 +119,7 @@ import { factTestHolds } from "./world-state.js";
 import { checkBuffOffer, combatBuffsFor, expireRunBuffs, oneHeroSeat, spendCheckBuff, spendRunBuffs } from "./buffs.js";
 import { sameHome } from "./visitors.js";
 import { checkTypedName } from "./names.js";
+import { seatedMembers, TABLE_FULL_MESSAGE } from "./seats.js";
 import { classAnswerRefusal, classPlaceWaitingOn, openClassPlace } from "./class-place.js";
 
 // ---------------------------------------------------------------------------
@@ -1409,8 +1410,10 @@ function assertSeatOpen(draft: RunState, playerId: string): void {
    * that outgrows it reaches an encounter it cannot start. The table this game
    * is built for seats three; six is "the cousins are visiting", not a raid.
    */
-  if (draft.party.length >= MAX_PARTY) {
-    throw new Illegal("ILLEGAL", `the party is full (${MAX_PARTY})`);
+  // Somebody the host took out keeps their place in `party` but not their
+  // seat (#389), so it is the seated members that count.
+  if (seatedMembers(draft).length >= MAX_PARTY) {
+    throw new Illegal("ILLEGAL", TABLE_FULL_MESSAGE);
   }
 }
 
@@ -2048,11 +2051,12 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext, spendBuff
  * is helped up sees it happen. Null with fewer than two heroes seated.
  */
 function friendToHelpUp(draft: RunState): string | null {
-  const n = draft.party.length;
+  const seated = seatedMembers(draft);
+  const n = seated.length;
   if (n < 2) return null;
   const holder = storyTurnHolder(draft);
-  const start = holder ? draft.party.indexOf(holder) : 0;
-  const others = Array.from({ length: n - 1 }, (_, i) => draft.party[(start + 1 + i) % n]!);
+  const start = holder ? Math.max(seated.indexOf(holder), 0) : 0;
+  const others = Array.from({ length: n - 1 }, (_, i) => seated[(start + 1 + i) % n]!);
   return (others.find((member) => member.connected) ?? others[0]!).character.id;
 }
 
@@ -2063,9 +2067,30 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
   const map = ctx.map?.(scene.map) ?? null;
   if (!map) throw new Illegal("NOT_FOUND", `map "${scene.map}" is not loaded`);
 
+  // Only the members still in the game take the field (#389): somebody the
+  // host took out keeps their place in `party`, not a spawn tile, so a new kid
+  // in the seat they freed has one.
+  const seated = seatedMembers(draft);
+  if (seated.length === 0) throw new Illegal("ILLEGAL", "nobody is left at the table to fight");
+  /*
+   * A party that walks in with every hero already down would lose before
+   * anybody had a turn (#389): the monsters act, nobody can, the fight is
+   * over. That happens after a lost fight whose `onDefeat` road leads to
+   * another fight with no rest between. The loss already took its cost (that
+   * fight's road, and every hit point), so this fight is not a second one: the
+   * heroes scramble up at 1 hp, as a rest would stand them, only barely. One
+   * hero still standing, or a friend the practice knocks down on purpose, is a
+   * table that can play, and walks in exactly as it is.
+   */
+  if (seated.every((member) => member.down || member.hp <= 0)) {
+    for (const member of seated) {
+      member.hp = Math.max(member.hp, 1);
+      member.down = false;
+    }
+  }
   // The practice's Help Up lesson (#255): one friend walks in knocked down.
   const downId = scene.friendDown ? friendToHelpUp(draft) : null;
-  const party: PartyPlacement[] = draft.party.map((member, i) => {
+  const party: PartyPlacement[] = seated.map((member, i) => {
     /*
      * No modulo. Wrapping member 4 onto spawn 0 read as graceful and was the
      * opposite: two figures on one tile is a state `placeActor` refuses with a
@@ -2078,7 +2103,7 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
     if (!at) {
       throw new Illegal(
         "ILLEGAL",
-        `map "${map.id}" has ${map.partySpawns.length} party spawns, the party is ${draft.party.length}`,
+        `map "${map.id}" has ${map.partySpawns.length} party spawns, the party is ${seated.length}`,
       );
     }
     // Luckstone charges come from the bag (content/items.json `rerollOnes`).
@@ -2114,7 +2139,7 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
   // graph campaign's run holds any; for every other fight there is no
   // `buffs` in the setup and none on the state.
   const held = draft.buffs ?? [];
-  const heroIds = draft.party.map((member) => member.character.id);
+  const heroIds = seated.map((member) => member.character.id);
   const buffs =
     held.length > 0
       ? combatBuffsFor(held, heroIds, heroIds[oneHeroSeat(draft.storyTurn, heroIds.length)] ?? null)
