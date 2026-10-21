@@ -1,0 +1,50 @@
+{
+  "$comment": "Deep glacier shelf: ice ribs divide the sound working lanes. The ridge brace is reachable by both lanes.",
+  "id": "riftlight_finale",
+  "rows": [
+    "..........",
+    "..........",
+    ".###..##..",
+    "..........",
+    "..........",
+    ".##..##...",
+    "..........",
+    ".........."
+  ],
+  "partySpawns": [
+    {
+      "x": 0,
+      "y": 3
+    },
+    {
+      "x": 0,
+      "y": 4
+    },
+    {
+      "x": 1,
+      "y": 3
+    },
+    {
+      "x": 1,
+      "y": 4
+    }
+  ],
+  "enemySpawns": [
+    {
+      "x": 9,
+      "y": 3
+    },
+    {
+      "x": 9,
+      "y": 4
+    },
+    {
+      "x": 8,
+      "y": 2
+    },
+    {
+      "x": 8,
+      "y": 5
+    }
+  ]
+}

@@ -15,7 +15,7 @@ const staged = stageRiftlightOpening();
 afterAll(() => fs.rmSync(staged, { recursive: true, force: true }));
 
 describe("Riftlight's authored opening", () => {
-  it("stages usable world assets when directory junctions are denied", { timeout: 60_000 }, () => {
+  it("stages usable world assets when directory junctions are denied", { timeout: 120_000 }, () => {
     const link = vi.spyOn(fs, "symlinkSync").mockImplementation(() => {
       throw Object.assign(new Error("Junction denied"), { code: "EPERM" });
     });
@@ -33,7 +33,7 @@ describe("Riftlight's authored opening", () => {
     }
   });
 
-  it("passes the real content gate alongside Gemfall, including props, art and prerequisite", { timeout: 60_000 }, () => {
+  it("passes the real content gate alongside Gemfall, including props, art and prerequisite", { timeout: 120_000 }, () => {
     const result = runValidator(staged);
     expect(result.ok, result.output).toBe(true);
     expect(campaign.requires).toEqual(["gemfall"]);
@@ -52,7 +52,7 @@ describe("Riftlight's authored opening", () => {
     expect(coverage.nodes.every((node) => node.entered)).toBe(true);
     expect(coverage.edges.every((edge) => edge.traversable)).toBe(true);
     expect(playtest(graph, campaign, { ...options, random: { seed: 16, runs: 10 }, replay: { search, coverage } }).violations).toEqual([]);
-  }, 60_000); // Full route graph, including strand-end return loops, also runs under V8 coverage.
+  }, 120_000); // Full route graph, including strand-end return loops, also runs under V8 coverage.
 
   it.each([
     ["kitsune", "starweaver"], ["bigfoot", "thornguard"],

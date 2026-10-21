@@ -164,7 +164,7 @@
  * clears the others, for edge effects and chapter results alike.
  *
  * The search is breadth-first, so every path it reports is a shortest one. It
- * stops at `maxStates` states (default 250,000, including the full Riftlight routes);
+ * stops at `maxStates` states (default 500,000, including the full Riftlight routes);
  * past that it says so rather than guess.
  */
 
@@ -289,7 +289,7 @@ export interface GraphLintResult {
   search: { states: number; complete: boolean };
 }
 
-export const DEFAULT_MAX_STATES = 250_000;
+export const DEFAULT_MAX_STATES = 500_000;
 
 /**
  * The `setFlag` effects anywhere in a chapter, as {@link ChapterFlagWrites}.
