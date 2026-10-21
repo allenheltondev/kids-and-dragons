@@ -41,7 +41,7 @@
           "goto": "look_again"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/wrong-valley",
       "variants": [
         {
           "when": {
@@ -74,7 +74,7 @@
           "goto": "look_again_2"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "look_again_1": {
       "type": "story",
@@ -87,7 +87,7 @@
           "goto": "look_again_1_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "look_again_1_check": {
       "type": "check",
@@ -101,7 +101,7 @@
       "onFailure": {
         "goto": "look_again_1_changed"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "look_again_1_done": {
       "type": "story",
@@ -114,7 +114,7 @@
           "goto": "worker_signal"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "look_again_1_changed": {
       "type": "story",
@@ -127,7 +127,7 @@
           "goto": "worker_signal"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "look_again_2": {
       "type": "story",
@@ -140,7 +140,7 @@
           "goto": "look_again_2_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "look_again_2_check": {
       "type": "check",
@@ -154,7 +154,7 @@
       "onFailure": {
         "goto": "look_again_2_changed"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "look_again_2_done": {
       "type": "story",
@@ -167,7 +167,7 @@
           "goto": "worker_signal"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "look_again_2_changed": {
       "type": "story",
@@ -180,7 +180,7 @@
           "goto": "worker_signal"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "worker_signal": {
       "type": "choice_point",
@@ -199,7 +199,7 @@
           "goto": "worker_signal_2"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "worker_signal_1": {
       "type": "story",
@@ -212,7 +212,7 @@
           "goto": "two_jobs"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "worker_signal_2": {
       "type": "story",
@@ -225,7 +225,7 @@
           "goto": "two_jobs"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "two_jobs": {
       "type": "choice_point",
@@ -244,7 +244,7 @@
           "goto": "two_jobs_2"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "two_jobs_1": {
       "type": "story",
@@ -257,7 +257,7 @@
           "goto": "test_flow"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "two_jobs_2": {
       "type": "story",
@@ -270,7 +270,7 @@
           "goto": "test_flow"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "test_flow": {
       "type": "choice_point",
@@ -289,7 +289,7 @@
           "goto": "test_flow_2"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "test_flow_1": {
       "type": "story",
@@ -302,7 +302,7 @@
           "goto": "test_flow_1_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "test_flow_1_check": {
       "type": "check",
@@ -328,7 +328,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "test_flow_1_done": {
       "type": "story",
@@ -341,7 +341,7 @@
           "goto": "bundle_plan"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "test_flow_1_changed": {
       "type": "story",
@@ -354,7 +354,7 @@
           "goto": "bundle_plan"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "test_flow_2": {
       "type": "story",
@@ -367,7 +367,7 @@
           "goto": "test_flow_2_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "test_flow_2_check": {
       "type": "check",
@@ -393,7 +393,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "test_flow_2_done": {
       "type": "story",
@@ -406,7 +406,7 @@
           "goto": "bundle_plan"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "test_flow_2_changed": {
       "type": "story",
@@ -419,7 +419,7 @@
           "goto": "bundle_plan"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "bundle_plan": {
       "type": "choice_point",
@@ -438,7 +438,7 @@
           "goto": "bundle_plan_2"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "bundle_plan_1": {
       "type": "story",
@@ -451,7 +451,7 @@
           "goto": "anchor"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "bundle_plan_2": {
       "type": "story",
@@ -464,7 +464,7 @@
           "goto": "anchor"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "anchor": {
       "type": "choice_point",
@@ -490,7 +490,7 @@
           "requiresClass": "thornguard"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "anchor_1": {
       "type": "story",
@@ -503,7 +503,7 @@
           "goto": "anchor_1_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "anchor_1_check": {
       "type": "check",
@@ -517,7 +517,7 @@
       "onFailure": {
         "goto": "anchor_1_changed"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "anchor_1_done": {
       "type": "story",
@@ -530,7 +530,7 @@
           "goto": "signals"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "anchor_1_changed": {
       "type": "story",
@@ -543,7 +543,7 @@
           "goto": "signals"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "anchor_2": {
       "type": "story",
@@ -556,7 +556,7 @@
           "goto": "anchor_2_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "anchor_2_check": {
       "type": "check",
@@ -570,7 +570,7 @@
       "onFailure": {
         "goto": "anchor_2_changed"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "anchor_2_done": {
       "type": "story",
@@ -583,7 +583,7 @@
           "goto": "signals"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "anchor_2_changed": {
       "type": "story",
@@ -596,7 +596,7 @@
           "goto": "signals"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "signals": {
       "type": "choice_point",
@@ -615,7 +615,7 @@
           "goto": "signals_2"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "signals_1": {
       "type": "story",
@@ -628,7 +628,7 @@
           "goto": "tools_return"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "signals_2": {
       "type": "story",
@@ -641,7 +641,7 @@
           "goto": "tools_return"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "tools_return": {
       "type": "choice_point",
@@ -667,7 +667,7 @@
           "requiresClass": "duskrunner"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "tools_return_1": {
       "type": "story",
@@ -680,7 +680,7 @@
           "goto": "tools_return_1_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "tools_return_1_check": {
       "type": "check",
@@ -694,7 +694,7 @@
       "onFailure": {
         "goto": "tools_return_1_changed"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "tools_return_1_done": {
       "type": "story",
@@ -707,7 +707,7 @@
           "goto": "crossing_choice"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "tools_return_1_changed": {
       "type": "story",
@@ -720,7 +720,7 @@
           "goto": "crossing_choice"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "tools_return_2": {
       "type": "story",
@@ -733,7 +733,7 @@
           "goto": "tools_return_2_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "tools_return_2_check": {
       "type": "check",
@@ -747,7 +747,7 @@
       "onFailure": {
         "goto": "tools_return_2_changed"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "tools_return_2_done": {
       "type": "story",
@@ -760,7 +760,7 @@
           "goto": "crossing_choice"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "tools_return_2_changed": {
       "type": "story",
@@ -773,7 +773,7 @@
           "goto": "crossing_choice"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "crossing_choice": {
       "type": "choice_point",
@@ -792,7 +792,7 @@
           "goto": "crossing_choice_2"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "crossing_choice_1": {
       "type": "story",
@@ -805,7 +805,7 @@
           "goto": "crossing_choice_1_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "crossing_choice_1_check": {
       "type": "check",
@@ -819,7 +819,7 @@
       "onFailure": {
         "goto": "crossing_choice_1_changed"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "crossing_choice_1_done": {
       "type": "story",
@@ -832,7 +832,7 @@
           "goto": "river_turn"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/wrong-valley",
       "onEnter": [
         {
           "type": "setFlag",
@@ -852,7 +852,7 @@
           "goto": "river_turn"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/wrong-valley",
       "onEnter": [
         {
           "type": "setFlag",
@@ -872,7 +872,7 @@
           "goto": "crossing_choice_2_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "crossing_choice_2_check": {
       "type": "check",
@@ -886,7 +886,7 @@
       "onFailure": {
         "goto": "crossing_choice_2_changed"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "crossing_choice_2_done": {
       "type": "story",
@@ -899,7 +899,7 @@
           "goto": "river_turn"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/wrong-valley",
       "onEnter": [
         {
           "type": "setFlag",
@@ -919,7 +919,7 @@
           "goto": "river_turn"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/wrong-valley",
       "onEnter": [
         {
           "type": "setFlag",
@@ -945,7 +945,7 @@
           "goto": "river_turn_2"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/wrong-valley",
       "onEnter": [
         {
           "type": "setFlag",
@@ -964,7 +964,7 @@
           "goto": "return_water"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "river_turn_2": {
       "type": "story",
@@ -977,7 +977,7 @@
           "goto": "return_water"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "return_water": {
       "type": "choice_point",
@@ -996,7 +996,7 @@
           "goto": "return_water_2"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "return_water_1": {
       "type": "story",
@@ -1009,7 +1009,7 @@
           "goto": "return_water_1_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "return_water_1_check": {
       "type": "check",
@@ -1023,7 +1023,7 @@
       "onFailure": {
         "goto": "return_water_1_changed"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "return_water_1_done": {
       "type": "story",
@@ -1036,7 +1036,7 @@
           "goto": "tell_together"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "return_water_1_changed": {
       "type": "story",
@@ -1049,7 +1049,7 @@
           "goto": "tell_together"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "return_water_2": {
       "type": "story",
@@ -1062,7 +1062,7 @@
           "goto": "return_water_2_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "return_water_2_check": {
       "type": "check",
@@ -1076,7 +1076,7 @@
       "onFailure": {
         "goto": "return_water_2_changed"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "return_water_2_done": {
       "type": "story",
@@ -1089,7 +1089,7 @@
           "goto": "tell_together"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "return_water_2_changed": {
       "type": "story",
@@ -1102,7 +1102,7 @@
           "goto": "tell_together"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "tell_together": {
       "type": "choice_point",
@@ -1121,7 +1121,7 @@
           "goto": "tell_together_2"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "tell_together_1": {
       "type": "story",
@@ -1134,7 +1134,7 @@
           "goto": "next_witness"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "tell_together_2": {
       "type": "story",
@@ -1147,7 +1147,7 @@
           "goto": "next_witness"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "next_witness": {
       "type": "choice_point",
@@ -1166,7 +1166,7 @@
           "goto": "next_witness_2"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "next_witness_1": {
       "type": "story",
@@ -1179,7 +1179,7 @@
           "goto": "last_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "next_witness_2": {
       "type": "story",
@@ -1192,7 +1192,7 @@
           "goto": "last_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "last_check": {
       "type": "choice_point",
@@ -1211,7 +1211,7 @@
           "goto": "last_check_2"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "last_check_1": {
       "type": "story",
@@ -1224,7 +1224,7 @@
           "goto": "last_check_1_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "last_check_1_check": {
       "type": "check",
@@ -1250,7 +1250,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "last_check_1_done": {
       "type": "story",
@@ -1263,7 +1263,7 @@
           "goto": "rest"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "last_check_1_changed": {
       "type": "story",
@@ -1276,7 +1276,7 @@
           "goto": "rest"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "last_check_2": {
       "type": "story",
@@ -1289,7 +1289,7 @@
           "goto": "last_check_2_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "last_check_2_check": {
       "type": "check",
@@ -1315,7 +1315,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "last_check_2_done": {
       "type": "story",
@@ -1328,7 +1328,7 @@
           "goto": "rest"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "last_check_2_changed": {
       "type": "story",
@@ -1341,7 +1341,7 @@
           "goto": "rest"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "rest": {
       "type": "rest",
@@ -1356,12 +1356,12 @@
           "value": true
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "anchor_assisted": {
       "type": "story",
       "narration": "A thornguard steadies the carrying board with brace while your party tests the anchor from firm ground. The worker watches the rock, not the strongest hero's confidence. Whoever can best judge the load may lead the check; the ability supplies support without making uncertain ice sound.",
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/wrong-valley",
       "choices": [
         {
           "id": "continue",
@@ -1383,12 +1383,12 @@
       "onFailure": {
         "goto": "anchor_1_changed"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     },
     "tools_return_assisted": {
       "type": "story",
       "narration": "A duskrunner works from the safe bank to secure the bundle's loose straps before the haul. The workers hold their signals while your party prepares the line. The most nimble friend can lead the pull; nobody has to stand on the doubtful central rock.",
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/wrong-valley",
       "choices": [
         {
           "id": "continue",
@@ -1410,7 +1410,7 @@
       "onFailure": {
         "goto": "tools_return_1_changed"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/wrong-valley"
     }
   },
   "voiceGuide": {

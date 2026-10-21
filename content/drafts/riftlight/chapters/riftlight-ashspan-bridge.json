@@ -49,7 +49,8 @@
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "landing": {
       "type": "choice_point",
@@ -73,7 +74,8 @@
           "type": "setFlag",
           "flag": "reached_the_ferry_landing"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "plank": {
       "type": "story",
@@ -91,7 +93,8 @@
           "type": "setFlag",
           "flag": "helped_travelers_board"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "rope": {
       "type": "story",
@@ -109,14 +112,16 @@
           "type": "setFlag",
           "flag": "helped_travelers_board"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "routes": {
       "type": "rest",
       "narration": "Ossley points downriver. \"The coast is called the Saltrot. When I go.\" Then he points to the road beside the boundary stones. You can ask about the coast or follow the stone-keepers' questions inland. For now, you have a safe landing and a route to discuss.",
       "heal": 0,
       "choices": [],
-      "outcome": "success"
+      "outcome": "success",
+      "art": "scenes/gemfall/northern-bridge-foot"
     }
   },
   "voiceGuide": {

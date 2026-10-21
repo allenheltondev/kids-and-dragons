@@ -53,7 +53,7 @@
           "goto": "listen"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "listen": {
       "type": "choice_point",
@@ -72,7 +72,7 @@
           "goto": "listen_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "listen_1": {
       "type": "story",
@@ -85,7 +85,7 @@
           "goto": "watch"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "listen_2": {
       "type": "story",
@@ -98,7 +98,7 @@
           "goto": "watch"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "watch": {
       "type": "choice_point",
@@ -117,7 +117,7 @@
           "goto": "watch_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "watch_1": {
       "type": "story",
@@ -130,7 +130,7 @@
           "goto": "watch_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "watch_2": {
       "type": "story",
@@ -143,7 +143,7 @@
           "goto": "watch_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "watch_check": {
       "type": "check",
@@ -159,7 +159,7 @@
         "goto": "watch_changed",
         "narration": "The tail shifts farther than your first mark."
       },
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "watch_clear": {
       "type": "story",
@@ -178,7 +178,7 @@
           "goto": "supplies"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "watch_changed": {
       "type": "story",
@@ -197,7 +197,7 @@
           "goto": "supplies"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "supplies": {
       "type": "choice_point",
@@ -216,7 +216,7 @@
           "goto": "supplies_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "supplies_1": {
       "type": "story",
@@ -229,7 +229,7 @@
           "goto": "cold_opening"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "supplies_2": {
       "type": "story",
@@ -242,11 +242,10 @@
           "goto": "cold_opening"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "cold_opening": {
       "type": "choice_point",
-      "rift": "steady",
       "narration": "In the far wall, an opening shows an empty snow hollow sheltered from wind. The Listening Chime, the chime from the glacier travelers, returns a clear echo. A builder can see both sides from the tunnel. How will you check that the hollow is unoccupied? On your side of the opening, loose bones rattle in a heap. The builders have stopped work around them; nobody knows where they came from.",
       "choices": [
         {
@@ -269,11 +268,11 @@
           "requiresClass": "starweaver"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "cold_opening_1": {
       "type": "story",
-      "rift": "steady",
       "narration": "You wait for blowing snow to clear. There are no tracks, nests or stored tools in the hollow. A lump shaped like a boot is only snow.",
       "choices": [
         {
@@ -283,11 +282,11 @@
           "goto": "cold_opening_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "cold_opening_2": {
       "type": "story",
-      "rift": "steady",
       "narration": "A builder steps through, leaves a marker and comes back while you watch. The way remains open. Nobody promises it will obey a new command.",
       "choices": [
         {
@@ -297,11 +296,11 @@
           "goto": "cold_opening_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "cold_opening_3": {
       "type": "story",
-      "rift": "steady",
       "narration": "A starweaver studies the light privately. The builders check the ground and the echo with the rest of the party. Everyone agrees on what the hollow can safely hold.",
       "choices": [
         {
@@ -311,11 +310,11 @@
           "goto": "cold_opening_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "cold_opening_check": {
       "type": "check",
-      "rift": "steady",
       "stat": "clever",
       "tn": 12,
       "roller": "party",
@@ -328,11 +327,11 @@
         "goto": "cold_opening_changed",
         "narration": "Drifting snow hides the far edge."
       },
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "cold_opening_clear": {
       "type": "story",
-      "rift": "steady",
       "narration": "You mark a clear sheltered space beyond the opening. Moving the wyrm there is possible; forcing it to like the place is not.",
       "onEnter": [
         {
@@ -348,11 +347,11 @@
           "goto": "bed"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "cold_opening_changed": {
       "type": "story",
-      "rift": "steady",
       "narration": "The builder clears the drift with a long pole, then marks a wider clear space. You wait for the check rather than guessing.",
       "onEnter": [
         {
@@ -368,11 +367,11 @@
           "goto": "bed"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "bed": {
       "type": "choice_point",
-      "rift": "steady",
       "narration": "The hollow has hard snow and no bench pillow. If you try moving the wyrm, it needs a place to settle. If you drive it off instead, the hollow will still leave it shelter away from the readers.",
       "choices": [
         {
@@ -388,11 +387,11 @@
           "goto": "bed_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "bed_1": {
       "type": "story",
-      "rift": "steady",
       "narration": "You shape the hollow from the open side without taking anything from the nest. The builder smooths one edge with a shovel the size of a soup spoon.",
       "choices": [
         {
@@ -402,11 +401,11 @@
           "goto": "lanes"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "bed_2": {
       "type": "story",
-      "rift": "steady",
       "narration": "You slide a loose slab into the hollow while the builder steadies it. It offers a flat resting place without blocking the return opening.",
       "choices": [
         {
@@ -416,11 +415,11 @@
           "goto": "lanes"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "lanes": {
       "type": "choice_point",
-      "rift": "steady",
       "narration": "The builders need one lane to withdraw and another that leads the wyrm toward the hollow. The paths must not cross. How will you mark them?",
       "choices": [
         {
@@ -436,11 +435,11 @@
           "goto": "lanes_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "lanes_1": {
       "type": "story",
-      "rift": "steady",
       "narration": "You lay cloth from the doorway to the snow strip. The wyrm's lane stays broad and empty. The builder straightens a corner that looks too much like a snack.",
       "choices": [
         {
@@ -450,11 +449,11 @@
           "goto": "lanes_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "lanes_2": {
       "type": "story",
-      "rift": "steady",
       "narration": "You scrape only the soft new snow. The lane curves toward the opening without pointing at the old ice.",
       "choices": [
         {
@@ -464,7 +463,8 @@
           "goto": "lanes_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady"
     },
     "lanes_check": {
       "type": "check",
@@ -480,7 +480,7 @@
         "goto": "lanes_changed",
         "narration": "One bench catches and the wyrm raises its head."
       },
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "lanes_clear": {
       "type": "story",
@@ -493,7 +493,7 @@
           "goto": "rest"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "lanes_changed": {
       "type": "story",
@@ -506,7 +506,7 @@
           "goto": "rest"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "rest": {
       "type": "rest",
@@ -526,7 +526,7 @@
           "goto": "rest_watch"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "rest_watch": {
       "type": "story",
@@ -539,7 +539,7 @@
           "goto": "signal"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "signal": {
       "type": "choice_point",
@@ -558,7 +558,7 @@
           "goto": "signal_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "signal_1": {
       "type": "story",
@@ -571,7 +571,7 @@
           "goto": "offer"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "signal_2": {
       "type": "story",
@@ -584,7 +584,7 @@
           "goto": "offer"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "offer": {
       "type": "choice_point",
@@ -603,7 +603,7 @@
           "goto": "offer_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "offer_1": {
       "type": "story",
@@ -616,7 +616,7 @@
           "goto": "fight"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "offer_2": {
       "type": "story",
@@ -629,7 +629,7 @@
           "goto": "fight"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "fight": {
       "type": "encounter",
@@ -709,7 +709,8 @@
             "flag": "wyrm_nest_kept"
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "room_clear": {
       "type": "story",
@@ -736,7 +737,7 @@
           "text": "The wyrm backs into the broad outer tunnel, leaving the readers' doorway. The builders leave the sheltered hollow available. It has not chosen the hollow."
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "room_moved": {
       "type": "story",
@@ -749,7 +750,7 @@
           "goto": "tools"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "tools": {
       "type": "choice_point",
@@ -768,7 +769,7 @@
           "goto": "tools_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "tools_1": {
       "type": "story",
@@ -781,7 +782,7 @@
           "goto": "tools_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "tools_2": {
       "type": "story",
@@ -794,7 +795,7 @@
           "goto": "tools_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "tools_check": {
       "type": "check",
@@ -810,7 +811,7 @@
         "goto": "tools_changed",
         "narration": "A shadow looks like a crack until the lamp shifts."
       },
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "tools_clear": {
       "type": "story",
@@ -823,7 +824,7 @@
           "goto": "shelves"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "tools_changed": {
       "type": "story",
@@ -836,7 +837,7 @@
           "goto": "shelves"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "shelves": {
       "type": "choice_point",
@@ -858,7 +859,7 @@
           "goto": "shelves_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room",
+      "art": "scenes/riftlight/wyrm-nest",
       "variants": [
         {
           "when": {
@@ -879,7 +880,7 @@
           "goto": "shelves_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "shelves_2": {
       "type": "story",
@@ -892,7 +893,7 @@
           "goto": "shelves_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "shelves_check": {
       "type": "check",
@@ -908,7 +909,7 @@
         "goto": "shelves_changed",
         "narration": "One foot rocks on a patch of loose snow."
       },
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "shelves_clear": {
       "type": "story",
@@ -921,7 +922,7 @@
           "goto": "readers"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "shelves_changed": {
       "type": "story",
@@ -934,7 +935,7 @@
           "goto": "readers"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "readers": {
       "type": "choice_point",
@@ -953,7 +954,7 @@
           "goto": "readers_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room",
+      "art": "scenes/riftlight/wyrm-nest",
       "variants": [
         {
           "when": {
@@ -974,7 +975,7 @@
           "goto": "readers_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "readers_2": {
       "type": "story",
@@ -987,7 +988,7 @@
           "goto": "readers_check"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "readers_check": {
       "type": "check",
@@ -1004,7 +1005,7 @@
         "goto": "readers_changed",
         "narration": "The first rhythm is too fast for the readers carrying notes."
       },
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "readers_clear": {
       "type": "story",
@@ -1023,7 +1024,7 @@
           "goto": "quiet"
         }
       ],
-      "art": "scenes/riftlight/reading-room",
+      "art": "scenes/riftlight/wyrm-nest",
       "variants": [
         {
           "when": {
@@ -1050,7 +1051,7 @@
           "goto": "quiet"
         }
       ],
-      "art": "scenes/riftlight/reading-room",
+      "art": "scenes/riftlight/wyrm-nest",
       "variants": [
         {
           "when": {
@@ -1077,7 +1078,7 @@
           "goto": "quiet_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "quiet_1": {
       "type": "story",
@@ -1090,7 +1091,7 @@
           "goto": "neighbors"
         }
       ],
-      "art": "scenes/riftlight/reading-room",
+      "art": "scenes/riftlight/wyrm-nest",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1109,7 +1110,7 @@
           "goto": "neighbors"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "neighbors": {
       "type": "choice_point",
@@ -1128,7 +1129,7 @@
           "goto": "neighbors_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "neighbors_1": {
       "type": "story",
@@ -1141,7 +1142,7 @@
           "goto": "departure"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "neighbors_2": {
       "type": "story",
@@ -1154,7 +1155,7 @@
           "goto": "departure"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "departure": {
       "type": "choice_point",
@@ -1173,7 +1174,7 @@
           "goto": "departure_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room",
+      "art": "scenes/riftlight/wyrm-nest",
       "variants": [
         {
           "when": {
@@ -1200,7 +1201,7 @@
           "goto": "ending"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "departure_2": {
       "type": "story",
@@ -1213,7 +1214,7 @@
           "goto": "ending"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     },
     "ending": {
       "type": "story",
@@ -1234,7 +1235,7 @@
           "text": "The new chamber must wait. Today the readers share their old room with the extra table, and the builders give up their free morning to finish the move."
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/wyrm-nest"
     }
   }
 }
