@@ -103,7 +103,7 @@ export function answerClassPlace(state: RunState, chapter: Chapter, answer: Clas
 }
 
 /** Walk every actual choice and both dice extremes through the real engine. */
-export function allPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags: Record<string, boolean> = {}, partySize = 1, initialHp?: number, classAnswer: ClassAnswer = "keep") {
+function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags: Record<string, boolean> = {}, partySize = 1, initialHp?: number, classAnswer: ClassAnswer = "keep") {
   const contract = continuity[chapter.id]!;
   const conditionalEntry = Object.entries(contract.entryByFlag ?? {}).flatMap(([flag, facts]) => flags[flag] ? facts : []);
   const initial = start(chapter, species, cls, flags, partySize);
@@ -162,4 +162,14 @@ export function allPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, fla
   expect(ends.length).toBeGreaterThan(0);
   for (const state of ends) expect(state.chapterOutcome).toBe("success");
   return { visited, ends, endingKnowledge, endingIntroductions };
+}
+
+// Cache identical scenarios, including chapter content so negative fixtures
+// and callers that edit a cloned chapter always get an independent walk.
+const pathCache = new Map<string, ReturnType<typeof walkAllPaths>>();
+export function allPaths(...args: Parameters<typeof walkAllPaths>): ReturnType<typeof walkAllPaths> {
+  const key = JSON.stringify(args);
+  let result = pathCache.get(key);
+  if (!result) { result = walkAllPaths(...args); pathCache.set(key, result); }
+  return structuredClone(result);
 }

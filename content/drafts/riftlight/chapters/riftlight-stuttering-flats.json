@@ -34,14 +34,17 @@
     "forbidden": [
       "gore",
       "Hollow Gate",
-      "Legend Dragon"
+      "Legend Dragon",
+      "Corvane",
+      "emperor",
+      "Pangea"
     ],
     "npcVoices": {}
   },
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "On the Saltrot mudflats, an opening in the air blinks away and comes back. Through it lies snow. A snowhorn goat stands belly-deep in mud beside it, chewing a reed with great disappointment. A Skupper guide, a small finned person with eyes on stalks, points to the rising tide. \"Bring that goat home before the opening closes. I can find firm mud. I cannot make a goat like it.\"",
+      "narration": "On the Saltrot mudflats, an opening in the air blinks away and comes back. Through it lies snow. A snowhorn goat stands belly-deep in mud beside it, chewing a reed with great disappointment. Your Skupper guide from the Saltrot bank waves her fins in greeting, then points to the rising tide. \"Bring that goat home before the opening closes. I can find firm mud. I cannot make a goat like it.\"",
       "choices": [
         {
           "id": "continue",
@@ -633,7 +636,7 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "Behind the windbreak, warm broth steams in a covered pot. The ladle wears a little wool sleeve. Take a breath and let sore muscles loosen before the next job.",
+      "narration": "The guide leads you onto a raised shell bank while the goat waits safely in its sling. She opens her waterproof lunch basket: warm kelp cakes and a flask of broth. Steam curls over the shells. There is time to eat before the next crossing.",
       "heal": 2,
       "choices": [
         {
@@ -653,7 +656,7 @@
     },
     "rest_watch": {
       "type": "story",
-      "narration": "You trade the watch so everyone gets a turn with the broth. A loose thread on the ladle sleeve waves at each passing cloud.",
+      "narration": "You keep watch beside the guide on the shell bank. She passes you a kelp cake while you follow the opening through another blink. The goat chews its own lunch noisily.",
       "choices": [
         {
           "id": "continue",
@@ -666,7 +669,7 @@
     },
     "glimpse": {
       "type": "choice_point",
-      "narration": "Through the clear gap, you can see a snowy bank and a herd beyond it. A yeti herder has noticed the stranded goat. The herder raises a blanket, waiting for your signal. What do you need checked?",
+      "narration": "Through a steady blink, the herder you helped on the glacier recognizes you and waves. Her herd waits behind her on the snow. This muddy goat is an adult from that herd, not the kid you rescued before. You need to show her where it can land.",
       "choices": [
         {
           "id": "plan_1",
@@ -983,7 +986,13 @@
           "goto": "credit"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats"
+      "art": "scenes/riftlight/stuttering-flats",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "flats_warning_pictures"
+        }
+      ]
     },
     "record_2": {
       "type": "story",
@@ -1045,22 +1054,36 @@
     },
     "next": {
       "type": "choice_point",
-      "narration": "Beyond the flats, displaced stonework lies toward the Bone Yard, a place where anything taken comes back. The guide can lead you to its edge. You can also return to the firm bank by the buried bridge. Which work will you prepare for?",
+      "narration": "The guide points out the Bone Yard trail and the return toward the buried bridge. You will choose your destination after leaving the flats. First, prepare for either journey: pack without carrying loose stones away, or leave a clear marker for the return.",
       "choices": [
         {
           "id": "plan_1",
-          "label": "Prepare to follow the stonework without taking anything",
+          "label": "Check the packs and leave loose stones here",
           "icon": "hand",
           "goto": "next_1"
         },
         {
           "id": "plan_2",
-          "label": "Mark your safe return toward the buried bridge",
+          "label": "Leave a clear return marker on firm ground",
           "icon": "hand",
           "goto": "next_2"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats"
+      "art": "scenes/riftlight/stuttering-flats",
+      "variants": [
+        {
+          "when": {
+            "flag": "flats_warning_pictures"
+          },
+          "text": "Your picture warning catches a passing fisher. She stops at the missing middle and chooses the marked waiting spot."
+        },
+        {
+          "when": {
+            "notFlag": "flats_warning_pictures"
+          },
+          "text": "A passing fisher follows your safe-bank drawing straight to the waiting spot. The guide nods: the new marker works."
+        }
+      ]
     },
     "next_1": {
       "type": "story",
@@ -1090,7 +1113,7 @@
     },
     "ending": {
       "type": "story",
-      "narration": "The snowhorn goat is home, and nobody had to race a vanishing floor. Your guide takes one final look at the warning board. \"A path once,\" she says. \"Even a path in the air.\" You leave the closed opening and follow the markers back to firm ground.",
+      "narration": "The snowhorn goat is home. Your guide checks the warning board. \"Wait until you can see the whole crossing,\" she says. You leave the closed opening and follow the markers back to firm ground.",
       "choices": [],
       "outcome": "success",
       "variants": [
