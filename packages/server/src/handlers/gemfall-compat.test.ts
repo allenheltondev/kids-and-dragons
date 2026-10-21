@@ -86,6 +86,9 @@ const PRE_EPIC = JSON.parse(
  * - `endings`: owner decision on #368 (decision 3). 05c's early crab defeat
  *   reroutes, at a cost, instead of ending the chapter, so `end_rolled_down`
  *   is gone and Gemfall has 47 endings, not 48.
+ * - Owner decision on #368 (decision 5) moved 05b's young gatherer before
+ *   the elders' vote. The digests were re-taken on that commit and none moved:
+ *   no ending, road carry, setback or save passes through her scenes.
  */
 const DIGESTS: PreEpicSave["digests"] = {
   ...PRE_EPIC.digests,
@@ -149,7 +152,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-04b.json": "9a7db3cf17d6a42354593bd3759a01c8a41fc0e248764c7aadd411a5573248f2",
   "chapters/gemfall-04c.json": "134360d7535f4eb277b04d96d699baf0d002e046c916be805b6e181f227f3458",
   "chapters/gemfall-05a.json": "73a98e7eb255d074710542d70130fede374510a84a239c00daf57594e87587ed",
-  "chapters/gemfall-05b.json": "dad6db20a43391b6f4723eed9ab9bb279b27875562be1019077d86f7ef69b8a7",
+  "chapters/gemfall-05b.json": "6645c41bb11dd6fc4babfde8a70cca5974abb87d0569d0f679248914daa7f285",
   "chapters/gemfall-05c.json": "2d16220bdf8cf750ad459a8071cc32299d9d6763f3584dea89bb71b198749d43",
   "chapters/gemfall-06.json": "4c7306ba197e3ce56b98421797da0aa1488cb3c28cc5eec350b5fdeb7b2c44e1",
   "chapters/gemfall-07h.json": "102d1fc2869f2001c57a3f17a934da964301e12e2db1d2342768a1e211a7c532",
