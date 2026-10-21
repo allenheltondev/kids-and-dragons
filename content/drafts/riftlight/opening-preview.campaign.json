@@ -1028,7 +1028,7 @@
         "from": "wyrm-nest",
         "to": "convergence",
         "kind": "forward",
-        "label": "Bring the agreeing discoveries to the glacier travelers",
+        "label": "Compare the river memory and buried bridge",
         "when": {
           "completed": [
             "reading-room",
@@ -1040,7 +1040,7 @@
         "from": "wyrm-nest",
         "to": "convergence",
         "kind": "forward",
-        "label": "Bring the agreeing discoveries to the glacier travelers",
+        "label": "Compare the river memory and island mooring",
         "when": {
           "completed": [
             "reading-room",
@@ -1052,7 +1052,7 @@
         "from": "bone-yard",
         "to": "convergence",
         "kind": "forward",
-        "label": "Bring the agreeing discoveries to the glacier travelers",
+        "label": "Compare the buried bridge and river memory",
         "when": {
           "completed": [
             "buried-bridge",
@@ -1064,7 +1064,7 @@
         "from": "bone-yard",
         "to": "convergence",
         "kind": "forward",
-        "label": "Bring the agreeing discoveries to the glacier travelers",
+        "label": "Compare the buried bridge and island mooring",
         "when": {
           "completed": [
             "buried-bridge",
@@ -1076,7 +1076,7 @@
         "from": "squall-temple",
         "to": "convergence",
         "kind": "forward",
-        "label": "Bring the agreeing discoveries to the glacier travelers",
+        "label": "Compare the island mooring and river memory",
         "when": {
           "completed": [
             "the-island-due-back",
@@ -1088,7 +1088,7 @@
         "from": "squall-temple",
         "to": "convergence",
         "kind": "forward",
-        "label": "Bring the agreeing discoveries to the glacier travelers",
+        "label": "Compare the island mooring and buried bridge",
         "when": {
           "completed": [
             "the-island-due-back",

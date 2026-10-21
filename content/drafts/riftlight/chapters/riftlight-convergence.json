@@ -34,7 +34,10 @@
     "forbidden": [
       "gore",
       "Hollow Gate",
-      "Legend Dragon"
+      "Legend Dragon",
+      "Corvane",
+      "emperor",
+      "Pangea"
     ],
     "npcVoices": {
       "Orin Vale": "Methodical griffin scholar. Asks what a test actually showed.",
@@ -47,7 +50,7 @@
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "At a sheltered glacier ledge, the travelers called the Riftseekers spread a map on an upturned sled. Orin Vale, the griffin scholar, weights one corner with his boot. Lady Olivia, a unicorn, steadies another. Seren Wisp, a kitsune, checks a chime while Pip Thistledown, the manticore scout, holds the loose pages. A bigfoot named Bram Lock keeps the path clear. \"Compare your discoveries,\" Orin asks. \"Then help us steady any opening before people go near it.\" His boot is still on his foot.",
+      "narration": "At a sheltered glacier ledge, Orin waves you over to a map on an upturned sled. Olivia greets you and steadies one corner. Your Riftseeker friends have made room for your account. A bigfoot named Bram Lock keeps the path clear. \"Help me keep everyone behind the line when an opening comes,\" he asks. Orin weights the map with his boot. \"Compare your discoveries. Then help us steady any opening before people go near it.\" His boot is still on his foot.",
       "choices": [
         {
           "id": "continue",
@@ -74,7 +77,7 @@
     },
     "accounts": {
       "type": "choice_point",
-      "narration": "Your party has reached this ledge with discoveries from more than one place. Orin leaves blank paper beside his map instead of filling the blanks for you. How will you begin the comparison?",
+      "narration": "Your party has reached this ledge with discoveries from more than one place. Orin leaves blank paper beside his map instead of filling the blanks for you. How will you begin the comparison? Seren joins you with her chime. Pip brings the loose pages and greets you with a wave of his tail. Your friends are ready to listen.",
       "choices": [
         {
           "id": "plan_1",
@@ -89,7 +92,21 @@
           "goto": "accounts_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
     },
     "accounts_1": {
       "type": "story",
@@ -218,7 +235,7 @@
     },
     "evidence": {
       "type": "choice_point",
-      "narration": "Orin asks what makes the comparison yours to use. A memory, a bridge and a carved mooring stone are knowledge, not things you can carry away. How will you keep that clear?",
+      "narration": "Orin asks what makes the comparison yours to use. What you learned on the road is knowledge, not something taken from the people who helped you. How will you keep that clear?",
       "choices": [
         {
           "id": "plan_1",
@@ -233,7 +250,27 @@
           "goto": "evidence_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "variants": [
+        {
+          "when": {
+            "flag": "fragment_paths_learned"
+          },
+          "text": "The memory readers showed you an old arrangement in the ice. Their memory stays with them; your account can be compared here."
+        },
+        {
+          "when": {
+            "flag": "fragment_coast_learned"
+          },
+          "text": "At the buried bridge, you checked an old river crossing against the coast around it. Your drawing carries the shape, without taking any stone."
+        },
+        {
+          "when": {
+            "flag": "fragment_sky_learned"
+          },
+          "text": "The island mooring stone showed an old boundary unlike the ground below it today. The stone stays with its keepers."
+        }
+      ]
     },
     "evidence_1": {
       "type": "story",
@@ -263,7 +300,7 @@
     },
     "pull": {
       "type": "choice_point",
-      "narration": "The chime on the sled answers a distant tremble in the ice. Snow grains slide toward a deep glacier passage, then stop. Your Listening Chime is the bell the travelers gave you: it tests readiness and a way back, not who made an opening. How will you compare the pull?",
+      "narration": "The chime on the sled answers a distant tremble in the ice. Snow grains slide toward a deep glacier passage, then stop. Your Listening Chime tests readiness and a way back. Bram lays a spare board in the sheltered corner. How will you compare the pull?",
       "choices": [
         {
           "id": "plan_1",
@@ -324,7 +361,7 @@
     },
     "pull_clear": {
       "type": "story",
-      "narration": "You have a direction to investigate, not a name for its cause. The travelers mark the passage on the present map.",
+      "narration": "The grains point toward the deep passage. The travelers mark that direction on the present map.",
       "choices": [
         {
           "id": "continue",
@@ -482,7 +519,7 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "Behind the windbreak, warm broth steams in a covered pot. The ladle wears a little wool sleeve. Take a breath and let sore muscles loosen before the next job.",
+      "narration": "Orin rolls the map away from the sled seat and opens the camp supper bag. You share dried apple rings and warm water from the camp flask. Pip tries to weigh a page with an apple ring, then eats the paperweight.",
       "heal": 2,
       "choices": [
         {
@@ -502,7 +539,7 @@
     },
     "rest_watch": {
       "type": "story",
-      "narration": "You trade the watch so everyone gets a turn with the broth. A loose thread on the ladle sleeve waves at each passing cloud.",
+      "narration": "Bram takes the path watch while you sit beside the sled. Seren tops up your cup. Pip replaces his missing apple paperweight with a bootlace knot.",
       "choices": [
         {
           "id": "continue",
@@ -574,7 +611,7 @@
     },
     "decision": {
       "type": "choice_point",
-      "narration": "Bram asks you to help him stop the experiment. Olivia asks you to stay beside her while she stops feeding it and watches what it does. Nobody is asked to summon anything. You can also ask Orin to use the chime readings you shared with him, if you shared them. What will you do?",
+      "narration": "Bram asks you to help him stop the experiment. Olivia asks you to stay beside her while she stops feeding it and watches what it does. What will you do?",
       "choices": [
         {
           "id": "bram",
@@ -871,7 +908,7 @@
     },
     "lesson": {
       "type": "choice_point",
-      "narration": "Seren explains the next skill through the cord. \"You can hold a condition. You cannot tell a one-way opening to be two-way, or give a once-only crossing a second use.\" How will your party practice?",
+      "narration": "Seren explains the next skill through the cord. \"You can hold a condition. You cannot tell a one-way opening to be two-way, or give a once-only crossing a second use.\" How will your party practice? Seren sets a short wooden prop wrapped in felt beside the cord. It can support the marked point while you learn the rhythm.",
       "choices": [
         {
           "id": "plan_1",
@@ -1134,7 +1171,7 @@
     },
     "ending": {
       "type": "story",
-      "narration": "The travelers have heard the party's discoveries, the experiment is safely stopped, and you have learned to hold a condition without changing a rule. The pull points down the deep passage. Nobody has named its cause. Your party is ready to follow the ordinary walking route and find out.",
+      "narration": "The travelers have heard the party's discoveries, the experiment is safely stopped, and you have learned to hold a condition without changing a rule. The pull points down the deep passage. Your party is ready to follow the ordinary walking route and find out.",
       "choices": [
         {
           "id": "continue",

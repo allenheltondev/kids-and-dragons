@@ -8006,8 +8006,8 @@
           "requires": [],
           "introduces": {
             "converge_bram": "A bigfoot named Bram Lock",
-            "converge_travelers": "travelers called the Riftseekers",
-            "converge_map": "spread a map"
+            "converge_travelers": "At a sheltered glacier ledge, Orin waves you over to a map on an upturned sled. Olivia greets you and steadies one corner. Your Riftseeker friends have made room for your account. A bigfoot named Bram Lock keeps the path clear. \"Help me keep everyone behind the line when an opening comes,\" he asks. Orin weights the map with his boot. \"Compare your discoveries. Then help us steady any opening before people go near it.\" His boot is still on his foot.",
+            "converge_map": "At a sheltered glacier ledge, Orin waves you over to a map on an upturned sled. Olivia greets you and steadies one corner. Your Riftseeker friends have made room for your account. A bigfoot named Bram Lock keeps the path clear. \"Help me keep everyone behind the line when an opening comes,\" he asks. Orin weights the map with his boot. \"Compare your discoveries. Then help us steady any opening before people go near it.\" His boot is still on his foot."
           }
         },
         "accounts": {
