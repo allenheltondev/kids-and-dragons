@@ -4,7 +4,10 @@
  *
  * - **Chapter start.** Before the first scene the TV shows "Last time…" (the reference campaign
  *   carries no roads, so its opener) ending with the goal, and reads it aloud in this order: the
- *   preface, "Your goal: …", the first scene's story. The goal is said once.
+ *   preface, "Your goal: …", the first scene's story. The goal is said once. The chapter's file
+ *   is slowed to 1.5s, inside the wait, and the order holds; slower than the wait, the story is
+ *   read alone and the goal after it, once (#356's order).
+ * - **Late join.** A kid who sits down partway gets the TV's "Where you left off" too.
  * - **Drop-in.** A kid's phone steps away partway through and comes back: the TV shows "Where you
  *   left off", the goal, the steps ticked so far and a line from each of the last scenes. It goes
  *   when the story moves on, with nothing tapped. A TV that reloads mid-chapter shows it too.
@@ -126,7 +129,13 @@ test.describe("the words around a chapter (#357)", () => {
 
     test(`chapter start and drop-in on the TV at ${at}`, async ({ browser }) => {
       test.setTimeout(300_000);
-      const tv = await device(browser, { viewport: size });
+      // Workers off, so every chapter file comes over the wire this test can slow down.
+      const tv = await device(browser, { viewport: size, serviceWorkers: "block" });
+      // The chapter's file is slow, but inside PREFACE_WAIT_MS: the preface still comes first.
+      await tv.route("**/content/chapters/**", async (route) => {
+        await new Promise((done) => setTimeout(done, 1500));
+        await route.continue();
+      });
       await tv.goto("/");
       await tv.getByRole("button", { name: /host a game/i }).click();
       await tv.getByText("Party Mode").click();
@@ -206,6 +215,35 @@ test.describe("the words around a chapter (#357)", () => {
       await expect(card).toHaveAttribute("data-kind", "back");
       expect(await fitProblems(tv)).toEqual([]);
       await shot(tv, `reload-${at}`);
+
+      // --- A late joiner sits down partway: the TV says where the party is ---
+      await jumpTo(token, kid, code, "scene_scouted");
+      await expect(card).toHaveCount(0, TAP);
+      const late = await device(browser, { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+      await late.goto("/");
+      await late.getByLabel(/room code/i).fill(code);
+      await late.getByRole("button", { name: /join a game/i }).click();
+      await expect(late).toHaveURL(new RegExp(`/p/${code}$`), TAP);
+      // Mid-chapter, the dev playtest toggle sits over the creation flow's Next (drop-in.spec).
+      await late.addStyleTag({ content: ".playtest { display: none !important; }" });
+      await late.getByRole("button", { name: /bigfoot/i }).first().click(TAP);
+      await late.getByRole("button", { name: /^next$/i }).click(TAP);
+      await late.locator("button").filter({ hasText: /thornguard|duskrunner|starweaver|songkeeper/i }).first().click(TAP);
+      await late.getByRole("button", { name: /^next$/i }).click(TAP);
+      for (let i = 0; i < 12; i++) {
+        const adds = late.getByRole("button", { name: /add a point to/i });
+        if ((await adds.count()) === 0) break;
+        await adds.first().click(TAP);
+      }
+      await late.getByRole("button", { name: /^next$/i }).click(TAP);
+      await late.getByPlaceholder("Tap to type").fill("Pip", TAP);
+      await late.getByRole("button", { name: /that's me/i }).click(TAP);
+      await expect.poll(async () => (await party(code, token.sessionToken)).some((m) => m.character.name === "Pip" && m.connected), TAP).toBe(true);
+      await expect(card).toBeVisible(TAP);
+      await expect(card).toHaveAttribute("data-kind", "back");
+      await expect(card).toContainText(GOAL);
+      expect(await fitProblems(tv)).toEqual([]);
+      await shot(tv, `late-join-${at}`);
     });
 
     test(`a stopped game resumed with Keep going shows where they left off, at ${at}`, async ({ browser }) => {
@@ -270,4 +308,39 @@ test.describe("the words around a chapter (#357)", () => {
       await expect(card).toHaveCount(0, TAP);
     });
   }
+
+  test("chapter files slower than the wait: the story is read alone, then the goal, once", async ({ browser }) => {
+    test.setTimeout(240_000);
+    const tv = await device(browser, { viewport: { width: 1280, height: 720 }, serviceWorkers: "block" });
+    await tv.goto("/");
+    await tv.getByRole("button", { name: /host a game/i }).click();
+    await tv.getByText("Party Mode").click();
+    await tv.getByRole("button", { name: /open the lobby here/i }).click();
+    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
+    const code = new URL(tv.url()).pathname.split("/").pop() ?? "";
+    await tv.getByRole("button", { name: "Turn read-aloud on" }).click();
+    // Slower than PREFACE_WAIT_MS (2.5s): the table is never kept waiting for a recap.
+    await tv.route("**/content/chapters/**", async (route) => {
+      await new Promise((done) => setTimeout(done, 5000));
+      await route.continue();
+    });
+
+    const kid = await device(browser, { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+    await kid.goto("/");
+    await kid.getByLabel(/room code/i).fill(code);
+    await kid.getByRole("button", { name: /join a game/i }).click();
+    await expect(kid).toHaveURL(new RegExp(`/p/${code}$`), TAP);
+    await createCharacter(kid, "unicorn", "Sparklehoof");
+    await kid.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+
+    // #356's order: the story, then the goal once the chapter file lands, and nothing twice.
+    await expect.poll(async () => (await said(tv)).filter((line) => line === `Your goal: ${GOAL}`).length, TAP).toBe(1);
+    const lines = await said(tv);
+    const story = lines.findIndex((line) => line.includes("wall of thorns"));
+    expect(story, lines.join("\n")).toBeGreaterThanOrEqual(0);
+    expect(lines.indexOf(`Your goal: ${GOAL}`)).toBeGreaterThan(story);
+    expect(lines.some((line) => line.startsWith("Here we go!"))).toBe(false);
+    await tv.waitForTimeout(500);
+    expect((await said(tv)).filter((line) => line.startsWith("Your goal:"))).toHaveLength(1);
+  });
 });
