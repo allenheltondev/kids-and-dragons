@@ -187,20 +187,47 @@ describe("what the arrows reach", () => {
     const press = (key: string): void => {
       (document.activeElement ?? document.body).dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true }));
     };
+    const checked = (id: string): boolean => (document.getElementById(id) as HTMLInputElement).checked;
     document.getElementById("host")!.focus();
     press("ArrowDown");
     expect(document.activeElement?.id).toBe("r_party");
-    // The arrows move past a radio rather than along its group.
+    // Arriving from outside the group only focuses; OK checks.
+    expect(checked("r_party")).toBe(false);
+    press("Enter");
+    expect(checked("r_party")).toBe(true);
+    // Inside the group, selection follows focus, both ways (review of #392: Right moved focus and
+    // left Phone Mode unchecked, while the browser's wrap-around checked the other way).
     press("ArrowRight");
     expect(document.activeElement?.id).toBe("r_phone");
-    expect((document.getElementById("r_phone") as HTMLInputElement).checked).toBe(false);
-    press("Enter");
-    expect((document.getElementById("r_phone") as HTMLInputElement).checked).toBe(true);
+    expect(checked("r_phone")).toBe(true);
     press("ArrowLeft");
-    press("Enter");
-    expect((document.getElementById("r_party") as HTMLInputElement).checked).toBe(true);
+    expect(document.activeElement?.id).toBe("r_party");
+    expect(checked("r_party")).toBe(true);
+    // Past the group's edge the arrow leaves it rather than wrapping round, and changes nothing.
+    press("ArrowLeft");
+    expect(document.activeElement?.id).toBe("host");
+    expect(checked("r_party")).toBe(true);
+    expect(checked("r_phone")).toBe(false);
+    press("ArrowDown");
     press("ArrowDown");
     expect(document.activeElement?.id).toBe("go");
+    expect(checked("r_party")).toBe(true);
+    stop();
+  });
+
+  it("checks the radio of the same name that the arrow lands on", () => {
+    lay('<input id="a" type="radio" name="m" /><input id="b" type="radio" name="m" /><input id="c" type="radio" name="other" />', {
+      a: at(0, 0), b: at(60, 0), c: at(120, 0),
+    });
+    const stop = installRemoteFocus();
+    document.getElementById("a")!.focus();
+    (document.activeElement ?? document.body).dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true, cancelable: true }));
+    expect(document.activeElement?.id).toBe("b");
+    expect((document.getElementById("b") as HTMLInputElement).checked).toBe(true);
+    // A radio of another name is another group: focus moves there, and nothing is chosen for it.
+    (document.activeElement ?? document.body).dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true, cancelable: true }));
+    expect(document.activeElement?.id).toBe("c");
+    expect((document.getElementById("c") as HTMLInputElement).checked).toBe(false);
     stop();
   });
 
@@ -208,5 +235,38 @@ describe("what the arrows reach", () => {
     lay('<input id="radio" type="radio" /><button id="b">b</button>', { radio: at(0, 0, 1), b: at(60, 0) });
     step("right");
     expect(document.activeElement?.id).toBe("b");
+  });
+});
+
+describe("on the start screen, which waits for a remote", () => {
+  const key = (key: string): KeyboardEvent => {
+    const event = new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true });
+    (document.activeElement ?? document.body).dispatchEvent(event);
+    return event;
+  };
+
+  it("leaves a keyboard's arrows alone once it has Tabbed onto something", () => {
+    // Review of #392: a laptop's arrows on the start screen's radios must stay the browser's own.
+    lay('<input id="a" type="radio" name="m" /><input id="b" type="radio" name="m" /><button id="go">go</button>', {
+      a: at(0, 0), b: at(60, 0), go: at(0, 100),
+    });
+    const stop = installRemoteFocus(document, { armed: false });
+    document.getElementById("a")!.focus();
+    const event = key("ArrowRight");
+    expect(event.defaultPrevented).toBe(false);
+    expect(document.activeElement?.id).toBe("a");
+    expect(key("ArrowDown").defaultPrevented).toBe(false);
+    stop();
+  });
+
+  it("wakes on an arrow with nothing focused, which is how a remote begins, and stays awake", () => {
+    lay('<button id="a">a</button><button id="b">b</button>', { a: at(0, 0), b: at(60, 0) });
+    const stop = installRemoteFocus(document, { armed: false });
+    expect(key("Tab").defaultPrevented).toBe(false);
+    expect(key("ArrowRight").defaultPrevented).toBe(true);
+    expect(document.activeElement?.id).toBe("a");
+    key("ArrowRight");
+    expect(document.activeElement?.id).toBe("b");
+    stop();
   });
 });
