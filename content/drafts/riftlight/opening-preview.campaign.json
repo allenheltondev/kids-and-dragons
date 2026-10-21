@@ -647,7 +647,7 @@
             "open": [
               {
                 "id": "olivia",
-                "label": "Lady Olivia's way \u00e2\u20ac\u201d open early and scatter the whales",
+                "label": "Lady Olivia's way \u2014 open early and scatter the whales",
                 "when": {
                   "notFlag": "whales_guided"
                 },
