@@ -194,7 +194,6 @@ What it does beyond the look:
 Put the fact in the narration itself, in plain words. The ribbon tells the room to pay attention;
 it cannot tell them what to pay attention to.
 
-<<<<<<< HEAD
 ## The chapter's goal
 
 Every chapter says what the party is trying to do, and the table can see it the whole time
@@ -239,7 +238,7 @@ Every chapter says what the party is trying to do, and the table can see it the 
 - **Spread the ticks.** The first a quarter of the way in, the last near the end. A step that ticks
   in scene 1 tells the table nothing.
 - Only a chapter that is nothing but its ending (a preview's pause) goes without one.
-=======
+
 ## Interactivity
 
 The table should be playing, not only listening. Four rules, and the two numbers
@@ -265,7 +264,6 @@ Both numbers are a reading list, never a gate: the `!` marks under the table say
 They read the spine only; a typical path's `read` in the table can run longer, so glance at it
 too. Bare `npm run content:pacing` lists the Gemfall chapters; `npm run content:pacing -- --chapter ""`
 lists every shipped chapter, and `--chapter bramblewood-` any one prefix.
->>>>>>> origin/main
 
 ## Class places (#311)
 
