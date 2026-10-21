@@ -1,7 +1,7 @@
 {
   "$comment": "DEVELOPMENT PREVIEW ONLY. Chapters are authored in sequence. Family timing and full-route progression remain production gates.",
   "id": "riftlight-opening-preview",
-  "title": "Riftlight \u00e2\u20ac\u201d opening preview",
+  "title": "Riftlight \u2014 opening preview",
   "blurb": "Snow falls on the Exchange quay. A small goat needs help. Beyond a fold in the air, a bell is ringing in the ice.",
   "requires": [
     "gemfall"
@@ -729,7 +729,7 @@
             "open": [
               {
                 "id": "olivia",
-                "label": "Lady Olivia's way \u00e2\u20ac\u201d open early and scatter the whales",
+                "label": "Lady Olivia's way \u2014 open early and scatter the whales",
                 "when": {
                   "notFlag": "whales_guided"
                 },
