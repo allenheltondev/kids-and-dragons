@@ -961,7 +961,9 @@ export function analyseGraphCampaign(campaign, chapters) {
    * Both are computed once, from the graph and the text, before the fixed
    * point; what every way in guarantees (K) still counts every arrival.
    */
+  const shownCache = new Map();
   const chapterShows = (cid) => {
+    if (shownCache.has(cid)) return shownCache.get(cid);
     const chapter = byId.get(cid);
     let shown = new Set();
     if (!chapter) return shown;
@@ -970,6 +972,7 @@ export function analyseGraphCampaign(campaign, chapters) {
       for (const c of cast) for (const n of nameTokens(c)) shown.add(n);
     }
     for (const sc of Object.values(chapter.scenes ?? {})) shown = union(shown, shownMain((sc.variants ?? []).map((v) => v.text), vocab));
+    shownCache.set(cid, shown);
     return shown;
   };
   const playedAt = (node) => [node.chapter, ...(node.variants ?? []).map((v) => v.chapter)];
