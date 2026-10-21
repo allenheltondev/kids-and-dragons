@@ -50,3 +50,7 @@ route exploration and replay pass without increasing timeouts.
 | Physical checks | 6 | 6 |
 | Encounters | 1 | 1 |
 | Longest reading run | 2 | 3 |
+
+### Second review follow-up
+
+The lost-fight ending now has one account: the readers stay at the extra table in the old room while builders spend their free morning finishing the chamber. The walking task moves notes past crowded benches on that path; both check results fit it. Removed the broad-table carry after furniture was already placed. Wording only; the spine remains 45 scenes, 14 decisions, 6 doing checks, 1 fight and a reading run of 3. The graph cap on this PR remains 50,000. Local-only Flats and Bone Yard flags no longer cross chapter boundaries because no other chapter reads them.
