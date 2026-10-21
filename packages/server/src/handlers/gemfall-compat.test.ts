@@ -123,6 +123,14 @@ const PRE_EPIC = JSON.parse(
  * and reading, and `check_doorstep` is a stand-your-ground check marked
  * `"doing"`. No scene, edge, flag, effect, stat or TN moved; the digests below
  * are unchanged.
+ *
+ * Re-pinned for gemfall-08's cohesion fixes (#368): wording, labels, check
+ * prompts and narration variants only. The opening states the goal and each
+ * pursuit's promise, every ending reads back motive, the soup tents and allies,
+ * the wardens' post reads allies, Hessa and her masked singers arrive where
+ * they are cast, the Keystone is named where it is lifted, "cult" is gone, and
+ * `check_remains` walks the bones home, marked `"doing"`. No scene, edge, flag,
+ * effect, stat or TN moved; the digests below are unchanged.
  */
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
@@ -141,7 +149,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-07h.json": "102d1fc2869f2001c57a3f17a934da964301e12e2db1d2342768a1e211a7c532",
   "chapters/gemfall-07l.json": "d2bf74142b55a622b2bdf709296541d07acb80eb74753c79f2f220b4f5f41604",
   "chapters/gemfall-07r.json": "82503bbeb255631abbab0138a1ab6dfa4cf1b9f149cf63e19906cc42dbe795d7",
-  "chapters/gemfall-08.json": "29efcf2a87c41fd553fdd28cb3caeab41c9d0b67916c7d7a83f573128a71aec0",
+  "chapters/gemfall-08.json": "f398421069007c00f2a32b6a82d61db07d762b54e6f5696df787cf070fa40870",
 };
 
 describe("Gemfall's files are the files that shipped before the epic", () => {

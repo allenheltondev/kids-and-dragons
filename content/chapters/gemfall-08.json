@@ -60,7 +60,30 @@
       "discovers": [
         "location.mount_red_sky"
       ],
-      "narration": "The last tree on the mountain is a small, bent pine, and someone has nailed a sign to it: NO ROAD BEYOND THIS POINT. SERIOUSLY. Above it, Mount Red Sky goes up and up, glowing at the top like a lamp somebody forgot to turn off. There are two ways on. An old stair cut into the rock zigzags back and forth forever. A slope of loose stones goes straight up.",
+      "narration": "The last tree on the mountain is a small, bent pine, and someone has nailed a sign to it: NO ROAD BEYOND THIS POINT. SERIOUSLY. Above it, Mount Red Sky goes up and up, glowing at the top like a lamp somebody forgot to turn off. Everyone else is running from this mountain. You are going to climb it, all the way to the seal deep inside, and give your answer. There are two ways on: an old stair that zigzags back and forth forever, or a slope of loose stones that goes straight up.",
+      "variants": [
+        {
+          "when": {
+            "flag": "pursuit_restore"
+          },
+          "text": "Back at Redspire, Pellam wrote down what you are here for: to put the stones back, every one.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "pursuit_hoard"
+          },
+          "text": "Back at Redspire, Pellam wrote down what you are here for: to finish the collection. Somewhere up there is the stone that would finish it.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "pursuit_leash"
+          },
+          "text": "Back at Redspire, Pellam wrote down what you are here for: to take the leash on what sleeps under the mountain, and hold it.",
+          "at": "start"
+        }
+      ],
       "choices": [
         {
           "id": "stair",
@@ -392,6 +415,26 @@
     "scene_warden_post": {
       "type": "story",
       "narration": "Higher up, the wardens' last post sits on a ledge with nobody in it. On the table is a big logbook, open to today, with a pencil on a string and a sign in very neat letters: ALL CLIMBERS MUST SIGN IN. Under it, a smaller sign: THIS MEANS YOU. Nobody has signed in all day. Beside the log is a little box labeled FOR CLIMBERS WHO SIGNED.",
+      "variants": [
+        {
+          "when": {
+            "flag": "told_wardens"
+          },
+          "text": "You told the wardens everything, back at Redspire, and somebody here was expecting you. At the top of today's page, in very neat writing, it already says: THE ONES WHO TOLD US. PLEASE SIGN BELOW."
+        },
+        {
+          "when": {
+            "flag": "told_gatherers"
+          },
+          "text": "Somebody has tied a tiny bell to the pencil string, the grandmothers' kind. The news you took to the dragonling towns got up the mountain before you did."
+        },
+        {
+          "when": {
+            "flag": "kept_close"
+          },
+          "text": "Nobody up here knows you are coming. You kept it close, and the empty post keeps your secret too."
+        }
+      ],
       "choices": [
         {
           "id": "sign",
@@ -407,7 +450,7 @@
         },
         {
           "id": "silly",
-          "label": "Sign in as Sir Crumpet and the Biscuit Twins",
+          "label": "Sign in as Sir Pancake and the Cookie Twins",
           "icon": "cake",
           "goto": "scene_warden_post_silly"
         },
@@ -453,7 +496,7 @@
     },
     "scene_warden_post_silly": {
       "type": "story",
-      "narration": "You sign in as Sir Crumpet and the Biscuit Twins, and under REASON FOR CLIMB you write: snacks. You laugh so hard that the next steep bit of path goes by without anyone noticing it was steep. The little box stays shut. It is a warden box. It knows. Somewhere in the future, a warden is going to write a very confused report about three biscuits.",
+      "narration": "You sign in as Sir Pancake and the Cookie Twins, and under REASON FOR CLIMB you write: snacks. You laugh so hard that the next steep bit of path goes by without anyone noticing it was steep. The little box stays shut. It is a warden box. It knows. Somewhere in the future, a warden is going to write a very confused report about three cookies.",
       "choices": [
         {
           "id": "on",
@@ -701,7 +744,7 @@
     },
     "choice_cairn_big_names": {
       "type": "story",
-      "narration": "You carve your names as big as they will go. They go very big. Then you run out of stone, and the last name has to go round the back and up the side, and one letter ends up on a different stone altogether. Climbers for years will read it and wonder who on earth MAGNIFICEN was. It is still, honestly, very impressive.",
+      "narration": "You carve your names as big as they will go. They go very big. Then you run out of stone, and the last name has to go around the back and up the side, and one letter ends up on a different stone altogether. Climbers for years will read it and wonder who on earth MAGNIFICEN was. It is still, honestly, very impressive.",
       "choices": [
         {
           "id": "on",
@@ -850,7 +893,7 @@
         },
         {
           "id": "around",
-          "label": "Go the long way round the field",
+          "label": "Go the long way around the field",
           "icon": "boot",
           "goto": "scene_crab_field_around"
         },
@@ -893,7 +936,7 @@
     },
     "scene_crab_field_around": {
       "type": "story",
-      "narration": "You take the long way round, along the edge of the ash, where nobody is pretending to be anything. It takes ages. Halfway round, the whole field of crabs shuffles slowly sideways to keep an eye on you, glittering, like the world's most suspicious audience. When you reach the far side, they all settle down and go back to being gems.",
+      "narration": "You take the long way around, along the edge of the ash, where nobody is pretending to be anything. It takes ages. Halfway around, the whole field of crabs shuffles slowly sideways to keep an eye on you, glittering, like the world's most suspicious audience. When you reach the far side, they all settle down and go back to being gems.",
       "cast": [
         {
           "figure": "entities/glassback_crab",
@@ -967,7 +1010,7 @@
     },
     "scene_ember_drift": {
       "type": "story",
-      "narration": "Near the top, something tiny glows in a drift of gray ash: one embermoth, stuck up to its wings, blinking slowly like a nightlight running low. Every other moth has flown away from the mountain. This one must have turned around too late, or too early. It looks up at you the way a lost puppy looks at the first nice person it sees.",
+      "narration": "Near the top, something tiny glows in a drift of gray ash: one embermoth, stuck up to its wings, blinking slowly like a nightlight running low. Every moth out here on the slopes has flown away from the mountain, all except the old ones deep inside it, which never leave. This one must have turned around too late, or too early. It looks up at you the way a lost puppy looks at the first nice person it sees.",
       "cast": [
         {
           "figure": "entities/embermoth"
@@ -1314,7 +1357,7 @@
       "choices": [
         {
           "id": "speak_gently",
-          "label": "Speak to the bones, gently",
+          "label": "Help the bones lie back down, gently",
           "icon": "heart",
           "goto": "check_remains"
         },
@@ -1430,7 +1473,7 @@
     "scene_bells_first": {
       "type": "story",
       "art": "scenes/gemfall/gem-gallery",
-      "narration": "Far behind you, down in the foothills, the bells are ringing. Ordinary rings, every town at once, one after another. Nobody has rung the last one yet. But everybody is standing right next to it.",
+      "narration": "Far behind you, down in the foothills, the bells are ringing. Ordinary rings, every town at once, one after another. Nobody has rung the last one yet. But everybody is standing right next to it. Halfway out of the wall, one of the bones stops to listen too, with a bony hand cupped behind where its ear used to be.",
       "cast": [
         {
           "figure": "entities/restless_remains"
@@ -1439,7 +1482,7 @@
       "choices": [
         {
           "id": "face",
-          "label": "Face the bones, gently",
+          "label": "Help the bones back down, gently",
           "icon": "heart",
           "goto": "check_remains"
         },
@@ -1456,7 +1499,8 @@
       "art": "scenes/gemfall/gem-gallery",
       "stat": "heart",
       "tn": 8,
-      "prompt": "Tell the bones, gently, that you came to set things right",
+      "checkKind": "doing",
+      "prompt": "Walk the bones back to their places in the wall, one gentle step at a time",
       "cast": [
         {
           "figure": "entities/restless_remains"
@@ -1472,17 +1516,17 @@
             "value": true
           }
         ],
-        "narration": "The bones listen. One of them nods, which is a lot of nodding for a bone, and they all lie back down in a slightly different arrangement."
+        "narration": "You take a bony hand, very gently, and walk it back to its place in the wall, the way you would walk a sleepwalker back to bed. One by one the others follow. One of them nods, which is a lot of nodding for a bone, and they all lie back down in a slightly different arrangement."
       },
       "onFailure": {
         "goto": "encounter_gallery",
-        "narration": "The stones in your pockets hum louder than your voice. The bones keep walking toward the hum."
+        "narration": "You reach for the nearest bony hand, but the stones in your pockets hum louder than you can be gentle. The bones slip past you and keep walking toward the hum."
       }
     },
     "encounter_gallery": {
       "type": "encounter",
       "map": "gallery",
-      "narration": "The restless remains clatter across the glittering floor, walking toward whatever is wrong. Right now, what is wrong is you.",
+      "narration": "The restless remains clatter across the glittering floor, walking toward whatever is wrong. Right now, what is wrong is you. One of them has lost a toe bone and keeps stopping to look for it.",
       "enemies": [
         {
           "id": "bones",
@@ -1506,7 +1550,7 @@
         "creature.embermoth"
       ],
       "art": "scenes/gemfall/gem-gallery",
-      "narration": "A side gallery where the air is cool and the gem-veins glow just bright enough to read by. Embermoths are dusting the walls. Eat what you have left, patch up your scrapes, and listen to the mountain breathing below you. It is breathing faster.",
+      "narration": "A side gallery where the air is cool and the gem-veins glow just bright enough to read by. Embermoths are dusting the walls. One has missed a spot and is very upset about it. Eat what you have left, patch up your scrapes, and listen to the mountain breathing below you. It is breathing faster.",
       "heal": 3,
       "choices": [
         {
@@ -1544,7 +1588,7 @@
       "type": "story",
       "priority": 2,
       "art": "scenes/gemfall/gem-gallery",
-      "narration": "Every bell in the foothills is ringing now, one ring after another, counting down toward the ring nobody uses. The floor jumps with every one. Five rings left. Maybe four.",
+      "narration": "Every bell in the foothills is ringing now, one ring after another, counting down toward the ring nobody uses. The floor jumps with every one, and a loose pebble bounces down the tube in time, as if it is trying to help count. Five rings left. Maybe four.",
       "choices": [
         {
           "id": "run",
@@ -1638,7 +1682,7 @@
         "creature.embermoth"
       ],
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "At the bottom of the mountain is a cave as big as the sky, and in it is the Seal-Keeper: a dragon so old its scales have turned to gemstone at the edges, with embermoths dusting its nose. It looks at you for a long time. It has looked at a great many people for a long time, and it is very good at it. Then it asks a question it already knows the answer to. \"What did you carry up my mountain?\"",
+      "narration": "At the bottom of the mountain is a cave as big as the sky, and in it is the Seal-Keeper: a dragon so old its scales have turned to gemstone at the edges, with embermoths dusting its nose. One of them has fallen asleep on the very tip and is snoring, very quietly. It looks at you for a long time. It has looked at a great many people for a long time, and it is very good at it. Then it asks a question it already knows the answer to. \"What did you carry up my mountain?\"",
       "variants": [
         {
           "when": {
@@ -2067,6 +2111,13 @@
           },
           "at": "start",
           "text": "\"You carried {facets} great stones up all those steps,\" the dragon says. \"That is a heavy haul. Heavy things can be hard to put down.\""
+        },
+        {
+          "when": {
+            "flag": "funded_the_break"
+          },
+          "text": "Then it sniffs, once, the way you sniff for smoke. \"Coins,\" it says. \"You gave coins to the soup tents. I felt every one of them go.\"",
+          "at": "start"
         }
       ],
       "cast": [
@@ -2359,7 +2410,7 @@
     "scene_verdict": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "\"Last question,\" says the Seal-Keeper. \"Who did you tell? And what do you want?\" Behind it, the seal glows like a round stained-glass window with pieces missing, and something under it is turning over in its sleep.",
+      "narration": "\"Last question,\" says the Seal-Keeper. \"Who did you tell? And what do you want?\" Behind it, the seal glows like a round stained-glass window with pieces missing, and something under it is turning over in its sleep. Somewhere in the wall, a bone sneezes. Everybody pretends not to notice.",
       "cast": [
         {
           "figure": "entities/legend_dragon",
@@ -2500,7 +2551,7 @@
     "encounter_dragon": {
       "type": "encounter",
       "map": "gallery",
-      "narration": "The Seal-Keeper uncurls until it fills the cave, and an old guardian of bones steps out of the wall to stand beside it.",
+      "narration": "The Seal-Keeper uncurls until it fills the cave, and an old guardian of bones steps out of the wall to stand beside it, looking extremely pleased to be included.",
       "enemies": [
         {
           "id": "keeper",
@@ -2541,7 +2592,7 @@
       "type": "story",
       "priority": 1,
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "Behind the dragon is the seal: a great round window of gemstone, cracked and missing pieces. At its very top sits one stone bigger than your head, the crown of the whole seal. Underneath, something vast is waking up. The Seal-Keeper waits. \"Well,\" it says. \"Choose.\"",
+      "narration": "Behind the dragon is the seal: a great round window of gemstone, cracked and missing pieces. At its very top sits one stone bigger than your head: the crown stone that holds the whole seal together. Underneath, something vast is waking up. The Seal-Keeper waits, tapping one claw on the floor like somebody waiting for a very slow bus. \"Well,\" it says. \"Choose.\"",
       "variants": [
         {
           "when": {
@@ -2650,14 +2701,14 @@
         },
         {
           "id": "cult_tether",
-          "label": "Hand it to the cult, held by the chord and the ledger",
+          "label": "Hand it to Hessa's masked singers, held by your tether",
           "icon": "note",
           "requiresFlag": "pursuit_leash",
           "goto": "check_tether_cult"
         },
         {
           "id": "cult",
-          "label": "Hand it to Hessa's cure, and hope they keep the bargain",
+          "label": "Hand it to Hessa's masked singers, and hope they keep it",
           "icon": "note",
           "goto": "check_tether_cult_bare"
         },
@@ -2726,6 +2777,7 @@
       "art": "scenes/gemfall/seal-chamber",
       "stat": "clever",
       "tn": 12,
+      "narration": "You call up the tube for Hessa, and she comes at once, as if she had been waiting on the stair all along. Behind her come her friends from the Deep Hollow in their painted bark masks, humming one low note. Hessa looks at the leash, then at the tether in your hands. \"We'll sing,\" she says. \"You keep us to the bargain.\"",
       "prompt": "Hold the Deep Hollow choir to every word of the bargain",
       "cast": [
         {
@@ -2783,6 +2835,72 @@
             }
           },
           "text": "It takes a long time to give back {facets} great stones. Each one clicks home like a key in its own lock, and the seal fills up from the bottom, brighter and brighter, until the cave is as bright as noon. In the history books, your list of stones takes a whole page."
+        },
+        {
+          "when": {
+            "flag": "motive_wealth"
+          },
+          "text": "You came north for the treasure. You are going home without one gem, and somehow you have never felt richer."
+        },
+        {
+          "when": {
+            "flag": "motive_curiosity"
+          },
+          "text": "You came to find out what really happened. Now you know, and so does the whole realm, because you are the ones telling it."
+        },
+        {
+          "when": {
+            "flag": "motive_prestige"
+          },
+          "text": "You came so everyone would know your names. They do now. The grandmothers carve them over the door of every bell-hut in the foothills."
+        },
+        {
+          "when": {
+            "flag": "motive_duty"
+          },
+          "text": "You came because somebody had to keep folk safe. Tonight, all over the realm, folk are safe, and most of them will never know who to thank."
+        },
+        {
+          "when": {
+            "flag": "motive_fresh_start"
+          },
+          "text": "You came for a fresh start somewhere new. The whole realm gets one tonight, and so do you."
+        },
+        {
+          "when": {
+            "flag": "motive_proving"
+          },
+          "text": "You came to prove you could do it. You did, and there is not one person left in the realm who doubts it."
+        },
+        {
+          "when": {
+            "flag": "refused_the_cult"
+          },
+          "text": "Hessa sends a pot of soup up the mountain the next morning. You said no to her cure, kindly, and she remembers the kindly part."
+        },
+        {
+          "when": {
+            "flag": "funded_the_break"
+          },
+          "text": "The coins you gave the soup tents come back in the strangest way: Hessa's masked singers spend them on new bells, and rings them for you."
+        },
+        {
+          "when": {
+            "flag": "told_wardens"
+          },
+          "text": "In Redspire, Pellam writes it down twice: RETURNED. Then, for the first time in four hundred years, he writes it a third time, just because he likes the word."
+        },
+        {
+          "when": {
+            "flag": "told_gatherers"
+          },
+          "text": "The grandmothers ring the news from town to town all night, and by morning every dragonling child knows the happy ring by heart."
+        },
+        {
+          "when": {
+            "flag": "kept_close"
+          },
+          "text": "Hardly anybody knew you were coming. By morning, everybody knows you came, and the little ones are already playing Heroes of Red Sky in the street."
         }
       ],
       "heal": 4,
@@ -2819,6 +2937,72 @@
             }
           },
           "text": "When the titan goes, the humming in your packs stops all at once: {facets} great stones, gone quiet together, like a choir at the end of a song. Carrying them down the mountain is the heaviest thing you ever do."
+        },
+        {
+          "when": {
+            "flag": "motive_wealth"
+          },
+          "text": "You came north for the treasure, and the realm keeps every bit of it. Some folk say a share should go to you. You let them argue."
+        },
+        {
+          "when": {
+            "flag": "motive_curiosity"
+          },
+          "text": "You came to find out what really happened. You found out, right to the end. What the titan was, though, nobody will ever know, and that question follows you home like a cat."
+        },
+        {
+          "when": {
+            "flag": "motive_prestige"
+          },
+          "text": "You came so everyone would know your names. Everyone does, and nobody can agree whether to cheer them or whisper them."
+        },
+        {
+          "when": {
+            "flag": "motive_duty"
+          },
+          "text": "You came because somebody had to keep folk safe. Folk are safe. Some nights you wonder what else you kept them from."
+        },
+        {
+          "when": {
+            "flag": "motive_fresh_start"
+          },
+          "text": "You came for a fresh start. The whole realm gets one, with nothing sleeping under it, and nobody knows yet what to do with all that quiet."
+        },
+        {
+          "when": {
+            "flag": "motive_proving"
+          },
+          "text": "You came to prove you could do it. You did something nobody else ever could, and you will be thinking about it for years."
+        },
+        {
+          "when": {
+            "flag": "refused_the_cult"
+          },
+          "text": "Hessa's masked singers from the soup tent sing at the foot of the mountain all night, very softly, for whatever is gone. You said no to their cure, and they do not hold it against you."
+        },
+        {
+          "when": {
+            "flag": "funded_the_break"
+          },
+          "text": "The coins you gave the soup tents buy candles, and every tent in the foothills lights one for the titan."
+        },
+        {
+          "when": {
+            "flag": "told_wardens"
+          },
+          "text": "In Redspire, Pellam writes the last line of four hundred years of watch-logs: NOTHING LEFT TO WATCH. Then he looks out of the window for a long time, and decides to keep watching anyway, in case something nice happens."
+        },
+        {
+          "when": {
+            "flag": "told_gatherers"
+          },
+          "text": "The grandmothers unwrap the bell nobody uses and put it away in a drawer, sock and all. Then they teach the little ones a new ring, for the day the Keeper flew."
+        },
+        {
+          "when": {
+            "flag": "kept_close"
+          },
+          "text": "You kept it close, so the story everybody tells is a little bit wrong. You never correct it. You just wave whenever the Seal-Keeper flies over."
         }
       ],
       "heal": 4,
@@ -2856,6 +3040,60 @@
             }
           },
           "text": "Under the ledger line, in the same tiny writing, is a number: {facets}. The clerk counts the great stones in the old record twice, and still cannot believe somebody carried that many up a mountain and told nobody."
+        },
+        {
+          "when": {
+            "flag": "motive_wealth"
+          },
+          "text": "You came north for the treasure. You go home with the best secret in the realm instead, and nobody can ever steal a secret."
+        },
+        {
+          "when": {
+            "flag": "motive_curiosity"
+          },
+          "text": "You came to find out what really happened. You are the only ones who will ever know all of it."
+        },
+        {
+          "when": {
+            "flag": "motive_prestige"
+          },
+          "text": "You came so everyone would know your names. Nobody ever will. That turns out to be the part you are proudest of."
+        },
+        {
+          "when": {
+            "flag": "motive_duty"
+          },
+          "text": "You came because somebody had to keep folk safe. Somebody did. Nobody needs to know who."
+        },
+        {
+          "when": {
+            "flag": "motive_fresh_start"
+          },
+          "text": "You came for a fresh start somewhere new. You walk down the mountain as nobody in particular, which is the freshest start there is."
+        },
+        {
+          "when": {
+            "flag": "motive_proving"
+          },
+          "text": "You came to prove you could do it. The only ones you had to prove it to were yourselves, and you did."
+        },
+        {
+          "when": {
+            "flag": "refused_the_cult"
+          },
+          "text": "Hessa never finds out who did it. She has a guess. She sends extra soup to your tent all winter, just in case."
+        },
+        {
+          "when": {
+            "flag": "funded_the_break"
+          },
+          "text": "Hessa finds your coins in her soup-tent tin the next spring and wonders who gave them. Nobody tells her."
+        },
+        {
+          "when": {
+            "flag": "kept_close"
+          },
+          "text": "You kept it close the whole way, and you keep it close now. Some nights, far up the mountain, a tiny bell rings the happy ring all by itself, and you know the mountain remembers."
         }
       ],
       "heal": 4,
@@ -2863,7 +3101,7 @@
     },
     "ending_collectors": {
       "type": "rest",
-      "narration": "You lift the Keystone. It is warm, and it is yours, and whatever you were collecting, it is complete now. The seal holds, just, the way a door holds without a lock, because the Seal-Keeper lies down across it and stays there, and means to stay. The rush is over and you won it. History files you as The Collectors, and the red sky is no longer the strangest weather in the realm. You are. Somewhere a grandmother adds your names to a very old list, and leaves a space under them, in case.",
+      "narration": "You lift the crown stone, the one the wardens' oldest logs call the Keystone. It is warm, and it is yours, and whatever you were collecting, it is complete now. The seal holds, just, the way a door holds without a lock, because the Seal-Keeper lies down across it and stays there, and means to stay. The rush is over and you won it. History files you as The Collectors, and the red sky is no longer the strangest weather in the realm. You are. Somewhere a grandmother adds your names to a very old list, and leaves a space under them, in case.",
       "variants": [
         {
           "when": {
@@ -2934,6 +3172,72 @@
             }
           },
           "text": "With the Keystone, your collection is {facets} great stones. The packs are so heavy that the mountain groans when you lift them, and every crab on the ash field turns to watch you carry them down."
+        },
+        {
+          "when": {
+            "flag": "motive_wealth"
+          },
+          "text": "You came north for the treasure, and you got the biggest one there is. It is very heavy, and it hums all the way home."
+        },
+        {
+          "when": {
+            "flag": "motive_curiosity"
+          },
+          "text": "You came to find out what really happened. The answer is in your hands, the size of your head, and it will not stop humming."
+        },
+        {
+          "when": {
+            "flag": "motive_prestige"
+          },
+          "text": "You came so everyone would know your names. Everyone does. Some say them with a cheer, and some with a frown."
+        },
+        {
+          "when": {
+            "flag": "motive_duty"
+          },
+          "text": "You came because somebody had to keep folk safe. The Seal-Keeper is keeping them safe now, lying across the crack. You visit it every spring, with snacks."
+        },
+        {
+          "when": {
+            "flag": "motive_fresh_start"
+          },
+          "text": "You came for a fresh start. With a stone like this, you could start anything at all. You are still deciding what."
+        },
+        {
+          "when": {
+            "flag": "motive_proving"
+          },
+          "text": "You came to prove you could do it. Nobody had ever lifted the Keystone before. Now somebody has."
+        },
+        {
+          "when": {
+            "flag": "refused_the_cult"
+          },
+          "text": "Hessa comes to see the Keystone once. She looks at it for a long time and says nothing, and leaves you a pot of soup anyway."
+        },
+        {
+          "when": {
+            "flag": "funded_the_break"
+          },
+          "text": "Hessa's masked singers from the soup tent ask, very politely, if they may sing to the Keystone. You let them, once a year, and the stone hums back."
+        },
+        {
+          "when": {
+            "flag": "told_wardens"
+          },
+          "text": "The wardens log the Keystone twice, then a third time, then post a warden outside your door, very politely, forever. The warden turns out to be excellent at checkers."
+        },
+        {
+          "when": {
+            "flag": "told_gatherers"
+          },
+          "text": "The grandmothers make up a brand-new ring for you. Nobody is sure yet whether it means thank you or watch out. The little ones ring it anyway, because it is fun."
+        },
+        {
+          "when": {
+            "flag": "kept_close"
+          },
+          "text": "You told nobody you were going, and now you hold the one stone everybody wants. You keep it close, the way you kept everything else. It hums, very softly, like a cat that has decided you are its people."
         }
       ],
       "heal": 4,
@@ -2941,7 +3245,7 @@
     },
     "ending_wardens_regret": {
       "type": "rest",
-      "narration": "You hand the leash to the wardens, the Skywardens of the citadel. They build a cage of oaths and ledgers around the titan, and it holds: honest, careful and cold. The realm is safe the way a locked room is safe. Years later, the wardens' captain writes one line in a ledger of a different color: I wonder if it was lonely. History calls it The Wardens' Regret. And the embermoths still visit the titan every evening, because nobody ever told them not to.",
+      "narration": "Down the last tube come the Skywardens, a whole citadel of them, out of breath and still very neat about it. You put the leash into the hands of their captain, a very tidy warden called Captain Voss. They build a cage of oaths and ledgers around the titan, and it holds: honest, careful and cold. The realm is safe the way a locked room is safe. Years later, the wardens' captain writes one line in a ledger of a different color: I wonder if it was lonely. History calls it The Wardens' Regret. And the embermoths still visit the titan every evening, because nobody ever told them not to.",
       "variants": [
         {
           "when": {
@@ -2970,6 +3274,72 @@
             }
           },
           "text": "In the wardens' ledger, the column for STONES SURRENDERED runs off the bottom of the page: {facets} great stones, each one logged twice. It is the longest entry the citadel has ever written, and the wardens are very proud of it."
+        },
+        {
+          "when": {
+            "flag": "motive_wealth"
+          },
+          "text": "You came north for the treasure. The wardens give you a receipt for the leash instead. It is the most carefully written thing you will ever own."
+        },
+        {
+          "when": {
+            "flag": "motive_curiosity"
+          },
+          "text": "You came to find out what really happened. The wardens let you read every log about it, all four hundred years, which takes most of a winter."
+        },
+        {
+          "when": {
+            "flag": "motive_prestige"
+          },
+          "text": "You came so everyone would know your names. The wardens write them on the cage, very small, in the corner, logged twice."
+        },
+        {
+          "when": {
+            "flag": "motive_duty"
+          },
+          "text": "You came because somebody had to keep folk safe. The wardens agree with you completely, which turns out to be more worrying than you expected."
+        },
+        {
+          "when": {
+            "flag": "motive_fresh_start"
+          },
+          "text": "You came for a fresh start. The wardens offer you a job. You say you will think about it, and you mean it."
+        },
+        {
+          "when": {
+            "flag": "motive_proving"
+          },
+          "text": "You came to prove you could do it. Captain Voss shakes your hand, which she has never done for anyone. Nobody at the citadel ever forgets it."
+        },
+        {
+          "when": {
+            "flag": "refused_the_cult"
+          },
+          "text": "Hessa hears about the cage. She does not argue. She sends the titan a song every evening, along with the moths."
+        },
+        {
+          "when": {
+            "flag": "funded_the_break"
+          },
+          "text": "Hessa writes you a letter about the coins you gave her soup tents: she would like them spent on something kinder than a cage. You keep the letter."
+        },
+        {
+          "when": {
+            "flag": "told_wardens"
+          },
+          "text": "You told the wardens first, and they never forget it. Pellam keeps a chair for you at the truth-table, with a cushion on it, which is not regulation."
+        },
+        {
+          "when": {
+            "flag": "told_gatherers"
+          },
+          "text": "The grandmothers ring a slow ring every evening for whatever is in the cage. The wardens tried to stop them once. They have stopped trying, and some of them hum along."
+        },
+        {
+          "when": {
+            "flag": "kept_close"
+          },
+          "text": "You kept it close all the way to the bottom, and then you gave it away. The wardens are still not sure what to make of you, which is the closest wardens come to liking someone."
         }
       ],
       "heal": 4,
@@ -2977,7 +3347,7 @@
     },
     "ending_cure": {
       "type": "rest",
-      "narration": "Hessa's people, the Deep Hollow choir, sing their crystal chord into the seal, and you hold them to every word. Something under the mountain hums back. The cult swears the world's broken laws are mending, and maybe they are: the sky is a little less red, and Hessa cries into a pot of soup. History calls it The Cure, with a question mark that nobody has ever quite been able to rub out.",
+      "narration": "Hessa's people, the Deep Hollow choir, sing their crystal chord into the seal, and you hold them to every word. Something under the mountain hums back. Hessa's choir swears the world's broken laws are mending, and maybe they are: the sky is a little less red, and Hessa cries into a pot of soup. History calls it The Cure, with a question mark that nobody has ever quite been able to rub out.",
       "variants": [
         {
           "when": {
@@ -3006,6 +3376,72 @@
             }
           },
           "text": "The choir sets your {facets} great stones around the seal in a ring, and the chord gets so loud that windows rattle in the foothills. Hessa says she has never heard a chord like it. She cries again."
+        },
+        {
+          "when": {
+            "flag": "motive_wealth"
+          },
+          "text": "You came north for the treasure. Hessa pays you in soup, every day, for the rest of your life, and honestly it is a fair price."
+        },
+        {
+          "when": {
+            "flag": "motive_curiosity"
+          },
+          "text": "You came to find out what really happened. Hessa says you will have to wait and see, like everybody else. You find you do not mind."
+        },
+        {
+          "when": {
+            "flag": "motive_prestige"
+          },
+          "text": "You came so everyone would know your names. The choir sings them in a chord, which is the loudest way a name can be said."
+        },
+        {
+          "when": {
+            "flag": "motive_duty"
+          },
+          "text": "You came because somebody had to keep folk safe. Whether this keeps them safe, nobody knows yet, so you keep watching, just in case."
+        },
+        {
+          "when": {
+            "flag": "motive_fresh_start"
+          },
+          "text": "You came for a fresh start. Hessa says the whole world is having one now. She may even be right."
+        },
+        {
+          "when": {
+            "flag": "motive_proving"
+          },
+          "text": "You came to prove you could do it. You held a whole choir to its word, which most people will tell you cannot be done."
+        },
+        {
+          "when": {
+            "flag": "refused_the_cult"
+          },
+          "text": "You said no to Hessa's cure once, at a soup tent in the foothills. Then you handed it to her anyway. She laughs about that for years."
+        },
+        {
+          "when": {
+            "flag": "funded_the_break"
+          },
+          "text": "The coins you gave the soup tents helped pay for the choir's crystal chord. Hessa shows you the receipt, very proudly."
+        },
+        {
+          "when": {
+            "flag": "told_wardens"
+          },
+          "text": "The wardens write it all down twice, add a question mark, and send a warden to sing with the choir and keep an eye on things. The warden turns out to have a lovely voice."
+        },
+        {
+          "when": {
+            "flag": "told_gatherers"
+          },
+          "text": "The grandmothers ring a new ring for the choir, and the choir sings one back. By spring, nobody can tell which is which."
+        },
+        {
+          "when": {
+            "flag": "kept_close"
+          },
+          "text": "You kept it close until the very end, and then you trusted Hessa with it. She keeps that trust like her best ladle, polished and always close at hand."
         }
       ],
       "heal": 4,
@@ -3042,6 +3478,72 @@
             }
           },
           "text": "You keep all {facets} great stones in a row along your windowsill. When they hum together, the whole valley gets a thunderstorm, so people learn to listen for it. The mountain still shivers when you visit."
+        },
+        {
+          "when": {
+            "flag": "motive_wealth"
+          },
+          "text": "You came north for the treasure. Now farmers bring you pies to ask about the weather, which is better than treasure, mostly."
+        },
+        {
+          "when": {
+            "flag": "motive_curiosity"
+          },
+          "text": "You came to find out what really happened. Now you find out every morning, because you are what happens."
+        },
+        {
+          "when": {
+            "flag": "motive_prestige"
+          },
+          "text": "You came so everyone would know your names. Every farmer in the realm says them each morning, looking up at the sky."
+        },
+        {
+          "when": {
+            "flag": "motive_duty"
+          },
+          "text": "You came because somebody had to keep folk safe. Now you keep the weather kind, too."
+        },
+        {
+          "when": {
+            "flag": "motive_fresh_start"
+          },
+          "text": "You came for a fresh start. You got the freshest one there is: being something the realm never had before."
+        },
+        {
+          "when": {
+            "flag": "motive_proving"
+          },
+          "text": "You came to prove you could do it. You hold the power under a mountain in your hands. Nobody asks you to prove anything anymore."
+        },
+        {
+          "when": {
+            "flag": "refused_the_cult"
+          },
+          "text": "Hessa comes for tea sometimes, on the same days as the Seal-Keeper. They argue very politely about the cure, and you pour."
+        },
+        {
+          "when": {
+            "flag": "funded_the_break"
+          },
+          "text": "Hessa writes to thank you for the coins you gave her soup tents, and asks, very politely, for rain on Tuesdays."
+        },
+        {
+          "when": {
+            "flag": "told_wardens"
+          },
+          "text": "The wardens send a clerk to log the weather at your camp twice a day. Pellam asks for the job, and gets it."
+        },
+        {
+          "when": {
+            "flag": "told_gatherers"
+          },
+          "text": "The grandmothers make up a ring for every kind of weather you make. The rain ring is the little ones' favorite."
+        },
+        {
+          "when": {
+            "flag": "kept_close"
+          },
+          "text": "You kept it close the whole way, and you are keeping it close still: the power under the mountain, folded in your hands like a sleeping bird."
         }
       ],
       "heal": 4,
@@ -3078,6 +3580,72 @@
             }
           },
           "text": "The Seal-Keeper set you down with all {facets} great stones still in your packs. They hum all night toward the summit, so loudly that nobody nearby gets any sleep, and so the whole foothills keeps watch with you."
+        },
+        {
+          "when": {
+            "flag": "motive_wealth"
+          },
+          "text": "You came north for the treasure. Tonight you would trade every gem in the realm to be back up there, helping."
+        },
+        {
+          "when": {
+            "flag": "motive_curiosity"
+          },
+          "text": "You came to find out what really happened. You will find out, one way or another. You are not done asking."
+        },
+        {
+          "when": {
+            "flag": "motive_prestige"
+          },
+          "text": "You came so everyone would know your names. Tonight nobody says them. Tomorrow, maybe, somebody will."
+        },
+        {
+          "when": {
+            "flag": "motive_duty"
+          },
+          "text": "You came because somebody had to keep folk safe. Somebody still has to. You will be ready next time."
+        },
+        {
+          "when": {
+            "flag": "motive_fresh_start"
+          },
+          "text": "You came for a fresh start. This is not the one you wanted, but it is still a start."
+        },
+        {
+          "when": {
+            "flag": "motive_proving"
+          },
+          "text": "You came to prove you could do it. You have not proved it yet. Yet is a very important word."
+        },
+        {
+          "when": {
+            "flag": "refused_the_cult"
+          },
+          "text": "Hessa brings soup to the foothills for everyone keeping watch. She gives you the first bowl, and the biggest."
+        },
+        {
+          "when": {
+            "flag": "funded_the_break"
+          },
+          "text": "Hessa's masked singers from the soup tent sing to the mountain all night. You are not sure it helps. You sing along anyway."
+        },
+        {
+          "when": {
+            "flag": "told_wardens"
+          },
+          "text": "In Redspire, Pellam opens a fresh page and writes your names at the top, with a space beneath them. \"For next time,\" he says."
+        },
+        {
+          "when": {
+            "flag": "told_gatherers"
+          },
+          "text": "The grandmothers ring the ordinary bell all night, so the Keeper knows it is not holding alone. You ring it with them."
+        },
+        {
+          "when": {
+            "flag": "kept_close"
+          },
+          "text": "Nobody knew you went up. Nobody knows you came down. But you know, and the embermoth knows, and that is enough to start again."
         }
       ],
       "heal": 3,
@@ -3115,6 +3683,72 @@
             }
           },
           "text": "In your packs, all {facets} great stones ring along with the last bell, loud as a second bell, and every mountain in the realm hears it."
+        },
+        {
+          "when": {
+            "flag": "motive_wealth"
+          },
+          "text": "You came north for the treasure. Now the treasure is scattered across a brand-new map, and you start learning where it all fell."
+        },
+        {
+          "when": {
+            "flag": "motive_curiosity"
+          },
+          "text": "You came to find out what really happened. Now there is a whole new realm to find out about."
+        },
+        {
+          "when": {
+            "flag": "motive_prestige"
+          },
+          "text": "You came so everyone would know your names. They know you as the almost-heroes. You plan to drop the almost."
+        },
+        {
+          "when": {
+            "flag": "motive_duty"
+          },
+          "text": "You came because somebody had to keep folk safe. Folk are scattered, not gone, and you go to find them, one town at a time."
+        },
+        {
+          "when": {
+            "flag": "motive_fresh_start"
+          },
+          "text": "You came for a fresh start. The whole realm gets one now, whether it wanted one or not, and somebody has to help."
+        },
+        {
+          "when": {
+            "flag": "motive_proving"
+          },
+          "text": "You came to prove you could do it. You nearly did. Nearly is how the second half of every great story starts."
+        },
+        {
+          "when": {
+            "flag": "refused_the_cult"
+          },
+          "text": "Hessa's soup tents are the first thing open in the new realm. She does not talk about the cure anymore. She just ladles."
+        },
+        {
+          "when": {
+            "flag": "funded_the_break"
+          },
+          "text": "The coins you gave the soup tents buy blankets for everyone whose roof wandered off. Hessa makes sure of it."
+        },
+        {
+          "when": {
+            "flag": "told_wardens"
+          },
+          "text": "The wardens start a brand-new log on the very first morning: WHERE EVERYTHING WENT. You help them fill it in."
+        },
+        {
+          "when": {
+            "flag": "told_gatherers"
+          },
+          "text": "The grandmothers ring every bell they have left, to find each other in the new realm. One by one, far away, the bells answer."
+        },
+        {
+          "when": {
+            "flag": "kept_close"
+          },
+          "text": "Nobody knew you went up. But you know where the seal is now, and you have not stopped thinking about how to fix it."
         }
       ],
       "heal": 3,
@@ -3152,6 +3786,72 @@
             }
           },
           "text": "Afterward, your packs still hold all {facets} great stones, every one pulling toward the crack. They are exactly what a cracked seal needs. Someday somebody will carry them down to it."
+        },
+        {
+          "when": {
+            "flag": "motive_wealth"
+          },
+          "text": "You came north for the treasure. Now the sky is full of it, and you spend the next year helping people pick it up."
+        },
+        {
+          "when": {
+            "flag": "motive_curiosity"
+          },
+          "text": "You came to find out what really happened. Now you know more about the titan than anybody alive, and someday that will help."
+        },
+        {
+          "when": {
+            "flag": "motive_prestige"
+          },
+          "text": "You came so everyone would know your names. The Keeper knows them, and calls them when it needs a hand. That is a good kind of famous."
+        },
+        {
+          "when": {
+            "flag": "motive_duty"
+          },
+          "text": "You came because somebody had to keep folk safe. The Keeper is keeping them safe now, and you go back every week to help it hold."
+        },
+        {
+          "when": {
+            "flag": "motive_fresh_start"
+          },
+          "text": "You came for a fresh start. The realm has a crack in it now, and fresh starts are how cracks get mended."
+        },
+        {
+          "when": {
+            "flag": "motive_proving"
+          },
+          "text": "You came to prove you could do it. You could not, this time. You are already working out how you will."
+        },
+        {
+          "when": {
+            "flag": "refused_the_cult"
+          },
+          "text": "You said no to Hessa's cure once. Now she is the first to climb down and help hold the crack, and you hold it side by side."
+        },
+        {
+          "when": {
+            "flag": "funded_the_break"
+          },
+          "text": "Hessa's masked singers from the soup tent grieve loudest of anyone. Then they start singing again, very softly, to help the Keeper hold."
+        },
+        {
+          "when": {
+            "flag": "told_wardens"
+          },
+          "text": "The wardens come up with ropes and ledgers, and start writing down exactly how to hold a cracked seal. You help with the ropes."
+        },
+        {
+          "when": {
+            "flag": "told_gatherers"
+          },
+          "text": "The grandmothers send a bell-keeper to sit with the Keeper every night, so it is never holding alone."
+        },
+        {
+          "when": {
+            "flag": "kept_close"
+          },
+          "text": "You kept it close, and now it is yours to help mend. You go back up the mountain in the spring, with better hands."
         }
       ],
       "heal": 3,
@@ -3185,6 +3885,7 @@
       "art": "scenes/gemfall/seal-chamber",
       "stat": "clever",
       "tn": 16,
+      "narration": "You call up the tube for Hessa, and she comes at once, as if she had been waiting on the stair all along. Behind her come her friends from the Deep Hollow in their painted bark masks, humming one low note. Hessa looks at the leash, then at your empty hands. \"We'll sing,\" she says. \"Tell us the bargain, and we'll keep it.\"",
       "prompt": "Hold Hessa's singers to a bargain you made up just now",
       "cast": [
         {
