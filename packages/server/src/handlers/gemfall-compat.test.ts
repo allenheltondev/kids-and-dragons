@@ -132,7 +132,7 @@ const PRE_EPIC = JSON.parse(
  */
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
-  "chapters/gemfall-01.json": "185f2344ddc0a02b752d1e16cdfc2d699adee2ea5acc1aa4c3e7ae49e43f6951",
+  "chapters/gemfall-01.json": "32d2c5f4b3140d89d31e41830470419765647f97923a0fe62e01bc339759e9c3",
   "chapters/gemfall-02.json": "025601275c30803358b3fea1ea8b552eb3ca78f7eb48a98e745b8063347b1829",
   "chapters/gemfall-03a.json": "2543acfd89b948804507bcec9667f9c2e19b2ad42b20d3f5ffdee17ba59bd73d",
   "chapters/gemfall-03b.json": "37f9a6d76003d1eec4660fa4a86ffdf7b9da305fc79618d2df6821bd4254a734",
