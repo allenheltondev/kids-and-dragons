@@ -3,10 +3,15 @@ title: Crimson Shard
 id: item.crimson_shard
 type: item
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: []
 tags: ["material", "fire", "crafting", "rare"]
+height_cm: 8
+size:
+  height: "8 cm (3 in)"
+  compare: "fits in a teapot"
+  line: "8 cm (3 in), fits in a teapot."
 related:
   - id: biome.red_sky_foothills
     type: biome

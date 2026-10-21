@@ -3,7 +3,7 @@ title: Reefglider
 id: creature.reefglider
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: []
 tags: ["ambient", "ocean", "reef", "indicator"]
@@ -11,6 +11,12 @@ classification: ambient_creature
 danger_level: none
 scale: medium
 sapience: animal
+height_cm: 90
+size:
+  height: "90 cm (2 ft 11 in)"
+  compare: "waist-high to a grown-up"
+  stance: "swims"
+  line: "90 cm (2 ft 11 in), waist-high to a grown-up. Swims."
 lore_hook: "A kite the sea flies for itself."
 likes:
   - id: npc.merfolk

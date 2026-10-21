@@ -3,13 +3,18 @@ title: Boughkin
 id: npc.boughkin
 type: npc
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: ["gemfall-04b"]
 tags: ["supporting_people", "woods", "trees", "memory", "rain"]
 classification: supporting_people
 scale: very_large
 sapience: sapient
+height_cm: 900
+size:
+  height: "9 m (30 ft)"
+  compare: "as big as a house"
+  line: "9 m (30 ft), as big as a house."
 lore_hook: "The path moved. The tree noticed who kept walking."
 related:
   - id: biome.enchanted_woods
