@@ -76,7 +76,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "The shortest road north is a parade: gem wagons up to their axles in ruts, a campfire on every rise, and centaur relay-runners weaving through it all at a canter. Then the whole parade stops. Somebody up ahead is shouting \"NUMBERS! GET YOUR NUMBERS!\"",
+      "narration": "Marda's rumor board said the rush road was jammed but moving: fall in and be carried. So you fell in. Somewhere ahead is the river ford, and tonight's job is to wait your turn there, then try to get across. The shortest road north is a parade: gem wagons up to their axles in ruts, a campfire on every rise, and centaur relay-runners weaving through it all at a canter. Then the whole parade stops. Somebody up ahead is shouting \"NUMBERS! GET YOUR NUMBERS!\"",
       "choices": [
         {
           "id": "walk_front",
@@ -143,7 +143,7 @@
     },
     "scene_spilled_pannier": {
       "type": "story",
-      "narration": "Halfway up the column, a gem wagon drops a wheel into a rut, and a pannier splits open. Little gem chips pour into the road like spilled sweets. Every head turns. The drover on the box is the lead drover, the boss of the whole river crossing up ahead, and he has a voice like a bass drum. \"MIND YOUR BOOTS!\" he booms. Somebody's dog is already sniffing the chips with great interest.",
+      "narration": "Halfway up the column, a gem wagon drops a wheel into a rut, and a pannier splits open. Little gem chips pour into the road like spilled candy. Every head turns. The drover on the box is the lead drover, the boss of the whole river crossing up ahead, and he has a voice like a bass drum. \"WATCH YOUR BOOTS!\" he booms. Somebody's dog is already sniffing the chips with great interest.",
       "choices": [
         {
           "id": "catch",
@@ -199,7 +199,7 @@
     },
     "scene_spilled_pannier_hold_back": {
       "type": "story",
-      "narration": "You stand back. The crowd scrambles, squabbles and stuffs its pockets. Nobody notices what you notice: every chip in the dust is humming, very faintly, like a kettle a long way off. When the last chip is gone, the road goes quiet, and so does the hum.",
+      "narration": "You stand back. The crowd scrambles, squabbles and stuffs its pockets. Nobody notices what you notice: every chip in the dust is trembling, very faintly, like a kettle a long way off. When the last chip is gone, the road goes quiet.",
       "choices": [
         {
           "id": "on",
@@ -212,7 +212,7 @@
     },
     "scene_spilled_pannier_spot_all": {
       "type": "story",
-      "narration": "Your bigfoot stops, looks once, and points. Under the wheel. In a hoofprint. Inside somebody's boot. Every chip goes back in the pannier, even the one the dog was guarding. The drover stares. \"Never seen eyes like that,\" he booms. \"I'll remember you lot.\"",
+      "narration": "Your bigfoot stops, looks once, and points. Under the wheel. In a hoofprint. Inside somebody's boot. Every chip goes back in the pannier, even the one the dog was guarding. The drover stares. \"Never seen eyes like that,\" he booms. \"I'll remember you folks.\"",
       "choices": [
         {
           "id": "on",
@@ -439,7 +439,7 @@
       "discovers": [
         "character.kitsune"
       ],
-      "narration": "Behind Burdock's stall, a kitsune in a tall hat is shuffling three cards on an upturned barrel. \"Find the Sun Card, win a front-of-the-queue pebble!\" Nobody ever finds the Sun Card. Her tails keep twitching every time she shuffles.",
+      "narration": "Behind Burdock's stall, a kitsune in a tall hat called Tamsin Three-Cards is shuffling three cards on an upturned barrel. \"Find the Sun Card, win a front-of-the-queue pebble!\" Nobody ever finds the Sun Card. Her tails keep twitching every time she shuffles.",
       "cast": [
         {
           "figure": "cast/tamsin",
@@ -499,7 +499,7 @@
     },
     "scene_exposed": {
       "type": "story",
-      "narration": "The kitsune, whose name turns out to be Tamsin Three-Cards, sighs and shakes the Sun Card out of her sleeve. The whole crowd gets their pebbles back. The drovers at the front of the queue have noticed you, and drovers remember faces.",
+      "narration": "Tamsin sighs and shakes the Sun Card out of her sleeve. The whole crowd gets their pebbles back. The drovers at the front of the queue have noticed you, and drovers remember faces.",
       "cast": [
         {
           "figure": "cast/tamsin",
@@ -570,7 +570,7 @@
     },
     "scene_soup_line": {
       "type": "story",
-      "narration": "At the edge of camp, people in dark robes with little crystals on strings are giving away soup to anyone whose season has gone wrong. A cheerful ladler named Wend fills your bowls without asking a single question. \"Kindness first,\" says Wend. \"Always.\" The crystal on Wend's string is humming, very faintly.",
+      "narration": "At the edge of camp, people in dark robes with little crystals on strings are giving away soup to anyone whose season has gone wrong. A cheerful ladler named Wend fills your bowls without asking a single question. \"Kindness first,\" says Wend. \"Always.\" The crystal on Wend's string gives a little shiver whenever a gem wagon rolls by.",
       "choices": [
         {
           "id": "thank_wend",
@@ -586,7 +586,7 @@
         },
         {
           "id": "ask_crystal",
-          "label": "Ask why the crystal is humming",
+          "label": "Ask why the crystal shivers",
           "icon": "ear",
           "goto": "scene_soup_line_ask_crystal"
         }
@@ -604,7 +604,7 @@
     },
     "scene_soup_line_ask_crystal": {
       "type": "story",
-      "narration": "Wend lifts the crystal and looks at it as if it has only just started. \"It's done that since the red night,\" Wend says. \"Whenever a gem wagon passes. We think it's trying to say something.\" Wend tucks it back inside the robe, where it goes on humming against Wend's heart.",
+      "narration": "Wend lifts the crystal and looks at it as if it has only just started. \"It's done that since the red night,\" Wend says. \"Whenever a gem wagon passes. We think it's trying to say something.\" Wend tucks it back inside the robe, where it goes on shivering against Wend's heart.",
       "choices": [
         {
           "id": "on",
@@ -623,7 +623,7 @@
     },
     "scene_soup_line_thank_wend": {
       "type": "story",
-      "narration": "\"Thank you,\" you say. Wend beams and fills your bowls a second time, without asking, and remembers all your names after hearing them once. \"Kindness first,\" says Wend again, as if it is a rule the whole world ought to have. The crystal on the string hums, very faintly, the whole time.",
+      "narration": "\"Thank you,\" you say. Wend beams and fills your bowls a second time, without asking, and remembers all your names after hearing them once. \"Kindness first,\" says Wend again, as if it is a rule the whole world ought to have. The crystal on the string shivers every time a wagon rolls by.",
       "choices": [
         {
           "id": "on",
@@ -698,7 +698,7 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Hold the queue against a shoving gang",
+      "prompt": "Link arms and hold the line against a shoving gang",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_relay_message",
@@ -751,7 +751,7 @@
           "name": "Tamsin Three-Cards"
         }
       ],
-      "narration": "Tamsin strolls up shuffling her cards. \"Find the Sun Card, win a place at the front!\" The red scarves crowd round to play. They play for an hour. They never find the Sun Card. By the time they give up, the queue has rolled on without them, and Tamsin gives you a wink.",
+      "narration": "Tamsin strolls up shuffling her cards. \"Find the Sun Card, win a place at the front!\" The red scarves crowd around to play. They play for an hour. They never find the Sun Card. By the time they give up, the queue has rolled on without them, and Tamsin gives you a wink.",
       "choices": [
         {
           "id": "on",
@@ -866,7 +866,7 @@
     },
     "choice_tolls": {
       "type": "choice_point",
-      "narration": "Two days is a long time to stand in a line, and the rush is charging its own tolls. A wagon is stuck to its axles in mud. A centaur marker line has been knocked flat by queue-jumpers. And a faun family called the Brackens is sitting beside a cracked cart wheel, very quiet. Everybody vote.",
+      "narration": "Two days is a long time to stand in a line, and the rush is charging its own tolls. A wagon is stuck to its axles in mud. A centaur marker line has been knocked flat by line-cutters. And a faun family called the Brackens is sitting beside a cracked cart wheel, very quiet. Everybody vote.",
       "cast": [
         {
           "figure": "cast/mother_bracken",
@@ -1079,7 +1079,7 @@
     },
     "scene_family_fix_wheel": {
       "type": "story",
-      "narration": "You lash the cracked wheel together with rope, round and round, until it looks like a wheel wearing a jumper. It turns. It wobbles, but it turns. The littlest Bracken rides on top of the cart to test it and declares it the best wheel ever made, which is not true, but it will get them home.",
+      "narration": "You lash the cracked wheel together with rope, around and around, until it looks like a wheel wearing a sweater. It turns. It wobbles, but it turns. The littlest Bracken rides on top of the cart to test it and declares it the best wheel ever made, which is not true, but it will get them home.",
       "cast": [
         {
           "figure": "cast/mother_bracken",
@@ -1103,7 +1103,7 @@
     },
     "scene_family_share_cake": {
       "type": "story",
-      "narration": "You break the honeycake into four, then five, so the littlest Bracken gets a bit from everyone. For a while nobody says anything, because honeycake. Then the mother says their season was not all bad, really, and the littlest one falls asleep against a cart wheel with crumbs on both cheeks.",
+      "narration": "You break the honeycake into pieces, then more pieces, so the littlest Bracken gets a bit from everyone. For a while nobody says anything, because honeycake. Then the mother says their season was not all bad, really, and the littlest one falls asleep against a cart wheel with crumbs on both cheeks.",
       "cast": [
         {
           "figure": "cast/mother_bracken",
@@ -1274,7 +1274,7 @@
     },
     "scene_campfire_play": {
       "type": "story",
-      "narration": "Round the biggest campfire, a troupe of rush folk is acting out the red night with blankets and saucepans: the mountain, the red sky, the stones falling like rain. It is a big hit. Then their mountain gets the hiccups. \"We need a new mountain, darlings!\" cries the troupe leader, and stares straight at you.",
+      "narration": "Around the biggest campfire, a troupe of rush folk is acting out the red night with blankets and saucepans: the mountain, the red sky, the stones falling like rain. It is a big hit. Then their mountain gets the hiccups. \"We need a new mountain, darlings!\" cries the troupe leader, and stares straight at you.",
       "choices": [
         {
           "id": "be_mountain",
@@ -1308,8 +1308,9 @@
     "check_play_mountain": {
       "type": "check",
       "stat": "heart",
+      "checkKind": "doing",
       "tn": 8,
-      "prompt": "Be a mountain in front of the whole camp",
+      "prompt": "Climb on the barrel under the red blanket and rumble like a mountain",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_witch_stall",
@@ -1473,7 +1474,7 @@
     },
     "scene_tuned_charm_leave_it": {
       "type": "story",
-      "narration": "You leave the stone in its sock on her shelf. Mother Thrum nods, not surprised, and tucks the wool tighter round it. \"Then it rings another night,\" she says. \"And so do I.\" The charms on the stall all chime once, softly, as a wagon rolls past in the dark.",
+      "narration": "You leave the stone in its sock on her shelf. Mother Thrum nods, not surprised, and tucks the wool tighter around it. \"Then it rings another night,\" she says. \"And so do I.\" The charms on the stall all chime once, softly, as a wagon rolls past in the dark.",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1572,7 +1573,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Listen for what changes from wagon to wagon",
+      "prompt": "Hold the charm to wagon after wagon and listen for a different note",
       "roller": "party",
       "onSuccess": {
         "goto": "rest_witch_fire",
@@ -1672,8 +1673,9 @@
     "check_learn_verse": {
       "type": "check",
       "stat": "heart",
+      "checkKind": "doing",
       "tn": 12,
-      "prompt": "Learn a drover song well enough to cross by it",
+      "prompt": "Sing the crossing verse back to the drover, line by line, one step per line",
       "roller": "party",
       "onSuccess": {
         "goto": "choice_ford",
@@ -1707,7 +1709,7 @@
     },
     "scene_crossing_verse_drover_teaches": {
       "type": "story",
-      "narration": "The lead drover spots you and crooks a finger. \"You lot. Here.\" He sings each line once, slowly, and makes you sing it back until it is right. \"Now you know it,\" he booms, \"and now the river knows you know it.\" Then he calls you mudlarks, which is what he calls everybody he likes.",
+      "narration": "The lead drover spots you and crooks a finger. \"You folks. Here.\" He sings each line once, slowly, and makes you sing it back until it is right. \"Now you know it,\" he booms, \"and now the river knows you know it.\" Then he calls you mudlarks, which is what he calls everybody he likes.",
       "choices": [
         {
           "id": "on",
@@ -1827,8 +1829,9 @@
     "check_ford_easy": {
       "type": "check",
       "stat": "heart",
+      "checkKind": "doing",
       "tn": 8,
-      "prompt": "Stay calm and cross together",
+      "prompt": "Link arms and wade across together, nice and steady",
       "roller": "all",
       "onSuccess": {
         "goto": "end_forded",
@@ -1845,7 +1848,16 @@
       "discovers": [
         "creature.river_drake"
       ],
-      "narration": "Halfway across, the red-scarf queue-jumpers charge into the water behind you, and a wagon full of bread tips over with a SPLASH. Two river drakes surface at once, very interested in the bread. The current is shoving at your knees.",
+      "narration": "Halfway across, the red-scarf line-cutters charge into the water behind you, and a wagon full of bread tips over with a SPLASH. Two river drakes surface at once, very interested in the bread. The current is shoving at your knees.",
+      "variants": [
+        {
+          "when": {
+            "flag": "joined_the_con"
+          },
+          "at": "start",
+          "text": "Number 1, says Tamsin's shiny pebble, and nobody stops to check it. The front of the line, it turns out, is exactly where the trouble starts."
+        }
+      ],
       "cast": [
         {
           "figure": "entities/river_drake",
@@ -1884,8 +1896,9 @@
     "check_drake_toll": {
       "type": "check",
       "stat": "heart",
+      "checkKind": "doing",
       "tn": 8,
-      "prompt": "Pay the river drakes politely in bread",
+      "prompt": "Fish the floating loaves out of the river and toss each drake its share",
       "cast": [
         {
           "figure": "entities/river_drake",
@@ -1926,7 +1939,7 @@
     },
     "scene_surge_scarves_help": {
       "type": "story",
-      "narration": "\"YOU LOT!\" you shout. The red scarves stare. Then their leader shrugs. \"Fair's fair,\" she says, and the whole gang wades in and grabs the wagon. Together you heave it upright while the drakes squabble over the bread. Everybody staggers up the north bank, soaked to the ears, and the red scarves even say sorry.",
+      "narration": "\"HEY, RED SCARVES!\" you shout. The red scarves stare. Then their leader shrugs. \"Fair's fair,\" she says, and the whole gang wades in and grabs the wagon. Together you heave it upright while the drakes squabble over the bread. Everybody staggers up the north bank, soaked to the ears, and the red scarves even say sorry.",
       "choices": [
         {
           "id": "on",
@@ -1955,7 +1968,7 @@
       "discovers": [
         "biome.enchanted_woods"
       ],
-      "narration": "The west branch does what rivers do: it whooshes you west into the green tangles of the Whispering Marsh, past a boggart in a reed hat who applauds. At last the channels let you go on a muddy bank near MossHome, at the flooded edge of the Enchanted Woods. You never chose this road, but here you are, and the tuned charm is still humming. The road people will hear about it. The road people hear about everything.",
+      "narration": "The west branch does what rivers do: it whooshes you west into the green tangles of the Whispering Marsh, past a boggart in a reed hat who applauds. At last the channels let you go on a muddy bank near MossHome, the bigfoot town, at the flooded edge of the Enchanted Woods. You never planned this road, but here you are, and the tuned charm is still humming. The road people will hear about it. The road people hear about everything.",
       "heal": 3,
       "onEnter": [
         {
