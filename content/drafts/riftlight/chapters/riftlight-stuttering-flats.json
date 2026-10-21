@@ -1054,7 +1054,7 @@
     },
     "next": {
       "type": "choice_point",
-      "narration": "The guide points out the Bone Yard trail and the return toward the buried bridge. You will choose your destination after leaving the flats. First, prepare for either journey: pack without carrying loose stones away, or leave a clear marker for the return.",
+      "narration": "The guide points out a trail to the Bone Yard, a place of old bones where anything taken comes back, and the way back toward the buried bridge. You will choose your destination after leaving the flats. First, prepare for either journey: check the packs for loose stones, or leave a clear return marker.",
       "choices": [
         {
           "id": "plan_1",
