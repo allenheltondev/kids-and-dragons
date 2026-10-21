@@ -185,6 +185,8 @@ test.describe("the words around a chapter (#357)", () => {
       // --- Drop-in: the kid's phone steps away and comes back; the TV says where they are ---
       await kid.goto("about:blank");
       await expect.poll(async () => (await party(code, token.sessionToken))[0]?.connected, TAP).toBe(false);
+      // The TV has seen the seat go away (drop-in.spec waits the same way): a comeback is away, then back.
+      await expect(tv.getByTestId("stepped-away")).toContainText("Sparklehoof stepped away.", TAP);
       await expect(card).toHaveCount(0);
       await kid.goto(`/p/${code}`);
       await expect.poll(async () => (await party(code, token.sessionToken))[0]?.connected, TAP).toBe(true);
