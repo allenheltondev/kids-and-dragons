@@ -3,10 +3,15 @@ title: Old Ossley
 id: individual.old_ossley
 type: individual
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: ["gemfall-03a", "gemfall-04a", "gemfall-05a", "gemfall-07h", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["stone_crossing", "river", "frogfolk", "crossing"]
+height_cm: 100
+size:
+  height: "1 m (3 ft 3 in)"
+  compare: "waist-high to a grown-up"
+  line: "1 m (3 ft 3 in), waist-high to a grown-up."
 related:
   - id: biome.plains
     type: biome

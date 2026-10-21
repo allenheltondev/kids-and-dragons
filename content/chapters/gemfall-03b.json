@@ -65,7 +65,7 @@
         "npc.frogfolk",
         "creature.will_o_wisp"
       ],
-      "narration": "A frogfolk ferrywoman called Gullet poles you into the Whispering Marsh. She carves a notch in her pole for every new wisp she sees, and this week she ran out of pole and started on her hat. Whole channels are roped off with ribbon and tiny bells, and behind them brand-new wisps bob about like they can't find their slippers. \"Too many new ones,\" says Gullet, and very carefully does not say why.",
+      "narration": "Marda's rumor board said the frogfolk still ferry the ones they like, and a frogfolk ferrywoman called Gullet likes you. She poles you into the Whispering Marsh. Tonight's job: ride through the marsh and find a way out. Gullet carves a notch in her pole for every new wisp, and this week she ran out of pole and started on her hat. Behind ribbons hung with tiny bells, brand-new wisps bob about like they can't find their slippers. \"Too many new ones,\" says Gullet. \"Ask the boggarts why. They live on an island out here and keep every lost thing.\"",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -353,7 +353,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Work out, from her hints, what Nan Rummage actually wants",
+      "prompt": "Poke through her piles and find the one lost thing Nan Rummage hasn't got",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -386,7 +386,7 @@
     "scene_boggart_clue": {
       "type": "story",
       "priority": 1,
-      "narration": "Nan Rummage opens the bag a crack. Inside is a chip of fallen gem, no bigger than a tooth, humming one long, low note. \"Lost things all hum,\" she tells the teapot lid. \"This one hums like the Gate. Same note. Exactly.\" Then, to an umbrella: \"Not that I said.\"",
+      "narration": "Nan Rummage opens the bag a crack. Inside is a chip of fallen gem, no bigger than a tooth, humming one long, low note. \"Lost things all hum,\" she tells the teapot lid. \"This one hums like the old Gate out in the still water. The Hollow Gate. Same note. Exactly.\" Then, to an umbrella: \"Not that I said.\"",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -572,7 +572,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "scene_barge",
-        "narration": "You tell them about the time a goose chased you all the way round a market. The reeds lean in. At the bit with the cabbage they actually gasp. One by one they untie themselves to hear better, and by the end there is a clear channel and a lot of rustling that might be clapping.",
+        "narration": "You tell them about the time a goose chased you all the way around a market. The reeds lean in. At the bit with the cabbage they actually gasp. One by one they untie themselves to hear better, and by the end there is a clear channel and a lot of rustling that might be clapping.",
         "effects": [
           {
             "type": "setFlag",
@@ -631,7 +631,7 @@
     },
     "scene_barge": {
       "type": "story",
-      "narration": "Round the next bend, half-sunk in the reeds, sits a gem barge with ABANDONED painted on the side in big, helpful letters. One gem sits on its deck, humming the boggart's note. There are prospector footprints in the mud going toward it, and, oddly, none coming back.",
+      "narration": "Around the next bend, half-sunk in the reeds, sits a gem barge with ABANDONED painted on the side in big, helpful letters. One gem sits on its deck, humming the boggart's note. There are prospector footprints in the mud going toward it, and, oddly, none coming back.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -754,7 +754,7 @@
       },
       "onFailure": {
         "goto": "encounter_mimic",
-        "narration": "The bank shakes. So does the barge. Then the barge turns round and looks at you, and it is not pleased."
+        "narration": "The bank shakes. So does the barge. Then the barge turns around and looks at you, and it is not pleased."
       }
     },
     "scene_kitsune_review": {
@@ -762,7 +762,7 @@
       "discovers": [
         "creature.mire_mimic"
       ],
-      "narration": "Your kitsune walks once round the barge with their nose in the air. \"The barnacles are on the wrong side. That rope is a tail. And nobody abandons a barge with the lantern still polished.\" A long, wounded silence. Then the barge unfolds into a mire mimic and slinks off into the reeds, mortified.",
+      "narration": "Your kitsune walks once around the barge with their nose in the air. \"The barnacles are on the wrong side. That rope is a tail. And nobody abandons a barge with the lantern still polished.\" A long, wounded silence. Then the barge unfolds into a mire mimic and slinks off into the reeds, mortified.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -828,7 +828,7 @@
       },
       "onFailure": {
         "goto": "ending_marsh_kept_secrets",
-        "narration": "Every channel looks like every other channel, and the wisps keep swapping them round when you blink. By the time you give up and sit down on a tussock, the moon has set and the marsh has decided to keep you a little longer."
+        "narration": "Every channel looks like every other channel, and the wisps keep swapping them around when you blink. By the time you give up and sit down on a tussock, the moon has set and the marsh has decided to keep you a little longer."
       }
     },
     "scene_act_closed": {
@@ -938,7 +938,7 @@
     },
     "rest_reed_raft_hat": {
       "type": "story",
-      "narration": "Gullet takes off her hat and turns it round. Every notch is a new wisp she has seen since the mountain went off. The brim is full. The crown is nearly full. \"When I run out of hat,\" she says, \"I'll start on my other hat.\" She puts it back on, and does not say what happens when she runs out of hats.",
+      "narration": "Gullet takes off her hat and turns it around. Every notch is a new wisp she has seen since the mountain went off. The brim is full. The crown is nearly full. \"When I run out of hat,\" she says, \"I'll start on my other hat.\" She puts it back on, and does not say what happens when she runs out of hats.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -976,7 +976,7 @@
     },
     "scene_fog_bank": {
       "type": "story",
-      "narration": "The fog closes in so thick you can't see the end of Gullet's pole. Somewhere ahead the channel splits, and somewhere ahead are old stumps that would very much like to meet a raft. Gullet slows right down. \"Need eyes,\" she hums. \"Or ears. I'm not fussy.\" A heron stands in the fog nearby, looking as lost as you are.",
+      "narration": "The fog closes in so thick you can't see the end of Gullet's pole. Somewhere ahead the channel splits, and somewhere ahead are old stumps that would very much like to meet a raft. Gullet slows right down. \"Need eyes,\" she hums. \"Or ears. I'm not picky.\" A heron stands in the fog nearby, looking as lost as you are.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -1278,6 +1278,7 @@
     "check_patience": {
       "type": "check",
       "stat": "heart",
+      "checkKind": "doing",
       "tn": 8,
       "prompt": "Walk with the wisp, not after it, however slowly it goes",
       "cast": [
@@ -1304,7 +1305,7 @@
     },
     "scene_wisp_trap": {
       "type": "story",
-      "narration": "The wisp leads you round and round in a big loop, and then straight into a pool of mud so sticky it keeps one boot each as a souvenir. When you squelch out, the wisp is waiting at the edge of the reeds, looking smug. Beyond it, across a stretch of still water, stands something huge and gray.",
+      "narration": "The wisp leads you around and around in a big loop, and then straight into a pool of mud so sticky it keeps one boot each as a souvenir. When you squelch out, the wisp is waiting at the edge of the reeds, looking smug. Beyond it, across a stretch of still water, stands something huge and gray.",
       "cast": [
         {
           "figure": "entities/will_o_wisp"
@@ -1438,7 +1439,7 @@
       "type": "story",
       "priority": 2,
       "art": "scenes/gemfall/hollow-gate",
-      "narration": "You stand very still. The runes are humming one long, low note. The boggart's note. The barge's note. Not a bit like it. The same. What that means, the Gate does not say. Is it a door? A warning? Something else? It just keeps humming, the way it has hummed since before anyone was here to hear it.",
+      "narration": "You stand very still. The runes are humming one long, low note. The boggart's note. The barge's note. Not just like it. The same. What that means, the Gate does not say. Is it a door? A warning? Something else? It just keeps humming, the way it has hummed since before anyone was here to hear it.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1555,6 +1556,7 @@
     "check_gate_hum": {
       "type": "check",
       "stat": "heart",
+      "checkKind": "doing",
       "tn": 12,
       "prompt": "Hum the Gate's note back to it, all on the same note",
       "roller": "all",
@@ -1608,7 +1610,7 @@
     },
     "scene_nan_washtub_north": {
       "type": "story",
-      "narration": "\"The trees?\" Nan tells the ladle. \"The trees are keeping lost things too. Piles of them. Picky about it, mind. They don't take mittens.\" She sniffs, as if this is very poor taste. \"They take the humming kind.\" Then she rows off backwards into the fog, still talking to the ladle, and is gone.",
+      "narration": "\"The trees?\" Nan tells the ladle. \"The trees are keeping lost things too. Piles of them. Picky about it, though. They don't take mittens.\" She sniffs, as if this is very poor taste. \"They take the humming kind.\" Then she rows off backwards into the fog, still talking to the ladle, and is gone.",
       "cast": [
         {
           "figure": "cast/nan_rummage",
@@ -1710,7 +1712,7 @@
       "roller": "all",
       "onSuccess": {
         "goto": "ending_walked_over",
-        "narration": "One, two, three, HEAVE. The cart pops out of the mud like a cork from a bottle, and the sausage seller hands round sausages hot off the griddle. The whole queue cheers, and the goose is beside itself. Nobody has ever been welcomed onto a road this loudly.",
+        "narration": "One, two, three, HEAVE. The cart pops out of the mud like a cork from a bottle, and the sausage seller hands out sausages hot off the griddle. The whole queue cheers, and the goose is beside itself. Nobody has ever been welcomed onto a road this loudly.",
         "effects": [
           {
             "type": "grantItem",
@@ -1733,7 +1735,7 @@
     },
     "scene_reed_edge_reeds": {
       "type": "story",
-      "narration": "You lay armfuls of reeds under the wheels, thick as a carpet. The cart rolls out smooth as a sledge, and the sausage seller stares at you as if you have just invented wheels. \"Marsh folk!\" she shouts. \"Clever marsh folk!\" She hands round sausages, and tells everybody in the queue about you, for quite a long time.",
+      "narration": "You lay armfuls of reeds under the wheels, thick as a carpet. The cart rolls out smooth as a sled, and the sausage seller stares at you as if you have just invented wheels. \"Marsh folk!\" she shouts. \"Clever marsh folk!\" She hands out sausages, and tells everybody in the queue about you, for quite a long time.",
       "choices": [
         {
           "id": "on",
@@ -1752,7 +1754,7 @@
     },
     "scene_reed_edge_prospectors": {
       "type": "story",
-      "narration": "\"Oi! Tussock people!\" The three prospectors you hauled out of the marsh are halfway up the queue. They come running, still damp, and the tallest one shouts, \"We owe these lot!\" Six prospector hands and all of yours push, and the cart shoots out of the mud so fast the sausage seller has to chase it. Sausages for everybody, and an extra one for the tall one.",
+      "narration": "\"Hey! Tussock people!\" The three prospectors you hauled out of the marsh are halfway up the queue. They come running, still damp, and the tallest one shouts, \"We owe these folks!\" Six prospector hands and all of yours push, and the cart shoots out of the mud so fast the sausage seller has to chase it. Sausages for everybody, and an extra one for the tall one.",
       "choices": [
         {
           "id": "on",
@@ -1831,8 +1833,9 @@
     "check_ford_song": {
       "type": "check",
       "stat": "heart",
+      "checkKind": "doing",
       "tn": 8,
-      "prompt": "Keep time with the frogfolk's crossing song",
+      "prompt": "Pole and stamp in time with the frogfolk's crossing song",
       "cast": [
         {
           "figure": "cast/gullet",
