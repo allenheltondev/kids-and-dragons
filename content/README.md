@@ -526,6 +526,10 @@ shows them, on a Starweaver's phone.
 "through": { "type": "story",        "rift": "collapse", "narration": "Behind you the fold pinches shut." }
 ```
 
+- Around the tear the stage draws a deep hole, a soft mist, a still arch line and two rings that turn
+  opposite ways, standing on the ground like a doorway. They only turn: nothing ripples, spirals,
+  breathes or flickers, because those are the Riftlight rules' own patterns and this shimmer must not
+  teach one.
 - `"steady"`: the rift is there, shimmering.
 - `"open"`: it unfolds once as the scene opens, with the `rift-open` cue, then shimmers.
 - `"collapse"`: it folds shut once as the scene opens, with the `rift-collapse` cue, then is gone.

@@ -77,10 +77,17 @@ import { sceneBackdropUrl } from "./art-paths";
 import {
   RIFT_FOOT,
   RIFT_GLOW_COLOR,
+  RIFT_DASHES,
+  RIFT_HALO_LINE,
   RIFT_HOLE_COLOR,
+  RIFT_INK_COLOR,
+  RIFT_MOTES,
+  groundFade,
   riftPasses,
   riftPresence,
   riftStand,
+  ringMarks,
+  ringPoint,
   STILL_FRAME,
   TEAR_HALF_HEIGHT_PX,
   TEAR_HALF_WIDTH_PX,
@@ -499,10 +506,11 @@ export function createScene(app: Application): PartyScene {
   riftSprite.visible = false;
   riftSprite.label = "rift";
   /*
-   * Behind the painted tear, the two layers that make it easy to see
-   * (scene-rift.ts, "Making the tear easy to see"): a breathing mist and a
-   * near-black hole, drawn once in sheet-frame pixels around the tear's
-   * middle and sized each frame by `riftPresence`.
+   * Around the painted tear, the layers that make it easy to see and give it
+   * presence (scene-rift.ts, "Making the tear easy to see"): a steady mist, a
+   * deep hole with a lighter rim, and two rings turning opposite ways. All in
+   * sheet-frame pixels around the tear's middle, sized each frame by
+   * `riftPresence`; only the rings are redrawn as they turn.
    */
   const riftGlow = new Graphics();
   // Many faint rings rather than a few strong ones, so the mist has no visible edge.
@@ -512,12 +520,79 @@ export function createScene(app: Application): PartyScene {
       .ellipse(0, 0, TEAR_HALF_WIDTH_PX * spread * 1.2, TEAR_HALF_HEIGHT_PX * (1 + ring * 0.045))
       .fill({ color: RIFT_GLOW_COLOR, alpha: 0.065 });
   }
+  // Deep in the middle, a little lighter at the rim: a gap with depth, not a flat cut-out.
   const riftHole = new Graphics()
-    .ellipse(0, 0, TEAR_HALF_WIDTH_PX * 0.78, TEAR_HALF_HEIGHT_PX * 0.88)
+    .ellipse(0, 0, TEAR_HALF_WIDTH_PX * 0.8, TEAR_HALF_HEIGHT_PX * 0.9)
+    .fill({ color: RIFT_GLOW_COLOR, alpha: 0.35 })
+    .ellipse(0, 0, TEAR_HALF_WIDTH_PX * 0.72, TEAR_HALF_HEIGHT_PX * 0.84)
+    .fill({ color: RIFT_HOLE_COLOR, alpha: 0.85 })
+    .ellipse(0, 0, TEAR_HALF_WIDTH_PX * 0.5, TEAR_HALF_HEIGHT_PX * 0.66)
     .fill({ color: RIFT_HOLE_COLOR });
+  const riftRings = new Graphics();
+  /**
+   * Redraw the rings where they stand now. Each dash is a tapered brushstroke,
+   * thick in the middle and pointed at both ends, a pale core inside the warm
+   * dark outline the figures wear, so it reads on bright and dark ground
+   * alike; each mote a dot in the same two tones. Anything under the floor
+   * line is not drawn (`groundFade`).
+   */
+  function drawRiftRings(seconds: number): void {
+    const still = prefersReducedMotion();
+    riftRings.clear();
+    // The still line first, under the turning marks: an arch over the tear, faded into the ground.
+    const lineSteps = 48;
+    for (const [width, color, alpha] of [[3, RIFT_INK_COLOR, 0.32], [1.2, RIFT_GLOW_COLOR, 0.5]] as const) {
+      let drawing = false;
+      for (let i = 0; i <= lineSteps; i++) {
+        const angle = (2 * Math.PI * i) / lineSteps;
+        const point = { x: RIFT_HALO_LINE.rx * Math.cos(angle), y: RIFT_HALO_LINE.ry * Math.sin(angle) };
+        if (groundFade(point.y) < 0.5) {
+          if (drawing) riftRings.stroke({ width, color, alpha });
+          drawing = false;
+          continue;
+        }
+        if (drawing) riftRings.lineTo(point.x, point.y);
+        else riftRings.moveTo(point.x, point.y);
+        drawing = true;
+      }
+      if (drawing) riftRings.stroke({ width, color, alpha });
+    }
+    const steps = 8;
+    for (const mark of ringMarks(RIFT_DASHES, seconds, still)) {
+      const at = (i: number) => ringPoint(RIFT_DASHES, mark.from + ((mark.to - mark.from) * i) / steps, mark.reach);
+      const middle = at(steps / 2);
+      const fade = groundFade(middle.y);
+      if (fade <= 0) continue;
+      for (const [half, color, alpha] of [[3.4, RIFT_INK_COLOR, 0.75], [1.6, RIFT_GLOW_COLOR, 0.95]] as const) {
+        // Out along one side and back along the other, widest at the middle.
+        const left: number[] = [];
+        const right: number[] = [];
+        for (let i = 0; i <= steps; i++) {
+          const point = at(i);
+          const next = at(Math.min(steps, i + 1));
+          const prev = at(Math.max(0, i - 1));
+          const dx = next.x - prev.x;
+          const dy = next.y - prev.y;
+          const length = Math.hypot(dx, dy) || 1;
+          const w = half * mark.width * (0.35 + 0.65 * Math.sin((Math.PI * i) / steps));
+          left.push(point.x - (dy / length) * w, point.y + (dx / length) * w);
+          right.unshift(point.x + (dy / length) * w, point.y - (dx / length) * w);
+        }
+        for (let i = 0; i < right.length; i += 2) left.push(right[i]!, right[i + 1]!);
+        riftRings.poly(left).fill({ color, alpha: alpha * fade });
+      }
+    }
+    for (const mark of ringMarks(RIFT_MOTES, seconds, still)) {
+      const point = ringPoint(RIFT_MOTES, mark.from, mark.reach);
+      const fade = groundFade(point.y);
+      if (fade <= 0) continue;
+      riftRings.circle(point.x, point.y, 3.3 * mark.width).fill({ color: RIFT_INK_COLOR, alpha: 0.75 * fade });
+      riftRings.circle(point.x, point.y, 1.9 * mark.width).fill({ color: RIFT_GLOW_COLOR, alpha: 0.95 * fade });
+    }
+  }
   const riftPresenceLayer = new Container();
   riftPresenceLayer.position.set(0, -TEAR_MIDDLE_PX);
-  riftPresenceLayer.addChild(riftGlow, riftHole);
+  riftPresenceLayer.addChild(riftGlow, riftRings, riftHole);
   /** The tear and what is behind it, standing on the floor line; scaled to the stage in layoutActors. */
   const riftGroup = new Container();
   riftGroup.zIndex = -1;
@@ -580,8 +655,9 @@ export function createScene(app: Application): PartyScene {
     }
     riftSprite.texture = frames[frame] ?? frames[0]!;
     riftSprite.visible = true;
-    const presence = riftPresence(pass, frame, elapsed, prefersReducedMotion(), RIFT_SHEET.frames);
+    const presence = riftPresence(pass, frame, RIFT_SHEET.frames);
     riftPresenceLayer.scale.set(presence.size);
+    drawRiftRings(elapsed);
     riftGlow.alpha = presence.glow;
     riftHole.alpha = presence.hole;
     riftGroup.visible = true;
