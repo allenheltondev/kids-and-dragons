@@ -62,6 +62,18 @@ describe("step", () => {
     expect(document.activeElement?.id).toBe("in1");
   });
 
+  it("stays inside a dialog that has focus, such as the sign-in over the Room panel", () => {
+    lay(
+      '<button id="behind">Lock the room</button><div role="dialog"><input id="email" type="email" /><button id="send">Send</button></div>',
+      { behind: at(0, 100), email: at(0, 0), send: at(0, 200) },
+    );
+    document.getElementById("email")!.focus();
+    step("down");
+    expect(document.activeElement?.id).toBe("send");
+    expect(step("down")).toBe(false);
+    expect(document.activeElement?.id).toBe("send");
+  });
+
   it("skips what is behind an inert page or disabled", () => {
     lay('<div inert><button id="behind">x</button></div><button id="off" disabled>y</button><button id="on">z</button>', {
       behind: at(0, 0), off: at(60, 0), on: at(120, 0),
@@ -85,12 +97,70 @@ describe("installRemoteFocus", () => {
     expect(document.activeElement?.id).toBe("b");
   });
 
-  it("leaves the arrows to a text field", () => {
+  const press = (key: string): KeyboardEvent => {
+    const event = new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true });
+    (document.activeElement ?? document.body).dispatchEvent(event);
+    return event;
+  };
+
+  it("leaves Left and Right to a text field, for its caret", () => {
     lay('<input id="field" /><button id="b">b</button>', { field: at(0, 0), b: at(60, 0) });
     const stop = installRemoteFocus();
     document.getElementById("field")!.focus();
-    document.getElementById("field")!.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
+    expect(press("ArrowRight").defaultPrevented).toBe(false);
     expect(document.activeElement?.id).toBe("field");
     stop();
+  });
+
+  it("reaches the sign-in's fields, and Up and Down leave a one-line one", () => {
+    // Review of #392: the remote could open "Let visitors join" but not reach its email field.
+    lay('<button id="open">Let visitors join</button><input id="email" type="email" /><button id="send">Send</button>', {
+      open: at(0, 0), email: at(0, 60), send: at(0, 120),
+    });
+    const stop = installRemoteFocus();
+    document.getElementById("open")!.focus();
+    press("ArrowDown");
+    expect(document.activeElement?.id).toBe("email");
+    press("ArrowDown");
+    expect(document.activeElement?.id).toBe("send");
+    press("ArrowUp");
+    expect(document.activeElement?.id).toBe("email");
+    press("ArrowUp");
+    expect(document.activeElement?.id).toBe("open");
+    stop();
+  });
+
+  it("leaves any field on Escape and then an arrow, so a remote is never stuck in one", () => {
+    lay('<select id="pick"><option>a</option><option>b</option></select><button id="b">b</button>', { pick: at(0, 0), b: at(60, 0) });
+    const stop = installRemoteFocus();
+    document.getElementById("pick")!.focus();
+    // A select keeps its own Up and Down.
+    expect(press("ArrowDown").defaultPrevented).toBe(false);
+    expect(document.activeElement?.id).toBe("pick");
+    press("Escape");
+    press("ArrowRight");
+    expect(document.activeElement?.id).toBe("b");
+    stop();
+  });
+
+  it("forgets an Escape once another key comes", () => {
+    lay('<input id="field" /><button id="b">b</button>', { field: at(0, 0), b: at(60, 0) });
+    const stop = installRemoteFocus();
+    document.getElementById("field")!.focus();
+    press("Escape");
+    press("a");
+    press("ArrowRight");
+    expect(document.activeElement?.id).toBe("field");
+    stop();
+  });
+});
+
+describe("what the arrows reach", () => {
+  it("skips a radio drawn by its card, and reaches the card", () => {
+    lay('<label id="card" tabindex="0"><input id="radio" type="radio" /></label>', { card: at(0, 0, 80), radio: at(0, 0, 1) });
+    step("right");
+    expect(document.activeElement?.id).toBe("card");
+    step("right");
+    expect(document.activeElement?.id).toBe("card");
   });
 });

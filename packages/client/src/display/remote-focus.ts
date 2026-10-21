@@ -6,8 +6,13 @@
  * and from nowhere to the first control on screen. The global `:focus-visible` ring shows
  * where it is (styles/theme.css).
  *
- * Only on the shared screen (DisplayExtras installs it), and never inside something that
- * answers arrows itself: a text field, a select, or a group of radios.
+ * Only on the shared screen (DisplayExtras installs it). Fields count: the grown-up's
+ * sign-in behind "Let visitors join" has an email field and a code field, and a remote has
+ * to reach them; while focus is in that sign-in, the arrows stay in it. Inside a field the
+ * arrows are the field's own, with two ways out, so a remote is never stuck in it: Up and
+ * Down leave a one-line text field (Left and Right still move the caret), and Escape and
+ * then any arrow leaves any field. A select, a slider or a group of radios keeps its arrows
+ * the same way.
  */
 
 export type Direction = "left" | "right" | "up" | "down";
@@ -19,7 +24,18 @@ const KEYS: Record<string, Direction> = {
   ArrowDown: "down",
 };
 
-const FOCUSABLE = "button:not([disabled]), a[href], summary, [tabindex]:not([tabindex='-1'])";
+const FOCUSABLE = [
+  "button:not([disabled])",
+  "a[href]",
+  "summary",
+  "input:not([disabled]):not([type='hidden'])",
+  "textarea:not([disabled])",
+  "select:not([disabled])",
+  "[tabindex]:not([tabindex='-1'])",
+].join(", ");
+
+/** One-line text fields, where Up and Down mean nothing and so may leave. */
+const ONE_LINE = new Set(["text", "email", "search", "tel", "url", "password", "number"]);
 
 export interface Box {
   left: number;
@@ -63,10 +79,24 @@ export function nearest(from: Box, boxes: Box[], direction: Direction): number {
   return best;
 }
 
+/**
+ * A radio or checkbox drawn by something else (a card, a chip) and itself hidden away: its
+ * drawing is what a person points at, so the arrows skip the box.
+ */
+function hiddenToggle(el: HTMLElement): boolean {
+  if (!(el instanceof HTMLInputElement) || (el.type !== "radio" && el.type !== "checkbox")) return false;
+  const box = el.getBoundingClientRect();
+  return box.width < 4 || box.height < 4 || el.closest(".kad-sr-only") !== null;
+}
+
 /** What may take focus now: shown, enabled, and not behind an open sheet (`inert`). */
 function candidates(root: ParentNode): HTMLElement[] {
   return [...root.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(
-    (el) => el.closest("[inert]") === null && el.getClientRects().length > 0 && (el.checkVisibility?.() ?? true),
+    (el) =>
+      el.closest("[inert]") === null &&
+      el.getClientRects().length > 0 &&
+      (el.checkVisibility?.() ?? true) &&
+      !hiddenToggle(el),
   );
 }
 
@@ -76,11 +106,20 @@ function answersArrowsItself(el: Element | null): boolean {
   return false;
 }
 
+/** A one-line text field gives Up and Down to the remote; it keeps Left and Right for the caret. */
+function leavesOnUpDown(el: Element | null, direction: Direction): boolean {
+  return (direction === "up" || direction === "down") && el instanceof HTMLInputElement && ONE_LINE.has(el.type);
+}
+
 /** Move focus one step `direction` from what has it; true if it moved. */
 export function step(direction: Direction, doc: Document = document): boolean {
   const active = doc.activeElement instanceof HTMLElement && doc.activeElement !== doc.body ? doc.activeElement : null;
-  // An open sheet keeps focus in itself (its own Tab trap); so do the arrows.
-  const sheet = active?.closest<HTMLElement>("[aria-modal='true']") ?? doc.querySelector<HTMLElement>("[aria-modal='true']");
+  // An open sheet keeps focus in itself (its own Tab trap); so do the arrows. So does a dialog
+  // focus is in, such as the grown-up's sign-in over the Room panel: its own Not now and close
+  // box are the way out, and the panel's buttons behind it are not.
+  const sheet =
+    active?.closest<HTMLElement>("[aria-modal='true'], [role='dialog'], [role='alertdialog']") ??
+    doc.querySelector<HTMLElement>("[aria-modal='true']");
   const all = candidates(sheet ?? doc);
   if (all.length === 0) return false;
   if (!active || !all.includes(active)) {
@@ -96,10 +135,19 @@ export function step(direction: Direction, doc: Document = document): boolean {
 
 /** Listen for the arrows on this screen; returns the way to stop. */
 export function installRemoteFocus(doc: Document = document): () => void {
+  // The field Escape was pressed in: the next arrow leaves it, whichever arrow it is.
+  let escaped: Element | null = null;
   const onKey = (event: KeyboardEvent): void => {
+    const active = doc.activeElement;
+    if (event.key === "Escape") {
+      escaped = answersArrowsItself(active) ? active : null;
+      return;
+    }
     const direction = KEYS[event.key];
+    const leaving = escaped !== null && escaped === active;
+    escaped = null;
     if (!direction || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.defaultPrevented) return;
-    if (answersArrowsItself(doc.activeElement)) return;
+    if (answersArrowsItself(active) && !leaving && !leavesOnUpDown(active, direction)) return;
     if (step(direction, doc)) event.preventDefault();
   };
   doc.addEventListener("keydown", onKey);
