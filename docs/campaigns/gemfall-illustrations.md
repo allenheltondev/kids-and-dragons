@@ -809,5 +809,6 @@ puts height/stance targets on every commissioned A4 row. Corbin carrying Posy is
 
 Only cast data changed in chapters. File hashes were re-taken for those presentation edits;
 the Gemfall compatibility tests still pass their unchanged gameplay digests. Overlay
-runtime/schema/content-gate integration remains part of #360; these assets do not opt any
-checks into group actions.
+design from #360 merged in PR #361 (docs only). Its runtime/schema/content-gate
+implementation remains absent from current main; these assets do not opt any checks into
+group actions. The design issue itself is complete.

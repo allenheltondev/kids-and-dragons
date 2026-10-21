@@ -74,11 +74,14 @@ registers the five painted tiptoe prints separately on a common circle so no pri
 by the portrait hole. A star and a small helper circle distinguish the final two states.
 The largest band is 221,112 bytes; the largest token is 23,490 bytes.
 
-**Dependency:** #360's runtime, schema/types, `content:validate` gate and integrated art
-verifier/contact-sheet support are not implemented in this checkout. Delivering the assets
-does not enable group actions. In particular, accepting a `together.move` in authored content
-still depends on #360. No gameplay checks were opted in here. The direct acceptance script
-below covers all 18 files until those integrated checks land.
+**Implementation status:** the approved group-action design from #360 merged in
+[PR #361](https://github.com/allenheltondev/kids-and-dragons/pull/361), which changed the
+design brief only. This branch includes that merge and current main (`efbc019c`). The
+runtime, schema/types, `content:validate` gate and integrated art verifier/contact-sheet
+support described by the brief are still absent from main. Accepting an authored
+`together.move` requires implementing that approved design. This art delivery does not
+enable group actions or opt gameplay checks in. The direct acceptance script below covers
+all 18 files until those integrated checks land; #360 itself is already complete.
 
 ## Validation
 

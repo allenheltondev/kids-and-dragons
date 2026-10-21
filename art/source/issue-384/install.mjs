@@ -27,7 +27,7 @@ for(const [id,name,basis,scale,heightCm] of rows) {
   if(i<0) mf.castFigures.push(entry); else mf.castFigures[i]=entry;
 }
 mf.figureOverflow['cast/seal_keeper']='top';
-mf.$togetherOverlaysComment='Painted overlays for group-action checks (docs/briefs/group-actions.md §7). Each declared move has two 1600x360 band states and four 192x192 token states on disk. Runtime support and the content gate are owned by #360. Art export and direct checks: art/source/issue-384/.';
+mf.$togetherOverlaysComment='Painted overlays for group-action checks (docs/briefs/group-actions.md §7; approved design merged in #361, closing #360). Each declared move has two 1600x360 band states and four 192x192 token states on disk. Runtime support and the content gate described by that design still need implementation. Art export and direct checks: art/source/issue-384/.';
 mf.togetherOverlays=[['heave',['slack','taut']],['hum',['wobble','together']],['tiptoe',['hush','over']]].map(([move,states])=>({
   move,band:{width:1600,height:360,clearTopPx:90,fadeSidePx:48,states},
   token:{size:192,holeRadius:62,states:['empty','holding','done','helped']},
