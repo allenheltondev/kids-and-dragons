@@ -363,6 +363,7 @@
     },
     "rift": {
       "type": "story",
+      "rift": "open",
       "narration": "A fold opens beside the current. Through it come thin cold air and a distant, low song. A patch of dry ground seems to hang beyond the shimmer. Farther downriver, water breaks over pale rocks. You can try the opening or stay with the river. The light around the fold is called Riftlight.",
       "choices": [
         {
@@ -375,6 +376,7 @@
     },
     "rift_choice": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "The opening is close enough to reach without dropping the line. The Listening Chime hangs from its cord. Do you test it, or keep looking for a shore?",
       "choices": [
         {
@@ -401,6 +403,7 @@
     },
     "river_chime": {
       "type": "story",
+      "rift": "steady",
       "narration": "One clear note sounds. No echo returns: the way is ready, but you cannot count on coming back through it. Nobody can name the land beyond. Everyone must choose the same crossing.",
       "choices": [
         {
@@ -413,6 +416,7 @@
     },
     "river_read": {
       "type": "story",
+      "rift": "steady",
       "narration": "Your starweaver studies the light around the fold and can tell the table what they notice. The shared view remains a neutral shimmer. The thin air and distant song are all anyone can learn about its destination.",
       "choices": [
         {
@@ -425,6 +429,7 @@
     },
     "rift_decision": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "The fold is within reach. Beyond it, you can see dry ground and hear that low song. The river still has a bank downstream. Which uncertainty will you take?",
       "choices": [
         {
@@ -454,6 +459,7 @@
     },
     "rift_end": {
       "type": "rest",
+      "rift": "steady",
       "narration": "You angle the rope toward the fold and gather together at its edge. Thin air brushes your faces. No one has let go. The crossing ahead will take your whole party at once.",
       "heal": 0,
       "choices": [],

@@ -72,6 +72,63 @@ describe("illustrated backdrops", () => {
   });
 });
 
+describe("a rift in plain view (#401)", () => {
+  /** Every sprite drawing a rift sheet frame, by the sheet it was cut from. */
+  const rifts = (app: FakeApp): Sprite[] => {
+    const found: Sprite[] = [];
+    const walk = (node: Container): void => {
+      if (node instanceof Sprite && node.label === "rift") found.push(node);
+      for (const child of node.children) walk(child as Container);
+    };
+    walk(app.stage);
+    return found;
+  };
+  const sheet = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 3072;
+    canvas.height = 256;
+    return Texture.from(canvas);
+  };
+
+  it("puts the tear on the stage only while a scene has one, and steps through its frames", async () => {
+    const load = vi.spyOn(Assets, "load").mockResolvedValue(sheet() as unknown as Record<string, unknown>);
+    const app = fakeApp();
+    const s = createScene(app as unknown as Application);
+    try {
+      expect(rifts(app)).toHaveLength(0);
+      s.setRift("steady", "c1/quay");
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(load).toHaveBeenCalledWith("/assets/effects/rift_neutral.sheet.png");
+      app.ticker.frame(16);
+      const [tear] = rifts(app);
+      expect(tear?.visible).toBe(true);
+      const first = tear!.texture.frame.x;
+      app.ticker.frame(250);
+      expect(tear!.texture.frame.x).not.toBe(first);
+      s.setRift(null, "c1/plain");
+      expect(rifts(app)).toHaveLength(0);
+    } finally { s.destroy(); load.mockRestore(); }
+  });
+
+  it("plays a collapse once and leaves nothing behind, and does not replay it for the same scene", async () => {
+    const load = vi.spyOn(Assets, "load").mockResolvedValue(sheet() as unknown as Record<string, unknown>);
+    const app = fakeApp();
+    const s = createScene(app as unknown as Application);
+    try {
+      s.setRift("collapse", "c1/through");
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      app.ticker.frame(16);
+      expect(load).toHaveBeenCalledWith("/assets/effects/rift_collapse.sheet.png");
+      expect(rifts(app)[0]?.visible).toBe(true);
+      app.ticker.frame(1_100);
+      expect(rifts(app)).toHaveLength(0);
+      s.setRift("collapse", "c1/through");
+      app.ticker.frame(16);
+      expect(rifts(app)).toHaveLength(0);
+    } finally { s.destroy(); load.mockRestore(); }
+  });
+});
+
 describe("the cast", () => {
   const tidewell = { key: "entities/selkie|Professor Tidewell", url: "/assets/entities/selkie/assembled.png", name: "Professor Tidewell", heightCm: 165, stance: "standing" as const };
 

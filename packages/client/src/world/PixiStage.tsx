@@ -16,6 +16,7 @@ import { boardAim, tablePreviews } from "./previews";
 import { useEnsureChapter } from "../screens/content";
 import { RendererFallback } from "./RendererFallback";
 import { sceneArtFor } from "./art-paths";
+import { sceneRiftFor } from "./scene-rift";
 import { castFor } from "./cast";
 import { onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "./stage-inset";
 
@@ -200,6 +201,7 @@ export function PixiStage(): React.JSX.Element {
       scene.setNameplatesVisible(nameplatesVisibleIn(live.state?.phase));
       scene.setParty(live.state?.party ?? []);
       scene.setBiome(live.chapter?.biome ?? null, sceneArtFor(live.chapter, live.state));
+      scene.setRift(sceneRiftFor(live.chapter, live.state), sceneKey(live.state));
       scene.setCast(visibleGuestsRef.current);
       scene.setStageInset(stageInsetBottom());
       scene.setStageInsetTop(stageInsetTop());
@@ -264,6 +266,11 @@ export function PixiStage(): React.JSX.Element {
   // Selected story scenes override the backdrop without changing combat tiles.
   useEffect(() => {
     sceneRef.current?.setBiome(chapter?.biome ?? null, sceneArtFor(chapter, state));
+  }, [chapter, state?.chapterId, state?.sceneId, state?.encounter]);
+
+  // A rift in plain view (#401), keyed by the scene so an opening plays once.
+  useEffect(() => {
+    sceneRef.current?.setRift(sceneRiftFor(chapter, state), sceneKey(state));
   }, [chapter, state?.chapterId, state?.sceneId, state?.encounter]);
 
   // Who is standing in the scene with the party. Keyed by the scene, not by
@@ -366,4 +373,9 @@ export function PixiStage(): React.JSX.Element {
         onClick={() => setGuestPage({ key: guestKey, index: guestIndex + 1 })}>›</button>
     </nav>}
   </>;
+}
+
+/** Which scene is up, for the rift's play-once key: null outside a chapter. */
+function sceneKey(state: RunState | null | undefined): string | null {
+  return state?.chapterId && state.sceneId ? `${state.chapterId}/${state.sceneId}` : null;
 }
