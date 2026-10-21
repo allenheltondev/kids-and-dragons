@@ -159,6 +159,24 @@ export function prefaceUtterances(preface: Extract<StartPreface, { status: "read
   return out;
 }
 
+/**
+ * The type steps down until the card fits its band (fit-plate.ts). On a band too short for even
+ * the last rung (a phone's pane over a long rest scene), the oldest lines go, one at a time, and
+ * then "So far" altogether; never the goal, its steps, or the last "Last time…" line. Read
+ * aloud, every line is still said.
+ */
+function fitCard(card: HTMLElement): void {
+  const lines = [...card.querySelectorAll<HTMLElement>(".preface__lines > li")];
+  const extras = [...card.querySelectorAll<HTMLElement>("[data-trim]")];
+  for (const element of [...lines, ...extras]) element.hidden = false;
+  fitPlate(card);
+  for (const element of [...lines.slice(0, -1), ...extras]) {
+    if (!card.hasAttribute("data-clipped")) return;
+    element.hidden = true;
+    fitPlate(card);
+  }
+}
+
 type Shown = { kind: "start" | "back"; key: string; scene: string };
 
 /**
@@ -231,7 +249,7 @@ export function ChapterPreface(): ReactElement | null {
   }, []);
   const card = useRef<HTMLElement | null>(null);
   useLayoutEffect(() => {
-    if (card.current) fitPlate(card.current);
+    if (card.current) fitCard(card.current);
   });
 
   if (shown === null || state === null) return null;
@@ -295,8 +313,8 @@ export function ChapterPreface(): ReactElement | null {
             )}
             {trail.length === 0 ? null : (
               <>
-                <h3 className="preface__sub">So far</h3>
-                <ul className="preface__lines preface__lines--trail">
+                <h3 className="preface__sub" data-trim="">So far</h3>
+                <ul className="preface__lines preface__lines--trail" data-trim="">
                   {trail.map((line) => (
                     <li key={line}>{line}</li>
                   ))}

@@ -126,3 +126,8 @@
 @media (prefers-reduced-motion: reduce) {
   .preface__card { animation: none; }
 }
+
+/* What fitCard (ChapterPreface.tsx) drops on a band too short for the last rung. */
+.preface__card [hidden] {
+  display: none;
+}
