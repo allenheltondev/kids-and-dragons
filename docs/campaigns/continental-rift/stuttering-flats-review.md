@@ -45,3 +45,13 @@ file byte for byte, while the following test runs the full content gate once.
 The background-art negative fixture retains the opening's class rooms on a small
 valid route, proves that baseline passes, then removes the art and requires rejection.
 This removes unrelated full-campaign searches from a five-second art assertion.
+
+### Pacing before and after review fixes
+
+| Shortest success spine | Before | After |
+|---|---:|---:|
+| Scenes | 43 | 43 |
+| Decisions | 15 | 15 |
+| Physical checks | 6 | 6 |
+| Encounters | 0 | 0 |
+| Longest reading run | 2 | 2 |
