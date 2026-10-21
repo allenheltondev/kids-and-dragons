@@ -130,7 +130,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-03b.json": "37f9a6d76003d1eec4660fa4a86ffdf7b9da305fc79618d2df6821bd4254a734",
   "chapters/gemfall-03c.json": "78e7df8bd534f191be7d113090b7cbf684847a8adcf120533809e6ca2abdf243",
   "chapters/gemfall-04a.json": "88d8ab6dea3765a61f829bd6ca1c4caccacf827fcddb5d7e6bfc34dfa26b3084",
-  "chapters/gemfall-04b.json": "8783b9897dcd39df468804d68aafe5ba15f550b6788a9d44511b1b1eaea2449a",
+  "chapters/gemfall-04b.json": "09861f4fdc70bcb29da03bd37bbc071503479ef247f7d727d990b494baec4f66",
   "chapters/gemfall-04c.json": "b05df44a8ca0d4b4b1aefd2c1c83e87d869c6210c2c102a0ab31d8767e12a471",
   "chapters/gemfall-05a.json": "21c1eeeee0d52044eb6bad67c921483148bb23e3349a505567ab5906659aebe7",
   "chapters/gemfall-05b.json": "6a30ade7fe12e2a7e961a8e5f11dcba8a3466b5b5f602938b0f76aff42c305f5",
