@@ -296,6 +296,22 @@ A screen that comes back partway (a resumed room, a reload, a phone back at the 
 the run walked. A scene whose words have variants or a `{token}` is passed over, so nothing is
 quoted that differs by party. Nothing to author for it.
 
+## The Story page (#358)
+
+The adventure book's Story page lists each chapter a household has played in a campaign: its
+goal's sentence, its priority-1 scene in the scene's own words, the `lastTime` lines for the
+route-set flags that chapter decided, and the first sentence of the ending it closed on. Nothing
+to author for it; it reads what is already here, so it is only as good as those are:
+
+- A p1 scene and an ending are read later, away from the table, against the items the party held
+  when each was shown: the engine keeps the bag a p1 scene's words read as it first opens
+  (`RunState.revealHeld`), and an ending is read with the bag the chapter closed with. A variant
+  whose `when` asks only `item`, `notItem` or `count` is read as it was; one that asks a flag, the
+  purse or the party's size is left out, since those are gone by then. `{party}` reads "you". So
+  the base narration of a p1 scene or an ending should stand on its own.
+- An ending's first sentence (or two, when the first is a word or two) is all of it that is
+  shown, so make it say where the party ended up.
+
 ## Class places (#311)
 
 A class's room (the Dojo, the Academy, the Rookery, the Conservatory:
