@@ -11,7 +11,7 @@
  * and the view is exactly what the server would send every screen alike.
  */
 
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, within } from "@testing-library/react";
 import {
   completeVisit,
@@ -32,6 +32,8 @@ import { useGameStore } from "../store";
 import { resetFieldGuideCache } from "./content";
 import { dismissPlayerSheet } from "../store/player-navigation";
 import { LobbyContent } from "./LobbyContent";
+import { forgetRiftSightings } from "./RiftSight";
+import { setAudioSink, type CueId } from "../audio/cue";
 import { PartyLayout } from "../layout/PartyLayout";
 import { TravelLayout } from "../layout/TravelLayout";
 
@@ -54,12 +56,12 @@ const RIFTS: { edge: string; rift: NonNullable<GraphEdge["rift"]>; effects: stri
   {
     edge: "timed",
     rift: { uses: 1, lasts: { unit: "visits", count: 3 } },
-    effects: ["rift_base", "rift_amber", "rift_shrink"],
+    effects: ["rift_shrink", "rift_amber"],
   },
   {
     edge: "unstable",
     rift: { uses: 1, unstable: { collapsesAfter: 1 } },
-    effects: ["rift_base", "rift_amber", "rift_stutter"],
+    effects: ["rift_stutter", "rift_amber"],
   },
   {
     edge: "linked",
@@ -184,6 +186,9 @@ const RULE = /one[- ]way|once|single|persist|stays open|come back|linked|other m
 
 afterEach(() => {
   cleanup();
+  forgetRiftSightings();
+  setAudioSink(null);
+  vi.useRealTimers();
   resetFieldGuideCache();
   dismissPlayerSheet();
 });
@@ -418,5 +423,89 @@ describe("the Riftlight indicator", () => {
     store(SONGKEEPER.playerId, { campaign: campaignWith(hubView()) });
     const { container } = render(<PartyLayout surface="player" />);
     expect(container.querySelector("[data-riftlight-indicator]")).toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The painted sheets, and a rift opening or collapsing
+// ---------------------------------------------------------------------------
+
+describe("the painted sheets", () => {
+  it("every layer draws its own sheet", () => {
+    const { container } = lobby(STARWEAVER.playerId);
+    for (const layer of container.querySelectorAll<HTMLElement>(".rift-glyph [data-effect]")) {
+      expect(layer.style.backgroundImage).toMatch(`/assets/effects/${layer.getAttribute("data-effect")}.sheet.png`);
+    }
+  });
+});
+
+describe("a rift opening or collapsing", () => {
+  /** The hub as before, with one of its rifts changed. */
+  const changed = (edge: string, status: "open" | "consumed"): JourneyView => {
+    const view = hubView();
+    return {
+      ...view,
+      exits: view.exits.map((exit) =>
+        exit.edge === edge && exit.rift ? { ...exit, available: status === "open", rift: { ...exit.rift, status } } : exit,
+      ),
+    };
+  };
+
+  const heard: CueId[] = [];
+  const listen = (): void => {
+    heard.length = 0;
+    setAudioSink({ cue: (id) => heard.push(id), music: () => undefined });
+  };
+  const update = (journey: JourneyView): void =>
+    act(() => {
+      const state = useGameStore.getState().state!;
+      useGameStore.setState({ state: { ...state, campaign: campaignWith(journey) } });
+    });
+  const once = (root: ParentNode): string[] =>
+    [...root.querySelectorAll(".rift-glyph__layer--once")].map((layer) => layer.getAttribute("data-effect") ?? "");
+
+  it("arriving draws the rifts as they are: nothing opens, nothing sounds", () => {
+    listen();
+    const { container } = lobby(TV);
+    expect(once(container)).toEqual([]);
+    expect(heard).toEqual([]);
+  });
+
+  it("a rift that wakes at the party's place unfolds once, with its cue, then shows its loop", () => {
+    vi.useFakeTimers();
+    listen();
+    const { container } = lobby(TV);
+    update(changed("dormant", "open"));
+    expect(once(container)).toEqual(["rift_open"]);
+    expect(container.querySelectorAll(".rift-glyph--opening")).toHaveLength(1);
+    expect(heard).toEqual(["rift-open"]);
+    act(() => vi.advanceTimersByTime(1000));
+    expect(once(container)).toEqual([]);
+    expect(drawnEffects(container)).toEqual(RIFTS.map(() => ["rift_neutral"]));
+    expect(heard).toEqual(["rift-open"]);
+  });
+
+  it("a rift that goes dark folds shut once, with its cue, then is gone", () => {
+    vi.useFakeTimers();
+    listen();
+    const { container } = lobby(STARWEAVER.playerId);
+    update(changed("amber", "consumed"));
+    expect(once(container)).toEqual(["rift_collapse"]);
+    const folding = container.querySelector<HTMLElement>(".rift-sight__rift--collapsing")!;
+    expect(folding.getAttribute("aria-hidden")).toBe("true");
+    expect(heard).toEqual(["rift-collapse"]);
+    act(() => vi.advanceTimersByTime(1000));
+    expect(container.querySelector(".rift-sight__rift--collapsing")).toBeNull();
+    expect(container.querySelectorAll(".rift-sight__rift")).toHaveLength(RIFTS.length - 1);
+  });
+
+  it("the moment survives the lobby unmounting while a chapter plays", () => {
+    listen();
+    lobby(TV);
+    cleanup();
+    store(TV, { campaign: campaignWith(changed("dormant", "open")) });
+    const { container } = render(<LobbyContent />);
+    expect(once(container)).toEqual(["rift_open"]);
+    expect(heard).toEqual(["rift-open"]);
   });
 });
