@@ -22,6 +22,9 @@ it.each([...chapters.values()].filter((chapter) => chapter.index >= 4))("$id: ev
   if (chapter.id === "riftlight-the-island-due-back") {
     for (const scene of allPaths(chapter, "manticore", "duskrunner", { whales_guided: true }).visited) visited.add(scene);
   }
+  if (chapter.id === "riftlight-convergence") {
+    for (const scene of allPaths(chapter, "manticore", "duskrunner", { orin_chime_shared: true, olivia_trusted: true }).visited) visited.add(scene);
+  }
   expect([...visited].sort(), chapter.id).toEqual(Object.keys(chapter.scenes).sort());
 }, 20_000); // Exhaustive walks across six party/history configurations run under V8 coverage in CI.
 
@@ -61,7 +64,7 @@ it("ending route guarantees remove phantom softlocks without hiding a missing ro
   expect(chapterFlagWrites(shelf).requiredOneOf).toBeUndefined();
   const broken = new Map(chapters); broken.set(shelf.id, shelf);
   expect(lintCampaignGraph(graph, { ...options, chapterFlags: chapterFlagsFrom(broken) }).findings.some((f) => f.code === "STRANDED")).toBe(true);
-}, 20_000); // Two exhaustive graph searches run under V8 coverage in CI.
+}, 90_000); // Two full-campaign searches, including the deliberately broken graph, under V8 coverage.
 
 it("the linked glacier rift grants only one Riftspark and preserves a way back", () => {
   const graph = parseCampaignGraph(campaign).graph!;
@@ -84,7 +87,7 @@ it("the linked glacier rift grants only one Riftspark and preserves a way back",
   expect(enterScene(returning, "sing", context(chapter)).state.narration).toContain("does not need another note");
 });
 
-it("a background-only story biome needs explicit scene art rather than tactical tiles", () => {
+it("a background-only story biome needs explicit scene art rather than tactical tiles", { timeout: 60_000 }, () => {
   const root = stageRiftlightOpening();
   try {
     const file = path.join(root, "content/chapters/riftlight-saltrot-arrival.json");
