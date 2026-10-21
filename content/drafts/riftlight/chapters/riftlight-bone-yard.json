@@ -34,14 +34,17 @@
     "forbidden": [
       "gore",
       "Hollow Gate",
-      "Legend Dragon"
+      "Legend Dragon",
+      "Corvane",
+      "emperor",
+      "Pangea"
     ],
     "npcVoices": {}
   },
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "At the edge of the Bone Yard, a Skupper guide stops in a brackish pool. Beyond her, broken stone walls have appeared among enormous old bones. Small bone crawlers crowd the fresh shimmer around the walls. \"Clear a safe way past those ruins,\" she says. \"Take nothing. Here, anything taken comes back. I will watch from water that suits my fins.\" One crawler is trying to fit its whole body under a pebble.",
+      "narration": "At the edge of the Bone Yard, your Skupper guide from the flats stops in a brackish pool. Beyond her, broken stone walls have appeared among enormous old bones. Small bone crawlers crowd the fresh shimmer around the walls. \"Clear a safe way past those ruins,\" she says. \"Take nothing. Here, anything taken comes back. I will watch from water that suits my fins.\" One crawler is trying to fit its whole body under a pebble.",
       "choices": [
         {
           "id": "continue",
@@ -53,7 +56,7 @@
     },
     "limit": {
       "type": "choice_point",
-      "narration": "The guide points out the boundary. Her pool is outside it; the displaced ruins are inside. Your party has mats and a line from the flats. How will you keep your own equipment apart from things found here?",
+      "narration": "The guide points out the boundary. Her pool is outside it; the displaced ruins are inside. She lends you a plank from her landing. You keep one mat and your rescue line, and tie bright loops to every piece of your own gear. What will you do with the spare mats?",
       "choices": [
         {
           "id": "plan_1",
@@ -71,7 +74,7 @@
     },
     "limit_1": {
       "type": "story",
-      "narration": "You tie loops where everyone can see them. A loose shell remains on the ground. It is not equipment merely because it would make a good cup.",
+      "narration": "You carry the spare mats too, all marked with loops. A loose shell stays on the ground. It is not equipment merely because it would make a good cup.",
       "choices": [
         {
           "id": "continue",
@@ -83,7 +86,7 @@
     },
     "limit_2": {
       "type": "story",
-      "narration": "You hand the guide the spare mats and carry only the rescue line. She parks the mats across two reeds, well above the pool.",
+      "narration": "You leave the spare mats across two reeds by the guide. You carry the marked plank, one mat and the rescue line. Her pool has become a very damp cloakroom.",
       "choices": [
         {
           "id": "continue",
@@ -434,7 +437,7 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "Behind the windbreak, warm broth steams in a covered pot. The ladle wears a little wool sleeve. Take a breath and let sore muscles loosen before the next job.",
+      "narration": "Back at the boundary pool, the guide opens a floating lunch box tied to a reed. There are soft seaweed rolls inside. You sit on your own mat outside the yard and rest. The box bumps her fin whenever she reaches for lunch.",
       "heal": 2,
       "choices": [
         {
@@ -453,7 +456,7 @@
     },
     "rest_watch": {
       "type": "story",
-      "narration": "You trade the watch so everyone gets a turn with the broth. A loose thread on the ladle sleeve waves at each passing cloud.",
+      "narration": "You watch from beside the pool while eating a seaweed roll. The guide keeps her lunch box from drifting into the yard. Even lunch must obey the boundary.",
       "choices": [
         {
           "id": "continue",
@@ -465,7 +468,7 @@
     },
     "plan": {
       "type": "choice_point",
-      "narration": "The tear feeds fresh magic beside the passage. Your Listening Chime, the glacier travelers' bell, gives an echo while the tear is steady. You can drive the crawlers away from the passage, or close the tear from the marked stones. Closing it takes several turns beside the seam; the crawlers will still be there.",
+      "narration": "The tear feeds fresh magic beside the passage. Your Listening Chime, the glacier travelers' chime, gives an echo while the tear is steady. You can drive the crawlers away from the passage, or close the tear from the marked stones. Closing it takes several turns beside the seam; the crawlers will still be there.",
       "choices": [
         {
           "id": "plan_1",
@@ -495,13 +498,13 @@
     },
     "plan_2": {
       "type": "story",
-      "narration": "You pick the nearest firm stones beside the seam. Your party will take turns working there while keeping the crawlers off.",
+      "narration": "You pick the nearest firm stones beside the seam. Your party will take turns working there while keeping the crawlers off. You mark the nearest closing points before the crawlers spread. This preparation shortens the work at the seam.",
       "choices": [
         {
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "fight"
+          "goto": "fight_seam"
         }
       ]
     },
@@ -665,7 +668,7 @@
       "choices": [
         {
           "id": "plan_1",
-          "label": "Shift the weight onto a fallen stone first",
+          "label": "Recover loose gear without moving the supports",
           "icon": "hand",
           "goto": "unbrace_1"
         },
@@ -675,11 +678,19 @@
           "icon": "hand",
           "goto": "unbrace_2"
         }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "bone_retreat"
+          },
+          "text": "The crawlers block the wall. Your plank must stay behind to support it; you can gather only the free mat and line from the outer strip."
+        }
       ]
     },
     "unbrace_1": {
       "type": "story",
-      "narration": "You roll a stone already here beneath the wall. The marked plank is loose enough to slide away, one slow inch at a time.",
+      "narration": "You check the supports from the safe strip. Anything still holding the wall stays there; your loose marked gear comes away first.",
       "choices": [
         {
           "id": "continue",
@@ -718,7 +729,7 @@
     },
     "unbrace_clear": {
       "type": "story",
-      "narration": "Every recovered piece carries your bright loop. Nothing found here joins it.",
+      "narration": "Every piece you recover carries a bright loop. Nothing found here joins it.",
       "choices": [
         {
           "id": "continue",
@@ -742,19 +753,27 @@
     },
     "exit_strip": {
       "type": "choice_point",
-      "narration": "The boundary pool shines between the arches. The guide raises her crest. Will you follow your marked strip or use the wide rim she signals?",
+      "narration": "The boundary pool shines beyond the arches. The guide raises her crest. Which marks will you follow on the way back?",
       "choices": [
         {
           "id": "plan_1",
-          "label": "Follow the markers back in order",
+          "label": "Follow your marked return route",
           "icon": "hand",
           "goto": "exit_strip_1"
         },
         {
           "id": "plan_2",
-          "label": "Use the broad rim and keep the arches in view",
+          "label": "Follow the guide's crest signals",
           "icon": "hand",
           "goto": "exit_strip_2"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "bone_retreat"
+          },
+          "text": "The crawlers still block your marked strip. The guide signals the wide rim; you must leave by that longer route, carrying the sore shoulders from your retreat."
         }
       ]
     },
@@ -946,7 +965,7 @@
     },
     "handoff": {
       "type": "choice_point",
-      "narration": "Your guide points back toward the Saltrot landing and its ways upriver or through the openings. A folded message asks the Riftseekers, the travelers studying the disturbances, to compare their sightings at the glacier when enough clues agree. How will you send your account?",
+      "narration": "Your guide points back toward the Saltrot landing and its ways upriver or through the openings. She opens a folded message Orin entrusted to her at the landing. It asks your Riftseeker friends to compare their sightings at the glacier when enough clues agree. How will you send your account?",
       "choices": [
         {
           "id": "plan_1",
@@ -1005,6 +1024,74 @@
           "text": "The short passage is still theirs. Your account marks the longer route you used instead."
         }
       ]
+    },
+    "fight_seam": {
+      "type": "encounter",
+      "map": "riftlight_bone_yard",
+      "narration": "Your marks show where to fold the tear shut. End two turns beside it to close it, or drive the crawlers away. Shifting stones still bite at anyone who stops on them.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "creature": "bone_crawler",
+          "count": 2
+        }
+      ],
+      "environment": {
+        "hazards": [
+          {
+            "id": "loose_stones",
+            "kind": "rift",
+            "label": "Shifting loose stones",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "damage": 1
+          }
+        ],
+        "objectives": [
+          {
+            "id": "close_seam",
+            "kind": "close",
+            "label": "Close the fresh tear",
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "turns": 2,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "bone_rift_closed"
+              }
+            ]
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "cleared"
+      },
+      "onDefeat": {
+        "goto": "rescued",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "bone_retreat"
+          }
+        ]
+      }
     }
   }
 }
