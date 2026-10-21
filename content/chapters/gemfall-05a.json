@@ -32,6 +32,31 @@
       "xp": 8
     }
   ],
+  "goal": {
+    "text": "Cross the cracked bridge, and find out what its cracks are saying.",
+    "steps": [
+      {
+        "id": "foot",
+        "label": "Get down to the bridge foot",
+        "flag": "reached_the_bridge_foot"
+      },
+      {
+        "id": "cracks",
+        "label": "Help map the bridge's cracks",
+        "flag": "laid_out_the_survey"
+      },
+      {
+        "id": "tell",
+        "label": "Decide who to tell",
+        "flag": "chose_who_to_tell"
+      },
+      {
+        "id": "cross",
+        "label": "Get across the bridge",
+        "flag": "crossed_the_span"
+      }
+    ]
+  },
   "props": {
     "facet_clerks": {
       "kind": "quest",
@@ -482,7 +507,13 @@
           "goto": "choice_stones_on_table"
         }
       ],
-      "art": "scenes/gemfall/bridge-engineers-tent"
+      "art": "scenes/gemfall/bridge-engineers-tent",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "laid_out_the_survey"
+        }
+      ]
     },
     "rest_tent": {
       "type": "rest",
@@ -573,7 +604,13 @@
           "goto": "scene_span_question"
         }
       ],
-      "art": "scenes/gemfall/bridge-engineers-tent"
+      "art": "scenes/gemfall/bridge-engineers-tent",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "chose_who_to_tell"
+        }
+      ]
     },
     "scene_told_gatherers": {
       "type": "story",
@@ -592,7 +629,13 @@
           "goto": "scene_span_question"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/gemfall/northern-bridge-foot",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "chose_who_to_tell"
+        }
+      ]
     },
     "scene_kept_close": {
       "type": "story",
@@ -605,7 +648,13 @@
           "goto": "scene_span_question"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/gemfall/northern-bridge-foot",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "chose_who_to_tell"
+        }
+      ]
     },
     "scene_crossing": {
       "type": "choice_point",
@@ -775,6 +824,12 @@
           "label": "Climb to the rim",
           "icon": "flame",
           "goto": "scene_rim_lookout"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "crossed_the_span"
         }
       ]
     },
@@ -1106,7 +1161,13 @@
           ]
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/gemfall/northern-bridge-foot",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "reached_the_bridge_foot"
+        }
+      ]
     },
     "check_rubbing": {
       "type": "check",

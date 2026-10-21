@@ -9,6 +9,21 @@
   "estimatedMinutes": 8,
   "xpAward": 140,
   "entry": "bridge",
+  "goal": {
+    "text": "Lend a hand at the river ferry before you go on.",
+    "steps": [
+      {
+        "id": "reach_landing",
+        "label": "Reach the ferry landing",
+        "flag": "reached_the_ferry_landing"
+      },
+      {
+        "id": "help_board",
+        "label": "Help the travelers board",
+        "flag": "helped_travelers_board"
+      }
+    ]
+  },
   "scenes": {
     "bridge": {
       "type": "story",
@@ -52,6 +67,12 @@
           "icon": "hand",
           "goto": "rope"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "reached_the_ferry_landing"
+        }
       ]
     },
     "plank": {
@@ -64,6 +85,12 @@
           "icon": "hand",
           "goto": "routes"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_travelers_board"
+        }
       ]
     },
     "rope": {
@@ -75,6 +102,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "routes"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_travelers_board"
         }
       ]
     },

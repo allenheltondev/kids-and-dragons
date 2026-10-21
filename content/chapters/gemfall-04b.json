@@ -25,6 +25,26 @@
       "xp": 12
     }
   ],
+  "goal": {
+    "text": "Find out what the forest is counting, and why.",
+    "steps": [
+      {
+        "id": "roll_call",
+        "label": "Answer the forest's roll call",
+        "flag": "answered_roll_call"
+      },
+      {
+        "id": "glade",
+        "label": "Help mend a sick glade",
+        "flag": "quieted_the_glade"
+      },
+      {
+        "id": "worst",
+        "label": "Find what hurts the forest most",
+        "flag": "reached_the_worst_glade"
+      }
+    ]
+  },
   "props": {
     "facet_glade": {
       "kind": "quest",
@@ -262,6 +282,12 @@
           "icon": "forward",
           "goto": "scene_attendance"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "answered_roll_call"
+        }
       ]
     },
     "check_roll_call_truth": {
@@ -277,13 +303,23 @@
             "type": "setFlag",
             "flag": "told_forest_truth",
             "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "answered_roll_call"
           }
         ],
         "narration": "You empty your pockets onto a stump and name everything out loud, even the squashed biscuit, even the stone if you have one. The trees rustle warmly, the way grown-ups do when you own up first. A path opens, wide and sunny, and the forest seems to make a little note about you."
       },
       "onFailure": {
         "goto": "scene_attendance",
-        "narration": "You name everything, very honestly, and then a frog climbs out of somebody's hood. Nobody knew it was there. It has been there since the river. The trees rustle about this for a long time, and you are fairly sure they are laughing. The frog hops off. A path opens, eventually."
+        "narration": "You name everything, very honestly, and then a frog climbs out of somebody's hood. Nobody knew it was there. It has been there since the river. The trees rustle about this for a long time, and you are fairly sure they are laughing. The frog hops off. A path opens, eventually.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "answered_roll_call"
+          }
+        ]
       }
     },
     "scene_roll_call_charm": {
@@ -295,6 +331,12 @@
           "label": "Walk on, the charm warm in your hand",
           "icon": "note",
           "goto": "scene_attendance"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "answered_roll_call"
         }
       ]
     },
@@ -813,6 +855,12 @@
           "label": "Say nothing, and sit down at the glade's edge",
           "icon": "rest",
           "goto": "scene_finding_rest"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "quieted_the_glade"
         }
       ]
     },
@@ -1347,6 +1395,12 @@
               "value": true
             }
           ]
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "reached_the_worst_glade"
         }
       ]
     },

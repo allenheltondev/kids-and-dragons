@@ -32,6 +32,31 @@
       "xp": 6
     }
   ],
+  "goal": {
+    "text": "Turn the road's stones toward home, and send the caravan's big stone home from the bend.",
+    "steps": [
+      {
+        "id": "help",
+        "label": "Start turning stones around",
+        "flag": "found_help_at_the_pinch"
+      },
+      {
+        "id": "masks",
+        "label": "Meet Hessa's masks on the road",
+        "flag": "met_the_masks"
+      },
+      {
+        "id": "caravan",
+        "label": "Meet the big caravan at the bend",
+        "flag": "met_the_caravan"
+      },
+      {
+        "id": "climb",
+        "label": "Climb the mountain",
+        "flag": "climbed_the_mountain"
+      }
+    ]
+  },
   "props": {
     "ossley_debt_stone": {
       "kind": "quest",
@@ -471,6 +496,12 @@
             }
           },
           "text": "Your packs go wild. The great stones in them rattle and strain at the straps, and you have to sit on one pack to keep it from rolling off after the rest."
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_help_at_the_pinch"
         }
       ]
     },
@@ -1106,6 +1137,12 @@
             }
           },
           "text": "Your own great stones are the loudest in the pile, and they tug uphill like a team of eager dogs."
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "met_the_masks"
         }
       ]
     },
@@ -1951,6 +1988,10 @@
           "type": "setFlag",
           "flag": "clock_steady",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "met_the_caravan"
         }
       ],
       "choices": [
@@ -1970,6 +2011,10 @@
           "type": "setFlag",
           "flag": "clock_late",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "met_the_caravan"
         }
       ],
       "choices": [

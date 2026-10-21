@@ -9,6 +9,31 @@
   "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "bank",
+  "goal": {
+    "text": "Study the buried bridge from the safe side of the bank.",
+    "steps": [
+      {
+        "id": "find_shelf",
+        "label": "Find firm ground to work from",
+        "flag": "found_a_firm_work_shelf"
+      },
+      {
+        "id": "look_under",
+        "label": "Get a look under the arches",
+        "flag": "looked_under_the_arches"
+      },
+      {
+        "id": "tidy_bank",
+        "label": "Tidy up the bank",
+        "flag": "tidied_the_work_site"
+      },
+      {
+        "id": "tell_guide",
+        "label": "Show the guide what you found",
+        "flag": "showed_the_guide_the_bridge"
+      }
+    ]
+  },
   "scenes": {
     "bank": {
       "type": "story",
@@ -105,7 +130,13 @@
           "goto": "river_explain"
         }
       ],
-      "art": "scenes/riftlight/buried-bridge-evidence"
+      "art": "scenes/riftlight/buried-bridge-evidence",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "looked_under_the_arches"
+        }
+      ]
     },
     "brace": {
       "type": "story",
@@ -118,7 +149,13 @@
           "goto": "river_explain"
         }
       ],
-      "art": "scenes/riftlight/buried-bridge-evidence"
+      "art": "scenes/riftlight/buried-bridge-evidence",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "looked_under_the_arches"
+        }
+      ]
     },
     "rest": {
       "type": "rest",
@@ -220,10 +257,22 @@
       "prompt": "Probe from the firm stopping line with the stick. Choose who leads; everyone can help.",
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "onSuccess": {
-        "goto": "ground_test_1_done"
+        "goto": "ground_test_1_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "found_a_firm_work_shelf"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "ground_test_1_changed"
+        "goto": "ground_test_1_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "found_a_firm_work_shelf"
+          }
+        ]
       }
     },
     "ground_test_1_done": {
@@ -273,10 +322,22 @@
       "prompt": "Map the bank from two firm viewpoints. Choose who leads; everyone can help.",
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "onSuccess": {
-        "goto": "ground_test_2_done"
+        "goto": "ground_test_2_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "found_a_firm_work_shelf"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "ground_test_2_changed"
+        "goto": "ground_test_2_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "found_a_firm_work_shelf"
+          }
+        ]
       }
     },
     "ground_test_2_done": {
@@ -959,10 +1020,22 @@
       "prompt": "Spread the loose silt thinly behind the stopping line. Choose who leads; everyone can help.",
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "onSuccess": {
-        "goto": "restore_bank_1_done"
+        "goto": "restore_bank_1_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "tidied_the_work_site"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "restore_bank_1_changed"
+        "goto": "restore_bank_1_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "tidied_the_work_site"
+          }
+        ]
       }
     },
     "restore_bank_1_done": {
@@ -1012,10 +1085,22 @@
       "prompt": "Leave a low marked mound on the dry side. Choose who leads; everyone can help.",
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "onSuccess": {
-        "goto": "restore_bank_2_done"
+        "goto": "restore_bank_2_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "tidied_the_work_site"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "restore_bank_2_changed"
+        "goto": "restore_bank_2_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "tidied_the_work_site"
+          }
+        ]
       }
     },
     "restore_bank_2_done": {
@@ -1084,10 +1169,22 @@
       "prompt": "Show the safe view and say exactly where the work stops. Choose who leads; everyone can help.",
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "onSuccess": {
-        "goto": "guide_handover_1_done"
+        "goto": "guide_handover_1_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "showed_the_guide_the_bridge"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "guide_handover_1_changed"
+        "goto": "guide_handover_1_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "showed_the_guide_the_bridge"
+          }
+        ]
       }
     },
     "guide_handover_1_done": {
@@ -1137,10 +1234,22 @@
       "prompt": "Ask the guide to repeat the warning in their own words. Choose who leads; everyone can help.",
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "onSuccess": {
-        "goto": "guide_handover_2_done"
+        "goto": "guide_handover_2_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "showed_the_guide_the_bridge"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "guide_handover_2_changed"
+        "goto": "guide_handover_2_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "showed_the_guide_the_bridge"
+          }
+        ]
       }
     },
     "guide_handover_2_done": {

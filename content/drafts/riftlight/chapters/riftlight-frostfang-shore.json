@@ -9,6 +9,21 @@
   "estimatedMinutes": 8,
   "xpAward": 140,
   "entry": "bank",
+  "goal": {
+    "text": "Find a dry way back uphill toward the mountain pass.",
+    "steps": [
+      {
+        "id": "get_help",
+        "label": "Get help from the griffin",
+        "flag": "got_the_griffins_ladder"
+      },
+      {
+        "id": "climb_up",
+        "label": "Climb up toward the pass",
+        "flag": "climbed_the_griffins_ladder"
+      }
+    ]
+  },
   "scenes": {
     "bank": {
       "type": "story",
@@ -30,13 +45,25 @@
           "id": "climb",
           "label": "Climb toward the pass",
           "icon": "hand",
-          "goto": "climb"
+          "goto": "climb",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "climbed_the_griffins_ladder"
+            }
+          ]
         },
         {
           "id": "help",
           "label": "Move the ladder to firmer ground",
           "icon": "hand",
           "goto": "ladder"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "got_the_griffins_ladder"
         }
       ]
     },
@@ -48,7 +75,13 @@
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "climb"
+          "goto": "climb",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "climbed_the_griffins_ladder"
+            }
+          ]
         }
       ]
     },

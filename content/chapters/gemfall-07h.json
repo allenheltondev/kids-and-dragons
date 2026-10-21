@@ -32,6 +32,34 @@
       "xp": 6
     }
   ],
+  "goal": {
+    "text": "Beat three other crowds to the caravan's loudest stone at the worst bend.",
+    "steps": [
+      {
+        "id": "pinch",
+        "label": "Race the other crowds for stones",
+        "flag": "got_ahead_at_the_pinch"
+      },
+      {
+        "id": "caravan",
+        "label": "Race for the caravan's stone",
+        "flag": "raced_for_the_stone"
+      },
+      {
+        "id": "offer",
+        "label": "Answer Hessa's offer",
+        "flag": "answered_hessa"
+      },
+      {
+        "id": "climb",
+        "label": "Climb up, or walk away",
+        "flag": [
+          "climbed_the_mountain",
+          "walked_away"
+        ]
+      }
+    ]
+  },
   "props": {
     "facet_caravan": {
       "kind": "quest",
@@ -442,6 +470,12 @@
           "icon": "gem",
           "goto": "scene_rival_collector_pride",
           "requiresItem": "facet_pride"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "got_ahead_at_the_pinch"
         }
       ]
     },
@@ -1787,7 +1821,13 @@
       },
       "onFailure": {
         "goto": "scene_tidewell",
-        "narration": "While you are still counting, a masked wagoneer quietly steers the middle wagon off up a side track. The masterpiece stone is gone, and the masks have it."
+        "narration": "While you are still counting, a masked wagoneer quietly steers the middle wagon off up a side track. The masterpiece stone is gone, and the masks have it.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "raced_for_the_stone"
+          }
+        ]
       }
     },
     "scene_caravan_won": {
@@ -1802,6 +1842,10 @@
           "type": "setFlag",
           "flag": "caravan_cornered",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "raced_for_the_stone"
         }
       ],
       "choices": [
@@ -1995,6 +2039,10 @@
               "type": "setFlag",
               "flag": "clock_late",
               "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "answered_hessa"
             }
           ]
         },
@@ -2008,6 +2056,10 @@
               "type": "setFlag",
               "flag": "refused_the_cult",
               "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "answered_hessa"
             }
           ]
         },
@@ -2031,6 +2083,10 @@
               "type": "setFlag",
               "flag": "gave_stone_back",
               "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "answered_hessa"
             }
           ]
         }

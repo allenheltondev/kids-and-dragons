@@ -9,6 +9,31 @@
   "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "arrival",
+  "goal": {
+    "text": "Help the keepers meet the island that is due back.",
+    "steps": [
+      {
+        "id": "spot_island",
+        "label": "Spot the island in the clouds",
+        "flag": "sighted_the_returning_island"
+      },
+      {
+        "id": "cross_over",
+        "label": "Cross over to the island",
+        "flag": "crossed_to_the_returning_island"
+      },
+      {
+        "id": "copy_carving",
+        "label": "Copy the old stone's carving",
+        "flag": "copied_the_old_carving"
+      },
+      {
+        "id": "come_back",
+        "label": "Get safely back across",
+        "flag": "came_back_across_the_board"
+      }
+    ]
+  },
   "voiceGuide": {
     "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
     "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
@@ -205,6 +230,12 @@
           "icon": "hand",
           "goto": "priority"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "sighted_the_returning_island"
+        }
       ]
     },
     "sightings_1_changed": {
@@ -216,6 +247,12 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "priority"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "sighted_the_returning_island"
         }
       ]
     },
@@ -254,6 +291,12 @@
           "icon": "hand",
           "goto": "priority"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "sighted_the_returning_island"
+        }
       ]
     },
     "sightings_2_changed": {
@@ -265,6 +308,12 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "priority"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "sighted_the_returning_island"
         }
       ]
     },
@@ -1012,6 +1061,12 @@
           "icon": "hand",
           "goto": "stone_care_2"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "crossed_to_the_returning_island"
+        }
       ]
     },
     "stone_care_1": {
@@ -1197,6 +1252,12 @@
           "label": "Have Pip name each visible ridge from the viewing mark",
           "icon": "hand",
           "goto": "orientation_2"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "copied_the_old_carving"
         }
       ]
     },
@@ -1647,6 +1708,12 @@
             "flag": "island_relay_delayed"
           },
           "text": "Your party finishes the last batch of carrying before the waiting messenger relay can leave. The keeper sends your chosen first message now, later than a light-kit crossing would have allowed."
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "came_back_across_the_board"
         }
       ]
     },

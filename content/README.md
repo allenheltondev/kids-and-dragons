@@ -194,6 +194,52 @@ What it does beyond the look:
 Put the fact in the narration itself, in plain words. The ribbon tells the room to pay attention;
 it cannot tell them what to pay attention to.
 
+<<<<<<< HEAD
+## The chapter's goal
+
+Every chapter says what the party is trying to do, and the table can see it the whole time
+(#356). `goal` is one sentence in kid words and two to four steps:
+
+```json
+"goal": {
+  "text": "Show you can hold the dragon's leash.",
+  "steps": [
+    { "id": "ledger", "label": "Get the wardens' ledger", "flag": "got_the_ledger" },
+    { "id": "chord", "label": "Learn the choir's chord", "flag": "learned_the_chord" },
+    { "id": "answer", "label": "Find a true answer", "flag": ["answered_true", "answered_kind"] }
+  ]
+}
+```
+
+- **It shows itself.** The shared screen draws it under the chapter's name, on the sky above the
+  figures; every phone draws it under the hero's strip. Nobody taps to open it. In a fight it folds
+  to the goal and a row of pips in the top corner. On a short pane (a tablet at the largest text)
+  it keeps the pips and names only the next step. Read-aloud says the goal after the first scene's
+  story; a tick is seen and chimed, never read out.
+- **A step ticks when its flag is set**, or any one of a list. It is the same machinery as a bonus
+  objective: author a `setFlag` where the thing visibly happens and point the step at it. A step
+  may watch an `item` instead, while anybody holds it, when the chapter already hands one over for
+  the thing (07l's ledger): one of the chapter's own `props`, given with `grantQuestItem`, so it
+  cannot arrive already held or be refused at a full bag. The tick
+  gets a moment on screen (a gold box, a few sparks and a chime; under reduced motion, the gold
+  only).
+- **Every step is on the spine.** `content:validate` refuses a step that some path to a success
+  ending can finish without ticking, naming the step and an ending that proves it. A failed roll is
+  a path: word the step for what every party does ("Race for the caravan's stone") and tick it on
+  both results, never for the success only some get. Set the flag on
+  a scene every road walks, on each road's own result scene, or on every branch of a check or
+  fight (a failed roll still did the thing). `optional: true` lifts the rule and draws "(if you
+  can)"; use it rarely. An optional step is an extra: the goal shows done when its required steps
+  are, the pips count the extras apart, and a short pane's "Next" never names one.
+- **Chapter-local flags only.** A route-set member can arrive already set from an earlier chapter,
+  so the validator refuses one. Never put the flag on an ending scene: the chapter is over by then.
+- **Written for scene 1.** It is on screen before anything has happened, so it names nothing the
+  party has not met on every way in, counts nothing, names no great stone and spoils nothing. One
+  sentence, at most 90 characters; labels at most 40, no full stop. US spelling, no em dashes.
+- **Spread the ticks.** The first a quarter of the way in, the last near the end. A step that ticks
+  in scene 1 tells the table nothing.
+- Only a chapter that is nothing but its ending (a preview's pause) goes without one.
+=======
 ## Interactivity
 
 The table should be playing, not only listening. Four rules, and the two numbers
@@ -219,6 +265,7 @@ Both numbers are a reading list, never a gate: the `!` marks under the table say
 They read the spine only; a typical path's `read` in the table can run longer, so glance at it
 too. Bare `npm run content:pacing` lists the Gemfall chapters; `npm run content:pacing -- --chapter ""`
 lists every shipped chapter, and `--chapter bramblewood-` any one prefix.
+>>>>>>> origin/main
 
 ## Class places (#311)
 

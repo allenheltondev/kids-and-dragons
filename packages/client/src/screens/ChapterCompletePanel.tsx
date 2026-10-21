@@ -41,6 +41,7 @@ import { Icon } from "./icons";
 import { campaignEndHeading, campaignEndLine } from "./campaign-copy";
 import { fightEndingIcon, fightEndingLine } from "./fight-ending-copy";
 import { useEnsureChapter, useEnsureContent } from "./content";
+import { ChapterGoalCard } from "./ChapterGoal";
 import "./shared.css";
 import "./ChapterCompletePanel.css";
 
@@ -181,6 +182,8 @@ export function ChapterCompletePanel(): ReactElement {
             <span>{endLine}</span>
           </p>
         ) : null}
+        {/* The goal the chapter set out with (#356), and what got ticked on the way. */}
+        <ChapterGoalCard place="world" />
         <p className="complete__xp">
           <Icon name="star" />
           <span>
