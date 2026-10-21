@@ -66,7 +66,7 @@ Nothing in these takes a click or focus on the TV. The live inventory found none
 | 23 | Dice card, tier cutscene, rank-up moment | `screens/DiceOverlay.tsx`, `screens/TransformCutscene.tsx`, `screens/RankUpMoment.tsx` | **auto** (already): timed, and the rank-up lets every pointer through. |
 | 24 | Chapter complete | `screens/ChapterCompletePanel.tsx` | n/a: nothing to click on the TV. |
 | 25 | Renderer failure warning | `world/RendererFallback.tsx` | n/a: a small red icon, not focusable (owner decision). |
-| 26 | "Last time…" and "Where you left off" (#378) | `screens/ChapterPreface.tsx` | **auto**: timed, `pointer-events: none` (checked once #378 is on `main`). |
+| 26 | "Last time…" and "Where you left off" (#378) | `screens/ChapterPreface.tsx:240`, `screens/ChapterPreface.css:21` | **auto** (already): goes by itself on a word-count timer, and `pointer-events: none`. Nothing to click; not reworked here. |
 
 ## Screens around the game
 
