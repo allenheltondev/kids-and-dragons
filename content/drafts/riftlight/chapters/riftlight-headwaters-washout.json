@@ -383,7 +383,8 @@
           "goto": "rift_choice"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "open"
     },
     "rift_choice": {
       "type": "choice_point",
@@ -410,7 +411,8 @@
           "goto": "rapids"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "steady"
     },
     "river_chime": {
       "type": "story",
@@ -423,7 +425,8 @@
           "goto": "rift_decision"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "steady"
     },
     "river_read": {
       "type": "story",
@@ -436,7 +439,8 @@
           "goto": "rift_decision"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "steady"
     },
     "rift_decision": {
       "type": "choice_point",
@@ -466,7 +470,8 @@
           "goto": "rapids"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "steady"
     },
     "rift_end": {
       "type": "rest",
@@ -481,7 +486,8 @@
           "value": true
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "steady"
     },
     "rapids": {
       "type": "choice_point",

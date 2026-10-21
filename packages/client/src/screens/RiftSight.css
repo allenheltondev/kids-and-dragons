@@ -1,23 +1,19 @@
 /*
  * RiftSight (#229): the rifts at the party's place, and their Riftlight.
  *
- * Placeholder art until the effect sheets land (brief Part A1). Each layer
- * reads in grayscale by its *shape* as well as its colour - green a soft
- * glow, amber a single flame, blue rings, violet a spiral - and its pattern
- * moves the way the palette says. Under reduced motion the shapes stay and
- * the movement stops, so a reading never depends on animation alone.
+ * Each layer is a painted effect sheet (brief Part A1): one row of 12 square
+ * frames, stepped through by CSS. The patterns are in the paint and read in
+ * grayscale by their shape - green the outer brackets, amber one flame at the
+ * foot, blue nested rings, violet an inward spiral. Under reduced motion each
+ * loop holds one frame, so the shapes stay and only the movement stops.
  *
- * The palette colours below are defined here and used nowhere else: the TV
- * and every non-Starweaver phone only ever get `--neutral`.
+ * The palette lives in the sheets; the TV and every non-Starweaver phone are
+ * only ever given `rift_neutral` (RiftSight.tsx).
  *
  * Sized in `em` against the surface (WorldView's second rule).
  */
 
 .rift-sight {
-  --rift-green: #5fd68e;
-  --rift-amber: #f2a541;
-  --rift-blue: #5aa9f2;
-  --rift-violet: #a87cf2;
   display: flex;
   flex-wrap: wrap;
   gap: 0.35em 1em;
@@ -54,124 +50,64 @@
 
 /* --- The glyph: a tear in the air, with its layers stacked over it. ------ */
 
+/*
+ * The painted tear fills about 42% of its frame's height and a third of its
+ * width, so each 5.6em frame is centred over a 2.4em slot and overflows it
+ * (transparently) rather than shrinking the tear to a speck.
+ */
 .rift-glyph {
-  display: grid;
+  position: relative;
   flex: none;
-  inline-size: 1.6em;
+  inline-size: 2em;
   block-size: 2.4em;
 }
 
-.rift-glyph__layer,
-.rift-glyph__motion {
-  grid-area: 1 / 1;
+/*
+ * The painted tear is matte charcoal, made to sit on a backdrop; on the dark
+ * UI it would all but vanish. A faint colourless glow behind it keeps "a rift
+ * is here" readable, and says nothing about which rift.
+ */
+.rift-glyph::before {
+  content: "";
+  position: absolute;
+  inset: -0.2em -0.4em;
   border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(230, 228, 240, 0.32), rgba(230, 228, 240, 0.1) 65%, transparent);
 }
 
-/* Everyone's view: colourless, quiet, and giving no rule away. */
-.rift-glyph__layer--neutral {
-  background: radial-gradient(closest-side, rgba(230, 228, 240, 0.55), rgba(230, 228, 240, 0.12) 70%, transparent);
-  box-shadow: 0 0 0.4em rgba(230, 228, 240, 0.25);
-  animation: rift-shimmer 3.2s ease-in-out infinite;
+.rift-glyph__layer {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  inline-size: 5.6em;
+  block-size: 5.6em;
+  translate: -50% -50%;
+  background-repeat: no-repeat;
+  background-size: 1200% 100%;
+  pointer-events: none;
+  animation-name: rift-frames;
+  animation-timing-function: steps(12, jump-end);
+  animation-iteration-count: infinite;
 }
 
-/* The Starweaver's view: the same colourless tear the colours compose over. */
-.rift-glyph__layer--base {
-  background: radial-gradient(closest-side, rgba(20, 16, 40, 0.9), rgba(230, 228, 240, 0.18) 80%, transparent);
-  border: 0.08em solid rgba(230, 228, 240, 0.35);
+/* A one-shot (open, collapse) plays once and holds its last frame. */
+.rift-glyph__layer--once {
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
 }
 
-/* Green: a soft glow filling the tear, breathing slowly. */
-.rift-glyph__layer--green {
-  background: radial-gradient(closest-side, transparent 30%, var(--rift-green) 75%, transparent);
-  opacity: 0.8;
-  animation: rift-breathe 3.6s ease-in-out infinite;
+/* While a rift unfolds, its loops wait under the unfolding. */
+.rift-glyph--opening .rift-glyph__layer:not(.rift-glyph__layer--once) {
+  visibility: hidden;
 }
 
-/* Amber: one small flame at the heart, with a single flicker per beat. */
-.rift-glyph__layer--amber {
-  margin: 30% 32%;
-  border-radius: 50% 50% 45% 45% / 65% 65% 35% 35%;
-  background: var(--rift-amber);
-  animation: rift-flicker 2.4s steps(1, end) infinite;
-}
-
-/* Blue: rings, rippling steadily outward. */
-.rift-glyph__layer--blue {
-  background: repeating-radial-gradient(closest-side, var(--rift-blue) 0 0.12em, transparent 0.12em 0.36em);
-  opacity: 0.75;
-  animation: rift-ripple 2s linear infinite;
-}
-
-/* Violet: a spiral of light, turning inward like an arrow. */
-.rift-glyph__layer--violet {
-  background: conic-gradient(from 0deg, var(--rift-violet) 0 12%, transparent 12% 25%, var(--rift-violet) 25% 37%, transparent 37% 50%, var(--rift-violet) 50% 62%, transparent 62% 75%, var(--rift-violet) 75% 87%, transparent 87%);
-  mask: radial-gradient(closest-side, #000 40%, transparent 100%);
-  opacity: 0.7;
-  animation: rift-spiral 3s linear infinite;
-}
-
-/* Motion is the whole rift moving, not a layer of its own. */
-.rift-glyph--shrink {
-  animation: rift-shrink 4s ease-in infinite;
-}
-
-.rift-glyph--stutter {
-  animation: rift-stutter 1.7s steps(1, end) infinite;
-}
-
-.rift-glyph--sync {
-  animation: rift-sync 1.2s ease-in-out infinite;
-}
-
-/* Two motions at once keep the more telling one. */
-.rift-glyph--shrink.rift-glyph--sync {
-  animation: rift-shrink 4s ease-in infinite;
-}
-
-.rift-glyph--stutter.rift-glyph--sync {
-  animation: rift-stutter 1.7s steps(1, end) infinite;
-}
-
-@keyframes rift-shimmer {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; }
-}
-
-@keyframes rift-breathe {
-  0%, 100% { opacity: 0.35; transform: scale(0.9); }
-  50% { opacity: 0.9; transform: scale(1); }
-}
-
-@keyframes rift-flicker {
-  0%, 85%, 100% { opacity: 1; }
-  88% { opacity: 0.25; }
-}
-
-@keyframes rift-ripple {
-  from { transform: scale(0.85); }
-  to { transform: scale(1.05); }
-}
-
-@keyframes rift-spiral {
-  from { transform: rotate(0deg) scale(1.05); }
-  to { transform: rotate(-360deg) scale(0.85); }
-}
-
-@keyframes rift-shrink {
-  from { transform: scale(1); }
-  to { transform: scale(0.7); }
-}
-
-@keyframes rift-stutter {
-  0%, 30%, 55%, 100% { transform: translateX(0); }
-  32% { transform: translateX(-0.08em); }
-  57% { transform: translateX(0.1em); }
-  60% { transform: translateX(0); opacity: 0.6; }
-}
-
-@keyframes rift-sync {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
+/*
+ * 12 frames, left to right. With a 1200% sheet, x = k/11 of the way across is
+ * frame k, so twelve steps from 0 towards 12/11 land on frames 0..11.
+ */
+@keyframes rift-frames {
+  from { background-position: 0% 0; }
+  to { background-position: 109.0909% 0; }
 }
 
 /* The Starweaver's menu indicator: no palette colour, no gold. */
@@ -185,8 +121,19 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rift-glyph,
+  /* Frame 6 of 12, mid-pattern: every layer at its most readable. */
   .rift-glyph__layer {
     animation: none;
+    background-position: 54.5455% 0;
+  }
+
+  /* Nothing unfolds or folds: the rift is simply there, or simply gone. */
+  .rift-glyph__layer--once,
+  .rift-sight__rift--collapsing {
+    display: none;
+  }
+
+  .rift-glyph--opening .rift-glyph__layer:not(.rift-glyph__layer--once) {
+    visibility: visible;
   }
 }

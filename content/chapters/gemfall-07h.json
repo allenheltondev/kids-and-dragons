@@ -308,7 +308,7 @@
       "narration": "You told the wardens the truth, and they still trust you. A clerk stamps a pass for you and waves you through without looking in your bags. The stamp feels heavy on your hand all afternoon.",
       "cast": [
         {
-          "figure": "cast/skywarden_faun",
+          "figure": "cast/warden_clerk",
           "name": "Warden Clerk"
         }
       ],
@@ -1046,7 +1046,7 @@
       "narration": "The centaur relay canters past your fire and does not stop. They have heard what you are for now. \"Fat caravan tomorrow,\" one calls over her shoulder. \"We're sending it the long way. Round you.\"",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/relay_runner",
           "name": "Relay Runner"
         }
       ],
@@ -1078,7 +1078,7 @@
       "narration": "\"Fair enough,\" you say. She looks surprised that you did not argue, and slows to a trot for a few paces as if she might say something else. Then she does not, and the relay canters on into the dark, and the dust settles on your humming packs.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/relay_runner",
           "name": "Relay Runner"
         }
       ],
@@ -1096,7 +1096,7 @@
       "narration": "You call after her the old road-people way, palm up, from far off, the way your family has done for longer than roads. She pulls up so hard she skids. For a long moment she looks at you, a manticore keeping the old courtesy while carrying what you carry. \"Fine,\" she says at last. \"Past you. Once. Don't make me sorry.\"",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/relay_runner",
           "name": "Relay Runner"
         }
       ],
@@ -1287,7 +1287,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/skywarden_faun",
+          "figure": "cast/warden_clerk",
           "name": "Warden Clerk"
         }
       ],
@@ -1318,7 +1318,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/skywarden_faun",
+          "figure": "cast/warden_clerk",
           "name": "Warden Clerk"
         }
       ],
@@ -1336,7 +1336,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "cast/skywarden_faun",
+          "figure": "cast/warden_clerk",
           "name": "Warden Clerk"
         }
       ],
@@ -1357,7 +1357,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/skywarden_faun",
+          "figure": "cast/warden_clerk",
           "name": "Warden Clerk"
         }
       ],
@@ -1742,7 +1742,7 @@
       "narration": "The relay owes you one, and the relay pays its debts. The fattest caravan in the funnel comes round the hairpin on the wrong side of the road, straight to where you are standing, and the centaur leading it does not look at you once. \"Once,\" she says to the air, and is gone.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/relay_runner",
           "name": "Relay Runner"
         }
       ],

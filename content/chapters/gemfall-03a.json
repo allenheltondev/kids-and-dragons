@@ -202,11 +202,11 @@
       ],
       "cast": [
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_scout",
           "name": "Brassbuckle scout"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_recordkeeper",
           "name": "Brassbuckle recordkeeper"
         }
       ],
@@ -234,11 +234,11 @@
       },
       "cast": [
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_scout",
           "name": "Brassbuckle scout"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_recordkeeper",
           "name": "Brassbuckle recordkeeper"
         }
       ],
@@ -264,11 +264,11 @@
       ],
       "cast": [
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_scout",
           "name": "Brassbuckle scout"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_recordkeeper",
           "name": "Brassbuckle recordkeeper"
         }
       ],
@@ -1189,11 +1189,11 @@
       "art": "scenes/gemfall/stone-crossing-queue",
       "cast": [
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_scout",
           "name": "Brassbuckle scout"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_recordkeeper",
           "name": "Brassbuckle recordkeeper"
         }
       ]
@@ -1228,11 +1228,11 @@
       "art": "scenes/gemfall/stone-crossing-queue",
       "cast": [
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_scout",
           "name": "Brassbuckle scout"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_recordkeeper",
           "name": "Brassbuckle recordkeeper"
         }
       ]
@@ -1448,11 +1448,11 @@
       "art": "scenes/gemfall/stone-crossing-queue",
       "cast": [
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_scout",
           "name": "Brassbuckle scout"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_recordkeeper",
           "name": "Brassbuckle recordkeeper"
         }
       ]
@@ -1497,11 +1497,11 @@
       "art": "scenes/gemfall/stone-crossing-queue",
       "cast": [
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_scout",
           "name": "Brassbuckle scout"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_recordkeeper",
           "name": "Brassbuckle recordkeeper"
         }
       ]
@@ -1532,11 +1532,11 @@
           "size": "very_large"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_scout",
           "name": "Brassbuckle scout"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_recordkeeper",
           "name": "Brassbuckle recordkeeper"
         }
       ],
@@ -1564,11 +1564,11 @@
       "art": "scenes/gemfall/stone-crossing-queue",
       "cast": [
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_scout",
           "name": "Brassbuckle scout"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_recordkeeper",
           "name": "Brassbuckle recordkeeper"
         }
       ]

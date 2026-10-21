@@ -63,7 +63,8 @@
           "goto": "listen"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/singing-hall-camp",
+      "rift": "steady"
     },
     "chime": {
       "type": "story",
@@ -91,7 +92,8 @@
           "flag": "traced_the_ticking"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/singing-hall-camp",
+      "rift": "steady"
     },
     "read": {
       "type": "story",
@@ -110,7 +112,8 @@
           "flag": "traced_the_ticking"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/singing-hall-camp",
+      "rift": "steady"
     },
     "listen": {
       "type": "story",
@@ -129,7 +132,8 @@
           "flag": "traced_the_ticking"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/singing-hall-camp",
+      "rift": "steady"
     },
     "decide": {
       "type": "choice_point",
@@ -160,7 +164,8 @@
           ]
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/singing-hall-camp",
+      "rift": "steady"
     },
     "sing": {
       "type": "story",
@@ -189,7 +194,8 @@
           "text": "You hum again. The opening stays just as wide. It does not need another note; it has stayed open since your first song."
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/singing-hall-camp",
+      "rift": "open"
     },
     "test_open": {
       "type": "story",
@@ -211,7 +217,8 @@
           "text": "The opening stays wide after your song ends. Salt wind and gull cries continue. You can return to camp for the Listening Chime before trusting the crossing."
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/singing-hall-camp",
+      "rift": "steady"
     },
     "ready": {
       "type": "rest",
@@ -219,7 +226,8 @@
       "heal": 0,
       "choices": [],
       "outcome": "success",
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/singing-hall-camp",
+      "rift": "steady"
     },
     "leave": {
       "type": "rest",

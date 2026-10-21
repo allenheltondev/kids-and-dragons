@@ -226,7 +226,8 @@
           "goto": "clear_quay"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "check_pattern": {
       "type": "check",
@@ -249,7 +250,8 @@
         "goto": "pattern_missed",
         "narration": "A barrel lid shoots past your ankle before you can point."
       },
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "pattern_seen": {
       "type": "story",
@@ -262,7 +264,8 @@
           "goto": "shimmer"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "pattern_missed": {
       "type": "story",
@@ -275,7 +278,8 @@
           "goto": "shimmer"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "clear_quay": {
       "type": "story",
@@ -288,7 +292,8 @@
           "goto": "shimmer"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "shimmer": {
       "type": "story",
@@ -325,7 +330,8 @@
           "flag": "found_the_cold_fold"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "open"
     },
     "read_light": {
       "type": "story",
@@ -338,7 +344,8 @@
           "goto": "pull"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "pull": {
       "type": "choice_point",
@@ -407,7 +414,8 @@
           "text": "From his safely moored boat, the pilot calls, \"Watch that crate on your left!\" You see it tilt in time to step clear."
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "catch": {
       "type": "check",
@@ -430,7 +438,8 @@
           }
         ]
       },
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "anchor": {
       "type": "check",
@@ -453,7 +462,8 @@
           }
         ]
       },
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "swoop": {
       "type": "check",
@@ -476,7 +486,8 @@
           }
         ]
       },
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "smash": {
       "type": "check",
@@ -499,7 +510,8 @@
           }
         ]
       },
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "brace": {
       "type": "check",
@@ -522,7 +534,8 @@
           }
         ]
       },
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "caught": {
       "type": "story",
@@ -535,7 +548,8 @@
           "goto": "through"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "together": {
       "type": "story",
@@ -548,7 +562,8 @@
           "goto": "through"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "tumbled": {
       "type": "story",
@@ -561,7 +576,8 @@
           "goto": "through"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "through": {
       "type": "story",
@@ -581,7 +597,8 @@
           "flag": "kept_the_kid_safe"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "collapse"
     },
     "white": {
       "type": "rest",

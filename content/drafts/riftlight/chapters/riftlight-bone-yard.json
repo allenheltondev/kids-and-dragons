@@ -53,7 +53,8 @@
           "goto": "limit"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "limit": {
       "type": "choice_point",
@@ -72,7 +73,8 @@
           "goto": "limit_2"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "limit_1": {
       "type": "story",
@@ -85,7 +87,8 @@
           "goto": "survey"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "limit_2": {
       "type": "story",
@@ -98,7 +101,8 @@
           "goto": "survey"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "survey": {
       "type": "choice_point",
@@ -117,7 +121,8 @@
           "goto": "survey_2"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "survey_1": {
       "type": "story",
@@ -130,7 +135,8 @@
           "goto": "survey_check"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "survey_2": {
       "type": "story",
@@ -143,7 +149,8 @@
           "goto": "survey_check"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "survey_check": {
       "type": "check",
@@ -159,7 +166,8 @@
         "goto": "survey_changed",
         "narration": "A loose stone rolls into the hollow; you stop before following it."
       },
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "survey_clear": {
       "type": "story",
@@ -178,7 +186,8 @@
           "goto": "markers"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "survey_changed": {
       "type": "story",
@@ -197,7 +206,8 @@
           "goto": "markers"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "markers": {
       "type": "choice_point",
@@ -216,7 +226,8 @@
           "goto": "markers_2"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "markers_1": {
       "type": "story",
@@ -229,7 +240,8 @@
           "goto": "test"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "markers_2": {
       "type": "story",
@@ -242,7 +254,8 @@
           "goto": "test"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "test": {
       "type": "choice_point",
@@ -261,7 +274,8 @@
           "goto": "test_2"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "test_1": {
       "type": "story",
@@ -274,7 +288,8 @@
           "goto": "vibration"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "test_2": {
       "type": "story",
@@ -287,7 +302,8 @@
           "goto": "vibration"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "vibration": {
       "type": "choice_point",
@@ -306,7 +322,8 @@
           "goto": "vibration_2"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "vibration_1": {
       "type": "story",
@@ -319,7 +336,8 @@
           "goto": "vibration_check"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "vibration_2": {
       "type": "story",
@@ -332,7 +350,8 @@
           "goto": "vibration_check"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "vibration_check": {
       "type": "check",
@@ -348,7 +367,8 @@
         "goto": "vibration_changed",
         "narration": "A crawler pins the line under one small foot."
       },
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "vibration_clear": {
       "type": "story",
@@ -361,7 +381,8 @@
           "goto": "support"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "vibration_changed": {
       "type": "story",
@@ -374,7 +395,8 @@
           "goto": "support"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "support": {
       "type": "choice_point",
@@ -393,7 +415,8 @@
           "goto": "support_2"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "support_1": {
       "type": "story",
@@ -406,7 +429,8 @@
           "goto": "support_check"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "support_2": {
       "type": "story",
@@ -419,7 +443,8 @@
           "goto": "support_check"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "support_check": {
       "type": "check",
@@ -435,7 +460,8 @@
         "goto": "support_changed",
         "narration": "The first brace tips and you pull back together."
       },
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "support_clear": {
       "type": "story",
@@ -448,7 +474,8 @@
           "goto": "rest"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "support_changed": {
       "type": "story",
@@ -461,7 +488,8 @@
           "goto": "rest"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "rest": {
       "type": "rest",
@@ -481,7 +509,8 @@
           "goto": "rest_watch"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "rest_watch": {
       "type": "story",
@@ -494,7 +523,8 @@
           "goto": "plan"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "plan": {
       "type": "choice_point",
@@ -513,7 +543,8 @@
           "goto": "plan_2"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "plan_1": {
       "type": "story",
@@ -526,7 +557,8 @@
           "goto": "fight"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "plan_2": {
       "type": "story",
@@ -539,7 +571,8 @@
           "goto": "fight_seam"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady"
     },
     "fight": {
       "type": "encounter",

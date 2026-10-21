@@ -1063,6 +1063,9 @@
         "priority": {
           "$ref": "#/$defs/priority"
         },
+        "rift": {
+          "$ref": "#/$defs/sceneRift"
+        },
         "onEnter": {
           "$ref": "#/$defs/effects"
         },
@@ -1136,6 +1139,9 @@
         "priority": {
           "$ref": "#/$defs/priority"
         },
+        "rift": {
+          "$ref": "#/$defs/sceneRift"
+        },
         "onEnter": {
           "$ref": "#/$defs/effects"
         },
@@ -1202,6 +1208,9 @@
         "priority": {
           "$ref": "#/$defs/priority"
         },
+        "rift": {
+          "$ref": "#/$defs/sceneRift"
+        },
         "onEnter": {
           "$ref": "#/$defs/effects"
         },
@@ -1265,6 +1274,9 @@
         },
         "priority": {
           "$ref": "#/$defs/priority"
+        },
+        "rift": {
+          "$ref": "#/$defs/sceneRift"
         },
         "onEnter": {
           "$ref": "#/$defs/effects"
@@ -2252,6 +2264,14 @@
       "enum": [
         1,
         2
+      ]
+    },
+    "sceneRift": {
+      "description": "SceneRift in chapter.ts (#401): a rift in plain view in this scene, drawn as the neutral shimmer on every screen, standing between the party and the cast. \"steady\" is there; \"open\" opens as the scene does, then stays; \"collapse\" folds shut as the scene does, then is gone. content/README.md, \"A rift in view\".",
+      "enum": [
+        "steady",
+        "open",
+        "collapse"
       ]
     },
     "rescueObjective": {

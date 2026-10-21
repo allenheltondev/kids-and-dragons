@@ -45,6 +45,7 @@ import { presentationDuration } from "../world/presentation";
 // (a cue per beat) and the chapter's biome (the music bed). Roadmap chapter 8.
 import { ambience, cue, cueForPresentation, stopSceneCues } from "../audio";
 import { ambienceForScene, sceneCuesFor } from "../audio/scene-audio";
+import { riftCueFor } from "../world/scene-rift";
 // From the import-free stats module, never from FrameMeter: a static import of
 // the meter is a static import of the scene, Pixi and the figures (frame-stats.ts).
 import { perfRequested } from "../world/frame-stats";
@@ -127,6 +128,17 @@ export function WorldView({
     for (const id of sceneCuesFor(previousAudioState.current, state)) cue(id);
     previousAudioState.current = state;
   }, [state]);
+
+  // A rift that opens or folds shut as its scene opens (#401). Here, not on
+  // the stage, so the room hears it on the still board too. Also run when the
+  // chapter lands: the state can name a scene before its chapter has loaded,
+  // and `riftCueFor` keeps that scene pending until it can be judged.
+  const riftCueHeard = useRef<string | null>(null);
+  useEffect(() => {
+    const next = riftCueFor(riftCueHeard.current, chapter, state);
+    riftCueHeard.current = next.heard;
+    cue(next.cue);
+  }, [chapter, state]);
   useEffect(() => () => { stopSceneCues(); }, []);
 
   return (
