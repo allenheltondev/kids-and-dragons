@@ -1,0 +1,19 @@
+{
+  "source": "duskrunner-mythic-kitsune-short-cloak-source.png",
+  "source_sha256": "a8f44b3bc82e56239c1f43e4d3a0be6dd322b35c03819a052aa778ce05b4ae7d",
+  "target": "assets/character-rigs/duskrunner/mythic/kitsune/assembled.png",
+  "source_size": [
+    1254,
+    1254
+  ],
+  "scaled_size": [
+    1022,
+    1022
+  ],
+  "translation": [
+    -2,
+    -1
+  ],
+  "ground_y": 900,
+  "method": "uniform Lanczos resampling; preserve preceding figure height and horizontal center; no retouching"
+}
