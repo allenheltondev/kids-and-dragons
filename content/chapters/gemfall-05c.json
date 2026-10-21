@@ -66,7 +66,7 @@
       "choices": [
         {
           "id": "join_queue",
-          "label": "Join the inspection line",
+          "label": "Join the inspection queue",
           "icon": "travel",
           "goto": "scene_inspection"
         },
@@ -115,7 +115,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "At the front of the line, a grandmother waves a little bell on a stick over every pack that comes past. When it passes a gem, the bell rings by itself. She writes each ring in her tally book. Rules are rules, even for family. When she reaches you, the bell rings so hard it nearly jumps off its stick. She looks at you over her spectacles. \"Well, now.\"",
+      "narration": "At the front of the queue, a grandmother waves a little bell on a stick over every pack that comes past. When it passes a gem, the bell rings by itself. She writes each ring in her tally book. Rules are rules, even for family. When she reaches you, the bell rings so hard it nearly jumps off its stick. She looks at you over her spectacles. \"Well, now.\"",
       "choices": [
         {
           "id": "open_packs",
@@ -1083,7 +1083,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "rest_bell_house",
-        "narration": "You tell them about the long lines and the jackalopes and the roads that bend, and you do all the voices. Forty grandmothers laugh in the right places and gasp in the right places, and one of them cries a little at the end, and says it is the onions."
+        "narration": "You tell them about the queues and the jackalopes and the roads that bend, and you do all the voices. Forty grandmothers laugh in the right places and gasp in the right places, and one of them cries a little at the end, and says it is the onions."
       },
       "onFailure": {
         "goto": "rest_bell_house",
@@ -1135,7 +1135,7 @@
     },
     "rest_bell_house": {
       "type": "rest",
-      "narration": "That night you sleep in the bell house, on warm stone, with the bells hanging silent over your heads. A grandmother tucks a hot rock into everybody's blanket, whether they want one or not. Outside, the rush is still lined up at the stones by lantern light.",
+      "narration": "That night you sleep in the bell house, on warm stone, with the bells hanging silent over your heads. A grandmother tucks a hot rock into everybody's blanket, whether they want one or not. Outside, the rush is still queuing at the stones by lantern light.",
       "heal": 3,
       "choices": [
         {
@@ -1310,7 +1310,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "Down at the line, the morning line has turned into a crowd, and the crowd is getting loud. A big man in a feathered hat is up on a cart, shouting that the stones are just old rocks and the grandmothers are just old ladies. People are starting to push. The grandmothers stand very still with their bells. Everybody vote.",
+      "narration": "Down at the line, the morning queue has turned into a crowd, and the crowd is getting loud. A big man in a feathered hat is up on a cart, shouting that the stones are just old rocks and the grandmothers are just old ladies. People are starting to push. The grandmothers stand very still with their bells. Everybody vote.",
       "choices": [
         {
           "id": "tell_story",
