@@ -69,6 +69,14 @@ async function labels(page: Page): Promise<Label[]> {
   });
 }
 
+/**
+ * A TV and a small one by default. KAD_TRUE_SIZE_VIEWPORTS="1920x1080,960x540"
+ * runs the same cases at other room sizes, for a visual acceptance pass.
+ */
+const VIEWPORTS: readonly (readonly [number, number])[] = process.env.KAD_TRUE_SIZE_VIEWPORTS
+  ? process.env.KAD_TRUE_SIZE_VIEWPORTS.split(",").map((size) => size.split("x").map(Number) as [number, number])
+  : [[1280, 720], [1024, 600]];
+
 test.describe("true size and stance on the story stage", () => {
   const open: { close(): Promise<void> }[] = [];
   test.afterEach(async () => {
@@ -125,6 +133,14 @@ test.describe("true size and stance on the story stage", () => {
     return tv;
   }
 
+  /** Dismiss the host's "Player joined" notices, as a host would, so a picture is of the stage. */
+  async function clearNotices(tv: Page): Promise<void> {
+    const dismiss = tv.getByRole("button", { name: "Dismiss" });
+    for (let i = 0; i < 6 && (await dismiss.count()) > 0; i++) {
+      await dismiss.first().click({ timeout: 2_000 }).catch(() => undefined);
+    }
+  }
+
   /** Two readings with motion off must match: every idle is still. */
   async function stillUnderReducedMotion(tv: Page): Promise<void> {
     await tv.evaluate(() => document.documentElement.setAttribute("data-motion", "reduced"));
@@ -165,7 +181,7 @@ test.describe("true size and stance on the story stage", () => {
     return found!;
   }
 
-  for (const [width, height] of [[1280, 720], [1024, 600]] as const) {
+  for (const [width, height] of VIEWPORTS) {
     test(`a dragon runs off the top beside a teapot-sized sprite, at ${width}x${height}`, async ({ browser }, info) => {
       test.setTimeout(240_000);
       const tv = await stage(browser, width, height, [
@@ -209,6 +225,7 @@ test.describe("true size and stance on the story stage", () => {
         expect(onTop, "the goal is drawn over the overflowing dragon").toBe(true);
         expect(dragonReading.labelTop!).toBeGreaterThan(goal.y + goal.height);
       }
+      await clearNotices(tv);
       await tv.screenshot({ path: info.outputPath(`dragon-off-the-top-${width}x${height}.png`) });
       await stillUnderReducedMotion(tv);
     });
@@ -231,6 +248,7 @@ test.describe("true size and stance on the story stage", () => {
       expect(whale.y + whale.height).toBeLessThan(whaleReading.groundY);
 
       await namesOnScreen(tv, width, ["Cloud Whale"]);
+      await clearNotices(tv);
       await tv.screenshot({ path: info.outputPath(`whale-off-the-right-${width}x${height}.png`) });
       await stillUnderReducedMotion(tv);
     });
@@ -264,8 +282,7 @@ test.describe("true size and stance on the story stage", () => {
       }
       expect(Math.min(...guests.map((g) => g.paint!.x))).toBeGreaterThanOrEqual(partyRight - width * 0.03);
       await namesOnScreen(tv, width, ["Sparklehoof", "Tumblefern", "Bramblebeard", "Tobble", "Hesper", "Mortar"]);
-      // The "Player joined" notices pass after a few seconds; the picture is of the stage.
-      await expect(tv.getByText("Player joined")).toHaveCount(0, { timeout: 30_000 }).catch(() => undefined);
+      await clearNotices(tv);
       await tv.screenshot({ path: info.outputPath(`three-and-three-${width}x${height}.png`) });
     });
 
@@ -317,6 +334,7 @@ test.describe("true size and stance on the story stage", () => {
       for (let i = 0; i < names.length; i++) for (let j = i + 1; j < names.length; j++) {
         expect(nameplatesCollide(names[i]!, names[j]!), `${names[i]!.text} / ${names[j]!.text}`).toBe(false);
       }
+      await clearNotices(tv);
       await tv.screenshot({ path: info.outputPath(`stances-${width}x${height}.png`) });
       await stillUnderReducedMotion(tv);
     });
