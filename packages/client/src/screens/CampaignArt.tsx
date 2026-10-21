@@ -11,10 +11,8 @@ import "./CampaignArt.css";
  * go once the real file ships, since the real file is always tried first.
  */
 const PLACEHOLDERS: Readonly<Record<string, string>> = {
-  gemfall: "scenes/gemfall/redspire-citadel",
-  riftlight: "scenes/riftlight/ice-shelf-headwaters",
   // The local story preview (`npm run riftlight:preview`) plays under its own id.
-  "riftlight-opening-preview": "scenes/riftlight/ice-shelf-headwaters",
+  "riftlight-opening-preview": "campaigns/riftlight",
 };
 
 export function campaignArtUrl(campaignId: string): string {
