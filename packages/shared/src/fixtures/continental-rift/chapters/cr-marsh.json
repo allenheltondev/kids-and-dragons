@@ -8,11 +8,19 @@
   "estimatedMinutes": 5,
   "xpAward": 100,
   "entry": "scene_reeds",
+  "goal": {
+    "text": "Find sure footing in the squelchy marsh.",
+    "steps": [
+      { "id": "wade_in", "label": "Wade into the marsh", "flag": "waded_into_the_marsh" },
+      { "id": "muddy_boots", "label": "Get your boots good and muddy", "flag": "took_the_mud" }
+    ]
+  },
   "scenes": {
     "scene_reeds": {
       "type": "story",
+      "onEnter": [{ "type": "setFlag", "flag": "waded_into_the_marsh" }],
       "narration": "The Marsh Approach squelches. A boggart with a lantern offers you a pot of thick, warm mud for your boots.",
-      "choices": [{ "id": "accept", "label": "Take the mud", "icon": "hand", "goto": "scene_mud" }]
+      "choices": [{ "id": "accept", "label": "Take the mud", "icon": "hand", "goto": "scene_mud", "effects": [{ "type": "setFlag", "flag": "took_the_mud" }] }]
     },
     "scene_mud": {
       "type": "story",

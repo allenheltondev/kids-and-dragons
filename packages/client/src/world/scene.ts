@@ -95,7 +95,7 @@ import {
 } from "./nameplate";
 import type { EncounterEvent } from "@kad/shared";
 import { stageLayout, STORY_MEASURE, type StageCastMember } from "./cast";
-import { storyStageHeight } from "./stage-inset";
+import { storyStageFrame } from "./stage-inset";
 import { reducedMotion } from "../a11y/prefs";
 
 export { characterArtUrl };
@@ -257,6 +257,8 @@ export interface PartyScene {
    * so nobody stands behind a paragraph. The fight board ignores it.
    */
   setStageInset(bottomPx: number): void;
+  /** How far down the pane the narration's head reaches (#356): see stage-inset.ts `storyStageFrame`. */
+  setStageInsetTop(topPx: number): void;
   /**
    * The names currently drawn, as boxes in whichever space is on screen —
    * board pixels during a fight, design units otherwise.
@@ -476,6 +478,9 @@ export function createScene(app: Application): PartyScene {
    */
   let insetBottom = 0;
   let insetTarget = 0;
+  /** The head's reach down the pane, eased the same way (#356). */
+  let insetTop = 0;
+  let insetTopTarget = 0;
   let board: BoardLayer | null = null;
   let encounterView: BoardViewState | null = null;
   /**
@@ -610,7 +615,17 @@ export function createScene(app: Application): PartyScene {
    */
   function cameraViewport(): Viewport {
     if (encounterView !== null) return viewport;
-    return { width: viewport.width, height: storyStageHeight(viewport.width, viewport.height, insetBottom) };
+    return { width: viewport.width, height: storyFrame().height };
+  }
+
+  /** Where the story frame sits in the pane: below the head's reach, if it reaches past the sky. */
+  function storyFrame(): { top: number; height: number } {
+    return storyStageFrame(viewport.width, viewport.height, insetBottom, insetTop);
+  }
+
+  /** How far down the pane the camera's frame starts: 0 for the board. */
+  function frameTop(): number {
+    return encounterView !== null ? 0 : storyFrame().top;
   }
 
   function applyCamera(dt: number): void {
@@ -636,7 +651,8 @@ export function createScene(app: Application): PartyScene {
     // units of `unit` px per tile — so the container scale is scale/unit.
     layer.scale.set(camNow.scale / unit);
     layer.x = frame.width / 2 - camNow.x * camNow.scale;
-    layer.y = frame.height / 2 - camNow.y * camNow.scale;
+    const shift = frameTop();
+    layer.y = shift + frame.height / 2 - camNow.y * camNow.scale;
 
     storyLayer.visible = !inCombat;
     boardWrap.visible = inCombat;
@@ -644,7 +660,7 @@ export function createScene(app: Application): PartyScene {
     // The painting's floor under the figures' feet (backdropFit). In a fight
     // the board is the floor, and the painting just covers the pane.
     const feetY = inCombat ? 0 : layer.y + GROUND_Y * layer.scale.y;
-    const fit = backdropFit(viewport, feetY, frame.height, backdropBleed);
+    const fit = backdropFit(viewport, feetY, shift + frame.height, backdropBleed);
     backdropArt.scale.set(fit.scale);
     backdropArt.position.set(fit.x, fit.y);
   }
@@ -771,6 +787,13 @@ export function createScene(app: Application): PartyScene {
         Math.abs(insetTarget - insetBottom) < 0.5
           ? insetTarget
           : approach(insetBottom, insetTarget, CAMERA_RATE, dt);
+      layoutActors();
+    }
+    if (insetTop !== insetTopTarget) {
+      insetTop =
+        Math.abs(insetTopTarget - insetTop) < 0.5
+          ? insetTopTarget
+          : approach(insetTop, insetTopTarget, CAMERA_RATE, dt);
       layoutActors();
     }
 
@@ -1338,6 +1361,18 @@ export function createScene(app: Application): PartyScene {
        */
       if (camNow === null || insetBottom === 0 || insetTarget === 0) {
         insetBottom = insetTarget;
+        camNow = null;
+        layoutActors();
+        applyCamera(0);
+      }
+    },
+
+    setStageInsetTop(topPx) {
+      if (destroyed) return;
+      insetTopTarget = Math.max(0, topPx);
+      // Like the plate: the first report, or a camera that has framed nothing yet, is a cut.
+      if (camNow === null || insetTop === 0 || insetTopTarget === 0) {
+        insetTop = insetTopTarget;
         camNow = null;
         layoutActors();
         applyCamera(0);

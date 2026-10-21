@@ -32,6 +32,31 @@
       "xp": 7
     }
   ],
+  "goal": {
+    "text": "Pay the toll at Stone Crossing and get across the river.",
+    "steps": [
+      {
+        "id": "reach_crossing",
+        "label": "Reach the crossing",
+        "flag": "reached_the_crossing"
+      },
+      {
+        "id": "pay_toll",
+        "label": "Pay the troll's toll",
+        "flag": "paid_the_toll"
+      },
+      {
+        "id": "camp_queue",
+        "label": "Camp in the queue for the night",
+        "flag": "camped_in_the_queue"
+      },
+      {
+        "id": "cross_river",
+        "label": "Get across the river",
+        "flag": "got_across_the_river"
+      }
+    ]
+  },
   "props": {
     "facet_drakes_rate": {
       "kind": "quest",
@@ -185,7 +210,13 @@
           "name": "Brassbuckle recordkeeper"
         }
       ],
-      "art": "scenes/gemfall/stone-crossing-queue"
+      "art": "scenes/gemfall/stone-crossing-queue",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "reached_the_crossing"
+        }
+      ]
     },
     "check_rivals": {
       "type": "check",
@@ -261,20 +292,38 @@
           "id": "tell_story",
           "label": "Tell him a story",
           "icon": "scroll",
-          "goto": "scene_troll_tell_story"
+          "goto": "scene_troll_tell_story",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "paid_the_toll"
+            }
+          ]
         },
         {
           "id": "ask_riddle",
           "label": "Ask him a riddle",
           "icon": "clever",
-          "goto": "scene_troll_ask_riddle"
+          "goto": "scene_troll_ask_riddle",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "paid_the_toll"
+            }
+          ]
         },
         {
           "id": "new_story",
           "label": "Make up a brand-new story, right now",
           "icon": "spark",
           "requiresFlag": "gave_our_story",
-          "goto": "scene_troll_new_story"
+          "goto": "scene_troll_new_story",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "paid_the_toll"
+            }
+          ]
         },
         {
           "id": "riddle_account",
@@ -287,6 +336,10 @@
               "type": "grantItem",
               "itemId": "luckstone",
               "to": "roller"
+            },
+            {
+              "type": "setFlag",
+              "flag": "paid_the_toll"
             }
           ]
         }
@@ -472,7 +525,13 @@
           "goto": "scene_night_rope"
         }
       ],
-      "art": "scenes/gemfall/stone-crossing-queue"
+      "art": "scenes/gemfall/stone-crossing-queue",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "camped_in_the_queue"
+        }
+      ]
     },
     "scene_drake_shelf": {
       "type": "story",
@@ -782,6 +841,10 @@
         {
           "type": "grantQuestItem",
           "itemId": "ossley_reed_knot"
+        },
+        {
+          "type": "setFlag",
+          "flag": "got_across_the_river"
         }
       ],
       "choices": [
@@ -1615,7 +1678,13 @@
           "goto": "scene_east_landing_ask_question"
         }
       ],
-      "art": "scenes/gemfall/eastern-bank-landing"
+      "art": "scenes/gemfall/eastern-bank-landing",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "got_across_the_river"
+        }
+      ]
     },
     "scene_east_landing_move_crates": {
       "type": "story",

@@ -9,6 +9,31 @@
   "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "arrival",
+  "goal": {
+    "text": "Compare your crossing with the yetis' memory ice.",
+    "steps": [
+      {
+        "id": "look",
+        "label": "Look into the memory ice",
+        "flag": "looked_into_the_memory_ice"
+      },
+      {
+        "id": "match",
+        "label": "Check what matches your crossing",
+        "flag": "checked_the_match"
+      },
+      {
+        "id": "file",
+        "label": "Help file the new record",
+        "flag": "filed_the_new_record"
+      },
+      {
+        "id": "teach",
+        "label": "Show a newcomer how to look",
+        "flag": "showed_the_newcomer"
+      }
+    ]
+  },
   "scenes": {
     "arrival": {
       "type": "story",
@@ -483,7 +508,13 @@
           "goto": "first_memory_2"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "looked_into_the_memory_ice"
+        }
+      ]
     },
     "first_memory_1": {
       "type": "story",
@@ -738,19 +769,37 @@
           "goto": "what_matches_1",
           "when": {
             "flag": "memory_independent_reading"
-          }
+          },
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "checked_the_match"
+            }
+          ]
         },
         {
           "id": "option_2",
           "label": "Lead with the limits of the match",
           "icon": "hand",
-          "goto": "what_matches_2"
+          "goto": "what_matches_2",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "checked_the_match"
+            }
+          ]
         },
         {
           "id": "keeper",
           "label": "Ask the elder to co-read and sign the direction",
           "icon": "hand",
-          "goto": "what_matches_keeper"
+          "goto": "what_matches_keeper",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "checked_the_match"
+            }
+          ]
         }
       ],
       "art": "scenes/riftlight/reading-room",
@@ -1038,7 +1087,13 @@
           ]
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "filed_the_new_record"
+        }
+      ]
     },
     "sliding_tray_1": {
       "type": "story",
@@ -1408,10 +1463,22 @@
       "roller": "party",
       "prompt": "Start with the quiet rule and fixed landmarks. Choose who leads while the others help.",
       "onSuccess": {
-        "goto": "teach_back_1_done"
+        "goto": "teach_back_1_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "showed_the_newcomer"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "teach_back_1_changed"
+        "goto": "teach_back_1_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "showed_the_newcomer"
+          }
+        ]
       },
       "art": "scenes/riftlight/reading-room"
     },
@@ -1461,10 +1528,22 @@
       "roller": "party",
       "prompt": "Ask the visitor to separate a view from an explanation. Choose who leads while the others help.",
       "onSuccess": {
-        "goto": "teach_back_2_done"
+        "goto": "teach_back_2_done",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "showed_the_newcomer"
+          }
+        ]
       },
       "onFailure": {
-        "goto": "teach_back_2_changed"
+        "goto": "teach_back_2_changed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "showed_the_newcomer"
+          }
+        ]
       },
       "art": "scenes/riftlight/reading-room"
     },

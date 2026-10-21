@@ -22,6 +22,26 @@
       "xp": 10
     }
   ],
+  "goal": {
+    "text": "Follow the humming in the wood all the way to where it comes from.",
+    "steps": [
+      {
+        "id": "hedge",
+        "label": "Get past the wall of thorns",
+        "flag": "got_past_the_hedge"
+      },
+      {
+        "id": "wood",
+        "label": "Find a way through the wood",
+        "flag": "crossed_the_wood"
+      },
+      {
+        "id": "door",
+        "label": "Open the door the humming is behind",
+        "flag": "opened_the_hill_door"
+      }
+    ]
+  },
   "props": {
     "$comment": "D7 chapter-scoped props: items this chapter brings with it, which the world does not otherwise have. The key opens one door, in this chapter. Putting it in canon/items.yaml would assert it as a fact about the Realm to make a lock work. They still project into content/items.json, because a quest item outlives the chapter that granted it and an inventory screen has to be able to name it.",
     "rusted_key": {
@@ -181,6 +201,13 @@
           "figure": "entities/pib",
           "name": "Pib",
           "size": "tiny"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "got_past_the_hedge",
+          "value": true
         }
       ],
       "choices": [
@@ -476,6 +503,11 @@
         {
           "type": "grantXp",
           "amount": 50
+        },
+        {
+          "type": "setFlag",
+          "flag": "crossed_the_wood",
+          "value": true
         }
       ],
       "choices": [
@@ -568,12 +600,24 @@
             "type": "grantItem",
             "itemId": "luckstone",
             "to": "roller"
+          },
+          {
+            "type": "setFlag",
+            "flag": "opened_the_hill_door",
+            "value": true
           }
         ]
       },
       "onFailure": {
         "goto": "rest_lanternfall",
-        "narration": "The key jams, and sticks, and finally the whole door gives up and swings open on its own with an enormous groan that startles every moth in the wood into the air at once. Not graceful. Still open."
+        "narration": "The key jams, and sticks, and finally the whole door gives up and swings open on its own with an enormous groan that startles every moth in the wood into the air at once. Not graceful. Still open.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "opened_the_hill_door",
+            "value": true
+          }
+        ]
       }
     },
     "rest_lanternfall": {

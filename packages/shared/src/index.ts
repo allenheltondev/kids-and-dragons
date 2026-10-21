@@ -33,6 +33,7 @@ export * from "./field-guide.js";
 export * from "./discoveries.js";
 export * from "./chapter-graph.js";
 export * from "./chapter-pacing.js";
+export * from "./chapter-goal.js";
 export * from "./narration.js";
 export * from "./routes.js";
 export * from "./campaign-graph.js";

@@ -31,6 +31,31 @@
       "xp": 7
     }
   ],
+  "goal": {
+    "text": "Follow the rush up the north road and find out what the road remembers.",
+    "steps": [
+      {
+        "id": "mule",
+        "label": "Get a stuck mule moving",
+        "flag": "moved_the_mule"
+      },
+      {
+        "id": "depot",
+        "label": "Visit the big gem depot",
+        "flag": "reached_the_depot"
+      },
+      {
+        "id": "songs",
+        "label": "Learn the centaurs' route-songs",
+        "flag": "heard_the_route_songs"
+      },
+      {
+        "id": "camp",
+        "label": "Find a safe place to camp",
+        "flag": "passed_the_bend"
+      }
+    ]
+  },
   "props": {
     "facet_depot": {
       "kind": "quest",
@@ -518,11 +543,23 @@
       "roller": "party",
       "onSuccess": {
         "goto": "rest_soup_tents",
-        "narration": "You heave, and the gem sack slips off the mule's back in the struggle. The moment it hits the ground, the mule leaps up, fresh as morning, and trots three steps away from it. \"She'll carry anything,\" says the owner, amazed. \"Anything but that, it seems.\""
+        "narration": "You heave, and the gem sack slips off the mule's back in the struggle. The moment it hits the ground, the mule leaps up, fresh as morning, and trots three steps away from it. \"She'll carry anything,\" says the owner, amazed. \"Anything but that, it seems.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "moved_the_mule"
+          }
+        ]
       },
       "onFailure": {
         "goto": "rest_soup_tents",
-        "narration": "You push. The mule leans. The mule wins, and you sit down in the road in a heap. From down there you notice the mule is not glaring at you at all. It is glaring at the gem sack on its own back. Its owner sees it too, and slowly takes the sack off."
+        "narration": "You push. The mule leans. The mule wins, and you sit down in the road in a heap. From down there you notice the mule is not glaring at you at all. It is glaring at the gem sack on its own back. Its owner sees it too, and slowly takes the sack off.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "moved_the_mule"
+          }
+        ]
       },
       "art": "scenes/gemfall/downbound-wagon-auction"
     },
@@ -537,7 +574,13 @@
           "goto": "rest_soup_tents"
         }
       ],
-      "art": "scenes/gemfall/downbound-wagon-auction"
+      "art": "scenes/gemfall/downbound-wagon-auction",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "moved_the_mule"
+        }
+      ]
     },
     "scene_stubborn_mule_ask_mule": {
       "type": "story",
@@ -550,7 +593,13 @@
           "goto": "rest_soup_tents"
         }
       ],
-      "art": "scenes/gemfall/downbound-wagon-auction"
+      "art": "scenes/gemfall/downbound-wagon-auction",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "moved_the_mule"
+        }
+      ]
     },
     "rest_soup_tents": {
       "type": "rest",
@@ -1059,6 +1108,12 @@
           "figure": "cast/clerk_pennywhistle",
           "name": "Clerk Pennywhistle"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "reached_the_depot"
+        }
       ]
     },
     "check_forms": {
@@ -1426,6 +1481,10 @@
         {
           "type": "grantQuestItem",
           "itemId": "verses_relay_spiral"
+        },
+        {
+          "type": "setFlag",
+          "flag": "heard_the_route_songs"
         }
       ],
       "choices": [
@@ -1559,7 +1618,13 @@
       "roller": "party",
       "onSuccess": {
         "goto": "end_foothills_in_sight",
-        "narration": "Not one blade of grass rustles. One wolf lifts its nose, sniffs, and goes back to pacing."
+        "narration": "Not one blade of grass rustles. One wolf lifts its nose, sniffs, and goes back to pacing.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "passed_the_bend"
+          }
+        ]
       },
       "onFailure": {
         "goto": "encounter_wolves",
@@ -1580,7 +1645,13 @@
       ],
       "onVictory": {
         "goto": "end_foothills_in_sight",
-        "narration": "The pack backs off into the grass and trots away north, toward the hills, glowing like a string of lanterns."
+        "narration": "The pack backs off into the grass and trots away north, toward the hills, glowing like a string of lanterns.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "passed_the_bend"
+          }
+        ]
       },
       "onDefeat": {
         "goto": "end_scattered",
@@ -1604,7 +1675,13 @@
           "goto": "end_foothills_in_sight"
         }
       ],
-      "art": "scenes/gemfall/road-bend-grass"
+      "art": "scenes/gemfall/road-bend-grass",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "passed_the_bend"
+        }
+      ]
     },
     "end_foothills_in_sight": {
       "type": "rest",

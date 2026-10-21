@@ -8,11 +8,19 @@
   "estimatedMinutes": 5,
   "xpAward": 100,
   "entry": "scene_summit",
+  "goal": {
+    "text": "Read the stars above the mountains.",
+    "steps": [
+      { "id": "climb", "label": "Climb to the very top", "flag": "reached_the_summit" },
+      { "id": "learn_stars", "label": "Learn the shape of the stars", "flag": "studied_the_stars" }
+    ]
+  },
   "scenes": {
     "scene_summit": {
       "type": "story",
+      "onEnter": [{ "type": "setFlag", "flag": "reached_the_summit" }],
       "narration": "Above the Frostfang Peaks the stars are close enough to count. They make a pattern that matches the cracks in the glacier below.",
-      "choices": [{ "id": "study", "label": "Study the pattern", "icon": "star", "goto": "scene_pattern" }]
+      "choices": [{ "id": "study", "label": "Study the pattern", "icon": "star", "goto": "scene_pattern", "effects": [{ "type": "setFlag", "flag": "studied_the_stars" }] }]
     },
     "scene_pattern": {
       "type": "story",
