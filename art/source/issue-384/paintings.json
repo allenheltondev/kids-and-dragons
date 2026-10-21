@@ -1,0 +1,232 @@
+[
+  {
+    "id": "cast/seal_keeper",
+    "source": "art/source/issue-384/originals/cast-seal_keeper.png",
+    "prompt": "Correct this dragon game figure's COMPOSITION ONLY. Preserve ancient warm gemstone-edged bronze scales, gentle heavy-lidded expression, embermoths dusting nose, painterly house style, left facing. Show ENTIRE dragon completely inside canvas with at least5% transparent margin on every side: both wing tips and horns must be fully visible, NONE cropped. Lower head considerably, neck bent downward so chin rests ON forepaws, muzzle beside front toes, eyes close above paws. Upper wings can remain tall. This is essential because the game shows only bottom third of this colossal figure. No ground or shadow, true transparent square PNG. Whole tail and all limbs within canvas. Keep dragon patient and welcoming. No text.",
+    "generationFile": "exec-c2198293-35a3-42af-90cb-c5643ec431cc.png",
+    "initialPrompt": "New SINGLE named story cast figure for Kids & Dragons. Attached image is species anatomy and HOUSE STYLE reference only. Warm crafted painterly children's fantasy, no photorealism, warm brown tapered outlines, upper-left light. Complete character and defining props, three-quarter LEFT facing the party, calm approachable expression, readable at120px. Truly transparent background, no ground or shadow, no words, letters, text, borders or scenery. Requested1024x1024RGBA canvas, all limbs and props inside8px margin, lowest opaque sole at y900, no painting below y912. Seal-Keeper, ancient colossal dragon so old its bronze-brown scales have turned to amber, rose quartz and mossy emerald gemstone at edges. Patient long-looking heavy-lidded face, several tiny amber embermoths dusting nose. Whole dragon, folded wings high above back and head lowered close to forefeet, resting chin just above wrists; face in LOWER THIRD of complete body, so it reads when upper wings overflow top of stage. Gentle solemn finale speaker, no aggressive teeth. Ancient asymmetrical horns, rich jewel edging, distinct from generic reference. Standing pose1800cm tall. Head and nose extend LEFT, body compact and taller than wide.",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "cast/brassbuckle_scout",
+    "source": "art/source/issue-384/originals/cast-brassbuckle_scout.png",
+    "prompt": "New adult badger-like Brassbuckle scout, species/style reference assets/entities/burrowfolk/assembled.png. Dented brass expedition hat, ochre expedition coat, rust neckerchief and coil of queue rope over shoulder, alert expression, no book. Warm painterly house style, complete standing three-quarter LEFT figure on 1024x1024 transparent RGBA, soles at y900, clear margins, no text, ground or shadow.95cm.",
+    "generationFile": "exec-2fa439c7-c691-4377-a6fe-b3f1bbe667dd.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "cast/brassbuckle_recordkeeper",
+    "source": "art/source/issue-384/originals/cast-brassbuckle_recordkeeper.png",
+    "prompt": "New SINGLE named story cast figure for Kids & Dragons. Attached image is species anatomy and HOUSE STYLE reference only. Warm crafted painterly children's fantasy, no photorealism, warm brown tapered outlines, upper-left light. Complete character and defining props, three-quarter LEFT facing the party, calm approachable expression, readable at120px. Truly transparent background, no ground or shadow, no words, letters, text, borders or scenery. Requested1024x1024RGBA canvas, all limbs and props inside8px margin, lowest opaque sole at y900, no painting below y912. Brassbuckle recordkeeper, adult badger-like Burrowfolk,95cm tall. Rounded earnest face, small round spectacles, ink-stained cream paws, wide pristine brass expedition helmet and ochre practical expedition coat, rust neckerchief, same expedition clothing as rope-carrying scout but different proportions: rounder belly, shorter muzzle, meticulous posture. Holds thick OPEN blank notebook and pencil on a string, no rope. No lettering in book.",
+    "generationFile": "exec-4efb1087-c7d4-4bc8-99ad-dcc6f38543c3.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "cast/relay_runner",
+    "source": "art/source/issue-384/originals/cast-relay_runner.png",
+    "prompt": "New SINGLE named story cast figure for Kids & Dragons. Attached image is species anatomy and HOUSE STYLE reference only. Warm crafted painterly children's fantasy, no photorealism, warm brown tapered outlines, upper-left light. Complete character and defining props, three-quarter LEFT facing the party, calm approachable expression, readable at120px. Truly transparent background, no ground or shadow, no words, letters, text, borders or scenery. Requested1024x1024RGBA canvas, all limbs and props inside8px margin, lowest opaque sole at y900, no painting below y912. Relay Runner: lean adult SHE-CENTAUR, dark bay horse body with four horse legs and humanlike centaur upper torso as reference. NOT a standalone human. Dark braided mane tied high for speed, green relay sash, rolled notes in a chest bandolier. Breathless mild mid-stride gesture but feet registered, chest facing LEFT. Distinct from chestnut Bracken with saddle satchel: no saddle satchel.230cm tall.",
+    "generationFile": "exec-84398f42-793b-4381-a092-2855be44a56a.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "cast/masked_choir_singer",
+    "source": "art/source/issue-384/originals/cast-masked_choir_singer.png",
+    "prompt": "New SINGLE named story cast figure for Kids & Dragons. Attached image is species anatomy and HOUSE STYLE reference only. Warm crafted painterly children's fantasy, no photorealism, warm brown tapered outlines, upper-left light. Complete character and defining props, three-quarter LEFT facing the party, calm approachable expression, readable at120px. Truly transparent background, no ground or shadow, no words, letters, text, borders or scenery. Requested1024x1024RGBA canvas, all limbs and props inside8px margin, lowest opaque sole at y900, no painting below y912. A third Deep Hollow choir look: adult badger-like Burrowfolk95cm tall, plum choir cloak, simple bark mask painted with curved ochre strokes pushed HALF UP face, mouth open mid-note, small rose humming crystal on neck string. Visible badger striped snout and small rounded ears. Kind sincere misguided singer, warm and a little spooky never scary. No brass expedition gear or book.",
+    "generationFile": "exec-e748fea3-c960-4c09-a5ec-fe8b2ef01b53.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "cast/bell_code_expert",
+    "source": "art/source/issue-384/originals/cast-bell_code_expert.png",
+    "prompt": "New SINGLE named story cast figure for Kids & Dragons. Attached image is species anatomy and HOUSE STYLE reference only. Warm crafted painterly children's fantasy, warm brown tapered outlines, upper-left light. Complete figure and props, three-quarter LEFT, calm approachable, readable at120px. Truly transparent background, no ground or shadow, no text, borders or scenery. Requested1024x1024RGBA canvas, all limbs and props inside24px margin, lowest opaque sole at y900, no painting below y912. Bell-Code Expert: small fast-talking dragonling CHILD70cm tall, warm cream scales tinted ochre, rusty red dorsal spines and wing membranes, distinct from mint Nim. MUST remain QUADRUPED like reference with four sturdy animal legs and small wings. Bell on each front wrist secured by small leather bands, patient teaching expression, small bell harness. No humanlike body or humanoid hands. Gentle lively smile, no rhythm sticks requiring hands.",
+    "generationFile": "exec-9905dc3f-775c-446f-94ff-1d643f6e6cdc.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "cast/gullets_cousin",
+    "source": "art/source/issue-384/originals/cast-gullets_cousin.png",
+    "prompt": "New SINGLE named story cast figure for Kids & Dragons. Attached image is species anatomy and HOUSE STYLE reference only. Warm crafted painterly children's fantasy, warm brown tapered outlines, upper-left light. Complete character and defining props, three-quarter LEFT, calm approachable, readable at120px. Truly transparent background, no ground or shadow, no text, borders or scenery. Requested1024x1024RGBA canvas, all limbs and props inside24px margin, lowest opaque sole at y900, no painting below y912. Gullet's Cousins ribbon-crew FOREMAN represented by ONE frogfolk individual110cm tall. Moss green frog, cream throat, THREE practical river hats STACKED on head, amused broad face. Holds curved ribbon strung with small brass bells. Practical teal river waistcoat, no backpack or lantern. Same frogfolk anatomy as reference, family resemblance but distinctive stacked hats.",
+    "generationFile": "exec-b8fe139d-6061-4384-ad9f-1412c1a7d278.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "cast/road_warden",
+    "source": "art/source/issue-384/originals/cast-road_warden.png",
+    "prompt": "New SINGLE named story cast figure for Kids & Dragons. Attached image is species anatomy and HOUSE STYLE reference only. Warm crafted painterly children's fantasy, warm brown tapered outlines, upper-left light. Complete character and defining props, three-quarter LEFT, calm approachable, readable at120px. Truly transparent background, no ground or shadow, no text, borders or scenery. Requested1024x1024RGBA canvas, all limbs and props inside24px margin, lowest opaque sole at y900, no painting below y912. Road-Warden, adult she-centaur230cm tall, dapple grey horse lower body with FOUR horse legs, dark grey braid, humanlike centaur upper torso as reference (NOT a standalone human). Practical blue road-stitched sash, three small wooden thread spools gently held between lips, spare marker ribbons on belt, needle safely pinned to sleeve, half-unpicked map sash draped across forearm. No lettering. Warm patient sewing expert, stand alone without table.",
+    "generationFile": "exec-ed29a943-a8e5-4977-bf76-fe540af26717.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "cast/fishmonger",
+    "source": "art/source/issue-384/originals/cast-fishmonger.png",
+    "prompt": "New SINGLE named story cast figure for Kids & Dragons. Attached image is species anatomy and HOUSE STYLE reference only. Warm crafted painterly children's fantasy, warm brown tapered outlines, upper-left light. Complete character and defining props, three-quarter LEFT, calm approachable, readable at120px. Truly transparent background, no ground or shadow, no text, borders or scenery. Requested1024x1024RGBA canvas, all limbs and props inside24px margin, lowest opaque sole at y900, no painting below y912. Fishmonger, broad white-furred YETI280cm tall, dignified calculating expression, looking up and LEFT at one tiny herring held in raised paw. Long sea-green work apron, wood pail of whole fish in other paw, chalk-dusted furry paws. No staff, crystals or weapons. Funny proportional contrast huge yeti and tiny herring.",
+    "generationFile": "exec-15069abe-d82b-4e7e-a917-d5659c0f4e70.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "cast/road_boss",
+    "source": "art/source/issue-384/originals/cast-road_boss.png",
+    "prompt": "New SINGLE named story cast figure for Kids & Dragons. Attached image is species anatomy and HOUSE STYLE reference only. Warm crafted painterly children's fantasy, warm brown tapered outlines, upper-left light. Complete character and defining props, three-quarter LEFT, calm approachable, readable at120px. Truly transparent background, no ground or shadow, no text, borders or scenery. Requested1024x1024RGBA canvas, all limbs and props inside24px margin, lowest opaque sole at y900, no painting below y912. Road Boss, broad stocky adult centaur250cm tall, dark brown horse lower body with FOUR horse legs and humanlike centaur upper torso per reference. Greying curly hair, good-humoured puffing cheeks. One blunt wooden marker post balanced on EACH shoulder behind neck, both posts completely within frame. Mud-spattered bright rust road sash and sturdy work apron. No writing or weapons.",
+    "generationFile": "exec-3bd8967b-685b-41a7-9abc-ef738bf58937.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "cast/warden_clerk",
+    "source": "art/source/issue-384/originals/cast-warden_clerk.png",
+    "prompt": "New SINGLE named story cast figure for Kids & Dragons. Attached image is species anatomy and HOUSE STYLE reference only. Warm crafted painterly children's fantasy, warm brown tapered outlines, upper-left light. Complete figure and props, three-quarter LEFT, calm approachable, readable at120px. Truly transparent background, no ground or shadow, no text, borders or scenery. Requested1024x1024RGBA canvas, all limbs and props inside24px margin, lowest opaque sole at y900, no painting below y912. Warden Clerk: one compact moss-green FROGFOLK110cm tall. Neat silver-and-violet Skywarden uniform with simple tower badge, impassive attentive face. Heavy wooden pass stamp in one webbed hand and closed ink pad in other, small BLANK ledger strapped at side. Different from faun Pellam: frog head, round body, no horns, no quill. No lettering on stamp or ledger. No weapons.",
+    "generationFile": "exec-7ddd9496-118c-44ec-9e1e-1985096cafae.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "cast/rush_prospector",
+    "source": "art/source/issue-384/originals/cast-rush_prospector.png",
+    "prompt": "New SINGLE named story cast figure for Kids & Dragons. Attached image is species anatomy and HOUSE STYLE reference only. Warm crafted painterly children's fantasy, warm brown tapered outlines, upper-left light. Complete character and defining props, three-quarter LEFT, calm approachable, readable at120px. Truly transparent background, no ground or shadow, no text, borders or scenery. Requested1024x1024RGBA canvas, all limbs and props inside24px margin, lowest opaque sole at y900, no painting below y912. Rush prospector, stubborn but approachable badger-like Burrowfolk95cm tall. Dusty workwear muted indigo vest, battered brown hat full of gem dust, mud to knees and muddy boots. Enormous pry bar gripped across shoulder but no violence. Gem pouch and soup bowl hanging at belt. Different outfit from Brassbuckle ochre expedition clothing.",
+    "generationFile": "exec-ad834626-7e78-4564-b1f4-a411fe7c7fae.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "cast/bell_courier",
+    "source": "art/source/issue-384/originals/cast-bell_courier.png",
+    "prompt": "New SINGLE named story cast figure for Kids & Dragons. Attached image is species anatomy and HOUSE STYLE reference only. Warm crafted painterly children's fantasy, warm brown tapered outlines, upper-left light. Complete figure and props, three-quarter LEFT, calm approachable, readable at120px. Truly transparent background, no ground or shadow, no text, borders or scenery. Requested1024x1024RGBA canvas, all limbs and props inside24px margin, lowest opaque sole at y900, no painting below y912. Bell Courier: tiny QUADRUPED dragonling girl with pale butter-yellow scales, coral-orange wing membranes and cinnamon spines, unlike mint Nim. Perched astride a fat friendly grey-brown pony, pony is part of the SAME complete figure, combined160cm tall. Bell on leather strap at her front wrist raised slightly to ring, letter pouch. Dragon remains animal anatomy with four limbs, little wings, not humanoid. Pony has all FOUR legs visible, rider no human hands. Puffing good-natured expression. Full pony tail and dragon tail inside canvas.",
+    "generationFile": "exec-a9262db1-8e3c-4a3a-9c33-5fc52878166d.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "cast/stall_witch",
+    "source": "art/source/issue-384/originals/cast-stall_witch.png",
+    "prompt": "New SINGLE named story cast figure for Kids & Dragons. Attached image is species anatomy and HOUSE STYLE reference only. Warm crafted painterly children's fantasy, warm brown tapered outlines, upper-left light. Complete figure and props, three-quarter LEFT, calm approachable, readable at120px. Truly transparent background, no ground or shadow, no text, borders or scenery. Requested1024x1024RGBA canvas, all limbs and props inside24px margin, lowest opaque sole at y900, no painting below y912. Stall Witch: individual olive-green FROGFOLK remedy witch140cm tall including tall floppy PATCHED pointed hat. Patient sales smile, deep teal robe, several dried herb charm bundles and small bell charms hanging from belt and sleeves, corked remedy bottles in wicker basket. Witch Order trappings, NOT bigfoot Mother Thrum. Webbed frog hands and toes, no human. Stand alone, no stall scenery, no text on bottles.",
+    "generationFile": "exec-842766b6-cb24-4568-abb3-1bc9658c8d6c.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "heave/band-slack",
+    "source": "art/source/issue-384/originals/heave-band-slack.png",
+    "prompt": "Warm painterly braided rope sagging in soft slack curve across strip toward wooden cart wheel half sunk in mud at right; true transparent RGBA,1600x360,top90 rows clear,sides fade48px,2px soft dark rim,no text or people.",
+    "generationFile": "exec-54e789b6-b43b-4559-b8c5-a85cca2ff895.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "heave/band-taut",
+    "source": "art/source/issue-384/originals/heave-band-taut.png",
+    "prompt": "Edit only rope slack and tiny wheel movement in this exact game overlay. Preserve the SAME wooden wheel's size, appearance, location, spokes and mud patch, same canvas and transparent frame, same rope thickness and length and both endpoints. Pull the rope straight and taut instead of its sagging U curve. Add two small strain strokes near wheel and two small puffs of dust. Wheel may lift ONLY A FEW pixels, no resizing. Do not zoom, crop or shift subject or alter style. This is a registered same-frame animation state of the provided slack art. No text, hands, feet or people. True transparent background, keep empty upper region and softly fading side ends.",
+    "generationFile": "exec-51825402-57c7-47fd-945e-4a6b18dbae7d.png",
+    "initialPrompt": "Warm painterly children's fantasy game overlay. Thick braided rope stretched straight across lower portion, two small strain strokes. At right a wooden cart wheel half sunk in mud but lifted a hair, two dust puffs. Same composition as slack state: wheel x1370 y245 on requested 1600x360 canvas. Entire top 90 rows transparent, subject only rows90-359, sides fade over48px. True transparent background, 2px soft dark rim, no text, no people or hands or feet.",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "heave/token-empty",
+    "source": "art/source/issue-384/originals/heave-token-empty.png",
+    "prompt": "Single game portrait-token ring asset. Warm painterly storybook style, warm dark brown tapered rim, no text or numbers or letters, no background or shadow, no hands or feet or people. True transparent PNG. Requested output192x192, circular ring centered at96,96. Entire centre disc radius62 MUST be transparent and empty. Entire outer8pixel edge transparent. Ring lives between radii66 and83. Small details within radius86. Balanced centred silhouette. Reads on light meadow and dark marsh, soft2px dark rim. A loose grey-brown DOTTED braided-rope loop, with gaps between rope dashes. Circular ring, no extras.",
+    "generationFile": "exec-6c76fbf0-fa30-43dd-bb0b-68e7ca57b329.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "heave/token-holding",
+    "source": "art/source/issue-384/originals/heave-token-holding.png",
+    "prompt": "Single game portrait-token ring asset. Warm painterly storybook style, warm dark brown tapered rim, no text or numbers or letters, no background or shadow, no hands or feet or people. True transparent PNG. Requested output192x192, circular ring centered at96,96. Entire centre disc radius62 MUST be transparent and empty. Entire outer8pixel edge transparent. Ring lives between radii66 and83. Small details within radius86. Balanced centred silhouette. Reads on light meadow and dark marsh, soft2px dark rim. A warm ochre braided rope loop pulled tight into a circle, very subtle small golden glow. No star or extra loop.",
+    "generationFile": "exec-84b5a711-4501-4fd5-a9aa-0c563de9ba54.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "heave/token-done",
+    "source": "art/source/issue-384/originals/heave-token-done.png",
+    "prompt": "Single game portrait-token ring asset. Warm painterly storybook style, warm dark brown tapered rim, no text or numbers or letters, no background or shadow, no hands or feet or people. True transparent PNG. Requested output192x192, circular ring centered at96,96. Entire centre disc radius62 MUST be transparent and empty. Entire outer8pixel edge transparent. Ring lives between radii66 and83. Small details within radius86. Balanced centred silhouette. Reads on light meadow and dark marsh, soft2px dark rim. A warm ochre braided rope loop pulled tight into a circle with a small GOLD FIVE POINT STAR knotted at TOP, outside centre hole.",
+    "generationFile": "exec-da06b638-dcce-4764-a038-edb1f1b1c884.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "heave/token-helped",
+    "source": "art/source/issue-384/originals/heave-token-helped.png",
+    "prompt": "Single game portrait-token ring asset. Warm painterly storybook style, warm dark brown tapered rim, no text or numbers or letters, no background or shadow, no hands or feet or people. True transparent PNG. Requested output192x192, circular ring centered at96,96. Entire centre disc radius62 MUST be transparent and empty. Entire outer8pixel edge transparent. Ring lives between radii66 and83. Small details within radius86. Balanced centred silhouette. Reads on light meadow and dark marsh, soft2px dark rim. A warm ochre braided rope loop pulled tight into a circle with a second smaller braided rope loop tied at RIGHT side, outside centre hole. No star.",
+    "generationFile": "exec-7dc80306-9f7d-461c-bc49-f1224c23907b.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "hum/band-wobble",
+    "source": "art/source/issue-384/originals/hum-band-wobble.png",
+    "prompt": "Warm painterly children's fantasy game overlay. Three or four thin warm golden sound ribbons flowing left to right, wavy lines out of step and crossing, a few round motes like dust in sunlight. Low broad composition, line endpoints registered around y240, motes balanced across frame. Requested canvas1600x360. Entire top90 rows transparent. Subject only rows90-359; sides fade48px. True transparent background. 2px soft dark rim so visible against bright meadow and dark marsh. No text, people, hands, feet, background.",
+    "generationFile": "exec-04b88b96-7a5d-4fc2-b03d-3285adbd5eb7.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "hum/band-together",
+    "source": "art/source/issue-384/originals/hum-band-together.png",
+    "prompt": "Edit this sound ribbon overlay into its TOGETHER state. Preserve canvas, transparent background, overall bounds, ribbon endpoints, warm painterly style, warm golden brown palette and placement EXACTLY. Merge the crossing wavering lines into ONE steady glowing ribbon, with motes lined up along its centre. Shape visibly steadier and coherent than original. Keep full upper empty area and soft dark outline. No text or people.",
+    "generationFile": "exec-fb4aae9a-1afc-4101-8a28-520329abcbeb.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "hum/token-empty",
+    "source": "art/source/issue-384/originals/hum-token-empty.png",
+    "prompt": "Single portrait token ring overlay for warm hand-painted children's storybook game. True transparent PNG. No text, letters, numbers, scenery, people, hands or feet. Requested192x192 canvas, centred96,96, main ring radius75. Centre disc radius62 completely empty transparent; all painted strokes between radii66 and84; entire outer8px clear. Extras stay within radius86. Balanced centred silhouette. Soft dark2px rim so warm gold shapes read on bright meadow and dark marsh. Circle of faint grey-gold DOTTED short curved SOUND STROKES, separated dashed arcs. No rope, star or extra ring.",
+    "generationFile": "exec-79a06e57-1c28-4144-94d7-51a98e902548.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "hum/token-holding",
+    "source": "art/source/issue-384/originals/hum-token-holding.png",
+    "prompt": "Single portrait token ring overlay for warm hand-painted children's storybook game. True transparent PNG. No text, letters, numbers, scenery, people, hands or feet. Requested192x192 canvas, centred96,96, main ring radius75. Centre disc radius62 completely empty transparent; all painted strokes between radii66 and84; entire outer8px clear. Extras stay within radius86. Balanced centred silhouette. Soft dark2px rim so warm gold shapes read on bright meadow and dark marsh. Circle of warm golden curved SOUND STROKES rippling outward with a second thin echo arc, energetic but centred. No rope, star or extra side ring.",
+    "generationFile": "exec-5754bd9b-7dcf-40e6-91cd-43781926ffa8.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "hum/token-done",
+    "source": "art/source/issue-384/originals/hum-token-done.png",
+    "prompt": "Single portrait token ring overlay for warm hand-painted children's storybook game. True transparent PNG. No text, letters, numbers, scenery, people, hands or feet. Requested192x192 canvas, centred96,96, main ring radius75. Centre disc radius62 completely empty transparent; all painted strokes between radii66 and84; entire outer8px clear. Extras stay within radius86. Balanced centred silhouette. Soft dark2px rim so warm gold shapes read on bright meadow and dark marsh. Circle of steady warm golden curved SOUND STROKES, with small gold FIVE POINT STAR at top. No rope.",
+    "generationFile": "exec-bce32067-326a-4d72-b92e-8340fe450905.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "hum/token-helped",
+    "source": "art/source/issue-384/originals/hum-token-helped.png",
+    "prompt": "Single portrait token ring overlay for warm hand-painted children's storybook game. True transparent PNG. No text, letters, numbers, scenery, people, hands or feet. Requested192x192 canvas, centred96,96, main ring radius75. Centre disc radius62 completely empty transparent; all painted strokes between radii66 and84; entire outer8px clear. Extras stay within radius86. Balanced centred silhouette. Soft dark2px rim so warm gold shapes read on bright meadow and dark marsh. Circle of steady warm golden curved SOUND STROKES with a second smaller sound-wave circle overlapping at RIGHT side outside main clear hole. No rope, no star.",
+    "generationFile": "exec-2dc4434e-2393-4e72-82cd-00f7bd675899.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "tiptoe/band-hush",
+    "source": "art/source/issue-384/originals/tiptoe-band-hush.png",
+    "prompt": "Warm painterly children's fantasy game overlay. A LOW wooden round-topped rail across broad frame, small faint species-neutral bean-shaped prints walking up toward it left to right, small thin crescent moon above rail toward right (no face or lettering). Rail spans x100-1500 at y270 on requested1600x360. Entire top90 rows clear. Subject rows90-359. Both sides fade48px. True transparent background,2px soft dark rim, no text, humans, hands, feet, scenery or ground.",
+    "generationFile": "exec-0fcfbcc1-73d5-4da7-9748-9c32c33d895f.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "tiptoe/band-over",
+    "source": "art/source/issue-384/originals/tiptoe-band-over.png",
+    "prompt": "Edit this low wooden rail overlay into its OVER state. Preserve canvas, entire rail and post positions, crescent moon position, transparent background, warm painterly style and overall frame EXACTLY. Change the faint approaching bean-shaped species-neutral prints into brighter prints hopping OVER the rail in an arc from left to right; add a TINY clover patch just on far right beyond the rail. No toes or paw anatomy, no people, no hands, no text or lettering. Entire top area remains empty transparent. Do not move or resize rail.",
+    "generationFile": "exec-1a37d0f6-4691-4526-aebe-232e8dbd6880.png",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "tiptoe/token-empty",
+    "source": "art/source/issue-384/originals/tiptoe-token-empty.png",
+    "prompt": "Precise token edit. True transparent background. Warm children's storybook painting, dark brown soft rim. Keep same five bean-shaped prints in same places, but REMOVE the filled gold interiors COMPLETELY so each bean is only a faint GREY BROWN dotted OUTLINE surrounding transparent interior. The gold inner area must be fully transparent. No gold fill anywhere, no medallions. Five disconnected dotted bean outlines arranged around clear centre.",
+    "generationFile": "exec-d15ebdf8-5eca-4701-a357-77544d96503b.png",
+    "initialPrompt": "Single portrait token ring overlay for warm hand-painted children's storybook game. True transparent PNG. No text, letters, numbers, scenery, people, hands or feet. Requested192x192 canvas, centred96,96, main ring radius75. Centre disc radius62 completely empty transparent; all painted strokes between radii66 and84; entire outer8px clear. Extras stay within radius86. Balanced centred silhouette. Soft dark2px rim so warm gold shapes read on bright meadow and dark marsh. A circular arrangement of exactly FIVE evenly spaced small soft bean-shaped PRINT OUTLINES, each made of faint dotted strokes. No toes, no hands, no animal paws, no star.",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "tiptoe/token-holding",
+    "source": "art/source/issue-384/originals/tiptoe-token-holding.png",
+    "prompt": "Edit this token to match precise simple game UI brief. REMOVE ALL connected gold ring, wooden frame, vines, leaves and ornamentation. Keep ONLY FIVE small softly round BEAN-SHAPED PRINTS arranged evenly in a circle around a large EMPTY transparent centre. Each bean is a single smooth blob, no toes, no feet anatomy. Sparse disconnected shapes with clear gaps between them; no connecting ring whatsoever. Only five FILLED warm-gold bean shapes with one tiny wobble stroke outside each. True transparent square background, warm painterly ochre with a soft dark brown rim. Circle of prints centred exactly at image centre, all five at equal radius. Main prints occupy annulus between32% and43% of canvas radius measured as fraction of width; central32%radius empty. Outer5% of canvas clear. No letters, numbers, text or shadows.",
+    "generationFile": "exec-b973e7e8-41e7-4abd-b9f9-7b3f1c1d7cdc.png",
+    "initialPrompt": "Single portrait token ring overlay for warm hand-painted children's storybook game. True transparent PNG. No text, letters, numbers, scenery, people, hands or feet. Requested192x192 canvas, centred96,96, main ring radius75. Centre disc radius62 completely empty transparent; all painted strokes between radii66 and84; entire outer8px clear. Extras stay within radius86. Balanced centred silhouette. Soft dark2px rim so warm gold shapes read on bright meadow and dark marsh. A circular arrangement of exactly FIVE evenly spaced small soft filled golden bean-shaped PRINTS, with a little wobble stroke beside each. No toes, animal paws, rope or star.",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "tiptoe/token-done",
+    "source": "art/source/issue-384/originals/tiptoe-token-done.png",
+    "prompt": "Precise token edit. True transparent background. Warm children's storybook painting, dark brown soft rim. The reference currently has FOUR bean prints and one star. Correct to FIVE bean prints PLUS one separate SMALL gold star, six objects total. Add the missing fifth bean at top centre of circular print arrangement. Put the much smaller star just above that top bean, so star is extra rather than replacing a print. Other four beans remain the same. Space five beans evenly round circle, big empty transparent centre, all six objects inside clear outer margin. No connecting ring, vines, leaves or text.",
+    "generationFile": "exec-5bd28edc-0831-4df7-b3b0-bfe35aa78fe9.png",
+    "initialPrompt": "Single portrait token ring overlay for warm hand-painted children's storybook game. True transparent PNG. No text, letters, numbers, scenery, people, hands or feet. Requested192x192 canvas, centred96,96, main ring radius75. Centre disc radius62 completely empty transparent; all painted strokes between radii66 and84; entire outer8px clear. Extras stay within radius86. Balanced centred silhouette. Soft dark2px rim so warm gold shapes read on bright meadow and dark marsh. A circular arrangement of exactly FIVE evenly spaced small soft filled golden bean-shaped PRINTS, with a small gold FIVE POINT STAR added at TOP. No toes, rope or animal paws.",
+    "generationMode": "built-in image_gen"
+  },
+  {
+    "id": "tiptoe/token-helped",
+    "source": "art/source/issue-384/originals/tiptoe-token-helped.png",
+    "prompt": "Edit this token to match precise simple game UI brief. REMOVE ALL connected gold ring, wooden frame, vines, leaves and ornamentation. Keep ONLY FIVE small softly round BEAN-SHAPED PRINTS arranged evenly in a circle around a large EMPTY transparent centre. Each bean is a single smooth blob, no toes, no feet anatomy. Sparse disconnected shapes with clear gaps between them; no connecting ring whatsoever. Only five FILLED warm-gold bean shapes plus a second smaller circle of five tiny bean shapes at the RIGHT outside main hole. True transparent square background, warm painterly ochre with a soft dark brown rim. Circle of prints centred exactly at image centre, all five at equal radius. Main prints occupy annulus between32% and43% of canvas radius measured as fraction of width; central32%radius empty. Outer5% of canvas clear. No letters, numbers, text or shadows.",
+    "generationFile": "exec-f869eb6f-c0be-4bed-af90-c65c74fd36ac.png",
+    "initialPrompt": "Single portrait token ring overlay for warm hand-painted children's storybook game. True transparent PNG. No text, letters, numbers, scenery, people, hands or feet. Requested192x192 canvas, centred96,96, main ring radius75. Centre disc radius62 completely empty transparent; all painted strokes between radii66 and84; entire outer8px clear. Extras stay within radius86. Balanced centred silhouette. Soft dark2px rim so warm gold shapes read on bright meadow and dark marsh. A circular arrangement of exactly FIVE evenly spaced soft filled bean-shaped PRINTS, with a second smaller ring of tiny bean prints overlapping at RIGHT side outside main hole. No star, toes, rope or animal paws.",
+    "generationMode": "built-in image_gen"
+  }
+]

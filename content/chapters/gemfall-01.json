@@ -297,7 +297,7 @@
       "narration": "The docks are awake before the red has even faded. A boy on a ladder is already rubbing out the price of rope and writing a bigger one. A barrel on wheels rumbles past in the dark with a merfolk inside it, shouting \"Rush prices, darlings, rush prices!\" to nobody in particular yet. A yeti fishmonger looks north, looks at his herring, and quietly doubles the price of herring.",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/fishmonger",
           "name": "Fishmonger"
         },
         {
@@ -813,7 +813,7 @@
           "figure": "entities/boggart"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/fishmonger",
           "name": "Fishmonger"
         }
       ],
@@ -890,7 +890,7 @@
           "figure": "entities/boggart"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/fishmonger",
           "name": "Fishmonger"
         }
       ],
@@ -920,7 +920,7 @@
           "figure": "entities/boggart"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/fishmonger",
           "name": "Fishmonger"
         }
       ],
@@ -939,7 +939,7 @@
       "narration": "By sunset you have heard of three roads north. East, the queue at Stone Crossing is three days long, the trolls take a story instead of coins, and a river drake is charging double. Straight north, the old caravan road through the Plains is the shortest way, so everybody is on it, wheel to wheel. West, the frogfolk still pole travelers through the Whispering Marsh, if they like you, and the marsh has been noisy since the red night. \"And watch the sky,\" adds the yeti fishmonger. \"The courier griffins are flying so overloaded with claim letters they can barely steer.\"",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/fishmonger",
           "name": "Fishmonger"
         }
       ],
