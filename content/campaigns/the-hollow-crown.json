@@ -5,5 +5,9 @@
   "id": "the-hollow-crown",
   "title": "The Hollow Crown",
   "blurb": "Something borrowed the crown out of the old shrine, and now the whole wood hums all night and nobody can sleep. Find it, and find out why.",
-  "chapters": ["bramblewood-01"]
+  "chapters": ["bramblewood-01"],
+  "lastTime": {
+    "opener": "A brand new adventure starts tonight, deep in Bramblewood, where something hums all night long and nobody can sleep.",
+    "lines": {}
+  }
 }
