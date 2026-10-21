@@ -29,7 +29,7 @@ it("supports an objective victory and a distinct retreat without a campaign setb
 it("preparing the closing stones shortens the objective without removing combat risk", () => {
   const prepared = chapter.scenes.fight_seam;
   if (prepared?.type !== "encounter") throw new Error("Expected prepared encounter");
-  expect(prepared.environment!.objectives![0]!.turns).toBe(2);
+  expect(prepared.environment!.objectives![0]).toMatchObject({ turns: 2 });
   expect(prepared.onDefeat.goto).toBe("rescued");
-  expect(chapter.scenes.exit_strip!.variants).toContainEqual(expect.objectContaining({ when: { flag: "bone_retreat" }, text: expect.stringContaining("longer route") }));
+  expect(chapter.scenes.exit_strip).toMatchObject({ variants: expect.arrayContaining([expect.objectContaining({ when: { flag: "bone_retreat" }, text: expect.stringContaining("longer route") })]) });
 });
