@@ -36,8 +36,8 @@
  */
 
 import { stanceIdle } from "./idle-motion";
-import { Application, Assets, Container, Graphics, Sprite, Text, Texture } from "pixi.js";
-import type { CastStance, PartyMember, Position } from "@kad/shared";
+import { Application, Assets, Container, Graphics, Rectangle, Sprite, Text, Texture } from "pixi.js";
+import type { CastStance, PartyMember, Position, SceneRift } from "@kad/shared";
 import { currentActorId } from "@kad/shared";
 import {
   createCameraState,
@@ -74,6 +74,8 @@ import {
 } from "./actor-art";
 import { figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, STANCE_LIFT, type Overflow, type PaintBox } from "./figure-scale";
 import { sceneBackdropUrl } from "./art-paths";
+import { RIFT_FOOT, riftPasses, riftStand, STILL_FRAME, type RiftPass } from "./scene-rift";
+import { RIFT_SHEET, riftSheetUrl } from "../screens/riftlight";
 import { isQuiet, QUIET_FLASH_SCALE } from "../quiet";
 import { focusHolds, type FocusHold } from "./attention";
 import {
@@ -251,6 +253,12 @@ export interface PartyScene {
    * across scenes stays put. Empty clears the stage back to the party alone.
    */
   setCast(members: readonly StageCastMember[]): void;
+  /**
+   * The rift in plain view in this scene (world/scene-rift.ts), or null.
+   * `key` names the scene, so an `"open"` or `"collapse"` plays once as the
+   * scene opens and not again on a re-render; a new key replays it.
+   */
+  setRift(rift: SceneRift | null, key: string | null): void;
   /**
    * How many CSS px along the bottom of the pane the story text covers
    * (world/stage-inset.ts). The story camera frames the stage into the rest,
@@ -468,6 +476,75 @@ export function createScene(app: Application): PartyScene {
 
   const actors = new Map<string, Actor>();
   const castActors = new Map<string, CastActor>();
+
+  /*
+   * A scene's rift (#401): one sprite standing between the party and the
+   * cast, stepping through the painted sheets that `riftPasses` lists. Behind
+   * every figure, since it stands in the gap rather than in front of anyone.
+   */
+  const riftSprite = new Sprite();
+  riftSprite.anchor.set(0.5, RIFT_FOOT);
+  riftSprite.visible = false;
+  riftSprite.zIndex = -1;
+  riftSprite.label = "rift";
+  // On the stage only while a scene has a rift: an ordinary scene's tree is
+  // the one it always was.
+  let riftKey: string | null = null;
+  let riftSequence: RiftPass[] = [];
+  let riftPassAt = 0;
+  /** When the current one-shot pass began, on `elapsed`. */
+  let riftPassStart = 0;
+  const riftSheets = new Map<string, Promise<Texture[] | null>>();
+  const riftFrames = new Map<string, Texture[]>();
+
+  function riftSheet(effect: string): Promise<Texture[] | null> {
+    const cached = riftSheets.get(effect);
+    if (cached) return cached;
+    const task = Assets.load<Texture>(riftSheetUrl(effect))
+      .then((sheet) => {
+        const frames = Array.from(
+          { length: RIFT_SHEET.frames },
+          (_, i) =>
+            new Texture({ source: sheet.source, frame: new Rectangle(i * RIFT_SHEET.size, 0, RIFT_SHEET.size, RIFT_SHEET.size) }),
+        );
+        riftFrames.set(effect, frames);
+        return frames;
+      })
+      // A missing sheet leaves the scene without its rift, never without its scene.
+      .catch(() => null);
+    riftSheets.set(effect, task);
+    return task;
+  }
+
+  /** Step the rift's sprite to this moment's frame, moving through its passes. */
+  function tickRift(): void {
+    const pass = riftSequence[riftPassAt];
+    const frames = pass ? riftFrames.get(pass.effect) : undefined;
+    if (!pass) {
+      // Every pass played (a rift that folded away): off the stage.
+      riftSprite.removeFromParent();
+      return;
+    }
+    if (!frames) {
+      riftSprite.visible = false;
+      return;
+    }
+    let frame: number;
+    if (pass.loop) {
+      // Loops run on the stage's clock, so they never restart on a re-render.
+      frame = prefersReducedMotion() ? STILL_FRAME : Math.floor(elapsed * RIFT_SHEET.fps) % RIFT_SHEET.frames;
+    } else {
+      frame = Math.floor((elapsed - riftPassStart) * RIFT_SHEET.fps);
+      if (frame >= RIFT_SHEET.frames) {
+        riftPassAt += 1;
+        riftPassStart = elapsed;
+        tickRift();
+        return;
+      }
+    }
+    riftSprite.texture = frames[frame] ?? frames[0]!;
+    riftSprite.visible = true;
+  }
   /** -1 = facing right, toward a cast on the right; 1 = as drawn. */
   let facing = 1;
   /**
@@ -706,6 +783,11 @@ export function createScene(app: Application): PartyScene {
     const slots = fit.slots;
     slots.party = slots.party.map((x) => x + left);
     slots.cast = slots.cast.map((x) => x + left);
+    const rift = riftStand({ ...slots, castLeft: slots.castLeft.map((x) => x + left) }, left, width, fit.k);
+    riftSprite.position.set(rift.x, GROUND_Y);
+    // By scale, not width: the frames may not have loaded yet, and a width set
+    // against the empty texture would be 256 times too big once they do.
+    riftSprite.scale.set(rift.frame / RIFT_SHEET.size);
     // Heroes are drawn facing left; with company on the right they turn round.
     facing = cast.length > 0 ? -1 : 1;
     // A name may be no wider than the slot its character stands in, less a
@@ -816,6 +898,7 @@ export function createScene(app: Application): PartyScene {
 
     applyCamera(dt);
     board?.tick(dt);
+    tickRift();
 
     // Holds whose tail has passed. Dropped rather than kept so the frame
     // closes back onto the active actor instead of widening all round.
@@ -1327,6 +1410,23 @@ export function createScene(app: Application): PartyScene {
       layoutActors();
     },
 
+    setRift(rift, key) {
+      if (destroyed || key === riftKey) return;
+      riftKey = key;
+      riftSequence = riftPasses(rift, prefersReducedMotion());
+      riftPassAt = 0;
+      riftPassStart = elapsed;
+      riftSprite.visible = false;
+      if (riftSequence.length === 0) riftSprite.removeFromParent();
+      else if (!riftSprite.parent) actorsLayer.addChild(riftSprite);
+      // The first pass waits for its sheet; tickRift starts it the frame it lands.
+      for (const pass of riftSequence) {
+        void riftSheet(pass.effect).then(() => {
+          if (riftKey === key && riftSequence[riftPassAt]?.effect === pass.effect) riftPassStart = elapsed;
+        });
+      }
+    },
+
     setCast(members) {
       if (destroyed) return;
       const wanted = new Set(members.map((member) => member.key));
@@ -1610,6 +1710,7 @@ export function createScene(app: Application): PartyScene {
         actor.container.destroy({ children: true });
       }
       actors.clear();
+      riftSprite.destroy();
       castActors.clear();
       board?.destroy();
       board = null;

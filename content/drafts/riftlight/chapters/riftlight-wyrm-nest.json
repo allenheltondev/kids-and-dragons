@@ -246,6 +246,7 @@
     },
     "cold_opening": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "In the far wall, an opening shows an empty snow hollow sheltered from wind. The Listening Chime, the chime from the glacier travelers, returns a clear echo. A builder can see both sides from the tunnel. How will you check that the hollow is unoccupied? On your side of the opening, loose bones rattle in a heap. The builders have stopped work around them; nobody knows where they came from.",
       "choices": [
         {
@@ -272,6 +273,7 @@
     },
     "cold_opening_1": {
       "type": "story",
+      "rift": "steady",
       "narration": "You wait for blowing snow to clear. There are no tracks, nests or stored tools in the hollow. A lump shaped like a boot is only snow.",
       "choices": [
         {
@@ -285,6 +287,7 @@
     },
     "cold_opening_2": {
       "type": "story",
+      "rift": "steady",
       "narration": "A builder steps through, leaves a marker and comes back while you watch. The way remains open. Nobody promises it will obey a new command.",
       "choices": [
         {
@@ -298,6 +301,7 @@
     },
     "cold_opening_3": {
       "type": "story",
+      "rift": "steady",
       "narration": "A starweaver studies the light privately. The builders check the ground and the echo with the rest of the party. Everyone agrees on what the hollow can safely hold.",
       "choices": [
         {
@@ -311,6 +315,7 @@
     },
     "cold_opening_check": {
       "type": "check",
+      "rift": "steady",
       "stat": "clever",
       "tn": 12,
       "roller": "party",
@@ -327,6 +332,7 @@
     },
     "cold_opening_clear": {
       "type": "story",
+      "rift": "steady",
       "narration": "You mark a clear sheltered space beyond the opening. Moving the wyrm there is possible; forcing it to like the place is not.",
       "onEnter": [
         {
@@ -346,6 +352,7 @@
     },
     "cold_opening_changed": {
       "type": "story",
+      "rift": "steady",
       "narration": "The builder clears the drift with a long pole, then marks a wider clear space. You wait for the check rather than guessing.",
       "onEnter": [
         {
@@ -365,6 +372,7 @@
     },
     "bed": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "The hollow has hard snow and no bench pillow. If you try moving the wyrm, it needs a place to settle. If you drive it off instead, the hollow will still leave it shelter away from the readers.",
       "choices": [
         {
@@ -384,6 +392,7 @@
     },
     "bed_1": {
       "type": "story",
+      "rift": "steady",
       "narration": "You shape the hollow from the open side without taking anything from the nest. The builder smooths one edge with a shovel the size of a soup spoon.",
       "choices": [
         {
@@ -397,6 +406,7 @@
     },
     "bed_2": {
       "type": "story",
+      "rift": "steady",
       "narration": "You slide a loose slab into the hollow while the builder steadies it. It offers a flat resting place without blocking the return opening.",
       "choices": [
         {
@@ -410,6 +420,7 @@
     },
     "lanes": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "The builders need one lane to withdraw and another that leads the wyrm toward the hollow. The paths must not cross. How will you mark them?",
       "choices": [
         {
@@ -429,6 +440,7 @@
     },
     "lanes_1": {
       "type": "story",
+      "rift": "steady",
       "narration": "You lay cloth from the doorway to the snow strip. The wyrm's lane stays broad and empty. The builder straightens a corner that looks too much like a snack.",
       "choices": [
         {
@@ -442,6 +454,7 @@
     },
     "lanes_2": {
       "type": "story",
+      "rift": "steady",
       "narration": "You scrape only the soft new snow. The lane curves toward the opening without pointing at the old ice.",
       "choices": [
         {

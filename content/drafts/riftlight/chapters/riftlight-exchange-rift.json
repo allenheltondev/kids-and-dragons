@@ -186,6 +186,7 @@
     },
     "quay": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "At the end of the quay, two stacks of crates lean toward a thin fold in the air. A loose rope slides across the wet boards. You can hear the harbor behind you, but from the fold comes only a deep, slow creak.",
       "choices": [
         {
@@ -204,6 +205,7 @@
     },
     "check_pattern": {
       "type": "check",
+      "rift": "steady",
       "stat": "clever",
       "tn": 8,
       "prompt": "Can you spot which loose things will slide first?",
@@ -226,6 +228,7 @@
     },
     "pattern_seen": {
       "type": "story",
+      "rift": "steady",
       "narration": "You kick a wedge under the nearest crate and call a warning. The noodle seller catches her awning before it tears free. Beyond the crates, something small bleats.",
       "choices": [
         {
@@ -238,6 +241,7 @@
     },
     "pattern_missed": {
       "type": "story",
+      "rift": "steady",
       "narration": "The lid rolls upright, circles twice, and drops flat beside the fold. You pull everyone back from its path. Beyond the crates, something small bleats.",
       "choices": [
         {
@@ -250,6 +254,7 @@
     },
     "clear_quay": {
       "type": "story",
+      "rift": "steady",
       "narration": "You wave the fish seller back and lift the noodle awning clear of a sliding crate. The dock workers start passing buckets out of the way. Beyond the crates, something small bleats.",
       "choices": [
         {
@@ -262,6 +267,7 @@
     },
     "shimmer": {
       "type": "story",
+      "rift": "open",
       "narration": "The fold opens. Cold, still air presses against your face, carrying the smell of very old ice. On the other side, snow lies under a white sky. Beside your boots stands a snowhorn goat kid, hardly taller than a bucket. It tries to climb your leg. A faint light traces its edge.",
       "choices": [
         {
@@ -298,6 +304,7 @@
     },
     "read_light": {
       "type": "story",
+      "rift": "steady",
       "narration": "Your Starweaver studies the light around the fold: Riftlight. The others watch a faint shimmer bend the air. The kid stamps twice, impatient to be picked up. Behind you, a mooring rope draws tight.",
       "choices": [
         {
@@ -310,6 +317,7 @@
     },
     "pull": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "The rope snaps straight. Crates scrape over the boards. The kid skids toward the opening, all four hooves spread. A dock worker throws you a loose line. You have time to make one move.",
       "choices": [
         {
@@ -378,6 +386,7 @@
     },
     "catch": {
       "type": "check",
+      "rift": "steady",
       "stat": "quick",
       "tn": 12,
       "prompt": "Catch the kid before it reaches the fold.",
@@ -400,6 +409,7 @@
     },
     "anchor": {
       "type": "check",
+      "rift": "steady",
       "stat": "might",
       "tn": 12,
       "prompt": "Hold the line while everyone grabs on.",
@@ -422,6 +432,7 @@
     },
     "swoop": {
       "type": "check",
+      "rift": "steady",
       "stat": "quick",
       "tn": 8,
       "prompt": "Skyward or Glide lifts the kid. Can you keep the loose line clear of the sliding crates?",
@@ -444,6 +455,7 @@
     },
     "smash": {
       "type": "check",
+      "rift": "steady",
       "stat": "might",
       "tn": 8,
       "prompt": "Smash breaks a crate into a barrier. Can you guide the loose line around it?",
@@ -466,6 +478,7 @@
     },
     "brace": {
       "type": "check",
+      "rift": "steady",
       "stat": "might",
       "tn": 8,
       "prompt": "Brace holds the post steady. Can you keep the line taut while everyone gets a grip?",
@@ -488,6 +501,7 @@
     },
     "caught": {
       "type": "story",
+      "rift": "steady",
       "narration": "You tuck the kid against your chest. The dock worker lets go of the line before it can take her too. Your friends grab hold of you. The quay folds out of sight.",
       "choices": [
         {
@@ -500,6 +514,7 @@
     },
     "together": {
       "type": "story",
+      "rift": "steady",
       "narration": "The kid scrambles into the loop of rope between you. You pull it close. The line holds your party together as the quay folds out of sight.",
       "choices": [
         {
@@ -512,6 +527,7 @@
     },
     "tumbled": {
       "type": "story",
+      "rift": "steady",
       "narration": "The kid lands against your chest. Someone catches your sleeve; someone else catches theirs. You tumble through together, dragging the loose end of the rope.",
       "choices": [
         {
@@ -524,6 +540,7 @@
     },
     "through": {
       "type": "story",
+      "rift": "collapse",
       "narration": "For one breath there is no sound. Then your boots hit snow. You pull the kid inside your coat as the wind flings wet snow against your knees. It sneezes into your collar. Behind you the fold pinches shut, taking the harbor noise with it. A small pulse warms your hands, then waits there.",
       "choices": [
         {

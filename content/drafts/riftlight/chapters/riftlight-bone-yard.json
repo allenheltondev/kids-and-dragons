@@ -44,6 +44,7 @@
   "scenes": {
     "arrival": {
       "type": "story",
+      "rift": "steady",
       "narration": "At the edge of the Bone Yard, your Skupper guide from the flats stops in a brackish pool. Beyond her, broken stone walls have appeared among enormous old bones. Small bone crawlers crowd the fresh shimmer around the walls. \"Clear a safe way past those ruins,\" she says. \"Take nothing. Here, anything taken comes back. I will watch from water that suits my fins.\" One crawler is trying to fit its whole body under a pebble.",
       "choices": [
         {
@@ -56,6 +57,7 @@
     },
     "limit": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "The guide points out the boundary. Her pool is outside it; the displaced ruins are inside. She lends you a plank from her landing. You keep one mat and your rescue line, and tie bright loops to every piece of your own gear. What will you do with the spare mats?",
       "choices": [
         {
@@ -74,6 +76,7 @@
     },
     "limit_1": {
       "type": "story",
+      "rift": "steady",
       "narration": "You carry the spare mats too, all marked with loops. A loose shell stays on the ground. A shell is not yours just because it would make a good cup.",
       "choices": [
         {
@@ -86,6 +89,7 @@
     },
     "limit_2": {
       "type": "story",
+      "rift": "steady",
       "narration": "You leave the spare mats across two reeds by the guide. You carry the marked plank, one mat and the rescue line. Her pool has become a very damp cloakroom.",
       "choices": [
         {
@@ -98,6 +102,7 @@
     },
     "survey": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "A leaning wall blocks the narrow path. A longer path curves around a deep hollow. The crawlers cluster beside a tear in the air near the wall. Where will you look for a safe passage?",
       "choices": [
         {
@@ -116,6 +121,7 @@
     },
     "survey_1": {
       "type": "story",
+      "rift": "steady",
       "narration": "You follow the wall without leaning on it. At its foot, loose stones tremble whenever the tear brightens. One stone rattles like a tooth in a cup.",
       "choices": [
         {
@@ -128,6 +134,7 @@
     },
     "survey_2": {
       "type": "story",
+      "rift": "steady",
       "narration": "You stay back from the hollow and follow the firm rim. A broken arch gives a view of the blocked path without stepping under the wall.",
       "choices": [
         {
@@ -140,6 +147,7 @@
     },
     "survey_check": {
       "type": "check",
+      "rift": "steady",
       "stat": "clever",
       "tn": 12,
       "roller": "party",
@@ -155,6 +163,7 @@
     },
     "survey_clear": {
       "type": "story",
+      "rift": "steady",
       "narration": "You mark a safe strip that reaches the passage and returns to the boundary.",
       "onEnter": [
         {
@@ -173,6 +182,7 @@
     },
     "survey_changed": {
       "type": "story",
+      "rift": "steady",
       "narration": "You use the longer rim, marking every turn from firm ground. The route reaches the same passage by a wider curve.",
       "onEnter": [
         {
@@ -191,6 +201,7 @@
     },
     "markers": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "The guide cannot leave her pool to mark the turns. From the path, your party can see her raised crest above the reeds. How will you make the way back clear?",
       "choices": [
         {
@@ -209,6 +220,7 @@
     },
     "markers_1": {
       "type": "story",
+      "rift": "steady",
       "narration": "The line stays on the surface, with loose bends around the ruins. You keep every end clear of the crawler swarm.",
       "choices": [
         {
@@ -221,6 +233,7 @@
     },
     "markers_2": {
       "type": "story",
+      "rift": "steady",
       "narration": "You choose arches visible from each turn. At the last one, the guide raises her crest twice to show she can still see you.",
       "choices": [
         {
@@ -233,6 +246,7 @@
     },
     "test": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "A pebble slides across the boundary and rolls back uphill. The guide leaves it alone. \"Anything taken comes back. Even if it makes you look silly.\" How will you check your route without collecting evidence?",
       "choices": [
         {
@@ -251,6 +265,7 @@
     },
     "test_1": {
       "type": "story",
+      "rift": "steady",
       "narration": "You sketch where the arches stand. The sketch is on paper you brought; every stone stays where you found it.",
       "choices": [
         {
@@ -263,6 +278,7 @@
     },
     "test_2": {
       "type": "story",
+      "rift": "steady",
       "narration": "You call each turn. The guide repeats it and scratches a map in the mud outside the boundary. Her tail accidentally adds a pond.",
       "choices": [
         {
@@ -275,6 +291,7 @@
     },
     "vibration": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "The crawlers turn toward a fresh pulse from the tear. They are following its magic, not guarding treasure for you. You can tap a loose plank you brought or shake the empty line to learn whether movement draws them away.",
       "choices": [
         {
@@ -293,6 +310,7 @@
     },
     "vibration_1": {
       "type": "story",
+      "rift": "steady",
       "narration": "You keep your feet on the marked strip and tap. The nearest crawler pauses, then returns to the shimmer. You have learned what it wants.",
       "choices": [
         {
@@ -305,6 +323,7 @@
     },
     "vibration_2": {
       "type": "story",
+      "rift": "steady",
       "narration": "The line moves like a very thin snake. A crawler watches, then squeezes back under the wall toward the magic. Its priorities are clear.",
       "choices": [
         {
@@ -317,6 +336,7 @@
     },
     "vibration_check": {
       "type": "check",
+      "rift": "steady",
       "stat": "quick",
       "tn": 12,
       "roller": "party",
@@ -332,6 +352,7 @@
     },
     "vibration_clear": {
       "type": "story",
+      "rift": "steady",
       "narration": "Your test gear is back on the safe strip. Distracting the crawlers will take more than waving lunch-shaped rope.",
       "choices": [
         {
@@ -344,6 +365,7 @@
     },
     "vibration_changed": {
       "type": "story",
+      "rift": "steady",
       "narration": "You slacken the line instead of tugging the crawler. When it lifts its foot toward the shimmer, the line slides free.",
       "choices": [
         {
@@ -356,6 +378,7 @@
     },
     "support": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "The leaning wall rocks inward. Your party can brace its foot with a stone already lying here, or wedge your plank under the low edge and recover it afterward. Neither plan requires carrying anything out.",
       "choices": [
         {
@@ -374,6 +397,7 @@
     },
     "support_1": {
       "type": "story",
+      "rift": "steady",
       "narration": "You roll the stone along the ground. It stays inside the boundary, at the foot of the wall. The crawlers briefly make room, then come back.",
       "choices": [
         {
@@ -386,6 +410,7 @@
     },
     "support_2": {
       "type": "story",
+      "rift": "steady",
       "narration": "You slide the bright-looped plank in from the safe strip. It holds the wall just long enough to inspect the tear behind it.",
       "choices": [
         {
@@ -398,6 +423,7 @@
     },
     "support_check": {
       "type": "check",
+      "rift": "steady",
       "stat": "might",
       "tn": 12,
       "roller": "party",
@@ -413,6 +439,7 @@
     },
     "support_clear": {
       "type": "story",
+      "rift": "steady",
       "narration": "There is a narrow passage behind the wall, with open ground beyond the tear.",
       "choices": [
         {
@@ -425,6 +452,7 @@
     },
     "support_changed": {
       "type": "story",
+      "rift": "steady",
       "narration": "You use two low supports instead of one tall wedge. The wall settles; your shoulders will remember the extra work.",
       "choices": [
         {
@@ -437,6 +465,7 @@
     },
     "rest": {
       "type": "rest",
+      "rift": "steady",
       "narration": "Back at the boundary pool, the guide opens a floating lunch box tied to a reed. There are soft seaweed rolls inside. You sit on your own mat outside the yard and rest. The box bumps her fin whenever she reaches for lunch.",
       "heal": 2,
       "choices": [
@@ -456,6 +485,7 @@
     },
     "rest_watch": {
       "type": "story",
+      "rift": "steady",
       "narration": "You watch from beside the pool while eating a seaweed roll. The guide keeps her lunch box from drifting into the yard. Even lunch must obey the boundary.",
       "choices": [
         {
@@ -468,6 +498,7 @@
     },
     "plan": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "The tear feeds fresh magic beside the passage. Your Listening Chime, the glacier travelers' chime, gives an echo while the tear is steady. You can drive the crawlers away from the passage, or close the tear from the marked stones. Closing it takes several turns beside the seam; the crawlers will still be there.",
       "choices": [
         {
@@ -486,6 +517,7 @@
     },
     "plan_1": {
       "type": "story",
+      "rift": "steady",
       "narration": "You leave the return line behind you and choose open ground for the fight. Nothing you strike will be carried away as a prize.",
       "choices": [
         {
@@ -498,6 +530,7 @@
     },
     "plan_2": {
       "type": "story",
+      "rift": "steady",
       "narration": "You pick the nearest firm stones beside the seam. Your party will take turns working there while keeping the crawlers off. You mark the nearest closing points before the crawlers spread. This preparation shortens the work at the seam.",
       "choices": [
         {

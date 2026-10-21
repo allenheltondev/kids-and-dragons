@@ -510,3 +510,36 @@ Guidance:
   meet Mortar discovers `npc.stone_troll` and casts Mortar; the next four scenes only cast him.
 - Characters who still stand in for a generic figure (Tidewell as `entities/selkie`) are listed in
   [`docs/briefs/story-cast-art.md`](../docs/briefs/story-cast-art.md), which commissions their own.
+
+## A rift in view: `rift` (#401)
+
+A story, check, choice-point or rest scene may say a rift is standing in front of the party. Every
+screen then draws the painted tear (`rift_neutral`) on the floor line, in the gap between the party
+and the cast, or just past the party when nobody else is there. It is the same colourless shimmer on
+the TV and every phone: a scene's rift has no rules of its own, so there is no Riftlight to read in
+it. The colours belong to the journey graph's rift edges, and only the lobby's list of ways on
+shows them, on a Starweaver's phone.
+
+```json
+"quay":    { "type": "choice_point", "rift": "steady",   "narration": "Two stacks of crates lean toward a thin fold in the air." },
+"shimmer": { "type": "story",        "rift": "open",     "narration": "The fold opens." },
+"through": { "type": "story",        "rift": "collapse", "narration": "Behind you the fold pinches shut." }
+```
+
+- `"steady"`: the rift is there, shimmering.
+- `"open"`: it unfolds once as the scene opens, with the `rift-open` cue, then shimmers.
+- `"collapse"`: it folds shut once as the scene opens, with the `rift-collapse` cue, then is gone.
+- Under reduced motion nothing unfolds or folds: an opening rift is simply there, a collapsing one
+  simply gone.
+- Never on a fight: the schema refuses it there, because the board draws its own ground.
+
+Guidance:
+
+- Tag the scenes where the narration puts the rift **in front of the party**, the way `cast` is for
+  who is physically there. A rift only mentioned, remembered, sealed behind ice or left behind is not
+  in view.
+- **Tag every scene it stays in view for**, not only the one that introduces it, or it blinks out and
+  back as the story moves on. Mark `"open"` and `"collapse"` on the scene where the narration says it
+  happens, and leave the rift off the scenes after it has gone.
+- A backdrop never paints the rift (Riftlight art brief, Part C): this is what draws it.
+- The stage draws one tear. A scene with a pair of folds (the whale road) shows one and says two.
