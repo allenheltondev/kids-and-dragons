@@ -141,6 +141,12 @@ const PRE_EPIC = JSON.parse(
  * terminal scene was added, removed or re-outcomed, so the endings, roads,
  * setbacks and saves below, re-taken by the probe, still match their pre-epic
  * digests.
+ *
+ * Re-pinned for gemfall-08's verdict replies, an owner decision on #368: each
+ * answer to the Seal-Keeper's last question lands on a scene where it answers
+ * back, then on `check_verdict` as before. Six scenes and their edges; no
+ * terminal scene changed, and the digests below, re-taken by the probe, still
+ * match.
  */
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
@@ -159,7 +165,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-07h.json": "102d1fc2869f2001c57a3f17a934da964301e12e2db1d2342768a1e211a7c532",
   "chapters/gemfall-07l.json": "d2bf74142b55a622b2bdf709296541d07acb80eb74753c79f2f220b4f5f41604",
   "chapters/gemfall-07r.json": "82503bbeb255631abbab0138a1ab6dfa4cf1b9f149cf63e19906cc42dbe795d7",
-  "chapters/gemfall-08.json": "2d615eca3aebf036c24dd61fc7f3fe353fc8f87ec5f09d8978c44cea9a97e4f2",
+  "chapters/gemfall-08.json": "e8611245d388ec868428698fb0e36ee3051674d39303480033812909add3a29a",
 };
 
 describe("Gemfall's files are the files that shipped before the epic", () => {
