@@ -1099,6 +1099,15 @@ export interface Campaign {
    */
   listed?: boolean;
   /**
+   * A teaser, not a campaign yet: a `listed` card for a story still being
+   * written, with its title, blurb and art but no chapters. Always locked:
+   * with its prerequisites' reason while any is unmet, then "Coming soon".
+   * Nothing can start it. Publishing the real campaign replaces the file under
+   * the same id, so the household's lobby card and its art carry straight over.
+   * Requires `chapters: []`, and a campaign with chapters may not set it.
+   */
+  comingSoon?: boolean;
+  /**
    * Makes this a graph campaign (#192): the next chapter is chosen by the
    * graph's edges, not by `index`. Absent — every campaign authored before it
    * existed, Gemfall included — is an ordered campaign, played exactly as it

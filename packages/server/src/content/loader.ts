@@ -433,6 +433,15 @@ function checkCampaign(
   if (typeof campaign.id !== "string" || campaign.id === "") {
     problems.push(`${label}: missing id`);
   }
+  // A teaser (`comingSoon`) is a lobby card and nothing else: no chapters,
+  // and never startable, so it has no ending to need.
+  if (campaign.comingSoon === true) {
+    if (!Array.isArray(campaign.chapters) || campaign.chapters.length > 0) {
+      problems.push(`${label}: a comingSoon teaser has no chapters; publishing the campaign replaces it`);
+    }
+    if (campaign.listed !== true) problems.push(`${label}: a comingSoon teaser is only ever seen listed`);
+    return problems;
+  }
   if (!Array.isArray(campaign.chapters) || campaign.chapters.length === 0) {
     problems.push(`${label}: a campaign with no chapters has no ending to commit at`);
     return problems;

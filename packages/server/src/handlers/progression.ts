@@ -542,12 +542,22 @@ export function campaignLock(
   /** Campaign ids the party's heroes have finished, from their own records (#283). */
   finished: readonly string[] = [],
 ): CampaignView["locked"] | null {
-  if (!campaign.requires?.length) return null;
-  if (attempts.some((a) => a.campaignId === campaign.id && a.status === "active")) return null;
+  if (!isGated(campaign)) return null;
+  if (!campaign.comingSoon && attempts.some((a) => a.campaignId === campaign.id && a.status === "active")) return null;
   const requires = unmetPrerequisites(campaign, attempts, finished);
-  if (requires.length === 0) return null;
+  // A teaser stays locked once its prerequisites are met: it says what is
+  // still owed while anything is, then that the story is on its way.
+  if (requires.length === 0) return campaign.comingSoon ? { requires, reason: COMING_SOON } : null;
   const titles = requires.map((id) => deps.content.campaign(id)?.title ?? id);
   return { requires, reason: prerequisiteReason(titles) };
+}
+
+/** What a `comingSoon` teaser says once nothing else stands in its way. */
+export const COMING_SOON = "Coming soon";
+
+/** A campaign that can be locked: one with prerequisites, or a teaser. */
+function isGated(campaign: Campaign): boolean {
+  return campaign.comingSoon === true || (campaign.requires?.length ?? 0) > 0;
 }
 
 /**
@@ -601,7 +611,7 @@ export async function lockedRefusal(
   deps: HandlerDeps,
   party: readonly PartyMember[] = [],
 ): Promise<string | null> {
-  if (!campaign.requires?.length) return null;
+  if (!isGated(campaign)) return null;
   const [attempts, finished] = await Promise.all([
     deps.repo.listCampaignProgress(householdId),
     partyFinished(party, householdId, deps),
@@ -627,7 +637,10 @@ export async function relockLobby(
   deps: Pick<HandlerDeps, "repo" | "content">,
 ): Promise<RunState> {
   const options = state.campaignOptions ?? [];
-  const gated = options.filter((o) => deps.content.campaign(o.id)?.requires?.length);
+  const gated = options.filter((o) => {
+    const campaign = deps.content.campaign(o.id);
+    return campaign !== null && isGated(campaign);
+  });
   if (gated.length === 0) return state;
   const [attempts, finished] = await Promise.all([
     deps.repo.listCampaignProgress(householdId),
@@ -635,7 +648,7 @@ export async function relockLobby(
   ]);
   const relocked = options.map((option): CampaignView => {
     const campaign = deps.content.campaign(option.id);
-    if (!campaign?.requires?.length) return option;
+    if (!campaign || !isGated(campaign)) return option;
     const { locked: _was, ...open } = option;
     const locked = campaignLock(campaign, attempts, deps, finished);
     return locked ? { ...open, locked } : open;
