@@ -343,6 +343,38 @@ describe("the edges of the rules", () => {
     expect(placed).toEqual(["Hero 1", "Hero 2", "Hero 3", "Hero 5"]);
   });
 
+  it("gives and takes the table's items among the seated, never somebody taken out (#389)", () => {
+    const context = ctx();
+    let state = newRun();
+    for (let i = 1; i <= MAX_PARTY; i++) {
+      state = applyIntent(state, { playerId: `p_${i}`, intent: { ...CREATE_UNICORN, name: `Hero ${i}` } }, context).state;
+    }
+    // p_1 is first in `party` and taken out; p_5 sat down in the seat it freed.
+    state = {
+      ...state,
+      removed: ["p_1"],
+      party: state.party.map((m) => (m.playerId === "p_1" ? { ...m, connected: false } : m)),
+    };
+    state = applyIntent(state, { playerId: "p_5", intent: { ...CREATE_UNICORN, name: "Hero 5" } }, context).state;
+    const bag = (s: RunState, playerId: string) =>
+      s.party.find((m) => m.playerId === playerId)!.character.inventory.map((e) => e.itemId);
+
+    const granted = applyEffects(state, [{ type: "grantItem", itemId: "river_charm", to: "party" }], context);
+    expect(bag(granted, "p_1")).not.toContain("river_charm");
+    expect(bag(granted, "p_2")).toContain("river_charm");
+
+    // A removed hero's bag neither opens a gate nor pays for one.
+    const theirs = applyEffects(state, [{ type: "grantItem", itemId: "river_charm", to: "p_1" }], context);
+    const chapter = makeChapter();
+    const shrine = chapter.scenes["scene_shrine"] as StoryScene;
+    shrine.choices = [...shrine.choices, { id: "charm", label: "Use the charm", icon: "star", goto: "scene_camp", requiresItem: "river_charm" }];
+    const at = (s: RunState) => currentChoices({ ...s, sceneId: "scene_shrine" }, chapter).map((c) => c.id);
+    expect(at(theirs)).not.toContain("charm");
+    expect(at(granted)).toContain("charm");
+    const taken = applyEffects(theirs, [{ type: "takeItem", itemId: "river_charm" }], context);
+    expect(bag(taken, "p_1")).toContain("river_charm");
+  });
+
   /** A one-scene chapter, so the check prompt can be reached in one step. */
   function chapterOf(entry: Scene & { type: "check" }): Chapter {
     return { ...makeChapter(), entry: "only", scenes: { only: entry } } as Chapter;

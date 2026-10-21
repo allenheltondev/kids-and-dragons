@@ -354,7 +354,9 @@ function party(state: RunState): {
   flags: Record<string, boolean>;
   coins: number;
 } {
-  return { members: state.party.map((m) => m.character), flags: state.flags, coins: state.coins ?? 0 };
+  // The table as it is playing (#389): a gate, a variant or `{party}` never
+  // reads the bag or the count of somebody the host took out.
+  return { members: seatedMembers(state).map((m) => m.character), flags: state.flags, coins: state.coins ?? 0 };
 }
 
 function touch(draft: RunState, ctx: EngineContext): void {
@@ -472,17 +474,20 @@ function targetsFor(
   to: string | undefined,
   rollerCharacterId?: string,
 ): PartyMember[] {
+  // "The party" is the members still in the game (#389): a reward, a heal or a
+  // cost never lands on somebody the host took out, who keeps a place in
+  // `party` only so a fight in progress can still point at them.
   if (to === undefined) {
     if (rollerCharacterId) {
       const roller = memberByCharacter(draft, rollerCharacterId);
       if (roller) return [roller];
     }
-    return [...draft.party];
+    return seatedMembers(draft);
   }
-  if (to === "party") return [...draft.party];
+  if (to === "party") return seatedMembers(draft);
   if (to === "roller") {
     const roller = rollerCharacterId ? memberByCharacter(draft, rollerCharacterId) : undefined;
-    return roller ? [roller] : [...draft.party];
+    return roller ? [roller] : seatedMembers(draft);
   }
   const named =
     draft.party.find((m) => m.playerId === to) ?? draft.party.find((m) => m.character.id === to);
@@ -535,13 +540,16 @@ function heal(member: PartyMember, amount: number): void {
  * takes its bonus with it. Holding none of them is a no-op.
  */
 function takeItem(draft: RunState, ids: string | readonly string[], ctx: EngineContext): void {
+  // Paid by the table that is playing (#389), the same members `party()`
+  // read the gate from.
+  const seated = seatedMembers(draft);
   for (const itemId of typeof ids === "string" ? [ids] : ids) {
-    const bagHolder = draft.party.find((m) => hasItem(m.character.inventory, itemId));
+    const bagHolder = seated.find((m) => hasItem(m.character.inventory, itemId));
     if (bagHolder) {
       setBag(bagHolder, removeItem(bagHolder.character.inventory, itemId), ctx);
       return;
     }
-    const questHolder = draft.party.find((m) => m.character.questItems.includes(itemId));
+    const questHolder = seated.find((m) => m.character.questItems.includes(itemId));
     if (questHolder) {
       questHolder.character.questItems = questHolder.character.questItems.filter((id) => id !== itemId);
       return;
@@ -2979,5 +2987,6 @@ export function currentChoices(state: RunState, chapter: Chapter): Choice[] {
 
 /** True when every character is knocked down. Branches the story; never ends it. */
 export function isPartyDown(state: RunState): boolean {
-  return state.party.length > 0 && state.party.every((m) => m.down);
+  const seated = seatedMembers(state);
+  return seated.length > 0 && seated.every((m) => m.down);
 }

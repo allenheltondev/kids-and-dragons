@@ -460,6 +460,43 @@ describe("picking up where you left off (#259)", () => {
     expect(tableFull(state, "p_5")).toBe(true);
   });
 
+  it("seats four of a save stopped with five heroes, the ones here first, and keeps the fifth's claim (#389)", async () => {
+    // A save from before the cap: a resume seated five, then the table stopped.
+    const h = await household(5);
+    const e = await evening(h);
+    await walkIn([e.one, e.two]);
+    await stopForToday({ code: e.code, principal: h.players[0]!.principal }, h.harness.deps);
+    const saved = (await h.harness.repo.getState(e.runId))!;
+    const bo = saved.party[1]!;
+    const boRow = (await h.harness.repo.getCharacter(h.householdId, bo.character.id))!;
+    const extra = ["Cy", "Dee", "Eve"].map((name, i) => ({ name, id: `c_${name.toLowerCase()}`, playerId: `p_${i + 3}` }));
+    for (const x of extra) {
+      await h.harness.repo.putCharacter({ ...boRow, id: x.id, name: x.name, ownerPlayerId: x.playerId, version: 1 });
+    }
+    await h.harness.repo.putState({
+      ...saved,
+      party: [
+        ...saved.party,
+        ...extra.map((x) => ({ ...bo, playerId: x.playerId, character: { ...bo.character, id: x.id, name: x.name, ownerPlayerId: x.playerId } })),
+      ],
+    });
+    h.harness.clock.advance(DAY);
+
+    // Bo and Eve are here today; Pip, Cy and Dee are not.
+    const created = await room(h, GEMFALL, 1);
+    const two = await sit(h, created.code, created.runId, 1);
+    await sit(h, created.code, created.runId, 4);
+    expect(await two.resume()).toMatchObject({ ok: true });
+    const state = await two.state();
+    // Here first (Bo, Eve), then the saved order (Pip, Cy), and in saved order at the table.
+    expect(state.party.map((m) => m.character.name)).toEqual(["Pip", "Bo", "Cy", "Eve"]);
+    expect(state.party.filter((m) => m.connected).map((m) => m.character.name)).toEqual(["Bo", "Eve"]);
+    // Dee keeps everything: still held by this adventure, and can sit back down.
+    const dee = (await h.harness.repo.getCharacter(h.householdId, "c_dee"))!;
+    expect(dee.provisional).toEqual(boRow.provisional);
+    expect(tableFull(state, "p_4")).toBe(true);
+  });
+
   it("brings somebody the saved game's host took out back still out, holding no seat (#389)", async () => {
     const h = await household(3);
     const created = await room(h);
