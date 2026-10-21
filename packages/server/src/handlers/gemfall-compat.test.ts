@@ -175,6 +175,38 @@ const DIGESTS: PreEpicSave["digests"] = {
  * turning the rush wagons is something the party does. That is a graph change,
  * but the probe warps past the check and never rolls it, so the endings,
  * roads, setbacks and saves below still match their pre-epic digests.
+ *
+ * Re-pinned for gemfall-06's cohesion fixes (#368): wording, labels, a check
+ * prompt and narration variants only. The opening states the goal and names
+ * Redspire, Hessa introduces the seal, the shut-out p1 says its fact plainly,
+ * Pellam's record reads back the party's motive, road, ember, sprites, glade
+ * and reading, and `check_doorstep` is a stand-your-ground check marked
+ * `"doing"`. No scene, edge, flag, effect, stat or TN moved; the digests below
+ * are unchanged.
+ *
+ * Re-pinned for gemfall-08's cohesion fixes (#368): wording, labels, check
+ * prompts and narration variants only. The opening states the goal and each
+ * pursuit's promise, every ending reads back motive, the soup tents and allies,
+ * the wardens' post reads allies, Hessa and her masked singers arrive where
+ * they are cast, the Keystone is named where it is lifted, "cult" is gone, and
+ * `check_remains` walks the bones home, marked `"doing"`. No scene, edge, flag,
+ * effect, stat or TN moved; the digests below are unchanged.
+ *
+ * Re-pinned for gemfall-08's setback reroutes, an owner decision on #368: an
+ * ordinary failed roll no longer reaches a loss. A failed race, a lost fight
+ * with the Keeper, a failed pry at the Keystone and a failed tether hold each
+ * reroute at a cost (a stone taken, a scrape, time, a way closed); Last Ring
+ * needs `clock_late` and Turned Back empty hands and a spent clock, each after
+ * two failures, and Broken Tether a second, chosen try. A graph change, but no
+ * terminal scene was added, removed or re-outcomed, so the endings, roads,
+ * setbacks and saves below, re-taken by the probe, still match their pre-epic
+ * digests.
+ *
+ * Re-pinned for gemfall-08's verdict replies, an owner decision on #368: each
+ * answer to the Seal-Keeper's last question lands on a scene where it answers
+ * back, then on `check_verdict` as before. Six scenes and their edges; no
+ * terminal scene changed, and the digests below, re-taken by the probe, still
+ * match.
  */
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
@@ -189,11 +221,11 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-05a.json": "73a98e7eb255d074710542d70130fede374510a84a239c00daf57594e87587ed",
   "chapters/gemfall-05b.json": "82c2078a654173e09b0028dc875b8d1c5ac31ea72651fdac1fbc5c3ccfcaecd1",
   "chapters/gemfall-05c.json": "5444899edbf6aaaa06a8e269a2080f97a47831f8ea24d68773a0b89df155fc7c",
-  "chapters/gemfall-06.json": "4c7306ba197e3ce56b98421797da0aa1488cb3c28cc5eec350b5fdeb7b2c44e1",
+  "chapters/gemfall-06.json": "b7a15bfce522b03e0f553e5b4d3272e25bf1051ca67585f4cf3de79bb1fc7345",
   "chapters/gemfall-07h.json": "102d1fc2869f2001c57a3f17a934da964301e12e2db1d2342768a1e211a7c532",
   "chapters/gemfall-07l.json": "d2bf74142b55a622b2bdf709296541d07acb80eb74753c79f2f220b4f5f41604",
   "chapters/gemfall-07r.json": "9b6ba7957b912c822a6de79e8e80a89e050a904850e4703627ac90559ca30530",
-  "chapters/gemfall-08.json": "29efcf2a87c41fd553fdd28cb3caeab41c9d0b67916c7d7a83f573128a71aec0",
+  "chapters/gemfall-08.json": "e8611245d388ec868428698fb0e36ee3051674d39303480033812909add3a29a",
 };
 
 describe("Gemfall's files are the files that shipped before the epic", () => {
