@@ -6,16 +6,21 @@
  * and from nowhere to the first control on screen. The global `:focus-visible` ring shows
  * where it is (styles/theme.css).
  *
- * On the shared screen, and on the start screen where a TV hosts its room (App installs it, a
- * lazy chunk, so no first paint pays for it). Fields count: the grown-up's
+ * Always on the shared screen. On the start screen, where a TV hosts its room, it waits for a
+ * remote to show itself: an arrow pressed with nothing focused, which is how a remote begins and
+ * not how a keyboard does (it Tabs first; a screen reader keeps its arrows). Until then the start
+ * screen is exactly as it was for every keyboard (App installs it, a lazy chunk off the first
+ * paint). Fields count: the grown-up's
  * sign-in behind "Let visitors join" has an email field and a code field, and a remote has
  * to reach them; while focus is in that sign-in, the arrows stay in it. Inside a field the
  * arrows are the field's own, with two ways out, so a remote is never stuck in it: Up and
  * Down leave a one-line text field (Left and Right still move the caret), and Escape and
  * then any arrow leaves any field. A select, a slider or a listbox keeps its arrows the same
- * way. A radio or checkbox is the arrows' to move past, not its own: the start screen's Party
- * Mode and Phone Mode are radios hidden inside the cards that draw them, so the card's box is
- * where the radio stands, and OK (Enter) checks it, as Space would.
+ * way. In a group of radios (the start screen's Party Mode and Phone Mode) selection follows
+ * focus, as a browser's own radio arrows do: an arrow to the next radio of the same name checks
+ * it. Past the group's last radio that way the arrow leaves the group, where a browser would wrap
+ * round, so a remote is never caught in it. Those radios are hidden inside the cards that draw
+ * them, so the card's box is where a radio stands, and OK (Enter) checks it, as Space would.
  */
 
 export type Direction = "left" | "right" | "up" | "down";
@@ -158,13 +163,28 @@ export function step(direction: Direction, doc: Document = document, lastPlace: 
   }
   const others = all.filter((el) => el !== active);
   const at = nearest(standsAt(active)!, others.map((el) => standsAt(el)!), direction);
+  // Inside a group of radios, the next one that way first, and selection follows focus.
+  const group = active instanceof HTMLInputElement && active.type === "radio" && active.name !== ""
+    ? others.filter((el) => el instanceof HTMLInputElement && el.type === "radio" && el.name === active.name && el.form === active.form)
+    : [];
+  const inGroup = group.length > 0 ? nearest(standsAt(active)!, group.map((el) => standsAt(el)!), direction) : -1;
+  if (inGroup >= 0) {
+    const next = group[inGroup]!;
+    next.focus();
+    next.click();
+    return true;
+  }
   if (at < 0) return false;
   others[at]!.focus();
   return true;
 }
 
-/** Listen for the arrows on this screen; returns the way to stop. */
-export function installRemoteFocus(doc: Document = document): () => void {
+/**
+ * Listen for the arrows on this screen; returns the way to stop. `armed: false` waits for a remote
+ * to show itself (an arrow with nothing focused) before it takes any key.
+ */
+export function installRemoteFocus(doc: Document = document, { armed = true }: { armed?: boolean } = {}): () => void {
+  let on = armed;
   // The field Escape was pressed in: the next arrow leaves it, whichever arrow it is.
   let escaped: Element | null = null;
   // Where focus last stood, for when what had it goes away under it.
@@ -174,6 +194,11 @@ export function installRemoteFocus(doc: Document = document): () => void {
   };
   const onKey = (event: KeyboardEvent): void => {
     const active = doc.activeElement;
+    if (!on) {
+      const nothing = active === null || active === doc.body || active === doc.documentElement;
+      if (!(event.key in KEYS) || !nothing || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      on = true;
+    }
     if (event.key === "Escape") {
       escaped = answersArrowsItself(active) ? active : null;
       return;

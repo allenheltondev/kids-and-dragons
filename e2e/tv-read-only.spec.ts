@@ -421,18 +421,24 @@ test.describe("the shared screen is read, not driven", () => {
     await expect(mode(/party mode/i)).toBeVisible(TAP);
 
     // OK put the button it was on away; the next arrow picks up near where it stood, under the
-    // mode cards. Up onto them, to Phone Mode and OK, back to Party Mode and OK.
+    // mode cards. Up onto them: arriving on Phone Mode only focuses it, and OK chooses it.
     await arrowTo("ArrowUp", (f) => /phone mode/i.test(f?.name ?? ""), "the Phone Mode card");
+    await expect(mode(/party mode/i)).toHaveClass(/home__mode--on/, TAP);
     await tv.keyboard.press("Enter");
     await expect(mode(/phone mode/i)).toHaveClass(/home__mode--on/, TAP);
-    await arrowTo("ArrowUp", (f) => /party mode/i.test(f?.name ?? ""), "the Party Mode card");
-    await tv.keyboard.press("Enter");
+    // Inside the group, selection follows focus, as the browser's radio arrows do: Up to Party
+    // Mode chooses it (review of #392).
+    await tv.keyboard.press("ArrowUp");
+    expect((await focusedOn(tv))?.name ?? "").toMatch(/party mode/i);
     await expect(mode(/party mode/i)).toHaveClass(/home__mode--on/, TAP);
     // The card whose radio has focus is ringed (HomeScreen.css .home__mode:focus-within).
     expect(await mode(/party mode/i).evaluate((el) => getComputedStyle(el).outlineStyle)).not.toBe("none");
 
-    // Down to Open the lobby here, and OK: the TV is the room's shared screen.
-    await arrowTo("ArrowDown", (f) => /open the lobby here/i.test(f?.name ?? ""), "Open the lobby here");
+    // Out of the group sideways, which chooses nothing, and up to Open the lobby here, and OK:
+    // the TV is the room's shared screen.
+    await tv.keyboard.press("ArrowRight");
+    await expect(mode(/party mode/i)).toHaveClass(/home__mode--on/);
+    await arrowTo("ArrowUp", (f) => /open the lobby here/i.test(f?.name ?? ""), "Open the lobby here");
     await tv.keyboard.press("Enter");
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
 
@@ -448,5 +454,33 @@ test.describe("the shared screen is read, not driven", () => {
     expect((await focusedOn(tv))?.name).toBe("Room");
     await tv.keyboard.press("Enter");
     await expect(tv.getByRole("button", { name: "Lock the room" })).toBeVisible(TAP);
+  });
+
+  test("a laptop's keyboard on the start screen keeps the browser's own radio arrows", async ({ browser }) => {
+    // Review of #392: with remote focus on at `/` for every device, Right moved focus to Phone Mode
+    // without choosing it. The start screen now waits for a remote (an arrow with nothing focused);
+    // a keyboard that Tabs in keeps the page as main has it.
+    const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+    open.push(context);
+    const page = await context.newPage();
+    await page.goto("/");
+    await page.getByRole("button", { name: /host a game/i }).click();
+    const party = page.getByRole("radio", { name: /party mode/i });
+    const phoneMode = page.getByRole("radio", { name: /phone mode/i });
+    await expect(party).toBeChecked(TAP);
+    // Tab onto the checked radio, as a keyboard does.
+    for (let i = 0; i < 30 && !(await party.evaluate((el) => el === document.activeElement)); i++) await page.keyboard.press("Tab");
+    await expect(party).toBeFocused();
+    // The browser's radio group: each arrow moves to the next radio and chooses it, either way.
+    await page.keyboard.press("ArrowDown");
+    await expect(phoneMode).toBeFocused();
+    await expect(phoneMode).toBeChecked();
+    await page.keyboard.press("ArrowUp");
+    await expect(party).toBeFocused();
+    await expect(party).toBeChecked();
+    await page.keyboard.press("ArrowRight");
+    await expect(phoneMode).toBeChecked();
+    await page.keyboard.press("ArrowLeft");
+    await expect(party).toBeChecked();
   });
 });

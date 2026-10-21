@@ -148,15 +148,17 @@ export function App(): React.JSX.Element {
     void loadSpeech().then((module) => module.startReadAloud()).catch(() => undefined);
   }, []);
 
-  // A TV remote's arrows (display/remote-focus.ts): on the shared screen, and on the start screen
-  // where a TV hosts its room before it is one. A chunk of its own, after first paint.
-  const remote = tv || route.name === "home";
+  // A TV remote's arrows (display/remote-focus.ts): always on the shared screen; on the start
+  // screen, where a TV hosts its room before it is one, only once a remote shows itself (an arrow
+  // with nothing focused), so a laptop's or a phone's keyboard keeps the page as it was. A chunk
+  // of its own, after first paint.
+  const remote = tv ? "always" : route.name === "home" ? "on-first-arrow" : null;
   useEffect(() => {
-    if (!remote) return;
+    if (remote === null) return;
     let stop: (() => void) | null = null;
     let live = true;
     void import("./display/remote-focus").then(
-      (module) => { if (live) stop = module.installRemoteFocus(); },
+      (module) => { if (live) stop = module.installRemoteFocus(document, { armed: remote === "always" }); },
       () => undefined,
     );
     return () => {
