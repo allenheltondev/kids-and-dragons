@@ -433,9 +433,122 @@
         "narration": "The crabs decide you are more trouble than you are worth and back into their warm burrow, still clacking. The prospector drops his pry bar and runs all the way back down past the stones."
       },
       "onDefeat": {
-        "goto": "end_rolled_down",
+        "goto": "scene_crabs_rescue",
         "narration": "The crabs chase you off their warm patch, down the hill, past the bells, and right back out through the boundary stones."
       }
+    },
+    "scene_crabs_rescue": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "Out past the stones, the grandmothers fish you out of the heather, one collar at a time. They bandage your scrapes, hand everybody a warm rock, and give you a stern look over their spectacles. \"Bandages cost, this season,\" says one. \"Everything costs, this season.\" Up the hill, the crabs clack, very pleased with themselves.",
+      "choices": [
+        {
+          "id": "pay",
+          "label": "Pay two coins for the bandages",
+          "icon": "bead",
+          "goto": "scene_crabs_rescue_pay",
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 2
+            }
+          ],
+          "when": {
+            "coins": {
+              "min": 2
+            }
+          }
+        },
+        {
+          "id": "supper",
+          "label": "Give them your supper for the bandages",
+          "icon": "cake",
+          "goto": "scene_crabs_rescue_supper",
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            }
+          ],
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          }
+        },
+        {
+          "id": "work",
+          "label": "Work it off on the grandmothers' pry-bar wall",
+          "icon": "hand",
+          "goto": "scene_crabs_rescue_work"
+        }
+      ]
+    },
+    "scene_crabs_rescue_pay": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "You count two coins into a grandmother's palm. She bites each one, writes BANDAGES: PAID in her tally book, and gives everybody a hard candy for being brave. The candy is very good. The coins are gone, and so is the afternoon.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sit down by the stones with the turned-back crowd",
+          "icon": "bead",
+          "goto": "scene_turned_back"
+        }
+      ]
+    },
+    "scene_crabs_rescue_supper": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "You hand over your supper. Eleven grandmothers share it out, a crumb each, chew very thoughtfully, and declare it adequate. It was going to be a lovely supper. Your stomachs grumble about it all the way back down to the stones.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sit down by the stones with the turned-back crowd",
+          "icon": "cake",
+          "goto": "scene_turned_back"
+        }
+      ]
+    },
+    "scene_crabs_rescue_work": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "narration": "The grandmothers keep a wall of pry bars, every one given up by somebody who listened in the end, and a heap more waiting to be hung. You hang them until your arms ache: one hundred and six. By the last one the sun is low, and the afternoon is gone.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sit down by the stones with the turned-back crowd",
+          "icon": "hand",
+          "goto": "scene_turned_back"
+        }
+      ]
     },
     "scene_turned_back": {
       "type": "story",
@@ -1626,20 +1739,6 @@
       "narration": "You walk north through the boundary stones into the foothills, with the rush all around you and the bells ringing ordinary rings behind you. Ahead, on a red ridge, stands the dark outline of the Skywardens' citadel. Tonight you camp under the stones that were here first, and they feel, for the first time, like they are on your side.",
       "heal": 4,
       "choices": []
-    },
-    "end_rolled_down": {
-      "type": "rest",
-      "narration": "The grandmothers fish you out of the crowd, bandage your scrapes, and give you a warm rock and a stern look. You have lost a whole day, and by the time you reach the grandmothers' tally house, it is full of other people's arguments. You keep what you know close, because there is no time today to make anyone listen.",
-      "heal": 3,
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "kept_close",
-          "value": true
-        }
-      ],
-      "choices": [],
-      "outcome": "setback"
     }
   },
   "voiceGuide": {

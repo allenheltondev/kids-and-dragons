@@ -12,7 +12,7 @@
  *   1. The files. Gemfall's sixteen chapters and its campaign file hash to the
  *      digests they had before the epic (its content has not changed since
  *      57c63ba8), load through the real loader, and are sound chapters.
- *   2. Every ending. Each of the 48 terminal scenes across the sixteen
+ *   2. Every ending. Each of the 47 terminal scenes across the sixteen
  *      chapters is reached from its chapter's entry, and settled through the
  *      server from an attempt standing at the beat before: what the attempt
  *      row says afterwards is digested and compared with the digest the same
@@ -77,6 +77,21 @@ const PRE_EPIC = JSON.parse(
   readFileSync(new URL("../fixtures/gemfall-pre-epic-save.json", import.meta.url), "utf8"),
 ) as PreEpicSave;
 
+/**
+ * The gameplay digests today's build is held to: the pre-epic build's, except
+ * where the owner changed Gemfall's graph on purpose. Each re-take comes from
+ * gemfall-compat-golden.test.ts run on the commit that made the change, and
+ * says why.
+ *
+ * - `endings`: owner decision on #368 (decision 3). 05c's early crab defeat
+ *   reroutes, at a cost, instead of ending the chapter, so `end_rolled_down`
+ *   is gone and Gemfall has 47 endings, not 48.
+ */
+const DIGESTS: PreEpicSave["digests"] = {
+  ...PRE_EPIC.digests,
+  endings: "cac9edbcfc299b099b655802a23ebac6909d84dd788c6d832c8d2cf5e4740da6",
+};
+
 // ---------------------------------------------------------------------------
 // 1. The files
 // ---------------------------------------------------------------------------
@@ -135,7 +150,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-04c.json": "134360d7535f4eb277b04d96d699baf0d002e046c916be805b6e181f227f3458",
   "chapters/gemfall-05a.json": "73a98e7eb255d074710542d70130fede374510a84a239c00daf57594e87587ed",
   "chapters/gemfall-05b.json": "dad6db20a43391b6f4723eed9ab9bb279b27875562be1019077d86f7ef69b8a7",
-  "chapters/gemfall-05c.json": "43a328dbbb95169f9355b6d447990ec1e17f6b0f2564387c15094090cccc915b",
+  "chapters/gemfall-05c.json": "2d16220bdf8cf750ad459a8071cc32299d9d6763f3584dea89bb71b198749d43",
   "chapters/gemfall-06.json": "4c7306ba197e3ce56b98421797da0aa1488cb3c28cc5eec350b5fdeb7b2c44e1",
   "chapters/gemfall-07h.json": "102d1fc2869f2001c57a3f17a934da964301e12e2db1d2342768a1e211a7c532",
   "chapters/gemfall-07l.json": "d2bf74142b55a622b2bdf709296541d07acb80eb74753c79f2f220b4f5f41604",
@@ -175,7 +190,7 @@ describe("Gemfall's files are the files that shipped before the epic", () => {
 // ---------------------------------------------------------------------------
 
 describe("Gemfall settles every ending as it did before the epic", () => {
-  it("each of the 48 endings is reachable from its chapter's entry", () => {
+  it("each of the 47 endings is reachable from its chapter's entry", () => {
     let count = 0;
     for (const id of content.campaign(GEMFALL)!.chapters) {
       const chapter = content.chapter(id)!;
@@ -185,7 +200,7 @@ describe("Gemfall settles every ending as it did before the epic", () => {
         count++;
       }
     }
-    expect(count).toBe(48);
+    expect(count).toBe(47);
   });
 
   it("each ending, settled through the server, leaves the attempt exactly as the pre-epic build left it", { timeout: 60_000 }, async () => {
@@ -197,7 +212,7 @@ describe("Gemfall settles every ending as it did before the epic", () => {
       outcome: string;
       attempt: ReturnType<typeof summary>;
     }[];
-    expect(rows).toHaveLength(48);
+    expect(rows).toHaveLength(47);
     for (const row of rows) {
       const chapter = content.chapter(row.chapterId)!;
       const ending = terminalScenes(chapter).find((e) => e.sceneId === row.sceneId)!;
@@ -215,7 +230,7 @@ describe("Gemfall settles every ending as it did before the epic", () => {
       });
       expect(row.attempt!.keys, where).not.toContain("journey");
     }
-    expect(digest(rows)).toBe(PRE_EPIC.digests.endings);
+    expect(digest(rows)).toBe(DIGESTS.endings);
   });
 
   it("all three roads and all three pursuits carry across eight evenings, as before", { timeout: 60_000 }, async () => {
@@ -244,7 +259,7 @@ describe("Gemfall settles every ending as it did before the epic", () => {
       expect(road.at(-1)!.attempt).toMatchObject({ status: "complete", lastIndex: 8, setbacks: 0 });
       for (const evening of road) expect(evening.attempt!.keys).not.toContain("journey");
     });
-    expect(digest(roads)).toBe(PRE_EPIC.digests.roads);
+    expect(digest(roads)).toBe(DIGESTS.roads);
   });
 
   it("setbacks fail the attempt at the campaign's limit, and the next evening starts again, as before", { timeout: 60_000 }, async () => {
@@ -254,7 +269,7 @@ describe("Gemfall settles every ending as it did before the epic", () => {
     expect(failed.attempt).toMatchObject({ status: "failed", setbacks: limit });
     expect(log.filter((e) => e.chapterId).map((e) => e.attempt!.setbacks)).toEqual([0, 0, 1, 2, 3, 4]);
     expect(log.at(-1)).toMatchObject({ next: "gemfall-01", attempt: { status: "active", setbacks: 0, lastIndex: 0 } });
-    expect(digest(log)).toBe(PRE_EPIC.digests.setbacks);
+    expect(digest(log)).toBe(DIGESTS.setbacks);
   });
 });
 
@@ -339,7 +354,7 @@ describe("Gemfall saves from before the epic", () => {
     const now = await playOn(h, table, save.run.id, content);
     const afterFight = now.fight;
     expect(now).toEqual(resumed);
-    expect(digest(now)).toBe(PRE_EPIC.digests.resumed);
+    expect(digest(now)).toBe(DIGESTS.resumed);
     expect(afterFight.phase).not.toBe("encounter");
     // Nothing the epic added was grown on the way.
     expect(await state()).not.toHaveProperty("journeyVisit");
