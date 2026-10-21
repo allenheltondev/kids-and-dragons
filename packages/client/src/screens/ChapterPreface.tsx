@@ -223,7 +223,12 @@ export function ChapterPreface(): ReactElement | null {
 
   // Between the corner row and the story plate, however tall the plate is today.
   const [plate, setPlate] = useState(stageInsetBottom);
-  useEffect(() => onStageInset(setPlate), []);
+  useEffect(() => {
+    const stop = onStageInset(setPlate);
+    // The plate may have reported before this listened (a screen loading mid-chapter).
+    setPlate(stageInsetBottom());
+    return stop;
+  }, []);
   const card = useRef<HTMLElement | null>(null);
   useLayoutEffect(() => {
     if (card.current) fitPlate(card.current);
