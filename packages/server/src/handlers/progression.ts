@@ -685,7 +685,9 @@ export async function lobbyCampaigns(
 ): Promise<CampaignView[]> {
   const attempts = await deps.repo.listCampaignProgress(householdId);
   const featured = featuredId ? deps.content.campaign(featuredId) : null;
-  const listed = deps.content
+  // Beside the room's own campaign, never instead of it: a room opened for no
+  // campaign offers none, and Begin plays what the phone names, as before.
+  const listed = !featured ? [] : deps.content
     .campaignIds()
     .map((id) => deps.content.campaign(id))
     .filter((c): c is Campaign => c !== null && c.listed === true && c.id !== featured?.id);
