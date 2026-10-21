@@ -34,6 +34,7 @@ import {
 } from "../screens";
 import { FieldGuideBanner } from "../screens/FieldGuideNews";
 import { RiftStatus } from "../screens/RiftStatus";
+import { ChapterGoalCard } from "../screens/ChapterGoal";
 import { useChapter, useGameStore, useMe, useRunState, useSession } from "../store";
 import type { PresentationEvent } from "../store/contract";
 // The hold table lives in world/presentation.ts because the board renderer
@@ -147,6 +148,13 @@ export function WorldView({
       {/* The rift clock and what the place just did (#201) — only in a fight
           that has an environment, so an ordinary fight's screen is untouched. */}
       {isSceneLike(phase) && state?.encounter?.environment ? <RiftStatus /> : null}
+      {/* The chapter's goal through a fight (#356), folded to a line in the top corner. Outside
+          a fight it is in the narration's head; in a place that fights back it heads RiftStatus. */}
+      {isSceneLike(phase) && state?.encounter != null && !state.encounter.environment ? (
+        <div className="world__goal">
+          <ChapterGoalCard place="world" folded />
+        </div>
+      ) : null}
       {phase === "chapter_complete" && <ChapterCompletePanel />}
 
       {/* The roll is the centrepiece of whatever pane it lands in. On a TV that

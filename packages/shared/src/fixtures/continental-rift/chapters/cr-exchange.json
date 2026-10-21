@@ -8,11 +8,19 @@
   "estimatedMinutes": 5,
   "xpAward": 100,
   "entry": "scene_arrivals",
+  "goal": {
+    "text": "Find out where the cold wind is coming from.",
+    "steps": [
+      { "id": "find_tear", "label": "Find the torn-open air", "flag": "found_the_tear" },
+      { "id": "look_in", "label": "Look into the tear", "flag": "looked_into_the_tear" }
+    ]
+  },
   "scenes": {
     "scene_arrivals": {
       "type": "story",
+      "onEnter": [{ "type": "setFlag", "flag": "found_the_tear" }],
       "narration": "The Exchange keeps a shelf for things the sea brings back. This morning the air above it has torn open, and cold wind blows out of the tear.",
-      "choices": [{ "id": "look", "label": "Look into the tear", "icon": "eye", "goto": "scene_tear" }]
+      "choices": [{ "id": "look", "label": "Look into the tear", "icon": "eye", "goto": "scene_tear", "effects": [{ "type": "setFlag", "flag": "looked_into_the_tear" }] }]
     },
     "scene_tear": {
       "type": "story",

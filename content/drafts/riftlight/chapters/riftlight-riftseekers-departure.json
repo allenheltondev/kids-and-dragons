@@ -9,6 +9,26 @@
   "estimatedMinutes": 10,
   "xpAward": 140,
   "entry": "map",
+  "goal": {
+    "text": "Meet the travelers and get ready for the road ahead.",
+    "steps": [
+      {
+        "id": "hear_plan",
+        "label": "Hear the travelers' plan",
+        "flag": "heard_the_travelers_plan"
+      },
+      {
+        "id": "decide_first",
+        "label": "Help decide what comes first",
+        "flag": "decided_what_comes_first"
+      },
+      {
+        "id": "get_ready",
+        "label": "Get ready for the road",
+        "flag": "got_ready_for_the_road"
+      }
+    ]
+  },
   "scenes": {
     "map": {
       "type": "story",
@@ -115,7 +135,13 @@
           "goto": "olivia"
         }
       ],
-      "priority": 2
+      "priority": 2,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "heard_the_travelers_plan"
+        }
+      ]
     },
     "olivia": {
       "type": "choice_point",
@@ -193,6 +219,12 @@
           "icon": "hand",
           "goto": "parting"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "got_ready_for_the_road"
+        }
       ]
     },
     "wrap": {
@@ -204,6 +236,12 @@
           "label": "Pack the chime",
           "icon": "hand",
           "goto": "parting"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "got_ready_for_the_road"
         }
       ]
     },
@@ -407,6 +445,12 @@
           "icon": "hand",
           "goto": "route"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "decided_what_comes_first"
+        }
       ]
     },
     "safe_routes": {
@@ -418,6 +462,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "route"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "decided_what_comes_first"
         }
       ]
     }

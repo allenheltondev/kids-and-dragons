@@ -26,6 +26,10 @@ out on Gemfall), and for a nonlinear campaign
 
 - **Every chapter ends on its beat.** A campaign is a ladder of beats, each a sentence that must be
   true when the chapter closes, whichever road the party took to get there. Write toward it.
+- **Every chapter has a `goal` on screen the whole chapter.** One sentence and two to four steps,
+  each ticking on a flag (or the chapter's own quest item) set on every path to a success ending;
+  the TV and phones show it with nothing to tap, and the entry scene says it in words (Interactivity,
+  below; [content/README.md](content/README.md#the-chapters-goal)).
 - **Put new material on the spine every path walks**, never on a detour a party can skip. A
   chapter is one 30–45 minute sitting, so the shortest path to a success ending is at least 30
   scenes, 14 of which ask something.

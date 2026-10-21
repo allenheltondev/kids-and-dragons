@@ -298,6 +298,9 @@ Before a graph campaign is reviewed:
 - [ ] `npm run content:continuity` — no new finding; every allow-list entry has a reason.
 - [ ] Each chapter's revelation is marked `priority: 1`, at most one per path through it, and its
       clues `priority: 2`.
+- [ ] Each chapter has a `goal` whose steps tick on every path to a success ending
+      ([content/README.md](../../content/README.md#the-chapters-goal)). A place is reached in more
+      than one order, so its goal names nothing any way in might not have shown.
 - [ ] Gemfall untouched: `gemfall-compat.test.ts` stays green without its goldens moving.
 
 ---

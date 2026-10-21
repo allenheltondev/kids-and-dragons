@@ -27,6 +27,31 @@
       "xp": 6
     }
   ],
+  "goal": {
+    "text": "Climb to the tower on the ridge, learn what the stones are, and say what it is all for.",
+    "steps": [
+      {
+        "id": "sleep",
+        "label": "Find somewhere warm to sleep",
+        "flag": "slept_on_warm_stones"
+      },
+      {
+        "id": "tower",
+        "label": "Get up to the tower",
+        "flag": "reached_the_tower"
+      },
+      {
+        "id": "truth",
+        "label": "Learn what the stones really are",
+        "flag": "learned_the_whole_truth"
+      },
+      {
+        "id": "answer",
+        "label": "Say what it is all for",
+        "flag": "said_what_for"
+      }
+    ]
+  },
   "props": {
     "facet_table": {
       "kind": "quest",
@@ -797,6 +822,12 @@
           "icon": "forward",
           "goto": "scene_morning_bells"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "slept_on_warm_stones"
+        }
       ]
     },
     "scene_morning_bells": {
@@ -1205,6 +1236,12 @@
             }
           ]
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "reached_the_tower"
+        }
       ]
     },
     "scene_citadel_gate_windows": {
@@ -1533,6 +1570,12 @@
           "label": "Leave the stone where it is, in warden custody",
           "icon": "hand",
           "goto": "scene_whole_truth_leave_stone"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "learned_the_whole_truth"
         }
       ]
     },
@@ -2166,6 +2209,10 @@
               "type": "setFlag",
               "flag": "pursuit_restore",
               "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "said_what_for"
             }
           ]
         },
@@ -2179,6 +2226,10 @@
               "type": "setFlag",
               "flag": "pursuit_hoard",
               "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "said_what_for"
             }
           ]
         },
@@ -2192,6 +2243,10 @@
               "type": "setFlag",
               "flag": "pursuit_leash",
               "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "said_what_for"
             }
           ]
         },
@@ -2205,6 +2260,10 @@
               "type": "setFlag",
               "flag": "pursuit_restore",
               "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "said_what_for"
             }
           ]
         }

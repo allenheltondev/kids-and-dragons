@@ -9,6 +9,21 @@
   "estimatedMinutes": 12,
   "xpAward": 140,
   "entry": "island",
+  "goal": {
+    "text": "Find your feet on an island high in the sky.",
+    "steps": [
+      {
+        "id": "listen_hum",
+        "label": "Learn to listen for a rift",
+        "flag": "listened_for_the_rift_hum"
+      },
+      {
+        "id": "guard_edge",
+        "label": "Help the keeper guard the edge",
+        "flag": "guarded_the_island_edge"
+      }
+    ]
+  },
   "scenes": {
     "island": {
       "type": "story",
@@ -45,6 +60,10 @@
               "type": "setFlag",
               "flag": "attune_taught",
               "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "listened_for_the_rift_hum"
             }
           ]
         }
@@ -87,6 +106,12 @@
           "icon": "hand",
           "goto": "island_rest"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "guarded_the_island_edge"
+        }
       ]
     },
     "song": {
@@ -98,6 +123,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "island_rest"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "guarded_the_island_edge"
         }
       ]
     },

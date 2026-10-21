@@ -29,6 +29,7 @@ import addFormats from "ajv-formats";
 import { conditionRefs, lintChapterText, unbackedCosts, unbackedSceneCharges } from "../../packages/shared/src/condition-lint.ts";
 import { slowBlockProblems } from "../../packages/shared/src/buffs.ts";
 import { chapterStartDiscoveries, sceneDiscoveries } from "../../packages/shared/src/discoveries.ts";
+import { goalStepFlags, stepsOffTheSpine } from "../../packages/shared/src/chapter-goal.ts";
 import { checkEncounterEnvironment } from "../../packages/shared/src/environment.ts";
 import { MUSIC_SPECS } from "../../packages/client/src/audio/paths.ts";
 import { RIFT_ACTION_KINDS, campaignMode, journeyFlags, parseCampaignGraph, riftActionWays } from "../../packages/shared/src/campaign-graph.ts";
@@ -1020,6 +1021,64 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
       `bonus objectives total ${bonusTotal} XP, over the 25% cap of ${bonusCap} for an xpAward of ${chapter.xpAward}`,
       "The engine clamps the overflow to nothing at the table, so the last objectives would pay 0 (spec §8.2).",
     );
+  }
+
+  // --- the chapter's goal (#356): on screen the whole chapter, ticking as flags set
+  const goal = chapter.goal;
+  const onlyAnEnding = (outgoing(scenes[chapter.entry] ?? {}, chapter.entry).length === 0);
+  if (!goal) {
+    // A chapter that is nothing but its ending (a preview's pause) has nothing to aim at.
+    if (!onlyAnEnding) {
+      fail("/goal", "chapter has no goal", "Every chapter states its goal, visible from scene 1: one sentence and two to four steps (content/README.md, \"The chapter's goal\").");
+    }
+  } else {
+    const stepIds = new Set();
+    const effectsOfChapter = Object.entries(scenes).flatMap(([id, scene]) => effectsOf(scene, id));
+    goal.steps.forEach((step, i) => {
+      const at = `/goal/steps/${i}`;
+      if (stepIds.has(step.id)) fail(`${at}/id`, `duplicate goal step id "${step.id}" in this chapter`);
+      stepIds.add(step.id);
+      if ((step.flag === undefined) === (step.item === undefined)) {
+        fail(at, `step "${step.id}" must watch a flag or an item, and not both`);
+      }
+      if (step.item !== undefined) {
+        // One of this chapter's own props, so it cannot arrive already held from an earlier chapter.
+        if (!Object.hasOwn(chapter.props ?? {}, step.item)) {
+          fail(`${at}/item`, `item "${step.item}" is not one of this chapter's props`, "A step watches an item only this chapter hands over; anything else could arrive already held.");
+        } else if (!effectsOfChapter.some(([e]) => e.type === "grantQuestItem" && e.itemId === step.item)) {
+          fail(`${at}/item`, `item "${step.item}" is never handed over with grantQuestItem in this chapter, so this step can never tick`);
+        }
+      }
+      for (const flag of goalStepFlags(step)) {
+        // Watched, never set, exactly like an objective: a step nothing ticks sits empty all evening.
+        if (!flagsSet.has(flag)) {
+          fail(
+            `${at}/flag`,
+            `flag "${flag}" is never set to true by any effect in this chapter, so this step can never tick`,
+            flagsSet.size ? `flags set here: ${[...flagsSet].join(", ")}` : "no setFlag effects in this chapter at all",
+          );
+        }
+        // A route-set member can arrive already set, and the step would tick before anybody did anything.
+        if (carried.has(flag)) {
+          fail(`${at}/flag`, `flag "${flag}" is a route-set member, which can cross from an earlier chapter`, "Point the step at a flag only this chapter sets, on the scene where the thing happens.");
+        }
+      }
+    });
+    if (/—/.test(`${goal.text} ${goal.steps.map((s) => s.label).join(" ")}`)) {
+      fail("/goal", "the goal has an em dash", "Read aloud to an eight-year-old: a full stop or a comma instead.");
+    }
+    if ((goal.text.match(/[.!?](\s|$)/g) ?? []).length > 1) {
+      fail("/goal/text", "the goal is more than one sentence", "One sentence; the steps say the rest.");
+    }
+    // Every road to a success ending ticks every step that is not optional (the spine).
+    for (const { stepId, ending } of stepsOffTheSpine(chapter)) {
+      const i = goal.steps.findIndex((s) => s.id === stepId);
+      fail(
+        `/goal/steps/${i}`,
+        `step "${stepId}" is not on the spine: some path reaches the success ending "${ending}" without setting its flag`,
+        "Set the flag (or hand over the item) on a scene every path walks, or on each road's own scene, or mark the step `optional`.",
+      );
+    }
   }
 
   if (biomes && !biomes.includes(chapter.biome) && !(backgroundOnlyBiomes.includes(chapter.biome) && Object.values(scenes).every((scene) => scene.type !== "encounter" && typeof scene.art === "string"))) {

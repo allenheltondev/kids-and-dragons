@@ -66,6 +66,10 @@
         "$ref": "#/$defs/objective"
       }
     },
+    "goal": {
+      "description": "ChapterGoal in chapter.ts (#356): what the party is trying to do, shown on the TV and every phone the whole chapter with nothing to tap. Required of every shipped chapter, each step's flag set somewhere in the chapter and every step that is not optional ticked on every path to a success ending: cross-file and graph rules, enforced by tools/content/validate.mjs.",
+      "$ref": "#/$defs/goal"
+    },
     "props": {
       "description": "Chapter-scoped props (D7): items this chapter brings with it that the world does not otherwise have. The world owns a honeycake; a chapter owns the key to its own door. These project into content/items.json alongside canon's items, because a quest item outlives the chapter that granted it and an inventory screen still has to name it \u2014 so the ids must not collide with canon's, which tools/canon/items.ts enforces. Same shape as an entry in schemas/items.schema.json.",
       "type": "object",
@@ -589,6 +593,75 @@
           "maximum": 500
         }
       }
+    },
+    "goal": {
+      "description": "ChapterGoal in chapter.ts.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "text",
+        "steps"
+      ],
+      "properties": {
+        "text": {
+          "$comment": "One sentence, read aloud as the chapter starts and shown the whole chapter.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 90
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 4,
+          "items": {
+            "$ref": "#/$defs/goalStep"
+          }
+        }
+      }
+    },
+    "goalStep": {
+      "description": "GoalStep in chapter.ts. Like an objective, it watches and never sets: a step ticks when its run flag (or any of a list) is set, or while the party holds its item, one of the chapter's own props.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "label": {
+          "$comment": "Shown beside a tick box on the TV and the phones, so it is short.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "flag": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/flag"
+            },
+            {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 4,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/flag"
+              }
+            }
+          ]
+        },
+        "optional": {
+          "type": "boolean"
+        },
+        "item": {
+          "$ref": "#/$defs/itemId"
+        }
+      },
+      "$comment": "Exactly one of `flag` and `item`: enforced by tools/content/validate.mjs (Ajv's strict mode will not take a oneOf of requireds)."
     },
     "choice": {
       "description": "Choice in chapter.ts. `goto` is required \u2014 a choice that leads nowhere is the single most common authoring mistake and it must fail the build, not the table.",

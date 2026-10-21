@@ -9,6 +9,21 @@
   "estimatedMinutes": 15,
   "xpAward": 140,
   "entry": "shelf",
+  "goal": {
+    "text": "Follow the icy path along the river.",
+    "steps": [
+      {
+        "id": "find_way",
+        "label": "Find a way past the broken ice",
+        "flag": "found_a_way_past_the_gap"
+      },
+      {
+        "id": "keep_together",
+        "label": "Keep everyone on the rope",
+        "flag": "kept_everyone_on_the_rope"
+      }
+    ]
+  },
   "scenes": {
     "shelf": {
       "type": "story",
@@ -74,6 +89,10 @@
           "type": "setFlag",
           "flag": "shelf_high_route",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "found_a_way_past_the_gap"
         }
       ]
     },
@@ -87,6 +106,12 @@
           "icon": "hand",
           "goto": "cross"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_a_way_past_the_gap"
+        }
       ]
     },
     "brace": {
@@ -99,6 +124,12 @@
           "icon": "hand",
           "goto": "assisted"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_a_way_past_the_gap"
+        }
       ]
     },
     "wing": {
@@ -110,6 +141,12 @@
           "label": "Guide everyone along the line",
           "icon": "hand",
           "goto": "assisted"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_a_way_past_the_gap"
         }
       ]
     },
@@ -181,6 +218,12 @@
           "icon": "hand",
           "goto": "rest_safe"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "kept_everyone_on_the_rope"
+        }
       ]
     },
     "rest_safe": {
@@ -206,6 +249,12 @@
           "label": "Look for a way onto the bank",
           "icon": "hand",
           "goto": "rest_river"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "kept_everyone_on_the_rope"
         }
       ]
     },

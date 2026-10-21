@@ -9,6 +9,26 @@
   "estimatedMinutes": 15,
   "xpAward": 140,
   "entry": "market",
+  "goal": {
+    "text": "Find out where the snow on the quay is coming from.",
+    "steps": [
+      {
+        "id": "help_barge",
+        "label": "Help the stuck supply barge",
+        "flag": "helped_the_barge"
+      },
+      {
+        "id": "find_cold",
+        "label": "Find where the cold comes from",
+        "flag": "found_the_cold_fold"
+      },
+      {
+        "id": "save_goat",
+        "label": "Save the little goat",
+        "flag": "kept_the_kid_safe"
+      }
+    ]
+  },
   "scenes": {
     "market": {
       "type": "story",
@@ -268,6 +288,12 @@
       "priority": 1,
       "discovers": [
         "creature.snowhorn_goat"
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_the_cold_fold"
+        }
       ]
     },
     "read_light": {
@@ -507,7 +533,13 @@
           "goto": "white"
         }
       ],
-      "priority": 2
+      "priority": 2,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "kept_the_kid_safe"
+        }
+      ]
     },
     "white": {
       "type": "rest",
@@ -550,6 +582,10 @@
           "type": "setFlag",
           "flag": "saved_barge_supper",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "helped_the_barge"
         }
       ]
     },
@@ -569,6 +605,10 @@
           "type": "setFlag",
           "flag": "found_barge_mooring",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "helped_the_barge"
         }
       ]
     },

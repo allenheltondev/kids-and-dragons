@@ -8,11 +8,19 @@
   "estimatedMinutes": 5,
   "xpAward": 100,
   "entry": "scene_flood",
+  "goal": {
+    "text": "Keep the harbor safe from the flood.",
+    "steps": [
+      { "id": "reach_docks", "label": "Reach the flooded docks", "flag": "reached_the_docks" },
+      { "id": "tie_boats", "label": "Tie down the boats", "flag": "tied_down_the_boats" }
+    ]
+  },
   "scenes": {
     "scene_flood": {
       "type": "story",
+      "onEnter": [{ "type": "setFlag", "flag": "reached_the_docks" }],
       "narration": "The Great River has come down in a rush of meltwater. The lower docks are under water, and the arrivals shelf is floating.",
-      "choices": [{ "id": "help", "label": "Help tie down the boats", "icon": "hand", "goto": "scene_tied" }]
+      "choices": [{ "id": "help", "label": "Help tie down the boats", "icon": "hand", "goto": "scene_tied", "effects": [{ "type": "setFlag", "flag": "tied_down_the_boats" }] }]
     },
     "scene_tied": {
       "type": "story",
