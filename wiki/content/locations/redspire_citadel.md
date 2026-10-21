@@ -3,7 +3,7 @@ title: Redspire Citadel
 id: location.redspire_citadel
 type: location
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: intentionally_undefined
 played_in: ["gemfall-05b", "gemfall-06"]
 tags: ["fortress", "skywardens", "highlands", "hub"]

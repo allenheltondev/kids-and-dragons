@@ -1,0 +1,119 @@
+/*
+ * StoryPane — the story so far (#358). Sized in em like every pane, so the
+ * display settings' text size (--kad-text-scale) carries straight through.
+ * One column that scrolls: it is read on a phone, and nothing in it is tapped.
+ */
+
+.story {
+  block-size: 100%;
+  overflow-y: auto;
+  padding: 0.75em;
+  line-height: 1.4;
+}
+
+.story__title {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0 0 0.6em;
+  font-family: var(--kad-font-display);
+  font-size: 1.4em;
+}
+
+.story__empty {
+  padding: 2em 1em;
+  text-align: center;
+}
+
+.story__campaign + .story__campaign {
+  margin-block-start: 1.25em;
+}
+
+.story__campaign-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25em 0.75em;
+  margin-block-end: 0.5em;
+}
+
+.story__campaign-title {
+  margin: 0;
+  font-family: var(--kad-font-display);
+  font-size: 1.25em;
+  overflow-wrap: anywhere;
+}
+
+.story__standing {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  margin: 0;
+  font-weight: 700;
+}
+
+.story__chapters {
+  display: grid;
+  gap: 0.75em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.story__chapter {
+  display: grid;
+  gap: 0.5em;
+  padding: 0.75em 0.9em;
+  border-radius: 0.75em;
+  background: color-mix(in srgb, currentColor 6%, transparent);
+  border-inline-start: 0.3em solid color-mix(in srgb, var(--kad-gold, #ffc95c) 70%, transparent);
+}
+
+.story__chapter-title {
+  margin: 0;
+  font-size: 1.1em;
+  overflow-wrap: anywhere;
+}
+
+.story__chapter p {
+  margin: 0;
+}
+
+.story__goal,
+.story__ending,
+.story__label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4em;
+}
+
+.story__goal > .kad-icon,
+.story__ending > .kad-icon,
+.story__label > .kad-icon {
+  flex: none;
+  margin-block-start: 0.15em;
+}
+
+.story__label {
+  font-weight: 700;
+}
+
+/* The revelation, in the scene's own words: the one thing on the card set apart. */
+.story__revealed {
+  display: grid;
+  gap: 0.4em;
+  margin: 0;
+  padding: 0.6em 0.75em;
+  border-radius: 0.6em;
+  background: color-mix(in srgb, var(--kad-gold, #ffc95c) 14%, transparent);
+}
+
+.story__chose ul {
+  margin: 0.3em 0 0;
+  padding-inline-start: 1.6em;
+}
+
+.story__chose li + li {
+  margin-block-start: 0.2em;
+}

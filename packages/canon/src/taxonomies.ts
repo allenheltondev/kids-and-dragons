@@ -41,12 +41,37 @@ import {
   CanonStatus,
   DangerLevel,
   Envelope,
+  HeightCm,
   MapProvenance,
   Sapience,
   Scale,
+  SCALE_CM,
+  Stance,
 } from "./envelope.js";
 
 export { CanonStatus, MapProvenance };
+
+/**
+ * #362 — how tall something we draw is, and how it occupies a scene. Required
+ * on everything with a figure (species, creature, people, individual), and
+ * optional on an item, where only the ones with art carry it.
+ */
+const Size = { height_cm: HeightCm, stance: Stance };
+
+/** A `height_cm` outside its own `scale` band is a typo in one or the other. */
+function heightInBand(
+  entity: { scale: z.infer<typeof Scale>; height_cm: number },
+  ctx: z.RefinementCtx,
+): void {
+  const [low, high] = SCALE_CM[entity.scale];
+  if (entity.height_cm < low || entity.height_cm > high) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["height_cm"],
+      message: `${entity.height_cm} cm is outside the ${entity.scale} band (${low}-${high} cm)`,
+    });
+  }
+}
 
 /** `{ x, y }` against the illustrated map. See `world_metadata.coordinate_system`. */
 const MapAnchor = z.strictObject({ x: z.number(), y: z.number() });
@@ -133,6 +158,7 @@ export const Biome = Place.extend({
 
 export const Species = Envelope.extend({
   scale: Scale,
+  ...Size,
   /** The part the accent colour sits on — see assets/manifest.json `signature`. */
   signature_part: z.enum(["horn", "mane", "tail", "wings"]),
   bipedal: z.boolean(),
@@ -142,7 +168,7 @@ export const Species = Envelope.extend({
     creatures: edge("creature"),
     items: edge("item"),
   }),
-});
+}).superRefine(heightInBand);
 
 // ---------------------------------------------------------------------------
 // creature — non-playable fauna. The taxonomy encounter generation reads.
@@ -159,6 +185,7 @@ export const Creature = Envelope.extend({
   classification: CreatureClassification,
   sapience: Sapience,
   scale: Scale,
+  ...Size,
   danger_level: DangerLevel,
   relationships: z.strictObject({
     primary_locations: edge("biome", "location"),
@@ -168,6 +195,7 @@ export const Creature = Envelope.extend({
   /** D9/D10 — what it does in a fight, and what it takes instead of one. */
   encounter: Encounter.optional(),
 }).superRefine((creature, ctx) => {
+  heightInBand(creature, ctx);
   const dangerous = creature.classification !== "ambient_creature";
   const { encounter, danger_level: danger } = creature;
 
@@ -216,6 +244,7 @@ export const People = Envelope.extend({
   classification: z.enum(["supporting_people", "cultural_order"]),
   sapience: Sapience,
   scale: Scale,
+  ...Size,
   /**
    * How this people generally sounds — D8. Prose, and about the *kind*, not a
    * person: "unhurried, states things as facts, never asks a question twice."
@@ -232,7 +261,7 @@ export const People = Envelope.extend({
     creatures: edge("creature"),
     items: edge("item"),
   }),
-});
+}).superRefine(heightInBand);
 
 // ---------------------------------------------------------------------------
 // individual — one named person, owned by a place. D8.
@@ -267,6 +296,11 @@ export const Individual = Envelope.extend({
    * the kind of small unkindness worth spending a field to avoid.
    */
   pronouns: z.string().min(1),
+  /**
+   * #362. Checked against their people's band by the canon test, since an
+   * individual has no `scale` of their own.
+   */
+  ...Size,
   /** How *this* person talks, over and above their people's register. */
   speech_register: z.string().optional(),
   relationships: z.strictObject({
@@ -303,6 +337,9 @@ export const Item = Envelope.extend({
   category: Slug,
   rarity: Slug,
   acquisition: z.string(),
+  /** #362 — only on an item with art, which is a prop the stage may draw. */
+  height_cm: HeightCm.optional(),
+  stance: Stance.optional(),
   relationships: z.strictObject({
     found_in: edge("biome", "location"),
     dropped_by: edge("creature"),

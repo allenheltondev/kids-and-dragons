@@ -3,13 +3,18 @@ title: Sheeple
 id: npc.sheeple
 type: npc
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: ["gemfall-01", "gemfall-02", "gemfall-07h"]
 tags: ["supporting_people", "plains", "flock", "skittish"]
 classification: supporting_people
 scale: medium
 sapience: sapient
+height_cm: 140
+size:
+  height: "1.4 m (4 ft 7 in)"
+  compare: "about as tall as a kid"
+  line: "1.4 m (4 ft 7 in), about as tall as a kid."
 lore_hook: "Nobody in the flock has ever had the first idea. The flock has had all of them."
 likes:
   - id: npc.faun

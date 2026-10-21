@@ -3,13 +3,18 @@ title: Selkie
 id: npc.selkie
 type: npc
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-01", "gemfall-05b", "gemfall-07h"]
 tags: ["supporting_people", "coastal", "shapeshifter", "courier"]
 classification: supporting_people
 scale: medium
 sapience: sapient
+height_cm: 165
+size:
+  height: "1.65 m (5 ft 5 in)"
+  compare: "as tall as a grown-up"
+  line: "1.65 m (5 ft 5 in), as tall as a grown-up."
 lore_hook: "Two shapes, one joke, always delivered on time."
 likes:
   - id: npc.merfolk
