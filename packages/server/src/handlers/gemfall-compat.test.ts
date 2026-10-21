@@ -207,9 +207,15 @@ const DIGESTS: PreEpicSave["digests"] = {
  * back, then on `check_verdict` as before. Six scenes and their edges; no
  * terminal scene changed, and the digests below, re-taken by the probe, still
  * match.
+ *
+ * Re-pinned for "Last time..." (#357): the campaign file gained `lastTime`, one
+ * line per route-set member and an opener, read by the shared screen before a
+ * chapter's first scene. The engine and server never read it, and no chapter
+ * file changed. The endings, roads, setbacks and saves below still match their
+ * pre-epic digests.
  */
 const GEMFALL_FILES: Record<string, string> = {
-  "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
+  "campaigns/gemfall.json": "cfb136f60708bcd2e5b68a7536ccd963a83dadb52e61e9e679377f264b10bf88",
   "chapters/gemfall-01.json": "32d2c5f4b3140d89d31e41830470419765647f97923a0fe62e01bc339759e9c3",
   "chapters/gemfall-02.json": "025601275c30803358b3fea1ea8b552eb3ca78f7eb48a98e745b8063347b1829",
   "chapters/gemfall-03a.json": "750c68b4e6492cae1c69df5d0b467b5ce22b2ad15e83d130325155a3dfc934e1",
