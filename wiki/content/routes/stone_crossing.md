@@ -3,7 +3,7 @@ title: Stone Crossing Route
 id: route.stone_crossing
 type: route
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-03a"]
 tags: []

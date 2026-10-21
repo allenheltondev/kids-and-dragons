@@ -3,7 +3,7 @@ title: The Hollow Gate
 id: location.hollow_gate
 type: location
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: intentionally_undefined
 played_in: ["gemfall-03b", "gemfall-04b", "gemfall-05a", "gemfall-05b", "gemfall-06", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["ruins", "marsh", "portal", "mysterious"]

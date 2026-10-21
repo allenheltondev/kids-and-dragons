@@ -8,7 +8,7 @@
  * its code, the content and the map painting were all already in memory. So:
  * play a little, open the book once with a signal, then drop the network and
  * *reload*, and open it again in a fresh tab — and the hero, the map's
- * painting and the Field Guide must all still be there.
+ * painting, the Story page and the Field Guide must all still be there.
  */
 
 import { test, expect, type BrowserContext, type Page } from "@playwright/test";
@@ -48,6 +48,11 @@ async function studyTheBook(page: Page): Promise<void> {
   await tray.getByRole("button", { name: "Map" }).click(TAP);
   await expect(page.getByText(/^Last seen in /)).toBeVisible(TAP);
   await expect.poll(() => paintingShown(page), { timeout: 20_000 }).toBe(true);
+
+  // The Story page (#358) is its own chunk, and the saved copy carries its words.
+  await tray.getByRole("button", { name: "Story" }).click(TAP);
+  await expect(page.getByRole("heading", { name: "The story so far" })).toBeVisible(TAP);
+  await expect(page.getByText(/no story yet/i)).toBeVisible(TAP);
 
   await tray.getByRole("button", { name: "Guide" }).click(TAP);
   const guide = page.getByRole("region", { name: "Field Guide" });

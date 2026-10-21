@@ -75,7 +75,15 @@ gemfall.md: pursuits are not walls. All four of chapter 8's philosophies — Res
 Control, Exploit — are ungated in the seal chamber. The pursuit a party declared changes how hard
 each one is, never whether it is there: a Tether party holds the leash on a TN 12 roll and
 anybody else on TN 16; a Collection party lifts the Keystone, and anybody else has to pry it out
-(TN 16, and a fail is Turned Back). Either way the party can step back and choose again.
+(TN 16). Either way the party can step back and choose again. A way the party tried and lost
+closes behind it, so nothing is a retry: a failed pry stings and the Keeper keeps the Keystone, and
+a leash let go (or a song stopped) sinks back under the seal. Every party arrives to all four.
+
+The losses stay rare (gemfall.md, "Losing"). Last Ring follows a lost race only for a `clock_late`
+party with no stone to wedge the door; Turned Back follows a lost fight with the Keeper and a
+failed hold only for a party with no stone to give and no time to ask for; Broken Tether needs a
+failed hold and a second failed try the party chose over letting go. Everything else reroutes at a
+cost: a stone taken, a scrape, an hour lost, a way closed.
 
 ### Reading a carried flag
 

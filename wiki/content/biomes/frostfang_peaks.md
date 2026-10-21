@@ -3,7 +3,7 @@ title: Frostfang Peaks
 id: biome.frostfang_peaks
 type: biome
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: []
 tags: ["frozen_mountains", "aeries", "griffin_homeland", "cliffs", "rescue"]
@@ -24,6 +24,9 @@ regional_relationships:
 related:
   - id: biome.glacier_of_origins
     type: biome
+    relationship: locations
+  - id: route.cairnstep
+    type: route
     relationship: locations
   - id: biome.red_sky_foothills
     type: biome
@@ -49,6 +52,9 @@ related:
   - id: creature.frost_wyrm
     type: creature
     relationship: dangerous_creatures
+  - id: campaign.riftlight
+    type: campaign
+    relationship: biomes
   - id: character.griffin
     type: character
     relationship: primary_locations
@@ -82,7 +88,7 @@ ai_context:
   visual_style: "Dense ranks of snow-covered peaks, dark exposed rock, high aeries, narrow passes, cloud shadows, ice shelves, and enormous vertical scale."
   common_encounters: "Mountain rescue, aerial travel, watch duties, avalanches, lost messengers, northern signs, dangerous passes, and conflicts between curiosity and caution."
   lore_highlights: "The accepted account is the visible one: the peaks are the realm's north wall, raised - depending on the teller - by deep time, old magic, or the world needing somewhere to keep its winter."
-  related_entities: "biome.glacier_of_origins, biome.red_sky_foothills, feature.great_river, biome.glacier_of_origins, biome.eastern_plains, character.griffin, npc.yeti, creature.snowhorn_goat, creature.frost_wyrm, character.griffin, character.kitsune, creature.snowhorn_goat, creature.frost_wyrm, feature.great_river, location.skullwater_cave, npc.yeti"
+  related_entities: "biome.glacier_of_origins, route.cairnstep, biome.red_sky_foothills, feature.great_river, biome.glacier_of_origins, biome.eastern_plains, character.griffin, npc.yeti, creature.snowhorn_goat, creature.frost_wyrm, campaign.riftlight, character.griffin, character.kitsune, creature.snowhorn_goat, creature.frost_wyrm, feature.great_river, location.skullwater_cave, npc.yeti"
   writing_guidance: "Griffins are rescuers, scouts, and people with ordinary communities, not merely mounts or guards. The Peaks are distinct from the Glacier of Origins."
   generation_hints: "Aerie communities maintain watches, rescue routes, signals, and pass knowledge while storms and ice frequently close expected paths."
 layout: biomes
@@ -144,6 +150,9 @@ The realm sleeps because the peaks do not. Rescue, watch, and weather all come d
 - [Red Sky Foothills](/biomes/red_sky_foothills/) `Separated From`
 - [The Eastern Plains](/biomes/eastern_plains/) `Borders`
 
+### Campaigns
+- [Riftlight](/campaigns/riftlight/) `Biomes`
+
 ### Characters
 - [Griffin](/characters/griffin/) `Primary Peoples` `Primary Locations`
 - [Kitsune](/characters/kitsune/) `Secondary Locations`
@@ -160,6 +169,9 @@ The realm sleeps because the peaks do not. Rescue, watch, and weather all come d
 
 ### Npcs
 - [Yeti](/npcs/yeti/) `Supporting Peoples` `Secondary Locations`
+
+### Routes
+- [The Cairnstep](/routes/cairnstep/) `Locations`
 <!-- END GENERATED: relationships -->
 
 

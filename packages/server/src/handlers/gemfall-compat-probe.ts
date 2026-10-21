@@ -142,8 +142,10 @@ export function selectingFlags(chapter: Chapter): Record<string, boolean> {
  */
 export function summary(row: CampaignProgressRecord | null) {
   if (!row) return null;
-  const { attemptId: _attemptId, version: _version, updatedAt: _updatedAt, ...rest } = row;
-  return { ...rest, keys: Object.keys(row).filter((k) => k !== "attemptId" && k !== "version").sort() };
+  // `story` (#358) is the Story page's record, read by nothing at play time:
+  // the gameplay the digests hold is everything else on the row.
+  const { attemptId: _attemptId, version: _version, updatedAt: _updatedAt, story: _story, ...rest } = row;
+  return { ...rest, keys: Object.keys(row).filter((k) => k !== "attemptId" && k !== "version" && k !== "story").sort() };
 }
 
 /**

@@ -3,7 +3,7 @@ title: Exchange–Sunward Road
 id: route.exchange_to_sunward_fields
 type: route
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-01", "gemfall-02"]
 tags: []

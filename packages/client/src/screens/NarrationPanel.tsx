@@ -27,6 +27,7 @@ import { VoteTicks } from "./VoteTicks";
 import { ClassPlaceRoll } from "./ClassPlace";
 import { chapterHeading } from "./campaign-copy";
 import { ChapterGoalCard, useChapterGoal } from "./ChapterGoal";
+import { prefaceUtterances, useStartPreface } from "./ChapterPreface";
 import { steppedAwayLine } from "./presence-copy";
 import "./shared.css";
 import "./NarrationPanel.css";
@@ -133,17 +134,40 @@ export function NarrationPanel(): ReactElement | null {
    *
    * One utterance per scene, not per render. The key covers a narration swap
    * inside the same scene.
+   *
+   * A chapter's first scene is read after its "Last time…" (#357), in this order:
+   *
+   *   1. "Last time… <the lines>" (or the campaign's opener), interrupting whatever was being said;
+   *   2. "Your goal: <the goal>", the preface's last line;
+   *   3. the first scene's story, queued behind them;
+   *   4. then the hint, the fitting stall and any rank-ups, as on every scene.
+   *
+   * The story waits for the campaign and chapter files the preface is read from, never longer
+   * than PREFACE_WAIT_MS, and every line after it waits with it so nothing jumps the queue.
+   * When the preface was read, the goal (#356's after-the-story line, below) is not read again.
    */
+  const preface = useStartPreface();
+  const prefacePending = preface.status === "pending";
+  const prefaceSaid = useRef<string | null>(null);
+  const goalSaidIn = useRef<string | null>(null);
   const spokenNarration = useRef<string | null>(null);
   useEffect(() => {
     const key = `${sceneId ?? "-"}:${narration}`;
-    if (narration.trim() === "" || spokenNarration.current === key) return;
+    if (narration.trim() === "" || spokenNarration.current === key || prefacePending) return;
     spokenNarration.current = key;
+    const story = ribbon === null ? narration : `${ribbon.label} ${narration}`;
+    if (preface.status === "ready" && prefaceSaid.current !== preface.key) {
+      prefaceSaid.current = preface.key;
+      if (preface.goal !== null) goalSaidIn.current = state?.chapterId ?? null;
+      prefaceUtterances(preface).forEach((line, i) => speak(line, { source: "narration", interrupt: i === 0 }));
+      speak(story, { source: "narration" });
+      return;
+    }
     // A new scene's narration replaces the last one rather than queueing behind it.
-    speak(ribbon === null ? narration : `${ribbon.label} ${narration}`, { source: "narration", interrupt: true });
+    speak(story, { source: "narration", interrupt: true });
     // The ribbon follows the scene, so a new one always arrives with new words.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sceneId, narration]);
+  }, [sceneId, narration, prefacePending]);
 
   /*
    * The hint, after the story and never instead of it: declared after the
@@ -153,45 +177,49 @@ export function NarrationPanel(): ReactElement | null {
   const spokenHint = useRef<string | null>(null);
   useEffect(() => {
     const key = `${sceneId ?? "-"}:${hint ?? ""}`;
-    if (hint === null || spokenHint.current === key) return;
+    if (hint === null || spokenHint.current === key || prefacePending) return;
     spokenHint.current = key;
     speak(hint, { source: "ui" });
-  }, [sceneId, hint]);
+  }, [sceneId, hint, prefacePending]);
 
   /*
    * The chapter's goal (#356), after the story and only on the chapter's first scene, so the
    * table hears what it is trying to do as the chapter starts. Once per chapter on this screen,
    * and never on a screen that loads mid-chapter. A step ticking is seen and heard (the chime)
    * but not read out: the owner found "Done: ..." after every tick too much.
+   *
+   * Said here only when the chapter had no "Last time…" to end with it (#357): a campaign
+   * without one, or files too slow to wait for. Otherwise it was the preface's last line,
+   * ahead of the story, and is never said twice.
    */
   const goal = useChapterGoal();
   const goalChapter = goal?.chapterId ?? null;
   const atStart = goal !== null && sceneId !== null && goal.entry === sceneId;
   const spokenGoal = useRef<string | null>(null);
   useEffect(() => {
-    if (goal === null || goalChapter === null || sceneId === null || spokenGoal.current === goalChapter) return;
+    if (goal === null || goalChapter === null || sceneId === null || spokenGoal.current === goalChapter || prefacePending) return;
     spokenGoal.current = goalChapter;
-    if (atStart) speak(`Your goal: ${goal.goal.text}`, { source: "narration" });
+    if (atStart && goalSaidIn.current !== goalChapter) speak(`Your goal: ${goal.goal.text}`, { source: "narration" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [goalChapter, atStart, sceneId]);
+  }, [goalChapter, atStart, sceneId, prefacePending]);
 
   /* The fitting stall's words (#312), after the story: they are narration too (spec §11). */
   const spokenStall = useRef<string | null>(null);
   useEffect(() => {
     const key = `${sceneId ?? "-"}:${stallWords ?? ""}`;
-    if (stallWords === null || spokenStall.current === key) return;
+    if (stallWords === null || spokenStall.current === key || prefacePending) return;
     spokenStall.current = key;
     speak(stallWords, { source: "narration" });
-  }, [sceneId, stallWords]);
+  }, [sceneId, stallWords, prefacePending]);
 
   /* The rank-up lines, after the story: once per scene. */
   const spokenRankUps = useRef<string | null>(null);
   useEffect(() => {
     const key = `${sceneId ?? "-"}:${rankUpText}`;
-    if (rankUpText === "" || spokenRankUps.current === key) return;
+    if (rankUpText === "" || spokenRankUps.current === key || prefacePending) return;
     spokenRankUps.current = key;
     speak(rankUpText, { source: "ui" });
-  }, [sceneId, rankUpText]);
+  }, [sceneId, rankUpText, prefacePending]);
 
   /*
    * Whose turn it is, and no more. The options themselves are read by the phone
@@ -201,18 +229,18 @@ export function NarrationPanel(): ReactElement | null {
   const choiceText = choices === null || turnName === null ? "" : `${turnName}'s turn.`;
   const spokenChoices = useRef<string | null>(null);
   useEffect(() => {
-    if (choiceText === "" || spokenChoices.current === choiceText) return;
+    if (choiceText === "" || spokenChoices.current === choiceText || prefacePending) return;
     spokenChoices.current = choiceText;
     speak(choiceText, { source: "prompt" });
-  }, [choiceText]);
+  }, [choiceText, prefacePending]);
 
   const rollText = prompt !== null && prompt.kind === "roll" ? prompt.prompt : "";
   const spokenRoll = useRef<string | null>(null);
   useEffect(() => {
-    if (rollText === "" || spokenRoll.current === rollText) return;
+    if (rollText === "" || spokenRoll.current === rollText || prefacePending) return;
     spokenRoll.current = rollText;
     speak(rollText, { source: "prompt" });
-  }, [rollText]);
+  }, [rollText, prefacePending]);
 
   /*
    * Hand-offs (spec §9.4). `trades` is optional on RunState — a run persisted

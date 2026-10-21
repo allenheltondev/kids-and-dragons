@@ -112,6 +112,7 @@ import { addItem, addQuestItem, freeSlots, hasItem, removeItem, swapItem, useCon
 import { sceneChoices, visibleChoices } from "./chapter-graph.js";
 import { combatTurnAway, readyWithoutAway, swapOwnerAway } from "./away.js";
 import { composeNarration, fillTokens } from "./narration.js";
+import { heardWith } from "./story-so-far.js";
 import { loadDie, readDie } from "./playtest.js";
 import type { CheckBuffOffer, RunBuff } from "./types/buffs.js";
 import type { FactId, FactValue } from "./types/campaign-graph.js";
@@ -119,6 +120,7 @@ import { factTestHolds } from "./world-state.js";
 import { checkBuffOffer, combatBuffsFor, expireRunBuffs, oneHeroSeat, spendCheckBuff, spendRunBuffs } from "./buffs.js";
 import { sameHome } from "./visitors.js";
 import { checkTypedName } from "./names.js";
+import { seatedMembers, TABLE_FULL_MESSAGE } from "./seats.js";
 import { classAnswerRefusal, classPlaceWaitingOn, openClassPlace } from "./class-place.js";
 
 // ---------------------------------------------------------------------------
@@ -353,7 +355,9 @@ function party(state: RunState): {
   flags: Record<string, boolean>;
   coins: number;
 } {
-  return { members: state.party.map((m) => m.character), flags: state.flags, coins: state.coins ?? 0 };
+  // The table as it is playing (#389): a gate, a variant or `{party}` never
+  // reads the bag or the count of somebody the host took out.
+  return { members: seatedMembers(state).map((m) => m.character), flags: state.flags, coins: state.coins ?? 0 };
 }
 
 function touch(draft: RunState, ctx: EngineContext): void {
@@ -471,17 +475,20 @@ function targetsFor(
   to: string | undefined,
   rollerCharacterId?: string,
 ): PartyMember[] {
+  // "The party" is the members still in the game (#389): a reward, a heal or a
+  // cost never lands on somebody the host took out, who keeps a place in
+  // `party` only so a fight in progress can still point at them.
   if (to === undefined) {
     if (rollerCharacterId) {
       const roller = memberByCharacter(draft, rollerCharacterId);
       if (roller) return [roller];
     }
-    return [...draft.party];
+    return seatedMembers(draft);
   }
-  if (to === "party") return [...draft.party];
+  if (to === "party") return seatedMembers(draft);
   if (to === "roller") {
     const roller = rollerCharacterId ? memberByCharacter(draft, rollerCharacterId) : undefined;
-    return roller ? [roller] : [...draft.party];
+    return roller ? [roller] : seatedMembers(draft);
   }
   const named =
     draft.party.find((m) => m.playerId === to) ?? draft.party.find((m) => m.character.id === to);
@@ -534,13 +541,16 @@ function heal(member: PartyMember, amount: number): void {
  * takes its bonus with it. Holding none of them is a no-op.
  */
 function takeItem(draft: RunState, ids: string | readonly string[], ctx: EngineContext): void {
+  // Paid by the table that is playing (#389), the same members `party()`
+  // read the gate from.
+  const seated = seatedMembers(draft);
   for (const itemId of typeof ids === "string" ? [ids] : ids) {
-    const bagHolder = draft.party.find((m) => hasItem(m.character.inventory, itemId));
+    const bagHolder = seated.find((m) => hasItem(m.character.inventory, itemId));
     if (bagHolder) {
       setBag(bagHolder, removeItem(bagHolder.character.inventory, itemId), ctx);
       return;
     }
-    const questHolder = draft.party.find((m) => m.character.questItems.includes(itemId));
+    const questHolder = seated.find((m) => m.character.questItems.includes(itemId));
     if (questHolder) {
       questHolder.character.questItems = questHolder.character.questItems.filter((id) => id !== itemId);
       return;
@@ -986,6 +996,11 @@ function enterSceneDraft(
   // as it is when the scene opens, so an item this scene grants counts (#159).
   // Stored rather than recomputed, so a reload mid-scene reads the same words.
   draft.narration = composeSceneNarration(draft, scene, transition);
+  // A revelation that reads the bag keeps the bag it was heard with, once a chapter (#358).
+  if (scene.type !== "encounter" && scene.priority === 1 && draft.revealHeld?.[sceneId] === undefined) {
+    const held = heardWith(scene, party(draft));
+    if (held !== null) draft.revealHeld = { ...draft.revealHeld, [sceneId]: held };
+  }
 
   const enter: Presentation = {
     kind: "SCENE_ENTER",
@@ -1409,8 +1424,10 @@ function assertSeatOpen(draft: RunState, playerId: string): void {
    * that outgrows it reaches an encounter it cannot start. The table this game
    * is built for seats three; six is "the cousins are visiting", not a raid.
    */
-  if (draft.party.length >= MAX_PARTY) {
-    throw new Illegal("ILLEGAL", `the party is full (${MAX_PARTY})`);
+  // Somebody the host took out keeps their place in `party` but not their
+  // seat (#389), so it is the seated members that count.
+  if (seatedMembers(draft).length >= MAX_PARTY) {
+    throw new Illegal("ILLEGAL", TABLE_FULL_MESSAGE);
   }
 }
 
@@ -1538,6 +1555,7 @@ function doStartChapter(
    * boundary, and anything scoped to a chapter dies here.
    */
   draft.visited = [];
+  delete draft.revealHeld;
   // The lobby's decision is spent: back in the lobby, the party decides again.
   draft.campaignVotes = {};
   for (const member of draft.party) member.ready = false;
@@ -2048,11 +2066,12 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext, spendBuff
  * is helped up sees it happen. Null with fewer than two heroes seated.
  */
 function friendToHelpUp(draft: RunState): string | null {
-  const n = draft.party.length;
+  const seated = seatedMembers(draft);
+  const n = seated.length;
   if (n < 2) return null;
   const holder = storyTurnHolder(draft);
-  const start = holder ? draft.party.indexOf(holder) : 0;
-  const others = Array.from({ length: n - 1 }, (_, i) => draft.party[(start + 1 + i) % n]!);
+  const start = holder ? Math.max(seated.indexOf(holder), 0) : 0;
+  const others = Array.from({ length: n - 1 }, (_, i) => seated[(start + 1 + i) % n]!);
   return (others.find((member) => member.connected) ?? others[0]!).character.id;
 }
 
@@ -2063,9 +2082,30 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
   const map = ctx.map?.(scene.map) ?? null;
   if (!map) throw new Illegal("NOT_FOUND", `map "${scene.map}" is not loaded`);
 
+  // Only the members still in the game take the field (#389): somebody the
+  // host took out keeps their place in `party`, not a spawn tile, so a new kid
+  // in the seat they freed has one.
+  const seated = seatedMembers(draft);
+  if (seated.length === 0) throw new Illegal("ILLEGAL", "nobody is left at the table to fight");
+  /*
+   * A party that walks in with every hero already down would lose before
+   * anybody had a turn (#389): the monsters act, nobody can, the fight is
+   * over. That happens after a lost fight whose `onDefeat` road leads to
+   * another fight with no rest between. The loss already took its cost (that
+   * fight's road, and every hit point), so this fight is not a second one: the
+   * heroes scramble up at 1 hp, as a rest would stand them, only barely. One
+   * hero still standing, or a friend the practice knocks down on purpose, is a
+   * table that can play, and walks in exactly as it is.
+   */
+  if (seated.every((member) => member.down || member.hp <= 0)) {
+    for (const member of seated) {
+      member.hp = Math.max(member.hp, 1);
+      member.down = false;
+    }
+  }
   // The practice's Help Up lesson (#255): one friend walks in knocked down.
   const downId = scene.friendDown ? friendToHelpUp(draft) : null;
-  const party: PartyPlacement[] = draft.party.map((member, i) => {
+  const party: PartyPlacement[] = seated.map((member, i) => {
     /*
      * No modulo. Wrapping member 4 onto spawn 0 read as graceful and was the
      * opposite: two figures on one tile is a state `placeActor` refuses with a
@@ -2078,7 +2118,7 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
     if (!at) {
       throw new Illegal(
         "ILLEGAL",
-        `map "${map.id}" has ${map.partySpawns.length} party spawns, the party is ${draft.party.length}`,
+        `map "${map.id}" has ${map.partySpawns.length} party spawns, the party is ${seated.length}`,
       );
     }
     // Luckstone charges come from the bag (content/items.json `rerollOnes`).
@@ -2114,7 +2154,7 @@ function startEncounter(draft: RunState, ctx: EngineContext): readonly Encounter
   // graph campaign's run holds any; for every other fight there is no
   // `buffs` in the setup and none on the state.
   const held = draft.buffs ?? [];
-  const heroIds = draft.party.map((member) => member.character.id);
+  const heroIds = seated.map((member) => member.character.id);
   const buffs =
     held.length > 0
       ? combatBuffsFor(held, heroIds, heroIds[oneHeroSeat(draft.storyTurn, heroIds.length)] ?? null)
@@ -2954,5 +2994,6 @@ export function currentChoices(state: RunState, chapter: Chapter): Choice[] {
 
 /** True when every character is knocked down. Branches the story; never ends it. */
 export function isPartyDown(state: RunState): boolean {
-  return state.party.length > 0 && state.party.every((m) => m.down);
+  const seated = seatedMembers(state);
+  return seated.length > 0 && seated.every((m) => m.down);
 }
