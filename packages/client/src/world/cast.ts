@@ -258,6 +258,9 @@ export const IDLE_RISE = 0.06;
 /** The least distance between two huddled guests' centres: room for a short name each. */
 export const HUDDLE_GAP = 110;
 
+/** The most two crowded neighbours overlap, as a share of their half-widths added together. */
+export const MAX_OVERLAP = 0.4;
+
 /** How close to the stage's right edge an ordinary figure's paint may reach. */
 export const EDGE_FILL = 0.995;
 
@@ -352,23 +355,34 @@ export function stageLayout(
       slots.cast = slots.cast.map((x) => x - shift);
       slots.castLeft = slots.castLeft.map((x) => x - shift);
     }
-    // Still over the edge: the guests huddle, each pulled in until its own
-    // paint is on the stage, in order and a name's width apart. Their name
-    // slots narrow to the room between neighbours, so names still never meet.
+    // Still over the edge: the guests close up, each overlapping its
+    // neighbour by at most `MAX_OVERLAP` of their half-widths (smaller ones
+    // stand in front, scene.ts). Past that the cast spills off the right edge,
+    // the way a whale does, and never back over the party. Each name slot is
+    // the room between neighbours, so names never meet; scene.ts pins a
+    // spilled guest's name inside the frame.
     if (reach - shift > width * EDGE_FILL) {
+      const half = cast.map((figure, i) => (castHeights[i]! * aspect(figure)) / 2);
+      const gap = (i: number, j: number) => Math.max(HUDDLE_GAP, (1 - MAX_OVERLAP) * (half[i]! + half[j]!));
       const xs = [...slots.cast];
+      // Right to left: pull each in until its paint is on the stage, keeping the gap.
       for (let i = xs.length - 1; i >= 0; i--) {
         if (overflow[i]) continue;
-        const half = (castHeights[i]! * aspect(cast[i]!)) / 2;
         const next = xs[i + 1];
-        xs[i] = Math.min(xs[i]!, width * EDGE_FILL - half, next === undefined ? Infinity : next - HUDDLE_GAP);
+        xs[i] = Math.min(xs[i]!, width * EDGE_FILL - half[i]!, next === undefined ? Infinity : next - gap(i, i + 1));
       }
-      const leftEdge = Math.min(...slots.castLeft);
+      // Left to right: nobody past the party's edge, and the gaps restored;
+      // whatever no longer fits spills off the right.
+      for (let i = 0; i < xs.length; i++) {
+        if (overflow[i]) continue;
+        const floor = i === 0 ? partyEdge + half[0]! : xs[i - 1]! + gap(i - 1, i);
+        xs[i] = Math.max(xs[i]!, floor);
+      }
       slots.cast = xs;
       slots.castSlots = xs.map((x, i) => {
-        const left = i === 0 ? Math.max(leftEdge, x - (slots.castSlots[i] ?? 0) / 2) : (xs[i - 1]! + x) / 2;
-        const right = i === xs.length - 1 ? width : (x + xs[i + 1]!) / 2;
-        return Math.min(slots.castSlots[i] ?? Infinity, 2 * Math.min(x - left, right - x));
+        const left = i === 0 ? partyEdge : (xs[i - 1]! + x) / 2;
+        const right = i === xs.length - 1 ? Math.max(x, width) : (x + xs[i + 1]!) / 2;
+        return Math.min(slots.castSlots[i] ?? Infinity, 2 * Math.min(x - left, Math.max(right - x, HUDDLE_GAP / 2)));
       });
       slots.castLeft = xs.map((x, i) => x - (slots.castSlots[i] ?? 0) / 2);
     }

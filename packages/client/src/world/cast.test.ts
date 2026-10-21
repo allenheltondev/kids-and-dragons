@@ -13,6 +13,7 @@ import {
   ENSEMBLES,
   MAX_CAST,
   MAX_GROUP,
+  MAX_OVERLAP,
   SLOT_FILL,
   STORY_MEASURE,
   castFigureUrl,
@@ -211,7 +212,7 @@ describe("stageSlots", () => {
     expect(slots.cast[0]).toBe(WIDTH * 0.8);
   });
 
-  it("fits three heroes and three guests' painted figures on the stage, each within its slot", () => {
+  it("fits three heroes and three guests on the stage, spilling only off the right when crowded", () => {
     const hero = (heightCm: number): StageFigure => ({ heightCm, stance: "standing", paint: null });
     for (const width of [1600, 2560]) for (const heights of [[160, 160, 160], [25, 230, 330]]) {
       const party = [hero(165), hero(85), hero(215)];
@@ -224,11 +225,11 @@ describe("stageSlots", () => {
       ];
       for (const figure of figures) {
         expect(figure.x - figure.width / 2).toBeGreaterThanOrEqual(0);
-        expect(figure.x + figure.width / 2).toBeLessThanOrEqual(width);
         // Above the floors, nobody's painted box spans more than SLOT_FILL of
-        // its slot; at the minimum scale neighbours may overlap instead.
+        // its slot; at the minimum scale neighbours overlap instead.
         if (figure.width > STORY_MEASURE.floor * aspect && fit.k > STORY_MEASURE.minScale!) {
           expect(figure.width).toBeLessThanOrEqual(figure.room * SLOT_FILL + 1e-6);
+          expect(figure.x + figure.width / 2).toBeLessThanOrEqual(width);
         }
       }
       // Left to right, centres in order and apart.
@@ -240,25 +241,29 @@ describe("stageSlots", () => {
     const figure = (heightCm: number): StageFigure => ({ heightCm, stance: "standing", paint: null });
     const party = [figure(165), figure(85), figure(215)];
     const cast = [figure(160), figure(230), figure(330)];
+    const aspect = paintAspect(NOMINAL_PAINT);
     for (const width of [1600, 2560]) {
       const fit = stageLayout(party, cast, width);
       expect(fit.k, `k at ${width}`).toBeGreaterThanOrEqual(STORY_MEASURE.minScale!);
       expect(fit.party[2]! / fit.party[1]!).toBeCloseTo(215 / 85);
-      const aspect = paintAspect(NOMINAL_PAINT);
-      // Every guest's paint on the stage, the cast right of the party, in order.
+      const partyEdge = Math.max(...fit.slots.party) + fit.slots.partySlot / 2;
+      const half = fit.cast.map((h) => (h * aspect) / 2);
       fit.slots.cast.forEach((x, i) => {
-        const half = (fit.cast[i]! * aspect) / 2;
-        expect(x + half, `guest ${i} at ${width}`).toBeLessThanOrEqual(width);
-        expect(x).toBeGreaterThan(Math.max(...fit.slots.party));
-        if (i > 0) expect(x).toBeGreaterThan(fit.slots.cast[i - 1]!);
+        // Nobody over the party: a guest's paint starts at or after the party's share.
+        expect(x - half[i]!, `guest ${i} at ${width}`).toBeGreaterThanOrEqual(partyEdge - 1e-6);
+        if (i > 0) {
+          expect(x).toBeGreaterThan(fit.slots.cast[i - 1]!);
+          // Neighbours overlap by at most MAX_OVERLAP of their half-widths.
+          expect(x - fit.slots.cast[i - 1]!).toBeGreaterThanOrEqual((1 - MAX_OVERLAP) * (half[i]! + half[i - 1]!) - 1e-6);
+        }
       });
+      // On a TV-wide stage everybody fits; on a narrow one the spill is off the right only.
+      if (width === 2560) fit.slots.cast.forEach((x, i) => expect(x + half[i]!).toBeLessThanOrEqual(width));
+      else expect(fit.slots.cast[0]! + half[0]!).toBeLessThanOrEqual(width);
       // Names keep to their slots, so adjacent slots never overlap: names cannot touch.
       for (let i = 1; i < fit.slots.cast.length; i++) {
         const gap = fit.slots.cast[i]! - fit.slots.cast[i - 1]!;
         expect(gap).toBeGreaterThanOrEqual((fit.slots.castSlots[i]! + fit.slots.castSlots[i - 1]!) / 2 - 1e-6);
-      }
-      for (let i = 1; i < fit.slots.party.length; i++) {
-        expect(fit.slots.party[i]! - fit.slots.party[i - 1]!).toBeCloseTo(fit.slots.partySlot);
       }
     }
   });
