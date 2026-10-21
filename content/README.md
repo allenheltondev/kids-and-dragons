@@ -194,7 +194,6 @@ What it does beyond the look:
 Put the fact in the narration itself, in plain words. The ribbon tells the room to pay attention;
 it cannot tell them what to pay attention to.
 
-<<<<<<< HEAD
 ## The chapter's goal
 
 Every chapter says what the party is trying to do, and the table can see it the whole time
@@ -239,7 +238,7 @@ Every chapter says what the party is trying to do, and the table can see it the 
 - **Spread the ticks.** The first a quarter of the way in, the last near the end. A step that ticks
   in scene 1 tells the table nothing.
 - Only a chapter that is nothing but its ending (a preview's pause) goes without one.
-=======
+
 ## Interactivity
 
 The table should be playing, not only listening. Four rules, and the two numbers
@@ -265,7 +264,6 @@ Both numbers are a reading list, never a gate: the `!` marks under the table say
 They read the spine only; a typical path's `read` in the table can run longer, so glance at it
 too. Bare `npm run content:pacing` lists the Gemfall chapters; `npm run content:pacing -- --chapter ""`
 lists every shipped chapter, and `--chapter bramblewood-` any one prefix.
->>>>>>> origin/main
 
 ## Class places (#311)
 
@@ -438,7 +436,20 @@ reading about one.
   `cast/<id>` (a named character's own figure, `assets/cast/<id>/assembled.png`). `npm run
   content:validate` fails, naming the expected file, if the art is not there.
 - `name` is the nameplate (32 characters at most). Omit it for an unnamed creature.
-- `size` defaults to the entity's `scale` in `assets/manifest.json`, or `medium` (a hero's height).
+- Every figure stands at its **true height** beside the party (canon `height_cm`, or `heightCm` on a
+  `cast/` figure in `assets/manifest.json`), so a teapot-sized sprite is a sixth of a faun and a troll
+  towers over both. A big guest shrinks the stage a little (never below 85% of true size); a huge one
+  overflows the frame instead: a dragon stands on the ground and runs off the top, a cloud whale runs
+  off the right, with its name kept on screen. Overflow direction comes from the art's shape, or from
+  `figureOverflow` in `assets/manifest.json`.
+- `size` is only for when *this* character is not the usual size for their figure: a faun child
+  (`"small"` on `entities/faun`), a manticore cub. It moves the figure's height to the nearest point
+  inside that band, so a size that restates the figure's own band changes nothing. Leave it off
+  otherwise.
+- `stance` overrides how the figure occupies the scene: `standing` (feet on the ground), `hovering`
+  (lifted a little, bobbing), `flying` (lifted further, drifting) or `swimming` (the ground line is a
+  water line hiding the lower body). Defaults to the figure's canon stance. A griffin landed in one
+  scene and in flight in the next.
 - Three at most, and never a party member.
 
 Guidance:
