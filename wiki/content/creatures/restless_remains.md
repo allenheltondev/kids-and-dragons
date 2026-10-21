@@ -3,7 +3,7 @@ title: Restless Remains
 id: creature.restless_remains
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-08"]
 tags: ["supernatural", "bone_yard", "rare", "guardian"]
@@ -11,6 +11,11 @@ classification: supernatural_manifestation
 danger_level: high
 scale: variable
 sapience: variable
+height_cm: 240
+size:
+  height: "2.4 m (7 ft 10 in)"
+  compare: "as tall as a door"
+  line: "2.4 m (7 ft 10 in), as tall as a door."
 lore_hook: "Not a monster. A grievance, wearing whatever was available."
 likes:
   - id: npc.merfolk

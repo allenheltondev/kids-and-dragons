@@ -3,13 +3,18 @@ title: Frogfolk
 id: npc.frogfolk
 type: npc
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-01", "gemfall-02", "gemfall-03a", "gemfall-03b", "gemfall-03c", "gemfall-07h", "gemfall-07l", "gemfall-07r"]
 tags: ["supporting_people", "marsh", "amphibious", "navigator"]
 classification: supporting_people
 scale: small_to_medium
 sapience: sapient
+height_cm: 105
+size:
+  height: "1.05 m (3 ft 5 in)"
+  compare: "about as tall as a kid"
+  line: "1.05 m (3 ft 5 in), about as tall as a kid."
 lore_hook: "They know where the ground actually is. This is rarer than it sounds."
 likes:
   - id: creature.silver_otter
@@ -40,7 +45,13 @@ related:
   - id: location.exchange
     type: location
     relationship: secondary_locations
+  - id: biome.sallow_wastelands
+    type: biome
+    relationship: secondary_locations
   - id: biome.whispering_marsh
+    type: biome
+    relationship: supporting_peoples
+  - id: biome.sallow_wastelands
     type: biome
     relationship: supporting_peoples
 assets:
@@ -52,7 +63,7 @@ ai_context:
   visual_style: "Amphibious humanoid form with broad eyes and varied frog-like colors. Reed-woven clothing, pole boats, and mist lanterns."
   common_encounters: "Marsh guide, boat keeper, first witness to a changed waterway."
   lore_highlights: "They know where the ground actually is. This is rarer than it sounds."
-  related_entities: "biome.whispering_marsh, location.exchange, biome.whispering_marsh"
+  related_entities: "biome.whispering_marsh, location.exchange, biome.sallow_wastelands, biome.whispering_marsh, biome.sallow_wastelands"
   writing_guidance: "Closes routes when the whispers grow dangerous."
   generation_hints: "Marks safe channels, monitors water levels, collects useful marsh plants, guides respectful travelers."
 layout: npcs
@@ -94,6 +105,7 @@ Reserved and precise, with a hospitality that consists of getting you where you 
 ## Related Entities
 
 ### Biomes
+- [The Sallow Wastelands](/biomes/sallow_wastelands/) `Secondary Locations` `Supporting Peoples`
 - [Whispering Marsh](/biomes/whispering_marsh/) `Primary Locations` `Supporting Peoples`
 
 ### Locations

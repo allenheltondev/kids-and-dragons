@@ -22,6 +22,7 @@ import type {
 import { bandTable, Encounter, ENCOUNTER_HP_WINDOW, resolveStats } from "./encounter.js";
 import { canonRef, edge, prefixOf, refTargets, slugOf, TAXONOMIES, TAXONOMY_PREFIX } from "./ids.js";
 import { checkAssets, errors, related } from "./registry.js";
+import { SCALE_CM, Stance } from "./envelope.js";
 
 /**
  * Reads an authored catalog, dropping its `$`-prefixed annotations — the same
@@ -103,6 +104,8 @@ describe("schema strictness", () => {
     classification: "ambient_creature",
     sapience: "animal",
     scale: "small",
+    height_cm: 50,
+    stance: "standing",
     danger_level: "low",
     short_description: "A beast, for testing.",
     relationships: { primary_locations: [], creatures: [], items: [] },
@@ -523,6 +526,8 @@ describe("named individuals — D8", () => {
       canon_status: "confirmed",
       role: "innkeeper",
       pronouns: "they/them",
+      height_cm: 170,
+      stance: "standing",
       relationships: { haunts: [], people: [], factions: [], creatures: [], items: [], quests: [] },
     };
     expect(Individual.safeParse(homeless).success).toBe(false);
@@ -560,5 +565,63 @@ describe("asset_id is a real join", () => {
       fs.existsSync(p),
     );
     expect(missing.map((issue) => `${issue.id} → ${issue.file}`)).toEqual([]);
+  });
+});
+
+describe("true size and stance — #362", () => {
+  const manifest = JSON.parse(
+    fs.readFileSync(path.join(process.cwd(), "assets", "manifest.json"), "utf8"),
+  ) as { species: { id: string }[]; entities: { id: string }[] };
+  type Sized = { id: string; asset_id?: string; scale?: keyof typeof SCALE_CM; height_cm?: number; stance?: string };
+  const all = [...registry.byId.values()] as Sized[];
+  /** A manifest id names its canon entity by `asset_id`, or by slug where canon has none (sheeple). */
+  const canonFor = (assetId: string, taxonomies: readonly string[]): Sized | undefined =>
+    all.find((e) => taxonomies.includes(registry.taxonomyOf.get(e.id) ?? "") && e.asset_id === assetId) ??
+    all.find((e) => taxonomies.includes(registry.taxonomyOf.get(e.id) ?? "") && slugOf(e.id) === assetId);
+
+  it("gives every figure in assets/manifest.json a height and a stance inside its band", () => {
+    const drawn = [
+      ...manifest.species.map((s) => ({ id: s.id, taxonomies: ["species"] })),
+      ...manifest.entities.map((e) => ({ id: e.id, taxonomies: ["creature", "people"] })),
+    ];
+    expect(drawn.length).toBeGreaterThan(30);
+    for (const { id, taxonomies } of drawn) {
+      const entity = canonFor(id, taxonomies);
+      expect(entity, `${id} has no canon entity`).toBeDefined();
+      expect(entity?.height_cm, `${id} height_cm`).toBeGreaterThan(0);
+      expect(Stance.options, `${id} stance`).toContain(entity?.stance);
+      const [low, high] = SCALE_CM[entity!.scale!];
+      expect(entity!.height_cm!, `${id} is ${entity!.height_cm} cm, outside ${entity!.scale}`).toBeGreaterThanOrEqual(low);
+      expect(entity!.height_cm!, `${id} is ${entity!.height_cm} cm, outside ${entity!.scale}`).toBeLessThanOrEqual(high);
+    }
+  });
+
+  it("stands every individual inside their own people's band", () => {
+    for (const person of registry.byTaxonomy.get("individual") ?? []) {
+      const { people, height_cm } = person as IndividualEntity;
+      const kind = people ? (registry.byId.get(people) as Sized | undefined) : undefined;
+      if (!kind?.scale) continue;
+      const [low, high] = SCALE_CM[kind.scale];
+      expect(height_cm, person.id).toBeGreaterThanOrEqual(low);
+      expect(height_cm, person.id).toBeLessThanOrEqual(high);
+    }
+  });
+
+  it("sizes every item that has art, since that is a prop the stage may draw", () => {
+    for (const item of registry.byTaxonomy.get("item") ?? []) {
+      const { asset_id, height_cm, stance } = item as ItemEntity;
+      if (!asset_id || !fs.existsSync(path.join(process.cwd(), "assets", "items", asset_id))) continue;
+      expect(height_cm, item.id).toBeGreaterThan(0);
+      expect(stance, item.id).toBeDefined();
+    }
+  });
+
+  it("refuses a height outside its band, and a stance the stage cannot draw", () => {
+    const beast = registry.byId.get("creature.jackalope");
+    expect(Creature.safeParse(beast).success).toBe(true);
+    expect(Creature.safeParse({ ...beast, height_cm: 300 }).success).toBe(false);
+    expect(Creature.safeParse({ ...beast, stance: "burrowing" }).success).toBe(false);
+    const { height_cm: _dropped, ...unsized } = beast as Sized;
+    expect(Creature.safeParse(unsized).success).toBe(false);
   });
 });

@@ -3,7 +3,7 @@ title: The Plains
 id: biome.plains
 type: biome
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-01", "gemfall-02", "gemfall-03a", "gemfall-03c", "gemfall-04a", "gemfall-04c", "gemfall-05a"]
 tags: ["central_plains", "roads", "caravans", "grassland", "crossroads"]
