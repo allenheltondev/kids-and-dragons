@@ -342,3 +342,28 @@ export function holeTexturePixels(width = HOLE_TEXTURE_WIDTH, height = HOLE_TEXT
   }
   return pixels;
 }
+
+/**
+ * Whether a scene's rift should sound now (#401): the `rift-open` or
+ * `rift-collapse` cue as the scene opens, once.
+ *
+ * Decided per scene, and only once the chapter that scene belongs to is
+ * loaded. The run state can name a scene before its chapter has arrived
+ * (`useChapter` resolves separately), and a scene judged without its chapter
+ * looks like one with no rift: so until the chapter matches, the scene is
+ * left pending rather than marked as heard, and the cue plays when the
+ * chapter lands. `heard` is the last scene key decided; pass back the
+ * returned one next time.
+ */
+export function riftCueFor(
+  heard: string | null,
+  chapter: Chapter | null,
+  state: RunState | null,
+): { heard: string | null; cue: "rift-open" | "rift-collapse" | null } {
+  const key = state?.chapterId && state.sceneId ? `${state.chapterId}/${state.sceneId}` : null;
+  if (key === null) return { heard: null, cue: null };
+  if (chapter?.id !== state?.chapterId) return { heard, cue: null };
+  if (key === heard) return { heard, cue: null };
+  const rift = sceneRiftFor(chapter, state);
+  return { heard: key, cue: rift === "open" ? "rift-open" : rift === "collapse" ? "rift-collapse" : null };
+}

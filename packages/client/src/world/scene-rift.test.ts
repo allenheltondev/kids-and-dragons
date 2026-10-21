@@ -19,6 +19,7 @@ import {
   RIFT_MOTES,
   RIFT_TEAR_CM,
   RIFT_TEAR_SHARE,
+  riftCueFor,
   riftPasses,
   riftPresence,
   riftStand,
@@ -240,5 +241,41 @@ describe("the hole's painted inside", () => {
       expect(Math.max(r, g, b) - Math.min(r, g, b)).toBeLessThanOrEqual(16);
       expect(Math.max(r, g, b)).toBeLessThan(0xe0);
     }
+  });
+});
+
+describe("when a scene's rift sounds", () => {
+  const opening = {
+    id: "c1",
+    scenes: {
+      shimmer: { type: "story", narration: "The fold opens.", rift: "open", choices: [] },
+      through: { type: "story", narration: "It pinches shut.", rift: "collapse", choices: [] },
+      plain: { type: "story", narration: "Fish.", choices: [] },
+    },
+  } as unknown as Chapter;
+
+  it("sounds once as the scene opens, and not again for the same scene", () => {
+    const first = riftCueFor(null, opening, at("shimmer"));
+    expect(first).toEqual({ heard: "c1/shimmer", cue: "rift-open" });
+    expect(riftCueFor(first.heard, opening, at("shimmer")).cue).toBeNull();
+    expect(riftCueFor(first.heard, opening, at("through")).cue).toBe("rift-collapse");
+  });
+
+  it("waits for the chapter: a scene named before its chapter loads is pending, not heard", () => {
+    const early = riftCueFor(null, null, at("shimmer"));
+    expect(early).toEqual({ heard: null, cue: null });
+    const stale = riftCueFor(early.heard, { ...opening, id: "c0" } as Chapter, at("shimmer"));
+    expect(stale).toEqual({ heard: null, cue: null });
+    expect(riftCueFor(stale.heard, opening, at("shimmer"))).toEqual({ heard: "c1/shimmer", cue: "rift-open" });
+  });
+
+  it("judges the scene the state names when the chapter lands, not one it passed through while waiting", () => {
+    const passed = riftCueFor(riftCueFor(null, null, at("shimmer")).heard, null, at("plain"));
+    expect(riftCueFor(passed.heard, opening, at("plain"))).toEqual({ heard: "c1/plain", cue: null });
+  });
+
+  it("is silent for a scene with no rift, and outside a chapter", () => {
+    expect(riftCueFor(null, opening, at("plain")).cue).toBeNull();
+    expect(riftCueFor("c1/plain", opening, makeState({ phase: "lobby" }))).toEqual({ heard: null, cue: null });
   });
 });
