@@ -52,6 +52,7 @@ export * from "./grid.js";
 export * from "./encounter.js";
 export * from "./environment.js";
 export * from "./engine.js";
+export * from "./seats.js";
 export * from "./away.js";
 export * from "./enemy-ai.js";
 export * from "./balance.js";

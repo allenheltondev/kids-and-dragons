@@ -486,6 +486,14 @@ export interface JoinRoomResponse extends RoomHostFlag, KeeperFlag {
   mode: RoomMode;
   sessionToken: string;
   state: RunState;
+  /**
+   * Every seat is taken and none is this player's (#389, `tableFull`): the
+   * phone is in the room, but it shows `TABLE_FULL_MESSAGE` instead of hero
+   * creation, so nobody builds a hero only to be refused. It is read from the
+   * state, and the phone reads it again from every patch, so a seat that
+   * opens later opens on the phone too. Absent means there is a seat.
+   */
+  full?: boolean;
 }
 
 /**
