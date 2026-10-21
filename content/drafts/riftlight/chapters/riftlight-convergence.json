@@ -597,6 +597,7 @@
     },
     "summoning": {
       "type": "story",
+      "rift": "open",
       "narration": "Olivia begins one summoning. A new opening unfolds above the empty snow, showing wind and moving grit. It stops widening, but does not answer her next gesture. Olivia looks twice at its light. \"That is not what I expected.\" The chime gives a sour note. Bram reaches toward her working hand. \"Enough. Step back before we learn this the hard way.\" Pip starts toward Olivia, then looks at your party.",
       "choices": [
         {
@@ -611,6 +612,7 @@
     },
     "decision": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "Bram asks you to help him stop the experiment. Olivia asks you to stay beside her while she stops feeding it and watches what it does. What will you do?",
       "choices": [
         {
@@ -637,6 +639,7 @@
     },
     "bram_plan": {
       "type": "story",
+      "rift": "steady",
       "narration": "You stand with Bram across the lane, leaving Olivia room to step away. \"Look at us, not the opening,\" he says. Pip stops behind the boundary when he sees your choice. Olivia lowers her hand instead of reaching through.",
       "onEnter": [
         {
@@ -665,6 +668,7 @@
     },
     "olivia_plan": {
       "type": "story",
+      "rift": "steady",
       "narration": "You stay on the marked working ground beside Olivia. She stops the summoning gesture, and you hold the retreat lane clear. Pip follows you, keeping his paws behind the mark. \"We watch,\" Olivia says. \"We do not cross.\" Bram stays ready at the shelter.",
       "onEnter": [
         {
@@ -694,6 +698,7 @@
     },
     "orin_plan": {
       "type": "story",
+      "rift": "steady",
       "narration": "Orin repeats the chime readings your party shared beside the buried bridge. \"We learned something by waiting,\" he says. \"Let this one answer first.\" Olivia lowers her hand and walks behind the boundary. Pip stays back with you. Bram lets out the breath he was holding.",
       "onEnter": [
         {
@@ -722,6 +727,7 @@
     },
     "steady": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "The opening remains after Olivia has stopped. Wind lifts loose snow toward it. Bram holds the retreat lane while Seren points out a loose screen catching the gust. What will your party secure?",
       "choices": [
         {
@@ -741,6 +747,7 @@
     },
     "steady_1": {
       "type": "story",
+      "rift": "steady",
       "narration": "You lower it from the sheltered side. The screen stops trying to become a sail, which improves everybody's opinion of it.",
       "choices": [
         {
@@ -754,6 +761,7 @@
     },
     "steady_2": {
       "type": "story",
+      "rift": "steady",
       "narration": "You fold the cloth and lay the sound benches across its loose edge. The map stays on the sheltered sled.",
       "choices": [
         {
@@ -767,6 +775,7 @@
     },
     "steady_check": {
       "type": "check",
+      "rift": "steady",
       "stat": "might",
       "tn": 12,
       "roller": "party",
@@ -783,6 +792,7 @@
     },
     "steady_clear": {
       "type": "story",
+      "rift": "steady",
       "narration": "Everyone stands clear of the opening, with nothing pulling at their hands.",
       "onEnter": [
         {
@@ -802,6 +812,7 @@
     },
     "steady_changed": {
       "type": "story",
+      "rift": "steady",
       "narration": "You let the fold go instead of chasing it. The sturdy bench holds the rest, and Bram brings everyone behind the boundary.",
       "onEnter": [
         {
@@ -821,6 +832,7 @@
     },
     "count": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "The chime note changes when a hanging cord on the screen is held still. Seren notices and asks for a test. The cord is ordinary expedition gear. Which test will keep the condition separate from the opening's rules?",
       "choices": [
         {
@@ -840,6 +852,7 @@
     },
     "count_1": {
       "type": "story",
+      "rift": "steady",
       "narration": "You hold, release and watch from the safe mark. The chime answers differently. Olivia records both results rather than naming either a command.",
       "choices": [
         {
@@ -853,6 +866,7 @@
     },
     "count_2": {
       "type": "story",
+      "rift": "steady",
       "narration": "Seren steadies it while your party listens. Pip repeats the sounds so the people at the back hear them too. The opening does not move to a new place.",
       "choices": [
         {
@@ -866,6 +880,7 @@
     },
     "count_check": {
       "type": "check",
+      "rift": "steady",
       "stat": "clever",
       "tn": 12,
       "roller": "party",
@@ -882,6 +897,7 @@
     },
     "count_clear": {
       "type": "story",
+      "rift": "steady",
       "narration": "The condition is clear enough to hold. It affects readiness; it does not promise a different destination or a different way back.",
       "choices": [
         {
@@ -895,6 +911,7 @@
     },
     "count_changed": {
       "type": "story",
+      "rift": "steady",
       "narration": "You shelter the cord and let Seren repeat the test. You keep her checked count separate from your gust-spoiled one.",
       "choices": [
         {
@@ -908,6 +925,7 @@
     },
     "lesson": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "Seren explains the next skill through the cord. \"You can hold a condition. You cannot tell a one-way opening to be two-way, or give a once-only crossing a second use.\" How will your party practice? Seren sets a short wooden prop wrapped in felt beside the cord. It can support the marked point while you learn the rhythm.",
       "choices": [
         {
@@ -934,6 +952,7 @@
     },
     "lesson_1": {
       "type": "story",
+      "rift": "steady",
       "narration": "You hold the condition as a team. Seren checks that every seated hero has a turn at the work. Nobody calls a new opening into being.",
       "choices": [
         {
@@ -947,6 +966,7 @@
     },
     "lesson_2": {
       "type": "story",
+      "rift": "steady",
       "narration": "You set the prop, then watch for slack while Seren tests the note. A tiny knitted cover stops the prop scratching the screen.",
       "choices": [
         {
@@ -960,6 +980,7 @@
     },
     "lesson_3": {
       "type": "story",
+      "rift": "steady",
       "narration": "A starweaver practices holding the condition while the rest of the party checks the cord and the note. Seren corrects the moment it slackens, then lets the hero lead.",
       "choices": [
         {
@@ -973,6 +994,7 @@
     },
     "lesson_check": {
       "type": "check",
+      "rift": "steady",
       "stat": "heart",
       "tn": 12,
       "roller": "party",
@@ -990,6 +1012,7 @@
     },
     "lesson_clear": {
       "type": "story",
+      "rift": "steady",
       "narration": "Seren calls the lesson Manipulate: hold a condition long enough for the group, never change the opening's nature.",
       "onEnter": [
         {
@@ -1013,6 +1036,7 @@
     },
     "lesson_changed": {
       "type": "story",
+      "rift": "steady",
       "narration": "You finish with the padded prop while Seren guides the rhythm. She calls the lesson Manipulate, holding a condition together rather than changing any rule.",
       "onEnter": [
         {
@@ -1036,6 +1060,7 @@
     },
     "release": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "Nobody needs to cross this experimental opening. The deep passage already has a walking route. How will you finish the test safely?",
       "choices": [
         {
@@ -1055,6 +1080,7 @@
     },
     "release_1": {
       "type": "story",
+      "rift": "steady",
       "narration": "You let the cord move from the sheltered side. The note goes sour again. Seren records that result and keeps the boundary in place.",
       "choices": [
         {
@@ -1068,6 +1094,7 @@
     },
     "release_2": {
       "type": "story",
+      "rift": "steady",
       "narration": "Seren takes the prop out only after the people and loose gear are behind the boundary. The opening remains an object to watch, not a shortcut to trust.",
       "choices": [
         {
@@ -1081,6 +1108,7 @@
     },
     "account": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "Olivia closes her notebook. She did summon an opening. She did not choose how it behaved. Orin asks the party to record both facts, without putting a victory or a villain into the margin.",
       "choices": [
         {
@@ -1100,6 +1128,7 @@
     },
     "account_1": {
       "type": "story",
+      "rift": "steady",
       "narration": "You write what the opening did and where everyone stood. Olivia reads the line without crossing it out. Pip copies the retreat signal beside it.",
       "choices": [
         {
@@ -1113,6 +1142,7 @@
     },
     "account_2": {
       "type": "story",
+      "rift": "steady",
       "narration": "You draw the cord and its prop. Seren labels only what the test proved. Bram adds the safe boundary as a very thick line.",
       "choices": [
         {
@@ -1126,6 +1156,7 @@
     },
     "path": {
       "type": "choice_point",
+      "rift": "steady",
       "narration": "The old outlines agree in places, and the pull leads farther into this glacier. Orin will go with you by the ordinary passage. The maps show what has moved; the people living here show what needs protecting. What will you take into the investigation?",
       "choices": [
         {
@@ -1145,6 +1176,7 @@
     },
     "path_1": {
       "type": "story",
+      "rift": "steady",
       "narration": "You fold the accounts with their sources showing. Orin brings the present map too, boot finally removed from its corner.",
       "choices": [
         {
@@ -1158,6 +1190,7 @@
     },
     "path_2": {
       "type": "story",
+      "rift": "steady",
       "narration": "You put today's homes on top where you can see them first. Bram checks the walking lane before anyone lifts the sled.",
       "choices": [
         {
@@ -1171,6 +1204,7 @@
     },
     "ending": {
       "type": "story",
+      "rift": "steady",
       "narration": "The travelers have heard the party's discoveries, the experiment is safely stopped, and you have learned to hold a condition without changing a rule. The pull points down the deep passage. Your party is ready to follow the ordinary walking route and find out.",
       "choices": [
         {
@@ -1206,6 +1240,7 @@
     },
     "finish": {
       "type": "story",
+      "rift": "steady",
       "narration": "Seren checks the shelter once more. The experimental opening stays marked for watchers. You carry the map down the walking passage toward the heart of the glacier.",
       "choices": [],
       "outcome": "success",

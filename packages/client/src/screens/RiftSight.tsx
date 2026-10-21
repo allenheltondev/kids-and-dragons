@@ -21,26 +21,37 @@
  * tab that lights while there is Riftlight to read and they are not already
  * looking at it, so they know to look.
  *
- * Art: until the effect sheets land (brief Part A1) every layer is a CSS
- * placeholder carrying its sheet's id in `data-effect`, so swapping the art in
- * changes no logic.
+ * Art: every layer is one of the painted effect sheets (brief Part A1), a
+ * row of frames played by CSS steps. All of them run on one clock, so the two
+ * mouths of a linked pair beat together, as `rift_sync` asks.
+ *
+ * `rift_open` and `rift_collapse` play once, with their cues, when a rift at
+ * the party's place wakes or goes dark (`riftMoments`). Cues reach only the
+ * TV: a joined phone installs no sink (audio/cue.ts).
  */
 
-import type { ReactElement } from "react";
+import { useEffect, useState, type CSSProperties, type ReactElement } from "react";
 import { lobbyCampaign } from "@kad/shared";
-import type { JourneyRiftView } from "@kad/shared";
+import type { JourneyRiftView, JourneyView } from "@kad/shared";
+import { cue } from "../audio/cue";
 import { useMe, useRunState, useSession } from "../store";
 import {
   NEUTRAL_RIFT_LINE,
-  RIFT_BASE_EFFECT,
+  RIFT_COLLAPSE_EFFECT,
   RIFT_NEUTRAL_EFFECT,
+  RIFT_OPEN_EFFECT,
+  RIFT_SHEET_MS,
   RIFTLIGHT_INDICATOR_LABEL,
-  riftEffect,
+  riftLayers,
+  riftMoments,
+  riftSheetUrl,
   riftlightOf,
   riftlightWords,
   seesRiftlight,
   visibleRifts,
   type LitRiftExit,
+  type RiftMoments,
+  type RiftSighting,
 } from "./riftlight";
 import { Icon } from "./icons";
 import "./shared.css";
@@ -57,37 +68,101 @@ export function useSeesRiftlight(): boolean {
 }
 
 /**
- * The lit rifts the world view is showing right now: only in the lobby, where
- * the party chooses its way on, and only for the adventure the lobby shows
- * (not while the vote between adventures is still open).
+ * The journey the lobby shows right now: only in the lobby, where the party
+ * chooses its way on, and only for the adventure the lobby shows (not while
+ * the vote between adventures is still open).
  */
-export function useVisibleRifts(): LitRiftExit[] {
+function useLobbyJourney(): { campaignId: string | null; journey: JourneyView | null } {
   const state = useRunState();
-  if (!state || (state.phase !== "lobby" && state.phase !== "creation")) return [];
+  if (!state || (state.phase !== "lobby" && state.phase !== "creation")) return { campaignId: null, journey: null };
   const choice = lobbyCampaign(state);
-  return choice.contested ? [] : visibleRifts(choice.leader?.journey);
+  if (choice.contested || !choice.leader?.journey) return { campaignId: null, journey: null };
+  return { campaignId: choice.leader.id, journey: choice.leader.journey };
+}
+
+/** The lit rifts the world view is showing right now. */
+export function useVisibleRifts(): LitRiftExit[] {
+  return visibleRifts(useLobbyJourney().journey);
+}
+
+/**
+ * The last rifts this screen saw at the party's place. Module-level, not
+ * component state: the lobby unmounts while a chapter plays, and a rift that
+ * woke during that chapter is exactly the change worth showing on the return.
+ */
+let lastSighting: RiftSighting | null = null;
+
+/** Tests: start the next render from a screen that has seen no rift. */
+export function forgetRiftSightings(): void {
+  lastSighting = null;
+}
+
+const NO_MOMENTS: RiftMoments = { opened: [], collapsed: [] };
+
+/** The rifts opening and collapsing right now, each for one pass of its sheet. */
+function useRiftMoments(): RiftMoments {
+  const { campaignId, journey } = useLobbyJourney();
+  const [moments, setMoments] = useState<RiftMoments>(NO_MOMENTS);
+  useEffect(() => {
+    const next = riftMoments(lastSighting, campaignId, journey);
+    lastSighting = next.sighting;
+    const { opened, collapsed } = next.moments;
+    if (opened.length === 0 && collapsed.length === 0) return;
+    if (opened.length > 0) cue("rift-open");
+    if (collapsed.length > 0) cue("rift-collapse");
+    setMoments(next.moments);
+  }, [campaignId, journey]);
+  useEffect(() => {
+    if (moments === NO_MOMENTS) return;
+    const done = setTimeout(() => setMoments(NO_MOMENTS), RIFT_SHEET_MS);
+    return () => clearTimeout(done);
+  }, [moments]);
+  return moments;
+}
+
+/**
+ * One sheet, played from its first frame. Every loop shares the page's clock
+ * (a negative delay into the current period), so layers registered to each
+ * other, and the two mouths of a linked pair, stay in phase however late each
+ * mounts. A one-shot starts where it is drawn.
+ */
+function SheetLayer({ effect, once = false }: { effect: string; once?: boolean }): ReactElement {
+  // Taken once, when the animation starts: recomputed on a re-render it would
+  // shift a running loop off the shared clock.
+  const [phase] = useState(() => Math.round(performance.now() % RIFT_SHEET_MS));
+  const style: CSSProperties = {
+    backgroundImage: `url("${riftSheetUrl(effect)}")`,
+    animationDuration: `${RIFT_SHEET_MS}ms`,
+    ...(once ? {} : { animationDelay: `-${phase}ms` }),
+  };
+  return (
+    <span
+      className={`rift-glyph__layer${once ? " rift-glyph__layer--once" : ""}`}
+      data-effect={effect}
+      style={style}
+    />
+  );
 }
 
 /** One rift, drawn. Decorative: the words beside it are what a screen reader hears. */
-export function RiftGlyph({ rift, riftlight }: { rift: JourneyRiftView; riftlight: boolean }): ReactElement {
+export function RiftGlyph({
+  rift,
+  riftlight,
+  opening = false,
+}: {
+  rift: JourneyRiftView;
+  riftlight: boolean;
+  /** It has just woken: `rift_open` plays over it once, then its loops show. */
+  opening?: boolean;
+}): ReactElement {
   const light = riftlight ? riftlightOf(rift) : null;
-  if (light === null) {
-    return (
-      <span className="rift-glyph" aria-hidden="true">
-        <span className="rift-glyph__layer rift-glyph__layer--neutral" data-effect={RIFT_NEUTRAL_EFFECT} />
-      </span>
-    );
-  }
-  const motion = light.motions.map((name) => ` rift-glyph--${name}`).join("");
+  const layers = light === null ? [RIFT_NEUTRAL_EFFECT] : riftLayers(light);
   return (
-    <span className={`rift-glyph${motion}`} aria-hidden="true">
-      <span className="rift-glyph__layer rift-glyph__layer--base" data-effect={RIFT_BASE_EFFECT} />
-      {light.colors.map((color) => (
-        <span key={color} className={`rift-glyph__layer rift-glyph__layer--${color}`} data-effect={riftEffect(color)} />
+    <span className={`rift-glyph${opening ? " rift-glyph--opening" : ""}`} aria-hidden="true">
+      {layers.map((effect) => (
+        <SheetLayer key={effect} effect={effect} />
       ))}
-      {light.motions.map((name) => (
-        <span key={name} className="rift-glyph__motion" data-effect={riftEffect(name)} />
-      ))}
+      {opening && <SheetLayer effect={RIFT_OPEN_EFFECT} once />}
     </span>
   );
 }
@@ -96,14 +171,15 @@ export function RiftGlyph({ rift, riftlight }: { rift: JourneyRiftView; riftligh
 export function RiftSightings(): ReactElement | null {
   const rifts = useVisibleRifts();
   const sees = useSeesRiftlight();
-  if (rifts.length === 0) return null;
+  const { opened, collapsed } = useRiftMoments();
+  if (rifts.length === 0 && collapsed.length === 0) return null;
   return (
     <ul className={`rift-sight${sees ? " rift-sight--riftlight" : ""}`} aria-label="Rifts here">
       {rifts.map((exit) => {
         const light = sees ? riftlightOf(exit.rift) : null;
         return (
           <li className="rift-sight__rift" key={exit.edge}>
-            <RiftGlyph rift={exit.rift} riftlight={sees} />
+            <RiftGlyph rift={exit.rift} riftlight={sees} opening={opened.includes(exit.edge)} />
             <span className="rift-sight__text">
               <b className="rift-sight__label">{exit.label}</b>
               {light === null ? (
@@ -120,6 +196,18 @@ export function RiftSightings(): ReactElement | null {
           </li>
         );
       })}
+      {/* A rift folding shut: colourless for everyone, and gone after one
+          pass. Hidden from screen readers, which never heard of it changing. */}
+      {collapsed.map((exit) => (
+        <li className="rift-sight__rift rift-sight__rift--collapsing" key={`collapse:${exit.edge}`} aria-hidden="true">
+          <span className="rift-glyph">
+            <SheetLayer effect={RIFT_COLLAPSE_EFFECT} once />
+          </span>
+          <span className="rift-sight__text">
+            <b className="rift-sight__label">{exit.label}</b>
+          </span>
+        </li>
+      ))}
     </ul>
   );
 }

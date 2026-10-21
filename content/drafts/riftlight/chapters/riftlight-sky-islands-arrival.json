@@ -27,6 +27,7 @@
   "scenes": {
     "island": {
       "type": "story",
+      "rift": "collapse",
       "narration": "The fold opens onto dry ground high above the realm. Your party crosses together. Behind you it closes, leaving only cold air. A kitsune temple keeper leads you away from the island's edge. \"These are called the Sky Islands,\" she says. \"And this one is not where it belongs.\"",
       "choices": [
         {
