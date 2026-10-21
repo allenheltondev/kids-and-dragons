@@ -269,3 +269,14 @@ change the preparations. The route returns to the lookout or the Cairnstep.
 See the [chapter review](../../../docs/campaigns/continental-rift/squall-temple-review.md).
 The spine has 45 scenes, 14 decisions, six checks and one fight, about 30 uncalibrated minutes.
 
+
+## The Maps Come Together
+
+Any two completed regional key nodes unlock convergence from a strand end. Compare
+the accounts, respond to Olivia's single experiment and learn Manipulate by holding
+a condition. Pip's choice mirrors the party; Olivia's trust and the intervention
+determine her ally, redeemed or rival outcome. See the
+[chapter review](../../../docs/campaigns/continental-rift/convergence-review.md).
+Convergence pays 650 XP and raises attunement to 2. The model predicts about 27 minutes
+for 45 scenes, 15 decisions and six checks; family timing is still unmeasured.
+
