@@ -1,8 +1,16 @@
-# Riftlight — authored opening
+# Riftlight: complete story preview
 
-Eighteen playable story nodes and eleven development pause boundaries, using the [design bible](../../../docs/campaigns/continental-rift/README.md).
-Gemfall anchors the read-aloud rhythm, tangible choices and visible consequences. The narrator
-describes what happens instead of telling the table what sort of thing it is or how to feel.
+All 24 story nodes are authored, from the Exchange to three glacier endings.
+The six final chapters are Stuttering Flats, Bone Yard, Wyrm Nest, Squall Temple,
+Convergence and Finale. Their PRs are stacked in that order. There are no
+development pause nodes or placeholder endings in this preview.
+
+This remains an isolated draft. It is not listed in the production lobby and
+does not change deployed content, Gemfall or existing saves. Timed family
+playtests and the full-campaign XP-route acceptance gate remain unfinished.
+The current graph admits longer paying routes than the design bible's original
+11–16-node estimate. The agreed 140 / 650 / 140 awards have been preserved, not
+claimed to meet the level-8 cap on every route.
 
 ## Play locally
 
@@ -11,272 +19,93 @@ npm ci
 npm run riftlight:preview
 ```
 
-Open http://localhost:5173 and start a Party or Travel game. Stop other dev servers first so
-the preview uses the normal ports. The launcher selects **Riftlight — opening preview**, stages
-the chapters and Listening Chime catalog in a temporary content tree, and uses a separate
-temporary save directory. Each launch starts fresh; leave it running to resume between sessions.
-Stopping the preview removes its staged content and saves after both dev processes close.
-The preview skips the Gemfall prerequisite so you can test immediately. New preview characters
-are stand-ins at the usual creation level; tests also walk the content as Sworn characters.
+Open http://localhost:5173 and start a Party or Travel game. Stop other dev
+servers first. The launcher stages chapters, encounter maps and the Listening
+Chime into temporary content and uses temporary saves. It skips Gemfall only
+for this isolated preview. Each launch starts fresh; keep it running to resume
+between sessions. Closing the launcher removes its staged files and saves.
 
-Nothing in this directory is loaded by the normal lobby, deployed, or projected into the normal
-item catalog. The staging helper merges the chapter's `props` only into the temporary catalog.
-These files are ordinary chapter JSON, validated with the same gate as shipped content.
+Production integration must retain `requires: ["gemfall"]`. Preview heroes start
+at ordinary creation level, so use an appropriately developed party when
+assessing combat balance; automated board tests do not replace that playtest.
 
-## Written
+## The completed routes
 
-| Node | Chapter | What the party does |
-| --- | --- | --- |
-| `exchange-rift` | `riftlight-exchange-rift` | Help a supply barge whose landing moved, investigate displaced arrivals, see kindness repaid during the kid rescue, and cross the first rift together. |
-| `glacier-survival` | `riftlight-glacier-survival` | Navigate an unmarked drift, protect the kid, cross a melt channel, and test the singing seam after learning its note. |
-| `riftseekers-departure` | `riftlight-riftseekers-departure` | Choose a priority in Orin and Olivia's practical disagreement, hear two purposeful leads, and receive the Listening Chime. |
-
-The preview now plays the first fork. The shelf leads to the Cairnstep or the river challenge;
-the hidden opening leads to the Saltrot and offers a linked return. River escapes reach
-Frostfang shore, the boundary stones, Ashspan Bridge, or a one-way Sky Islands crossing.
-Short arrival episodes give each route a concrete landing. Eleven biome-matched `preview-pause-*`
-chapters are explicit development boundaries, pay no XP, and must never enter production.
-Their five-minute metadata is the schema minimum, not a measured duration.
-
-Failed rolls cost a little harm and change the immediate result; every path continues. No
-setback ending, early antagonist reveal, or assumption about the party's Gemfall ending.
-The wing, Smash, Brace and Songkeeper options enable team checks: the qualified hero supplies
-the ability while the best roller handles the line or guides the group. Failure harms that
-roller, without pretending they have their teammate's wings or class ability.
-Story narration never announces diagnostic rift colors. The first rift's colors appear through
-the existing private Starweaver view at the exit; the in-chapter reading records the choice
-for Seren's callback without duplicating that private view in shared text.
-
-## The route slice
-
-See [route implementation and review](../../../docs/campaigns/continental-rift/routes-continuity-review.md)
-for all new nodes, the river rift placement, nonlethal harm, linked-rift return and first-crossing
-Riftspark behavior. Ordinary story damage is unchanged. The short regional arrivals teach Attune
-once, as journey state, whichever region is visited first. The Saltrot uses its canonical biome
-with explicit existing scene art; it has no invented combat tileset.
-
-## Continuity to carry into the next nodes
-
-| State | Meaning / later use |
+| Part | What the party does |
 | --- | --- |
-| `noticed_the_sky_ship` | Met Captain Thimble, a chapter-scoped kitsune captain. Reintroduce her at Sky Islands arrival, with a callback if this flag is set. |
-| `starweaver_read_first_rift` | Voluntarily read the first opening. Seren recognizes this at departure. |
-| `learned_glacier_note` | Guaranteed on every survival path. The hidden glacier rift's sung-note requirement can read it. |
-| `helped_glacier_herder` | Stayed to help with the blankets; use for a later local recognition. |
-| `made_glacier_shelter` | Built a windbreak; optional return detail. |
-| `crossed_melt_dry` | Crossed the melt channel without the herder's rescue. |
-| `helped_fish_seller` | Moved the fish under cover; optional Exchange callback. |
-| `saved_barge_supper` / `found_barge_mooring` | Which immediate supply rescue the party chose; the pilot helps during the quay rescue. |
-| `marked_glacier_drift` / `sheltered_kid_on_detour` / `found_drift_hollow` | Which self-directed route got the party through the drift. |
-| `tested_singing_seam` | Every route repeats or observes the note response. The ice remains sealed. |
-| `listening_chime` | Guaranteed quest prop from departure. Sour means not ready; echo means an open return route. |
-| `riftspark` | Granted on crossing the one-use rift: +2 on one chosen check; expires after the next chapter. |
+| Exchange, glacier and departure | Rescue the kid, survive the glacier, learn its note and receive the Listening Chime. |
+| Shelf, hidden opening and washout | Choose an ice-shelf route, discover the sung-note opening, or reach different river exits. |
+| Forgotten Paths | Count a moved stone, cross a changed valley, compare memory ice, and make room for readers and a frost wyrm. |
+| Wandering Sky | Meet the island keepers, guide or scatter the whales, investigate the island due back, and shelter a temple in a squall. |
+| Restless Coast | Study a buried bridge, return a stranded goat through an unstable opening, and clear a route past displaced Bone Yard ruins. |
+| Convergence | Bring two completed regional discoveries together, respond to Olivia's experiment and learn Manipulate. |
+| Finale | Learn who is moving the land, anchor its present shape, close the last seam and choose a future after the battle. |
 
-The goat reaches the glacier on every path and is returned to its herd on every survival path;
-there is no goat outcome flag. Attune is earned at the first regional lesson. Olivia has **not** summoned anything.
+Every strand has an onward route after its local challenges. The Bone Yard
+guide's checked route allows Old Ossley's next-tide ferry upriver to Ashspan.
+The Sky temple has a griffin flight back to the Cairnstep; the glacier builders
+join that rescue network. Existing rift conditions and single-use rules stay
+intact. Keys are the reading room, buried bridge and island due back; completing
+any two unlocks convergence from the appropriate strand end. The third remains
+optional. Fragments are knowledge, never inventory items.
 
-## Pacing and remaining work
+## Consequences and endings
 
-The three prologue chapters remain compact first drafts, not measured 30–40-minute chapters. The uncalibrated pacing
-revised model predicts roughly 11 minutes for the Exchange, 15 for survival and 9 for departure, before
-extra table conversation. Metadata budgets 15 / 15 / 10 minutes pending a real table playtest.
-Keep the departure encounter brief as the character bible requests. Expand the first two
-through consequential play if table timing calls for it, rather than adding narration pages.
-The [required family playtest gate](../../../docs/campaigns/continental-rift/opening-playtest.md)
-is not passed. Record actual times and child engagement in `playtest-observations.json`; no
-measurements have been invented. The 30–40-minute ordinary-node goal remains unresolved until
-playtests support it or a shorter prologue goal is explicitly recorded.
-Each pays the agreed 140 XP, with no extra objectives that could push the campaign over its cap.
+The wyrm can become a neighbor and later ally, be driven away, or keep its nest
+while the builders relocate. The temple's landing can be diverted, safely
+settled beside the island, or damaged and closed for morning repairs after a lost fight. Ordinary
+failed checks change methods and costs, then continue; they do not end a chapter.
 
-The next authoring slice continues with the island due back and the stuttering flats,
-then the remaining strand ends and convergence. The first Coast fragment and the initial regional discoveries are now playable. Full-campaign XP-route acceptance remains unfinished. The current preview
-graph is linted and replayed with no softlocks; its pauses are not campaign endings.
+At convergence, trust from the whale opening plus stopping Olivia yields her
+redeemed path; trust plus standing beside her yields an ally; without that trust
+she leaves as a rival. Orin's intervention requires the earlier shared chime
+readings and counts as helping Bram. Pip mirrors the party's intervention.
+Olivia makes one summoning; heroes never summon rifts. Manipulate holds a
+condition and cannot change a destination, use limit or return behavior.
 
-For production integration:
+The finale offers **The Glacier Keepers**, **The Ones Who Listened**, and the
+completing setback **Rivers Wander** after a lost battle and a failed recovery attempt.
+The first loss brings everyone to the watcher, spends the extra support and leaves
+some places shifted. A different attempt uses the retreat signals and ridge brace;
+success still offers both futures, with a scar on the map. Only its failure ends
+the campaign at Rivers Wander.
+Two discoveries anchor the present land. A third discovery or either allied
+Olivia or wyrm can supply one additional anchor, capped at three; choosing that
+support selects a weaker opponent with one fewer crawler. The party can instead
+keep the reserve team on the rescue lane. Combat can end by closing the seam's
+actual board objective, without knocking Corvane down.
 
-1. Create `content/campaigns/riftlight.json` using the agreed full graph and `requires: ["gemfall"]`.
-2. Move approved chapters to `content/chapters/`, changing their `campaignId` to `riftlight`.
-3. Keep these node and chapter ids; replace the preview pause nodes with the agreed regional edges.
-   Revisit policies in the preview are temporary too: implement the bible's changed glacier
-   visits and `pass` departure hub in the full graph.
-4. Generate the real item catalog from the departure prop with `npm run canon:items`.
-5. Validate full routes, revisits, class-free access, progression and no-softlock coverage.
+## Review and verification
 
-## Verification
+The [design index](../../../docs/campaigns/continental-rift/README.md) links the
+opening and regional continuity reviews. The final chapter reviews are:
+
+- [Stuttering Flats](../../../docs/campaigns/continental-rift/stuttering-flats-review.md)
+- [Bone Yard](../../../docs/campaigns/continental-rift/bone-yard-review.md)
+- [Wyrm Nest](../../../docs/campaigns/continental-rift/wyrm-nest-review.md)
+- [Squall Temple](../../../docs/campaigns/continental-rift/squall-temple-review.md)
+- [Convergence](../../../docs/campaigns/continental-rift/convergence-review.md)
+- [Finale](../../../docs/campaigns/continental-rift/finale-review.md)
 
 ```sh
-npx vitest run tools/content/riftlight-opening.test.ts tools/content/riftlight-routes.test.ts tools/content/riftlight-continuity.test.mjs
+npx vitest run riftlight
+npm run typecheck
+npm run content:validate
+npm run content:continuity
 ```
 
-Tests stage the content alongside Gemfall, run the actual content gate, walk the journey through
-the graph runtime, and exhaust chapter choices with low/high dice across all six species and
-all four classes. They check the guaranteed song/chime and Seren's carried-flag callback.
+Tests stage the draft alongside Gemfall and use the real content gate. Chapter
+walkers exhaust choices and dice extremes, check literal introductions and
+prerequisites, and enumerate declared encounter outcomes. Separate finale board
+tests run READY, MOVE and END_TURN through both real fights to objective victory
+and whole-party defeat. They do not claim to measure combat balance or family
+elapsed time. Every new chapter has an on-screen goal and a rest waypoint.
 
-The [scene-by-scene continuity review](../../../docs/campaigns/continental-rift/opening-continuity-review.md)
-covers the initial 80 scenes; the [route review](../../../docs/campaigns/continental-rift/routes-continuity-review.md) covers the 83 added scenes, including ordinary objects and actions the proper-name sweep cannot detect.
-`continuity.json` records their narrative dependencies and introduction wording. The real-engine
-walker checks that each path establishes what later scenes refer to, including across chapter
-boundaries and conditional callbacks. New scenes require an explicit review entry.
+## Production gates
 
-## Class rooms (#315)
-
-The four class places ([docs/class-mastery.md §2](../../../docs/class-mastery.md)) are side rooms
-of existing places, each entered from that place's `rest` scene and leading back to it. Each is a
-room scene marked `classPlace` and one short lesson scene.
-
-| Room | Class | Place, off which rest | Teacher, and the detail |
-| --- | --- | --- | --- |
-| The Rookery | Duskrunner | The Exchange's rooftops, up a ladder from `quay_rest` (new, on the quay after the barge) | The crows, as a flock. A sign on the chimney: NO MESSING. (WITH US.) A tiny doormat. |
-| The Conservatory | Songkeeper | Through a glass door off the singing hall's `hall` rest | Aunt Bellow, a yeti who conducts with a carrot; the plants lean toward the best singer. |
-| The Dojo | Thornguard | A stone hut up the slope from the Riftseekers' `camp` | Master Dunnick, a bigfoot holding the door shut against the wind for forty years; pillows. |
-| The Academy | Starweaver | A roofless tower above the Riftseekers' `camp`, beside the Dojo, until the marsh village is written | Professor Nettle, a dragonling; no roof, homework floats away, the telescope sneezes. |
-
-Every room introduces its teacher on every visit. Leaving it sets a chapter flag (`met_the_crows`,
-`met_aunt_bellow`, `met_master_dunnick`, `met_professor_nettle`) that a shorter repeat-visit variant
-reads, so only a second visit inside the same chapter reads shorter. `camp` was an ending
-and is now a waypoint; `set_out` ends the departure chapter.
-
-The Academy belongs in the marsh village ([docs/class-mastery.md §2](../../../docs/class-mastery.md)).
-Riftlight's story does not have that place yet; when it is written, the Academy moves there, and
-the camp tower is where it stands until then.
-
-The singing hall's rest heals 2 on every arrival, so a party can walk into the Conservatory and
-back to heal again, as often as it likes. That is deliberate: the game always keeps somewhere to heal
-for free, and in Riftlight this is it. Do not "fix" it by making the hall heal once. The walker answers
-`KEEP_CLASS` at a room by default, or switches (`allPaths(..., "switch")`); see
-`tools/content/riftlight-class-rooms.test.ts` and, through the server,
-`packages/server/src/handlers/riftlight-class-rooms.test.ts`.
-
-## Regional discoveries
-
-This slice adds `stone-counters`, `whale-road`, and `buried-bridge`.
-See the [regional continuity review](../../../docs/campaigns/continental-rift/regional-continuity-review.md).
-The stone counters teach shrinking motion and Attune if needed. The whales offer gentle
-navigation or Lady Olivia's early opening. The buried bridge gives the first Coast clue,
-with optional sharing of chime readings with Orin. All three have explicit development pauses.
-
-Carry `whales_scattered` into the island-due-back navigator problem, `olivia_trusted` into
-her eventual epilogue, and `orin_chime_shared` into the convergence's noncombat option.
-`fragment_coast_learned` records knowledge; completing `buried-bridge` is the Coast key-node
-completion. Neither creates an item. The reading room now provides the Paths key node; convergence and the Sky key node remain unwritten.
-The `saltrot_arrival_*` flags identify the latest crossing and are reset together on entry.
-These regional chapters now have substantive investigations on every main path, with 14
-decisions and six checks each. Their family pacing remains unmeasured. The
-[regional pacing report and production gate](../../../docs/campaigns/continental-rift/regional-pacing-gate.md)
-records the expansion, shortest-path estimates and real-play requirements before production.
-
-`riftlight-route-prerequisites.test.ts` separately proves the regional entry facts using
-actual introductions on every chapter ending and intersection across every incoming graph
-edge, including guarded and return edges. The departure chapter grants the chime without the
-test fixture seeding it; downstream chapter paths must preserve it. Negative shortcut checks
-prove that bypassing the prologue invalidates the regional prerequisite guarantees.
-
-The regional chapters now use dedicated `stone-counters`, `whale-road`, and
-`buried-bridge-dry-channel` scene illustrations. The whales' cleared ending uses a matching
-`whale-road-cleared` view with the whales gone and the neutral pair open. The original wet-flat bridge
-illustration is preserved. [Generation prompts and references](../../../art/source/riftlight/scenes/regional-generation.md)
-accompany the source PNGs; runtime exports are 1920×1080 WebP.
-
-
-Evidence close-ups show the ambiguous chipped count and pictorial slates only after those
-objects have been introduced, and the bridge waterline/rounded pebbles only when inspection
-reveals them. No definitive count, date or secret explanation is added. The whale aftermath
-appears only at the gentle ending; the undecided offer retains the circling-whale scene.
-[Evidence/aftermath prompts](../../../art/source/riftlight/scenes/evidence-generation.md) and
-source PNGs accompany the runtime WebP assets.
-
-
-## Forgotten Paths: changed river and memory ice
-
-`stone-counters` now continues through `the-wrong-valley` to `reading-room`. Both are ordinary
-35-minute planning budgets with 14 decisions on the shortest modeled path, rather than brief
-transitions. The river crossing has seven checks; the reading room has six. Existing glacier
-and reading-room illustrations supply the backdrops. Both nodes offer a return route and an
-explicit preview pause, and use pass revisits so the temporary river change is not replayed.
-
-`valley_crossed_high` records the route actually used, including a backup after a failed plan;
-`wrong_valley_witnessed` records the witnessed change. `fragment_paths_learned` is knowledge,
-not an item. `memory_notes_shared` records permission to leave the party's account with the
-keepers. A party that already completed the buried bridge gets a checked Coast comparison;
-other routes never pretend to have found that clue. The memory remains local, undated and
-unexplained. No convergence, wyrm encounter or finale is implied by the development pauses.
-
-See the [northern continuity review](../../../docs/campaigns/continental-rift/memory-paths-continuity-review.md).
-Run the new route/producer tests with `npx vitest run tools/content/riftlight-memory-paths.test.ts`.
-The shared pacing report now covers five ordinary regional nodes; real family timings remain
-pending for all of them.
-
-The reading room retains independent evidence, ridge/rock method, keeper endorsement,
-catalog usability and permission to publish as separate flags. Later citations, the newcomer
-lesson and keeper reactions use those results. Only a successful catalog trial can produce
-a public visitor guide; an assisted copy stays staff-guided. Chapter arrival resets these
-local investigation flags. Run `npx vitest run tools/content/riftlight-reading-consequences.test.ts`
-for four complete consequence routes; automated play does not replace timed family play.
-
-## The returning island
-
-`whale-road` now continues to `the-island-due-back`, the Sky key node. Welcome the
-returning island, choose between recovering sealed letters and readying the lookout,
-cross under keeper signals, and compare the old mooring stone with the land below.
-Whale history changes a sighting method; preparation and evidence checks affect later
-options, keeper help, warning resources and credit. Copying remains voluntary.
-Every route learns `fragment_sky_learned` without taking an object or revealing the
-islands' origin. Return to the whale-road hub or use the explicit development pause.
-
-See the [island review](../../../docs/campaigns/continental-rift/island-continuity-review.md).
-Run `npx vitest run tools/content/riftlight-island.test.ts` for complete engine-played
-consequence routes. The pacing report now covers six ordinary regions; family timing
-and the production gate remain pending. The temple continuation remains unwritten.
-
-The island's joined-land inference now appears only after a successful comparison
-or a player-chosen assisted follow-up. Failed landings offer batch carrying with a
-delayed message relay versus borrowing a lighter kit. These recoveries add decisions
-without rerolls; incomplete tests stay credited as incomplete.
-
-## Stuttering Flats
-
-The buried bridge now continues to the stranded-goat rescue at the stuttering flats.
-Every route returns the goat home. A failed crossing leaves the sling with the herder;
-the party remains on the Saltrot side. See the [chapter review](../../../docs/campaigns/continental-rift/stuttering-flats-review.md).
-The uncalibrated shortest-path estimate is 25.5 minutes (43 scenes, 15 decisions, six checks);
-the 35-minute budget still needs a timed family playtest. This chapter adds no bonus XP.
-
-
-## The Borrowed Ruins
-
-Stuttering Flats continues to the Bone Yard. Close the fresh tear or clear the crawlers;
-a lost fight costs the short route. No Bone Yard object enters inventory. See the
-[chapter review](../../../docs/campaigns/continental-rift/bone-yard-review.md).
-The staged preview now includes dedicated encounter maps. The modeled spine is 43 scenes,
-14 decisions, six checks and one encounter (28.5 uncalibrated minutes).
-
-
-## A Room Already Taken
-
-The memory readers now lead to the wyrm nest. Clear the room, guide the wyrm into a
-sheltered hollow to earn an ally, or help the builders move after a lost fight.
-The Cairnstep rescue route can return to this completed chapter. See the
-[chapter review](../../../docs/campaigns/continental-rift/wyrm-nest-review.md).
-The modeled spine has 45 scenes, 15 decisions, six checks and one encounter,
-about 30 uncalibrated minutes. Family timing remains unmeasured.
-
-
-## The Temple in the Squall
-
-The island lookout continues to the temple. Divert the returning island, shelter the
-temple while it settles, or repair a damaged landing after a lost fight. Prior messages
-change the preparations. The route returns to the lookout or the Cairnstep.
-See the [chapter review](../../../docs/campaigns/continental-rift/squall-temple-review.md).
-The spine has 45 scenes, 14 decisions, six checks and one fight, about 30 uncalibrated minutes.
-
-
-## The Maps Come Together
-
-Any two completed regional key nodes unlock convergence from a strand end. Compare
-the accounts, respond to Olivia's single experiment and learn Manipulate by holding
-a condition. Pip's choice mirrors the party; Olivia's trust and the intervention
-determine her ally, redeemed or rival outcome. See the
-[chapter review](../../../docs/campaigns/continental-rift/convergence-review.md).
-Convergence pays 650 XP and raises attunement to 2. The model predicts about 27 minutes
-for 45 scenes, 15 decisions and six checks; family timing is still unmeasured.
-
+Keep this campaign in drafts until family timing and route XP are accepted.
+The original opening gate and `playtest-observations.json` still contain no
+invented measurements. The short prologue remains a compact draft. New ordinary
+chapter metadata budgets 35 minutes (finale 40); model predictions are explicitly
+uncalibrated. Preserve the four class rooms and the singing hall's repeatable
+free healing when integrating approved content.

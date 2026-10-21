@@ -1015,7 +1015,7 @@
     },
     "ending": {
       "type": "story",
-      "narration": "Your party leaves the Bone Yard with no stone, bone or hidden prize. The guide has a usable warning, and travelers still need to check the route each time. Behind you the crawlers settle among the displaced walls. In front of you lies the Saltrot, with more than one way onward.",
+      "narration": "Your party leaves the Bone Yard with no stone, bone or hidden prize. The guide has a usable warning, and travelers still need to check the route each time. Behind you the crawlers settle among the displaced walls. In front of you lies the Saltrot, with more than one way onward. The guide raises her crest toward the river. Old Ossley, the river boatman, will return upriver on the next tide. At the boundary, the guide checked the tidal channel back to his landing. Your report tells him when the boat can leave the flats for the upriver run.",
       "onEnter": [
         {
           "type": "setFlag",
