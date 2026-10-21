@@ -1011,13 +1011,21 @@ export interface ChapterStory {
   ending: SceneId;
   /** The priority-1 scenes the party walked through, in the order it reached them. Absent: none. */
   revealed?: SceneId[];
+  /**
+   * For a revelation whose words read the bag (a facet-count variant, a
+   * `{facets}`): the items they read that the party held as it opened, so the
+   * page quotes what the table heard then, not what the bag held at the end.
+   * Absent for one whose words read nothing of the bag.
+   */
+  heard?: Record<SceneId, string[]>;
   /** The route-set flags this chapter decided (not carried in), in `routeSets` order. Absent: none. */
   decided?: string[];
   /**
    * The items the party held between them as the chapter closed, of those
-   * this record's words read (a variant's item or count, a line's `holding`,
-   * a `{facets}`), so a line naming a great stone still reads the inventory
-   * it was true of. Absent: none of them.
+   * the ending's words and the decided lines read (a variant's item or count,
+   * a line's `holding`, a `{facets}`), so a line naming a great stone still
+   * reads the inventory it was true of. Absent: none of them. A revelation's
+   * bag is its own (`heard`).
    */
   held?: string[];
 }

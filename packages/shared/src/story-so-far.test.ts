@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { chapterStoryOf, storyChapterView, storyChapters } from "./story-so-far.js";
+import { chapterStoryOf, heardWith, storyChapterView, storyChapters } from "./story-so-far.js";
 import type { Campaign, Chapter } from "./types/chapter.js";
 import type { ResolvedCharacter } from "./types/domain.js";
 
@@ -59,16 +59,26 @@ describe("what a chapter keeps for the Story page", () => {
       flags: { road_hill: true, stone_kept: true, door_seen: true },
       before: { road_hill: true },
       party: { members: [hero(["facet_moon", "facet_sun"]), hero(["rope"])] },
+      revealHeld: { reveal: ["facet_sun"] },
     });
     expect(story).toEqual({
       chapterId: "walk-01",
       ending: "end_home",
       revealed: ["reveal"],
+      // The revelation keeps the bag it was heard with, not the one at the end.
+      heard: { reveal: ["facet_sun"] },
       // The hill was carried in; only the stone is this chapter's.
       decided: ["stone_kept"],
-      // The potion and the rope are never read; the facets are.
-      held: ["facet_moon", "facet_sun"],
+      // At the end: only what the ending and the decided lines read (the moon stone's line).
+      held: ["facet_moon"],
     });
+  });
+
+  it("knows which scenes' words read the bag, and what of it", () => {
+    const scenes = chapter.scenes as Record<string, Parameters<typeof heardWith>[0]>;
+    expect(heardWith(scenes["reveal"]!, { members: [hero(["facet_moon", "rope"])] })).toEqual(["facet_moon"]);
+    expect(heardWith(scenes["reveal"]!, { members: [hero([])] })).toEqual([]);
+    expect(heardWith(scenes["clue"]!, { members: [hero(["facet_moon"])] })).toBeNull();
   });
 
   it("leaves empty keys off", () => {
@@ -82,7 +92,8 @@ describe("what a chapter keeps for the Story page", () => {
 describe("a chapter on the Story page", () => {
   it("reads the revelation and the lines against the bag it kept, and never counts the party", () => {
     const holding = storyChapterView(campaign, chapter, {
-      chapterId: "walk-01", ending: "end_home", revealed: ["reveal"], decided: ["stone_kept"], held: ["facet_moon", "facet_sun"],
+      chapterId: "walk-01", ending: "end_home", revealed: ["reveal"], heard: { reveal: ["facet_moon", "facet_sun"] },
+      decided: ["stone_kept"], held: ["facet_moon"],
     });
     expect(holding).toEqual({
       chapterId: "walk-01",
@@ -96,11 +107,36 @@ describe("a chapter on the Story page", () => {
     });
 
     const empty = storyChapterView(campaign, chapter, {
-      chapterId: "walk-01", ending: "end_lost", revealed: ["reveal"], decided: ["stone_kept"],
+      chapterId: "walk-01", ending: "end_lost", revealed: ["reveal"], heard: { reveal: [] }, decided: ["stone_kept"],
     });
     expect(empty.outcome).toBe("setback");
     expect(empty.revealed).toEqual(["The gate is a door.\n\nYour hands are empty, so it is up to you."]);
     expect(empty.lastTime).toEqual(["You kept the moon stone, once."]);
+  });
+
+  it("quotes a revelation as it was heard when the bag changes after it, either way", () => {
+    // Empty-handed at the revelation, a stone picked up before the end.
+    const gained = storyChapterView(campaign, chapter, {
+      chapterId: "walk-01", ending: "end_home", revealed: ["reveal"], heard: { reveal: [] }, decided: ["stone_kept"], held: ["facet_moon"],
+    });
+    expect(gained.revealed).toEqual(["The gate is a door.\n\nYour hands are empty, so it is up to you."]);
+    // The lines are read at the end, against the bag then.
+    expect(gained.lastTime).toEqual(["You kept the moon stone. It is in your pack."]);
+
+    // A stone in hand at the revelation, gone by the end.
+    const lost = storyChapterView(campaign, chapter, {
+      chapterId: "walk-01", ending: "end_home", revealed: ["reveal"], heard: { reveal: ["facet_moon"] }, decided: ["stone_kept"],
+    });
+    expect(lost.revealed).toEqual(["The gate is a door.\n\nThe great stones hum at it, one of them."]);
+    expect(lost.lastTime).toEqual(["You kept the moon stone, once."]);
+  });
+
+  it("quotes only the words every party heard when a revelation's bag was never kept", () => {
+    const unknown = storyChapterView(campaign, chapter, { chapterId: "walk-01", ending: "end_home", revealed: ["reveal"], held: ["facet_moon"] });
+    expect(unknown.revealed).toEqual(["The gate is a door."]);
+    // A scene whose words never read the bag needs no record.
+    const plain = { ...chapter, scenes: { ...chapter.scenes, reveal: { type: "story", priority: 1, narration: "Plain words.", choices: [] } } } as unknown as Chapter;
+    expect(storyChapterView(campaign, plain, { chapterId: "walk-01", ending: "end_home", revealed: ["reveal"] }).revealed).toEqual(["Plain words."]);
   });
 
   it("lists an older row's chapters by title, choosing a routed beat only by the one road it holds", () => {

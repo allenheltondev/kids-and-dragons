@@ -18,7 +18,7 @@ import { partyItemIds, type ChoiceParty } from "./chapter-graph.js";
 import { firstSentence, lastTimeLines } from "./chapter-preface.js";
 import { composeNarration, fillTokens } from "./narration.js";
 
-type SceneWords = { type?: string; narration?: string; prompt?: string; variants?: NarrationVariant[]; outcome?: string; priority?: number };
+export type SceneWords = { type?: string; narration?: string; prompt?: string; variants?: NarrationVariant[]; outcome?: string; priority?: number };
 
 function sceneOf(chapter: Pick<Chapter, "scenes">, id: SceneId): SceneWords | undefined {
   return chapter.scenes[id] as SceneWords | undefined;
@@ -46,6 +46,24 @@ function matches(pattern: string, id: string): boolean {
   return pattern.endsWith("*") ? id.startsWith(pattern.slice(0, -1)) : pattern === id;
 }
 
+/** The items in `party`'s bag that any of `read` (ids and `*` patterns) names, sorted. */
+function heldOf(party: ChoiceParty, read: readonly string[]): string[] {
+  return [...partyItemIds(party)].filter((id) => read.some((pattern) => matches(pattern, id))).sort();
+}
+
+/**
+ * What a priority-1 scene's words read of the bag as it opens, so the Story
+ * page can later quote it as the table heard it, not against whatever the
+ * party held by the chapter's end. Null when its words read nothing of the
+ * bag (most scenes): there is nothing to keep. Called by the engine on the
+ * scene's first arrival in a chapter (`RunState.revealHeld`).
+ */
+export function heardWith(scene: SceneWords, party: ChoiceParty): string[] | null {
+  const read: string[] = [];
+  itemsRead(scene, read);
+  return read.length === 0 ? null : heldOf(party, read);
+}
+
 /**
  * What a completing chapter keeps for the Story page: its ending, the
  * priority-1 scenes on its trail, the route-set flags it decided (set now and
@@ -61,6 +79,8 @@ export function chapterStoryOf(input: {
   /** The route-set flags the attempt held before this chapter. */
   before: Readonly<Record<string, boolean>> | undefined;
   party: ChoiceParty;
+  /** What each priority-1 scene's words read of the bag as it opened (`RunState.revealHeld`). */
+  revealHeld?: Readonly<Record<SceneId, readonly string[]>>;
 }): ChapterStory {
   const { campaign, chapter, ending } = input;
   const revealed: SceneId[] = [];
@@ -72,18 +92,28 @@ export function chapterStoryOf(input: {
     .flat()
     .filter((flag) => input.flags[flag] === true && input.before?.[flag] !== true);
 
+  // The bag as the chapter closes is the bag the ending was read with (its words are
+  // composed after its own onEnter, and it settles in the same step), and the one
+  // the next "Last time…" will read. A revelation was heard earlier, with its own.
   const read: string[] = [];
-  for (const id of [...revealed, ending]) itemsRead(sceneOf(chapter, id), read);
+  itemsRead(sceneOf(chapter, ending), read);
   for (const flag of decided) {
     const line = campaign.lastTime?.lines[flag];
     if (line !== undefined && typeof line !== "string") read.push(line.holding);
   }
-  const held = [...partyItemIds(input.party)].filter((id) => read.some((pattern) => matches(pattern, id))).sort();
+  const held = heldOf(input.party, read);
+  const heard = Object.fromEntries(
+    revealed.flatMap((id) => {
+      const bag = input.revealHeld?.[id];
+      return bag === undefined ? [] : [[id, [...bag]]];
+    }),
+  );
 
   return {
     chapterId: chapter.id,
     ending,
     ...(revealed.length > 0 ? { revealed } : {}),
+    ...(Object.keys(heard).length > 0 ? { heard } : {}),
     ...(decided.length > 0 ? { decided } : {}),
     ...(held.length > 0 ? { held } : {}),
   };
@@ -99,10 +129,19 @@ function heldParty(held: readonly string[]): ChoiceParty {
   return { members: [member], flags: {}, coins: 0 };
 }
 
-/** A scene's words as this party saw them, as near as the bag can say. */
-function wordsOf(scene: SceneWords, held: readonly string[]): string {
-  const party = heldParty(held);
+/**
+ * A scene's words as this party saw them, as near as the bag can say. `held`
+ * null: the bag it was read with is not known (a revelation reached before the
+ * bag was kept), so only the words every party heard are quoted, and a scene
+ * that counts the stones (`{facets}`) is not quoted at all.
+ */
+function wordsOf(scene: SceneWords, held: readonly string[] | null): string {
+  const party = heldParty(held ?? []);
   const base = scene.narration ?? scene.prompt ?? "";
+  if (held === null) {
+    if (base.includes("{facets}")) return "";
+    return fillTokens(base, party).trim();
+  }
   const variants = (scene.variants ?? []).filter((v) => readsOnlyTheBag(v.when));
   return fillTokens(composeNarration(base, variants, party), party).trim();
 }
@@ -130,7 +169,9 @@ export function storyChapterView(
   }
   for (const id of story.revealed ?? []) {
     const scene = sceneOf(chapter, id);
-    const words = scene ? wordsOf(scene, held) : "";
+    // Read with the bag it was heard with. A scene whose words never read the bag needs none.
+    const bag = story.heard?.[id] ?? (scene && heardWith(scene, heldParty([])) === null ? [] : null);
+    const words = scene ? wordsOf(scene, bag) : "";
     if (words !== "") view.revealed.push(words);
   }
   // The preface's own picking: the decided flags, in story order, the newest few, read against the bag.
