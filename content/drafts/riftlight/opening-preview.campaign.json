@@ -1,5 +1,5 @@
 {
-  "$comment": "DEVELOPMENT PREVIEW ONLY. Eighteen authored story nodes and eleven explicit pause boundaries. Convergence and finale remain unwritten.",
+  "$comment": "DEVELOPMENT PREVIEW ONLY. Chapters are authored in sequence. Family timing and full-route progression remain production gates.",
   "id": "riftlight-opening-preview",
   "title": "Riftlight — opening preview",
   "blurb": "Snow falls on the Exchange quay. A small goat needs help. Beyond a fold in the air, a bell is ringing in the ice.",
@@ -35,7 +35,9 @@
     "riftlight-preview-pause-the-wrong-valley",
     "riftlight-preview-pause-reading-room",
     "riftlight-the-island-due-back",
-    "riftlight-preview-pause-the-island-due-back"
+    "riftlight-preview-pause-the-island-due-back",
+    "riftlight-stuttering-flats",
+    "riftlight-preview-pause-stuttering-flats"
   ],
   "graph": {
     "version": 1,
@@ -89,7 +91,11 @@
       "island_warning_sent",
       "island_signal_repeated",
       "fragment_sky_learned",
-      "island_relay_delayed"
+      "island_relay_delayed",
+      "flats_rhythm_read",
+      "flats_guide_signals",
+      "goat_returned_home",
+      "flats_sling_left"
     ],
     "buffs": {
       "riftspark": {
@@ -329,6 +335,18 @@
         "title": "Pause the Sky preview",
         "ending": {
           "title": "End of authored Sky preview"
+        }
+      },
+      "stuttering-flats": {
+        "chapter": "riftlight-stuttering-flats",
+        "title": "The Stuttering Flats",
+        "revisit": "pass"
+      },
+      "preview-pause-stuttering-flats": {
+        "chapter": "riftlight-preview-pause-stuttering-flats",
+        "title": "Pause the development preview",
+        "ending": {
+          "title": "Development preview pause"
         }
       }
     },
@@ -798,6 +816,24 @@
         "to": "preview-pause-the-island-due-back",
         "kind": "forward",
         "label": "Pause here at the end of the authored Sky preview"
+      },
+      "buried-bridge-to-stuttering-flats": {
+        "from": "buried-bridge",
+        "to": "stuttering-flats",
+        "kind": "forward",
+        "label": "Help a stranded goat at the blinking opening"
+      },
+      "stuttering-flats-pause": {
+        "from": "stuttering-flats",
+        "to": "preview-pause-stuttering-flats",
+        "kind": "forward",
+        "label": "Pause this development preview"
+      },
+      "flats-to-buried": {
+        "from": "stuttering-flats",
+        "to": "buried-bridge",
+        "kind": "return",
+        "label": "Return to the buried bridge"
       }
     },
     "facts": {
