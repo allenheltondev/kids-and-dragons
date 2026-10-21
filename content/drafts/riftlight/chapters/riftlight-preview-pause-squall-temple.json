@@ -1,0 +1,36 @@
+{
+  "$comment": "Development boundary only. Never copy this chapter or ending into the production campaign.",
+  "id": "riftlight-preview-pause-squall-temple",
+  "campaignId": "riftlight-opening-preview",
+  "index": 6,
+  "title": "A Break in the Journey",
+  "biome": "sky_islands",
+  "music": "riftlight-sky",
+  "estimatedMinutes": 5,
+  "xpAward": 0,
+  "entry": "pause",
+  "scenes": {
+    "pause": {
+      "type": "rest",
+      "narration": "Your party takes a break here to compare what you found. The next part of this development preview has not been authored yet.",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success",
+      "art": "scenes/riftlight/temple-island-squall"
+    }
+  },
+  "voiceGuide": {
+    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
+    "forbidden": [
+      "death",
+      "gore",
+      "Corvane",
+      "emperor",
+      "Pangea",
+      "Hollow Gate",
+      "Legend Dragon"
+    ],
+    "npcVoices": {}
+  }
+}

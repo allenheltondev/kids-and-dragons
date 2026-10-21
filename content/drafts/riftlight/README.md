@@ -260,3 +260,12 @@ The Cairnstep rescue route can return to this completed chapter. See the
 The modeled spine has 45 scenes, 15 decisions, six checks and one encounter,
 about 30 uncalibrated minutes. Family timing remains unmeasured.
 
+
+## The Temple in the Squall
+
+The island lookout continues to the temple. Divert the returning island, shelter the
+temple while it settles, or repair a damaged landing after a lost fight. Prior messages
+change the preparations. The route returns to the lookout or the Cairnstep.
+See the [chapter review](../../../docs/campaigns/continental-rift/squall-temple-review.md).
+The spine has 45 scenes, 14 decisions, six checks and one fight, about 30 uncalibrated minutes.
+
