@@ -3,7 +3,7 @@ title: The Sallow Wastelands
 id: biome.sallow_wastelands
 type: biome
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: []
 tags: ["coastal_lowland", "brackish", "mudflats", "saltrot", "unstable_ground"]
@@ -40,15 +40,30 @@ related:
   - id: location.bone_yard
     type: location
     relationship: contains_sites
+  - id: npc.skupper
+    type: npc
+    relationship: primary_peoples
+  - id: npc.frogfolk
+    type: npc
+    relationship: supporting_peoples
   - id: creature.bone_crawler
     type: creature
     relationship: dangerous_creatures
   - id: creature.restless_remains
     type: creature
     relationship: supernatural_manifestations
+  - id: campaign.riftlight
+    type: campaign
+    relationship: biomes
   - id: location.bone_yard
     type: location
     relationship: biome
+  - id: npc.frogfolk
+    type: npc
+    relationship: secondary_locations
+  - id: npc.skupper
+    type: npc
+    relationship: primary_locations
 assets:
   primary: assets/biomes/sallow_wastelands/portrait.webp
   primaryFull: assets/biomes/sallow_wastelands/bg.webp
@@ -58,7 +73,7 @@ ai_context:
   visual_style: "Gray-green flats under a hazy sky: silt banks, salt-crusted pools, drowned and stunted trees, channels that braid and rebraid with the floods, and the pale gleam of the Bone Yard at the river mouth."
   common_encounters: "Hard travel over unstable ground, salvage and flotsam stories, seasonal flood danger, guides who read the flats, approaches to the Bone Yard, and journeys where the land itself is the obstacle."
   lore_highlights: "The accepted account is exactly what it looks like: the Glacierflow slows, spreads, and lays down everything it carried across the continent."
-  related_entities: "location.bone_yard, feature.great_river, biome.open_sea, biome.eastern_plains, biome.open_sea, location.bone_yard, creature.bone_crawler, creature.restless_remains, location.bone_yard"
+  related_entities: "location.bone_yard, feature.great_river, biome.open_sea, biome.eastern_plains, biome.open_sea, location.bone_yard, npc.skupper, npc.frogfolk, creature.bone_crawler, creature.restless_remains, campaign.riftlight, location.bone_yard, npc.frogfolk, npc.skupper"
   writing_guidance: "Not a desert and not a marsh: the Saltrot is a brackish river-mouth lowland, and its hazards are salt, silt, flood, and footing rather than monsters. The Bone Yard is a location within it, not a separate biome. The geographic hierarchy is Sallow Wastelands, then the Bone Yard, then the sea."
   generation_hints: "Tides and floods redraw the channels seasonally, the river keeps delivering silt and debris toward the mouth, and paths that held last season may not hold now."
 layout: biomes
@@ -93,6 +108,7 @@ To the realm, the Saltrot is the cautionary approach to the Bone Yard and the pr
 > *Creator canon, not generally known in-world. No NPC recites these.*
 
 - The guides' real secret is sedimentary. Each flood drops its coarse, quick-draining material first, along the old channel spines, and carries the finest silt furthest - out toward the mouth, where the Bone Yard stands. Firm ground returns in that order, spines first, mouth last, so the earliest safe paths always run away from the Yard. The flats are not warning anyone. They are draining.
+- The silt the guides do not recognize is glacier silt, and the cause is a hidden rift in the Glacier of Origins that comes out in the Saltrot. It shows green and blue: it needs a sung note before it will open, and once open it stays open, both ways. That rift is not the glacier's summer crevasse, which stays unexplained.
 
 ### Neighbors
 
@@ -118,6 +134,9 @@ To the realm, the Saltrot is the cautionary approach to the Bone Yard and the pr
 - [The Eastern Plains](/biomes/eastern_plains/) `Borders`
 - [The Open Sea](/biomes/open_sea/) `Locations` `Borders`
 
+### Campaigns
+- [Riftlight](/campaigns/riftlight/) `Biomes`
+
 ### Creatures
 - [Bone Crawler](/creatures/bone_crawler/) `Dangerous Creatures`
 - [Restless Remains](/creatures/restless_remains/) `Supernatural Manifestations`
@@ -127,4 +146,8 @@ To the realm, the Saltrot is the cautionary approach to the Bone Yard and the pr
 
 ### Locations
 - [The Bone Yard](/locations/bone_yard/) `Locations` `Contains Sites` `Biome`
+
+### Npcs
+- [Frogfolk](/npcs/frogfolk/) `Supporting Peoples` `Secondary Locations`
+- [Skupper](/npcs/skupper/) `Primary Peoples` `Primary Locations`
 <!-- END GENERATED: relationships -->

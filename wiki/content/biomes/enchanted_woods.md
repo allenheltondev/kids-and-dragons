@@ -3,7 +3,7 @@ title: Enchanted Woods
 id: biome.enchanted_woods
 type: biome
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-03b", "gemfall-03c", "gemfall-04b"]
 tags: ["ancient_forest", "living_magic", "changing_paths", "memory", "hidden_glades"]
