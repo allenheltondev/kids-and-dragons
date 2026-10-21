@@ -37,3 +37,21 @@ route coverage and runtime replay remain exhaustive. Identical chapter walks are
 memoized by their full scenario and chapter content, with defensive result copies.
 Focused V8 coverage: 62 tests passed in 10.18 seconds (whole-repository thresholds
 are intentionally not evaluated as evidence from this focused run).
+
+Searches and chapter metadata are reused only while their content signatures match;
+edited graph and chapter-metadata fixtures invalidate the cache. Continuity analysis
+reuses each chapter's shown vocabulary. The asset-copy fallback compares every copied
+file byte for byte, while the following test runs the full content gate once.
+The background-art negative fixture retains the opening's class rooms on a small
+valid route, proves that baseline passes, then removes the art and requires rejection.
+This removes unrelated full-campaign searches from a five-second art assertion.
+
+### Pacing before and after review fixes
+
+| Shortest success spine | Before | After |
+|---|---:|---:|
+| Scenes | 43 | 43 |
+| Decisions | 15 | 15 |
+| Physical checks | 6 | 6 |
+| Encounters | 0 | 0 |
+| Longest reading run | 2 | 2 |
