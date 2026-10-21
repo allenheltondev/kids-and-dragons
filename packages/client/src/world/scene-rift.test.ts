@@ -213,6 +213,13 @@ describe("the hole's painted inside", () => {
     expect(light(at(0, 0))).toBeLessThan(light(at(0.75, 0)));
   });
 
+  it("has a luminous band just inside its edge, brighter than the mist on either side", () => {
+    const band = Array.from({ length: 9 }, (_, i) => light(at(0, -0.6 - i * 0.05)));
+    const brightest = band.indexOf(Math.max(...band));
+    expect(brightest).toBeGreaterThan(0);
+    expect(brightest).toBeLessThan(band.length - 1);
+  });
+
   it("is opaque inside, feathered at the edge, and empty outside the ellipse", () => {
     expect(at(0, 0).a).toBe(255);
     const edge = at(0, 0.93).a;

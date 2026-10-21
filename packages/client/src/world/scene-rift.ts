@@ -261,9 +261,9 @@ export function riftPresence(pass: RiftPass | null, frame: number, frames = 12):
 /*
  * The hole's painted inside (#401). Not flat bands of dark but one surface,
  * painted the way the backdrops are: deepest at the middle, lifting through
- * a slate grey to a soft misty rim, with brushy mottling and faint upright
- * streaks of air in it, and a feathered edge that melts into the tear's
- * outline. Computed once, here, from a fixed seed, so it is the same picture
+ * a slate grey to a soft misty rim with a luminous band just inside it, with
+ * brushy mottling, upright wisps of air and a few far-off specks deep inside,
+ * and a feathered edge that melts into the tear's outline. Computed once, here, from a fixed seed, so it is the same picture
  * on every screen and every load, and nothing in it moves (the shimmer may
  * not move like a rule; see "WHAT THEY MAY NOT DO" above).
  *
@@ -322,12 +322,19 @@ export function holeTexturePixels(width = HOLE_TEXTURE_WIDTH, height = HOLE_TEXT
       // A few upright wisps of air: thin, wavering, broken along their length,
       // strongest part-way out. Uneven on purpose, so they never line up into stripes.
       const wisp =
-        Math.pow(Math.abs(Math.sin(px * 0.21 + 5 * valueNoise(px / 9, py / 36, 4))), 30) *
-        smoothstep(0.45, 0.8, valueNoise(px / 5, py / 20, 5)) *
-        smoothstep(0.15, 0.6, r);
+        Math.pow(Math.abs(Math.sin(px * 0.27 + 5 * valueNoise(px / 9, py / 44, 4))), 24) *
+        smoothstep(0.35, 0.75, valueNoise(px / 5, py / 26, 5)) *
+        smoothstep(0.12, 0.55, r);
+      // A luminous band just inside the outline, uneven along its length like a painted edge.
+      const rim = Math.exp(-Math.pow((r - 0.8) / 0.07, 2)) * (0.6 + 0.4 * valueNoise(px / 6, py / 10, 6));
+      // A few tiny faint specks deep inside, like far-off light seen through the gap.
+      const speck = lattice(px, py, 7) > 0.994 ? (1 - smoothstep(0.2, 0.7, r)) * 0.45 : 0;
       // Deep at the middle, lifting to a misty rim.
-      const lift = 0.06 + 0.5 * Math.pow(smoothstep(0.25, 1, r), 1.4);
-      const light = Math.min(0.85, Math.max(0, lift + (mottle - 0.5) * 0.34 * (0.4 + r) + wisp * 0.28));
+      const lift = 0.05 + 0.5 * Math.pow(smoothstep(0.25, 1, r), 1.4);
+      const light = Math.min(
+        0.85,
+        Math.max(0, lift + (mottle - 0.5) * 0.34 * (0.4 + r) + wisp * 0.32 + rim * 0.28 + speck),
+      );
       for (let c = 0; c < 3; c++) pixels[i + c] = Math.round(dark[c]! + (mist[c]! - dark[c]!) * light);
       // A feathered edge, so the hole melts into the painted outline.
       pixels[i + 3] = Math.round(255 * (1 - smoothstep(0.82, 1, r)));
