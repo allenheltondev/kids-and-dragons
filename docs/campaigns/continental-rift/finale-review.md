@@ -109,3 +109,9 @@ The staged draft gate, real board outcomes, checkpoint continuations, all clue p
 and exhaustive route replay pass. The setback audit requires two failures and reaches
 Rivers Wander in at least 49 scenes. Focused coverage runs also pass independently
 at every earlier chapter head; the final full run includes all their fixes.
+
+The fresh Linux CI run passed 5,072 tests but exposed one remaining timeout in the
+finale spine assertion. That assertion now requests zero typical-path samples:
+it still computes and checks the exact shortest success path in all six party
+scenarios, without also generating 3,000 unrelated sampled walks. The normal
+pacing report retains its complete sampling behavior and the test timeout is unchanged.

@@ -101,7 +101,8 @@ it("offers the upriver escape once the guide has checked it at the Bone Yard", (
   }
 });
 it("keeps the success spine interactive across party scenarios", () => {
-  for (const { shortest } of pacingReport(chapter).scenarios) {
+  // These assertions need exact shortest paths, not 3,000 sampled walks.
+  for (const { shortest } of pacingReport(chapter, undefined, 0).scenarios) {
     expect(shortest!.scenes).toBeGreaterThanOrEqual(30);
     expect(shortest!.decisions).toBeGreaterThanOrEqual(14);
     expect(shortest!.checks).toBe(6);
