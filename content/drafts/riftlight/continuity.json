@@ -5653,7 +5653,7 @@
         "arrival": {
           "requires": [],
           "introduces": {
-            "skupper_guide": "A Skupper guide",
+            "skupper_guide": "On the Saltrot mudflats, an opening in the air blinks away and comes back. Through it lies snow. A snowhorn goat stands belly-deep in mud beside it, chewing a reed with great disappointment. Your Skupper guide from the Saltrot bank waves her fins in greeting, then points to the rising tide. \"Bring that goat home before the opening closes. I can find firm mud. I cannot make a goat like it.\"",
             "stranded_goat": "A snowhorn goat",
             "blinking_gap": "an opening in the air blinks"
           }
@@ -6204,7 +6204,7 @@
           "requires": [],
           "introduces": {
             "bone_crawlers": "Small bone crawlers",
-            "yard_guide": "a Skupper guide",
+            "yard_guide": "At the edge of the Bone Yard, your Skupper guide from the flats stops in a brackish pool. Beyond her, broken stone walls have appeared among enormous old bones. Small bone crawlers crowd the fresh shimmer around the walls. \"Clear a safe way past those ruins,\" she says. \"Take nothing. Here, anything taken comes back. I will watch from water that suits my fins.\" One crawler is trying to fit its whole body under a pebble.",
             "yard_rule": "anything taken comes back",
             "yard_ruins": "broken stone walls"
           }
@@ -6768,6 +6768,15 @@
           "introduces": {}
         },
         "ending": {
+          "requires": [
+            "bone_crawlers",
+            "yard_guide",
+            "yard_rule",
+            "yard_ruins"
+          ],
+          "introduces": {}
+        },
+        "fight_seam": {
           "requires": [
             "bone_crawlers",
             "yard_guide",
