@@ -112,6 +112,7 @@ import { addItem, addQuestItem, freeSlots, hasItem, removeItem, swapItem, useCon
 import { sceneChoices, visibleChoices } from "./chapter-graph.js";
 import { combatTurnAway, readyWithoutAway, swapOwnerAway } from "./away.js";
 import { composeNarration, fillTokens } from "./narration.js";
+import { heardWith } from "./story-so-far.js";
 import { loadDie, readDie } from "./playtest.js";
 import type { CheckBuffOffer, RunBuff } from "./types/buffs.js";
 import type { FactId, FactValue } from "./types/campaign-graph.js";
@@ -986,6 +987,11 @@ function enterSceneDraft(
   // as it is when the scene opens, so an item this scene grants counts (#159).
   // Stored rather than recomputed, so a reload mid-scene reads the same words.
   draft.narration = composeSceneNarration(draft, scene, transition);
+  // A revelation that reads the bag keeps the bag it was heard with, once a chapter (#358).
+  if (scene.type !== "encounter" && scene.priority === 1 && draft.revealHeld?.[sceneId] === undefined) {
+    const held = heardWith(scene, party(draft));
+    if (held !== null) draft.revealHeld = { ...draft.revealHeld, [sceneId]: held };
+  }
 
   const enter: Presentation = {
     kind: "SCENE_ENTER",
@@ -1538,6 +1544,7 @@ function doStartChapter(
    * boundary, and anything scoped to a chapter dies here.
    */
   draft.visited = [];
+  delete draft.revealHeld;
   // The lobby's decision is spent: back in the lobby, the party decides again.
   draft.campaignVotes = {};
   for (const member of draft.party) member.ready = false;

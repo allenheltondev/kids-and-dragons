@@ -75,6 +75,44 @@ describe("the Story page's record", () => {
     ]);
   });
 
+  it("quotes Gemfall's seal chamber as an empty-handed party heard it, though the Keystone is in the bag by the end", async () => {
+    const h = await gemfallHousehold(content);
+    // The beat before the last, and a hero with no great stone.
+    await h.harness.repo.putCampaignProgress({
+      householdId: h.householdId,
+      campaignId: "gemfall",
+      status: "active",
+      setbacks: 0,
+      lastIndex: 7,
+      routeFlags: { route_river: true, pursuit_hoard: true },
+      updatedAt: "2026-07-01T00:00:00.000Z",
+    });
+    const t = await evening(h);
+    expect(await t.begin()).toBe("gemfall-08");
+    await t.goto("scene_seal_chamber");
+    const run = await t.state();
+    expect(run.narration).toContain("then at your empty hands");
+    expect(run.revealHeld).toEqual({ scene_seal_chamber: [] });
+    // The Keystone goes in the bag after the revelation, on the way to the ending.
+    await t.choose("keystone");
+    await t.choose("collectors");
+
+    const attempt = (await h.attempt())!;
+    const kept = attempt.story!.at(-1)!;
+    expect(kept).toMatchObject({ chapterId: "gemfall-08", ending: "ending_collectors", heard: { scene_seal_chamber: [] } });
+    // The ending was read with the Keystone in the bag, and keeps that.
+    expect(kept.held).toEqual(["facet_keystone"]);
+
+    const journal = await getJournal({ householdId: h.householdId, playerId: h.players[0]!.principal.playerId }, h.harness.deps);
+    if (!journal.ok) throw new Error(journal.error.message);
+    const chapter = journal.value.story![0]!.chapters.at(-1)!;
+    expect(chapter.revealed).toHaveLength(1);
+    expect(chapter.revealed[0]).toContain("You look at the gaps in the seal, and then at your empty hands.");
+    expect(chapter.revealed[0]).toContain("which is you.");
+    expect(chapter.revealed[0]).not.toContain("great stones");
+    expect(chapter.revealed[0]).not.toContain("tug");
+  });
+
   it("lists a chapter an older row played, by title and goal, beside the ones it kept", async () => {
     const h = await gemfallHousehold(content);
     // A row from before the page: two beats finished on the River Road, no story.

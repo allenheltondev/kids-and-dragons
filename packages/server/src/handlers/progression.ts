@@ -748,6 +748,7 @@ function keepStory(
     flags: state.flags,
     before,
     party: { members: seatedParty(state).map((m) => m.character) },
+    ...(state.revealHeld ? { revealHeld: state.revealHeld } : {}),
   });
   attempt.story = [...(attempt.story ?? []), story];
 }
