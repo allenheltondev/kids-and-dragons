@@ -221,10 +221,9 @@ Details: [docs/deploy.md](docs/deploy.md).
 ## In progress
 
 Open pull requests: a "Last time…" preface before a chapter's first scene (#378); the rest of the
-Gemfall cohesion fixes from the #368 audit (#372, #373, #376, #381); the remaining Riftlight
-regions, Convergence and the finale (#374, #375, #377, #379, #380, #382); and figure heights in the
-wiki's World Encyclopedia (#385). Group actions on phones are designed
-([docs/briefs/group-actions.md](docs/briefs/group-actions.md)) but not yet built.
+Gemfall cohesion fixes from the #368 audit (#372, #373, #376, #381); and the remaining Riftlight
+regions, Convergence and the finale (#374, #375, #377, #379, #380, #382). Group actions on phones
+are designed ([docs/briefs/group-actions.md](docs/briefs/group-actions.md)) but not yet built.
 
 ## Further reading
 
