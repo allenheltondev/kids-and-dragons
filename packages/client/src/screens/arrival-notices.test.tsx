@@ -122,6 +122,31 @@ describe("arrival notices", () => {
     expect(screen.getByRole("alert").textContent).toMatch(/start a new room/i);
   });
 
+  it("let the shared screen's flood warning go once read, and bring it back when more are dropped", () => {
+    // Owner call C on #392.
+    vi.useFakeTimers();
+    seat({ playerId: "", host: true });
+    act(() => {
+      useGameStore.setState({ arrivals: [], arrivalsDropped: 12 });
+    });
+    render(<ArrivalNotices placement="float" />);
+    const flood = /a lot of phones are joining/i;
+    expect(screen.getByRole("alert").textContent).toMatch(flood);
+    const ms = noticeMs("A lot of phones are joining. If you don't know them, start a new room.");
+    act(() => {
+      vi.advanceTimersByTime(ms);
+    });
+    expect(screen.queryByText(flood)).toBeNull();
+    act(() => {
+      useGameStore.setState({ arrivalsDropped: 20 });
+    });
+    expect(screen.getByRole("alert").textContent).toMatch(flood);
+    act(() => {
+      vi.advanceTimersByTime(ms);
+    });
+    expect(screen.queryByText(flood)).toBeNull();
+  });
+
   it("go away on their own once read", () => {
     vi.useFakeTimers();
     seat({ playerId: "" });

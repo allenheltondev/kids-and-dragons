@@ -12,7 +12,7 @@ import { useGameStore } from "../store";
 import type { ClientSession } from "../store/contract";
 import { makeState } from "../testing/fixtures";
 import { useKeepsakeStore } from "../store/keepsake";
-import { HostControls, LetHeroGo, rosterOf } from "./HostControls";
+import { HostControls, LetHeroGo, STOP_OFFER_MS, rosterOf } from "./HostControls";
 
 function member(playerId: string, name: string, connected = true): PartyMember {
   return {
@@ -58,6 +58,7 @@ function room(session: Partial<ClientSession>, run: Partial<RunState> = RUN) {
 
 afterEach(() => {
   cleanup();
+  vi.useRealTimers();
   act(() => {
     useGameStore.setState({ session: null, state: null });
   });
@@ -222,6 +223,79 @@ describe("stopping for today (#259)", () => {
     room({ host: true }, UNDER_WAY);
     render(<HostControls placement="float" />);
     expect(screen.queryByText(/cozy place to stop/)).toBeNull();
+  });
+
+  it("keeps playing by itself on the shared screen after STOP_OFFER_MS, once, with a bar running down", () => {
+    // Owner call B on #392: nothing on the TV waits for a tap.
+    vi.useFakeTimers();
+    const { stopForToday } = room({ host: true }, { ...UNDER_WAY, sceneType: "rest" });
+    render(<HostControls placement="float" />);
+    expect(STOP_OFFER_MS).toBe(15_000);
+    expect(screen.getByTestId("stop-offer-clock").textContent).toContain("Keeping going");
+    act(() => {
+      vi.advanceTimersByTime(STOP_OFFER_MS - 1);
+    });
+    expect(screen.getByText(/cozy place to stop/)).toBeTruthy();
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+    expect(screen.queryByText(/cozy place to stop/)).toBeNull();
+    // What Keep playing does: nothing is sent, and the offer stays away for this rest.
+    act(() => {
+      vi.advanceTimersByTime(10 * STOP_OFFER_MS);
+    });
+    expect(screen.queryByText(/cozy place to stop/)).toBeNull();
+    expect(stopForToday).not.toHaveBeenCalled();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it("still takes either answer before the time runs out, and Stop for today stays in Room", () => {
+    vi.useFakeTimers();
+    const { stopForToday } = room({ host: true }, { ...UNDER_WAY, sceneType: "rest" });
+    render(<HostControls placement="float" />);
+    act(() => {
+      vi.advanceTimersByTime(STOP_OFFER_MS / 2);
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Keep playing" }));
+    expect(screen.queryByText(/cozy place to stop/)).toBeNull();
+    expect(vi.getTimerCount()).toBe(0);
+    expect(stopForToday).not.toHaveBeenCalled();
+
+    cleanup();
+    const again = room({ host: true }, { ...UNDER_WAY, sceneType: "rest", sceneId: "s_2" });
+    render(<HostControls placement="float" />);
+    fireEvent.click(screen.getByRole("button", { name: "Stop here for today" }));
+    expect(again.stopForToday).toHaveBeenCalledTimes(1);
+    act(() => {
+      vi.advanceTimersByTime(STOP_OFFER_MS * 2);
+    });
+    // A stop on its way is the host's answer: the clock does not put the offer away under it.
+    expect(screen.getByText(/cozy place to stop/)).toBeTruthy();
+  });
+
+  it("offers again at the next rest, with a fresh clock", () => {
+    vi.useFakeTimers();
+    room({ host: true }, { ...UNDER_WAY, sceneType: "rest" });
+    render(<HostControls placement="float" />);
+    act(() => {
+      vi.advanceTimersByTime(STOP_OFFER_MS);
+    });
+    expect(screen.queryByText(/cozy place to stop/)).toBeNull();
+    act(() => {
+      useGameStore.setState({ state: { ...useGameStore.getState().state!, sceneId: "s_9" } });
+    });
+    expect(screen.getByText(/cozy place to stop/)).toBeTruthy();
+  });
+
+  it("waits for an answer on a host's phone, which is not driven by a remote", () => {
+    vi.useFakeTimers();
+    room({ host: true }, { ...UNDER_WAY, sceneType: "rest" });
+    render(<HostControls placement="inline" />);
+    act(() => {
+      vi.advanceTimersByTime(STOP_OFFER_MS * 2);
+    });
+    expect(screen.getByText(/cozy place to stop/)).toBeTruthy();
+    expect(screen.queryByTestId("stop-offer-clock")).toBeNull();
   });
 
   it("is not offered to a phone that did not open the room", () => {

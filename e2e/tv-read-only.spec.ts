@@ -124,6 +124,44 @@ async function hostTv(browser: Browser, open: BrowserContext[]): Promise<Page> {
   return tv;
 }
 
+/** The dev playtest jump (playtest.ts), from a seated phone, as layout-fit.spec and stop-resume.spec use it. */
+async function jumpTo(page: Page, code: string, sceneId: string): Promise<void> {
+  const session = await page.evaluate((room) => {
+    const saved = localStorage.getItem(`kad.session.${room}`);
+    return saved ? (JSON.parse(saved) as { playerId: string; sessionToken: string }) : { playerId: "", sessionToken: "" };
+  }, code);
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const state = await roomState<{ runId: string; seq: number }>(page, code);
+    const response = await fetch("http://localhost:8787/api/action", {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: `Bearer ${session.sessionToken}` },
+      body: JSON.stringify({ runId: state.runId, playerId: session.playerId, seq: state.seq, intent: { type: "PLAYTEST_GOTO", sceneId } }),
+    });
+    const answer = (await response.json()) as { ok?: boolean; error?: { code: string } };
+    if (answer.ok) return;
+    if (answer.error?.code !== "STALE_SEQ") throw new Error(`PLAYTEST_GOTO: ${JSON.stringify(answer.error)}`);
+  }
+  throw new Error("PLAYTEST_GOTO kept losing the seq race");
+}
+
+/** When the stop offer next comes and goes, timed from inside the page. */
+async function watchOffer(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const record = { shownAt: 0, goneAt: 0 };
+    (window as unknown as { kadOffer: typeof record }).kadOffer = record;
+    const frame = (): void => {
+      const up = document.querySelector(".kad-host__offer") !== null;
+      if (up && !record.shownAt) record.shownAt = performance.now();
+      if (!up && record.shownAt) {
+        record.goneAt = performance.now();
+        return;
+      }
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  });
+}
+
 test.describe("the shared screen is read, not driven", () => {
   const open: BrowserContext[] = [];
   test.afterEach(async () => {
@@ -309,5 +347,50 @@ test.describe("the shared screen is read, not driven", () => {
     await tv.keyboard.type("12345678");
     await expect(codeField).toHaveValue("12345678");
     await expect(tv.locator(".keepsake [role='alert']").or(tv.locator(".kad-host__code"))).not.toBeEmpty(TAP);
+  });
+
+  test("the Rest stop offer keeps playing by itself after 15s, still takes OK first, and keeps its clock under reduced motion", async ({ browser }) => {
+    test.setTimeout(240_000);
+    const tv = await hostTv(browser, open);
+    const code = new URL(tv.url()).pathname.split("/").pop() ?? "";
+    const kid = await join(browser, code);
+    await createCharacter(kid, "unicorn", "Sparklehoof");
+    await kid.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    await expect.poll(async () => (await roomState<{ phase: string }>(kid, code)).phase, TAP).toBe("scene");
+    const offer = tv.locator(".kad-host__offer");
+    const keep = offer.getByRole("button", { name: "Keep playing" });
+
+    // --- A Rest, under reduced motion: the bar stands still, nobody answers, and it keeps playing ---
+    await tv.evaluate(() => document.documentElement.setAttribute("data-motion", "reduced"));
+    await watchOffer(tv);
+    await jumpTo(kid, code, "rest_mossbank");
+    await expect(offer).toBeVisible(TAP);
+    await expect(offer.getByTestId("stop-offer-clock")).toContainText("Keeping going");
+    expect(await offer.locator(".kad-host__offer-bar > span").evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
+    await expect(offer).toHaveCount(0, { timeout: 25_000 });
+    const timed = await tv.evaluate(() => (window as unknown as { kadOffer: { shownAt: number; goneAt: number } }).kadOffer);
+    const up = timed.goneAt - timed.shownAt;
+    expect(up, `the offer was up for ${Math.round(up)}ms`).toBeGreaterThan(14_000);
+    expect(up, `the offer was up for ${Math.round(up)}ms`).toBeLessThan(17_000);
+    // Kept playing: the room is still at the Rest, not stopped, and the offer does not come back.
+    const after = await roomState<{ sceneId: string; stopped?: boolean }>(kid, code);
+    expect(after.sceneId).toBe("rest_mossbank");
+    expect(after.stopped ?? false).toBe(false);
+    await tv.waitForTimeout(2_000);
+    await expect(offer).toHaveCount(0);
+    // Stop for today is still in the Room panel.
+    await tv.getByRole("button", { name: "Room", exact: true }).click();
+    await expect(tv.getByRole("button", { name: "Stop for today" })).toBeVisible(TAP);
+    await tv.getByRole("button", { name: "Room", exact: true }).click();
+
+    // --- The same Rest on a reloaded TV, which offers again: the bar runs, and OK on Keep playing
+    //     still answers it before the clock ---
+    await tv.reload();
+    await expect(offer).toBeVisible(TAP);
+    expect(await offer.locator(".kad-host__offer-bar > span").evaluate((el) => getComputedStyle(el).animationName)).toBe("kad-host-offer-run");
+    await keep.focus();
+    await tv.keyboard.press("Enter");
+    await expect(offer).toHaveCount(0, TAP);
+    expect((await roomState<{ stopped?: boolean }>(kid, code)).stopped ?? false).toBe(false);
   });
 });

@@ -18,7 +18,7 @@ Verdicts:
   design.
 - **keep**: genuinely needed on the TV. It stays, and must work with a remote (arrows and Enter, a
   visible focus ring).
-- **owner call**: ambiguous. It is left as it is, with the options set out at the end.
+- **owner call**: ambiguous, so put to the owner. The owner's decisions are at the end.
 
 Unchanged owner decisions: the goal tracker updates by itself and is never tapped. The "Last time…"
 recap (#378) dismisses on its own. A rendering error stays hidden behind a small red warning icon.
@@ -42,13 +42,13 @@ recap (#378) dismisses on its own. A rendering error stays hidden behind a small
 | # | Element | File:line | What it does | Verdict |
 |---|---|---|---|---|
 | 8 | Room panel: Make keeper, Remove, per player | `screens/HostControls.tsx:319`, `:330` | Hands a phone the keeper role; takes a player out. | **keep** (Remove is the owner's named example). |
-| 9 | Room panel: Let visitors join / Stop new visitors | `screens/HostControls.tsx:449` | Opens the room to visitors. It first opens a grown-up's sign-in on the TV (`SignInFlow`, `HostControls.tsx:271`). | **keep** for the switch. The sign-in it opens is an **owner call** (A below). |
+| 9 | Room panel: Let visitors join / Stop new visitors | `screens/HostControls.tsx:449` | Opens the room to visitors. It first opens a grown-up's sign-in on the TV (`SignInFlow`, `HostControls.tsx:271`). | **keep** for the switch. The sign-in it opens stays on the TV, by owner decision (A below); a remote can reach and fill it. |
 | 10 | Room panel: Lock, Quiet mode, Stop for today (and its confirm), Close the room (and its confirm) | `screens/HostControls.tsx:349`, `:365`, `:385`, `:394`, `:399`, `:408`, `:417`, `:422` | The host's levers (#263, #259, #260). | **keep**: no phone equivalent in a TV-hosted room. |
-| 11 | Stop offer at a Rest: Stop here for today, Keep playing | `screens/HostControls.tsx:113`, `:125` | Comes up by itself at a Rest scene and stays until one of them is clicked. It lay over the goal header. | **owner call** (B below). |
+| 11 | Stop offer at a Rest: Stop here for today, Keep playing | `screens/HostControls.tsx:113`, `:125` | Comes up by itself at a Rest scene and stays until one of them is clicked. It lay over the goal header. | **auto**, by owner decision (B below): on the TV it keeps playing by itself after 15s. |
 | 12 | Host TV's "Player joined" card: Remove, Dismiss (✕) | `screens/ArrivalNotices.tsx:113`, `:123` | One card per arrival, kept until dismissed. #389: at 1024×600, three cards covered the right of the goal header and the guests; in the lobby they covered the QR code. | **auto**. One line ("Pip and Bo joined"), nothing to tap, gone after `noticeMs`. Remove is still a click away in the Room panel (8), which lists everyone who ever joined and survives a refresh. |
 | 13 | Host TV's "N more joined" / "Show fewer" | `screens/ArrivalNotices.tsx:80` | Unfolds the arrival cards past three. | **auto**. The one line names up to three people and counts the rest ("Pip, Bo and 3 more joined"). |
 | 14 | A non-host display's "Player joined" card: Dismiss (✕) | `screens/ArrivalNotices.tsx:123` | Already went by itself after 8s. | **auto**: no ✕, and the same line as 12. |
-| 15 | Flood warning, "A lot of phones are joining…" | `screens/ArrivalNotices.tsx:72` | Shown to a host while arrivals overflow; stays until the screen leaves the room. Nothing to click. | **owner call** (C below). |
+| 15 | Flood warning, "A lot of phones are joining…" | `screens/ArrivalNotices.tsx:72` | Shown to a host while arrivals overflow; stays until the screen leaves the room. Nothing to click. | **auto**, by owner decision (C below). |
 | 16 | Error toast's Dismiss (✕) | `ui/ErrorToast.tsx:38` | Already went by itself after 6s. Bottom centre, over the story plate. | **auto**: no ✕ on the TV, in the column (off the plate), gone after `noticeMs`. |
 | 17 | Reconnecting banner | `ui/ConnectionBanner.tsx:53` | Shown while the stream is down; goes when it is back. Nothing to click. | **auto** (already). In the column on the TV, so it is never on the chapter title or goal. |
 | 18 | "New in the Field Guide" banner (TV) | `screens/FieldGuideNews.tsx:194` | A plain `div`: nothing to click (only the phone's toast, `:123`, is a button). It went after 5s, top centre, over the chapter's title and goal. | **auto** (already). In the column, and up for `noticeMs` of its words. |
@@ -96,18 +96,27 @@ card's Remove stays on the TV, in the Room panel, where it already was.
   one. A radio hidden under the card that draws it is skipped; the card is what takes focus.
 - The About report takes focus on Close when it opens, closes on Escape, and gives focus back to (i).
 
-## Owner calls
+## Owner decisions
 
-**A. The visitor switch's sign-in on the TV** (9). "Let visitors join" opens a grown-up's email
-and code sign-in on the TV, which means typing with a remote. Options: (1) leave it; (2) have the TV
-show a QR code that opens the sign-in on the grown-up's phone (new design); (3) hide the switch on
-a host TV and offer it only on a host phone (a TV-hosted room would then have no visitor switch).
+These three were put to the owner as owner calls, and the owner has decided them.
 
-**B. The Rest stop offer** (11). It still waits for a click, but it now stands in the column,
-below the goal header and off the plate, so it no longer covers either. Options: (1) leave it;
-(2) let it go by itself after a while, since Stop for today stays in the Room panel; (3) make it a
-line with nothing to tap ("A good place to stop. Room → Stop for today"), which is new copy.
+**A. The visitor switch's sign-in on the TV** (9). It stays on the TV as it is. A remote can get
+through it: the arrows reach the email and code fields, each field takes focus as its step opens,
+and Up/Down or Escape and then an arrow leave a field (`display/remote-focus.ts`). A QR code that
+opens the sign-in on a phone is a separate follow-up issue, not built here.
 
-**C. The flood warning** (15). It has nothing to click, but it stays up while arrivals overflow
-and it is a security warning. Options: (1) leave it up, as now; (2) let it go after `noticeMs`
-like the other notices, with the roster in the Room panel still showing everyone.
+**B. The Rest stop offer** (11). On the TV it keeps playing by itself after 15 seconds
+(`STOP_OFFER_MS`, `screens/HostControls.tsx`).
+- The countdown is quiet: a thin bar runs down under the buttons, with "Keeping going…". Nothing
+  has to be tapped.
+- Either button still works, by click or a remote's Enter, before the time runs out. Stop for
+  today stays in the Room panel.
+- Under reduced motion the bar stands still and full, and the timer still runs.
+- The timeout does exactly what Keep playing does, which is this screen's own business: it puts the
+  offer away for this Rest and sends nothing. So it happens once, the clock goes with the offer, and
+  no phone or other screen is affected. While a stop is on its way, the clock waits.
+- A host's phone (Phone or Travel Mode) still waits for an answer: it is not driven by a remote.
+
+**C. The flood warning** (15). On the TV it goes after `noticeMs`, like the other notices, and comes
+back if more phones fall off the list afterwards. The Room panel's roster lists everyone meanwhile.
+A host's phone keeps it up, as before.
