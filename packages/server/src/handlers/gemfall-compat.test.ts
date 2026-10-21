@@ -115,6 +115,14 @@ const PRE_EPIC = JSON.parse(
  * they die with the chapter, and none is set where the pinned mid-fight save
  * resumes (02's wolves to its plank bridge). The endings, roads, setbacks and
  * saves below still match their pre-epic digests.
+ *
+ * Re-pinned for gemfall-06's cohesion fixes (#368): wording, labels, a check
+ * prompt and narration variants only. The opening states the goal and names
+ * Redspire, Hessa introduces the seal, the shut-out p1 says its fact plainly,
+ * Pellam's record reads back the party's motive, road, ember, sprites, glade
+ * and reading, and `check_doorstep` is a stand-your-ground check marked
+ * `"doing"`. No scene, edge, flag, effect, stat or TN moved; the digests below
+ * are unchanged.
  */
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
@@ -129,7 +137,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-05a.json": "21c1eeeee0d52044eb6bad67c921483148bb23e3349a505567ab5906659aebe7",
   "chapters/gemfall-05b.json": "6a30ade7fe12e2a7e961a8e5f11dcba8a3466b5b5f602938b0f76aff42c305f5",
   "chapters/gemfall-05c.json": "a6ab77dd22ea8fa5d00569017d18d5c305dbcbbbb2d9f39b4c24dc71f30e4f43",
-  "chapters/gemfall-06.json": "4c7306ba197e3ce56b98421797da0aa1488cb3c28cc5eec350b5fdeb7b2c44e1",
+  "chapters/gemfall-06.json": "b7a15bfce522b03e0f553e5b4d3272e25bf1051ca67585f4cf3de79bb1fc7345",
   "chapters/gemfall-07h.json": "102d1fc2869f2001c57a3f17a934da964301e12e2db1d2342768a1e211a7c532",
   "chapters/gemfall-07l.json": "d2bf74142b55a622b2bdf709296541d07acb80eb74753c79f2f220b4f5f41604",
   "chapters/gemfall-07r.json": "82503bbeb255631abbab0138a1ab6dfa4cf1b9f149cf63e19906cc42dbe795d7",
