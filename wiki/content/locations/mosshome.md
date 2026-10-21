@@ -3,7 +3,7 @@ title: MossHome
 id: location.mosshome
 type: location
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-03b", "gemfall-03c", "gemfall-04b", "gemfall-05b", "gemfall-06", "gemfall-07h", "gemfall-07l", "gemfall-07r", "gemfall-08"]
 tags: ["forest_settlement", "living_architecture", "bigfoot", "cultivated_moss", "ancient_trees"]

@@ -3,10 +3,15 @@ title: Marsh Lantern
 id: item.marsh_lantern
 type: item
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: []
 tags: ["tool", "light", "swamp", "common"]
+height_cm: 35
+size:
+  height: "35 cm (1 ft 2 in)"
+  compare: "fits in a backpack"
+  line: "35 cm (1 ft 2 in), fits in a backpack."
 related:
   - id: biome.whispering_marsh
     type: biome

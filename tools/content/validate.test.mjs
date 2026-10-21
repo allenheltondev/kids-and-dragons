@@ -517,6 +517,8 @@ describe("routed beats", () => {
     const campaign = readJson(dir, ...CAMPAIGN);
     campaign.chapters = ["bramblewood-01", ...roads.map(([id]) => id)];
     campaign.routeSets = { road: roads.map(([, flag]) => flag) };
+    // A campaign that carries flags has a "Last time" line for each (#357).
+    campaign.lastTime = { opener: "Off we go.", lines: Object.fromEntries(roads.map(([, flag]) => [flag, `You took the ${flag} road.`])) };
     mutate({ dir, campaign, roads });
     writeJson(dir, CAMPAIGN, campaign);
     return validate(dir);

@@ -3,9 +3,9 @@
  *
  * A phone that is not in a game can still open the things a game leaves
  * behind and just look: your hero, the bag they carry, the atlas with every
- * country the household has found, and the Field Guide. Nothing here sends an
- * intent or can change anything, so there is nothing to get wrong — it is the
- * book you leaf through in the car, not the table.
+ * country the household has found, the story so far, and the Field Guide.
+ * Nothing here sends an intent or can change anything, so there is nothing
+ * to get wrong — it is the book you leaf through in the car, not the table.
  *
  * Shaped like Travel Mode on purpose (layout/TravelLayout.tsx): one surface at
  * a time over the same tray of objects, so the journal and the game feel like
@@ -42,7 +42,7 @@ import { offlineArtFor, warm } from "../sw/warm";
 import "./shared.css";
 import "./JournalScreen.css";
 
-export type JournalPane = "hero" | "map" | "guide" | "me";
+export type JournalPane = "hero" | "map" | "story" | "guide" | "me";
 
 /**
  * Her own page (#299) is a chunk of its own, fetched the first time "Me" is
@@ -50,6 +50,9 @@ export type JournalPane = "hero" | "map" | "guide" | "me";
  * the journal chunk, let alone the first paint.
  */
 const ProfilePane = lazyChunk(() => import("./ProfilePane"), (module) => module.default);
+
+/** The story so far (#358): its own chunk too, fetched the first time "Story" is opened. */
+const StoryPane = lazyChunk(() => import("./StoryPane"), (module) => module.default);
 
 /**
  * A saved hero as the sheet and the atlas want them: a party member at full
@@ -180,6 +183,7 @@ export function JournalScreen(): ReactElement {
       <nav className="kad-travel__bar kad-tray" aria-label="What to look at">
         <TrayTab on={pane === "hero"} object="satchel" label="Hero" onClick={() => setPane("hero")} />
         <TrayTab on={pane === "map"} object="map" label="Map" onClick={() => setPane("map")} />
+        <TrayTab on={pane === "story"} object="storybook" label="Story" onClick={() => setPane("story")} />
         <TrayTab on={pane === "guide"} object="fieldGuide" label="Guide" onClick={() => setPane("guide")} />
         {load.journal.profile ? (
           <TrayTab on={pane === "me"} object="scroll" label="Me" onClick={() => setPane("me")} />
@@ -202,6 +206,13 @@ export function JournalScreen(): ReactElement {
           <ChunkBoundary inline message="Your page couldn’t open.">
             <Suspense fallback={<div className="journal__busy" role="status"><Spinner /><span>Opening your page…</span></div>}>
               <ProfilePane journal={load.journal} />
+            </Suspense>
+          </ChunkBoundary>
+        ) : null}
+        {pane === "story" ? (
+          <ChunkBoundary inline message="Your story couldn’t open.">
+            <Suspense fallback={<div className="journal__busy" role="status"><Spinner /><span>Opening your story…</span></div>}>
+              <StoryPane journal={load.journal} />
             </Suspense>
           </ChunkBoundary>
         ) : null}
