@@ -134,7 +134,10 @@ export function useStartPreface(): StartPreface {
   }, [waiting, key]);
 
   if (!start || state === null || without) return { status: "none" };
-  if (!loaded) return gaveUp === key ? { status: "none" } : { status: "pending", key };
+  // Gave up waiting: the story has been read without it, so it never comes back for this start,
+  // however soon after the files land. A recap after the story would be out of order.
+  if (gaveUp === key) return { status: "none" };
+  if (!loaded) return { status: "pending", key };
   // A playtest jump, or a chapter that opens somewhere other than its entry: not a start.
   if (!campaign || !chapter || chapter.entry !== state.sceneId) return { status: "none" };
   const held = partyItemIds({ members: state.party.map((member) => member.character) });
