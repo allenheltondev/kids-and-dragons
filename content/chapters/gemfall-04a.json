@@ -433,7 +433,7 @@
       "narration": "The centaur waystation is a long barn full of sashes. Every road-warden's sash is a stitched map of the roads, and this season every single one is being unpicked and sewn again. There are needles everywhere. A centaur with three spools in her mouth waves you to the big table.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/road_warden",
           "name": "Road-Warden"
         }
       ],
@@ -467,7 +467,7 @@
       "prompt": "Line up the new stitched detours, thread by thread",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/road_warden",
           "name": "Road-Warden"
         }
       ],
@@ -495,7 +495,7 @@
       "narration": "Side by side, the new detours are not random. They spiral. Every road on every sash bends around the places where the stones fell, like water going around rocks. The roads are flinching. And the widest spiral of all is centered on a patch of grass a short walk from here.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/road_warden",
           "name": "Road-Warden"
         }
       ],
@@ -526,7 +526,7 @@
       "narration": "The centaurs feed you oat-cakes, wrap up a supper bundle for the road, and argue about whose stitching is neatest. The barn smells of hay and new thread. Sit a while and get your breath.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/road_warden",
           "name": "Road-Warden"
         }
       ],
@@ -842,11 +842,11 @@
       "art": "scenes/gemfall/pride-marker-road",
       "cast": [
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_scout",
           "name": "Brassbuckle scout"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_recordkeeper",
           "name": "Brassbuckle recordkeeper"
         }
       ]
@@ -865,11 +865,11 @@
       "art": "scenes/gemfall/pride-marker-road",
       "cast": [
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_scout",
           "name": "Brassbuckle scout"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_recordkeeper",
           "name": "Brassbuckle recordkeeper"
         }
       ]
@@ -888,11 +888,11 @@
       "art": "scenes/gemfall/pride-marker-road",
       "cast": [
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_scout",
           "name": "Brassbuckle scout"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_recordkeeper",
           "name": "Brassbuckle recordkeeper"
         }
       ]
@@ -911,11 +911,11 @@
       "art": "scenes/gemfall/pride-marker-road",
       "cast": [
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_scout",
           "name": "Brassbuckle scout"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/brassbuckle_recordkeeper",
           "name": "Brassbuckle recordkeeper"
         }
       ]
@@ -1424,7 +1424,7 @@
       "narration": "A centaur hands you a needle and a sash and shows you a road to move. You unpick it, stitch by stitch, and sew it back a finger's width to the left, around a little red cross. You feel strangely guilty, as if you had moved a real road. In a way, you have.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/road_warden",
           "name": "Road-Warden"
         }
       ],
@@ -1443,7 +1443,7 @@
       "narration": "The whole barn turns around. \"The griffin from the letters!\" Somebody takes the spools out of her mouth to shake your hand. Bracken's letters are already pinned up on the wall, and the centaurs have been waiting for you so they could start the big table. They pull out a stool for everybody.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/road_warden",
           "name": "Road-Warden"
         }
       ],
@@ -1462,7 +1462,7 @@
       "narration": "You go around the barn with a pot of red ink, dotting every place a stone fell. When you step back, the map looks like it has measles. Every single road bends away from the dots. The oldest centaur looks at it for a long time, then hangs it up where everybody can see.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/road_warden",
           "name": "Road-Warden"
         }
       ],

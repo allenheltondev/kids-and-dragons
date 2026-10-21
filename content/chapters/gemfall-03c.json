@@ -769,7 +769,7 @@
       ],
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/relay_runner",
           "name": "Relay Runner"
         }
       ],
@@ -804,7 +804,7 @@
       "prompt": "Run a message down a two-day queue",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/relay_runner",
           "name": "Relay Runner"
         }
       ],
@@ -830,7 +830,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/relay_runner",
           "name": "Relay Runner"
         }
       ],
@@ -849,7 +849,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/relay_runner",
           "name": "Relay Runner"
         }
       ],
@@ -994,7 +994,7 @@
       "narration": "The marker line stands straight again, every post pointing the safe way to the ford. A centaur relay-runner slows down just long enough to say \"The relay remembers,\" and then she is gone, already singing it to the next runner up the road.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/relay_runner",
           "name": "Relay Runner"
         }
       ],

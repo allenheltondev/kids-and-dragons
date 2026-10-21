@@ -540,7 +540,7 @@
           "name": "Masked choir singer"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/masked_choir_singer",
           "name": "Masked choir singer"
         }
       ]
@@ -566,7 +566,7 @@
           "name": "Masked choir singer"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/masked_choir_singer",
           "name": "Masked choir singer"
         }
       ]
@@ -592,7 +592,7 @@
           "name": "Masked choir singer"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/masked_choir_singer",
           "name": "Masked choir singer"
         }
       ]
@@ -618,7 +618,7 @@
           "name": "Masked choir singer"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/masked_choir_singer",
           "name": "Masked choir singer"
         }
       ]
@@ -677,7 +677,7 @@
           "name": "Masked choir singer"
         },
         {
-          "figure": "entities/burrowfolk",
+          "figure": "cast/masked_choir_singer",
           "name": "Masked choir singer"
         }
       ]
@@ -1099,7 +1099,7 @@
       "narration": "At the end of the road a witch in a patched hat runs a remedy stall, and every charm on it is ringing by itself. \"I'll lend you my question,\" she says, \"if you answer it first. What do you actually want?\"",
       "cast": [
         {
-          "figure": "entities/witch_order",
+          "figure": "cast/stall_witch",
           "name": "Stall Witch"
         }
       ],
@@ -1141,7 +1141,7 @@
       "narration": "You say whatever you think will get you the question. The stall witch listens to all of it with her head on one side. \"No,\" she says, pleasantly, when you finish. \"That's not a want. That's a wish for a want.\" She lends you nothing, and her charms ring once, as if amused.",
       "cast": [
         {
-          "figure": "entities/witch_order",
+          "figure": "cast/stall_witch",
           "name": "Stall Witch"
         }
       ],
@@ -1159,7 +1159,7 @@
       "narration": "\"To hold it, because we can.\" The stall witch does not look away. \"Honest,\" she says. \"I'll give you honest.\" She lends you the question anyway, but she holds onto it a heartbeat longer than she needs to before she lets go. \"Ask it of yourselves first,\" she says.",
       "cast": [
         {
-          "figure": "entities/witch_order",
+          "figure": "cast/stall_witch",
           "name": "Stall Witch"
         }
       ],
@@ -1177,7 +1177,7 @@
       "narration": "\"To hold it still, so nobody gets hurt.\" The stall witch looks at you for a long moment, and then nods, once. \"That one I'll lend,\" she says, and presses the question into your hands like a small warm coin. \"Ask it of anything. Even me.\"",
       "cast": [
         {
-          "figure": "entities/witch_order",
+          "figure": "cast/stall_witch",
           "name": "Stall Witch"
         }
       ],
@@ -1352,7 +1352,7 @@
       "narration": "The centaur relay pulls up at your table and unrolls a sash-map. \"Fat caravan tomorrow, biggest stone in the funnel,\" says the lead runner. \"Where do you want it?\" You point at the worst bend, and she nods as if that is the most sensible thing anyone has said all day.",
       "cast": [
         {
-          "figure": "entities/centaur",
+          "figure": "cast/relay_runner",
           "name": "Relay Runner"
         }
       ],
