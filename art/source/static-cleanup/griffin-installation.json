@@ -1,0 +1,25 @@
+{
+  "approved_source": "duskrunner-mythic-griffin-chest-candidate.png",
+  "source_sha256": "44028b67e51c91010707635f4b6dcdd79623116aef19f60af665e2737680cb99",
+  "target": "assets/character-rigs/duskrunner/mythic/griffin/assembled.png",
+  "source_size": [
+    1254,
+    1254
+  ],
+  "output_size": [
+    1024,
+    1024
+  ],
+  "resampling": "Lanczos, uniform downscale; no retouching",
+  "translation": [
+    0,
+    0
+  ],
+  "ground_y": 900,
+  "visible_bounds": [
+    115,
+    88,
+    923,
+    900
+  ]
+}

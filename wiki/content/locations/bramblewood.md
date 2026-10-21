@@ -3,7 +3,7 @@ title: Bramblewood
 id: location.bramblewood
 type: location
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: newly_defined
 played_in: ["bramblewood-01", "gemfall-02", "gemfall-05a", "gemfall-05c"]
 tags: ["town", "hedges", "sunward_fields", "waystop"]

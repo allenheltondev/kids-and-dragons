@@ -3,14 +3,20 @@ title: Will-o'-Wisp
 id: creature.will_o_wisp
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
-played_in: ["bramblewood-01", "gemfall-03b", "gemfall-04b"]
+played_in: ["bramblewood-01", "first-steps-01", "gemfall-03b", "gemfall-04b"]
 tags: ["supernatural", "marsh", "memory", "misdirection"]
 classification: supernatural_manifestation
 danger_level: moderate
 scale: tiny
 sapience: variable
+height_cm: 20
+size:
+  height: "20 cm (8 in)"
+  compare: "fits in a backpack"
+  stance: "hovers"
+  line: "20 cm (8 in), fits in a backpack. Hovers."
 lore_hook: "A memory that got loose, and is still trying to finish itself."
 likes:
   - id: npc.boggart

@@ -3,7 +3,7 @@ title: Mosshorn
 id: creature.mosshorn
 type: creature
 status: draft
-lastReviewed: "2026-10-15"
+lastReviewed: "2026-10-21"
 canon_status: confirmed
 played_in: ["gemfall-04b", "gemfall-07h"]
 tags: ["ambient", "forest", "gentle", "indicator"]
@@ -11,6 +11,11 @@ classification: ambient_creature
 danger_level: none
 scale: medium
 sapience: animal
+height_cm: 150
+size:
+  height: "1.5 m (4 ft 11 in)"
+  compare: "as tall as a grown-up"
+  line: "1.5 m (4 ft 11 in), as tall as a grown-up."
 lore_hook: "A walking garden that takes the job as seriously as any gardener."
 likes:
   - id: npc.harvest_sprite
