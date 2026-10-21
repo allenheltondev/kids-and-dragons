@@ -802,7 +802,7 @@
     },
     "steady_changed": {
       "type": "story",
-      "narration": "You let the fold go instead of chasing it. The sound bench holds the rest, and Bram brings everyone behind the second mark.",
+      "narration": "You let the fold go instead of chasing it. The sturdy bench holds the rest, and Bram brings everyone behind the boundary.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1068,7 +1068,7 @@
     },
     "release_2": {
       "type": "story",
-      "narration": "Seren takes the prop out only after the people and loose gear are behind the second mark. The opening remains an object to watch, not a shortcut to trust.",
+      "narration": "Seren takes the prop out only after the people and loose gear are behind the boundary. The opening remains an object to watch, not a shortcut to trust.",
       "choices": [
         {
           "id": "continue",
