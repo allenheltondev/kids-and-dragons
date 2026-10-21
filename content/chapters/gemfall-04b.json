@@ -56,7 +56,7 @@
   "scenes": {
     "scene_tree_line": {
       "type": "story",
-      "narration": "The Enchanted Woods begin all at once, like a wall somebody painted green. As you step under the first branches, a fern unrolls, looks you up and down, and rolls itself back up. Somewhere in here, something is counting, and it has just reached you.",
+      "narration": "The Enchanted Woods begin all at once, like a wall somebody painted green. As you step under the first branches, a fern unrolls, looks you up and down, and rolls itself back up. Somewhere in here, something is counting, and it has just reached you. Every road north runs through these trees, so before you go any further, you need to find out what the forest is counting, and why.",
       "choices": [
         {
           "id": "walk_in",
@@ -153,11 +153,19 @@
           "icon": "forward",
           "goto": "scene_runner_path"
         }
+      ],
+      "variants": [
+        {
+          "when": {
+            "item": "charm_ford_witch"
+          },
+          "text": "For you, it was the river. The west branch swept you off the ford, away from all those waiting wagons, and through the marsh to here. Somewhere back east, the drovers are still singing the crossing verse without you."
+        }
       ]
     },
     "scene_runner_path": {
       "type": "story",
-      "narration": "A bigfoot runner comes jogging down the path toward you, a bundle of knotted cords over one shoulder. Right in front of her, the path folds itself up like a napkin and is gone. She keeps jogging, on the spot, frowning at the ferns. \"Third time today,\" she puffs. \"MossHome runner. Bigfoot town, up north. Can't stop. Never stop. Can't get through, either.\"",
+      "narration": "A bigfoot runner comes jogging down the path toward you, a bundle of knotted cords over one shoulder. Right in front of her, the path folds itself up like a napkin and is gone. She keeps jogging in place, frowning at the ferns. \"Third time today,\" she puffs. \"MossHome runner. Bigfoot town, up north. Can't stop. Never stop. Can't get through, either.\"",
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -206,7 +214,7 @@
       },
       "onFailure": {
         "goto": "scene_roll_call",
-        "narration": "You find a path. It is the wrong one, and it walks you in a neat circle back to the runner, who has found the right one herself while you were gone and is jogging on the spot, laughing. \"Happens to everybody this season,\" she puffs, and jogs away north."
+        "narration": "You find a path. It is the wrong one, and it walks you in a neat circle back to the runner, who has found the right one herself while you were gone and is jogging in place, laughing. \"Happens to everybody this season,\" she puffs, and jogs away north."
       }
     },
     "scene_runner_path_carry": {
@@ -249,7 +257,7 @@
     },
     "scene_roll_call": {
       "type": "story",
-      "narration": "The path opens into a round clearing ringed by tall trees. As you step in, the leaves begin to rustle in turn, one tree after another, slow as a teacher reading the register. They are calling names. A squirrel answers \"Here!\" and scampers off. A prospector answers, and the path behind him quietly shuts. Now the rustling is coming round to you.",
+      "narration": "The path opens into a round clearing ringed by tall trees. As you step in, the leaves begin to rustle in turn, one tree after another, slow as a teacher taking attendance. They are calling names. A squirrel answers \"Here!\" and scampers off. A prospector answers, and the path behind him quietly shuts. Now the rustling is coming around to you.",
       "choices": [
         {
           "id": "here",
@@ -270,11 +278,49 @@
           "requiresItem": "charm_ford_witch",
           "goto": "scene_roll_call_charm"
         }
+      ],
+      "variants": [
+        {
+          "when": {
+            "item": "charm_ford_witch"
+          },
+          "text": "It slows right down over Mother Thrum's tuned charm from the ford, and the charm gives one small chime back, like a hand going up."
+        },
+        {
+          "when": {
+            "item": "brave_whistle"
+          },
+          "text": "It gives your brave whistle a short, approving rustle, the way you would nod at somebody wearing a medal."
+        },
+        {
+          "when": {
+            "item": "hollow_crown_shard"
+          },
+          "text": "Over the curl of cold silver from the marsh, it goes very quiet, and then hurries on, the way you skip a page you are not ready to read."
+        },
+        {
+          "when": {
+            "item": "mosslight_jar"
+          },
+          "text": "It counts your jar of mosslight, and the jar glows a little brighter, as if it likes being counted."
+        },
+        {
+          "when": {
+            "item": "facet_barge"
+          },
+          "text": "The Barge Stone from the marsh gets the longest rustle of all."
+        },
+        {
+          "when": {
+            "item": "facet_ford"
+          },
+          "text": "The Ford Stone from the river crossing gets the longest rustle of all."
+        }
       ]
     },
     "scene_roll_call_here": {
       "type": "story",
-      "narration": "\"Here!\" you shout. The trees rustle, satisfied. Then the rustling carries on, slowly, as if it is reading out what is in your packs: socks, crumbs, a spoon, a biscuit you forgot about. Anything that hums gets a long, thoughtful rustle all of its own. At last, with the air of a teacher closing a book, a path opens.",
+      "narration": "\"Here!\" you shout. The trees rustle, satisfied. Then the rustling carries on, slowly, as if it is reading out what is in your packs: socks, crumbs, a spoon, a cookie you forgot about. Anything that hums gets a long, thoughtful rustle all of its own. At last, with the air of a teacher closing a book, a path opens.",
       "choices": [
         {
           "id": "on",
@@ -309,7 +355,7 @@
             "flag": "answered_roll_call"
           }
         ],
-        "narration": "You empty your pockets onto a stump and name everything out loud, even the squashed biscuit, even the stone if you have one. The trees rustle warmly, the way grown-ups do when you own up first. A path opens, wide and sunny, and the forest seems to make a little note about you."
+        "narration": "You empty your pockets onto a stump and name everything out loud, even the squashed cookie, even the stone if you have one. The trees rustle warmly, the way grown-ups do when you own up first. A path opens, wide and sunny, and the forest seems to make a little note about you."
       },
       "onFailure": {
         "goto": "scene_attendance",
@@ -381,7 +427,7 @@
     },
     "scene_attendance_open_path": {
       "type": "story",
-      "narration": "You take the path that opens for you. It closes neatly behind you, like a door held by a very good butler, and the next one opens just ahead. It is a bit like being passed from hand to hand. Then, round a bend, you hear somebody shouting at a hedge. The hedge does not seem to be listening.",
+      "narration": "You take the path that opens for you. It closes neatly behind you, like a door held by a very good butler, and the next one opens just ahead. It is a bit like being passed from hand to hand. Then, around a bend, you hear somebody shouting at a hedge. The hedge does not seem to be listening.",
       "choices": [
         {
           "id": "on",
@@ -476,12 +522,12 @@
       },
       "onFailure": {
         "goto": "scene_mosshorns",
-        "narration": "You heave. The hedge heaves back, and now it is holding your sleeves too. In a panic, the biggest prospector empties his pockets on the ground, and the moment the gems touch the moss, roots curl round them and pull them under. The hedge lets everybody go at once, as if nothing happened."
+        "narration": "You heave. The hedge heaves back, and now it is holding your sleeves too. In a panic, the biggest prospector empties his pockets on the ground, and the moment the gems touch the moss, roots curl around them and pull them under. The hedge lets everybody go at once, as if nothing happened."
       }
     },
     "scene_hedge_empty": {
       "type": "story",
-      "narration": "\"It isn't you it wants,\" you tell them. \"It's what you're carrying.\" They grumble. They argue. Then, one by one, they turn out their pockets. The gems roll into the moss, and roots curl round them like fingers and draw them down. The hedge lets go at once. The prospectors stare at the ground. \"It's taking them,\" one whispers. \"Where's it taking them?\"",
+      "narration": "\"It isn't you it wants,\" you tell them. \"It's what you're carrying.\" They grumble. They argue. Then, one by one, they turn out their pockets. The gems roll into the moss, and roots curl around them like fingers and draw them down. The hedge lets go at once. The prospectors stare at the ground. \"It's taking them,\" one whispers. \"Where's it taking them?\"",
       "choices": [
         {
           "id": "on",
@@ -609,7 +655,7 @@
     },
     "scene_gray_patch": {
       "type": "story",
-      "narration": "In a bald gray patch, where nothing grows and no mosshorn will graze, a crumb of fallen stone glitters in the moss. It's no bigger than a pea, and it is humming, very small and very determined, like a bee in a jar. Round it the moss has gone gray in a perfect ring. A beetle walks the long way round.",
+      "narration": "In a bald gray patch, where nothing grows and no mosshorn will graze, a crumb of fallen stone glitters in the moss. It's no bigger than a pea, and it is humming, very small and very determined, like a bee in a jar. Around it the moss has gone gray in a perfect ring. A beetle walks the long way around.",
       "choices": [
         {
           "id": "pocket",
@@ -663,8 +709,9 @@
       },
       "onFailure": {
         "goto": "scene_unicorns",
-        "narration": "You press it down. It pops back up. You press it again. It pops up again, like a cork in a bath. On the third go you give up and plant a stick beside it as a flag, so whoever mends these things can find it. Somebody nearby, with ears, has noticed that too."
-      }
+        "narration": "You press it down. It pops back up. You press it again. It pops up again, like a cork in a bath. On the third try you give up and plant a stick beside it as a flag, so whoever mends these things can find it. Somebody nearby, with ears, has noticed that too."
+      },
+      "checkKind": "doing"
     },
     "scene_unicorns": {
       "type": "story",
@@ -727,7 +774,7 @@
     },
     "scene_unicorns_horn": {
       "type": "story",
-      "narration": "You lower your horn to the bruise beside the two unicorns. It feels like pressing on a sore knee, and then like the knee feeling better. Green creeps out from under your horn in a slow ring, and the flowers turn round to see who did it. The elder unicorn's ears tip forward. For a unicorn, that is a standing ovation.",
+      "narration": "You lower your horn to the bruise beside the two unicorns. It feels like pressing on a sore knee, and then like the knee feeling better. Green creeps out from under your horn in a slow ring, and the flowers turn around to see who did it. The elder unicorn's ears tip forward. For a unicorn, that is a standing ovation.",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
@@ -749,7 +796,7 @@
     },
     "scene_unicorns_guard": {
       "type": "story",
-      "narration": "You stand guard at the edge of the glade while the unicorns mend, horns low, humming. Nothing comes. A mosshorn peers in, sees you guarding, and backs out again, very respectfully. A squirrel tries to cross and you make it wait. By the time you turn round, the moss is green again, and the elder unicorn nods: a good guard is help too.",
+      "narration": "You stand guard at the edge of the glade while the unicorns mend, horns low, humming. Nothing comes. A mosshorn peers in, sees you guarding, and backs out again, very respectfully. A squirrel tries to cross and you make it wait. By the time you turn around, the moss is green again, and the elder unicorn nods: a good guard is help too.",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
@@ -795,7 +842,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Hum with the unicorns while the moss remembers its color",
+      "prompt": "Hum with the unicorns, hands flat on the moss, while it remembers its color",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
@@ -816,12 +863,13 @@
             "value": true
           }
         ],
-        "narration": "Green creeps back from the middle, like a spill going backwards. The flowers turn round one by one to face the sun."
+        "narration": "Green creeps back from the middle, like a spill going backwards. The flowers turn around one by one to face the sun."
       },
       "onFailure": {
         "goto": "scene_finding",
         "narration": "You hum, and the moss goes green, then gray, then a sort of hopeful beige. The unicorns finish it themselves, very kindly, while you hold their saddlebags."
-      }
+      },
+      "checkKind": "doing"
     },
     "scene_finding": {
       "type": "story",
@@ -1069,7 +1117,8 @@
       "onFailure": {
         "goto": "scene_sitting_beech",
         "narration": "Your hoot comes out like a goose with hiccups. The calf looks at you, embarrassed on your behalf, and hoots properly itself. The herd answers at once and comes to fetch it. As it trots home, the calf looks back at you with deep pity. You have been out-hooted by a baby."
-      }
+      },
+      "checkKind": "doing"
     },
     "scene_lost_calf_carry": {
       "type": "story",
@@ -1091,7 +1140,7 @@
     },
     "scene_lost_calf_lead": {
       "type": "story",
-      "narration": "The calf trusts you, so you trust it. It leads you down a mosshorn path you would never have found, under ferns taller than you, and straight into the middle of its herd. The big mosshorns crowd round, sniffing your lullaby-hummed boots. Then the whole herd walks you to the last stretch before the worst glade, like an escort.",
+      "narration": "The calf trusts you, so you trust it. It leads you down a mosshorn path you would never have found, under ferns taller than you, and straight into the middle of its herd. The big mosshorns crowd around, sniffing your lullaby-hummed boots. Then the whole herd walks you to the last stretch before the worst glade, like an escort.",
       "cast": [
         {
           "figure": "entities/mosshorn",
@@ -1109,7 +1158,7 @@
     },
     "scene_sitting_beech": {
       "type": "choice_point",
-      "narration": "On the last stretch to the worst glade, an old beech has sat down across the path like a grandad in an armchair, roots tucked under. It smells of rain. \"Before you see the worst of it,\" it whispers, very slowly, \"tell me why you came.\" A squirrel on its shoulder taps one foot, impatiently. What do you tell it? Everybody vote.",
+      "narration": "On the last stretch to the worst glade, a huge beech, fatter and mossier than any tree you have passed, has sat down across the path like a grandpa in an armchair, roots tucked under, with a beard of gray lichen. \"Before you see the worst of it,\" it whispers, very slowly, \"tell me why you came.\" A squirrel on its shoulder taps one foot, impatiently. What do you tell it? Everybody vote.",
       "choices": [
         {
           "id": "stones",
@@ -1153,7 +1202,7 @@
     },
     "scene_sitting_beech_passing": {
       "type": "story",
-      "narration": "\"Passing through,\" the beech repeats, very slowly. \"Everybody is passing through. Even me. I am just slower about it.\" It gets up one root at a time, which takes long enough to eat a whole biscuit. Then it waves you on with a branch, not at all convinced, but far too polite to say so.",
+      "narration": "\"Passing through,\" the beech repeats, very slowly. \"Everybody is passing through. Even me. I am just slower about it.\" It gets up one root at a time, which takes long enough to eat a whole cookie. Then it waves you on with a branch, not at all convinced, but far too polite to say so.",
       "choices": [
         {
           "id": "on",
@@ -1177,7 +1226,7 @@
     },
     "scene_sitting_beech_told": {
       "type": "story",
-      "narration": "\"You told the roll call everything,\" you remind it. \"Even the biscuit.\" The beech creaks with what is definitely laughter. \"I know,\" it whispers. \"The whole forest knows. I was only being polite.\" It gets up at once, the squirrel clinging on, and bows you past. You have never been bowed at by a tree before.",
+      "narration": "\"You told the roll call everything,\" you remind it. \"Even the cookie.\" The beech creaks with what is definitely laughter. \"I know,\" it whispers. \"The whole forest knows. I was only being polite.\" It gets up at once, the squirrel clinging on, and bows you past. You have never been bowed at by a tree before.",
       "choices": [
         {
           "id": "on",
@@ -1334,7 +1383,7 @@
       },
       "onDefeat": {
         "goto": "check_way_back",
-        "narration": "The echo hunter herds you out of the glade, nudge by patient nudge, all the way to a path that closes neatly behind you. When you turn round, the glade is gone."
+        "narration": "The echo hunter herds you out of the glade, nudge by patient nudge, all the way to a path that closes neatly behind you. When you turn around, the glade is gone."
       }
     },
     "check_way_back": {
@@ -1406,7 +1455,7 @@
     },
     "scene_mend_glade": {
       "type": "story",
-      "narration": "You kneel round the stone and press it, gently, down into the moss. It sinks like a pebble into honey. Green spreads out from the middle in a ring, and every flower in the glade turns round at once to look at you. The unicorns bow, ears and all.",
+      "narration": "You kneel around the stone and press it, gently, down into the moss. It sinks like a pebble into honey. Green spreads out from the middle in a ring, and every flower in the glade turns around at once to look at you. The unicorns bow, ears and all.",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
@@ -1494,7 +1543,7 @@
     "scene_pile_glimpsed": {
       "type": "story",
       "priority": 2,
-      "narration": "The paths close round you one by one, until the only way left squeezes past an enormous hollow oak. For just a moment you see inside: pickaxes, panniers, a feathered hat, and gems, dozens of them, humming. The forest has been confiscating. A root slides across the hole like a lid, and a branch gives your pocket a long, meaningful look.",
+      "narration": "The paths close around you one by one, until the only way left squeezes past an enormous hollow oak. For just a moment you see inside: pickaxes, panniers, a feathered hat, and gems, dozens of them, humming. The forest has been confiscating. A root slides across the hole like a lid, and a branch gives your pocket a long, meaningful look.",
       "choices": [
         {
           "id": "on",
@@ -1536,7 +1585,7 @@
     },
     "ending_marked_present": {
       "type": "rest",
-      "narration": "You camp at the northern edge of the Woods on moss as soft as a pillow. All night, a mosshorn stands at the edge of your firelight like a guard, its antler flowers open. The forest has taken attendance, and it has marked you present.",
+      "narration": "You camp at the northern edge of the Woods on moss as soft as a pillow. All night, a mosshorn stands at the edge of your firelight like a guard, its antler flowers open. The forest has taken attendance, and it has marked you present. Just before dark, the MossHome runner jogs by on a path that stays put for once. \"MossHome's just north!\" she puffs, and does not stop.",
       "cast": [
         {
           "figure": "entities/mosshorn"
@@ -1547,13 +1596,13 @@
     },
     "ending_marked_something": {
       "type": "rest",
-      "narration": "You camp at the northern edge of the Woods, where the paths finally let you out. The Glade Stone hums in your pack all night. No mosshorns come anywhere near. The forest has taken attendance, and next to your name it has written something you can't quite read.",
+      "narration": "You camp at the northern edge of the Woods, where the paths finally let you out. The Glade Stone hums in your pack all night. No mosshorns come anywhere near. The forest has taken attendance, and next to your name it has written something you can't quite read. Just before dark, the MossHome runner jogs by on a path that stays put for once. \"MossHome's just north!\" she puffs, and does not stop.",
       "heal": 4,
       "choices": []
     },
     "ending_shown_the_door": {
       "type": "rest",
-      "narration": "By the time you find your way back, the worst glade is already green. The unicorns mended it without you, and the stone has sunk back into the ground where nobody will ever pocket it. The forest walks you to its northern edge, politely, the way you walk a guest to the door. Camp there, scuffed and a little sorry.",
+      "narration": "By the time you find your way back, the worst glade is already green. The unicorns mended it without you, and the stone has sunk back into the ground where nobody will ever pocket it. The forest walks you to its northern edge, politely, the way you walk a guest to the door. Just before dark, the MossHome runner jogs by and waves. \"MossHome's just north!\" she puffs. Camp at the edge of the trees, scuffed and a little sorry.",
       "heal": 3,
       "onEnter": [
         {

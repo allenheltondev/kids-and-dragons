@@ -115,6 +115,12 @@ const PRE_EPIC = JSON.parse(
  * they die with the chapter, and none is set where the pinned mid-fight save
  * resumes (02's wolves to its plank bridge). The endings, roads, setbacks and
  * saves below still match their pre-epic digests.
+ *
+ * Re-pinned for the stage 4 cohesion fixes (#368): wording, labels, prompts,
+ * narration variants and `checkKind` only in 04a, 04b and 04c (each opening
+ * states its goal, Sefa sends the party to the waystation, callbacks to 3A, 3B
+ * and 3C, UK idioms out). No scene, edge, flag, effect, stat or TN moved; the
+ * endings, roads, setbacks and saves below still match their pre-epic digests.
  */
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "c3c679e0b5bb801c38acf7f09ce663e877aaa33120d8ed3f54bb307cb6148195",
@@ -123,9 +129,9 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-03a.json": "2543acfd89b948804507bcec9667f9c2e19b2ad42b20d3f5ffdee17ba59bd73d",
   "chapters/gemfall-03b.json": "37f9a6d76003d1eec4660fa4a86ffdf7b9da305fc79618d2df6821bd4254a734",
   "chapters/gemfall-03c.json": "78e7df8bd534f191be7d113090b7cbf684847a8adcf120533809e6ca2abdf243",
-  "chapters/gemfall-04a.json": "7902a8b516a6a58c6e7da9d76d0bc3601f4deee67d34bbe79eb763798dbe3eda",
-  "chapters/gemfall-04b.json": "9a7db3cf17d6a42354593bd3759a01c8a41fc0e248764c7aadd411a5573248f2",
-  "chapters/gemfall-04c.json": "134360d7535f4eb277b04d96d699baf0d002e046c916be805b6e181f227f3458",
+  "chapters/gemfall-04a.json": "88d8ab6dea3765a61f829bd6ca1c4caccacf827fcddb5d7e6bfc34dfa26b3084",
+  "chapters/gemfall-04b.json": "8783b9897dcd39df468804d68aafe5ba15f550b6788a9d44511b1b1eaea2449a",
+  "chapters/gemfall-04c.json": "5125582823cff28a429e5942657f12a06624b7d25bf7056fbe3148c6828f41b4",
   "chapters/gemfall-05a.json": "21c1eeeee0d52044eb6bad67c921483148bb23e3349a505567ab5906659aebe7",
   "chapters/gemfall-05b.json": "6a30ade7fe12e2a7e961a8e5f11dcba8a3466b5b5f602938b0f76aff42c305f5",
   "chapters/gemfall-05c.json": "a6ab77dd22ea8fa5d00569017d18d5c305dbcbbbb2d9f39b4c24dc71f30e4f43",
