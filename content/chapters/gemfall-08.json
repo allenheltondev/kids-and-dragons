@@ -2524,7 +2524,7 @@
           "id": "honest",
           "label": "Tell it what you want, honestly",
           "icon": "heart",
-          "goto": "check_verdict"
+          "goto": "scene_verdict_honest"
         },
         {
           "id": "silent",
@@ -2551,34 +2551,148 @@
           "label": "\"We told the wardens. They wrote it down twice.\"",
           "icon": "shield",
           "requiresFlag": "told_wardens",
-          "goto": "check_verdict"
+          "goto": "scene_verdict_wardens"
         },
         {
           "id": "close",
           "label": "\"We told nobody. We came ourselves.\"",
           "icon": "lantern",
           "requiresFlag": "kept_close",
-          "goto": "check_verdict"
+          "goto": "scene_verdict_close"
         },
         {
           "id": "rich",
           "label": "\"Honestly? We came to get rich.\"",
           "icon": "crown",
           "requiresFlag": "motive_wealth",
-          "goto": "check_verdict"
+          "goto": "scene_verdict_rich"
         },
         {
           "id": "duty",
           "label": "\"Somebody had to come. So we came.\"",
           "icon": "shield",
           "requiresFlag": "motive_duty",
-          "goto": "check_verdict"
+          "goto": "scene_verdict_duty"
         },
         {
           "id": "proving",
           "label": "\"We came to find out if we could.\"",
           "icon": "star",
           "requiresFlag": "motive_proving",
+          "goto": "scene_verdict_proving"
+        }
+      ]
+    },
+    "scene_verdict_honest": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "You tell it what you want, as honestly as you can, even the parts that sound silly out loud. The Seal-Keeper listens all the way to the end without blinking once. \"Honest,\" it says. \"Up here, that is rarer than gems.\" Then it waits, to see whether you meant it.",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hold its gaze while it decides",
+          "icon": "eye",
+          "goto": "check_verdict"
+        }
+      ]
+    },
+    "scene_verdict_wardens": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "\"We told the wardens,\" you say. \"They wrote it down twice.\" The Seal-Keeper snorts, and a little puff of warm ash comes out of one nostril. \"They write everything down twice,\" it says. \"I have read their logs. They are very good at noticing, and not so good at climbing. You climbed.\" Then it waits, to see whether you meant it.",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hold its gaze while it decides",
+          "icon": "eye",
+          "goto": "check_verdict"
+        }
+      ]
+    },
+    "scene_verdict_close": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "\"We told nobody,\" you say. \"We came ourselves.\" The Seal-Keeper tilts its enormous head, and three embermoths slide off its nose. \"Then nobody will thank you,\" it says, \"and nobody will come to help. Can you bear that?\" It waits for your answer, and it is in no hurry at all.",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hold its gaze while it decides",
+          "icon": "eye",
+          "goto": "check_verdict"
+        }
+      ]
+    },
+    "scene_verdict_rich": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "\"Honestly?\" you say. \"We came to get rich.\" There is a long pause. Then the Seal-Keeper makes a sound like a rockslide, which turns out to be a laugh. \"At last,\" it says. \"Everybody else says they came for me.\" Then it looks at you, very hard, to see what else is in there.",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hold its gaze while it decides",
+          "icon": "eye",
+          "goto": "check_verdict"
+        }
+      ]
+    },
+    "scene_verdict_duty": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "\"Somebody had to come,\" you say. \"So we came.\" The Seal-Keeper is quiet for a long time. \"Somebody,\" it says. \"I have been somebody for a very long time. It is heavy.\" An embermoth lands on your shoulder, as if to help carry it. Then the dragon waits, to see whether you meant it.",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hold its gaze while it decides",
+          "icon": "eye",
+          "goto": "check_verdict"
+        }
+      ]
+    },
+    "scene_verdict_proving": {
+      "type": "story",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "\"We came to find out if we could,\" you say. \"And can you?\" asks the Seal-Keeper. You do not know yet, and you say so. It nods, slowly, so slowly that a moth on its eyebrow has time to fall asleep. \"Then we will both find out,\" it says, and waits.",
+      "cast": [
+        {
+          "figure": "entities/legend_dragon",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hold its gaze while it decides",
+          "icon": "eye",
           "goto": "check_verdict"
         }
       ]
@@ -2626,7 +2740,7 @@
       "art": "scenes/gemfall/seal-chamber",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Answer the Seal-Keeper with your whole heart",
+      "prompt": "Hold the Seal-Keeper's gaze, and mean every word",
       "cast": [
         {
           "figure": "entities/legend_dragon",
