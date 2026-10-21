@@ -34,14 +34,17 @@
     "forbidden": [
       "gore",
       "Hollow Gate",
-      "Legend Dragon"
+      "Legend Dragon",
+      "Corvane",
+      "emperor",
+      "Pangea"
     ],
     "npcVoices": {}
   },
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "The island you met is drifting toward a temple island through heavy rain. A kitsune keeper rings a lookout bell; its rope wears a tiny raincoat. Beside the temple, a fresh opening spills bone crawlers onto the wet landing. \"Keep the temple safe as that island drifts toward us,\" the keeper calls. \"We can push its approach clear, or shelter this landing and let it settle.\" She points to people still carrying cushions across the yard.",
+      "narration": "The island you helped welcome home is drifting toward a temple island through heavy rain. A different kitsune keeper from the one at the lookout rings a lookout bell; its rope wears a tiny raincoat. Beside the temple, a fresh opening spills bone crawlers onto the wet landing: little scuttling creatures with jointed legs and rattling backs. \"Keep the temple safe as that island drifts toward us,\" the keeper calls. \"We can push its approach clear, or shelter this landing and let it settle.\" She points to people still carrying cushions across the yard.",
       "choices": [
         {
           "id": "continue",
@@ -287,7 +290,7 @@
     },
     "messages": {
       "type": "story",
-      "narration": "The last keeper reaches the covered hall. The temple has shelter for everyone, even the bell rope's spare raincoat. Your party can now work on the landing while the keepers signal from inside.",
+      "narration": "The last keeper reaches the covered hall. The temple has shelter for everyone, even the bell rope's spare raincoat. Your party can now work on the landing while the keepers signal from inside. The temple's own griffin messenger shelters at the back of the hall, ready to carry travelers down to the Cairnstep once the wind clears.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -305,15 +308,16 @@
       "variants": [
         {
           "when": {
-            "flag": "island_messages_saved"
+            "flag": "island_messages_saved",
+            "notFlag": "island_relay_delayed"
           },
-          "text": "The messenger whose sealed letters you saved offers to relay your signals from the hall."
+          "text": "The island letter courier whose sealed letters you saved offers to relay your signals from the hall."
         },
         {
           "when": {
             "flag": "island_relay_delayed"
           },
-          "text": "The messenger is still finishing the delayed letter relay. A keeper takes the signal station until the messenger arrives."
+          "text": "The island letter courier is still finishing the delayed letter relay. A keeper takes the signal station until that courier arrives."
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -368,7 +372,7 @@
       "stat": "clever",
       "tn": 12,
       "roller": "party",
-      "prompt": "Choose sound posts and clear rope paths without stepping outside the fence.",
+      "prompt": "Choose firm posts and clear rope paths without stepping outside the fence.",
       "onSuccess": {
         "goto": "gear_clear",
         "narration": "The useful rope runs clear of the keeper's doorway."
@@ -394,7 +398,7 @@
     },
     "gear_changed": {
       "type": "story",
-      "narration": "You put the caught rope aside and use a shorter sound line from the store. The reach is smaller; the keeper moves the working marker closer.",
+      "narration": "You put the caught rope aside and use a shorter strong line from the store. The reach is smaller; the keeper moves the working marker closer.",
       "choices": [
         {
           "id": "continue",
@@ -559,7 +563,7 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "Behind the windbreak, warm broth steams in a covered pot. The ladle wears a little wool sleeve. Take a breath and let sore muscles loosen before the next job.",
+      "narration": "Inside the covered hall, the keepers pass around a basket of rice buns. You rest on cushions rescued from the rain. One cushion has a solemn embroidered bird with a bun crumb on its beak.",
       "heal": 2,
       "choices": [
         {
@@ -579,7 +583,7 @@
     },
     "rest_watch": {
       "type": "story",
-      "narration": "You trade the watch so everyone gets a turn with the broth. A loose thread on the ladle sleeve waves at each passing cloud.",
+      "narration": "You share the hall watch with a keeper, each settled on a dry cushion. The messenger shakes rain from one wing into a bucket. The embroidered bird remains perfectly dry.",
       "choices": [
         {
           "id": "continue",
@@ -617,20 +621,20 @@
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "plan"
+          "goto": "roof"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "crawl_2": {
       "type": "story",
-      "narration": "You use wet chalk on the sound boards. The keepers stay behind that mark. The chalk has a string tied to it so it cannot become another flying object.",
+      "narration": "You use wet chalk on the safe boards. The keepers stay behind that mark. The chalk has a string tied to it so it cannot become another flying object.",
       "choices": [
         {
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "plan"
+          "goto": "roof"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -656,7 +660,7 @@
     },
     "push_plan": {
       "type": "story",
-      "narration": "You run the sound ropes through the mooring posts and leave room for them to slip free afterward. The keeper holds the release cloth ready. The plan is a small turn at the edge, not a tug across the sky.",
+      "narration": "You run the strong ropes through the mooring posts and leave room for them to slip free afterward. The keeper holds the release cloth ready. The plan is a small turn at the edge, not a tug across the sky.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -775,7 +779,7 @@
     "fight_shelter": {
       "type": "encounter",
       "map": "riftlight_squall_temple",
-      "narration": "The crawlers crowd the sheltered corner. Hold its sound boards for two clear rounds, or clear the crawlers so the keepers can hold them. The squall lowers everyone's Guard by one.",
+      "narration": "The crawlers crowd the sheltered corner. Hold its safe boards for two clear rounds, or clear the crawlers so the keepers can hold them. The squall lowers everyone's Guard by one.",
       "enemies": [
         {
           "id": "crawler",
@@ -866,7 +870,7 @@
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "roof"
+          "goto": "record"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -879,20 +883,20 @@
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "roof"
+          "goto": "record"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "damaged": {
       "type": "story",
-      "narration": "The crawlers force your party back behind the gate. The keepers pull the shelter shut and help you recover inside. The island bumps the empty landing. Boards crack and the outer awning folds; everyone is already under the stone roof. Your next job is repair, not another fight.",
+      "narration": "The crawlers force your party back behind the gate. The keepers pull the shelter shut and help you recover inside. The island bumps the empty landing. Boards crack and the outer awning folds; everyone is already under the stone roof. The outer landing must stay closed tonight. The morning crew will need your spare gear to repair it.",
       "choices": [
         {
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "roof"
+          "goto": "record"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -931,7 +935,7 @@
     },
     "roof_2": {
       "type": "story",
-      "narration": "You lower the sound gutter end from inside the window. The keeper braces the basin before the first rush of water arrives.",
+      "narration": "You lower the firm gutter end from inside the window. The keeper braces the basin before the first rush of water arrives.",
       "choices": [
         {
           "id": "continue",
@@ -986,7 +990,7 @@
     },
     "boards": {
       "type": "choice_point",
-      "narration": "The outer landing must be checked before anyone uses it. A board that looks sound may have shifted in the gusts. What will your party inspect?",
+      "narration": "The outer landing must be checked before anyone uses it. A board that looks firm may have shifted in the gusts. What will your party inspect?",
       "choices": [
         {
           "id": "plan_1",
@@ -1073,17 +1077,17 @@
     },
     "repair": {
       "type": "choice_point",
-      "narration": "The keepers have spare boards and mat covers. The storm is easing, but work still belongs inside the checked boundary. Which job will you leave ready for the morning?",
+      "narration": "Rain blows through a gap between the landing boards and the low wall. The keepers have spare boards and mat covers. Which preparation will help the next crew work from behind the checked boundary?",
       "choices": [
         {
           "id": "plan_1",
-          "label": "Stack repair boards beside the closed gate",
+          "label": "Stack spare boards for the next crew",
           "icon": "hand",
           "goto": "repair_1"
         },
         {
           "id": "plan_2",
-          "label": "Cover the exposed seam against the remaining rain",
+          "label": "Cover the rain gap beside the wall",
           "icon": "hand",
           "goto": "repair_2"
         }
@@ -1098,20 +1102,20 @@
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "record"
+          "goto": "plan"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "repair_2": {
       "type": "story",
-      "narration": "You lash a mat from the sound side and leave the unsafe edge marked. The keeper can lift the cover tomorrow without crossing it.",
+      "narration": "You lash a mat from the safe side and leave the unsafe edge marked. The keeper can lift the cover tomorrow without crossing it.",
       "choices": [
         {
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "record"
+          "goto": "plan"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -1146,7 +1150,13 @@
           "goto": "watch"
         }
       ],
-      "art": "scenes/riftlight/temple-island-squall"
+      "art": "scenes/riftlight/temple-island-squall",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "temple_signal_log"
+        }
+      ]
     },
     "record_2": {
       "type": "story",
@@ -1178,7 +1188,21 @@
           "goto": "watch_2"
         }
       ],
-      "art": "scenes/riftlight/temple-island-squall"
+      "art": "scenes/riftlight/temple-island-squall",
+      "variants": [
+        {
+          "when": {
+            "flag": "temple_signal_log"
+          },
+          "text": "The keeper uses your signal log to show the relief watch when to hold and when to release. Your record becomes their first practice."
+        },
+        {
+          "when": {
+            "notFlag": "temple_signal_log"
+          },
+          "text": "The keeper hands your landing map to the relief watch. They find their safe station without stepping over its unchecked edge."
+        }
+      ]
     },
     "watch_1": {
       "type": "story",
@@ -1208,7 +1232,7 @@
     },
     "ending": {
       "type": "story",
-      "narration": "The temple is safe to shelter in, and every keeper has a dry place. The bell rope sheds its tiny raincoat into a bucket. A griffin messenger can carry you down to the Cairnstep when the wind clears; the path behind returns to the island's lookout. You have changed what the next watch will find.",
+      "narration": "The temple is safe to shelter in, and every keeper has a dry place. The bell rope sheds its tiny raincoat into a bucket. A griffin messenger can carry you down to the Cairnstep when the wind clears; the path behind returns to the island's lookout. You have changed what the next watch will find. As the squall eases, the fresh opening shrinks shut. The keepers watch from behind a striped wait sign until its last shimmer is gone; no new crawlers can enter the hall.",
       "onEnter": [
         {
           "type": "setFlag",
