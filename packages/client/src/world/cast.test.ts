@@ -225,11 +225,41 @@ describe("stageSlots", () => {
       for (const figure of figures) {
         expect(figure.x - figure.width / 2).toBeGreaterThanOrEqual(0);
         expect(figure.x + figure.width / 2).toBeLessThanOrEqual(width);
-        // Floored figures aside, nobody's painted box spans more than SLOT_FILL of its slot.
-        if (figure.width > STORY_MEASURE.floor * aspect) expect(figure.width).toBeLessThanOrEqual(figure.room * SLOT_FILL + 1e-6);
+        // Above the floors, nobody's painted box spans more than SLOT_FILL of
+        // its slot; at the minimum scale neighbours may overlap instead.
+        if (figure.width > STORY_MEASURE.floor * aspect && fit.k > STORY_MEASURE.minScale!) {
+          expect(figure.width).toBeLessThanOrEqual(figure.room * SLOT_FILL + 1e-6);
+        }
       }
       // Left to right, centres in order and apart.
       for (let i = 1; i < figures.length; i++) expect(figures[i]!.x).toBeGreaterThan(figures[i - 1]!.x);
+    }
+  });
+
+  it("never shrinks a crowded scene below minScale: three heroes and three guests (#366 review)", () => {
+    const figure = (heightCm: number): StageFigure => ({ heightCm, stance: "standing", paint: null });
+    const party = [figure(165), figure(85), figure(215)];
+    const cast = [figure(160), figure(230), figure(330)];
+    for (const width of [1600, 2560]) {
+      const fit = stageLayout(party, cast, width);
+      expect(fit.k, `k at ${width}`).toBeGreaterThanOrEqual(STORY_MEASURE.minScale!);
+      expect(fit.party[2]! / fit.party[1]!).toBeCloseTo(215 / 85);
+      const aspect = paintAspect(NOMINAL_PAINT);
+      // Every guest's paint on the stage, the cast right of the party, in order.
+      fit.slots.cast.forEach((x, i) => {
+        const half = (fit.cast[i]! * aspect) / 2;
+        expect(x + half, `guest ${i} at ${width}`).toBeLessThanOrEqual(width);
+        expect(x).toBeGreaterThan(Math.max(...fit.slots.party));
+        if (i > 0) expect(x).toBeGreaterThan(fit.slots.cast[i - 1]!);
+      });
+      // Names keep to their slots, so adjacent slots never overlap: names cannot touch.
+      for (let i = 1; i < fit.slots.cast.length; i++) {
+        const gap = fit.slots.cast[i]! - fit.slots.cast[i - 1]!;
+        expect(gap).toBeGreaterThanOrEqual((fit.slots.castSlots[i]! + fit.slots.castSlots[i - 1]!) / 2 - 1e-6);
+      }
+      for (let i = 1; i < fit.slots.party.length; i++) {
+        expect(fit.slots.party[i]! - fit.slots.party[i - 1]!).toBeCloseTo(fit.slots.partySlot);
+      }
     }
   });
 
