@@ -6777,6 +6777,574 @@
           "introduces": {}
         }
       }
+    },
+    "riftlight-preview-pause-wyrm-nest": {
+      "entryFacts": [],
+      "scenes": {
+        "pause": {
+          "requires": [],
+          "introduces": {}
+        }
+      }
+    },
+    "riftlight-wyrm-nest": {
+      "entryFacts": [
+        "orin",
+        "olivia",
+        "listening_chime",
+        "chime_rules",
+        "learned_note",
+        "hall",
+        "riftseekers",
+        "valley_change",
+        "valley_record"
+      ],
+      "scenes": {
+        "arrival": {
+          "requires": [],
+          "introduces": {
+            "nest_wyrm": "A frost wyrm",
+            "nest_builders": "yeti builders",
+            "nest_bench": "using a bench as a pillow"
+          }
+        },
+        "listen": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "listen_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "listen_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "watch": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "watch_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "watch_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "watch_check": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "watch_clear": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "watch_changed": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "supplies": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "supplies_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "supplies_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "cold_opening": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "cold_opening_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "cold_opening_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "cold_opening_3": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "cold_opening_check": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "cold_opening_clear": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "cold_opening_changed": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "bed": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "bed_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "bed_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "lanes": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "lanes_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "lanes_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "lanes_check": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "lanes_clear": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "lanes_changed": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "rest": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "rest_watch": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "signal": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "signal_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "signal_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "offer": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "offer_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "offer_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "fight": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "room_clear": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "room_moved": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "tools": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "tools_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "tools_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "tools_check": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "tools_clear": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "tools_changed": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "shelves": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "shelves_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "shelves_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "shelves_check": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "shelves_clear": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "shelves_changed": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "readers": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "readers_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "readers_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "readers_check": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "readers_clear": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "readers_changed": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "quiet": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "quiet_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "quiet_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "neighbors": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "neighbors_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "neighbors_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "departure": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "departure_1": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "departure_2": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "ending": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        }
+      }
     }
   }
 }

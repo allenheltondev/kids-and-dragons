@@ -39,7 +39,9 @@
     "riftlight-stuttering-flats",
     "riftlight-preview-pause-stuttering-flats",
     "riftlight-bone-yard",
-    "riftlight-preview-pause-bone-yard"
+    "riftlight-preview-pause-bone-yard",
+    "riftlight-wyrm-nest",
+    "riftlight-preview-pause-wyrm-nest"
   ],
   "graph": {
     "version": 1,
@@ -94,12 +96,7 @@
       "island_signal_repeated",
       "fragment_sky_learned",
       "island_relay_delayed",
-      "flats_rhythm_read",
-      "flats_guide_signals",
-      "goat_returned_home",
-      "flats_sling_left",
-      "bone_retreat",
-      "bone_rift_closed"
+      "wyrm_ally"
     ],
     "buffs": {
       "riftspark": {
@@ -360,6 +357,18 @@
       },
       "preview-pause-bone-yard": {
         "chapter": "riftlight-preview-pause-bone-yard",
+        "title": "Pause the development preview",
+        "ending": {
+          "title": "Development preview pause"
+        }
+      },
+      "wyrm-nest": {
+        "chapter": "riftlight-wyrm-nest",
+        "title": "A Room Already Taken",
+        "revisit": "pass"
+      },
+      "preview-pause-wyrm-nest": {
+        "chapter": "riftlight-preview-pause-wyrm-nest",
         "title": "Pause the development preview",
         "ending": {
           "title": "Development preview pause"
@@ -868,6 +877,39 @@
         "to": "saltrot-arrival",
         "kind": "return",
         "label": "Return to the Saltrot landing"
+      },
+      "reading-room-to-wyrm-nest": {
+        "from": "reading-room",
+        "to": "wyrm-nest",
+        "kind": "forward",
+        "label": "Help the builders whose new room has a nest"
+      },
+      "wyrm-nest-pause": {
+        "from": "wyrm-nest",
+        "to": "preview-pause-wyrm-nest",
+        "kind": "forward",
+        "label": "Pause this development preview"
+      },
+      "wyrm-to-readers": {
+        "from": "wyrm-nest",
+        "to": "reading-room",
+        "kind": "return",
+        "label": "Return to the memory readers"
+      },
+      "wyrm-to-cairnstep": {
+        "from": "wyrm-nest",
+        "to": "cairnstep-pass",
+        "kind": "return",
+        "label": "Follow the yeti and griffin rescue signals"
+      },
+      "cairnstep-to-wyrm": {
+        "from": "cairnstep-pass",
+        "to": "wyrm-nest",
+        "kind": "forward",
+        "label": "Visit the glacier builders by the rescue route",
+        "when": {
+          "completed": "wyrm-nest"
+        }
       }
     },
     "facts": {

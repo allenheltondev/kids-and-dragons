@@ -145,10 +145,15 @@ export function allPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, fla
       const scene = chapter.scenes[state.sceneId!]!;
       if (scene.type !== "encounter") throw new Error("Expected encounter");
       for (const branch of [scene.onVictory, scene.onDefeat, scene.onEscape, scene.onTimeout].filter(Boolean)) {
-        const settled = applyEffects(state, branch!.effects, context(chapter));
-        const result = enterScene(settled, branch!.goto, context(chapter));
-        expect(result.error).toBeUndefined();
-        pending.push({ state: result.state, known, introduced });
+        const outcomes = branch === scene.onVictory
+          ? [[], ...(scene.environment?.objectives ?? []).filter(o => o.endsFight).map(o => o.effects ?? [])]
+          : [[]];
+        for (const effects of outcomes) {
+          const settled = applyEffects(state, [...effects, ...(branch!.effects ?? [])], context(chapter));
+          const result = enterScene(settled, branch!.goto, context(chapter));
+          expect(result.error).toBeUndefined();
+          pending.push({ state: result.state, known, introduced });
+        }
       }
     } else if (state.prompt?.kind === "choice") {
       expect(state.prompt.options.length).toBeGreaterThan(0);
