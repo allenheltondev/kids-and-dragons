@@ -389,6 +389,21 @@ describe("the chapter's goal (#356)", () => {
     expect(result.code).not.toBe(0);
   });
 
+  it("keeps a many-flag step on the spine when one of its flags is cleared and another is surely set", () => {
+    // The hedge step watches either flag; clearing the wood's flag at the mossbank (nothing sets it
+    // again), after the hedge flag is surely set, leaves it ticked at the table, so the gate must not
+    // refuse it either.
+    const result = withChapter((chapter) => {
+      chapter.goal.steps[0].flag = ["got_past_the_hedge", "crossed_the_wood"];
+      // The wood's own step watches that flag alone, so it is set aside: this is about the hedge step.
+      chapter.goal.steps[1].optional = true;
+      const rest = chapter.scenes.rest_mossbank;
+      rest.onEnter = [...(rest.onEnter ?? []), { type: "setFlag", flag: "crossed_the_wood", value: false }];
+    });
+    expect(result.out).not.toContain("is not on the spine");
+    expect(result.code).toBe(0);
+  });
+
   it("lets an optional step sit off the spine", () => {
     const result = withChapter((chapter) => {
       chapter.goal.steps[0].flag = chapter.objectives[0].flag;
