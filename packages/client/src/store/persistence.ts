@@ -268,6 +268,19 @@ export function loadPlayerDeviceToken(storage: KeyValueStorage = defaultStorage(
   }
 }
 
+/**
+ * Whether this storage has been anybody at all: a player, or a TV that hosted.
+ * Read without minting. An installed app's first launch (#412) asks about an
+ * old hero only while this is false, before anything here makes a new one.
+ */
+export function hasDeviceIdentity(storage: KeyValueStorage = defaultStorage()): boolean {
+  try {
+    return storage.getItem(DEVICE_KEY) !== null;
+  } catch {
+    return false;
+  }
+}
+
 /** Seated or adopted as a player: keep the binding, and stop being a screen. */
 export function asPlayerIdentity(identity: LocalIdentity, deviceToken?: string): LocalIdentity {
   const { screenOnly: _screen, ...rest } = identity;
