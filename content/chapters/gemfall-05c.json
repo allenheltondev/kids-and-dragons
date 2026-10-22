@@ -11,6 +11,10 @@
   "estimatedMinutes": 40,
   "xpAward": 90,
   "entry": "scene_stones_line",
+  "plate": {
+    "art": "plates/gemfall/05c",
+    "narration": "Tall boundary stones stand across the caravan road. A dragonling grandmother lifts a little bell over a waiting pack. Behind her, wheels and tails crowd the red hills. Everyone wants through. The stones are in no hurry."
+  },
   "objectives": [
     {
       "id": "rule",

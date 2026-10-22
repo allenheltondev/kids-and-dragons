@@ -79,6 +79,26 @@
       "clock_late": "The ground is shaking slow and steady, like a drum. Time is getting short."
     }
   },
+  "prologue": {
+    "plates": [
+      {
+        "art": "plates/gemfall/prologue-1",
+        "narration": "Mount Red Sky has been quiet for longer than anyone can remember. Grandmothers say it is only sleeping. Grandfathers say it is only sulking. Nobody has ever gone up to ask."
+      },
+      {
+        "art": "plates/gemfall/prologue-2",
+        "narration": "Down in the realm, everybody gets on with things. Bakers bake. Griffins deliver the mail. Somebody is always losing a hat. Nobody gives the old mountain a second thought."
+      },
+      {
+        "art": "plates/gemfall/prologue-3",
+        "narration": "But tonight, high in the north, the red glow in the mountain's crater flickers once, like a sleeper rolling over. A single spark floats up into the dark. Then everything is quiet again. Almost."
+      },
+      {
+        "art": "plates/gemfall/prologue-4",
+        "narration": "Far to the south, the Exchange is lighting its harbor lamps. Every road in the realm begins or ends here. Tonight, a few strangers on the docks are about to find out which."
+      }
+    ]
+  },
   "setbackLimit": 4,
   "purseBackfill": { "coins": 6, "byFlag": { "ember_sold": 15 } }
 }

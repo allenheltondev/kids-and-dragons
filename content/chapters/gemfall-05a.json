@@ -12,6 +12,10 @@
   "estimatedMinutes": 40,
   "xpAward": 90,
   "entry": "scene_bridge",
+  "plate": {
+    "art": "plates/gemfall/05a",
+    "narration": "A crack runs through the Northern River Bridge. A griffin engineer crouches beside it with chalk and a clipboard. Beyond the barriers, travelers wait to cross. The stones need a careful look before the road can carry on."
+  },
   "objectives": [
     {
       "id": "prospector",

@@ -9,6 +9,10 @@
   "estimatedMinutes": 10,
   "xpAward": 140,
   "entry": "map",
+  "plate": {
+    "art": "plates/riftlight/riftseekers-departure",
+    "narration": "Outside the singing hall, packs rest beside a waiting sledge. Beyond its sheltered ledge, white paths disappear between the peaks. There is room on the map for more than one road."
+  },
   "goal": {
     "text": "Meet the travelers and get ready for the road ahead.",
     "steps": [

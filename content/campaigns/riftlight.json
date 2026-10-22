@@ -951,5 +951,25 @@
       "river_escaped_late": "The river carried you a long way, right down to a bridge and a boatman with a flat boat.",
       "river_took_rift": "You steered your rope toward the shining fold in the air, and crossed it together."
     }
+  },
+  "prologue": {
+    "plates": [
+      {
+        "art": "plates/riftlight/prologue-1",
+        "narration": "The Exchange is the busiest harbor in the realm, and this morning it is busier than ever. Barges bump the quay. Stallkeepers shout the price of fish, and the gulls shout back."
+      },
+      {
+        "art": "plates/riftlight/prologue-2",
+        "narration": "Far to the north, a glacier shines in the sun. Deep inside its ice, a bell is ringing. Slow and clear, over and over, as if it is calling for somebody."
+      },
+      {
+        "art": "plates/riftlight/prologue-3",
+        "narration": "Nobody at the Exchange can hear that bell. But cold travels farther than sound. A thin ribbon of snow wind slips south, over peaks and rivers and a hundred sleeping villages. It is the wrong wind, going the wrong way."
+      },
+      {
+        "art": "plates/riftlight/prologue-4",
+        "narration": "By breakfast it arrives. Snow drifts over the fish stalls, out of a perfectly blue sky. Everyone on the quay looks up. Then they look at you. You came back from the mountain. Surely you know what is going on?"
+      }
+    ]
   }
 }

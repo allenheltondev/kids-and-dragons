@@ -9,6 +9,10 @@
   "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "bank",
+  "plate": {
+    "art": "plates/riftlight/buried-bridge",
+    "narration": "Stone arches rise from the silt beside a dry channel. No river passes under them now. From the firm bank, the old bridge stretches away into a haze of salt and pale mud."
+  },
   "goal": {
     "text": "Study the buried bridge from the safe side of the bank.",
     "steps": [

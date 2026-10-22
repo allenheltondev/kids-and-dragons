@@ -9,6 +9,10 @@
   "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "arrival",
+  "plate": {
+    "art": "plates/riftlight/the-wrong-valley",
+    "narration": "Two valleys run between the glacier ridges. An old path follows one; fresh water fills the other. High on the slope, a chipped stone marker still points along the ridge."
+  },
   "goal": {
     "text": "Follow the changed river and find a safe way across.",
     "steps": [

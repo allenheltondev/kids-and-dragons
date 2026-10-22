@@ -28,6 +28,10 @@
       }
     ]
   },
+  "plate": {
+    "art": "plates/riftlight/finale",
+    "narration": "You are back on the glacier where it all began. The ice is blue and quiet and enormous. Even the wind has stopped to listen."
+  },
   "voiceGuide": {
     "tone": "Warm, curious and practical. Short sentences. Show the consequence of each plan. Nobody dies.",
     "vocabulary": "Read aloud to an eight-year-old.",

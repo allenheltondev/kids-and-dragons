@@ -12,6 +12,10 @@
     "flag": "pursuit_leash"
   },
   "entry": "scene_the_table",
+  "plate": {
+    "art": "plates/gemfall/07l",
+    "narration": "A table made from a door waits between two barrels. A warden stands on one side, a bark-mask singer on the other. A dragonling grandmother keeps knitting. Somehow, this road needs everyone to listen at the same table."
+  },
   "objectives": [
     {
       "id": "tested",

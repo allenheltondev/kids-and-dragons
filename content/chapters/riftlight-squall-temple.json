@@ -8,6 +8,10 @@
   "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "arrival",
+  "plate": {
+    "art": "plates/riftlight/squall-temple",
+    "narration": "Rain sweeps across a temple island high above the realm. Wind banners stream over the wet landing. Through the clouds, another island appears for a moment, then fades behind the rain."
+  },
   "goal": {
     "text": "Keep the temple safe as the returning island drifts toward it.",
     "steps": [

@@ -9,6 +9,10 @@
   "estimatedMinutes": 8,
   "xpAward": 140,
   "entry": "bank",
+  "plate": {
+    "art": "plates/riftlight/frostfang-shore",
+    "narration": "A griffin leans over the ridge and lowers a rope ladder. Its bottom rung swings above the rising water. Up on the rocks, a dry path winds toward the pass. Time to climb."
+  },
   "goal": {
     "text": "Find a dry way back uphill toward the mountain pass.",
     "steps": [
