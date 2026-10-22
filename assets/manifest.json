@@ -989,7 +989,17 @@
     "scenes/riftlight/singing-hall-camp",
     "scenes/classes/dojo",
     "scenes/classes/academy",
-    "scenes/classes/rookery"
+    "scenes/classes/rookery",
+    "scenes/bramblewood/hedge_wall",
+    "scenes/bramblewood/clearing",
+    "scenes/bramblewood/fork",
+    "scenes/bramblewood/canopy",
+    "scenes/bramblewood/stair",
+    "scenes/bramblewood/stream",
+    "scenes/bramblewood/thicket",
+    "scenes/bramblewood/shrine",
+    "scenes/bramblewood/hill_door",
+    "scenes/bramblewood/lanternfall"
   ],
   "$campaignArtComment": "Key art for the lobby's adventure cards (packages/client/src/screens/CampaignArt.tsx): one opaque 16:9 painting per campaign at assets/campaigns/<id>.webp. Until a campaign's file lands, a scene from its story stands in. verify.py checks the size of any that exist and refuses an undeclared file.",
   "campaignArt": {
@@ -999,7 +1009,9 @@
     },
     "campaigns": [
       "gemfall",
-      "riftlight"
+      "riftlight",
+      "first-steps",
+      "the-hollow-crown"
     ]
   },
   "$castFiguresComment": "Named story characters' own figures, drawn on the story stage opposite the party (content `cast`, docs/briefs/story-cast-art.md). Same contract as entities: assets/cast/<id>/assembled.png, 1024x1024 RGBA, one complete cutout standing on the canvas origin (feet at y=900), facing left toward the party. `basis` is the entity or species the character is one of; `scale` is how big they stand, in the entities' scale words; `heightCm` is their height in centimeters, in their own pose and inside that band (canon/creatures.yaml `scale`, packages/canon SCALE_CM), and `stance` how they occupy a scene (standing, hovering, flying or swimming). Both are data, never shown to a player (#362). verify.py checks each entry.",
@@ -2291,5 +2303,38 @@
         ]
       }
     }
-  ]
+  ],
+  "$paintedIconsComment": "Additional ability and distinct item icons commissioned for #421. Transparent 256px WebP, bundled with the client; inventory and verify check these deliveries. Existing painted icons remain documented in the client painted README.",
+  "paintedIcons": {
+    "canvas": {
+      "width": 256,
+      "height": 256
+    },
+    "ids": [
+      "eye",
+      "facet_barge",
+      "facet_caravan",
+      "facet_clerks",
+      "facet_confiscated",
+      "facet_depot",
+      "facet_drakes_rate",
+      "facet_ember",
+      "facet_ford",
+      "facet_glade",
+      "facet_harvest",
+      "facet_keystone",
+      "facet_pride",
+      "facet_table",
+      "facet_unassigned",
+      "fist",
+      "flame",
+      "key",
+      "moon",
+      "potion",
+      "shield",
+      "spark",
+      "thorn",
+      "wing"
+    ]
+  }
 }
