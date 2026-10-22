@@ -11,7 +11,7 @@
  */
 
 import { useCallback, useEffect, useId, useState } from "react";
-import type { ChangeEvent, ReactElement } from "react";
+import type { ChangeEvent, ReactElement, ReactNode } from "react";
 import type { PairingCode } from "@kad/shared";
 import { api } from "../sync/client";
 import { navigate, normalizePairingInput, pairingUrl, PAIRING_CODE_LENGTH } from "../router";
@@ -165,8 +165,20 @@ export function PlayAsMe({ onClose }: { onClose: () => void }): ReactElement {
   );
 }
 
-/** On a fresh device: "Bring my hero to this device". */
-export function PairHere({ initialCode, onClose }: { initialCode: string; onClose: () => void }): ReactElement {
+/**
+ * On a fresh device: "Bring my hero to this device". `note` replaces where to
+ * get the code, for an installed app whose hero is in the browser on this same
+ * phone (#412).
+ */
+export function PairHere({
+  initialCode,
+  onClose,
+  note,
+}: {
+  initialCode: string;
+  onClose: () => void;
+  note?: ReactNode;
+}): ReactElement {
   const [code, setCode] = useState(() => normalizePairingInput(initialCode));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -195,8 +207,12 @@ export function PairHere({ initialCode, onClose }: { initialCode: string; onClos
         <span>Bring my hero to this device</span>
       </h2>
       <p className="home__hint kad-muted">
-        On your other phone, tap <b>Play as me on another device</b>. Then type the letters here, or scan the picture
-        with this camera.
+        {note ?? (
+          <>
+            On your other phone, tap <b>Play as me on another device</b>. Then type the letters here, or scan the
+            picture with this camera.
+          </>
+        )}
       </p>
       <label className="pair__field" htmlFor={fieldId}>
         <span className="pair__label">Your code</span>
