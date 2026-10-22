@@ -36,6 +36,7 @@ import {
   makeRng,
   positionOf,
 } from "@kad/shared";
+import { lobbyCampaign } from "@kad/shared";
 import type { ActionResponse, Chapter, Character, ClientIntent, RunState } from "@kad/shared";
 import type { ContentStore } from "../content/loader.ts";
 import type { Engine } from "../engine/port.ts";
@@ -103,6 +104,9 @@ export async function evening(h: GemfallHousehold) {
     send,
     must,
     begin: async () => {
+      // Once Gemfall is finished, Riftlight is open beside it and the lobby
+      // asks which; replaying Gemfall is a vote for it.
+      if (lobbyCampaign(await state()).contested) await must({ type: "VOTE_CAMPAIGN", campaignId: GEMFALL });
       await must({ type: "CONTINUE_CAMPAIGN", campaignId: GEMFALL });
       return (await state()).chapterId;
     },

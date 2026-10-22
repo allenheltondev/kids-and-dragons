@@ -1,7 +1,7 @@
 {
   "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
   "id": "riftlight-riftseekers-departure",
-  "campaignId": "riftlight-opening-preview",
+  "campaignId": "riftlight",
   "index": 3,
   "title": "A Map with a Missing Pass",
   "biome": "glacier_of_origins",

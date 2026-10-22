@@ -1,7 +1,7 @@
 {
   "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
   "id": "riftlight-stone-counters",
-  "campaignId": "riftlight-opening-preview",
+  "campaignId": "riftlight",
   "index": 5,
   "title": "The Stone That Moved",
   "biome": "red_sky_foothills",

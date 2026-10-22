@@ -11,11 +11,9 @@ afterEach(() => {
 });
 
 describe("a campaign's key art", () => {
-  it("lets the local preview borrow the published Riftlight painting", () => {
-    const { container } = render(<CampaignArt campaignId="riftlight-opening-preview" />);
+  it("shows the campaign's painting, and a plain panel if it cannot load", () => {
+    const { container } = render(<CampaignArt campaignId="riftlight" />);
     const img = () => container.querySelector("img");
-    expect(img()?.getAttribute("src")).toBe("/assets/campaigns/riftlight-opening-preview.webp");
-    fireEvent.error(img()!);
     expect(img()?.getAttribute("src")).toBe("/assets/campaigns/riftlight.webp");
     fireEvent.error(img()!);
     expect(img()).toBeNull();
@@ -31,11 +29,9 @@ describe("a campaign's key art", () => {
     expect(campaignArtSources("the-hollow-crown")).toEqual(["/assets/campaigns/the-hollow-crown.webp"]);
   });
 
-  it("only stands in with paintings that exist", () => {
-    for (const id of ["gemfall", "riftlight", "riftlight-opening-preview"]) {
-      for (const source of campaignArtSources(id).slice(1)) {
-        expect(existsSync(source.slice(1)), source).toBe(true);
-      }
+  it("ships every painting it declares", () => {
+    for (const id of manifest.campaignArt.campaigns) {
+      expect(existsSync(campaignArtSources(id)[0]!.slice(1)), id).toBe(true);
     }
   });
 });

@@ -10,10 +10,9 @@ import "./CampaignArt.css";
  * past that a plain panel: the card still reads by its title. A placeholder can
  * go once the real file ships, since the real file is always tried first.
  */
-const PLACEHOLDERS: Readonly<Record<string, string>> = {
-  // The local story preview (`npm run riftlight:preview`) plays under its own id.
-  "riftlight-opening-preview": "campaigns/riftlight",
-};
+// Campaign id → a story scene (`scenes/...`). Empty while every listed
+// campaign has its own painting.
+const PLACEHOLDERS: Readonly<Record<string, string>> = {};
 
 export function campaignArtUrl(campaignId: string): string {
   return `/assets/campaigns/${campaignId}.webp`;

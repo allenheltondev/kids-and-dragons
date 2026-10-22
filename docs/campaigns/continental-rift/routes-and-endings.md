@@ -1,16 +1,18 @@
-# Riftlight: complete story preview
+# Riftlight: routes and endings
 
 All 24 story nodes are authored, from the Exchange to three glacier endings.
 The six final chapters are Stuttering Flats, Bone Yard, Wyrm Nest, Squall Temple,
-Convergence and Finale. Their PRs are stacked in that order. There are no
-development pause nodes or placeholder endings in this preview.
+Convergence and Finale. There are no development pause nodes or placeholder
+endings.
 
-This remains an isolated draft. It is not listed in the production lobby and
-does not change deployed content, Gemfall or existing saves. Timed family
-playtests and the full-campaign XP-route acceptance gate remain unfinished.
-The current graph admits longer paying routes than the design bible's original
-11–16-node estimate. The agreed 140 / 650 / 140 awards have been preserved, not
-claimed to meet the level-8 cap on every route.
+Riftlight is shipped: `content/campaigns/riftlight.json`, its chapters in
+`content/chapters/riftlight-*.json` and its battle maps in `content/maps/`. It
+is `listed`, so every household's lobby offers it beside Gemfall, locked by
+`requires: ["gemfall"]` until Gemfall is finished. The owner published it ahead
+of timed family playtests and the full-campaign XP-route review (see
+Production gates). The current graph admits longer paying routes than the
+design bible's original 11–16-node estimate. The agreed 140 / 650 / 140 awards
+have been preserved, not claimed to meet the level-8 cap on every route.
 
 ## Play locally
 
@@ -20,12 +22,12 @@ npm run riftlight:preview
 ```
 
 Open http://localhost:5173 and start a Party or Travel game. Stop other dev
-servers first. The launcher stages chapters, encounter maps and the Listening
-Chime into temporary content and uses temporary saves. It skips Gemfall only
-for this isolated preview. Each launch starts fresh; keep it running to resume
-between sessions. Closing the launcher removes its staged files and saves.
+servers first. The launcher copies the shipped content into a temporary root
+with temporary saves and drops Riftlight's Gemfall prerequisite there only.
+Each launch starts fresh; keep it running to resume between sessions. Closing
+the launcher removes its staged files and saves.
 
-Production integration must retain `requires: ["gemfall"]`. Preview heroes start
+The shipped campaign keeps `requires: ["gemfall"]`. Preview heroes start
 at ordinary creation level, so use an appropriately developed party when
 assessing combat balance; automated board tests do not replace that playtest.
 
@@ -77,15 +79,15 @@ actual board objective, without knocking Corvane down.
 
 ## Review and verification
 
-The [design index](../../../docs/campaigns/continental-rift/README.md) links the
+The [design index](README.md) links the
 opening and regional continuity reviews. The final chapter reviews are:
 
-- [Stuttering Flats](../../../docs/campaigns/continental-rift/stuttering-flats-review.md)
-- [Bone Yard](../../../docs/campaigns/continental-rift/bone-yard-review.md)
-- [Wyrm Nest](../../../docs/campaigns/continental-rift/wyrm-nest-review.md)
-- [Squall Temple](../../../docs/campaigns/continental-rift/squall-temple-review.md)
-- [Convergence](../../../docs/campaigns/continental-rift/convergence-review.md)
-- [Finale](../../../docs/campaigns/continental-rift/finale-review.md)
+- [Stuttering Flats](stuttering-flats-review.md)
+- [Bone Yard](bone-yard-review.md)
+- [Wyrm Nest](wyrm-nest-review.md)
+- [Squall Temple](squall-temple-review.md)
+- [Convergence](convergence-review.md)
+- [Finale](finale-review.md)
 
 ```sh
 npx vitest run riftlight
@@ -94,7 +96,7 @@ npm run content:validate
 npm run content:continuity
 ```
 
-Tests stage the draft alongside Gemfall and use the real content gate. Chapter
+Tests read the shipped files alongside Gemfall and use the real content gate. Chapter
 walkers exhaust choices and dice extremes, check literal introductions and
 prerequisites, and enumerate declared encounter outcomes. Separate finale board
 tests run READY, MOVE and END_TURN through both real fights to objective victory
@@ -103,9 +105,9 @@ elapsed time. Every new chapter has an on-screen goal and a rest waypoint.
 
 ## Production gates
 
-Keep this campaign in drafts until family timing and route XP are accepted.
-The original opening gate and `playtest-observations.json` still contain no
-invented measurements. The short prologue remains a compact draft. New ordinary
+Published by the owner before these were measured: family timing and route XP
+are still to be checked at real tables. `playtest-observations.json` (beside
+this file) still contains no invented measurements; record real ones there. The short prologue remains a compact draft. New ordinary
 chapter metadata budgets 35 minutes (finale 40); model predictions are explicitly
 uncalibrated. Preserve the four class rooms and the singing hall's repeatable
-free healing when integrating approved content.
+free healing.

@@ -19,7 +19,7 @@ Record each chapter separately, from its first scene to its ending, excluding me
 breaks. Also record the combined session length, actual choices, dice failures, time spent
 discussing choices, where a child proposed an idea, and any moment an adult had to explain an
 unintroduced object or motivation. Use the blank observation file beside the draft chapters:
-[`playtest-observations.json`](../../../content/drafts/riftlight/playtest-observations.json).
+[`playtest-observations.json`](playtest-observations.json).
 Keep its sessions list empty until someone actually plays; do not enter model predictions as
 observations. Per-chapter measured rows can later be copied to `docs/review/playtest-timings.json`
 using the existing timing template. The pacing CLI only reads shipped chapter paths today;
