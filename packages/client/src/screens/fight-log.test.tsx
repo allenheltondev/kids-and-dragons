@@ -193,8 +193,8 @@ describe("FightLog on the shared screen", () => {
       seq: i,
       events: [{ type: "heal", actorId: "c_sky", amount: 1, hp: i + 1 } as EncounterEvent],
     }));
-    // Four lines are wanted: the last four heals, and the steps after them.
-    expect(batchesForLines([...heals, ...steps], fight()).map((b) => b.seq)).toEqual([2, 3, 4, 5, 10, 11, 12, 13, 14]);
+    // Four lines are wanted: the last four heals. The steps draw none, so none is kept.
+    expect(batchesForLines([...heals, ...steps], fight()).map((b) => b.seq)).toEqual([2, 3, 4, 5]);
   });
 
   it("starts each fight empty", () => {

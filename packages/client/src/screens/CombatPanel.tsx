@@ -1201,10 +1201,14 @@ function useBeats(encounter: EncounterState | null, myId: string | null): readon
     return { beats: [] as Beat[], from: 0 };
   }, [recent, encounter, myId]);
 
-  // Let go of the batches older than the one the line comes from.
+  // Keep only the batch the line comes from: the older ones are replaced, and the newer
+  // ones say nothing (a long walk would otherwise pile them up). Not before the fight is
+  // in state, which the opening round can beat here (see above).
   useEffect(() => {
-    if (said.from > 0) setRecent((kept) => kept.slice(said.from));
-  }, [said.from]);
+    if (!encounter || recent.length === 0) return;
+    const keep = said.beats.length > 0 ? [recent[said.from]!] : [];
+    if (keep.length !== recent.length) setRecent(keep);
+  }, [encounter, recent, said]);
 
   return said.beats;
 }
