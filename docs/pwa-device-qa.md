@@ -55,18 +55,48 @@ Start each pass with a fresh install, and with no saved site data for the site.
 
 ## Recording a pass
 
-Add one row per device and mode to the table in the pull request or the issue (#414), and file
-an issue for every row that did not pass. Link it in Notes. Write the commit of the build you
+A pass is two tables, copied into a comment on #414 (or a file linked from it): the result of every
+check on every device and mode, and a summary row per device. Write the commit of the build you
 tested, not "latest".
 
-| Date | Tester | Device | OS | Browser/mode | Build (commit) | Rows passed | Notes / issues filed |
+### Results, per check
+
+Mark every cell **Pass**, **Fail**, **N/A** (the check cannot apply there, such as installing the
+TV) or **Not run**. Never leave one blank. Every Fail links the issue filed for it in Notes, and
+every N/A or Not run says why there.
+
+| Check | Android, installed | Android, Chrome tab | iPhone, Home Screen | iPhone, Safari tab | iPad, Home Screen | iPad, Safari tab | TV, browser tab | Notes / issues |
+|---|---|---|---|---|---|---|---|---|
+| Install |  |  |  |  |  |  |  |  |
+| Icon, name and splash |  |  |  |  |  |  |  |  |
+| Launch with no browser chrome |  |  |  |  |  |  |  |  |
+| Safe areas and notch |  |  |  |  |  |  |  |  |
+| Rotation |  |  |  |  |  |  |  |  |
+| In-app back and navigation |  |  |  |  |  |  |  |  |
+| Update after a deploy, room open |  |  |  |  |  |  |  |  |
+| Leave and rejoin a room |  |  |  |  |  |  |  |  |
+| Background then foreground, mid-room |  |  |  |  |  |  |  |  |
+| App killed, then relaunched |  |  |  |  |  |  |  |  |
+| Audio unlock and read-aloud |  |  |  |  |  |  |  |  |
+| Adventure book, online then offline |  |  |  |  |  |  |  |  |
+| Airplane mode inside a room |  |  |  |  |  |  |  |  |
+| Safari hero to installed app, by pairing |  |  |  |  |  |  |  |  |
+| Installed hero to browser, by pairing |  |  |  |  |  |  |  |  |
+| First launch in the installed app, starting fresh |  |  |  |  |  |  |  |  |
+| QR join to a browser TV |  |  |  |  |  |  |  |  |
+| Join link from another app |  |  |  |  |  |  |  |  |
+| TV never asked to install |  |  |  |  |  |  |  |  |
+
+### Summary, per device
+
+| Date | Tester | Device | OS | Browser/mode | Build (commit) | Pass / Fail / N/A / Not run | Notes / issues filed |
 |---|---|---|---|---|---|---|---|
-|  |  |  |  |  |  |  /  |  |
-|  |  |  |  |  |  |  /  |  |
-|  |  |  |  |  |  |  /  |  |
+|  |  |  |  |  |  |  /  /  /  |  |
+|  |  |  |  |  |  |  /  /  /  |  |
+|  |  |  |  |  |  |  /  /  /  |  |
 
 ## Closing the epic
 
-#410 closes only after one recorded pass, with every row passed or explained, on at least one
+#410 closes only after one recorded pass, with every check passed or explained in the per-check table, on at least one
 Android phone and at least one iPhone or iPad. A pass on a laptop's device emulation does not
 count.
