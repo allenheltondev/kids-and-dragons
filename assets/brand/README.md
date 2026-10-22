@@ -11,7 +11,7 @@ The approved identity uses a friendly purple dragon head with gold horns, a gold
 - `dragon-{192,512}.png`: larger app/logo exports, transparent and not maskable.
 - `preview.html`: live-text wordmark, light/dark surfaces, and actual-size icons.
 
-Production copies live in `packages/client/public`: `brand/dragon-mark.png` uses the 512px export; `favicon.ico`, `favicon-32.png`, and `apple-touch-icon.png` are linked from the HTML entry point. Keep these copies in sync when changing the approved master.
+Production copies live in `packages/client/public`: `brand/dragon-mark.png` uses the 512px export; `favicon.ico`, `favicon-32.png`, and `apple-touch-icon.png` are linked from the HTML entry point. The install icons in `packages/client/public/icons/` (the web manifest's `any` and `maskable` sets) are generated from `dragon-mark.png` by `python3 tools/art/pwa-icons.py`. Keep these copies in sync when changing the approved master.
 
 Leave clear space around the symbol and avoid cropping the horns or snout. The palette combines violet, warm gold, and deep plum outlines; the background is `#0d0b1a`. The artwork is raster and contains tonal variation.
 
