@@ -291,6 +291,25 @@ export type CastSize =
 export type ScenePriority = 1 | 2;
 
 /**
+ * A rift in plain view in this scene (#401): the stage draws the painted tear
+ * standing in the gap between the party and the cast, on the floor line.
+ *
+ * - `"steady"`: it is there, shimmering.
+ * - `"open"`: it opens as the scene does (`rift_open` once, with its cue),
+ *   then shimmers.
+ * - `"collapse"`: it folds shut as the scene does (`rift_collapse` once, with
+ *   its cue), then is gone.
+ *
+ * Every screen draws the neutral shimmer, whoever is holding it: a scene's
+ * rift has no rules of its own (those belong to the journey graph's rift
+ * edges), so there is no Riftlight to read in it. Absent is a scene with no
+ * tear in view, which is nearly every scene. Tag the scene the narration puts
+ * the rift in front of the party; a rift only mentioned or remembered is not
+ * in view. Never on a fight, whose board draws its own ground.
+ */
+export type SceneRift = "steady" | "open" | "collapse";
+
+/**
  * What a check asks of the table, for the pacing report's interactivity count
  * (content/README.md, "Interactivity"): `"doing"` is something the party does
  * (heave, climb, dodge, sneak, puzzle out a lock), `"talking"` is something
@@ -318,6 +337,8 @@ export interface StoryScene {
   variants?: NarrationVariant[];
   /** How much this scene matters to the story. See `ScenePriority`. */
   priority?: ScenePriority;
+  /** A rift in plain view. See `SceneRift`. */
+  rift?: SceneRift;
   /** One line for a player still learning what to tap. See `SceneHint`. */
   hint?: SceneHint;
   onEnter?: Effect[];
@@ -363,6 +384,8 @@ export interface CheckScene {
   variants?: NarrationVariant[];
   /** How much this scene matters to the story. See `ScenePriority`. */
   priority?: ScenePriority;
+  /** A rift in plain view. See `SceneRift`. */
+  rift?: SceneRift;
   /** One line for a player still learning what to tap. See `SceneHint`. */
   hint?: SceneHint;
   onEnter?: Effect[];
@@ -397,6 +420,8 @@ export interface ChoicePointScene {
   variants?: NarrationVariant[];
   /** How much this scene matters to the story. See `ScenePriority`. */
   priority?: ScenePriority;
+  /** A rift in plain view. See `SceneRift`. */
+  rift?: SceneRift;
   /** One line for a player still learning what to tap. See `SceneHint`. */
   hint?: SceneHint;
   onEnter?: Effect[];
@@ -426,6 +451,8 @@ export interface RestScene {
   variants?: NarrationVariant[];
   /** How much this scene matters to the story. See `ScenePriority`. */
   priority?: ScenePriority;
+  /** A rift in plain view. See `SceneRift`. */
+  rift?: SceneRift;
   /** One line for a player still learning what to tap. See `SceneHint`. */
   hint?: SceneHint;
   onEnter?: Effect[];

@@ -71,7 +71,8 @@
             "dragonling"
           ]
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "high": {
       "type": "story",
@@ -94,7 +95,8 @@
           "type": "setFlag",
           "flag": "found_a_way_past_the_gap"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "low": {
       "type": "story",
@@ -112,7 +114,8 @@
           "type": "setFlag",
           "flag": "found_a_way_past_the_gap"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "brace": {
       "type": "story",
@@ -130,7 +133,8 @@
           "type": "setFlag",
           "flag": "found_a_way_past_the_gap"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "wing": {
       "type": "story",
@@ -148,7 +152,8 @@
           "type": "setFlag",
           "flag": "found_a_way_past_the_gap"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "cross": {
       "type": "check",
@@ -177,7 +182,8 @@
             "value": true
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "assisted": {
       "type": "check",
@@ -206,7 +212,8 @@
             "value": true
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "across": {
       "type": "story",
@@ -224,7 +231,8 @@
           "type": "setFlag",
           "flag": "kept_everyone_on_the_rope"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "rest_safe": {
       "type": "rest",
@@ -238,7 +246,8 @@
           "flag": "traverse_made",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "fall": {
       "type": "story",
@@ -256,7 +265,8 @@
           "type": "setFlag",
           "flag": "kept_everyone_on_the_rope"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "rest_river": {
       "type": "rest",
@@ -270,7 +280,8 @@
           "flag": "traverse_failed",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     }
   },
   "voiceGuide": {

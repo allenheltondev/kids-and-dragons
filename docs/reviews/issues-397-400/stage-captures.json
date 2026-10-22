@@ -1,0 +1,197 @@
+[
+  {
+    "scene": "scene_prologue_realm",
+    "cast": [
+      {
+        "figure": "characters/bigfoot",
+        "name": "Master Dunnick"
+      }
+    ],
+    "art": "scenes/classes/dojo",
+    "reviewName": "dunnick-before",
+    "tv": "stage-dunnick-before-tv.webp",
+    "phone": "stage-dunnick-before-phone.webp"
+  },
+  {
+    "scene": "scene_prologue_city",
+    "cast": [
+      {
+        "figure": "cast/master_dunnick",
+        "name": "Master Dunnick"
+      }
+    ],
+    "art": "scenes/classes/dojo",
+    "reviewName": "dunnick-after",
+    "tv": "stage-dunnick-after-tv.webp",
+    "phone": "stage-dunnick-after-phone.webp"
+  },
+  {
+    "scene": "scene_prologue_party",
+    "cast": [
+      {
+        "figure": "characters/dragonling",
+        "name": "Professor Nettle"
+      }
+    ],
+    "art": "scenes/classes/academy",
+    "reviewName": "nettle-before",
+    "tv": "stage-nettle-before-tv.webp",
+    "phone": "stage-nettle-before-phone.webp"
+  },
+  {
+    "scene": "scene_prologue_party_prologue_begin",
+    "cast": [
+      {
+        "figure": "cast/professor_nettle",
+        "name": "Professor Nettle"
+      }
+    ],
+    "art": "scenes/classes/academy",
+    "reviewName": "nettle-after",
+    "tv": "stage-nettle-after-tv.webp",
+    "phone": "stage-nettle-after-phone.webp"
+  },
+  {
+    "scene": "scene_prologue_party_oranges",
+    "cast": [
+      {
+        "figure": "entities/yeti",
+        "name": "Aunt Bellow"
+      }
+    ],
+    "art": "scenes/classes/conservatory",
+    "reviewName": "bellow-before",
+    "tv": "stage-bellow-before-tv.webp",
+    "phone": "stage-bellow-before-phone.webp"
+  },
+  {
+    "scene": "scene_prologue_party_lamps",
+    "cast": [
+      {
+        "figure": "cast/aunt_bellow",
+        "name": "Aunt Bellow"
+      }
+    ],
+    "art": "scenes/classes/conservatory",
+    "reviewName": "bellow-after",
+    "tv": "stage-bellow-after-tv.webp",
+    "phone": "stage-bellow-after-phone.webp"
+  },
+  {
+    "scene": "scene_prologue_party_cards",
+    "cast": [
+      {
+        "figure": "cast/yeti_elder",
+        "name": "Yeti herder"
+      }
+    ],
+    "art": "scenes/riftlight/singing-hall",
+    "reviewName": "herder-before",
+    "tv": "stage-herder-before-tv.webp",
+    "phone": "stage-herder-before-phone.webp"
+  },
+  {
+    "scene": "scene_red_sky",
+    "cast": [
+      {
+        "figure": "cast/yeti_herder",
+        "name": "Yeti herder"
+      }
+    ],
+    "art": "scenes/riftlight/singing-hall",
+    "reviewName": "herder-after",
+    "tv": "stage-herder-after-tv.webp",
+    "phone": "stage-herder-after-phone.webp"
+  },
+  {
+    "scene": "scene_lighthouse",
+    "cast": [
+      {
+        "figure": "entities/rookery_crows",
+        "name": "The crows"
+      }
+    ],
+    "art": "scenes/classes/rookery",
+    "reviewName": "crows-after",
+    "tv": "stage-crows-after-tv.webp",
+    "phone": "stage-crows-after-phone.webp"
+  },
+  {
+    "scene": "scene_harbour_wall",
+    "cast": [
+      {
+        "figure": "cast/orin_vale",
+        "name": "Orin Vale"
+      }
+    ],
+    "art": "scenes/riftlight/wrong-valley",
+    "reviewName": "wrong-valley",
+    "tv": "stage-wrong-valley-tv.webp",
+    "phone": "stage-wrong-valley-phone.webp"
+  },
+  {
+    "scene": "scene_night_docks",
+    "cast": [
+      {
+        "figure": "cast/orin_vale",
+        "name": "Orin Vale"
+      }
+    ],
+    "art": "scenes/riftlight/convergence-ledge",
+    "reviewName": "convergence-ledge",
+    "tv": "stage-convergence-ledge-tv.webp",
+    "phone": "stage-convergence-ledge-phone.webp"
+  },
+  {
+    "scene": "scene_stampede",
+    "cast": [
+      {
+        "figure": "cast/orin_vale",
+        "name": "Orin Vale"
+      }
+    ],
+    "art": "scenes/riftlight/wyrm-nest",
+    "reviewName": "wyrm-nest",
+    "tv": "stage-wyrm-nest-tv.webp",
+    "phone": "stage-wyrm-nest-phone.webp"
+  },
+  {
+    "scene": "scene_plaques",
+    "cast": [
+      {
+        "figure": "cast/orin_vale",
+        "name": "Orin Vale"
+      }
+    ],
+    "art": "scenes/riftlight/bone-yard-ruins",
+    "reviewName": "bone-yard-ruins",
+    "tv": "stage-bone-yard-ruins-tv.webp",
+    "phone": "stage-bone-yard-ruins-phone.webp"
+  },
+  {
+    "scene": "scene_long_bridge",
+    "cast": [
+      {
+        "figure": "cast/orin_vale",
+        "name": "Orin Vale"
+      }
+    ],
+    "art": "scenes/riftlight/singing-hall-camp",
+    "reviewName": "singing-hall-camp",
+    "tv": "stage-singing-hall-camp-tv.webp",
+    "phone": "stage-singing-hall-camp-phone.webp"
+  },
+  {
+    "scene": "scene_long_bridge_barge",
+    "cast": [
+      {
+        "figure": "cast/orin_vale",
+        "name": "Orin Vale"
+      }
+    ],
+    "art": "scenes/riftlight/island-due-back",
+    "reviewName": "island-due-back",
+    "tv": "stage-island-due-back-tv.webp",
+    "phone": "stage-island-due-back-phone.webp"
+  }
+]

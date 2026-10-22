@@ -60,7 +60,8 @@
           "figure": "cast/seren_wisp",
           "name": "Seren Wisp"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "arrival_story": {
       "type": "story",
@@ -72,7 +73,8 @@
           "icon": "hand",
           "goto": "fellowship"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "arrival_question": {
       "type": "story",
@@ -84,7 +86,8 @@
           "icon": "hand",
           "goto": "fellowship"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "fellowship": {
       "type": "story",
@@ -96,7 +99,8 @@
           "icon": "hand",
           "goto": "seren"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "seren": {
       "type": "story",
@@ -122,7 +126,8 @@
           },
           "text": "\"You can learn a good deal without seeing what I see,\" Seren says. She glances at Orin's instruments. \"He brought half a bag of help.\""
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "lead": {
       "type": "story",
@@ -141,7 +146,8 @@
           "type": "setFlag",
           "flag": "heard_the_travelers_plan"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "olivia": {
       "type": "choice_point",
@@ -159,7 +165,8 @@
           "icon": "hand",
           "goto": "safe_routes"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "route": {
       "type": "story",
@@ -171,7 +178,8 @@
           "icon": "hand",
           "goto": "chime"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "chime": {
       "type": "story",
@@ -189,7 +197,8 @@
           "type": "grantQuestItem",
           "itemId": "listening_chime"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "test_chime": {
       "type": "choice_point",
@@ -207,7 +216,8 @@
           "icon": "hand",
           "goto": "wrap"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "ring": {
       "type": "story",
@@ -225,7 +235,8 @@
           "type": "setFlag",
           "flag": "got_ready_for_the_road"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "wrap": {
       "type": "story",
@@ -243,7 +254,8 @@
           "type": "setFlag",
           "flag": "got_ready_for_the_road"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "parting": {
       "type": "story",
@@ -255,7 +267,8 @@
           "icon": "hand",
           "goto": "camp"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "camp": {
       "type": "rest",
@@ -280,14 +293,16 @@
           "icon": "travel",
           "goto": "set_out"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "set_out": {
       "type": "rest",
       "narration": "You brush the snow off your packs and stand. Inside the hall, the yetis hold their low note a little longer, as if they are waving. Which road comes first?",
       "heal": 0,
       "choices": [],
-      "outcome": "success"
+      "outcome": "success",
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "dojo": {
       "type": "story",
@@ -304,7 +319,7 @@
       "classPlace": "thornguard",
       "cast": [
         {
-          "figure": "characters/bigfoot",
+          "figure": "cast/master_dunnick",
           "name": "Master Dunnick"
         }
       ],
@@ -335,14 +350,15 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/classes/dojo"
     },
     "dojo_pillows": {
       "type": "story",
       "narration": "A student unties a rope. Pillows tumble from the rafters. You plant your feet and catch one, then another, then another. The next one lands on your head. Master Dunnick nods without leaving the door. \"That is how you brace. Stand still, and let it come to you.\"",
       "cast": [
         {
-          "figure": "characters/bigfoot",
+          "figure": "cast/master_dunnick",
           "name": "Master Dunnick"
         }
       ],
@@ -360,7 +376,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/classes/dojo"
     },
     "academy": {
       "type": "story",
@@ -377,7 +394,7 @@
       "classPlace": "starweaver",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/professor_nettle",
           "name": "Professor Nettle"
         }
       ],
@@ -408,14 +425,15 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/classes/academy"
     },
     "academy_stars": {
       "type": "story",
       "narration": "Professor Nettle lets you look through the telescope. Even by day, the stars are so close you could count their points. Then the telescope sneezes. Brass rattles. Dust puffs out of the far end. \"Bless you,\" says the professor, to the telescope. \"It does that when it sees something new.\"",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/professor_nettle",
           "name": "Professor Nettle"
         }
       ],
@@ -433,7 +451,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/classes/academy"
     },
     "help_now": {
       "type": "story",
@@ -451,7 +470,8 @@
           "type": "setFlag",
           "flag": "decided_what_comes_first"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     },
     "safe_routes": {
       "type": "story",
@@ -469,7 +489,8 @@
           "type": "setFlag",
           "flag": "decided_what_comes_first"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
     }
   },
   "voiceGuide": {

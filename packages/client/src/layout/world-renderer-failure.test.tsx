@@ -91,3 +91,62 @@ it("draws the chapter as still art and a plain board when the renderer is gone",
   expect(action).toHaveBeenCalled();
   expect(container.querySelector(".kad-stage")).toBeNull();
 });
+
+it("sounds a scene's rift opening or folding shut once as the scene opens, even on the still board (#401)", async () => {
+  vi.spyOn(console, "error").mockImplementation(() => undefined);
+  const { setAudioSink } = await import("../audio/cue");
+  const heard: string[] = [];
+  setAudioSink({ cue: (id) => heard.push(id), music: () => undefined });
+  try {
+    scene.chapter = {
+      id: "ch1",
+      biome: "glacier_of_origins",
+      scenes: {
+        quay: { type: "story", narration: "A fold.", rift: "steady", choices: [] },
+        shimmer: { type: "story", narration: "The fold opens.", rift: "open", choices: [] },
+        through: { type: "story", narration: "It pinches shut.", rift: "collapse", choices: [] },
+      },
+    };
+    const at = (sceneId: string) => ({ phase: "scene", chapterId: "ch1", sceneId, party: [] });
+    scene.state = at("quay");
+    const { rerender } = render(<WorldView />);
+    expect(heard.filter((id) => id.startsWith("rift"))).toEqual([]);
+    scene.state = at("shimmer");
+    rerender(<WorldView />);
+    scene.state = { ...at("shimmer") };
+    rerender(<WorldView />);
+    expect(heard.filter((id) => id.startsWith("rift"))).toEqual(["rift-open"]);
+    scene.state = at("through");
+    rerender(<WorldView />);
+    expect(heard.filter((id) => id.startsWith("rift"))).toEqual(["rift-open", "rift-collapse"]);
+  } finally {
+    setAudioSink(null);
+  }
+});
+
+it("sounds a scene's rift once its chapter arrives, when the scene was named first (#401)", async () => {
+  vi.spyOn(console, "error").mockImplementation(() => undefined);
+  const { setAudioSink } = await import("../audio/cue");
+  const heard: string[] = [];
+  setAudioSink({ cue: (id) => heard.push(id), music: () => undefined });
+  try {
+    // The run state names the opening scene before useChapter() has resolved.
+    scene.chapter = null;
+    scene.state = { phase: "scene", chapterId: "ch1", sceneId: "shimmer", party: [] };
+    const { rerender } = render(<WorldView />);
+    expect(heard.filter((id) => id.startsWith("rift"))).toEqual([]);
+    scene.chapter = {
+      id: "ch1",
+      biome: "glacier_of_origins",
+      scenes: { shimmer: { type: "story", narration: "The fold opens.", rift: "open", choices: [] } },
+    };
+    rerender(<WorldView />);
+    expect(heard.filter((id) => id.startsWith("rift"))).toEqual(["rift-open"]);
+    // Neither a later patch nor the same chapter again sounds it twice.
+    scene.state = { ...(scene.state as object) };
+    rerender(<WorldView />);
+    expect(heard.filter((id) => id.startsWith("rift"))).toEqual(["rift-open"]);
+  } finally {
+    setAudioSink(null);
+  }
+});

@@ -65,7 +65,8 @@
             "dragonling"
           ]
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "grab": {
       "type": "check",
@@ -107,7 +108,8 @@
             "flag": "reached_for_the_ledge"
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "smash": {
       "type": "check",
@@ -149,7 +151,8 @@
             "flag": "reached_for_the_ledge"
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "lift": {
       "type": "check",
@@ -191,7 +194,8 @@
             "flag": "reached_for_the_ledge"
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "early": {
       "type": "rest",
@@ -205,7 +209,8 @@
           "flag": "river_escaped_early",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "tree": {
       "type": "story",
@@ -217,7 +222,8 @@
           "icon": "hand",
           "goto": "tree_choice"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "tree_choice": {
       "type": "choice_point",
@@ -243,7 +249,8 @@
           "goto": "call",
           "requiresSpecies": "manticore"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "climb": {
       "type": "check",
@@ -277,7 +284,8 @@
             "nonlethal": true
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "guide": {
       "type": "check",
@@ -311,7 +319,8 @@
             "nonlethal": true
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "call": {
       "type": "check",
@@ -345,7 +354,8 @@
             "nonlethal": true
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "middle": {
       "type": "rest",
@@ -359,7 +369,8 @@
           "flag": "river_escaped_middle",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/stone-counters"
     },
     "rift": {
       "type": "story",
@@ -371,7 +382,9 @@
           "icon": "hand",
           "goto": "rift_choice"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "open"
     },
     "rift_choice": {
       "type": "choice_point",
@@ -397,7 +410,9 @@
           "icon": "hand",
           "goto": "rapids"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "steady"
     },
     "river_chime": {
       "type": "story",
@@ -409,7 +424,9 @@
           "icon": "hand",
           "goto": "rift_decision"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "steady"
     },
     "river_read": {
       "type": "story",
@@ -421,7 +438,9 @@
           "icon": "hand",
           "goto": "rift_decision"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "steady"
     },
     "rift_decision": {
       "type": "choice_point",
@@ -450,7 +469,9 @@
           "icon": "hand",
           "goto": "rapids"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "steady"
     },
     "rift_end": {
       "type": "rest",
@@ -464,7 +485,9 @@
           "flag": "river_took_rift",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "steady"
     },
     "rapids": {
       "type": "choice_point",
@@ -489,7 +512,8 @@
           "goto": "mend_signal",
           "requiresSpecies": "unicorn"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "swim": {
       "type": "check",
@@ -533,7 +557,8 @@
             "value": true
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "signal": {
       "type": "check",
@@ -577,7 +602,8 @@
             "value": true
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "mend_signal": {
       "type": "check",
@@ -621,7 +647,8 @@
             "value": true
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "late": {
       "type": "rest",
@@ -641,7 +668,8 @@
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "rescue": {
       "type": "story",
@@ -675,7 +703,8 @@
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     },
     "rescued": {
       "type": "rest",
@@ -689,7 +718,8 @@
           "flag": "river_escaped_late",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
     }
   },
   "voiceGuide": {

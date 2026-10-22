@@ -1,0 +1,554 @@
+{
+  "mode": "built-in image_gen",
+  "assets": [
+    {
+      "id": "wrong-valley",
+      "issue": 397,
+      "kind": "scene",
+      "output": "assets/scenes/riftlight/wrong-valley.webp",
+      "prompt": "Use case: illustration-story. Kids & Dragons game backdrop, 1920x1080 landscape 16:9, warm crafted painterly storybook finish matching reference brushwork. Reference is STYLE only, replace its location with the request. Stage contract: full-width open safe foreground from 70% down, feet floor at 80%, simple low-detail standing area; major landmarks in upper half and at edges. No figures, creatures, people, lettering, UI, borders, rifts or portals. A northbound road rising toward a glacier, path cut in two by a dry melt channel. In upper/middle left, a dark route-marker stone has one fork-shaped chip. Behind it the old melt channel is dry, while a clearly separate new river pours between TWO ridges farther west on image right. Broad shelf above new flow. Blue ice, dark rock, bright cold daylight. Keep standing band solid rock, no water crossing foreground.",
+      "references": [
+        "assets/scenes/riftlight/ice-shelf-headwaters.webp"
+      ],
+      "source": "exec-74e08809-d035-42eb-bff6-27e418cc3ddf.png",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB",
+      "sha256": "3389df7da3b33aeb32c9d68c41411a89fea10a1655f922eb816314ebb6a19ee3"
+    },
+    {
+      "id": "convergence-ledge",
+      "issue": 397,
+      "kind": "scene",
+      "output": "assets/scenes/riftlight/convergence-ledge.webp",
+      "prompt": "Use case: illustration-story. Kids & Dragons game backdrop, 1920x1080 landscape 16:9, warm crafted painterly storybook finish matching reference brushwork. Reference is STYLE only, replace its location with the request. Stage contract: full-width open safe foreground from 70% down, feet floor at 80%, simple low-detail standing area; major landmarks in upper half and at edges. No figures, creatures, people, lettering, UI, borders, rifts or portals. A sheltered broad glacier ledge. An upturned wooden sled is used as a map table at back left: a spread parchment with abstract unlabeled paths secured by small pebbles. An unmistakable deep glacier passage leads away at back right. Pale blue ice ribs and warm soft daylight. Exceptionally wide uncluttered foreground for a large party and five Riftseekers. No bookshelves or library.",
+      "references": [
+        "assets/scenes/riftlight/reading-room.webp"
+      ],
+      "source": "exec-06e60ce7-606c-48ee-9cae-02a43ab36108.png",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB",
+      "sha256": "60696ed569fc64dd16d1bcbf29ceccb73b8edad153207cb36e6c4bb13b9a880b"
+    },
+    {
+      "id": "wyrm-nest",
+      "issue": 397,
+      "kind": "scene",
+      "output": "assets/scenes/riftlight/wyrm-nest.webp",
+      "prompt": "Use case: illustration-story. Kids & Dragons game backdrop, 1920x1080 landscape 16:9, warm crafted painterly storybook finish matching reference brushwork. Reference is STYLE only, replace its location with the request. Stage contract: full-width open safe foreground from 70% down, feet floor at 80%, simple low-detail standing area; major landmarks in upper half and at edges. No figures, creatures, people, lettering, UI, borders, rifts or portals. A new glacier chamber half carved by yeti builders. A built doorway, broad simple stone/ice bench along side wall for a wyrm's pillow, tiny delicate ice ferns frosted on back wall, structural ice ribs. A far wall opening shows a sheltered snow hollow. Rough unfinished carving beside finished masonry. Cold blue ice with a little warm daylight. Leave ALL creatures out, especially no wyrm. Empty full-width foreground.",
+      "references": [
+        "assets/scenes/riftlight/reading-room.webp"
+      ],
+      "source": "exec-30eb7f46-5808-4660-9cfd-a41c2219afab.png",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB",
+      "sha256": "458e6e49fd00b3f366af5814c368465699cba4f079f1826b62dd56532897d4da"
+    },
+    {
+      "id": "bone-yard-ruins",
+      "issue": 397,
+      "kind": "scene",
+      "output": "assets/scenes/riftlight/bone-yard-ruins.webp",
+      "prompt": "Use case: illustration-story. Kids & Dragons game backdrop, 1920x1080 landscape 16:9, warm crafted painterly storybook finish matching reference brushwork. Reference is STYLE only, replace its location with the request. Stage contract: full-width open safe foreground from 70% down, feet floor at 80%, simple low-detail standing area; major landmarks in upper half and at edges. No figures, creatures, people, lettering, UI, borders, rifts or portals. Ancient BROKEN STONE WALLS have appeared among enormous weathered old bones under a hazy sky. The broken masonry is the central upper-half landmark: a leaning wall blocks one narrow side path, a separate longer side path curves around a deep hollow visible farther back. A small brackish pool at back edge. Quiet curious archaeological mood, cream bones, dusty ochre earth, muted green brackish water, warm gray masonry. Safe continuous solid foreground; bones are ancient remains, no gore.",
+      "references": [
+        "assets/scenes/riftlight/ice-shelf-headwaters.webp"
+      ],
+      "source": "exec-127a3ed8-4aff-4222-a96a-fab8118cecc6.png",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB",
+      "sha256": "bd3aa0b0c0df49900448776bedac4c584cebf85517bd7fd40daac49346e547ff"
+    },
+    {
+      "id": "singing-hall",
+      "issue": 397,
+      "kind": "scene",
+      "output": "assets/scenes/riftlight/singing-hall.webp",
+      "prompt": "Use case: illustration-story. Kids & Dragons game backdrop, 1920x1080 landscape 16:9, warm crafted painterly storybook finish matching reference brushwork. Reference is STYLE only, replace its location with the request. Stage contract: full-width open safe foreground from 70% down, feet floor at 80%, simple low-detail standing area; major landmarks in upper half and at edges. No figures, creatures, people, lettering, UI, borders, rifts or portals. Inside a cozy hall carved from thick glacier ice. Benches around small warm cups along the back and sides, a row of warm rounded stones beside damp blankets over a wooden rail. At the BACK a closed glass door glows with damp warm greenhouse air behind it, the Conservatory. Harmonious welcoming ice architecture, gentle amber warmth on blue ice. No library shelves, no written music, no instruments floating, no people or yetis. Broad unobstructed floor.",
+      "references": [
+        "assets/scenes/riftlight/reading-room.webp"
+      ],
+      "source": "exec-6ff629f9-0f89-4174-9cad-745dc0931ba8.png",
+      "initialSource": "exec-2a7471d7-cda6-4150-b178-c6b3ba9334fa.png",
+      "correction": "Edit only the reference Singing Hall painting: add a LOW ROW OF ROUNDED WARM DARK STONES under the blanket rail at the LEFT rear side wall, with a few damp socks and mittens draped above them, subtly warming/drying. Keep them behind the open foreground. Preserve the glass Conservatory door, ice hall, cups and benches, original framing, lighting and style. No people, text, rifts, new doors or foreground obstructions.",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB",
+      "sha256": "daca6db3c2e7d57e8fa612fca8d57ecdcb6553b332436f4e8dde299190ff0770"
+    },
+    {
+      "id": "singing-hall-camp",
+      "issue": 397,
+      "kind": "scene",
+      "output": "assets/scenes/riftlight/singing-hall-camp.webp",
+      "prompt": "Use case: illustration-story. Kids & Dragons game backdrop, 1920x1080 landscape 16:9, warm crafted painterly storybook finish matching reference brushwork. Reference is STYLE only, replace its location with the request. Stage contract: full-width open safe foreground from 70% down, feet floor at 80%, simple low-detail standing area; major landmarks in upper half and at edges. No figures, creatures, people, lettering, UI, borders, rifts or portals. Outside a singing hall built into a glacier wall: Riftseekers' modest camp on dry flat stones beside the hall. Canvas tents and supplies at the back sides. A thin SEALED seam is physically visible in the hall wall: closed ordinary ice joint with NO opening, NO glow, NO portal. A narrow foot passage runs along rock, an ice shelf leads east toward distant stepped cairns. Welcoming snowy daylight, camp sheltered from wind, broad dry stone foreground.",
+      "references": [
+        "assets/scenes/riftlight/reading-room.webp"
+      ],
+      "source": "exec-7a1e8ed1-3023-4296-93b9-c4e94614d1bb.png",
+      "initialSource": "exec-d03b7684-728d-4bfa-a0f4-e60268294319.png",
+      "correction": "Edit only the reference camp painting: REMOVE every book and bookshelf/niche from the exterior ice facade, filling those areas with rough naturally carved blue ice. Keep the hall door and tents. Add a thin closed vertical ordinary SEALED ICE SEAM in the solid wall just RIGHT of the hall doorway, NOT an open crack or portal, NO glow. Preserve the camp, dry standing floor, side footpath, cairns, camera framing, full-width open foreground, painterly style and lighting. No figures, lettering, books, shelves or rifts.",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB",
+      "sha256": "721efa75d196775df2ceb0e05118a09ec8b7fa70b3fdacb92be13a2a7eef897c"
+    },
+    {
+      "id": "dojo",
+      "issue": 398,
+      "kind": "scene",
+      "output": "assets/scenes/classes/dojo.webp",
+      "prompt": "Use case: illustration-story. Kids & Dragons game backdrop, 1920x1080 landscape 16:9, warm crafted painterly storybook finish matching reference brushwork. Reference is STYLE only, replace its location with the request. Stage contract: full-width open safe foreground from 70% down, feet floor at 80%, simple low-detail standing area; major landmarks in upper half and at edges. No figures, creatures, people, lettering, UI, borders, rifts or portals. A mountain school room with sturdy timber beams and stone walls, a small warm hearth to the SIDE, a heavy shut wooden door visibly braced against wind by its bent latch and draft-curled fabric strip. One thorn bracer hangs on a hook by the fire. A few practice pillows stacked at the back. Simple warm wood floor, peaceful disciplined school, open uncluttered center, no weapons or figures. No snow-specific landscape, reusable class room.",
+      "references": [
+        "assets/scenes/classes/conservatory.webp"
+      ],
+      "source": "exec-36c7bbe3-c46c-4e99-8887-d040dc103904.png",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB",
+      "sha256": "d27a9390e6c8602cca0aa7adb78a39783d279eb81a795d740132cec20a3ea15a"
+    },
+    {
+      "id": "academy",
+      "issue": 398,
+      "kind": "scene",
+      "output": "assets/scenes/classes/academy.webp",
+      "prompt": "Use case: illustration-story. Kids & Dragons game backdrop, 1920x1080 landscape 16:9, warm crafted painterly storybook finish matching reference brushwork. Reference is STYLE only, replace its location with the request. Stage contract: full-width open safe foreground from 70% down, feet floor at 80%, simple low-detail standing area; major landmarks in upper half and at edges. No figures, creatures, people, lettering, UI, borders, rifts or portals. A classroom at the top of a ROOFLESS round tower: above the low parapet there is ONLY open sky, no visible landscape, no snow or marsh. A huge eccentric BRASS TELESCOPE at the back left. Desks arranged along back and sides, a few loose BLANK homework sheets floating up toward the sky. Patient magical school atmosphere, warm brass and weathered stone, soft late-afternoon sky. Wide open empty stone floor for figures. No letter shapes or writing anywhere.",
+      "references": [
+        "assets/scenes/classes/conservatory.webp"
+      ],
+      "source": "exec-7cf4e523-8633-4233-94a2-49245295e3ea.png",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB",
+      "sha256": "b56bf1f46896a90d78a464e9b8de13f087ce2780586de51f5d93f56744e4c5e7"
+    },
+    {
+      "id": "rookery",
+      "issue": 398,
+      "kind": "scene",
+      "output": "assets/scenes/classes/rookery.webp",
+      "prompt": "Use case: illustration-story. Kids & Dragons game backdrop, 1920x1080 landscape 16:9, warm crafted painterly storybook finish matching reference brushwork. Reference is STYLE only, replace its location with the request. Stage contract: full-width open safe foreground from 70% down, feet floor at 80%, simple low-detail standing area; major landmarks in upper half and at edges. No figures, creatures, people, lettering, UI, borders, rifts or portals. A rooftop school on the Exchange's rooftops: broad safe continuous level roof terrace in foreground, chimney pots and gutters along the BACK/SIDES above the standing band. On the tallest chimney a conspicuous small BLANK wooden sign, no writing. One dark dusk hood hangs from a side peg. Distant warm whimsical market rooftops under dusk sunlight. No crows or other birds: a separate flock cutout will be composited live. No people, no rail/roof obstruction in foreground.",
+      "references": [
+        "assets/scenes/classes/conservatory.webp"
+      ],
+      "source": "exec-e41b1e30-d82a-463f-9619-41e8764ed028.png",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB",
+      "sha256": "38fe247bca7a5ea0f15ee7dc9905a9b54946fb0ea6f0dae57d87c1badebe69ec"
+    },
+    {
+      "id": "master_dunnick",
+      "issue": 398,
+      "kind": "cast",
+      "basis": "bigfoot",
+      "scale": "large",
+      "heightCm": 270,
+      "stance": "standing",
+      "name": "Master Dunnick",
+      "output": "assets/cast/master_dunnick/assembled.png",
+      "references": [
+        "assets/cast/mosshome_archivist/assembled.png"
+      ],
+      "prompt": "Use case: illustration-story. Kids & Dragons finished transparent story cast figure. Warm hand-drawn storybook painted fur/scales, warm dark-brown outline, simple readable shapes, upper-left light. Three-quarter facing LEFT toward the party. Full isolated complete figure, all anatomy and props inside image, about 820px silhouette on 1024x1024 RGBA, feet centered x512 baseline y900. Real transparent background; no floor, no shadow, no scenery, no text, no border. References are house-style/species references, NOT individuals to copy. An OLD male bigfoot Thornguard teacher, unmistakably grown, broad grizzled umber mane, cream fur, bushy grey eyebrows, mild experienced face, sturdy bipedal body and large bare feet. Simple moss-green padded shoulder vest, thorn bracer around one wrist. Relaxed posture with shoulders subtly leaned BACK as if bracing a door, but do NOT paint a door: stage backdrop provides it. Arms loosely folded over belly. No weapon, no youthful hero proportions. Distinct from female archivist: short tousled mane, beard and moustache, no bun, no knotted cords.",
+      "source": "exec-83505d84-d5b9-4747-8d9a-7e7e85433ccd.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "260c6bc80ac3e3dbd836421a9562c97d992dec001fbb898bd67cd4d7365eb348"
+    },
+    {
+      "id": "professor_nettle",
+      "issue": 398,
+      "kind": "cast",
+      "basis": "dragonling",
+      "scale": "medium",
+      "heightCm": 165,
+      "stance": "standing",
+      "name": "Professor Nettle",
+      "output": "assets/cast/professor_nettle/assembled.png",
+      "references": [
+        "assets/cast/great_gran_ashby/assembled.png"
+      ],
+      "prompt": "Use case: illustration-story. Kids & Dragons finished transparent story cast figure. Warm hand-drawn storybook painted fur/scales, warm dark-brown outline, simple readable shapes, upper-left light. Three-quarter facing LEFT toward the party. Full isolated complete figure, all anatomy and props inside image, about 820px silhouette on 1024x1024 RGBA, feet centered x512 baseline y900. Real transparent background; no floor, no shadow, no scenery, no text, no border. References are house-style/species references, NOT individuals to copy. An ADULT dragonling professor, clearly older than a hero child but not elderly. Quadruped on all four feet, pale mint scales, rich forest-green spines, orange wing membranes, long tail; short mane-like spine ruff, a calm unbothered half smile and round spectacles. Wearing a simple ink-blue academic shoulder cape with brass clasp and a small leather pouch for telescope tools. No mortarboard, no wizard hat, no humanoid hands, no floating papers or telescope in this cutout. Slightly longer muzzle and sturdy mature proportions. Do not copy grandmother shawl or walking stick.",
+      "source": "exec-d5f6acb5-5ee4-4312-aa6d-79a98ba91e81.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "a6b586c8ad1af8d34c1f810570a551c59744f175f8fbb4dfc27c8e4f1964bf67"
+    },
+    {
+      "id": "aunt_bellow",
+      "issue": 398,
+      "kind": "cast",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 265,
+      "stance": "standing",
+      "name": "Aunt Bellow",
+      "output": "assets/cast/aunt_bellow/assembled.png",
+      "references": [
+        "assets/entities/yeti/assembled.png",
+        "assets/cast/yeti_elder/assembled.png"
+      ],
+      "prompt": "Use case: illustration-story. Kids & Dragons finished transparent story cast figure. Warm hand-drawn storybook painted fur/scales, warm dark-brown outline, simple readable shapes, upper-left light. Three-quarter facing LEFT toward the party. Full isolated complete figure, all anatomy and props inside image, about 820px silhouette on 1024x1024 RGBA, feet centered x512 baseline y900. Real transparent background; no floor, no shadow, no scenery, no text, no border. References are house-style/species references, NOT individuals to copy. Adult FEMALE yeti choir teacher, warm expansive confident expression with open mouth mid-note. Broad stocky bipedal white/ice-blue fur, compact swept-back hair in a loose topknot, no long elderly beard, no braids. Ochre/terracotta sleeveless work apron with one large pocket and a soft green shoulder scarf. Conducts with a single orange CARROT with small green leaves held in one hand, other hand open palm up at waist. Clearly different from reference male blue-clothed yeti elder: younger round face, no book, no staff, no long white facial hair.",
+      "source": "exec-0f61c76c-ef25-48d2-b1cf-cdb5006e8398.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "798dda1d59bff6574ce24827a115a6ede159f3407e971ca471f9cc57678b0595"
+    },
+    {
+      "id": "yeti_herder",
+      "issue": 399,
+      "kind": "cast",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 250,
+      "stance": "standing",
+      "name": "Yeti herder",
+      "output": "assets/cast/yeti_herder/assembled.png",
+      "references": [
+        "assets/entities/yeti/assembled.png",
+        "assets/cast/yeti_elder/assembled.png"
+      ],
+      "prompt": "Use case: illustration-story. Kids & Dragons finished transparent story cast figure. Warm hand-drawn storybook painted fur/scales, warm dark-brown outline, simple readable shapes, upper-left light. Three-quarter facing LEFT toward the party. Full isolated complete figure, all anatomy and props inside image, about 820px silhouette on 1024x1024 RGBA, feet centered x512 baseline y900. Real transparent background; no floor, no shadow, no scenery, no text, no border. References are house-style/species references, NOT individuals to copy. Young ADULT female outdoorsy working yeti herder with a short tousled ice-blue/white head tuft and broad friendly face, no elder beard or braids. Stocky bipedal white furry body with very large bare feet. Weathered olive short wool vest, rust-red scarf and practical rope belt. Holds a plain wooden shepherd's crook, carries a small tin kettle clipped to belt and a coil of herding rope. Warm welcoming smile, relaxed everyday working pose. Distinct from blue-robed elder: no book, no robe, no crystal staff, no ornaments, no grey old eyebrows.",
+      "source": "exec-f4efb56f-9df7-42ca-b658-25646ca32fae.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "1559d204dae54b387ac429b5cb1a1b9122afb612b08479d66255802061494c04"
+    },
+    {
+      "id": "rookery_crows",
+      "issue": 398,
+      "kind": "stage",
+      "scale": "small_to_medium",
+      "heightCm": 80,
+      "stance": "standing",
+      "name": "The crows",
+      "output": "assets/entities/rookery_crows/assembled.png",
+      "references": [
+        "assets/cast/yeti_elder/assembled.png"
+      ],
+      "prompt": "Use case: illustration-story. Kids & Dragons finished transparent story cast figure. Warm hand-drawn storybook painted fur/scales, warm dark-brown outline, simple readable shapes, upper-left light. Three-quarter facing LEFT toward the party. Full isolated complete figure, all anatomy and props inside image, about 820px silhouette on 1024x1024 RGBA, feet centered x512 baseline y900. Real transparent background; no floor, no shadow, no scenery, no text, no border. References are house-style/species references, NOT individuals to copy. A single unified cutout of a FLOCK of SIX ordinary crows teaching as equals. Real crow anatomy, rounded charcoal feathers with subtle warm blue-grey highlights, stout black-grey beaks, small dark alert eyes and sturdy feet. All six same size and prominence, none singled out as leader. Compact natural staggered group, roughly square arrangement with three in front and three close behind, complete bodies, feet, beaks and tails all visible, subtle head tilts in different directions but overall facing LEFT. Each bird stands, wings folded, no flying birds. Calm confident 'don't mess with us' attitude, not threatening. No clothing, accessories, pedestal, branches, chimney pots, flags, text or human traits. All front-row feet share baseline y900.",
+      "source": "exec-612c3333-4aa4-4db8-9e54-a538bc4f730f.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "b111c2df1c59b2f8ae6cb95368104b89261c7565e75cc846a01ac33fdd372ec4",
+      "registrationNote": "The staggered two-row flock has an 80 cm overall painted pose; each front-row bird is about 48 cm. Adjusted from 45 cm overall after phone-stage review showed the flock too small."
+    },
+    {
+      "id": "starweaver-radiant-unicorn",
+      "issue": 400,
+      "kind": "hero",
+      "class": "starweaver",
+      "tier": "radiant",
+      "species": "unicorn",
+      "output": "assets/character-rigs/starweaver/radiant/unicorn/assembled.png",
+      "prompt": "Use case: illustration-story. Asset type: Kids & Dragons finished transparent game hero figure, 1024x1024 RGBA. Create a faithful transparent illustration of the RADIANT STARWEAVER UNICORN shown in the reference. Reference supplies the EXACT species, tier, class outfit, palette and anatomy: preserve all of them. A quadrupedal unicorn, pale violet-cream coat, rich violet mane and tail, bold blue horn, four complete hooves, no wings. Preserve deep teal astral shoulder mantle, gold constellation stitching, star clasp, and ONE floating faceted focus gem near the head; all its ring and glow must be contained within the canvas. The focus gem remains separate in the same cutout; no other magical effects. Match crafted hand-drawn warm dark outlines and painted storybook shading, soft cel highlights, upper-left lighting. Neutral three-quarter LEFT facing, weight evenly on all four limbs. Whole complete figure: ears, horn, wings, tail tips, ALL feet and floating focus if present must be intact and separated from canvas edges. No clipping, holes, missing hoof tips, duplicated anatomy or scenery. Real TRANSPARENT background, no ground or painted shadow, no letters, border, magic portal or UI. Scale so figure silhouette fits about 820px tall and max 950px wide, feet midpoint at x512 and baseline y900 on a 1024 square with transparent 124px below. Do not preserve the opaque portrait backdrop.",
+      "references": [
+        "assets/gear-portraits/starweaver/radiant/unicorn.png"
+      ],
+      "source": "exec-4f06ea28-079f-4fca-94e5-4192db7e7f84.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "ecc8f5ecd2a992150af12a0a2ffb3426d6efe111fac8dcca125f49120a3f058a"
+    },
+    {
+      "id": "starweaver-radiant-dragonling",
+      "issue": 400,
+      "kind": "hero",
+      "class": "starweaver",
+      "tier": "radiant",
+      "species": "dragonling",
+      "output": "assets/character-rigs/starweaver/radiant/dragonling/assembled.png",
+      "prompt": "Use case: illustration-story. Asset type: Kids & Dragons finished transparent game hero figure, 1024x1024 RGBA. Create a faithful transparent illustration of the RADIANT STARWEAVER DRAGONLING shown in the reference. Reference supplies the EXACT species, tier, class outfit, palette and anatomy: preserve all of them. A quadrupedal dragonling, pale mint scales, forest-green spines and horns, orange batlike wing membranes, four complete clawed feet and a long tail. Preserve deep teal astral shoulder mantle, gold constellation stitching, star clasp, and ONE floating faceted focus gem near the head; all its ring and glow must be contained within the canvas. The focus gem remains separate in the same cutout; no other magical effects. Match crafted hand-drawn warm dark outlines and painted storybook shading, soft cel highlights, upper-left lighting. Neutral three-quarter LEFT facing, weight evenly on all four limbs. Whole complete figure: ears, horn, wings, tail tips, ALL feet and floating focus if present must be intact and separated from canvas edges. No clipping, holes, missing hoof tips, duplicated anatomy or scenery. Real TRANSPARENT background, no ground or painted shadow, no letters, border, magic portal or UI. Scale so figure silhouette fits about 820px tall and max 950px wide, feet midpoint at x512 and baseline y900 on a 1024 square with transparent 124px below. Do not preserve the opaque portrait backdrop.",
+      "references": [
+        "assets/gear-portraits/starweaver/radiant/dragonling.png"
+      ],
+      "source": "exec-b5cb474e-1733-49ea-9523-c6f7c19976e8.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "bfc1f5073fe3f43c12a78e2c3b04414c69fc588e286c0a6ebd1e2be44e5e9817"
+    },
+    {
+      "id": "starweaver-radiant-griffin",
+      "issue": 400,
+      "kind": "hero",
+      "class": "starweaver",
+      "tier": "radiant",
+      "species": "griffin",
+      "output": "assets/character-rigs/starweaver/radiant/griffin/assembled.png",
+      "prompt": "Use case: illustration-story. Asset type: Kids & Dragons finished transparent game hero figure, 1024x1024 RGBA. Create a faithful transparent illustration of the RADIANT STARWEAVER GRIFFIN shown in the reference. Reference supplies the EXACT species, tier, class outfit, palette and anatomy: preserve all of them. A quadrupedal griffin, white feathered head with slate-blue crest and neck ruff, yellow beak, gold feathered wings, pale slate body, two gold front talons and two rear paws, lion tail. Exactly four legs and two wings. Preserve deep teal astral shoulder mantle, gold constellation stitching, star clasp, and ONE floating faceted focus gem near the head; all its ring and glow must be contained within the canvas. The focus gem remains separate in the same cutout; no other magical effects. Match crafted hand-drawn warm dark outlines and painted storybook shading, soft cel highlights, upper-left lighting. Neutral three-quarter LEFT facing, weight evenly on all four limbs. Whole complete figure: ears, horn, wings, tail tips, ALL feet and floating focus if present must be intact and separated from canvas edges. No clipping, holes, missing hoof tips, duplicated anatomy or scenery. Real TRANSPARENT background, no ground or painted shadow, no letters, border, magic portal or UI. Scale so figure silhouette fits about 820px tall and max 950px wide, feet midpoint at x512 and baseline y900 on a 1024 square with transparent 124px below. Do not preserve the opaque portrait backdrop.",
+      "references": [
+        "assets/gear-portraits/starweaver/radiant/griffin.png"
+      ],
+      "source": "exec-a845ddc1-4ef5-411e-9423-9aac647460c0.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "75666335bb826ae575b14d62613e9b08c06610f42191bdab9a5878830beb1296"
+    },
+    {
+      "id": "starweaver-radiant-kitsune",
+      "issue": 400,
+      "kind": "hero",
+      "class": "starweaver",
+      "tier": "radiant",
+      "species": "kitsune",
+      "output": "assets/character-rigs/starweaver/radiant/kitsune/assembled.png",
+      "prompt": "Use case: illustration-story. Asset type: Kids & Dragons finished transparent game hero figure, 1024x1024 RGBA. Create a faithful transparent illustration of the RADIANT STARWEAVER KITSUNE shown in the reference. Reference supplies the EXACT species, tier, class outfit, palette and anatomy: preserve all of them. A quadrupedal kitsune fox, cream coat, vermilion mane/ruff and large ears, teal bushy cream-tipped tails. Match number and arrangement of tails in the reference. Four complete paws. Preserve deep teal astral shoulder mantle, gold constellation stitching, star clasp, and ONE floating faceted focus gem near the head; all its ring and glow must be contained within the canvas. The focus gem remains separate in the same cutout; no other magical effects. Match crafted hand-drawn warm dark outlines and painted storybook shading, soft cel highlights, upper-left lighting. Neutral three-quarter LEFT facing, weight evenly on all four limbs. Whole complete figure: ears, horn, wings, tail tips, ALL feet and floating focus if present must be intact and separated from canvas edges. No clipping, holes, missing hoof tips, duplicated anatomy or scenery. Real TRANSPARENT background, no ground or painted shadow, no letters, border, magic portal or UI. Scale so figure silhouette fits about 820px tall and max 950px wide, feet midpoint at x512 and baseline y900 on a 1024 square with transparent 124px below. Do not preserve the opaque portrait backdrop.",
+      "references": [
+        "assets/gear-portraits/starweaver/radiant/kitsune.png"
+      ],
+      "source": "exec-870de01e-c4be-4e0d-962c-86fe8f7c5782.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "0652457d4b34195648b41cc4a6b80938aaafaf045af8b85a19e78014b752cfb3"
+    },
+    {
+      "id": "starweaver-radiant-manticore",
+      "issue": 400,
+      "kind": "hero",
+      "class": "starweaver",
+      "tier": "radiant",
+      "species": "manticore",
+      "output": "assets/character-rigs/starweaver/radiant/manticore/assembled.png",
+      "prompt": "Use case: illustration-story. Asset type: Kids & Dragons finished transparent game hero figure, 1024x1024 RGBA. Create a faithful transparent illustration of the RADIANT STARWEAVER MANTICORE shown in the reference. Reference supplies the EXACT species, tier, class outfit, palette and anatomy: preserve all of them. A quadrupedal lionlike manticore, pale pink-cream coat, deep crimson mane, green segmented scorpion tail with a blunt readable stinger, four complete paws. No added wings. Preserve deep teal astral shoulder mantle, gold constellation stitching, star clasp, and ONE floating faceted focus gem near the head; all its ring and glow must be contained within the canvas. The focus gem remains separate in the same cutout; no other magical effects. Match crafted hand-drawn warm dark outlines and painted storybook shading, soft cel highlights, upper-left lighting. Neutral three-quarter LEFT facing, weight evenly on all four limbs. Whole complete figure: ears, horn, wings, tail tips, ALL feet and floating focus if present must be intact and separated from canvas edges. No clipping, holes, missing hoof tips, duplicated anatomy or scenery. Real TRANSPARENT background, no ground or painted shadow, no letters, border, magic portal or UI. Scale so figure silhouette fits about 820px tall and max 950px wide, feet midpoint at x512 and baseline y900 on a 1024 square with transparent 124px below. Do not preserve the opaque portrait backdrop.",
+      "references": [
+        "assets/gear-portraits/starweaver/radiant/manticore.png"
+      ],
+      "source": "exec-fa4bfc7a-f28d-4880-8fe1-ac885a5a2ad8.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "2713f004e248990fa61db42dea424b2937d764e6164a46fd4f5e1c125ce471ee"
+    },
+    {
+      "id": "songkeeper-sworn-unicorn",
+      "issue": 400,
+      "kind": "hero",
+      "class": "songkeeper",
+      "tier": "sworn",
+      "species": "unicorn",
+      "output": "assets/character-rigs/songkeeper/sworn/unicorn/assembled.png",
+      "prompt": "Use case: illustration-story. Asset type: Kids & Dragons finished transparent game hero figure, 1024x1024 RGBA. Create a faithful transparent illustration of the SWORN SONGKEEPER UNICORN shown in the reference. Reference supplies the EXACT species, tier, class outfit, palette and anatomy: preserve all of them. A quadrupedal unicorn, pale violet-cream coat, rich violet mane and tail, bold blue horn, four complete hooves, no wings. Preserve warm golden woven shoulder wrap, geometric embroidery, fringe, bronze clasp and the small hanging chime bells and ear ornament. SWORN must keep the simpler single woven wrap and single central bell, without the Radiant's extra layers. Match crafted hand-drawn warm dark outlines and painted storybook shading, soft cel highlights, upper-left lighting. Neutral three-quarter LEFT facing, weight evenly on all four limbs. Whole complete figure: ears, horn, wings, tail tips, ALL feet and floating focus if present must be intact and separated from canvas edges. No clipping, holes, missing hoof tips, duplicated anatomy or scenery. Real TRANSPARENT background, no ground or painted shadow, no letters, border, magic portal or UI. Scale so figure silhouette fits about 820px tall and max 950px wide, feet midpoint at x512 and baseline y900 on a 1024 square with transparent 124px below. Do not preserve the opaque portrait backdrop.",
+      "references": [
+        "assets/gear-portraits/songkeeper/sworn/unicorn.png"
+      ],
+      "source": "exec-dd5a11d9-2f1c-456f-90f4-66b07d43ccfd.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "f802a960b7f6782d4fbfa40cbcff5381d85870f4ef76b0350815c16048dc301f"
+    },
+    {
+      "id": "songkeeper-sworn-dragonling",
+      "issue": 400,
+      "kind": "hero",
+      "class": "songkeeper",
+      "tier": "sworn",
+      "species": "dragonling",
+      "output": "assets/character-rigs/songkeeper/sworn/dragonling/assembled.png",
+      "prompt": "Use case: illustration-story. Asset type: Kids & Dragons finished transparent game hero figure, 1024x1024 RGBA. Create a faithful transparent illustration of the SWORN SONGKEEPER DRAGONLING shown in the reference. Reference supplies the EXACT species, tier, class outfit, palette and anatomy: preserve all of them. A quadrupedal dragonling, pale mint scales, forest-green spines and horns, orange batlike wing membranes, four complete clawed feet and a long tail. Preserve warm golden woven shoulder wrap, geometric embroidery, fringe, bronze clasp and the small hanging chime bells and ear ornament. SWORN must keep the simpler single woven wrap and single central bell, without the Radiant's extra layers. Match crafted hand-drawn warm dark outlines and painted storybook shading, soft cel highlights, upper-left lighting. Neutral three-quarter LEFT facing, weight evenly on all four limbs. Whole complete figure: ears, horn, wings, tail tips, ALL feet and floating focus if present must be intact and separated from canvas edges. No clipping, holes, missing hoof tips, duplicated anatomy or scenery. Real TRANSPARENT background, no ground or painted shadow, no letters, border, magic portal or UI. Scale so figure silhouette fits about 820px tall and max 950px wide, feet midpoint at x512 and baseline y900 on a 1024 square with transparent 124px below. Do not preserve the opaque portrait backdrop.",
+      "references": [
+        "assets/gear-portraits/songkeeper/sworn/dragonling.png"
+      ],
+      "source": "exec-99963757-daae-404f-8bae-57bedd0eb584.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "8ee497b3e5e415432e528727596be374e9dd27ce234c0bb62637a34c65c48894"
+    },
+    {
+      "id": "songkeeper-sworn-griffin",
+      "issue": 400,
+      "kind": "hero",
+      "class": "songkeeper",
+      "tier": "sworn",
+      "species": "griffin",
+      "output": "assets/character-rigs/songkeeper/sworn/griffin/assembled.png",
+      "prompt": "Use case: illustration-story. Asset type: Kids & Dragons finished transparent game hero figure, 1024x1024 RGBA. Create a faithful transparent illustration of the SWORN SONGKEEPER GRIFFIN shown in the reference. Reference supplies the EXACT species, tier, class outfit, palette and anatomy: preserve all of them. A quadrupedal griffin, white feathered head with slate-blue crest and neck ruff, yellow beak, gold feathered wings, pale slate body, two gold front talons and two rear paws, lion tail. Exactly four legs and two wings. Preserve warm golden woven shoulder wrap, geometric embroidery, fringe, bronze clasp and the small hanging chime bells and ear ornament. SWORN must keep the simpler single woven wrap and single central bell, without the Radiant's extra layers. Match crafted hand-drawn warm dark outlines and painted storybook shading, soft cel highlights, upper-left lighting. Neutral three-quarter LEFT facing, weight evenly on all four limbs. Whole complete figure: ears, horn, wings, tail tips, ALL feet and floating focus if present must be intact and separated from canvas edges. No clipping, holes, missing hoof tips, duplicated anatomy or scenery. Real TRANSPARENT background, no ground or painted shadow, no letters, border, magic portal or UI. Scale so figure silhouette fits about 820px tall and max 950px wide, feet midpoint at x512 and baseline y900 on a 1024 square with transparent 124px below. Do not preserve the opaque portrait backdrop.",
+      "references": [
+        "assets/gear-portraits/songkeeper/sworn/griffin.png"
+      ],
+      "source": "exec-45b41329-db75-4f4d-b7b7-634c8ebf48b0.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "17496ed8151e6f183e2a9c4684d481d452534763b960b29f1e12b843f1270e58"
+    },
+    {
+      "id": "songkeeper-sworn-manticore",
+      "issue": 400,
+      "kind": "hero",
+      "class": "songkeeper",
+      "tier": "sworn",
+      "species": "manticore",
+      "output": "assets/character-rigs/songkeeper/sworn/manticore/assembled.png",
+      "prompt": "Use case: illustration-story. Asset type: Kids & Dragons finished transparent game hero figure, 1024x1024 RGBA. Create a faithful transparent illustration of the SWORN SONGKEEPER MANTICORE shown in the reference. Reference supplies the EXACT species, tier, class outfit, palette and anatomy: preserve all of them. A quadrupedal lionlike manticore, pale pink-cream coat, deep crimson mane, green segmented scorpion tail with a blunt readable stinger, four complete paws. No added wings. Preserve warm golden woven shoulder wrap, geometric embroidery, fringe, bronze clasp and the small hanging chime bells and ear ornament. SWORN must keep the simpler single woven wrap and single central bell, without the Radiant's extra layers. Match crafted hand-drawn warm dark outlines and painted storybook shading, soft cel highlights, upper-left lighting. Neutral three-quarter LEFT facing, weight evenly on all four limbs. Whole complete figure: ears, horn, wings, tail tips, ALL feet and floating focus if present must be intact and separated from canvas edges. No clipping, holes, missing hoof tips, duplicated anatomy or scenery. Real TRANSPARENT background, no ground or painted shadow, no letters, border, magic portal or UI. Scale so figure silhouette fits about 820px tall and max 950px wide, feet midpoint at x512 and baseline y900 on a 1024 square with transparent 124px below. Do not preserve the opaque portrait backdrop.",
+      "references": [
+        "assets/gear-portraits/songkeeper/sworn/manticore.png"
+      ],
+      "source": "exec-5b1efc51-a31c-46c0-b798-ace1e64fca42.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "aa248bb8b53dfdbc67db8d57e307918ac696b81a25b52703513021569df2e2af"
+    },
+    {
+      "id": "songkeeper-radiant-unicorn",
+      "issue": 400,
+      "kind": "hero",
+      "class": "songkeeper",
+      "tier": "radiant",
+      "species": "unicorn",
+      "output": "assets/character-rigs/songkeeper/radiant/unicorn/assembled.png",
+      "prompt": "Use case: illustration-story. Asset type: Kids & Dragons finished transparent game hero figure, 1024x1024 RGBA. Create a faithful transparent illustration of the RADIANT SONGKEEPER UNICORN shown in the reference. Reference supplies the EXACT species, tier, class outfit, palette and anatomy: preserve all of them. A quadrupedal unicorn, pale violet-cream coat, rich violet mane and tail, bold blue horn, four complete hooves, no wings. Preserve warm golden woven shoulder wrap, geometric embroidery, fringe, bronze clasp and the small hanging chime bells and ear ornament. RADIANT must keep the reference's broader layered elaborate wrap, multiple bells and mature luminous species details, visibly above Sworn. Match crafted hand-drawn warm dark outlines and painted storybook shading, soft cel highlights, upper-left lighting. Neutral three-quarter LEFT facing, weight evenly on all four limbs. Whole complete figure: ears, horn, wings, tail tips, ALL feet and floating focus if present must be intact and separated from canvas edges. No clipping, holes, missing hoof tips, duplicated anatomy or scenery. Real TRANSPARENT background, no ground or painted shadow, no letters, border, magic portal or UI. Scale so figure silhouette fits about 820px tall and max 950px wide, feet midpoint at x512 and baseline y900 on a 1024 square with transparent 124px below. Do not preserve the opaque portrait backdrop.",
+      "references": [
+        "assets/gear-portraits/songkeeper/radiant/unicorn.png"
+      ],
+      "source": "exec-7de21b09-1461-4d88-9d46-8b69b2a5d730.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "539a500267b16cd5ac530e2cc32eb042fa22a13a6bdc04201595e1ef591c5592"
+    },
+    {
+      "id": "songkeeper-radiant-dragonling",
+      "issue": 400,
+      "kind": "hero",
+      "class": "songkeeper",
+      "tier": "radiant",
+      "species": "dragonling",
+      "output": "assets/character-rigs/songkeeper/radiant/dragonling/assembled.png",
+      "prompt": "Use case: illustration-story. Asset type: Kids & Dragons finished transparent game hero figure, 1024x1024 RGBA. Create a faithful transparent illustration of the RADIANT SONGKEEPER DRAGONLING shown in the reference. Reference supplies the EXACT species, tier, class outfit, palette and anatomy: preserve all of them. A quadrupedal dragonling, pale mint scales, forest-green spines and horns, orange batlike wing membranes, four complete clawed feet and a long tail. Preserve warm golden woven shoulder wrap, geometric embroidery, fringe, bronze clasp and the small hanging chime bells and ear ornament. RADIANT must keep the reference's broader layered elaborate wrap, multiple bells and mature luminous species details, visibly above Sworn. Match crafted hand-drawn warm dark outlines and painted storybook shading, soft cel highlights, upper-left lighting. Neutral three-quarter LEFT facing, weight evenly on all four limbs. Whole complete figure: ears, horn, wings, tail tips, ALL feet and floating focus if present must be intact and separated from canvas edges. No clipping, holes, missing hoof tips, duplicated anatomy or scenery. Real TRANSPARENT background, no ground or painted shadow, no letters, border, magic portal or UI. Scale so figure silhouette fits about 820px tall and max 950px wide, feet midpoint at x512 and baseline y900 on a 1024 square with transparent 124px below. Do not preserve the opaque portrait backdrop.",
+      "references": [
+        "assets/gear-portraits/songkeeper/radiant/dragonling.png"
+      ],
+      "source": "exec-c32e5d6f-0ca0-4c21-abe3-79b6b62f095a.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "58e5e204450a9a61b43915bc4acaeab18fbf1e835a35befec5ccfe904f050625"
+    },
+    {
+      "id": "songkeeper-radiant-griffin",
+      "issue": 400,
+      "kind": "hero",
+      "class": "songkeeper",
+      "tier": "radiant",
+      "species": "griffin",
+      "output": "assets/character-rigs/songkeeper/radiant/griffin/assembled.png",
+      "prompt": "Use case: illustration-story. Asset type: Kids & Dragons finished transparent game hero figure, 1024x1024 RGBA. Create a faithful transparent illustration of the RADIANT SONGKEEPER GRIFFIN shown in the reference. Reference supplies the EXACT species, tier, class outfit, palette and anatomy: preserve all of them. A quadrupedal griffin, white feathered head with slate-blue crest and neck ruff, yellow beak, gold feathered wings, pale slate body, two gold front talons and two rear paws, lion tail. Exactly four legs and two wings. Preserve warm golden woven shoulder wrap, geometric embroidery, fringe, bronze clasp and the small hanging chime bells and ear ornament. RADIANT must keep the reference's broader layered elaborate wrap, multiple bells and mature luminous species details, visibly above Sworn. Match crafted hand-drawn warm dark outlines and painted storybook shading, soft cel highlights, upper-left lighting. Neutral three-quarter LEFT facing, weight evenly on all four limbs. Whole complete figure: ears, horn, wings, tail tips, ALL feet and floating focus if present must be intact and separated from canvas edges. No clipping, holes, missing hoof tips, duplicated anatomy or scenery. Real TRANSPARENT background, no ground or painted shadow, no letters, border, magic portal or UI. Scale so figure silhouette fits about 820px tall and max 950px wide, feet midpoint at x512 and baseline y900 on a 1024 square with transparent 124px below. Do not preserve the opaque portrait backdrop.",
+      "references": [
+        "assets/gear-portraits/songkeeper/radiant/griffin.png"
+      ],
+      "source": "exec-5b5a0d4e-f996-412b-96d4-9dab57ced001.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "645868a90b80f847deb074d84a07adb5829bd44deb2ef24f64245a72f2bdbf51"
+    },
+    {
+      "id": "songkeeper-radiant-kitsune",
+      "issue": 400,
+      "kind": "hero",
+      "class": "songkeeper",
+      "tier": "radiant",
+      "species": "kitsune",
+      "output": "assets/character-rigs/songkeeper/radiant/kitsune/assembled.png",
+      "prompt": "Use case: illustration-story. Asset type: Kids & Dragons finished transparent game hero figure, 1024x1024 RGBA. Create a faithful transparent illustration of the RADIANT SONGKEEPER KITSUNE shown in the reference. Reference supplies the EXACT species, tier, class outfit, palette and anatomy: preserve all of them. A quadrupedal kitsune fox, cream coat, vermilion mane/ruff and large ears, teal bushy cream-tipped tails. Match number and arrangement of tails in the reference. Four complete paws. Preserve warm golden woven shoulder wrap, geometric embroidery, fringe, bronze clasp and the small hanging chime bells and ear ornament. RADIANT must keep the reference's broader layered elaborate wrap, multiple bells and mature luminous species details, visibly above Sworn. Match crafted hand-drawn warm dark outlines and painted storybook shading, soft cel highlights, upper-left lighting. Neutral three-quarter LEFT facing, weight evenly on all four limbs. Whole complete figure: ears, horn, wings, tail tips, ALL feet and floating focus if present must be intact and separated from canvas edges. No clipping, holes, missing hoof tips, duplicated anatomy or scenery. Real TRANSPARENT background, no ground or painted shadow, no letters, border, magic portal or UI. Scale so figure silhouette fits about 820px tall and max 950px wide, feet midpoint at x512 and baseline y900 on a 1024 square with transparent 124px below. Do not preserve the opaque portrait backdrop.",
+      "references": [
+        "assets/gear-portraits/songkeeper/radiant/kitsune.png"
+      ],
+      "source": "exec-a6d00720-dc65-4270-adda-2bd2826f4dae.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "a0654804e5357295df2b4cf54ffe13360586193b185bfcee2153c096727d3e86"
+    },
+    {
+      "id": "songkeeper-radiant-manticore",
+      "issue": 400,
+      "kind": "hero",
+      "class": "songkeeper",
+      "tier": "radiant",
+      "species": "manticore",
+      "output": "assets/character-rigs/songkeeper/radiant/manticore/assembled.png",
+      "prompt": "Use case: illustration-story. Asset type: Kids & Dragons finished transparent game hero figure, 1024x1024 RGBA. Create a faithful transparent illustration of the RADIANT SONGKEEPER MANTICORE shown in the reference. Reference supplies the EXACT species, tier, class outfit, palette and anatomy: preserve all of them. A quadrupedal lionlike manticore, pale pink-cream coat, deep crimson mane, green segmented scorpion tail with a blunt readable stinger, four complete paws. No added wings. Preserve warm golden woven shoulder wrap, geometric embroidery, fringe, bronze clasp and the small hanging chime bells and ear ornament. RADIANT must keep the reference's broader layered elaborate wrap, multiple bells and mature luminous species details, visibly above Sworn. Match crafted hand-drawn warm dark outlines and painted storybook shading, soft cel highlights, upper-left lighting. Neutral three-quarter LEFT facing, weight evenly on all four limbs. Whole complete figure: ears, horn, wings, tail tips, ALL feet and floating focus if present must be intact and separated from canvas edges. No clipping, holes, missing hoof tips, duplicated anatomy or scenery. Real TRANSPARENT background, no ground or painted shadow, no letters, border, magic portal or UI. Scale so figure silhouette fits about 820px tall and max 950px wide, feet midpoint at x512 and baseline y900 on a 1024 square with transparent 124px below. Do not preserve the opaque portrait backdrop.",
+      "references": [
+        "assets/gear-portraits/songkeeper/radiant/manticore.png"
+      ],
+      "source": "exec-a0369d9e-cea8-42e1-9175-1cea4152e90f.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "339d96bf1025158ce6f001c3b009d72bd5dd9b3bf7ad3ff2d9c88b85bc01867a"
+    }
+  ]
+}
