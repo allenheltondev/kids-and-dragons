@@ -7,7 +7,7 @@ Paintings with the story told over them, shown **before** the table is asked to 
 - A **chapter plate**: one painting and a sentence or two, before the first scene of a chapter
   that establishes the chapter's setting, mood and immediate situation. It invites children
   into the next problem without revealing an outcome. Riftlight uses one for every chapter
-  after its prologue.
+  after its prologue, as does every Gemfall road and pursuit variant.
 
 Both are skippable and shown once per device. This document is the spec for the **art** (what to
 paint, how it is cropped, how to hand it over) and for the **content** that asks for it. The code
@@ -183,9 +183,10 @@ the TV view with the caption band shaded and the surviving middle outlined, besi
 
 ## 4. Delivered coverage
 
-All 31 paintings are delivered: four for Gemfall and 27 for Riftlight. Riftlight's four-plate
-prologue represents its opening chapter, *Snow on the Quay*; each of the other 23 chapters has
-its own representative plate. The narration is in the content; the prompts are in
+All 46 paintings are delivered: 19 for Gemfall and 27 for Riftlight. Each campaign's
+four-plate prologue represents its opening chapter. Gemfall's other 15 authored chapters
+(including all road and pursuit variants) and Riftlight's other 23 chapters each have their
+own representative plate. The narration is in the content; the prompts are in
 [story-plates-prompts.json](story-plates-prompts.json).
 
 ### Gemfall
@@ -203,6 +204,29 @@ stones, the seal or the titan.
 | `prologue-2` | A sunny village crossroads: bakers, a mail griffin, a runaway hat | Down in the realm, everybody gets on with things… |
 | `prologue-3` | The crater up close, one spark floating into the stars | But tonight, high in the north, the red glow… |
 | `prologue-4` | The Exchange harbor at dusk, the Long Bridge's lamps being lit, an empty pier | Far to the south, the Exchange is lighting its harbor lamps… |
+
+**Chapter plates** (15, covering every road and pursuit variant):
+
+Gemfall has eight story beats and 16 authored chapter files. A playthrough sees its prologue
+and seven chapter plates; the selected branches each have their own painting.
+
+| File | Chapter | Shows |
+|---|---|---|
+| `02` | Green Roads North | A stopped faun watering her hoof while a sprite watches the approaching rush |
+| `03a` | The Long Mile | A mossy toll-troll listening for a riddle, with a bird nesting on his shoulder |
+| `03b` | What the Marsh Remembers | A frogfolk ferrywoman, bell ribbons and curious new marsh wisps |
+| `03c` | The Ford That Decides | A muddy wagon and a centaur handing out queue tokens at the ford |
+| `04a` | The Pride Roads | A watchful manticore and freshly replanted markers bending the road |
+| `04b` | The Forest Takes Attendance | A counting fern, a poised acorn and a waiting bramble curtain |
+| `04c` | The Road That Remembers | A seated mule chewing a daisy while its owner pleads |
+| `05a` | The Broken Bridge | A griffin engineer examining the cracked bridge with chalk |
+| `05b` | MossHome and the High Paths | A bigfoot archivist at a living tree door, carrying knotted record cords |
+| `05c` | The Boundary Stones | A dragonling grandmother inspecting a pack with a small bell |
+| `06` | Ashfall | A grandmother disputing a prospector's doorstep claim beneath Redspire |
+| `07r` | The Returning | A glitter-filled wheelbarrow jammed between rocks in the Pinch |
+| `07h` | The Collection | A dragonling lookout and rival buyers watching the approaching caravan |
+| `07l` | The Tether | A wobbly door-table and a knitting grandmother between two arguing factions |
+| `08` | Gemfall | Two routes up the glowing mountain while a prospector hurries downhill |
 
 ### Riftlight
 

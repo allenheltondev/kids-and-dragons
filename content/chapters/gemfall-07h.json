@@ -12,6 +12,10 @@
     "flag": "pursuit_hoard"
   },
   "entry": "scene_like_weather",
+  "plate": {
+    "art": "plates/gemfall/07h",
+    "narration": "At the Pinch, buyers crane their necks toward the next caravan. A dragonling climbs her ladder for a better look. The bend ahead is crowded already. Getting there first will take more than a loud voice."
+  },
   "objectives": [
     {
       "id": "cornered",

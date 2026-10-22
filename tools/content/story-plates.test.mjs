@@ -27,10 +27,10 @@ function used() {
 }
 
 describe("story plates", () => {
-  it("ships an opening painting for every Riftlight chapter", () => {
-    const campaign = campaigns.find((c) => c.id === "riftlight");
-    const opening = campaign.graph.nodes[campaign.graph.entry].chapter;
-    expect(campaign.chapters).toHaveLength(24);
+  it.each([{ id: "gemfall", count: 16 }, { id: "riftlight", count: 24 }])("ships an opening painting for every $id chapter", ({ id, count }) => {
+    const campaign = campaigns.find((c) => c.id === id);
+    const opening = campaign.graph ? campaign.graph.nodes[campaign.graph.entry].chapter : campaign.chapters[0];
+    expect(campaign.chapters).toHaveLength(count);
     for (const id of campaign.chapters) {
       const chapter = chapters.find((c) => c.id === id);
       const plates = id === opening ? campaign.prologue.plates : [chapter.plate];

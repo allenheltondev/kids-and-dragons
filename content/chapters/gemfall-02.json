@@ -8,6 +8,10 @@
   "estimatedMinutes": 40,
   "xpAward": 90,
   "entry": "scene_song_stops",
+  "plate": {
+    "art": "plates/gemfall/02",
+    "narration": "A faun stops playing, but her watering flute keeps pouring onto her hoof. Beyond the pumpkins, wagon wheels raise a cloud of dust. A tiny sprite folds its arms. The rush is coming through somebody's garden."
+  },
   "objectives": [
     {
       "id": "rows",
