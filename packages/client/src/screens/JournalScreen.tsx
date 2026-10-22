@@ -41,6 +41,8 @@ import { loadFieldGuide, useEnsureContent, useEnsureWorld } from "./content";
 import { offlineArtFor, warm } from "../sw/warm";
 import "./shared.css";
 import "./JournalScreen.css";
+// The tray, painted as it is in the room (docs/briefs/tablet-chrome-art.md).
+import "../styles/chrome.css";
 
 export type JournalPane = "hero" | "map" | "story" | "guide" | "me";
 

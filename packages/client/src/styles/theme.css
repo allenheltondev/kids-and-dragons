@@ -424,6 +424,9 @@ html[data-motion="reduced"] *::after {
 .kad-surface--player > .player,
 .kad-surface--player > .player-view__creation > .creation {
   flex: 1 1 0;
+  /* Not the 100% they ask for alone: in a column that would also be their least height, and a
+     host's Room bar above them would push their foot (the commit, Next) off the pane. */
+  block-size: auto;
 }
 
 .kad-surface--map {

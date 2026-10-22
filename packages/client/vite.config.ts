@@ -45,5 +45,12 @@ export default defineConfig({
      * to delete the other's files.
      */
     assetsDir: "bundle",
+    /*
+     * The painted chrome (src/assets/chrome/) stays files rather than data URLs, small as most of
+     * it is: inlined, all of it rode in every stylesheet that dresses anything (the room's and the
+     * journal's, ~96KB each), whether the screen used the piece or not. As files it is fetched
+     * once, when drawn, and the service worker saves it like the rest of `/bundle/`.
+     */
+    assetsInlineLimit: (file) => (file.includes("/assets/chrome/") ? false : undefined),
   },
 });

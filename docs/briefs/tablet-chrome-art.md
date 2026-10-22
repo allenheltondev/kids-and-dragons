@@ -1,10 +1,24 @@
 # Brief: painted chrome for the screens (frames, borders, rails and plates)
 
-**Status:** art delivered; CSS integration and device review pending. All 38 filenames enumerated
-below (including optional pieces) are in `packages/client/src/assets/chrome/`; prompts and slicing
-are recorded in that folder's README. Contact sheets and technical previews are in
-[`docs/reviews/tablet-chrome-art/`](../reviews/tablet-chrome-art/). The PR summary's count of 42
-does not match the tables' 38 deliverables. The complete set was requested together for this pass.
+**Status:** delivered and wired; device review on a real iPad pending. All 38 pieces are in
+`packages/client/src/assets/chrome/` (prompts and slicing in that folder's README) and laid on by
+`packages/client/src/styles/chrome.css`; contact sheets and technical previews are in
+[`docs/reviews/tablet-chrome-art/`](../reviews/tablet-chrome-art/). (An earlier summary of this
+brief counted 42; the tables have always listed 38.)
+
+**How it is wired, where it departs from the tables:**
+
+- The choice plate's trim is sized in em, not px, so its round socket grows with the plate and
+  stays round (a px inset stretched it oval on a taller plate). Its height is 4.3em.
+- The divider (`rule-flourish`) is drawn at its own size, centered, not stretched, so its star
+  keeps its shape. It is the line over the preface's goal.
+- The map's place names (`.atlas__landmark`) hang on `tag-place` as well as the "you are here" card.
+- `ornament-empty` stands over the one screen with nothing on it: the table is full, or the host
+  took you out.
+- Selected creation cards take `panel-featured`, and a picked inventory item a gold ring, since
+  the frames replace the outlines that marked them.
+- Images are files, never inlined (`vite.config.ts`), so the room's stylesheet carries only rules
+  and the service worker saves each picture once.
 
 This brief lists every piece of interface art the game needs so its screens look like the
 storybook its pictures are. It covers the frames around and between the panes, the panels that sit
