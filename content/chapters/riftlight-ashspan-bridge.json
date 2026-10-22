@@ -1,7 +1,7 @@
 {
   "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
   "id": "riftlight-ashspan-bridge",
-  "campaignId": "riftlight-opening-preview",
+  "campaignId": "riftlight",
   "index": 4,
   "title": "When the Ferry Goes Your Way",
   "biome": "eastern_plains",

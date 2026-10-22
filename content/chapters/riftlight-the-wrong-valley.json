@@ -1,7 +1,7 @@
 {
   "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
   "id": "riftlight-the-wrong-valley",
-  "campaignId": "riftlight-opening-preview",
+  "campaignId": "riftlight",
   "index": 6,
   "title": "The River Takes Another Valley",
   "biome": "glacier_of_origins",

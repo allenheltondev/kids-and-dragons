@@ -2,7 +2,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { afterAll, describe, expect, it, vi } from "vitest";
 import { enterScene, lintCampaignGraph, parseCampaignGraph, newCharacter, resolveCharacter, validateChapter, startJourney, completeVisit, takeExit, seedRunBuffs } from "@kad/shared";
-import type { Campaign } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { runValidator } from "./run-validator.ts";
 import { chapterFlagsFrom } from "./journey-graph.ts";
@@ -11,7 +10,7 @@ import { stageRiftlightOpening } from "./riftlight-preview.ts";
 import { campaign, chapters as allChapters, rules, items, context, start, send, allPaths } from "./riftlight-test-support.ts";
 const ROOT = path.resolve(import.meta.dirname, "../..");
 const chapters = new Map([...allChapters].filter(([, chapter]) => chapter.index <= 3));
-const continuity = JSON.parse(fs.readFileSync(path.join(ROOT, "content/drafts/riftlight/continuity.json"), "utf8")).chapters;
+const continuity = JSON.parse(fs.readFileSync(path.join(ROOT, "docs/campaigns/continental-rift/continuity.json"), "utf8")).chapters;
 const staged = stageRiftlightOpening();
 afterAll(() => fs.rmSync(staged, { recursive: true, force: true }));
 
@@ -46,10 +45,9 @@ describe("Riftlight's authored opening", () => {
     const result = runValidator(staged);
     expect(result.ok, result.output).toBe(true);
     expect(campaign.requires).toEqual(["gemfall"]);
-    // What ships is the lobby teaser alone: no chapters, nothing to start.
-    const teaser = JSON.parse(fs.readFileSync(path.join(ROOT, "content/campaigns/riftlight.json"), "utf8")) as Campaign;
-    expect(teaser).toMatchObject({ comingSoon: true, listed: true, chapters: [], requires: ["gemfall"] });
-    expect(fs.existsSync(path.join(staged, "content/campaigns/riftlight.json"))).toBe(false);
+    // Shipped beside Gemfall, in every lobby, and locked until it is finished.
+    expect(campaign).toMatchObject({ id: "riftlight", listed: true });
+    expect(campaign.comingSoon).toBeUndefined();
     for (const chapter of allChapters.values()) expect(validateChapter(chapter), chapter.id).toEqual([]);
   });
 

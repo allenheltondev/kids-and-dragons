@@ -23,7 +23,7 @@ it("keeps content and saves until the runner closes, then removes them", async (
   const running = runRiftlightPreview(root, run);
   expect(run.mock.calls[0]![0]).toEqual([
     { command: "npm run dev:server", env: expect.objectContaining({ KAD_CONTENT_DIR: path.join(root, "content"), KAD_DATA_DIR: path.join(root, "saves") }) },
-    { command: "npm run dev:client", env: expect.objectContaining({ VITE_LAUNCH_CAMPAIGN: "riftlight-opening-preview" }) },
+    { command: "npm run dev:client", env: expect.objectContaining({ VITE_LAUNCH_CAMPAIGN: "riftlight" }) },
   ]);
   expect(fs.existsSync(path.join(root, "saves/table.json"))).toBe(true);
   close();

@@ -112,7 +112,8 @@ it("a background-only story biome needs explicit scene art rather than tactical 
       nodes: Object.fromEntries(kept.map((id, i) => [id, { chapter: id, ...(i === kept.length - 1 ? { ending: { title: "Art fixture" } } : {}) }])),
       edges: Object.fromEntries(kept.slice(1).map((id, i) => [`next_${i}`, { from: kept[i], to: id, kind: "forward" }])) };
     fs.writeFileSync(campaignFile, JSON.stringify(fixture));
-    const baseline = runValidator(root);
+    // A new graph, so a new proof, written as an author would (content:proofs).
+    const baseline = runValidator(root, ["--write-proofs"]);
     expect(baseline.ok, baseline.output).toBe(true);
     delete chapter.scenes.flats.art;
     fs.writeFileSync(file, JSON.stringify(chapter));
