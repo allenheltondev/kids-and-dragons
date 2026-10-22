@@ -1,0 +1,205 @@
+{
+  "mode": "built-in image_gen",
+  "created": "2026-10-22",
+  "assets": [
+    {
+      "class": "starweaver",
+      "species": "unicorn",
+      "prompt": "Use case: illustration-story. Deliver ONE finished full-body game character cutout, 1024x1024 PNG with true transparent background. Reference 1 is the approved fledgling UNICORN identity and palette; reference 2 is the approved MYTHIC body, pose, silhouette and mane; reference 3 is the approved STARWEAVER MYTHIC gear portrait, the source of truth for exact costume. Create this same Mythic Starweaver unicorn as a transparent standing figure. Preserve pale lavender coat, purple/magenta flowing starlit mane and tail, large blue crystalline spiral horn, warm dark eyes, four hooves, neutral quadruped pose facing three-quarter LEFT. Match deep teal layered star-embroidered gold-trim shoulder/chest mantle and central teal star jewel with small hanging gems exactly to reference 3. Include its small teal focus crystal in gold orbital frame floating beside upper-right shoulder, fully inside canvas. Warm finely painted storybook texture, clean readable silhouette. Entire creature, horn, tail and focus visible; feet at y=900, centered at x=512, at least 16px clear canvas around all extremities. No scenery, no ground plane, no shadow puddle, no aura halo, no text, no border, no extra limbs, no separate parts. Preserve approved friendly individual, not a redesign.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-53d33802-869d-4942-8eb6-3c05746e8f27.png",
+      "output": "assets/character-rigs/starweaver/mythic/unicorn/assembled.png",
+      "references": [
+        "assets/characters/unicorn/fledgling/assembled.png",
+        "assets/characters/unicorn/mythic/assembled.png",
+        "assets/gear-portraits/starweaver/mythic/unicorn.png"
+      ],
+      "sha256": "df6832bb9a61908299bce751e4d55b771370baf575d7f12e7af7d9604dc943e7",
+      "sourceSha256": "58e43e54dd346d2f535c3562f36fcbeff7fd955da50399fce1576fa44dce9bd5",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "class": "starweaver",
+      "species": "dragonling",
+      "body": "mint green dragon with dark pine-green back ridges, round friendly snout, four paws, TWO large open orange bat wings",
+      "prompt": "Use case: illustration-story. ONE full-body dragonling MYTHIC STARWEAVER game cutout, true transparent PNG, square 1024x1024. Image 1 is approved fledgling identity/palette reference, image 2 approved Mythic body reference, image 3 approved Starweaver Mythic gear portrait costume reference. Preserve same individual: mint green dragon with dark pine-green back ridges, round friendly snout, four paws, TWO large open orange bat wings. Match image 3's deep teal mantle, fine gold embroidered constellations, layered gold-trim chest/shoulder panels and star jewel clasp. Include its single floating faceted focus gem in delicate gold orbital frame near upper-right shoulder as in gear portrait; no halo or particles. Keep majestic Mythic body and signature size consistent with image 2, costume fit exactly per image 3, soft painterly storybook finish. Neutral quadruped standing pose, facing three-quarter LEFT; all four feet visible and grounded at y=900, centered x=512. Entire wings/tails/gem within canvas with 16px margin, no cropping. No scenery, no background color, no shadows, no floor, no text, no aura, no extra limbs, no split parts. Warm friendly expression with dark eyes and round catchlights.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-1d6e9819-7d0e-4003-a6be-6bb0985d2283.png",
+      "output": "assets/character-rigs/starweaver/mythic/dragonling/assembled.png",
+      "references": [
+        "assets/characters/dragonling/fledgling/assembled.png",
+        "assets/characters/dragonling/mythic/assembled.png",
+        "assets/gear-portraits/starweaver/mythic/dragonling.png"
+      ],
+      "sha256": "b7781b2d8c5b9c6f7e0d49e0e2dfef567c8f6729843339a68ec0d0c6ef9c71a6",
+      "sourceSha256": "7cec3ef1db5ef34a3a4cedea58e3fffb40093e6fdbf64f5b80b947480421eca5",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "class": "starweaver",
+      "species": "griffin",
+      "body": "white and pale blue griffin, blue feathered head and chest, golden beak and talons, gold wings, four legs",
+      "prompt": "Use case: illustration-story. ONE full-body griffin MYTHIC STARWEAVER game cutout, true transparent PNG, square 1024x1024. Image 1 is approved fledgling identity/palette reference, image 2 approved Mythic body reference, image 3 approved Starweaver Mythic gear portrait costume reference. Preserve same individual: white and pale blue griffin, blue feathered head and chest, golden beak and talons, gold wings, four legs. Match image 3's deep teal mantle, fine gold embroidered constellations, layered gold-trim chest/shoulder panels and star jewel clasp. Include its single floating faceted focus gem in delicate gold orbital frame near upper-right shoulder as in gear portrait; no halo or particles. Keep majestic Mythic body and signature size consistent with image 2, costume fit exactly per image 3, soft painterly storybook finish. Neutral quadruped standing pose, facing three-quarter LEFT; all four feet visible and grounded at y=900, centered x=512. Entire wings/tails/gem within canvas with 16px margin, no cropping. No scenery, no background color, no shadows, no floor, no text, no aura, no extra limbs, no split parts. Warm friendly expression with dark eyes and round catchlights.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-6b3bf217-a354-4c9c-ac4e-5a531655284b.png",
+      "output": "assets/character-rigs/starweaver/mythic/griffin/assembled.png",
+      "references": [
+        "assets/characters/griffin/fledgling/assembled.png",
+        "assets/characters/griffin/mythic/assembled.png",
+        "assets/gear-portraits/starweaver/mythic/griffin.png"
+      ],
+      "sha256": "ee2870457efad577b5db20ce340d21559c67103e859be1585a28365823d498bc",
+      "sourceSha256": "c545cd3850ad2be1a653194245e860e98cf6652ea207055206fc47d3954b4a14",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "class": "starweaver",
+      "species": "kitsune",
+      "body": "cream and red-orange fox with pointed ears, warm dark eyes, THREE huge luminous cyan-white tails",
+      "prompt": "Use case: illustration-story. ONE full-body kitsune MYTHIC STARWEAVER game cutout, true transparent PNG, square 1024x1024. Image 1 is approved fledgling identity/palette reference, image 2 approved Mythic body reference, image 3 approved Starweaver Mythic gear portrait costume reference. Preserve same individual: cream and red-orange fox with pointed ears, warm dark eyes, THREE huge luminous cyan-white tails. Match image 3's deep teal mantle, fine gold embroidered constellations, layered gold-trim chest/shoulder panels and star jewel clasp. Include its single floating faceted focus gem in delicate gold orbital frame near upper-right shoulder as in gear portrait; no halo or particles. Keep majestic Mythic body and signature size consistent with image 2, costume fit exactly per image 3, soft painterly storybook finish. Neutral quadruped standing pose, facing three-quarter LEFT; all four feet visible and grounded at y=900, centered x=512. Entire wings/tails/gem within canvas with 16px margin, no cropping. No scenery, no background color, no shadows, no floor, no text, no aura, no extra limbs, no split parts. Warm friendly expression with dark eyes and round catchlights.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-a461b5fc-2885-4b37-add8-435c5c8f3f34.png",
+      "output": "assets/character-rigs/starweaver/mythic/kitsune/assembled.png",
+      "references": [
+        "assets/characters/kitsune/fledgling/assembled.png",
+        "assets/characters/kitsune/mythic/assembled.png",
+        "assets/gear-portraits/starweaver/mythic/kitsune.png"
+      ],
+      "sha256": "d6841a8338a23b0a6416b0cc9a226a2b18a329b8a63e34264b6953bc306320bf",
+      "sourceSha256": "7788f17e64c3cb0669db8cd96e4f7db417f8fcdc1c60660651375ae0eba1a009",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "class": "starweaver",
+      "species": "manticore",
+      "body": "pink lion body and rounded friendly face, deep red mane, four pink paws, high segmented green scorpion tail arching over back",
+      "prompt": "Use case: illustration-story. ONE full-body manticore MYTHIC STARWEAVER game cutout, square 1024x1024 true transparent PNG. Reference 1 approved fledgling identity/palette, reference 2 approved Mythic body, reference 3 approved exact class gear portrait. Preserve same friendly individual: pink lion body and rounded friendly face, deep red mane, four pink paws, high segmented green scorpion tail arching over back. Match reference 3 costume: deep teal gold-trim mantle with fine embroidered constellations, layered chest/shoulder panels and star jewel clasp. Include its green faceted focus gem in delicate gold orbital frame beside upper-right shoulder, as in portrait. Mythic proportions and signature grandeur from reference 2. Finely painted storybook texture, clean contour, neutral quadruped standing three-quarter LEFT. All four feet visible, centered x=512, ground at y=900. Entire horn/wings/tail/gear within canvas, 16px clear edge margin. No scenery, no ground shadow, no floor, no opaque background, no halo or aura or particle cloud, no text, no border, no extra limbs, no split parts. Warm dark eyes with small round catchlights. Deliver a finished transparent illustration matching the references, not a redesign.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-1f9a39ba-b8df-4770-81bc-09c54704e4f1.png",
+      "output": "assets/character-rigs/starweaver/mythic/manticore/assembled.png",
+      "references": [
+        "assets/characters/manticore/fledgling/assembled.png",
+        "assets/characters/manticore/mythic/assembled.png",
+        "assets/gear-portraits/starweaver/mythic/manticore.png"
+      ],
+      "sha256": "f786128deb4ed98992f625ee013ef79d401a18764c5e7bd9c86235bf78cc18bd",
+      "sourceSha256": "bd8298ac01fa36c7755b4b6462094fc56d9f1bbc9653460fa2d05842c3cfcc52",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "class": "songkeeper",
+      "species": "unicorn",
+      "body": "pale lavender unicorn, huge blue crystalline spiral horn, rich purple/magenta long flowing starlit mane and tail, four dark purple hooves",
+      "prompt": "Use case: illustration-story. ONE full-body unicorn MYTHIC SONGKEEPER game cutout, square 1024x1024 true transparent PNG. Reference 1 approved fledgling identity/palette, reference 2 approved Mythic body, reference 3 approved exact class gear portrait. Preserve same friendly individual: pale lavender unicorn, huge blue crystalline spiral horn, rich purple/magenta long flowing starlit mane and tail, four dark purple hooves. Match reference 3 costume: rich golden ochre woven embroidered shoulder cape, broad gold collar, round sun clasp, turquoise jewel accents and dangling gold bell tassels exactly as in portrait; cloak should fit around wings/tail without hiding species silhouette. No floating crystal. Mythic proportions and signature grandeur from reference 2. Finely painted storybook texture, clean contour, neutral quadruped standing three-quarter LEFT. All four feet visible, centered x=512, ground at y=900. Entire horn/wings/tail/gear within canvas, 16px clear edge margin. No scenery, no ground shadow, no floor, no opaque background, no halo or aura or particle cloud, no text, no border, no extra limbs, no split parts. Warm dark eyes with small round catchlights. Deliver a finished transparent illustration matching the references, not a redesign.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-7928d136-1acb-458a-a67f-fdab4b518343.png",
+      "output": "assets/character-rigs/songkeeper/mythic/unicorn/assembled.png",
+      "references": [
+        "assets/characters/unicorn/fledgling/assembled.png",
+        "assets/characters/unicorn/mythic/assembled.png",
+        "assets/gear-portraits/songkeeper/mythic/unicorn.png"
+      ],
+      "sha256": "d1f1db524b6fb84d43e9d0a044436dceea80ebd07f514a754509acb848b11cc2",
+      "sourceSha256": "51129e28b53e31180093770c609e9fe4856674640edd6b085929d1a3488cf523",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "class": "songkeeper",
+      "species": "dragonling",
+      "body": "mint green dragon, dark pine-green back ridges, round friendly snout, four paws, TWO large open orange bat wings",
+      "prompt": "Use case: illustration-story. ONE full-body dragonling MYTHIC SONGKEEPER game cutout, square 1024x1024 true transparent PNG. Reference 1 approved fledgling identity/palette, reference 2 approved Mythic body, reference 3 approved exact class gear portrait. Preserve same friendly individual: mint green dragon, dark pine-green back ridges, round friendly snout, four paws, TWO large open orange bat wings. Match reference 3 costume: rich golden ochre woven embroidered shoulder cape, broad gold collar, round sun clasp, turquoise jewel accents and dangling gold bell tassels exactly as in portrait; cloak should fit around wings/tail without hiding species silhouette. No floating crystal. Mythic proportions and signature grandeur from reference 2. Finely painted storybook texture, clean contour, neutral quadruped standing three-quarter LEFT. All four feet visible, centered x=512, ground at y=900. Entire horn/wings/tail/gear within canvas, 16px clear edge margin. No scenery, no ground shadow, no floor, no opaque background, no halo or aura or particle cloud, no text, no border, no extra limbs, no split parts. Warm dark eyes with small round catchlights. Deliver a finished transparent illustration matching the references, not a redesign.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-feb8076f-ac34-407d-9d95-bc7322a312d0.png",
+      "output": "assets/character-rigs/songkeeper/mythic/dragonling/assembled.png",
+      "references": [
+        "assets/characters/dragonling/fledgling/assembled.png",
+        "assets/characters/dragonling/mythic/assembled.png",
+        "assets/gear-portraits/songkeeper/mythic/dragonling.png"
+      ],
+      "sha256": "6c2661589f9b5e6fcdd650d900fa0b5e45c0e641ccc51cf8d69db778ef16d748",
+      "sourceSha256": "0ac8cb1af5afd83ca5f787f6e2a8680b65b346d39046027b56b8e6f1b83b6333",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "class": "songkeeper",
+      "species": "griffin",
+      "body": "white and pale blue griffin, blue feathered head and chest, gold beak and talons, TWO broad golden feathered wings, four legs",
+      "prompt": "Use case: illustration-story. ONE finished full-body griffin MYTHIC SONGKEEPER game cutout. 1024x1024 true transparent PNG. Reference 1 approved fledgling identity and palette, reference 2 approved Mythic body, reference 3 approved exact Songkeeper Mythic costume portrait. Preserve same individual: white and pale blue griffin, blue feathered head and chest, gold beak and talons, TWO broad golden feathered wings, four legs. Match reference 3's rich golden ochre woven embroidered shoulder cape, broad gold collar, round sun clasp, turquoise jewel accents and dangling gold bell tassels exactly. Cape wraps naturally around body without hiding wings/tails. Preserve Mythic grandeur and species silhouette from reference 2. Warm finely painted storybook texture, friendly dark eyes with round catchlights, neutral quadruped stance facing three-quarter LEFT. Four feet visible and aligned on ground y=900, center x=512. Entire creature including wings/tails/cloak visible within canvas, 16px margin around every extremity. No opaque background, no scene, no ground plane, no shadow puddle, no halo or aura, no floating crystal, no detached particles, no text, no frame, no extra limbs, no split parts. Transparent finished character matching approved art, not a redesign.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-dc7f34c1-2134-4489-ab13-e4c5e7ca1fd0.png",
+      "output": "assets/character-rigs/songkeeper/mythic/griffin/assembled.png",
+      "references": [
+        "assets/characters/griffin/fledgling/assembled.png",
+        "assets/characters/griffin/mythic/assembled.png",
+        "assets/gear-portraits/songkeeper/mythic/griffin.png"
+      ],
+      "sha256": "b7eb93495a8bdeb5fb4de8fd89a63d131f24506cfcc2bc3a153628191c412a74",
+      "sourceSha256": "caad9a48ee0a21549d9e9ef39417c8f0f99c003ff7995106742b37f31c184c92",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "class": "songkeeper",
+      "species": "kitsune",
+      "body": "cream and red-orange fox, pointed ears, THREE huge fluffy cyan-white tails, dark friendly eyes, four paws",
+      "prompt": "Use case: illustration-story. ONE finished full-body kitsune MYTHIC SONGKEEPER game cutout. 1024x1024 true transparent PNG. Reference 1 approved fledgling identity and palette, reference 2 approved Mythic body, reference 3 approved exact Songkeeper Mythic costume portrait. Preserve same individual: cream and red-orange fox, pointed ears, THREE huge fluffy cyan-white tails, dark friendly eyes, four paws. Match reference 3's rich golden ochre woven embroidered shoulder cape, broad gold collar, round sun clasp, turquoise jewel accents and dangling gold bell tassels exactly. Cape wraps naturally around body without hiding wings/tails. Preserve Mythic grandeur and species silhouette from reference 2. Warm finely painted storybook texture, friendly dark eyes with round catchlights, neutral quadruped stance facing three-quarter LEFT. Four feet visible and aligned on ground y=900, center x=512. Entire creature including wings/tails/cloak visible within canvas, 16px margin around every extremity. No opaque background, no scene, no ground plane, no shadow puddle, no halo or aura, no floating crystal, no detached particles, no text, no frame, no extra limbs, no split parts. Transparent finished character matching approved art, not a redesign.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-0de05c9a-bfac-4856-a697-bf24f720550e.png",
+      "output": "assets/character-rigs/songkeeper/mythic/kitsune/assembled.png",
+      "references": [
+        "assets/characters/kitsune/fledgling/assembled.png",
+        "assets/characters/kitsune/mythic/assembled.png",
+        "assets/gear-portraits/songkeeper/mythic/kitsune.png"
+      ],
+      "sha256": "72099064a435a8e4db0156de06684b9b76333e1bb0393c4668f2c895ad4398b2",
+      "sourceSha256": "c6507f48b4692c690dfa625c20461d8c336eb4ab4de6c0854e4214b70cc0abe9",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "class": "songkeeper",
+      "species": "manticore",
+      "body": "pink lion creature, rounded warm face, deep red mane, four pink paws, high green segmented scorpion tail arching over back",
+      "prompt": "Use case: illustration-story. ONE finished full-body manticore MYTHIC SONGKEEPER game cutout. 1024x1024 true transparent PNG. Reference 1 approved fledgling identity and palette, reference 2 approved Mythic body, reference 3 approved exact Songkeeper Mythic costume portrait. Preserve same individual: pink lion creature, rounded warm face, deep red mane, four pink paws, high green segmented scorpion tail arching over back. Match reference 3's rich golden ochre woven embroidered shoulder cape, broad gold collar, round sun clasp, turquoise jewel accents and dangling gold bell tassels exactly. Cape wraps naturally around body without hiding wings/tails. Preserve Mythic grandeur and species silhouette from reference 2. Warm finely painted storybook texture, friendly dark eyes with round catchlights, neutral quadruped stance facing three-quarter LEFT. Four feet visible and aligned on ground y=900, center x=512. Entire creature including wings/tails/cloak visible within canvas, 16px margin around every extremity. No opaque background, no scene, no ground plane, no shadow puddle, no halo or aura, no floating crystal, no detached particles, no text, no frame, no extra limbs, no split parts. Transparent finished character matching approved art, not a redesign.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-349d260d-2811-4a08-b387-869a2d52ee76.png",
+      "output": "assets/character-rigs/songkeeper/mythic/manticore/assembled.png",
+      "references": [
+        "assets/characters/manticore/fledgling/assembled.png",
+        "assets/characters/manticore/mythic/assembled.png",
+        "assets/gear-portraits/songkeeper/mythic/manticore.png"
+      ],
+      "sha256": "d59b1261eebb325bbaba067b2fbe10b5e878d4902d842ec4b353a05dea5c3051",
+      "sourceSha256": "a0ebb8baa86aab7c9b9857e2c313bb7faabd930a8a3e5ae95c148601da584b7a",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    }
+  ]
+}
