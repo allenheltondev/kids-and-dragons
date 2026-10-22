@@ -103,7 +103,8 @@ describe("the gate — every graph campaign in the repo", () => {
         expect(isGraphSubject(s)).toBe(true);
       });
 
-      it("lints without an error and the search runs to completion", () => {
+      // The whole walk, on purpose: Riftlight's takes seconds.
+      it("lints without an error and the search runs to completion", { timeout: 60_000 }, () => {
         const { findings, search } = lintCampaignGraph(s.graph!, explorerOptions(s));
         expect(findings.filter((f) => f.severity === "error")).toEqual([]);
         expect(search.complete).toBe(true);
@@ -197,7 +198,7 @@ describe("ordered campaigns — seen, skipped, unchanged", () => {
     expect(run.stdout).toContain("ordered campaign (no graph), skipped");
   });
 
-  it("--all inspects only the graph campaigns and still exits 0 on the shipped repo", () => {
+  it("--all inspects only the graph campaigns and still exits 0 on the shipped repo", { timeout: 60_000 }, () => {
     const run = cli(["--all"]);
     expect(run.status).toBe(0);
     expect(run.stdout).toContain("gemfall.json: ordered campaign (no graph), skipped");

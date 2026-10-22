@@ -64,8 +64,8 @@ export function readFailures(output: string): string[] {
 }
 
 /** Runs `validate.mjs` over a tree and reports what it said. */
-export function runValidator(contentRoot: string): GateRun {
-  const result = spawnSync(process.execPath, [VALIDATOR], {
+export function runValidator(contentRoot: string, args: readonly string[] = []): GateRun {
+  const result = spawnSync(process.execPath, [VALIDATOR, ...args], {
     env: { ...process.env, KAD_CONTENT_ROOT: contentRoot },
     encoding: "utf8",
   });

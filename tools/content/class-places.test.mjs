@@ -108,9 +108,9 @@ describe("class place reach", () => {
     }
   });
 
-  it("counts the Riftlight draft's one-use, one-way rift as open, and the rooms beyond it", () => {
-    // Read from the shipped draft so the test follows it: its only way out of the Exchange.
-    const draft = JSON.parse(readFileSync(join(REPO, "content", "drafts", "riftlight", "opening-preview.campaign.json"), "utf8"));
+  it("counts Riftlight's one-use, one-way rift as open, and the rooms beyond it", () => {
+    // Read from the shipped campaign so the test follows it: its only way out of the Exchange.
+    const draft = JSON.parse(readFileSync(join(REPO, "content", "campaigns", "riftlight.json"), "utf8"));
     const { when, locked, rift } = draft.graph.edges["exchange-to-glacier"];
     expect(rift.uses).toBe(1);
     expect([when, locked, rift.opensWhen, rift.lasts, rift.unstable, rift.linkedTo, rift.actions]).toEqual(Array(7).fill(undefined));
@@ -183,7 +183,8 @@ describe("content:validate over a graph campaign", { timeout: 60_000 }, () => {
     edit?.(chapters);
     for (const [id, ch] of Object.entries(chapters)) writeFileSync(join(dir, "content", "chapters", `${id}.json`), JSON.stringify(ch));
     try {
-      const out = execFileSync(process.execPath, [join(REPO, "tools", "content", "validate.mjs")], {
+      // A new graph, so a new proof, written as an author would (content:proofs).
+      const out = execFileSync(process.execPath, [join(REPO, "tools", "content", "validate.mjs"), "--write-proofs"], {
         env: { ...process.env, KAD_CONTENT_ROOT: dir, NO_COLOR: "1" },
         encoding: "utf8",
       });
