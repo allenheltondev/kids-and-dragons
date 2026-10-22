@@ -6,13 +6,12 @@
  */
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { useGameStore } from "../store";
 import { perfRequested } from "../world/frame-stats";
 import { getAudioProbe, onAudioProbe } from "../audio/cue";
 import { Button } from "../ui/Button";
 import { probeCapabilities, type Capability } from "./capabilities";
 import { keepAwake, type KeepAwake, type WakeLockState } from "./wake-lock";
-import { onWake } from "./wake";
+import { useReconnectOnWake } from "../sync/wake-reconnect";
 
 import "./DisplayExtras.css";
 
@@ -40,14 +39,13 @@ export function DisplayExtras({ controls = true }: { controls?: boolean } = {}):
     const lock: KeepAwake = keepAwake();
     setWakeNow(lock.state());
     const stopWatching = lock.onChange(() => { setWakeNow(lock.state()); });
-    // Asleep and back: a fresh stream, then everything missed from the last seq.
-    const stopWake = onWake(() => { useGameStore.getState().reconnect(); });
     return () => {
       stopWatching();
-      stopWake();
       lock.stop();
     };
   }, []);
+  // Asleep and back: a fresh stream, then everything missed from the last seq.
+  useReconnectOnWake();
 
   if (!controls) return null;
   return (
