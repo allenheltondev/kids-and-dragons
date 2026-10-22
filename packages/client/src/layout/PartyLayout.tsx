@@ -15,7 +15,9 @@ import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigat
  * subtree.
  *
  * The TV remains the world display. Phones can inspect World or Map without
- * changing the room mode; each new question brings their controls back.
+ * changing the room mode; each new question brings their controls back. A
+ * tablet held sideways shows the world (or the map) beside the controls
+ * instead (landscape.ts), so there is nothing to bring back.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -29,6 +31,7 @@ import { GuideTab } from "./GuideTab";
 import { BookTab } from "./BookTab";
 import { useMyTurnKey } from "../store";
 import { setHelpPane } from "../help/focus";
+import { useSideBySide } from "./landscape";
 
 export interface PartyLayoutProps {
   surface: "world" | "player";
@@ -56,12 +59,13 @@ function PhoneLayout(): React.JSX.Element {
   // Each new question takes focus, including two consecutive questions for
   // the same player. An update to the current question (such as another vote)
   // does not: the player can keep looking at the map while thinking.
+  const sideBySide = useSideBySide();
   const turnKey = useMyTurnKey();
   const previousTurnKey = useRef<string | null>(null);
   useEffect(() => {
-    if (turnKey !== null && turnKey !== previousTurnKey.current) setShowing("player");
+    if (!sideBySide && turnKey !== null && turnKey !== previousTurnKey.current) setShowing("player");
     previousTurnKey.current = turnKey;
-  }, [turnKey]);
+  }, [turnKey, sideBySide]);
 
   const section = usePlayerNavigation((navigation) => navigation.section);
   // The "?" in the corner row (#256) explains whatever pane is up.
@@ -69,37 +73,43 @@ function PhoneLayout(): React.JSX.Element {
     setHelpPane(showing);
     return () => setHelpPane("player");
   }, [showing]);
-  const onMap = showing === "map";
-  const inGuide = showing === "player" && section === "guide";
+  // Side by side, the controls are always up and the pane beside them is the
+  // world unless the map was asked for.
+  const shows = (pane: Showing): boolean =>
+    sideBySide ? pane === "player" || pane === (showing === "map" ? "map" : "world") : pane === showing;
+  const onMap = shows("map");
+  const inGuide = shows("player") && section === "guide";
+  // Side by side, You and Guide are already on the screen: they leave the map where it is.
+  const showPlayer = (): void => setShowing((at) => (sideBySide && at === "map" ? at : "player"));
 
   return (
-    <div className="kad-party kad-party--player">
+    <div className="kad-party kad-party--player" data-side-by-side={sideBySide || undefined}>
       {/* Four destinations on every phone; the TV stays a pure display. */}
       <nav className="kad-party__bar kad-tray" aria-label="What to look at">
         <button
           type="button"
-          className={`kad-tray__tab kad-tap kad-focusable${showing === "world" ? " kad-tray__tab--on" : ""}`}
-          aria-pressed={showing === "world"}
+          className={`kad-tray__tab kad-tap kad-focusable${shows("world") ? " kad-tray__tab--on" : ""}`}
+          aria-pressed={shows("world")}
           onClick={() => { dismissPlayerSheet(); setShowing("world"); }}
         >
           <span className="kad-tray__object">
             <TrayObject name="globe" />
             {/* A Starweaver's cue that the world has Riftlight to read (#229);
                 out while they are looking at it. */}
-            <RiftlightIndicator onWorld={showing === "world"} />
+            <RiftlightIndicator onWorld={shows("world")} />
           </span>
           <span className="kad-tray__label">World</span>
         </button>
         <button
           type="button"
-          className={`kad-tray__tab kad-tray__tab--primary kad-tap kad-focusable${showing === "player" && !inGuide ? " kad-tray__tab--on" : ""}`}
+          className={`kad-tray__tab kad-tray__tab--primary kad-tap kad-focusable${shows("player") && !inGuide ? " kad-tray__tab--on" : ""}`}
           aria-label="You"
-          aria-pressed={showing === "player" && !inGuide}
-          onClick={() => { dismissPlayerSheet(); setShowing("player"); }}
+          aria-pressed={shows("player") && !inGuide}
+          onClick={() => { dismissPlayerSheet(); showPlayer(); }}
         >
           <span className="kad-tray__object">
             <TrayObject name="satchel" />
-            {turnKey !== null && (showing !== "player" || section !== "turn") ? (
+            {turnKey !== null && (!shows("player") || section !== "turn") ? (
               <span className="kad-tray__badge" aria-label="Your turn">★</span>
             ) : null}
           </span>
@@ -116,18 +126,18 @@ function PhoneLayout(): React.JSX.Element {
           </span>
           <span className="kad-tray__label">Map</span>
         </button>
-        <GuideTab on={inGuide} onShowPlayer={() => setShowing("player")} />
+        <GuideTab on={inGuide} onShowPlayer={showPlayer} />
         <BookTab />
       </nav>
 
       {/* `hidden` rather than unmounted, like the Travel panes: a selection
           half-made in the bag survives a look at the map. */}
-      <div className="kad-party__pane" data-pane="player" data-showing={showing === "player"}>
+      <div className="kad-party__pane" data-pane="player" data-showing={shows("player")}>
         <PlayerView roomControls={<ModeSwitch />} />
       </div>
-      <div className="kad-party__pane" data-pane="world" data-showing={showing === "world"}>
+      <div className="kad-party__pane" data-pane="world" data-showing={shows("world")}>
         {/* Mounted behind the controls, so it says when it is actually seen. */}
-        <WorldView gatesPresentations={false} prefetch={showing === "world"} />
+        <WorldView gatesPresentations={false} prefetch={shows("world")} />
       </div>
       {onMap ? (
         <div className="kad-party__pane" data-pane="map" data-showing>

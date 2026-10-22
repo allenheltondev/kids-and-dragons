@@ -21,6 +21,10 @@ import { BookTab } from "./BookTab";
  * the world pane and the six inventory slots fell off the bottom of the other.
  * One surface at a time gives each of them the whole screen.
  *
+ * A tablet held sideways has the width a phone lacks, so there the world (or
+ * the map) sits beside your controls and the tray runs down the side
+ * (landscape.ts). The rules below still hold; the world is just never hidden.
+ *
  * Everything the shell owns, and the surfaces are not allowed to know:
  *
  *   • Your turn pushes your controls in front of you, automatically.
@@ -56,6 +60,7 @@ import { useIsMyCombatTurn, useIsMyPrompt, useMe, useMyTurnKey, usePresentation,
 import { TRANSFORM_BEAT_MS } from "../screens/TransformCutscene";
 import { rollCardMs } from "../world/presentation";
 import { setHelpPane } from "../help/focus";
+import { useSideBySide } from "./landscape";
 
 type Focus = "world" | "map" | "player";
 
@@ -92,12 +97,16 @@ export function TravelLayout(): React.JSX.Element {
   // Track the question, not merely the boolean "my turn": successive
   // prompts for the same player can arrive without an intervening false.
   // The key stays put when the same prompt's votes or other state updates.
+  //
+  // On a landscape tablet your controls never leave the screen, so a new
+  // question leaves the map where it is.
+  const sideBySide = useSideBySide();
   const turnKey = useMyTurnKey();
   const previousTurnKey = useRef<string | null>(null);
   useEffect(() => {
-    if (turnKey !== null && turnKey !== previousTurnKey.current) setFocus("player");
+    if (!sideBySide && turnKey !== null && turnKey !== previousTurnKey.current) setFocus("player");
     previousTurnKey.current = turnKey;
-  }, [turnKey]);
+  }, [turnKey, sideBySide]);
 
   // The die is the one thing everybody watches, whatever they were looking at.
   // Held for as long as the dice card is up, so it can be read (spec §2.2).
@@ -143,7 +152,17 @@ export function TravelLayout(): React.JSX.Element {
    * looking at. Nothing outranks the transformation.
    */
   const showing: Focus = transforming || rolling ? "world" : focus;
-  const inGuide = showing === "player" && section === "guide";
+  /*
+   * Side by side (landscape.ts): your controls are always up, and the big pane
+   * beside them is the world unless the map was asked for. The roll and the
+   * transformation take that pane, as they take the screen on a phone.
+   */
+  const beside: Focus = showing === "map" ? "map" : "world";
+  const shows = (pane: Focus): boolean =>
+    sideBySide ? pane === "player" || pane === beside : pane === showing;
+  const inGuide = shows("player") && section === "guide";
+  // Side by side, You and Guide are already on the screen: they leave the map where it is.
+  const showPlayer = (): void => setFocus((at) => (sideBySide && at === "map" ? at : "player"));
   // The "?" in the corner row (#256) explains whatever pane is up.
   useEffect(() => {
     setHelpPane(showing);
@@ -151,37 +170,37 @@ export function TravelLayout(): React.JSX.Element {
   }, [showing]);
 
   return (
-    <div className="kad-travel">
+    <div className="kad-travel" data-side-by-side={sideBySide || undefined}>
       {/* The tray (screens/TrayObjects.tsx): a shelf of things rather than a
           row of tabs — the realm globe, your satchel, the map, the Field Guide's
           journal. */}
       <nav className="kad-travel__bar kad-tray" aria-label="What to look at">
         <button
           type="button"
-          className={`kad-travel__tab kad-tray__tab kad-tap kad-focusable${showing === "world" ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
-          aria-pressed={showing === "world"}
+          className={`kad-travel__tab kad-tray__tab kad-tap kad-focusable${shows("world") ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
+          aria-pressed={shows("world")}
           onClick={() => { dismissPlayerSheet(); setFocus("world"); }}
         >
           <span className="kad-tray__object">
             <TrayObject name="globe" />
             {/* A Starweaver's cue that the world has Riftlight to read (#229);
                 out while they are looking at it. */}
-            <RiftlightIndicator onWorld={showing === "world"} />
+            <RiftlightIndicator onWorld={shows("world")} />
           </span>
           <span className="kad-tray__label">World</span>
         </button>
         <button
           type="button"
-          className={`kad-travel__tab kad-tray__tab kad-tray__tab--primary kad-tap kad-focusable${showing === "player" && !inGuide ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
+          className={`kad-travel__tab kad-tray__tab kad-tray__tab--primary kad-tap kad-focusable${shows("player") && !inGuide ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
           aria-label="You"
-          aria-pressed={showing === "player" && !inGuide}
-          onClick={() => { dismissPlayerSheet(); setFocus("player"); }}
+          aria-pressed={shows("player") && !inGuide}
+          onClick={() => { dismissPlayerSheet(); showPlayer(); }}
         >
           <span className="kad-tray__object">
             <TrayObject name="satchel" />
             {/* A badge with a shape, not a colour: "you are needed" must not
                 be colour alone (spec §11). */}
-            {myTurn && (showing !== "player" || section !== "turn") ? (
+            {myTurn && (!shows("player") || section !== "turn") ? (
               <span className="kad-travel__nudge kad-tray__badge" aria-label="Your turn">
                 ★
               </span>
@@ -191,8 +210,8 @@ export function TravelLayout(): React.JSX.Element {
         </button>
         <button
           type="button"
-          className={`kad-travel__tab kad-tray__tab kad-tap kad-focusable${showing === "map" ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
-          aria-pressed={showing === "map"}
+          className={`kad-travel__tab kad-tray__tab kad-tap kad-focusable${shows("map") ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
+          aria-pressed={shows("map")}
           onClick={() => { dismissPlayerSheet(); setFocus("map"); }}
         >
           <span className="kad-tray__object">
@@ -200,23 +219,23 @@ export function TravelLayout(): React.JSX.Element {
           </span>
           <span className="kad-tray__label">Map</span>
         </button>
-        <GuideTab on={inGuide} onShowPlayer={() => setFocus("player")}
+        <GuideTab on={inGuide} onShowPlayer={showPlayer}
           className="kad-travel__tab" onClassName="kad-travel__tab--on" />
         <BookTab className="kad-travel__tab" />
       </nav>
 
       {/* `hidden` rather than unmounted — see the header. */}
-      <div className="kad-travel__pane" data-pane="world" data-showing={showing === "world"}>
-        <WorldView prefetch={showing === "world"} />
+      <div className="kad-travel__pane" data-pane="world" data-showing={shows("world")}>
+        <WorldView prefetch={shows("world")} />
       </div>
-      <div className="kad-travel__pane" data-pane="player" data-showing={showing === "player"}>
+      <div className="kad-travel__pane" data-pane="player" data-showing={shows("player")}>
         <PlayerView roomControls={<ModeSwitch />} />
       </div>
       {/* Map navigation is remembered separately, so this can stay unmounted
           until requested — and it is the one pane whose
           chapter fetch (`useEnsureChapter`) should not run on a phone that
           never asked for it. */}
-      {showing === "map" ? (
+      {shows("map") ? (
         <div className="kad-travel__pane" data-pane="map" data-showing>
           <MapView />
         </div>

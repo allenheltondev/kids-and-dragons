@@ -279,3 +279,52 @@ describe("Party Mode and the Field Guide (#112)", () => {
     expect(creation?.hasAttribute("hidden")).toBe(true);
   });
 });
+
+describe("Party Mode on a tablet held sideways", () => {
+  /** matchMedia as a landscape tablet (layout/landscape.ts). */
+  function sideways() {
+    vi.stubGlobal("matchMedia", vi.fn((query: string) => ({
+      matches: query.includes("orientation: landscape"),
+      media: query,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+    })));
+  }
+
+  it("shows the world beside the controls, and the map in its place on request", () => {
+    sideways();
+    const { container } = mount();
+    expect(container.querySelector(".kad-party--player")?.hasAttribute("data-side-by-side")).toBe(true);
+    expect(showing(container).sort()).toEqual(["player", "world"]);
+    act(() => screen.getByRole("button", { name: /^map$/i }).click());
+    expect(showing(container).sort()).toEqual(["map", "player"]);
+    expect(screen.getByRole("button", { name: /^map$/i }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("button", { name: /^you$/i }).getAttribute("aria-pressed")).toBe("true");
+    act(() => screen.getByRole("button", { name: /^world$/i }).click());
+    expect(showing(container).sort()).toEqual(["player", "world"]);
+  });
+
+  it("leaves the map up for a new question, since the controls are already in view", () => {
+    sideways();
+    const { container } = mount();
+    act(() => screen.getByRole("button", { name: /^map$/i }).click());
+    act(() => {
+      const state = useGameStore.getState().state;
+      if (!state) throw new Error("no state");
+      useGameStore.setState({ state: { ...state, prompt: {
+        kind: "choice", sceneId: "scene_hedge_wall", vote: false,
+        options: [{ id: "gap", label: "Find a gap", icon: "eye" }],
+        forPlayerIds: ["p_1"],
+      } } });
+    });
+    expect(showing(container).sort()).toEqual(["map", "player"]);
+    // No ★ to call her back: the question is already on the screen.
+    expect(container.querySelector(".kad-tray__badge")).toBeNull();
+  });
+
+  it("keeps one surface at a time on a phone", () => {
+    const { container } = mount();
+    expect(container.querySelector(".kad-party--player")?.hasAttribute("data-side-by-side")).toBe(false);
+    expect(showing(container)).toEqual(["player"]);
+  });
+});
