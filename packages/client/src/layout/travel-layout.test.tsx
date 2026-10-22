@@ -361,3 +361,62 @@ describe("Travel Mode and the Field Guide (#112)", () => {
     vi.unstubAllGlobals();
   });
 });
+
+describe("Travel Mode on a tablet held sideways", () => {
+  beforeEach(() => {
+    vi.stubGlobal("matchMedia", vi.fn((query: string) => ({
+      matches: query.includes("orientation: landscape"),
+      media: query,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+    })));
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  /** Every pane on screen, the way the CSS reads it. */
+  function shown(container: HTMLElement): string[] {
+    return [...container.querySelectorAll('.kad-travel__pane[data-showing="true"]')]
+      .map((pane) => pane.getAttribute("data-pane") ?? "")
+      .sort();
+  }
+
+  it("never hides the world or the controls: the map takes the world's place beside them", () => {
+    const { container } = mount();
+    expect(shown(container)).toEqual(["player", "world"]);
+    act(() => {
+      tab(container, "Map").click();
+    });
+    expect(shown(container)).toEqual(["map", "player"]);
+    // You is already on the screen: tapping it leaves the map where it is.
+    act(() => {
+      tab(container, "You").click();
+    });
+    expect(shown(container)).toEqual(["map", "player"]);
+    act(() => {
+      tab(container, "World").click();
+    });
+    expect(shown(container)).toEqual(["player", "world"]);
+  });
+
+  it("gives the die the big pane while the map is up, and keeps the controls", () => {
+    const { container } = mount();
+    act(() => {
+      tab(container, "Map").click();
+    });
+    act(() => {
+      useGameStore.setState({
+        presentation: {
+          seq: 10,
+          presentation: { kind: "ROLL", roll: { d20: 14, modifier: 0, total: 14, tn: 10, success: true } },
+        } as never,
+      });
+    });
+    expect(shown(container)).toEqual(["player", "world"]);
+    act(() => {
+      vi.advanceTimersByTime(rollCardMs({}) + 100);
+    });
+    expect(shown(container)).toEqual(["map", "player"]);
+  });
+});

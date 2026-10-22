@@ -13,7 +13,7 @@
  * row, and what Room opens drops below it with who just joined, so none of them
  * covers a heading or a choice; that is checked at 1280x720 and at a tablet's
  * 1024x600. This walks a real room to each of those screens and then looks
- * at them at 360px and 390px, at normal and the largest text (#262), with
+ * at them at 360px and 390px and on a tablet held sideways, at normal and the largest text (#262), with
  * one-handed play off, right and left (PHONE and SHARED below say which), and asserts on each:
  *
  * - no word, button or picture overlaps a corner control;
@@ -57,6 +57,10 @@ const PHONE: Case[] = [
   { width: 360, height: 800, text: "largest", hand: "off" },
   { width: 360, height: 800, text: "largest", hand: "left" },
   { width: 390, height: 800, text: "largest", hand: "right" },
+  // A tablet held sideways (layout/landscape.ts): the tray is a rail with the corner row at its
+  // foot, and the world sits beside the controls. An iPad, and the smallest iPad at the largest text.
+  { width: 1180, height: 820, text: "normal", hand: "off" },
+  { width: 1024, height: 768, text: "largest", hand: "right" },
 ];
 /* A television, and a tablet showing the game (#274) at the largest text: the row is widest there. */
 const SHARED: Case[] = [

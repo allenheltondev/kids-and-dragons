@@ -1639,6 +1639,14 @@ type RoomMode = "party" | "travel";
 //   /guide       → <GuideScreen />     (the grown-up's guide, #257)
 ```
 
+**A tablet held sideways** (landscape, at least 900×560; `layout/landscape.ts`, with the same query
+in `components.css`) is where kids most often play, and it is short of height rather than width. On
+`/p/:code` there, in either mode, the tray becomes a rail down the side, with the corner row (help,
+text, read-aloud, sound) at its foot, so nothing keeps a strip at the top or bottom. The world, or
+the map when it was asked for, sits beside the controls instead of behind them. The controls never
+leave the screen, so a new question does not take the map away, and a roll or a transformation
+takes only the big pane. A phone, and a tablet held upright, keep one surface at a time.
+
 `/journal` is the one surface with no room behind it. It reads `GET /api/journal`, authorised by
 the **device token** (`x-kad-device-token`) rather than a room session, which between games does
 not exist: the player's own heroes, the household's Field Guide, a player-id → name map for "found
