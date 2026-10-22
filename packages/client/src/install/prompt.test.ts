@@ -6,8 +6,9 @@ import {
   resetInstallPrompt,
   subscribeInstallPrompt,
 } from "./prompt";
-import { dismissInstallCard, firstLaunchAnswered, installCardDismissed, startFresh } from "./remember";
-import type { KeyValueStorage } from "../store/persistence";
+import { dismissInstallCard, firstLaunch, installCardDismissed, recordFirstLaunch, startFresh } from "./remember";
+import type { InstallEnv } from "./detect";
+import { DEVICE_IDENTITY_KEY, SHARED_DEVICE_KEY, type KeyValueStorage } from "../store/persistence";
 
 function offer(outcome: "accepted" | "dismissed" = "accepted") {
   const event = Object.assign(new Event("beforeinstallprompt", { cancelable: true }), {
@@ -78,11 +79,42 @@ describe("what this device remembers", () => {
   it("keeps a put-away card put away, and a fresh start answered", () => {
     const storage = memory();
     expect(installCardDismissed(storage)).toBe(false);
-    expect(firstLaunchAnswered(storage)).toBe(false);
+    expect(firstLaunch(storage)).toBeNull();
     dismissInstallCard(storage);
     startFresh(storage);
     expect(installCardDismissed(storage)).toBe(true);
-    expect(firstLaunchAnswered(storage)).toBe(true);
+    expect(firstLaunch(storage)).toBe("fresh");
+  });
+
+  const app: InstallEnv = { userAgent: "iPhone", standalone: true };
+
+  it("records the app's first launch at boot, before anything is anybody", () => {
+    const storage = memory();
+    recordFirstLaunch(app, storage);
+    expect(firstLaunch(storage)).toBe("pending");
+    // A TV's room then mints an identity; the next boot keeps it pending.
+    storage.setItem(DEVICE_IDENTITY_KEY, JSON.stringify({ householdId: "hh_1", playerId: "p_1", screenOnly: true }));
+    recordFirstLaunch(app, storage);
+    expect(firstLaunch(storage)).toBe("pending");
+    startFresh(storage);
+    recordFirstLaunch(app, storage);
+    expect(firstLaunch(storage)).toBe("fresh");
+  });
+
+  it("records nothing in a tab, on a device already somebody, or on a family tablet", () => {
+    const tab = memory();
+    recordFirstLaunch({ userAgent: "iPhone", standalone: false }, tab);
+    expect(firstLaunch(tab)).toBeNull();
+
+    const played = memory();
+    played.setItem(DEVICE_IDENTITY_KEY, JSON.stringify({ householdId: "hh_1", playerId: "p_1", deviceToken: "dev_1" }));
+    recordFirstLaunch(app, played);
+    expect(firstLaunch(played)).toBeNull();
+
+    const tablet = memory();
+    tablet.setItem(SHARED_DEVICE_KEY, JSON.stringify({ token: "sh_1", householdId: "hh_1" }));
+    recordFirstLaunch(app, tablet);
+    expect(firstLaunch(tablet)).toBeNull();
   });
 
   it("never throws where storage does", () => {

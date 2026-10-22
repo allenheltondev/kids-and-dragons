@@ -10,8 +10,9 @@
  *
  * Installed is not the same as "has played". On an iPhone or iPad a Home
  * Screen app can start with storage of its own, empty, apart from Safari's, so
- * the hero that phone made in Safari is not there. `needsFirstLaunchChoice`
- * says when to ask about that before anything makes a new one.
+ * the hero that phone made in Safari is not there. `isFirstLaunch` and
+ * `needsFirstLaunchChoice` say when to ask about that before anything makes a
+ * new one.
  */
 
 /** How this browser installs, as far as we will say. */
@@ -85,18 +86,37 @@ export function installCardVisible(input: { standalone: boolean; dismissed: bool
 }
 
 /**
- * Ask "played in Safari before?" before this storage is anybody: opened as an
- * app, with no device identity of any kind (not a player's, not a TV's, not a
- * family tablet's), and nobody has answered yet. Pairing answers by leaving a
- * player token; "Start fresh" answers by being remembered.
+ * Whether this launch is the installed app's first, decided once at boot,
+ * before the first render and so before anything can mint an identity: opened
+ * as an app, with no device identity of any kind (not a player's, not a TV's),
+ * no family tablet, and nothing recorded about a first launch yet.
+ *
+ * It is decided at boot, not on the home screen, because the home screen is
+ * not the only way in. An app first opened at `/tv/:code` watches the room as
+ * a display, and that mints a TV's identity; a home screen that looked for
+ * "no identity" afterwards would never ask.
  */
-export function needsFirstLaunchChoice(input: {
+export function isFirstLaunch(input: {
   standalone: boolean;
   hasIdentity: boolean;
   sharedDevice: boolean;
-  answered: boolean;
+  recorded: boolean;
 }): boolean {
-  return input.standalone && !input.hasIdentity && !input.sharedDevice && !input.answered;
+  return input.standalone && !input.hasIdentity && !input.sharedDevice && !input.recorded;
+}
+
+/**
+ * Ask "played in Safari before?" while a first launch is still pending: not
+ * answered with "Start fresh", and not answered by pairing (or signing in),
+ * which leaves a player's token. A TV's identity minted meanwhile is no answer.
+ * A family tablet set up meanwhile is: it is nobody's, so has nobody to bring.
+ */
+export function needsFirstLaunchChoice(input: {
+  pending: boolean;
+  hasPlayer: boolean;
+  sharedDevice: boolean;
+}): boolean {
+  return input.pending && !input.hasPlayer && !input.sharedDevice;
 }
 
 /** What the browser a hero came from is called in the words we show. */

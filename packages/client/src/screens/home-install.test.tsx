@@ -12,7 +12,8 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { useKeepsakeStore } from "../store/keepsake";
 import { DEVICE_IDENTITY_KEY } from "../store/persistence";
-import { FIRST_LAUNCH_KEY, INSTALL_HIDDEN_KEY } from "../install/remember";
+import { FIRST_LAUNCH_KEY, INSTALL_HIDDEN_KEY, recordFirstLaunch } from "../install/remember";
+import { browserEnv } from "../install/detect";
 import { navigate } from "../router";
 import { HomeScreen } from "./HomeScreen";
 import { AccountScreen } from "./AccountScreen";
@@ -24,12 +25,14 @@ const DESKTOP_FIREFOX = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gec
 const ASK = /played in safari before/i;
 const INSTALL = /install kids & dragons/i;
 
+/** Boot as this browser: what main.tsx does before the first render. */
 function as(userAgent: string, standalone: boolean): void {
   Object.defineProperty(navigator, "userAgent", { value: userAgent, configurable: true });
   Object.defineProperty(window, "matchMedia", {
     configurable: true,
     value: (query: string) => ({ matches: standalone && query === "(display-mode: standalone)", media: query }),
   });
+  recordFirstLaunch(browserEnv());
 }
 
 beforeEach(() => {
@@ -80,9 +83,28 @@ describe("the installed app's first launch", () => {
     expect(localStorage.getItem(DEVICE_IDENTITY_KEY)).toBeNull();
   });
 
-  it("is not asked of an app that is already somebody", () => {
+  it("still asks when a TV's room opened first and minted an identity", () => {
+    as(IPHONE_SAFARI, true);
+    // What watching a room as a display leaves behind, before `/` is ever drawn.
+    localStorage.setItem(
+      DEVICE_IDENTITY_KEY,
+      JSON.stringify({ householdId: "hh_tv", playerId: "p_tv", deviceToken: "dev_tv", screenOnly: true }),
+    );
+    render(<HomeScreen />);
+    expect(screen.getByRole("heading", { name: ASK })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /join a game/i })).toBeNull();
+  });
+
+  it("is answered by pairing: a player's token ends it", () => {
     as(IPHONE_SAFARI, true);
     localStorage.setItem(DEVICE_IDENTITY_KEY, JSON.stringify({ householdId: "hh_1", playerId: "p_1", deviceToken: "dev_1" }));
+    render(<HomeScreen />);
+    expect(screen.queryByRole("heading", { name: ASK })).toBeNull();
+  });
+
+  it("is not asked of an app that was already somebody when it booted", () => {
+    localStorage.setItem(DEVICE_IDENTITY_KEY, JSON.stringify({ householdId: "hh_1", playerId: "p_1", screenOnly: true }));
+    as(IPHONE_SAFARI, true);
     render(<HomeScreen />);
     expect(screen.queryByRole("heading", { name: ASK })).toBeNull();
     expect(screen.getByRole("button", { name: /join a game/i })).toBeTruthy();
