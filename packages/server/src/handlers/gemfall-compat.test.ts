@@ -33,6 +33,14 @@
  * on both builds. To re-take the goldens after a *deliberate* Gemfall change:
  * run the probe on the old and new builds as described there, and say why in
  * the commit.
+ *
+ * Re-taken deliberately for the damage rule (a hit's damage comes off its
+ * attack roll: a graze, a solid hit or a critical, where it was a flat 3):
+ * the `resumed` play-on and its digest only, by playing the same pre-epic
+ * save on the new build. The fight still ends where it did, on the same
+ * scene with the same hero down; the beats moved, by their damage numbers and
+ * the target and tier each roll now carries. The endings, roads and setbacks
+ * throw no dice and still match the pre-epic build.
  */
 
 import { createHash } from "node:crypto";

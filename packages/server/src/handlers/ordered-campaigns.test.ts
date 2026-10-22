@@ -266,10 +266,16 @@ describe("ordered settlement writes no journey", () => {
  * seed, and the whole transcript is hashed. The golden digest was taken from
  * the build *before* buffs existed (this test uses nothing newer), so any
  * drift in item/trinket resolution or combat arithmetic fails here.
+ *
+ * Re-taken once, deliberately, for the damage rule: a hit's damage now comes
+ * off its attack roll (a graze, a solid hit or a critical) rather than a flat
+ * 3, and each roll beat names its target and tier. With that rule switched
+ * off the transcript hashes to the pre-#200 digest exactly, so nothing else
+ * moved; buffs still change nothing for an ordered campaign.
  */
 describe("Gemfall's numbers, with temporary buffs in the build (#200)", () => {
-  /** The digest of the transcript below, as the pre-#200 build produced it. */
-  const GOLDEN = "55d9cdf7dc65cb8c06bd6bdf73baebb44b33db03627036c722a7990c2f5f309d";
+  /** The digest of the transcript below: the pre-#200 build's fight, under today's damage rule. */
+  const GOLDEN = "0d242a361bb53603920a4d634be6cbc7a09c07a583cd913d0699dc608ed3b11f";
 
   const rules = content.rules();
   const items = content.items();
