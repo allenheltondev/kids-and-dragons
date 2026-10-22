@@ -147,6 +147,7 @@ export function LobbyContent(): ReactElement {
   // A campaign the household has not unlocked (#221) says why instead.
   const locked = lockedLine(state?.campaign);
   const choice = state ? lobbyCampaign(state) : null;
+  const cards = (state?.campaignOptions?.length ?? 0) > 1;
 
   return (
     <section className="lobby entry-scene-host" aria-labelledby="lobby-heading">
@@ -172,8 +173,11 @@ export function LobbyContent(): ReactElement {
           otherwise the first scene is the first anyone hears of the story.
           Told while the room is filling, and gone once the lineup starts:
           from then on the party is what the screen is for, and a full
-          three-person lineup has to fit a 720p TV without scrolling. */}
-      {party.length === 0 && campaignPremise(state?.campaign) !== null ? (
+          three-person lineup has to fit a 720p TV without scrolling.
+          Not beside the adventure cards either: they name the choice, the
+          phones carry each one's premise, and the two together push the
+          room code off a 720p TV. */}
+      {party.length === 0 && !cards && campaignPremise(state?.campaign) !== null ? (
         <div className="lobby__premise">
           <p className="lobby__premise-title">
             <Icon name="scroll" />
@@ -187,7 +191,7 @@ export function LobbyContent(): ReactElement {
           locked sequel, asleep with its reason). The phones vote when two or
           more could start; one that could is simply what's next. Cards sit in
           a row, so they still fit beside a full party. */}
-      {state && (state.campaignOptions?.length ?? 0) > 1 ? (
+      {state && cards ? (
         <ul className="lobby__campaigns" aria-label="Which adventure?">
           {(state.campaignOptions ?? []).map((option) => {
             const votedIds = party

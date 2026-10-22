@@ -133,6 +133,12 @@ describe("the adventure cards", () => {
     expect(cards[0]?.querySelector("img")?.getAttribute("src")).toBe("/assets/campaigns/gemfall.webp");
   });
 
+  it("leaves the premise to the cards, so the room code still fits a 720p TV", () => {
+    mount({ campaign: FIRST, campaignOptions: [FIRST, SEQUEL], campaignVotes: {} });
+    expect(screen.getByRole("list", { name: "Which adventure?" })).toBeTruthy();
+    expect(screen.queryByText(PREMISE)).toBeNull();
+  });
+
   it("draws no cards for a single adventure", () => {
     mount({ campaign: FIRST, campaignOptions: [FIRST], party: [makeMember()] });
     expect(screen.queryByRole("list", { name: "Which adventure?" })).toBeNull();
