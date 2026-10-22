@@ -264,6 +264,8 @@ async function misfits(page: Page): Promise<string[]> {
       let bottom = Math.min(box.bottom, innerHeight);
       // The browser's own answer covers display, visibility, opacity and a closed <details>.
       if (!el.checkVisibility({ opacityProperty: true, visibilityProperty: true })) return null;
+      // Words for a screen reader alone are clipped to a pixel on purpose (.kad-sr-only).
+      if (el.closest(".kad-sr-only")) return null;
       for (let at: Element | null = el; at; at = at.parentElement) {
         const style = getComputedStyle(at);
         if (at !== el && at !== document.documentElement && at !== document.body && style.overflow !== "visible") {
