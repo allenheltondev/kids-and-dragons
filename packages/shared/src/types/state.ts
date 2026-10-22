@@ -330,6 +330,13 @@ export interface RunState {
    */
   bonuses?: EarnedBonus[];
   /**
+   * The heroes, by character id, the chapter just finished paid nothing to,
+   * because it had paid them its XP before (#408): a chapter pays a hero once
+   * ever. `xpEarned` is still what it paid everyone else. Set by the server
+   * at settlement, absent when nobody was, cleared at the next chapter start.
+   */
+  xpAlreadyPaid?: string[];
+  /**
    * How each fight in a place that fought back ended (#220), in the order
    * they were fought, for the completion screen: through the rift, out of
    * time, won, lost — and who was freed or lost, what got done. Only a fight

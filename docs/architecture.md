@@ -275,7 +275,11 @@ class moves from the character into each half of progress, and that class is giv
 matching every class move the half resolved with before (from its XP and its old
 `unlockedActions`), so no hero opens the game to a missing move. (A move of another class in that
 list would be dropped, since only the worn class's moves resolve, but no writer ever stored one; see
-the step's comment.)
+the step's comment.) The v7 step (#408) adds nothing: `paidChapters`, the chapters that have paid a
+half its XP, is absent on every older row and reads as nothing paid. Nothing on an older row says
+which chapters she played, so a hero from before the ledger may be paid once more for a chapter she
+already finished, and never loses XP she has; the bump only stops a v6 build narrowing the ledger
+away and letting every chapter pay her again.
 
 The failure mode is worth naming precisely, because it changes the solution. **Nothing but our own
 Lambda ever writes these items.** There is no hostile input to defend against and no third-party

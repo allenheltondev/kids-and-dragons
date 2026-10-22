@@ -260,6 +260,8 @@ If the **whole party** is knocked down, the encounter is **lost, not fatal** —
 
 XP is awarded per chapter, not per enemy defeated — so exploring and talking are worth as much as fighting. Levels 1–10.
 
+**A chapter pays each hero once, ever** (#408). Replaying a campaign is for the story: a chapter a hero has already been paid for, in an earlier attempt or at another table, pays her nothing more, bonuses included, while a chapter she has never finished (another road through Gemfall) pays in full. Each hero is judged on her own record, so a new hero at the table is paid while a veteran is not. A payment made during a campaign that then fails goes back with the XP, so she can earn it again (`CharacterProgress.paidChapters`).
+
 Each level grants a stat point. Class moves are not on this ladder: they come from distinctions (§4.3), earned by deeds rather than XP, with no level cap. **Four levels are appearance tiers:**
 
 | Level | Tier | Visual change |
