@@ -169,10 +169,12 @@ complete; grid occupancy and enemy-rig playback remain separate engine integrati
 
 ### 4.4 Interface chrome — 42 to paint
 
-Frames, borders, the tray and rail, panels and buttons are all CSS today; none is in the manifest,
-so `art:inventory` does not count them. The full list, with sizes, slicing and where each one shows,
-is [briefs/tablet-chrome-art.md](./briefs/tablet-chrome-art.md). Part A (the frame around and
-between the panes on a landscape tablet) comes first.
+Frames, borders, the tray and rail, panels and buttons still render with CSS. The 38 painted
+assets are delivered in `packages/client/src/assets/chrome/`, with prompts and slicing notes in
+its README, awaiting integration. They are not in the art manifest, so `art:inventory` does not
+count them. The full list, sizes and intended placements are in
+[briefs/tablet-chrome-art.md](./briefs/tablet-chrome-art.md); the
+[review sheets](./reviews/tablet-chrome-art/) show every piece on night and biome backgrounds.
 
 ---
 
