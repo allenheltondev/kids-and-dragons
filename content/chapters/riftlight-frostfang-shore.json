@@ -9,6 +9,10 @@
   "estimatedMinutes": 8,
   "xpAward": 140,
   "entry": "bank",
+  "plate": {
+    "art": "plates/riftlight/frostfang-shore",
+    "narration": "A strip of stony shore lies beneath the Frostfang cliffs. Above the water, a dry path climbs toward the ridges. The river keeps going, but there is a way uphill."
+  },
   "goal": {
     "text": "Find a dry way back uphill toward the mountain pass.",
     "steps": [

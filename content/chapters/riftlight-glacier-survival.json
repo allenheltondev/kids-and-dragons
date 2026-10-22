@@ -9,6 +9,10 @@
   "estimatedMinutes": 15,
   "xpAward": 140,
   "entry": "arrival",
+  "plate": {
+    "art": "plates/riftlight/glacier-survival",
+    "narration": "Snow rolls over the Glacier of Origins in long white waves. Dark rocks break the wind. Beyond a narrow melt channel, a low doorway glows warm against the blue ice."
+  },
   "goal": {
     "text": "Get the little goat home safe and find somewhere warm.",
     "steps": [

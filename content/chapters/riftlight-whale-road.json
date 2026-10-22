@@ -9,6 +9,10 @@
   "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "whales",
+  "plate": {
+    "art": "plates/riftlight/whale-road",
+    "narration": "Above a grassy island, cloud whales turn through the mist. Their long fins move slowly in the open sky. Below them, a broad green landing waits between the clouds."
+  },
   "goal": {
     "text": "Help the keeper get the whales' island ready before the folds open.",
     "steps": [

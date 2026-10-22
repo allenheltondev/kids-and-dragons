@@ -8,6 +8,10 @@
   "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "arrival",
+  "plate": {
+    "art": "plates/riftlight/wyrm-nest",
+    "narration": "Below the reading room, a new doorway opens into blue ice. A wide bench stands beside it. Tiny frost ferns spread across the wall, bright in the lantern light."
+  },
   "goal": {
     "text": "Make room for the readers and the frost wyrm without waking the old ice.",
     "steps": [

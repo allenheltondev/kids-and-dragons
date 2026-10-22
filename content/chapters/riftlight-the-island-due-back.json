@@ -9,6 +9,10 @@
   "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "arrival",
+  "plate": {
+    "art": "plates/riftlight/the-island-due-back",
+    "narration": "Beneath the clouds, a low island comes into view. A notch breaks its flat brow. On the lookout, a bell waits beside folded signal cloths and a landing board."
+  },
   "goal": {
     "text": "Help the keepers meet the island that is due back.",
     "steps": [

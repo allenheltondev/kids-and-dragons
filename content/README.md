@@ -314,7 +314,7 @@ decide anything. Full spec, with the art: [docs/story-plates.md](../docs/story-p
 ```
 
 in the campaign file (3 to 6 plates, before the opening chapter's first scene), and in a chapter
-that begins somewhere new:
+to establish its setting and mood (Riftlight uses one for every later chapter):
 
 ```json
 "plate": { "art": "plates/riftlight/finale", "narration": "You are back on the glacier..." }

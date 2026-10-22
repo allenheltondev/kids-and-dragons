@@ -3,7 +3,7 @@
  * manifest declares are the same list, so the art tools count what is owed and nothing in a
  * campaign points at a painting nobody was commissioned to make.
  */
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -27,6 +27,21 @@ function used() {
 }
 
 describe("story plates", () => {
+  it("ships an opening painting for every Riftlight chapter", () => {
+    const campaign = campaigns.find((c) => c.id === "riftlight");
+    const opening = campaign.graph.nodes[campaign.graph.entry].chapter;
+    expect(campaign.chapters).toHaveLength(24);
+    for (const id of campaign.chapters) {
+      const chapter = chapters.find((c) => c.id === id);
+      const plates = id === opening ? campaign.prologue.plates : [chapter.plate];
+      if (id === opening) expect(chapter.plate).toBeUndefined();
+      for (const plate of plates) {
+        expect(plate, `${id} opening painting`).toBeDefined();
+        expect(existsSync(join(REPO, "assets", `${plate.art}.webp`)), plate.art).toBe(true);
+      }
+    }
+  });
+
   it("declares a 16:9 canvas", () => {
     expect(manifest.storyPlates.canvas).toEqual({ width: 1600, height: 900 });
   });

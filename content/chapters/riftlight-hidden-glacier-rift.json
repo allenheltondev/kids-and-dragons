@@ -9,6 +9,10 @@
   "estimatedMinutes": 15,
   "xpAward": 140,
   "entry": "search",
+  "plate": {
+    "art": "plates/riftlight/hidden-glacier-rift",
+    "narration": "Beside the singing hall, a narrow passage follows the rock beneath the ice. Drops of water catch the light. Farther in, a low sound trembles through the stone."
+  },
   "goal": {
     "text": "Search the glacier for another opening.",
     "steps": [

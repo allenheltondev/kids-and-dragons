@@ -5,7 +5,8 @@ Paintings with the story told over them, shown **before** the table is asked to 
 - A campaign's **prologue**: a short series (3 to 6 plates) before the first scene of its opening
   chapter. It puts the table in the world and raises the question the campaign answers.
 - A **chapter plate**: one painting and a sentence or two, before the first scene of a chapter
-  that begins somewhere new. It says where we are.
+  that establishes the chapter's setting and mood. It says where we are without revealing
+  a choice or outcome. Riftlight uses one for every chapter after its prologue.
 
 Both are skippable and shown once per device. This document is the spec for the **art** (what to
 paint, how it is cropped, how to hand it over) and for the **content** that asks for it. The code
@@ -175,10 +176,12 @@ the TV view with the caption band shaded and the surviving middle outlined, besi
    (the count drops), `npm run art:plates` (look at it).
 4. Commit the files. Nothing else changes: the manifest and content already name them.
 
-## 4. What is owed
+## 4. Delivered coverage
 
-Thirteen paintings: four for Gemfall, nine for Riftlight. The narration is already in the content;
-the prompts are in [story-plates-prompts.json](story-plates-prompts.json).
+All 31 paintings are delivered: four for Gemfall and 27 for Riftlight. Riftlight's four-plate
+prologue represents its opening chapter, *Snow on the Quay*; each of the other 23 chapters has
+its own representative plate. The narration is in the content; the prompts are in
+[story-plates-prompts.json](story-plates-prompts.json).
 
 ### Gemfall
 
@@ -207,14 +210,32 @@ stones, the seal or the titan.
 | `prologue-3` | A thin ribbon of snow wind crossing the realm, south | Nobody at the Exchange can hear that bell… |
 | `prologue-4` | The quay again, snowing out of a clear sky, everyone looking out at us | By breakfast it arrives… |
 
-**Chapter plates** (each before that chapter's first scene):
+**Chapter plates** (23, each before that chapter's first scene):
 
 | File | Chapter | Shows |
 |---|---|---|
+| `glacier-survival` | A Bell in the Snow | Snowy melt channel and a warm doorway in the ice |
+| `riftseekers-departure` | A Map with a Missing Pass | Map and travel packs on a sledge outside the singing hall |
+| `ice-shelf-traverse` | The Path Beside the River | A narrow blue ice path beside the Great River |
+| `hidden-glacier-rift` | The Note Under the Ice | A quiet rock passage beneath the ice |
+| `headwaters-washout` | The River Chooses a Road | The river bending around a low dark ice ledge |
+| `frostfang-shore` | A Way Back Uphill | A dry trail climbing from stony shore toward the ridges |
+| `cairnstep-pass` | A Pass Not in the Ledger | Stacked cairns climbing a notch between snowy peaks |
+| `boundary-stone-bank` | The Stones Above the Water | Weathered boundary stones above the river |
+| `ashspan-bridge` | When the Ferry Goes Your Way | A flat ferry waiting below the stone bridge |
 | `sky-islands-arrival` | Land Under an Unfamiliar Sky | Drifting stone islands, gold-roofed temples, hanging roots |
 | `saltrot-arrival` | Mud Where Ice Should Be | Gray-green brackish mudflats, silt banks, drowned trees |
-| `cairnstep-pass` | A Pass Not in the Ledger | Stacked cairns climbing a notch between snowy peaks |
+| `stone-counters` | The Stone That Moved | A boundary stone beside an empty hollow in the grass |
+| `whale-road` | The Whales' Turning Place | Cloud whales turning above a grassy island |
+| `buried-bridge` | A Bridge Without a River | Old stone arches over a dry silt channel |
+| `the-wrong-valley` | The River Takes Another Valley | A dry old channel beside a fresh river in the next valley |
 | `reading-room` | The River in the Memory Ice | A room carved from blue glacier ice, lantern-lit |
+| `the-island-due-back` | The Island Due Back | A lookout bell and a low island emerging from cloud |
+| `stuttering-flats` | The Stuttering Flats | An unexpected patch of snow on the coastal mudflats |
+| `bone-yard` | The Borrowed Ruins | Pale ancient arches and displaced stone ruins |
+| `wyrm-nest` | A Room Already Taken | A bench and frost ferns by a newly carved ice doorway |
+| `squall-temple` | The Temple in the Squall | A gold-roofed temple island in sweeping rain |
+| `convergence` | The Maps Come Together | A sheltered map table overlooking the blue glacier |
 | `finale` | The Glacier Remembers | The glacier quiet and enormous, the wind holding its breath |
 
 ## 5. Adding plates to another campaign
