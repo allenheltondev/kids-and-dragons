@@ -20,6 +20,10 @@
  *   colours with a spinner — never red, no dismiss button, because there is
  *   nothing anybody at the table can do and nothing they need to. It removes
  *   itself the moment the channel is back.
+ *
+ * "Back" means caught up, not just reopened (#413): until the catch-up after
+ * a reopen has landed, the phone's answers are held (`GameStore.synced`), and
+ * this is what says why. A slow catch-up is still just "Reconnecting".
  */
 
 import { useEffect, useState } from "react";
@@ -31,9 +35,10 @@ export const RECONNECT_GRACE_MS = 1500;
 
 export function ConnectionBanner(): React.JSX.Element | null {
   const connection = useGameStore((store) => store.connection);
+  const catchingUp = useGameStore((store) => store.session !== null && !store.synced);
   const [shown, setShown] = useState(false);
 
-  const dropped = connection === "reconnecting";
+  const dropped = connection === "reconnecting" || catchingUp;
   useEffect(() => {
     if (!dropped) {
       setShown(false);

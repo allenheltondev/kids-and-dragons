@@ -232,6 +232,15 @@ export interface ActionRequest {
   /** The client's last-seen server seq. The server rejects stale intents. */
   seq: number;
   intent: ClientIntent;
+  /**
+   * The question a decision intent (`DECISION_INTENTS`) was made on,
+   * `decisionContext` of the state the phone showed when it was tapped
+   * (#413). The server refuses the intent with `STALE_DECISION` when its own
+   * state's context differs, however the seq came to match: a retry after
+   * `STALE_SEQ` re-posts at the server's seq, and only this keeps it on the
+   * question it was meant for. Absent means unchecked (an older client).
+   */
+  context?: string;
 }
 
 export interface ActionResponse {
@@ -240,9 +249,14 @@ export interface ActionResponse {
   /**
    * Set when ok is false. Clients resync rather than retrying blindly.
    * `HERO_BUSY`: the hero is in another table's adventure (#282), and the
-   * message names her.
+   * message names her. `STALE_DECISION`: the question the intent answered
+   * (`ActionRequest.context`) has passed; the phone lets the player choose
+   * again rather than resending it.
    */
-  error?: { code: "STALE_SEQ" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN" | "HERO_BUSY"; message: string };
+  error?: {
+    code: "STALE_SEQ" | "STALE_DECISION" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN" | "HERO_BUSY";
+    message: string;
+  };
 }
 
 // ---------------------------------------------------------------------------

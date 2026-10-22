@@ -9,6 +9,10 @@
  * errand on `/account`, behind one quiet link: a home screen with nine ways
  * out had a grown-up who came to host tapping "I play here already".
  *
+ * Installed as an app with nothing in its storage (#412), it asks one thing
+ * first: was there a hero in Safari to bring over, or is this a fresh start?
+ * Until that is answered nothing here can join, host or make anybody.
+ *
  * Joining asks for no name: the character-creation flow asks "What's your
  * name?" where it means something. The only name field left is under the host
  * link, for Phone Mode, where the host is seated as a player straight away.
@@ -24,8 +28,12 @@ import { useKeepsakeStore } from "../store/keepsake";
 import { takeMoveLink } from "./move-link";
 // The one normalize helper for typed and prefilled codes — the router owns the
 // code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
-import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, normalizeCodeInput as normalizeCode, pairingFromSearch } from "../router";
-import { loadPlayerDeviceToken } from "../store/persistence";
+import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, normalizeCodeInput as normalizeCode, pairingFromSearch, useRoute } from "../router";
+import { loadPlayerDeviceToken, loadSharedDevice } from "../store/persistence";
+import { browserEnv, browserName, needsFirstLaunchChoice } from "../install/detect";
+import { firstLaunch as firstLaunchRecord } from "../install/remember";
+import { InstallCard } from "../install/InstallCard";
+import { FirstLaunchChoice } from "../install/FirstLaunch";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
@@ -161,6 +169,21 @@ function PersonalHome(): ReactElement {
   const keepsakeStep = useKeepsakeStore((s) => s.step);
   const hasPlayed = useMemo(() => loadPlayerDeviceToken() !== null, [keepsakeStep]);
 
+  /*
+   * The installed app's first launch (#412), recorded as pending at boot
+   * (main.tsx) before anything could mint an identity, so a TV's room opened
+   * first does not answer it. Only reads: nothing here makes anybody.
+   */
+  const [installEnv] = useState(browserEnv);
+  const atHome = useRoute().name === "home";
+  const [firstLaunch, setFirstLaunch] = useState(() =>
+    needsFirstLaunchChoice({
+      pending: firstLaunchRecord() === "pending",
+      hasPlayer: loadPlayerDeviceToken() !== null,
+      sharedDevice: loadSharedDevice() !== null,
+    }),
+  );
+
   const trimmedName = displayName.trim();
   const codeReady = codeComplete(code);
   // Party Mode is started from the TV, and the TV is nobody (spec §2.1): it
@@ -204,26 +227,25 @@ function PersonalHome(): ReactElement {
     }
   }, [joinRoom, code]);
 
+  if (firstLaunch) {
+    return (
+      <main className="home entry-scene-host">
+        <EntryScene scene="home-market" />
+        <div className="home__inner kad-stack">
+          <Masthead />
+          <div className="home__body">
+            <FirstLaunchChoice browser={browserName(installEnv)} onFresh={() => setFirstLaunch(false)} />
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="home entry-scene-host">
       <EntryScene scene="home-market" />
       <div className="home__inner kad-stack">
-        <header className="home__masthead">
-          <h1 className="home__title">
-            <img
-              className="home__logo"
-              src="/brand/dragon-mark.png"
-              alt=""
-              width={512}
-              height={512}
-              fetchPriority="high"
-            />
-            <span className="home__wordmark">
-              Kids <span className="home__ampersand">&amp;</span><br />
-              Dragons
-            </span>
-          </h1>
-        </header>
+        <Masthead />
 
         {/* Hosting anchors the cards to the top: picking Phone Mode adds a
             name field, and in a centred column that lifted the very tile
@@ -315,6 +337,11 @@ function PersonalHome(): ReactElement {
               </Button>
             </section>
           ) : null}
+
+          {/* Installing (#412): quiet, last of the ways in, and only where
+              this browser really can. Only at `/`: a room's link that lands
+              here for want of a session is somebody on their way to a game. */}
+          {hosting || !atHome ? null : <InstallCard />}
 
           <section
             className="home__card home__host"
@@ -461,5 +488,26 @@ function PersonalHome(): ReactElement {
 
       <LazySignInFlow />
     </main>
+  );
+}
+
+function Masthead(): ReactElement {
+  return (
+    <header className="home__masthead">
+      <h1 className="home__title">
+        <img
+          className="home__logo"
+          src="/brand/dragon-mark.png"
+          alt=""
+          width={512}
+          height={512}
+          fetchPriority="high"
+        />
+        <span className="home__wordmark">
+          Kids <span className="home__ampersand">&amp;</span><br />
+          Dragons
+        </span>
+      </h1>
+    </header>
   );
 }

@@ -1,0 +1,113 @@
+/**
+ * A deploy while a room is open (#413), against a production build: the one
+ * place the service worker exists (playwright.prod.config.ts).
+ *
+ * The new build's worker takes over the open page at once (`skipWaiting` and
+ * `clients.claim`, sw.ts). The page keeps running the build it loaded, whose
+ * code the deploy has deleted from the bucket, and must neither go blank nor
+ * stop answering: the worker keeps one build back (policy.ts
+ * `swStaleBundles`), and the game's state never goes through it at all
+ * (`/api` and `/events` pass straight by).
+ *
+ * The deploy is made by the proxy (counting-proxy.ts), exactly as offline.spec
+ * makes one: a rewritten `sw.js` listing none of this build's code, and a
+ * bucket that answers 404 for all of it.
+ */
+
+import { test, expect, type Page } from "@playwright/test";
+import { createCharacter } from "./characters";
+import { startCountingProxy } from "./counting-proxy";
+import { openPlayerTask } from "./player-navigation";
+import { roomState } from "./room-state";
+
+const TAP = { timeout: 20_000 } as const;
+
+async function controlled(page: Page): Promise<void> {
+  await page.waitForFunction(() => navigator.serviceWorker?.controller != null, undefined, { timeout: 30_000 });
+}
+
+test("a room keeps playing when a new build's worker takes over mid-game", async ({ browser, baseURL }) => {
+  test.setTimeout(180_000);
+  const proxy = await startCountingProxy(baseURL ?? "http://localhost:4173");
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, baseURL: proxy.url });
+  const phone = await context.newPage();
+  const errors: string[] = [];
+  phone.on("pageerror", (e) => errors.push(e.message));
+  try {
+    // --- A phone hosts a room, makes a hero and begins ---
+    await phone.goto("/");
+    await phone.getByRole("button", { name: /host a game/i }).click();
+    await phone.getByText("Phone Mode").click();
+    await phone.getByLabel(/adventurer name/i).fill("Ada");
+    await phone.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(phone).toHaveURL(/\/p\/[A-Z0-9]{4}$/);
+    const code = new URL(phone.url()).pathname.split("/").pop()!;
+    await createCharacter(phone, "unicorn", "Moonbeam");
+    await phone.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    await expect(phone.getByRole("button", { name: /begin the adventure/i })).toHaveCount(0, TAP);
+    await controlled(phone);
+    // This build's worker has finished taking over: it recorded its code.
+    await expect
+      .poll(() => phone.evaluate(async () => (await caches.match("/__kad/bundle-list")) !== undefined), { timeout: 20_000 })
+      .toBe(true);
+    // Whatever the launch campaign opens on: a story question, read off the server.
+    type Room = { seq: number; sceneId: string | null; prompt: { kind: string; options?: { label: string }[] } | null };
+    const room = (): Promise<Room> => roomState<Room>(phone, code);
+    await expect.poll(async () => (await room()).prompt?.kind, TAP).toBe("choice");
+    const opening = await room();
+    const answer = opening.prompt?.options?.[0]?.label ?? "";
+    expect(answer).not.toBe("");
+
+    // --- The deploy: a new worker, and none of this build's code left in the bucket ---
+    proxy.configure({
+      rewrite: (path) =>
+        path === "/sw.js"
+          ? (text) =>
+              text
+                .replace(/const __KAD_BUNDLE__ = \[[^\]]*\];/, "const __KAD_BUNDLE__ = [];")
+                .replace(/const __KAD_PRECACHE__ = \[[^\]]*\];/, "const __KAD_PRECACHE__ = [];")
+          : undefined,
+      gone: (path) => path.startsWith("/bundle/"),
+    });
+    const before = await phone.evaluate(() => navigator.serviceWorker.controller?.scriptURL ?? "");
+    await phone.evaluate(async () => {
+      const taken = new Promise((resolve) => navigator.serviceWorker.addEventListener("controllerchange", resolve, { once: true }));
+      await (await navigator.serviceWorker.getRegistration())?.update();
+      await taken;
+    });
+    // The new worker is in charge of this very page, with its own (empty) list.
+    await expect
+      .poll(() => phone.evaluate(async () => (await (await caches.match("/__kad/bundle-list"))?.json()) as unknown), { timeout: 20_000 })
+      .toEqual([]);
+    expect(await phone.evaluate(() => navigator.serviceWorker.controller?.scriptURL ?? "")).toBe(before);
+
+    // --- Not blank, and still the game ---
+    expect(await phone.locator("#root > *").count()).toBeGreaterThan(0);
+    await openPlayerTask(phone);
+    const choices = phone.locator(".prompt .choice");
+    await expect(choices.filter({ hasText: answer })).toBeEnabled(TAP);
+    await expect(phone.getByText(/couldn.t (load|open)/i)).toHaveCount(0);
+
+    // --- And it still plays: an answer reaches the server and the next scene arrives ---
+    await choices.filter({ hasText: answer }).click(TAP);
+    await phone.getByRole("button", { name: /do it!/i }).click(TAP);
+    await expect.poll(async () => (await room()).seq, TAP).toBeGreaterThan(opening.seq);
+    // The page drew what the answer led to, not the question it answered.
+    await expect(phone.locator(".prompt__title, .player__task-entry, .prompt .choice").first()).toBeVisible(TAP);
+    await expect(phone.getByText(/couldn.t (load|open)/i)).toHaveCount(0);
+
+    // The book, a chunk this page has not imported yet, still opens from the
+    // build kept one back.
+    await phone.evaluate(() => {
+      history.pushState(null, "", "/journal");
+      dispatchEvent(new PopStateEvent("popstate"));
+    });
+    await expect(phone.locator(".journal")).toBeVisible(TAP);
+    await expect(phone.getByText(/couldn.t open/i)).toHaveCount(0);
+
+    expect(errors).toEqual([]);
+  } finally {
+    await context.close();
+    await proxy.close();
+  }
+});

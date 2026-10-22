@@ -58,6 +58,32 @@ describe("the reconnecting banner", () => {
     expect(screen.queryByText("Reconnecting…")).toBeNull();
   });
 
+  it("stays up after the stream reopens until the phone has caught up (#413)", () => {
+    vi.useFakeTimers();
+    render(<ConnectionBanner />);
+    act(() => {
+      useGameStore.setState({
+        session: { runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "party", sessionToken: "t" },
+        connection: "reconnecting",
+        synced: false,
+      });
+    });
+    act(() => {
+      vi.advanceTimersByTime(RECONNECT_GRACE_MS + 50);
+    });
+    // Open, but the old scene's question is what is still on screen.
+    setConnection("open");
+    expect(screen.getByText("Reconnecting…")).toBeTruthy();
+
+    act(() => {
+      useGameStore.setState({ synced: true });
+    });
+    expect(screen.queryByText("Reconnecting…")).toBeNull();
+    act(() => {
+      useGameStore.setState({ session: null });
+    });
+  });
+
   it("stays quiet for every state that is not a drop", () => {
     // "connecting" is the initial attach — the screens own their spinners
     // there — and "error" already has the toast. This banner is only for the

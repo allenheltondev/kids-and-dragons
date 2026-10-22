@@ -146,6 +146,7 @@ function mount(options: MountOptions = {}) {
       sessionToken: "t",
     },
     state: baseState(options),
+    synced: true,
     items: options.items === undefined ? ITEMS : options.items,
     campaign: options.campaign === undefined ? CAMPAIGN : options.campaign,
     send,
@@ -2059,6 +2060,51 @@ describe("the token and the rank-up moment on your own phone (#314)", () => {
     mount({ playerId: "p_2", party: [member(), member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }) })] });
     serverSends({ rankUps: { sceneId: "s_1", ups: [up] } });
     expect(screen.queryByTestId("player-rank-up")).toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Catching up after a drop (#413)
+// ---------------------------------------------------------------------------
+
+describe("while the phone is catching up", () => {
+  const catchingUp = (synced: boolean): void => {
+    act(() => {
+      useGameStore.setState({ synced });
+    });
+  };
+  afterEach(() => {
+    useGameStore.setState({ synced: true });
+  });
+
+  it("offers no answer to a question that may have passed, and gives them back once caught up", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({ prompt: choicePrompt() });
+    await user.click(screen.getByRole("button", { name: /Take the east path/ }));
+
+    catchingUp(false);
+    expect((screen.getByRole("button", { name: /Take the east path/ }) as HTMLButtonElement).disabled).toBe(true);
+    expect((screen.getByRole("button", { name: /Take the west path/ }) as HTMLButtonElement).disabled).toBe(true);
+    expect((doIt() as HTMLButtonElement).disabled).toBe(true);
+    await user.click(doIt());
+    expect(sent).toEqual([]);
+
+    catchingUp(true);
+    expect((doIt() as HTMLButtonElement).disabled).toBe(false);
+    await user.click(doIt());
+    expect(sent).toEqual([{ type: "CHOOSE", choiceId: "east" }]);
+  });
+
+  it("holds the roll too", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({
+      prompt: { kind: "roll", sceneId: "s_1", stat: "clever", tn: 12, prompt: "Can you read the runes?", characterId: "c_1" },
+    });
+    catchingUp(false);
+    const roll = screen.getByRole("button", { name: "Roll!" }) as HTMLButtonElement;
+    expect(roll.disabled).toBe(true);
+    await user.click(roll);
+    expect(sent).toEqual([]);
   });
 });
 
