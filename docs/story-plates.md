@@ -175,12 +175,30 @@ the TV view with the caption band shaded and the surviving middle outlined, besi
    (the count drops), `npm run art:plates` (look at it).
 4. Commit the files. Nothing else changes: the manifest and content already name them.
 
-## 4. Riftlight: what is owed
+## 4. What is owed
 
-Nine paintings. The narration is already in the content; the prompts are in
-[story-plates-prompts.json](story-plates-prompts.json).
+Thirteen paintings: four for Gemfall, nine for Riftlight. The narration is already in the content;
+the prompts are in [story-plates-prompts.json](story-plates-prompts.json).
 
-**Prologue** (`content/campaigns/riftlight.json`, plays once, before *Snow on the Quay*):
+### Gemfall
+
+**Prologue** (`content/campaigns/gemfall.json`, before chapter 1, *The City That Smelled
+Opportunity*). The eruption has **not** happened yet when chapter 1 begins (`scene_red_sky` is where
+the sky turns red, a few scenes in), so the plates are the quiet before it: the legend, the ordinary
+world, the first stir, and the Exchange lighting its lamps. They hand off to chapter 1's own narrated
+opening ("This is the Realm of Red Sky…"), which they do not repeat. Nothing here explains the
+stones, the seal or the titan.
+
+| File | Shows | Narration |
+|---|---|---|
+| `prologue-1` | Mount Red Sky by moonlight, huge and sleepy, one ember glowing in the crater | Mount Red Sky has been quiet for longer than anyone can remember… |
+| `prologue-2` | A sunny village crossroads: bakers, a mail griffin, a runaway hat | Down in the realm, everybody gets on with things… |
+| `prologue-3` | The crater up close, one spark floating into the stars | But tonight, high in the north, the red glow… |
+| `prologue-4` | The Exchange harbor at dusk, the Long Bridge's lamps being lit, an empty pier | Far to the south, the Exchange is lighting its harbor lamps… |
+
+### Riftlight
+
+**Prologue** (`content/campaigns/riftlight.json`, before *Snow on the Quay*):
 
 | File | Shows | Narration |
 |---|---|---|
@@ -206,5 +224,6 @@ Nine paintings. The narration is already in the content; the prompts are in
 3. Add the prompts to [story-plates-prompts.json](story-plates-prompts.json).
 4. `npm run content:validate`. For a **graph** campaign, also `npm run content:proofs` and commit
    what it writes (it re-fingerprints the campaign).
-5. Gemfall is pinned (`gemfall-compat.test.ts` hashes every Gemfall file). Adding a prologue to it
-   is a deliberate content edit: re-take those hashes and say why in the commit.
+5. Gemfall is pinned (`gemfall-compat.test.ts` hashes every Gemfall file). A change to its campaign
+   file or a chapter is a deliberate content edit: re-take that file's hash, say why in the test
+   header and the commit, and the gameplay digests must not move. (Its prologue was added this way.)
