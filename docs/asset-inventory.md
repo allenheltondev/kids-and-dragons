@@ -167,6 +167,13 @@ registered layers, seam overdraw, real alpha), one directory deep rather than tw
 is the declared exception: 2048×2048, origin (1024, 2024), and a four-tile footprint. Its art is
 complete; grid occupancy and enemy-rig playback remain separate engine integration work.
 
+### 4.4 Interface chrome — 42 to paint
+
+Frames, borders, the tray and rail, panels and buttons are all CSS today; none is in the manifest,
+so `art:inventory` does not count them. The full list, with sizes, slicing and where each one shows,
+is [briefs/tablet-chrome-art.md](./briefs/tablet-chrome-art.md). Part A (the frame around and
+between the panes on a landscape tablet) comes first.
+
 ---
 
 ## 5. Known warnings
