@@ -2167,6 +2167,56 @@
       "class": "songkeeper",
       "tier": "radiant",
       "species": "manticore"
+    },
+    {
+      "class": "starweaver",
+      "tier": "mythic",
+      "species": "unicorn"
+    },
+    {
+      "class": "starweaver",
+      "tier": "mythic",
+      "species": "dragonling"
+    },
+    {
+      "class": "starweaver",
+      "tier": "mythic",
+      "species": "griffin"
+    },
+    {
+      "class": "starweaver",
+      "tier": "mythic",
+      "species": "kitsune"
+    },
+    {
+      "class": "starweaver",
+      "tier": "mythic",
+      "species": "manticore"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "mythic",
+      "species": "unicorn"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "mythic",
+      "species": "dragonling"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "mythic",
+      "species": "griffin"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "mythic",
+      "species": "kitsune"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "mythic",
+      "species": "manticore"
     }
   ],
   "$figureVariantsComment": "Finished transparent class illustrations. Legacy character-rigs paths are retained for existing assets; no rig runtime or split parts are required.",
