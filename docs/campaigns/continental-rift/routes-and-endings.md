@@ -9,10 +9,17 @@ Riftlight is shipped: `content/campaigns/riftlight.json`, its chapters in
 `content/chapters/riftlight-*.json` and its battle maps in `content/maps/`. It
 is `listed`, so every household's lobby offers it beside Gemfall, locked by
 `requires: ["gemfall"]` until Gemfall is finished. The owner published it ahead
-of timed family playtests and the full-campaign XP-route review (see
-Production gates). The current graph admits longer paying routes than the
-design bible's original 11–16-node estimate. The agreed 140 / 650 / 140 awards
-have been preserved, not claimed to meet the level-8 cap on every route.
+of timed family playtests (see Production gates).
+
+**XP.** The agreed 140 / 650 / 140 awards are kept: 140 for each ordinary
+chapter and 650 at the convergence, paid once per chapter per attempt. The
+graph admits longer routes than the design bible's original 11–16-node
+estimate; one route visits all 24 places (review on #405), so the most any
+route pays is 3,870 XP. Level 9 starts at 4,700, so a hero who enters with
+830 XP or more and completes every place reaches level 9. Gemfall pays 760
+base XP on a full run, and up to about 1,000 on paper with every objective.
+The owner accepted level 9 for completionists rather than trim the awards;
+`tools/content/riftlight-xp.test.ts` pins the numbers.
 
 ## Play locally
 
