@@ -22,7 +22,7 @@
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ReactElement } from "react";
-import type { JournalResponse, PartyMember, ResolvedCharacter } from "@kad/shared";
+import type { JournalFinishedCampaign, JournalResponse, PartyMember, ResolvedCharacter } from "@kad/shared";
 import { navigate } from "../router";
 import { useGameStore, useItems, useWorld } from "../store";
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
@@ -299,6 +299,8 @@ function HeroPane({ journal, onPlay, onOpen }: { journal: JournalResponse; onPla
     return (
       <div className="kad-surface kad-surface--player" data-surface="player">
         <section className="journal__empty">
+          {/* Her page and the household's story do not wait on a hero. */}
+          <HeroLinks journal={journal} onOpen={onOpen} />
           <Icon name="name" size="2.4em" />
           <p>No hero yet. Make one in your next game, and they will be waiting here.</p>
           <Button variant="primary" size="lg" icon={<Icon name="play" />} onClick={onPlay}>
@@ -332,23 +334,56 @@ function HeroPane({ journal, onPlay, onOpen }: { journal: JournalResponse; onPla
             })}
           </ul>
           ) : null}
-          {/* Her page, and the story so far: the hero's own, a tap away in the corner. */}
-          <nav className="journal__links" aria-label="About you">
-            {journal.profile ? (
-              <button type="button" className="journal__link kad-tap kad-focusable" onClick={() => onOpen("me")}>
-                <Icon name="name" />
-                <span>My page</span>
-              </button>
-            ) : null}
-            <button type="button" className="journal__link kad-tap kad-focusable" onClick={() => onOpen("story")}>
-              <Icon name="story" />
-              <span>Story</span>
-            </button>
-          </nav>
+          <HeroLinks journal={journal} onOpen={onOpen} />
         </div>
         <CharacterSheet key={hero.id} member={restingMember(hero)} isMe items={items} explore />
+        {/* Her page lists these when she has one; a book without it (an older server, or its saved copy) keeps them here. */}
+        {journal.profile ? null : <FinishedAdventures lines={journal.finished?.[hero.id] ?? []} />}
       </section>
     </div>
+  );
+}
+
+/** Her page, and the story so far: the hero's own, a tap away in the corner. */
+function HeroLinks({ journal, onOpen }: { journal: JournalResponse; onOpen: (pane: JournalPane) => void }): ReactElement {
+  return (
+    <nav className="journal__links" aria-label="About you">
+      {journal.profile ? (
+        <button type="button" className="journal__link kad-tap kad-focusable" onClick={() => onOpen("me")}>
+          <Icon name="name" />
+          <span>My page</span>
+        </button>
+      ) : null}
+      <button type="button" className="journal__link kad-tap kad-focusable" onClick={() => onOpen("story")}>
+        <Icon name="story" />
+        <span>Story</span>
+      </button>
+    </nav>
+  );
+}
+
+/**
+ * The adventures this hero has seen to the end (#283), only for a book with no
+ * page of her own, where this is the one place they show. Her record, so one she
+ * finished at a friend's table is here too.
+ */
+function FinishedAdventures({ lines }: { lines: readonly JournalFinishedCampaign[] }): ReactElement | null {
+  if (lines.length === 0) return null;
+  return (
+    <section className="journal__finished" aria-label="Adventures finished">
+      <h2 className="journal__finished-title">
+        <Icon name="star" />
+        <span>Adventures finished</span>
+      </h2>
+      <ul className="journal__finished-list">
+        {lines.map((line) => (
+          <li key={line.campaignId} className="journal__finished-line">
+            <Icon name="check" />
+            <span>{line.title}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
