@@ -1039,19 +1039,30 @@ describe("graph campaigns (#192)", { timeout: 30_000 }, () => {
   }
 
   it("refuses a graph campaign with no proof, or a stale one, so the server never walks at start", () => {
-    const missing = copyTree();
-    rmSync(join(missing, "content", "graph-proofs", "riftlight.json"));
-    const none = validate(missing);
-    expect(none.code, none.out).not.toBe(0);
-    expect(none.out).toMatch(/no graph proof .*graph-proofs\/riftlight\.json/);
+    // The small graph above, not Riftlight: an untrusted proof means a walk,
+    // and Riftlight's takes seconds.
+    let dir = "";
+    const written = graphTree(({ dir: d }) => {
+      dir = d;
+    });
+    expect(written.code, written.out).toBe(0);
+    expect(written.out).toMatch(/proof written/);
+    const proofFile = ["content", "graph-proofs", "the-hollow-crown.json"];
 
-    const stale = copyTree();
-    const proof = readJson(stale, "content", "graph-proofs", "riftlight.json");
-    writeJson(stale, ["content", "graph-proofs", "riftlight.json"], { ...proof, fingerprint: "0".repeat(32) });
-    const result = validate(stale);
-    expect(result.code, result.out).not.toBe(0);
-    expect(result.out).toMatch(/the graph proof is stale/);
-    expect(result.out).toMatch(/npm run content:proofs/);
+    const proof = readJson(dir, ...proofFile);
+    writeJson(dir, proofFile, { ...proof, fingerprint: "0".repeat(32) });
+    const stale = validate(dir);
+    expect(stale.code, stale.out).not.toBe(0);
+    expect(stale.out).toMatch(/the graph proof is stale/);
+    expect(stale.out).toMatch(/npm run content:proofs/);
+
+    rmSync(join(dir, ...proofFile));
+    const none = validate(dir);
+    expect(none.code, none.out).not.toBe(0);
+    expect(none.out).toMatch(/no graph proof .*graph-proofs\/the-hollow-crown\.json/);
+
+    // And Riftlight's shipped proof was trusted throughout, not walked.
+    expect(none.out).toMatch(/riftlight\.json {2}campaign .*proven/);
   });
 
   it("accepts a whole graph, and skips the beat rules it has no beats for", () => {

@@ -1487,7 +1487,7 @@ function checkGraphCampaign(rep, file, campaign, chaptersById, fail, okSoFar, it
     const fingerprint = graphFingerprint(campaign, chapterFlags);
     const proofFile = join(CONTENT, graphProofPath(campaign.id));
     const proof = existsSync(proofFile) ? JSON.parse(readFileSync(proofFile, "utf8")) : null;
-    if (proof && proof.fingerprint === fingerprint && proof.checker === CHECKER && !WRITE_PROOFS) {
+    if (proof && proof.fingerprint === fingerprint && proof.checker === CHECKER) {
       // Walked already, by this checker, over exactly this graph.
       for (const w of proof.warnings) rep.warn(`${f} ${w.path}  ${w.code}: ${w.message}`, w.hint);
       walked = `, walked ${proof.states} state(s), proven`;
