@@ -314,15 +314,16 @@ decide anything. Full spec, with the art: [docs/story-plates.md](../docs/story-p
 ```
 
 in the campaign file (3 to 6 plates, before the opening chapter's first scene), and in a chapter
-to establish its setting and mood (Riftlight uses one for every later chapter):
+to establish its setting and immediate situation (Riftlight uses one for every later chapter):
 
 ```json
 "plate": { "art": "plates/riftlight/finale", "narration": "You are back on the glacier..." }
 ```
 
 - Each narration is **at most 45 words**, **the same for every party**: no `{token}`, no counting
-  the party, no great stone, no em dash. A chapter plate names a place and a feeling, never a
-  person, because a graph campaign can be entered in any order.
+  the party, no great stone, no em dash. A chapter plate sets the place and a concrete starting
+  situation, without named introductions, solutions or outcomes. Creatures and unnamed local
+  helpers may appear when the chapter opens with them. It must read true for every route in.
 - A prologue introduces and raises the question; it never answers it, and in a sequel it never
   says how the last campaign ended.
 - Every `art` is declared in `assets/manifest.json` → `storyPlates.ids`, and nothing else is

@@ -11,7 +11,7 @@
   "entry": "current",
   "plate": {
     "art": "plates/riftlight/headwaters-washout",
-    "narration": "Below Frostfang, the Great River curves between dark ice and stone. The current curls around low ledges. Farther down, the banks open toward gentler country."
+    "narration": "The Great River sweeps past the Frostfang ice. A rope pulls tight across the current. Just ahead, a dark ledge juts over the water. One good hold could bring everyone ashore."
   },
   "goal": {
     "text": "Hold on to each other and find a way out of the river.",

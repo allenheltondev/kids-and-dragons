@@ -11,7 +11,7 @@
   "entry": "search",
   "plate": {
     "art": "plates/riftlight/hidden-glacier-rift",
-    "narration": "Beside the singing hall, a narrow passage follows the rock beneath the ice. Drops of water catch the light. Farther in, a low sound trembles through the stone."
+    "narration": "A fold in the air shivers at the end of the passage. Salt wind slips through, though the glacier lies all around. A low note trembles under the rock. Something here is waiting for an answer."
   },
   "goal": {
     "text": "Search the glacier for another opening.",
