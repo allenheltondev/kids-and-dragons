@@ -14,8 +14,9 @@ const BASE_URL = process.env.KAD_E2E_BASE_URL ?? "http://localhost:5173";
 export default defineConfig({
   testDir: "./e2e",
   // Visual review tools run explicitly with playwright.cast-review.config.ts.
-  // Offline and performance checks use their own production-style server.
-  testIgnore: ["wiki-*.spec.ts", "static-figures-shot.spec.ts", "cast-shot.spec.ts", "offline.spec.ts", "perf.spec.ts", "production-locks.spec.ts"],
+  // Offline, performance, production-lock and installability checks need a
+  // production build (the service worker): playwright.prod.config.ts.
+  testIgnore: ["wiki-*.spec.ts", "static-figures-shot.spec.ts", "cast-shot.spec.ts", "offline.spec.ts", "perf.spec.ts", "production-locks.spec.ts", "installable.spec.ts"],
   // Three players each walking a five-step creation flow, and then a whole
   // chapter with real roll animations, is a lot of genuine interaction — the
   // playthrough spends about two minutes of this on its own.
