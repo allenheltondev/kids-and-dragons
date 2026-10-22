@@ -5,7 +5,9 @@
  * A tab that can install gets one quiet card on the home screen, never on the
  * TV and never in the installed app. The installed app, opened with nothing in
  * its storage, asks "Played in Safari before?" before anything can make a new
- * hero, and bringing one over lands on the existing pairing panel (#281).
+ * hero, and bringing one over lands on the existing pairing panel (#281),
+ * where a code from Safari makes the app that same kid with that same hero,
+ * never a second player. A TV's room opened first does not count as an answer.
  *
  * "Installed" is emulated: `(display-mode: standalone)` is stubbed before the
  * page loads, and an iPhone is a user agent. Whether a real iPhone's Home
@@ -15,6 +17,7 @@
  */
 
 import { test, expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
+import { createCharacter } from "./characters";
 
 const TAP = { timeout: 20_000 } as const;
 
@@ -41,6 +44,18 @@ function standalone(): void {
       dispatchEvent: () => false,
     } as MediaQueryList;
   };
+}
+
+interface StoredIdentity {
+  householdId: string;
+  playerId: string;
+  deviceToken?: string;
+}
+
+/** This browser's device identity, as persistence stores it, or `null`. */
+async function identityOf(page: Page): Promise<StoredIdentity | null> {
+  const raw = await page.evaluate(() => localStorage.getItem("kad.device"));
+  return raw === null ? null : (JSON.parse(raw) as StoredIdentity);
 }
 
 test.describe("install guidance", () => {
@@ -122,6 +137,99 @@ test.describe("install guidance", () => {
     await expect(app.getByRole("button", { name: /join a game/i })).toBeVisible(TAP);
     await expect(app.getByRole("heading", { name: ASK })).toHaveCount(0);
     expect(await app.evaluate(() => localStorage.getItem("kad.device"))).toBeNull();
+  });
+
+  test("the installed app brings Safari's hero over by code, and is her, not a second player", async ({ browser }) => {
+    test.setTimeout(240_000);
+    const HERO = "Starling";
+
+    // --- Safari (a plain tab): a real hero, then a code from Account ---
+    const safariContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    open.push(safariContext);
+    const safari = await safariContext.newPage();
+    await safari.goto("/");
+    await safari.getByRole("button", { name: /host a game/i }).click();
+    await safari.getByText("Phone Mode").click();
+    await safari.getByLabel(/adventurer name/i).fill("Ada");
+    await safari.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(safari).toHaveURL(/\/p\/[A-Z0-9]{4}$/);
+    await createCharacter(safari, "unicorn", HERO);
+    await safari.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    await expect(safari.getByRole("button", { name: /begin the adventure/i })).toHaveCount(0, TAP);
+    const ada = await identityOf(safari);
+    expect(ada?.deviceToken).toBeTruthy();
+
+    await safari.goto("/account");
+    await safari.getByRole("button", { name: /play as me on another device/i }).click(TAP);
+    const shown = (await safari.locator(".pair__code").textContent(TAP)) ?? "";
+    expect(shown).toMatch(/^[A-Z]{4}-[A-Z]{4}$/);
+
+    // --- The installed app, empty: bring my hero over, and type the code ---
+    const app = await iphone(browser, true);
+    await app.goto("/");
+    await app.getByRole("button", { name: /bring my hero over/i }).click(TAP);
+    await expect(app).toHaveURL(/\/account$/, TAP);
+    await app.getByLabel("Your code").fill(shown);
+    await app.getByRole("button", { name: /that.s me/i }).click(TAP);
+    await expect(app).toHaveURL(/\/journal$/, TAP);
+    await expect(app.getByRole("region", { name: `${HERO}'s character sheet` })).toBeVisible(TAP);
+
+    // She is the same player, on a binding of her own.
+    const paired = await identityOf(app);
+    expect(paired?.playerId).toBe(ada?.playerId);
+    expect(paired?.deviceToken).toBeTruthy();
+    expect(paired?.deviceToken).not.toBe(ada?.deviceToken);
+
+    // Answered: the app does not ask again.
+    await app.goto("/");
+    await expect(app.getByRole("button", { name: /join a game/i })).toBeVisible(TAP);
+    await expect(app.getByRole("heading", { name: ASK })).toHaveCount(0);
+
+    // --- And plays as her: a TV seats her saved hero, not a new one ---
+    const host = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+    open.push(host);
+    const tv = await host.newPage();
+    await tv.goto("/");
+    await tv.getByRole("button", { name: /host a game/i }).click();
+    await tv.getByRole("button", { name: /open the lobby here/i }).click();
+    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
+    const room = new URL(tv.url()).pathname.split("/").pop() ?? "";
+    await app.getByLabel("Room code, four letters").fill(room);
+    await app.getByRole("button", { name: /join a game/i }).click();
+    await expect(app).toHaveURL(new RegExp(`/p/${room}$`), TAP);
+    await expect(app.getByText(/welcome back/i)).toBeVisible(TAP);
+    await app.getByRole("button", { name: new RegExp(HERO) }).click(TAP);
+    await app.getByRole("button", { name: new RegExp(`play as ${HERO}`, "i") }).click(TAP);
+    await app.getByRole("button", { name: /^Ready to play$/i }).click(TAP);
+    await expect(tv.getByText(HERO)).toBeVisible(TAP);
+
+    // The household, as the server keeps it: one kid, one hero, both hers.
+    const journal = await app.request.get("/api/journal", { headers: { "x-kad-device-token": paired?.deviceToken ?? "" } });
+    expect(journal.status()).toBe(200);
+    const book = (await journal.json()) as { heroes: { name: string }[]; finders: Record<string, string> };
+    expect(Object.keys(book.finders)).toEqual([ada?.playerId]);
+    expect(book.heroes.map((hero) => hero.name)).toEqual([HERO]);
+    expect((await identityOf(app))?.playerId).toBe(ada?.playerId);
+  });
+
+  test("a TV's room opened first does not answer the question", async ({ browser }) => {
+    // A real room to watch: the display path mints a TV's identity as it watches.
+    const host = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+    open.push(host);
+    const tv = await host.newPage();
+    await tv.goto("/");
+    await tv.getByRole("button", { name: /host a game/i }).click();
+    await tv.getByRole("button", { name: /open the lobby here/i }).click();
+    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
+    const room = new URL(tv.url()).pathname.split("/").pop() ?? "";
+
+    const app = await iphone(browser, true);
+    await app.goto(`/tv/${room}`);
+    await expect.poll(() => app.evaluate(() => localStorage.getItem("kad.device")), TAP).not.toBeNull();
+
+    await app.goto("/");
+    await expect(app.getByRole("heading", { name: ASK })).toBeVisible(TAP);
+    await expect(app.getByRole("button", { name: /join a game/i })).toHaveCount(0);
   });
 
   test("bringing a hero over lands on the pairing panel, with nothing spent or made", async ({ browser }) => {
