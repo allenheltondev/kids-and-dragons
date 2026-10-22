@@ -88,6 +88,15 @@ export interface JournalLoad {
 
 export interface GameStore {
   connection: ConnectionStatus;
+  /**
+   * Whether the mirror is caught up with the server (#413). True from the
+   * snapshot a room is entered with; false from the moment the stream drops
+   * (or is replaced on a wake) until the catch-up after it reopens has been
+   * applied. An open stream alone is not enough: the old scene's question is
+   * still on screen until that catch-up lands. While false, the phone offers
+   * no decisions and `send` refuses every intent.
+   */
+  synced: boolean;
   session: ClientSession | null;
   /** The server's authoritative run state, mirrored. Never written directly. */
   state: RunState | null;

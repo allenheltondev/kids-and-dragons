@@ -69,6 +69,7 @@ import {
   useRunState,
   useSend,
   useSharePreview,
+  useSynced,
 } from "../store";
 // Path helpers only — `screens/` never drags the renderer in (art-paths.ts).
 import { biomeBackdropUrl, sceneArtFor, sceneBackdropUrl } from "../world/art-paths";
@@ -562,6 +563,15 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   const section = usePlayerNavigation((navigation) => navigation.section);
   useEffect(() => { setSheetFor(null); }, [navigationRevision]);
   const [busy, setBusy] = useState(false);
+  /*
+   * Every way to answer is held while a tap is on its way (`busy`) and while
+   * this phone is catching up after a drop (#413): until then the question on
+   * screen may be one the story has already left. The labels still read off
+   * `busy` alone ("Rolling…" is for a tap that was sent); the banner says why
+   * a held button is waiting.
+   */
+  const synced = useSynced();
+  const held = busy || !synced;
   /**
    * "Ready to play" was tapped and the READY is on its way. Held locally so
    * the ready page never flashes a second "I'm ready!" between the tap and
@@ -1056,7 +1066,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                     variant="primary"
                     size="md"
                     icon={<Icon name="check" />}
-                    disabled={busy}
+                    disabled={held}
                     onClick={() => {
                       if (aimedStat === null) return;
                       setPendingStat(null);
@@ -1102,6 +1112,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                       type="button"
                       className={`choice kad-tap kad-focusable${selected ? " choice--on" : ""}`}
                       aria-pressed={selected}
+                      disabled={!synced}
                       onClick={() => setPendingChoice(option.id)}
                     >
                       <span className="choice__icon">
@@ -1146,7 +1157,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 size="md"
                 block
                 icon={<Icon name="forward" />}
-                disabled={busy}
+                disabled={held}
                 onClick={() => void dispatch({ type: "CHOOSE", choiceId: myVote })}
               >
                 {`Decide without ${awayNames(
@@ -1177,7 +1188,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 variant="primary"
                 size="md"
                 icon={<Icon name="check" />}
-                disabled={busy}
+                disabled={held}
                 onClick={() => {
                   if (chosenOption !== null) void dispatch({ type: "CHOOSE", choiceId: chosenOption.id });
                 }}
@@ -1236,7 +1247,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   variant="primary"
                   size="lg"
                   icon={<Icon name="star" />}
-                  disabled={busy}
+                  disabled={held}
                   onClick={() => void dispatch({ type: "ROLL", spendBuff: myPrompt.buff?.id })}
                 >
                   {busy ? "Rolling…" : "Use it and roll!"}
@@ -1245,7 +1256,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   variant="secondary"
                   size="lg"
                   icon={<Icon name="d20" />}
-                  disabled={busy}
+                  disabled={held}
                   onClick={() => void dispatch({ type: "ROLL" })}
                 >
                   {busy ? "Rolling…" : "Save it and roll"}
@@ -1256,7 +1267,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 variant="primary"
                 size="lg"
                 icon={<Icon name="d20" />}
-                disabled={busy}
+                disabled={held}
                 onClick={() => void dispatch({ type: "ROLL" })}
               >
                 {busy ? "Rolling…" : "Roll!"}
@@ -1335,7 +1346,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 variant="primary"
                 size="md"
                 icon={<Icon name="check" />}
-                disabled={busy}
+                disabled={held}
                 onClick={() => {
                   if (pendingDrop !== undefined) {
                     void dispatch({ type: "RESOLVE_ITEM_SWAP", dropItemId: pendingDrop });
@@ -1448,7 +1459,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                         variant="ghost"
                         size="md"
                         icon={<Icon name="close" />}
-                        disabled={busy}
+                        disabled={held}
                         onClick={() =>
                           void dispatch({ type: "RESOLVE_TRADE", tradeId: offer.id, accept: false })
                         }
@@ -1462,7 +1473,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                           variant="primary"
                           size="md"
                           icon={<Icon name="check" />}
-                          disabled={busy}
+                          disabled={held}
                           onClick={() => {
                             setTradeDrop(null);
                             void dispatch({
@@ -1518,7 +1529,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 variant="secondary"
                 size="lg"
                 icon={<Icon name="back" />}
-                disabled={busy || !me.ready}
+                disabled={held || !me.ready}
                 onClick={() => {
                   void dispatch({ type: "READY", ready: false });
                   if (inLobby) setPlayerSection("bag");
@@ -1531,7 +1542,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 variant="primary"
                 size="lg"
                 icon={<Icon name="ready" />}
-                disabled={busy}
+                disabled={held}
                 onClick={() => void dispatch({ type: "READY", ready: true })}
               >
                 {inLobby ? "I'm ready!" : "I'm ready to fight!"}
@@ -1562,7 +1573,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 variant="primary"
                 size="lg"
                 icon={<Icon name="swords" />}
-                disabled={busy}
+                disabled={held}
                 onClick={() => void dispatch({ type: "READY", ready: true })}
               >
                 {`Start without ${awayNames(party.filter((m) => !m.ready))}`}
@@ -1600,7 +1611,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                           className={`choice choice--campaign kad-tap kad-focusable${selected ? " choice--on" : ""}`}
                           data-locked={locked}
                           aria-pressed={selected}
-                          disabled={busy || locked}
+                          disabled={held || locked}
                           onClick={() => void dispatch({ type: "VOTE_CAMPAIGN", campaignId: option.id })}
                         >
                           <span className="choice__art">
@@ -1656,7 +1667,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   variant="primary"
                   size="lg"
                   icon={<Icon name="forward" />}
-                  disabled={busy}
+                  disabled={held}
                   aria-label={`Keep going with ${savedHeroes(state.saved)}`}
                   onClick={() => void keepGoing()}
                 >
@@ -1678,7 +1689,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   variant="primary"
                   size="lg"
                   icon={<Icon name="star" />}
-                  disabled={busy}
+                  disabled={held}
                   onClick={() => void dispatch({ type: "START_PRACTICE" })}
                 >
                   Play the practice
@@ -1709,7 +1720,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   <JourneyPanel
                     journey={graphJourney}
                     ended={campaignChoice?.leader?.ended}
-                    busy={busy}
+                    busy={held}
                     onChoose={(exit) => chooseExit(exit, graphJourney.visit, campaignId)}
                     onContinue={() => dispatch({ type: "CONTINUE_CAMPAIGN", campaignId })}
                     // A rift action (#197) is one idempotent intent; the
@@ -1735,7 +1746,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                     variant={newcomers.length > 0 ? "secondary" : "primary"}
                     size="lg"
                     icon={<Icon name="forward" />}
-                    disabled={busy}
+                    disabled={held}
                     onClick={() => void dispatch({ type: "CONTINUE_CAMPAIGN", campaignId })}
                   >
                     {newcomers.length > 0 ? skipPracticeLabel(state.campaign) : beginLabel(state.campaign)}
@@ -1792,7 +1803,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 variant="secondary"
                 size="lg"
                 icon={<Icon name="back" />}
-                disabled={busy}
+                disabled={held}
                 onClick={() => void dispatch({ type: "READY", ready: false })}
               >
                 Wait, I'm still looking
@@ -1802,7 +1813,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 variant="primary"
                 size="lg"
                 icon={<Icon name="forward" />}
-                disabled={busy}
+                disabled={held}
                 onClick={() => void dispatch({ type: "READY", ready: true })}
               >
                 Back to the lobby
@@ -1849,7 +1860,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               variant="secondary"
               size="lg"
               icon={<Icon name="forward" />}
-              disabled={busy}
+              disabled={held}
               onClick={() => void dispatch({ type: "RESOLVE_ITEM_SWAP", dropItemId: null })}
             >
               Leave it and go on
@@ -1877,7 +1888,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 variant="secondary"
                 size="lg"
                 icon={<Icon name="players" />}
-                disabled={busy}
+                disabled={held}
                 onClick={() => void dispatch({ type: "HELP" })}
               >
                 {`Help ${nameOfCharacter(party, globalPrompt.characterId)}: +d${String(helpSides(rules, me))}`}
@@ -2020,7 +2031,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   variant="primary"
                   size="md"
                   icon={<Icon name="consumable" />}
-                  disabled={busy}
+                  disabled={held}
                   onClick={() => {
                     const itemId = selectedEntry.itemId;
                     setSelected(null);
@@ -2082,7 +2093,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                         <button
                           type="button"
                           className="choice kad-tap kad-focusable"
-                          disabled={busy}
+                          disabled={held}
                           onClick={() =>
                             void dispatch({
                               type: "OFFER_ITEM",
@@ -2132,7 +2143,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                     variant="ghost"
                     size="md"
                     icon={<Icon name="back" />}
-                    disabled={busy}
+                    disabled={held}
                     onClick={() =>
                       void dispatch({ type: "RESOLVE_TRADE", tradeId: offer.id, accept: false })
                     }
@@ -2161,7 +2172,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             it is the whole answer: the tap says you are ready. */}
         {inLobby ? (
           <Button variant="primary" size="lg" block className="player__task-entry player__task-entry--foot"
-            icon={<Icon name="hand" />} disabled={readyRequested && busy} onClick={readyToPlay}>
+            icon={<Icon name="hand" />} disabled={(readyRequested && busy) || !synced} onClick={readyToPlay}>
             {offersToMe.length > 0 ? "A gift for you" : "Ready to play"}
           </Button>
         ) : null}

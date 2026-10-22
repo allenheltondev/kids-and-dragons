@@ -24,7 +24,7 @@ import { useState } from "react";
 import type { ReactElement } from "react";
 import { classPlaceWaitingOn, maySwitchAt, owesClassAnswer } from "@kad/shared";
 import type { ClassId, ClassPlaceState, PartyMember, RulesContent } from "@kad/shared";
-import { useMe, useParty, useRules, useRunState, useSend } from "../store";
+import { useMe, useParty, useRules, useRunState, useSend, useSynced } from "../store";
 import { Button } from "../ui/Button";
 import { ClassToken, tokenName } from "./ClassToken";
 import { Icon } from "./icons";
@@ -83,6 +83,8 @@ export function ClassPlaceChoice(): ReactElement | null {
   // The class a "Be a …" tap picked, or "keep", until the "are you sure?" is answered.
   const [picked, setPicked] = useState<ClassId | "keep" | null>(null);
   const [busy, setBusy] = useState(false);
+  // Held while catching up after a drop, like every answer (#413).
+  const synced = useSynced();
 
   const place = state?.phase === "scene" ? state.classPlace : undefined;
   if (!place || me === null) return null;
@@ -154,7 +156,7 @@ export function ClassPlaceChoice(): ReactElement | null {
             variant="primary"
             size="md"
             icon={<Icon name={picked === "keep" ? "check" : picked} />}
-            disabled={busy}
+            disabled={busy || !synced}
             onClick={() => void answer(picked)}
           >
             {picked === "keep" ? "Yes, keep it" : "Yes, switch!"}

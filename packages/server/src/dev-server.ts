@@ -456,6 +456,7 @@ async function main(): Promise<void> {
         playerId: body.playerId,
         seq: Number(body.seq ?? 0),
         intent: body.intent,
+        ...(typeof body.context === "string" ? { context: body.context } : {}),
         principal,
       },
       deps,
@@ -1063,6 +1064,7 @@ function statusFor(error: ActionError): number {
     case "FORBIDDEN":
       return 403;
     case "STALE_SEQ":
+    case "STALE_DECISION":
     case "ILLEGAL":
     case "HERO_BUSY":
       return 409;

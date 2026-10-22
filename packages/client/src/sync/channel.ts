@@ -431,9 +431,15 @@ export function openChannel(options: ChannelOptions): Channel {
   let attempt = 0;
   let closed = false;
 
-  function connect(): void {
+  /**
+   * `again`: a stream replacing one this page had, which is a reconnect even
+   * on its first attempt. Said as one, so a wake that is slow to find the
+   * network shows the banner, and the catch-up line (screens/CatchUp) knows
+   * the story may have moved while the screen was away.
+   */
+  function connect(again = false): void {
     if (closed) return;
-    options.onStatus(attempt === 0 ? "connecting" : "reconnecting");
+    options.onStatus(attempt === 0 && !again ? "connecting" : "reconnecting");
 
     const es = create(options.url(options.sequencer.seq));
     source = es;
@@ -461,7 +467,7 @@ export function openChannel(options: ChannelOptions): Channel {
       options.onStatus("reconnecting");
       const delay = backoffDelay(attempt, options.backoff);
       attempt += 1;
-      retryTimer = schedule(connect, delay);
+      retryTimer = schedule(() => { connect(); }, delay);
     };
   }
 
@@ -476,7 +482,7 @@ export function openChannel(options: ChannelOptions): Channel {
       source = null;
       old?.close();
       attempt = 0;
-      connect();
+      connect(true);
     },
     close() {
       closed = true;
