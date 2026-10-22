@@ -382,15 +382,6 @@
  * Everybody's face, as a way into their sheet. Horizontal and scrollable, so
  * four characters fit a phone without pushing the bag off the bottom.
  */
-.party-strip__heading {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2, 0.5em);
-  margin: 0 0 var(--space-2, 0.5em);
-  font-size: var(--font-size-md, 1em);
-  font-weight: 700;
-}
-
 .party-strip__list {
   display: flex;
   gap: var(--space-2, 0.5em);
@@ -632,13 +623,14 @@
 
 /* --- Sheet + inventory ------------------------------------------------- */
 
+/* Tight between sections: each fold's heading is already a touch-high row of its own. */
 .player__scroll {
   flex: 1 1 auto;
   min-block-size: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2, 0.5em);
-  padding: var(--space-3, 0.75em);
+  gap: var(--space-1, 0.25em);
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
 }
 
 .stat-row {
@@ -671,25 +663,9 @@
   font-size: var(--font-size-lg, 1.25em);
 }
 
-.inv__heading,
-.inv__quest-heading {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2, 0.5em);
-  margin: 0 0 var(--space-2, 0.5em);
-  font-size: var(--font-size-md, 1em);
-  font-weight: 700;
-}
-
-/* The party purse sits at the far end of the bag's heading. */
+/* The party purse sits at the far end of the bag's heading, before its chevron. */
 .inv__purse {
-  margin-inline-start: auto;
   font-size: var(--font-size-sm, 0.875em);
-}
-
-.inv__quest-heading {
-  font-size: var(--font-size-sm, 0.875em);
-  color: var(--color-text-muted, #b7b0d8);
 }
 
 /* Six slots, always six — an empty slot is information (spec §9.1). */
@@ -768,7 +744,7 @@
 }
 
 .inv__quest {
-  margin-top: var(--space-2, 0.5em);
+  margin-top: var(--space-1, 0.25em);
 }
 
 .inv__quest-list {
@@ -1141,10 +1117,9 @@
 
 .player__inventory-story { margin: 0 0 0.5em; flex: 0 0 auto; line-height: 1.4; color: var(--kad-ink); }
 .player .player__inventory-back { flex: 0 0 auto; margin: 0.5em 0.75em 0.75em; inline-size: calc(100% - 1.5em); }
-.player__room-settings { margin-block-start: auto; border-block-start: 1px solid var(--kad-border); padding-block-start: 0.5em; }
-.player__room-settings > summary { min-block-size: var(--kad-touch-min); display: flex; align-items: center; cursor: pointer; color: var(--kad-ink-dim); font-size: 0.85em; }
-.player__room-settings > summary::before { content: "▸"; margin-inline-end: 0.5em; }
-.player__room-settings[open] > summary::before { content: "▾"; }
+.player__room-settings { margin-block-start: auto; border-block-start: 1px solid var(--kad-border); padding-block-start: 0.25em; }
+.player__room-settings > .kad-fold__head { color: var(--kad-ink-dim); font-size: 0.85em; font-weight: 400; }
+.player__room-settings > .kad-fold__body:not([hidden]) { display: flex; flex-direction: column; gap: 0.5em; padding-block-end: 0.5em; }
 .kad-room-mode { display: flex; align-items: center; gap: 0.75em; inline-size: 100%; padding: 0.5em; border: 1px solid var(--kad-border); border-radius: var(--kad-radius-md); background: var(--kad-bg-raised); color: var(--kad-ink); font: inherit; text-align: start; }
 .kad-room-mode .kad-tray__object { inline-size: 2em; block-size: 2em; }
 

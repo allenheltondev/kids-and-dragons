@@ -333,7 +333,9 @@ async function misfits(page: Page): Promise<string[]> {
       if (box.right > vw + 1 || box.left < -1) out.push(`${label(el)} runs off the screen (x ${Math.round(box.left)} to ${Math.round(box.right)}, y ${Math.round(box.top)}, of ${vw})`);
       const style = getComputedStyle(el);
       const hides = style.overflowX !== "visible" || style.textOverflow === "ellipsis";
-      if (hides && el.scrollWidth > el.clientWidth + 1 && !el.matches("input, textarea, select")) {
+      // The one cut on purpose: a phone's goal folded to its line ends in "…" and opens to the
+      // whole sentence on a tap (ChapterGoal, from the playtest's "too much vertical space").
+      if (hides && el.scrollWidth > el.clientWidth + 1 && !el.matches("input, textarea, select, .goal--closed .goal__sentence")) {
         out.push(`${label(el)} is clipped (${el.scrollWidth} > ${el.clientWidth})`);
       }
       // A word broken across lines, as the rendered text has it: font-independent.
