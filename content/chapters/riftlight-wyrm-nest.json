@@ -10,7 +10,7 @@
   "entry": "arrival",
   "plate": {
     "art": "plates/riftlight/wyrm-nest",
-    "narration": "Below the reading room, a new doorway opens into blue ice. A wide bench stands beside it. Tiny frost ferns spread across the wall, bright in the lantern light."
+    "narration": "A frost wyrm has claimed the new reading room. Its head rests on a bench, and every sleepy breath paints frost ferns on the wall. The yeti builders wait beside their tools. Somehow, everyone needs room."
   },
   "goal": {
     "text": "Make room for the readers and the frost wyrm without waking the old ice.",

@@ -11,7 +11,7 @@
   "entry": "arrival",
   "plate": {
     "art": "plates/riftlight/glacier-survival",
-    "narration": "Snow rolls over the Glacier of Origins in long white waves. Dark rocks break the wind. Beyond a narrow melt channel, a low doorway glows warm against the blue ice."
+    "narration": "A little snowhorn goat bleats across the meltwater. Its herd answers from a snowy ledge, bells clinking. Between them, the water runs cold and quick. Those small hooves need a way home."
   },
   "goal": {
     "text": "Get the little goat home safe and find somewhere warm.",
