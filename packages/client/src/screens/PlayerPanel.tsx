@@ -437,7 +437,7 @@ function InventoryGrid({
           level={4}
           defaultOpen={false}
           className="inv__quest"
-          title={<><Icon name="quest" /><span>Story things (they never take a slot)</span></>}
+          title={<><Icon name="quest" /><span>Story things</span></>}
           trail={<span className="kad-chip">{questItems.length}</span>}
         >
           <ul className="inv__quest-list">
