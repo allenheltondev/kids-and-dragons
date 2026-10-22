@@ -13,6 +13,7 @@
  * | `NarrationPanel`       | WorldView  | phase is scene-like                  |
  * | `TurnBanner`           | WorldView  | a hero's combat turn begins          |
  * | `RiftStatus`           | WorldView  | a fight with an environment (#201)   |
+ * | `FightLog`             | WorldView  | a fight is on: the last few beats    |
  * | `DiceOverlay`          | WorldView  | a ROLL presentation arrives          |
  * | `TransformCutscene`    | WorldView  | a progression award crosses a tier   |
  * | `ChapterCompletePanel` | WorldView  | phase === "chapter_complete"         |
@@ -35,6 +36,7 @@ export { LobbyContent } from "./LobbyContent";
 export { NarrationPanel } from "./NarrationPanel";
 export { TurnBanner } from "./TurnBanner";
 export { RiftStatus } from "./RiftStatus";
+export { FightLog } from "./FightLog";
 export { DiceOverlay } from "./DiceOverlay";
 export { TransformCutscene, previousTier } from "./TransformCutscene";
 export { ChapterCompletePanel } from "./ChapterCompletePanel";

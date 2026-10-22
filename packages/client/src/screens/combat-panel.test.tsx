@@ -41,7 +41,8 @@ import {
 } from "@kad/shared";
 import { makeItems, makeRules } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
-import { CombatControls, cardColumns, describeBeats, rollWords } from "./CombatPanel";
+import { CombatControls, cardColumns } from "./CombatPanel";
+import { describeBeats, needsLine, rollWords } from "./fight-log";
 
 const RULES: RulesContent = makeRules();
 const ITEMS: ItemCatalog = makeItems();
@@ -461,11 +462,64 @@ describe("a tap does the thing (spec §11)", () => {
   });
 
   it("does a card with nothing to aim on the card tap", async () => {
+    // Shout and Get Ready, nobody in reach: one card to a row, each with its
+    // sentence on it, so the tap is the commit.
     const user = userEvent.setup();
-    const { sent } = mount({ characters: [character({ actions: ["shout"] })] });
+    const far = encounterWith({
+      party: [{ character: character({ actions: ["shout"] }), at: { x: 1, y: 2 } }],
+      enemies: [{ spec: wisp(), at: { x: 4, y: 4 } }],
+    });
+    const { sent } = mount({ characters: [character({ actions: ["shout"] })], encounter: far });
 
     await user.click(card("Shout"));
     expect(sent).toEqual([{ type: "COMBAT_ACTION", abilityId: "shout" }]);
+  });
+
+  it("reads a packed card out first, and Go! or the same card again does it", async () => {
+    /*
+     * A playtest: "when you have 4+ options it hides the descriptions of what
+     * the options do." Packed two or three to a row a card has room for its
+     * name only, so its sentence goes up on the line over the cards when it
+     * is tapped, and nothing is sent until Go!. An aimed card's who? step is
+     * already that pause, and says the sentence beside its question.
+     */
+    const SAID: AbilityCatalog = Object.fromEntries(
+      Object.entries(CATALOG).map(([id, ability]) => [id, { ...ability, summary: `What ${ability.name} does.` }]),
+    );
+    const user = userEvent.setup();
+    const { sent } = mount({ characters: [character({ actions: ["strike", "shout"] })], abilities: SAID });
+    const reading = () => document.querySelector(".combat__reading")?.textContent;
+    expect(document.querySelector(".combat__actions")?.getAttribute("data-columns")).toBe("2");
+    // Up from the turn's first moment, so the first tap moves nothing.
+    expect(reading()).toBe("Tap a card to see what it does.");
+
+    await user.click(screen.getByRole("button", { name: /^Shout/ }));
+    expect(sent).toEqual([]);
+    expect(reading()).toBe("What Shout does.");
+    expect(screen.getByRole("button", { name: /^Shout/ }).getAttribute("aria-pressed")).toBe("true");
+    // Another card reads that one instead; the cards stay where they are.
+    await user.click(screen.getByRole("button", { name: /^Get Ready/ }));
+    expect(reading()).toBe("Wait this turn, and get +2 on your next roll.");
+    expect(sent).toEqual([]);
+    await user.click(screen.getByRole("button", { name: "Go! Get Ready" }));
+    expect(sent).toEqual([{ type: "COMBAT_ACTION", abilityId: "ready" }]);
+  });
+
+  it("does a packed card on a second tap of the same card", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({ characters: [character({ actions: ["strike", "shout"] })] });
+    await user.click(card("Shout"));
+    await user.click(card("Shout"));
+    expect(sent).toEqual([{ type: "COMBAT_ACTION", abilityId: "shout" }]);
+  });
+
+  it("says an aimed packed card's sentence beside its question", async () => {
+    const SAID: AbilityCatalog = { ...CATALOG, strike: { ...CATALOG.strike!, summary: "Hit an enemy up to 6 squares away." } };
+    const user = userEvent.setup();
+    mount({ characters: [character({ actions: ["strike", "shout"] })], abilities: SAID });
+    await user.click(screen.getByRole("button", { name: /^Strike/ }));
+    expect(screen.getByText(/Strike: who\?/)).toBeTruthy();
+    expect(document.querySelector(".combat__reading")?.textContent).toBe("Hit an enemy up to 6 squares away.");
   });
 
   it("offers no End turn while there is a card to play — Get Ready is how you pass", () => {
@@ -511,7 +565,12 @@ describe("a tap does the thing (spec §11)", () => {
           release = resolve;
         }),
     );
-    mount({ characters: [character({ actions: ["shout"] })] });
+    // Nobody in reach, so Shout and Get Ready have a row each and Shout's tap is the commit.
+    const far = encounterWith({
+      party: [{ character: character({ actions: ["shout"] }), at: { x: 1, y: 2 } }],
+      enemies: [{ spec: wisp(), at: { x: 4, y: 4 } }],
+    });
+    mount({ characters: [character({ actions: ["shout"] })], encounter: far });
     useGameStore.setState({ send });
 
     const shout = card("Shout");
@@ -850,7 +909,11 @@ describe("items in a fight", () => {
       encounter: wounded,
     });
 
+    // Attack, Get Ready and the draught: packed, so the first tap reads it.
     await user.click(screen.getByRole("button", { name: /Use Sunbloom Draught/ }));
+    expect(sent).toEqual([]);
+    expect(document.querySelector(".combat__reading")?.textContent).toMatch(/hearts back/);
+    await user.click(screen.getByRole("button", { name: "Go! Use Sunbloom Draught" }));
     expect(sent).toEqual([{ type: "USE_ITEM", itemId: "sunbloom_draught" }]);
   });
 
@@ -1094,18 +1157,18 @@ describe("what just happened", () => {
   });
 
   it("reads a roll out the way the table would", () => {
-    expect(rollWords(roll())).toBe("14 + 3 Might = 17 against 11");
-    expect(rollWords(roll({ mod: 0, total: 14, stat: undefined }))).toBe("14 = 14 against 11");
-    expect(rollWords(roll({ mod: -1, total: 13, stat: undefined }))).toBe("14 - 1 = 13 against 11");
+    expect(rollWords(roll())).toBe("14 + 3 Might = 17 vs Guard 11");
+    expect(rollWords(roll({ mod: 0, total: 14, stat: undefined }))).toBe("14 = 14 vs Guard 11");
+    expect(rollWords(roll({ mod: -1, total: 13, stat: undefined }))).toBe("14 - 1 = 13 vs Guard 11");
   });
 
   it("names the viewer You, everyone else by name, and says who took what", () => {
     const encounter = encounterWith();
     const beats = describeBeats(
       [
-        { type: "roll", roll: roll() },
+        { type: "roll", roll: roll(), targetId: "wisp#1", tier: "solid" },
         { type: "damage", actorId: "wisp#1", amount: 3, hp: 3 },
-        { type: "roll", roll: roll({ characterId: "wisp#1", die: 4, mod: 3, total: 7, tn: 12, result: "miss", stat: undefined }) },
+        { type: "roll", roll: roll({ characterId: "wisp#1", die: 4, mod: 3, total: 7, tn: 12, result: "miss", stat: undefined }), targetId: "c_hero" },
         { type: "moved", actorId: "wisp#1", to: { x: 0, y: 0 } },
         { type: "down", actorId: "c_hero" },
       ],
@@ -1113,14 +1176,47 @@ describe("what just happened", () => {
       "c_hero",
       7,
     );
+    // A swing is one line: the roll gathers the hurt that follows it.
     expect(beats.map((b) => b.text)).toEqual([
-      "You rolled 14 + 3 Might = 17 against 11. Hit!",
-      "Bramblewisp 1 takes 3. 3 left.",
-      "Bramblewisp 1 rolled 4 + 3 = 7 against 12. Miss!",
+      "You rolled 14 + 3 Might = 17 vs Guard 11. Solid hit! Bramblewisp 1 takes 3. 3 left.",
+      "Bramblewisp 1 rolled 4 + 3 = 7 vs Guard 12. Miss!",
       "You are knocked down!",
     ]);
     // Good news green, bad news red (shape and words carry it too: spec §11).
-    expect(beats.map((b) => b.tone)).toEqual(["good", "good", "plain", "bad"]);
+    expect(beats.map((b) => b.tone)).toEqual(["good", "plain", "bad"]);
+  });
+
+  it("says each tier, what the roll needed and whose Guard that was", () => {
+    const encounter = encounterWith();
+    const swing = (tier: "graze" | "solid" | "critical", amount: number, die: number) =>
+      describeBeats(
+        [
+          { type: "roll", roll: roll({ die, total: die + 3 }), targetId: "wisp#1", tier },
+          { type: "damage", actorId: "wisp#1", amount, hp: 6 - amount },
+        ],
+        encounter,
+        "c_hero",
+        1,
+      );
+    expect(swing("graze", 2, 9)[0]!.text).toBe("You rolled 9 + 3 Might = 12 vs Guard 11. Graze! Bramblewisp 1 takes 2. 4 left.");
+    expect(swing("solid", 3, 14)[0]!.text).toContain("Solid hit! Bramblewisp 1 takes 3.");
+    expect(swing("critical", 5, 20)[0]!.text).toContain("Critical! Bramblewisp 1 takes 5. 1 left.");
+    expect(needsLine(swing("graze", 2, 9)[0]!.swing!)).toBe("Needs 11: Bramblewisp 1's Guard");
+
+    // A monster's swing at the phone's own hero needs the hero's Guard.
+    const atMe = describeBeats(
+      [
+        { type: "roll", roll: roll({ characterId: "wisp#1", die: 20, total: 23, tn: 12, stat: undefined }), targetId: "c_hero", tier: "critical" },
+        { type: "damage", actorId: "c_hero", amount: 5, hp: 0 },
+        { type: "down", actorId: "c_hero" },
+      ],
+      encounter,
+      "c_hero",
+      2,
+    );
+    expect(atMe.map((b) => b.text)).toEqual(["Bramblewisp 1 rolled 20 + 3 = 23 vs Guard 12. Critical! You take 5 and are knocked down!"]);
+    expect(needsLine(atMe[0]!.swing!)).toBe("Needs 12: your Guard");
+    expect(atMe[0]!.tone).toBe("bad");
   });
 
   it("keeps the opening monster round when it arrives before the fight does", () => {
@@ -1154,11 +1250,11 @@ describe("what just happened", () => {
     act(() => {
       useGameStore.setState({ state: { ...current, encounter: fight } });
     });
-    const log = screen.getByRole("list", { name: "What just happened" });
+    const log = screen.getByRole("group", { name: "What just happened" });
     expect(log.textContent).toContain("You take 3. 7 left.");
 
     // And a fight that ends takes its log with it. The next one starts with
-    // the box already in its place, holding only its opening line, so its
+    // the line already in its place, holding only its opening words, so its
     // first beat moves nothing.
     act(() => {
       useGameStore.setState({ state: { ...current, encounter: null } });
@@ -1166,12 +1262,13 @@ describe("what just happened", () => {
     act(() => {
       useGameStore.setState({ state: { ...current, encounter: { ...encounterWith(), startedAt: 99 } } });
     });
-    const fresh = screen.getByRole("list", { name: "What just happened" });
-    expect(within(fresh).getAllByRole("listitem").map((li) => li.textContent)).toEqual(["The fight is on!"]);
+    const fresh = screen.getByRole("group", { name: "What just happened" });
+    expect(fresh.querySelector(".combat__beat")?.textContent).toBe("The fight is on!");
+    expect(within(fresh).queryAllByRole("listitem")).toEqual([]);
     expect(fresh.textContent).not.toContain("You take 3");
   });
 
-  it("shows the last beat on the phone, and the d20 as its parts", () => {
+  it("shows the last beat on the phone in one line: the sum, the Guard it needed, how hard it landed", () => {
     const encounter = encounterWith();
     const wispIndex = encounter.order.findIndex((id) => id.startsWith("wisp"));
     mount({ encounter: { ...encounter, turnIndex: wispIndex } });
@@ -1179,11 +1276,14 @@ describe("what just happened", () => {
     act(() => {
       useGameStore.setState({
         presentation: {
-          seq: 9,
+          // Past the seq the test before left in the store: an older one
+          // would read as a replay, and the panel would show that one's beat.
+          seq: 109,
           presentation: {
             kind: "COMBAT_SEQUENCE",
             events: [
-              { type: "roll", roll: roll({ characterId: "wisp#1", die: 16, mod: 3, total: 19, tn: 12, stat: undefined }) },
+              { type: "heal", actorId: "wisp#1", amount: 1, hp: 6 },
+              { type: "roll", roll: roll({ characterId: "wisp#1", die: 16, mod: 3, total: 19, tn: 12, stat: undefined }), targetId: "c_hero", tier: "solid" },
               { type: "damage", actorId: "c_hero", amount: 3, hp: 7 },
             ],
           },
@@ -1191,14 +1291,17 @@ describe("what just happened", () => {
       });
     });
 
-    const log = screen.getByRole("list", { name: "What just happened" });
-    expect(log.textContent).toContain("Bramblewisp 1");
-    expect(log.textContent).toContain("16");
-    expect(log.textContent).toContain("+ 3");
-    expect(log.textContent).toContain("= 19");
-    expect(log.textContent).toContain("vs 12");
-    expect(log.textContent).toContain("Hit!");
-    expect(log.textContent).toContain("You take 3. 7 left.");
+    const log = screen.getByRole("group", { name: "What just happened" });
+    // One line on screen, the newest: the swing and what it did, together.
+    const shown = log.querySelectorAll(".combat__beat");
+    expect(shown).toHaveLength(1);
+    expect(shown[0]!.textContent).toBe("Bramblewisp 1 rolled 16 + 3 = 19 vs Guard 12. Solid hit! You take 3. 7 left.");
+    expect(shown[0]!.className).toContain("combat__line");
+    // The whole beat is still there for a screen reader.
+    expect(within(log).getAllByRole("listitem").map((li) => li.textContent)).toEqual([
+      "Bramblewisp 1 gets 1 back. 6 now.",
+      "Bramblewisp 1 rolled 16 + 3 = 19 vs Guard 12. Solid hit! You take 3. 7 left.",
+    ]);
   });
 });
 
