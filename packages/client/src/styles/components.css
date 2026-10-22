@@ -263,6 +263,15 @@
   min-block-size: 0;
 }
 
+/* Every pane is a size container, so the surface inside it scales with the pane and not the
+   screen: a surface sets its own font-size in cqw/cqh (theme.css), and those units measure the
+   nearest container above the element, never the element itself. With no container above, they
+   measured the viewport, which is the pane on a phone and twice the pane side by side. */
+.kad-travel__pane,
+.kad-party__pane {
+  container-type: size;
+}
+
 .kad-travel__pane[data-showing="false"] {
   display: none;
 }

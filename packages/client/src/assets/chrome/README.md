@@ -53,6 +53,7 @@ Each line below completes that shared prompt with the asset name, delivery size,
 
 ## Derived
 
+- **button-choice-plate.webp**, **button-choice-socket.webp**, and the same pair for `-picked` and `-pressed`: each choice plate split in two, so the plate can stretch to any height while the socket keeps its shape. The plate's left end is its own right end turned round; the socket is what differed. Made by `python3 tools/art/chrome-derive.py`; the three delivered plates stay as their source.
 - **strip-identity-frame.webp**: `strip-identity.webp` with its plum middle keyed out, so its brass frame can go round the gold "your turn" strip. Made by `python3 tools/art/chrome-derive.py`, not drawn; rerun it if the nameplate changes, or replace it with a painted gold variant.
 
 ## Review

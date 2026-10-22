@@ -20,6 +20,7 @@ import type { PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
 import { useGameStore } from "../store";
 import { TravelLayout } from "./TravelLayout";
 import { rollCardMs } from "../world/presentation";
+import { useHelpFocus } from "../help/focus";
 
 function character(): ResolvedCharacter {
   return {
@@ -438,6 +439,29 @@ describe("Travel Mode on a tablet held sideways", () => {
       for (const fn of listeners) fn();
     });
     expect(shown(container)).toEqual(["player"]);
+  });
+
+  it("explains the pane she last went to: the map, then her controls beside it", () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise(() => undefined)));
+    const { container } = mount();
+    act(() => {
+      tab(container, "Map").click();
+    });
+    expect(useHelpFocus.getState().pane).toBe("map");
+    // You is already on the screen, so the map stays; the "?" follows her to the controls.
+    act(() => {
+      tab(container, "You").click();
+    });
+    expect(shown(container)).toEqual(["map", "player"]);
+    expect(useHelpFocus.getState().pane).toBe("player");
+    act(() => {
+      tab(container, "Map").click();
+    });
+    act(() => {
+      tab(container, "Guide").click();
+    });
+    expect(shown(container)).toEqual(["map", "player"]);
+    expect(useHelpFocus.getState().pane).toBe("player");
   });
 
   it("gives the die the big pane while the map is up, and keeps the controls", () => {

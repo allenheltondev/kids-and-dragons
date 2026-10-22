@@ -17,6 +17,7 @@ import { useGameStore } from "../store";
 import { resetFieldGuideCache } from "../screens/content";
 import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigation";
 import { PartyLayout } from "./PartyLayout";
+import { useHelpFocus } from "../help/focus";
 
 function mount(prompt: Prompt | null = null, phone = true) {
   // A phone that plays remembers her (a device token); a family tablet's pick holds only a seat (#299).
@@ -324,6 +325,18 @@ describe("Party Mode on a tablet held sideways", () => {
     expect(showing(container).sort()).toEqual(["map", "player"]);
     // No ★ to call her back: the question is already on the screen.
     expect(container.querySelector(".kad-tray__badge")).toBeNull();
+  });
+
+  it("explains the pane she last went to: the map, then her controls beside it", () => {
+    sideways();
+    mount();
+    act(() => screen.getByRole("button", { name: /^map$/i }).click());
+    expect(useHelpFocus.getState().pane).toBe("map");
+    act(() => screen.getByRole("button", { name: /^you$/i }).click());
+    expect(useHelpFocus.getState().pane).toBe("player");
+    act(() => screen.getByRole("button", { name: /^map$/i }).click());
+    act(() => screen.getByRole("button", { name: /^guide$/i }).click());
+    expect(useHelpFocus.getState().pane).toBe("player");
   });
 
   it("keeps one surface at a time on a phone", () => {
