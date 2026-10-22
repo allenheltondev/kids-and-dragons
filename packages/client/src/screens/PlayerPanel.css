@@ -74,9 +74,9 @@
  * goes to the dark ink the theme sets for text on gold (--kad-accent-ink).
  * Ink on the deepest stop (#c9962f) is about 7:1, past WCAG AA's 4.5:1 for
  * small text, and nothing on the strip is told by colour alone: the change
- * is the whole banner, and a screen reader hears "your turn". The portrait's
- * ring breathes so it catches the eye from across the room; still under
- * reduced motion.
+ * is the whole banner, and a screen reader hears "your turn". A gold glow
+ * spills from the banner's bottom edge and breathes, so it catches the eye
+ * from across the room; under reduced motion it stays lit and still.
  */
 .sheet--turn {
   --sheet-ink: var(--kad-accent-ink, #0d0b1a);
@@ -88,6 +88,33 @@
   );
   border-bottom-color: var(--kad-gold-lo, #c9962f);
   color: var(--sheet-ink);
+  /* Over what comes after it, so the glow below is painted on top. */
+  position: relative;
+  z-index: 2;
+}
+
+/*
+ * The glow under the banner: its own layer, so the breath animates opacity
+ * (cheap on a phone) rather than a box-shadow, and it never takes a tap.
+ */
+.sheet--turn::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 100%;
+  block-size: 1.1em;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--kad-gold, #f5c86c) 75%, transparent),
+    transparent
+  );
+  pointer-events: none;
+  animation: sheet-turn-glow 2.2s ease-in-out infinite;
+}
+
+@keyframes sheet-turn-glow {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
 }
 
 .sheet--turn .sheet__name,
@@ -104,7 +131,6 @@
 
 .sheet--turn .sheet__portrait {
   box-shadow: 0 0 0 0.14em var(--sheet-ink);
-  animation: sheet-turn-ring 2s ease-in-out infinite;
 }
 
 /* The bar's well stays dark, so the green fill keeps its contrast on gold. */
@@ -118,18 +144,10 @@
   color: var(--kad-gold-hi, #ffe6a8);
 }
 
-@keyframes sheet-turn-ring {
-  0%, 100% {
-    box-shadow: 0 0 0 0.14em var(--sheet-ink), 0 0 0 0.14em rgba(255, 255, 255, 0);
-  }
-  50% {
-    box-shadow: 0 0 0 0.14em var(--sheet-ink), 0 0 0 0.4em rgba(255, 255, 255, 0.55);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .sheet--turn .sheet__portrait {
+  .sheet--turn::after {
     animation: none;
+    opacity: 0.8;
   }
 }
 
