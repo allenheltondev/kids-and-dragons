@@ -1529,6 +1529,7 @@ function doStartChapter(
   draft.chapterOutcome = null;
   draft.bonuses = [];
   delete draft.fightEndings;
+  delete draft.xpAlreadyPaid;
   // Deeds counted last chapter were folded into the heroes when it ended.
   delete draft.deeds;
   delete draft.rankUps;

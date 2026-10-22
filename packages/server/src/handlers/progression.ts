@@ -185,7 +185,7 @@ async function foldChapterXpDetails(
   householdId: string,
   chapter: Chapter | null,
 ): Promise<AwardChapterXpResult> {
-  if (!chapter) return { characters: [], writes: [], awards: [] };
+  if (!chapter) return { characters: [], writes: [], awards: [], alreadyPaid: [] };
 
   return awardChapterXpDetails({
     state,
@@ -744,6 +744,11 @@ export interface ChapterSettlement {
    * once per chapter per attempt. The room's completion screen shows no XP.
    */
   replay?: boolean;
+  /**
+   * Heroes this chapter had already paid, on some earlier attempt or at some
+   * other table (#408): they earned nothing now. Absent when there are none.
+   */
+  alreadyPaid?: string[];
 }
 
 /**
@@ -843,6 +848,7 @@ export async function settleChapterCompletion(
   const award = await foldChapterXpDetails(state, deps, householdId, chapter);
   const characters = award.writes;
   const xpEarned = chapter ? computeChapterXp(state, chapter) : 0;
+  const paid = paidBefore(award);
 
   const chapterProgress: ChapterProgressRecord | undefined = chapter
     ? {
@@ -857,7 +863,7 @@ export async function settleChapterCompletion(
     : undefined;
 
   if (!campaignId || !campaign || !chapter) {
-    return { characters, awards: award.awards, ...(chapterProgress ? { chapterProgress } : {}) };
+    return { characters, awards: award.awards, ...paid, ...(chapterProgress ? { chapterProgress } : {}) };
   }
 
   // The run seq serializes one room. This version serializes the household row
@@ -908,6 +914,7 @@ export async function settleChapterCompletion(
         return failCampaign(c, flavored ? `${campaignId}#${reached}` : campaignId, now);
       }),
       awards: award.awards,
+      ...paid,
       ...(chapterProgress ? { chapterProgress } : {}),
       campaignProgress: attempt,
       campaignProgressExpectedVersion,
@@ -920,6 +927,7 @@ export async function settleChapterCompletion(
     return {
       characters: await settleParty(state, deps, householdId, characters, finish(campaignId, outcome, householdId, now)),
       awards: award.awards,
+      ...paid,
       ...(chapterProgress ? { chapterProgress } : {}),
       campaignProgress: attempt,
       campaignProgressExpectedVersion,
@@ -930,11 +938,17 @@ export async function settleChapterCompletion(
   return {
     characters,
     awards: award.awards,
+    ...paid,
     ...(chapterProgress ? { chapterProgress } : {}),
     campaignProgress: attempt,
     campaignProgressExpectedVersion,
     campaignView: campaignView(campaign, attempt, deps),
   };
+}
+
+/** `ChapterSettlement.alreadyPaid` from a fold: the key only when someone was. */
+function paidBefore(award: AwardChapterXpResult): Pick<ChapterSettlement, "alreadyPaid"> {
+  return award.alreadyPaid.length > 0 ? { alreadyPaid: award.alreadyPaid } : {};
 }
 
 /**
@@ -958,7 +972,9 @@ export async function settleChapterCompletion(
  * finds the visit already completed — a duplicate.
  *
  * XP pays once per chapter per attempt (`firstCompletion`): a replayed visit
- * still folds the bag — what was found on a replay is real — but no XP.
+ * still folds the bag — what was found on a replay is real — but no XP. And
+ * once per chapter per hero, ever (#408): a first visit this attempt still
+ * pays nothing to a hero the chapter paid on an earlier one (`alreadyPaid`).
  */
 async function settleVisit(input: {
   state: RunState;
@@ -1030,6 +1046,7 @@ async function settleVisit(input: {
   attempt.coins = state.coins ?? attempt.coins ?? 0;
   const settled = {
     awards: award.awards,
+    ...paidBefore(award),
     chapterProgress,
     campaignProgressExpectedVersion,
     ...(replay ? { replay } : {}),

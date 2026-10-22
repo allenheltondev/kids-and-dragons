@@ -195,7 +195,8 @@ describe("foldChapterXp", () => {
     state.runId = "r_2";
     state.xpEarned = 400;
     state.bonuses = [{ id: "bonus", label: "Bonus", xp: 100 }];
-    for (const c of await foldChapterXp(state, harness.deps, householdId)) {
+    const next = { ...makeChapter(), id: "bramblewood-02", index: 2 };
+    for (const c of await foldChapterXp(state, harness.deps, householdId, next)) {
       await harness.repo.putCharacter(c);
     }
 
@@ -680,6 +681,170 @@ describe("settleChapterCompletion — the campaign boundary", () => {
 
     expect(settlement.campaignProgress).toMatchObject({ status: "failed", setbacks: 1 });
     expect(settlement.characters[0]?.character.provisional).toBeNull();
+  });
+
+  // -------------------------------------------------------------------------
+  // A chapter pays each hero once, ever (#408)
+  // -------------------------------------------------------------------------
+
+  /** Settles `state` and writes its heroes back, as the run's commit would. */
+  async function settleAndKeep(harness: TestHarness, state: RunState, householdId: string) {
+    const settlement = await settleChapterCompletion(state, harness.deps, householdId);
+    for (const write of settlement.characters) expect(await harness.repo.writeCharacter(write)).toBe(true);
+    if (settlement.campaignProgress) await harness.repo.putCampaignProgress(settlement.campaignProgress);
+    return settlement;
+  }
+
+  /** A fresh attempt at the fixture campaign, started as a chapter start does. */
+  async function nextAttempt(harness: TestHarness, householdId: string, state: RunState) {
+    const previous = await harness.repo.getCampaignProgress(householdId, "the-hollow-crown");
+    const started = joinOrStartAttempt(previous, householdId, "the-hollow-crown", state.runId, new Date(T0).toISOString());
+    if (started.startedAttempt) await harness.repo.putCampaignProgress(started.startedAttempt.attempt);
+    state.campaignAttemptId = started.attemptId;
+  }
+
+  /** The fixture run with a second hero seated beside the first. */
+  function withSecondHero(harness: TestHarness, householdId: string, state: RunState, playerId: string) {
+    const second = { ...setup(harness, householdId, playerId).character, id: `c_${playerId}`, name: "Bramble" };
+    const rules = harness.deps.content.rules();
+    const items = harness.deps.content.items();
+    state.party.push({ ...state.party[0]!, playerId, character: resolveCharacter(second, rules, items) });
+    return second;
+  }
+
+  it("pays a hero nothing for a chapter a completed attempt already paid her (#408)", async () => {
+    const harness = campaignHarness({ chapters: ["bramblewood-01"] });
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
+    await harness.repo.putCharacter(character);
+    await nextAttempt(harness, householdId, state);
+    completing(state);
+    state.xpEarned = 300;
+    const first = await settleAndKeep(harness, state, householdId);
+    expect(first.campaignProgress?.status).toBe("complete");
+    expect(first.alreadyPaid).toBeUndefined();
+    expect(first.awards).toHaveLength(1);
+
+    // Replayed: a new attempt, the same chapter, the same hero, bonuses and all.
+    await nextAttempt(harness, householdId, state);
+    completing(state);
+    state.xpEarned = 300 + 75;
+    const replay = await settleAndKeep(harness, state, householdId);
+
+    expect(replay.campaignProgress?.status).toBe("complete");
+    expect(replay.alreadyPaid).toEqual([character.id]);
+    expect(replay.awards).toEqual([]);
+    const stored = await harness.repo.getCharacter(householdId, character.id);
+    expect(stored?.committed).toMatchObject({ xp: 300, paidChapters: ["bramblewood-01"] });
+  });
+
+  it("pays an unseen chapter in full to the hero an earlier one already paid (#408)", async () => {
+    const harness = campaignHarness();
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
+    await harness.repo.putCharacter({
+      ...character,
+      committed: { ...character.committed, xp: 300, level: 2, paidChapters: ["bramblewood-01"] },
+    });
+    await nextAttempt(harness, householdId, state);
+    completing(state);
+    state.xpEarned = 300;
+    expect((await settleAndKeep(harness, state, householdId)).alreadyPaid).toEqual([character.id]);
+
+    completing(state, { chapterId: "bramblewood-02" });
+    state.xpEarned = 300;
+    const unseen = await settleAndKeep(harness, state, householdId);
+
+    expect(unseen.alreadyPaid).toBeUndefined();
+    // The final beat: the campaign completes, and the ledger is kept with the XP.
+    const stored = await harness.repo.getCharacter(householdId, character.id);
+    expect(stored?.committed).toMatchObject({ xp: 600, paidChapters: ["bramblewood-01", "bramblewood-02"] });
+  });
+
+  it("judges each hero on her own record: the new one is paid and the veteran is not (#408)", async () => {
+    const harness = campaignHarness();
+    const { householdId, players } = await seedHousehold(harness, 2);
+    const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
+    await harness.repo.putCharacter({ ...character, committed: { ...character.committed, paidChapters: ["bramblewood-01"] } });
+    const newcomer = withSecondHero(harness, householdId, state, players[1]!.principal.playerId);
+    await harness.repo.putCharacter(newcomer);
+    await nextAttempt(harness, householdId, state);
+    completing(state);
+    state.xpEarned = 300;
+
+    const settlement = await settleAndKeep(harness, state, householdId);
+
+    expect(settlement.alreadyPaid).toEqual([character.id]);
+    expect(settlement.awards.map((a) => a.characterId)).toEqual([newcomer.id]);
+    expect((await harness.repo.getCharacter(householdId, character.id))?.provisional?.xp).toBe(0);
+    expect((await harness.repo.getCharacter(householdId, newcomer.id))?.provisional?.xp).toBe(300);
+    // The bag still folds for the veteran: only the XP was hers once.
+    expect(settlement.characters.map((w) => w.character.id).sort()).toEqual([character.id, newcomer.id].sort());
+  });
+
+  it("does not burn a first payment a failed campaign took back (#408)", async () => {
+    const harness = campaignHarness({ setbackLimit: 1 });
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
+    await harness.repo.putCharacter(character);
+    await nextAttempt(harness, householdId, state);
+    completing(state);
+    state.xpEarned = 300;
+    await settleAndKeep(harness, state, householdId);
+    // A setback on the next beat fails the attempt, taking the 300 back.
+    completing(state, { chapterId: "bramblewood-02", chapterOutcome: "setback" });
+    state.xpEarned = 0;
+    const failed = await settleAndKeep(harness, state, householdId);
+    expect(failed.campaignProgress?.status).toBe("failed");
+    expect((await harness.repo.getCharacter(householdId, character.id))?.committed.xp).toBe(0);
+
+    await nextAttempt(harness, householdId, state);
+    completing(state, { chapterId: "bramblewood-01", chapterOutcome: "success" });
+    state.xpEarned = 300;
+    const again = await settleAndKeep(harness, state, householdId);
+
+    expect(again.alreadyPaid).toBeUndefined();
+    expect((await harness.repo.getCharacter(householdId, character.id))?.provisional?.xp).toBe(300);
+  });
+
+  it("reads a visiting hero's record at her home, so another table cannot pay her twice (#408)", async () => {
+    const harness = campaignHarness();
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
+    const visitor = { ...character, householdId: "h_visit", committed: { ...character.committed, paidChapters: ["bramblewood-01"] } };
+    await harness.repo.putCharacter(visitor);
+    state.party[0] = { ...state.party[0]!, homeHouseholdId: "h_visit" };
+    await nextAttempt(harness, householdId, state);
+    completing(state);
+    state.xpEarned = 300;
+
+    const settlement = await settleAndKeep(harness, state, householdId);
+
+    expect(settlement.alreadyPaid).toEqual([character.id]);
+    expect((await harness.repo.getCharacter("h_visit", character.id))?.provisional?.xp).toBe(0);
+  });
+
+  it("a second settlement of the same first payment cannot land, and its retry pays nothing (#408)", async () => {
+    // Two tables (or a retry) settling from the same read of her row: the
+    // first write moves its version, so the second is refused whole, and
+    // anything that re-reads finds the chapter already paid.
+    const harness = campaignHarness();
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
+    await harness.repo.putCharacter(character);
+    await nextAttempt(harness, householdId, state);
+    completing(state);
+    state.xpEarned = 300;
+    const racer = structuredClone(state);
+
+    const a = await settleChapterCompletion(state, harness.deps, householdId);
+    const b = await settleChapterCompletion(racer, harness.deps, householdId);
+    expect(await harness.repo.writeCharacter(a.characters[0]!)).toBe(true);
+    expect(await harness.repo.writeCharacter(b.characters[0]!)).toBe(false);
+
+    const retry = await settleChapterCompletion(structuredClone(racer), harness.deps, householdId);
+    expect(retry.alreadyPaid).toEqual([character.id]);
+    expect((await harness.repo.getCharacter(householdId, character.id))?.provisional?.xp).toBe(300);
   });
 });
 
