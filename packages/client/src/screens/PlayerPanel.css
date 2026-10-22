@@ -69,38 +69,61 @@
 }
 
 /*
- * Your turn in a fight (IdentityStrip `myTurn`): your name goes gold and a
- * warm glow rises behind your face, breathing slowly so it catches the eye
- * from across the room. Still under reduced motion, just lit.
+ * The game is waiting on you (IdentityStrip `myTurn`): the whole strip turns
+ * gold, a gradient from the light gold to the deep one, and everything on it
+ * goes to the dark ink the theme sets for text on gold (--kad-accent-ink).
+ * Ink on the deepest stop (#c9962f) is about 7:1, past WCAG AA's 4.5:1 for
+ * small text, and nothing on the strip is told by colour alone: the change
+ * is the whole banner, and a screen reader hears "your turn". The portrait's
+ * ring breathes so it catches the eye from across the room; still under
+ * reduced motion.
  */
 .sheet--turn {
-  background:
-    linear-gradient(90deg, color-mix(in srgb, var(--color-accent, #ffc95c) 22%, transparent), transparent 70%),
-    var(--color-surface, #191534);
+  --sheet-ink: var(--kad-accent-ink, #0d0b1a);
+  background: linear-gradient(
+    100deg,
+    var(--kad-gold-hi, #ffe6a8) 0%,
+    var(--kad-gold, #f5c86c) 45%,
+    var(--kad-gold-lo, #c9962f) 100%
+  );
+  border-bottom-color: var(--kad-gold-lo, #c9962f);
+  color: var(--sheet-ink);
+}
+
+.sheet--turn .sheet__name,
+.sheet--turn .sheet__meta,
+.sheet--turn .sheet__down,
+.sheet--turn .sheet__hp-label,
+.sheet--turn .kad-muted {
+  color: var(--sheet-ink);
+}
+
+.sheet--turn .sheet__meta {
+  font-weight: 600;
 }
 
 .sheet--turn .sheet__portrait {
-  box-shadow:
-    0 0 0 0.14em var(--color-accent, #ffc95c),
-    0 0 0.9em 0.2em color-mix(in srgb, var(--color-accent, #ffc95c) 70%, transparent);
-  animation: sheet-turn-glow 2s ease-in-out infinite;
+  box-shadow: 0 0 0 0.14em var(--sheet-ink);
+  animation: sheet-turn-ring 2s ease-in-out infinite;
 }
 
-.sheet--turn .sheet__name {
-  color: var(--color-accent, #ffc95c);
-  text-shadow: 0 0 0.5em color-mix(in srgb, var(--color-accent, #ffc95c) 55%, transparent);
+/* The bar's well stays dark, so the green fill keeps its contrast on gold. */
+.sheet--turn .sheet__hp-track {
+  box-shadow: 0 0 0 0.08em var(--sheet-ink);
 }
 
-@keyframes sheet-turn-glow {
+/* The waiting point's gold chip would vanish on gold: it turns to ink. */
+.sheet--turn .sheet__points {
+  background: var(--sheet-ink);
+  color: var(--kad-gold-hi, #ffe6a8);
+}
+
+@keyframes sheet-turn-ring {
   0%, 100% {
-    box-shadow:
-      0 0 0 0.14em var(--color-accent, #ffc95c),
-      0 0 0.5em 0.1em color-mix(in srgb, var(--color-accent, #ffc95c) 50%, transparent);
+    box-shadow: 0 0 0 0.14em var(--sheet-ink), 0 0 0 0.14em rgba(255, 255, 255, 0);
   }
   50% {
-    box-shadow:
-      0 0 0 0.14em var(--color-accent, #ffc95c),
-      0 0 1.1em 0.3em color-mix(in srgb, var(--color-accent, #ffc95c) 80%, transparent);
+    box-shadow: 0 0 0 0.14em var(--sheet-ink), 0 0 0 0.4em rgba(255, 255, 255, 0.55);
   }
 }
 

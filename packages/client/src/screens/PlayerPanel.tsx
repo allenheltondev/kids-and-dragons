@@ -58,6 +58,7 @@ import {
   useChapter,
   useGameStore,
   useIsMyCombatTurn,
+  useWaitingOnMe,
   useIsMyPrompt,
   useMyTurnKey,
   useItems,
@@ -254,11 +255,13 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
   const { character } = me;
   const hpPct = character.maxHp === 0 ? 0 : Math.max(0, Math.min(1, me.hp / character.maxHp));
   /*
-   * In a fight, your turn lights your own name and the glow behind your face.
-   * It was a "Your turn, Name!" row over the board, and a playtest asked for
-   * that row back: the strip is pinned and already says who you are.
+   * Whenever the game is waiting on you (a fight turn, a roll, a choice, a
+   * vote not yet cast), the whole strip turns gold. That is the "your turn"
+   * signal everywhere, rather than words: a playtest found "Your turn, Name!"
+   * rows cost room and read as one more line of text. The strip is pinned
+   * and already says who you are.
    */
-  const myTurn = useIsMyCombatTurn();
+  const myTurn = useWaitingOnMe();
   return (
     <header className={`sheet${myTurn ? " sheet--turn" : ""}`}>
       {/* Your own face on your own sheet, at whatever tier you have grown to —
@@ -1079,9 +1082,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               <span>
                 {myPrompt.vote
                   ? "Everyone votes"
-                  : myPrompt.forPlayerIds.includes(me.playerId)
-                    ? "Your turn! What do you do?"
-                    : "What do you do?"}
+                  : "What do you do?"}
               </span>
             </h3>
 

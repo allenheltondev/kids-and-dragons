@@ -1623,6 +1623,28 @@ describe("the party strip", () => {
     expect(document.querySelector(".sheet")!.classList.contains("sheet--turn")).toBe(false);
   });
 
+  it("turns the strip gold whenever the game waits on you, and only then", () => {
+    const lit = () => document.querySelector(".sheet")!.classList.contains("sheet--turn");
+    // Your roll.
+    mount({
+      party: [member(), member({ character: THISTLE, playerId: "p_2" })],
+      prompt: { kind: "roll", sceneId: "s_1", stat: "quick", tn: 12, prompt: "Wriggle through", characterId: "c_1" },
+    });
+    expect(lit()).toBe(true);
+    // A friend's roll, with the friend at the table.
+    serverSends({ prompt: { kind: "roll", sceneId: "s_1", stat: "quick", tn: 12, prompt: "Wriggle through", characterId: THISTLE.id } });
+    expect(lit()).toBe(false);
+    // A vote you have not cast, then have.
+    serverSends({ prompt: choicePrompt({ vote: true, forPlayerIds: [] }) });
+    expect(lit()).toBe(true);
+    serverSends({ prompt: choicePrompt({ vote: true, forPlayerIds: [], votes: { p_1: "east" } }) });
+    expect(lit()).toBe(false);
+    // The words are gone: the gold says it.
+    serverSends({ prompt: choicePrompt({ forPlayerIds: ["p_1"] }) });
+    expect(lit()).toBe(true);
+    expect(screen.queryByText(/Your turn!/)).toBeNull();
+  });
+
   it("gives the controller back when the tray dismisses a character sheet", async () => {
     // With a question open, the party waits behind the dock and covers the
     // prompt rather than sitting under it, so the way back has to put the
