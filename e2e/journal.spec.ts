@@ -51,6 +51,16 @@ test.describe("the adventure book", () => {
 
     // --- Walk away, and open the book ---
     await phone.goto("/");
+    // Hosting is a grown-up's panel of its own: the book and the guide link
+    // step aside for it, as joining does.
+    const guideLink = phone.getByRole("button", { name: /move a hero to another device/i });
+    await expect(phone.getByRole("button", { name: BOOK })).toBeVisible(TAP);
+    await expect(guideLink).toBeVisible();
+    await phone.getByRole("button", { name: /host a game/i }).click();
+    await expect(phone.getByRole("heading", { name: /^start a game$/i })).toBeVisible();
+    await expect(phone.getByRole("button", { name: BOOK })).toBeHidden();
+    await expect(guideLink).toBeHidden();
+    await phone.goto("/");
     await phone.getByRole("button", { name: BOOK }).click(TAP);
     await expect(phone).toHaveURL(/\/journal$/);
     const tray = phone.getByRole("navigation", { name: "What to look at" });
