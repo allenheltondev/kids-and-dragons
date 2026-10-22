@@ -398,3 +398,43 @@ describe("the chapter's goal on the summary (#356)", () => {
     expect([...goal.querySelectorAll(".goal__step")].map((s) => s.getAttribute("data-done"))).toEqual(["false", "false", "false", "true"]);
   });
 });
+
+describe("a hero the chapter has paid before (#408)", () => {
+  const VETERAN = MEMBER;
+  const NEWCOMER: PartyMember = { ...MEMBER, playerId: "p_2", character: character({ id: "c_2", name: "Bramble" }) };
+
+  it("leaves the line alone when the chapter paid everyone", () => {
+    mount({ party: [VETERAN, NEWCOMER] });
+    expect(screen.getByText(/XP for everyone/)).toBeTruthy();
+    expect(screen.queryByText("XP earned here before")).toBeNull();
+  });
+
+  it("says who the XP was for, and marks the hero it skipped", () => {
+    mount({ party: [VETERAN, NEWCOMER], xpAlreadyPaid: ["c_1"] });
+    expect(screen.getByText("100")).toBeTruthy();
+    expect(screen.getByText(/XP for each hero new to this chapter/)).toBeTruthy();
+    expect(screen.queryByText(/XP for everyone/)).toBeNull();
+    expect(screen.getAllByText("XP earned here before")).toHaveLength(1);
+  });
+
+  it("says plainly when nobody earned it this time, and the story still finished", () => {
+    vi.useFakeTimers();
+    const spoken: string[] = [];
+    setSpeaker((text) => spoken.push(text));
+    try {
+      mount({ party: [VETERAN, NEWCOMER], xpAlreadyPaid: ["c_1", "c_2"] });
+      expect(screen.getByText("Chapter finished!")).toBeTruthy();
+      expect(screen.getByText("Everyone here has earned this chapter's XP before.")).toBeTruthy();
+      expect(screen.queryByText("100")).toBeNull();
+      expect(screen.getAllByText("XP earned here before")).toHaveLength(2);
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
+      expect(spoken[0]).toContain("Chapter finished! Everyone here has earned this chapter's XP before.");
+      expect(spoken[0]).not.toContain("The party earned");
+    } finally {
+      setSpeaker(null);
+      vi.useRealTimers();
+    }
+  });
+});

@@ -46,7 +46,7 @@ import type {
  * commit — a bump without a step is a silent no-op migration, which is the one
  * failure this whole mechanism cannot detect.
  */
-export const CHARACTER_VERSION = 6;
+export const CHARACTER_VERSION = 7;
 
 /** Thrown for a stored row that cannot be repaired into a playable character. */
 export class StoredCharacterError extends Error {
@@ -151,6 +151,17 @@ const STEPS: Record<number, Step> = {
    * would offer her the swap a second time.
    */
   5: (raw) => raw,
+  /*
+   * v6 → v7. The paid-chapter ledger (#408): `paidChapters` on a progress
+   * half, the chapters that have paid her XP. Nothing to fill, and nothing
+   * the row could fill it from: which chapters she played is not on the row,
+   * and the table's records do not say who was seated. So an older hero reads
+   * as nothing paid yet, and may earn once more a chapter she played before
+   * the ledger, but never loses XP she has. The bump is v6's reason: a v6
+   * build narrows the ledger away (`progress` below), and its next write would
+   * let every chapter pay her again.
+   */
+  6: (raw) => raw,
 };
 
 /**
@@ -264,6 +275,10 @@ function progress(value: unknown, path: string): CharacterProgress {
     unspentPoints: typeof raw["unspentPoints"] === "number" ? raw["unspentPoints"] : 0,
     // Only `true` is ever written, and absent means the swap is unspent.
     ...(raw["fitted"] === true ? { fitted: true as const } : {}),
+    // Kept only when present, so a hero no chapter has paid reads back as stored.
+    ...(raw["paidChapters"] === undefined
+      ? {}
+      : { paidChapters: strings(raw["paidChapters"], `${path}.paidChapters`) }),
   };
 }
 

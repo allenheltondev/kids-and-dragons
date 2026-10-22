@@ -40,6 +40,12 @@ export interface SharedRuntime {
       questItems: readonly string[],
     ): Character;
     awardXp(character: Character, rules: RulesContent, amount: number): AwardXpResult;
+    payChapterXp(
+      character: Character,
+      rules: RulesContent,
+      chapterId: string,
+      amount: number,
+    ): AwardXpResult & { alreadyPaid?: true };
     foldRunDeeds(character: Character, counted: Partial<Record<ClassId, ClassMastery>> | undefined): Character;
     resolveCharacter(character: Character, rules: RulesContent, items: ItemCatalog): ResolvedCharacter;
   };
@@ -59,6 +65,7 @@ export function loadSharedRuntime(): Promise<SharedRuntime> {
         startCampaign: shared.startCampaign,
         syncRunInventory: shared.syncRunInventory,
         awardXp: shared.awardXp,
+        payChapterXp: shared.payChapterXp,
         foldRunDeeds: shared.foldRunDeeds,
         resolveCharacter: shared.resolveCharacter,
       },
@@ -108,12 +115,20 @@ export interface AwardChapterXpResult {
   /** `characters`, each conditioned on the row as it was read (#282). */
   writes: CharacterWrite[];
   awards: ProgressionAward[];
+  /**
+   * Heroes this chapter had already paid (#408), by character id: the award
+   * was theirs to earn once, so they got the bag and the deeds and no XP.
+   */
+  alreadyPaid: string[];
 }
 
 /**
  * Builds every character row and UI trigger owed by a chapter completion.
  * Inventory is always synchronized; XP mutation and award triggers are skipped
- * when the authored total is not positive.
+ * when the authored total is not positive, and for each hero this chapter has
+ * paid before (#408, `payChapterXp`): once ever, the bonuses with the rest,
+ * since they are all one total. That is checked here, on her stored row, so
+ * no attempt, room or table she plays it at can pay her twice.
  */
 export async function awardChapterXpDetails(
   input: AwardChapterXpInput,
@@ -135,6 +150,7 @@ export async function awardChapterXpDetails(
   const characters: Character[] = [];
   const writes: CharacterWrite[] = [];
   const awards: ProgressionAward[] = [];
+  const alreadyPaid: string[] = [];
   for (const [index, member] of input.state.party.entries()) {
     const row = stored[index];
     if (!row) continue;
@@ -150,15 +166,15 @@ export async function awardChapterXpDetails(
       progression.syncRunInventory(target, member.character.inventory, member.character.questItems),
       input.state.deeds?.heroes[member.character.id],
     );
-    const awarded: AwardXpResult =
-      amount > 0 ? progression.awardXp(carried, input.rules, amount) : { character: carried };
+    const awarded = progression.payChapterXp(carried, input.rules, input.chapter.id, amount);
+    if (awarded.alreadyPaid) alreadyPaid.push(awarded.character.id);
     characters.push(awarded.character);
     writes.push({
       character: awarded.character,
       expectedVersion: row.version ?? 0,
       expectedClaim: row.provisional?.runId ?? null,
     });
-    if (amount > 0) {
+    if (amount > 0 && !awarded.alreadyPaid) {
       awards.push({
         characterId: awarded.character.id,
         ...(awarded.leveledTo !== undefined ? { leveledTo: awarded.leveledTo } : {}),
@@ -170,7 +186,7 @@ export async function awardChapterXpDetails(
   // Folded: the heroes carry them now. Left on the run, a campaign that fails
   // at this completion would have the reverted heroes re-dressed in them.
   delete input.state.deeds;
-  return { characters, writes, awards };
+  return { characters, writes, awards, alreadyPaid };
 }
 
 /**

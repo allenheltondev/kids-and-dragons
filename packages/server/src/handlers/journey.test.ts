@@ -409,6 +409,50 @@ describe("a walk through the map", () => {
     expect(replay.journey?.chaptersCompleted).toBeUndefined();
   });
 
+  it("a replayed map pays a hero nothing for a chapter the last attempt paid her (#408)", async () => {
+    const { harness, householdId, players } = await world();
+    const a = await room(harness, householdId, players[0]!.principal);
+    await a.must({ type: "CONTINUE_CAMPAIGN" });
+    await a.finish();
+    await a.must({ type: "CHOOSE_EXIT", edgeId: "to-quarry", visit: 1 });
+    await a.lobby();
+    await a.must({ type: "CONTINUE_CAMPAIGN" });
+    await a.finish("scene_setback");
+    expect((await a.exit("quarry-to-home")).ok).toBe(true);
+    await a.lobby();
+    await a.must({ type: "CONTINUE_CAMPAIGN" });
+    await a.finish();
+    expect((await a.state()).campaign?.ended).toBe("complete");
+    const veteran = (await a.state()).party[0]!.character.id;
+    const earned = await a.xp();
+
+    // A new attempt: the same first chapter, the same hero.
+    await a.lobby();
+    await a.must({ type: "CONTINUE_CAMPAIGN" });
+    await a.finish();
+    expect(await a.xp()).toBe(earned);
+    expect((await a.state()).xpAlreadyPaid).toEqual([veteran]);
+    // The chapter's worth still stands for anyone it has not paid.
+    expect((await a.state()).xpEarned).toBeGreaterThan(0);
+    // And the replay goes on as a story: the map moves, only the XP is held back.
+    expect((await a.state()).campaign?.journey).toMatchObject({ node: "waystone", status: "choosing" });
+  });
+
+  it("a failed attempt does not spend a chapter's first payment: the next attempt pays it (#408)", async () => {
+    const { harness, householdId, players } = await world(sampler({ setbackLimit: 1 }));
+    const a = await room(harness, householdId, players[0]!.principal);
+    await a.must({ type: "CONTINUE_CAMPAIGN" });
+    await a.finish("scene_setback");
+    expect((await a.state()).campaign?.ended).toBe("failed");
+    expect(await a.xp()).toBe(0);
+
+    await a.lobby();
+    await a.must({ type: "CONTINUE_CAMPAIGN" });
+    await a.finish();
+    expect(await a.xp()).toBeGreaterThan(0);
+    expect((await a.state()).xpAlreadyPaid).toBeUndefined();
+  });
+
   it("the setback limit fails the attempt wherever the party is", async () => {
     const { harness, householdId, players, attempt } = await world(sampler({ setbackLimit: 1 }));
     const a = await room(harness, householdId, players[0]!.principal);

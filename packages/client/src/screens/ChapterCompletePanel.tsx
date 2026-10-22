@@ -94,6 +94,18 @@ export function ChapterCompletePanel(): ReactElement {
 
   const xp = state?.xpEarned ?? 0;
   /*
+   * Heroes this chapter had paid before (#408): it pays each hero once, ever,
+   * so they earned nothing this time and the line says so instead of "for
+   * everyone". Absent on every chapter that paid the whole table.
+   */
+  const alreadyPaid = useMemo(() => new Set(state?.xpAlreadyPaid ?? []), [state?.xpAlreadyPaid]);
+  const nobodyPaid = party.length > 0 && party.every((m) => alreadyPaid.has(m.character.id));
+  const xpLine = nobodyPaid
+    ? "Everyone here has earned this chapter's XP before."
+    : alreadyPaid.size > 0
+      ? `${String(xp)} XP for each hero new to this chapter.`
+      : null;
+  /*
    * Absent means success, the same default `completeChapter` applies — a run
    * persisted before the field existed, or a chapter authored before setbacks
    * did, must not read as a setback on the strength of a missing key.
@@ -152,8 +164,10 @@ export function ChapterCompletePanel(): ReactElement {
         endLine !== null
           ? `${heading} ${endLine}`
           : setback
-            ? `The story took a turn. The party earned ${String(xp)} experience, and the adventure keeps going.`
-            : `Chapter finished! The party earned ${String(xp)} experience.`,
+            ? xpLine === null
+              ? `The story took a turn. The party earned ${String(xp)} experience, and the adventure keeps going.`
+              : `The story took a turn. ${xpLine} The adventure keeps going.`
+            : `Chapter finished! ${xpLine ?? `The party earned ${String(xp)} experience.`}`,
         // Read aloud too, because a recap that only exists on the television is
         // a recap nobody hears — the §11 seam is where every line of narration
         // goes and this is narration. Appended to the same utterance rather
@@ -162,7 +176,7 @@ export function ChapterCompletePanel(): ReactElement {
         ...recap,
       ].join(" "),
     );
-  }, [xp, setback, recap, heading, endLine, fightEndings, chapterReady, waited]);
+  }, [xp, xpLine, setback, recap, heading, endLine, fightEndings, chapterReady, waited]);
 
   const questItems = party.flatMap((m) =>
     m.character.questItems.map((itemId) => ({ itemId, owner: m.character.name })),
@@ -189,8 +203,15 @@ export function ChapterCompletePanel(): ReactElement {
           <span>
             {/* Per chapter, never per player (spec §8.1) — "for everyone" is
                 the line that keeps the youngest player from counting hers
-                against the adults'. */}
-            <b>{xp}</b> XP for everyone
+                against the adults'. Only a hero the chapter paid before is
+                left out of it (#408), and her card says why. */}
+            {nobodyPaid ? (
+              xpLine
+            ) : (
+              <>
+                <b>{xp}</b> {alreadyPaid.size > 0 ? "XP for each hero new to this chapter" : "XP for everyone"}
+              </>
+            )}
           </span>
         </p>
         {setback && ended === undefined ? (
@@ -271,6 +292,12 @@ export function ChapterCompletePanel(): ReactElement {
                     <Icon name="levelup" />
                     <span>Level {newLevel ?? member.character.level}</span>
                   </span>
+                  {alreadyPaid.has(member.character.id) ? (
+                    <span className="kad-chip">
+                      <Icon name="check" />
+                      <span>XP earned here before</span>
+                    </span>
+                  ) : null}
                   {newLevel === undefined ? null : (
                     <span className="kad-chip kad-chip--ok">
                       <Icon name="star" />
