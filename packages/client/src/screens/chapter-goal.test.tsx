@@ -7,6 +7,7 @@
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen } from "@testing-library/react";
+import { FOLDS_KEY } from "../ui/Collapsible";
 import type { Chapter, RunState } from "@kad/shared";
 import { setAudioSink } from "../audio/cue";
 import { useGameStore } from "../store";
@@ -65,6 +66,7 @@ const ticked = (): boolean[] =>
 
 afterEach(() => {
   cleanup();
+  localStorage.removeItem(FOLDS_KEY);
   setAudioSink(null);
   vi.useRealTimers();
 });
@@ -82,7 +84,7 @@ describe("the chapter's goal", () => {
 
   it("ticks a step when its flag is set, any of a list counting, and says so in words", () => {
     seed({ climbed_right: true });
-    render(<ChapterGoalCard place="phone" />);
+    render(<ChapterGoalCard place="world" />);
     expect(ticked()).toEqual([false, true, false]);
     expect(screen.getAllByRole("img", { name: "Not yet" })).toHaveLength(2);
     expect(screen.getByRole("img", { name: "Done" })).toBeTruthy();
@@ -178,6 +180,52 @@ describe("the chapter's goal", () => {
     expect(screen.getByText("Get the cat down from the tree.")).toBeTruthy();
     expect(screen.getByRole("img", { name: "1 of 2 done, 0 of 1 extras" })).toBeTruthy();
     expect(document.querySelectorAll(".goal__step")).toHaveLength(0);
+  });
+
+  describe("on a phone (playtest: the card in full took too much of the screen)", () => {
+    const toggle = () => screen.getByRole("button", { name: /Get the cat down from the tree\./ });
+
+    it("is one line, the goal and how much is done, until the kid opens it", () => {
+      seed({ found_ladder: true });
+      render(<ChapterGoalCard place="phone" />);
+      // Still on screen with nothing tapped: the goal's words and its progress are the line.
+      expect(screen.getByText("Get the cat down from the tree.")).toBeTruthy();
+      expect(screen.getByRole("img", { name: "1 of 2 done, 0 of 1 extras" })).toBeTruthy();
+      expect(document.querySelector(".goal")?.classList.contains("goal--closed")).toBe(true);
+      expect(toggle().getAttribute("aria-expanded")).toBe("false");
+      // The steps are there, ticked as they are, and folded away.
+      const steps = document.getElementById(toggle().getAttribute("aria-controls") ?? "");
+      expect(steps?.classList.contains("goal__steps")).toBe(true);
+      expect(steps?.hidden).toBe(true);
+      expect(ticked()).toEqual([true, false, false]);
+      expect(screen.queryByRole("img", { name: "Not yet" })).toBeNull();
+
+      act(() => toggle().click());
+      expect(toggle().getAttribute("aria-expanded")).toBe("true");
+      expect(steps?.hidden).toBe(false);
+      expect(screen.getAllByRole("img", { name: "Not yet" })).toHaveLength(2);
+      expect(document.querySelector(".goal")?.classList.contains("goal--open")).toBe(true);
+    });
+
+    it("remembers on this device whether it was left open", () => {
+      seed({});
+      const { unmount } = render(<ChapterGoalCard place="phone" />);
+      act(() => toggle().click());
+      unmount();
+      render(<ChapterGoalCard place="phone" />);
+      expect(toggle().getAttribute("aria-expanded")).toBe("true");
+    });
+
+    it("has nothing to tap in a fight, and the TV never folds", () => {
+      seed({});
+      render(<ChapterGoalCard place="phone" folded />);
+      expect(document.querySelector("button")).toBeNull();
+      cleanup();
+      localStorage.setItem(FOLDS_KEY, JSON.stringify({ goal: false }));
+      render(<ChapterGoalCard place="world" />);
+      expect(document.querySelector("button")).toBeNull();
+      expect(document.querySelector(".goal__steps")?.hasAttribute("hidden")).toBe(false);
+    });
   });
 
   it("draws nothing for a chapter with no goal, or before the chapter has loaded", () => {
