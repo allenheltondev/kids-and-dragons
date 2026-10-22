@@ -1,0 +1,200 @@
+/*
+ * The fight so far, on the shared screen — down the right-hand side, under
+ * the device's corner row, clear of the rift's corner and the fight's folded
+ * goal card (both top left), the turn banner (top middle) and the narration
+ * strip (bottom). Sized in `em` against `.kad-surface` like everything in
+ * WorldView, so it reads from a sofa on a TV and shrinks to a corner on a
+ * phone's world pane (no viewport units).
+ *
+ * A hit and a miss differ in shape and words as well as colour (spec §11):
+ * the verdict is a pill that says "Graze!", "Solid hit!", "Critical!" or
+ * "Miss!", and a critical's pill is doubled.
+ */
+
+.fight-log {
+  /* A column beside the board: FightLog reports its width, and the fight
+     camera frames the board to its left (world/stage-inset.ts). */
+  --fight-log-beside: 1;
+  position: absolute;
+  inset-block-start: calc(var(--kad-corner-bottom, 52px) + 0.4em);
+  inset-inline-end: 0.75em;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+  inline-size: min(34%, 26em);
+  /* Never past the bottom of the pane: on a short screen the oldest lines
+     give way at the top (below), and the Guard note keeps its place. */
+  max-block-size: calc(100% - var(--kad-corner-bottom, 52px) - 1.2em);
+  padding: 0.5em 0.75em;
+  border: 0.08em solid var(--color-border, #3a3468);
+  border-inline-start: 0.3em solid var(--color-accent, #ffc95c);
+  border-radius: var(--radius-md, 0.75em);
+  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 84%, transparent);
+  box-shadow: 0 0.3em 1em rgba(0, 0, 0, 0.45);
+  color: var(--color-text, #f4f0ff);
+  pointer-events: none;
+}
+
+/* Newest at the bottom, and anything that does not fit is the oldest, cut
+   off at the top rather than pushing the box off the screen. */
+.fight-log__lines {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.45em;
+  min-block-size: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+}
+
+.fight-log__line {
+  flex: none;
+}
+
+.fight-log__line {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+  animation: fight-log-arrive 320ms ease-out both;
+}
+
+.fight-log__line--quiet {
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+/* A line that is not a swing says its news in its colour and its words. */
+.fight-log__line--good > span:only-child {
+  color: var(--color-success, #4ad991);
+}
+
+.fight-log__line--bad > span:only-child {
+  color: var(--color-danger, #ff6b6b);
+}
+
+.fight-log__swing {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3em;
+  font-weight: 700;
+}
+
+.fight-log__who {
+  font-weight: 900;
+}
+
+.fight-log__die {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15em;
+  padding: 0 0.35em;
+  border-radius: 0.4em;
+  background: var(--color-surface, #191534);
+  color: var(--color-accent, #ffc95c);
+  font-size: 1.2em;
+  font-weight: 900;
+}
+
+.fight-log__stat,
+.fight-log__vs {
+  color: var(--color-text-muted, #b7b0d8);
+  font-weight: 600;
+}
+
+.fight-log__arrow {
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+.fight-log__verdict {
+  padding: 0 0.5em;
+  border-radius: var(--radius-pill, 999em);
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.fight-log__verdict--graze,
+.fight-log__verdict--solid {
+  background: color-mix(in srgb, var(--color-success, #4ad991) 25%, transparent);
+  color: var(--color-success, #4ad991);
+}
+
+.fight-log__verdict--critical {
+  background: color-mix(in srgb, var(--color-accent, #ffc95c) 30%, transparent);
+  color: var(--color-accent, #ffc95c);
+  box-shadow: 0 0 0 0.12em var(--color-accent, #ffc95c);
+}
+
+.fight-log__verdict--miss {
+  background: color-mix(in srgb, var(--color-text-muted, #b7b0d8) 20%, transparent);
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+/* A monster's hit lands on the party: the hearts it took read as bad news. */
+.fight-log__line--bad .fight-log__verdict--graze,
+.fight-log__line--bad .fight-log__verdict--solid {
+  background: color-mix(in srgb, var(--color-danger, #ff6b6b) 25%, transparent);
+  color: var(--color-danger, #ff6b6b);
+}
+
+.fight-log__why {
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: var(--font-size-sm, 0.875em);
+  font-weight: 600;
+}
+
+.fight-log__guard {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0;
+  padding-block-start: 0.35em;
+  border-block-start: 0.06em solid var(--color-border, #3a3468);
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+.fight-log__guard > .kad-icon {
+  flex: none;
+}
+
+@keyframes fight-log-arrive {
+  from { transform: translateY(0.4em); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fight-log__line {
+    animation: none;
+  }
+}
+
+/*
+ * A phone's world pane: a corner, not a column, over the board's top margin
+ * (a portrait pane's board is width-bound, with room above it), so it asks
+ * the board for no room. The last three lines, small, and no Guard note (the
+ * phone's own line says "vs Guard" every time). The phone's shell already
+ * keeps the corner row off the pane, so it sits at the top.
+ */
+@container world (max-width: 40em) {
+  .fight-log {
+    --fight-log-beside: 0;
+    inset-block-start: 0.5em;
+    /* Beside the folded goal card (#356), which takes up to half the top from the left. */
+    inline-size: min(44%, 18em);
+    padding: 0.35em 0.5em;
+    font-size: var(--font-size-sm, 0.875em);
+  }
+
+  .fight-log__line:nth-last-child(n + 4) {
+    display: none;
+  }
+
+  .fight-log__guard {
+    display: none;
+  }
+}

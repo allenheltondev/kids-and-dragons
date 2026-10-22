@@ -101,6 +101,50 @@ export function checkTarget(tn: number): string {
   return `${DIFFICULTY_WORD[difficultyFor(tn)]}: needed ${String(tn)}`;
 }
 
+/** Stat ids as a kid reads them off the sheet. */
+const STAT_WORD: Record<string, string> = { might: "Might", quick: "Quick", clever: "Clever", heart: "Heart" };
+
+/** What the shared screen needs to know about a check that is waiting on its roll. */
+export interface CheckPlanPrompt {
+  stat: string;
+  tn: number;
+  characterId: string;
+  helper?: { characterId: string; sides: number } | undefined;
+  group?: unknown;
+}
+
+/**
+ * A waiting check, said for the whole table before the die is thrown: who
+ * rolls, what gets added, and the number to reach. The roller's phone always
+ * said "Tricky: needed 12"; a playtest found the TV said only the question,
+ * so the table could not tell what counted until the die had landed.
+ *
+ *   { roll: "Sparklehoof rolls d20 + 3 Might", target: "Tricky: 12 or more makes it." }
+ */
+export function checkPlan(
+  prompt: CheckPlanPrompt,
+  party: readonly { character: { id: string; name: string; stats: Record<string, number> } }[],
+): { roll: string; target: string } {
+  const stat = STAT_WORD[prompt.stat] ?? prompt.stat;
+  const word = DIFFICULTY_WORD[difficultyFor(prompt.tn)];
+  if (prompt.group !== undefined) {
+    return {
+      roll: `Everyone rolls d20 + their ${stat}`,
+      target: `${word}: ${String(prompt.tn)} or more makes it. Half of you or more need to.`,
+    };
+  }
+  const roller = party.find((m) => m.character.id === prompt.characterId)?.character;
+  const mod = roller?.stats[prompt.stat] ?? 0;
+  // "+ 0 Quick" rather than nothing: the stat is what the roller adds, even at nothing.
+  const sum = ` ${mod < 0 ? "−" : "+"} ${String(Math.abs(mod))}`;
+  const helper = prompt.helper ? party.find((m) => m.character.id === prompt.helper?.characterId)?.character.name : undefined;
+  const help = prompt.helper ? `, plus ${helper ?? "a friend"}'s d${String(prompt.helper.sides)}` : "";
+  return {
+    roll: `${roller?.name ?? "Someone"} rolls d20${sum} ${stat}${help}`,
+    target: `${word}: ${String(prompt.tn)} or more makes it.`,
+  };
+}
+
 /** A check has a difficulty; an attack's number is the target's Guard. */
 export function neededLabel(roll: Pick<DiceRoll, "tn" | "result">): string {
   const isCheck = roll.result === "success" || roll.result === "failure";

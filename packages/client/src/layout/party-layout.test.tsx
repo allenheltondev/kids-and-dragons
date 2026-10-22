@@ -77,7 +77,11 @@ describe("Party Mode and the map", () => {
     mount();
     const nav = screen.getByRole("navigation", { name: "What to look at" });
     expect(nav.querySelectorAll("button")).toHaveLength(4);
-    act(() => screen.getByText("Room settings").click());
+    // Folded at the foot of the You page until it is opened.
+    const settings = screen.getByRole("button", { name: "Room settings" });
+    expect(settings.getAttribute("aria-expanded")).toBe("false");
+    act(() => settings.click());
+    expect(settings.getAttribute("aria-expanded")).toBe("true");
     act(() => screen.getByRole("button", { name: "No TV? Show the world on the phones" }).click());
     expect(send).toHaveBeenCalledWith({ type: "SET_MODE", mode: "travel" });
     act(() => {

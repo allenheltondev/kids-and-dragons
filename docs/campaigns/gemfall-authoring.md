@@ -287,7 +287,7 @@ beat ladder's sentences, one per road, and no path through a chapter passes two 
 | 5 | `05a/scene_outline`, `05b/scene_knot_cords`, `05c/scene_here_first`: older than the mountain's name |
 | 6 | `scene_whole_truth`, or `scene_shut_out` for a party locked outside: seal, titan, rush |
 | 7 | none; the beat is the gathering, and its clues are p2 |
-| 8 | `scene_seal_chamber`: the seal, its crown, and what is waking under it |
+| 8 | `scene_seal_chamber`: the seal, its crown, and the titan waking under it, asking whether it is morning |
 
 The p2s are the cult's pitch on each road, the bell nobody rings, the wrong-way embermoths, the
 Hollow Gate, the forest's pile, and the Seal-Keeper. One reveal cannot be marked:

@@ -351,14 +351,64 @@ export const READY_ID = "ready";
 export const READY_BONUS = 2;
 
 /**
- * Damage on a plain Attack. The spec gives target numbers (§4.1) and hit points
- * (rules.json `baseMaxHp`) but never says how hard a hit lands, so this is
- * chosen rather than quoted: 3 against a 10 HP character is four hits, which
- * puts a two-on-one fight at about the four rounds §7.1 tunes for. It is a
- * default, not a constant — an ability's `damage` is authored per effect, and a
- * catalog that redefines `attack` overrides this without a deploy.
+ * Damage on a plain Attack, as a solid hit lands it. The spec gives target
+ * numbers (§4.1) and hit points (rules.json `baseMaxHp`) but never says how
+ * hard a hit lands, so this is chosen rather than quoted. It is a default, not
+ * a constant — an ability's `damage` is authored per effect, and a catalog
+ * that redefines `attack` overrides this without a deploy.
+ *
+ * How hard one hit lands comes from the same d20 that decided it hit; there
+ * is no second die (`damageTier`). A hit that only just meets the Guard is a
+ * graze, one past it by `SOLID_MARGIN` or more is solid, and a natural 20 is a
+ * critical: with 3, that is 2, 3 or 5. A flat 3 made every hit the same hit,
+ * and a table that rolled an 18 could not see that it mattered. The average
+ * hit is a little under 3, so a 10 HP character still takes about four, which
+ * keeps a two-on-one fight near the four rounds §7.1 tunes for.
  */
 export const ATTACK_DAMAGE = 3;
+
+/**
+ * How far past the Guard a hit must land to be solid. The margin is
+ * `total - guard`, the same subtraction `clears` (dice.ts) decides the hit
+ * with, so a margin of 0 is a hit that exactly met the Guard.
+ */
+export const SOLID_MARGIN = 5;
+
+/** What a natural 20 adds on top of the authored damage. */
+export const CRITICAL_BONUS = 2;
+
+/**
+ * How hard a hit landed, read off the roll that decided it. Rides the `roll`
+ * event of every hit, so a screen can say "Graze! 2" and not just a bare 2.
+ */
+export type DamageTier = "graze" | "solid" | "critical";
+
+/**
+ * The tier of a hit. A natural 20 is critical whatever the total: it is the
+ * face the table shouts at, and `clears` already lets it land past any Guard.
+ * Otherwise it is the margin: `SOLID_MARGIN` or more past the Guard is solid,
+ * anything less is a graze.
+ */
+export function damageTier(roll: Pick<DiceRoll, "die" | "total" | "tn">): DamageTier {
+  if (roll.die >= 20) return "critical";
+  return roll.total - roll.tn >= SOLID_MARGIN ? "solid" : "graze";
+}
+
+/**
+ * An authored damage `d` at a tier: a graze is `d - 1` (never under 1), solid
+ * is `d`, a critical is `d + CRITICAL_BONUS`. Damage buffs, burdens and wards
+ * apply after this, exactly as they did to the flat number.
+ */
+export function tieredDamage(damage: number, tier: DamageTier): number {
+  switch (tier) {
+    case "graze":
+      return Math.max(1, damage - 1);
+    case "solid":
+      return damage;
+    case "critical":
+      return damage + CRITICAL_BONUS;
+  }
+}
 
 /**
  * The three actions §7.2 marks "Available to: Everyone".
@@ -583,7 +633,13 @@ export interface EncounterState {
 
 /** Something worth animating or narrating. Returned, never stored in state. */
 export type EncounterEvent =
-  | { readonly type: "roll"; readonly roll: DiceRoll }
+  /**
+   * A swing. `targetId` is the figure it was aimed at, whose Guard `roll.tn`
+   * is; `tier` is how hard a hit landed (`damageTier`), on hits only. Both
+   * are optional because rolls persisted before them (a mid-fight save's
+   * last beat) carry neither.
+   */
+  | { readonly type: "roll"; readonly roll: DiceRoll; readonly targetId?: ActorId; readonly tier?: DamageTier }
   | { readonly type: "damage"; readonly actorId: ActorId; readonly amount: number; readonly hp: number }
   | { readonly type: "heal"; readonly actorId: ActorId; readonly amount: number; readonly hp: number }
   | { readonly type: "down"; readonly actorId: ActorId }
@@ -1746,17 +1802,23 @@ function applyEffect(
       // Luckstone: a 1 is thrown again, once per charge per fight. Both rolls
       // are shown, so the table sees the 1 and then the second chance.
       if (roll.die === 1 && (actor.rerollOnes ?? 0) > 0) {
-        events.push({ type: "roll", roll });
+        events.push({ type: "roll", roll, targetId: recipientId });
         working = updateCombatant(working, actorId, (c) => ({
           ...c,
           rerollOnes: (c.rerollOnes ?? 0) - 1,
         }));
         roll = swing();
       }
-      events.push({ type: "roll", roll });
-      if (roll.result !== "hit") return { state: working, rolled: true };
+      if (roll.result !== "hit") {
+        events.push({ type: "roll", roll, targetId: recipientId });
+        return { state: working, rolled: true };
+      }
+      // How hard it landed comes off the same die (`damageTier`), and rides
+      // the roll so the screens can say "Graze!" before the number lands.
+      const tier = damageTier(roll);
+      events.push({ type: "roll", roll, targetId: recipientId, tier });
       // A hit always hurts: a burden takes a damage buff down to 1, not 0.
-      const damage = buffed(effect.damage, buffBonus(state.buffs, actor.id, "damage"), 1);
+      const damage = buffed(tieredDamage(effect.damage, tier), buffBonus(state.buffs, actor.id, "damage"), 1);
       working = dealDamage(working, recipientId, damage, events);
       // A numbing sting (#227): the hit just landed leaves its mark. Neither
       // exists on a figure that was not given one, so this is a no-op then.

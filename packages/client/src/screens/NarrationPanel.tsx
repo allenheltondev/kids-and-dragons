@@ -25,6 +25,7 @@ import { Icon } from "./icons";
 import { ClassToken } from "./ClassToken";
 import { VoteTicks } from "./VoteTicks";
 import { ClassPlaceRoll } from "./ClassPlace";
+import { checkPlan } from "./DiceOverlay";
 import { chapterHeading } from "./campaign-copy";
 import { ChapterGoalCard, useChapterGoal } from "./ChapterGoal";
 import { prefaceUtterances, useStartPreface } from "./ChapterPreface";
@@ -580,12 +581,28 @@ export function NarrationPanel(): ReactElement | null {
         ) : null}
 
         {prompt !== null && prompt.kind === "roll" ? (
-          <p className="narration__prompt">
-            <Icon name="d20" />
-            <span>{prompt.prompt}</span>
-          </p>
+          <>
+            <p className="narration__prompt">
+              <Icon name="d20" />
+              <span>{prompt.prompt}</span>
+            </p>
+            {/* Who rolls, what is added, and the number to reach, for the whole table before
+                the die is thrown (DiceOverlay `checkPlan`). */}
+            <CheckPlanLine plan={checkPlan(prompt, party)} stat={prompt.stat} />
+          </>
         ) : null}
       </div>
     </section>
+  );
+}
+
+/** A waiting check's sum and target, under its question (see `checkPlan`). */
+function CheckPlanLine({ plan, stat }: { plan: { roll: string; target: string }; stat: string }): ReactElement {
+  return (
+    <p className="narration__check">
+      <Icon name={stat} />
+      <span>{plan.roll}.</span>
+      <strong className="narration__target">{plan.target}</strong>
+    </p>
   );
 }

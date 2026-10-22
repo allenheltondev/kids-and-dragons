@@ -212,8 +212,81 @@
   z-index: 1;
   inline-size: auto;
   max-inline-size: none;
-  margin: 0 var(--space-3, 0.75em) var(--space-2, 0.5em);
+  margin: var(--space-1, 0.25em) var(--space-2, 0.5em);
+  padding-block: 0;
   font-size: 0.95em;
+  /* The card is the switch on a phone (below), so it takes taps, unlike the TV's. */
+  pointer-events: auto;
+}
+
+/*
+ * A phone folds the card to one line (ChapterGoal.tsx): the goal, cut short, its pips and a
+ * chevron, the whole line one touch-high button. Open, the goal wraps and the steps show under
+ * it, and the pips step aside for the boxes that say the same. In a fight it is the goal and
+ * its pips, as before, with nothing to open.
+ */
+.goal__toggle {
+  inline-size: 100%;
+  min-block-size: var(--kad-touch-min, 2.75em);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 800;
+  text-align: start;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.goal--phone .goal__text {
+  min-block-size: var(--kad-touch-min, 2.75em);
+}
+
+.goal--phone .goal__sentence {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.goal--closed .goal__sentence,
+.goal--phone.goal--folded .goal__sentence {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.goal--closed .goal__pips {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+/* Folded, a tick's moment is its pip's: it pops and glows gold. Reduced motion keeps the glow. */
+.goal--closed .goal__pip--fresh {
+  animation:
+    goal-pop 520ms cubic-bezier(0.3, 1.6, 0.5, 1) both,
+    goal-pip-glow 2.4s ease-out both;
+}
+
+@keyframes goal-pip-glow {
+  0%, 45% { box-shadow: 0 0 0 0.25em #f5c86c66; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .goal--closed .goal__pip--fresh { animation: goal-pip-glow 2.4s ease-out both; }
+}
+
+.goal--phone .kad-fold__chevron {
+  margin-inline-start: auto;
+}
+
+.goal--phone .goal__steps {
+  padding-block-end: var(--space-2, 0.5em);
+}
+
+/* `display: flex` above would otherwise outrank the folded list's `hidden`. */
+.goal__steps[hidden] {
+  display: none;
 }
 
 /* In a fight, on its own in the top corner (WorldView); in a place that fights back it heads
