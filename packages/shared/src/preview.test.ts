@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { previewContext, readIntentPreview } from "./preview.js";
+import { DECISION_INTENTS, decisionContext, previewContext, readIntentPreview } from "./preview.js";
 import type { RunState } from "./types/state.js";
 
 describe("readIntentPreview", () => {
@@ -92,5 +92,63 @@ describe("previewContext in a fight", () => {
     // the second's.
     expect(previewContext(fight(5))).not.toBe(previewContext(fight(9)));
     expect(previewContext(fight(5))).toBe(previewContext(fight(5)));
+  });
+});
+
+describe("decisionContext (#413)", () => {
+  const base = {
+    phase: "scene",
+    chapterId: "ch1",
+    sceneId: "fork",
+    visited: ["start", "fork"],
+    storyTurn: 0,
+    encounter: null,
+    prompt: { kind: "choice", sceneId: "fork", options: [], forPlayerIds: [], vote: true },
+  } as unknown as RunState;
+
+  it("stays put while a friend votes, so the ordinary retry still goes through", () => {
+    const voted = { ...base, prompt: { ...base.prompt, votes: { p_friend: "left" } } } as unknown as RunState;
+    expect(decisionContext(voted)).toBe(decisionContext(base));
+  });
+
+  it("moves on with the scene, a revisit, the turn marker and the kind of question", () => {
+    const next = { ...base, sceneId: "brook", visited: ["start", "fork", "brook"] } as unknown as RunState;
+    expect(decisionContext(next)).not.toBe(decisionContext(base));
+    expect(decisionContext({ ...base, visited: ["start", "fork", "brook", "fork"] })).not.toBe(decisionContext(base));
+    expect(decisionContext({ ...base, storyTurn: 1 })).not.toBe(decisionContext(base));
+    const roll = { ...base, prompt: { kind: "roll", sceneId: "fork" } } as unknown as RunState;
+    expect(decisionContext(roll)).not.toBe(decisionContext(base));
+  });
+
+  it("names a fight's turn, not the steps taken in it", () => {
+    const fight = (patch: Record<string, unknown>) =>
+      ({
+        encounter: {
+          startedAt: 5,
+          round: 1,
+          turnIndex: 0,
+          stepsLeft: 4,
+          actionTaken: false,
+          order: ["c_pip", "c_wolf"],
+          openingOrder: ["c_pip", "c_wolf"],
+          encoreActor: null,
+          combatants: [
+            { id: "c_pip", side: "party", down: false },
+            { id: "c_wolf", side: "enemy", down: false },
+          ],
+          ...patch,
+        },
+      }) as unknown as RunState;
+    expect(decisionContext(fight({ stepsLeft: 1, actionTaken: true }))).toBe(decisionContext(fight({})));
+    expect(decisionContext(fight({ turnIndex: 1 }))).not.toBe(decisionContext(fight({})));
+    expect(decisionContext(fight({ startedAt: 9 }))).not.toBe(decisionContext(fight({})));
+  });
+
+  it("binds the answers to a question, and not the lobby or the journey", () => {
+    expect(DECISION_INTENTS.has("CHOOSE")).toBe(true);
+    expect(DECISION_INTENTS.has("ROLL")).toBe(true);
+    expect(DECISION_INTENTS.has("MOVE")).toBe(true);
+    expect(DECISION_INTENTS.has("READY")).toBe(false);
+    expect(DECISION_INTENTS.has("CHOOSE_EXIT")).toBe(false);
   });
 });
