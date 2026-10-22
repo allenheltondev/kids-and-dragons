@@ -663,14 +663,15 @@
 
 /*
  * Narrower still (a 320px phone at large text, or 390px at the largest): the
- * name and its chip get the first line to themselves, and the stepper the
- * second.
+ * name gets the first line to itself, and its chip leads the stepper on the
+ * second. Sharing the first line with the chip, a name was cut off at the
+ * largest text with some fonts.
  */
 @container (max-width: 19em) {
   .creation-stat {
     grid-template-areas:
-      "icon name name bonus bonus"
-      "icon . take value add";
+      "icon name name name name"
+      "icon bonus take value add";
     row-gap: var(--space-1, 0.25em);
   }
 
@@ -680,7 +681,7 @@
     align-self: center;
   }
 
-  .creation-stat__bonus { align-self: center; justify-content: flex-end; }
+  .creation-stat__bonus { align-self: center; justify-content: flex-start; }
 
   /*
    * A species or class card: the picture shrinks to sit beside the name, and
