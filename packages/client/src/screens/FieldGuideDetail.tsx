@@ -92,6 +92,11 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, 
           same scroller would open the new one wherever you had read down to
           in the old. A fresh one starts at the top. */}
       <div key={entryId} className="field-guide__body kad-scroll field-guide__detail" data-testid="guide-detail">
+        {/* The way back at the top as well as the foot, floating over the page as it scrolls. */}
+        <Button className="fgd__return" variant="secondary" size="md" icon={<Icon name="back" />}
+          onClick={() => onSelect(null)}>
+          {backLabel.replace(/^Back to/, "Return to")}
+        </Button>
         <header className="fgd__header">
           <span className="fgd__art" aria-hidden="true">
             {entry.art ? <img src={entry.art} alt="" /> : <Icon name={CATEGORY_ICON[entry.category] ?? "leaf"} />}
@@ -101,8 +106,18 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, 
           {entry.short_description && <p className="fgd__short">{entry.short_description}</p>}
           {(danger || size) && (
             <ul className="fgd__badges" aria-label="At a glance">
-              {danger && <li className="fgd__badge" data-danger={entry.danger_level}>{danger}</li>}
-              {size && <li className="fgd__badge">{size}</li>}
+              {danger && (
+                <li className="fgd__badge" data-danger={entry.danger_level}>
+                  <span className="fgd__badge-label"><Icon name="shield" /> Danger</span>
+                  <span>{danger}</span>
+                </li>
+              )}
+              {size && (
+                <li className="fgd__badge">
+                  <span className="fgd__badge-label"><Icon name="eye" /> Size</span>
+                  <span>{size}</span>
+                </li>
+              )}
             </ul>
           )}
           <Button variant="secondary" size="md" icon={<Icon name="sound" />}

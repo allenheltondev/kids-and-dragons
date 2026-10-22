@@ -217,7 +217,7 @@ html:not([data-contrast="high"]) .goal__step--done .goal__box > svg {
   --chrome-w: 16px;
 }
 html:not([data-contrast="high"]) :is(.atlas__label, .atlas__landmark) {
-  padding: 0.35em 0.8em;
+  padding: 0.6em 1.5em;
 }
 
 .kad-map__flip-tab {
@@ -412,7 +412,7 @@ html:not([data-contrast="high"]) [data-phone-magic] .kad-tray__tab--on {
 }
 
 /* The corner row's controls: a brass ring each. */
-html:not([data-contrast="high"]) .kad-corner :is(button, a) {
+html:not([data-contrast="high"]) :is(.kad-corner :is(button, a), .kad-back__button) {
   background: url("../assets/chrome/corner-bezel.webp") center / 100% no-repeat;
   border-radius: 50%;
 }

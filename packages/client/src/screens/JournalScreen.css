@@ -51,14 +51,53 @@
   padding: 0.75em;
 }
 
-.journal__heroes {
+/* The hero picker on the left; her page and the story in the corner. */
+.journal__bar {
   display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 0.6em;
   margin: 0 0 0.75em;
+}
+
+.journal__heroes {
+  display: flex;
+  flex: 1 1 0;
+  min-inline-size: 0;
+  gap: 0.6em;
+  margin: 0;
   padding: 0 0 0.25em;
   list-style: none;
   overflow-x: auto;
 }
+
+.journal__links {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 0.4em;
+  margin-inline-start: auto;
+}
+
+.journal__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.45em;
+  min-block-size: 2.75rem;
+  padding: 0.3em 0.9em;
+  border: 1px solid #ad885777;
+  border-radius: 999px;
+  background: linear-gradient(#3c2d42, #20192f);
+  box-shadow: inset 0 -0.2em #0003;
+  color: #f3ddb3;
+  font: inherit;
+  font-size: 0.9em;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.journal__link .kad-icon { color: #e5c281; }
 
 .journal__pick {
   display: flex;
@@ -93,34 +132,6 @@
   font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.journal__finished {
-  margin: 0.75em 0 0;
-  padding: 0.6em 0.75em;
-  border-radius: 0.6em;
-  background: color-mix(in srgb, currentColor 6%, transparent);
-}
-
-.journal__finished-title {
-  display: flex;
-  align-items: center;
-  gap: 0.4em;
-  margin: 0 0 0.4em;
-  font-size: 1em;
-}
-
-.journal__finished-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.journal__finished-line {
-  display: flex;
-  align-items: center;
-  gap: 0.4em;
-  padding: 0.15em 0;
 }
 
 .journal__empty {

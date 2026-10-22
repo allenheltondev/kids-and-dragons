@@ -8,6 +8,7 @@ import {
   setPlayerSection,
   usePlayerNavigation,
 } from "../store/player-navigation";
+import { DETAIL_STEP, useBackStep } from "../store/back-steps";
 import { useFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { markFieldGuideSeen, useFieldGuideSeen } from "../store/field-guide-seen";
 import { Button } from "../ui/Button";
@@ -46,6 +47,10 @@ export function FieldGuide({ backToBag = true }: {
   // A deep link to something undiscovered (or unknown) falls back to the index.
   const discoveries = useFieldGuideDiscoveries();
   const open = guideEntry !== null && guide !== null && discoveries[guideEntry] ? guide.entries[guideEntry] : undefined;
+
+  // Back is the entry first, then (in play) the bag the guide sits beside; in the journal the book's own trail takes over.
+  useBackStep(open ? () => { selectGuideEntry(null); return true; } : null, DETAIL_STEP);
+  useBackStep(!open && backToBag ? () => { setPlayerSection("bag"); return true; } : null);
 
   return (
     <section className="field-guide" aria-label="Field Guide" data-entry={open?.id}>
@@ -94,13 +99,15 @@ export function FieldGuideIndex({ guide }: { guide: FieldGuideData | null }) {
   return (
     <>
       <p className="field-guide__summary">{found} of {all.length} found</p>
+      <div className="field-guide__meter" aria-hidden="true"><span style={{ inlineSize: `${String(all.length === 0 ? 0 : (found / all.length) * 100)}%` }} /></div>
       {section && (
         <div className="field-guide__tabs" role="tablist" aria-label="Field Guide sections">
           {sections.map((s) => (
             <button key={s.id} type="button" role="tab" id={`fg-tab-${s.id}`}
               aria-selected={s.id === section.id} aria-controls="fg-panel"
               className="field-guide__tab" onClick={() => selectGuideTab(s.id)}>
-              {s.label}
+              <Icon name={s.icon} />
+              <span>{s.label}</span>
             </button>
           ))}
         </div>

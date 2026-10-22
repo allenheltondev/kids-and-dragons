@@ -21,6 +21,18 @@ const HANDS: readonly { id: Hand; label: string; name: string }[] = [
   { id: "left", label: "Left", name: "Left hand" },
 ];
 
+/* Drawn here rather than in the shared icon set, which is part of the first paint; this control loads after it. */
+function GearIcon(): React.JSX.Element {
+  return (
+    <svg className="kad-a11y__glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <g fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+      </g>
+    </svg>
+  );
+}
+
 export function A11yControl(): React.JSX.Element {
   const open = useA11y((state) => state.open);
   const setOpen = useA11y((state) => state.setOpen);
@@ -36,7 +48,7 @@ export function A11yControl(): React.JSX.Element {
         aria-expanded={open}
         onClick={() => setOpen(true)}
       >
-        <span aria-hidden="true" className="kad-a11y__glyph">Aa</span>
+        <GearIcon />
       </button>
       {open ? <A11ySheet onClose={close} /> : null}
     </>

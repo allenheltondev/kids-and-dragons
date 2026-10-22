@@ -6,10 +6,7 @@
   gap: 0.8em;
   padding: 0.75em 0.8em;
   color: var(--kad-ink);
-  background:
-    radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--sheet-accent) 16%, transparent), transparent 24em),
-    radial-gradient(circle at 95% 38%, #b78c4c12, transparent 14em),
-    #100e20;
+  /* No ground of its own: the pane's night paper runs edge to edge behind it. */
 }
 .sheetview__head {
   position: relative;
@@ -63,39 +60,41 @@
 .sheetview__souvenirs,
 .sheetview__bag,
 .sheetview__quest { margin: 0; padding: 0; list-style: none; }
-.sheetview__stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5em; }
+.sheetview__stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5em; }
 .sheetview__stat {
   --talent: #d5b783;
   position: relative;
-  display: grid;
-  grid-template-columns: 1fr;
-  justify-items: center;
+  display: flex;
   align-items: center;
-  gap: 0.3em;
-  padding: 0.6em 0.3em;
+  gap: 0.6em;
+  padding: 0.45em 0.7em 0.45em 0.5em;
   border: 1px solid color-mix(in srgb, var(--talent) 45%, #28213e);
   border-radius: 1.2em 0.65em 1.2em 0.65em;
   background: linear-gradient(145deg, color-mix(in srgb, var(--talent) 18%, #28213e), #191529 85%);
-  box-shadow: inset 0 0.16em #ffffff0a, 0 0.25em 0 #080613;
+  box-shadow: inset 0 0.16em #ffffff0a, 0 0.2em 0 #080613;
 }
 .sheetview__stat--might { --talent: #e6a283; }
 .sheetview__stat--quick { --talent: #8bcca9; }
 .sheetview__stat--clever { --talent: #b8a1e5; }
 .sheetview__stat--heart { --talent: #e59dab; }
-.sheetview__stat-glyph { display: grid; place-items: center; inline-size: 2.7em; block-size: 2.7em; border-radius: 50%; background: #0d0a1e66; color: var(--talent); box-shadow: inset 0 0 0 1px #ffffff15; }
-.sheetview__stat-glyph .kad-icon { font-size: 2em; }
-.sheetview__stat-glyph .kad-icon--painted { font-size: 2.55em; }
-.sheetview__stat b { justify-self: center; font-size: 1.5em; line-height: 1; color: #fff0cf; text-shadow: 0 0.1em #0005; }
-.sheetview__stat > .sheetview__word { grid-column: 1 / -1; font-size: 0.75em; font-weight: 700; color: var(--talent); }
+.sheetview__stat-glyph { display: grid; flex: none; place-items: center; inline-size: 2.3em; block-size: 2.3em; border-radius: 50%; background: #0d0a1e66; color: var(--talent); box-shadow: inset 0 0 0 1px #ffffff15; }
+.sheetview__stat-glyph .kad-icon { font-size: 1.7em; }
+.sheetview__stat-glyph .kad-icon--painted { font-size: 2.1em; }
+.sheetview__stat-text { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.1em 0.5em; min-inline-size: 0; }
+.sheetview__stat b { font-size: 1.5em; line-height: 1; color: #fff0cf; text-shadow: 0 0.1em #0005; }
+.sheetview__stat .sheetview__word { font-size: 0.8em; font-weight: 700; color: var(--talent); }
 .sheetview__vitals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55em; }
 .sheetview__vital { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.35em; padding: 0.6em 0.2em; border-radius: 0.8em; background: #211b32; font-size: 0.8em; }
 .sheetview__vital .kad-icon { color: #d5af73; font-size: 1.4em; }
 .sheetview__vital > span { text-transform: capitalize; color: var(--kad-ink-dim); }
 .sheetview__vital b { font-size: 1.2em; }
 .sheetview__ladder { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.4em; padding: 0.5em; border: 1px dashed #ab8e595c; border-radius: 1.4em; background: linear-gradient(125deg, #3e30442b, #191529); }
-.sheetview__rung { display: grid; grid-template-columns: 1fr; justify-items: center; text-align: center; align-items: center; gap: 0.3em; padding: 0.6em 0.15em; border: 1px solid #67516c; border-radius: 0.9em; background: #231d35; font-size: 0.7em; }
+.sheetview__rung { display: grid; grid-template-columns: 1fr; justify-items: center; text-align: center; align-content: start; gap: 0.3em; padding: 0.6em 0.15em; border: 1px solid #67516c; border-radius: 0.9em; background: #231d35; font-size: 0.75em; }
 .sheetview__rung > .kad-icon { font-size: 1.5em; color: #e5c281; }
+.sheetview__rung-level { font-size: 0.85em; color: #f3ddb3; }
 .sheetview__rung-note { grid-column: 1 / -1; font-size: 0.8em; }
+.sheetview__rung--now { box-shadow: 0 0 0 0.15em #f3ddb399; }
+.sheetview__rung--now .sheetview__rung-note { color: #ffe4a1; font-weight: 700; }
 .sheetview__rung--reached { border-color: #dfbd7a; background: linear-gradient(140deg, #62472b66, #30243c); }
 .sheetview__rung--lost { border-style: dashed; border-color: #dfbd7a; }
 .sheetview__rung--ahead { opacity: 0.65; }
