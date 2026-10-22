@@ -1129,7 +1129,7 @@ export function createBoardLayer(): BoardLayer {
           actor.art.rotation = approach(actor.art.rotation, FALLEN_ROTATION, DOWN_RATE, dtSeconds);
           actor.art.alpha = approach(actor.art.alpha, FALLEN_ALPHA, DOWN_RATE, dtSeconds);
         } else {
-          actor.art.rotation = approach(actor.art.rotation, idle.rotation, DOWN_RATE, dtSeconds);
+          actor.art.rotation = still ? idle.rotation : approach(actor.art.rotation, idle.rotation, DOWN_RATE, dtSeconds);
           actor.art.alpha = approach(actor.art.alpha, actor.away ? AWAY_ALPHA : 1, DOWN_RATE, dtSeconds);
         }
       }

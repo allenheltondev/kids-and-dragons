@@ -118,7 +118,7 @@ import {
 } from "./nameplate";
 import type { EncounterEvent } from "@kad/shared";
 import { stageLayout, STORY_MEASURE, type StageCastMember } from "./cast";
-import { storyStageFrame } from "./stage-inset";
+import { boardStageWidth, storyStageFrame } from "./stage-inset";
 import { reducedMotion } from "../a11y/prefs";
 
 export { characterArtUrl };
@@ -291,6 +291,12 @@ export interface PartyScene {
   setStageInset(bottomPx: number): void;
   /** How far down the pane the narration's head reaches (#356): see stage-inset.ts `storyStageFrame`. */
   setStageInsetTop(topPx: number): void;
+  /**
+   * How many CSS px along the pane's end the shared screen's fight log covers
+   * (world/stage-inset.ts). The fight camera frames the board into the rest,
+   * so no monster stands under the log. The story ignores it.
+   */
+  setBoardInset(endPx: number): void;
   /**
    * The names currently drawn, as boxes in whichever space is on screen —
    * board pixels during a fight, design units otherwise.
@@ -687,6 +693,8 @@ export function createScene(app: Application): PartyScene {
   /** The head's reach down the pane, eased the same way (#356). */
   let insetTop = 0;
   let insetTopTarget = 0;
+  /** CSS px of pane end the fight log covers. See setBoardInset. */
+  let boardInsetEnd = 0;
   let board: BoardLayer | null = null;
   let encounterView: BoardViewState | null = null;
   /**
@@ -815,12 +823,13 @@ export function createScene(app: Application): PartyScene {
   }
 
   /**
-   * The rect the camera frames into. The board gets the whole pane; the story
-   * gets the part above the narration plate, so the figures stand clear of
-   * the words instead of behind them.
+   * The rect the camera frames into. The board gets the pane left of the
+   * fight log (the whole pane where there is none); the story gets the part
+   * above the narration plate, so the figures stand clear of the words
+   * instead of behind them.
    */
   function cameraViewport(): Viewport {
-    if (encounterView !== null) return viewport;
+    if (encounterView !== null) return { width: boardStageWidth(viewport.width, boardInsetEnd), height: viewport.height };
     return { width: viewport.width, height: storyFrame().height };
   }
 
@@ -1119,7 +1128,9 @@ export function createScene(app: Application): PartyScene {
       // Anything raised bobs or drifts instead (stanceIdle, #362).
       const idle = stanceIdle(actor.stance, elapsed, actor.phase, still);
       const reach = motionReach(actor.height);
-      actor.art.rotation = approach(actor.art.rotation, idle.rotation, BOB_RATE, dt);
+      // Reduced motion holds the figure upright at once: an eased return from
+      // the standing lean is still motion.
+      actor.art.rotation = still ? idle.rotation : approach(actor.art.rotation, idle.rotation, BOB_RATE, dt);
       actor.art.y = approach(actor.art.y, restY(actor) + idle.dy * reach, DOWN_RATE, dt);
       actor.art.x = idle.dx * reach;
       actor.art.scale.y = 1 + idle.breath;
@@ -1624,6 +1635,16 @@ export function createScene(app: Application): PartyScene {
         layoutActors();
         applyCamera(0);
       }
+    },
+
+    setBoardInset(endPx) {
+      if (destroyed) return;
+      const next = Math.max(0, endPx);
+      if (next === boardInsetEnd) return;
+      // A cut, like a plate arriving: the log comes up with the fight.
+      boardInsetEnd = next;
+      camNow = null;
+      applyCamera(0);
     },
 
     focusCamera(next) {

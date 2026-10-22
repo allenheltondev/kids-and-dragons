@@ -60,7 +60,7 @@
   [data-phone-magic] :is(.creation__body > :not([role="alert"]), .item-detail, .give:not(.give--waiting),
     .sheetview, .field-guide__detail, .keepsake__panel),
   [data-phone-magic] .player__scroll:not([hidden]),
-  [data-phone-magic] .player__room-settings[open] > :not(summary) {
+  [data-phone-magic] .kad-fold__body:not([hidden]) {
     animation: phone-view-magic 240ms ease-out;
   }
 

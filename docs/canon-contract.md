@@ -448,7 +448,8 @@ generated projection — this supersedes `docs/briefs/generated-content.md` §2,
 which put it in `content/`.
 
 Everything below is anchored to numbers already in the engine, not invented:
-`ATTACK_DAMAGE = 3` for every plain swing (`encounter.ts`), heroes at
+`ATTACK_DAMAGE = 3` for a solid plain swing, 2 for a graze and 5 for a natural
+20 (`damageTier` in `encounter.ts`), heroes at
 `baseMaxHp` 10 / `baseGuard` 11 / `baseSteps` 4 (`rules.json`), attacks resolved
 as d20 + mod vs Guard (`dice.ts` `resolveAttack`), initiative as d20 + `quick`,
 three players on a 10×8 board (spec §7.1).
@@ -488,8 +489,9 @@ steps 5 / attack 3, three of them — read against the round budget:
 | `legend` | — | — | — | — | — | bespoke, signed off per creature |
 
 The arithmetic that fixes them: a level-1 hero swings at d20 + 2..4 against
-Guard 11 — about 65% — for 3 damage, so ~2 damage a round each, ~6 for a party
-of three. Spec §7.1 tunes for about four rounds, so **total encounter HP wants
+Guard 11 — about 65% — for 2 on a graze, 3 on a hit five past the Guard and 5
+on a natural 20, so a little under 2 damage a round each, ~5.5 for a party of
+three. Spec §7.1 tunes for about four rounds, so **total encounter HP wants
 to land in 18–30**, and three wisps at 6 HP is exactly 18. That total is the
 invariant worth validating, not the individual numbers.
 

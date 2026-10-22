@@ -6,7 +6,8 @@
  * `encounterBands.$comment`, which derives every band's stat block from spec
  * §7.1's four-round target. That note is the closest thing this project has to
  * a combat model — and nobody can run it. A number in prose goes stale the
- * first time `ATTACK_DAMAGE` or `baseGuard` moves, and nothing says so.
+ * first time `ATTACK_DAMAGE`, its tiers (`damageTier`) or `baseGuard` moves,
+ * and nothing says so.
  *
  * So this is that note as code, reading the constants rather than restating
  * them. It **reports and never gates**, the same way `art:inventory` does:
@@ -39,7 +40,7 @@
  * kinds.
  */
 
-import { ATTACK_DAMAGE } from "./encounter.js";
+import { ATTACK_DAMAGE, damageTier, tieredDamage } from "./encounter.js";
 import type { EnemySpec } from "./types/chapter.js";
 import type { RulesContent } from "./types/domain.js";
 
@@ -167,6 +168,24 @@ export function hitChance(mod: number, target: number): number {
   return Math.max(1 / 20, Math.min(19 / 20, (21 - needed) / 20));
 }
 
+/**
+ * What one swing of d20 + mod at `target` takes off, on average, for an
+ * authored `damage`. A hit is not one number any more (`damageTier` in
+ * encounter.ts): the same die decides a graze, a solid hit or a critical, so
+ * this walks the twenty faces rather than multiplying `hitChance` by a flat
+ * figure. Face 1 always misses and face 20 is always a critical, exactly as
+ * the resolver has it.
+ */
+export function expectedSwingDamage(mod: number, target: number, damage: number): number {
+  let sum = 0;
+  for (let die = 2; die <= 20; die += 1) {
+    const total = die + mod;
+    if (die < 20 && total < target) continue;
+    sum += tieredDamage(damage, damageTier({ die, total, tn: target }));
+  }
+  return sum / 20;
+}
+
 /** What one playthrough of the model produced. */
 interface Run {
   rounds: number;
@@ -242,7 +261,8 @@ export function estimateEncounter(
 
   const notes: string[] = [
     `A party of ${String(party.size)} at ${String(party.hp)} HP and Guard ${String(party.guard)}, ` +
-      `swinging at +${String(party.attackMod)} for ${String(attackDamage)} a hit.`,
+      `swinging at +${String(party.attackMod)} for ${String(tieredDamage(attackDamage, "graze"))}, ` +
+      `${String(attackDamage)} or ${String(tieredDamage(attackDamage, "critical"))} a hit (graze, solid, natural 20).`,
   ];
 
   if (enemyCount === 0) {
@@ -267,9 +287,8 @@ export function estimateEncounter(
     );
   }
 
-  const damagePerAttacker =
-    hitChance(party.attackMod, meanGuard) * attackDamage;
-  const damagePerEnemy = hitChance(meanAttack, party.guard) * attackDamage;
+  const damagePerAttacker = expectedSwingDamage(party.attackMod, meanGuard, attackDamage);
+  const damagePerEnemy = expectedSwingDamage(meanAttack, party.guard, attackDamage);
 
   // A natural 20 always lands, so the chance is never zero. But a Guard only a
   // natural 20 can reach is still a mistake rather than a hard fight, and an

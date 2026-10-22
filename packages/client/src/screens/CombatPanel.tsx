@@ -20,6 +20,11 @@
  * (`finishTurnIfSpent`), so End Turn appears only when a player is giving
  * something up — steps left after acting, or nothing worth doing.
  *
+ * Every card says what it does before it is tapped: the cards stand one to a
+ * row, each with its sentence. They used to pack two or three to a row with
+ * the name alone, and a playtest found four nameless cards hard to choose
+ * between; a tap-to-read pause that fixed it was a second tap nobody guessed.
+ *
  * What makes a single tap safe is what is *on* the surface being tapped: the
  * only figures listed are ones the ability can legally hit, a wrong gold
  * square costs a step or two, and a mis-aimed ability still lands on a
@@ -32,15 +37,17 @@
  * Mode phone has no other view of it), and a turn spent looking at a blank
  * pane is a turn not spent planning the next one. On your turn its squares
  * become the taps; on anybody else's it is a map to think over. Above it,
- * what just happened: every roll, hit and miss of the last beat, in words,
- * because a d20 that nobody sees is not a d20.
+ * once something has happened, what just happened, in one line: the newest
+ * swing with its sum and the Guard it needed. The running log is the shared
+ * screen's (FightLog), so the phone keeps only that line. Your own turn is
+ * the pinned strip's to say (PlayerPanel), not a row here.
  *
  * The board keeps its size for the whole turn. It takes whatever height the
  * pane has left, so anything around it that grew or shrank on a tap used to
  * resize the map under the finger aiming at it. So everything around it has a
- * seat that does not change: the title row, the log, the legend, and the dock
- * under the board — one line for the hint or the question, and the cards
- * below it, held at the tallest they have been this turn.
+ * seat that does not change within a turn: the log line, the legend, and the
+ * dock under the board — one line for the hint or the question, and the
+ * cards below it, held at the tallest they have been this turn.
  */
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -49,7 +56,6 @@ import type {
   AbilityCatalog,
   ClientIntent,
   Combatant,
-  DiceRoll,
   EncounterEvent,
   EncounterState,
   IntentPreview,
@@ -63,7 +69,6 @@ import {
   combatTurnAway,
   currentActor,
   currentActorId,
-  captiveName,
   environmentView,
   legalActions,
   legalItemTargets,
@@ -88,7 +93,8 @@ import { Button } from "../ui/Button";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { BuffList, combatBuffRows } from "./BuffList";
-import { PUFFED_HINT, PUFFED_WORDS, numbedLine, puffedLine } from "./buff-copy";
+import { PUFFED_HINT, PUFFED_WORDS } from "./buff-copy";
+import { describeBeats, type Beat } from "./fight-log";
 import { isNumbedHero } from "./combat-grid";
 import {
   combatantIcon,
@@ -104,7 +110,6 @@ import {
   CLOCK_ICON,
   EXIT_ICON,
   clockLine,
-  environmentBeatLine,
   exitLine,
   hazardIcon,
   hazardLine,
@@ -145,16 +150,14 @@ const IDLE: Selection = { step: "idle" };
 const MAX_LOOSE_CARDS = 6;
 
 /**
- * Cards to a row, by how many there are: one or two keep their sentence on a
- * row each; three or four go two to a row; five or more go three to a row,
- * icon over name. Every row a card list adds is a row the board gives up,
- * and a pane that scrolls is the one thing the turn screen must not do.
+ * From this many cards, each tightens to a short row (CombatPanel.css
+ * `data-dense`). The cards always stand one to a row, each with its icon,
+ * its name and the sentence saying what it does: packed two or three to a
+ * row they fit more over the board but lost the sentence, and a playtest
+ * found four nameless cards hard to choose between. A long list folds the
+ * bag (MAX_LOOSE_CARDS) before it crowds the board.
  */
-export function cardColumns(count: number): 1 | 2 | 3 {
-  if (count <= 2) return 1;
-  if (count <= 4) return 2;
-  return 3;
-}
+export const DENSE_CARDS = 3;
 
 /**
  * Drawn but unseen: the style for something that comes and goes inside a
@@ -168,25 +171,12 @@ function seat(shown: boolean): CSSProperties | undefined {
 /**
  * One turn, start to finish: which fight, whose turn, which round. Unlike
  * `turnKey` it does not change when a step or the action is spent, because
- * what hangs off it (the card columns, the dock's height) must hold still
+ * what hangs off it (the cards' density, the dock's height) must hold still
  * across exactly those taps.
  */
 function turnOf(encounter: EncounterState | null): string {
   if (!encounter) return "none";
   return [encounter.startedAt, currentActorId(encounter), encounter.round, encounter.turnIndex].join(":");
-}
-
-/**
- * One line of "what just happened", already in words. Built when the beat
- * arrives rather than at render, because the names come from the encounter
- * as it stood *then* — the patch behind the beat may hand the clock on.
- */
-export interface Beat {
-  readonly key: string;
-  /** A roll keeps its numbers, so it can be drawn as a die rather than a sentence. */
-  readonly roll?: { readonly who: string; readonly roll: DiceRoll };
-  readonly text: string;
-  readonly tone: "good" | "bad" | "plain";
 }
 
 export function CombatControls(): ReactElement | null {
@@ -228,13 +218,13 @@ export function CombatControls(): ReactElement | null {
    */
   const sending = useRef(false);
   /*
-   * Cards to a row, held for the turn. Stepping beside a monster adds Attack
-   * and stepping away takes it off, which re-dealt every card into a new
-   * shape mid-turn. The count only goes up within a turn: a card leaving
-   * never re-deals the rest, and a card arriving adds a column at most once.
+   * Whether the cards are dense, held for the turn. Stepping beside a monster
+   * adds Attack and stepping away takes it off, which would re-style every
+   * card mid-turn. Dense only switches on within a turn, never off.
    */
-  const columnsSeen = useRef<{ turn: string; columns: 1 | 2 | 3 }>({ turn: "", columns: 1 });
+  const denseSeen = useRef<{ turn: string; dense: boolean }>({ turn: "", dense: false });
   const dockRef = useRef<HTMLDivElement>(null);
+  const answersRef = useRef<HTMLDivElement>(null);
   // The grid draws each monster's portrait, which hangs off the chapter. A
   // Party Mode phone draws no board of its own, so nothing else fetched it.
   useEnsureChapter();
@@ -270,6 +260,7 @@ export function CombatControls(): ReactElement | null {
 
   const beats = useBeats(encounter, me?.character.id ?? null);
   useTallestThisTurn(dockRef, turnOf(encounter));
+  useMoreBelow(answersRef);
 
   if (!encounter || !me) return null;
 
@@ -345,10 +336,9 @@ export function CombatControls(): ReactElement | null {
   const bagFolded = usableItems.length > 1 && actions.length + usableItems.length > MAX_LOOSE_CARDS;
   const cardCount = actions.length + (bagFolded ? 1 : usableItems.length);
   const thisTurn = turnOf(encounter);
-  if (columnsSeen.current.turn !== thisTurn) columnsSeen.current = { turn: thisTurn, columns: 1 };
-  const columns = Math.max(columnsSeen.current.columns, cardColumns(cardCount)) as 1 | 2 | 3;
-  columnsSeen.current.columns = columns;
-
+  if (denseSeen.current.turn !== thisTurn) denseSeen.current = { turn: thisTurn, dense: false };
+  const dense = denseSeen.current.dense || cardCount >= DENSE_CARDS;
+  denseSeen.current.dense = dense;
   function commitAction(
     action: LegalAction,
     targetIds: readonly string[] = [],
@@ -486,8 +476,10 @@ export function CombatControls(): ReactElement | null {
           ? `You can still walk ${encounter.stepsLeft} step${encounter.stepsLeft === 1 ? "" : "s"}, or end your turn.`
           : null
         : moves.length > 0
-          ? "Walk on a gold square, or pick one thing."
+          ? `Walk up to ${encounter.stepsLeft} step${encounter.stepsLeft === 1 ? "" : "s"} on gold, or pick one thing.`
           : "Pick one thing to do.";
+
+  const inBag = selection.step === "items";
 
   // How many figures the who-step offers in all, picked or not, so the list
   // keeps its columns while picks leave it.
@@ -496,24 +488,10 @@ export function CombatControls(): ReactElement | null {
 
   return (
     <div className="prompt combat">
-      {/* The title row and the waiting line swap at every turn, in a seat of
-          the same height (CombatPanel.css), so neither moves the board. */}
-      {myTurn ? (
-        <h3 className="prompt__title combat__title">
-          <Icon name="swords" />
-          <span className="combat__line">Your turn, {me.character.name}!</span>
-          {/* Steps left, kept on the row when there are none to spend; the
-              "s" keeps its room at 1 step, so 2 → 1 does not shift a thing. */}
-          <span className="kad-chip combat__steps" style={seat(!encounter.actionTaken || moves.length > 0)}>
-            <Icon name="steps" />
-            {/* One span: the chip is a flex row, and a bare "s" beside it was
-                its own item, set off by the chip's gap as "step s". */}
-            <span>
-              {encounter.stepsLeft} step<span style={seat(encounter.stepsLeft !== 1)}>s</span>
-            </span>
-          </span>
-        </h3>
-      ) : (
+      {/* Somebody else's turn: whose, in one line. Your own turn has no row
+          here: the pinned strip lights your name and face (PlayerPanel
+          IdentityStrip), and a playtest wanted the row for the cards. */}
+      {myTurn ? null : (
         <p className="player__waiting combat__waiting" role="status">
           <Icon name="waiting" />
           <span className="combat__line">
@@ -539,10 +517,12 @@ export function CombatControls(): ReactElement | null {
           environment, so nothing here moves an ordinary board. */}
       <EnvironmentStatus encounter={encounter} />
 
-      {/* What the last beat did, in words and numbers: every roll on the
-          table, whoever threw it. The one place the d20 shows on a phone.
-          There from the fight's first moment, empty until a beat lands. */}
-      <BeatLog beats={beats} />
+      {/* What the last beat did, in one line: the newest swing, its sum and
+          the Guard it needed, or whatever else just happened. The running
+          log with every roll drawn out is the TV's (FightLog); here it is a
+          single line, so a phone gives its rows to the board, and nothing
+          until the first beat lands. */}
+      <LastBeat beats={beats} turn={turnOf(encounter)} />
 
       {/*
         The board. Tappable cells are real <button>s; everything else is an
@@ -727,12 +707,13 @@ export function CombatControls(): ReactElement | null {
               but no tap, focus or screen-reader stop lands on it. The capture
               guard is for a browser too old to know `inert`. */}
           <div
+            ref={answersRef}
             className={`combat__answers${pending ? " combat__answers--pending" : ""}`}
             inert={pending}
             onClickCapture={pending ? swallowTap : undefined}
           >
             {selection.step === "idle" && cardCount > 0 ? (
-              <ul className="prompt__options combat__actions" data-columns={columns}>
+              <ul className="prompt__options combat__actions" data-dense={dense || undefined}>
                 {actions.map((action) => (
                   <li key={action.abilityId}>
                     <button
@@ -775,7 +756,6 @@ export function CombatControls(): ReactElement | null {
                       key={`item-${item.itemId}`}
                       item={item}
                       onTap={tapItem}
-                      compact={columns > 1}
                     />
                   ))
                 )}
@@ -783,14 +763,13 @@ export function CombatControls(): ReactElement | null {
             ) : null}
 
             {/* The bag, opened in place of the cards: same spot, same thumb. */}
-            {selection.step === "items" ? (
-              <ul className="prompt__options combat__actions" data-columns={cardColumns(usableItems.length)}>
+            {inBag ? (
+              <ul className="prompt__options combat__actions" data-dense={usableItems.length >= DENSE_CARDS || undefined}>
                 {usableItems.map((item) => (
                   <ItemCard
                     key={`item-${item.itemId}`}
                     item={item}
                     onTap={tapItem}
-                    compact={cardColumns(usableItems.length) > 1}
                   />
                 ))}
               </ul>
@@ -967,6 +946,39 @@ function useTallestThisTurn(ref: RefObject<HTMLElement | null>, turn: string): v
 }
 
 /**
+ * Marks a box that scrolls with `data-more` while there is more of it below.
+ * The cards scroll in their own box only on a pane too short for them all
+ * (CombatPanel.css), and a card list cut cleanly at a card's edge reads as
+ * the whole list; the mark fades the bottom edge so it reads as "keep going".
+ */
+function useMoreBelow(ref: RefObject<HTMLElement | null>): void {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const check = () => {
+      const more = el.scrollHeight - el.clientHeight - el.scrollTop > 2;
+      if (more) el.setAttribute("data-more", "");
+      else el.removeAttribute("data-more");
+    };
+    check();
+    el.addEventListener("scroll", check, { passive: true });
+    // The cards slide in, and a card mid-slide overhangs the box: look again once it lands.
+    el.addEventListener("animationend", check);
+    const resized = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(check);
+    resized?.observe(el);
+    for (const child of el.children) resized?.observe(child);
+    const changed = typeof MutationObserver === "undefined" ? null : new MutationObserver(check);
+    changed?.observe(el, { childList: true, subtree: true });
+    return () => {
+      el.removeEventListener("scroll", check);
+      el.removeEventListener("animationend", check);
+      resized?.disconnect();
+      changed?.disconnect();
+    };
+  });
+}
+
+/**
  * The question an aimed card asks, with its way back on the same row: a
  * Change button on a row of its own was a row the board had to give up. An
  * up-to-N card's Go sits there too, its seat held until the first pick.
@@ -979,7 +991,8 @@ function AskRow({
 }: {
   icon: string;
   onChange: () => void;
-  go?: { shown: boolean; onGo: () => void } | undefined;
+  /** `label` names the button for a screen reader; an up-to-N pick's is "That's everyone". */
+  go?: { shown: boolean; onGo: () => void; label?: string } | undefined;
   children: ReactNode;
 }): ReactElement {
   return (
@@ -993,7 +1006,7 @@ function AskRow({
           variant="primary"
           size="md"
           icon={<Icon name="check" />}
-          aria-label="That's everyone. Go!"
+          aria-label={go.label ?? "That's everyone. Go!"}
           style={seat(go.shown)}
           onClick={go.onGo}
         >
@@ -1011,12 +1024,9 @@ function AskRow({
 function ItemCard({
   item,
   onTap,
-  compact,
 }: {
   item: { itemId: string; def: ItemDef; count: number };
   onTap: (itemId: string, def: ItemDef) => void;
-  /** Packed into columns: the name alone, since "Use" costs a wrapped line. */
-  compact: boolean;
 }): ReactElement {
   const name = `Use ${item.def.name}${item.count > 1 ? ` ×${item.count}` : ""}`;
   return (
@@ -1033,7 +1043,7 @@ function ItemCard({
         </span>
         <span className="choice__text">
           <span className="choice__label">
-            {compact ? item.def.name : `Use ${item.def.name}`}
+            Use {item.def.name}
             {item.count > 1 ? <span className="combat__count"> ×{item.count}</span> : null}
           </span>
           <span className="choice__sub">{itemSummary(item.def)}</span>
@@ -1150,11 +1160,18 @@ function CellFigure({ occupant, numbed = false }: { occupant: GridOccupant; numb
  * them late is never wrong and reading them early could find nothing to read.
  */
 function useBeats(encounter: EncounterState | null, myId: string | null): readonly Beat[] {
-  const [last, setLast] = useState<{ seq: number; events: readonly EncounterEvent[] } | null>(null);
+  /*
+   * The batches since the last one with something to say. A step or a wall
+   * going up arrives as a batch of its own that says nothing, and taking it
+   * as "the last beat" blanked the line until the next swing: the line came
+   * and went between a step and an attack, and the board under it changed
+   * size mid-turn. So the line holds the newest batch that says something.
+   */
+  const [recent, setRecent] = useState<{ seq: number; events: readonly EncounterEvent[] }[]>([]);
 
   const take = useCallback((events: readonly EncounterEvent[] | undefined, seq: number) => {
     if (!events || events.length === 0) return;
-    setLast({ seq, events });
+    setRecent((kept) => [...kept, { seq, events }]);
   }, []);
 
   usePresentation("COMBAT_SEQUENCE", (presentation, event) => take(presentation.events, event.seq));
@@ -1170,211 +1187,68 @@ function useBeats(encounter: EncounterState | null, myId: string | null): readon
   const fightId = encounter?.startedAt ?? null;
   const previousFight = useRef(fightId);
   useEffect(() => {
-    if (previousFight.current !== null && previousFight.current !== fightId) setLast(null);
+    if (previousFight.current !== null && previousFight.current !== fightId) setRecent([]);
     previousFight.current = fightId;
   }, [fightId]);
 
-  return useMemo(
-    () => (last && encounter ? describeBeats(last.events, encounter, myId, last.seq) : []),
-    [last, encounter, myId],
-  );
-}
-
-/** Stat ids as a kid reads them off the sheet. */
-const STAT_NAMES: Record<string, string> = {
-  might: "Might",
-  quick: "Quick",
-  clever: "Clever",
-  heart: "Heart",
-};
-
-/**
- * Beats → lines. Pure, so the wording can be asserted. "You" for the phone's
- * own hero; everyone else by name, with the ordinal that tells three wisps
- * apart. Walking is left out — it is the board's to show, and in words it
- * buries the hit under it.
- */
-export function describeBeats(
-  events: readonly EncounterEvent[],
-  encounter: EncounterState,
-  myId: string | null,
-  seq: number,
-): Beat[] {
-  const name = (id: string): string => {
-    if (id === myId) return "You";
-    const c = combatantById(encounter, id);
-    return c ? combatantLabel(c) : id;
-  };
-  const out: Beat[] = [];
-  events.forEach((event, i) => {
-    const key = `${seq}:${i}`;
-    switch (event.type) {
-      case "roll": {
-        const who = name(event.roll.characterId);
-        const hit = event.roll.result === "hit" || event.roll.result === "success";
-        out.push({
-          key,
-          roll: { who, roll: event.roll },
-          text: `${who} rolled ${rollWords(event.roll)}. ${hit ? "Hit!" : "Miss!"}`,
-          tone: hit ? (event.roll.characterId === myId || isParty(encounter, event.roll.characterId) ? "good" : "bad") : "plain",
-        });
-        return;
-      }
-      case "damage": {
-        const who = name(event.actorId);
-        out.push({
-          key,
-          text: `${who} ${who === "You" ? "take" : "takes"} ${event.amount}. ${event.hp} left.`,
-          tone: isParty(encounter, event.actorId) ? "bad" : "good",
-        });
-        return;
-      }
-      case "heal": {
-        const who = name(event.actorId);
-        out.push({ key, text: `${who} ${who === "You" ? "get" : "gets"} ${event.amount} back. ${event.hp} now.`, tone: "good" });
-        return;
-      }
-      case "down": {
-        const who = name(event.actorId);
-        out.push({
-          key,
-          text: `${who} ${who === "You" ? "are" : "is"} knocked down!`,
-          tone: isParty(encounter, event.actorId) ? "bad" : "good",
-        });
-        return;
-      }
-      case "revived": {
-        const who = name(event.actorId);
-        out.push({ key, text: `${who} ${who === "You" ? "are" : "is"} back up!`, tone: "good" });
-        return;
-      }
-      case "shoved":
-        out.push({ key, text: `${name(event.actorId)} ${name(event.actorId) === "You" ? "get" : "gets"} shoved.`, tone: "plain" });
-        return;
-      case "protected":
-        out.push({ key, text: `${name(event.byId)} ${name(event.byId) === "You" ? "brace" : "braces"} for ${name(event.actorId)}.`, tone: "good" });
-        return;
-      case "bonus":
-        out.push({ key, text: `${name(event.actorId)}: +${event.amount} on the next roll.`, tone: "good" });
-        return;
-      case "dazed":
-        out.push({ key, text: `${name(event.actorId)} ${name(event.actorId) === "You" ? "are" : "is"} dazed.`, tone: "plain" });
-        return;
-      case "warded":
-        out.push({ key, text: `${name(event.actorId)}: warded for ${event.amount}.`, tone: "good" });
-        return;
-      case "evaded":
-        out.push({ key, text: `${name(event.actorId)} vanished from ${name(event.byId)}'s swing!`, tone: "plain" });
-        return;
-      case "rooted":
-        out.push({ key, text: `${name(event.actorId)} ${name(event.actorId) === "You" ? "are" : "is"} rooted.`, tone: "plain" });
-        return;
-      case "numbed":
-        out.push({ key, text: numbedLine(name(event.actorId), event.steps, event.turns), tone: "plain" });
-        return;
-      case "puffed":
-        out.push({ key, text: puffedLine(name(event.actorId)), tone: "plain" });
-        return;
-      case "encore":
-        out.push({ key, text: `${name(event.actorId)} ${name(event.actorId) === "You" ? "get" : "gets"} another action!`, tone: "good" });
-        return;
-      // The place fighting back (#201): words shared with the TV's rift
-      // caption (environment-copy.ts), so the two never drift.
-      case "hazard":
-      case "slowed":
-      case "escaped":
-      case "freed":
-      case "captiveLost":
-      case "captiveDragged":
-      case "objective":
-      case "relocated":
-      case "riftClock":
-      case "surge": {
-        const line = environmentBeatLine(event, {
-          name,
-          isParty: (id) => isParty(encounter, id),
-          captive: (index) => captiveName(encounter.environment?.spec, index),
-          objective: (id) => objectiveLabel(encounter, id),
-        });
-        if (line) out.push({ key, ...line });
-        return;
-      }
-      case "moved":
-      case "walled":
-        return;
+  const said = useMemo(() => {
+    if (!encounter) return { beats: [] as Beat[], from: 0 };
+    for (let at = recent.length - 1; at >= 0; at -= 1) {
+      const batch = recent[at]!;
+      const beats = describeBeats(batch.events, encounter, myId, batch.seq);
+      if (beats.length > 0) return { beats, from: at };
     }
-  });
-  return out;
-}
+    return { beats: [] as Beat[], from: 0 };
+  }, [recent, encounter, myId]);
 
-function objectiveLabel(encounter: EncounterState, id: string): string {
-  return encounter.environment?.spec.objectives?.find((o) => o.id === id)?.label ?? id;
-}
-
-function isParty(encounter: EncounterState, id: string): boolean {
-  return combatantById(encounter, id)?.side === "party";
-}
-
-/** "14 + 3 Might = 17 against 11", the way the table would read it out. */
-export function rollWords(roll: DiceRoll): string {
-  const stat = roll.stat ? ` ${STAT_NAMES[roll.stat] ?? roll.stat}` : "";
-  const mod = roll.mod === 0 ? "" : ` ${roll.mod < 0 ? "-" : "+"} ${Math.abs(roll.mod)}${stat}`;
-  return `${roll.die}${mod} = ${roll.total} against ${roll.tn}`;
-}
-
-function BeatLog({ beats }: { beats: readonly Beat[] }): ReactElement {
-  // The newest line is the one that matters; a long round scrolls to it.
-  const ref = useRef<HTMLOListElement>(null);
+  // Keep only the batch the line comes from: the older ones are replaced, and the newer
+  // ones say nothing (a long walk would otherwise pile them up). Not before the fight is
+  // in state, which the opening round can beat here (see above).
   useEffect(() => {
-    const el = ref.current;
-    if (el) el.scrollTop = el.scrollHeight;
-  }, [beats]);
-  return (
-    <ol className="combat__log" aria-label="What just happened" ref={ref}>
-      {/* The box is up from the first moment of the fight; empty, it read as
-          something broken. */}
-      {beats.length === 0 ? <li className="combat__beat combat__beat--quiet">The fight is on!</li> : null}
-      {beats.map((beat) => (
-        <li key={beat.key} className={`combat__beat combat__beat--${beat.tone}`}>
-          {beat.roll ? (
-            <RollLine who={beat.roll.who} roll={beat.roll.roll} />
-          ) : (
-            <span>{beat.text}</span>
-          )}
-        </li>
-      ))}
-    </ol>
-  );
+    if (!encounter || recent.length === 0) return;
+    const keep = said.beats.length > 0 ? [recent[said.from]!] : [];
+    if (keep.length !== recent.length) setRecent(keep);
+  }, [encounter, recent, said]);
+
+  return said.beats;
 }
 
 /**
- * A roll drawn as its parts: the die big, the bonus and its stat beside it,
- * the total against the Guard it had to beat, and the verdict. The same sum
- * the dice card shows for a check (DiceOverlay), at a size a fight can afford.
+ * The newest line of the last beat, on one line of its own. The phone used to
+ * keep a three-line log with every roll drawn as its parts, which was rows
+ * the board gave up on every turn; the shared screen now carries that log for
+ * the room (FightLog), and a phone keeps the one line its holder looks for: a
+ * swing's sum, what it needed and how hard it landed, all in the line's words
+ * (fight-log.ts). The whole beat stays readable to a screen reader.
  */
-function RollLine({ who, roll }: { who: string; roll: DiceRoll }): ReactElement {
-  const hit = roll.result === "hit" || roll.result === "success";
-  const stat = roll.stat ? STAT_NAMES[roll.stat] ?? roll.stat : null;
+function LastBeat({ beats, turn }: { beats: readonly Beat[]; turn: string }): ReactElement | null {
+  const last = beats.at(-1) ?? null;
+  /*
+   * Before anything has happened there is nothing to say: "The fight is on!"
+   * held the row from the first moment, and a playtest asked for it back. But
+   * the board takes whatever height is left, so the row may only arrive
+   * between turns: a first line landing mid-turn (a swing with steps still to
+   * walk) waits for the next turn to take its row, and is read out to a
+   * screen reader meanwhile.
+   */
+  const row = useRef<{ turn: string; shown: boolean }>({ turn: "", shown: false });
+  if (row.current.turn !== turn) row.current = { turn, shown: last !== null };
+  else if (last === null) row.current.shown = false;
+  if (last === null) return null;
+  // Held off this turn: only the screen reader's copy, which takes no room.
   return (
-    <span className="combat__roll">
-      <span className="combat__roll-who">{who}</span>
-      <span className="combat__roll-die" aria-label={`rolled ${roll.die}`}>
-        <Icon name="d20" />
-        {roll.die}
-      </span>
-      {roll.mod !== 0 ? (
-        <span className="combat__roll-mod">
-          {roll.mod < 0 ? "-" : "+"} {Math.abs(roll.mod)}
-          {stat ? <span className="combat__roll-stat"> {stat}</span> : null}
-        </span>
+    <div className={row.current.shown ? "combat__log" : "kad-sr-only"} aria-label="What just happened" role="group">
+      {row.current.shown ? (
+        <p key={last.key} className={`combat__beat combat__line combat__beat--${last.tone}`} aria-hidden="true">
+          {last.text}
+        </p>
       ) : null}
-      <span className="combat__roll-total">= {roll.total}</span>
-      <span className="combat__roll-tn kad-muted">vs {roll.tn}</span>
-      <span className={`combat__roll-verdict combat__roll-verdict--${hit ? "hit" : "miss"}`}>
-        <Icon name={hit ? "check" : "close"} />
-        {hit ? "Hit!" : "Miss"}
-      </span>
-    </span>
+      <ol className="kad-sr-only" aria-live="polite">
+        {beats.map((beat) => (
+          <li key={beat.key}>{beat.text}</li>
+        ))}
+      </ol>
+    </div>
   );
 }
 

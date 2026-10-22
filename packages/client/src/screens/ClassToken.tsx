@@ -160,6 +160,8 @@ export interface TokenCardProps {
   rules: RulesContent | null;
   /** How many heroes are at the table, which picks the deed track when the two are level. */
   partySize: number;
+  /** False where a heading above already names the token (the You page's fold). */
+  named?: boolean;
 }
 
 /**
@@ -168,7 +170,7 @@ export interface TokenCardProps {
  * (still loading, or a sheet opened between games before they land) the
  * token and its notches still show; only the pips wait.
  */
-export function TokenCard({ character, isMe, rules, partySize }: TokenCardProps): ReactElement {
+export function TokenCard({ character, isMe, rules, partySize, named = true }: TokenCardProps): ReactElement {
   const classDef = (rules?.classes as Partial<Record<ClassId, ClassDef>> | undefined)?.[character.class];
   // Without the rules the sheet's own class line still names the class.
   const title = classDef ? rankTitle(classDef, character.rank) : null;
@@ -178,7 +180,7 @@ export function TokenCard({ character, isMe, rules, partySize }: TokenCardProps)
     <div className="token-card">
       <ClassToken classId={character.class} rank={character.rank} owner={isMe ? "your" : `${character.name}'s`} />
       <span className="token-card__words">
-        <span className="token-card__name">{isMe ? `Your ${name}` : `${character.name}'s ${name}`}</span>
+        {named ? <span className="token-card__name">{isMe ? `Your ${name}` : `${character.name}'s ${name}`}</span> : null}
         {title === null ? null : <span className="token-card__title">{title}</span>}
         {track === null ? (
           classDef && character.rank === "master" ? (
@@ -215,7 +217,7 @@ export function SpareTokens({ spares, isMe }: { spares: ResolvedCharacter["spare
     <div className="spare-tokens">
       <h4 className="spare-tokens__heading">
         <TokenGlyph classId={spares[0]!.class} />
-        <span>{isMe ? "Your old gear (it never takes a slot)" : "Their old gear (it never takes a slot)"}</span>
+        <span>{isMe ? "Your old gear" : "Their old gear"}</span>
       </h4>
       <ul className="spare-tokens__list">
         {spares.map((spare) => (

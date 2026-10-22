@@ -12,6 +12,27 @@
   align-items: center;
 }
 
+/*
+ * Two big buttons side by side cut both labels short on a phone ("Make
+ * some…", "Play as Th…"): stacked there instead, the hero's name in full and
+ * "Play as" last, nearest the thumb.
+ */
+@container (max-width: 30em) {
+  .welcome-back .creation__foot {
+    flex-direction: column;
+    gap: var(--space-2, 0.5em);
+  }
+
+  .welcome-back .creation__foot > * {
+    flex: 0 0 auto;
+  }
+
+  .welcome-back .creation__foot .kad-button__label {
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+}
+
 .welcome-back__art {
   display: grid;
   place-items: center;
@@ -21,4 +42,17 @@
   border-radius: var(--radius-md, 0.75em);
   background: var(--color-surface-sunken, #120f26);
   overflow: hidden;
+}
+
+/* Beside the name on the narrowest panes, like the creation flow's cards there. */
+@container (max-width: 19em) {
+  .welcome-back__art {
+    width: 3.5em;
+    height: 3.5em;
+  }
+
+  /* A hero's name is whatever the kid typed: under the picture, with the whole width. */
+  .welcome-back__hero .creation-card__title {
+    grid-column: 1 / -1;
+  }
 }

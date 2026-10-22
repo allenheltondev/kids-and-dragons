@@ -27,7 +27,8 @@ describe("figure sizes (#362)", () => {
     const cast = Object.values(chapter.scenes).flatMap((scene) => scene.type === "encounter" ? [] : scene.cast ?? []);
     expect(cast.some((member) => member.figure === "entities/legend_dragon")).toBe(false);
     const keeper = cast.filter((member) => member.figure === "cast/seal_keeper");
-    expect(keeper).toHaveLength(54);
+    // 82 since the titan finale gave the seal chamber its own climb to every ending.
+    expect(keeper).toHaveLength(82);
     expect(keeper.every((member) => member.name === "Seal-Keeper")).toBe(true);
   });
 
