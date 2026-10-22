@@ -245,25 +245,43 @@ html:not([data-contrast="high"]) .lobby__code-letter {
 /* --- What a kid taps --------------------------------------------------- */
 
 /*
- * A story choice. Its left inset holds the round socket the choice's icon sits in, and a socket
- * stretched taller goes oval, so this trim is in em: the plate's own height is in em (its padding
- * and icon), and the socket grows with it and stays round. 4.3em is that height; 32 and 112 of
- * the file's 128 are a quarter and seven eighths of it.
+ * A story choice: a plate that stretches to any height, and the socket the choice's icon sits in,
+ * drawn on its own at the art's shape (tools/art/chrome-derive.py splits the delivered plate in
+ * two). Painted into the plate's left end, the socket went oval whenever a choice ran taller than
+ * the plate, on two lines or at a larger text size. The socket is sized in em, so it grows with
+ * the type: 4.3em is a one-line choice's height, and 3.76em is the socket's 112 file pixels of
+ * the plate's 128 at that height.
  */
 .choice {
-  --chrome: url("../assets/chrome/button-choice.webp");
-  --chrome-slice: 32 32 32 112;
-  --chrome-w: 1.075em 1.075em 1.075em 3.76em;
+  --chrome: url("../assets/chrome/button-choice-plate.webp");
+  --chrome-slice: 32;
+  --chrome-w: 16px;
+  --chrome-socket: url("../assets/chrome/button-choice-socket.webp");
 }
 .choice:active {
-  --chrome: url("../assets/chrome/button-choice-pressed.webp");
+  --chrome: url("../assets/chrome/button-choice-pressed-plate.webp");
+  --chrome-socket: url("../assets/chrome/button-choice-pressed-socket.webp");
 }
 .choice--on {
-  --chrome: url("../assets/chrome/button-choice-picked.webp");
+  --chrome: url("../assets/chrome/button-choice-picked-plate.webp");
+  --chrome-socket: url("../assets/chrome/button-choice-picked-socket.webp");
 }
 html:not([data-contrast="high"]) .choice:has(> .choice__icon) {
   min-block-size: 4.3em;
   padding-inline-start: 0.48em;
+}
+/* The socket, over the plate and under the icon, centred on the icon however tall the choice is. */
+html:not([data-contrast="high"]) .choice:has(> .choice__icon)::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 50%;
+  z-index: -1;
+  inline-size: 3.76em;
+  block-size: 4.3em;
+  transform: translateY(-50%);
+  background: var(--chrome-socket) center / 100% 100% no-repeat;
+  pointer-events: none;
 }
 /* A choice with a picture rather than an icon (an adventure to pick) has no socket to sit in: the
    plain plate, and a gold ring when it is the one picked. */

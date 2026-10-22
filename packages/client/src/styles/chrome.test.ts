@@ -22,7 +22,14 @@ const drawn = [...new Set([...css.matchAll(/url\("\.\.\/assets\/chrome\/([a-z-]+
 describe("the painted chrome", () => {
   it("draws every piece that was delivered, and only those", () => {
     expect(delivered.length).toBeGreaterThan(0);
-    expect(drawn).toEqual(delivered);
+    // Delivered whole and drawn in parts (tools/art/chrome-derive.py splits each into a plate and
+    // its socket), so they are in the folder as the parts' source, not drawn themselves.
+    const sources = ["button-choice", "button-choice-picked", "button-choice-pressed"];
+    for (const source of sources) {
+      expect(drawn, `${source} is drawn as its plate`).toContain(`${source}-plate`);
+      expect(drawn, `${source} is drawn as its socket`).toContain(`${source}-socket`);
+    }
+    expect(drawn).toEqual(delivered.filter((piece) => !sources.includes(piece)));
   });
 
   it("paints only behind the high contrast guard", () => {

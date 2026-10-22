@@ -90,6 +90,9 @@ export function TravelLayout(): React.JSX.Element {
   const myTurn = isMyPrompt || isMyCombatTurn || me === null;
   const section = usePlayerNavigation((navigation) => navigation.section);
   const [focus, setFocus] = useState<Focus>("world");
+  // The pane she last went to, for the "?": side by side, two are up at once, and the one she
+  // tapped (or the one a new question put in front of her) is the one to explain.
+  const [engaged, setEngaged] = useState<Focus>("player");
   const [rolling, setRolling] = useState(false);
   const [transforming, setTransforming] = useState(false);
   const rollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -105,7 +108,10 @@ export function TravelLayout(): React.JSX.Element {
   const turnKey = useMyTurnKey();
   const previousTurnKey = useRef<string | null>(null);
   useEffect(() => {
-    if (!sideBySide && turnKey !== null && turnKey !== previousTurnKey.current) setFocus("player");
+    if (turnKey !== null && turnKey !== previousTurnKey.current) {
+      setEngaged("player");
+      if (!sideBySide) setFocus("player");
+    }
     previousTurnKey.current = turnKey;
   }, [turnKey, sideBySide]);
   // Leaving side by side (the tablet turned upright) with a question still open: it was never
@@ -170,12 +176,20 @@ export function TravelLayout(): React.JSX.Element {
     sideBySide ? pane === "player" || pane === beside : pane === showing;
   const inGuide = shows("player") && section === "guide";
   // Side by side, You and Guide are already on the screen: they leave the map where it is.
-  const showPlayer = (): void => setFocus((at) => (sideBySide && at === "map" ? at : "player"));
-  // The "?" in the corner row (#256) explains whatever pane is up.
+  const showPlayer = (): void => {
+    setEngaged("player");
+    setFocus((at) => (sideBySide && at === "map" ? at : "player"));
+  };
+  const show = (pane: "world" | "map"): void => {
+    setEngaged(pane);
+    setFocus(pane);
+  };
+  // The "?" in the corner row (#256) explains whatever pane is up; side by side, the one she is in.
+  const helpPane: Focus = sideBySide ? engaged : showing;
   useEffect(() => {
-    setHelpPane(showing);
+    setHelpPane(helpPane);
     return () => setHelpPane("player");
-  }, [showing]);
+  }, [helpPane]);
 
   return (
     <div className="kad-travel" data-side-by-side={sideBySide || undefined}>
@@ -187,7 +201,7 @@ export function TravelLayout(): React.JSX.Element {
           type="button"
           className={`kad-travel__tab kad-tray__tab kad-tap kad-focusable${shows("world") ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
           aria-pressed={shows("world")}
-          onClick={() => { dismissPlayerSheet(); setFocus("world"); }}
+          onClick={() => { dismissPlayerSheet(); show("world"); }}
         >
           <span className="kad-tray__object">
             <TrayObject name="globe" />
@@ -220,7 +234,7 @@ export function TravelLayout(): React.JSX.Element {
           type="button"
           className={`kad-travel__tab kad-tray__tab kad-tap kad-focusable${shows("map") ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
           aria-pressed={shows("map")}
-          onClick={() => { dismissPlayerSheet(); setFocus("map"); }}
+          onClick={() => { dismissPlayerSheet(); show("map"); }}
         >
           <span className="kad-tray__object">
             <TrayObject name="map" />

@@ -56,6 +56,9 @@ function PhoneLayout(): React.JSX.Element {
   // something — or having no character yet — is the game waiting on you, and
   // nothing you brought up on purpose outranks that.
   const [showing, setShowing] = useState<Showing>("player");
+  // The pane she last went to, for the "?": side by side, two are up at once, and the one she
+  // tapped (or the one a new question put in front of her) is the one to explain.
+  const [engaged, setEngaged] = useState<Showing>("player");
 
   // Each new question takes focus, including two consecutive questions for
   // the same player. An update to the current question (such as another vote)
@@ -64,7 +67,10 @@ function PhoneLayout(): React.JSX.Element {
   const turnKey = useMyTurnKey();
   const previousTurnKey = useRef<string | null>(null);
   useEffect(() => {
-    if (!sideBySide && turnKey !== null && turnKey !== previousTurnKey.current) setShowing("player");
+    if (turnKey !== null && turnKey !== previousTurnKey.current) {
+      setEngaged("player");
+      if (!sideBySide) setShowing("player");
+    }
     previousTurnKey.current = turnKey;
   }, [turnKey, sideBySide]);
   // Leaving side by side (the tablet turned upright) with a question still open: it was never
@@ -76,11 +82,12 @@ function PhoneLayout(): React.JSX.Element {
   }, [sideBySide, turnKey]);
 
   const section = usePlayerNavigation((navigation) => navigation.section);
-  // The "?" in the corner row (#256) explains whatever pane is up.
+  // The "?" in the corner row (#256) explains whatever pane is up; side by side, the one she is in.
+  const helpPane: Showing = sideBySide ? engaged : showing;
   useEffect(() => {
-    setHelpPane(showing);
+    setHelpPane(helpPane);
     return () => setHelpPane("player");
-  }, [showing]);
+  }, [helpPane]);
   // Side by side, the controls are always up and the pane beside them is the
   // world unless the map was asked for.
   const shows = (pane: Showing): boolean =>
@@ -88,7 +95,14 @@ function PhoneLayout(): React.JSX.Element {
   const onMap = shows("map");
   const inGuide = shows("player") && section === "guide";
   // Side by side, You and Guide are already on the screen: they leave the map where it is.
-  const showPlayer = (): void => setShowing((at) => (sideBySide && at === "map" ? at : "player"));
+  const showPlayer = (): void => {
+    setEngaged("player");
+    setShowing((at) => (sideBySide && at === "map" ? at : "player"));
+  };
+  const show = (pane: "world" | "map"): void => {
+    setEngaged(pane);
+    setShowing(pane);
+  };
 
   return (
     <div className="kad-party kad-party--player" data-side-by-side={sideBySide || undefined}>
@@ -98,7 +112,7 @@ function PhoneLayout(): React.JSX.Element {
           type="button"
           className={`kad-tray__tab kad-tap kad-focusable${shows("world") ? " kad-tray__tab--on" : ""}`}
           aria-pressed={shows("world")}
-          onClick={() => { dismissPlayerSheet(); setShowing("world"); }}
+          onClick={() => { dismissPlayerSheet(); show("world"); }}
         >
           <span className="kad-tray__object">
             <TrayObject name="globe" />
@@ -127,7 +141,7 @@ function PhoneLayout(): React.JSX.Element {
           type="button"
           className={`kad-tray__tab kad-tap kad-focusable${onMap ? " kad-tray__tab--on" : ""}`}
           aria-pressed={onMap}
-          onClick={() => { dismissPlayerSheet(); setShowing("map"); }}
+          onClick={() => { dismissPlayerSheet(); show("map"); }}
         >
           <span className="kad-tray__object">
             <TrayObject name="map" />
