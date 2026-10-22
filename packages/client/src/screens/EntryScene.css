@@ -69,3 +69,25 @@
 }
 @keyframes entry-scene-arrive { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .entry-scene__image { animation: none; } }
+
+/*
+ * The lobby in a phone's or a tablet's world pane, which a finger can scroll: when the room, the
+ * adventures and the party do not fit (a small phone at the largest text), the lobby scrolls rather
+ * than cutting off its foot. The TV keeps `overflow: hidden`, since nobody can scroll a TV. The
+ * painting stays put behind the words: sticky at the top and a whole pane tall (the surface is the
+ * size container, so 100cqh), pulled up over the lobby's padding, and taking no room: the bottom
+ * margin gives back its height, and the padding it was pulled over cancels the gap after it.
+ */
+:is(.kad-travel, .kad-party--player) .lobby.entry-scene-host {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+:is(.kad-travel, .kad-party--player) .lobby.entry-scene-host > .entry-scene {
+  position: sticky;
+  inset: auto;
+  inset-block-start: 0;
+  flex: none;
+  block-size: 100cqh;
+  margin-block: calc(-1 * var(--space-4, 1em)) -100cqh;
+  margin-inline: calc(-1 * var(--space-4, 1em));
+}

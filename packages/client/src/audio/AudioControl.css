@@ -34,10 +34,13 @@
   font-size: 0.8em;
   pointer-events: none;
 }
-/* Phones unlock sound on the first tap. The TV needs a gesture reminder. */
+/* Phones and tablets unlock sound on the first tap. The TV needs a gesture reminder. Anywhere
+   else the hint hangs past the strip the corner row keeps (and off a tablet's rail, over the
+   game), so it is the TV's alone. */
 @media (max-width: 699px) {
   .kad-audio-control__hint { display: none; }
 }
+body:not(:has(.kad-party--world)) .kad-audio-control__hint { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .kad-audio-control { transition: none; }
 }

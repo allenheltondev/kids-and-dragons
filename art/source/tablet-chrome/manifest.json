@@ -1,0 +1,272 @@
+{
+  "generator": "Built-in image_gen",
+  "common_prompt": "Use case: stylized-concept. Create ONE production UI art asset for Kids & Dragons. Warm storybook painting read by lamplight, chunky readable shapes, restrained low-detail brushwork, old gold/brass #6b5430 #b08a3e #f5c86c, plum leather #2a1f45 to #110c22, deep violet #1a1730, subtle teal accents. Straight-on orthographic, aligned to canvas, not a perspective object or mockup. Decoration ONLY at edges, all text areas completely calm. No text, letters, digits, red trim, silver or white trim, watermarks, extra objects, drop shadow outside canvas. Asset must occupy prescribed aspect ratio; generate on transparent canvas except full-bleed material tiles. Nine-slice edges must be completely plain lengthwise, with all corner motifs entirely within stated insets. Keep same family materials and geometry across states. ",
+  "assets": [
+    {
+      "id": "pane-spine",
+      "width": 32,
+      "height": 256,
+      "slicing": "T vertical",
+      "description": "A carved old-gold spine strip where book pages meet; uninterrupted plain longitudinal ridges, no crosswise motifs, seamless vertical ends."
+    },
+    {
+      "id": "pane-spine-cap",
+      "width": 32,
+      "height": 64,
+      "slicing": "cap",
+      "description": "A small leaf-shaped antique brass finial ending a vertical book spine. Mirrorable top/bottom."
+    },
+    {
+      "id": "pane-spine-boss",
+      "width": 64,
+      "height": 64,
+      "slicing": "boss",
+      "description": "A round brass boss with one small teal cabochon and chunky leaf setting."
+    },
+    {
+      "id": "pane-corner",
+      "width": 96,
+      "height": 96,
+      "slicing": "C",
+      "description": "Top-left L-shaped filigree corner only, thin brass curling leaf trim along top and left, rest transparent; must look right mirrored."
+    },
+    {
+      "id": "rail-wood",
+      "width": 208,
+      "height": 256,
+      "slicing": "T vertical",
+      "description": "Full-bleed dark plum leather shelf material, subtle longitudinal worn sheen, seamless top/bottom; no border or objects."
+    },
+    {
+      "id": "rail-rim",
+      "width": 8,
+      "height": 256,
+      "slicing": "T vertical",
+      "description": "Extremely narrow full-height old gold edge, plain uninterrupted longitudinal highlights, seamless top/bottom."
+    },
+    {
+      "id": "tray-wood",
+      "width": 256,
+      "height": 144,
+      "slicing": "T horizontal",
+      "description": "Full-bleed dark plum leather shelf material, subtle horizontal worn sheen, seamless left/right; no border or objects."
+    },
+    {
+      "id": "tray-rim",
+      "width": 256,
+      "height": 8,
+      "slicing": "T horizontal",
+      "description": "Extremely narrow full-width old gold edge, plain uninterrupted horizontal highlights, seamless left/right."
+    },
+    {
+      "id": "rail-socket",
+      "width": 112,
+      "height": 112,
+      "slicing": "round",
+      "description": "A shallow round recessed dark plum well with subtle antique-brass edge; calm dark empty interior."
+    },
+    {
+      "id": "rail-current",
+      "width": 24,
+      "height": 160,
+      "slicing": "3S vertical caps 24",
+      "description": "Vertical brass bracket for selected tab, heavy protruding ends within 24px caps and plain stretchable middle; selected silhouette."
+    },
+    {
+      "id": "tray-current",
+      "width": 160,
+      "height": 24,
+      "slicing": "3S horizontal caps 24",
+      "description": "Horizontal brass bracket for selected tab, heavy protruding ends within 24px caps and plain stretchable middle; selected silhouette."
+    },
+    {
+      "id": "rail-foot",
+      "width": 208,
+      "height": 208,
+      "slicing": "9S inset 32",
+      "description": "Small square inset dark plum leather control tray, restrained brass edge, empty calm center. All corners contained in 32px inset."
+    },
+    {
+      "id": "corner-bezel",
+      "width": 96,
+      "height": 96,
+      "slicing": "round",
+      "description": "Round chunky antique brass bezel with empty dark plum center for an overlaid control icon."
+    },
+    {
+      "id": "panel",
+      "width": 192,
+      "height": 192,
+      "slicing": "9S inset 40",
+      "description": "Standard square dark violet cloth card, thin brass rounded edge; completely flat calm #1a1730 center. Corners within 40px."
+    },
+    {
+      "id": "panel-featured",
+      "width": 256,
+      "height": 256,
+      "slicing": "9S inset 64",
+      "description": "Featured square dark violet card, heavier old gold frame and small leaf corner flourishes within 64px corners. Flat #1a1730 center."
+    },
+    {
+      "id": "panel-sunken",
+      "width": 128,
+      "height": 128,
+      "slicing": "9S inset 32",
+      "description": "Square dark recessed well, inner shadow, slightly rounded corners, no metallic trim; flat dark #0d0b1a center. Corners within 32px."
+    },
+    {
+      "id": "plate-story",
+      "width": 512,
+      "height": 192,
+      "slicing": "9S insets left/right 48 top/bottom 32",
+      "description": "Wide low dark-glass narration panel, gold TOP edge, subtle rounded corners within 48px sides and 32px top/bottom, calm flat dark center."
+    },
+    {
+      "id": "strip-identity",
+      "width": 256,
+      "height": 128,
+      "slicing": "9S inset 40",
+      "description": "Wide dark plum hero nameplate, restrained brass edge and minimal corner detail within 40px; blank flat dark interior."
+    },
+    {
+      "id": "heading-ribbon",
+      "width": 384,
+      "height": 96,
+      "slicing": "3S horizontal caps 64",
+      "description": "Horizontal deep-violet cloth heading ribbon with brass end details contained in 64px endcaps; plain flat stretchable middle, blank."
+    },
+    {
+      "id": "rule-flourish",
+      "width": 512,
+      "height": 32,
+      "slicing": "3S horizontal caps 96",
+      "description": "Very thin horizontal antique-brass divider with tiny central four-point star, restrained symmetrical ends in 96px endcaps, transparent backdrop."
+    },
+    {
+      "id": "goal-paper",
+      "width": 384,
+      "height": 192,
+      "slicing": "9S inset 48",
+      "description": "Wide warm light parchment slip, pinned only at top-left with small brass pin inside 48px corner; all curls inside 48px corners, flat blank warm cream center."
+    },
+    {
+      "id": "goal-box",
+      "width": 64,
+      "height": 64,
+      "slicing": "checkbox",
+      "description": "One empty hand-inked dark plum square checkbox, chunky uneven ink outline, transparent interior and outside. No marks inside."
+    },
+    {
+      "id": "goal-box-ticked",
+      "width": 64,
+      "height": 64,
+      "slicing": "checkbox",
+      "description": "One hand-inked dark plum square checkbox with a bold hand-drawn old gold check tick, same outer square geometry as empty checkbox."
+    },
+    {
+      "id": "code-coin",
+      "width": 128,
+      "height": 128,
+      "slicing": "round",
+      "description": "Round warm brass coin for room-code letter, raised chunky rim, flat empty dark antique gold center; absolutely no lettering or symbols."
+    },
+    {
+      "id": "tag-place",
+      "width": 192,
+      "height": 96,
+      "slicing": "9S inset 32",
+      "description": "Small wide dark stained wood blank place-name tag, thin brass edge and short string at top-left contained entirely within 32px corner; flat dark center."
+    },
+    {
+      "id": "tab-flip",
+      "width": 384,
+      "height": 112,
+      "slicing": "3S horizontal caps 56",
+      "description": "Inactive wide deep-plum bookmark tab, thin brass outline, subtle folded cloth ends inside 56px endcaps, plain blank dark stretchable center."
+    },
+    {
+      "id": "tab-flip-on",
+      "width": 384,
+      "height": 112,
+      "slicing": "3S horizontal caps 56",
+      "description": "Selected wide deep-plum bookmark tab, thick GOLD outline and protruding pointed bookmark end silhouette within 56px caps, plain blank dark stretchable center; same overall canvas as inactive."
+    },
+    {
+      "id": "button-choice",
+      "width": 384,
+      "height": 128,
+      "slicing": "9S insets left 112 others 32",
+      "description": "Wide dark plum wooden story-choice plate, thin brass edge, ONE round recessed empty icon socket at far left inside 112px left inset. Corners within 32px other sides. Flat dark blank text area."
+    },
+    {
+      "id": "button-choice-picked",
+      "width": 384,
+      "height": 128,
+      "slicing": "9S insets left 112 others 32",
+      "description": "Selected wide dark plum wooden story-choice plate, heavy bright gold edge with extra raised corner brackets changing silhouette, slightly lit; ONE round empty icon socket at far left inside 112px inset. Other corners within 32px. Flat dark blank text area."
+    },
+    {
+      "id": "button-choice-pressed",
+      "width": 384,
+      "height": 128,
+      "slicing": "9S insets left 112 others 32",
+      "description": "Pressed wide dark plum wooden story-choice plate, darker surface and brass edge recessed about 2 delivery pixels; ONE round empty icon socket at far left inside 112px inset. Other corners within 32px. Flat dark blank text area."
+    },
+    {
+      "id": "button-primary",
+      "width": 384,
+      "height": 128,
+      "slicing": "9S inset 48",
+      "description": "Wide polished violet enamel action plate #8b6cf5 with old-gold rim; simple rounded corners within 48px, flat violet blank text area, no faceted middle."
+    },
+    {
+      "id": "button-primary-pressed",
+      "width": 384,
+      "height": 128,
+      "slicing": "9S inset 48",
+      "description": "Pressed wide polished violet enamel action plate, darker violet surface, gold rim recessed about 2 delivery pixels; same rounded corners within 48px, flat blank text area."
+    },
+    {
+      "id": "button-secondary",
+      "width": 384,
+      "height": 112,
+      "slicing": "9S inset 40",
+      "description": "Wide quiet dark plum action plate with thin antique-brass edge, rounded corners within 40px, entirely flat blank dark text area."
+    },
+    {
+      "id": "hp-frame",
+      "width": 256,
+      "height": 40,
+      "slicing": "3S horizontal caps 24",
+      "description": "Thin wide brass health-bar frame, rounded endcaps inside 24px, transparent EMPTY center for CSS fill, uninterrupted horizontal edges."
+    },
+    {
+      "id": "slot-frame",
+      "width": 160,
+      "height": 160,
+      "slicing": "9S inset 40",
+      "description": "Square antique-brass inventory slot frame, chunky subtle rounded corner brackets inside 40px, empty transparent center for item."
+    },
+    {
+      "id": "paper-night",
+      "width": 512,
+      "height": 512,
+      "slicing": "T both",
+      "description": "Full-bleed almost-flat deep night violet #1a1730 cloth/paper texture, no border or objects; extremely faint variation BELOW 6% contrast, seamless on all four edges."
+    },
+    {
+      "id": "vignette",
+      "width": 512,
+      "height": 512,
+      "slicing": "overlay",
+      "description": "Square soft deep-plum dark vignette fading inward from all edges to a fully transparent large central area. No trim, shapes, objects or texture."
+    },
+    {
+      "id": "ornament-empty",
+      "width": 256,
+      "height": 256,
+      "slicing": "ornament",
+      "description": "One small closed antique-brass storybook lantern with dark teal glass and a short curled vine wrapping its base, friendly chunky silhouette, gentle lamplight, isolated."
+    }
+  ]
+}

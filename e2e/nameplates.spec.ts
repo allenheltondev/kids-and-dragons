@@ -215,7 +215,9 @@ test.describe("nameplates", () => {
     await watcher.getByRole("button", { name: "Previous guest" }).click();
     await expect.poll(() => namesOn(watcher, "story"), { timeout: 30_000 })
       .toBe([...HEROES, guests[1]!.name].sort().join(","));
-    await watcher.setViewportSize({ width: 960, height: 844 });
+    // Wide enough for every guest at once, held upright: on its side a screen this size is a
+    // tablet, and the world sits beside the controls in a phone's width (layout/landscape.ts).
+    await watcher.setViewportSize({ width: 960, height: 1100 });
     await expect.poll(() => namesOn(watcher, "story"), { timeout: 30_000 })
       .toBe([...HEROES, ...guests.map((guest) => guest.name)].sort().join(","));
     await expect(watcher.getByRole("navigation", { name: "Scene guests" })).toHaveCount(0);

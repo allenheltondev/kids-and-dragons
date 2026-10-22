@@ -17,6 +17,7 @@ import { useGameStore } from "../store";
 import { resetFieldGuideCache } from "../screens/content";
 import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigation";
 import { PartyLayout } from "./PartyLayout";
+import { useHelpFocus } from "../help/focus";
 
 function mount(prompt: Prompt | null = null, phone = true) {
   // A phone that plays remembers her (a device token); a family tablet's pick holds only a seat (#299).
@@ -281,5 +282,66 @@ describe("Party Mode and the Field Guide (#112)", () => {
     expect(await screen.findByRole("region", { name: "Field Guide" })).toBeTruthy();
     expect(container.querySelector(".player-view__creation")).toBe(creation);
     expect(creation?.hasAttribute("hidden")).toBe(true);
+  });
+});
+
+describe("Party Mode on a tablet held sideways", () => {
+  /** matchMedia as a landscape tablet (layout/landscape.ts). */
+  function sideways() {
+    vi.stubGlobal("matchMedia", vi.fn((query: string) => ({
+      matches: query.includes("orientation: landscape"),
+      media: query,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+    })));
+  }
+
+  it("shows the world beside the controls, and the map in its place on request", () => {
+    sideways();
+    const { container } = mount();
+    expect(container.querySelector(".kad-party--player")?.hasAttribute("data-side-by-side")).toBe(true);
+    expect(showing(container).sort()).toEqual(["player", "world"]);
+    act(() => screen.getByRole("button", { name: /^map$/i }).click());
+    expect(showing(container).sort()).toEqual(["map", "player"]);
+    expect(screen.getByRole("button", { name: /^map$/i }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("button", { name: /^you$/i }).getAttribute("aria-pressed")).toBe("true");
+    act(() => screen.getByRole("button", { name: /^world$/i }).click());
+    expect(showing(container).sort()).toEqual(["player", "world"]);
+  });
+
+  it("leaves the map up for a new question, since the controls are already in view", () => {
+    sideways();
+    const { container } = mount();
+    act(() => screen.getByRole("button", { name: /^map$/i }).click());
+    act(() => {
+      const state = useGameStore.getState().state;
+      if (!state) throw new Error("no state");
+      useGameStore.setState({ state: { ...state, prompt: {
+        kind: "choice", sceneId: "scene_hedge_wall", vote: false,
+        options: [{ id: "gap", label: "Find a gap", icon: "eye" }],
+        forPlayerIds: ["p_1"],
+      } } });
+    });
+    expect(showing(container).sort()).toEqual(["map", "player"]);
+    // No ★ to call her back: the question is already on the screen.
+    expect(container.querySelector(".kad-tray__badge")).toBeNull();
+  });
+
+  it("explains the pane she last went to: the map, then her controls beside it", () => {
+    sideways();
+    mount();
+    act(() => screen.getByRole("button", { name: /^map$/i }).click());
+    expect(useHelpFocus.getState().pane).toBe("map");
+    act(() => screen.getByRole("button", { name: /^you$/i }).click());
+    expect(useHelpFocus.getState().pane).toBe("player");
+    act(() => screen.getByRole("button", { name: /^map$/i }).click());
+    act(() => screen.getByRole("button", { name: /^guide$/i }).click());
+    expect(useHelpFocus.getState().pane).toBe("player");
+  });
+
+  it("keeps one surface at a time on a phone", () => {
+    const { container } = mount();
+    expect(container.querySelector(".kad-party--player")?.hasAttribute("data-side-by-side")).toBe(false);
+    expect(showing(container)).toEqual(["player"]);
   });
 });
