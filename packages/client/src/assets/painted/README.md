@@ -43,3 +43,18 @@ Generated for Kids & Dragons with the built-in imagegen tool. Runtime files reta
 - **hand**: A welcoming gloved hand for helping and healing.
 
 - **supper**: Ordinary bread, cheese and smoked sausage in a cream cloth bundle tied at the top. Dedicated Supper Bundle inventory icon; warm painted gold highlights and plum shadows, transparent 256px WebP.
+
+
+## Remaining #421 icons (2026-10-22)
+
+`shield`, `wing`, `spark`, `fist`, `eye`, `moon`, `thorn` and `flame` now have
+dedicated paintings instead of vector glyphs or shared aliases. `key` is the
+round-bowed rusted iron key, distinct from `quest`; `potion` is the amber Sunbloom
+bottle, distinct from `consumable`. All fourteen `facet_*` names have separate
+paintings, selected in the client display catalog without changing authored
+item definitions. All 24 are declared in `manifest.paintedIcons` and verified
+for 256px canvas, real alpha and clear edge margin.
+
+Exact prompts, reference roles, output hashes and light/dark review sheets at
+128px, 48px and 24px are in
+[`docs/reviews/issue-421-remaining`](../../../../../docs/reviews/issue-421-remaining/README.md).

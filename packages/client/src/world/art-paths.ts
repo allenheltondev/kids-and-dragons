@@ -37,6 +37,16 @@ export function characterArtUrl(species: SpeciesId, tier: TierId = STARTING_TIER
  * runtime stays tiny while the manifest remains the source of truth.
  */
 const CLASS_FIGURE_VARIANTS = new Set<string>([
+  "starweaver/mythic/unicorn",
+  "starweaver/mythic/dragonling",
+  "starweaver/mythic/griffin",
+  "starweaver/mythic/kitsune",
+  "starweaver/mythic/manticore",
+  "songkeeper/mythic/unicorn",
+  "songkeeper/mythic/dragonling",
+  "songkeeper/mythic/griffin",
+  "songkeeper/mythic/kitsune",
+  "songkeeper/mythic/manticore",
   "songkeeper/radiant/manticore",
   "songkeeper/radiant/kitsune",
   "songkeeper/radiant/griffin",

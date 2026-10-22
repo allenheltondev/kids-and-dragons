@@ -989,7 +989,17 @@
     "scenes/riftlight/singing-hall-camp",
     "scenes/classes/dojo",
     "scenes/classes/academy",
-    "scenes/classes/rookery"
+    "scenes/classes/rookery",
+    "scenes/bramblewood/hedge_wall",
+    "scenes/bramblewood/clearing",
+    "scenes/bramblewood/fork",
+    "scenes/bramblewood/canopy",
+    "scenes/bramblewood/stair",
+    "scenes/bramblewood/stream",
+    "scenes/bramblewood/thicket",
+    "scenes/bramblewood/shrine",
+    "scenes/bramblewood/hill_door",
+    "scenes/bramblewood/lanternfall"
   ],
   "$campaignArtComment": "Key art for the lobby's adventure cards (packages/client/src/screens/CampaignArt.tsx): one opaque 16:9 painting per campaign at assets/campaigns/<id>.webp. Until a campaign's file lands, a scene from its story stands in. verify.py checks the size of any that exist and refuses an undeclared file.",
   "campaignArt": {
@@ -999,7 +1009,9 @@
     },
     "campaigns": [
       "gemfall",
-      "riftlight"
+      "riftlight",
+      "first-steps",
+      "the-hollow-crown"
     ]
   },
   "$storyPlatesComment": "Story plates (docs/story-plates.md): full-screen paintings with the story told over them, before the table is asked to decide anything. A campaign's prologue (3-6 plates) and chapter plates (one each), opaque 16:9 WebP at assets/<id>.webp. `ids` is every plate content/ uses, exactly (tools/content/story-plates.test.mjs): the content names a painting, this names it again so the art tools can count what is owed. A plate whose painting has not landed is left out when the story plays. verify.py checks the size of any that exist and refuses an undeclared file.",
@@ -2222,6 +2234,56 @@
       "class": "songkeeper",
       "tier": "radiant",
       "species": "manticore"
+    },
+    {
+      "class": "starweaver",
+      "tier": "mythic",
+      "species": "unicorn"
+    },
+    {
+      "class": "starweaver",
+      "tier": "mythic",
+      "species": "dragonling"
+    },
+    {
+      "class": "starweaver",
+      "tier": "mythic",
+      "species": "griffin"
+    },
+    {
+      "class": "starweaver",
+      "tier": "mythic",
+      "species": "kitsune"
+    },
+    {
+      "class": "starweaver",
+      "tier": "mythic",
+      "species": "manticore"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "mythic",
+      "species": "unicorn"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "mythic",
+      "species": "dragonling"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "mythic",
+      "species": "griffin"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "mythic",
+      "species": "kitsune"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "mythic",
+      "species": "manticore"
     }
   ],
   "$figureVariantsComment": "Finished transparent class illustrations. Legacy character-rigs paths are retained for existing assets; no rig runtime or split parts are required.",
@@ -2296,5 +2358,38 @@
         ]
       }
     }
-  ]
+  ],
+  "$paintedIconsComment": "Additional ability and distinct item icons commissioned for #421. Transparent 256px WebP, bundled with the client; inventory and verify check these deliveries. Existing painted icons remain documented in the client painted README.",
+  "paintedIcons": {
+    "canvas": {
+      "width": 256,
+      "height": 256
+    },
+    "ids": [
+      "eye",
+      "facet_barge",
+      "facet_caravan",
+      "facet_clerks",
+      "facet_confiscated",
+      "facet_depot",
+      "facet_drakes_rate",
+      "facet_ember",
+      "facet_ford",
+      "facet_glade",
+      "facet_harvest",
+      "facet_keystone",
+      "facet_pride",
+      "facet_table",
+      "facet_unassigned",
+      "fist",
+      "flame",
+      "key",
+      "moon",
+      "potion",
+      "shield",
+      "spark",
+      "thorn",
+      "wing"
+    ]
+  }
 }

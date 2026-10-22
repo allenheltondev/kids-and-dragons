@@ -56,6 +56,7 @@ interface Manifest {
   sceneIllustrations?: string[];
   campaignArt?: { campaigns: string[] };
   storyPlates?: { ids: string[] };
+  paintedIcons?: { ids: string[] };
   entities: { id: string; classification: string }[];
 }
 
@@ -275,6 +276,16 @@ const delivered = (line: Line): number => line.need - line.missing.length;
 }
 
 // --- Canonical entities ------------------------------------------------------
+{
+  const icons = manifest.paintedIcons?.ids ?? [];
+  lines.push({
+    category: "Additional painted icons",
+    need: icons.length,
+    missing: icons.filter(id => !has("packages/client/src/assets/painted", `${id}.webp`)),
+    note: "#421 ability icons and distinct facets, key and potion; bundled with the client",
+  });
+}
+
 {
   const missing = manifest.entities
     .filter((e) => !has(`assets/entities/${e.id}`, "assembled.png"))

@@ -187,6 +187,8 @@ function cloneProgress(progress: CharacterProgress): CharacterProgress {
     // Present only once spent, so a hero who never used the stall clones
     // exactly as before it existed.
     ...(progress.fitted ? { fitted: true as const } : {}),
+    // The same: a hero no chapter has paid yet clones exactly as before #408.
+    ...(progress.paidChapters ? { paidChapters: [...progress.paidChapters] } : {}),
   };
 }
 
@@ -548,6 +550,40 @@ export function awardXp(
     character: writeProgress(character, next),
     ...(levelsGained > 0 ? { leveledTo: level } : {}),
     ...(levelsGained > 0 && tier !== beforeTier ? { newTier: tier } : {}),
+  };
+}
+
+/** Has this chapter already paid this hero its XP (#408)? Reads the effective half. */
+export function hasBeenPaid(character: Character, chapterId: string): boolean {
+  return (effectiveProgress(character).paidChapters ?? []).includes(chapterId);
+}
+
+/**
+ * A chapter's XP for one hero, paid once ever (#408): `awardXp`, and the
+ * chapter noted in the same half the XP went to, so the two commit or revert
+ * together. A chapter that has paid her already pays nothing, and says so
+ * (`alreadyPaid`), however many attempts, tables or campaign runs later.
+ *
+ * An award of nothing is not a payment, so it notes nothing: a chapter that
+ * paid no XP (or one the caller is withholding) leaves her free to earn it.
+ * Call `startCampaign()` first, as for `awardXp`.
+ */
+export function payChapterXp(
+  character: Character,
+  rules: RulesContent,
+  chapterId: string,
+  amount: number,
+): AwardXpResult & { alreadyPaid?: true } {
+  if (amount <= 0) return { character };
+  if (hasBeenPaid(character, chapterId)) return { character, alreadyPaid: true };
+  const awarded = awardXp(character, rules, amount);
+  const progress = effectiveProgress(awarded.character);
+  return {
+    ...awarded,
+    character: writeProgress(awarded.character, {
+      ...progress,
+      paidChapters: [...(progress.paidChapters ?? []), chapterId],
+    }),
   };
 }
 

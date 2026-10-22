@@ -240,6 +240,19 @@ export interface CharacterProgress {
    * written before it existed. Only ever `true`.
    */
   fitted?: true;
+  /**
+   * The chapters that have paid her their XP, by chapter id (#408): a chapter
+   * pays a hero once, ever, so replaying it in a new attempt, at another
+   * table or in another campaign run pays her nothing more. An unseen chapter
+   * (another road through Gemfall, say) still pays in full.
+   *
+   * Here, beside `xp`, for the reason `unspentPoints` is: a chapter paid
+   * during a campaign that then fails is taken back with the XP it paid, so
+   * she can earn it again; one paid in a completed campaign is hers for good.
+   * Absent until a chapter pays her, and on every row written before it
+   * existed (character schema v7), which reads as nothing paid yet.
+   */
+  paidChapters?: string[];
 }
 
 export interface ProvisionalProgress extends CharacterProgress {

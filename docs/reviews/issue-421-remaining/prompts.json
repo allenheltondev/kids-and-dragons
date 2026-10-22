@@ -1,0 +1,624 @@
+{
+  "mode": "built-in image_gen",
+  "created": "2026-10-22",
+  "assets": [
+    {
+      "id": "hedge_wall",
+      "kind": "scene",
+      "output": "assets/scenes/bramblewood/hedge_wall.webp",
+      "prompt": "Use case: illustration-story. One Kids & Dragons stage backdrop, landscape 16:9, 1920x1080. Reference image is STYLE ONLY: warm crafted painterly forest, hand-painted texture and atmospheric natural light; do not copy blue gems or root arch. Subject: A woodland footpath ends at a very tall dense wall of interlaced brown brambles and green leaves, twice a small hero's height. Tiny purple blossoms at the sides. The thorn hedge fills upper middle; a broad safe grass/dirt standing area is clear across foreground. Warm late-afternoon shafts of light; intriguing and gentle. Composition contract: broad low-detail firm standing space across full width from 70% down, feet line 80% height. Landmarks and props above foreground, visual interest upper half and sides; mobile-readable silhouettes. No people, no creatures except explicitly requested tiny moths, no characters, no baked-in heroes, no text, no letters, no UI, no frame, no threatening imagery, no floating portal. Color: moss green, ochre sunlight, warm brown wood. A gently mysterious place for an eight-year-old.",
+      "references": [
+        "assets/biomes/enchanted_woods/bg.webp"
+      ],
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-60eda3be-6034-4643-9eb7-ea34387a1a84.png",
+      "sourceSha256": "fd3711d46b6d9ab7b716994167fdf536858442d80f08515c86df5491cfc65300",
+      "sha256": "c883e6ef94cd74f4a21e684e60c454a244c65d6117eabbd45ebf27c1f86a4484",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "clearing",
+      "kind": "scene",
+      "output": "assets/scenes/bramblewood/clearing.webp",
+      "prompt": "Use case: illustration-story. One Kids & Dragons stage backdrop, landscape 16:9, 1920x1080. Reference image is STYLE ONLY: warm crafted painterly forest, hand-painted texture and atmospheric natural light; do not copy blue gems or root arch. Subject: A round clearing in ancient friendly woodland, drifting tiny warm orange lantern moths high in air, a single broad toadstool stool at back left ready for a teapot-size sprite. NO sprite or acorn prop. Mossy ground, sun patches and soft fern edges. Cozy mysterious afternoon. Composition contract: broad low-detail firm standing space across full width from 70% down, feet line 80% height. Landmarks and props above foreground, visual interest upper half and sides; mobile-readable silhouettes. No people, no creatures except explicitly requested tiny moths, no characters, no baked-in heroes, no text, no letters, no UI, no frame, no threatening imagery, no floating portal. Color: moss green, ochre sunlight, warm brown wood. A gently mysterious place for an eight-year-old.",
+      "references": [
+        "assets/biomes/enchanted_woods/bg.webp"
+      ],
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-438b5203-eb3f-4c8b-a783-1bdab4e56d68.png",
+      "sourceSha256": "95cf35618c9cc74b4d968a5b4f9e1737204e73d90690ffd1af87385d4624d75c",
+      "sha256": "244a1763353cc340f9b0355c829ca97251272079c6a27ce953165e45d82cb9d6",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "fork",
+      "kind": "scene",
+      "output": "assets/scenes/bramblewood/fork.webp",
+      "prompt": "Use case: illustration-story. One Kids & Dragons stage backdrop, landscape 16:9, 1920x1080. Reference image is STYLE ONLY: warm crafted painterly forest, hand-painted texture and atmospheric natural light; do not copy blue gems or root arch. Subject: A mossy forest path forks in the middle distance: LEFT a run of ancient stone stairs climbs into trees; RIGHT a shallow silvery stream curls between ferns. Make two routes visually distinct; near foreground is a broad uninterrupted mossy standing area. Soft golden forest daylight. Composition contract: broad low-detail firm standing space across full width from 70% down, feet line 80% height. Landmarks and props above foreground, visual interest upper half and sides; mobile-readable silhouettes. No people, no creatures except explicitly requested tiny moths, no characters, no baked-in heroes, no text, no letters, no UI, no frame, no threatening imagery, no floating portal. Color: moss green, ochre sunlight, warm brown wood. A gently mysterious place for an eight-year-old.",
+      "references": [
+        "assets/biomes/enchanted_woods/bg.webp"
+      ],
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-63dad087-3f6d-40a4-b770-10a29d8579af.png",
+      "sourceSha256": "44b31266e286f65b2d60d2efedf7db39a3dded07e00b3c0b68796f09f9e95482",
+      "sha256": "b6cf33111b663939bb26bdebdaebe7928810a0ab178d53b1e2815707d35bb1eb",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "canopy",
+      "kind": "scene",
+      "output": "assets/scenes/bramblewood/canopy.webp",
+      "prompt": "Use case: illustration-story. One Kids & Dragons stage backdrop, landscape 16:9, 1920x1080. Reference image is STYLE ONLY: warm crafted painterly forest, hand-painted texture and atmospheric natural light; do not copy blue gems or root arch. Subject: A high viewpoint through sunlit woodland treetops looking across the forest valley: in mid/distant landscape a mossy stair and root-bound small gate at left, a curving stream and thicket at right, a rounded green hill with small round wooden door behind both. Broad moss-covered safe tree terrace in lower third for composited flying heroes; no dangerous cliff in foreground. No tiny creatures, no crown reveal. Composition contract: broad low-detail firm standing space across full width from 70% down, feet line 80% height. Landmarks and props above foreground, visual interest upper half and sides; mobile-readable silhouettes. No people, no creatures except explicitly requested tiny moths, no characters, no baked-in heroes, no text, no letters, no UI, no frame, no threatening imagery, no floating portal. Color: moss green, ochre sunlight, warm brown wood. A gently mysterious place for an eight-year-old.",
+      "references": [
+        "assets/biomes/enchanted_woods/bg.webp"
+      ],
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-eb3e1315-a481-427f-8f24-b8b95a80e231.png",
+      "sourceSha256": "f7e8a2eaa863e1948ba8ff3c5b9f136cd275ade64e558aade95c1d93fef2ac58",
+      "sha256": "a196e77f0adb3b783ab1ff3554c40609c2c7a8a4429401922a3460dca38e9da7",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "stair",
+      "kind": "scene",
+      "output": "assets/scenes/bramblewood/stair.webp",
+      "prompt": "Use case: illustration-story. One Kids & Dragons stage backdrop, 1920x1080 landscape 16:9. Reference STYLE ONLY: warm crafted painterly woodland, natural light, visible fine brush texture; no blue embedded jewels. Subject: Ancient moss-soft stone steps climb between woodland trunks to a small old wooden gate tied shut with thick living tree roots. Gate is in upper middle. Low forest path at base remains broad and open. Leaves and dappled warm sun, no ominous faces. Keep lower 30% broad clear quiet firm grassy earth for separate hero figures, feet line at 80% canvas. Important landmarks sit above standing band and read on a phone. Moss greens, golden light, earthy browns. No people, no hero creatures, no text, no UI, no frame, no magical portals. Gentle storybook mood for children around eight.",
+      "references": [
+        "assets/biomes/enchanted_woods/bg.webp"
+      ],
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-2784a0c5-78cb-4b7e-b32b-c5a8c6b8f8d5.png",
+      "sourceSha256": "7820a1ab81827f42140d3a211af666182c38bf14a79775bd94ec055cc748e799",
+      "sha256": "48afcf07e56099de6e78e0a191f8e2ef8f0efa4c26e0faa493f7565e11e09797",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "stream",
+      "kind": "scene",
+      "output": "assets/scenes/bramblewood/stream.webp",
+      "prompt": "Use case: illustration-story. One Kids & Dragons stage backdrop, 1920x1080 landscape 16:9. Reference STYLE ONLY: warm crafted painterly woodland, natural light, visible fine brush texture; no blue embedded jewels. Subject: A shallow gently winding clear stream in ancient friendly woodland, little stepping stones and fern banks, one large open grassy bank across the bottom for heroes. Stream flows across middle into distance, warm sunlight flecks water, gently enchanted blue reflections, but no creatures or wisps and no jar. Keep lower 30% broad clear quiet firm grassy earth for separate hero figures, feet line at 80% canvas. Important landmarks sit above standing band and read on a phone. Moss greens, golden light, earthy browns. No people, no hero creatures, no text, no UI, no frame, no magical portals. Gentle storybook mood for children around eight.",
+      "references": [
+        "assets/biomes/enchanted_woods/bg.webp"
+      ],
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-6517311c-4a35-41a2-b91f-25ae5f701b31.png",
+      "sourceSha256": "e571a25f7d6d5d830a55e3be5a581a25885e230138f938cdbcd84e85e10408ed",
+      "sha256": "e43df14b2c582b7e3b3187c66732377a1320d1adb64e9ab34e37054400e4611e",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "thicket",
+      "kind": "scene",
+      "output": "assets/scenes/bramblewood/thicket.webp",
+      "prompt": "Use case: illustration-story. One Kids & Dragons stage backdrop, 1920x1080 landscape 16:9. Reference STYLE ONLY: warm crafted painterly woodland, natural light, visible fine brush texture; no blue embedded jewels. Subject: A soft dense woodland thicket beside a slow stream, tangled but rounded leafy branches and mossy banks, fern-bordered clear opening across foreground. View downstream toward brighter foliage, tiny warm orange lantern moths above banks. A reassuring place after a harmless mishap, not sinister. Keep lower 30% broad clear quiet firm grassy earth for separate hero figures, feet line at 80% canvas. Important landmarks sit above standing band and read on a phone. Moss greens, golden light, earthy browns. No people, no hero creatures, no text, no UI, no frame, no magical portals. Gentle storybook mood for children around eight.",
+      "references": [
+        "assets/biomes/enchanted_woods/bg.webp"
+      ],
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-8896b633-52a0-4d8f-bc27-7b164f3cd542.png",
+      "sourceSha256": "4735f9e60db6f5575fc268a3642f8c578c29cbaee6657860377064ae1d310858",
+      "sha256": "9f852f21fd1e6404891cdae2c581d596387415d8093956923eda1b9548c265eb",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "shrine",
+      "kind": "scene",
+      "output": "assets/scenes/bramblewood/shrine.webp",
+      "prompt": "Use case: illustration-story. One Kids & Dragons stage backdrop, 1920x1080 landscape 16:9. Reference STYLE ONLY: warm crafted painterly woodland, natural light, visible fine brush texture; no blue embedded jewels. Subject: A small ancient stone shrine in a forest hollow, half-swallowed by rounded roots, empty shallow crown-shaped resting plinth in upper middle; broad warm mossy bank below for a rest. Weather-worn abstract carving marks only, no legible text. The crown is MISSING: no crown and no key. Afternoon sunshine and gentle mystery, no skulls or dark ritual. Keep lower 30% broad clear quiet firm grassy earth for separate hero figures, feet line at 80% canvas. Important landmarks sit above standing band and read on a phone. Moss greens, golden light, earthy browns. No people, no hero creatures, no text, no UI, no frame, no magical portals. Gentle storybook mood for children around eight.",
+      "references": [
+        "assets/biomes/enchanted_woods/bg.webp"
+      ],
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-39dc1402-11c2-4e7b-b47d-5e7ce193bc38.png",
+      "sourceSha256": "d8e4915c144c822e6239309fc8a63ce182f6b6bf9a4ad67255e84904dcd00a35",
+      "sha256": "8cb3f0d8a0b4c5c9b0716a9db8f241c613b0d90196df0621380b1a8eff09f4cd",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "hill_door",
+      "kind": "scene",
+      "output": "assets/scenes/bramblewood/hill_door.webp",
+      "subject": "A small ROUND WOODEN DOOR set in a rounded moss-covered hill in an ancient forest. Door is CLOSED, with a modest iron latch and keyhole, sized for a small woodland neighbor, roots curl over its round frame. Warm dappled afternoon, hints of amber warmth in tiny cracks only. Broad soft grassy clearing across lower third. No occupant, no crown visible, no key prop.",
+      "references": [
+        "assets/biomes/enchanted_woods/bg.webp"
+      ],
+      "prompt": "Use case: illustration-story. Single landscape 16:9 painted game stage backdrop, 1920x1080. Reference 1 is visual style only: crafted painterly storybook texture, atmospheric light and warm natural color. Other references if present supply subject identity. Scene: A small ROUND WOODEN DOOR set in a rounded moss-covered hill in an ancient forest. Door is CLOSED, with a modest iron latch and keyhole, sized for a small woodland neighbor, roots curl over its round frame. Warm dappled afternoon, hints of amber warmth in tiny cracks only. Broad soft grassy clearing across lower third. No occupant, no crown visible, no key prop. Keep foreground from 70% down low-detail and open across full width for separately composited actors, feet at 80% height. All landmarks above this band. No UI, no border, no text, no logo. For children around eight; gently magical, never scary.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-cd9333dd-c28a-4ec6-a186-e006ae81973a.png",
+      "sourceSha256": "39ec54a9f38840fc891444d4285d5945e3487e8128d2330889d67e5444c08199",
+      "sha256": "d2fd41356206c8a2efd6f7a973c30bb98a21d60879d52c5a7bb95f8a1488998d",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "lanternfall",
+      "kind": "scene",
+      "output": "assets/scenes/bramblewood/lanternfall.webp",
+      "subject": "The SAME kind of small round CLOSED wooden door in a mossy hill, now early blue evening under woodland boughs. A safe grassy campsite outside doorway with a simple folded cream blanket to one SIDE above foreground; many tiny warm orange lantern moths rise gently into upper air like slow sparks. Cozy amber light, peaceful bedtime, no campfire and no campers. Broad clear standing band lower third, nothing frightening.",
+      "references": [
+        "assets/biomes/enchanted_woods/bg.webp"
+      ],
+      "prompt": "Use case: illustration-story. Single landscape 16:9 painted game stage backdrop, 1920x1080. Reference 1 is visual style only: crafted painterly storybook texture, atmospheric light and warm natural color. Other references if present supply subject identity. Scene: The SAME kind of small round CLOSED wooden door in a mossy hill, now early blue evening under woodland boughs. A safe grassy campsite outside doorway with a simple folded cream blanket to one SIDE above foreground; many tiny warm orange lantern moths rise gently into upper air like slow sparks. Cozy amber light, peaceful bedtime, no campfire and no campers. Broad clear standing band lower third, nothing frightening. Keep foreground from 70% down low-detail and open across full width for separately composited actors, feet at 80% height. All landmarks above this band. No UI, no border, no text, no logo. For children around eight; gently magical, never scary.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-26b461af-e2f8-4c6a-9397-c8249d2a3466.png",
+      "sourceSha256": "437777e61c0d642758e309b21bba462fdfc55bc0f1163f6a5526bd0de1bcb17d",
+      "sha256": "3efe7cef274cec9dfc39f79582db9546d196bdc16799234ee4f76a3d9c4e9050",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "first-steps",
+      "kind": "campaign",
+      "output": "assets/campaigns/first-steps.webp",
+      "subject": "Campaign cover for FIRST STEPS, a sunny practice meadow: a welcoming wooden gate stands open onto a flower-flecked grassy path, broad stepping stones lead toward a quiet pond, friendly orange-brown faun Tansy in yellow scarf from reference 2 stands beside the gate holding a blank wooden clipboard instead of the pink stone, a small friendly blue light wisp bobs nearby. Warm sunshine and spring greens. Wide establishing scene, faun at left third, gate and path center, big simple inviting silhouettes visible on lobby thumbnail. No title or other text. No dangerous weapons, no battle, no extra heroes.",
+      "references": [
+        "assets/campaigns/gemfall.webp",
+        "assets/cast/tansy/assembled.png"
+      ],
+      "prompt": "Use case: illustration-story. Single landscape 16:9 painted game campaign key art, 1600x900. Reference 1 is visual style only: crafted painterly storybook texture, atmospheric light and warm natural color. Other references if present supply subject identity. Scene: Campaign cover for FIRST STEPS, a sunny practice meadow: a welcoming wooden gate stands open onto a flower-flecked grassy path, broad stepping stones lead toward a quiet pond, friendly orange-brown faun Tansy in yellow scarf from reference 2 stands beside the gate holding a blank wooden clipboard instead of the pink stone, a small friendly blue light wisp bobs nearby. Warm sunshine and spring greens. Wide establishing scene, faun at left third, gate and path center, big simple inviting silhouettes visible on lobby thumbnail. No title or other text. No dangerous weapons, no battle, no extra heroes.  No UI, no border, no text, no logo. For children around eight; gently magical, never scary.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-43446e60-0021-4c0f-8911-1e1f3c90992e.png",
+      "sourceSha256": "b9ff9fc5e70fa95d764893f7a40b9c3bb1304b8d4bdce1b1ce2326734c68a951",
+      "sha256": "7c4764b1ba0e65b66357605768d64f10a69789c86a4bbc4cfd56e3736bc62e0a",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "the-hollow-crown",
+      "kind": "campaign",
+      "output": "assets/campaigns/the-hollow-crown.webp",
+      "subject": "Campaign cover for THE HOLLOW CROWN: ancient friendly woodland at blue-hour with warm lantern moths rising, a root-embraced small stone shrine at left, its resting plinth conspicuously EMPTY, winding mossy path leads to a small round CLOSED wooden door in a softly rounded green hill at right. No crown is visible, no culprit, no characters; the missing object is a mystery. Beautiful golden dusk light through tall branches, gentle curiosity rather than horror. Strong center composition legible as a small lobby card, warm crafted painterly fantasy. No title or lettering.",
+      "references": [
+        "assets/campaigns/gemfall.webp",
+        "assets/biomes/enchanted_woods/bg.webp"
+      ],
+      "prompt": "Use case: illustration-story. Single landscape 16:9 painted game campaign key art, 1600x900. Reference 1 is visual style only: crafted painterly storybook texture, atmospheric light and warm natural color. Other references if present supply subject identity. Scene: Campaign cover for THE HOLLOW CROWN: ancient friendly woodland at blue-hour with warm lantern moths rising, a root-embraced small stone shrine at left, its resting plinth conspicuously EMPTY, winding mossy path leads to a small round CLOSED wooden door in a softly rounded green hill at right. No crown is visible, no culprit, no characters; the missing object is a mystery. Beautiful golden dusk light through tall branches, gentle curiosity rather than horror. Strong center composition legible as a small lobby card, warm crafted painterly fantasy. No title or lettering.  No UI, no border, no text, no logo. For children around eight; gently magical, never scary.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-9fdd3816-b823-4a43-9ad5-90b77a401300.png",
+      "sourceSha256": "03eecba790b10322755d00767135a0825339e74a2ebc2408d6b56fb5f5979a68",
+      "sha256": "ffe04ca2bcac03f9b828fcb82f0123a03528548bd7dc44f45698004375062112",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "shield",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/shield.webp",
+      "references": [
+        "packages/client/src/assets/painted/thornguard.webp"
+      ],
+      "prompt": "Use case: illustration-story. One painted game ability icon, square 1024x1024 source to downsample to 256px. True transparent background. Reference supplies crafted painterly object style, warm old gold highlights, plum-brown outlines and soft cream/teal/lavender palette; DO NOT copy shield subject unless explicitly requested. Subject: A single sturdy rounded guardian shield with warm old-gold rim, cream-teal face, and ONE broad gold crossbar; no thorn sprig, distinct from the class badge. Friendly protective carved shape. Bold simple readable silhouette at 24px, low interior detail, two tones plus upper-left highlight, hand-painted texture. Object centered, fills 80% of canvas with ample clear alpha margin. No text, lettering, numbers, UI, border, backdrop, floor, cast shadow or multiple objects. One finished isolated illustration, not vector clipart or 3D.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-c8754b72-a009-4420-ba32-2815584586bd.png",
+      "sourceSha256": "f5e916b022e389ba570d66237c893a5e4b7f562030e821f7c010a38e528ac22b",
+      "sha256": "0878e9b970a78118ff403edf5fd21619fdb893c79e35ce835cbedbc7625dcce9",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "wing",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/wing.webp",
+      "references": [
+        "packages/client/src/assets/painted/thornguard.webp"
+      ],
+      "prompt": "Use case: illustration-story. One painted game ability icon, square 1024x1024 source to downsample to 256px. True transparent background. Reference supplies crafted painterly object style, warm old gold highlights, plum-brown outlines and soft cream/teal/lavender palette; DO NOT copy shield subject unless explicitly requested. Subject: ONE sweeping feathered wing detached as a symbolic emblem, thick cream feathers with lavender shadow and warm gold tips, three broad feather groups, bold upward curved silhouette; no body or bird. Bold simple readable silhouette at 24px, low interior detail, two tones plus upper-left highlight, hand-painted texture. Object centered, fills 80% of canvas with ample clear alpha margin. No text, lettering, numbers, UI, border, backdrop, floor, cast shadow or multiple objects. One finished isolated illustration, not vector clipart or 3D.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-df9a96b4-16ec-4f31-b752-f4f3b23922ba.png",
+      "sourceSha256": "833d6ab57b26c253211daf72bfb303930a669646001bdc4c274eedc34531c8c4",
+      "sha256": "ddfd9dd21e3684079249c3ae061cc0c2316c714a3df460d7adb154c45ea3d6f4",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "spark",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/spark.webp",
+      "references": [
+        "packages/client/src/assets/painted/thornguard.webp"
+      ],
+      "prompt": "Use case: illustration-story. One painted game ability icon, square 1024x1024 source to downsample to 256px. True transparent background. Reference supplies crafted painterly object style, warm old gold highlights, plum-brown outlines and soft cream/teal/lavender palette; DO NOT copy shield subject unless explicitly requested. Subject: ONE large friendly four-point magical spark made of warm gold light with a small teal core, wide soft tapered rays; no star medal, no particles, no background halo. Bold simple readable silhouette at 24px, low interior detail, two tones plus upper-left highlight, hand-painted texture. Object centered, fills 80% of canvas with ample clear alpha margin. No text, lettering, numbers, UI, border, backdrop, floor, cast shadow or multiple objects. One finished isolated illustration, not vector clipart or 3D.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-87e552e2-6205-42f5-b879-b0265bf9421c.png",
+      "sourceSha256": "bd5fbcf3fa625ab447117db9024d84270f3d0d4866f61936488361cc1d35b337",
+      "sha256": "44b1a524b30bce5d2a899c6de2c653d780cc35a8bc2d33e6f15523861563e9e8",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "fist",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/fist.webp",
+      "references": [
+        "packages/client/src/assets/painted/thornguard.webp"
+      ],
+      "prompt": "Use case: illustration-story. One painted game ability icon, square 1024x1024 source to downsample to 256px. True transparent background. Reference supplies crafted painterly object style, warm old gold highlights, plum-brown outlines and soft cream/teal/lavender palette; DO NOT copy shield subject unless explicitly requested. Subject: ONE friendly closed leather-gloved fist viewed three-quarter front, chunky terracotta glove with cream knuckles and short teal cuff. Clearly curled fingers, no arm, no threatening pose, no weapon. Bold simple readable silhouette at 24px, low interior detail, two tones plus upper-left highlight, hand-painted texture. Object centered, fills 80% of canvas with ample clear alpha margin. No text, lettering, numbers, UI, border, backdrop, floor, cast shadow or multiple objects. One finished isolated illustration, not vector clipart or 3D.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-8017cdc2-4863-40f0-b565-15953191ba77.png",
+      "sourceSha256": "09fc2b95942552347c2ff29c3a0983be918af3ec07c9943156bc9bce3f29e1e7",
+      "sha256": "bb62989b6a35624fd0fff13d3dc7c1c76010b9f9689e88c938d7ccb1d3a1291e",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "eye",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/eye.webp",
+      "references": [
+        "packages/client/src/assets/painted/thornguard.webp"
+      ],
+      "prompt": "Use case: illustration-story. One painted game ability icon, square 1024x1024 source for a 256px game asset. True transparent background. Reference is STYLE ONLY: crafted painterly game object, warm old-gold highlights, plum-brown contour, soft cream/teal/lavender accents. Subject: ONE watchful friendly eye emblem, almond-shaped cream eyelids with plum outline, large teal iris and dark plum pupil with a single cream glint. No eyelashes, makeup, eyebrow, face or eyeball horror. Bold easily readable silhouette at 24px; sparse large shapes, two tones plus upper-left highlight, hand-painted texture. Object centered fills 80% canvas, clear alpha margin on all sides. No text, numbers, border, UI, background color, ground, cast shadow, extra objects. One finished isolated illustration, not flat vector or 3D.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-4659631f-d49a-43d7-be33-065c431b68cb.png",
+      "sourceSha256": "8f4563c49d8912df72483e145642b84506d365d07cf4c3ec07820e67925a869b",
+      "sha256": "76a7bf0fd1ba91adbcb285e7d4c1cd1406ee2237edbf6c2a6e87e106cea402d3",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "moon",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/moon.webp",
+      "references": [
+        "packages/client/src/assets/painted/thornguard.webp"
+      ],
+      "prompt": "Use case: illustration-story. One painted game ability icon, square 1024x1024 source for a 256px game asset. True transparent background. Reference is STYLE ONLY: crafted painterly game object, warm old-gold highlights, plum-brown contour, soft cream/teal/lavender accents. Subject: ONE thick crescent moon carved in warm gold with cream upper-left highlight and lavender inner-edge shading, horns softly rounded, simple moon silhouette. No face, no stars or particles. Bold easily readable silhouette at 24px; sparse large shapes, two tones plus upper-left highlight, hand-painted texture. Object centered fills 80% canvas, clear alpha margin on all sides. No text, numbers, border, UI, background color, ground, cast shadow, extra objects. One finished isolated illustration, not flat vector or 3D.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-11ac38ec-952f-43a9-9bba-e75a199d5fcd.png",
+      "sourceSha256": "de86f3ab84628d8c49feab2fb84370c1a02b4b5af3f17880f042b5d6f5f53318",
+      "sha256": "bf9b5705d4c71b4f8aa0d6285199d2e8c2988fe2539632f83070afc1f4335ca6",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "thorn",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/thorn.webp",
+      "references": [
+        "packages/client/src/assets/painted/thornguard.webp"
+      ],
+      "prompt": "Use case: illustration-story. One painted game ability icon, square 1024x1024 source for a 256px game asset. True transparent background. Reference is STYLE ONLY: crafted painterly game object, warm old-gold highlights, plum-brown contour, soft cream/teal/lavender accents. Subject: ONE curved woody plum-brown thorn sprig with THREE chunky short rounded gold thorns and two moss-teal leaves. Bold diagonal curling silhouette. Friendly natural bramble, no sharp weapon, no shield. Bold easily readable silhouette at 24px; sparse large shapes, two tones plus upper-left highlight, hand-painted texture. Object centered fills 80% canvas, clear alpha margin on all sides. No text, numbers, border, UI, background color, ground, cast shadow, extra objects. One finished isolated illustration, not flat vector or 3D.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-540b6ba4-0ce7-43a6-94ca-56ae3524b508.png",
+      "sourceSha256": "d6ee40d669936f9a2d354cdacd5c8e78e0eb08e9ff9f15bdf86a2f2b368db391",
+      "sha256": "789359091a3e53aff65dd6bebed099881b8c02c2add167984494986fb19ee2f5",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "flame",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/flame.webp",
+      "references": [
+        "packages/client/src/assets/painted/thornguard.webp"
+      ],
+      "prompt": "Use case: illustration-story. One painted game ability icon, square 1024x1024 source for a 256px game asset. True transparent background. Reference is STYLE ONLY: crafted painterly game object, warm old-gold highlights, plum-brown contour, soft cream/teal/lavender accents. Subject: ONE simple sculpted orange-gold flame with three broad curved tongues and small cream heart-shaped inner flame, lavender edge shadow. Rounded warm silhouette; no candle, no torch, no smoke. Bold easily readable silhouette at 24px; sparse large shapes, two tones plus upper-left highlight, hand-painted texture. Object centered fills 80% canvas, clear alpha margin on all sides. No text, numbers, border, UI, background color, ground, cast shadow, extra objects. One finished isolated illustration, not flat vector or 3D.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-3b0f77ab-4c4a-4124-befa-cab18c3c966f.png",
+      "sourceSha256": "fbb3063989d0b89ee0446ae3f5d14a5ce59b4b8e07935e625b70145585323159",
+      "sha256": "c77ded02b00b1a09db250537fbb0cab57104a3f6a6cc837ce39171455be1f1a1",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "facet_barge",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/facet_barge.webp",
+      "references": [
+        "packages/client/src/assets/painted/trinket.webp"
+      ],
+      "prompt": "Use case: illustration-story. ONE painted inventory icon for Kids & Dragons, square 1024px source with TRUE transparent background, final 256px. Reference is STYLE ONLY: chunky faceted gem, cream highlights, warm gold edges, lavender shadows, visible painterly craft, strong warm plum outline. Subject: The Barge Stone: ONE broad faceted lavender gemstone, squat hexagonal silhouette with a gently rippled teal reflection along its lower edge, one short piece of old dock rope cradling its base. A stone carried on a river barge, not a boat miniature. Bold distinctive shape at 24px, large simple facets, one upper-left light source, centered with 10% transparent margin, gentle storybook magic. No text, glyphs, runes or labels with writing; no particles or halo, no floor, no backdrop, no UI, no border, no photorealism. Only the described item and its attached identifying wrapper/tag, no loose extra props.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-8bb9d906-12ee-4fd4-84f0-5757a9628880.png",
+      "sourceSha256": "17523f4e15561cfdc94df1c4d3a943661e3d62f05c8210fc00823a85bd9e87e0",
+      "sha256": "453d0a54ad7fd042ddb80c471e83ea9a2217712def5d87484ceb4a9fd4d388f7",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "facet_caravan",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/facet_caravan.webp",
+      "references": [
+        "packages/client/src/assets/painted/trinket.webp"
+      ],
+      "prompt": "Use case: illustration-story. ONE painted inventory icon for Kids & Dragons, square 1024px source with TRUE transparent background, final 256px. Reference is STYLE ONLY: chunky faceted gem, cream highlights, warm gold edges, lavender shadows, visible painterly craft, strong warm plum outline. Subject: The Caravan Stone: ONE large long-cut faceted honey-gold gemstone, octagonal vertical silhouette, resting in a simple burgundy leather carrying sling with two broad crossing bands. Chunky wealthy caravan centerpiece; no cart, animals or people. Bold distinctive shape at 24px, large simple facets, one upper-left light source, centered with 10% transparent margin, gentle storybook magic. No text, glyphs, runes or labels with writing; no particles or halo, no floor, no backdrop, no UI, no border, no photorealism. Only the described item and its attached identifying wrapper/tag, no loose extra props.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-bd21b989-da3c-4957-a48d-e4cf90216cf1.png",
+      "sourceSha256": "57a2e7586a556638b10847992b3cde211d110bf116d30b9270c4a3e676a4d64b",
+      "sha256": "bf815b5821996774de1b7bf8640bc9d774d1916ab25369f6035b50c264523a97",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "facet_clerks",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/facet_clerks.webp",
+      "references": [
+        "packages/client/src/assets/painted/trinket.webp"
+      ],
+      "prompt": "Use case: illustration-story. ONE painted inventory icon for Kids & Dragons, square 1024px source with TRUE transparent background, final 256px. Reference is STYLE ONLY: chunky faceted gem, cream highlights, warm gold edges, lavender shadows, visible painterly craft, strong warm plum outline. Subject: The Clerk's Stone: ONE faceted pale lavender square-cut gemstone tipped slightly diagonal, with a large blank cream shipping tag tied through a short teal cord at its top-right corner. Tag has a single abstract gold dot, NO letters or numbers. Stone remains the main object. Bold distinctive shape at 24px, large simple facets, one upper-left light source, centered with 10% transparent margin, gentle storybook magic. No text, glyphs, runes or labels with writing; no particles or halo, no floor, no backdrop, no UI, no border, no photorealism. Only the described item and its attached identifying wrapper/tag, no loose extra props.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-0364eada-e577-49ea-a2ee-1bf097c086e5.png",
+      "sourceSha256": "9ffb7f5d25ca404cf47785c407baa5ab28b1236df1f3418b83f7feadc6232389",
+      "sha256": "d037b9a2ce28a92a101a567885f37276ab44e12ea8ac032cfd3eb948c45c1559",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "facet_confiscated",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/facet_confiscated.webp",
+      "references": [
+        "packages/client/src/assets/painted/trinket.webp"
+      ],
+      "prompt": "Use case: illustration-story. ONE painted inventory icon for Kids & Dragons, square 1024px source with TRUE transparent background, final 256px. Reference is STYLE ONLY: chunky faceted gem, cream highlights, warm gold edges, lavender shadows, visible painterly craft, strong warm plum outline. Subject: The Confiscated Stone: ONE broad triangular faceted lavender gem secured at its lower corner by a dark teal cord and a chunky unlettered red wax seal. The seal is a simple round disk, no writing. A seized stone from a forest stash, not a crown or lock. Bold distinctive shape at 24px, large simple facets, one upper-left light source, centered with 10% transparent margin, gentle storybook magic. No text, glyphs, runes or labels with writing; no particles or halo, no floor, no backdrop, no UI, no border, no photorealism. Only the described item and its attached identifying wrapper/tag, no loose extra props.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-19d7e06f-d4bd-4c37-abc2-9b8b64fce13e.png",
+      "sourceSha256": "e0e78ed93d5b74833ad8526b6f896c1efb2efa112c9d8d8656d6b48674e84f74",
+      "sha256": "f7b956c19f34756ba1db5fd5f86cb953d4d9e3c36d5b760d394db74d891c738d",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "facet_depot",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/facet_depot.webp",
+      "references": [
+        "packages/client/src/assets/painted/trinket.webp"
+      ],
+      "prompt": "Use case: illustration-story. ONE painted inventory icon for Kids & Dragons, square 1024px source with TRUE transparent background, final 256px. Reference STYLE ONLY: chunky faceted gem, cream highlights, warm gold edges, lavender shadows, hand-painted craft and warm plum outline. Subject: The Depot Stone: ONE chunky lavender cushion-cut gem in a small open brass corner-bracket, with one cream depot tag tied to the bracket. Tag is blank except a broad red horizontal seal stripe, NO writing. Wide square silhouette, stone dominates. Bold distinctive shape at 24px, sparse simple large facets, one upper-left light, centered with 10% clear alpha margin. No text, legible labels, glyphs or runes; no particles or aura, no floor, no backdrop, no UI, no border, no photorealism. Only described object with its attached wrapper/stand, no unrelated props.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-64181716-9dc2-4b83-85bd-856553e49ada.png",
+      "sourceSha256": "411247ff0cb5cc60854f764c8cd2378950db66dac9f847a884ff133024b86800",
+      "sha256": "bd303f847ff293a1fba41f390ecdc273607b18ea9eab2f6f683af825bbc568c5",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "facet_drakes_rate",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/facet_drakes_rate.webp",
+      "references": [
+        "packages/client/src/assets/painted/trinket.webp"
+      ],
+      "prompt": "Use case: illustration-story. ONE painted inventory icon for Kids & Dragons, square 1024px source with TRUE transparent background, final 256px. Reference STYLE ONLY: chunky faceted gem, cream highlights, warm gold edges, lavender shadows, hand-painted craft and warm plum outline. Subject: The Drake's Rate: ONE faceted river-teal oval-cut gemstone held in a simple copper claw-footed treasure stand with a broad empty flat brass receipt tab at base; two short parallel incised lines on the tab, NO writing. Not a dragon, no actual claws of a living creature, no extra coins. Bold distinctive shape at 24px, sparse simple large facets, one upper-left light, centered with 10% clear alpha margin. No text, legible labels, glyphs or runes; no particles or aura, no floor, no backdrop, no UI, no border, no photorealism. Only described object with its attached wrapper/stand, no unrelated props.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-c4af36d7-2737-46a5-b301-b75dccbbcb62.png",
+      "sourceSha256": "1655e28951f6096ad30f5e0c167841ad7037372b9bac2deb6e42a61a71ba5399",
+      "sha256": "d761f6dd6fbdf736a9f69183f60b1916e6df866a71567a2be01b07e47bb4f993",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "facet_ember",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/facet_ember.webp",
+      "references": [
+        "packages/client/src/assets/painted/trinket.webp"
+      ],
+      "prompt": "Use case: illustration-story. ONE painted inventory icon for Kids & Dragons, square 1024px source with TRUE transparent background, final 256px. Reference STYLE ONLY: chunky faceted gem, cream highlights, warm gold edges, lavender shadows, hand-painted craft and warm plum outline. Subject: The Ember Facet: ONE large warm RED gemstone, asymmetrical flame-shaped angular cut, deep red outer faces with amber-orange inner facets, pale warm upper-left glint. Warm as toast, not on fire: no flame, no particles. Strong pointed top and broad uneven base. Bold distinctive shape at 24px, sparse simple large facets, one upper-left light, centered with 10% clear alpha margin. No text, legible labels, glyphs or runes; no particles or aura, no floor, no backdrop, no UI, no border, no photorealism. Only described object with its attached wrapper/stand, no unrelated props.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-2cc53688-9da0-490d-bf34-481697cfc28b.png",
+      "sourceSha256": "ed43b3973fb30b711159249092b4a31504826d55a63a4fd30a060d3f8af96b42",
+      "sha256": "82f80e5d9d73b798eba4256a58b78fed24919a228886991dc3aa9795da0cf04f",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "facet_ford",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/facet_ford.webp",
+      "references": [
+        "packages/client/src/assets/painted/trinket.webp"
+      ],
+      "prompt": "Use case: illustration-story. ONE painted inventory icon for Kids & Dragons, square 1024px source with TRUE transparent background, final 256px. Reference STYLE ONLY: chunky faceted gem, cream highlights, warm gold edges, lavender shadows, hand-painted craft and warm plum outline. Subject: The Ford Stone: ONE broad blue-lavender faceted gem wrapped halfway in a thick moss-teal wool sock with warm cream cuff. The top half of the crystal emerges clearly from the sock; a single small gold bell charm hangs from cuff. No foot or character, no other objects. Bold distinctive shape at 24px, sparse simple large facets, one upper-left light, centered with 10% clear alpha margin. No text, legible labels, glyphs or runes; no particles or aura, no floor, no backdrop, no UI, no border, no photorealism. Only described object with its attached wrapper/stand, no unrelated props.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-ccbff2e1-d797-4359-bd6c-36f361fff28d.png",
+      "sourceSha256": "3c42a81fa52505f4d1d83fa6ce05921829c1827bccf6eade7d16bc9366df398a",
+      "sha256": "6e610dc892788b94cd3a9bd44cd578a2889405a1aeffe42e31f3abbf6a7cb5d7",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "facet_glade",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/facet_glade.webp",
+      "references": [
+        "packages/client/src/assets/painted/trinket.webp"
+      ],
+      "prompt": "Use case: illustration-story. ONE painted inventory icon for Kids & Dragons, square 1024px source with TRUE transparent background, final 256px. Reference STYLE ONLY: chunky faceted gem, cream highlights, warm gold edges, lavender shadows, fine storybook painterly craft, warm plum outline. Subject: The Glade Stone: ONE broad rough-cut lavender crystal, uneven tall kite silhouette with two smaller angular shoulders, cradled along lower edge by a thick curling deep-green leaf and a little moss. Stone is visibly dominant. No other gems, no creatures, no forest scene. Distinctive bold silhouette readable at 24px, sparse large facets, upper-left illumination, centered with 10% alpha margin. No writing, text, numbers, runes, floating sparkles, halo, background, floor, shadow puddle, UI, frame, photorealism. One described stone with only its attached distinguishing detail.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-6e9364f6-3934-455e-a3a8-be49e5ef10b0.png",
+      "sourceSha256": "98ca8eaa96cf82beaa106848a46d4ff6b080d7fbb5a6a9155e55ed2156dff277",
+      "sha256": "565c9d3c1f87f530fac8595fec96db11d4dcf9d82d7e06a3b3767583b6494116",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "facet_harvest",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/facet_harvest.webp",
+      "references": [
+        "packages/client/src/assets/painted/trinket.webp"
+      ],
+      "prompt": "Use case: illustration-story. ONE painted inventory icon for Kids & Dragons, square 1024px source with TRUE transparent background, final 256px. Reference STYLE ONLY: chunky faceted gem, cream highlights, warm gold edges, lavender shadows, fine storybook painterly craft, warm plum outline. Subject: The Harvest Stone: ONE GREEN-GOLD faceted gem, plump rounded octagonal silhouette, with ONE tiny gold star medal on a short plum ribbon pinned at lower-right. No lettering on medal. Strong green faces, golden upper-left facet edges, cheerful crafted object. Distinctive bold silhouette readable at 24px, sparse large facets, upper-left illumination, centered with 10% alpha margin. No writing, text, numbers, runes, floating sparkles, halo, background, floor, shadow puddle, UI, frame, photorealism. One described stone with only its attached distinguishing detail.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-c886253b-e5f0-493f-a524-8ae76926c74a.png",
+      "sourceSha256": "f83a6f91cf1bd3bd3ad084cac5f70c7557dc9dbdc6ace1becf9e2d1c36de2362",
+      "sha256": "0dac61ff1c1491cf9d5f45289711961d42ebee0636b704f78786d755179b0d72",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "facet_keystone",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/facet_keystone.webp",
+      "references": [
+        "packages/client/src/assets/painted/trinket.webp"
+      ],
+      "prompt": "Use case: illustration-story. ONE painted inventory icon for Kids & Dragons, square 1024px source with TRUE transparent background, final 256px. Reference STYLE ONLY: chunky faceted gem, cream highlights, warm gold edges, lavender shadows, fine storybook painterly craft, warm plum outline. Subject: The Keystone: ONE huge-looking broad faceted amber-gold gem, heavy hexagonal tapering crown-of-seal shape, three chunky peaked crystal shoulders meeting a broad flat base; no actual metal crown, no frame. A substantial warm stone, cream bright core and honey-gold faces; no decorative small gems, no pedestal. Distinctive bold silhouette readable at 24px, sparse large facets, upper-left illumination, centered with 10% alpha margin. No writing, text, numbers, runes, floating sparkles, halo, background, floor, shadow puddle, UI, frame, photorealism. One described stone with only its attached distinguishing detail.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-88f0c20a-8556-4cb4-bec6-8bed52e220dd.png",
+      "sourceSha256": "5b6b1ef7876c8f9ac746bd7488abc25dfc1ef7b179b68804a5f52acfd3a8c981",
+      "sha256": "e1dc1272316e5b79a66a2290b38d8f2594e59668cc75fb7cc1772a526d24626e",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "facet_pride",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/facet_pride.webp",
+      "references": [
+        "packages/client/src/assets/painted/trinket.webp"
+      ],
+      "prompt": "Use case: illustration-story. ONE painted inventory icon for Kids & Dragons, square 1024px source with TRUE transparent background, final 256px. Reference STYLE ONLY: chunky faceted gem, cream highlights, warm gold edges, lavender shadows, fine storybook painterly craft, warm plum outline. Subject: The Pride Stone: ONE heavy red-lavender faceted gemstone with a broad low pentagonal body, wide flat bottom and proud angled peak. A narrow warm terracotta leather band wraps its lower third with a single small golden paw-shaped clasp; no lion, no loose props. Sturdy weighty silhouette. Distinctive bold silhouette readable at 24px, sparse large facets, upper-left illumination, centered with 10% alpha margin. No writing, text, numbers, runes, floating sparkles, halo, background, floor, shadow puddle, UI, frame, photorealism. One described stone with only its attached distinguishing detail.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-a35f4b8c-590e-4545-b06a-9245eee023a0.png",
+      "sourceSha256": "a17dcd3c1e8c6295bd04577be196185f9f98e03cd23575f6a724d74d85ab9bb9",
+      "sha256": "0394ab328202b89d88e248d46ebcf5a8e5195f754c6b8195f6db9b837cd0a7ce",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "facet_table",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/facet_table.webp",
+      "references": [
+        "packages/client/src/assets/painted/trinket.webp"
+      ],
+      "prompt": "Use case: illustration-story. ONE painted inventory icon for Kids & Dragons, square 1024px source, TRUE transparent background, final 256px. Reference is STYLE ONLY: warm crafted painterly object, soft cream highlights, old-gold edges, plum/lavender shadows, thick warm contour. Subject: The Table Stone: ONE clean geometrical lavender lozenge-cut crystal with broad flat central face, resting on a thin old-gold rectangular assay tray with two broad corner notches, no legs. A truth-table's carefully recorded specimen, no writing or runes. Stone dominates, low angular diamond silhouette. Bold simple silhouette readable at 24px; sparse large details, upper-left light, centered with 10% clear alpha margin. No text, letters, numbers, runes, backdrop, floor, cast shadow, particles, halo, UI, frame, photorealism. Only described item and its attached identifying detail.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-e954b0f4-889c-442c-a6ae-3e5a95eafba1.png",
+      "sourceSha256": "9794f1e437dea8ca34a605d0a2a9d73514c676fd9647fa86b6d8feb25bdd9766",
+      "sha256": "47bb99cc12cc043c47c7bbccb4f2805b13ffd7ce34031697590c671527730088",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "facet_unassigned",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/facet_unassigned.webp",
+      "references": [
+        "packages/client/src/assets/painted/trinket.webp"
+      ],
+      "prompt": "Use case: illustration-story. ONE painted inventory icon for Kids & Dragons, square 1024px source, TRUE transparent background, final 256px. Reference is STYLE ONLY: warm crafted painterly object, soft cream highlights, old-gold edges, plum/lavender shadows, thick warm contour. Subject: The Unassigned Stone: ONE pale lavender rounded irregular gem partly wrapped in a folded warm cream knitted cloth with a plum stitched edge, tied with ONE short teal ribbon knot at lower-left. Treasured carefully, not merchandise. No writing, no cave, no human, no loose props. Bold simple silhouette readable at 24px; sparse large details, upper-left light, centered with 10% clear alpha margin. No text, letters, numbers, runes, backdrop, floor, cast shadow, particles, halo, UI, frame, photorealism. Only described item and its attached identifying detail.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-0472f930-e601-4d1e-8c35-a4d80483a5e0.png",
+      "sourceSha256": "dbab885f704709effde6a07d92b45291bd2726118a571df7d3dbf33d83f8f069",
+      "sha256": "d36af0cf4844df08712ca0d4047550a27841714a28fcac7e7529b6da261156ca",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "key",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/key.webp",
+      "references": [
+        "packages/client/src/assets/painted/thornguard.webp"
+      ],
+      "prompt": "Use case: illustration-story. ONE painted inventory icon for Kids & Dragons, square 1024px source, TRUE transparent background, final 256px. Reference is STYLE ONLY: warm crafted painterly object, soft cream highlights, old-gold edges, plum/lavender shadows, thick warm contour. Subject: ONE old RUSTED KEY for a small woodland door: large simple round open bow, short warm iron shaft angled up-right, TWO chunky rectangular teeth, warm reddish-brown rust with old-gold edge glints and lavender shadow. No jewel and no star-shaped bow, distinct from enchanted golden quest key. Bold simple silhouette readable at 24px; sparse large details, upper-left light, centered with 10% clear alpha margin. No text, letters, numbers, runes, backdrop, floor, cast shadow, particles, halo, UI, frame, photorealism. Only described item and its attached identifying detail.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-b8d66ca9-b62d-4069-adba-0c6166f294b9.png",
+      "sourceSha256": "8acb699d712c977eeec46187e666b79f26227c34d94fbe71c505aa247ed91efd",
+      "sha256": "d137cd3ab4fa4444369cdf493060c5559741eea91d9dddea789fbf267d3c118d",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "potion",
+      "kind": "icon",
+      "output": "packages/client/src/assets/painted/potion.webp",
+      "references": [
+        "packages/client/src/assets/painted/thornguard.webp"
+      ],
+      "prompt": "Use case: illustration-story. ONE painted inventory icon for Kids & Dragons, square 1024px source, TRUE transparent background, final 256px. Reference is STYLE ONLY: warm crafted painterly object, soft cream highlights, old-gold edges, plum/lavender shadows, thick warm contour. Subject: ONE small SUNBLOOM DRAUGHT healing bottle: squat round amber glass body containing warm honey-gold liquid, thick plum glass edge, oversized cork stopper and simple gold neck band, one large cream sun-flower shaped medallion on front with NO lettering. No heart marking, no green liquid, distinct from generic consumable bottle. Bold simple silhouette readable at 24px; sparse large details, upper-left light, centered with 10% clear alpha margin. No text, letters, numbers, runes, backdrop, floor, cast shadow, particles, halo, UI, frame, photorealism. Only described item and its attached identifying detail.",
+      "source": "C:\\Users\\allen\\.codex\\generated_images\\01a164f2-abc5-7ab1-82e9-18f8c127616f\\exec-45cfb9f8-ed4f-4fd4-adf8-6c20934b1712.png",
+      "sourceSha256": "f0a0b28e4062456fb625436bc2852db65822706404c9617a4bad7bba93f5731b",
+      "sha256": "403ed2d15e102f19e37128d17dbb555bf353d2e4a83c6a1029c1c222d1ef3fc5",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    }
+  ]
+}
