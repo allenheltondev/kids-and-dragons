@@ -438,3 +438,22 @@ describe("a hero the chapter has paid before (#408)", () => {
     }
   });
 });
+
+describe("bonus objectives on a replay (#408)", () => {
+  const VETERAN_TWO: PartyMember = { ...MEMBER, playerId: "p_2", character: character({ id: "c_2", name: "Bramble" }) };
+
+  it("shows the objectives as done, not as XP, when nobody earns the chapter again", () => {
+    mount({ party: [MEMBER, VETERAN_TWO], xpAlreadyPaid: ["c_1", "c_2"], bonuses: [bonus()] });
+    expect(screen.getByText("Found the hidden shrine")).toBeTruthy();
+    expect(screen.getByText("Already claimed")).toBeTruthy();
+    expect(screen.queryByText("+20")).toBeNull();
+    expect(screen.queryByText(/new heroes earn these/)).toBeNull();
+  });
+
+  it("qualifies the objectives' XP when only some heroes are new", () => {
+    mount({ party: [MEMBER, VETERAN_TWO], xpAlreadyPaid: ["c_1"], bonuses: [bonus()] });
+    expect(screen.getByText("+20")).toBeTruthy();
+    expect(screen.getByText(/new heroes earn these/)).toBeTruthy();
+    expect(screen.queryByText("Already claimed")).toBeNull();
+  });
+});

@@ -247,15 +247,23 @@ export function ChapterCompletePanel(): ReactElement {
           <h3 className="complete__bonus-heading">
             <Icon name="star" />
             <span>And you did these too</span>
+            {/* Mixed table: the objectives' XP is for the new heroes only. */}
+            {alreadyPaid.size > 0 && !nobodyPaid ? <span className="kad-muted"> (new heroes earn these)</span> : null}
           </h3>
           <ul className="complete__bonus-list">
             {bonuses.map((bonus) => (
               <li className="complete-bonus" key={bonus.id}>
                 <Icon name="check" />
                 <span className="complete-bonus__label">{bonus.label}</span>
-                {/* A clamped objective can honestly pay 0 (the 25% budget is
-                    shared). It still shows: the party did the thing. */}
-                <span className="complete-bonus__xp kad-muted">+{bonus.xp}</span>
+                {/* When nobody earns the chapter's XP again, its objectives'
+                    XP is withheld with the rest: they are shown as done, not
+                    as XP. A clamped objective can honestly pay 0 (the 25%
+                    budget is shared). It still shows: the party did the thing. */}
+                {nobodyPaid ? (
+                  <span className="complete-bonus__xp kad-muted">Already claimed</span>
+                ) : (
+                  <span className="complete-bonus__xp kad-muted">+{bonus.xp}</span>
+                )}
               </li>
             ))}
           </ul>
