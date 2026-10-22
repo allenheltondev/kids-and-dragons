@@ -265,7 +265,7 @@ for (const hand of ["right", "left"] as const) {
     // reaching for the top of the phone.
     const dock = page.locator(".player__dock");
     if (await dock.isVisible().catch(() => false)) await dock.click(TAP);
-    await page.locator(".player__room-settings > summary").click(TAP);
+    await page.locator(".player__room-settings").getByRole("button", { name: "Room settings" }).click(TAP);
     await page.locator(".player__room-settings").getByRole("button", { name: "Display settings" }).click(TAP);
     await expect(page.getByRole("dialog", { name: "Display settings" })).toBeVisible(TAP);
     await page.keyboard.press("Escape");
