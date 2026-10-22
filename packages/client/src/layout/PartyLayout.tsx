@@ -32,6 +32,7 @@ import { BookTab } from "./BookTab";
 import { useMyTurnKey } from "../store";
 import { setHelpPane } from "../help/focus";
 import { useSideBySide } from "./landscape";
+import { PaneFrame } from "./PaneFrame";
 
 export interface PartyLayoutProps {
   surface: "world" | "player";
@@ -138,10 +139,12 @@ function PhoneLayout(): React.JSX.Element {
       <div className="kad-party__pane" data-pane="world" data-showing={shows("world")}>
         {/* Mounted behind the controls, so it says when it is actually seen. */}
         <WorldView gatesPresentations={false} prefetch={shows("world")} />
+        <PaneFrame />
       </div>
       {onMap ? (
         <div className="kad-party__pane" data-pane="map" data-showing>
           <MapView />
+          <PaneFrame />
         </div>
       ) : null}
     </div>

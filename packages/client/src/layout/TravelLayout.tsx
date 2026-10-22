@@ -61,6 +61,7 @@ import { TRANSFORM_BEAT_MS } from "../screens/TransformCutscene";
 import { rollCardMs } from "../world/presentation";
 import { setHelpPane } from "../help/focus";
 import { useSideBySide } from "./landscape";
+import { PaneFrame } from "./PaneFrame";
 
 type Focus = "world" | "map" | "player";
 
@@ -227,6 +228,7 @@ export function TravelLayout(): React.JSX.Element {
       {/* `hidden` rather than unmounted — see the header. */}
       <div className="kad-travel__pane" data-pane="world" data-showing={shows("world")}>
         <WorldView prefetch={shows("world")} />
+        <PaneFrame />
       </div>
       <div className="kad-travel__pane" data-pane="player" data-showing={shows("player")}>
         <PlayerView roomControls={<ModeSwitch />} />
@@ -238,6 +240,7 @@ export function TravelLayout(): React.JSX.Element {
       {shows("map") ? (
         <div className="kad-travel__pane" data-pane="map" data-showing>
           <MapView />
+          <PaneFrame />
         </div>
       ) : null}
     </div>

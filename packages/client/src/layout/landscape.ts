@@ -16,6 +16,9 @@
  */
 
 import { useSyncExternalStore } from "react";
+// The painted chrome, which both room layouts dress (docs/briefs/tablet-chrome-art.md). Imported
+// here because both import this, so it loads with the room and never with the start screen.
+import "../styles/chrome.css";
 
 export const LANDSCAPE_TABLET = "(orientation: landscape) and (min-width: 900px) and (min-height: 560px)";
 

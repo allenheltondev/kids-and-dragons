@@ -167,12 +167,13 @@ registered layers, seam overdraw, real alpha), one directory deep rather than tw
 is the declared exception: 2048×2048, origin (1024, 2024), and a four-tile footprint. Its art is
 complete; grid occupancy and enemy-rig playback remain separate engine integration work.
 
-### 4.4 Interface chrome — 42 to paint
+### 4.4 Interface chrome — 38 / 38, in use
 
-Frames, borders, the tray and rail, panels and buttons still render with CSS. The 38 painted
-assets are delivered in `packages/client/src/assets/chrome/`, with prompts and slicing notes in
-its README, awaiting integration. They are not in the art manifest, so `art:inventory` does not
-count them. The full list, sizes and intended placements are in
+The frames, the tray and rail, panels and buttons are painted: the 38 pieces in
+`packages/client/src/assets/chrome/` (prompts and slicing in its README) are laid on by
+`packages/client/src/styles/chrome.css`, and `chrome.test.ts` fails if a piece goes unused or a
+`url()` names one that is not there. They are not in the art manifest, so `art:inventory` does not
+count them. The full list, sizes and placements are in
 [briefs/tablet-chrome-art.md](./briefs/tablet-chrome-art.md); the
 [review sheets](./reviews/tablet-chrome-art/) show every piece on night and biome backgrounds.
 

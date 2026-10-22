@@ -1,0 +1,478 @@
+/*
+ * The painted chrome (docs/briefs/tablet-chrome-art.md): the frames, rails, plates and buttons
+ * from assets/chrome/, laid over the CSS shapes they replace.
+ *
+ * Loaded with the room (layout/landscape.ts, which both room layouts import, and the journal),
+ * never with the start screen, so none of it weighs on the first paint.
+ *
+ * Every piece is 2x art: an inset of 40 in the file is 20px here. Trim is in px, so larger text
+ * grows the panel and not its corners; the choice plate is the one exception (below). A panel's
+ * frame is a pseudo-element behind its content, so nothing here moves a box. High contrast keeps
+ * the flat borders underneath: every rule is behind `html:not([data-contrast="high"])`.
+ */
+
+/* --------------------------------------------------------------------------
+ * Nine-slice frames on a pseudo-element.
+ *
+ * `--chrome` is the picture, `--chrome-slice` its insets in file pixels and `--chrome-w` the same
+ * in CSS pixels. `::before` sits behind the content and takes the place of the background;
+ * `::after` (`--chrome-over`) sits over it, for frames whose middle is open (a slot, the HP bar).
+ * ----------------------------------------------------------------------- */
+
+html:not([data-contrast="high"]) :is(
+  .kad-host--inline, .catch-up, .lobby-member, .lobby__join, .creation-species, .creation-card,
+  .preface__card, .rankup__card,
+  .narration__plate, .sheet, .goal,
+  .lobby__heading, .lobby__party-heading, .party-strip__heading,
+  .atlas__label, .atlas__landmark, .kad-map__flip-tab,
+  .choice, .kad-button--primary, .kad-button--secondary,
+  .stat-row__item, .inv__button, .inv__slot--empty, .sheet__hp-track
+) {
+  isolation: isolate;
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/* The ones that are not already positioned. */
+html:not([data-contrast="high"]) :is(
+  .kad-host--inline, .catch-up, .lobby-member, .lobby__join, .creation-species, .creation-card,
+  .preface__card, .rankup__card, .narration__plate, .atlas__label, .goal:not(.goal--phone),
+  .sheet, .lobby__heading, .lobby__party-heading, .party-strip__heading,
+  .kad-map__flip-tab, .choice, .stat-row__item, .inv__button, .inv__slot--empty, .sheet__hp-track
+) {
+  position: relative;
+}
+
+html:not([data-contrast="high"]) :is(
+  .kad-host--inline, .catch-up, .lobby-member, .lobby__join, .creation-species, .creation-card,
+  .preface__card, .rankup__card,
+  .narration__plate, .sheet, .goal,
+  .lobby__heading, .lobby__party-heading, .party-strip__heading,
+  .atlas__label, .atlas__landmark, .kad-map__flip-tab,
+  .choice, .kad-button--primary, .kad-button--secondary,
+  .stat-row__item, .inv__button, .inv__slot--empty, .sheet__hp-track
+)::before,
+html:not([data-contrast="high"]) :is(.inv__button, .inv__slot--empty, .sheet__hp-track)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-style: solid;
+  border-color: transparent;
+  border-width: var(--chrome-w);
+  border-image-source: var(--chrome);
+  border-image-slice: var(--chrome-slice) fill;
+  border-image-width: var(--chrome-w);
+  border-image-repeat: stretch;
+}
+
+/* Open-middle frames over their content: the slot over its item, the brass over the HP fill. */
+html:not([data-contrast="high"]) :is(.inv__button, .inv__slot--empty, .sheet__hp-track)::after {
+  z-index: 1;
+  border-width: var(--chrome-over-w);
+  border-image-source: var(--chrome-over);
+  border-image-slice: var(--chrome-over-slice);
+  border-image-width: var(--chrome-over-w);
+}
+
+/* --- Panels ------------------------------------------------------------ */
+
+.kad-host--inline,
+.catch-up,
+.lobby-member,
+.lobby__join,
+.creation-species,
+.creation-card {
+  --chrome: url("../assets/chrome/panel.webp");
+  --chrome-slice: 40;
+  --chrome-w: 20px;
+}
+
+.preface__card,
+.rankup__card,
+.creation-species--on,
+.creation-card--on {
+  --chrome: url("../assets/chrome/panel-featured.webp");
+  --chrome-slice: 64;
+  --chrome-w: 32px;
+}
+
+.stat-row__item {
+  --chrome: url("../assets/chrome/panel-sunken.webp");
+  --chrome-slice: 32;
+  --chrome-w: 16px;
+}
+
+/* The story's plate, wherever the world is drawn. */
+.narration__plate {
+  --chrome: url("../assets/chrome/plate-story.webp");
+  --chrome-slice: 32 48;
+  --chrome-w: 16px 24px;
+}
+
+.sheet {
+  --chrome: url("../assets/chrome/strip-identity.webp");
+  --chrome-slice: 40;
+  --chrome-w: 20px;
+}
+html:not([data-contrast="high"]) .sheet {
+  border-bottom: 0;
+}
+
+/* --- Headings: a ribbon as wide as the words ---------------------------- */
+
+.lobby__heading,
+.lobby__party-heading,
+.party-strip__heading {
+  --chrome: url("../assets/chrome/heading-ribbon.webp");
+  --chrome-slice: 0 64;
+  --chrome-w: 0 32px;
+}
+html:not([data-contrast="high"]) :is(.lobby__heading, .lobby__party-heading, .party-strip__heading) {
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  padding: 0.3em 34px;
+}
+
+/* A divider at its own size: stretched, its star would smear. */
+html:not([data-contrast="high"]) .preface__goal {
+  border-block-start: 0;
+  padding-block-start: calc(16px + var(--space-2, 0.5em));
+  background: url("../assets/chrome/rule-flourish.webp") center top / min(256px, 100%) 16px no-repeat;
+}
+
+/* --- The chapter's goal, on a slip of paper ---------------------------- */
+
+.goal {
+  --chrome: url("../assets/chrome/goal-paper.webp");
+  --chrome-slice: 48;
+  --chrome-w: 24px;
+}
+html:not([data-contrast="high"]) .goal {
+  /* Clear of the pin and the curls in the paper's corners. */
+  padding: 14px 20px 14px 22px;
+  color: #2a1f45;
+  text-shadow: none;
+}
+html:not([data-contrast="high"]) .goal :is(.goal__sentence, .goal__label, .goal__text) {
+  color: #2a1f45;
+}
+html:not([data-contrast="high"]) .goal .goal__step--done .goal__label {
+  color: #7a6a58;
+}
+html:not([data-contrast="high"]) .goal__box {
+  border: 0;
+  border-radius: 0;
+  opacity: 1;
+  background: url("../assets/chrome/goal-box.webp") center / 100% no-repeat;
+}
+html:not([data-contrast="high"]) .goal__step--done .goal__box {
+  background: url("../assets/chrome/goal-box-ticked.webp") center / 100% no-repeat;
+}
+/* The painted tick is the tick. */
+html:not([data-contrast="high"]) .goal__step--done .goal__box > svg {
+  visibility: hidden;
+}
+
+/* --- The map ------------------------------------------------------------ */
+
+.atlas__label,
+.atlas__landmark {
+  --chrome: url("../assets/chrome/tag-place.webp");
+  --chrome-slice: 32;
+  --chrome-w: 16px;
+}
+html:not([data-contrast="high"]) :is(.atlas__label, .atlas__landmark) {
+  padding: 0.35em 0.8em;
+}
+
+.kad-map__flip-tab {
+  --chrome: url("../assets/chrome/tab-flip.webp");
+  --chrome-slice: 0 56;
+  --chrome-w: 0 28px;
+}
+.kad-map__flip-tab--on {
+  --chrome: url("../assets/chrome/tab-flip-on.webp");
+}
+html:not([data-contrast="high"]) .kad-map__flip {
+  background: url("../assets/chrome/paper-night.webp") 0 0 / 256px;
+}
+
+/* --- The room code: a coin under each letter --------------------------- */
+
+html:not([data-contrast="high"]) .lobby__code-letter {
+  border: 0;
+  background: url("../assets/chrome/code-coin.webp") center / contain no-repeat;
+  /* Struck into the coin's dark middle: light, with a dark edge to stand out of the gold. */
+  color: #fff3d6;
+  text-shadow: 0 0.06em 0 #2a1f45, 0 0 0.25em rgba(13, 11, 26, 0.9);
+}
+
+/* --- What a kid taps --------------------------------------------------- */
+
+/*
+ * A story choice. Its left inset holds the round socket the choice's icon sits in, and a socket
+ * stretched taller goes oval, so this trim is in em: the plate's own height is in em (its padding
+ * and icon), and the socket grows with it and stays round. 4.3em is that height; 32 and 112 of
+ * the file's 128 are a quarter and seven eighths of it.
+ */
+.choice {
+  --chrome: url("../assets/chrome/button-choice.webp");
+  --chrome-slice: 32 32 32 112;
+  --chrome-w: 1.075em 1.075em 1.075em 3.76em;
+}
+.choice:active {
+  --chrome: url("../assets/chrome/button-choice-pressed.webp");
+}
+.choice--on {
+  --chrome: url("../assets/chrome/button-choice-picked.webp");
+}
+html:not([data-contrast="high"]) .choice {
+  min-block-size: 4.3em;
+  padding-inline-start: 0.48em;
+}
+/* The icon in the socket: round, and the socket is its well. */
+html:not([data-contrast="high"]) .choice__icon {
+  inline-size: 2.8em;
+  block-size: 2.8em;
+  border-radius: 50%;
+  background: none;
+  box-shadow: none;
+}
+html:not([data-contrast="high"]) .choice--on .choice__icon {
+  background: radial-gradient(circle, rgba(255, 230, 168, 0.35), transparent 70%);
+  color: var(--kad-gold, #ffc95c);
+}
+
+.kad-button--primary {
+  --chrome: url("../assets/chrome/button-primary.webp");
+  --chrome-slice: 48;
+  --chrome-w: 24px;
+}
+.kad-button--primary:active:not(:disabled) {
+  --chrome: url("../assets/chrome/button-primary-pressed.webp");
+}
+.kad-button--secondary {
+  --chrome: url("../assets/chrome/button-secondary.webp");
+  --chrome-slice: 40;
+  --chrome-w: 20px;
+}
+html:not([data-contrast="high"]) .kad-button--primary {
+  color: #1a1030;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+/* The plate is the press: it sinks, the button does not jump. */
+html:not([data-contrast="high"]) :is(.kad-button--primary, .kad-button--secondary) {
+  min-block-size: max(var(--kad-touch-min), 48px);
+  padding-inline: max(var(--kad-space-4), 24px);
+}
+
+/* An inventory slot: a well, with the brass frame over the item's edges. */
+.inv__button,
+.inv__slot--empty {
+  --chrome: url("../assets/chrome/panel-sunken.webp");
+  --chrome-slice: 32;
+  --chrome-w: 16px;
+  --chrome-over: url("../assets/chrome/slot-frame.webp");
+  --chrome-over-slice: 40;
+  --chrome-over-w: 20px;
+}
+
+/* The item picked: the brass frame lit, and a ring round it, so it is not the gold alone. */
+html:not([data-contrast="high"]) .inv__button--on {
+  box-shadow: 0 0 0 0.14em var(--kad-gold, #ffc95c), 0 0 0.8em rgba(245, 200, 108, 0.45);
+  border-radius: 12px;
+}
+
+/* The health bar: a sunken track, the fill, and the brass frame over both. */
+.sheet__hp-track {
+  --chrome: url("../assets/chrome/panel-sunken.webp");
+  --chrome-slice: 32;
+  --chrome-w: 5px;
+  --chrome-over: url("../assets/chrome/hp-frame.webp");
+  --chrome-over-slice: 0 24;
+  --chrome-over-w: 0 6px;
+}
+html:not([data-contrast="high"]) .sheet__hp-track {
+  block-size: 14px;
+  padding: 3px 5px;
+  border-radius: 0;
+  overflow: visible;
+}
+html:not([data-contrast="high"]) .sheet__hp-fill {
+  border-radius: 999px;
+}
+
+/* --------------------------------------------------------------------------
+ * The tray and the rail (components.css lays them out).
+ * ----------------------------------------------------------------------- */
+
+html:not([data-contrast="high"]) .kad-tray {
+  background: url("../assets/chrome/tray-wood.webp") 0 0 / 128px 100% repeat-x;
+}
+html:not([data-contrast="high"]) .kad-tray::before {
+  block-size: 4px;
+  inset-block-start: -4px;
+  background: url("../assets/chrome/tray-rim.webp") 0 0 / 128px 4px repeat-x;
+  opacity: 1;
+}
+
+/* Each object sits in its well on the shelf. The satchel keeps its own medallion. */
+html:not([data-contrast="high"]) .kad-tray__tab:not(.kad-tray__tab--primary) .kad-tray__object {
+  background: url("../assets/chrome/rail-socket.webp") center / 100% no-repeat;
+}
+html:not([data-contrast="high"]) .kad-tray__tab:not(.kad-tray__tab--primary) .kad-tray-object {
+  inline-size: 74%;
+  block-size: 74%;
+}
+
+/* The tab now showing: a brass bracket under it. Shape, not only the gold label (spec §11). */
+html:not([data-contrast="high"]) .kad-tray__tab {
+  position: relative;
+  /* Room under every label for the bracket, so choosing a tab never moves one. */
+  padding-block-end: 12px;
+}
+html:not([data-contrast="high"]) .kad-tray__tab--on::after {
+  content: "";
+  position: absolute;
+  inset-inline: 14%;
+  inset-block-end: 0;
+  block-size: 12px;
+  pointer-events: none;
+  border-style: solid;
+  border-color: transparent;
+  border-width: 0 12px;
+  border-image: url("../assets/chrome/tray-current.webp") 0 24 fill / 0 12px stretch;
+}
+html:not([data-contrast="high"]) [data-phone-magic] .kad-tray__tab--on {
+  box-shadow: none;
+}
+
+/* The corner row's controls: a brass ring each. */
+html:not([data-contrast="high"]) .kad-corner :is(button, a) {
+  background: url("../assets/chrome/corner-bezel.webp") center / 100% no-repeat;
+  border-radius: 50%;
+}
+
+@media (orientation: landscape) and (min-width: 900px) and (min-height: 560px) {
+  html:not([data-contrast="high"]) :is(.kad-travel, .kad-party--player) > .kad-tray {
+    background: url("../assets/chrome/rail-wood.webp") 0 0 / 100% 128px repeat-y;
+  }
+  html:not([data-contrast="high"]) :is(.kad-travel, .kad-party--player) > .kad-tray::before {
+    inline-size: 4px;
+    block-size: auto;
+    inset-block: 0;
+    inset-inline: auto -4px;
+    background: url("../assets/chrome/rail-rim.webp") 0 0 / 4px 128px repeat-y;
+  }
+  html[data-hand="right"]:not([data-contrast="high"]) :is(.kad-travel, .kad-party--player) > .kad-tray::before {
+    inset-inline: -4px auto;
+  }
+
+  /* On the rail the bracket stands on the edge that faces the game, so the labels need no room. */
+  html:not([data-contrast="high"]) :is(.kad-travel, .kad-party--player) > .kad-tray .kad-tray__tab {
+    padding-block-end: 0.1rem;
+  }
+  html:not([data-contrast="high"]) :is(.kad-travel, .kad-party--player) > .kad-tray .kad-tray__tab--on::after {
+    inset-inline: auto -0.35rem;
+    inset-block: 10%;
+    inline-size: 12px;
+    block-size: auto;
+    border-width: 12px 0;
+    border-image: url("../assets/chrome/rail-current.webp") 24 0 fill / 12px 0 stretch;
+  }
+  html[data-hand="right"]:not([data-contrast="high"]) :is(.kad-travel, .kad-party--player) > .kad-tray .kad-tray__tab--on::after {
+    inset-inline: -0.35rem auto;
+  }
+
+  /* The corner row's little tray at the rail's foot. */
+  html:not([data-contrast="high"]) body:has(.kad-party--player, .kad-travel) .kad-corner {
+    padding: 6px;
+    background: url("../assets/chrome/rail-foot.webp") center / 100% 100% no-repeat;
+  }
+
+  /* The spine where the two pages meet, with its finials and its boss. */
+  html:not([data-contrast="high"]) [data-side-by-side] > [data-pane="player"] {
+    border-inline-start: 0;
+  }
+  html:not([data-contrast="high"]) [data-side-by-side] > [data-pane="player"]::before,
+  html:not([data-contrast="high"]) [data-side-by-side] > [data-pane="player"]::after {
+    content: "";
+    position: absolute;
+    z-index: 4;
+    inset-inline-start: -8px;
+    inline-size: 16px;
+    pointer-events: none;
+  }
+  html:not([data-contrast="high"]) [data-side-by-side] > [data-pane="player"]::before {
+    inset-block: 0;
+    background:
+      url("../assets/chrome/pane-spine-boss.webp") center / 32px no-repeat,
+      url("../assets/chrome/pane-spine-cap.webp") center top / 16px 32px no-repeat,
+      url("../assets/chrome/pane-spine.webp") center 0 / 16px 128px repeat-y;
+  }
+  /* The bottom finial, the top one turned over. */
+  html:not([data-contrast="high"]) [data-side-by-side] > [data-pane="player"]::after {
+    inset-block-end: 0;
+    block-size: 32px;
+    transform: scaleY(-1);
+    background: url("../assets/chrome/pane-spine-cap.webp") center / 16px 32px no-repeat;
+  }
+  /* The spine stands in the seam, half on each page. The boss would sit on one page's art, so
+     the pane does not clip it. */
+  [data-side-by-side] > [data-pane="player"] {
+    overflow: visible;
+  }
+
+  /* The world as a window in the frame: filigree in its corners and a soft dark edge. */
+  html:not([data-contrast="high"]) [data-side-by-side] .kad-pane-frame {
+    display: block;
+  }
+}
+
+/* Drawn by layout/PaneFrame.tsx inside the world and the map; only side by side (above). */
+.kad-pane-frame {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+/* The soft dark edge, softened: it lies over the story's plate too. */
+.kad-pane-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("../assets/chrome/vignette.webp") center / 100% 100% no-repeat;
+  opacity: 0.55;
+}
+.kad-pane-frame__corner {
+  position: absolute;
+  inline-size: 48px;
+  block-size: 48px;
+  background: url("../assets/chrome/pane-corner.webp") 0 0 / 100% no-repeat;
+}
+.kad-pane-frame__corner:nth-child(1) { inset-block-start: 4px; inset-inline-start: 4px; }
+.kad-pane-frame__corner:nth-child(2) { inset-block-start: 4px; inset-inline-end: 4px; transform: scaleX(-1); }
+.kad-pane-frame__corner:nth-child(3) { inset-block-end: 4px; inset-inline-start: 4px; transform: scaleY(-1); }
+.kad-pane-frame__corner:nth-child(4) { inset-block-end: 4px; inset-inline-end: 4px; transform: scale(-1); }
+
+/* --------------------------------------------------------------------------
+ * The one screen with nothing on it for you: the table is full, or the host took you out.
+ * A closed lantern over the words, so it reads as the book waiting, not as broken.
+ * ----------------------------------------------------------------------- */
+
+html:not([data-contrast="high"]) .kad-removed {
+  padding-block-start: calc(1.5rem + 104px);
+  background: url("../assets/chrome/ornament-empty.webp") center 1.5rem / 96px no-repeat;
+}
+
+/* --------------------------------------------------------------------------
+ * The controls pane: night paper, almost flat.
+ * ----------------------------------------------------------------------- */
+
+html:not([data-contrast="high"]) .kad-surface--player {
+  background: var(--kad-bg) url("../assets/chrome/paper-night.webp") 0 0 / 256px;
+}
