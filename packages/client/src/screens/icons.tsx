@@ -292,26 +292,19 @@ const GLYPHS: Record<string, ReactElement> = {
  * uses the word an author reaches for ("fist"), not our internal stat id.
  */
 const ALIASES: Record<string, string> = {
-  // spec §4.1 lists two icon senses per stat; both resolve to the stat glyph.
-  fist: "might",
+  // Synonyms without dedicated paintings keep their shared stat glyph.
   boulder: "might",
-  wing: "quick",
-  spark: "clever",
   // Heart's senses are their own glyphs — a flame and a hand read differently
   // as choices, so they stay distinct and only `heart` maps to the heart.
   strength: "might",
   speed: "quick",
   mind: "clever",
   // Item kinds and common content synonyms.
-  potion: "consumable",
   gem: "trinket",
-  key: "quest",
   item: "bag",
   inventory: "bag",
-  shield: "guard",
   coins: "coin",
   purse: "coin",
-  moon: "rest",
   // Interface synonyms.
   roll: "d20",
   die: "d20",
