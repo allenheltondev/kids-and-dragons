@@ -12,6 +12,10 @@
     "flag": "pursuit_restore"
   },
   "entry": "scene_the_pinch",
+  "plate": {
+    "art": "plates/gemfall/07r",
+    "narration": "At the Pinch, a wheelbarrow full of glitter has jammed between two rocks. Its owner looks proudly at the load. Behind him, the wagon queue grows longer. Before this road can turn toward home, somebody has to get it moving."
+  },
   "objectives": [
     {
       "id": "caravan_home",

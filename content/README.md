@@ -314,7 +314,8 @@ decide anything. Full spec, with the art: [docs/story-plates.md](../docs/story-p
 ```
 
 in the campaign file (3 to 6 plates, before the opening chapter's first scene), and in a chapter
-to establish its setting and immediate situation (Riftlight uses one for every later chapter):
+to establish its setting and immediate situation (both Gemfall and Riftlight use one for every
+later chapter, including road and pursuit variants):
 
 ```json
 "plate": { "art": "plates/riftlight/finale", "narration": "You are back on the glacier..." }

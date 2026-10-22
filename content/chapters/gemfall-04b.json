@@ -11,6 +11,10 @@
   "estimatedMinutes": 40,
   "xpAward": 90,
   "entry": "scene_tree_line",
+  "plate": {
+    "art": "plates/gemfall/04b",
+    "narration": "At the forest entrance, a fern unrolls toward the path. An acorn balances on its tip. The brambles ahead are waiting too. Before anyone goes farther, the Woods seem to want a little attention."
+  },
   "objectives": [
     {
       "id": "objection",

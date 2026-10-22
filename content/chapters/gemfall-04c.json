@@ -11,6 +11,10 @@
   "estimatedMinutes": 40,
   "xpAward": 90,
   "entry": "scene_north_roads",
+  "plate": {
+    "art": "plates/gemfall/04c",
+    "narration": "A mule has sat down in the middle of the north road. It is chewing a daisy. Its owner pleads, the wagons grumble, and the sack on its back hums away. Nobody is going anywhere just yet."
+  },
   "objectives": [
     {
       "id": "tib",

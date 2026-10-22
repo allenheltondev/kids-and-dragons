@@ -7,6 +7,10 @@
   "estimatedMinutes": 45,
   "xpAward": 90,
   "entry": "scene_arrival",
+  "plate": {
+    "art": "plates/gemfall/06",
+    "narration": "A dragonling grandmother rings her bell at a prospector on her doorstep. Above the crowded tents, a black tower rises from the ridge. The road has brought everyone this far. Now there are questions to carry uphill."
+  },
   "objectives": [
     {
       "id": "read_the_crab",

@@ -44,11 +44,11 @@ Snapshot — regenerate with `npm run art:inventory`.
 | Effect sheets, declared | **28 / 28** | — |
 | Entity cutouts | **32 / 32** | — |
 | Campaign key art | **2 / 2** | — |
-| **Story plates** (prologue + chapter plates) | **31 / 31** | — |
+| **Story plates** (prologue + chapter plates) | **46 / 46** | — |
 | Effect sheets, specified but undeclared | **0 / 0** | — |
 | **Entity part-sets (combat roster)** | **9 / 9** | — |
 
-**10 class figures outstanding.** The character-and-gear paintings and all 31 story plates are complete.
+**10 class figures outstanding.** The character-and-gear paintings and all 46 story plates are complete.
 What remains is a finished transparent `assembled.png` for each of the 10 Mythic Starweaver and
 Songkeeper figures. Story plate coverage: [story-plates.md](./story-plates.md).
 
@@ -127,9 +127,10 @@ surfaces already use the approved gear portrait.
 ### 4.1b Story plates — complete
 
 Full-screen paintings with the story told over them, before the table decides anything: a
-campaign's prologue and representative chapter plates. Gemfall's four prologue plates and Riftlight's four
-prologue plates and 23 chapter plates are delivered and wired. Riftlight's opening chapter uses its
-prologue; every later chapter has its own plate. 1600×900 opaque WebP at
+campaign's prologue and representative chapter plates. Gemfall's four prologue plates and 15
+chapter plates, and Riftlight's four prologue plates and 23 chapter plates, are delivered and wired.
+Each opening chapter uses its prologue; every later chapter and Gemfall route variant has its
+own plate. 1600×900 opaque WebP at
 `assets/plates/<campaign>/<name>.webp`, declared in `manifest.storyPlates`. The story plays without
 a plate until its painting lands. Spec, safe area and delivery steps: [story-plates.md](./story-plates.md);
 prompts: [story-plates-prompts.json](./story-plates-prompts.json); composition check:
