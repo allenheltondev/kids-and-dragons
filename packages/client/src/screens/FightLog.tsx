@@ -69,24 +69,27 @@ export function fightLogLines(
 
 /**
  * The batches the log still needs: the newest ones that between them hold the
- * last `limit` lines, and none older. Counted in lines, not batches, because a
- * batch can say nothing at all (a step, a wall going up, a place's own beat
- * the log leaves out): a cap of four batches let four steps push every swing
- * out and put "The fight is on!" back mid-fight.
+ * last `limit` lines, and none that draw no line. Counted in lines, not
+ * batches, because a batch can say nothing at all (a step, a wall going up, a
+ * place's own beat the log leaves out): a cap of four batches let four steps
+ * push every swing out and put "The fight is on!" back mid-fight, and keeping
+ * the silent ones let a long walk grow the log's state for nothing.
  */
 export function batchesForLines<B extends { readonly seq: number; readonly events: readonly EncounterEvent[] }>(
   batches: readonly B[],
   encounter: Parameters<typeof describeBeats>[1],
   limit: number = FIGHT_LOG_LINES,
 ): B[] {
+  const kept: B[] = [];
   let lines = 0;
-  let from = batches.length;
-  while (from > 0 && lines < limit) {
-    from -= 1;
-    const batch = batches[from]!;
-    lines += describeBeats(batch.events, encounter, null, batch.seq).filter((line) => !line.environment).length;
+  for (let at = batches.length - 1; at >= 0 && lines < limit; at -= 1) {
+    const batch = batches[at]!;
+    const said = describeBeats(batch.events, encounter, null, batch.seq).filter((line) => !line.environment).length;
+    if (said === 0) continue;
+    kept.unshift(batch);
+    lines += said;
   }
-  return batches.slice(from);
+  return kept;
 }
 
 export function FightLog(): ReactElement | null {
