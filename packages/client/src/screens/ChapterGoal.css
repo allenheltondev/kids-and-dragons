@@ -249,7 +249,8 @@
   min-inline-size: 0;
 }
 
-.goal--closed .goal__sentence {
+.goal--closed .goal__sentence,
+.goal--phone.goal--folded .goal__sentence {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

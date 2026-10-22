@@ -20,11 +20,10 @@
  * (`finishTurnIfSpent`), so End Turn appears only when a player is giving
  * something up — steps left after acting, or nothing worth doing.
  *
- * The one pause is for reading. Packed two or three to a row, a card has room
- * for its name and not for what it does, and a playtest found four nameless
- * cards hard to choose between. So a packed card's first tap puts its
- * sentence on a line over the cards, and Go! (or the same card again) does
- * it; an aimed card's who? step was already that pause, and says it too.
+ * Every card says what it does before it is tapped: the cards stand one to a
+ * row, each with its sentence. They used to pack two or three to a row with
+ * the name alone, and a playtest found four nameless cards hard to choose
+ * between; a tap-to-read pause that fixed it was a second tap nobody guessed.
  *
  * What makes a single tap safe is what is *on* the surface being tapped: the
  * only figures listed are ones the ability can legally hit, a wrong gold
@@ -46,9 +45,8 @@
  * pane has left, so anything around it that grew or shrank on a tap used to
  * resize the map under the finger aiming at it. So everything around it has a
  * seat that does not change: the title row, the log line, the legend, and the
- * dock under the board — one line for the hint or the question, the packed
- * cards' sentence line, and the cards below it, held at the tallest they
- * have been this turn.
+ * dock under the board — one line for the hint or the question, and the
+ * cards below it, held at the tallest they have been this turn.
  */
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -143,16 +141,7 @@ type Selection =
   /** A thrown consumable, waiting on a monster to land on. */
   | { step: "item-target"; itemId: string }
   /** The "Use an item" card, opened: the bag's usable items, in place. */
-  | { step: "items" }
-  /**
-   * A packed card with nothing to aim, tapped once: its sentence is up over
-   * the cards, and Go! (or the same card again) does it. Only when the cards
-   * are packed two or three to a row; a card with room for its sentence
-   * still does it on the tap.
-   */
-  | { step: "read"; action: LegalAction }
-  /** The same, for a consumable that needs no aiming; `fromBag` keeps the opened bag up. */
-  | { step: "read-item"; itemId: string; fromBag: boolean };
+  | { step: "items" };
 
 const IDLE: Selection = { step: "idle" };
 
@@ -160,22 +149,14 @@ const IDLE: Selection = { step: "idle" };
 const MAX_LOOSE_CARDS = 6;
 
 /**
- * Cards to a row, by how many there are: one or two keep their sentence on a
- * row each; three or four go two to a row; five or more go three to a row,
- * icon over name. Every row a card list adds is a row the board gives up,
- * and a pane that scrolls is the one thing the turn screen must not do.
- *
- * Packed cards have no room for their sentence, so it moves to a line of its
- * own over the cards (`packed` below): a tap on a packed card reads it out
- * there first, and Go! (or the same card again) does it. Every sentence on
- * every card was tried and measured first; three rows of them pushed the
- * board to its floor and the last row off a 390px phone.
+ * From this many cards, each tightens to a short row (CombatPanel.css
+ * `data-dense`). The cards always stand one to a row, each with its icon,
+ * its name and the sentence saying what it does: packed two or three to a
+ * row they fit more over the board but lost the sentence, and a playtest
+ * found four nameless cards hard to choose between. A long list folds the
+ * bag (MAX_LOOSE_CARDS) before it crowds the board.
  */
-export function cardColumns(count: number): 1 | 2 | 3 {
-  if (count <= 2) return 1;
-  if (count <= 4) return 2;
-  return 3;
-}
+export const DENSE_CARDS = 3;
 
 /**
  * Drawn but unseen: the style for something that comes and goes inside a
@@ -189,7 +170,7 @@ function seat(shown: boolean): CSSProperties | undefined {
 /**
  * One turn, start to finish: which fight, whose turn, which round. Unlike
  * `turnKey` it does not change when a step or the action is spent, because
- * what hangs off it (the card columns, the dock's height) must hold still
+ * what hangs off it (the cards' density, the dock's height) must hold still
  * across exactly those taps.
  */
 function turnOf(encounter: EncounterState | null): string {
@@ -236,13 +217,13 @@ export function CombatControls(): ReactElement | null {
    */
   const sending = useRef(false);
   /*
-   * Cards to a row, held for the turn. Stepping beside a monster adds Attack
-   * and stepping away takes it off, which re-dealt every card into a new
-   * shape mid-turn. The count only goes up within a turn: a card leaving
-   * never re-deals the rest, and a card arriving adds a column at most once.
+   * Whether the cards are dense, held for the turn. Stepping beside a monster
+   * adds Attack and stepping away takes it off, which would re-style every
+   * card mid-turn. Dense only switches on within a turn, never off.
    */
-  const columnsSeen = useRef<{ turn: string; columns: 1 | 2 | 3 }>({ turn: "", columns: 1 });
+  const denseSeen = useRef<{ turn: string; dense: boolean }>({ turn: "", dense: false });
   const dockRef = useRef<HTMLDivElement>(null);
+  const answersRef = useRef<HTMLDivElement>(null);
   // The grid draws each monster's portrait, which hangs off the chapter. A
   // Party Mode phone draws no board of its own, so nothing else fetched it.
   useEnsureChapter();
@@ -278,6 +259,7 @@ export function CombatControls(): ReactElement | null {
 
   const beats = useBeats(encounter, me?.character.id ?? null);
   useTallestThisTurn(dockRef, turnOf(encounter));
+  useMoreBelow(answersRef);
 
   if (!encounter || !me) return null;
 
@@ -353,22 +335,9 @@ export function CombatControls(): ReactElement | null {
   const bagFolded = usableItems.length > 1 && actions.length + usableItems.length > MAX_LOOSE_CARDS;
   const cardCount = actions.length + (bagFolded ? 1 : usableItems.length);
   const thisTurn = turnOf(encounter);
-  if (columnsSeen.current.turn !== thisTurn) columnsSeen.current = { turn: thisTurn, columns: 1 };
-  const columns = Math.max(columnsSeen.current.columns, cardColumns(cardCount)) as 1 | 2 | 3;
-  columnsSeen.current.columns = columns;
-  /*
-   * Cards packed two or three to a row have room for a name, not for what
-   * the card does. A playtest found that hard ("when you have 4+ options it
-   * hides the descriptions"), so packed cards get one shared line over them
-   * that says the sentence of whichever card was tapped, and a tap on a
-   * packed card reads it there first: an aimed card already asks who? or
-   * where? before anything happens, and now says what it does beside the
-   * question; a card with nothing to aim waits for Go!. Two lines, held for
-   * the turn, which costs the board less than a sentence on every card.
-   */
-  const packed = columns > 1;
-  const bagPacked = cardColumns(usableItems.length) > 1;
-
+  if (denseSeen.current.turn !== thisTurn) denseSeen.current = { turn: thisTurn, dense: false };
+  const dense = denseSeen.current.dense || cardCount >= DENSE_CARDS;
+  denseSeen.current.dense = dense;
   function commitAction(
     action: LegalAction,
     targetIds: readonly string[] = [],
@@ -414,11 +383,6 @@ export function CombatControls(): ReactElement | null {
     void dispatch({ type: "MOVE", to: at });
   }
 
-  /** The packed card whose sentence is up (see `packed`). */
-  function picked(action: LegalAction): boolean {
-    return selection.step === "read" && selection.action.abilityId === action.abilityId;
-  }
-
   function tapAction(action: LegalAction): void {
     if (action.tiles.length > 0) {
       setSelection({ step: "tile", action, picked: [] });
@@ -428,23 +392,12 @@ export function CombatControls(): ReactElement | null {
       setSelection({ step: "target", action, picked: [] });
       return;
     }
-    // A packed card says what it does before it does it (see `packed`).
-    if (packed && !picked(action)) {
-      setSelection({ step: "read", action });
-      return;
-    }
     commitAction(action);
   }
 
   function tapItem(itemId: string, def: ItemDef): void {
     if (def.effect?.type === "damage") {
       setSelection({ step: "item-target", itemId });
-      return;
-    }
-    // From the opened bag, the bag's own packing decides (it has its own count).
-    const fromBag = selection.step === "items" || (selection.step === "read-item" && selection.fromBag);
-    if ((fromBag ? bagPacked : packed) && !(selection.step === "read-item" && selection.itemId === itemId)) {
-      setSelection({ step: "read-item", itemId, fromBag });
       return;
     }
     commitItem(itemId);
@@ -509,7 +462,7 @@ export function CombatControls(): ReactElement | null {
    */
   const canEnd =
     myTurn &&
-    (selection.step === "idle" || selection.step === "read" || selection.step === "read-item") &&
+    selection.step === "idle" &&
     ((encounter.actionTaken && moves.length > 0) ||
       (!encounter.actionTaken && actions.length === 0 && usableItems.length === 0));
 
@@ -525,20 +478,7 @@ export function CombatControls(): ReactElement | null {
           ? "Walk on a gold square, or pick one thing."
           : "Pick one thing to do.";
 
-  const inBag = selection.step === "items" || (selection.step === "read-item" && selection.fromBag);
-
-  /*
-   * The packed cards' shared line: what the tapped card does, in the card's
-   * own sentence; before any tap, how to read one. The bag, opened, packs
-   * its items by their own count.
-   */
-  const reading: { text: string; quiet: boolean } | null = !(inBag ? bagPacked : packed) || encounter.actionTaken
-    ? null
-    : selection.step === "read" || selection.step === "target" || selection.step === "tile" || selection.step === "tile-target"
-      ? { text: summaryOf(selection.action.abilityId, abilities) ?? selection.action.name, quiet: false }
-      : selection.step === "read-item" || selection.step === "item-target"
-        ? { text: items?.[selection.itemId] ? itemSummary(items[selection.itemId]!) : "", quiet: false }
-        : { text: selection.step === "items" ? "Tap an item to see what it does." : "Tap a card to see what it does.", quiet: true };
+  const inBag = selection.step === "items";
 
   // How many figures the who-step offers in all, picked or not, so the list
   // keeps its columns while picks leave it.
@@ -734,26 +674,6 @@ export function CombatControls(): ReactElement | null {
               <AskRow icon="bag" onChange={() => setSelection(IDLE)}>
                 Use an item: which one?
               </AskRow>
-            ) : selection.step === "read" ? (
-              <AskRow
-                icon={selection.action.icon}
-                onChange={() => setSelection(IDLE)}
-                go={{ shown: true, onGo: () => commitAction(selection.action), label: `Go! ${selection.action.name}` }}
-              >
-                {selection.action.name}
-              </AskRow>
-            ) : selection.step === "read-item" ? (
-              <AskRow
-                icon={items?.[selection.itemId]?.icon ?? "consumable"}
-                onChange={() => setSelection(selection.fromBag ? { step: "items" } : IDLE)}
-                go={{
-                  shown: true,
-                  onGo: () => commitItem(selection.itemId),
-                  label: `Go! Use ${items?.[selection.itemId]?.name ?? "the item"}`,
-                }}
-              >
-                {items?.[selection.itemId]?.name ?? "The item"}
-              </AskRow>
             ) : selection.step === "tile" ? (
               <AskRow icon={selection.action.icon} onChange={() => setSelection(IDLE)}>
                 {selection.action.name}: tap a glowing tile.
@@ -800,31 +720,18 @@ export function CombatControls(): ReactElement | null {
               but no tap, focus or screen-reader stop lands on it. The capture
               guard is for a browser too old to know `inert`. */}
           <div
+            ref={answersRef}
             className={`combat__answers${pending ? " combat__answers--pending" : ""}`}
             inert={pending}
             onClickCapture={pending ? swallowTap : undefined}
           >
-            {/* The packed cards' sentence line (see `packed`): the tapped
-                card's sentence, in a seat of two lines held for the turn. */}
-            {reading !== null ? (
-              <p
-                className={`combat__reading${reading.quiet ? " combat__reading--quiet" : ""}`}
-                role="status"
-                aria-live="polite"
-              >
-                {reading.text}
-              </p>
-            ) : null}
-
-            {(selection.step === "idle" || selection.step === "read" || (selection.step === "read-item" && !selection.fromBag)) &&
-            cardCount > 0 ? (
-              <ul className="prompt__options combat__actions" data-columns={columns}>
+            {selection.step === "idle" && cardCount > 0 ? (
+              <ul className="prompt__options combat__actions" data-dense={dense || undefined}>
                 {actions.map((action) => (
                   <li key={action.abilityId}>
                     <button
                       type="button"
-                      className={`choice kad-tap kad-focusable${picked(action) ? " choice--picked" : ""}`}
-                      aria-pressed={packed ? picked(action) : undefined}
+                      className="choice kad-tap kad-focusable"
                       onClick={() => tapAction(action)}
                       {...helpAttrs({ kind: "card", name: action.name, icon: action.icon, ...textOf(summaryOf(action.abilityId, abilities)) })}
                     >
@@ -862,8 +769,6 @@ export function CombatControls(): ReactElement | null {
                       key={`item-${item.itemId}`}
                       item={item}
                       onTap={tapItem}
-                      compact={columns > 1}
-                      picked={packed ? selection.step === "read-item" && selection.itemId === item.itemId : undefined}
                     />
                   ))
                 )}
@@ -872,14 +777,12 @@ export function CombatControls(): ReactElement | null {
 
             {/* The bag, opened in place of the cards: same spot, same thumb. */}
             {inBag ? (
-              <ul className="prompt__options combat__actions" data-columns={cardColumns(usableItems.length)}>
+              <ul className="prompt__options combat__actions" data-dense={usableItems.length >= DENSE_CARDS || undefined}>
                 {usableItems.map((item) => (
                   <ItemCard
                     key={`item-${item.itemId}`}
                     item={item}
                     onTap={tapItem}
-                    compact={bagPacked}
-                    picked={bagPacked ? selection.step === "read-item" && selection.itemId === item.itemId : undefined}
                   />
                 ))}
               </ul>
@@ -1056,6 +959,39 @@ function useTallestThisTurn(ref: RefObject<HTMLElement | null>, turn: string): v
 }
 
 /**
+ * Marks a box that scrolls with `data-more` while there is more of it below.
+ * The cards scroll in their own box only on a pane too short for them all
+ * (CombatPanel.css), and a card list cut cleanly at a card's edge reads as
+ * the whole list; the mark fades the bottom edge so it reads as "keep going".
+ */
+function useMoreBelow(ref: RefObject<HTMLElement | null>): void {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const check = () => {
+      const more = el.scrollHeight - el.clientHeight - el.scrollTop > 2;
+      if (more) el.setAttribute("data-more", "");
+      else el.removeAttribute("data-more");
+    };
+    check();
+    el.addEventListener("scroll", check, { passive: true });
+    // The cards slide in, and a card mid-slide overhangs the box: look again once it lands.
+    el.addEventListener("animationend", check);
+    const resized = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(check);
+    resized?.observe(el);
+    for (const child of el.children) resized?.observe(child);
+    const changed = typeof MutationObserver === "undefined" ? null : new MutationObserver(check);
+    changed?.observe(el, { childList: true, subtree: true });
+    return () => {
+      el.removeEventListener("scroll", check);
+      el.removeEventListener("animationend", check);
+      resized?.disconnect();
+      changed?.disconnect();
+    };
+  });
+}
+
+/**
  * The question an aimed card asks, with its way back on the same row: a
  * Change button on a row of its own was a row the board had to give up. An
  * up-to-N card's Go sits there too, its seat held until the first pick.
@@ -1101,24 +1037,17 @@ function AskRow({
 function ItemCard({
   item,
   onTap,
-  compact,
-  picked,
 }: {
   item: { itemId: string; def: ItemDef; count: number };
   onTap: (itemId: string, def: ItemDef) => void;
-  /** Packed into columns: the name alone, since "Use" costs a wrapped line. */
-  compact: boolean;
-  /** Packed and tapped once: its sentence is up, and Go! uses it. Undefined when not packed. */
-  picked?: boolean | undefined;
 }): ReactElement {
   const name = `Use ${item.def.name}${item.count > 1 ? ` ×${item.count}` : ""}`;
   return (
     <li>
       <button
         type="button"
-        className={`choice kad-tap kad-focusable${picked ? " choice--picked" : ""}`}
+        className="choice kad-tap kad-focusable"
         aria-label={name}
-        aria-pressed={picked}
         onClick={() => onTap(item.itemId, item.def)}
         {...helpAttrs({ kind: "item", name: item.def.name, icon: item.def.icon, ...textOf(item.def.text) })}
       >
@@ -1127,7 +1056,7 @@ function ItemCard({
         </span>
         <span className="choice__text">
           <span className="choice__label">
-            {compact ? item.def.name : `Use ${item.def.name}`}
+            Use {item.def.name}
             {item.count > 1 ? <span className="combat__count"> ×{item.count}</span> : null}
           </span>
           <span className="choice__sub">{itemSummary(item.def)}</span>
@@ -1338,11 +1267,5 @@ export function previewOf(selection: Selection): IntentPreview | null {
       return { kind: "item", itemId: selection.itemId };
     case "items":
       return null;
-    // A packed card being read is the table's business too: it is what they
-    // are about to do.
-    case "read":
-      return { kind: "action", abilityId: selection.action.abilityId };
-    case "read-item":
-      return { kind: "item", itemId: selection.itemId };
   }
 }

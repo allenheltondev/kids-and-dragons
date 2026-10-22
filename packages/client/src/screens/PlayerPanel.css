@@ -937,10 +937,13 @@
  * under the thumb, and the board floats centred in whatever is left — on a
  * tall phone that is a lot, and a board in the middle of it reads as the
  * table it is, where a board jammed against the cards read as "floating".
+ * It may shrink too, so a long list of cards scrolls in its own box under
+ * the board rather than scrolling the board out of the pane (CombatPanel.css).
  */
 .player--fighting .player__prompt > :first-child {
   margin-block-start: 0;
-  flex: 1 0 auto;
+  flex: 1 1 auto;
+  min-block-size: 0;
 }
 
 .player--fighting .combat__grid {
