@@ -58,6 +58,7 @@ import {
   useChapter,
   useGameStore,
   useIsMyCombatTurn,
+  useWaitingOnMe,
   useIsMyPrompt,
   useMyTurnKey,
   useItems,
@@ -74,12 +75,13 @@ import {
 import { biomeBackdropUrl, sceneArtFor, sceneBackdropUrl } from "../world/art-paths";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
+import { Collapsible } from "../ui/Collapsible";
 import { hear, useReadAloudOn } from "../speech/read-aloud";
 import { speak } from "@kad/shared";
 import { CampaignArt } from "./CampaignArt";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { CharacterSheet } from "./CharacterSheet";
-import { ClassToken, SpareTokens, TokenCard } from "./ClassToken";
+import { ClassToken, SpareTokens, TokenCard, TokenGlyph, tokenName } from "./ClassToken";
 import { Icon } from "./icons";
 import { ChapterGoalCard } from "./ChapterGoal";
 import { savedHeading, savedHeroes } from "./save-copy";
@@ -254,8 +256,16 @@ function ConfirmBar({
 function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
   const { character } = me;
   const hpPct = character.maxHp === 0 ? 0 : Math.max(0, Math.min(1, me.hp / character.maxHp));
+  /*
+   * Whenever the game is waiting on you (a fight turn, a roll, a choice, a
+   * vote not yet cast), the whole strip turns gold. That is the "your turn"
+   * signal everywhere, rather than words: a playtest found "Your turn, Name!"
+   * rows cost room and read as one more line of text. The strip is pinned
+   * and already says who you are.
+   */
+  const myTurn = useWaitingOnMe();
   return (
-    <header className="sheet">
+    <header className={`sheet${myTurn ? " sheet--turn" : ""}`}>
       {/* Your own face on your own sheet, at whatever tier you have grown to —
           the identity strip is pinned, so this is the one picture that is on
           screen for the whole session. */}
@@ -270,7 +280,10 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
         />
       </span>
       <span className="sheet__id">
-        <span className="sheet__name">{character.name}</span>
+        <span className="sheet__name">
+          {character.name}
+          {myTurn ? <span className="kad-sr-only" role="status">: your turn!</span> : null}
+        </span>
         {/* Knocked down (spec §7.3) takes the level line's place rather than
             a banner of its own: a banner pushed the question down a row the
             moment an enemy landed a hit, under a thumb already on its way. */}
@@ -374,15 +387,17 @@ function InventoryGrid({
 }): ReactElement {
   const slots = Array.from({ length: INVENTORY_SLOTS }, (_, i) => entries[i] ?? null);
   return (
-    <div className="inv">
-      <h3 className="inv__heading">
-        <Icon name="bag" />
-        <span>Your things</span>
+    <Collapsible
+      id="bag"
+      className="inv"
+      title={<><Icon name="bag" /><span>Your things</span></>}
+      trail={
         <span className="inv__purse kad-chip" aria-label={`The party's purse: ${String(coins)} ${coins === 1 ? "coin" : "coins"}`}>
           <Icon name="coin" />
           <span aria-hidden="true">{coins}</span>
         </span>
-      </h3>
+      }
+    >
       <ul className="inv__grid">
         {slots.map((entry, index) => {
           const def = entry === null ? undefined : items?.[entry.itemId];
@@ -417,12 +432,16 @@ function InventoryGrid({
         })}
       </ul>
 
+      {/* Folded at first: the list only grows, and its count on the heading says it is there. */}
       {questItems.length === 0 ? null : (
-        <div className="inv__quest">
-          <h4 className="inv__quest-heading">
-            <Icon name="quest" />
-            <span>Story things (they never take a slot)</span>
-          </h4>
+        <Collapsible
+          id="story-things"
+          level={4}
+          defaultOpen={false}
+          className="inv__quest"
+          title={<><Icon name="quest" /><span>Story things</span></>}
+          trail={<span className="kad-chip">{questItems.length}</span>}
+        >
           <ul className="inv__quest-list">
             {questItems.map((itemId) => (
               <li className="kad-chip" key={itemId}>
@@ -431,10 +450,10 @@ function InventoryGrid({
               </li>
             ))}
           </ul>
-        </div>
+        </Collapsible>
       )}
       <SpareTokens spares={spares} isMe />
-    </div>
+    </Collapsible>
   );
 }
 
@@ -895,9 +914,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       {inLobby ? <EntryScene scene={lobbySceneFor(party)} /> : null}
       {backdrop ? <SceneBackdrop src={backdrop} /> : null}
       <IdentityStrip me={me} />
-      {/* The chapter's goal (#356), on every phone with nothing to tap. Folded in a fight, where
-          the controls need the room. */}
-      {inChapter ? <ChapterGoalCard place="phone" folded={inEncounter} /> : null}
+      {/* The chapter's goal (#356), on every phone with nothing to tap. Not in a fight: a playtest
+          wanted the room for the cards, and the fight is the goal's step for now. */}
+      {inChapter && !inEncounter ? <ChapterGoalCard place="phone" /> : null}
 
       {/*
         What the world is asking, echoed here.
@@ -1074,9 +1093,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               <span>
                 {myPrompt.vote
                   ? "Everyone votes"
-                  : myPrompt.forPlayerIds.includes(me.playerId)
-                    ? "Your turn! What do you do?"
-                    : "What do you do?"}
+                  : "What do you do?"}
               </span>
             </h3>
 
@@ -1907,9 +1924,25 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             )}
           </div>
         )}
-        <StatRow me={me} />
+        {/*
+          Every section below folds under its heading (ui/Collapsible), and
+          each phone remembers how its kid left them: the page had grown long
+          enough that the bag was a scroll away (playtest). The stats, the
+          party and the bag start open; the token card, the longest thing a kid
+          rarely needs mid-scene, starts folded to its name.
+        */}
+        <Collapsible id="stats" className="player__stats" title={<><Icon name="levelup" /><span>Your stats</span></>}>
+          <StatRow me={me} />
+        </Collapsible>
         {/* The worn token, its notches and the deed toward the next (#314). */}
-        <TokenCard character={me.character} isMe rules={rules} partySize={party.length} />
+        <Collapsible
+          id="token"
+          defaultOpen={false}
+          className="player__token"
+          title={<><TokenGlyph classId={me.character.class} /><span>Your {tokenName(me.character.class)}</span></>}
+        >
+          <TokenCard character={me.character} isMe rules={rules} partySize={party.length} named={false} />
+        </Collapsible>
 
         {/*
           spec §6.1 lists "look at each other's characters" as one of the four
@@ -1919,11 +1952,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           "what is her Guard?" is a question a fight raises more often than a
           camp does.
         */}
-        <div className="party-strip">
-          <h3 className="party-strip__heading">
-            <Icon name="party" />
-            <span>Everyone</span>
-          </h3>
+        <Collapsible id="party" className="party-strip" title={<><Icon name="party" /><span>Everyone</span></>}>
           <ul className="party-strip__list">
             {party.map((member) => (
               <li key={member.playerId}>
@@ -1958,7 +1987,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               </li>
             ))}
           </ul>
-        </div>
+        </Collapsible>
 
         <InventoryGrid
           entries={inventory}
@@ -2128,15 +2157,14 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         ) : null}
 
         {roomControls ? (
-          <details className="player__room-settings">
-            <summary className="kad-focusable">Room settings</summary>
+          <Collapsible id="room" level={4} defaultOpen={false} className="player__room-settings" title={<span>Room settings</span>}>
             {roomControls}
             {/* Text size, contrast and one-handed play (#262), reachable from the bottom of the phone. */}
             <Button variant="secondary" size="md" block
               onClick={() => { void import("../a11y").then((module) => { module.openA11ySettings(); }); }}>
               Display settings
             </Button>
-          </details>
+          </Collapsible>
         ) : null}
 
         {/* In the lobby the one thing left to do comes last, at the foot of

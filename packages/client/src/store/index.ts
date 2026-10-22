@@ -1559,6 +1559,28 @@ export function useMyTurnKey(): string | null {
   });
 }
 
+/**
+ * "Is the game waiting on me right now?" What lights the phone's pinned strip
+ * gold (PlayerPanel IdentityStrip): any question this player still has to
+ * answer (`useMyTurnKey`), less the ones they already have: a vote cast, a
+ * ready given. The key alone stays put after a vote, because a vote counted
+ * is progress on the question, not a new one.
+ */
+export function useWaitingOnMe(): boolean {
+  const key = useMyTurnKey();
+  const answered = useGameStore((store) => {
+    const state = store.state;
+    const playerId = store.session?.playerId ?? "";
+    const prompt = state?.prompt ?? null;
+    if (!state || !prompt) return false;
+    if (prompt.kind === "choice") return prompt.vote && prompt.votes?.[playerId] !== undefined;
+    if (prompt.kind === "ready") return state.party.some((m) => m.playerId === playerId && m.ready);
+    return false;
+  });
+  // A combat turn or a class place is never "already answered" here: the key goes when it does.
+  return key !== null && key !== "creation" && !(key.startsWith("prompt:") && answered);
+}
+
 export function useIsMyCombatTurn(): boolean {
   return useGameStore((store) => isMyCombatTurn(store.state, store.session?.playerId ?? ""));
 }

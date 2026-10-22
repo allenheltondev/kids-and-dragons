@@ -9,6 +9,10 @@
 .creation {
   container-type: inline-size;
   display: grid;
+  /* One column no wider than the phone. An `auto` column grew to its widest
+     child's min-content (the name field's 20 characters, at larger text), and
+     pushed the step and its buttons off the right edge. */
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr) auto;
   width: 100%;
   height: 100%;
@@ -593,6 +597,7 @@
 
 .creation-name__input {
   width: 100%;
+  min-inline-size: 0;
   min-height: var(--touch-min, 3em);
   padding: var(--space-3, 0.75em);
   border: 0.08em solid var(--color-border, #3a3468);
@@ -601,6 +606,165 @@
   color: var(--color-text, #f4f1ff);
   font: inherit;
   font-size: var(--font-size-lg, 1.25em);
+}
+
+/* --- A phone's width ------------------------------------------------------ */
+
+/*
+ * The playtest's 320-390px phones, or any phone at larger text (these are
+ * `em`, so a bigger text size reaches them sooner).
+ *
+ * The edges give a little back, and the primary action takes the larger share
+ * of the foot so "That's me!" keeps its words beside "Back".
+ */
+@container (max-width: 26em) {
+  .creation__head,
+  .creation__body,
+  .creation__foot {
+    padding-inline: var(--space-3, 0.75em);
+  }
+
+  .creation__foot > .kad-button--primary {
+    flex-grow: 2;
+  }
+
+  /*
+   * A stat row becomes a stepper: the name with its free-point chip under it,
+   * then "−  4  +". Five columns side by side left the name a few pixels, and
+   * the chip sat on top of it ("He+1 free"). The two buttons keep their own
+   * seats either side of the number, so neither moves when the other comes or
+   * goes, as before.
+   */
+  .creation-stat {
+    grid-template-columns:
+      auto minmax(0, 1fr) var(--touch-min, 2.75em) 2.2ch var(--touch-min, 2.75em);
+    grid-template-areas:
+      "icon name take value add"
+      "icon bonus take value add";
+    column-gap: var(--space-2, 0.5em);
+    row-gap: 0;
+  }
+
+  .creation-stat__icon { grid-area: icon; }
+  .creation-stat__name { grid-area: name; align-self: end; min-inline-size: 0; }
+  .creation-stat__bonus { grid-area: bonus; align-self: start; justify-content: flex-start; }
+  .creation-stat__value { grid-area: value; text-align: center; }
+  .creation-stat__controls { display: contents; }
+  .creation-step-btn--take { grid-area: take; }
+  .creation-step-btn--add { grid-area: add; }
+
+  /* No chip: the name sits in the middle of the row. */
+  .creation-stat:has(.creation-stat__bonus:empty) .creation-stat__name {
+    grid-row: 1 / span 2;
+    align-self: center;
+  }
+  .creation-stat__bonus:empty { display: none; }
+}
+
+/*
+ * Narrower still (a 320px phone at large text, or 390px at the largest): the
+ * name gets the first line to itself, and its chip leads the stepper on the
+ * second. Sharing the first line with the chip, a name was cut off at the
+ * largest text with some fonts.
+ */
+@container (max-width: 19em) {
+  .creation-stat {
+    grid-template-areas:
+      "icon name name name name"
+      "icon bonus take value add";
+    row-gap: var(--space-1, 0.25em);
+  }
+
+  .creation-stat__name,
+  .creation-stat:has(.creation-stat__bonus:empty) .creation-stat__name {
+    grid-area: name;
+    align-self: center;
+  }
+
+  .creation-stat__bonus { align-self: center; justify-content: flex-start; }
+
+  /*
+   * A species or class card: the picture shrinks to sit beside the name, and
+   * the words under them take the card's whole width. Side by side, the words
+   * had a word per line and the check ran off the card.
+   */
+  .creation-species,
+  .creation-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: var(--space-2, 0.5em);
+    row-gap: var(--space-1, 0.25em);
+  }
+
+  .creation-species__text,
+  .creation-card > .creation-card__text {
+    display: contents;
+  }
+
+  .creation-species__text > :not(.creation-card__title),
+  .creation-card > .creation-card__text > :not(.creation-card__title) {
+    grid-column: 1 / -1;
+  }
+
+  .creation-species__art {
+    inline-size: 3.5em;
+  }
+
+  .creation-card__icon {
+    width: 2.5em;
+    height: 2.5em;
+  }
+
+  /*
+   * The name and its check share a line that may wrap: at the largest text a
+   * long class name ("Thornguard") and the check were wider than the column
+   * with some fonts, and the check ran off the screen. A step down in size
+   * keeps them together on most phones; wrapping keeps the check on screen
+   * on the rest.
+   */
+  .creation-card__title {
+    flex-wrap: wrap;
+    min-inline-size: 0;
+    font-size: var(--font-size-md, 1em);
+  }
+
+  /* The head is pinned over the step, so on a pane this narrow its title steps down a size
+     and leaves the step more of the screen. */
+  .creation__title {
+    font-size: var(--font-size-lg, 1.25em);
+  }
+
+  /* The foot's buttons run a size smaller, and a label too long for its button wraps
+     ("That's / me!") rather than being cut to "That'…". "Back" is its arrow (and still
+     says "Back" to a screen reader), so the step's own action keeps its words. */
+  .creation__foot .kad-button {
+    padding-inline: var(--space-3, 0.75em);
+  }
+
+  .creation__foot > .kad-button--ghost {
+    flex: 0 0 auto;
+  }
+
+  .creation__foot > .kad-button--ghost .kad-button__label {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .creation__foot .kad-button--lg {
+    font-size: var(--font-size-md, 1em);
+    min-block-size: var(--kad-touch-min, 2.75em);
+    padding-block: var(--space-2, 0.5em);
+  }
+
+  .creation__foot .kad-button--primary .kad-button__label {
+    white-space: normal;
+    text-overflow: clip;
+  }
 }
 
 

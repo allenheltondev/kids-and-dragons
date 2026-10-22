@@ -27,6 +27,7 @@ import {
   ChapterCompletePanel,
   CreationPreview,
   DiceOverlay,
+  FightLog,
   LobbyContent,
   NarrationPanel,
   TransformCutscene,
@@ -172,6 +173,12 @@ export function WorldView({
           comes back partway (#357). Over the stage, between the corner row and the plate, and
           gone by itself once read or once play moves on. */}
       {isSceneLike(phase) && <ChapterPreface />}
+      {/* The fight so far, every roll with what it needed (FightLog). Mounted
+          for any scene-like phase, not only once a fight is in state: the
+          opening monster round rides ENCOUNTER_BEGAN, ahead of the patch that
+          puts the fight there, and a mount-on-fight would miss it. It draws
+          nothing outside a fight. */}
+      {isSceneLike(phase) && <FightLog />}
       {phase === "chapter_complete" && <ChapterCompletePanel />}
 
       {/* The roll is the centrepiece of whatever pane it lands in. On a TV that
