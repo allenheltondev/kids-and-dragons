@@ -34,6 +34,10 @@
       }
     ]
   },
+  "plate": {
+    "art": "plates/riftlight/reading-room",
+    "narration": "Deep in the glacier, yeti hands have carved a room from blue ice. Lantern light slides along the walls. Some of the ice shines with pictures too faint to read."
+  },
   "scenes": {
     "arrival": {
       "type": "story",

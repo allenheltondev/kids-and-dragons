@@ -36,18 +36,21 @@ Snapshot — regenerate with `npm run art:inventory`.
 |---|---|---|
 | Character illustrations | **24 / 24** | — |
 | Gear portraits | **72 / 72** | — |
-| **Class figure variants** | **47 / 72** | **25 to illustrate** |
+| **Class figure variants** | **62 / 72** | **10 to illustrate** |
 | Biome backdrops, tiles + props | **51 / 51** | — |
 | Story-only environments | **5 / 5** | — |
 | Canon place coverage | **23 / 23** | — |
-| Scene illustrations | **70 / 70** | — |
-| Effect sheets, declared | **17 / 17** | — |
-| Entity cutouts | **30 / 30** | — |
+| Scene illustrations | **94 / 94** | — |
+| Effect sheets, declared | **28 / 28** | — |
+| Entity cutouts | **32 / 32** | — |
+| Campaign key art | **2 / 2** | — |
+| **Story plates** (prologue + chapter plates) | **0 / 9** | **9 to paint** |
 | Effect sheets, specified but undeclared | **0 / 0** | — |
 | **Entity part-sets (combat roster)** | **9 / 9** | — |
 
-**25 class figures outstanding.** The character-and-gear paintings are complete. What remains is
-a finished transparent `assembled.png` for each of the 25 class figures.
+**10 class figures and 9 story plates outstanding.** The character-and-gear paintings are complete.
+What remains is a finished transparent `assembled.png` for each of the 10 Mythic Starweaver and
+Songkeeper figures, and the nine Riftlight story plates ([story-plates.md](./story-plates.md)).
 
 ---
 
@@ -107,23 +110,33 @@ one. Inventory icons are painted WebP assets registered in `packages/client/src/
 
 ## 4. What is left
 
-### 4.1 Class figure variants — 25 to illustrate
+### 4.1 Class figure variants — 10 to illustrate
 
-Every approved geared character needs one transparent class figure. Forty-seven of 72 are delivered. Outstanding:
+Every approved geared character needs one transparent class figure. Sixty-two of 72 are delivered. Outstanding:
 
 | Class | Tiers | Variants |
 |---|---|---:|
-| `starweaver` | radiant, mythic; five species excluding Bigfoot | 10 |
-| `songkeeper` | sworn, radiant, mythic; five species excluding Bigfoot | 15 |
+| `starweaver` | mythic; five species excluding Bigfoot | 5 |
+| `songkeeper` | mythic; five species excluding Bigfoot | 5 |
 
 No gear at `fledgling`, by design. Each is one finished `assembled.png` from art already approved,
 to the contract in [art-pipeline.md](./art-pipeline.md), declared in `manifest.figureVariants`.
 Undelivered combinations fall back to the un-geared species figure on figure surfaces; still-image
 surfaces already use the approved gear portrait.
 
+### 4.1b Story plates — 9 to paint
+
+Full-screen paintings with the story told over them, before the table decides anything: a
+campaign's prologue and one-off chapter plates. Riftlight's four prologue plates and five chapter
+plates are written and wired; their paintings are owed. 1600×900 opaque WebP at
+`assets/plates/<campaign>/<name>.webp`, declared in `manifest.storyPlates`. The story plays without
+a plate until its painting lands. Spec, safe area and delivery steps: [story-plates.md](./story-plates.md);
+prompts: [story-plates-prompts.json](./story-plates-prompts.json); composition check:
+`npm run art:plates`.
+
 ### 4.2 Effect sheets — complete
 
-All 17 are delivered and declared in the manifest. The six combat gaps identified by
+All 28 are delivered and declared in the manifest. The six combat gaps identified by
 [asset-brief §9.4](./asset-brief.md#94-effects--mapping-the-ten-verbs) are closed, including
 `down_settle` on the `down.settle` event.
 

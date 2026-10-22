@@ -304,6 +304,33 @@ A screen that comes back partway (a resumed room, a reload, a phone back at the 
 the run walked. A scene whose words have variants or a `{token}` is passed over, so nothing is
 quoted that differs by party. Nothing to author for it.
 
+## Story plates: the prologue and chapter plates
+
+A campaign can open with paintings and the story told over them, before the table is asked to
+decide anything. Full spec, with the art: [docs/story-plates.md](../docs/story-plates.md).
+
+```json
+"prologue": { "plates": [ { "art": "plates/riftlight/prologue-1", "narration": "The Exchange is..." } ] }
+```
+
+in the campaign file (3 to 6 plates, before the opening chapter's first scene), and in a chapter
+that begins somewhere new:
+
+```json
+"plate": { "art": "plates/riftlight/finale", "narration": "You are back on the glacier..." }
+```
+
+- Each narration is **at most 45 words**, **the same for every party**: no `{token}`, no counting
+  the party, no great stone, no em dash. A chapter plate names a place and a feeling, never a
+  person, because a graph campaign can be entered in any order.
+- A prologue introduces and raises the question; it never answers it, and in a sequel it never
+  says how the last campaign ended.
+- Every `art` is declared in `assets/manifest.json` → `storyPlates.ids`, and nothing else is
+  (`tools/content/story-plates.test.mjs`). The opening chapter takes the prologue **or** a plate.
+- A plate whose painting has not shipped is left out when the story plays, so content can land
+  before its art. `npm run art:inventory` lists what is owed.
+- On a graph campaign, `npm run content:proofs` after adding one.
+
 ## The Story page (#358)
 
 The adventure book's Story page lists each chapter a household has played in a campaign: its

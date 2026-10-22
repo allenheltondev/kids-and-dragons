@@ -80,6 +80,16 @@ out on Gemfall), and for a nonlinear campaign
   jar", "your goat" and "that ledger" need a human read at every merge point. Fix findings in the
   prose; an entry in `tools/content/continuity-allow.json` needs a one-line reason.
 
+### Story plates
+
+A campaign may open with a `prologue` (3 to 6 painted plates with the story told over them) and a
+chapter that begins somewhere new may have one `plate`. They are shown once per device and
+skippable, and the chapter's "Last time…" and first scene wait behind them. A plate's words are
+at most 45, the same for every party, and name a place and a feeling rather than anyone the party
+may not have met. The art is declared in `assets/manifest.json` → `storyPlates` and owed in
+`npm run art:inventory`. See [docs/story-plates.md](docs/story-plates.md) and
+[content/README.md](content/README.md#story-plates-the-prologue-and-chapter-plates).
+
 ### Priority scenes
 
 A non-combat scene may set `priority`: `1` for a revelation the campaign turns on, `2` for a clue
