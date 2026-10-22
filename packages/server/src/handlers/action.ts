@@ -38,6 +38,7 @@ import type {
 } from "@kad/shared";
 import {
   currentPlayable,
+  decisionContext,
   isPracticeCampaign,
   lobbyCampaign,
   resolveCharacter,
@@ -124,6 +125,20 @@ export async function applyAction(
         code: "STALE_SEQ",
         message: `intent was built on seq ${input.seq}, run is at seq ${state.seq}`,
       },
+    };
+  }
+
+  // --- 1b. the question it answers (#413) ------------------------------------
+  // A phone that fell behind re-posts its tap at the seq this handler reported,
+  // so a matching seq does not prove the tap was made on this question. The
+  // context it was stamped with does: when the question it answered is gone,
+  // a choice id the next question happens to share ("onward") is not an answer
+  // to it. Nothing is applied and nothing is logged.
+  if (typeof input.context === "string" && input.context !== decisionContext(state)) {
+    return {
+      ok: false,
+      seq: state.seq,
+      error: { code: "STALE_DECISION", message: "The story moved on. Choose again." },
     };
   }
 

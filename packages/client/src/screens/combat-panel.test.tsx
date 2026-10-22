@@ -239,6 +239,7 @@ function mount(options: MountOptions = {}) {
     rules: options.rules === undefined ? RULES : options.rules,
     abilities: options.abilities === undefined ? CATALOG : options.abilities,
     items: options.items === undefined ? ITEMS : options.items,
+    synced: true,
     send,
   });
 
@@ -459,6 +460,29 @@ describe("a tap does the thing (spec §11)", () => {
     await user.click(tile(1, 1));
     expect(sent).toEqual([{ type: "MOVE", to: { x: 1, y: 1 } }]);
     expect(screen.queryByRole("button", { name: /do it/i })).toBeNull();
+  });
+
+  it("holds the whole turn while the phone catches up after a drop (#413)", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({ characters: [character({ actions: ["shout"] })] });
+    act(() => {
+      useGameStore.setState({ synced: false });
+    });
+    try {
+      // No gold squares to walk to, and the cards hear no tap.
+      expect(screen.queryByRole("button", { name: /column 2, row 2$/ })).toBeNull();
+      await user.click(card("Shout"));
+      expect(sent).toEqual([]);
+      expect(screen.getByText("Catching up with the game…")).toBeTruthy();
+
+      act(() => {
+        useGameStore.setState({ synced: true });
+      });
+      await user.click(card("Shout"));
+      expect(sent).toEqual([{ type: "COMBAT_ACTION", abilityId: "shout" }]);
+    } finally {
+      useGameStore.setState({ synced: true });
+    }
   });
 
   it("does a card with nothing to aim on the card tap", async () => {
