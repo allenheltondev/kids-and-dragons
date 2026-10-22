@@ -1128,7 +1128,9 @@ export function createScene(app: Application): PartyScene {
       // Anything raised bobs or drifts instead (stanceIdle, #362).
       const idle = stanceIdle(actor.stance, elapsed, actor.phase, still);
       const reach = motionReach(actor.height);
-      actor.art.rotation = approach(actor.art.rotation, idle.rotation, BOB_RATE, dt);
+      // Reduced motion holds the figure upright at once: an eased return from
+      // the standing lean is still motion.
+      actor.art.rotation = still ? idle.rotation : approach(actor.art.rotation, idle.rotation, BOB_RATE, dt);
       actor.art.y = approach(actor.art.y, restY(actor) + idle.dy * reach, DOWN_RATE, dt);
       actor.art.x = idle.dx * reach;
       actor.art.scale.y = 1 + idle.breath;

@@ -18,7 +18,7 @@ import {
 } from "@kad/shared";
 import { makeRules } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
-import { FIGHT_LOG_LINES, FightLog, GUARD_WORDS, fightLogLines } from "./FightLog";
+import { FIGHT_LOG_LINES, FightLog, GUARD_WORDS, batchesForLines, fightLogLines } from "./FightLog";
 
 const RULES = makeRules();
 
@@ -170,6 +170,31 @@ describe("FightLog on the shared screen", () => {
     expect(items).toHaveLength(2);
     expect(items[1]!.textContent).toContain("Miss!");
     expect(items[1]!.textContent).toContain("Needs 12: Skyclaw's Guard.");
+  });
+
+  it("keeps a swing on through steps that say nothing", () => {
+    // A review: the log kept its last four *batches*, and a step is a batch
+    // of its own that draws no line, so four steps pushed every swing out and
+    // put "The fight is on!" back mid-fight.
+    mount(fight());
+    play(skyclawHits);
+    for (let i = 0; i < 6; i += 1) play([{ type: "moved", actorId: "wisp#1", to: { x: 3, y: i % 3 } }]);
+    const items = within(screen.getByRole("complementary")).getAllByRole("listitem");
+    expect(items).toHaveLength(1);
+    expect(items[0]!.textContent).toContain("Graze! 2");
+  });
+
+  it("lets go of batches no line on screen comes from", () => {
+    const steps = Array.from({ length: 5 }, (_, i) => ({
+      seq: 10 + i,
+      events: [{ type: "moved", actorId: "wisp#1", to: { x: 3, y: 1 } } as EncounterEvent],
+    }));
+    const heals = Array.from({ length: 6 }, (_, i) => ({
+      seq: i,
+      events: [{ type: "heal", actorId: "c_sky", amount: 1, hp: i + 1 } as EncounterEvent],
+    }));
+    // Four lines are wanted: the last four heals, and the steps after them.
+    expect(batchesForLines([...heals, ...steps], fight()).map((b) => b.seq)).toEqual([2, 3, 4, 5, 10, 11, 12, 13, 14]);
   });
 
   it("starts each fight empty", () => {

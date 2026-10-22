@@ -522,7 +522,7 @@ export function CombatControls(): ReactElement | null {
           log with every roll drawn out is the TV's (FightLog); here it is a
           single line, so a phone gives its rows to the board, and nothing
           until the first beat lands. */}
-      <LastBeat beats={beats} />
+      <LastBeat beats={beats} turn={turnOf(encounter)} />
 
       {/*
         The board. Tappable cells are real <button>s; everything else is an
@@ -1160,11 +1160,18 @@ function CellFigure({ occupant, numbed = false }: { occupant: GridOccupant; numb
  * them late is never wrong and reading them early could find nothing to read.
  */
 function useBeats(encounter: EncounterState | null, myId: string | null): readonly Beat[] {
-  const [last, setLast] = useState<{ seq: number; events: readonly EncounterEvent[] } | null>(null);
+  /*
+   * The batches since the last one with something to say. A step or a wall
+   * going up arrives as a batch of its own that says nothing, and taking it
+   * as "the last beat" blanked the line until the next swing: the line came
+   * and went between a step and an attack, and the board under it changed
+   * size mid-turn. So the line holds the newest batch that says something.
+   */
+  const [recent, setRecent] = useState<{ seq: number; events: readonly EncounterEvent[] }[]>([]);
 
   const take = useCallback((events: readonly EncounterEvent[] | undefined, seq: number) => {
     if (!events || events.length === 0) return;
-    setLast({ seq, events });
+    setRecent((kept) => [...kept, { seq, events }]);
   }, []);
 
   usePresentation("COMBAT_SEQUENCE", (presentation, event) => take(presentation.events, event.seq));
@@ -1180,14 +1187,26 @@ function useBeats(encounter: EncounterState | null, myId: string | null): readon
   const fightId = encounter?.startedAt ?? null;
   const previousFight = useRef(fightId);
   useEffect(() => {
-    if (previousFight.current !== null && previousFight.current !== fightId) setLast(null);
+    if (previousFight.current !== null && previousFight.current !== fightId) setRecent([]);
     previousFight.current = fightId;
   }, [fightId]);
 
-  return useMemo(
-    () => (last && encounter ? describeBeats(last.events, encounter, myId, last.seq) : []),
-    [last, encounter, myId],
-  );
+  const said = useMemo(() => {
+    if (!encounter) return { beats: [] as Beat[], from: 0 };
+    for (let at = recent.length - 1; at >= 0; at -= 1) {
+      const batch = recent[at]!;
+      const beats = describeBeats(batch.events, encounter, myId, batch.seq);
+      if (beats.length > 0) return { beats, from: at };
+    }
+    return { beats: [] as Beat[], from: 0 };
+  }, [recent, encounter, myId]);
+
+  // Let go of the batches older than the one the line comes from.
+  useEffect(() => {
+    if (said.from > 0) setRecent((kept) => kept.slice(said.from));
+  }, [said.from]);
+
+  return said.beats;
 }
 
 /**
@@ -1198,16 +1217,28 @@ function useBeats(encounter: EncounterState | null, myId: string | null): readon
  * swing's sum, what it needed and how hard it landed, all in the line's words
  * (fight-log.ts). The whole beat stays readable to a screen reader.
  */
-function LastBeat({ beats }: { beats: readonly Beat[] }): ReactElement | null {
+function LastBeat({ beats, turn }: { beats: readonly Beat[]; turn: string }): ReactElement | null {
   const last = beats.at(-1) ?? null;
-  // Before anything has happened there is nothing to say: "The fight is on!"
-  // held the row from the first moment, and a playtest asked for it back.
-  if (!last) return null;
+  /*
+   * Before anything has happened there is nothing to say: "The fight is on!"
+   * held the row from the first moment, and a playtest asked for it back. But
+   * the board takes whatever height is left, so the row may only arrive
+   * between turns: a first line landing mid-turn (a swing with steps still to
+   * walk) waits for the next turn to take its row, and is read out to a
+   * screen reader meanwhile.
+   */
+  const row = useRef<{ turn: string; shown: boolean }>({ turn: "", shown: false });
+  if (row.current.turn !== turn) row.current = { turn, shown: last !== null };
+  else if (last === null) row.current.shown = false;
+  if (last === null) return null;
+  // Held off this turn: only the screen reader's copy, which takes no room.
   return (
-    <div className="combat__log" aria-label="What just happened" role="group">
-      <p key={last.key} className={`combat__beat combat__line combat__beat--${last.tone}`} aria-hidden="true">
-        {last.text}
-      </p>
+    <div className={row.current.shown ? "combat__log" : "kad-sr-only"} aria-label="What just happened" role="group">
+      {row.current.shown ? (
+        <p key={last.key} className={`combat__beat combat__line combat__beat--${last.tone}`} aria-hidden="true">
+          {last.text}
+        </p>
+      ) : null}
       <ol className="kad-sr-only" aria-live="polite">
         {beats.map((beat) => (
           <li key={beat.key}>{beat.text}</li>

@@ -138,6 +138,21 @@ test.describe("true size and stance on the story stage", () => {
     await expect(tv.locator(".kad-arrival")).toHaveCount(0, { timeout: 10_000 });
   }
 
+  /**
+   * Bramblebeard's height over Tumblefern's, read with motion off. A standing
+   * figure breathes (a 3% stretch about the feet, world/idle-motion.ts), each
+   * on its own phase, so two heights read mid-breath can be several percent
+   * out of true proportion; held still, they are exactly in it. Motion comes
+   * back on after, for whatever the test reads next.
+   */
+  async function heroProportion(tv: Page): Promise<number> {
+    await tv.evaluate(() => document.documentElement.setAttribute("data-motion", "reduced"));
+    await tv.waitForTimeout(400);
+    const still = await report(tv);
+    await tv.evaluate(() => document.documentElement.removeAttribute("data-motion"));
+    return byName(still, "Bramblebeard").paint!.height / byName(still, "Tumblefern").paint!.height;
+  }
+
   /** Two readings with motion off must match: every idle is still. */
   async function stillUnderReducedMotion(tv: Page): Promise<void> {
     await tv.evaluate(() => document.documentElement.setAttribute("data-motion", "reduced"));
@@ -198,7 +213,7 @@ test.describe("true size and stance on the story stage", () => {
       expect(Math.abs(dragon.y + dragon.height - dragonReading.groundY)).toBeLessThan(dragon.height * 0.04);
       // It does not shrink anybody: the heroes stay in true proportion to each
       // other, and it never stands over the party.
-      expect(bigfoot.height / kitsune.height).toBeCloseTo(215 / 85, 1);
+      expect(await heroProportion(tv)).toBeCloseTo(215 / 85, 1);
       expect(dragon.x).toBeGreaterThan(bigfoot.x + bigfoot.width * 0.5);
       // The floor: Pib is a figure, not a speck.
       expect(pib.height).toBeGreaterThan(height * 0.03);
@@ -269,7 +284,7 @@ test.describe("true size and stance on the story stage", () => {
       expect(heroes).toHaveLength(3);
       // The owner's floor: nobody is drawn below 85% of true size (scene.ts STORY_MEASURE.minScale).
       for (const figure of figures) expect(figure.scale, `${figure.name} scale`).toBeGreaterThanOrEqual(0.85 - 1e-3);
-      expect(byName(figures, "Bramblebeard").paint!.height / byName(figures, "Tumblefern").paint!.height).toBeCloseTo(215 / 85, 1);
+      expect(await heroProportion(tv)).toBeCloseTo(215 / 85, 1);
       // Nobody stands over the party, and any spill is off the right.
       const partyRight = Math.max(...heroes.map((f) => f.paint!.x + f.paint!.width));
       const partyCentres = Math.max(...heroes.map((f) => f.paint!.x + f.paint!.width / 2));
@@ -298,7 +313,7 @@ test.describe("true size and stance on the story stage", () => {
       const merrow = byName(figures, "Merrow");
 
       // Hero species in true proportion to each other.
-      expect(bigfoot.paint!.height / kitsune.paint!.height).toBeCloseTo(215 / 85, 1);
+      expect(await heroProportion(tv)).toBeCloseTo(215 / 85, 1);
       // Standing: feet on the ground line.
       for (const hero of [kitsune, bigfoot]) {
         expect(hero.stance).toBe("standing");

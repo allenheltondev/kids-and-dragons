@@ -715,6 +715,19 @@
     height: 2.5em;
   }
 
+  /*
+   * The name and its check share a line that may wrap: at the largest text a
+   * long class name ("Thornguard") and the check were wider than the column
+   * with some fonts, and the check ran off the screen. A step down in size
+   * keeps them together on most phones; wrapping keeps the check on screen
+   * on the rest.
+   */
+  .creation-card__title {
+    flex-wrap: wrap;
+    min-inline-size: 0;
+    font-size: var(--font-size-md, 1em);
+  }
+
   /* The head is pinned over the step, so on a pane this narrow its title steps down a size
      and leaves the step more of the screen. */
   .creation__title {
