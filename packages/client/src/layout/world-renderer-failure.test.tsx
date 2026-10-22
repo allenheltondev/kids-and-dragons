@@ -23,6 +23,7 @@ vi.mock("../screens", () => ({
   ChapterCompletePanel: () => null,
   CreationPreview: () => null,
   DiceOverlay: () => null,
+  FightLog: () => null,
   LobbyContent: () => null,
   NarrationPanel: () => <button onClick={action}>Continue the story</button>,
   TransformCutscene: () => null,

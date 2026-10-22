@@ -124,3 +124,46 @@ export function storyStageFrame(
   }
   return { top: high, height: full - high };
 }
+
+/*
+ * ---------------------------------------------------------------------------
+ * The fight log's side
+ *
+ * The shared screen's fight log (screens/FightLog.tsx) stands down the right
+ * of a wide pane, and a board drawn under it hid its last columns, which is
+ * where half the monsters start. So the log reports how much of the pane's
+ * end it covers, the way the narration plate reports its height, and the
+ * fight camera frames the board into the rest (scene.ts `setBoardInset`). A
+ * narrow pane's log is a small corner over the board's margin and reports 0.
+ */
+
+let end = 0;
+const endListeners = new Set<(endPx: number) => void>();
+
+/** Report the CSS px the fight log covers along the pane's end. 0 when it covers none. */
+export function setBoardInsetEnd(px: number): void {
+  const next = Number.isFinite(px) && px > 0 ? Math.round(px) : 0;
+  if (next === end) return;
+  end = next;
+  for (const listener of endListeners) listener(end);
+}
+
+export function boardInsetEnd(): number {
+  return end;
+}
+
+export function onBoardInsetEnd(listener: (endPx: number) => void): () => void {
+  endListeners.add(listener);
+  return () => {
+    endListeners.delete(listener);
+  };
+}
+
+/**
+ * The width the fight camera frames the board into: the pane less the log,
+ * never less than `MIN_STAGE_FRACTION` of it, so a log that somehow grew
+ * across the pane cannot shrink the board to a stamp.
+ */
+export function boardStageWidth(paneWidth: number, insetEnd: number): number {
+  return Math.max(paneWidth * MIN_STAGE_FRACTION, paneWidth - Math.max(0, insetEnd));
+}

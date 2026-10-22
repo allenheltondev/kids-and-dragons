@@ -20,6 +20,12 @@
  * (`finishTurnIfSpent`), so End Turn appears only when a player is giving
  * something up — steps left after acting, or nothing worth doing.
  *
+ * The one pause is for reading. Packed two or three to a row, a card has room
+ * for its name and not for what it does, and a playtest found four nameless
+ * cards hard to choose between. So a packed card's first tap puts its
+ * sentence on a line over the cards, and Go! (or the same card again) does
+ * it; an aimed card's who? step was already that pause, and says it too.
+ *
  * What makes a single tap safe is what is *on* the surface being tapped: the
  * only figures listed are ones the ability can legally hit, a wrong gold
  * square costs a step or two, and a mis-aimed ability still lands on a
@@ -32,15 +38,17 @@
  * Mode phone has no other view of it), and a turn spent looking at a blank
  * pane is a turn not spent planning the next one. On your turn its squares
  * become the taps; on anybody else's it is a map to think over. Above it,
- * what just happened: every roll, hit and miss of the last beat, in words,
- * because a d20 that nobody sees is not a d20.
+ * what just happened, in one line: the newest swing with its sum and the
+ * Guard it needed, because a d20 that nobody sees is not a d20. The running
+ * log is the shared screen's (FightLog), so the phone keeps only that line.
  *
  * The board keeps its size for the whole turn. It takes whatever height the
  * pane has left, so anything around it that grew or shrank on a tap used to
  * resize the map under the finger aiming at it. So everything around it has a
- * seat that does not change: the title row, the log, the legend, and the dock
- * under the board — one line for the hint or the question, and the cards
- * below it, held at the tallest they have been this turn.
+ * seat that does not change: the title row, the log line, the legend, and the
+ * dock under the board — one line for the hint or the question, the packed
+ * cards' sentence line, and the cards below it, held at the tallest they
+ * have been this turn.
  */
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -49,7 +57,6 @@ import type {
   AbilityCatalog,
   ClientIntent,
   Combatant,
-  DiceRoll,
   EncounterEvent,
   EncounterState,
   IntentPreview,
@@ -63,7 +70,6 @@ import {
   combatTurnAway,
   currentActor,
   currentActorId,
-  captiveName,
   environmentView,
   legalActions,
   legalItemTargets,
@@ -88,7 +94,8 @@ import { Button } from "../ui/Button";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { BuffList, combatBuffRows } from "./BuffList";
-import { PUFFED_HINT, PUFFED_WORDS, numbedLine, puffedLine } from "./buff-copy";
+import { PUFFED_HINT, PUFFED_WORDS } from "./buff-copy";
+import { describeBeats, type Beat } from "./fight-log";
 import { isNumbedHero } from "./combat-grid";
 import {
   combatantIcon,
@@ -104,7 +111,6 @@ import {
   CLOCK_ICON,
   EXIT_ICON,
   clockLine,
-  environmentBeatLine,
   exitLine,
   hazardIcon,
   hazardLine,
@@ -137,7 +143,16 @@ type Selection =
   /** A thrown consumable, waiting on a monster to land on. */
   | { step: "item-target"; itemId: string }
   /** The "Use an item" card, opened: the bag's usable items, in place. */
-  | { step: "items" };
+  | { step: "items" }
+  /**
+   * A packed card with nothing to aim, tapped once: its sentence is up over
+   * the cards, and Go! (or the same card again) does it. Only when the cards
+   * are packed two or three to a row; a card with room for its sentence
+   * still does it on the tap.
+   */
+  | { step: "read"; action: LegalAction }
+  /** The same, for a consumable that needs no aiming; `fromBag` keeps the opened bag up. */
+  | { step: "read-item"; itemId: string; fromBag: boolean };
 
 const IDLE: Selection = { step: "idle" };
 
@@ -149,6 +164,12 @@ const MAX_LOOSE_CARDS = 6;
  * row each; three or four go two to a row; five or more go three to a row,
  * icon over name. Every row a card list adds is a row the board gives up,
  * and a pane that scrolls is the one thing the turn screen must not do.
+ *
+ * Packed cards have no room for their sentence, so it moves to a line of its
+ * own over the cards (`packed` below): a tap on a packed card reads it out
+ * there first, and Go! (or the same card again) does it. Every sentence on
+ * every card was tried and measured first; three rows of them pushed the
+ * board to its floor and the last row off a 390px phone.
  */
 export function cardColumns(count: number): 1 | 2 | 3 {
   if (count <= 2) return 1;
@@ -174,19 +195,6 @@ function seat(shown: boolean): CSSProperties | undefined {
 function turnOf(encounter: EncounterState | null): string {
   if (!encounter) return "none";
   return [encounter.startedAt, currentActorId(encounter), encounter.round, encounter.turnIndex].join(":");
-}
-
-/**
- * One line of "what just happened", already in words. Built when the beat
- * arrives rather than at render, because the names come from the encounter
- * as it stood *then* — the patch behind the beat may hand the clock on.
- */
-export interface Beat {
-  readonly key: string;
-  /** A roll keeps its numbers, so it can be drawn as a die rather than a sentence. */
-  readonly roll?: { readonly who: string; readonly roll: DiceRoll };
-  readonly text: string;
-  readonly tone: "good" | "bad" | "plain";
 }
 
 export function CombatControls(): ReactElement | null {
@@ -348,6 +356,18 @@ export function CombatControls(): ReactElement | null {
   if (columnsSeen.current.turn !== thisTurn) columnsSeen.current = { turn: thisTurn, columns: 1 };
   const columns = Math.max(columnsSeen.current.columns, cardColumns(cardCount)) as 1 | 2 | 3;
   columnsSeen.current.columns = columns;
+  /*
+   * Cards packed two or three to a row have room for a name, not for what
+   * the card does. A playtest found that hard ("when you have 4+ options it
+   * hides the descriptions"), so packed cards get one shared line over them
+   * that says the sentence of whichever card was tapped, and a tap on a
+   * packed card reads it there first: an aimed card already asks who? or
+   * where? before anything happens, and now says what it does beside the
+   * question; a card with nothing to aim waits for Go!. Two lines, held for
+   * the turn, which costs the board less than a sentence on every card.
+   */
+  const packed = columns > 1;
+  const bagPacked = cardColumns(usableItems.length) > 1;
 
   function commitAction(
     action: LegalAction,
@@ -394,6 +414,11 @@ export function CombatControls(): ReactElement | null {
     void dispatch({ type: "MOVE", to: at });
   }
 
+  /** The packed card whose sentence is up (see `packed`). */
+  function picked(action: LegalAction): boolean {
+    return selection.step === "read" && selection.action.abilityId === action.abilityId;
+  }
+
   function tapAction(action: LegalAction): void {
     if (action.tiles.length > 0) {
       setSelection({ step: "tile", action, picked: [] });
@@ -403,12 +428,23 @@ export function CombatControls(): ReactElement | null {
       setSelection({ step: "target", action, picked: [] });
       return;
     }
+    // A packed card says what it does before it does it (see `packed`).
+    if (packed && !picked(action)) {
+      setSelection({ step: "read", action });
+      return;
+    }
     commitAction(action);
   }
 
   function tapItem(itemId: string, def: ItemDef): void {
     if (def.effect?.type === "damage") {
       setSelection({ step: "item-target", itemId });
+      return;
+    }
+    // From the opened bag, the bag's own packing decides (it has its own count).
+    const fromBag = selection.step === "items" || (selection.step === "read-item" && selection.fromBag);
+    if ((fromBag ? bagPacked : packed) && !(selection.step === "read-item" && selection.itemId === itemId)) {
+      setSelection({ step: "read-item", itemId, fromBag });
       return;
     }
     commitItem(itemId);
@@ -473,7 +509,7 @@ export function CombatControls(): ReactElement | null {
    */
   const canEnd =
     myTurn &&
-    selection.step === "idle" &&
+    (selection.step === "idle" || selection.step === "read" || selection.step === "read-item") &&
     ((encounter.actionTaken && moves.length > 0) ||
       (!encounter.actionTaken && actions.length === 0 && usableItems.length === 0));
 
@@ -488,6 +524,21 @@ export function CombatControls(): ReactElement | null {
         : moves.length > 0
           ? "Walk on a gold square, or pick one thing."
           : "Pick one thing to do.";
+
+  const inBag = selection.step === "items" || (selection.step === "read-item" && selection.fromBag);
+
+  /*
+   * The packed cards' shared line: what the tapped card does, in the card's
+   * own sentence; before any tap, how to read one. The bag, opened, packs
+   * its items by their own count.
+   */
+  const reading: { text: string; quiet: boolean } | null = !(inBag ? bagPacked : packed) || encounter.actionTaken
+    ? null
+    : selection.step === "read" || selection.step === "target" || selection.step === "tile" || selection.step === "tile-target"
+      ? { text: summaryOf(selection.action.abilityId, abilities) ?? selection.action.name, quiet: false }
+      : selection.step === "read-item" || selection.step === "item-target"
+        ? { text: items?.[selection.itemId] ? itemSummary(items[selection.itemId]!) : "", quiet: false }
+        : { text: selection.step === "items" ? "Tap an item to see what it does." : "Tap a card to see what it does.", quiet: true };
 
   // How many figures the who-step offers in all, picked or not, so the list
   // keeps its columns while picks leave it.
@@ -539,10 +590,12 @@ export function CombatControls(): ReactElement | null {
           environment, so nothing here moves an ordinary board. */}
       <EnvironmentStatus encounter={encounter} />
 
-      {/* What the last beat did, in words and numbers: every roll on the
-          table, whoever threw it. The one place the d20 shows on a phone.
-          There from the fight's first moment, empty until a beat lands. */}
-      <BeatLog beats={beats} />
+      {/* What the last beat did, in one line: the newest swing, its sum and
+          the Guard it needed, or whatever else just happened. The running
+          log with every roll drawn out is the TV's (FightLog); here it is a
+          single line, so a phone gives its rows to the board. There from the
+          fight's first moment. */}
+      <LastBeat beats={beats} />
 
       {/*
         The board. Tappable cells are real <button>s; everything else is an
@@ -681,6 +734,26 @@ export function CombatControls(): ReactElement | null {
               <AskRow icon="bag" onChange={() => setSelection(IDLE)}>
                 Use an item: which one?
               </AskRow>
+            ) : selection.step === "read" ? (
+              <AskRow
+                icon={selection.action.icon}
+                onChange={() => setSelection(IDLE)}
+                go={{ shown: true, onGo: () => commitAction(selection.action), label: `Go! ${selection.action.name}` }}
+              >
+                {selection.action.name}
+              </AskRow>
+            ) : selection.step === "read-item" ? (
+              <AskRow
+                icon={items?.[selection.itemId]?.icon ?? "consumable"}
+                onChange={() => setSelection(selection.fromBag ? { step: "items" } : IDLE)}
+                go={{
+                  shown: true,
+                  onGo: () => commitItem(selection.itemId),
+                  label: `Go! Use ${items?.[selection.itemId]?.name ?? "the item"}`,
+                }}
+              >
+                {items?.[selection.itemId]?.name ?? "The item"}
+              </AskRow>
             ) : selection.step === "tile" ? (
               <AskRow icon={selection.action.icon} onChange={() => setSelection(IDLE)}>
                 {selection.action.name}: tap a glowing tile.
@@ -731,13 +804,27 @@ export function CombatControls(): ReactElement | null {
             inert={pending}
             onClickCapture={pending ? swallowTap : undefined}
           >
-            {selection.step === "idle" && cardCount > 0 ? (
+            {/* The packed cards' sentence line (see `packed`): the tapped
+                card's sentence, in a seat of two lines held for the turn. */}
+            {reading !== null ? (
+              <p
+                className={`combat__reading${reading.quiet ? " combat__reading--quiet" : ""}`}
+                role="status"
+                aria-live="polite"
+              >
+                {reading.text}
+              </p>
+            ) : null}
+
+            {(selection.step === "idle" || selection.step === "read" || (selection.step === "read-item" && !selection.fromBag)) &&
+            cardCount > 0 ? (
               <ul className="prompt__options combat__actions" data-columns={columns}>
                 {actions.map((action) => (
                   <li key={action.abilityId}>
                     <button
                       type="button"
-                      className="choice kad-tap kad-focusable"
+                      className={`choice kad-tap kad-focusable${picked(action) ? " choice--picked" : ""}`}
+                      aria-pressed={packed ? picked(action) : undefined}
                       onClick={() => tapAction(action)}
                       {...helpAttrs({ kind: "card", name: action.name, icon: action.icon, ...textOf(summaryOf(action.abilityId, abilities)) })}
                     >
@@ -776,6 +863,7 @@ export function CombatControls(): ReactElement | null {
                       item={item}
                       onTap={tapItem}
                       compact={columns > 1}
+                      picked={packed ? selection.step === "read-item" && selection.itemId === item.itemId : undefined}
                     />
                   ))
                 )}
@@ -783,14 +871,15 @@ export function CombatControls(): ReactElement | null {
             ) : null}
 
             {/* The bag, opened in place of the cards: same spot, same thumb. */}
-            {selection.step === "items" ? (
+            {inBag ? (
               <ul className="prompt__options combat__actions" data-columns={cardColumns(usableItems.length)}>
                 {usableItems.map((item) => (
                   <ItemCard
                     key={`item-${item.itemId}`}
                     item={item}
                     onTap={tapItem}
-                    compact={cardColumns(usableItems.length) > 1}
+                    compact={bagPacked}
+                    picked={bagPacked ? selection.step === "read-item" && selection.itemId === item.itemId : undefined}
                   />
                 ))}
               </ul>
@@ -979,7 +1068,8 @@ function AskRow({
 }: {
   icon: string;
   onChange: () => void;
-  go?: { shown: boolean; onGo: () => void } | undefined;
+  /** `label` names the button for a screen reader; an up-to-N pick's is "That's everyone". */
+  go?: { shown: boolean; onGo: () => void; label?: string } | undefined;
   children: ReactNode;
 }): ReactElement {
   return (
@@ -993,7 +1083,7 @@ function AskRow({
           variant="primary"
           size="md"
           icon={<Icon name="check" />}
-          aria-label="That's everyone. Go!"
+          aria-label={go.label ?? "That's everyone. Go!"}
           style={seat(go.shown)}
           onClick={go.onGo}
         >
@@ -1012,19 +1102,23 @@ function ItemCard({
   item,
   onTap,
   compact,
+  picked,
 }: {
   item: { itemId: string; def: ItemDef; count: number };
   onTap: (itemId: string, def: ItemDef) => void;
   /** Packed into columns: the name alone, since "Use" costs a wrapped line. */
   compact: boolean;
+  /** Packed and tapped once: its sentence is up, and Go! uses it. Undefined when not packed. */
+  picked?: boolean | undefined;
 }): ReactElement {
   const name = `Use ${item.def.name}${item.count > 1 ? ` ×${item.count}` : ""}`;
   return (
     <li>
       <button
         type="button"
-        className="choice kad-tap kad-focusable"
+        className={`choice kad-tap kad-focusable${picked ? " choice--picked" : ""}`}
         aria-label={name}
+        aria-pressed={picked}
         onClick={() => onTap(item.itemId, item.def)}
         {...helpAttrs({ kind: "item", name: item.def.name, icon: item.def.icon, ...textOf(item.def.text) })}
       >
@@ -1180,201 +1274,33 @@ function useBeats(encounter: EncounterState | null, myId: string | null): readon
   );
 }
 
-/** Stat ids as a kid reads them off the sheet. */
-const STAT_NAMES: Record<string, string> = {
-  might: "Might",
-  quick: "Quick",
-  clever: "Clever",
-  heart: "Heart",
-};
-
 /**
- * Beats → lines. Pure, so the wording can be asserted. "You" for the phone's
- * own hero; everyone else by name, with the ordinal that tells three wisps
- * apart. Walking is left out — it is the board's to show, and in words it
- * buries the hit under it.
+ * The newest line of the last beat, on one line of its own. The phone used to
+ * keep a three-line log with every roll drawn as its parts, which was rows
+ * the board gave up on every turn; the shared screen now carries that log for
+ * the room (FightLog), and a phone keeps the one line its holder looks for: a
+ * swing's sum, what it needed and how hard it landed, all in the line's words
+ * (fight-log.ts). The whole beat stays readable to a screen reader.
  */
-export function describeBeats(
-  events: readonly EncounterEvent[],
-  encounter: EncounterState,
-  myId: string | null,
-  seq: number,
-): Beat[] {
-  const name = (id: string): string => {
-    if (id === myId) return "You";
-    const c = combatantById(encounter, id);
-    return c ? combatantLabel(c) : id;
-  };
-  const out: Beat[] = [];
-  events.forEach((event, i) => {
-    const key = `${seq}:${i}`;
-    switch (event.type) {
-      case "roll": {
-        const who = name(event.roll.characterId);
-        const hit = event.roll.result === "hit" || event.roll.result === "success";
-        out.push({
-          key,
-          roll: { who, roll: event.roll },
-          text: `${who} rolled ${rollWords(event.roll)}. ${hit ? "Hit!" : "Miss!"}`,
-          tone: hit ? (event.roll.characterId === myId || isParty(encounter, event.roll.characterId) ? "good" : "bad") : "plain",
-        });
-        return;
-      }
-      case "damage": {
-        const who = name(event.actorId);
-        out.push({
-          key,
-          text: `${who} ${who === "You" ? "take" : "takes"} ${event.amount}. ${event.hp} left.`,
-          tone: isParty(encounter, event.actorId) ? "bad" : "good",
-        });
-        return;
-      }
-      case "heal": {
-        const who = name(event.actorId);
-        out.push({ key, text: `${who} ${who === "You" ? "get" : "gets"} ${event.amount} back. ${event.hp} now.`, tone: "good" });
-        return;
-      }
-      case "down": {
-        const who = name(event.actorId);
-        out.push({
-          key,
-          text: `${who} ${who === "You" ? "are" : "is"} knocked down!`,
-          tone: isParty(encounter, event.actorId) ? "bad" : "good",
-        });
-        return;
-      }
-      case "revived": {
-        const who = name(event.actorId);
-        out.push({ key, text: `${who} ${who === "You" ? "are" : "is"} back up!`, tone: "good" });
-        return;
-      }
-      case "shoved":
-        out.push({ key, text: `${name(event.actorId)} ${name(event.actorId) === "You" ? "get" : "gets"} shoved.`, tone: "plain" });
-        return;
-      case "protected":
-        out.push({ key, text: `${name(event.byId)} ${name(event.byId) === "You" ? "brace" : "braces"} for ${name(event.actorId)}.`, tone: "good" });
-        return;
-      case "bonus":
-        out.push({ key, text: `${name(event.actorId)}: +${event.amount} on the next roll.`, tone: "good" });
-        return;
-      case "dazed":
-        out.push({ key, text: `${name(event.actorId)} ${name(event.actorId) === "You" ? "are" : "is"} dazed.`, tone: "plain" });
-        return;
-      case "warded":
-        out.push({ key, text: `${name(event.actorId)}: warded for ${event.amount}.`, tone: "good" });
-        return;
-      case "evaded":
-        out.push({ key, text: `${name(event.actorId)} vanished from ${name(event.byId)}'s swing!`, tone: "plain" });
-        return;
-      case "rooted":
-        out.push({ key, text: `${name(event.actorId)} ${name(event.actorId) === "You" ? "are" : "is"} rooted.`, tone: "plain" });
-        return;
-      case "numbed":
-        out.push({ key, text: numbedLine(name(event.actorId), event.steps, event.turns), tone: "plain" });
-        return;
-      case "puffed":
-        out.push({ key, text: puffedLine(name(event.actorId)), tone: "plain" });
-        return;
-      case "encore":
-        out.push({ key, text: `${name(event.actorId)} ${name(event.actorId) === "You" ? "get" : "gets"} another action!`, tone: "good" });
-        return;
-      // The place fighting back (#201): words shared with the TV's rift
-      // caption (environment-copy.ts), so the two never drift.
-      case "hazard":
-      case "slowed":
-      case "escaped":
-      case "freed":
-      case "captiveLost":
-      case "captiveDragged":
-      case "objective":
-      case "relocated":
-      case "riftClock":
-      case "surge": {
-        const line = environmentBeatLine(event, {
-          name,
-          isParty: (id) => isParty(encounter, id),
-          captive: (index) => captiveName(encounter.environment?.spec, index),
-          objective: (id) => objectiveLabel(encounter, id),
-        });
-        if (line) out.push({ key, ...line });
-        return;
-      }
-      case "moved":
-      case "walled":
-        return;
-    }
-  });
-  return out;
-}
-
-function objectiveLabel(encounter: EncounterState, id: string): string {
-  return encounter.environment?.spec.objectives?.find((o) => o.id === id)?.label ?? id;
-}
-
-function isParty(encounter: EncounterState, id: string): boolean {
-  return combatantById(encounter, id)?.side === "party";
-}
-
-/** "14 + 3 Might = 17 against 11", the way the table would read it out. */
-export function rollWords(roll: DiceRoll): string {
-  const stat = roll.stat ? ` ${STAT_NAMES[roll.stat] ?? roll.stat}` : "";
-  const mod = roll.mod === 0 ? "" : ` ${roll.mod < 0 ? "-" : "+"} ${Math.abs(roll.mod)}${stat}`;
-  return `${roll.die}${mod} = ${roll.total} against ${roll.tn}`;
-}
-
-function BeatLog({ beats }: { beats: readonly Beat[] }): ReactElement {
-  // The newest line is the one that matters; a long round scrolls to it.
-  const ref = useRef<HTMLOListElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (el) el.scrollTop = el.scrollHeight;
-  }, [beats]);
+function LastBeat({ beats }: { beats: readonly Beat[] }): ReactElement {
+  const last = beats.at(-1) ?? null;
   return (
-    <ol className="combat__log" aria-label="What just happened" ref={ref}>
-      {/* The box is up from the first moment of the fight; empty, it read as
-          something broken. */}
-      {beats.length === 0 ? <li className="combat__beat combat__beat--quiet">The fight is on!</li> : null}
-      {beats.map((beat) => (
-        <li key={beat.key} className={`combat__beat combat__beat--${beat.tone}`}>
-          {beat.roll ? (
-            <RollLine who={beat.roll.who} roll={beat.roll.roll} />
-          ) : (
-            <span>{beat.text}</span>
-          )}
-        </li>
-      ))}
-    </ol>
-  );
-}
-
-/**
- * A roll drawn as its parts: the die big, the bonus and its stat beside it,
- * the total against the Guard it had to beat, and the verdict. The same sum
- * the dice card shows for a check (DiceOverlay), at a size a fight can afford.
- */
-function RollLine({ who, roll }: { who: string; roll: DiceRoll }): ReactElement {
-  const hit = roll.result === "hit" || roll.result === "success";
-  const stat = roll.stat ? STAT_NAMES[roll.stat] ?? roll.stat : null;
-  return (
-    <span className="combat__roll">
-      <span className="combat__roll-who">{who}</span>
-      <span className="combat__roll-die" aria-label={`rolled ${roll.die}`}>
-        <Icon name="d20" />
-        {roll.die}
-      </span>
-      {roll.mod !== 0 ? (
-        <span className="combat__roll-mod">
-          {roll.mod < 0 ? "-" : "+"} {Math.abs(roll.mod)}
-          {stat ? <span className="combat__roll-stat"> {stat}</span> : null}
-        </span>
-      ) : null}
-      <span className="combat__roll-total">= {roll.total}</span>
-      <span className="combat__roll-tn kad-muted">vs {roll.tn}</span>
-      <span className={`combat__roll-verdict combat__roll-verdict--${hit ? "hit" : "miss"}`}>
-        <Icon name={hit ? "check" : "close"} />
-        {hit ? "Hit!" : "Miss"}
-      </span>
-    </span>
+    <div className="combat__log" aria-label="What just happened" role="group">
+      <p
+        key={last?.key ?? "quiet"}
+        className={`combat__beat combat__line combat__beat--${last?.tone ?? "quiet"}`}
+        aria-hidden="true"
+      >
+        {/* The box is up from the first moment of the fight; empty, it read as
+            something broken. */}
+        {last ? last.text : "The fight is on!"}
+      </p>
+      <ol className="kad-sr-only" aria-live="polite">
+        {beats.map((beat) => (
+          <li key={beat.key}>{beat.text}</li>
+        ))}
+      </ol>
+    </div>
   );
 }
 
@@ -1412,5 +1338,11 @@ export function previewOf(selection: Selection): IntentPreview | null {
       return { kind: "item", itemId: selection.itemId };
     case "items":
       return null;
+    // A packed card being read is the table's business too: it is what they
+    // are about to do.
+    case "read":
+      return { kind: "action", abilityId: selection.action.abilityId };
+    case "read-item":
+      return { kind: "item", itemId: selection.itemId };
   }
 }
