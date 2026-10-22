@@ -11,7 +11,9 @@ import {
   failCampaign,
   fitClass,
   foldRunDeeds,
+  hasBeenPaid,
   MAX_STAT_GAIN,
+  payChapterXp,
   newCharacter,
   rankForLevel,
   rankIn,
@@ -799,6 +801,68 @@ describe("awardXp (spec §8.1)", () => {
     const result = awardXp(joined, rules, 600); // 1200 → 1800, level 4 → 5
     expect(effectiveProgress(result.character).level).toBe(5);
     expect(effectiveProgress(result.character).unspentPoints).toBe(4);
+  });
+});
+
+describe("payChapterXp: a chapter pays a hero once, ever (#408)", () => {
+  it("pays the award and notes the chapter in the same half", () => {
+    const paid = payChapterXp(startCampaign(makeCharacter(), "r_1"), rules, "ch-1", 300);
+
+    expect(paid.alreadyPaid).toBeUndefined();
+    expect(paid.leveledTo).toBe(2);
+    expect(paid.character.provisional).toMatchObject({ xp: 300, paidChapters: ["ch-1"] });
+    // Mid-campaign, like the XP: committed has not been paid anything yet.
+    expect(paid.character.committed.paidChapters).toBeUndefined();
+    expect(hasBeenPaid(paid.character, "ch-1")).toBe(true);
+  });
+
+  it("pays nothing the second time, and says so", () => {
+    const once = payChapterXp(makeCharacter(), rules, "ch-1", 300).character;
+
+    const twice = payChapterXp(once, rules, "ch-1", 300);
+
+    expect(twice).toEqual({ character: once, alreadyPaid: true });
+    expect(twice.character.committed.xp).toBe(300);
+  });
+
+  it("still pays a chapter it has not paid her, beside one it has", () => {
+    const once = payChapterXp(makeCharacter(), rules, "gemfall-03a", 300).character;
+
+    const other = payChapterXp(once, rules, "gemfall-03b", 300);
+
+    expect(other.alreadyPaid).toBeUndefined();
+    expect(other.character.committed).toMatchObject({ xp: 600, paidChapters: ["gemfall-03a", "gemfall-03b"] });
+  });
+
+  it.each([0, -50])("notes nothing for an award of %i XP, so the chapter can still pay later", (amount) => {
+    const character = makeCharacter();
+
+    const result = payChapterXp(character, rules, "ch-1", amount);
+
+    expect(result).toEqual({ character });
+    expect(hasBeenPaid(result.character, "ch-1")).toBe(false);
+  });
+
+  it("is taken back with the XP when the campaign fails, and kept when it completes", () => {
+    const earned = payChapterXp(startCampaign(makeCharacter(), "r_1"), rules, "ch-1", 300).character;
+
+    const failed = failCampaign(earned, "souvenir", "2026-10-22T00:00:00.000Z");
+    expect(hasBeenPaid(failed, "ch-1")).toBe(false);
+    expect(payChapterXp(startCampaign(failed, "r_2"), rules, "ch-1", 300).alreadyPaid).toBeUndefined();
+
+    const kept = commitCampaign(earned);
+    expect(kept.committed.paidChapters).toEqual(["ch-1"]);
+    // The next campaign starts from what she has kept.
+    expect(payChapterXp(startCampaign(kept, "r_2"), rules, "ch-1", 300).alreadyPaid).toBe(true);
+  });
+
+  it("never caps a level: a hero high up the ladder is paid an unseen chapter in full", () => {
+    const veteran = makeCharacter();
+    veteran.committed = { ...veteran.committed, xp: 50_000, level: 20, paidChapters: ["ch-1"] };
+
+    const paid = payChapterXp(veteran, rules, "ch-2", 650);
+
+    expect(paid.character.committed.xp).toBe(50_650);
   });
 });
 

@@ -552,3 +552,28 @@ describe("migrateCharacter — the field guards, at their edges", () => {
     expect(() => migrateCharacter(nulled, CHARACTER_VERSION)).toThrow(/got null/);
   });
 });
+
+describe("migrateCharacter — the paid-chapter ledger (v7, #408)", () => {
+  it("reads a v6 row as no chapter paid yet (#408)", () => {
+    const row = JSON.parse(JSON.stringify(current())) as Record<string, unknown>;
+    const migrated = migrateCharacter(row, 6);
+    expect(migrated.committed).not.toHaveProperty("paidChapters");
+    expect(migrated).toEqual(current());
+  });
+
+  it("keeps the paid-chapter ledger on either half exactly", () => {
+    const character = current();
+    character.committed = { ...character.committed, paidChapters: ["gemfall-01"] };
+    character.provisional = { ...character.committed, paidChapters: ["gemfall-01", "gemfall-02"], runId: "r_1" };
+    expect(migrateCharacter(JSON.parse(JSON.stringify(character)), CHARACTER_VERSION)).toEqual(character);
+  });
+
+  it("refuses a ledger that is not a list of chapter ids", () => {
+    for (const paidChapters of ["gemfall-01", [3], [""]]) {
+      const row = { ...current(), committed: { ...current().committed, paidChapters } };
+      expect(() => migrateCharacter(row, CHARACTER_VERSION), JSON.stringify(paidChapters)).toThrow(
+        /committed\.paidChapters/,
+      );
+    }
+  });
+});
