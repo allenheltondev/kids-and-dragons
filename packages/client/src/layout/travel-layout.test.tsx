@@ -400,6 +400,46 @@ describe("Travel Mode on a tablet held sideways", () => {
     expect(shown(container)).toEqual(["player", "world"]);
   });
 
+  it("brings an open question forward when the tablet turns upright", () => {
+    // A matchMedia that can turn: sideways first, then upright.
+    let sideways = true;
+    const listeners = new Set<() => void>();
+    vi.stubGlobal("matchMedia", vi.fn((query: string) => ({
+      get matches() { return sideways && query.includes("orientation: landscape"); },
+      media: query,
+      addEventListener: (_: string, fn: () => void) => listeners.add(fn),
+      removeEventListener: (_: string, fn: () => void) => listeners.delete(fn),
+    })));
+    const { container } = mount();
+    act(() => {
+      tab(container, "Map").click();
+    });
+    // The question arrives while the controls are already beside the map: nothing moves.
+    act(() => {
+      useGameStore.setState({
+        state: {
+          ...state(),
+          seq: 10,
+          phase: "scene",
+          prompt: {
+            kind: "choice",
+            sceneId: "rest_lanternfall",
+            options: [{ id: "on", label: "Onward", icon: "arrow" }],
+            forPlayerIds: ["p_1"],
+            vote: false,
+          },
+        },
+      });
+    });
+    expect(shown(container)).toEqual(["map", "player"]);
+    // Upright, one pane at a time: the question, not the map.
+    act(() => {
+      sideways = false;
+      for (const fn of listeners) fn();
+    });
+    expect(shown(container)).toEqual(["player"]);
+  });
+
   it("gives the die the big pane while the map is up, and keeps the controls", () => {
     const { container } = mount();
     act(() => {

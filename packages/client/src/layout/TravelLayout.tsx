@@ -108,6 +108,13 @@ export function TravelLayout(): React.JSX.Element {
     if (!sideBySide && turnKey !== null && turnKey !== previousTurnKey.current) setFocus("player");
     previousTurnKey.current = turnKey;
   }, [turnKey, sideBySide]);
+  // Leaving side by side (the tablet turned upright) with a question still open: it was never
+  // brought forward, since the controls were in view, so it is now.
+  const wasSideBySide = useRef(sideBySide);
+  useEffect(() => {
+    if (wasSideBySide.current && !sideBySide && turnKey !== null) setFocus("player");
+    wasSideBySide.current = sideBySide;
+  }, [sideBySide, turnKey]);
 
   // The die is the one thing everybody watches, whatever they were looking at.
   // Held for as long as the dice card is up, so it can be read (spec §2.2).

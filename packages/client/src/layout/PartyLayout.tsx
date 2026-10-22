@@ -67,6 +67,13 @@ function PhoneLayout(): React.JSX.Element {
     if (!sideBySide && turnKey !== null && turnKey !== previousTurnKey.current) setShowing("player");
     previousTurnKey.current = turnKey;
   }, [turnKey, sideBySide]);
+  // Leaving side by side (the tablet turned upright) with a question still open: it was never
+  // brought forward, since the controls were in view, so it is now.
+  const wasSideBySide = useRef(sideBySide);
+  useEffect(() => {
+    if (wasSideBySide.current && !sideBySide && turnKey !== null) setShowing("player");
+    wasSideBySide.current = sideBySide;
+  }, [sideBySide, turnKey]);
 
   const section = usePlayerNavigation((navigation) => navigation.section);
   // The "?" in the corner row (#256) explains whatever pane is up.
