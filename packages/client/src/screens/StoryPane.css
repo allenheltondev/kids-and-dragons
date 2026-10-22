@@ -47,7 +47,7 @@
   border: 1px solid #ad885777;
   border-radius: 1.2em 0.6em 1.2em 0.6em;
   background: linear-gradient(120deg, #8d683d55, #30243a);
-  box-shadow: inset 0 0.15em #ffffff10, 0 0.25em 0 #080613;
+  box-shadow: inset 0 0.15em #ffffff10, 0 0.3em 0.9em #0003;
 }
 
 .story__campaign-title {
@@ -120,7 +120,7 @@
   border: 1px solid #ad885755;
   border-radius: 0.5em 1.2em 0.5em 1.2em;
   background: linear-gradient(150deg, #3e30442b, #191529e6);
-  box-shadow: inset 0 0.15em #ffffff0a, 0 0.25em 0 #080613;
+  box-shadow: inset 0 0.15em #ffffff0a, 0 0.3em 0.9em #0003;
 }
 
 .story__chapter-title {

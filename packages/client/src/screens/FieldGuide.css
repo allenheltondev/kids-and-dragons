@@ -58,7 +58,7 @@
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4em;
   background: radial-gradient(ellipse at 50% 25%, #5a4668aa, #231d35 78%);
   border: 0.08em solid #ad8857aa; border-radius: 1.1em 0.6em 1.1em 0.6em;
-  box-shadow: inset 0 0.15em #ffffff10, 0 0.25em 0 #080613;
+  box-shadow: inset 0 0.15em #ffffff10, 0 0.3em 0.9em #0003;
   transition: transform 0.12s ease;
 }
 .field-guide__card:not(:disabled):active { transform: scale(0.97); }

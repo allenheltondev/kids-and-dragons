@@ -67,7 +67,7 @@
     radial-gradient(circle at 12% 0%, #ffffff55, transparent 9em),
     linear-gradient(135deg, var(--profile-accent), color-mix(in srgb, var(--profile-accent) 70%, #ffffff));
   color: var(--profile-ink);
-  box-shadow: inset 0 0.15em #ffffff66, 0 0.3em 0 #080613, 0 0.7em 1.2em #0005;
+  box-shadow: inset 0 0.15em #ffffff66, 0 0.4em 1em #0004;
 }
 .profile__banner-words { flex: 1 1 8em; min-inline-size: 0; }
 
@@ -215,7 +215,7 @@
   border: 1px solid #ad885766;
   border-radius: 1.2em 0.7em 1.2em 0.7em;
   background: radial-gradient(ellipse at 50% 20%, #5a4668aa, #231d35 75%);
-  box-shadow: inset 0 0.15em #ffffff10, 0 0.3em 0 #080613;
+  box-shadow: inset 0 0.15em #ffffff10, 0 0.3em 0.9em #0003;
   text-align: center;
   scroll-snap-align: center;
 }
